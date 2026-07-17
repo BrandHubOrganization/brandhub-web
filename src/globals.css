@@ -15,13 +15,13 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
     
-    /* Màu primary theo Task (#3B82F6 - HSL: 217 91% 60%) */
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 0 0% 100%;
+    /* Đồng bộ với BrandHub Design: primary là near-black (#0a0a0a) */
+    --primary: 240 5.9% 3.9%;
+    --primary-foreground: 0 0% 98%;
     
-    /* Màu secondary theo Task (#8B5CF6 - HSL: 262 83% 66%) */
-    --secondary: 262.2 83.3% 65.9%;
-    --secondary-foreground: 0 0% 100%;
+    /* Đồng bộ với BrandHub Design: secondary là surface-soft (#f4f4f5) */
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
     
     /* Màu success theo Task (#10B981 - HSL: 160 84% 39%) */
     --success: 160.4 84.1% 39.4%;
@@ -64,12 +64,13 @@
     --popover: 222.2 84% 6%;
     --popover-foreground: 210 40% 98%;
     
-    /* Primary giữ nguyên hoặc đảo độ sáng trong dark mode */
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Primary trong dark mode là near-white (#fafafa) */
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 84% 4.9%;
     
-    --secondary: 262.2 83.3% 65.9%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary trong dark mode là surface-soft dark (#27272a) */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
     
     --success: 160.4 84.1% 39.4%;
     --success-foreground: 222.2 47.4% 11.2%;
