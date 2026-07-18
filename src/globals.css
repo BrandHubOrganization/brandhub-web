@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Geist+Mono:wght@100..900&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  :root {
+    /* Biến CSS gốc cho shadcn/ui */
+    --background: 0 0% 98%; /* #fafafa tương đương 240 5.9% 98% */
+    --foreground: 222.2 84% 4.9%; /* #0a0a0a */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    /* Màu primary theo Task (#3B82F6 - HSL: 217 91% 60%) */
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Màu secondary theo Task (#8B5CF6 - HSL: 262 83% 66%) */
+    --secondary: 262.2 83.3% 65.9%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Màu success theo Task (#10B981 - HSL: 160 84% 39%) */
+    --success: 160.4 84.1% 39.4%;
+    --success-foreground: 0 0% 100%;
+    
+    /* Màu warning theo Task (#F59E0B - HSL: 38 92% 50%) */
+    --warning: 38 92% 50%;
+    --warning-foreground: 222.2 47.4% 11.2%;
+    
+    /* Màu danger / destructive theo Task (#EF4444 - HSL: 0 84% 60%) */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --muted: 240 4.8% 95.9%; /* #f4f4f5 */
+    --muted-foreground: 240 3.8% 46.1%; /* #71717a */
+    --accent: 240 4.8% 95.9%; /* #f4f4f5 */
+    --accent-foreground: 222.2 47.4% 11.2%; /* #0a0a0a */
+    
+    --border: 240 5.9% 90%; /* #e4e4e7 */
+    --input: 240 5.9% 90%; /* #e4e4e7 */
+    --ring: 15 88% 55%; /* focus ring dùng màu cam thương hiệu */
+    --radius: 0.5rem;
+
+    /* Các màu thương hiệu BrandHub đặc trưng */
+    --brand-orange: 15 88% 55%; /* #f05a28 */
+    --brand-orange-soft: 15 100% 96%; /* #fff0eb */
+    --ink: 222.2 84% 4.9%; /* #0a0a0a */
+    --canvas: 0 0% 98%; /* #fafafa */
+    --surface-soft: 240 5.9% 96%; /* #f4f4f5 */
+    --surface-mid: 240 5.9% 90%; /* #e4e4e7 */
+    --hairline: 240 5.9% 90%; /* #e4e4e7 */
+    --hairline-soft: 240 5.9% 96%; /* #f4f4f5 */
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%; /* #09090b */
+    --foreground: 210 40% 98%; /* #fafafa */
+    --card: 222.2 84% 6%; /* hơi sáng hơn nền đen */
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 6%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Primary giữ nguyên hoặc đảo độ sáng trong dark mode */
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    
+    --secondary: 262.2 83.3% 65.9%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    
+    --success: 160.4 84.1% 39.4%;
+    --success-foreground: 222.2 47.4% 11.2%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 222.2 47.4% 11.2%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 222.2 47.4% 11.2%;
+    
+    --muted: 217.2 32.6% 17.5%; /* #27272a */
+    --muted-foreground: 215 20.2% 65.1%; /* #a1a1aa */
+    --accent: 217.2 32.6% 17.5%; /* #27272a */
+    --accent-foreground: 210 40% 98%; /* #fafafa */
+    
+    --border: 217.2 32.6% 17.5%; /* #27272a */
+    --input: 217.2 32.6% 17.5%; /* #27272a */
+    --ring: 15 88% 55%;
+
+    /* Màu thương hiệu trong dark mode */
+    --brand-orange: 15 88% 55%; /* #f05a28 */
+    --brand-orange-soft: 15 30% 15%; /* cam tối hơn */
+    --ink: 210 40% 98%; /* #fafafa */
+    --canvas: 222.2 84% 4.9%; /* #09090b */
+    --surface-soft: 217.2 32.6% 17.5%; /* #27272a */
+    --surface-mid: 217.2 32.6% 25%; /* #3f3f46 */
+    --hairline: 217.2 32.6% 17.5%; /* #27272a */
+    --hairline-soft: 217.2 32.6% 12%; /* subtler border */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Định nghĩa cấu hình theme tương thích với Tailwind v4 */
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", monospace;
+
+  /* Typography scale */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.875rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+
+  /* Ánh xạ màu cho Tailwind */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  
+  /* Các màu thương hiệu BrandHub */
+  --color-brand-orange: hsl(var(--brand-orange));
+  --color-brand-orange-soft: hsl(var(--brand-orange-soft));
+  --color-ink: hsl(var(--ink));
+  --color-canvas: hsl(var(--canvas));
+  --color-surface-soft: hsl(var(--surface-soft));
+  --color-surface-mid: hsl(var(--surface-mid));
+  --color-hairline: hsl(var(--hairline));
+  --color-hairline-soft: hsl(var(--hairline-soft));
+
+  /* Tương thích với các class border của shadcn */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
