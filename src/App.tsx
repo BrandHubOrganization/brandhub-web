@@ -1,10 +1,15 @@
 import { useState } from 'react'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 
-function App() {
+// Import UI Primitives
+import { Toaster } from '@/components/ui/sonner'
+import ExamplesPage from '@/components/examples'
+
+function Home() {
   const [count, setCount] = useState(0)
 
   return (
@@ -21,13 +26,25 @@ function App() {
             Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+
+        <div className="flex flex-col items-center gap-4 my-6">
+          <button
+            type="button"
+            className="counter cursor-pointer"
+            onClick={() => setCount((count) => count + 1)}
+          >
+            Count is {count}
+          </button>
+
+          <Link to="/components/examples">
+            <button
+              type="button"
+              className="cursor-pointer px-6 py-2.5 rounded-md font-medium text-white transition-all bg-[#f05a28] hover:bg-[#f05a28]/90 focus:outline-none"
+            >
+              Xem Thư Viện UI Component (Examples) →
+            </button>
+          </Link>
+        </div>
       </section>
 
       <div className="ticks"></div>
@@ -119,4 +136,17 @@ function App() {
   )
 }
 
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/components/examples" element={<ExamplesPage />} />
+      </Routes>
+      <Toaster position="bottom-right" closeButton richColors />
+    </BrowserRouter>
+  )
+}
+
 export default App
+
