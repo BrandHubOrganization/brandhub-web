@@ -1,9 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type UserRole = "ADMIN" | "AGENCY_OWNER" | "ACCOUNT_MANAGER" | "CONTENT_CREATOR" | "BRAND_CLIENT";
+export type UserRole =
+  | "ADMIN"
+  | "AGENCY_OWNER"
+  | "ACCOUNT_MANAGER"
+  | "CONTENT_CREATOR"
+  | "BRAND_CLIENT";
 
-interface User {
+export interface User {
   id: string;
   name: string;
   email: string;
@@ -16,9 +21,8 @@ interface User {
 interface AuthState {
   user: User | null;
   accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
-  setAuth: (user: User, accessToken: string, refreshToken: string) => void;
+  setAuth: (user: User, accessToken: string) => void;
   clearAuth: () => void;
 }
 
@@ -27,13 +31,16 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       accessToken: null,
-      refreshToken: null,
       isAuthenticated: false,
-      setAuth: (user, accessToken, refreshToken) =>
-        set({ user, accessToken, refreshToken, isAuthenticated: true }),
-      clearAuth: () =>
-        set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false }),
+      setAuth: (user, accessToken) => {
+        localStorage.setItem("accessToken", accessToken);
+        set({ user, accessToken, isAuthenticated: true });
+      },
+      clearAuth: () => {
+        localStorage.removeItem("accessToken");
+        set({ user: null, accessToken: null, isAuthenticated: false });
+      },
     }),
-    { name: "brandhub-auth" }
-  )
+    { name: "brandhub-auth" },
+  ),
 );

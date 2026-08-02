@@ -1,0 +1,129 @@
+{
+  "auth": {
+    "common": { "email": "Email", "password": "Password", "backToLogin": "Back to login", "and": "and" },
+    "brand": {
+      "tagline": "PLAN · CREATE · SCHEDULE · PUBLISH · GROW",
+      "testimonial": "\"We cut content creation time from 3 days to 2 hours. BrandHub has completely transformed our team's workflow.\"",
+      "testimonialName": "Minh Nguyen", "testimonialRole": "Content Director, VCorp Media",
+      "statUsers": "Users", "statContent": "Content created", "statUptime": "Uptime"
+    },
+    "login": {
+      "welcomeBack": "Welcome back", "subtitle": "Sign in to continue your work", "tab": "Sign in",
+      "submit": "Sign in", "forgotPassword": "Forgot password?", "orContinue": "or continue with",
+      "agreeToTerms": "By continuing, you agree to our", "termsOfService": "Terms of Service", "privacyPolicy": "Privacy Policy",
+      "successToast": "Signed in successfully!", "errorDefault": "Sign in failed. Please try again."
+    },
+    "register": {
+      "heading": "Create account", "subtitle": "Start for free, no credit card needed", "tab": "Sign up",
+      "fullName": "Full name", "confirmPassword": "Confirm password", "submit": "Create account",
+      "haveAccount": "Already have an account?", "successToast": "Registration successful! Please verify your email.",
+      "errorDefault": "Registration failed. Please try again."
+    },
+    "verifyOtp": {
+      "heading": "Verify email", "subtitle": "We sent a 6-digit OTP to", "submit": "Verify",
+      "noCode": "Didn't receive the code?", "resend": "Resend", "incompleteOtp": "Please enter the full 6-digit OTP",
+      "successToast": "Verification successful! Please sign in.", "errorDefault": "Invalid OTP. Please try again.",
+      "resendSuccess": "OTP resent. Please check your email.", "resendError": "Failed to resend OTP. Please try again."
+    },
+    "forgotPassword": {
+      "heading": "Forgot password?", "subtitle": "Enter your email and we'll send you a reset link", "submit": "Send reset link",
+      "successHeading": "Check your email", "successMessage": "We've sent a password reset link to {{email}}. Please check your inbox (including spam) and follow the instructions.",
+      "successToast": "Password reset email sent!", "errorDefault": "Request failed. Please try again."
+    },
+    "resetPassword": {
+      "heading": "Reset password", "subtitle": "Enter a new password for your account", "newPassword": "New password",
+      "submit": "Reset password", "successToast": "Password reset successful! Please sign in.",
+      "errorDefault": "Password reset failed. The token may have expired."
+    },
+    "validation": {
+      "fullNameRequired": "Please enter your full name", "emailRequired": "Please enter your email", "emailInvalid": "Invalid email address",
+      "passwordRequired": "Please enter a password", "newPasswordRequired": "Please enter a new password",
+      "passwordMinLength": "Password must be at least 8 characters", "passwordNeedDigit": "Password must contain at least 1 digit",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "landing": {
+      "heroTitle": "The all-in-one brand content management platform",
+      "heroSubtitle": "Plan, create, schedule, and publish content faster. BrandHub helps your team collaborate effectively on a single platform.",
+      "ctaStart": "Start free", "ctaLogin": "Sign in", "trustedBy": "Trusted by 50,000+ brands and agencies",
+      "features": {
+        "planning": { "title": "Content planning", "description": "Visually schedule and manage content campaigns across multiple channels." },
+        "creation": { "title": "AI-powered creation", "description": "Create content faster with AI assistance while maintaining brand quality and style." },
+        "publishing": { "title": "Multi-channel publishing", "description": "Auto-publish to multiple social media platforms simultaneously." },
+        "analytics": { "title": "Performance analytics", "description": "Track content performance in real-time, optimize strategy based on data." }
+      }
+    },
+    "passwordStrength": {
+      "label": "Password strength:", "veryWeak": "Very weak", "weak": "Weak", "medium": "Medium",
+      "good": "Good", "strong": "Strong", "veryStrong": "Very strong", "hint": " — needs at least 8 characters and 1 digit"
+    }
+  },
+  "landing": {
+    "trustedBy": "Trusted by 50,000+ brands & agencies worldwide",
+    "stats": { "contents": "Content pieces managed", "brands": "Brands & agencies", "platforms": "Platform integrations", "uptime": "Uptime guarantee" },
+    "features": {
+      "title": "Everything you need in one platform", "subtitle": "From planning to publishing, BrandHub streamlines your entire content workflow.",
+      "items": {
+        "planning": { "title": "Content Planning", "desc": "Visual campaign calendar with drag-and-drop scheduling across all channels." },
+        "creation": { "title": "AI-Powered Creation", "desc": "Generate and refine content with AI that understands your brand voice and guidelines." },
+        "publishing": { "title": "Multi-Channel Publishing", "desc": "Auto-publish to Facebook, Instagram, TikTok, LinkedIn, and more simultaneously." },
+        "analytics": { "title": "Performance Analytics", "desc": "Real-time dashboards tracking engagement, reach, and ROI across every campaign." },
+        "collab": { "title": "Team Collaboration", "desc": "Built-in approval workflows, comments, and role-based access for seamless teamwork." },
+        "automation": { "title": "Smart Automation", "desc": "Auto-schedule optimal posting times, batch-create variations, and set recurring campaigns." }
+      }
+    },
+    "howItWorks": {
+      "title": "How it works", "subtitle": "Four simple steps to transform your content workflow.",
+      "steps": {
+        "plan": { "title": "Plan your content", "desc": "Map out campaigns on a visual calendar. Assign tasks, set deadlines, and align your team on one roadmap." },
+        "create": { "title": "Create with AI", "desc": "Use AI-powered tools to draft, refine, and localize content. Maintain brand consistency with style guides and templates." },
+        "schedule": { "title": "Schedule & review", "desc": "Queue posts across all platforms. Built-in approval workflows ensure every piece gets the right sign-off." },
+        "publish": { "title": "Publish & analyze", "desc": "Auto-publish at optimal times. Track performance in real-time and optimize your strategy with actionable insights." }
+      }
+    },
+    "templates": {
+      "title": "Start with proven templates", "subtitle": "Jumpstart your campaigns with professionally designed templates for every platform.",
+      "items": {
+        "social": { "title": "Social Media Kits", "desc": "Pre-made templates for Instagram, Facebook, TikTok, LinkedIn posts and stories." },
+        "blog": { "title": "Blog & Article", "desc": "SEO-optimized content templates with headline formulas and structure guides." },
+        "email": { "title": "Email Campaigns", "desc": "Newsletter templates, drip sequences, and promotional email layouts ready to customize." }
+      }
+    },
+    "testimonials": {
+      "title": "Loved by content teams worldwide", "subtitle": "See what our customers say about BrandHub.",
+      "items": {
+        "minh": { "quote": "We cut content turnaround from 3 days to 2 hours. BrandHub completely transformed how our team operates." },
+        "sarah": { "quote": "After 6 months with BrandHub, our content output increased 240%. The AI tools are genuinely game-changing." },
+        "tuan": { "quote": "Best investment for our agency. Managing 20+ client brands has never been this smooth and organized." }
+      }
+    },
+    "pricing": {
+      "title": "Simple, transparent pricing", "subtitle": "Choose the plan that fits your team. No hidden fees.", "mostPopular": "Most Popular",
+      "plans": {
+        "starter": { "name": "Starter", "price": "Free", "cta": "Start free", "features": ["1 workspace", "5 team members", "3 social channels", "Basic analytics", "100 scheduled posts/mo"] },
+        "pro": { "name": "Pro", "price": "590K ₫", "cta": "Start free trial", "features": ["Unlimited workspaces", "Unlimited team members", "All social channels", "Advanced analytics", "AI content generation", "Priority support", "Custom templates"] },
+        "enterprise": { "name": "Enterprise", "price": "Custom", "cta": "Contact sales", "features": ["Everything in Pro", "Dedicated account manager", "Custom integrations", "SLA guarantee", "On-premise option", "SSO & SAML", "Custom AI model training"] }
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions", "subtitle": "Can't find what you're looking for? Contact our support team.",
+      "items": {
+        "q1": { "q": "Is there a free plan available?", "a": "Yes! Our Starter plan is completely free forever. You get 1 workspace, 5 team members, 3 social channels, and 100 scheduled posts per month. No credit card required." },
+        "q2": { "q": "Which social media platforms do you support?", "a": "BrandHub supports all major platforms including Facebook, Instagram, TikTok, LinkedIn, Twitter/X, YouTube, Pinterest, and Threads. We continuously add new integrations based on user feedback." },
+        "q3": { "q": "How does AI content creation work?", "a": "Our AI is trained on marketing best practices and adapts to your brand voice. You provide a brief or topic, and it generates drafts, variations, and localized versions. You always have final approval before anything goes live." },
+        "q4": { "q": "Can I collaborate with my team and clients?", "a": "Absolutely. BrandHub has built-in approval workflows, role-based permissions, and comment threads. Clients can review and approve content without needing to log into your main workspace." },
+        "q5": { "q": "How does the Pro trial work?", "a": "Start a 14-day free trial of the Pro plan — no credit card needed. You get full access to all Pro features. We'll remind you before the trial ends, and you can downgrade to Starter anytime." }
+      }
+    },
+    "cta": { "title": "Ready to transform your content workflow?", "subtitle": "Join 50,000+ brands and agencies already using BrandHub. Start free, no credit card required.", "start": "Start free", "login": "Sign in" },
+    "footer": {
+      "tagline": "The all-in-one brand content management platform. Plan, create, schedule, publish, and grow — all in one place.",
+      "columns": { "product": "Product", "resources": "Resources", "company": "Company" },
+      "links": {
+        "product": ["Features", "Pricing", "Integrations", "Changelog", "API"],
+        "resources": ["Help Center", "Blog", "Templates", "Community", "Tutorials"],
+        "company": ["About", "Careers", "Contact", "Privacy", "Terms"]
+      },
+      "copyright": "© {{year}} BrandHub. All rights reserved."
+    }
+  }
+}

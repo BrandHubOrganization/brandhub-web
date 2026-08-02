@@ -10,7 +10,11 @@ import { AuthGuard } from "@/components/layout/AuthGuard";
 import { Layout } from "@/components/layout/Layout";
 
 // Import Pages
-import { LoginPage } from "@/pages/LoginPage";
+import { LoginPage } from "@/pages/auth/LoginPage";
+import { RegisterPage } from "@/pages/auth/RegisterPage";
+import { VerifyOtpPage } from "@/pages/auth/VerifyOtpPage";
+import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
+import { ResetPasswordPage } from "@/pages/auth/ResetPasswordPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { WorkspacePage } from "@/pages/WorkspacePage";
 import { PortalPage } from "@/pages/PortalPage";
@@ -23,13 +27,17 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
+        {/* Public Routes — accessible without authentication */}
+        <Route path="/" element={<DashboardPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-otp" element={<VerifyOtpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-        {/* Authenticated Routes wrapped in AuthGuard and Layout */}
+        {/* Authenticated Routes — require login */}
         <Route element={<AuthGuard />}>
           <Route element={<Layout />}>
-            <Route path="/" element={<DashboardPage />} />
             <Route path="/workspace" element={<WorkspacePage />} />
             <Route path="/portal" element={<PortalPage />} />
             <Route path="/admin" element={<AdminPage />} />
