@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
   Heart,
   MessageCircle,
@@ -11,9 +12,15 @@ import { cn } from "@/lib/utils";
 interface TikTokPostProps {
   className?: string;
   caption?: string;
-  likes?: string;
-  comments?: string;
-  shares?: string;
+  likes?: ReactNode;
+  comments?: ReactNode;
+  shares?: ReactNode;
+  /** Thumbnail video — nếu có sẽ hiển thị thay cho video placeholder. */
+  imageUrl?: string;
+  /** Đã like chưa — true thì icon tim đổi màu đỏ + fill, persist. */
+  liked?: boolean;
+  /** Đã lưu chưa — true thì icon bookmark đổi màu vàng + fill, persist. */
+  saved?: boolean;
 }
 
 /**
@@ -27,6 +34,9 @@ export function TikTokPost({
   likes = "45.2K",
   comments = "1.2K",
   shares = "8.4K",
+  imageUrl,
+  liked,
+  saved,
 }: TikTokPostProps) {
   return (
     <div
@@ -38,6 +48,14 @@ export function TikTokPost({
     >
       {/* Video background */}
       <div className="absolute inset-0 bg-linear-to-b from-zinc-900 via-zinc-950 to-black">
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt=""
+            className="absolute inset-0 size-full object-cover opacity-70"
+            loading="lazy"
+          />
+        )}
         <div className="absolute top-1/3 left-1/2 size-40 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute right-0 bottom-1/3 size-32 rounded-full bg-red-500/10 blur-3xl" />
 
@@ -76,10 +94,26 @@ export function TikTokPost({
               +
             </div>
           </div>
-          <TikTokAction icon={Heart} label={likes} />
-          <TikTokAction icon={MessageCircle} label={comments} />
-          <TikTokAction icon={Share2} label={shares} />
-          <TikTokAction icon={Bookmark} label="Lưu" />
+          <TikTokAction
+            dataTarget="like"
+            icon={Heart}
+            label={likes}
+            active={liked}
+            activeClass="fill-red-500 text-red-500"
+          />
+          <TikTokAction
+            dataTarget="comment"
+            icon={MessageCircle}
+            label={comments}
+          />
+          <TikTokAction dataTarget="share" icon={Share2} label={shares} />
+          <TikTokAction
+            dataTarget="save"
+            icon={Bookmark}
+            label="Lưu"
+            active={saved}
+            activeClass="fill-yellow-400 text-yellow-400"
+          />
         </div>
 
         {/* Top tabs */}
@@ -99,14 +133,25 @@ export function TikTokPost({
 function TikTokAction({
   icon: Icon,
   label,
+  dataTarget,
+  active,
+  activeClass = "fill-red-500 text-red-500",
 }: {
   icon: React.ComponentType<{ className?: string }>;
-  label: string;
+  label: ReactNode;
+  dataTarget?: string;
+  active?: boolean;
+  activeClass?: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-0.5">
+    <div
+      data-cursor-target={dataTarget}
+      className="flex flex-col items-center gap-0.5"
+    >
       <div className="flex size-10 items-center justify-center rounded-full bg-white/10 backdrop-blur">
-        <Icon className="size-[18px] text-white" />
+        <Icon
+          className={`size-[18px] ${active ? activeClass : "text-white"}`}
+        />
       </div>
       <span className="text-[10px] font-medium text-white/80">{label}</span>
     </div>
