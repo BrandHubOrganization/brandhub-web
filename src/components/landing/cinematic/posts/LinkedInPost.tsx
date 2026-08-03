@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
   ThumbsUp,
   MessageCircle,
@@ -5,8 +6,10 @@ import {
   Repeat2,
   MoreHorizontal,
   BookOpen,
+  Newspaper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { Reaction } from "../ReactionPicker";
 
 interface LinkedInPostProps {
   className?: string;
@@ -14,8 +17,12 @@ interface LinkedInPostProps {
   authorTitle?: string;
   content?: string;
   articleHeadline?: string;
-  likes?: string;
-  comments?: string;
+  likes?: ReactNode;
+  comments?: ReactNode;
+  /** Ảnh article card — nếu có sẽ thay thế placeholder gradient. */
+  imageUrl?: string;
+  /** Reaction đã chọn (like/celebrate/support/love/insightful/funny) — đổi icon+màu nút Thích, persist sau khi picker đóng. */
+  activeReaction?: Reaction | null;
 }
 
 /**
@@ -30,6 +37,8 @@ export function LinkedInPost({
   articleHeadline = "How BrandHub Transformed Our Content Operations — A Case Study",
   likes = "892",
   comments = "67",
+  imageUrl,
+  activeReaction,
 }: LinkedInPostProps) {
   return (
     <div
@@ -68,18 +77,28 @@ export function LinkedInPost({
 
       {/* Article card */}
       <div className="mx-4 mt-3 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50">
-        <div className="flex h-40 items-center justify-center bg-linear-to-br from-blue-100 via-white to-blue-50 dark:from-blue-950/30 dark:via-zinc-800 dark:to-blue-950/20">
-          <div className="text-center">
-            <BookOpen className="mx-auto size-8 text-blue-300 dark:text-blue-700" />
-            <p className="mt-1 text-[10px] font-medium text-blue-400 dark:text-blue-600">
-              LinkedIn Pulse
-            </p>
-          </div>
+        <div className="flex h-40 items-center justify-center overflow-hidden bg-linear-to-br from-blue-100 via-white to-blue-50 dark:from-blue-950/30 dark:via-zinc-800 dark:to-blue-950/20">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt="LinkedIn Pulse"
+              className="size-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="text-center">
+              <BookOpen className="mx-auto size-8 text-blue-300 dark:text-blue-700" />
+              <p className="mt-1 text-[10px] font-medium text-blue-400 dark:text-blue-600">
+                LinkedIn Pulse
+              </p>
+            </div>
+          )}
         </div>
         <div className="border-t border-zinc-200 bg-white px-3.5 py-3 dark:border-zinc-700 dark:bg-zinc-800">
           <div className="mb-1 flex items-center gap-1.5">
-            <span className="rounded bg-blue-50 px-1.5 py-0.5 text-[9px] font-medium text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-              📰 Article
+            <span className="flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-[9px] font-medium text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+              <Newspaper className="size-2.5" />
+              Article
             </span>
             <span className="text-[10px] text-zinc-400 dark:text-zinc-500">
               5 phút đọc
@@ -99,8 +118,8 @@ export function LinkedInPost({
       {/* Stats */}
       <div className="mx-4 mt-3 flex items-center gap-4 border-b border-zinc-100 pb-3 dark:border-zinc-700/50">
         <div className="flex items-center gap-1">
-          <span className="flex size-4 items-center justify-center rounded-full bg-blue-500 text-[8px] text-white ring-2 ring-white dark:ring-zinc-900">
-            👍
+          <span className="flex size-4 items-center justify-center rounded-full bg-blue-500 ring-2 ring-white dark:ring-zinc-900">
+            <ThumbsUp className="size-2 fill-white text-white" />
           </span>
           <span className="text-xs text-zinc-500 dark:text-zinc-400">
             {likes}
@@ -116,10 +135,28 @@ export function LinkedInPost({
 
       {/* Action buttons */}
       <div className="flex items-center justify-between px-2 py-1.5">
-        <LIActionBtn icon={ThumbsUp} label="Thích" />
-        <LIActionBtn icon={MessageCircle} label="Bình luận" />
-        <LIActionBtn icon={Repeat2} label="Repost" />
-        <LIActionBtn icon={Share2} label="Gửi" />
+        {activeReaction ? (
+          <button
+            data-cursor-target="like"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-xs font-semibold transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            style={{ color: activeReaction.color }}
+          >
+            <activeReaction.icon
+              className="size-[15px]"
+              fill={activeReaction.color}
+            />
+            {activeReaction.label}
+          </button>
+        ) : (
+          <LIActionBtn dataTarget="like" icon={ThumbsUp} label="Thích" />
+        )}
+        <LIActionBtn
+          dataTarget="comment"
+          icon={MessageCircle}
+          label="Bình luận"
+        />
+        <LIActionBtn dataTarget="repost" icon={Repeat2} label="Repost" />
+        <LIActionBtn dataTarget="send" icon={Share2} label="Gửi" />
       </div>
     </div>
   );
@@ -128,12 +165,17 @@ export function LinkedInPost({
 function LIActionBtn({
   icon: Icon,
   label,
+  dataTarget,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
+  dataTarget?: string;
 }) {
   return (
-    <button className="flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium text-zinc-500 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800">
+    <button
+      data-cursor-target={dataTarget}
+      className="flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium text-zinc-500 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+    >
       <Icon className="size-[18px]" />
       {label}
     </button>
