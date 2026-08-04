@@ -4,14 +4,16 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
 
 /** URL redirect trực tiếp sang backend OAuth flow — dùng làm href, không phải axios call. */
-export function oauthUrl(provider: "google" | "github" | "facebook"): string {
+export function oauthUrl(
+  provider: "google" | "github" | "linkedin" | "microsoft",
+): string {
   return `${API_BASE_URL}/api/v1/auth/oauth/${provider}`;
 }
 
 // --- Request types ---
 
 export interface LoginRequest {
-  email: string;
+  identifier: string;
   password: string;
 }
 
@@ -33,6 +35,30 @@ export interface ResetPasswordRequest {
 export interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
+}
+
+export interface LinkPhoneRequest {
+  phone: string;
+}
+
+export interface VerifyPhoneOtpRequest {
+  otpCode: string;
+}
+
+export interface SetPasswordRequest {
+  password: string;
+}
+
+export interface UnlinkOAuthRequest {
+  provider: string;
+}
+
+export interface MeResponse {
+  userId: string;
+  email: string;
+  phone: string | null;
+  hasPassword: boolean;
+  linkedProviders: string[];
 }
 
 export interface VerifyOtpRequest {
@@ -95,4 +121,20 @@ export const authService = {
   logout: () => api.post<ApiResponse<void>>("/api/v1/auth/logout"),
 
   refresh: () => api.post<ApiResponse<LoginResponse>>("/api/v1/auth/refresh"),
+
+  linkPhone: (data: LinkPhoneRequest) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/link/phone", data),
+
+  verifyPhoneOtp: (data: VerifyPhoneOtpRequest) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/verify-phone-otp", data),
+
+  setPassword: (data: SetPasswordRequest) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/set-password", data),
+
+  unlinkPhone: () => api.post<ApiResponse<void>>("/api/v1/auth/unlink/phone"),
+
+  unlinkOAuth: (data: UnlinkOAuthRequest) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/unlink/oauth", data),
+
+  me: () => api.get<ApiResponse<MeResponse>>("/api/v1/auth/me"),
 };
