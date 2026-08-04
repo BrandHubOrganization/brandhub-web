@@ -15,6 +15,7 @@ import { RegisterPage } from "@/pages/auth/RegisterPage";
 import { VerifyOtpPage } from "@/pages/auth/VerifyOtpPage";
 import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
 import { ResetPasswordPage } from "@/pages/auth/ResetPasswordPage";
+import { OAuthCallbackPage } from "@/pages/auth/OAuthCallbackPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { ChangePasswordPage } from "@/pages/ChangePasswordPage";
 import { WorkspacePage } from "@/pages/WorkspacePage";
@@ -35,6 +36,7 @@ function App() {
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
 
         {/* Authenticated Routes — require login */}
         <Route element={<AuthGuard />}>

@@ -1,5 +1,13 @@
 import { api } from "./api";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+
+/** URL redirect trực tiếp sang backend OAuth flow — dùng làm href, không phải axios call. */
+export function oauthUrl(provider: "google" | "github" | "facebook"): string {
+  return `${API_BASE_URL}/api/v1/auth/oauth/${provider}`;
+}
+
 // --- Request types ---
 
 export interface LoginRequest {
