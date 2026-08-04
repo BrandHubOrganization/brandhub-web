@@ -25,12 +25,20 @@ export function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await authService.login({ identifier: identifier.trim(), password });
+      const res = await authService.login({
+        identifier: identifier.trim(),
+        password,
+      });
       const { accessToken } = res.data.data;
       // ponytail: derive role from /me endpoint when available
       const role: UserRole = "CONTENT_CREATOR";
       setAuth(
-        { id: "pending", name: identifier.split("@")[0], email: identifier.trim(), role },
+        {
+          id: "pending",
+          name: identifier.split("@")[0],
+          email: identifier.trim(),
+          role,
+        },
         accessToken,
       );
       toast.success(t("auth.login.successToast"));
