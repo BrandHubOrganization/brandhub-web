@@ -77,7 +77,7 @@ export function LinkedInPost({
 
       {/* Article card */}
       <div className="mx-4 mt-3 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50">
-        <div className="flex h-40 items-center justify-center overflow-hidden bg-linear-to-br from-blue-100 via-white to-blue-50 dark:from-blue-950/30 dark:via-zinc-800 dark:to-blue-950/20">
+        <div className="relative flex h-40 items-center justify-center overflow-hidden bg-linear-to-br from-blue-700 via-blue-800 to-zinc-900">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -86,10 +86,13 @@ export function LinkedInPost({
               loading="lazy"
             />
           ) : (
-            <div className="text-center">
-              <BookOpen className="mx-auto size-8 text-blue-300 dark:text-blue-700" />
-              <p className="mt-1 text-[10px] font-medium text-blue-400 dark:text-blue-600">
-                LinkedIn Pulse
+            <div className="relative text-center">
+              <div className="absolute top-1/2 left-1/2 size-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-400/20 blur-3xl" />
+              <div className="relative mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-white/15 shadow-lg ring-1 ring-white/30 backdrop-blur">
+                <BookOpen className="size-6 text-white" />
+              </div>
+              <p className="relative text-xs font-semibold text-white/90">
+                BrandHub Insights
               </p>
             </div>
           )}
