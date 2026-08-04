@@ -3,8 +3,20 @@
     "common": { "email": "Email", "password": "Mật khẩu", "backToLogin": "Quay lại đăng nhập", "and": "và" },
     "brand": {
       "tagline": "PLAN · CREATE · SCHEDULE · PUBLISH · GROW",
-      "testimonial": "\"Chúng tôi rút ngắn thời gian tạo nội dung từ 3 ngày xuống còn 2 giờ. BrandHub đã thay đổi hoàn toàn quy trình làm việc của team.\"",
-      "testimonialName": "Minh Nguyễn", "testimonialRole": "Content Director, VCorp Media",
+      "testimonials": [
+        {
+          "quote": "\"Chúng tôi rút ngắn thời gian tạo nội dung từ 3 ngày xuống còn 2 giờ. BrandHub đã thay đổi hoàn toàn quy trình làm việc của team.\"",
+          "name": "Minh Nguyễn", "role": "Content Director, VCorp Media", "initials": "MN"
+        },
+        {
+          "quote": "\"Duyệt bài đa kênh giờ chỉ mất 1 cú click. Team mình tăng 240% output mà không cần thêm người.\"",
+          "name": "Thu Hà", "role": "Account Manager, TechStart Vietnam", "initials": "TH"
+        },
+        {
+          "quote": "\"AI gợi ý content theo trend chuẩn không ngờ. Tiết kiệm cho agency tôi ~$3,200/tháng chi phí công cụ.\"",
+          "name": "Đức Anh", "role": "COO, NextGen Media Group", "initials": "ĐA"
+        }
+      ],
       "statUsers": "Người dùng", "statContent": "Nội dung tạo", "statUptime": "Uptime"
     },
     "login": {
