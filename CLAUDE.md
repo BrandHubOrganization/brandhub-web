@@ -225,3 +225,10 @@ for the full icon set before reaching for an emoji as a fallback.
 - Prefer small, single-purpose components over large monolithic files.
 - Default to writing **no comments**; add one only when the WHY is non-obvious.
   Do not restate what the code obviously does.
+
+## Feature Workflow
+
+Mọi tính năng phát triển phải tuân theo quy trình **spec → plan → task → test**
+trước khi viết code, và quay lại từ `spec.md` nếu có sai sót.
+
+Xem nguồn sự thật duy nhất: `../brandhub-infrastructure/docs/rule/feature-workflow.md`
