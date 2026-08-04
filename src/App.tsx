@@ -16,6 +16,7 @@ import { VerifyOtpPage } from "@/pages/auth/VerifyOtpPage";
 import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
 import { ResetPasswordPage } from "@/pages/auth/ResetPasswordPage";
 import { DashboardPage } from "@/pages/DashboardPage";
+import { ChangePasswordPage } from "@/pages/ChangePasswordPage";
 import { WorkspacePage } from "@/pages/WorkspacePage";
 import { PortalPage } from "@/pages/PortalPage";
 import { AdminPage } from "@/pages/AdminPage";
@@ -38,6 +39,7 @@ function App() {
         {/* Authenticated Routes — require login */}
         <Route element={<AuthGuard />}>
           <Route element={<Layout />}>
+            <Route path="/change-password" element={<ChangePasswordPage />} />
             <Route path="/workspace" element={<WorkspacePage />} />
             <Route path="/portal" element={<PortalPage />} />
             <Route path="/admin" element={<AdminPage />} />

@@ -22,6 +22,11 @@ export interface ResetPasswordRequest {
   newPassword: string;
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface VerifyOtpRequest {
   email: string;
   otpCode: string;
@@ -69,6 +74,9 @@ export const authService = {
 
   resetPassword: (data: ResetPasswordRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/reset-password", data),
+
+  changePassword: (data: ChangePasswordRequest) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/change-password", data),
 
   verifyOtp: (data: VerifyOtpRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/verify-otp", data),

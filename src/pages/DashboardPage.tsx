@@ -50,7 +50,7 @@ export function DashboardPage() {
             <Button
               variant="outline"
               className="cursor-pointer text-xs"
-              onClick={() => navigate("/forgot-password")}
+              onClick={() => navigate("/change-password")}
             >
               Đổi mật khẩu
             </Button>
