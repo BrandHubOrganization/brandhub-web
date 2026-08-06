@@ -18,7 +18,12 @@ import { useAuthStore } from "@/store/authStore";
 export function DashboardPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, clearAuth } = useAuthStore();
+
+  const handleLogout = () => {
+    clearAuth();
+    navigate("/login", { replace: true });
+  };
 
   // ── Authenticated: role-based redirect on mount ──
   if (isAuthenticated && user) {
@@ -41,12 +46,28 @@ export function DashboardPage() {
         title="Dashboard"
         description="Tổng quan hoạt động và nội dung cần phê duyệt."
         actions={
-          <Button
-            variant="default"
-            className="cursor-pointer bg-[#f05a28] text-xs text-white hover:bg-[#f05a28]/90"
-          >
-            Tạo Nội Dung Mới
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              className="cursor-pointer text-xs"
+              onClick={() => navigate("/change-password")}
+            >
+              Đổi mật khẩu
+            </Button>
+            <Button
+              variant="outline"
+              className="cursor-pointer text-xs"
+              onClick={handleLogout}
+            >
+              Đăng xuất
+            </Button>
+            <Button
+              variant="default"
+              className="cursor-pointer bg-[#f05a28] text-xs text-white hover:bg-[#f05a28]/90"
+            >
+              Tạo Nội Dung Mới
+            </Button>
+          </div>
         }
       >
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

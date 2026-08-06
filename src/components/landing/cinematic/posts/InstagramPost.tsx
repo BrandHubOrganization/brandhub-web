@@ -5,12 +5,10 @@ import {
   Send,
   Bookmark,
   MoreHorizontal,
-  ImageIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface InstagramPostProps {
-  className?: string;
   caption?: string;
   likes?: ReactNode;
   comments?: ReactNode;
@@ -72,16 +70,19 @@ export function InstagramPost({
           />
         </div>
       ) : (
-        <div className="relative flex aspect-square items-center justify-center bg-linear-to-br from-orange-50 via-pink-50 to-purple-50 dark:from-orange-950/30 dark:via-pink-950/20 dark:to-purple-950/30">
-          <div className="absolute top-1/4 left-1/4 size-32 rounded-full bg-orange-200/30 blur-2xl dark:bg-orange-500/10" />
-          <div className="absolute top-1/3 right-1/4 size-24 rounded-full bg-pink-200/40 blur-2xl dark:bg-pink-500/10" />
-          <div className="absolute bottom-1/4 left-1/3 size-28 rounded-full bg-purple-200/30 blur-2xl dark:bg-purple-500/10" />
+        <div className="relative flex aspect-square items-center justify-center bg-linear-to-br from-orange-500 via-pink-500 to-purple-600">
+          <div className="absolute top-1/4 left-1/4 size-32 rounded-full bg-yellow-300/30 blur-3xl" />
+          <div className="absolute top-1/3 right-1/4 size-24 rounded-full bg-fuchsia-400/30 blur-3xl" />
+          <div className="absolute bottom-1/4 left-1/3 size-28 rounded-full bg-white/20 blur-3xl" />
           <div className="relative text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-2xl bg-white/80 shadow-sm backdrop-blur dark:bg-zinc-800/80">
-              <ImageIcon className="size-7 text-zinc-300 dark:text-zinc-600" />
+            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-2xl bg-white/15 shadow-lg ring-1 ring-white/30 backdrop-blur">
+              <span className="text-2xl font-black text-white">B</span>
             </div>
-            <p className="text-xs font-medium text-zinc-400 dark:text-zinc-500">
+            <p className="text-sm font-bold tracking-wide text-white">
               BrandHub Campaign
+            </p>
+            <p className="mt-0.5 text-[10px] font-medium text-white/70">
+              Multi-channel content
             </p>
           </div>
         </div>

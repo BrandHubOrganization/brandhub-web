@@ -29,15 +29,30 @@ import {
   Files,
   Clock,
   AlertCircle,
+  Building2,
+  Star,
+  MoreHorizontal,
+  FolderOpen,
   Apple,
   Wifi,
   BatteryFull,
+  Sparkles,
+  Wand2,
+  CheckCircle2,
+  Loader2,
+  Image as ImageIcon,
+  Play,
+  Flame,
+  Lightbulb,
+  List,
+  CalendarRange,
 } from "lucide-react";
 import { InstagramPost } from "./posts/InstagramPost";
 import { TikTokPost } from "./posts/TikTokPost";
 import { FacebookPost } from "./posts/FacebookPost";
 import { LinkedInPost } from "./posts/LinkedInPost";
 import { MiniPosts } from "./MiniPosts";
+import { LightRays } from "@/components/landing/LightRays";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -57,6 +72,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
  */
 export function CinematicHero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [device, setDevice] = useState<"macbook" | "iphone">("macbook");
 
   useGSAP(() => {
     if (!sectionRef.current) return;
@@ -262,11 +278,34 @@ export function CinematicHero() {
       id="hero-cinematic"
       className="relative h-screen w-full overflow-hidden bg-zinc-950"
     >
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          maskImage:
+            "radial-gradient(ellipse 38% 44% at 50% 46%, transparent 60%, black 100%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 38% 44% at 50% 46%, transparent 60%, black 100%)",
+        }}
+      >
+        <LightRays
+          raysOrigin="top-center"
+          raysColor="#f05a28"
+          raysSpeed={1.2}
+          lightSpread={1.6}
+          rayLength={2.2}
+          fadeDistance={1.4}
+          saturation={1}
+          followMouse
+          mouseInfluence={0.12}
+          noiseAmount={0.06}
+          distortion={0.03}
+        />
+      </div>
       <div className="absolute inset-0 flex flex-col">
         {/* Stage chính: dashboard MacBook + posts bay + mini-posts 4 góc */}
         <div className="relative flex-1">
           {/* Layer 0: BrandHub Dashboard background */}
-          <BrandHubDashboardBg />
+          <BrandHubDashboardBg device={device} />
 
           {/* Layer 1: Post stack */}
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
@@ -284,15 +323,33 @@ export function CinematicHero() {
             </div>
           </div>
 
-          {/* Layer 2: Mini posts 4 góc */}
-          <div className="mini-posts pointer-events-none absolute inset-0 z-20 opacity-0">
+          {/* Layer 2: Mini posts 4 góc — chỉ đủ chỗ từ màn hình lớn (xl+),
+              màn nhỏ hơn ẩn hẳn để nhường không gian cho demo dashboard. */}
+          <div className="mini-posts pointer-events-none absolute inset-0 z-20 hidden opacity-0 xl:block">
             <MiniPosts />
           </div>
         </div>
 
         {/* Vùng dành riêng cho CTA — tách khỏi dashboard nên không đè lên laptop */}
         <div className="relative z-30 flex flex-col items-center gap-2.5 px-6 pb-5">
-          <div className="cta-overlay pointer-events-none opacity-0">
+          <div className="cta-overlay pointer-events-none flex flex-col items-center gap-3 opacity-0">
+            <button
+              type="button"
+              onClick={() =>
+                setDevice((d) => (d === "macbook" ? "iphone" : "macbook"))
+              }
+              className="pointer-events-auto flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-medium text-white ring-1 ring-white/20 backdrop-blur-md transition-colors hover:bg-white/20"
+            >
+              {device === "macbook" ? (
+                <>
+                  <Smartphone className="size-3.5" /> Xem trên iPhone
+                </>
+              ) : (
+                <>
+                  <Monitor className="size-3.5" /> Xem trên MacBook
+                </>
+              )}
+            </button>
             <CTAButtons />
           </div>
           {/* Scroll hint */}
@@ -308,9 +365,54 @@ export function CinematicHero() {
   );
 }
 
-function BrandHubDashboardBg() {
+const NAV_ITEMS = [
+  { icon: LayoutGrid, label: "Tổng quan", pageIndex: 0 },
+  { icon: FileText, label: "Nội dung", pageIndex: 1 },
+  { icon: CalendarDays, label: "Lịch", pageIndex: 2 },
+  { icon: Sparkles, label: "AI Studio", pageIndex: 3 },
+  { icon: LineChart, label: "Analytics", pageIndex: 4 },
+  { icon: Upload, label: "Xuất bản", pageIndex: 5 },
+  { icon: Building2, label: "Workspace", pageIndex: 6 },
+] as const;
+
+const NOTIFICATIONS = [
+  {
+    icon: "approve",
+    title: "3 bài đang chờ bạn duyệt",
+    time: "vừa xong",
+    color: "text-amber-500",
+  },
+  {
+    icon: "publish",
+    title: "Launch Heineken đã đăng lên Instagram",
+    time: "12 phút trước",
+    color: "text-emerald-500",
+  },
+  {
+    icon: "ai",
+    title: "AI Studio đã sinh xong 6 ảnh mới",
+    time: "1 giờ trước",
+    color: "text-brand-orange",
+  },
+  {
+    icon: "credit",
+    title: "Chỉ còn 1,250 AI credits",
+    time: "3 giờ trước",
+    color: "text-blue-500",
+  },
+] as const;
+
+function NotifIcon({ kind }: { kind: string }) {
+  if (kind === "approve") return <Clock className="size-3.5 text-amber-500" />;
+  if (kind === "publish")
+    return <Upload className="size-3.5 text-emerald-500" />;
+  if (kind === "ai") return <Sparkles className="text-brand-orange size-3.5" />;
+  return <AlertCircle className="size-3.5 text-blue-500" />;
+}
+
+function BrandHubDashboardBg({ device }: { device: "macbook" | "iphone" }) {
   const [page, setPage] = useState(0);
-  const [sideNav, setSideNav] = useState<number | null>(0);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [clock, setClock] = useState(() =>
     new Date().toLocaleTimeString("en-US", {
       hour: "numeric",
@@ -331,264 +433,369 @@ function BrandHubDashboardBg() {
     }, 30000);
     return () => clearInterval(id);
   }, []);
+
+  // Demo lần đầu: tự xoay qua toàn bộ 7 tab để khoe từng trang, giữ lâu ở
+  // Nội dung (page 1) cho view-demo chạy xong, rồi dừng. Guard 1 lần.
+  useEffect(() => {
+    if (localStorage.getItem("brandhub_tab_demo")) return;
+    localStorage.setItem("brandhub_tab_demo", "1");
+    const plan: [number, number][] = [
+      [1, 900],
+      [2, 4500],
+      [3, 5300],
+      [4, 6100],
+      [5, 6900],
+      [6, 7700],
+      [0, 8500],
+    ];
+    plan.forEach(([pg, ms]) => setTimeout(() => setPage(pg), ms));
+  }, [setPage]);
   const pages = [
     <OverviewPage key="overview" />,
-    <ContentPage key="content" />,
+    <ContentPage key="content" device={device} />,
     <SchedulePage key="schedule" />,
+    <AIStudioPage key="ai-studio" />,
     <AnalyticsPage key="analytics" />,
+    <PublishPage key="publish" />,
+    <WorkspacePage key="workspace" device={device} />,
   ];
-  const tabLabels = ["Tổng quan", "Nội dung", "Lịch", "Analytics"];
-
-  // Tự động chuyển tab mỗi 4s như một người thật đang duyệt app.
-  useEffect(() => {
-    const id = setInterval(() => {
-      setPage((p) => (p + 1) % pages.length);
-    }, 4200);
-    return () => clearInterval(id);
-  }, [pages.length]);
-
   return (
     <div className="brandhub-bg absolute inset-0 z-0 flex items-center justify-center opacity-0">
-      <div className="w-full max-w-5xl px-4">
-        {/* Vỏ MacBook Air M5 — chất kim loại: chassis nhôm + bezel màn đen + tai thỏ */}
-        <div className="relative rounded-[1.7rem] bg-linear-to-b from-zinc-400 via-zinc-300 to-zinc-500 p-[3px] shadow-2xl shadow-zinc-900/50">
-          <div className="rounded-[1.4rem] bg-linear-to-b from-zinc-200 via-zinc-400 to-zinc-500 p-[3px]">
-            <div className="relative rounded-[1.2rem] bg-zinc-900 p-2 sm:p-2.5">
-              {/* Bezel đen màn → toàn bộ là desktop macOS Sonoma: wallpaper + menubar
+      {device === "iphone" ? (
+        <IPhoneFrame
+          page={page}
+          setPage={setPage}
+          clock={clock}
+          pages={pages}
+        />
+      ) : (
+        <div className="w-full max-w-6xl px-4 xl:max-w-5xl">
+          {/* Vỏ MacBook Air M5 — chất kim loại: chassis nhôm + bezel màn đen + tai thỏ */}
+          <div className="relative rounded-[1.7rem] bg-linear-to-b from-zinc-400 via-zinc-300 to-zinc-500 p-[3px] shadow-2xl shadow-zinc-900/50">
+            <div className="rounded-[1.4rem] bg-linear-to-b from-zinc-200 via-zinc-400 to-zinc-500 p-[3px]">
+              <div className="relative rounded-[1.2rem] bg-zinc-900 p-2 sm:p-2.5">
+                {/* Bezel đen màn → toàn bộ là desktop macOS Sonoma: wallpaper + menubar
                   + Safari window nổi + Dock. */}
-              <div className="relative overflow-hidden rounded-lg bg-black pt-9 pb-10 sm:pt-10 sm:pb-12">
-                {/* Wallpaper Sonoma — bản sao ci gradient rực rỡ: indigo → tím → magenta
+                <div className="relative overflow-hidden rounded-lg bg-black pt-9 pb-10 sm:pt-10 sm:pb-12">
+                  {/* Wallpaper Sonoma — bản sao ci gradient rực rỡ: indigo → tím → magenta
                     → cam → vàng, kèm vài radial bloom mềm đúng tông default Sonoma */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(180deg,#241454 0%,#59299e 22%,#a63aa5 42%,#f0576b 62%,#ff8e3a 82%,#ffd166 100%)",
-                  }}
-                />
-                <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_18%_22%,#7fd4ff_0%,transparent_55%),radial-gradient(70%_55%_at_85%_50%,#ff9e5e_0%,transparent_60%),radial-gradient(80%_70%_at_50%_100%,#fff6d8_10%,transparent_68%)] opacity-45 mix-blend-screen" />
-                <div className="absolute inset-0 opacity-40">
-                  <div className="absolute inset-0 bg-linear-to-b from-white/15 via-transparent to-black/25" />
-                </div>
-                {/* Lớp tinhtinh: sóng sơn trôi nhẹ */}
-                <div className="absolute inset-0 bg-[radial-gradient(60%_80%_at_80%_90%,#0ea5e9_0%,transparent_60%),radial-gradient(50%_60%_at_30%_70%,#f472b6_0%,transparent_60%)] opacity-30 mix-blend-overlay" />
-
-                {/* Tai thỏ: pill hẹp giữa, xuyên qua menubar xuống wallpaper */}
-                <div className="absolute top-0 left-1/2 z-20 h-6 w-36 -translate-x-1/2 rounded-b-xl bg-black shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
-                  <div className="absolute top-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[#0b1d3a]" />
-                  <div className="absolute top-[3px] right-5 size-0.5 rounded-full bg-emerald-500/70" />
-                </div>
-
-                {/* Menubar: dải glass mờ phủ lên wallpaper — macOS Sonoma */}
-                <div className="absolute inset-x-0 top-0 z-10 flex h-6 items-center justify-between bg-white/25 px-3.5 backdrop-blur-md">
-                  <div className="flex items-center gap-2.5 pr-6">
-                    <Apple className="size-3 text-zinc-900" />
-                    <span className="text-[10.5px] font-bold text-zinc-900">
-                      BrandHub
-                    </span>
-                    <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
-                      Tệp
-                    </span>
-                    <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
-                      Sửa
-                    </span>
-                    <span className="hidden text-[10.5px] font-medium text-zinc-800 md:block">
-                      Hiển thị
-                    </span>
-                    <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
-                      Cửa sổ
-                    </span>
-                    <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
-                      Trợ giúp
-                    </span>
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(180deg,#241454 0%,#59299e 22%,#a63aa5 42%,#f0576b 62%,#ff8e3a 82%,#ffd166 100%)",
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_18%_22%,#7fd4ff_0%,transparent_55%),radial-gradient(70%_55%_at_85%_50%,#ff9e5e_0%,transparent_60%),radial-gradient(80%_70%_at_50%_100%,#fff6d8_10%,transparent_68%)] opacity-45 mix-blend-screen" />
+                  <div className="absolute inset-0 opacity-40">
+                    <div className="absolute inset-0 bg-linear-to-b from-white/15 via-transparent to-black/25" />
                   </div>
-                  <div className="flex items-center gap-2.5 pl-6">
-                    <Search className="size-2.5 text-zinc-800" />
-                    <Wifi className="size-3 text-zinc-800" />
-                    <BatteryFull className="size-3.5 text-zinc-800" />
-                    <span className="text-[10.5px] font-semibold text-zinc-900">
-                      {clock}
-                    </span>
-                  </div>
-                </div>
+                  {/* Lớp tinhtinh: sóng sơn trôi nhẹ */}
+                  <div className="absolute inset-0 bg-[radial-gradient(60%_80%_at_80%_90%,#0ea5e9_0%,transparent_60%),radial-gradient(50%_60%_at_30%_70%,#f472b6_0%,transparent_60%)] opacity-30 mix-blend-overlay" />
 
-                {/* Cửa sổ Safari nổi trên desktop — dashboard tương tác */}
-                <div className="relative z-30 mx-3 mb-3 overflow-hidden rounded-xl bg-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] ring-1 ring-black/15 sm:mx-4">
-                  {/* Thanh tiêu đề: 3 nút traffic-light */}
-                  <div className="flex items-center gap-3 border-b border-zinc-200 bg-zinc-50/80 px-4 py-2.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="size-3 rounded-full bg-[#ff5f57]" />
-                      <span className="size-3 rounded-full bg-[#febc2e]" />
-                      <span className="size-3 rounded-full bg-[#28c840]" />
-                    </div>
-                    <div className="ml-2 hidden items-center gap-1 sm:flex">
-                      <ArrowLeft className="size-3.5 text-zinc-500" />
-                      <ArrowRight className="size-3 text-zinc-400" />
-                      <RefreshCw className="size-3 text-zinc-400" />
-                    </div>
-                    {/* Thanh địa chỉ centered */}
-                    <div className="mx-auto flex max-w-md flex-1 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1 shadow-sm">
-                      <Compass className="size-3 text-zinc-400" />
-                      <span className="flex-1 truncate text-center text-[11px] font-medium tracking-tight text-zinc-700">
-                        brandhub.app/dashboard
+                  {/* Tai thỏ: pill hẹp giữa, xuyên qua menubar xuống wallpaper */}
+                  <div className="absolute top-0 left-1/2 z-20 h-6 w-36 -translate-x-1/2 rounded-b-xl bg-black shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+                    <div className="absolute top-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[#0b1d3a]" />
+                    <div className="absolute top-[3px] right-5 size-0.5 rounded-full bg-emerald-500/70" />
+                  </div>
+
+                  {/* Menubar: dải glass mờ phủ lên wallpaper — macOS Sonoma */}
+                  <div className="absolute inset-x-0 top-0 z-10 flex h-6 items-center justify-between bg-white/25 px-3.5 backdrop-blur-md">
+                    <div className="flex items-center gap-2.5 pr-6">
+                      <Apple className="size-3 text-zinc-900" />
+                      <span className="text-[10.5px] font-bold text-zinc-900">
+                        BrandHub
+                      </span>
+                      <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
+                        Tệp
+                      </span>
+                      <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
+                        Sửa
+                      </span>
+                      <span className="hidden text-[10.5px] font-medium text-zinc-800 md:block">
+                        Hiển thị
+                      </span>
+                      <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
+                        Cửa sổ
+                      </span>
+                      <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
+                        Trợ giúp
                       </span>
                     </div>
-                    <div className="flex items-center gap-2.5">
-                      <Smartphone className="size-3.5 text-zinc-500" />
-                      <Monitor className="size-3.5 text-zinc-500" />
-                      <div className="flex items-center gap-1.5">
-                        <div className="size-5 rounded-full bg-linear-to-br from-orange-400 to-orange-600" />
-                        <Bell className="size-3 text-zinc-500" />
-                      </div>
+                    <div className="flex items-center gap-2.5 pl-6">
+                      <Search className="size-2.5 text-zinc-800" />
+                      <Wifi className="size-3 text-zinc-800" />
+                      <BatteryFull className="size-3.5 text-zinc-800" />
+                      <span className="text-[10.5px] font-semibold text-zinc-900">
+                        {clock}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Thanh tab — nhiều trang mở, tab active được đánh dấu */}
-                  <div className="flex items-end gap-1 border-b border-zinc-200 bg-zinc-50/60 px-3 pt-2">
-                    {tabLabels.map((label, i) => {
-                      const active = i === page;
-                      return (
-                        <button
-                          key={label}
-                          onClick={() => setPage(i)}
-                          className={`flex items-center gap-1.5 rounded-t-lg border border-b-0 px-3 py-1.5 text-[10px] font-medium transition-colors ${
-                            active
-                              ? "border-zinc-200 bg-white text-zinc-900"
-                              : "border-transparent text-zinc-500 hover:text-zinc-700"
-                          }`}
-                        >
-                          <span
-                            className={`size-1.5 rounded-full ${active ? "bg-brand-orange" : "bg-zinc-300"}`}
-                          />
-                          <span>{label}</span>
-                          <span className="ml-0.5 text-zinc-300">×</span>
-                        </button>
-                      );
-                    })}
-                    <button className="mb-1.5 ml-0.5 flex size-5 items-center justify-center rounded text-zinc-400 hover:text-zinc-700">
-                      <Plus className="size-3" />
-                    </button>
-                    {/* Tab duỗi chiếm khoảng trống còn lại */}
-                    <div className="mb-1.5 h-6 flex-1 rounded-t-lg border border-b-0 border-transparent" />
-                  </div>
-
-                  {/* Body: sidebar + nội dung chuyển trang */}
-                  <div className="flex">
-                    <div className="hidden w-44 shrink-0 border-r border-zinc-200 bg-zinc-50/40 p-3 sm:block">
-                      <div className="mb-3 flex items-center gap-2 px-1">
-                        <div className="bg-brand-orange flex size-5 items-center justify-center rounded-md text-[10px] font-bold text-white">
-                          B
-                        </div>
-                        <span className="text-xs font-semibold text-zinc-900">
-                          BrandHub
+                  {/* Cửa sổ Safari nổi trên desktop — dashboard tương tác */}
+                  <div className="relative z-30 mx-3 mb-3 overflow-hidden rounded-xl bg-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] ring-1 ring-black/15 sm:mx-4">
+                    {/* Thanh tiêu đề: 3 nút traffic-light */}
+                    <div className="flex items-center gap-3 border-b border-zinc-200 bg-zinc-50/80 px-4 py-2.5">
+                      <div className="flex items-center gap-1.5">
+                        <span className="size-3 rounded-full bg-[#ff5f57]" />
+                        <span className="size-3 rounded-full bg-[#febc2e]" />
+                        <span className="size-3 rounded-full bg-[#28c840]" />
+                      </div>
+                      <div className="ml-2 hidden items-center gap-1 sm:flex">
+                        <ArrowLeft className="size-3.5 text-zinc-500" />
+                        <ArrowRight className="size-3 text-zinc-400" />
+                        <RefreshCw className="size-3 text-zinc-400" />
+                      </div>
+                      {/* Thanh địa chỉ centered */}
+                      <div className="mx-auto flex max-w-md flex-1 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1 shadow-sm">
+                        <Compass className="size-3 text-zinc-400" />
+                        <span className="flex-1 truncate text-center text-[11px] font-medium tracking-tight text-zinc-700">
+                          brandhub.app/dashboard
                         </span>
                       </div>
-                      {[
-                        { icon: LayoutGrid, label: "Tổng quan", pageIndex: 0 },
-                        { icon: FileText, label: "Nội dung", pageIndex: 1 },
-                        { icon: CalendarDays, label: "Lịch", pageIndex: 2 },
-                        { icon: LineChart, label: "Analytics", pageIndex: 3 },
-                        { icon: Upload, label: "Xuất bản", pageIndex: null },
-                      ].map((item) => {
-                        const activeNav = sideNav === item.pageIndex;
-                        return (
-                          <div
-                            key={item.label}
-                            onClick={() =>
-                              item.pageIndex !== null &&
-                              setSideNav(item.pageIndex)
-                            }
-                            className={`mb-1 flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors ${
-                              activeNav
-                                ? "bg-brand-orange/10 text-brand-orange font-medium"
-                                : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
-                            }`}
+                      <div className="flex items-center gap-2.5">
+                        <Smartphone className="size-3.5 text-zinc-500" />
+                        <Monitor className="size-3.5 text-zinc-500" />
+                        <div className="relative flex items-center gap-1.5">
+                          <div className="size-5 rounded-full bg-linear-to-br from-orange-400 to-orange-600" />
+                          <button
+                            type="button"
+                            onClick={() => setNotifOpen((o) => !o)}
+                            className="relative flex cursor-pointer items-center"
+                            aria-expanded={notifOpen}
                           >
-                            <item.icon className="size-3.5" />
-                            {item.label}
-                          </div>
-                        );
-                      })}
+                            <Bell className="size-3 text-zinc-500" />
+                            <span className="absolute -top-1 -right-1 size-1.5 rounded-full bg-red-500" />
+                          </button>
+                          {notifOpen && (
+                            <>
+                              <div
+                                className="fixed inset-0 z-40"
+                                onClick={() => setNotifOpen(false)}
+                              />
+                              <div className="absolute top-6 right-0 z-50 w-52 rounded-lg border border-zinc-200 bg-white p-1.5 shadow-xl">
+                                <p className="px-2 py-1 text-[10px] font-semibold text-zinc-700">
+                                  Thông báo
+                                </p>
+                                <div className="flex flex-col">
+                                  {NOTIFICATIONS.map((n) => (
+                                    <div
+                                      key={n.title}
+                                      className="flex items-start gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-50"
+                                    >
+                                      <NotifIcon kind={n.icon} />
+                                      <div className="min-w-0">
+                                        <p className="line-clamp-2 text-[10px] leading-tight text-zinc-700">
+                                          {n.title}
+                                        </p>
+                                        <p className="text-[8px] text-zinc-400">
+                                          {n.time}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    {/* Trang active: key thay đổi theo index → remount, GSAP chạy lại animation chuyển trang */}
-                    <div className="relative min-h-[340px] flex-1 overflow-hidden">
-                      <div key={page} className="page-enter absolute inset-0">
-                        {pages[page]}
+
+                    {/* Body: sidebar + nội dung chuyển trang */}
+                    <div className="flex">
+                      <div className="hidden w-44 shrink-0 border-r border-zinc-200 bg-zinc-50/40 p-3 sm:block">
+                        <div className="mb-3 flex items-center gap-2 px-1">
+                          <div className="bg-brand-orange flex size-5 items-center justify-center rounded-md text-[10px] font-bold text-white">
+                            B
+                          </div>
+                          <span className="text-xs font-semibold text-zinc-900">
+                            BrandHub
+                          </span>
+                        </div>
+                        {NAV_ITEMS.map((item) => {
+                          const activeNav = page === item.pageIndex;
+                          return (
+                            <div
+                              key={item.label}
+                              onClick={() => setPage(item.pageIndex)}
+                              className={`mb-1 flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors ${
+                                activeNav
+                                  ? "bg-brand-orange/10 text-brand-orange font-medium"
+                                  : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+                              }`}
+                            >
+                              <item.icon className="size-3.5" />
+                              {item.label}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {/* Trang active: key thay đổi theo index → remount, GSAP chạy lại animation chuyển trang */}
+                      <div className="relative h-85 flex-1 overflow-y-auto">
+                        <div key={page} className="page-enter min-h-full">
+                          {pages[page]}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Dock — dải glass nổi cuối màn hình. Left: BrandHub (app đang chạy)
+                  {/* Dock — dải glass nổi cuối màn hình. Left: BrandHub (app đang chạy)
                       + bộ icon app chuẩn Apple: Finder, Launchpad, Safari, Messages, Mail,
                       Maps, Photos, Calendar, Notes, Music. Divider. Right: Downloads + Trash. */}
-                <div className="absolute inset-x-0 bottom-0.5 z-30 flex items-center justify-center">
-                  <div className="flex items-end gap-1.5 rounded-2xl rounded-b-xl bg-black/25 px-2 py-1.5 ring-1 ring-white/20 backdrop-blur-md">
-                    {/* BrandHub đang chạy — logo thương hiệu thay chỗ Mail/Facetime */}
-                    <div className="relative flex size-5 items-center justify-center rounded-[22%] bg-linear-to-tr from-orange-500 to-orange-300 text-[9px] font-bold text-white shadow">
-                      B
-                      <span className="absolute -bottom-1 left-1/2 size-[3px] -translate-x-1/2 rounded-full bg-black/70" />
-                    </div>
-                    {/* Finder */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#23c6ff] to-[#0a7be0] shadow">
-                      <FaceGlyph />
-                    </div>
-                    {/* Launchpad */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#79849c] to-[#3d4657] shadow">
-                      <LaunchpadGlyph />
-                    </div>
-                    {/* Safari */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
-                      <SafariGlyph />
-                    </div>
-                    {/* Messages */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#3be86b] to-[#14a83a] shadow">
-                      <MessagesGlyph />
-                    </div>
-                    {/* Mail */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#49b0ff] to-[#1475e8] shadow">
-                      <MailGlyph />
-                    </div>
-                    {/* Maps */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#fdfefe] to-[#d9e2ec] shadow">
-                      <MapsGlyph />
-                    </div>
-                    {/* Photos */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
-                      <PhotosGlyph />
-                    </div>
-                    {/* Calendar */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
-                      <CalendarGlyph />
-                    </div>
-                    {/* Notes */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#f7f7f7] to-[#e6e6e6] shadow">
-                      <NotesGlyph />
-                    </div>
-                    {/* Music */}
-                    <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#ff5d8f] to-[#e11d60] shadow">
-                      <MusicGlyph />
-                    </div>
-                    {/* Divider */}
-                    <div className="mx-0.5 h-6 w-px bg-white/25" />
-                    {/* Downloads folder */}
-                    <div className="flex size-5 items-center justify-center shadow">
-                      <DownloadsGlyph />
-                    </div>
-                    {/* Trash */}
-                    <div className="flex size-5 items-center justify-center rounded-[20%] bg-[#c9cfd6] shadow ring-1 ring-white/40">
-                      <TrashGlyph />
+                  <div className="absolute inset-x-0 bottom-0.5 z-30 flex items-center justify-center">
+                    <div className="flex items-end gap-1.5 rounded-2xl rounded-b-xl bg-black/25 px-2 py-1.5 ring-1 ring-white/20 backdrop-blur-md">
+                      {/* BrandHub đang chạy — logo thương hiệu thay chỗ Mail/Facetime */}
+                      <div className="relative flex size-5 items-center justify-center rounded-[22%] bg-linear-to-tr from-orange-500 to-orange-300 text-[9px] font-bold text-white shadow">
+                        B
+                        <span className="absolute -bottom-1 left-1/2 size-[3px] -translate-x-1/2 rounded-full bg-black/70" />
+                      </div>
+                      {/* Finder */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#23c6ff] to-[#0a7be0] shadow">
+                        <FaceGlyph />
+                      </div>
+                      {/* Launchpad */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#79849c] to-[#3d4657] shadow">
+                        <LaunchpadGlyph />
+                      </div>
+                      {/* Safari */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
+                        <SafariGlyph />
+                      </div>
+                      {/* Messages */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#3be86b] to-[#14a83a] shadow">
+                        <MessagesGlyph />
+                      </div>
+                      {/* Mail */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#49b0ff] to-[#1475e8] shadow">
+                        <MailGlyph />
+                      </div>
+                      {/* Maps */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#fdfefe] to-[#d9e2ec] shadow">
+                        <MapsGlyph />
+                      </div>
+                      {/* Photos */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
+                        <PhotosGlyph />
+                      </div>
+                      {/* Calendar */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
+                        <CalendarGlyph />
+                      </div>
+                      {/* Notes */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#f7f7f7] to-[#e6e6e6] shadow">
+                        <NotesGlyph />
+                      </div>
+                      {/* Music */}
+                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#ff5d8f] to-[#e11d60] shadow">
+                        <MusicGlyph />
+                      </div>
+                      {/* Divider */}
+                      <div className="mx-0.5 h-6 w-px bg-white/25" />
+                      {/* Downloads folder */}
+                      <div className="flex size-5 items-center justify-center shadow">
+                        <DownloadsGlyph />
+                      </div>
+                      {/* Trash */}
+                      <div className="flex size-5 items-center justify-center rounded-[20%] bg-[#c9cfd6] shadow ring-1 ring-white/40">
+                        <TrashGlyph />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Dưới chân: hõm mở nắp laptop */}
-                <div className="absolute bottom-0 left-1/2 h-1.5 w-[26%] -translate-x-1/2 rounded-full bg-zinc-300/70" />
+                  {/* Dưới chân: hõm mở nắp laptop */}
+                  <div className="absolute bottom-0 left-1/2 h-1.5 w-[26%] -translate-x-1/2 rounded-full bg-zinc-300/70" />
+                </div>
               </div>
             </div>
           </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+/** Khung iPhone: status bar iOS + Safari toolbar + trang active + bottom tab bar. */
+function IPhoneFrame({
+  page,
+  setPage,
+  clock,
+  pages,
+}: {
+  page: number;
+  setPage: (i: number) => void;
+  clock: string;
+  pages: React.ReactNode[];
+}) {
+  return (
+    <div className="relative mx-auto w-full max-w-80 px-4">
+      {/* Vỏ iPhone — chassis titan + viền màn đen + notch */}
+      <div className="relative rounded-[2.6rem] bg-linear-to-b from-zinc-500 via-zinc-300 to-zinc-500 p-0.75 shadow-2xl shadow-zinc-900/50">
+        <div className="relative overflow-hidden rounded-[2.4rem] bg-black p-2">
+          <div className="relative h-150 overflow-hidden rounded-4xl bg-white">
+            {/* Status bar iOS — chữ trắng, cách notch ra 2 bên */}
+            <div className="absolute inset-x-0 top-0 z-30 flex h-9 items-end justify-between px-6 pb-1.5">
+              <span className="text-[11px] font-semibold text-white">
+                {clock}
+              </span>
+              <div className="flex items-center gap-1">
+                <Wifi className="size-3 text-white" />
+                <BatteryFull className="size-3.5 text-white" />
+              </div>
+            </div>
+
+            {/* Notch (Dynamic Island) */}
+            <div className="absolute top-2 left-1/2 z-30 h-6 w-24 -translate-x-1/2 rounded-full bg-black" />
+
+            {/* Top bar app: tên trang hiện tại */}
+            <div className="absolute inset-x-0 top-9 z-10 flex h-9 items-center justify-center border-b border-zinc-100 bg-white px-4">
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-zinc-900">
+                <div className="bg-brand-orange flex size-4 items-center justify-center rounded text-[8px] font-bold text-white">
+                  B
+                </div>
+                {NAV_ITEMS[page].label}
+              </span>
+            </div>
+
+            {/* Nội dung trang — kích thước thật, scroll dọc khi cao hơn màn */}
+            <div className="absolute inset-x-0 top-18 bottom-14 overflow-y-auto">
+              <div key={page} className="page-enter min-h-full">
+                {pages[page]}
+              </div>
+            </div>
+
+            {/* Bottom tab bar iOS — 6 mục, icon + label nhỏ */}
+            <div className="absolute inset-x-0 bottom-0 z-20 flex items-start justify-around border-t border-zinc-200 bg-white/95 px-0.5 pt-1.5 pb-3.5 backdrop-blur">
+              {NAV_ITEMS.map((item) => {
+                const active = page === item.pageIndex;
+                return (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => setPage(item.pageIndex)}
+                    className="flex flex-col items-center gap-0.5 px-0.5"
+                  >
+                    <item.icon
+                      className={`size-4 ${active ? "text-brand-orange" : "text-zinc-400"}`}
+                    />
+                    <span
+                      className={`text-[8px] leading-none font-medium ${
+                        active ? "text-brand-orange" : "text-zinc-400"
+                      }`}
+                    >
+                      {item.label.split(" ")[0]}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
+      {/* Nút nguồn + volume */}
+      <div className="absolute top-24 -right-0.75 h-16 w-0.75 rounded-r bg-zinc-400" />
+      <div className="absolute top-20 -left-0.75 h-8 w-0.75 rounded-l bg-zinc-400" />
+      <div className="absolute top-32 -left-0.75 h-12 w-0.75 rounded-l bg-zinc-400" />
     </div>
   );
 }
@@ -598,14 +805,14 @@ function CTAButtons() {
     <div className="flex flex-col items-center gap-4 sm:flex-row">
       <a
         href="/register"
-        className="bg-brand-orange hover:bg-brand-orange/90 inline-flex items-center gap-2 rounded-lg px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:shadow-orange-500/40"
+        className="bg-brand-orange hover:bg-brand-orange/90 pointer-events-auto inline-flex items-center gap-2 rounded-lg px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:shadow-orange-500/40"
       >
         <Rocket className="size-4" />
         Bắt đầu miễn phí
       </a>
       <a
         href="/login"
-        className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-medium text-white backdrop-blur transition-all hover:bg-white/10"
+        className="pointer-events-auto inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-medium text-white backdrop-blur transition-all hover:bg-white/10"
       >
         Đăng nhập
       </a>
@@ -617,15 +824,79 @@ function CTAButtons() {
 
 const PAGE_CARD = "rounded-lg border border-zinc-200 bg-white p-3 shadow-sm";
 
+interface TrendingItem {
+  rank: number;
+  keyword: string;
+  channel: CalChannel;
+  growth: number;
+  views: string;
+}
+/** Trending hôm nay — mock dữ liệu hệ thống cào. */
+const TRENDING_ITEMS: TrendingItem[] = [
+  {
+    rank: 1,
+    keyword: "Cà phê trứng đang lên ngôi",
+    channel: "tiktok",
+    growth: 312,
+    views: "1.2M",
+  },
+  {
+    rank: 2,
+    keyword: "Review iPhone 17 mới ra mắt",
+    channel: "instagram",
+    growth: 268,
+    views: "980K",
+  },
+  {
+    rank: 3,
+    keyword: "Sneaker drop Nike Air Max",
+    channel: "tiktok",
+    growth: 194,
+    views: "742K",
+  },
+  {
+    rank: 4,
+    keyword: "Xu hướng quà T8 cho khách hàng",
+    channel: "facebook",
+    growth: 121,
+    views: "510K",
+  },
+  {
+    rank: 5,
+    keyword: "Case study content agency VN",
+    channel: "linkedin",
+    growth: 87,
+    views: "316K",
+  },
+];
+
+interface AdviceItem {
+  title: string;
+  body: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+/** Lời khuyên AI đề xuất hôm nay. */
+const ADVICE_ITEMS: AdviceItem[] = [
+  {
+    title: "Đăng Reel tối nay 20h",
+    body: "Trend 'Cà phê trứng' đang tăng 312% — cập nhật ngay nội dung TikTok.",
+    icon: Flame,
+  },
+  {
+    title: "Giờ vàng Instagram 19h",
+    body: "Audience brand bạn active mạnh nhất 19-21h. Dời bài 09:00 → 19:30.",
+    icon: Clock,
+  },
+  {
+    title: "Gợi ý: chuỗi Q&A founder",
+    body: "Nội dung nói về người thật đang tăng reach 2.4x tuần này.",
+    icon: Lightbulb,
+  },
+];
+
 function OverviewPage() {
-  const stats = [
-    { label: "Tổng bài", val: "1,284", icon: Files, color: "text-blue-400" },
-    { label: "Đã đăng", val: "986", icon: Upload, color: "text-emerald-400" },
-    { label: "Chờ duyệt", val: "24", icon: Clock, color: "text-amber-400" },
-    { label: "Lỗi", val: "3", icon: AlertCircle, color: "text-red-400" },
-  ];
   return (
-    <div className="flex h-full flex-col gap-3 p-4">
+    <div className="flex min-h-full flex-col gap-3 p-4">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-semibold text-zinc-900">
@@ -635,25 +906,87 @@ function OverviewPage() {
             Hôm nay có 12 nội dung cần publish
           </p>
         </div>
-        <div className="flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-1 text-[10px] font-medium text-emerald-400">
+        <div className="bg-brand-orange/10 text-brand-orange flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium">
           <TrendingUp className="size-3" />
           +18% tuần này
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-3">
-        {stats.map((s) => (
-          <div key={s.label} className={PAGE_CARD}>
-            <div className="mb-1 flex items-center justify-between">
-              <s.icon className={`size-3 ${s.color}`} />
-              <span className={`text-[9px] ${s.color}`}>●</span>
-            </div>
-            <p className="text-lg font-bold text-zinc-900">{s.val}</p>
-            <p className="text-[10px] text-zinc-500">{s.label}</p>
+      <div className="grid grid-cols-2 gap-3">
+        <div className={PAGE_CARD}>
+          <div className="mb-1 flex items-center justify-between">
+            <span className="flex items-center gap-1 text-[10px] text-zinc-500">
+              <Files className="text-brand-orange size-3" />
+              Tổng bài
+            </span>
+            <span className="text-brand-orange text-[9px]">●</span>
           </div>
-        ))}
+          <p className="text-lg font-bold text-zinc-900">1,284</p>
+          <div className="mt-1.5 flex flex-col gap-1">
+            <span className="flex items-center gap-1 text-[9px] text-zinc-500">
+              <Upload className="text-brand-orange size-2.5" /> Đã đăng
+              <b className="ml-auto font-semibold text-zinc-700">986</b>
+            </span>
+            <span className="flex items-center gap-1 text-[9px] text-zinc-500">
+              <Clock className="text-brand-orange size-2.5" /> Chờ duyệt
+              <b className="ml-auto font-semibold text-zinc-700">24</b>
+            </span>
+            <span className="flex items-center gap-1 text-[9px] text-zinc-500">
+              <AlertCircle className="text-brand-orange size-2.5" /> Lỗi
+              <b className="ml-auto font-semibold text-zinc-700">3</b>
+            </span>
+          </div>
+        </div>
+        <div className={PAGE_CARD}>
+          <div className="mb-1 flex items-center justify-between">
+            <span className="flex items-center gap-1 text-[10px] text-zinc-500">
+              <Users2 className="text-brand-orange size-3" />
+              Theo dõi
+            </span>
+            <span className="text-brand-orange text-[9px]">●</span>
+          </div>
+          <p className="text-lg font-bold text-zinc-900">12.4k</p>
+          <div className="bg-brand-orange/10 text-brand-orange mt-1.5 flex w-fit items-center gap-1 rounded px-1.5 py-0.5 text-[9px] font-medium">
+            <TrendingUp className="size-2.5" /> +18% tuần này
+          </div>
+        </div>
       </div>
-      <div className="grid flex-1 grid-cols-3 gap-3">
-        <div className="col-span-2 flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
+      {/* Trending hôm nay */}
+      <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
+        <div className="mb-2 flex items-center justify-between">
+          <p className="flex items-center gap-1.5 text-[10px] font-medium text-zinc-500">
+            <Flame className="text-brand-orange size-3" />
+            TRENDING HÔM NAY
+          </p>
+          <span className="bg-brand-orange/10 text-brand-orange flex items-center gap-1 rounded px-1.5 py-0.5 text-[8px] font-medium">
+            <RefreshCw className="size-2.5" /> Cào 09:00
+          </span>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          {TRENDING_ITEMS.map((t) => {
+            const cfg = CALENDAR_CHANNEL_CONFIG[t.channel];
+            return (
+              <div key={t.rank} className="flex items-center gap-2">
+                <span className="flex size-4 shrink-0 items-center justify-center rounded text-[9px] font-bold text-zinc-500">
+                  {t.rank}
+                </span>
+                <cfg.icon
+                  className="size-3 shrink-0"
+                  style={{ color: cfg.color }}
+                />
+                <p className="min-w-0 flex-1 truncate text-[10px] text-zinc-700">
+                  {t.keyword}
+                </p>
+                <span className="flex items-center gap-0.5 text-[9px] font-semibold text-emerald-600">
+                  <TrendingUp className="size-2.5" />+{t.growth}%
+                </span>
+                <span className="text-[9px] text-zinc-400">{t.views}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="grid flex-1 grid-cols-1 gap-3">
+        <div className="col-span-1 flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-[10px] font-medium text-zinc-500">
               HIỆU SUẤT CONTENT
@@ -670,9 +1003,10 @@ function OverviewPage() {
             TOP KÊNH HOẠT ĐỘNG
           </p>
           {[
-            { name: "Instagram", pct: 82, color: "bg-pink-500" },
-            { name: "TikTok", pct: 71, color: "bg-cyan-500" },
-            { name: "Facebook", pct: 64, color: "bg-blue-500" },
+            { name: "Instagram", pct: 82, color: "bg-brand-orange" },
+            { name: "TikTok", pct: 71, color: "bg-orange-400" },
+            { name: "Facebook", pct: 64, color: "bg-amber-500" },
+            { name: "LinkedIn", pct: 48, color: "bg-orange-300" },
           ].map((k) => (
             <div key={k.name} className="mb-2">
               <p className="text-[9px] text-zinc-500">{k.name}</p>
@@ -684,6 +1018,63 @@ function OverviewPage() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {/* Donut phân bố kênh */}
+        <div className="flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
+          <p className="mb-2 text-[10px] font-medium text-zinc-500">
+            PHÂN BỐ KÊNH
+          </p>
+          <div className="flex flex-1 items-center gap-3">
+            <div
+              className="size-16 shrink-0 rounded-full"
+              style={{
+                background:
+                  "conic-gradient(#f05a28 0 29%, #ff6b35 0 57%, #eab308 0 78%, #f0783a 0 100%)",
+              }}
+            />
+            <div className="flex flex-1 flex-col gap-1">
+              {[
+                { label: "Instagram", pct: "29%", c: "bg-brand-orange" },
+                { label: "TikTok", pct: "28%", c: "bg-orange-400" },
+                { label: "Facebook", pct: "21%", c: "bg-amber-500" },
+                { label: "LinkedIn", pct: "22%", c: "bg-orange-300" },
+              ].map((k) => (
+                <div key={k.label} className="flex items-center gap-1.5">
+                  <span className={`size-1.5 rounded-full ${k.c}`} />
+                  <p className="flex-1 text-[9px] text-zinc-500">{k.label}</p>
+                  <p className="text-[9px] font-semibold text-zinc-700">
+                    {k.pct}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* Lời khuyên AI */}
+        <div className="flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
+          <p className="flex items-center gap-1.5 text-[10px] font-medium text-zinc-500">
+            <Sparkles className="text-brand-orange size-3" />
+            ĐỀ XUẤT HÔM NAY
+          </p>
+          <div className="mt-2 flex flex-col gap-2.5">
+            {ADVICE_ITEMS.map((a) => (
+              <div key={a.title} className="flex items-start gap-2">
+                <span className="bg-brand-orange/10 text-brand-orange mt-0.5 flex size-5 shrink-0 items-center justify-center rounded">
+                  <a.icon className="size-3" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold text-zinc-800">
+                    {a.title}
+                  </p>
+                  <p className="text-[9px] leading-snug text-zinc-500">
+                    {a.body}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -727,45 +1118,179 @@ function AnimatedBars() {
   );
 }
 
-function ContentPage() {
+const KANBAN_COLS = [
+  {
+    key: "draft",
+    label: "Bản nháp",
+    dot: "bg-zinc-400",
+    bar: "bg-zinc-300",
+  },
+  {
+    key: "review",
+    label: "Chờ duyệt",
+    dot: "bg-amber-400",
+    bar: "bg-amber-300",
+  },
+  {
+    key: "published",
+    label: "Đã đăng",
+    dot: "bg-emerald-400",
+    bar: "bg-emerald-300",
+  },
+] as const;
+type KanbanStatus = (typeof KANBAN_COLS)[number]["key"];
+
+interface KanbanItem {
+  title: string;
+  channel: CalChannel;
+  time: string;
+  status: KanbanStatus;
+  cover?: string;
+  tag?: string;
+  author?: string;
+  impressions?: string;
+}
+
+const KANBAN_ITEMS: KanbanItem[] = [
+  {
+    title: "Case study BrandHub x VCorp",
+    channel: "linkedin",
+    time: "Cập nhật 10:24",
+    status: "draft",
+    cover:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=200&q=60",
+    tag: "Article",
+  },
+  {
+    title: "Tuyển dụng 5 vị trí Marketing",
+    channel: "linkedin",
+    time: "Cập nhật 09:10",
+    status: "draft",
+    tag: "Bài viết",
+    cover:
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=200&q=60",
+    author: "Thu Hà",
+    impressions: "0",
+  },
+  {
+    title: "Email khuyến mãi 20% KH thân thiết",
+    channel: "facebook",
+    time: "Cập nhật hôm qua",
+    status: "draft",
+    tag: "Email",
+    cover:
+      "https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?auto=format&fit=crop&w=200&q=60",
+    author: "Minh Nguyễn",
+    impressions: "0",
+  },
+  {
+    title: "Banner khuyến mãi T8 giảm 30%",
+    channel: "facebook",
+    time: "Chờ từ 15:00 hôm nay",
+    status: "review",
+    cover:
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=200&q=60",
+    tag: "Quảng cáo",
+  },
+  {
+    title: "Livestream: Q&A với founder",
+    channel: "facebook",
+    time: "CN tuần sau 20:00",
+    status: "review",
+    cover:
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=200&q=60",
+    tag: "Live",
+  },
+  {
+    title: "Reel: 3 mẹo tăng reach hữu cơ",
+    channel: "instagram",
+    time: "Chờ từ 10:00 hôm nay",
+    status: "review",
+    cover:
+      "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=200&q=60",
+    tag: "Reel",
+  },
+  {
+    title: "Launch Heineken mới — Hè 2026",
+    channel: "instagram",
+    time: "Hôm nay 09:00",
+    status: "published",
+    cover:
+      "https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=200&q=60",
+    tag: "Campaign",
+    author: "Quang",
+    impressions: "45.6K",
+  },
+  {
+    title: "Review Nike Air Max — trend hè",
+    channel: "tiktok",
+    time: "Hôm nay 12:00",
+    status: "published",
+    cover:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=200&q=60",
+    tag: "Video",
+    author: "Đức",
+    impressions: "72.1K",
+  },
+  {
+    title: "Weekly roundup tháng 7",
+    channel: "linkedin",
+    time: "Hôm nay 08:30",
+    status: "published",
+    tag: "Insight",
+    cover:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=200&q=60",
+    author: "Thu Hà",
+    impressions: "18.2K",
+  },
+  {
+    title: "Story khuyến mãi cuối tuần",
+    channel: "instagram",
+    time: "Hôm qua 18:00",
+    status: "published",
+    tag: "Story",
+    cover:
+      "https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=200&q=60",
+    author: "Trang",
+    impressions: "9.4K",
+  },
+];
+
+function ContentPage({ device }: { device: "macbook" | "iphone" }) {
   const [query, setQuery] = useState("");
   const [creating, setCreating] = useState(false);
-  const posts = [
-    {
-      ch: "Instagram",
-      color: "bg-pink-500",
-      title: "Launch Heineken mới",
-      time: "Hôm nay 09:00",
-      status: "Đã đăng",
-      sc: "text-emerald-400",
-    },
-    {
-      ch: "TikTok",
-      color: "bg-cyan-500",
-      title: "Review Nike — trend",
-      time: "Hôm nay 12:00",
-      status: "Đã đăng",
-      sc: "text-emerald-400",
-    },
-    {
-      ch: "Facebook",
-      color: "bg-blue-500",
-      title: "Banner khuyến mãi T7",
-      time: "Mai 15:00",
-      status: "Chờ duyệt",
-      sc: "text-amber-400",
-    },
-    {
-      ch: "LinkedIn",
-      color: "bg-sky-500",
-      title: "Case study BrandHub",
-      time: "T4 tuần sau",
-      status: "Bản nháp",
-      sc: "text-zinc-400",
-    },
-  ];
+  const [items, setItems] = useState<KanbanItem[]>(KANBAN_ITEMS);
+  const [dragTitle, setDragTitle] = useState<string | null>(null);
+  const [open, setOpen] = useState<KanbanItem | null>(null);
+  const [view, setView] = useState<"kanban" | "list" | "timeline">("kanban");
+  const [demoHint, setDemoHint] = useState(false);
+
+  // Demo lần đầu: tự xoay qua 3 view rồi dừng, guard localStorage 1 lần.
+  useEffect(() => {
+    if (localStorage.getItem("brandhub_view_demo")) return;
+    localStorage.setItem("brandhub_view_demo", "1");
+    setDemoHint(true);
+    const seq = ["list", "timeline", "kanban"] as const;
+    seq.forEach((v, i) => {
+      setTimeout(() => setView(v), (i + 1) * 800);
+    });
+    setTimeout(() => setDemoHint(false), 3600);
+  }, []);
+
+  const moveTo = (status: KanbanStatus) => {
+    if (!dragTitle) return;
+    setItems((prev) =>
+      prev.map((p) => (p.title === dragTitle ? { ...p, status } : p)),
+    );
+    setDragTitle(null);
+  };
+
+  const filtered = items.filter((p) =>
+    p.title.toLowerCase().includes(query.trim().toLowerCase()),
+  );
+
   return (
-    <div className="flex h-full flex-col gap-3 p-4">
+    <div className="relative flex min-h-full flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-zinc-900">
@@ -791,49 +1316,390 @@ function ContentPage() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Tìm kiếm nội dung..."
+          placeholder="Tìm kiếm theo tên bài..."
           className="w-full bg-transparent text-[10px] text-zinc-700 outline-none placeholder:text-zinc-500"
         />
       </div>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-0.5 rounded-lg border border-zinc-200 bg-white p-0.5 shadow-sm">
+          {(
+            [
+              { key: "kanban", icon: LayoutGrid, label: "Kanban" },
+              { key: "list", icon: List, label: "List" },
+              { key: "timeline", icon: CalendarRange, label: "Timeline" },
+            ] as const
+          ).map((v) => (
+            <button
+              key={v.key}
+              type="button"
+              onClick={() => setView(v.key)}
+              className={`flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-[9px] font-medium transition-colors ${
+                view === v.key
+                  ? "bg-brand-orange text-white"
+                  : "text-zinc-500 hover:bg-zinc-100"
+              }`}
+            >
+              <v.icon className="size-3" /> {v.label}
+            </button>
+          ))}
+        </div>
+        <span className="text-[9px] text-zinc-400">{filtered.length} bài</span>
+      </div>
+      {demoHint && (
+        <p className="ghost-comment-in border-brand-orange/30 bg-brand-orange/10 text-brand-orange rounded-md border px-2 py-1 text-center text-[9px] font-medium">
+          Demo: 3 kiểu view — bạn tự khám phá nhé
+        </p>
+      )}
       <div
-        className={`flex flex-1 flex-col gap-1.5 overflow-hidden ${
-          creating ? "blur-[1px]" : ""
+        className={`grid flex-1 gap-3 ${view !== "kanban" ? "hidden" : ""} ${
+          device === "iphone"
+            ? "grid-cols-1"
+            : "grid-cols-1 sm:grid-cols-3 sm:overflow-hidden"
         }`}
       >
-        {posts
-          .filter((p) =>
-            p.title.toLowerCase().includes(query.trim().toLowerCase()),
-          )
-          .map((p) => (
+        {KANBAN_COLS.map((col) => {
+          const colItems = filtered.filter((p) => p.status === col.key);
+          const isOver = dragTitle !== null;
+          return (
             <div
-              key={p.title}
-              className="flex items-center gap-2.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 shadow-sm"
+              key={col.key}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => moveTo(col.key)}
+              className={`flex min-h-40 flex-col gap-1.5 rounded-lg border p-2 shadow-sm transition-colors ${
+                isOver
+                  ? "border-brand-orange/50 bg-brand-orange/5"
+                  : "border-zinc-200 bg-zinc-50/60"
+              }`}
             >
-              <span
-                className={`flex size-6 shrink-0 items-center justify-center rounded-full ${p.color} text-[8px] font-bold text-white`}
+              <div className="flex items-center justify-between px-0.5 pb-1">
+                <span className="flex items-center gap-1.5 text-[10px] font-semibold text-zinc-700">
+                  <span className={`size-1.5 rounded-full ${col.dot}`} />
+                  {col.label}
+                </span>
+                <span className="rounded-full bg-white px-1.5 text-[9px] font-medium text-zinc-500 shadow-sm">
+                  {colItems.length}
+                </span>
+              </div>
+              {colItems.map((p) => {
+                const cfg = CALENDAR_CHANNEL_CONFIG[p.channel];
+                return (
+                  <div
+                    key={p.title}
+                    draggable
+                    onDragStart={() => setDragTitle(p.title)}
+                    onDragEnd={() => setDragTitle(null)}
+                    onClick={() => setOpen(p)}
+                    className="hover:border-brand-orange/40 flex cursor-pointer flex-col gap-1.5 rounded-lg border border-zinc-200 bg-white p-1.5 shadow-sm transition-colors"
+                  >
+                    {p.cover ? (
+                      <img
+                        src={p.cover}
+                        alt={p.title}
+                        loading="lazy"
+                        className="h-10 w-full rounded-md object-cover"
+                      />
+                    ) : (
+                      <div className="from-brand-orange/30 h-10 w-full rounded-md bg-linear-to-br via-amber-300/40 to-purple-400/30" />
+                    )}
+                    <div className="flex items-start gap-1.5">
+                      <cfg.icon
+                        className="mt-0.5 size-3 shrink-0"
+                        style={{ color: cfg.color }}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="line-clamp-2 text-[10px] leading-tight font-medium text-zinc-800">
+                          {p.title}
+                        </p>
+                        <p className="mt-0.5 flex items-center gap-1 text-[8px] text-zinc-400">
+                          {p.tag && (
+                            <span
+                              className={`rounded px-1 font-medium text-white ${col.bar}`}
+                            >
+                              {p.tag}
+                            </span>
+                          )}
+                          <span className="truncate">{p.time}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              {colItems.length === 0 && (
+                <p className="py-3 text-center text-[9px] text-zinc-400">
+                  Thả bài vào đây
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {view === "list" && (
+        <div className="flex flex-1 flex-col gap-1.5 overflow-y-auto">
+          {filtered.map((p) => {
+            const cfg = CALENDAR_CHANNEL_CONFIG[p.channel];
+            const col = KANBAN_COLS.find((c) => c.key === p.status);
+            return (
+              <div
+                key={p.title}
+                onClick={() => setOpen(p)}
+                className="hover:border-brand-orange/40 flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 bg-white p-1.5 shadow-sm transition-colors"
               >
-                {p.ch[0]}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[11px] font-medium text-zinc-900">
+                <img
+                  src={p.cover}
+                  alt={p.title}
+                  loading="lazy"
+                  className="size-9 shrink-0 rounded-md object-cover"
+                />
+                <cfg.icon
+                  className="size-3 shrink-0"
+                  style={{ color: cfg.color }}
+                />
+                <p className="min-w-0 flex-1 truncate text-[10px] font-medium text-zinc-800">
                   {p.title}
                 </p>
-                <p className="text-[9px] text-zinc-500">{p.time}</p>
+                <span
+                  className={`shrink-0 rounded px-1 py-0.5 text-[8px] font-medium text-white ${col?.bar}`}
+                >
+                  {col?.label}
+                </span>
+                <span className="shrink-0 text-[9px] text-zinc-400">
+                  {p.time}
+                </span>
               </div>
-              <span className={`text-[9px] font-medium ${p.sc}`}>
-                {p.status}
-              </span>
-            </div>
-          ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
+      {view === "timeline" && (
+        <TimelineNotion items={filtered} onOpen={setOpen} />
+      )}
       {creating && (
         <p className="ghost-comment-in border-brand-orange/30 bg-brand-orange/10 text-brand-orange rounded-md border px-2 py-1 text-center text-[9px] font-medium">
           Đang mở trình soạn bài mới...
         </p>
       )}
+      {open && (
+        <div className="absolute inset-0 z-20 flex flex-col overflow-y-auto rounded-lg border border-zinc-200 bg-white p-3 shadow-xl">
+          <button
+            type="button"
+            onClick={() => setOpen(null)}
+            className="text-brand-orange flex w-fit items-center gap-1 text-[10px] font-semibold"
+          >
+            <ArrowLeft className="size-3" /> Tất cả bài
+          </button>
+          <div className="from-brand-orange/30 relative mt-2 h-28 overflow-hidden rounded-md bg-linear-to-br via-amber-300/40 to-purple-400/30">
+            {open.cover && (
+              <img
+                src={open.cover}
+                alt={open.title}
+                loading="lazy"
+                className="absolute inset-0 size-full object-cover"
+              />
+            )}
+          </div>
+          <div className="mt-2.5 flex items-start justify-between gap-2">
+            <p className="text-xs leading-snug font-semibold text-zinc-900">
+              {open.title}
+            </p>
+            {(() => {
+              const col = KANBAN_COLS.find((c) => c.key === open.status);
+              return (
+                <span
+                  className={`shrink-0 rounded px-1.5 py-0.5 text-[8px] font-medium text-white ${col?.bar}`}
+                >
+                  {col?.label}
+                </span>
+              );
+            })()}
+          </div>
+          <div className="mt-2.5 flex flex-col gap-1.5">
+            {(() => {
+              const cfg = CALENDAR_CHANNEL_CONFIG[open.channel];
+              return (
+                <span className="flex items-center gap-1.5 text-[10px] text-zinc-600">
+                  <cfg.icon className="size-3" style={{ color: cfg.color }} />
+                  Kênh: {cfg.label}
+                </span>
+              );
+            })()}
+            <span className="flex items-center gap-1.5 text-[10px] text-zinc-600">
+              <Clock className="text-brand-orange size-3" /> {open.time}
+            </span>
+            <span className="flex items-center gap-1.5 text-[10px] text-zinc-600">
+              <Users2 className="text-brand-orange size-3" /> Tác giả:{" "}
+              {open.author ?? "—"}
+            </span>
+          </div>
+          <div className="bg-brand-orange/5 border-brand-orange/15 mt-3 flex items-center justify-around rounded-lg border px-2 py-2.5">
+            <div className="text-center">
+              <p className="text-sm font-bold text-zinc-900">
+                {open.impressions ?? "0"}
+              </p>
+              <p className="text-[8px] text-zinc-500">Lượt tiếp cận</p>
+            </div>
+            <div className="h-6 w-px bg-zinc-200" />
+            <div className="text-center">
+              <p className="text-sm font-bold text-zinc-900">
+                {open.status === "published" ? "2.1K" : "—"}
+              </p>
+              <p className="text-[8px] text-zinc-500">Tương tác</p>
+            </div>
+            <div className="h-6 w-px bg-zinc-200" />
+            <div className="text-center">
+              <p className="text-sm font-bold text-zinc-900">
+                {open.status === "published" ? "4.8%" : "—"}
+              </p>
+              <p className="text-[8px] text-zinc-500">Engagement</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+/** Timeline kiểu Notion — trục ngang theo ngày, task là bar nối nhiều cột. */
+const TIMELINE_DAYS = [
+  { dow: "T2", date: "03/08" },
+  { dow: "T3", date: "04/08" },
+  { dow: "T4", date: "05/08" },
+  { dow: "T5", date: "06/08" },
+  { dow: "T6", date: "07/08" },
+  { dow: "T7", date: "08/08" },
+  { dow: "CN", date: "09/08" },
+];
+const TIMELINE_COL = 56;
+const TIMELINE_GUTTER = 88;
+
+function TimelineNotion({
+  items,
+  onOpen,
+}: {
+  items: KanbanItem[];
+  onOpen: (i: KanbanItem) => void;
+}) {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white shadow-sm">
+      <div
+        style={{
+          minWidth: TIMELINE_GUTTER + TIMELINE_DAYS.length * TIMELINE_COL,
+        }}
+      >
+        {/* Header ngày */}
+        <div className="flex border-b border-zinc-200">
+          <div
+            className="shrink-0 border-r border-zinc-200 px-2 py-1 text-[9px] font-medium text-zinc-500"
+            style={{ width: TIMELINE_GUTTER }}
+          >
+            Tác vụ
+          </div>
+          {TIMELINE_DAYS.map((d, i) => (
+            <div
+              key={d.date}
+              className={`shrink-0 px-1 py-1 text-center ${i === 0 ? "bg-brand-orange/5" : ""}`}
+              style={{ width: TIMELINE_COL }}
+            >
+              <p className="text-[8px] font-semibold text-zinc-700">{d.dow}</p>
+              <p className="text-[8px] text-zinc-400">{d.date}</p>
+            </div>
+          ))}
+        </div>
+        {/* Các lane task */}
+        {items.map((p) => {
+          const cfg = CALENDAR_CHANNEL_CONFIG[p.channel];
+          const col = KANBAN_COLS.find((c) => c.key === p.status);
+          const day =
+            p.status === "published" ? 0 : p.status === "review" ? 1 : 3;
+          const span = p.status === "draft" ? 2 : 1;
+          return (
+            <div key={p.title} className="flex border-b border-zinc-100">
+              <div
+                className="z-10 flex shrink-0 items-center gap-1 border-r border-zinc-200 bg-white px-2 py-1.5"
+                style={{ width: TIMELINE_GUTTER }}
+              >
+                <cfg.icon
+                  className="size-3 shrink-0"
+                  style={{ color: cfg.color }}
+                />
+                <p className="truncate text-[9px] text-zinc-700">{p.title}</p>
+              </div>
+              <div
+                className="relative"
+                style={{
+                  width: TIMELINE_DAYS.length * TIMELINE_COL,
+                  height: 30,
+                }}
+              >
+                {TIMELINE_DAYS.map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute top-0 bottom-0 border-r border-zinc-100"
+                    style={{ left: i * TIMELINE_COL, width: TIMELINE_COL }}
+                  />
+                ))}
+                <div
+                  onClick={() => onOpen(p)}
+                  className={`absolute top-1 bottom-1 cursor-pointer rounded px-1.5 shadow-sm transition-transform hover:-translate-y-px ${col?.bar}`}
+                  style={{
+                    left: day * TIMELINE_COL + 3,
+                    width: span * TIMELINE_COL - 6,
+                  }}
+                >
+                  <span className="flex h-full items-center gap-1 truncate text-[8px] font-medium text-white">
+                    <cfg.icon
+                      className="size-2.5 shrink-0"
+                      style={{ color: "rgba(255,255,255,.9)" }}
+                    />
+                    {cfg.label}
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+const CALENDAR_CHANNEL_CONFIG = {
+  instagram: { icon: InstagramGlyph, color: "#f05a28", label: "Instagram" },
+  tiktok: { icon: TikTokGlyph, color: "#ff6b35", label: "TikTok" },
+  facebook: { icon: FacebookGlyph, color: "#ea4a1c", label: "Facebook" },
+  linkedin: { icon: LinkedInGlyph, color: "#f0783a", label: "LinkedIn" },
+} as const;
+type CalChannel = keyof typeof CALENDAR_CHANNEL_CONFIG;
+
+const CALENDAR_POSTS: Record<
+  number,
+  { title: string; channel: CalChannel; time: string }[]
+> = {
+  5: [{ title: "Chào tháng 8!", channel: "instagram", time: "09:00" }],
+  9: [
+    { title: "Launch Heineken mới", channel: "instagram", time: "09:00" },
+    { title: "Review Nike — trend", channel: "tiktok", time: "12:00" },
+    { title: "Banner khuyến mãi T8", channel: "facebook", time: "15:00" },
+  ],
+  12: [{ title: "Weekly roundup", channel: "linkedin", time: "08:30" }],
+  15: [
+    { title: "Weekly roundup", channel: "linkedin", time: "11:00" },
+    { title: "Reel tips tăng reach", channel: "instagram", time: "19:00" },
+  ],
+  19: [
+    { title: "Unboxing Serie B", channel: "tiktok", time: "19:00" },
+    { title: "Livestream Q&A founder", channel: "facebook", time: "20:00" },
+  ],
+  22: [
+    { title: "Banner khuyến mãi T8", channel: "facebook", time: "15:00" },
+    { title: "Case study BrandHub", channel: "linkedin", time: "17:00" },
+  ],
+  26: [{ title: "Flash sale cuối tháng", channel: "instagram", time: "10:00" }],
+  28: [
+    { title: "Q3 preview", channel: "instagram", time: "10:00" },
+    { title: "Tuyển dụng Marketing", channel: "linkedin", time: "14:00" },
+  ],
+};
 
 function SchedulePage() {
   const cells = [
@@ -867,64 +1733,107 @@ function SchedulePage() {
     null,
   ];
   const today = 22;
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(today);
+  const selectedPosts = selected ? (CALENDAR_POSTS[selected] ?? []) : [];
+
   return (
-    <div className="flex h-full flex-col gap-3 p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-semibold text-zinc-900">Lịch xuất bản</p>
-          <p className="text-[11px] text-zinc-500">Tháng 8, 2026</p>
+    <div className="flex min-h-full flex-col gap-3 p-4">
+      <div className="flex flex-1 flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-zinc-900">Lịch xuất bản</p>
+            <p className="text-[11px] text-zinc-500">Tháng 8, 2026</p>
+          </div>
+          <div className="flex items-center gap-2 text-zinc-500">
+            <button className="rounded p-0.5 hover:text-zinc-900">
+              <ChevronLeft className="size-3" />
+            </button>
+            <span className="text-[11px] font-medium">Tháng 8</span>
+            <button className="rounded p-0.5 hover:text-zinc-900">
+              <ChevronRight className="size-3" />
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-2 text-zinc-500">
-          <button className="rounded p-0.5 hover:text-zinc-900">
-            <ChevronLeft className="size-3" />
-          </button>
-          <span className="text-[11px] font-medium">Tháng 8</span>
-          <button className="rounded p-0.5 hover:text-zinc-900">
-            <ChevronRight className="size-3" />
-          </button>
+        <div className="grid grid-cols-7 gap-1 text-center text-[8px] text-zinc-500">
+          {["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map((d) => (
+            <span key={d}>{d}</span>
+          ))}
+        </div>
+        <div className="grid flex-1 grid-cols-7 gap-1">
+          {cells.map((c, i) => {
+            const posts = c ? (CALENDAR_POSTS[c] ?? []) : [];
+            return (
+              <button
+                key={i}
+                type="button"
+                disabled={!c}
+                onClick={() => c && setSelected(c)}
+                aria-pressed={selected === c}
+                className={`flex flex-col items-center gap-0.5 rounded-md p-1 text-[10px] transition-all outline-none ${
+                  c === today
+                    ? "bg-brand-orange font-bold text-white"
+                    : selected === c
+                      ? "bg-brand-orange/15 text-brand-orange ring-brand-orange/40 font-semibold ring-1"
+                      : c
+                        ? "hover:border-brand-orange/40 hover:text-brand-orange border border-zinc-200 bg-white text-zinc-600 shadow-sm"
+                        : ""
+                }`}
+              >
+                <span>{c}</span>
+                {posts.length > 0 && (
+                  <span className="flex gap-0.5">
+                    {posts.slice(0, 3).map((p, pi) => (
+                      <span
+                        key={pi}
+                        className="size-1 rounded-full"
+                        style={{
+                          background:
+                            c === today
+                              ? "white"
+                              : CALENDAR_CHANNEL_CONFIG[p.channel].color,
+                        }}
+                      />
+                    ))}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
-      <div className="grid grid-cols-7 gap-1 text-center text-[8px] text-zinc-500">
-        {["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map((d) => (
-          <span key={d}>{d}</span>
-        ))}
-      </div>
-      <div className="grid flex-1 grid-cols-7 gap-1">
-        {cells.map((c, i) => (
-          <button
-            key={i}
-            type="button"
-            disabled={!c}
-            onClick={() => c && setSelected(c)}
-            aria-pressed={selected === c}
-            className={`flex items-center justify-center rounded-md text-[10px] transition-all outline-none ${
-              c === today
-                ? "bg-brand-orange font-bold text-white"
-                : selected === c
-                  ? "bg-brand-orange/15 text-brand-orange ring-brand-orange/40 font-semibold ring-1"
-                  : c
-                    ? "hover:border-brand-orange/40 hover:text-brand-orange border border-zinc-200 bg-white text-zinc-600 shadow-sm"
-                    : ""
-            }`}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-      <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
-        <p className="mb-2 text-[10px] font-medium text-zinc-500">
-          DÒNG THỜI GIAN HÔM NAY
+
+      <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 bg-white p-2.5 shadow-sm">
+        <p className="text-[10px] font-medium text-zinc-500">
+          {selected ? `NGÀY ${selected}/8` : "CHỌN NGÀY"}
         </p>
-        <div className="flex items-center gap-2">
-          <span className="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-[9px] font-bold text-emerald-600">
-            09
-          </span>
-          <span className="text-[10px] text-zinc-700">Đăng bài Heineken</span>
-          <span className="ml-auto rounded bg-emerald-500/10 px-1.5 py-0.5 text-[8px] text-emerald-600">
-            Xong
-          </span>
-        </div>
+        {selectedPosts.length === 0 ? (
+          <p className="py-4 text-center text-[9px] text-zinc-400">
+            Chưa có bài lên lịch
+          </p>
+        ) : (
+          <div className="flex flex-col gap-1.5">
+            {selectedPosts.map((p, i) => {
+              const cfg = CALENDAR_CHANNEL_CONFIG[p.channel];
+              return (
+                <div
+                  key={i}
+                  className="flex items-start gap-1.5 rounded-md border border-zinc-100 p-1.5"
+                >
+                  <cfg.icon
+                    className="mt-0.5 size-3 shrink-0"
+                    style={{ color: cfg.color }}
+                  />
+                  <div className="min-w-0">
+                    <p className="truncate text-[9px] font-medium text-zinc-800">
+                      {p.title}
+                    </p>
+                    <p className="text-[8px] text-zinc-400">{p.time}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1008,7 +1917,7 @@ function AnimatedLineChart() {
 
 function AnalyticsPage() {
   return (
-    <div className="flex h-full flex-col gap-3 p-4">
+    <div className="flex min-h-full flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-zinc-900">
@@ -1022,26 +1931,31 @@ function AnalyticsPage() {
           <BarChart3 className="size-3" /> 6 tháng gần nhất
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {[
-          { icon: Eye, label: "Lượt xem", val: "486k", color: "text-blue-400" },
+          {
+            icon: Eye,
+            label: "Lượt xem",
+            val: "486k",
+            color: "text-brand-orange",
+          },
           {
             icon: Users2,
             label: "Người theo dõi",
             val: "12.4k",
-            color: "text-emerald-400",
+            color: "text-brand-orange",
           },
           {
             icon: MessageCircle,
             label: "Tương tác",
             val: "8.1k",
-            color: "text-pink-400",
+            color: "text-brand-orange",
           },
           {
             icon: Share2,
             label: "Chia sẻ",
             val: "2.9k",
-            color: "text-amber-400",
+            color: "text-brand-orange",
           },
         ].map((s) => (
           <div key={s.label} className={PAGE_CARD}>
@@ -1051,7 +1965,7 @@ function AnalyticsPage() {
           </div>
         ))}
       </div>
-      <div className="grid flex-1 grid-cols-2 gap-3">
+      <div className="grid flex-1 grid-cols-1 gap-3">
         <div className="flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
           <p className="mb-1 text-[10px] font-medium text-zinc-500">
             LƯỢT XEM THEO NGÀY
@@ -1066,10 +1980,10 @@ function AnalyticsPage() {
           </p>
           <div className="flex flex-1 flex-col justify-center gap-2.5 px-1">
             {[
-              { name: "Instagram", pct: 35, color: "bg-pink-500" },
-              { name: "TikTok", pct: 30, color: "bg-cyan-500" },
-              { name: "Facebook", pct: 22, color: "bg-blue-500" },
-              { name: "LinkedIn", pct: 13, color: "bg-sky-500" },
+              { name: "Instagram", pct: 35, color: "bg-brand-orange" },
+              { name: "TikTok", pct: 30, color: "bg-orange-400" },
+              { name: "Facebook", pct: 22, color: "bg-amber-500" },
+              { name: "LinkedIn", pct: 13, color: "bg-orange-300" },
             ].map((k) => (
               <div key={k.name}>
                 <div className="mb-1 flex justify-between text-[9px]">
@@ -1104,6 +2018,904 @@ function PieGrowBar({ pct, color }: { pct: number; color: string }) {
       className={`h-full rounded-full ${color}`}
       style={{ width: 0 }}
     />
+  );
+}
+
+const AI_GEN_TABS = [
+  { key: "text", label: "Viết bài" },
+  { key: "image", label: "Sinh ảnh" },
+  { key: "video", label: "Video" },
+] as const;
+type AiGenTab = (typeof AI_GEN_TABS)[number]["key"];
+
+const AI_MOCK_IMAGE_GALLERY = [
+  "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1583744946564-b52ac1c389c8?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80",
+];
+
+const AI_MOCK_VIDEO_GALLERY = [
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1533167649158-6d508895b680?auto=format&fit=crop&w=300&q=80",
+  "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=300&q=80",
+];
+
+const AI_MOCK_TEXT_RESULT = `🌟 BẢO BỐI MÙA HÈ — HƯƠNG THƠM LÔI CUỐN KHÔNG THỂ CHỐI TỪ 🌟
+
+Mùa hè gõ cửa mang theo cái nắng oi ả, nhưng đừng để nhiệt độ làm phai nhạt sự tự tin của bạn! Hãy để dòng nước hoa thế hệ mới đồng hành cùng bạn suốt cả ngày dài.
+
+✨ Điểm nổi bật:
+1. Lưu hương đến 12 tiếng nhờ công nghệ vi nang tự nhiên.
+2. Hương cam Bergamot Nam Phi kết hợp hoa huệ trắng tinh khôi.
+3. Thiết kế chai thủy tinh sang trọng, dễ mang theo.
+
+👉 Inbox ngay để nhận ưu đãi GIẢM 20% + FREESHIP hôm nay!
+#Perfume #SummerVibes #BrandHub`;
+
+const AI_TEMPLATES = [
+  "Nước hoa nam, tông gỗ, sang trọng, studio",
+  "Kem chống nắng, nền biển, tươi mát",
+  "Giày chạy bộ, đầy năng lượng, motion",
+  "Banner livestream, gradient cam",
+];
+
+const AI_PROMPT_HISTORY = [
+  { title: "Ảnh sản phẩm kem chống nắng — nền biển", time: "12 phút trước" },
+  { title: "Video giới thiệu giày Nike Air Max", time: "1 giờ trước" },
+  { title: "Caption case study BrandHub", time: "Hôm qua" },
+  { title: "Story Instagram quán cà phê — tông ấm", time: "Hôm qua" },
+  { title: "Tiêu đề blog SEO: 'Cách tăng reach 2026'", time: "2 ngày trước" },
+  { title: "Banner livestream T8 — nền gradient cam", time: "3 ngày trước" },
+  { title: "Email khuyến mãi 20% khách hàng thân thiết", time: "1 tuần trước" },
+];
+
+function AIStudioPage() {
+  const [tab, setTab] = useState<AiGenTab>("image");
+  const [prompt, setPrompt] = useState(
+    "Ảnh sản phẩm nước hoa cầm bởi người mẫu trên bãi biển, ánh nắng hè, phong cách photorealistic",
+  );
+  const [generating, setGenerating] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const handleGenerate = () => {
+    setGenerating(true);
+    setDone(false);
+    setTimeout(() => {
+      setGenerating(false);
+      setDone(true);
+    }, 1800);
+  };
+
+  return (
+    <div className="flex min-h-full flex-col gap-3 p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="flex items-center gap-1.5 text-sm font-semibold text-zinc-900">
+            <Sparkles className="text-brand-orange size-3.5" /> AI Studio
+          </p>
+          <p className="text-[11px] text-zinc-500">
+            Sinh nội dung tự động bằng AI
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-[9px] text-zinc-400">AI Credits còn lại</p>
+          <p className="text-brand-orange text-[11px] font-semibold">
+            1,250 / 2,000
+          </p>
+        </div>
+      </div>
+
+      <div className="flex gap-1 rounded-lg border border-zinc-200 bg-zinc-50 p-0.5">
+        {AI_GEN_TABS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => {
+              setTab(t.key);
+              setDone(false);
+            }}
+            className={`flex-1 rounded-md py-1 text-[10px] font-medium transition-colors ${
+              tab === t.key
+                ? "bg-white text-zinc-900 shadow-sm"
+                : "text-zinc-500 hover:text-zinc-700"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-1 flex-col gap-3">
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="flex flex-wrap gap-1">
+            {AI_TEMPLATES.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setPrompt(t)}
+                className="hover:border-brand-orange/40 hover:text-brand-orange rounded-full border border-zinc-200 bg-white px-2 py-0.5 text-[8px] text-zinc-500 transition-colors"
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          <textarea
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            className="focus:border-brand-orange/50 h-20 flex-none resize-none rounded-lg border border-zinc-200 bg-white p-2 text-[10px] text-zinc-700 outline-none"
+          />
+          <button
+            type="button"
+            onClick={handleGenerate}
+            disabled={generating}
+            className="bg-brand-orange flex items-center justify-center gap-1.5 rounded-md py-1.5 text-[10px] font-semibold text-white transition-transform active:scale-95 disabled:opacity-70"
+          >
+            {generating ? (
+              <>
+                <Loader2 className="size-3 animate-spin" /> Đang sinh nội dung
+                AI...
+              </>
+            ) : (
+              <>
+                <Wand2 className="size-3" /> Sinh{" "}
+                {tab === "image" ? "ảnh" : tab === "video" ? "video" : "bài"} AI
+              </>
+            )}
+          </button>
+
+          <div className={PAGE_CARD + " flex-1"}>
+            <p className="mb-2 flex items-center gap-1 text-[9px] font-medium text-zinc-500">
+              <ImageIcon className="size-3" /> KẾT QUẢ AI
+            </p>
+            {!done ? (
+              <p className="py-6 text-center text-[9px] text-zinc-400">
+                Chưa có kết quả — nhấn Sinh AI để bắt đầu
+              </p>
+            ) : tab === "text" ? (
+              <div className="ghost-comment-in rounded-md border border-zinc-100 bg-zinc-50 p-2.5">
+                <p className="text-[9px] leading-relaxed whitespace-pre-line text-zinc-700">
+                  {AI_MOCK_TEXT_RESULT}
+                </p>
+              </div>
+            ) : tab === "video" ? (
+              <div className="ghost-comment-in grid grid-cols-2 gap-1.5">
+                {AI_MOCK_VIDEO_GALLERY.map((url, i) => (
+                  <div
+                    key={i}
+                    className={`relative aspect-video overflow-hidden rounded-md ${i === 0 ? "ring-brand-orange ring-2" : ""}`}
+                  >
+                    <img
+                      src={url}
+                      alt="AI generated video thumbnail"
+                      loading="lazy"
+                      className="size-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                      <div className="flex size-6 items-center justify-center rounded-full bg-white/90">
+                        <Play className="ml-0.5 size-3 fill-zinc-900 text-zinc-900" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="ghost-comment-in grid grid-cols-3 gap-1.5">
+                {AI_MOCK_IMAGE_GALLERY.map((url, i) => (
+                  <img
+                    key={i}
+                    src={url}
+                    alt="AI generated"
+                    loading="lazy"
+                    className={`aspect-square rounded-md object-cover ${i === 0 ? "ring-brand-orange ring-2" : ""}`}
+                  />
+                ))}
+              </div>
+            )}
+            {done && (
+              <button
+                type="button"
+                onClick={handleGenerate}
+                disabled={generating}
+                className="hover:border-brand-orange/40 hover:text-brand-orange mt-2 flex w-full items-center justify-center gap-1.5 rounded-md border border-zinc-200 py-1.5 text-[10px] font-medium text-zinc-600 transition-colors disabled:opacity-70"
+              >
+                <RefreshCw className="size-3" /> Tạo biến thể khác
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <div className={PAGE_CARD}>
+            <p className="mb-2 text-[9px] font-medium text-zinc-500">
+              LỊCH SỬ GẦN ĐÂY
+            </p>
+            <div className="flex flex-col gap-2">
+              {AI_PROMPT_HISTORY.map((h, i) => (
+                <div
+                  key={i}
+                  className="border-b border-zinc-100 pb-1.5 last:border-0"
+                >
+                  <p className="line-clamp-2 text-[9px] font-medium text-zinc-700">
+                    {h.title}
+                  </p>
+                  <p className="text-[8px] text-zinc-400">{h.time}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const PUBLISH_CHANNELS = [
+  {
+    key: "instagram",
+    icon: InstagramGlyph,
+    label: "Instagram",
+    color: "#f05a28",
+    scheduled: "Hôm nay 09:00",
+  },
+  {
+    key: "tiktok",
+    icon: TikTokGlyph,
+    label: "TikTok",
+    color: "#ff6b35",
+    scheduled: "Hôm nay 12:00",
+  },
+  {
+    key: "facebook",
+    icon: FacebookGlyph,
+    label: "Facebook",
+    color: "#ea4a1c",
+    scheduled: "Mai 15:00",
+  },
+  {
+    key: "linkedin",
+    icon: LinkedInGlyph,
+    label: "LinkedIn",
+    color: "#f0783a",
+    scheduled: "T4 tuần sau",
+  },
+] as const;
+
+const PUBLISH_QUEUE = [
+  {
+    title: "Launch Heineken mới — Hè 2026",
+    channel: "instagram" as CalChannel,
+  },
+  { title: "Review Nike Air Max — trend hè", channel: "tiktok" as CalChannel },
+  { title: "Case study BrandHub x VCorp", channel: "linkedin" as CalChannel },
+  { title: "Banner khuyến mãi T8 giảm 30%", channel: "facebook" as CalChannel },
+  {
+    title: "Reel: 3 mẹo tăng reach hữu cơ",
+    channel: "instagram" as CalChannel,
+  },
+  { title: "Livestream Q&A với founder", channel: "facebook" as CalChannel },
+];
+
+type WsStatus = "active" | "review" | "paused";
+
+interface Workspace {
+  id: number;
+  name: string;
+  client: string;
+  color: string;
+  members: number;
+  docs: number;
+  lastActive: string;
+  status: WsStatus;
+  starred: boolean;
+  tags: string[];
+}
+
+const WORKSPACES: Workspace[] = [
+  {
+    id: 1,
+    name: "VCorp Media",
+    client: "Nguyễn Văn Minh",
+    color: "#f05a28",
+    members: 5,
+    docs: 142,
+    lastActive: "2 giờ trước",
+    status: "active",
+    starred: true,
+    tags: ["Social", "Blog"],
+  },
+  {
+    id: 2,
+    name: "TechStart Vietnam",
+    client: "Lê Thị Hoa",
+    color: "#ff6b35",
+    members: 3,
+    docs: 78,
+    lastActive: "5 giờ trước",
+    status: "active",
+    starred: false,
+    tags: ["Tech", "SaaS"],
+  },
+  {
+    id: 3,
+    name: "Fashion Brand X",
+    client: "Trần Minh Đức",
+    color: "#ea4a1c",
+    members: 4,
+    docs: 95,
+    lastActive: "Hôm qua",
+    status: "active",
+    starred: true,
+    tags: ["Fashion", "E-comm"],
+  },
+  {
+    id: 4,
+    name: "Green Energy Co.",
+    client: "Phạm Thu Hằng",
+    color: "#f0783a",
+    members: 2,
+    docs: 34,
+    lastActive: "3 ngày trước",
+    status: "review",
+    starred: false,
+    tags: ["Energy", "B2B"],
+  },
+  {
+    id: 5,
+    name: "EduLearn Platform",
+    client: "Hoàng Thị Mai",
+    color: "#e85d20",
+    members: 6,
+    docs: 201,
+    lastActive: "1 tuần trước",
+    status: "paused",
+    starred: false,
+    tags: ["EdTech"],
+  },
+  {
+    id: 6,
+    name: "F&B Chain Hà Nội",
+    client: "Vũ Quang Hùng",
+    color: "#ff7a3d",
+    members: 2,
+    docs: 22,
+    lastActive: "2 tuần trước",
+    status: "active",
+    starred: false,
+    tags: ["F&B", "Local"],
+  },
+];
+
+const WS_STATUS: Record<
+  WsStatus,
+  { label: string; dot: string; bg: string; text: string }
+> = {
+  active: {
+    label: "Đang hoạt động",
+    dot: "bg-emerald-400",
+    bg: "bg-emerald-50",
+    text: "text-emerald-600",
+  },
+  review: {
+    label: "Đang duyệt",
+    dot: "bg-brand-orange",
+    bg: "bg-brand-orange/10",
+    text: "text-brand-orange",
+  },
+  paused: {
+    label: "Tạm dừng",
+    dot: "bg-zinc-300",
+    bg: "bg-zinc-100",
+    text: "text-zinc-500",
+  },
+};
+
+const WORKSPACE_MEMBERS = [
+  { name: "Minh Nguyễn", role: "Content Director" },
+  { name: "Thu Hà", role: "Account Manager" },
+  { name: "Quang", role: "Creator" },
+  { name: "Linh", role: "Designer" },
+  { name: "Đức", role: "Creator" },
+  { name: "Trang", role: "Editor" },
+];
+
+const WORKSPACE_CONTENT = [
+  {
+    title: "Launch mùa hè 2026",
+    channel: "instagram" as CalChannel,
+    status: "Đã đăng",
+  },
+  {
+    title: "Reel trend TikTok",
+    channel: "tiktok" as CalChannel,
+    status: "Chờ duyệt",
+  },
+  {
+    title: "Case study khách hàng",
+    channel: "linkedin" as CalChannel,
+    status: "Bản nháp",
+  },
+  {
+    title: "Banner khuyến mãi T8",
+    channel: "facebook" as CalChannel,
+    status: "Đã đăng",
+  },
+  {
+    title: "Story quà tặng",
+    channel: "instagram" as CalChannel,
+    status: "Chờ duyệt",
+  },
+  {
+    title: "Email marketing",
+    channel: "linkedin" as CalChannel,
+    status: "Bản nháp",
+  },
+];
+
+function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<"all" | "starred" | "active">("all");
+  const [list, setList] = useState<Workspace[]>(WORKSPACES);
+  const [selected, setSelected] = useState<number | null>(null);
+
+  const toggleStar = (id: number) =>
+    setList((prev) =>
+      prev.map((w) => (w.id === id ? { ...w, starred: !w.starred } : w)),
+    );
+
+  const create = () =>
+    setList((prev) => [
+      {
+        id: Date.now(),
+        name: "Dự án mới",
+        client: "Khách hàng mới",
+        color: "#f05a28",
+        members: 1,
+        docs: 0,
+        lastActive: "vừa tạo",
+        status: "active",
+        starred: false,
+        tags: ["Mới"],
+      },
+      ...prev,
+    ]);
+
+  const filtered = list.filter((w) => {
+    const m =
+      w.name.toLowerCase().includes(query.toLowerCase()) ||
+      w.client.toLowerCase().includes(query.toLowerCase());
+    if (!m) return false;
+    if (filter === "starred") return w.starred;
+    if (filter === "active") return w.status === "active";
+    return true;
+  });
+
+  const filters = [
+    { key: "all", label: "Tất cả", icon: FolderOpen },
+    { key: "starred", label: "Đánh dấu", icon: Star },
+    { key: "active", label: "Đang hoạt động", icon: Clock },
+  ] as const;
+
+  const selectedWs =
+    selected != null ? list.find((w) => w.id === selected) : undefined;
+  if (selectedWs) {
+    return <WorkspaceDetail ws={selectedWs} onBack={() => setSelected(null)} />;
+  }
+
+  return (
+    <div className="flex min-h-full flex-col gap-3 p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-semibold text-zinc-900">Workspace</p>
+          <p className="text-[11px] text-zinc-500">
+            {list.length} workspaces ·{" "}
+            {list.filter((w) => w.status === "active").length} đang hoạt động
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={create}
+          className="bg-brand-orange flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold text-white transition-transform active:scale-95"
+        >
+          <Plus className="size-3" /> Tạo
+        </button>
+      </div>
+
+      <div className="focus-within:border-brand-orange/50 focus-within:ring-brand-orange/30 flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 shadow-sm transition-colors focus-within:ring-1">
+        <Search className="size-3 shrink-0 text-zinc-500" />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Tìm workspace hoặc khách hàng..."
+          className="w-full bg-transparent text-[10px] text-zinc-700 outline-none placeholder:text-zinc-500"
+        />
+      </div>
+
+      <div className="flex gap-1">
+        {filters.map((f) => (
+          <button
+            key={f.key}
+            type="button"
+            onClick={() => setFilter(f.key)}
+            className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[9px] font-medium transition-colors ${
+              filter === f.key
+                ? "border-brand-orange/40 bg-brand-orange/10 text-brand-orange"
+                : "hover:border-brand-orange/40 hover:text-brand-orange border-zinc-200 bg-white text-zinc-500"
+            }`}
+          >
+            <f.icon className="size-2.5" /> {f.label}
+          </button>
+        ))}
+      </div>
+
+      <div
+        className={`grid gap-2 ${
+          device === "iphone" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
+        }`}
+      >
+        {filtered.map((w) => {
+          const s = WS_STATUS[w.status];
+          return (
+            <div
+              key={w.id}
+              onClick={() => setSelected(w.id)}
+              className="hover:border-brand-orange/40 cursor-pointer overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm transition-colors"
+            >
+              <div className="h-1 w-full" style={{ background: w.color }} />
+              <div className="flex items-start justify-between p-2">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="flex size-7 items-center justify-center rounded-md"
+                    style={{ background: w.color + "20" }}
+                  >
+                    <span
+                      style={{ color: w.color }}
+                      className="text-[11px] font-bold"
+                    >
+                      {w.name.charAt(0)}
+                    </span>
+                  </div>
+                  <div className="leading-tight">
+                    <p className="text-[11px] font-semibold text-zinc-900">
+                      {w.name}
+                    </p>
+                    <p className="text-[9px] text-zinc-500">{w.client}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-0.5">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleStar(w.id);
+                    }}
+                  >
+                    <Star
+                      className={`size-3 transition-colors ${
+                        w.starred
+                          ? "fill-amber-400 text-amber-400"
+                          : "text-zinc-300 hover:text-amber-400"
+                      }`}
+                    />
+                  </button>
+                  <MoreHorizontal className="size-3 text-zinc-400" />
+                </div>
+              </div>
+              <div className="px-2 pb-2">
+                <div className="mb-2 flex flex-wrap gap-1">
+                  {w.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded bg-zinc-100 px-1.5 py-0.5 text-[8px] font-medium text-zinc-500"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5 text-[9px] text-zinc-500">
+                    <span className="flex items-center gap-1">
+                      <Users2 className="size-2.5" /> {w.members}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Files className="size-2.5" /> {w.docs}
+                    </span>
+                  </div>
+                  <span
+                    className={`flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[8px] font-medium ${s.bg} ${s.text}`}
+                  >
+                    <span className={`size-1 rounded-full ${s.dot}`} />{" "}
+                    {s.label}
+                  </span>
+                </div>
+                <p className="mt-1.5 flex items-center gap-1 text-[9px] text-zinc-400">
+                  <Clock className="size-2.5" /> Hoạt động {w.lastActive}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+        {filtered.length === 0 && (
+          <p className="col-span-full py-6 text-center text-[10px] text-zinc-400">
+            Không tìm thấy workspace
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function WorkspaceDetail({
+  ws,
+  onBack,
+}: {
+  ws: Workspace;
+  onBack: () => void;
+}) {
+  const s = WS_STATUS[ws.status];
+  const members = WORKSPACE_MEMBERS.slice(
+    0,
+    Math.min(ws.members, WORKSPACE_MEMBERS.length),
+  );
+  const offset = (ws.id * 2) % WORKSPACE_CONTENT.length;
+  const content = [
+    ...WORKSPACE_CONTENT.slice(offset),
+    ...WORKSPACE_CONTENT.slice(0, offset),
+  ].slice(0, 4);
+
+  return (
+    <div className="flex min-h-full flex-col gap-3 p-4">
+      <button
+        type="button"
+        onClick={onBack}
+        className="hover:text-brand-orange flex items-center gap-1 text-[10px] font-medium text-zinc-500 transition-colors"
+      >
+        <ArrowLeft className="size-3" /> Tất cả workspace
+      </button>
+
+      <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm">
+        <div className="h-1 w-full" style={{ background: ws.color }} />
+        <div className="flex items-center justify-between p-2">
+          <div className="flex items-center gap-2">
+            <div
+              className="flex size-8 items-center justify-center rounded-md"
+              style={{ background: ws.color + "20" }}
+            >
+              <span style={{ color: ws.color }} className="text-xs font-bold">
+                {ws.name.charAt(0)}
+              </span>
+            </div>
+            <div>
+              <p className="text-[12px] font-semibold text-zinc-900">
+                {ws.name}
+              </p>
+              <p className="text-[9px] text-zinc-500">{ws.client}</p>
+            </div>
+          </div>
+          <span
+            className={`flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[8px] font-medium ${s.bg} ${s.text}`}
+          >
+            <span className={`size-1 rounded-full ${s.dot}`} /> {s.label}
+          </span>
+        </div>
+        <div className="flex items-center gap-2.5 border-t border-zinc-100 px-2 py-1.5 text-[9px] text-zinc-500">
+          <span className="flex items-center gap-1">
+            <Users2 className="size-2.5" /> {ws.members} thành viên
+          </span>
+          <span className="flex items-center gap-1">
+            <Files className="size-2.5" /> {ws.docs} nội dung
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="size-2.5" /> {ws.lastActive}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
+          <p className="mb-2 text-[9px] font-medium text-zinc-500">
+            THÀNH VIÊN
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {members.map((m) => (
+              <div key={m.name} className="flex items-center gap-2">
+                <div
+                  className="flex size-6 items-center justify-center rounded-full text-[8px] font-bold"
+                  style={{ background: ws.color + "20", color: ws.color }}
+                >
+                  {m.name
+                    .split(" ")
+                    .map((p) => p.charAt(0))
+                    .join("")
+                    .slice(0, 2)}
+                </div>
+                <span className="flex-1 text-[10px] text-zinc-700">
+                  {m.name}
+                </span>
+                <span className="text-[8px] text-zinc-400">{m.role}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <p className="text-[9px] font-medium text-zinc-500">
+            NỘI DUNG GẦN ĐÂY
+          </p>
+          {content.map((c) => {
+            const cfg = CALENDAR_CHANNEL_CONFIG[c.channel];
+            return (
+              <div
+                key={c.title}
+                className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 shadow-sm"
+              >
+                <cfg.icon
+                  className="size-3 shrink-0"
+                  style={{ color: cfg.color }}
+                />
+                <p className="min-w-0 flex-1 truncate text-[10px] text-zinc-700">
+                  {c.title}
+                </p>
+                <span className="rounded-full bg-zinc-100 px-1.5 py-0.5 text-[8px] text-zinc-500">
+                  {c.status}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PublishPage() {
+  const [pushing, setPushing] = useState(false);
+  const [pushedCount, setPushedCount] = useState(0);
+
+  const handlePushAll = () => {
+    setPushing(true);
+    setPushedCount(0);
+    PUBLISH_CHANNELS.forEach((_, i) => {
+      setTimeout(
+        () => {
+          setPushedCount((c) => c + 1);
+          if (i === PUBLISH_CHANNELS.length - 1) setPushing(false);
+        },
+        500 * (i + 1),
+      );
+    });
+  };
+
+  return (
+    <div className="flex min-h-full flex-col gap-3 p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-semibold text-zinc-900">Xuất bản</p>
+          <p className="text-[11px] text-zinc-500">
+            Đẩy nội dung lên các kênh đã kết nối
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        {PUBLISH_CHANNELS.map((ch, i) => {
+          const pushed = pushedCount > i;
+          return (
+            <div
+              key={ch.key}
+              className="flex items-center gap-2.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 shadow-sm"
+            >
+              <ch.icon
+                className="size-4 shrink-0"
+                style={{ color: ch.color }}
+              />
+              <span className="flex-1 text-[11px] font-medium text-zinc-800">
+                {ch.label}
+              </span>
+              <span className="shrink-0 text-[8px] text-zinc-400">
+                {ch.scheduled}
+              </span>
+              {pushing && !pushed ? (
+                <Loader2 className="size-3.5 shrink-0 animate-spin text-zinc-400" />
+              ) : pushed ? (
+                <CheckCircle2 className="size-3.5 shrink-0 text-emerald-500" />
+              ) : (
+                <span className="shrink-0 text-[9px] text-zinc-400">
+                  Sẵn sàng
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className={PAGE_CARD}>
+        <p className="mb-2 text-[10px] font-medium text-zinc-500">
+          HÀNG CHỜ ĐẨY ({PUBLISH_QUEUE.length})
+        </p>
+        <div className="flex flex-col gap-1.5">
+          {PUBLISH_QUEUE.map((q, i) => {
+            const cfg = CALENDAR_CHANNEL_CONFIG[q.channel];
+            return (
+              <div key={i} className="flex items-center gap-2">
+                <cfg.icon
+                  className="size-3 shrink-0"
+                  style={{ color: cfg.color }}
+                />
+                <p className="truncate text-[10px] font-medium text-zinc-800">
+                  {q.title}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={handlePushAll}
+        disabled={pushing}
+        className="bg-brand-orange mt-auto flex items-center justify-center gap-1.5 rounded-md py-2 text-[11px] font-semibold text-white transition-transform active:scale-95 disabled:opacity-70"
+      >
+        {pushing ? (
+          <>
+            <Loader2 className="size-3.5 animate-spin" /> Đang đẩy bài...
+          </>
+        ) : (
+          <>
+            <Upload className="size-3.5" /> Đẩy lên tất cả kênh
+          </>
+        )}
+      </button>
+    </div>
+  );
+}
+
+/* ── Icon mạng xã hội — glyph SVG inline (lucide-react bản hiện tại đã
+   bỏ các icon brand Facebook/Instagram/Linkedin). ─────────────────── */
+
+function InstagramGlyph({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className}>
+      <rect
+        x="2.5"
+        y="2.5"
+        width="19"
+        height="19"
+        rx="5"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="2" />
+      <circle cx="17.6" cy="6.4" r="1.2" fill="currentColor" />
+    </svg>
+  );
+}
+
+function TikTokGlyph({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M16.5 2h-3.2v13.4a3 3 0 1 1-2.2-2.9V9.2a6.2 6.2 0 1 0 5.4 6.1V8.6a7.7 7.7 0 0 0 4.5 1.4V6.8a4.4 4.4 0 0 1-4.5-4.4V2z" />
+    </svg>
+  );
+}
+
+function FacebookGlyph({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V8c0-.9.25-1.5 1.55-1.5H16.7V3.7C16.4 3.66 15.4 3.57 14.2 3.57c-2.4 0-4 1.47-4 4.16v2.16H7.5V13H10.2v8h3.3z" />
+    </svg>
+  );
+}
+
+function LinkedInGlyph({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M6.94 8.5H3.56V20h3.38V8.5zM5.25 3.5a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92zM20.5 20h-3.37v-5.9c0-1.4-.03-3.2-1.95-3.2-1.96 0-2.26 1.53-2.26 3.1V20H9.55V8.5h3.24v1.57h.05c.45-.85 1.55-1.75 3.2-1.75 3.43 0 4.06 2.25 4.06 5.18V20z" />
+    </svg>
   );
 }
 

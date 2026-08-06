@@ -79,7 +79,7 @@ export function FacebookPost({
 
       {/* Link preview card */}
       <div className="mx-4 mt-3 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50">
-        <div className="flex h-44 items-center justify-center overflow-hidden bg-linear-to-br from-blue-50 via-orange-50 to-blue-100 dark:from-blue-950/20 dark:via-orange-950/20 dark:to-blue-950/40">
+        <div className="from-brand-orange relative flex h-44 items-center justify-center overflow-hidden bg-linear-to-br via-orange-600 to-blue-700">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -88,11 +88,12 @@ export function FacebookPost({
               loading="lazy"
             />
           ) : (
-            <div className="text-center">
-              <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-white/70 shadow-sm backdrop-blur dark:bg-zinc-800/70">
-                <ThumbsUp className="size-5 text-blue-500" />
+            <div className="relative text-center">
+              <div className="absolute top-1/2 left-1/2 size-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-3xl" />
+              <div className="relative mx-auto mb-2 flex size-14 items-center justify-center rounded-2xl bg-white/15 shadow-lg ring-1 ring-white/30 backdrop-blur">
+                <span className="text-xl font-black text-white">B</span>
               </div>
-              <p className="text-[11px] font-medium text-zinc-400 dark:text-zinc-500">
+              <p className="relative text-sm font-bold text-white">
                 brandhub.vn
               </p>
             </div>
