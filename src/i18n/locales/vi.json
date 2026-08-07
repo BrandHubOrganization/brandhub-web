@@ -1,0 +1,141 @@
+{
+  "auth": {
+    "common": { "email": "Email", "password": "Mật khẩu", "backToLogin": "Quay lại đăng nhập", "and": "và" },
+    "brand": {
+      "tagline": "PLAN · CREATE · SCHEDULE · PUBLISH · GROW",
+      "testimonials": [
+        {
+          "quote": "\"Chúng tôi rút ngắn thời gian tạo nội dung từ 3 ngày xuống còn 2 giờ. BrandHub đã thay đổi hoàn toàn quy trình làm việc của team.\"",
+          "name": "Minh Nguyễn", "role": "Content Director, VCorp Media", "initials": "MN"
+        },
+        {
+          "quote": "\"Duyệt bài đa kênh giờ chỉ mất 1 cú click. Team mình tăng 240% output mà không cần thêm người.\"",
+          "name": "Thu Hà", "role": "Account Manager, TechStart Vietnam", "initials": "TH"
+        },
+        {
+          "quote": "\"AI gợi ý content theo trend chuẩn không ngờ. Tiết kiệm cho agency tôi ~$3,200/tháng chi phí công cụ.\"",
+          "name": "Đức Anh", "role": "COO, NextGen Media Group", "initials": "ĐA"
+        }
+      ],
+      "statUsers": "Người dùng", "statContent": "Nội dung tạo", "statUptime": "Uptime"
+    },
+    "login": {
+      "welcomeBack": "Chào mừng trở lại", "subtitle": "Đăng nhập để tiếp tục công việc của bạn", "tab": "Đăng nhập",
+      "submit": "Đăng nhập", "forgotPassword": "Quên mật khẩu?", "orContinue": "hoặc tiếp tục với",
+      "agreeToTerms": "Bằng cách tiếp tục, bạn đồng ý với", "termsOfService": "Điều khoản dịch vụ", "privacyPolicy": "Chính sách bảo mật",
+      "successToast": "Đăng nhập thành công!", "errorDefault": "Đăng nhập thất bại. Vui lòng thử lại."
+    },
+    "register": {
+      "heading": "Tạo tài khoản", "subtitle": "Bắt đầu miễn phí, không cần thẻ tín dụng", "tab": "Đăng ký",
+      "fullName": "Họ và tên", "confirmPassword": "Xác nhận mật khẩu", "submit": "Tạo tài khoản",
+      "haveAccount": "Đã có tài khoản?", "successToast": "Đăng ký thành công! Vui lòng xác thực email.",
+      "errorDefault": "Đăng ký thất bại. Vui lòng thử lại."
+    },
+    "verifyOtp": {
+      "heading": "Xác thực email", "subtitle": "Chúng tôi đã gửi mã OTP 6 chữ số đến", "submit": "Xác thực",
+      "noCode": "Chưa nhận được mã?", "resend": "Gửi lại", "incompleteOtp": "Vui lòng nhập đủ 6 chữ số OTP",
+      "successToast": "Xác thực thành công! Vui lòng đăng nhập.", "errorDefault": "Mã OTP không hợp lệ. Vui lòng thử lại.",
+      "resendSuccess": "Đã gửi lại mã OTP. Vui lòng kiểm tra email.", "resendError": "Gửi lại OTP thất bại. Vui lòng thử lại."
+    },
+    "forgotPassword": {
+      "heading": "Quên mật khẩu?", "subtitle": "Nhập email của bạn, chúng tôi sẽ gửi link đặt lại mật khẩu", "submit": "Gửi link đặt lại mật khẩu",
+      "successHeading": "Kiểm tra email của bạn", "successMessage": "Chúng tôi đã gửi link đặt lại mật khẩu đến {{email}}. Vui lòng kiểm tra hộp thư (bao gồm cả spam) và làm theo hướng dẫn.",
+      "successToast": "Email đặt lại mật khẩu đã được gửi!", "errorDefault": "Gửi yêu cầu thất bại. Vui lòng thử lại."
+    },
+    "resetPassword": {
+      "heading": "Đặt lại mật khẩu", "subtitle": "Nhập mật khẩu mới cho tài khoản của bạn", "newPassword": "Mật khẩu mới",
+      "submit": "Đặt lại mật khẩu", "successToast": "Đặt lại mật khẩu thành công! Vui lòng đăng nhập.",
+      "errorDefault": "Đặt lại mật khẩu thất bại. Token có thể đã hết hạn."
+    },
+    "validation": {
+      "fullNameRequired": "Vui lòng nhập họ và tên", "emailRequired": "Vui lòng nhập email", "emailInvalid": "Email không hợp lệ",
+      "passwordRequired": "Vui lòng nhập mật khẩu", "newPasswordRequired": "Vui lòng nhập mật khẩu mới",
+      "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự", "passwordNeedDigit": "Mật khẩu phải chứa ít nhất 1 chữ số",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp"
+    },
+    "landing": {
+      "heroTitle": "Nền tảng quản lý nội dung thương hiệu toàn diện",
+      "heroSubtitle": "Lên kế hoạch, sáng tạo, lên lịch và xuất bản nội dung nhanh hơn. BrandHub giúp team của bạn hợp tác hiệu quả trên một nền tảng duy nhất.",
+      "ctaStart": "Bắt đầu miễn phí", "ctaLogin": "Đăng nhập", "trustedBy": "Được tin dùng bởi hơn 50,000+ thương hiệu và agency",
+      "features": {
+        "planning": { "title": "Lập kế hoạch nội dung", "description": "Lên lịch và quản lý chiến dịch nội dung trên nhiều kênh một cách trực quan." },
+        "creation": { "title": "Sáng tạo với AI", "description": "Tạo nội dung nhanh hơn với trợ lý AI, giữ vững chất lượng và phong cách thương hiệu." },
+        "publishing": { "title": "Xuất bản đa kênh", "description": "Đăng bài tự động lên nhiều nền tảng mạng xã hội cùng một lúc." },
+        "analytics": { "title": "Phân tích hiệu quả", "description": "Theo dõi hiệu suất nội dung theo thời gian thực, tối ưu chiến lược dựa trên dữ liệu." }
+      }
+    },
+    "passwordStrength": {
+      "label": "Độ mạnh mật khẩu:", "veryWeak": "Quá yếu", "weak": "Yếu", "medium": "Trung bình",
+      "good": "Khá", "strong": "Mạnh", "veryStrong": "Rất mạnh", "hint": " — cần ít nhất 8 ký tự và 1 chữ số"
+    }
+  },
+  "landing": {
+    "trustedBy": "Được tin dùng bởi 50,000+ thương hiệu & agency toàn cầu",
+    "stats": { "contents": "Nội dung được quản lý", "brands": "Thương hiệu & agency", "platforms": "Nền tảng tích hợp", "uptime": "Cam kết uptime" },
+    "features": {
+      "title": "Tất cả trong một nền tảng", "subtitle": "Từ lập kế hoạch đến xuất bản, BrandHub tối ưu toàn bộ workflow nội dung của bạn.",
+      "items": {
+        "planning": { "title": "Lập kế hoạch nội dung", "desc": "Lịch campaign trực quan với kéo thả, lên lịch trên tất cả các kênh." },
+        "creation": { "title": "Sáng tạo với AI", "desc": "Tạo và tinh chỉnh nội dung với AI hiểu giọng điệu thương hiệu và nguyên tắc của bạn." },
+        "publishing": { "title": "Xuất bản đa kênh", "desc": "Tự động đăng lên Facebook, Instagram, TikTok, LinkedIn và nhiều nền tảng khác cùng lúc." },
+        "analytics": { "title": "Phân tích hiệu suất", "desc": "Dashboard thời gian thực theo dõi tương tác, phạm vi tiếp cận và ROI trên mọi chiến dịch." },
+        "collab": { "title": "Cộng tác nhóm", "desc": "Workflow phê duyệt tích hợp, bình luận và phân quyền theo vai trò cho teamwork liền mạch." },
+        "automation": { "title": "Tự động hóa thông minh", "desc": "Tự động lên lịch giờ đăng tối ưu, tạo biến thể hàng loạt và thiết lập chiến dịch định kỳ." }
+      }
+    },
+    "howItWorks": {
+      "title": "Cách hoạt động", "subtitle": "Bốn bước đơn giản để thay đổi workflow nội dung của bạn.",
+      "steps": {
+        "plan": { "title": "Lên kế hoạch", "desc": "Vạch ra chiến dịch trên lịch trực quan. Giao việc, đặt deadline và đồng bộ team trên một lộ trình." },
+        "create": { "title": "Sáng tạo với AI", "desc": "Dùng công cụ AI để soạn thảo, tinh chỉnh và bản địa hóa nội dung. Giữ nhất quán thương hiệu với style guide và template." },
+        "schedule": { "title": "Lên lịch & duyệt", "desc": "Xếp hàng bài đăng trên tất cả nền tảng. Workflow phê duyệt tích hợp đảm bảo mọi nội dung được kiểm duyệt đúng cách." },
+        "publish": { "title": "Xuất bản & phân tích", "desc": "Tự động đăng vào giờ tối ưu. Theo dõi hiệu suất thời gian thực và tối ưu chiến lược với dữ liệu thực tế." }
+      }
+    },
+    "templates": {
+      "title": "Bắt đầu với template có sẵn", "subtitle": "Khởi động chiến dịch nhanh chóng với template được thiết kế chuyên nghiệp cho mọi nền tảng.",
+      "items": {
+        "social": { "title": "Bộ Social Media", "desc": "Template có sẵn cho bài đăng và story Instagram, Facebook, TikTok, LinkedIn." },
+        "blog": { "title": "Blog & Bài viết", "desc": "Template nội dung chuẩn SEO với công thức headline và hướng dẫn cấu trúc." },
+        "email": { "title": "Chiến dịch Email", "desc": "Template newsletter, drip sequence và email quảng cáo sẵn sàng tùy chỉnh." }
+      }
+    },
+    "testimonials": {
+      "title": "Được yêu thích bởi các team content toàn cầu", "subtitle": "Xem khách hàng nói gì về BrandHub.",
+      "items": {
+        "minh": { "quote": "Chúng tôi rút ngắn thời gian content từ 3 ngày xuống 2 giờ. BrandHub thay đổi hoàn toàn cách team vận hành." },
+        "sarah": { "quote": "Sau 6 tháng dùng BrandHub, output content tăng 240%. Công cụ AI thực sự là game changer." },
+        "tuan": { "quote": "Khoản đầu tư tốt nhất cho agency. Quản lý 20+ thương hiệu khách hàng chưa bao giờ mượt mà và có tổ chức như vậy." }
+      }
+    },
+    "pricing": {
+      "title": "Bảng giá đơn giản, minh bạch", "subtitle": "Chọn gói phù hợp với team của bạn. Không phí ẩn.", "mostPopular": "Phổ biến nhất",
+      "plans": {
+        "starter": { "name": "Starter", "price": "Miễn phí", "cta": "Bắt đầu miễn phí", "features": ["1 không gian làm việc", "5 thành viên", "3 kênh mạng xã hội", "Phân tích cơ bản", "100 bài đăng/tháng"] },
+        "pro": { "name": "Pro", "price": "590K ₫", "cta": "Dùng thử miễn phí", "features": ["Không gian làm việc không giới hạn", "Thành viên không giới hạn", "Tất cả kênh mạng xã hội", "Phân tích nâng cao", "Tạo nội dung AI", "Hỗ trợ ưu tiên", "Template tùy chỉnh"] },
+        "enterprise": { "name": "Enterprise", "price": "Tùy chỉnh", "cta": "Liên hệ sales", "features": ["Tất cả tính năng Pro", "Quản lý tài khoản riêng", "Tích hợp tùy chỉnh", "Cam kết SLA", "Tùy chọn on-premise", "SSO & SAML", "Huấn luyện AI riêng"] }
+      }
+    },
+    "faq": {
+      "title": "Câu hỏi thường gặp", "subtitle": "Không tìm thấy câu trả lời? Liên hệ đội hỗ trợ của chúng tôi.",
+      "items": {
+        "q1": { "q": "Có gói miễn phí không?", "a": "Có! Gói Starter của chúng tôi miễn phí trọn đời. Bạn nhận được 1 không gian làm việc, 5 thành viên, 3 kênh mạng xã hội và 100 bài đăng mỗi tháng. Không cần thẻ tín dụng." },
+        "q2": { "q": "BrandHub hỗ trợ những nền tảng mạng xã hội nào?", "a": "BrandHub hỗ trợ tất cả nền tảng lớn bao gồm Facebook, Instagram, TikTok, LinkedIn, Twitter/X, YouTube, Pinterest và Threads. Chúng tôi liên tục thêm tích hợp mới dựa trên phản hồi người dùng." },
+        "q3": { "q": "Tính năng tạo nội dung AI hoạt động thế nào?", "a": "AI của chúng tôi được huấn luyện trên best practice marketing và thích nghi với giọng điệu thương hiệu của bạn. Bạn cung cấp brief hoặc chủ đề, AI sẽ tạo bản nháp, biến thể và phiên bản bản địa hóa. Bạn luôn có quyền phê duyệt cuối cùng trước khi đăng." },
+        "q4": { "q": "Tôi có thể cộng tác với team và khách hàng không?", "a": "Hoàn toàn được. BrandHub có workflow phê duyệt tích hợp, phân quyền theo vai trò và luồng bình luận. Khách hàng có thể xem và phê duyệt nội dung mà không cần đăng nhập vào không gian làm việc chính của bạn." },
+        "q5": { "q": "Dùng thử Pro hoạt động thế nào?", "a": "Bắt đầu dùng thử 14 ngày gói Pro — không cần thẻ tín dụng. Bạn có toàn quyền truy cập tất cả tính năng Pro. Chúng tôi sẽ nhắc bạn trước khi thời gian dùng thử kết thúc và bạn có thể hạ xuống gói Starter bất cứ lúc nào." }
+      }
+    },
+    "cta": { "title": "Sẵn sàng thay đổi workflow nội dung?", "subtitle": "Tham gia cùng 50,000+ thương hiệu và agency đã dùng BrandHub. Bắt đầu miễn phí, không cần thẻ tín dụng.", "start": "Bắt đầu miễn phí", "login": "Đăng nhập" },
+    "footer": {
+      "tagline": "Nền tảng quản lý nội dung thương hiệu toàn diện. Lập kế hoạch, sáng tạo, lên lịch, xuất bản và phát triển — tất cả trong một.",
+      "columns": { "product": "Sản phẩm", "resources": "Tài nguyên", "company": "Công ty" },
+      "links": {
+        "product": ["Tính năng", "Bảng giá", "Tích hợp", "Cập nhật", "API"],
+        "resources": ["Trung tâm trợ giúp", "Blog", "Template", "Cộng đồng", "Hướng dẫn"],
+        "company": ["Giới thiệu", "Tuyển dụng", "Liên hệ", "Bảo mật", "Điều khoản"]
+      },
+      "copyright": "© {{year}} BrandHub. Đã đăng ký bản quyền."
+    }
+  }
+}

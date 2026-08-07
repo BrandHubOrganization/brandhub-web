@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Workspace } from "@/types/workspace";
+import type { Workspace } from "@/types/workspace";
 import { api } from "@/lib/axios";
 
 export interface WorkspaceState {

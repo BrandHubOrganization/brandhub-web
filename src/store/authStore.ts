@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { User, UserRole } from "@/types/user";
+import type { User, UserRole } from "@/types/user";
 
 export type { User, UserRole };
 
@@ -50,6 +50,6 @@ export const useAuthStore = create<AuthState>()(
           });
       },
     }),
-    { name: "brandhub-auth" }
-  )
+    { name: "brandhub-auth" },
+  ),
 );
