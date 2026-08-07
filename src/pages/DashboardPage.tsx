@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { CinematicHero } from "@/components/landing/cinematic/CinematicHero";
@@ -16,7 +16,7 @@ import { Footer } from "@/components/landing/Footer";
 import { useAuthStore } from "@/store/authStore";
 
 export function DashboardPage() {
-
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated, user, clearAuth } = useAuthStore();
 
