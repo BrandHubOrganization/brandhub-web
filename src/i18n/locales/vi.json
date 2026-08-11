@@ -69,6 +69,10 @@
       "good": "Khá", "strong": "Mạnh", "veryStrong": "Rất mạnh", "hint": " — cần ít nhất 8 ký tự và 1 chữ số"
     }
   },
+  "common": {
+    "switchLanguage": "Đổi ngôn ngữ",
+    "toggleTheme": "Đổi giao diện sáng/tối"
+  },
   "landing": {
     "trustedBy": "Được tin dùng bởi 50,000+ thương hiệu & agency toàn cầu",
     "stats": { "contents": "Nội dung được quản lý", "brands": "Thương hiệu & agency", "platforms": "Nền tảng tích hợp", "uptime": "Cam kết uptime" },

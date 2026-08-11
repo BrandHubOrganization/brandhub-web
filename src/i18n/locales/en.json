@@ -69,6 +69,10 @@
       "good": "Good", "strong": "Strong", "veryStrong": "Very strong", "hint": " — needs at least 8 characters and 1 digit"
     }
   },
+  "common": {
+    "switchLanguage": "Switch language",
+    "toggleTheme": "Toggle light/dark theme"
+  },
   "landing": {
     "trustedBy": "Trusted by 50,000+ brands & agencies worldwide",
     "stats": { "contents": "Content pieces managed", "brands": "Brands & agencies", "platforms": "Platform integrations", "uptime": "Uptime guarantee" },

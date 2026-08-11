@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { CinematicHero } from "@/components/landing/cinematic/CinematicHero";
+import { LandingControls } from "@/components/landing/LandingControls";
 import { LogoWall } from "@/components/landing/LogoWall";
 import { StatsCounter } from "@/components/landing/StatsCounter";
 import { Features } from "@/components/landing/Features";
@@ -107,6 +108,7 @@ export function DashboardPage() {
   // ── Unauthenticated: Full Landing Page ──
   return (
     <div style={{ fontFamily: "var(--font-sans)" }}>
+      <LandingControls />
       <CinematicHero />
       <LogoWall />
       <Features />
