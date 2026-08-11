@@ -233,41 +233,32 @@ export function CinematicHero() {
         "<0.2",
       );
 
-    // Lock the timeline forward-only once it reaches the end: scrub
-    // naturally reverses the timeline when the user scrolls back up
-    // within the pinned 3500px range, which is what let the big post
-    // cards (and the mini-posts under them) rewind and reappear. This
-    // clamps progress at 1 so further scroll inside the pin range can't
-    // play it backwards — WITHOUT touching the ScrollTrigger's pin state.
-    // (An earlier attempt called scrollTrigger.disable()/kill() here to
-    // "freeze" the section — that stops the pin from tracking scroll
-    // position at all, so scrolling further inside the still-3500px-tall
-    // spacer left the section pinned at a stale spot and the whole hero,
-    // mini-posts included, visually jumped to the wrong place in the
-    // page. Leaving the ScrollTrigger alone and only clamping progress
-    // keeps the pin correctly synced with real scroll position.)
+    // Forward-only lock + pin release on complete.
+    //
+    // The intro must play exactly once: scrolling back up inside the 3500px
+    // pin range must NOT reverse it (posts flying back, MacBook fading out).
+    // So once the timeline hits progress 1, clamp it there (lock).
+    //
+    // The 3500px pin-spacer is also what creates the dead scroll-up zone
+    // (hero frozen, page doesn't move for a whole pin-length while the lock
+    // keeps progress at 1). Killing the ScrollTrigger on complete collapses
+    // that spacer back to the hero's own height, so scrolling back up returns
+    // to normal flow — no dead gap, no reverse. delayedCall defers the kill
+    // out of this onComplete's own update stack — killing a pinned
+    // ScrollTrigger from inside its own callback otherwise leaves the spacer
+    // in place.
     let locked = false;
     tl.eventCallback("onComplete", () => {
       locked = true;
-      // Idle motion: each corner card drifts up/down gently forever, out
-      // of phase with the others so the 4 corners don't bob in lockstep
-      // (which would read as fake/mechanical rather than "alive").
-      const idleTargets = [
-        { sel: ".mini-post-ig", delay: 0 },
-        { sel: ".mini-post-tt", delay: 0.4 },
-        { sel: ".mini-post-fb", delay: 0.8 },
-        { sel: ".mini-post-li", delay: 1.2 },
-      ];
-      idleTargets.forEach(({ sel, delay }) => {
-        gsap.to(sel, {
-          y: "+=6",
-          duration: 2.2 + Math.random() * 0.6,
-          delay,
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut",
+      const st = tl.scrollTrigger;
+      if (st)
+        gsap.delayedCall(0.15, () => {
+          st.kill();
+          ScrollTrigger.refresh();
+          // Killing + refresh can settle the timeline back to progress 0
+          // (intro state). Force it to the end so the MacBook demo stays up.
+          tl.progress(1);
         });
-      });
     });
     tl.eventCallback("onUpdate", () => {
       if (locked && tl.progress() < 1) tl.progress(1);
@@ -495,258 +486,294 @@ function BrandHubDashboardBg({
     <PublishPage key="publish" />,
     <WorkspacePage key="workspace" device={device} />,
   ];
+  // Fit-scale demo (MacBook/iPhone) vào chiều cao hero khả dụng để không bao
+  // giờ đè lên vùng CTA. CTA reserve bottom-44 (~176px). demoRef.offsetHeight
+  // là layout box (không bị scale) nên ổn định để đo.
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const demoRef = useRef<HTMLDivElement>(null);
+  const [fitScale, setFitScale] = useState(1);
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const demo = demoRef.current;
+    if (!wrap || !demo) return;
+    const measure = () => {
+      const availH = wrap.clientHeight - 8;
+      const demoH = demo.offsetHeight;
+      if (demoH > 0) setFitScale(Math.min(1, availH / demoH));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(wrap);
+    ro.observe(demo);
+    return () => ro.disconnect();
+  }, [device]);
+
   return (
-    <div className="brandhub-bg absolute inset-0 z-0 flex items-center justify-center opacity-0">
-      {device === "iphone" ? (
-        <IPhoneFrame
-          page={page}
-          setPage={setPage}
-          clock={clock}
-          pages={pages}
-        />
-      ) : (
-        <div className="w-full max-w-6xl px-4 xl:max-w-5xl">
-          {/* Vỏ MacBook Air M5 — chất kim loại: chassis nhôm + bezel màn đen + tai thỏ */}
-          <div className="relative rounded-[1.7rem] bg-linear-to-b from-zinc-400 via-zinc-300 to-zinc-500 p-[3px] shadow-2xl shadow-zinc-900/50">
-            <div className="rounded-[1.4rem] bg-linear-to-b from-zinc-200 via-zinc-400 to-zinc-500 p-[3px]">
-              <div className="relative rounded-[1.2rem] bg-zinc-900 p-2 sm:p-2.5">
-                {/* Bezel đen màn → toàn bộ là desktop macOS Sonoma: wallpaper + menubar
+    <div
+      ref={wrapRef}
+      className="brandhub-bg absolute inset-x-0 top-0 bottom-44 z-0 flex items-center justify-center opacity-0"
+    >
+      {/* Fit-scale demo device (MacBook/iPhone): height cố định theo nội dung
+          (~520px), không co theo width. Trên viewport thấp, 520px + vùng CTA
+          (bottom-44) vượt chiều cao hero → demo tràn đè lên nút CTA. Giải
+          pháp: đo vùng khả dụng, scale demo xuống vừa khít, giữ căn giữa.
+          ResizeObserver tự cân lại khi cửa sổ đổi size / đổi device. */}
+      <div
+        ref={demoRef}
+        className="origin-center will-change-transform"
+        style={{ transform: `scale(${fitScale})` }}
+      >
+        {device === "iphone" ? (
+          <IPhoneFrame
+            page={page}
+            setPage={setPage}
+            clock={clock}
+            pages={pages}
+          />
+        ) : (
+          <div className="w-full max-w-6xl px-4 xl:max-w-5xl">
+            {/* Vỏ MacBook Air M5 — chất kim loại: chassis nhôm + bezel màn đen + tai thỏ */}
+            <div className="relative rounded-[1.7rem] bg-linear-to-b from-zinc-400 via-zinc-300 to-zinc-500 p-[3px] shadow-2xl shadow-zinc-900/50">
+              <div className="rounded-[1.4rem] bg-linear-to-b from-zinc-200 via-zinc-400 to-zinc-500 p-[3px]">
+                <div className="relative rounded-[1.2rem] bg-zinc-900 p-2 sm:p-2.5">
+                  {/* Bezel đen màn → toàn bộ là desktop macOS Sonoma: wallpaper + menubar
                   + Safari window nổi + Dock. */}
-                <div className="relative overflow-hidden rounded-lg bg-black pt-9 pb-10 sm:pt-10 sm:pb-12">
-                  {/* Wallpaper Sonoma — bản sao ci gradient rực rỡ: indigo → tím → magenta
+                  <div className="relative overflow-hidden rounded-lg bg-black pt-9 pb-10 sm:pt-10 sm:pb-12">
+                    {/* Wallpaper Sonoma — bản sao ci gradient rực rỡ: indigo → tím → magenta
                     → cam → vàng, kèm vài radial bloom mềm đúng tông default Sonoma */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(180deg,#241454 0%,#59299e 22%,#a63aa5 42%,#f0576b 62%,#ff8e3a 82%,#ffd166 100%)",
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_18%_22%,#7fd4ff_0%,transparent_55%),radial-gradient(70%_55%_at_85%_50%,#ff9e5e_0%,transparent_60%),radial-gradient(80%_70%_at_50%_100%,#fff6d8_10%,transparent_68%)] opacity-45 mix-blend-screen" />
-                  <div className="absolute inset-0 opacity-40">
-                    <div className="absolute inset-0 bg-linear-to-b from-white/15 via-transparent to-black/25" />
-                  </div>
-                  {/* Lớp tinhtinh: sóng sơn trôi nhẹ */}
-                  <div className="absolute inset-0 bg-[radial-gradient(60%_80%_at_80%_90%,#0ea5e9_0%,transparent_60%),radial-gradient(50%_60%_at_30%_70%,#f472b6_0%,transparent_60%)] opacity-30 mix-blend-overlay" />
-
-                  {/* Tai thỏ: pill hẹp giữa, xuyên qua menubar xuống wallpaper */}
-                  <div className="absolute top-0 left-1/2 z-20 h-6 w-36 -translate-x-1/2 rounded-b-xl bg-black shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
-                    <div className="absolute top-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[#0b1d3a]" />
-                    <div className="absolute top-[3px] right-5 size-0.5 rounded-full bg-emerald-500/70" />
-                  </div>
-
-                  {/* Menubar: dải glass mờ phủ lên wallpaper — macOS Sonoma */}
-                  <div className="absolute inset-x-0 top-0 z-10 flex h-6 items-center justify-between bg-white/25 px-3.5 backdrop-blur-md">
-                    <div className="flex items-center gap-2.5 pr-6">
-                      <Apple className="size-3 text-zinc-900" />
-                      <span className="text-[10.5px] font-bold text-zinc-900">
-                        BrandHub
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
-                        Tệp
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
-                        Sửa
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 md:block">
-                        Hiển thị
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
-                        Cửa sổ
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
-                        Trợ giúp
-                      </span>
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(180deg,#241454 0%,#59299e 22%,#a63aa5 42%,#f0576b 62%,#ff8e3a 82%,#ffd166 100%)",
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_18%_22%,#7fd4ff_0%,transparent_55%),radial-gradient(70%_55%_at_85%_50%,#ff9e5e_0%,transparent_60%),radial-gradient(80%_70%_at_50%_100%,#fff6d8_10%,transparent_68%)] opacity-45 mix-blend-screen" />
+                    <div className="absolute inset-0 opacity-40">
+                      <div className="absolute inset-0 bg-linear-to-b from-white/15 via-transparent to-black/25" />
                     </div>
-                    <div className="flex items-center gap-2.5 pl-6">
-                      <Search className="size-2.5 text-zinc-800" />
-                      <Wifi className="size-3 text-zinc-800" />
-                      <BatteryFull className="size-3.5 text-zinc-800" />
-                      <span className="text-[10.5px] font-semibold text-zinc-900">
-                        {clock}
-                      </span>
-                    </div>
-                  </div>
+                    {/* Lớp tinhtinh: sóng sơn trôi nhẹ */}
+                    <div className="absolute inset-0 bg-[radial-gradient(60%_80%_at_80%_90%,#0ea5e9_0%,transparent_60%),radial-gradient(50%_60%_at_30%_70%,#f472b6_0%,transparent_60%)] opacity-30 mix-blend-overlay" />
 
-                  {/* Cửa sổ Safari nổi trên desktop — dashboard tương tác */}
-                  <div className="relative z-30 mx-3 mb-3 overflow-hidden rounded-xl bg-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] ring-1 ring-black/15 sm:mx-4">
-                    {/* Thanh tiêu đề: 3 nút traffic-light */}
-                    <div className="flex items-center gap-3 border-b border-zinc-200 bg-zinc-50/80 px-4 py-2.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="size-3 rounded-full bg-[#ff5f57]" />
-                        <span className="size-3 rounded-full bg-[#febc2e]" />
-                        <span className="size-3 rounded-full bg-[#28c840]" />
-                      </div>
-                      <div className="ml-2 hidden items-center gap-1 sm:flex">
-                        <ArrowLeft className="size-3.5 text-zinc-500" />
-                        <ArrowRight className="size-3 text-zinc-400" />
-                        <RefreshCw className="size-3 text-zinc-400" />
-                      </div>
-                      {/* Thanh địa chỉ centered */}
-                      <div className="mx-auto flex max-w-md flex-1 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1 shadow-sm">
-                        <Compass className="size-3 text-zinc-400" />
-                        <span className="flex-1 truncate text-center text-[11px] font-medium tracking-tight text-zinc-700">
-                          brandhub.app/dashboard
+                    {/* Tai thỏ: pill hẹp giữa, xuyên qua menubar xuống wallpaper */}
+                    <div className="absolute top-0 left-1/2 z-20 h-6 w-36 -translate-x-1/2 rounded-b-xl bg-black shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+                      <div className="absolute top-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[#0b1d3a]" />
+                      <div className="absolute top-[3px] right-5 size-0.5 rounded-full bg-emerald-500/70" />
+                    </div>
+
+                    {/* Menubar: dải glass mờ phủ lên wallpaper — macOS Sonoma */}
+                    <div className="absolute inset-x-0 top-0 z-10 flex h-6 items-center justify-between bg-white/25 px-3.5 backdrop-blur-md">
+                      <div className="flex items-center gap-2.5 pr-6">
+                        <Apple className="size-3 text-zinc-900" />
+                        <span className="text-[10.5px] font-bold text-zinc-900">
+                          BrandHub
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
+                          Tệp
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
+                          Sửa
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 md:block">
+                          Hiển thị
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
+                          Cửa sổ
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
+                          Trợ giúp
                         </span>
                       </div>
-                      <div className="flex items-center gap-2.5">
-                        <Smartphone className="size-3.5 text-zinc-500" />
-                        <Monitor className="size-3.5 text-zinc-500" />
-                        <div className="relative flex items-center gap-1.5">
-                          <div className="size-5 rounded-full bg-linear-to-br from-orange-400 to-orange-600" />
-                          <button
-                            type="button"
-                            onClick={() => setNotifOpen((o) => !o)}
-                            className="relative flex cursor-pointer items-center"
-                            aria-expanded={notifOpen}
-                          >
-                            <Bell className="size-3 text-zinc-500" />
-                            <span className="absolute -top-1 -right-1 size-1.5 rounded-full bg-red-500" />
-                          </button>
-                          {notifOpen && (
-                            <>
-                              <div
-                                className="fixed inset-0 z-40"
-                                onClick={() => setNotifOpen(false)}
-                              />
-                              <div className="absolute top-6 right-0 z-50 w-52 rounded-lg border border-zinc-200 bg-white p-1.5 shadow-xl">
-                                <p className="px-2 py-1 text-[10px] font-semibold text-zinc-700">
-                                  Thông báo
-                                </p>
-                                <div className="flex flex-col">
-                                  {NOTIFICATIONS.map((n) => (
-                                    <div
-                                      key={n.title}
-                                      className="flex items-start gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-50"
-                                    >
-                                      <NotifIcon kind={n.icon} />
-                                      <div className="min-w-0">
-                                        <p className="line-clamp-2 text-[10px] leading-tight text-zinc-700">
-                                          {n.title}
-                                        </p>
-                                        <p className="text-[8px] text-zinc-400">
-                                          {n.time}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </>
-                          )}
-                        </div>
+                      <div className="flex items-center gap-2.5 pl-6">
+                        <Search className="size-2.5 text-zinc-800" />
+                        <Wifi className="size-3 text-zinc-800" />
+                        <BatteryFull className="size-3.5 text-zinc-800" />
+                        <span className="text-[10.5px] font-semibold text-zinc-900">
+                          {clock}
+                        </span>
                       </div>
                     </div>
 
-                    {/* Body: sidebar + nội dung chuyển trang */}
-                    <div className="flex">
-                      <div className="hidden w-44 shrink-0 border-r border-zinc-200 bg-zinc-50/40 p-3 sm:block">
-                        <div className="mb-3 flex items-center gap-2 px-1">
-                          <div className="bg-brand-orange flex size-5 items-center justify-center rounded-md text-[10px] font-bold text-white">
-                            B
-                          </div>
-                          <span className="text-xs font-semibold text-zinc-900">
-                            BrandHub
+                    {/* Cửa sổ Safari nổi trên desktop — dashboard tương tác */}
+                    <div className="relative z-30 mx-3 mb-3 overflow-hidden rounded-xl bg-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] ring-1 ring-black/15 sm:mx-4">
+                      {/* Thanh tiêu đề: 3 nút traffic-light */}
+                      <div className="flex items-center gap-3 border-b border-zinc-200 bg-zinc-50/80 px-4 py-2.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="size-3 rounded-full bg-[#ff5f57]" />
+                          <span className="size-3 rounded-full bg-[#febc2e]" />
+                          <span className="size-3 rounded-full bg-[#28c840]" />
+                        </div>
+                        <div className="ml-2 hidden items-center gap-1 sm:flex">
+                          <ArrowLeft className="size-3.5 text-zinc-500" />
+                          <ArrowRight className="size-3 text-zinc-400" />
+                          <RefreshCw className="size-3 text-zinc-400" />
+                        </div>
+                        {/* Thanh địa chỉ centered */}
+                        <div className="mx-auto flex max-w-md flex-1 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1 shadow-sm">
+                          <Compass className="size-3 text-zinc-400" />
+                          <span className="flex-1 truncate text-center text-[11px] font-medium tracking-tight text-zinc-700">
+                            brandhub.app/dashboard
                           </span>
                         </div>
-                        {NAV_ITEMS.map((item) => {
-                          const activeNav = page === item.pageIndex;
-                          return (
-                            <div
-                              key={item.label}
-                              onClick={() => setPage(item.pageIndex)}
-                              className={`mb-1 flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors ${
-                                activeNav
-                                  ? "bg-brand-orange/10 text-brand-orange font-medium"
-                                  : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
-                              }`}
+                        <div className="flex items-center gap-2.5">
+                          <Smartphone className="size-3.5 text-zinc-500" />
+                          <Monitor className="size-3.5 text-zinc-500" />
+                          <div className="relative flex items-center gap-1.5">
+                            <div className="size-5 rounded-full bg-linear-to-br from-orange-400 to-orange-600" />
+                            <button
+                              type="button"
+                              onClick={() => setNotifOpen((o) => !o)}
+                              className="relative flex cursor-pointer items-center"
+                              aria-expanded={notifOpen}
                             >
-                              <item.icon className="size-3.5" />
-                              {item.label}
-                            </div>
-                          );
-                        })}
+                              <Bell className="size-3 text-zinc-500" />
+                              <span className="absolute -top-1 -right-1 size-1.5 rounded-full bg-red-500" />
+                            </button>
+                            {notifOpen && (
+                              <>
+                                <div
+                                  className="fixed inset-0 z-40"
+                                  onClick={() => setNotifOpen(false)}
+                                />
+                                <div className="absolute top-6 right-0 z-50 w-52 rounded-lg border border-zinc-200 bg-white p-1.5 shadow-xl">
+                                  <p className="px-2 py-1 text-[10px] font-semibold text-zinc-700">
+                                    Thông báo
+                                  </p>
+                                  <div className="flex flex-col">
+                                    {NOTIFICATIONS.map((n) => (
+                                      <div
+                                        key={n.title}
+                                        className="flex items-start gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-50"
+                                      >
+                                        <NotifIcon kind={n.icon} />
+                                        <div className="min-w-0">
+                                          <p className="line-clamp-2 text-[10px] leading-tight text-zinc-700">
+                                            {n.title}
+                                          </p>
+                                          <p className="text-[8px] text-zinc-400">
+                                            {n.time}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      {/* Trang active: key thay đổi theo index → remount, GSAP chạy lại animation chuyển trang */}
-                      <div className="relative h-85 flex-1 overflow-y-auto">
-                        <div key={page} className="page-enter min-h-full">
-                          {pages[page]}
+
+                      {/* Body: sidebar + nội dung chuyển trang */}
+                      <div className="flex">
+                        <div className="hidden w-44 shrink-0 border-r border-zinc-200 bg-zinc-50/40 p-3 sm:block">
+                          <div className="mb-3 flex items-center gap-2 px-1">
+                            <div className="bg-brand-orange flex size-5 items-center justify-center rounded-md text-[10px] font-bold text-white">
+                              B
+                            </div>
+                            <span className="text-xs font-semibold text-zinc-900">
+                              BrandHub
+                            </span>
+                          </div>
+                          {NAV_ITEMS.map((item) => {
+                            const activeNav = page === item.pageIndex;
+                            return (
+                              <div
+                                key={item.label}
+                                onClick={() => setPage(item.pageIndex)}
+                                className={`mb-1 flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors ${
+                                  activeNav
+                                    ? "bg-brand-orange/10 text-brand-orange font-medium"
+                                    : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+                                }`}
+                              >
+                                <item.icon className="size-3.5" />
+                                {item.label}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {/* Trang active: key thay đổi theo index → remount, GSAP chạy lại animation chuyển trang */}
+                        <div className="relative h-85 flex-1 overflow-y-auto">
+                          <div key={page} className="page-enter min-h-full">
+                            {pages[page]}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Dock — dải glass nổi cuối màn hình. Left: BrandHub (app đang chạy)
+                    {/* Dock — dải glass nổi cuối màn hình. Left: BrandHub (app đang chạy)
                       + bộ icon app chuẩn Apple: Finder, Launchpad, Safari, Messages, Mail,
                       Maps, Photos, Calendar, Notes, Music. Divider. Right: Downloads + Trash. */}
-                  <div className="absolute inset-x-0 bottom-0.5 z-30 flex items-center justify-center">
-                    <div className="flex items-end gap-1.5 rounded-2xl rounded-b-xl bg-black/25 px-2 py-1.5 ring-1 ring-white/20 backdrop-blur-md">
-                      {/* BrandHub đang chạy — logo thương hiệu thay chỗ Mail/Facetime */}
-                      <div className="relative flex size-5 items-center justify-center rounded-[22%] bg-linear-to-tr from-orange-500 to-orange-300 text-[9px] font-bold text-white shadow">
-                        B
-                        <span className="absolute -bottom-1 left-1/2 size-[3px] -translate-x-1/2 rounded-full bg-black/70" />
-                      </div>
-                      {/* Finder */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#23c6ff] to-[#0a7be0] shadow">
-                        <FaceGlyph />
-                      </div>
-                      {/* Launchpad */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#79849c] to-[#3d4657] shadow">
-                        <LaunchpadGlyph />
-                      </div>
-                      {/* Safari */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
-                        <SafariGlyph />
-                      </div>
-                      {/* Messages */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#3be86b] to-[#14a83a] shadow">
-                        <MessagesGlyph />
-                      </div>
-                      {/* Mail */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#49b0ff] to-[#1475e8] shadow">
-                        <MailGlyph />
-                      </div>
-                      {/* Maps */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#fdfefe] to-[#d9e2ec] shadow">
-                        <MapsGlyph />
-                      </div>
-                      {/* Photos */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
-                        <PhotosGlyph />
-                      </div>
-                      {/* Calendar */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
-                        <CalendarGlyph />
-                      </div>
-                      {/* Notes */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#f7f7f7] to-[#e6e6e6] shadow">
-                        <NotesGlyph />
-                      </div>
-                      {/* Music */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#ff5d8f] to-[#e11d60] shadow">
-                        <MusicGlyph />
-                      </div>
-                      {/* Divider */}
-                      <div className="mx-0.5 h-6 w-px bg-white/25" />
-                      {/* Downloads folder */}
-                      <div className="flex size-5 items-center justify-center shadow">
-                        <DownloadsGlyph />
-                      </div>
-                      {/* Trash */}
-                      <div className="flex size-5 items-center justify-center rounded-[20%] bg-[#c9cfd6] shadow ring-1 ring-white/40">
-                        <TrashGlyph />
+                    <div className="absolute inset-x-0 bottom-0.5 z-30 flex items-center justify-center">
+                      <div className="flex items-end gap-1.5 rounded-2xl rounded-b-xl bg-black/25 px-2 py-1.5 ring-1 ring-white/20 backdrop-blur-md">
+                        {/* BrandHub đang chạy — logo thương hiệu thay chỗ Mail/Facetime */}
+                        <div className="relative flex size-5 items-center justify-center rounded-[22%] bg-linear-to-tr from-orange-500 to-orange-300 text-[9px] font-bold text-white shadow">
+                          B
+                          <span className="absolute -bottom-1 left-1/2 size-[3px] -translate-x-1/2 rounded-full bg-black/70" />
+                        </div>
+                        {/* Finder */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#23c6ff] to-[#0a7be0] shadow">
+                          <FaceGlyph />
+                        </div>
+                        {/* Launchpad */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#79849c] to-[#3d4657] shadow">
+                          <LaunchpadGlyph />
+                        </div>
+                        {/* Safari */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
+                          <SafariGlyph />
+                        </div>
+                        {/* Messages */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#3be86b] to-[#14a83a] shadow">
+                          <MessagesGlyph />
+                        </div>
+                        {/* Mail */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#49b0ff] to-[#1475e8] shadow">
+                          <MailGlyph />
+                        </div>
+                        {/* Maps */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#fdfefe] to-[#d9e2ec] shadow">
+                          <MapsGlyph />
+                        </div>
+                        {/* Photos */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
+                          <PhotosGlyph />
+                        </div>
+                        {/* Calendar */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
+                          <CalendarGlyph />
+                        </div>
+                        {/* Notes */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#f7f7f7] to-[#e6e6e6] shadow">
+                          <NotesGlyph />
+                        </div>
+                        {/* Music */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#ff5d8f] to-[#e11d60] shadow">
+                          <MusicGlyph />
+                        </div>
+                        {/* Divider */}
+                        <div className="mx-0.5 h-6 w-px bg-white/25" />
+                        {/* Downloads folder */}
+                        <div className="flex size-5 items-center justify-center shadow">
+                          <DownloadsGlyph />
+                        </div>
+                        {/* Trash */}
+                        <div className="flex size-5 items-center justify-center rounded-[20%] bg-[#c9cfd6] shadow ring-1 ring-white/40">
+                          <TrashGlyph />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Dưới chân: hõm mở nắp laptop */}
-                  <div className="absolute bottom-0 left-1/2 h-1.5 w-[26%] -translate-x-1/2 rounded-full bg-zinc-300/70" />
+                    {/* Dưới chân: hõm mở nắp laptop */}
+                    <div className="absolute bottom-0 left-1/2 h-1.5 w-[26%] -translate-x-1/2 rounded-full bg-zinc-300/70" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -3215,9 +3242,15 @@ function PublishPage() {
 /* ── Icon mạng xã hội — glyph SVG inline (lucide-react bản hiện tại đã
    bỏ các icon brand Facebook/Instagram/Linkedin). ─────────────────── */
 
-function InstagramGlyph({ className = "size-4" }: { className?: string }) {
+function InstagramGlyph({
+  className = "size-4",
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       <rect
         x="2.5"
         y="2.5"
@@ -3233,25 +3266,58 @@ function InstagramGlyph({ className = "size-4" }: { className?: string }) {
   );
 }
 
-function TikTokGlyph({ className = "size-4" }: { className?: string }) {
+function TikTokGlyph({
+  className = "size-4",
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      style={style}
+    >
       <path d="M16.5 2h-3.2v13.4a3 3 0 1 1-2.2-2.9V9.2a6.2 6.2 0 1 0 5.4 6.1V8.6a7.7 7.7 0 0 0 4.5 1.4V6.8a4.4 4.4 0 0 1-4.5-4.4V2z" />
     </svg>
   );
 }
 
-function FacebookGlyph({ className = "size-4" }: { className?: string }) {
+function FacebookGlyph({
+  className = "size-4",
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      style={style}
+    >
       <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V8c0-.9.25-1.5 1.55-1.5H16.7V3.7C16.4 3.66 15.4 3.57 14.2 3.57c-2.4 0-4 1.47-4 4.16v2.16H7.5V13H10.2v8h3.3z" />
     </svg>
   );
 }
 
-function LinkedInGlyph({ className = "size-4" }: { className?: string }) {
+function LinkedInGlyph({
+  className = "size-4",
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      style={style}
+    >
       <path d="M6.94 8.5H3.56V20h3.38V8.5zM5.25 3.5a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92zM20.5 20h-3.37v-5.9c0-1.4-.03-3.2-1.95-3.2-1.96 0-2.26 1.53-2.26 3.1V20H9.55V8.5h3.24v1.57h.05c.45-.85 1.55-1.75 3.2-1.75 3.43 0 4.06 2.25 4.06 5.18V20z" />
     </svg>
   );

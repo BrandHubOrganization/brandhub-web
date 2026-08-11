@@ -258,7 +258,7 @@ function MiniTikTok() {
   const rotation = useFeedRotation(tiktokFeed, { intervalMs: 5500 });
   return (
     <div
-      className={`${CARD} mini-post-tt top-4 right-4 w-[280px] origin-top-right scale-[0.52] opacity-95`}
+      className={`${CARD} mini-post-tt top-20 right-4 w-[280px] origin-top-right scale-[0.52] opacity-95`}
     >
       <SlideStack
         sliding={rotation.phase === "sliding"}

@@ -8,13 +8,25 @@ import {
   Users,
   Zap,
   MousePointerClick,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
 
+interface Feature {
+  key: string;
+  icon: LucideIcon;
+  pageIndex: number;
+  span: string;
+  tint: string;
+  /** Chỉ một số card dùng kích thước icon/box riêng; còn lại dùng fallback trong JSX. */
+  iconSize?: string;
+  boxSize?: string;
+}
+
 // pageIndex matches CinematicHero's NAV_ITEMS order (Overview, Content,
 // Schedule, AI Studio, Analytics, Publish, Workspace).
-const FEATURES = [
+const FEATURES: Feature[] = [
   {
     key: "planning",
     icon: CalendarDays,
@@ -59,7 +71,7 @@ const FEATURES = [
     span: "lg:col-span-4",
     tint: "bg-zinc-50/50 dark:bg-zinc-900/50",
   },
-] as const;
+];
 
 export function Features() {
   const { t } = useTranslation();

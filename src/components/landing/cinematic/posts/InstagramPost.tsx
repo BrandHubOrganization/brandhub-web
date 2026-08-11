@@ -9,6 +9,8 @@ import {
 import { cn } from "@/lib/utils";
 
 interface InstagramPostProps {
+  /** Class bổ sung — dùng để định vị/scale từ ngoài (post-ig, GSAP). */
+  className?: string;
   caption?: string;
   likes?: ReactNode;
   comments?: ReactNode;
