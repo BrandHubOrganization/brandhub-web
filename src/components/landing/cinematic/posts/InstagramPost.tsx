@@ -37,7 +37,7 @@ export function InstagramPost({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-[340px] overflow-hidden rounded-xl border border-zinc-200/70 bg-white shadow-xl shadow-zinc-200/50 dark:border-zinc-700/50 dark:bg-zinc-900 dark:shadow-zinc-950/60",
+        "mx-auto w-full max-w-55 overflow-hidden rounded-xl border border-zinc-200/70 bg-white shadow-xl shadow-zinc-200/50 sm:max-w-85 dark:border-zinc-700/50 dark:bg-zinc-900 dark:shadow-zinc-950/60",
         className,
       )}
     >
