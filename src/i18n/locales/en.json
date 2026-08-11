@@ -69,11 +69,16 @@
       "good": "Good", "strong": "Strong", "veryStrong": "Very strong", "hint": " — needs at least 8 characters and 1 digit"
     }
   },
+  "common": {
+    "switchLanguage": "Switch language",
+    "toggleTheme": "Toggle light/dark theme"
+  },
   "landing": {
     "trustedBy": "Trusted by 50,000+ brands & agencies worldwide",
     "stats": { "contents": "Content pieces managed", "brands": "Brands & agencies", "platforms": "Platform integrations", "uptime": "Uptime guarantee" },
     "features": {
       "title": "Everything you need in one platform", "subtitle": "From planning to publishing, BrandHub streamlines your entire content workflow.",
+      "demoLabel": "See it in the demo", "demoAction": "View {{feature}} in the live MacBook demo above",
       "items": {
         "planning": { "title": "Content Planning", "desc": "Visual campaign calendar with drag-and-drop scheduling across all channels." },
         "creation": { "title": "AI-Powered Creation", "desc": "Generate and refine content with AI that understands your brand voice and guidelines." },

@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { CinematicHero } from "@/components/landing/cinematic/CinematicHero";
+import { LandingControls } from "@/components/landing/LandingControls";
 import { LogoWall } from "@/components/landing/LogoWall";
 import { StatsCounter } from "@/components/landing/StatsCounter";
 import { Features } from "@/components/landing/Features";
@@ -16,7 +16,6 @@ import { Footer } from "@/components/landing/Footer";
 import { useAuthStore } from "@/store/authStore";
 
 export function DashboardPage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated, user, clearAuth } = useAuthStore();
 
@@ -107,6 +106,7 @@ export function DashboardPage() {
   // ── Unauthenticated: Full Landing Page ──
   return (
     <div style={{ fontFamily: "var(--font-sans)" }}>
+      <LandingControls />
       <CinematicHero />
       <LogoWall />
       <Features />

@@ -41,7 +41,7 @@ export function TikTokPost({
   return (
     <div
       className={cn(
-        "relative mx-auto w-full max-w-[280px] overflow-hidden rounded-2xl bg-black shadow-2xl shadow-zinc-800/30 dark:shadow-black/60",
+        "relative mx-auto w-full max-w-45 overflow-hidden rounded-2xl bg-black shadow-2xl shadow-zinc-800/30 sm:max-w-70 dark:shadow-black/60",
         className,
       )}
       style={{ aspectRatio: "9/16" }}

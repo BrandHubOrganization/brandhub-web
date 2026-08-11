@@ -45,7 +45,7 @@ export function FacebookPost({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-[430px] overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg shadow-zinc-200/60 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-zinc-950/70",
+        "mx-auto w-full max-w-55 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg shadow-zinc-200/60 sm:max-w-107.5 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-zinc-950/70",
         className,
       )}
     >

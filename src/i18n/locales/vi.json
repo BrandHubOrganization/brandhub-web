@@ -69,11 +69,16 @@
       "good": "Khá", "strong": "Mạnh", "veryStrong": "Rất mạnh", "hint": " — cần ít nhất 8 ký tự và 1 chữ số"
     }
   },
+  "common": {
+    "switchLanguage": "Đổi ngôn ngữ",
+    "toggleTheme": "Đổi giao diện sáng/tối"
+  },
   "landing": {
     "trustedBy": "Được tin dùng bởi 50,000+ thương hiệu & agency toàn cầu",
     "stats": { "contents": "Nội dung được quản lý", "brands": "Thương hiệu & agency", "platforms": "Nền tảng tích hợp", "uptime": "Cam kết uptime" },
     "features": {
       "title": "Tất cả trong một nền tảng", "subtitle": "Từ lập kế hoạch đến xuất bản, BrandHub tối ưu toàn bộ workflow nội dung của bạn.",
+      "demoLabel": "Xem demo thực tế", "demoAction": "Xem {{feature}} trong demo MacBook trực tiếp phía trên",
       "items": {
         "planning": { "title": "Lập kế hoạch nội dung", "desc": "Lịch campaign trực quan với kéo thả, lên lịch trên tất cả các kênh." },
         "creation": { "title": "Sáng tạo với AI", "desc": "Tạo và tinh chỉnh nội dung với AI hiểu giọng điệu thương hiệu và nguyên tắc của bạn." },

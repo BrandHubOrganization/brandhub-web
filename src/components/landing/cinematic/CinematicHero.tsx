@@ -53,6 +53,7 @@ import { FacebookPost } from "./posts/FacebookPost";
 import { LinkedInPost } from "./posts/LinkedInPost";
 import { MiniPosts } from "./MiniPosts";
 import { LightRays } from "@/components/landing/LightRays";
+import { useLandingDemoStore } from "@/store/landingDemoStore";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -79,6 +80,7 @@ export function CinematicHero() {
 
     const tl = gsap.timeline({
       scrollTrigger: {
+        id: "hero-pin",
         trigger: sectionRef.current,
         start: "top top",
         end: "+=3500",
@@ -231,41 +233,32 @@ export function CinematicHero() {
         "<0.2",
       );
 
-    // Lock the timeline forward-only once it reaches the end: scrub
-    // naturally reverses the timeline when the user scrolls back up
-    // within the pinned 3500px range, which is what let the big post
-    // cards (and the mini-posts under them) rewind and reappear. This
-    // clamps progress at 1 so further scroll inside the pin range can't
-    // play it backwards — WITHOUT touching the ScrollTrigger's pin state.
-    // (An earlier attempt called scrollTrigger.disable()/kill() here to
-    // "freeze" the section — that stops the pin from tracking scroll
-    // position at all, so scrolling further inside the still-3500px-tall
-    // spacer left the section pinned at a stale spot and the whole hero,
-    // mini-posts included, visually jumped to the wrong place in the
-    // page. Leaving the ScrollTrigger alone and only clamping progress
-    // keeps the pin correctly synced with real scroll position.)
+    // Forward-only lock + pin release on complete.
+    //
+    // The intro must play exactly once: scrolling back up inside the 3500px
+    // pin range must NOT reverse it (posts flying back, MacBook fading out).
+    // So once the timeline hits progress 1, clamp it there (lock).
+    //
+    // The 3500px pin-spacer is also what creates the dead scroll-up zone
+    // (hero frozen, page doesn't move for a whole pin-length while the lock
+    // keeps progress at 1). Killing the ScrollTrigger on complete collapses
+    // that spacer back to the hero's own height, so scrolling back up returns
+    // to normal flow — no dead gap, no reverse. delayedCall defers the kill
+    // out of this onComplete's own update stack — killing a pinned
+    // ScrollTrigger from inside its own callback otherwise leaves the spacer
+    // in place.
     let locked = false;
     tl.eventCallback("onComplete", () => {
       locked = true;
-      // Idle motion: each corner card drifts up/down gently forever, out
-      // of phase with the others so the 4 corners don't bob in lockstep
-      // (which would read as fake/mechanical rather than "alive").
-      const idleTargets = [
-        { sel: ".mini-post-ig", delay: 0 },
-        { sel: ".mini-post-tt", delay: 0.4 },
-        { sel: ".mini-post-fb", delay: 0.8 },
-        { sel: ".mini-post-li", delay: 1.2 },
-      ];
-      idleTargets.forEach(({ sel, delay }) => {
-        gsap.to(sel, {
-          y: "+=6",
-          duration: 2.2 + Math.random() * 0.6,
-          delay,
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut",
+      const st = tl.scrollTrigger;
+      if (st)
+        gsap.delayedCall(0.15, () => {
+          st.kill();
+          ScrollTrigger.refresh();
+          // Killing + refresh can settle the timeline back to progress 0
+          // (intro state). Force it to the end so the MacBook demo stays up.
+          tl.progress(1);
         });
-      });
     });
     tl.eventCallback("onUpdate", () => {
       if (locked && tl.progress() < 1) tl.progress(1);
@@ -276,7 +269,7 @@ export function CinematicHero() {
     <section
       ref={sectionRef}
       id="hero-cinematic"
-      className="relative h-screen w-full overflow-hidden bg-zinc-950"
+      className="relative min-h-[100dvh] w-full overflow-hidden bg-zinc-950"
     >
       <div
         className="absolute inset-0 z-0"
@@ -301,11 +294,15 @@ export function CinematicHero() {
           distortion={0.03}
         />
       </div>
-      <div className="absolute inset-0 flex flex-col">
-        {/* Stage chính: dashboard MacBook + posts bay + mini-posts 4 góc */}
-        <div className="relative flex-1">
+      <div className="absolute inset-0">
+        {/* Stage chính: dashboard MacBook + posts bay + mini-posts 4 góc.
+            Full inset-0 (không còn flex-1 chia chỗ với CTA) — CTA area giờ
+            absolute overlay bên dưới nên không còn ăn bớt chiều cao stage
+            trên mobile (trước đây cta-overlay dù opacity-0 vẫn chiếm layout
+            height đầy đủ trong flex flow, đẩy stage/post tràn lên khỏi viewport). */}
+        <div className="relative inset-0 h-full">
           {/* Layer 0: BrandHub Dashboard background */}
-          <BrandHubDashboardBg device={device} />
+          <BrandHubDashboardBg device={device} sectionRef={sectionRef} />
 
           {/* Layer 1: Post stack */}
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
@@ -330,8 +327,9 @@ export function CinematicHero() {
           </div>
         </div>
 
-        {/* Vùng dành riêng cho CTA — tách khỏi dashboard nên không đè lên laptop */}
-        <div className="relative z-30 flex flex-col items-center gap-2.5 px-6 pb-5">
+        {/* Vùng dành riêng cho CTA — absolute overlay đáy màn hình, không
+            chiếm chỗ trong layout stage kể cả lúc opacity-0. */}
+        <div className="absolute inset-x-0 bottom-0 z-30 flex flex-col items-center gap-1.5 px-6 pb-3 sm:gap-2.5 sm:pb-5">
           <div className="cta-overlay pointer-events-none flex flex-col items-center gap-3 opacity-0">
             <button
               type="button"
@@ -410,9 +408,38 @@ function NotifIcon({ kind }: { kind: string }) {
   return <AlertCircle className="size-3.5 text-blue-500" />;
 }
 
-function BrandHubDashboardBg({ device }: { device: "macbook" | "iphone" }) {
-  const [page, setPage] = useState(0);
+function BrandHubDashboardBg({
+  device,
+  sectionRef,
+}: {
+  device: "macbook" | "iphone";
+  sectionRef: React.RefObject<HTMLElement | null>;
+}) {
+  const page = useLandingDemoStore((s) => s.activePage);
+  const setPage = useLandingDemoStore((s) => s.setPage);
+  const requestId = useLandingDemoStore((s) => s.requestId);
   const [notifOpen, setNotifOpen] = useState(false);
+
+  // A Feature card requested a specific demo tab (goToPage bumped
+  // requestId; activePage/page is already updated via the store). Scroll
+  // to the END of the hero's 3500px pinned scroll range — NOT
+  // scrollIntoView(), which would only reach the pin's start and force
+  // the user to re-scroll through the whole IG->TT->FB->LI intro before
+  // seeing the MacBook. ScrollTrigger.getById reads the actual pinned
+  // end position (post-layout), matching where the timeline locks at
+  // progress:1.
+  useEffect(() => {
+    if (requestId === 0) return;
+    const trigger = ScrollTrigger.getById("hero-pin");
+    if (trigger) {
+      window.scrollTo({ top: trigger.end, behavior: "smooth" });
+    } else {
+      sectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [requestId, sectionRef]);
   const [clock, setClock] = useState(() =>
     new Date().toLocaleTimeString("en-US", {
       hour: "numeric",
@@ -459,258 +486,294 @@ function BrandHubDashboardBg({ device }: { device: "macbook" | "iphone" }) {
     <PublishPage key="publish" />,
     <WorkspacePage key="workspace" device={device} />,
   ];
+  // Fit-scale demo (MacBook/iPhone) vào chiều cao hero khả dụng để không bao
+  // giờ đè lên vùng CTA. CTA reserve bottom-44 (~176px). demoRef.offsetHeight
+  // là layout box (không bị scale) nên ổn định để đo.
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const demoRef = useRef<HTMLDivElement>(null);
+  const [fitScale, setFitScale] = useState(1);
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const demo = demoRef.current;
+    if (!wrap || !demo) return;
+    const measure = () => {
+      const availH = wrap.clientHeight - 8;
+      const demoH = demo.offsetHeight;
+      if (demoH > 0) setFitScale(Math.min(1, availH / demoH));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(wrap);
+    ro.observe(demo);
+    return () => ro.disconnect();
+  }, [device]);
+
   return (
-    <div className="brandhub-bg absolute inset-0 z-0 flex items-center justify-center opacity-0">
-      {device === "iphone" ? (
-        <IPhoneFrame
-          page={page}
-          setPage={setPage}
-          clock={clock}
-          pages={pages}
-        />
-      ) : (
-        <div className="w-full max-w-6xl px-4 xl:max-w-5xl">
-          {/* Vỏ MacBook Air M5 — chất kim loại: chassis nhôm + bezel màn đen + tai thỏ */}
-          <div className="relative rounded-[1.7rem] bg-linear-to-b from-zinc-400 via-zinc-300 to-zinc-500 p-[3px] shadow-2xl shadow-zinc-900/50">
-            <div className="rounded-[1.4rem] bg-linear-to-b from-zinc-200 via-zinc-400 to-zinc-500 p-[3px]">
-              <div className="relative rounded-[1.2rem] bg-zinc-900 p-2 sm:p-2.5">
-                {/* Bezel đen màn → toàn bộ là desktop macOS Sonoma: wallpaper + menubar
+    <div
+      ref={wrapRef}
+      className="brandhub-bg absolute inset-x-0 top-0 bottom-44 z-0 flex items-center justify-center opacity-0"
+    >
+      {/* Fit-scale demo device (MacBook/iPhone): height cố định theo nội dung
+          (~520px), không co theo width. Trên viewport thấp, 520px + vùng CTA
+          (bottom-44) vượt chiều cao hero → demo tràn đè lên nút CTA. Giải
+          pháp: đo vùng khả dụng, scale demo xuống vừa khít, giữ căn giữa.
+          ResizeObserver tự cân lại khi cửa sổ đổi size / đổi device. */}
+      <div
+        ref={demoRef}
+        className="origin-center will-change-transform"
+        style={{ transform: `scale(${fitScale})` }}
+      >
+        {device === "iphone" ? (
+          <IPhoneFrame
+            page={page}
+            setPage={setPage}
+            clock={clock}
+            pages={pages}
+          />
+        ) : (
+          <div className="w-full max-w-6xl px-4 xl:max-w-5xl">
+            {/* Vỏ MacBook Air M5 — chất kim loại: chassis nhôm + bezel màn đen + tai thỏ */}
+            <div className="relative rounded-[1.7rem] bg-linear-to-b from-zinc-400 via-zinc-300 to-zinc-500 p-[3px] shadow-2xl shadow-zinc-900/50">
+              <div className="rounded-[1.4rem] bg-linear-to-b from-zinc-200 via-zinc-400 to-zinc-500 p-[3px]">
+                <div className="relative rounded-[1.2rem] bg-zinc-900 p-2 sm:p-2.5">
+                  {/* Bezel đen màn → toàn bộ là desktop macOS Sonoma: wallpaper + menubar
                   + Safari window nổi + Dock. */}
-                <div className="relative overflow-hidden rounded-lg bg-black pt-9 pb-10 sm:pt-10 sm:pb-12">
-                  {/* Wallpaper Sonoma — bản sao ci gradient rực rỡ: indigo → tím → magenta
+                  <div className="relative overflow-hidden rounded-lg bg-black pt-9 pb-10 sm:pt-10 sm:pb-12">
+                    {/* Wallpaper Sonoma — bản sao ci gradient rực rỡ: indigo → tím → magenta
                     → cam → vàng, kèm vài radial bloom mềm đúng tông default Sonoma */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(180deg,#241454 0%,#59299e 22%,#a63aa5 42%,#f0576b 62%,#ff8e3a 82%,#ffd166 100%)",
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_18%_22%,#7fd4ff_0%,transparent_55%),radial-gradient(70%_55%_at_85%_50%,#ff9e5e_0%,transparent_60%),radial-gradient(80%_70%_at_50%_100%,#fff6d8_10%,transparent_68%)] opacity-45 mix-blend-screen" />
-                  <div className="absolute inset-0 opacity-40">
-                    <div className="absolute inset-0 bg-linear-to-b from-white/15 via-transparent to-black/25" />
-                  </div>
-                  {/* Lớp tinhtinh: sóng sơn trôi nhẹ */}
-                  <div className="absolute inset-0 bg-[radial-gradient(60%_80%_at_80%_90%,#0ea5e9_0%,transparent_60%),radial-gradient(50%_60%_at_30%_70%,#f472b6_0%,transparent_60%)] opacity-30 mix-blend-overlay" />
-
-                  {/* Tai thỏ: pill hẹp giữa, xuyên qua menubar xuống wallpaper */}
-                  <div className="absolute top-0 left-1/2 z-20 h-6 w-36 -translate-x-1/2 rounded-b-xl bg-black shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
-                    <div className="absolute top-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[#0b1d3a]" />
-                    <div className="absolute top-[3px] right-5 size-0.5 rounded-full bg-emerald-500/70" />
-                  </div>
-
-                  {/* Menubar: dải glass mờ phủ lên wallpaper — macOS Sonoma */}
-                  <div className="absolute inset-x-0 top-0 z-10 flex h-6 items-center justify-between bg-white/25 px-3.5 backdrop-blur-md">
-                    <div className="flex items-center gap-2.5 pr-6">
-                      <Apple className="size-3 text-zinc-900" />
-                      <span className="text-[10.5px] font-bold text-zinc-900">
-                        BrandHub
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
-                        Tệp
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
-                        Sửa
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 md:block">
-                        Hiển thị
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
-                        Cửa sổ
-                      </span>
-                      <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
-                        Trợ giúp
-                      </span>
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(180deg,#241454 0%,#59299e 22%,#a63aa5 42%,#f0576b 62%,#ff8e3a 82%,#ffd166 100%)",
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_18%_22%,#7fd4ff_0%,transparent_55%),radial-gradient(70%_55%_at_85%_50%,#ff9e5e_0%,transparent_60%),radial-gradient(80%_70%_at_50%_100%,#fff6d8_10%,transparent_68%)] opacity-45 mix-blend-screen" />
+                    <div className="absolute inset-0 opacity-40">
+                      <div className="absolute inset-0 bg-linear-to-b from-white/15 via-transparent to-black/25" />
                     </div>
-                    <div className="flex items-center gap-2.5 pl-6">
-                      <Search className="size-2.5 text-zinc-800" />
-                      <Wifi className="size-3 text-zinc-800" />
-                      <BatteryFull className="size-3.5 text-zinc-800" />
-                      <span className="text-[10.5px] font-semibold text-zinc-900">
-                        {clock}
-                      </span>
-                    </div>
-                  </div>
+                    {/* Lớp tinhtinh: sóng sơn trôi nhẹ */}
+                    <div className="absolute inset-0 bg-[radial-gradient(60%_80%_at_80%_90%,#0ea5e9_0%,transparent_60%),radial-gradient(50%_60%_at_30%_70%,#f472b6_0%,transparent_60%)] opacity-30 mix-blend-overlay" />
 
-                  {/* Cửa sổ Safari nổi trên desktop — dashboard tương tác */}
-                  <div className="relative z-30 mx-3 mb-3 overflow-hidden rounded-xl bg-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] ring-1 ring-black/15 sm:mx-4">
-                    {/* Thanh tiêu đề: 3 nút traffic-light */}
-                    <div className="flex items-center gap-3 border-b border-zinc-200 bg-zinc-50/80 px-4 py-2.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="size-3 rounded-full bg-[#ff5f57]" />
-                        <span className="size-3 rounded-full bg-[#febc2e]" />
-                        <span className="size-3 rounded-full bg-[#28c840]" />
-                      </div>
-                      <div className="ml-2 hidden items-center gap-1 sm:flex">
-                        <ArrowLeft className="size-3.5 text-zinc-500" />
-                        <ArrowRight className="size-3 text-zinc-400" />
-                        <RefreshCw className="size-3 text-zinc-400" />
-                      </div>
-                      {/* Thanh địa chỉ centered */}
-                      <div className="mx-auto flex max-w-md flex-1 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1 shadow-sm">
-                        <Compass className="size-3 text-zinc-400" />
-                        <span className="flex-1 truncate text-center text-[11px] font-medium tracking-tight text-zinc-700">
-                          brandhub.app/dashboard
+                    {/* Tai thỏ: pill hẹp giữa, xuyên qua menubar xuống wallpaper */}
+                    <div className="absolute top-0 left-1/2 z-20 h-6 w-36 -translate-x-1/2 rounded-b-xl bg-black shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+                      <div className="absolute top-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[#0b1d3a]" />
+                      <div className="absolute top-[3px] right-5 size-0.5 rounded-full bg-emerald-500/70" />
+                    </div>
+
+                    {/* Menubar: dải glass mờ phủ lên wallpaper — macOS Sonoma */}
+                    <div className="absolute inset-x-0 top-0 z-10 flex h-6 items-center justify-between bg-white/25 px-3.5 backdrop-blur-md">
+                      <div className="flex items-center gap-2.5 pr-6">
+                        <Apple className="size-3 text-zinc-900" />
+                        <span className="text-[10.5px] font-bold text-zinc-900">
+                          BrandHub
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
+                          Tệp
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 sm:block">
+                          Sửa
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 md:block">
+                          Hiển thị
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
+                          Cửa sổ
+                        </span>
+                        <span className="hidden text-[10.5px] font-medium text-zinc-800 lg:block">
+                          Trợ giúp
                         </span>
                       </div>
-                      <div className="flex items-center gap-2.5">
-                        <Smartphone className="size-3.5 text-zinc-500" />
-                        <Monitor className="size-3.5 text-zinc-500" />
-                        <div className="relative flex items-center gap-1.5">
-                          <div className="size-5 rounded-full bg-linear-to-br from-orange-400 to-orange-600" />
-                          <button
-                            type="button"
-                            onClick={() => setNotifOpen((o) => !o)}
-                            className="relative flex cursor-pointer items-center"
-                            aria-expanded={notifOpen}
-                          >
-                            <Bell className="size-3 text-zinc-500" />
-                            <span className="absolute -top-1 -right-1 size-1.5 rounded-full bg-red-500" />
-                          </button>
-                          {notifOpen && (
-                            <>
-                              <div
-                                className="fixed inset-0 z-40"
-                                onClick={() => setNotifOpen(false)}
-                              />
-                              <div className="absolute top-6 right-0 z-50 w-52 rounded-lg border border-zinc-200 bg-white p-1.5 shadow-xl">
-                                <p className="px-2 py-1 text-[10px] font-semibold text-zinc-700">
-                                  Thông báo
-                                </p>
-                                <div className="flex flex-col">
-                                  {NOTIFICATIONS.map((n) => (
-                                    <div
-                                      key={n.title}
-                                      className="flex items-start gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-50"
-                                    >
-                                      <NotifIcon kind={n.icon} />
-                                      <div className="min-w-0">
-                                        <p className="line-clamp-2 text-[10px] leading-tight text-zinc-700">
-                                          {n.title}
-                                        </p>
-                                        <p className="text-[8px] text-zinc-400">
-                                          {n.time}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </>
-                          )}
-                        </div>
+                      <div className="flex items-center gap-2.5 pl-6">
+                        <Search className="size-2.5 text-zinc-800" />
+                        <Wifi className="size-3 text-zinc-800" />
+                        <BatteryFull className="size-3.5 text-zinc-800" />
+                        <span className="text-[10.5px] font-semibold text-zinc-900">
+                          {clock}
+                        </span>
                       </div>
                     </div>
 
-                    {/* Body: sidebar + nội dung chuyển trang */}
-                    <div className="flex">
-                      <div className="hidden w-44 shrink-0 border-r border-zinc-200 bg-zinc-50/40 p-3 sm:block">
-                        <div className="mb-3 flex items-center gap-2 px-1">
-                          <div className="bg-brand-orange flex size-5 items-center justify-center rounded-md text-[10px] font-bold text-white">
-                            B
-                          </div>
-                          <span className="text-xs font-semibold text-zinc-900">
-                            BrandHub
+                    {/* Cửa sổ Safari nổi trên desktop — dashboard tương tác */}
+                    <div className="relative z-30 mx-3 mb-3 overflow-hidden rounded-xl bg-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] ring-1 ring-black/15 sm:mx-4">
+                      {/* Thanh tiêu đề: 3 nút traffic-light */}
+                      <div className="flex items-center gap-3 border-b border-zinc-200 bg-zinc-50/80 px-4 py-2.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="size-3 rounded-full bg-[#ff5f57]" />
+                          <span className="size-3 rounded-full bg-[#febc2e]" />
+                          <span className="size-3 rounded-full bg-[#28c840]" />
+                        </div>
+                        <div className="ml-2 hidden items-center gap-1 sm:flex">
+                          <ArrowLeft className="size-3.5 text-zinc-500" />
+                          <ArrowRight className="size-3 text-zinc-400" />
+                          <RefreshCw className="size-3 text-zinc-400" />
+                        </div>
+                        {/* Thanh địa chỉ centered */}
+                        <div className="mx-auto flex max-w-md flex-1 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1 shadow-sm">
+                          <Compass className="size-3 text-zinc-400" />
+                          <span className="flex-1 truncate text-center text-[11px] font-medium tracking-tight text-zinc-700">
+                            brandhub.app/dashboard
                           </span>
                         </div>
-                        {NAV_ITEMS.map((item) => {
-                          const activeNav = page === item.pageIndex;
-                          return (
-                            <div
-                              key={item.label}
-                              onClick={() => setPage(item.pageIndex)}
-                              className={`mb-1 flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors ${
-                                activeNav
-                                  ? "bg-brand-orange/10 text-brand-orange font-medium"
-                                  : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
-                              }`}
+                        <div className="flex items-center gap-2.5">
+                          <Smartphone className="size-3.5 text-zinc-500" />
+                          <Monitor className="size-3.5 text-zinc-500" />
+                          <div className="relative flex items-center gap-1.5">
+                            <div className="size-5 rounded-full bg-linear-to-br from-orange-400 to-orange-600" />
+                            <button
+                              type="button"
+                              onClick={() => setNotifOpen((o) => !o)}
+                              className="relative flex cursor-pointer items-center"
+                              aria-expanded={notifOpen}
                             >
-                              <item.icon className="size-3.5" />
-                              {item.label}
-                            </div>
-                          );
-                        })}
+                              <Bell className="size-3 text-zinc-500" />
+                              <span className="absolute -top-1 -right-1 size-1.5 rounded-full bg-red-500" />
+                            </button>
+                            {notifOpen && (
+                              <>
+                                <div
+                                  className="fixed inset-0 z-40"
+                                  onClick={() => setNotifOpen(false)}
+                                />
+                                <div className="absolute top-6 right-0 z-50 w-52 rounded-lg border border-zinc-200 bg-white p-1.5 shadow-xl">
+                                  <p className="px-2 py-1 text-[10px] font-semibold text-zinc-700">
+                                    Thông báo
+                                  </p>
+                                  <div className="flex flex-col">
+                                    {NOTIFICATIONS.map((n) => (
+                                      <div
+                                        key={n.title}
+                                        className="flex items-start gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-50"
+                                      >
+                                        <NotifIcon kind={n.icon} />
+                                        <div className="min-w-0">
+                                          <p className="line-clamp-2 text-[10px] leading-tight text-zinc-700">
+                                            {n.title}
+                                          </p>
+                                          <p className="text-[8px] text-zinc-400">
+                                            {n.time}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      {/* Trang active: key thay đổi theo index → remount, GSAP chạy lại animation chuyển trang */}
-                      <div className="relative h-85 flex-1 overflow-y-auto">
-                        <div key={page} className="page-enter min-h-full">
-                          {pages[page]}
+
+                      {/* Body: sidebar + nội dung chuyển trang */}
+                      <div className="flex">
+                        <div className="hidden w-44 shrink-0 border-r border-zinc-200 bg-zinc-50/40 p-3 sm:block">
+                          <div className="mb-3 flex items-center gap-2 px-1">
+                            <div className="bg-brand-orange flex size-5 items-center justify-center rounded-md text-[10px] font-bold text-white">
+                              B
+                            </div>
+                            <span className="text-xs font-semibold text-zinc-900">
+                              BrandHub
+                            </span>
+                          </div>
+                          {NAV_ITEMS.map((item) => {
+                            const activeNav = page === item.pageIndex;
+                            return (
+                              <div
+                                key={item.label}
+                                onClick={() => setPage(item.pageIndex)}
+                                className={`mb-1 flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors ${
+                                  activeNav
+                                    ? "bg-brand-orange/10 text-brand-orange font-medium"
+                                    : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700"
+                                }`}
+                              >
+                                <item.icon className="size-3.5" />
+                                {item.label}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {/* Trang active: key thay đổi theo index → remount, GSAP chạy lại animation chuyển trang */}
+                        <div className="relative h-85 flex-1 overflow-y-auto">
+                          <div key={page} className="page-enter min-h-full">
+                            {pages[page]}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Dock — dải glass nổi cuối màn hình. Left: BrandHub (app đang chạy)
+                    {/* Dock — dải glass nổi cuối màn hình. Left: BrandHub (app đang chạy)
                       + bộ icon app chuẩn Apple: Finder, Launchpad, Safari, Messages, Mail,
                       Maps, Photos, Calendar, Notes, Music. Divider. Right: Downloads + Trash. */}
-                  <div className="absolute inset-x-0 bottom-0.5 z-30 flex items-center justify-center">
-                    <div className="flex items-end gap-1.5 rounded-2xl rounded-b-xl bg-black/25 px-2 py-1.5 ring-1 ring-white/20 backdrop-blur-md">
-                      {/* BrandHub đang chạy — logo thương hiệu thay chỗ Mail/Facetime */}
-                      <div className="relative flex size-5 items-center justify-center rounded-[22%] bg-linear-to-tr from-orange-500 to-orange-300 text-[9px] font-bold text-white shadow">
-                        B
-                        <span className="absolute -bottom-1 left-1/2 size-[3px] -translate-x-1/2 rounded-full bg-black/70" />
-                      </div>
-                      {/* Finder */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#23c6ff] to-[#0a7be0] shadow">
-                        <FaceGlyph />
-                      </div>
-                      {/* Launchpad */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#79849c] to-[#3d4657] shadow">
-                        <LaunchpadGlyph />
-                      </div>
-                      {/* Safari */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
-                        <SafariGlyph />
-                      </div>
-                      {/* Messages */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#3be86b] to-[#14a83a] shadow">
-                        <MessagesGlyph />
-                      </div>
-                      {/* Mail */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#49b0ff] to-[#1475e8] shadow">
-                        <MailGlyph />
-                      </div>
-                      {/* Maps */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#fdfefe] to-[#d9e2ec] shadow">
-                        <MapsGlyph />
-                      </div>
-                      {/* Photos */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
-                        <PhotosGlyph />
-                      </div>
-                      {/* Calendar */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
-                        <CalendarGlyph />
-                      </div>
-                      {/* Notes */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#f7f7f7] to-[#e6e6e6] shadow">
-                        <NotesGlyph />
-                      </div>
-                      {/* Music */}
-                      <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#ff5d8f] to-[#e11d60] shadow">
-                        <MusicGlyph />
-                      </div>
-                      {/* Divider */}
-                      <div className="mx-0.5 h-6 w-px bg-white/25" />
-                      {/* Downloads folder */}
-                      <div className="flex size-5 items-center justify-center shadow">
-                        <DownloadsGlyph />
-                      </div>
-                      {/* Trash */}
-                      <div className="flex size-5 items-center justify-center rounded-[20%] bg-[#c9cfd6] shadow ring-1 ring-white/40">
-                        <TrashGlyph />
+                    <div className="absolute inset-x-0 bottom-0.5 z-30 flex items-center justify-center">
+                      <div className="flex items-end gap-1.5 rounded-2xl rounded-b-xl bg-black/25 px-2 py-1.5 ring-1 ring-white/20 backdrop-blur-md">
+                        {/* BrandHub đang chạy — logo thương hiệu thay chỗ Mail/Facetime */}
+                        <div className="relative flex size-5 items-center justify-center rounded-[22%] bg-linear-to-tr from-orange-500 to-orange-300 text-[9px] font-bold text-white shadow">
+                          B
+                          <span className="absolute -bottom-1 left-1/2 size-[3px] -translate-x-1/2 rounded-full bg-black/70" />
+                        </div>
+                        {/* Finder */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#23c6ff] to-[#0a7be0] shadow">
+                          <FaceGlyph />
+                        </div>
+                        {/* Launchpad */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#79849c] to-[#3d4657] shadow">
+                          <LaunchpadGlyph />
+                        </div>
+                        {/* Safari */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
+                          <SafariGlyph />
+                        </div>
+                        {/* Messages */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#3be86b] to-[#14a83a] shadow">
+                          <MessagesGlyph />
+                        </div>
+                        {/* Mail */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#49b0ff] to-[#1475e8] shadow">
+                          <MailGlyph />
+                        </div>
+                        {/* Maps */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#fdfefe] to-[#d9e2ec] shadow">
+                          <MapsGlyph />
+                        </div>
+                        {/* Photos */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
+                          <PhotosGlyph />
+                        </div>
+                        {/* Calendar */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-white shadow">
+                          <CalendarGlyph />
+                        </div>
+                        {/* Notes */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#f7f7f7] to-[#e6e6e6] shadow">
+                          <NotesGlyph />
+                        </div>
+                        {/* Music */}
+                        <div className="flex size-5 items-center justify-center rounded-[22%] bg-linear-to-b from-[#ff5d8f] to-[#e11d60] shadow">
+                          <MusicGlyph />
+                        </div>
+                        {/* Divider */}
+                        <div className="mx-0.5 h-6 w-px bg-white/25" />
+                        {/* Downloads folder */}
+                        <div className="flex size-5 items-center justify-center shadow">
+                          <DownloadsGlyph />
+                        </div>
+                        {/* Trash */}
+                        <div className="flex size-5 items-center justify-center rounded-[20%] bg-[#c9cfd6] shadow ring-1 ring-white/40">
+                          <TrashGlyph />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Dưới chân: hõm mở nắp laptop */}
-                  <div className="absolute bottom-0 left-1/2 h-1.5 w-[26%] -translate-x-1/2 rounded-full bg-zinc-300/70" />
+                    {/* Dưới chân: hõm mở nắp laptop */}
+                    <div className="absolute bottom-0 left-1/2 h-1.5 w-[26%] -translate-x-1/2 rounded-full bg-zinc-300/70" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -2414,13 +2477,150 @@ const WS_STATUS: Record<
 };
 
 const WORKSPACE_MEMBERS = [
-  { name: "Minh Nguyễn", role: "Content Director" },
-  { name: "Thu Hà", role: "Account Manager" },
-  { name: "Quang", role: "Creator" },
-  { name: "Linh", role: "Designer" },
-  { name: "Đức", role: "Creator" },
-  { name: "Trang", role: "Editor" },
+  { name: "Minh Nguyễn", role: "Content Director", online: true },
+  { name: "Thu Hà", role: "Account Manager", online: true },
+  { name: "Quang", role: "Creator", online: true },
+  { name: "Linh", role: "Designer", online: false },
+  { name: "Đức", role: "Creator", online: false },
+  { name: "Trang", role: "Editor", online: false },
 ];
+
+interface BoardCard {
+  title: string;
+  channel: CalChannel;
+  assignee: string;
+}
+
+const WORKSPACE_BOARD: Record<
+  "todo" | "doing" | "review" | "done",
+  BoardCard[]
+> = {
+  todo: [
+    { title: "Caption Reel trend hè", channel: "tiktok", assignee: "Quang" },
+    { title: "Story quà tặng T8", channel: "instagram", assignee: "Linh" },
+  ],
+  doing: [
+    { title: "Banner khuyến mãi T8", channel: "facebook", assignee: "Đức" },
+    {
+      title: "Case study khách hàng",
+      channel: "linkedin",
+      assignee: "Minh Nguyễn",
+    },
+  ],
+  review: [
+    { title: "Launch mùa hè 2026", channel: "instagram", assignee: "Trang" },
+  ],
+  done: [
+    {
+      title: "Email marketing tháng 7",
+      channel: "linkedin",
+      assignee: "Thu Hà",
+    },
+    { title: "Reel giới thiệu sản phẩm", channel: "tiktok", assignee: "Quang" },
+  ],
+};
+
+const WORKSPACE_BOARD_COLS = [
+  { key: "todo", label: "To Do", dot: "bg-zinc-400" },
+  { key: "doing", label: "Đang làm", dot: "bg-blue-400" },
+  { key: "review", label: "Review", dot: "bg-amber-400" },
+  { key: "done", label: "Xong", dot: "bg-emerald-400" },
+] as const;
+
+/** AI-generated portrait avatar, seeded by name so it stays stable across renders. */
+function avatarUrl(name: string, size = 64) {
+  return `https://i.pravatar.cc/${size}?u=${encodeURIComponent(name)}`;
+}
+
+interface TimelineItem {
+  title: string;
+  channel: CalChannel;
+  assignee: string;
+  startWeek: number;
+  weeks: number;
+  progress: number;
+}
+
+const WORKSPACE_TIMELINE: TimelineItem[] = [
+  {
+    title: "Launch mùa hè 2026",
+    channel: "instagram",
+    assignee: "Trang",
+    startWeek: 0,
+    weeks: 3,
+    progress: 100,
+  },
+  {
+    title: "Case study khách hàng",
+    channel: "linkedin",
+    assignee: "Minh Nguyễn",
+    startWeek: 1,
+    weeks: 4,
+    progress: 60,
+  },
+  {
+    title: "Banner khuyến mãi T8",
+    channel: "facebook",
+    assignee: "Đức",
+    startWeek: 2,
+    weeks: 2,
+    progress: 80,
+  },
+  {
+    title: "Reel trend TikTok",
+    channel: "tiktok",
+    assignee: "Quang",
+    startWeek: 3,
+    weeks: 3,
+    progress: 30,
+  },
+  {
+    title: "Email marketing tháng 7",
+    channel: "linkedin",
+    assignee: "Thu Hà",
+    startWeek: 4,
+    weeks: 2,
+    progress: 100,
+  },
+  {
+    title: "Story quà tặng T8",
+    channel: "instagram",
+    assignee: "Linh",
+    startWeek: 5,
+    weeks: 2,
+    progress: 10,
+  },
+];
+const TIMELINE_WEEKS = 8;
+
+const WORKSPACE_ACTIVITY = [
+  {
+    actor: "Minh Nguyễn",
+    action: "đã duyệt bài “Launch mùa hè 2026”",
+    time: "2 phút trước",
+  },
+  {
+    actor: "Thu Hà",
+    action: "đã kéo “Banner khuyến mãi T8” sang Đang làm",
+    time: "18 phút trước",
+  },
+  {
+    actor: "Quang",
+    action: "đã tải lên 3 ảnh sản phẩm mới",
+    time: "45 phút trước",
+  },
+  {
+    actor: "Linh",
+    action: "đã bình luận trong “Story quà tặng T8”",
+    time: "1 giờ trước",
+  },
+  {
+    actor: "Đức",
+    action: "đã tạo thẻ “Case study khách hàng”",
+    time: "3 giờ trước",
+  },
+  { actor: "Trang", action: "đã xuất bản lên Instagram", time: "Hôm qua" },
+] as const;
 
 const WORKSPACE_CONTENT = [
   {
@@ -2655,30 +2855,40 @@ function WorkspaceDetail({
   ws: Workspace;
   onBack: () => void;
 }) {
-  const s = WS_STATUS[ws.status];
+  const [tab, setTab] = useState<
+    "board" | "timeline" | "docs" | "members" | "activity"
+  >("board");
   const members = WORKSPACE_MEMBERS.slice(
     0,
     Math.min(ws.members, WORKSPACE_MEMBERS.length),
   );
+  const onlineCount = members.filter((m) => m.online).length;
   const offset = (ws.id * 2) % WORKSPACE_CONTENT.length;
   const content = [
     ...WORKSPACE_CONTENT.slice(offset),
     ...WORKSPACE_CONTENT.slice(0, offset),
   ].slice(0, 4);
 
-  return (
-    <div className="flex min-h-full flex-col gap-3 p-4">
-      <button
-        type="button"
-        onClick={onBack}
-        className="hover:text-brand-orange flex items-center gap-1 text-[10px] font-medium text-zinc-500 transition-colors"
-      >
-        <ArrowLeft className="size-3" /> Tất cả workspace
-      </button>
+  const tabs = [
+    { key: "board", label: "Board", icon: LayoutGrid },
+    { key: "timeline", label: "Timeline", icon: CalendarRange },
+    { key: "docs", label: "Docs", icon: Files },
+    { key: "members", label: "Members", icon: Users2 },
+    { key: "activity", label: "Activity", icon: MessageCircle },
+  ] as const;
 
-      <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm">
-        <div className="h-1 w-full" style={{ background: ws.color }} />
-        <div className="flex items-center justify-between p-2">
+  return (
+    <div className="flex min-h-full flex-col">
+      <div className="flex flex-col gap-2 border-b border-zinc-200 bg-white p-3">
+        <button
+          type="button"
+          onClick={onBack}
+          className="hover:text-brand-orange flex w-fit items-center gap-1 text-[10px] font-medium text-zinc-500 transition-colors"
+        >
+          <ArrowLeft className="size-3" /> Tất cả workspace
+        </button>
+
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div
               className="flex size-8 items-center justify-center rounded-md"
@@ -2692,80 +2902,235 @@ function WorkspaceDetail({
               <p className="text-[12px] font-semibold text-zinc-900">
                 {ws.name}
               </p>
-              <p className="text-[9px] text-zinc-500">{ws.client}</p>
+              <p className="text-[9px] text-zinc-500">
+                Không gian chung · {ws.members} thành viên
+              </p>
             </div>
           </div>
-          <span
-            className={`flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[8px] font-medium ${s.bg} ${s.text}`}
-          >
-            <span className={`size-1 rounded-full ${s.dot}`} /> {s.label}
-          </span>
+
+          {/* Avatar stack — ai đang online trong shared space này */}
+          <div className="flex items-center gap-1.5">
+            <div className="flex -space-x-2">
+              {members.map((m) => (
+                <div key={m.name} title={m.name} className="relative">
+                  <img
+                    src={avatarUrl(m.name, 48)}
+                    alt={m.name}
+                    loading="lazy"
+                    className="size-6 rounded-full border-2 border-white object-cover"
+                  />
+                  {m.online && (
+                    <span className="absolute -right-0.5 -bottom-0.5 size-2 rounded-full border border-white bg-emerald-400" />
+                  )}
+                </div>
+              ))}
+            </div>
+            <span className="flex items-center gap-1 text-[8px] font-medium text-emerald-600">
+              <span className="size-1.5 rounded-full bg-emerald-400" />
+              {onlineCount} online
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-2.5 border-t border-zinc-100 px-2 py-1.5 text-[9px] text-zinc-500">
-          <span className="flex items-center gap-1">
-            <Users2 className="size-2.5" /> {ws.members} thành viên
-          </span>
-          <span className="flex items-center gap-1">
-            <Files className="size-2.5" /> {ws.docs} nội dung
-          </span>
-          <span className="flex items-center gap-1">
-            <Clock className="size-2.5" /> {ws.lastActive}
-          </span>
+
+        <div className="flex items-center gap-1">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setTab(t.key)}
+              className={`flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-[9px] font-medium transition-colors ${
+                tab === t.key
+                  ? "bg-brand-orange text-white"
+                  : "text-zinc-500 hover:bg-zinc-100"
+              }`}
+            >
+              <t.icon className="size-3" /> {t.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
-        <div className="rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
-          <p className="mb-2 text-[9px] font-medium text-zinc-500">
-            THÀNH VIÊN
-          </p>
-          <div className="flex flex-col gap-1.5">
-            {members.map((m) => (
-              <div key={m.name} className="flex items-center gap-2">
-                <div
-                  className="flex size-6 items-center justify-center rounded-full text-[8px] font-bold"
-                  style={{ background: ws.color + "20", color: ws.color }}
-                >
-                  {m.name
-                    .split(" ")
-                    .map((p) => p.charAt(0))
-                    .join("")
-                    .slice(0, 2)}
-                </div>
-                <span className="flex-1 text-[10px] text-zinc-700">
-                  {m.name}
+      <div className="flex-1 p-3">
+        {tab === "board" && (
+          <div className="grid grid-cols-2 gap-2">
+            {WORKSPACE_BOARD_COLS.map((col) => (
+              <div
+                key={col.key}
+                className="flex flex-col gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50/60 p-2"
+              >
+                <span className="flex items-center gap-1.5 text-[9px] font-semibold text-zinc-700">
+                  <span className={`size-1.5 rounded-full ${col.dot}`} />
+                  {col.label}
+                  <span className="ml-auto rounded-full bg-white px-1.5 text-[8px] font-medium text-zinc-500 shadow-sm">
+                    {WORKSPACE_BOARD[col.key].length}
+                  </span>
                 </span>
-                <span className="text-[8px] text-zinc-400">{m.role}</span>
+                {WORKSPACE_BOARD[col.key].map((card) => {
+                  const cfg = CALENDAR_CHANNEL_CONFIG[card.channel];
+                  return (
+                    <div
+                      key={card.title}
+                      className="flex flex-col gap-1.5 rounded-lg border border-zinc-200 bg-white p-1.5 shadow-sm"
+                    >
+                      <p className="line-clamp-2 text-[9px] leading-tight font-medium text-zinc-800">
+                        {card.title}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <cfg.icon
+                          className="size-3"
+                          style={{ color: cfg.color }}
+                        />
+                        <img
+                          src={avatarUrl(card.assignee, 32)}
+                          alt={card.assignee}
+                          title={card.assignee}
+                          loading="lazy"
+                          className="size-4 rounded-full object-cover"
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             ))}
           </div>
-        </div>
+        )}
 
-        <div className="flex flex-col gap-1.5">
-          <p className="text-[9px] font-medium text-zinc-500">
-            NỘI DUNG GẦN ĐÂY
-          </p>
-          {content.map((c) => {
-            const cfg = CALENDAR_CHANNEL_CONFIG[c.channel];
-            return (
+        {tab === "timeline" && (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-1 pl-[35%] text-[8px] text-zinc-400">
+              {Array.from({ length: TIMELINE_WEEKS }, (_, i) => (
+                <span key={i} className="flex-1 text-center">
+                  T{i + 1}
+                </span>
+              ))}
+            </div>
+            {WORKSPACE_TIMELINE.map((item) => {
+              const cfg = CALENDAR_CHANNEL_CONFIG[item.channel];
+              return (
+                <div key={item.title} className="flex items-center gap-2">
+                  <div className="flex w-[35%] items-center gap-1.5">
+                    <cfg.icon
+                      className="size-3 shrink-0"
+                      style={{ color: cfg.color }}
+                    />
+                    <p className="min-w-0 truncate text-[9px] text-zinc-700">
+                      {item.title}
+                    </p>
+                  </div>
+                  <div className="relative h-4 flex-1">
+                    <div
+                      className="absolute inset-y-0 flex items-center overflow-hidden rounded-full"
+                      style={{
+                        left: `${(item.startWeek / TIMELINE_WEEKS) * 100}%`,
+                        width: `${(item.weeks / TIMELINE_WEEKS) * 100}%`,
+                        background: cfg.color + "25",
+                      }}
+                    >
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${item.progress}%`,
+                          background: cfg.color,
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <img
+                    src={avatarUrl(item.assignee, 32)}
+                    alt={item.assignee}
+                    title={item.assignee}
+                    loading="lazy"
+                    className="size-4 shrink-0 rounded-full object-cover"
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {tab === "docs" && (
+          <div className="flex flex-col gap-1.5">
+            {content.map((c) => {
+              const cfg = CALENDAR_CHANNEL_CONFIG[c.channel];
+              return (
+                <div
+                  key={c.title}
+                  className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 shadow-sm"
+                >
+                  <cfg.icon
+                    className="size-3 shrink-0"
+                    style={{ color: cfg.color }}
+                  />
+                  <p className="min-w-0 flex-1 truncate text-[10px] text-zinc-700">
+                    {c.title}
+                  </p>
+                  <span className="rounded-full bg-zinc-100 px-1.5 py-0.5 text-[8px] text-zinc-500">
+                    {c.status}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {tab === "members" && (
+          <div className="flex flex-col gap-1.5">
+            {members.map((m) => (
               <div
-                key={c.title}
+                key={m.name}
                 className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 shadow-sm"
               >
-                <cfg.icon
-                  className="size-3 shrink-0"
-                  style={{ color: cfg.color }}
-                />
-                <p className="min-w-0 flex-1 truncate text-[10px] text-zinc-700">
-                  {c.title}
-                </p>
-                <span className="rounded-full bg-zinc-100 px-1.5 py-0.5 text-[8px] text-zinc-500">
-                  {c.status}
+                <div className="relative">
+                  <img
+                    src={avatarUrl(m.name, 56)}
+                    alt={m.name}
+                    loading="lazy"
+                    className="size-7 rounded-full object-cover"
+                  />
+                  {m.online && (
+                    <span className="absolute -right-0.5 -bottom-0.5 size-2 rounded-full border border-white bg-emerald-400" />
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-medium text-zinc-800">
+                    {m.name}
+                  </p>
+                  <p className="text-[8px] text-zinc-400">{m.role}</p>
+                </div>
+                <span
+                  className={`text-[8px] font-medium ${m.online ? "text-emerald-600" : "text-zinc-400"}`}
+                >
+                  {m.online ? "Online" : "Offline"}
                 </span>
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "activity" && (
+          <div className="flex flex-col gap-3">
+            {WORKSPACE_ACTIVITY.map((a, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <img
+                  src={avatarUrl(a.actor, 48)}
+                  alt={a.actor}
+                  loading="lazy"
+                  className="mt-0.5 size-6 shrink-0 rounded-full object-cover"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] leading-snug text-zinc-700">
+                    <span className="font-semibold text-zinc-900">
+                      {a.actor}
+                    </span>{" "}
+                    {a.action}
+                  </p>
+                  <p className="text-[8px] text-zinc-400">{a.time}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -2877,9 +3242,15 @@ function PublishPage() {
 /* ── Icon mạng xã hội — glyph SVG inline (lucide-react bản hiện tại đã
    bỏ các icon brand Facebook/Instagram/Linkedin). ─────────────────── */
 
-function InstagramGlyph({ className = "size-4" }: { className?: string }) {
+function InstagramGlyph({
+  className = "size-4",
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
       <rect
         x="2.5"
         y="2.5"
@@ -2895,25 +3266,58 @@ function InstagramGlyph({ className = "size-4" }: { className?: string }) {
   );
 }
 
-function TikTokGlyph({ className = "size-4" }: { className?: string }) {
+function TikTokGlyph({
+  className = "size-4",
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      style={style}
+    >
       <path d="M16.5 2h-3.2v13.4a3 3 0 1 1-2.2-2.9V9.2a6.2 6.2 0 1 0 5.4 6.1V8.6a7.7 7.7 0 0 0 4.5 1.4V6.8a4.4 4.4 0 0 1-4.5-4.4V2z" />
     </svg>
   );
 }
 
-function FacebookGlyph({ className = "size-4" }: { className?: string }) {
+function FacebookGlyph({
+  className = "size-4",
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      style={style}
+    >
       <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V8c0-.9.25-1.5 1.55-1.5H16.7V3.7C16.4 3.66 15.4 3.57 14.2 3.57c-2.4 0-4 1.47-4 4.16v2.16H7.5V13H10.2v8h3.3z" />
     </svg>
   );
 }
 
-function LinkedInGlyph({ className = "size-4" }: { className?: string }) {
+function LinkedInGlyph({
+  className = "size-4",
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      style={style}
+    >
       <path d="M6.94 8.5H3.56V20h3.38V8.5zM5.25 3.5a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92zM20.5 20h-3.37v-5.9c0-1.4-.03-3.2-1.95-3.2-1.96 0-2.26 1.53-2.26 3.1V20H9.55V8.5h3.24v1.57h.05c.45-.85 1.55-1.75 3.2-1.75 3.43 0 4.06 2.25 4.06 5.18V20z" />
     </svg>
   );
