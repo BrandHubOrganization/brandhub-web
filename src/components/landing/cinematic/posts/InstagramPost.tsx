@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Heart,
   MessageCircle,
@@ -29,13 +30,16 @@ interface InstagramPostProps {
  */
 export function InstagramPost({
   className,
-  caption = "Nền tảng quản lý content đa kênh số 1 cho agency & brand. Tự động hóa toàn bộ workflow sáng tạo → xuất bản.",
+  caption,
   likes = "2,384",
   comments = "156",
   imageUrl,
   liked,
   saved,
 }: InstagramPostProps) {
+  const { t } = useTranslation();
+  const resolvedCaption =
+    caption ?? t("landing.heroFeed.instagram.0.caption");
   return (
     <div
       className={cn(
@@ -55,7 +59,7 @@ export function InstagramPost({
             brandhub_vn
           </p>
           <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
-            2 giờ trước
+            {t("landing.heroFeed.ui.timeAgoHoursShort")}
           </p>
         </div>
         <MoreHorizontal className="size-4 text-zinc-500 dark:text-zinc-400" />
@@ -84,7 +88,7 @@ export function InstagramPost({
               BrandHub Campaign
             </p>
             <p className="mt-0.5 text-[10px] font-medium text-white/70">
-              Multi-channel content
+              {t("landing.heroFeed.ui.multiChannelContent")}
             </p>
           </div>
         </div>
@@ -122,7 +126,7 @@ export function InstagramPost({
 
       {/* Likes */}
       <p className="px-3.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        {likes} lượt thích
+        {likes} {t("landing.heroFeed.ui.likesSuffix")}
       </p>
 
       {/* Caption */}
@@ -131,10 +135,11 @@ export function InstagramPost({
           <span className="mr-1 font-semibold text-zinc-900 dark:text-zinc-100">
             brandhub_vn
           </span>
-          {caption}
+          {resolvedCaption}
         </p>
         <p className="mt-1 text-[11px] text-zinc-400 dark:text-zinc-500">
-          Xem tất cả {comments} bình luận
+          {t("landing.heroFeed.ui.viewAllCommentsPrefix")} {comments}{" "}
+          {t("landing.heroFeed.ui.viewAllCommentsSuffix")}
         </p>
       </div>
     </div>

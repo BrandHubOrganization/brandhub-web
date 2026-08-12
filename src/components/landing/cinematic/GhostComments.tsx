@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Heart } from "lucide-react";
 import {
   GHOST_COMMENTERS,
-  GHOST_HEADLINES,
+  GHOST_HEADLINE_KEYS,
   type GhostCommenter,
 } from "./feedContent";
 
@@ -46,7 +47,7 @@ export function useGhostTyping(
   const [state, setState] = useState<GhostCommentState | null>(null);
   const pickRef = useRef({
     commenter: GHOST_COMMENTERS[0],
-    headline: GHOST_HEADLINES[0],
+    headline: GHOST_HEADLINE_KEYS[0],
     text: pool[0],
   });
 
@@ -59,7 +60,7 @@ export function useGhostTyping(
     const idx = Math.floor(Math.random() * GHOST_COMMENTERS.length);
     pickRef.current = {
       commenter: GHOST_COMMENTERS[idx],
-      headline: GHOST_HEADLINES[idx % GHOST_HEADLINES.length],
+      headline: GHOST_HEADLINE_KEYS[idx % GHOST_HEADLINE_KEYS.length],
       text: pool[Math.floor(Math.random() * pool.length)],
     };
     const { commenter, headline, text } = pickRef.current;
@@ -152,6 +153,7 @@ export function InstagramGhostComment({
 }: {
   state: GhostCommentState | null;
 }) {
+  const { t } = useTranslation();
   if (!state) return null;
   const { phase, typed, commenter } = state;
 
@@ -163,7 +165,7 @@ export function InstagramGhostComment({
           gradient={commenter.avatarGradient}
         />
         <p className="min-w-0 flex-1 truncate text-[10px] text-zinc-700 dark:text-zinc-300">
-          {typed || "Thêm bình luận…"}
+          {typed || t("landing.heroFeed.ui.typingPlaceholder")}
           <span className="cursor-blink ml-0.5">|</span>
         </p>
       </div>
@@ -185,7 +187,9 @@ export function InstagramGhostComment({
           {typed}
         </p>
         <p className="mt-0.5 text-[9px] text-zinc-400 dark:text-zinc-500">
-          {phase === "posting" ? "Đang đăng…" : "Vừa xong · Trả lời"}
+          {phase === "posting"
+            ? t("landing.heroFeed.ui.posting")
+            : t("landing.heroFeed.ui.justNowReply")}
         </p>
       </div>
       {phase === "posted" && (
@@ -205,6 +209,7 @@ export function TikTokGhostComment({
 }: {
   state: GhostCommentState | null;
 }) {
+  const { t } = useTranslation();
   if (!state) return null;
   const { phase, typed, commenter } = state;
 
@@ -220,7 +225,7 @@ export function TikTokGhostComment({
             gradient={commenter.avatarGradient}
           />
           <p className="min-w-0 flex-1 truncate text-[10px] text-white/90">
-            {typed || "Thêm bình luận..."}
+            {typed || t("landing.heroFeed.ui.typingPlaceholderDots")}
             <span className="cursor-blink ml-0.5">|</span>
           </p>
         </div>
@@ -233,7 +238,9 @@ export function TikTokGhostComment({
       className={`ghost-comment-in absolute right-16 bottom-0 left-0 z-50 rounded-t-xl bg-zinc-900/95 px-2.5 py-2 backdrop-blur ${fadeClass(phase)}`}
       style={{ opacity: phase === "posting" ? 0.6 : undefined }}
     >
-      <p className="mb-1.5 text-[9px] font-medium text-white/50">Bình luận</p>
+      <p className="mb-1.5 text-[9px] font-medium text-white/50">
+        {t("landing.heroFeed.ui.comment")}
+      </p>
       <div className="flex items-start gap-1.5">
         <AvatarInitials
           initials={commenter.initials}
@@ -243,8 +250,14 @@ export function TikTokGhostComment({
           <p className="text-[9px] text-white/50">@{commenter.handle}</p>
           <p className="text-[10px] leading-snug text-white">{typed}</p>
           <div className="mt-0.5 flex items-center gap-2 text-[9px] text-white/40">
-            <span>{phase === "posting" ? "Đang đăng…" : "2 giây"}</span>
-            {phase === "posted" && <span>Trả lời</span>}
+            <span>
+              {phase === "posting"
+                ? t("landing.heroFeed.ui.posting")
+                : t("landing.heroFeed.ui.timeAgoSeconds2")}
+            </span>
+            {phase === "posted" && (
+              <span>{t("landing.heroFeed.ui.reply")}</span>
+            )}
           </div>
         </div>
         {phase === "posted" && (
@@ -256,7 +269,7 @@ export function TikTokGhostComment({
       </div>
       {phase === "posted" && (
         <span className="mt-1.5 inline-block rounded bg-pink-500/20 px-1.5 py-0.5 text-[8px] font-medium text-pink-300">
-          Bình luận đầu tiên
+          {t("landing.heroFeed.ui.firstComment")}
         </span>
       )}
     </div>
@@ -272,6 +285,7 @@ export function FacebookGhostComment({
 }: {
   state: GhostCommentState | null;
 }) {
+  const { t } = useTranslation();
   if (!state) return null;
   const { phase, typed, commenter } = state;
 
@@ -284,7 +298,7 @@ export function FacebookGhostComment({
         />
         <div className="min-w-0 flex-1 rounded-full border border-zinc-200 bg-white px-2.5 py-1.5 dark:border-zinc-600 dark:bg-zinc-800">
           <p className="truncate text-[10px] text-zinc-600 dark:text-zinc-300">
-            {typed || "Viết bình luận…"}
+            {typed || t("landing.heroFeed.ui.fbTypingPlaceholder")}
             <span className="cursor-blink ml-0.5">|</span>
           </p>
         </div>
@@ -304,18 +318,22 @@ export function FacebookGhostComment({
       <div className="min-w-0 flex-1">
         <div className="rounded-2xl bg-zinc-100 px-3 py-1.5 dark:bg-zinc-700">
           <p className="text-[10px] font-semibold text-zinc-900 dark:text-zinc-100">
-            {commenter.name}
+            {t(commenter.nameKey)}
           </p>
           <p className="text-[10px] leading-snug text-zinc-800 dark:text-zinc-200">
             {typed}
           </p>
         </div>
         <div className="mt-0.5 flex items-center gap-2 px-3 text-[9px] font-medium text-zinc-500 dark:text-zinc-400">
-          <span>{phase === "posting" ? "Đang đăng…" : "Thích"}</span>
+          <span>
+            {phase === "posting"
+              ? t("landing.heroFeed.ui.posting")
+              : t("landing.heroFeed.ui.like")}
+          </span>
           {phase === "posted" && (
             <>
-              <span>Phản hồi</span>
-              <span>Vừa xong</span>
+              <span>{t("landing.heroFeed.ui.reply")}</span>
+              <span>{t("landing.heroFeed.ui.justNow")}</span>
             </>
           )}
         </div>
@@ -333,6 +351,7 @@ export function LinkedInGhostComment({
 }: {
   state: GhostCommentState | null;
 }) {
+  const { t } = useTranslation();
   if (!state) return null;
   const { phase, typed, commenter, headline } = state;
 
@@ -346,7 +365,7 @@ export function LinkedInGhostComment({
         />
         <div className="min-w-0 flex-1 rounded-full border border-zinc-300 bg-white px-2.5 py-1.5 dark:border-zinc-600 dark:bg-zinc-800">
           <p className="truncate text-[10px] text-zinc-600 dark:text-zinc-300">
-            {typed || "Thêm bình luận…"}
+            {typed || t("landing.heroFeed.ui.typingPlaceholder")}
             <span className="cursor-blink ml-0.5">|</span>
           </p>
         </div>
@@ -366,17 +385,23 @@ export function LinkedInGhostComment({
       />
       <div className="min-w-0 flex-1 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 dark:border-zinc-700 dark:bg-zinc-800">
         <p className="text-[10px] font-semibold text-zinc-900 dark:text-zinc-100">
-          {commenter.name}
+          {t(commenter.nameKey)}
         </p>
         <p className="text-[9px] text-zinc-500 dark:text-zinc-400">
-          {headline}
+          {t(headline)}
         </p>
         <p className="mt-0.5 text-[10px] leading-snug text-zinc-800 dark:text-zinc-200">
           {typed}
         </p>
         <div className="mt-1 flex items-center gap-2 text-[9px] font-medium text-zinc-500 dark:text-zinc-400">
-          <span>{phase === "posting" ? "Đang đăng…" : "Thích"}</span>
-          {phase === "posted" && <span>Phản hồi</span>}
+          <span>
+            {phase === "posting"
+              ? t("landing.heroFeed.ui.posting")
+              : t("landing.heroFeed.ui.like")}
+          </span>
+          {phase === "posted" && (
+            <span>{t("landing.heroFeed.ui.reply")}</span>
+          )}
         </div>
       </div>
     </div>

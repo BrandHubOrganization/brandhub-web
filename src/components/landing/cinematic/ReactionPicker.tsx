@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   ThumbsUp,
   Heart,
@@ -30,24 +31,30 @@ export interface Reaction {
 /** 6 reaction Facebook — thứ tự chuẩn: Thích, Yêu thích, Haha, Wow, Buồn, Phẫn nộ.
  *  Wow không có icon riêng phù hợp trong lucide, dùng ThumbsUp scale lớn hơn thay thế
  *  để tránh nhầm ý nghĩa (PartyPopper hợp Celebrate hơn Wow). */
-export const FB_REACTIONS: Reaction[] = [
-  { key: "like", icon: ThumbsUp, label: "Thích", color: "#1877f2" },
-  { key: "love", icon: Heart, label: "Yêu thích", color: "#f33e58" },
-  { key: "haha", icon: Laugh, label: "Haha", color: "#f7b125" },
-  { key: "wow", icon: PartyPopper, label: "Wow", color: "#f7b125" },
-  { key: "sad", icon: Frown, label: "Buồn", color: "#f7b125" },
-  { key: "angry", icon: Angry, label: "Phẫn nộ", color: "#e9710f" },
-];
+export function useFbReactions(): Reaction[] {
+  const { t } = useTranslation();
+  return [
+    { key: "like", icon: ThumbsUp, label: t("landing.heroFeed.reactions.fb.like"), color: "#1877f2" },
+    { key: "love", icon: Heart, label: t("landing.heroFeed.reactions.fb.love"), color: "#f33e58" },
+    { key: "haha", icon: Laugh, label: t("landing.heroFeed.reactions.fb.haha"), color: "#f7b125" },
+    { key: "wow", icon: PartyPopper, label: t("landing.heroFeed.reactions.fb.wow"), color: "#f7b125" },
+    { key: "sad", icon: Frown, label: t("landing.heroFeed.reactions.fb.sad"), color: "#f7b125" },
+    { key: "angry", icon: Angry, label: t("landing.heroFeed.reactions.fb.angry"), color: "#e9710f" },
+  ];
+}
 
 /** 6 reaction LinkedIn — bộ riêng, thiên hướng chuyên nghiệp. */
-export const LI_REACTIONS: Reaction[] = [
-  { key: "like", icon: ThumbsUp, label: "Thích", color: "#0a66c2" },
-  { key: "celebrate", icon: PartyPopper, label: "Chúc mừng", color: "#6dae4f" },
-  { key: "support", icon: Handshake, label: "Ủng hộ", color: "#7a5abf" },
-  { key: "love", icon: Heart, label: "Yêu thích", color: "#df704d" },
-  { key: "insightful", icon: Lightbulb, label: "Sâu sắc", color: "#f5bb5c" },
-  { key: "funny", icon: Laugh, label: "Hài hước", color: "#f5bb5c" },
-];
+export function useLiReactions(): Reaction[] {
+  const { t } = useTranslation();
+  return [
+    { key: "like", icon: ThumbsUp, label: t("landing.heroFeed.reactions.li.like"), color: "#0a66c2" },
+    { key: "celebrate", icon: PartyPopper, label: t("landing.heroFeed.reactions.li.celebrate"), color: "#6dae4f" },
+    { key: "support", icon: Handshake, label: t("landing.heroFeed.reactions.li.support"), color: "#7a5abf" },
+    { key: "love", icon: Heart, label: t("landing.heroFeed.reactions.li.love"), color: "#df704d" },
+    { key: "insightful", icon: Lightbulb, label: t("landing.heroFeed.reactions.li.insightful"), color: "#f5bb5c" },
+    { key: "funny", icon: Laugh, label: t("landing.heroFeed.reactions.li.funny"), color: "#f5bb5c" },
+  ];
+}
 
 export function ReactionPicker({
   reactions,

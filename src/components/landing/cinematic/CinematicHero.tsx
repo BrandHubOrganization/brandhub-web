@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -46,6 +47,8 @@ import {
   Lightbulb,
   List,
   CalendarRange,
+  ThumbsUp,
+  X as XIcon,
 } from "lucide-react";
 import { InstagramPost } from "./posts/InstagramPost";
 import { TikTokPost } from "./posts/TikTokPost";
@@ -72,6 +75,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
  * does NOT reverse them.
  */
 export function CinematicHero() {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const [device, setDevice] = useState<"macbook" | "iphone">("macbook");
 
@@ -340,20 +344,23 @@ export function CinematicHero() {
             >
               {device === "macbook" ? (
                 <>
-                  <Smartphone className="size-3.5" /> Xem trên iPhone
+                  <Smartphone className="size-3.5" />{" "}
+                  {t("landing.hero.viewOnIphone")}
                 </>
               ) : (
                 <>
-                  <Monitor className="size-3.5" /> Xem trên MacBook
+                  <Monitor className="size-3.5" />{" "}
+                  {t("landing.hero.viewOnMacbook")}
                 </>
               )}
             </button>
             <CTAButtons />
+            <SocialProof />
           </div>
           {/* Scroll hint */}
           <div className="scroll-hint flex flex-col items-center gap-1 text-white/25">
             <span className="text-[10px] tracking-[0.2em] uppercase">
-              Cuộn xuống
+              {t("landing.hero.scrollDown")}
             </span>
             <div className="h-8 w-px animate-pulse bg-linear-to-b from-white/30 to-transparent" />
           </div>
@@ -371,6 +378,7 @@ const NAV_ITEMS = [
   { icon: LineChart, label: "Analytics", pageIndex: 4 },
   { icon: Upload, label: "Xuất bản", pageIndex: 5 },
   { icon: Building2, label: "Workspace", pageIndex: 6 },
+  { icon: ThumbsUp, label: "Phê duyệt", pageIndex: 7 },
 ] as const;
 
 const NOTIFICATIONS = [
@@ -478,35 +486,41 @@ function BrandHubDashboardBg({
     plan.forEach(([pg, ms]) => setTimeout(() => setPage(pg), ms));
   }, [setPage]);
   const pages = [
-    <OverviewPage key="overview" />,
+    <OverviewPage key="overview" device={device} />,
     <ContentPage key="content" device={device} />,
     <SchedulePage key="schedule" />,
     <AIStudioPage key="ai-studio" />,
     <AnalyticsPage key="analytics" />,
     <PublishPage key="publish" />,
     <WorkspacePage key="workspace" device={device} />,
+    <ApprovalPage key="approval" />,
   ];
   // Fit-scale demo (MacBook/iPhone) vào chiều cao hero khả dụng để không bao
-  // giờ đè lên vùng CTA. CTA reserve bottom-44 (~176px). demoRef.offsetHeight
-  // là layout box (không bị scale) nên ổn định để đo.
+  // giờ đè lên vùng CTA. CTA reserve bottom-44 (~176px).
+  //
+  // demoRef.offsetHeight KHÔNG được dùng để đo nữa: nội dung Kanban/table
+  // của một số trang demo (Nội dung, Workspace...) có thể tràn ra ngoài
+  // overflow-y-auto trong đúng khung hình đo (trước khi scroll container
+  // clip lại), khiến offsetHeight đọc sai ở đúng lúc effect chạy và
+  // "đóng băng" fitScale nhỏ hơn thật — MacBook bị co vĩnh viễn dù nội
+  // dung sau đó ổn định lại. Cố định chiều cao demo bằng hằng số thay vì
+  // đo động: MacBook luôn cùng kích thước bất kể đang ở trang nào.
   const wrapRef = useRef<HTMLDivElement>(null);
   const demoRef = useRef<HTMLDivElement>(null);
+  const DEMO_HEIGHT_PX = device === "iphone" ? 622 : 523;
   const [fitScale, setFitScale] = useState(1);
   useEffect(() => {
     const wrap = wrapRef.current;
-    const demo = demoRef.current;
-    if (!wrap || !demo) return;
+    if (!wrap) return;
     const measure = () => {
       const availH = wrap.clientHeight - 8;
-      const demoH = demo.offsetHeight;
-      if (demoH > 0) setFitScale(Math.min(1, availH / demoH));
+      if (availH > 0) setFitScale(Math.min(1, availH / DEMO_HEIGHT_PX));
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(wrap);
-    ro.observe(demo);
     return () => ro.disconnect();
-  }, [device]);
+  }, [DEMO_HEIGHT_PX]);
 
   return (
     <div
@@ -531,7 +545,7 @@ function BrandHubDashboardBg({
             pages={pages}
           />
         ) : (
-          <div className="w-full max-w-6xl px-4 xl:max-w-5xl">
+          <div className="w-[min(72rem,90vw)] px-4 xl:w-[min(64rem,90vw)]">
             {/* Vỏ MacBook Air M5 — chất kim loại: chassis nhôm + bezel màn đen + tai thỏ */}
             <div className="relative rounded-[1.7rem] bg-linear-to-b from-zinc-400 via-zinc-300 to-zinc-500 p-[3px] shadow-2xl shadow-zinc-900/50">
               <div className="rounded-[1.4rem] bg-linear-to-b from-zinc-200 via-zinc-400 to-zinc-500 p-[3px]">
@@ -791,7 +805,7 @@ function IPhoneFrame({
   pages: React.ReactNode[];
 }) {
   return (
-    <div className="relative mx-auto w-full max-w-80 px-4">
+    <div className="relative mx-auto w-80 px-4">
       {/* Vỏ iPhone — chassis titan + viền màn đen + notch */}
       <div className="relative rounded-[2.6rem] bg-linear-to-b from-zinc-500 via-zinc-300 to-zinc-500 p-0.75 shadow-2xl shadow-zinc-900/50">
         <div className="relative overflow-hidden rounded-[2.4rem] bg-black p-2">
@@ -827,8 +841,9 @@ function IPhoneFrame({
               </div>
             </div>
 
-            {/* Bottom tab bar iOS — 6 mục, icon + label nhỏ */}
-            <div className="absolute inset-x-0 bottom-0 z-20 flex items-start justify-around border-t border-zinc-200 bg-white/95 px-0.5 pt-1.5 pb-3.5 backdrop-blur">
+            {/* Bottom tab bar iOS — 7 mục, icon + label nhỏ. flex-1 min-w-0 ép
+                mỗi item co đều vừa 320px, tránh tràn khỏi khung iPhone. */}
+            <div className="absolute inset-x-0 bottom-0 z-20 flex items-start rounded-b-4xl border-t border-zinc-200 bg-white/95 px-0.5 pt-1.5 pb-3.5 backdrop-blur">
               {NAV_ITEMS.map((item) => {
                 const active = page === item.pageIndex;
                 return (
@@ -836,13 +851,13 @@ function IPhoneFrame({
                     key={item.label}
                     type="button"
                     onClick={() => setPage(item.pageIndex)}
-                    className="flex flex-col items-center gap-0.5 px-0.5"
+                    className="flex min-w-0 flex-1 flex-col items-center gap-0.5 px-0.5"
                   >
                     <item.icon
-                      className={`size-4 ${active ? "text-brand-orange" : "text-zinc-400"}`}
+                      className={`size-4 shrink-0 ${active ? "text-brand-orange" : "text-zinc-400"}`}
                     />
                     <span
-                      className={`text-[8px] leading-none font-medium ${
+                      className={`w-full truncate text-center text-[7px] leading-none font-medium ${
                         active ? "text-brand-orange" : "text-zinc-400"
                       }`}
                     >
@@ -864,6 +879,7 @@ function IPhoneFrame({
 }
 
 function CTAButtons() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center gap-4 sm:flex-row">
       <a
@@ -871,14 +887,40 @@ function CTAButtons() {
         className="bg-brand-orange hover:bg-brand-orange/90 pointer-events-auto inline-flex items-center gap-2 rounded-lg px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:shadow-orange-500/40"
       >
         <Rocket className="size-4" />
-        Bắt đầu miễn phí
+        {t("landing.hero.ctaStart")}
       </a>
       <a
         href="/login"
         className="pointer-events-auto inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-medium text-white backdrop-blur transition-all hover:bg-white/10"
       >
-        Đăng nhập
+        {t("landing.hero.ctaLogin")}
       </a>
+    </div>
+  );
+}
+
+const AVATAR_INITIALS = ["MN", "SC", "TL", "ĐA"];
+
+/** Social proof: avatar stack + trusted-by text, dưới CTA buttons trong hero. */
+function SocialProof() {
+  const { t } = useTranslation();
+  return (
+    <div className="pointer-events-none flex items-center gap-2.5">
+      <div className="flex -space-x-2">
+        {AVATAR_INITIALS.map((initials) => (
+          <div
+            key={initials}
+            className="bg-brand-orange flex size-6 items-center justify-center rounded-full text-[9px] font-bold text-white ring-2 ring-black/80"
+          >
+            {initials}
+          </div>
+        ))}
+      </div>
+      <p className="text-[11px] text-white/60">
+        {t("landing.hero.trustedByPrefix")}{" "}
+        <span className="font-semibold text-white/90">50,000+</span>{" "}
+        {t("landing.hero.trustedBySuffix")}
+      </p>
     </div>
   );
 }
@@ -957,7 +999,8 @@ const ADVICE_ITEMS: AdviceItem[] = [
   },
 ];
 
-function OverviewPage() {
+function OverviewPage({ device }: { device: "macbook" | "iphone" }) {
+  const gridCols = device === "iphone" ? "grid-cols-1" : "grid-cols-2";
   return (
     <div className="flex min-h-full flex-col gap-3 p-4">
       <div className="flex items-start justify-between">
@@ -1083,7 +1126,7 @@ function OverviewPage() {
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className={`grid ${gridCols} gap-3`}>
         {/* Donut phân bố kênh */}
         <div className="flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
           <p className="mb-2 text-[10px] font-medium text-zinc-500">
@@ -3235,6 +3278,120 @@ function PublishPage() {
           </>
         )}
       </button>
+    </div>
+  );
+}
+
+interface ApprovalItem {
+  id: number;
+  title: string;
+  channel: CalChannel;
+  submittedBy: string;
+  thumbnail: string;
+}
+
+const APPROVAL_QUEUE: ApprovalItem[] = [
+  {
+    id: 1,
+    title: "Review sản phẩm mới — bộ sưu tập Thu 2026",
+    channel: "instagram",
+    submittedBy: "Content Creator",
+    thumbnail:
+      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=200&h=200&fit=crop",
+  },
+  {
+    id: 2,
+    title: "Video giới thiệu tính năng AI Studio",
+    channel: "tiktok",
+    submittedBy: "Content Creator",
+    thumbnail:
+      "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=200&h=200&fit=crop",
+  },
+];
+
+/** Trang demo khách hàng (Brand Client) xem trước và phê duyệt bài đã
+ * qua vòng duyệt của Account Manager, khớp bước "Phê duyệt" trong quy
+ * trình swimlane trên landing page. */
+function ApprovalPage() {
+  const [queue, setQueue] = useState(APPROVAL_QUEUE);
+  const [feedback, setFeedback] = useState<number | null>(null);
+
+  const resolve = (id: number) =>
+    setTimeout(() => setQueue((prev) => prev.filter((q) => q.id !== id)), 400);
+
+  return (
+    <div className="flex min-h-full flex-col gap-3 p-4">
+      <div>
+        <p className="text-sm font-semibold text-zinc-900">Phê duyệt</p>
+        <p className="text-[11px] text-zinc-500">
+          Xem trước và phê duyệt bài trước khi xuất bản
+        </p>
+      </div>
+
+      {queue.length === 0 ? (
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 py-10 text-center">
+          <CheckCircle2 className="size-8 text-emerald-500" />
+          <p className="text-xs font-medium text-zinc-700">
+            Đã duyệt hết bài chờ
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2.5">
+          {queue.map((item) => {
+            const cfg = CALENDAR_CHANNEL_CONFIG[item.channel];
+            return (
+              <div
+                key={item.id}
+                className="flex flex-col gap-2.5 rounded-lg border border-zinc-200 bg-white p-3 shadow-sm"
+              >
+                <div className="flex items-center gap-2.5">
+                  <img
+                    src={item.thumbnail}
+                    alt=""
+                    className="size-11 shrink-0 rounded-md object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[11px] font-medium text-zinc-800">
+                      {item.title}
+                    </p>
+                    <p className="flex items-center gap-1 text-[9px] text-zinc-400">
+                      <cfg.icon
+                        className="size-2.5"
+                        style={{ color: cfg.color }}
+                      />
+                      {item.submittedBy}
+                    </p>
+                  </div>
+                </div>
+
+                {feedback === item.id ? (
+                  <div className="ghost-comment-in flex items-center gap-1.5 rounded-md bg-zinc-50 px-2 py-1.5 text-[9px] text-zinc-600">
+                    <MessageCircle className="size-3 shrink-0 text-zinc-400" />
+                    Đã gửi góp ý cho Account Manager
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => resolve(item.id)}
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-md bg-emerald-500 py-1.5 text-[10px] font-semibold text-white transition-transform active:scale-95"
+                    >
+                      <ThumbsUp className="size-3.5" /> Phê duyệt
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFeedback(item.id)}
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-zinc-300 bg-white py-1.5 text-[10px] font-semibold text-zinc-700 transition-transform active:scale-95"
+                    >
+                      <XIcon className="size-3.5" /> Góp ý
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

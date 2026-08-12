@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Check,
   Search,
@@ -103,19 +104,23 @@ function FriendAvatar({
 // ── Instagram: "Gửi tới" — search + carousel avatar + nút Gửi riêng ──
 
 export function InstagramShareSheet({ state }: { state: ShareState | null }) {
+  const { t } = useTranslation();
   if (!state) return null;
   const { phase, pickedFriend } = state;
   const others = GHOST_COMMENTERS.filter((c) => c !== pickedFriend).slice(0, 3);
+  const pickedName = t(pickedFriend.nameKey);
 
   return (
     <div className="ghost-comment-in absolute inset-x-2 bottom-1/2 z-[60] translate-y-1/2 rounded-2xl border border-zinc-200 bg-white p-3 shadow-xl dark:border-zinc-600 dark:bg-zinc-800">
       <div className="mb-2.5 flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1.5 dark:bg-zinc-700">
         <Search className="size-3 text-zinc-400" />
-        <span className="text-[10px] text-zinc-400">Tìm kiếm</span>
+        <span className="text-[10px] text-zinc-400">
+          {t("landing.heroFeed.ui.search")}
+        </span>
       </div>
       <div className="flex items-start gap-3 overflow-hidden">
         {[pickedFriend, ...others].map((friend) => (
-          <div key={friend.name} className="flex flex-col items-center gap-1">
+          <div key={friend.nameKey} className="flex flex-col items-center gap-1">
             <div className="relative">
               <FriendAvatar commenter={friend} />
               {friend === pickedFriend && phase !== "open" && (
@@ -125,14 +130,14 @@ export function InstagramShareSheet({ state }: { state: ShareState | null }) {
               )}
             </div>
             <span className="max-w-[44px] truncate text-[8px] text-zinc-600 dark:text-zinc-300">
-              {friend.name.split(" ")[0]}
+              {t(friend.nameKey).split(" ")[0]}
             </span>
           </div>
         ))}
       </div>
       {phase === "sent" && (
         <p className="mt-2.5 text-center text-[9px] font-medium text-emerald-600 dark:text-emerald-400">
-          Đã gửi tới {pickedFriend.name}
+          {t("landing.heroFeed.ui.sentTo", { name: pickedName })}
         </p>
       )}
     </div>
@@ -142,16 +147,20 @@ export function InstagramShareSheet({ state }: { state: ShareState | null }) {
 // ── TikTok: hàng bạn bè + hàng action xám (Copy link...) ─────────────
 
 export function TikTokShareSheet({ state }: { state: ShareState | null }) {
+  const { t } = useTranslation();
   if (!state) return null;
   const { phase, pickedFriend } = state;
   const others = GHOST_COMMENTERS.filter((c) => c !== pickedFriend).slice(0, 2);
+  const pickedName = t(pickedFriend.nameKey);
 
   return (
     <div className="ghost-comment-in absolute right-16 bottom-0 left-0 z-[60] rounded-t-2xl bg-zinc-900/98 p-3 backdrop-blur">
-      <p className="mb-2 text-[9px] font-medium text-white/50">Chia sẻ tới</p>
+      <p className="mb-2 text-[9px] font-medium text-white/50">
+        {t("landing.heroFeed.ui.shareTo")}
+      </p>
       <div className="mb-3 flex items-start gap-3">
         {[pickedFriend, ...others].map((friend) => (
-          <div key={friend.name} className="flex flex-col items-center gap-1">
+          <div key={friend.nameKey} className="flex flex-col items-center gap-1">
             <div className="relative">
               <FriendAvatar commenter={friend} />
               {friend === pickedFriend && phase === "sent" && (
@@ -161,7 +170,7 @@ export function TikTokShareSheet({ state }: { state: ShareState | null }) {
               )}
             </div>
             <span className="max-w-[40px] truncate text-[8px] text-white/70">
-              {friend.name.split(" ")[0]}
+              {t(friend.nameKey).split(" ")[0]}
             </span>
           </div>
         ))}
@@ -171,18 +180,22 @@ export function TikTokShareSheet({ state }: { state: ShareState | null }) {
           <div className="flex size-8 items-center justify-center rounded-full bg-white/10">
             <Link2 className="size-3.5 text-white" />
           </div>
-          <span className="text-[8px] text-white/60">Sao chép</span>
+          <span className="text-[8px] text-white/60">
+            {t("landing.heroFeed.ui.copyLink")}
+          </span>
         </div>
         <div className="flex flex-col items-center gap-1">
           <div className="flex size-8 items-center justify-center rounded-full bg-white/10">
             <Send className="size-3.5 text-white" />
           </div>
-          <span className="text-[8px] text-white/60">Chia sẻ</span>
+          <span className="text-[8px] text-white/60">
+            {t("landing.heroFeed.ui.share")}
+          </span>
         </div>
       </div>
       {phase === "sent" && (
         <p className="mt-2 text-center text-[9px] font-medium text-cyan-300">
-          Đã gửi tới {pickedFriend.name}
+          {t("landing.heroFeed.ui.sentTo", { name: pickedName })}
         </p>
       )}
     </div>
@@ -192,13 +205,26 @@ export function TikTokShareSheet({ state }: { state: ShareState | null }) {
 // ── Facebook: menu dọc — KHÔNG phải friend picker ────────────────────
 
 export function FacebookShareSheet({ state }: { state: ShareState | null }) {
+  const { t } = useTranslation();
   if (!state) return null;
   const { phase } = state;
 
   const options = [
-    { icon: Users, label: "Chia sẻ ngay", desc: "Bạn bè" },
-    { icon: BookmarkPlus, label: "Chia sẻ lên Feed", desc: "Thêm chú thích" },
-    { icon: MessageCircle, label: "Gửi qua Messenger", desc: "Riêng tư" },
+    {
+      icon: Users,
+      label: t("landing.heroFeed.ui.fbShareNow"),
+      desc: t("landing.heroFeed.ui.fbShareNowDesc"),
+    },
+    {
+      icon: BookmarkPlus,
+      label: t("landing.heroFeed.ui.fbShareFeed"),
+      desc: t("landing.heroFeed.ui.fbShareFeedDesc"),
+    },
+    {
+      icon: MessageCircle,
+      label: t("landing.heroFeed.ui.fbShareMessenger"),
+      desc: t("landing.heroFeed.ui.fbShareMessengerDesc"),
+    },
   ];
 
   return (
@@ -233,23 +259,25 @@ export function FacebookShareSheet({ state }: { state: ShareState | null }) {
 // ── LinkedIn: "Nhập tên..." + carousel connection + ô tin nhắn ──────
 
 export function LinkedInShareSheet({ state }: { state: ShareState | null }) {
+  const { t } = useTranslation();
   if (!state) return null;
   const { phase, pickedFriend } = state;
   const others = GHOST_COMMENTERS.filter((c) => c !== pickedFriend).slice(0, 2);
+  const pickedName = t(pickedFriend.nameKey);
 
   return (
     <div className="ghost-comment-in absolute inset-x-3 bottom-1/2 z-[60] translate-y-1/2 rounded-xl border border-zinc-300 bg-white p-3 shadow-xl dark:border-zinc-600 dark:bg-zinc-800">
       <p className="mb-2 text-[10px] font-semibold text-zinc-800 dark:text-zinc-100">
-        Gửi cho
+        {t("landing.heroFeed.ui.sendTo")}
       </p>
       <div className="mb-2.5 flex items-center gap-1.5 rounded-md border border-zinc-300 px-2 py-1.5 dark:border-zinc-600">
         <span className="text-[10px] text-zinc-400">
-          {phase === "open" ? "Nhập tên..." : pickedFriend.name}
+          {phase === "open" ? t("landing.heroFeed.ui.typeName") : pickedName}
         </span>
       </div>
       <div className="mb-2.5 flex items-start gap-2.5 overflow-hidden">
         {[pickedFriend, ...others].map((friend) => (
-          <div key={friend.name} className="flex flex-col items-center gap-1">
+          <div key={friend.nameKey} className="flex flex-col items-center gap-1">
             <div
               className={`rounded-full ${
                 friend === pickedFriend && phase !== "open"
@@ -260,17 +288,17 @@ export function LinkedInShareSheet({ state }: { state: ShareState | null }) {
               <FriendAvatar commenter={friend} size="size-7" />
             </div>
             <span className="max-w-[42px] truncate text-[8px] text-zinc-600 dark:text-zinc-300">
-              {friend.name.split(" ")[0]}
+              {t(friend.nameKey).split(" ")[0]}
             </span>
           </div>
         ))}
       </div>
       <div className="rounded-md border border-zinc-200 px-2 py-1.5 text-[9px] text-zinc-400 dark:border-zinc-700">
-        Viết tin nhắn (không bắt buộc)
+        {t("landing.heroFeed.ui.writeMessage")}
       </div>
       {phase === "sent" && (
         <p className="mt-2 text-[9px] font-medium text-emerald-600 dark:text-emerald-400">
-          Đã gửi tới {pickedFriend.name}
+          {t("landing.heroFeed.ui.sentTo", { name: pickedName })}
         </p>
       )}
     </div>

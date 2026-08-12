@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Heart,
   MessageCircle,
@@ -30,7 +31,7 @@ interface TikTokPostProps {
  */
 export function TikTokPost({
   className,
-  caption = "Lên lịch content tự động với BrandHub AI #contentcreator #brandhub",
+  caption,
   likes = "45.2K",
   comments = "1.2K",
   shares = "8.4K",
@@ -38,6 +39,8 @@ export function TikTokPost({
   liked,
   saved,
 }: TikTokPostProps) {
+  const { t } = useTranslation();
+  const resolvedCaption = caption ?? t("landing.heroFeed.tiktok.0.caption");
   return (
     <div
       className={cn(
@@ -76,12 +79,12 @@ export function TikTokPost({
             <p className="text-sm font-semibold text-white">@brandhub_vn</p>
           </div>
           <p className="mb-2 line-clamp-3 text-xs leading-relaxed text-white/90">
-            {caption}
+            {resolvedCaption}
           </p>
           <div className="flex items-center gap-1.5">
             <Music4 className="size-3 text-white/60" />
             <p className="text-[11px] text-white/60">
-              original sound - BrandHub
+              {t("landing.heroFeed.ui.originalSound")}
             </p>
           </div>
         </div>
@@ -110,7 +113,7 @@ export function TikTokPost({
           <TikTokAction
             dataTarget="save"
             icon={Bookmark}
-            label="Lưu"
+            label={t("landing.heroFeed.ui.save")}
             active={saved}
             activeClass="fill-yellow-400 text-yellow-400"
           />
@@ -119,10 +122,10 @@ export function TikTokPost({
         {/* Top tabs */}
         <div className="absolute top-0 right-0 left-0 flex items-center gap-2 px-3 pt-3">
           <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-medium text-white/80 backdrop-blur">
-            Đang follow
+            {t("landing.heroFeed.ui.following")}
           </span>
           <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-medium text-white/60 backdrop-blur">
-            Dành cho bạn
+            {t("landing.heroFeed.ui.forYou")}
           </span>
         </div>
       </div>
