@@ -1,17 +1,25 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PLANS = [
-  { key: "starter", featured: false },
-  { key: "pro", featured: true },
-  { key: "enterprise", featured: false },
+  { key: "starter", featured: false, monthlyPrice: 0 },
+  { key: "pro", featured: true, monthlyPrice: 590_000 },
+  { key: "enterprise", featured: false, monthlyPrice: null },
 ];
+
+const YEARLY_DISCOUNT = 0.2;
+
+function formatVnd(amount: number) {
+  return amount.toLocaleString("vi-VN") + " ₫";
+}
 
 export function Pricing() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [yearly, setYearly] = useState(false);
 
   return (
     <section id="pricing" className="bg-white py-24 dark:bg-zinc-950">
@@ -29,6 +37,37 @@ export function Pricing() {
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.pricing.subtitle")}
           </p>
+
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <span
+              className={`text-sm font-medium ${!yearly ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-500"}`}
+            >
+              Hàng tháng
+            </span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={yearly}
+              onClick={() => setYearly((y) => !y)}
+              className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors ${
+                yearly ? "bg-brand-orange" : "bg-zinc-300 dark:bg-zinc-700"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-sm transition-transform ${
+                  yearly ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+            <span
+              className={`flex items-center gap-1.5 text-sm font-medium ${yearly ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-500"}`}
+            >
+              Hàng năm
+              <span className="bg-brand-orange/10 text-brand-orange rounded-full px-1.5 py-0.5 text-[10px] font-semibold">
+                Tiết kiệm 20%
+              </span>
+            </span>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -36,6 +75,18 @@ export function Pricing() {
             const features = t(`landing.pricing.plans.${plan.key}.features`, {
               returnObjects: true,
             }) as string[];
+            const priceLabel =
+              plan.monthlyPrice === null
+                ? t(`landing.pricing.plans.${plan.key}.price`)
+                : plan.monthlyPrice === 0
+                  ? t(`landing.pricing.plans.${plan.key}.price`)
+                  : formatVnd(
+                      yearly
+                        ? Math.round(
+                            (plan.monthlyPrice * (1 - YEARLY_DISCOUNT)) / 1000,
+                          ) * 1000
+                        : plan.monthlyPrice,
+                    );
 
             return (
               <motion.div
@@ -61,7 +112,7 @@ export function Pricing() {
                 </h3>
                 <div className="mb-6">
                   <span className="text-4xl font-extrabold text-zinc-900 dark:text-zinc-100">
-                    {t(`landing.pricing.plans.${plan.key}.price`)}
+                    {priceLabel}
                   </span>
                   {plan.key !== "enterprise" && (
                     <span className="text-sm text-zinc-500 dark:text-zinc-400">
