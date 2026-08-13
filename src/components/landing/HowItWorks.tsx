@@ -184,6 +184,7 @@ export function HowItWorks() {
                     <img
                       src={`https://images.unsplash.com/${PHOTO_IDS[lane.key]}?w=96&h=96&fit=crop&crop=faces`}
                       alt=""
+                      loading="lazy"
                       className={cn(
                         "size-11 shrink-0 rounded-full object-cover ring-2",
                         lane.accentRing,
