@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { ChevronDown } from "lucide-react";
 
 const FAQS = [
@@ -13,6 +13,7 @@ const FAQS = [
 
 export function FAQ() {
   const { t } = useTranslation();
+  const reduce = useReducedMotion();
   const [open, setOpen] = useState<string | null>(null);
 
   return (
@@ -53,16 +54,16 @@ export function FAQ() {
                     {t(`landing.faq.items.${key}.q`)}
                   </span>
                   <ChevronDown
-                    className={`size-5 shrink-0 text-zinc-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                    className={`size-5 shrink-0 text-zinc-400 ${reduce ? "" : "transition-transform"} ${isOpen ? "rotate-180" : ""}`}
                   />
                 </button>
                 <AnimatePresence>
                   {isOpen && (
                     <motion.div
-                      initial={{ height: 0, opacity: 0 }}
+                      initial={reduce ? false : { height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25 }}
+                      exit={reduce ? undefined : { height: 0, opacity: 0 }}
+                      transition={{ duration: reduce ? 0 : 0.25 }}
                       className="overflow-hidden"
                     >
                       <p className="px-6 pb-5 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
