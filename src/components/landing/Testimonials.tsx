@@ -43,15 +43,17 @@ export function Testimonials() {
   const [active, setActive] = useState(0);
   const current = TESTIMONIALS[active];
 
-  // Tự động xoay quote nổi bật, dừng ngay khi người dùng tự chọn avatar
-  // (không ghi đè lựa chọn của họ ngay sau đó).
+  // Tự động xoay quote nổi bật; interval reset lại mốc thời gian mỗi khi
+  // `active` đổi (kể cả do người dùng tự bấm avatar) — nhờ vậy chọn 1 quote
+  // luôn có đủ AUTO_ROTATE_MS trước khi bị auto-advance ghi đè, thay vì bị
+  // interval cũ (không phụ thuộc `active`) tự tiếp tục đếm ngầm.
   useEffect(() => {
     if (reduce) return;
     const id = setInterval(() => {
       setActive((i) => (i + 1) % TESTIMONIALS.length);
     }, AUTO_ROTATE_MS);
     return () => clearInterval(id);
-  }, [reduce]);
+  }, [reduce, active]);
 
   return (
     <section id="testimonials" className="bg-zinc-50 py-24 dark:bg-zinc-900/50">

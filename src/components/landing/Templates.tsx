@@ -76,6 +76,7 @@ export function Templates() {
                 <img
                   src={photo}
                   alt=""
+                  loading="lazy"
                   className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/0 to-black/0" />
