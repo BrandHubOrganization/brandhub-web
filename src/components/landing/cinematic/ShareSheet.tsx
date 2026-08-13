@@ -120,7 +120,10 @@ export function InstagramShareSheet({ state }: { state: ShareState | null }) {
       </div>
       <div className="flex items-start gap-3 overflow-hidden">
         {[pickedFriend, ...others].map((friend) => (
-          <div key={friend.nameKey} className="flex flex-col items-center gap-1">
+          <div
+            key={friend.nameKey}
+            className="flex flex-col items-center gap-1"
+          >
             <div className="relative">
               <FriendAvatar commenter={friend} />
               {friend === pickedFriend && phase !== "open" && (
@@ -160,7 +163,10 @@ export function TikTokShareSheet({ state }: { state: ShareState | null }) {
       </p>
       <div className="mb-3 flex items-start gap-3">
         {[pickedFriend, ...others].map((friend) => (
-          <div key={friend.nameKey} className="flex flex-col items-center gap-1">
+          <div
+            key={friend.nameKey}
+            className="flex flex-col items-center gap-1"
+          >
             <div className="relative">
               <FriendAvatar commenter={friend} />
               {friend === pickedFriend && phase === "sent" && (
@@ -277,7 +283,10 @@ export function LinkedInShareSheet({ state }: { state: ShareState | null }) {
       </div>
       <div className="mb-2.5 flex items-start gap-2.5 overflow-hidden">
         {[pickedFriend, ...others].map((friend) => (
-          <div key={friend.nameKey} className="flex flex-col items-center gap-1">
+          <div
+            key={friend.nameKey}
+            className="flex flex-col items-center gap-1"
+          >
             <div
               className={`rounded-full ${
                 friend === pickedFriend && phase !== "open"

@@ -79,6 +79,61 @@
       "ctaStart": "Start free", "ctaLogin": "Sign in",
       "trustedByPrefix": "Trusted by", "trustedBySuffix": "brands & agencies"
     },
+    "heroDemo": {
+      "nav": { "overview": "Overview", "content": "Content", "schedule": "Schedule", "publish": "Publish", "approval": "Approval" },
+      "notifications": { "title": "Notifications" },
+      "common": { "justNow": "just now", "minutesAgo": "{{count}} min ago", "hoursAgo": "{{count}}h ago", "daysAgo": "{{count}}d ago", "weekAgo": "1 week ago", "today": "Today", "yesterday": "Yesterday", "justCreated": "just created" },
+      "overview": {
+        "greeting": "Good morning, Team!", "todaySummary": "12 pieces of content need publishing today", "weeklyGrowth": "+18% this week",
+        "totalPosts": "Total Posts", "published": "Published", "pendingApproval": "Pending Review", "error": "Errors",
+        "followers": "Followers", "trendingToday": "TRENDING TODAY", "scrapedAt": "Scraped 09:00",
+        "contentPerformance": "CONTENT PERFORMANCE", "days30": "30 days", "topChannels": "TOP CHANNELS",
+        "channelDistribution": "CHANNEL SPLIT", "aiSuggestions": "TODAY'S SUGGESTIONS"
+      },
+      "content": {
+        "title": "Content Management", "subtitle": "Schedule & publish across channels", "createPost": "New Post",
+        "searchPlaceholder": "Search by post name...", "postsCount": "{{count}} posts",
+        "viewDemoHint": "Demo: 3 view modes — explore on your own", "dropHere": "Drop post here",
+        "openingEditor": "Opening new post editor...", "allPosts": "All Posts",
+        "channelLabel": "Channel: {{channel}}", "author": "Author:", "reach": "Reach",
+        "engagement": "Engagement", "task": "Task",
+        "kanban": { "draft": "Draft", "review": "Pending Review", "published": "Published" }
+      },
+      "schedule": {
+        "publishSchedule": "Publish Schedule", "selectDate": "SELECT DATE", "dayLabel": "AUG {{day}}",
+        "noScheduledPosts": "No posts scheduled", "monthYear": "August 2026", "monthShort": "August"
+      },
+      "analytics": {
+        "title": "Performance Analytics", "subtitle": "Channel & content growth", "last6Months": "Last 6 months",
+        "views": "Views", "followers": "Followers", "engagement": "Engagement", "shares": "Shares",
+        "viewsByDay": "VIEWS BY DAY", "channelDistribution": "CHANNEL SPLIT"
+      },
+      "aiStudio": {
+        "writeText": "Write Text", "generateImage": "Generate Image", "generateContentByAi": "Auto-generate content with AI",
+        "aiCreditsRemaining": "AI Credits remaining", "generating": "Generating content...",
+        "generateImageBtn": "Generate Image", "generateVideoBtn": "Generate Video", "generateTextBtn": "Generate Text",
+        "aiResultTitle": "AI RESULT", "noResultYet": "No result yet — click Generate to start",
+        "generateAnotherVariant": "Generate another variant", "recentHistory": "RECENT HISTORY"
+      },
+      "workspace": {
+        "workspacesCount": "{{count}} workspaces · {{active}} active", "create": "Create",
+        "searchPlaceholder": "Search workspace or client...", "all": "All", "starred": "Starred",
+        "active": "Active", "noWorkspaceFound": "No workspace found", "allWorkspaces": "All workspaces",
+        "sharedSpace": "Shared space · {{count}} members", "online": "{{count}} online",
+        "doing": "Doing", "membersOnline": "Online", "membersOffline": "Offline",
+        "newWorkspace": "New project", "newClient": "New client", "newTag": "New", "lastActive": "Active {{time}}",
+        "status": { "active": "Active", "review": "In review", "paused": "Paused" }
+      },
+      "publish": {
+        "title": "Publish", "subtitle": "Push content to connected channels", "ready": "Ready",
+        "queueTitle": "PUSH QUEUE ({{count}})", "pushing": "Pushing posts...", "pushAll": "Push to all channels"
+      },
+      "approval": {
+        "title": "Approval", "subtitle": "Preview and approve posts before publishing",
+        "allApproved": "All pending posts approved", "feedbackSent": "Feedback sent to Account Manager",
+        "approve": "Approve", "feedback": "Feedback"
+      }
+    },
     "heroFeed": {
       "ui": {
         "like": "Like", "comment": "Comment", "share": "Share", "send": "Send", "repost": "Repost", "save": "Save",
@@ -217,8 +272,22 @@
         "tuan": { "quote": "Best investment for our agency. Managing 20+ client brands has never been this smooth and organized." }
       }
     },
+    "nav": {
+      "features": "Features", "howItWorks": "How It Works", "templates": "Templates", "testimonials": "Testimonials",
+      "team": "Team", "pricing": "Pricing", "faq": "FAQ", "login": "Sign in", "register": "Sign up"
+    },
+    "team": {
+      "title": "Development Team", "subtitle": "The student team building BrandHub for the SEP490 capstone project.",
+      "members": {
+        "member1": { "name": "Nguyen Van A", "role": "Project Manager" },
+        "member2": { "name": "Tran Thi B", "role": "Frontend Developer" },
+        "member3": { "name": "Le Van C", "role": "Backend Developer" },
+        "member4": { "name": "Pham Thi D", "role": "QA Engineer" }
+      }
+    },
     "pricing": {
       "title": "Simple, transparent pricing", "subtitle": "Choose the plan that fits your team. No hidden fees.", "mostPopular": "Most Popular",
+      "monthly": "Monthly", "yearly": "Yearly", "yearlySave": "Save 20%", "perMonth": "/mo",
       "plans": {
         "starter": { "name": "Starter", "price": "Free", "cta": "Start free", "features": ["1 workspace", "5 team members", "3 social channels", "Basic analytics", "100 scheduled posts/mo"] },
         "pro": { "name": "Pro", "price": "590K ₫", "cta": "Start free trial", "features": ["Unlimited workspaces", "Unlimited team members", "All social channels", "Advanced analytics", "AI content generation", "Priority support", "Custom templates"] },
@@ -238,11 +307,15 @@
     "cta": { "title": "Ready to transform your content workflow?", "subtitle": "Join 50,000+ brands and agencies already using BrandHub. Start free, no credit card required.", "start": "Start free", "login": "Sign in" },
     "footer": {
       "tagline": "The all-in-one brand content management platform. Plan, create, schedule, publish, and grow — all in one place.",
+      "email": "brandhub404@gmail.com",
       "columns": { "product": "Product", "resources": "Resources", "company": "Company" },
+      "comingSoon": "Coming soon",
+      "productLinks": {
+        "features": "Features", "howItWorks": "How It Works", "templates": "Templates", "pricing": "Pricing"
+      },
       "links": {
-        "product": ["Features", "Pricing", "Integrations", "Changelog", "API"],
-        "resources": ["Help Center", "Blog", "Templates", "Community", "Tutorials"],
-        "company": ["About", "Careers", "Contact", "Privacy", "Terms"]
+        "resources": ["Help Center", "Blog", "Community", "Tutorials"],
+        "company": ["About", "Careers", "Privacy", "Terms"]
       },
       "copyright": "© {{year}} BrandHub. All rights reserved."
     }

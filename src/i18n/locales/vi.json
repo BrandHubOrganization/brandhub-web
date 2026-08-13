@@ -79,6 +79,61 @@
       "ctaStart": "Bắt đầu miễn phí", "ctaLogin": "Đăng nhập",
       "trustedByPrefix": "Được tin dùng bởi", "trustedBySuffix": "thương hiệu & agency"
     },
+    "heroDemo": {
+      "nav": { "overview": "Tổng quan", "content": "Nội dung", "schedule": "Lịch", "publish": "Xuất bản", "approval": "Phê duyệt" },
+      "notifications": { "title": "Thông báo" },
+      "common": { "justNow": "vừa xong", "minutesAgo": "{{count}} phút trước", "hoursAgo": "{{count}} giờ trước", "daysAgo": "{{count}} ngày trước", "weekAgo": "1 tuần trước", "today": "Hôm nay", "yesterday": "Hôm qua", "justCreated": "vừa tạo" },
+      "overview": {
+        "greeting": "Chào buổi sáng, Team!", "todaySummary": "Hôm nay có 12 nội dung cần publish", "weeklyGrowth": "+18% tuần này",
+        "totalPosts": "Tổng bài", "published": "Đã đăng", "pendingApproval": "Chờ duyệt", "error": "Lỗi",
+        "followers": "Theo dõi", "trendingToday": "TRENDING HÔM NAY", "scrapedAt": "Cào 09:00",
+        "contentPerformance": "HIỆU SUẤT CONTENT", "days30": "30 ngày", "topChannels": "TOP KÊNH HOẠT ĐỘNG",
+        "channelDistribution": "PHÂN BỐ KÊNH", "aiSuggestions": "ĐỀ XUẤT HÔM NAY"
+      },
+      "content": {
+        "title": "Quản lý nội dung", "subtitle": "Lên lịch & xuất bản đa kênh", "createPost": "Tạo bài",
+        "searchPlaceholder": "Tìm kiếm theo tên bài...", "postsCount": "{{count}} bài",
+        "viewDemoHint": "Demo: 3 kiểu view — bạn tự khám phá nhé", "dropHere": "Thả bài vào đây",
+        "openingEditor": "Đang mở trình soạn bài mới...", "allPosts": "Tất cả bài",
+        "channelLabel": "Kênh: {{channel}}", "author": "Tác giả:", "reach": "Lượt tiếp cận",
+        "engagement": "Tương tác", "task": "Tác vụ",
+        "kanban": { "draft": "Bản nháp", "review": "Chờ duyệt", "published": "Đã đăng" }
+      },
+      "schedule": {
+        "publishSchedule": "Lịch xuất bản", "selectDate": "CHỌN NGÀY", "dayLabel": "NGÀY {{day}}/8",
+        "noScheduledPosts": "Chưa có bài lên lịch", "monthYear": "Tháng 8, 2026", "monthShort": "Tháng 8"
+      },
+      "analytics": {
+        "title": "Phân tích hiệu suất", "subtitle": "Tăng trưởng kênh & nội dung", "last6Months": "6 tháng gần nhất",
+        "views": "Lượt xem", "followers": "Người theo dõi", "engagement": "Tương tác", "shares": "Chia sẻ",
+        "viewsByDay": "LƯỢT XEM THEO NGÀY", "channelDistribution": "PHÂN BỔ KÊNH"
+      },
+      "aiStudio": {
+        "writeText": "Viết bài", "generateImage": "Sinh ảnh", "generateContentByAi": "Sinh nội dung tự động bằng AI",
+        "aiCreditsRemaining": "AI Credits còn lại", "generating": "Đang sinh nội dung AI...",
+        "generateImageBtn": "Sinh ảnh AI", "generateVideoBtn": "Sinh video AI", "generateTextBtn": "Sinh bài AI",
+        "aiResultTitle": "KẾT QUẢ AI", "noResultYet": "Chưa có kết quả — nhấn Sinh AI để bắt đầu",
+        "generateAnotherVariant": "Tạo biến thể khác", "recentHistory": "LỊCH SỬ GẦN ĐÂY"
+      },
+      "workspace": {
+        "workspacesCount": "{{count}} workspaces · {{active}} đang hoạt động", "create": "Tạo",
+        "searchPlaceholder": "Tìm workspace hoặc khách hàng...", "all": "Tất cả", "starred": "Đánh dấu",
+        "active": "Đang hoạt động", "noWorkspaceFound": "Không tìm thấy workspace", "allWorkspaces": "Tất cả workspace",
+        "sharedSpace": "Không gian chung · {{count}} thành viên", "online": "{{count}} online",
+        "doing": "Đang làm", "membersOnline": "Online", "membersOffline": "Offline",
+        "newWorkspace": "Dự án mới", "newClient": "Khách hàng mới", "newTag": "Mới", "lastActive": "Hoạt động {{time}}",
+        "status": { "active": "Đang hoạt động", "review": "Đang duyệt", "paused": "Tạm dừng" }
+      },
+      "publish": {
+        "title": "Xuất bản", "subtitle": "Đẩy nội dung lên các kênh đã kết nối", "ready": "Sẵn sàng",
+        "queueTitle": "HÀNG CHỜ ĐẨY ({{count}})", "pushing": "Đang đẩy bài...", "pushAll": "Đẩy lên tất cả kênh"
+      },
+      "approval": {
+        "title": "Phê duyệt", "subtitle": "Xem trước và phê duyệt bài trước khi xuất bản",
+        "allApproved": "Đã duyệt hết bài chờ", "feedbackSent": "Đã gửi góp ý cho Account Manager",
+        "approve": "Phê duyệt", "feedback": "Góp ý"
+      }
+    },
     "heroFeed": {
       "ui": {
         "like": "Thích", "comment": "Bình luận", "share": "Chia sẻ", "send": "Gửi", "repost": "Repost", "save": "Lưu",
@@ -217,8 +272,22 @@
         "tuan": { "quote": "Khoản đầu tư tốt nhất cho agency. Quản lý 20+ thương hiệu khách hàng chưa bao giờ mượt mà và có tổ chức như vậy." }
       }
     },
+    "nav": {
+      "features": "Tính năng", "howItWorks": "Quy trình", "templates": "Template", "testimonials": "Đánh giá",
+      "team": "Đội ngũ", "pricing": "Bảng giá", "faq": "FAQ", "login": "Đăng nhập", "register": "Đăng ký"
+    },
+    "team": {
+      "title": "Đội ngũ phát triển", "subtitle": "Nhóm sinh viên xây dựng BrandHub trong đồ án tốt nghiệp SEP490.",
+      "members": {
+        "member1": { "name": "Nguyễn Văn A", "role": "Project Manager" },
+        "member2": { "name": "Trần Thị B", "role": "Frontend Developer" },
+        "member3": { "name": "Lê Văn C", "role": "Backend Developer" },
+        "member4": { "name": "Phạm Thị D", "role": "QA Engineer" }
+      }
+    },
     "pricing": {
       "title": "Bảng giá đơn giản, minh bạch", "subtitle": "Chọn gói phù hợp với team của bạn. Không phí ẩn.", "mostPopular": "Phổ biến nhất",
+      "monthly": "Hàng tháng", "yearly": "Hàng năm", "yearlySave": "Tiết kiệm 20%", "perMonth": "/tháng",
       "plans": {
         "starter": { "name": "Starter", "price": "Miễn phí", "cta": "Bắt đầu miễn phí", "features": ["1 không gian làm việc", "5 thành viên", "3 kênh mạng xã hội", "Phân tích cơ bản", "100 bài đăng/tháng"] },
         "pro": { "name": "Pro", "price": "590K ₫", "cta": "Dùng thử miễn phí", "features": ["Không gian làm việc không giới hạn", "Thành viên không giới hạn", "Tất cả kênh mạng xã hội", "Phân tích nâng cao", "Tạo nội dung AI", "Hỗ trợ ưu tiên", "Template tùy chỉnh"] },
@@ -238,11 +307,15 @@
     "cta": { "title": "Sẵn sàng thay đổi workflow nội dung?", "subtitle": "Tham gia cùng 50,000+ thương hiệu và agency đã dùng BrandHub. Bắt đầu miễn phí, không cần thẻ tín dụng.", "start": "Bắt đầu miễn phí", "login": "Đăng nhập" },
     "footer": {
       "tagline": "Nền tảng quản lý nội dung thương hiệu toàn diện. Lập kế hoạch, sáng tạo, lên lịch, xuất bản và phát triển — tất cả trong một.",
+      "email": "brandhub404@gmail.com",
       "columns": { "product": "Sản phẩm", "resources": "Tài nguyên", "company": "Công ty" },
+      "comingSoon": "Sắp ra mắt",
+      "productLinks": {
+        "features": "Tính năng", "howItWorks": "Quy trình", "templates": "Template", "pricing": "Bảng giá"
+      },
       "links": {
-        "product": ["Tính năng", "Bảng giá", "Tích hợp", "Cập nhật", "API"],
-        "resources": ["Trung tâm trợ giúp", "Blog", "Template", "Cộng đồng", "Hướng dẫn"],
-        "company": ["Giới thiệu", "Tuyển dụng", "Liên hệ", "Bảo mật", "Điều khoản"]
+        "resources": ["Trung tâm trợ giúp", "Blog", "Cộng đồng", "Hướng dẫn"],
+        "company": ["Giới thiệu", "Tuyển dụng", "Bảo mật", "Điều khoản"]
       },
       "copyright": "© {{year}} BrandHub. Đã đăng ký bản quyền."
     }

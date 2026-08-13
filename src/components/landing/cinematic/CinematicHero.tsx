@@ -370,43 +370,57 @@ export function CinematicHero() {
   );
 }
 
-const NAV_ITEMS = [
-  { icon: LayoutGrid, label: "Tổng quan", pageIndex: 0 },
-  { icon: FileText, label: "Nội dung", pageIndex: 1 },
-  { icon: CalendarDays, label: "Lịch", pageIndex: 2 },
-  { icon: Sparkles, label: "AI Studio", pageIndex: 3 },
-  { icon: LineChart, label: "Analytics", pageIndex: 4 },
-  { icon: Upload, label: "Xuất bản", pageIndex: 5 },
-  { icon: Building2, label: "Workspace", pageIndex: 6 },
-  { icon: ThumbsUp, label: "Phê duyệt", pageIndex: 7 },
-] as const;
+function useNavItems() {
+  const { t } = useTranslation();
+  return [
+    {
+      icon: LayoutGrid,
+      label: t("landing.heroDemo.nav.overview"),
+      pageIndex: 0,
+    },
+    { icon: FileText, label: t("landing.heroDemo.nav.content"), pageIndex: 1 },
+    {
+      icon: CalendarDays,
+      label: t("landing.heroDemo.nav.schedule"),
+      pageIndex: 2,
+    },
+    { icon: Sparkles, label: "AI Studio", pageIndex: 3 },
+    { icon: LineChart, label: "Analytics", pageIndex: 4 },
+    { icon: Upload, label: t("landing.heroDemo.nav.publish"), pageIndex: 5 },
+    { icon: Building2, label: "Workspace", pageIndex: 6 },
+    { icon: ThumbsUp, label: t("landing.heroDemo.nav.approval"), pageIndex: 7 },
+  ] as const;
+}
 
-const NOTIFICATIONS = [
-  {
-    icon: "approve",
-    title: "3 bài đang chờ bạn duyệt",
-    time: "vừa xong",
-    color: "text-amber-500",
-  },
-  {
-    icon: "publish",
-    title: "Launch Heineken đã đăng lên Instagram",
-    time: "12 phút trước",
-    color: "text-emerald-500",
-  },
-  {
-    icon: "ai",
-    title: "AI Studio đã sinh xong 6 ảnh mới",
-    time: "1 giờ trước",
-    color: "text-brand-orange",
-  },
-  {
-    icon: "credit",
-    title: "Chỉ còn 1,250 AI credits",
-    time: "3 giờ trước",
-    color: "text-blue-500",
-  },
-] as const;
+function useNotifications() {
+  const { t } = useTranslation();
+  return [
+    {
+      icon: "approve",
+      title: "3 bài đang chờ bạn duyệt",
+      time: t("landing.heroDemo.common.justNow"),
+      color: "text-amber-500",
+    },
+    {
+      icon: "publish",
+      title: "Launch Heineken đã đăng lên Instagram",
+      time: t("landing.heroDemo.common.minutesAgo", { count: 12 }),
+      color: "text-emerald-500",
+    },
+    {
+      icon: "ai",
+      title: "AI Studio đã sinh xong 6 ảnh mới",
+      time: t("landing.heroDemo.common.hoursAgo", { count: 1 }),
+      color: "text-brand-orange",
+    },
+    {
+      icon: "credit",
+      title: "Chỉ còn 1,250 AI credits",
+      time: t("landing.heroDemo.common.hoursAgo", { count: 3 }),
+      color: "text-blue-500",
+    },
+  ] as const;
+}
 
 function NotifIcon({ kind }: { kind: string }) {
   if (kind === "approve") return <Clock className="size-3.5 text-amber-500" />;
@@ -423,10 +437,13 @@ function BrandHubDashboardBg({
   device: "macbook" | "iphone";
   sectionRef: React.RefObject<HTMLElement | null>;
 }) {
+  const { t } = useTranslation();
   const page = useLandingDemoStore((s) => s.activePage);
   const setPage = useLandingDemoStore((s) => s.setPage);
   const requestId = useLandingDemoStore((s) => s.requestId);
   const [notifOpen, setNotifOpen] = useState(false);
+  const NAV_ITEMS = useNavItems();
+  const NOTIFICATIONS = useNotifications();
 
   // A Feature card requested a specific demo tab (goToPage bumped
   // requestId; activePage/page is already updated via the store). Scroll
@@ -471,8 +488,10 @@ function BrandHubDashboardBg({
 
   // Demo lần đầu: tự xoay qua toàn bộ 7 tab để khoe từng trang, giữ lâu ở
   // Nội dung (page 1) cho view-demo chạy xong, rồi dừng. Guard 1 lần.
+  // Bỏ qua nếu prefers-reduced-motion; dọn timer khi unmount giữa chừng.
   useEffect(() => {
     if (localStorage.getItem("brandhub_tab_demo")) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     localStorage.setItem("brandhub_tab_demo", "1");
     const plan: [number, number][] = [
       [1, 900],
@@ -483,7 +502,8 @@ function BrandHubDashboardBg({
       [6, 7700],
       [0, 8500],
     ];
-    plan.forEach(([pg, ms]) => setTimeout(() => setPage(pg), ms));
+    const timers = plan.map(([pg, ms]) => setTimeout(() => setPage(pg), ms));
+    return () => timers.forEach(clearTimeout);
   }, [setPage]);
   const pages = [
     <OverviewPage key="overview" device={device} />,
@@ -651,7 +671,7 @@ function BrandHubDashboardBg({
                                 />
                                 <div className="absolute top-6 right-0 z-50 w-52 rounded-lg border border-zinc-200 bg-white p-1.5 shadow-xl">
                                   <p className="px-2 py-1 text-[10px] font-semibold text-zinc-700">
-                                    Thông báo
+                                    {t("landing.heroDemo.notifications.title")}
                                   </p>
                                   <div className="flex flex-col">
                                     {NOTIFICATIONS.map((n) => (
@@ -804,6 +824,7 @@ function IPhoneFrame({
   clock: string;
   pages: React.ReactNode[];
 }) {
+  const NAV_ITEMS = useNavItems();
   return (
     <div className="relative mx-auto w-80 px-4">
       {/* Vỏ iPhone — chassis titan + viền màn đen + notch */}
@@ -1000,21 +1021,22 @@ const ADVICE_ITEMS: AdviceItem[] = [
 ];
 
 function OverviewPage({ device }: { device: "macbook" | "iphone" }) {
+  const { t } = useTranslation();
   const gridCols = device === "iphone" ? "grid-cols-1" : "grid-cols-2";
   return (
     <div className="flex min-h-full flex-col gap-3 p-4">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-semibold text-zinc-900">
-            Chào buổi sáng, Team!
+            {t("landing.heroDemo.overview.greeting")}
           </p>
           <p className="text-[11px] text-zinc-500">
-            Hôm nay có 12 nội dung cần publish
+            {t("landing.heroDemo.overview.todaySummary")}
           </p>
         </div>
         <div className="bg-brand-orange/10 text-brand-orange flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-medium">
           <TrendingUp className="size-3" />
-          +18% tuần này
+          {t("landing.heroDemo.overview.weeklyGrowth")}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -1022,22 +1044,25 @@ function OverviewPage({ device }: { device: "macbook" | "iphone" }) {
           <div className="mb-1 flex items-center justify-between">
             <span className="flex items-center gap-1 text-[10px] text-zinc-500">
               <Files className="text-brand-orange size-3" />
-              Tổng bài
+              {t("landing.heroDemo.overview.totalPosts")}
             </span>
             <span className="text-brand-orange text-[9px]">●</span>
           </div>
           <p className="text-lg font-bold text-zinc-900">1,284</p>
           <div className="mt-1.5 flex flex-col gap-1">
             <span className="flex items-center gap-1 text-[9px] text-zinc-500">
-              <Upload className="text-brand-orange size-2.5" /> Đã đăng
+              <Upload className="text-brand-orange size-2.5" />{" "}
+              {t("landing.heroDemo.overview.published")}
               <b className="ml-auto font-semibold text-zinc-700">986</b>
             </span>
             <span className="flex items-center gap-1 text-[9px] text-zinc-500">
-              <Clock className="text-brand-orange size-2.5" /> Chờ duyệt
+              <Clock className="text-brand-orange size-2.5" />{" "}
+              {t("landing.heroDemo.overview.pendingApproval")}
               <b className="ml-auto font-semibold text-zinc-700">24</b>
             </span>
             <span className="flex items-center gap-1 text-[9px] text-zinc-500">
-              <AlertCircle className="text-brand-orange size-2.5" /> Lỗi
+              <AlertCircle className="text-brand-orange size-2.5" />{" "}
+              {t("landing.heroDemo.overview.error")}
               <b className="ml-auto font-semibold text-zinc-700">3</b>
             </span>
           </div>
@@ -1046,13 +1071,14 @@ function OverviewPage({ device }: { device: "macbook" | "iphone" }) {
           <div className="mb-1 flex items-center justify-between">
             <span className="flex items-center gap-1 text-[10px] text-zinc-500">
               <Users2 className="text-brand-orange size-3" />
-              Theo dõi
+              {t("landing.heroDemo.overview.followers")}
             </span>
             <span className="text-brand-orange text-[9px]">●</span>
           </div>
           <p className="text-lg font-bold text-zinc-900">12.4k</p>
           <div className="bg-brand-orange/10 text-brand-orange mt-1.5 flex w-fit items-center gap-1 rounded px-1.5 py-0.5 text-[9px] font-medium">
-            <TrendingUp className="size-2.5" /> +18% tuần này
+            <TrendingUp className="size-2.5" />{" "}
+            {t("landing.heroDemo.overview.weeklyGrowth")}
           </div>
         </div>
       </div>
@@ -1061,31 +1087,32 @@ function OverviewPage({ device }: { device: "macbook" | "iphone" }) {
         <div className="mb-2 flex items-center justify-between">
           <p className="flex items-center gap-1.5 text-[10px] font-medium text-zinc-500">
             <Flame className="text-brand-orange size-3" />
-            TRENDING HÔM NAY
+            {t("landing.heroDemo.overview.trendingToday")}
           </p>
           <span className="bg-brand-orange/10 text-brand-orange flex items-center gap-1 rounded px-1.5 py-0.5 text-[8px] font-medium">
-            <RefreshCw className="size-2.5" /> Cào 09:00
+            <RefreshCw className="size-2.5" />{" "}
+            {t("landing.heroDemo.overview.scrapedAt")}
           </span>
         </div>
         <div className="flex flex-col gap-1.5">
-          {TRENDING_ITEMS.map((t) => {
-            const cfg = CALENDAR_CHANNEL_CONFIG[t.channel];
+          {TRENDING_ITEMS.map((item) => {
+            const cfg = CALENDAR_CHANNEL_CONFIG[item.channel];
             return (
-              <div key={t.rank} className="flex items-center gap-2">
+              <div key={item.rank} className="flex items-center gap-2">
                 <span className="flex size-4 shrink-0 items-center justify-center rounded text-[9px] font-bold text-zinc-500">
-                  {t.rank}
+                  {item.rank}
                 </span>
                 <cfg.icon
                   className="size-3 shrink-0"
                   style={{ color: cfg.color }}
                 />
                 <p className="min-w-0 flex-1 truncate text-[10px] text-zinc-700">
-                  {t.keyword}
+                  {item.keyword}
                 </p>
                 <span className="flex items-center gap-0.5 text-[9px] font-semibold text-emerald-600">
-                  <TrendingUp className="size-2.5" />+{t.growth}%
+                  <TrendingUp className="size-2.5" />+{item.growth}%
                 </span>
-                <span className="text-[9px] text-zinc-400">{t.views}</span>
+                <span className="text-[9px] text-zinc-400">{item.views}</span>
               </div>
             );
           })}
@@ -1095,18 +1122,18 @@ function OverviewPage({ device }: { device: "macbook" | "iphone" }) {
         <div className="col-span-1 flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-[10px] font-medium text-zinc-500">
-              HIỆU SUẤT CONTENT
+              {t("landing.heroDemo.overview.contentPerformance")}
             </p>
             <div className="flex items-center gap-1 text-[9px] text-zinc-500">
               <span className="bg-brand-orange size-1.5 rounded-full" />
-              30 ngày
+              {t("landing.heroDemo.overview.days30")}
             </div>
           </div>
           <AnimatedBars />
         </div>
         <div className="flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
           <p className="mb-2 text-[10px] font-medium text-zinc-500">
-            TOP KÊNH HOẠT ĐỘNG
+            {t("landing.heroDemo.overview.topChannels")}
           </p>
           {[
             { name: "Instagram", pct: 82, color: "bg-brand-orange" },
@@ -1130,7 +1157,7 @@ function OverviewPage({ device }: { device: "macbook" | "iphone" }) {
         {/* Donut phân bố kênh */}
         <div className="flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
           <p className="mb-2 text-[10px] font-medium text-zinc-500">
-            PHÂN BỐ KÊNH
+            {t("landing.heroDemo.overview.channelDistribution")}
           </p>
           <div className="flex flex-1 items-center gap-3">
             <div
@@ -1162,7 +1189,7 @@ function OverviewPage({ device }: { device: "macbook" | "iphone" }) {
         <div className="flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
           <p className="flex items-center gap-1.5 text-[10px] font-medium text-zinc-500">
             <Sparkles className="text-brand-orange size-3" />
-            ĐỀ XUẤT HÔM NAY
+            {t("landing.heroDemo.overview.aiSuggestions")}
           </p>
           <div className="mt-2 flex flex-col gap-2.5">
             {ADVICE_ITEMS.map((a) => (
@@ -1224,27 +1251,32 @@ function AnimatedBars() {
   );
 }
 
-const KANBAN_COLS = [
+const KANBAN_COLS_BASE = [
   {
     key: "draft",
-    label: "Bản nháp",
     dot: "bg-zinc-400",
     bar: "bg-zinc-300",
   },
   {
     key: "review",
-    label: "Chờ duyệt",
     dot: "bg-amber-400",
     bar: "bg-amber-300",
   },
   {
     key: "published",
-    label: "Đã đăng",
     dot: "bg-emerald-400",
     bar: "bg-emerald-300",
   },
 ] as const;
-type KanbanStatus = (typeof KANBAN_COLS)[number]["key"];
+type KanbanStatus = (typeof KANBAN_COLS_BASE)[number]["key"];
+
+function useKanbanCols() {
+  const { t } = useTranslation();
+  return KANBAN_COLS_BASE.map((c) => ({
+    ...c,
+    label: t(`landing.heroDemo.content.kanban.${c.key}`),
+  }));
+}
 
 interface KanbanItem {
   title: string;
@@ -1363,6 +1395,7 @@ const KANBAN_ITEMS: KanbanItem[] = [
 ];
 
 function ContentPage({ device }: { device: "macbook" | "iphone" }) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [creating, setCreating] = useState(false);
   const [items, setItems] = useState<KanbanItem[]>(KANBAN_ITEMS);
@@ -1372,15 +1405,19 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
   const [demoHint, setDemoHint] = useState(false);
 
   // Demo lần đầu: tự xoay qua 3 view rồi dừng, guard localStorage 1 lần.
+  // Bỏ qua nếu user bật prefers-reduced-motion; luôn dọn timer khi unmount
+  // giữa chừng để tránh setState-after-unmount.
   useEffect(() => {
     if (localStorage.getItem("brandhub_view_demo")) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     localStorage.setItem("brandhub_view_demo", "1");
     setDemoHint(true);
     const seq = ["list", "timeline", "kanban"] as const;
-    seq.forEach((v, i) => {
-      setTimeout(() => setView(v), (i + 1) * 800);
-    });
-    setTimeout(() => setDemoHint(false), 3600);
+    const timers = seq.map((v, i) =>
+      setTimeout(() => setView(v), (i + 1) * 800),
+    );
+    timers.push(setTimeout(() => setDemoHint(false), 3600));
+    return () => timers.forEach(clearTimeout);
   }, []);
 
   const moveTo = (status: KanbanStatus) => {
@@ -1394,16 +1431,17 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
   const filtered = items.filter((p) =>
     p.title.toLowerCase().includes(query.trim().toLowerCase()),
   );
+  const KANBAN_COLS = useKanbanCols();
 
   return (
     <div className="relative flex min-h-full flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-zinc-900">
-            Quản lý nội dung
+            {t("landing.heroDemo.content.title")}
           </p>
           <p className="text-[11px] text-zinc-500">
-            Lên lịch & xuất bản đa kênh
+            {t("landing.heroDemo.content.subtitle")}
           </p>
         </div>
         <button
@@ -1414,7 +1452,7 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
           }}
           className="bg-brand-orange flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold text-white transition-transform active:scale-95"
         >
-          <Plus className="size-3" /> Tạo bài
+          <Plus className="size-3" /> {t("landing.heroDemo.content.createPost")}
         </button>
       </div>
       <div className="focus-within:border-brand-orange/50 focus-within:ring-brand-orange/30 flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 shadow-sm transition-colors focus-within:ring-1">
@@ -1422,7 +1460,7 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Tìm kiếm theo tên bài..."
+          placeholder={t("landing.heroDemo.content.searchPlaceholder")}
           className="w-full bg-transparent text-[10px] text-zinc-700 outline-none placeholder:text-zinc-500"
         />
       </div>
@@ -1449,11 +1487,13 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
             </button>
           ))}
         </div>
-        <span className="text-[9px] text-zinc-400">{filtered.length} bài</span>
+        <span className="text-[9px] text-zinc-400">
+          {t("landing.heroDemo.content.postsCount", { count: filtered.length })}
+        </span>
       </div>
       {demoHint && (
         <p className="ghost-comment-in border-brand-orange/30 bg-brand-orange/10 text-brand-orange rounded-md border px-2 py-1 text-center text-[9px] font-medium">
-          Demo: 3 kiểu view — bạn tự khám phá nhé
+          {t("landing.heroDemo.content.viewDemoHint")}
         </p>
       )}
       <div
@@ -1533,7 +1573,7 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
               })}
               {colItems.length === 0 && (
                 <p className="py-3 text-center text-[9px] text-zinc-400">
-                  Thả bài vào đây
+                  {t("landing.heroDemo.content.dropHere")}
                 </p>
               )}
             </div>
@@ -1582,7 +1622,7 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
       )}
       {creating && (
         <p className="ghost-comment-in border-brand-orange/30 bg-brand-orange/10 text-brand-orange rounded-md border px-2 py-1 text-center text-[9px] font-medium">
-          Đang mở trình soạn bài mới...
+          {t("landing.heroDemo.content.openingEditor")}
         </p>
       )}
       {open && (
@@ -1592,7 +1632,8 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
             onClick={() => setOpen(null)}
             className="text-brand-orange flex w-fit items-center gap-1 text-[10px] font-semibold"
           >
-            <ArrowLeft className="size-3" /> Tất cả bài
+            <ArrowLeft className="size-3" />{" "}
+            {t("landing.heroDemo.content.allPosts")}
           </button>
           <div className="from-brand-orange/30 relative mt-2 h-28 overflow-hidden rounded-md bg-linear-to-br via-amber-300/40 to-purple-400/30">
             {open.cover && (
@@ -1625,7 +1666,9 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
               return (
                 <span className="flex items-center gap-1.5 text-[10px] text-zinc-600">
                   <cfg.icon className="size-3" style={{ color: cfg.color }} />
-                  Kênh: {cfg.label}
+                  {t("landing.heroDemo.content.channelLabel", {
+                    channel: cfg.label,
+                  })}
                 </span>
               );
             })()}
@@ -1633,8 +1676,8 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
               <Clock className="text-brand-orange size-3" /> {open.time}
             </span>
             <span className="flex items-center gap-1.5 text-[10px] text-zinc-600">
-              <Users2 className="text-brand-orange size-3" /> Tác giả:{" "}
-              {open.author ?? "—"}
+              <Users2 className="text-brand-orange size-3" />{" "}
+              {t("landing.heroDemo.content.author")} {open.author ?? "—"}
             </span>
           </div>
           <div className="bg-brand-orange/5 border-brand-orange/15 mt-3 flex items-center justify-around rounded-lg border px-2 py-2.5">
@@ -1642,14 +1685,18 @@ function ContentPage({ device }: { device: "macbook" | "iphone" }) {
               <p className="text-sm font-bold text-zinc-900">
                 {open.impressions ?? "0"}
               </p>
-              <p className="text-[8px] text-zinc-500">Lượt tiếp cận</p>
+              <p className="text-[8px] text-zinc-500">
+                {t("landing.heroDemo.content.reach")}
+              </p>
             </div>
             <div className="h-6 w-px bg-zinc-200" />
             <div className="text-center">
               <p className="text-sm font-bold text-zinc-900">
                 {open.status === "published" ? "2.1K" : "—"}
               </p>
-              <p className="text-[8px] text-zinc-500">Tương tác</p>
+              <p className="text-[8px] text-zinc-500">
+                {t("landing.heroDemo.content.engagement")}
+              </p>
             </div>
             <div className="h-6 w-px bg-zinc-200" />
             <div className="text-center">
@@ -1685,6 +1732,8 @@ function TimelineNotion({
   items: KanbanItem[];
   onOpen: (i: KanbanItem) => void;
 }) {
+  const { t } = useTranslation();
+  const KANBAN_COLS = useKanbanCols();
   return (
     <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white shadow-sm">
       <div
@@ -1698,7 +1747,7 @@ function TimelineNotion({
             className="shrink-0 border-r border-zinc-200 px-2 py-1 text-[9px] font-medium text-zinc-500"
             style={{ width: TIMELINE_GUTTER }}
           >
-            Tác vụ
+            {t("landing.heroDemo.content.task")}
           </div>
           {TIMELINE_DAYS.map((d, i) => (
             <div
@@ -1808,6 +1857,7 @@ const CALENDAR_POSTS: Record<
 };
 
 function SchedulePage() {
+  const { t } = useTranslation();
   const cells = [
     null,
     null,
@@ -1847,14 +1897,20 @@ function SchedulePage() {
       <div className="flex flex-1 flex-col gap-3">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-900">Lịch xuất bản</p>
-            <p className="text-[11px] text-zinc-500">Tháng 8, 2026</p>
+            <p className="text-sm font-semibold text-zinc-900">
+              {t("landing.heroDemo.schedule.publishSchedule")}
+            </p>
+            <p className="text-[11px] text-zinc-500">
+              {t("landing.heroDemo.schedule.monthYear")}
+            </p>
           </div>
           <div className="flex items-center gap-2 text-zinc-500">
             <button className="rounded p-0.5 hover:text-zinc-900">
               <ChevronLeft className="size-3" />
             </button>
-            <span className="text-[11px] font-medium">Tháng 8</span>
+            <span className="text-[11px] font-medium">
+              {t("landing.heroDemo.schedule.monthShort")}
+            </span>
             <button className="rounded p-0.5 hover:text-zinc-900">
               <ChevronRight className="size-3" />
             </button>
@@ -1910,11 +1966,13 @@ function SchedulePage() {
 
       <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 bg-white p-2.5 shadow-sm">
         <p className="text-[10px] font-medium text-zinc-500">
-          {selected ? `NGÀY ${selected}/8` : "CHỌN NGÀY"}
+          {selected
+            ? t("landing.heroDemo.schedule.dayLabel", { day: selected })
+            : t("landing.heroDemo.schedule.selectDate")}
         </p>
         {selectedPosts.length === 0 ? (
           <p className="py-4 text-center text-[9px] text-zinc-400">
-            Chưa có bài lên lịch
+            {t("landing.heroDemo.schedule.noScheduledPosts")}
           </p>
         ) : (
           <div className="flex flex-col gap-1.5">
@@ -2022,44 +2080,46 @@ function AnimatedLineChart() {
 }
 
 function AnalyticsPage() {
+  const { t } = useTranslation();
   return (
     <div className="flex min-h-full flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-zinc-900">
-            Phân tích hiệu suất
+            {t("landing.heroDemo.analytics.title")}
           </p>
           <p className="text-[11px] text-zinc-500">
-            Tăng trưởng kênh & nội dung
+            {t("landing.heroDemo.analytics.subtitle")}
           </p>
         </div>
         <div className="flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-2 py-1 text-[9px] text-zinc-600 shadow-sm">
-          <BarChart3 className="size-3" /> 6 tháng gần nhất
+          <BarChart3 className="size-3" />{" "}
+          {t("landing.heroDemo.analytics.last6Months")}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {[
           {
             icon: Eye,
-            label: "Lượt xem",
+            label: t("landing.heroDemo.analytics.views"),
             val: "486k",
             color: "text-brand-orange",
           },
           {
             icon: Users2,
-            label: "Người theo dõi",
+            label: t("landing.heroDemo.analytics.followers"),
             val: "12.4k",
             color: "text-brand-orange",
           },
           {
             icon: MessageCircle,
-            label: "Tương tác",
+            label: t("landing.heroDemo.analytics.engagement"),
             val: "8.1k",
             color: "text-brand-orange",
           },
           {
             icon: Share2,
-            label: "Chia sẻ",
+            label: t("landing.heroDemo.analytics.shares"),
             val: "2.9k",
             color: "text-brand-orange",
           },
@@ -2074,7 +2134,7 @@ function AnalyticsPage() {
       <div className="grid flex-1 grid-cols-1 gap-3">
         <div className="flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
           <p className="mb-1 text-[10px] font-medium text-zinc-500">
-            LƯỢT XEM THEO NGÀY
+            {t("landing.heroDemo.analytics.viewsByDay")}
           </p>
           <div className="min-h-24 flex-1">
             <AnimatedLineChart />
@@ -2082,7 +2142,7 @@ function AnalyticsPage() {
         </div>
         <div className="flex flex-col rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
           <p className="mb-2 text-[10px] font-medium text-zinc-500">
-            PHÂN BỔ KÊNH
+            {t("landing.heroDemo.analytics.channelDistribution")}
           </p>
           <div className="flex flex-1 flex-col justify-center gap-2.5 px-1">
             {[
@@ -2127,12 +2187,24 @@ function PieGrowBar({ pct, color }: { pct: number; color: string }) {
   );
 }
 
-const AI_GEN_TABS = [
-  { key: "text", label: "Viết bài" },
-  { key: "image", label: "Sinh ảnh" },
+const AI_GEN_TABS_BASE = [
+  { key: "text" },
+  { key: "image" },
   { key: "video", label: "Video" },
 ] as const;
-type AiGenTab = (typeof AI_GEN_TABS)[number]["key"];
+type AiGenTab = (typeof AI_GEN_TABS_BASE)[number]["key"];
+
+function useAiGenTabs() {
+  const { t } = useTranslation();
+  return [
+    { key: "text" as const, label: t("landing.heroDemo.aiStudio.writeText") },
+    {
+      key: "image" as const,
+      label: t("landing.heroDemo.aiStudio.generateImage"),
+    },
+    { key: "video" as const, label: "Video" },
+  ];
+}
 
 const AI_MOCK_IMAGE_GALLERY = [
   "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=300&q=80",
@@ -2180,6 +2252,8 @@ const AI_PROMPT_HISTORY = [
 ];
 
 function AIStudioPage() {
+  const { t } = useTranslation();
+  const AI_GEN_TABS = useAiGenTabs();
   const [tab, setTab] = useState<AiGenTab>("image");
   const [prompt, setPrompt] = useState(
     "Ảnh sản phẩm nước hoa cầm bởi người mẫu trên bãi biển, ánh nắng hè, phong cách photorealistic",
@@ -2204,11 +2278,13 @@ function AIStudioPage() {
             <Sparkles className="text-brand-orange size-3.5" /> AI Studio
           </p>
           <p className="text-[11px] text-zinc-500">
-            Sinh nội dung tự động bằng AI
+            {t("landing.heroDemo.aiStudio.generateContentByAi")}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[9px] text-zinc-400">AI Credits còn lại</p>
+          <p className="text-[9px] text-zinc-400">
+            {t("landing.heroDemo.aiStudio.aiCreditsRemaining")}
+          </p>
           <p className="text-brand-orange text-[11px] font-semibold">
             1,250 / 2,000
           </p>
@@ -2216,21 +2292,21 @@ function AIStudioPage() {
       </div>
 
       <div className="flex gap-1 rounded-lg border border-zinc-200 bg-zinc-50 p-0.5">
-        {AI_GEN_TABS.map((t) => (
+        {AI_GEN_TABS.map((tabItem) => (
           <button
-            key={t.key}
+            key={tabItem.key}
             type="button"
             onClick={() => {
-              setTab(t.key);
+              setTab(tabItem.key);
               setDone(false);
             }}
             className={`flex-1 rounded-md py-1 text-[10px] font-medium transition-colors ${
-              tab === t.key
+              tab === tabItem.key
                 ? "bg-white text-zinc-900 shadow-sm"
                 : "text-zinc-500 hover:text-zinc-700"
             }`}
           >
-            {t.label}
+            {tabItem.label}
           </button>
         ))}
       </div>
@@ -2238,14 +2314,14 @@ function AIStudioPage() {
       <div className="flex flex-1 flex-col gap-3">
         <div className="flex flex-1 flex-col gap-2">
           <div className="flex flex-wrap gap-1">
-            {AI_TEMPLATES.map((t) => (
+            {AI_TEMPLATES.map((template) => (
               <button
-                key={t}
+                key={template}
                 type="button"
-                onClick={() => setPrompt(t)}
+                onClick={() => setPrompt(template)}
                 className="hover:border-brand-orange/40 hover:text-brand-orange rounded-full border border-zinc-200 bg-white px-2 py-0.5 text-[8px] text-zinc-500 transition-colors"
               >
-                {t}
+                {template}
               </button>
             ))}
           </div>
@@ -2262,24 +2338,29 @@ function AIStudioPage() {
           >
             {generating ? (
               <>
-                <Loader2 className="size-3 animate-spin" /> Đang sinh nội dung
-                AI...
+                <Loader2 className="size-3 animate-spin" />{" "}
+                {t("landing.heroDemo.aiStudio.generating")}
               </>
             ) : (
               <>
-                <Wand2 className="size-3" /> Sinh{" "}
-                {tab === "image" ? "ảnh" : tab === "video" ? "video" : "bài"} AI
+                <Wand2 className="size-3" />{" "}
+                {tab === "image"
+                  ? t("landing.heroDemo.aiStudio.generateImageBtn")
+                  : tab === "video"
+                    ? t("landing.heroDemo.aiStudio.generateVideoBtn")
+                    : t("landing.heroDemo.aiStudio.generateTextBtn")}
               </>
             )}
           </button>
 
           <div className={PAGE_CARD + " flex-1"}>
             <p className="mb-2 flex items-center gap-1 text-[9px] font-medium text-zinc-500">
-              <ImageIcon className="size-3" /> KẾT QUẢ AI
+              <ImageIcon className="size-3" />{" "}
+              {t("landing.heroDemo.aiStudio.aiResultTitle")}
             </p>
             {!done ? (
               <p className="py-6 text-center text-[9px] text-zinc-400">
-                Chưa có kết quả — nhấn Sinh AI để bắt đầu
+                {t("landing.heroDemo.aiStudio.noResultYet")}
               </p>
             ) : tab === "text" ? (
               <div className="ghost-comment-in rounded-md border border-zinc-100 bg-zinc-50 p-2.5">
@@ -2328,7 +2409,8 @@ function AIStudioPage() {
                 disabled={generating}
                 className="hover:border-brand-orange/40 hover:text-brand-orange mt-2 flex w-full items-center justify-center gap-1.5 rounded-md border border-zinc-200 py-1.5 text-[10px] font-medium text-zinc-600 transition-colors disabled:opacity-70"
               >
-                <RefreshCw className="size-3" /> Tạo biến thể khác
+                <RefreshCw className="size-3" />{" "}
+                {t("landing.heroDemo.aiStudio.generateAnotherVariant")}
               </button>
             )}
           </div>
@@ -2337,7 +2419,7 @@ function AIStudioPage() {
         <div>
           <div className={PAGE_CARD}>
             <p className="mb-2 text-[9px] font-medium text-zinc-500">
-              LỊCH SỬ GẦN ĐÂY
+              {t("landing.heroDemo.aiStudio.recentHistory")}
             </p>
             <div className="flex flex-col gap-2">
               {AI_PROMPT_HISTORY.map((h, i) => (
@@ -2495,29 +2577,47 @@ const WORKSPACES: Workspace[] = [
   },
 ];
 
-const WS_STATUS: Record<
+const WS_STATUS_BASE: Record<
   WsStatus,
-  { label: string; dot: string; bg: string; text: string }
+  { dot: string; bg: string; text: string }
 > = {
   active: {
-    label: "Đang hoạt động",
     dot: "bg-emerald-400",
     bg: "bg-emerald-50",
     text: "text-emerald-600",
   },
   review: {
-    label: "Đang duyệt",
     dot: "bg-brand-orange",
     bg: "bg-brand-orange/10",
     text: "text-brand-orange",
   },
   paused: {
-    label: "Tạm dừng",
     dot: "bg-zinc-300",
     bg: "bg-zinc-100",
     text: "text-zinc-500",
   },
 };
+
+function useWsStatus(): Record<
+  WsStatus,
+  { label: string; dot: string; bg: string; text: string }
+> {
+  const { t } = useTranslation();
+  return {
+    active: {
+      ...WS_STATUS_BASE.active,
+      label: t("landing.heroDemo.workspace.status.active"),
+    },
+    review: {
+      ...WS_STATUS_BASE.review,
+      label: t("landing.heroDemo.workspace.status.review"),
+    },
+    paused: {
+      ...WS_STATUS_BASE.paused,
+      label: t("landing.heroDemo.workspace.status.paused"),
+    },
+  };
+}
 
 const WORKSPACE_MEMBERS = [
   { name: "Minh Nguyễn", role: "Content Director", online: true },
@@ -2563,12 +2663,21 @@ const WORKSPACE_BOARD: Record<
   ],
 };
 
-const WORKSPACE_BOARD_COLS = [
+const WORKSPACE_BOARD_COLS_BASE = [
   { key: "todo", label: "To Do", dot: "bg-zinc-400" },
-  { key: "doing", label: "Đang làm", dot: "bg-blue-400" },
+  { key: "doing", dot: "bg-blue-400" },
   { key: "review", label: "Review", dot: "bg-amber-400" },
   { key: "done", label: "Xong", dot: "bg-emerald-400" },
 ] as const;
+
+function useWorkspaceBoardCols() {
+  const { t } = useTranslation();
+  return WORKSPACE_BOARD_COLS_BASE.map((c) =>
+    c.key === "doing"
+      ? { ...c, label: t("landing.heroDemo.workspace.doing") }
+      : c,
+  );
+}
 
 /** AI-generated portrait avatar, seeded by name so it stays stable across renders. */
 function avatarUrl(name: string, size = 64) {
@@ -2669,36 +2778,38 @@ const WORKSPACE_CONTENT = [
   {
     title: "Launch mùa hè 2026",
     channel: "instagram" as CalChannel,
-    status: "Đã đăng",
+    status: "published" as KanbanStatus,
   },
   {
     title: "Reel trend TikTok",
     channel: "tiktok" as CalChannel,
-    status: "Chờ duyệt",
+    status: "review" as KanbanStatus,
   },
   {
     title: "Case study khách hàng",
     channel: "linkedin" as CalChannel,
-    status: "Bản nháp",
+    status: "draft" as KanbanStatus,
   },
   {
     title: "Banner khuyến mãi T8",
     channel: "facebook" as CalChannel,
-    status: "Đã đăng",
+    status: "published" as KanbanStatus,
   },
   {
     title: "Story quà tặng",
     channel: "instagram" as CalChannel,
-    status: "Chờ duyệt",
+    status: "review" as KanbanStatus,
   },
   {
     title: "Email marketing",
     channel: "linkedin" as CalChannel,
-    status: "Bản nháp",
+    status: "draft" as KanbanStatus,
   },
 ];
 
 function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
+  const { t } = useTranslation();
+  const WS_STATUS = useWsStatus();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "starred" | "active">("all");
   const [list, setList] = useState<Workspace[]>(WORKSPACES);
@@ -2713,15 +2824,15 @@ function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
     setList((prev) => [
       {
         id: Date.now(),
-        name: "Dự án mới",
-        client: "Khách hàng mới",
+        name: t("landing.heroDemo.workspace.newWorkspace"),
+        client: t("landing.heroDemo.workspace.newClient"),
         color: "#f05a28",
         members: 1,
         docs: 0,
-        lastActive: "vừa tạo",
+        lastActive: t("landing.heroDemo.common.justCreated"),
         status: "active",
         starred: false,
-        tags: ["Mới"],
+        tags: [t("landing.heroDemo.workspace.newTag")],
       },
       ...prev,
     ]);
@@ -2737,9 +2848,21 @@ function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
   });
 
   const filters = [
-    { key: "all", label: "Tất cả", icon: FolderOpen },
-    { key: "starred", label: "Đánh dấu", icon: Star },
-    { key: "active", label: "Đang hoạt động", icon: Clock },
+    {
+      key: "all",
+      label: t("landing.heroDemo.workspace.all"),
+      icon: FolderOpen,
+    },
+    {
+      key: "starred",
+      label: t("landing.heroDemo.workspace.starred"),
+      icon: Star,
+    },
+    {
+      key: "active",
+      label: t("landing.heroDemo.workspace.active"),
+      icon: Clock,
+    },
   ] as const;
 
   const selectedWs =
@@ -2754,8 +2877,10 @@ function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
         <div>
           <p className="text-sm font-semibold text-zinc-900">Workspace</p>
           <p className="text-[11px] text-zinc-500">
-            {list.length} workspaces ·{" "}
-            {list.filter((w) => w.status === "active").length} đang hoạt động
+            {t("landing.heroDemo.workspace.workspacesCount", {
+              count: list.length,
+              active: list.filter((w) => w.status === "active").length,
+            })}
           </p>
         </div>
         <button
@@ -2763,7 +2888,7 @@ function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
           onClick={create}
           className="bg-brand-orange flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold text-white transition-transform active:scale-95"
         >
-          <Plus className="size-3" /> Tạo
+          <Plus className="size-3" /> {t("landing.heroDemo.workspace.create")}
         </button>
       </div>
 
@@ -2772,7 +2897,7 @@ function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Tìm workspace hoặc khách hàng..."
+          placeholder={t("landing.heroDemo.workspace.searchPlaceholder")}
           className="w-full bg-transparent text-[10px] text-zinc-700 outline-none placeholder:text-zinc-500"
         />
       </div>
@@ -2875,7 +3000,10 @@ function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
                   </span>
                 </div>
                 <p className="mt-1.5 flex items-center gap-1 text-[9px] text-zinc-400">
-                  <Clock className="size-2.5" /> Hoạt động {w.lastActive}
+                  <Clock className="size-2.5" />{" "}
+                  {t("landing.heroDemo.workspace.lastActive", {
+                    time: w.lastActive,
+                  })}
                 </p>
               </div>
             </div>
@@ -2883,7 +3011,7 @@ function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
         })}
         {filtered.length === 0 && (
           <p className="col-span-full py-6 text-center text-[10px] text-zinc-400">
-            Không tìm thấy workspace
+            {t("landing.heroDemo.workspace.noWorkspaceFound")}
           </p>
         )}
       </div>
@@ -2898,6 +3026,8 @@ function WorkspaceDetail({
   ws: Workspace;
   onBack: () => void;
 }) {
+  const { t } = useTranslation();
+  const workspaceBoardCols = useWorkspaceBoardCols();
   const [tab, setTab] = useState<
     "board" | "timeline" | "docs" | "members" | "activity"
   >("board");
@@ -2928,7 +3058,8 @@ function WorkspaceDetail({
           onClick={onBack}
           className="hover:text-brand-orange flex w-fit items-center gap-1 text-[10px] font-medium text-zinc-500 transition-colors"
         >
-          <ArrowLeft className="size-3" /> Tất cả workspace
+          <ArrowLeft className="size-3" />{" "}
+          {t("landing.heroDemo.workspace.allWorkspaces")}
         </button>
 
         <div className="flex items-center justify-between">
@@ -2946,7 +3077,9 @@ function WorkspaceDetail({
                 {ws.name}
               </p>
               <p className="text-[9px] text-zinc-500">
-                Không gian chung · {ws.members} thành viên
+                {t("landing.heroDemo.workspace.sharedSpace", {
+                  count: ws.members,
+                })}
               </p>
             </div>
           </div>
@@ -2970,24 +3103,24 @@ function WorkspaceDetail({
             </div>
             <span className="flex items-center gap-1 text-[8px] font-medium text-emerald-600">
               <span className="size-1.5 rounded-full bg-emerald-400" />
-              {onlineCount} online
+              {t("landing.heroDemo.workspace.online", { count: onlineCount })}
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-1">
-          {tabs.map((t) => (
+          {tabs.map((tabItem) => (
             <button
-              key={t.key}
+              key={tabItem.key}
               type="button"
-              onClick={() => setTab(t.key)}
+              onClick={() => setTab(tabItem.key)}
               className={`flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-[9px] font-medium transition-colors ${
-                tab === t.key
+                tab === tabItem.key
                   ? "bg-brand-orange text-white"
                   : "text-zinc-500 hover:bg-zinc-100"
               }`}
             >
-              <t.icon className="size-3" /> {t.label}
+              <tabItem.icon className="size-3" /> {tabItem.label}
             </button>
           ))}
         </div>
@@ -2996,7 +3129,7 @@ function WorkspaceDetail({
       <div className="flex-1 p-3">
         {tab === "board" && (
           <div className="grid grid-cols-2 gap-2">
-            {WORKSPACE_BOARD_COLS.map((col) => (
+            {workspaceBoardCols.map((col) => (
               <div
                 key={col.key}
                 className="flex flex-col gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50/60 p-2"
@@ -3109,7 +3242,7 @@ function WorkspaceDetail({
                     {c.title}
                   </p>
                   <span className="rounded-full bg-zinc-100 px-1.5 py-0.5 text-[8px] text-zinc-500">
-                    {c.status}
+                    {t(`landing.heroDemo.content.kanban.${c.status}`)}
                   </span>
                 </div>
               );
@@ -3144,7 +3277,9 @@ function WorkspaceDetail({
                 <span
                   className={`text-[8px] font-medium ${m.online ? "text-emerald-600" : "text-zinc-400"}`}
                 >
-                  {m.online ? "Online" : "Offline"}
+                  {m.online
+                    ? t("landing.heroDemo.workspace.membersOnline")
+                    : t("landing.heroDemo.workspace.membersOffline")}
                 </span>
               </div>
             ))}
@@ -3180,6 +3315,7 @@ function WorkspaceDetail({
 }
 
 function PublishPage() {
+  const { t } = useTranslation();
   const [pushing, setPushing] = useState(false);
   const [pushedCount, setPushedCount] = useState(0);
 
@@ -3201,9 +3337,11 @@ function PublishPage() {
     <div className="flex min-h-full flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-zinc-900">Xuất bản</p>
+          <p className="text-sm font-semibold text-zinc-900">
+            {t("landing.heroDemo.publish.title")}
+          </p>
           <p className="text-[11px] text-zinc-500">
-            Đẩy nội dung lên các kênh đã kết nối
+            {t("landing.heroDemo.publish.subtitle")}
           </p>
         </div>
       </div>
@@ -3232,7 +3370,7 @@ function PublishPage() {
                 <CheckCircle2 className="size-3.5 shrink-0 text-emerald-500" />
               ) : (
                 <span className="shrink-0 text-[9px] text-zinc-400">
-                  Sẵn sàng
+                  {t("landing.heroDemo.publish.ready")}
                 </span>
               )}
             </div>
@@ -3242,7 +3380,9 @@ function PublishPage() {
 
       <div className={PAGE_CARD}>
         <p className="mb-2 text-[10px] font-medium text-zinc-500">
-          HÀNG CHỜ ĐẨY ({PUBLISH_QUEUE.length})
+          {t("landing.heroDemo.publish.queueTitle", {
+            count: PUBLISH_QUEUE.length,
+          })}
         </p>
         <div className="flex flex-col gap-1.5">
           {PUBLISH_QUEUE.map((q, i) => {
@@ -3270,11 +3410,13 @@ function PublishPage() {
       >
         {pushing ? (
           <>
-            <Loader2 className="size-3.5 animate-spin" /> Đang đẩy bài...
+            <Loader2 className="size-3.5 animate-spin" />{" "}
+            {t("landing.heroDemo.publish.pushing")}
           </>
         ) : (
           <>
-            <Upload className="size-3.5" /> Đẩy lên tất cả kênh
+            <Upload className="size-3.5" />{" "}
+            {t("landing.heroDemo.publish.pushAll")}
           </>
         )}
       </button>
@@ -3313,6 +3455,7 @@ const APPROVAL_QUEUE: ApprovalItem[] = [
  * qua vòng duyệt của Account Manager, khớp bước "Phê duyệt" trong quy
  * trình swimlane trên landing page. */
 function ApprovalPage() {
+  const { t } = useTranslation();
   const [queue, setQueue] = useState(APPROVAL_QUEUE);
   const [feedback, setFeedback] = useState<number | null>(null);
 
@@ -3322,9 +3465,11 @@ function ApprovalPage() {
   return (
     <div className="flex min-h-full flex-col gap-3 p-4">
       <div>
-        <p className="text-sm font-semibold text-zinc-900">Phê duyệt</p>
+        <p className="text-sm font-semibold text-zinc-900">
+          {t("landing.heroDemo.approval.title")}
+        </p>
         <p className="text-[11px] text-zinc-500">
-          Xem trước và phê duyệt bài trước khi xuất bản
+          {t("landing.heroDemo.approval.subtitle")}
         </p>
       </div>
 
@@ -3332,7 +3477,7 @@ function ApprovalPage() {
         <div className="flex flex-1 flex-col items-center justify-center gap-2 py-10 text-center">
           <CheckCircle2 className="size-8 text-emerald-500" />
           <p className="text-xs font-medium text-zinc-700">
-            Đã duyệt hết bài chờ
+            {t("landing.heroDemo.approval.allApproved")}
           </p>
         </div>
       ) : (
@@ -3367,7 +3512,7 @@ function ApprovalPage() {
                 {feedback === item.id ? (
                   <div className="ghost-comment-in flex items-center gap-1.5 rounded-md bg-zinc-50 px-2 py-1.5 text-[9px] text-zinc-600">
                     <MessageCircle className="size-3 shrink-0 text-zinc-400" />
-                    Đã gửi góp ý cho Account Manager
+                    {t("landing.heroDemo.approval.feedbackSent")}
                   </div>
                 ) : (
                   <div className="flex gap-2">
@@ -3376,14 +3521,16 @@ function ApprovalPage() {
                       onClick={() => resolve(item.id)}
                       className="flex flex-1 items-center justify-center gap-1.5 rounded-md bg-emerald-500 py-1.5 text-[10px] font-semibold text-white transition-transform active:scale-95"
                     >
-                      <ThumbsUp className="size-3.5" /> Phê duyệt
+                      <ThumbsUp className="size-3.5" />{" "}
+                      {t("landing.heroDemo.approval.approve")}
                     </button>
                     <button
                       type="button"
                       onClick={() => setFeedback(item.id)}
                       className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-zinc-300 bg-white py-1.5 text-[10px] font-semibold text-zinc-700 transition-transform active:scale-95"
                     >
-                      <XIcon className="size-3.5" /> Góp ý
+                      <XIcon className="size-3.5" />{" "}
+                      {t("landing.heroDemo.approval.feedback")}
                     </button>
                   </div>
                 )}

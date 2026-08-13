@@ -38,8 +38,7 @@ export function InstagramPost({
   saved,
 }: InstagramPostProps) {
   const { t } = useTranslation();
-  const resolvedCaption =
-    caption ?? t("landing.heroFeed.instagram.0.caption");
+  const resolvedCaption = caption ?? t("landing.heroFeed.instagram.0.caption");
   return (
     <div
       className={cn(

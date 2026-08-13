@@ -399,9 +399,7 @@ export function LinkedInGhostComment({
               ? t("landing.heroFeed.ui.posting")
               : t("landing.heroFeed.ui.like")}
           </span>
-          {phase === "posted" && (
-            <span>{t("landing.heroFeed.ui.reply")}</span>
-          )}
+          {phase === "posted" && <span>{t("landing.heroFeed.ui.reply")}</span>}
         </div>
       </div>
     </div>

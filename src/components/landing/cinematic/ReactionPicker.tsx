@@ -34,12 +34,42 @@ export interface Reaction {
 export function useFbReactions(): Reaction[] {
   const { t } = useTranslation();
   return [
-    { key: "like", icon: ThumbsUp, label: t("landing.heroFeed.reactions.fb.like"), color: "#1877f2" },
-    { key: "love", icon: Heart, label: t("landing.heroFeed.reactions.fb.love"), color: "#f33e58" },
-    { key: "haha", icon: Laugh, label: t("landing.heroFeed.reactions.fb.haha"), color: "#f7b125" },
-    { key: "wow", icon: PartyPopper, label: t("landing.heroFeed.reactions.fb.wow"), color: "#f7b125" },
-    { key: "sad", icon: Frown, label: t("landing.heroFeed.reactions.fb.sad"), color: "#f7b125" },
-    { key: "angry", icon: Angry, label: t("landing.heroFeed.reactions.fb.angry"), color: "#e9710f" },
+    {
+      key: "like",
+      icon: ThumbsUp,
+      label: t("landing.heroFeed.reactions.fb.like"),
+      color: "#1877f2",
+    },
+    {
+      key: "love",
+      icon: Heart,
+      label: t("landing.heroFeed.reactions.fb.love"),
+      color: "#f33e58",
+    },
+    {
+      key: "haha",
+      icon: Laugh,
+      label: t("landing.heroFeed.reactions.fb.haha"),
+      color: "#f7b125",
+    },
+    {
+      key: "wow",
+      icon: PartyPopper,
+      label: t("landing.heroFeed.reactions.fb.wow"),
+      color: "#f7b125",
+    },
+    {
+      key: "sad",
+      icon: Frown,
+      label: t("landing.heroFeed.reactions.fb.sad"),
+      color: "#f7b125",
+    },
+    {
+      key: "angry",
+      icon: Angry,
+      label: t("landing.heroFeed.reactions.fb.angry"),
+      color: "#e9710f",
+    },
   ];
 }
 
@@ -47,12 +77,42 @@ export function useFbReactions(): Reaction[] {
 export function useLiReactions(): Reaction[] {
   const { t } = useTranslation();
   return [
-    { key: "like", icon: ThumbsUp, label: t("landing.heroFeed.reactions.li.like"), color: "#0a66c2" },
-    { key: "celebrate", icon: PartyPopper, label: t("landing.heroFeed.reactions.li.celebrate"), color: "#6dae4f" },
-    { key: "support", icon: Handshake, label: t("landing.heroFeed.reactions.li.support"), color: "#7a5abf" },
-    { key: "love", icon: Heart, label: t("landing.heroFeed.reactions.li.love"), color: "#df704d" },
-    { key: "insightful", icon: Lightbulb, label: t("landing.heroFeed.reactions.li.insightful"), color: "#f5bb5c" },
-    { key: "funny", icon: Laugh, label: t("landing.heroFeed.reactions.li.funny"), color: "#f5bb5c" },
+    {
+      key: "like",
+      icon: ThumbsUp,
+      label: t("landing.heroFeed.reactions.li.like"),
+      color: "#0a66c2",
+    },
+    {
+      key: "celebrate",
+      icon: PartyPopper,
+      label: t("landing.heroFeed.reactions.li.celebrate"),
+      color: "#6dae4f",
+    },
+    {
+      key: "support",
+      icon: Handshake,
+      label: t("landing.heroFeed.reactions.li.support"),
+      color: "#7a5abf",
+    },
+    {
+      key: "love",
+      icon: Heart,
+      label: t("landing.heroFeed.reactions.li.love"),
+      color: "#df704d",
+    },
+    {
+      key: "insightful",
+      icon: Lightbulb,
+      label: t("landing.heroFeed.reactions.li.insightful"),
+      color: "#f5bb5c",
+    },
+    {
+      key: "funny",
+      icon: Laugh,
+      label: t("landing.heroFeed.reactions.li.funny"),
+      color: "#f5bb5c",
+    },
   ];
 }
 
