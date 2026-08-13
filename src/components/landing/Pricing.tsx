@@ -42,7 +42,7 @@ export function Pricing() {
             <span
               className={`text-sm font-medium ${!yearly ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-500"}`}
             >
-              Hàng tháng
+              {t("landing.pricing.monthly")}
             </span>
             <button
               type="button"
@@ -62,9 +62,9 @@ export function Pricing() {
             <span
               className={`flex items-center gap-1.5 text-sm font-medium ${yearly ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-500"}`}
             >
-              Hàng năm
+              {t("landing.pricing.yearly")}
               <span className="bg-brand-orange/10 text-brand-orange rounded-full px-1.5 py-0.5 text-[10px] font-semibold">
-                Tiết kiệm 20%
+                {t("landing.pricing.yearlySave")}
               </span>
             </span>
           </div>
@@ -116,7 +116,7 @@ export function Pricing() {
                   </span>
                   {plan.key !== "enterprise" && (
                     <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                      /tháng
+                      {t("landing.pricing.perMonth")}
                     </span>
                   )}
                 </div>
