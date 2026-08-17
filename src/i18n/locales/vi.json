@@ -1,6 +1,6 @@
 {
   "auth": {
-    "common": { "email": "Email", "password": "Mật khẩu", "backToLogin": "Quay lại đăng nhập", "and": "và" },
+    "common": { "email": "Email", "password": "Mật khẩu", "backToLogin": "Quay lại đăng nhập", "backToHome": "Về trang chủ", "and": "và" },
     "brand": {
       "tagline": "PLAN · CREATE · SCHEDULE · PUBLISH · GROW",
       "testimonials": [

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AuthBrandPanel } from "@/components/auth/AuthBrandPanel";
 import { AuthMobileHeader } from "@/components/auth/AuthMobileHeader";
+import { BackToHomeLink } from "@/components/auth/BackToHomeLink";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 import { authService, oauthUrl } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
@@ -59,6 +60,7 @@ export function LoginPage() {
       <div className="flex flex-1 items-center justify-center px-4 sm:px-8">
         <div className="w-full max-w-[400px]">
           <AuthMobileHeader />
+          <BackToHomeLink />
           <div className="mb-8 select-none">
             <h1 className="text-foreground mb-1 text-2xl font-bold tracking-tight">
               {t("auth.login.welcomeBack")}

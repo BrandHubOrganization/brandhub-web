@@ -1,6 +1,6 @@
 {
   "auth": {
-    "common": { "email": "Email", "password": "Password", "backToLogin": "Back to login", "and": "and" },
+    "common": { "email": "Email", "password": "Password", "backToLogin": "Back to login", "backToHome": "Back to home", "and": "and" },
     "brand": {
       "tagline": "PLAN · CREATE · SCHEDULE · PUBLISH · GROW",
       "testimonials": [
