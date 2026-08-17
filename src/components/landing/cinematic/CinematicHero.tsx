@@ -74,10 +74,25 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
  * a separate onEnter trigger so they stick — scrolling back up
  * does NOT reverse them.
  */
+/** Set bởi BackToHomeLink trước khi điều hướng về "/" — báo Hero user đã
+ * xem intro rồi, bỏ qua animation pin-scroll 3500px, vào thẳng demo. */
+export const HERO_SKIP_INTRO_KEY = "brandhub_skip_hero_intro";
+
 export function CinematicHero() {
   const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const [device, setDevice] = useState<"macbook" | "iphone">("macbook");
+  // Đọc + xoá sessionStorage key đúng MỘT LẦN qua useState lazy-initializer
+  // (không phải trong useGSAP effect) — React StrictMode (dev) double-invoke
+  // effect khiến useGSAP chạy 2 lần khi mount; nếu đọc/xoá trong effect,
+  // lần 1 xoá key rồi lần 2 đọc ra false, replay animation đè mất kết quả
+  // skip đúng của lần 1. useState initializer chỉ chạy 1 lần cho cả 2
+  // invoke (khác ref: ghi ref trong lúc render bị React Compiler cấm).
+  const [skipIntro] = useState(() => {
+    const skip = sessionStorage.getItem(HERO_SKIP_INTRO_KEY) === "1";
+    if (skip) sessionStorage.removeItem(HERO_SKIP_INTRO_KEY);
+    return skip;
+  });
 
   useGSAP(() => {
     if (!sectionRef.current) return;
@@ -252,7 +267,7 @@ export function CinematicHero() {
     // ScrollTrigger from inside its own callback otherwise leaves the spacer
     // in place.
     let locked = false;
-    tl.eventCallback("onComplete", () => {
+    const finishIntro = () => {
       locked = true;
       const st = tl.scrollTrigger;
       if (st)
@@ -263,10 +278,25 @@ export function CinematicHero() {
           // (intro state). Force it to the end so the MacBook demo stays up.
           tl.progress(1);
         });
-    });
+    };
+    tl.eventCallback("onComplete", finishIntro);
     tl.eventCallback("onUpdate", () => {
       if (locked && tl.progress() < 1) tl.progress(1);
     });
+
+    // User đã xem intro trước đó (vd. bấm "Về trang chủ" từ trang auth) —
+    // nhảy thẳng tới cuối timeline ngay thay vì bắt cuộn lại 3500px animation
+    // đã xem rồi. Kill ScrollTrigger TRƯỚC khi set progress: trong lúc nó
+    // còn sống với scrub:1, nó liên tục ghi đè progress về giá trị khớp
+    // scrollY thật (đang ở 0 vì trang vừa mount) — set progress trước khi
+    // kill nên bị scrub kéo ngược lại ngay lập tức.
+    if (skipIntro) {
+      locked = true;
+      const st = tl.scrollTrigger;
+      st?.kill();
+      ScrollTrigger.refresh();
+      tl.progress(1);
+    }
   });
 
   return (
