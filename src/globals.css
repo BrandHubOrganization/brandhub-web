@@ -324,3 +324,28 @@
 .page-enter {
   animation: page-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* LogoWall marquee: track chứa logos x2, trượt đúng nửa track (-50%) rồi
+   lặp lại — vô hạn liền mạch vì nửa sau là bản sao y hệt nửa đầu. */
+@keyframes logo-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-logo-marquee {
+  animation: logo-marquee 28s linear infinite;
+}
+
+.animate-logo-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-logo-marquee {
+    animation: none;
+  }
+}

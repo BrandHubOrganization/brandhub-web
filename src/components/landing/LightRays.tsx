@@ -110,6 +110,7 @@ export function LightRays({
 
   useEffect(() => {
     if (!isVisible || !containerRef.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     cleanupFunctionRef.current?.();
     cleanupFunctionRef.current = null;

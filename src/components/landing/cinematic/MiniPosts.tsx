@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { InstagramPost } from "./posts/InstagramPost";
 import { TikTokPost } from "./posts/TikTokPost";
 import { FacebookPost } from "./posts/FacebookPost";
@@ -12,7 +13,11 @@ import {
   FacebookGhostComment,
   LinkedInGhostComment,
 } from "./GhostComments";
-import { ReactionPicker, FB_REACTIONS, LI_REACTIONS } from "./ReactionPicker";
+import {
+  ReactionPicker,
+  useFbReactions,
+  useLiReactions,
+} from "./ReactionPicker";
 import {
   useShareSheet,
   InstagramShareSheet,
@@ -27,10 +32,10 @@ import {
   instagramFeed,
   linkedinFeed,
   tiktokFeed,
-  IG_GHOST_COMMENTS,
-  TT_GHOST_COMMENTS,
-  FB_GHOST_COMMENTS,
-  LI_GHOST_COMMENTS,
+  IG_GHOST_COMMENT_KEYS,
+  TT_GHOST_COMMENT_KEYS,
+  FB_GHOST_COMMENT_KEYS,
+  LI_GHOST_COMMENT_KEYS,
   type FacebookSlide,
   type InstagramSlide,
   type LinkedInSlide,
@@ -182,6 +187,7 @@ function MiniInstagram() {
 }
 
 function InstagramSlideCard({ slide }: { slide: InstagramSlide }) {
+  const { t } = useTranslation();
   const likes = useLiveCounter(slide.likesSeed, {
     minIntervalMs: 2000,
     maxIntervalMs: 4000,
@@ -212,7 +218,7 @@ function InstagramSlideCard({ slide }: { slide: InstagramSlide }) {
 
   const ghostState = useGhostTyping(
     ghostCommentActive,
-    IG_GHOST_COMMENTS,
+    IG_GHOST_COMMENT_KEYS.map((k) => t(k)),
     () => setCommentCount((n) => n + 1),
     () => setGhostCommentActive(false),
   );
@@ -222,7 +228,7 @@ function InstagramSlideCard({ slide }: { slide: InstagramSlide }) {
   return (
     <div className={`${INNER} ${likes.bumped ? "scale-[1.03]" : ""}`}>
       <InstagramPost
-        caption={slide.caption}
+        caption={t(slide.captionKey)}
         imageUrl={slide.imageUrl}
         liked={liked}
         saved={saved}
@@ -275,6 +281,7 @@ function MiniTikTok() {
 }
 
 function TikTokSlideCard({ slide }: { slide: TikTokSlide }) {
+  const { t } = useTranslation();
   const likes = useLiveCounter(slide.likesSeed, {
     minIntervalMs: 1800,
     maxIntervalMs: 3400,
@@ -305,7 +312,7 @@ function TikTokSlideCard({ slide }: { slide: TikTokSlide }) {
 
   const ghostState = useGhostTyping(
     ghostCommentActive,
-    TT_GHOST_COMMENTS,
+    TT_GHOST_COMMENT_KEYS.map((k) => t(k)),
     () => setCommentCount((n) => n + 1),
     () => setGhostCommentActive(false),
   );
@@ -317,7 +324,7 @@ function TikTokSlideCard({ slide }: { slide: TikTokSlide }) {
       <TikTokPost
         liked={liked}
         saved={saved}
-        caption={slide.caption}
+        caption={t(slide.captionKey)}
         imageUrl={slide.imageUrl}
         likes={
           <span key={bumpKey} className={bumpKey ? "count-bump" : undefined}>
@@ -369,6 +376,8 @@ function MiniFacebook() {
 }
 
 function FacebookSlideCard({ slide }: { slide: FacebookSlide }) {
+  const { t } = useTranslation();
+  const fbReactions = useFbReactions();
   const likes = useLiveCounter(slide.likesSeed, {
     minIntervalMs: 3000,
     maxIntervalMs: 6000,
@@ -380,43 +389,46 @@ function FacebookSlideCard({ slide }: { slide: FacebookSlide }) {
   const [reactionVisible, setReactionVisible] = useState(false);
   const [reactionPick, setReactionPick] = useState<string | null>(null);
   const [activeReaction, setActiveReaction] = useState<
-    (typeof FB_REACTIONS)[number] | null
+    (typeof fbReactions)[number] | null
   >(null);
   const [shared, setShared] = useState(false);
   const [shareActive, setShareActive] = useState(false);
   const bumpKey = likes.bumped || ghostLikes > 0 ? "bump" : "";
 
-  const handleInteract = useCallback((type: string) => {
-    if (type === "like") {
-      // Facebook thật: hover/long-press Thích → hiện reaction picker,
-      // dừng ~500ms rồi "chọn" 1 reaction ngẫu nhiên (ưu tiên like/love).
-      // Reaction đã chọn PERSIST trên nút Thích sau khi picker đóng —
-      // giống hành vi thật (nút đổi icon+màu vĩnh viễn, không chỉ nháy).
-      setReactionVisible(true);
-      setGhostLikes((n) => n + 1);
-      setTimeout(() => {
-        const chosen =
-          Math.random() < 0.6
-            ? FB_REACTIONS[0]
-            : FB_REACTIONS[Math.floor(Math.random() * FB_REACTIONS.length)];
-        setReactionPick(chosen.key);
-        setActiveReaction(chosen);
+  const handleInteract = useCallback(
+    (type: string) => {
+      if (type === "like") {
+        // Facebook thật: hover/long-press Thích → hiện reaction picker,
+        // dừng ~500ms rồi "chọn" 1 reaction ngẫu nhiên (ưu tiên like/love).
+        // Reaction đã chọn PERSIST trên nút Thích sau khi picker đóng —
+        // giống hành vi thật (nút đổi icon+màu vĩnh viễn, không chỉ nháy).
+        setReactionVisible(true);
+        setGhostLikes((n) => n + 1);
         setTimeout(() => {
-          setReactionVisible(false);
-          setReactionPick(null);
-        }, 900);
-      }, 450);
-    } else if (type === "comment") {
-      setGhostCommentActive(true);
-    } else if (type === "share") {
-      setShared(true);
-      setShareActive(true);
-    }
-  }, []);
+          const chosen =
+            Math.random() < 0.6
+              ? fbReactions[0]
+              : fbReactions[Math.floor(Math.random() * fbReactions.length)];
+          setReactionPick(chosen.key);
+          setActiveReaction(chosen);
+          setTimeout(() => {
+            setReactionVisible(false);
+            setReactionPick(null);
+          }, 900);
+        }, 450);
+      } else if (type === "comment") {
+        setGhostCommentActive(true);
+      } else if (type === "share") {
+        setShared(true);
+        setShareActive(true);
+      }
+    },
+    [fbReactions],
+  );
 
   const ghostState = useGhostTyping(
     ghostCommentActive,
-    FB_GHOST_COMMENTS,
+    FB_GHOST_COMMENT_KEYS.map((k) => t(k)),
     () => setCommentCount((n) => n + 1),
     () => setGhostCommentActive(false),
   );
@@ -426,9 +438,9 @@ function FacebookSlideCard({ slide }: { slide: FacebookSlide }) {
   return (
     <div className={`${INNER} ${likes.bumped ? "scale-[1.03]" : ""}`}>
       <FacebookPost
-        authorName={slide.authorName}
-        authorRole={slide.authorRole}
-        content={slide.content}
+        authorName={t(slide.authorNameKey)}
+        authorRole={t(slide.authorRoleKey)}
+        content={t(slide.contentKey)}
         imageUrl={slide.imageUrl}
         activeReaction={activeReaction}
         shared={shared}
@@ -451,7 +463,7 @@ function FacebookSlideCard({ slide }: { slide: FacebookSlide }) {
       />
       <div className="absolute right-2 bottom-1.5">
         <ReactionPicker
-          reactions={FB_REACTIONS}
+          reactions={fbReactions}
           selected={reactionPick}
           visible={reactionVisible}
         />
@@ -483,6 +495,8 @@ function MiniLinkedIn() {
 }
 
 function LinkedInSlideCard({ slide }: { slide: LinkedInSlide }) {
+  const { t } = useTranslation();
+  const liReactions = useLiReactions();
   const likes = useLiveCounter(slide.likesSeed, {
     minIntervalMs: 4000,
     maxIntervalMs: 8000,
@@ -494,41 +508,44 @@ function LinkedInSlideCard({ slide }: { slide: LinkedInSlide }) {
   const [reactionVisible, setReactionVisible] = useState(false);
   const [reactionPick, setReactionPick] = useState<string | null>(null);
   const [activeReaction, setActiveReaction] = useState<
-    (typeof LI_REACTIONS)[number] | null
+    (typeof liReactions)[number] | null
   >(null);
   const [shareActive, setShareActive] = useState(false);
   const bumpKey = likes.bumped || ghostLikes > 0 ? "bump" : "";
 
-  const handleInteract = useCallback((type: string) => {
-    if (type === "like") {
-      // LinkedIn thật: hover/long-press Thích → hiện 6 reaction riêng
-      // (Thích/Chúc mừng/Ủng hộ/Yêu thích/Sâu sắc/Hài hước), thiên về
-      // "Sâu sắc" và "Chúc mừng" hơn IG/FB do văn hoá platform formal.
-      // Reaction PERSIST trên nút sau khi picker đóng.
-      setReactionVisible(true);
-      setGhostLikes((n) => n + 1);
-      setTimeout(() => {
-        const pool = LI_REACTIONS.filter((r) =>
-          ["like", "insightful", "celebrate", "support"].includes(r.key),
-        );
-        const chosen = pool[Math.floor(Math.random() * pool.length)];
-        setReactionPick(chosen.key);
-        setActiveReaction(chosen);
+  const handleInteract = useCallback(
+    (type: string) => {
+      if (type === "like") {
+        // LinkedIn thật: hover/long-press Thích → hiện 6 reaction riêng
+        // (Thích/Chúc mừng/Ủng hộ/Yêu thích/Sâu sắc/Hài hước), thiên về
+        // "Sâu sắc" và "Chúc mừng" hơn IG/FB do văn hoá platform formal.
+        // Reaction PERSIST trên nút sau khi picker đóng.
+        setReactionVisible(true);
+        setGhostLikes((n) => n + 1);
         setTimeout(() => {
-          setReactionVisible(false);
-          setReactionPick(null);
-        }, 900);
-      }, 450);
-    } else if (type === "comment") {
-      setGhostCommentActive(true);
-    } else if (type === "send") {
-      setShareActive(true);
-    }
-  }, []);
+          const pool = liReactions.filter((r) =>
+            ["like", "insightful", "celebrate", "support"].includes(r.key),
+          );
+          const chosen = pool[Math.floor(Math.random() * pool.length)];
+          setReactionPick(chosen.key);
+          setActiveReaction(chosen);
+          setTimeout(() => {
+            setReactionVisible(false);
+            setReactionPick(null);
+          }, 900);
+        }, 450);
+      } else if (type === "comment") {
+        setGhostCommentActive(true);
+      } else if (type === "send") {
+        setShareActive(true);
+      }
+    },
+    [liReactions],
+  );
 
   const ghostState = useGhostTyping(
     ghostCommentActive,
-    LI_GHOST_COMMENTS,
+    LI_GHOST_COMMENT_KEYS.map((k) => t(k)),
     () => setCommentCount((n) => n + 1),
     () => setGhostCommentActive(false),
   );
@@ -538,10 +555,10 @@ function LinkedInSlideCard({ slide }: { slide: LinkedInSlide }) {
   return (
     <div className={`${INNER} ${likes.bumped ? "scale-[1.03]" : ""}`}>
       <LinkedInPost
-        authorName={slide.authorName}
-        authorTitle={slide.authorTitle}
-        content={slide.content}
-        articleHeadline={slide.articleHeadline}
+        authorName={t(slide.authorNameKey)}
+        authorTitle={t(slide.authorTitleKey)}
+        content={t(slide.contentKey)}
+        articleHeadline={t(slide.articleHeadlineKey)}
         imageUrl={slide.imageUrl}
         activeReaction={activeReaction}
         likes={
@@ -562,7 +579,7 @@ function LinkedInSlideCard({ slide }: { slide: LinkedInSlide }) {
       />
       <div className="absolute right-2 bottom-1.5">
         <ReactionPicker
-          reactions={LI_REACTIONS}
+          reactions={liReactions}
           selected={reactionPick}
           visible={reactionVisible}
         />
