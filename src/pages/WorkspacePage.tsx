@@ -32,7 +32,7 @@ export function WorkspacePage() {
       description={t("workspace.list.description")}
       actions={
         <Button
-          className="bg-[#f05a28] hover:bg-[#f05a28]/90 text-white cursor-pointer text-xs"
+          className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-xs text-white"
           onClick={() => navigate("/workspaces/create")}
         >
           {t("workspace.list.createButton")}
@@ -40,24 +40,28 @@ export function WorkspacePage() {
       }
     >
       {workspaces.length === 0 ? (
-        <p className="text-muted-foreground text-sm">{t("workspace.list.empty")}</p>
+        <p className="text-muted-foreground text-sm">
+          {t("workspace.list.empty")}
+        </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {workspaces.map((ws) => (
             <button
               key={ws.id}
               onClick={() => navigate(`/workspaces/${ws.id}/settings`)}
-              className="border border-border bg-card rounded-lg overflow-hidden flex flex-col justify-between text-left cursor-pointer hover:border-[#f05a28]/50 transition-colors"
+              className="border-border bg-card hover:border-brand-orange/50 flex cursor-pointer flex-col justify-between overflow-hidden rounded-lg border text-left transition-colors"
             >
-              <div className="h-1.5 bg-[#f05a28]" />
-              <div className="p-6 space-y-4 flex-1">
+              <div className="bg-brand-orange h-1.5" />
+              <div className="flex-1 space-y-4 p-6">
                 <div className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-md bg-[#fff0eb] text-[#f05a28] font-bold text-sm">
+                  <div className="bg-brand-orange-soft text-brand-orange flex size-10 items-center justify-center rounded-md text-sm font-bold">
                     {ws.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-foreground">{ws.name}</h3>
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-mono">
+                    <h3 className="text-foreground text-sm font-bold">
+                      {ws.name}
+                    </h3>
+                    <p className="text-muted-foreground font-mono text-[10px] tracking-wider uppercase">
                       {ws.slug}
                     </p>
                   </div>
