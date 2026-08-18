@@ -4,6 +4,8 @@ import { TemplateCard } from '@/components/template/TemplateCard';
 import { TemplatePreviewModal } from '@/components/template/TemplatePreviewModal';
 import { mockTemplateService } from '@/services/mockTemplateService';
 import type { ContentTemplate } from '@/types/template';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Search, Plus, LayoutTemplate, ChevronLeft, ChevronRight, Loader2, FileQuestion } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -83,28 +85,28 @@ export function TemplateBrowserPage() {
       title="Thư Viện Mẫu Bài Viết (Templates)"
       description="Quản lý và tái sử dụng các mẫu bài đăng chuyên nghiệp chỉ với 1 click."
       actions={
-        <button
+        <Button
           type="button"
           onClick={() => navigate('/editor')}
-          className="px-4 py-2 bg-[#f05a28] hover:bg-[#f05a28]/90 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+          className="bg-[#f05a28] hover:bg-[#f05a28]/90 text-white font-semibold text-xs"
+          size="sm"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 mr-1" />
           <span>Tạo Bài Viết Mới</span>
-        </button>
+        </Button>
       }
     >
       <div className="space-y-6">
         {/* Top Control Bar: Search & Count */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 p-4 rounded-2xl shadow-xs">
-          {/* Search Bar with 300ms Debounce */}
-          <div className="relative w-full sm:w-96">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-            <input
-              type="text"
+          {/* Search Bar with UI Input (300ms Debounce) */}
+          <div className="w-full sm:w-96">
+            <Input
+              iconPrefix={<Search className="w-4 h-4" />}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Tìm kiếm mẫu theo tiêu đề, nội dung..."
-              className="w-full pl-10 pr-4 py-2 text-xs bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20"
+              className="text-xs"
             />
           </div>
 
@@ -133,14 +135,15 @@ export function TemplateBrowserPage() {
                 No templates yet. Save a draft from the Content Editor to see it here.
               </p>
             </div>
-            <button
+            <Button
               type="button"
               onClick={() => navigate('/editor')}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition-colors shadow-xs"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs"
+              size="sm"
             >
-              <LayoutTemplate className="w-4 h-4" />
+              <LayoutTemplate className="w-4 h-4 mr-1" />
               <span>Đi đến Content Editor</span>
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -162,22 +165,24 @@ export function TemplateBrowserPage() {
               Trang {page + 1} / {totalPages}
             </span>
             <div className="flex items-center gap-2">
-              <button
+              <Button
                 type="button"
+                variant="outline"
+                size="icon"
                 disabled={page === 0}
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
-                className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 disabled:opacity-40 transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="outline"
+                size="icon"
                 disabled={page >= totalPages - 1}
                 onClick={() => setPage((p) => p + 1)}
-                className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 disabled:opacity-40 transition-colors"
               >
                 <ChevronRight className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
           </div>
         )}

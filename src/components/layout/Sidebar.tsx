@@ -12,6 +12,7 @@ import {
   Building2,
   FolderKanban,
   LayoutTemplate,
+  Hash,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -48,6 +49,7 @@ const NAV_SECTIONS: NavSection[] = [
       { to: "/requests", icon: FileEdit, label: "Content Requests" },
       { to: "/editor", icon: FileEdit, label: "Content Editor" },
       { to: "/templates", icon: LayoutTemplate, label: "Post Templates" },
+      { to: "/hashtag-groups", icon: Hash, label: "Hashtag Groups" },
       { to: "/calendar", icon: CalendarDays, label: "Calendar" },
       { to: "/library", icon: FolderKanban, label: "Content Library" },
     ],

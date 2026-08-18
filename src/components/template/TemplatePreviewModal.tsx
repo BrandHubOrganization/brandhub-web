@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { ArrowRight, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -132,22 +133,19 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
 
         {/* Footer Actions */}
         <DialogFooter className="p-4 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 sm:justify-between flex items-center">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl text-xs font-medium transition-colors"
-          >
+          <Button type="button" variant="outline" size="sm" onClick={onClose}>
             Đóng
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
+            size="sm"
             onClick={handleUseTemplate}
-            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition-colors shadow-xs cursor-pointer"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white"
           >
             <span>Use Template</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+            <ArrowRight className="w-4 h-4 ml-1" />
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

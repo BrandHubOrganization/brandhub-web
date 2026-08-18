@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { Hash, X, Plus } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Hash, X, Plus, FolderKanban, ChevronDown } from "lucide-react";
+import { mockHashtagGroupService } from "@/services/mockHashtagGroupService";
+import type { HashtagGroup } from "@/types/hashtagGroup";
+import { toast } from "sonner";
 
 interface HashtagInputWithSuggestionsProps {
   hashtags: string[];
@@ -24,6 +27,12 @@ export const HashtagInputWithSuggestions: React.FC<
 > = ({ hashtags, onChange }) => {
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [groups, setGroups] = useState<HashtagGroup[]>([]);
+  const [showGroupDropdown, setShowGroupDropdown] = useState(false);
+
+  useEffect(() => {
+    mockHashtagGroupService.getGroups().then(setGroups).catch(console.error);
+  }, []);
 
   const handleAddTag = (tagToAdd: string) => {
     let formatted = tagToAdd.trim();
@@ -35,6 +44,13 @@ export const HashtagInputWithSuggestions: React.FC<
     }
     setInputValue("");
     setShowSuggestions(false);
+  };
+
+  const handleLoadFromGroup = (group: HashtagGroup) => {
+    const merged = Array.from(new Set([...hashtags, ...group.hashtags]));
+    onChange(merged);
+    setShowGroupDropdown(false);
+    toast.success(`Đã tải ${group.hashtags.length} hashtags từ nhóm "${group.name}"!`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -56,10 +72,52 @@ export const HashtagInputWithSuggestions: React.FC<
 
   return (
     <div className="space-y-2">
-      <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-        <Hash className="h-3.5 w-3.5 text-indigo-500" />
-        Hashtags
-      </label>
+      <div className="flex items-center justify-between">
+        <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+          <Hash className="h-3.5 w-3.5 text-indigo-500" />
+          Hashtags
+        </label>
+
+        {/* Load from Group Dropdown Button */}
+        {groups.length > 0 && (
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowGroupDropdown(!showGroupDropdown)}
+              className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:hover:bg-indigo-950 rounded-lg transition-colors"
+            >
+              <FolderKanban className="h-3.5 w-3.5" />
+              <span>Load từ Nhóm</span>
+              <ChevronDown className="h-3 w-3" />
+            </button>
+
+            {showGroupDropdown && (
+              <div className="absolute right-0 top-full z-30 mt-1 w-64 space-y-1 rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
+                <span className="block px-2 text-[10px] font-semibold tracking-wider text-zinc-400 uppercase">
+                  Chọn nhóm hashtag đã lưu:
+                </span>
+                <div className="max-h-48 overflow-y-auto space-y-1">
+                  {groups.map((group) => (
+                    <button
+                      key={group.id}
+                      type="button"
+                      onClick={() => handleLoadFromGroup(group)}
+                      className="flex w-full flex-col rounded-lg px-2 py-1.5 text-left text-xs hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors"
+                    >
+                      <span className="font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                        {group.name}
+                      </span>
+                      <span className="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 truncate">
+                        {group.hashtags.join(", ")}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Input box */}
       <div className="relative">

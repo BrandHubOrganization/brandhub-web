@@ -24,6 +24,7 @@ import { ClientDetailPage } from "@/pages/ClientDetailPage";
 import { ContentLibraryPage } from "@/pages/ContentLibraryPage";
 import { ContentRequestListPage } from "@/pages/ContentRequestListPage";
 import { TemplateBrowserPage } from "@/pages/TemplateBrowserPage";
+import { HashtagGroupsPage } from "@/pages/HashtagGroupsPage";
 import ExamplesPage from "@/components/examples";
 
 export function AppRoutes() {
@@ -51,6 +52,7 @@ export function AppRoutes() {
           <Route path="/requests" element={<ContentRequestListPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/templates" element={<TemplateBrowserPage />} />
+          <Route path="/hashtag-groups" element={<HashtagGroupsPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/library" element={<ContentLibraryPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
