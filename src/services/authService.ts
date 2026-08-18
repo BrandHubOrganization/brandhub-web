@@ -1,4 +1,5 @@
 import { api } from "./api";
+import type { UserRole } from "@/store/authStore";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
@@ -56,9 +57,23 @@ export interface UnlinkOAuthRequest {
 export interface MeResponse {
   userId: string;
   email: string;
-  phone: string | null;
-  hasPassword: boolean;
-  linkedProviders: string[];
+  fullName?: string;
+  avatarUrl?: string;
+  role?: UserRole | string;
+  workspaceId?: string;
+  phone?: string | null;
+  hasPassword?: boolean;
+  linkedProviders?: string[];
+}
+
+export interface UserProfileResponse {
+  userId: string;
+  email: string;
+  fullName?: string;
+  avatarUrl?: string;
+  role: UserRole;
+  workspaceId?: string;
+  createdAt?: string;
 }
 
 export interface VerifyOtpRequest {
@@ -88,13 +103,9 @@ export interface ApiResponse<T> {
   success: boolean;
   data: T;
   error?: ApiError;
-  meta?: unknown;
-  requestId?: string;
-  version?: string;
-  timestamp?: string;
 }
 
-// --- Service ---
+// --- Service methods ---
 
 export const authService = {
   login: (data: LoginRequest) =>
@@ -102,6 +113,9 @@ export const authService = {
 
   register: (data: RegisterRequest) =>
     api.post<ApiResponse<RegisterResponse>>("/api/v1/auth/register", data),
+
+  verifyOtp: (data: VerifyOtpRequest) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/verify-otp", data),
 
   forgotPassword: (data: ForgotPasswordRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/forgot-password", data),
@@ -111,16 +125,6 @@ export const authService = {
 
   changePassword: (data: ChangePasswordRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/change-password", data),
-
-  verifyOtp: (data: VerifyOtpRequest) =>
-    api.post<ApiResponse<void>>("/api/v1/auth/verify-otp", data),
-
-  resendOtp: (data: ForgotPasswordRequest) =>
-    api.post<ApiResponse<void>>("/api/v1/auth/resend-otp", data),
-
-  logout: () => api.post<ApiResponse<void>>("/api/v1/auth/logout"),
-
-  refresh: () => api.post<ApiResponse<LoginResponse>>("/api/v1/auth/refresh"),
 
   linkPhone: (data: LinkPhoneRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/link/phone", data),
@@ -137,4 +141,6 @@ export const authService = {
     api.post<ApiResponse<void>>("/api/v1/auth/unlink/oauth", data),
 
   me: () => api.get<ApiResponse<MeResponse>>("/api/v1/auth/me"),
+
+  getProfile: () => api.get<ApiResponse<UserProfileResponse>>("/api/v1/users/me"),
 };

@@ -19,6 +19,8 @@ import { AdminPage } from "@/pages/AdminPage";
 import { EditorPage } from "@/pages/EditorPage";
 import { CalendarPage } from "@/pages/CalendarPage";
 import { AnalyticsPage } from "@/pages/AnalyticsPage";
+import { ClientListPage } from "@/pages/ClientListPage";
+import { ClientDetailPage } from "@/pages/ClientDetailPage";
 import ExamplesPage from "@/components/examples";
 
 export function AppRoutes() {
@@ -37,6 +39,8 @@ export function AppRoutes() {
       <Route element={<AuthGuard />}>
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/clients" element={<ClientListPage />} />
+          <Route path="/clients/:id" element={<ClientDetailPage />} />
           <Route path="/change-password" element={<ChangePasswordPage />} />
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/portal" element={<PortalPage />} />

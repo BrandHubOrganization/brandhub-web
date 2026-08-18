@@ -9,6 +9,7 @@ import {
   BarChart3,
   ShieldAlert,
   ChevronDown,
+  Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -49,6 +50,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: "Quản lý",
     items: [
+      { to: "/clients", icon: Building2, label: "Brand Clients" },
       { to: "/workspace", icon: FolderOpen, label: "Workspaces" },
       { to: "/portal", icon: Users, label: "Client Portal" },
     ],

@@ -2,9 +2,10 @@
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { XIcon } from "lucide-react";
+import { XIcon, AlertTriangle, Info, CheckCircle2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { Button } from "./button";
 
 function Dialog({
   ...props
@@ -121,6 +122,115 @@ function DialogDescription({
   );
 }
 
+// ── Convenient Reusable Confirm Dialog ──
+export type ConfirmVariant = "danger" | "warning" | "info" | "success";
+
+export interface ConfirmDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void | Promise<void>;
+  title?: string;
+  description?: React.ReactNode;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: ConfirmVariant;
+  isLoading?: boolean;
+}
+
+function ConfirmDialog({
+  isOpen,
+  onClose,
+  onConfirm,
+  title = "Xác nhận hành động",
+  description = "Bạn có chắc chắn muốn thực hiện hành động này không?",
+  confirmText = "Xác nhận",
+  cancelText = "Hủy bỏ",
+  variant = "danger",
+  isLoading = false,
+}: ConfirmDialogProps) {
+  const getVariantStyles = () => {
+    switch (variant) {
+      case "danger":
+        return {
+          icon: <AlertTriangle className="size-5 text-rose-500 shrink-0" />,
+          titleColor: "text-rose-600 dark:text-rose-500",
+          btnVariant: "destructive" as const,
+        };
+      case "warning":
+        return {
+          icon: <AlertTriangle className="size-5 text-amber-500 shrink-0" />,
+          titleColor: "text-amber-600 dark:text-amber-500",
+          btnVariant: "default" as const,
+        };
+      case "success":
+        return {
+          icon: <CheckCircle2 className="size-5 text-emerald-500 shrink-0" />,
+          titleColor: "text-emerald-600 dark:text-emerald-500",
+          btnVariant: "default" as const,
+        };
+      default:
+        return {
+          icon: <Info className="size-5 text-blue-500 shrink-0" />,
+          titleColor: "text-foreground",
+          btnVariant: "default" as const,
+        };
+    }
+  };
+
+  const style = getVariantStyles();
+
+  const handleConfirm = async () => {
+    await onConfirm();
+    onClose();
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[420px]">
+        <DialogHeader>
+          <DialogTitle className={`flex items-center gap-2 text-base font-bold ${style.titleColor}`}>
+            {style.icon}
+            {title}
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="py-2 text-xs text-foreground/90 leading-relaxed">
+          {typeof description === "string" ? <p>{description}</p> : description}
+        </div>
+
+        <DialogFooter className="pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onClose}
+            disabled={isLoading}
+            className="text-xs cursor-pointer"
+          >
+            {cancelText}
+          </Button>
+          <Button
+            type="button"
+            variant={style.btnVariant}
+            size="sm"
+            disabled={isLoading}
+            onClick={handleConfirm}
+            className={`text-xs font-semibold cursor-pointer ${
+              variant === "warning"
+                ? "bg-amber-500 hover:bg-amber-600 text-white"
+                : variant === "success"
+                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                : ""
+            }`}
+          >
+            {isLoading ? "Đang xử lý..." : confirmText}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export {
   Dialog,
   DialogClose,
@@ -132,4 +242,5 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  ConfirmDialog,
 };

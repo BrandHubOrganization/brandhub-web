@@ -1,18 +1,23 @@
 import * as React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Menu,
-  ChevronLeft,
-  ChevronRight,
   Bell,
+  ChevronDown,
+  Globe,
   LogOut,
-  Settings,
-  ShieldAlert,
+  Menu,
+  Moon,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Shield,
+  Sun,
+  User as UserIcon,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { useAuthStore, type UserRole } from "@/store/authStore";
+import { useAuthStore } from "@/store/authStore";
+import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +33,7 @@ const ROLE_LABELS: Record<string, string> = {
   BRAND_CLIENT: "Brand Client",
   AGENCY_OWNER: "Agency Owner",
   ADMIN: "Admin",
+  USER: "User",
 };
 
 export interface NavbarProps {
@@ -43,55 +49,30 @@ export function Navbar({
 }: NavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, clearAuth, setAuth } = useAuthStore();
+  const { user, clearAuth } = useAuthStore();
 
-  const currentRole = user?.role || "CONTENT_CREATOR";
+  const currentRole = user?.role || "USER";
+  const roleLabel = ROLE_LABELS[currentRole] || String(currentRole || "User");
   const username = user?.name || user?.email?.split("@")[0] || "User";
 
-  // Dynamic breadcrumbs trail calculation
+  const { theme, setTheme } = useTheme();
+  const { i18n, t } = useTranslation();
+
+  const [hasUnreadNotification, setHasUnreadNotification] =
+    React.useState(true);
+
   const getBreadcrumbs = () => {
-    const path = location.pathname;
-    if (path === "/" || path === "/dashboard")
-      return [{ label: "Dashboard", active: true }];
-
-    const parts = path.split("/").filter(Boolean);
-    return parts.map((part, index) => {
-      const labelMap: Record<string, string> = {
-        workspace: "Workspaces",
-        portal: "Client Portal",
-        editor: "Content Editor",
-        calendar: "Calendar",
-        analytics: "Analytics",
-        admin: "Admin Panel",
-        components: "Components",
-        examples: "UI Primitives",
-      };
-      const label =
-        labelMap[part] || part.charAt(0).toUpperCase() + part.slice(1);
-      return {
-        label,
-        active: index === parts.length - 1,
-      };
+    const segments = location.pathname.split("/").filter(Boolean);
+    if (segments.length === 0)
+      return [{ label: t("nav.dashboard"), path: "/" }];
+    return segments.map((seg, idx) => {
+      const path = "/" + segments.slice(0, idx + 1).join("/");
+      const labelKey = `nav.${seg}`;
+      const label = t(labelKey, {
+        defaultValue: seg.charAt(0).toUpperCase() + seg.slice(1),
+      });
+      return { label, path };
     });
-  };
-
-  // Helper for simulating logins with different roles for testing
-  const handleRoleSimulation = (role: UserRole) => {
-    if (user) {
-      setAuth(
-        {
-          ...user,
-          role,
-        },
-        "simulated-access-token",
-      );
-
-      // Navigate to respective route on change
-      if (role === "AGENCY_OWNER") navigate("/workspace");
-      else if (role === "BRAND_CLIENT") navigate("/portal");
-      else if (role === "ADMIN") navigate("/admin");
-      else navigate("/");
-    }
   };
 
   const handleLogout = () => {
@@ -99,188 +80,165 @@ export function Navbar({
     navigate("/login");
   };
 
+  const toggleLanguage = () => {
+    const nextLang = i18n.language === "vi" ? "en" : "vi";
+    i18n.changeLanguage(nextLang);
+  };
+
+  const breadcrumbs = getBreadcrumbs();
+
   return (
     <header
-      className="border-border bg-card z-30 flex h-14 shrink-0 items-center justify-between gap-3 border-b px-4 select-none"
-      style={{
-        borderColor: "var(--hairline, #e4e4e7)",
-        background: "var(--canvas, #fafafa)",
-      }}
+      className="bg-card border-border flex h-14 w-full items-center justify-between border-b px-4 transition-all"
+      style={{ fontFamily: "var(--font-sans)" }}
     >
-      <div className="flex min-w-0 items-center gap-3">
-        {/* Mobile Sidebar Toggle */}
+      {/* Left: Mobile Menu & Sidebar Toggle & Breadcrumbs */}
+      <div className="flex items-center gap-3">
         <Button
           variant="ghost"
           size="icon"
-          className="text-muted-foreground size-8 md:hidden"
+          className="size-8 md:hidden"
           onClick={onMobileMenuOpen}
+          title="Open Menu"
         >
           <Menu className="size-4" />
         </Button>
 
-        {/* Desktop Sidebar Toggle */}
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hidden size-8 md:flex"
           onClick={toggleCollapsed}
-          className="text-muted-foreground hover:bg-accent hover:text-foreground hidden h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors md:flex"
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (
-            <ChevronRight className="size-4" />
+            <PanelLeftOpen className="size-4" />
           ) : (
-            <ChevronLeft className="size-4" />
+            <PanelLeftClose className="size-4" />
           )}
-        </button>
+        </Button>
 
-        {/* Dynamic Breadcrumbs */}
-        <div className="text-muted-foreground hidden items-center gap-1.5 truncate text-xs sm:flex">
-          <span
-            className="hover:text-foreground cursor-pointer font-medium"
-            onClick={() => navigate("/")}
-          >
-            Home
-          </span>
-          {getBreadcrumbs().map((b, i) => (
-            <React.Fragment key={i}>
-              <span className="text-muted-foreground/45 shrink-0">/</span>
-              <span
-                className={cn(
-                  b.active
-                    ? "text-foreground truncate font-semibold"
-                    : "hover:text-foreground shrink-0 cursor-pointer",
-                )}
-              >
-                {b.label}
-              </span>
-            </React.Fragment>
-          ))}
-        </div>
+        <nav className="text-muted-foreground hidden items-center gap-1.5 text-xs sm:flex">
+          {breadcrumbs.map((b, idx) => {
+            const isLast = idx === breadcrumbs.length - 1;
+            return (
+              <React.Fragment key={b.path}>
+                {idx > 0 && <span className="text-muted-foreground/40">/</span>}
+                <span
+                  className={cn(
+                    "transition-colors",
+                    isLast
+                      ? "text-foreground font-semibold"
+                      : "hover:text-foreground cursor-pointer",
+                  )}
+                  onClick={() => !isLast && navigate(b.path)}
+                >
+                  {b.label}
+                </span>
+              </React.Fragment>
+            );
+          })}
+        </nav>
       </div>
 
-      <div className="flex shrink-0 items-center gap-2">
-        {/* Role Simulator Selector (Handy for debugging & evaluation) */}
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md border border-dashed px-2.5 text-xs font-medium transition-colors outline-none"
-            style={{
-              borderColor: "var(--brand-orange, #f05a28)",
-              color: "var(--brand-orange, #f05a28)",
-              background: "var(--brand-orange-soft, #fff0eb)",
-            }}
-          >
-            <ShieldAlert className="size-3.5 shrink-0" />
-            <span className="hidden sm:inline">
-              Role: {ROLE_LABELS[currentRole]}
-            </span>
-            <span className="sm:hidden">
-              {ROLE_LABELS[currentRole].split(" ")[0]}
-            </span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[200px]">
-            <DropdownMenuLabel className="text-xs">
-              Mô phỏng Phân quyền
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {(Object.keys(ROLE_LABELS) as UserRole[]).map((key) => (
-              <DropdownMenuItem
-                key={key}
-                onClick={() => handleRoleSimulation(key)}
-                className={cn(
-                  "cursor-pointer text-xs font-medium",
-                  currentRole === key ? "bg-accent" : "",
-                )}
-                style={
-                  currentRole === key
-                    ? { color: "var(--brand-orange, #f05a28)" }
-                    : {}
-                }
-              >
-                {ROLE_LABELS[key]}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      {/* Right: Real Role Badge (Read-only), Language, Theme, Notifications & User Dropdown */}
+      <div className="flex items-center gap-2">
+        {/* Real User Role Badge from Database */}
+        <div
+          className="flex h-8 items-center gap-1.5 rounded-md border border-dashed px-2.5 text-xs font-semibold select-none"
+          style={{
+            borderColor: "var(--brand-orange, #f05a28)",
+            color: "var(--brand-orange, #f05a28)",
+            background: "var(--brand-orange-soft, #fff0eb)",
+          }}
+          title="Vai trò thực tế từ Hệ thống Database"
+        >
+          <Shield className="size-3.5 shrink-0" />
+          <span className="hidden sm:inline">Role: {roleLabel}</span>
+          <span className="sm:hidden">{roleLabel.split(" ")[0]}</span>
+        </div>
+
+        {/* Language Switcher */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleLanguage}
+          className="h-8 gap-1.5 px-2 text-xs font-medium"
+          title="Switch Language"
+        >
+          <Globe className="size-3.5" />
+          <span className="uppercase">{i18n.language || "vi"}</span>
+        </Button>
+
+        {/* Theme Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          title="Toggle theme"
+        >
+          {theme === "dark" ? (
+            <Sun className="size-4 text-amber-400" />
+          ) : (
+            <Moon className="size-4" />
+          )}
+        </Button>
 
         {/* Notification Bell */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="text-muted-foreground hover:bg-accent hover:text-foreground relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-colors outline-none">
-            <Bell className="size-4" />
-            <span
-              className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full"
-              style={{ background: "var(--brand-orange, #f05a28)" }}
-            />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[300px] p-2">
-            <DropdownMenuLabel className="flex items-center justify-between text-xs">
-              <span>Thông báo</span>
-              <Badge
-                className="flex h-4 items-center justify-center px-1.5 text-[9px]"
-                style={{
-                  background: "var(--brand-orange, #f05a28)",
-                  color: "white",
-                }}
-              >
-                2 Mới
-              </Badge>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <div className="flex flex-col gap-1.5 py-1">
-              <div className="hover:bg-accent cursor-pointer rounded-md p-2 text-xs transition-colors">
-                <p className="text-foreground font-semibold">
-                  Tuấn (Creator) đã gửi bài viết
-                </p>
-                <p className="text-muted-foreground mt-0.5">
-                  Campaign 'Kem chống nắng' đang chờ duyệt.
-                </p>
-                <span className="text-muted-foreground mt-1 block text-[10px]">
-                  2 phút trước
-                </span>
-              </div>
-              <div className="hover:bg-accent cursor-pointer rounded-md p-2 text-xs transition-colors">
-                <p className="text-foreground font-semibold">
-                  Hùng (Client) từ chối duyệt bài
-                </p>
-                <p className="text-muted-foreground mt-0.5">
-                  Yêu cầu sửa lại thiết kế font chữ trong ảnh.
-                </p>
-                <span className="text-muted-foreground mt-1 block text-[10px]">
-                  1 giờ trước
-                </span>
-              </div>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative size-8"
+          onClick={() => setHasUnreadNotification(false)}
+          title="Notifications"
+        >
+          <Bell className="size-4" />
+          {hasUnreadNotification && (
+            <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-[#f05a28]" />
+          )}
+        </Button>
 
-        {/* Profile Avatar Dropdown */}
+        <div className="bg-border mx-1 h-4 w-px" />
+
+        {/* User Profile Dropdown */}
         <DropdownMenu>
-          <DropdownMenuTrigger className="shrink-0 cursor-pointer outline-none">
-            <div
-              className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold text-white transition-opacity hover:opacity-90"
-              style={{ background: "var(--brand-orange, #f05a28)" }}
-            >
+          <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 outline-none">
+            <div className="bg-brand-orange-soft text-brand-orange flex size-7 items-center justify-center rounded-full border border-[#f05a28]/20 text-xs font-bold">
               {username.charAt(0).toUpperCase()}
             </div>
+            <span className="text-foreground hidden max-w-[120px] truncate text-xs font-semibold sm:inline">
+              {username}
+            </span>
+            <ChevronDown className="text-muted-foreground size-3.5" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[180px]">
-            <DropdownMenuLabel className="flex flex-col gap-0.5">
-              <span className="text-foreground truncate text-xs font-bold">
-                {username}
-              </span>
-              <span className="text-muted-foreground truncate text-[9px]">
-                {ROLE_LABELS[currentRole]}
-              </span>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-xs leading-none font-medium">{username}</p>
+                <p className="text-muted-foreground text-[11px] leading-none">
+                  {user?.email || "No email"}
+                </p>
+                <p className="pt-1 text-[10px] leading-none font-bold text-[#f05a28]">
+                  {roleLabel}
+                </p>
+              </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="cursor-pointer gap-2 text-xs"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/change-password")}
+              className="cursor-pointer text-xs"
             >
-              <Settings className="text-muted-foreground size-3.5" /> Thiết lập
+              <UserIcon className="mr-2 size-3.5" />
+              Đổi mật khẩu
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="hover:text-red-650 cursor-pointer gap-2 text-xs text-red-500"
               onClick={handleLogout}
+              className="cursor-pointer text-xs text-rose-500 focus:bg-rose-50 focus:text-rose-600 dark:focus:bg-rose-950/50"
             >
-              <LogOut className="size-3.5" /> Đăng xuất
+              <LogOut className="mr-2 size-3.5" />
+              {t("nav.logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
