@@ -10,6 +10,7 @@ import {
   ShieldAlert,
   ChevronDown,
   Building2,
+  FolderKanban,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -45,6 +46,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { to: "/editor", icon: FileEdit, label: "Content Editor" },
       { to: "/calendar", icon: CalendarDays, label: "Calendar" },
+      { to: "/library", icon: FolderKanban, label: "Content Library" },
     ],
   },
   {

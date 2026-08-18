@@ -1,7 +1,31 @@
+import { useLocation } from "react-router-dom";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 
 export function EditorPage() {
+  const location = useLocation();
+  const locationState = location.state as { prefilledCaption?: string; templateTitle?: string } | null;
+
+  const [title, setTitle] = useState(locationState?.templateTitle || "Nike Air Max Pulse - Chi tiết ra mắt");
+  const [caption, setCaption] = useState(
+    locationState?.prefilledCaption ||
+      `👟 Đột phá phong cách với dòng Nike Air Max Pulse hoàn toàn mới!
+Với đệm khí Air cải tiến mang lại độ đàn hồi vượt trội, đây là sự kết hợp hoàn hảo giữa thời trang đường phố và hiệu năng vận hành.
+
+📅 Ngày mở bán: 18/07/2026.
+Đừng bỏ lỡ!`
+  );
+
+  useEffect(() => {
+    if (locationState?.prefilledCaption) {
+      setCaption(locationState.prefilledCaption);
+    }
+    if (locationState?.templateTitle) {
+      setTitle(locationState.templateTitle);
+    }
+  }, [locationState]);
+
   return (
     <PageWrapper
       title="Content Editor"
@@ -19,16 +43,14 @@ export function EditorPage() {
             type="text"
             className="w-full text-xl font-bold border-b border-border pb-2 outline-none focus:border-brand-orange bg-transparent"
             placeholder="Nhập tiêu đề nội dung..."
-            defaultValue="Nike Air Max Pulse - Chi tiết ra mắt"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <textarea
             className="w-full h-64 outline-none resize-none bg-transparent text-sm leading-relaxed"
             placeholder="Bắt đầu viết bài của bạn..."
-            defaultValue={`👟 Đột phá phong cách với dòng Nike Air Max Pulse hoàn toàn mới!
-Với đệm khí Air cải tiến mang lại độ đàn hồi vượt trội, đây là sự kết hợp hoàn hảo giữa thời trang đường phố và hiệu năng vận hành.
-
-📅 Ngày mở bán: 18/07/2026.
-Đừng bỏ lỡ!`}
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
           />
         </div>
 

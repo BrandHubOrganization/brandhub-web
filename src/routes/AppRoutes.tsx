@@ -21,6 +21,7 @@ import { CalendarPage } from "@/pages/CalendarPage";
 import { AnalyticsPage } from "@/pages/AnalyticsPage";
 import { ClientListPage } from "@/pages/ClientListPage";
 import { ClientDetailPage } from "@/pages/ClientDetailPage";
+import { ContentLibraryPage } from "@/pages/ContentLibraryPage";
 import ExamplesPage from "@/components/examples";
 
 export function AppRoutes() {
@@ -47,6 +48,7 @@ export function AppRoutes() {
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/library" element={<ContentLibraryPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/components/examples" element={<ExamplesPage />} />
         </Route>
