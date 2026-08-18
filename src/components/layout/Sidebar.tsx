@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Building2,
   FolderKanban,
+  LayoutTemplate,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -46,6 +47,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { to: "/requests", icon: FileEdit, label: "Content Requests" },
       { to: "/editor", icon: FileEdit, label: "Content Editor" },
+      { to: "/templates", icon: LayoutTemplate, label: "Post Templates" },
       { to: "/calendar", icon: CalendarDays, label: "Calendar" },
       { to: "/library", icon: FolderKanban, label: "Content Library" },
     ],

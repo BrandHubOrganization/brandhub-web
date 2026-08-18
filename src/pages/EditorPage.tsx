@@ -14,7 +14,12 @@ import { toast } from 'sonner';
 export function EditorPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const locationState = location.state as { prefilledCaption?: string; templateTitle?: string } | null;
+  const locationState = location.state as {
+    prefilledCaption?: string;
+    templateTitle?: string;
+    prefilledHashtags?: string[];
+    prefilledMediaUrls?: string[];
+  } | null;
 
   // Editor Form States
   const [title, setTitle] = useState(locationState?.templateTitle || 'Nike Air Max Pulse — Mở bán đợt 1');
@@ -22,15 +27,19 @@ export function EditorPage() {
     locationState?.prefilledCaption ||
       'Đột phá phong cách với dòng Nike Air Max Pulse hoàn toàn mới! Với đệm khí Air cải tiến mang lại độ đàn hồi vượt trội, đây là sự kết hợp hoàn hảo giữa thời trang đường phố và hiệu năng vận hành.'
   );
-  const [hashtags, setHashtags] = useState<string[]>([
-    '#NikeAirMax',
-    '#AirMaxPulse',
-    '#Sneakerhead',
-    '#BrandHub',
-  ]);
-  const [mediaUrls, setMediaUrls] = useState<string[]>([
-    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1000&q=80',
-  ]);
+  const [hashtags, setHashtags] = useState<string[]>(
+    locationState?.prefilledHashtags || [
+      '#NikeAirMax',
+      '#AirMaxPulse',
+      '#Sneakerhead',
+      '#BrandHub',
+    ]
+  );
+  const [mediaUrls, setMediaUrls] = useState<string[]>(
+    locationState?.prefilledMediaUrls || [
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1000&q=80',
+    ]
+  );
   const [targetPlatforms] = useState<SocialPlatform[]>(['FACEBOOK', 'INSTAGRAM', 'TIKTOK']);
 
   // Auto-Save & Sync States
@@ -42,13 +51,19 @@ export function EditorPage() {
   // Preview Modal State
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
-  // Sync state if coming from Content Library or Request list
+  // Sync state if coming from Content Library, Request list, or Template Browser
   useEffect(() => {
     if (locationState?.prefilledCaption) {
       setCaption(locationState.prefilledCaption);
     }
     if (locationState?.templateTitle) {
       setTitle(locationState.templateTitle);
+    }
+    if (locationState?.prefilledHashtags && locationState.prefilledHashtags.length > 0) {
+      setHashtags(locationState.prefilledHashtags);
+    }
+    if (locationState?.prefilledMediaUrls && locationState.prefilledMediaUrls.length > 0) {
+      setMediaUrls(locationState.prefilledMediaUrls);
     }
   }, [locationState]);
 

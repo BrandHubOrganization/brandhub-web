@@ -23,6 +23,7 @@ import { ClientListPage } from "@/pages/ClientListPage";
 import { ClientDetailPage } from "@/pages/ClientDetailPage";
 import { ContentLibraryPage } from "@/pages/ContentLibraryPage";
 import { ContentRequestListPage } from "@/pages/ContentRequestListPage";
+import { TemplateBrowserPage } from "@/pages/TemplateBrowserPage";
 import ExamplesPage from "@/components/examples";
 
 export function AppRoutes() {
@@ -49,6 +50,7 @@ export function AppRoutes() {
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/requests" element={<ContentRequestListPage />} />
           <Route path="/editor" element={<EditorPage />} />
+          <Route path="/templates" element={<TemplateBrowserPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/library" element={<ContentLibraryPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
