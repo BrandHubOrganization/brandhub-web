@@ -44,6 +44,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: "Sáng tạo",
     items: [
+      { to: "/requests", icon: FileEdit, label: "Content Requests" },
       { to: "/editor", icon: FileEdit, label: "Content Editor" },
       { to: "/calendar", icon: CalendarDays, label: "Calendar" },
       { to: "/library", icon: FolderKanban, label: "Content Library" },

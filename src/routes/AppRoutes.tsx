@@ -22,6 +22,7 @@ import { AnalyticsPage } from "@/pages/AnalyticsPage";
 import { ClientListPage } from "@/pages/ClientListPage";
 import { ClientDetailPage } from "@/pages/ClientDetailPage";
 import { ContentLibraryPage } from "@/pages/ContentLibraryPage";
+import { ContentRequestListPage } from "@/pages/ContentRequestListPage";
 import ExamplesPage from "@/components/examples";
 
 export function AppRoutes() {
@@ -46,6 +47,7 @@ export function AppRoutes() {
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/requests" element={<ContentRequestListPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/library" element={<ContentLibraryPage />} />

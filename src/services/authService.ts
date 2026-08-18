@@ -117,6 +117,9 @@ export const authService = {
   verifyOtp: (data: VerifyOtpRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/verify-otp", data),
 
+  resendOtp: (data: { email: string }) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/resend-otp", data),
+
   forgotPassword: (data: ForgotPasswordRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/forgot-password", data),
 
