@@ -4,6 +4,13 @@ import type {
   AIGenerateResponse,
 } from '@/types/editor';
 
+const MOCK_AI_IMAGES = [
+  'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1000&q=80',
+  'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1000&q=80',
+  'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000&q=80',
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&q=80',
+];
+
 class MockEditorService {
   private draft: PostDraft = {
     id: 'post-99',
@@ -47,13 +54,29 @@ class MockEditorService {
     req: AIGenerateRequest,
     onChunk?: (partial: string) => void
   ): Promise<AIGenerateResponse> {
-    const isHàiHước = req.prompt.toLowerCase().includes('hài') || req.prompt.toLowerCase().includes('funny');
+    // Simulate error testing if prompt contains "error" or "fail"
+    if (req.prompt.toLowerCase().includes('error')) {
+      await this.delay(1000);
+      throw new Error('SERVICE_UNAVAILABLE');
+    }
+    if (req.prompt.toLowerCase().includes('limit')) {
+      await this.delay(1000);
+      throw new Error('RATE_LIMITED');
+    }
 
-    const resultCaption = isHàiHước
+    const isHàiHước = req.prompt.toLowerCase().includes('hài') || req.prompt.toLowerCase().includes('funny');
+    const isFeedback = !!req.userFeedback;
+
+    let resultCaption = isHàiHước
       ? `🔥 Bật chế độ "Flex" phong cách cực chất cùng siêu phẩm mới nhất! 👟\nKhông chỉ là một đôi giày, đây là tấm vé giúp bạn trở thành tâm điểm mọi ánh nhìn trên phố.\n\n✨ Đệm khí êm ái đến mức bạn có thể nhún nhảy cả ngày mà không thấy mệt. Đặt hàng ngay kẻo hết size nhé cả nhà!`
       : `👟 Khám phá sự kết hợp hoàn hảo giữa thời trang đường phố và công nghệ đệm khí vượt trội.\n\nThiết kế tối ưu mang lại sự thoải mái trong từng bước di chuyển. Sản phẩm đã chính thức có mặt tại hệ thống cửa hàng trên toàn quốc!`;
 
-    const hashtags = ['#BrandHub', '#Fashion2026', '#StreetStyle', '#TrendingNow', '#MustHave'];
+    if (isFeedback) {
+      resultCaption = `[Đã tối ưu theo phản hồi: "${req.userFeedback}"]\n\n${resultCaption}`;
+    }
+
+    const hashtags = ['#BrandHub', '#Fashion2026', '#StreetStyle', '#TrendingNow', '#MustHave', '#StabilityAI'];
+    const randomImage = MOCK_AI_IMAGES[Math.floor(Math.random() * MOCK_AI_IMAGES.length)];
 
     // Stream chunks simulation if callback provided
     if (onChunk) {
@@ -62,16 +85,17 @@ class MockEditorService {
       for (let i = 0; i < words.length; i++) {
         current += (i === 0 ? '' : ' ') + words[i];
         onChunk(current);
-        await this.delay(60);
+        await this.delay(40);
       }
     } else {
-      await this.delay(2000);
+      await this.delay(1500);
     }
 
     return {
       caption: resultCaption,
       hashtags,
-      reasoning: 'Gợi ý nội dung được tối ưu hóa cho tương tác cao trên các nền tảng mạng xã hội được chọn.',
+      imageUrl: randomImage,
+      reasoning: 'Gợi ý nội dung và hình ảnh nghệ thuật Stability AI được tối ưu hóa theo phong cách của bạn.',
     };
   }
 }

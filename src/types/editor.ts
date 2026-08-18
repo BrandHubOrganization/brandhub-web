@@ -17,10 +17,19 @@ export interface AIGenerateRequest {
   topic?: string;
   platforms: SocialPlatform[];
   tone?: string;
+  userFeedback?: string;
+  previousOutput?: {
+    caption: string;
+    hashtags: string[];
+    imageUrl?: string;
+  };
 }
 
 export interface AIGenerateResponse {
   caption: string;
   hashtags: string[];
+  imageUrl?: string;
   reasoning?: string;
 }
+
+export type AIErrorType = 'SERVICE_UNAVAILABLE' | 'RATE_LIMITED' | 'GENERATION_FAILED' | null;

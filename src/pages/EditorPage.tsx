@@ -100,12 +100,15 @@ export function EditorPage() {
   }, [saveDraft]);
 
   // AI Auto-Populate Action
-  const handleApplyAIResult = (newCaption: string, newHashtags: string[]) => {
+  const handleApplyAIResult = (newCaption: string, newHashtags: string[], imageUrl?: string) => {
     setCaption(newCaption);
     if (newHashtags.length > 0) {
       // Merge unique hashtags
       const merged = Array.from(new Set([...hashtags, ...newHashtags]));
       setHashtags(merged);
+    }
+    if (imageUrl && !mediaUrls.includes(imageUrl)) {
+      setMediaUrls((prev) => [...prev, imageUrl]);
     }
     setIsDirty(true);
   };
