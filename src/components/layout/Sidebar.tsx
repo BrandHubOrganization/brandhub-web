@@ -35,7 +35,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: "Tổng quan",
     items: [
-      { to: "/", icon: LayoutDashboard, label: "Dashboard" },
+      { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
       { to: "/analytics", icon: BarChart3, label: "Analytics" },
     ],
   },
