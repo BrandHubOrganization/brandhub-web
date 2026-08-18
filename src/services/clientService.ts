@@ -204,6 +204,8 @@ export const clientService = {
           ...existing.servicePackage,
           packageTier: dto.packageTier,
           monthlyPostQuota: dto.monthlyPostLimit,
+          platforms: dto.allowedPlatforms || existing.servicePackage.platforms,
+          aiCreditsPerMonth: dto.aiCreditsPerMonth ?? existing.servicePackage.aiCreditsPerMonth ?? 200,
           expiryDate: dto.expiryDate || existing.servicePackage.expiryDate,
         },
       };

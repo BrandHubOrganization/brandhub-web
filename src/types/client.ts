@@ -70,6 +70,7 @@ export interface UpdateServicePackageDTO {
   packageTier: PackageTier;
   monthlyPostLimit: number;
   allowedPlatforms?: Platform[];
+  aiCreditsPerMonth?: number;
   expiryDate?: string;
 }
 

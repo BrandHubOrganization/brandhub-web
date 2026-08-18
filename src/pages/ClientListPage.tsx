@@ -111,6 +111,8 @@ export function ClientListPage() {
                 ...c.servicePackage,
                 packageTier: dto.packageTier,
                 monthlyPostQuota: dto.monthlyPostLimit,
+                platforms: dto.allowedPlatforms || c.servicePackage.platforms,
+                aiCreditsPerMonth: dto.aiCreditsPerMonth ?? c.servicePackage.aiCreditsPerMonth,
                 expiryDate: dto.expiryDate || c.servicePackage.expiryDate,
               },
             }

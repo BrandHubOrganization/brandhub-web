@@ -1,6 +1,6 @@
 export type PostStatus = "DRAFT" | "PENDING_REVIEW" | "APPROVED" | "SCHEDULED" | "PUBLISHED" | "FAILED" | "REJECTED";
 export type MediaType = "IMAGE" | "VIDEO" | "NONE";
-export type Platform = "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "ZALO_OA";
+export type Platform = "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "ZALO_OA" | "YOUTUBE";
 
 export interface PlatformTarget {
   platform: Platform;
