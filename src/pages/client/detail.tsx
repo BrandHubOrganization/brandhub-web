@@ -43,7 +43,7 @@ export function ClientDetailPage() {
       <PageWrapper title="Chi tiết Client" description="Đang tải dữ liệu...">
         <div className="space-y-6">
           <Skeleton className="h-28 w-full rounded-xl" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Skeleton className="h-48 w-full rounded-xl" />
             <Skeleton className="h-48 w-full rounded-xl" />
           </div>
@@ -55,9 +55,15 @@ export function ClientDetailPage() {
   if (!client) {
     return (
       <PageWrapper title="Chi tiết Client">
-        <div className="p-8 text-center space-y-4">
-          <p className="text-sm text-muted-foreground">Không tìm thấy thông tin thương hiệu này.</p>
-          <Button size="sm" onClick={() => navigate("/clients")} className="text-xs">
+        <div className="space-y-4 p-8 text-center">
+          <p className="text-muted-foreground text-sm">
+            Không tìm thấy thông tin thương hiệu này.
+          </p>
+          <Button
+            size="sm"
+            onClick={() => navigate("/clients")}
+            className="text-xs"
+          >
             Quay lại danh sách Client
           </Button>
         </div>
@@ -74,7 +80,7 @@ export function ClientDetailPage() {
           variant="outline"
           size="sm"
           onClick={() => navigate("/clients")}
-          className="text-xs gap-1.5 cursor-pointer"
+          className="cursor-pointer gap-1.5 text-xs"
         >
           <ArrowLeft className="size-3.5" /> Quay lại
         </Button>
@@ -90,7 +96,7 @@ export function ClientDetailPage() {
         )}
 
         {/* Grid: Tài khoản MXH & Yêu cầu Nội dung */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <ClientSocialAccounts accounts={client.linkedAccounts} />
           <ClientContentRequests requests={client.contentRequests} />
         </div>

@@ -112,11 +112,11 @@ export const HashtagGroupsTab: React.FC = () => {
       {/* Header & Add Button */}
       <div className="flex items-center justify-between rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
         <div>
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
             <Hash className="text-brand-orange h-4 w-4" />
             Nhóm Hashtag Đã Lưu ({groups.length})
           </h3>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             Quản lý các bộ hashtag định sẵn và copy nhanh vào bài đăng
           </p>
         </div>
@@ -218,7 +218,7 @@ export const HashtagGroupsTab: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
           <div className="w-full max-w-md space-y-4 rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
             <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
-              <h3 className="text-sm font-semibold text-foreground">
+              <h3 className="text-foreground text-sm font-semibold">
                 {editingGroup
                   ? "Chỉnh Sửa Nhóm Hashtag"
                   : "Tạo Nhóm Hashtag Mới"}

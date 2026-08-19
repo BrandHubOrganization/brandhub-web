@@ -36,7 +36,11 @@ export function SearchHeader({
         {totalElements !== undefined && (
           <span className="bg-muted flex items-center gap-1 rounded-md px-2.5 py-1 font-medium">
             {icon}
-            Tổng số: <strong className="text-foreground font-semibold">{totalElements}</strong> {totalLabel}
+            Tổng số:{" "}
+            <strong className="text-foreground font-semibold">
+              {totalElements}
+            </strong>{" "}
+            {totalLabel}
           </span>
         )}
         {extraActions}

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import type { Assignee } from '@/types/contentRequest';
-import { MOCK_CREATORS } from '@/services/mockContentRequestService';
-import { X, Search, Check, UserPlus } from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import type { Assignee } from "@/types/contentRequest";
+import { MOCK_CREATORS } from "@/services/mockContentRequestService";
+import { X, Search, Check, UserPlus } from "lucide-react";
+import { toast } from "sonner";
 
 interface AssigneePickerModalProps {
   isOpen: boolean;
@@ -19,8 +19,10 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
   onClose,
   onConfirm,
 }) => {
-  const [selectedId, setSelectedId] = useState<string>(currentAssignee?.id || '');
-  const [search, setSearch] = useState('');
+  const [selectedId, setSelectedId] = useState<string>(
+    currentAssignee?.id || "",
+  );
+  const [search, setSearch] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
@@ -28,13 +30,13 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
   const filteredCreators = MOCK_CREATORS.filter(
     (c) =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.email.toLowerCase().includes(search.toLowerCase())
+      c.email.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedId) {
-      toast.error('Vui lòng chọn nhân sự đảm nhận bài viết');
+      toast.error("Vui lòng chọn nhân sự đảm nhận bài viết");
       return;
     }
 
@@ -43,80 +45,81 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
       await onConfirm(selectedId);
       onClose();
     } catch (err) {
-      toast.error('Lỗi khi phân công nhân sự');
+      toast.error("Lỗi khi phân công nhân sự");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-card rounded-2xl max-w-md w-full p-6 border border-border shadow-2xl space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
+      <div className="bg-card border-border w-full max-w-md space-y-4 rounded-2xl border p-6 shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
+        <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
           <div className="flex items-center gap-2">
-            <UserPlus className="w-5 h-5 text-brand-orange dark:text-brand-orange/80" />
-            <h3 className="font-semibold text-sm text-foreground">
+            <UserPlus className="text-brand-orange dark:text-brand-orange/80 h-5 w-5" />
+            <h3 className="text-foreground text-sm font-semibold">
               Phân Công Nhân Sự Sáng Tạo
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-lg p-1"
+            className="rounded-lg p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <p className="text-xs text-muted-foreground">
-          Gán Creator cho yêu cầu: <span className="font-semibold text-foreground">{requestTitle}</span>
+        <p className="text-muted-foreground text-xs">
+          Gán Creator cho yêu cầu:{" "}
+          <span className="text-foreground font-semibold">{requestTitle}</span>
         </p>
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm theo tên hoặc email Creator..."
-            className="w-full pl-9 pr-4 py-2 bg-muted border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs text-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20"
+            className="bg-muted text-foreground focus:ring-brand-orange/20 w-full rounded-xl border border-zinc-200 py-2 pr-4 pl-9 text-xs focus:ring-2 focus:outline-hidden dark:border-zinc-700"
           />
         </div>
 
         {/* Creators List */}
-        <div className="max-h-60 overflow-y-auto space-y-1.5 pr-1">
+        <div className="max-h-60 space-y-1.5 overflow-y-auto pr-1">
           {filteredCreators.map((creator) => {
             const isSelected = selectedId === creator.id;
             return (
               <div
                 key={creator.id}
                 onClick={() => setSelectedId(creator.id)}
-                className={`flex items-center justify-between p-3 rounded-xl cursor-pointer border transition-all ${
+                className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-all ${
                   isSelected
-                    ? 'bg-brand-orange-soft dark:bg-brand-orange/20 border-brand-orange/50 shadow-xs'
-                    : 'bg-white dark:bg-zinc-800/40 border-zinc-100 dark:border-zinc-800/80 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+                    ? "bg-brand-orange-soft dark:bg-brand-orange/20 border-brand-orange/50 shadow-xs"
+                    : "border-zinc-100 bg-white hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-800/40 dark:hover:bg-zinc-800"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <img
                     src={creator.avatarUrl}
                     alt={creator.name}
-                    className="w-9 h-9 rounded-full object-cover border border-zinc-200 dark:border-zinc-700"
+                    className="h-9 w-9 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
                   />
                   <div>
-                    <h4 className="text-xs font-semibold text-foreground">
+                    <h4 className="text-foreground text-xs font-semibold">
                       {creator.name}
                     </h4>
-                    <span className="text-[10px] text-muted-foreground font-mono">
+                    <span className="text-muted-foreground font-mono text-[10px]">
                       {creator.email}
                     </span>
                   </div>
                 </div>
 
                 {isSelected && (
-                  <div className="w-5 h-5 rounded-full bg-brand-orange text-white flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5 stroke-[3]" />
+                  <div className="bg-brand-orange flex h-5 w-5 items-center justify-center rounded-full text-white">
+                    <Check className="h-3.5 w-3.5 stroke-[3]" />
                   </div>
                 )}
               </div>
@@ -125,11 +128,11 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex justify-end gap-2 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+        <div className="flex justify-end gap-2 border-t border-zinc-100 pt-3 dark:border-zinc-800">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl text-xs font-medium"
+            className="rounded-xl border border-zinc-300 px-4 py-2 text-xs font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"
           >
             Hủy
           </button>
@@ -137,9 +140,9 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-4 py-2 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-xl text-xs font-medium cursor-pointer disabled:opacity-50"
+            className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer rounded-xl px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
           >
-            {isSubmitting ? 'Đang gán...' : 'Xác nhận gán'}
+            {isSubmitting ? "Đang gán..." : "Xác nhận gán"}
           </button>
         </div>
       </div>

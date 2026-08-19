@@ -55,10 +55,8 @@ export function TemplateBrowserPage() {
 
           <div className="self-end text-xs font-medium text-zinc-500 sm:self-center dark:text-zinc-400">
             Hiển thị{" "}
-            <strong className="text-foreground">
-              {templates.length}
-            </strong>{" "}
-            / {total} mẫu bài đăng
+            <strong className="text-foreground">{templates.length}</strong> /{" "}
+            {total} mẫu bài đăng
           </div>
         </div>
 

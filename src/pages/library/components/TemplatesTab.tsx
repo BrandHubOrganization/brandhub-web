@@ -101,11 +101,11 @@ export const TemplatesTab: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
         <div>
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
             <FileText className="text-brand-orange h-4 w-4" />
             Mẫu Bài Viết Đã Duyệt ({templates.length})
           </h3>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             Các bài viết chuẩn hóa kèm nhóm hashtag sẵn sàng để sử dụng ngay
           </p>
         </div>
@@ -201,7 +201,7 @@ export const TemplatesTab: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
           <div className="w-full max-w-md space-y-4 rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
             <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
-              <h3 className="text-sm font-semibold text-foreground">
+              <h3 className="text-foreground text-sm font-semibold">
                 Tạo Mẫu Bài Viết Mới
               </h3>
               <button

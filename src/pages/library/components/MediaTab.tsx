@@ -170,10 +170,10 @@ export const MediaTab: React.FC = () => {
       {mediaList.length === 0 && !loading ? (
         <div className="rounded-2xl border border-dashed border-zinc-200 bg-white p-8 py-16 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
           <ImageIcon className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-700" />
-          <h3 className="mb-1 text-sm font-semibold text-foreground">
+          <h3 className="text-foreground mb-1 text-sm font-semibold">
             Không tìm thấy file media nào
           </h3>
-          <p className="mx-auto max-w-sm text-xs text-muted-foreground">
+          <p className="text-muted-foreground mx-auto max-w-sm text-xs">
             Thử thay đổi từ khóa tìm kiếm hoặc tải thêm tài nguyên mới vào thư
             viện.
           </p>

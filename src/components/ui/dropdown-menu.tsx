@@ -257,9 +257,7 @@ export interface DropdownProps {
 function Dropdown({ trigger, items, className, align = "end" }: DropdownProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        {trigger}
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent align={align} className={className}>
         {items.map((item, index) => (
           <DropdownMenuItem

@@ -1,4 +1,5 @@
-export type SocialPlatform = 'FACEBOOK' | 'INSTAGRAM' | 'TIKTOK' | 'THREADS' | 'YOUTUBE';
+export type SocialPlatform =
+  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
 
 export interface ContentTemplate {
   id: string;

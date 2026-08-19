@@ -1,6 +1,6 @@
-import React from 'react';
-import type { ContentTemplate, SocialPlatform } from '@/types/template';
-import { Calendar, Eye, Trash2 } from 'lucide-react';
+import React from "react";
+import type { ContentTemplate, SocialPlatform } from "@/types/template";
+import { Calendar, Eye, Trash2 } from "lucide-react";
 
 interface TemplateCardProps {
   template: ContentTemplate;
@@ -8,38 +8,65 @@ interface TemplateCardProps {
   onDelete: (id: string, title: string) => void;
 }
 
-const PLATFORM_COLOR_MAP: Record<SocialPlatform, { bg: string; text: string; label: string }> = {
-  FACEBOOK: { bg: 'bg-blue-100 dark:bg-blue-950', text: 'text-blue-600 dark:text-blue-400', label: 'FB' },
-  INSTAGRAM: { bg: 'bg-pink-100 dark:bg-pink-950', text: 'text-pink-600 dark:text-pink-400', label: 'IG' },
-  TIKTOK: { bg: 'bg-zinc-900 dark:bg-zinc-800', text: 'text-white', label: 'TT' },
-  THREADS: { bg: 'bg-zinc-800 dark:bg-zinc-700', text: 'text-white', label: 'TH' },
-  YOUTUBE: { bg: 'bg-red-100 dark:bg-red-950', text: 'text-red-600 dark:text-red-400', label: 'YT' },
+const PLATFORM_COLOR_MAP: Record<
+  SocialPlatform,
+  { bg: string; text: string; label: string }
+> = {
+  FACEBOOK: {
+    bg: "bg-blue-100 dark:bg-blue-950",
+    text: "text-blue-600 dark:text-blue-400",
+    label: "FB",
+  },
+  INSTAGRAM: {
+    bg: "bg-pink-100 dark:bg-pink-950",
+    text: "text-pink-600 dark:text-pink-400",
+    label: "IG",
+  },
+  TIKTOK: {
+    bg: "bg-zinc-900 dark:bg-zinc-800",
+    text: "text-white",
+    label: "TT",
+  },
+  THREADS: {
+    bg: "bg-zinc-800 dark:bg-zinc-700",
+    text: "text-white",
+    label: "TH",
+  },
+  YOUTUBE: {
+    bg: "bg-red-100 dark:bg-red-950",
+    text: "text-red-600 dark:text-red-400",
+    label: "YT",
+  },
 };
 
-export const TemplateCard: React.FC<TemplateCardProps> = ({ template, onPreview, onDelete }) => {
+export const TemplateCard: React.FC<TemplateCardProps> = ({
+  template,
+  onPreview,
+  onDelete,
+}) => {
   // Truncate caption to first 100 chars
   const snippet =
     template.caption.length > 100
-      ? template.caption.slice(0, 100) + '...'
+      ? template.caption.slice(0, 100) + "..."
       : template.caption;
 
   const formatDate = (isoString: string) => {
-    return new Date(isoString).toLocaleDateString('vi-VN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return new Date(isoString).toLocaleDateString("vi-VN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
   return (
     <div
       onClick={() => onPreview(template)}
-      className="bg-card rounded-2xl border border-border/80 p-5 shadow-xs hover:shadow-md hover:border-brand-orange/40 transition-all flex flex-col justify-between cursor-pointer group"
+      className="bg-card border-border/80 hover:border-brand-orange/40 group flex cursor-pointer flex-col justify-between rounded-2xl border p-5 shadow-xs transition-all hover:shadow-md"
     >
       <div>
         {/* Header Title & Delete Button */}
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-semibold text-sm text-foreground group-hover:text-brand-orange transition-colors line-clamp-1">
+        <div className="mb-2 flex items-start justify-between gap-2">
+          <h3 className="text-foreground group-hover:text-brand-orange line-clamp-1 text-sm font-semibold transition-colors">
             {template.title}
           </h3>
           <button
@@ -48,26 +75,30 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({ template, onPreview,
               e.stopPropagation();
               onDelete(template.id, template.title);
             }}
-            className="p-1 text-zinc-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors shrink-0 cursor-pointer"
+            className="shrink-0 cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
             title="Xóa template"
           >
-            <Trash2 className="w-3.5 h-3.5" />
+            <Trash2 className="h-3.5 w-3.5" />
           </button>
         </div>
 
         {/* Caption Snippet (100 chars) */}
-        <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed mb-4 line-clamp-3 bg-muted/40 p-3 rounded-xl border border-zinc-100 dark:border-zinc-800">
+        <p className="bg-muted/40 mb-4 line-clamp-3 rounded-xl border border-zinc-100 p-3 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
           {snippet}
         </p>
 
         {/* Target Platform Badges */}
-        <div className="flex flex-wrap items-center gap-1.5 mb-4">
+        <div className="mb-4 flex flex-wrap items-center gap-1.5">
           {template.targetPlatforms.map((p) => {
-            const pInfo = PLATFORM_COLOR_MAP[p] || { bg: 'bg-zinc-100', text: 'text-zinc-700', label: p };
+            const pInfo = PLATFORM_COLOR_MAP[p] || {
+              bg: "bg-zinc-100",
+              text: "text-zinc-700",
+              label: p,
+            };
             return (
               <span
                 key={p}
-                className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold ${pInfo.bg} ${pInfo.text}`}
+                className={`rounded-md px-2 py-0.5 font-mono text-[10px] font-bold ${pInfo.bg} ${pInfo.text}`}
               >
                 {pInfo.label}
               </span>
@@ -77,9 +108,9 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({ template, onPreview,
       </div>
 
       {/* Footer Info */}
-      <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
-        <span className="text-[11px] text-zinc-400 flex items-center gap-1">
-          <Calendar className="w-3 h-3" />
+      <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
+        <span className="flex items-center gap-1 text-[11px] text-zinc-400">
+          <Calendar className="h-3 w-3" />
           Dùng gần nhất: {formatDate(template.lastUsedAt)}
         </span>
 
@@ -89,9 +120,9 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({ template, onPreview,
             e.stopPropagation();
             onPreview(template);
           }}
-          className="px-3 py-1 bg-brand-orange-soft hover:bg-brand-orange hover:text-white text-brand-orange rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+          className="bg-brand-orange-soft hover:bg-brand-orange text-brand-orange flex cursor-pointer items-center gap-1 rounded-xl px-3 py-1 text-xs font-semibold transition-colors hover:text-white"
         >
-          <Eye className="w-3.5 h-3.5" />
+          <Eye className="h-3.5 w-3.5" />
           <span>Xem trước</span>
         </button>
       </div>

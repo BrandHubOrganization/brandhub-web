@@ -1,4 +1,5 @@
-export type SocialPlatform = 'FACEBOOK' | 'INSTAGRAM' | 'TIKTOK' | 'THREADS' | 'YOUTUBE';
+export type SocialPlatform =
+  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
 
 export interface PostDraft {
   id: string;
@@ -8,7 +9,7 @@ export interface PostDraft {
   hashtags: string[];
   mediaUrls: string[];
   targetPlatforms: SocialPlatform[];
-  status: 'DRAFT' | 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED';
+  status: "DRAFT" | "PENDING_REVIEW" | "APPROVED" | "REJECTED";
   updatedAt: string;
 }
 
@@ -32,4 +33,5 @@ export interface AIGenerateResponse {
   reasoning?: string;
 }
 
-export type AIErrorType = 'SERVICE_UNAVAILABLE' | 'RATE_LIMITED' | 'GENERATION_FAILED' | null;
+export type AIErrorType =
+  "SERVICE_UNAVAILABLE" | "RATE_LIMITED" | "GENERATION_FAILED" | null;

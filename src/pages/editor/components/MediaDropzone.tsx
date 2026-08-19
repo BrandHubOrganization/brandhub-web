@@ -1,13 +1,16 @@
-import React, { useRef, useState } from 'react';
-import { Upload, X, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useRef, useState } from "react";
+import { Upload, X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface MediaDropzoneProps {
   mediaUrls: string[];
   onChange: (urls: string[]) => void;
 }
 
-export const MediaDropzone: React.FC<MediaDropzoneProps> = ({ mediaUrls, onChange }) => {
+export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
+  mediaUrls,
+  onChange,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
@@ -24,9 +27,9 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({ mediaUrls, onChang
         if (progress >= 100) {
           clearInterval(interval);
           setUploadProgress(null);
-          const isVideo = file.type.startsWith('video');
+          const isVideo = file.type.startsWith("video");
           const mockUrl = isVideo
-            ? 'https://assets.mixkit.co/videos/preview/mixkit-pouring-coffee-into-a-cup-42898-large.mp4'
+            ? "https://assets.mixkit.co/videos/preview/mixkit-pouring-coffee-into-a-cup-42898-large.mp4"
             : URL.createObjectURL(file);
           resolve(mockUrl);
         }
@@ -88,35 +91,38 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({ mediaUrls, onChang
         onDragLeave={() => setIsDragOver(false)}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+        className={`cursor-pointer rounded-2xl border-2 border-dashed p-6 text-center transition-all ${
           isDragOver
-            ? 'border-brand-orange bg-brand-orange/10 dark:bg-brand-orange/20'
-            : 'border-border bg-zinc-50/50 dark:bg-zinc-900/50 hover:border-brand-orange'
+            ? "border-brand-orange bg-brand-orange/10 dark:bg-brand-orange/20"
+            : "border-border hover:border-brand-orange bg-zinc-50/50 dark:bg-zinc-900/50"
         }`}
       >
         {uploadProgress !== null ? (
-          <div className="space-y-3 py-2 max-w-xs mx-auto">
+          <div className="mx-auto max-w-xs space-y-3 py-2">
             <div className="flex items-center justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-300">
               <span className="flex items-center gap-1.5">
-                <Loader2 className="w-4 h-4 animate-spin text-brand-orange" />
+                <Loader2 className="text-brand-orange h-4 w-4 animate-spin" />
                 Đang tải phương tiện lên...
               </span>
               <span className="font-mono">{uploadProgress}%</span>
             </div>
-            <div className="w-full h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
               <div
-                className="h-full bg-brand-orange transition-all duration-150 rounded-full"
+                className="bg-brand-orange h-full rounded-full transition-all duration-150"
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
           </div>
         ) : (
           <div className="space-y-2">
-            <div className="w-10 h-10 rounded-full bg-brand-orange-soft dark:bg-brand-orange/20 text-brand-orange dark:text-brand-orange/80 flex items-center justify-center mx-auto shadow-xs">
-              <Upload className="w-5 h-5" />
+            <div className="bg-brand-orange-soft dark:bg-brand-orange/20 text-brand-orange dark:text-brand-orange/80 mx-auto flex h-10 w-10 items-center justify-center rounded-full shadow-xs">
+              <Upload className="h-5 w-5" />
             </div>
-            <h4 className="text-xs font-semibold text-foreground">
-              Kéo thả hình ảnh/video vào đây hoặc <span className="text-brand-orange dark:text-brand-orange/80">duyệt từ máy tính</span>
+            <h4 className="text-foreground text-xs font-semibold">
+              Kéo thả hình ảnh/video vào đây hoặc{" "}
+              <span className="text-brand-orange dark:text-brand-orange/80">
+                duyệt từ máy tính
+              </span>
             </h4>
             <p className="text-[11px] text-zinc-400">
               Hỗ trợ JPG, PNG, GIF, MP4 (tối đa 50MB)
@@ -127,26 +133,30 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({ mediaUrls, onChang
 
       {/* Uploaded Media Previews */}
       {mediaUrls.length > 0 && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 pt-1">
+        <div className="grid grid-cols-3 gap-3 pt-1 sm:grid-cols-4">
           {mediaUrls.map((url, idx) => {
-            const isVideo = url.endsWith('.mp4') || url.includes('mixkit');
+            const isVideo = url.endsWith(".mp4") || url.includes("mixkit");
             return (
               <div
                 key={idx}
-                className="group relative rounded-xl overflow-hidden aspect-square border border-border bg-zinc-900 shadow-2xs"
+                className="group border-border relative aspect-square overflow-hidden rounded-xl border bg-zinc-900 shadow-2xs"
               >
                 {isVideo ? (
-                  <video src={url} className="w-full h-full object-cover" />
+                  <video src={url} className="h-full w-full object-cover" />
                 ) : (
-                  <img src={url} alt={`Media ${idx}`} className="w-full h-full object-cover" />
+                  <img
+                    src={url}
+                    alt={`Media ${idx}`}
+                    className="h-full w-full object-cover"
+                  />
                 )}
 
                 <button
                   type="button"
                   onClick={() => handleRemoveMedia(idx)}
-                  className="absolute top-1.5 right-1.5 p-1 rounded-full bg-black/60 text-white hover:bg-red-600 transition-colors"
+                  className="absolute top-1.5 right-1.5 rounded-full bg-black/60 p-1 text-white transition-colors hover:bg-red-600"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="h-3.5 w-3.5" />
                 </button>
               </div>
             );

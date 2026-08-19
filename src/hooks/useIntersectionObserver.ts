@@ -1,13 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 interface UseIntersectionObserverOptions extends IntersectionObserverInit {
   freezeOnceVisible?: boolean;
 }
 
 export function useIntersectionObserver(
-  options: UseIntersectionObserverOptions = {}
+  options: UseIntersectionObserverOptions = {},
 ) {
-  const { threshold = 0, root = null, rootMargin = '0px', freezeOnceVisible = false } = options;
+  const {
+    threshold = 0,
+    root = null,
+    rootMargin = "0px",
+    freezeOnceVisible = false,
+  } = options;
   const [targetRef, setTargetRef] = useState<Element | null>(null);
   const [isIntersecting, setIsIntersecting] = useState<boolean>(false);
 
@@ -26,7 +31,7 @@ export function useIntersectionObserver(
           observer.disconnect();
         }
       },
-      { threshold, root, rootMargin }
+      { threshold, root, rootMargin },
     );
 
     observer.observe(targetRef);

@@ -1,13 +1,14 @@
 export type ContentRequestStatus =
-  | 'SUBMITTED'
-  | 'ASSIGNED'
-  | 'IN_PROGRESS'
-  | 'PENDING_REVIEW'
-  | 'SENT_TO_CLIENT'
-  | 'APPROVED'
-  | 'REJECTED';
+  | "SUBMITTED"
+  | "ASSIGNED"
+  | "IN_PROGRESS"
+  | "PENDING_REVIEW"
+  | "SENT_TO_CLIENT"
+  | "APPROVED"
+  | "REJECTED";
 
-export type SocialPlatform = 'FACEBOOK' | 'INSTAGRAM' | 'TIKTOK' | 'THREADS' | 'YOUTUBE';
+export type SocialPlatform =
+  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
 
 export interface Assignee {
   id: string;

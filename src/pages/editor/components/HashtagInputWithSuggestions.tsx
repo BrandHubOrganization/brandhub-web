@@ -162,7 +162,7 @@ export const HashtagInputWithSuggestions: React.FC<
                         onClick={() => handleLoadFromGroup(group)}
                         className="hover:bg-brand-orange-soft flex w-full cursor-pointer flex-col rounded-lg px-2 py-1.5 text-left text-xs transition-colors"
                       >
-                        <span className="line-clamp-1 font-semibold text-foreground">
+                        <span className="text-foreground line-clamp-1 font-semibold">
                           {group.name}
                         </span>
                         <span className="text-brand-orange truncate font-mono text-[10px]">

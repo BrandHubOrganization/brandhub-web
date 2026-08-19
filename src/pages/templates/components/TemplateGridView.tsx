@@ -49,10 +49,10 @@ export function TemplateGridView({
           <FileQuestion className="h-10 w-10" />
         </div>
         <div className="space-y-1">
-          <h3 className="text-base font-bold text-foreground">
+          <h3 className="text-foreground text-base font-bold">
             Chưa Có Mẫu Bài Viết Nào
           </h3>
-          <p className="text-xs leading-relaxed text-muted-foreground">
+          <p className="text-muted-foreground text-xs leading-relaxed">
             No templates yet. Save a draft from the Content Editor to see it
             here.
           </p>

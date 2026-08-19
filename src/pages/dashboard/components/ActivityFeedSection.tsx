@@ -30,7 +30,7 @@ export function ActivityFeedSection({
       case "POST_PUBLISHED":
         return <Send className="size-3.5 text-emerald-500" />;
       case "POST_APPROVED":
-        return <CheckCircle className="size-3.5 text-brand-orange" />;
+        return <CheckCircle className="text-brand-orange size-3.5" />;
       case "POST_FAILED":
         return <AlertTriangle className="size-3.5 text-rose-500" />;
       case "COMMENT_ADDED":
@@ -38,18 +38,20 @@ export function ActivityFeedSection({
       case "TASK_ASSIGNED":
         return <UserPlus className="size-3.5 text-purple-500" />;
       default:
-        return <Activity className="size-3.5 text-muted-foreground" />;
+        return <Activity className="text-muted-foreground size-3.5" />;
     }
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+    <div className="border-border bg-card space-y-4 rounded-xl border p-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Activity className="size-4 text-[#f05a28]" />
-          <h3 className="text-sm font-bold text-foreground">Hoạt động gần đây</h3>
+          <h3 className="text-foreground text-sm font-bold">
+            Hoạt động gần đây
+          </h3>
         </div>
-        <span className="text-[11px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+        <span className="text-muted-foreground bg-muted rounded-full px-2 py-0.5 text-[11px] font-medium">
           10 sự kiện mới nhất
         </span>
       </div>
@@ -57,9 +59,12 @@ export function ActivityFeedSection({
       {isLoading ? (
         <div className="space-y-3 pt-1">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex items-start gap-3 border-b border-border/40 pb-3 last:border-0">
-              <Skeleton className="size-8 rounded-full shrink-0" />
-              <div className="space-y-1.5 flex-1">
+            <div
+              key={i}
+              className="border-border/40 flex items-start gap-3 border-b pb-3 last:border-0"
+            >
+              <Skeleton className="size-8 shrink-0 rounded-full" />
+              <div className="flex-1 space-y-1.5">
                 <Skeleton className="h-3.5 w-3/4" />
                 <Skeleton className="h-3 w-1/2" />
               </div>
@@ -67,37 +72,49 @@ export function ActivityFeedSection({
           ))}
         </div>
       ) : isError ? (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 text-center space-y-2">
-          <p className="text-xs text-destructive flex items-center justify-center gap-1.5">
+        <div className="border-destructive/20 bg-destructive/5 space-y-2 rounded-lg border p-4 text-center">
+          <p className="text-destructive flex items-center justify-center gap-1.5 text-xs">
             <AlertCircle className="size-3.5" /> Lỗi tải nhật ký hoạt động
           </p>
-          <Button variant="ghost" size="sm" onClick={onRetry} className="h-7 text-xs gap-1 cursor-pointer">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onRetry}
+            className="h-7 cursor-pointer gap-1 text-xs"
+          >
             <RefreshCw className="size-3" /> Thử lại
           </Button>
         </div>
       ) : events.length === 0 ? (
-        <div className="p-6 text-center text-xs text-muted-foreground border border-dashed rounded-lg">
+        <div className="text-muted-foreground rounded-lg border border-dashed p-6 text-center text-xs">
           Chưa có hoạt động nào được ghi nhận gần đây.
         </div>
       ) : (
-        <div className="space-y-3 pt-1 divide-y divide-border/40">
+        <div className="divide-border/40 space-y-3 divide-y pt-1">
           {events.map((event) => (
-            <div key={event.id} className="pt-3 first:pt-0 flex items-start gap-3 group">
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted border border-border text-xs font-bold text-foreground">
+            <div
+              key={event.id}
+              className="group flex items-start gap-3 pt-3 first:pt-0"
+            >
+              <div className="bg-muted border-border text-foreground flex size-8 shrink-0 items-center justify-center rounded-full border text-xs font-bold">
                 {event.actorName.charAt(0).toUpperCase()}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-xs font-semibold text-foreground">{event.actorName}</span>
-                  <span className="text-xs text-muted-foreground">{event.actionText}</span>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-foreground text-xs font-semibold">
+                    {event.actorName}
+                  </span>
+                  <span className="text-muted-foreground text-xs">
+                    {event.actionText}
+                  </span>
                   {getEventIcon(event.type)}
                 </div>
                 {event.targetTitle && (
-                  <p className="text-xs font-medium text-foreground/90 truncate mt-0.5">
+                  <p className="text-foreground/90 mt-0.5 truncate text-xs font-medium">
                     {event.targetTitle}
                   </p>
                 )}
-                <span className="text-[10px] text-muted-foreground block mt-1">
+                <span className="text-muted-foreground mt-1 block text-[10px]">
                   {event.timestamp}
                 </span>
               </div>

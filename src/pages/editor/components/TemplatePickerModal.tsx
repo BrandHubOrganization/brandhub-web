@@ -49,10 +49,10 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
               <LayoutTemplate className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-foreground">
+              <h3 className="text-foreground text-base font-semibold">
                 Thư viện Mẫu bài đăng (Post Templates)
               </h3>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 Chọn mẫu nội dung có sẵn để áp dụng nhanh vào Editor
               </p>
             </div>

@@ -1,16 +1,16 @@
-import React from 'react';
-import type { ContentTemplate } from '@/types/template';
+import React from "react";
+import type { ContentTemplate } from "@/types/template";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { ArrowRight, FileText } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface TemplatePreviewModalProps {
   isOpen: boolean;
@@ -28,7 +28,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
   if (!template) return null;
 
   const handleUseTemplate = () => {
-    navigate('/editor', {
+    navigate("/editor", {
       state: {
         prefilledCaption: template.caption,
         templateTitle: template.title,
@@ -37,55 +37,57 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
       },
     });
 
-    toast.success(`Đã tải mẫu bài viết "${template.title}" vào Content Editor!`);
+    toast.success(
+      `Đã tải mẫu bài viết "${template.title}" vào Content Editor!`,
+    );
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col p-0 overflow-hidden border-border">
+      <DialogContent className="border-border flex max-h-[90vh] flex-col overflow-hidden p-0 sm:max-w-2xl">
         {/* Header */}
-        <DialogHeader className="p-4 border-b border-zinc-100 dark:border-zinc-800">
-          <DialogTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
-            <FileText className="w-5 h-5 text-brand-orange" />
+        <DialogHeader className="border-b border-zinc-100 p-4 dark:border-zinc-800">
+          <DialogTitle className="text-foreground flex items-center gap-2 text-sm font-semibold">
+            <FileText className="text-brand-orange h-5 w-5" />
             Chi Tiết Mẫu Bài Viết
           </DialogTitle>
         </DialogHeader>
 
         {/* Content Body */}
-        <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
+        <div className="flex-1 space-y-5 overflow-y-auto p-6 text-left">
           {/* Title */}
           <div>
-            <span className="text-[10px] font-bold text-brand-orange uppercase tracking-wider block mb-1">
+            <span className="text-brand-orange mb-1 block text-[10px] font-bold tracking-wider uppercase">
               Tiêu Đề Template:
             </span>
-            <h2 className="text-base font-bold text-foreground">
+            <h2 className="text-foreground text-base font-bold">
               {template.title}
             </h2>
           </div>
 
           {/* Full Caption */}
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+            <span className="block text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
               Nội Dung Caption Đầy Đủ:
             </span>
-            <div className="p-4 bg-muted/40 rounded-xl border border-zinc-100 dark:border-zinc-800 text-xs text-foreground whitespace-pre-wrap leading-relaxed">
+            <div className="bg-muted/40 text-foreground rounded-xl border border-zinc-100 p-4 text-xs leading-relaxed whitespace-pre-wrap dark:border-zinc-800">
               {template.caption}
             </div>
           </div>
 
           {/* Target Platforms & Hashtags */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Target Platforms */}
             <div className="space-y-1.5">
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+              <span className="block text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
                 Nền Tảng Áp Dụng:
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {template.targetPlatforms.map((p) => (
                   <span
                     key={p}
-                    className="px-2.5 py-1 text-xs font-mono font-semibold rounded-lg bg-muted text-zinc-700 dark:text-zinc-300"
+                    className="bg-muted rounded-lg px-2.5 py-1 font-mono text-xs font-semibold text-zinc-700 dark:text-zinc-300"
                   >
                     {p}
                   </span>
@@ -95,14 +97,14 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
 
             {/* Hashtags */}
             <div className="space-y-1.5">
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+              <span className="block text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
                 Hashtags Đính Kèm:
               </span>
               <div className="flex flex-wrap gap-1">
                 {template.hashtags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-2 py-0.5 text-xs font-mono rounded-md bg-brand-orange-soft text-brand-orange font-semibold"
+                    className="bg-brand-orange-soft text-brand-orange rounded-md px-2 py-0.5 font-mono text-xs font-semibold"
                   >
                     {tag}
                   </span>
@@ -114,16 +116,20 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
           {/* Media Images Preview */}
           {template.mediaUrls.length > 0 && (
             <div className="space-y-1.5">
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
+              <span className="block text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
                 Hình Ảnh Xem Trước:
               </span>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {template.mediaUrls.map((url, idx) => (
                   <div
                     key={idx}
-                    className="rounded-xl overflow-hidden aspect-video border border-border bg-zinc-900"
+                    className="border-border aspect-video overflow-hidden rounded-xl border bg-zinc-900"
                   >
-                    <img src={url} alt={`Template media ${idx}`} className="w-full h-full object-cover" />
+                    <img
+                      src={url}
+                      alt={`Template media ${idx}`}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                 ))}
               </div>
@@ -132,8 +138,14 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <DialogFooter className="p-4 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 sm:justify-between flex items-center">
-          <Button type="button" variant="outline" size="sm" onClick={onClose} className="cursor-pointer">
+        <DialogFooter className="flex items-center border-t border-zinc-100 bg-zinc-50 p-4 sm:justify-between dark:border-zinc-800 dark:bg-zinc-900">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onClose}
+            className="cursor-pointer"
+          >
             Đóng
           </Button>
 
@@ -141,10 +153,10 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
             type="button"
             size="sm"
             onClick={handleUseTemplate}
-            className="bg-brand-orange hover:bg-brand-orange/90 text-white cursor-pointer font-semibold"
+            className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer font-semibold text-white"
           >
             <span>Use Template</span>
-            <ArrowRight className="w-4 h-4 ml-1" />
+            <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
         </DialogFooter>
       </DialogContent>

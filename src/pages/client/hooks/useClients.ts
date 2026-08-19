@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { clientService } from "../services/clientService";
-import type { Client, CreateClientDTO, UpdateServicePackageDTO } from "../types/client";
+import type {
+  Client,
+  CreateClientDTO,
+  UpdateServicePackageDTO,
+} from "../types/client";
 import { toast } from "sonner";
 
 export function useClients() {
@@ -39,7 +43,10 @@ export function useClients() {
     }
   };
 
-  const handleUpdateServicePackage = async (id: string, dto: UpdateServicePackageDTO) => {
+  const handleUpdateServicePackage = async (
+    id: string,
+    dto: UpdateServicePackageDTO,
+  ) => {
     try {
       const updated = await clientService.updateServicePackage(id, dto);
       setClients((prev) => prev.map((c) => (c.id === id ? updated : c)));

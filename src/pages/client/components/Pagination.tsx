@@ -21,8 +21,8 @@ export function Pagination({
       className={`border-border bg-muted/20 flex items-center justify-between border-t px-4 py-3 text-xs ${className}`}
     >
       <span className="text-muted-foreground">
-        Trang <span className="text-foreground font-semibold">{page + 1}</span> /{" "}
-        {totalPages}
+        Trang <span className="text-foreground font-semibold">{page + 1}</span>{" "}
+        / {totalPages}
       </span>
 
       <div className="flex items-center gap-1">

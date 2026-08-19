@@ -1,5 +1,6 @@
-export type PlatformType = 'FACEBOOK' | 'INSTAGRAM' | 'TIKTOK' | 'THREADS' | 'YOUTUBE';
-export type PostStatus = 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' | 'FAILED';
+export type PlatformType =
+  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
+export type PostStatus = "DRAFT" | "SCHEDULED" | "PUBLISHED" | "FAILED";
 
 export interface CalendarPostEvent {
   id: string;
