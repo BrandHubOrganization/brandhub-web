@@ -261,11 +261,13 @@ Vi phạm rule "không viết lại `<button>/<input>/<select>/<textarea>` thô 
 ✅ Hoàn thành 2026-08-19 — `--primary` = brand orange (light+dark), thêm `--sidebar*`, đổi 27 chỗ indigo/blue + 12 chỗ inline hex → brand token. Default `<Button>` giờ render cam thương hiệu.
 
 **P2 (cleanup):**
-- [ ] Chuyển 20 component feature-specific vô page (4.1).
-- [ ] Tách `client/index.tsx` 167 dòng (4.2).
-- [ ] Thêm shadcn primitives (4.3).
-- [ ] Thay raw HTML (PHẦN 5).
-- [ ] Đổi 2 emoji UI → lucide (PHẦN 3).
+- [x] Chuyển 25 component feature-specific vô page (4.1).
+- [x] Tách `client/index.tsx` 167 dòng (4.2).
+- [x] Thêm shadcn primitives (4.3).
+- [x] Thay raw HTML (PHẦN 5).
+- [x] Đổi 2 emoji UI → lucide (PHẦN 3).
+
+✅ Hoàn thành 2026-08-19 — `git mv` 25 component vô `pages/{feature}/components/`, tách `client/index.tsx` → `ClientModals.tsx`, thêm 3 primitives (`select`, `textarea`, `tabs`), thay raw HTML bằng `ui/*` ở 13 file, đổi 2 emoji → lucide. `npx tsc --noEmit` 0 lỗi, `npm run build` xanh. Commit `dd24527`.
 
 ---
 
