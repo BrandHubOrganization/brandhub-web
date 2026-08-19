@@ -238,10 +238,10 @@ export function Navbar({
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-xs leading-none font-medium">{username}</p>
-                <p className="text-muted-foreground text-[11px] leading-none">
+                <p className="text-muted-foreground text-2xs leading-none">
                   {user?.email || "No email"}
                 </p>
-                <p className="pt-1 text-[10px] leading-none font-bold text-[#f05a28]">
+                <p className="pt-1 text-3xs leading-none font-bold text-[#f05a28]">
                   {roleLabel}
                 </p>
               </div>

@@ -88,7 +88,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
           {/* Header */}
           <DialogHeader className="border-b border-zinc-100 p-4 dark:border-zinc-800">
             <DialogTitle className="text-foreground flex items-center gap-2 text-sm font-semibold">
-              <Hash className="text-brand-orange h-5 w-5" />
+              <Hash className="text-brand-orange size-5" />
               {initialData ? "Chỉnh Sửa Nhóm Hashtag" : "Tạo Nhóm Hashtag Mới"}
             </DialogTitle>
           </DialogHeader>
@@ -115,7 +115,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
                 <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                   Danh sách Hashtags <span className="text-rose-500">*</span>
                 </label>
-                <span className="text-[10px] text-zinc-400">
+                <span className="text-3xs text-zinc-400">
                   Tối đa 50 hashtags
                 </span>
               </div>
@@ -126,7 +126,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
                 placeholder="Nhập các hashtag, phân cách bằng dấu phẩy hoặc xuống dòng...&#10;Ví dụ: #Fashion2026, #SummerVibes, #BrandHub"
                 className="bg-muted text-foreground focus:ring-brand-orange/20 w-full rounded-xl border border-zinc-200 p-3 font-mono text-xs focus:ring-2 focus:outline-hidden dark:border-zinc-700"
               />
-              <p className="text-[11px] text-zinc-400">
+              <p className="text-2xs text-zinc-400">
                 Phân cách các hashtag bằng dấu phẩy <code>,</code> hoặc xuống
                 dòng. Dấu <code>#</code> tự động được thêm nếu thiếu.
               </p>
@@ -144,7 +144,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
               loading={isSubmitting}
               className="bg-brand-orange hover:bg-brand-orange/90 text-white"
             >
-              <Save className="mr-1 h-4 w-4" />
+              <Save className="mr-1 size-4" />
               <span>{initialData ? "Cập Nhật" : "Tạo Mới"}</span>
             </Button>
           </DialogFooter>

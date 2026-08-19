@@ -91,7 +91,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
         onDragLeave={() => setIsDragOver(false)}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`cursor-pointer rounded-2xl border-2 border-dashed p-6 text-center transition-all ${
+        className={`cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-all ${
           isDragOver
             ? "border-brand-orange bg-brand-orange/10 dark:bg-brand-orange/20"
             : "border-border hover:border-brand-orange bg-zinc-50/50 dark:bg-zinc-900/50"
@@ -101,7 +101,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
           <div className="mx-auto max-w-xs space-y-3 py-2">
             <div className="flex items-center justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-300">
               <span className="flex items-center gap-1.5">
-                <Loader2 className="text-brand-orange h-4 w-4 animate-spin" />
+                <Loader2 className="text-brand-orange size-4 animate-spin" />
                 Đang tải phương tiện lên...
               </span>
               <span className="font-mono">{uploadProgress}%</span>
@@ -115,8 +115,8 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
           </div>
         ) : (
           <div className="space-y-2">
-            <div className="bg-brand-orange-soft dark:bg-brand-orange/20 text-brand-orange dark:text-brand-orange/80 mx-auto flex h-10 w-10 items-center justify-center rounded-full shadow-xs">
-              <Upload className="h-5 w-5" />
+            <div className="bg-brand-orange-soft dark:bg-brand-orange/20 text-brand-orange dark:text-brand-orange/80 mx-auto flex size-10 items-center justify-center rounded-full shadow-xs">
+              <Upload className="size-5" />
             </div>
             <h4 className="text-foreground text-xs font-semibold">
               Kéo thả hình ảnh/video vào đây hoặc{" "}
@@ -124,7 +124,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
                 duyệt từ máy tính
               </span>
             </h4>
-            <p className="text-[11px] text-zinc-400">
+            <p className="text-2xs text-zinc-400">
               Hỗ trợ JPG, PNG, GIF, MP4 (tối đa 50MB)
             </p>
           </div>
@@ -156,7 +156,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
                   onClick={() => handleRemoveMedia(idx)}
                   className="absolute top-1.5 right-1.5 rounded-full bg-black/60 p-1 text-white transition-colors hover:bg-red-600"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X className="size-3.5" />
                 </button>
               </div>
             );

@@ -53,11 +53,11 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-      <div className="bg-card border-border w-full max-w-md space-y-4 rounded-2xl border p-6 shadow-2xl">
+      <div className="bg-card border-border w-full max-w-md space-y-4 rounded-xl border p-6 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
           <div className="flex items-center gap-2">
-            <UserPlus className="text-brand-orange dark:text-brand-orange/80 h-5 w-5" />
+            <UserPlus className="text-brand-orange dark:text-brand-orange/80 size-5" />
             <h3 className="text-foreground text-sm font-semibold">
               Phân Công Nhân Sự Sáng Tạo
             </h3>
@@ -66,7 +66,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
             onClick={onClose}
             className="rounded-lg p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
           >
-            <X className="h-5 w-5" />
+            <X className="size-5" />
           </button>
         </div>
 
@@ -77,7 +77,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
             value={search}
@@ -105,21 +105,21 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
                   <img
                     src={creator.avatarUrl}
                     alt={creator.name}
-                    className="h-9 w-9 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
+                    className="size-9 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
                   />
                   <div>
                     <h4 className="text-foreground text-xs font-semibold">
                       {creator.name}
                     </h4>
-                    <span className="text-muted-foreground font-mono text-[10px]">
+                    <span className="text-muted-foreground font-mono text-3xs">
                       {creator.email}
                     </span>
                   </div>
                 </div>
 
                 {isSelected && (
-                  <div className="bg-brand-orange flex h-5 w-5 items-center justify-center rounded-full text-white">
-                    <Check className="h-3.5 w-3.5 stroke-[3]" />
+                  <div className="bg-brand-orange flex size-5 items-center justify-center rounded-full text-white">
+                    <Check className="size-3.5 stroke-[3]" />
                   </div>
                 )}
               </div>

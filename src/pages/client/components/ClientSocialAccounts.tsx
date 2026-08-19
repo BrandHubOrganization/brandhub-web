@@ -32,12 +32,12 @@ export function ClientSocialAccounts({
                   <span className="text-foreground block text-xs font-semibold">
                     {acc.accountName}
                   </span>
-                  <span className="text-muted-foreground text-[10px]">
+                  <span className="text-muted-foreground text-3xs">
                     {acc.accountHandle} ({acc.platform})
                   </span>
                 </div>
               </div>
-              <span className="rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+              <span className="rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-3xs font-semibold text-emerald-600">
                 Đã kết nối
               </span>
             </div>

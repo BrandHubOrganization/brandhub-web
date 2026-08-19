@@ -61,7 +61,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
   return (
     <div
       onClick={() => onPreview(template)}
-      className="bg-card border-border/80 hover:border-brand-orange/40 group flex cursor-pointer flex-col justify-between rounded-2xl border p-5 shadow-xs transition-all hover:shadow-md"
+      className="bg-card border-border/80 hover:border-brand-orange/40 group flex cursor-pointer flex-col justify-between rounded-xl border p-5 shadow-xs transition-all hover:shadow-md"
     >
       <div>
         {/* Header Title & Delete Button */}
@@ -78,7 +78,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
             className="shrink-0 cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
             title="Xóa template"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="size-3.5" />
           </button>
         </div>
 
@@ -98,7 +98,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
             return (
               <span
                 key={p}
-                className={`rounded-md px-2 py-0.5 font-mono text-[10px] font-bold ${pInfo.bg} ${pInfo.text}`}
+                className={`rounded-md px-2 py-0.5 font-mono text-3xs font-bold ${pInfo.bg} ${pInfo.text}`}
               >
                 {pInfo.label}
               </span>
@@ -109,8 +109,8 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
 
       {/* Footer Info */}
       <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
-        <span className="flex items-center gap-1 text-[11px] text-zinc-400">
-          <Calendar className="h-3 w-3" />
+        <span className="flex items-center gap-1 text-2xs text-zinc-400">
+          <Calendar className="size-3" />
           Dùng gần nhất: {formatDate(template.lastUsedAt)}
         </span>
 
@@ -122,7 +122,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
           }}
           className="bg-brand-orange-soft hover:bg-brand-orange text-brand-orange flex cursor-pointer items-center gap-1 rounded-xl px-3 py-1 text-xs font-semibold transition-colors hover:text-white"
         >
-          <Eye className="h-3.5 w-3.5" />
+          <Eye className="size-3.5" />
           <span>Xem trước</span>
         </button>
       </div>

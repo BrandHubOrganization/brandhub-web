@@ -92,11 +92,11 @@ export const MediaTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Toolbar Controls */}
-      <div className="flex flex-col items-stretch justify-between gap-3 rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex flex-col items-stretch justify-between gap-3 rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900">
         <div className="flex flex-1 items-center gap-3">
           {/* Search Box */}
           <div className="relative max-w-md flex-1">
-            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
             <Input
               type="text"
               value={search}
@@ -126,7 +126,7 @@ export const MediaTab: React.FC = () => {
                   : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
               }`}
             >
-              <ImageIcon className="h-3.5 w-3.5" />
+              <ImageIcon className="size-3.5" />
               Ảnh
             </button>
             <button
@@ -137,7 +137,7 @@ export const MediaTab: React.FC = () => {
                   : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
               }`}
             >
-              <Film className="h-3.5 w-3.5" />
+              <Film className="size-3.5" />
               Video
             </button>
           </div>
@@ -146,7 +146,7 @@ export const MediaTab: React.FC = () => {
         <div className="flex items-center gap-3">
           {/* Sort Dropdown */}
           <div className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-700/80 dark:bg-zinc-800/80">
-            <ArrowUpDown className="h-3.5 w-3.5 text-zinc-400" />
+            <ArrowUpDown className="size-3.5 text-zinc-400" />
             <Select
               value={sort}
               onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
@@ -168,8 +168,8 @@ export const MediaTab: React.FC = () => {
 
       {/* Media Grid */}
       {mediaList.length === 0 && !loading ? (
-        <div className="rounded-2xl border border-dashed border-zinc-200 bg-white p-8 py-16 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-          <ImageIcon className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-700" />
+        <div className="rounded-xl border border-dashed border-zinc-200 bg-white p-8 py-16 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
+          <ImageIcon className="mx-auto mb-3 size-12 text-zinc-300 dark:text-zinc-700" />
           <h3 className="text-foreground mb-1 text-sm font-semibold">
             Không tìm thấy file media nào
           </h3>
@@ -184,7 +184,7 @@ export const MediaTab: React.FC = () => {
             <div
               key={media.id}
               onClick={() => setSelectedMedia(media)}
-              className="group hover:border-brand-orange/50 relative aspect-square transform cursor-pointer overflow-hidden rounded-2xl border border-zinc-200/80 bg-zinc-900 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800"
+              className="group hover:border-brand-orange/50 relative aspect-square transform cursor-pointer overflow-hidden rounded-xl border border-zinc-200/80 bg-zinc-900 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800"
             >
               {/* Media Display */}
               {media.type === "video" ? (
@@ -195,8 +195,8 @@ export const MediaTab: React.FC = () => {
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <div className="text-brand-orange flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg transition-transform group-hover:scale-110">
-                      <Play className="ml-0.5 h-5 w-5 fill-current" />
+                    <div className="text-brand-orange flex size-10 items-center justify-center rounded-full bg-white/90 shadow-lg transition-transform group-hover:scale-110">
+                      <Play className="ml-0.5 size-5 fill-current" />
                     </div>
                   </div>
                 </div>
@@ -213,20 +213,20 @@ export const MediaTab: React.FC = () => {
                 <span className="truncate text-xs leading-tight font-semibold">
                   {media.filename}
                 </span>
-                <span className="mt-0.5 font-mono text-[10px] text-zinc-300">
+                <span className="mt-0.5 font-mono text-3xs text-zinc-300">
                   {(media.sizeBytes / (1024 * 1024)).toFixed(1)} MB
                 </span>
               </div>
 
               {/* Type Badge Top Right */}
-              <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-bold text-white uppercase backdrop-blur-xs">
+              <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-3xs font-bold text-white uppercase backdrop-blur-xs">
                 {media.type === "video" ? (
                   <>
-                    <Film className="text-brand-orange h-3 w-3" /> Video
+                    <Film className="text-brand-orange size-3" /> Video
                   </>
                 ) : (
                   <>
-                    <ImageIcon className="text-brand-orange h-3 w-3" /> Image
+                    <ImageIcon className="text-brand-orange size-3" /> Image
                   </>
                 )}
               </div>
@@ -239,7 +239,7 @@ export const MediaTab: React.FC = () => {
       <div ref={sentinelRef} className="flex items-center justify-center py-6">
         {loading && (
           <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-xs font-medium text-zinc-500 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-            <Loader2 className="text-brand-orange h-4 w-4 animate-spin" />
+            <Loader2 className="text-brand-orange size-4 animate-spin" />
             <span>Đang tải thêm media...</span>
           </div>
         )}

@@ -25,7 +25,7 @@ export function CreateWorkspaceForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="border-border bg-card flex max-w-sm flex-col gap-4 rounded-lg border p-6"
+      className="border-border bg-card flex max-w-sm flex-col gap-4 rounded-xl border p-6"
     >
       <Input
         label={t("workspace.create.nameLabel")}

@@ -41,12 +41,12 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
-      <div className="animate-in fade-in zoom-in-95 flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl duration-200 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="animate-in fade-in zoom-in-95 flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-2xl duration-200 dark:border-zinc-800 dark:bg-zinc-900">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-100 p-4 dark:border-zinc-800">
           <div className="flex items-center gap-2">
             <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-1.5">
-              <LayoutTemplate className="h-5 w-5" />
+              <LayoutTemplate className="size-5" />
             </div>
             <div>
               <h3 className="text-foreground text-base font-semibold">
@@ -61,14 +61,14 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
             onClick={onClose}
             className="cursor-pointer p-1 text-lg leading-none text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
           >
-            <X className="h-5 w-5" />
+            <X className="size-5" />
           </button>
         </div>
 
         {/* Search Bar */}
         <div className="border-b border-zinc-100 bg-zinc-50/50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50">
           <div className="relative">
-            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
             <Input
               type="text"
               value={search}
@@ -100,7 +100,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
                     <h4 className="group-hover:text-brand-orange line-clamp-1 text-xs font-semibold text-zinc-900 transition-colors dark:text-zinc-100">
                       {tpl.title}
                     </h4>
-                    <span className="bg-brand-orange-soft text-brand-orange shrink-0 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold">
+                    <span className="bg-brand-orange-soft text-brand-orange shrink-0 rounded-full px-2 py-0.5 font-mono text-3xs font-bold">
                       Template
                     </span>
                   </div>
@@ -116,7 +116,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
                     {tpl.hashtags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-[10px] text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+                        className="rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-3xs text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
                       >
                         {tag}
                       </span>
@@ -128,7 +128,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
                     onClick={() => handleApply(tpl)}
                     className="bg-brand-orange hover:bg-brand-orange/90 flex shrink-0 cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold text-white shadow-2xs transition-colors"
                   >
-                    <Check className="h-3.5 w-3.5" />
+                    <Check className="size-3.5" />
                     <span>Áp dụng</span>
                   </button>
                 </div>

@@ -36,7 +36,7 @@ export function TemplateGridView({
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center space-y-3 py-20 text-zinc-400">
-        <Loader2 className="text-brand-orange h-8 w-8 animate-spin" />
+        <Loader2 className="text-brand-orange size-8 animate-spin" />
         <p className="text-xs font-medium">Đang tải thư viện mẫu bài viết...</p>
       </div>
     );
@@ -44,9 +44,9 @@ export function TemplateGridView({
 
   if (templates.length === 0) {
     return (
-      <div className="mx-auto my-8 flex max-w-lg flex-col items-center justify-center space-y-4 rounded-2xl border border-zinc-200/80 bg-white p-12 text-center shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/20 dark:text-brand-orange/80 rounded-2xl p-4">
-          <FileQuestion className="h-10 w-10" />
+      <div className="mx-auto my-8 flex max-w-lg flex-col items-center justify-center space-y-4 rounded-xl border border-zinc-200/80 bg-white p-12 text-center shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/20 dark:text-brand-orange/80 rounded-xl p-4">
+          <FileQuestion className="size-10" />
         </div>
         <div className="space-y-1">
           <h3 className="text-foreground text-base font-bold">
@@ -63,7 +63,7 @@ export function TemplateGridView({
           className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-xs font-semibold text-white"
           size="sm"
         >
-          <LayoutTemplate className="mr-1 h-4 w-4" />
+          <LayoutTemplate className="mr-1 size-4" />
           <span>Đi đến Content Editor</span>
         </Button>
       </div>
@@ -96,7 +96,7 @@ export function TemplateGridView({
               disabled={page === 0}
               onClick={onPrevPage}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="size-4" />
             </Button>
             <Button
               type="button"
@@ -105,7 +105,7 @@ export function TemplateGridView({
               disabled={page >= totalPages - 1}
               onClick={onNextPage}
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="size-4" />
             </Button>
           </div>
         </div>

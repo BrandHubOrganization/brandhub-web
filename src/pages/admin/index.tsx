@@ -7,7 +7,7 @@ export function AdminPage() {
       description="Trang cấu hình và quản trị hệ thống dành riêng cho Administrator."
     >
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="border-border bg-card space-y-4 rounded-lg border p-6">
+        <div className="border-border bg-card space-y-4 rounded-xl border p-6">
           <h2 className="text-lg font-bold">Quản lý người dùng</h2>
           <p className="text-muted-foreground text-xs">
             Thêm mới, chỉnh sửa quyền truy cập hoặc vô hiệu hóa các tài khoản
@@ -18,7 +18,7 @@ export function AdminPage() {
           </div>
         </div>
 
-        <div className="border-border bg-card space-y-4 rounded-lg border p-6">
+        <div className="border-border bg-card space-y-4 rounded-xl border p-6">
           <h2 className="text-lg font-bold">Cấu hình Hệ thống</h2>
           <p className="text-muted-foreground text-xs">
             Quản lý các tích hợp API bên thứ ba (OpenAI, Facebook, Instagram

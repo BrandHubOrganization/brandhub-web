@@ -18,7 +18,7 @@ export function RequestTabs({ activeTab, totalCount, onTabChange }: Props) {
             : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
         }`}
       >
-        <FileText className="h-4 w-4" />
+        <FileText className="size-4" />
         <span>Tất Cả Yêu Cầu ({totalCount})</span>
       </button>
 
@@ -30,7 +30,7 @@ export function RequestTabs({ activeTab, totalCount, onTabChange }: Props) {
             : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
         }`}
       >
-        <UserCheck className="h-4 w-4" />
+        <UserCheck className="size-4" />
         <span>Nhiệm Vụ Của Tôi</span>
       </button>
     </div>

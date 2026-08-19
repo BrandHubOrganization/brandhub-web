@@ -51,7 +51,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const textLength = value.length;
 
   return (
-    <div className="border-border bg-card flex min-h-[320px] flex-col overflow-hidden rounded-2xl border shadow-xs">
+    <div className="border-border bg-card flex min-h-[320px] flex-col overflow-hidden rounded-xl border shadow-xs">
       {/* Formatting Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 bg-zinc-50/80 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/40">
         <div className="flex items-center gap-1">
@@ -65,7 +65,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             }`}
             title="In đậm (Bold)"
           >
-            <Bold className="h-4 w-4" />
+            <Bold className="size-4" />
           </button>
 
           <button
@@ -78,7 +78,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             }`}
             title="In nghiêng (Italic)"
           >
-            <Italic className="h-4 w-4" />
+            <Italic className="size-4" />
           </button>
 
           <div className="mx-1 h-4 w-px bg-zinc-200 dark:bg-zinc-700" />
@@ -93,7 +93,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             }`}
             title="Danh sách gạch đầu dòng"
           >
-            <List className="h-4 w-4" />
+            <List className="size-4" />
           </button>
 
           <button
@@ -106,7 +106,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             }`}
             title="Danh sách đánh số"
           >
-            <ListOrdered className="h-4 w-4" />
+            <ListOrdered className="size-4" />
           </button>
 
           <div className="mx-1 h-4 w-px bg-zinc-200 dark:bg-zinc-700" />
@@ -122,11 +122,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             className="rounded-lg p-1.5 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
             title="Chèn liên kết"
           >
-            <Link className="h-4 w-4" />
+            <Link className="size-4" />
           </button>
         </div>
 
-        <span className="font-mono text-[11px] text-zinc-400">
+        <span className="font-mono text-2xs text-zinc-400">
           TipTap Rich Text Editor
         </span>
       </div>
@@ -149,7 +149,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             return (
               <div
                 key={platform}
-                className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-[11px] ${
+                className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-2xs ${
                   isOverLimit
                     ? "border-red-200 bg-red-50 font-bold text-red-600 dark:border-red-900 dark:bg-red-950/50"
                     : "border-zinc-200 bg-white text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400"
@@ -165,7 +165,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           })}
         </div>
 
-        <span className="font-mono text-[11px] text-zinc-400">
+        <span className="font-mono text-2xs text-zinc-400">
           Tổng số ký tự: {textLength}
         </span>
       </div>

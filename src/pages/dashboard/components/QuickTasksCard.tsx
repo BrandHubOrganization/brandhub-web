@@ -21,7 +21,7 @@ export function QuickTasksCard({ userName, userRole }: Props) {
               <h2 className="text-foreground text-lg font-bold">
                 Xin chào trở lại, {userName || "User"}!
               </h2>
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#f05a28]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#f05a28]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#f05a28]/10 px-2.5 py-0.5 text-2xs font-semibold text-[#f05a28]">
                 <Sparkles className="size-3" /> {userRole}
               </span>
             </div>

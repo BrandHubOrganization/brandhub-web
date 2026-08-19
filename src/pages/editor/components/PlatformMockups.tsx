@@ -41,18 +41,18 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
             <img
               src={authorAvatar}
               alt="avatar"
-              className="h-10 w-10 rounded-full border border-slate-200 object-cover"
+              className="size-10 rounded-full border border-slate-200 object-cover"
             />
             <div>
               <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 {authorName}
               </h4>
               <p className="flex items-center gap-1 text-xs text-slate-500">
-                Just now · <Globe className="h-3 w-3" />
+                Just now · <Globe className="size-3" />
               </p>
             </div>
           </div>
-          <MoreHorizontal className="h-5 w-5 text-slate-400" />
+          <MoreHorizontal className="size-5 text-slate-400" />
         </div>
 
         <p className="px-3.5 pb-3 text-sm whitespace-pre-wrap text-slate-800 dark:text-slate-200">
@@ -71,13 +71,13 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
 
         <div className="flex items-center justify-between border-t border-slate-100 p-3 text-xs font-medium text-slate-500 dark:border-slate-800">
           <button className="flex items-center gap-1.5 hover:text-blue-600">
-            <ThumbsUp className="h-4 w-4" /> Like
+            <ThumbsUp className="size-4" /> Like
           </button>
           <button className="flex items-center gap-1.5 hover:text-blue-600">
-            <MessageCircle className="h-4 w-4" /> Comment
+            <MessageCircle className="size-4" /> Comment
           </button>
           <button className="flex items-center gap-1.5 hover:text-blue-600">
-            <Share2 className="h-4 w-4" /> Share
+            <Share2 className="size-4" /> Share
           </button>
         </div>
       </div>
@@ -89,7 +89,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
       <div className="mx-auto max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-[2px]">
+            <div className="size-8 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-[2px]">
               <img
                 src={authorAvatar}
                 alt="avatar"
@@ -100,7 +100,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
               {authorName.toLowerCase().replace(/\s+/g, "_")}
             </span>
           </div>
-          <MoreHorizontal className="h-5 w-5 text-slate-400" />
+          <MoreHorizontal className="size-5 text-slate-400" />
         </div>
 
         <div
@@ -116,11 +116,11 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
         <div className="space-y-2 p-3">
           <div className="flex items-center justify-between text-slate-700 dark:text-slate-300">
             <div className="flex items-center gap-3">
-              <Heart className="h-5 w-5 cursor-pointer hover:text-rose-500" />
-              <MessageCircle className="h-5 w-5 cursor-pointer hover:text-slate-500" />
-              <Share2 className="h-5 w-5 cursor-pointer hover:text-slate-500" />
+              <Heart className="size-5 cursor-pointer hover:text-rose-500" />
+              <MessageCircle className="size-5 cursor-pointer hover:text-slate-500" />
+              <Share2 className="size-5 cursor-pointer hover:text-slate-500" />
             </div>
-            <Bookmark className="h-5 w-5 cursor-pointer" />
+            <Bookmark className="size-5 cursor-pointer" />
           </div>
 
           <p className="line-clamp-3 text-xs text-slate-800 dark:text-slate-200">
@@ -136,7 +136,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
 
   if (platform === "TIKTOK") {
     return (
-      <div className="relative mx-auto aspect-[9/16] max-w-[280px] overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 text-white shadow-2xl">
+      <div className="relative mx-auto aspect-[9/16] max-w-[280px] overflow-hidden rounded-xl border border-slate-800 bg-slate-950 text-white shadow-2xl">
         <img
           src={mediaSrc}
           alt="TikTok"
@@ -145,7 +145,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80" />
 
         <div className="absolute right-3 bottom-12 flex flex-col items-center gap-4 text-xs">
-          <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-white">
+          <div className="size-10 overflow-hidden rounded-full border-2 border-white">
             <img
               src={authorAvatar}
               alt="avatar"
@@ -153,15 +153,15 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
             />
           </div>
           <div className="flex flex-col items-center">
-            <Heart className="h-6 w-6 fill-white" />
+            <Heart className="size-6 fill-white" />
             <span>12.4K</span>
           </div>
           <div className="flex flex-col items-center">
-            <MessageCircle className="h-6 w-6 fill-white" />
+            <MessageCircle className="size-6 fill-white" />
             <span>342</span>
           </div>
           <div className="flex flex-col items-center">
-            <Bookmark className="h-6 w-6 fill-white" />
+            <Bookmark className="size-6 fill-white" />
             <span>1.2K</span>
           </div>
         </div>
@@ -170,7 +170,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
           <h5 className="text-xs font-semibold text-white">
             @{authorName.toLowerCase().replace(/\s+/g, "")}
           </h5>
-          <p className="line-clamp-2 text-[11px] text-slate-200">{caption}</p>
+          <p className="line-clamp-2 text-2xs text-slate-200">{caption}</p>
         </div>
       </div>
     );
@@ -183,7 +183,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
         <img
           src={authorAvatar}
           alt="avatar"
-          className="h-8 w-8 rounded-full object-cover"
+          className="size-8 rounded-full object-cover"
         />
         <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
           {authorName}

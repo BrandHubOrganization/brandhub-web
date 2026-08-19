@@ -23,7 +23,7 @@ export function ClientBanner({ client }: ClientBannerProps) {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <h2 className="text-foreground text-lg font-bold">{client.name}</h2>
-            <span className="rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+            <span className="rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-3xs font-semibold text-emerald-600">
               {client.status}
             </span>
           </div>
@@ -49,7 +49,7 @@ export function ClientBanner({ client }: ClientBannerProps) {
       <div className="bg-muted/30 border-border flex items-center gap-3 rounded-lg border p-3">
         <UserCheck className="text-brand-orange size-5 shrink-0" />
         <div className="text-xs">
-          <span className="text-muted-foreground block text-[10px]">
+          <span className="text-muted-foreground block text-3xs">
             Account Manager
           </span>
           <span className="text-foreground font-semibold">

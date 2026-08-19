@@ -110,10 +110,10 @@ export const HashtagGroupsTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header & Add Button */}
-      <div className="flex items-center justify-between rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex items-center justify-between rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
         <div>
           <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-            <Hash className="text-brand-orange h-4 w-4" />
+            <Hash className="text-brand-orange size-4" />
             Nhóm Hashtag Đã Lưu ({groups.length})
           </h3>
           <p className="text-muted-foreground text-xs">
@@ -125,7 +125,7 @@ export const HashtagGroupsTab: React.FC = () => {
           onClick={() => handleOpenModal()}
           className="bg-brand-orange hover:bg-brand-orange/90 active:bg-brand-orange/80 flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="size-4" />
           <span>Tạo Nhóm Hashtag</span>
         </button>
       </div>
@@ -136,8 +136,8 @@ export const HashtagGroupsTab: React.FC = () => {
           Đang tải nhóm hashtag...
         </div>
       ) : groups.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-zinc-200 bg-white p-8 py-12 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-          <Hash className="mx-auto mb-2 h-10 w-10 text-zinc-300 dark:text-zinc-700" />
+        <div className="rounded-xl border border-dashed border-zinc-200 bg-white p-8 py-12 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
+          <Hash className="mx-auto mb-2 size-10 text-zinc-300 dark:text-zinc-700" />
           <p className="text-xs text-zinc-500">
             Chưa có nhóm hashtag nào. Nhấn "Tạo Nhóm Hashtag" để thêm mới.
           </p>
@@ -147,12 +147,12 @@ export const HashtagGroupsTab: React.FC = () => {
           {groups.map((group) => (
             <div
               key={group.id}
-              className="hover:border-brand-orange/40 group flex flex-col justify-between rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-xs transition-all dark:border-zinc-800 dark:bg-zinc-900"
+              className="hover:border-brand-orange/40 group flex flex-col justify-between rounded-xl border border-zinc-200/80 bg-white p-5 shadow-xs transition-all dark:border-zinc-800 dark:bg-zinc-900"
             >
               <div>
                 <div className="mb-3 flex items-center justify-between">
                   <h4 className="group-hover:text-brand-orange flex items-center gap-1.5 text-sm font-semibold text-zinc-900 transition-colors dark:text-zinc-100">
-                    <Tag className="text-brand-orange h-3.5 w-3.5" />
+                    <Tag className="text-brand-orange size-3.5" />
                     {group.name}
                   </h4>
                   <div className="flex items-center gap-1">
@@ -161,14 +161,14 @@ export const HashtagGroupsTab: React.FC = () => {
                       className="hover:text-brand-orange dark:hover:text-brand-orange cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
                       title="Sửa nhóm"
                     >
-                      <Edit2 className="h-3.5 w-3.5" />
+                      <Edit2 className="size-3.5" />
                     </button>
                     <button
                       onClick={() => handleDeleteGroup(group.id, group.name)}
                       className="cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
                       title="Xóa nhóm"
                     >
-                      <Trash2 className="h-3.5 w-3.5" />
+                      <Trash2 className="size-3.5" />
                     </button>
                   </div>
                 </div>
@@ -188,7 +188,7 @@ export const HashtagGroupsTab: React.FC = () => {
 
               {/* Copy Action Footer */}
               <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
-                <span className="font-mono text-[11px] text-zinc-400">
+                <span className="font-mono text-2xs text-zinc-400">
                   {group.tags.length} hashtags
                 </span>
                 <button
@@ -197,12 +197,12 @@ export const HashtagGroupsTab: React.FC = () => {
                 >
                   {copiedId === group.id ? (
                     <>
-                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                      <Check className="size-3.5 text-emerald-500" />
                       <span>Đã Copy</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="h-3.5 w-3.5" />
+                      <Copy className="size-3.5" />
                       <span>Copy Group</span>
                     </>
                   )}
@@ -216,7 +216,7 @@ export const HashtagGroupsTab: React.FC = () => {
       {/* Modal Form Create / Edit */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md space-y-4 rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="w-full max-w-md space-y-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
             <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
               <h3 className="text-foreground text-sm font-semibold">
                 {editingGroup
@@ -227,7 +227,7 @@ export const HashtagGroupsTab: React.FC = () => {
                 onClick={() => setIsModalOpen(false)}
                 className="cursor-pointer text-zinc-400 hover:text-zinc-600"
               >
-                <X className="h-5 w-5" />
+                <X className="size-5" />
               </button>
             </div>
 

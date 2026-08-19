@@ -25,7 +25,7 @@ export function ClientTable({
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left">
         <thead>
-          <tr className="border-border bg-muted/40 text-muted-foreground border-b text-[11px] font-bold tracking-wider uppercase">
+          <tr className="border-border bg-muted/40 text-muted-foreground border-b text-2xs font-bold tracking-wider uppercase">
             <th className="px-4 py-3">Thương hiệu / Client</th>
             <th className="px-4 py-3">Account Manager</th>
             <th className="px-4 py-3 text-center">Active Posts</th>
@@ -97,7 +97,7 @@ export function ClientTable({
                       <span className="text-foreground group-hover:text-brand-orange block truncate font-bold transition-colors">
                         {client.name}
                       </span>
-                      <span className="text-muted-foreground block truncate text-[11px]">
+                      <span className="text-muted-foreground block truncate text-2xs">
                         {client.contactEmail}
                       </span>
                     </div>
@@ -114,7 +114,7 @@ export function ClientTable({
                         className="size-5 shrink-0 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="bg-muted flex size-5 items-center justify-center rounded-full text-[10px] font-bold">
+                      <div className="bg-muted flex size-5 items-center justify-center rounded-full text-3xs font-bold">
                         A
                       </div>
                     )}
@@ -129,7 +129,7 @@ export function ClientTable({
                   <span className="text-foreground font-semibold">
                     {client.activePostsCount}
                   </span>
-                  <span className="text-muted-foreground text-[10px]">
+                  <span className="text-muted-foreground text-3xs">
                     /{client.servicePackage?.monthlyPostQuota || 30}
                   </span>
                 </td>
@@ -137,7 +137,7 @@ export function ClientTable({
                 {/* Service Package Badge */}
                 <td className="px-4 py-3">
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${
+                    className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-3xs font-bold ${
                       client.servicePackage?.packageTier === "ENTERPRISE"
                         ? "border-purple-500/20 bg-purple-500/10 text-purple-600"
                         : client.servicePackage?.packageTier === "GROWTH"
@@ -153,7 +153,7 @@ export function ClientTable({
                 {/* Status Badge */}
                 <td className="px-4 py-3 text-center">
                   <span
-                    className={`inline-flex items-center rounded px-2 py-0.5 text-[10px] font-medium ${
+                    className={`inline-flex items-center rounded px-2 py-0.5 text-3xs font-medium ${
                       client.status === "ACTIVE"
                         ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-600"
                         : "border border-gray-500/20 bg-gray-500/10 text-gray-500"

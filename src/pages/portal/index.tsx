@@ -31,7 +31,7 @@ export function PortalPage() {
       title="Client Portal"
       description="Không gian phê duyệt nội dung của khách hàng."
     >
-      <div className="border-border bg-card overflow-hidden rounded-lg border">
+      <div className="border-border bg-card overflow-hidden rounded-xl border">
         <div className="border-border bg-muted/10 border-b p-4 text-sm font-bold">
           Hàng đợi Phê duyệt Nội dung
         </div>
@@ -51,7 +51,7 @@ export function PortalPage() {
               </div>
               <div>
                 <Badge
-                  className="rounded-full px-2 py-0.5 font-mono text-[10px] uppercase"
+                  className="rounded-full px-2 py-0.5 font-mono text-3xs uppercase"
                   variant={
                     item.status === "Approved"
                       ? "PUBLISHED"

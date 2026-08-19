@@ -53,7 +53,7 @@ export function TeamStatsSection({
             Hiệu suất thành viên (Team Stats)
           </h3>
         </div>
-        <span className="flex items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-600">
+        <span className="flex items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-3xs font-medium text-emerald-600">
           <ShieldCheck className="size-3" /> Chế độ Quản lý ({userRole})
         </span>
       </div>
@@ -68,13 +68,13 @@ export function TeamStatsSection({
             <div key={member.memberId} className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <div className="bg-muted flex size-6 items-center justify-center rounded-full text-[10px] font-bold">
+                  <div className="bg-muted flex size-6 items-center justify-center rounded-full text-3xs font-bold">
                     {member.memberName.charAt(0)}
                   </div>
                   <span className="text-foreground font-semibold">
                     {member.memberName}
                   </span>
-                  <span className="text-muted-foreground bg-muted py-0.2 rounded px-1.5 text-[10px]">
+                  <span className="text-muted-foreground bg-muted py-0.2 rounded px-1.5 text-3xs">
                     {member.role === "ACCOUNT" ? "AM" : "Creator"}
                   </span>
                 </div>

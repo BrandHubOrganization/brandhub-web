@@ -36,16 +36,16 @@ export function TemplateBrowserPage() {
           className="bg-[#f05a28] text-xs font-semibold text-white hover:bg-[#f05a28]/90"
           size="sm"
         >
-          <Plus className="mr-1 h-4 w-4" />
+          <Plus className="mr-1 size-4" />
           <span>Tạo Bài Viết Mới</span>
         </Button>
       }
     >
       <div className="space-y-6">
-        <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs sm:flex-row dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="flex flex-col items-center justify-between gap-4 rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs sm:flex-row dark:border-zinc-800 dark:bg-zinc-900">
           <div className="w-full sm:w-96">
             <Input
-              iconPrefix={<Search className="h-4 w-4" />}
+              iconPrefix={<Search className="size-4" />}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Tìm kiếm mẫu theo tiêu đề, nội dung..."

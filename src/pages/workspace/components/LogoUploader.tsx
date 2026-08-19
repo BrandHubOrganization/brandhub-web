@@ -20,7 +20,7 @@ export function LogoUploader({
   const { t } = useTranslation();
 
   return (
-    <div className="border-border bg-card mb-4 flex max-w-sm flex-col items-center gap-4 rounded-lg border p-6">
+    <div className="border-border bg-card mb-4 flex max-w-sm flex-col items-center gap-4 rounded-xl border p-6">
       <div className="bg-brand-orange flex size-20 items-center justify-center overflow-hidden rounded-full text-2xl font-semibold text-white">
         {logoUrl ? (
           <img src={logoUrl} alt={name} className="size-full object-cover" />

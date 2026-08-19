@@ -58,7 +58,7 @@ export function PasswordStrengthMeter({ password, className }: Props) {
           />
         ))}
       </div>
-      <p className="text-muted-foreground text-[11px] font-medium">
+      <p className="text-muted-foreground text-2xs font-medium">
         {t("auth.passwordStrength.label")}{" "}
         <span className="text-foreground">{label}</span>
         {score < 3 && t("auth.passwordStrength.hint")}

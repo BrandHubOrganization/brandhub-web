@@ -104,7 +104,7 @@ export const HashtagInputWithSuggestions: React.FC<
     <div className="space-y-2.5">
       <div className="flex items-center justify-between">
         <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-          <Hash className="text-brand-orange h-3.5 w-3.5" />
+          <Hash className="text-brand-orange size-3.5" />
           Bộ Hashtags bài viết ({hashtags.length})
         </label>
 
@@ -114,12 +114,12 @@ export const HashtagInputWithSuggestions: React.FC<
             <button
               type="button"
               onClick={handleCopyAll}
-              className="hover:text-brand-orange flex cursor-pointer items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-zinc-600 transition-colors dark:text-zinc-400"
+              className="hover:text-brand-orange flex cursor-pointer items-center gap-1 px-2 py-0.5 text-2xs font-medium text-zinc-600 transition-colors dark:text-zinc-400"
             >
               {copied ? (
-                <Check className="h-3 w-3 text-emerald-500" />
+                <Check className="size-3 text-emerald-500" />
               ) : (
-                <Copy className="h-3 w-3" />
+                <Copy className="size-3" />
               )}
               <span>{copied ? "Đã copy" : "Copy bộ Tag"}</span>
             </button>
@@ -130,7 +130,7 @@ export const HashtagInputWithSuggestions: React.FC<
             <button
               type="button"
               onClick={handleClearAll}
-              className="cursor-pointer text-[11px] font-medium text-rose-500 hover:underline"
+              className="cursor-pointer text-2xs font-medium text-rose-500 hover:underline"
             >
               Xoá tất cả
             </button>
@@ -142,16 +142,16 @@ export const HashtagInputWithSuggestions: React.FC<
               <button
                 type="button"
                 onClick={() => setShowGroupDropdown(!showGroupDropdown)}
-                className="text-brand-orange bg-brand-orange-soft hover:bg-brand-orange/20 flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-colors"
+                className="text-brand-orange bg-brand-orange-soft hover:bg-brand-orange/20 flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-2xs font-semibold transition-colors"
               >
-                <FolderKanban className="h-3.5 w-3.5" />
+                <FolderKanban className="size-3.5" />
                 <span>Load từ Nhóm</span>
-                <ChevronDown className="h-3 w-3" />
+                <ChevronDown className="size-3" />
               </button>
 
               {showGroupDropdown && (
                 <div className="absolute top-full right-0 z-30 mt-1 w-64 space-y-1 rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-                  <span className="block px-2 text-[10px] font-semibold tracking-wider text-zinc-400 uppercase">
+                  <span className="block px-2 text-3xs font-semibold tracking-wider text-zinc-400 uppercase">
                     Chọn nhóm hashtag đã lưu:
                   </span>
                   <div className="max-h-48 space-y-1 overflow-y-auto">
@@ -165,7 +165,7 @@ export const HashtagInputWithSuggestions: React.FC<
                         <span className="text-foreground line-clamp-1 font-semibold">
                           {group.name}
                         </span>
-                        <span className="text-brand-orange truncate font-mono text-[10px]">
+                        <span className="text-brand-orange truncate font-mono text-3xs">
                           {group.hashtags.join(", ")}
                         </span>
                       </button>
@@ -196,9 +196,9 @@ export const HashtagInputWithSuggestions: React.FC<
         {/* Suggestions Popup */}
         {showSuggestions && filteredSuggestions.length > 0 && (
           <div className="absolute top-full right-0 left-0 z-20 mt-1 max-h-48 space-y-1 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-            <span className="mb-1 flex items-center justify-between px-2 text-[10px] font-semibold tracking-wider text-zinc-400 uppercase">
+            <span className="mb-1 flex items-center justify-between px-2 text-3xs font-semibold tracking-wider text-zinc-400 uppercase">
               <span>Gợi ý hashtag thịnh hành:</span>
-              <Sparkles className="text-brand-orange h-3 w-3" />
+              <Sparkles className="text-brand-orange size-3" />
             </span>
             {filteredSuggestions.map((tag) => (
               <button
@@ -208,7 +208,7 @@ export const HashtagInputWithSuggestions: React.FC<
                 className="text-brand-orange hover:bg-brand-orange-soft flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-1.5 text-left font-mono text-xs transition-colors"
               >
                 <span>{tag}</span>
-                <Plus className="h-3.5 w-3.5" />
+                <Plus className="size-3.5" />
               </button>
             ))}
           </div>
@@ -228,7 +228,7 @@ export const HashtagInputWithSuggestions: React.FC<
               onClick={() => handleRemoveTag(tag)}
               className="text-brand-orange/70 hover:text-brand-orange cursor-pointer rounded-full"
             >
-              <X className="h-3 w-3" />
+              <X className="size-3" />
             </button>
           </span>
         ))}

@@ -35,9 +35,9 @@ export function AnalyticsPage() {
         ].map((stat, idx) => (
           <div
             key={idx}
-            className="border-border bg-card space-y-2 rounded-lg border p-6"
+            className="border-border bg-card space-y-2 rounded-xl border p-6"
           >
-            <p className="text-muted-foreground font-mono text-[10px] font-semibold tracking-wider uppercase">
+            <p className="text-muted-foreground font-mono text-3xs font-semibold tracking-wider uppercase">
               {stat.label}
             </p>
             <div className="flex items-baseline gap-2">
@@ -48,12 +48,12 @@ export function AnalyticsPage() {
                 {stat.delta}
               </span>
             </div>
-            <p className="text-muted-foreground text-[10px]">{stat.desc}</p>
+            <p className="text-muted-foreground text-3xs">{stat.desc}</p>
           </div>
         ))}
       </div>
 
-      <div className="border-border bg-card mt-6 space-y-4 rounded-lg border p-6">
+      <div className="border-border bg-card mt-6 space-y-4 rounded-xl border p-6">
         <h2 className="text-foreground text-sm font-bold">
           Hiệu quả theo Kênh xuất bản
         </h2>

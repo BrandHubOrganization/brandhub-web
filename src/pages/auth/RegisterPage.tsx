@@ -84,7 +84,7 @@ export function RegisterPage() {
             >
               {t("auth.login.tab")}
             </button>
-            <button className="bg-card text-foreground flex-1 cursor-default rounded-md py-1.5 text-sm font-medium shadow-sm transition-all">
+            <button className="bg-card text-foreground flex-1 cursor-default rounded-md py-1.5 text-sm font-medium shadow-xs transition-all">
               {t("auth.register.tab")}
             </button>
           </div>

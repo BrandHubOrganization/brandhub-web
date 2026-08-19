@@ -72,7 +72,7 @@ export function ClientListPage() {
           icon={<Building2 className="size-3.5 text-[#f05a28]" />}
           extraActions={
             isOwner ? (
-              <span className="hidden items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold text-emerald-600 sm:inline-flex">
+              <span className="hidden items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-3xs font-semibold text-emerald-600 sm:inline-flex">
                 <ShieldCheck className="size-3" /> AGENCY OWNER
               </span>
             ) : undefined

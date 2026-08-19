@@ -51,7 +51,7 @@ export function ActivityFeedSection({
             Hoạt động gần đây
           </h3>
         </div>
-        <span className="text-muted-foreground bg-muted rounded-full px-2 py-0.5 text-[11px] font-medium">
+        <span className="text-muted-foreground bg-muted rounded-full px-2 py-0.5 text-2xs font-medium">
           10 sự kiện mới nhất
         </span>
       </div>
@@ -114,7 +114,7 @@ export function ActivityFeedSection({
                     {event.targetTitle}
                   </p>
                 )}
-                <span className="text-muted-foreground mt-1 block text-[10px]">
+                <span className="text-muted-foreground mt-1 block text-3xs">
                   {event.timestamp}
                 </span>
               </div>

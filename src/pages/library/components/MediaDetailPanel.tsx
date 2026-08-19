@@ -75,9 +75,9 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
         <div className="border-border flex items-center justify-between border-b p-4">
           <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
             {media.type === "video" ? (
-              <Film className="text-brand-orange h-4 w-4" />
+              <Film className="text-brand-orange size-4" />
             ) : (
-              <ImageIcon className="text-brand-orange h-4 w-4" />
+              <ImageIcon className="text-brand-orange size-4" />
             )}
             Chi tiết Media
           </h3>
@@ -85,7 +85,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
             onClick={onClose}
             className="cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           >
-            <X className="h-5 w-5" />
+            <X className="size-5" />
           </button>
         </div>
 
@@ -123,7 +123,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
           <div className="bg-muted/50 space-y-3 rounded-xl border border-zinc-100 p-4 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                <HardDrive className="h-4 w-4" /> Dung lượng
+                <HardDrive className="size-4" /> Dung lượng
               </span>
               <span className="text-foreground font-mono font-medium">
                 {formatBytes(media.sizeBytes)}
@@ -133,7 +133,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
             {media.width && media.height && (
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                  <Maximize2 className="h-4 w-4" /> Độ phân giải
+                  <Maximize2 className="size-4" /> Độ phân giải
                 </span>
                 <span className="text-foreground font-mono font-medium">
                   {media.width} × {media.height} px
@@ -144,7 +144,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
             {media.durationSeconds && (
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                  <Film className="h-4 w-4" /> Thời lượng
+                  <Film className="size-4" /> Thời lượng
                 </span>
                 <span className="text-foreground font-mono font-medium">
                   {media.durationSeconds} giây
@@ -154,7 +154,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
 
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                <Calendar className="h-4 w-4" /> Ngày tải lên
+                <Calendar className="size-4" /> Ngày tải lên
               </span>
               <span className="text-foreground text-xs">
                 {formatDate(media.createdAt)}
@@ -179,9 +179,9 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
                 className="bg-brand-orange hover:bg-brand-orange/90 flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
               >
                 {copied ? (
-                  <Check className="h-4 w-4" />
+                  <Check className="size-4" />
                 ) : (
-                  <Copy className="h-4 w-4" />
+                  <Copy className="size-4" />
                 )}
                 {copied ? "Copied" : "Copy"}
               </button>
@@ -196,7 +196,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
             disabled={isDeleting}
             className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-red-50 px-4 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-900/60"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="size-4" />
             {isDeleting ? "Đang xóa..." : "Xóa File"}
           </button>
 

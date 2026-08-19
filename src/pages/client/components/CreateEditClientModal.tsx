@@ -85,7 +85,7 @@ export function CreateEditClientModal({
               className="text-xs"
             />
             {errors.name && (
-              <p className="text-[11px] font-medium text-rose-500">
+              <p className="text-2xs font-medium text-rose-500">
                 {errors.name}
               </p>
             )}
@@ -110,7 +110,7 @@ export function CreateEditClientModal({
               <Mail className="text-muted-foreground absolute top-2.5 left-2.5 size-3.5" />
             </div>
             {errors.contactEmail && (
-              <p className="text-[11px] font-medium text-rose-500">
+              <p className="text-2xs font-medium text-rose-500">
                 {errors.contactEmail}
               </p>
             )}

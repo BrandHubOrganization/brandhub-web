@@ -49,7 +49,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
         {/* Header */}
         <DialogHeader className="border-b border-zinc-100 p-4 dark:border-zinc-800">
           <DialogTitle className="text-foreground flex items-center gap-2 text-sm font-semibold">
-            <FileText className="text-brand-orange h-5 w-5" />
+            <FileText className="text-brand-orange size-5" />
             Chi Tiết Mẫu Bài Viết
           </DialogTitle>
         </DialogHeader>
@@ -58,7 +58,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
         <div className="flex-1 space-y-5 overflow-y-auto p-6 text-left">
           {/* Title */}
           <div>
-            <span className="text-brand-orange mb-1 block text-[10px] font-bold tracking-wider uppercase">
+            <span className="text-brand-orange mb-1 block text-3xs font-bold tracking-wider uppercase">
               Tiêu Đề Template:
             </span>
             <h2 className="text-foreground text-base font-bold">
@@ -68,7 +68,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
 
           {/* Full Caption */}
           <div className="space-y-1">
-            <span className="block text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
+            <span className="block text-3xs font-bold tracking-wider text-zinc-400 uppercase">
               Nội Dung Caption Đầy Đủ:
             </span>
             <div className="bg-muted/40 text-foreground rounded-xl border border-zinc-100 p-4 text-xs leading-relaxed whitespace-pre-wrap dark:border-zinc-800">
@@ -80,7 +80,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Target Platforms */}
             <div className="space-y-1.5">
-              <span className="block text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
+              <span className="block text-3xs font-bold tracking-wider text-zinc-400 uppercase">
                 Nền Tảng Áp Dụng:
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -97,7 +97,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
 
             {/* Hashtags */}
             <div className="space-y-1.5">
-              <span className="block text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
+              <span className="block text-3xs font-bold tracking-wider text-zinc-400 uppercase">
                 Hashtags Đính Kèm:
               </span>
               <div className="flex flex-wrap gap-1">
@@ -116,7 +116,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
           {/* Media Images Preview */}
           {template.mediaUrls.length > 0 && (
             <div className="space-y-1.5">
-              <span className="block text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
+              <span className="block text-3xs font-bold tracking-wider text-zinc-400 uppercase">
                 Hình Ảnh Xem Trước:
               </span>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -156,7 +156,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
             className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer font-semibold text-white"
           >
             <span>Use Template</span>
-            <ArrowRight className="ml-1 h-4 w-4" />
+            <ArrowRight className="ml-1 size-4" />
           </Button>
         </DialogFooter>
       </DialogContent>

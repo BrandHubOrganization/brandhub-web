@@ -61,12 +61,12 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
       >
         {isUploading ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
             <span>Đang tải lên...</span>
           </>
         ) : (
           <>
-            <Upload className="h-4 w-4" />
+            <Upload className="size-4" />
             <span>Tải lên Media</span>
           </>
         )}

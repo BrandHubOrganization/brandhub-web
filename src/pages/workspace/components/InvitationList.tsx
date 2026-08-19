@@ -28,7 +28,7 @@ export function InvitationList({
       {invitations.map((inv) => (
         <div
           key={inv.id}
-          className="border-border bg-card flex flex-col gap-3 rounded-lg border p-4"
+          className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4"
         >
           <div>
             <p className="text-foreground text-sm font-semibold">

@@ -121,7 +121,7 @@ export function KpiCardsSection({
                 {card.value}
               </span>
             </div>
-            <p className="text-muted-foreground mt-1 text-[11px]">
+            <p className="text-muted-foreground mt-1 text-2xs">
               {card.change}
             </p>
           </div>

@@ -81,7 +81,7 @@ export function LoginPage() {
             </p>
           </div>
           <div className="border-border bg-muted mb-6 flex rounded-lg border p-0.5 select-none">
-            <button className="bg-card text-foreground flex-1 cursor-default rounded-md py-1.5 text-sm font-medium shadow-sm transition-all">
+            <button className="bg-card text-foreground flex-1 cursor-default rounded-md py-1.5 text-sm font-medium shadow-xs transition-all">
               {t("auth.login.tab")}
             </button>
             <button

@@ -28,11 +28,11 @@ export function ClientContentRequests({
                 <span className="text-foreground block text-xs font-semibold">
                   {req.title}
                 </span>
-                <span className="text-muted-foreground text-[10px]">
+                <span className="text-muted-foreground text-3xs">
                   Tạo bởi: {req.authorName} &bull; {req.createdAt}
                 </span>
               </div>
-              <span className="rounded border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-600">
+              <span className="rounded border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-3xs font-medium text-amber-600">
                 {req.status}
               </span>
             </div>

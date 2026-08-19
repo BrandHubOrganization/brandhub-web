@@ -31,19 +31,19 @@ export function EditorHeaderActions({
       <div className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
         {isSaving ? (
           <>
-            <Clock className="h-3.5 w-3.5 animate-spin text-amber-500" />
+            <Clock className="size-3.5 animate-spin text-amber-500" />
             <span>Đang tự động lưu...</span>
           </>
         ) : isDirty ? (
           <>
-            <Save className="h-3.5 w-3.5 text-amber-500" />
+            <Save className="size-3.5 text-amber-500" />
             <span className="font-medium text-amber-600 dark:text-amber-400">
               Chưa lưu nháp
             </span>
           </>
         ) : (
           <>
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+            <CheckCircle2 className="size-3.5 text-emerald-500" />
             <span>Đã lưu nháp lúc {lastSavedTime}</span>
           </>
         )}
@@ -54,7 +54,7 @@ export function EditorHeaderActions({
         onClick={onOpenTemplatePicker}
         className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
       >
-        <LayoutTemplate className="text-brand-orange h-4 w-4" />
+        <LayoutTemplate className="text-brand-orange size-4" />
         <span>Mẫu Bài Đăng</span>
       </button>
 
@@ -63,7 +63,7 @@ export function EditorHeaderActions({
         onClick={onOpenPreview}
         className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
       >
-        <Eye className="text-brand-orange h-4 w-4" />
+        <Eye className="text-brand-orange size-4" />
         <span>Preview Post</span>
       </button>
 
@@ -73,7 +73,7 @@ export function EditorHeaderActions({
         disabled={isSubmitting}
         className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-[#f05a28] px-4 py-1.5 text-xs font-medium text-white shadow-xs transition-colors hover:bg-[#f05a28]/90 disabled:opacity-50"
       >
-        <Send className="h-3.5 w-3.5" />
+        <Send className="size-3.5" />
         <span>{isSubmitting ? "Đang gửi..." : "Gửi phê duyệt"}</span>
       </button>
     </div>

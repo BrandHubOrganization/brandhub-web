@@ -111,12 +111,12 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
   };
 
   return (
-    <div className="bg-card border-border/80 flex min-h-[500px] flex-col justify-between overflow-hidden rounded-2xl border shadow-xs">
+    <div className="bg-card border-border/80 flex min-h-[500px] flex-col justify-between overflow-hidden rounded-xl border shadow-xs">
       {/* Table Container */}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="bg-muted/60 border-border/80 text-muted-foreground border-b text-[11px] font-bold tracking-wider uppercase">
+            <tr className="bg-muted/60 border-border/80 text-muted-foreground border-b text-2xs font-bold tracking-wider uppercase">
               <th className="px-4 py-3.5">Topic / Chủ Đề</th>
               <th className="px-3 py-3.5">Platforms</th>
               <th className="px-4 py-3.5">Khách Hàng (Client)</th>
@@ -160,7 +160,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           return (
                             <span
                               key={p}
-                              className={`rounded-md px-1.5 py-0.5 font-mono text-[10px] font-bold ${pInfo.bg} ${pInfo.text}`}
+                              className={`rounded-md px-1.5 py-0.5 font-mono text-3xs font-bold ${pInfo.bg} ${pInfo.text}`}
                               title={p}
                             >
                               {pInfo.label}
@@ -183,7 +183,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                     {/* Status Badge */}
                     <td className="px-3 py-3.5">
                       <span
-                        className={`inline-block rounded-full border px-2.5 py-1 text-[11px] font-semibold ${statusInfo.className}`}
+                        className={`inline-block rounded-full border px-2.5 py-1 text-2xs font-semibold ${statusInfo.className}`}
                       >
                         {statusInfo.label}
                       </span>
@@ -196,14 +196,14 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           <img
                             src={req.assignee.avatarUrl}
                             alt={req.assignee.name}
-                            className="h-6 w-6 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
+                            className="size-6 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
                           />
                           <span className="text-foreground max-w-[120px] truncate font-medium">
                             {req.assignee.name}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-[11px] text-zinc-400 italic">
+                        <span className="text-2xs text-zinc-400 italic">
                           Chưa phân công
                         </span>
                       )}
@@ -222,7 +222,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                             className="bg-brand-orange-soft dark:bg-brand-orange/20 hover:bg-brand-orange dark:hover:bg-brand-orange text-brand-orange dark:text-brand-orange/80 flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors hover:text-white"
                             title="Phân công nhân sự"
                           >
-                            <UserPlus className="h-3.5 w-3.5" />
+                            <UserPlus className="size-3.5" />
                             <span>Assign</span>
                           </button>
                         )}
@@ -232,7 +232,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
                           title="Chuyển đến Editor"
                         >
-                          <ArrowRight className="h-4 w-4" />
+                          <ArrowRight className="size-4" />
                         </button>
                       </div>
                     </td>
@@ -261,7 +261,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
             disabled={page <= 1}
             className="rounded-lg border border-zinc-200 p-1.5 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700 dark:hover:bg-zinc-800"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="size-4" />
           </button>
           <span className="text-foreground px-2 font-mono font-semibold">
             Trang {page} / {totalPages}
@@ -271,7 +271,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
             disabled={page >= totalPages}
             className="rounded-lg border border-zinc-200 p-1.5 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700 dark:hover:bg-zinc-800"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="size-4" />
           </button>
         </div>
       </div>

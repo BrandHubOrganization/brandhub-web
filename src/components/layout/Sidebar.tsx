@@ -218,7 +218,7 @@ export function Sidebar({
                   <span className="truncate text-xs leading-tight font-semibold text-white">
                     {activeWorkspace?.name ?? "No workspace"}
                   </span>
-                  <span className="text-muted-foreground mt-0.5 text-[9px] leading-none">
+                  <span className="text-muted-foreground mt-0.5 text-3xs leading-none">
                     Workspace
                   </span>
                 </div>
@@ -227,7 +227,7 @@ export function Sidebar({
             )}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="ml-2 w-[180px]">
-            <DropdownMenuLabel className="text-muted-foreground text-[10px] tracking-wider uppercase">
+            <DropdownMenuLabel className="text-muted-foreground text-3xs tracking-wider uppercase">
               Chọn Workspace
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -254,7 +254,7 @@ export function Sidebar({
         {filteredSections.map((section, idx) => (
           <div key={section.key} className="space-y-1">
             {!collapsed ? (
-              <span className="text-muted-foreground mb-1 block px-2.5 text-[10px] font-bold tracking-wider uppercase">
+              <span className="text-muted-foreground mb-1 block px-2.5 text-3xs font-bold tracking-wider uppercase">
                 {section.title}
               </span>
             ) : (
@@ -303,7 +303,7 @@ export function Sidebar({
         style={{ borderColor: "var(--sidebar-border, #27272a)" }}
       >
         {!collapsed && (
-          <div className="text-muted-foreground px-2.5 py-1 text-[10px] leading-snug">
+          <div className="text-muted-foreground px-2.5 py-1 text-3xs leading-snug">
             Vai trò:{" "}
             <span className="font-semibold text-white">
               {role === "OWNER"

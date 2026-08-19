@@ -51,7 +51,7 @@ export function EditorPage() {
     >
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <div className="space-y-2 rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="space-y-2 rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
             <label className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
               Tiêu đề nội dung / Yêu cầu
             </label>
@@ -75,7 +75,7 @@ export function EditorPage() {
             />
           </div>
 
-          <div className="space-y-3 rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="space-y-3 rounded-xl border border-zinc-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
             <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
               Hình ảnh & Video đính kèm
             </label>
@@ -85,7 +85,7 @@ export function EditorPage() {
             />
           </div>
 
-          <div className="rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="rounded-xl border border-zinc-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
             <HashtagInputWithSuggestions
               hashtags={hashtags}
               onChange={handleHashtagsChange}
