@@ -47,7 +47,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
         {/* Header */}
         <DialogHeader className="p-4 border-b border-zinc-100 dark:border-zinc-800">
           <DialogTitle className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <FileText className="w-5 h-5 text-brand-orange" />
             Chi Tiết Mẫu Bài Viết
           </DialogTitle>
         </DialogHeader>
@@ -56,7 +56,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
         <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
           {/* Title */}
           <div>
-            <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">
+            <span className="text-[10px] font-bold text-brand-orange uppercase tracking-wider block mb-1">
               Tiêu Đề Template:
             </span>
             <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
@@ -102,7 +102,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
                 {template.hashtags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-2 py-0.5 text-xs font-mono rounded-md bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300"
+                    className="px-2 py-0.5 text-xs font-mono rounded-md bg-brand-orange-soft text-brand-orange font-semibold"
                   >
                     {tag}
                   </span>
@@ -133,7 +133,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
 
         {/* Footer Actions */}
         <DialogFooter className="p-4 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 sm:justify-between flex items-center">
-          <Button type="button" variant="outline" size="sm" onClick={onClose}>
+          <Button type="button" variant="outline" size="sm" onClick={onClose} className="cursor-pointer">
             Đóng
           </Button>
 
@@ -141,7 +141,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
             type="button"
             size="sm"
             onClick={handleUseTemplate}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="bg-brand-orange hover:bg-brand-orange/90 text-white cursor-pointer font-semibold"
           >
             <span>Use Template</span>
             <ArrowRight className="w-4 h-4 ml-1" />

@@ -1,5 +1,6 @@
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 const WORKSPACES = [
   { name: "Nike Vietnam Campaign", code: "NK", members: 8, posts: 24, color: "bg-blue-600" },
@@ -13,18 +14,19 @@ export function WorkspacePage() {
       title="Workspaces"
       description="Danh sách không gian làm việc của các nhãn hàng."
       actions={
-        <Button className="bg-[#f05a28] hover:bg-[#f05a28]/90 text-white cursor-pointer text-xs">
-          Tạo Workspace Mới
+        <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white cursor-pointer text-xs">
+          <Plus className="size-4 mr-1.5" />
+          Tạo Workspace mới
         </Button>
       }
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {WORKSPACES.map((ws) => (
-          <div key={ws.code} className="border border-border bg-card rounded-lg overflow-hidden flex flex-col justify-between">
+          <div key={ws.code} className="border border-border bg-card rounded-lg overflow-hidden flex flex-col justify-between hover:border-brand-orange/40 transition-colors">
             <div className={`h-1.5 ${ws.color}`} />
             <div className="p-6 space-y-4 flex-1">
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-md bg-[#fff0eb] text-[#f05a28] font-bold text-sm">
+                <div className="flex size-10 items-center justify-center rounded-md bg-brand-orange-soft text-brand-orange font-bold text-sm">
                   {ws.code}
                 </div>
                 <div>

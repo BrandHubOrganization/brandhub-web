@@ -137,7 +137,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-medium disabled:opacity-50"
+            className="px-4 py-2 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-xl text-xs font-medium cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? 'Đang gán...' : 'Xác nhận gán'}
           </button>

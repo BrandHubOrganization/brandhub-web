@@ -89,7 +89,7 @@ export const ContentCalendarPage: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <CalendarIcon className="w-7 h-7 text-indigo-600" />
+            <CalendarIcon className="w-7 h-7 text-[var(--color-brand-orange,#f05a28)]" />
             Content Calendar
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -102,7 +102,7 @@ export const ContentCalendarPage: React.FC = () => {
             setSelectedDateForModal(new Date());
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm transition-all shadow-xs cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 bg-[#f05a28] hover:bg-[#d94e20] text-white rounded-xl font-medium text-sm transition-all shadow-xs cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Schedule Post</span>

@@ -1,4 +1,4 @@
-import type { Platform } from "./post";
+import type { Platform } from "@/types/post";
 
 export type PackageTier = "STARTER" | "GROWTH" | "ENTERPRISE";
 export type ClientStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED";

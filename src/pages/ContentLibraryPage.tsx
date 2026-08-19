@@ -22,7 +22,7 @@ export function ContentLibraryPage() {
             onClick={() => setActiveTab('media')}
             className={`pb-3 flex items-center gap-2 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'media'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 font-semibold'
+                ? 'border-brand-orange text-brand-orange font-semibold'
                 : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
             }`}
           >
@@ -34,7 +34,7 @@ export function ContentLibraryPage() {
             onClick={() => setActiveTab('hashtags')}
             className={`pb-3 flex items-center gap-2 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'hashtags'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 font-semibold'
+                ? 'border-brand-orange text-brand-orange font-semibold'
                 : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
             }`}
           >
@@ -46,7 +46,7 @@ export function ContentLibraryPage() {
             onClick={() => setActiveTab('templates')}
             className={`pb-3 flex items-center gap-2 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'templates'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 font-semibold'
+                ? 'border-brand-orange text-brand-orange font-semibold'
                 : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
             }`}
           >

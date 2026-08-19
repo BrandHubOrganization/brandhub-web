@@ -34,12 +34,12 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({ template, onPreview,
   return (
     <div
       onClick={() => onPreview(template)}
-      className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-5 shadow-xs hover:shadow-md hover:border-indigo-500/40 transition-all flex flex-col justify-between cursor-pointer group"
+      className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-5 shadow-xs hover:shadow-md hover:border-brand-orange/40 transition-all flex flex-col justify-between cursor-pointer group"
     >
       <div>
         {/* Header Title & Delete Button */}
         <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
+          <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-brand-orange transition-colors line-clamp-1">
             {template.title}
           </h3>
           <button
@@ -48,7 +48,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({ template, onPreview,
               e.stopPropagation();
               onDelete(template.id, template.title);
             }}
-            className="p-1 text-zinc-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors shrink-0"
+            className="p-1 text-zinc-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors shrink-0 cursor-pointer"
             title="Xóa template"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -89,7 +89,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({ template, onPreview,
             e.stopPropagation();
             onPreview(template);
           }}
-          className="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 text-indigo-600 dark:text-indigo-300 rounded-xl text-xs font-medium flex items-center gap-1 transition-colors"
+          className="px-3 py-1 bg-brand-orange-soft hover:bg-brand-orange hover:text-white text-brand-orange rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
         >
           <Eye className="w-3.5 h-3.5" />
           <span>Xem trước</span>

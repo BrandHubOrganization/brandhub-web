@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { CreateClientDTO, PackageTier } from "@/types/client";
+import type { CreateClientDTO, PackageTier } from "../types/client";
 import { Building2, Mail, UserCheck } from "lucide-react";
 
 interface CreateEditClientModalProps {

@@ -41,7 +41,6 @@ export const MediaTab: React.FC = () => {
           setMediaList(res.items);
         } else {
           setMediaList((prev) => {
-            // Avoid duplicates
             const existingIds = new Set(prev.map((i) => i.id));
             const newUnique = res.items.filter((i) => !existingIds.has(i.id));
             return [...prev, ...newUnique];
@@ -94,7 +93,7 @@ export const MediaTab: React.FC = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Tìm kiếm file theo tên..."
-              className="w-full pl-9 pr-4 py-2 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700/80 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+              className="w-full pl-9 pr-4 py-2 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700/80 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-all"
             />
           </div>
 
@@ -102,7 +101,7 @@ export const MediaTab: React.FC = () => {
           <div className="flex items-center gap-1.5 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700/80 rounded-xl p-1">
             <button
               onClick={() => setFilterType('all')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
                 filterType === 'all'
                   ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-xs'
                   : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
@@ -112,9 +111,9 @@ export const MediaTab: React.FC = () => {
             </button>
             <button
               onClick={() => setFilterType('image')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1 ${
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${
                 filterType === 'image'
-                  ? 'bg-white dark:bg-zinc-700 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                  ? 'bg-brand-orange-soft text-brand-orange font-bold shadow-xs'
                   : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
               }`}
             >
@@ -123,9 +122,9 @@ export const MediaTab: React.FC = () => {
             </button>
             <button
               onClick={() => setFilterType('video')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1 ${
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${
                 filterType === 'video'
-                  ? 'bg-white dark:bg-zinc-700 text-purple-600 dark:text-purple-400 shadow-xs'
+                  ? 'bg-brand-orange-soft text-brand-orange font-bold shadow-xs'
                   : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
               }`}
             >
@@ -171,7 +170,7 @@ export const MediaTab: React.FC = () => {
             <div
               key={media.id}
               onClick={() => setSelectedMedia(media)}
-              className="group relative bg-zinc-900 rounded-2xl overflow-hidden aspect-square border border-zinc-200/80 dark:border-zinc-800 cursor-pointer shadow-xs hover:shadow-md hover:border-indigo-500/50 transition-all transform hover:-translate-y-0.5"
+              className="group relative bg-zinc-900 rounded-2xl overflow-hidden aspect-square border border-zinc-200/80 dark:border-zinc-800 cursor-pointer shadow-xs hover:shadow-md hover:border-brand-orange/50 transition-all transform hover:-translate-y-0.5"
             >
               {/* Media Display */}
               {media.type === 'video' ? (
@@ -182,7 +181,7 @@ export const MediaTab: React.FC = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-white/90 text-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <div className="w-10 h-10 rounded-full bg-white/90 text-brand-orange flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                       <Play className="w-5 h-5 fill-current ml-0.5" />
                     </div>
                   </div>
@@ -207,11 +206,11 @@ export const MediaTab: React.FC = () => {
               <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/60 backdrop-blur-xs text-white uppercase flex items-center gap-1">
                 {media.type === 'video' ? (
                   <>
-                    <Film className="w-3 h-3 text-purple-400" /> Video
+                    <Film className="w-3 h-3 text-brand-orange" /> Video
                   </>
                 ) : (
                   <>
-                    <ImageIcon className="w-3 h-3 text-indigo-400" /> Image
+                    <ImageIcon className="w-3 h-3 text-brand-orange" /> Image
                   </>
                 )}
               </div>
@@ -224,7 +223,7 @@ export const MediaTab: React.FC = () => {
       <div ref={sentinelRef} className="py-6 flex items-center justify-center">
         {loading && (
           <div className="flex items-center gap-2 text-xs text-zinc-500 font-medium bg-white dark:bg-zinc-900 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-xs">
-            <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+            <Loader2 className="w-4 h-4 animate-spin text-brand-orange" />
             <span>Đang tải thêm media...</span>
           </div>
         )}

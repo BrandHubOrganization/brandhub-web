@@ -87,7 +87,7 @@ export function HashtagGroupsPage() {
         <Button
           type="button"
           onClick={handleOpenCreate}
-          className="bg-[#f05a28] hover:bg-[#f05a28]/90 text-white font-semibold text-xs"
+          className="bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold text-xs cursor-pointer"
           size="sm"
         >
           <Plus className="w-4 h-4 mr-1" />
@@ -116,13 +116,13 @@ export function HashtagGroupsPage() {
         {/* Groups Grid Cards */}
         {isLoading ? (
           <div className="py-20 flex flex-col items-center justify-center space-y-3 text-zinc-400">
-            <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+            <Loader2 className="w-8 h-8 animate-spin text-brand-orange" />
             <p className="text-xs font-medium">Đang tải nhóm hashtag...</p>
           </div>
         ) : groups.length === 0 ? (
           /* Empty State */
           <div className="bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 rounded-2xl p-12 text-center flex flex-col items-center justify-center space-y-4 max-w-lg mx-auto my-8 shadow-xs">
-            <div className="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+            <div className="p-4 rounded-2xl bg-brand-orange-soft text-brand-orange">
               <FileQuestion className="w-10 h-10" />
             </div>
             <div className="space-y-1">
@@ -136,7 +136,7 @@ export function HashtagGroupsPage() {
             <Button
               type="button"
               onClick={handleOpenCreate}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs"
+              className="bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold text-xs cursor-pointer"
               size="sm"
             >
               <Plus className="w-4 h-4 mr-1" />
@@ -148,16 +148,16 @@ export function HashtagGroupsPage() {
             {groups.map((group) => (
               <div
                 key={group.id}
-                className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-indigo-500/40 transition-all"
+                className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-brand-orange/40 transition-all group"
               >
                 <div className="space-y-3">
                   {/* Header: Title & Actions */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
-                      <div className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 shrink-0">
+                      <div className="p-1.5 rounded-lg bg-brand-orange-soft text-brand-orange shrink-0">
                         <Hash className="w-4 h-4" />
                       </div>
-                      <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 truncate">
+                      <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 truncate group-hover:text-brand-orange transition-colors">
                         {group.name}
                       </h3>
                     </div>
@@ -169,7 +169,7 @@ export function HashtagGroupsPage() {
                         size="icon"
                         onClick={() => handleOpenEdit(group)}
                         title="Chỉnh sửa nhóm"
-                        className="h-8 w-8 text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+                        className="h-8 w-8 text-zinc-400 hover:text-brand-orange dark:hover:text-brand-orange cursor-pointer"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </Button>
@@ -179,7 +179,7 @@ export function HashtagGroupsPage() {
                         size="icon"
                         onClick={() => setDeletingGroup(group)}
                         title="Xóa nhóm"
-                        className="h-8 w-8 text-zinc-400 hover:text-red-600"
+                        className="h-8 w-8 text-zinc-400 hover:text-red-600 cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
@@ -196,7 +196,7 @@ export function HashtagGroupsPage() {
                       {group.hashtags.map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-0.5 text-xs font-mono font-medium rounded-md bg-white dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400 border border-zinc-200/60 dark:border-zinc-700 shadow-2xs"
+                          className="px-2 py-0.5 text-xs font-mono font-semibold rounded-md bg-brand-orange-soft text-brand-orange border border-brand-orange/10"
                         >
                           {tag}
                         </span>

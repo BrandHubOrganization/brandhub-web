@@ -150,7 +150,7 @@ export function ContentRequestListPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => fetchRequests()}
-            className="p-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+            className="p-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
             title="Làm mới"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -165,7 +165,7 @@ export function ContentRequestListPage() {
             onClick={() => handleTabChange('all')}
             className={`pb-3 flex items-center gap-2 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'all'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 font-semibold'
+                ? 'border-brand-orange text-brand-orange font-semibold'
                 : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
             }`}
           >
@@ -177,7 +177,7 @@ export function ContentRequestListPage() {
             onClick={() => handleTabChange('my-tasks')}
             className={`pb-3 flex items-center gap-2 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'my-tasks'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 font-semibold'
+                ? 'border-brand-orange text-brand-orange font-semibold'
                 : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
             }`}
           >

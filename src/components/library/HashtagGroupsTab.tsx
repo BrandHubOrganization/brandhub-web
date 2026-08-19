@@ -102,7 +102,7 @@ export const HashtagGroupsTab: React.FC = () => {
       <div className="flex items-center justify-between bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs">
         <div>
           <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-            <Hash className="w-4 h-4 text-indigo-500" />
+            <Hash className="w-4 h-4 text-brand-orange" />
             Nhóm Hashtag Đã Lưu ({groups.length})
           </h3>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -112,7 +112,7 @@ export const HashtagGroupsTab: React.FC = () => {
 
         <button
           onClick={() => handleOpenModal()}
-          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs"
+          className="px-4 py-2 bg-brand-orange hover:bg-brand-orange/90 active:bg-brand-orange/80 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Tạo Nhóm Hashtag</span>
@@ -132,25 +132,25 @@ export const HashtagGroupsTab: React.FC = () => {
           {groups.map((group) => (
             <div
               key={group.id}
-              className="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-zinc-200/80 dark:border-zinc-800 shadow-xs hover:border-indigo-500/40 transition-all flex flex-col justify-between"
+              className="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-zinc-200/80 dark:border-zinc-800 shadow-xs hover:border-brand-orange/40 transition-all flex flex-col justify-between group"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-                    <Tag className="w-3.5 h-3.5 text-indigo-500" />
+                  <h4 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5 group-hover:text-brand-orange transition-colors">
+                    <Tag className="w-3.5 h-3.5 text-brand-orange" />
                     {group.name}
                   </h4>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleOpenModal(group)}
-                      className="p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                      className="p-1 text-zinc-400 hover:text-brand-orange dark:hover:text-brand-orange rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                       title="Sửa nhóm"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => handleDeleteGroup(group.id, group.name)}
-                      className="p-1 text-zinc-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                      className="p-1 text-zinc-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
                       title="Xóa nhóm"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -159,11 +159,11 @@ export const HashtagGroupsTab: React.FC = () => {
                 </div>
 
                 {/* Hashtag List Badges */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                <div className="flex flex-wrap gap-1.5 mb-4 max-h-32 overflow-y-auto">
                   {group.tags.map((tag, idx) => (
                     <span
                       key={idx}
-                      className="px-2.5 py-1 text-xs font-mono font-medium rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900/50"
+                      className="px-2.5 py-1 text-xs font-mono font-semibold rounded-lg bg-brand-orange-soft text-brand-orange border border-brand-orange/10"
                     >
                       {tag}
                     </span>
@@ -176,7 +176,7 @@ export const HashtagGroupsTab: React.FC = () => {
                 <span className="text-[11px] text-zinc-400 font-mono">{group.tags.length} hashtags</span>
                 <button
                   onClick={() => handleCopyGroup(group)}
-                  className="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 text-zinc-700 dark:text-zinc-300 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors"
+                  className="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-brand-orange hover:text-white dark:hover:bg-brand-orange text-zinc-700 dark:text-zinc-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   {copiedId === group.id ? (
                     <>
@@ -204,7 +204,7 @@ export const HashtagGroupsTab: React.FC = () => {
               <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
                 {editingGroup ? 'Chỉnh Sửa Nhóm Hashtag' : 'Tạo Nhóm Hashtag Mới'}
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-zinc-600">
+              <button onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-zinc-600 cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -219,7 +219,7 @@ export const HashtagGroupsTab: React.FC = () => {
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder="Ví dụ: Fashion Summer 2026"
-                  className="w-full px-3 py-2 text-xs bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20"
+                  className="w-full px-3 py-2 text-xs bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-colors"
                 />
               </div>
 
@@ -232,7 +232,7 @@ export const HashtagGroupsTab: React.FC = () => {
                   value={tagsInput}
                   onChange={(e) => setTagsInput(e.target.value)}
                   placeholder="#fashion #summer #style #ootd"
-                  className="w-full px-3 py-2 text-xs font-mono bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20"
+                  className="w-full px-3 py-2 text-xs font-mono bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-colors"
                 />
               </div>
 
@@ -240,14 +240,14 @@ export const HashtagGroupsTab: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl text-xs font-medium"
+                  className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl text-xs font-medium cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-medium disabled:opacity-50"
+                  className="px-4 py-2 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-xl text-xs font-semibold disabled:opacity-50 cursor-pointer"
                 >
                   {isSaving ? 'Đang lưu...' : 'Lưu Nhóm'}
                 </button>

@@ -55,12 +55,12 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <CalendarIcon className="w-5 h-5 text-indigo-600" />
+              <CalendarIcon className="w-5 h-5 text-[#f05a28]" />
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Schedule Post</h3>
             </div>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none cursor-pointer"
             >
               ✕
             </button>
@@ -75,7 +75,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 placeholder="e.g. Summer Sale Promo"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-[#f05a28] focus:outline-hidden"
               />
             </div>
 
@@ -85,7 +85,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsPreviewOpen(true)}
-                  className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 font-medium"
+                  className="text-xs text-[#f05a28] hover:underline flex items-center gap-1 font-medium cursor-pointer"
                 >
                   <Eye className="w-3.5 h-3.5" />
                   Preview Mockup
@@ -96,7 +96,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 placeholder="Enter post caption..."
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-[#f05a28] focus:outline-hidden"
               />
             </div>
 
@@ -106,7 +106,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 <select
                   value={platform}
                   onChange={(e) => setPlatform(e.target.value as PlatformType)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-[#f05a28] focus:outline-hidden"
                 >
                   <option value="FACEBOOK">Facebook</option>
                   <option value="INSTAGRAM">Instagram</option>
@@ -123,7 +123,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-[#f05a28] focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -133,13 +133,13 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                className="px-4 py-2 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs"
+                className="px-4 py-2 text-xs font-medium rounded-lg bg-[#f05a28] hover:bg-[#d94e20] text-white shadow-xs cursor-pointer"
               >
                 Schedule
               </button>

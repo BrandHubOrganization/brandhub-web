@@ -1,10 +1,10 @@
-import { api } from "./api";
+import { api } from "@/services/api";
 import type {
   Client,
   CreateClientDTO,
   UpdateServicePackageDTO,
   ClientListParams,
-} from "@/types/client";
+} from "../types/client";
 
 const MOCK_CLIENTS: Client[] = [
   {
@@ -119,12 +119,11 @@ export const clientService = {
       const response = await api.get("/api/v1/clients", { params });
       const content = response.data?.data?.content ?? response.data?.data ?? response.data;
       const total = response.data?.meta?.totalElements ?? content?.length ?? MOCK_CLIENTS.length;
-      
+
       if (Array.isArray(content) && content.length > 0) {
         return { content, totalElements: total };
       }
-      
-      // Filter mock by search if present
+
       let filtered = [...MOCK_CLIENTS];
       if (params?.search) {
         const query = params.search.toLowerCase();

@@ -52,7 +52,7 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({ onUploadSu
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={isUploading}
-        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-medium text-xs flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
+        className="px-4 py-2 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-xl font-medium text-xs flex items-center gap-2 transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
       >
         {isUploading ? (
           <>

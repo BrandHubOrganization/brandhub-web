@@ -138,7 +138,7 @@ export function TemplateBrowserPage() {
             <Button
               type="button"
               onClick={() => navigate('/editor')}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs"
+              className="bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold text-xs cursor-pointer"
               size="sm"
             >
               <LayoutTemplate className="w-4 h-4 mr-1" />

@@ -16,7 +16,7 @@ const PLATFORM_ICONS: Record<PlatformType, React.ReactNode> = {
   FACEBOOK: <Share2 className="w-4 h-4 text-blue-500" />,
   INSTAGRAM: <Globe className="w-4 h-4 text-pink-500" />,
   TIKTOK: <Video className="w-4 h-4 text-slate-800 dark:text-slate-200" />,
-  THREADS: <AtSign className="w-4 h-4 text-purple-500" />,
+  THREADS: <AtSign className="w-4 h-4 text-slate-700 dark:text-slate-300" />,
   YOUTUBE: <MessageSquare className="w-4 h-4 text-red-500" />,
 };
 
@@ -41,10 +41,10 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({ isOp
         {/* Header */}
         <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Eye className="w-5 h-5 text-indigo-600" />
+            <Eye className="w-5 h-5 text-[#f05a28]" />
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Platform Visual Mockup Preview</h3>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none">✕</button>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none cursor-pointer">✕</button>
         </div>
 
         {/* Platform Tabs */}
@@ -56,9 +56,9 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({ isOp
                 <button
                   key={platform}
                   onClick={() => setActivePlatform(platform)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs border border-slate-200 dark:border-slate-700'
+                      ? 'bg-white dark:bg-slate-800 text-[#f05a28] shadow-xs border border-slate-200 dark:border-slate-700'
                       : 'text-slate-500 hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
                   }`}
                 >
@@ -71,7 +71,7 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({ isOp
 
           <button
             onClick={handleCopyCaption}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors shrink-0"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors shrink-0 cursor-pointer"
           >
             <Copy className="w-3.5 h-3.5" />
             <span>Copy Caption</span>
