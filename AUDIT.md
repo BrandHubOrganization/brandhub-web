@@ -341,6 +341,15 @@ Fix: thêm `--text-2xs`/`--text-3xs` vào `@theme`, cấm `text-[Npx]`; chuẩn 
 2. **P1 — màu + type:** bỏ raw zinc/hex, chốt semantic + `brand-orange`, bỏ `text-[Npx]`.
 3. **P2 — style:** chạy prettier toàn repo (fix quote), chuẩn icon `size-*`, i18n `t()`, ui primitives.
 
+✅ **Hoàn thành toàn bộ 2026-08-20:**
+- 7.1 (25 component) — đã làm ở P2 đợt trước, commit `dd24527`.
+- 7.2 raw zinc → semantic token (`bg-card`/`bg-muted`/`text-foreground`/`text-muted-foreground`/`border-border`), 18 file — commit `05f0937`.
+- Prettier toàn repo (quote nháy đơn → kép, tailwind class sort) — commit `ffb4ee5`.
+- 7.4 radius: card/modal container chốt `rounded-xl` (nâng `rounded-lg`, hạ `rounded-2xl`); shadow base chốt `shadow-xs` (giữ `hover:shadow-md` nguyên vẹn); `h-N w-N` bằng nhau → `size-N` (148 chỗ, 27 file); thêm `--text-2xs`(11px)/`--text-3xs`(9px), thay 284 chỗ `text-[Npx]` (trừ `landing/*` — giữ aesthetic marketing riêng) — commit `f0eac6d`.
+- 7.5 i18n: 7 namespace mới (`editor`/`library`/`templates`/`requests`/`hashtagGroups`/`client`/`dashboard`) trong vi.json + en.json key-parallel, 39 chỗ hardcode → `t()`, 22 component — commit `e424602`.
+- `npx tsc -p tsconfig.app.json --noEmit` 0 lỗi + `npm run build` xanh sau mỗi đợt.
+- Badge/button nhỏ (`rounded-md`, `px-2 py-0.5`) và radius/màu `landing/*` **cố tình giữ nguyên** — ngoài phạm vi (tỷ lệ kích thước đúng / aesthetic marketing riêng).
+
 ---
 
 ## Verification (khi fix)
