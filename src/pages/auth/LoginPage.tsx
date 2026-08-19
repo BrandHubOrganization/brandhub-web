@@ -41,6 +41,7 @@ export function LoginPage() {
           role,
         },
         accessToken,
+        (res.data.data as any).refreshToken || "",
       );
       toast.success(t("auth.login.successToast"));
       navigate("/");

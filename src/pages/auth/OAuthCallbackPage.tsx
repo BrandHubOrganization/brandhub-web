@@ -25,6 +25,7 @@ export function OAuthCallbackPage() {
     setAuth(
       { id: "pending", name: "User", email: "", role: "CONTENT_CREATOR" },
       token,
+      "",
     );
     toast.success("Đăng nhập thành công!");
     navigate("/", { replace: true });
