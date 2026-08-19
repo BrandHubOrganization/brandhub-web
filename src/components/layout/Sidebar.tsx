@@ -9,6 +9,10 @@ import {
   BarChart3,
   ShieldAlert,
   ChevronDown,
+  Building2,
+  FolderKanban,
+  LayoutTemplate,
+  Hash,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -35,20 +39,25 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: "Tổng quan",
     items: [
-      { to: "/", icon: LayoutDashboard, label: "Dashboard" },
+      { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
       { to: "/analytics", icon: BarChart3, label: "Analytics" },
     ],
   },
   {
     title: "Sáng tạo",
     items: [
+      { to: "/requests", icon: FileEdit, label: "Content Requests" },
       { to: "/editor", icon: FileEdit, label: "Content Editor" },
+      { to: "/templates", icon: LayoutTemplate, label: "Post Templates" },
+      { to: "/hashtag-groups", icon: Hash, label: "Hashtag Groups" },
       { to: "/calendar", icon: CalendarDays, label: "Calendar" },
+      { to: "/library", icon: FolderKanban, label: "Content Library" },
     ],
   },
   {
     title: "Quản lý",
     items: [
+      { to: "/clients", icon: Building2, label: "Brand Clients" },
       { to: "/workspace", icon: FolderOpen, label: "Workspaces" },
       { to: "/portal", icon: Users, label: "Client Portal" },
     ],

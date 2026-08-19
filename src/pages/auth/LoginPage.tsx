@@ -2,7 +2,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
-import { useAuthStore, type UserRole } from "@/store/authStore";
+import { useAuthStore, type UserRole, type User } from "@/store/authStore";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -31,18 +31,28 @@ export function LoginPage() {
         password,
       });
       const { accessToken } = res.data.data;
-      // ponytail: derive role from /me endpoint when available
-      const role: UserRole = "CONTENT_CREATOR";
-      setAuth(
-        {
-          id: "pending",
-          name: identifier.split("@")[0],
-          email: identifier.trim(),
-          role,
-        },
-        accessToken,
-        (res.data.data as any).refreshToken || "",
-      );
+      
+      // 1. Lưu token để axios interceptor đính kèm Authorization header
+      localStorage.setItem("accessToken", accessToken);
+
+      // 2. Lấy dữ liệu Profile & Role THẬT 100% từ Database qua /api/v1/users/me
+      const profileRes = await authService.getProfile();
+      const profileData = profileRes.data.data;
+
+      if (!profileData) {
+        throw new Error("Không thể tải thông tin User từ Database.");
+      }
+
+      const realUser: User = {
+        id: profileData.userId,
+        name: profileData.fullName || identifier.split("@")[0],
+        email: profileData.email,
+        role: profileData.role as UserRole, // Role từ DB
+        workspaceId: profileData.workspaceId,
+        avatar: profileData.avatarUrl,
+      };
+
+      setAuth(realUser, accessToken);
       toast.success(t("auth.login.successToast"));
       navigate("/");
     } catch (err: unknown) {
