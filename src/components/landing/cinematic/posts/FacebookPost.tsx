@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ThumbsUp,
   MessageCircle,
@@ -32,9 +33,9 @@ interface FacebookPostProps {
  */
 export function FacebookPost({
   className,
-  authorName = "Minh Nguyễn",
-  authorRole = "Content Director, VCorp Media",
-  content = "Dùng BrandHub team tôi cắt thời gian tạo content từ 3 ngày xuống còn 2 giờ. Game changer cho mọi agency! Tự động publish đa kênh, AI hỗ trợ viết bài, calendar kéo thả trực quan.",
+  authorName,
+  authorRole,
+  content,
   likes = "2.3K",
   comments = "342",
   shares = "89",
@@ -42,10 +43,16 @@ export function FacebookPost({
   activeReaction,
   shared,
 }: FacebookPostProps) {
+  const { t } = useTranslation();
+  const resolvedAuthorName =
+    authorName ?? t("landing.heroFeed.facebook.0.authorName");
+  const resolvedAuthorRole =
+    authorRole ?? t("landing.heroFeed.facebook.0.authorRole");
+  const resolvedContent = content ?? t("landing.heroFeed.facebook.0.content");
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-[430px] overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg shadow-zinc-200/60 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-zinc-950/70",
+        "mx-auto w-full max-w-55 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg shadow-zinc-200/60 sm:max-w-107.5 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-zinc-950/70",
         className,
       )}
     >
@@ -56,13 +63,13 @@ export function FacebookPost({
         </div>
         <div className="flex-1 leading-tight">
           <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            {authorName}
+            {resolvedAuthorName}
           </p>
           <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-            {authorRole}
+            {resolvedAuthorRole}
           </p>
           <div className="mt-0.5 flex items-center gap-1 text-[11px] text-zinc-400 dark:text-zinc-500">
-            <span>2 giờ</span>
+            <span>{t("landing.heroFeed.ui.timeAgoHours2")}</span>
             <span className="text-zinc-300 dark:text-zinc-600">·</span>
             <Globe className="size-2.5" />
           </div>
@@ -73,7 +80,7 @@ export function FacebookPost({
       {/* Text content */}
       <div className="px-4 pt-2.5">
         <p className="text-sm leading-relaxed text-zinc-800 dark:text-zinc-200">
-          {content}
+          {resolvedContent}
         </p>
       </div>
 
@@ -94,18 +101,17 @@ export function FacebookPost({
                 <span className="text-xl font-black text-white">B</span>
               </div>
               <p className="relative text-sm font-bold text-white">
-                brandhub.vn
+                {t("landing.heroFeed.ui.sourceSite")}
               </p>
             </div>
           )}
         </div>
         <div className="border-t border-zinc-200 bg-white px-3.5 py-2.5 dark:border-zinc-700 dark:bg-zinc-800">
           <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
-            BrandHub — Nền tảng quản lý nội dung thương hiệu toàn diện
+            {t("landing.heroFeed.ui.linkPreviewTitle")}
           </p>
           <p className="mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-400">
-            Lên kế hoạch, sáng tạo, lên lịch và xuất bản nội dung đa kênh trên
-            một nền tảng duy nhất.
+            {t("landing.heroFeed.ui.linkPreviewDesc")}
           </p>
         </div>
       </div>
@@ -126,8 +132,12 @@ export function FacebookPost({
           </span>
         </div>
         <div className="flex gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-          <span>{comments} bình luận</span>
-          <span>{shares} chia sẻ</span>
+          <span>
+            {comments} {t("landing.heroFeed.ui.commentsSuffix")}
+          </span>
+          <span>
+            {shares} {t("landing.heroFeed.ui.sharesSuffix")}
+          </span>
         </div>
       </div>
 
@@ -146,17 +156,21 @@ export function FacebookPost({
             {activeReaction.label}
           </button>
         ) : (
-          <FBActionBtn dataTarget="like" icon={ThumbsUp} label="Thích" />
+          <FBActionBtn
+            dataTarget="like"
+            icon={ThumbsUp}
+            label={t("landing.heroFeed.ui.like")}
+          />
         )}
         <FBActionBtn
           dataTarget="comment"
           icon={MessageCircle}
-          label="Bình luận"
+          label={t("landing.heroFeed.ui.comment")}
         />
         <FBActionBtn
           dataTarget="share"
           icon={Share2}
-          label="Chia sẻ"
+          label={t("landing.heroFeed.ui.share")}
           active={shared}
         />
       </div>

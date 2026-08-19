@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AuthBrandPanel } from "@/components/auth/AuthBrandPanel";
 import { AuthMobileHeader } from "@/components/auth/AuthMobileHeader";
+import { BackToHomeLink } from "@/components/auth/BackToHomeLink";
 import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
 
@@ -94,6 +95,7 @@ export function VerifyOtpPage() {
       <div className="flex flex-1 items-center justify-center px-4 sm:px-8">
         <div className="w-full max-w-[400px]">
           <AuthMobileHeader />
+          <BackToHomeLink />
           <div className="mb-8 select-none">
             <div
               className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full"

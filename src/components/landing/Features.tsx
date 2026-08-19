@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import {
   CalendarDays,
   FileEdit,
@@ -7,25 +7,82 @@ import {
   BarChart3,
   Users,
   Zap,
+  MousePointerClick,
+  type LucideIcon,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useLandingDemoStore } from "@/store/landingDemoStore";
 
-const FEATURES = [
-  { key: "planning", icon: CalendarDays },
-  { key: "creation", icon: FileEdit },
-  { key: "publishing", icon: LayoutDashboard },
-  { key: "analytics", icon: BarChart3 },
-  { key: "collab", icon: Users },
-  { key: "automation", icon: Zap },
+interface Feature {
+  key: string;
+  icon: LucideIcon;
+  pageIndex: number;
+  span: string;
+  tint: string;
+  /** Chỉ một số card dùng kích thước icon/box riêng; còn lại dùng fallback trong JSX. */
+  iconSize?: string;
+  boxSize?: string;
+}
+
+// pageIndex matches CinematicHero's NAV_ITEMS order (Overview, Content,
+// Schedule, AI Studio, Analytics, Publish, Workspace).
+const FEATURES: Feature[] = [
+  {
+    key: "planning",
+    icon: CalendarDays,
+    pageIndex: 2,
+    span: "lg:col-span-2 lg:row-span-2",
+    tint: "bg-gradient-to-br from-orange-50 to-white dark:from-orange-950/20 dark:to-zinc-900",
+    iconSize: "size-7",
+    boxSize: "size-16",
+  },
+  {
+    key: "creation",
+    icon: FileEdit,
+    pageIndex: 3,
+    span: "lg:col-span-1",
+    tint: "bg-zinc-50/50 dark:bg-zinc-900/50",
+  },
+  {
+    key: "publishing",
+    icon: LayoutDashboard,
+    pageIndex: 5,
+    span: "lg:col-span-1",
+    tint: "bg-white dark:bg-zinc-950",
+  },
+  {
+    key: "analytics",
+    icon: BarChart3,
+    pageIndex: 4,
+    span: "lg:col-span-1",
+    tint: "bg-zinc-50/50 dark:bg-zinc-900/50",
+  },
+  {
+    key: "collab",
+    icon: Users,
+    pageIndex: 6,
+    span: "lg:col-span-1",
+    tint: "bg-white dark:bg-zinc-950",
+  },
+  {
+    key: "automation",
+    icon: Zap,
+    pageIndex: 1,
+    span: "lg:col-span-4",
+    tint: "bg-zinc-50/50 dark:bg-zinc-900/50",
+  },
 ];
 
 export function Features() {
   const { t } = useTranslation();
+  const reduce = useReducedMotion();
+  const goToPage = useLandingDemoStore((s) => s.goToPage);
 
   return (
     <section id="features" className="bg-white py-24 dark:bg-zinc-950">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
@@ -39,27 +96,62 @@ export function Features() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map(({ key, icon: Icon }, i) => (
-            <motion.div
-              key={key}
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="group rounded-2xl border border-zinc-100 bg-zinc-50/50 p-8 transition-all hover:border-orange-200 hover:bg-orange-50/30 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-orange-800/30 dark:hover:bg-orange-950/10"
-            >
-              <div className="bg-brand-orange/10 text-brand-orange mb-5 flex size-12 items-center justify-center rounded-xl transition-transform group-hover:scale-110">
-                <Icon className="size-6" />
-              </div>
-              <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                {t(`landing.features.items.${key}.title`)}
-              </h3>
-              <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                {t(`landing.features.items.${key}.desc`)}
-              </p>
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {FEATURES.map(
+            (
+              { key, icon: Icon, pageIndex, span, tint, iconSize, boxSize },
+              i,
+            ) => (
+              <motion.div
+                key={key}
+                role="button"
+                tabIndex={0}
+                aria-label={t("landing.features.demoAction", {
+                  feature: t(`landing.features.items.${key}.title`),
+                })}
+                onClick={() => goToPage(pageIndex)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    goToPage(pageIndex);
+                  }
+                }}
+                initial={reduce ? false : { opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className={cn(
+                  "group focus-visible:ring-brand-orange relative flex cursor-pointer flex-col justify-center rounded-2xl border border-zinc-100 p-8 transition-all hover:border-orange-200 hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none dark:border-zinc-800 dark:hover:border-orange-800/30",
+                  tint,
+                  span,
+                )}
+              >
+                <div
+                  className={cn(
+                    "bg-brand-orange/10 text-brand-orange mb-5 flex items-center justify-center rounded-xl transition-transform group-hover:scale-110",
+                    boxSize ?? "size-12",
+                  )}
+                >
+                  <Icon className={iconSize ?? "size-6"} />
+                </div>
+                <h3
+                  className={cn(
+                    "mb-2 font-bold text-zinc-900 dark:text-zinc-100",
+                    key === "planning" ? "text-2xl" : "text-lg",
+                  )}
+                >
+                  {t(`landing.features.items.${key}.title`)}
+                </h3>
+                <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                  {t(`landing.features.items.${key}.desc`)}
+                </p>
+                <span className="text-brand-orange mt-4 flex items-center gap-1.5 text-xs font-semibold opacity-0 transition-opacity group-hover:opacity-100">
+                  <MousePointerClick className="size-3.5" />
+                  {t("landing.features.demoLabel")}
+                </span>
+              </motion.div>
+            ),
+          )}
         </div>
       </div>
     </section>

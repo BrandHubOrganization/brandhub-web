@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 const STATS = [
   {
@@ -35,12 +35,17 @@ function useCountUp(
   decimals = 0,
   duration = 2000,
   start = false,
+  skipAnimation = false,
 ) {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(skipAnimation && start ? target : 0);
   const raf = useRef<number>(0);
 
   useEffect(() => {
     if (!start) return;
+    if (skipAnimation) {
+      setValue(target);
+      return;
+    }
     const startTime = performance.now();
     const step = (now: number) => {
       const elapsed = now - startTime;
@@ -51,13 +56,14 @@ function useCountUp(
     };
     raf.current = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf.current);
-  }, [target, duration, start]);
+  }, [target, duration, start, skipAnimation]);
 
   return value.toFixed(decimals);
 }
 
 export function StatsCounter() {
   const { t } = useTranslation();
+  const reduce = useReducedMotion();
   const [inView, setInView] = useState(false);
 
   return (
@@ -79,6 +85,7 @@ export function StatsCounter() {
                   suffix={s.suffix}
                   decimals={s.decimals}
                   start={inView}
+                  skipAnimation={!!reduce}
                 />
               </p>
               <p className="mt-2 text-sm font-medium text-white/70">
@@ -97,13 +104,15 @@ function CountValue({
   suffix,
   decimals = 0,
   start,
+  skipAnimation,
 }: {
   target: number;
   suffix: string;
   decimals?: number;
   start: boolean;
+  skipAnimation?: boolean;
 }) {
-  const raw = useCountUp(target, decimals, 2000, start);
+  const raw = useCountUp(target, decimals, 2000, start, skipAnimation);
   const formatted = Number(raw).toLocaleString("vi-VN", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,

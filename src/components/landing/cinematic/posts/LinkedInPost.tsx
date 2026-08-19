@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ThumbsUp,
   MessageCircle,
@@ -31,19 +32,27 @@ interface LinkedInPostProps {
  */
 export function LinkedInPost({
   className,
-  authorName = "Sarah Chen",
-  authorTitle = "Marketing Lead tại Global Brands Inc.",
-  content = "Sau 6 tháng dùng BrandHub, team marketing của chúng tôi đã tăng 240% output content, giảm 80% thời gian approval. Đây là case study chi tiết về cách chúng tôi chuyển đổi workflow.",
-  articleHeadline = "How BrandHub Transformed Our Content Operations — A Case Study",
+  authorName,
+  authorTitle,
+  content,
+  articleHeadline,
   likes = "892",
   comments = "67",
   imageUrl,
   activeReaction,
 }: LinkedInPostProps) {
+  const { t } = useTranslation();
+  const resolvedAuthorName =
+    authorName ?? t("landing.heroFeed.linkedin.0.authorName");
+  const resolvedAuthorTitle =
+    authorTitle ?? t("landing.heroFeed.linkedin.0.authorTitle");
+  const resolvedContent = content ?? t("landing.heroFeed.linkedin.0.content");
+  const resolvedArticleHeadline =
+    articleHeadline ?? t("landing.heroFeed.linkedin.0.articleHeadline");
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-[430px] overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg shadow-zinc-200/50 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-zinc-950/60",
+        "mx-auto w-full max-w-55 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg shadow-zinc-200/50 sm:max-w-107.5 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-zinc-950/60",
         className,
       )}
     >
@@ -54,13 +63,13 @@ export function LinkedInPost({
         </div>
         <div className="flex-1 leading-tight">
           <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            {authorName}
+            {resolvedAuthorName}
           </p>
           <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-            {authorTitle}
+            {resolvedAuthorTitle}
           </p>
           <div className="mt-0.5 flex items-center gap-1 text-[11px] text-zinc-400 dark:text-zinc-500">
-            <span>3 ngày</span>
+            <span>{t("landing.heroFeed.ui.timeAgoDays3")}</span>
             <span className="text-zinc-300 dark:text-zinc-600">·</span>
             <GlobeMini className="size-2.5" />
           </div>
@@ -71,7 +80,7 @@ export function LinkedInPost({
       {/* Content */}
       <div className="px-4 pt-3">
         <p className="text-sm leading-relaxed text-zinc-800 dark:text-zinc-200">
-          {content}
+          {resolvedContent}
         </p>
       </div>
 
@@ -92,7 +101,7 @@ export function LinkedInPost({
                 <BookOpen className="size-6 text-white" />
               </div>
               <p className="relative text-xs font-semibold text-white/90">
-                BrandHub Insights
+                {t("landing.heroFeed.ui.insights")}
               </p>
             </div>
           )}
@@ -101,19 +110,17 @@ export function LinkedInPost({
           <div className="mb-1 flex items-center gap-1.5">
             <span className="flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-[9px] font-medium text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
               <Newspaper className="size-2.5" />
-              Article
+              {t("landing.heroFeed.ui.article")}
             </span>
             <span className="text-[10px] text-zinc-400 dark:text-zinc-500">
-              5 phút đọc
+              {t("landing.heroFeed.ui.minRead")}
             </span>
           </div>
           <p className="text-sm leading-snug font-semibold text-zinc-800 dark:text-zinc-100">
-            {articleHeadline}
+            {resolvedArticleHeadline}
           </p>
           <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400">
-            Từ manual workflow 3 ngày/content → automation 2 giờ/content. Cách
-            BrandHub giúp team marketing scale output mà không cần thêm
-            headcount.
+            {t("landing.heroFeed.ui.articleExcerpt")}
           </p>
         </div>
       </div>
@@ -129,10 +136,10 @@ export function LinkedInPost({
           </span>
         </div>
         <span className="text-xs text-zinc-500 dark:text-zinc-400">
-          {comments} bình luận
+          {comments} {t("landing.heroFeed.ui.commentsSuffix")}
         </span>
         <span className="text-xs text-zinc-500 dark:text-zinc-400">
-          12 repost
+          {t("landing.heroFeed.ui.repostsCount")}
         </span>
       </div>
 
@@ -151,15 +158,27 @@ export function LinkedInPost({
             {activeReaction.label}
           </button>
         ) : (
-          <LIActionBtn dataTarget="like" icon={ThumbsUp} label="Thích" />
+          <LIActionBtn
+            dataTarget="like"
+            icon={ThumbsUp}
+            label={t("landing.heroFeed.ui.like")}
+          />
         )}
         <LIActionBtn
           dataTarget="comment"
           icon={MessageCircle}
-          label="Bình luận"
+          label={t("landing.heroFeed.ui.comment")}
         />
-        <LIActionBtn dataTarget="repost" icon={Repeat2} label="Repost" />
-        <LIActionBtn dataTarget="send" icon={Share2} label="Gửi" />
+        <LIActionBtn
+          dataTarget="repost"
+          icon={Repeat2}
+          label={t("landing.heroFeed.ui.repost")}
+        />
+        <LIActionBtn
+          dataTarget="send"
+          icon={Share2}
+          label={t("landing.heroFeed.ui.send")}
+        />
       </div>
     </div>
   );

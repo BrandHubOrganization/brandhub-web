@@ -1,14 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { CinematicHero } from "@/components/landing/cinematic/CinematicHero";
+import { Navbar } from "@/components/landing/Navbar";
 import { LogoWall } from "@/components/landing/LogoWall";
 import { StatsCounter } from "@/components/landing/StatsCounter";
 import { Features } from "@/components/landing/Features";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Templates } from "@/components/landing/Templates";
 import { Testimonials } from "@/components/landing/Testimonials";
+import { TeamSection } from "@/components/landing/TeamSection";
 import { Pricing } from "@/components/landing/Pricing";
 import { FAQ } from "@/components/landing/FAQ";
 import { CTASection } from "@/components/landing/CTASection";
@@ -16,7 +17,6 @@ import { Footer } from "@/components/landing/Footer";
 import { useAuthStore } from "@/store/authStore";
 
 export function DashboardPage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated, user, clearAuth } = useAuthStore();
 
@@ -107,6 +107,7 @@ export function DashboardPage() {
   // ── Unauthenticated: Full Landing Page ──
   return (
     <div style={{ fontFamily: "var(--font-sans)" }}>
+      <Navbar />
       <CinematicHero />
       <LogoWall />
       <Features />
@@ -114,6 +115,7 @@ export function DashboardPage() {
       <HowItWorks />
       <Templates />
       <Testimonials />
+      <TeamSection />
       <Pricing />
       <FAQ />
       <CTASection />

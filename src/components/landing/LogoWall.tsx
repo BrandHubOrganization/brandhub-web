@@ -37,20 +37,18 @@ export function LogoWall() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6"
+          className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
         >
-          {LOGOS.map((name, i) => (
-            <motion.div
-              key={name}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.1 + i * 0.04 }}
-              className="text-lg font-bold text-zinc-300 transition-colors select-none hover:text-zinc-400 dark:text-zinc-600 dark:hover:text-zinc-500"
-            >
-              {name}
-            </motion.div>
-          ))}
+          <div className="animate-logo-marquee flex w-max items-center gap-x-14">
+            {[...LOGOS, ...LOGOS].map((name, i) => (
+              <div
+                key={`${name}-${i}`}
+                className="shrink-0 text-lg font-bold text-zinc-300 transition-colors select-none hover:text-zinc-400 dark:text-zinc-600 dark:hover:text-zinc-500"
+              >
+                {name}
+              </div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>

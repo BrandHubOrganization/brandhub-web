@@ -1,4 +1,12 @@
 import { useTranslation } from "react-i18next";
+import { Mail } from "lucide-react";
+
+const PRODUCT_LINKS = [
+  { id: "features", labelKey: "landing.footer.productLinks.features" },
+  { id: "how-it-works", labelKey: "landing.footer.productLinks.howItWorks" },
+  { id: "templates", labelKey: "landing.footer.productLinks.templates" },
+  { id: "pricing", labelKey: "landing.footer.productLinks.pricing" },
+];
 
 function GithubIcon({ className }: { className?: string }) {
   return (
@@ -44,15 +52,24 @@ export function Footer() {
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
               {t("landing.footer.tagline")}
             </p>
+            <a
+              href={`mailto:${t("landing.footer.email")}`}
+              className="mt-3 flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+            >
+              <Mail className="size-3.5" />
+              {t("landing.footer.email")}
+            </a>
             <div className="mt-4 flex gap-3">
               {[
-                { icon: GithubIcon, href: "#" },
-                { icon: TwitterIcon, href: "#" },
-                { icon: LinkedinIcon, href: "#" },
-              ].map(({ icon: Icon, href }, i) => (
+                { icon: GithubIcon, href: "#", label: "GitHub" },
+                { icon: TwitterIcon, href: "#", label: "Twitter" },
+                { icon: LinkedinIcon, href: "#", label: "LinkedIn" },
+              ].map(({ icon: Icon, href, label }, i) => (
                 <a
                   key={i}
                   href={href}
+                  aria-label={label}
+                  onClick={(e) => e.preventDefault()}
                   className="flex size-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-400 transition-colors hover:text-zinc-600 dark:border-zinc-700 dark:hover:text-zinc-300"
                 >
                   <Icon className="size-4" />
@@ -61,8 +78,34 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Link columns */}
-          {(["product", "resources", "company"] as const).map((col) => (
+          {/* Product — link tới section thật trên landing */}
+          <div>
+            <h4 className="mb-4 text-xs font-semibold tracking-wider text-zinc-900 uppercase dark:text-zinc-100">
+              {t("landing.footer.columns.product")}
+            </h4>
+            <ul className="space-y-2.5">
+              {PRODUCT_LINKS.map((link) => (
+                <li key={link.id}>
+                  <a
+                    href={`#${link.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document
+                        .getElementById(link.id)
+                        ?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="text-sm text-zinc-500 transition-colors hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                  >
+                    {t(link.labelKey)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Resources/Company — chưa có trang thật, đánh dấu Sắp ra mắt
+              thay vì href="#" giả dẫn người dùng bấm vào chỗ không có gì. */}
+          {(["resources", "company"] as const).map((col) => (
             <div key={col}>
               <h4 className="mb-4 text-xs font-semibold tracking-wider text-zinc-900 uppercase dark:text-zinc-100">
                 {t(`landing.footer.columns.${col}`)}
@@ -74,12 +117,12 @@ export function Footer() {
                   }) as string[]
                 ).map((link: string, i: number) => (
                   <li key={i}>
-                    <a
-                      href="#"
-                      className="text-sm text-zinc-500 transition-colors hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
-                    >
+                    <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-600">
                       {link}
-                    </a>
+                      <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[9px] font-medium text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
+                        {t("landing.footer.comingSoon")}
+                      </span>
+                    </span>
                   </li>
                 ))}
               </ul>
