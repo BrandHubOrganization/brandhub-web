@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
-import { Upload, Loader2 } from 'lucide-react';
-import type { MediaItem } from '@/types/contentLibrary';
-import { toast } from 'sonner';
+import React, { useRef, useState } from "react";
+import { Upload, Loader2 } from "lucide-react";
+import type { MediaItem } from "@/types/contentLibrary";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
 interface MediaUploadButtonProps {
@@ -9,7 +9,10 @@ interface MediaUploadButtonProps {
   onUploadStart?: () => void;
 }
 
-export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({ onUploadSuccess, onUploadStart }) => {
+export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
+  onUploadSuccess,
+  onUploadStart,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -19,7 +22,7 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({ onUploadSu
 
     // Validate size (max 50MB)
     if (file.size > 50 * 1024 * 1024) {
-      toast.error('File vượt quá giới hạn 50MB');
+      toast.error("File vượt quá giới hạn 50MB");
       return;
     }
 
@@ -27,16 +30,17 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({ onUploadSu
     if (onUploadStart) onUploadStart();
 
     try {
-      const { mockContentLibraryService } = await import('@/services/mockContentLibraryService');
+      const { mockContentLibraryService } =
+        await import("@/services/mockContentLibraryService");
       const uploadedItem = await mockContentLibraryService.uploadMedia(file);
       toast.success(`Đã tải lên thành công: ${file.name}`);
       onUploadSuccess(uploadedItem);
     } catch (err) {
-      toast.error('Tải file lên thất bại!');
+      toast.error("Tải file lên thất bại!");
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+        fileInputRef.current.value = "";
       }
     }
   };
@@ -53,16 +57,16 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({ onUploadSu
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={isUploading}
-        className="px-4 py-2 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-xl font-medium text-xs flex items-center gap-2 transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
+        className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-xs font-medium text-white shadow-xs transition-colors disabled:opacity-50"
       >
         {isUploading ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" />
             <span>Đang tải lên...</span>
           </>
         ) : (
           <>
-            <Upload className="w-4 h-4" />
+            <Upload className="h-4 w-4" />
             <span>Tải lên Media</span>
           </>
         )}

@@ -77,7 +77,10 @@ export function DashboardPage() {
       }
     >
       <div className="space-y-6">
-        <QuickTasksCard userName={user?.name || ""} userRole={memberRole ?? undefined} />
+        <QuickTasksCard
+          userName={user?.name || ""}
+          userRole={memberRole ?? undefined}
+        />
 
         <KpiCardsSection
           data={analytics}

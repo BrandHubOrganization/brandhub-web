@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import type { CalendarPostEvent } from "@/types/calendar";
 import type { PlatformType } from "@/types/calendar";
-import { Calendar as CalendarIcon, Eye } from 'lucide-react';
+import { Calendar as CalendarIcon, Eye } from "lucide-react";
 import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewModal";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,50 +20,56 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const [title, setTitle] = useState('');
-  const [caption, setCaption] = useState('');
-  const [platform, setPlatform] = useState<PlatformType>('FACEBOOK');
-  const [time, setTime] = useState('09:00');
+  const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
+  const [platform, setPlatform] = useState<PlatformType>("FACEBOOK");
+  const [time, setTime] = useState("09:00");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   if (!isOpen) return null;
 
-  const formattedDateStr = selectedDate ? selectedDate.toISOString().split('T')[0] : '';
+  const formattedDateStr = selectedDate
+    ? selectedDate.toISOString().split("T")[0]
+    : "";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    const scheduledDateTime = new Date(`${formattedDateStr}T${time}:00`).toISOString();
+    const scheduledDateTime = new Date(
+      `${formattedDateStr}T${time}:00`,
+    ).toISOString();
 
     onSubmit({
       title,
       start: scheduledDateTime,
       extendedProps: {
         platform,
-        status: 'SCHEDULED',
+        status: "SCHEDULED",
         captionPreview: caption || title,
       },
     });
 
     // Reset & Close
-    setTitle('');
-    setCaption('');
+    setTitle("");
+    setCaption("");
     onClose();
   };
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+        <div className="animate-in fade-in zoom-in-95 w-full max-w-md space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl duration-200 dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <CalendarIcon className="w-5 h-5 text-[#f05a28]" />
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Schedule Post</h3>
+              <CalendarIcon className="h-5 w-5 text-[#f05a28]" />
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                Schedule Post
+              </h3>
             </div>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none cursor-pointer"
+              className="cursor-pointer text-lg leading-none text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             >
               ✕
             </button>
@@ -71,7 +77,9 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Post Title</label>
+              <label className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">
+                Post Title
+              </label>
               <Input
                 type="text"
                 required
@@ -83,14 +91,16 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">Caption Preview</label>
+              <div className="mb-1 flex items-center justify-between">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+                  Caption Preview
+                </label>
                 <button
                   type="button"
                   onClick={() => setIsPreviewOpen(true)}
-                  className="text-xs text-[#f05a28] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                  className="flex cursor-pointer items-center gap-1 text-xs font-medium text-[#f05a28] hover:underline"
                 >
-                  <Eye className="w-3.5 h-3.5" />
+                  <Eye className="h-3.5 w-3.5" />
                   Preview Mockup
                 </button>
               </div>
@@ -105,7 +115,9 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Platform</label>
+                <label className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">
+                  Platform
+                </label>
                 <Select
                   value={platform}
                   onChange={(e) => setPlatform(e.target.value as PlatformType)}
@@ -120,7 +132,9 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Scheduled Time</label>
+                <label className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">
+                  Scheduled Time
+                </label>
                 <div className="relative">
                   <Input
                     type="time"
@@ -132,17 +146,17 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
               </div>
             </div>
 
-            <div className="pt-3 flex items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-3 dark:border-slate-800">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
+                className="cursor-pointer rounded-lg border border-slate-300 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-xs font-medium rounded-lg bg-[#f05a28] hover:bg-[#d94e20] text-white shadow-xs cursor-pointer"
+                className="cursor-pointer rounded-lg bg-[#f05a28] px-4 py-2 text-xs font-medium text-white shadow-xs hover:bg-[#d94e20]"
               >
                 Schedule
               </button>
@@ -156,8 +170,15 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
         onClose={() => setIsPreviewOpen(false)}
         data={{
           title,
-          caption: caption || title || 'Post caption preview text...',
-          targetPlatforms: [platform, 'FACEBOOK', 'INSTAGRAM', 'TIKTOK', 'THREADS', 'YOUTUBE'].filter((v, i, a) => a.indexOf(v) === i) as PlatformType[],
+          caption: caption || title || "Post caption preview text...",
+          targetPlatforms: [
+            platform,
+            "FACEBOOK",
+            "INSTAGRAM",
+            "TIKTOK",
+            "THREADS",
+            "YOUTUBE",
+          ].filter((v, i, a) => a.indexOf(v) === i) as PlatformType[],
         }}
       />
     </>

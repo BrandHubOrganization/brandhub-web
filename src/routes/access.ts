@@ -25,7 +25,9 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/admin": "ADMIN",
 };
 
-const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort((a, b) => b.length - a.length);
+const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
+  (a, b) => b.length - a.length,
+);
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {

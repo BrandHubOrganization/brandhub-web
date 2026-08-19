@@ -51,12 +51,12 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl max-w-md w-full p-6 border border-zinc-200 dark:border-zinc-800 shadow-2xl space-y-4">
+      <div className="bg-card rounded-2xl max-w-md w-full p-6 border border-border shadow-2xl space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
           <div className="flex items-center gap-2">
             <UserPlus className="w-5 h-5 text-brand-orange dark:text-brand-orange/80" />
-            <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+            <h3 className="font-semibold text-sm text-foreground">
               Phân Công Nhân Sự Sáng Tạo
             </h3>
           </div>
@@ -68,8 +68,8 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
           </button>
         </div>
 
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Gán Creator cho yêu cầu: <span className="font-semibold text-zinc-800 dark:text-zinc-200">{requestTitle}</span>
+        <p className="text-xs text-muted-foreground">
+          Gán Creator cho yêu cầu: <span className="font-semibold text-foreground">{requestTitle}</span>
         </p>
 
         {/* Search Bar */}
@@ -80,7 +80,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm theo tên hoặc email Creator..."
-            className="w-full pl-9 pr-4 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20"
+            className="w-full pl-9 pr-4 py-2 bg-muted border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs text-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20"
           />
         </div>
 
@@ -105,10 +105,10 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
                     className="w-9 h-9 rounded-full object-cover border border-zinc-200 dark:border-zinc-700"
                   />
                   <div>
-                    <h4 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                    <h4 className="text-xs font-semibold text-foreground">
                       {creator.name}
                     </h4>
-                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono">
+                    <span className="text-[10px] text-muted-foreground font-mono">
                       {creator.email}
                     </span>
                   </div>

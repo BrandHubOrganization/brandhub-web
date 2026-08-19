@@ -145,5 +145,6 @@ export const authService = {
 
   me: () => api.get<ApiResponse<MeResponse>>("/api/v1/auth/me"),
 
-  getProfile: () => api.get<ApiResponse<UserProfileResponse>>("/api/v1/users/me"),
+  getProfile: () =>
+    api.get<ApiResponse<UserProfileResponse>>("/api/v1/users/me"),
 };

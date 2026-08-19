@@ -91,7 +91,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({ mediaUrls, onChang
         className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
           isDragOver
             ? 'border-brand-orange bg-brand-orange/10 dark:bg-brand-orange/20'
-            : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 hover:border-brand-orange'
+            : 'border-border bg-zinc-50/50 dark:bg-zinc-900/50 hover:border-brand-orange'
         }`}
       >
         {uploadProgress !== null ? (
@@ -115,7 +115,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({ mediaUrls, onChang
             <div className="w-10 h-10 rounded-full bg-brand-orange-soft dark:bg-brand-orange/20 text-brand-orange dark:text-brand-orange/80 flex items-center justify-center mx-auto shadow-xs">
               <Upload className="w-5 h-5" />
             </div>
-            <h4 className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+            <h4 className="text-xs font-semibold text-foreground">
               Kéo thả hình ảnh/video vào đây hoặc <span className="text-brand-orange dark:text-brand-orange/80">duyệt từ máy tính</span>
             </h4>
             <p className="text-[11px] text-zinc-400">
@@ -133,7 +133,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({ mediaUrls, onChang
             return (
               <div
                 key={idx}
-                className="group relative rounded-xl overflow-hidden aspect-square border border-zinc-200 dark:border-zinc-800 bg-zinc-900 shadow-2xs"
+                className="group relative rounded-xl overflow-hidden aspect-square border border-border bg-zinc-900 shadow-2xs"
               >
                 {isVideo ? (
                   <video src={url} className="w-full h-full object-cover" />

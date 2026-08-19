@@ -5,7 +5,12 @@ import type { Notification } from "@/types/notification";
 export interface NotificationState {
   notifications: Notification[];
   unreadCount: number;
-  addNotification: (notification: Omit<Notification, "read" | "createdAt"> & { read?: boolean; createdAt?: string }) => void;
+  addNotification: (
+    notification: Omit<Notification, "read" | "createdAt"> & {
+      read?: boolean;
+      createdAt?: string;
+    },
+  ) => void;
   markRead: (id: string) => void;
   markAllRead: () => void;
   reset: () => void;
@@ -51,5 +56,5 @@ export const useNotificationStore = create<NotificationState>()(
         state.notifications = [];
         state.unreadCount = 0;
       }),
-  }))
+  })),
 );

@@ -50,7 +50,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const textLength = value.length;
 
   return (
-    <div className="border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-white dark:bg-zinc-900 shadow-xs overflow-hidden flex flex-col min-h-[320px]">
+    <div className="border border-border rounded-2xl bg-card shadow-xs overflow-hidden flex flex-col min-h-[320px]">
       {/* Formatting Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-800/40">
         <div className="flex items-center gap-1">
@@ -59,7 +59,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={`p-1.5 rounded-lg text-xs transition-colors ${
               editor.isActive('bold')
-                ? 'bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 font-bold'
+                ? 'bg-zinc-200 dark:bg-zinc-700 text-foreground font-bold'
                 : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
             }`}
             title="In đậm (Bold)"
@@ -72,7 +72,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={`p-1.5 rounded-lg text-xs transition-colors ${
               editor.isActive('italic')
-                ? 'bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 italic'
+                ? 'bg-zinc-200 dark:bg-zinc-700 text-foreground italic'
                 : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
             }`}
             title="In nghiêng (Italic)"
@@ -87,7 +87,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className={`p-1.5 rounded-lg text-xs transition-colors ${
               editor.isActive('bulletList')
-                ? 'bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100'
+                ? 'bg-zinc-200 dark:bg-zinc-700 text-foreground'
                 : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
             }`}
             title="Danh sách gạch đầu dòng"
@@ -100,7 +100,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             className={`p-1.5 rounded-lg text-xs transition-colors ${
               editor.isActive('orderedList')
-                ? 'bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100'
+                ? 'bg-zinc-200 dark:bg-zinc-700 text-foreground'
                 : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
             }`}
             title="Danh sách đánh số"
@@ -131,7 +131,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       </div>
 
       {/* Editor Main Content Area */}
-      <div className="p-4 flex-1 text-sm leading-relaxed text-zinc-900 dark:text-zinc-100 outline-none min-h-[220px]">
+      <div className="p-4 flex-1 text-sm leading-relaxed text-foreground outline-none min-h-[220px]">
         <EditorContent editor={editor} className="prose dark:prose-invert max-w-none focus:outline-hidden min-h-[200px]" />
       </div>
 

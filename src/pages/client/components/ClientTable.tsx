@@ -66,7 +66,10 @@ export function ClientTable({
             ))
           ) : clients.length === 0 ? (
             <tr>
-              <td colSpan={6} className="text-muted-foreground py-8 text-center">
+              <td
+                colSpan={6}
+                className="text-muted-foreground py-8 text-center"
+              >
                 Không tìm thấy Client nào phù hợp.
               </td>
             </tr>
@@ -86,12 +89,12 @@ export function ClientTable({
                         className="border-border size-8 shrink-0 rounded-full border object-cover"
                       />
                     ) : (
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-orange-soft text-xs font-bold text-brand-orange">
+                      <div className="bg-brand-orange-soft text-brand-orange flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold">
                         {client.name.charAt(0)}
                       </div>
                     )}
                     <div className="min-w-0">
-                      <span className="text-foreground block truncate font-bold transition-colors group-hover:text-brand-orange">
+                      <span className="text-foreground group-hover:text-brand-orange block truncate font-bold transition-colors">
                         {client.name}
                       </span>
                       <span className="text-muted-foreground block truncate text-[11px]">
@@ -177,7 +180,7 @@ export function ClientTable({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-muted-foreground size-7 cursor-pointer hover:text-brand-orange"
+                          className="text-muted-foreground hover:text-brand-orange size-7 cursor-pointer"
                           title="Đổi gói dịch vụ"
                           onClick={() => onSelectPackage(client)}
                         >

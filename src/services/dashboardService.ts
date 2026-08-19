@@ -128,7 +128,10 @@ export const dashboardService = {
       // Handle standard envelope response format if present ({ data: ... })
       return response.data?.data ?? response.data ?? MOCK_ANALYTICS_OVERVIEW;
     } catch (error) {
-      console.warn("Backend API /api/v1/analytics/overview offline or error, using fallback data", error);
+      console.warn(
+        "Backend API /api/v1/analytics/overview offline or error, using fallback data",
+        error,
+      );
       return MOCK_ANALYTICS_OVERVIEW;
     }
   },
@@ -138,13 +141,17 @@ export const dashboardService = {
       const response = await api.get("/api/v1/notifications", {
         params: { type: "activity", page, size },
       });
-      const data = response.data?.data?.content ?? response.data?.content ?? response.data;
+      const data =
+        response.data?.data?.content ?? response.data?.content ?? response.data;
       if (Array.isArray(data) && data.length > 0) {
         return data;
       }
       return MOCK_ACTIVITIES;
     } catch (error) {
-      console.warn("Backend API /api/v1/notifications offline or error, using fallback data", error);
+      console.warn(
+        "Backend API /api/v1/notifications offline or error, using fallback data",
+        error,
+      );
       return MOCK_ACTIVITIES;
     }
   },

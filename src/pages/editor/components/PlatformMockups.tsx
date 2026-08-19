@@ -1,84 +1,132 @@
-import React from 'react';
+import React from "react";
 import type { PlatformType } from "@/types/calendar";
 import type { PostPreviewData } from "@/types/preview";
 import { PLATFORM_LIMITS } from "@/types/preview";
-import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, ThumbsUp, Globe } from 'lucide-react';
+import {
+  Heart,
+  MessageCircle,
+  Share2,
+  Bookmark,
+  MoreHorizontal,
+  ThumbsUp,
+  Globe,
+} from "lucide-react";
 
 interface PlatformMockupProps {
   platform: PlatformType;
   data: PostPreviewData;
 }
 
-export const PlatformMockup: React.FC<PlatformMockupProps> = ({ platform, data }) => {
+export const PlatformMockup: React.FC<PlatformMockupProps> = ({
+  platform,
+  data,
+}) => {
   const {
     caption,
     mediaUrls = [],
-    authorName = 'BrandHub Official',
-    authorAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    authorName = "BrandHub Official",
+    authorAvatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
   } = data;
 
-  const defaultMedia = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80';
+  const defaultMedia =
+    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80";
   const mediaSrc = mediaUrls[0] || defaultMedia;
   const config = PLATFORM_LIMITS[platform];
 
-  if (platform === 'FACEBOOK') {
+  if (platform === "FACEBOOK") {
     return (
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs overflow-hidden max-w-md mx-auto">
-        <div className="p-3.5 flex items-center justify-between">
+      <div className="mx-auto max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex items-center justify-between p-3.5">
           <div className="flex items-center gap-2.5">
-            <img src={authorAvatar} alt="avatar" className="w-10 h-10 rounded-full object-cover border border-slate-200" />
+            <img
+              src={authorAvatar}
+              alt="avatar"
+              className="h-10 w-10 rounded-full border border-slate-200 object-cover"
+            />
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{authorName}</h4>
-              <p className="text-xs text-slate-500 flex items-center gap-1">Just now · <Globe className="w-3 h-3" /></p>
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                {authorName}
+              </h4>
+              <p className="flex items-center gap-1 text-xs text-slate-500">
+                Just now · <Globe className="h-3 w-3" />
+              </p>
             </div>
           </div>
-          <MoreHorizontal className="w-5 h-5 text-slate-400" />
+          <MoreHorizontal className="h-5 w-5 text-slate-400" />
         </div>
 
-        <p className="px-3.5 pb-3 text-sm text-slate-800 dark:text-slate-200 whitespace-pre-wrap">{caption}</p>
+        <p className="px-3.5 pb-3 text-sm whitespace-pre-wrap text-slate-800 dark:text-slate-200">
+          {caption}
+        </p>
 
-        <div className={`w-full bg-slate-100 dark:bg-slate-800 overflow-hidden ${config.aspectRatioClass}`}>
-          <img src={mediaSrc} alt="Post content" className="w-full h-full object-cover" />
+        <div
+          className={`w-full overflow-hidden bg-slate-100 dark:bg-slate-800 ${config.aspectRatioClass}`}
+        >
+          <img
+            src={mediaSrc}
+            alt="Post content"
+            className="h-full w-full object-cover"
+          />
         </div>
 
-        <div className="p-3 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 text-slate-500 text-xs font-medium">
-          <button className="flex items-center gap-1.5 hover:text-blue-600"><ThumbsUp className="w-4 h-4" /> Like</button>
-          <button className="flex items-center gap-1.5 hover:text-blue-600"><MessageCircle className="w-4 h-4" /> Comment</button>
-          <button className="flex items-center gap-1.5 hover:text-blue-600"><Share2 className="w-4 h-4" /> Share</button>
+        <div className="flex items-center justify-between border-t border-slate-100 p-3 text-xs font-medium text-slate-500 dark:border-slate-800">
+          <button className="flex items-center gap-1.5 hover:text-blue-600">
+            <ThumbsUp className="h-4 w-4" /> Like
+          </button>
+          <button className="flex items-center gap-1.5 hover:text-blue-600">
+            <MessageCircle className="h-4 w-4" /> Comment
+          </button>
+          <button className="flex items-center gap-1.5 hover:text-blue-600">
+            <Share2 className="h-4 w-4" /> Share
+          </button>
         </div>
       </div>
     );
   }
 
-  if (platform === 'INSTAGRAM') {
+  if (platform === "INSTAGRAM") {
     return (
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xs overflow-hidden max-w-md mx-auto">
-        <div className="p-3 flex items-center justify-between">
+      <div className="mx-auto max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex items-center justify-between p-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full p-[2px] bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600">
-              <img src={authorAvatar} alt="avatar" className="w-full h-full rounded-full object-cover border-2 border-white dark:border-slate-900" />
+            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-[2px]">
+              <img
+                src={authorAvatar}
+                alt="avatar"
+                className="h-full w-full rounded-full border-2 border-white object-cover dark:border-slate-900"
+              />
             </div>
-            <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">{authorName.toLowerCase().replace(/\s+/g, '_')}</span>
+            <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+              {authorName.toLowerCase().replace(/\s+/g, "_")}
+            </span>
           </div>
-          <MoreHorizontal className="w-5 h-5 text-slate-400" />
+          <MoreHorizontal className="h-5 w-5 text-slate-400" />
         </div>
 
-        <div className={`w-full bg-slate-100 dark:bg-slate-800 overflow-hidden ${config.aspectRatioClass}`}>
-          <img src={mediaSrc} alt="Post content" className="w-full h-full object-cover" />
+        <div
+          className={`w-full overflow-hidden bg-slate-100 dark:bg-slate-800 ${config.aspectRatioClass}`}
+        >
+          <img
+            src={mediaSrc}
+            alt="Post content"
+            className="h-full w-full object-cover"
+          />
         </div>
 
-        <div className="p-3 space-y-2">
+        <div className="space-y-2 p-3">
           <div className="flex items-center justify-between text-slate-700 dark:text-slate-300">
             <div className="flex items-center gap-3">
-              <Heart className="w-5 h-5 hover:text-rose-500 cursor-pointer" />
-              <MessageCircle className="w-5 h-5 hover:text-slate-500 cursor-pointer" />
-              <Share2 className="w-5 h-5 hover:text-slate-500 cursor-pointer" />
+              <Heart className="h-5 w-5 cursor-pointer hover:text-rose-500" />
+              <MessageCircle className="h-5 w-5 cursor-pointer hover:text-slate-500" />
+              <Share2 className="h-5 w-5 cursor-pointer hover:text-slate-500" />
             </div>
-            <Bookmark className="w-5 h-5 cursor-pointer" />
+            <Bookmark className="h-5 w-5 cursor-pointer" />
           </div>
 
-          <p className="text-xs text-slate-800 dark:text-slate-200 line-clamp-3">
-            <span className="font-semibold mr-1.5">{authorName.toLowerCase().replace(/\s+/g, '_')}</span>
+          <p className="line-clamp-3 text-xs text-slate-800 dark:text-slate-200">
+            <span className="mr-1.5 font-semibold">
+              {authorName.toLowerCase().replace(/\s+/g, "_")}
+            </span>
             {caption}
           </p>
         </div>
@@ -86,24 +134,43 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({ platform, data }
     );
   }
 
-  if (platform === 'TIKTOK') {
+  if (platform === "TIKTOK") {
     return (
-      <div className="bg-slate-950 text-white rounded-2xl shadow-2xl overflow-hidden max-w-[280px] mx-auto relative aspect-[9/16] border border-slate-800">
-        <img src={mediaSrc} alt="TikTok" className="w-full h-full object-cover opacity-90" />
+      <div className="relative mx-auto aspect-[9/16] max-w-[280px] overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 text-white shadow-2xl">
+        <img
+          src={mediaSrc}
+          alt="TikTok"
+          className="h-full w-full object-cover opacity-90"
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80" />
-        
+
         <div className="absolute right-3 bottom-12 flex flex-col items-center gap-4 text-xs">
-          <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden">
-            <img src={authorAvatar} alt="avatar" className="w-full h-full object-cover" />
+          <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-white">
+            <img
+              src={authorAvatar}
+              alt="avatar"
+              className="h-full w-full object-cover"
+            />
           </div>
-          <div className="flex flex-col items-center"><Heart className="w-6 h-6 fill-white" /><span>12.4K</span></div>
-          <div className="flex flex-col items-center"><MessageCircle className="w-6 h-6 fill-white" /><span>342</span></div>
-          <div className="flex flex-col items-center"><Bookmark className="w-6 h-6 fill-white" /><span>1.2K</span></div>
+          <div className="flex flex-col items-center">
+            <Heart className="h-6 w-6 fill-white" />
+            <span>12.4K</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <MessageCircle className="h-6 w-6 fill-white" />
+            <span>342</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Bookmark className="h-6 w-6 fill-white" />
+            <span>1.2K</span>
+          </div>
         </div>
 
-        <div className="absolute left-3 bottom-4 right-14 space-y-1">
-          <h5 className="font-semibold text-xs text-white">@{authorName.toLowerCase().replace(/\s+/g, '')}</h5>
-          <p className="text-[11px] text-slate-200 line-clamp-2">{caption}</p>
+        <div className="absolute right-14 bottom-4 left-3 space-y-1">
+          <h5 className="text-xs font-semibold text-white">
+            @{authorName.toLowerCase().replace(/\s+/g, "")}
+          </h5>
+          <p className="line-clamp-2 text-[11px] text-slate-200">{caption}</p>
         </div>
       </div>
     );
@@ -111,14 +178,28 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({ platform, data }
 
   // Default fallback for Threads & Youtube
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 max-w-md mx-auto space-y-3">
+    <div className="mx-auto max-w-md space-y-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
       <div className="flex items-center gap-2">
-        <img src={authorAvatar} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
-        <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">{authorName}</span>
+        <img
+          src={authorAvatar}
+          alt="avatar"
+          className="h-8 w-8 rounded-full object-cover"
+        />
+        <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+          {authorName}
+        </span>
       </div>
-      <p className="text-xs text-slate-800 dark:text-slate-200 whitespace-pre-wrap">{caption}</p>
-      <div className={`w-full bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden ${config.aspectRatioClass}`}>
-        <img src={mediaSrc} alt="Media preview" className="w-full h-full object-cover" />
+      <p className="text-xs whitespace-pre-wrap text-slate-800 dark:text-slate-200">
+        {caption}
+      </p>
+      <div
+        className={`w-full overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800 ${config.aspectRatioClass}`}
+      >
+        <img
+          src={mediaSrc}
+          alt="Media preview"
+          className="h-full w-full object-cover"
+        />
       </div>
     </div>
   );

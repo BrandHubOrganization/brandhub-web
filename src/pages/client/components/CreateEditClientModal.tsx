@@ -72,16 +72,23 @@ export function CreateEditClientModal({
           {/* Tên thương hiệu */}
           <div className="space-y-1.5">
             <Label htmlFor="name" className="text-xs font-semibold">
-              Tên Thương hiệu / Doanh nghiệp <span className="text-rose-500">*</span>
+              Tên Thương hiệu / Doanh nghiệp{" "}
+              <span className="text-rose-500">*</span>
             </Label>
             <Input
               id="name"
               placeholder="VD: Heineken Vietnam, Nike Store..."
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className="text-xs"
             />
-            {errors.name && <p className="text-[11px] text-rose-500 font-medium">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-[11px] font-medium text-rose-500">
+                {errors.name}
+              </p>
+            )}
           </div>
 
           {/* Email người liên hệ */}
@@ -95,13 +102,17 @@ export function CreateEditClientModal({
                 type="email"
                 placeholder="contact@brand.com"
                 value={formData.contactEmail}
-                onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
-                className="text-xs pl-8"
+                onChange={(e) =>
+                  setFormData({ ...formData, contactEmail: e.target.value })
+                }
+                className="pl-8 text-xs"
               />
-              <Mail className="size-3.5 text-muted-foreground absolute left-2.5 top-2.5" />
+              <Mail className="text-muted-foreground absolute top-2.5 left-2.5 size-3.5" />
             </div>
             {errors.contactEmail && (
-              <p className="text-[11px] text-rose-500 font-medium">{errors.contactEmail}</p>
+              <p className="text-[11px] font-medium text-rose-500">
+                {errors.contactEmail}
+              </p>
             )}
           </div>
 
@@ -115,7 +126,9 @@ export function CreateEditClientModal({
                 id="industry"
                 placeholder="VD: Thời trang, F&B..."
                 value={formData.industry}
-                onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, industry: e.target.value })
+                }
                 className="text-xs"
               />
             </div>
@@ -127,7 +140,9 @@ export function CreateEditClientModal({
                 id="logoUrl"
                 placeholder="https://..."
                 value={formData.logoUrl}
-                onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, logoUrl: e.target.value })
+                }
                 className="text-xs"
               />
             </div>
@@ -136,12 +151,18 @@ export function CreateEditClientModal({
           {/* Account Manager Phụ trách & Gói Dịch vụ */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold flex items-center gap-1">
-                <UserCheck className="size-3 text-muted-foreground" /> Account Manager
+              <Label className="flex items-center gap-1 text-xs font-semibold">
+                <UserCheck className="text-muted-foreground size-3" /> Account
+                Manager
               </Label>
               <Select
                 value={formData.assignedAccountManagerId}
-                onChange={(e) => setFormData({ ...formData, assignedAccountManagerId: e.target.value })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    assignedAccountManagerId: e.target.value,
+                  })
+                }
                 className="border-border bg-background text-xs"
               >
                 <option value="am-1">Nguyễn Văn An (AM)</option>
@@ -151,10 +172,17 @@ export function CreateEditClientModal({
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">Gói dịch vụ ban đầu</Label>
+              <Label className="text-xs font-semibold">
+                Gói dịch vụ ban đầu
+              </Label>
               <Select
                 value={formData.packageTier}
-                onChange={(e) => setFormData({ ...formData, packageTier: e.target.value as PackageTier })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    packageTier: e.target.value as PackageTier,
+                  })
+                }
                 className="border-border bg-background text-xs"
               >
                 <option value="STARTER">STARTER (15 posts/tháng)</option>
@@ -165,14 +193,20 @@ export function CreateEditClientModal({
           </div>
 
           <DialogFooter className="pt-3">
-            <Button type="button" variant="outline" size="sm" onClick={onClose} className="text-xs cursor-pointer">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onClose}
+              className="cursor-pointer text-xs"
+            >
               Hủy
             </Button>
             <Button
               type="submit"
               size="sm"
               disabled={isLoading}
-              className="bg-[#f05a28] hover:bg-[#f05a28]/90 text-white text-xs gap-1.5 cursor-pointer"
+              className="cursor-pointer gap-1.5 bg-[#f05a28] text-xs text-white hover:bg-[#f05a28]/90"
             >
               {isLoading ? "Đang xử lý..." : "Tạo Client Mới"}
             </Button>

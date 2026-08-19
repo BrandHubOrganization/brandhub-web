@@ -1,12 +1,19 @@
 import { useState } from "react";
-import type { Client, CreateClientDTO, UpdateServicePackageDTO } from "./types/client";
+import type {
+  Client,
+  CreateClientDTO,
+  UpdateServicePackageDTO,
+} from "./types/client";
 import { CreateEditClientModal } from "./components/CreateEditClientModal";
 import { ServicePackageModal } from "./components/ServicePackageModal";
 import { DeleteClientModal } from "./components/DeleteClientModal";
 
 interface ClientModalsProps {
   createClient: (dto: CreateClientDTO) => Promise<Client>;
-  updateServicePackage: (id: string, dto: UpdateServicePackageDTO) => Promise<Client>;
+  updateServicePackage: (
+    id: string,
+    dto: UpdateServicePackageDTO,
+  ) => Promise<Client>;
   deleteClient: (id: string) => Promise<void>;
   isCreateOpen: boolean;
   onCloseCreate: () => void;
@@ -38,7 +45,10 @@ export function ClientModals({
     }
   };
 
-  const handleUpdatePackageSubmit = async (id: string, dto: UpdateServicePackageDTO) => {
+  const handleUpdatePackageSubmit = async (
+    id: string,
+    dto: UpdateServicePackageDTO,
+  ) => {
     setIsSubmitting(true);
     try {
       await updateServicePackage(id, dto);

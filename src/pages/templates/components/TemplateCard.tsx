@@ -34,12 +34,12 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({ template, onPreview,
   return (
     <div
       onClick={() => onPreview(template)}
-      className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-5 shadow-xs hover:shadow-md hover:border-brand-orange/40 transition-all flex flex-col justify-between cursor-pointer group"
+      className="bg-card rounded-2xl border border-border/80 p-5 shadow-xs hover:shadow-md hover:border-brand-orange/40 transition-all flex flex-col justify-between cursor-pointer group"
     >
       <div>
         {/* Header Title & Delete Button */}
         <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-brand-orange transition-colors line-clamp-1">
+          <h3 className="font-semibold text-sm text-foreground group-hover:text-brand-orange transition-colors line-clamp-1">
             {template.title}
           </h3>
           <button
@@ -56,7 +56,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({ template, onPreview,
         </div>
 
         {/* Caption Snippet (100 chars) */}
-        <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed mb-4 line-clamp-3 bg-zinc-50 dark:bg-zinc-800/40 p-3 rounded-xl border border-zinc-100 dark:border-zinc-800">
+        <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed mb-4 line-clamp-3 bg-muted/40 p-3 rounded-xl border border-zinc-100 dark:border-zinc-800">
           {snippet}
         </p>
 

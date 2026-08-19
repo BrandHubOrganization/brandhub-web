@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import type { PostTemplate, HashtagGroup } from '@/types/contentLibrary';
-import { mockContentLibraryService } from '@/services/mockContentLibraryService';
-import { FileText, ArrowRight, Plus, Trash2, Calendar, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import React, { useEffect, useState } from "react";
+import type { PostTemplate, HashtagGroup } from "@/types/contentLibrary";
+import { mockContentLibraryService } from "@/services/mockContentLibraryService";
+import { FileText, ArrowRight, Plus, Trash2, Calendar, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
@@ -16,9 +16,9 @@ export const TemplatesTab: React.FC = () => {
 
   // Modal create
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [title, setTitle] = useState('');
-  const [caption, setCaption] = useState('');
-  const [selectedHgId, setSelectedHgId] = useState('');
+  const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
+  const [selectedHgId, setSelectedHgId] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   const fetchData = async () => {
@@ -31,7 +31,7 @@ export const TemplatesTab: React.FC = () => {
       setTemplates(tplData);
       setHashtagGroups(hgData);
     } catch (err) {
-      toast.error('Lỗi khi tải danh sách Post Templates');
+      toast.error("Lỗi khi tải danh sách Post Templates");
     } finally {
       setLoading(false);
     }
@@ -43,11 +43,11 @@ export const TemplatesTab: React.FC = () => {
 
   const handleUseTemplate = (tpl: PostTemplate) => {
     const fullCaption = tpl.hashtagGroup
-      ? `${tpl.caption}\n\n${tpl.hashtagGroup.tags.join(' ')}`
+      ? `${tpl.caption}\n\n${tpl.hashtagGroup.tags.join(" ")}`
       : tpl.caption;
 
     // Navigate to /editor passing pre-fill state
-    navigate('/editor', {
+    navigate("/editor", {
       state: {
         prefilledCaption: fullCaption,
         templateTitle: tpl.title,
@@ -60,21 +60,25 @@ export const TemplatesTab: React.FC = () => {
   const handleCreateTemplate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !caption.trim()) {
-      toast.error('Vui lòng điền tiêu đề và nội dung caption mẫu');
+      toast.error("Vui lòng điền tiêu đề và nội dung caption mẫu");
       return;
     }
 
     setIsSaving(true);
     try {
-      const created = await mockContentLibraryService.createTemplate(title, caption, selectedHgId || undefined);
+      const created = await mockContentLibraryService.createTemplate(
+        title,
+        caption,
+        selectedHgId || undefined,
+      );
       setTemplates((prev) => [created, ...prev]);
-      toast.success('Tạo Mẫu Bài Viết mới thành công!');
+      toast.success("Tạo Mẫu Bài Viết mới thành công!");
       setIsModalOpen(false);
-      setTitle('');
-      setCaption('');
-      setSelectedHgId('');
+      setTitle("");
+      setCaption("");
+      setSelectedHgId("");
     } catch (err) {
-      toast.error('Lỗi khi tạo Mẫu Bài Viết');
+      toast.error("Lỗi khi tạo Mẫu Bài Viết");
     } finally {
       setIsSaving(false);
     }
@@ -85,9 +89,9 @@ export const TemplatesTab: React.FC = () => {
       try {
         await mockContentLibraryService.deleteTemplate(id);
         setTemplates((prev) => prev.filter((t) => t.id !== id));
-        toast.success('Đã xóa mẫu bài viết');
+        toast.success("Đã xóa mẫu bài viết");
       } catch (err) {
-        toast.error('Lỗi khi xóa template');
+        toast.error("Lỗi khi xóa template");
       }
     }
   };
@@ -95,70 +99,74 @@ export const TemplatesTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs">
+      <div className="flex items-center justify-between rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
         <div>
-          <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-brand-orange" />
+          <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <FileText className="text-brand-orange h-4 w-4" />
             Mẫu Bài Viết Đã Duyệt ({templates.length})
           </h3>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-muted-foreground">
             Các bài viết chuẩn hóa kèm nhóm hashtag sẵn sàng để sử dụng ngay
           </p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-brand-orange hover:bg-brand-orange/90 active:bg-brand-orange/80 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+          className="bg-brand-orange hover:bg-brand-orange/90 active:bg-brand-orange/80 flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="h-4 w-4" />
           <span>Tạo Template Mới</span>
         </button>
       </div>
 
       {/* Grid Templates */}
       {loading ? (
-        <div className="py-12 text-center text-xs text-zinc-400">Đang tải danh sách template...</div>
+        <div className="py-12 text-center text-xs text-zinc-400">
+          Đang tải danh sách template...
+        </div>
       ) : templates.length === 0 ? (
-        <div className="text-center py-12 bg-white dark:bg-zinc-900/50 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 p-8">
-          <FileText className="w-10 h-10 text-zinc-300 dark:text-zinc-700 mx-auto mb-2" />
-          <p className="text-xs text-zinc-500">Chưa có template bài viết nào. Nhấn "Tạo Template Mới" để thêm mới.</p>
+        <div className="rounded-2xl border border-dashed border-zinc-200 bg-white p-8 py-12 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
+          <FileText className="mx-auto mb-2 h-10 w-10 text-zinc-300 dark:text-zinc-700" />
+          <p className="text-xs text-zinc-500">
+            Chưa có template bài viết nào. Nhấn "Tạo Template Mới" để thêm mới.
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {templates.map((tpl) => (
             <div
               key={tpl.id}
-              className="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-zinc-200/80 dark:border-zinc-800 shadow-xs hover:border-brand-orange/40 transition-all flex flex-col justify-between group"
+              className="hover:border-brand-orange/40 group flex flex-col justify-between rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-xs transition-all dark:border-zinc-800 dark:bg-zinc-900"
             >
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5 group-hover:text-brand-orange transition-colors">
+                <div className="mb-2 flex items-center justify-between">
+                  <h4 className="group-hover:text-brand-orange flex items-center gap-1.5 text-sm font-semibold text-zinc-900 transition-colors dark:text-zinc-100">
                     {tpl.title}
                   </h4>
                   <button
                     onClick={() => handleDeleteTemplate(tpl.id, tpl.title)}
-                    className="p-1 text-zinc-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
+                    className="cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
 
                 {/* Caption Snippet */}
-                <p className="text-xs text-zinc-600 dark:text-zinc-300 line-clamp-3 mb-4 leading-relaxed bg-zinc-50 dark:bg-zinc-800/40 p-3 rounded-xl border border-zinc-100 dark:border-zinc-800">
+                <p className="mb-4 line-clamp-3 rounded-xl border border-zinc-100 bg-zinc-50 p-3 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:bg-zinc-800/40 dark:text-zinc-300">
                   {tpl.caption}
                 </p>
 
                 {/* Attached Hashtag Group */}
                 {tpl.hashtagGroup && (
                   <div className="mb-4">
-                    <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
+                    <span className="mb-1 block text-[10px] font-semibold tracking-wider text-zinc-400 uppercase">
                       Nhóm Hashtag Đính Kèm:
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {tpl.hashtagGroup.tags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 text-[10px] font-mono font-semibold rounded-md bg-brand-orange-soft text-brand-orange"
+                          className="bg-brand-orange-soft text-brand-orange rounded-md px-2 py-0.5 font-mono text-[10px] font-semibold"
                         >
                           {tag}
                         </span>
@@ -169,18 +177,18 @@ export const TemplatesTab: React.FC = () => {
               </div>
 
               {/* Action Button */}
-              <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
-                <span className="text-[11px] text-zinc-400 flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
-                  {new Date(tpl.createdAt).toLocaleDateString('vi-VN')}
+              <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
+                <span className="flex items-center gap-1 text-[11px] text-zinc-400">
+                  <Calendar className="h-3 w-3" />
+                  {new Date(tpl.createdAt).toLocaleDateString("vi-VN")}
                 </span>
 
                 <button
                   onClick={() => handleUseTemplate(tpl)}
-                  className="px-3.5 py-1.5 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                  className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition-colors"
                 >
                   <span>Use Template</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
@@ -190,18 +198,23 @@ export const TemplatesTab: React.FC = () => {
 
       {/* Modal Create Template */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl max-w-md w-full p-6 border border-zinc-200 dark:border-zinc-800 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
-              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">Tạo Mẫu Bài Viết Mới</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-zinc-600 cursor-pointer">
-                <X className="w-5 h-5" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md space-y-4 rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
+              <h3 className="text-sm font-semibold text-foreground">
+                Tạo Mẫu Bài Viết Mới
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="cursor-pointer text-zinc-400 hover:text-zinc-600"
+              >
+                <X className="h-5 w-5" />
               </button>
             </div>
 
             <form onSubmit={handleCreateTemplate} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                   Tiêu đề Template
                 </label>
                 <Input
@@ -214,7 +227,7 @@ export const TemplatesTab: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                   Nội dung Caption mẫu
                 </label>
                 <Textarea
@@ -227,7 +240,7 @@ export const TemplatesTab: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                   Gắn Nhóm Hashtag (Tùy chọn)
                 </label>
                 <Select
@@ -248,16 +261,16 @@ export const TemplatesTab: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl text-xs font-medium cursor-pointer"
+                  className="cursor-pointer rounded-xl border border-zinc-300 px-4 py-2 text-xs font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-4 py-2 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-xl text-xs font-semibold disabled:opacity-50 cursor-pointer"
+                  className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer rounded-xl px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
                 >
-                  {isSaving ? 'Đang tạo...' : 'Tạo Template'}
+                  {isSaving ? "Đang tạo..." : "Tạo Template"}
                 </button>
               </div>
             </form>

@@ -19,7 +19,8 @@ export function useCreateWorkspace() {
     try {
       const { data } = await workspaceService.create({
         name: name.trim(),
-        industry: (industry.trim() || undefined) as WorkspaceIndustry | undefined,
+        industry: (industry.trim() || undefined) as
+          WorkspaceIndustry | undefined,
       });
       navigate(`/workspaces/${data.data.id}/settings`);
     } catch (err: unknown) {

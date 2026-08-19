@@ -20,7 +20,7 @@ interface ContentRequestTableProps {
 }
 
 const STATUS_BADGE_MAP: Record<ContentRequestStatus, { label: string; className: string }> = {
-  SUBMITTED: { label: 'Submitted', className: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700' },
+  SUBMITTED: { label: 'Submitted', className: 'bg-muted text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700' },
   ASSIGNED: { label: 'Assigned', className: 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800' },
   IN_PROGRESS: { label: 'In Progress', className: 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800' },
   PENDING_REVIEW: { label: 'Pending Review', className: 'bg-orange-50 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800' },
@@ -58,12 +58,12 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs overflow-hidden flex flex-col justify-between min-h-[500px]">
+    <div className="bg-card rounded-2xl border border-border/80 shadow-xs overflow-hidden flex flex-col justify-between min-h-[500px]">
       {/* Table Container */}
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-zinc-50 dark:bg-zinc-800/60 border-b border-zinc-200/80 dark:border-zinc-800 text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+            <tr className="bg-muted/60 border-b border-border/80 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               <th className="py-3.5 px-4">Topic / Chủ Đề</th>
               <th className="py-3.5 px-3">Platforms</th>
               <th className="py-3.5 px-4">Khách Hàng (Client)</th>
@@ -90,7 +90,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                     className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer group"
                   >
                     {/* Topic */}
-                    <td className="py-3.5 px-4 font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-brand-orange dark:group-hover:text-brand-orange/80 transition-colors max-w-xs truncate">
+                    <td className="py-3.5 px-4 font-semibold text-foreground group-hover:text-brand-orange dark:group-hover:text-brand-orange/80 transition-colors max-w-xs truncate">
                       {req.topic}
                     </td>
 
@@ -138,7 +138,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                             alt={req.assignee.name}
                             className="w-6 h-6 rounded-full object-cover border border-zinc-200 dark:border-zinc-700"
                           />
-                          <span className="text-zinc-800 dark:text-zinc-200 font-medium truncate max-w-[120px]">
+                          <span className="text-foreground font-medium truncate max-w-[120px]">
                             {req.assignee.name}
                           </span>
                         </div>
@@ -180,9 +180,9 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
       </div>
 
       {/* Pagination Footer */}
-      <div className="p-4 border-t border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <div className="p-4 border-t border-border/80 bg-zinc-50 dark:bg-zinc-900/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
         <div>
-          Hiển thị <span className="font-semibold text-zinc-800 dark:text-zinc-200">{requests.length}</span> / <span className="font-semibold text-zinc-800 dark:text-zinc-200">{total}</span> yêu cầu nội dung (20 dòng/trang)
+          Hiển thị <span className="font-semibold text-foreground">{requests.length}</span> / <span className="font-semibold text-foreground">{total}</span> yêu cầu nội dung (20 dòng/trang)
         </div>
 
         <div className="flex items-center gap-2">
@@ -193,7 +193,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="font-mono text-zinc-800 dark:text-zinc-200 font-semibold px-2">
+          <span className="font-mono text-foreground font-semibold px-2">
             Trang {page} / {totalPages}
           </span>
           <button

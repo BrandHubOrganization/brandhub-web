@@ -33,10 +33,10 @@ export function HashtagGroupGrid({
           <FileQuestion className="h-10 w-10" />
         </div>
         <div className="space-y-1">
-          <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+          <h3 className="text-base font-bold text-foreground">
             Chưa Có Nhóm Hashtag Nào
           </h3>
-          <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs leading-relaxed text-muted-foreground">
             Tạo các bộ hashtag dùng chung theo chủ đề để tăng tốc độ sáng tạo
             bài đăng.
           </p>

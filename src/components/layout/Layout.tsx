@@ -121,7 +121,11 @@ export function Layout() {
 
   // Filter mobile tabs based on role
   const filteredMobileTabs = MOBILE_TABS.filter((tab) => {
-    if (!activeWorkspace && tab.to !== "/dashboard" && tab.to !== "/workspace") {
+    if (
+      !activeWorkspace &&
+      tab.to !== "/dashboard" &&
+      tab.to !== "/workspace"
+    ) {
       return false;
     }
     if (

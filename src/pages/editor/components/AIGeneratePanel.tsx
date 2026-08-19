@@ -144,13 +144,13 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
             <Sparkles className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="flex items-center gap-1.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+            <h3 className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
               Trợ lý AI Co-Pilot
               <span className="bg-brand-orange-soft text-brand-orange rounded-full px-1.5 py-0.5 text-[10px] font-bold">
                 Pro
               </span>
             </h3>
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+            <p className="text-[11px] text-muted-foreground">
               Tự động tạo Caption, Hashtags & Ảnh AI (Stability AI)
             </p>
           </div>

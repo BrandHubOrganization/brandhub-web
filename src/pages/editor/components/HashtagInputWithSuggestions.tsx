@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Hash, X, Plus, FolderKanban, ChevronDown, Sparkles, Copy, Check } from "lucide-react";
+import {
+  Hash,
+  X,
+  Plus,
+  FolderKanban,
+  ChevronDown,
+  Sparkles,
+  Copy,
+  Check,
+} from "lucide-react";
 import { mockHashtagGroupService } from "@/services/mockHashtagGroupService";
 import type { HashtagGroup } from "@/types/hashtagGroup";
 import { toast } from "sonner";
@@ -56,7 +65,9 @@ export const HashtagInputWithSuggestions: React.FC<
     const merged = Array.from(new Set([...hashtags, ...group.hashtags]));
     onChange(merged);
     setShowGroupDropdown(false);
-    toast.success(`Đã tải ${group.hashtags.length} hashtags từ nhóm "${group.name}"!`);
+    toast.success(
+      `Đã tải ${group.hashtags.length} hashtags từ nhóm "${group.name}"!`,
+    );
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -93,7 +104,7 @@ export const HashtagInputWithSuggestions: React.FC<
     <div className="space-y-2.5">
       <div className="flex items-center justify-between">
         <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-          <Hash className="h-3.5 w-3.5 text-brand-orange" />
+          <Hash className="text-brand-orange h-3.5 w-3.5" />
           Bộ Hashtags bài viết ({hashtags.length})
         </label>
 
@@ -103,9 +114,13 @@ export const HashtagInputWithSuggestions: React.FC<
             <button
               type="button"
               onClick={handleCopyAll}
-              className="flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-zinc-600 dark:text-zinc-400 hover:text-brand-orange transition-colors cursor-pointer"
+              className="hover:text-brand-orange flex cursor-pointer items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-zinc-600 transition-colors dark:text-zinc-400"
             >
-              {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+              {copied ? (
+                <Check className="h-3 w-3 text-emerald-500" />
+              ) : (
+                <Copy className="h-3 w-3" />
+              )}
               <span>{copied ? "Đã copy" : "Copy bộ Tag"}</span>
             </button>
           )}
@@ -115,7 +130,7 @@ export const HashtagInputWithSuggestions: React.FC<
             <button
               type="button"
               onClick={handleClearAll}
-              className="text-[11px] font-medium text-rose-500 hover:underline cursor-pointer"
+              className="cursor-pointer text-[11px] font-medium text-rose-500 hover:underline"
             >
               Xoá tất cả
             </button>
@@ -127,7 +142,7 @@ export const HashtagInputWithSuggestions: React.FC<
               <button
                 type="button"
                 onClick={() => setShowGroupDropdown(!showGroupDropdown)}
-                className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold text-brand-orange bg-brand-orange-soft hover:bg-brand-orange/20 rounded-lg transition-colors cursor-pointer"
+                className="text-brand-orange bg-brand-orange-soft hover:bg-brand-orange/20 flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-colors"
               >
                 <FolderKanban className="h-3.5 w-3.5" />
                 <span>Load từ Nhóm</span>
@@ -135,22 +150,22 @@ export const HashtagInputWithSuggestions: React.FC<
               </button>
 
               {showGroupDropdown && (
-                <div className="absolute right-0 top-full z-30 mt-1 w-64 space-y-1 rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="absolute top-full right-0 z-30 mt-1 w-64 space-y-1 rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
                   <span className="block px-2 text-[10px] font-semibold tracking-wider text-zinc-400 uppercase">
                     Chọn nhóm hashtag đã lưu:
                   </span>
-                  <div className="max-h-48 overflow-y-auto space-y-1">
+                  <div className="max-h-48 space-y-1 overflow-y-auto">
                     {groups.map((group) => (
                       <button
                         key={group.id}
                         type="button"
                         onClick={() => handleLoadFromGroup(group)}
-                        className="flex w-full flex-col rounded-lg px-2 py-1.5 text-left text-xs hover:bg-brand-orange-soft transition-colors cursor-pointer"
+                        className="hover:bg-brand-orange-soft flex w-full cursor-pointer flex-col rounded-lg px-2 py-1.5 text-left text-xs transition-colors"
                       >
-                        <span className="font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                        <span className="line-clamp-1 font-semibold text-foreground">
                           {group.name}
                         </span>
-                        <span className="text-[10px] font-mono text-brand-orange truncate">
+                        <span className="text-brand-orange truncate font-mono text-[10px]">
                           {group.hashtags.join(", ")}
                         </span>
                       </button>
@@ -183,14 +198,14 @@ export const HashtagInputWithSuggestions: React.FC<
           <div className="absolute top-full right-0 left-0 z-20 mt-1 max-h-48 space-y-1 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
             <span className="mb-1 flex items-center justify-between px-2 text-[10px] font-semibold tracking-wider text-zinc-400 uppercase">
               <span>Gợi ý hashtag thịnh hành:</span>
-              <Sparkles className="h-3 w-3 text-brand-orange" />
+              <Sparkles className="text-brand-orange h-3 w-3" />
             </span>
             {filteredSuggestions.map((tag) => (
               <button
                 key={tag}
                 type="button"
                 onClick={() => handleAddTag(tag)}
-                className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left font-mono text-xs text-brand-orange hover:bg-brand-orange-soft transition-colors cursor-pointer"
+                className="text-brand-orange hover:bg-brand-orange-soft flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-1.5 text-left font-mono text-xs transition-colors"
               >
                 <span>{tag}</span>
                 <Plus className="h-3.5 w-3.5" />
@@ -205,13 +220,13 @@ export const HashtagInputWithSuggestions: React.FC<
         {hashtags.map((tag) => (
           <span
             key={tag}
-            className="inline-flex items-center gap-1 rounded-lg border border-brand-orange/20 bg-brand-orange-soft px-2.5 py-1 font-mono text-xs font-semibold text-brand-orange"
+            className="border-brand-orange/20 bg-brand-orange-soft text-brand-orange inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 font-mono text-xs font-semibold"
           >
             <span>{tag}</span>
             <button
               type="button"
               onClick={() => handleRemoveTag(tag)}
-              className="rounded-full text-brand-orange/70 hover:text-brand-orange cursor-pointer"
+              className="text-brand-orange/70 hover:text-brand-orange cursor-pointer rounded-full"
             >
               <X className="h-3 w-3" />
             </button>

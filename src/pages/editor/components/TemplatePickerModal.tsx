@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  LayoutTemplate,
-  Search,
-  Check,
-  X,
-} from "lucide-react";
+import { LayoutTemplate, Search, Check, X } from "lucide-react";
 import { mockTemplateService } from "@/services/mockTemplateService";
 import type { ContentTemplate } from "@/types/template";
 import { toast } from "sonner";
@@ -54,10 +49,10 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
               <LayoutTemplate className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+              <h3 className="text-base font-semibold text-foreground">
                 Thư viện Mẫu bài đăng (Post Templates)
               </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-muted-foreground">
                 Chọn mẫu nội dung có sẵn để áp dụng nhanh vào Editor
               </p>
             </div>
@@ -79,7 +74,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Tìm kiếm mẫu theo tiêu đề hoặc nội dung..."
-              className="rounded-xl border-zinc-200 bg-white pl-9 pr-4 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+              className="rounded-xl border-zinc-200 bg-white pr-4 pl-9 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
             />
           </div>
         </div>

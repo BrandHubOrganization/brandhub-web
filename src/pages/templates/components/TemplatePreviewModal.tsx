@@ -43,10 +43,10 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col p-0 overflow-hidden border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col p-0 overflow-hidden border-border">
         {/* Header */}
         <DialogHeader className="p-4 border-b border-zinc-100 dark:border-zinc-800">
-          <DialogTitle className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          <DialogTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <FileText className="w-5 h-5 text-brand-orange" />
             Chi Tiết Mẫu Bài Viết
           </DialogTitle>
@@ -59,7 +59,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
             <span className="text-[10px] font-bold text-brand-orange uppercase tracking-wider block mb-1">
               Tiêu Đề Template:
             </span>
-            <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+            <h2 className="text-base font-bold text-foreground">
               {template.title}
             </h2>
           </div>
@@ -69,7 +69,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
             <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
               Nội Dung Caption Đầy Đủ:
             </span>
-            <div className="p-4 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl border border-zinc-100 dark:border-zinc-800 text-xs text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap leading-relaxed">
+            <div className="p-4 bg-muted/40 rounded-xl border border-zinc-100 dark:border-zinc-800 text-xs text-foreground whitespace-pre-wrap leading-relaxed">
               {template.caption}
             </div>
           </div>
@@ -85,7 +85,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
                 {template.targetPlatforms.map((p) => (
                   <span
                     key={p}
-                    className="px-2.5 py-1 text-xs font-mono font-semibold rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+                    className="px-2.5 py-1 text-xs font-mono font-semibold rounded-lg bg-muted text-zinc-700 dark:text-zinc-300"
                   >
                     {p}
                   </span>
@@ -121,7 +121,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
                 {template.mediaUrls.map((url, idx) => (
                   <div
                     key={idx}
-                    className="rounded-xl overflow-hidden aspect-video border border-zinc-200 dark:border-zinc-800 bg-zinc-900"
+                    className="rounded-xl overflow-hidden aspect-video border border-border bg-zinc-900"
                   >
                     <img src={url} alt={`Template media ${idx}`} className="w-full h-full object-cover" />
                   </div>

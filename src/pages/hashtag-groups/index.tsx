@@ -55,7 +55,7 @@ export function HashtagGroupsPage() {
 
           <div className="self-end text-xs font-medium text-zinc-500 sm:self-center dark:text-zinc-400">
             Hiển thị{" "}
-            <strong className="text-zinc-900 dark:text-zinc-100">
+            <strong className="text-foreground">
               {groups.length}
             </strong>{" "}
             nhóm hashtag
