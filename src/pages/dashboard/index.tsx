@@ -7,6 +7,7 @@ import { ActivityFeedSection } from "@/components/dashboard/ActivityFeedSection"
 import { TeamStatsSection } from "@/components/dashboard/TeamStatsSection";
 import { useDashboardData } from "./hooks/useDashboardData";
 import { QuickTasksCard } from "./components/QuickTasksCard";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ export function DashboardPage() {
     fetchActivities,
     handleLogout,
   } = useDashboardData();
+
+  const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
 
   return (
     <PageWrapper
@@ -74,7 +77,7 @@ export function DashboardPage() {
       }
     >
       <div className="space-y-6">
-        <QuickTasksCard userName={user?.name || ""} userRole={user?.role} />
+        <QuickTasksCard userName={user?.name || ""} userRole={memberRole ?? undefined} />
 
         <KpiCardsSection
           data={analytics}
@@ -96,7 +99,7 @@ export function DashboardPage() {
           <div className="space-y-6">
             <TeamStatsSection
               stats={analytics?.teamStats}
-              userRole={user?.role}
+              userRole={memberRole}
               isLoading={isAnalyticsLoading}
             />
           </div>

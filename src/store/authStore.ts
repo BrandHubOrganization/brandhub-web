@@ -1,10 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { User, UserRole } from "@/types/user";
+import type { User, SystemRole } from "@/types/user";
 
-export type { User, UserRole };
-
-export type SystemRole = "ADMIN" | "USER";
+export type { User, SystemRole };
 
 interface AuthState {
   user: User | null;

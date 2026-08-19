@@ -11,28 +11,28 @@ export const MOCK_CREATORS: Assignee[] = [
     name: 'Nguyễn Văn Minh',
     email: 'minh.nguyen@brandhub.io',
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-    role: 'CONTENT_CREATOR',
+    role: 'CREATOR',
   },
   {
     id: 'user-2',
     name: 'Trần Thị Thu Hà',
     email: 'ha.tran@brandhub.io',
     avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150',
-    role: 'CONTENT_CREATOR',
+    role: 'CREATOR',
   },
   {
     id: 'user-3',
     name: 'Lê Hoàng Nam',
     email: 'nam.le@brandhub.io',
     avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-    role: 'CONTENT_CREATOR',
+    role: 'CREATOR',
   },
   {
     id: 'user-4',
     name: 'Phạm Phương Anh',
     email: 'anh.pham@brandhub.io',
     avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-    role: 'CONTENT_CREATOR',
+    role: 'CREATOR',
   },
 ];
 

@@ -1,17 +1,17 @@
 import type { TeamMemberStat } from "@/types/analytics";
-import type { UserRole } from "@/types/user";
+import type { MemberRole } from "@/types/workspace";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Users, ShieldCheck, FileCheck } from "lucide-react";
 
 interface TeamStatsSectionProps {
   stats?: TeamMemberStat[];
-  userRole?: UserRole;
+  userRole?: MemberRole | null;
   isLoading: boolean;
 }
 
 export function TeamStatsSection({ stats, userRole, isLoading }: TeamStatsSectionProps) {
-  // Acceptance Criteria: Team stats section shows per-member post counts (AGENCY_OWNER/ACCOUNT_MANAGER view only)
-  const canViewTeamStats = userRole === "AGENCY_OWNER" || userRole === "ACCOUNT_MANAGER";
+  // Acceptance Criteria: Team stats section shows per-member post counts (OWNER/ACCOUNT view only)
+  const canViewTeamStats = userRole === "OWNER" || userRole === "ACCOUNT";
 
   if (!canViewTeamStats) {
     return null;
@@ -64,7 +64,7 @@ export function TeamStatsSection({ stats, userRole, isLoading }: TeamStatsSectio
                   </div>
                   <span className="font-semibold text-foreground">{member.memberName}</span>
                   <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.2 rounded">
-                    {member.role === "ACCOUNT_MANAGER" ? "AM" : "Creator"}
+                    {member.role === "ACCOUNT" ? "AM" : "Creator"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">

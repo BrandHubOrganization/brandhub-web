@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { MemberRole, Workspace } from "@/types/workspace";
 import type { SystemRole } from "@/store/authStore";
+import { canAccess } from "@/routes/access";
 
 interface NavItem {
   to: string;
@@ -99,55 +100,22 @@ export function Sidebar({
 }: SidebarProps) {
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.map((section) => {
-    let items = section.items.filter((item) => {
-      // CLIENT cannot see workspaces or content editor
-      if (
-        role === "CLIENT" &&
-        (item.to === "/workspace" || item.to === "/editor")
-      ) {
-        return false;
-      }
-      // OWNER manages the business, doesn't create content directly
-      if (
-        role === "OWNER" &&
-        (item.to === "/editor" || item.to === "/calendar")
-      ) {
-        return false;
-      }
-      // Only system ADMIN can see Admin Panel — independent of workspace MemberRole
-      if (item.to === "/admin" && systemRole !== "ADMIN") {
-        return false;
-      }
-      return true;
-    });
+    const items = section.items.filter((item) =>
+      canAccess(item.to, systemRole, role),
+    );
 
     // Members link needs a dynamic workspaceId path — only add once a
     // workspace is active, and only for roles that manage membership.
     if (
       section.key === "manage" &&
       activeWorkspace &&
-      (role === "OWNER" || role === "ACCOUNT")
+      canAccess(`/workspaces/${activeWorkspace.id}/members`, systemRole, role)
     ) {
-      items = [
-        ...items,
-        {
-          to: `/workspaces/${activeWorkspace.id}/members`,
-          icon: UserPlus,
-          label: "Members",
-        },
-      ];
-    }
-
-    // Overview link is workspace-independent — shown for OWNER/ACCOUNT even
-    // without an active workspace, since it aggregates across all of them.
-    if (
-      section.key === "overview" &&
-      (role === "OWNER" || role === "ACCOUNT")
-    ) {
-      items = [
-        { to: "/analytics/overview", icon: Building2, label: "Overview" },
-        ...items,
-      ];
+      items.push({
+        to: `/workspaces/${activeWorkspace.id}/members`,
+        icon: UserPlus,
+        label: "Members",
+      });
     }
 
     return { ...section, items };

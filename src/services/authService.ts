@@ -1,5 +1,5 @@
 import { api } from "./api";
-import type { UserRole } from "@/store/authStore";
+import type { SystemRole } from "@/store/authStore";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
@@ -59,7 +59,7 @@ export interface MeResponse {
   email: string;
   fullName?: string;
   avatarUrl?: string;
-  role?: UserRole | string;
+  role?: SystemRole | string;
   workspaceId?: string;
   phone?: string | null;
   hasPassword?: boolean;
@@ -71,7 +71,7 @@ export interface UserProfileResponse {
   email: string;
   fullName?: string;
   avatarUrl?: string;
-  role: UserRole;
+  role: SystemRole;
   workspaceId?: string;
   createdAt?: string;
 }

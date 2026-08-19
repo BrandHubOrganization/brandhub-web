@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useAuthStore } from "@/store/authStore";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { mockContentRequestService } from "@/services/mockContentRequestService";
 import type {
   ContentRequest,
@@ -13,8 +13,7 @@ import type {
 export type ActiveTab = "all" | "my-tasks";
 
 export function useContentRequests() {
-  const { user } = useAuthStore();
-  const userRole = user?.role || "ACCOUNT_MANAGER";
+  const userRole = useWorkspaceStore((s) => s.currentMemberRole) ?? "ACCOUNT";
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchQuery = searchParams.get("q") || "";

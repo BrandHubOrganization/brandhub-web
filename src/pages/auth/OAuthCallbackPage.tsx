@@ -2,7 +2,7 @@ import * as React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useAuthStore, type UserRole, type User } from "@/store/authStore";
+import { useAuthStore, type SystemRole, type User } from "@/store/authStore";
 import { authService } from "@/services/authService";
 
 export function OAuthCallbackPage() {
@@ -35,7 +35,7 @@ export function OAuthCallbackPage() {
           id: profile.userId,
           name: profile.fullName || "User",
           email: profile.email,
-          role: profile.role as UserRole, // Role lấy trực tiếp từ DB
+          role: profile.role as SystemRole, // Role lấy trực tiếp từ DB
           workspaceId: profile.workspaceId,
           avatar: profile.avatarUrl,
         };

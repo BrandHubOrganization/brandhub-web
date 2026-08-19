@@ -21,10 +21,10 @@ import {
   Users,
   BarChart3,
 } from "lucide-react";
-import type { MemberRole, Workspace } from "@/types/workspace";
+import type { Workspace } from "@/types/workspace";
 
 const MOBILE_TABS = [
-  { to: "/", icon: LayoutDashboard, labelKey: "nav.dashboard" },
+  { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
   { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
   { to: "/editor", icon: FileEdit, labelKey: "nav.editor" },
   { to: "/calendar", icon: CalendarDays, labelKey: "nav.calendar" },
@@ -42,7 +42,8 @@ export function Layout() {
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
-  const [memberRole, setMemberRole] = React.useState<MemberRole | null>(null);
+  const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const setCurrentMemberRole = useWorkspaceStore((s) => s.setCurrentMemberRole);
 
   React.useEffect(() => {
     fetchWorkspaces();
@@ -80,9 +81,9 @@ export function Layout() {
       .listMembers(activeWorkspace.id)
       .then(({ data }) => {
         const me = data.data.find((m) => m.userId === user.id);
-        setMemberRole(me?.role ?? null);
+        setCurrentMemberRole(me?.role ?? null);
       })
-      .catch(() => setMemberRole(null));
+      .catch(() => setCurrentMemberRole(null));
   }, [activeWorkspace, user]);
 
   const currentRole = memberRole;
@@ -120,7 +121,7 @@ export function Layout() {
 
   // Filter mobile tabs based on role
   const filteredMobileTabs = MOBILE_TABS.filter((tab) => {
-    if (!activeWorkspace && tab.to !== "/" && tab.to !== "/workspace") {
+    if (!activeWorkspace && tab.to !== "/dashboard" && tab.to !== "/workspace") {
       return false;
     }
     if (

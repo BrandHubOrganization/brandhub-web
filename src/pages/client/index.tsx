@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
-import { useAuthStore } from "@/store/authStore";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { Plus, Building2, ShieldCheck } from "lucide-react";
 
 // Common Reusable Components
@@ -21,8 +21,8 @@ import { ServicePackageModal } from "./components/ServicePackageModal";
 import { DeleteClientModal } from "./components/DeleteClientModal";
 
 export function ClientListPage() {
-  const { user } = useAuthStore();
-  const isOwner = (user?.role?.toUpperCase() ?? "") === "AGENCY_OWNER";
+  const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const isOwner = memberRole === "OWNER";
 
   // Custom Hook
   const {

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
-import { useAuthStore, type UserRole, type User } from "@/store/authStore";
+import { useAuthStore, type SystemRole, type User } from "@/store/authStore";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -47,7 +47,7 @@ export function LoginPage() {
         id: profileData.userId,
         name: profileData.fullName || identifier.split("@")[0],
         email: profileData.email,
-        role: profileData.role as UserRole, // Role từ DB
+        role: profileData.role as SystemRole, // Role từ DB
         workspaceId: profileData.workspaceId,
         avatar: profileData.avatarUrl,
       };

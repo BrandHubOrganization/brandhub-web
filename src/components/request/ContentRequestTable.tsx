@@ -42,7 +42,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
   total,
   page,
   totalPages,
-  userRole = 'ACCOUNT_MANAGER',
+  userRole = 'ACCOUNT',
   onPageChange,
   onOpenAssignModal,
 }) => {
@@ -151,7 +151,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                     <td className="py-3.5 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-2">
                         {/* Assign Button for Account Manager */}
-                        {userRole === 'ACCOUNT_MANAGER' && (
+                        {userRole === 'ACCOUNT' && (
                           <button
                             onClick={() => onOpenAssignModal(req)}
                             className="px-2.5 py-1.5 bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 text-indigo-600 dark:text-indigo-300 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors"
