@@ -912,7 +912,20 @@
       "copyAllButton": "Copy Tags"
     },
     "imageLightbox": { "copySuccess": "Image URL copied to clipboard!" },
-    "templatePicker": { "apply": "Apply" }
+    "templatePicker": { "apply": "Apply" },
+    "preview": {
+      "title": "Platform Visual Mockup Preview", "copyCaptionSuccess": "Caption copied to clipboard!",
+      "copyCaptionButton": "Copy Caption", "specLabel": "Spec:", "charsLabel": "chars"
+    }
+  },
+  "calendar": {
+    "schedule": {
+      "title": "Schedule Post", "postTitleLabel": "Post Title",
+      "postTitlePlaceholder": "e.g. Summer Sale Promo",
+      "captionPreviewLabel": "Caption Preview", "previewMockupButton": "Preview Mockup",
+      "captionPlaceholder": "Enter post caption...", "platformLabel": "Platform",
+      "scheduledTimeLabel": "Scheduled Time", "cancel": "Cancel", "submit": "Schedule"
+    }
   },
   "hashtagGroups": {
     "deleteSuccess": "Hashtag group deleted",

@@ -6,6 +6,7 @@ import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewM
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
 
 interface SchedulePostModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [platform, setPlatform] = useState<PlatformType>("FACEBOOK");
@@ -62,9 +64,9 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
         <div className="animate-in fade-in zoom-in-95 w-full max-w-md space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-2xl duration-200 dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <CalendarIcon className="size-5 text-brand-orange" />
+              <CalendarIcon className="text-brand-orange size-5" />
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                Schedule Post
+                {t("calendar.schedule.title")}
               </h3>
             </div>
             <button
@@ -78,12 +80,12 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">
-                Post Title
+                {t("calendar.schedule.postTitleLabel")}
               </label>
               <Input
                 type="text"
                 required
-                placeholder="e.g. Summer Sale Promo"
+                placeholder={t("calendar.schedule.postTitlePlaceholder")}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
@@ -93,20 +95,20 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
             <div>
               <div className="mb-1 flex items-center justify-between">
                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                  Caption Preview
+                  {t("calendar.schedule.captionPreviewLabel")}
                 </label>
                 <button
                   type="button"
                   onClick={() => setIsPreviewOpen(true)}
-                  className="flex cursor-pointer items-center gap-1 text-xs font-medium text-brand-orange hover:underline"
+                  className="text-brand-orange flex cursor-pointer items-center gap-1 text-xs font-medium hover:underline"
                 >
                   <Eye className="size-3.5" />
-                  Preview Mockup
+                  {t("calendar.schedule.previewMockupButton")}
                 </button>
               </div>
               <Textarea
                 rows={3}
-                placeholder="Enter post caption..."
+                placeholder={t("calendar.schedule.captionPlaceholder")}
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
                 className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
@@ -116,7 +118,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">
-                  Platform
+                  {t("calendar.schedule.platformLabel")}
                 </label>
                 <Select
                   value={platform}
@@ -133,7 +135,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
 
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">
-                  Scheduled Time
+                  {t("calendar.schedule.scheduledTimeLabel")}
                 </label>
                 <div className="relative">
                   <Input
@@ -152,13 +154,13 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 onClick={onClose}
                 className="cursor-pointer rounded-lg border border-slate-300 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
               >
-                Cancel
+                {t("calendar.schedule.cancel")}
               </button>
               <button
                 type="submit"
-                className="cursor-pointer rounded-lg bg-brand-orange px-4 py-2 text-xs font-medium text-white shadow-xs hover:bg-brand-orange/90"
+                className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer rounded-lg px-4 py-2 text-xs font-medium text-white shadow-xs"
               >
-                Schedule
+                {t("calendar.schedule.submit")}
               </button>
             </div>
           </form>
@@ -170,7 +172,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
         onClose={() => setIsPreviewOpen(false)}
         data={{
           title,
-          caption: caption || title || "Post caption preview text...",
+          caption: caption || title || t("calendar.schedule.captionPlaceholder"),
           targetPlatforms: [
             platform,
             "FACEBOOK",

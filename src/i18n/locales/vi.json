@@ -907,7 +907,20 @@
       "copyAllButton": "Copy bộ Tag"
     },
     "imageLightbox": { "copySuccess": "Đã copy đường dẫn ảnh vào clipboard!" },
-    "templatePicker": { "apply": "Áp dụng" }
+    "templatePicker": { "apply": "Áp dụng" },
+    "preview": {
+      "title": "Xem trước Mockup theo Nền tảng", "copyCaptionSuccess": "Đã copy caption vào clipboard!",
+      "copyCaptionButton": "Copy Caption", "specLabel": "Thông số:", "charsLabel": "ký tự"
+    }
+  },
+  "calendar": {
+    "schedule": {
+      "title": "Lên lịch bài đăng", "postTitleLabel": "Tiêu đề bài đăng",
+      "postTitlePlaceholder": "Ví dụ: Khuyến mãi mùa hè",
+      "captionPreviewLabel": "Xem trước Caption", "previewMockupButton": "Xem trước Mockup",
+      "captionPlaceholder": "Nhập caption bài đăng...", "platformLabel": "Nền tảng",
+      "scheduledTimeLabel": "Giờ đăng", "cancel": "Hủy", "submit": "Lên lịch"
+    }
   },
   "hashtagGroups": {
     "deleteSuccess": "Đã xóa nhóm Hashtag",

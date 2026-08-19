@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface PlatformPreviewModalProps {
   isOpen: boolean;
@@ -35,6 +36,7 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
   onClose,
   data,
 }) => {
+  const { t } = useTranslation();
   const { targetPlatforms = ["FACEBOOK"], caption = "" } = data;
   const [activePlatform, setActivePlatform] = useState<PlatformType>(
     targetPlatforms[0] || "FACEBOOK",
@@ -48,7 +50,7 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
 
   const handleCopyCaption = () => {
     navigator.clipboard.writeText(caption);
-    toast.success("Caption copied to clipboard!");
+    toast.success(t("editor.preview.copyCaptionSuccess"));
   };
 
   return (
@@ -57,9 +59,9 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800">
           <div className="flex items-center gap-2">
-            <Eye className="size-5 text-brand-orange" />
+            <Eye className="text-brand-orange size-5" />
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-              Platform Visual Mockup Preview
+              {t("editor.preview.title")}
             </h3>
           </div>
           <button
@@ -81,7 +83,7 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
                   onClick={() => setActivePlatform(platform)}
                   className={`flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
                     isActive
-                      ? "border border-slate-200 bg-white text-brand-orange shadow-xs dark:border-slate-700 dark:bg-slate-800"
+                      ? "text-brand-orange border border-slate-200 bg-white shadow-xs dark:border-slate-700 dark:bg-slate-800"
                       : "text-slate-500 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
                   }`}
                 >
@@ -97,14 +99,14 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
             className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
           >
             <Copy className="size-3.5" />
-            <span>Copy Caption</span>
+            <span>{t("editor.preview.copyCaptionButton")}</span>
           </button>
         </div>
 
         {/* Character Limit Bar */}
         <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-6 py-2 text-xs dark:border-slate-800 dark:bg-slate-950">
           <span className="text-slate-500">
-            Spec:{" "}
+            {t("editor.preview.specLabel")}{" "}
             <strong className="text-slate-700 dark:text-slate-300">
               {activeConfig.label}
             </strong>
@@ -116,11 +118,10 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
                 : "text-slate-600 dark:text-slate-400"
             }`}
           >
-            {isOverLimit && (
-              <AlertCircle className="size-3.5 text-rose-600" />
-            )}
+            {isOverLimit && <AlertCircle className="size-3.5 text-rose-600" />}
             <span>
-              {caption.length} / {activeConfig.maxCharacters} chars
+              {caption.length} / {activeConfig.maxCharacters}{" "}
+              {t("editor.preview.charsLabel")}
             </span>
           </div>
         </div>
