@@ -94,8 +94,8 @@ export function KpiCardsSection({
       value: `${data.successRate}%`,
       change: t("dashboard.kpi.systemTargetMet"),
       icon: TrendingUp,
-      iconBg: "bg-[#f05a28]/10 text-[#f05a28]",
-      accentColor: "border-l-[#f05a28]",
+      iconBg: "bg-brand-orange/10 text-brand-orange",
+      accentColor: "border-l-brand-orange",
     },
   ];
 

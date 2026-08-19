@@ -76,7 +76,7 @@ export function ServicePackageModal({
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base font-bold">
-            <ShieldCheck className="size-4 text-[#f05a28]" />
+            <ShieldCheck className="size-4 text-brand-orange" />
             Nâng cấp / Điều chỉnh Gói dịch vụ
           </DialogTitle>
         </DialogHeader>
@@ -107,7 +107,7 @@ export function ServicePackageModal({
                     onClick={() => handleTierChange(tier)}
                     className={`cursor-pointer rounded-lg border p-2.5 text-center text-xs font-bold transition-all ${
                       formData.packageTier === tier
-                        ? "border-[#f05a28] bg-[#fff0eb] text-[#f05a28] dark:bg-[#f05a28]/10"
+                        ? "border-brand-orange bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/10"
                         : "border-border hover:bg-muted/50 text-foreground"
                     }`}
                   >
@@ -189,7 +189,7 @@ export function ServicePackageModal({
               type="submit"
               size="sm"
               disabled={isLoading}
-              className="cursor-pointer gap-1.5 bg-[#f05a28] text-xs text-white hover:bg-[#f05a28]/90"
+              className="cursor-pointer gap-1.5 bg-brand-orange text-xs text-white hover:bg-brand-orange/90"
             >
               {isLoading
                 ? t("client.servicePackage.processing")

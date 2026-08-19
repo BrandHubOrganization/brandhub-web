@@ -65,7 +65,7 @@ export function CreateEditClientModal({
       <DialogContent className="sm:max-w-[520px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base font-bold">
-            <Building2 className="size-4 text-[#f05a28]" />
+            <Building2 className="size-4 text-brand-orange" />
             Tạo mới Brand Client
           </DialogTitle>
         </DialogHeader>
@@ -208,7 +208,7 @@ export function CreateEditClientModal({
               type="submit"
               size="sm"
               disabled={isLoading}
-              className="cursor-pointer gap-1.5 bg-[#f05a28] text-xs text-white hover:bg-[#f05a28]/90"
+              className="cursor-pointer gap-1.5 bg-brand-orange text-xs text-white hover:bg-brand-orange/90"
             >
               {isLoading
                 ? t("client.createEdit.processing")

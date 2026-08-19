@@ -12,6 +12,7 @@ import {
   Video,
   AtSign,
   MessageSquare,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -56,16 +57,16 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800">
           <div className="flex items-center gap-2">
-            <Eye className="size-5 text-[#f05a28]" />
+            <Eye className="size-5 text-brand-orange" />
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
               Platform Visual Mockup Preview
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="cursor-pointer text-lg leading-none text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+            className="cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
           >
-            ✕
+            <X className="size-5" />
           </button>
         </div>
 
@@ -80,7 +81,7 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
                   onClick={() => setActivePlatform(platform)}
                   className={`flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
                     isActive
-                      ? "border border-slate-200 bg-white text-[#f05a28] shadow-xs dark:border-slate-700 dark:bg-slate-800"
+                      ? "border border-slate-200 bg-white text-brand-orange shadow-xs dark:border-slate-700 dark:bg-slate-800"
                       : "text-slate-500 hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
                   }`}
                 >

@@ -42,7 +42,7 @@ export function DashboardPage() {
             disabled={isRefreshing}
           >
             <RefreshCw
-              className={`size-3.5 ${isRefreshing ? "animate-spin text-[#f05a28]" : ""}`}
+              className={`size-3.5 ${isRefreshing ? "animate-spin text-brand-orange" : ""}`}
             />
             Làm mới
           </Button>
@@ -68,7 +68,7 @@ export function DashboardPage() {
             variant="default"
             size="sm"
             onClick={() => navigate("/editor")}
-            className="cursor-pointer gap-1.5 bg-[#f05a28] text-xs font-medium text-white hover:bg-[#f05a28]/90"
+            className="cursor-pointer gap-1.5 bg-brand-orange text-xs font-medium text-white hover:bg-brand-orange/90"
           >
             <Plus className="size-3.5" />
             Tạo Nội Dung Mới

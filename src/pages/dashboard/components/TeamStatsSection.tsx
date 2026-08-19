@@ -48,7 +48,7 @@ export function TeamStatsSection({
     <div className="border-border bg-card space-y-4 rounded-xl border p-5">
       <div className="border-border flex items-center justify-between border-b pb-3">
         <div className="flex items-center gap-2">
-          <Users className="size-4 text-[#f05a28]" />
+          <Users className="size-4 text-brand-orange" />
           <h3 className="text-foreground text-sm font-bold">
             Hiệu suất thành viên (Team Stats)
           </h3>
@@ -88,7 +88,7 @@ export function TeamStatsSection({
               {/* Progress bar */}
               <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
                 <div
-                  className="h-full rounded-full bg-[#f05a28] transition-all duration-300"
+                  className="h-full rounded-full bg-brand-orange transition-all duration-300"
                   style={{ width: `${rate}%` }}
                 />
               </div>

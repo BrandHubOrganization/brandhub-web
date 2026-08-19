@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Hash, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -121,12 +122,12 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
                   Tối đa 50 hashtags
                 </span>
               </div>
-              <textarea
+              <Textarea
                 rows={4}
                 value={hashtagsText}
                 onChange={(e) => setHashtagsText(e.target.value)}
                 placeholder="Nhập các hashtag, phân cách bằng dấu phẩy hoặc xuống dòng...&#10;Ví dụ: #Fashion2026, #SummerVibes, #BrandHub"
-                className="bg-muted text-foreground focus:ring-brand-orange/20 w-full rounded-xl border border-zinc-200 p-3 font-mono text-xs focus:ring-2 focus:outline-hidden dark:border-zinc-700"
+                className="bg-muted text-foreground focus:ring-brand-orange/20 rounded-xl border-zinc-200 font-mono text-xs dark:border-zinc-700"
               />
               <p className="text-2xs text-zinc-400">
                 Phân cách các hashtag bằng dấu phẩy <code>,</code> hoặc xuống

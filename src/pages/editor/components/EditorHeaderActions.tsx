@@ -73,7 +73,7 @@ export function EditorHeaderActions({
         type="button"
         onClick={onSubmitForReview}
         disabled={isSubmitting}
-        className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-[#f05a28] px-4 py-1.5 text-xs font-medium text-white shadow-xs transition-colors hover:bg-[#f05a28]/90 disabled:opacity-50"
+        className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-brand-orange px-4 py-1.5 text-xs font-medium text-white shadow-xs transition-colors hover:bg-brand-orange/90 disabled:opacity-50"
       >
         <Send className="size-3.5" />
         <span>

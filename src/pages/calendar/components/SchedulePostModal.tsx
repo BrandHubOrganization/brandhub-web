@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { CalendarPostEvent } from "@/types/calendar";
 import type { PlatformType } from "@/types/calendar";
-import { Calendar as CalendarIcon, Eye } from "lucide-react";
+import { Calendar as CalendarIcon, Eye, X } from "lucide-react";
 import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewModal";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -62,16 +62,16 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
         <div className="animate-in fade-in zoom-in-95 w-full max-w-md space-y-5 rounded-xl border border-slate-200 bg-white p-6 shadow-2xl duration-200 dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <CalendarIcon className="size-5 text-[#f05a28]" />
+              <CalendarIcon className="size-5 text-brand-orange" />
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 Schedule Post
               </h3>
             </div>
             <button
               onClick={onClose}
-              className="cursor-pointer text-lg leading-none text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             >
-              ✕
+              <X className="size-5" />
             </button>
           </div>
 
@@ -98,7 +98,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsPreviewOpen(true)}
-                  className="flex cursor-pointer items-center gap-1 text-xs font-medium text-[#f05a28] hover:underline"
+                  className="flex cursor-pointer items-center gap-1 text-xs font-medium text-brand-orange hover:underline"
                 >
                   <Eye className="size-3.5" />
                   Preview Mockup
@@ -156,7 +156,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
               </button>
               <button
                 type="submit"
-                className="cursor-pointer rounded-lg bg-[#f05a28] px-4 py-2 text-xs font-medium text-white shadow-xs hover:bg-[#d94e20]"
+                className="cursor-pointer rounded-lg bg-brand-orange px-4 py-2 text-xs font-medium text-white shadow-xs hover:bg-brand-orange/90"
               >
                 Schedule
               </button>

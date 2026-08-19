@@ -33,7 +33,7 @@ export function TemplateBrowserPage() {
         <Button
           type="button"
           onClick={() => navigate("/editor")}
-          className="bg-[#f05a28] text-xs font-semibold text-white hover:bg-[#f05a28]/90"
+          className="bg-brand-orange text-xs font-semibold text-white hover:bg-brand-orange/90"
           size="sm"
         >
           <Plus className="mr-1 size-4" />

@@ -50,7 +50,7 @@ export function ClientListPage() {
           <Button
             size="sm"
             onClick={() => setIsCreateOpen(true)}
-            className="cursor-pointer gap-1.5 bg-[#f05a28] text-xs font-semibold text-white hover:bg-[#f05a28]/90"
+            className="cursor-pointer gap-1.5 bg-brand-orange text-xs font-semibold text-white hover:bg-brand-orange/90"
           >
             <Plus className="size-3.5" />
             Tạo Client Mới
@@ -69,7 +69,7 @@ export function ClientListPage() {
           placeholder="Tìm kiếm thương hiệu, email, ngành hàng..."
           totalElements={totalElements}
           totalLabel="Client"
-          icon={<Building2 className="size-3.5 text-[#f05a28]" />}
+          icon={<Building2 className="size-3.5 text-brand-orange" />}
           extraActions={
             isOwner ? (
               <span className="hidden items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-3xs font-semibold text-emerald-600 sm:inline-flex">

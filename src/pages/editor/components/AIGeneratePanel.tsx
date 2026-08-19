@@ -15,6 +15,7 @@ import type { SocialPlatform, AIErrorType } from "@/types/editor";
 import { ImageLightboxModal } from "./ImageLightboxModal";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { Textarea } from "@/components/ui/textarea";
 
 interface AIGeneratePanelProps {
   topic?: string;
@@ -184,12 +185,12 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
           <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
             Yêu cầu định hướng (Prompt)
           </label>
-          <textarea
+          <Textarea
             rows={3}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Ví dụ: Viết bài đăng phong cách hài hước..."
-            className="focus:ring-brand-orange/20 focus:border-brand-orange w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-900 transition-colors focus:ring-2 focus:outline-hidden dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className="focus:ring-brand-orange/20 focus:border-brand-orange rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
           />
         </div>
 
@@ -267,11 +268,11 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
 
             {/* Streaming Caption */}
             {streamingText && (
-              <textarea
+              <Textarea
                 rows={4}
                 value={streamingText}
                 onChange={(e) => setStreamingText(e.target.value)}
-                className="w-full rounded-xl border border-zinc-200 bg-white p-2.5 font-sans text-xs leading-relaxed text-zinc-800 focus:outline-hidden dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
+                className="rounded-xl border-zinc-200 bg-white font-sans text-xs leading-relaxed text-zinc-800 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
               />
             )}
 

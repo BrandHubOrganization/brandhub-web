@@ -46,7 +46,7 @@ export function ActivityFeedSection({
     <div className="border-border bg-card space-y-4 rounded-xl border p-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Activity className="size-4 text-[#f05a28]" />
+          <Activity className="size-4 text-brand-orange" />
           <h3 className="text-foreground text-sm font-bold">
             Hoạt động gần đây
           </h3>
