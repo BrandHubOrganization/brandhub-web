@@ -71,7 +71,9 @@
   },
   "common": {
     "switchLanguage": "Đổi ngôn ngữ",
-    "toggleTheme": "Đổi giao diện sáng/tối"
+    "toggleTheme": "Đổi giao diện sáng/tối",
+    "loadFailed": "Tải dữ liệu thất bại",
+    "actionFailed": "Có lỗi xảy ra"
   },
   "landing": {
     "hero": {
@@ -318,6 +320,61 @@
         "company": ["Giới thiệu", "Tuyển dụng", "Bảo mật", "Điều khoản"]
       },
       "copyright": "© {{year}} BrandHub. Đã đăng ký bản quyền."
+    }
+  },
+  "workspace": {
+    "create": {
+      "title": "Tạo workspace",
+      "description": "Thiết lập workspace mới cho đội nhóm hoặc thương hiệu của bạn.",
+      "nameLabel": "Tên workspace",
+      "industryLabel": "Ngành hàng",
+      "submit": "Tạo workspace"
+    },
+    "settings": {
+      "title": "Cài đặt workspace",
+      "description": "Quản lý cấu hình workspace của bạn.",
+      "nameLabel": "Tên workspace",
+      "timezoneLabel": "Múi giờ",
+      "defaultPlatformsLabel": "Nền tảng mặc định",
+      "reportFrequencyLabel": "Tần suất báo cáo",
+      "save": "Lưu thay đổi",
+      "saveSuccess": "Đã lưu cài đặt thành công"
+    },
+    "members": {
+      "title": "Thành viên",
+      "description": "Quản lý quyền truy cập workspace này.",
+      "inviteButton": "Mời thành viên",
+      "inviteDialogTitle": "Mời thành viên",
+      "emailLabel": "Email",
+      "roleLabel": "Vai trò",
+      "joinedAtLabel": "Ngày tham gia",
+      "statusLabel": "Trạng thái",
+      "active": "Đang hoạt động",
+      "removeButton": "Xóa",
+      "removeConfirmTitle": "Xóa thành viên?",
+      "removeConfirmDescription": "Thành viên này sẽ mất quyền truy cập workspace.",
+      "inviteSuccess": "Đã gửi lời mời",
+      "removeSuccess": "Đã xóa thành viên"
+    },
+    "roles": {
+      "OWNER": "Chủ sở hữu",
+      "CREATOR": "Người tạo nội dung",
+      "VIEWER": "Người xem",
+      "CLIENT": "Khách hàng",
+      "ACCOUNT": "Quản lý tài khoản"
+    },
+    "errors": {
+      "slugConflict": "Workspace với tên này đã tồn tại",
+      "lastOwnerCannotBeRemoved": "Không thể xóa chủ sở hữu cuối cùng của workspace",
+      "alreadyMember": "Người này đã là thành viên của workspace"
+    },
+    "list": {
+      "title": "Workspaces",
+      "description": "Quản lý các workspace thương hiệu của đội nhóm bạn.",
+      "createButton": "Tạo Workspace Mới",
+      "members": "{{count}} thành viên",
+      "posts": "{{count}} bài đăng",
+      "empty": "Chưa có workspace nào. Tạo mới để bắt đầu."
     }
   }
 }
