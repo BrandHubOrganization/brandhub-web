@@ -41,6 +41,6 @@ export function canAccess(
   const rule = resolveAccessRule(pathname);
   if (!rule) return true;
   if (systemRole === "ADMIN") return true;
-  if (rule === "ADMIN") return systemRole === "ADMIN";
+  if (rule === "ADMIN") return false;
   return memberRole !== null && rule.includes(memberRole);
 }

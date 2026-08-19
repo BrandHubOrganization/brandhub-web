@@ -3,6 +3,8 @@ import type { HashtagGroup } from '@/types/contentLibrary';
 import { mockContentLibraryService } from '@/services/mockContentLibraryService';
 import { Hash, Copy, Plus, Edit2, Trash2, Check, X, Tag } from 'lucide-react';
 import { toast } from 'sonner';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export const HashtagGroupsTab: React.FC = () => {
   const [groups, setGroups] = useState<HashtagGroup[]>([]);
@@ -214,12 +216,12 @@ export const HashtagGroupsTab: React.FC = () => {
                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
                   Tên nhóm Hashtag
                 </label>
-                <input
+                <Input
                   type="text"
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder="Ví dụ: Fashion Summer 2026"
-                  className="w-full px-3 py-2 text-xs bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-colors"
+                  className="rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                 />
               </div>
 
@@ -227,12 +229,12 @@ export const HashtagGroupsTab: React.FC = () => {
                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
                   Danh sách Hashtags (cách nhau bởi dấu cách hoặc phẩy)
                 </label>
-                <textarea
+                <Textarea
                   rows={4}
                   value={tagsInput}
                   onChange={(e) => setTagsInput(e.target.value)}
                   placeholder="#fashion #summer #style #ootd"
-                  className="w-full px-3 py-2 text-xs font-mono bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-colors"
+                  className="rounded-xl border-zinc-200 bg-zinc-50 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                 />
               </div>
 

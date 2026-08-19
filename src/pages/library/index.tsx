@@ -1,9 +1,10 @@
 import { useState } from "react";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { MediaTab } from "@/components/library/MediaTab";
-import { HashtagGroupsTab } from "@/components/library/HashtagGroupsTab";
-import { TemplatesTab } from "@/components/library/TemplatesTab";
+import { MediaTab } from "@/pages/library/components/MediaTab";
+import { HashtagGroupsTab } from "@/pages/library/components/HashtagGroupsTab";
+import { TemplatesTab } from "@/pages/library/components/TemplatesTab";
 import { Film, Hash, FileText } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type TabKey = "media" | "hashtags" | "templates";
 
@@ -17,43 +18,33 @@ export function ContentLibraryPage() {
     >
       <div className="space-y-6">
         {/* Navigation Tab Bar */}
-        <div className="flex gap-6 border-b border-zinc-200 text-sm font-medium dark:border-zinc-800">
-          <button
-            onClick={() => setActiveTab("media")}
-            className={`flex cursor-pointer items-center gap-2 border-b-2 pb-3 transition-colors ${
-              activeTab === "media"
-                ? "border-brand-orange text-brand-orange font-semibold"
-                : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            }`}
-          >
-            <Film className="h-4 w-4" />
-            <span>Media Library</span>
-          </button>
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabKey)}>
+          <TabsList className="h-auto w-full justify-start gap-6 rounded-none border-b border-zinc-200 bg-transparent p-0 dark:border-zinc-800">
+            <TabsTrigger
+              value="media"
+              className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-0 py-0 pb-3 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-800 data-[state=active]:border-brand-orange data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-brand-orange data-[state=active]:shadow-none dark:hover:text-zinc-200"
+            >
+              <Film className="h-4 w-4" />
+              <span>Media Library</span>
+            </TabsTrigger>
 
-          <button
-            onClick={() => setActiveTab("hashtags")}
-            className={`flex cursor-pointer items-center gap-2 border-b-2 pb-3 transition-colors ${
-              activeTab === "hashtags"
-                ? "border-brand-orange text-brand-orange font-semibold"
-                : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            }`}
-          >
-            <Hash className="h-4 w-4" />
-            <span>Hashtag Groups</span>
-          </button>
+            <TabsTrigger
+              value="hashtags"
+              className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-0 py-0 pb-3 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-800 data-[state=active]:border-brand-orange data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-brand-orange data-[state=active]:shadow-none dark:hover:text-zinc-200"
+            >
+              <Hash className="h-4 w-4" />
+              <span>Hashtag Groups</span>
+            </TabsTrigger>
 
-          <button
-            onClick={() => setActiveTab("templates")}
-            className={`flex cursor-pointer items-center gap-2 border-b-2 pb-3 transition-colors ${
-              activeTab === "templates"
-                ? "border-brand-orange text-brand-orange font-semibold"
-                : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            }`}
-          >
-            <FileText className="h-4 w-4" />
-            <span>Post Templates</span>
-          </button>
-        </div>
+            <TabsTrigger
+              value="templates"
+              className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-0 py-0 pb-3 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-800 data-[state=active]:border-brand-orange data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-brand-orange data-[state=active]:shadow-none dark:hover:text-zinc-200"
+            >
+              <FileText className="h-4 w-4" />
+              <span>Post Templates</span>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {/* Tab Content Display */}
         {activeTab === "media" && <MediaTab />}

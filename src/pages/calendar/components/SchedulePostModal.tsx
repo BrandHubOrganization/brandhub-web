@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import type { CalendarPostEvent } from '../../types/calendar';
-import type { PlatformType } from '../../types/calendar';
+import type { CalendarPostEvent } from "@/types/calendar";
+import type { PlatformType } from "@/types/calendar";
 import { Calendar as CalendarIcon, Eye } from 'lucide-react';
-import { PlatformPreviewModal } from '../preview/PlatformPreviewModal';
+import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewModal";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select";
 
 interface SchedulePostModalProps {
   isOpen: boolean;
@@ -69,13 +72,13 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Post Title</label>
-              <input
+              <Input
                 type="text"
                 required
                 placeholder="e.g. Summer Sale Promo"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-[#f05a28] focus:outline-hidden"
+                className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               />
             </div>
 
@@ -91,39 +94,39 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                   Preview Mockup
                 </button>
               </div>
-              <textarea
+              <Textarea
                 rows={3}
                 placeholder="Enter post caption..."
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-[#f05a28] focus:outline-hidden"
+                className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Platform</label>
-                <select
+                <Select
                   value={platform}
                   onChange={(e) => setPlatform(e.target.value as PlatformType)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-[#f05a28] focus:outline-hidden"
+                  className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                 >
                   <option value="FACEBOOK">Facebook</option>
                   <option value="INSTAGRAM">Instagram</option>
                   <option value="TIKTOK">TikTok</option>
                   <option value="THREADS">Threads</option>
                   <option value="YOUTUBE">Youtube</option>
-                </select>
+                </Select>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Scheduled Time</label>
                 <div className="relative">
-                  <input
+                  <Input
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-[#f05a28] focus:outline-hidden"
+                    className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                   />
                 </div>
               </div>

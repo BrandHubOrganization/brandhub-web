@@ -5,6 +5,8 @@ import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { MediaDetailPanel } from './MediaDetailPanel';
 import { MediaUploadButton } from './MediaUploadButton';
 import { Search, ArrowUpDown, Film, Image as ImageIcon, Loader2, Play } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 
 export const MediaTab: React.FC = () => {
   const [mediaList, setMediaList] = useState<MediaItem[]>([]);
@@ -88,12 +90,12 @@ export const MediaTab: React.FC = () => {
           {/* Search Box */}
           <div className="relative flex-1 max-w-md">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
-            <input
+            <Input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Tìm kiếm file theo tên..."
-              className="w-full pl-9 pr-4 py-2 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700/80 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-all"
+              className="rounded-xl border-zinc-200 bg-zinc-50 pl-9 pr-4 text-xs text-zinc-900 placeholder-zinc-400 dark:border-zinc-700/80 dark:bg-zinc-800/80 dark:text-zinc-100"
             />
           </div>
 
@@ -138,14 +140,14 @@ export const MediaTab: React.FC = () => {
           {/* Sort Dropdown */}
           <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700/80 rounded-xl px-3 py-1.5">
             <ArrowUpDown className="w-3.5 h-3.5 text-zinc-400" />
-            <select
+            <Select
               value={sort}
               onChange={(e) => setSort(e.target.value as 'newest' | 'oldest')}
-              className="bg-transparent text-xs text-zinc-700 dark:text-zinc-300 font-medium focus:outline-hidden cursor-pointer"
+              className="h-auto w-auto min-w-0 border-0 bg-transparent px-0 py-0 text-xs font-medium text-zinc-700 shadow-none focus-visible:ring-0 cursor-pointer dark:text-zinc-300"
             >
               <option value="newest" className="dark:bg-zinc-900">Mới nhất</option>
               <option value="oldest" className="dark:bg-zinc-900">Cũ nhất</option>
-            </select>
+            </Select>
           </div>
 
           {/* Upload Button */}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import type { PlatformType } from '../../types/calendar';
-import type { PostPreviewData } from '../../types/preview';
-import { PLATFORM_LIMITS } from '../../types/preview';
+import type { PlatformType } from "@/types/calendar";
+import type { PostPreviewData } from "@/types/preview";
+import { PLATFORM_LIMITS } from "@/types/preview";
 import { PlatformMockup } from './PlatformMockups';
 import { Copy, Eye, AlertCircle, Share2, Globe, Video, AtSign, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';

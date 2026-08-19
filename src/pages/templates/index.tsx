@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { TemplatePreviewModal } from "@/components/template/TemplatePreviewModal";
+import { TemplatePreviewModal } from "@/pages/templates/components/TemplatePreviewModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Plus } from "lucide-react";

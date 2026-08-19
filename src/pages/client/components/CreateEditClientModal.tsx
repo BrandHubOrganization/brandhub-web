@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import type { CreateClientDTO, PackageTier } from "../types/client";
 import { Building2, Mail, UserCheck } from "lucide-react";
 
@@ -138,28 +139,28 @@ export function CreateEditClientModal({
               <Label className="text-xs font-semibold flex items-center gap-1">
                 <UserCheck className="size-3 text-muted-foreground" /> Account Manager
               </Label>
-              <select
+              <Select
                 value={formData.assignedAccountManagerId}
                 onChange={(e) => setFormData({ ...formData, assignedAccountManagerId: e.target.value })}
-                className="w-full h-9 rounded-md border border-border bg-background px-3 text-xs focus:outline-none focus:ring-1 focus:ring-[#f05a28]"
+                className="border-border bg-background text-xs"
               >
                 <option value="am-1">Nguyễn Văn An (AM)</option>
                 <option value="am-2">Phạm Minh Dung (AM)</option>
                 <option value="am-3">Trần Hoàng Long (AM)</option>
-              </select>
+              </Select>
             </div>
 
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Gói dịch vụ ban đầu</Label>
-              <select
+              <Select
                 value={formData.packageTier}
                 onChange={(e) => setFormData({ ...formData, packageTier: e.target.value as PackageTier })}
-                className="w-full h-9 rounded-md border border-border bg-background px-3 text-xs focus:outline-none focus:ring-1 focus:ring-[#f05a28]"
+                className="border-border bg-background text-xs"
               >
                 <option value="STARTER">STARTER (15 posts/tháng)</option>
                 <option value="GROWTH">GROWTH (30 posts/tháng)</option>
                 <option value="ENTERPRISE">ENTERPRISE (45 posts/tháng)</option>
-              </select>
+              </Select>
             </div>
           </div>
 

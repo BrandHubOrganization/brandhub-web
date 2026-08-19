@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Upload, Loader2 } from 'lucide-react';
 import type { MediaItem } from '@/types/contentLibrary';
 import { toast } from 'sonner';
+import { Input } from "@/components/ui/input";
 
 interface MediaUploadButtonProps {
   onUploadSuccess: (newMedia: MediaItem) => void;
@@ -42,7 +43,7 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({ onUploadSu
 
   return (
     <>
-      <input
+      <Input
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}

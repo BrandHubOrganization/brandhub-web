@@ -1,7 +1,7 @@
 import PageWrapper from "@/components/layout/PageWrapper";
-import { ContentRequestFilterBar } from "@/components/request/ContentRequestFilterBar";
-import { ContentRequestTable } from "@/components/request/ContentRequestTable";
-import { AssigneePickerModal } from "@/components/request/AssigneePickerModal";
+import { ContentRequestFilterBar } from "@/pages/requests/components/ContentRequestFilterBar";
+import { ContentRequestTable } from "@/pages/requests/components/ContentRequestTable";
+import { AssigneePickerModal } from "@/pages/requests/components/AssigneePickerModal";
 import { RefreshCw } from "lucide-react";
 import { useContentRequests } from "./hooks/useContentRequests";
 import { RequestTabs } from "./components/RequestTabs";

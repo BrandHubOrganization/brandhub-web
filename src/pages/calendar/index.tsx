@@ -1,8 +1,8 @@
 import { Plus } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { PlatformFilter } from "@/components/calendar/PlatformFilter";
-import { ContentCalendar } from "@/components/calendar/ContentCalendar";
-import { SchedulePostModal } from "@/components/calendar/SchedulePostModal";
+import { PlatformFilter } from "@/pages/calendar/components/PlatformFilter";
+import { ContentCalendar } from "@/pages/calendar/components/ContentCalendar";
+import { SchedulePostModal } from "@/pages/calendar/components/SchedulePostModal";
 import { useContentCalendar } from "./hooks/useContentCalendar";
 
 export function CalendarPage() {
@@ -10,7 +10,6 @@ export function CalendarPage() {
     events,
     selectedPlatforms,
     setSelectedPlatforms,
-    dateRange,
     setDateRange,
     isModalOpen,
     setIsModalOpen,

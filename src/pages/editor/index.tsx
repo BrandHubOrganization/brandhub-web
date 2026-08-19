@@ -1,10 +1,11 @@
 import PageWrapper from "@/components/layout/PageWrapper";
-import { RichTextEditor } from "@/components/editor/RichTextEditor";
-import { MediaDropzone } from "@/components/editor/MediaDropzone";
-import { HashtagInputWithSuggestions } from "@/components/editor/HashtagInputWithSuggestions";
-import { AIGeneratePanel } from "@/components/editor/AIGeneratePanel";
-import { PlatformPreviewModal } from "@/components/preview/PlatformPreviewModal";
-import { TemplatePickerModal } from "@/components/editor/TemplatePickerModal";
+import { Input } from "@/components/ui/input";
+import { RichTextEditor } from "@/pages/editor/components/RichTextEditor";
+import { MediaDropzone } from "@/pages/editor/components/MediaDropzone";
+import { HashtagInputWithSuggestions } from "@/pages/editor/components/HashtagInputWithSuggestions";
+import { AIGeneratePanel } from "@/pages/editor/components/AIGeneratePanel";
+import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewModal";
+import { TemplatePickerModal } from "@/pages/editor/components/TemplatePickerModal";
 import { useEditorForm } from "./hooks/useEditorForm";
 import { EditorHeaderActions } from "./components/EditorHeaderActions";
 
@@ -54,12 +55,12 @@ export function EditorPage() {
             <label className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
               Tiêu đề nội dung / Yêu cầu
             </label>
-            <input
+            <Input
               type="text"
               value={title}
               onChange={(e) => handleTitleChange(e.target.value)}
               placeholder="Nhập tiêu đề bài viết..."
-              className="focus:border-brand-orange w-full border-b border-zinc-200 bg-transparent pb-2 text-lg font-bold text-zinc-900 transition-colors outline-none dark:border-zinc-800 dark:text-zinc-100"
+              className="h-auto rounded-none border-x-0 border-t-0 border-b border-zinc-200 bg-transparent px-0 pb-2 text-lg font-bold text-zinc-900 shadow-none focus-visible:ring-0 dark:border-zinc-800 dark:text-zinc-100"
             />
           </div>
 

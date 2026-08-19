@@ -206,7 +206,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
           ) : (
             <>
               <Wand2 className="h-4 w-4" />
-              <span>Generate with AI ✨</span>
+              <span>Generate with AI</span>
             </>
           )}
         </button>

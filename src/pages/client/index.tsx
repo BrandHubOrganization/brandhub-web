@@ -10,15 +10,9 @@ import { Pagination } from "./components/Pagination";
 
 // Local Feature Imports
 import { useClients } from "./hooks/useClients";
-import type {
-  Client,
-  CreateClientDTO,
-  UpdateServicePackageDTO,
-} from "./types/client";
+import type { Client } from "./types/client";
 import { ClientTable } from "./components/ClientTable";
-import { CreateEditClientModal } from "./components/CreateEditClientModal";
-import { ServicePackageModal } from "./components/ServicePackageModal";
-import { DeleteClientModal } from "./components/DeleteClientModal";
+import { ClientModals } from "./ClientModals";
 
 export function ClientListPage() {
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
@@ -44,40 +38,6 @@ export function ClientListPage() {
     useState<Client | null>(null);
   const [selectedClientForDelete, setSelectedClientForDelete] =
     useState<Client | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-  // Handlers
-  const handleCreateSubmit = async (dto: CreateClientDTO) => {
-    setIsSubmitting(true);
-    try {
-      await createClient(dto);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleUpdatePackageSubmit = async (
-    id: string,
-    dto: UpdateServicePackageDTO,
-  ) => {
-    setIsSubmitting(true);
-    try {
-      await updateServicePackage(id, dto);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!selectedClientForDelete) return;
-    setIsSubmitting(true);
-    try {
-      await deleteClient(selectedClientForDelete.id);
-      setSelectedClientForDelete(null);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const totalPages = Math.ceil(totalElements / size) || 1;
 
@@ -138,27 +98,16 @@ export function ClientListPage() {
       </div>
 
       {/* Modals */}
-      <CreateEditClientModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-        onSubmit={handleCreateSubmit}
-        isLoading={isSubmitting}
-      />
-
-      <ServicePackageModal
-        isOpen={!!selectedClientForPackage}
-        client={selectedClientForPackage}
-        onClose={() => setSelectedClientForPackage(null)}
-        onSubmit={handleUpdatePackageSubmit}
-        isLoading={isSubmitting}
-      />
-
-      <DeleteClientModal
-        isOpen={!!selectedClientForDelete}
-        clientName={selectedClientForDelete?.name}
-        onClose={() => setSelectedClientForDelete(null)}
-        onConfirm={handleDeleteConfirm}
-        isLoading={isSubmitting}
+      <ClientModals
+        createClient={createClient}
+        updateServicePackage={updateServicePackage}
+        deleteClient={deleteClient}
+        isCreateOpen={isCreateOpen}
+        onCloseCreate={() => setIsCreateOpen(false)}
+        selectedClientForPackage={selectedClientForPackage}
+        onClosePackage={() => setSelectedClientForPackage(null)}
+        selectedClientForDelete={selectedClientForDelete}
+        onCloseDelete={() => setSelectedClientForDelete(null)}
       />
     </PageWrapper>
   );

@@ -1,4 +1,4 @@
-import { TemplateCard } from "@/components/template/TemplateCard";
+import { TemplateCard } from "@/pages/templates/components/TemplateCard";
 import { Button } from "@/components/ui/button";
 import {
   LayoutTemplate,
@@ -24,7 +24,6 @@ interface Props {
 
 export function TemplateGridView({
   templates,
-  total,
   page,
   totalPages,
   isLoading,

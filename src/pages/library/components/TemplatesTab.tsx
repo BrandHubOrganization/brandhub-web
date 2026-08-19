@@ -4,6 +4,9 @@ import { mockContentLibraryService } from '@/services/mockContentLibraryService'
 import { FileText, ArrowRight, Plus, Trash2, Calendar, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select";
 
 export const TemplatesTab: React.FC = () => {
   const navigate = useNavigate();
@@ -201,12 +204,12 @@ export const TemplatesTab: React.FC = () => {
                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
                   Tiêu đề Template
                 </label>
-                <input
+                <Input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Ví dụ: Khuyến Mãi Mùa Hè ☀️"
-                  className="w-full px-3 py-2 text-xs bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-colors"
+                  placeholder="Ví dụ: Khuyến Mãi Mùa Hè"
+                  className="rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                 />
               </div>
 
@@ -214,12 +217,12 @@ export const TemplatesTab: React.FC = () => {
                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
                   Nội dung Caption mẫu
                 </label>
-                <textarea
+                <Textarea
                   rows={4}
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
                   placeholder="Nhập nội dung mẫu bài đăng tại đây..."
-                  className="w-full px-3 py-2 text-xs bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-colors"
+                  className="rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                 />
               </div>
 
@@ -227,10 +230,10 @@ export const TemplatesTab: React.FC = () => {
                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
                   Gắn Nhóm Hashtag (Tùy chọn)
                 </label>
-                <select
+                <Select
                   value={selectedHgId}
                   onChange={(e) => setSelectedHgId(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-colors"
+                  className="rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                 >
                   <option value="">-- Không đính kèm --</option>
                   {hashtagGroups.map((hg) => (
@@ -238,7 +241,7 @@ export const TemplatesTab: React.FC = () => {
                       {hg.name} ({hg.tags.length} tags)
                     </option>
                   ))}
-                </select>
+                </Select>
               </div>
 
               <div className="flex justify-end gap-2 pt-2">

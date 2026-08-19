@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface Props {
   name: string;
@@ -27,7 +28,7 @@ export function LogoUploader({
           name.charAt(0).toUpperCase()
         )}
       </div>
-      <input
+      <Input
         ref={fileInputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp"

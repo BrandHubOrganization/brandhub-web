@@ -1,7 +1,7 @@
 import React from 'react';
-import type { PlatformType } from '../../types/calendar';
-import type { PostPreviewData } from '../../types/preview';
-import { PLATFORM_LIMITS } from '../../types/preview';
+import type { PlatformType } from "@/types/calendar";
+import type { PostPreviewData } from "@/types/preview";
+import { PLATFORM_LIMITS } from "@/types/preview";
 import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, ThumbsUp, Globe } from 'lucide-react';
 
 interface PlatformMockupProps {

@@ -1,5 +1,5 @@
 import PageWrapper from "@/components/layout/PageWrapper";
-import { HashtagGroupFormModal } from "@/components/hashtag/HashtagGroupFormModal";
+import { HashtagGroupFormModal } from "@/pages/hashtag-groups/components/HashtagGroupFormModal";
 import { ConfirmDialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

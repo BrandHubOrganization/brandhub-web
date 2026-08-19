@@ -3,6 +3,7 @@ import { Hash, X, Plus, FolderKanban, ChevronDown, Sparkles, Copy, Check } from 
 import { mockHashtagGroupService } from "@/services/mockHashtagGroupService";
 import type { HashtagGroup } from "@/types/hashtagGroup";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 interface HashtagInputWithSuggestionsProps {
   hashtags: string[];
@@ -164,7 +165,7 @@ export const HashtagInputWithSuggestions: React.FC<
 
       {/* Input box */}
       <div className="relative">
-        <input
+        <Input
           type="text"
           value={inputValue}
           onChange={(e) => {
@@ -174,7 +175,7 @@ export const HashtagInputWithSuggestions: React.FC<
           onFocus={() => setShowSuggestions(true)}
           onKeyDown={handleKeyDown}
           placeholder="Nhập hashtag và nhấn Enter (hoặc chọn gợi ý)..."
-          className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono text-xs text-zinc-900 focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 focus:outline-hidden dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+          className="rounded-xl border-zinc-200 bg-zinc-50 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
         />
 
         {/* Suggestions Popup */}

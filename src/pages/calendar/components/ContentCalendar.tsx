@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import type { CalendarPostEvent, PlatformType } from "../../types/calendar";
+import type { CalendarPostEvent, PlatformType } from "@/types/calendar";
 import { Video, AtSign, Share2, Globe, MessageSquare } from "lucide-react";
 
 interface ContentCalendarProps {

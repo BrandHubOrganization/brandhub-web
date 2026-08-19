@@ -4,13 +4,11 @@ import {
   Search,
   Check,
   X,
-  FileText,
-  Image as ImageIcon,
-  Sparkles,
 } from "lucide-react";
 import { mockTemplateService } from "@/services/mockTemplateService";
 import type { ContentTemplate } from "@/types/template";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 interface TemplatePickerModalProps {
   isOpen: boolean;
@@ -76,12 +74,12 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
         <div className="border-b border-zinc-100 bg-zinc-50/50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50">
           <div className="relative">
             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-            <input
+            <Input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Tìm kiếm mẫu theo tiêu đề hoặc nội dung..."
-              className="focus:border-brand-orange focus:ring-brand-orange/20 w-full rounded-xl border border-zinc-200 bg-white py-2 pr-4 pl-9 text-xs text-zinc-900 focus:ring-2 focus:outline-hidden dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+              className="rounded-xl border-zinc-200 bg-white pl-9 pr-4 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
             />
           </div>
         </div>

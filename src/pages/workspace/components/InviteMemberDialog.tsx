@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -53,17 +54,16 @@ export function InviteMemberDialog({
             <Label className="text-xs font-semibold tracking-wide">
               {t("workspace.members.roleLabel")}
             </Label>
-            <select
+            <Select
               value={role}
               onChange={(e) => onRoleChange(e.target.value as MemberRole)}
-              className="border-input bg-input-background flex h-9 w-full rounded-md border px-3 text-sm"
             >
               {ALL_ROLES.map((r) => (
                 <option key={r} value={r}>
                   {t(`workspace.roles.${r}`)}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <DialogFooter>
             <Button variant="orange" type="submit" loading={submitting}>

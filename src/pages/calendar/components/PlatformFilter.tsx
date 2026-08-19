@@ -1,5 +1,5 @@
 import React from 'react';
-import type { PlatformType } from '../../types/calendar';
+import type { PlatformType } from "@/types/calendar";
 import { Video, AtSign, Share2, Globe, MessageSquare } from 'lucide-react';
 
 interface PlatformFilterProps {
