@@ -6,6 +6,7 @@ import {
   Clock,
   LayoutTemplate,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   isSaving: boolean;
@@ -26,13 +27,14 @@ export function EditorHeaderActions({
   onOpenPreview,
   onSubmitForReview,
 }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
         {isSaving ? (
           <>
             <Clock className="size-3.5 animate-spin text-amber-500" />
-            <span>Đang tự động lưu...</span>
+            <span>{t("editor.header.autoSaving")}</span>
           </>
         ) : isDirty ? (
           <>
@@ -44,7 +46,7 @@ export function EditorHeaderActions({
         ) : (
           <>
             <CheckCircle2 className="size-3.5 text-emerald-500" />
-            <span>Đã lưu nháp lúc {lastSavedTime}</span>
+            <span>{t("editor.header.savedAt", { time: lastSavedTime })}</span>
           </>
         )}
       </div>
@@ -74,7 +76,11 @@ export function EditorHeaderActions({
         className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-[#f05a28] px-4 py-1.5 text-xs font-medium text-white shadow-xs transition-colors hover:bg-[#f05a28]/90 disabled:opacity-50"
       >
         <Send className="size-3.5" />
-        <span>{isSubmitting ? "Đang gửi..." : "Gửi phê duyệt"}</span>
+        <span>
+          {isSubmitting
+            ? t("editor.header.submitting")
+            : t("editor.header.submitForApproval")}
+        </span>
       </button>
     </div>
   );

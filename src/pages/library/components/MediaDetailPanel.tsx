@@ -12,6 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface MediaDetailPanelProps {
   media: MediaItem | null;
@@ -24,6 +25,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
   onClose,
   onDelete,
 }) => {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -32,7 +34,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(media.url);
     setCopied(true);
-    toast.success("Đã copy S3 URL vào clipboard!");
+    toast.success(t("library.media.copyUrlSuccess"));
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -41,7 +43,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
       setIsDeleting(true);
       try {
         await onDelete(media.id);
-        toast.success("Đã xóa file media thành công");
+        toast.success(t("library.media.deleteFileSuccess"));
         onClose();
       } catch (err) {
         toast.error("Lỗi khi xóa file");
@@ -197,7 +199,9 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
             className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-red-50 px-4 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-900/60"
           >
             <Trash2 className="size-4" />
-            {isDeleting ? "Đang xóa..." : "Xóa File"}
+            {isDeleting
+              ? t("library.media.deleting")
+              : t("library.media.deleteFileButton")}
           </button>
 
           <button

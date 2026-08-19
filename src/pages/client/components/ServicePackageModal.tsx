@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +32,7 @@ export function ServicePackageModal({
   onSubmit,
   isLoading = false,
 }: ServicePackageModalProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<UpdateServicePackageDTO>({
     packageTier: "GROWTH",
     monthlyPostLimit: 30,
@@ -189,7 +191,9 @@ export function ServicePackageModal({
               disabled={isLoading}
               className="cursor-pointer gap-1.5 bg-[#f05a28] text-xs text-white hover:bg-[#f05a28]/90"
             >
-              {isLoading ? "Đang xử lý..." : "Cập nhật Gói Dịch Vụ"}
+              {isLoading
+                ? t("client.servicePackage.processing")
+                : t("client.servicePackage.updateButton")}
             </Button>
           </DialogFooter>
         </form>

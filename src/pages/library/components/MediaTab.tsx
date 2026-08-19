@@ -12,10 +12,12 @@ import {
   Loader2,
   Play,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 
 export const MediaTab: React.FC = () => {
+  const { t } = useTranslation();
   const [mediaList, setMediaList] = useState<MediaItem[]>([]);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -213,13 +215,13 @@ export const MediaTab: React.FC = () => {
                 <span className="truncate text-xs leading-tight font-semibold">
                   {media.filename}
                 </span>
-                <span className="mt-0.5 font-mono text-3xs text-zinc-300">
+                <span className="text-3xs mt-0.5 font-mono text-zinc-300">
                   {(media.sizeBytes / (1024 * 1024)).toFixed(1)} MB
                 </span>
               </div>
 
               {/* Type Badge Top Right */}
-              <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-3xs font-bold text-white uppercase backdrop-blur-xs">
+              <div className="text-3xs absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 font-bold text-white uppercase backdrop-blur-xs">
                 {media.type === "video" ? (
                   <>
                     <Film className="text-brand-orange size-3" /> Video
@@ -240,7 +242,7 @@ export const MediaTab: React.FC = () => {
         {loading && (
           <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-xs font-medium text-zinc-500 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
             <Loader2 className="text-brand-orange size-4 animate-spin" />
-            <span>Đang tải thêm media...</span>
+            <span>{t("library.media.loadingMore")}</span>
           </div>
         )}
         {!hasMore && mediaList.length > 0 && (

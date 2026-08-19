@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Client } from "../types/client";
@@ -19,13 +20,14 @@ export function ClientTable({
   onSelectPackage,
   onSelectDelete,
 }: ClientTableProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left">
         <thead>
-          <tr className="border-border bg-muted/40 text-muted-foreground border-b text-2xs font-bold tracking-wider uppercase">
+          <tr className="border-border bg-muted/40 text-muted-foreground text-2xs border-b font-bold tracking-wider uppercase">
             <th className="px-4 py-3">Thương hiệu / Client</th>
             <th className="px-4 py-3">Account Manager</th>
             <th className="px-4 py-3 text-center">Active Posts</th>
@@ -97,7 +99,7 @@ export function ClientTable({
                       <span className="text-foreground group-hover:text-brand-orange block truncate font-bold transition-colors">
                         {client.name}
                       </span>
-                      <span className="text-muted-foreground block truncate text-2xs">
+                      <span className="text-muted-foreground text-2xs block truncate">
                         {client.contactEmail}
                       </span>
                     </div>
@@ -114,7 +116,7 @@ export function ClientTable({
                         className="size-5 shrink-0 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="bg-muted flex size-5 items-center justify-center rounded-full text-3xs font-bold">
+                      <div className="bg-muted text-3xs flex size-5 items-center justify-center rounded-full font-bold">
                         A
                       </div>
                     )}
@@ -137,7 +139,7 @@ export function ClientTable({
                 {/* Service Package Badge */}
                 <td className="px-4 py-3">
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-3xs font-bold ${
+                    className={`text-3xs inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-bold ${
                       client.servicePackage?.packageTier === "ENTERPRISE"
                         ? "border-purple-500/20 bg-purple-500/10 text-purple-600"
                         : client.servicePackage?.packageTier === "GROWTH"
@@ -153,7 +155,7 @@ export function ClientTable({
                 {/* Status Badge */}
                 <td className="px-4 py-3 text-center">
                   <span
-                    className={`inline-flex items-center rounded px-2 py-0.5 text-3xs font-medium ${
+                    className={`text-3xs inline-flex items-center rounded px-2 py-0.5 font-medium ${
                       client.status === "ACTIVE"
                         ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-600"
                         : "border border-gray-500/20 bg-gray-500/10 text-gray-500"
@@ -181,7 +183,7 @@ export function ClientTable({
                           variant="ghost"
                           size="icon"
                           className="text-muted-foreground hover:text-brand-orange size-7 cursor-pointer"
-                          title="Đổi gói dịch vụ"
+                          title={t("client.table.changeServicePackage")}
                           onClick={() => onSelectPackage(client)}
                         >
                           <Zap className="size-3.5" />

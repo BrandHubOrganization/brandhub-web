@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Hash, Save } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface HashtagGroupFormModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [hashtagsText, setHashtagsText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,7 +76,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
       if (err.message === "DUPLICATE_NAME") {
         setErrorMsg("Tên nhóm hashtag này đã tồn tại trong workspace.");
       } else {
-        setErrorMsg("Đã xảy ra lỗi khi lưu nhóm hashtag.");
+        setErrorMsg(t("hashtagGroups.saveError"));
       }
     } finally {
       setIsSubmitting(false);

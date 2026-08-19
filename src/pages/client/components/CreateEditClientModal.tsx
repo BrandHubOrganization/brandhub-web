@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
 import type { CreateClientDTO, PackageTier } from "../types/client";
 import { Building2, Mail, UserCheck } from "lucide-react";
 
@@ -26,6 +27,7 @@ export function CreateEditClientModal({
   onSubmit,
   isLoading = false,
 }: CreateEditClientModalProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<CreateClientDTO>({
     name: "",
     logoUrl: "",
@@ -208,7 +210,9 @@ export function CreateEditClientModal({
               disabled={isLoading}
               className="cursor-pointer gap-1.5 bg-[#f05a28] text-xs text-white hover:bg-[#f05a28]/90"
             >
-              {isLoading ? "Đang xử lý..." : "Tạo Client Mới"}
+              {isLoading
+                ? t("client.createEdit.processing")
+                : t("client.createEdit.createButton")}
             </Button>
           </DialogFooter>
         </form>

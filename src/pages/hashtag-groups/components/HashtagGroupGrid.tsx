@@ -1,6 +1,7 @@
 import { Plus, Hash, Edit2, Trash2, Loader2, FileQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { HashtagGroup } from "@/types/hashtagGroup";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   groups: HashtagGroup[];
@@ -17,11 +18,12 @@ export function HashtagGroupGrid({
   onEdit,
   onDelete,
 }: Props) {
+  const { t } = useTranslation();
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center space-y-3 py-20 text-zinc-400">
         <Loader2 className="text-brand-orange size-8 animate-spin" />
-        <p className="text-xs font-medium">Đang tải nhóm hashtag...</p>
+        <p className="text-xs font-medium">{t("hashtagGroups.loading")}</p>
       </div>
     );
   }
@@ -97,7 +99,7 @@ export function HashtagGroupGrid({
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-2xs text-zinc-400">
+              <div className="text-2xs flex items-center justify-between text-zinc-400">
                 <span>
                   Số lượng:{" "}
                   <strong className="font-mono text-zinc-700 dark:text-zinc-300">

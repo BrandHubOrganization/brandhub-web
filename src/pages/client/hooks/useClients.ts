@@ -6,8 +6,10 @@ import type {
   UpdateServicePackageDTO,
 } from "../types/client";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export function useClients() {
+  const { t } = useTranslation();
   const [clients, setClients] = useState<Client[]>([]);
   const [totalElements, setTotalElements] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -50,7 +52,7 @@ export function useClients() {
     try {
       const updated = await clientService.updateServicePackage(id, dto);
       setClients((prev) => prev.map((c) => (c.id === id ? updated : c)));
-      toast.success("Đã nâng cấp/cập nhật gói dịch vụ!");
+      toast.success(t("client.servicePackage.upgradeSuccess"));
       return updated;
     } catch (error) {
       toast.error("Không thể cập nhật gói dịch vụ");
@@ -63,7 +65,7 @@ export function useClients() {
       await clientService.deleteClient(id);
       setClients((prev) => prev.filter((c) => c.id !== id));
       setTotalElements((prev) => Math.max(0, prev - 1));
-      toast.success("Đã xóa thương hiệu khách hàng!");
+      toast.success(t("client.deleteSuccess"));
     } catch (error) {
       toast.error("Không thể xóa khách hàng");
       throw error;

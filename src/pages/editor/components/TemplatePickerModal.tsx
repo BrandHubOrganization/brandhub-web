@@ -3,6 +3,7 @@ import { LayoutTemplate, Search, Check, X } from "lucide-react";
 import { mockTemplateService } from "@/services/mockTemplateService";
 import type { ContentTemplate } from "@/types/template";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 
 interface TemplatePickerModalProps {
@@ -16,6 +17,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
   onClose,
   onSelectTemplate,
 }) => {
+  const { t } = useTranslation();
   const [templates, setTemplates] = useState<ContentTemplate[]>([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -100,7 +102,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
                     <h4 className="group-hover:text-brand-orange line-clamp-1 text-xs font-semibold text-zinc-900 transition-colors dark:text-zinc-100">
                       {tpl.title}
                     </h4>
-                    <span className="bg-brand-orange-soft text-brand-orange shrink-0 rounded-full px-2 py-0.5 font-mono text-3xs font-bold">
+                    <span className="bg-brand-orange-soft text-brand-orange text-3xs shrink-0 rounded-full px-2 py-0.5 font-mono font-bold">
                       Template
                     </span>
                   </div>
@@ -116,7 +118,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
                     {tpl.hashtags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-3xs text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+                        className="text-3xs rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
                       >
                         {tag}
                       </span>
@@ -129,7 +131,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
                     className="bg-brand-orange hover:bg-brand-orange/90 flex shrink-0 cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold text-white shadow-2xs transition-colors"
                   >
                     <Check className="size-3.5" />
-                    <span>Áp dụng</span>
+                    <span>{t("editor.templatePicker.apply")}</span>
                   </button>
                 </div>
               </div>

@@ -1,5 +1,6 @@
 import { X, Copy, Maximize2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface ImageLightboxModalProps {
   isOpen: boolean;
@@ -12,11 +13,12 @@ export const ImageLightboxModal: React.FC<ImageLightboxModalProps> = ({
   imageUrl,
   onClose,
 }) => {
+  const { t } = useTranslation();
   if (!isOpen || !imageUrl) return null;
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(imageUrl);
-    toast.success("Đã copy đường dẫn ảnh vào clipboard!");
+    toast.success(t("editor.imageLightbox.copySuccess"));
   };
 
   return (

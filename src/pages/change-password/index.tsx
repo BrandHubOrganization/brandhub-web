@@ -2,6 +2,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/auth/PasswordInput";
@@ -9,6 +10,7 @@ import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
 
 export function ChangePasswordPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
@@ -24,10 +26,12 @@ export function ChangePasswordPage() {
     setLoading(true);
     try {
       await authService.changePassword({ currentPassword, newPassword });
-      toast.success("Đổi mật khẩu thành công");
+      toast.success(t("settings.security.changeSuccess"));
       navigate("/");
     } catch (err: unknown) {
-      toast.error(extractErrorMessage(err, "Đổi mật khẩu thất bại"));
+      toast.error(
+        extractErrorMessage(err, t("settings.security.changeFailed")),
+      );
     } finally {
       setLoading(false);
     }
@@ -35,7 +39,7 @@ export function ChangePasswordPage() {
 
   return (
     <PageWrapper
-      title="Đổi mật khẩu"
+      title={t("settings.security.submit")}
       description="Trang test tạm — giao diện chính thức làm sau."
     >
       <form

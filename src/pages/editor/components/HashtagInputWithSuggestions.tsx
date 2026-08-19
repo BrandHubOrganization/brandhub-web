@@ -12,6 +12,7 @@ import {
 import { mockHashtagGroupService } from "@/services/mockHashtagGroupService";
 import type { HashtagGroup } from "@/types/hashtagGroup";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 
 interface HashtagInputWithSuggestionsProps {
@@ -39,6 +40,7 @@ const TRENDING_HASHTAGS = [
 export const HashtagInputWithSuggestions: React.FC<
   HashtagInputWithSuggestionsProps
 > = ({ hashtags, onChange }) => {
+  const { t } = useTranslation();
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [groups, setGroups] = useState<HashtagGroup[]>([]);
@@ -85,13 +87,13 @@ export const HashtagInputWithSuggestions: React.FC<
     if (hashtags.length === 0) return;
     navigator.clipboard.writeText(hashtags.join(" "));
     setCopied(true);
-    toast.success("Đã copy toàn bộ bộ Hashtag vào clipboard!");
+    toast.success(t("editor.hashtagInput.copyAllSuccess"));
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleClearAll = () => {
     onChange([]);
-    toast.info("Đã xoá toàn bộ Hashtags");
+    toast.info(t("editor.hashtagInput.clearAllSuccess"));
   };
 
   const filteredSuggestions = TRENDING_HASHTAGS.filter(
@@ -114,14 +116,18 @@ export const HashtagInputWithSuggestions: React.FC<
             <button
               type="button"
               onClick={handleCopyAll}
-              className="hover:text-brand-orange flex cursor-pointer items-center gap-1 px-2 py-0.5 text-2xs font-medium text-zinc-600 transition-colors dark:text-zinc-400"
+              className="hover:text-brand-orange text-2xs flex cursor-pointer items-center gap-1 px-2 py-0.5 font-medium text-zinc-600 transition-colors dark:text-zinc-400"
             >
               {copied ? (
                 <Check className="size-3 text-emerald-500" />
               ) : (
                 <Copy className="size-3" />
               )}
-              <span>{copied ? "Đã copy" : "Copy bộ Tag"}</span>
+              <span>
+                {copied
+                  ? t("editor.hashtagInput.copied")
+                  : t("editor.hashtagInput.copyAllButton")}
+              </span>
             </button>
           )}
 
@@ -130,7 +136,7 @@ export const HashtagInputWithSuggestions: React.FC<
             <button
               type="button"
               onClick={handleClearAll}
-              className="cursor-pointer text-2xs font-medium text-rose-500 hover:underline"
+              className="text-2xs cursor-pointer font-medium text-rose-500 hover:underline"
             >
               Xoá tất cả
             </button>
@@ -142,7 +148,7 @@ export const HashtagInputWithSuggestions: React.FC<
               <button
                 type="button"
                 onClick={() => setShowGroupDropdown(!showGroupDropdown)}
-                className="text-brand-orange bg-brand-orange-soft hover:bg-brand-orange/20 flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-2xs font-semibold transition-colors"
+                className="text-brand-orange bg-brand-orange-soft hover:bg-brand-orange/20 text-2xs flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 font-semibold transition-colors"
               >
                 <FolderKanban className="size-3.5" />
                 <span>Load từ Nhóm</span>
@@ -151,7 +157,7 @@ export const HashtagInputWithSuggestions: React.FC<
 
               {showGroupDropdown && (
                 <div className="absolute top-full right-0 z-30 mt-1 w-64 space-y-1 rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-                  <span className="block px-2 text-3xs font-semibold tracking-wider text-zinc-400 uppercase">
+                  <span className="text-3xs block px-2 font-semibold tracking-wider text-zinc-400 uppercase">
                     Chọn nhóm hashtag đã lưu:
                   </span>
                   <div className="max-h-48 space-y-1 overflow-y-auto">
@@ -165,7 +171,7 @@ export const HashtagInputWithSuggestions: React.FC<
                         <span className="text-foreground line-clamp-1 font-semibold">
                           {group.name}
                         </span>
-                        <span className="text-brand-orange truncate font-mono text-3xs">
+                        <span className="text-brand-orange text-3xs truncate font-mono">
                           {group.hashtags.join(", ")}
                         </span>
                       </button>
@@ -196,7 +202,7 @@ export const HashtagInputWithSuggestions: React.FC<
         {/* Suggestions Popup */}
         {showSuggestions && filteredSuggestions.length > 0 && (
           <div className="absolute top-full right-0 left-0 z-20 mt-1 max-h-48 space-y-1 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-            <span className="mb-1 flex items-center justify-between px-2 text-3xs font-semibold tracking-wider text-zinc-400 uppercase">
+            <span className="text-3xs mb-1 flex items-center justify-between px-2 font-semibold tracking-wider text-zinc-400 uppercase">
               <span>Gợi ý hashtag thịnh hành:</span>
               <Sparkles className="text-brand-orange size-3" />
             </span>

@@ -3,10 +3,12 @@ import type { HashtagGroup } from "@/types/contentLibrary";
 import { mockContentLibraryService } from "@/services/mockContentLibraryService";
 import { Hash, Copy, Plus, Edit2, Trash2, Check, X, Tag } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 export const HashtagGroupsTab: React.FC = () => {
+  const { t } = useTranslation();
   const [groups, setGroups] = useState<HashtagGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -100,7 +102,7 @@ export const HashtagGroupsTab: React.FC = () => {
       try {
         await mockContentLibraryService.deleteHashtagGroup(id);
         setGroups((prev) => prev.filter((g) => g.id !== id));
-        toast.success("Đã xóa nhóm Hashtag");
+        toast.success(t("hashtagGroups.deleteSuccess"));
       } catch (err) {
         toast.error("Lỗi khi xóa nhóm Hashtag");
       }
@@ -188,7 +190,7 @@ export const HashtagGroupsTab: React.FC = () => {
 
               {/* Copy Action Footer */}
               <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
-                <span className="font-mono text-2xs text-zinc-400">
+                <span className="text-2xs font-mono text-zinc-400">
                   {group.tags.length} hashtags
                 </span>
                 <button
@@ -198,7 +200,7 @@ export const HashtagGroupsTab: React.FC = () => {
                   {copiedId === group.id ? (
                     <>
                       <Check className="size-3.5 text-emerald-500" />
-                      <span>Đã Copy</span>
+                      <span>{t("hashtagGroups.copied")}</span>
                     </>
                   ) : (
                     <>
@@ -271,7 +273,9 @@ export const HashtagGroupsTab: React.FC = () => {
                   disabled={isSaving}
                   className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer rounded-xl px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
                 >
-                  {isSaving ? "Đang lưu..." : "Lưu Nhóm"}
+                  {isSaving
+                    ? t("hashtagGroups.saving")
+                    : t("hashtagGroups.saveButton")}
                 </button>
               </div>
             </form>

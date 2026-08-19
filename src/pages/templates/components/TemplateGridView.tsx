@@ -8,6 +8,7 @@ import {
   FileQuestion,
 } from "lucide-react";
 import type { ContentTemplate } from "@/types/template";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   templates: ContentTemplate[];
@@ -33,11 +34,12 @@ export function TemplateGridView({
   onPrevPage,
   onNextPage,
 }: Props) {
+  const { t } = useTranslation();
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center space-y-3 py-20 text-zinc-400">
         <Loader2 className="text-brand-orange size-8 animate-spin" />
-        <p className="text-xs font-medium">Đang tải thư viện mẫu bài viết...</p>
+        <p className="text-xs font-medium">{t("templates.grid.loading")}</p>
       </div>
     );
   }
@@ -64,7 +66,7 @@ export function TemplateGridView({
           size="sm"
         >
           <LayoutTemplate className="mr-1 size-4" />
-          <span>Đi đến Content Editor</span>
+          <span>{t("templates.grid.goToEditor")}</span>
         </Button>
       </div>
     );

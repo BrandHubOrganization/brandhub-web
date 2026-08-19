@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import type { MediaItem } from "@/types/contentLibrary";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 
 interface MediaUploadButtonProps {
@@ -13,6 +14,7 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
   onUploadSuccess,
   onUploadStart,
 }) => {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -62,7 +64,7 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
         {isUploading ? (
           <>
             <Loader2 className="size-4 animate-spin" />
-            <span>Đang tải lên...</span>
+            <span>{t("library.media.uploading")}</span>
           </>
         ) : (
           <>

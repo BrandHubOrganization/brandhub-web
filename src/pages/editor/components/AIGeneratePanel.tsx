@@ -14,6 +14,7 @@ import { mockEditorService } from "@/services/mockEditorService";
 import type { SocialPlatform, AIErrorType } from "@/types/editor";
 import { ImageLightboxModal } from "./ImageLightboxModal";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface AIGeneratePanelProps {
   topic?: string;
@@ -45,6 +46,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
   targetPlatforms = ["FACEBOOK", "INSTAGRAM", "TIKTOK"],
   onApplyAIResult,
 }) => {
+  const { t } = useTranslation();
   const [prompt, setPrompt] = useState(
     "Viết bài đăng hấp dẫn, ngắn gọn với giọng văn thu hút và kêu gọi hành động.",
   );
@@ -107,7 +109,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
       setShowFeedbackInput(false);
       toast.success(
         isRegenerate
-          ? "Đã tái tạo nội dung theo phản hồi!"
+          ? t("editor.aiGenerate.regenerateSuccess")
           : "AI Co-Pilot đã tạo xong nội dung!",
       );
     } catch (err: any) {
@@ -131,7 +133,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
         generatedResult.hashtags,
         generatedResult.imageUrl,
       );
-      toast.success("Đã áp dụng Caption, Hashtags & Ảnh AI vào bài viết!");
+      toast.success(t("editor.aiGenerate.applySuccess"));
     }
   };
 
@@ -146,7 +148,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
           <div>
             <h3 className="text-foreground flex items-center gap-1.5 text-sm font-semibold">
               Trợ lý AI Co-Pilot
-              <span className="bg-brand-orange-soft text-brand-orange rounded-full px-1.5 py-0.5 text-3xs font-bold">
+              <span className="bg-brand-orange-soft text-brand-orange text-3xs rounded-full px-1.5 py-0.5 font-bold">
                 Pro
               </span>
             </h3>
@@ -158,7 +160,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
 
         {/* Quick Presets */}
         <div className="space-y-1.5">
-          <span className="block text-2xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+          <span className="text-2xs block font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
             Gợi ý phong cách:
           </span>
           <div className="flex flex-wrap gap-1.5">
@@ -169,7 +171,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
                 onClick={() =>
                   setPrompt((prev) => `${prev} ${preset.promptAdd}`)
                 }
-                className="hover:bg-brand-orange-soft hover:text-brand-orange cursor-pointer rounded-lg bg-zinc-100 px-2.5 py-1 text-2xs font-medium text-zinc-700 transition-colors dark:bg-zinc-800 dark:text-zinc-300"
+                className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs cursor-pointer rounded-lg bg-zinc-100 px-2.5 py-1 font-medium text-zinc-700 transition-colors dark:bg-zinc-800 dark:text-zinc-300"
               >
                 + {preset.label}
               </button>
@@ -247,7 +249,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
                 Kết Quả AI Sinh (Text & Stability AI):
               </span>
               {isGenerating && (
-                <span className="font-mono text-3xs text-zinc-400">
+                <span className="text-3xs font-mono text-zinc-400">
                   Ước tính: ~{estimatedSeconds}s
                 </span>
               )}
@@ -276,7 +278,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
             {/* Generated AI Image Thumbnail with Lightbox */}
             {generatedResult?.imageUrl && (
               <div className="space-y-1.5 pt-1">
-                <span className="block text-3xs font-semibold text-zinc-400">
+                <span className="text-3xs block font-semibold text-zinc-400">
                   Ảnh AI Sinh (Stability AI):
                 </span>
                 <div
@@ -299,14 +301,14 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
             {/* Generated Hashtags Tags */}
             {generatedResult && (
               <div className="border-t border-zinc-200/60 pt-2 dark:border-zinc-700/60">
-                <span className="mb-1 block text-3xs font-semibold text-zinc-400">
+                <span className="text-3xs mb-1 block font-semibold text-zinc-400">
                   Hashtags đính kèm:
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {generatedResult.hashtags.map((tag) => (
                     <span
                       key={tag}
-                      className="bg-brand-orange-soft text-brand-orange rounded-md px-2 py-0.5 font-mono text-3xs font-medium"
+                      className="bg-brand-orange-soft text-brand-orange text-3xs rounded-md px-2 py-0.5 font-mono font-medium"
                     >
                       {tag}
                     </span>
@@ -334,7 +336,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
               </button>
             ) : (
               <div className="bg-brand-orange-soft/40 border-brand-orange/20 space-y-1.5 rounded-xl border p-3">
-                <label className="text-brand-orange block text-2xs font-semibold">
+                <label className="text-brand-orange text-2xs block font-semibold">
                   Ý kiến phản hồi tinh chỉnh AI (Feedback):
                 </label>
                 <input

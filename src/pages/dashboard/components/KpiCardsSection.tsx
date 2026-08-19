@@ -6,6 +6,7 @@ import {
   RefreshCw,
   AlertCircle,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import type { AnalyticsOverview } from "@/types/analytics";
@@ -23,6 +24,7 @@ export function KpiCardsSection({
   isError,
   onRetry,
 }: KpiCardsSectionProps) {
+  const { t } = useTranslation();
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -72,7 +74,7 @@ export function KpiCardsSection({
       accentColor: "border-l-brand-orange",
     },
     {
-      title: "Đã xuất bản thành công",
+      title: t("dashboard.kpi.publishedSuccessTitle"),
       value: data.publishedCount.toLocaleString("vi-VN"),
       change: "+8.2% đúng tiến độ",
       icon: CheckCircle2,
@@ -90,7 +92,7 @@ export function KpiCardsSection({
     {
       title: "Tỷ lệ thành công",
       value: `${data.successRate}%`,
-      change: "Đạt mục tiêu hệ thống",
+      change: t("dashboard.kpi.systemTargetMet"),
       icon: TrendingUp,
       iconBg: "bg-[#f05a28]/10 text-[#f05a28]",
       accentColor: "border-l-[#f05a28]",
@@ -121,9 +123,7 @@ export function KpiCardsSection({
                 {card.value}
               </span>
             </div>
-            <p className="text-muted-foreground mt-1 text-2xs">
-              {card.change}
-            </p>
+            <p className="text-muted-foreground text-2xs mt-1">{card.change}</p>
           </div>
         );
       })}

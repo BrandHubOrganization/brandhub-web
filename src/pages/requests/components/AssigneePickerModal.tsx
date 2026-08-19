@@ -3,6 +3,7 @@ import type { Assignee } from "@/types/contentRequest";
 import { MOCK_CREATORS } from "@/services/mockContentRequestService";
 import { X, Search, Check, UserPlus } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface AssigneePickerModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string>(
     currentAssignee?.id || "",
   );
@@ -111,7 +113,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
                     <h4 className="text-foreground text-xs font-semibold">
                       {creator.name}
                     </h4>
-                    <span className="text-muted-foreground font-mono text-3xs">
+                    <span className="text-muted-foreground text-3xs font-mono">
                       {creator.email}
                     </span>
                   </div>
@@ -142,7 +144,9 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
             disabled={isSubmitting}
             className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer rounded-xl px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
           >
-            {isSubmitting ? "Đang gán..." : "Xác nhận gán"}
+            {isSubmitting
+              ? t("requests.assigneePicker.assigning")
+              : t("requests.assigneePicker.confirmButton")}
           </button>
         </div>
       </div>

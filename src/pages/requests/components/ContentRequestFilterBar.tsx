@@ -4,6 +4,7 @@ import type {
   SocialPlatform,
 } from "@/types/contentRequest";
 import { Search, Calendar, RotateCcw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ContentRequestFilterBarProps {
   searchQuery: string;
@@ -84,6 +85,7 @@ export const ContentRequestFilterBar: React.FC<
   onEndDateChange,
   onResetFilters,
 }) => {
+  const { t } = useTranslation();
   const [localSearch, setLocalSearch] = useState(searchQuery);
 
   // Debounce search input by 300ms
@@ -145,7 +147,7 @@ export const ContentRequestFilterBar: React.FC<
             <button
               onClick={onResetFilters}
               className="flex items-center gap-1 rounded-xl bg-zinc-100 px-3 py-2 text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-800 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
-              title="Đặt lại bộ lọc"
+              title={t("requests.filterBar.resetFilter")}
             >
               <RotateCcw className="size-3.5" />
               <span>Reset</span>
@@ -156,7 +158,7 @@ export const ContentRequestFilterBar: React.FC<
 
       {/* Multi-select Status Badges Filter */}
       <div className="flex flex-wrap items-center gap-2 border-t border-zinc-100 pt-1 dark:border-zinc-800/80">
-        <span className="mr-1 text-2xs font-semibold tracking-wider text-zinc-400 uppercase">
+        <span className="text-2xs mr-1 font-semibold tracking-wider text-zinc-400 uppercase">
           Status:
         </span>
         {ALL_STATUSES.map(({ key, label, colorClass }) => {
@@ -179,7 +181,7 @@ export const ContentRequestFilterBar: React.FC<
 
       {/* Multi-select Platform Filter */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="mr-1 text-2xs font-semibold tracking-wider text-zinc-400 uppercase">
+        <span className="text-2xs mr-1 font-semibold tracking-wider text-zinc-400 uppercase">
           Platform:
         </span>
         {ALL_PLATFORMS.map((p) => {

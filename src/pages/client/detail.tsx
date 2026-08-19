@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 // Feature Imports
 import { clientService } from "./services/clientService";
@@ -15,6 +16,7 @@ import { ClientSocialAccounts } from "./components/ClientSocialAccounts";
 import { ClientContentRequests } from "./components/ClientContentRequests";
 
 export function ClientDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -40,7 +42,10 @@ export function ClientDetailPage() {
 
   if (isLoading) {
     return (
-      <PageWrapper title="Chi tiết Client" description="Đang tải dữ liệu...">
+      <PageWrapper
+        title={t("client.detail.title")}
+        description={t("client.detail.loading")}
+      >
         <div className="space-y-6">
           <Skeleton className="h-28 w-full rounded-xl" />
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

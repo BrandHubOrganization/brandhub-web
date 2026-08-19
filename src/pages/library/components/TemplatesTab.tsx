@@ -4,11 +4,13 @@ import { mockContentLibraryService } from "@/services/mockContentLibraryService"
 import { FileText, ArrowRight, Plus, Trash2, Calendar, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 
 export const TemplatesTab: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [templates, setTemplates] = useState<PostTemplate[]>([]);
   const [hashtagGroups, setHashtagGroups] = useState<HashtagGroup[]>([]);
@@ -89,7 +91,7 @@ export const TemplatesTab: React.FC = () => {
       try {
         await mockContentLibraryService.deleteTemplate(id);
         setTemplates((prev) => prev.filter((t) => t.id !== id));
-        toast.success("Đã xóa mẫu bài viết");
+        toast.success(t("library.templates.deleteSuccess"));
       } catch (err) {
         toast.error("Lỗi khi xóa template");
       }
@@ -159,14 +161,14 @@ export const TemplatesTab: React.FC = () => {
                 {/* Attached Hashtag Group */}
                 {tpl.hashtagGroup && (
                   <div className="mb-4">
-                    <span className="mb-1 block text-3xs font-semibold tracking-wider text-zinc-400 uppercase">
+                    <span className="text-3xs mb-1 block font-semibold tracking-wider text-zinc-400 uppercase">
                       Nhóm Hashtag Đính Kèm:
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {tpl.hashtagGroup.tags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className="bg-brand-orange-soft text-brand-orange rounded-md px-2 py-0.5 font-mono text-3xs font-semibold"
+                          className="bg-brand-orange-soft text-brand-orange text-3xs rounded-md px-2 py-0.5 font-mono font-semibold"
                         >
                           {tag}
                         </span>
@@ -178,7 +180,7 @@ export const TemplatesTab: React.FC = () => {
 
               {/* Action Button */}
               <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
-                <span className="flex items-center gap-1 text-2xs text-zinc-400">
+                <span className="text-2xs flex items-center gap-1 text-zinc-400">
                   <Calendar className="size-3" />
                   {new Date(tpl.createdAt).toLocaleDateString("vi-VN")}
                 </span>
@@ -270,7 +272,9 @@ export const TemplatesTab: React.FC = () => {
                   disabled={isSaving}
                   className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer rounded-xl px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
                 >
-                  {isSaving ? "Đang tạo..." : "Tạo Template"}
+                  {isSaving
+                    ? t("library.templates.creating")
+                    : t("library.templates.createButton")}
                 </button>
               </div>
             </form>
