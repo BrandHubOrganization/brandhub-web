@@ -172,7 +172,8 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
         onClose={() => setIsPreviewOpen(false)}
         data={{
           title,
-          caption: caption || title || t("calendar.schedule.captionPlaceholder"),
+          caption:
+            caption || title || t("calendar.schedule.captionPlaceholder"),
           targetPlatforms: [
             platform,
             "FACEBOOK",
