@@ -24,23 +24,36 @@
   // Đúng — dùng class Tailwind semantic
   <div className="bg-background text-foreground">
 
-  // Đúng — variant dark:
-  <div className="bg-white dark:bg-zinc-900">
+  // Đúng — token semantic thay cho bg-white/dark:bg-zinc-900
+  <div className="bg-card text-foreground">
+  <div className="bg-muted text-muted-foreground">
 
   // Đúng — token thương hiệu
   <Button variant="orange">Đăng ký</Button>
 
+  // Đúng — hover state dùng opacity trên token, không tự chế màu tối
+  <button className="bg-brand-orange hover:bg-brand-orange/90">Lưu</button>
+
   // Sai — hardcode màu
   <div style={{ background: "#fafafa" }}>
   <Button className="bg-[#f05a28] text-white">Đăng ký</Button>
+  <button className="bg-brand-orange hover:bg-[#d94e20]">Lưu</button>
   ```
 - **Nguyên tắc màu:** ưu tiên class semantic (`bg-primary`, `text-muted-foreground`,
-  `bg-card`, `border-border`) + token thương hiệu (`bg-brand-orange`,
-  `text-brand-orange`, `bg-brand-orange-soft`). KHÔNG dùng raw hex/raw palette
-  (`bg-[#f05a28]`, `text-zinc-500`, `bg-white` cho nền có token tương đương).
+  `bg-card`, `bg-muted`, `text-foreground`, `border-border`) + token thương hiệu
+  (`bg-brand-orange`, `text-brand-orange`, `bg-brand-orange-soft`). KHÔNG dùng raw
+  hex/raw palette (`bg-[#f05a28]`, `text-zinc-500`, `bg-white`/`dark:bg-zinc-900` khi
+  đã có `bg-card` tương đương).
+- **Hover/active state:** dùng opacity trên token (`hover:bg-brand-orange/90`,
+  `active:bg-brand-orange/80`), KHÔNG tự pha màu tối hơn bằng hex riêng
+  (`hover:bg-[#d94e20]`).
 - **Ngoại lệ:** Được dùng `var(--brand-orange)` trong `style` prop khi Tailwind không
   hỗ trợ (màu động, gradient). Mọi màu hex tĩnh phải khai báo tập trung trong
   `src/theme/colors.ts` và tham chiếu qua token.
+- **Ngoại lệ — brand màu bên thứ 3:** SVG icon/logo của nhà cung cấp OAuth
+  (Google, Microsoft, LinkedIn…) giữ nguyên hex chính hãng (`fill="#4285F4"`)
+  — đây là brand color bắt buộc theo guideline của bên thứ 3, không phải màu
+  UI tự chọn, không thay bằng token.
 - **Token `--sidebar*`:** Sidebar dùng `--sidebar`, `--sidebar-foreground`,
   `--sidebar-border` — 3 token này phải có trong `:root` + `.dark` (mặc định
   `#09090b` / `#fafafa` / `#27272a`).
@@ -74,6 +87,11 @@
 - **Key-parallel (bắt buộc):** key thêm vào `vi.json` phải thêm đồng bộ vào `en.json`.
   Hai file luôn song song — thiếu 1 bên là lỗi.
 - **Không nhúng text trong code logic** — mọi string hiển thị phải qua `t()`.
+- **Ngoại lệ — text là dữ liệu, không phải UI chrome:** sample/mock content (caption
+  demo, tên khách hàng giả, industry mẫu trong `mockXxxService.ts`) KHÔNG cần qua
+  `t()` — đó là dữ liệu giả lập một người dùng thật sẽ nhập, không phải nhãn giao
+  diện. Chỉ label/button/placeholder/toast/title do hệ thống hiển thị mới bắt buộc
+  i18n.
 
 ---
 
@@ -525,8 +543,16 @@ Dấu hiệu cần refactor ngay:
     `@theme` rồi dùng `text-2xs`.
 - **Heading page:** dùng `PageWrapper` (title=`text-3xl font-bold tracking-tight`,
   description=`text-sm text-muted-foreground`) — mọi page đi qua shell này để đồng bộ.
-- **Card radius:** chốt 1 thang — ưu tiên `rounded-xl` (12px) cho card, `rounded-lg` (8px)
-  cho control nhỏ. Không trộn `rounded-md`/`rounded-xl`/`rounded-2xl` tuỳ tiện.
+- **Card radius:** container lớn (card/modal/panel — wrapper có `bg-card`/`border` bao
+  quanh 1 khối nội dung) chốt `rounded-xl` (12px). Không trộn `rounded-md`/`rounded-lg`/
+  `rounded-2xl` cho cùng loại container.
+- **Badge/button nhỏ:** `rounded-md` (6px) vẫn hợp lệ cho phần tử nhỏ (badge, tag,
+  button `px-2 py-0.5`, input `h-9`) — tỷ lệ radius nhỏ khớp kích thước nhỏ, KHÔNG bắt
+  buộc nâng lên `rounded-xl`.
+- **`components/ui/*` primitives:** radius mặc định của `Button`/`Input`/`Badge`/
+  `Select`/`Textarea`/… KHÔNG tự ý đổi — đây là default cho toàn hệ thống, đổi ở đây
+  ảnh hưởng mọi nơi dùng primitive đó. Muốn khác đi thì override qua `className` tại
+  nơi dùng, không sửa primitive.
 - **Shadow:** `shadow-xs`/`shadow-sm` cho card; `shadow-md` chỉ khi cần elevation. Không
   dùng pure-black drop-shadow trên nền sáng.
 - **Spacing:** dùng thang `space-y-*` / `gap-*` / `p-*` Tailwind (4px base), không dùng
