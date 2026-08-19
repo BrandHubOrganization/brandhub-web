@@ -1,0 +1,62 @@
+import { Plus } from "lucide-react";
+import PageWrapper from "@/components/layout/PageWrapper";
+import { PlatformFilter } from "@/components/calendar/PlatformFilter";
+import { ContentCalendar } from "@/components/calendar/ContentCalendar";
+import { SchedulePostModal } from "@/components/calendar/SchedulePostModal";
+import { useContentCalendar } from "./hooks/useContentCalendar";
+
+export function CalendarPage() {
+  const {
+    events,
+    selectedPlatforms,
+    setSelectedPlatforms,
+    dateRange,
+    setDateRange,
+    isModalOpen,
+    setIsModalOpen,
+    selectedDateForModal,
+    handleReschedule,
+    handleDateClick,
+    handleCreatePost,
+    openModalOnNow,
+  } = useContentCalendar();
+
+  return (
+    <PageWrapper
+      title="Content Calendar"
+      description="Manage, filter, and drag-and-drop schedule posts across all connected platforms."
+      actions={
+        <button
+          onClick={openModalOnNow}
+          className="flex cursor-pointer items-center gap-2 rounded-xl bg-[#f05a28] px-4 py-2 text-sm font-medium text-white shadow-xs transition-all hover:bg-[#d94e20]"
+        >
+          <Plus className="size-4" />
+          <span>Schedule Post</span>
+        </button>
+      }
+    >
+      <div className="space-y-6">
+        <PlatformFilter
+          selectedPlatforms={selectedPlatforms}
+          onChange={setSelectedPlatforms}
+        />
+
+        <ContentCalendar
+          events={events}
+          onReschedule={handleReschedule}
+          onDateClick={handleDateClick}
+          onDatesChange={(start, end) => setDateRange({ start, end })}
+        />
+
+        <SchedulePostModal
+          isOpen={isModalOpen}
+          selectedDate={selectedDateForModal}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleCreatePost}
+        />
+      </div>
+    </PageWrapper>
+  );
+}
+
+export default CalendarPage;

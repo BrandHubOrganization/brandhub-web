@@ -75,6 +75,86 @@
     "loadFailed": "Tải dữ liệu thất bại",
     "actionFailed": "Có lỗi xảy ra"
   },
+  "nav": {
+    "home": "Trang chủ",
+    "dashboard": "Dashboard",
+    "overview": "Tổng quan Workspace",
+    "analytics": "Analytics",
+    "editor": "Content Editor",
+    "calendar": "Calendar",
+    "workspace": "Workspaces",
+    "members": "Thành viên",
+    "invitations": "Lời mời",
+    "portal": "Client Portal",
+    "admin": "Admin Panel",
+    "settings": "Thiết lập",
+    "sections": {
+      "overview": "Tổng quan",
+      "create": "Sáng tạo",
+      "manage": "Quản lý",
+      "system": "Hệ thống"
+    }
+  },
+  "settings": {
+    "title": "Thiết lập",
+    "description": "Quản lý thông tin tài khoản và tuỳ chọn của bạn.",
+    "tabs": {
+      "general": "Chung",
+      "profile": "Hồ sơ",
+      "avatar": "Ảnh đại diện",
+      "connections": "Kết nối tài khoản",
+      "security": "Bảo mật"
+    },
+    "general": {
+      "themeLabel": "Giao diện sáng/tối",
+      "languageLabel": "Ngôn ngữ"
+    },
+    "phone": {
+      "label": "Số điện thoại",
+      "sendOtp": "Gửi mã OTP",
+      "verifyOtp": "Xác nhận",
+      "unlink": "Gỡ liên kết",
+      "otpSentSuccess": "Đã gửi mã OTP",
+      "verifySuccess": "Đã liên kết số điện thoại",
+      "unlinkSuccess": "Đã gỡ liên kết số điện thoại"
+    },
+    "connections": {
+      "connect": "Kết nối",
+      "disconnect": "Ngắt kết nối",
+      "connectedLabel": "Đã liên kết",
+      "notConnectedLabel": "Chưa liên kết",
+      "connectSuccess": "Đã liên kết tài khoản {{provider}}",
+      "disconnectSuccess": "Đã ngắt kết nối",
+      "emailMismatchWarning": "Chỉ dùng tài khoản có cùng email hiện tại ({{email}}) để kết nối.",
+      "error": {
+        "OAUTH_EMAIL_MISMATCH": "Email tài khoản không khớp email hiện tại của bạn",
+        "OAUTH_ALREADY_LINKED": "Tài khoản này đã được liên kết với một tài khoản khác"
+      }
+    },
+    "profile": {
+      "emailLabel": "Email",
+      "fullNameLabel": "Họ tên",
+      "timezoneLabel": "Múi giờ",
+      "notificationLabel": "Nhận thông báo qua email",
+      "save": "Lưu thay đổi",
+      "saveSuccess": "Đã lưu thông tin cá nhân"
+    },
+    "avatar": {
+      "uploadButton": "Tải ảnh lên",
+      "uploadSuccess": "Đã cập nhật ảnh đại diện",
+      "invalidType": "Chỉ nhận file JPEG, PNG hoặc WebP",
+      "tooLarge": "Ảnh không được vượt quá 5MB"
+    },
+    "security": {
+      "currentPasswordLabel": "Mật khẩu hiện tại",
+      "newPasswordLabel": "Mật khẩu mới",
+      "confirmPasswordLabel": "Xác nhận mật khẩu mới",
+      "submit": "Đổi mật khẩu",
+      "changeSuccess": "Đổi mật khẩu thành công",
+      "changeFailed": "Đổi mật khẩu thất bại",
+      "mismatch": "Mật khẩu mới không khớp"
+    }
+  },
   "landing": {
     "hero": {
       "viewOnIphone": "Xem trên iPhone", "viewOnMacbook": "Xem trên MacBook", "scrollDown": "Cuộn xuống",
@@ -375,6 +455,39 @@
       "members": "{{count}} thành viên",
       "posts": "{{count}} bài đăng",
       "empty": "Chưa có workspace nào. Tạo mới để bắt đầu."
+    }
+  },
+  "invitations": {
+    "title": "Lời mời tham gia workspace",
+    "description": "Danh sách lời mời đang chờ bạn phản hồi.",
+    "empty": "Không có lời mời nào.",
+    "acceptButton": "Chấp nhận",
+    "declineButton": "Từ chối",
+    "acceptSuccess": "Đã tham gia workspace",
+    "declineSuccess": "Đã từ chối lời mời",
+    "roleLabel": "Vai trò",
+    "expiresLabel": "Hết hạn",
+    "invitedByLabel": "Người mời"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "description": "Báo cáo hiệu quả nội dung và tương tác chiến dịch.",
+    "team": {
+      "memberTableTitle": "Thành viên workspace",
+      "totalMembersLabel": "{{count}} thành viên",
+      "activityTitle": "Hoạt động gần đây",
+      "activityEmpty": "Chưa có hoạt động nào.",
+      "contributionTitle": "Hiệu suất đóng góp",
+      "contributionSubtitle": "Số liệu minh hoạ — sẽ dùng dữ liệu thật khi có module nội dung."
+    },
+    "overview": {
+      "title": "Tổng quan Workspace",
+      "description": "Xem tổng hợp tất cả workspace bạn đang quản lý.",
+      "workspaceListTitle": "Danh sách workspace",
+      "totalWorkspacesLabel": "Tổng workspace",
+      "totalMembersLabel": "Tổng thành viên",
+      "activityTitle": "Hoạt động gần đây",
+      "empty": "Bạn chưa quản lý workspace nào."
     }
   }
 }

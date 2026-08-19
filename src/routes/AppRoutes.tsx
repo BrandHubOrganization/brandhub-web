@@ -11,27 +11,32 @@ import { VerifyOtpPage } from "@/pages/auth/VerifyOtpPage";
 import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
 import { ResetPasswordPage } from "@/pages/auth/ResetPasswordPage";
 import { OAuthCallbackPage } from "@/pages/auth/OAuthCallbackPage";
-import { DashboardPage } from "@/pages/DashboardPage";
-import { ChangePasswordPage } from "@/pages/ChangePasswordPage";
-import { WorkspacePage } from "@/pages/WorkspacePage";
-import { PortalPage } from "@/pages/PortalPage";
-import { AdminPage } from "@/pages/AdminPage";
-import { EditorPage } from "@/pages/EditorPage";
-import { CalendarPage } from "@/pages/CalendarPage";
-import { AnalyticsPage } from "@/pages/AnalyticsPage";
+import { LandingPage } from "@/pages/dashboard/landing";
+import { DashboardPage } from "@/pages/dashboard";
+import { ChangePasswordPage } from "@/pages/change-password";
+import { WorkspacePage } from "@/pages/workspace";
+import { CreateWorkspacePage } from "@/pages/workspace/create";
+import { WorkspaceSettingsPage } from "@/pages/workspace/detail";
+import { WorkspaceMembersPage } from "@/pages/workspace/members";
+import { InvitationsPage } from "@/pages/workspace/invitations";
+import { PortalPage } from "@/pages/portal";
+import { AdminPage } from "@/pages/admin";
+import { EditorPage } from "@/pages/editor";
+import { CalendarPage } from "@/pages/calendar";
+import { AnalyticsPage } from "@/pages/analytics";
 import { ClientListPage } from "@/pages/client";
 import { ClientDetailPage } from "@/pages/client/detail";
-import { ContentLibraryPage } from "@/pages/ContentLibraryPage";
-import { ContentRequestListPage } from "@/pages/ContentRequestListPage";
-import { TemplateBrowserPage } from "@/pages/TemplateBrowserPage";
-import { HashtagGroupsPage } from "@/pages/HashtagGroupsPage";
+import { ContentLibraryPage } from "@/pages/library";
+import { ContentRequestListPage } from "@/pages/requests";
+import { TemplateBrowserPage } from "@/pages/templates";
+import { HashtagGroupsPage } from "@/pages/hashtag-groups";
 import ExamplesPage from "@/components/examples";
 
 export function AppRoutes() {
   return (
     <Routes>
       {/* Public Routes — accessible without authentication */}
-      <Route path="/" element={<DashboardPage />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/verify-otp" element={<VerifyOtpPage />} />
@@ -47,6 +52,16 @@ export function AppRoutes() {
           <Route path="/clients/:id" element={<ClientDetailPage />} />
           <Route path="/change-password" element={<ChangePasswordPage />} />
           <Route path="/workspace" element={<WorkspacePage />} />
+          <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
+          <Route
+            path="/workspaces/:id/settings"
+            element={<WorkspaceSettingsPage />}
+          />
+          <Route
+            path="/workspaces/:id/members"
+            element={<WorkspaceMembersPage />}
+          />
+          <Route path="/invitations" element={<InvitationsPage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/requests" element={<ContentRequestListPage />} />

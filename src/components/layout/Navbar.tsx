@@ -5,6 +5,7 @@ import {
   ChevronDown,
   Globe,
   LogOut,
+  Mail,
   Menu,
   Moon,
   PanelLeftClose,
@@ -26,33 +27,43 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { MemberRole, Workspace } from "@/types/workspace";
 
-const ROLE_LABELS: Record<string, string> = {
-  CONTENT_CREATOR: "Creator",
-  ACCOUNT_MANAGER: "Account Manager (AM)",
-  BRAND_CLIENT: "Brand Client",
-  AGENCY_OWNER: "Agency Owner",
-  ADMIN: "Admin",
-  USER: "User",
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const NAV_KEY_MAP: Record<string, string> = {
+  workspace: "nav.workspace",
+  workspaces: "nav.workspace",
+  portal: "nav.portal",
+  editor: "nav.editor",
+  calendar: "nav.calendar",
+  analytics: "nav.analytics",
+  admin: "nav.admin",
+  settings: "nav.settings",
+  members: "workspace.members.title",
+  invitations: "nav.invitations",
 };
 
 export interface NavbarProps {
   collapsed: boolean;
   toggleCollapsed: () => void;
   onMobileMenuOpen: () => void;
+  memberRole: MemberRole | null;
+  workspaces: Workspace[];
 }
 
 export function Navbar({
   collapsed,
   toggleCollapsed,
   onMobileMenuOpen,
+  memberRole,
+  workspaces,
 }: NavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, clearAuth } = useAuthStore();
 
-  const currentRole = user?.role || "USER";
-  const roleLabel = ROLE_LABELS[currentRole] || String(currentRole || "User");
   const username = user?.name || user?.email?.split("@")[0] || "User";
 
   const { theme, setTheme } = useTheme();
@@ -65,14 +76,22 @@ export function Navbar({
     const segments = location.pathname.split("/").filter(Boolean);
     if (segments.length === 0)
       return [{ label: t("nav.dashboard"), path: "/" }];
-    return segments.map((seg, idx) => {
+
+    const crumbs: { label: string; path: string }[] = [];
+    segments.forEach((seg, idx) => {
       const path = "/" + segments.slice(0, idx + 1).join("/");
-      const labelKey = `nav.${seg}`;
-      const label = t(labelKey, {
-        defaultValue: seg.charAt(0).toUpperCase() + seg.slice(1),
-      });
-      return { label, path };
+      if (UUID_REGEX.test(seg)) {
+        const workspace = workspaces.find((ws) => ws.id === seg);
+        if (workspace) crumbs.push({ label: workspace.name, path });
+        return;
+      }
+      const navKey = NAV_KEY_MAP[seg];
+      const label = navKey
+        ? t(navKey)
+        : seg.charAt(0).toUpperCase() + seg.slice(1);
+      crumbs.push({ label, path });
     });
+    return crumbs;
   };
 
   const handleLogout = () => {
@@ -86,6 +105,9 @@ export function Navbar({
   };
 
   const breadcrumbs = getBreadcrumbs();
+  const roleLabel = memberRole
+    ? t(`workspace.roles.${memberRole}`)
+    : t("workspace.noRole", { defaultValue: "—" });
 
   return (
     <header
@@ -143,7 +165,7 @@ export function Navbar({
 
       {/* Right: Real Role Badge (Read-only), Language, Theme, Notifications & User Dropdown */}
       <div className="flex items-center gap-2">
-        {/* Real User Role Badge from Database */}
+        {/* Real Member Role Badge for the active workspace */}
         <div
           className="flex h-8 items-center gap-1.5 rounded-md border border-dashed px-2.5 text-xs font-semibold select-none"
           style={{
@@ -226,10 +248,17 @@ export function Navbar({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => navigate("/change-password")}
-              className="cursor-pointer text-xs"
+              className="cursor-pointer gap-2 text-xs"
+              onClick={() => navigate("/invitations")}
             >
-              <UserIcon className="mr-2 size-3.5" />
+              <Mail className="text-muted-foreground size-3.5" />
+              {t("nav.invitations")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate("/change-password")}
+              className="cursor-pointer gap-2 text-xs"
+            >
+              <UserIcon className="text-muted-foreground size-3.5" />
               Đổi mật khẩu
             </DropdownMenuItem>
             <DropdownMenuSeparator />

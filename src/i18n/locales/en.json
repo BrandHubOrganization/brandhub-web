@@ -75,6 +75,86 @@
     "loadFailed": "Failed to load data",
     "actionFailed": "Something went wrong"
   },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "overview": "Workspace Overview",
+    "analytics": "Analytics",
+    "editor": "Content Editor",
+    "calendar": "Calendar",
+    "workspace": "Workspaces",
+    "members": "Members",
+    "invitations": "Invitations",
+    "portal": "Client Portal",
+    "admin": "Admin Panel",
+    "settings": "Settings",
+    "sections": {
+      "overview": "Overview",
+      "create": "Create",
+      "manage": "Manage",
+      "system": "System"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your account information and preferences.",
+    "tabs": {
+      "general": "General",
+      "profile": "Profile",
+      "avatar": "Avatar",
+      "connections": "Connections",
+      "security": "Security"
+    },
+    "general": {
+      "themeLabel": "Light/dark theme",
+      "languageLabel": "Language"
+    },
+    "phone": {
+      "label": "Phone number",
+      "sendOtp": "Send OTP",
+      "verifyOtp": "Verify",
+      "unlink": "Unlink",
+      "otpSentSuccess": "OTP sent",
+      "verifySuccess": "Phone number linked",
+      "unlinkSuccess": "Phone number unlinked"
+    },
+    "connections": {
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "connectedLabel": "Connected",
+      "notConnectedLabel": "Not connected",
+      "connectSuccess": "{{provider}} account connected",
+      "disconnectSuccess": "Disconnected",
+      "emailMismatchWarning": "Only use an account with the same current email ({{email}}) to connect.",
+      "error": {
+        "OAUTH_EMAIL_MISMATCH": "OAuth account email does not match your current account",
+        "OAUTH_ALREADY_LINKED": "This account is already linked to a different account"
+      }
+    },
+    "profile": {
+      "emailLabel": "Email",
+      "fullNameLabel": "Full name",
+      "timezoneLabel": "Timezone",
+      "notificationLabel": "Receive email notifications",
+      "save": "Save changes",
+      "saveSuccess": "Profile updated"
+    },
+    "avatar": {
+      "uploadButton": "Upload photo",
+      "uploadSuccess": "Avatar updated",
+      "invalidType": "Only JPEG, PNG, or WebP files are accepted",
+      "tooLarge": "Image must not exceed 5MB"
+    },
+    "security": {
+      "currentPasswordLabel": "Current password",
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm new password",
+      "submit": "Change password",
+      "changeSuccess": "Password changed successfully",
+      "changeFailed": "Failed to change password",
+      "mismatch": "New passwords do not match"
+    }
+  },
   "landing": {
     "hero": {
       "viewOnIphone": "View on iPhone", "viewOnMacbook": "View on MacBook", "scrollDown": "Scroll down",
@@ -377,6 +457,40 @@
       "posts": "{{count}} post",
       "posts_other": "{{count}} posts",
       "empty": "No workspaces yet. Create one to get started."
+    }
+  },
+  "invitations": {
+    "title": "Workspace Invitations",
+    "description": "Invitations waiting for your response.",
+    "empty": "No invitations.",
+    "acceptButton": "Accept",
+    "declineButton": "Decline",
+    "acceptSuccess": "Joined the workspace",
+    "declineSuccess": "Invitation declined",
+    "roleLabel": "Role",
+    "expiresLabel": "Expires",
+    "invitedByLabel": "Invited by"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "description": "Content performance and campaign engagement reports.",
+    "team": {
+      "memberTableTitle": "Workspace members",
+      "totalMembersLabel": "{{count}} member",
+      "totalMembersLabel_other": "{{count}} members",
+      "activityTitle": "Recent activity",
+      "activityEmpty": "No activity yet.",
+      "contributionTitle": "Contribution performance",
+      "contributionSubtitle": "Sample data — will use real data once the content module is available."
+    },
+    "overview": {
+      "title": "Workspace Overview",
+      "description": "See a combined view of every workspace you manage.",
+      "workspaceListTitle": "Workspace list",
+      "totalWorkspacesLabel": "Total workspaces",
+      "totalMembersLabel": "Total members",
+      "activityTitle": "Recent activity",
+      "empty": "You don't manage any workspace yet."
     }
   }
 }

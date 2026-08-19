@@ -5,12 +5,16 @@ import { useAuthStore } from "@/store/authStore";
 import { Plus, Building2, ShieldCheck } from "lucide-react";
 
 // Common Reusable Components
-import { SearchHeader } from "@/components/common/SearchHeader";
-import { Pagination } from "@/components/common/Pagination";
+import { SearchHeader } from "./components/SearchHeader";
+import { Pagination } from "./components/Pagination";
 
 // Local Feature Imports
 import { useClients } from "./hooks/useClients";
-import type { Client, CreateClientDTO, UpdateServicePackageDTO } from "./types/client";
+import type {
+  Client,
+  CreateClientDTO,
+  UpdateServicePackageDTO,
+} from "./types/client";
 import { ClientTable } from "./components/ClientTable";
 import { CreateEditClientModal } from "./components/CreateEditClientModal";
 import { ServicePackageModal } from "./components/ServicePackageModal";
@@ -36,8 +40,10 @@ export function ClientListPage() {
   const [page, setPage] = useState<number>(0);
   const size = 10;
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
-  const [selectedClientForPackage, setSelectedClientForPackage] = useState<Client | null>(null);
-  const [selectedClientForDelete, setSelectedClientForDelete] = useState<Client | null>(null);
+  const [selectedClientForPackage, setSelectedClientForPackage] =
+    useState<Client | null>(null);
+  const [selectedClientForDelete, setSelectedClientForDelete] =
+    useState<Client | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Handlers
@@ -50,7 +56,10 @@ export function ClientListPage() {
     }
   };
 
-  const handleUpdatePackageSubmit = async (id: string, dto: UpdateServicePackageDTO) => {
+  const handleUpdatePackageSubmit = async (
+    id: string,
+    dto: UpdateServicePackageDTO,
+  ) => {
     setIsSubmitting(true);
     try {
       await updateServicePackage(id, dto);
