@@ -118,7 +118,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
                     {tpl.hashtags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="text-3xs rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+                        className="text-3xs rounded-xl bg-zinc-100 px-1.5 py-0.5 font-mono text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
                       >
                         {tag}
                       </span>

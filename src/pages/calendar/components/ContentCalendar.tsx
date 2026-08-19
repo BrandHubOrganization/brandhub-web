@@ -60,7 +60,7 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
 
     return (
       <div
-        className={`group relative flex w-full cursor-grab items-center gap-1.5 overflow-hidden rounded-md border px-2 py-1 text-xs font-medium transition-all duration-150 active:cursor-grabbing ${statusColorClass}`}
+        className={`group relative flex w-full cursor-grab items-center gap-1.5 overflow-hidden rounded-xl border px-2 py-1 text-xs font-medium transition-all duration-150 active:cursor-grabbing ${statusColorClass}`}
         title={`${eventInfo.event.title}\n\nCaption: ${extProps?.captionPreview || "No preview"}`}
       >
         {PLATFORM_ICONS[platform]}

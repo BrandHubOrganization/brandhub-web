@@ -160,7 +160,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           return (
                             <span
                               key={p}
-                              className={`rounded-md px-1.5 py-0.5 font-mono text-3xs font-bold ${pInfo.bg} ${pInfo.text}`}
+                              className={`rounded-xl px-1.5 py-0.5 font-mono text-3xs font-bold ${pInfo.bg} ${pInfo.text}`}
                               title={p}
                             >
                               {pInfo.label}

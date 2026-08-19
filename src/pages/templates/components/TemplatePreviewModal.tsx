@@ -104,7 +104,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
                 {template.hashtags.map((tag) => (
                   <span
                     key={tag}
-                    className="bg-brand-orange-soft text-brand-orange rounded-md px-2 py-0.5 font-mono text-xs font-semibold"
+                    className="bg-brand-orange-soft text-brand-orange rounded-xl px-2 py-0.5 font-mono text-xs font-semibold"
                   >
                     {tag}
                   </span>

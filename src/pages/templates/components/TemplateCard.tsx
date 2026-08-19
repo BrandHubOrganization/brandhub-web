@@ -98,7 +98,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
             return (
               <span
                 key={p}
-                className={`rounded-md px-2 py-0.5 font-mono text-3xs font-bold ${pInfo.bg} ${pInfo.text}`}
+                className={`rounded-xl px-2 py-0.5 font-mono text-3xs font-bold ${pInfo.bg} ${pInfo.text}`}
               >
                 {pInfo.label}
               </span>

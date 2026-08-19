@@ -168,7 +168,7 @@ export const TemplatesTab: React.FC = () => {
                       {tpl.hashtagGroup.tags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className="bg-brand-orange-soft text-brand-orange text-3xs rounded-md px-2 py-0.5 font-mono font-semibold"
+                          className="bg-brand-orange-soft text-brand-orange text-3xs rounded-xl px-2 py-0.5 font-mono font-semibold"
                         >
                           {tag}
                         </span>

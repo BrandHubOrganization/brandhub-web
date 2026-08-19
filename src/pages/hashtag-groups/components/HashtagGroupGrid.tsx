@@ -113,7 +113,7 @@ export function HashtagGroupGrid({
                 {group.hashtags.map((tag) => (
                   <span
                     key={tag}
-                    className="bg-brand-orange-soft text-brand-orange border-brand-orange/10 rounded-md border px-2 py-0.5 font-mono text-xs font-semibold"
+                    className="bg-brand-orange-soft text-brand-orange border-brand-orange/10 rounded-xl border px-2 py-0.5 font-mono text-xs font-semibold"
                   >
                     {tag}
                   </span>

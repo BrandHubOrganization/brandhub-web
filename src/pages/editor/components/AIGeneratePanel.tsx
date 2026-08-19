@@ -308,7 +308,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
                   {generatedResult.hashtags.map((tag) => (
                     <span
                       key={tag}
-                      className="bg-brand-orange-soft text-brand-orange text-3xs rounded-md px-2 py-0.5 font-mono font-medium"
+                      className="bg-brand-orange-soft text-brand-orange text-3xs rounded-xl px-2 py-0.5 font-mono font-medium"
                     >
                       {tag}
                     </span>

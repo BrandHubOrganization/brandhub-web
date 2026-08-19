@@ -21,7 +21,7 @@ export function WorkspaceCardGrid({ workspaces, onOpen }: Props) {
           <div className="bg-brand-orange h-1.5" />
           <div className="flex-1 space-y-4 p-6">
             <div className="flex items-center gap-3">
-              <div className="bg-brand-orange-soft text-brand-orange flex size-10 items-center justify-center rounded-md text-sm font-bold">
+              <div className="bg-brand-orange-soft text-brand-orange flex size-10 items-center justify-center rounded-xl text-sm font-bold">
                 {ws.name.slice(0, 2).toUpperCase()}
               </div>
               <div>

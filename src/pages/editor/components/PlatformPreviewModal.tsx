@@ -109,7 +109,7 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
             </strong>
           </span>
           <div
-            className={`flex items-center gap-1.5 rounded-md px-2 py-0.5 font-medium ${
+            className={`flex items-center gap-1.5 rounded-xl px-2 py-0.5 font-medium ${
               isOverLimit
                 ? "border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400"
                 : "text-slate-600 dark:text-slate-400"
