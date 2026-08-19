@@ -90,33 +90,33 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({ mediaUrls, onChang
         onClick={() => fileInputRef.current?.click()}
         className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
           isDragOver
-            ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/30'
-            : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 hover:border-indigo-400'
+            ? 'border-brand-orange bg-brand-orange/10 dark:bg-brand-orange/20'
+            : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 hover:border-brand-orange'
         }`}
       >
         {uploadProgress !== null ? (
           <div className="space-y-3 py-2 max-w-xs mx-auto">
             <div className="flex items-center justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-300">
               <span className="flex items-center gap-1.5">
-                <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+                <Loader2 className="w-4 h-4 animate-spin text-brand-orange" />
                 Đang tải phương tiện lên...
               </span>
               <span className="font-mono">{uploadProgress}%</span>
             </div>
             <div className="w-full h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
               <div
-                className="h-full bg-indigo-600 transition-all duration-150 rounded-full"
+                className="h-full bg-brand-orange transition-all duration-150 rounded-full"
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
           </div>
         ) : (
           <div className="space-y-2">
-            <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto shadow-xs">
+            <div className="w-10 h-10 rounded-full bg-brand-orange-soft dark:bg-brand-orange/20 text-brand-orange dark:text-brand-orange/80 flex items-center justify-center mx-auto shadow-xs">
               <Upload className="w-5 h-5" />
             </div>
             <h4 className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
-              Kéo thả hình ảnh/video vào đây hoặc <span className="text-indigo-600 dark:text-indigo-400">duyệt từ máy tính</span>
+              Kéo thả hình ảnh/video vào đây hoặc <span className="text-brand-orange dark:text-brand-orange/80">duyệt từ máy tính</span>
             </h4>
             <p className="text-[11px] text-zinc-400">
               Hỗ trợ JPG, PNG, GIF, MP4 (tối đa 50MB)

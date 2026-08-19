@@ -28,7 +28,7 @@ export function CalendarPage() {
       actions={
         <button
           onClick={openModalOnNow}
-          className="flex cursor-pointer items-center gap-2 rounded-xl bg-[#f05a28] px-4 py-2 text-sm font-medium text-white shadow-xs transition-all hover:bg-[#d94e20]"
+          className="flex cursor-pointer items-center gap-2 rounded-xl bg-brand-orange px-4 py-2 text-sm font-medium text-white shadow-xs transition-all hover:bg-brand-orange/90"
         >
           <Plus className="size-4" />
           <span>Schedule Post</span>

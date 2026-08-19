@@ -253,10 +253,12 @@ Vi phạm rule "không viết lại `<button>/<input>/<select>/<textarea>` thô 
 ✅ Hoàn thành 2026-08-19 — `npx tsc --noEmit` 0 lỗi. FE giờ dùng đúng `SystemRole` (ADMIN/USER) + `MemberRole` (OWNER/CREATOR/VIEWER/CLIENT/ACCOUNT), khớp BE.
 
 **P1 (màu & theme):**
-- [ ] Gắn `--primary` = brand orange (hoặc ngừng dùng text-primary cho CTA).
-- [ ] Thêm `--sidebar*` tokens.
-- [ ] Đổi ~15 chỗ indigo/blue accent → brand-orange (2.3).
-- [ ] Đổi ~11 chỗ inline hex → token (2.4).
+- [x] Gắn `--primary` = brand orange (hoặc ngừng dùng text-primary cho CTA).
+- [x] Thêm `--sidebar*` tokens.
+- [x] Đổi ~15 chỗ indigo/blue accent → brand-orange (2.3).
+- [x] Đổi ~11 chỗ inline hex → token (2.4).
+
+✅ Hoàn thành 2026-08-19 — `--primary` = brand orange (light+dark), thêm `--sidebar*`, đổi 27 chỗ indigo/blue + 12 chỗ inline hex → brand token. Default `<Button>` giờ render cam thương hiệu.
 
 **P2 (cleanup):**
 - [ ] Chuyển 20 component feature-specific vô page (4.1).

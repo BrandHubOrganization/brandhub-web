@@ -86,12 +86,12 @@ export function ClientTable({
                         className="border-border size-8 shrink-0 rounded-full border object-cover"
                       />
                     ) : (
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#fff0eb] text-xs font-bold text-[#f05a28]">
+                      <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-orange-soft text-xs font-bold text-brand-orange">
                         {client.name.charAt(0)}
                       </div>
                     )}
                     <div className="min-w-0">
-                      <span className="text-foreground block truncate font-bold transition-colors group-hover:text-[#f05a28]">
+                      <span className="text-foreground block truncate font-bold transition-colors group-hover:text-brand-orange">
                         {client.name}
                       </span>
                       <span className="text-muted-foreground block truncate text-[11px]">
@@ -138,8 +138,8 @@ export function ClientTable({
                       client.servicePackage?.packageTier === "ENTERPRISE"
                         ? "border-purple-500/20 bg-purple-500/10 text-purple-600"
                         : client.servicePackage?.packageTier === "GROWTH"
-                          ? "border-[#f05a28]/20 bg-[#f05a28]/10 text-[#f05a28]"
-                          : "border-blue-500/20 bg-blue-500/10 text-blue-600"
+                          ? "border-brand-orange/20 bg-brand-orange/10 text-brand-orange"
+                          : "border-brand-orange/20 bg-brand-orange/10 text-brand-orange"
                     }`}
                   >
                     <Zap className="size-3" />{" "}
@@ -177,7 +177,7 @@ export function ClientTable({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-muted-foreground size-7 cursor-pointer hover:text-[#f05a28]"
+                          className="text-muted-foreground size-7 cursor-pointer hover:text-brand-orange"
                           title="Đổi gói dịch vụ"
                           onClick={() => onSelectPackage(client)}
                         >

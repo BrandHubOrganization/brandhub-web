@@ -10,7 +10,7 @@ export function ClientAnalyticsCards({ analytics }: ClientAnalyticsCardsProps) {
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
       <div className="rounded-xl border border-border bg-card p-4 space-y-1">
         <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
-          <FileText className="size-3.5 text-blue-500" /> Tổng số bài đăng
+          <FileText className="size-3.5 text-brand-orange" /> Tổng số bài đăng
         </span>
         <span className="text-xl font-bold text-foreground">{analytics.totalPosts}</span>
       </div>
@@ -31,7 +31,7 @@ export function ClientAnalyticsCards({ analytics }: ClientAnalyticsCardsProps) {
 
       <div className="rounded-xl border border-border bg-card p-4 space-y-1">
         <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
-          <BarChart3 className="size-3.5 text-[#f05a28]" /> Tương tác trung bình
+          <BarChart3 className="size-3.5 text-brand-orange" /> Tương tác trung bình
         </span>
         <span className="text-xl font-bold text-foreground">{analytics.engagementRate}%</span>
       </div>

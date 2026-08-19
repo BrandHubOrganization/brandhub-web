@@ -37,7 +37,7 @@ export function TemplateGridView({
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center space-y-3 py-20 text-zinc-400">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-orange" />
         <p className="text-xs font-medium">Đang tải thư viện mẫu bài viết...</p>
       </div>
     );
@@ -46,7 +46,7 @@ export function TemplateGridView({
   if (templates.length === 0) {
     return (
       <div className="mx-auto my-8 flex max-w-lg flex-col items-center justify-center space-y-4 rounded-2xl border border-zinc-200/80 bg-white p-12 text-center shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="rounded-2xl bg-indigo-50 p-4 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
+        <div className="rounded-2xl bg-brand-orange-soft p-4 text-brand-orange dark:bg-brand-orange/20 dark:text-brand-orange/80">
           <FileQuestion className="h-10 w-10" />
         </div>
         <div className="space-y-1">

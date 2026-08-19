@@ -55,7 +55,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
           <div className="flex items-center gap-2">
-            <UserPlus className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <UserPlus className="w-5 h-5 text-brand-orange dark:text-brand-orange/80" />
             <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
               Phân Công Nhân Sự Sáng Tạo
             </h3>
@@ -80,7 +80,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm theo tên hoặc email Creator..."
-            className="w-full pl-9 pr-4 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full pl-9 pr-4 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20"
           />
         </div>
 
@@ -94,7 +94,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
                 onClick={() => setSelectedId(creator.id)}
                 className={`flex items-center justify-between p-3 rounded-xl cursor-pointer border transition-all ${
                   isSelected
-                    ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500/50 shadow-xs'
+                    ? 'bg-brand-orange-soft dark:bg-brand-orange/20 border-brand-orange/50 shadow-xs'
                     : 'bg-white dark:bg-zinc-800/40 border-zinc-100 dark:border-zinc-800/80 hover:bg-zinc-50 dark:hover:bg-zinc-800'
                 }`}
               >
@@ -115,7 +115,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
                 </div>
 
                 {isSelected && (
-                  <div className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-brand-orange text-white flex items-center justify-center">
                     <Check className="w-3.5 h-3.5 stroke-[3]" />
                   </div>
                 )}

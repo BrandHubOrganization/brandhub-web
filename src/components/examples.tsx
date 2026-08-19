@@ -356,7 +356,7 @@ export default function ExamplesPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-blue-500/30 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20"
+                  className="border-brand-orange/30 text-brand-orange hover:bg-brand-orange-soft dark:hover:bg-brand-orange/20"
                   onClick={() => info("Thông tin", "Có 3 bài đăng đang đợi phê duyệt.")}
                 >
                   Toast Info

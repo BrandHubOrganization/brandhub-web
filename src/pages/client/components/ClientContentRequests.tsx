@@ -9,7 +9,7 @@ export function ClientContentRequests({ requests = [] }: ClientContentRequestsPr
   return (
     <div className="rounded-xl border border-border bg-card p-5 space-y-4">
       <div className="flex items-center gap-2 border-b border-border pb-3">
-        <FileText className="size-4 text-[#f05a28]" />
+        <FileText className="size-4 text-brand-orange" />
         <h3 className="text-sm font-bold text-foreground">Yêu cầu Nội dung mới nhất</h3>
       </div>
 

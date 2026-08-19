@@ -32,7 +32,7 @@ const ALL_STATUSES: {
   {
     key: "ASSIGNED",
     label: "Assigned",
-    colorClass: "bg-blue-50 text-blue-700",
+    colorClass: "bg-brand-orange-soft text-brand-orange",
   },
   {
     key: "IN_PROGRESS",
@@ -118,7 +118,7 @@ export const ContentRequestFilterBar: React.FC<
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Tìm kiếm chủ đề, tên khách hàng..."
-            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2 pr-4 pl-9 text-xs text-zinc-900 placeholder-zinc-400 focus:ring-2 focus:ring-indigo-500/20 focus:outline-hidden dark:border-zinc-700/80 dark:bg-zinc-800/80 dark:text-zinc-100"
+            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2 pr-4 pl-9 text-xs text-zinc-900 placeholder-zinc-400 focus:ring-2 focus:ring-brand-orange/20 focus:outline-hidden dark:border-zinc-700/80 dark:bg-zinc-800/80 dark:text-zinc-100"
           />
         </div>
 
@@ -190,7 +190,7 @@ export const ContentRequestFilterBar: React.FC<
               onClick={() => onPlatformToggle(p)}
               className={`cursor-pointer rounded-lg border px-2.5 py-1 font-mono text-xs font-medium transition-all ${
                 isSelected
-                  ? "border-indigo-600 bg-indigo-600 text-white shadow-2xs"
+                  ? "border-brand-orange bg-brand-orange text-white shadow-2xs"
                   : "border-zinc-200/80 bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:border-zinc-700/80 dark:bg-zinc-800 dark:text-zinc-400"
               }`}
             >

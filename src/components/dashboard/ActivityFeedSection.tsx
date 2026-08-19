@@ -30,7 +30,7 @@ export function ActivityFeedSection({
       case "POST_PUBLISHED":
         return <Send className="size-3.5 text-emerald-500" />;
       case "POST_APPROVED":
-        return <CheckCircle className="size-3.5 text-blue-500" />;
+        return <CheckCircle className="size-3.5 text-brand-orange" />;
       case "POST_FAILED":
         return <AlertTriangle className="size-3.5 text-rose-500" />;
       case "COMMENT_ADDED":

@@ -90,7 +90,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                     className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer group"
                   >
                     {/* Topic */}
-                    <td className="py-3.5 px-4 font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors max-w-xs truncate">
+                    <td className="py-3.5 px-4 font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-brand-orange dark:group-hover:text-brand-orange/80 transition-colors max-w-xs truncate">
                       {req.topic}
                     </td>
 
@@ -154,7 +154,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                         {userRole === 'ACCOUNT' && (
                           <button
                             onClick={() => onOpenAssignModal(req)}
-                            className="px-2.5 py-1.5 bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 text-indigo-600 dark:text-indigo-300 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors"
+                            className="px-2.5 py-1.5 bg-brand-orange-soft dark:bg-brand-orange/20 hover:bg-brand-orange hover:text-white dark:hover:bg-brand-orange text-brand-orange dark:text-brand-orange/80 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors"
                             title="Phân công nhân sự"
                           >
                             <UserPlus className="w-3.5 h-3.5" />

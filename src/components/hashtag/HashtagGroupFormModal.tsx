@@ -88,7 +88,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
           {/* Header */}
           <DialogHeader className="p-4 border-b border-zinc-100 dark:border-zinc-800">
             <DialogTitle className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              <Hash className="w-5 h-5 text-indigo-500" />
+              <Hash className="w-5 h-5 text-brand-orange" />
               {initialData ? 'Chỉnh Sửa Nhóm Hashtag' : 'Tạo Nhóm Hashtag Mới'}
             </DialogTitle>
           </DialogHeader>
@@ -122,7 +122,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
                 value={hashtagsText}
                 onChange={(e) => setHashtagsText(e.target.value)}
                 placeholder="Nhập các hashtag, phân cách bằng dấu phẩy hoặc xuống dòng...&#10;Ví dụ: #Fashion2026, #SummerVibes, #BrandHub"
-                className="w-full p-3 text-xs bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 font-mono"
+                className="w-full p-3 text-xs bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:ring-2 focus:ring-brand-orange/20 font-mono"
               />
               <p className="text-[11px] text-zinc-400">
                 Phân cách các hashtag bằng dấu phẩy <code>,</code> hoặc xuống dòng. Dấu <code>#</code> tự động được thêm nếu thiếu.
@@ -135,7 +135,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
             <Button type="button" variant="outline" size="sm" onClick={onClose}>
               Hủy
             </Button>
-            <Button type="submit" size="sm" loading={isSubmitting} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+            <Button type="submit" size="sm" loading={isSubmitting} className="bg-brand-orange hover:bg-brand-orange/90 text-white">
               <Save className="w-4 h-4 mr-1" />
               <span>{initialData ? 'Cập Nhật' : 'Tạo Mới'}</span>
             </Button>

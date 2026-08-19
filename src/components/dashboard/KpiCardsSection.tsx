@@ -68,8 +68,8 @@ export function KpiCardsSection({
       value: data.totalPosts.toLocaleString("vi-VN"),
       change: "+12.4% so với tháng trước",
       icon: FileText,
-      iconBg: "bg-blue-500/10 text-blue-500",
-      accentColor: "border-l-blue-500",
+      iconBg: "bg-brand-orange/10 text-brand-orange",
+      accentColor: "border-l-brand-orange",
     },
     {
       title: "Đã xuất bản thành công",

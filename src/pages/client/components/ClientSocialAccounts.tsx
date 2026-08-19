@@ -9,7 +9,7 @@ export function ClientSocialAccounts({ accounts = [] }: ClientSocialAccountsProp
   return (
     <div className="rounded-xl border border-border bg-card p-5 space-y-4">
       <div className="flex items-center gap-2 border-b border-border pb-3">
-        <Share2 className="size-4 text-[#f05a28]" />
+        <Share2 className="size-4 text-brand-orange" />
         <h3 className="text-sm font-bold text-foreground">Tài khoản Mạng xã hội đã liên kết</h3>
       </div>
 
@@ -21,7 +21,7 @@ export function ClientSocialAccounts({ accounts = [] }: ClientSocialAccountsProp
               className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/10"
             >
               <div className="flex items-center gap-2.5">
-                <div className="size-7 rounded-full bg-[#f05a28]/10 text-[#f05a28] font-bold text-xs flex items-center justify-center">
+                <div className="size-7 rounded-full bg-brand-orange/10 text-brand-orange font-bold text-xs flex items-center justify-center">
                   {acc.platform.charAt(0)}
                 </div>
                 <div>

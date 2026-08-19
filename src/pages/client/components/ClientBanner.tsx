@@ -16,7 +16,7 @@ export function ClientBanner({ client }: ClientBannerProps) {
             className="size-16 rounded-xl object-cover border border-border shrink-0"
           />
         ) : (
-          <div className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-[#fff0eb] text-[#f05a28] font-bold text-xl">
+          <div className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-brand-orange-soft text-brand-orange font-bold text-xl">
             {client.name.charAt(0)}
           </div>
         )}
@@ -29,7 +29,7 @@ export function ClientBanner({ client }: ClientBannerProps) {
           </div>
           <p className="text-xs text-muted-foreground flex items-center gap-3">
             <span className="flex items-center gap-1">
-              <Building2 className="size-3 text-[#f05a28]" /> {client.industry}
+              <Building2 className="size-3 text-brand-orange" /> {client.industry}
             </span>
             <span className="flex items-center gap-1">
               <Mail className="size-3 text-muted-foreground" /> {client.contactEmail}
@@ -44,7 +44,7 @@ export function ClientBanner({ client }: ClientBannerProps) {
       </div>
 
       <div className="flex items-center gap-3 bg-muted/30 p-3 rounded-lg border border-border">
-        <UserCheck className="size-5 text-[#f05a28] shrink-0" />
+        <UserCheck className="size-5 text-brand-orange shrink-0" />
         <div className="text-xs">
           <span className="text-muted-foreground block text-[10px]">Account Manager</span>
           <span className="font-semibold text-foreground">
