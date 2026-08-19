@@ -4,15 +4,19 @@ import type { User, UserRole } from "@/types/user";
 
 export type { User, UserRole };
 
+export type SystemRole = "ADMIN" | "USER";
+
 interface AuthState {
   user: User | null;
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
+  systemRole: SystemRole | null;
   setUser: (user: User | null) => void;
   setAuth: (user: User, accessToken: string, refreshToken: string) => void;
   clearAuth: () => void;
   setTokens: (accessToken: string, refreshToken: string | null) => void;
+  setSystemRole: (systemRole: SystemRole | null) => void;
   logout: () => void;
 }
 
@@ -23,6 +27,7 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
+      systemRole: null,
 
       setUser: (user) => set({ user, isAuthenticated: user !== null }),
 
@@ -30,16 +35,31 @@ export const useAuthStore = create<AuthState>()(
         set({ user, accessToken, refreshToken, isAuthenticated: true }),
 
       clearAuth: () =>
-        set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false }),
+        set({
+          user: null,
+          accessToken: null,
+          refreshToken: null,
+          isAuthenticated: false,
+          systemRole: null,
+        }),
 
       setTokens: (accessToken, refreshToken) =>
         set((state) => ({
           accessToken,
-          refreshToken: refreshToken !== null ? refreshToken : state.refreshToken,
+          refreshToken:
+            refreshToken !== null ? refreshToken : state.refreshToken,
         })),
 
+      setSystemRole: (systemRole) => set({ systemRole }),
+
       logout: () => {
-        set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false });
+        set({
+          user: null,
+          accessToken: null,
+          refreshToken: null,
+          isAuthenticated: false,
+          systemRole: null,
+        });
         // Clear workspace store atomically without circular dependency issues at load-time
         import("./workspaceStore")
           .then((module) => {

@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { Workspace } from "@/types/workspace";
-import { api } from "@/lib/axios";
+import type { Workspace } from "@/types/workspace";
+import { workspaceService } from "@/services/workspaceService";
 
 export interface WorkspaceState {
   currentWorkspace: Workspace | null;
@@ -18,40 +18,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 
   fetchWorkspaces: async () => {
     try {
-      const response = await api.get("/api/v1/workspaces");
-      // Handle standard API envelope { data: { data: [...] } } or direct array
-      const list = response.data.data || response.data;
-      set({ workspaceList: Array.isArray(list) ? list : [] });
-    } catch (error) {
-      console.warn("Failed to fetch workspaces, using fallback mock data:", error);
-      // Fallback mockup data as a safety fallback
-      const fallbackList: Workspace[] = [
-        {
-          id: "ws-nike",
-          name: "Nike Vietnam Campaign",
-          ownerId: "owner-demo",
-          description: "Nike Marketing Campaigns",
-          settings: {
-            defaultPlatforms: ["facebook", "instagram"],
-            timezone: "Asia/Ho_Chi_Minh",
-            language: "vi",
-          },
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: "ws-heineken",
-          name: "Heineken Campaign 2026",
-          ownerId: "owner-demo",
-          description: "Heineken Promo",
-          settings: {
-            defaultPlatforms: ["instagram"],
-            timezone: "Asia/Ho_Chi_Minh",
-            language: "vi",
-          },
-          createdAt: new Date().toISOString(),
-        },
-      ];
-      set({ workspaceList: fallbackList });
+      const { data } = await workspaceService.list();
+      set({ workspaceList: data.data });
+    } catch {
+      set({ workspaceList: [] });
     }
   },
 
