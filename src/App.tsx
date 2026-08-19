@@ -19,6 +19,9 @@ import { OAuthCallbackPage } from "@/pages/auth/OAuthCallbackPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { ChangePasswordPage } from "@/pages/ChangePasswordPage";
 import { WorkspacePage } from "@/pages/WorkspacePage";
+import { CreateWorkspacePage } from "@/pages/workspaces/CreateWorkspacePage";
+import { WorkspaceSettingsPage } from "@/pages/workspaces/WorkspaceSettingsPage";
+import { WorkspaceMembersPage } from "@/pages/workspaces/WorkspaceMembersPage";
 import { PortalPage } from "@/pages/PortalPage";
 import { AdminPage } from "@/pages/AdminPage";
 import { EditorPage } from "@/pages/EditorPage";
@@ -43,6 +46,9 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/change-password" element={<ChangePasswordPage />} />
             <Route path="/workspace" element={<WorkspacePage />} />
+            <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
+            <Route path="/workspaces/:id/settings" element={<WorkspaceSettingsPage />} />
+            <Route path="/workspaces/:id/members" element={<WorkspaceMembersPage />} />
             <Route path="/portal" element={<PortalPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/editor" element={<EditorPage />} />

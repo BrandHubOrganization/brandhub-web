@@ -71,7 +71,9 @@
   },
   "common": {
     "switchLanguage": "Switch language",
-    "toggleTheme": "Toggle light/dark theme"
+    "toggleTheme": "Toggle light/dark theme",
+    "loadFailed": "Failed to load data",
+    "actionFailed": "Something went wrong"
   },
   "landing": {
     "hero": {
@@ -318,6 +320,63 @@
         "company": ["About", "Careers", "Privacy", "Terms"]
       },
       "copyright": "© {{year}} BrandHub. All rights reserved."
+    }
+  },
+  "workspace": {
+    "create": {
+      "title": "Create workspace",
+      "description": "Set up a new workspace for your team or brand.",
+      "nameLabel": "Workspace name",
+      "industryLabel": "Industry",
+      "submit": "Create workspace"
+    },
+    "settings": {
+      "title": "Workspace settings",
+      "description": "Manage your workspace configuration.",
+      "nameLabel": "Workspace name",
+      "timezoneLabel": "Timezone",
+      "defaultPlatformsLabel": "Default platforms",
+      "reportFrequencyLabel": "Report frequency",
+      "save": "Save changes",
+      "saveSuccess": "Settings saved successfully"
+    },
+    "members": {
+      "title": "Members",
+      "description": "Manage who has access to this workspace.",
+      "inviteButton": "Invite member",
+      "inviteDialogTitle": "Invite a member",
+      "emailLabel": "Email",
+      "roleLabel": "Role",
+      "joinedAtLabel": "Joined",
+      "statusLabel": "Status",
+      "active": "Active",
+      "removeButton": "Remove",
+      "removeConfirmTitle": "Remove member?",
+      "removeConfirmDescription": "This member will lose access to the workspace.",
+      "inviteSuccess": "Invitation sent",
+      "removeSuccess": "Member removed"
+    },
+    "roles": {
+      "OWNER": "Owner",
+      "CREATOR": "Creator",
+      "VIEWER": "Viewer",
+      "CLIENT": "Client",
+      "ACCOUNT": "Account manager"
+    },
+    "errors": {
+      "slugConflict": "A workspace with this name already exists",
+      "lastOwnerCannotBeRemoved": "Cannot remove the last owner of the workspace",
+      "alreadyMember": "This person is already a member of the workspace"
+    },
+    "list": {
+      "title": "Workspaces",
+      "description": "Manage your team's brand workspaces.",
+      "createButton": "Create workspace",
+      "members": "{{count}} member",
+      "members_other": "{{count}} members",
+      "posts": "{{count}} post",
+      "posts_other": "{{count}} posts",
+      "empty": "No workspaces yet. Create one to get started."
     }
   }
 }
