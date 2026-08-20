@@ -1,0 +1,42 @@
+{
+  "notifications": "Thông báo",
+  "noEmail": "Chưa có email",
+  "workspaceSwitcher": {
+    "label": "Không gian làm việc",
+    "noWorkspace": "Chưa có không gian làm việc",
+    "selectWorkspace": "Chọn Không gian làm việc"
+  },
+  "home": "Trang chủ",
+  "dashboard": "Bảng điều khiển",
+  "overview": "Tổng quan Không gian làm việc",
+  "analytics": "Phân tích",
+  "editor": "Trình soạn Nội dung",
+  "calendar": "Lịch",
+  "workspace": "Không gian làm việc",
+  "members": "Thành viên",
+  "invitations": "Lời mời",
+  "portal": "Cổng Khách hàng",
+  "admin": "Quản trị Hệ thống",
+  "requests": "Yêu cầu Nội dung",
+  "templates": "Mẫu Bài đăng",
+  "hashtagGroups": "Nhóm Hashtag",
+  "library": "Thư viện Nội dung",
+  "clients": "Thương hiệu Khách hàng",
+  "settings": "Thiết lập",
+  "sections": {
+    "overview": "Tổng quan",
+    "create": "Sáng tạo",
+    "manage": "Quản lý",
+    "system": "Hệ thống"
+  },
+  "changePassword": "Đổi mật khẩu",
+  "logout": "Đăng xuất",
+  "openMenu": "Mở menu",
+  "expandSidebar": "Mở rộng sidebar",
+  "collapseSidebar": "Thu gọn sidebar",
+  "switchLanguage": "Đổi ngôn ngữ",
+  "toggleTheme": "Đổi giao diện",
+  "realRoleTitle": "Vai trò thực tế từ Hệ thống Database",
+  "roleLabel": "Vai trò: {{role}}",
+  "roleLabelPrefix": "Vai trò:"
+}

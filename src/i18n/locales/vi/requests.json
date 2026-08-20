@@ -1,0 +1,58 @@
+{
+  "page": {
+    "title": "Yêu Cầu Nội Dung",
+    "description": "Quản lý và phân công các yêu cầu sản xuất nội dung bài viết từ các thương hiệu đối tác.",
+    "refresh": "Làm mới"
+  },
+  "tabs": {
+    "all": "Tất Cả Yêu Cầu ({{count}})",
+    "myTasks": "Nhiệm Vụ Của Tôi"
+  },
+  "assigneePicker": {
+    "assigning": "Đang gán...",
+    "confirmButton": "Xác nhận gán",
+    "selectAssigneeRequired": "Vui lòng chọn nhân sự đảm nhận bài viết",
+    "assignError": "Lỗi khi phân công nhân sự",
+    "title": "Phân Công Nhân Sự Sáng Tạo",
+    "assignFor": "Gán Creator cho yêu cầu:",
+    "searchPlaceholder": "Tìm theo tên hoặc email Creator...",
+    "cancel": "Hủy"
+  },
+  "status": {
+    "SUBMITTED": "Đã Gửi",
+    "ASSIGNED": "Đã Phân Công",
+    "IN_PROGRESS": "Đang Thực Hiện",
+    "PENDING_REVIEW": "Chờ Duyệt",
+    "SENT_TO_CLIENT": "Đã Gửi Khách Hàng",
+    "APPROVED": "Đã Duyệt",
+    "REJECTED": "Từ Chối"
+  },
+  "filterBar": {
+    "resetFilter": "Đặt lại bộ lọc",
+    "searchPlaceholder": "Tìm kiếm chủ đề, tên khách hàng...",
+    "reset": "Reset",
+    "statusLabel": "Trạng thái:",
+    "platformLabel": "Nền tảng:"
+  },
+  "table": {
+    "topic": "Chủ Đề",
+    "platforms": "Nền Tảng",
+    "client": "Khách Hàng",
+    "deadline": "Hạn Chót",
+    "status": "Trạng Thái",
+    "assignee": "Người Phân Công",
+    "actions": "Thao Tác",
+    "empty": "Không tìm thấy yêu cầu nội dung nào phù hợp.",
+    "unassigned": "Chưa phân công",
+    "assign": "Phân công nhân sự",
+    "assignButton": "Assign",
+    "goToEditor": "Chuyển đến Editor",
+    "showing": "Hiển thị {{shown}} / {{total}} yêu cầu nội dung (20 dòng/trang)",
+    "page": "Trang {{page}} / {{totalPages}}",
+    "deadlineLabel": "Hạn hoàn thành"
+  },
+  "toast": {
+    "loadFailed": "Lỗi khi tải danh sách yêu cầu nội dung",
+    "assignSuccess": "Đã phân công thành công cho {{name}}!"
+  }
+}

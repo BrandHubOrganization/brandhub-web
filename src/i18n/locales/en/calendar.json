@@ -1,0 +1,33 @@
+{
+  "page": {
+    "title": "Content Calendar",
+    "description": "Manage, filter, and drag-and-drop schedule posts across all connected platforms.",
+    "schedulePostButton": "Schedule Post"
+  },
+  "platformFilter": {
+    "label": "Platforms:",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All"
+  },
+  "eventCard": {
+    "noCaptionPreview": "No preview"
+  },
+  "toast": {
+    "loadFailed": "Failed to load content calendar posts",
+    "rescheduleSuccess": "Post rescheduled successfully!",
+    "rescheduleFailed": "Failed to reschedule post. Rolling back...",
+    "createSuccess": "New post scheduled on calendar!"
+  },
+  "schedule": {
+    "title": "Schedule Post",
+    "postTitleLabel": "Post Title",
+    "postTitlePlaceholder": "e.g. Summer Sale Promo",
+    "captionPreviewLabel": "Caption Preview",
+    "previewMockupButton": "Preview Mockup",
+    "captionPlaceholder": "Enter post caption...",
+    "platformLabel": "Platform",
+    "scheduledTimeLabel": "Scheduled Time",
+    "cancel": "Cancel",
+    "submit": "Schedule"
+  }
+}

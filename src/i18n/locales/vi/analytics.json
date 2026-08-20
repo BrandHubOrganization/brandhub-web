@@ -1,0 +1,43 @@
+{
+  "title": "Analytics",
+  "description": "Báo cáo hiệu quả nội dung và tương tác chiến dịch.",
+  "team": {
+    "memberTableTitle": "Thành viên không gian làm việc",
+    "totalMembersLabel": "{{count}} thành viên",
+    "activityTitle": "Hoạt động gần đây",
+    "activityEmpty": "Chưa có hoạt động nào.",
+    "contributionTitle": "Hiệu suất đóng góp",
+    "contributionSubtitle": "Số liệu minh hoạ — sẽ dùng dữ liệu thật khi có module nội dung."
+  },
+  "stats": {
+    "reach": {
+      "label": "LƯỢT TIẾP CẬN",
+      "desc": "So với tháng trước"
+    },
+    "engagement": {
+      "label": "TƯƠNG TÁC",
+      "desc": "So với tháng trước"
+    },
+    "posts": {
+      "label": "BÀI ĐĂNG",
+      "desc": "Bằng với tháng trước"
+    },
+    "responseRate": {
+      "label": "TỶ LỆ PHẢN HỒI",
+      "desc": "Cải thiện tốt"
+    }
+  },
+  "channelPerformance": {
+    "title": "Hiệu quả theo Kênh xuất bản",
+    "placeholder": "[Biểu đồ thống kê theo mạng xã hội: Facebook, Instagram, LinkedIn, Blog]"
+  },
+  "overview": {
+    "title": "Tổng quan Không gian làm việc",
+    "description": "Xem tổng hợp tất cả không gian làm việc bạn đang quản lý.",
+    "workspaceListTitle": "Danh sách không gian làm việc",
+    "totalWorkspacesLabel": "Tổng không gian làm việc",
+    "totalMembersLabel": "Tổng thành viên",
+    "activityTitle": "Hoạt động gần đây",
+    "empty": "Bạn chưa quản lý không gian làm việc nào."
+  }
+}

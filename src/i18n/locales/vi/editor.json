@@ -1,0 +1,116 @@
+{
+  "submitSuccess": "Đã gửi bài viết để phê duyệt thành công!",
+  "submitEmptyError": "Vui lòng soạn thảo nội dung caption trước khi gửi duyệt",
+  "submitError": "Lỗi khi gửi bài duyệt",
+  "page": {
+    "title": "Content Editor",
+    "description": "Biên tập bài viết đa nền tảng kết hợp Trợ lý AI Co-Pilot.",
+    "titleLabel": "Tiêu đề nội dung / Yêu cầu",
+    "titlePlaceholder": "Nhập tiêu đề bài viết...",
+    "captionLabel": "Nội dung Caption chính",
+    "mediaLabel": "Hình ảnh & Video đính kèm"
+  },
+  "aiGenerate": {
+    "regenerateSuccess": "Đã tái tạo nội dung theo phản hồi!",
+    "applySuccess": "Đã áp dụng Caption, Hashtags & Ảnh AI vào bài viết!",
+    "promptRequiredError": "Vui lòng nhập yêu cầu cho AI Co-Pilot",
+    "generateSuccess": "AI Co-Pilot đã tạo xong nội dung!",
+    "title": "Trợ lý AI Co-Pilot",
+    "proBadge": "Pro",
+    "subtitle": "Tự động tạo Caption, Hashtags & Ảnh AI (Stability AI)",
+    "presetsLabel": "Gợi ý phong cách:",
+    "presets": {
+      "funny": "Hài hước / Viral",
+      "professional": "Chuyên nghiệp",
+      "cta": "Kêu gọi mua hàng (CTA)"
+    },
+    "promptLabel": "Yêu cầu định hướng (Prompt)",
+    "promptPlaceholder": "Ví dụ: Viết bài đăng phong cách hài hước...",
+    "generating": "AI đang tạo (~{{seconds}}s)...",
+    "generateButton": "Generate with AI",
+    "errorServiceUnavailable": "Dịch vụ AI hiện không khả dụng (503)",
+    "errorRateLimited": "Vượt quá giới hạn gọi AI (429 Rate Limit)",
+    "errorGenerationFailed": "Tạo nội dung thất bại. Vui lòng thử lại",
+    "errorHint": "Vui lòng kiểm tra lại kết nối mạng hoặc nhập prompt khác trước khi thử lại.",
+    "retryButton": "Thử lại (Retry)",
+    "resultLabel": "Kết Quả AI Sinh (Text & Stability AI):",
+    "estimateLabel": "Ước tính: ~{{seconds}}s",
+    "imageResultLabel": "Ảnh AI Sinh (Stability AI):",
+    "viewFullImage": "Xem Phóng To",
+    "hashtagsAttached": "Hashtags đính kèm:",
+    "addFeedbackButton": "+ Phản hồi bổ sung để Regenerate ( Make it shorter, professional...)",
+    "feedbackLabel": "Ý kiến phản hồi tinh chỉnh AI (Feedback):",
+    "feedbackPlaceholder": "Ví dụ: Make it more professional, shorter caption...",
+    "regenerateButton": "Regenerate",
+    "useThisButton": "Use this"
+  },
+  "header": {
+    "autoSaving": "Đang tự động lưu...",
+    "savedAt": "Đã lưu nháp lúc {{time}}",
+    "submitting": "Đang gửi...",
+    "submitForApproval": "Gửi phê duyệt",
+    "unsavedDraft": "Chưa lưu nháp",
+    "templatePickerButton": "Mẫu Bài Đăng",
+    "previewButton": "Preview Post"
+  },
+  "hashtagInput": {
+    "copyAllSuccess": "Đã copy toàn bộ bộ Hashtag vào clipboard!",
+    "clearAllSuccess": "Đã xoá toàn bộ Hashtags",
+    "copied": "Đã copy",
+    "copyAllButton": "Copy bộ Tag",
+    "loadFromGroupSuccess": "Đã tải {{count}} hashtags từ nhóm \"{{name}}\"!",
+    "label": "Bộ Hashtags bài viết ({{count}})",
+    "clearAllButton": "Xoá tất cả",
+    "loadFromGroupButton": "Load từ Nhóm",
+    "chooseGroupLabel": "Chọn nhóm hashtag đã lưu:",
+    "inputPlaceholder": "Nhập hashtag và nhấn Enter (hoặc chọn gợi ý)...",
+    "trendingSuggestionsLabel": "Gợi ý hashtag thịnh hành:"
+  },
+  "imageLightbox": {
+    "copySuccess": "Đã copy đường dẫn ảnh vào clipboard!",
+    "title": "AI Generated Image Preview (Stability AI)",
+    "copyUrlButton": "Copy URL"
+  },
+  "mediaDropzone": {
+    "sizeExceededError": "File {{fileName}} vượt quá dung lượng 50MB",
+    "uploadSuccess": "Đã upload thành công: {{fileName}}",
+    "uploadError": "Lỗi khi upload file {{fileName}}",
+    "uploading": "Đang tải phương tiện lên...",
+    "dragDropText": "Kéo thả hình ảnh/video vào đây hoặc",
+    "browseText": "duyệt từ máy tính",
+    "supportedFormats": "Hỗ trợ JPG, PNG, GIF, MP4 (tối đa 50MB)"
+  },
+  "richText": {
+    "contentPlaceholder": "Bắt đầu soạn thảo nội dung bài đăng của bạn tại đây...",
+    "boldTooltip": "In đậm (Bold)",
+    "italicTooltip": "In nghiêng (Italic)",
+    "bulletListTooltip": "Danh sách gạch đầu dòng",
+    "orderedListTooltip": "Danh sách đánh số",
+    "linkUrlPrompt": "Nhập đường dẫn URL:",
+    "linkTooltip": "Chèn liên kết",
+    "totalChars": "Tổng số ký tự: {{count}}"
+  },
+  "templatePicker": {
+    "apply": "Áp dụng",
+    "title": "Thư viện Mẫu bài đăng (Post Templates)",
+    "subtitle": "Chọn mẫu nội dung có sẵn để áp dụng nhanh vào Editor",
+    "searchPlaceholder": "Tìm kiếm mẫu theo tiêu đề hoặc nội dung...",
+    "loading": "Đang tải danh sách mẫu bài đăng...",
+    "empty": "Không tìm thấy mẫu phù hợp",
+    "templateBadge": "Template",
+    "applySuccess": "Đã áp dụng mẫu bài đăng \"{{title}}\"!"
+  },
+  "mockup": {
+    "justNow": "Vừa xong",
+    "like": "Thích",
+    "comment": "Bình luận",
+    "share": "Chia sẻ"
+  },
+  "preview": {
+    "title": "Xem trước Mockup theo Nền tảng",
+    "copyCaptionSuccess": "Đã copy caption vào clipboard!",
+    "copyCaptionButton": "Copy Caption",
+    "specLabel": "Thông số:",
+    "charsLabel": "ký tự"
+  }
+}

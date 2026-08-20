@@ -1,0 +1,613 @@
+{
+  "hero": {
+    "viewOnIphone": "Xem trên iPhone",
+    "viewOnMacbook": "Xem trên MacBook",
+    "scrollDown": "Cuộn xuống",
+    "ctaStart": "Bắt đầu miễn phí",
+    "ctaLogin": "Đăng nhập",
+    "trustedByPrefix": "Được tin dùng bởi",
+    "trustedBySuffix": "thương hiệu & agency"
+  },
+  "heroDemo": {
+    "nav": {
+      "overview": "Tổng quan",
+      "content": "Nội dung",
+      "schedule": "Lịch",
+      "publish": "Xuất bản",
+      "approval": "Phê duyệt"
+    },
+    "notifications": {
+      "title": "Thông báo"
+    },
+    "common": {
+      "justNow": "vừa xong",
+      "minutesAgo": "{{count}} phút trước",
+      "hoursAgo": "{{count}} giờ trước",
+      "daysAgo": "{{count}} ngày trước",
+      "weekAgo": "1 tuần trước",
+      "today": "Hôm nay",
+      "yesterday": "Hôm qua",
+      "justCreated": "vừa tạo"
+    },
+    "overview": {
+      "greeting": "Chào buổi sáng, Team!",
+      "todaySummary": "Hôm nay có 12 nội dung cần publish",
+      "weeklyGrowth": "+18% tuần này",
+      "totalPosts": "Tổng bài",
+      "published": "Đã đăng",
+      "pendingApproval": "Chờ duyệt",
+      "error": "Lỗi",
+      "followers": "Theo dõi",
+      "trendingToday": "TRENDING HÔM NAY",
+      "scrapedAt": "Cào 09:00",
+      "contentPerformance": "HIỆU SUẤT CONTENT",
+      "days30": "30 ngày",
+      "topChannels": "TOP KÊNH HOẠT ĐỘNG",
+      "channelDistribution": "PHÂN BỐ KÊNH",
+      "aiSuggestions": "ĐỀ XUẤT HÔM NAY"
+    },
+    "content": {
+      "title": "Quản lý nội dung",
+      "subtitle": "Lên lịch & xuất bản đa kênh",
+      "createPost": "Tạo bài",
+      "searchPlaceholder": "Tìm kiếm theo tên bài...",
+      "postsCount": "{{count}} bài",
+      "viewDemoHint": "Demo: 3 kiểu view — bạn tự khám phá nhé",
+      "dropHere": "Thả bài vào đây",
+      "openingEditor": "Đang mở trình soạn bài mới...",
+      "allPosts": "Tất cả bài",
+      "channelLabel": "Kênh: {{channel}}",
+      "author": "Tác giả:",
+      "reach": "Lượt tiếp cận",
+      "engagement": "Tương tác",
+      "task": "Tác vụ",
+      "kanban": {
+        "draft": "Bản nháp",
+        "review": "Chờ duyệt",
+        "published": "Đã đăng"
+      }
+    },
+    "schedule": {
+      "publishSchedule": "Lịch xuất bản",
+      "selectDate": "CHỌN NGÀY",
+      "dayLabel": "NGÀY {{day}}/8",
+      "noScheduledPosts": "Chưa có bài lên lịch",
+      "monthYear": "Tháng 8, 2026",
+      "monthShort": "Tháng 8"
+    },
+    "analytics": {
+      "title": "Phân tích hiệu suất",
+      "subtitle": "Tăng trưởng kênh & nội dung",
+      "last6Months": "6 tháng gần nhất",
+      "views": "Lượt xem",
+      "followers": "Người theo dõi",
+      "engagement": "Tương tác",
+      "shares": "Chia sẻ",
+      "viewsByDay": "LƯỢT XEM THEO NGÀY",
+      "channelDistribution": "PHÂN BỔ KÊNH"
+    },
+    "aiStudio": {
+      "writeText": "Viết bài",
+      "generateImage": "Sinh ảnh",
+      "generateContentByAi": "Sinh nội dung tự động bằng AI",
+      "aiCreditsRemaining": "AI Credits còn lại",
+      "generating": "Đang sinh nội dung AI...",
+      "generateImageBtn": "Sinh ảnh AI",
+      "generateVideoBtn": "Sinh video AI",
+      "generateTextBtn": "Sinh bài AI",
+      "aiResultTitle": "KẾT QUẢ AI",
+      "noResultYet": "Chưa có kết quả — nhấn Sinh AI để bắt đầu",
+      "generateAnotherVariant": "Tạo biến thể khác",
+      "recentHistory": "LỊCH SỬ GẦN ĐÂY"
+    },
+    "workspace": {
+      "workspacesCount": "{{count}} workspaces · {{active}} đang hoạt động",
+      "create": "Tạo",
+      "searchPlaceholder": "Tìm workspace hoặc khách hàng...",
+      "all": "Tất cả",
+      "starred": "Đánh dấu",
+      "active": "Đang hoạt động",
+      "noWorkspaceFound": "Không tìm thấy workspace",
+      "allWorkspaces": "Tất cả workspace",
+      "sharedSpace": "Không gian chung · {{count}} thành viên",
+      "online": "{{count}} online",
+      "doing": "Đang làm",
+      "membersOnline": "Online",
+      "membersOffline": "Offline",
+      "newWorkspace": "Dự án mới",
+      "newClient": "Khách hàng mới",
+      "newTag": "Mới",
+      "lastActive": "Hoạt động {{time}}",
+      "status": {
+        "active": "Đang hoạt động",
+        "review": "Đang duyệt",
+        "paused": "Tạm dừng"
+      }
+    },
+    "publish": {
+      "title": "Xuất bản",
+      "subtitle": "Đẩy nội dung lên các kênh đã kết nối",
+      "ready": "Sẵn sàng",
+      "queueTitle": "HÀNG CHỜ ĐẨY ({{count}})",
+      "pushing": "Đang đẩy bài...",
+      "pushAll": "Đẩy lên tất cả kênh"
+    },
+    "approval": {
+      "title": "Phê duyệt",
+      "subtitle": "Xem trước và phê duyệt bài trước khi xuất bản",
+      "allApproved": "Đã duyệt hết bài chờ",
+      "feedbackSent": "Đã gửi góp ý cho Account Manager",
+      "approve": "Phê duyệt",
+      "feedback": "Góp ý"
+    }
+  },
+  "heroFeed": {
+    "ui": {
+      "like": "Thích",
+      "comment": "Bình luận",
+      "share": "Chia sẻ",
+      "send": "Gửi",
+      "repost": "Repost",
+      "save": "Lưu",
+      "timeAgoHours2": "2 giờ",
+      "timeAgoHoursShort": "2 giờ trước",
+      "timeAgoDays3": "3 ngày",
+      "timeAgoSeconds2": "2 giây",
+      "commentsSuffix": "bình luận",
+      "sharesSuffix": "chia sẻ",
+      "likesSuffix": "lượt thích",
+      "viewAllCommentsPrefix": "Xem tất cả",
+      "viewAllCommentsSuffix": "bình luận",
+      "minRead": "5 phút đọc",
+      "repostsCount": "12 repost",
+      "article": "Article",
+      "insights": "BrandHub Insights",
+      "sourceSite": "brandhub.vn",
+      "multiChannelContent": "Multi-channel content",
+      "typingPlaceholder": "Thêm bình luận…",
+      "typingPlaceholderDots": "Thêm bình luận...",
+      "fbTypingPlaceholder": "Viết bình luận…",
+      "posting": "Đang đăng…",
+      "justNowReply": "Vừa xong · Trả lời",
+      "justNow": "Vừa xong",
+      "reply": "Phản hồi",
+      "firstComment": "Bình luận đầu tiên",
+      "originalSound": "original sound - BrandHub",
+      "following": "Đang follow",
+      "forYou": "Dành cho bạn",
+      "search": "Tìm kiếm",
+      "sentTo": "Đã gửi tới {{name}}",
+      "shareTo": "Chia sẻ tới",
+      "sendTo": "Gửi cho",
+      "typeName": "Nhập tên...",
+      "writeMessage": "Viết tin nhắn (không bắt buộc)",
+      "copyLink": "Sao chép",
+      "fbShareNow": "Chia sẻ ngay",
+      "fbShareNowDesc": "Bạn bè",
+      "fbShareFeed": "Chia sẻ lên Feed",
+      "fbShareFeedDesc": "Thêm chú thích",
+      "fbShareMessenger": "Gửi qua Messenger",
+      "fbShareMessengerDesc": "Riêng tư",
+      "linkPreviewTitle": "BrandHub — Nền tảng quản lý nội dung thương hiệu toàn diện",
+      "linkPreviewDesc": "Lên kế hoạch, sáng tạo, lên lịch và xuất bản nội dung đa kênh trên một nền tảng duy nhất.",
+      "articleExcerpt": "Từ manual workflow 3 ngày/content → automation 2 giờ/content. Cách BrandHub giúp team marketing scale output mà không cần thêm headcount."
+    },
+    "reactions": {
+      "fb": {
+        "like": "Thích",
+        "love": "Yêu thích",
+        "haha": "Haha",
+        "wow": "Wow",
+        "sad": "Buồn",
+        "angry": "Phẫn nộ"
+      },
+      "li": {
+        "like": "Thích",
+        "celebrate": "Chúc mừng",
+        "support": "Ủng hộ",
+        "love": "Yêu thích",
+        "insightful": "Sâu sắc",
+        "funny": "Hài hước"
+      }
+    },
+    "instagram": {
+      "0": {
+        "caption": "Từ 3 tiếng xuống 15 phút cho 1 bài đăng. Không filter, không màu mè — chỉ là workflow thực tế của team mình sau 2 tháng dùng BrandHub. Lên lịch 1 tuần content trong 1 buổi sáng. Cái cảm giác không còn phải thức khuya lên bài nữa nó nhẹ cả người."
+      },
+      "1": {
+        "caption": "Swipe để xem bảng so sánh trước/sau khi chuyển từ 5 công cụ rời rạc về 1 nền tảng duy nhất. 3 tháng, 247 bài đăng, 0 missed deadline. Cột 'sai format' và 'đăng nhầm giờ' giờ là chuyện quá khứ. Team 4 người quản lý 12 brand cùng lúc."
+      },
+      "2": {
+        "caption": "Caption này được AI viết trong 30 giây — nhưng quan trọng hơn là nó match đúng tone giọng brand mình. BrandHub AI Assistant giờ hiểu cả cách mình dùng emoji, cách xuống dòng, cả mấy từ 'kiểu kiểu' mình hay dùng. Cứ như có thêm 1 copywriter trong team vậy."
+      }
+    },
+    "tiktok": {
+      "0": {
+        "caption": "POV: bạn vừa phát hiện ra 1 tool tự động hóa toàn bộ content calendar cho 5 nền tảng chỉ trong 1 click. Team content từ 6 người xuống 3. Sếp không còn hỏi 'bài đăng đâu' mỗi sáng nữa."
+      },
+      "1": {
+        "caption": "1 công cụ thay thế Canva + Google Calendar + Trello + Google Drive + Messenger. Nghe ảo nhưng thật. Đây là stack thực tế team mình dùng để quản lý 8 client cùng lúc. Ai bảo agency lúc nào cũng hỗn loạn?"
+      },
+      "2": {
+        "caption": "React cùng team content tụi mình khi nhận brief 5 campaign Tết cùng 1 lúc. Có BrandHub Calendar nên kéo thả 15 phút xong lịch, không phải ngồi Excel 3 tiếng như năm ngoái. Mọi người hỏi nhiều quá nên tụi mình làm clip này."
+      }
+    },
+    "facebook": {
+      "0": {
+        "authorName": "Minh Nguyễn",
+        "authorRole": "Founder & Creative Director, Bloom Digital Agency",
+        "content": "Sau 4 tháng dùng BrandHub cho toàn bộ operation của agency, đây là con số thật: 12 client, 3 content writer, 247 bài đăng/tháng, 0 trễ deadline. Trước đây team mình dùng 5 công cụ khác nhau — Canva để design, Google Sheets để tracking, Trello để assign task, Drive để duyệt bài, Messenger để feedback. Mỗi lần 1 bài đi từ idea đến published là 3-4 ngày. Giờ tất cả trong 1 tab. Cái mình thích nhất là approval workflow: client vào duyệt bài ngay trên nền tảng, không còn cái cảnh screenshot bài đăng gửi qua Messenger rồi 'anh ơi duyệt giúp em'. Ai làm agency sẽ hiểu cảm giác này."
+      },
+      "1": {
+        "authorName": "Thu Hà",
+        "authorRole": "Owner, TheCosmos Beauty",
+        "content": "Brand nhỏ không có team content riêng. 1 mình mình vừa chụp ảnh, viết caption, đăng bài, trả lời comment. Trước khi biết BrandHub, mỗi ngày mất 3-4 tiếng cho social — giờ còn 30 phút. AI viết caption theo đúng giọng brand (mình dùng tiếng Việt là chính, BrandHub AI hỗ trợ tiếng Việt rất tốt, không bị kiểu dịch word-by-word như mấy tool khác). Calendar kéo thả trực quan, nhìn 1 cái biết ngay tuần này đăng gì. Doanh thu online tăng 40% trong 2 tháng đầu, không phải vì mình giỏi hơn mà vì có thời gian tập trung vào sản phẩm thay vì mắc kẹt với content."
+      },
+      "2": {
+        "authorName": "Đức Anh",
+        "authorRole": "COO, NextGen Media Group",
+        "content": "Quản lý chiến dịch Tết 2026 cho 5 brand cùng lúc với team 8 người. Nếu không có BrandHub, chắc mình đã không sống sót qua tháng 1. Tính năng cross-platform publishing giúp 1 bài đăng đi 5 kênh (FB, IG, TT, LI, X) chỉ với 1 cú click. Content calendar cho phép nhìn toàn cảnh tất cả campaign trên 1 màn hình — phát hiện ngay được lỗi trùng giờ, trùng nội dung. Team mình tăng 240% output, giảm 80% thời gian họp duyệt bài. ROI đo được: tiết kiệm ~$3,200/tháng chi phí công cụ + nhân sự."
+      }
+    },
+    "linkedin": {
+      "0": {
+        "authorName": "Linh Phạm",
+        "authorTitle": "Head of Marketing, Unilever Vietnam",
+        "content": "Sau 6 tháng triển khai BrandHub cho team marketing 25 người, chúng tôi đã tăng 240% output content trong khi giảm 80% thời gian approval. Trước đây quy trình duyệt 1 bài đăng qua 4 cấp mất trung bình 3.2 ngày — giờ còn 4 giờ. Đây là case study chi tiết về cách chúng tôi chuyển đổi từ manual workflow sang AI-assisted content operations mà vẫn giữ được brand safety và compliance.",
+        "articleHeadline": "How We Scaled Content Operations 3x Without Adding Headcount — A Unilever Vietnam Case Study"
+      },
+      "1": {
+        "authorName": "James Tran",
+        "authorTitle": "VP Growth, Nimbus Group",
+        "content": "Chúng tôi đã evaluate 4 nền tảng content management (BrandHub, ContentStudio, Loomly, Vista Social) trong 3 tháng trước khi quyết định. Tiêu chí: multi-brand support, AI writing quality, approval workflow, cross-platform publishing, pricing. BrandHub thắng ở 4/5 tiêu chí. Đây là breakdown chi tiết từng nền tảng — không sponsored, chỉ là kinh nghiệm thực tế của team growth.",
+        "articleHeadline": "We Evaluated 4 Content Platforms Over 90 Days — Here's Our Scorecard"
+      },
+      "2": {
+        "authorName": "Sarah Chen",
+        "authorTitle": "Content Operations Lead, Zalora Group",
+        "content": "Quản lý content cho 6 thị trường Đông Nam Á, mỗi thị trường 1 ngôn ngữ, 1 bộ brand guideline riêng — đó là bài toán chúng tôi đối mặt mỗi ngày. BrandHub giải quyết được 3 điểm đau lớn nhất: (1) centralized content calendar cho phép regional team nhìn thấy toàn bộ campaign từ Singapore HQ, (2) AI localization giúp dịch + điều chỉnh tone cho từng thị trường trong vài phút thay vì vài ngày, (3) approval workflow phân quyền theo region — market lead duyệt local content, regional director duyệt campaign lớn. Kết quả: time-to-market giảm 65%, content consistency score tăng từ 6.2 lên 8.9/10.",
+        "articleHeadline": "Managing Content Across 6 Markets, 6 Languages: Our BrandHub Playbook"
+      }
+    },
+    "commenters": {
+      "0": {
+        "name": "Thu Hà",
+        "headline": "Marketing Manager tại Beauty Co."
+      },
+      "1": {
+        "name": "Đức Anh",
+        "headline": "Founder, Agency nhỏ 5 người"
+      },
+      "2": {
+        "name": "Minh Khuê",
+        "headline": "Content Lead, E-commerce startup"
+      },
+      "3": {
+        "name": "Quang Huy",
+        "headline": "Freelance Social Media Strategist"
+      },
+      "4": {
+        "name": "Bảo Trân",
+        "headline": "Growth Marketer, SaaS B2B"
+      }
+    },
+    "ghostComments": {
+      "ig": [
+        "Cho mình xin tên tool với ạ 🙏",
+        "Đẹp quá, mình cũng đang cần cái này 😍",
+        "Team mình y chang luôn, cứu cánh thật sự",
+        "Có link dùng thử không bạn ơi?",
+        "Auto follow luôn, quá hay 🔥"
+      ],
+      "tt": [
+        "real quá 😭 team mình y chang",
+        "chỗ nào mua v ạ",
+        "cứu tui với, đúng nỗi đau luôn",
+        "video này nên viral hơn nữa 🔥",
+        "team content xem cái này đi ạ"
+      ],
+      "fb": [
+        "Anh cho em hỏi giá gói cho agency 5 người là bao nhiêu vậy ạ? Bên em đang tìm giải pháp tương tự.",
+        "Đọc xong thấy đúng vấn đề của team mình luôn, để mình tìm hiểu thêm xem sao.",
+        "Team bên chị dùng được mấy tháng rồi, hiệu quả thật chứ không phải quảng cáo đâu mọi người.",
+        "Cảm ơn bài chia sẻ chi tiết, đúng cái mình đang tìm kiếm cho quý sau."
+      ],
+      "li": [
+        "Con số ấn tượng. Anh/chị có thể chia sẻ thêm về quy trình migration không?",
+        "Case study rất hữu ích. Team mình đang cân nhắc giải pháp tương tự cho quý tới.",
+        "Đây đúng là bài toán nhiều team marketing đang gặp phải. Cảm ơn đã chia sẻ chi tiết.",
+        "Insight rất giá trị, đặc biệt phần về approval workflow. Sẽ áp dụng thử."
+      ]
+    }
+  },
+  "trustedBy": "Được tin dùng bởi 50,000+ thương hiệu & agency toàn cầu",
+  "stats": {
+    "contents": "Nội dung được quản lý",
+    "brands": "Thương hiệu & agency",
+    "platforms": "Nền tảng tích hợp",
+    "uptime": "Cam kết uptime"
+  },
+  "features": {
+    "title": "Tất cả trong một nền tảng",
+    "subtitle": "Từ lập kế hoạch đến xuất bản, BrandHub tối ưu toàn bộ workflow nội dung của bạn.",
+    "demoLabel": "Xem demo thực tế",
+    "demoAction": "Xem {{feature}} trong demo MacBook trực tiếp phía trên",
+    "items": {
+      "planning": {
+        "title": "Lập kế hoạch nội dung",
+        "desc": "Lịch campaign trực quan với kéo thả, lên lịch trên tất cả các kênh."
+      },
+      "creation": {
+        "title": "Sáng tạo với AI",
+        "desc": "Tạo và tinh chỉnh nội dung với AI hiểu giọng điệu thương hiệu và nguyên tắc của bạn."
+      },
+      "publishing": {
+        "title": "Xuất bản đa kênh",
+        "desc": "Tự động đăng lên Facebook, Instagram, TikTok, LinkedIn và nhiều nền tảng khác cùng lúc."
+      },
+      "analytics": {
+        "title": "Phân tích hiệu suất",
+        "desc": "Dashboard thời gian thực theo dõi tương tác, phạm vi tiếp cận và ROI trên mọi chiến dịch."
+      },
+      "collab": {
+        "title": "Cộng tác nhóm",
+        "desc": "Workflow phê duyệt tích hợp, bình luận và phân quyền theo vai trò cho teamwork liền mạch."
+      },
+      "automation": {
+        "title": "Tự động hóa thông minh",
+        "desc": "Tự động lên lịch giờ đăng tối ưu, tạo biến thể hàng loạt và thiết lập chiến dịch định kỳ."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "Cách hoạt động",
+    "subtitle": "Mỗi vai trò một quy trình riêng, cùng vận hành trơn tru trên một nền tảng.",
+    "input": "Đầu vào",
+    "output": "Đầu ra",
+    "demoAction": "Xem {{step}} trong demo trực tiếp phía trên",
+    "roles": {
+      "owner": {
+        "roleTag": "Quản trị agency",
+        "setupWorkspace": {
+          "title": "Tạo workspace",
+          "desc": "Khởi tạo không gian làm việc cho agency"
+        },
+        "inviteTeam": {
+          "title": "Mời team",
+          "desc": "Thêm Account Manager, Content Creator"
+        },
+        "assignClient": {
+          "title": "Gán khách hàng",
+          "desc": "Phân công Brand Client cho từng AM"
+        }
+      },
+      "creator": {
+        "roleTag": "Sáng tạo nội dung",
+        "draftContent": {
+          "title": "Soạn nội dung",
+          "desc": "Viết bài theo lịch được giao"
+        },
+        "aiAssist": {
+          "title": "AI hỗ trợ",
+          "desc": "Gợi ý caption, hashtag, hình ảnh"
+        },
+        "submitReview": {
+          "title": "Gửi duyệt",
+          "desc": "Đẩy bài cho Account Manager xem"
+        }
+      },
+      "manager": {
+        "roleTag": "Quản lý khách hàng",
+        "reviewContent": {
+          "title": "Duyệt nội dung",
+          "desc": "Kiểm tra chất lượng, đúng brand"
+        },
+        "requestChanges": {
+          "title": "Yêu cầu sửa",
+          "desc": "Phản hồi lại Creator nếu cần chỉnh"
+        },
+        "forwardClient": {
+          "title": "Chuyển khách hàng",
+          "desc": "Gửi bản duyệt cuối cho Brand Client"
+        }
+      },
+      "client": {
+        "roleTag": "Chủ thương hiệu",
+        "previewFinal": {
+          "title": "Xem trước",
+          "desc": "Preview đúng định dạng từng nền tảng"
+        },
+        "approve": {
+          "title": "Phê duyệt",
+          "desc": "Approve hoặc góp ý trực tiếp"
+        },
+        "autoPublish": {
+          "title": "Tự động xuất bản",
+          "desc": "Hệ thống đăng đúng giờ đã lên lịch"
+        }
+      }
+    }
+  },
+  "templates": {
+    "title": "Bắt đầu với template có sẵn",
+    "subtitle": "Khởi động chiến dịch nhanh chóng với template được thiết kế chuyên nghiệp cho mọi nền tảng.",
+    "useLabel": "Dùng ngay",
+    "demoAction": "Xem {{template}} trong demo trực tiếp phía trên",
+    "items": {
+      "social": {
+        "title": "Bộ Social Media",
+        "desc": "Template có sẵn cho bài đăng và story Instagram, Facebook, TikTok, LinkedIn."
+      },
+      "blog": {
+        "title": "Blog & Bài viết",
+        "desc": "Template nội dung chuẩn SEO với công thức headline và hướng dẫn cấu trúc."
+      },
+      "email": {
+        "title": "Chiến dịch Email",
+        "desc": "Template newsletter, drip sequence và email quảng cáo sẵn sàng tùy chỉnh."
+      }
+    }
+  },
+  "testimonials": {
+    "title": "Được yêu thích bởi các team content toàn cầu",
+    "subtitle": "Xem khách hàng nói gì về BrandHub.",
+    "items": {
+      "minh": {
+        "quote": "Chúng tôi rút ngắn thời gian content từ 3 ngày xuống 2 giờ. BrandHub thay đổi hoàn toàn cách team vận hành."
+      },
+      "sarah": {
+        "quote": "Sau 6 tháng dùng BrandHub, output content tăng 240%. Công cụ AI thực sự là game changer."
+      },
+      "tuan": {
+        "quote": "Khoản đầu tư tốt nhất cho agency. Quản lý 20+ thương hiệu khách hàng chưa bao giờ mượt mà và có tổ chức như vậy."
+      }
+    }
+  },
+  "nav": {
+    "features": "Tính năng",
+    "howItWorks": "Quy trình",
+    "templates": "Template",
+    "testimonials": "Đánh giá",
+    "team": "Đội ngũ",
+    "pricing": "Bảng giá",
+    "faq": "FAQ",
+    "login": "Đăng nhập",
+    "register": "Đăng ký"
+  },
+  "team": {
+    "title": "Đội ngũ phát triển",
+    "subtitle": "Nhóm sinh viên xây dựng BrandHub trong đồ án tốt nghiệp SEP490.",
+    "members": {
+      "member1": {
+        "name": "Nguyễn Văn A",
+        "role": "Project Manager"
+      },
+      "member2": {
+        "name": "Trần Thị B",
+        "role": "Frontend Developer"
+      },
+      "member3": {
+        "name": "Lê Văn C",
+        "role": "Backend Developer"
+      },
+      "member4": {
+        "name": "Phạm Thị D",
+        "role": "QA Engineer"
+      }
+    }
+  },
+  "pricing": {
+    "title": "Bảng giá đơn giản, minh bạch",
+    "subtitle": "Chọn gói phù hợp với team của bạn. Không phí ẩn.",
+    "mostPopular": "Phổ biến nhất",
+    "monthly": "Hàng tháng",
+    "yearly": "Hàng năm",
+    "yearlySave": "Tiết kiệm 20%",
+    "perMonth": "/tháng",
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "price": "Miễn phí",
+        "cta": "Bắt đầu miễn phí",
+        "features": [
+          "1 không gian làm việc",
+          "5 thành viên",
+          "3 kênh mạng xã hội",
+          "Phân tích cơ bản",
+          "100 bài đăng/tháng"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "590K ₫",
+        "cta": "Dùng thử miễn phí",
+        "features": [
+          "Không gian làm việc không giới hạn",
+          "Thành viên không giới hạn",
+          "Tất cả kênh mạng xã hội",
+          "Phân tích nâng cao",
+          "Tạo nội dung AI",
+          "Hỗ trợ ưu tiên",
+          "Template tùy chỉnh"
+        ]
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "Tùy chỉnh",
+        "cta": "Liên hệ sales",
+        "features": [
+          "Tất cả tính năng Pro",
+          "Quản lý tài khoản riêng",
+          "Tích hợp tùy chỉnh",
+          "Cam kết SLA",
+          "Tùy chọn on-premise",
+          "SSO & SAML",
+          "Huấn luyện AI riêng"
+        ]
+      }
+    }
+  },
+  "faq": {
+    "title": "Câu hỏi thường gặp",
+    "subtitle": "Không tìm thấy câu trả lời? Liên hệ đội hỗ trợ của chúng tôi.",
+    "items": {
+      "q1": {
+        "q": "Có gói miễn phí không?",
+        "a": "Có! Gói Starter của chúng tôi miễn phí trọn đời. Bạn nhận được 1 không gian làm việc, 5 thành viên, 3 kênh mạng xã hội và 100 bài đăng mỗi tháng. Không cần thẻ tín dụng."
+      },
+      "q2": {
+        "q": "BrandHub hỗ trợ những nền tảng mạng xã hội nào?",
+        "a": "BrandHub hỗ trợ tất cả nền tảng lớn bao gồm Facebook, Instagram, TikTok, LinkedIn, Twitter/X, YouTube, Pinterest và Threads. Chúng tôi liên tục thêm tích hợp mới dựa trên phản hồi người dùng."
+      },
+      "q3": {
+        "q": "Tính năng tạo nội dung AI hoạt động thế nào?",
+        "a": "AI của chúng tôi được huấn luyện trên best practice marketing và thích nghi với giọng điệu thương hiệu của bạn. Bạn cung cấp brief hoặc chủ đề, AI sẽ tạo bản nháp, biến thể và phiên bản bản địa hóa. Bạn luôn có quyền phê duyệt cuối cùng trước khi đăng."
+      },
+      "q4": {
+        "q": "Tôi có thể cộng tác với team và khách hàng không?",
+        "a": "Hoàn toàn được. BrandHub có workflow phê duyệt tích hợp, phân quyền theo vai trò và luồng bình luận. Khách hàng có thể xem và phê duyệt nội dung mà không cần đăng nhập vào không gian làm việc chính của bạn."
+      },
+      "q5": {
+        "q": "Dùng thử Pro hoạt động thế nào?",
+        "a": "Bắt đầu dùng thử 14 ngày gói Pro — không cần thẻ tín dụng. Bạn có toàn quyền truy cập tất cả tính năng Pro. Chúng tôi sẽ nhắc bạn trước khi thời gian dùng thử kết thúc và bạn có thể hạ xuống gói Starter bất cứ lúc nào."
+      }
+    }
+  },
+  "cta": {
+    "title": "Sẵn sàng thay đổi workflow nội dung?",
+    "subtitle": "Tham gia cùng 50,000+ thương hiệu và agency đã dùng BrandHub. Bắt đầu miễn phí, không cần thẻ tín dụng.",
+    "start": "Bắt đầu miễn phí",
+    "login": "Đăng nhập"
+  },
+  "footer": {
+    "tagline": "Nền tảng quản lý nội dung thương hiệu toàn diện. Lập kế hoạch, sáng tạo, lên lịch, xuất bản và phát triển — tất cả trong một.",
+    "email": "brandhub404@gmail.com",
+    "columns": {
+      "product": "Sản phẩm",
+      "resources": "Tài nguyên",
+      "company": "Công ty"
+    },
+    "comingSoon": "Sắp ra mắt",
+    "productLinks": {
+      "features": "Tính năng",
+      "howItWorks": "Quy trình",
+      "templates": "Template",
+      "pricing": "Bảng giá"
+    },
+    "links": {
+      "resources": [
+        "Trung tâm trợ giúp",
+        "Blog",
+        "Cộng đồng",
+        "Hướng dẫn"
+      ],
+      "company": [
+        "Giới thiệu",
+        "Tuyển dụng",
+        "Bảo mật",
+        "Điều khoản"
+      ]
+    },
+    "copyright": "© {{year}} BrandHub. Đã đăng ký bản quyền."
+  }
+}

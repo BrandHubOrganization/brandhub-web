@@ -1,0 +1,102 @@
+{
+  "deleteSuccess": "Client brand deleted!",
+  "loadListError": "Failed to load the client brand list",
+  "createError": "Unable to create new client brand",
+  "updatePackageError": "Unable to update service package",
+  "deleteError": "Unable to delete client",
+  "createSuccess": "Client \"{{name}}\" added successfully!",
+  "list": {
+    "title": "Manage Brand Clients",
+    "description": "Manage brand clients, service packages, and Account Manager assignments.",
+    "createButton": "Create New Client",
+    "searchPlaceholder": "Search brand, email, industry...",
+    "totalLabel": "Clients",
+    "agencyOwnerBadge": "AGENCY OWNER"
+  },
+  "detail": {
+    "title": "Client Details",
+    "loading": "Loading data...",
+    "loadError": "Unable to load client details",
+    "notFound": "This client brand could not be found.",
+    "backToList": "Back to client list",
+    "back": "Back",
+    "descriptionTemplate": "Brand details and content history for {{name}}",
+    "accountManager": "Account Manager",
+    "unassigned": "Unassigned"
+  },
+  "table": {
+    "changeServicePackage": "Change service package",
+    "brandColumn": "Brand / Client",
+    "accountManagerColumn": "Account Manager",
+    "activePostsColumn": "Active Posts",
+    "packageColumn": "Service Package",
+    "statusColumn": "Status",
+    "actionsColumn": "Actions",
+    "empty": "No matching clients found.",
+    "viewDetail": "View client details",
+    "deleteClient": "Delete client",
+    "unassigned": "Unassigned"
+  },
+  "pagination": {
+    "page": "Page",
+    "prev": "Prev",
+    "next": "Next"
+  },
+  "analytics": {
+    "totalPosts": "Total posts",
+    "publishedPosts": "Published",
+    "activeRequests": "Pending requests",
+    "engagementRate": "Avg. engagement"
+  },
+  "banner": {
+    "accountManager": "Account Manager",
+    "unassigned": "Unassigned"
+  },
+  "contentRequests": {
+    "title": "Latest Content Requests",
+    "createdBy": "Created by: {{name}} • {{date}}",
+    "empty": "No content requests yet."
+  },
+  "socialAccounts": {
+    "title": "Linked Social Accounts",
+    "connected": "Connected",
+    "empty": "No social accounts linked yet."
+  },
+  "servicePackage": {
+    "processing": "Processing...",
+    "updateButton": "Update Service Package",
+    "upgradeSuccess": "Service package updated!",
+    "modalTitle": "Upgrade / Adjust Service Package",
+    "appliedBrand": "Applied to brand:",
+    "tierLabel": "Select Package Tier",
+    "postLimitLabel": "Post Quota / Month",
+    "aiCreditsLabel": "AI Credits / Month",
+    "expiryLabel": "Contract / package expiry date",
+    "cancel": "Cancel"
+  },
+  "createEdit": {
+    "processing": "Processing...",
+    "createButton": "Create New Client",
+    "modalTitle": "Create New Brand Client",
+    "nameLabel": "Brand / Business Name",
+    "namePlaceholder": "e.g. Heineken Vietnam, Nike Store...",
+    "nameRequired": "Brand name cannot be empty",
+    "emailLabel": "Contact Email",
+    "emailPlaceholder": "contact@brand.com",
+    "emailRequired": "Contact email cannot be empty",
+    "emailInvalid": "Invalid email format",
+    "industryLabel": "Industry / Sector",
+    "industryPlaceholder": "e.g. Fashion, F&B...",
+    "logoUrlLabel": "Logo Image URL",
+    "logoUrlPlaceholder": "https://...",
+    "accountManagerLabel": "Account Manager",
+    "packageTierLabel": "Initial Service Package",
+    "cancel": "Cancel"
+  },
+  "deleteModal": {
+    "title": "Delete brand \"{{name}}\"?",
+    "description": "This will disconnect linked social accounts and archive all post data. Are you sure you want to continue?",
+    "confirmText": "Confirm Delete",
+    "cancelText": "Cancel"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "submitSuccess": "Post submitted for approval successfully!",
+  "submitEmptyError": "Please write the caption content before submitting for review",
+  "submitError": "Error submitting post for review",
+  "page": {
+    "title": "Content Editor",
+    "description": "Compose multi-platform content with your AI Co-Pilot assistant.",
+    "titleLabel": "Content Title / Brief",
+    "titlePlaceholder": "Enter post title...",
+    "captionLabel": "Main Caption Content",
+    "mediaLabel": "Attached Images & Videos"
+  },
+  "aiGenerate": {
+    "regenerateSuccess": "Content regenerated based on your feedback!",
+    "applySuccess": "AI caption, hashtags & image applied to your post!",
+    "promptRequiredError": "Please enter a request for the AI Co-Pilot",
+    "generateSuccess": "AI Co-Pilot has finished generating content!",
+    "title": "AI Co-Pilot Assistant",
+    "proBadge": "Pro",
+    "subtitle": "Auto-generate Caption, Hashtags & AI Image (Stability AI)",
+    "presetsLabel": "Style suggestions:",
+    "presets": {
+      "funny": "Funny / Viral",
+      "professional": "Professional",
+      "cta": "Call to action (CTA)"
+    },
+    "promptLabel": "Prompt",
+    "promptPlaceholder": "e.g. Write an engaging post in a funny tone...",
+    "generating": "AI is generating (~{{seconds}}s)...",
+    "generateButton": "Generate with AI",
+    "errorServiceUnavailable": "AI service is currently unavailable (503)",
+    "errorRateLimited": "AI call limit exceeded (429 Rate Limit)",
+    "errorGenerationFailed": "Content generation failed. Please try again",
+    "errorHint": "Please check your network connection or enter a different prompt before retrying.",
+    "retryButton": "Retry",
+    "resultLabel": "AI Generated Result (Text & Stability AI):",
+    "estimateLabel": "Estimated: ~{{seconds}}s",
+    "imageResultLabel": "AI Generated Image (Stability AI):",
+    "viewFullImage": "View Full Size",
+    "hashtagsAttached": "Attached hashtags:",
+    "addFeedbackButton": "+ Additional feedback to Regenerate (Make it shorter, professional...)",
+    "feedbackLabel": "AI refinement feedback:",
+    "feedbackPlaceholder": "e.g. Make it more professional, shorter caption...",
+    "regenerateButton": "Regenerate",
+    "useThisButton": "Use this"
+  },
+  "header": {
+    "autoSaving": "Auto-saving...",
+    "savedAt": "Draft saved at {{time}}",
+    "submitting": "Submitting...",
+    "submitForApproval": "Submit for Approval",
+    "unsavedDraft": "Unsaved draft",
+    "templatePickerButton": "Post Templates",
+    "previewButton": "Preview Post"
+  },
+  "hashtagInput": {
+    "copyAllSuccess": "All hashtags copied to clipboard!",
+    "clearAllSuccess": "All hashtags cleared",
+    "copied": "Copied",
+    "copyAllButton": "Copy Tags",
+    "loadFromGroupSuccess": "Loaded {{count}} hashtags from group \"{{name}}\"!",
+    "label": "Post hashtags ({{count}})",
+    "clearAllButton": "Clear all",
+    "loadFromGroupButton": "Load from Group",
+    "chooseGroupLabel": "Choose a saved hashtag group:",
+    "inputPlaceholder": "Type a hashtag and press Enter (or pick a suggestion)...",
+    "trendingSuggestionsLabel": "Trending hashtag suggestions:"
+  },
+  "imageLightbox": {
+    "copySuccess": "Image URL copied to clipboard!",
+    "title": "AI Generated Image Preview (Stability AI)",
+    "copyUrlButton": "Copy URL"
+  },
+  "mediaDropzone": {
+    "sizeExceededError": "File {{fileName}} exceeds the 50MB size limit",
+    "uploadSuccess": "Successfully uploaded: {{fileName}}",
+    "uploadError": "Error uploading file {{fileName}}",
+    "uploading": "Uploading media...",
+    "dragDropText": "Drag & drop images/videos here or",
+    "browseText": "browse from your computer",
+    "supportedFormats": "Supports JPG, PNG, GIF, MP4 (up to 50MB)"
+  },
+  "richText": {
+    "contentPlaceholder": "Start writing your post content here...",
+    "boldTooltip": "Bold",
+    "italicTooltip": "Italic",
+    "bulletListTooltip": "Bullet list",
+    "orderedListTooltip": "Numbered list",
+    "linkUrlPrompt": "Enter the URL:",
+    "linkTooltip": "Insert link",
+    "totalChars": "Total characters: {{count}}"
+  },
+  "templatePicker": {
+    "apply": "Apply",
+    "title": "Post Template Library",
+    "subtitle": "Pick a ready-made content template to quickly apply to the Editor",
+    "searchPlaceholder": "Search templates by title or content...",
+    "loading": "Loading post templates...",
+    "empty": "No matching templates found",
+    "templateBadge": "Template",
+    "applySuccess": "Applied post template \"{{title}}\"!"
+  },
+  "mockup": {
+    "justNow": "Just now",
+    "like": "Like",
+    "comment": "Comment",
+    "share": "Share"
+  },
+  "preview": {
+    "title": "Platform Visual Mockup Preview",
+    "copyCaptionSuccess": "Caption copied to clipboard!",
+    "copyCaptionButton": "Copy Caption",
+    "specLabel": "Spec:",
+    "charsLabel": "chars"
+  }
+}

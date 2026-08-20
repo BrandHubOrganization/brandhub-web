@@ -1,0 +1,12 @@
+{
+  "title": "Workspace Invitations",
+  "description": "Invitations waiting for your response.",
+  "empty": "No invitations.",
+  "acceptButton": "Accept",
+  "declineButton": "Decline",
+  "acceptSuccess": "Joined the workspace",
+  "declineSuccess": "Invitation declined",
+  "roleLabel": "Role",
+  "expiresLabel": "Expires",
+  "invitedByLabel": "Invited by"
+}

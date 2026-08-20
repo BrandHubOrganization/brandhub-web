@@ -1,0 +1,58 @@
+{
+  "page": {
+    "title": "Content Requests",
+    "description": "Manage and assign content production requests from partner brands.",
+    "refresh": "Refresh"
+  },
+  "tabs": {
+    "all": "All Requests ({{count}})",
+    "myTasks": "My Tasks"
+  },
+  "assigneePicker": {
+    "assigning": "Assigning...",
+    "confirmButton": "Confirm Assignment",
+    "selectAssigneeRequired": "Please select a creator to assign this post",
+    "assignError": "Error assigning creator",
+    "title": "Assign Content Creator",
+    "assignFor": "Assign a creator for request:",
+    "searchPlaceholder": "Search by creator name or email...",
+    "cancel": "Cancel"
+  },
+  "status": {
+    "SUBMITTED": "Submitted",
+    "ASSIGNED": "Assigned",
+    "IN_PROGRESS": "In Progress",
+    "PENDING_REVIEW": "Pending Review",
+    "SENT_TO_CLIENT": "Sent to Client",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected"
+  },
+  "filterBar": {
+    "resetFilter": "Reset filters",
+    "searchPlaceholder": "Search topic, client name...",
+    "reset": "Reset",
+    "statusLabel": "Status:",
+    "platformLabel": "Platform:"
+  },
+  "table": {
+    "topic": "Topic",
+    "platforms": "Platforms",
+    "client": "Client",
+    "deadline": "Deadline",
+    "status": "Status",
+    "assignee": "Assignee",
+    "actions": "Actions",
+    "empty": "No matching content requests found.",
+    "unassigned": "Unassigned",
+    "assign": "Assign creator",
+    "assignButton": "Assign",
+    "goToEditor": "Go to Editor",
+    "showing": "Showing {{shown}} / {{total}} content requests (20 rows/page)",
+    "page": "Page {{page}} / {{totalPages}}",
+    "deadlineLabel": "Due"
+  },
+  "toast": {
+    "loadFailed": "Error loading content requests",
+    "assignSuccess": "Successfully assigned to {{name}}!"
+  }
+}
