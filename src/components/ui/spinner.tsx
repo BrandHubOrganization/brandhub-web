@@ -13,7 +13,7 @@ const spinnerVariants = cva(
         lg: "size-8 border-[3px]",
       },
       variant: {
-        default: "text-[#f05a28]", // Brand orange
+        default: "text-brand-orange",
         muted: "text-muted-foreground",
         white: "text-white",
         current: "text-current",

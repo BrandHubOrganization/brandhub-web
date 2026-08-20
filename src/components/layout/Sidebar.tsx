@@ -15,6 +15,7 @@ import {
   Hash,
   UserPlus,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -31,49 +32,49 @@ import { canAccess } from "@/routes/access";
 interface NavItem {
   to: string;
   icon: React.ComponentType<{ className?: string }>;
-  label: string;
+  labelKey: string;
 }
 
 interface NavSection {
   key: string;
-  title: string;
+  titleKey: string;
   items: NavItem[];
 }
 
 const NAV_SECTIONS: NavSection[] = [
   {
     key: "overview",
-    title: "Tổng quan",
+    titleKey: "nav.sections.overview",
     items: [
-      { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-      { to: "/analytics", icon: BarChart3, label: "Analytics" },
+      { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
+      { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
     ],
   },
   {
     key: "create",
-    title: "Sáng tạo",
+    titleKey: "nav.sections.create",
     items: [
-      { to: "/requests", icon: FileEdit, label: "Content Requests" },
-      { to: "/editor", icon: FileEdit, label: "Content Editor" },
-      { to: "/templates", icon: LayoutTemplate, label: "Post Templates" },
-      { to: "/hashtag-groups", icon: Hash, label: "Hashtag Groups" },
-      { to: "/calendar", icon: CalendarDays, label: "Calendar" },
-      { to: "/library", icon: FolderKanban, label: "Content Library" },
+      { to: "/requests", icon: FileEdit, labelKey: "nav.requests" },
+      { to: "/editor", icon: FileEdit, labelKey: "nav.editor" },
+      { to: "/templates", icon: LayoutTemplate, labelKey: "nav.templates" },
+      { to: "/hashtag-groups", icon: Hash, labelKey: "nav.hashtagGroups" },
+      { to: "/calendar", icon: CalendarDays, labelKey: "nav.calendar" },
+      { to: "/library", icon: FolderKanban, labelKey: "nav.library" },
     ],
   },
   {
     key: "manage",
-    title: "Quản lý",
+    titleKey: "nav.sections.manage",
     items: [
-      { to: "/clients", icon: Building2, label: "Brand Clients" },
-      { to: "/workspace", icon: FolderOpen, label: "Workspaces" },
-      { to: "/portal", icon: Users, label: "Client Portal" },
+      { to: "/clients", icon: Building2, labelKey: "nav.clients" },
+      { to: "/workspace", icon: FolderOpen, labelKey: "nav.workspace" },
+      { to: "/portal", icon: Users, labelKey: "nav.portal" },
     ],
   },
   {
     key: "system",
-    title: "Hệ thống",
-    items: [{ to: "/admin", icon: ShieldAlert, label: "Admin Panel" }],
+    titleKey: "nav.sections.system",
+    items: [{ to: "/admin", icon: ShieldAlert, labelKey: "nav.admin" }],
   },
 ];
 
@@ -98,6 +99,7 @@ export function Sidebar({
   className,
   onMobileItemClick,
 }: SidebarProps) {
+  const { t } = useTranslation();
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.map((section) => {
     const items = section.items.filter((item) =>
@@ -114,7 +116,7 @@ export function Sidebar({
       items.push({
         to: `/workspaces/${activeWorkspace.id}/members`,
         icon: UserPlus,
-        label: "Members",
+        labelKey: "nav.members",
       });
     }
 
@@ -206,20 +208,20 @@ export function Sidebar({
         <DropdownMenu>
           <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
             {collapsed ? (
-              <div className="mx-auto my-3 flex size-8 items-center justify-center rounded-md bg-[#fff0eb] text-xs font-bold text-[#f05a28]">
+              <div className="mx-auto my-3 flex size-8 items-center justify-center bg-brand-orange-soft text-brand-orange rounded-md text-xs font-bold">
                 {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
               </div>
             ) : (
               <div className="border-border bg-muted/15 hover:bg-muted/30 mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors">
-                <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[#fff0eb] text-xs font-bold text-[#f05a28]">
+                <div className="flex size-7 shrink-0 items-center justify-center bg-brand-orange-soft text-brand-orange rounded-md text-xs font-bold">
                   {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
                 </div>
                 <div className="flex min-w-0 flex-col">
                   <span className="truncate text-xs leading-tight font-semibold text-white">
-                    {activeWorkspace?.name ?? "No workspace"}
+                    {activeWorkspace?.name ?? t("nav.workspaceSwitcher.noWorkspace")}
                   </span>
                   <span className="text-muted-foreground mt-0.5 text-3xs leading-none">
-                    Workspace
+                    {t("nav.workspaceSwitcher.label")}
                   </span>
                 </div>
                 <ChevronDown className="text-muted-foreground ml-auto size-3.5 shrink-0" />
@@ -228,7 +230,7 @@ export function Sidebar({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="ml-2 w-[180px]">
             <DropdownMenuLabel className="text-muted-foreground text-3xs tracking-wider uppercase">
-              Chọn Workspace
+              {t("nav.workspaceSwitcher.selectWorkspace")}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {workspaces.map((ws) => (
@@ -238,7 +240,7 @@ export function Sidebar({
                 className={cn(
                   "cursor-pointer text-xs",
                   activeWorkspace?.id === ws.id
-                    ? "font-semibold text-[#f05a28]"
+                    ? "text-brand-orange font-semibold"
                     : "",
                 )}
               >
@@ -255,14 +257,14 @@ export function Sidebar({
           <div key={section.key} className="space-y-1">
             {!collapsed ? (
               <span className="text-muted-foreground mb-1 block px-2.5 text-3xs font-bold tracking-wider uppercase">
-                {section.title}
+                {t(section.titleKey)}
               </span>
             ) : (
               idx > 0 && <div className="bg-border mx-1 my-2 h-px opacity-20" />
             )}
 
             <div className="space-y-0.5">
-              {section.items.map(({ to, icon: Icon, label }) => (
+              {section.items.map(({ to, icon: Icon, labelKey }) => (
                 <NavLink
                   key={to}
                   to={to}
@@ -283,10 +285,10 @@ export function Sidebar({
                         }
                       : { color: "var(--sidebar-foreground, #fafafa)" }
                   }
-                  title={collapsed ? label : undefined}
+                  title={collapsed ? t(labelKey) : undefined}
                 >
                   <Icon className="size-4 shrink-0" />
-                  {!collapsed && <span>{label}</span>}
+                  {!collapsed && <span>{t(labelKey)}</span>}
                 </NavLink>
               ))}
             </div>

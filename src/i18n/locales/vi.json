@@ -139,6 +139,11 @@
     "actionFailed": "Có lỗi xảy ra"
   },
   "nav": {
+    "notifications": "Thông báo",
+    "noEmail": "Chưa có email",
+    "workspaceSwitcher": {
+      "label": "Workspace", "noWorkspace": "Chưa có workspace", "selectWorkspace": "Chọn Workspace"
+    },
     "home": "Trang chủ",
     "dashboard": "Dashboard",
     "overview": "Tổng quan Workspace",
@@ -150,6 +155,11 @@
     "invitations": "Lời mời",
     "portal": "Client Portal",
     "admin": "Admin Panel",
+    "requests": "Content Requests",
+    "templates": "Post Templates",
+    "hashtagGroups": "Hashtag Groups",
+    "library": "Content Library",
+    "clients": "Brand Clients",
     "settings": "Thiết lập",
     "sections": {
       "overview": "Tổng quan",

@@ -185,7 +185,7 @@ export function Layout() {
         </Sheet>
 
         {/* Page Content Outlet */}
-        <main className="flex-1 overflow-y-auto bg-[#fafafa] pb-16 md:pb-0 dark:bg-[#09090b]">
+        <main className="bg-background flex-1 overflow-y-auto pb-16 md:pb-0">
           <Outlet />
         </main>
       </div>

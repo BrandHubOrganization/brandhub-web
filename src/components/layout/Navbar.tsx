@@ -213,11 +213,11 @@ export function Navbar({
           size="icon"
           className="relative size-8"
           onClick={() => setHasUnreadNotification(false)}
-          title="Notifications"
+          title={t("nav.notifications")}
         >
           <Bell className="size-4" />
           {hasUnreadNotification && (
-            <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-[#f05a28]" />
+            <span className="bg-brand-orange absolute top-1.5 right-1.5 size-2 rounded-full" />
           )}
         </Button>
 
@@ -226,7 +226,7 @@ export function Navbar({
         {/* User Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 outline-none">
-            <div className="bg-brand-orange-soft text-brand-orange flex size-7 items-center justify-center rounded-full border border-[#f05a28]/20 text-xs font-bold">
+            <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
               {username.charAt(0).toUpperCase()}
             </div>
             <span className="text-foreground hidden max-w-[120px] truncate text-xs font-semibold sm:inline">
@@ -239,9 +239,9 @@ export function Navbar({
               <div className="flex flex-col space-y-1">
                 <p className="text-xs leading-none font-medium">{username}</p>
                 <p className="text-muted-foreground text-2xs leading-none">
-                  {user?.email || "No email"}
+                  {user?.email || t("nav.noEmail")}
                 </p>
-                <p className="pt-1 text-3xs leading-none font-bold text-[#f05a28]">
+                <p className="text-brand-orange pt-1 text-3xs leading-none font-bold">
                   {roleLabel}
                 </p>
               </div>

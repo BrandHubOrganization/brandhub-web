@@ -139,6 +139,11 @@
     "actionFailed": "Something went wrong"
   },
   "nav": {
+    "notifications": "Notifications",
+    "noEmail": "No email",
+    "workspaceSwitcher": {
+      "label": "Workspace", "noWorkspace": "No workspace", "selectWorkspace": "Select Workspace"
+    },
     "home": "Home",
     "dashboard": "Dashboard",
     "overview": "Workspace Overview",
@@ -150,6 +155,11 @@
     "invitations": "Invitations",
     "portal": "Client Portal",
     "admin": "Admin Panel",
+    "requests": "Content Requests",
+    "templates": "Post Templates",
+    "hashtagGroups": "Hashtag Groups",
+    "library": "Content Library",
+    "clients": "Brand Clients",
     "settings": "Settings",
     "sections": {
       "overview": "Overview",
