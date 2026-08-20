@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -133,6 +134,7 @@ function DataTable<T>({
   pageSize = 5,
   className,
 }: DataTableProps<T>) {
+  const { t } = useTranslation();
   const [sortKey, setSortKey] = React.useState<keyof T | null>(null);
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -226,7 +228,7 @@ function DataTable<T>({
                   colSpan={columns.length}
                   className="text-muted-foreground h-32 text-center"
                 >
-                  {emptyState || "Không có dữ liệu hiển thị."}
+                  {emptyState || t("common.table.empty")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -249,7 +251,11 @@ function DataTable<T>({
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-2">
           <p className="text-muted-foreground font-mono text-xs">
-            Trang {currentPage} / {totalPages} (Tổng {data.length} dòng)
+            {t("common.table.pageInfo", {
+              current: currentPage,
+              total: totalPages,
+              count: data.length,
+            })}
           </p>
           <div className="flex items-center gap-1">
             <Button

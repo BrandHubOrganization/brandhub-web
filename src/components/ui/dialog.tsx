@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XIcon, AlertTriangle, Info, CheckCircle2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
@@ -141,13 +142,19 @@ function ConfirmDialog({
   isOpen,
   onClose,
   onConfirm,
-  title = "Xác nhận hành động",
-  description = "Bạn có chắc chắn muốn thực hiện hành động này không?",
-  confirmText = "Xác nhận",
-  cancelText = "Hủy bỏ",
+  title,
+  description,
+  confirmText,
+  cancelText,
   variant = "danger",
   isLoading = false,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation();
+  const resolvedTitle = title ?? t("common.confirmDialog.title");
+  const resolvedDescription = description ?? t("common.confirmDialog.description");
+  const resolvedConfirmText = confirmText ?? t("common.confirmDialog.confirm");
+  const resolvedCancelText = cancelText ?? t("common.confirmDialog.cancel");
+
   const getVariantStyles = () => {
     switch (variant) {
       case "danger":
@@ -192,12 +199,16 @@ function ConfirmDialog({
             className={`flex items-center gap-2 text-base font-bold ${style.titleColor}`}
           >
             {style.icon}
-            {title}
+            {resolvedTitle}
           </DialogTitle>
         </DialogHeader>
 
         <div className="text-foreground/90 py-2 text-xs leading-relaxed">
-          {typeof description === "string" ? <p>{description}</p> : description}
+          {typeof resolvedDescription === "string" ? (
+            <p>{resolvedDescription}</p>
+          ) : (
+            resolvedDescription
+          )}
         </div>
 
         <DialogFooter className="pt-2">
@@ -209,7 +220,7 @@ function ConfirmDialog({
             disabled={isLoading}
             className="cursor-pointer text-xs"
           >
-            {cancelText}
+            {resolvedCancelText}
           </Button>
           <Button
             type="button"
@@ -225,7 +236,7 @@ function ConfirmDialog({
                   : ""
             }`}
           >
-            {isLoading ? "Đang xử lý..." : confirmText}
+            {isLoading ? t("common.processing") : resolvedConfirmText}
           </Button>
         </DialogFooter>
       </DialogContent>

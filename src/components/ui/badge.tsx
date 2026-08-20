@@ -18,10 +18,8 @@ const badgeVariants = cva(
         outline:
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         // PostStatus variants
-        DRAFT:
-          "border-transparent bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300",
-        draft:
-          "border-transparent bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300",
+        DRAFT: "border-transparent bg-muted text-muted-foreground",
+        draft: "border-transparent bg-muted text-muted-foreground",
         PENDING_REVIEW:
           "border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
         pending_review:
