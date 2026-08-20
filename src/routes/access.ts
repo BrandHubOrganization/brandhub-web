@@ -29,8 +29,13 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
   (a, b) => b.length - a.length,
 );
 
+const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "ACCOUNT"];
+
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
+  if (/^\/workspaces\/[^/]+\/members$/.test(pathname)) {
+    return MEMBERS_PAGE_ACCESS;
+  }
   const key = SORTED_KEYS.find((k) => pathname === k || pathname.startsWith(k));
   return key ? ROUTE_ACCESS[key] : null;
 }
