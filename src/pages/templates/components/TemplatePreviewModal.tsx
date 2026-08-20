@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface TemplatePreviewModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   if (!template) return null;
 
@@ -38,7 +40,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
     });
 
     toast.success(
-      `Đã tải mẫu bài viết "${template.title}" vào Content Editor!`,
+      t("templates.preview.loadSuccess", { title: template.title }),
     );
     onClose();
   };
@@ -47,10 +49,10 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="border-border flex max-h-[90vh] flex-col overflow-hidden p-0 sm:max-w-2xl">
         {/* Header */}
-        <DialogHeader className="border-b border-zinc-100 p-4 dark:border-zinc-800">
+        <DialogHeader className="border-border border-b p-4">
           <DialogTitle className="text-foreground flex items-center gap-2 text-sm font-semibold">
             <FileText className="text-brand-orange size-5" />
-            Chi Tiết Mẫu Bài Viết
+            {t("templates.preview.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -58,8 +60,8 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
         <div className="flex-1 space-y-5 overflow-y-auto p-6 text-left">
           {/* Title */}
           <div>
-            <span className="text-brand-orange mb-1 block text-3xs font-bold tracking-wider uppercase">
-              Tiêu Đề Template:
+            <span className="text-brand-orange text-3xs mb-1 block font-bold tracking-wider uppercase">
+              {t("templates.preview.titleLabel")}
             </span>
             <h2 className="text-foreground text-base font-bold">
               {template.title}
@@ -68,10 +70,10 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
 
           {/* Full Caption */}
           <div className="space-y-1">
-            <span className="block text-3xs font-bold tracking-wider text-zinc-400 uppercase">
-              Nội Dung Caption Đầy Đủ:
+            <span className="text-3xs text-muted-foreground block font-bold tracking-wider uppercase">
+              {t("templates.preview.captionLabel")}
             </span>
-            <div className="bg-muted/40 text-foreground rounded-xl border border-zinc-100 p-4 text-xs leading-relaxed whitespace-pre-wrap dark:border-zinc-800">
+            <div className="bg-muted/40 text-foreground border-border rounded-xl border p-4 text-xs leading-relaxed whitespace-pre-wrap">
               {template.caption}
             </div>
           </div>
@@ -80,14 +82,14 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Target Platforms */}
             <div className="space-y-1.5">
-              <span className="block text-3xs font-bold tracking-wider text-zinc-400 uppercase">
-                Nền Tảng Áp Dụng:
+              <span className="text-3xs text-muted-foreground block font-bold tracking-wider uppercase">
+                {t("templates.preview.platformsLabel")}
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {template.targetPlatforms.map((p) => (
                   <span
                     key={p}
-                    className="bg-muted rounded-lg px-2.5 py-1 font-mono text-xs font-semibold text-zinc-700 dark:text-zinc-300"
+                    className="bg-muted text-muted-foreground rounded-lg px-2.5 py-1 font-mono text-xs font-semibold"
                   >
                     {p}
                   </span>
@@ -97,8 +99,8 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
 
             {/* Hashtags */}
             <div className="space-y-1.5">
-              <span className="block text-3xs font-bold tracking-wider text-zinc-400 uppercase">
-                Hashtags Đính Kèm:
+              <span className="text-3xs text-muted-foreground block font-bold tracking-wider uppercase">
+                {t("templates.preview.hashtagsLabel")}
               </span>
               <div className="flex flex-wrap gap-1">
                 {template.hashtags.map((tag) => (
@@ -116,8 +118,8 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
           {/* Media Images Preview */}
           {template.mediaUrls.length > 0 && (
             <div className="space-y-1.5">
-              <span className="block text-3xs font-bold tracking-wider text-zinc-400 uppercase">
-                Hình Ảnh Xem Trước:
+              <span className="text-3xs text-muted-foreground block font-bold tracking-wider uppercase">
+                {t("templates.preview.mediaLabel")}
               </span>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {template.mediaUrls.map((url, idx) => (
@@ -138,7 +140,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <DialogFooter className="flex items-center border-t border-zinc-100 bg-zinc-50 p-4 sm:justify-between dark:border-zinc-800 dark:bg-zinc-900">
+        <DialogFooter className="border-border bg-muted flex items-center border-t p-4 sm:justify-between">
           <Button
             type="button"
             variant="outline"
@@ -146,7 +148,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
             onClick={onClose}
             className="cursor-pointer"
           >
-            Đóng
+            {t("templates.preview.close")}
           </Button>
 
           <Button
@@ -155,7 +157,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
             onClick={handleUseTemplate}
             className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer font-semibold text-white"
           >
-            <span>Use Template</span>
+            <span>{t("templates.preview.useTemplate")}</span>
             <ArrowRight className="ml-1 size-4" />
           </Button>
         </DialogFooter>

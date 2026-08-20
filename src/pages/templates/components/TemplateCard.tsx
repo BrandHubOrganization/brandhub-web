@@ -1,6 +1,7 @@
 import React from "react";
 import type { ContentTemplate, SocialPlatform } from "@/types/template";
 import { Calendar, Eye, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface TemplateCardProps {
   template: ContentTemplate;
@@ -44,6 +45,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
   onPreview,
   onDelete,
 }) => {
+  const { t } = useTranslation();
   // Truncate caption to first 100 chars
   const snippet =
     template.caption.length > 100
@@ -75,15 +77,15 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
               e.stopPropagation();
               onDelete(template.id, template.title);
             }}
-            className="shrink-0 cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
-            title="Xóa template"
+            className="text-muted-foreground shrink-0 cursor-pointer rounded-lg p-1 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
+            title={t("templates.card.deleteTooltip")}
           >
             <Trash2 className="size-3.5" />
           </button>
         </div>
 
         {/* Caption Snippet (100 chars) */}
-        <p className="bg-muted/40 mb-4 line-clamp-3 rounded-xl border border-zinc-100 p-3 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
+        <p className="bg-muted/40 border-border text-muted-foreground mb-4 line-clamp-3 rounded-xl border p-3 text-xs leading-relaxed">
           {snippet}
         </p>
 
@@ -98,7 +100,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
             return (
               <span
                 key={p}
-                className={`rounded-xl px-2 py-0.5 font-mono text-3xs font-bold ${pInfo.bg} ${pInfo.text}`}
+                className={`text-3xs rounded-xl px-2 py-0.5 font-mono font-bold ${pInfo.bg} ${pInfo.text}`}
               >
                 {pInfo.label}
               </span>
@@ -108,10 +110,12 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
       </div>
 
       {/* Footer Info */}
-      <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
-        <span className="flex items-center gap-1 text-2xs text-zinc-400">
+      <div className="border-border flex items-center justify-between border-t pt-3">
+        <span className="text-2xs text-muted-foreground flex items-center gap-1">
           <Calendar className="size-3" />
-          Dùng gần nhất: {formatDate(template.lastUsedAt)}
+          {t("templates.card.lastUsed", {
+            date: formatDate(template.lastUsedAt),
+          })}
         </span>
 
         <button
@@ -123,7 +127,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
           className="bg-brand-orange-soft hover:bg-brand-orange text-brand-orange flex cursor-pointer items-center gap-1 rounded-xl px-3 py-1 text-xs font-semibold transition-colors hover:text-white"
         >
           <Eye className="size-3.5" />
-          <span>Xem trước</span>
+          <span>{t("templates.card.previewButton")}</span>
         </button>
       </div>
     </div>

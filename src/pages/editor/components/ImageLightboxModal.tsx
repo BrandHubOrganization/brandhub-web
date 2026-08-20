@@ -28,7 +28,7 @@ export const ImageLightboxModal: React.FC<ImageLightboxModalProps> = ({
         <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900/90 p-4">
           <span className="flex items-center gap-2 text-xs font-semibold text-zinc-300">
             <Maximize2 className="text-brand-orange size-4" />
-            AI Generated Image Preview (Stability AI)
+            {t("editor.imageLightbox.title")}
           </span>
 
           <div className="flex items-center gap-2">
@@ -37,7 +37,7 @@ export const ImageLightboxModal: React.FC<ImageLightboxModalProps> = ({
               className="flex items-center gap-1.5 rounded-lg bg-zinc-800 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-zinc-700"
             >
               <Copy className="size-3.5" />
-              <span>Copy URL</span>
+              <span>{t("editor.imageLightbox.copyUrlButton")}</span>
             </button>
             <button
               onClick={onClose}

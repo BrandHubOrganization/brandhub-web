@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { mockContentRequestService } from "@/services/mockContentRequestService";
 import type {
@@ -13,6 +14,7 @@ import type {
 export type ActiveTab = "all" | "my-tasks";
 
 export function useContentRequests() {
+  const { t } = useTranslation();
   const userRole = useWorkspaceStore((s) => s.currentMemberRole) ?? "ACCOUNT";
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -76,7 +78,7 @@ export function useContentRequests() {
       });
       setData(res);
     } catch (err) {
-      toast.error("Lỗi khi tải danh sách yêu cầu nội dung");
+      toast.error(t("requests.toast.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -138,7 +140,9 @@ export function useContentRequests() {
       selectedRequestForAssign.id,
       assigneeId,
     );
-    toast.success(`Đã phân công thành công cho ${updated.assignee?.name}!`);
+    toast.success(
+      t("requests.toast.assignSuccess", { name: updated.assignee?.name }),
+    );
     fetchRequests();
   };
 

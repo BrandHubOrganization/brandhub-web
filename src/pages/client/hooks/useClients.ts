@@ -22,7 +22,7 @@ export function useClients() {
       setClients(data.content);
       setTotalElements(data.totalElements);
     } catch (error) {
-      toast.error("Lỗi khi tải danh sách thương hiệu khách hàng");
+      toast.error(t("client.loadListError"));
     } finally {
       setIsLoading(false);
     }
@@ -37,10 +37,10 @@ export function useClients() {
       const created = await mockClientService.createClient(dto);
       setClients((prev) => [created, ...prev]);
       setTotalElements((prev) => prev + 1);
-      toast.success(`Đã thêm khách hàng "${created.name}" thành công!`);
+      toast.success(t("client.createSuccess", { name: created.name }));
       return created;
     } catch (error) {
-      toast.error("Không thể tạo thương hiệu khách hàng mới");
+      toast.error(t("client.createError"));
       throw error;
     }
   };
@@ -55,7 +55,7 @@ export function useClients() {
       toast.success(t("client.servicePackage.upgradeSuccess"));
       return updated;
     } catch (error) {
-      toast.error("Không thể cập nhật gói dịch vụ");
+      toast.error(t("client.updatePackageError"));
       throw error;
     }
   };
@@ -67,7 +67,7 @@ export function useClients() {
       setTotalElements((prev) => Math.max(0, prev - 1));
       toast.success(t("client.deleteSuccess"));
     } catch (error) {
-      toast.error("Không thể xóa khách hàng");
+      toast.error(t("client.deleteError"));
       throw error;
     }
   };

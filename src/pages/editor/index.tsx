@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Input } from "@/components/ui/input";
 import { RichTextEditor } from "@/pages/editor/components/RichTextEditor";
@@ -10,6 +11,7 @@ import { useEditorForm } from "./hooks/useEditorForm";
 import { EditorHeaderActions } from "./components/EditorHeaderActions";
 
 export function EditorPage() {
+  const { t } = useTranslation();
   const {
     title,
     caption,
@@ -35,8 +37,8 @@ export function EditorPage() {
 
   return (
     <PageWrapper
-      title="Content Editor"
-      description="Biên tập bài viết đa nền tảng kết hợp Trợ lý AI Co-Pilot."
+      title={t("editor.page.title")}
+      description={t("editor.page.description")}
       actions={
         <EditorHeaderActions
           isSaving={isSaving}
@@ -51,22 +53,22 @@ export function EditorPage() {
     >
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <div className="space-y-2 rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-            <label className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
-              Tiêu đề nội dung / Yêu cầu
+          <div className="border-border bg-card space-y-2 rounded-xl border p-4 shadow-xs">
+            <label className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+              {t("editor.page.titleLabel")}
             </label>
             <Input
               type="text"
               value={title}
               onChange={(e) => handleTitleChange(e.target.value)}
-              placeholder="Nhập tiêu đề bài viết..."
-              className="h-auto rounded-none border-x-0 border-t-0 border-b border-zinc-200 bg-transparent px-0 pb-2 text-lg font-bold text-zinc-900 shadow-none focus-visible:ring-0 dark:border-zinc-800 dark:text-zinc-100"
+              placeholder={t("editor.page.titlePlaceholder")}
+              className="border-border text-foreground h-auto rounded-none border-x-0 border-t-0 border-b bg-transparent px-0 pb-2 text-lg font-bold shadow-none focus-visible:ring-0"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-              Nội dung Caption chính
+            <label className="text-muted-foreground text-xs font-semibold">
+              {t("editor.page.captionLabel")}
             </label>
             <RichTextEditor
               value={caption}
@@ -75,9 +77,9 @@ export function EditorPage() {
             />
           </div>
 
-          <div className="space-y-3 rounded-xl border border-zinc-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-              Hình ảnh & Video đính kèm
+          <div className="border-border bg-card space-y-3 rounded-xl border p-5 shadow-xs">
+            <label className="text-muted-foreground block text-xs font-semibold">
+              {t("editor.page.mediaLabel")}
             </label>
             <MediaDropzone
               mediaUrls={mediaUrls}
@@ -85,7 +87,7 @@ export function EditorPage() {
             />
           </div>
 
-          <div className="rounded-xl border border-zinc-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="border-border bg-card rounded-xl border p-5 shadow-xs">
             <HashtagInputWithSuggestions
               hashtags={hashtags}
               onChange={handleHashtagsChange}

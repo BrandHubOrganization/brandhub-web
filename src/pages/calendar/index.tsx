@@ -4,8 +4,10 @@ import { PlatformFilter } from "@/pages/calendar/components/PlatformFilter";
 import { ContentCalendar } from "@/pages/calendar/components/ContentCalendar";
 import { SchedulePostModal } from "@/pages/calendar/components/SchedulePostModal";
 import { useContentCalendar } from "./hooks/useContentCalendar";
+import { useTranslation } from "react-i18next";
 
 export function CalendarPage() {
+  const { t } = useTranslation();
   const {
     events,
     selectedPlatforms,
@@ -22,15 +24,15 @@ export function CalendarPage() {
 
   return (
     <PageWrapper
-      title="Content Calendar"
-      description="Manage, filter, and drag-and-drop schedule posts across all connected platforms."
+      title={t("calendar.page.title")}
+      description={t("calendar.page.description")}
       actions={
         <button
           onClick={openModalOnNow}
           className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium text-white shadow-xs transition-all"
         >
           <Plus className="size-4" />
-          <span>Schedule Post</span>
+          <span>{t("calendar.page.schedulePostButton")}</span>
         </button>
       }
     >

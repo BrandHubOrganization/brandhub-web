@@ -30,7 +30,7 @@ export function ClientDetailPage() {
       const data = await mockClientService.getClientById(id);
       setClient(data);
     } catch {
-      toast.error("Không thể tải thông tin chi tiết của Client");
+      toast.error(t("client.detail.loadError"));
     } finally {
       setIsLoading(false);
     }
@@ -59,17 +59,17 @@ export function ClientDetailPage() {
 
   if (!client) {
     return (
-      <PageWrapper title="Chi tiết Client">
+      <PageWrapper title={t("client.detail.title")}>
         <div className="space-y-4 p-8 text-center">
           <p className="text-muted-foreground text-sm">
-            Không tìm thấy thông tin thương hiệu này.
+            {t("client.detail.notFound")}
           </p>
           <Button
             size="sm"
             onClick={() => navigate("/clients")}
             className="text-xs"
           >
-            Quay lại danh sách Client
+            {t("client.detail.backToList")}
           </Button>
         </div>
       </PageWrapper>
@@ -79,7 +79,9 @@ export function ClientDetailPage() {
   return (
     <PageWrapper
       title={client.name}
-      description={`Chi tiết thương hiệu và lịch sử nội dung của ${client.name}`}
+      description={t("client.detail.descriptionTemplate", {
+        name: client.name,
+      })}
       actions={
         <Button
           variant="outline"
@@ -87,7 +89,7 @@ export function ClientDetailPage() {
           onClick={() => navigate("/clients")}
           className="cursor-pointer gap-1.5 text-xs"
         >
-          <ArrowLeft className="size-3.5" /> Quay lại
+          <ArrowLeft className="size-3.5" /> {t("client.detail.back")}
         </Button>
       }
     >

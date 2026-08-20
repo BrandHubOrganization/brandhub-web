@@ -37,7 +37,7 @@ export function TemplateGridView({
   const { t } = useTranslation();
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-3 py-20 text-zinc-400">
+      <div className="text-muted-foreground flex flex-col items-center justify-center space-y-3 py-20">
         <Loader2 className="text-brand-orange size-8 animate-spin" />
         <p className="text-xs font-medium">{t("templates.grid.loading")}</p>
       </div>
@@ -46,17 +46,16 @@ export function TemplateGridView({
 
   if (templates.length === 0) {
     return (
-      <div className="mx-auto my-8 flex max-w-lg flex-col items-center justify-center space-y-4 rounded-xl border border-zinc-200/80 bg-white p-12 text-center shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="border-border bg-card mx-auto my-8 flex max-w-lg flex-col items-center justify-center space-y-4 rounded-xl border p-12 text-center shadow-xs">
         <div className="bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/20 dark:text-brand-orange/80 rounded-xl p-4">
           <FileQuestion className="size-10" />
         </div>
         <div className="space-y-1">
           <h3 className="text-foreground text-base font-bold">
-            Chưa Có Mẫu Bài Viết Nào
+            {t("templates.grid.emptyTitle")}
           </h3>
           <p className="text-muted-foreground text-xs leading-relaxed">
-            No templates yet. Save a draft from the Content Editor to see it
-            here.
+            {t("templates.grid.emptyDescription")}
           </p>
         </div>
         <Button
@@ -86,9 +85,12 @@ export function TemplateGridView({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-800">
-          <span className="text-xs text-zinc-500">
-            Trang {page + 1} / {totalPages}
+        <div className="border-border flex items-center justify-between border-t pt-4">
+          <span className="text-muted-foreground text-xs">
+            {t("templates.grid.pageIndicator", {
+              page: page + 1,
+              total: totalPages,
+            })}
           </span>
           <div className="flex items-center gap-2">
             <Button

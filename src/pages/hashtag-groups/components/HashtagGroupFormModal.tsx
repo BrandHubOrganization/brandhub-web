@@ -49,23 +49,23 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
 
     const trimmedName = name.trim();
     if (!trimmedName) {
-      setErrorMsg("Vui lòng nhập tên nhóm hashtag.");
+      setErrorMsg(t("hashtagGroups.form.nameRequired"));
       return;
     }
 
     const parsedHashtags = hashtagsText
       .split(/[\n,]+/)
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0)
-      .map((t) => (t.startsWith("#") ? t : `#${t}`));
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0)
+      .map((tag) => (tag.startsWith("#") ? tag : `#${tag}`));
 
     if (parsedHashtags.length === 0) {
-      setErrorMsg("Vui lòng nhập ít nhất 1 hashtag.");
+      setErrorMsg(t("hashtagGroups.form.hashtagsRequired"));
       return;
     }
 
     if (parsedHashtags.length > 50) {
-      setErrorMsg("Tối đa 50 hashtags cho mỗi nhóm.");
+      setErrorMsg(t("hashtagGroups.form.hashtagsMax"));
       return;
     }
 
@@ -76,7 +76,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "";
       if (message === "DUPLICATE_NAME") {
-        setErrorMsg("Tên nhóm hashtag này đã tồn tại trong workspace.");
+        setErrorMsg(t("hashtagGroups.form.duplicateName"));
       } else {
         setErrorMsg(t("hashtagGroups.saveError"));
       }
@@ -93,7 +93,9 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
           <DialogHeader className="border-b border-zinc-100 p-4 dark:border-zinc-800">
             <DialogTitle className="text-foreground flex items-center gap-2 text-sm font-semibold">
               <Hash className="text-brand-orange size-5" />
-              {initialData ? "Chỉnh Sửa Nhóm Hashtag" : "Tạo Nhóm Hashtag Mới"}
+              {initialData
+                ? t("hashtagGroups.form.editTitle")
+                : t("hashtagGroups.form.createTitle")}
             </DialogTitle>
           </DialogHeader>
 
@@ -107,32 +109,32 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
 
             {/* Group Name Input (reusing UI Input) */}
             <Input
-              label="Tên nhóm Hashtag *"
+              label={t("hashtagGroups.form.nameLabel")}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ví dụ: Chiến Dịch Mùa Hè 2026"
+              placeholder={t("hashtagGroups.form.namePlaceholder")}
             />
 
             {/* Hashtags Textarea */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                  Danh sách Hashtags <span className="text-rose-500">*</span>
+                  {t("hashtagGroups.form.hashtagsLabel")}{" "}
+                  <span className="text-rose-500">*</span>
                 </label>
                 <span className="text-3xs text-zinc-400">
-                  Tối đa 50 hashtags
+                  {t("hashtagGroups.form.hashtagsMaxHint")}
                 </span>
               </div>
               <Textarea
                 rows={4}
                 value={hashtagsText}
                 onChange={(e) => setHashtagsText(e.target.value)}
-                placeholder="Nhập các hashtag, phân cách bằng dấu phẩy hoặc xuống dòng...&#10;Ví dụ: #Fashion2026, #SummerVibes, #BrandHub"
+                placeholder={t("hashtagGroups.form.hashtagsPlaceholder")}
                 className="bg-muted text-foreground focus:ring-brand-orange/20 rounded-xl border-zinc-200 font-mono text-xs dark:border-zinc-700"
               />
               <p className="text-2xs text-zinc-400">
-                Phân cách các hashtag bằng dấu phẩy <code>,</code> hoặc xuống
-                dòng. Dấu <code>#</code> tự động được thêm nếu thiếu.
+                {t("hashtagGroups.form.hashtagsHelperText")}
               </p>
             </div>
           </div>
@@ -140,7 +142,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
           {/* Footer with UI Buttons */}
           <DialogFooter className="flex justify-end gap-2 border-t border-zinc-100 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
             <Button type="button" variant="outline" size="sm" onClick={onClose}>
-              Hủy
+              {t("hashtagGroups.form.cancel")}
             </Button>
             <Button
               type="submit"
@@ -149,7 +151,11 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
               className="bg-brand-orange hover:bg-brand-orange/90 text-white"
             >
               <Save className="mr-1 size-4" />
-              <span>{initialData ? "Cập Nhật" : "Tạo Mới"}</span>
+              <span>
+                {initialData
+                  ? t("hashtagGroups.form.update")
+                  : t("hashtagGroups.form.createNew")}
+              </span>
             </Button>
           </DialogFooter>
         </form>

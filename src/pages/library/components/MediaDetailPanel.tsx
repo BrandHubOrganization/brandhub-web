@@ -41,14 +41,18 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
   };
 
   const handleDelete = async () => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa file "${media.filename}"?`)) {
+    if (
+      window.confirm(
+        t("library.media.deleteConfirm", { filename: media.filename }),
+      )
+    ) {
       setIsDeleting(true);
       try {
         await onDelete(media.id);
         toast.success(t("library.media.deleteFileSuccess"));
         onClose();
       } catch (err) {
-        toast.error("Lỗi khi xóa file");
+        toast.error(t("library.media.deleteError"));
       } finally {
         setIsDeleting(false);
       }
@@ -77,7 +81,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
             ) : (
               <ImageIcon className="text-brand-orange size-4" />
             )}
-            Chi tiết Media
+            {t("library.media.detailTitle")}
           </h3>
           <button
             onClick={onClose}
@@ -121,7 +125,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
           <div className="bg-muted/50 space-y-3 rounded-xl border border-zinc-100 p-4 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                <HardDrive className="size-4" /> Dung lượng
+                <HardDrive className="size-4" /> {t("library.media.sizeLabel")}
               </span>
               <span className="text-foreground font-mono font-medium">
                 {formatFileSize(media.sizeBytes)}
@@ -131,7 +135,8 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
             {media.width && media.height && (
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                  <Maximize2 className="size-4" /> Độ phân giải
+                  <Maximize2 className="size-4" />{" "}
+                  {t("library.media.resolutionLabel")}
                 </span>
                 <span className="text-foreground font-mono font-medium">
                   {media.width} × {media.height} px
@@ -142,17 +147,20 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
             {media.durationSeconds && (
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                  <Film className="size-4" /> Thời lượng
+                  <Film className="size-4" /> {t("library.media.durationLabel")}
                 </span>
                 <span className="text-foreground font-mono font-medium">
-                  {media.durationSeconds} giây
+                  {t("library.media.durationSeconds", {
+                    seconds: media.durationSeconds,
+                  })}
                 </span>
               </div>
             )}
 
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                <Calendar className="size-4" /> Ngày tải lên
+                <Calendar className="size-4" />{" "}
+                {t("library.media.uploadedAtLabel")}
               </span>
               <span className="text-foreground text-xs">
                 {formatDate(media.createdAt)}
@@ -163,7 +171,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
           {/* S3 Direct Link Input Box */}
           <div className="space-y-1.5">
             <label className="text-muted-foreground text-xs font-semibold">
-              S3 Direct URL
+              {t("library.media.directUrlLabel")}
             </label>
             <div className="flex gap-2">
               <input
@@ -181,7 +189,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
                 ) : (
                   <Copy className="size-4" />
                 )}
-                {copied ? "Copied" : "Copy"}
+                {copied ? t("library.media.copied") : t("library.media.copy")}
               </button>
             </div>
           </div>
@@ -204,7 +212,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
             onClick={onClose}
             className="cursor-pointer rounded-xl border border-zinc-300 px-4 py-2 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
-            Đóng
+            {t("library.media.close")}
           </button>
         </div>
       </div>

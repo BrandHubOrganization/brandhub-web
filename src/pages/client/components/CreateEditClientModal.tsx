@@ -42,12 +42,12 @@ export function CreateEditClientModal({
   const validate = () => {
     const errs: Record<string, string> = {};
     if (!formData.name.trim()) {
-      errs.name = "Tên thương hiệu không được để trống";
+      errs.name = t("client.createEdit.nameRequired");
     }
     if (!formData.contactEmail.trim()) {
-      errs.contactEmail = "Email liên hệ không được để trống";
+      errs.contactEmail = t("client.createEdit.emailRequired");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactEmail)) {
-      errs.contactEmail = "Email không đúng định dạng";
+      errs.contactEmail = t("client.createEdit.emailInvalid");
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -65,8 +65,8 @@ export function CreateEditClientModal({
       <DialogContent className="sm:max-w-[520px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base font-bold">
-            <Building2 className="size-4 text-brand-orange" />
-            Tạo mới Brand Client
+            <Building2 className="text-brand-orange size-4" />
+            {t("client.createEdit.modalTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -74,12 +74,12 @@ export function CreateEditClientModal({
           {/* Tên thương hiệu */}
           <div className="space-y-1.5">
             <Label htmlFor="name" className="text-xs font-semibold">
-              Tên Thương hiệu / Doanh nghiệp{" "}
+              {t("client.createEdit.nameLabel")}{" "}
               <span className="text-rose-500">*</span>
             </Label>
             <Input
               id="name"
-              placeholder="VD: Heineken Vietnam, Nike Store..."
+              placeholder={t("client.createEdit.namePlaceholder")}
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -96,13 +96,14 @@ export function CreateEditClientModal({
           {/* Email người liên hệ */}
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs font-semibold">
-              Email liên hệ đại diện <span className="text-rose-500">*</span>
+              {t("client.createEdit.emailLabel")}{" "}
+              <span className="text-rose-500">*</span>
             </Label>
             <div className="relative">
               <Input
                 id="email"
                 type="email"
-                placeholder="contact@brand.com"
+                placeholder={t("client.createEdit.emailPlaceholder")}
                 value={formData.contactEmail}
                 onChange={(e) =>
                   setFormData({ ...formData, contactEmail: e.target.value })
@@ -122,11 +123,11 @@ export function CreateEditClientModal({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="industry" className="text-xs font-semibold">
-                Ngành hàng / Lĩnh vực
+                {t("client.createEdit.industryLabel")}
               </Label>
               <Input
                 id="industry"
-                placeholder="VD: Thời trang, F&B..."
+                placeholder={t("client.createEdit.industryPlaceholder")}
                 value={formData.industry}
                 onChange={(e) =>
                   setFormData({ ...formData, industry: e.target.value })
@@ -136,11 +137,11 @@ export function CreateEditClientModal({
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="logoUrl" className="text-xs font-semibold">
-                Logo Image URL
+                {t("client.createEdit.logoUrlLabel")}
               </Label>
               <Input
                 id="logoUrl"
-                placeholder="https://..."
+                placeholder={t("client.createEdit.logoUrlPlaceholder")}
                 value={formData.logoUrl}
                 onChange={(e) =>
                   setFormData({ ...formData, logoUrl: e.target.value })
@@ -154,8 +155,8 @@ export function CreateEditClientModal({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="flex items-center gap-1 text-xs font-semibold">
-                <UserCheck className="text-muted-foreground size-3" /> Account
-                Manager
+                <UserCheck className="text-muted-foreground size-3" />{" "}
+                {t("client.createEdit.accountManagerLabel")}
               </Label>
               <Select
                 value={formData.assignedAccountManagerId}
@@ -175,7 +176,7 @@ export function CreateEditClientModal({
 
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">
-                Gói dịch vụ ban đầu
+                {t("client.createEdit.packageTierLabel")}
               </Label>
               <Select
                 value={formData.packageTier}
@@ -202,13 +203,13 @@ export function CreateEditClientModal({
               onClick={onClose}
               className="cursor-pointer text-xs"
             >
-              Hủy
+              {t("client.createEdit.cancel")}
             </Button>
             <Button
               type="submit"
               size="sm"
               disabled={isLoading}
-              className="cursor-pointer gap-1.5 bg-brand-orange text-xs text-white hover:bg-brand-orange/90"
+              className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white"
             >
               {isLoading
                 ? t("client.createEdit.processing")

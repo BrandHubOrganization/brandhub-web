@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { Client } from "../types/client";
 import { Building2, Mail, Phone, UserCheck } from "lucide-react";
 
@@ -6,6 +7,7 @@ interface ClientBannerProps {
 }
 
 export function ClientBanner({ client }: ClientBannerProps) {
+  const { t } = useTranslation();
   return (
     <div className="border-border bg-card flex flex-col items-start justify-between gap-4 rounded-xl border p-6 md:flex-row md:items-center">
       <div className="flex items-center gap-4">
@@ -50,10 +52,10 @@ export function ClientBanner({ client }: ClientBannerProps) {
         <UserCheck className="text-brand-orange size-5 shrink-0" />
         <div className="text-xs">
           <span className="text-muted-foreground text-3xs block">
-            Account Manager
+            {t("client.banner.accountManager")}
           </span>
           <span className="text-foreground font-semibold">
-            {client.assignedAccountManagerName || "Chưa phân công"}
+            {client.assignedAccountManagerName || t("client.banner.unassigned")}
           </span>
         </div>
       </div>

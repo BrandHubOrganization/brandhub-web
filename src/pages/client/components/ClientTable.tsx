@@ -28,12 +28,20 @@ export function ClientTable({
       <table className="w-full border-collapse text-left">
         <thead>
           <tr className="border-border bg-muted/40 text-muted-foreground text-2xs border-b font-bold tracking-wider uppercase">
-            <th className="px-4 py-3">Thương hiệu / Client</th>
-            <th className="px-4 py-3">Account Manager</th>
-            <th className="px-4 py-3 text-center">Active Posts</th>
-            <th className="px-4 py-3">Gói Dịch Vụ</th>
-            <th className="px-4 py-3 text-center">Trạng thái</th>
-            <th className="px-4 py-3 text-right">Thao tác</th>
+            <th className="px-4 py-3">{t("client.table.brandColumn")}</th>
+            <th className="px-4 py-3">
+              {t("client.table.accountManagerColumn")}
+            </th>
+            <th className="px-4 py-3 text-center">
+              {t("client.table.activePostsColumn")}
+            </th>
+            <th className="px-4 py-3">{t("client.table.packageColumn")}</th>
+            <th className="px-4 py-3 text-center">
+              {t("client.table.statusColumn")}
+            </th>
+            <th className="px-4 py-3 text-right">
+              {t("client.table.actionsColumn")}
+            </th>
           </tr>
         </thead>
         <tbody className="divide-border/60 divide-y text-xs">
@@ -72,7 +80,7 @@ export function ClientTable({
                 colSpan={6}
                 className="text-muted-foreground py-8 text-center"
               >
-                Không tìm thấy Client nào phù hợp.
+                {t("client.table.empty")}
               </td>
             </tr>
           ) : (
@@ -121,7 +129,8 @@ export function ClientTable({
                       </div>
                     )}
                     <span className="text-foreground font-medium">
-                      {client.assignedAccountManagerName || "Chưa phân công"}
+                      {client.assignedAccountManagerName ||
+                        t("client.table.unassigned")}
                     </span>
                   </div>
                 </td>
@@ -172,7 +181,7 @@ export function ClientTable({
                       variant="ghost"
                       size="icon"
                       className="text-muted-foreground hover:text-foreground size-7 cursor-pointer"
-                      title="Xem chi tiết Client"
+                      title={t("client.table.viewDetail")}
                       onClick={() => navigate(`/clients/${client.id}`)}
                     >
                       <Eye className="size-3.5" />
@@ -192,7 +201,7 @@ export function ClientTable({
                           variant="ghost"
                           size="icon"
                           className="text-muted-foreground size-7 cursor-pointer hover:text-rose-500"
-                          title="Xóa Client"
+                          title={t("client.table.deleteClient")}
                           onClick={() => onSelectDelete(client)}
                         >
                           <Trash2 className="size-3.5" />

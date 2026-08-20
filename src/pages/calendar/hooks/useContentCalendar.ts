@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { calendarService } from "@/services/calendarService";
 import type { CalendarPostEvent, PlatformType } from "@/types/calendar";
 
@@ -12,6 +13,7 @@ const ALL_PLATFORMS: PlatformType[] = [
 ];
 
 export function useContentCalendar() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState<CalendarPostEvent[]>([]);
   const [selectedPlatforms, setSelectedPlatforms] =
     useState<PlatformType[]>(ALL_PLATFORMS);
@@ -33,7 +35,7 @@ export function useContentCalendar() {
       });
       setEvents(data);
     } catch (err) {
-      toast.error("Failed to load content calendar posts");
+      toast.error(t("calendar.toast.loadFailed"));
     }
   };
 
@@ -57,10 +59,10 @@ export function useContentCalendar() {
         postId: eventId,
         newScheduledAt: newDate.toISOString(),
       });
-      toast.success("Post rescheduled successfully!");
+      toast.success(t("calendar.toast.rescheduleSuccess"));
       return true;
     } catch (err) {
-      toast.error("Failed to reschedule post. Rolling back...");
+      toast.error(t("calendar.toast.rescheduleFailed"));
       setEvents(previousEvents);
       return false;
     }
@@ -84,7 +86,7 @@ export function useContentCalendar() {
     };
 
     setEvents((prev) => [...prev, newEvent]);
-    toast.success("New post scheduled on calendar!");
+    toast.success(t("calendar.toast.createSuccess"));
   };
 
   const openModalOnNow = () => {

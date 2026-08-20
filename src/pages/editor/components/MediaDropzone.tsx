@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { MAX_MEDIA_UPLOAD_SIZE } from "@/lib/constants";
 
 interface MediaDropzoneProps {
@@ -12,6 +13,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
   mediaUrls,
   onChange,
 }) => {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
@@ -44,16 +46,24 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
 
     for (const file of fileArray) {
       if (file.size > MAX_MEDIA_UPLOAD_SIZE) {
-        toast.error(`File ${file.name} vượt quá dung lượng 50MB`);
+        toast.error(
+          t("editor.mediaDropzone.sizeExceededError", {
+            fileName: file.name,
+          }),
+        );
         continue;
       }
 
       try {
         const uploadedUrl = await simulateProgress(file);
         onChange([...mediaUrls, uploadedUrl]);
-        toast.success(`Đã upload thành công: ${file.name}`);
+        toast.success(
+          t("editor.mediaDropzone.uploadSuccess", { fileName: file.name }),
+        );
       } catch (err) {
-        toast.error(`Lỗi khi upload file ${file.name}`);
+        toast.error(
+          t("editor.mediaDropzone.uploadError", { fileName: file.name }),
+        );
       }
     }
   };
@@ -95,19 +105,19 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
         className={`cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-all ${
           isDragOver
             ? "border-brand-orange bg-brand-orange/10 dark:bg-brand-orange/20"
-            : "border-border hover:border-brand-orange bg-zinc-50/50 dark:bg-zinc-900/50"
+            : "border-border hover:border-brand-orange bg-muted/50"
         }`}
       >
         {uploadProgress !== null ? (
           <div className="mx-auto max-w-xs space-y-3 py-2">
-            <div className="flex items-center justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+            <div className="text-muted-foreground flex items-center justify-between text-xs font-semibold">
               <span className="flex items-center gap-1.5">
                 <Loader2 className="text-brand-orange size-4 animate-spin" />
-                Đang tải phương tiện lên...
+                {t("editor.mediaDropzone.uploading")}
               </span>
               <span className="font-mono">{uploadProgress}%</span>
             </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+            <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
               <div
                 className="bg-brand-orange h-full rounded-full transition-all duration-150"
                 style={{ width: `${uploadProgress}%` }}
@@ -120,13 +130,13 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
               <Upload className="size-5" />
             </div>
             <h4 className="text-foreground text-xs font-semibold">
-              Kéo thả hình ảnh/video vào đây hoặc{" "}
+              {t("editor.mediaDropzone.dragDropText")}{" "}
               <span className="text-brand-orange dark:text-brand-orange/80">
-                duyệt từ máy tính
+                {t("editor.mediaDropzone.browseText")}
               </span>
             </h4>
-            <p className="text-2xs text-zinc-400">
-              Hỗ trợ JPG, PNG, GIF, MP4 (tối đa 50MB)
+            <p className="text-2xs text-muted-foreground">
+              {t("editor.mediaDropzone.supportedFormats")}
             </p>
           </div>
         )}

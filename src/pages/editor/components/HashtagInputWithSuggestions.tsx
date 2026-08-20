@@ -69,7 +69,10 @@ export const HashtagInputWithSuggestions: React.FC<
     onChange(merged);
     setShowGroupDropdown(false);
     toast.success(
-      `Đã tải ${group.hashtags.length} hashtags từ nhóm "${group.name}"!`,
+      t("editor.hashtagInput.loadFromGroupSuccess", {
+        count: group.hashtags.length,
+        name: group.name,
+      }),
     );
   };
 
@@ -108,7 +111,7 @@ export const HashtagInputWithSuggestions: React.FC<
       <div className="flex items-center justify-between">
         <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
           <Hash className="text-brand-orange size-3.5" />
-          Bộ Hashtags bài viết ({hashtags.length})
+          {t("editor.hashtagInput.label", { count: hashtags.length })}
         </label>
 
         <div className="flex items-center gap-2">
@@ -139,7 +142,7 @@ export const HashtagInputWithSuggestions: React.FC<
               onClick={handleClearAll}
               className="text-2xs cursor-pointer font-medium text-rose-500 hover:underline"
             >
-              Xoá tất cả
+              {t("editor.hashtagInput.clearAllButton")}
             </button>
           )}
 
@@ -152,14 +155,14 @@ export const HashtagInputWithSuggestions: React.FC<
                 className="text-brand-orange bg-brand-orange-soft hover:bg-brand-orange/20 text-2xs flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 font-semibold transition-colors"
               >
                 <FolderKanban className="size-3.5" />
-                <span>Load từ Nhóm</span>
+                <span>{t("editor.hashtagInput.loadFromGroupButton")}</span>
                 <ChevronDown className="size-3" />
               </button>
 
               {showGroupDropdown && (
                 <div className="absolute top-full right-0 z-30 mt-1 w-64 space-y-1 rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
                   <span className="text-3xs block px-2 font-semibold tracking-wider text-zinc-400 uppercase">
-                    Chọn nhóm hashtag đã lưu:
+                    {t("editor.hashtagInput.chooseGroupLabel")}
                   </span>
                   <div className="max-h-48 space-y-1 overflow-y-auto">
                     {groups.map((group) => (
@@ -196,7 +199,7 @@ export const HashtagInputWithSuggestions: React.FC<
           }}
           onFocus={() => setShowSuggestions(true)}
           onKeyDown={handleKeyDown}
-          placeholder="Nhập hashtag và nhấn Enter (hoặc chọn gợi ý)..."
+          placeholder={t("editor.hashtagInput.inputPlaceholder")}
           className="rounded-xl border-zinc-200 bg-zinc-50 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
         />
 
@@ -204,7 +207,7 @@ export const HashtagInputWithSuggestions: React.FC<
         {showSuggestions && filteredSuggestions.length > 0 && (
           <div className="absolute top-full right-0 left-0 z-20 mt-1 max-h-48 space-y-1 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
             <span className="text-3xs mb-1 flex items-center justify-between px-2 font-semibold tracking-wider text-zinc-400 uppercase">
-              <span>Gợi ý hashtag thịnh hành:</span>
+              <span>{t("editor.hashtagInput.trendingSuggestionsLabel")}</span>
               <Sparkles className="text-brand-orange size-3" />
             </span>
             {filteredSuggestions.map((tag) => (

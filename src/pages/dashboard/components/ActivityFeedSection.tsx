@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { ActivityEvent } from "@/types/analytics";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ export function ActivityFeedSection({
   isError,
   onRetry,
 }: ActivityFeedSectionProps) {
+  const { t } = useTranslation();
   const getEventIcon = (type: ActivityEvent["type"]) => {
     switch (type) {
       case "POST_PUBLISHED":
@@ -46,13 +48,13 @@ export function ActivityFeedSection({
     <div className="border-border bg-card space-y-4 rounded-xl border p-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Activity className="size-4 text-brand-orange" />
+          <Activity className="text-brand-orange size-4" />
           <h3 className="text-foreground text-sm font-bold">
-            Hoạt động gần đây
+            {t("dashboard.activityFeed.title")}
           </h3>
         </div>
-        <span className="text-muted-foreground bg-muted rounded-full px-2 py-0.5 text-2xs font-medium">
-          10 sự kiện mới nhất
+        <span className="text-muted-foreground bg-muted text-2xs rounded-full px-2 py-0.5 font-medium">
+          {t("dashboard.activityFeed.latestBadge")}
         </span>
       </div>
 
@@ -74,7 +76,8 @@ export function ActivityFeedSection({
       ) : isError ? (
         <div className="border-destructive/20 bg-destructive/5 space-y-2 rounded-lg border p-4 text-center">
           <p className="text-destructive flex items-center justify-center gap-1.5 text-xs">
-            <AlertCircle className="size-3.5" /> Lỗi tải nhật ký hoạt động
+            <AlertCircle className="size-3.5" />{" "}
+            {t("dashboard.activityFeed.loadError")}
           </p>
           <Button
             variant="ghost"
@@ -82,12 +85,12 @@ export function ActivityFeedSection({
             onClick={onRetry}
             className="h-7 cursor-pointer gap-1 text-xs"
           >
-            <RefreshCw className="size-3" /> Thử lại
+            <RefreshCw className="size-3" /> {t("dashboard.activityFeed.retry")}
           </Button>
         </div>
       ) : events.length === 0 ? (
         <div className="text-muted-foreground rounded-lg border border-dashed p-6 text-center text-xs">
-          Chưa có hoạt động nào được ghi nhận gần đây.
+          {t("dashboard.activityFeed.empty")}
         </div>
       ) : (
         <div className="divide-border/40 space-y-3 divide-y pt-1">
@@ -114,7 +117,7 @@ export function ActivityFeedSection({
                     {event.targetTitle}
                   </p>
                 )}
-                <span className="text-muted-foreground mt-1 block text-3xs">
+                <span className="text-muted-foreground text-3xs mt-1 block">
                   {event.timestamp}
                 </span>
               </div>

@@ -11,6 +11,7 @@ import {
   ThumbsUp,
   Globe,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface PlatformMockupProps {
   platform: PlatformType;
@@ -21,6 +22,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
   platform,
   data,
 }) => {
+  const { t } = useTranslation();
   const {
     caption,
     mediaUrls = [],
@@ -48,7 +50,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
                 {authorName}
               </h4>
               <p className="flex items-center gap-1 text-xs text-slate-500">
-                Just now · <Globe className="size-3" />
+                {t("editor.mockup.justNow")} · <Globe className="size-3" />
               </p>
             </div>
           </div>
@@ -71,13 +73,13 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
 
         <div className="flex items-center justify-between border-t border-slate-100 p-3 text-xs font-medium text-slate-500 dark:border-slate-800">
           <button className="flex items-center gap-1.5 hover:text-blue-600">
-            <ThumbsUp className="size-4" /> Like
+            <ThumbsUp className="size-4" /> {t("editor.mockup.like")}
           </button>
           <button className="flex items-center gap-1.5 hover:text-blue-600">
-            <MessageCircle className="size-4" /> Comment
+            <MessageCircle className="size-4" /> {t("editor.mockup.comment")}
           </button>
           <button className="flex items-center gap-1.5 hover:text-blue-600">
-            <Share2 className="size-4" /> Share
+            <Share2 className="size-4" /> {t("editor.mockup.share")}
           </button>
         </div>
       </div>
@@ -170,7 +172,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
           <h5 className="text-xs font-semibold text-white">
             @{authorName.toLowerCase().replace(/\s+/g, "")}
           </h5>
-          <p className="line-clamp-2 text-2xs text-slate-200">{caption}</p>
+          <p className="text-2xs line-clamp-2 text-slate-200">{caption}</p>
         </div>
       </div>
     );

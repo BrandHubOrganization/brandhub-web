@@ -22,42 +22,34 @@ interface ContentRequestFilterBarProps {
 
 const ALL_STATUSES: {
   key: ContentRequestStatus;
-  label: string;
   colorClass: string;
 }[] = [
   {
     key: "SUBMITTED",
-    label: "Submitted",
     colorClass: "bg-zinc-100 text-zinc-700",
   },
   {
     key: "ASSIGNED",
-    label: "Assigned",
     colorClass: "bg-brand-orange-soft text-brand-orange",
   },
   {
     key: "IN_PROGRESS",
-    label: "In Progress",
     colorClass: "bg-amber-50 text-amber-700",
   },
   {
     key: "PENDING_REVIEW",
-    label: "Pending Review",
     colorClass: "bg-orange-50 text-orange-700",
   },
   {
     key: "SENT_TO_CLIENT",
-    label: "Sent To Client",
     colorClass: "bg-purple-50 text-purple-700",
   },
   {
     key: "APPROVED",
-    label: "Approved",
     colorClass: "bg-emerald-50 text-emerald-700",
   },
   {
     key: "REJECTED",
-    label: "Rejected",
     colorClass: "bg-rose-50 text-rose-700",
   },
 ];
@@ -110,58 +102,58 @@ export const ContentRequestFilterBar: React.FC<
     localSearch !== "";
 
   return (
-    <div className="space-y-3 rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="border-border bg-card space-y-3 rounded-xl border p-4 shadow-xs">
       {/* Search Input & Reset Button */}
       <div className="flex flex-col items-stretch justify-between gap-3 sm:flex-row sm:items-center">
         <div className="relative max-w-md flex-1">
-          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
+          <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <input
             type="text"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            placeholder="Tìm kiếm chủ đề, tên khách hàng..."
-            className="focus:ring-brand-orange/20 w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2 pr-4 pl-9 text-xs text-zinc-900 placeholder-zinc-400 focus:ring-2 focus:outline-hidden dark:border-zinc-700/80 dark:bg-zinc-800/80 dark:text-zinc-100"
+            placeholder={t("requests.filterBar.searchPlaceholder")}
+            className="focus:ring-brand-orange/20 border-border bg-muted text-foreground placeholder-muted-foreground w-full rounded-xl border py-2 pr-4 pl-9 text-xs focus:ring-2 focus:outline-hidden"
           />
         </div>
 
         {/* Date Range Picker */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-zinc-50 px-2.5 py-1.5 text-xs text-zinc-600 dark:border-zinc-700/80 dark:bg-zinc-800/80 dark:text-zinc-300">
-            <Calendar className="size-3.5 text-zinc-400" />
+          <div className="border-border bg-muted text-muted-foreground flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs">
+            <Calendar className="text-muted-foreground size-3.5" />
             <input
               type="date"
               value={startDate}
               onChange={(e) => onStartDateChange(e.target.value)}
-              className="cursor-pointer bg-transparent text-xs text-zinc-800 focus:outline-hidden dark:text-zinc-200"
+              className="text-foreground cursor-pointer bg-transparent text-xs focus:outline-hidden"
             />
-            <span className="text-zinc-400">-</span>
+            <span className="text-muted-foreground">-</span>
             <input
               type="date"
               value={endDate}
               onChange={(e) => onEndDateChange(e.target.value)}
-              className="cursor-pointer bg-transparent text-xs text-zinc-800 focus:outline-hidden dark:text-zinc-200"
+              className="text-foreground cursor-pointer bg-transparent text-xs focus:outline-hidden"
             />
           </div>
 
           {hasActiveFilters && (
             <button
               onClick={onResetFilters}
-              className="flex items-center gap-1 rounded-xl bg-zinc-100 px-3 py-2 text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-800 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+              className="bg-muted text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-medium transition-colors"
               title={t("requests.filterBar.resetFilter")}
             >
               <RotateCcw className="size-3.5" />
-              <span>Reset</span>
+              <span>{t("requests.filterBar.reset")}</span>
             </button>
           )}
         </div>
       </div>
 
       {/* Multi-select Status Badges Filter */}
-      <div className="flex flex-wrap items-center gap-2 border-t border-zinc-100 pt-1 dark:border-zinc-800/80">
-        <span className="text-2xs mr-1 font-semibold tracking-wider text-zinc-400 uppercase">
-          Status:
+      <div className="border-border flex flex-wrap items-center gap-2 border-t pt-1">
+        <span className="text-2xs text-muted-foreground mr-1 font-semibold tracking-wider uppercase">
+          {t("requests.filterBar.statusLabel")}
         </span>
-        {ALL_STATUSES.map(({ key, label, colorClass }) => {
+        {ALL_STATUSES.map(({ key, colorClass }) => {
           const isSelected = selectedStatuses.includes(key);
           return (
             <button
@@ -173,7 +165,7 @@ export const ContentRequestFilterBar: React.FC<
                   : `${colorClass} border-transparent hover:opacity-80`
               }`}
             >
-              {label}
+              {t(`requests.status.${key}`)}
             </button>
           );
         })}
@@ -181,8 +173,8 @@ export const ContentRequestFilterBar: React.FC<
 
       {/* Multi-select Platform Filter */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-2xs mr-1 font-semibold tracking-wider text-zinc-400 uppercase">
-          Platform:
+        <span className="text-2xs text-muted-foreground mr-1 font-semibold tracking-wider uppercase">
+          {t("requests.filterBar.platformLabel")}
         </span>
         {ALL_PLATFORMS.map((p) => {
           const isSelected = selectedPlatforms.includes(p);
@@ -193,7 +185,7 @@ export const ContentRequestFilterBar: React.FC<
               className={`cursor-pointer rounded-lg border px-2.5 py-1 font-mono text-xs font-medium transition-all ${
                 isSelected
                   ? "border-brand-orange bg-brand-orange text-white shadow-2xs"
-                  : "border-zinc-200/80 bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:border-zinc-700/80 dark:bg-zinc-800 dark:text-zinc-400"
+                  : "border-border bg-muted text-muted-foreground hover:bg-muted/70"
               }`}
             >
               {p}

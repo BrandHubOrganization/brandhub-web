@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Search, Plus } from "lucide-react";
 import { useHashtagGroups } from "./hooks/useHashtagGroups";
 import { HashtagGroupGrid } from "./components/HashtagGroupGrid";
+import { useTranslation } from "react-i18next";
 
 export function HashtagGroupsPage() {
+  const { t } = useTranslation();
   const {
     groups,
     search,
@@ -27,8 +29,8 @@ export function HashtagGroupsPage() {
 
   return (
     <PageWrapper
-      title="Quản Lý Nhóm Hashtags"
-      description="Quản lý và nhóm các từ khóa Hashtag theo chủ đề để chèn nhanh vào bài viết."
+      title={t("hashtagGroups.page.title")}
+      description={t("hashtagGroups.page.description")}
       actions={
         <Button
           type="button"
@@ -37,7 +39,7 @@ export function HashtagGroupsPage() {
           size="sm"
         >
           <Plus className="mr-1 size-4" />
-          <span>Tạo Nhóm Mới</span>
+          <span>{t("hashtagGroups.page.createButton")}</span>
         </Button>
       }
     >
@@ -48,15 +50,13 @@ export function HashtagGroupsPage() {
               iconPrefix={<Search className="size-4" />}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm kiếm nhóm theo tên hoặc hashtag..."
+              placeholder={t("hashtagGroups.page.searchPlaceholder")}
               className="text-xs"
             />
           </div>
 
           <div className="self-end text-xs font-medium text-zinc-500 sm:self-center dark:text-zinc-400">
-            Hiển thị{" "}
-            <strong className="text-foreground">{groups.length}</strong> nhóm
-            hashtag
+            {t("hashtagGroups.page.showingCount", { count: groups.length })}
           </div>
         </div>
 
@@ -80,10 +80,12 @@ export function HashtagGroupsPage() {
         isOpen={!!deletingGroup}
         onClose={() => setDeletingGroup(null)}
         onConfirm={handleConfirmDelete}
-        title={`Xóa Nhóm Hashtag "${deletingGroup?.name}"?`}
-        description="Bạn có chắc chắn muốn xóa nhóm hashtag này không? Thao tác này không thể hoàn tác."
-        confirmText="Xóa Nhóm"
-        cancelText="Hủy"
+        title={t("hashtagGroups.deleteDialog.title", {
+          name: deletingGroup?.name,
+        })}
+        description={t("hashtagGroups.deleteDialog.description")}
+        confirmText={t("hashtagGroups.deleteDialog.confirmText")}
+        cancelText={t("hashtagGroups.deleteDialog.cancelText")}
         variant="danger"
         isLoading={isDeleting}
       />

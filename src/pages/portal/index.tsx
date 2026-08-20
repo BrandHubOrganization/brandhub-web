@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
 
@@ -26,14 +27,15 @@ const QUEUE_ITEMS = [
 ];
 
 export function PortalPage() {
+  const { t } = useTranslation();
   return (
     <PageWrapper
-      title="Client Portal"
-      description="Không gian phê duyệt nội dung của khách hàng."
+      title={t("dashboard.portal.title")}
+      description={t("dashboard.portal.description")}
     >
       <div className="border-border bg-card overflow-hidden rounded-xl border">
         <div className="border-border bg-muted/10 border-b p-4 text-sm font-bold">
-          Hàng đợi Phê duyệt Nội dung
+          {t("dashboard.portal.queueTitle")}
         </div>
         <div className="divide-border divide-y">
           {QUEUE_ITEMS.map((item) => (
@@ -46,12 +48,14 @@ export function PortalPage() {
                 <div className="text-muted-foreground flex items-center gap-2 text-xs">
                   <span>{item.workspace}</span>
                   <span>•</span>
-                  <span>Ngày tạo: {item.date}</span>
+                  <span>
+                    {t("dashboard.portal.createdOn", { date: item.date })}
+                  </span>
                 </div>
               </div>
               <div>
                 <Badge
-                  className="rounded-full px-2 py-0.5 font-mono text-3xs uppercase"
+                  className="text-3xs rounded-full px-2 py-0.5 font-mono uppercase"
                   variant={
                     item.status === "Approved"
                       ? "PUBLISHED"

@@ -5,8 +5,10 @@ import { AssigneePickerModal } from "@/pages/requests/components/AssigneePickerM
 import { RefreshCw } from "lucide-react";
 import { useContentRequests } from "./hooks/useContentRequests";
 import { RequestTabs } from "./components/RequestTabs";
+import { useTranslation } from "react-i18next";
 
 export function ContentRequestListPage() {
+  const { t } = useTranslation();
   const {
     userRole,
     searchQuery,
@@ -33,14 +35,14 @@ export function ContentRequestListPage() {
 
   return (
     <PageWrapper
-      title="Content Requests"
-      description="Quản lý và phân công các yêu cầu sản xuất nội dung bài viết từ các thương hiệu đối tác."
+      title={t("requests.page.title")}
+      description={t("requests.page.description")}
       actions={
         <div className="flex items-center gap-2">
           <button
             onClick={() => fetchRequests()}
             className="cursor-pointer rounded-xl border border-zinc-200 bg-white p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-            title="Làm mới"
+            title={t("requests.page.refresh")}
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
           </button>

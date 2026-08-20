@@ -15,7 +15,7 @@ import type {
   UpdateServicePackageDTO,
   PackageTier,
 } from "../types/client";
-import { ShieldCheck, Zap } from "lucide-react";
+import { Package, Zap } from "lucide-react";
 
 interface ServicePackageModalProps {
   isOpen: boolean;
@@ -76,8 +76,8 @@ export function ServicePackageModal({
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base font-bold">
-            <ShieldCheck className="text-brand-orange size-4" />
-            Nâng cấp / Điều chỉnh Gói dịch vụ
+            <Package className="text-brand-orange size-4" />
+            {t("client.servicePackage.modalTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -85,7 +85,7 @@ export function ServicePackageModal({
           {client && (
             <div className="bg-muted/40 space-y-1 rounded-lg p-3 text-xs">
               <span className="text-muted-foreground block">
-                Thương hiệu áp dụng:
+                {t("client.servicePackage.appliedBrand")}
               </span>
               <strong className="text-foreground text-sm font-bold">
                 {client.name}
@@ -96,7 +96,7 @@ export function ServicePackageModal({
           {/* Hạng gói dịch vụ */}
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold">
-              Chọn Hạng Gói (Tier)
+              {t("client.servicePackage.tierLabel")}
             </Label>
             <div className="grid grid-cols-3 gap-2">
               {(["STARTER", "GROWTH", "ENTERPRISE"] as PackageTier[]).map(
@@ -122,7 +122,7 @@ export function ServicePackageModal({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="postLimit" className="text-xs font-semibold">
-                Quota Post / Tháng
+                {t("client.servicePackage.postLimitLabel")}
               </Label>
               <Input
                 id="postLimit"
@@ -142,7 +142,8 @@ export function ServicePackageModal({
                 htmlFor="aiCredits"
                 className="flex items-center gap-1 text-xs font-semibold"
               >
-                <Zap className="size-3 text-amber-500" /> AI Credits / Tháng
+                <Zap className="size-3 text-amber-500" />{" "}
+                {t("client.servicePackage.aiCreditsLabel")}
               </Label>
               <Input
                 id="aiCredits"
@@ -162,7 +163,7 @@ export function ServicePackageModal({
           {/* Ngày hết hạn gói */}
           <div className="space-y-1.5">
             <Label htmlFor="expiry" className="text-xs font-semibold">
-              Ngày hết hạn hợp đồng / gói dịch vụ
+              {t("client.servicePackage.expiryLabel")}
             </Label>
             <Input
               id="expiry"
@@ -183,7 +184,7 @@ export function ServicePackageModal({
               onClick={onClose}
               className="cursor-pointer text-xs"
             >
-              Hủy
+              {t("client.servicePackage.cancel")}
             </Button>
             <Button
               type="submit"

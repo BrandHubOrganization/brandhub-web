@@ -104,7 +104,7 @@ export const MediaTab: React.FC = () => {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm kiếm file theo tên..."
+              placeholder={t("library.media.searchPlaceholder")}
               className="rounded-xl border-zinc-200 bg-zinc-50 pr-4 pl-9 text-xs text-zinc-900 placeholder-zinc-400 dark:border-zinc-700/80 dark:bg-zinc-800/80 dark:text-zinc-100"
             />
           </div>
@@ -119,7 +119,7 @@ export const MediaTab: React.FC = () => {
                   : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
               }`}
             >
-              Tất cả
+              {t("library.media.filterAll")}
             </button>
             <button
               onClick={() => setFilterType("image")}
@@ -130,7 +130,7 @@ export const MediaTab: React.FC = () => {
               }`}
             >
               <ImageIcon className="size-3.5" />
-              Ảnh
+              {t("library.media.filterImage")}
             </button>
             <button
               onClick={() => setFilterType("video")}
@@ -141,7 +141,7 @@ export const MediaTab: React.FC = () => {
               }`}
             >
               <Film className="size-3.5" />
-              Video
+              {t("library.media.filterVideo")}
             </button>
           </div>
         </div>
@@ -156,10 +156,10 @@ export const MediaTab: React.FC = () => {
               className="h-auto w-auto min-w-0 cursor-pointer border-0 bg-transparent px-0 py-0 text-xs font-medium text-zinc-700 shadow-none focus-visible:ring-0 dark:text-zinc-300"
             >
               <option value="newest" className="dark:bg-zinc-900">
-                Mới nhất
+                {t("library.media.sortNewest")}
               </option>
               <option value="oldest" className="dark:bg-zinc-900">
-                Cũ nhất
+                {t("library.media.sortOldest")}
               </option>
             </Select>
           </div>
@@ -174,11 +174,10 @@ export const MediaTab: React.FC = () => {
         <div className="rounded-xl border border-dashed border-zinc-200 bg-white p-8 py-16 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
           <ImageIcon className="mx-auto mb-3 size-12 text-zinc-300 dark:text-zinc-700" />
           <h3 className="text-foreground mb-1 text-sm font-semibold">
-            Không tìm thấy file media nào
+            {t("library.media.emptyTitle")}
           </h3>
           <p className="text-muted-foreground mx-auto max-w-sm text-xs">
-            Thử thay đổi từ khóa tìm kiếm hoặc tải thêm tài nguyên mới vào thư
-            viện.
+            {t("library.media.emptyDescription")}
           </p>
         </div>
       ) : (
@@ -225,11 +224,13 @@ export const MediaTab: React.FC = () => {
               <div className="text-3xs absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 font-bold text-white uppercase backdrop-blur-xs">
                 {media.type === "video" ? (
                   <>
-                    <Film className="text-brand-orange size-3" /> Video
+                    <Film className="text-brand-orange size-3" />{" "}
+                    {t("library.media.typeVideo")}
                   </>
                 ) : (
                   <>
-                    <ImageIcon className="text-brand-orange size-3" /> Image
+                    <ImageIcon className="text-brand-orange size-3" />{" "}
+                    {t("library.media.typeImage")}
                   </>
                 )}
               </div>
@@ -248,7 +249,7 @@ export const MediaTab: React.FC = () => {
         )}
         {!hasMore && mediaList.length > 0 && (
           <span className="text-xs font-medium text-zinc-400">
-            Đã tải tất cả media tài nguyên
+            {t("library.media.allLoaded")}
           </span>
         )}
       </div>

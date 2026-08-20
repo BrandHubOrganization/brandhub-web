@@ -24,7 +24,7 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
     if (!file) return;
 
     if (file.size > MAX_MEDIA_UPLOAD_SIZE) {
-      toast.error("File vượt quá giới hạn 50MB");
+      toast.error(t("library.media.sizeLimitError"));
       return;
     }
 
@@ -35,10 +35,10 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
       const { mockContentLibraryService } =
         await import("@/services/mockContentLibraryService");
       const uploadedItem = await mockContentLibraryService.uploadMedia(file);
-      toast.success(`Đã tải lên thành công: ${file.name}`);
+      toast.success(t("library.media.uploadSuccess", { filename: file.name }));
       onUploadSuccess(uploadedItem);
     } catch (err) {
-      toast.error("Tải file lên thất bại!");
+      toast.error(t("library.media.uploadError"));
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -69,7 +69,7 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
         ) : (
           <>
             <Upload className="size-4" />
-            <span>Tải lên Media</span>
+            <span>{t("library.media.uploadButton")}</span>
           </>
         )}
       </button>

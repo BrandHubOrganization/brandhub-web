@@ -3,6 +3,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Bold, Italic, List, ListOrdered, Link } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { SocialPlatform } from "@/types/editor";
 
 interface RichTextEditorProps {
@@ -25,11 +26,12 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   onChange,
   targetPlatforms = ["FACEBOOK", "INSTAGRAM", "TIKTOK"],
 }) => {
+  const { t } = useTranslation();
   const editor = useEditor({
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: "Bắt đầu soạn thảo nội dung bài đăng của bạn tại đây...",
+        placeholder: t("editor.richText.contentPlaceholder"),
       }),
     ],
     content: value,
@@ -53,17 +55,17 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div className="border-border bg-card flex min-h-[320px] flex-col overflow-hidden rounded-xl border shadow-xs">
       {/* Formatting Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 bg-zinc-50/80 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/40">
+      <div className="border-border bg-muted/80 flex flex-wrap items-center justify-between gap-2 border-b p-2.5">
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={`rounded-lg p-1.5 text-xs transition-colors ${
               editor.isActive("bold")
-                ? "text-foreground bg-zinc-200 font-bold dark:bg-zinc-700"
-                : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                ? "text-foreground bg-muted font-bold"
+                : "text-muted-foreground hover:bg-muted"
             }`}
-            title="In đậm (Bold)"
+            title={t("editor.richText.boldTooltip")}
           >
             <Bold className="size-4" />
           </button>
@@ -73,25 +75,25 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={`rounded-lg p-1.5 text-xs transition-colors ${
               editor.isActive("italic")
-                ? "text-foreground bg-zinc-200 italic dark:bg-zinc-700"
-                : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                ? "text-foreground bg-muted italic"
+                : "text-muted-foreground hover:bg-muted"
             }`}
-            title="In nghiêng (Italic)"
+            title={t("editor.richText.italicTooltip")}
           >
             <Italic className="size-4" />
           </button>
 
-          <div className="mx-1 h-4 w-px bg-zinc-200 dark:bg-zinc-700" />
+          <div className="bg-border mx-1 h-4 w-px" />
 
           <button
             type="button"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className={`rounded-lg p-1.5 text-xs transition-colors ${
               editor.isActive("bulletList")
-                ? "text-foreground bg-zinc-200 dark:bg-zinc-700"
-                : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                ? "text-foreground bg-muted"
+                : "text-muted-foreground hover:bg-muted"
             }`}
-            title="Danh sách gạch đầu dòng"
+            title={t("editor.richText.bulletListTooltip")}
           >
             <List className="size-4" />
           </button>
@@ -101,32 +103,32 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             className={`rounded-lg p-1.5 text-xs transition-colors ${
               editor.isActive("orderedList")
-                ? "text-foreground bg-zinc-200 dark:bg-zinc-700"
-                : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                ? "text-foreground bg-muted"
+                : "text-muted-foreground hover:bg-muted"
             }`}
-            title="Danh sách đánh số"
+            title={t("editor.richText.orderedListTooltip")}
           >
             <ListOrdered className="size-4" />
           </button>
 
-          <div className="mx-1 h-4 w-px bg-zinc-200 dark:bg-zinc-700" />
+          <div className="bg-border mx-1 h-4 w-px" />
 
           <button
             type="button"
             onClick={() => {
-              const url = window.prompt("Nhập đường dẫn URL:");
+              const url = window.prompt(t("editor.richText.linkUrlPrompt"));
               if (url) {
                 editor.chain().focus().setMark("link", { href: url }).run();
               }
             }}
-            className="rounded-lg p-1.5 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-            title="Chèn liên kết"
+            className="text-muted-foreground hover:bg-muted rounded-lg p-1.5 transition-colors"
+            title={t("editor.richText.linkTooltip")}
           >
             <Link className="size-4" />
           </button>
         </div>
 
-        <span className="font-mono text-2xs text-zinc-400">
+        <span className="text-2xs text-muted-foreground font-mono">
           TipTap Rich Text Editor
         </span>
       </div>
@@ -140,7 +142,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       </div>
 
       {/* Character Count Indicators Per Platform */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-100 bg-zinc-50/50 p-3 text-xs dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="border-border bg-muted/50 flex flex-wrap items-center justify-between gap-3 border-t p-3 text-xs">
         <div className="flex flex-wrap items-center gap-3">
           {targetPlatforms.map((platform) => {
             const limitInfo = PLATFORM_LIMITS[platform];
@@ -149,10 +151,10 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             return (
               <div
                 key={platform}
-                className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-2xs ${
+                className={`text-2xs flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono ${
                   isOverLimit
                     ? "border-red-200 bg-red-50 font-bold text-red-600 dark:border-red-900 dark:bg-red-950/50"
-                    : "border-zinc-200 bg-white text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400"
+                    : "border-border bg-card text-muted-foreground"
                 }`}
               >
                 <span>{limitInfo.label}:</span>
@@ -165,8 +167,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           })}
         </div>
 
-        <span className="font-mono text-2xs text-zinc-400">
-          Tổng số ký tự: {textLength}
+        <span className="text-2xs text-muted-foreground font-mono">
+          {t("editor.richText.totalChars", { count: textLength })}
         </span>
       </div>
     </div>

@@ -6,6 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import type { EventDropArg, EventContentArg } from "@fullcalendar/core";
 import type { CalendarPostEvent, PlatformType } from "@/types/calendar";
 import { Video, AtSign, Share2, Globe, MessageSquare } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ContentCalendarProps {
   events: CalendarPostEvent[];
@@ -40,6 +41,7 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
   onDateClick,
   onDatesChange,
 }) => {
+  const { t } = useTranslation();
   const calendarRef = useRef<FullCalendar>(null);
 
   const handleEventDrop = async (dropInfo: EventDropArg) => {
@@ -62,7 +64,7 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
     return (
       <div
         className={`group relative flex w-full cursor-grab items-center gap-1.5 overflow-hidden rounded-xl border px-2 py-1 text-xs font-medium transition-all duration-150 active:cursor-grabbing ${statusColorClass}`}
-        title={`${eventInfo.event.title}\n\nCaption: ${extProps?.captionPreview || "No preview"}`}
+        title={`${eventInfo.event.title}\n\nCaption: ${extProps?.captionPreview || t("calendar.eventCard.noCaptionPreview")}`}
       >
         {PLATFORM_ICONS[platform]}
         <span className="truncate">{eventInfo.event.title}</span>

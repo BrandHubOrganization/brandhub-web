@@ -38,7 +38,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedId) {
-      toast.error("Vui lòng chọn nhân sự đảm nhận bài viết");
+      toast.error(t("requests.assigneePicker.selectAssigneeRequired"));
       return;
     }
 
@@ -47,7 +47,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
       await onConfirm(selectedId);
       onClose();
     } catch (err) {
-      toast.error("Lỗi khi phân công nhân sự");
+      toast.error(t("requests.assigneePicker.assignError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -57,35 +57,35 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
       <div className="bg-card border-border max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-xl border p-6 shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
+        <div className="border-border flex items-center justify-between border-b pb-3">
           <div className="flex items-center gap-2">
             <UserPlus className="text-brand-orange dark:text-brand-orange/80 size-5" />
             <h3 className="text-foreground text-sm font-semibold">
-              Phân Công Nhân Sự Sáng Tạo
+              {t("requests.assigneePicker.title")}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+            className="text-muted-foreground hover:text-foreground rounded-lg p-1"
           >
             <X className="size-5" />
           </button>
         </div>
 
         <p className="text-muted-foreground text-xs">
-          Gán Creator cho yêu cầu:{" "}
+          {t("requests.assigneePicker.assignFor")}{" "}
           <span className="text-foreground font-semibold">{requestTitle}</span>
         </p>
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
+          <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm theo tên hoặc email Creator..."
-            className="bg-muted text-foreground focus:ring-brand-orange/20 w-full rounded-xl border border-zinc-200 py-2 pr-4 pl-9 text-xs focus:ring-2 focus:outline-hidden dark:border-zinc-700"
+            placeholder={t("requests.assigneePicker.searchPlaceholder")}
+            className="bg-muted text-foreground focus:ring-brand-orange/20 border-border w-full rounded-xl border py-2 pr-4 pl-9 text-xs focus:ring-2 focus:outline-hidden"
           />
         </div>
 
@@ -100,14 +100,14 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
                 className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-all ${
                   isSelected
                     ? "bg-brand-orange-soft dark:bg-brand-orange/20 border-brand-orange/50 shadow-xs"
-                    : "border-zinc-100 bg-white hover:bg-zinc-50 dark:border-zinc-800/80 dark:bg-zinc-800/40 dark:hover:bg-zinc-800"
+                    : "border-border bg-card hover:bg-muted"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <img
                     src={creator.avatarUrl}
                     alt={creator.name}
-                    className="size-9 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
+                    className="border-border size-9 rounded-full border object-cover"
                   />
                   <div>
                     <h4 className="text-foreground text-xs font-semibold">
@@ -130,13 +130,13 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex justify-end gap-2 border-t border-zinc-100 pt-3 dark:border-zinc-800">
+        <div className="border-border flex justify-end gap-2 border-t pt-3">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-zinc-300 px-4 py-2 text-xs font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"
+            className="border-border text-muted-foreground rounded-xl border px-4 py-2 text-xs font-medium"
           >
-            Hủy
+            {t("requests.assigneePicker.cancel")}
           </button>
           <button
             type="button"

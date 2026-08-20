@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Plus, KeyRound, LogOut } from "lucide-react";
@@ -10,6 +11,7 @@ import { QuickTasksCard } from "./components/QuickTasksCard";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 
 export function DashboardPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     user,
@@ -30,8 +32,8 @@ export function DashboardPage() {
 
   return (
     <PageWrapper
-      title="Dashboard"
-      description="Tổng quan chỉ số hoạt động, nhật ký sự kiện và tiến độ nhóm."
+      title={t("dashboard.page.title")}
+      description={t("dashboard.page.description")}
       actions={
         <div className="flex flex-wrap items-center gap-2">
           <Button
@@ -42,9 +44,9 @@ export function DashboardPage() {
             disabled={isRefreshing}
           >
             <RefreshCw
-              className={`size-3.5 ${isRefreshing ? "animate-spin text-brand-orange" : ""}`}
+              className={`size-3.5 ${isRefreshing ? "text-brand-orange animate-spin" : ""}`}
             />
-            Làm mới
+            {t("dashboard.page.refresh")}
           </Button>
           <Button
             variant="outline"
@@ -53,7 +55,7 @@ export function DashboardPage() {
             onClick={() => navigate("/change-password")}
           >
             <KeyRound className="size-3.5" />
-            Đổi mật khẩu
+            {t("dashboard.page.changePassword")}
           </Button>
           <Button
             variant="outline"
@@ -62,16 +64,16 @@ export function DashboardPage() {
             onClick={handleLogout}
           >
             <LogOut className="size-3.5" />
-            Đăng xuất
+            {t("dashboard.page.logout")}
           </Button>
           <Button
             variant="default"
             size="sm"
             onClick={() => navigate("/editor")}
-            className="cursor-pointer gap-1.5 bg-brand-orange text-xs font-medium text-white hover:bg-brand-orange/90"
+            className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs font-medium text-white"
           >
             <Plus className="size-3.5" />
-            Tạo Nội Dung Mới
+            {t("dashboard.page.createContent")}
           </Button>
         </div>
       }

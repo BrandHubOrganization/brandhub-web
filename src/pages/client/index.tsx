@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { useWorkspaceStore } from "@/store/workspaceStore";
@@ -15,6 +16,7 @@ import { ClientTable } from "./components/ClientTable";
 import { ClientModals } from "./ClientModals";
 
 export function ClientListPage() {
+  const { t } = useTranslation();
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const isOwner = memberRole === "OWNER";
 
@@ -43,17 +45,17 @@ export function ClientListPage() {
 
   return (
     <PageWrapper
-      title="Quản lý Brand Clients"
-      description="Quản lý danh sách thương hiệu, gói dịch vụ và phân công Account Manager."
+      title={t("client.list.title")}
+      description={t("client.list.description")}
       actions={
         isOwner && (
           <Button
             size="sm"
             onClick={() => setIsCreateOpen(true)}
-            className="cursor-pointer gap-1.5 bg-brand-orange text-xs font-semibold text-white hover:bg-brand-orange/90"
+            className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs font-semibold text-white"
           >
             <Plus className="size-3.5" />
-            Tạo Client Mới
+            {t("client.list.createButton")}
           </Button>
         )
       }
@@ -66,14 +68,15 @@ export function ClientListPage() {
             setSearchTerm(val);
             setPage(0);
           }}
-          placeholder="Tìm kiếm thương hiệu, email, ngành hàng..."
+          placeholder={t("client.list.searchPlaceholder")}
           totalElements={totalElements}
-          totalLabel="Client"
-          icon={<Building2 className="size-3.5 text-brand-orange" />}
+          totalLabel={t("client.list.totalLabel")}
+          icon={<Building2 className="text-brand-orange size-3.5" />}
           extraActions={
             isOwner ? (
-              <span className="hidden items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-3xs font-semibold text-emerald-600 sm:inline-flex">
-                <ShieldCheck className="size-3" /> AGENCY OWNER
+              <span className="text-3xs hidden items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 font-semibold text-emerald-600 sm:inline-flex">
+                <ShieldCheck className="size-3" />{" "}
+                {t("client.list.agencyOwnerBadge")}
               </span>
             ) : undefined
           }

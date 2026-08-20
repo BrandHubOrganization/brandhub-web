@@ -50,7 +50,7 @@ export function KpiCardsSection({
       <div className="border-destructive/30 bg-destructive/5 flex flex-col items-center justify-center gap-3 rounded-xl border p-5 text-center">
         <div className="text-destructive flex items-center gap-2 text-sm font-medium">
           <AlertCircle className="size-4" />
-          <span>Không thể tải dữ liệu KPI Analytics</span>
+          <span>{t("dashboard.kpi.loadError")}</span>
         </div>
         <Button
           variant="outline"
@@ -58,7 +58,7 @@ export function KpiCardsSection({
           onClick={onRetry}
           className="cursor-pointer gap-2 text-xs"
         >
-          <RefreshCw className="size-3.5" /> Thử lại
+          <RefreshCw className="size-3.5" /> {t("dashboard.kpi.retry")}
         </Button>
       </div>
     );
@@ -66,9 +66,9 @@ export function KpiCardsSection({
 
   const cards = [
     {
-      title: "Tổng số bài đăng (Tháng này)",
+      title: t("dashboard.kpi.totalPostsTitle"),
       value: data.totalPosts.toLocaleString("vi-VN"),
-      change: "+12.4% so với tháng trước",
+      change: t("dashboard.kpi.totalPostsChange"),
       icon: FileText,
       iconBg: "bg-brand-orange/10 text-brand-orange",
       accentColor: "border-l-brand-orange",
@@ -76,21 +76,21 @@ export function KpiCardsSection({
     {
       title: t("dashboard.kpi.publishedSuccessTitle"),
       value: data.publishedCount.toLocaleString("vi-VN"),
-      change: "+8.2% đúng tiến độ",
+      change: t("dashboard.kpi.publishedChange"),
       icon: CheckCircle2,
       iconBg: "bg-emerald-500/10 text-emerald-500",
       accentColor: "border-l-emerald-500",
     },
     {
-      title: "Bài đăng thất bại",
+      title: t("dashboard.kpi.failedTitle"),
       value: data.failedCount.toLocaleString("vi-VN"),
-      change: "-2 bài so với tuần trước",
+      change: t("dashboard.kpi.failedChange"),
       icon: XCircle,
       iconBg: "bg-rose-500/10 text-rose-500",
       accentColor: "border-l-rose-500",
     },
     {
-      title: "Tỷ lệ thành công",
+      title: t("dashboard.kpi.successRateTitle"),
       value: `${data.successRate}%`,
       change: t("dashboard.kpi.systemTargetMet"),
       icon: TrendingUp,

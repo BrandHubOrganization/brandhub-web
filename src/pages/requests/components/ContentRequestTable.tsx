@@ -6,6 +6,7 @@ import type {
 } from "@/types/contentRequest";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, UserPlus, ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ContentRequestTableProps {
   requests: ContentRequest[];
@@ -18,42 +19,32 @@ interface ContentRequestTableProps {
   onOpenAssignModal: (req: ContentRequest) => void;
 }
 
-const STATUS_BADGE_MAP: Record<
-  ContentRequestStatus,
-  { label: string; className: string }
-> = {
+const STATUS_BADGE_MAP: Record<ContentRequestStatus, { className: string }> = {
   SUBMITTED: {
-    label: "Submitted",
     className:
       "bg-muted text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700",
   },
   ASSIGNED: {
-    label: "Assigned",
     className:
       "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800",
   },
   IN_PROGRESS: {
-    label: "In Progress",
     className:
       "bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800",
   },
   PENDING_REVIEW: {
-    label: "Pending Review",
     className:
       "bg-orange-50 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800",
   },
   SENT_TO_CLIENT: {
-    label: "Sent to Client",
     className:
       "bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800",
   },
   APPROVED: {
-    label: "Approved",
     className:
       "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
   },
   REJECTED: {
-    label: "Rejected",
     className:
       "bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800",
   },
@@ -100,12 +91,13 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
   onOpenAssignModal,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleRowClick = (req: ContentRequest) => {
     navigate("/editor", {
       state: {
         templateTitle: req.topic,
-        prefilledCaption: `[Client: ${req.clientName}] ${req.topic}\n\nHạn hoàn thành: ${req.deadline}`,
+        prefilledCaption: `[Client: ${req.clientName}] ${req.topic}\n\n${t("requests.table.deadlineLabel")}: ${req.deadline}`,
       },
     });
   };
@@ -116,21 +108,26 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="bg-muted/60 border-border/80 text-muted-foreground border-b text-2xs font-bold tracking-wider uppercase">
-              <th className="px-4 py-3.5">Topic / Chủ Đề</th>
-              <th className="px-3 py-3.5">Platforms</th>
-              <th className="px-4 py-3.5">Khách Hàng (Client)</th>
-              <th className="px-3 py-3.5">Deadline</th>
-              <th className="px-3 py-3.5">Trạng Thái</th>
-              <th className="px-4 py-3.5">Người Phân Công</th>
-              <th className="px-4 py-3.5 text-right">Thao Tác</th>
+            <tr className="bg-muted/60 border-border/80 text-muted-foreground text-2xs border-b font-bold tracking-wider uppercase">
+              <th className="px-4 py-3.5">{t("requests.table.topic")}</th>
+              <th className="px-3 py-3.5">{t("requests.table.platforms")}</th>
+              <th className="px-4 py-3.5">{t("requests.table.client")}</th>
+              <th className="px-3 py-3.5">{t("requests.table.deadline")}</th>
+              <th className="px-3 py-3.5">{t("requests.table.status")}</th>
+              <th className="px-4 py-3.5">{t("requests.table.assignee")}</th>
+              <th className="px-4 py-3.5 text-right">
+                {t("requests.table.actions")}
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 text-xs dark:divide-zinc-800/80">
+          <tbody className="divide-border divide-y text-xs">
             {requests.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-16 text-center text-zinc-400">
-                  Không tìm thấy yêu cầu nội dung nào phù hợp.
+                <td
+                  colSpan={7}
+                  className="text-muted-foreground py-16 text-center"
+                >
+                  {t("requests.table.empty")}
                 </td>
               </tr>
             ) : (
@@ -141,7 +138,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                   <tr
                     key={req.id}
                     onClick={() => handleRowClick(req)}
-                    className="group cursor-pointer transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40"
+                    className="group hover:bg-muted/80 cursor-pointer transition-colors"
                   >
                     {/* Topic */}
                     <td className="text-foreground group-hover:text-brand-orange dark:group-hover:text-brand-orange/80 max-w-xs truncate px-4 py-3.5 font-semibold transition-colors">
@@ -160,7 +157,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           return (
                             <span
                               key={p}
-                              className={`rounded-xl px-1.5 py-0.5 font-mono text-3xs font-bold ${pInfo.bg} ${pInfo.text}`}
+                              className={`text-3xs rounded-xl px-1.5 py-0.5 font-mono font-bold ${pInfo.bg} ${pInfo.text}`}
                               title={p}
                             >
                               {pInfo.label}
@@ -171,21 +168,21 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                     </td>
 
                     {/* Client Name */}
-                    <td className="px-4 py-3.5 font-medium text-zinc-700 dark:text-zinc-300">
+                    <td className="text-muted-foreground px-4 py-3.5 font-medium">
                       {req.clientName}
                     </td>
 
                     {/* Deadline */}
-                    <td className="px-3 py-3.5 font-mono text-zinc-600 dark:text-zinc-400">
+                    <td className="text-muted-foreground px-3 py-3.5 font-mono">
                       {req.deadline}
                     </td>
 
                     {/* Status Badge */}
                     <td className="px-3 py-3.5">
                       <span
-                        className={`inline-block rounded-full border px-2.5 py-1 text-2xs font-semibold ${statusInfo.className}`}
+                        className={`text-2xs inline-block rounded-full border px-2.5 py-1 font-semibold ${statusInfo.className}`}
                       >
-                        {statusInfo.label}
+                        {t(`requests.status.${req.status}`)}
                       </span>
                     </td>
 
@@ -196,15 +193,15 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           <img
                             src={req.assignee.avatarUrl}
                             alt={req.assignee.name}
-                            className="size-6 rounded-full border border-zinc-200 object-cover dark:border-zinc-700"
+                            className="border-border size-6 rounded-full border object-cover"
                           />
                           <span className="text-foreground max-w-[120px] truncate font-medium">
                             {req.assignee.name}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-2xs text-zinc-400 italic">
-                          Chưa phân công
+                        <span className="text-2xs text-muted-foreground italic">
+                          {t("requests.table.unassigned")}
                         </span>
                       )}
                     </td>
@@ -220,17 +217,17 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           <button
                             onClick={() => onOpenAssignModal(req)}
                             className="bg-brand-orange-soft dark:bg-brand-orange/20 hover:bg-brand-orange dark:hover:bg-brand-orange text-brand-orange dark:text-brand-orange/80 flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors hover:text-white"
-                            title="Phân công nhân sự"
+                            title={t("requests.table.assign")}
                           >
                             <UserPlus className="size-3.5" />
-                            <span>Assign</span>
+                            <span>{t("requests.table.assignButton")}</span>
                           </button>
                         )}
 
                         <button
                           onClick={() => handleRowClick(req)}
-                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
-                          title="Chuyển đến Editor"
+                          className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
+                          title={t("requests.table.goToEditor")}
                         >
                           <ArrowRight className="size-4" />
                         </button>
@@ -245,31 +242,29 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
       </div>
 
       {/* Pagination Footer */}
-      <div className="border-border/80 text-muted-foreground flex flex-col items-center justify-between gap-3 border-t bg-zinc-50 p-4 text-xs sm:flex-row dark:bg-zinc-900/50">
+      <div className="border-border/80 text-muted-foreground bg-muted flex flex-col items-center justify-between gap-3 border-t p-4 text-xs sm:flex-row">
         <div>
-          Hiển thị{" "}
-          <span className="text-foreground font-semibold">
-            {requests.length}
-          </span>{" "}
-          / <span className="text-foreground font-semibold">{total}</span> yêu
-          cầu nội dung (20 dòng/trang)
+          {t("requests.table.showing", {
+            shown: requests.length,
+            total,
+          })}
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1}
-            className="rounded-lg border border-zinc-200 p-1.5 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            className="border-border hover:bg-muted rounded-lg border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ChevronLeft className="size-4" />
           </button>
           <span className="text-foreground px-2 font-mono font-semibold">
-            Trang {page} / {totalPages}
+            {t("requests.table.page", { page, totalPages })}
           </span>
           <button
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages}
-            className="rounded-lg border border-zinc-200 p-1.5 transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            className="border-border hover:bg-muted rounded-lg border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ChevronRight className="size-4" />
           </button>

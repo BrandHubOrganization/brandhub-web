@@ -37,46 +37,48 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
 
   const handleApply = (tpl: ContentTemplate) => {
     onSelectTemplate(tpl);
-    toast.success(`Đã áp dụng mẫu bài đăng "${tpl.title}"!`);
+    toast.success(
+      t("editor.templatePicker.applySuccess", { title: tpl.title }),
+    );
     onClose();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
-      <div className="animate-in fade-in zoom-in-95 flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-2xl duration-200 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="animate-in fade-in zoom-in-95 border-border bg-card flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border shadow-2xl duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-100 p-4 dark:border-zinc-800">
+        <div className="border-border flex items-center justify-between border-b p-4">
           <div className="flex items-center gap-2">
             <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-1.5">
               <LayoutTemplate className="size-5" />
             </div>
             <div>
               <h3 className="text-foreground text-base font-semibold">
-                Thư viện Mẫu bài đăng (Post Templates)
+                {t("editor.templatePicker.title")}
               </h3>
               <p className="text-muted-foreground text-xs">
-                Chọn mẫu nội dung có sẵn để áp dụng nhanh vào Editor
+                {t("editor.templatePicker.subtitle")}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="cursor-pointer p-1 text-lg leading-none text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+            className="text-muted-foreground hover:text-foreground cursor-pointer p-1 text-lg leading-none"
           >
             <X className="size-5" />
           </button>
         </div>
 
         {/* Search Bar */}
-        <div className="border-b border-zinc-100 bg-zinc-50/50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50">
+        <div className="border-border bg-muted/50 border-b p-4">
           <div className="relative">
-            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
+            <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
             <Input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm kiếm mẫu theo tiêu đề hoặc nội dung..."
-              className="rounded-xl border-zinc-200 bg-white pr-4 pl-9 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+              placeholder={t("editor.templatePicker.searchPlaceholder")}
+              className="border-border bg-card text-foreground rounded-xl pr-4 pl-9 text-xs"
             />
           </div>
         </div>
@@ -84,41 +86,41 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
         {/* Template Grid Body */}
         <div className="grid flex-1 grid-cols-1 gap-4 overflow-y-auto p-4 md:grid-cols-2">
           {isLoading ? (
-            <div className="col-span-2 py-12 text-center text-xs text-zinc-400">
-              Đang tải danh sách mẫu bài đăng...
+            <div className="text-muted-foreground col-span-2 py-12 text-center text-xs">
+              {t("editor.templatePicker.loading")}
             </div>
           ) : templates.length === 0 ? (
-            <div className="col-span-2 py-12 text-center text-xs text-zinc-400">
-              Không tìm thấy mẫu phù hợp
+            <div className="text-muted-foreground col-span-2 py-12 text-center text-xs">
+              {t("editor.templatePicker.empty")}
             </div>
           ) : (
             templates.map((tpl) => (
               <div
                 key={tpl.id}
-                className="hover:border-brand-orange/50 group flex flex-col justify-between space-y-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-2xs transition-all dark:border-zinc-700/80 dark:bg-zinc-800/60"
+                className="hover:border-brand-orange/50 group border-border bg-card flex flex-col justify-between space-y-3 rounded-xl border p-4 shadow-2xs transition-all"
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <h4 className="group-hover:text-brand-orange line-clamp-1 text-xs font-semibold text-zinc-900 transition-colors dark:text-zinc-100">
+                    <h4 className="group-hover:text-brand-orange text-foreground line-clamp-1 text-xs font-semibold transition-colors">
                       {tpl.title}
                     </h4>
                     <span className="bg-brand-orange-soft text-brand-orange text-3xs shrink-0 rounded-full px-2 py-0.5 font-mono font-bold">
-                      Template
+                      {t("editor.templatePicker.templateBadge")}
                     </span>
                   </div>
 
-                  <p className="line-clamp-3 text-xs leading-relaxed text-zinc-600 dark:text-zinc-300">
+                  <p className="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
                     {tpl.caption}
                   </p>
                 </div>
 
                 {/* Hashtags & Action */}
-                <div className="flex items-center justify-between gap-2 border-t border-zinc-100 pt-2 dark:border-zinc-700/60">
+                <div className="border-border flex items-center justify-between gap-2 border-t pt-2">
                   <div className="flex max-h-6 flex-wrap gap-1 overflow-hidden">
                     {tpl.hashtags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="text-3xs rounded-xl bg-zinc-100 px-1.5 py-0.5 font-mono text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+                        className="text-3xs bg-muted text-muted-foreground rounded-xl px-1.5 py-0.5 font-mono"
                       >
                         {tag}
                       </span>

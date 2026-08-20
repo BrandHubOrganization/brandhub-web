@@ -27,7 +27,7 @@ export const HashtagGroupsTab: React.FC = () => {
       const data = await mockContentLibraryService.getHashtagGroups();
       setGroups(data);
     } catch (err) {
-      toast.error("Lỗi khi tải danh sách Hashtag Groups");
+      toast.error(t("hashtagGroups.loadError"));
     } finally {
       setLoading(false);
     }
@@ -41,7 +41,7 @@ export const HashtagGroupsTab: React.FC = () => {
     const textToCopy = group.tags.join(" ");
     navigator.clipboard.writeText(textToCopy);
     setCopiedId(group.id);
-    toast.success(`Đã copy nhóm hashtag "${group.name}"!`);
+    toast.success(t("hashtagGroups.copySuccess", { name: group.name }));
     setTimeout(() => setCopiedId(null), COPY_FEEDBACK_DURATION_MS);
   };
 
@@ -61,7 +61,7 @@ export const HashtagGroupsTab: React.FC = () => {
   const handleSaveGroup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!groupName.trim() || !tagsInput.trim()) {
-      toast.error("Vui lòng nhập đầy đủ tên và hashtag");
+      toast.error(t("hashtagGroups.validationError"));
       return;
     }
 
@@ -81,31 +81,31 @@ export const HashtagGroupsTab: React.FC = () => {
         setGroups((prev) =>
           prev.map((g) => (g.id === updated.id ? updated : g)),
         );
-        toast.success("Cập nhật nhóm Hashtag thành công!");
+        toast.success(t("hashtagGroups.updateSuccess"));
       } else {
         const created = await mockContentLibraryService.createHashtagGroup(
           groupName,
           tagsArray,
         );
         setGroups((prev) => [created, ...prev]);
-        toast.success("Tạo nhóm Hashtag mới thành công!");
+        toast.success(t("hashtagGroups.createSuccess"));
       }
       setIsModalOpen(false);
     } catch (err) {
-      toast.error("Lỗi khi lưu nhóm Hashtag");
+      toast.error(t("hashtagGroups.saveError"));
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDeleteGroup = async (id: string, name: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa nhóm hashtag "${name}"?`)) {
+    if (window.confirm(t("hashtagGroups.deleteConfirm", { name }))) {
       try {
         await mockContentLibraryService.deleteHashtagGroup(id);
         setGroups((prev) => prev.filter((g) => g.id !== id));
         toast.success(t("hashtagGroups.deleteSuccess"));
       } catch (err) {
-        toast.error("Lỗi khi xóa nhóm Hashtag");
+        toast.error(t("hashtagGroups.deleteError"));
       }
     }
   };
@@ -117,10 +117,10 @@ export const HashtagGroupsTab: React.FC = () => {
         <div>
           <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
             <Hash className="text-brand-orange size-4" />
-            Nhóm Hashtag Đã Lưu ({groups.length})
+            {t("hashtagGroups.headerCount", { count: groups.length })}
           </h3>
           <p className="text-muted-foreground text-xs">
-            Quản lý các bộ hashtag định sẵn và copy nhanh vào bài đăng
+            {t("hashtagGroups.headerDescription")}
           </p>
         </div>
 
@@ -129,20 +129,20 @@ export const HashtagGroupsTab: React.FC = () => {
           className="bg-brand-orange hover:bg-brand-orange/90 active:bg-brand-orange/80 flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
         >
           <Plus className="size-4" />
-          <span>Tạo Nhóm Hashtag</span>
+          <span>{t("hashtagGroups.createButton")}</span>
         </button>
       </div>
 
       {/* Grid List */}
       {loading ? (
         <div className="py-12 text-center text-xs text-zinc-400">
-          Đang tải nhóm hashtag...
+          {t("hashtagGroups.loading")}
         </div>
       ) : groups.length === 0 ? (
         <div className="rounded-xl border border-dashed border-zinc-200 bg-white p-8 py-12 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
           <Hash className="mx-auto mb-2 size-10 text-zinc-300 dark:text-zinc-700" />
           <p className="text-xs text-zinc-500">
-            Chưa có nhóm hashtag nào. Nhấn "Tạo Nhóm Hashtag" để thêm mới.
+            {t("hashtagGroups.emptyState")}
           </p>
         </div>
       ) : (
@@ -162,14 +162,14 @@ export const HashtagGroupsTab: React.FC = () => {
                     <button
                       onClick={() => handleOpenModal(group)}
                       className="hover:text-brand-orange dark:hover:text-brand-orange cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                      title="Sửa nhóm"
+                      title={t("hashtagGroups.editTooltip")}
                     >
                       <Edit2 className="size-3.5" />
                     </button>
                     <button
                       onClick={() => handleDeleteGroup(group.id, group.name)}
                       className="cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
-                      title="Xóa nhóm"
+                      title={t("hashtagGroups.deleteTooltip")}
                     >
                       <Trash2 className="size-3.5" />
                     </button>
@@ -192,7 +192,9 @@ export const HashtagGroupsTab: React.FC = () => {
               {/* Copy Action Footer */}
               <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
                 <span className="text-2xs font-mono text-zinc-400">
-                  {group.tags.length} hashtags
+                  {t("hashtagGroups.hashtagsCount", {
+                    count: group.tags.length,
+                  })}
                 </span>
                 <button
                   onClick={() => handleCopyGroup(group)}
@@ -206,7 +208,7 @@ export const HashtagGroupsTab: React.FC = () => {
                   ) : (
                     <>
                       <Copy className="size-3.5" />
-                      <span>Copy Group</span>
+                      <span>{t("hashtagGroups.copyGroupButton")}</span>
                     </>
                   )}
                 </button>
@@ -223,8 +225,8 @@ export const HashtagGroupsTab: React.FC = () => {
             <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
               <h3 className="text-foreground text-sm font-semibold">
                 {editingGroup
-                  ? "Chỉnh Sửa Nhóm Hashtag"
-                  : "Tạo Nhóm Hashtag Mới"}
+                  ? t("hashtagGroups.editModalTitle")
+                  : t("hashtagGroups.createModalTitle")}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -237,26 +239,26 @@ export const HashtagGroupsTab: React.FC = () => {
             <form onSubmit={handleSaveGroup} className="space-y-4">
               <div>
                 <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                  Tên nhóm Hashtag
+                  {t("hashtagGroups.nameFieldLabel")}
                 </label>
                 <Input
                   type="text"
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
-                  placeholder="Ví dụ: Fashion Summer 2026"
+                  placeholder={t("hashtagGroups.namePlaceholder")}
                   className="rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                 />
               </div>
 
               <div>
                 <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                  Danh sách Hashtags (cách nhau bởi dấu cách hoặc phẩy)
+                  {t("hashtagGroups.tagsFieldLabel")}
                 </label>
                 <Textarea
                   rows={4}
                   value={tagsInput}
                   onChange={(e) => setTagsInput(e.target.value)}
-                  placeholder="#fashion #summer #style #ootd"
+                  placeholder={t("hashtagGroups.tagsPlaceholder")}
                   className="rounded-xl border-zinc-200 bg-zinc-50 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                 />
               </div>
@@ -267,7 +269,7 @@ export const HashtagGroupsTab: React.FC = () => {
                   onClick={() => setIsModalOpen(false)}
                   className="cursor-pointer rounded-xl border border-zinc-300 px-4 py-2 text-xs font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"
                 >
-                  Hủy
+                  {t("hashtagGroups.cancelButton")}
                 </button>
                 <button
                   type="submit"

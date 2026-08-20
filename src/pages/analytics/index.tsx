@@ -1,43 +1,46 @@
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 
 export function AnalyticsPage() {
+  const { t } = useTranslation();
+
   return (
     <PageWrapper
-      title="Analytics"
-      description="Báo cáo hiệu quả nội dung và tương tác chiến dịch."
+      title={t("analytics.title")}
+      description={t("analytics.description")}
     >
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         {[
           {
-            label: "LƯỢT TIẾP CẬN",
+            label: t("analytics.stats.reach.label"),
             value: "245,890",
             delta: "+12.4%",
-            desc: "So với tháng trước",
+            desc: t("analytics.stats.reach.desc"),
           },
           {
-            label: "TƯƠNG TÁC",
+            label: t("analytics.stats.engagement.label"),
             value: "18,430",
             delta: "+8.2%",
-            desc: "So với tháng trước",
+            desc: t("analytics.stats.engagement.desc"),
           },
           {
-            label: "BÀI ĐĂNG",
+            label: t("analytics.stats.posts.label"),
             value: "48",
             delta: "0.0%",
-            desc: "Bằng với tháng trước",
+            desc: t("analytics.stats.posts.desc"),
           },
           {
-            label: "TỶ LỆ PHẢN HỒI",
+            label: t("analytics.stats.responseRate.label"),
             value: "94.5%",
             delta: "+1.5%",
-            desc: "Cải thiện tốt",
+            desc: t("analytics.stats.responseRate.desc"),
           },
         ].map((stat, idx) => (
           <div
             key={idx}
             className="border-border bg-card space-y-2 rounded-xl border p-6"
           >
-            <p className="text-muted-foreground font-mono text-3xs font-semibold tracking-wider uppercase">
+            <p className="text-muted-foreground text-3xs font-mono font-semibold tracking-wider uppercase">
               {stat.label}
             </p>
             <div className="flex items-baseline gap-2">
@@ -55,11 +58,10 @@ export function AnalyticsPage() {
 
       <div className="border-border bg-card mt-6 space-y-4 rounded-xl border p-6">
         <h2 className="text-foreground text-sm font-bold">
-          Hiệu quả theo Kênh xuất bản
+          {t("analytics.channelPerformance.title")}
         </h2>
         <div className="border-border text-muted-foreground bg-muted/10 flex h-48 items-center justify-center rounded border border-dashed text-xs">
-          [Biểu đồ thống kê theo mạng xã hội: Facebook, Instagram, LinkedIn,
-          Blog]
+          {t("analytics.channelPerformance.placeholder")}
         </div>
       </div>
     </PageWrapper>

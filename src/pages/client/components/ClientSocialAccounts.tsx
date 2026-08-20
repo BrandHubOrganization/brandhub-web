@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { LinkedSocialAccount } from "../types/client";
 import { Share2 } from "lucide-react";
 
@@ -8,12 +9,13 @@ interface ClientSocialAccountsProps {
 export function ClientSocialAccounts({
   accounts = [],
 }: ClientSocialAccountsProps) {
+  const { t } = useTranslation();
   return (
     <div className="border-border bg-card space-y-4 rounded-xl border p-5">
       <div className="border-border flex items-center gap-2 border-b pb-3">
         <Share2 className="text-brand-orange size-4" />
         <h3 className="text-foreground text-sm font-bold">
-          Tài khoản Mạng xã hội đã liên kết
+          {t("client.socialAccounts.title")}
         </h3>
       </div>
 
@@ -37,14 +39,14 @@ export function ClientSocialAccounts({
                   </span>
                 </div>
               </div>
-              <span className="rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-3xs font-semibold text-emerald-600">
-                Đã kết nối
+              <span className="text-3xs rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-600">
+                {t("client.socialAccounts.connected")}
               </span>
             </div>
           ))
         ) : (
           <p className="text-muted-foreground py-4 text-center text-xs">
-            Chưa có tài khoản mạng xã hội nào được liên kết.
+            {t("client.socialAccounts.empty")}
           </p>
         )}
       </div>

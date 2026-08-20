@@ -61,17 +61,17 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-        <div className="animate-in fade-in zoom-in-95 max-h-[90vh] w-full max-w-md space-y-5 overflow-y-auto rounded-xl border border-slate-200 bg-white p-6 shadow-2xl duration-200 dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+        <div className="animate-in fade-in zoom-in-95 max-h-[90vh] w-full max-w-md space-y-5 overflow-y-auto rounded-xl border border-border bg-card p-6 shadow-2xl duration-200">
+          <div className="flex items-center justify-between border-b border-border pb-3">
             <div className="flex items-center gap-2">
               <CalendarIcon className="text-brand-orange size-5" />
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg font-semibold text-foreground">
                 {t("calendar.schedule.title")}
               </h3>
             </div>
             <button
               onClick={onClose}
-              className="cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="cursor-pointer text-muted-foreground hover:text-foreground"
             >
               <X className="size-5" />
             </button>
@@ -79,7 +79,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">
                 {t("calendar.schedule.postTitleLabel")}
               </label>
               <Input
@@ -88,13 +88,13 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 placeholder={t("calendar.schedule.postTitlePlaceholder")}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                className="rounded-lg border-border bg-card text-sm text-foreground"
               />
             </div>
 
             <div>
               <div className="mb-1 flex items-center justify-between">
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+                <label className="block text-xs font-medium text-muted-foreground">
                   {t("calendar.schedule.captionPreviewLabel")}
                 </label>
                 <button
@@ -111,19 +111,19 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 placeholder={t("calendar.schedule.captionPlaceholder")}
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                className="rounded-lg border-border bg-card text-sm text-foreground"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">
                   {t("calendar.schedule.platformLabel")}
                 </label>
                 <Select
                   value={platform}
                   onChange={(e) => setPlatform(e.target.value as PlatformType)}
-                  className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  className="rounded-lg border-border bg-card text-sm text-foreground"
                 >
                   <option value="FACEBOOK">Facebook</option>
                   <option value="INSTAGRAM">Instagram</option>
@@ -134,7 +134,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">
                   {t("calendar.schedule.scheduledTimeLabel")}
                 </label>
                 <div className="relative">
@@ -142,17 +142,17 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="rounded-lg border-slate-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                    className="rounded-lg border-border bg-card text-sm text-foreground"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-3 dark:border-slate-800">
+            <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="cursor-pointer rounded-lg border border-slate-300 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                className="cursor-pointer rounded-lg border border-border px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted"
               >
                 {t("calendar.schedule.cancel")}
               </button>

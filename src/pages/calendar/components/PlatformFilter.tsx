@@ -1,6 +1,7 @@
 import React from "react";
 import type { PlatformType } from "@/types/calendar";
 import { Video, AtSign, Share2, Globe, MessageSquare } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface PlatformFilterProps {
   selectedPlatforms: PlatformType[];
@@ -51,6 +52,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
   selectedPlatforms,
   onChange,
 }) => {
+  const { t } = useTranslation();
   const togglePlatform = (id: PlatformType) => {
     if (selectedPlatforms.includes(id)) {
       onChange(selectedPlatforms.filter((p) => p !== id));
@@ -68,9 +70,9 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
   };
 
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-800 dark:bg-slate-900/50">
+    <div className="border-border bg-muted mb-4 flex flex-wrap items-center gap-2 rounded-xl border p-2">
       <span className="px-2 text-xs font-semibold tracking-wider text-slate-500 uppercase">
-        Platforms:
+        {t("calendar.platformFilter.label")}
       </span>
       <button
         type="button"
@@ -78,8 +80,8 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
         className="rounded-lg border border-slate-300 px-2.5 py-1 text-xs font-medium transition-colors hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
       >
         {selectedPlatforms.length === PLATFORMS.length
-          ? "Deselect All"
-          : "Select All"}
+          ? t("calendar.platformFilter.deselectAll")
+          : t("calendar.platformFilter.selectAll")}
       </button>
       <div className="mx-1 h-4 w-[1px] bg-slate-300 dark:bg-slate-700" />
       {PLATFORMS.map((p) => {

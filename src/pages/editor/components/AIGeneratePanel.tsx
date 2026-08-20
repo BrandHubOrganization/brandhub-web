@@ -29,18 +29,18 @@ interface AIGeneratePanelProps {
 
 const TONE_PRESETS = [
   {
-    label: "Hài hước / Viral",
+    key: "funny",
     promptAdd: "Phong cách vui vẻ, hài hước, tạo sự chú ý.",
   },
   {
-    label: "Chuyên nghiệp",
+    key: "professional",
     promptAdd: "Giọng văn chuyên nghiệp, ngắn gọn, đáng tin cậy.",
   },
   {
-    label: "Kêu gọi mua hàng (CTA)",
+    key: "cta",
     promptAdd: "Tập trung vào ưu đãi, thúc đẩy mua hàng ngay.",
   },
-];
+] as const;
 
 export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
   topic = "",
@@ -50,7 +50,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
   const { t } = useTranslation();
   const [prompt, setPrompt] = useState(
     "Viết bài đăng hấp dẫn, ngắn gọn với giọng văn thu hút và kêu gọi hành động.",
-  );
+  ); // ponytail: sample prompt text is demo content, not UI chrome
   const [userFeedback, setUserFeedback] = useState("");
   const [showFeedbackInput, setShowFeedbackInput] = useState(false);
 
@@ -73,7 +73,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
 
   const handleGenerate = async (isRegenerate: boolean = false) => {
     if (!prompt.trim()) {
-      toast.error("Vui lòng nhập yêu cầu cho AI Co-Pilot");
+      toast.error(t("editor.aiGenerate.promptRequiredError"));
       return;
     }
 
@@ -111,7 +111,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
       toast.success(
         isRegenerate
           ? t("editor.aiGenerate.regenerateSuccess")
-          : "AI Co-Pilot đã tạo xong nội dung!",
+          : t("editor.aiGenerate.generateSuccess"),
       );
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "";
@@ -140,42 +140,42 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
   };
 
   return (
-    <div className="flex h-full flex-col justify-between space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="border-border bg-card flex h-full flex-col justify-between space-y-4 rounded-xl border p-5 shadow-xs">
       <div className="space-y-4">
         {/* Header Title */}
-        <div className="flex items-center gap-2 border-b border-zinc-100 pb-3 dark:border-zinc-800">
+        <div className="border-border flex items-center gap-2 border-b pb-3">
           <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-1.5">
             <Sparkles className="size-5" />
           </div>
           <div>
             <h3 className="text-foreground flex items-center gap-1.5 text-sm font-semibold">
-              Trợ lý AI Co-Pilot
+              {t("editor.aiGenerate.title")}
               <span className="bg-brand-orange-soft text-brand-orange text-3xs rounded-full px-1.5 py-0.5 font-bold">
-                Pro
+                {t("editor.aiGenerate.proBadge")}
               </span>
             </h3>
             <p className="text-muted-foreground text-2xs">
-              Tự động tạo Caption, Hashtags & Ảnh AI (Stability AI)
+              {t("editor.aiGenerate.subtitle")}
             </p>
           </div>
         </div>
 
         {/* Quick Presets */}
         <div className="space-y-1.5">
-          <span className="text-2xs block font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
-            Gợi ý phong cách:
+          <span className="text-2xs text-muted-foreground block font-semibold tracking-wider uppercase">
+            {t("editor.aiGenerate.presetsLabel")}
           </span>
           <div className="flex flex-wrap gap-1.5">
             {TONE_PRESETS.map((preset) => (
               <button
-                key={preset.label}
+                key={preset.key}
                 type="button"
                 onClick={() =>
                   setPrompt((prev) => `${prev} ${preset.promptAdd}`)
                 }
-                className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs cursor-pointer rounded-lg bg-zinc-100 px-2.5 py-1 font-medium text-zinc-700 transition-colors dark:bg-zinc-800 dark:text-zinc-300"
+                className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs bg-muted text-muted-foreground cursor-pointer rounded-lg px-2.5 py-1 font-medium transition-colors"
               >
-                + {preset.label}
+                + {t(`editor.aiGenerate.presets.${preset.key}`)}
               </button>
             ))}
           </div>
@@ -183,15 +183,15 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
 
         {/* Prompt Input Area */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-            Yêu cầu định hướng (Prompt)
+          <label className="text-muted-foreground text-xs font-semibold">
+            {t("editor.aiGenerate.promptLabel")}
           </label>
           <Textarea
             rows={3}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Ví dụ: Viết bài đăng phong cách hài hước..."
-            className="focus:ring-brand-orange/20 focus:border-brand-orange rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            placeholder={t("editor.aiGenerate.promptPlaceholder")}
+            className="focus:ring-brand-orange/20 focus:border-brand-orange border-border bg-muted text-foreground rounded-xl text-xs"
           />
         </div>
 
@@ -205,12 +205,16 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
           {isGenerating ? (
             <>
               <Loader2 className="size-4 animate-spin" />
-              <span>AI đang tạo (~{estimatedSeconds}s)...</span>
+              <span>
+                {t("editor.aiGenerate.generating", {
+                  seconds: estimatedSeconds,
+                })}
+              </span>
             </>
           ) : (
             <>
               <Wand2 className="size-4" />
-              <span>Generate with AI</span>
+              <span>{t("editor.aiGenerate.generateButton")}</span>
             </>
           )}
         </button>
@@ -222,37 +226,38 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
               <AlertTriangle className="size-4 shrink-0" />
               <span>
                 {errorState === "SERVICE_UNAVAILABLE" &&
-                  "Dịch vụ AI hiện không khả dụng (503)"}
+                  t("editor.aiGenerate.errorServiceUnavailable")}
                 {errorState === "RATE_LIMITED" &&
-                  "Vượt quá giới hạn gọi AI (429 Rate Limit)"}
+                  t("editor.aiGenerate.errorRateLimited")}
                 {errorState === "GENERATION_FAILED" &&
-                  "Tạo nội dung thất bại. Vui lòng thử lại"}
+                  t("editor.aiGenerate.errorGenerationFailed")}
               </span>
             </div>
             <p className="text-2xs text-red-600 dark:text-red-400">
-              Vui lòng kiểm tra lại kết nối mạng hoặc nhập prompt khác trước khi
-              thử lại.
+              {t("editor.aiGenerate.errorHint")}
             </p>
             <button
               onClick={() => handleGenerate(false)}
               className="flex cursor-pointer items-center gap-1 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700"
             >
               <RotateCcw className="size-3.5" />
-              <span>Thử lại (Retry)</span>
+              <span>{t("editor.aiGenerate.retryButton")}</span>
             </button>
           </div>
         )}
 
         {/* Result & Streaming Display Box */}
         {(isGenerating || streamingText || generatedResult) && !errorState && (
-          <div className="space-y-3 rounded-xl border border-zinc-200/80 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
+          <div className="border-border bg-muted space-y-3 rounded-xl border p-4">
             <div className="flex items-center justify-between">
               <span className="text-brand-orange text-3xs font-bold tracking-wider uppercase">
-                Kết Quả AI Sinh (Text & Stability AI):
+                {t("editor.aiGenerate.resultLabel")}
               </span>
               {isGenerating && (
-                <span className="text-3xs font-mono text-zinc-400">
-                  Ước tính: ~{estimatedSeconds}s
+                <span className="text-3xs text-muted-foreground font-mono">
+                  {t("editor.aiGenerate.estimateLabel", {
+                    seconds: estimatedSeconds,
+                  })}
                 </span>
               )}
             </div>
@@ -260,10 +265,10 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
             {/* Skeleton Loading State */}
             {isGenerating && !streamingText && (
               <div className="animate-pulse space-y-2.5 py-2">
-                <div className="size-3/4 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-3 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-3 w-5/6 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="mt-2 h-20 w-full rounded-xl bg-zinc-200 dark:bg-zinc-700" />
+                <div className="bg-muted size-3/4 rounded-full" />
+                <div className="bg-muted h-3 w-full rounded-full" />
+                <div className="bg-muted h-3 w-5/6 rounded-full" />
+                <div className="bg-muted mt-2 h-20 w-full rounded-xl" />
               </div>
             )}
 
@@ -273,19 +278,19 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
                 rows={4}
                 value={streamingText}
                 onChange={(e) => setStreamingText(e.target.value)}
-                className="rounded-xl border-zinc-200 bg-white font-sans text-xs leading-relaxed text-zinc-800 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
+                className="border-border bg-card text-foreground rounded-xl font-sans text-xs leading-relaxed"
               />
             )}
 
             {/* Generated AI Image Thumbnail with Lightbox */}
             {generatedResult?.imageUrl && (
               <div className="space-y-1.5 pt-1">
-                <span className="text-3xs block font-semibold text-zinc-400">
-                  Ảnh AI Sinh (Stability AI):
+                <span className="text-3xs text-muted-foreground block font-semibold">
+                  {t("editor.aiGenerate.imageResultLabel")}
                 </span>
                 <div
                   onClick={() => setIsLightboxOpen(true)}
-                  className="group hover:border-brand-orange relative aspect-video cursor-pointer overflow-hidden rounded-xl border border-zinc-200 bg-zinc-900 shadow-2xs transition-all dark:border-zinc-700"
+                  className="group hover:border-brand-orange border-border relative aspect-video cursor-pointer overflow-hidden rounded-xl border bg-zinc-900 shadow-2xs transition-all"
                 >
                   <img
                     src={generatedResult.imageUrl}
@@ -294,7 +299,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
                   />
                   <div className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/40 text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
                     <Maximize2 className="size-4" />
-                    <span>Xem Phóng To</span>
+                    <span>{t("editor.aiGenerate.viewFullImage")}</span>
                   </div>
                 </div>
               </div>
@@ -302,9 +307,9 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
 
             {/* Generated Hashtags Tags */}
             {generatedResult && (
-              <div className="border-t border-zinc-200/60 pt-2 dark:border-zinc-700/60">
-                <span className="text-3xs mb-1 block font-semibold text-zinc-400">
-                  Hashtags đính kèm:
+              <div className="border-border/60 border-t pt-2">
+                <span className="text-3xs text-muted-foreground mb-1 block font-semibold">
+                  {t("editor.aiGenerate.hashtagsAttached")}
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {generatedResult.hashtags.map((tag) => (
@@ -331,22 +336,19 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
                 className="text-brand-orange flex cursor-pointer items-center gap-1 text-xs font-medium hover:underline"
               >
                 <MessageSquare className="size-3.5" />
-                <span>
-                  + Phản hồi bổ sung để Regenerate ( Make it shorter,
-                  professional...)
-                </span>
+                <span>{t("editor.aiGenerate.addFeedbackButton")}</span>
               </button>
             ) : (
               <div className="bg-brand-orange-soft/40 border-brand-orange/20 space-y-1.5 rounded-xl border p-3">
                 <label className="text-brand-orange text-2xs block font-semibold">
-                  Ý kiến phản hồi tinh chỉnh AI (Feedback):
+                  {t("editor.aiGenerate.feedbackLabel")}
                 </label>
                 <input
                   type="text"
                   value={userFeedback}
                   onChange={(e) => setUserFeedback(e.target.value)}
-                  placeholder="Ví dụ: Make it more professional, shorter caption..."
-                  className="border-brand-orange/30 w-full rounded-lg border bg-white p-2 text-xs text-zinc-900 focus:outline-hidden dark:bg-zinc-800 dark:text-zinc-100"
+                  placeholder={t("editor.aiGenerate.feedbackPlaceholder")}
+                  className="border-brand-orange/30 bg-card text-foreground w-full rounded-lg border p-2 text-xs focus:outline-hidden"
                 />
               </div>
             )}
@@ -360,10 +362,10 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
           <button
             type="button"
             onClick={() => handleGenerate(true)}
-            className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-zinc-100 py-2 text-xs font-semibold text-zinc-800 transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+            className="bg-muted text-foreground hover:bg-muted/70 flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-semibold transition-colors"
           >
             <RefreshCw className="text-brand-orange size-3.5" />
-            <span>Regenerate</span>
+            <span>{t("editor.aiGenerate.regenerateButton")}</span>
           </button>
           <button
             type="button"
@@ -371,7 +373,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
             className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-2 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-emerald-700"
           >
             <Check className="size-4 stroke-[3]" />
-            <span>Use this</span>
+            <span>{t("editor.aiGenerate.useThisButton")}</span>
           </button>
         </div>
       )}

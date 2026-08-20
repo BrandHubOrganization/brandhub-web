@@ -40,7 +40,7 @@ export function EditorHeaderActions({
           <>
             <Save className="size-3.5 text-amber-500" />
             <span className="font-medium text-amber-600 dark:text-amber-400">
-              Chưa lưu nháp
+              {t("editor.header.unsavedDraft")}
             </span>
           </>
         ) : (
@@ -57,7 +57,7 @@ export function EditorHeaderActions({
         className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
       >
         <LayoutTemplate className="text-brand-orange size-4" />
-        <span>Mẫu Bài Đăng</span>
+        <span>{t("editor.header.templatePickerButton")}</span>
       </button>
 
       <button
@@ -66,14 +66,14 @@ export function EditorHeaderActions({
         className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
       >
         <Eye className="text-brand-orange size-4" />
-        <span>Preview Post</span>
+        <span>{t("editor.header.previewButton")}</span>
       </button>
 
       <button
         type="button"
         onClick={onSubmitForReview}
         disabled={isSubmitting}
-        className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-brand-orange px-4 py-1.5 text-xs font-medium text-white shadow-xs transition-colors hover:bg-brand-orange/90 disabled:opacity-50"
+        className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-1.5 text-xs font-medium text-white shadow-xs transition-colors disabled:opacity-50"
       >
         <Send className="size-3.5" />
         <span>

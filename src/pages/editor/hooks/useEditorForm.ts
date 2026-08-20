@@ -151,7 +151,7 @@ export function useEditorForm() {
 
   const handleSubmitForReview = async () => {
     if (!caption.trim()) {
-      toast.error("Vui lòng soạn thảo nội dung caption trước khi gửi duyệt");
+      toast.error(t("editor.submitEmptyError"));
       return;
     }
 
@@ -161,7 +161,7 @@ export function useEditorForm() {
       toast.success(t("editor.submitSuccess"));
       navigate("/requests");
     } catch (err) {
-      toast.error("Lỗi khi gửi bài duyệt");
+      toast.error(t("editor.submitError"));
     } finally {
       setIsSubmitting(false);
     }

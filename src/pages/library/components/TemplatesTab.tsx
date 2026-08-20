@@ -33,7 +33,7 @@ export const TemplatesTab: React.FC = () => {
       setTemplates(tplData);
       setHashtagGroups(hgData);
     } catch (err) {
-      toast.error("Lỗi khi tải danh sách Post Templates");
+      toast.error(t("library.templates.loadError"));
     } finally {
       setLoading(false);
     }
@@ -56,13 +56,13 @@ export const TemplatesTab: React.FC = () => {
       },
     });
 
-    toast.success(`Đã áp dụng template "${tpl.title}" vào Content Editor!`);
+    toast.success(t("library.templates.useSuccess", { title: tpl.title }));
   };
 
   const handleCreateTemplate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !caption.trim()) {
-      toast.error("Vui lòng điền tiêu đề và nội dung caption mẫu");
+      toast.error(t("library.templates.validationError"));
       return;
     }
 
@@ -74,26 +74,26 @@ export const TemplatesTab: React.FC = () => {
         selectedHgId || undefined,
       );
       setTemplates((prev) => [created, ...prev]);
-      toast.success("Tạo Mẫu Bài Viết mới thành công!");
+      toast.success(t("library.templates.createSuccess"));
       setIsModalOpen(false);
       setTitle("");
       setCaption("");
       setSelectedHgId("");
     } catch (err) {
-      toast.error("Lỗi khi tạo Mẫu Bài Viết");
+      toast.error(t("library.templates.createError"));
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDeleteTemplate = async (id: string, title: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa template "${title}"?`)) {
+    if (window.confirm(t("library.templates.deleteConfirm", { title }))) {
       try {
         await mockContentLibraryService.deleteTemplate(id);
         setTemplates((prev) => prev.filter((t) => t.id !== id));
         toast.success(t("library.templates.deleteSuccess"));
       } catch (err) {
-        toast.error("Lỗi khi xóa template");
+        toast.error(t("library.templates.deleteError"));
       }
     }
   };
@@ -101,14 +101,14 @@ export const TemplatesTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="border-border bg-card flex items-center justify-between rounded-xl border p-4 shadow-xs">
         <div>
           <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
             <FileText className="text-brand-orange size-4" />
-            Mẫu Bài Viết Đã Duyệt ({templates.length})
+            {t("library.templates.headerCount", { count: templates.length })}
           </h3>
           <p className="text-muted-foreground text-xs">
-            Các bài viết chuẩn hóa kèm nhóm hashtag sẵn sàng để sử dụng ngay
+            {t("library.templates.headerDescription")}
           </p>
         </div>
 
@@ -117,20 +117,20 @@ export const TemplatesTab: React.FC = () => {
           className="bg-brand-orange hover:bg-brand-orange/90 active:bg-brand-orange/80 flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
         >
           <Plus className="size-4" />
-          <span>Tạo Template Mới</span>
+          <span>{t("library.templates.createNewButton")}</span>
         </button>
       </div>
 
       {/* Grid Templates */}
       {loading ? (
-        <div className="py-12 text-center text-xs text-zinc-400">
-          Đang tải danh sách template...
+        <div className="text-muted-foreground py-12 text-center text-xs">
+          {t("library.templates.loading")}
         </div>
       ) : templates.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-zinc-200 bg-white p-8 py-12 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-          <FileText className="mx-auto mb-2 size-10 text-zinc-300 dark:text-zinc-700" />
-          <p className="text-xs text-zinc-500">
-            Chưa có template bài viết nào. Nhấn "Tạo Template Mới" để thêm mới.
+        <div className="border-border bg-card rounded-xl border border-dashed p-8 py-12 text-center">
+          <FileText className="text-muted-foreground mx-auto mb-2 size-10" />
+          <p className="text-muted-foreground text-xs">
+            {t("library.templates.emptyState")}
           </p>
         </div>
       ) : (
@@ -138,31 +138,31 @@ export const TemplatesTab: React.FC = () => {
           {templates.map((tpl) => (
             <div
               key={tpl.id}
-              className="hover:border-brand-orange/40 group flex flex-col justify-between rounded-xl border border-zinc-200/80 bg-white p-5 shadow-xs transition-all dark:border-zinc-800 dark:bg-zinc-900"
+              className="hover:border-brand-orange/40 group border-border bg-card flex flex-col justify-between rounded-xl border p-5 shadow-xs transition-all"
             >
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <h4 className="group-hover:text-brand-orange flex items-center gap-1.5 text-sm font-semibold text-zinc-900 transition-colors dark:text-zinc-100">
+                  <h4 className="group-hover:text-brand-orange text-foreground flex items-center gap-1.5 text-sm font-semibold transition-colors">
                     {tpl.title}
                   </h4>
                   <button
                     onClick={() => handleDeleteTemplate(tpl.id, tpl.title)}
-                    className="cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
+                    className="text-muted-foreground cursor-pointer rounded-lg p-1 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
                   >
                     <Trash2 className="size-3.5" />
                   </button>
                 </div>
 
                 {/* Caption Snippet */}
-                <p className="mb-4 line-clamp-3 rounded-xl border border-zinc-100 bg-zinc-50 p-3 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:bg-zinc-800/40 dark:text-zinc-300">
+                <p className="border-border bg-muted text-muted-foreground mb-4 line-clamp-3 rounded-xl border p-3 text-xs leading-relaxed">
                   {tpl.caption}
                 </p>
 
                 {/* Attached Hashtag Group */}
                 {tpl.hashtagGroup && (
                   <div className="mb-4">
-                    <span className="text-3xs mb-1 block font-semibold tracking-wider text-zinc-400 uppercase">
-                      Nhóm Hashtag Đính Kèm:
+                    <span className="text-3xs text-muted-foreground mb-1 block font-semibold tracking-wider uppercase">
+                      {t("library.templates.attachedHashtagsLabel")}
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {tpl.hashtagGroup.tags.map((tag, idx) => (
@@ -179,8 +179,8 @@ export const TemplatesTab: React.FC = () => {
               </div>
 
               {/* Action Button */}
-              <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
-                <span className="text-2xs flex items-center gap-1 text-zinc-400">
+              <div className="border-border flex items-center justify-between border-t pt-3">
+                <span className="text-2xs text-muted-foreground flex items-center gap-1">
                   <Calendar className="size-3" />
                   {new Date(tpl.createdAt).toLocaleDateString("vi-VN")}
                 </span>
@@ -189,7 +189,7 @@ export const TemplatesTab: React.FC = () => {
                   onClick={() => handleUseTemplate(tpl)}
                   className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition-colors"
                 >
-                  <span>Use Template</span>
+                  <span>{t("library.templates.useTemplateButton")}</span>
                   <ArrowRight className="size-3.5" />
                 </button>
               </div>
@@ -201,14 +201,14 @@ export const TemplatesTab: React.FC = () => {
       {/* Modal Create Template */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md space-y-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
+          <div className="border-border bg-card w-full max-w-md space-y-4 rounded-xl border p-6 shadow-2xl">
+            <div className="border-border flex items-center justify-between border-b pb-3">
               <h3 className="text-foreground text-sm font-semibold">
-                Tạo Mẫu Bài Viết Mới
+                {t("library.templates.modalTitle")}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="cursor-pointer text-zinc-400 hover:text-zinc-600"
+                className="text-muted-foreground hover:text-foreground cursor-pointer"
               >
                 <X className="size-5" />
               </button>
@@ -216,41 +216,43 @@ export const TemplatesTab: React.FC = () => {
 
             <form onSubmit={handleCreateTemplate} className="space-y-4">
               <div>
-                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                  Tiêu đề Template
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                  {t("library.templates.titleFieldLabel")}
                 </label>
                 <Input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Ví dụ: Khuyến Mãi Mùa Hè"
-                  className="rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  placeholder={t("library.templates.titlePlaceholder")}
+                  className="border-border bg-muted text-foreground rounded-xl text-xs"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                  Nội dung Caption mẫu
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                  {t("library.templates.captionFieldLabel")}
                 </label>
                 <Textarea
                   rows={4}
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
-                  placeholder="Nhập nội dung mẫu bài đăng tại đây..."
-                  className="rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  placeholder={t("library.templates.captionPlaceholder")}
+                  className="border-border bg-muted text-foreground rounded-xl text-xs"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                  Gắn Nhóm Hashtag (Tùy chọn)
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                  {t("library.templates.hashtagGroupFieldLabel")}
                 </label>
                 <Select
                   value={selectedHgId}
                   onChange={(e) => setSelectedHgId(e.target.value)}
-                  className="rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  className="border-border bg-muted text-foreground rounded-xl text-xs"
                 >
-                  <option value="">-- Không đính kèm --</option>
+                  <option value="">
+                    {t("library.templates.hashtagGroupNone")}
+                  </option>
                   {hashtagGroups.map((hg) => (
                     <option key={hg.id} value={hg.id}>
                       {hg.name} ({hg.tags.length} tags)
@@ -263,9 +265,9 @@ export const TemplatesTab: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="cursor-pointer rounded-xl border border-zinc-300 px-4 py-2 text-xs font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"
+                  className="border-border text-muted-foreground cursor-pointer rounded-xl border px-4 py-2 text-xs font-medium"
                 >
-                  Hủy
+                  {t("library.templates.cancelButton")}
                 </button>
                 <button
                   type="submit"
