@@ -76,7 +76,7 @@ export function ServicePackageModal({
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base font-bold">
-            <ShieldCheck className="size-4 text-brand-orange" />
+            <ShieldCheck className="text-brand-orange size-4" />
             Nâng cấp / Điều chỉnh Gói dịch vụ
           </DialogTitle>
         </DialogHeader>
@@ -189,7 +189,7 @@ export function ServicePackageModal({
               type="submit"
               size="sm"
               disabled={isLoading}
-              className="cursor-pointer gap-1.5 bg-brand-orange text-xs text-white hover:bg-brand-orange/90"
+              className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white"
             >
               {isLoading
                 ? t("client.servicePackage.processing")
