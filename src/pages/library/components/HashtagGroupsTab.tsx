@@ -3,6 +3,7 @@ import type { HashtagGroup } from "@/types/contentLibrary";
 import { mockContentLibraryService } from "@/services/mockContentLibraryService";
 import { Hash, Copy, Plus, Edit2, Trash2, Check, X, Tag } from "lucide-react";
 import { toast } from "sonner";
+import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -41,7 +42,7 @@ export const HashtagGroupsTab: React.FC = () => {
     navigator.clipboard.writeText(textToCopy);
     setCopiedId(group.id);
     toast.success(`Đã copy nhóm hashtag "${group.name}"!`);
-    setTimeout(() => setCopiedId(null), 2000);
+    setTimeout(() => setCopiedId(null), COPY_FEEDBACK_DURATION_MS);
   };
 
   const handleOpenModal = (group?: HashtagGroup) => {

@@ -12,6 +12,8 @@ import {
   Check,
 } from "lucide-react";
 import { toast } from "sonner";
+import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
+import { formatFileSize } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
 interface MediaDetailPanelProps {
@@ -35,7 +37,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
     navigator.clipboard.writeText(media.url);
     setCopied(true);
     toast.success(t("library.media.copyUrlSuccess"));
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), COPY_FEEDBACK_DURATION_MS);
   };
 
   const handleDelete = async () => {
@@ -51,12 +53,6 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
         setIsDeleting(false);
       }
     }
-  };
-
-  const formatBytes = (bytes: number) => {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   };
 
   const formatDate = (isoString: string) => {
@@ -128,7 +124,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
                 <HardDrive className="size-4" /> Dung lượng
               </span>
               <span className="text-foreground font-mono font-medium">
-                {formatBytes(media.sizeBytes)}
+                {formatFileSize(media.sizeBytes)}
               </span>
             </div>
 

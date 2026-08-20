@@ -173,7 +173,13 @@ const MOCK_CLIENTS: Client[] = [
   },
 ];
 
-export const clientService = {
+function warnMockFallback(context: string, error: unknown): void {
+  if (import.meta.env.DEV) {
+    console.warn(`[mockClientService] ${context}, using mock fallback`, error);
+  }
+}
+
+export const mockClientService = {
   async getClients(
     params?: ClientListParams,
   ): Promise<{ content: Client[]; totalElements: number }> {
@@ -202,10 +208,7 @@ export const clientService = {
       }
       return { content: filtered, totalElements: filtered.length };
     } catch (error) {
-      console.warn(
-        "Backend /api/v1/clients offline or error, using mock data",
-        error,
-      );
+      warnMockFallback("GET /api/v1/clients failed", error);
       let filtered = [...MOCK_CLIENTS];
       if (params?.search) {
         const query = params.search.toLowerCase();
@@ -224,10 +227,7 @@ export const clientService = {
       const response = await api.get(`/api/v1/clients/${id}`);
       return response.data?.data ?? response.data ?? MOCK_CLIENTS[0];
     } catch (error) {
-      console.warn(
-        `Backend GET /api/v1/clients/${id} error, using fallback client`,
-        error,
-      );
+      warnMockFallback(`GET /api/v1/clients/${id} failed`, error);
       const found = MOCK_CLIENTS.find((c) => c.id === id);
       return found ?? MOCK_CLIENTS[0];
     }
@@ -238,10 +238,7 @@ export const clientService = {
       const response = await api.post("/api/v1/clients", dto);
       return response.data?.data ?? response.data;
     } catch (error) {
-      console.warn(
-        "Backend POST /api/v1/clients error, simulating client creation",
-        error,
-      );
+      warnMockFallback("POST /api/v1/clients failed", error);
       const newClient: Client = {
         id: `cli-${Date.now()}`,
         workspaceId: "ws-1",
@@ -283,8 +280,8 @@ export const clientService = {
       );
       return response.data?.data ?? response.data;
     } catch (error) {
-      console.warn(
-        `Backend PUT /api/v1/clients/${id}/service-package error, optimistic mock response`,
+      warnMockFallback(
+        `PUT /api/v1/clients/${id}/service-package failed`,
         error,
       );
       const existing = MOCK_CLIENTS.find((c) => c.id === id) || MOCK_CLIENTS[0];
@@ -309,10 +306,7 @@ export const clientService = {
     try {
       await api.delete(`/api/v1/clients/${id}`);
     } catch (error) {
-      console.warn(
-        `Backend DELETE /api/v1/clients/${id} error, simulating deletion`,
-        error,
-      );
+      warnMockFallback(`DELETE /api/v1/clients/${id} failed`, error);
     }
   },
 };

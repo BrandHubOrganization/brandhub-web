@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import type { EventDropArg, EventContentArg } from "@fullcalendar/core";
 import type { CalendarPostEvent, PlatformType } from "@/types/calendar";
 import { Video, AtSign, Share2, Globe, MessageSquare } from "lucide-react";
 
@@ -39,9 +40,9 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
   onDateClick,
   onDatesChange,
 }) => {
-  const calendarRef = useRef<any>(null);
+  const calendarRef = useRef<FullCalendar>(null);
 
-  const handleEventDrop = async (dropInfo: any) => {
+  const handleEventDrop = async (dropInfo: EventDropArg) => {
     const { event, revert } = dropInfo;
     const newDate = event.start;
     if (!newDate) return;
@@ -52,7 +53,7 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
     }
   };
 
-  const renderEventContent = (eventInfo: any) => {
+  const renderEventContent = (eventInfo: EventContentArg) => {
     const extProps = eventInfo.event.extendedProps;
     const platform = extProps?.platform as PlatformType;
     const status = extProps?.status || "SCHEDULED";

@@ -12,6 +12,7 @@ import {
 import { mockHashtagGroupService } from "@/services/mockHashtagGroupService";
 import type { HashtagGroup } from "@/types/hashtagGroup";
 import { toast } from "sonner";
+import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 
@@ -88,7 +89,7 @@ export const HashtagInputWithSuggestions: React.FC<
     navigator.clipboard.writeText(hashtags.join(" "));
     setCopied(true);
     toast.success(t("editor.hashtagInput.copyAllSuccess"));
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), COPY_FEEDBACK_DURATION_MS);
   };
 
   const handleClearAll = () => {

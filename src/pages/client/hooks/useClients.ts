@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { clientService } from "../services/clientService";
+import { mockClientService } from "../services/mockClientService";
 import type {
   Client,
   CreateClientDTO,
@@ -18,7 +18,7 @@ export function useClients() {
   const fetchClients = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await clientService.getClients({ search: searchTerm });
+      const data = await mockClientService.getClients({ search: searchTerm });
       setClients(data.content);
       setTotalElements(data.totalElements);
     } catch (error) {
@@ -34,7 +34,7 @@ export function useClients() {
 
   const handleCreateClient = async (dto: CreateClientDTO) => {
     try {
-      const created = await clientService.createClient(dto);
+      const created = await mockClientService.createClient(dto);
       setClients((prev) => [created, ...prev]);
       setTotalElements((prev) => prev + 1);
       toast.success(`Đã thêm khách hàng "${created.name}" thành công!`);
@@ -50,7 +50,7 @@ export function useClients() {
     dto: UpdateServicePackageDTO,
   ) => {
     try {
-      const updated = await clientService.updateServicePackage(id, dto);
+      const updated = await mockClientService.updateServicePackage(id, dto);
       setClients((prev) => prev.map((c) => (c.id === id ? updated : c)));
       toast.success(t("client.servicePackage.upgradeSuccess"));
       return updated;
@@ -62,7 +62,7 @@ export function useClients() {
 
   const handleDeleteClient = async (id: string) => {
     try {
-      await clientService.deleteClient(id);
+      await mockClientService.deleteClient(id);
       setClients((prev) => prev.filter((c) => c.id !== id));
       setTotalElements((prev) => Math.max(0, prev - 1));
       toast.success(t("client.deleteSuccess"));

@@ -4,6 +4,7 @@ import { mockContentLibraryService } from "@/services/mockContentLibraryService"
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { MediaDetailPanel } from "./MediaDetailPanel";
 import { MediaUploadButton } from "./MediaUploadButton";
+import { formatFileSize } from "@/lib/utils";
 import {
   Search,
   ArrowUpDown,
@@ -216,7 +217,7 @@ export const MediaTab: React.FC = () => {
                   {media.filename}
                 </span>
                 <span className="text-3xs mt-0.5 font-mono text-zinc-300">
-                  {(media.sizeBytes / (1024 * 1024)).toFixed(1)} MB
+                  {formatFileSize(media.sizeBytes)}
                 </span>
               </div>
 

@@ -1,0 +1,2 @@
+export const MAX_MEDIA_UPLOAD_SIZE = 50 * 1024 * 1024; // 50MB
+export const COPY_FEEDBACK_DURATION_MS = 2000;

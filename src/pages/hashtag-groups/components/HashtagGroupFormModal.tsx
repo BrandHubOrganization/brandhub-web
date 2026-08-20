@@ -73,8 +73,9 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
     try {
       await onSubmit({ name: trimmedName, hashtags: parsedHashtags });
       onClose();
-    } catch (err: any) {
-      if (err.message === "DUPLICATE_NAME") {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "";
+      if (message === "DUPLICATE_NAME") {
         setErrorMsg("Tên nhóm hashtag này đã tồn tại trong workspace.");
       } else {
         setErrorMsg(t("hashtagGroups.saveError"));

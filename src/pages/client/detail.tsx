@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
 // Feature Imports
-import { clientService } from "./services/clientService";
+import { mockClientService } from "./services/mockClientService";
 import type { Client } from "./types/client";
 import { ClientBanner } from "./components/ClientBanner";
 import { ClientAnalyticsCards } from "./components/ClientAnalyticsCards";
@@ -27,7 +27,7 @@ export function ClientDetailPage() {
     if (!id) return;
     setIsLoading(true);
     try {
-      const data = await clientService.getClientById(id);
+      const data = await mockClientService.getClientById(id);
       setClient(data);
     } catch {
       toast.error("Không thể tải thông tin chi tiết của Client");

@@ -4,6 +4,7 @@ import type { MediaItem } from "@/types/contentLibrary";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
+import { MAX_MEDIA_UPLOAD_SIZE } from "@/lib/constants";
 
 interface MediaUploadButtonProps {
   onUploadSuccess: (newMedia: MediaItem) => void;
@@ -22,8 +23,7 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate size (max 50MB)
-    if (file.size > 50 * 1024 * 1024) {
+    if (file.size > MAX_MEDIA_UPLOAD_SIZE) {
       toast.error("File vượt quá giới hạn 50MB");
       return;
     }

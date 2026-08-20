@@ -241,7 +241,7 @@ export function Navbar({
                 <p className="text-muted-foreground text-2xs leading-none">
                   {user?.email || t("nav.noEmail")}
                 </p>
-                <p className="text-brand-orange pt-1 text-3xs leading-none font-bold">
+                <p className="text-brand-orange text-3xs pt-1 leading-none font-bold">
                   {roleLabel}
                 </p>
               </div>

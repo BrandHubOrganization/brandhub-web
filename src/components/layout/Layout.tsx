@@ -205,7 +205,7 @@ export function Layout() {
               to={to}
               end={to === "/"}
               className={({ isActive }) =>
-                `flex w-12 cursor-pointer flex-col items-center justify-center gap-1 py-1.5 text-3xs transition-colors ${
+                `text-3xs flex w-12 cursor-pointer flex-col items-center justify-center gap-1 py-1.5 transition-colors ${
                   isActive
                     ? "text-brand-orange font-semibold"
                     : "text-muted-foreground hover:text-foreground"

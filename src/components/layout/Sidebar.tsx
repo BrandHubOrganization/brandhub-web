@@ -208,19 +208,20 @@ export function Sidebar({
         <DropdownMenu>
           <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
             {collapsed ? (
-              <div className="mx-auto my-3 flex size-8 items-center justify-center bg-brand-orange-soft text-brand-orange rounded-md text-xs font-bold">
+              <div className="bg-brand-orange-soft text-brand-orange mx-auto my-3 flex size-8 items-center justify-center rounded-md text-xs font-bold">
                 {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
               </div>
             ) : (
               <div className="border-border bg-muted/15 hover:bg-muted/30 mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors">
-                <div className="flex size-7 shrink-0 items-center justify-center bg-brand-orange-soft text-brand-orange rounded-md text-xs font-bold">
+                <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold">
                   {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
                 </div>
                 <div className="flex min-w-0 flex-col">
                   <span className="truncate text-xs leading-tight font-semibold text-white">
-                    {activeWorkspace?.name ?? t("nav.workspaceSwitcher.noWorkspace")}
+                    {activeWorkspace?.name ??
+                      t("nav.workspaceSwitcher.noWorkspace")}
                   </span>
-                  <span className="text-muted-foreground mt-0.5 text-3xs leading-none">
+                  <span className="text-muted-foreground text-3xs mt-0.5 leading-none">
                     {t("nav.workspaceSwitcher.label")}
                   </span>
                 </div>
@@ -256,7 +257,7 @@ export function Sidebar({
         {filteredSections.map((section, idx) => (
           <div key={section.key} className="space-y-1">
             {!collapsed ? (
-              <span className="text-muted-foreground mb-1 block px-2.5 text-3xs font-bold tracking-wider uppercase">
+              <span className="text-muted-foreground text-3xs mb-1 block px-2.5 font-bold tracking-wider uppercase">
                 {t(section.titleKey)}
               </span>
             ) : (
@@ -305,7 +306,7 @@ export function Sidebar({
         style={{ borderColor: "var(--sidebar-border, #27272a)" }}
       >
         {!collapsed && (
-          <div className="text-muted-foreground px-2.5 py-1 text-3xs leading-snug">
+          <div className="text-muted-foreground text-3xs px-2.5 py-1 leading-snug">
             Vai trò:{" "}
             <span className="font-semibold text-white">
               {role === "OWNER"

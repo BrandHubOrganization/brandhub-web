@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { MAX_MEDIA_UPLOAD_SIZE } from "@/lib/constants";
 
 interface MediaDropzoneProps {
   mediaUrls: string[];
@@ -42,7 +43,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
     if (fileArray.length === 0) return;
 
     for (const file of fileArray) {
-      if (file.size > 50 * 1024 * 1024) {
+      if (file.size > MAX_MEDIA_UPLOAD_SIZE) {
         toast.error(`File ${file.name} vượt quá dung lượng 50MB`);
         continue;
       }

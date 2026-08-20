@@ -113,10 +113,11 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
           ? t("editor.aiGenerate.regenerateSuccess")
           : "AI Co-Pilot đã tạo xong nội dung!",
       );
-    } catch (err: any) {
-      if (err.message === "RATE_LIMITED") {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "";
+      if (message === "RATE_LIMITED") {
         setErrorState("RATE_LIMITED");
-      } else if (err.message === "SERVICE_UNAVAILABLE") {
+      } else if (message === "SERVICE_UNAVAILABLE") {
         setErrorState("SERVICE_UNAVAILABLE");
       } else {
         setErrorState("GENERATION_FAILED");
