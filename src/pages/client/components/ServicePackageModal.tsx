@@ -105,7 +105,7 @@ export function ServicePackageModal({
                     key={tier}
                     type="button"
                     onClick={() => handleTierChange(tier)}
-                    className={`cursor-pointer rounded-lg border p-2.5 text-center text-xs font-bold transition-all ${
+                    className={`text-3xs cursor-pointer rounded-lg border p-2.5 text-center font-bold transition-all sm:text-xs ${
                       formData.packageTier === tier
                         ? "border-brand-orange bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/10"
                         : "border-border hover:bg-muted/50 text-foreground"

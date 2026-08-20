@@ -27,7 +27,7 @@ export function ClientBanner({ client }: ClientBannerProps) {
               {client.status}
             </span>
           </div>
-          <p className="text-muted-foreground flex items-center gap-3 text-xs">
+          <p className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
             <span className="flex items-center gap-1">
               <Building2 className="text-brand-orange size-3" />{" "}
               {client.industry}

@@ -55,7 +55,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-      <div className="bg-card border-border w-full max-w-md space-y-4 rounded-xl border p-6 shadow-2xl">
+      <div className="bg-card border-border max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-xl border p-6 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
           <div className="flex items-center gap-2">
