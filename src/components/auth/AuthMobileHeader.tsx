@@ -9,7 +9,7 @@ export function AuthMobileHeader() {
     <div className="mb-10 flex items-center gap-2.5 select-none lg:hidden">
       <div
         className="flex h-7 w-7 items-center justify-center rounded-md"
-        style={{ background: "var(--brand-orange, #f05a28)" }}
+        style={{ background: "hsl(var(--brand-orange, 15 88% 55%))" }}
       >
         <BrandHubLogo size={14} />
       </div>
@@ -22,7 +22,9 @@ export function AuthMobileHeader() {
         }}
       >
         Brand
-        <span style={{ color: "var(--brand-orange, #f05a28)" }}>Hub</span>
+        <span style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}>
+          Hub
+        </span>
       </span>
     </div>
   );

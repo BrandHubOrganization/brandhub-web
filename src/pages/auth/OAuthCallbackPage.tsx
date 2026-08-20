@@ -30,7 +30,7 @@ export function OAuthCallbackPage() {
         const profile = res.data.data;
 
         if (!profile) {
-          throw new Error("Không thể tải thông tin User từ Database.");
+          throw new Error(t("auth.login.profileLoadFailed"));
         }
 
         const userObj: User = {
@@ -47,7 +47,7 @@ export function OAuthCallbackPage() {
         navigate("/", { replace: true });
       } catch (error) {
         console.error("Lỗi khi tải thông tin User từ Database:", error);
-        toast.error("Không thể lấy thông tin người dùng từ Database.");
+        toast.error(t("auth.login.oauthProfileFailed"));
         navigate("/login", { replace: true });
       }
     };

@@ -20,14 +20,14 @@ export function ChangePasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      toast.error("Mật khẩu mới không khớp");
+      toast.error(t("settings.security.mismatch"));
       return;
     }
     setLoading(true);
     try {
       await authService.changePassword({ currentPassword, newPassword });
       toast.success(t("settings.security.changeSuccess"));
-      navigate("/");
+      navigate("/dashboard");
     } catch (err: unknown) {
       toast.error(
         extractErrorMessage(err, t("settings.security.changeFailed")),
@@ -40,26 +40,26 @@ export function ChangePasswordPage() {
   return (
     <PageWrapper
       title={t("settings.security.submit")}
-      description="Trang test tạm — giao diện chính thức làm sau."
+      description={t("settings.security.pageDescription")}
     >
       <form
         onSubmit={handleSubmit}
         className="border-border bg-card flex max-w-sm flex-col gap-4 rounded-xl border p-6"
       >
         <PasswordInput
-          label="Mật khẩu hiện tại"
+          label={t("settings.security.currentPasswordLabel")}
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
           required
         />
         <PasswordInput
-          label="Mật khẩu mới"
+          label={t("settings.security.newPasswordLabel")}
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
         />
         <PasswordInput
-          label="Xác nhận mật khẩu mới"
+          label={t("settings.security.confirmPasswordLabel")}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
@@ -70,7 +70,7 @@ export function ChangePasswordPage() {
           loading={loading}
           className="mt-1 gap-2 font-semibold"
         >
-          Đổi mật khẩu
+          {t("settings.security.submit")}
           <ArrowRight className="size-4" />
         </Button>
       </form>

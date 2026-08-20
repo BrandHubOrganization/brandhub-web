@@ -194,8 +194,8 @@ export function Layout() {
       <div
         className="border-border pb-safe fixed right-0 bottom-0 left-0 z-40 flex h-16 items-center justify-around border-t md:hidden"
         style={{
-          background: "var(--card, #ffffff)",
-          borderColor: "var(--border, #e4e4e7)",
+          background: "hsl(var(--card, 0 0% 100%))",
+          borderColor: "hsl(var(--border, 240 5.9% 90%))",
         }}
       >
         {filteredMobileTabs.slice(0, 5).map(({ to, icon: Icon, labelKey }) => {

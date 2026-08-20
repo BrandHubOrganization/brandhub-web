@@ -121,7 +121,7 @@ export function Navbar({
           size="icon"
           className="size-8 md:hidden"
           onClick={onMobileMenuOpen}
-          title="Open Menu"
+          title={t("nav.openMenu")}
         >
           <Menu className="size-4" />
         </Button>
@@ -131,7 +131,7 @@ export function Navbar({
           size="icon"
           className="hidden size-8 md:flex"
           onClick={toggleCollapsed}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? t("nav.expandSidebar") : t("nav.collapseSidebar")}
         >
           {collapsed ? (
             <PanelLeftOpen className="size-4" />
@@ -169,14 +169,16 @@ export function Navbar({
         <div
           className="flex h-8 items-center gap-1.5 rounded-md border border-dashed px-2.5 text-xs font-semibold select-none"
           style={{
-            borderColor: "var(--brand-orange, #f05a28)",
-            color: "var(--brand-orange, #f05a28)",
-            background: "var(--brand-orange-soft, #fff0eb)",
+            borderColor: "hsl(var(--brand-orange, 15 88% 55%))",
+            color: "hsl(var(--brand-orange, 15 88% 55%))",
+            background: "hsl(var(--brand-orange-soft, 15 100% 96%))",
           }}
-          title="Vai trò thực tế từ Hệ thống Database"
+          title={t("nav.realRoleTitle")}
         >
           <Shield className="size-3.5 shrink-0" />
-          <span className="hidden sm:inline">Role: {roleLabel}</span>
+          <span className="hidden sm:inline">
+            {t("nav.roleLabel", { role: roleLabel })}
+          </span>
           <span className="sm:hidden">{roleLabel.split(" ")[0]}</span>
         </div>
 
@@ -186,7 +188,7 @@ export function Navbar({
           size="sm"
           onClick={toggleLanguage}
           className="h-8 gap-1.5 px-2 text-xs font-medium"
-          title="Switch Language"
+          title={t("nav.switchLanguage")}
         >
           <Globe className="size-3.5" />
           <span className="uppercase">{i18n.language || "vi"}</span>
@@ -198,7 +200,7 @@ export function Navbar({
           size="icon"
           className="size-8"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          title="Toggle theme"
+          title={t("nav.toggleTheme")}
         >
           {theme === "dark" ? (
             <Sun className="size-4 text-amber-400" />
@@ -259,7 +261,7 @@ export function Navbar({
               className="cursor-pointer gap-2 text-xs"
             >
               <UserIcon className="text-muted-foreground size-3.5" />
-              Đổi mật khẩu
+              {t("nav.changePassword")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

@@ -40,7 +40,7 @@ export function LoginPage() {
       const profileData = profileRes.data.data;
 
       if (!profileData) {
-        throw new Error("Không thể tải thông tin User từ Database.");
+        throw new Error(t("auth.login.profileLoadFailed"));
       }
 
       const realUser: User = {
@@ -54,7 +54,7 @@ export function LoginPage() {
 
       setAuth(realUser, accessToken);
       toast.success(t("auth.login.successToast"));
-      navigate("/");
+      navigate("/dashboard");
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("auth.login.errorDefault")));
     } finally {

@@ -9,7 +9,6 @@ import {
   BarChart3,
   ShieldAlert,
   ChevronDown,
-  Building2,
   FolderKanban,
   LayoutTemplate,
   Hash,
@@ -66,7 +65,6 @@ const NAV_SECTIONS: NavSection[] = [
     key: "manage",
     titleKey: "nav.sections.manage",
     items: [
-      { to: "/clients", icon: Building2, labelKey: "nav.clients" },
       { to: "/workspace", icon: FolderOpen, labelKey: "nav.workspace" },
       { to: "/portal", icon: Users, labelKey: "nav.portal" },
     ],
@@ -131,9 +129,9 @@ export function Sidebar({
         className,
       )}
       style={{
-        background: "var(--sidebar, #09090b)",
-        color: "var(--sidebar-foreground, #fafafa)",
-        borderRight: "1px solid var(--sidebar-border, #27272a)",
+        background: "hsl(var(--sidebar, 240 6% 4%))",
+        color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
+        borderRight: "1px solid hsl(var(--sidebar-border, 240 5% 15%))",
       }}
     >
       {/* Logo Area */}
@@ -142,11 +140,11 @@ export function Sidebar({
           "flex h-14 shrink-0 items-center border-b px-3",
           collapsed ? "justify-center" : "gap-2.5",
         )}
-        style={{ borderColor: "var(--sidebar-border, #27272a)" }}
+        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
       >
         <div
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md"
-          style={{ background: "var(--brand-orange, #f05a28)" }}
+          style={{ background: "hsl(var(--brand-orange, 15 88% 55%))" }}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="2.2" fill="white" />
@@ -195,7 +193,9 @@ export function Sidebar({
         {!collapsed && (
           <span className="font-sans text-sm font-bold tracking-tight text-white">
             Brand
-            <span style={{ color: "var(--brand-orange, #f05a28)" }}>Hub</span>
+            <span style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}>
+              Hub
+            </span>
           </span>
         )}
       </div>
@@ -203,7 +203,7 @@ export function Sidebar({
       {/* Workspace Selector Dropdown */}
       <div
         className="shrink-0 border-b"
-        style={{ borderColor: "var(--sidebar-border, #27272a)" }}
+        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
       >
         <DropdownMenu>
           <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
@@ -281,10 +281,12 @@ export function Sidebar({
                   style={({ isActive }) =>
                     isActive
                       ? {
-                          background: "var(--brand-orange, #f05a28)",
+                          background: "hsl(var(--brand-orange, 15 88% 55%))",
                           color: "#ffffff",
                         }
-                      : { color: "var(--sidebar-foreground, #fafafa)" }
+                      : {
+                          color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
+                        }
                   }
                   title={collapsed ? t(labelKey) : undefined}
                 >
@@ -303,23 +305,13 @@ export function Sidebar({
           "flex flex-col gap-0.5 border-t p-2",
           collapsed ? "items-center" : "",
         )}
-        style={{ borderColor: "var(--sidebar-border, #27272a)" }}
+        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
       >
         {!collapsed && (
           <div className="text-muted-foreground text-3xs px-2.5 py-1 leading-snug">
-            Vai trò:{" "}
+            {t("nav.roleLabelPrefix")}{" "}
             <span className="font-semibold text-white">
-              {role === "OWNER"
-                ? "Owner"
-                : role === "ACCOUNT"
-                  ? "Account Manager"
-                  : role === "CREATOR"
-                    ? "Creator"
-                    : role === "VIEWER"
-                      ? "Viewer"
-                      : role === "CLIENT"
-                        ? "Client"
-                        : "—"}
+              {role ? t(`workspace.roles.${role}`) : "—"}
             </span>
           </div>
         )}

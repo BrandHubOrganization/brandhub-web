@@ -104,7 +104,7 @@ export function VerifyOtpPage() {
             >
               <Mail
                 className="size-5"
-                style={{ color: "var(--brand-orange, #f05a28)" }}
+                style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}
               />
             </div>
             <h1 className="text-foreground mb-1 text-center text-2xl font-bold tracking-tight">
@@ -154,7 +154,7 @@ export function VerifyOtpPage() {
                 onClick={handleResend}
                 disabled={resending}
                 className="hover:text-foreground inline-flex cursor-pointer items-center gap-1 text-sm font-medium transition-colors disabled:opacity-50"
-                style={{ color: "var(--brand-orange, #f05a28)" }}
+                style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}
               >
                 {resending ? (
                   <RefreshCw className="size-3 animate-spin" />
