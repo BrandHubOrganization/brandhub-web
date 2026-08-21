@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { mockTemplateService } from "@/services/mockTemplateService";
 import type { ContentTemplate } from "@/types/template";
 
 export function useTemplates() {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -36,7 +38,7 @@ export function useTemplates() {
       setTotal(res.total);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error("Lỗi khi tải danh sách mẫu bài viết");
+      toast.error(t("templates.toast.loadError"));
     } finally {
       setIsLoading(false);
     }
@@ -52,13 +54,13 @@ export function useTemplates() {
   };
 
   const handleDeleteTemplate = async (id: string, title: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa template "${title}"?`)) {
+    if (window.confirm(t("templates.toast.deleteConfirm", { title }))) {
       try {
         await mockTemplateService.deleteTemplate(id);
-        toast.success(`Đã xóa template "${title}"`);
+        toast.success(t("templates.toast.deleteSuccess", { title }));
         fetchTemplates();
       } catch (err) {
-        toast.error("Lỗi khi xóa template");
+        toast.error(t("templates.toast.deleteError"));
       }
     }
   };

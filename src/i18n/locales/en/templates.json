@@ -28,5 +28,11 @@
     "close": "Close",
     "useTemplate": "Use Template",
     "loadSuccess": "Loaded template \"{{title}}\" into the Content Editor!"
+  },
+  "toast": {
+    "loadError": "Failed to load template list",
+    "deleteError": "Failed to delete template",
+    "deleteSuccess": "Deleted template \"{{title}}\"",
+    "deleteConfirm": "Are you sure you want to delete template \"{{title}}\"?"
   }
 }

@@ -170,7 +170,7 @@ export function Layout() {
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetContent side="left" className="w-[240px] border-0 p-0">
             <SheetHeader className="sr-only">
-              <SheetTitle>Navigation Menu</SheetTitle>
+              <SheetTitle>{t("nav.navigationMenu")}</SheetTitle>
             </SheetHeader>
             <Sidebar
               collapsed={false}

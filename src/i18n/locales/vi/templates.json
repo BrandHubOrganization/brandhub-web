@@ -15,7 +15,7 @@
     "loading": "Đang tải thư viện mẫu bài viết...",
     "goToEditor": "Đi đến Content Editor",
     "emptyTitle": "Chưa Có Mẫu Bài Viết Nào",
-    "emptyDescription": "No templates yet. Save a draft from the Content Editor to see it here.",
+    "emptyDescription": "Chưa có mẫu bài viết. Lưu một bản nháp từ Content Editor để xem tại đây.",
     "pageIndicator": "Trang {{page}} / {{total}}"
   },
   "preview": {
@@ -28,5 +28,11 @@
     "close": "Đóng",
     "useTemplate": "Use Template",
     "loadSuccess": "Đã tải mẫu bài viết \"{{title}}\" vào Content Editor!"
+  },
+  "toast": {
+    "loadError": "Lỗi khi tải danh sách mẫu bài viết",
+    "deleteError": "Lỗi khi xóa template",
+    "deleteSuccess": "Đã xóa template \"{{title}}\"",
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa template \"{{title}}\"?"
   }
 }
