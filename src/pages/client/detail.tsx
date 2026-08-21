@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 // Feature Imports
 import { mockClientService } from "./services/mockClientService";
@@ -19,6 +20,10 @@ export function ClientDetailPage() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const membersPath = currentWorkspace
+    ? `/workspaces/${currentWorkspace.id}/members`
+    : "/dashboard";
 
   const [client, setClient] = useState<Client | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -66,7 +71,7 @@ export function ClientDetailPage() {
           </p>
           <Button
             size="sm"
-            onClick={() => navigate("/clients")}
+            onClick={() => navigate(membersPath)}
             className="text-xs"
           >
             {t("client.detail.backToList")}
@@ -86,7 +91,7 @@ export function ClientDetailPage() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate("/clients")}
+          onClick={() => navigate(membersPath)}
           className="cursor-pointer gap-1.5 text-xs"
         >
           <ArrowLeft className="size-3.5" /> {t("client.detail.back")}
