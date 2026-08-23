@@ -2,7 +2,9 @@ import axios from "axios";
 import { useAuthStore } from "@/store/authStore";
 
 const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
+  (typeof import.meta !== "undefined" &&
+    import.meta.env &&
+    import.meta.env.VITE_API_BASE_URL) ||
   "http://localhost:8080";
 
 const apiClient = axios.create({
@@ -24,7 +26,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Token refresh management
@@ -79,13 +81,16 @@ apiClient.interceptors.response.use(
         const response = await axios.post(
           `${API_BASE_URL}/api/v1/auth/refresh`,
           { refreshToken },
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
-        const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data;
+        const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+          response.data.data;
 
         // Update tokens in auth store
-        useAuthStore.getState().setTokens(newAccessToken, newRefreshToken || null);
+        useAuthStore
+          .getState()
+          .setTokens(newAccessToken, newRefreshToken || null);
 
         // Resolve queued requests with the new token
         processQueue(null, newAccessToken);
@@ -110,7 +115,7 @@ apiClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;

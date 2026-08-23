@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -133,6 +134,7 @@ function DataTable<T>({
   pageSize = 5,
   className,
 }: DataTableProps<T>) {
+  const { t } = useTranslation();
   const [sortKey, setSortKey] = React.useState<keyof T | null>(null);
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -184,8 +186,8 @@ function DataTable<T>({
   }, [sortedData, currentPage, pageSize]);
 
   return (
-    <div className={cn("space-y-4 w-full", className)}>
-      <div className="border rounded-lg bg-card overflow-hidden">
+    <div className={cn("w-full space-y-4", className)}>
+      <div className="bg-card overflow-hidden rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -195,7 +197,7 @@ function DataTable<T>({
                     <button
                       type="button"
                       onClick={() => handleSort(col.accessorKey)}
-                      className="inline-flex items-center gap-1.5 hover:text-foreground cursor-pointer transition-colors"
+                      className="hover:text-foreground inline-flex cursor-pointer items-center gap-1.5 transition-colors"
                     >
                       {col.header}
                       <ArrowUpDown className="size-3.5" />
@@ -224,9 +226,9 @@ function DataTable<T>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-32 text-center text-muted-foreground"
+                  className="text-muted-foreground h-32 text-center"
                 >
-                  {emptyState || "Không có dữ liệu hiển thị."}
+                  {emptyState || t("common.table.empty")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -248,8 +250,12 @@ function DataTable<T>({
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-2">
-          <p className="text-xs text-muted-foreground font-mono">
-            Trang {currentPage} / {totalPages} (Tổng {data.length} dòng)
+          <p className="text-muted-foreground font-mono text-xs">
+            {t("common.table.pageInfo", {
+              current: currentPage,
+              total: totalPages,
+              count: data.length,
+            })}
           </p>
           <div className="flex items-center gap-1">
             <Button

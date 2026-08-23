@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XIcon, AlertTriangle, Info, CheckCircle2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
@@ -58,7 +59,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%] data-[state=closed]:slide-out-to-left-[50%] data-[state=open]:slide-in-from-left-[50%] fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
+          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%] data-[state=closed]:slide-out-to-left-[50%] data-[state=open]:slide-in-from-left-[50%] fixed top-[50%] left-[50%] z-50 grid max-h-[90vh] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 overflow-y-auto rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
           className,
         )}
         {...props}
@@ -141,36 +142,42 @@ function ConfirmDialog({
   isOpen,
   onClose,
   onConfirm,
-  title = "Xác nhận hành động",
-  description = "Bạn có chắc chắn muốn thực hiện hành động này không?",
-  confirmText = "Xác nhận",
-  cancelText = "Hủy bỏ",
+  title,
+  description,
+  confirmText,
+  cancelText,
   variant = "danger",
   isLoading = false,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation();
+  const resolvedTitle = title ?? t("common.confirmDialog.title");
+  const resolvedDescription = description ?? t("common.confirmDialog.description");
+  const resolvedConfirmText = confirmText ?? t("common.confirmDialog.confirm");
+  const resolvedCancelText = cancelText ?? t("common.confirmDialog.cancel");
+
   const getVariantStyles = () => {
     switch (variant) {
       case "danger":
         return {
-          icon: <AlertTriangle className="size-5 text-rose-500 shrink-0" />,
+          icon: <AlertTriangle className="size-5 shrink-0 text-rose-500" />,
           titleColor: "text-rose-600 dark:text-rose-500",
           btnVariant: "destructive" as const,
         };
       case "warning":
         return {
-          icon: <AlertTriangle className="size-5 text-amber-500 shrink-0" />,
+          icon: <AlertTriangle className="size-5 shrink-0 text-amber-500" />,
           titleColor: "text-amber-600 dark:text-amber-500",
           btnVariant: "default" as const,
         };
       case "success":
         return {
-          icon: <CheckCircle2 className="size-5 text-emerald-500 shrink-0" />,
+          icon: <CheckCircle2 className="size-5 shrink-0 text-emerald-500" />,
           titleColor: "text-emerald-600 dark:text-emerald-500",
           btnVariant: "default" as const,
         };
       default:
         return {
-          icon: <Info className="size-5 text-blue-500 shrink-0" />,
+          icon: <Info className="size-5 shrink-0 text-blue-500" />,
           titleColor: "text-foreground",
           btnVariant: "default" as const,
         };
@@ -188,14 +195,20 @@ function ConfirmDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[420px]">
         <DialogHeader>
-          <DialogTitle className={`flex items-center gap-2 text-base font-bold ${style.titleColor}`}>
+          <DialogTitle
+            className={`flex items-center gap-2 text-base font-bold ${style.titleColor}`}
+          >
             {style.icon}
-            {title}
+            {resolvedTitle}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="py-2 text-xs text-foreground/90 leading-relaxed">
-          {typeof description === "string" ? <p>{description}</p> : description}
+        <div className="text-foreground/90 py-2 text-xs leading-relaxed">
+          {typeof resolvedDescription === "string" ? (
+            <p>{resolvedDescription}</p>
+          ) : (
+            resolvedDescription
+          )}
         </div>
 
         <DialogFooter className="pt-2">
@@ -205,9 +218,9 @@ function ConfirmDialog({
             size="sm"
             onClick={onClose}
             disabled={isLoading}
-            className="text-xs cursor-pointer"
+            className="cursor-pointer text-xs"
           >
-            {cancelText}
+            {resolvedCancelText}
           </Button>
           <Button
             type="button"
@@ -215,15 +228,15 @@ function ConfirmDialog({
             size="sm"
             disabled={isLoading}
             onClick={handleConfirm}
-            className={`text-xs font-semibold cursor-pointer ${
+            className={`cursor-pointer text-xs font-semibold ${
               variant === "warning"
-                ? "bg-amber-500 hover:bg-amber-600 text-white"
+                ? "bg-amber-500 text-white hover:bg-amber-600"
                 : variant === "success"
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : ""
+                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                  : ""
             }`}
           >
-            {isLoading ? "Đang xử lý..." : confirmText}
+            {isLoading ? t("common.processing") : resolvedConfirmText}
           </Button>
         </DialogFooter>
       </DialogContent>

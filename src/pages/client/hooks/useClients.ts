@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import { clientService } from "../services/clientService";
-import type { Client, CreateClientDTO, UpdateServicePackageDTO } from "../types/client";
+import { mockClientService } from "../services/mockClientService";
+import type {
+  Client,
+  CreateClientDTO,
+  UpdateServicePackageDTO,
+} from "../types/client";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export function useClients() {
+  const { t } = useTranslation();
   const [clients, setClients] = useState<Client[]>([]);
   const [totalElements, setTotalElements] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -12,11 +18,11 @@ export function useClients() {
   const fetchClients = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await clientService.getClients({ search: searchTerm });
+      const data = await mockClientService.getClients({ search: searchTerm });
       setClients(data.content);
       setTotalElements(data.totalElements);
     } catch (error) {
-      toast.error("Lỗi khi tải danh sách thương hiệu khách hàng");
+      toast.error(t("client.loadListError"));
     } finally {
       setIsLoading(false);
     }
@@ -28,37 +34,40 @@ export function useClients() {
 
   const handleCreateClient = async (dto: CreateClientDTO) => {
     try {
-      const created = await clientService.createClient(dto);
+      const created = await mockClientService.createClient(dto);
       setClients((prev) => [created, ...prev]);
       setTotalElements((prev) => prev + 1);
-      toast.success(`Đã thêm khách hàng "${created.name}" thành công!`);
+      toast.success(t("client.createSuccess", { name: created.name }));
       return created;
     } catch (error) {
-      toast.error("Không thể tạo thương hiệu khách hàng mới");
+      toast.error(t("client.createError"));
       throw error;
     }
   };
 
-  const handleUpdateServicePackage = async (id: string, dto: UpdateServicePackageDTO) => {
+  const handleUpdateServicePackage = async (
+    id: string,
+    dto: UpdateServicePackageDTO,
+  ) => {
     try {
-      const updated = await clientService.updateServicePackage(id, dto);
+      const updated = await mockClientService.updateServicePackage(id, dto);
       setClients((prev) => prev.map((c) => (c.id === id ? updated : c)));
-      toast.success("Đã nâng cấp/cập nhật gói dịch vụ!");
+      toast.success(t("client.servicePackage.upgradeSuccess"));
       return updated;
     } catch (error) {
-      toast.error("Không thể cập nhật gói dịch vụ");
+      toast.error(t("client.updatePackageError"));
       throw error;
     }
   };
 
   const handleDeleteClient = async (id: string) => {
     try {
-      await clientService.deleteClient(id);
+      await mockClientService.deleteClient(id);
       setClients((prev) => prev.filter((c) => c.id !== id));
       setTotalElements((prev) => Math.max(0, prev - 1));
-      toast.success("Đã xóa thương hiệu khách hàng!");
+      toast.success(t("client.deleteSuccess"));
     } catch (error) {
-      toast.error("Không thể xóa khách hàng");
+      toast.error(t("client.deleteError"));
       throw error;
     }
   };

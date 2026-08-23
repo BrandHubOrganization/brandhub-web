@@ -1029,7 +1029,10 @@ const TRENDING_ITEMS: TrendingItem[] = [
 interface AdviceItem {
   title: string;
   body: string;
-  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  icon: React.ComponentType<{
+    className?: string;
+    style?: React.CSSProperties;
+  }>;
 }
 /** Lời khuyên AI đề xuất hôm nay. */
 const ADVICE_ITEMS: AdviceItem[] = [

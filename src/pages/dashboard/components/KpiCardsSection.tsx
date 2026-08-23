@@ -1,0 +1,132 @@
+import {
+  FileText,
+  CheckCircle2,
+  XCircle,
+  TrendingUp,
+  RefreshCw,
+  AlertCircle,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import type { AnalyticsOverview } from "@/types/analytics";
+
+interface KpiCardsSectionProps {
+  data: AnalyticsOverview | null;
+  isLoading: boolean;
+  isError: boolean;
+  onRetry: () => void;
+}
+
+export function KpiCardsSection({
+  data,
+  isLoading,
+  isError,
+  onRetry,
+}: KpiCardsSectionProps) {
+  const { t } = useTranslation();
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="border-border bg-card space-y-3 rounded-xl border p-5"
+          >
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-9 w-9 rounded-lg" />
+            </div>
+            <Skeleton className="h-8 w-20" />
+            <Skeleton className="h-3 w-32" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <div className="border-destructive/30 bg-destructive/5 flex flex-col items-center justify-center gap-3 rounded-xl border p-5 text-center">
+        <div className="text-destructive flex items-center gap-2 text-sm font-medium">
+          <AlertCircle className="size-4" />
+          <span>{t("dashboard.kpi.loadError")}</span>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onRetry}
+          className="cursor-pointer gap-2 text-xs"
+        >
+          <RefreshCw className="size-3.5" /> {t("dashboard.kpi.retry")}
+        </Button>
+      </div>
+    );
+  }
+
+  const cards = [
+    {
+      title: t("dashboard.kpi.totalPostsTitle"),
+      value: data.totalPosts.toLocaleString("vi-VN"),
+      change: t("dashboard.kpi.totalPostsChange"),
+      icon: FileText,
+      iconBg: "bg-brand-orange/10 text-brand-orange",
+      accentColor: "border-l-brand-orange",
+    },
+    {
+      title: t("dashboard.kpi.publishedSuccessTitle"),
+      value: data.publishedCount.toLocaleString("vi-VN"),
+      change: t("dashboard.kpi.publishedChange"),
+      icon: CheckCircle2,
+      iconBg: "bg-emerald-500/10 text-emerald-500",
+      accentColor: "border-l-emerald-500",
+    },
+    {
+      title: t("dashboard.kpi.failedTitle"),
+      value: data.failedCount.toLocaleString("vi-VN"),
+      change: t("dashboard.kpi.failedChange"),
+      icon: XCircle,
+      iconBg: "bg-rose-500/10 text-rose-500",
+      accentColor: "border-l-rose-500",
+    },
+    {
+      title: t("dashboard.kpi.successRateTitle"),
+      value: `${data.successRate}%`,
+      change: t("dashboard.kpi.systemTargetMet"),
+      icon: TrendingUp,
+      iconBg: "bg-brand-orange/10 text-brand-orange",
+      accentColor: "border-l-brand-orange",
+    },
+  ];
+
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {cards.map((card, idx) => {
+        const Icon = card.icon;
+        return (
+          <div
+            key={idx}
+            className={`group border-border bg-card relative overflow-hidden rounded-xl border border-l-4 p-5 transition-all duration-200 hover:shadow-md ${card.accentColor}`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground text-xs font-medium">
+                {card.title}
+              </span>
+              <div
+                className={`flex size-9 items-center justify-center rounded-lg ${card.iconBg}`}
+              >
+                <Icon className="size-4" />
+              </div>
+            </div>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-foreground text-2xl font-bold tracking-tight">
+                {card.value}
+              </span>
+            </div>
+            <p className="text-muted-foreground text-2xs mt-1">{card.change}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}

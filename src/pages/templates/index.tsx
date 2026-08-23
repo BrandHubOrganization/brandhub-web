@@ -1,13 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { TemplatePreviewModal } from "@/components/template/TemplatePreviewModal";
+import { TemplatePreviewModal } from "@/pages/templates/components/TemplatePreviewModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Plus } from "lucide-react";
 import { useTemplates } from "./hooks/useTemplates";
 import { TemplateGridView } from "./components/TemplateGridView";
+import { useTranslation } from "react-i18next";
 
 export function TemplateBrowserPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     searchTerm,
@@ -27,38 +29,37 @@ export function TemplateBrowserPage() {
 
   return (
     <PageWrapper
-      title="Thư Viện Mẫu Bài Viết (Templates)"
-      description="Quản lý và tái sử dụng các mẫu bài đăng chuyên nghiệp chỉ với 1 click."
+      title={t("templates.page.title")}
+      description={t("templates.page.description")}
       actions={
         <Button
           type="button"
           onClick={() => navigate("/editor")}
-          className="bg-[#f05a28] text-xs font-semibold text-white hover:bg-[#f05a28]/90"
+          className="bg-brand-orange hover:bg-brand-orange/90 text-xs font-semibold text-white"
           size="sm"
         >
-          <Plus className="mr-1 h-4 w-4" />
-          <span>Tạo Bài Viết Mới</span>
+          <Plus className="mr-1 size-4" />
+          <span>{t("templates.page.createButton")}</span>
         </Button>
       }
     >
       <div className="space-y-6">
-        <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs sm:flex-row dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="border-border bg-card flex flex-col items-center justify-between gap-4 rounded-xl border p-4 shadow-xs sm:flex-row">
           <div className="w-full sm:w-96">
             <Input
-              iconPrefix={<Search className="h-4 w-4" />}
+              iconPrefix={<Search className="size-4" />}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Tìm kiếm mẫu theo tiêu đề, nội dung..."
+              placeholder={t("templates.page.searchPlaceholder")}
               className="text-xs"
             />
           </div>
 
-          <div className="self-end text-xs font-medium text-zinc-500 sm:self-center dark:text-zinc-400">
-            Hiển thị{" "}
-            <strong className="text-zinc-900 dark:text-zinc-100">
-              {templates.length}
-            </strong>{" "}
-            / {total} mẫu bài đăng
+          <div className="text-muted-foreground self-end text-xs font-medium sm:self-center">
+            {t("templates.page.showing", {
+              count: templates.length,
+              total,
+            })}
           </div>
         </div>
 

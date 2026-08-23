@@ -21,10 +21,10 @@ import {
   Users,
   BarChart3,
 } from "lucide-react";
-import type { MemberRole, Workspace } from "@/types/workspace";
+import type { Workspace } from "@/types/workspace";
 
 const MOBILE_TABS = [
-  { to: "/", icon: LayoutDashboard, labelKey: "nav.dashboard" },
+  { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
   { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
   { to: "/editor", icon: FileEdit, labelKey: "nav.editor" },
   { to: "/calendar", icon: CalendarDays, labelKey: "nav.calendar" },
@@ -42,7 +42,8 @@ export function Layout() {
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
-  const [memberRole, setMemberRole] = React.useState<MemberRole | null>(null);
+  const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const setCurrentMemberRole = useWorkspaceStore((s) => s.setCurrentMemberRole);
 
   React.useEffect(() => {
     fetchWorkspaces();
@@ -80,9 +81,9 @@ export function Layout() {
       .listMembers(activeWorkspace.id)
       .then(({ data }) => {
         const me = data.data.find((m) => m.userId === user.id);
-        setMemberRole(me?.role ?? null);
+        setCurrentMemberRole(me?.role ?? null);
       })
-      .catch(() => setMemberRole(null));
+      .catch(() => setCurrentMemberRole(null));
   }, [activeWorkspace, user]);
 
   const currentRole = memberRole;
@@ -120,7 +121,11 @@ export function Layout() {
 
   // Filter mobile tabs based on role
   const filteredMobileTabs = MOBILE_TABS.filter((tab) => {
-    if (!activeWorkspace && tab.to !== "/" && tab.to !== "/workspace") {
+    if (
+      !activeWorkspace &&
+      tab.to !== "/dashboard" &&
+      tab.to !== "/workspace"
+    ) {
       return false;
     }
     if (
@@ -165,7 +170,7 @@ export function Layout() {
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetContent side="left" className="w-[240px] border-0 p-0">
             <SheetHeader className="sr-only">
-              <SheetTitle>Navigation Menu</SheetTitle>
+              <SheetTitle>{t("nav.navigationMenu")}</SheetTitle>
             </SheetHeader>
             <Sidebar
               collapsed={false}
@@ -180,7 +185,7 @@ export function Layout() {
         </Sheet>
 
         {/* Page Content Outlet */}
-        <main className="flex-1 overflow-y-auto bg-[#fafafa] pb-16 md:pb-0 dark:bg-[#09090b]">
+        <main className="bg-background flex-1 overflow-y-auto pb-16 md:pb-0">
           <Outlet />
         </main>
       </div>
@@ -189,8 +194,8 @@ export function Layout() {
       <div
         className="border-border pb-safe fixed right-0 bottom-0 left-0 z-40 flex h-16 items-center justify-around border-t md:hidden"
         style={{
-          background: "var(--card, #ffffff)",
-          borderColor: "var(--border, #e4e4e7)",
+          background: "hsl(var(--card, 0 0% 100%))",
+          borderColor: "hsl(var(--border, 240 5.9% 90%))",
         }}
       >
         {filteredMobileTabs.slice(0, 5).map(({ to, icon: Icon, labelKey }) => {
@@ -200,7 +205,7 @@ export function Layout() {
               to={to}
               end={to === "/"}
               className={({ isActive }) =>
-                `flex w-12 cursor-pointer flex-col items-center justify-center gap-1 py-1.5 text-[10px] transition-colors ${
+                `text-3xs flex w-12 cursor-pointer flex-col items-center justify-center gap-1 py-1.5 transition-colors ${
                   isActive
                     ? "text-brand-orange font-semibold"
                     : "text-muted-foreground hover:text-foreground"

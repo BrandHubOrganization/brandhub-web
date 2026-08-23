@@ -1,0 +1,613 @@
+{
+  "hero": {
+    "viewOnIphone": "View on iPhone",
+    "viewOnMacbook": "View on MacBook",
+    "scrollDown": "Scroll down",
+    "ctaStart": "Start free",
+    "ctaLogin": "Sign in",
+    "trustedByPrefix": "Trusted by",
+    "trustedBySuffix": "brands & agencies"
+  },
+  "heroDemo": {
+    "nav": {
+      "overview": "Overview",
+      "content": "Content",
+      "schedule": "Schedule",
+      "publish": "Publish",
+      "approval": "Approval"
+    },
+    "notifications": {
+      "title": "Notifications"
+    },
+    "common": {
+      "justNow": "just now",
+      "minutesAgo": "{{count}} min ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "weekAgo": "1 week ago",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "justCreated": "just created"
+    },
+    "overview": {
+      "greeting": "Good morning, Team!",
+      "todaySummary": "12 pieces of content need publishing today",
+      "weeklyGrowth": "+18% this week",
+      "totalPosts": "Total Posts",
+      "published": "Published",
+      "pendingApproval": "Pending Review",
+      "error": "Errors",
+      "followers": "Followers",
+      "trendingToday": "TRENDING TODAY",
+      "scrapedAt": "Scraped 09:00",
+      "contentPerformance": "CONTENT PERFORMANCE",
+      "days30": "30 days",
+      "topChannels": "TOP CHANNELS",
+      "channelDistribution": "CHANNEL SPLIT",
+      "aiSuggestions": "TODAY'S SUGGESTIONS"
+    },
+    "content": {
+      "title": "Content Management",
+      "subtitle": "Schedule & publish across channels",
+      "createPost": "New Post",
+      "searchPlaceholder": "Search by post name...",
+      "postsCount": "{{count}} posts",
+      "viewDemoHint": "Demo: 3 view modes — explore on your own",
+      "dropHere": "Drop post here",
+      "openingEditor": "Opening new post editor...",
+      "allPosts": "All Posts",
+      "channelLabel": "Channel: {{channel}}",
+      "author": "Author:",
+      "reach": "Reach",
+      "engagement": "Engagement",
+      "task": "Task",
+      "kanban": {
+        "draft": "Draft",
+        "review": "Pending Review",
+        "published": "Published"
+      }
+    },
+    "schedule": {
+      "publishSchedule": "Publish Schedule",
+      "selectDate": "SELECT DATE",
+      "dayLabel": "AUG {{day}}",
+      "noScheduledPosts": "No posts scheduled",
+      "monthYear": "August 2026",
+      "monthShort": "August"
+    },
+    "analytics": {
+      "title": "Performance Analytics",
+      "subtitle": "Channel & content growth",
+      "last6Months": "Last 6 months",
+      "views": "Views",
+      "followers": "Followers",
+      "engagement": "Engagement",
+      "shares": "Shares",
+      "viewsByDay": "VIEWS BY DAY",
+      "channelDistribution": "CHANNEL SPLIT"
+    },
+    "aiStudio": {
+      "writeText": "Write Text",
+      "generateImage": "Generate Image",
+      "generateContentByAi": "Auto-generate content with AI",
+      "aiCreditsRemaining": "AI Credits remaining",
+      "generating": "Generating content...",
+      "generateImageBtn": "Generate Image",
+      "generateVideoBtn": "Generate Video",
+      "generateTextBtn": "Generate Text",
+      "aiResultTitle": "AI RESULT",
+      "noResultYet": "No result yet — click Generate to start",
+      "generateAnotherVariant": "Generate another variant",
+      "recentHistory": "RECENT HISTORY"
+    },
+    "workspace": {
+      "workspacesCount": "{{count}} workspaces · {{active}} active",
+      "create": "Create",
+      "searchPlaceholder": "Search workspace or client...",
+      "all": "All",
+      "starred": "Starred",
+      "active": "Active",
+      "noWorkspaceFound": "No workspace found",
+      "allWorkspaces": "All workspaces",
+      "sharedSpace": "Shared space · {{count}} members",
+      "online": "{{count}} online",
+      "doing": "Doing",
+      "membersOnline": "Online",
+      "membersOffline": "Offline",
+      "newWorkspace": "New project",
+      "newClient": "New client",
+      "newTag": "New",
+      "lastActive": "Active {{time}}",
+      "status": {
+        "active": "Active",
+        "review": "In review",
+        "paused": "Paused"
+      }
+    },
+    "publish": {
+      "title": "Publish",
+      "subtitle": "Push content to connected channels",
+      "ready": "Ready",
+      "queueTitle": "PUSH QUEUE ({{count}})",
+      "pushing": "Pushing posts...",
+      "pushAll": "Push to all channels"
+    },
+    "approval": {
+      "title": "Approval",
+      "subtitle": "Preview and approve posts before publishing",
+      "allApproved": "All pending posts approved",
+      "feedbackSent": "Feedback sent to Account Manager",
+      "approve": "Approve",
+      "feedback": "Feedback"
+    }
+  },
+  "heroFeed": {
+    "ui": {
+      "like": "Like",
+      "comment": "Comment",
+      "share": "Share",
+      "send": "Send",
+      "repost": "Repost",
+      "save": "Save",
+      "timeAgoHours2": "2h",
+      "timeAgoHoursShort": "2 hours ago",
+      "timeAgoDays3": "3d",
+      "timeAgoSeconds2": "2s",
+      "commentsSuffix": "comments",
+      "sharesSuffix": "shares",
+      "likesSuffix": "likes",
+      "viewAllCommentsPrefix": "View all",
+      "viewAllCommentsSuffix": "comments",
+      "minRead": "5 min read",
+      "repostsCount": "12 reposts",
+      "article": "Article",
+      "insights": "BrandHub Insights",
+      "sourceSite": "brandhub.vn",
+      "multiChannelContent": "Multi-channel content",
+      "typingPlaceholder": "Add a comment…",
+      "typingPlaceholderDots": "Add a comment...",
+      "fbTypingPlaceholder": "Write a comment…",
+      "posting": "Posting…",
+      "justNowReply": "Just now · Reply",
+      "justNow": "Just now",
+      "reply": "Reply",
+      "firstComment": "First comment",
+      "originalSound": "original sound - BrandHub",
+      "following": "Following",
+      "forYou": "For You",
+      "search": "Search",
+      "sentTo": "Sent to {{name}}",
+      "shareTo": "Share to",
+      "sendTo": "Send to",
+      "typeName": "Type a name...",
+      "writeMessage": "Write a message (optional)",
+      "copyLink": "Copy link",
+      "fbShareNow": "Share now",
+      "fbShareNowDesc": "Friends",
+      "fbShareFeed": "Share to Feed",
+      "fbShareFeedDesc": "Add a caption",
+      "fbShareMessenger": "Send via Messenger",
+      "fbShareMessengerDesc": "Private",
+      "linkPreviewTitle": "BrandHub — The all-in-one brand content management platform",
+      "linkPreviewDesc": "Plan, create, schedule, and publish multi-channel content on a single platform.",
+      "articleExcerpt": "From a 3-day manual workflow to 2-hour automation. How BrandHub helps marketing teams scale output without adding headcount."
+    },
+    "reactions": {
+      "fb": {
+        "like": "Like",
+        "love": "Love",
+        "haha": "Haha",
+        "wow": "Wow",
+        "sad": "Sad",
+        "angry": "Angry"
+      },
+      "li": {
+        "like": "Like",
+        "celebrate": "Celebrate",
+        "support": "Support",
+        "love": "Love",
+        "insightful": "Insightful",
+        "funny": "Funny"
+      }
+    },
+    "instagram": {
+      "0": {
+        "caption": "From 3 hours down to 15 minutes per post. No filters, no fluff — just our team's actual workflow after 2 months on BrandHub. A whole week of content scheduled in one morning. Not having to stay up late posting anymore feels amazing."
+      },
+      "1": {
+        "caption": "Swipe for the before/after of switching from 5 scattered tools to one platform. 3 months, 247 posts, 0 missed deadlines. 'Wrong format' and 'posted at the wrong time' are ancient history now. A team of 4 managing 12 brands at once."
+      },
+      "2": {
+        "caption": "This caption was written by AI in 30 seconds — but the real win is it nailed our brand's tone. BrandHub's AI Assistant now gets how we use emoji, our line breaks, even the little quirks we always use. Feels like having an extra copywriter on the team."
+      }
+    },
+    "tiktok": {
+      "0": {
+        "caption": "POV: you just found a tool that automates your entire content calendar across 5 platforms in one click. Content team went from 6 people to 3. My boss stopped asking 'where's the post' every morning."
+      },
+      "1": {
+        "caption": "One tool replacing Canva + Google Calendar + Trello + Google Drive + Messenger. Sounds fake but it's real. This is the actual stack our team uses to run 8 clients at once. Who said agencies have to be chaos?"
+      },
+      "2": {
+        "caption": "Our content team's reaction to getting 5 Tet campaign briefs at once. With BrandHub Calendar we drag-and-drop the whole schedule in 15 minutes instead of 3 hours in Excel like last year. So many people asked how, we made this video."
+      }
+    },
+    "facebook": {
+      "0": {
+        "authorName": "Minh Nguyen",
+        "authorRole": "Founder & Creative Director, Bloom Digital Agency",
+        "content": "4 months into running our whole agency on BrandHub, here are the real numbers: 12 clients, 3 content writers, 247 posts/month, 0 missed deadlines. We used to juggle 5 separate tools — Canva for design, Google Sheets for tracking, Trello for task assignment, Drive for approvals, Messenger for feedback. Getting one post from idea to published took 3-4 days. Now it's all in one tab. My favorite part is the approval workflow: clients review posts right on the platform, no more screenshotting a draft into Messenger and 'hey can you approve this real quick.' If you run an agency, you know that feeling."
+      },
+      "1": {
+        "authorName": "Thu Ha",
+        "authorRole": "Owner, TheCosmos Beauty",
+        "content": "Small brand, no dedicated content team. It's just me shooting photos, writing captions, posting, and replying to comments. Before BrandHub, social ate 3-4 hours of my day — now it's 30 minutes. The AI writes captions that actually sound like my brand (I write mostly in Vietnamese, and BrandHub's AI handles it really well, none of that word-for-word translation feel other tools have). The drag-and-drop calendar means I can see my whole week's content at a glance. Online revenue is up 40% in the first two months, not because I got better at this, but because I finally have time to focus on the product instead of being stuck on content."
+      },
+      "2": {
+        "authorName": "Duc Anh",
+        "authorRole": "COO, NextGen Media Group",
+        "content": "Running the Tet 2026 campaign for 5 brands at once with an 8-person team. Without BrandHub, I honestly don't think we'd have survived January. Cross-platform publishing sends one post to 5 channels (FB, IG, TikTok, LinkedIn, X) with a single click. The content calendar gives us a bird's-eye view of every campaign on one screen — we catch double-bookings and duplicate content instantly. Our team's output is up 240%, and review meeting time is down 80%. Measurable ROI: roughly $3,200/month saved on tooling and headcount."
+      }
+    },
+    "linkedin": {
+      "0": {
+        "authorName": "Linh Pham",
+        "authorTitle": "Head of Marketing, Unilever Vietnam",
+        "content": "6 months after rolling out BrandHub to a 25-person marketing team, we've grown content output by 240% while cutting approval time by 80%. Our old 4-tier review process for a single post averaged 3.2 days — now it's 4 hours. Here's a detailed case study on how we moved from a manual workflow to AI-assisted content operations without compromising brand safety or compliance.",
+        "articleHeadline": "How We Scaled Content Operations 3x Without Adding Headcount — A Unilever Vietnam Case Study"
+      },
+      "1": {
+        "authorName": "James Tran",
+        "authorTitle": "VP Growth, Nimbus Group",
+        "content": "We spent 3 months evaluating 4 content management platforms (BrandHub, ContentStudio, Loomly, Vista Social) before deciding. Criteria: multi-brand support, AI writing quality, approval workflow, cross-platform publishing, pricing. BrandHub won on 4 of 5. Here's the detailed breakdown of each platform — not sponsored, just our growth team's real experience.",
+        "articleHeadline": "We Evaluated 4 Content Platforms Over 90 Days — Here's Our Scorecard"
+      },
+      "2": {
+        "authorName": "Sarah Chen",
+        "authorTitle": "Content Operations Lead, Zalora Group",
+        "content": "Managing content across 6 Southeast Asian markets, each with its own language and brand guidelines, is a problem we face every single day. BrandHub solved our three biggest pain points: (1) a centralized content calendar that lets regional teams see every campaign from Singapore HQ, (2) AI localization that translates and adjusts tone per market in minutes instead of days, (3) region-based approval permissions — market leads approve local content, regional directors approve major campaigns. Results: time-to-market down 65%, content consistency score up from 6.2 to 8.9/10.",
+        "articleHeadline": "Managing Content Across 6 Markets, 6 Languages: Our BrandHub Playbook"
+      }
+    },
+    "commenters": {
+      "0": {
+        "name": "Thu Ha",
+        "headline": "Marketing Manager at Beauty Co."
+      },
+      "1": {
+        "name": "Duc Anh",
+        "headline": "Founder, 5-person boutique agency"
+      },
+      "2": {
+        "name": "Minh Khue",
+        "headline": "Content Lead, E-commerce startup"
+      },
+      "3": {
+        "name": "Quang Huy",
+        "headline": "Freelance Social Media Strategist"
+      },
+      "4": {
+        "name": "Bao Tran",
+        "headline": "Growth Marketer, SaaS B2B"
+      }
+    },
+    "ghostComments": {
+      "ig": [
+        "What's this tool called? 🙏",
+        "Gorgeous, I need this too 😍",
+        "This is literally my team, such a lifesaver",
+        "Is there a free trial link?",
+        "Following immediately, this is so good 🔥"
+      ],
+      "tt": [
+        "this is so real 😭 exactly my team",
+        "where do i sign up",
+        "someone save me, this is exactly my pain",
+        "this video deserves to blow up 🔥",
+        "content teams need to see this"
+      ],
+      "fb": [
+        "Quick question, what's the pricing for a 5-person agency plan? We're looking for something similar.",
+        "Reading this hit close to home, going to look into it more.",
+        "My team's been using it for a few months now, it actually works, not just an ad.",
+        "Thanks for the detailed writeup, exactly what I've been looking for next quarter."
+      ],
+      "li": [
+        "Impressive numbers. Could you share more about the migration process?",
+        "Really useful case study. My team is considering something similar for next quarter.",
+        "This is exactly the problem a lot of marketing teams are dealing with. Thanks for the detailed share.",
+        "Great insight, especially the approval workflow part. Going to try this."
+      ]
+    }
+  },
+  "trustedBy": "Trusted by 50,000+ brands & agencies worldwide",
+  "stats": {
+    "contents": "Content pieces managed",
+    "brands": "Brands & agencies",
+    "platforms": "Platform integrations",
+    "uptime": "Uptime guarantee"
+  },
+  "features": {
+    "title": "Everything you need in one platform",
+    "subtitle": "From planning to publishing, BrandHub streamlines your entire content workflow.",
+    "demoLabel": "See it in the demo",
+    "demoAction": "View {{feature}} in the live MacBook demo above",
+    "items": {
+      "planning": {
+        "title": "Content Planning",
+        "desc": "Visual campaign calendar with drag-and-drop scheduling across all channels."
+      },
+      "creation": {
+        "title": "AI-Powered Creation",
+        "desc": "Generate and refine content with AI that understands your brand voice and guidelines."
+      },
+      "publishing": {
+        "title": "Multi-Channel Publishing",
+        "desc": "Auto-publish to Facebook, Instagram, TikTok, LinkedIn, and more simultaneously."
+      },
+      "analytics": {
+        "title": "Performance Analytics",
+        "desc": "Real-time dashboards tracking engagement, reach, and ROI across every campaign."
+      },
+      "collab": {
+        "title": "Team Collaboration",
+        "desc": "Built-in approval workflows, comments, and role-based access for seamless teamwork."
+      },
+      "automation": {
+        "title": "Smart Automation",
+        "desc": "Auto-schedule optimal posting times, batch-create variations, and set recurring campaigns."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "subtitle": "Every role has its own workflow, running smoothly on one platform.",
+    "input": "Input",
+    "output": "Output",
+    "demoAction": "View {{step}} in the live demo above",
+    "roles": {
+      "owner": {
+        "roleTag": "Agency admin",
+        "setupWorkspace": {
+          "title": "Create workspace",
+          "desc": "Set up the agency's workspace"
+        },
+        "inviteTeam": {
+          "title": "Invite team",
+          "desc": "Add Account Managers, Content Creators"
+        },
+        "assignClient": {
+          "title": "Assign clients",
+          "desc": "Match each Brand Client to an AM"
+        }
+      },
+      "creator": {
+        "roleTag": "Content creation",
+        "draftContent": {
+          "title": "Draft content",
+          "desc": "Write posts per the assigned schedule"
+        },
+        "aiAssist": {
+          "title": "AI assist",
+          "desc": "Get caption, hashtag, image suggestions"
+        },
+        "submitReview": {
+          "title": "Submit for review",
+          "desc": "Send drafts to the Account Manager"
+        }
+      },
+      "manager": {
+        "roleTag": "Client management",
+        "reviewContent": {
+          "title": "Review content",
+          "desc": "Check quality and brand alignment"
+        },
+        "requestChanges": {
+          "title": "Request changes",
+          "desc": "Send feedback back to the Creator"
+        },
+        "forwardClient": {
+          "title": "Forward to client",
+          "desc": "Pass the final draft to Brand Client"
+        }
+      },
+      "client": {
+        "roleTag": "Brand owner",
+        "previewFinal": {
+          "title": "Preview",
+          "desc": "See exact per-platform formatting"
+        },
+        "approve": {
+          "title": "Approve",
+          "desc": "Approve or leave direct feedback"
+        },
+        "autoPublish": {
+          "title": "Auto-publish",
+          "desc": "System posts at the scheduled time"
+        }
+      }
+    }
+  },
+  "templates": {
+    "title": "Start with proven templates",
+    "subtitle": "Jumpstart your campaigns with professionally designed templates for every platform.",
+    "useLabel": "Use now",
+    "demoAction": "View {{template}} in the live demo above",
+    "items": {
+      "social": {
+        "title": "Social Media Kits",
+        "desc": "Pre-made templates for Instagram, Facebook, TikTok, LinkedIn posts and stories."
+      },
+      "blog": {
+        "title": "Blog & Article",
+        "desc": "SEO-optimized content templates with headline formulas and structure guides."
+      },
+      "email": {
+        "title": "Email Campaigns",
+        "desc": "Newsletter templates, drip sequences, and promotional email layouts ready to customize."
+      }
+    }
+  },
+  "testimonials": {
+    "title": "Loved by content teams worldwide",
+    "subtitle": "See what our customers say about BrandHub.",
+    "items": {
+      "minh": {
+        "quote": "We cut content turnaround from 3 days to 2 hours. BrandHub completely transformed how our team operates."
+      },
+      "sarah": {
+        "quote": "After 6 months with BrandHub, our content output increased 240%. The AI tools are genuinely game-changing."
+      },
+      "tuan": {
+        "quote": "Best investment for our agency. Managing 20+ client brands has never been this smooth and organized."
+      }
+    }
+  },
+  "nav": {
+    "features": "Features",
+    "howItWorks": "How It Works",
+    "templates": "Templates",
+    "testimonials": "Testimonials",
+    "team": "Team",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "login": "Sign in",
+    "register": "Sign up"
+  },
+  "team": {
+    "title": "Development Team",
+    "subtitle": "The student team building BrandHub for the SEP490 capstone project.",
+    "members": {
+      "member1": {
+        "name": "Nguyen Van A",
+        "role": "Project Manager"
+      },
+      "member2": {
+        "name": "Tran Thi B",
+        "role": "Frontend Developer"
+      },
+      "member3": {
+        "name": "Le Van C",
+        "role": "Backend Developer"
+      },
+      "member4": {
+        "name": "Pham Thi D",
+        "role": "QA Engineer"
+      }
+    }
+  },
+  "pricing": {
+    "title": "Simple, transparent pricing",
+    "subtitle": "Choose the plan that fits your team. No hidden fees.",
+    "mostPopular": "Most Popular",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "yearlySave": "Save 20%",
+    "perMonth": "/mo",
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "price": "Free",
+        "cta": "Start free",
+        "features": [
+          "1 workspace",
+          "5 team members",
+          "3 social channels",
+          "Basic analytics",
+          "100 scheduled posts/mo"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "590K ₫",
+        "cta": "Start free trial",
+        "features": [
+          "Unlimited workspaces",
+          "Unlimited team members",
+          "All social channels",
+          "Advanced analytics",
+          "AI content generation",
+          "Priority support",
+          "Custom templates"
+        ]
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "Custom",
+        "cta": "Contact sales",
+        "features": [
+          "Everything in Pro",
+          "Dedicated account manager",
+          "Custom integrations",
+          "SLA guarantee",
+          "On-premise option",
+          "SSO & SAML",
+          "Custom AI model training"
+        ]
+      }
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "subtitle": "Can't find what you're looking for? Contact our support team.",
+    "items": {
+      "q1": {
+        "q": "Is there a free plan available?",
+        "a": "Yes! Our Starter plan is completely free forever. You get 1 workspace, 5 team members, 3 social channels, and 100 scheduled posts per month. No credit card required."
+      },
+      "q2": {
+        "q": "Which social media platforms do you support?",
+        "a": "BrandHub supports all major platforms including Facebook, Instagram, TikTok, LinkedIn, Twitter/X, YouTube, Pinterest, and Threads. We continuously add new integrations based on user feedback."
+      },
+      "q3": {
+        "q": "How does AI content creation work?",
+        "a": "Our AI is trained on marketing best practices and adapts to your brand voice. You provide a brief or topic, and it generates drafts, variations, and localized versions. You always have final approval before anything goes live."
+      },
+      "q4": {
+        "q": "Can I collaborate with my team and clients?",
+        "a": "Absolutely. BrandHub has built-in approval workflows, role-based permissions, and comment threads. Clients can review and approve content without needing to log into your main workspace."
+      },
+      "q5": {
+        "q": "How does the Pro trial work?",
+        "a": "Start a 14-day free trial of the Pro plan — no credit card needed. You get full access to all Pro features. We'll remind you before the trial ends, and you can downgrade to Starter anytime."
+      }
+    }
+  },
+  "cta": {
+    "title": "Ready to transform your content workflow?",
+    "subtitle": "Join 50,000+ brands and agencies already using BrandHub. Start free, no credit card required.",
+    "start": "Start free",
+    "login": "Sign in"
+  },
+  "footer": {
+    "tagline": "The all-in-one brand content management platform. Plan, create, schedule, publish, and grow — all in one place.",
+    "email": "brandhub404@gmail.com",
+    "columns": {
+      "product": "Product",
+      "resources": "Resources",
+      "company": "Company"
+    },
+    "comingSoon": "Coming soon",
+    "productLinks": {
+      "features": "Features",
+      "howItWorks": "How It Works",
+      "templates": "Templates",
+      "pricing": "Pricing"
+    },
+    "links": {
+      "resources": [
+        "Help Center",
+        "Blog",
+        "Community",
+        "Tutorials"
+      ],
+      "company": [
+        "About",
+        "Careers",
+        "Privacy",
+        "Terms"
+      ]
+    },
+    "copyright": "© {{year}} BrandHub. All rights reserved."
+  }
+}

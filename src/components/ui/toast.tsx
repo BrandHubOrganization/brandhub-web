@@ -17,14 +17,18 @@ export function showToast({
   const getIcon = () => {
     switch (variant) {
       case "success":
-        return <CheckCircle2 className="size-5 text-green-500 shrink-0 mt-0.5" />;
+        return (
+          <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-green-500" />
+        );
       case "error":
-        return <XCircle className="size-5 text-red-500 shrink-0 mt-0.5" />;
+        return <XCircle className="mt-0.5 size-5 shrink-0 text-red-500" />;
       case "warning":
-        return <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />;
+        return (
+          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-500" />
+        );
       case "info":
       default:
-        return <Info className="size-5 text-blue-500 shrink-0 mt-0.5" />;
+        return <Info className="mt-0.5 size-5 shrink-0 text-blue-500" />;
     }
   };
 
@@ -45,16 +49,22 @@ export function showToast({
   return sonnerToast.custom(
     (id) => (
       <div
-        className={`flex items-start gap-3 p-4 border rounded-lg bg-card text-foreground shadow-lg border-l-4 ${getBorderColor()} w-[356px] pointer-events-auto cursor-pointer`}
+        className={`bg-card text-foreground flex items-start gap-3 rounded-lg border border-l-4 p-4 shadow-lg ${getBorderColor()} pointer-events-auto w-[356px] cursor-pointer`}
         onClick={() => sonnerToast.dismiss(id)}
       >
         {getIcon()}
-        <div className="space-y-1 flex-grow">
-          {title && <p className="text-sm font-semibold leading-none">{title}</p>}
-          {description && <p className="text-xs text-muted-foreground leading-normal mt-1">{description}</p>}
+        <div className="flex-grow space-y-1">
+          {title && (
+            <p className="text-sm leading-none font-semibold">{title}</p>
+          )}
+          {description && (
+            <p className="text-muted-foreground mt-1 text-xs leading-normal">
+              {description}
+            </p>
+          )}
         </div>
       </div>
     ),
-    { duration }
+    { duration },
   );
 }

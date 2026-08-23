@@ -13,7 +13,7 @@ const spinnerVariants = cva(
         lg: "size-8 border-[3px]",
       },
       variant: {
-        default: "text-[#f05a28]", // Brand orange
+        default: "text-brand-orange",
         muted: "text-muted-foreground",
         white: "text-white",
         current: "text-current",
@@ -23,11 +23,12 @@ const spinnerVariants = cva(
       size: "md",
       variant: "default",
     },
-  }
+  },
 );
 
 export interface SpinnerProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof spinnerVariants> {}
 
 function Spinner({ className, size, variant, ...props }: SpinnerProps) {

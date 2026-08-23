@@ -1,0 +1,61 @@
+{
+  "title": "Settings",
+  "description": "Manage your account information and preferences.",
+  "tabs": {
+    "general": "General",
+    "profile": "Profile",
+    "avatar": "Avatar",
+    "connections": "Connections",
+    "security": "Security"
+  },
+  "general": {
+    "themeLabel": "Light/dark theme",
+    "languageLabel": "Language"
+  },
+  "phone": {
+    "label": "Phone number",
+    "sendOtp": "Send OTP",
+    "verifyOtp": "Verify",
+    "unlink": "Unlink",
+    "otpSentSuccess": "OTP sent",
+    "verifySuccess": "Phone number linked",
+    "unlinkSuccess": "Phone number unlinked"
+  },
+  "connections": {
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connectedLabel": "Connected",
+    "notConnectedLabel": "Not connected",
+    "connectSuccess": "{{provider}} account connected",
+    "disconnectSuccess": "Disconnected",
+    "emailMismatchWarning": "Only use an account with the same current email ({{email}}) to connect.",
+    "error": {
+      "OAUTH_EMAIL_MISMATCH": "OAuth account email does not match your current account",
+      "OAUTH_ALREADY_LINKED": "This account is already linked to a different account"
+    }
+  },
+  "profile": {
+    "emailLabel": "Email",
+    "fullNameLabel": "Full name",
+    "timezoneLabel": "Timezone",
+    "notificationLabel": "Receive email notifications",
+    "save": "Save changes",
+    "saveSuccess": "Profile updated"
+  },
+  "avatar": {
+    "uploadButton": "Upload photo",
+    "uploadSuccess": "Avatar updated",
+    "invalidType": "Only JPEG, PNG, or WebP files are accepted",
+    "tooLarge": "Image must not exceed 5MB"
+  },
+  "security": {
+    "currentPasswordLabel": "Current password",
+    "newPasswordLabel": "New password",
+    "confirmPasswordLabel": "Confirm new password",
+    "submit": "Change password",
+    "changeSuccess": "Password changed successfully",
+    "changeFailed": "Failed to change password",
+    "mismatch": "New passwords do not match",
+    "pageDescription": "Temporary test page — the official UI will be built later."
+  }
+}

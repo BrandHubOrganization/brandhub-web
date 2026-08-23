@@ -1,68 +1,49 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { Button } from "@/components/ui/button";
 import { useWorkspaceMembers } from "./hooks/useWorkspaceMembers";
-import { MembersTable } from "./components/MembersTable";
-import { InviteMemberDialog } from "./components/InviteMemberDialog";
-import { RemoveMemberDialog } from "./components/RemoveMemberDialog";
+import { useClients } from "@/pages/client/hooks/useClients";
+import {
+  MembersSectionTabs,
+  type MembersSection,
+} from "./components/MembersSectionTabs";
+import { InternalMembersSection } from "./components/InternalMembersSection";
+import { ClientsSection } from "./components/ClientsSection";
 
 export function WorkspaceMembersPage() {
   const { t } = useTranslation();
-  const {
-    members,
-    loading,
-    canManage,
-    inviteOpen,
-    setInviteOpen,
-    inviteEmail,
-    setInviteEmail,
-    inviteRole,
-    setInviteRole,
-    inviting,
-    handleInvite,
-    removeTarget,
-    setRemoveTarget,
-    removing,
-    handleRemove,
-  } = useWorkspaceMembers();
+  const [section, setSection] = useState<MembersSection>("internal");
+  const membersState = useWorkspaceMembers();
+  const { totalElements: clientCount } = useClients();
 
-  if (loading) return null;
+  if (membersState.loading) return null;
+
+  const internalMembers = membersState.members.filter(
+    (m) => m.role !== "CLIENT",
+  );
 
   return (
     <PageWrapper
       title={t("workspace.members.title")}
       description={t("workspace.members.description")}
-      actions={
-        canManage && (
-          <Button variant="orange" onClick={() => setInviteOpen(true)}>
-            {t("workspace.members.inviteButton")}
-          </Button>
-        )
-      }
     >
-      <MembersTable
-        members={members}
-        canManage={canManage}
-        onRemove={setRemoveTarget}
-      />
+      <div className="space-y-4">
+        <MembersSectionTabs
+          active={section}
+          internalCount={internalMembers.length}
+          clientCount={clientCount}
+          onChange={setSection}
+        />
 
-      <InviteMemberDialog
-        open={inviteOpen}
-        onOpenChange={setInviteOpen}
-        email={inviteEmail}
-        onEmailChange={setInviteEmail}
-        role={inviteRole}
-        onRoleChange={setInviteRole}
-        submitting={inviting}
-        onSubmit={handleInvite}
-      />
-
-      <RemoveMemberDialog
-        open={!!removeTarget}
-        onOpenChange={(open) => !open && setRemoveTarget(null)}
-        submitting={removing}
-        onSubmit={handleRemove}
-      />
+        {section === "internal" ? (
+          <InternalMembersSection
+            {...membersState}
+            internalMembers={internalMembers}
+          />
+        ) : (
+          <ClientsSection />
+        )}
+      </div>
     </PageWrapper>
   );
 }

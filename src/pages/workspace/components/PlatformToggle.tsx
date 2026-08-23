@@ -32,7 +32,7 @@ export function PlatformToggle({ value, onToggle }: Props) {
               type="button"
               onClick={() => onToggle(key)}
               className={cn(
-                "flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs font-medium transition-colors",
+                "flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-medium transition-colors",
                 active
                   ? "border-brand-orange bg-brand-orange-soft text-brand-orange"
                   : "border-border text-muted-foreground hover:text-foreground",

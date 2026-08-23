@@ -1,0 +1,43 @@
+{
+  "navigationMenu": "Navigation Menu",
+  "notifications": "Notifications",
+  "noEmail": "No email",
+  "workspaceSwitcher": {
+    "label": "Workspace",
+    "noWorkspace": "No workspace",
+    "selectWorkspace": "Select Workspace"
+  },
+  "home": "Home",
+  "dashboard": "Dashboard",
+  "overview": "Workspace Overview",
+  "analytics": "Analytics",
+  "editor": "Content Editor",
+  "calendar": "Calendar",
+  "workspace": "Workspaces",
+  "members": "Members",
+  "invitations": "Invitations",
+  "portal": "Client Portal",
+  "admin": "Admin Panel",
+  "requests": "Content Requests",
+  "templates": "Post Templates",
+  "hashtagGroups": "Hashtag Groups",
+  "library": "Content Library",
+  "clients": "Brand Clients",
+  "settings": "Settings",
+  "sections": {
+    "overview": "Overview",
+    "create": "Create",
+    "manage": "Manage",
+    "system": "System"
+  },
+  "changePassword": "Change password",
+  "logout": "Log out",
+  "openMenu": "Open menu",
+  "expandSidebar": "Expand sidebar",
+  "collapseSidebar": "Collapse sidebar",
+  "switchLanguage": "Switch language",
+  "toggleTheme": "Toggle theme",
+  "realRoleTitle": "Actual role from the database",
+  "roleLabel": "Role: {{role}}",
+  "roleLabelPrefix": "Role:"
+}

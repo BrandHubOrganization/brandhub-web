@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { mockEditorService } from "@/services/mockEditorService";
 import type { SocialPlatform } from "@/types/editor";
 import type { ContentTemplate } from "@/types/template";
@@ -13,6 +14,7 @@ type EditorLocationState = {
 } | null;
 
 export function useEditorForm() {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const locationState = location.state as EditorLocationState;
@@ -149,17 +151,17 @@ export function useEditorForm() {
 
   const handleSubmitForReview = async () => {
     if (!caption.trim()) {
-      toast.error("Vui lòng soạn thảo nội dung caption trước khi gửi duyệt");
+      toast.error(t("editor.submitEmptyError"));
       return;
     }
 
     setIsSubmitting(true);
     try {
       await mockEditorService.submitForReview("post-99");
-      toast.success("Đã gửi bài viết để phê duyệt thành công!");
+      toast.success(t("editor.submitSuccess"));
       navigate("/requests");
     } catch (err) {
-      toast.error("Lỗi khi gửi bài duyệt");
+      toast.error(t("editor.submitError"));
     } finally {
       setIsSubmitting(false);
     }

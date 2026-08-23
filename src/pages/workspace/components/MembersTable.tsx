@@ -22,7 +22,7 @@ export function MembersTable({ members, canManage, onRemove }: Props) {
   const { t } = useTranslation();
 
   return (
-    <div className="border-border bg-card rounded-lg border">
+    <div className="border-border bg-card rounded-xl border">
       <Table>
         <TableHeader>
           <TableRow>

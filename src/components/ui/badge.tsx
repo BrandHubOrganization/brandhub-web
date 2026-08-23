@@ -18,20 +18,32 @@ const badgeVariants = cva(
         outline:
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         // PostStatus variants
-        DRAFT: "border-transparent bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300",
-        draft: "border-transparent bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300",
-        PENDING_REVIEW: "border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
-        pending_review: "border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
-        APPROVED: "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300",
-        approved: "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300",
-        SCHEDULED: "border-transparent bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/10 dark:text-brand-orange",
-        scheduled: "border-transparent bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/10 dark:text-brand-orange",
-        PUBLISHED: "border-transparent bg-green-100 text-green-800 dark:bg-green-950/40 dark:text-green-300",
-        published: "border-transparent bg-green-100 text-green-800 dark:bg-green-950/40 dark:text-green-300",
-        FAILED: "border-transparent bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300",
-        failed: "border-transparent bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300",
-        REJECTED: "border-transparent bg-red-900 text-red-50 dark:bg-red-950 dark:text-red-200",
-        rejected: "border-transparent bg-red-900 text-red-50 dark:bg-red-950 dark:text-red-200",
+        DRAFT: "border-transparent bg-muted text-muted-foreground",
+        draft: "border-transparent bg-muted text-muted-foreground",
+        PENDING_REVIEW:
+          "border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
+        pending_review:
+          "border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
+        APPROVED:
+          "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300",
+        approved:
+          "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300",
+        SCHEDULED:
+          "border-transparent bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/10 dark:text-brand-orange",
+        scheduled:
+          "border-transparent bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/10 dark:text-brand-orange",
+        PUBLISHED:
+          "border-transparent bg-green-100 text-green-800 dark:bg-green-950/40 dark:text-green-300",
+        published:
+          "border-transparent bg-green-100 text-green-800 dark:bg-green-950/40 dark:text-green-300",
+        FAILED:
+          "border-transparent bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300",
+        failed:
+          "border-transparent bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300",
+        REJECTED:
+          "border-transparent bg-red-900 text-red-50 dark:bg-red-950 dark:text-red-200",
+        rejected:
+          "border-transparent bg-red-900 text-red-50 dark:bg-red-950 dark:text-red-200",
       },
     },
     defaultVariants: {
@@ -41,17 +53,11 @@ const badgeVariants = cva(
 );
 
 export interface BadgeProps
-  extends React.ComponentProps<"span">,
-    VariantProps<typeof badgeVariants> {
+  extends React.ComponentProps<"span">, VariantProps<typeof badgeVariants> {
   asChild?: boolean;
 }
 
-function Badge({
-  className,
-  variant,
-  asChild = false,
-  ...props
-}: BadgeProps) {
+function Badge({ className, variant, asChild = false, ...props }: BadgeProps) {
   const Comp = asChild ? Slot : "span";
 
   return (

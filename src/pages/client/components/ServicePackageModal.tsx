@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +10,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Client, UpdateServicePackageDTO, PackageTier } from "../types/client";
-import { ShieldCheck, Zap } from "lucide-react";
+import type {
+  Client,
+  UpdateServicePackageDTO,
+  PackageTier,
+} from "../types/client";
+import { Package, Zap } from "lucide-react";
 
 interface ServicePackageModalProps {
   isOpen: boolean;
@@ -27,6 +32,7 @@ export function ServicePackageModal({
   onSubmit,
   isLoading = false,
 }: ServicePackageModalProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<UpdateServicePackageDTO>({
     packageTier: "GROWTH",
     monthlyPostLimit: 30,
@@ -70,37 +76,45 @@ export function ServicePackageModal({
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base font-bold">
-            <ShieldCheck className="size-4 text-[#f05a28]" />
-            Nâng cấp / Điều chỉnh Gói dịch vụ
+            <Package className="text-brand-orange size-4" />
+            {t("client.servicePackage.modalTitle")}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-2">
           {client && (
-            <div className="p-3 bg-muted/40 rounded-lg text-xs space-y-1">
-              <span className="text-muted-foreground block">Thương hiệu áp dụng:</span>
-              <strong className="text-foreground text-sm font-bold">{client.name}</strong>
+            <div className="bg-muted/40 space-y-1 rounded-lg p-3 text-xs">
+              <span className="text-muted-foreground block">
+                {t("client.servicePackage.appliedBrand")}
+              </span>
+              <strong className="text-foreground text-sm font-bold">
+                {client.name}
+              </strong>
             </div>
           )}
 
           {/* Hạng gói dịch vụ */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold">Chọn Hạng Gói (Tier)</Label>
+            <Label className="text-xs font-semibold">
+              {t("client.servicePackage.tierLabel")}
+            </Label>
             <div className="grid grid-cols-3 gap-2">
-              {(["STARTER", "GROWTH", "ENTERPRISE"] as PackageTier[]).map((tier) => (
-                <button
-                  key={tier}
-                  type="button"
-                  onClick={() => handleTierChange(tier)}
-                  className={`p-2.5 rounded-lg border text-xs font-bold transition-all text-center cursor-pointer ${
-                    formData.packageTier === tier
-                      ? "border-[#f05a28] bg-[#fff0eb] text-[#f05a28] dark:bg-[#f05a28]/10"
-                      : "border-border hover:bg-muted/50 text-foreground"
-                  }`}
-                >
-                  {tier}
-                </button>
-              ))}
+              {(["STARTER", "GROWTH", "ENTERPRISE"] as PackageTier[]).map(
+                (tier) => (
+                  <button
+                    key={tier}
+                    type="button"
+                    onClick={() => handleTierChange(tier)}
+                    className={`text-3xs cursor-pointer rounded-lg border p-2.5 text-center font-bold transition-all sm:text-xs ${
+                      formData.packageTier === tier
+                        ? "border-brand-orange bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/10"
+                        : "border-border hover:bg-muted/50 text-foreground"
+                    }`}
+                  >
+                    {tier}
+                  </button>
+                ),
+              )}
             </div>
           </div>
 
@@ -108,26 +122,40 @@ export function ServicePackageModal({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="postLimit" className="text-xs font-semibold">
-                Quota Post / Tháng
+                {t("client.servicePackage.postLimitLabel")}
               </Label>
               <Input
                 id="postLimit"
                 type="number"
                 value={formData.monthlyPostLimit}
-                onChange={(e) => setFormData({ ...formData, monthlyPostLimit: Number(e.target.value) })}
-                className="text-xs font-mono"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    monthlyPostLimit: Number(e.target.value),
+                  })
+                }
+                className="font-mono text-xs"
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="aiCredits" className="text-xs font-semibold flex items-center gap-1">
-                <Zap className="size-3 text-amber-500" /> AI Credits / Tháng
+              <Label
+                htmlFor="aiCredits"
+                className="flex items-center gap-1 text-xs font-semibold"
+              >
+                <Zap className="size-3 text-amber-500" />{" "}
+                {t("client.servicePackage.aiCreditsLabel")}
               </Label>
               <Input
                 id="aiCredits"
                 type="number"
                 value={formData.aiCreditsPerMonth || 200}
-                onChange={(e) => setFormData({ ...formData, aiCreditsPerMonth: Number(e.target.value) })}
-                className="text-xs font-mono"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    aiCreditsPerMonth: Number(e.target.value),
+                  })
+                }
+                className="font-mono text-xs"
               />
             </div>
           </div>
@@ -135,28 +163,38 @@ export function ServicePackageModal({
           {/* Ngày hết hạn gói */}
           <div className="space-y-1.5">
             <Label htmlFor="expiry" className="text-xs font-semibold">
-              Ngày hết hạn hợp đồng / gói dịch vụ
+              {t("client.servicePackage.expiryLabel")}
             </Label>
             <Input
               id="expiry"
               type="date"
               value={formData.expiryDate || ""}
-              onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, expiryDate: e.target.value })
+              }
               className="text-xs"
             />
           </div>
 
           <DialogFooter className="pt-3">
-            <Button type="button" variant="outline" size="sm" onClick={onClose} className="text-xs cursor-pointer">
-              Hủy
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onClose}
+              className="cursor-pointer text-xs"
+            >
+              {t("client.servicePackage.cancel")}
             </Button>
             <Button
               type="submit"
               size="sm"
               disabled={isLoading}
-              className="bg-[#f05a28] hover:bg-[#f05a28]/90 text-white text-xs gap-1.5 cursor-pointer"
+              className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white"
             >
-              {isLoading ? "Đang xử lý..." : "Cập nhật Gói Dịch Vụ"}
+              {isLoading
+                ? t("client.servicePackage.processing")
+                : t("client.servicePackage.updateButton")}
             </Button>
           </DialogFooter>
         </form>

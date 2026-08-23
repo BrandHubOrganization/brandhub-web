@@ -1,10 +1,10 @@
-export type UserRole = "ADMIN" | "AGENCY_OWNER" | "ACCOUNT_MANAGER" | "CONTENT_CREATOR" | "BRAND_CLIENT" | "GUEST";
+export type SystemRole = "ADMIN" | "USER";
 
 export interface User {
   id: string;
   name: string;
   email: string;
-  role: UserRole;
+  role: SystemRole;
   workspaceId?: string;
   clientId?: string;
   avatar?: string;

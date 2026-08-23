@@ -1,0 +1,44 @@
+{
+  "title": "Analytics",
+  "description": "Content performance and campaign engagement reports.",
+  "team": {
+    "memberTableTitle": "Workspace members",
+    "totalMembersLabel": "{{count}} member",
+    "totalMembersLabel_other": "{{count}} members",
+    "activityTitle": "Recent activity",
+    "activityEmpty": "No activity yet.",
+    "contributionTitle": "Contribution performance",
+    "contributionSubtitle": "Sample data — will use real data once the content module is available."
+  },
+  "stats": {
+    "reach": {
+      "label": "REACH",
+      "desc": "Compared to last month"
+    },
+    "engagement": {
+      "label": "ENGAGEMENT",
+      "desc": "Compared to last month"
+    },
+    "posts": {
+      "label": "POSTS",
+      "desc": "Same as last month"
+    },
+    "responseRate": {
+      "label": "RESPONSE RATE",
+      "desc": "Good improvement"
+    }
+  },
+  "channelPerformance": {
+    "title": "Performance by Publishing Channel",
+    "placeholder": "[Chart of stats by social network: Facebook, Instagram, LinkedIn, Blog]"
+  },
+  "overview": {
+    "title": "Workspace Overview",
+    "description": "See a combined view of every workspace you manage.",
+    "workspaceListTitle": "Workspace list",
+    "totalWorkspacesLabel": "Total workspaces",
+    "totalMembersLabel": "Total members",
+    "activityTitle": "Recent activity",
+    "empty": "You don't manage any workspace yet."
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "deleteSuccess": "Đã xóa thương hiệu khách hàng!",
+  "loadListError": "Lỗi khi tải danh sách thương hiệu khách hàng",
+  "createError": "Không thể tạo thương hiệu khách hàng mới",
+  "updatePackageError": "Không thể cập nhật gói dịch vụ",
+  "deleteError": "Không thể xóa khách hàng",
+  "createSuccess": "Đã thêm khách hàng \"{{name}}\" thành công!",
+  "list": {
+    "title": "Quản lý Brand Clients",
+    "description": "Quản lý danh sách thương hiệu, gói dịch vụ và phân công Account Manager.",
+    "createButton": "Tạo Client Mới",
+    "searchPlaceholder": "Tìm kiếm thương hiệu, email, ngành hàng...",
+    "totalLabel": "Client",
+    "agencyOwnerBadge": "AGENCY OWNER"
+  },
+  "detail": {
+    "title": "Chi tiết Client",
+    "loading": "Đang tải dữ liệu...",
+    "loadError": "Không thể tải thông tin chi tiết của Client",
+    "notFound": "Không tìm thấy thông tin thương hiệu này.",
+    "backToList": "Quay lại danh sách Client",
+    "back": "Quay lại",
+    "descriptionTemplate": "Chi tiết thương hiệu và lịch sử nội dung của {{name}}",
+    "accountManager": "Account Manager",
+    "unassigned": "Chưa phân công"
+  },
+  "table": {
+    "changeServicePackage": "Đổi gói dịch vụ",
+    "brandColumn": "Thương hiệu / Client",
+    "accountManagerColumn": "Account Manager",
+    "activePostsColumn": "Active Posts",
+    "packageColumn": "Gói Dịch Vụ",
+    "statusColumn": "Trạng thái",
+    "actionsColumn": "Thao tác",
+    "empty": "Không tìm thấy Client nào phù hợp.",
+    "viewDetail": "Xem chi tiết Client",
+    "deleteClient": "Xóa Client",
+    "unassigned": "Chưa phân công"
+  },
+  "pagination": {
+    "page": "Trang",
+    "prev": "Trước",
+    "next": "Sau"
+  },
+  "analytics": {
+    "totalPosts": "Tổng số bài đăng",
+    "publishedPosts": "Đã xuất bản",
+    "activeRequests": "Yêu cầu chờ xử lý",
+    "engagementRate": "Tương tác trung bình"
+  },
+  "banner": {
+    "accountManager": "Account Manager",
+    "unassigned": "Chưa phân công"
+  },
+  "contentRequests": {
+    "title": "Yêu cầu Nội dung mới nhất",
+    "createdBy": "Tạo bởi: {{name}} • {{date}}",
+    "empty": "Chưa có yêu cầu nội dung nào mới."
+  },
+  "socialAccounts": {
+    "title": "Tài khoản Mạng xã hội đã liên kết",
+    "connected": "Đã kết nối",
+    "empty": "Chưa có tài khoản mạng xã hội nào được liên kết."
+  },
+  "servicePackage": {
+    "processing": "Đang xử lý...",
+    "updateButton": "Cập nhật Gói Dịch Vụ",
+    "upgradeSuccess": "Đã nâng cấp/cập nhật gói dịch vụ!",
+    "modalTitle": "Nâng cấp / Điều chỉnh Gói dịch vụ",
+    "appliedBrand": "Thương hiệu áp dụng:",
+    "tierLabel": "Chọn Hạng Gói (Tier)",
+    "postLimitLabel": "Quota Post / Tháng",
+    "aiCreditsLabel": "AI Credits / Tháng",
+    "expiryLabel": "Ngày hết hạn hợp đồng / gói dịch vụ",
+    "cancel": "Hủy"
+  },
+  "createEdit": {
+    "processing": "Đang xử lý...",
+    "createButton": "Tạo Client Mới",
+    "modalTitle": "Tạo mới Brand Client",
+    "nameLabel": "Tên Thương hiệu / Doanh nghiệp",
+    "namePlaceholder": "VD: Heineken Vietnam, Nike Store...",
+    "nameRequired": "Tên thương hiệu không được để trống",
+    "emailLabel": "Email liên hệ đại diện",
+    "emailPlaceholder": "contact@brand.com",
+    "emailRequired": "Email liên hệ không được để trống",
+    "emailInvalid": "Email không đúng định dạng",
+    "industryLabel": "Ngành hàng / Lĩnh vực",
+    "industryPlaceholder": "VD: Thời trang, F&B...",
+    "logoUrlLabel": "Logo Image URL",
+    "logoUrlPlaceholder": "https://...",
+    "accountManagerLabel": "Account Manager",
+    "packageTierLabel": "Gói dịch vụ ban đầu",
+    "cancel": "Hủy"
+  },
+  "deleteModal": {
+    "title": "Xóa thương hiệu \"{{name}}\"?",
+    "description": "Hành động này sẽ ngắt kết nối các tài khoản mạng xã hội và lưu trữ toàn bộ dữ liệu bài viết. Bạn có chắc chắn muốn tiếp tục không?",
+    "confirmText": "Xác nhận Xóa",
+    "cancelText": "Hủy bỏ"
+  }
+}

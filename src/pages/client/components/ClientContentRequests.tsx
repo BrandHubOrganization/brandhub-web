@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { ContentRequest } from "../types/client";
 import { FileText } from "lucide-react";
 
@@ -5,12 +6,17 @@ interface ClientContentRequestsProps {
   requests?: ContentRequest[];
 }
 
-export function ClientContentRequests({ requests = [] }: ClientContentRequestsProps) {
+export function ClientContentRequests({
+  requests = [],
+}: ClientContentRequestsProps) {
+  const { t } = useTranslation();
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
-      <div className="flex items-center gap-2 border-b border-border pb-3">
-        <FileText className="size-4 text-[#f05a28]" />
-        <h3 className="text-sm font-bold text-foreground">Yêu cầu Nội dung mới nhất</h3>
+    <div className="border-border bg-card space-y-4 rounded-xl border p-5">
+      <div className="border-border flex items-center gap-2 border-b pb-3">
+        <FileText className="text-brand-orange size-4" />
+        <h3 className="text-foreground text-sm font-bold">
+          {t("client.contentRequests.title")}
+        </h3>
       </div>
 
       <div className="space-y-3">
@@ -18,24 +24,27 @@ export function ClientContentRequests({ requests = [] }: ClientContentRequestsPr
           requests.map((req) => (
             <div
               key={req.id}
-              className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/10"
+              className="border-border bg-muted/10 flex items-center justify-between rounded-lg border p-3"
             >
               <div>
-                <span className="text-xs font-semibold text-foreground block">
+                <span className="text-foreground block text-xs font-semibold">
                   {req.title}
                 </span>
-                <span className="text-[10px] text-muted-foreground">
-                  Tạo bởi: {req.authorName} &bull; {req.createdAt}
+                <span className="text-muted-foreground text-3xs">
+                  {t("client.contentRequests.createdBy", {
+                    name: req.authorName,
+                    date: req.createdAt,
+                  })}
                 </span>
               </div>
-              <span className="text-[10px] font-medium bg-amber-500/10 text-amber-600 border border-amber-500/20 px-2 py-0.5 rounded">
+              <span className="text-3xs rounded border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 font-medium text-amber-600">
                 {req.status}
               </span>
             </div>
           ))
         ) : (
-          <p className="text-xs text-muted-foreground text-center py-4">
-            Chưa có yêu cầu nội dung nào mới.
+          <p className="text-muted-foreground py-4 text-center text-xs">
+            {t("client.contentRequests.empty")}
           </p>
         )}
       </div>

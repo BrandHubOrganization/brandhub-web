@@ -24,7 +24,6 @@ import { AdminPage } from "@/pages/admin";
 import { EditorPage } from "@/pages/editor";
 import { CalendarPage } from "@/pages/calendar";
 import { AnalyticsPage } from "@/pages/analytics";
-import { ClientListPage } from "@/pages/client";
 import { ClientDetailPage } from "@/pages/client/detail";
 import { ContentLibraryPage } from "@/pages/library";
 import { ContentRequestListPage } from "@/pages/requests";
@@ -48,7 +47,6 @@ export function AppRoutes() {
       <Route element={<AuthGuard />}>
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/clients" element={<ClientListPage />} />
           <Route path="/clients/:id" element={<ClientDetailPage />} />
           <Route path="/change-password" element={<ChangePasswordPage />} />
           <Route path="/workspace" element={<WorkspacePage />} />

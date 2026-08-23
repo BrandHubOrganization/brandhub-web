@@ -9,12 +9,12 @@ import {
   BarChart3,
   ShieldAlert,
   ChevronDown,
-  Building2,
   FolderKanban,
   LayoutTemplate,
   Hash,
   UserPlus,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -26,53 +26,53 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { MemberRole, Workspace } from "@/types/workspace";
 import type { SystemRole } from "@/store/authStore";
+import { canAccess } from "@/routes/access";
 
 interface NavItem {
   to: string;
   icon: React.ComponentType<{ className?: string }>;
-  label: string;
+  labelKey: string;
 }
 
 interface NavSection {
   key: string;
-  title: string;
+  titleKey: string;
   items: NavItem[];
 }
 
 const NAV_SECTIONS: NavSection[] = [
   {
     key: "overview",
-    title: "Tổng quan",
+    titleKey: "nav.sections.overview",
     items: [
-      { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-      { to: "/analytics", icon: BarChart3, label: "Analytics" },
+      { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
+      { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
     ],
   },
   {
     key: "create",
-    title: "Sáng tạo",
+    titleKey: "nav.sections.create",
     items: [
-      { to: "/requests", icon: FileEdit, label: "Content Requests" },
-      { to: "/editor", icon: FileEdit, label: "Content Editor" },
-      { to: "/templates", icon: LayoutTemplate, label: "Post Templates" },
-      { to: "/hashtag-groups", icon: Hash, label: "Hashtag Groups" },
-      { to: "/calendar", icon: CalendarDays, label: "Calendar" },
-      { to: "/library", icon: FolderKanban, label: "Content Library" },
+      { to: "/requests", icon: FileEdit, labelKey: "nav.requests" },
+      { to: "/editor", icon: FileEdit, labelKey: "nav.editor" },
+      { to: "/templates", icon: LayoutTemplate, labelKey: "nav.templates" },
+      { to: "/hashtag-groups", icon: Hash, labelKey: "nav.hashtagGroups" },
+      { to: "/calendar", icon: CalendarDays, labelKey: "nav.calendar" },
+      { to: "/library", icon: FolderKanban, labelKey: "nav.library" },
     ],
   },
   {
     key: "manage",
-    title: "Quản lý",
+    titleKey: "nav.sections.manage",
     items: [
-      { to: "/clients", icon: Building2, label: "Brand Clients" },
-      { to: "/workspace", icon: FolderOpen, label: "Workspaces" },
-      { to: "/portal", icon: Users, label: "Client Portal" },
+      { to: "/workspace", icon: FolderOpen, labelKey: "nav.workspace" },
+      { to: "/portal", icon: Users, labelKey: "nav.portal" },
     ],
   },
   {
     key: "system",
-    title: "Hệ thống",
-    items: [{ to: "/admin", icon: ShieldAlert, label: "Admin Panel" }],
+    titleKey: "nav.sections.system",
+    items: [{ to: "/admin", icon: ShieldAlert, labelKey: "nav.admin" }],
   },
 ];
 
@@ -97,57 +97,25 @@ export function Sidebar({
   className,
   onMobileItemClick,
 }: SidebarProps) {
+  const { t } = useTranslation();
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.map((section) => {
-    let items = section.items.filter((item) => {
-      // CLIENT cannot see workspaces or content editor
-      if (
-        role === "CLIENT" &&
-        (item.to === "/workspace" || item.to === "/editor")
-      ) {
-        return false;
-      }
-      // OWNER manages the business, doesn't create content directly
-      if (
-        role === "OWNER" &&
-        (item.to === "/editor" || item.to === "/calendar")
-      ) {
-        return false;
-      }
-      // Only system ADMIN can see Admin Panel — independent of workspace MemberRole
-      if (item.to === "/admin" && systemRole !== "ADMIN") {
-        return false;
-      }
-      return true;
-    });
+    const items = section.items.filter((item) =>
+      canAccess(item.to, systemRole, role),
+    );
 
     // Members link needs a dynamic workspaceId path — only add once a
     // workspace is active, and only for roles that manage membership.
     if (
       section.key === "manage" &&
       activeWorkspace &&
-      (role === "OWNER" || role === "ACCOUNT")
+      canAccess(`/workspaces/${activeWorkspace.id}/members`, systemRole, role)
     ) {
-      items = [
-        ...items,
-        {
-          to: `/workspaces/${activeWorkspace.id}/members`,
-          icon: UserPlus,
-          label: "Members",
-        },
-      ];
-    }
-
-    // Overview link is workspace-independent — shown for OWNER/ACCOUNT even
-    // without an active workspace, since it aggregates across all of them.
-    if (
-      section.key === "overview" &&
-      (role === "OWNER" || role === "ACCOUNT")
-    ) {
-      items = [
-        { to: "/analytics/overview", icon: Building2, label: "Overview" },
-        ...items,
-      ];
+      items.push({
+        to: `/workspaces/${activeWorkspace.id}/members`,
+        icon: UserPlus,
+        labelKey: "nav.members",
+      });
     }
 
     return { ...section, items };
@@ -161,9 +129,9 @@ export function Sidebar({
         className,
       )}
       style={{
-        background: "var(--sidebar, #09090b)",
-        color: "var(--sidebar-foreground, #fafafa)",
-        borderRight: "1px solid var(--sidebar-border, #27272a)",
+        background: "hsl(var(--sidebar, 240 6% 4%))",
+        color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
+        borderRight: "1px solid hsl(var(--sidebar-border, 240 5% 15%))",
       }}
     >
       {/* Logo Area */}
@@ -172,11 +140,11 @@ export function Sidebar({
           "flex h-14 shrink-0 items-center border-b px-3",
           collapsed ? "justify-center" : "gap-2.5",
         )}
-        style={{ borderColor: "var(--sidebar-border, #27272a)" }}
+        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
       >
         <div
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md"
-          style={{ background: "var(--brand-orange, #f05a28)" }}
+          style={{ background: "hsl(var(--brand-orange, 15 88% 55%))" }}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="2.2" fill="white" />
@@ -225,7 +193,9 @@ export function Sidebar({
         {!collapsed && (
           <span className="font-sans text-sm font-bold tracking-tight text-white">
             Brand
-            <span style={{ color: "var(--brand-orange, #f05a28)" }}>Hub</span>
+            <span style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}>
+              Hub
+            </span>
           </span>
         )}
       </div>
@@ -233,25 +203,26 @@ export function Sidebar({
       {/* Workspace Selector Dropdown */}
       <div
         className="shrink-0 border-b"
-        style={{ borderColor: "var(--sidebar-border, #27272a)" }}
+        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
       >
         <DropdownMenu>
           <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
             {collapsed ? (
-              <div className="mx-auto my-3 flex size-8 items-center justify-center rounded-md bg-[#fff0eb] text-xs font-bold text-[#f05a28]">
+              <div className="bg-brand-orange-soft text-brand-orange mx-auto my-3 flex size-8 items-center justify-center rounded-md text-xs font-bold">
                 {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
               </div>
             ) : (
               <div className="border-border bg-muted/15 hover:bg-muted/30 mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors">
-                <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[#fff0eb] text-xs font-bold text-[#f05a28]">
+                <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold">
                   {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
                 </div>
                 <div className="flex min-w-0 flex-col">
                   <span className="truncate text-xs leading-tight font-semibold text-white">
-                    {activeWorkspace?.name ?? "No workspace"}
+                    {activeWorkspace?.name ??
+                      t("nav.workspaceSwitcher.noWorkspace")}
                   </span>
-                  <span className="text-muted-foreground mt-0.5 text-[9px] leading-none">
-                    Workspace
+                  <span className="text-muted-foreground text-3xs mt-0.5 leading-none">
+                    {t("nav.workspaceSwitcher.label")}
                   </span>
                 </div>
                 <ChevronDown className="text-muted-foreground ml-auto size-3.5 shrink-0" />
@@ -259,8 +230,8 @@ export function Sidebar({
             )}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="ml-2 w-[180px]">
-            <DropdownMenuLabel className="text-muted-foreground text-[10px] tracking-wider uppercase">
-              Chọn Workspace
+            <DropdownMenuLabel className="text-muted-foreground text-3xs tracking-wider uppercase">
+              {t("nav.workspaceSwitcher.selectWorkspace")}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {workspaces.map((ws) => (
@@ -270,7 +241,7 @@ export function Sidebar({
                 className={cn(
                   "cursor-pointer text-xs",
                   activeWorkspace?.id === ws.id
-                    ? "font-semibold text-[#f05a28]"
+                    ? "text-brand-orange font-semibold"
                     : "",
                 )}
               >
@@ -286,15 +257,15 @@ export function Sidebar({
         {filteredSections.map((section, idx) => (
           <div key={section.key} className="space-y-1">
             {!collapsed ? (
-              <span className="text-muted-foreground mb-1 block px-2.5 text-[10px] font-bold tracking-wider uppercase">
-                {section.title}
+              <span className="text-muted-foreground text-3xs mb-1 block px-2.5 font-bold tracking-wider uppercase">
+                {t(section.titleKey)}
               </span>
             ) : (
               idx > 0 && <div className="bg-border mx-1 my-2 h-px opacity-20" />
             )}
 
             <div className="space-y-0.5">
-              {section.items.map(({ to, icon: Icon, label }) => (
+              {section.items.map(({ to, icon: Icon, labelKey }) => (
                 <NavLink
                   key={to}
                   to={to}
@@ -310,15 +281,17 @@ export function Sidebar({
                   style={({ isActive }) =>
                     isActive
                       ? {
-                          background: "var(--brand-orange, #f05a28)",
+                          background: "hsl(var(--brand-orange, 15 88% 55%))",
                           color: "#ffffff",
                         }
-                      : { color: "var(--sidebar-foreground, #fafafa)" }
+                      : {
+                          color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
+                        }
                   }
-                  title={collapsed ? label : undefined}
+                  title={collapsed ? t(labelKey) : undefined}
                 >
                   <Icon className="size-4 shrink-0" />
-                  {!collapsed && <span>{label}</span>}
+                  {!collapsed && <span>{t(labelKey)}</span>}
                 </NavLink>
               ))}
             </div>
@@ -332,23 +305,13 @@ export function Sidebar({
           "flex flex-col gap-0.5 border-t p-2",
           collapsed ? "items-center" : "",
         )}
-        style={{ borderColor: "var(--sidebar-border, #27272a)" }}
+        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
       >
         {!collapsed && (
-          <div className="text-muted-foreground px-2.5 py-1 text-[10px] leading-snug">
-            Vai trò:{" "}
+          <div className="text-muted-foreground text-3xs px-2.5 py-1 leading-snug">
+            {t("nav.roleLabelPrefix")}{" "}
             <span className="font-semibold text-white">
-              {role === "OWNER"
-                ? "Owner"
-                : role === "ACCOUNT"
-                  ? "Account Manager"
-                  : role === "CREATOR"
-                    ? "Creator"
-                    : role === "VIEWER"
-                      ? "Viewer"
-                      : role === "CLIENT"
-                        ? "Client"
-                        : "—"}
+              {role ? t(`workspace.roles.${role}`) : "—"}
             </span>
           </div>
         )}

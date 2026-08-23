@@ -1,0 +1,61 @@
+{
+  "kpi": {
+    "publishedSuccessTitle": "Đã xuất bản thành công",
+    "systemTargetMet": "Đạt mục tiêu hệ thống",
+    "totalPostsTitle": "Tổng số bài đăng (Tháng này)",
+    "totalPostsChange": "+12.4% so với tháng trước",
+    "publishedChange": "+8.2% đúng tiến độ",
+    "failedTitle": "Bài đăng thất bại",
+    "failedChange": "-2 bài so với tuần trước",
+    "successRateTitle": "Tỷ lệ thành công",
+    "loadError": "Không thể tải dữ liệu KPI Analytics",
+    "retry": "Thử lại"
+  },
+  "activityFeed": {
+    "title": "Hoạt động gần đây",
+    "latestBadge": "10 sự kiện mới nhất",
+    "loadError": "Lỗi tải nhật ký hoạt động",
+    "retry": "Thử lại",
+    "empty": "Chưa có hoạt động nào được ghi nhận gần đây."
+  },
+  "quickTasks": {
+    "greeting": "Xin chào trở lại, {{name}}!",
+    "defaultUser": "User",
+    "subtitle": "Hệ thống đang hoạt động ổn định. Dưới đây là báo cáo tổng quan chiến dịch của bạn.",
+    "priorityTitle": "Nhiệm vụ ưu tiên hôm nay",
+    "task1": "Phê duyệt bài viết Chiến dịch Heineken (AM)",
+    "task2": "Lên lịch bài đăng Nike Air Max (Creator)",
+    "task3": "Xem báo cáo hiệu năng nội dung tháng 8"
+  },
+  "teamStats": {
+    "title": "Hiệu suất thành viên (Team Stats)",
+    "managementMode": "Chế độ Quản lý ({{role}})",
+    "roleAM": "AM",
+    "roleCreator": "Creator",
+    "postsSuffix": "bài"
+  },
+  "page": {
+    "title": "Dashboard",
+    "description": "Tổng quan chỉ số hoạt động, nhật ký sự kiện và tiến độ nhóm.",
+    "refresh": "Làm mới",
+    "changePassword": "Đổi mật khẩu",
+    "logout": "Đăng xuất",
+    "createContent": "Tạo Nội Dung Mới"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "description": "Trang cấu hình và quản trị hệ thống dành riêng cho Administrator.",
+    "userManagementTitle": "Quản lý người dùng",
+    "userManagementDescription": "Thêm mới, chỉnh sửa quyền truy cập hoặc vô hiệu hóa các tài khoản Creator, AM và Client.",
+    "userManagementPlaceholder": "[Danh sách & bộ lọc người dùng]",
+    "systemConfigTitle": "Cấu hình Hệ thống",
+    "systemConfigDescription": "Quản lý các tích hợp API bên thứ ba (OpenAI, Facebook, Instagram Graph API).",
+    "systemConfigPlaceholder": "[Thông tin kết nối & API Keys]"
+  },
+  "portal": {
+    "title": "Client Portal",
+    "description": "Không gian phê duyệt nội dung của khách hàng.",
+    "queueTitle": "Hàng đợi Phê duyệt Nội dung",
+    "createdOn": "Ngày tạo: {{date}}"
+  }
+}

@@ -27,7 +27,7 @@ export function FrequencyToggle({ value, onToggle }: Props) {
               type="button"
               onClick={() => onToggle(freq)}
               className={cn(
-                "rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
+                "rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors",
                 active
                   ? "border-brand-orange bg-brand-orange-soft text-brand-orange"
                   : "border-border text-muted-foreground hover:text-foreground",

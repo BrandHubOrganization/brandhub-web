@@ -1,11 +1,13 @@
 import { create } from "zustand";
-import type { Workspace } from "@/types/workspace";
+import type { Workspace, MemberRole } from "@/types/workspace";
 import { workspaceService } from "@/services/workspaceService";
 
 export interface WorkspaceState {
   currentWorkspace: Workspace | null;
   workspaceList: Workspace[];
+  currentMemberRole: MemberRole | null;
   setCurrentWorkspace: (workspace: Workspace | null) => void;
+  setCurrentMemberRole: (role: MemberRole | null) => void;
   fetchWorkspaces: () => Promise<void>;
   reset: () => void;
 }
@@ -13,8 +15,10 @@ export interface WorkspaceState {
 export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   currentWorkspace: null,
   workspaceList: [],
+  currentMemberRole: null,
 
   setCurrentWorkspace: (workspace) => set({ currentWorkspace: workspace }),
+  setCurrentMemberRole: (role) => set({ currentMemberRole: role }),
 
   fetchWorkspaces: async () => {
     try {
@@ -25,5 +29,6 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     }
   },
 
-  reset: () => set({ currentWorkspace: null, workspaceList: [] }),
+  reset: () =>
+    set({ currentWorkspace: null, workspaceList: [], currentMemberRole: null }),
 }));

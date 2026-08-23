@@ -1,10 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { User, UserRole } from "@/types/user";
+import type { User, SystemRole } from "@/types/user";
 
-export type { User, UserRole };
-
-export type SystemRole = "ADMIN" | "USER";
+export type { User, SystemRole };
 
 interface AuthState {
   user: User | null;
@@ -13,7 +11,7 @@ interface AuthState {
   isAuthenticated: boolean;
   systemRole: SystemRole | null;
   setUser: (user: User | null) => void;
-  setAuth: (user: User, accessToken: string, refreshToken: string) => void;
+  setAuth: (user: User, accessToken: string, refreshToken?: string) => void;
   clearAuth: () => void;
   setTokens: (accessToken: string, refreshToken: string | null) => void;
   setSystemRole: (systemRole: SystemRole | null) => void;
@@ -31,7 +29,7 @@ export const useAuthStore = create<AuthState>()(
 
       setUser: (user) => set({ user, isAuthenticated: user !== null }),
 
-      setAuth: (user, accessToken, refreshToken) =>
+      setAuth: (user, accessToken, refreshToken = "") =>
         set({ user, accessToken, refreshToken, isAuthenticated: true }),
 
       clearAuth: () =>

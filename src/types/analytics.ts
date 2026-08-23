@@ -22,7 +22,12 @@ export interface ActivityEvent {
   actionText: string;
   targetTitle?: string;
   timestamp: string;
-  type: "POST_PUBLISHED" | "TASK_ASSIGNED" | "COMMENT_ADDED" | "POST_APPROVED" | "POST_FAILED";
+  type:
+    | "POST_PUBLISHED"
+    | "TASK_ASSIGNED"
+    | "COMMENT_ADDED"
+    | "POST_APPROVED"
+    | "POST_FAILED";
 }
 
 export interface ActivityFeedResponse {

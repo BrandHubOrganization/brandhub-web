@@ -1,4 +1,4 @@
-export type MediaType = 'image' | 'video';
+export type MediaType = "image" | "video";
 
 export interface MediaItem {
   id: string;
@@ -34,9 +34,9 @@ export interface PostTemplate {
 
 export interface MediaQueryParams {
   workspaceId?: string;
-  type?: MediaType | 'all';
+  type?: MediaType | "all";
   search?: string;
-  sort?: 'newest' | 'oldest';
+  sort?: "newest" | "oldest";
   page: number;
   limit: number;
 }

@@ -2,10 +2,12 @@ import * as React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useAuthStore, type UserRole, type User } from "@/store/authStore";
+import { useTranslation } from "react-i18next";
+import { useAuthStore, type SystemRole, type User } from "@/store/authStore";
 import { authService } from "@/services/authService";
 
 export function OAuthCallbackPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const setAuth = useAuthStore((state) => state.setAuth);
@@ -14,7 +16,7 @@ export function OAuthCallbackPage() {
     const handleOAuth = async () => {
       const token = searchParams.get("token");
       if (!token) {
-        toast.error("Đăng nhập thất bại. Vui lòng thử lại.");
+        toast.error(t("auth.login.errorDefault"));
         navigate("/login", { replace: true });
         return;
       }
@@ -28,24 +30,24 @@ export function OAuthCallbackPage() {
         const profile = res.data.data;
 
         if (!profile) {
-          throw new Error("Không thể tải thông tin User từ Database.");
+          throw new Error(t("auth.login.profileLoadFailed"));
         }
 
         const userObj: User = {
           id: profile.userId,
           name: profile.fullName || "User",
           email: profile.email,
-          role: profile.role as UserRole, // Role lấy trực tiếp từ DB
+          role: profile.role as SystemRole, // Role lấy trực tiếp từ DB
           workspaceId: profile.workspaceId,
           avatar: profile.avatarUrl,
         };
 
         setAuth(userObj, token);
-        toast.success("Đăng nhập thành công!");
+        toast.success(t("auth.login.successToast"));
         navigate("/", { replace: true });
       } catch (error) {
         console.error("Lỗi khi tải thông tin User từ Database:", error);
-        toast.error("Không thể lấy thông tin người dùng từ Database.");
+        toast.error(t("auth.login.oauthProfileFailed"));
         navigate("/login", { replace: true });
       }
     };

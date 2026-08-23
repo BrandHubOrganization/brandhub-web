@@ -1,10 +1,5 @@
 import { Sparkles } from "lucide-react";
-
-const PRIORITY_TASKS = [
-  "Phê duyệt bài viết Chiến dịch Heineken (AM)",
-  "Lên lịch bài đăng Nike Air Max (Creator)",
-  "Xem báo cáo hiệu năng nội dung tháng 8",
-];
+import { useTranslation } from "react-i18next";
 
 interface Props {
   userName: string;
@@ -12,6 +7,12 @@ interface Props {
 }
 
 export function QuickTasksCard({ userName, userRole }: Props) {
+  const { t } = useTranslation();
+  const PRIORITY_TASKS = [
+    t("dashboard.quickTasks.task1"),
+    t("dashboard.quickTasks.task2"),
+    t("dashboard.quickTasks.task3"),
+  ];
   return (
     <div className="space-y-6">
       <div className="border-border from-card via-card to-muted/30 relative overflow-hidden rounded-xl border bg-gradient-to-r p-5">
@@ -19,15 +20,16 @@ export function QuickTasksCard({ userName, userRole }: Props) {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <h2 className="text-foreground text-lg font-bold">
-                Xin chào trở lại, {userName || "User"}!
+                {t("dashboard.quickTasks.greeting", {
+                  name: userName || t("dashboard.quickTasks.defaultUser"),
+                })}
               </h2>
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#f05a28]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#f05a28]">
+              <span className="bg-brand-orange/10 text-2xs text-brand-orange inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-semibold">
                 <Sparkles className="size-3" /> {userRole}
               </span>
             </div>
             <p className="text-muted-foreground text-xs">
-              Hệ thống đang hoạt động ổn định. Dưới đây là báo cáo tổng quan
-              chiến dịch của bạn.
+              {t("dashboard.quickTasks.subtitle")}
             </p>
           </div>
         </div>
@@ -35,7 +37,7 @@ export function QuickTasksCard({ userName, userRole }: Props) {
 
       <div className="border-border bg-card space-y-3 rounded-xl border p-5">
         <h3 className="text-foreground text-sm font-bold">
-          Nhiệm vụ ưu tiên hôm nay
+          {t("dashboard.quickTasks.priorityTitle")}
         </h3>
         <div className="space-y-2.5">
           {PRIORITY_TASKS.map((taskText, idx) => (
@@ -45,7 +47,7 @@ export function QuickTasksCard({ userName, userRole }: Props) {
             >
               <input
                 type="checkbox"
-                className="border-border size-3.5 rounded text-[#f05a28] focus:ring-[#f05a28]"
+                className="border-border text-brand-orange focus:ring-brand-orange size-3.5 rounded"
               />
               <span>{taskText}</span>
             </label>

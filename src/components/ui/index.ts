@@ -12,3 +12,6 @@ export * from "./skeleton";
 export * from "./table";
 export * from "./dropdown-menu";
 export * from "./sheet";
+export * from "./select";
+export * from "./textarea";
+export * from "./tabs";

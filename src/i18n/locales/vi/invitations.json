@@ -1,0 +1,12 @@
+{
+  "title": "Lời mời tham gia không gian làm việc",
+  "description": "Danh sách lời mời đang chờ bạn phản hồi.",
+  "empty": "Không có lời mời nào.",
+  "acceptButton": "Chấp nhận",
+  "declineButton": "Từ chối",
+  "acceptSuccess": "Đã tham gia không gian làm việc",
+  "declineSuccess": "Đã từ chối lời mời",
+  "roleLabel": "Vai trò",
+  "expiresLabel": "Hết hạn",
+  "invitedByLabel": "Người mời"
+}

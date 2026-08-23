@@ -1,0 +1,61 @@
+{
+  "kpi": {
+    "publishedSuccessTitle": "Published Successfully",
+    "systemTargetMet": "System target met",
+    "totalPostsTitle": "Total Posts (This Month)",
+    "totalPostsChange": "+12.4% vs last month",
+    "publishedChange": "+8.2% on schedule",
+    "failedTitle": "Failed Posts",
+    "failedChange": "-2 posts vs last week",
+    "successRateTitle": "Success Rate",
+    "loadError": "Unable to load KPI analytics data",
+    "retry": "Retry"
+  },
+  "activityFeed": {
+    "title": "Recent Activity",
+    "latestBadge": "10 latest events",
+    "loadError": "Failed to load activity log",
+    "retry": "Retry",
+    "empty": "No recent activity recorded yet."
+  },
+  "quickTasks": {
+    "greeting": "Welcome back, {{name}}!",
+    "defaultUser": "User",
+    "subtitle": "The system is running smoothly. Here's an overview of your campaigns.",
+    "priorityTitle": "Today's priority tasks",
+    "task1": "Approve Heineken Campaign post (AM)",
+    "task2": "Schedule Nike Air Max post (Creator)",
+    "task3": "Review August content performance report"
+  },
+  "teamStats": {
+    "title": "Team Performance (Team Stats)",
+    "managementMode": "Management Mode ({{role}})",
+    "roleAM": "AM",
+    "roleCreator": "Creator",
+    "postsSuffix": "posts"
+  },
+  "page": {
+    "title": "Dashboard",
+    "description": "Overview of activity metrics, event logs, and team progress.",
+    "refresh": "Refresh",
+    "changePassword": "Change password",
+    "logout": "Log out",
+    "createContent": "Create New Content"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "description": "System configuration and administration for Administrators only.",
+    "userManagementTitle": "User Management",
+    "userManagementDescription": "Add, edit access permissions, or disable Creator, AM, and Client accounts.",
+    "userManagementPlaceholder": "[User list & filters]",
+    "systemConfigTitle": "System Configuration",
+    "systemConfigDescription": "Manage third-party API integrations (OpenAI, Facebook, Instagram Graph API).",
+    "systemConfigPlaceholder": "[Connection info & API keys]"
+  },
+  "portal": {
+    "title": "Client Portal",
+    "description": "Client content approval workspace.",
+    "queueTitle": "Content Approval Queue",
+    "createdOn": "Created on: {{date}}"
+  }
+}

@@ -1,59 +1,55 @@
 import { useState } from "react";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { MediaTab } from "@/components/library/MediaTab";
-import { HashtagGroupsTab } from "@/components/library/HashtagGroupsTab";
-import { TemplatesTab } from "@/components/library/TemplatesTab";
+import { MediaTab } from "@/pages/library/components/MediaTab";
+import { HashtagGroupsTab } from "@/pages/library/components/HashtagGroupsTab";
+import { TemplatesTab } from "@/pages/library/components/TemplatesTab";
 import { Film, Hash, FileText } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslation } from "react-i18next";
 
 type TabKey = "media" | "hashtags" | "templates";
 
 export function ContentLibraryPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>("media");
 
   return (
     <PageWrapper
-      title="Content Library"
-      description="Quản lý tập trung tài nguyên truyền thông (S3 Media), bộ Hashtags và Mẫu bài đăng của workspace."
+      title={t("library.page.title")}
+      description={t("library.page.description")}
     >
       <div className="space-y-6">
         {/* Navigation Tab Bar */}
-        <div className="flex gap-6 border-b border-zinc-200 text-sm font-medium dark:border-zinc-800">
-          <button
-            onClick={() => setActiveTab("media")}
-            className={`flex cursor-pointer items-center gap-2 border-b-2 pb-3 transition-colors ${
-              activeTab === "media"
-                ? "border-brand-orange text-brand-orange font-semibold"
-                : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            }`}
-          >
-            <Film className="h-4 w-4" />
-            <span>Media Library</span>
-          </button>
+        <Tabs
+          value={activeTab}
+          onValueChange={(v) => setActiveTab(v as TabKey)}
+        >
+          <TabsList className="border-border h-auto w-full justify-start gap-6 rounded-none border-b bg-transparent p-0">
+            <TabsTrigger
+              value="media"
+              className="data-[state=active]:border-brand-orange data-[state=active]:text-brand-orange text-muted-foreground hover:text-foreground flex items-center gap-2 rounded-none border-b-2 border-transparent px-0 py-0 pb-3 text-sm font-medium transition-colors data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:shadow-none"
+            >
+              <Film className="size-4" />
+              <span>{t("library.page.mediaTab")}</span>
+            </TabsTrigger>
 
-          <button
-            onClick={() => setActiveTab("hashtags")}
-            className={`flex cursor-pointer items-center gap-2 border-b-2 pb-3 transition-colors ${
-              activeTab === "hashtags"
-                ? "border-brand-orange text-brand-orange font-semibold"
-                : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            }`}
-          >
-            <Hash className="h-4 w-4" />
-            <span>Hashtag Groups</span>
-          </button>
+            <TabsTrigger
+              value="hashtags"
+              className="data-[state=active]:border-brand-orange data-[state=active]:text-brand-orange text-muted-foreground hover:text-foreground flex items-center gap-2 rounded-none border-b-2 border-transparent px-0 py-0 pb-3 text-sm font-medium transition-colors data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:shadow-none"
+            >
+              <Hash className="size-4" />
+              <span>{t("library.page.hashtagsTab")}</span>
+            </TabsTrigger>
 
-          <button
-            onClick={() => setActiveTab("templates")}
-            className={`flex cursor-pointer items-center gap-2 border-b-2 pb-3 transition-colors ${
-              activeTab === "templates"
-                ? "border-brand-orange text-brand-orange font-semibold"
-                : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            }`}
-          >
-            <FileText className="h-4 w-4" />
-            <span>Post Templates</span>
-          </button>
-        </div>
+            <TabsTrigger
+              value="templates"
+              className="data-[state=active]:border-brand-orange data-[state=active]:text-brand-orange text-muted-foreground hover:text-foreground flex items-center gap-2 rounded-none border-b-2 border-transparent px-0 py-0 pb-3 text-sm font-medium transition-colors data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:shadow-none"
+            >
+              <FileText className="size-4" />
+              <span>{t("library.page.templatesTab")}</span>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {/* Tab Content Display */}
         {activeTab === "media" && <MediaTab />}

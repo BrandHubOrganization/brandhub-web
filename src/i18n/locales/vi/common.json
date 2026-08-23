@@ -1,0 +1,20 @@
+{
+  "switchLanguage": "Đổi ngôn ngữ",
+  "toggleTheme": "Đổi giao diện sáng/tối",
+  "loadFailed": "Tải dữ liệu thất bại",
+  "actionFailed": "Có lỗi xảy ra",
+  "searchPlaceholder": "Tìm kiếm...",
+  "totalLabel": "Tổng số",
+  "itemsLabel": "mục",
+  "table": {
+    "empty": "Không có dữ liệu hiển thị.",
+    "pageInfo": "Trang {{current}} / {{total}} (Tổng {{count}} dòng)"
+  },
+  "processing": "Đang xử lý...",
+  "confirmDialog": {
+    "title": "Xác nhận hành động",
+    "description": "Bạn có chắc chắn muốn thực hiện hành động này không?",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy bỏ"
+  }
+}

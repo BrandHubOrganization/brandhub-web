@@ -21,23 +21,28 @@ export function PageWrapper({
   }, [title]);
 
   return (
-    <div className={cn("container mx-auto p-4 md:p-8 space-y-6 max-w-6xl pb-24", className)}>
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
+    <div
+      className={cn(
+        "container mx-auto max-w-6xl space-y-6 p-4 pb-24 md:p-8",
+        className,
+      )}
+    >
+      <div className="border-border flex flex-col justify-between gap-4 border-b pb-6 md:flex-row md:items-center">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">
+          <h1 className="text-foreground font-sans text-3xl font-bold tracking-tight">
             {title}
           </h1>
           {description && (
-            <p className="text-sm text-muted-foreground">
-              {description}
-            </p>
+            <p className="text-muted-foreground text-sm">{description}</p>
           )}
         </div>
-        {actions && <div className="flex items-center gap-2 self-start md:self-center shrink-0">{actions}</div>}
+        {actions && (
+          <div className="flex shrink-0 items-center gap-2 self-start md:self-center">
+            {actions}
+          </div>
+        )}
       </div>
-      <div className="w-full">
-        {children}
-      </div>
+      <div className="w-full">{children}</div>
     </div>
   );
 }

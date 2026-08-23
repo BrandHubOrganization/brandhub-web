@@ -1,4 +1,4 @@
-import { TemplateCard } from "@/components/template/TemplateCard";
+import { TemplateCard } from "@/pages/templates/components/TemplateCard";
 import { Button } from "@/components/ui/button";
 import {
   LayoutTemplate,
@@ -8,6 +8,7 @@ import {
   FileQuestion,
 } from "lucide-react";
 import type { ContentTemplate } from "@/types/template";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   templates: ContentTemplate[];
@@ -24,7 +25,6 @@ interface Props {
 
 export function TemplateGridView({
   templates,
-  total,
   page,
   totalPages,
   isLoading,
@@ -34,28 +34,28 @@ export function TemplateGridView({
   onPrevPage,
   onNextPage,
 }: Props) {
+  const { t } = useTranslation();
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-3 py-20 text-zinc-400">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
-        <p className="text-xs font-medium">Đang tải thư viện mẫu bài viết...</p>
+      <div className="text-muted-foreground flex flex-col items-center justify-center space-y-3 py-20">
+        <Loader2 className="text-brand-orange size-8 animate-spin" />
+        <p className="text-xs font-medium">{t("templates.grid.loading")}</p>
       </div>
     );
   }
 
   if (templates.length === 0) {
     return (
-      <div className="mx-auto my-8 flex max-w-lg flex-col items-center justify-center space-y-4 rounded-2xl border border-zinc-200/80 bg-white p-12 text-center shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="rounded-2xl bg-indigo-50 p-4 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
-          <FileQuestion className="h-10 w-10" />
+      <div className="border-border bg-card mx-auto my-8 flex max-w-lg flex-col items-center justify-center space-y-4 rounded-xl border p-12 text-center shadow-xs">
+        <div className="bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/20 dark:text-brand-orange/80 rounded-xl p-4">
+          <FileQuestion className="size-10" />
         </div>
         <div className="space-y-1">
-          <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-            Chưa Có Mẫu Bài Viết Nào
+          <h3 className="text-foreground text-base font-bold">
+            {t("templates.grid.emptyTitle")}
           </h3>
-          <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-            No templates yet. Save a draft from the Content Editor to see it
-            here.
+          <p className="text-muted-foreground text-xs leading-relaxed">
+            {t("templates.grid.emptyDescription")}
           </p>
         </div>
         <Button
@@ -64,8 +64,8 @@ export function TemplateGridView({
           className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-xs font-semibold text-white"
           size="sm"
         >
-          <LayoutTemplate className="mr-1 h-4 w-4" />
-          <span>Đi đến Content Editor</span>
+          <LayoutTemplate className="mr-1 size-4" />
+          <span>{t("templates.grid.goToEditor")}</span>
         </Button>
       </div>
     );
@@ -85,9 +85,12 @@ export function TemplateGridView({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-800">
-          <span className="text-xs text-zinc-500">
-            Trang {page + 1} / {totalPages}
+        <div className="border-border flex items-center justify-between border-t pt-4">
+          <span className="text-muted-foreground text-xs">
+            {t("templates.grid.pageIndicator", {
+              page: page + 1,
+              total: totalPages,
+            })}
           </span>
           <div className="flex items-center gap-2">
             <Button
@@ -97,7 +100,7 @@ export function TemplateGridView({
               disabled={page === 0}
               onClick={onPrevPage}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="size-4" />
             </Button>
             <Button
               type="button"
@@ -106,7 +109,7 @@ export function TemplateGridView({
               disabled={page >= totalPages - 1}
               onClick={onNextPage}
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="size-4" />
             </Button>
           </div>
         </div>

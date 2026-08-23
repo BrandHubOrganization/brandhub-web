@@ -28,23 +28,26 @@ function Modal({
   className,
 }: ModalProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      if (!open) onClose();
-    }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent className={className}>
         {(title || description) && (
           <DialogHeader>
             {title && <DialogTitle>{title}</DialogTitle>}
-            {description && <DialogDescription>{description}</DialogDescription>}
+            {description && (
+              <DialogDescription>{description}</DialogDescription>
+            )}
           </DialogHeader>
         )}
         <div className="py-2" data-slot="modal-body">
           {children}
         </div>
         {footer && (
-          <DialogFooter data-slot="modal-footer">
-            {footer}
-          </DialogFooter>
+          <DialogFooter data-slot="modal-footer">{footer}</DialogFooter>
         )}
       </DialogContent>
     </Dialog>

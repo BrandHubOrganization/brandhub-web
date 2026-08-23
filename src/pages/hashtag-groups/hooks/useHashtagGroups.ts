@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { mockHashtagGroupService } from "@/services/mockHashtagGroupService";
 import type { HashtagGroup } from "@/types/hashtagGroup";
 
 export function useHashtagGroups() {
+  const { t } = useTranslation();
   const [groups, setGroups] = useState<HashtagGroup[]>([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -18,7 +20,7 @@ export function useHashtagGroups() {
       const data = await mockHashtagGroupService.getGroups(search);
       setGroups(data);
     } catch (err) {
-      toast.error("Lỗi khi tải danh sách nhóm Hashtag");
+      toast.error(t("hashtagGroups.loadError"));
     } finally {
       setIsLoading(false);
     }
@@ -44,10 +46,14 @@ export function useHashtagGroups() {
   }) => {
     if (editingGroup) {
       await mockHashtagGroupService.updateGroup(editingGroup.id, payload);
-      toast.success(`Đã cập nhật nhóm hashtag "${payload.name}"!`);
+      toast.success(
+        t("hashtagGroups.toast.updateSuccess", { name: payload.name }),
+      );
     } else {
       await mockHashtagGroupService.createGroup(payload);
-      toast.success(`Đã tạo mới nhóm hashtag "${payload.name}"!`);
+      toast.success(
+        t("hashtagGroups.toast.createSuccess", { name: payload.name }),
+      );
     }
     fetchGroups();
   };
@@ -57,11 +63,15 @@ export function useHashtagGroups() {
     setIsDeleting(true);
     try {
       await mockHashtagGroupService.deleteGroup(deletingGroup.id);
-      toast.success(`Đã xóa nhóm hashtag "${deletingGroup.name}"!`);
+      toast.success(
+        t("hashtagGroups.toast.deleteSuccessNamed", {
+          name: deletingGroup.name,
+        }),
+      );
       setDeletingGroup(null);
       fetchGroups();
     } catch (err) {
-      toast.error("Lỗi khi xóa nhóm hashtag");
+      toast.error(t("hashtagGroups.deleteError"));
     } finally {
       setIsDeleting(false);
     }

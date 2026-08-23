@@ -1,5 +1,6 @@
 import { FileText, UserCheck } from "lucide-react";
 import type { ActiveTab } from "../hooks/useContentRequests";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   activeTab: ActiveTab;
@@ -8,18 +9,19 @@ interface Props {
 }
 
 export function RequestTabs({ activeTab, totalCount, onTabChange }: Props) {
+  const { t } = useTranslation();
   return (
-    <div className="flex gap-6 border-b border-zinc-200 text-sm font-medium dark:border-zinc-800">
+    <div className="border-border flex gap-6 border-b text-sm font-medium">
       <button
         onClick={() => onTabChange("all")}
         className={`flex cursor-pointer items-center gap-2 border-b-2 pb-3 transition-colors ${
           activeTab === "all"
             ? "border-brand-orange text-brand-orange font-semibold"
-            : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+            : "text-muted-foreground hover:text-foreground border-transparent"
         }`}
       >
-        <FileText className="h-4 w-4" />
-        <span>Tất Cả Yêu Cầu ({totalCount})</span>
+        <FileText className="size-4" />
+        <span>{t("requests.tabs.all", { count: totalCount })}</span>
       </button>
 
       <button
@@ -27,11 +29,11 @@ export function RequestTabs({ activeTab, totalCount, onTabChange }: Props) {
         className={`flex cursor-pointer items-center gap-2 border-b-2 pb-3 transition-colors ${
           activeTab === "my-tasks"
             ? "border-brand-orange text-brand-orange font-semibold"
-            : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+            : "text-muted-foreground hover:text-foreground border-transparent"
         }`}
       >
-        <UserCheck className="h-4 w-4" />
-        <span>Nhiệm Vụ Của Tôi</span>
+        <UserCheck className="size-4" />
+        <span>{t("requests.tabs.myTasks")}</span>
       </button>
     </div>
   );

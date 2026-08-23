@@ -1,0 +1,38 @@
+{
+  "page": {
+    "title": "Thư Viện Mẫu Bài Viết (Templates)",
+    "description": "Quản lý và tái sử dụng các mẫu bài đăng chuyên nghiệp chỉ với 1 click.",
+    "createButton": "Tạo Bài Viết Mới",
+    "searchPlaceholder": "Tìm kiếm mẫu theo tiêu đề, nội dung...",
+    "showing": "Hiển thị {{count}} / {{total}} mẫu bài đăng"
+  },
+  "card": {
+    "deleteTooltip": "Xóa template",
+    "lastUsed": "Dùng gần nhất: {{date}}",
+    "previewButton": "Xem trước"
+  },
+  "grid": {
+    "loading": "Đang tải thư viện mẫu bài viết...",
+    "goToEditor": "Đi đến Content Editor",
+    "emptyTitle": "Chưa Có Mẫu Bài Viết Nào",
+    "emptyDescription": "Chưa có mẫu bài viết. Lưu một bản nháp từ Content Editor để xem tại đây.",
+    "pageIndicator": "Trang {{page}} / {{total}}"
+  },
+  "preview": {
+    "title": "Chi Tiết Mẫu Bài Viết",
+    "titleLabel": "Tiêu Đề Template:",
+    "captionLabel": "Nội Dung Caption Đầy Đủ:",
+    "platformsLabel": "Nền Tảng Áp Dụng:",
+    "hashtagsLabel": "Hashtags Đính Kèm:",
+    "mediaLabel": "Hình Ảnh Xem Trước:",
+    "close": "Đóng",
+    "useTemplate": "Use Template",
+    "loadSuccess": "Đã tải mẫu bài viết \"{{title}}\" vào Content Editor!"
+  },
+  "toast": {
+    "loadError": "Lỗi khi tải danh sách mẫu bài viết",
+    "deleteError": "Lỗi khi xóa template",
+    "deleteSuccess": "Đã xóa template \"{{title}}\"",
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa template \"{{title}}\"?"
+  }
+}

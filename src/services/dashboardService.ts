@@ -10,28 +10,28 @@ const MOCK_ANALYTICS_OVERVIEW: AnalyticsOverview = {
     {
       memberId: "u-1",
       memberName: "Nguyễn Văn An",
-      role: "ACCOUNT_MANAGER",
+      role: "ACCOUNT",
       postCount: 42,
       publishedCount: 40,
     },
     {
       memberId: "u-2",
       memberName: "Trần Thị Bình",
-      role: "CONTENT_CREATOR",
+      role: "CREATOR",
       postCount: 58,
       publishedCount: 52,
     },
     {
       memberId: "u-3",
       memberName: "Lê Hoàng Cường",
-      role: "CONTENT_CREATOR",
+      role: "CREATOR",
       postCount: 36,
       publishedCount: 30,
     },
     {
       memberId: "u-4",
       memberName: "Phạm Minh Dung",
-      role: "CONTENT_CREATOR",
+      role: "CREATOR",
       postCount: 12,
       publishedCount: 10,
     },
@@ -128,7 +128,10 @@ export const dashboardService = {
       // Handle standard envelope response format if present ({ data: ... })
       return response.data?.data ?? response.data ?? MOCK_ANALYTICS_OVERVIEW;
     } catch (error) {
-      console.warn("Backend API /api/v1/analytics/overview offline or error, using fallback data", error);
+      console.warn(
+        "Backend API /api/v1/analytics/overview offline or error, using fallback data",
+        error,
+      );
       return MOCK_ANALYTICS_OVERVIEW;
     }
   },
@@ -138,13 +141,17 @@ export const dashboardService = {
       const response = await api.get("/api/v1/notifications", {
         params: { type: "activity", page, size },
       });
-      const data = response.data?.data?.content ?? response.data?.content ?? response.data;
+      const data =
+        response.data?.data?.content ?? response.data?.content ?? response.data;
       if (Array.isArray(data) && data.length > 0) {
         return data;
       }
       return MOCK_ACTIVITIES;
     } catch (error) {
-      console.warn("Backend API /api/v1/notifications offline or error, using fallback data", error);
+      console.warn(
+        "Backend API /api/v1/notifications offline or error, using fallback data",
+        error,
+      );
       return MOCK_ACTIVITIES;
     }
   },

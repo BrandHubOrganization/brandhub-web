@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { workspaceService } from "@/services/workspaceService";
+import type { WorkspaceIndustry } from "@/types/workspace";
 import { extractErrorMessage } from "@/utils/error";
 
 export function useCreateWorkspace() {
@@ -18,7 +19,8 @@ export function useCreateWorkspace() {
     try {
       const { data } = await workspaceService.create({
         name: name.trim(),
-        industry: industry.trim() || undefined,
+        industry: (industry.trim() || undefined) as
+          WorkspaceIndustry | undefined,
       });
       navigate(`/workspaces/${data.data.id}/settings`);
     } catch (err: unknown) {

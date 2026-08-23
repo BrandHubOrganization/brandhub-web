@@ -85,7 +85,6 @@ const mockData: ContentItem[] = [
 export default function ExamplesPage() {
   const { success, error, warning, info } = useToast();
 
-  
   // Modal state
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -151,18 +150,23 @@ export default function ExamplesPage() {
     {
       header: "Cập nhật",
       accessorKey: "updatedAt" as const,
-      cell: (row: ContentItem) => <span className="font-mono text-xs">{row.updatedAt}</span>,
+      cell: (row: ContentItem) => (
+        <span className="font-mono text-xs">{row.updatedAt}</span>
+      ),
     },
   ];
 
   return (
-    <div className="min-h-screen bg-canvas text-ink p-6 md:p-12 space-y-12">
+    <div className="bg-canvas text-ink min-h-screen space-y-12 p-6 md:p-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b pb-6 border-hairline">
+      <div className="border-hairline flex flex-col border-b pb-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Thư Viện UI Component</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Thư Viện UI Component
+          </h1>
           <p className="text-muted-foreground mt-1">
-            Các primitive component dùng chung cho dự án BrandHub Dashboard, thiết kế đồng bộ theo BrandHub Design System.
+            Các primitive component dùng chung cho dự án BrandHub Dashboard,
+            thiết kế đồng bộ theo BrandHub Design System.
           </p>
         </div>
         <div className="mt-4 md:mt-0">
@@ -175,20 +179,22 @@ export default function ExamplesPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
         {/* SECTION 1: BUTTONS */}
-        <section className="border border-hairline rounded-lg p-6 bg-card space-y-6">
+        <section className="border-hairline bg-card space-y-6 rounded-lg border p-6">
           <div>
             <h2 className="text-xl font-semibold">1. Button (Nút Bấm)</h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              Hỗ trợ các variant màu sắc, kích thước, loading spinner và disabled.
+            <p className="text-muted-foreground mt-1 text-xs">
+              Hỗ trợ các variant màu sắc, kích thước, loading spinner và
+              disabled.
             </p>
           </div>
-          
+
           <div className="space-y-4">
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-2 font-mono">VARIANTS</p>
+              <p className="text-muted-foreground mb-2 font-mono text-xs font-semibold">
+                VARIANTS
+              </p>
               <div className="flex flex-wrap gap-2">
                 <Button variant="primary">Primary (Black)</Button>
                 <Button variant="orange">Orange (Brand CTA)</Button>
@@ -200,11 +206,19 @@ export default function ExamplesPage() {
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-2 font-mono">SIZES</p>
+              <p className="text-muted-foreground mb-2 font-mono text-xs font-semibold">
+                SIZES
+              </p>
               <div className="flex flex-wrap items-center gap-2">
-                <Button variant="orange" size="sm">Small (sm)</Button>
-                <Button variant="orange" size="md">Medium (md - Default)</Button>
-                <Button variant="orange" size="lg">Large (lg)</Button>
+                <Button variant="orange" size="sm">
+                  Small (sm)
+                </Button>
+                <Button variant="orange" size="md">
+                  Medium (md - Default)
+                </Button>
+                <Button variant="orange" size="lg">
+                  Large (lg)
+                </Button>
                 <Button variant="primary" size="icon">
                   <Plus className="size-4" />
                 </Button>
@@ -212,28 +226,39 @@ export default function ExamplesPage() {
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-2 font-mono">STATES</p>
+              <p className="text-muted-foreground mb-2 font-mono text-xs font-semibold">
+                STATES
+              </p>
               <div className="flex flex-wrap gap-2">
-                <Button variant="orange" loading>Đang tải dữ liệu</Button>
+                <Button variant="orange" loading>
+                  Đang tải dữ liệu
+                </Button>
                 <Button variant="primary" loading size="icon" />
-                <Button variant="orange" disabled>Disabled State</Button>
-                <Button variant="outline" disabled>Disabled Outline</Button>
+                <Button variant="orange" disabled>
+                  Disabled State
+                </Button>
+                <Button variant="outline" disabled>
+                  Disabled Outline
+                </Button>
               </div>
             </div>
           </div>
         </section>
 
         {/* SECTION 2: INPUTS */}
-        <section className="border border-hairline rounded-lg p-6 bg-card space-y-6">
+        <section className="border-hairline bg-card space-y-6 rounded-lg border p-6">
           <div>
-            <h2 className="text-xl font-semibold">2. Input (Trường Nhập Liệu)</h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              Hỗ trợ label, placeholder, tin nhắn lỗi, prefix/suffix icon và controlled/uncontrolled.
+            <h2 className="text-xl font-semibold">
+              2. Input (Trường Nhập Liệu)
+            </h2>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Hỗ trợ label, placeholder, tin nhắn lỗi, prefix/suffix icon và
+              controlled/uncontrolled.
             </p>
           </div>
 
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <Input
                 label="Uncontrolled Input"
                 placeholder="Nhập bất cứ thứ gì..."
@@ -245,7 +270,7 @@ export default function ExamplesPage() {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <Input
                 label="Có Icon Prefix (Phía trước)"
                 placeholder="Tìm kiếm bài viết..."
@@ -258,8 +283,10 @@ export default function ExamplesPage() {
               />
             </div>
 
-            <div className="border-t border-hairline pt-4 mt-2 space-y-3">
-              <p className="text-xs font-semibold text-muted-foreground font-mono">DEMO CONTROLLED MODE</p>
+            <div className="border-hairline mt-2 space-y-3 border-t pt-4">
+              <p className="text-muted-foreground font-mono text-xs font-semibold">
+                DEMO CONTROLLED MODE
+              </p>
               <div className="flex items-end gap-3">
                 <Input
                   label="Controlled Input"
@@ -268,12 +295,15 @@ export default function ExamplesPage() {
                   onChange={(e) => setControlledVal(e.target.value)}
                   wrapperClassName="flex-grow"
                 />
-                <Button variant="primary" onClick={() => setControlledVal("BrandHub AI")}>
+                <Button
+                  variant="primary"
+                  onClick={() => setControlledVal("BrandHub AI")}
+                >
                   Set Giá Trị
                 </Button>
               </div>
               {controlledVal && (
-                <p className="text-xs text-brand-orange font-mono">
+                <p className="text-brand-orange font-mono text-xs">
                   Giá trị thực tế trong State: "{controlledVal}"
                 </p>
               )}
@@ -282,22 +312,27 @@ export default function ExamplesPage() {
         </section>
 
         {/* SECTION 3: MODAL & TOAST */}
-        <section className="border border-hairline rounded-lg p-6 bg-card space-y-6">
+        <section className="border-hairline bg-card space-y-6 rounded-lg border p-6">
           <div>
-            <h2 className="text-xl font-semibold">3. Modal & Toast (Hộp Thoại & Thông Báo)</h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              Thử nghiệm hiển thị Modal (có focus trap, backdrop) và các Toast thông báo (dismiss sau 4s).
+            <h2 className="text-xl font-semibold">
+              3. Modal & Toast (Hộp Thoại & Thông Báo)
+            </h2>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Thử nghiệm hiển thị Modal (có focus trap, backdrop) và các Toast
+              thông báo (dismiss sau 4s).
             </p>
           </div>
 
           <div className="space-y-6">
             {/* Modal Controls */}
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-2 font-mono">MODAL (DIALOG)</p>
+              <p className="text-muted-foreground mb-2 font-mono text-xs font-semibold">
+                MODAL (DIALOG)
+              </p>
               <Button variant="orange" onClick={() => setIsModalOpen(true)}>
                 Mở Modal Ví Dụ
               </Button>
-              
+
               <Modal
                 isOpen={isModalOpen}
                 onClose={() => {
@@ -307,22 +342,30 @@ export default function ExamplesPage() {
                 title="Xác nhận lưu thay đổi?"
                 description="Hành động này sẽ lưu các thiết lập hiện tại vào hệ thống."
                 footer={
-                  <div className="flex gap-2 justify-end w-full">
-                    <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                  <div className="flex w-full justify-end gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsModalOpen(false)}
+                    >
                       Hủy bỏ
                     </Button>
-                    <Button variant="orange" onClick={() => {
-                      setIsModalOpen(false);
-                      success("Thành công", "Các thay đổi đã được lưu lại!");
-                    }}>
+                    <Button
+                      variant="orange"
+                      onClick={() => {
+                        setIsModalOpen(false);
+                        success("Thành công", "Các thay đổi đã được lưu lại!");
+                      }}
+                    >
                       Lưu thay đổi
                     </Button>
                   </div>
                 }
               >
                 <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Đây là nội dung hiển thị trong body slot của Modal. Trình duyệt đã được kích hoạt focus trap, bạn chỉ có thể di chuyển focus (Tab) giữa các nút điều khiển trong modal này.
+                  <p className="text-muted-foreground text-sm">
+                    Đây là nội dung hiển thị trong body slot của Modal. Trình
+                    duyệt đã được kích hoạt focus trap, bạn chỉ có thể di chuyển
+                    focus (Tab) giữa các nút điều khiển trong modal này.
                   </p>
                   <Input label="Tên cấu hình" placeholder="Nhập tên mới..." />
                 </div>
@@ -331,33 +374,46 @@ export default function ExamplesPage() {
 
             {/* Toast Controls */}
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-2 font-mono">TOAST NOTIFICATIONS (TỰ ẨN SAU 4s)</p>
+              <p className="text-muted-foreground mb-2 font-mono text-xs font-semibold">
+                TOAST NOTIFICATIONS (TỰ ẨN SAU 4s)
+              </p>
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant="outline"
                   className="border-green-500/30 text-green-600 hover:bg-green-50 dark:hover:bg-green-950/20"
-                  onClick={() => success("Thành công!", "Dữ liệu bài viết đã được cập nhật thành công.")}
+                  onClick={() =>
+                    success(
+                      "Thành công!",
+                      "Dữ liệu bài viết đã được cập nhật thành công.",
+                    )
+                  }
                 >
                   Toast Success
                 </Button>
                 <Button
                   variant="outline"
                   className="border-red-500/30 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
-                  onClick={() => error("Lỗi hệ thống", "Không thể kết nối đến máy chủ AI.")}
+                  onClick={() =>
+                    error("Lỗi hệ thống", "Không thể kết nối đến máy chủ AI.")
+                  }
                 >
                   Toast Error
                 </Button>
                 <Button
                   variant="outline"
                   className="border-amber-500/30 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20"
-                  onClick={() => warning("Cảnh báo", "Dung lượng bộ nhớ của bạn sắp đầy.")}
+                  onClick={() =>
+                    warning("Cảnh báo", "Dung lượng bộ nhớ của bạn sắp đầy.")
+                  }
                 >
                   Toast Warning
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-blue-500/30 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20"
-                  onClick={() => info("Thông tin", "Có 3 bài đăng đang đợi phê duyệt.")}
+                  className="border-brand-orange/30 text-brand-orange hover:bg-brand-orange-soft dark:hover:bg-brand-orange/20"
+                  onClick={() =>
+                    info("Thông tin", "Có 3 bài đăng đang đợi phê duyệt.")
+                  }
                 >
                   Toast Info
                 </Button>
@@ -367,18 +423,23 @@ export default function ExamplesPage() {
         </section>
 
         {/* SECTION 4: BADGES, SPINNERS, DROPDOWNS */}
-        <section className="border border-hairline rounded-lg p-6 bg-card space-y-6">
+        <section className="border-hairline bg-card space-y-6 rounded-lg border p-6">
           <div>
-            <h2 className="text-xl font-semibold">4. Badge, Spinner & Dropdown (Các Primitive Khác)</h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              Hiển thị các trạng thái Badge, Spinner tải trang và Dropdown thao tác nhanh.
+            <h2 className="text-xl font-semibold">
+              4. Badge, Spinner & Dropdown (Các Primitive Khác)
+            </h2>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Hiển thị các trạng thái Badge, Spinner tải trang và Dropdown thao
+              tác nhanh.
             </p>
           </div>
 
           <div className="space-y-6">
             {/* Badges */}
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-2 font-mono">BADGES (TRẠNG THÁI BÀI VIẾT)</p>
+              <p className="text-muted-foreground mb-2 font-mono text-xs font-semibold">
+                BADGES (TRẠNG THÁI BÀI VIẾT)
+              </p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="draft">Nháp (Draft)</Badge>
                 <Badge variant="pending_review">Chờ Duyệt (Pending)</Badge>
@@ -391,38 +452,52 @@ export default function ExamplesPage() {
 
             {/* Spinners */}
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-2 font-mono">SPINNER LOADER (SIZE & COLOR)</p>
+              <p className="text-muted-foreground mb-2 font-mono text-xs font-semibold">
+                SPINNER LOADER (SIZE & COLOR)
+              </p>
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
                   <Spinner size="sm" />
-                  <span className="text-xs text-muted-foreground">Nhỏ (sm)</span>
+                  <span className="text-muted-foreground text-xs">
+                    Nhỏ (sm)
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Spinner size="md" />
-                  <span className="text-xs text-muted-foreground">Vừa (md)</span>
+                  <span className="text-muted-foreground text-xs">
+                    Vừa (md)
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Spinner size="lg" />
-                  <span className="text-xs text-muted-foreground">Lớn (lg)</span>
+                  <span className="text-muted-foreground text-xs">
+                    Lớn (lg)
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Spinner size="sm" variant="muted" />
-                  <span className="text-xs text-muted-foreground">Muted color</span>
+                  <span className="text-muted-foreground text-xs">
+                    Muted color
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Dropdown Menu */}
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-2 font-mono">DROPDOWN ACTION (WRAPPER & ALIGN)</p>
+              <p className="text-muted-foreground mb-2 font-mono text-xs font-semibold">
+                DROPDOWN ACTION (WRAPPER & ALIGN)
+              </p>
               <div className="flex gap-4">
                 <Dropdown
                   align="start"
-                  trigger={<Button variant="outline">Thao Tác (Align Start)</Button>}
+                  trigger={
+                    <Button variant="outline">Thao Tác (Align Start)</Button>
+                  }
                   items={[
                     {
                       label: (
-                        <div className="flex items-center gap-2 w-full">
+                        <div className="flex w-full items-center gap-2">
                           <Settings className="size-4" />
                           <span>Cấu hình</span>
                         </div>
@@ -432,7 +507,7 @@ export default function ExamplesPage() {
                     },
                     {
                       label: (
-                        <div className="flex items-center gap-2 w-full">
+                        <div className="flex w-full items-center gap-2">
                           <Share2 className="size-4" />
                           <span>Chia sẻ</span>
                         </div>
@@ -442,7 +517,7 @@ export default function ExamplesPage() {
                     },
                     {
                       label: (
-                        <div className="flex items-center gap-2 w-full text-destructive">
+                        <div className="text-destructive flex w-full items-center gap-2">
                           <Trash2 className="size-4" />
                           <span>Xóa mục</span>
                         </div>
@@ -459,16 +534,19 @@ export default function ExamplesPage() {
       </div>
 
       {/* SECTION 5: TABLE / DATATABLE */}
-      <section className="border border-hairline rounded-lg p-6 bg-card space-y-6">
+      <section className="border-hairline bg-card space-y-6 rounded-lg border p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-xl font-semibold">5. Table & DataTable (Bảng dữ liệu phân trang & sắp xếp)</h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              Component DataTable cấp cao tự động xử lý sắp xếp (sorting), phân trang (pagination), hiển thị Skeleton khi tải và Empty state.
+            <h2 className="text-xl font-semibold">
+              5. Table & DataTable (Bảng dữ liệu phân trang & sắp xếp)
+            </h2>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Component DataTable cấp cao tự động xử lý sắp xếp (sorting), phân
+              trang (pagination), hiển thị Skeleton khi tải và Empty state.
             </p>
           </div>
-          
-          <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
+
+          <div className="mt-4 flex flex-wrap gap-2 md:mt-0">
             <Button
               variant="outline"
               size="sm"
@@ -493,11 +571,18 @@ export default function ExamplesPage() {
           loading={isTableLoading}
           pageSize={3}
           emptyState={
-            <div className="flex flex-col items-center justify-center p-8 space-y-2">
-              <AlertCircle className="size-8 text-muted-foreground animate-bounce" />
-              <p className="font-medium text-ink">Bảng hiện tại trống</p>
-              <p className="text-xs text-muted-foreground">Không tìm thấy dữ liệu bài viết nào.</p>
-              <Button variant="orange" size="sm" onClick={() => setTableData(mockData)} className="mt-2">
+            <div className="flex flex-col items-center justify-center space-y-2 p-8">
+              <AlertCircle className="text-muted-foreground size-8 animate-bounce" />
+              <p className="text-ink font-medium">Bảng hiện tại trống</p>
+              <p className="text-muted-foreground text-xs">
+                Không tìm thấy dữ liệu bài viết nào.
+              </p>
+              <Button
+                variant="orange"
+                size="sm"
+                onClick={() => setTableData(mockData)}
+                className="mt-2"
+              >
                 Khôi Phục Dữ Liệu
               </Button>
             </div>

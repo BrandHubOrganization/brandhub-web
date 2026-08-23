@@ -1,0 +1,62 @@
+{
+  "create": {
+    "title": "Tạo không gian làm việc",
+    "description": "Thiết lập không gian làm việc mới cho đội nhóm hoặc thương hiệu của bạn.",
+    "nameLabel": "Tên không gian làm việc",
+    "industryLabel": "Ngành hàng",
+    "submit": "Tạo không gian làm việc"
+  },
+  "settings": {
+    "title": "Cài đặt không gian làm việc",
+    "description": "Quản lý cấu hình không gian làm việc của bạn.",
+    "nameLabel": "Tên không gian làm việc",
+    "timezoneLabel": "Múi giờ",
+    "defaultPlatformsLabel": "Nền tảng mặc định",
+    "reportFrequencyLabel": "Tần suất báo cáo",
+    "save": "Lưu thay đổi",
+    "saveSuccess": "Đã lưu cài đặt thành công",
+    "logoUploadButton": "Tải logo lên",
+    "logoInvalidType": "Chỉ nhận file JPEG, PNG hoặc WebP",
+    "logoTooLarge": "Logo không được vượt quá 5MB",
+    "logoUploadSuccess": "Đã cập nhật logo"
+  },
+  "noRole": "—",
+  "members": {
+    "title": "Thành viên",
+    "description": "Quản lý quyền truy cập không gian làm việc này.",
+    "internalTab": "Nội Bộ ({{count}})",
+    "clientsTab": "Khách Hàng ({{count}})",
+    "inviteButton": "Mời thành viên",
+    "inviteDialogTitle": "Mời thành viên",
+    "emailLabel": "Email",
+    "roleLabel": "Vai trò",
+    "joinedAtLabel": "Ngày tham gia",
+    "statusLabel": "Trạng thái",
+    "active": "Đang hoạt động",
+    "removeButton": "Xóa",
+    "removeConfirmTitle": "Xóa thành viên?",
+    "removeConfirmDescription": "Thành viên này sẽ mất quyền truy cập không gian làm việc.",
+    "inviteSuccess": "Đã gửi lời mời",
+    "removeSuccess": "Đã xóa thành viên"
+  },
+  "roles": {
+    "OWNER": "Chủ sở hữu",
+    "CREATOR": "Người tạo nội dung",
+    "VIEWER": "Người xem",
+    "CLIENT": "Khách hàng",
+    "ACCOUNT": "Quản lý tài khoản"
+  },
+  "errors": {
+    "slugConflict": "Không gian làm việc với tên này đã tồn tại",
+    "lastOwnerCannotBeRemoved": "Không thể xóa chủ sở hữu cuối cùng của không gian làm việc",
+    "alreadyMember": "Người này đã là thành viên của không gian làm việc"
+  },
+  "list": {
+    "title": "Không gian làm việc",
+    "description": "Quản lý các không gian làm việc thương hiệu của đội nhóm bạn.",
+    "createButton": "Tạo Không gian làm việc Mới",
+    "members": "{{count}} thành viên",
+    "posts": "{{count}} bài đăng",
+    "empty": "Chưa có không gian làm việc nào. Tạo mới để bắt đầu."
+  }
+}

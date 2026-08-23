@@ -1,0 +1,38 @@
+{
+  "page": {
+    "title": "Post Template Library",
+    "description": "Manage and reuse professional post templates in a single click.",
+    "createButton": "Create New Post",
+    "searchPlaceholder": "Search templates by title, content...",
+    "showing": "Showing {{count}} / {{total}} templates"
+  },
+  "card": {
+    "deleteTooltip": "Delete template",
+    "lastUsed": "Last used: {{date}}",
+    "previewButton": "Preview"
+  },
+  "grid": {
+    "loading": "Loading post template library...",
+    "goToEditor": "Go to Content Editor",
+    "emptyTitle": "No Templates Yet",
+    "emptyDescription": "No templates yet. Save a draft from the Content Editor to see it here.",
+    "pageIndicator": "Page {{page}} / {{total}}"
+  },
+  "preview": {
+    "title": "Template Details",
+    "titleLabel": "Template Title:",
+    "captionLabel": "Full Caption Content:",
+    "platformsLabel": "Applicable Platforms:",
+    "hashtagsLabel": "Attached Hashtags:",
+    "mediaLabel": "Media Preview:",
+    "close": "Close",
+    "useTemplate": "Use Template",
+    "loadSuccess": "Loaded template \"{{title}}\" into the Content Editor!"
+  },
+  "toast": {
+    "loadError": "Failed to load template list",
+    "deleteError": "Failed to delete template",
+    "deleteSuccess": "Deleted template \"{{title}}\"",
+    "deleteConfirm": "Are you sure you want to delete template \"{{title}}\"?"
+  }
+}
