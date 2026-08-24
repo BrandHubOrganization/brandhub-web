@@ -1,10 +1,23 @@
-export type NotificationType = "INFO" | "SUCCESS" | "WARNING" | "ERROR";
+export type NotificationType =
+  | "APPROVAL_REQUEST"
+  | "PUBLISH_SUCCESS"
+  | "PUBLISH_FAILED"
+  | "MENTION"
+  | "SYSTEM";
 
-export interface Notification {
+export interface AppNotification {
   id: string;
+  type: NotificationType;
   title: string;
   message: string;
-  type: NotificationType;
-  read: boolean;
+  isRead: boolean;
   createdAt: string;
+  linkTo?: string;
+}
+
+export interface NotificationPreferences {
+  inApp: boolean;
+  email: boolean;
+  push: boolean;
+  categories: Record<NotificationType, boolean>;
 }
