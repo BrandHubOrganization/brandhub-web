@@ -1,0 +1,62 @@
+{
+  "status": {
+    "ACTIVE": "Đang hoạt động",
+    "PAST_DUE": "Quá hạn thanh toán",
+    "CANCELED": "Đã hủy",
+    "TRIALING": "Dùng thử"
+  },
+  "plans": {
+    "title": "Gói đăng ký",
+    "description": "Quản lý gói đăng ký BrandHub của workspace.",
+    "loadError": "Không thể tải dữ liệu đăng ký.",
+    "retry": "Thử lại",
+    "currentTier": "Gói hiện tại",
+    "renewsAt": "Gia hạn vào",
+    "aiCredits": "AI credit đã dùng",
+    "monthly": "Hàng tháng",
+    "yearly": "Hàng năm",
+    "perMonth": "tháng",
+    "perYear": "năm",
+    "popular": "Phổ biến",
+    "currentPlan": "Gói hiện tại",
+    "upgrade": "Nâng cấp",
+    "downgrade": "Hạ cấp",
+    "upgradeConfirm": "Nâng cấp lên gói {{plan}}?",
+    "downgradeConfirm": "Hạ cấp xuống gói {{plan}}?"
+  },
+  "checkout": {
+    "title": "Thanh toán",
+    "description": "Hoàn tất thanh toán gói đăng ký.",
+    "loadError": "Không thể tải thông tin thanh toán.",
+    "orderSummary": "Tóm tắt đơn hàng",
+    "plan": "Gói",
+    "cycle": "Chu kỳ thanh toán",
+    "amount": "Số tiền",
+    "selectMethod": "Chọn phương thức thanh toán",
+    "methods": {
+      "VNPAY": "VNPay",
+      "MOMO": "MoMo"
+    },
+    "pay": "Thanh toán ngay",
+    "paySuccess": "Thanh toán thành công. Gói đăng ký của bạn đã được cập nhật.",
+    "payError": "Thanh toán thất bại. Vui lòng thử lại."
+  },
+  "invoices": {
+    "title": "Lịch sử hóa đơn",
+    "description": "Xem lại các hóa đơn đăng ký trước đây.",
+    "loadError": "Không thể tải hóa đơn.",
+    "retry": "Thử lại",
+    "number": "Hóa đơn",
+    "tier": "Gói",
+    "amount": "Số tiền",
+    "status": "Trạng thái",
+    "issuedAt": "Ngày phát hành",
+    "download": "Tải xuống",
+    "downloadUnavailable": "Tính năng tải PDF chưa khả dụng trong bản demo.",
+    "statuses": {
+      "PAID": "Đã thanh toán",
+      "PENDING": "Đang chờ",
+      "FAILED": "Thất bại"
+    }
+  }
+}

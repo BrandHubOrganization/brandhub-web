@@ -1,0 +1,62 @@
+{
+  "status": {
+    "ACTIVE": "Active",
+    "PAST_DUE": "Past Due",
+    "CANCELED": "Canceled",
+    "TRIALING": "Trialing"
+  },
+  "plans": {
+    "title": "Subscription Plans",
+    "description": "Manage your workspace's BrandHub subscription plan.",
+    "loadError": "Failed to load subscription data.",
+    "retry": "Retry",
+    "currentTier": "Current plan",
+    "renewsAt": "Renews on",
+    "aiCredits": "AI credits used",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "perMonth": "month",
+    "perYear": "year",
+    "popular": "Popular",
+    "currentPlan": "Current Plan",
+    "upgrade": "Upgrade",
+    "downgrade": "Downgrade",
+    "upgradeConfirm": "Upgrade to {{plan}}?",
+    "downgradeConfirm": "Downgrade to {{plan}}?"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "description": "Complete your subscription payment.",
+    "loadError": "Failed to load checkout details.",
+    "orderSummary": "Order Summary",
+    "plan": "Plan",
+    "cycle": "Billing cycle",
+    "amount": "Amount",
+    "selectMethod": "Select payment method",
+    "methods": {
+      "VNPAY": "VNPay",
+      "MOMO": "MoMo"
+    },
+    "pay": "Pay Now",
+    "paySuccess": "Payment successful. Your subscription has been updated.",
+    "payError": "Payment failed. Please try again."
+  },
+  "invoices": {
+    "title": "Invoice History",
+    "description": "View your past subscription invoices.",
+    "loadError": "Failed to load invoices.",
+    "retry": "Retry",
+    "number": "Invoice",
+    "tier": "Plan",
+    "amount": "Amount",
+    "status": "Status",
+    "issuedAt": "Issued",
+    "download": "Download",
+    "downloadUnavailable": "PDF download is not available in this demo.",
+    "statuses": {
+      "PAID": "Paid",
+      "PENDING": "Pending",
+      "FAILED": "Failed"
+    }
+  }
+}
