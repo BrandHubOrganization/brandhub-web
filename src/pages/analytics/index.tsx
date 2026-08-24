@@ -1,69 +1,79 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { AlertCircle, RefreshCw } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getAnalyticsSummary } from "@/services/mock/mockAnalyticsService";
+import type { AnalyticsSummary } from "@/types/analytics";
+import { StatCards } from "./components/StatCards";
+import { ChannelPerformanceChart } from "./components/ChannelPerformanceChart";
 
 export function AnalyticsPage() {
   const { t } = useTranslation();
+  const [data, setData] = useState<AnalyticsSummary | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSummary() {
+      setIsLoading(true);
+      setIsError(false);
+      try {
+        const summary = await getAnalyticsSummary();
+        if (!cancelled) setData(summary);
+      } catch (err) {
+        console.error("Failed to load analytics summary:", err);
+        if (!cancelled) setIsError(true);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    }
+
+    loadSummary();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <PageWrapper
       title={t("analytics.title")}
       description={t("analytics.description")}
     >
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-        {[
-          {
-            label: t("analytics.stats.reach.label"),
-            value: "245,890",
-            delta: "+12.4%",
-            desc: t("analytics.stats.reach.desc"),
-          },
-          {
-            label: t("analytics.stats.engagement.label"),
-            value: "18,430",
-            delta: "+8.2%",
-            desc: t("analytics.stats.engagement.desc"),
-          },
-          {
-            label: t("analytics.stats.posts.label"),
-            value: "48",
-            delta: "0.0%",
-            desc: t("analytics.stats.posts.desc"),
-          },
-          {
-            label: t("analytics.stats.responseRate.label"),
-            value: "94.5%",
-            delta: "+1.5%",
-            desc: t("analytics.stats.responseRate.desc"),
-          },
-        ].map((stat, idx) => (
-          <div
-            key={idx}
-            className="border-border bg-card space-y-2 rounded-xl border p-6"
-          >
-            <p className="text-muted-foreground text-3xs font-mono font-semibold tracking-wider uppercase">
-              {stat.label}
-            </p>
-            <div className="flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-bold tracking-tight">
-                {stat.value}
-              </span>
-              <span className="font-mono text-xs font-semibold text-emerald-600">
-                {stat.delta}
-              </span>
-            </div>
-            <p className="text-muted-foreground text-3xs">{stat.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="border-border bg-card mt-6 space-y-4 rounded-xl border p-6">
-        <h2 className="text-foreground text-sm font-bold">
-          {t("analytics.channelPerformance.title")}
-        </h2>
-        <div className="border-border text-muted-foreground bg-muted/10 flex h-48 items-center justify-center rounded border border-dashed text-xs">
-          {t("analytics.channelPerformance.placeholder")}
+      {isLoading && (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-28 rounded-xl" />
+          ))}
         </div>
-      </div>
+      )}
+
+      {isError && !isLoading && (
+        <div className="border-destructive/30 bg-destructive/5 flex flex-col items-center justify-center gap-3 rounded-xl border p-6 text-center">
+          <div className="text-destructive flex items-center gap-2 text-sm font-medium">
+            <AlertCircle className="size-4" />
+            <span>{t("analytics.loadError")}</span>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.location.reload()}
+            className="gap-2 text-xs"
+          >
+            <RefreshCw className="size-3.5" /> {t("analytics.retry")}
+          </Button>
+        </div>
+      )}
+
+      {data && !isLoading && !isError && (
+        <>
+          <StatCards cards={data.cards} />
+          <ChannelPerformanceChart channelStats={data.channelStats} />
+        </>
+      )}
     </PageWrapper>
   );
 }

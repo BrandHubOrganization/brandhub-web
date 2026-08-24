@@ -1,6 +1,8 @@
 {
   "title": "Analytics",
   "description": "Content performance and campaign engagement reports.",
+  "loadError": "Could not load analytics data.",
+  "retry": "Retry",
   "team": {
     "memberTableTitle": "Workspace members",
     "totalMembersLabel": "{{count}} member",
@@ -30,7 +32,10 @@
   },
   "channelPerformance": {
     "title": "Performance by Publishing Channel",
-    "placeholder": "[Chart of stats by social network: Facebook, Instagram, LinkedIn, Blog]"
+    "subtitle": "Reach by platform over the last 30 days",
+    "totalPosts": "Total posts",
+    "totalReach": "Total reach",
+    "totalEngagement": "Total engagement"
   },
   "overview": {
     "title": "Workspace Overview",
