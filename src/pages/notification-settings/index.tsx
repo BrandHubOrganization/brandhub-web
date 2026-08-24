@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { Mail, Smartphone } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -115,6 +116,41 @@ export function NotificationSettingsPage() {
                 }
               />
             ))}
+          </div>
+
+          <div className="border-border bg-card rounded-xl border p-4">
+            <div className="flex items-center gap-2 border-b border-border pb-3">
+              <Mail className="text-brand-orange size-4" />
+              <h2 className="text-foreground text-sm font-semibold">
+                {t("notifications.settings.emailPreviewTitle")}
+              </h2>
+            </div>
+            <div className="border-border mt-3 rounded-lg border p-3">
+              <p className="text-foreground text-xs font-semibold">
+                {t("notifications.settings.emailSubject")}
+              </p>
+              <p className="text-muted-foreground text-xs">
+                {t("notifications.settings.emailBody")}
+              </p>
+              <div className="bg-muted text-muted-foreground mt-2 rounded px-3 py-2 text-2xs">
+                {t("notifications.settings.emailFootnote")}
+              </div>
+            </div>
+          </div>
+
+          <div className="border-border bg-card rounded-xl border p-4">
+            <div className="flex items-center gap-2 border-b border-border pb-3">
+              <Smartphone className="text-brand-orange size-4" />
+              <h2 className="text-foreground text-sm font-semibold">
+                {t("notifications.settings.pushTitle")}
+              </h2>
+            </div>
+            <p className="text-muted-foreground mt-3 text-xs">
+              {t("notifications.settings.pushBody")}
+            </p>
+            <div className="bg-muted text-muted-foreground mt-2 rounded px-3 py-2 text-2xs">
+              {t("notifications.settings.pushFootnote")}
+            </div>
           </div>
 
           <div className="flex justify-end">

@@ -46,7 +46,8 @@ export function PublishPreview({
     );
   }
 
-  const active = platformTargets[Math.min(activeIndex, platformTargets.length - 1)];
+  const active =
+    platformTargets[Math.min(activeIndex, platformTargets.length - 1)];
   const meta = PLATFORM_META[active.platform];
 
   const previewData: PostPreviewData = {
@@ -66,7 +67,7 @@ export function PublishPreview({
               key={tgt.platform}
               type="button"
               onClick={() => setActiveIndex(idx)}
-              className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-2xs font-medium ${
+              className={`text-2xs flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-medium ${
                 idx === activeIndex
                   ? `${tgtMeta.color} border-current`
                   : "border-border text-muted-foreground"

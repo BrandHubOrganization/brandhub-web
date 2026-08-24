@@ -24,6 +24,13 @@
     "off": "Off",
     "save": "Save changes",
     "saveSuccess": "Notification settings saved.",
-    "saveError": "Failed to save settings."
+    "saveError": "Failed to save settings.",
+    "emailPreviewTitle": "Email template preview",
+    "emailSubject": "New post needs review — BrandHub",
+    "emailBody": "Hi Trung Le, a post was just submitted for review. Click below to view it.",
+    "emailFootnote": "This is a preview of the email sent when a new notification arrives.",
+    "pushTitle": "Push Notifications (FCM)",
+    "pushBody": "Push notifications delivered to the BrandHub mobile app (iOS/Android) on important events.",
+    "pushFootnote": "Preview: enable to receive push notifications on your mobile device."
   }
 }

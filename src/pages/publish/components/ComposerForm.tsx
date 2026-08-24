@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,11 @@ export function ComposerForm({
   isSubmitting,
 }: ComposerFormProps) {
   const { t } = useTranslation();
+
+  const [templateMessage, setTemplateMessage] = useState("");
+  const zaloSelected = state.platformTargets.some(
+    (target) => target.platform === "ZALO_OA",
+  );
 
   function update<K extends keyof ComposerFormState>(
     key: K,
@@ -87,9 +93,25 @@ export function ComposerForm({
         </label>
         <PlatformTargetPicker
           targets={state.platformTargets}
-          onChange={(platformTargets) => update("platformTargets", platformTargets)}
+          onChange={(platformTargets) =>
+            update("platformTargets", platformTargets)
+          }
         />
       </div>
+
+      {zaloSelected && (
+        <div className="space-y-1.5">
+          <label className="text-xs font-semibold tracking-wide">
+            {t("publish.composer.zaloTemplateLabel")}
+          </label>
+          <Textarea
+            value={templateMessage}
+            onChange={(e) => setTemplateMessage(e.target.value)}
+            placeholder={t("publish.composer.zaloTemplatePlaceholder")}
+            className="min-h-20 text-xs"
+          />
+        </div>
+      )}
 
       <Button
         variant="orange"

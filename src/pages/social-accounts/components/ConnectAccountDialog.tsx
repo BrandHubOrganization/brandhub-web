@@ -6,7 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ALL_PLATFORMS, PLATFORM_META } from "@/pages/social-accounts/lib/platformMeta";
+import {
+  ALL_PLATFORMS,
+  PLATFORM_META,
+} from "@/pages/social-accounts/lib/platformMeta";
 
 interface ConnectAccountDialogProps {
   isOpen: boolean;

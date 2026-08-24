@@ -15,7 +15,12 @@ export function ClientListErrorBanner({ onRetry }: ClientListErrorBannerProps) {
         <AlertCircle className="size-4" />
         <span>{t("client.loadListError")}</span>
       </div>
-      <Button variant="outline" size="sm" onClick={onRetry} className="gap-2 text-xs">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onRetry}
+        className="gap-2 text-xs"
+      >
         <RefreshCw className="size-3.5" /> {t("client.list.retry")}
       </Button>
     </div>

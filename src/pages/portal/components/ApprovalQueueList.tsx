@@ -1,4 +1,5 @@
-import { Check, RotateCcw } from "lucide-react";
+import { useState } from "react";
+import { Check, MessageSquare, RotateCcw, Send } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,26 @@ export function ApprovalQueueList({
 }: ApprovalQueueListProps) {
   const { t } = useTranslation();
 
+  const [threads, setThreads] = useState<Record<string, string[]>>(() =>
+    Object.fromEntries(
+      items.map((i) => [
+        i.id,
+        [
+          "Cần bổ sung CTA rõ ràng hơn ở cuối bài.",
+          "Màu sắc ổn, nhưng caption hơi dài — nên rút gọn.",
+        ],
+      ]),
+    ),
+  );
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+
+  function addComment(id: string) {
+    const text = drafts[id]?.trim();
+    if (!text) return;
+    setThreads((prev) => ({ ...prev, [id]: [...(prev[id] ?? []), text] }));
+    setDrafts((prev) => ({ ...prev, [id]: "" }));
+  }
+
   return (
     <div className="border-border bg-card overflow-hidden rounded-xl border">
       <div className="border-border bg-muted/10 border-b p-4 text-sm font-bold">
@@ -43,6 +64,49 @@ export function ApprovalQueueList({
                 <span>
                   {t("dashboard.portal.createdOn", { date: item.createdAt })}
                 </span>
+              </div>
+
+              <div className="border-border mt-3 w-full rounded-lg border p-3 sm:w-96">
+                <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold">
+                  <MessageSquare className="text-brand-orange size-3.5" />
+                  {t("dashboard.portal.comments", {
+                    count: (threads[item.id] ?? []).length,
+                  })}
+                </div>
+                <div className="space-y-2">
+                  {(threads[item.id] ?? []).map((comment, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-muted text-muted-foreground rounded-lg px-3 py-1.5 text-xs"
+                    >
+                      {comment}
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <input
+                    value={drafts[item.id] ?? ""}
+                    onChange={(e) =>
+                      setDrafts((prev) => ({
+                        ...prev,
+                        [item.id]: e.target.value,
+                      }))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") addComment(item.id);
+                    }}
+                    placeholder={t("dashboard.portal.commentPlaceholder")}
+                    className="border-border bg-card text-foreground w-full rounded-lg border px-2.5 py-1.5 text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => addComment(item.id)}
+                    className="bg-brand-orange flex shrink-0 cursor-pointer items-center justify-center rounded-lg px-2.5 py-1.5 text-white"
+                    title={t("dashboard.portal.sendComment")}
+                  >
+                    <Send className="size-3.5" />
+                  </button>
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-3">

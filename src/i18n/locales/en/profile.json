@@ -1,0 +1,22 @@
+{
+  "title": "Personal Profile",
+  "description": "Personal information, identity verification and account management.",
+  "verified": "Verified",
+  "avatar": { "upload": "Upload avatar" },
+  "identity": {
+    "title": "Identity Verification",
+    "status": "Verified",
+    "verified": "Confirmed",
+    "uploadMore": "Upload more documents"
+  },
+  "danger": {
+    "title": "Danger Zone",
+    "deactivateHint": "Deactivating will lock your account. Data is not permanently deleted.",
+    "deactivateButton": "Deactivate account",
+    "confirmTitle": "Deactivate account?",
+    "confirmBody": "You will not be able to sign in until reactivated. This can be undone by signing back in.",
+    "cancel": "Cancel",
+    "confirmDeactivate": "Confirm deactivation",
+    "deactivateSuccess": "Account deactivated"
+  }
+}

@@ -7,6 +7,7 @@ import {
   ChevronDown,
   Clock,
   Globe,
+  IdCard,
   Info,
   LogOut,
   Mail,
@@ -16,6 +17,7 @@ import {
   PanelLeftOpen,
   Settings,
   Shield,
+  ShieldCheck,
   Sun,
   User as UserIcon,
   XCircle,
@@ -376,6 +378,20 @@ export function Navbar({
             >
               <Mail className="text-muted-foreground size-3.5" />
               {t("nav.invitations")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate("/profile")}
+              className="cursor-pointer gap-2 text-xs"
+            >
+              <IdCard className="text-muted-foreground size-3.5" />
+              {t("nav.profile")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate("/security")}
+              className="cursor-pointer gap-2 text-xs"
+            >
+              <ShieldCheck className="text-muted-foreground size-3.5" />
+              {t("nav.security")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => navigate("/change-password")}

@@ -18,7 +18,17 @@
     "logoUploadButton": "Upload logo",
     "logoInvalidType": "Only JPEG, PNG, or WebP files are accepted",
     "logoTooLarge": "Logo must not exceed 5MB",
-    "logoUploadSuccess": "Logo updated"
+    "logoUploadSuccess": "Logo updated",
+    "danger": {
+      "title": "Danger Zone",
+      "deleteHint": "Deleting a workspace permanently removes all content, members and data. This cannot be undone.",
+      "deleteButton": "Delete workspace",
+      "confirmTitle": "Delete workspace?",
+      "confirmBody": "This action cannot be undone. All data will be permanently deleted.",
+      "cancel": "Cancel",
+      "confirmDelete": "Delete permanently",
+      "deleteSuccess": "Workspace deleted"
+    }
   },
   "noRole": "—",
   "members": {
@@ -60,5 +70,19 @@
     "posts": "{{count}} post",
     "posts_other": "{{count}} posts",
     "empty": "No workspaces yet. Create one to get started."
+  },
+  "permissions": {
+    "roleManagement": "Role Management",
+    "matrixTitle": "Permissions Matrix",
+    "permission": "Permission",
+    "roleChanged": "Changed {{name}} role to {{role}}",
+    "perms": {
+      "publish": "Publish content",
+      "approve": "Approve content",
+      "invite": "Invite members",
+      "manageRoles": "Manage roles",
+      "viewAnalytics": "View analytics",
+      "editWorkspace": "Edit workspace"
+    }
   }
 }

@@ -131,7 +131,10 @@ export function TrendsPage() {
             onToggle={handleToggleKeyword}
             onDelete={handleDeleteKeyword}
           />
-          <TrendingTopicGrid topics={topics} onUseForContent={handleUseForContent} />
+          <TrendingTopicGrid
+            topics={topics}
+            onUseForContent={handleUseForContent}
+          />
         </div>
       )}
     </PageWrapper>

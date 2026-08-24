@@ -17,7 +17,9 @@ export function CurrentPlanSummary({ subscription }: CurrentPlanSummaryProps) {
           <span className="text-foreground text-sm font-semibold">
             {t("subscription.plans.currentTier")}: {subscription.tier}
           </span>
-          <Badge variant={subscription.status === "ACTIVE" ? "PUBLISHED" : "FAILED"}>
+          <Badge
+            variant={subscription.status === "ACTIVE" ? "PUBLISHED" : "FAILED"}
+          >
             {t(`subscription.status.${subscription.status}`)}
           </Badge>
         </div>

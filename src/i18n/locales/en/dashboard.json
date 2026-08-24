@@ -126,6 +126,9 @@
       "AWAITING_APPROVAL": "Awaiting approval",
       "APPROVED": "Approved",
       "REVISION_REQUESTED": "Revision requested"
-    }
+    },
+    "comments": "Comments ({{count}})",
+    "commentPlaceholder": "Write a comment...",
+    "sendComment": "Send comment"
   }
 }

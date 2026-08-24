@@ -84,5 +84,15 @@
       "DAILY": "Hàng ngày",
       "WEEKLY": "Hàng tuần"
     }
+  },
+  "video": {
+    "title": "AI Video Studio",
+    "description": "Tạo video từ kịch bản, sắp xếp cảnh và chọn định dạng xuất.",
+    "scriptLabel": "Kịch bản",
+    "sceneMapping": "Sắp xếp cảnh",
+    "exportLabel": "Định dạng xuất",
+    "previewPlaceholder": "Xem trước video",
+    "generateButton": "Tạo video",
+    "generateSuccess": "Đã tạo video thành công"
   }
 }

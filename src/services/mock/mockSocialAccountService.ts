@@ -67,7 +67,9 @@ export async function getSocialAccounts(): Promise<SocialAccount[]> {
   return Promise.resolve(MOCK_ACCOUNTS.map((a) => ({ ...a })));
 }
 
-export async function connectAccount(platform: Platform): Promise<SocialAccount> {
+export async function connectAccount(
+  platform: Platform,
+): Promise<SocialAccount> {
   const newAccount: SocialAccount = {
     id: `acc-${Date.now()}`,
     platform,

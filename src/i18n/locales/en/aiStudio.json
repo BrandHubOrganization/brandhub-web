@@ -84,5 +84,15 @@
       "DAILY": "Daily",
       "WEEKLY": "Weekly"
     }
+  },
+  "video": {
+    "title": "AI Video Studio",
+    "description": "Generate video from a script, map scenes and choose an export format.",
+    "scriptLabel": "Script",
+    "sceneMapping": "Scene Mapping",
+    "exportLabel": "Export format",
+    "previewPlaceholder": "Video preview",
+    "generateButton": "Generate video",
+    "generateSuccess": "Video generated"
   }
 }

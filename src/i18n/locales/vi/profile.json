@@ -1,0 +1,22 @@
+{
+  "title": "Hồ sơ cá nhân",
+  "description": "Thông tin cá nhân, xác minh danh tính và quản lý tài khoản.",
+  "verified": "Đã xác minh",
+  "avatar": { "upload": "Tải ảnh đại diện" },
+  "identity": {
+    "title": "Xác minh danh tính",
+    "status": "Đã xác minh",
+    "verified": "Đã xác nhận",
+    "uploadMore": "Tải thêm tài liệu"
+  },
+  "danger": {
+    "title": "Vùng nguy hiểm",
+    "deactivateHint": "Vô hiệu hóa sẽ khóa tài khoản của bạn. Dữ liệu không bị xóa vĩnh viễn.",
+    "deactivateButton": "Vô hiệu hóa tài khoản",
+    "confirmTitle": "Vô hiệu hóa tài khoản?",
+    "confirmBody": "Bạn sẽ không thể đăng nhập cho đến khi kích hoạt lại. Hành động này có thể hoàn tác bằng cách đăng nhập lại.",
+    "cancel": "Hủy",
+    "confirmDeactivate": "Xác nhận vô hiệu hóa",
+    "deactivateSuccess": "Tài khoản đã bị vô hiệu hóa"
+  }
+}

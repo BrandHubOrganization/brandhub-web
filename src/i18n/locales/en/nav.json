@@ -44,5 +44,7 @@
   "toggleTheme": "Toggle theme",
   "realRoleTitle": "Actual role from the database",
   "roleLabel": "Role: {{role}}",
-  "roleLabelPrefix": "Role:"
+  "roleLabelPrefix": "Role:",
+  "profile": "Profile",
+  "security": "Security"
 }

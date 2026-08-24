@@ -9,6 +9,7 @@ import {
 } from "./components/MembersSectionTabs";
 import { InternalMembersSection } from "./components/InternalMembersSection";
 import { ClientsSection } from "./components/ClientsSection";
+import { WorkspacePermissionsPanel } from "./components/WorkspacePermissionsPanel";
 
 export function WorkspaceMembersPage() {
   const { t } = useTranslation();
@@ -43,6 +44,8 @@ export function WorkspaceMembersPage() {
         ) : (
           <ClientsSection />
         )}
+
+        <WorkspacePermissionsPanel members={internalMembers} />
       </div>
     </PageWrapper>
   );

@@ -126,6 +126,9 @@
       "AWAITING_APPROVAL": "Chờ phê duyệt",
       "APPROVED": "Đã duyệt",
       "REVISION_REQUESTED": "Yêu cầu chỉnh sửa"
-    }
+    },
+    "comments": "Bình luận ({{count}})",
+    "commentPlaceholder": "Viết bình luận...",
+    "sendComment": "Gửi bình luận"
   }
 }

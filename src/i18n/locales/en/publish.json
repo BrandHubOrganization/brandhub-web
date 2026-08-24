@@ -22,7 +22,9 @@
     "captionOverridePlaceholder": "Leave blank to use the shared caption",
     "submitting": "Submitting...",
     "schedule": "Schedule Post",
-    "saveDraft": "Save Draft"
+    "saveDraft": "Save Draft",
+    "zaloTemplateLabel": "Template message (Zalo)",
+    "zaloTemplatePlaceholder": "Pick a Zalo OA template and fill in the parameters..."
   },
   "preview": {
     "empty": "Select a platform to preview the post.",

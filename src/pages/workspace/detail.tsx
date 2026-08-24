@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { TriangleAlert } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,6 +28,7 @@ export function WorkspaceSettingsPage() {
     handleLogoChange,
     handleSubmit,
   } = useWorkspaceSettings();
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   if (loading) return null;
 
@@ -70,6 +74,63 @@ export function WorkspaceSettingsPage() {
           {t("workspace.settings.save")}
         </Button>
       </form>
+
+      {canManage && (
+        <div className="max-w-sm">
+          <div className="rounded-xl border border-red-200 bg-card p-6 dark:border-red-900/50">
+            <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
+              <TriangleAlert className="size-4 text-rose-500" />
+              {t("workspace.settings.danger.title")}
+            </h3>
+            <p className="text-muted-foreground mt-2 text-xs">
+              {t("workspace.settings.danger.deleteHint")}
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4 border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
+              onClick={() => setDeleteOpen(true)}
+            >
+              {t("workspace.settings.danger.deleteButton")}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {deleteOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
+            <div className="flex items-center gap-2">
+              <TriangleAlert className="size-5 text-rose-500" />
+              <h3 className="text-foreground text-sm font-semibold">
+                {t("workspace.settings.danger.confirmTitle")}
+              </h3>
+            </div>
+            <p className="text-muted-foreground text-xs">
+              {t("workspace.settings.danger.confirmBody")}
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDeleteOpen(false)}
+              >
+                {t("workspace.settings.danger.cancel")}
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => {
+                  setDeleteOpen(false);
+                  toast.success(t("workspace.settings.danger.deleteSuccess"));
+                }}
+              >
+                {t("workspace.settings.danger.confirmDelete")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </PageWrapper>
   );
 }

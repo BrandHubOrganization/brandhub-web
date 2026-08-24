@@ -41,6 +41,9 @@ import { KnowledgeBasePage } from "@/pages/ai-studio/knowledge-base";
 import { TrendsPage } from "@/pages/ai-studio/trends";
 import { ReportsPage } from "@/pages/reports";
 import { NotificationSettingsPage } from "@/pages/notification-settings";
+import { SecurityPage } from "@/pages/security";
+import { ProfilePage } from "@/pages/profile";
+import { VideoStudioPage } from "@/pages/ai-studio/video";
 import ExamplesPage from "@/components/examples";
 
 export function AppRoutes() {
@@ -108,6 +111,9 @@ export function AppRoutes() {
             path="/notification-settings"
             element={<NotificationSettingsPage />}
           />
+          <Route path="/security" element={<SecurityPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/ai-studio/video" element={<VideoStudioPage />} />
           <Route path="/components/examples" element={<ExamplesPage />} />
         </Route>
       </Route>

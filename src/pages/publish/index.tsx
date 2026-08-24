@@ -9,7 +9,10 @@ import {
   getScheduledPosts,
   retryPost,
 } from "@/services/mock/mockPublishService";
-import { ComposerForm, type ComposerFormState } from "./components/ComposerForm";
+import {
+  ComposerForm,
+  type ComposerFormState,
+} from "./components/ComposerForm";
 import { PublishPreview } from "./components/PublishPreview";
 import { PublishStatusTable } from "./components/PublishStatusTable";
 import { PublishErrorBanner } from "./components/PublishErrorBanner";
@@ -29,7 +32,8 @@ export function PublishPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formState, setFormState] = useState<ComposerFormState>(INITIAL_FORM_STATE);
+  const [formState, setFormState] =
+    useState<ComposerFormState>(INITIAL_FORM_STATE);
 
   useEffect(() => {
     let cancelled = false;
@@ -101,7 +105,10 @@ export function PublishPage() {
   }
 
   return (
-    <PageWrapper title={t("publish.title")} description={t("publish.description")}>
+    <PageWrapper
+      title={t("publish.title")}
+      description={t("publish.description")}
+    >
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ComposerForm
           state={formState}

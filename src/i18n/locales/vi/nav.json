@@ -44,5 +44,7 @@
   "toggleTheme": "Đổi giao diện",
   "realRoleTitle": "Vai trò thực tế từ Hệ thống Database",
   "roleLabel": "Vai trò: {{role}}",
-  "roleLabelPrefix": "Vai trò:"
+  "roleLabelPrefix": "Vai trò:",
+  "profile": "Hồ sơ",
+  "security": "Bảo mật"
 }

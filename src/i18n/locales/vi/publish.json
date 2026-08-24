@@ -22,7 +22,9 @@
     "captionOverridePlaceholder": "Để trống để dùng nội dung chung",
     "submitting": "Đang xử lý...",
     "schedule": "Lên lịch đăng",
-    "saveDraft": "Lưu nháp"
+    "saveDraft": "Lưu nháp",
+    "zaloTemplateLabel": "Tin nhắn mẫu (Zalo)",
+    "zaloTemplatePlaceholder": "Chọn mẫu tin nhắn Zalo OA và điền các tham số..."
   },
   "preview": {
     "empty": "Chọn nền tảng để xem trước bài đăng.",

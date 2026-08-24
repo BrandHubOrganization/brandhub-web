@@ -9,6 +9,8 @@ import {
   RotateCcw,
   MessageSquare,
   Wand2,
+  Eraser,
+  Images,
 } from "lucide-react";
 import { mockEditorService } from "@/services/mock/mockEditorService";
 import type { SocialPlatform, AIErrorType } from "@/types/editor";
@@ -70,6 +72,9 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
 
   // Lightbox Modal State
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  // Image tool state
+  const [imageToolResult, setImageToolResult] = useState<string | null>(null);
 
   const handleGenerate = async (isRegenerate: boolean = false) => {
     if (!prompt.trim()) {
@@ -218,6 +223,40 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
             </>
           )}
         </button>
+
+        {/* Image Tools */}
+        <div className="space-y-1.5">
+          <span className="text-2xs text-muted-foreground block font-semibold tracking-wider uppercase">
+            {t("editor.aiGenerate.imageToolsLabel")}
+          </span>
+          <div className="grid grid-cols-2 gap-1.5">
+            <button
+              type="button"
+              onClick={() =>
+                setImageToolResult(t("editor.aiGenerate.variationsDone"))
+              }
+              className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs bg-muted text-muted-foreground flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2 font-medium transition-colors"
+            >
+              <Images className="size-3.5" />
+              {t("editor.aiGenerate.imageVariations")}
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                setImageToolResult(t("editor.aiGenerate.bgRemoved"))
+              }
+              className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs bg-muted text-muted-foreground flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2 font-medium transition-colors"
+            >
+              <Eraser className="size-3.5" />
+              {t("editor.aiGenerate.removeBackground")}
+            </button>
+          </div>
+          {imageToolResult && (
+            <p className="bg-brand-orange-soft/40 border-brand-orange/20 text-brand-orange text-2xs rounded-lg border px-2.5 py-1.5">
+              {imageToolResult}
+            </p>
+          )}
+        </div>
 
         {/* Error States Display */}
         {errorState && (

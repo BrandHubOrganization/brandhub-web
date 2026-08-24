@@ -28,6 +28,14 @@
     "platformLabel": "Nền tảng",
     "scheduledTimeLabel": "Giờ đăng",
     "cancel": "Hủy",
-    "submit": "Lên lịch"
+    "submit": "Lên lịch",
+    "recurrenceLabel": "Lặp lại",
+    "recurrence": {
+      "none": "Không lặp lại",
+      "daily": "Hàng ngày",
+      "weekly": "Hàng tuần",
+      "monthly": "Hàng tháng",
+      "until": "Đến"
+    }
   }
 }

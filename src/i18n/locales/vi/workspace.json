@@ -18,7 +18,17 @@
     "logoUploadButton": "Tải logo lên",
     "logoInvalidType": "Chỉ nhận file JPEG, PNG hoặc WebP",
     "logoTooLarge": "Logo không được vượt quá 5MB",
-    "logoUploadSuccess": "Đã cập nhật logo"
+    "logoUploadSuccess": "Đã cập nhật logo",
+    "danger": {
+      "title": "Vùng nguy hiểm",
+      "deleteHint": "Xóa workspace sẽ xóa vĩnh viễn tất cả nội dung, thành viên và dữ liệu. Không thể hoàn tác.",
+      "deleteButton": "Xóa workspace",
+      "confirmTitle": "Xóa workspace?",
+      "confirmBody": "Thao tác này không thể hoàn tác. Toàn bộ dữ liệu sẽ bị xóa vĩnh viễn.",
+      "cancel": "Hủy",
+      "confirmDelete": "Xóa vĩnh viễn",
+      "deleteSuccess": "Workspace đã được xóa"
+    }
   },
   "noRole": "—",
   "members": {
@@ -58,5 +68,19 @@
     "members": "{{count}} thành viên",
     "posts": "{{count}} bài đăng",
     "empty": "Chưa có không gian làm việc nào. Tạo mới để bắt đầu."
+  },
+  "permissions": {
+    "roleManagement": "Quản lý vai trò",
+    "matrixTitle": "Ma trận quyền",
+    "permission": "Quyền",
+    "roleChanged": "Đã đổi vai trò của {{name}} thành {{role}}",
+    "perms": {
+      "publish": "Đăng nội dung",
+      "approve": "Duyệt nội dung",
+      "invite": "Mời thành viên",
+      "manageRoles": "Quản lý vai trò",
+      "viewAnalytics": "Xem báo cáo",
+      "editWorkspace": "Sửa workspace"
+    }
   }
 }

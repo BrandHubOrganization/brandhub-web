@@ -90,12 +90,9 @@ const MOCK_POSTS: Post[] = [
     ],
     "2026-08-30T09:00:00Z",
   ),
-  makePost(
-    "post-8",
-    "Draft bài viết mùa lễ hội",
-    "DRAFT",
-    [{ platform: "FACEBOOK", postType: "FEED", optimizedCaption: "" }],
-  ),
+  makePost("post-8", "Draft bài viết mùa lễ hội", "DRAFT", [
+    { platform: "FACEBOOK", postType: "FEED", optimizedCaption: "" },
+  ]),
 ];
 
 export async function getScheduledPosts(): Promise<Post[]> {
@@ -121,9 +118,7 @@ export async function createPost(input: CreatePostInput): Promise<Post> {
   );
   post.caption = input.caption;
   post.hashtags = input.hashtags;
-  post.mediaUrls = input.mediaUrls.length
-    ? input.mediaUrls
-    : post.mediaUrls;
+  post.mediaUrls = input.mediaUrls.length ? input.mediaUrls : post.mediaUrls;
   MOCK_POSTS.unshift(post);
   return Promise.resolve({ ...post });
 }

@@ -13,7 +13,11 @@ export interface OrderSummaryCardProps {
   amount: number;
 }
 
-export function OrderSummaryCard({ plan, cycle, amount }: OrderSummaryCardProps) {
+export function OrderSummaryCard({
+  plan,
+  cycle,
+  amount,
+}: OrderSummaryCardProps) {
   const { t } = useTranslation();
 
   return (

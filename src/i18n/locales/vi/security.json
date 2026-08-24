@@ -1,0 +1,19 @@
+{
+  "title": "Bảo mật",
+  "description": "Quản lý xác thực hai lớp (2FA) cho tài khoản của bạn.",
+  "2fa": {
+    "title": "Xác thực hai lớp (2FA)",
+    "subtitle": "Tăng cường bảo mật bằng mã TOTP mỗi khi đăng nhập.",
+    "stepHint": "Quét mã QR bằng ứng dụng xác thực (Google Authenticator, Authy...) rồi nhập mã 6 chữ số để kích hoạt.",
+    "secretLabel": "Khóa bí mật",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
+    "copySuccess": "Đã sao chép khóa bí mật",
+    "verifyCodeLabel": "Mã xác thực (6 chữ số)",
+    "backupCodes": "Mã dự phòng (lưu nơi an toàn)",
+    "enableButton": "Kích hoạt 2FA",
+    "enabled": "2FA đã bật",
+    "enableSuccess": "Đã bật 2FA",
+    "disableSuccess": "Đã tắt 2FA"
+  }
+}

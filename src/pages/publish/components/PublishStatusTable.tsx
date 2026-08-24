@@ -10,7 +10,10 @@ interface PublishStatusTableProps {
   onRetry: (id: string) => void;
 }
 
-export function PublishStatusTable({ posts, onRetry }: PublishStatusTableProps) {
+export function PublishStatusTable({
+  posts,
+  onRetry,
+}: PublishStatusTableProps) {
   const { t } = useTranslation();
 
   return (
@@ -18,9 +21,15 @@ export function PublishStatusTable({ posts, onRetry }: PublishStatusTableProps) 
       <table className="w-full text-left text-xs">
         <thead>
           <tr className="border-border text-muted-foreground border-b">
-            <th className="px-4 py-3 font-medium">{t("publish.table.title")}</th>
-            <th className="px-4 py-3 font-medium">{t("publish.table.platforms")}</th>
-            <th className="px-4 py-3 font-medium">{t("publish.table.status")}</th>
+            <th className="px-4 py-3 font-medium">
+              {t("publish.table.title")}
+            </th>
+            <th className="px-4 py-3 font-medium">
+              {t("publish.table.platforms")}
+            </th>
+            <th className="px-4 py-3 font-medium">
+              {t("publish.table.status")}
+            </th>
             <th className="px-4 py-3 font-medium">{t("publish.table.when")}</th>
             <th className="px-4 py-3 font-medium" />
           </tr>
@@ -48,7 +57,9 @@ export function PublishStatusTable({ posts, onRetry }: PublishStatusTableProps) 
                 </div>
               </td>
               <td className="px-4 py-3">
-                <Badge variant={post.status}>{t(`publish.status.${post.status}`)}</Badge>
+                <Badge variant={post.status}>
+                  {t(`publish.status.${post.status}`)}
+                </Badge>
               </td>
               <td className="text-muted-foreground px-4 py-3">
                 {post.publishedAt

@@ -42,7 +42,12 @@
     "feedbackLabel": "Ý kiến phản hồi tinh chỉnh AI (Feedback):",
     "feedbackPlaceholder": "Ví dụ: Make it more professional, shorter caption...",
     "regenerateButton": "Regenerate",
-    "useThisButton": "Use this"
+    "useThisButton": "Use this",
+    "imageToolsLabel": "Công cụ hình ảnh",
+    "imageVariations": "Tạo biến thể ảnh",
+    "removeBackground": "Xóa nền",
+    "variationsDone": "Đã tạo 4 biến thể ảnh.",
+    "bgRemoved": "Đã xóa nền ảnh."
   },
   "header": {
     "autoSaving": "Đang tự động lưu...",

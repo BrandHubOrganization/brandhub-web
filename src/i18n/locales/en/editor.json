@@ -42,7 +42,12 @@
     "feedbackLabel": "AI refinement feedback:",
     "feedbackPlaceholder": "e.g. Make it more professional, shorter caption...",
     "regenerateButton": "Regenerate",
-    "useThisButton": "Use this"
+    "useThisButton": "Use this",
+    "imageToolsLabel": "Image tools",
+    "imageVariations": "Image variations",
+    "removeBackground": "Remove background",
+    "variationsDone": "Generated 4 image variations.",
+    "bgRemoved": "Background removed."
   },
   "header": {
     "autoSaving": "Auto-saving...",

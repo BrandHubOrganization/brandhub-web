@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import type { SocialAccount } from "@/pages/social-accounts/types/socialAccount";
 import { PLATFORM_META } from "@/pages/social-accounts/lib/platformMeta";
 
-const STATUS_VARIANT: Record<SocialAccount["status"], "SCHEDULED" | "FAILED" | "DRAFT"> = {
+const STATUS_VARIANT: Record<
+  SocialAccount["status"],
+  "SCHEDULED" | "FAILED" | "DRAFT"
+> = {
   CONNECTED: "SCHEDULED",
   EXPIRED: "FAILED",
   DISCONNECTED: "DRAFT",
@@ -63,7 +66,7 @@ export function SocialAccountCard({
 
       {rateLimitPct !== null && (
         <div className="space-y-1">
-          <div className="text-muted-foreground flex justify-between text-2xs">
+          <div className="text-muted-foreground text-2xs flex justify-between">
             <span>{t("socialAccounts.rateLimit")}</span>
             <span>
               {account.rateLimitUsed}/{account.rateLimitMax}{" "}
