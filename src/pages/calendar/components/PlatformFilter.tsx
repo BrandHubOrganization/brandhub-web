@@ -48,6 +48,13 @@ const PLATFORMS: {
   },
 ];
 
+export const ZALO_OA_PLATFORM = {
+  id: "ZALO_OA" as const,
+  label: "Zalo OA",
+  icon: <MessageSquare className="h-4 w-4 text-sky-600" />,
+  color: "border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300",
+};
+
 export const PlatformFilter: React.FC<PlatformFilterProps> = ({
   selectedPlatforms,
   onChange,

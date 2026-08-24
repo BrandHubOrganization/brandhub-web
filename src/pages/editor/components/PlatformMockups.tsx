@@ -37,32 +37,32 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
 
   if (platform === "FACEBOOK") {
     return (
-      <div className="mx-auto max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="border-border bg-card mx-auto max-w-md overflow-hidden rounded-xl border shadow-xs">
         <div className="flex items-center justify-between p-3.5">
           <div className="flex items-center gap-2.5">
             <img
               src={authorAvatar}
               alt="avatar"
-              className="size-10 rounded-full border border-slate-200 object-cover"
+              className="border-border size-10 rounded-full border object-cover"
             />
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              <h4 className="text-foreground text-sm font-semibold">
                 {authorName}
               </h4>
-              <p className="flex items-center gap-1 text-xs text-slate-500">
+              <p className="text-muted-foreground flex items-center gap-1 text-xs">
                 {t("editor.mockup.justNow")} · <Globe className="size-3" />
               </p>
             </div>
           </div>
-          <MoreHorizontal className="size-5 text-slate-400" />
+          <MoreHorizontal className="text-muted-foreground size-5" />
         </div>
 
-        <p className="px-3.5 pb-3 text-sm whitespace-pre-wrap text-slate-800 dark:text-slate-200">
+        <p className="text-foreground px-3.5 pb-3 text-sm whitespace-pre-wrap">
           {caption}
         </p>
 
         <div
-          className={`w-full overflow-hidden bg-slate-100 dark:bg-slate-800 ${config.aspectRatioClass}`}
+          className={`bg-muted w-full overflow-hidden ${config.aspectRatioClass}`}
         >
           <img
             src={mediaSrc}
@@ -71,7 +71,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
           />
         </div>
 
-        <div className="flex items-center justify-between border-t border-slate-100 p-3 text-xs font-medium text-slate-500 dark:border-slate-800">
+        <div className="border-border text-muted-foreground flex items-center justify-between border-t p-3 text-xs font-medium">
           <button className="flex items-center gap-1.5 hover:text-blue-600">
             <ThumbsUp className="size-4" /> {t("editor.mockup.like")}
           </button>
@@ -88,7 +88,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
 
   if (platform === "INSTAGRAM") {
     return (
-      <div className="mx-auto max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="border-border bg-card mx-auto max-w-md overflow-hidden rounded-xl border shadow-xs">
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center gap-2.5">
             <div className="size-8 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-[2px]">
@@ -98,15 +98,15 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
                 className="h-full w-full rounded-full border-2 border-white object-cover dark:border-slate-900"
               />
             </div>
-            <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+            <span className="text-foreground text-xs font-semibold">
               {authorName.toLowerCase().replace(/\s+/g, "_")}
             </span>
           </div>
-          <MoreHorizontal className="size-5 text-slate-400" />
+          <MoreHorizontal className="text-muted-foreground size-5" />
         </div>
 
         <div
-          className={`w-full overflow-hidden bg-slate-100 dark:bg-slate-800 ${config.aspectRatioClass}`}
+          className={`bg-muted w-full overflow-hidden ${config.aspectRatioClass}`}
         >
           <img
             src={mediaSrc}
@@ -116,16 +116,16 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
         </div>
 
         <div className="space-y-2 p-3">
-          <div className="flex items-center justify-between text-slate-700 dark:text-slate-300">
+          <div className="text-muted-foreground flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Heart className="size-5 cursor-pointer hover:text-rose-500" />
-              <MessageCircle className="size-5 cursor-pointer hover:text-slate-500" />
-              <Share2 className="size-5 cursor-pointer hover:text-slate-500" />
+              <MessageCircle className="hover:text-foreground size-5 cursor-pointer" />
+              <Share2 className="hover:text-foreground size-5 cursor-pointer" />
             </div>
             <Bookmark className="size-5 cursor-pointer" />
           </div>
 
-          <p className="line-clamp-3 text-xs text-slate-800 dark:text-slate-200">
+          <p className="text-foreground line-clamp-3 text-xs">
             <span className="mr-1.5 font-semibold">
               {authorName.toLowerCase().replace(/\s+/g, "_")}
             </span>
@@ -180,22 +180,20 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
 
   // Default fallback for Threads & Youtube
   return (
-    <div className="mx-auto max-w-md space-y-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+    <div className="border-border bg-card mx-auto max-w-md space-y-3 rounded-xl border p-4">
       <div className="flex items-center gap-2">
         <img
           src={authorAvatar}
           alt="avatar"
           className="size-8 rounded-full object-cover"
         />
-        <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+        <span className="text-foreground text-xs font-semibold">
           {authorName}
         </span>
       </div>
-      <p className="text-xs whitespace-pre-wrap text-slate-800 dark:text-slate-200">
-        {caption}
-      </p>
+      <p className="text-foreground text-xs whitespace-pre-wrap">{caption}</p>
       <div
-        className={`w-full overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800 ${config.aspectRatioClass}`}
+        className={`bg-muted w-full overflow-hidden rounded-lg ${config.aspectRatioClass}`}
       >
         <img
           src={mediaSrc}
