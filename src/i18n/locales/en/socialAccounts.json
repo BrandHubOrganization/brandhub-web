@@ -1,0 +1,30 @@
+{
+  "title": "Social Accounts",
+  "description": "Manage your workspace's connected social media accounts.",
+  "connectNew": "Connect New Account",
+  "loadError": "Failed to load social accounts.",
+  "retry": "Retry",
+  "tokenExpires": "Token expires:",
+  "rateLimit": "Rate limit",
+  "postsToday": "posts today",
+  "connectSuccess": "Account connected successfully.",
+  "connectError": "Failed to connect account.",
+  "disconnectConfirm": "Are you sure you want to disconnect this account?",
+  "disconnectSuccess": "Account disconnected.",
+  "disconnectError": "Failed to disconnect account.",
+  "refreshSuccess": "Token refreshed.",
+  "refreshError": "Failed to refresh token.",
+  "status": {
+    "CONNECTED": "Connected",
+    "EXPIRED": "Expired",
+    "DISCONNECTED": "Disconnected"
+  },
+  "actions": {
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "refreshToken": "Refresh Token"
+  },
+  "connectDialog": {
+    "title": "Select a platform to connect"
+  }
+}
