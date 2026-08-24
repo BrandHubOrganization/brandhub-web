@@ -53,6 +53,7 @@ export function ServicePackageModal({
 
   const handleTierChange = (tier: PackageTier) => {
     const quotaMap: Record<PackageTier, number> = {
+      FREE: 5,
       STARTER: 15,
       GROWTH: 30,
       ENTERPRISE: 45,

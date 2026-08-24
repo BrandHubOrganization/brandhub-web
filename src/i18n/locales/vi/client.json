@@ -11,7 +11,8 @@
     "createButton": "Tạo Client Mới",
     "searchPlaceholder": "Tìm kiếm thương hiệu, email, ngành hàng...",
     "totalLabel": "Client",
-    "agencyOwnerBadge": "AGENCY OWNER"
+    "agencyOwnerBadge": "AGENCY OWNER",
+    "retry": "Thử lại"
   },
   "detail": {
     "title": "Chi tiết Client",

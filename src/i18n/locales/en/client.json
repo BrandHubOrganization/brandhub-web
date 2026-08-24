@@ -11,7 +11,8 @@
     "createButton": "Create New Client",
     "searchPlaceholder": "Search brand, email, industry...",
     "totalLabel": "Clients",
-    "agencyOwnerBadge": "AGENCY OWNER"
+    "agencyOwnerBadge": "AGENCY OWNER",
+    "retry": "Retry"
   },
   "detail": {
     "title": "Client Details",
