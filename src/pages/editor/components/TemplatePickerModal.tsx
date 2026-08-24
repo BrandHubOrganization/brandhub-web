@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { LayoutTemplate, Search, Check, X } from "lucide-react";
-import { mockTemplateService } from "@/services/mockTemplateService";
+import { mockTemplateService } from "@/services/mock/mockTemplateService";
 import type { ContentTemplate } from "@/types/template";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";

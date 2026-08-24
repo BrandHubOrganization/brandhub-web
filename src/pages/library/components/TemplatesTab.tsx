@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { PostTemplate, HashtagGroup } from "@/types/contentLibrary";
-import { mockContentLibraryService } from "@/services/mockContentLibraryService";
+import { mockContentLibraryService } from "@/services/mock/mockContentLibraryService";
 import { FileText, ArrowRight, Plus, Trash2, Calendar, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";

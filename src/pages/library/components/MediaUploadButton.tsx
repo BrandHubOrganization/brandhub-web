@@ -33,7 +33,7 @@ export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
 
     try {
       const { mockContentLibraryService } =
-        await import("@/services/mockContentLibraryService");
+        await import("@/services/mock/mockContentLibraryService");
       const uploadedItem = await mockContentLibraryService.uploadMedia(file);
       toast.success(t("library.media.uploadSuccess", { filename: file.name }));
       onUploadSuccess(uploadedItem);

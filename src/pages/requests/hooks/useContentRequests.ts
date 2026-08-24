@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import { mockContentRequestService } from "@/services/mockContentRequestService";
+import { mockContentRequestService } from "@/services/mock/mockContentRequestService";
 import type {
   ContentRequest,
   ContentRequestStatus,

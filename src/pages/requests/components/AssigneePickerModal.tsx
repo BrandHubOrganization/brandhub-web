@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Assignee } from "@/types/contentRequest";
-import { MOCK_CREATORS } from "@/services/mockContentRequestService";
+import { MOCK_CREATORS } from "@/services/mock/mockContentRequestService";
 import { X, Search, Check, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";

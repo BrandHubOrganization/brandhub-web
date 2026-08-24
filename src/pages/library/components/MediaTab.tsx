@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import type { MediaItem, MediaType } from "@/types/contentLibrary";
-import { mockContentLibraryService } from "@/services/mockContentLibraryService";
+import { mockContentLibraryService } from "@/services/mock/mockContentLibraryService";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { MediaDetailPanel } from "./MediaDetailPanel";
 import { MediaUploadButton } from "./MediaUploadButton";
@@ -95,28 +95,28 @@ export const MediaTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Toolbar Controls */}
-      <div className="flex flex-col items-stretch justify-between gap-3 rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="border-border bg-card flex flex-col items-stretch justify-between gap-3 rounded-xl border p-4 shadow-xs sm:flex-row sm:items-center">
         <div className="flex flex-1 items-center gap-3">
           {/* Search Box */}
           <div className="relative max-w-md flex-1">
-            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
+            <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
             <Input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t("library.media.searchPlaceholder")}
-              className="rounded-xl border-zinc-200 bg-zinc-50 pr-4 pl-9 text-xs text-zinc-900 placeholder-zinc-400 dark:border-zinc-700/80 dark:bg-zinc-800/80 dark:text-zinc-100"
+              className="border-border bg-muted text-foreground placeholder-muted-foreground rounded-xl pr-4 pl-9 text-xs"
             />
           </div>
 
           {/* Filter Type */}
-          <div className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-700/80 dark:bg-zinc-800/80">
+          <div className="border-border bg-muted flex items-center gap-1.5 rounded-xl border p-1">
             <button
               onClick={() => setFilterType("all")}
               className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 filterType === "all"
-                  ? "bg-white text-zinc-900 shadow-xs dark:bg-zinc-700 dark:text-zinc-100"
-                  : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                  ? "bg-card text-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("library.media.filterAll")}
@@ -126,7 +126,7 @@ export const MediaTab: React.FC = () => {
               className={`flex cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 filterType === "image"
                   ? "bg-brand-orange-soft text-brand-orange font-bold shadow-xs"
-                  : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <ImageIcon className="size-3.5" />
@@ -137,7 +137,7 @@ export const MediaTab: React.FC = () => {
               className={`flex cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 filterType === "video"
                   ? "bg-brand-orange-soft text-brand-orange font-bold shadow-xs"
-                  : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <Film className="size-3.5" />
@@ -148,17 +148,17 @@ export const MediaTab: React.FC = () => {
 
         <div className="flex items-center gap-3">
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-700/80 dark:bg-zinc-800/80">
-            <ArrowUpDown className="size-3.5 text-zinc-400" />
+          <div className="border-border bg-muted flex items-center gap-2 rounded-xl border px-3 py-1.5">
+            <ArrowUpDown className="text-muted-foreground size-3.5" />
             <Select
               value={sort}
               onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
-              className="h-auto w-auto min-w-0 cursor-pointer border-0 bg-transparent px-0 py-0 text-xs font-medium text-zinc-700 shadow-none focus-visible:ring-0 dark:text-zinc-300"
+              className="text-foreground h-auto w-auto min-w-0 cursor-pointer border-0 bg-transparent px-0 py-0 text-xs font-medium shadow-none focus-visible:ring-0"
             >
-              <option value="newest" className="dark:bg-zinc-900">
+              <option value="newest" className="bg-card">
                 {t("library.media.sortNewest")}
               </option>
-              <option value="oldest" className="dark:bg-zinc-900">
+              <option value="oldest" className="bg-card">
                 {t("library.media.sortOldest")}
               </option>
             </Select>
@@ -171,8 +171,8 @@ export const MediaTab: React.FC = () => {
 
       {/* Media Grid */}
       {mediaList.length === 0 && !loading ? (
-        <div className="rounded-xl border border-dashed border-zinc-200 bg-white p-8 py-16 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-          <ImageIcon className="mx-auto mb-3 size-12 text-zinc-300 dark:text-zinc-700" />
+        <div className="border-border bg-card rounded-xl border border-dashed p-8 py-16 text-center">
+          <ImageIcon className="text-muted-foreground mx-auto mb-3 size-12" />
           <h3 className="text-foreground mb-1 text-sm font-semibold">
             {t("library.media.emptyTitle")}
           </h3>
@@ -186,7 +186,7 @@ export const MediaTab: React.FC = () => {
             <div
               key={media.id}
               onClick={() => setSelectedMedia(media)}
-              className="group hover:border-brand-orange/50 relative aspect-square transform cursor-pointer overflow-hidden rounded-xl border border-zinc-200/80 bg-zinc-900 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800"
+              className="group hover:border-brand-orange/50 border-border relative aspect-square transform cursor-pointer overflow-hidden rounded-xl border bg-zinc-900 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md"
             >
               {/* Media Display */}
               {media.type === "video" ? (
@@ -215,7 +215,7 @@ export const MediaTab: React.FC = () => {
                 <span className="truncate text-xs leading-tight font-semibold">
                   {media.filename}
                 </span>
-                <span className="text-3xs mt-0.5 font-mono text-zinc-300">
+                <span className="text-3xs mt-0.5 font-mono text-white/70">
                   {formatFileSize(media.sizeBytes)}
                 </span>
               </div>
@@ -242,13 +242,13 @@ export const MediaTab: React.FC = () => {
       {/* Infinite Scroll Loading Sentinel */}
       <div ref={sentinelRef} className="flex items-center justify-center py-6">
         {loading && (
-          <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-xs font-medium text-zinc-500 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="border-border bg-card text-muted-foreground flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium shadow-xs">
             <Loader2 className="text-brand-orange size-4 animate-spin" />
             <span>{t("library.media.loadingMore")}</span>
           </div>
         )}
         {!hasMore && mediaList.length > 0 && (
-          <span className="text-xs font-medium text-zinc-400">
+          <span className="text-muted-foreground text-xs font-medium">
             {t("library.media.allLoaded")}
           </span>
         )}

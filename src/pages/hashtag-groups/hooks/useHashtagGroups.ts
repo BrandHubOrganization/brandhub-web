@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { mockHashtagGroupService } from "@/services/mockHashtagGroupService";
+import { mockHashtagGroupService } from "@/services/mock/mockHashtagGroupService";
 import type { HashtagGroup } from "@/types/hashtagGroup";
 
 export function useHashtagGroups() {

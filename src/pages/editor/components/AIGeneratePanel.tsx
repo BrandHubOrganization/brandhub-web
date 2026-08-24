@@ -10,7 +10,7 @@ import {
   MessageSquare,
   Wand2,
 } from "lucide-react";
-import { mockEditorService } from "@/services/mockEditorService";
+import { mockEditorService } from "@/services/mock/mockEditorService";
 import type { SocialPlatform, AIErrorType } from "@/types/editor";
 import { ImageLightboxModal } from "./ImageLightboxModal";
 import { toast } from "sonner";

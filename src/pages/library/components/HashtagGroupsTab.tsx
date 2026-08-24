@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { HashtagGroup } from "@/types/contentLibrary";
-import { mockContentLibraryService } from "@/services/mockContentLibraryService";
+import { mockContentLibraryService } from "@/services/mock/mockContentLibraryService";
 import { Hash, Copy, Plus, Edit2, Trash2, Check, X, Tag } from "lucide-react";
 import { toast } from "sonner";
 import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
@@ -113,7 +113,7 @@ export const HashtagGroupsTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header & Add Button */}
-      <div className="flex items-center justify-between rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="border-border bg-card flex items-center justify-between rounded-xl border p-4 shadow-xs">
         <div>
           <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
             <Hash className="text-brand-orange size-4" />
@@ -135,13 +135,13 @@ export const HashtagGroupsTab: React.FC = () => {
 
       {/* Grid List */}
       {loading ? (
-        <div className="py-12 text-center text-xs text-zinc-400">
+        <div className="text-muted-foreground py-12 text-center text-xs">
           {t("hashtagGroups.loading")}
         </div>
       ) : groups.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-zinc-200 bg-white p-8 py-12 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-          <Hash className="mx-auto mb-2 size-10 text-zinc-300 dark:text-zinc-700" />
-          <p className="text-xs text-zinc-500">
+        <div className="border-border bg-card rounded-xl border border-dashed p-8 py-12 text-center">
+          <Hash className="text-muted-foreground mx-auto mb-2 size-10" />
+          <p className="text-muted-foreground text-xs">
             {t("hashtagGroups.emptyState")}
           </p>
         </div>
@@ -150,25 +150,25 @@ export const HashtagGroupsTab: React.FC = () => {
           {groups.map((group) => (
             <div
               key={group.id}
-              className="hover:border-brand-orange/40 group flex flex-col justify-between rounded-xl border border-zinc-200/80 bg-white p-5 shadow-xs transition-all dark:border-zinc-800 dark:bg-zinc-900"
+              className="hover:border-brand-orange/40 border-border bg-card group flex flex-col justify-between rounded-xl border p-5 shadow-xs transition-all"
             >
               <div>
                 <div className="mb-3 flex items-center justify-between">
-                  <h4 className="group-hover:text-brand-orange flex items-center gap-1.5 text-sm font-semibold text-zinc-900 transition-colors dark:text-zinc-100">
+                  <h4 className="group-hover:text-brand-orange text-foreground flex items-center gap-1.5 text-sm font-semibold transition-colors">
                     <Tag className="text-brand-orange size-3.5" />
                     {group.name}
                   </h4>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleOpenModal(group)}
-                      className="hover:text-brand-orange dark:hover:text-brand-orange cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                      className="hover:text-brand-orange text-muted-foreground hover:bg-muted cursor-pointer rounded-lg p-1 transition-colors"
                       title={t("hashtagGroups.editTooltip")}
                     >
                       <Edit2 className="size-3.5" />
                     </button>
                     <button
                       onClick={() => handleDeleteGroup(group.id, group.name)}
-                      className="cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
+                      className="text-muted-foreground cursor-pointer rounded-lg p-1 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
                       title={t("hashtagGroups.deleteTooltip")}
                     >
                       <Trash2 className="size-3.5" />
@@ -190,15 +190,15 @@ export const HashtagGroupsTab: React.FC = () => {
               </div>
 
               {/* Copy Action Footer */}
-              <div className="flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800/80">
-                <span className="text-2xs font-mono text-zinc-400">
+              <div className="border-border flex items-center justify-between border-t pt-3">
+                <span className="text-2xs text-muted-foreground font-mono">
                   {t("hashtagGroups.hashtagsCount", {
                     count: group.tags.length,
                   })}
                 </span>
                 <button
                   onClick={() => handleCopyGroup(group)}
-                  className="hover:bg-brand-orange dark:hover:bg-brand-orange flex cursor-pointer items-center gap-1.5 rounded-xl bg-zinc-100 px-3 py-1.5 text-xs font-semibold text-zinc-700 transition-colors hover:text-white dark:bg-zinc-800 dark:text-zinc-300"
+                  className="hover:bg-brand-orange dark:hover:bg-brand-orange bg-muted text-foreground flex cursor-pointer items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition-colors hover:text-white"
                 >
                   {copiedId === group.id ? (
                     <>
@@ -221,8 +221,8 @@ export const HashtagGroupsTab: React.FC = () => {
       {/* Modal Form Create / Edit */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md space-y-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
+          <div className="border-border bg-card w-full max-w-md space-y-4 rounded-xl border p-6 shadow-2xl">
+            <div className="border-border flex items-center justify-between border-b pb-3">
               <h3 className="text-foreground text-sm font-semibold">
                 {editingGroup
                   ? t("hashtagGroups.editModalTitle")
@@ -230,7 +230,7 @@ export const HashtagGroupsTab: React.FC = () => {
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="cursor-pointer text-zinc-400 hover:text-zinc-600"
+                className="text-muted-foreground hover:text-foreground cursor-pointer"
               >
                 <X className="size-5" />
               </button>
@@ -238,7 +238,7 @@ export const HashtagGroupsTab: React.FC = () => {
 
             <form onSubmit={handleSaveGroup} className="space-y-4">
               <div>
-                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                <label className="text-foreground mb-1 block text-xs font-semibold">
                   {t("hashtagGroups.nameFieldLabel")}
                 </label>
                 <Input
@@ -246,12 +246,12 @@ export const HashtagGroupsTab: React.FC = () => {
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder={t("hashtagGroups.namePlaceholder")}
-                  className="rounded-xl border-zinc-200 bg-zinc-50 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  className="border-border bg-muted text-foreground rounded-xl text-xs"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                <label className="text-foreground mb-1 block text-xs font-semibold">
                   {t("hashtagGroups.tagsFieldLabel")}
                 </label>
                 <Textarea
@@ -259,7 +259,7 @@ export const HashtagGroupsTab: React.FC = () => {
                   value={tagsInput}
                   onChange={(e) => setTagsInput(e.target.value)}
                   placeholder={t("hashtagGroups.tagsPlaceholder")}
-                  className="rounded-xl border-zinc-200 bg-zinc-50 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  className="border-border bg-muted text-foreground rounded-xl font-mono text-xs"
                 />
               </div>
 
@@ -267,7 +267,7 @@ export const HashtagGroupsTab: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="cursor-pointer rounded-xl border border-zinc-300 px-4 py-2 text-xs font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"
+                  className="border-border text-foreground cursor-pointer rounded-xl border px-4 py-2 text-xs font-medium"
                 >
                   {t("hashtagGroups.cancelButton")}
                 </button>

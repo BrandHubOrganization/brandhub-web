@@ -9,7 +9,7 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-import { mockHashtagGroupService } from "@/services/mockHashtagGroupService";
+import { mockHashtagGroupService } from "@/services/mock/mockHashtagGroupService";
 import type { HashtagGroup } from "@/types/hashtagGroup";
 import { toast } from "sonner";
 import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
@@ -109,7 +109,7 @@ export const HashtagInputWithSuggestions: React.FC<
   return (
     <div className="space-y-2.5">
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+        <label className="text-foreground flex items-center gap-1.5 text-xs font-semibold">
           <Hash className="text-brand-orange size-3.5" />
           {t("editor.hashtagInput.label", { count: hashtags.length })}
         </label>
@@ -120,7 +120,7 @@ export const HashtagInputWithSuggestions: React.FC<
             <button
               type="button"
               onClick={handleCopyAll}
-              className="hover:text-brand-orange text-2xs flex cursor-pointer items-center gap-1 px-2 py-0.5 font-medium text-zinc-600 transition-colors dark:text-zinc-400"
+              className="hover:text-brand-orange text-2xs text-muted-foreground flex cursor-pointer items-center gap-1 px-2 py-0.5 font-medium transition-colors"
             >
               {copied ? (
                 <Check className="size-3 text-emerald-500" />
@@ -160,8 +160,8 @@ export const HashtagInputWithSuggestions: React.FC<
               </button>
 
               {showGroupDropdown && (
-                <div className="absolute top-full right-0 z-30 mt-1 w-64 space-y-1 rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-                  <span className="text-3xs block px-2 font-semibold tracking-wider text-zinc-400 uppercase">
+                <div className="border-border bg-card absolute top-full right-0 z-30 mt-1 w-64 space-y-1 rounded-xl border p-2 shadow-xl">
+                  <span className="text-3xs text-muted-foreground block px-2 font-semibold tracking-wider uppercase">
                     {t("editor.hashtagInput.chooseGroupLabel")}
                   </span>
                   <div className="max-h-48 space-y-1 overflow-y-auto">
@@ -200,13 +200,13 @@ export const HashtagInputWithSuggestions: React.FC<
           onFocus={() => setShowSuggestions(true)}
           onKeyDown={handleKeyDown}
           placeholder={t("editor.hashtagInput.inputPlaceholder")}
-          className="rounded-xl border-zinc-200 bg-zinc-50 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+          className="border-border bg-muted text-foreground rounded-xl font-mono text-xs"
         />
 
         {/* Suggestions Popup */}
         {showSuggestions && filteredSuggestions.length > 0 && (
-          <div className="absolute top-full right-0 left-0 z-20 mt-1 max-h-48 space-y-1 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-            <span className="text-3xs mb-1 flex items-center justify-between px-2 font-semibold tracking-wider text-zinc-400 uppercase">
+          <div className="border-border bg-card absolute top-full right-0 left-0 z-20 mt-1 max-h-48 space-y-1 overflow-y-auto rounded-xl border p-2 shadow-xl">
+            <span className="text-3xs text-muted-foreground mb-1 flex items-center justify-between px-2 font-semibold tracking-wider uppercase">
               <span>{t("editor.hashtagInput.trendingSuggestionsLabel")}</span>
               <Sparkles className="text-brand-orange size-3" />
             </span>
