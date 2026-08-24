@@ -1,0 +1,48 @@
+{
+  "title": "Publish",
+  "description": "Compose and schedule posts across multiple social platforms.",
+  "loadError": "Failed to load posts.",
+  "retry": "Retry",
+  "createSuccess": "Post created successfully.",
+  "createError": "Failed to create post.",
+  "retrySuccess": "Post retry started.",
+  "retryError": "Failed to retry post.",
+  "composer": {
+    "titleLabel": "Title",
+    "titlePlaceholder": "Enter post title",
+    "captionLabel": "Caption",
+    "captionPlaceholder": "Enter post caption",
+    "hashtagsLabel": "Hashtags (comma separated)",
+    "hashtagsPlaceholder": "#brandhub, #marketing",
+    "mediaUrlsLabel": "Media URLs (comma separated)",
+    "mediaUrlsPlaceholder": "https://...",
+    "scheduleLabel": "Schedule",
+    "platformsLabel": "Target platforms",
+    "captionOverride": "Custom caption for {{platform}}",
+    "captionOverridePlaceholder": "Leave blank to use the shared caption",
+    "submitting": "Submitting...",
+    "schedule": "Schedule Post",
+    "saveDraft": "Save Draft"
+  },
+  "preview": {
+    "empty": "Select a platform to preview the post.",
+    "genericLabel": "Preview"
+  },
+  "table": {
+    "heading": "Scheduled Posts",
+    "title": "Title",
+    "platforms": "Platforms",
+    "status": "Status",
+    "when": "When",
+    "retry": "Retry"
+  },
+  "status": {
+    "DRAFT": "Draft",
+    "PENDING_REVIEW": "Pending Review",
+    "APPROVED": "Approved",
+    "SCHEDULED": "Scheduled",
+    "PUBLISHED": "Published",
+    "FAILED": "Failed",
+    "REJECTED": "Rejected"
+  }
+}

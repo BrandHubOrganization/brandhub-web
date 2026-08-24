@@ -1,0 +1,48 @@
+{
+  "title": "Xuất bản",
+  "description": "Soạn và lên lịch đăng bài trên nhiều nền tảng mạng xã hội.",
+  "loadError": "Không tải được danh sách bài đăng.",
+  "retry": "Thử lại",
+  "createSuccess": "Đã tạo bài đăng thành công.",
+  "createError": "Không thể tạo bài đăng.",
+  "retrySuccess": "Đã thử đăng lại bài viết.",
+  "retryError": "Không thể thử đăng lại.",
+  "composer": {
+    "titleLabel": "Tiêu đề",
+    "titlePlaceholder": "Nhập tiêu đề bài đăng",
+    "captionLabel": "Nội dung",
+    "captionPlaceholder": "Nhập nội dung bài đăng",
+    "hashtagsLabel": "Hashtag (phân cách bằng dấu phẩy)",
+    "hashtagsPlaceholder": "#brandhub, #marketing",
+    "mediaUrlsLabel": "URL hình ảnh/video (phân cách bằng dấu phẩy)",
+    "mediaUrlsPlaceholder": "https://...",
+    "scheduleLabel": "Lịch đăng",
+    "platformsLabel": "Nền tảng đăng bài",
+    "captionOverride": "Nội dung tùy chỉnh cho {{platform}}",
+    "captionOverridePlaceholder": "Để trống để dùng nội dung chung",
+    "submitting": "Đang xử lý...",
+    "schedule": "Lên lịch đăng",
+    "saveDraft": "Lưu nháp"
+  },
+  "preview": {
+    "empty": "Chọn nền tảng để xem trước bài đăng.",
+    "genericLabel": "Xem trước"
+  },
+  "table": {
+    "heading": "Bài đăng đã lên lịch",
+    "title": "Tiêu đề",
+    "platforms": "Nền tảng",
+    "status": "Trạng thái",
+    "when": "Thời gian",
+    "retry": "Thử lại"
+  },
+  "status": {
+    "DRAFT": "Nháp",
+    "PENDING_REVIEW": "Chờ duyệt",
+    "APPROVED": "Đã duyệt",
+    "SCHEDULED": "Đã lên lịch",
+    "PUBLISHED": "Đã đăng",
+    "FAILED": "Thất bại",
+    "REJECTED": "Bị từ chối"
+  }
+}
