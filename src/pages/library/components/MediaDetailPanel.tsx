@@ -85,7 +85,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
           </h3>
           <button
             onClick={onClose}
-            className="cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+            className="text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer rounded-lg p-1 transition-colors"
           >
             <X className="size-5" />
           </button>
@@ -122,7 +122,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
           </div>
 
           {/* Metadata Grid */}
-          <div className="bg-muted/50 space-y-3 rounded-xl border border-zinc-100 p-4 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
+          <div className="bg-muted/50 border-border text-muted-foreground space-y-3 rounded-xl border p-4 text-sm">
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground flex items-center gap-2 text-xs">
                 <HardDrive className="size-4" /> {t("library.media.sizeLabel")}
@@ -178,7 +178,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
                 type="text"
                 readOnly
                 value={media.url}
-                className="bg-muted flex-1 rounded-lg border border-zinc-200 px-3 py-2 font-mono text-xs text-zinc-600 focus:outline-hidden dark:border-zinc-700 dark:text-zinc-300"
+                className="bg-muted border-border text-muted-foreground flex-1 rounded-lg border px-3 py-2 font-mono text-xs focus:outline-hidden"
               />
               <button
                 onClick={handleCopyUrl}
@@ -196,7 +196,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="border-border flex items-center justify-between border-t bg-zinc-50 p-4 dark:bg-zinc-900">
+        <div className="border-border bg-muted flex items-center justify-between border-t p-4">
           <button
             onClick={handleDelete}
             disabled={isDeleting}
@@ -210,7 +210,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
 
           <button
             onClick={onClose}
-            className="cursor-pointer rounded-xl border border-zinc-300 px-4 py-2 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className="border-border text-foreground hover:bg-muted cursor-pointer rounded-xl border px-4 py-2 text-xs font-medium transition-colors"
           >
             {t("library.media.close")}
           </button>

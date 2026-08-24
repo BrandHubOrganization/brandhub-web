@@ -30,7 +30,7 @@ export function EditorHeaderActions({
   const { t } = useTranslation();
   return (
     <div className="flex items-center gap-3">
-      <div className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
+      <div className="border-border bg-card text-muted-foreground flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs">
         {isSaving ? (
           <>
             <Clock className="size-3.5 animate-spin text-amber-500" />
@@ -54,7 +54,7 @@ export function EditorHeaderActions({
       <button
         type="button"
         onClick={onOpenTemplatePicker}
-        className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+        className="border-border bg-card text-foreground hover:bg-muted flex cursor-pointer items-center gap-1.5 rounded-xl border px-3.5 py-1.5 text-xs font-medium shadow-2xs transition-colors"
       >
         <LayoutTemplate className="text-brand-orange size-4" />
         <span>{t("editor.header.templatePickerButton")}</span>
@@ -63,7 +63,7 @@ export function EditorHeaderActions({
       <button
         type="button"
         onClick={onOpenPreview}
-        className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+        className="border-border bg-card text-foreground hover:bg-muted flex cursor-pointer items-center gap-1.5 rounded-xl border px-3.5 py-1.5 text-xs font-medium shadow-2xs transition-colors"
       >
         <Eye className="text-brand-orange size-4" />
         <span>{t("editor.header.previewButton")}</span>

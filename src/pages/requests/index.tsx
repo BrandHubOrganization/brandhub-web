@@ -41,7 +41,7 @@ export function ContentRequestListPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => fetchRequests()}
-            className="cursor-pointer rounded-xl border border-zinc-200 bg-white p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+            className="border-border bg-card text-muted-foreground hover:bg-muted cursor-pointer rounded-xl border p-2 transition-colors"
             title={t("requests.page.refresh")}
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />

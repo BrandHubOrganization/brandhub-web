@@ -44,7 +44,7 @@ export function HashtagGroupsPage() {
       }
     >
       <div className="space-y-6">
-        <div className="flex flex-col items-center justify-between gap-4 rounded-xl border border-zinc-200/80 bg-white p-4 shadow-xs sm:flex-row dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="border-border bg-card flex flex-col items-center justify-between gap-4 rounded-xl border p-4 shadow-xs sm:flex-row">
           <div className="w-full sm:w-96">
             <Input
               iconPrefix={<Search className="size-4" />}
@@ -55,7 +55,7 @@ export function HashtagGroupsPage() {
             />
           </div>
 
-          <div className="self-end text-xs font-medium text-zinc-500 sm:self-center dark:text-zinc-400">
+          <div className="text-muted-foreground self-end text-xs font-medium sm:self-center">
             {t("hashtagGroups.page.showingCount", { count: groups.length })}
           </div>
         </div>
