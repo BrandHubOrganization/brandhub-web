@@ -161,7 +161,7 @@ export const ContentRequestFilterBar: React.FC<
               onClick={() => onStatusToggle(key)}
               className={`cursor-pointer rounded-full border px-2.5 py-1 text-xs font-medium transition-all ${
                 isSelected
-                  ? "border-zinc-900 bg-zinc-900 font-semibold text-white shadow-2xs dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+                  ? "border-foreground bg-foreground text-background font-semibold shadow-2xs"
                   : `${colorClass} border-transparent hover:opacity-80`
               }`}
             >

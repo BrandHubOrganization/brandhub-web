@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api } from "@/services/api";
 import type { AnalyticsOverview, ActivityEvent } from "@/types/analytics";
 
 const MOCK_ANALYTICS_OVERVIEW: AnalyticsOverview = {

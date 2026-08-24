@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { mockEditorService } from "@/services/mockEditorService";
+import { mockEditorService } from "@/services/mock/mockEditorService";
 import type { SocialPlatform } from "@/types/editor";
 import type { ContentTemplate } from "@/types/template";
 

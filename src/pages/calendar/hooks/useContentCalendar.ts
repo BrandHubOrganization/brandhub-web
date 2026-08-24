@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { calendarService } from "@/services/calendarService";
+import { calendarService } from "@/services/mock/mockCalendarService";
 import type { CalendarPostEvent, PlatformType } from "@/types/calendar";
 
 const ALL_PLATFORMS: PlatformType[] = [

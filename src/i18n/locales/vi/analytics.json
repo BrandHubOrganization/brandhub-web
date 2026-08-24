@@ -1,6 +1,8 @@
 {
   "title": "Analytics",
   "description": "Báo cáo hiệu quả nội dung và tương tác chiến dịch.",
+  "loadError": "Không tải được dữ liệu thống kê.",
+  "retry": "Thử lại",
   "team": {
     "memberTableTitle": "Thành viên không gian làm việc",
     "totalMembersLabel": "{{count}} thành viên",
@@ -29,7 +31,10 @@
   },
   "channelPerformance": {
     "title": "Hiệu quả theo Kênh xuất bản",
-    "placeholder": "[Biểu đồ thống kê theo mạng xã hội: Facebook, Instagram, LinkedIn, Blog]"
+    "subtitle": "Lượt tiếp cận theo từng nền tảng trong 30 ngày qua",
+    "totalPosts": "Tổng bài đăng",
+    "totalReach": "Tổng tiếp cận",
+    "totalEngagement": "Tổng tương tác"
   },
   "overview": {
     "title": "Tổng quan Không gian làm việc",

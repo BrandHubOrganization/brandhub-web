@@ -1,0 +1,30 @@
+{
+  "title": "Tài khoản mạng xã hội",
+  "description": "Quản lý kết nối tài khoản mạng xã hội của workspace.",
+  "connectNew": "Kết nối tài khoản mới",
+  "loadError": "Không tải được danh sách tài khoản.",
+  "retry": "Thử lại",
+  "tokenExpires": "Token hết hạn:",
+  "rateLimit": "Giới hạn tần suất",
+  "postsToday": "bài hôm nay",
+  "connectSuccess": "Kết nối tài khoản thành công.",
+  "connectError": "Không thể kết nối tài khoản.",
+  "disconnectConfirm": "Bạn có chắc muốn ngắt kết nối tài khoản này?",
+  "disconnectSuccess": "Đã ngắt kết nối tài khoản.",
+  "disconnectError": "Không thể ngắt kết nối tài khoản.",
+  "refreshSuccess": "Đã làm mới token.",
+  "refreshError": "Không thể làm mới token.",
+  "status": {
+    "CONNECTED": "Đã kết nối",
+    "EXPIRED": "Hết hạn",
+    "DISCONNECTED": "Đã ngắt kết nối"
+  },
+  "actions": {
+    "connect": "Kết nối",
+    "disconnect": "Ngắt kết nối",
+    "refreshToken": "Làm mới token"
+  },
+  "connectDialog": {
+    "title": "Chọn nền tảng để kết nối"
+  }
+}

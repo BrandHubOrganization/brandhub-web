@@ -22,6 +22,11 @@
   "templates": "Mẫu Bài đăng",
   "hashtagGroups": "Nhóm Hashtag",
   "library": "Thư viện Nội dung",
+  "socialAccounts": "Tài khoản Mạng xã hội",
+  "publish": "Xuất bản",
+  "subscription": "Gói đăng ký",
+  "aiStudio": "AI Studio",
+  "reports": "Báo cáo",
   "clients": "Thương hiệu Khách hàng",
   "settings": "Thiết lập",
   "sections": {
@@ -39,5 +44,7 @@
   "toggleTheme": "Đổi giao diện",
   "realRoleTitle": "Vai trò thực tế từ Hệ thống Database",
   "roleLabel": "Vai trò: {{role}}",
-  "roleLabelPrefix": "Vai trò:"
+  "roleLabelPrefix": "Vai trò:",
+  "profile": "Hồ sơ",
+  "security": "Bảo mật"
 }

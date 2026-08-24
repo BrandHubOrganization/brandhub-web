@@ -1,0 +1,36 @@
+{
+  "title": "Notifications",
+  "markAllRead": "Mark all read",
+  "viewSettings": "Notification settings",
+  "empty": "No notifications yet.",
+  "types": {
+    "APPROVAL_REQUEST": "Approval request",
+    "PUBLISH_SUCCESS": "Publish success",
+    "PUBLISH_FAILED": "Publish failed",
+    "MENTION": "Mention",
+    "SYSTEM": "System"
+  },
+  "settings": {
+    "title": "Notification Settings",
+    "description": "Manage how you receive notifications from BrandHub.",
+    "loadError": "Failed to load notification settings.",
+    "retry": "Retry",
+    "channelsTitle": "Delivery channels",
+    "inApp": "In-App",
+    "email": "Email",
+    "push": "Push",
+    "categoriesTitle": "Notification types",
+    "on": "On",
+    "off": "Off",
+    "save": "Save changes",
+    "saveSuccess": "Notification settings saved.",
+    "saveError": "Failed to save settings.",
+    "emailPreviewTitle": "Email template preview",
+    "emailSubject": "New post needs review — BrandHub",
+    "emailBody": "Hi Trung Le, a post was just submitted for review. Click below to view it.",
+    "emailFootnote": "This is a preview of the email sent when a new notification arrives.",
+    "pushTitle": "Push Notifications (FCM)",
+    "pushBody": "Push notifications delivered to the BrandHub mobile app (iOS/Android) on important events.",
+    "pushFootnote": "Preview: enable to receive push notifications on your mobile device."
+  }
+}

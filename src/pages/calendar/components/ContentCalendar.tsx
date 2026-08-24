@@ -73,7 +73,7 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+    <div className="border-border bg-card rounded-xl border p-4 shadow-xs">
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

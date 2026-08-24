@@ -1,0 +1,44 @@
+{
+  "title": "Reports",
+  "description": "Team productivity, exports, and scheduled reports.",
+  "loadError": "Failed to load reports data.",
+  "retry": "Retry",
+  "team": {
+    "title": "Team Productivity",
+    "member": "Member",
+    "postsCreated": "Posts Created",
+    "postsApproved": "Posts Approved",
+    "avgApprovalTime": "Avg. Approval Time",
+    "aiGenerationsUsed": "AI Generations Used",
+    "hoursValue": "{{value}}h"
+  },
+  "export": {
+    "pdf": "Export PDF",
+    "excel": "Export Excel",
+    "unavailable": "Export is not available in this demo."
+  },
+  "scheduled": {
+    "title": "Scheduled Reports",
+    "namePlaceholder": "Report name",
+    "recipientsPlaceholder": "Recipients (comma separated)",
+    "add": "Add Schedule",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "delete": "Delete",
+    "lastSentAt": "Last sent:",
+    "frequencies": {
+      "DAILY": "Daily",
+      "WEEKLY": "Weekly",
+      "MONTHLY": "Monthly"
+    },
+    "createSuccess": "Scheduled report created.",
+    "createError": "Failed to create scheduled report.",
+    "toggleSuccess": "Scheduled report updated.",
+    "toggleError": "Failed to update scheduled report.",
+    "deleteConfirm": "Delete this scheduled report?",
+    "deleteSuccess": "Scheduled report deleted.",
+    "deleteError": "Failed to delete scheduled report."
+  }
+}

@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import type { Notification } from "@/types/notification";
+
+export interface Notification {
+  id: string;
+  title: string;
+  message?: string;
+  read: boolean;
+  createdAt: string;
+}
 
 export interface NotificationState {
   notifications: Notification[];

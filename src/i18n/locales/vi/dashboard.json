@@ -45,17 +45,90 @@
   "admin": {
     "title": "Admin Panel",
     "description": "Trang cấu hình và quản trị hệ thống dành riêng cho Administrator.",
-    "userManagementTitle": "Quản lý người dùng",
-    "userManagementDescription": "Thêm mới, chỉnh sửa quyền truy cập hoặc vô hiệu hóa các tài khoản Creator, AM và Client.",
-    "userManagementPlaceholder": "[Danh sách & bộ lọc người dùng]",
-    "systemConfigTitle": "Cấu hình Hệ thống",
-    "systemConfigDescription": "Quản lý các tích hợp API bên thứ ba (OpenAI, Facebook, Instagram Graph API).",
-    "systemConfigPlaceholder": "[Thông tin kết nối & API Keys]"
+    "loadError": "Không thể tải dữ liệu quản trị.",
+    "retry": "Thử lại",
+    "tabs": {
+      "users": "Người dùng",
+      "moderation": "Kiểm duyệt",
+      "health": "Tình trạng Hệ thống",
+      "stats": "Thống kê Nền tảng"
+    },
+    "users": {
+      "name": "Tên",
+      "role": "Vai trò",
+      "status": "Trạng thái",
+      "workspaceCount": "Không gian làm việc",
+      "createdAt": "Ngày tạo",
+      "actions": "Hành động",
+      "verify": "Xác minh",
+      "disable": "Vô hiệu hóa",
+      "enable": "Kích hoạt",
+      "delete": "Xóa",
+      "statuses": {
+        "ACTIVE": "Hoạt động",
+        "PENDING_VERIFICATION": "Chờ xác minh",
+        "DISABLED": "Đã vô hiệu hóa"
+      },
+      "verifySuccess": "Đã xác minh người dùng.",
+      "verifyError": "Không thể xác minh người dùng.",
+      "toggleSuccess": "Đã cập nhật trạng thái người dùng.",
+      "toggleError": "Không thể cập nhật trạng thái người dùng.",
+      "deleteConfirm": "Xóa người dùng này?",
+      "deleteSuccess": "Đã xóa người dùng.",
+      "deleteError": "Không thể xóa người dùng."
+    },
+    "moderation": {
+      "approve": "Duyệt",
+      "remove": "Gỡ bỏ",
+      "statuses": {
+        "PENDING": "Chờ duyệt",
+        "APPROVED": "Đã duyệt",
+        "REMOVED": "Đã gỡ"
+      },
+      "approveSuccess": "Đã duyệt nội dung.",
+      "approveError": "Không thể duyệt nội dung.",
+      "removeSuccess": "Đã gỡ nội dung.",
+      "removeError": "Không thể gỡ nội dung."
+    },
+    "health": {
+      "latency": "Độ trễ",
+      "uptime": "Thời gian hoạt động",
+      "statuses": {
+        "UP": "Hoạt động",
+        "DEGRADED": "Suy giảm",
+        "DOWN": "Ngừng hoạt động"
+      }
+    },
+    "stats": {
+      "labels": {
+        "Total Users": "Tổng người dùng",
+        "Total Workspaces": "Tổng không gian làm việc",
+        "Posts Published Today": "Bài đăng hôm nay",
+        "Active Subscriptions": "Gói đăng ký hoạt động",
+        "AI Generations Today": "Lượt tạo AI hôm nay",
+        "Storage Used GB": "Dung lượng đã dùng (GB)"
+      }
+    }
   },
   "portal": {
     "title": "Client Portal",
     "description": "Không gian phê duyệt nội dung của khách hàng.",
     "queueTitle": "Hàng đợi Phê duyệt Nội dung",
-    "createdOn": "Ngày tạo: {{date}}"
+    "createdOn": "Ngày tạo: {{date}}",
+    "approve": "Phê duyệt",
+    "requestRevision": "Yêu cầu chỉnh sửa",
+    "loadError": "Không tải được hàng đợi phê duyệt.",
+    "approveSuccess": "Đã phê duyệt nội dung.",
+    "approveError": "Phê duyệt thất bại, thử lại sau.",
+    "revisionSuccess": "Đã gửi yêu cầu chỉnh sửa.",
+    "revisionError": "Gửi yêu cầu thất bại, thử lại sau.",
+    "status": {
+      "AWAITING_APPROVAL": "Chờ phê duyệt",
+      "APPROVED": "Đã duyệt",
+      "REVISION_REQUESTED": "Yêu cầu chỉnh sửa"
+    },
+    "comments": "Bình luận ({{count}})",
+    "commentPlaceholder": "Viết bình luận...",
+    "sendComment": "Gửi bình luận"
   }
 }

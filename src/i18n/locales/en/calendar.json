@@ -28,6 +28,14 @@
     "platformLabel": "Platform",
     "scheduledTimeLabel": "Scheduled Time",
     "cancel": "Cancel",
-    "submit": "Schedule"
+    "submit": "Schedule",
+    "recurrenceLabel": "Recurrence",
+    "recurrence": {
+      "none": "No recurrence",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "until": "Until"
+    }
   }
 }

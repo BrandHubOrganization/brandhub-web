@@ -1,18 +1,26 @@
 import * as React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
+  AtSign,
   Bell,
+  CheckCircle,
   ChevronDown,
+  Clock,
   Globe,
+  IdCard,
+  Info,
   LogOut,
   Mail,
   Menu,
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
+  Settings,
   Shield,
+  ShieldCheck,
   Sun,
   User as UserIcon,
+  XCircle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -28,6 +36,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { MemberRole, Workspace } from "@/types/workspace";
+import type { AppNotification, NotificationType } from "@/types/notification";
+import {
+  getNotifications,
+  markAllAsRead,
+  markAsRead,
+} from "@/services/mock/mockNotificationService";
+
+const NOTIFICATION_ICONS: Record<NotificationType, React.ElementType> = {
+  APPROVAL_REQUEST: Clock,
+  PUBLISH_SUCCESS: CheckCircle,
+  PUBLISH_FAILED: XCircle,
+  MENTION: AtSign,
+  SYSTEM: Info,
+};
 
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -69,8 +91,39 @@ export function Navbar({
   const { theme, setTheme } = useTheme();
   const { i18n, t } = useTranslation();
 
-  const [hasUnreadNotification, setHasUnreadNotification] =
-    React.useState(true);
+  const [notifications, setNotifications] = React.useState<AppNotification[]>(
+    [],
+  );
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  React.useEffect(() => {
+    let cancelled = false;
+    getNotifications()
+      .then((data) => {
+        if (!cancelled) setNotifications(data);
+      })
+      .catch((err) => console.error("Failed to load notifications:", err));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleNotificationClick(n: AppNotification) {
+    if (!n.isRead) {
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item.id === n.id ? { ...item, isRead: true } : item,
+        ),
+      );
+      await markAsRead(n.id);
+    }
+    if (n.linkTo) navigate(n.linkTo);
+  }
+
+  async function handleMarkAllRead() {
+    setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
+    await markAllAsRead();
+  }
 
   const getBreadcrumbs = () => {
     const segments = location.pathname.split("/").filter(Boolean);
@@ -210,18 +263,88 @@ export function Navbar({
         </Button>
 
         {/* Notification Bell */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative size-8"
-          onClick={() => setHasUnreadNotification(false)}
-          title={t("nav.notifications")}
-        >
-          <Bell className="size-4" />
-          {hasUnreadNotification && (
-            <span className="bg-brand-orange absolute top-1.5 right-1.5 size-2 rounded-full" />
-          )}
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative size-8"
+              title={t("nav.notifications")}
+            >
+              <Bell className="size-4" />
+              {unreadCount > 0 && (
+                <span className="bg-brand-orange text-2xs absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full text-white">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-80">
+            <div className="flex items-center justify-between px-2 py-1.5">
+              <DropdownMenuLabel className="p-0 text-xs font-semibold">
+                {t("notifications.title")}
+              </DropdownMenuLabel>
+              {unreadCount > 0 && (
+                <button
+                  type="button"
+                  onClick={handleMarkAllRead}
+                  className="text-brand-orange text-2xs font-medium hover:underline"
+                >
+                  {t("notifications.markAllRead")}
+                </button>
+              )}
+            </div>
+            <DropdownMenuSeparator />
+            <div className="max-h-80 overflow-y-auto">
+              {notifications.length === 0 && (
+                <p className="text-muted-foreground px-2 py-4 text-center text-xs">
+                  {t("notifications.empty")}
+                </p>
+              )}
+              {notifications.map((n) => {
+                const Icon = NOTIFICATION_ICONS[n.type];
+                return (
+                  <DropdownMenuItem
+                    key={n.id}
+                    onClick={() => handleNotificationClick(n)}
+                    className={cn(
+                      "cursor-pointer items-start gap-2 py-2 text-xs",
+                      !n.isRead && "bg-muted/40",
+                    )}
+                  >
+                    <Icon className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
+                    <div className="flex-1 space-y-0.5">
+                      <p
+                        className={cn(
+                          "font-medium",
+                          n.isRead
+                            ? "text-muted-foreground"
+                            : "text-foreground",
+                        )}
+                      >
+                        {n.title}
+                      </p>
+                      <p className="text-muted-foreground text-2xs">
+                        {n.message}
+                      </p>
+                    </div>
+                    {!n.isRead && (
+                      <span className="bg-brand-orange mt-1 size-1.5 shrink-0 rounded-full" />
+                    )}
+                  </DropdownMenuItem>
+                );
+              })}
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => navigate("/notification-settings")}
+              className="cursor-pointer justify-center gap-1.5 text-xs font-medium"
+            >
+              <Settings className="size-3.5" />
+              {t("notifications.viewSettings")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <div className="bg-border mx-1 h-4 w-px" />
 
@@ -255,6 +378,20 @@ export function Navbar({
             >
               <Mail className="text-muted-foreground size-3.5" />
               {t("nav.invitations")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate("/profile")}
+              className="cursor-pointer gap-2 text-xs"
+            >
+              <IdCard className="text-muted-foreground size-3.5" />
+              {t("nav.profile")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate("/security")}
+              className="cursor-pointer gap-2 text-xs"
+            >
+              <ShieldCheck className="text-muted-foreground size-3.5" />
+              {t("nav.security")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => navigate("/change-password")}

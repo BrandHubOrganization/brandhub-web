@@ -45,17 +45,90 @@
   "admin": {
     "title": "Admin Panel",
     "description": "System configuration and administration for Administrators only.",
-    "userManagementTitle": "User Management",
-    "userManagementDescription": "Add, edit access permissions, or disable Creator, AM, and Client accounts.",
-    "userManagementPlaceholder": "[User list & filters]",
-    "systemConfigTitle": "System Configuration",
-    "systemConfigDescription": "Manage third-party API integrations (OpenAI, Facebook, Instagram Graph API).",
-    "systemConfigPlaceholder": "[Connection info & API keys]"
+    "loadError": "Failed to load admin data.",
+    "retry": "Retry",
+    "tabs": {
+      "users": "Users",
+      "moderation": "Moderation",
+      "health": "System Health",
+      "stats": "Platform Stats"
+    },
+    "users": {
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "workspaceCount": "Workspaces",
+      "createdAt": "Created At",
+      "actions": "Actions",
+      "verify": "Verify",
+      "disable": "Disable",
+      "enable": "Enable",
+      "delete": "Delete",
+      "statuses": {
+        "ACTIVE": "Active",
+        "PENDING_VERIFICATION": "Pending Verification",
+        "DISABLED": "Disabled"
+      },
+      "verifySuccess": "User verified.",
+      "verifyError": "Failed to verify user.",
+      "toggleSuccess": "User status updated.",
+      "toggleError": "Failed to update user status.",
+      "deleteConfirm": "Delete this user?",
+      "deleteSuccess": "User deleted.",
+      "deleteError": "Failed to delete user."
+    },
+    "moderation": {
+      "approve": "Approve",
+      "remove": "Remove",
+      "statuses": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REMOVED": "Removed"
+      },
+      "approveSuccess": "Content approved.",
+      "approveError": "Failed to approve content.",
+      "removeSuccess": "Content removed.",
+      "removeError": "Failed to remove content."
+    },
+    "health": {
+      "latency": "Latency",
+      "uptime": "Uptime",
+      "statuses": {
+        "UP": "Up",
+        "DEGRADED": "Degraded",
+        "DOWN": "Down"
+      }
+    },
+    "stats": {
+      "labels": {
+        "Total Users": "Total Users",
+        "Total Workspaces": "Total Workspaces",
+        "Posts Published Today": "Posts Published Today",
+        "Active Subscriptions": "Active Subscriptions",
+        "AI Generations Today": "AI Generations Today",
+        "Storage Used GB": "Storage Used (GB)"
+      }
+    }
   },
   "portal": {
     "title": "Client Portal",
     "description": "Client content approval workspace.",
     "queueTitle": "Content Approval Queue",
-    "createdOn": "Created on: {{date}}"
+    "createdOn": "Created on: {{date}}",
+    "approve": "Approve",
+    "requestRevision": "Request revision",
+    "loadError": "Could not load the approval queue.",
+    "approveSuccess": "Content approved.",
+    "approveError": "Approval failed, please try again.",
+    "revisionSuccess": "Revision request sent.",
+    "revisionError": "Request failed, please try again.",
+    "status": {
+      "AWAITING_APPROVAL": "Awaiting approval",
+      "APPROVED": "Approved",
+      "REVISION_REQUESTED": "Revision requested"
+    },
+    "comments": "Comments ({{count}})",
+    "commentPlaceholder": "Write a comment...",
+    "sendComment": "Send comment"
   }
 }

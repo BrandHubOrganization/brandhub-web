@@ -2,7 +2,7 @@ import type {
   CalendarFetchParams,
   CalendarPostEvent,
   ReschedulePostPayload,
-} from "../types/calendar";
+} from "@/types/calendar";
 
 // Mock initial data if backend is offline/mocking
 const MOCK_EVENTS: CalendarPostEvent[] = [

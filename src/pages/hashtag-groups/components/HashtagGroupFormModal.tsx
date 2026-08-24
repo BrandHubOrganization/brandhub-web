@@ -90,7 +90,7 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
       <DialogContent className="border-border overflow-hidden p-0 sm:max-w-md">
         <form onSubmit={handleSubmit}>
           {/* Header */}
-          <DialogHeader className="border-b border-zinc-100 p-4 dark:border-zinc-800">
+          <DialogHeader className="border-border border-b p-4">
             <DialogTitle className="text-foreground flex items-center gap-2 text-sm font-semibold">
               <Hash className="text-brand-orange size-5" />
               {initialData
@@ -118,11 +118,11 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
             {/* Hashtags Textarea */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                <label className="text-foreground text-xs font-semibold">
                   {t("hashtagGroups.form.hashtagsLabel")}{" "}
                   <span className="text-rose-500">*</span>
                 </label>
-                <span className="text-3xs text-zinc-400">
+                <span className="text-3xs text-muted-foreground">
                   {t("hashtagGroups.form.hashtagsMaxHint")}
                 </span>
               </div>
@@ -131,16 +131,16 @@ export const HashtagGroupFormModal: React.FC<HashtagGroupFormModalProps> = ({
                 value={hashtagsText}
                 onChange={(e) => setHashtagsText(e.target.value)}
                 placeholder={t("hashtagGroups.form.hashtagsPlaceholder")}
-                className="bg-muted text-foreground focus:ring-brand-orange/20 rounded-xl border-zinc-200 font-mono text-xs dark:border-zinc-700"
+                className="bg-muted text-foreground focus:ring-brand-orange/20 border-border rounded-xl font-mono text-xs"
               />
-              <p className="text-2xs text-zinc-400">
+              <p className="text-2xs text-muted-foreground">
                 {t("hashtagGroups.form.hashtagsHelperText")}
               </p>
             </div>
           </div>
 
           {/* Footer with UI Buttons */}
-          <DialogFooter className="flex justify-end gap-2 border-t border-zinc-100 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
+          <DialogFooter className="border-border bg-muted flex justify-end gap-2 border-t p-4">
             <Button type="button" variant="outline" size="sm" onClick={onClose}>
               {t("hashtagGroups.form.cancel")}
             </Button>

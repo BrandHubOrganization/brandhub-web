@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
-import { dashboardService } from "@/services/dashboardService";
+import { dashboardService } from "@/services/mock/mockDashboardService";
 import type { AnalyticsOverview, ActivityEvent } from "@/types/analytics";
 
 export function useDashboardData() {

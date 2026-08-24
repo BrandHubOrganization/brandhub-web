@@ -1,6 +1,6 @@
 import type { Platform } from "@/types/post";
 
-export type PackageTier = "STARTER" | "GROWTH" | "ENTERPRISE";
+export type PackageTier = "FREE" | "STARTER" | "GROWTH" | "ENTERPRISE";
 export type ClientStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED";
 
 export interface ServicePackage {

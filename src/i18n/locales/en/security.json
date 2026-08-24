@@ -1,0 +1,19 @@
+{
+  "title": "Security",
+  "description": "Manage two-factor authentication (2FA) for your account.",
+  "2fa": {
+    "title": "Two-Factor Authentication (2FA)",
+    "subtitle": "Strengthen security with a TOTP code on every sign-in.",
+    "stepHint": "Scan the QR code with an authenticator app (Google Authenticator, Authy...) then enter the 6-digit code to activate.",
+    "secretLabel": "Secret key",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copySuccess": "Secret key copied",
+    "verifyCodeLabel": "Verification code (6 digits)",
+    "backupCodes": "Backup codes (store somewhere safe)",
+    "enableButton": "Enable 2FA",
+    "enabled": "2FA enabled",
+    "enableSuccess": "2FA enabled",
+    "disableSuccess": "2FA disabled"
+  }
+}

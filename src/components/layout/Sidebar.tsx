@@ -13,6 +13,12 @@ import {
   LayoutTemplate,
   Hash,
   UserPlus,
+  Send,
+  Link2,
+  CreditCard,
+  Sparkles,
+  Building2,
+  FileBarChart,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -59,6 +65,7 @@ const NAV_SECTIONS: NavSection[] = [
       { to: "/hashtag-groups", icon: Hash, labelKey: "nav.hashtagGroups" },
       { to: "/calendar", icon: CalendarDays, labelKey: "nav.calendar" },
       { to: "/library", icon: FolderKanban, labelKey: "nav.library" },
+      { to: "/publish", icon: Send, labelKey: "nav.publish" },
     ],
   },
   {
@@ -66,7 +73,24 @@ const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.manage",
     items: [
       { to: "/workspace", icon: FolderOpen, labelKey: "nav.workspace" },
+      { to: "/clients", icon: Building2, labelKey: "nav.clients" },
       { to: "/portal", icon: Users, labelKey: "nav.portal" },
+      {
+        to: "/social-accounts",
+        icon: Link2,
+        labelKey: "nav.socialAccounts",
+      },
+      {
+        to: "/subscription/plans",
+        icon: CreditCard,
+        labelKey: "nav.subscription",
+      },
+      {
+        to: "/ai-studio/ambassadors",
+        icon: Sparkles,
+        labelKey: "nav.aiStudio",
+      },
+      { to: "/reports", icon: FileBarChart, labelKey: "nav.reports" },
     ],
   },
   {

@@ -26,6 +26,8 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
   const [caption, setCaption] = useState("");
   const [platform, setPlatform] = useState<PlatformType>("FACEBOOK");
   const [time, setTime] = useState("09:00");
+  const [recurrence, setRecurrence] = useState("none");
+  const [repeatUntil, setRepeatUntil] = useState("");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   if (!isOpen) return null;
@@ -61,17 +63,17 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-        <div className="animate-in fade-in zoom-in-95 max-h-[90vh] w-full max-w-md space-y-5 overflow-y-auto rounded-xl border border-border bg-card p-6 shadow-2xl duration-200">
-          <div className="flex items-center justify-between border-b border-border pb-3">
+        <div className="animate-in fade-in zoom-in-95 border-border bg-card max-h-[90vh] w-full max-w-md space-y-5 overflow-y-auto rounded-xl border p-6 shadow-2xl duration-200">
+          <div className="border-border flex items-center justify-between border-b pb-3">
             <div className="flex items-center gap-2">
               <CalendarIcon className="text-brand-orange size-5" />
-              <h3 className="text-lg font-semibold text-foreground">
+              <h3 className="text-foreground text-lg font-semibold">
                 {t("calendar.schedule.title")}
               </h3>
             </div>
             <button
               onClick={onClose}
-              className="cursor-pointer text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground cursor-pointer"
             >
               <X className="size-5" />
             </button>
@@ -79,7 +81,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">
+              <label className="text-muted-foreground mb-1 block text-xs font-medium">
                 {t("calendar.schedule.postTitleLabel")}
               </label>
               <Input
@@ -88,13 +90,13 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 placeholder={t("calendar.schedule.postTitlePlaceholder")}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="rounded-lg border-border bg-card text-sm text-foreground"
+                className="border-border bg-card text-foreground rounded-lg text-sm"
               />
             </div>
 
             <div>
               <div className="mb-1 flex items-center justify-between">
-                <label className="block text-xs font-medium text-muted-foreground">
+                <label className="text-muted-foreground block text-xs font-medium">
                   {t("calendar.schedule.captionPreviewLabel")}
                 </label>
                 <button
@@ -111,19 +113,19 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                 placeholder={t("calendar.schedule.captionPlaceholder")}
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                className="rounded-lg border-border bg-card text-sm text-foreground"
+                className="border-border bg-card text-foreground rounded-lg text-sm"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                <label className="text-muted-foreground mb-1 block text-xs font-medium">
                   {t("calendar.schedule.platformLabel")}
                 </label>
                 <Select
                   value={platform}
                   onChange={(e) => setPlatform(e.target.value as PlatformType)}
-                  className="rounded-lg border-border bg-card text-sm text-foreground"
+                  className="border-border bg-card text-foreground rounded-lg text-sm"
                 >
                   <option value="FACEBOOK">Facebook</option>
                   <option value="INSTAGRAM">Instagram</option>
@@ -134,7 +136,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                <label className="text-muted-foreground mb-1 block text-xs font-medium">
                   {t("calendar.schedule.scheduledTimeLabel")}
                 </label>
                 <div className="relative">
@@ -142,17 +144,56 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="rounded-lg border-border bg-card text-sm text-foreground"
+                    className="border-border bg-card text-foreground rounded-lg text-sm"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
+            <div className="border-border rounded-lg border p-3">
+              <label className="text-muted-foreground mb-2 block text-xs font-medium">
+                {t("calendar.schedule.recurrenceLabel")}
+              </label>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
+                <Select
+                  value={recurrence}
+                  onChange={(e) => setRecurrence(e.target.value)}
+                  className="border-border bg-card text-foreground rounded-lg text-sm"
+                >
+                  <option value="none">
+                    {t("calendar.schedule.recurrence.none")}
+                  </option>
+                  <option value="daily">
+                    {t("calendar.schedule.recurrence.daily")}
+                  </option>
+                  <option value="weekly">
+                    {t("calendar.schedule.recurrence.weekly")}
+                  </option>
+                  <option value="monthly">
+                    {t("calendar.schedule.recurrence.monthly")}
+                  </option>
+                </Select>
+                {recurrence !== "none" && (
+                  <div className="flex items-center gap-2">
+                    <label className="text-muted-foreground text-xs">
+                      {t("calendar.schedule.recurrence.until")}
+                    </label>
+                    <Input
+                      type="date"
+                      value={repeatUntil}
+                      onChange={(e) => setRepeatUntil(e.target.value)}
+                      className="border-border bg-card text-foreground rounded-lg text-sm"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="border-border flex items-center justify-end gap-2 border-t pt-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="cursor-pointer rounded-lg border border-border px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted"
+                className="border-border text-muted-foreground hover:bg-muted cursor-pointer rounded-lg border px-4 py-2 text-xs font-medium"
               >
                 {t("calendar.schedule.cancel")}
               </button>

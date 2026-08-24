@@ -1,0 +1,36 @@
+{
+  "title": "Thông báo",
+  "markAllRead": "Đánh dấu tất cả đã đọc",
+  "viewSettings": "Cài đặt thông báo",
+  "empty": "Không có thông báo nào.",
+  "types": {
+    "APPROVAL_REQUEST": "Yêu cầu duyệt",
+    "PUBLISH_SUCCESS": "Đăng bài thành công",
+    "PUBLISH_FAILED": "Đăng bài thất bại",
+    "MENTION": "Nhắc đến bạn",
+    "SYSTEM": "Hệ thống"
+  },
+  "settings": {
+    "title": "Cài đặt thông báo",
+    "description": "Quản lý cách bạn nhận thông báo từ BrandHub.",
+    "loadError": "Không thể tải cài đặt thông báo.",
+    "retry": "Thử lại",
+    "channelsTitle": "Kênh nhận thông báo",
+    "inApp": "Trong ứng dụng",
+    "email": "Email",
+    "push": "Đẩy (Push)",
+    "categoriesTitle": "Loại thông báo",
+    "on": "Bật",
+    "off": "Tắt",
+    "save": "Lưu thay đổi",
+    "saveSuccess": "Đã lưu cài đặt thông báo.",
+    "saveError": "Lưu cài đặt thất bại.",
+    "emailPreviewTitle": "Xem trước mẫu email",
+    "emailSubject": "Có bài đăng mới cần duyệt — BrandHub",
+    "emailBody": "Xin chào Trung Le, một bài đăng vừa được gửi để duyệt. Bấm nút bên dưới để xem.",
+    "emailFootnote": "Đây là bản xem trước mẫu email gửi khi có thông báo mới.",
+    "pushTitle": "Thông báo Push (FCM)",
+    "pushBody": "Thông báo đẩy đến ứng dụng di động BrandHub (iOS/Android) khi có sự kiện quan trọng.",
+    "pushFootnote": "Preview: bật để nhận thông báo đẩy trên thiết bị di động của bạn."
+  }
+}

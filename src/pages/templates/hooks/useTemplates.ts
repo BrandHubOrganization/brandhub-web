@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { mockTemplateService } from "@/services/mockTemplateService";
+import { mockTemplateService } from "@/services/mock/mockTemplateService";
 import type { ContentTemplate } from "@/types/template";
 
 export function useTemplates() {

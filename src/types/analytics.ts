@@ -37,3 +37,24 @@ export interface ActivityFeedResponse {
   page: number;
   size: number;
 }
+
+export type AnalyticsPlatform =
+  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
+
+export interface ChannelStat {
+  platform: AnalyticsPlatform;
+  postCount: number;
+  reach: number;
+  engagement: number;
+}
+
+export interface StatSummaryCard {
+  key: "reach" | "engagement" | "posts" | "responseRate";
+  value: string;
+  deltaPercent: number;
+}
+
+export interface AnalyticsSummary {
+  cards: StatSummaryCard[];
+  channelStats: ChannelStat[];
+}

@@ -1,0 +1,44 @@
+{
+  "title": "Báo cáo",
+  "description": "Năng suất đội nhóm, xuất báo cáo và lịch báo cáo tự động.",
+  "loadError": "Không thể tải dữ liệu báo cáo.",
+  "retry": "Thử lại",
+  "team": {
+    "title": "Năng suất Đội nhóm",
+    "member": "Thành viên",
+    "postsCreated": "Bài đã tạo",
+    "postsApproved": "Bài đã duyệt",
+    "avgApprovalTime": "TG duyệt TB",
+    "aiGenerationsUsed": "Lượt dùng AI",
+    "hoursValue": "{{value}} giờ"
+  },
+  "export": {
+    "pdf": "Xuất PDF",
+    "excel": "Xuất Excel",
+    "unavailable": "Chức năng xuất file không khả dụng trong bản demo."
+  },
+  "scheduled": {
+    "title": "Báo cáo Định kỳ",
+    "namePlaceholder": "Tên báo cáo",
+    "recipientsPlaceholder": "Người nhận (phân tách bằng dấu phẩy)",
+    "add": "Thêm lịch",
+    "active": "Đang hoạt động",
+    "inactive": "Đã tắt",
+    "activate": "Bật",
+    "deactivate": "Tắt",
+    "delete": "Xóa",
+    "lastSentAt": "Gửi lần cuối:",
+    "frequencies": {
+      "DAILY": "Hàng ngày",
+      "WEEKLY": "Hàng tuần",
+      "MONTHLY": "Hàng tháng"
+    },
+    "createSuccess": "Đã tạo báo cáo định kỳ.",
+    "createError": "Không thể tạo báo cáo định kỳ.",
+    "toggleSuccess": "Đã cập nhật báo cáo định kỳ.",
+    "toggleError": "Không thể cập nhật báo cáo định kỳ.",
+    "deleteConfirm": "Xóa báo cáo định kỳ này?",
+    "deleteSuccess": "Đã xóa báo cáo định kỳ.",
+    "deleteError": "Không thể xóa báo cáo định kỳ."
+  }
+}

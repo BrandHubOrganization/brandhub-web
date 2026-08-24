@@ -24,11 +24,26 @@ import { AdminPage } from "@/pages/admin";
 import { EditorPage } from "@/pages/editor";
 import { CalendarPage } from "@/pages/calendar";
 import { AnalyticsPage } from "@/pages/analytics";
+import { SocialAccountsPage } from "@/pages/social-accounts";
+import { PublishPage } from "@/pages/publish";
+import { SubscriptionPlansPage } from "@/pages/subscription/plans";
+import { SubscriptionCheckoutPage } from "@/pages/subscription/checkout";
+import { SubscriptionInvoicesPage } from "@/pages/subscription/invoices";
 import { ClientDetailPage } from "@/pages/client/detail";
+import { ClientListPage } from "@/pages/client/list";
+import { ClientCreatePage } from "@/pages/client/create";
 import { ContentLibraryPage } from "@/pages/library";
 import { ContentRequestListPage } from "@/pages/requests";
 import { TemplateBrowserPage } from "@/pages/templates";
 import { HashtagGroupsPage } from "@/pages/hashtag-groups";
+import { AmbassadorsPage } from "@/pages/ai-studio/ambassadors";
+import { KnowledgeBasePage } from "@/pages/ai-studio/knowledge-base";
+import { TrendsPage } from "@/pages/ai-studio/trends";
+import { ReportsPage } from "@/pages/reports";
+import { NotificationSettingsPage } from "@/pages/notification-settings";
+import { SecurityPage } from "@/pages/security";
+import { ProfilePage } from "@/pages/profile";
+import { VideoStudioPage } from "@/pages/ai-studio/video";
 import ExamplesPage from "@/components/examples";
 
 export function AppRoutes() {
@@ -47,6 +62,8 @@ export function AppRoutes() {
       <Route element={<AuthGuard />}>
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/clients" element={<ClientListPage />} />
+          <Route path="/clients/create" element={<ClientCreatePage />} />
           <Route path="/clients/:id" element={<ClientDetailPage />} />
           <Route path="/change-password" element={<ChangePasswordPage />} />
           <Route path="/workspace" element={<WorkspacePage />} />
@@ -69,6 +86,34 @@ export function AppRoutes() {
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/library" element={<ContentLibraryPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/social-accounts" element={<SocialAccountsPage />} />
+          <Route path="/publish" element={<PublishPage />} />
+          <Route
+            path="/subscription/plans"
+            element={<SubscriptionPlansPage />}
+          />
+          <Route
+            path="/subscription/checkout"
+            element={<SubscriptionCheckoutPage />}
+          />
+          <Route
+            path="/subscription/invoices"
+            element={<SubscriptionInvoicesPage />}
+          />
+          <Route path="/ai-studio/ambassadors" element={<AmbassadorsPage />} />
+          <Route
+            path="/ai-studio/knowledge-base"
+            element={<KnowledgeBasePage />}
+          />
+          <Route path="/ai-studio/trends" element={<TrendsPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route
+            path="/notification-settings"
+            element={<NotificationSettingsPage />}
+          />
+          <Route path="/security" element={<SecurityPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/ai-studio/video" element={<VideoStudioPage />} />
           <Route path="/components/examples" element={<ExamplesPage />} />
         </Route>
       </Route>
