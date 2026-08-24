@@ -22,6 +22,11 @@
   "templates": "Post Templates",
   "hashtagGroups": "Hashtag Groups",
   "library": "Content Library",
+  "socialAccounts": "Social Accounts",
+  "publish": "Publish",
+  "subscription": "Subscription",
+  "aiStudio": "AI Studio",
+  "reports": "Reports",
   "clients": "Brand Clients",
   "settings": "Settings",
   "sections": {

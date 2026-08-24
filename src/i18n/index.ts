@@ -17,6 +17,12 @@ import viLibrary from "./locales/vi/library.json";
 import viRequests from "./locales/vi/requests.json";
 import viTemplates from "./locales/vi/templates.json";
 import viAnalytics from "./locales/vi/analytics.json";
+import viSocialAccounts from "./locales/vi/socialAccounts.json";
+import viPublish from "./locales/vi/publish.json";
+import viSubscription from "./locales/vi/subscription.json";
+import viAiStudio from "./locales/vi/aiStudio.json";
+import viReports from "./locales/vi/reports.json";
+import viNotifications from "./locales/vi/notifications.json";
 
 import enAuth from "./locales/en/auth.json";
 import enCommon from "./locales/en/common.json";
@@ -34,6 +40,12 @@ import enLibrary from "./locales/en/library.json";
 import enRequests from "./locales/en/requests.json";
 import enTemplates from "./locales/en/templates.json";
 import enAnalytics from "./locales/en/analytics.json";
+import enSocialAccounts from "./locales/en/socialAccounts.json";
+import enPublish from "./locales/en/publish.json";
+import enSubscription from "./locales/en/subscription.json";
+import enAiStudio from "./locales/en/aiStudio.json";
+import enReports from "./locales/en/reports.json";
+import enNotifications from "./locales/en/notifications.json";
 
 const vi = {
   auth: viAuth,
@@ -52,6 +64,12 @@ const vi = {
   requests: viRequests,
   templates: viTemplates,
   analytics: viAnalytics,
+  socialAccounts: viSocialAccounts,
+  publish: viPublish,
+  subscription: viSubscription,
+  aiStudio: viAiStudio,
+  reports: viReports,
+  notifications: viNotifications,
 };
 
 const en = {
@@ -71,6 +89,12 @@ const en = {
   requests: enRequests,
   templates: enTemplates,
   analytics: enAnalytics,
+  socialAccounts: enSocialAccounts,
+  publish: enPublish,
+  subscription: enSubscription,
+  aiStudio: enAiStudio,
+  reports: enReports,
+  notifications: enNotifications,
 };
 
 const savedLang = localStorage.getItem("brandhub-lang");
