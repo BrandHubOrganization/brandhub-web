@@ -8,7 +8,20 @@
     "titleLabel": "Tiêu đề nội dung / Yêu cầu",
     "titlePlaceholder": "Nhập tiêu đề bài viết...",
     "captionLabel": "Nội dung Caption chính",
-    "mediaLabel": "Hình ảnh & Video đính kèm"
+    "mediaLabel": "Hình ảnh & Video đính kèm",
+    "postTypeLabel": "Chọn Hình thức Bài đăng",
+    "postType": {
+      "TEXT": "Chữ (Text)",
+      "IMAGE": "Hình ảnh",
+      "VIDEO": "Video",
+      "CAROUSEL": "Carousel / Bộ ảnh"
+    },
+    "postTypeHint": {
+      "TEXT": "Bài đăng chỉ gồm chữ: caption + hashtags, phù hợp Threads, Zalo Text.",
+      "IMAGE": "Bài đăng kèm một hình ảnh nổi bật, phù hợp Facebook, Instagram, Zalo Image.",
+      "VIDEO": "Bài đăng kèm một video, phù hợp TikTok, Instagram Reel, YouTube Shorts.",
+      "CAROUSEL": "Bài đăng bộ 2–10 ảnh trượt liên tiếp, phù hợp Instagram Carousel, LinkedIn."
+    }
   },
   "aiGenerate": {
     "regenerateSuccess": "Đã tái tạo nội dung theo phản hồi!",

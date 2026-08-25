@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Search } from "lucide-react";
+import { Search, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { SearchResult } from "../types/knowledgeBase";
@@ -72,6 +72,16 @@ export function SemanticSearchBar({ onSearch }: SemanticSearchBarProps) {
                 </p>
               </div>
             ))
+          )}
+          {results.length > 0 && (
+            <div className="text-muted-foreground flex items-center gap-1.5 px-1 text-[11px]">
+              <ShieldCheck className="size-3.5 text-emerald-600" />
+              <span>
+                {t("aiStudio.knowledgeBase.guardVerified", {
+                  count: results.length,
+                })}
+              </span>
+            </div>
           )}
         </div>
       )}

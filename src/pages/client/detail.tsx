@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Settings, UserCog } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useWorkspaceStore } from "@/store/workspaceStore";
@@ -15,6 +15,13 @@ import { ClientBanner } from "./components/ClientBanner";
 import { ClientAnalyticsCards } from "./components/ClientAnalyticsCards";
 import { ClientSocialAccounts } from "./components/ClientSocialAccounts";
 import { ClientContentRequests } from "./components/ClientContentRequests";
+import { ServicePackageModal } from "./components/ServicePackageModal";
+
+const AM_OPTIONS = [
+  { id: "am-1", name: "Nguyễn Văn An" },
+  { id: "am-2", name: "Phạm Minh Dung" },
+  { id: "am-3", name: "Lê Hoàng Cường" },
+];
 
 export function ClientDetailPage() {
   const { t } = useTranslation();
@@ -27,6 +34,8 @@ export function ClientDetailPage() {
 
   const [client, setClient] = useState<Client | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
 
   const fetchClientDetail = useCallback(async () => {
     if (!id) return;
@@ -44,6 +53,18 @@ export function ClientDetailPage() {
   useEffect(() => {
     fetchClientDetail();
   }, [fetchClientDetail]);
+
+  async function handleAssign(amId: string) {
+    if (!client) return;
+    const am = AM_OPTIONS.find((o) => o.id === amId);
+    setClient({
+      ...client,
+      assignedAccountManagerId: amId,
+      assignedAccountManagerName: am?.name ?? client.assignedAccountManagerName,
+    });
+    setAssignOpen(false);
+    toast.success(t("client.detail.assignSuccess"));
+  }
 
   if (isLoading) {
     return (
@@ -88,14 +109,32 @@ export function ClientDetailPage() {
         name: client.name,
       })}
       actions={
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate(membersPath)}
-          className="cursor-pointer gap-1.5 text-xs"
-        >
-          <ArrowLeft className="size-3.5" /> {t("client.detail.back")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate(membersPath)}
+            className="cursor-pointer gap-1.5 text-xs"
+          >
+            <ArrowLeft className="size-3.5" /> {t("client.detail.back")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="cursor-pointer gap-1.5 text-xs"
+            onClick={() => setAssignOpen(true)}
+          >
+            <UserCog className="size-3.5" /> {t("client.detail.assignAm")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="cursor-pointer gap-1.5 text-xs"
+            onClick={() => setSettingsOpen(true)}
+          >
+            <Settings className="size-3.5" /> {t("client.detail.settings")}
+          </Button>
+        </div>
       }
     >
       <div className="space-y-6">
@@ -113,6 +152,55 @@ export function ClientDetailPage() {
           <ClientContentRequests requests={client.contentRequests} />
         </div>
       </div>
+
+      {assignOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="bg-card w-full max-w-sm rounded-xl border p-5">
+            <h3 className="text-foreground text-sm font-semibold">
+              {t("client.detail.assignAm")}
+            </h3>
+            <p className="text-muted-foreground mt-1 text-xs">
+              {t("client.detail.assignSubtitle")}
+            </p>
+            <div className="mt-4 space-y-2">
+              {AM_OPTIONS.map((am) => (
+                <button
+                  key={am.id}
+                  type="button"
+                  className="bg-muted text-foreground w-full rounded-lg px-3 py-2 text-left text-sm transition-colors hover:opacity-80"
+                  onClick={() => handleAssign(am.id)}
+                >
+                  {am.name}
+                  {am.id === client.assignedAccountManagerId && (
+                    <span className="text-muted-foreground ml-2 text-xs">
+                      · {t("client.detail.current")}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4 w-full"
+              onClick={() => setAssignOpen(false)}
+            >
+              {t("client.detail.cancel")}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <ServicePackageModal
+        isOpen={settingsOpen}
+        client={settingsOpen ? client : null}
+        onClose={() => setSettingsOpen(false)}
+        onSubmit={async () => {
+          setSettingsOpen(false);
+          await fetchClientDetail();
+        }}
+        isLoading={false}
+      />
     </PageWrapper>
   );
 }

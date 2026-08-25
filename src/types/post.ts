@@ -35,4 +35,13 @@ export interface Post {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+  /** Deliverability metadata — surfaced to make retry/DLQ visible in the UI. */
+  delivery?: {
+    attempt: number;
+    maxAttempts: number;
+    lastBackoffSec: number;
+    nextAttemptAt?: string;
+    inDeadLetterQueue?: boolean;
+    lastError?: string;
+  };
 }

@@ -54,9 +54,21 @@
       "INDEXED": "Đã lập chỉ mục",
       "FAILED": "Thất bại"
     },
+    "stage": {
+      "chunking": "Tách đoạn",
+      "embedding": "Embedding",
+      "indexing": "Lập chỉ mục"
+    },
+    "brandVoice": {
+      "title": "Giọng thương hiệu",
+      "trained": "Đã huấn luyện",
+      "tone": "Thân thiện, gần gũi, nhiệt huyết",
+      "updatedAt": "Cập nhật 2026-08-20"
+    },
     "searchPlaceholder": "Tìm kiếm ngữ nghĩa...",
     "search": "Tìm kiếm",
-    "noResults": "Không tìm thấy kết quả phù hợp."
+    "noResults": "Không tìm thấy kết quả phù hợp.",
+    "guardVerified": "Đã đối chiếu {{count}} nguồn · không phát hiện ảo giác."
   },
   "trends": {
     "title": "Xu hướng",

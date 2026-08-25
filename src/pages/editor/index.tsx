@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Input } from "@/components/ui/input";
@@ -10,8 +11,13 @@ import { TemplatePickerModal } from "@/pages/editor/components/TemplatePickerMod
 import { useEditorForm } from "./hooks/useEditorForm";
 import { EditorHeaderActions } from "./components/EditorHeaderActions";
 
+type PostType = "TEXT" | "IMAGE" | "VIDEO" | "CAROUSEL";
+
+const POST_TYPES: PostType[] = ["TEXT", "IMAGE", "VIDEO", "CAROUSEL"];
+
 export function EditorPage() {
   const { t } = useTranslation();
+  const [postType, setPostType] = useState<PostType>("IMAGE");
   const {
     title,
     caption,
@@ -51,6 +57,31 @@ export function EditorPage() {
         />
       }
     >
+      <div className="border-border bg-card space-y-3 rounded-xl border p-5 shadow-xs">
+        <label className="text-muted-foreground block text-xs font-semibold">
+          {t("editor.page.postTypeLabel")}
+        </label>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {POST_TYPES.map((type) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => setPostType(type)}
+              className={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+                postType === type
+                  ? "border-brand-orange text-brand-orange bg-brand-orange-soft"
+                  : "bg-muted text-foreground hover:opacity-80"
+              }`}
+            >
+              {t(`editor.page.postType.${type}`)}
+            </button>
+          ))}
+        </div>
+        <p className="text-muted-foreground text-xs">
+          {t(`editor.page.postTypeHint.${postType}`)}
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <div className="border-border bg-card space-y-2 rounded-xl border p-4 shadow-xs">

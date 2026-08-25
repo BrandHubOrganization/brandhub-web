@@ -36,7 +36,9 @@
     "platforms": "Nền tảng",
     "status": "Trạng thái",
     "when": "Thời gian",
-    "retry": "Thử lại"
+    "retry": "Thử lại",
+    "dlq": "DLQ",
+    "deliveryAttempt": "Thử {{attempt}}/{{max}} · backoff {{backoff}}s"
   },
   "status": {
     "DRAFT": "Nháp",

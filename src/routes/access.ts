@@ -14,7 +14,7 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/requests": ["OWNER", "ACCOUNT", "CREATOR", "CLIENT"],
   "/portal": ["OWNER", "ACCOUNT", "CLIENT"],
   "/library": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER", "CLIENT"],
-  "/editor": ["CREATOR"],
+  "/editor": ["OWNER", "CREATOR"],
   "/templates": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER"],
   "/hashtag-groups": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER"],
   "/calendar": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER", "CLIENT"],

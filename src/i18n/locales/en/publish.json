@@ -36,7 +36,9 @@
     "platforms": "Platforms",
     "status": "Status",
     "when": "When",
-    "retry": "Retry"
+    "retry": "Retry",
+    "dlq": "DLQ",
+    "deliveryAttempt": "Attempt {{attempt}}/{{max}} · backoff {{backoff}}s"
   },
   "status": {
     "DRAFT": "Draft",

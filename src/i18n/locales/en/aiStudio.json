@@ -54,9 +54,21 @@
       "INDEXED": "Indexed",
       "FAILED": "Failed"
     },
+    "stage": {
+      "chunking": "Chunking",
+      "embedding": "Embedding",
+      "indexing": "Indexing"
+    },
+    "brandVoice": {
+      "title": "Brand Voice",
+      "trained": "Trained",
+      "tone": "Friendly, approachable, energetic",
+      "updatedAt": "Updated 2026-08-20"
+    },
     "searchPlaceholder": "Semantic search...",
     "search": "Search",
-    "noResults": "No matching results found."
+    "noResults": "No matching results found.",
+    "guardVerified": "Verified against {{count}} sources · no hallucination detected."
   },
   "trends": {
     "title": "Trends",

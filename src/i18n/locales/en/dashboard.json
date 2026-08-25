@@ -113,6 +113,10 @@
   "portal": {
     "title": "Client Portal",
     "description": "Client content approval workspace.",
+    "tabApprovals": "Approval Queue",
+    "tabCalendar": "Content Calendar",
+    "calendarEmpty": "No posts scheduled yet.",
+    "calendarLoadError": "Could not load content calendar.",
     "queueTitle": "Content Approval Queue",
     "createdOn": "Created on: {{date}}",
     "approve": "Approve",

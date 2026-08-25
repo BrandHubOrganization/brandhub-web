@@ -23,7 +23,13 @@
     "back": "Quay lại",
     "descriptionTemplate": "Chi tiết thương hiệu và lịch sử nội dung của {{name}}",
     "accountManager": "Account Manager",
-    "unassigned": "Chưa phân công"
+    "unassigned": "Chưa phân công",
+    "assignAm": "Phân công AM",
+    "assignSubtitle": "Chọn Account Manager phụ trách thương hiệu này",
+    "assignSuccess": "Đã phân công Account Manager.",
+    "current": "Hiện tại",
+    "cancel": "Hủy",
+    "settings": "Cài đặt"
   },
   "table": {
     "changeServicePackage": "Đổi gói dịch vụ",

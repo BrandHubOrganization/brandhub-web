@@ -23,7 +23,13 @@
     "back": "Back",
     "descriptionTemplate": "Brand details and content history for {{name}}",
     "accountManager": "Account Manager",
-    "unassigned": "Unassigned"
+    "unassigned": "Unassigned",
+    "assignAm": "Assign AM",
+    "assignSubtitle": "Choose the Account Manager responsible for this brand",
+    "assignSuccess": "Account Manager assigned.",
+    "current": "Current",
+    "cancel": "Cancel",
+    "settings": "Settings"
   },
   "table": {
     "changeServicePackage": "Change service package",

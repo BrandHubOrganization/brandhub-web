@@ -8,7 +8,20 @@
     "titleLabel": "Content Title / Brief",
     "titlePlaceholder": "Enter post title...",
     "captionLabel": "Main Caption Content",
-    "mediaLabel": "Attached Images & Videos"
+    "mediaLabel": "Attached Images & Videos",
+    "postTypeLabel": "Select Post Type",
+    "postType": {
+      "TEXT": "Text",
+      "IMAGE": "Image",
+      "VIDEO": "Video",
+      "CAROUSEL": "Carousel"
+    },
+    "postTypeHint": {
+      "TEXT": "Text-only post: caption + hashtags, fits Threads, Zalo Text.",
+      "IMAGE": "Single featured image, fits Facebook, Instagram, Zalo Image.",
+      "VIDEO": "Single video, fits TikTok, Instagram Reel, YouTube Shorts.",
+      "CAROUSEL": "2–10 swipeable images, fits Instagram Carousel, LinkedIn."
+    }
   },
   "aiGenerate": {
     "regenerateSuccess": "Content regenerated based on your feedback!",

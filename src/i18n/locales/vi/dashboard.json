@@ -113,6 +113,10 @@
   "portal": {
     "title": "Client Portal",
     "description": "Không gian phê duyệt nội dung của khách hàng.",
+    "tabApprovals": "Hàng đợi Phê duyệt",
+    "tabCalendar": "Lịch Nội Dung",
+    "calendarEmpty": "Chưa có bài đăng nào trong lịch.",
+    "calendarLoadError": "Không tải được lịch nội dung.",
     "queueTitle": "Hàng đợi Phê duyệt Nội dung",
     "createdOn": "Ngày tạo: {{date}}",
     "approve": "Phê duyệt",
