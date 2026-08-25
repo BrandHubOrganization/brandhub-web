@@ -119,7 +119,7 @@ export function NotificationSettingsPage() {
           </div>
 
           <div className="border-border bg-card rounded-xl border p-4">
-            <div className="flex items-center gap-2 border-b border-border pb-3">
+            <div className="border-border flex items-center gap-2 border-b pb-3">
               <Mail className="text-brand-orange size-4" />
               <h2 className="text-foreground text-sm font-semibold">
                 {t("notifications.settings.emailPreviewTitle")}
@@ -132,14 +132,14 @@ export function NotificationSettingsPage() {
               <p className="text-muted-foreground text-xs">
                 {t("notifications.settings.emailBody")}
               </p>
-              <div className="bg-muted text-muted-foreground mt-2 rounded px-3 py-2 text-2xs">
+              <div className="bg-muted text-muted-foreground text-2xs mt-2 rounded px-3 py-2">
                 {t("notifications.settings.emailFootnote")}
               </div>
             </div>
           </div>
 
           <div className="border-border bg-card rounded-xl border p-4">
-            <div className="flex items-center gap-2 border-b border-border pb-3">
+            <div className="border-border flex items-center gap-2 border-b pb-3">
               <Smartphone className="text-brand-orange size-4" />
               <h2 className="text-foreground text-sm font-semibold">
                 {t("notifications.settings.pushTitle")}
@@ -148,7 +148,7 @@ export function NotificationSettingsPage() {
             <p className="text-muted-foreground mt-3 text-xs">
               {t("notifications.settings.pushBody")}
             </p>
-            <div className="bg-muted text-muted-foreground mt-2 rounded px-3 py-2 text-2xs">
+            <div className="bg-muted text-muted-foreground text-2xs mt-2 rounded px-3 py-2">
               {t("notifications.settings.pushFootnote")}
             </div>
           </div>

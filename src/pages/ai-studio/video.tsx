@@ -65,14 +65,16 @@ export function VideoStudioPage() {
                   key={scene.index}
                   className="border-border flex items-center gap-3 rounded-lg border px-3 py-2.5"
                 >
-                  <div className="bg-muted text-foreground flex size-8 shrink-0 items-center justify-center rounded text-2xs font-mono">
+                  <div className="bg-muted text-foreground text-2xs flex size-8 shrink-0 items-center justify-center rounded font-mono">
                     {String(scene.index).padStart(2, "0")}
                   </div>
                   <div className="flex-1">
                     <p className="text-foreground text-xs font-medium">
                       {scene.title}
                     </p>
-                    <p className="text-muted-foreground text-2xs">{scene.duration}</p>
+                    <p className="text-muted-foreground text-2xs">
+                      {scene.duration}
+                    </p>
                   </div>
                   <Play className="text-muted-foreground size-3.5" />
                 </div>
@@ -84,7 +86,7 @@ export function VideoStudioPage() {
         {/* Right: preview + export */}
         <div className="space-y-6">
           <div className="border-border bg-card aspect-video overflow-hidden rounded-xl border">
-            <div className="bg-muted flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
+            <div className="bg-muted text-muted-foreground flex h-full flex-col items-center justify-center gap-2">
               <Clapperboard className="size-8" />
               <span className="text-2xs">
                 {t("aiStudio.video.previewPlaceholder")}

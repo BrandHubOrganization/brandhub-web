@@ -5,7 +5,8 @@ export type ContentRequestStatus =
   | "PENDING_REVIEW"
   | "SENT_TO_CLIENT"
   | "APPROVED"
-  | "REJECTED";
+  | "REJECTED"
+  | "CANCELLED";
 
 export type SocialPlatform =
   "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
@@ -18,6 +19,13 @@ export interface Assignee {
   role: string;
 }
 
+export interface StatusHistoryEntry {
+  status: ContentRequestStatus;
+  changedAt: string;
+  changedBy: string;
+  note?: string;
+}
+
 export interface ContentRequest {
   id: string;
   topic: string;
@@ -27,6 +35,8 @@ export interface ContentRequest {
   status: ContentRequestStatus;
   assignee?: Assignee;
   createdAt: string;
+  briefNote?: string;
+  statusHistory?: StatusHistoryEntry[];
 }
 
 export interface ContentRequestQueryParams {
@@ -46,4 +56,19 @@ export interface ContentRequestPaginatedResponse {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+export interface CreateContentRequestPayload {
+  topic: string;
+  platforms: SocialPlatform[];
+  clientName: string;
+  deadline: string;
+  briefNote?: string;
+}
+
+export interface ReviseContentRequestPayload {
+  topic: string;
+  platforms: SocialPlatform[];
+  deadline: string;
+  briefNote?: string;
 }

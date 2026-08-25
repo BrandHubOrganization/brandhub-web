@@ -9,6 +9,8 @@ import type {
   ContentRequestStatus,
   SocialPlatform,
   ContentRequestPaginatedResponse,
+  CreateContentRequestPayload,
+  ReviseContentRequestPayload,
 } from "@/types/contentRequest";
 
 export type ActiveTab = "all" | "my-tasks";
@@ -37,6 +39,13 @@ export function useContentRequests() {
   });
   const [loading, setLoading] = useState(true);
   const [selectedRequestForAssign, setSelectedRequestForAssign] =
+    useState<ContentRequest | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [selectedRequestForDetail, setSelectedRequestForDetail] =
+    useState<ContentRequest | null>(null);
+  const [selectedRequestForRevise, setSelectedRequestForRevise] =
+    useState<ContentRequest | null>(null);
+  const [selectedRequestForCancel, setSelectedRequestForCancel] =
     useState<ContentRequest | null>(null);
 
   const updateQueryParams = useCallback(
@@ -146,6 +155,35 @@ export function useContentRequests() {
     fetchRequests();
   };
 
+  const handleCreateRequest = async (payload: CreateContentRequestPayload) => {
+    const created = await mockContentRequestService.createRequest(payload);
+    toast.success(t("requests.create.success", { topic: created.topic }));
+    fetchRequests();
+  };
+
+  const handleReviseRequest = async (
+    requestId: string,
+    payload: ReviseContentRequestPayload,
+  ) => {
+    const updated = await mockContentRequestService.reviseRequest(
+      requestId,
+      payload,
+    );
+    toast.success(t("requests.revise.success", { topic: updated.topic }));
+    setSelectedRequestForDetail(null);
+    fetchRequests();
+  };
+
+  const handleCancelRequest = async (requestId: string, reason?: string) => {
+    const updated = await mockContentRequestService.cancelRequest(
+      requestId,
+      reason,
+    );
+    toast.success(t("requests.cancelDialog.success", { topic: updated.topic }));
+    setSelectedRequestForDetail(null);
+    fetchRequests();
+  };
+
   return {
     userRole,
     searchQuery,
@@ -159,6 +197,14 @@ export function useContentRequests() {
     loading,
     selectedRequestForAssign,
     setSelectedRequestForAssign,
+    isCreateOpen,
+    setIsCreateOpen,
+    selectedRequestForDetail,
+    setSelectedRequestForDetail,
+    selectedRequestForRevise,
+    setSelectedRequestForRevise,
+    selectedRequestForCancel,
+    setSelectedRequestForCancel,
     handleSearchChange,
     handleStatusToggle,
     handlePlatformToggle,
@@ -168,6 +214,9 @@ export function useContentRequests() {
     handleTabChange,
     handlePageChange,
     handleConfirmAssign,
+    handleCreateRequest,
+    handleReviseRequest,
+    handleCancelRequest,
     fetchRequests,
   };
 }

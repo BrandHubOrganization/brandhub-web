@@ -50,7 +50,9 @@ export function ProfilePage() {
                 </button>
               </div>
               <div className="space-y-1">
-                <h2 className="text-foreground text-base font-semibold">{name}</h2>
+                <h2 className="text-foreground text-base font-semibold">
+                  {name}
+                </h2>
                 <p className="text-muted-foreground text-xs">{email}</p>
                 <span className="bg-brand-orange-soft text-brand-orange text-3xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium">
                   <BadgeCheck className="size-3" />
@@ -82,14 +84,14 @@ export function ProfilePage() {
 
           {/* Identity verification */}
           <div className="border-border bg-card rounded-xl border p-6">
-            <div className="flex items-center justify-between border-b border-border pb-3">
+            <div className="border-border flex items-center justify-between border-b pb-3">
               <div className="flex items-center gap-2">
                 <IdCard className="text-brand-orange size-5" />
                 <h3 className="text-foreground text-sm font-semibold">
                   {t("profile.identity.title")}
                 </h3>
               </div>
-              <span className="bg-emerald-100 text-3xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium text-emerald-700">
+              <span className="text-3xs inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-700">
                 <FileCheck2 className="size-3" />
                 {t("profile.identity.status")}
               </span>
@@ -117,7 +119,7 @@ export function ProfilePage() {
         </div>
 
         {/* Right: danger zone */}
-        <div className="border-border rounded-xl border border-red-200 bg-card p-6 dark:border-red-900/50">
+        <div className="border-border bg-card rounded-xl border border-red-200 p-6 dark:border-red-900/50">
           <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
             <TriangleAlert className="size-4 text-rose-500" />
             {t("profile.danger.title")}

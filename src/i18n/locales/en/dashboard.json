@@ -129,6 +129,23 @@
     },
     "comments": "Comments ({{count}})",
     "commentPlaceholder": "Write a comment...",
-    "sendComment": "Send comment"
+    "sendComment": "Send comment",
+    "revisionRound": "Revision round {{round}}",
+    "chainTitle": "Approval Chain",
+    "stage": {
+      "CREATOR": "Creator",
+      "MANAGER": "Manager",
+      "CLIENT": "Client"
+    },
+    "stageStatus": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REVISION_REQUESTED": "Revision requested"
+    },
+    "rejectReasonRequired": "Please enter a reason for requesting revision",
+    "rejectPlaceholder": "Enter the reason for requesting content revision...",
+    "resubmit": "Resubmit for approval",
+    "resubmitSuccess": "Content resubmitted, a new approval round has started.",
+    "resubmitError": "Resubmit failed, please try again."
   }
 }

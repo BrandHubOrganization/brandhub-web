@@ -25,7 +25,49 @@
     "PENDING_REVIEW": "Pending Review",
     "SENT_TO_CLIENT": "Sent to Client",
     "APPROVED": "Approved",
-    "REJECTED": "Rejected"
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled"
+  },
+  "create": {
+    "button": "Create Request",
+    "title": "Create New Content Request",
+    "topicLabel": "Post Topic",
+    "topicPlaceholder": "E.g. Launch Summer 2026 Collection",
+    "clientLabel": "Client",
+    "clientPlaceholder": "E.g. Nike Vietnam",
+    "deadlineLabel": "Deadline",
+    "platformsLabel": "Publishing Platforms",
+    "briefLabel": "Brief Note (optional)",
+    "briefPlaceholder": "Short description of the content request...",
+    "submit": "Create Request",
+    "submitting": "Creating...",
+    "cancel": "Cancel",
+    "validationError": "Please fill in topic, client, deadline and at least 1 platform",
+    "success": "Created request \"{{topic}}\""
+  },
+  "detail": {
+    "title": "Request Detail",
+    "statusHistoryTitle": "Status History",
+    "briefLabel": "Brief note",
+    "reviseButton": "Revise request",
+    "cancelButton": "Cancel request",
+    "close": "Close"
+  },
+  "revise": {
+    "title": "Revise Request",
+    "submit": "Save changes",
+    "submitting": "Saving...",
+    "success": "Updated request \"{{topic}}\"",
+    "error": "Error revising request"
+  },
+  "cancelDialog": {
+    "title": "Cancel Content Request?",
+    "description": "This will cancel request \"{{topic}}\" and cannot be undone.",
+    "reasonPlaceholder": "Cancellation reason (optional)...",
+    "confirm": "Confirm Cancel",
+    "cancel": "Keep Request",
+    "success": "Cancelled request \"{{topic}}\"",
+    "error": "Error cancelling request"
   },
   "filterBar": {
     "resetFilter": "Reset filters",

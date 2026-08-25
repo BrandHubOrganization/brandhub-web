@@ -7,6 +7,7 @@ import {
   approveQueueItem,
   getApprovalQueue,
   requestQueueItemRevision,
+  resubmitQueueItem,
 } from "@/services/mock/mockPortalService";
 import type { ApprovalQueueItem } from "@/types/portal";
 import { ApprovalQueueList } from "./components/ApprovalQueueList";
@@ -38,14 +39,15 @@ export function PortalPage() {
     };
   }, [t]);
 
+  async function reloadQueue() {
+    const queue = await getApprovalQueue();
+    setItems(queue);
+  }
+
   async function handleApprove(id: string) {
     try {
       await approveQueueItem(id);
-      setItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, status: "APPROVED" as const } : item,
-        ),
-      );
+      await reloadQueue();
       toast.success(t("dashboard.portal.approveSuccess"));
     } catch (err) {
       console.error("Failed to approve item:", err);
@@ -53,20 +55,29 @@ export function PortalPage() {
     }
   }
 
-  async function handleRequestRevision(id: string) {
+  async function handleRequestRevision(id: string, comment: string) {
+    if (!comment.trim()) {
+      toast.error(t("dashboard.portal.rejectReasonRequired"));
+      return;
+    }
     try {
-      await requestQueueItemRevision(id);
-      setItems((prev) =>
-        prev.map((item) =>
-          item.id === id
-            ? { ...item, status: "REVISION_REQUESTED" as const }
-            : item,
-        ),
-      );
+      await requestQueueItemRevision(id, comment.trim());
+      await reloadQueue();
       toast.success(t("dashboard.portal.revisionSuccess"));
     } catch (err) {
       console.error("Failed to request revision:", err);
       toast.error(t("dashboard.portal.revisionError"));
+    }
+  }
+
+  async function handleResubmit(id: string) {
+    try {
+      await resubmitQueueItem(id);
+      await reloadQueue();
+      toast.success(t("dashboard.portal.resubmitSuccess"));
+    } catch (err) {
+      console.error("Failed to resubmit item:", err);
+      toast.error(t("dashboard.portal.resubmitError"));
     }
   }
 
@@ -82,6 +93,7 @@ export function PortalPage() {
           items={items}
           onApprove={handleApprove}
           onRequestRevision={handleRequestRevision}
+          onResubmit={handleResubmit}
         />
       )}
     </PageWrapper>

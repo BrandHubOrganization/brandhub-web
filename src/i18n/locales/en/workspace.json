@@ -31,6 +31,10 @@
     }
   },
   "noRole": "—",
+  "reportFrequency": {
+    "WEEKLY": "Weekly",
+    "MONTHLY": "Monthly"
+  },
   "members": {
     "title": "Members",
     "description": "Manage who has access to this workspace.",

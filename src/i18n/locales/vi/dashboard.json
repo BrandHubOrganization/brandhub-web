@@ -129,6 +129,23 @@
     },
     "comments": "Bình luận ({{count}})",
     "commentPlaceholder": "Viết bình luận...",
-    "sendComment": "Gửi bình luận"
+    "sendComment": "Gửi bình luận",
+    "revisionRound": "Vòng chỉnh sửa {{round}}",
+    "chainTitle": "Chuỗi Phê Duyệt",
+    "stage": {
+      "CREATOR": "Người Sáng Tạo",
+      "MANAGER": "Quản Lý",
+      "CLIENT": "Khách Hàng"
+    },
+    "stageStatus": {
+      "PENDING": "Đang chờ",
+      "APPROVED": "Đã duyệt",
+      "REVISION_REQUESTED": "Yêu cầu sửa"
+    },
+    "rejectReasonRequired": "Vui lòng nhập lý do yêu cầu chỉnh sửa",
+    "rejectPlaceholder": "Nhập lý do yêu cầu chỉnh sửa nội dung...",
+    "resubmit": "Gửi lại để duyệt",
+    "resubmitSuccess": "Đã gửi lại nội dung, bắt đầu vòng duyệt mới.",
+    "resubmitError": "Gửi lại thất bại, thử lại sau."
   }
 }

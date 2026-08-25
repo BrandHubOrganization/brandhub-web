@@ -31,6 +31,10 @@
     }
   },
   "noRole": "—",
+  "reportFrequency": {
+    "WEEKLY": "Hàng tuần",
+    "MONTHLY": "Hàng tháng"
+  },
   "members": {
     "title": "Thành viên",
     "description": "Quản lý quyền truy cập không gian làm việc này.",

@@ -32,8 +32,8 @@ export function LoginPage() {
       });
       const { accessToken } = res.data.data;
 
-      // 1. Lưu token để axios interceptor đính kèm Authorization header
-      localStorage.setItem("accessToken", accessToken);
+      // 1. Lưu token vào store để axios interceptor đính kèm Authorization header
+      useAuthStore.getState().setTokens(accessToken, null);
 
       // 2. Lấy dữ liệu Profile & Role THẬT 100% từ Database qua /api/v1/users/me
       const profileRes = await authService.getProfile();
