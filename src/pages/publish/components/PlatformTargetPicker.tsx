@@ -74,7 +74,7 @@ export function PlatformTargetPicker({
 
       {targets.length > 0 && (
         <div className="border-border bg-card space-y-2 rounded-xl border p-3">
-          <div className="text-muted-foreground flex items-center gap-1.5 text-2xs font-semibold tracking-wider uppercase">
+          <div className="text-muted-foreground text-2xs flex items-center gap-1.5 font-semibold tracking-wider uppercase">
             <Gauge className="size-3.5" />
             {t("publish.composer.rateLimitLabel")}
           </div>
@@ -84,7 +84,7 @@ export function PlatformTargetPicker({
             const isOverLimit = usage.used >= usage.max;
             return (
               <div key={tgt.platform} className="space-y-1">
-                <div className="flex items-center justify-between text-2xs">
+                <div className="text-2xs flex items-center justify-between">
                   <span className="text-foreground font-medium">
                     {PLATFORM_META[tgt.platform].label}
                   </span>

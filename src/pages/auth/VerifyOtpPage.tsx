@@ -170,7 +170,9 @@ export function VerifyOtpPage() {
                 {resending ? (
                   <RefreshCw className="size-3 animate-spin" />
                 ) : resendCooldown > 0 ? (
-                  t("auth.verifyOtp.resendCooldown", { seconds: resendCooldown })
+                  t("auth.verifyOtp.resendCooldown", {
+                    seconds: resendCooldown,
+                  })
                 ) : (
                   t("auth.verifyOtp.resend")
                 )}

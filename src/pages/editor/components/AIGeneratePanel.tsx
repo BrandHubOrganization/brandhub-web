@@ -223,7 +223,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
                 key={type}
                 type="button"
                 onClick={() => setContentType(type)}
-                className={`rounded-lg py-1.5 text-2xs font-semibold transition-colors ${
+                className={`text-2xs rounded-lg py-1.5 font-semibold transition-colors ${
                   contentType === type
                     ? "bg-card text-brand-orange shadow-xs"
                     : "text-muted-foreground hover:text-foreground cursor-pointer"
@@ -308,7 +308,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
               type="button"
               onClick={() => setActiveImageTool("TEXT_TO_IMAGE")}
               title={t("editor.aiGenerate.textToImage")}
-              className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 text-3xs font-medium transition-colors ${
+              className={`text-3xs flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 font-medium transition-colors ${
                 activeImageTool === "TEXT_TO_IMAGE"
                   ? "bg-brand-orange-soft text-brand-orange"
                   : "bg-muted text-muted-foreground hover:opacity-80"
@@ -321,7 +321,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
               type="button"
               onClick={() => setActiveImageTool("VARIATIONS")}
               title={t("editor.aiGenerate.imageVariations")}
-              className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 text-3xs font-medium transition-colors ${
+              className={`text-3xs flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 font-medium transition-colors ${
                 activeImageTool === "VARIATIONS"
                   ? "bg-brand-orange-soft text-brand-orange"
                   : "bg-muted text-muted-foreground hover:opacity-80"
@@ -334,7 +334,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
               type="button"
               onClick={() => setActiveImageTool("REMOVE_BG")}
               title={t("editor.aiGenerate.removeBackground")}
-              className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 text-3xs font-medium transition-colors ${
+              className={`text-3xs flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 font-medium transition-colors ${
                 activeImageTool === "REMOVE_BG"
                   ? "bg-brand-orange-soft text-brand-orange"
                   : "bg-muted text-muted-foreground hover:opacity-80"
@@ -347,7 +347,7 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
               type="button"
               onClick={() => setActiveImageTool("STYLE")}
               title={t("editor.aiGenerate.stylePresets")}
-              className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 text-3xs font-medium transition-colors ${
+              className={`text-3xs flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 font-medium transition-colors ${
                 activeImageTool === "STYLE"
                   ? "bg-brand-orange-soft text-brand-orange"
                   : "bg-muted text-muted-foreground hover:opacity-80"

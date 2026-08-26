@@ -9,7 +9,12 @@ import {
   Bookmark,
   MoreHorizontal,
   ThumbsUp,
+  ThumbsDown,
   Globe,
+  AtSign,
+  Repeat2,
+  Send,
+  PlayCircle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -152,7 +157,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
               alt="Post content"
               className="h-full w-full object-cover"
             />
-            <span className="bg-background/80 text-foreground absolute top-2 right-2 rounded-full px-2 py-0.5 text-3xs font-semibold">
+            <span className="bg-background/80 text-foreground text-3xs absolute top-2 right-2 rounded-full px-2 py-0.5 font-semibold">
               1/{Math.max(mediaUrls.length, 3)}
             </span>
             <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1">
@@ -387,7 +392,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
   return (
     <div className="border-border bg-card mx-auto max-w-md space-y-3 rounded-xl border p-4">
       <div className="flex items-center gap-2">
-        <div className="bg-sky-500/10 text-sky-600 flex size-8 items-center justify-center rounded-full">
+        <div className="flex size-8 items-center justify-center rounded-full bg-sky-500/10 text-sky-600">
           <MessageCircle className="size-4" />
         </div>
         <div>
@@ -409,9 +414,7 @@ export const PlatformMockup: React.FC<PlatformMockupProps> = ({
             />
           </div>
         )}
-        <p className="text-foreground text-xs whitespace-pre-wrap">
-          {caption}
-        </p>
+        <p className="text-foreground text-xs whitespace-pre-wrap">{caption}</p>
       </div>
     </div>
   );

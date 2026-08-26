@@ -150,7 +150,7 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
               <button
                 key={fmt.key}
                 onClick={() => setInstagramFormat(fmt.key)}
-                className={`flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-2xs font-medium transition-colors ${
+                className={`text-2xs flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-colors ${
                   instagramFormat === fmt.key
                     ? "bg-brand-orange-soft text-brand-orange"
                     : "text-muted-foreground hover:bg-accent"

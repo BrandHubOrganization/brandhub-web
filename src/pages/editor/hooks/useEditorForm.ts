@@ -43,6 +43,8 @@ export function useEditorForm() {
     "FACEBOOK",
     "INSTAGRAM",
     "TIKTOK",
+    "THREADS",
+    "ZALO_OA",
   ]);
 
   const [isDirty, setIsDirty] = useState(false);
