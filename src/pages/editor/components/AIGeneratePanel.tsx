@@ -11,6 +11,8 @@ import {
   Wand2,
   Eraser,
   Images,
+  ImagePlus,
+  Palette,
 } from "lucide-react";
 import { mockEditorService } from "@/services/mock/mockEditorService";
 import type { SocialPlatform, AIErrorType } from "@/types/editor";
@@ -44,12 +46,36 @@ const TONE_PRESETS = [
   },
 ] as const;
 
+type ContentType = "CAPTION" | "BLOG" | "AD_COPY";
+const CONTENT_TYPES: ContentType[] = ["CAPTION", "BLOG", "AD_COPY"];
+
+type BrandTone = "FRIENDLY" | "PROFESSIONAL" | "PLAYFUL" | "LUXURY";
+const BRAND_TONES: BrandTone[] = [
+  "FRIENDLY",
+  "PROFESSIONAL",
+  "PLAYFUL",
+  "LUXURY",
+];
+
+type ImageTool = "TEXT_TO_IMAGE" | "VARIATIONS" | "REMOVE_BG" | "STYLE";
+const STYLE_PRESETS = [
+  "REALISTIC",
+  "MINIMALIST",
+  "VIBRANT",
+  "VINTAGE",
+] as const;
+
 export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
   topic = "",
   targetPlatforms = ["FACEBOOK", "INSTAGRAM", "TIKTOK"],
   onApplyAIResult,
 }) => {
   const { t } = useTranslation();
+  const [contentType, setContentType] = useState<ContentType>("CAPTION");
+  const [brandTone, setBrandTone] = useState<BrandTone>("FRIENDLY");
+  const [activeImageTool, setActiveImageTool] =
+    useState<ImageTool>("TEXT_TO_IMAGE");
+  const [textToImagePrompt, setTextToImagePrompt] = useState("");
   const [prompt, setPrompt] = useState(
     "Viết bài đăng hấp dẫn, ngắn gọn với giọng văn thu hút và kêu gọi hành động.",
   ); // ponytail: sample prompt text is demo content, not UI chrome
@@ -186,16 +212,64 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
           </div>
         </div>
 
+        {/* Content Type Tabs */}
+        <div className="space-y-1.5">
+          <span className="text-2xs text-muted-foreground block font-semibold tracking-wider uppercase">
+            {t("editor.aiGenerate.contentTypeLabel")}
+          </span>
+          <div className="bg-muted grid grid-cols-3 gap-1 rounded-xl p-1">
+            {CONTENT_TYPES.map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setContentType(type)}
+                className={`rounded-lg py-1.5 text-2xs font-semibold transition-colors ${
+                  contentType === type
+                    ? "bg-card text-brand-orange shadow-xs"
+                    : "text-muted-foreground hover:text-foreground cursor-pointer"
+                }`}
+              >
+                {t(`editor.aiGenerate.contentType.${type}`)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Brand Tone Selector */}
+        <div className="space-y-1.5">
+          <label className="text-muted-foreground text-xs font-semibold">
+            {t("editor.aiGenerate.toneLabel")}
+          </label>
+          <div className="flex flex-wrap gap-1.5">
+            {BRAND_TONES.map((tone) => (
+              <button
+                key={tone}
+                type="button"
+                onClick={() => setBrandTone(tone)}
+                className={`text-2xs cursor-pointer rounded-lg px-2.5 py-1 font-medium transition-colors ${
+                  brandTone === tone
+                    ? "bg-brand-orange-soft text-brand-orange"
+                    : "bg-muted text-muted-foreground hover:opacity-80"
+                }`}
+              >
+                {t(`editor.aiGenerate.tone.${tone}`)}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Prompt Input Area */}
         <div className="space-y-1.5">
           <label className="text-muted-foreground text-xs font-semibold">
             {t("editor.aiGenerate.promptLabel")}
           </label>
           <Textarea
-            rows={3}
+            rows={contentType === "BLOG" ? 5 : 3}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder={t("editor.aiGenerate.promptPlaceholder")}
+            placeholder={t(
+              `editor.aiGenerate.promptPlaceholders.${contentType}`,
+            )}
             className="focus:ring-brand-orange/20 focus:border-brand-orange border-border bg-muted text-foreground rounded-xl text-xs"
           />
         </div>
@@ -229,30 +303,132 @@ export const AIGeneratePanel: React.FC<AIGeneratePanelProps> = ({
           <span className="text-2xs text-muted-foreground block font-semibold tracking-wider uppercase">
             {t("editor.aiGenerate.imageToolsLabel")}
           </span>
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-4 gap-1">
             <button
               type="button"
-              onClick={() =>
-                setImageToolResult(t("editor.aiGenerate.variationsDone"))
-              }
-              className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs bg-muted text-muted-foreground flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2 font-medium transition-colors"
+              onClick={() => setActiveImageTool("TEXT_TO_IMAGE")}
+              title={t("editor.aiGenerate.textToImage")}
+              className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 text-3xs font-medium transition-colors ${
+                activeImageTool === "TEXT_TO_IMAGE"
+                  ? "bg-brand-orange-soft text-brand-orange"
+                  : "bg-muted text-muted-foreground hover:opacity-80"
+              }`}
+            >
+              <ImagePlus className="size-3.5" />
+              {t("editor.aiGenerate.textToImage")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveImageTool("VARIATIONS")}
+              title={t("editor.aiGenerate.imageVariations")}
+              className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 text-3xs font-medium transition-colors ${
+                activeImageTool === "VARIATIONS"
+                  ? "bg-brand-orange-soft text-brand-orange"
+                  : "bg-muted text-muted-foreground hover:opacity-80"
+              }`}
             >
               <Images className="size-3.5" />
               {t("editor.aiGenerate.imageVariations")}
             </button>
             <button
               type="button"
-              onClick={() =>
-                setImageToolResult(t("editor.aiGenerate.bgRemoved"))
-              }
-              className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs bg-muted text-muted-foreground flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2 font-medium transition-colors"
+              onClick={() => setActiveImageTool("REMOVE_BG")}
+              title={t("editor.aiGenerate.removeBackground")}
+              className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 text-3xs font-medium transition-colors ${
+                activeImageTool === "REMOVE_BG"
+                  ? "bg-brand-orange-soft text-brand-orange"
+                  : "bg-muted text-muted-foreground hover:opacity-80"
+              }`}
             >
               <Eraser className="size-3.5" />
               {t("editor.aiGenerate.removeBackground")}
             </button>
+            <button
+              type="button"
+              onClick={() => setActiveImageTool("STYLE")}
+              title={t("editor.aiGenerate.stylePresets")}
+              className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg px-1 py-2 text-3xs font-medium transition-colors ${
+                activeImageTool === "STYLE"
+                  ? "bg-brand-orange-soft text-brand-orange"
+                  : "bg-muted text-muted-foreground hover:opacity-80"
+              }`}
+            >
+              <Palette className="size-3.5" />
+              {t("editor.aiGenerate.stylePresets")}
+            </button>
           </div>
+
+          {activeImageTool === "TEXT_TO_IMAGE" && (
+            <div className="space-y-1.5 pt-1">
+              <Textarea
+                rows={2}
+                value={textToImagePrompt}
+                onChange={(e) => setTextToImagePrompt(e.target.value)}
+                placeholder={t("editor.aiGenerate.textToImagePlaceholder")}
+                className="focus:ring-brand-orange/20 focus:border-brand-orange border-border bg-muted text-foreground rounded-xl text-xs"
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setImageToolResult(t("editor.aiGenerate.textToImageDone"))
+                }
+                className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs bg-muted text-muted-foreground flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2 font-medium transition-colors"
+              >
+                <ImagePlus className="size-3.5" />
+                {t("editor.aiGenerate.textToImageButton")}
+              </button>
+            </div>
+          )}
+
+          {activeImageTool === "VARIATIONS" && (
+            <button
+              type="button"
+              onClick={() =>
+                setImageToolResult(t("editor.aiGenerate.variationsDone"))
+              }
+              className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs bg-muted text-muted-foreground mt-1 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2 font-medium transition-colors"
+            >
+              <Images className="size-3.5" />
+              {t("editor.aiGenerate.imageVariations")}
+            </button>
+          )}
+
+          {activeImageTool === "REMOVE_BG" && (
+            <button
+              type="button"
+              onClick={() =>
+                setImageToolResult(t("editor.aiGenerate.bgRemoved"))
+              }
+              className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs bg-muted text-muted-foreground mt-1 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 py-2 font-medium transition-colors"
+            >
+              <Eraser className="size-3.5" />
+              {t("editor.aiGenerate.removeBackground")}
+            </button>
+          )}
+
+          {activeImageTool === "STYLE" && (
+            <div className="mt-1 grid grid-cols-2 gap-1.5">
+              {STYLE_PRESETS.map((style) => (
+                <button
+                  key={style}
+                  type="button"
+                  onClick={() =>
+                    setImageToolResult(
+                      t("editor.aiGenerate.stylePresetApplied", {
+                        style: t(`editor.aiGenerate.stylePreset.${style}`),
+                      }),
+                    )
+                  }
+                  className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs bg-muted text-muted-foreground cursor-pointer rounded-lg px-2 py-2 font-medium transition-colors"
+                >
+                  {t(`editor.aiGenerate.stylePreset.${style}`)}
+                </button>
+              ))}
+            </div>
+          )}
+
           {imageToolResult && (
-            <p className="bg-brand-orange-soft/40 border-brand-orange/20 text-brand-orange text-2xs rounded-lg border px-2.5 py-1.5">
+            <p className="bg-brand-orange-soft/40 border-brand-orange/20 text-brand-orange text-2xs mt-1.5 rounded-lg border px-2.5 py-1.5">
               {imageToolResult}
             </p>
           )}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { PlatformType } from "@/types/calendar";
-import type { PostPreviewData } from "@/types/preview";
+import type { InstagramFormat, PostPreviewData } from "@/types/preview";
 import { PLATFORM_LIMITS } from "@/types/preview";
 import { PlatformMockup } from "./PlatformMockups";
 import {
@@ -13,6 +13,10 @@ import {
   AtSign,
   MessageSquare,
   X,
+  Image as ImageIcon,
+  Film,
+  GalleryHorizontal,
+  CircleDot,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -28,6 +32,7 @@ const PLATFORM_ICONS: Record<PlatformType, React.ReactNode> = {
   INSTAGRAM: <Globe className="size-4 text-pink-500" />,
   TIKTOK: <Video className="text-foreground size-4" />,
   THREADS: <AtSign className="text-muted-foreground size-4" />,
+  ZALO_OA: <MessageSquare className="size-4 text-sky-500" />,
   YOUTUBE: <MessageSquare className="size-4 text-red-500" />,
 };
 
@@ -41,6 +46,18 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
   const [activePlatform, setActivePlatform] = useState<PlatformType>(
     targetPlatforms[0] || "FACEBOOK",
   );
+  const [instagramFormat, setInstagramFormat] =
+    useState<InstagramFormat>("IMAGE");
+
+  const INSTAGRAM_FORMATS: {
+    key: InstagramFormat;
+    icon: React.ReactNode;
+  }[] = [
+    { key: "IMAGE", icon: <ImageIcon className="size-3.5" /> },
+    { key: "REEL", icon: <Film className="size-3.5" /> },
+    { key: "CAROUSEL", icon: <GalleryHorizontal className="size-3.5" /> },
+    { key: "STORY", icon: <CircleDot className="size-3.5" /> },
+  ];
 
   if (!isOpen) return null;
 
@@ -126,9 +143,32 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
           </div>
         </div>
 
+        {/* Instagram Format Tabs */}
+        {activePlatform === "INSTAGRAM" && (
+          <div className="border-border bg-muted/30 flex items-center gap-1 border-b px-6 py-2">
+            {INSTAGRAM_FORMATS.map((fmt) => (
+              <button
+                key={fmt.key}
+                onClick={() => setInstagramFormat(fmt.key)}
+                className={`flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-2xs font-medium transition-colors ${
+                  instagramFormat === fmt.key
+                    ? "bg-brand-orange-soft text-brand-orange"
+                    : "text-muted-foreground hover:bg-accent"
+                }`}
+              >
+                {fmt.icon}
+                {t(`editor.preview.instagramFormat.${fmt.key}`)}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* Mockup Render Body */}
         <div className="bg-muted/50 flex-1 overflow-y-auto p-6">
-          <PlatformMockup platform={activePlatform} data={data} />
+          <PlatformMockup
+            platform={activePlatform}
+            data={{ ...data, instagramFormat }}
+          />
         </div>
       </div>
     </div>

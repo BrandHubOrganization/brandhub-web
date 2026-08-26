@@ -60,7 +60,19 @@
     "imageVariations": "Image variations",
     "removeBackground": "Remove background",
     "variationsDone": "Generated 4 image variations.",
-    "bgRemoved": "Background removed."
+    "bgRemoved": "Background removed.",
+    "textToImage": "Text to Image",
+    "textToImagePlaceholder": "Describe the image you want AI to generate, e.g. sneakers on a neon-lit city street at night...",
+    "textToImageButton": "Generate AI Image",
+    "textToImageDone": "Image generated from text description.",
+    "stylePresets": "Style Presets",
+    "stylePreset": {
+      "REALISTIC": "Realistic",
+      "MINIMALIST": "Minimalist",
+      "VIBRANT": "Vibrant",
+      "VINTAGE": "Vintage"
+    },
+    "stylePresetApplied": "Applied \"{{style}}\" style to the image."
   },
   "header": {
     "autoSaving": "Auto-saving...",
@@ -129,6 +141,12 @@
     "copyCaptionSuccess": "Caption copied to clipboard!",
     "copyCaptionButton": "Copy Caption",
     "specLabel": "Spec:",
-    "charsLabel": "chars"
+    "charsLabel": "chars",
+    "instagramFormat": {
+      "IMAGE": "Image",
+      "REEL": "Reel",
+      "CAROUSEL": "Carousel",
+      "STORY": "Story"
+    }
   }
 }

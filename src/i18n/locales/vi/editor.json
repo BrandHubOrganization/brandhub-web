@@ -37,7 +37,25 @@
       "professional": "Chuyên nghiệp",
       "cta": "Kêu gọi mua hàng (CTA)"
     },
+    "contentTypeLabel": "Loại nội dung",
+    "contentType": {
+      "CAPTION": "Caption",
+      "BLOG": "Blog / Bài viết",
+      "AD_COPY": "Quảng cáo (Ad Copy)"
+    },
+    "toneLabel": "Giọng văn thương hiệu",
+    "tone": {
+      "FRIENDLY": "Thân thiện",
+      "PROFESSIONAL": "Chuyên nghiệp",
+      "PLAYFUL": "Vui nhộn",
+      "LUXURY": "Sang trọng"
+    },
     "promptLabel": "Yêu cầu định hướng (Prompt)",
+    "promptPlaceholders": {
+      "CAPTION": "Ví dụ: Viết caption ngắn gọn, hài hước cho bài đăng mạng xã hội...",
+      "BLOG": "Ví dụ: Viết bài blog 500 từ giới thiệu sản phẩm mới, có mở bài - thân bài - kết luận...",
+      "AD_COPY": "Ví dụ: Viết quảng cáo ngắn kêu gọi mua hàng, nhấn mạnh ưu đãi giới hạn thời gian..."
+    },
     "promptPlaceholder": "Ví dụ: Viết bài đăng phong cách hài hước...",
     "generating": "AI đang tạo (~{{seconds}}s)...",
     "generateButton": "Generate with AI",
@@ -60,7 +78,19 @@
     "imageVariations": "Tạo biến thể ảnh",
     "removeBackground": "Xóa nền",
     "variationsDone": "Đã tạo 4 biến thể ảnh.",
-    "bgRemoved": "Đã xóa nền ảnh."
+    "bgRemoved": "Đã xóa nền ảnh.",
+    "textToImage": "Tạo ảnh từ Văn bản",
+    "textToImagePlaceholder": "Mô tả hình ảnh muốn AI tạo, ví dụ: đôi giày thể thao trên nền phố đêm neon...",
+    "textToImageButton": "Tạo ảnh AI",
+    "textToImageDone": "Đã tạo ảnh từ mô tả văn bản.",
+    "stylePresets": "Style Presets",
+    "stylePreset": {
+      "REALISTIC": "Chân thực",
+      "MINIMALIST": "Tối giản",
+      "VIBRANT": "Rực rỡ",
+      "VINTAGE": "Cổ điển"
+    },
+    "stylePresetApplied": "Đã áp dụng style \"{{style}}\" cho ảnh."
   },
   "header": {
     "autoSaving": "Đang tự động lưu...",
@@ -129,6 +159,12 @@
     "copyCaptionSuccess": "Đã copy caption vào clipboard!",
     "copyCaptionButton": "Copy Caption",
     "specLabel": "Thông số:",
-    "charsLabel": "ký tự"
+    "charsLabel": "ký tự",
+    "instagramFormat": {
+      "IMAGE": "Ảnh",
+      "REEL": "Reel",
+      "CAROUSEL": "Carousel",
+      "STORY": "Story"
+    }
   }
 }

@@ -30,9 +30,7 @@ export function PortalCalendarView() {
           endDate: new Date(8640000000000000).toISOString(),
         });
         if (!cancelled) {
-          setEvents(
-            data.filter((e) => e.extendedProps.status !== "DRAFT"),
-          );
+          setEvents(data.filter((e) => e.extendedProps.status !== "DRAFT"));
         }
       } catch (err) {
         console.error("Failed to load portal calendar:", err);

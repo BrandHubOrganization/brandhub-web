@@ -20,6 +20,8 @@
     "platformsLabel": "Target platforms",
     "captionOverride": "Custom caption for {{platform}}",
     "captionOverridePlaceholder": "Leave blank to use the shared caption",
+    "rateLimitLabel": "Publishing Rate Limit",
+    "rateLimitExceeded": "Rate limit exceeded. You cannot publish more posts to this platform right now.",
     "submitting": "Submitting...",
     "schedule": "Schedule Post",
     "saveDraft": "Save Draft",

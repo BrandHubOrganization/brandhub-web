@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Gauge } from "lucide-react";
 import type { Platform, PlatformTarget } from "@/types/post";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -10,6 +11,16 @@ interface PlatformTargetPickerProps {
   targets: PlatformTarget[];
   onChange: (targets: PlatformTarget[]) => void;
 }
+
+// ponytail: fixed demo usage/limit per platform, no metrics backend wired yet
+const RATE_LIMIT_USAGE: Record<Platform, { used: number; max: number }> = {
+  FACEBOOK: { used: 180, max: 200 },
+  INSTAGRAM: { used: 42, max: 200 },
+  TIKTOK: { used: 8, max: 50 },
+  THREADS: { used: 15, max: 250 },
+  ZALO_OA: { used: 95, max: 100 },
+  YOUTUBE: { used: 3, max: 6 },
+};
 
 export function PlatformTargetPicker({
   targets,
@@ -60,6 +71,49 @@ export function PlatformTargetPicker({
           );
         })}
       </div>
+
+      {targets.length > 0 && (
+        <div className="border-border bg-card space-y-2 rounded-xl border p-3">
+          <div className="text-muted-foreground flex items-center gap-1.5 text-2xs font-semibold tracking-wider uppercase">
+            <Gauge className="size-3.5" />
+            {t("publish.composer.rateLimitLabel")}
+          </div>
+          {targets.map((tgt) => {
+            const usage = RATE_LIMIT_USAGE[tgt.platform];
+            const pct = Math.round((usage.used / usage.max) * 100);
+            const isOverLimit = usage.used >= usage.max;
+            return (
+              <div key={tgt.platform} className="space-y-1">
+                <div className="flex items-center justify-between text-2xs">
+                  <span className="text-foreground font-medium">
+                    {PLATFORM_META[tgt.platform].label}
+                  </span>
+                  <span
+                    className={
+                      isOverLimit
+                        ? "font-semibold text-rose-600 dark:text-rose-400"
+                        : "text-muted-foreground"
+                    }
+                  >
+                    {usage.used} / {usage.max}
+                  </span>
+                </div>
+                <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
+                  <div
+                    className={`h-full rounded-full ${isOverLimit ? "bg-rose-500" : "bg-brand-orange"}`}
+                    style={{ width: `${Math.min(pct, 100)}%` }}
+                  />
+                </div>
+                {isOverLimit && (
+                  <p className="text-3xs text-rose-600 dark:text-rose-400">
+                    {t("publish.composer.rateLimitExceeded")}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {targets.map((tgt) => (
         <div key={tgt.platform} className="space-y-1">

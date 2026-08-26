@@ -19,11 +19,21 @@ export function VerifyOtpPage() {
   const [otp, setOtp] = React.useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = React.useState(false);
   const [resending, setResending] = React.useState(false);
+  const [resendCooldown, setResendCooldown] = React.useState(0);
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
   React.useEffect(() => {
     if (!email) navigate("/register", { replace: true });
   }, [email, navigate]);
+
+  React.useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(
+      () => setResendCooldown((s) => Math.max(0, s - 1)),
+      1000,
+    );
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -78,6 +88,7 @@ export function VerifyOtpPage() {
     try {
       await authService.resendOtp({ email });
       toast.success(t("auth.verifyOtp.resendSuccess"));
+      setResendCooldown(60);
     } catch {
       toast.error(t("auth.verifyOtp.resendError"));
     } finally {
@@ -152,12 +163,14 @@ export function VerifyOtpPage() {
               <button
                 type="button"
                 onClick={handleResend}
-                disabled={resending}
+                disabled={resending || resendCooldown > 0}
                 className="hover:text-foreground inline-flex cursor-pointer items-center gap-1 text-sm font-medium transition-colors disabled:opacity-50"
                 style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}
               >
                 {resending ? (
                   <RefreshCw className="size-3 animate-spin" />
+                ) : resendCooldown > 0 ? (
+                  t("auth.verifyOtp.resendCooldown", { seconds: resendCooldown })
                 ) : (
                   t("auth.verifyOtp.resend")
                 )}

@@ -20,6 +20,8 @@
     "platformsLabel": "Nền tảng đăng bài",
     "captionOverride": "Nội dung tùy chỉnh cho {{platform}}",
     "captionOverridePlaceholder": "Để trống để dùng nội dung chung",
+    "rateLimitLabel": "Giới hạn tần suất đăng bài (Rate Limit)",
+    "rateLimitExceeded": "Đã vượt giới hạn. Tạm thời không thể đăng thêm bài lên nền tảng này.",
     "submitting": "Đang xử lý...",
     "schedule": "Lên lịch đăng",
     "saveDraft": "Lưu nháp",
