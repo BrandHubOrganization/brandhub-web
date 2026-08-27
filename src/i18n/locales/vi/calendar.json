@@ -9,6 +9,15 @@
     "selectAll": "Chọn Tất Cả",
     "deselectAll": "Bỏ Chọn Tất Cả"
   },
+  "statusFilter": {
+    "label": "Trạng thái:",
+    "selectAll": "Chọn Tất Cả",
+    "deselectAll": "Bỏ Chọn Tất Cả"
+  },
+  "filterBar": {
+    "resultCount": "{{count}} bài đăng",
+    "clearAll": "Xóa bộ lọc"
+  },
   "eventCard": {
     "noCaptionPreview": "Không có xem trước"
   },

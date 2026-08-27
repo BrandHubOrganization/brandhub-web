@@ -21,6 +21,7 @@ export interface CalendarFetchParams {
   startDate: string;
   endDate: string;
   platforms?: PlatformType[];
+  statuses?: PostStatus[];
 }
 
 export interface ReschedulePostPayload {

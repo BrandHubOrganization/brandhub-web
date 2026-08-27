@@ -59,8 +59,19 @@ export const calendarService = {
     await new Promise((res) => setTimeout(res, 400));
 
     return MOCK_EVENTS.filter((evt) => {
-      if (params.platforms && params.platforms.length > 0) {
-        return params.platforms.includes(evt.extendedProps.platform);
+      if (
+        params.platforms &&
+        params.platforms.length > 0 &&
+        !params.platforms.includes(evt.extendedProps.platform)
+      ) {
+        return false;
+      }
+      if (
+        params.statuses &&
+        params.statuses.length > 0 &&
+        !params.statuses.includes(evt.extendedProps.status)
+      ) {
+        return false;
       }
       return true;
     });

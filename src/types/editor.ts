@@ -13,12 +13,23 @@ export interface PostDraft {
   updatedAt: string;
 }
 
+export type AIContentType = "CAPTION" | "BLOG" | "AD_COPY";
+
+export type BlogLength = "SHORT" | "MEDIUM" | "LONG";
+export type AdObjective = "AWARENESS" | "TRAFFIC" | "CONVERSION";
+
 export interface AIGenerateRequest {
   prompt: string;
+  contentType: AIContentType;
   topic?: string;
   platforms: SocialPlatform[];
   tone?: string;
   userFeedback?: string;
+  hashtagCount?: number;
+  blogLength?: BlogLength;
+  blogKeyword?: string;
+  adObjective?: AdObjective;
+  adCallToAction?: string;
   previousOutput?: {
     caption: string;
     hashtags: string[];
@@ -31,6 +42,9 @@ export interface AIGenerateResponse {
   hashtags: string[];
   imageUrl?: string;
   reasoning?: string;
+  blogTitle?: string;
+  adHeadline?: string;
+  adDescription?: string;
 }
 
 export type AIErrorType =

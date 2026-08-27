@@ -51,6 +51,26 @@
     "imageResultLabel": "AI Generated Image (Stability AI):",
     "viewFullImage": "View Full Size",
     "hashtagsAttached": "Attached hashtags:",
+    "blogTitleLabel": "Blog title:",
+    "adHeadlineLabel": "Ad headline:",
+    "adDescriptionLabel": "Ad description:",
+    "hashtagCountLabel": "Number of hashtags",
+    "blogLengthLabel": "Article length",
+    "blogLength": {
+      "SHORT": "Short",
+      "MEDIUM": "Medium",
+      "LONG": "Long"
+    },
+    "blogKeywordLabel": "Primary keyword (SEO)",
+    "blogKeywordPlaceholder": "e.g. Air Max Pulse, running shoes...",
+    "adObjectiveLabel": "Ad objective",
+    "adObjective": {
+      "AWARENESS": "Brand awareness",
+      "TRAFFIC": "Traffic",
+      "CONVERSION": "Conversion / Sales"
+    },
+    "adCtaLabel": "Call to action (CTA)",
+    "adCtaPlaceholder": "e.g. Shop now, Sign up now...",
     "addFeedbackButton": "+ Additional feedback to Regenerate (Make it shorter, professional...)",
     "feedbackLabel": "AI refinement feedback:",
     "feedbackPlaceholder": "e.g. Make it more professional, shorter caption...",
@@ -66,13 +86,36 @@
     "textToImageButton": "Generate AI Image",
     "textToImageDone": "Image generated from text description.",
     "stylePresets": "Style Presets",
+    "tool": {
+      "TEXT_TO_IMAGE": "Text to Image",
+      "VARIATIONS": "Image variations",
+      "REMOVE_BG": "Remove background",
+      "STYLE": "Style Preset Library",
+      "BRAND_REFERENCE": "Brand reference images"
+    },
+    "styleCategory": {
+      "PHOTOGRAPHY": "Photography",
+      "ILLUSTRATION": "Illustration",
+      "MOOD": "Mood"
+    },
     "stylePreset": {
       "REALISTIC": "Realistic",
+      "STUDIO_LIGHT": "Studio light",
+      "CINEMATIC": "Cinematic",
+      "MACRO": "Macro",
+      "FLAT_VECTOR": "Flat vector",
+      "WATERCOLOR": "Watercolor",
+      "3D_RENDER": "3D render",
+      "SKETCH": "Sketch",
       "MINIMALIST": "Minimalist",
       "VIBRANT": "Vibrant",
-      "VINTAGE": "Vintage"
+      "VINTAGE": "Vintage",
+      "LUXURY_DARK": "Luxury dark"
     },
-    "stylePresetApplied": "Applied \"{{style}}\" style to the image."
+    "stylePresetApplied": "Applied \"{{style}}\" style to the image.",
+    "brandReferenceHint": "Upload your logo, product photos, or a mood board for the AI to use as a brand style reference when generating images.",
+    "brandReferenceDropzone": "Drag & drop images here or click to browse",
+    "brandReferenceUploadSuccess": "Brand reference image uploaded."
   },
   "header": {
     "autoSaving": "Auto-saving...",

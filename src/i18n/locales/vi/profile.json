@@ -2,12 +2,40 @@
   "title": "Hồ sơ cá nhân",
   "description": "Thông tin cá nhân, xác minh danh tính và quản lý tài khoản.",
   "verified": "Đã xác minh",
-  "avatar": { "upload": "Tải ảnh đại diện" },
+  "avatar": {
+    "upload": "Tải ảnh đại diện",
+    "modalTitle": "Tải ảnh đại diện",
+    "dragDropText": "Kéo ảnh vào đây hoặc",
+    "browseText": "chọn tệp",
+    "supportedFormats": "PNG, JPG tối đa 5MB",
+    "cancel": "Hủy",
+    "save": "Lưu ảnh đại diện",
+    "uploadSuccess": "Cập nhật ảnh đại diện thành công"
+  },
+  "editButton": "Chỉnh sửa hồ sơ",
+  "cancelEdit": "Hủy",
+  "view": {
+    "roleLabel": "Vai trò",
+    "workspaceLabel": "Workspace",
+    "joinedLabel": "Ngày tham gia",
+    "lastLoginLabel": "Đăng nhập gần nhất",
+    "phoneLabel": "Số điện thoại",
+    "phoneEmpty": "Chưa cập nhật",
+    "jobTitleLabel": "Chức danh",
+    "jobTitleEmpty": "Chưa cập nhật"
+  },
+  "edit": {
+    "phoneLabel": "Số điện thoại",
+    "phonePlaceholder": "0912 345 678",
+    "jobTitleLabel": "Chức danh",
+    "jobTitlePlaceholder": "VD: Content Director"
+  },
   "identity": {
     "title": "Xác minh danh tính",
     "status": "Đã xác minh",
     "verified": "Đã xác nhận",
-    "uploadMore": "Tải thêm tài liệu"
+    "selfieLabel": "Ảnh chụp mặt",
+    "retakeButton": "Chụp lại ảnh"
   },
   "danger": {
     "title": "Vùng nguy hiểm",

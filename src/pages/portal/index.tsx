@@ -9,9 +9,10 @@ import {
   requestQueueItemRevision,
   resubmitQueueItem,
 } from "@/services/mock/mockPortalService";
-import type { ApprovalQueueItem } from "@/types/portal";
+import type { ApprovalQueueItem, ApprovalStage } from "@/types/portal";
 import { ApprovalQueueList } from "./components/ApprovalQueueList";
 import { PortalCalendarView } from "./components/PortalCalendarView";
+import { ViewerStageSwitcher } from "./components/ViewerStageSwitcher";
 
 type PortalTab = "approvals" | "calendar";
 
@@ -20,6 +21,7 @@ export function PortalPage() {
   const [items, setItems] = useState<ApprovalQueueItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<PortalTab>("approvals");
+  const [viewerStage, setViewerStage] = useState<ApprovalStage>("CREATOR");
 
   useEffect(() => {
     let cancelled = false;
@@ -50,7 +52,7 @@ export function PortalPage() {
 
   async function handleApprove(id: string) {
     try {
-      await approveQueueItem(id);
+      await approveQueueItem(id, viewerStage);
       await reloadQueue();
       toast.success(t("dashboard.portal.approveSuccess"));
     } catch (err) {
@@ -65,7 +67,7 @@ export function PortalPage() {
       return;
     }
     try {
-      await requestQueueItemRevision(id, comment.trim());
+      await requestQueueItemRevision(id, viewerStage, comment.trim());
       await reloadQueue();
       toast.success(t("dashboard.portal.revisionSuccess"));
     } catch (err) {
@@ -117,15 +119,21 @@ export function PortalPage() {
 
       {activeTab === "calendar" ? (
         <PortalCalendarView />
-      ) : isLoading ? (
-        <Skeleton className="h-64 rounded-xl" />
       ) : (
-        <ApprovalQueueList
-          items={items}
-          onApprove={handleApprove}
-          onRequestRevision={handleRequestRevision}
-          onResubmit={handleResubmit}
-        />
+        <div className="space-y-4">
+          <ViewerStageSwitcher value={viewerStage} onChange={setViewerStage} />
+          {isLoading ? (
+            <Skeleton className="h-64 rounded-xl" />
+          ) : (
+            <ApprovalQueueList
+              items={items}
+              viewerStage={viewerStage}
+              onApprove={handleApprove}
+              onRequestRevision={handleRequestRevision}
+              onResubmit={handleResubmit}
+            />
+          )}
+        </div>
       )}
     </PageWrapper>
   );

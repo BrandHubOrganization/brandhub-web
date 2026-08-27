@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Check, Minus, Shield, UserCog } from "lucide-react";
+import {
+  Check,
+  Minus,
+  Shield,
+  ShieldOff,
+  TriangleAlert,
+  UserCog,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { MemberRole, WorkspaceMember } from "@/types/workspace";
 
 interface Props {
@@ -24,6 +32,9 @@ export function WorkspacePermissionsPanel({ members }: Props) {
   const [roles, setRoles] = useState<Record<string, MemberRole>>(() =>
     Object.fromEntries(members.map((m) => [m.id, m.role])),
   );
+  const [revokeTarget, setRevokeTarget] = useState<WorkspaceMember | null>(
+    null,
+  );
 
   const handleRoleChange = (member: WorkspaceMember, role: MemberRole) => {
     setRoles((prev) => ({ ...prev, [member.id]: role }));
@@ -33,6 +44,17 @@ export function WorkspacePermissionsPanel({ members }: Props) {
         role: t(`workspace.roles.${role}`),
       }),
     );
+  };
+
+  const handleConfirmRevoke = () => {
+    if (!revokeTarget) return;
+    setRoles((prev) => ({ ...prev, [revokeTarget.id]: "VIEWER" }));
+    toast.success(
+      t("workspace.permissions.revokeSuccess", {
+        name: revokeTarget.fullName,
+      }),
+    );
+    setRevokeTarget(null);
   };
 
   return (
@@ -57,20 +79,34 @@ export function WorkspacePermissionsPanel({ members }: Props) {
                 </p>
                 <p className="text-muted-foreground text-2xs">{member.email}</p>
               </div>
-              <select
-                value={roles[member.id]}
-                disabled={roles[member.id] === "OWNER"}
-                onChange={(e) =>
-                  handleRoleChange(member, e.target.value as MemberRole)
-                }
-                className="border-border bg-card text-foreground cursor-pointer rounded-lg border px-2 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {ROLES.map((role) => (
-                  <option key={role} value={role}>
-                    {t(`workspace.roles.${role}`)}
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <select
+                  value={roles[member.id]}
+                  disabled={roles[member.id] === "OWNER"}
+                  onChange={(e) =>
+                    handleRoleChange(member, e.target.value as MemberRole)
+                  }
+                  className="border-border bg-card text-foreground cursor-pointer rounded-lg border px-2 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {ROLES.map((role) => (
+                    <option key={role} value={role}>
+                      {t(`workspace.roles.${role}`)}
+                    </option>
+                  ))}
+                </select>
+                {roles[member.id] !== "OWNER" &&
+                  roles[member.id] !== "VIEWER" && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-1.5 border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
+                      onClick={() => setRevokeTarget(member)}
+                    >
+                      <ShieldOff className="size-3.5" />
+                      {t("workspace.permissions.revokeButton")}
+                    </Button>
+                  )}
+              </div>
             </div>
           ))}
         </div>
@@ -122,6 +158,40 @@ export function WorkspacePermissionsPanel({ members }: Props) {
           </table>
         </div>
       </div>
+
+      {revokeTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
+            <div className="flex items-center gap-2">
+              <TriangleAlert className="size-5 text-rose-500" />
+              <h3 className="text-foreground text-sm font-semibold">
+                {t("workspace.permissions.revokeConfirmTitle")}
+              </h3>
+            </div>
+            <p className="text-muted-foreground text-xs">
+              {t("workspace.permissions.revokeConfirmBody", {
+                name: revokeTarget.fullName,
+              })}
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setRevokeTarget(null)}
+              >
+                {t("workspace.permissions.revokeCancel")}
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleConfirmRevoke}
+              >
+                {t("workspace.permissions.revokeConfirmButton")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

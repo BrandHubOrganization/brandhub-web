@@ -135,12 +135,40 @@
     "commentPlaceholder": "Viết bình luận...",
     "sendComment": "Gửi bình luận",
     "revisionRound": "Vòng chỉnh sửa {{round}}",
+    "rejectModal": {
+      "title": "Yêu cầu chỉnh sửa",
+      "categoryLabel": "Loại vấn đề",
+      "categoryPlaceholder": "Chọn loại vấn đề",
+      "category": {
+        "VISUAL": "Hình ảnh / Thiết kế",
+        "COPY": "Nội dung / Caption",
+        "BRAND": "Không đúng thương hiệu",
+        "COMPLIANCE": "Vi phạm quy định",
+        "OTHER": "Khác"
+      },
+      "severityLabel": "Mức độ ưu tiên",
+      "severity": {
+        "LOW": "Thấp",
+        "MEDIUM": "Trung bình",
+        "HIGH": "Gấp"
+      },
+      "detailLabel": "Mô tả chi tiết",
+      "detailPlaceholder": "Mô tả cụ thể cần sửa gì...",
+      "detailRequired": "Vui lòng nhập mô tả chi tiết",
+      "categoryRequired": "Vui lòng chọn loại vấn đề",
+      "cancel": "Hủy",
+      "submit": "Gửi yêu cầu chỉnh sửa"
+    },
     "chainTitle": "Chuỗi Phê Duyệt",
     "stage": {
       "CREATOR": "Người Sáng Tạo",
       "MANAGER": "Quản Lý",
       "CLIENT": "Khách Hàng"
     },
+    "viewerSwitcher": {
+      "label": "Xem với vai trò:"
+    },
+    "waitingForStage": "Đang chờ {{stage}} duyệt",
     "stageStatus": {
       "PENDING": "Đang chờ",
       "APPROVED": "Đã duyệt",

@@ -22,13 +22,22 @@ function initialChain(upToStage: ApprovalStage): ApprovalStageEntry[] {
 
 const MOCK_QUEUE: ApprovalQueueItem[] = [
   {
+    id: "req-0",
+    title: "Reel: Hậu trường quay chiến dịch Comfort",
+    workspaceName: "Comfort Vietnam",
+    status: "AWAITING_APPROVAL",
+    createdAt: "2026-07-18",
+    revisionRound: 1,
+    approvalChain: initialChain("CREATOR"),
+  },
+  {
     id: "req-1",
     title: "Social Post: Giới thiệu Nike Air Max Pulse",
     workspaceName: "Nike Vietnam",
     status: "AWAITING_APPROVAL",
     createdAt: "2026-07-17",
     revisionRound: 1,
-    approvalChain: initialChain("CLIENT"),
+    approvalChain: initialChain("MANAGER"),
   },
   {
     id: "req-2",
@@ -104,17 +113,26 @@ export async function getApprovalQueue(): Promise<ApprovalQueueItem[]> {
   return MOCK_QUEUE;
 }
 
-export async function approveQueueItem(id: string): Promise<void> {
+const STAGE_ACTOR_LABEL: Record<ApprovalStage, string> = {
+  CREATOR: "Nguyễn Văn Minh",
+  MANAGER: "Trần Thị Thu Hà",
+  CLIENT: "Client",
+};
+
+export async function approveQueueItem(
+  id: string,
+  actingStage: ApprovalStage,
+): Promise<void> {
   await delay(300);
   const item = MOCK_QUEUE.find((i) => i.id === id);
   if (!item) return;
 
   const pending = currentPendingStage(item);
-  if (!pending) return;
+  if (!pending || pending.stage !== actingStage) return;
 
   pending.status = "APPROVED";
   pending.actedAt = new Date().toISOString();
-  pending.actorName = pending.actorName ?? "Client";
+  pending.actorName = STAGE_ACTOR_LABEL[actingStage];
 
   const stillPending = currentPendingStage(item);
   item.status = stillPending ? "AWAITING_APPROVAL" : "APPROVED";
@@ -122,6 +140,7 @@ export async function approveQueueItem(id: string): Promise<void> {
 
 export async function requestQueueItemRevision(
   id: string,
+  actingStage: ApprovalStage,
   comment?: string,
 ): Promise<void> {
   await delay(300);
@@ -129,10 +148,11 @@ export async function requestQueueItemRevision(
   if (!item) return;
 
   const pending = currentPendingStage(item);
-  if (!pending) return;
+  if (!pending || pending.stage !== actingStage) return;
 
   pending.status = "REVISION_REQUESTED";
   pending.actedAt = new Date().toISOString();
+  pending.actorName = STAGE_ACTOR_LABEL[actingStage];
   pending.comment = comment;
   item.status = "REVISION_REQUESTED";
 }

@@ -135,12 +135,40 @@
     "commentPlaceholder": "Write a comment...",
     "sendComment": "Send comment",
     "revisionRound": "Revision round {{round}}",
+    "rejectModal": {
+      "title": "Request revision",
+      "categoryLabel": "Issue category",
+      "categoryPlaceholder": "Select an issue category",
+      "category": {
+        "VISUAL": "Visual / Design",
+        "COPY": "Content / Caption",
+        "BRAND": "Off-brand",
+        "COMPLIANCE": "Compliance violation",
+        "OTHER": "Other"
+      },
+      "severityLabel": "Priority",
+      "severity": {
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "Urgent"
+      },
+      "detailLabel": "Details",
+      "detailPlaceholder": "Describe what needs to change...",
+      "detailRequired": "Please enter revision details",
+      "categoryRequired": "Please select an issue category",
+      "cancel": "Cancel",
+      "submit": "Send revision request"
+    },
     "chainTitle": "Approval Chain",
     "stage": {
       "CREATOR": "Creator",
       "MANAGER": "Manager",
       "CLIENT": "Client"
     },
+    "viewerSwitcher": {
+      "label": "Viewing as:"
+    },
+    "waitingForStage": "Waiting for {{stage}} to review",
     "stageStatus": {
       "PENDING": "Pending",
       "APPROVED": "Approved",

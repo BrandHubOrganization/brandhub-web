@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Settings, UserCog } from "lucide-react";
+import { ArrowLeft, Settings, Package, UserCog } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useWorkspaceStore } from "@/store/workspaceStore";
@@ -16,6 +16,7 @@ import { ClientAnalyticsCards } from "./components/ClientAnalyticsCards";
 import { ClientSocialAccounts } from "./components/ClientSocialAccounts";
 import { ClientContentRequests } from "./components/ClientContentRequests";
 import { ServicePackageModal } from "./components/ServicePackageModal";
+import { ClientSettingsModal } from "./components/ClientSettingsModal";
 
 const AM_OPTIONS = [
   { id: "am-1", name: "Nguyễn Văn An" },
@@ -34,6 +35,7 @@ export function ClientDetailPage() {
 
   const [client, setClient] = useState<Client | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [packageOpen, setPackageOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
 
@@ -130,6 +132,14 @@ export function ClientDetailPage() {
             variant="outline"
             size="sm"
             className="cursor-pointer gap-1.5 text-xs"
+            onClick={() => setPackageOpen(true)}
+          >
+            <Package className="size-3.5" /> {t("client.detail.servicePackage")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="cursor-pointer gap-1.5 text-xs"
             onClick={() => setSettingsOpen(true)}
           >
             <Settings className="size-3.5" /> {t("client.detail.settings")}
@@ -192,14 +202,25 @@ export function ClientDetailPage() {
       )}
 
       <ServicePackageModal
-        isOpen={settingsOpen}
-        client={settingsOpen ? client : null}
-        onClose={() => setSettingsOpen(false)}
-        onSubmit={async () => {
-          setSettingsOpen(false);
+        isOpen={packageOpen}
+        client={packageOpen ? client : null}
+        onClose={() => setPackageOpen(false)}
+        onSubmit={async (id, dto) => {
+          await mockClientService.updateServicePackage(id, dto);
+          setPackageOpen(false);
           await fetchClientDetail();
         }}
         isLoading={false}
+      />
+
+      <ClientSettingsModal
+        isOpen={settingsOpen}
+        client={settingsOpen ? client : null}
+        onClose={() => setSettingsOpen(false)}
+        onSubmit={async (id, dto) => {
+          await mockClientService.updateClientSettings(id, dto);
+          await fetchClientDetail();
+        }}
       />
     </PageWrapper>
   );

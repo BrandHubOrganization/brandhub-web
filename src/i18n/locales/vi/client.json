@@ -29,7 +29,8 @@
     "assignSuccess": "Đã phân công Account Manager.",
     "current": "Hiện tại",
     "cancel": "Hủy",
-    "settings": "Cài đặt"
+    "settings": "Cài đặt",
+    "servicePackage": "Gói dịch vụ"
   },
   "table": {
     "changeServicePackage": "Đổi gói dịch vụ",
@@ -80,6 +81,31 @@
     "aiCreditsLabel": "AI Credits / Tháng",
     "expiryLabel": "Ngày hết hạn hợp đồng / gói dịch vụ",
     "cancel": "Hủy"
+  },
+  "settings": {
+    "modalTitle": "Cài đặt Client",
+    "appliedBrand": "Thương hiệu áp dụng:",
+    "contactsLabel": "Đầu mối liên hệ tại doanh nghiệp khách hàng",
+    "addContact": "Thêm liên hệ",
+    "contactsEmpty": "Chưa có đầu mối liên hệ nào được thiết lập.",
+    "contactNamePlaceholder": "Họ tên",
+    "contactEmailPlaceholder": "Email",
+    "canApproveToggle": "Có quyền duyệt nội dung",
+    "role": {
+      "MARKETING_LEAD": "Trưởng phòng Marketing",
+      "APPROVER": "Người phê duyệt",
+      "FINANCE": "Tài chính",
+      "LEGAL": "Pháp chế"
+    },
+    "preferencesLabel": "Tùy chọn thông báo & phê duyệt",
+    "notifyOnNewRequest": "Thông báo khi có yêu cầu nội dung mới",
+    "notifyOnPublish": "Thông báo khi bài đăng được xuất bản",
+    "requireApproval": "Bắt buộc khách hàng phê duyệt trước khi xuất bản",
+    "languageLabel": "Ngôn ngữ liên lạc ưu tiên",
+    "cancel": "Hủy",
+    "saving": "Đang lưu...",
+    "saveButton": "Lưu cài đặt",
+    "saveSuccess": "Đã lưu cài đặt client."
   },
   "createEdit": {
     "processing": "Đang xử lý...",

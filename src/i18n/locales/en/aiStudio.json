@@ -8,8 +8,25 @@
     "createTitle": "Create new ambassador",
     "nameLabel": "Ambassador name",
     "namePlaceholder": "Enter ambassador name",
-    "faceImageLabel": "Face image URL",
-    "faceImagePlaceholder": "https://...",
+    "faceUploadLabel": "Face Upload",
+    "faceUploadHint": "Upload a clear portrait photo for the AI to train a face replica.",
+    "faceUploadDropzone": "Drag & drop an image here or click to browse",
+    "instantIdLabel": "InstantID Model Setup",
+    "identityStrengthLabel": "Identity Strength",
+    "posePreservationLabel": "Pose Preservation",
+    "posePreservation": {
+      "LOW": "Loose",
+      "MEDIUM": "Balanced",
+      "HIGH": "Strict"
+    },
+    "qualityTierLabel": "Model quality tier",
+    "qualityTier": {
+      "STANDARD": "Standard",
+      "HIGH": "High",
+      "ULTRA": "Ultra"
+    },
+    "negativePromptLabel": "Negative Prompt",
+    "negativePromptPlaceholder": "e.g. distorted face, text, watermark...",
     "cancel": "Cancel",
     "createSuccess": "Ambassador created successfully.",
     "createError": "Failed to create ambassador.",

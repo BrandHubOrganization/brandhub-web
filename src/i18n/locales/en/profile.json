@@ -2,12 +2,40 @@
   "title": "Personal Profile",
   "description": "Personal information, identity verification and account management.",
   "verified": "Verified",
-  "avatar": { "upload": "Upload avatar" },
+  "avatar": {
+    "upload": "Upload avatar",
+    "modalTitle": "Upload avatar",
+    "dragDropText": "Drag & drop an image here or",
+    "browseText": "browse",
+    "supportedFormats": "PNG, JPG up to 5MB",
+    "cancel": "Cancel",
+    "save": "Save avatar",
+    "uploadSuccess": "Avatar updated successfully"
+  },
+  "editButton": "Edit profile",
+  "cancelEdit": "Cancel",
+  "view": {
+    "roleLabel": "Role",
+    "workspaceLabel": "Workspace",
+    "joinedLabel": "Joined",
+    "lastLoginLabel": "Last login",
+    "phoneLabel": "Phone",
+    "phoneEmpty": "Not set",
+    "jobTitleLabel": "Job title",
+    "jobTitleEmpty": "Not set"
+  },
+  "edit": {
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "0912 345 678",
+    "jobTitleLabel": "Job title",
+    "jobTitlePlaceholder": "e.g. Content Director"
+  },
   "identity": {
     "title": "Identity Verification",
     "status": "Verified",
     "verified": "Confirmed",
-    "uploadMore": "Upload more documents"
+    "selfieLabel": "Face photo",
+    "retakeButton": "Retake photo"
   },
   "danger": {
     "title": "Danger Zone",

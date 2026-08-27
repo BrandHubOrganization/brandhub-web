@@ -69,6 +69,26 @@
     "imageResultLabel": "Ảnh AI Sinh (Stability AI):",
     "viewFullImage": "Xem Phóng To",
     "hashtagsAttached": "Hashtags đính kèm:",
+    "blogTitleLabel": "Tiêu đề bài blog:",
+    "adHeadlineLabel": "Tiêu đề quảng cáo:",
+    "adDescriptionLabel": "Mô tả quảng cáo:",
+    "hashtagCountLabel": "Số lượng hashtag",
+    "blogLengthLabel": "Độ dài bài viết",
+    "blogLength": {
+      "SHORT": "Ngắn",
+      "MEDIUM": "Vừa",
+      "LONG": "Dài"
+    },
+    "blogKeywordLabel": "Từ khóa chính (SEO)",
+    "blogKeywordPlaceholder": "VD: Air Max Pulse, giày chạy bộ...",
+    "adObjectiveLabel": "Mục tiêu quảng cáo",
+    "adObjective": {
+      "AWARENESS": "Nhận diện thương hiệu",
+      "TRAFFIC": "Lượt truy cập",
+      "CONVERSION": "Chuyển đổi / Bán hàng"
+    },
+    "adCtaLabel": "Nút kêu gọi hành động (CTA)",
+    "adCtaPlaceholder": "VD: Mua ngay, Đăng ký ngay...",
     "addFeedbackButton": "+ Phản hồi bổ sung để Regenerate ( Make it shorter, professional...)",
     "feedbackLabel": "Ý kiến phản hồi tinh chỉnh AI (Feedback):",
     "feedbackPlaceholder": "Ví dụ: Make it more professional, shorter caption...",
@@ -84,13 +104,36 @@
     "textToImageButton": "Tạo ảnh AI",
     "textToImageDone": "Đã tạo ảnh từ mô tả văn bản.",
     "stylePresets": "Style Presets",
+    "tool": {
+      "TEXT_TO_IMAGE": "Tạo ảnh từ Văn bản",
+      "VARIATIONS": "Tạo biến thể ảnh",
+      "REMOVE_BG": "Xóa nền",
+      "STYLE": "Kho Style Presets",
+      "BRAND_REFERENCE": "Ảnh tham chiếu thương hiệu"
+    },
+    "styleCategory": {
+      "PHOTOGRAPHY": "Nhiếp ảnh",
+      "ILLUSTRATION": "Minh họa",
+      "MOOD": "Sắc thái"
+    },
     "stylePreset": {
       "REALISTIC": "Chân thực",
+      "STUDIO_LIGHT": "Ánh sáng studio",
+      "CINEMATIC": "Điện ảnh",
+      "MACRO": "Cận cảnh (Macro)",
+      "FLAT_VECTOR": "Vector phẳng",
+      "WATERCOLOR": "Màu nước",
+      "3D_RENDER": "Render 3D",
+      "SKETCH": "Phác thảo",
       "MINIMALIST": "Tối giản",
       "VIBRANT": "Rực rỡ",
-      "VINTAGE": "Cổ điển"
+      "VINTAGE": "Cổ điển",
+      "LUXURY_DARK": "Sang trọng tối màu"
     },
-    "stylePresetApplied": "Đã áp dụng style \"{{style}}\" cho ảnh."
+    "stylePresetApplied": "Đã áp dụng style \"{{style}}\" cho ảnh.",
+    "brandReferenceHint": "Tải lên logo, ảnh sản phẩm hoặc mood board để AI dùng làm tham chiếu phong cách thương hiệu khi tạo ảnh.",
+    "brandReferenceDropzone": "Kéo thả ảnh vào đây hoặc bấm để chọn file",
+    "brandReferenceUploadSuccess": "Đã tải lên ảnh tham chiếu thương hiệu."
   },
   "header": {
     "autoSaving": "Đang tự động lưu...",

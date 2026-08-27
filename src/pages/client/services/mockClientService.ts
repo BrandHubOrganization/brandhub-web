@@ -3,6 +3,7 @@ import type {
   Client,
   CreateClientDTO,
   UpdateServicePackageDTO,
+  UpdateClientSettingsDTO,
   ClientListParams,
 } from "../types/client";
 
@@ -74,6 +75,28 @@ const MOCK_CLIENTS: Client[] = [
       activeRequests: 4,
       engagementRate: 8.4,
     },
+    contacts: [
+      {
+        id: "ct-1",
+        name: "Đặng Thu Trang",
+        email: "trang.dang@heineken.vn",
+        role: "MARKETING_LEAD",
+        canApproveContent: true,
+      },
+      {
+        id: "ct-2",
+        name: "Vũ Quốc Bảo",
+        email: "bao.vu@heineken.vn",
+        role: "LEGAL",
+        canApproveContent: true,
+      },
+    ],
+    preferences: {
+      notifyOnNewRequest: true,
+      notifyOnPublish: true,
+      requireClientApprovalBeforePublish: true,
+      preferredLanguage: "vi",
+    },
     createdAt: "2026-01-15",
   },
   {
@@ -129,6 +152,21 @@ const MOCK_CLIENTS: Client[] = [
       activeRequests: 2,
       engagementRate: 6.8,
     },
+    contacts: [
+      {
+        id: "ct-3",
+        name: "Hoàng Anh Tuấn",
+        email: "tuan.hoang@nike.com.vn",
+        role: "MARKETING_LEAD",
+        canApproveContent: false,
+      },
+    ],
+    preferences: {
+      notifyOnNewRequest: true,
+      notifyOnPublish: false,
+      requireClientApprovalBeforePublish: false,
+      preferredLanguage: "en",
+    },
     createdAt: "2026-02-10",
   },
   {
@@ -168,6 +206,28 @@ const MOCK_CLIENTS: Client[] = [
       publishedPosts: 27,
       activeRequests: 1,
       engagementRate: 4.2,
+    },
+    contacts: [
+      {
+        id: "ct-4",
+        name: "Ngô Thị Kim Ngân",
+        email: "ngan.ngo@purenut.vn",
+        role: "FINANCE",
+        canApproveContent: false,
+      },
+      {
+        id: "ct-5",
+        name: "Đỗ Văn Phát",
+        email: "phat.do@purenut.vn",
+        role: "APPROVER",
+        canApproveContent: true,
+      },
+    ],
+    preferences: {
+      notifyOnNewRequest: false,
+      notifyOnPublish: true,
+      requireClientApprovalBeforePublish: true,
+      preferredLanguage: "vi",
     },
     createdAt: "2026-04-01",
   },
@@ -298,6 +358,24 @@ export const mockClientService = {
             200,
           expiryDate: dto.expiryDate || existing.servicePackage.expiryDate,
         },
+      };
+    }
+  },
+
+  async updateClientSettings(
+    id: string,
+    dto: UpdateClientSettingsDTO,
+  ): Promise<Client> {
+    try {
+      const response = await api.put(`/api/v1/clients/${id}/settings`, dto);
+      return response.data?.data ?? response.data;
+    } catch (error) {
+      warnMockFallback(`PUT /api/v1/clients/${id}/settings failed`, error);
+      const existing = MOCK_CLIENTS.find((c) => c.id === id) || MOCK_CLIENTS[0];
+      return {
+        ...existing,
+        contacts: dto.contacts,
+        preferences: dto.preferences,
       };
     }
   },

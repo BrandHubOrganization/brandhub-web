@@ -1,6 +1,7 @@
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { PlatformFilter } from "@/pages/calendar/components/PlatformFilter";
+import { StatusFilter } from "@/pages/calendar/components/StatusFilter";
 import { ContentCalendar } from "@/pages/calendar/components/ContentCalendar";
 import { SchedulePostModal } from "@/pages/calendar/components/SchedulePostModal";
 import { useContentCalendar } from "./hooks/useContentCalendar";
@@ -12,6 +13,9 @@ export function CalendarPage() {
     events,
     selectedPlatforms,
     setSelectedPlatforms,
+    selectedStatuses,
+    setSelectedStatuses,
+    clearFilters,
     setDateRange,
     isModalOpen,
     setIsModalOpen,
@@ -37,10 +41,29 @@ export function CalendarPage() {
       }
     >
       <div className="space-y-6">
-        <PlatformFilter
-          selectedPlatforms={selectedPlatforms}
-          onChange={setSelectedPlatforms}
-        />
+        <div className="space-y-2">
+          <PlatformFilter
+            selectedPlatforms={selectedPlatforms}
+            onChange={setSelectedPlatforms}
+          />
+          <StatusFilter
+            selectedStatuses={selectedStatuses}
+            onChange={setSelectedStatuses}
+          />
+          <div className="text-muted-foreground flex items-center justify-between px-2 text-xs">
+            <span>
+              {t("calendar.filterBar.resultCount", { count: events.length })}
+            </span>
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="hover:text-foreground flex cursor-pointer items-center gap-1 font-medium"
+            >
+              <X className="size-3.5" />
+              {t("calendar.filterBar.clearAll")}
+            </button>
+          </div>
+        </div>
 
         <ContentCalendar
           events={events}

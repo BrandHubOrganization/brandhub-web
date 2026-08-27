@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Check, MessageSquare, RotateCcw, Send, RefreshCw } from "lucide-react";
+import { Check, MessageSquare, RotateCcw, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type {
   ApprovalQueueItem,
   ApprovalQueueStatus,
+  ApprovalStage,
   ApprovalStageStatus,
 } from "@/types/portal";
+import { RejectRequestModal } from "./RejectRequestModal";
 
 interface ApprovalQueueListProps {
   items: ApprovalQueueItem[];
+  viewerStage: ApprovalStage;
   onApprove: (id: string) => void;
   onRequestRevision: (id: string, comment: string) => void;
   onResubmit: (id: string) => void;
@@ -31,20 +34,20 @@ const STAGE_DOT: Record<ApprovalStageStatus, string> = {
 
 export function ApprovalQueueList({
   items,
+  viewerStage,
   onApprove,
   onRequestRevision,
   onResubmit,
 }: ApprovalQueueListProps) {
   const { t } = useTranslation();
-  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [rejectTarget, setRejectTarget] = useState<ApprovalQueueItem | null>(
+    null,
+  );
 
-  function handleReject(id: string) {
-    const text = drafts[id]?.trim();
-    if (!text) {
-      return;
-    }
-    onRequestRevision(id, text);
-    setDrafts((prev) => ({ ...prev, [id]: "" }));
+  function handleRejectSubmit(comment: string) {
+    if (!rejectTarget) return;
+    onRequestRevision(rejectTarget.id, comment);
+    setRejectTarget(null);
   }
 
   return (
@@ -134,37 +137,6 @@ export function ApprovalQueueList({
                   </div>
                 )}
 
-                {pendingStage && (
-                  <div className="border-border w-full rounded-lg border p-3 sm:w-96">
-                    <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold">
-                      {t("dashboard.portal.rejectPlaceholder")}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input
-                        value={drafts[item.id] ?? ""}
-                        onChange={(e) =>
-                          setDrafts((prev) => ({
-                            ...prev,
-                            [item.id]: e.target.value,
-                          }))
-                        }
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") handleReject(item.id);
-                        }}
-                        placeholder={t("dashboard.portal.commentPlaceholder")}
-                        className="border-border bg-card text-foreground w-full rounded-lg border px-2.5 py-1.5 text-xs"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleReject(item.id)}
-                        className="bg-muted text-foreground hover:bg-muted/80 flex shrink-0 cursor-pointer items-center justify-center rounded-lg px-2.5 py-1.5"
-                        title={t("dashboard.portal.sendComment")}
-                      >
-                        <Send className="size-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
 
               <div className="flex shrink-0 flex-col items-end gap-3">
@@ -175,13 +147,13 @@ export function ApprovalQueueList({
                   {t(`dashboard.portal.status.${item.status}`)}
                 </Badge>
 
-                {pendingStage && (
+                {pendingStage && pendingStage.stage === viewerStage && (
                   <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="gap-1.5 text-xs"
-                      onClick={() => handleReject(item.id)}
+                      className="gap-1.5 border-rose-300 text-xs text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
+                      onClick={() => setRejectTarget(item)}
                     >
                       <RotateCcw className="size-3.5" />
                       {t("dashboard.portal.requestRevision")}
@@ -196,6 +168,14 @@ export function ApprovalQueueList({
                       {t("dashboard.portal.approve")}
                     </Button>
                   </div>
+                )}
+
+                {pendingStage && pendingStage.stage !== viewerStage && (
+                  <span className="text-muted-foreground text-2xs italic">
+                    {t("dashboard.portal.waitingForStage", {
+                      stage: t(`dashboard.portal.stage.${pendingStage.stage}`),
+                    })}
+                  </span>
                 )}
 
                 {item.status === "REVISION_REQUESTED" && (
@@ -214,6 +194,13 @@ export function ApprovalQueueList({
           );
         })}
       </div>
+
+      <RejectRequestModal
+        isOpen={rejectTarget !== null}
+        itemTitle={rejectTarget?.title ?? ""}
+        onClose={() => setRejectTarget(null)}
+        onSubmit={handleRejectSubmit}
+      />
     </div>
   );
 }

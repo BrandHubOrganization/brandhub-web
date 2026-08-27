@@ -9,6 +9,15 @@
     "selectAll": "Select All",
     "deselectAll": "Deselect All"
   },
+  "statusFilter": {
+    "label": "Status:",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All"
+  },
+  "filterBar": {
+    "resultCount": "{{count}} posts",
+    "clearAll": "Clear filters"
+  },
   "eventCard": {
     "noCaptionPreview": "No preview"
   },

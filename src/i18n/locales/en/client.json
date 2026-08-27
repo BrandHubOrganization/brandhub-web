@@ -29,7 +29,8 @@
     "assignSuccess": "Account Manager assigned.",
     "current": "Current",
     "cancel": "Cancel",
-    "settings": "Settings"
+    "settings": "Settings",
+    "servicePackage": "Service package"
   },
   "table": {
     "changeServicePackage": "Change service package",
@@ -80,6 +81,31 @@
     "aiCreditsLabel": "AI Credits / Month",
     "expiryLabel": "Contract / package expiry date",
     "cancel": "Cancel"
+  },
+  "settings": {
+    "modalTitle": "Client Settings",
+    "appliedBrand": "Applied to brand:",
+    "contactsLabel": "Contact roles within the client's business",
+    "addContact": "Add contact",
+    "contactsEmpty": "No contacts configured yet.",
+    "contactNamePlaceholder": "Full name",
+    "contactEmailPlaceholder": "Email",
+    "canApproveToggle": "Can approve content",
+    "role": {
+      "MARKETING_LEAD": "Marketing Lead",
+      "APPROVER": "Approver",
+      "FINANCE": "Finance",
+      "LEGAL": "Legal"
+    },
+    "preferencesLabel": "Notification & approval preferences",
+    "notifyOnNewRequest": "Notify on new content request",
+    "notifyOnPublish": "Notify when a post is published",
+    "requireApproval": "Require client approval before publishing",
+    "languageLabel": "Preferred communication language",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "saveButton": "Save settings",
+    "saveSuccess": "Client settings saved."
   },
   "createEdit": {
     "processing": "Processing...",

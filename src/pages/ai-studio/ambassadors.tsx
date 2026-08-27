@@ -11,7 +11,7 @@ import {
   generateVideo,
   getAmbassadors,
 } from "@/services/mock/mockAmbassadorService";
-import type { Ambassador } from "./types/ambassador";
+import type { Ambassador, InstantIdSettings } from "./types/ambassador";
 import { AmbassadorGrid } from "./components/AmbassadorGrid";
 import { CreateAmbassadorDialog } from "./components/CreateAmbassadorDialog";
 import { GenerateVideoDialog } from "./components/GenerateVideoDialog";
@@ -48,9 +48,13 @@ export function AmbassadorsPage() {
     };
   }, []);
 
-  async function handleCreate(name: string, faceImageUrl: string) {
+  async function handleCreate(
+    name: string,
+    faceImageUrl: string,
+    instantIdSettings: InstantIdSettings,
+  ) {
     try {
-      const created = await createAmbassador(name, faceImageUrl);
+      const created = await createAmbassador(name, faceImageUrl, instantIdSettings);
       setAmbassadors((prev) => [...prev, created]);
       setIsCreateOpen(false);
       toast.success(t("aiStudio.ambassadors.createSuccess"));
