@@ -55,10 +55,10 @@
   },
   "roles": {
     "OWNER": "Chủ sở hữu",
+    "MANAGER": "Quản lý workspace",
+    "ACCOUNT": "Quản lý tài khoản",
     "CREATOR": "Người tạo nội dung",
-    "VIEWER": "Người xem",
-    "CLIENT": "Khách hàng",
-    "ACCOUNT": "Quản lý tài khoản"
+    "CLIENT": "Khách hàng"
   },
   "errors": {
     "slugConflict": "Không gian làm việc với tên này đã tồn tại",

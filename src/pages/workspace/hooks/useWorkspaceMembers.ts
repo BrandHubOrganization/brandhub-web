@@ -7,13 +7,13 @@ import { workspaceService } from "@/services/workspaceService";
 import { extractErrorMessage } from "@/utils/error";
 import type { MemberRole, WorkspaceMember } from "@/types/workspace";
 
-export const MANAGE_ROLES: MemberRole[] = ["OWNER", "ACCOUNT"];
+export const MANAGE_ROLES: MemberRole[] = ["OWNER", "MANAGER"];
 export const ALL_ROLES: MemberRole[] = [
   "OWNER",
-  "CREATOR",
-  "VIEWER",
-  "CLIENT",
+  "MANAGER",
   "ACCOUNT",
+  "CREATOR",
+  "CLIENT",
 ];
 
 // Demo seed so Remove Member / Revoke Role stay demonstrable when the
@@ -34,12 +34,12 @@ function seedDemoMembers(members: WorkspaceMember[]): WorkspaceMember[] {
       isActive: true,
     },
     {
-      id: "demo-viewer",
+      id: "demo-manager",
       workspaceId: members[0]?.workspaceId ?? "ws-1",
       userId: "demo-u2",
       fullName: "Hồng Nhung (Demo)",
       email: "hongnhung.demo@brandhub.dev",
-      role: "VIEWER",
+      role: "MANAGER",
       joinedAt: "2026-07-15T00:00:00Z",
       isActive: true,
     },

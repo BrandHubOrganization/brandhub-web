@@ -9,19 +9,24 @@ export type AccessRule = MemberRole[] | "ADMIN";
  * AuthGuard + Sidebar/Layout đọc chung.
  */
 export const ROUTE_ACCESS: Record<string, AccessRule> = {
-  "/dashboard": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER", "CLIENT"],
-  "/change-password": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER", "CLIENT"],
-  "/requests": ["OWNER", "ACCOUNT", "CREATOR", "CLIENT"],
-  "/portal": ["OWNER", "ACCOUNT", "CLIENT"],
-  "/library": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER", "CLIENT"],
-  "/editor": ["OWNER", "CREATOR"],
-  "/templates": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER"],
-  "/hashtag-groups": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER"],
-  "/calendar": ["OWNER", "ACCOUNT", "CREATOR", "VIEWER", "CLIENT"],
-  "/analytics": ["OWNER", "ACCOUNT"],
-  "/clients": ["OWNER", "ACCOUNT"],
+  "/dashboard": ["OWNER", "MANAGER", "ACCOUNT", "CREATOR", "CLIENT"],
+  "/change-password": ["OWNER", "MANAGER", "ACCOUNT", "CREATOR", "CLIENT"],
   "/workspace": ["OWNER"],
-  "/invitations": ["OWNER", "ACCOUNT"],
+  "/social-accounts": ["OWNER"],
+  "/subscription/plans": ["OWNER"],
+  "/clients": ["OWNER", "MANAGER", "ACCOUNT"],
+  "/analytics": ["OWNER", "MANAGER", "ACCOUNT"],
+  "/reports": ["OWNER", "MANAGER", "ACCOUNT"],
+  "/invitations": ["OWNER", "MANAGER"],
+  "/requests": ["ACCOUNT", "CREATOR", "CLIENT"],
+  "/portal": ["ACCOUNT", "CLIENT"],
+  "/calendar": ["ACCOUNT", "CREATOR", "CLIENT"],
+  "/library": ["ACCOUNT", "CREATOR", "CLIENT"],
+  "/editor": ["CREATOR"],
+  "/templates": ["CREATOR"],
+  "/hashtag-groups": ["CREATOR"],
+  "/publish": ["CREATOR"],
+  "/ai-studio": ["CREATOR"],
   "/admin": "ADMIN",
 };
 
@@ -29,7 +34,7 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
   (a, b) => b.length - a.length,
 );
 
-const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "ACCOUNT"];
+const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {

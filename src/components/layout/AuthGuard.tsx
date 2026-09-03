@@ -15,10 +15,17 @@ export function AuthGuard() {
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const setCurrentMemberRole = useWorkspaceStore((s) => s.setCurrentMemberRole);
 
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const isDevSession = accessToken?.startsWith("dev-token-") ?? false;
+
   const [roleLoaded, setRoleLoaded] = React.useState(false);
 
   React.useEffect(() => {
     if (!isAuthenticated || !user) return;
+    if (isDevSession) {
+      setRoleLoaded(true);
+      return;
+    }
     setRoleLoaded(false);
     Promise.all([
       userService

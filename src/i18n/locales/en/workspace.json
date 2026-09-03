@@ -55,10 +55,10 @@
   },
   "roles": {
     "OWNER": "Owner",
+    "MANAGER": "Workspace manager",
+    "ACCOUNT": "Account manager",
     "CREATOR": "Creator",
-    "VIEWER": "Viewer",
-    "CLIENT": "Client",
-    "ACCOUNT": "Account manager"
+    "CLIENT": "Client"
   },
   "errors": {
     "slugConflict": "A workspace with this name already exists",

@@ -44,13 +44,16 @@ export function Layout() {
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const setCurrentMemberRole = useWorkspaceStore((s) => s.setCurrentMemberRole);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const isDevSession = accessToken?.startsWith("dev-token-") ?? false;
 
   React.useEffect(() => {
+    if (isDevSession) return;
     fetchWorkspaces();
-  }, [fetchWorkspaces]);
+  }, [fetchWorkspaces, isDevSession]);
 
   React.useEffect(() => {
-    if (!user) return;
+    if (!user || isDevSession) return;
     userService
       .getProfile()
       .then(({ data }) => {
@@ -76,7 +79,7 @@ export function Layout() {
   }, [activeWorkspace]);
 
   React.useEffect(() => {
-    if (!activeWorkspace || !user) return;
+    if (!activeWorkspace || !user || isDevSession) return;
     workspaceService
       .listMembers(activeWorkspace.id)
       .then(({ data }) => {

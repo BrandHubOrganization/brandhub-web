@@ -16,14 +16,14 @@ interface Props {
   members: WorkspaceMember[];
 }
 
-const ROLES: MemberRole[] = ["OWNER", "CREATOR", "VIEWER", "CLIENT", "ACCOUNT"];
+const ROLES: MemberRole[] = ["OWNER", "MANAGER", "ACCOUNT", "CREATOR", "CLIENT"];
 
 const PERMISSIONS = [
-  { key: "publish", roles: ["OWNER", "ACCOUNT"] },
-  { key: "approve", roles: ["OWNER"] },
-  { key: "invite", roles: ["OWNER", "ACCOUNT"] },
-  { key: "manageRoles", roles: ["OWNER"] },
-  { key: "viewAnalytics", roles: ["OWNER", "CREATOR", "ACCOUNT", "CLIENT"] },
+  { key: "publish", roles: ["CREATOR"] },
+  { key: "approve", roles: ["OWNER", "MANAGER", "ACCOUNT"] },
+  { key: "invite", roles: ["OWNER", "MANAGER"] },
+  { key: "manageRoles", roles: ["OWNER", "MANAGER"] },
+  { key: "viewAnalytics", roles: ["OWNER", "MANAGER", "ACCOUNT"] },
   { key: "editWorkspace", roles: ["OWNER"] },
 ] as const;
 
@@ -48,7 +48,7 @@ export function WorkspacePermissionsPanel({ members }: Props) {
 
   const handleConfirmRevoke = () => {
     if (!revokeTarget) return;
-    setRoles((prev) => ({ ...prev, [revokeTarget.id]: "VIEWER" }));
+    setRoles((prev) => ({ ...prev, [revokeTarget.id]: "CLIENT" }));
     toast.success(
       t("workspace.permissions.revokeSuccess", {
         name: revokeTarget.fullName,
@@ -95,7 +95,7 @@ export function WorkspacePermissionsPanel({ members }: Props) {
                   ))}
                 </select>
                 {roles[member.id] !== "OWNER" &&
-                  roles[member.id] !== "VIEWER" && (
+                  roles[member.id] !== "CLIENT" && (
                     <Button
                       variant="outline"
                       size="sm"

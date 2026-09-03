@@ -7,6 +7,7 @@ export interface WorkspaceState {
   workspaceList: Workspace[];
   currentMemberRole: MemberRole | null;
   setCurrentWorkspace: (workspace: Workspace | null) => void;
+  setWorkspaceList: (workspaces: Workspace[]) => void;
   setCurrentMemberRole: (role: MemberRole | null) => void;
   fetchWorkspaces: () => Promise<void>;
   reset: () => void;
@@ -18,6 +19,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   currentMemberRole: null,
 
   setCurrentWorkspace: (workspace) => set({ currentWorkspace: workspace }),
+  setWorkspaceList: (workspaces) => set({ workspaceList: workspaces }),
   setCurrentMemberRole: (role) => set({ currentMemberRole: role }),
 
   fetchWorkspaces: async () => {

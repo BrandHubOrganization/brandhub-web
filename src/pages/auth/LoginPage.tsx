@@ -10,6 +10,7 @@ import { AuthBrandPanel } from "@/components/auth/AuthBrandPanel";
 import { AuthMobileHeader } from "@/components/auth/AuthMobileHeader";
 import { BackToHomeLink } from "@/components/auth/BackToHomeLink";
 import { PasswordInput } from "@/components/auth/PasswordInput";
+import { DevQuickLogin } from "@/components/auth/DevQuickLogin";
 import { authService, oauthUrl } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
 
@@ -190,6 +191,7 @@ export function LoginPage() {
               {t("auth.login.privacyPolicy")}
             </button>
           </p>
+          <DevQuickLogin />
         </div>
       </div>
     </div>

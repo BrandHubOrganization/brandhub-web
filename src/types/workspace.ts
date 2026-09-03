@@ -1,4 +1,4 @@
-export type MemberRole = "OWNER" | "CREATOR" | "VIEWER" | "CLIENT" | "ACCOUNT";
+export type MemberRole = "OWNER" | "MANAGER" | "ACCOUNT" | "CREATOR" | "CLIENT";
 
 export type WorkspaceIndustry =
   | "FNB"
