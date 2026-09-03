@@ -163,7 +163,7 @@ export function ProfilePage() {
                       {t("profile.view.roleLabel")}
                     </p>
                     <p className="text-foreground text-xs font-medium">
-                      {user?.role ?? "AGENCY_OWNER"}
+                      {user?.role ?? "—"}
                     </p>
                   </div>
                 </div>

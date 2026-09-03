@@ -111,9 +111,20 @@ src/
 
 ## Roles
 
-`UserRole`: `ADMIN`, `AGENCY_OWNER`, `ACCOUNT_MANAGER`, `CONTENT_CREATOR`,
-`BRAND_CLIENT`. Nav/sidebar visibility is filtered by role — e.g. `BRAND_CLIENT`
-cannot see `/workspace` or `/editor`; only `ADMIN` sees `/admin`.
+Two-tier role model:
+- `SystemRole` (`src/types/user.ts`): `ADMIN` | `USER`. `ADMIN` bypasses all
+  route checks (`canAccess()` in `src/routes/access.ts`).
+- `MemberRole` (`src/types/workspace.ts`, per-workspace): `OWNER` (pure
+  management, no content tools), `MANAGER` (workspace ops: members/settings/
+  clients/analytics/reports), `ACCOUNT` (agency-client bridge: requests/
+  portal/clients/calendar/library), `CREATOR` (content tools: editor/
+  templates/hashtag-groups/publish/ai-studio), `CLIENT` (view/approve own
+  content only).
+
+Nav/sidebar visibility and route access are both driven by
+`ROUTE_ACCESS` in `src/routes/access.ts` — the single source of truth for
+role → route. `Sidebar.tsx` filters nav items and `AuthGuard.tsx` blocks
+direct URL access using the same map.
 
 ## Types
 
