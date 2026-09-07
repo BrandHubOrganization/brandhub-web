@@ -31,6 +31,10 @@
     }
   },
   "noRole": "—",
+  "reportFrequency": {
+    "WEEKLY": "Hàng tuần",
+    "MONTHLY": "Hàng tháng"
+  },
   "members": {
     "title": "Thành viên",
     "description": "Quản lý quyền truy cập không gian làm việc này.",
@@ -51,10 +55,10 @@
   },
   "roles": {
     "OWNER": "Chủ sở hữu",
+    "MANAGER": "Quản lý workspace",
+    "ACCOUNT": "Quản lý tài khoản",
     "CREATOR": "Người tạo nội dung",
-    "VIEWER": "Người xem",
-    "CLIENT": "Khách hàng",
-    "ACCOUNT": "Quản lý tài khoản"
+    "CLIENT": "Khách hàng"
   },
   "errors": {
     "slugConflict": "Không gian làm việc với tên này đã tồn tại",
@@ -74,6 +78,12 @@
     "matrixTitle": "Ma trận quyền",
     "permission": "Quyền",
     "roleChanged": "Đã đổi vai trò của {{name}} thành {{role}}",
+    "revokeButton": "Thu hồi",
+    "revokeConfirmTitle": "Thu hồi vai trò?",
+    "revokeConfirmBody": "{{name}} sẽ mất toàn bộ quyền quản lý và chuyển về vai trò Viewer (chỉ xem). Hành động này có thể hoàn tác bằng cách gán lại vai trò.",
+    "revokeConfirmButton": "Xác nhận thu hồi",
+    "revokeCancel": "Hủy",
+    "revokeSuccess": "Đã thu hồi vai trò của {{name}}",
     "perms": {
       "publish": "Đăng nội dung",
       "approve": "Duyệt nội dung",

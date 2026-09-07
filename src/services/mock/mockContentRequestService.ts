@@ -1,9 +1,42 @@
 import type {
   ContentRequest,
+  ContentRequestStatus,
   Assignee,
   ContentRequestQueryParams,
   ContentRequestPaginatedResponse,
+  CreateContentRequestPayload,
+  ReviseContentRequestPayload,
+  StatusHistoryEntry,
 } from "@/types/contentRequest";
+
+const STATUS_FLOW: ContentRequestStatus[] = [
+  "SUBMITTED",
+  "ASSIGNED",
+  "IN_PROGRESS",
+  "PENDING_REVIEW",
+  "SENT_TO_CLIENT",
+  "APPROVED",
+];
+
+function buildStatusHistory(
+  finalStatus: ContentRequestStatus,
+  createdAt: string,
+  assigneeName?: string,
+): StatusHistoryEntry[] {
+  const flowIndex = STATUS_FLOW.indexOf(finalStatus);
+  const steps =
+    flowIndex === -1 ? [finalStatus] : STATUS_FLOW.slice(0, flowIndex + 1);
+  const base = new Date(createdAt).getTime();
+
+  return steps.map((status, i) => ({
+    status,
+    changedAt: new Date(base + i * 6 * 60 * 60 * 1000).toISOString(),
+    changedBy:
+      status === "SUBMITTED"
+        ? "Account Manager"
+        : (assigneeName ?? "Account Manager"),
+  }));
+}
 
 export const MOCK_CREATORS: Assignee[] = [
   {
@@ -261,7 +294,13 @@ const INITIAL_REQUESTS: ContentRequest[] = [
 ];
 
 class MockContentRequestService {
-  private requests: ContentRequest[] = [...INITIAL_REQUESTS];
+  private requests: ContentRequest[] = INITIAL_REQUESTS.map((r) => ({
+    ...r,
+    statusHistory:
+      r.statusHistory ??
+      buildStatusHistory(r.status, r.createdAt, r.assignee?.name),
+  }));
+  private nextId = 200;
 
   private async delay(ms: number = 300) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -341,6 +380,105 @@ class MockContentRequestService {
       ...this.requests[reqIndex],
       assignee,
       status: "ASSIGNED",
+    };
+    updated.statusHistory = [
+      ...(this.requests[reqIndex].statusHistory ?? []),
+      {
+        status: "ASSIGNED",
+        changedAt: new Date().toISOString(),
+        changedBy: "Account Manager",
+        note: `Đã gán cho ${assignee.name}`,
+      },
+    ];
+
+    this.requests[reqIndex] = updated;
+    return updated;
+  }
+
+  async getRequestById(requestId: string): Promise<ContentRequest> {
+    await this.delay(200);
+    const req = this.requests.find((r) => r.id === requestId);
+    if (!req) throw new Error("Request not found");
+    return req;
+  }
+
+  async createRequest(
+    payload: CreateContentRequestPayload,
+  ): Promise<ContentRequest> {
+    await this.delay(400);
+    const now = new Date().toISOString();
+    const created: ContentRequest = {
+      id: `req-${this.nextId++}`,
+      topic: payload.topic,
+      platforms: payload.platforms,
+      clientName: payload.clientName,
+      deadline: payload.deadline,
+      briefNote: payload.briefNote,
+      status: "SUBMITTED",
+      createdAt: now,
+      statusHistory: [
+        {
+          status: "SUBMITTED",
+          changedAt: now,
+          changedBy: "Account Manager",
+        },
+      ],
+    };
+    this.requests.unshift(created);
+    return created;
+  }
+
+  async reviseRequest(
+    requestId: string,
+    payload: ReviseContentRequestPayload,
+  ): Promise<ContentRequest> {
+    await this.delay(400);
+    const reqIndex = this.requests.findIndex((r) => r.id === requestId);
+    if (reqIndex === -1) throw new Error("Request not found");
+
+    const current = this.requests[reqIndex];
+    const updated: ContentRequest = {
+      ...current,
+      topic: payload.topic,
+      platforms: payload.platforms,
+      deadline: payload.deadline,
+      briefNote: payload.briefNote,
+      statusHistory: [
+        ...(current.statusHistory ?? []),
+        {
+          status: current.status,
+          changedAt: new Date().toISOString(),
+          changedBy: current.assignee?.name ?? "Account Manager",
+          note: "Yêu cầu đã được chỉnh sửa",
+        },
+      ],
+    };
+
+    this.requests[reqIndex] = updated;
+    return updated;
+  }
+
+  async cancelRequest(
+    requestId: string,
+    reason?: string,
+  ): Promise<ContentRequest> {
+    await this.delay(400);
+    const reqIndex = this.requests.findIndex((r) => r.id === requestId);
+    if (reqIndex === -1) throw new Error("Request not found");
+
+    const current = this.requests[reqIndex];
+    const updated: ContentRequest = {
+      ...current,
+      status: "CANCELLED",
+      statusHistory: [
+        ...(current.statusHistory ?? []),
+        {
+          status: "CANCELLED",
+          changedAt: new Date().toISOString(),
+          changedBy: "Account Manager",
+          note: reason,
+        },
+      ],
     };
 
     this.requests[reqIndex] = updated;

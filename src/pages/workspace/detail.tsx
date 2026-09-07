@@ -9,6 +9,7 @@ import { useWorkspaceSettings } from "./hooks/useWorkspaceSettings";
 import { LogoUploader } from "./components/LogoUploader";
 import { PlatformToggle } from "./components/PlatformToggle";
 import { FrequencyToggle } from "./components/FrequencyToggle";
+import { TimezoneSelect } from "./components/TimezoneSelect";
 
 export function WorkspaceSettingsPage() {
   const { t } = useTranslation();
@@ -17,6 +18,8 @@ export function WorkspaceSettingsPage() {
     saving,
     name,
     setName,
+    timezone,
+    setTimezone,
     defaultPlatforms,
     reportFrequency,
     logoUrl,
@@ -57,6 +60,7 @@ export function WorkspaceSettingsPage() {
           onChange={(e) => setName(e.target.value)}
           required
         />
+        <TimezoneSelect value={timezone} onChange={setTimezone} />
         <PlatformToggle
           value={defaultPlatforms}
           onToggle={toggleWorkspacePlatform}
@@ -77,7 +81,7 @@ export function WorkspaceSettingsPage() {
 
       {canManage && (
         <div className="max-w-sm">
-          <div className="rounded-xl border border-red-200 bg-card p-6 dark:border-red-900/50">
+          <div className="bg-card rounded-xl border border-red-200 p-6 dark:border-red-900/50">
             <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
               <TriangleAlert className="size-4 text-rose-500" />
               {t("workspace.settings.danger.title")}

@@ -17,6 +17,9 @@ export function useWorkspaceSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState("");
+  const [timezone, setTimezone] = useState(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone,
+  );
   const [defaultPlatforms, setDefaultPlatforms] = useState<string[]>([]);
   const [reportFrequency, setReportFrequency] =
     useState<ReportFrequency | null>(null);
@@ -32,6 +35,8 @@ export function useWorkspaceSettings() {
       .then(({ data }) => {
         setName(data.data.name);
         setLogoUrl(data.data.logoUrl);
+        if (data.data.settings.timezone)
+          setTimezone(data.data.settings.timezone);
         setDefaultPlatforms(data.data.settings.defaultPlatforms ?? []);
         setReportFrequency(data.data.settings.reportFrequency ?? null);
       })
@@ -94,7 +99,7 @@ export function useWorkspaceSettings() {
     try {
       await workspaceService.updateSettings(workspaceId, {
         name: name.trim(),
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timezone,
         defaultPlatforms,
         reportFrequency: reportFrequency ?? undefined,
       });
@@ -112,6 +117,8 @@ export function useWorkspaceSettings() {
     saving,
     name,
     setName,
+    timezone,
+    setTimezone,
     defaultPlatforms,
     reportFrequency,
     logoUrl,

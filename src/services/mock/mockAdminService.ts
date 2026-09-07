@@ -46,7 +46,7 @@ const MOCK_USERS: AdminUser[] = [
     id: "u-5",
     name: "Hoàng Đức Em",
     email: "em.hoang@brandhub.vn",
-    role: "VIEWER",
+    role: "MANAGER",
     status: "DISABLED",
     workspaceCount: 1,
     createdAt: "2025-11-30T00:00:00Z",

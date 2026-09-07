@@ -25,7 +25,49 @@
     "PENDING_REVIEW": "Chờ Duyệt",
     "SENT_TO_CLIENT": "Đã Gửi Khách Hàng",
     "APPROVED": "Đã Duyệt",
-    "REJECTED": "Từ Chối"
+    "REJECTED": "Từ Chối",
+    "CANCELLED": "Đã Hủy"
+  },
+  "create": {
+    "button": "Tạo Yêu Cầu",
+    "title": "Tạo Yêu Cầu Nội Dung Mới",
+    "topicLabel": "Chủ đề bài viết",
+    "topicPlaceholder": "VD: Ra mắt bộ sưu tập mùa hè 2026",
+    "clientLabel": "Khách hàng",
+    "clientPlaceholder": "VD: Nike Vietnam",
+    "deadlineLabel": "Hạn chót",
+    "platformsLabel": "Nền tảng xuất bản",
+    "briefLabel": "Ghi chú brief (tùy chọn)",
+    "briefPlaceholder": "Mô tả ngắn về yêu cầu nội dung...",
+    "submit": "Tạo yêu cầu",
+    "submitting": "Đang tạo...",
+    "cancel": "Hủy",
+    "validationError": "Vui lòng điền đủ chủ đề, khách hàng, hạn chót và ít nhất 1 nền tảng",
+    "success": "Đã tạo yêu cầu \"{{topic}}\""
+  },
+  "detail": {
+    "title": "Chi Tiết Yêu Cầu",
+    "statusHistoryTitle": "Lịch Sử Trạng Thái",
+    "briefLabel": "Ghi chú brief",
+    "reviseButton": "Chỉnh sửa yêu cầu",
+    "cancelButton": "Hủy yêu cầu",
+    "close": "Đóng"
+  },
+  "revise": {
+    "title": "Chỉnh Sửa Yêu Cầu",
+    "submit": "Lưu thay đổi",
+    "submitting": "Đang lưu...",
+    "success": "Đã cập nhật yêu cầu \"{{topic}}\"",
+    "error": "Lỗi khi chỉnh sửa yêu cầu"
+  },
+  "cancelDialog": {
+    "title": "Hủy Yêu Cầu Nội Dung?",
+    "description": "Thao tác này sẽ hủy yêu cầu \"{{topic}}\" và không thể hoàn tác.",
+    "reasonPlaceholder": "Lý do hủy (tùy chọn)...",
+    "confirm": "Xác nhận hủy",
+    "cancel": "Không hủy",
+    "success": "Đã hủy yêu cầu \"{{topic}}\"",
+    "error": "Lỗi khi hủy yêu cầu"
   },
   "filterBar": {
     "resetFilter": "Đặt lại bộ lọc",

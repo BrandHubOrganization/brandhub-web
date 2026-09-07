@@ -1,5 +1,5 @@
 export type PlatformType =
-  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
+  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "ZALO_OA" | "YOUTUBE";
 export type PostStatus = "DRAFT" | "SCHEDULED" | "PUBLISHED" | "FAILED";
 
 export interface CalendarPostEvent {
@@ -21,6 +21,7 @@ export interface CalendarFetchParams {
   startDate: string;
   endDate: string;
   platforms?: PlatformType[];
+  statuses?: PostStatus[];
 }
 
 export interface ReschedulePostPayload {

@@ -1,5 +1,7 @@
 import type { PlatformType } from "./calendar";
 
+export type InstagramFormat = "IMAGE" | "REEL" | "CAROUSEL" | "STORY";
+
 export interface PostPreviewData {
   title?: string;
   caption: string;
@@ -7,6 +9,7 @@ export interface PostPreviewData {
   authorName?: string;
   authorAvatar?: string;
   targetPlatforms: PlatformType[];
+  instagramFormat?: InstagramFormat;
 }
 
 export interface PlatformLimitConfig {
@@ -35,6 +38,11 @@ export const PLATFORM_LIMITS: Record<PlatformType, PlatformLimitConfig> = {
     maxCharacters: 500,
     aspectRatioClass: "aspect-square",
     label: "Threads (1:1 Square)",
+  },
+  ZALO_OA: {
+    maxCharacters: 2000,
+    aspectRatioClass: "aspect-[4/3]",
+    label: "Zalo OA (4:3)",
   },
   YOUTUBE: {
     maxCharacters: 5000,

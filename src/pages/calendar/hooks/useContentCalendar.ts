@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { calendarService } from "@/services/mock/mockCalendarService";
-import type { CalendarPostEvent, PlatformType } from "@/types/calendar";
+import type {
+  CalendarPostEvent,
+  PlatformType,
+  PostStatus,
+} from "@/types/calendar";
 
 const ALL_PLATFORMS: PlatformType[] = [
   "FACEBOOK",
@@ -12,11 +16,20 @@ const ALL_PLATFORMS: PlatformType[] = [
   "YOUTUBE",
 ];
 
+const ALL_STATUSES: PostStatus[] = [
+  "DRAFT",
+  "SCHEDULED",
+  "PUBLISHED",
+  "FAILED",
+];
+
 export function useContentCalendar() {
   const { t } = useTranslation();
   const [events, setEvents] = useState<CalendarPostEvent[]>([]);
   const [selectedPlatforms, setSelectedPlatforms] =
     useState<PlatformType[]>(ALL_PLATFORMS);
+  const [selectedStatuses, setSelectedStatuses] =
+    useState<PostStatus[]>(ALL_STATUSES);
   const [dateRange, setDateRange] = useState<{ start: Date; end: Date }>({
     start: new Date(),
     end: new Date(),
@@ -32,6 +45,7 @@ export function useContentCalendar() {
         startDate: dateRange.start.toISOString(),
         endDate: dateRange.end.toISOString(),
         platforms: selectedPlatforms,
+        statuses: selectedStatuses,
       });
       setEvents(data);
     } catch (err) {
@@ -41,7 +55,12 @@ export function useContentCalendar() {
 
   useEffect(() => {
     fetchCalendarEvents();
-  }, [selectedPlatforms, dateRange]);
+  }, [selectedPlatforms, selectedStatuses, dateRange]);
+
+  const clearFilters = () => {
+    setSelectedPlatforms(ALL_PLATFORMS);
+    setSelectedStatuses(ALL_STATUSES);
+  };
 
   const handleReschedule = async (
     eventId: string,
@@ -98,6 +117,9 @@ export function useContentCalendar() {
     events,
     selectedPlatforms,
     setSelectedPlatforms,
+    selectedStatuses,
+    setSelectedStatuses,
+    clearFilters,
     dateRange,
     setDateRange,
     isModalOpen,

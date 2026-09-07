@@ -57,9 +57,23 @@ export function PublishStatusTable({
                 </div>
               </td>
               <td className="px-4 py-3">
-                <Badge variant={post.status}>
-                  {t(`publish.status.${post.status}`)}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant={post.status}>
+                    {t(`publish.status.${post.status}`)}
+                  </Badge>
+                  {post.delivery?.inDeadLetterQueue && (
+                    <Badge variant="FAILED">{t("publish.table.dlq")}</Badge>
+                  )}
+                </div>
+                {post.status === "FAILED" && post.delivery && (
+                  <p className="text-muted-foreground mt-1 text-[11px]">
+                    {t("publish.table.deliveryAttempt", {
+                      attempt: post.delivery.attempt,
+                      max: post.delivery.maxAttempts,
+                      backoff: post.delivery.lastBackoffSec,
+                    })}
+                  </p>
+                )}
               </td>
               <td className="text-muted-foreground px-4 py-3">
                 {post.publishedAt

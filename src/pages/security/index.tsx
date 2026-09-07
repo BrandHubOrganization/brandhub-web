@@ -14,7 +14,7 @@ function QrMockup() {
     392, 403, 412, 420, 426, 431, 434, 436,
   ]);
   return (
-    <div className="grid aspect-square w-44 grid-cols-[repeat(21,1fr)] gap-0 rounded-lg border border-border bg-card p-1.5">
+    <div className="border-border bg-card grid aspect-square w-44 grid-cols-[repeat(21,1fr)] gap-0 rounded-lg border p-1.5">
       {Array.from({ length: cells * cells }, (_, i) => (
         <span
           key={i}
@@ -61,7 +61,10 @@ export function SecurityPage() {
   };
 
   return (
-    <PageWrapper title={t("security.title")} description={t("security.description")}>
+    <PageWrapper
+      title={t("security.title")}
+      description={t("security.description")}
+    >
       <div className="border-border bg-card max-w-2xl rounded-xl border p-6">
         <div className="border-border flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-3">
@@ -80,7 +83,7 @@ export function SecurityPage() {
           <button
             type="button"
             onClick={handleToggle}
-            className="relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full bg-muted transition-colors"
+            className="bg-muted relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors"
             role="switch"
             aria-checked={enabled}
           >
@@ -106,7 +109,12 @@ export function SecurityPage() {
                 <code className="bg-muted text-foreground rounded-lg px-3 py-2 font-mono text-xs tracking-widest">
                   {secret}
                 </code>
-                <Button variant="outline" size="sm" className="gap-1.5" onClick={handleCopy}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={handleCopy}
+                >
                   {copied ? (
                     <Check className="size-3.5 text-emerald-600" />
                   ) : (
@@ -134,7 +142,7 @@ export function SecurityPage() {
                 {backupCodes.map((code) => (
                   <code
                     key={code}
-                    className="bg-muted text-muted-foreground rounded px-2 py-1 text-center font-mono text-2xs"
+                    className="bg-muted text-muted-foreground text-2xs rounded px-2 py-1 text-center font-mono"
                   >
                     {code}
                   </code>

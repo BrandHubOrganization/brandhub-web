@@ -7,14 +7,45 @@ import { workspaceService } from "@/services/workspaceService";
 import { extractErrorMessage } from "@/utils/error";
 import type { MemberRole, WorkspaceMember } from "@/types/workspace";
 
-export const MANAGE_ROLES: MemberRole[] = ["OWNER", "ACCOUNT"];
+export const MANAGE_ROLES: MemberRole[] = ["OWNER", "MANAGER"];
 export const ALL_ROLES: MemberRole[] = [
   "OWNER",
-  "CREATOR",
-  "VIEWER",
-  "CLIENT",
+  "MANAGER",
   "ACCOUNT",
+  "CREATOR",
+  "CLIENT",
 ];
+
+// Demo seed so Remove Member / Revoke Role stay demonstrable when the
+// backend workspace holds only the owner. Appended only when no other
+// internal member exists — screenshots, not real membership.
+function seedDemoMembers(members: WorkspaceMember[]): WorkspaceMember[] {
+  const internal = members.filter((m) => m.role !== "CLIENT");
+  if (internal.length > 1) return members;
+  const demo: WorkspaceMember[] = [
+    {
+      id: "demo-creator",
+      workspaceId: members[0]?.workspaceId ?? "ws-1",
+      userId: "demo-u1",
+      fullName: "Minh Anh (Demo)",
+      email: "minhanh.demo@brandhub.dev",
+      role: "CREATOR",
+      joinedAt: "2026-07-01T00:00:00Z",
+      isActive: true,
+    },
+    {
+      id: "demo-manager",
+      workspaceId: members[0]?.workspaceId ?? "ws-1",
+      userId: "demo-u2",
+      fullName: "Hồng Nhung (Demo)",
+      email: "hongnhung.demo@brandhub.dev",
+      role: "MANAGER",
+      joinedAt: "2026-07-15T00:00:00Z",
+      isActive: true,
+    },
+  ];
+  return [...members, ...demo];
+}
 
 export function useWorkspaceMembers() {
   const { t } = useTranslation();
@@ -38,7 +69,7 @@ export function useWorkspaceMembers() {
     if (!workspaceId) return;
     workspaceService
       .listMembers(workspaceId)
-      .then(({ data }) => setMembers(data.data))
+      .then(({ data }) => setMembers(seedDemoMembers(data.data)))
       .catch((err: unknown) =>
         toast.error(extractErrorMessage(err, t("common.loadFailed"))),
       )

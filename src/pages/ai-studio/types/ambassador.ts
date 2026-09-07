@@ -1,5 +1,15 @@
 export type AmbassadorStatus = "TRAINING" | "READY" | "FAILED";
 
+export type PosePreservation = "LOW" | "MEDIUM" | "HIGH";
+export type ModelQualityTier = "STANDARD" | "HIGH" | "ULTRA";
+
+export interface InstantIdSettings {
+  identityStrength: number;
+  posePreservation: PosePreservation;
+  qualityTier: ModelQualityTier;
+  negativePrompt?: string;
+}
+
 export interface Ambassador {
   id: string;
   name: string;
@@ -8,6 +18,7 @@ export interface Ambassador {
   createdAt: string;
   videosGenerated: number;
   modelId?: string;
+  instantIdSettings?: InstantIdSettings;
 }
 
 export type AmbassadorVideoJobStatus =

@@ -57,6 +57,24 @@ export function DocumentList({ documents, onDelete }: DocumentListProps) {
                 <Badge variant={STATUS_BADGE_VARIANT[doc.status]}>
                   {t(`aiStudio.knowledgeBase.docStatus.${doc.status}`)}
                 </Badge>
+                {doc.status === "PROCESSING" && (
+                  <div className="text-2xs mt-1.5 flex items-center gap-1.5">
+                    {(["chunking", "embedding", "indexing"] as const).map(
+                      (stage, i) => (
+                        <span key={stage} className="flex items-center gap-1">
+                          <span
+                            className={`size-1.5 rounded-full ${
+                              i <= 1 ? "bg-brand-orange" : "bg-muted"
+                            }`}
+                          />
+                          <span className="text-muted-foreground">
+                            {t(`aiStudio.knowledgeBase.stage.${stage}`)}
+                          </span>
+                        </span>
+                      ),
+                    )}
+                  </div>
+                )}
               </TableCell>
               <TableCell>
                 {doc.status === "INDEXED" ? (doc.chunksCount ?? 0) : "—"}

@@ -17,6 +17,7 @@ interface ContentRequestTableProps {
   userRole?: string;
   onPageChange: (newPage: number) => void;
   onOpenAssignModal: (req: ContentRequest) => void;
+  onOpenDetail: (req: ContentRequest) => void;
 }
 
 const STATUS_BADGE_MAP: Record<ContentRequestStatus, { className: string }> = {
@@ -47,6 +48,10 @@ const STATUS_BADGE_MAP: Record<ContentRequestStatus, { className: string }> = {
   REJECTED: {
     className:
       "bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800",
+  },
+  CANCELLED: {
+    className:
+      "bg-muted text-muted-foreground border-border line-through opacity-70",
   },
 };
 
@@ -89,11 +94,12 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
   userRole = "ACCOUNT",
   onPageChange,
   onOpenAssignModal,
+  onOpenDetail,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const handleRowClick = (req: ContentRequest) => {
+  const handleGoToEditor = (req: ContentRequest) => {
     navigate("/editor", {
       state: {
         templateTitle: req.topic,
@@ -137,7 +143,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                 return (
                   <tr
                     key={req.id}
-                    onClick={() => handleRowClick(req)}
+                    onClick={() => onOpenDetail(req)}
                     className="group hover:bg-muted/80 cursor-pointer transition-colors"
                   >
                     {/* Topic */}
@@ -225,7 +231,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                         )}
 
                         <button
-                          onClick={() => handleRowClick(req)}
+                          onClick={() => handleGoToEditor(req)}
                           className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
                           title={t("requests.table.goToEditor")}
                         >

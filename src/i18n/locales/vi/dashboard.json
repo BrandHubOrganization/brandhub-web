@@ -113,6 +113,10 @@
   "portal": {
     "title": "Client Portal",
     "description": "Không gian phê duyệt nội dung của khách hàng.",
+    "tabApprovals": "Hàng đợi Phê duyệt",
+    "tabCalendar": "Lịch Nội Dung",
+    "calendarEmpty": "Chưa có bài đăng nào trong lịch.",
+    "calendarLoadError": "Không tải được lịch nội dung.",
     "queueTitle": "Hàng đợi Phê duyệt Nội dung",
     "createdOn": "Ngày tạo: {{date}}",
     "approve": "Phê duyệt",
@@ -129,6 +133,51 @@
     },
     "comments": "Bình luận ({{count}})",
     "commentPlaceholder": "Viết bình luận...",
-    "sendComment": "Gửi bình luận"
+    "sendComment": "Gửi bình luận",
+    "revisionRound": "Vòng chỉnh sửa {{round}}",
+    "rejectModal": {
+      "title": "Yêu cầu chỉnh sửa",
+      "categoryLabel": "Loại vấn đề",
+      "categoryPlaceholder": "Chọn loại vấn đề",
+      "category": {
+        "VISUAL": "Hình ảnh / Thiết kế",
+        "COPY": "Nội dung / Caption",
+        "BRAND": "Không đúng thương hiệu",
+        "COMPLIANCE": "Vi phạm quy định",
+        "OTHER": "Khác"
+      },
+      "severityLabel": "Mức độ ưu tiên",
+      "severity": {
+        "LOW": "Thấp",
+        "MEDIUM": "Trung bình",
+        "HIGH": "Gấp"
+      },
+      "detailLabel": "Mô tả chi tiết",
+      "detailPlaceholder": "Mô tả cụ thể cần sửa gì...",
+      "detailRequired": "Vui lòng nhập mô tả chi tiết",
+      "categoryRequired": "Vui lòng chọn loại vấn đề",
+      "cancel": "Hủy",
+      "submit": "Gửi yêu cầu chỉnh sửa"
+    },
+    "chainTitle": "Chuỗi Phê Duyệt",
+    "stage": {
+      "CREATOR": "Người Sáng Tạo",
+      "MANAGER": "Quản Lý",
+      "CLIENT": "Khách Hàng"
+    },
+    "viewerSwitcher": {
+      "label": "Xem với vai trò:"
+    },
+    "waitingForStage": "Đang chờ {{stage}} duyệt",
+    "stageStatus": {
+      "PENDING": "Đang chờ",
+      "APPROVED": "Đã duyệt",
+      "REVISION_REQUESTED": "Yêu cầu sửa"
+    },
+    "rejectReasonRequired": "Vui lòng nhập lý do yêu cầu chỉnh sửa",
+    "rejectPlaceholder": "Nhập lý do yêu cầu chỉnh sửa nội dung...",
+    "resubmit": "Gửi lại để duyệt",
+    "resubmitSuccess": "Đã gửi lại nội dung, bắt đầu vòng duyệt mới.",
+    "resubmitError": "Gửi lại thất bại, thử lại sau."
   }
 }

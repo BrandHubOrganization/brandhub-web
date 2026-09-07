@@ -31,6 +31,10 @@
     }
   },
   "noRole": "—",
+  "reportFrequency": {
+    "WEEKLY": "Weekly",
+    "MONTHLY": "Monthly"
+  },
   "members": {
     "title": "Members",
     "description": "Manage who has access to this workspace.",
@@ -51,10 +55,10 @@
   },
   "roles": {
     "OWNER": "Owner",
+    "MANAGER": "Workspace manager",
+    "ACCOUNT": "Account manager",
     "CREATOR": "Creator",
-    "VIEWER": "Viewer",
-    "CLIENT": "Client",
-    "ACCOUNT": "Account manager"
+    "CLIENT": "Client"
   },
   "errors": {
     "slugConflict": "A workspace with this name already exists",
@@ -76,6 +80,12 @@
     "matrixTitle": "Permissions Matrix",
     "permission": "Permission",
     "roleChanged": "Changed {{name}} role to {{role}}",
+    "revokeButton": "Revoke",
+    "revokeConfirmTitle": "Revoke role?",
+    "revokeConfirmBody": "{{name}} will lose all management permissions and be moved to the Viewer role (read-only). This can be undone by reassigning a role.",
+    "revokeConfirmButton": "Confirm revoke",
+    "revokeCancel": "Cancel",
+    "revokeSuccess": "Revoked {{name}}'s role",
     "perms": {
       "publish": "Publish content",
       "approve": "Approve content",

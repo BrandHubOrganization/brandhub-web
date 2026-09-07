@@ -52,6 +52,8 @@ export interface Client {
   linkedAccounts?: LinkedSocialAccount[];
   contentRequests?: ContentRequest[];
   analyticsSummary?: ClientAnalyticsSummary;
+  contacts?: ClientContact[];
+  preferences?: ClientPreferences;
   createdAt: string;
   updatedAt?: string;
 }
@@ -72,6 +74,29 @@ export interface UpdateServicePackageDTO {
   allowedPlatforms?: Platform[];
   aiCreditsPerMonth?: number;
   expiryDate?: string;
+}
+
+export type ClientContactRole =
+  "MARKETING_LEAD" | "APPROVER" | "FINANCE" | "LEGAL";
+
+export interface ClientContact {
+  id: string;
+  name: string;
+  email: string;
+  role: ClientContactRole;
+  canApproveContent: boolean;
+}
+
+export interface ClientPreferences {
+  notifyOnNewRequest: boolean;
+  notifyOnPublish: boolean;
+  requireClientApprovalBeforePublish: boolean;
+  preferredLanguage: "vi" | "en";
+}
+
+export interface UpdateClientSettingsDTO {
+  contacts: ClientContact[];
+  preferences: ClientPreferences;
 }
 
 export interface ClientListParams {

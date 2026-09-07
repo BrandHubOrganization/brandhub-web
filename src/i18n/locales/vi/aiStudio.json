@@ -8,8 +8,25 @@
     "createTitle": "Tạo đại sứ mới",
     "nameLabel": "Tên đại sứ",
     "namePlaceholder": "Nhập tên đại sứ",
-    "faceImageLabel": "URL ảnh khuôn mặt",
-    "faceImagePlaceholder": "https://...",
+    "faceUploadLabel": "Ảnh khuôn mặt (Face Upload)",
+    "faceUploadHint": "Tải lên 1 ảnh chân dung rõ mặt để AI huấn luyện bản sao khuôn mặt.",
+    "faceUploadDropzone": "Kéo thả ảnh vào đây hoặc bấm để chọn file",
+    "instantIdLabel": "Cấu hình mô hình InstantID",
+    "identityStrengthLabel": "Mức độ giữ khuôn mặt (Identity Strength)",
+    "posePreservationLabel": "Giữ nguyên tư thế (Pose Preservation)",
+    "posePreservation": {
+      "LOW": "Tự do",
+      "MEDIUM": "Cân bằng",
+      "HIGH": "Giữ nguyên"
+    },
+    "qualityTierLabel": "Chất lượng mô hình",
+    "qualityTier": {
+      "STANDARD": "Tiêu chuẩn",
+      "HIGH": "Cao",
+      "ULTRA": "Cực đỉnh"
+    },
+    "negativePromptLabel": "Nội dung cấm (Negative Prompt)",
+    "negativePromptPlaceholder": "VD: khuôn mặt méo, chữ, watermark...",
     "cancel": "Hủy",
     "createSuccess": "Đã tạo đại sứ thành công.",
     "createError": "Tạo đại sứ thất bại.",
@@ -54,9 +71,21 @@
       "INDEXED": "Đã lập chỉ mục",
       "FAILED": "Thất bại"
     },
+    "stage": {
+      "chunking": "Tách đoạn",
+      "embedding": "Embedding",
+      "indexing": "Lập chỉ mục"
+    },
+    "brandVoice": {
+      "title": "Giọng thương hiệu",
+      "trained": "Đã huấn luyện",
+      "tone": "Thân thiện, gần gũi, nhiệt huyết",
+      "updatedAt": "Cập nhật 2026-08-20"
+    },
     "searchPlaceholder": "Tìm kiếm ngữ nghĩa...",
     "search": "Tìm kiếm",
-    "noResults": "Không tìm thấy kết quả phù hợp."
+    "noResults": "Không tìm thấy kết quả phù hợp.",
+    "guardVerified": "Đã đối chiếu {{count}} nguồn · không phát hiện ảo giác."
   },
   "trends": {
     "title": "Xu hướng",

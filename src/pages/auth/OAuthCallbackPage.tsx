@@ -21,8 +21,8 @@ export function OAuthCallbackPage() {
         return;
       }
 
-      // 1. Lưu tạm accessToken để gọi API
-      localStorage.setItem("accessToken", token);
+      // 1. Lưu tạm accessToken vào store để gọi API
+      useAuthStore.getState().setTokens(token, null);
 
       try {
         // 2. Lấy dữ liệu User Profile và Role THẬT 100% từ Database

@@ -1,6 +1,7 @@
 import type {
   Ambassador,
   AmbassadorVideoJob,
+  InstantIdSettings,
 } from "@/pages/ai-studio/types/ambassador";
 
 const MOCK_AMBASSADORS: Ambassador[] = [
@@ -49,6 +50,7 @@ export async function getAmbassadors(): Promise<Ambassador[]> {
 export async function createAmbassador(
   name: string,
   faceImageUrl: string,
+  instantIdSettings: InstantIdSettings,
 ): Promise<Ambassador> {
   const newAmbassador: Ambassador = {
     id: `amb-${Date.now()}`,
@@ -57,6 +59,7 @@ export async function createAmbassador(
     status: "TRAINING",
     createdAt: new Date().toISOString(),
     videosGenerated: 0,
+    instantIdSettings,
   };
   MOCK_AMBASSADORS.push(newAmbassador);
   return Promise.resolve({ ...newAmbassador });

@@ -50,13 +50,23 @@ const MOCK_POSTS: Post[] = [
     undefined,
     "2026-08-20T10:00:00Z",
   ),
-  makePost(
-    "post-3",
-    "Video giới thiệu thương hiệu",
-    "FAILED",
-    [{ platform: "TIKTOK", postType: "VIDEO", optimizedCaption: "" }],
-    "2026-08-19T14:00:00Z",
-  ),
+  (() => {
+    const post = makePost(
+      "post-3",
+      "Video giới thiệu thương hiệu",
+      "FAILED",
+      [{ platform: "TIKTOK", postType: "VIDEO", optimizedCaption: "" }],
+      "2026-08-19T14:00:00Z",
+    );
+    post.delivery = {
+      attempt: 2,
+      maxAttempts: 3,
+      lastBackoffSec: 4,
+      nextAttemptAt: "2026-08-19T14:00:04Z",
+      lastError: "TikTok API returned 5xx — retrying with backoff",
+    };
+    return post;
+  })(),
   makePost(
     "post-4",
     "Bài viết chia sẻ kiến thức",
@@ -79,6 +89,7 @@ const MOCK_POSTS: Post[] = [
     [{ platform: "YOUTUBE", postType: "VIDEO", optimizedCaption: "" }],
     "2026-08-18T16:00:00Z",
   ),
+
   makePost(
     "post-7",
     "Chiến dịch đa nền tảng Q3",
@@ -95,8 +106,31 @@ const MOCK_POSTS: Post[] = [
   ]),
 ];
 
+function withDelivery(): Post[] {
+  const posts = MOCK_POSTS.map((p) => ({ ...p }));
+  const p3 = posts.find((p) => p.id === "post-3");
+  const p6 = posts.find((p) => p.id === "post-6");
+  if (p3)
+    p3.delivery = {
+      attempt: 2,
+      maxAttempts: 3,
+      lastBackoffSec: 4,
+      nextAttemptAt: "2026-08-19T14:00:04Z",
+      lastError: "TikTok API returned 5xx — retrying with backoff",
+    };
+  if (p6)
+    p6.delivery = {
+      attempt: 3,
+      maxAttempts: 3,
+      lastBackoffSec: 8,
+      inDeadLetterQueue: true,
+      lastError: "YouTube API timeout after 3 attempts — moved to DLQ",
+    };
+  return posts;
+}
+
 export async function getScheduledPosts(): Promise<Post[]> {
-  return Promise.resolve(MOCK_POSTS.map((p) => ({ ...p })));
+  return Promise.resolve(withDelivery());
 }
 
 export interface CreatePostInput {

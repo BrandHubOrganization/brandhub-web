@@ -22,7 +22,8 @@ export function ClientListPage() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
-  const isOwner = currentMemberRole === "OWNER";
+  const isOwner =
+    currentMemberRole === "OWNER" || currentMemberRole === "MANAGER";
 
   const [clients, setClients] = useState<Client[]>([]);
   const [totalElements, setTotalElements] = useState(0);
