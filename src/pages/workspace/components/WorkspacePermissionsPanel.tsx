@@ -16,7 +16,13 @@ interface Props {
   members: WorkspaceMember[];
 }
 
-const ROLES: MemberRole[] = ["OWNER", "MANAGER", "ACCOUNT", "CREATOR", "CLIENT"];
+const ROLES: MemberRole[] = [
+  "OWNER",
+  "MANAGER",
+  "ACCOUNT",
+  "CREATOR",
+  "CLIENT",
+];
 
 const PERMISSIONS = [
   { key: "publish", roles: ["CREATOR"] },
