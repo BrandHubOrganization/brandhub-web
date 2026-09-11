@@ -30,7 +30,7 @@
   "teamStats": {
     "title": "Team Performance (Team Stats)",
     "managementMode": "Management Mode ({{role}})",
-    "roleAM": "AM",
+    "roleManager": "Manager",
     "roleCreator": "Creator",
     "postsSuffix": "posts"
   },

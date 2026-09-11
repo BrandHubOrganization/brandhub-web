@@ -115,9 +115,9 @@ Two-tier role model:
 - `SystemRole` (`src/types/user.ts`): `ADMIN` | `USER`. `ADMIN` bypasses all
   route checks (`canAccess()` in `src/routes/access.ts`).
 - `MemberRole` (`src/types/workspace.ts`, per-workspace): `OWNER` (pure
-  management, no content tools), `MANAGER` (workspace ops: members/settings/
-  clients/analytics/reports), `ACCOUNT` (agency-client bridge: requests/
-  portal/clients/calendar/library), `CREATOR` (content tools: editor/
+  management, no content tools), `MANAGER` (workspace ops + client
+  communication: members/settings/clients/analytics/reports/requests/portal/
+  calendar/library/approve), `CREATOR` (content tools: editor/
   templates/hashtag-groups/publish/ai-studio), `CLIENT` (view/approve own
   content only).
 

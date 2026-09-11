@@ -30,7 +30,7 @@
   "teamStats": {
     "title": "Hiệu suất thành viên (Team Stats)",
     "managementMode": "Chế độ Quản lý ({{role}})",
-    "roleAM": "AM",
+    "roleManager": "Quản lý",
     "roleCreator": "Creator",
     "postsSuffix": "bài"
   },

@@ -17,7 +17,7 @@ export type ActiveTab = "all" | "my-tasks";
 
 export function useContentRequests() {
   const { t } = useTranslation();
-  const userRole = useWorkspaceStore((s) => s.currentMemberRole) ?? "ACCOUNT";
+  const userRole = useWorkspaceStore((s) => s.currentMemberRole) ?? "MANAGER";
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchQuery = searchParams.get("q") || "";

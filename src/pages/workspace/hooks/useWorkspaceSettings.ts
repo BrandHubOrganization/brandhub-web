@@ -49,7 +49,7 @@ export function useWorkspaceSettings() {
       .listMembers(workspaceId)
       .then(({ data }) => {
         const me = data.data.find((m) => m.userId === userId);
-        setCanManage(me?.role === "OWNER" || me?.role === "ACCOUNT");
+        setCanManage(me?.role === "OWNER" || me?.role === "MANAGER");
       })
       .catch(() => setCanManage(false));
   }, [workspaceId, userId, t]);

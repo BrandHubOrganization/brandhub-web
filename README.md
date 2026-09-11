@@ -4,7 +4,7 @@ Web admin dashboard for BrandHub — content management, approval workflows, sch
 
 ## Overview
 
-React 18 + TypeScript SPA built with Vite. Used by agency staff (ADMIN, AGENCY_OWNER, ACCOUNT_MANAGER, CONTENT_CREATOR) to manage clients, create/approve/schedule social posts, and view campaign performance.
+React 19 + TypeScript SPA built with Vite. Used by agency staff (system roles `ADMIN` | `USER`; workspace roles `OWNER` | `MANAGER` | `CREATOR` | `CLIENT`) to manage clients, create/approve/schedule social posts, and view campaign performance.
 
 ## Tech Stack
 

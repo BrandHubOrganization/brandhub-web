@@ -11,7 +11,6 @@ export const MANAGE_ROLES: MemberRole[] = ["OWNER", "MANAGER"];
 export const ALL_ROLES: MemberRole[] = [
   "OWNER",
   "MANAGER",
-  "ACCOUNT",
   "CREATOR",
   "CLIENT",
 ];

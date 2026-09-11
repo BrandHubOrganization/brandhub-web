@@ -10,7 +10,7 @@ const MOCK_ANALYTICS_OVERVIEW: AnalyticsOverview = {
     {
       memberId: "u-1",
       memberName: "Nguyễn Văn An",
-      role: "ACCOUNT",
+      role: "MANAGER",
       postCount: 42,
       publishedCount: 40,
     },

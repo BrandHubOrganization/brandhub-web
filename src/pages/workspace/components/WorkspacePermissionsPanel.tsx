@@ -19,17 +19,16 @@ interface Props {
 const ROLES: MemberRole[] = [
   "OWNER",
   "MANAGER",
-  "ACCOUNT",
   "CREATOR",
   "CLIENT",
 ];
 
 const PERMISSIONS = [
   { key: "publish", roles: ["CREATOR"] },
-  { key: "approve", roles: ["OWNER", "MANAGER", "ACCOUNT"] },
+  { key: "approve", roles: ["OWNER", "MANAGER"] },
   { key: "invite", roles: ["OWNER", "MANAGER"] },
   { key: "manageRoles", roles: ["OWNER", "MANAGER"] },
-  { key: "viewAnalytics", roles: ["OWNER", "MANAGER", "ACCOUNT"] },
+  { key: "viewAnalytics", roles: ["OWNER", "MANAGER"] },
   { key: "editWorkspace", roles: ["OWNER"] },
 ] as const;
 

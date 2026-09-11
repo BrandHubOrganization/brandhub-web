@@ -3,6 +3,15 @@
 > Ngày audit: 2026-08-19 · Branch: `refactor/feature-based-structure`
 > Phạm vi: toàn bộ `src/pages/`, `src/components/`, `src/routes/`, theme, primitives.
 > Tài liệu này **chỉ liệt kê lỗi + hướng fix** — chưa sửa code. Dùng làm checklist cho đợt fix sau.
+>
+> ⚠️ **Cập nhật 2026-09-11 — mô hình role đã thay đổi so với thời điểm audit.**
+> `MemberRole` hiện chỉ còn **4 giá trị: `OWNER` | `MANAGER` | `CREATOR` | `CLIENT`**.
+> Role `ACCOUNT` đã **bị xóa toàn bộ**; toàn bộ quyền của nó dồn về `MANAGER`
+> (MANAGER nay vừa quản lý dự án/tiến độ team, vừa giao tiếp khách hàng).
+> Role `VIEWER` (nhắc trong tài liệu này) cũng đã bị bỏ ở đợt trước.
+> Các bảng/đoạn văn dưới đây ghi lại **trạng thái tại 2026-08-19** và được giữ
+> nguyên làm lịch sử — khi đối chiếu code, dùng mô hình 4 role ở trên, không
+> dùng `ACCOUNT`/`VIEWER`.
 
 ---
 
