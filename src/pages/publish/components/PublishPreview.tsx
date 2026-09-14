@@ -12,7 +12,6 @@ const MOCKUP_SUPPORTED: PlatformType[] = [
   "INSTAGRAM",
   "TIKTOK",
   "THREADS",
-  "ZALO_OA",
   "YOUTUBE",
 ];
 

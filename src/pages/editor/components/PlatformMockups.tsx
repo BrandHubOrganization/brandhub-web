@@ -5,7 +5,6 @@ import { InstagramMockup } from "./mockups/InstagramMockup";
 import { TikTokMockup } from "./mockups/TikTokMockup";
 import { ThreadsMockup } from "./mockups/ThreadsMockup";
 import { YouTubeMockup } from "./mockups/YouTubeMockup";
-import { ZaloOaMockup } from "./mockups/ZaloOaMockup";
 
 interface PlatformMockupProps {
   platform: PlatformType;
@@ -21,7 +20,6 @@ const MOCKUP_BY_PLATFORM: Record<
   TIKTOK: TikTokMockup,
   THREADS: ThreadsMockup,
   YOUTUBE: YouTubeMockup,
-  ZALO_OA: ZaloOaMockup,
 };
 
 export function PlatformMockup({ platform, data }: PlatformMockupProps) {
