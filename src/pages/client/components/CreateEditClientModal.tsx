@@ -151,7 +151,7 @@ export function CreateEditClientModal({
             </div>
           </div>
 
-          {/* Account Manager Phụ trách & Gói Dịch vụ */}
+          {/* Manager Phụ trách & Gói Dịch vụ */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="flex items-center gap-1 text-xs font-semibold">

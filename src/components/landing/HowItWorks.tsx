@@ -44,7 +44,7 @@ interface Lane {
 const LANES: Lane[] = [
   {
     key: "owner",
-    roleLabel: "Agency Owner",
+    roleLabel: "Owner",
     accent: "bg-orange-600",
     accentText: "text-orange-600 dark:text-orange-400",
     accentSoft: "bg-orange-600/10 text-orange-700 dark:text-orange-400",
@@ -58,7 +58,7 @@ const LANES: Lane[] = [
   },
   {
     key: "creator",
-    roleLabel: "Content Creator",
+    roleLabel: "Creator",
     accent: "bg-brand-orange",
     accentText: "text-brand-orange",
     accentSoft: "bg-brand-orange/10 text-brand-orange",
@@ -72,7 +72,7 @@ const LANES: Lane[] = [
   },
   {
     key: "manager",
-    roleLabel: "Account Manager",
+    roleLabel: "Manager",
     accent: "bg-orange-400",
     accentText: "text-orange-500 dark:text-orange-300",
     accentSoft: "bg-orange-400/10 text-orange-600 dark:text-orange-300",
@@ -86,7 +86,7 @@ const LANES: Lane[] = [
   },
   {
     key: "client",
-    roleLabel: "Brand Client",
+    roleLabel: "Client",
     accent: "bg-orange-300",
     accentText: "text-orange-500 dark:text-orange-300",
     accentSoft: "bg-orange-300/15 text-orange-600 dark:text-orange-300",

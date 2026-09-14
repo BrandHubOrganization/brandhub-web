@@ -114,7 +114,7 @@ export function ClientTable({
                   </div>
                 </td>
 
-                {/* Account Manager */}
+                {/* Manager */}
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
                     {client.assignedAccountManagerAvatar ? (

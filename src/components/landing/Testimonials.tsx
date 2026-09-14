@@ -22,7 +22,7 @@ const TESTIMONIALS = [
   {
     key: "tuan",
     name: "Tuấn Lê",
-    role: "Agency Owner",
+    role: "Owner",
     company: "CreativeHub",
     stars: 5,
   },

@@ -6,8 +6,8 @@
   "deleteError": "Unable to delete client",
   "createSuccess": "Client \"{{name}}\" added successfully!",
   "list": {
-    "title": "Manage Brand Clients",
-    "description": "Manage brand clients, service packages, and Account Manager assignments.",
+    "title": "Manage Clients",
+    "description": "Manage brand clients, service packages, and Manager assignments.",
     "createButton": "Create New Client",
     "searchPlaceholder": "Search brand, email, industry...",
     "totalLabel": "Clients",
@@ -22,11 +22,11 @@
     "backToList": "Back to client list",
     "back": "Back",
     "descriptionTemplate": "Brand details and content history for {{name}}",
-    "accountManager": "Account Manager",
+    "accountManager": "Manager",
     "unassigned": "Unassigned",
     "assignAm": "Assign AM",
-    "assignSubtitle": "Choose the Account Manager responsible for this brand",
-    "assignSuccess": "Account Manager assigned.",
+    "assignSubtitle": "Choose the Manager responsible for this brand",
+    "assignSuccess": "Manager assigned.",
     "current": "Current",
     "cancel": "Cancel",
     "settings": "Settings",
@@ -35,7 +35,7 @@
   "table": {
     "changeServicePackage": "Change service package",
     "brandColumn": "Brand / Client",
-    "accountManagerColumn": "Account Manager",
+    "accountManagerColumn": "Manager",
     "activePostsColumn": "Active Posts",
     "packageColumn": "Service Package",
     "statusColumn": "Status",
@@ -57,7 +57,7 @@
     "engagementRate": "Avg. engagement"
   },
   "banner": {
-    "accountManager": "Account Manager",
+    "accountManager": "Manager",
     "unassigned": "Unassigned"
   },
   "contentRequests": {
@@ -110,7 +110,7 @@
   "createEdit": {
     "processing": "Processing...",
     "createButton": "Create New Client",
-    "modalTitle": "Create New Brand Client",
+    "modalTitle": "Create New Client",
     "nameLabel": "Brand / Business Name",
     "namePlaceholder": "e.g. Heineken Vietnam, Nike Store...",
     "nameRequired": "Brand name cannot be empty",
@@ -122,7 +122,7 @@
     "industryPlaceholder": "e.g. Fashion, F&B...",
     "logoUrlLabel": "Logo Image URL",
     "logoUrlPlaceholder": "https://...",
-    "accountManagerLabel": "Account Manager",
+    "accountManagerLabel": "Manager",
     "packageTierLabel": "Initial Service Package",
     "cancel": "Cancel"
   },

@@ -7,7 +7,7 @@ publish multi-channel content (Instagram, TikTok, Facebook, LinkedIn).
 This package (`brandhub-web-dashboard`) is the React SPA frontend that consumes
 the `brandhub-business-service` REST API (base URL `http://localhost:8080`).
 
-Target users: agency owners, brand clients, content creators, account managers,
+Target users: owners, clients, creators, managers,
 admins.
 
 ## Tech Stack
