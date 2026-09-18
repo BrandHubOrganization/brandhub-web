@@ -24,9 +24,7 @@
     "rateLimitExceeded": "Đã vượt giới hạn. Tạm thời không thể đăng thêm bài lên nền tảng này.",
     "submitting": "Đang xử lý...",
     "schedule": "Lên lịch đăng",
-    "saveDraft": "Lưu nháp",
-    "zaloTemplateLabel": "Tin nhắn mẫu (Zalo)",
-    "zaloTemplatePlaceholder": "Chọn mẫu tin nhắn Zalo OA và điền các tham số..."
+    "saveDraft": "Lưu nháp"
   },
   "preview": {
     "empty": "Chọn nền tảng để xem trước bài đăng.",

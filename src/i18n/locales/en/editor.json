@@ -17,8 +17,8 @@
       "CAROUSEL": "Carousel"
     },
     "postTypeHint": {
-      "TEXT": "Text-only post: caption + hashtags, fits Threads, Zalo Text.",
-      "IMAGE": "Single featured image, fits Facebook, Instagram, Zalo Image.",
+      "TEXT": "Text-only post: caption + hashtags, fits Threads.",
+      "IMAGE": "Single featured image, fits Facebook, Instagram.",
       "VIDEO": "Single video, fits TikTok, Instagram Reel, YouTube Shorts.",
       "CAROUSEL": "2–10 swipeable images, fits Instagram Carousel, LinkedIn."
     }

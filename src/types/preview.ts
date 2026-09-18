@@ -39,11 +39,6 @@ export const PLATFORM_LIMITS: Record<PlatformType, PlatformLimitConfig> = {
     aspectRatioClass: "aspect-square",
     label: "Threads (1:1 Square)",
   },
-  ZALO_OA: {
-    maxCharacters: 2000,
-    aspectRatioClass: "aspect-[4/3]",
-    label: "Zalo OA (4:3)",
-  },
   YOUTUBE: {
     maxCharacters: 5000,
     aspectRatioClass: "aspect-video",

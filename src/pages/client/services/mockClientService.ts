@@ -25,7 +25,7 @@ const MOCK_CLIENTS: Client[] = [
     servicePackage: {
       packageTier: "ENTERPRISE",
       monthlyPostQuota: 45,
-      platforms: ["FACEBOOK", "INSTAGRAM", "TIKTOK", "ZALO_OA"],
+      platforms: ["FACEBOOK", "INSTAGRAM", "TIKTOK"],
       aiCreditsPerMonth: 500,
       expiryDate: "2026-12-31",
     },
@@ -186,7 +186,7 @@ const MOCK_CLIENTS: Client[] = [
     servicePackage: {
       packageTier: "STARTER",
       monthlyPostQuota: 15,
-      platforms: ["FACEBOOK", "ZALO_OA"],
+      platforms: ["FACEBOOK"],
       aiCreditsPerMonth: 50,
       expiryDate: "2026-10-15",
     },

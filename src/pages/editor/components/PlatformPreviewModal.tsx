@@ -32,7 +32,6 @@ const PLATFORM_ICONS: Record<PlatformType, React.ReactNode> = {
   INSTAGRAM: <Globe className="size-4 text-pink-500" />,
   TIKTOK: <Video className="text-foreground size-4" />,
   THREADS: <AtSign className="text-muted-foreground size-4" />,
-  ZALO_OA: <MessageSquare className="size-4 text-sky-500" />,
   YOUTUBE: <MessageSquare className="size-4 text-red-500" />,
 };
 

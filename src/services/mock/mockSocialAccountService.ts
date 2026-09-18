@@ -42,17 +42,6 @@ const MOCK_ACCOUNTS: SocialAccount[] = [
     connectedAt: "2026-02-01T00:00:00Z",
   },
   {
-    id: "acc-5",
-    platform: "ZALO_OA",
-    accountName: "BrandHub OA",
-    accountHandle: "brandhub-oa",
-    status: "CONNECTED",
-    tokenExpiresAt: "2026-12-01T00:00:00Z",
-    connectedAt: "2026-06-20T00:00:00Z",
-    rateLimitUsed: 8,
-    rateLimitMax: 20,
-  },
-  {
     id: "acc-6",
     platform: "YOUTUBE",
     accountName: "BrandHub Channel",

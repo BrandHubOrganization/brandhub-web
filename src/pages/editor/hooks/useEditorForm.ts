@@ -44,7 +44,6 @@ export function useEditorForm() {
     "INSTAGRAM",
     "TIKTOK",
     "THREADS",
-    "ZALO_OA",
   ]);
 
   const [isDirty, setIsDirty] = useState(false);

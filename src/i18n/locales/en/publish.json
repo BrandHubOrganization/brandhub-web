@@ -24,9 +24,7 @@
     "rateLimitExceeded": "Rate limit exceeded. You cannot publish more posts to this platform right now.",
     "submitting": "Submitting...",
     "schedule": "Schedule Post",
-    "saveDraft": "Save Draft",
-    "zaloTemplateLabel": "Template message (Zalo)",
-    "zaloTemplatePlaceholder": "Pick a Zalo OA template and fill in the parameters..."
+    "saveDraft": "Save Draft"
   },
   "preview": {
     "empty": "Select a platform to preview the post.",

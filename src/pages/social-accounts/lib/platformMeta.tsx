@@ -30,11 +30,6 @@ export const PLATFORM_META: Record<Platform, PlatformMeta> = {
     color:
       "border-purple-500/30 bg-purple-500/10 text-purple-700 dark:text-purple-300",
   },
-  ZALO_OA: {
-    label: "Zalo OA",
-    icon: <MessageSquare className="h-4 w-4 text-sky-600" />,
-    color: "border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300",
-  },
   YOUTUBE: {
     label: "Youtube",
     icon: <MessageSquare className="h-4 w-4 text-red-600" />,
@@ -47,6 +42,5 @@ export const ALL_PLATFORMS: Platform[] = [
   "INSTAGRAM",
   "TIKTOK",
   "THREADS",
-  "ZALO_OA",
   "YOUTUBE",
 ];
