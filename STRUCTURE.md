@@ -36,7 +36,7 @@ brandhub-web/
 │   │   ├── analytics/            # Báo cáo & Thống kê Analytics
 │   │   ├── auth/                 # Xác thực người dùng (Login, Register, OTP, ForgotPassword, OAuth)
 │   │   ├── calendar/             # Lịch lập kế hoạch nội dung (Content Calendar)
-│   │   ├── client/               # ⭐ Quản lý Thương hiệu Khách hàng (Brand Clients)
+│   │   ├── client/               # ⭐ Quản lý Thương hiệu Khách hàng (Clients)
 │   │   │   ├── components/       # UI Sub-components (ClientTable, Banner, AnalyticsCards, Modals)
 │   │   │   ├── hooks/            # Custom Hook xử lý State & Async (useClients.ts)
 │   │   │   ├── services/         # API Service riêng cho Client (clientService.ts)

@@ -136,7 +136,7 @@
       "title": "Phê duyệt",
       "subtitle": "Xem trước và phê duyệt bài trước khi xuất bản",
       "allApproved": "Đã duyệt hết bài chờ",
-      "feedbackSent": "Đã gửi góp ý cho Account Manager",
+      "feedbackSent": "Đã gửi góp ý cho Manager",
       "approve": "Phê duyệt",
       "feedback": "Góp ý"
     }
@@ -374,11 +374,11 @@
         },
         "inviteTeam": {
           "title": "Mời team",
-          "desc": "Thêm Account Manager, Content Creator"
+          "desc": "Thêm Manager, Creator"
         },
         "assignClient": {
           "title": "Gán khách hàng",
-          "desc": "Phân công Brand Client cho từng AM"
+          "desc": "Phân công Client cho từng AM"
         }
       },
       "creator": {
@@ -393,7 +393,7 @@
         },
         "submitReview": {
           "title": "Gửi duyệt",
-          "desc": "Đẩy bài cho Account Manager xem"
+          "desc": "Đẩy bài cho Manager xem"
         }
       },
       "manager": {
@@ -408,7 +408,7 @@
         },
         "forwardClient": {
           "title": "Chuyển khách hàng",
-          "desc": "Gửi bản duyệt cuối cho Brand Client"
+          "desc": "Gửi bản duyệt cuối cho Client"
         }
       },
       "client": {

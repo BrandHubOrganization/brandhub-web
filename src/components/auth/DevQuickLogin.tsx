@@ -26,11 +26,6 @@ const QUICK_ROLES: QuickRole[] = [
   },
   {
     systemRole: "USER",
-    memberRole: "ACCOUNT",
-    labelKey: "workspace.roles.ACCOUNT",
-  },
-  {
-    systemRole: "USER",
     memberRole: "CREATOR",
     labelKey: "workspace.roles.CREATOR",
   },

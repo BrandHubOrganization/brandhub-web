@@ -13,7 +13,7 @@
     "confirmButton": "Confirm Assignment",
     "selectAssigneeRequired": "Please select a creator to assign this post",
     "assignError": "Error assigning creator",
-    "title": "Assign Content Creator",
+    "title": "Assign Creator",
     "assignFor": "Assign a creator for request:",
     "searchPlaceholder": "Search by creator name or email...",
     "cancel": "Cancel"

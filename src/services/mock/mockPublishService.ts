@@ -75,14 +75,6 @@ const MOCK_POSTS: Post[] = [
     "2026-08-27T08:00:00Z",
   ),
   makePost(
-    "post-5",
-    "Thông báo sự kiện Zalo OA",
-    "PUBLISHED",
-    [{ platform: "ZALO_OA", postType: "ARTICLE", optimizedCaption: "" }],
-    undefined,
-    "2026-08-15T07:30:00Z",
-  ),
-  makePost(
     "post-6",
     "Clip Youtube tổng kết tháng",
     "FAILED",

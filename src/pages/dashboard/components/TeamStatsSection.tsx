@@ -16,8 +16,8 @@ export function TeamStatsSection({
   isLoading,
 }: TeamStatsSectionProps) {
   const { t } = useTranslation();
-  // Acceptance Criteria: Team stats section shows per-member post counts (OWNER/ACCOUNT view only)
-  const canViewTeamStats = userRole === "OWNER" || userRole === "ACCOUNT";
+  // Acceptance Criteria: Team stats section shows per-member post counts (OWNER/MANAGER view only)
+  const canViewTeamStats = userRole === "OWNER" || userRole === "MANAGER";
 
   if (!canViewTeamStats) {
     return null;
@@ -78,8 +78,8 @@ export function TeamStatsSection({
                     {member.memberName}
                   </span>
                   <span className="text-muted-foreground bg-muted py-0.2 text-3xs rounded px-1.5">
-                    {member.role === "ACCOUNT"
-                      ? t("dashboard.teamStats.roleAM")
+                    {member.role === "MANAGER"
+                      ? t("dashboard.teamStats.roleManager")
                       : t("dashboard.teamStats.roleCreator")}
                   </span>
                 </div>

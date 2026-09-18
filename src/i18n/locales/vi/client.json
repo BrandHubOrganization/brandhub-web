@@ -6,8 +6,8 @@
   "deleteError": "Không thể xóa khách hàng",
   "createSuccess": "Đã thêm khách hàng \"{{name}}\" thành công!",
   "list": {
-    "title": "Quản lý Brand Clients",
-    "description": "Quản lý danh sách thương hiệu, gói dịch vụ và phân công Account Manager.",
+    "title": "Quản lý Clients",
+    "description": "Quản lý danh sách thương hiệu, gói dịch vụ và phân công Manager.",
     "createButton": "Tạo Client Mới",
     "searchPlaceholder": "Tìm kiếm thương hiệu, email, ngành hàng...",
     "totalLabel": "Client",
@@ -22,11 +22,11 @@
     "backToList": "Quay lại danh sách Client",
     "back": "Quay lại",
     "descriptionTemplate": "Chi tiết thương hiệu và lịch sử nội dung của {{name}}",
-    "accountManager": "Account Manager",
+    "accountManager": "Manager",
     "unassigned": "Chưa phân công",
     "assignAm": "Phân công AM",
-    "assignSubtitle": "Chọn Account Manager phụ trách thương hiệu này",
-    "assignSuccess": "Đã phân công Account Manager.",
+    "assignSubtitle": "Chọn Manager phụ trách thương hiệu này",
+    "assignSuccess": "Đã phân công Manager.",
     "current": "Hiện tại",
     "cancel": "Hủy",
     "settings": "Cài đặt",
@@ -35,7 +35,7 @@
   "table": {
     "changeServicePackage": "Đổi gói dịch vụ",
     "brandColumn": "Thương hiệu / Client",
-    "accountManagerColumn": "Account Manager",
+    "accountManagerColumn": "Manager",
     "activePostsColumn": "Active Posts",
     "packageColumn": "Gói Dịch Vụ",
     "statusColumn": "Trạng thái",
@@ -57,7 +57,7 @@
     "engagementRate": "Tương tác trung bình"
   },
   "banner": {
-    "accountManager": "Account Manager",
+    "accountManager": "Manager",
     "unassigned": "Chưa phân công"
   },
   "contentRequests": {
@@ -110,7 +110,7 @@
   "createEdit": {
     "processing": "Đang xử lý...",
     "createButton": "Tạo Client Mới",
-    "modalTitle": "Tạo mới Brand Client",
+    "modalTitle": "Tạo mới Client",
     "nameLabel": "Tên Thương hiệu / Doanh nghiệp",
     "namePlaceholder": "VD: Heineken Vietnam, Nike Store...",
     "nameRequired": "Tên thương hiệu không được để trống",
@@ -122,7 +122,7 @@
     "industryPlaceholder": "VD: Thời trang, F&B...",
     "logoUrlLabel": "Logo Image URL",
     "logoUrlPlaceholder": "https://...",
-    "accountManagerLabel": "Account Manager",
+    "accountManagerLabel": "Manager",
     "packageTierLabel": "Gói dịch vụ ban đầu",
     "cancel": "Hủy"
   },

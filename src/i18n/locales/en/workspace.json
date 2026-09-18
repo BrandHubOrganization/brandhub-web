@@ -56,7 +56,6 @@
   "roles": {
     "OWNER": "Owner",
     "MANAGER": "Workspace manager",
-    "ACCOUNT": "Account manager",
     "CREATOR": "Creator",
     "CLIENT": "Client"
   },

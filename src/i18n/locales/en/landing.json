@@ -136,7 +136,7 @@
       "title": "Approval",
       "subtitle": "Preview and approve posts before publishing",
       "allApproved": "All pending posts approved",
-      "feedbackSent": "Feedback sent to Account Manager",
+      "feedbackSent": "Feedback sent to Manager",
       "approve": "Approve",
       "feedback": "Feedback"
     }
@@ -374,11 +374,11 @@
         },
         "inviteTeam": {
           "title": "Invite team",
-          "desc": "Add Account Managers, Content Creators"
+          "desc": "Add Managers, Creators"
         },
         "assignClient": {
           "title": "Assign clients",
-          "desc": "Match each Brand Client to an AM"
+          "desc": "Match each Client to an AM"
         }
       },
       "creator": {
@@ -393,7 +393,7 @@
         },
         "submitReview": {
           "title": "Submit for review",
-          "desc": "Send drafts to the Account Manager"
+          "desc": "Send drafts to the Manager"
         }
       },
       "manager": {
@@ -408,7 +408,7 @@
         },
         "forwardClient": {
           "title": "Forward to client",
-          "desc": "Pass the final draft to Brand Client"
+          "desc": "Pass the final draft to Client"
         }
       },
       "client": {

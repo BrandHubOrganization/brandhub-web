@@ -2654,7 +2654,7 @@ function useWsStatus(): Record<
 
 const WORKSPACE_MEMBERS = [
   { name: "Minh Nguyễn", role: "Content Director", online: true },
-  { name: "Thu Hà", role: "Account Manager", online: true },
+  { name: "Thu Hà", role: "Manager", online: true },
   { name: "Quang", role: "Creator", online: true },
   { name: "Linh", role: "Designer", online: false },
   { name: "Đức", role: "Creator", online: false },
@@ -3470,7 +3470,7 @@ const APPROVAL_QUEUE: ApprovalItem[] = [
     id: 1,
     title: "Review sản phẩm mới — bộ sưu tập Thu 2026",
     channel: "instagram",
-    submittedBy: "Content Creator",
+    submittedBy: "Creator",
     thumbnail:
       "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=200&h=200&fit=crop",
   },
@@ -3478,14 +3478,14 @@ const APPROVAL_QUEUE: ApprovalItem[] = [
     id: 2,
     title: "Video giới thiệu tính năng AI Studio",
     channel: "tiktok",
-    submittedBy: "Content Creator",
+    submittedBy: "Creator",
     thumbnail:
       "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=200&h=200&fit=crop",
   },
 ];
 
-/** Trang demo khách hàng (Brand Client) xem trước và phê duyệt bài đã
- * qua vòng duyệt của Account Manager, khớp bước "Phê duyệt" trong quy
+/** Trang demo khách hàng (Client) xem trước và phê duyệt bài đã
+ * qua vòng duyệt của Manager, khớp bước "Phê duyệt" trong quy
  * trình swimlane trên landing page. */
 function ApprovalPage() {
   const { t } = useTranslation();

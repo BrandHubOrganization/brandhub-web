@@ -30,7 +30,7 @@ export function ProfilePage() {
 
   const [name, setName] = useState(user?.name ?? "Trung Le");
   const [phone, setPhone] = useState("0912 345 678");
-  const [jobTitle, setJobTitle] = useState("Agency Owner");
+  const [jobTitle, setJobTitle] = useState("Owner");
   const email = user?.email ?? "trung@brandhub.dev";
 
   // Chỉ lưu ảnh selfie xác minh danh tính — không lưu CCCD/giấy tờ tùy thân
@@ -45,7 +45,7 @@ export function ProfilePage() {
   const handleCancelEdit = () => {
     setName(user?.name ?? "Trung Le");
     setPhone("0912 345 678");
-    setJobTitle("Agency Owner");
+    setJobTitle("Owner");
     setIsEditing(false);
   };
 

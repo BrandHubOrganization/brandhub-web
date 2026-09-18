@@ -3,6 +3,15 @@
 > Ngày audit: 2026-08-19 · Branch: `refactor/feature-based-structure`
 > Phạm vi: toàn bộ `src/pages/`, `src/components/`, `src/routes/`, theme, primitives.
 > Tài liệu này **chỉ liệt kê lỗi + hướng fix** — chưa sửa code. Dùng làm checklist cho đợt fix sau.
+>
+> ⚠️ **Cập nhật 2026-09-11 — mô hình role đã thay đổi so với thời điểm audit.**
+> `MemberRole` hiện chỉ còn **4 giá trị: `OWNER` | `MANAGER` | `CREATOR` | `CLIENT`**.
+> Role `ACCOUNT` đã **bị xóa toàn bộ**; toàn bộ quyền của nó dồn về `MANAGER`
+> (MANAGER nay vừa quản lý dự án/tiến độ team, vừa giao tiếp khách hàng).
+> Role `VIEWER` (nhắc trong tài liệu này) cũng đã bị bỏ ở đợt trước.
+> Các bảng/đoạn văn dưới đây ghi lại **trạng thái tại 2026-08-19** và được giữ
+> nguyên làm lịch sử — khi đối chiếu code, dùng mô hình 4 role ở trên, không
+> dùng `ACCOUNT`/`VIEWER`.
 
 ---
 
@@ -31,11 +40,11 @@
 | **BE** | `User.role` (String legacy) | nullable, gần chết | chỉ fallback trong `getUserProfile` |
 | **FE** | `SystemRole` | `ADMIN, USER` | ✅ khớp BE |
 | **FE** | `MemberRole` | `OWNER, CREATOR, VIEWER, CLIENT, ACCOUNT` | ✅ khớp BE |
-| **FE** | `UserRole` | `ADMIN, AGENCY_OWNER, ACCOUNT_MANAGER, CONTENT_CREATOR, BRAND_CLIENT, GUEST` | ❌ **KHÔNG tồn tại ở BE** |
+| **FE** | `UserRole` | `ADMIN, OWNER, MANAGER, CREATOR, CLIENT, GUEST` | ❌ **KHÔNG tồn tại ở BE** |
 
-- BE `login`/`getProfile` trả `role` = `SystemRole.name()` → **chỉ "ADMIN" hoặc "USER"**. Chưa từng trả `AGENCY_OWNER`/`ACCOUNT_MANAGER`/`CONTENT_CREATOR`/`BRAND_CLIENT` (grep toàn repo Java = 0 hit).
-- `UserRole` FE là **bóng ma**: 5 giá trị business tự bịa, đổi tên MemberRole (`AGENCY_OWNER`≈`OWNER`, `ACCOUNT_MANAGER`≈`ACCOUNT`, `CONTENT_CREATOR`≈`CREATOR`, `BRAND_CLIENT`≈`CLIENT`).
-- Code chết: `pages/client/index.tsx:25` check `user.role === "AGENCY_OWNER"` → **luôn false**. `hooks/useContentRequests.ts:17` default `ACCOUNT_MANAGER` → sai.
+- BE `login`/`getProfile` trả `role` = `SystemRole.name()` → **chỉ "ADMIN" hoặc "USER"**. Chưa từng trả `OWNER`/`MANAGER`/`CREATOR`/`CLIENT` (grep toàn repo Java = 0 hit).
+- `UserRole` FE là **bóng ma**: 5 giá trị business tự bịa, đổi tên MemberRole (`OWNER`≈`OWNER`, `MANAGER`≈`ACCOUNT`, `CREATOR`≈`CREATOR`, `CLIENT`≈`CLIENT`).
+- Code chết: `pages/client/index.tsx:25` check `user.role === "OWNER"` → **luôn false**. `hooks/useContentRequests.ts:17` default `MANAGER` → sai.
 - **Chốt:** bỏ `UserRole`, dùng `SystemRole` (ADMIN/USER) + `MemberRole` (workspace) — đúng BE, đúng mô hình `@RequireRole` hiện tại.
 
 ### 1.1 Hiện trạng gating (file:line)
@@ -87,12 +96,12 @@ Ai login cũng gõ thẳng URL `/admin`, `/workspace`, `/editor`, `/analytics` �
 Ghi chú:
 - `OWNER` quản doanh nghiệp, không trực tiếp sản xuất → ẩn `/editor` (giữ rule Sidebar hiện tại `:111-116`).
 - `CREATOR` chỉ sản xuất → không thấy clients/analytics/portal/workspace/admin.
-- `CLIENT` (brand client) → portal + requests + library (+dashboard/password), khớp quyết định user.
+- `CLIENT` (client) → portal + requests + library (+dashboard/password), khớp quyết định user.
 - `VIEWER` team nội bộ xem → không tạo (no editor) nhưng xem templates/hashtag/calendar/library.
 
 ### 1.6 Hướng fix (P0)
 
-1. **Xóa `UserRole`** trong `src/types/user.ts` + mọi check `AGENCY_OWNER`/`ACCOUNT_MANAGER`/`CONTENT_CREATOR`/`BRAND_CLIENT` (`client/index.tsx:25`, `useContentRequests.ts:17`). Đổi `User["role"]` sang `SystemRole`.
+1. **Xóa `UserRole`** trong `src/types/user.ts` + mọi check `OWNER`/`MANAGER`/`CREATOR`/`CLIENT` (`client/index.tsx:25`, `useContentRequests.ts:17`). Đổi `User["role"]` sang `SystemRole`.
 2. **Route-level guard** — 1 map nguồn sự thật `ROUTE_ACCESS: Record<path, MemberRole[] | "ADMIN">` trong file `src/routes/access.ts`. `AuthGuard` nhận `memberRoles?: MemberRole[]` (+ tự xử `systemRole` cho `/admin`), redirect `/dashboard` nếu thiếu quyền:
    ```tsx
    // src/components/layout/AuthGuard.tsx
@@ -105,7 +114,7 @@ Ghi chú:
    ```
 3. **Sidebar/Layout đọc chung `ROUTE_ACCESS`** — không tự hardcode filter như `:101-154` / `:122-133`.
 4. **Sửa 2 bug nav** — `/analytics/overview` → `/analytics`; mobile tab `/` → `/dashboard`.
-5. **`useContentRequests.ts`** bỏ default `ACCOUNT_MANAGER`, đọc `memberRole` thực.
+5. **`useContentRequests.ts`** bỏ default `MANAGER`, đọc `memberRole` thực.
 
 ---
 
@@ -244,7 +253,7 @@ Vi phạm rule "không viết lại `<button>/<input>/<select>/<textarea>` thô 
 ## PHẦN 6 — Checklist ưu tiên
 
 **P0 (làm trước — bảo mật phân quyền):**
-- [x] Xóa `UserRole` bóng ma + mọi check `AGENCY_OWNER`/… (1.0).
+- [x] Xóa `UserRole` bóng ma + mọi check `OWNER`/… (1.0).
 - [x] Tạo `ROUTE_ACCESS` map (MemberRole + SystemRole) + AuthGuard check role (1.6).
 - [x] Gắn roles vào route — AuthGuard tự resolve `ROUTE_ACCESS` theo pathname (không cần sửa AppRoutes từng route).
 - [x] Sidebar/Layout đọc chung `ROUTE_ACCESS`, không hardcode filter.

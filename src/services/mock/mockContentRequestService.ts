@@ -33,8 +33,8 @@ function buildStatusHistory(
     changedAt: new Date(base + i * 6 * 60 * 60 * 1000).toISOString(),
     changedBy:
       status === "SUBMITTED"
-        ? "Account Manager"
-        : (assigneeName ?? "Account Manager"),
+        ? "Manager"
+        : (assigneeName ?? "Manager"),
   }));
 }
 
@@ -386,7 +386,7 @@ class MockContentRequestService {
       {
         status: "ASSIGNED",
         changedAt: new Date().toISOString(),
-        changedBy: "Account Manager",
+        changedBy: "Manager",
         note: `Đã gán cho ${assignee.name}`,
       },
     ];
@@ -420,7 +420,7 @@ class MockContentRequestService {
         {
           status: "SUBMITTED",
           changedAt: now,
-          changedBy: "Account Manager",
+          changedBy: "Manager",
         },
       ],
     };
@@ -448,7 +448,7 @@ class MockContentRequestService {
         {
           status: current.status,
           changedAt: new Date().toISOString(),
-          changedBy: current.assignee?.name ?? "Account Manager",
+          changedBy: current.assignee?.name ?? "Manager",
           note: "Yêu cầu đã được chỉnh sửa",
         },
       ],
@@ -475,7 +475,7 @@ class MockContentRequestService {
         {
           status: "CANCELLED",
           changedAt: new Date().toISOString(),
-          changedBy: "Account Manager",
+          changedBy: "Manager",
           note: reason,
         },
       ],

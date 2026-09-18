@@ -18,7 +18,6 @@ const RATE_LIMIT_USAGE: Record<Platform, { used: number; max: number }> = {
   INSTAGRAM: { used: 42, max: 200 },
   TIKTOK: { used: 8, max: 50 },
   THREADS: { used: 15, max: 250 },
-  ZALO_OA: { used: 95, max: 100 },
   YOUTUBE: { used: 3, max: 6 },
 };
 
