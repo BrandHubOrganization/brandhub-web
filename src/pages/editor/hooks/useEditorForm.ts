@@ -43,7 +43,7 @@ export function useEditorForm() {
     "FACEBOOK",
     "INSTAGRAM",
     "TIKTOK",
-    "THREADS",
+    "THREADS"
   ]);
 
   const [isDirty, setIsDirty] = useState(false);
