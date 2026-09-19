@@ -1,369 +1,213 @@
-# BrandHub Web Dashboard — Audit UI & Kiến Trúc & Phân Luồng Role
+# AUDIT.md — Kiểm tra UI, cấu trúc & phân luồng role
 
-> Ngày audit: 2026-08-19 · Branch: `refactor/feature-based-structure`
-> Phạm vi: toàn bộ `src/pages/`, `src/components/`, `src/routes/`, theme, primitives.
-> Tài liệu này **chỉ liệt kê lỗi + hướng fix** — chưa sửa code. Dùng làm checklist cho đợt fix sau.
->
-> ⚠️ **Cập nhật 2026-09-11 — mô hình role đã thay đổi so với thời điểm audit.**
-> `MemberRole` hiện chỉ còn **4 giá trị: `OWNER` | `MANAGER` | `CREATOR` | `CLIENT`**.
-> Role `ACCOUNT` đã **bị xóa toàn bộ**; toàn bộ quyền của nó dồn về `MANAGER`
-> (MANAGER nay vừa quản lý dự án/tiến độ team, vừa giao tiếp khách hàng).
-> Role `VIEWER` (nhắc trong tài liệu này) cũng đã bị bỏ ở đợt trước.
-> Các bảng/đoạn văn dưới đây ghi lại **trạng thái tại 2026-08-19** và được giữ
-> nguyên làm lịch sử — khi đối chiếu code, dùng mô hình 4 role ở trên, không
-> dùng `ACCOUNT`/`VIEWER`.
+> **Ngày:** 2026-09-18
+> **Phạm vi:** `brandhub-web-dashboard`
+> **Mục đích:** Rà soát toàn bộ dashboard — UI đã đúng quy định (màu thương hiệu, cấu trúc file, shadcn primitives) chưa, và **đặc biệt phân luồng theo role** có đúng/chặt chẽ chưa.
+> **Tài liệu này CHỈ liệt kê lỗi + hướng fix. Không sửa code trong đợt này.** Dùng nó làm checklist cho đợt sửa sau.
 
 ---
 
-## Tổng quan
+## Tóm tắt
 
-| Nhóm | Mức | Số lượng |
-| :--- | :--- | :--- |
-| **P0 — Phân luồng Role (không có rào)** | Nghiêm trọng | 1 lỗ hổng lớn + 3 điểm phụ |
-| **P1 — Màu sắc & Theme** | Trung bình | ~28 chỗ |
-| **P2 — Cấu trúc File / Architecture** | Trung bình | 20 component + 1 index vượt dòng |
-| **P2 — Emoji làm icon** | Nhẹ | 2 chỗ |
-| **P2 — Raw HTML thay primitives** | Nhẹ | ~12 chỗ |
+| Nhóm | Trạng thái | Mức ưu tiên |
+|---|---|---|
+| 1. Phân luồng role | Đã có guard trung tâm, **còn 4 lỗ hổng** | **P0** |
+| 2. Màu sắc / theme | Đã fix phần lớn, còn lỗi badge xanh dương | P1 |
+| 3. Emoji vs lucide | Đã xử lý gần hết | P2 |
+| 4. Cấu trúc file | Đã feature-based | P2 |
+| 5. Primitives / raw HTML | Thiếu 9 primitive, còn raw HTML ở 11 file | P2 |
 
----
-
-## PHẦN 1 — Phân Luồng Role (ưu tiên cao nhất)
-
-> ⚠️ **Cập nhật 2026-08-19 — FE↔BE role KHÔNG đồng bộ.** Xem 1.0.
-
-### 1.0 FE↔BE role — desync NGHIÊM TRỌNG (nguồn sự thật = BE)
-
-| Tầng | Enum | Giá trị | Nguồn |
-| :--- | :--- | :--- | :--- |
-| **BE** | `SystemRole` | `ADMIN, USER` | bảng `user_system_roles` |
-| **BE** | `MemberRole` | `OWNER, CREATOR, VIEWER, CLIENT, ACCOUNT` | bảng workspace members |
-| **BE** | `User.role` (String legacy) | nullable, gần chết | chỉ fallback trong `getUserProfile` |
-| **FE** | `SystemRole` | `ADMIN, USER` | ✅ khớp BE |
-| **FE** | `MemberRole` | `OWNER, CREATOR, VIEWER, CLIENT, ACCOUNT` | ✅ khớp BE |
-| **FE** | `UserRole` | `ADMIN, OWNER, MANAGER, CREATOR, CLIENT, GUEST` | ❌ **KHÔNG tồn tại ở BE** |
-
-- BE `login`/`getProfile` trả `role` = `SystemRole.name()` → **chỉ "ADMIN" hoặc "USER"**. Chưa từng trả `OWNER`/`MANAGER`/`CREATOR`/`CLIENT` (grep toàn repo Java = 0 hit).
-- `UserRole` FE là **bóng ma**: 5 giá trị business tự bịa, đổi tên MemberRole (`OWNER`≈`OWNER`, `MANAGER`≈`ACCOUNT`, `CREATOR`≈`CREATOR`, `CLIENT`≈`CLIENT`).
-- Code chết: `pages/client/index.tsx:25` check `user.role === "OWNER"` → **luôn false**. `hooks/useContentRequests.ts:17` default `MANAGER` → sai.
-- **Chốt:** bỏ `UserRole`, dùng `SystemRole` (ADMIN/USER) + `MemberRole` (workspace) — đúng BE, đúng mô hình `@RequireRole` hiện tại.
-
-### 1.1 Hiện trạng gating (file:line)
-
-- `src/routes/AppRoutes.tsx:48-76` — 20 route protected, wrap `<AuthGuard>` + `<Layout>`. **Không route nào mang `roles`. ZERO route-guard.**
-- `src/components/layout/AuthGuard.tsx:8-10` — chỉ check `isAuthenticated`:
-  ```tsx
-  if (!isAuthenticated) return <Navigate to="/login" ... />;
-  return <Outlet />;
-  ```
-- `src/components/layout/Sidebar.tsx:101-154` + `Layout.tsx:122-133` — nav gating dựa `MemberRole` + `systemRole` (SystemRole). ✅ Đúng nguồn, chỉ thiếu chặn route.
-
-### 1.2 Lỗ hổng NGHIÊM TRỌNG — URL bypass
-
-Ai login cũng gõ thẳng URL `/admin`, `/workspace`, `/editor`, `/analytics` → render bình thường. Nav chỉ **ẩn**, không **chặn**. BE có `@RequireRole(MemberRole…)` chặn API, nhưng FE chưa chặn route → user vẫn thấy UI (data sẽ 403).
-
-### 1.3 Hai nguồn role đúng — nhưng FE thêm 1 bóng ma
-
-- `SystemRole` (ADMIN/USER): quyền toàn hệ thống — `/admin`.
-- `MemberRole` (OWNER/CREATOR/VIEWER/CLIENT/ACCOUNT): quyền trong workspace — content/members/clients.
-- `UserRole` FE: bóng ma, xóa đi (xem 1.0).
-
-### 1.4 Dead nav
-
-- `Sidebar.tsx:148` trỏ `/analytics/overview` — không tồn tại → link chết.
-- `Layout.tsx:27` mobile tab `/` label "Dashboard" → trỏ landing public (ngoài AuthGuard), mất layout. Sửa → `/dashboard`.
-
-### 1.5 Bảng Role → Page (route-guard cài tới đâu)
-
-`SystemRole.ADMIN` = full quyền (mọi page + `/admin`). Bảng dưới cho **MemberRole** (ADMIN bỏ qua):
-
-| Page | OWNER | ACCOUNT | CREATOR | VIEWER | CLIENT |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| /dashboard | ✅ | ✅ | ✅ | ✅ | ✅ |
-| /change-password | ✅ | ✅ | ✅ | ✅ | ✅ |
-| /requests | ✅ | ✅ | ✅ | — | ✅ |
-| /portal | ✅ | ✅ | — | — | ✅ |
-| /library | ✅ | ✅ | ✅ | ✅ | ✅ |
-| /editor | — | — | ✅ | — | — |
-| /templates | ✅ | ✅ | ✅ | ✅ | — |
-| /hashtag-groups | ✅ | ✅ | ✅ | ✅ | — |
-| /calendar | ✅ | ✅ | ✅ | ✅ | ✅(đọc) |
-| /analytics | ✅ | ✅ | — | — | — |
-| /clients | ✅ | ✅ | — | — | — |
-| /workspace(+members/settings) | ✅ | — | — | — | — |
-| /invitations | ✅ | ✅ | — | — | — |
-| /admin | — | — | — | — | — |
-
-Ghi chú:
-- `OWNER` quản doanh nghiệp, không trực tiếp sản xuất → ẩn `/editor` (giữ rule Sidebar hiện tại `:111-116`).
-- `CREATOR` chỉ sản xuất → không thấy clients/analytics/portal/workspace/admin.
-- `CLIENT` (client) → portal + requests + library (+dashboard/password), khớp quyết định user.
-- `VIEWER` team nội bộ xem → không tạo (no editor) nhưng xem templates/hashtag/calendar/library.
-
-### 1.6 Hướng fix (P0)
-
-1. **Xóa `UserRole`** trong `src/types/user.ts` + mọi check `OWNER`/`MANAGER`/`CREATOR`/`CLIENT` (`client/index.tsx:25`, `useContentRequests.ts:17`). Đổi `User["role"]` sang `SystemRole`.
-2. **Route-level guard** — 1 map nguồn sự thật `ROUTE_ACCESS: Record<path, MemberRole[] | "ADMIN">` trong file `src/routes/access.ts`. `AuthGuard` nhận `memberRoles?: MemberRole[]` (+ tự xử `systemRole` cho `/admin`), redirect `/dashboard` nếu thiếu quyền:
-   ```tsx
-   // src/components/layout/AuthGuard.tsx
-   export function AuthGuard({ memberRoles }: { memberRoles?: MemberRole[] }) {
-     const { isAuthenticated, systemRole } = useAuthStore();
-     if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
-     // admin: systemRole === "ADMIN"; còn lại: memberRole ∈ memberRoles (đọc từ layout/store)
-     return <Outlet />;
-   }
-   ```
-3. **Sidebar/Layout đọc chung `ROUTE_ACCESS`** — không tự hardcode filter như `:101-154` / `:122-133`.
-4. **Sửa 2 bug nav** — `/analytics/overview` → `/analytics`; mobile tab `/` → `/dashboard`.
-5. **`useContentRequests.ts`** bỏ default `MANAGER`, đọc `memberRole` thực.
+**Tóm tắt quan trọng:** So với audit trước, codebase đã refactor mạnh. Role gating **đã được cài** (không còn "zero guard" như trước) — nhưng vẫn còn lỗ hổng **ungated route** và **mobile nav không khớp**. Màu `--primary` đã là brand orange. Đọc từng phần bên dưới để có file:line chính xác.
 
 ---
 
-## PHẦN 2 — Màu Sắc & Theme
+## PHẦN 1 — Phân luồng Role (ưu tiên cao nhất)
 
-### 2.1 `--primary` không phải brand orange (P1)
+### 1.1 Hiện trạng (đã có guard trung tâm)
 
-`src/globals.css:19` light `--primary: 240 5.9% 3.9%` (near-black), `:68` dark `--primary: 210 40% 98%` (near-white). Brand orange chỉ nằm ở `--brand-orange` (`:49`) và `--ring` (`:45`).
+Cơ chế gating đã được tập trung hóa, tốt hơn đáng kể so với trước:
 
-→ Hệ quả: mọi `text-primary` / `bg-primary` / `bg-primary-foreground` render near-black/near-white, **không phải màu thương hiệu**.
+- **Nguồn sự thật duy nhất** — [`src/routes/access.ts`](src/routes/access.ts) định nghĩa map `ROUTE_ACCESS` (route → role được phép) + `canAccess()` + `resolveAccessRule()`. `AuthGuard` và `Sidebar` **đọc chung** map này, không còn gating rời rạc.
+- **AuthGuard chặn URL bypass** — [`src/components/layout/AuthGuard.tsx:62-64`](src/components/layout/AuthGuard.tsx#L62-L64) gọi `canAccess(location.pathname, systemRole, memberRole)`, nếu không đủ quyền → `Navigate` về `/dashboard`. Không còn "gõ URL thẳng vào `/admin` vẫn render".
+- **Hai tầng role**:
+  - `SystemRole = "ADMIN" | "USER"` — quyền toàn hệ thống (`src/types/user.ts:1`).
+  - `MemberRole = "OWNER" | "MANAGER" | "CREATOR" | "CLIENT"` — quyền theo workspace (`src/types/workspace.ts:1`).
+- **Admin bypass** — `canAccess()`: nếu `systemRole === "ADMIN"` → luôn cho phép (đúng).
 
-**Fix:** nếu `--primary` được dùng cho CTA/nhấn chính → gắn `--primary: 15 88% 55%` (brand orange) + `--primary-foreground: 0 0% 100%`. Nếu `--primary` chủ ý là màu chữ/nền → giữ nguyên nhưng **ngừng dùng `text-primary` cho CTA**, chuyển sang `bg-brand-orange text-white`.
+### 1.2 Lỗ hổng còn lại
 
-### 2.2 Thiếu token `--sidebar*` (P1)
+#### ① Ungated routes — ai đăng nhập cũng vào được (P0)
 
-`src/components/layout/Sidebar.tsx:164-175` dùng `var(--sidebar, #09090b)`, `var(--sidebar-foreground, #fafafa)`, `var(--sidebar-border, #27272a)` — nhưng **`globals.css` không định nghĩa 3 token này**, chỉ có fallback hex. Theme dark sẽ không đồng bộ.
+`resolveAccessRule()` trả `null` cho path **không có trong `ROUTE_ACCESS`**, và `canAccess()` khi `rule == null` thì **trả `true`** (default-allow). Hậu quả: route nào quên khai báo sẽ mở cho mọi người đã đăng nhập.
 
-**Fix:** thêm vào `:root` + `.dark` trong `globals.css`:
-```css
---sidebar: 240 6% 4%;            /* #09090b */
---sidebar-foreground: 0 0% 98%;  /* #fafafa */
---sidebar-border: 240 5% 15%;    /* #27272a */
-```
+Các route **được khai báo trong `AppRoutes` nhưng thiếu trong `ROUTE_ACCESS`**:
 
-### 2.3 Accent indigo/blue không phải brand (P1) — đổi sang `bg-brand-orange` / `text-brand-orange`
+| Route | Vấn đề | Nên là |
+|---|---|---|
+| `/subscription/checkout` | Không match key nào (chỉ có `/subscription/plans`) → mở | `["OWNER"]` |
+| `/subscription/invoices` | Tương tự → mở | `["OWNER"]` |
+| `/profile`, `/security`, `/notification-settings` | Mở cho mọi role (có thể chủ ý — trang cá nhân) | Xác nhận intent |
+| `/components/examples` | Mở (trang dev/example) | Ẩn khỏi production |
 
-> Trừ các màu **semantic/channel** (Facebook=blue, info=blue, blog=indigo #6366f1 trong `theme/colors.ts`) — những chỗ đó giữ nguyên.
+→ **Fix:** thêm `"/subscription/checkout"` và `"/subscription/invoices"` vào `ROUTE_ACCESS` (giống `"/subscription/plans": ["OWNER"]`).
 
-Cần đổi (accent không brand):
+#### ② Prefix-match mong manh — `/workspace` "nuốt" `/workspaces/*` (P1)
 
-| File | Dòng | Hiện tại | Fix |
-| :--- | :---: | :--- | :--- |
-| `components/dashboard/KpiCardsSection.tsx` | 71-72 | `bg-blue-500/10 text-blue-500`, `border-l-blue-500` | `bg-brand-orange/10 text-brand-orange`, `border-l-brand-orange` |
-| `components/dashboard/ActivityFeedSection.tsx` | 33 | `text-blue-500` (CheckCircle) | `text-brand-orange` |
-| `pages/templates/components/TemplateGridView.tsx` | 40, 49 | `text-indigo-500`, `bg-indigo-50 text-indigo-600` | `text-brand-orange`, `bg-brand-orange-soft text-brand-orange` |
-| `pages/client/components/ClientAnalyticsCards.tsx` | 13 | `text-blue-500` | `text-brand-orange` |
-| `pages/client/components/ClientTable.tsx` | 142 | `border-blue-500/20 bg-blue-500/10 text-blue-600` | `border-brand-orange/20 bg-brand-orange/10 text-brand-orange` |
-| `components/request/ContentRequestTable.tsx` | 93, 157 | `group-hover:text-indigo-600`, `bg-indigo-50 ... text-indigo-600` | `group-hover:text-brand-orange`, `bg-brand-orange-soft ... text-brand-orange` |
-| `components/request/ContentRequestFilterBar.tsx` | 35, 121, 193 | `bg-blue-50 text-blue-700`, `focus:ring-indigo-500/20`, `border-indigo-600 bg-indigo-600` | `bg-brand-orange-soft text-brand-orange`, `focus:ring-brand-orange/20`, `border-brand-orange bg-brand-orange` |
-| `components/request/AssigneePickerModal.tsx` | 58, 83, 97, 118 | `text-indigo-600`, `focus:ring-indigo-500/20`, `bg-indigo-50`, `bg-indigo-600` | `text-brand-orange`, `focus:ring-brand-orange/20`, `bg-brand-orange-soft`, `bg-brand-orange` |
-| `components/hashtag/HashtagGroupFormModal.tsx` | 91, 125, 138 | `text-indigo-500`, `focus:ring-indigo-500/20`, `bg-indigo-600 hover:bg-indigo-700` | `text-brand-orange`, `focus:ring-brand-orange/20`, `bg-brand-orange hover:bg-brand-orange/90` |
-| `components/editor/MediaDropzone.tsx` | 93, 94, 101, 108, 115, 119 | `border-indigo-500 bg-indigo-50/50`, `hover:border-indigo-400`, `text-indigo-600`, `bg-indigo-600`, `bg-indigo-50 text-indigo-600` | đổi indigo → brand-orange tương ứng |
-| `components/editor/ImageLightboxModal.tsx` | 28 | `text-indigo-400` | `text-brand-orange` |
-| `components/examples.tsx` | 359 | `border-blue-500/30 text-blue-600` | `border-brand-orange/30 text-brand-orange` |
+`resolveAccessRule()` dùng `pathname.startsWith(k)` (xem [`access.ts:44`](src/routes/access.ts#L44)). Key `/workspace` là prefix của `/workspaces/*`, nên:
 
-Giữ nguyên (semantic/channel): `ui/toast.tsx:27,41` (info), `ui/badge.tsx:25-26` (approved), `ui/dialog.tsx:173` (info), `TemplateCard.tsx:12`, `ContentRequestTable.tsx:24,33` (ASSIGNED/FB), `ContentCalendar.tsx:17,30`, `PlatformFilter.tsx:11`, `PlatformPreviewModal.tsx:16`, `PlatformMockups.tsx:45-47` (FB), toàn bộ `landing/cinematic/**` (mock social brand).
+- `/workspaces/create` → bị gán rule `["OWNER"]` của `/workspace` (vô tình, nhưng may đúng intent).
+- `/workspaces/:id/settings` → cũng thành `["OWNER"]` (chỉ OWNER sửa được, có thể nên OWNER+MANAGER).
+- `/workspaces/:id/members` → có regex riêng (OK).
 
-### 2.4 Inline hex thay token brand (P1) — đổi sang `text-brand-orange` / `bg-brand-orange-soft`
+Nguy hiểm ở chỗ: thêm route mới kiểu `/workspaces/:id/analytics` thì sẽ **âm thầm** bị gán `OWNER` mà không ai biết.
 
-`--brand-orange` (#f05a28) và `--brand-orange-soft` (#fff0eb) đã có sẵn.
+→ **Fix:** tách `/workspace` (trang danh sách, OWNER) khỏi `/workspaces/*` (dùng key chính xác hoặc regex riêng từng route).
 
-| File | Dòng | Hiện tại | Fix |
-| :--- | :---: | :--- | :--- |
-| `pages/calendar/index.tsx` | 31 | `bg-[#f05a28] hover:bg-[#d94e20]` | `bg-brand-orange hover:bg-brand-orange/90` |
-| `pages/client/components/ClientAnalyticsCards.tsx` | 34 | `text-[#f05a28]` | `text-brand-orange` |
-| `pages/client/components/ClientBanner.tsx` | 19, 32, 47 | `bg-[#fff0eb] text-[#f05a28]` | `bg-brand-orange-soft text-brand-orange` |
-| `pages/client/components/ClientContentRequests.tsx` | 12 | `text-[#f05a28]` | `text-brand-orange` |
-| `pages/client/components/ClientSocialAccounts.tsx` | 12, 24 | `text-[#f05a28]`, `bg-[#f05a28]/10` | `text-brand-orange`, `bg-brand-orange/10` |
-| `pages/client/components/ClientTable.tsx` | 89, 94 | `bg-[#fff0eb] text-[#f05a28]`, `group-hover:text-[#f05a28]` | `bg-brand-orange-soft text-brand-orange`, `group-hover:text-brand-orange` |
+#### ③ Mobile bottom tab bar KHÔNG dùng `canAccess` (P1)
 
-> Lưu ý: `text-brand-orange` là utility sinh từ token `--brand-orange` (Tailwind v4 CSS-first); nếu chưa có, khai báo trong `globals.css` qua `@theme`.
+Sidebar (desktop) lọc bằng `canAccess()`, nhưng **bottom tab bar mobile** ở [`src/components/layout/Layout.tsx:126-141`](src/components/layout/Layout.tsx#L126-L141) dùng logic ad-hoc `filteredMobileTabs` — chỉ hardcode `currentRole === "CLIENT"` để ẩn `/workspace` + `/editor`.
 
----
+Hậu quả: mobile hiển thị link mà desktop ẩn. Ví dụ `/analytics` (rule `["OWNER","MANAGER"]`) vẫn hiện trên mobile cho CREATOR/CLIENT. Gating mobile **không khớp** desktop.
 
-## PHẦN 3 — Emoji làm UI icon (P2)
+→ **Fix:** cho `filteredMobileTabs` dùng `canAccess(tab.to, systemRole, memberRole)` thay vì hardcode CLIENT.
 
-Rule: không dùng emoji làm icon/button/status — dùng `lucide-react`.
+#### ④ Default-allow thay vì default-deny (P2)
 
-| File | Dòng | Hiện tại | Fix |
-| :--- | :---: | :--- | :--- |
-| `components/editor/AIGeneratePanel.tsx` | 209 | `<span>Generate with AI ✨</span>` | `<Sparkles className="size-4" />` từ lucide |
-| `components/library/TemplatesTab.tsx` | 208 | `placeholder="…Mùa Hè ☀️"` | bỏ emoji khỏi placeholder |
+`canAccess()` trả `true` khi không tìm thấy rule. Nếu sau này thêm route mới mà quên khai báo, nó sẽ mở ngầm.
 
-Giữ nguyên (mock content, không phải UI chrome): `landing/cinematic/CinematicHero.tsx:2259` (✨ trong nội dung giả lập).
+→ **Fix (đề xuất):** đổi `resolveAccessRule` trả `null` → `canAccess` trả `false` khi không khai báo (default-deny), và bắt buộc mọi route protected phải có entry trong `ROUTE_ACCESS`. Cộng thêm 1 test/lint kiểm tra mọi path trong `AppRoutes` đều có rule.
 
----
+### 1.3 Bảng Role → Route (hiện tại, nguồn `ROUTE_ACCESS`)
 
-## PHẦN 4 — Cấu trúc File / Architecture (P2)
+| Route | OWNER | MANAGER | CREATOR | CLIENT | ADMIN |
+|---|---|---|---|---|---|
+| `/dashboard` | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `/change-password` | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `/workspace` | ✓ | — | — | — | ✓ |
+| `/social-accounts` | ✓ | — | — | — | ✓ |
+| `/subscription/plans` | ✓ | — | — | — | ✓ |
+| `/clients` | ✓ | ✓ | — | — | ✓ |
+| `/analytics` | ✓ | ✓ | — | — | ✓ |
+| `/reports` | ✓ | ✓ | — | — | ✓ |
+| `/invitations` | ✓ | ✓ | — | — | ✓ |
+| `/requests` | — | ✓ | ✓ | ✓ | ✓ |
+| `/portal` | — | ✓ | — | ✓ | ✓ |
+| `/calendar` | — | ✓ | ✓ | ✓ | ✓ |
+| `/library` | — | ✓ | ✓ | ✓ | ✓ |
+| `/editor` | — | — | ✓ | — | ✓ |
+| `/templates` | — | — | ✓ | — | ✓ |
+| `/hashtag-groups` | — | — | ✓ | — | ✓ |
+| `/publish` | — | — | ✓ | — | ✓ |
+| `/ai-studio` (và con) | — | — | ✓ | — | ✓ |
+| `/admin` | — | — | — | — | **chỉ ADMIN** |
+| `/workspaces/:id/members` | ✓ | ✓ | — | — | ✓ |
 
-### 4.1 20 component feature-specific đặt nhầm chỗ (P2)
-
-Các sub-component của một page đang nằm ở `src/components/{feature}/` thay vì `src/pages/{feature}/components/`. Investigator xác nhận **100% chỉ dùng đúng 1 page** — không cái nào shared thật. Vi phạm Orchestrator Pattern (STRUCTURE.md §3).
-
-| Folder hiện tại | Files | Page đích (`src/pages/…`) |
-| :--- | :--- | :--- |
-| `components/calendar/` | ContentCalendar, PlatformFilter, SchedulePostModal | `calendar/components/` |
-| `components/dashboard/` | ActivityFeedSection, KpiCardsSection, TeamStatsSection | `dashboard/components/` |
-| `components/editor/` | RichTextEditor, MediaDropzone, HashtagInputWithSuggestions, AIGeneratePanel, TemplatePickerModal, ImageLightboxModal | `editor/components/` |
-| `components/hashtag/` | HashtagGroupFormModal | `hashtag-groups/components/` |
-| `components/preview/` | PlatformPreviewModal, PlatformMockups | `editor/components/` |
-| `components/request/` | ContentRequestFilterBar, ContentRequestTable, AssigneePickerModal | `requests/components/` |
-| `components/template/` | TemplateCard, TemplatePreviewModal | `templates/components/` |
-
-**Fix:** `git mv` từng file vào page `components/`, cập nhật import trong page `index.tsx` + component cha (giữ nguyên tên export). Sau đó xóa folder `components/{feature}/` rỗng.
-
-> Trừ: `PlatformPreviewModal` thực tế được `SchedulePostModal` (calendar) + `editor` dùng → nếu đúng shared 2 page thì giữ ở `components/`. Đã kiểm tra: hiện chỉ editor dùng; nếu calendar dùng lại thì đổi classification.
-
-### 4.2 Orchestrator vượt giới hạn (P2)
-
-- `pages/client/index.tsx` = **167 dòng** (>150 rule STRUCTURE.md §3). Tách handler + phần search/pagination thành sub-component trong `client/components/` (hoặc đẩy logic xuống hook).
-
-Các index còn lại đều <150 (workspace 42, client 167, admin 36, portal 74, analytics 69, library 67, change-password 77). Detail >100: `ClientTable.tsx` 206, `CreateEditClientModal.tsx` 183, `ServicePackageModal.tsx` 166 — nên tách nhỏ nếu đủ phức tạp.
-
-### 4.3 Thiếu shadcn primitives (P2)
-
-`src/components/ui/index.ts` chỉ re-export 14: button, spinner, badge, label, input, dialog, modal, toast, use-toast, sonner, skeleton, table, dropdown-menu, sheet.
-
-**Thiếu:** `select`, `textarea`, `card`, `tabs`, `avatar`, `tooltip`, `switch`, `checkbox`, `radio-group`, `popover`, `alert-dialog`, `separator`.
-
-→ Đây là nguyên nhân trực tiếp của raw-HTML ở PHẦN 5. **Fix:** `npx shadcn@latest add select textarea card tabs avatar tooltip switch checkbox radio-group popover alert-dialog separator` rồi thay thế dần.
+> Lưu ý: `ADMIN` (SystemRole) bỏ qua mọi check, nên cột ADMIN luôn ✓.
 
 ---
 
-## PHẦN 5 — Raw HTML thay primitives (P2)
+## PHẦN 2 — Màu sắc & Theme
 
-Vi phạm rule "không viết lại `<button>/<input>/<select>/<textarea>` thô — dùng `ui/*`".
+### 2.1 Đã fix (trước lỗi, giờ OK)
 
-| File | Dòng | Vấn đề | Fix |
-| :--- | :---: | :--- | :--- |
-| `pages/library/index.tsx` | 21, 33, 45 | raw `<button>` làm tab bar | `ui/tabs` hoặc tạo `LibraryTab` |
-| `pages/editor/index.tsx` | 57, 62 | raw `<input>` (title) | `ui/input` |
-| `pages/auth/VerifyOtpPage.tsx` | 120 | raw `<input>` (OTP) | `ui/input` |
-| `pages/client/components/CreateEditClientModal.tsx` | 141, 154 | raw `<select>` | `ui/select` |
-| `pages/workspace/components/InviteMemberDialog.tsx` | 56 | raw `<select>` | `ui/select` |
-| `pages/workspace/components/LogoUploader.tsx` | 30 | raw `<input type="file">` | `ui/input` + hidden file |
-| `components/calendar/SchedulePostModal.tsx` | 72, 94, 106, 122 | raw `<input>/<select>/<textarea>` | `ui/*` |
-| `components/library/MediaTab.tsx` | 91, 141 | raw `<input>` | `ui/input` |
-| `components/library/MediaUploadButton.tsx` | 45 | raw `<input>` | `ui/input` |
-| `components/editor/HashtagInputWithSuggestions.tsx` | 167 | raw `<input>` | `ui/input` |
-| `components/editor/TemplatePickerModal.tsx` | 79 | raw `<input>` | `ui/input` |
-| `components/library/HashtagGroupsTab.tsx` | 217, 230 | raw `<input>` | `ui/input` |
-| `components/library/TemplatesTab.tsx` | 204, 217, 230 | raw `<input>/<textarea>` | `ui/input` / `ui/textarea` |
+- `--primary: 15 88% 55%` = **brand orange** [`src/globals.css:19`](src/globals.css#L19). Trước là near-black mặc định shadcn, giờ đã đúng.
+- `--sidebar`, `--sidebar-foreground`, `--sidebar-border` đã **được định nghĩa** [`globals.css:49-51`](src/globals.css#L49-L51). Trước Sidebar phải fallback hex.
+- `--brand-orange`, `--brand-orange-soft` đã có.
+
+### 2.2 Còn lỗi — badge trạng thái xanh dương (P1)
+
+Các badge/status sau dùng **blue/indigo** thay vì brand orange / màu trung tính (xanh dương chỉ hợp khi là màu nền tảng Facebook/LinkedIn, không phải màu nhấn của sản phẩm):
+
+| File | Dòng | Mô tả |
+|---|---|---|
+| `src/pages/calendar/components/ContentCalendar.tsx` | [32](src/pages/calendar/components/ContentCalendar.tsx#L32) | `bg-indigo-500/15 border-indigo-500/30 text-indigo-700` — badge category |
+| `src/pages/templates/components/TemplateCard.tsx` | [17-18](src/pages/templates/components/TemplateCard.tsx#L17-L18) | `bg-blue-100 text-blue-600` — badge type |
+| `src/pages/requests/components/ContentRequestTable.tsx` | [30](src/pages/requests/components/ContentRequestTable.tsx#L30), [63-64](src/pages/requests/components/ContentRequestTable.tsx#L63-L64) | badge status blue |
+| `src/components/ui/badge.tsx` | [28,30](src/components/ui/badge.tsx#L28-L30) | variant default/secondary mặc định shadcn = blue |
+| `src/components/ui/dialog.tsx` | [180](src/components/ui/dialog.tsx#L180) | icon "info" `text-blue-500` (thấp — info=blue chấp nhận được) |
+| `src/components/ui/toast.tsx` | [31,45](src/components/ui/toast.tsx#L31-L45) | icon "info" blue (thấp) |
+
+> **Không phải lỗi** (màu xanh dương đúng vì là màu nền tảng): `social-accounts/lib/platformMeta.tsx`, `calendar/components/ContentCalendar.tsx:19` (icon FACEBOOK), `analytics/components/ChannelPerformanceChart.tsx:9` (chart theo kênh), `editor/components/mockups/*`, `editor/components/PlatformPreviewModal.tsx`, và các mock post trong `components/landing/cinematic/*`.
+
+### 2.3 Còn lỗi — inline hex thay token (P2)
+
+Các file dùng `#f05a28` / `#fff0eb` trực tiếp thay vì `--brand-orange` / `--brand-orange-soft`:
+
+- `src/components/landing/cinematic/CinematicHero.tsx`
+- `src/components/landing/cinematic/MiniPosts.tsx`
+- `src/components/landing/cinematic/CursorGhost.tsx`
+
+(`src/theme/colors.ts` và `src/globals.css` dùng hex là **đúng** — nơi định nghĩa token.)
+
+→ **Fix:** đổi inline hex sang `hsl(var(--brand-orange))` / `hsl(var(--brand-orange-soft))` hoặc class `text-brand-orange` / `bg-brand-orange-soft`.
+
+---
+
+## PHẦN 3 — Emoji vs lucide
+
+Gần như đã xử lý. Emoji còn lại **chỉ** trong mock content landing (`components/landing/cinematic/*`), dùng làm nội dung giả cho post mạng xã hội — chấp nhận được:
+
+- `CinematicHero.tsx` — text mock `🌟 ✨ 👉` trong nội dung post demo.
+- `GhostComments.tsx` — ký tự `♡` cho nút like comment (giả lập UI social).
+
+Không còn emoji trong UI chrome thật (trước có `☀️` ở TemplatesTab và `✨` ở AIGeneratePanel — đã hết).
+
+---
+
+## PHẦN 4 — Cấu trúc file
+
+Cấu trúc **feature-based đã hoàn tất**: mọi page ở `src/pages/{feature}/` kèm `{feature}/components/`. Xác nhận qua import trong `AppRoutes.tsx` (VD `@/pages/analytics`, `@/pages/editor/components/mockups/...`).
+
+Lỗi "20 sub-component nằm nhầm trong `src/components/{feature}/`" đã hết. **Không còn việc cần làm ở nhóm này.**
+
+---
+
+## PHẦN 5 — Primitives & raw HTML
+
+### 5.1 Thiếu primitive (P2)
+
+`src/components/ui/index.ts` hiện export 17: button, spinner, badge, label, input, dialog, modal, toast, use-toast, sonner, skeleton, table, dropdown-menu, sheet, select, textarea, tabs.
+
+**Còn thiếu:** `card`, `avatar`, `tooltip`, `switch`, `checkbox`, `radio-group`, `popover`, `alert-dialog`, `separator`.
+
+→ Cài khi cần (theo nhu cầu thật, không cài tràn lan).
+
+### 5.2 Raw HTML thay vì primitive (P2)
+
+11 file còn dùng raw `<select>` / `<textarea>` / `<input>` / `<button>` thay vì `ui/select`, `ui/textarea`, `ui/input`:
+
+| File | Nguyên nhân |
+|---|---|
+| `src/pages/auth/LoginPage.tsx` | form input |
+| `src/pages/auth/RegisterPage.tsx` | form input |
+| `src/pages/workspace/components/WorkspacePermissionsPanel.tsx` | select |
+| `src/pages/client/components/ClientSettingsModal.tsx` | select/input |
+| `src/pages/portal/components/RejectRequestModal.tsx` | textarea |
+| `src/pages/requests/components/CreateRequestModal.tsx` | textarea/input |
+| `src/pages/requests/components/CancelRequestDialog.tsx` | input |
+| `src/pages/requests/components/ReviseRequestModal.tsx` | textarea/input |
+| `src/pages/ai-studio/video.tsx` | input |
+| `src/components/landing/cinematic/CinematicHero.tsx` | (landing, mock) |
+| `src/pages/editor/components/mockups/FacebookMockup.tsx` | (mockup, giả lập UI FB — không sửa) |
+
+> `ui/select.tsx` và `ui/textarea.tsx` render raw `<select>`/`<textarea>` là **đúng** (chính primitive). `FacebookMockup` giả lập giao diện Facebook nên raw là chủ ý.
+
+→ **Fix:** thay các file trên bằng `ui/select` + `ui/textarea` + `ui/input` (các primitive này **đã có sẵn**).
 
 ---
 
 ## PHẦN 6 — Checklist ưu tiên
 
-**P0 (làm trước — bảo mật phân quyền):**
-- [x] Xóa `UserRole` bóng ma + mọi check `OWNER`/… (1.0).
-- [x] Tạo `ROUTE_ACCESS` map (MemberRole + SystemRole) + AuthGuard check role (1.6).
-- [x] Gắn roles vào route — AuthGuard tự resolve `ROUTE_ACCESS` theo pathname (không cần sửa AppRoutes từng route).
-- [x] Sidebar/Layout đọc chung `ROUTE_ACCESS`, không hardcode filter.
-- [x] Sửa 2 bug nav: bỏ dead `/analytics/overview`; mobile tab `/` → `/dashboard`.
+### P0 — Bảo mật phân quyền (làm trước)
+- [ ] Thêm `/subscription/checkout` + `/subscription/invoices` vào `ROUTE_ACCESS` (`["OWNER"]`) — đang mở cho mọi người.
+- [ ] Cho `filteredMobileTabs` (Layout.tsx) dùng `canAccess()` — mobile nav đang lộ link.
+- [ ] Tách prefix `/workspace` khỏi `/workspaces/*` trong `access.ts`.
 
-✅ Hoàn thành 2026-08-19 — `npx tsc --noEmit` 0 lỗi. FE giờ dùng đúng `SystemRole` (ADMIN/USER) + `MemberRole` (OWNER/CREATOR/VIEWER/CLIENT/ACCOUNT), khớp BE.
+### P1 — Màu sắc
+- [ ] Đổi badge blue/indigo → brand orange / trung tính (ContentCalendar, TemplateCard, ContentRequestTable, ui/badge.tsx).
 
-**P1 (màu & theme):**
-- [x] Gắn `--primary` = brand orange (hoặc ngừng dùng text-primary cho CTA).
-- [x] Thêm `--sidebar*` tokens.
-- [x] Đổi ~15 chỗ indigo/blue accent → brand-orange (2.3).
-- [x] Đổi ~11 chỗ inline hex → token (2.4).
-
-✅ Hoàn thành 2026-08-19 — `--primary` = brand orange (light+dark), thêm `--sidebar*`, đổi 27 chỗ indigo/blue + 12 chỗ inline hex → brand token. Default `<Button>` giờ render cam thương hiệu.
-
-**P2 (cleanup):**
-- [x] Chuyển 25 component feature-specific vô page (4.1).
-- [x] Tách `client/index.tsx` 167 dòng (4.2).
-- [x] Thêm shadcn primitives (4.3).
-- [x] Thay raw HTML (PHẦN 5).
-- [x] Đổi 2 emoji UI → lucide (PHẦN 3).
-
-✅ Hoàn thành 2026-08-19 — `git mv` 25 component vô `pages/{feature}/components/`, tách `client/index.tsx` → `ClientModals.tsx`, thêm 3 primitives (`select`, `textarea`, `tabs`), thay raw HTML bằng `ui/*` ở 13 file, đổi 2 emoji → lucide. `npx tsc --noEmit` 0 lỗi, `npm run build` xanh. Commit `dd24527`.
-
----
-
-## PHẦN 7 — Sync Trung ↔ Phước (kiểm tra đồng bộ)
-
-> Câu hỏi: code của **Trung** và **Phước** đã đồng bộ nhau chưa (UI, style, cỡ chữ,
-> cấu trúc, triển khai)?
-> **Kết luận: CHƯA đồng bộ.** Không phải ai đúng ai sai — cả 2 mắc **cùng một bộ lỗi**;
-> điểm lệch thật sự nằm ở **cấu trúc file** và **style nhỏ** (quote, icon size).
-
-### 7.1 Cấu trúc — lệch lớn nhất (P0)
-
-- **Trung** đã refactor page vào `src/pages/{feature}/` (đúng STRUCTURE.md).
-- **Phước** vẫn để 25 component feature-specific trong `src/components/{feature}/`:
-
-  | Folder | Files | Page đích |
-  | :--- | :--- | :--- |
-  | `components/calendar/` | 3 | `pages/calendar/components/` |
-  | `components/dashboard/` | 3 | `pages/dashboard/components/` |
-  | `components/editor/` | 6 | `pages/editor/components/` |
-  | `components/hashtag/` | 1 | `pages/hashtag-groups/components/` |
-  | `components/library/` | 5 | `pages/library/components/` |
-  | `components/preview/` | 2 | `pages/editor/components/` |
-  | `components/request/` | 3 | `pages/requests/components/` |
-  | `components/template/` | 2 | `pages/templates/components/` |
-
-- ⚠️ **Chỉnh lại PHẦN 4.1:** số đúng là **25** (PHẦN 4.1 cũ ghi 20, thiếu `components/library/` 5 file).
-- Fix: `git mv` 25 file vào `pages/{feature}/components/`, cập nhật import, giữ nguyên tên export.
-
-### 7.2 Màu sắc — 3 hệ trộn lẫn (P1)
-
-Cả 2 tác giả dùng lẫn 3 hệ màu, không chốt 1 hệ:
-
-| Hệ | Ai dùng |
-| :--- | :--- |
-| Semantic token (`bg-card`, `text-muted-foreground`) | cả 2 (đúng) |
-| Raw `zinc-*` / `bg-white` / `bg-zinc-900` | Phước 16 file, Trung 9 file |
-| Inline hex `#f05a28` | 29 file (components 13 + pages 16) |
-
-Fix: chốt semantic + `brand-orange` theo rule.md §1, bỏ raw zinc + inline hex.
-
-### 7.3 Cỡ chữ (Typography) — thang bị phá (P1)
-
-- Font Inter đồng bộ (globals.css). Page title chuẩn `text-3xl` qua `PageWrapper` (Trung) → **title đồng bộ tốt**.
-- **Nhưng 284 chỗ `text-[Npx]` tùy ý ngoài thang** `text-xs..3xl`:
-  `10px×116 · 9px×69 · 11px×63 · 8px×34 · 7px×1 · 12px×1` — cả 2 tác giả đều vi phạm.
-- Icon size lệch: Trung `size-4`, Phước `w-4 h-4` (`RichTextEditor.tsx`).
-
-Fix: thêm `--text-2xs`/`--text-3xs` vào `@theme`, cấm `text-[Npx]`; chuẩn icon `size-*`.
-
-### 7.4 Phong cách thiết kế — không lock thang (P1)
-
-- Card radius trộn `rounded-md`/`lg`/`xl`/`2xl` — chốt `rounded-xl`.
-- Shadow trộn `shadow-xs`/`sm`/`md`.
-- Visual language lệch giữa page: `editor` dùng `zinc-*` + `rounded-2xl` + `bg-white`
-  (Trung index + Phước component), trong khi `dashboard` dùng semantic + `rounded-xl`.
-
-### 7.5 Triển khai — cùng lỗi, chưa thống nhất (P2)
-
-- **i18n:** CẢ 2 hardcode tiếng Việt (`"Làm mới"`, `"Tổng số bài đăng"`) thay vì `t()`. Vi phạm §2.
-- **Raw HTML:** Phước `<button>` toolbar (`RichTextEditor.tsx`), Trung `<input>` title
-  (`editor/index.tsx:57`). Cả 2 vi phạm §4.
-- **Quote:** Phước nháy đơn `'react'`, Trung nháy kép `"react"` → prettier chưa chạy trên
-  file Phước. Chốt nháy kép (prettier default).
-- **Service/types:** cả 2 central trong `src/services/` + `src/types/` — **điểm đồng bộ tốt**.
-  Lưu ý Phước dùng `mock*Service`, Trung dùng real (`workspaceService`) → thống nhất khi backend ready.
-
-### 7.6 Hành động (thứ tự)
-
-1. **P0 — migrate 25 component** vào `pages/{feature}/components/` (7.1) → khớp cấu trúc Trung.
-2. **P1 — màu + type:** bỏ raw zinc/hex, chốt semantic + `brand-orange`, bỏ `text-[Npx]`.
-3. **P2 — style:** chạy prettier toàn repo (fix quote), chuẩn icon `size-*`, i18n `t()`, ui primitives.
-
-✅ **Hoàn thành toàn bộ 2026-08-20:**
-- 7.1 (25 component) — đã làm ở P2 đợt trước, commit `dd24527`.
-- 7.2 raw zinc → semantic token (`bg-card`/`bg-muted`/`text-foreground`/`text-muted-foreground`/`border-border`), 18 file — commit `05f0937`.
-- Prettier toàn repo (quote nháy đơn → kép, tailwind class sort) — commit `ffb4ee5`.
-- 7.4 radius: card/modal container chốt `rounded-xl` (nâng `rounded-lg`, hạ `rounded-2xl`); shadow base chốt `shadow-xs` (giữ `hover:shadow-md` nguyên vẹn); `h-N w-N` bằng nhau → `size-N` (148 chỗ, 27 file); thêm `--text-2xs`(11px)/`--text-3xs`(9px), thay 284 chỗ `text-[Npx]` (trừ `landing/*` — giữ aesthetic marketing riêng) — commit `f0eac6d`.
-- 7.5 i18n: 7 namespace mới (`editor`/`library`/`templates`/`requests`/`hashtagGroups`/`client`/`dashboard`) trong vi.json + en.json key-parallel, 39 chỗ hardcode → `t()`, 22 component — commit `e424602`.
-- `npx tsc -p tsconfig.app.json --noEmit` 0 lỗi + `npm run build` xanh sau mỗi đợt.
-- Badge/button nhỏ (`rounded-md`, `px-2 py-0.5`) và radius/màu `landing/*` **cố tình giữ nguyên** — ngoài phạm vi (tỷ lệ kích thước đúng / aesthetic marketing riêng).
-
----
-
-## Verification (khi fix)
-
-- `npx tsc --noEmit` → 0 lỗi sau mỗi đợt.
-- `npm run build` → xanh.
-- Test thủ công: login từng MemberRole (OWNER / ACCOUNT / CREATOR / VIEWER / CLIENT) + SystemRole ADMIN, gõ trực tiếp URL `/admin`, `/editor`, `/workspace`, `/analytics` → phải redirect, không render.
-- Check nav sidebar/mobile khớp bảng 1.5.
+### P2 — Code convention
+- [ ] Đổi inline hex → token brand (cinematic landing).
+- [ ] Raw HTML → primitive (11 file ở §5.2).
+- [ ] (Tùy chọn) Cài primitive còn thiếu khi thực sự cần.
+- [ ] (Tùy chọn) Đổi `canAccess` sang default-deny + thêm test kiểm tra mọi route có rule.
