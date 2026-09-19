@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { Settings2, UserPlus, Trash2, ShieldCheck } from "lucide-react";
 import type {
   Client,
@@ -122,14 +123,15 @@ export function ClientSettingsModal({
               <Label className="text-xs font-semibold">
                 {t("client.settings.contactsLabel")}
               </Label>
-              <button
+              <Button
+                variant="ghost"
                 type="button"
                 onClick={addContact}
-                className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs text-muted-foreground flex cursor-pointer items-center gap-1 rounded-lg px-2 py-1 font-medium transition-colors"
+                className="hover:bg-brand-orange-soft hover:text-brand-orange text-2xs text-muted-foreground flex h-auto cursor-pointer items-center gap-1 rounded-lg px-2 py-1 font-medium transition-colors"
               >
                 <UserPlus className="size-3.5" />
                 {t("client.settings.addContact")}
-              </button>
+              </Button>
             </div>
 
             {contacts.length === 0 && (
@@ -161,21 +163,21 @@ export function ClientSettingsModal({
                     placeholder={t("client.settings.contactEmailPlaceholder")}
                     className="text-xs"
                   />
-                  <select
+                  <Select
                     value={contact.role}
                     onChange={(e) =>
                       updateContact(contact.id, {
                         role: e.target.value as ClientContactRole,
                       })
                     }
-                    className="border-border bg-card text-foreground text-2xs rounded-lg border px-2"
+                    className="border-border bg-card text-foreground text-2xs h-auto rounded-lg border px-2"
                   >
                     {CONTACT_ROLES.map((role) => (
                       <option key={role} value={role}>
                         {t(`client.settings.role.${role}`)}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
@@ -193,13 +195,15 @@ export function ClientSettingsModal({
                     >
                       <ShieldCheck className="size-3.5" />
                     </button>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       type="button"
                       onClick={() => removeContact(contact.id)}
                       className="flex size-7 cursor-pointer items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-colors hover:bg-rose-100 dark:bg-rose-950/40"
                     >
                       <Trash2 className="size-3.5" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}

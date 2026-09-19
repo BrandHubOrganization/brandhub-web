@@ -7,6 +7,9 @@ import type {
   ReviseContentRequestPayload,
   SocialPlatform,
 } from "@/types/contentRequest";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const PLATFORMS: SocialPlatform[] = [
   "FACEBOOK",
@@ -100,11 +103,11 @@ export const ReviseRequestModal: React.FC<ReviseRequestModalProps> = ({
             <label className="text-foreground text-xs font-semibold">
               {t("requests.create.topicLabel")}
             </label>
-            <input
+            <Input
               type="text"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              className="bg-muted text-foreground focus:ring-brand-orange/20 border-border w-full rounded-xl border px-3 py-2 text-xs focus:ring-2 focus:outline-hidden"
+              className="bg-muted text-foreground focus:ring-brand-orange/20 border-border h-auto w-full rounded-xl border px-3 py-2 text-xs focus:ring-2 focus:outline-hidden"
               required
             />
           </div>
@@ -113,11 +116,11 @@ export const ReviseRequestModal: React.FC<ReviseRequestModalProps> = ({
             <label className="text-foreground text-xs font-semibold">
               {t("requests.create.deadlineLabel")}
             </label>
-            <input
+            <Input
               type="date"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className="bg-muted text-foreground focus:ring-brand-orange/20 border-border w-full rounded-xl border px-3 py-2 text-xs focus:ring-2 focus:outline-hidden"
+              className="bg-muted text-foreground focus:ring-brand-orange/20 border-border h-auto w-full rounded-xl border px-3 py-2 text-xs focus:ring-2 focus:outline-hidden"
               required
             />
           </div>
@@ -151,31 +154,33 @@ export const ReviseRequestModal: React.FC<ReviseRequestModalProps> = ({
             <label className="text-foreground text-xs font-semibold">
               {t("requests.create.briefLabel")}
             </label>
-            <textarea
+            <Textarea
               value={briefNote}
               onChange={(e) => setBriefNote(e.target.value)}
               rows={3}
-              className="bg-muted text-foreground focus:ring-brand-orange/20 border-border w-full resize-none rounded-xl border px-3 py-2 text-xs focus:ring-2 focus:outline-hidden"
+              className="bg-muted text-foreground focus:ring-brand-orange/20 border-border min-h-0 w-full resize-none rounded-xl border px-3 py-2 text-xs focus:ring-2 focus:outline-hidden"
             />
           </div>
 
           <div className="border-border flex justify-end gap-2 border-t pt-3">
-            <button
+            <Button
+              variant="outline"
               type="button"
               onClick={onClose}
-              className="border-border text-muted-foreground rounded-xl border px-4 py-2 text-xs font-medium"
+              className="border-border text-muted-foreground h-auto rounded-xl border px-4 py-2 text-xs font-medium"
             >
               {t("requests.create.cancel")}
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="orange"
               type="submit"
               disabled={isSubmitting}
-              className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer rounded-xl px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
+              className="bg-brand-orange hover:bg-brand-orange/90 h-auto cursor-pointer px-4 py-2 text-xs font-medium text-white"
             >
               {isSubmitting
                 ? t("requests.revise.submitting")
                 : t("requests.revise.submit")}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

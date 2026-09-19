@@ -22,7 +22,7 @@ interface CursorGhostProps {
  * gọi `onInteract` để component cha tạo tương tác thật (tim bay, comment...).
  */
 export function CursorGhost({
-  color = "#f05a28",
+  color = "hsl(var(--brand-orange))",
   targets = [],
   onInteract,
 }: CursorGhostProps) {

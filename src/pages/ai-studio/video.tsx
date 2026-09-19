@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Clapperboard, Film, ListTree, Play, Wand2 } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 type ExportFormat = "MP4" | "GIF" | "WEBM";
 
@@ -44,11 +45,11 @@ export function VideoStudioPage() {
             <label className="text-muted-foreground mb-2 block text-xs font-semibold tracking-wider uppercase">
               {t("aiStudio.video.scriptLabel")}
             </label>
-            <textarea
+            <Textarea
               rows={5}
               value={script}
               onChange={(e) => setScript(e.target.value)}
-              className="border-border bg-muted text-foreground w-full rounded-xl border p-3 text-sm leading-relaxed"
+              className="border-border bg-muted text-foreground min-h-0 w-full rounded-xl border p-3 text-sm leading-relaxed"
             />
           </div>
 
