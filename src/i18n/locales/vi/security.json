@@ -10,10 +10,18 @@
     "copied": "Đã sao chép",
     "copySuccess": "Đã sao chép khóa bí mật",
     "verifyCodeLabel": "Mã xác thực (6 chữ số)",
-    "backupCodes": "Mã dự phòng (lưu nơi an toàn)",
     "enableButton": "Kích hoạt 2FA",
-    "enabled": "2FA đã bật",
+    "confirmEnable": "Xác nhận kích hoạt",
+    "enabledLabel": "2FA đã bật",
+    "enabledHint": "Tài khoản của bạn đang được bảo vệ bởi xác thực hai lớp.",
+    "disableButton": "Tắt 2FA",
+    "disableHint": "Nhập mã xác thực hiện tại để tắt 2FA.",
+    "confirmDisable": "Xác nhận tắt",
+    "cancel": "Hủy",
     "enableSuccess": "Đã bật 2FA",
-    "disableSuccess": "Đã tắt 2FA"
+    "disableSuccess": "Đã tắt 2FA",
+    "enableError": "Kích hoạt 2FA thất bại. Mã không hợp lệ.",
+    "disableError": "Tắt 2FA thất bại. Mã không hợp lệ.",
+    "setupError": "Không thể tạo mã QR. Vui lòng thử lại."
   }
 }

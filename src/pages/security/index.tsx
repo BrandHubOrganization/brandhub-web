@@ -1,63 +1,99 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Check, Copy, ShieldCheck } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { authService } from "@/services/authService";
+import { extractErrorMessage } from "@/utils/error";
 
-function QrMockup() {
-  // Deterministic pseudo-QR grid so the 2FA setup screen has a visual anchor.
-  const cells = 21;
-  const filled = new Set([
-    0, 6, 7, 8, 12, 15, 19, 26, 32, 45, 51, 60, 66, 79, 90, 98, 113, 127, 140,
-    155, 168, 182, 199, 214, 230, 247, 264, 281, 300, 318, 335, 351, 366, 380,
-    392, 403, 412, 420, 426, 431, 434, 436,
-  ]);
-  return (
-    <div className="border-border bg-card grid aspect-square w-44 grid-cols-[repeat(21,1fr)] gap-0 rounded-lg border p-1.5">
-      {Array.from({ length: cells * cells }, (_, i) => (
-        <span
-          key={i}
-          className={filled.has(i) ? "bg-foreground" : "bg-card"}
-          aria-hidden
-        />
-      ))}
-    </div>
-  );
+/** Tách secret (Base32) từ otpauth:// URI trả về bởi backend. */
+function secretFromUrl(qrCodeUrl: string): string {
+  try {
+    return new URL(qrCodeUrl).searchParams.get("secret") ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/** Hiển thị secret theo nhóm 4 ký tự cho dễ đọc. */
+function formatSecret(secret: string): string {
+  return (secret.match(/.{1,4}/g) ?? []).join(" ");
 }
 
 export function SecurityPage() {
   const { t } = useTranslation();
   const [enabled, setEnabled] = useState(false);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+  const [disabling, setDisabling] = useState(false);
+  const [code, setCode] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const secret = "JBSW Y3DP EHPK 3PXP";
-  const backupCodes = [
-    "8JQ2-6KR9",
-    "P3MW-4TQX",
-    "K7N1-Z8VA",
-    "C4RD-9UYB",
-    "T6FL-2WNH",
-    "H9GX-5MSE",
-  ];
+  useEffect(() => {
+    authService
+      .me()
+      .then((res) => setEnabled(Boolean(res.data.data.twoFactorEnabled)))
+      .catch(() => {
+        /* giữ enabled=false; người dùng vẫn có thể bật 2FA */
+      });
+  }, []);
 
-  const handleCopy = () => {
-    navigator.clipboard?.writeText(secret.replace(/\s/g, ""));
+  const secret = qrCodeUrl ? secretFromUrl(qrCodeUrl) : "";
+
+  const handleCopy = useCallback(() => {
+    if (!secret) return;
+    navigator.clipboard?.writeText(secret);
     setCopied(true);
     toast.success(t("security.2fa.copySuccess"));
     setTimeout(() => setCopied(false), 1500);
+  }, [secret, t]);
+
+  const handleEnable = async () => {
+    setSubmitting(true);
+    try {
+      const res = await authService.setupTwoFactor();
+      setQrCodeUrl(res.data.data.qrCodeUrl);
+      setCode("");
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("security.2fa.setupError")));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleToggle = () => {
-    setEnabled((prev) => {
-      const next = !prev;
-      toast.success(
-        next
-          ? t("security.2fa.enableSuccess")
-          : t("security.2fa.disableSuccess"),
-      );
-      return next;
-    });
+  const handleConfirmEnable = async () => {
+    if (code.trim().length !== 6) return;
+    setSubmitting(true);
+    try {
+      await authService.confirmTwoFactor(code.trim());
+      setEnabled(true);
+      setQrCodeUrl(null);
+      setCode("");
+      toast.success(t("security.2fa.enableSuccess"));
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("security.2fa.enableError")));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleConfirmDisable = async () => {
+    if (code.trim().length !== 6) return;
+    setSubmitting(true);
+    try {
+      await authService.disableTwoFactor(code.trim());
+      setEnabled(false);
+      setDisabling(false);
+      setCode("");
+      toast.success(t("security.2fa.disableSuccess"));
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("security.2fa.disableError")));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -66,97 +102,166 @@ export function SecurityPage() {
       description={t("security.description")}
     >
       <div className="border-border bg-card max-w-2xl rounded-xl border p-6">
-        <div className="border-border flex items-center justify-between border-b pb-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-2">
-              <ShieldCheck className="size-5" />
-            </div>
-            <div>
-              <h2 className="text-foreground text-sm font-semibold">
-                {t("security.2fa.title")}
-              </h2>
-              <p className="text-muted-foreground text-xs">
-                {t("security.2fa.subtitle")}
-              </p>
-            </div>
+        <div className="border-border flex items-center gap-3 border-b pb-4">
+          <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-2">
+            <ShieldCheck className="size-5" />
           </div>
-          <button
-            type="button"
-            onClick={handleToggle}
-            className="bg-muted relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors"
-            role="switch"
-            aria-checked={enabled}
-          >
-            <span
-              className={`bg-card size-5 translate-x-0.5 rounded-full shadow-xs transition-transform ${
-                enabled ? "bg-brand-orange translate-x-[22px]" : ""
-              }`}
-            />
-          </button>
+          <div>
+            <h2 className="text-foreground text-sm font-semibold">
+              {t("security.2fa.title")}
+            </h2>
+            <p className="text-muted-foreground text-xs">
+              {t("security.2fa.subtitle")}
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 pt-6 sm:grid-cols-[auto_1fr]">
-          <QrMockup />
-          <div className="space-y-4">
-            <p className="text-muted-foreground text-xs">
-              {t("security.2fa.stepHint")}
-            </p>
-            <div>
-              <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                {t("security.2fa.secretLabel")}
-              </label>
-              <div className="flex items-center gap-2">
-                <code className="bg-muted text-foreground rounded-lg px-3 py-2 font-mono text-xs tracking-widest">
-                  {secret}
-                </code>
+        {/* Chưa bật 2FA */}
+        {!enabled && !qrCodeUrl && !disabling && (
+          <div className="pt-6">
+            <Button
+              variant="orange"
+              className="gap-2"
+              onClick={handleEnable}
+              loading={submitting}
+            >
+              <ShieldCheck className="size-4" />
+              {t("security.2fa.enableButton")}
+            </Button>
+          </div>
+        )}
+
+        {/* Đang thiết lập (QR + secret + nhập mã) */}
+        {!enabled && qrCodeUrl && (
+          <div className="grid grid-cols-1 gap-6 pt-6 sm:grid-cols-[auto_1fr]">
+            <div className="border-border bg-card flex aspect-square w-44 items-center justify-center rounded-lg border p-2">
+              <QRCodeSVG value={qrCodeUrl} size={160} />
+            </div>
+            <div className="space-y-4">
+              <p className="text-muted-foreground text-xs">
+                {t("security.2fa.stepHint")}
+              </p>
+              {secret && (
+                <div>
+                  <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                    {t("security.2fa.secretLabel")}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <code className="bg-muted text-foreground rounded-lg px-3 py-2 font-mono text-xs tracking-widest">
+                      {formatSecret(secret)}
+                    </code>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-1.5"
+                      onClick={handleCopy}
+                    >
+                      {copied ? (
+                        <Check className="size-3.5 text-emerald-600" />
+                      ) : (
+                        <Copy className="size-3.5" />
+                      )}
+                      {copied
+                        ? t("security.2fa.copied")
+                        : t("security.2fa.copy")}
+                    </Button>
+                  </div>
+                </div>
+              )}
+              <Input
+                label={t("security.2fa.verifyCodeLabel")}
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                placeholder="000000"
+                value={code}
+                onChange={(e) =>
+                  setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                }
+              />
+              <div className="flex gap-2">
+                <Button
+                  variant="orange"
+                  className="gap-2"
+                  onClick={handleConfirmEnable}
+                  loading={submitting}
+                  disabled={code.trim().length !== 6}
+                >
+                  <ShieldCheck className="size-4" />
+                  {t("security.2fa.confirmEnable")}
+                </Button>
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="gap-1.5"
-                  onClick={handleCopy}
+                  onClick={() => {
+                    setQrCodeUrl(null);
+                    setCode("");
+                  }}
                 >
-                  {copied ? (
-                    <Check className="size-3.5 text-emerald-600" />
-                  ) : (
-                    <Copy className="size-3.5" />
-                  )}
-                  {copied ? t("security.2fa.copied") : t("security.2fa.copy")}
+                  {t("security.2fa.cancel")}
                 </Button>
               </div>
             </div>
-            <div>
-              <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                {t("security.2fa.verifyCodeLabel")}
-              </label>
-              <input
-                type="text"
-                placeholder="000 000"
-                className="border-border bg-card text-foreground w-full rounded-lg border px-3 py-2 text-sm"
-              />
-            </div>
-            <div className="border-border rounded-lg border p-3">
-              <p className="text-muted-foreground mb-2 text-xs font-semibold">
-                {t("security.2fa.backupCodes")}
-              </p>
-              <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-                {backupCodes.map((code) => (
-                  <code
-                    key={code}
-                    className="bg-muted text-muted-foreground text-2xs rounded px-2 py-1 text-center font-mono"
-                  >
-                    {code}
-                  </code>
-                ))}
-              </div>
-            </div>
-            <Button variant="orange" className="gap-2" onClick={handleToggle}>
-              <ShieldCheck className="size-4" />
-              {enabled
-                ? t("security.2fa.enabled")
-                : t("security.2fa.enableButton")}
+          </div>
+        )}
+
+        {/* Đã bật 2FA */}
+        {enabled && !disabling && (
+          <div className="pt-6">
+            <p className="text-muted-foreground mb-4 text-sm">
+              {t("security.2fa.enabledHint")}
+            </p>
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => {
+                setDisabling(true);
+                setCode("");
+              }}
+            >
+              {t("security.2fa.disableButton")}
             </Button>
           </div>
-        </div>
+        )}
+
+        {/* Xác nhận tắt 2FA */}
+        {enabled && disabling && (
+          <div className="space-y-4 pt-6">
+            <p className="text-muted-foreground text-sm">
+              {t("security.2fa.disableHint")}
+            </p>
+            <Input
+              label={t("security.2fa.verifyCodeLabel")}
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              placeholder="000000"
+              value={code}
+              onChange={(e) =>
+                setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+              }
+            />
+            <div className="flex gap-2">
+              <Button
+                variant="orange"
+                className="gap-2"
+                onClick={handleConfirmDisable}
+                loading={submitting}
+                disabled={code.trim().length !== 6}
+              >
+                {t("security.2fa.confirmDisable")}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDisabling(false);
+                  setCode("");
+                }}
+              >
+                {t("security.2fa.cancel")}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </PageWrapper>
   );

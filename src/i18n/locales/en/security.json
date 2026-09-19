@@ -10,10 +10,18 @@
     "copied": "Copied",
     "copySuccess": "Secret key copied",
     "verifyCodeLabel": "Verification code (6 digits)",
-    "backupCodes": "Backup codes (store somewhere safe)",
     "enableButton": "Enable 2FA",
-    "enabled": "2FA enabled",
+    "confirmEnable": "Confirm & enable",
+    "enabledLabel": "2FA enabled",
+    "enabledHint": "Your account is protected by two-factor authentication.",
+    "disableButton": "Disable 2FA",
+    "disableHint": "Enter your current verification code to disable 2FA.",
+    "confirmDisable": "Confirm disable",
+    "cancel": "Cancel",
     "enableSuccess": "2FA enabled",
-    "disableSuccess": "2FA disabled"
+    "disableSuccess": "2FA disabled",
+    "enableError": "Failed to enable 2FA. Invalid code.",
+    "disableError": "Failed to disable 2FA. Invalid code.",
+    "setupError": "Could not generate the QR code. Please try again."
   }
 }
