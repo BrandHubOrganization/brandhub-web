@@ -1,0 +1,76 @@
+{
+  "list": {
+    "title": "Agencies",
+    "description": "Manage your agencies and invite your team.",
+    "createButton": "Create Agency",
+    "emptyTitle": "You don't have an agency yet",
+    "emptyDescription": "Create an agency to start inviting your team.",
+    "emptyButton": "Create your first agency",
+    "manageMembers": "Manage members"
+  },
+  "create": {
+    "title": "Create Agency",
+    "description": "Set up a new agency for your team.",
+    "nameLabel": "Agency name",
+    "namePlaceholder": "Acme Studio",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "What does your agency do?",
+    "cancel": "Cancel",
+    "submit": "Create",
+    "success": "Agency created"
+  },
+  "members": {
+    "title": "Agency Members",
+    "description": "Invite teammates by email or share an invite link.",
+    "back": "Back to agencies",
+    "inviteTitle": "Invite a member",
+    "emailLabel": "Email",
+    "emailPlaceholder": "teammate@company.com",
+    "sendInvite": "Send invite",
+    "copyLink": "Copy link",
+    "linkCopied": "Invite link copied",
+    "linkCopyFailed": "Failed to copy link",
+    "empty": "No members yet. Invite your first teammate above.",
+    "you": "(you)",
+    "remove": "Remove",
+    "inviteSuccess": "Invite sent to {{email}}",
+    "removeSuccess": "Member removed"
+  },
+  "invitations": {
+    "title": "Agency Invitations",
+    "description": "Invitations sent to you.",
+    "empty": "No pending invitations.",
+    "unknownAgency": "An agency",
+    "expires": "Expires {{date}}",
+    "accept": "Accept",
+    "decline": "Decline",
+    "back": "Go to agencies",
+    "acceptSuccess": "You joined {{agency}}",
+    "declineSuccess": "Invitation declined"
+  },
+  "accept": {
+    "loading": "Accepting invitation…",
+    "missingToken": "Missing invitation token.",
+    "successToast": "You joined the agency",
+    "successTitle": "You're in!",
+    "redirecting": "Redirecting to your agencies…",
+    "failedTitle": "Invitation failed",
+    "invalid": "Invalid or expired invitation.",
+    "back": "Go to agencies"
+  },
+  "dashboardCta": {
+    "title": "Welcome! Create your agency to get started.",
+    "description": "Set up your agency and invite your team.",
+    "button": "Create Agency"
+  },
+  "errors": {
+    "loadFailed": "Failed to load agencies",
+    "createFailed": "Failed to create agency",
+    "membersLoadFailed": "Failed to load members",
+    "inviteFailed": "Failed to invite",
+    "removeFailed": "Failed to remove member",
+    "invitationsLoadFailed": "Failed to load invitations",
+    "acceptFailed": "Failed to accept invitation",
+    "declineFailed": "Failed to decline invitation"
+  }
+}

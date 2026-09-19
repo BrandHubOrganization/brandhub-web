@@ -25,6 +25,7 @@ import viReports from "./locales/vi/reports.json";
 import viNotifications from "./locales/vi/notifications.json";
 import viSecurity from "./locales/vi/security.json";
 import viProfile from "./locales/vi/profile.json";
+import viAgency from "./locales/vi/agency.json";
 
 import enAuth from "./locales/en/auth.json";
 import enCommon from "./locales/en/common.json";
@@ -50,6 +51,7 @@ import enReports from "./locales/en/reports.json";
 import enNotifications from "./locales/en/notifications.json";
 import enSecurity from "./locales/en/security.json";
 import enProfile from "./locales/en/profile.json";
+import enAgency from "./locales/en/agency.json";
 
 const vi = {
   auth: viAuth,
@@ -76,6 +78,7 @@ const vi = {
   notifications: viNotifications,
   security: viSecurity,
   profile: viProfile,
+  agency: viAgency,
 };
 
 const en = {
@@ -103,6 +106,7 @@ const en = {
   notifications: enNotifications,
   security: enSecurity,
   profile: enProfile,
+  agency: enAgency,
 };
 
 const savedLang = localStorage.getItem("brandhub-lang");

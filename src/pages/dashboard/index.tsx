@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -9,6 +10,7 @@ import { TeamStatsSection } from "@/pages/dashboard/components/TeamStatsSection"
 import { useDashboardData } from "./hooks/useDashboardData";
 import { QuickTasksCard } from "./components/QuickTasksCard";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { agencyService } from "@/services/agencyService";
 
 export function DashboardPage() {
   const { t } = useTranslation();
@@ -29,6 +31,14 @@ export function DashboardPage() {
   } = useDashboardData();
 
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
+
+  const [hasAgency, setHasAgency] = useState<boolean | null>(null);
+  useEffect(() => {
+    agencyService
+      .list()
+      .then(({ data }) => setHasAgency(data.data.length > 0))
+      .catch(() => setHasAgency(true));
+  }, []);
 
   return (
     <PageWrapper
@@ -79,6 +89,25 @@ export function DashboardPage() {
       }
     >
       <div className="space-y-6">
+        {hasAgency === false && (
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-brand-orange/30 bg-brand-orange/5 p-4">
+            <div>
+              <p className="text-sm font-semibold">
+                {t("agency.dashboardCta.title")}
+              </p>
+              <p className="text-muted-foreground text-xs">
+                {t("agency.dashboardCta.description")}
+              </p>
+            </div>
+            <Button
+              className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-xs font-medium text-white"
+              onClick={() => navigate("/agency/create")}
+            >
+              {t("agency.dashboardCta.button")}
+            </Button>
+          </div>
+        )}
+
         <QuickTasksCard
           userName={user?.name || ""}
           userRole={memberRole ?? undefined}

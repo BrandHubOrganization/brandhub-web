@@ -20,6 +20,11 @@ import { CreateWorkspacePage } from "@/pages/workspace/create";
 import { WorkspaceSettingsPage } from "@/pages/workspace/detail";
 import { WorkspaceMembersPage } from "@/pages/workspace/members";
 import { InvitationsPage } from "@/pages/workspace/invitations";
+import { AgencyPage } from "@/pages/agency";
+import { CreateAgencyPage } from "@/pages/agency/create";
+import { AgencyMembersPage } from "@/pages/agency/members";
+import { AgencyInvitationsPage } from "@/pages/agency/invitations";
+import { AcceptInvitationPage } from "@/pages/agency/accept";
 import { PortalPage } from "@/pages/portal";
 import { AdminPage } from "@/pages/admin";
 import { EditorPage } from "@/pages/editor";
@@ -79,6 +84,11 @@ export function AppRoutes() {
             element={<WorkspaceMembersPage />}
           />
           <Route path="/invitations" element={<InvitationsPage />} />
+          <Route path="/invitations/accept" element={<AcceptInvitationPage />} />
+          <Route path="/agency" element={<AgencyPage />} />
+          <Route path="/agency/create" element={<CreateAgencyPage />} />
+          <Route path="/agency/invitations" element={<AgencyInvitationsPage />} />
+          <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/requests" element={<ContentRequestListPage />} />
