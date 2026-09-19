@@ -12,8 +12,11 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/dashboard": ["OWNER", "MANAGER", "CREATOR", "CLIENT"],
   "/change-password": ["OWNER", "MANAGER", "CREATOR", "CLIENT"],
   "/workspace": ["OWNER"],
+  "/workspaces/create": ["OWNER"],
   "/social-accounts": ["OWNER"],
   "/subscription/plans": ["OWNER"],
+  "/subscription/checkout": ["OWNER"],
+  "/subscription/invoices": ["OWNER"],
   "/clients": ["OWNER", "MANAGER"],
   "/analytics": ["OWNER", "MANAGER"],
   "/reports": ["OWNER", "MANAGER"],
@@ -35,13 +38,20 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
 );
 
 const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
+const WORKSPACE_SETTINGS_ACCESS: AccessRule = ["OWNER"];
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
   if (/^\/workspaces\/[^/]+\/members$/.test(pathname)) {
     return MEMBERS_PAGE_ACCESS;
   }
-  const key = SORTED_KEYS.find((k) => pathname === k || pathname.startsWith(k));
+  if (/^\/workspaces\/[^/]+\/settings$/.test(pathname)) {
+    return WORKSPACE_SETTINGS_ACCESS;
+  }
+  // Boundary-aware: "/workspace" không được nuốt "/workspaces/*".
+  const key = SORTED_KEYS.find(
+    (k) => pathname === k || pathname.startsWith(k + "/"),
+  );
   return key ? ROUTE_ACCESS[key] : null;
 }
 

@@ -10,18 +10,14 @@ import {
   UserCog,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import type { MemberRole, WorkspaceMember } from "@/types/workspace";
 
 interface Props {
   members: WorkspaceMember[];
 }
 
-const ROLES: MemberRole[] = [
-  "OWNER",
-  "MANAGER",
-  "CREATOR",
-  "CLIENT",
-];
+const ROLES: MemberRole[] = ["OWNER", "MANAGER", "CREATOR", "CLIENT"];
 
 const PERMISSIONS = [
   { key: "publish", roles: ["CREATOR"] },
@@ -85,20 +81,20 @@ export function WorkspacePermissionsPanel({ members }: Props) {
                 <p className="text-muted-foreground text-2xs">{member.email}</p>
               </div>
               <div className="flex items-center gap-2">
-                <select
+                <Select
                   value={roles[member.id]}
                   disabled={roles[member.id] === "OWNER"}
                   onChange={(e) =>
                     handleRoleChange(member, e.target.value as MemberRole)
                   }
-                  className="border-border bg-card text-foreground cursor-pointer rounded-lg border px-2 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50"
+                  className="border-border bg-card text-foreground h-auto cursor-pointer rounded-lg border px-2 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {ROLES.map((role) => (
                     <option key={role} value={role}>
                       {t(`workspace.roles.${role}`)}
                     </option>
                   ))}
-                </select>
+                </Select>
                 {roles[member.id] !== "OWNER" &&
                   roles[member.id] !== "CLIENT" && (
                     <Button

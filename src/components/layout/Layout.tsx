@@ -5,6 +5,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { workspaceService } from "@/services/workspaceService";
 import { userService } from "@/services/userService";
+import { canAccess } from "@/routes/access";
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
 import {
@@ -131,13 +132,7 @@ export function Layout() {
     ) {
       return false;
     }
-    if (
-      currentRole === "CLIENT" &&
-      (tab.to === "/workspace" || tab.to === "/editor")
-    ) {
-      return false;
-    }
-    return true;
+    return canAccess(tab.to, systemRole, memberRole);
   });
 
   const handleSwitchWorkspace = (workspaceId: string) => {

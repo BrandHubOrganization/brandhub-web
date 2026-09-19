@@ -9,6 +9,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 type IssueCategory = "VISUAL" | "COPY" | "BRAND" | "COMPLIANCE" | "OTHER";
 type Severity = "LOW" | "MEDIUM" | "HIGH";
@@ -61,8 +63,12 @@ export function RejectRequestModal({
       return;
     }
 
-    const categoryLabel = t(`dashboard.portal.rejectModal.category.${category}`);
-    const severityLabel = t(`dashboard.portal.rejectModal.severity.${severity}`);
+    const categoryLabel = t(
+      `dashboard.portal.rejectModal.category.${category}`,
+    );
+    const severityLabel = t(
+      `dashboard.portal.rejectModal.severity.${severity}`,
+    );
     const comment = `[${categoryLabel} · ${severityLabel}] ${detail.trim()}`;
 
     onSubmit(comment);
@@ -83,10 +89,10 @@ export function RejectRequestModal({
             <label className="text-muted-foreground mb-1 block text-xs font-medium">
               {t("dashboard.portal.rejectModal.categoryLabel")}
             </label>
-            <select
+            <Select
               value={category}
               onChange={(e) => setCategory(e.target.value as IssueCategory)}
-              className="border-border bg-card text-foreground w-full cursor-pointer rounded-lg border px-3 py-2 text-xs"
+              className="border-border bg-card text-foreground h-auto w-full cursor-pointer rounded-lg border px-3 py-2 text-xs"
             >
               <option value="" disabled>
                 {t("dashboard.portal.rejectModal.categoryPlaceholder")}
@@ -96,7 +102,7 @@ export function RejectRequestModal({
                   {t(`dashboard.portal.rejectModal.category.${c}`)}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
 
           <div>
@@ -125,12 +131,12 @@ export function RejectRequestModal({
             <label className="text-muted-foreground mb-1 block text-xs font-medium">
               {t("dashboard.portal.rejectModal.detailLabel")}
             </label>
-            <textarea
+            <Textarea
               value={detail}
               onChange={(e) => setDetail(e.target.value)}
               placeholder={t("dashboard.portal.rejectModal.detailPlaceholder")}
               rows={4}
-              className="border-border bg-card text-foreground w-full resize-none rounded-lg border px-3 py-2 text-xs"
+              className="border-border bg-card text-foreground min-h-0 w-full resize-none rounded-lg border px-3 py-2 text-xs"
             />
           </div>
         </div>
@@ -139,7 +145,11 @@ export function RejectRequestModal({
           <Button variant="outline" onClick={handleClose}>
             {t("dashboard.portal.rejectModal.cancel")}
           </Button>
-          <Button variant="destructive" className="gap-1.5" onClick={handleSubmit}>
+          <Button
+            variant="destructive"
+            className="gap-1.5"
+            onClick={handleSubmit}
+          >
             <RotateCcw className="size-3.5" />
             {t("dashboard.portal.rejectModal.submit")}
           </Button>

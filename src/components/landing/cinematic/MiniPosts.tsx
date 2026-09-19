@@ -250,7 +250,7 @@ function InstagramSlideCard({ slide }: { slide: InstagramSlide }) {
         maxIntervalMs={3000}
       />
       <CursorGhost
-        color="#f05a28"
+        color="hsl(var(--brand-orange))"
         targets={IG_TARGETS}
         onInteract={handleInteract}
       />

@@ -29,7 +29,7 @@ const STATUS_COLORS: Record<string, string> = {
   DRAFT:
     "bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-300",
   SCHEDULED:
-    "bg-indigo-500/15 border-indigo-500/30 text-indigo-700 dark:text-indigo-300",
+    "bg-brand-orange/15 border-brand-orange/30 text-brand-orange dark:text-brand-orange",
   PUBLISHED:
     "bg-emerald-500/15 border-emerald-500/30 text-emerald-700 dark:text-emerald-300",
   FAILED: "bg-rose-500/15 border-rose-500/30 text-rose-700 dark:text-rose-300",

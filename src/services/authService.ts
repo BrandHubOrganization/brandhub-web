@@ -5,9 +5,7 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
 
 /** URL redirect trực tiếp sang backend OAuth flow — dùng làm href, không phải axios call. */
-export function oauthUrl(
-  provider: "google" | "github" | "linkedin" | "microsoft",
-): string {
+export function oauthUrl(provider: "google"): string {
   return `${API_BASE_URL}/api/v1/auth/oauth/${provider}`;
 }
 
@@ -64,6 +62,7 @@ export interface MeResponse {
   phone?: string | null;
   hasPassword?: boolean;
   linkedProviders?: string[];
+  twoFactorEnabled?: boolean;
 }
 
 export interface UserProfileResponse {
@@ -87,6 +86,21 @@ export interface LoginResponse {
   accessToken: string;
   tokenType: string;
   expiresIn: number;
+  requireTwoFactor?: boolean;
+  twoFactorToken?: string;
+}
+
+export interface TwoFactorSetupResponse {
+  qrCodeUrl: string;
+}
+
+export interface TwoFactorConfirmRequest {
+  code: string;
+}
+
+export interface TwoFactorVerifyRequest {
+  twoFactorToken: string;
+  code: string;
 }
 
 export interface RegisterResponse {
@@ -147,4 +161,23 @@ export const authService = {
 
   getProfile: () =>
     api.get<ApiResponse<UserProfileResponse>>("/api/v1/users/me"),
+
+  setupTwoFactor: () =>
+    api.post<ApiResponse<TwoFactorSetupResponse>>("/api/v1/auth/2fa/setup"),
+
+  confirmTwoFactor: (code: string) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/2fa/confirm", {
+      code,
+    } satisfies TwoFactorConfirmRequest),
+
+  disableTwoFactor: (code: string) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/2fa/disable", {
+      code,
+    } satisfies TwoFactorConfirmRequest),
+
+  verifyTwoFactor: (twoFactorToken: string, code: string) =>
+    api.post<ApiResponse<LoginResponse>>("/api/v1/auth/2fa/verify", {
+      twoFactorToken,
+      code,
+    } satisfies TwoFactorVerifyRequest),
 };

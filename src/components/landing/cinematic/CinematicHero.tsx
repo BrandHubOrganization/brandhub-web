@@ -1197,7 +1197,7 @@ function OverviewPage({ device }: { device: "macbook" | "iphone" }) {
               className="size-16 shrink-0 rounded-full"
               style={{
                 background:
-                  "conic-gradient(#f05a28 0 29%, #ff6b35 0 57%, #eab308 0 78%, #f0783a 0 100%)",
+                  "conic-gradient(hsl(var(--brand-orange)) 0 29%, #ff6b35 0 57%, #eab308 0 78%, #f0783a 0 100%)",
               }}
             />
             <div className="flex flex-1 flex-col gap-1">
@@ -1852,7 +1852,11 @@ function TimelineNotion({
 }
 
 const CALENDAR_CHANNEL_CONFIG = {
-  instagram: { icon: InstagramGlyph, color: "#f05a28", label: "Instagram" },
+  instagram: {
+    icon: InstagramGlyph,
+    color: "hsl(var(--brand-orange))",
+    label: "Instagram",
+  },
   tiktok: { icon: TikTokGlyph, color: "#ff6b35", label: "TikTok" },
   facebook: { icon: FacebookGlyph, color: "#ea4a1c", label: "Facebook" },
   linkedin: { icon: LinkedInGlyph, color: "#f0783a", label: "LinkedIn" },
@@ -2068,8 +2072,16 @@ function AnimatedLineChart() {
     <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="h-full w-full">
       <defs>
         <linearGradient id="chartAreaFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f05a28" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#f05a28" stopOpacity="0" />
+          <stop
+            offset="0%"
+            stopColor="hsl(var(--brand-orange))"
+            stopOpacity="0.35"
+          />
+          <stop
+            offset="100%"
+            stopColor="hsl(var(--brand-orange))"
+            stopOpacity="0"
+          />
         </linearGradient>
       </defs>
       {[20, 45, 70, 95].map((y) => (
@@ -2093,7 +2105,7 @@ function AnimatedLineChart() {
         className="chart-line"
         d={pts}
         fill="none"
-        stroke="#f05a28"
+        stroke="hsl(var(--brand-orange))"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -2104,7 +2116,7 @@ function AnimatedLineChart() {
           cx={+p.split(",")[0]}
           cy={+p.split(",")[1]}
           r="3"
-          fill="#f05a28"
+          fill="hsl(var(--brand-orange))"
           className="chart-dot"
         />
       ))}
@@ -2479,7 +2491,7 @@ const PUBLISH_CHANNELS = [
     key: "instagram",
     icon: InstagramGlyph,
     label: "Instagram",
-    color: "#f05a28",
+    color: "hsl(var(--brand-orange))",
     scheduled: "Hôm nay 09:00",
   },
   {
@@ -2540,7 +2552,7 @@ const WORKSPACES: Workspace[] = [
     id: 1,
     name: "VCorp Media",
     client: "Nguyễn Văn Minh",
-    color: "#f05a28",
+    color: "hsl(var(--brand-orange))",
     members: 5,
     docs: 142,
     lastActive: "2 giờ trước",
@@ -2859,7 +2871,7 @@ function WorkspacePage({ device }: { device: "macbook" | "iphone" }) {
         id: Date.now(),
         name: t("landing.heroDemo.workspace.newWorkspace"),
         client: t("landing.heroDemo.workspace.newClient"),
-        color: "#f05a28",
+        color: "hsl(var(--brand-orange))",
         members: 1,
         docs: 0,
         lastActive: t("landing.heroDemo.common.justCreated"),

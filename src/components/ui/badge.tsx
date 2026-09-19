@@ -25,9 +25,9 @@ const badgeVariants = cva(
         pending_review:
           "border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
         APPROVED:
-          "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300",
+          "border-transparent bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
         approved:
-          "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300",
+          "border-transparent bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
         SCHEDULED:
           "border-transparent bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/10 dark:text-brand-orange",
         scheduled:

@@ -27,7 +27,7 @@ const STATUS_BADGE_MAP: Record<ContentRequestStatus, { className: string }> = {
   },
   ASSIGNED: {
     className:
-      "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800",
+      "bg-slate-100 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800",
   },
   IN_PROGRESS: {
     className:
