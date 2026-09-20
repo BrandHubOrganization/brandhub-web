@@ -270,7 +270,10 @@ export function ClientProfilePage() {
               <label className="text-muted-foreground mb-1 block text-xs font-medium">
                 {t("clientProfile.noteLabel")}
               </label>
-              <Textarea value={note} onChange={(e) => setNote(e.target.value)} />
+              <Textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+              />
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={handleCancelEdit}>

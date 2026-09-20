@@ -204,7 +204,11 @@ export function ProfilePage() {
                   <Button variant="outline" onClick={handleCancelEdit}>
                     {t("profile.cancelEdit")}
                   </Button>
-                  <Button variant="orange" onClick={handleSave} loading={saving}>
+                  <Button
+                    variant="orange"
+                    onClick={handleSave}
+                    loading={saving}
+                  >
                     {t("settings.profile.save")}
                   </Button>
                 </div>
@@ -217,7 +221,9 @@ export function ProfilePage() {
                     <p className="text-muted-foreground text-3xs">
                       {t("profile.view.roleLabel")}
                     </p>
-                    <p className="text-foreground text-xs font-medium">{role}</p>
+                    <p className="text-foreground text-xs font-medium">
+                      {role}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2.5">
