@@ -6,15 +6,19 @@ export interface UserProfileResponse {
   email: string;
   fullName: string;
   avatarUrl: string | null;
+  phone: string | null;
   role: string;
   workspaceId: string | null;
+  timezone: string | null;
+  notificationPreferences: Record<string, unknown> | null;
   createdAt: string;
 }
 
 export interface UpdateProfileRequest {
   fullName: string;
-  timezone: string;
-  notificationPreferences: Record<string, unknown>;
+  phone?: string;
+  timezone?: string;
+  notificationPreferences?: Record<string, unknown>;
 }
 
 export interface AvatarResponse {

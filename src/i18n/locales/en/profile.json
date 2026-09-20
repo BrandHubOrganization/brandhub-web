@@ -14,6 +14,7 @@
   },
   "editButton": "Edit profile",
   "cancelEdit": "Cancel",
+  "saveError": "Unable to save profile",
   "view": {
     "roleLabel": "Role",
     "workspaceLabel": "Workspace",
