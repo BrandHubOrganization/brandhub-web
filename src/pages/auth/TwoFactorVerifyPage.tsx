@@ -22,7 +22,9 @@ export function TwoFactorVerifyPage() {
   const [loading, setLoading] = React.useState(false);
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
-  const twoFactorToken = sessionStorage.getItem(TOKEN_KEY);
+  const twoFactorToken =
+    new URLSearchParams(window.location.search).get("twoFactorToken") ??
+    sessionStorage.getItem(TOKEN_KEY);
 
   React.useEffect(() => {
     if (!twoFactorToken) navigate("/login", { replace: true });
