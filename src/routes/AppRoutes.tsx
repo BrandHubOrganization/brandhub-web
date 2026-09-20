@@ -49,6 +49,7 @@ import { ReportsPage } from "@/pages/reports";
 import { NotificationSettingsPage } from "@/pages/notification-settings";
 import { SecurityPage } from "@/pages/security";
 import { ProfilePage } from "@/pages/profile";
+import { ClientProfilePage } from "@/pages/client-profile";
 import { VideoStudioPage } from "@/pages/ai-studio/video";
 import ExamplesPage from "@/components/examples";
 
@@ -84,10 +85,16 @@ export function AppRoutes() {
             element={<WorkspaceMembersPage />}
           />
           <Route path="/invitations" element={<InvitationsPage />} />
-          <Route path="/invitations/accept" element={<AcceptInvitationPage />} />
+          <Route
+            path="/invitations/accept"
+            element={<AcceptInvitationPage />}
+          />
           <Route path="/agency" element={<AgencyPage />} />
           <Route path="/agency/create" element={<CreateAgencyPage />} />
-          <Route path="/agency/invitations" element={<AgencyInvitationsPage />} />
+          <Route
+            path="/agency/invitations"
+            element={<AgencyInvitationsPage />}
+          />
           <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
@@ -125,6 +132,7 @@ export function AppRoutes() {
           />
           <Route path="/security" element={<SecurityPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/client-profile" element={<ClientProfilePage />} />
           <Route path="/ai-studio/video" element={<VideoStudioPage />} />
           <Route path="/components/examples" element={<ExamplesPage />} />
         </Route>

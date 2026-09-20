@@ -25,6 +25,7 @@ import viReports from "./locales/vi/reports.json";
 import viNotifications from "./locales/vi/notifications.json";
 import viSecurity from "./locales/vi/security.json";
 import viProfile from "./locales/vi/profile.json";
+import viClientProfile from "./locales/vi/clientProfile.json";
 import viAgency from "./locales/vi/agency.json";
 
 import enAuth from "./locales/en/auth.json";
@@ -51,6 +52,7 @@ import enReports from "./locales/en/reports.json";
 import enNotifications from "./locales/en/notifications.json";
 import enSecurity from "./locales/en/security.json";
 import enProfile from "./locales/en/profile.json";
+import enClientProfile from "./locales/en/clientProfile.json";
 import enAgency from "./locales/en/agency.json";
 
 const vi = {
@@ -78,6 +80,7 @@ const vi = {
   notifications: viNotifications,
   security: viSecurity,
   profile: viProfile,
+  clientProfile: viClientProfile,
   agency: viAgency,
 };
 
@@ -106,6 +109,7 @@ const en = {
   notifications: enNotifications,
   security: enSecurity,
   profile: enProfile,
+  clientProfile: enClientProfile,
   agency: enAgency,
 };
 

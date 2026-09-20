@@ -1,0 +1,21 @@
+{
+  "title": "Hồ sơ Client",
+  "description": "Thông tin mà các Agency khác nhìn thấy khi bạn tham gia với vai trò Client.",
+  "notFound": "Bạn chưa có hồ sơ Client. Hồ sơ sẽ được tạo khi bạn chấp nhận lời mời Client đầu tiên.",
+  "displayNameLabel": "Tên hiển thị",
+  "companyLabel": "Công ty",
+  "phoneLabel": "Số điện thoại",
+  "noteLabel": "Ghi chú",
+  "logoUrlLabel": "Logo URL",
+  "websiteLabel": "Website",
+  "industryLabel": "Ngành nghề",
+  "locationLabel": "Địa điểm",
+  "descriptionLabel": "Mô tả công ty",
+  "linkedinLabel": "LinkedIn",
+  "facebookLabel": "Facebook",
+  "editButton": "Chỉnh sửa",
+  "cancelEdit": "Hủy",
+  "save": "Lưu",
+  "saveSuccess": "Đã cập nhật hồ sơ Client",
+  "saveError": "Không thể lưu hồ sơ Client"
+}
