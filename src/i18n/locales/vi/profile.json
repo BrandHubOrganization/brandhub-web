@@ -10,7 +10,8 @@
     "supportedFormats": "PNG, JPG tối đa 5MB",
     "cancel": "Hủy",
     "save": "Lưu ảnh đại diện",
-    "uploadSuccess": "Cập nhật ảnh đại diện thành công"
+    "uploadSuccess": "Cập nhật ảnh đại diện thành công",
+    "uploadError": "Không thể tải ảnh đại diện"
   },
   "editButton": "Chỉnh sửa hồ sơ",
   "cancelEdit": "Hủy",
@@ -30,13 +31,6 @@
     "phonePlaceholder": "0912 345 678",
     "jobTitleLabel": "Chức danh",
     "jobTitlePlaceholder": "VD: Content Director"
-  },
-  "identity": {
-    "title": "Xác minh danh tính",
-    "status": "Đã xác minh",
-    "verified": "Đã xác nhận",
-    "selfieLabel": "Ảnh chụp mặt",
-    "retakeButton": "Chụp lại ảnh"
   },
   "danger": {
     "title": "Vùng nguy hiểm",

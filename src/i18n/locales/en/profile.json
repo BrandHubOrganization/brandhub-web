@@ -10,7 +10,8 @@
     "supportedFormats": "PNG, JPG up to 5MB",
     "cancel": "Cancel",
     "save": "Save avatar",
-    "uploadSuccess": "Avatar updated successfully"
+    "uploadSuccess": "Avatar updated successfully",
+    "uploadError": "Unable to upload avatar"
   },
   "editButton": "Edit profile",
   "cancelEdit": "Cancel",
@@ -30,13 +31,6 @@
     "phonePlaceholder": "0912 345 678",
     "jobTitleLabel": "Job title",
     "jobTitlePlaceholder": "e.g. Content Director"
-  },
-  "identity": {
-    "title": "Identity Verification",
-    "status": "Verified",
-    "verified": "Confirmed",
-    "selfieLabel": "Face photo",
-    "retakeButton": "Retake photo"
   },
   "danger": {
     "title": "Danger Zone",

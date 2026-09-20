@@ -9,11 +9,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { userService } from "@/services/userService";
+import { extractErrorMessage } from "@/utils/error";
 
 interface AvatarUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (previewUrl: string) => void;
+  onSave: (avatarUrl: string) => void;
 }
 
 export function AvatarUploadModal({
@@ -24,10 +26,13 @@ export function AvatarUploadModal({
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleFile = (file: File) => {
     if (!file.type.startsWith("image/")) return;
+    setFile(file);
     setPreviewUrl(URL.createObjectURL(file));
   };
 
@@ -40,15 +45,25 @@ export function AvatarUploadModal({
 
   const handleClose = () => {
     setPreviewUrl(null);
+    setFile(null);
     onClose();
   };
 
-  const handleSave = () => {
-    if (!previewUrl) return;
-    onSave(previewUrl);
-    toast.success(t("profile.avatar.uploadSuccess"));
-    setPreviewUrl(null);
-    onClose();
+  const handleSave = async () => {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const res = await userService.uploadAvatar(file);
+      onSave(res.data.data.avatarUrl);
+      toast.success(t("profile.avatar.uploadSuccess"));
+      setPreviewUrl(null);
+      setFile(null);
+      onClose();
+    } catch (err) {
+      toast.error(extractErrorMessage(err, t("profile.avatar.uploadError")));
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -115,7 +130,12 @@ export function AvatarUploadModal({
           <Button variant="outline" onClick={handleClose}>
             {t("profile.avatar.cancel")}
           </Button>
-          <Button variant="orange" disabled={!previewUrl} onClick={handleSave}>
+          <Button
+            variant="orange"
+            disabled={!file || uploading}
+            loading={uploading}
+            onClick={handleSave}
+          >
             {t("profile.avatar.save")}
           </Button>
         </div>

@@ -7,8 +7,6 @@ import {
   Calendar,
   Camera,
   Clock,
-  FileCheck2,
-  IdCard,
   Pencil,
   Phone,
   ShieldCheck,
@@ -95,6 +93,11 @@ export function ProfilePage() {
     setName(user?.name ?? "");
     setPhone(user?.phone ?? "");
     setIsEditing(false);
+  };
+
+  const handleAvatarUploaded = (url: string) => {
+    setAvatarUrl(url);
+    if (user) setUser({ ...user, avatar: url });
   };
 
   const handleDeactivate = async () => {
@@ -255,36 +258,6 @@ export function ProfilePage() {
               </div>
             )}
           </div>
-
-          <div className="border-border bg-card rounded-xl border p-6">
-            <div className="border-border flex items-center justify-between border-b pb-3">
-              <div className="flex items-center gap-2">
-                <IdCard className="text-brand-orange size-5" />
-                <h3 className="text-foreground text-sm font-semibold">
-                  {t("profile.identity.title")}
-                </h3>
-              </div>
-              <span className="text-3xs inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-700">
-                <FileCheck2 className="size-3" />
-                {t("profile.identity.status")}
-              </span>
-            </div>
-            <div className="mt-3 space-y-2">
-              <div className="border-border flex items-center justify-between rounded-lg border px-3 py-2.5">
-                <span className="text-foreground flex items-center gap-2 text-xs font-medium">
-                  <Camera className="text-muted-foreground size-3.5" />
-                  {t("profile.identity.selfieLabel")}
-                </span>
-                <span className="text-2xs text-emerald-600">
-                  {t("profile.identity.verified")}
-                </span>
-              </div>
-              <Button variant="outline" size="sm" className="mt-2 gap-1.5">
-                <Camera className="size-3.5" />
-                {t("profile.identity.retakeButton")}
-              </Button>
-            </div>
-          </div>
         </div>
 
         <div className="border-border bg-card rounded-xl border border-red-200 p-6 dark:border-red-900/50">
@@ -349,7 +322,7 @@ export function ProfilePage() {
       <AvatarUploadModal
         isOpen={avatarModalOpen}
         onClose={() => setAvatarModalOpen(false)}
-        onSave={setAvatarUrl}
+        onSave={handleAvatarUploaded}
       />
     </PageWrapper>
   );
