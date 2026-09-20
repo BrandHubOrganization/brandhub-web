@@ -64,7 +64,9 @@ export function LoginPage() {
 
       setAuth(realUser, accessToken);
       toast.success(t("auth.login.successToast"));
-      navigate("/dashboard");
+      // Temporary: /dashboard gate needs workspace memberRole (empty for fresh login).
+      // navigate("/dashboard");
+      navigate("/");
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("auth.login.errorDefault")));
     } finally {
