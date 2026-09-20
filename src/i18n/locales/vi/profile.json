@@ -44,8 +44,10 @@
     "deactivateButton": "Vô hiệu hóa tài khoản",
     "confirmTitle": "Vô hiệu hóa tài khoản?",
     "confirmBody": "Bạn sẽ không thể đăng nhập cho đến khi kích hoạt lại. Hành động này có thể hoàn tác bằng cách đăng nhập lại.",
+    "passwordPlaceholder": "Nhập mật khẩu để xác nhận",
     "cancel": "Hủy",
     "confirmDeactivate": "Xác nhận vô hiệu hóa",
+    "deactivateError": "Không thể vô hiệu hóa tài khoản",
     "deactivateSuccess": "Tài khoản đã bị vô hiệu hóa"
   }
 }

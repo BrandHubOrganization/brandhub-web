@@ -103,6 +103,10 @@ export interface TwoFactorVerifyRequest {
   code: string;
 }
 
+export interface DeactivateRequest {
+  password: string;
+}
+
 export interface RegisterResponse {
   userId: string;
 }
@@ -180,4 +184,9 @@ export const authService = {
       twoFactorToken,
       code,
     } satisfies TwoFactorVerifyRequest),
+
+  deactivate: (password: string) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/deactivate", {
+      password,
+    } satisfies DeactivateRequest),
 };

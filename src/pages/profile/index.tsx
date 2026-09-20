@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
   BadgeCheck,
@@ -18,17 +19,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/authStore";
 import { userService } from "@/services/userService";
+import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
 import type { User } from "@/types/user";
 import { AvatarUploadModal } from "./components/AvatarUploadModal";
 
 export function ProfilePage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deactivateOpen, setDeactivateOpen] = useState(false);
+  const [deactivatePassword, setDeactivatePassword] = useState("");
+  const [deactivating, setDeactivating] = useState(false);
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
 
   const [name, setName] = useState(user?.name ?? "");
@@ -90,6 +95,20 @@ export function ProfilePage() {
     setName(user?.name ?? "");
     setPhone(user?.phone ?? "");
     setIsEditing(false);
+  };
+
+  const handleDeactivate = async () => {
+    setDeactivating(true);
+    try {
+      await authService.deactivate(deactivatePassword);
+      useAuthStore.getState().logout();
+      navigate("/login");
+    } catch (err) {
+      toast.error(
+        extractErrorMessage(err, t("profile.danger.deactivateError")),
+      );
+      setDeactivating(false);
+    }
   };
 
   return (
@@ -299,6 +318,12 @@ export function ProfilePage() {
             <p className="text-muted-foreground text-xs">
               {t("profile.danger.confirmBody")}
             </p>
+            <Input
+              type="password"
+              value={deactivatePassword}
+              onChange={(e) => setDeactivatePassword(e.target.value)}
+              placeholder={t("profile.danger.passwordPlaceholder")}
+            />
             <div className="flex justify-end gap-2">
               <Button
                 variant="outline"
@@ -310,10 +335,9 @@ export function ProfilePage() {
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={() => {
-                  setDeactivateOpen(false);
-                  toast.success(t("profile.danger.deactivateSuccess"));
-                }}
+                loading={deactivating}
+                disabled={!deactivatePassword || deactivating}
+                onClick={handleDeactivate}
               >
                 {t("profile.danger.confirmDeactivate")}
               </Button>

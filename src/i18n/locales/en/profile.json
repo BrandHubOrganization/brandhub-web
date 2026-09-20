@@ -44,8 +44,10 @@
     "deactivateButton": "Deactivate account",
     "confirmTitle": "Deactivate account?",
     "confirmBody": "You will not be able to sign in until reactivated. This can be undone by signing back in.",
+    "passwordPlaceholder": "Enter your password to confirm",
     "cancel": "Cancel",
     "confirmDeactivate": "Confirm deactivation",
+    "deactivateError": "Unable to deactivate account",
     "deactivateSuccess": "Account deactivated"
   }
 }
