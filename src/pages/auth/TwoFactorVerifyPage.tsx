@@ -90,7 +90,9 @@ export function TwoFactorVerifyPage() {
       setAuth(realUser, accessToken);
       sessionStorage.removeItem(TOKEN_KEY);
       toast.success(t("auth.twoFactor.successToast"));
-      navigate("/dashboard", { replace: true });
+      // Temporary: /dashboard gate needs workspace memberRole (empty for fresh login).
+      // navigate("/dashboard", { replace: true });
+      navigate("/", { replace: true });
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("auth.twoFactor.errorDefault")));
     } finally {
