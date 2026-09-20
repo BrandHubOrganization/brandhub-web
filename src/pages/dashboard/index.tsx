@@ -90,7 +90,7 @@ export function DashboardPage() {
     >
       <div className="space-y-6">
         {hasAgency === false && (
-          <div className="flex items-center justify-between gap-3 rounded-xl border border-brand-orange/30 bg-brand-orange/5 p-4">
+          <div className="border-brand-orange/30 bg-brand-orange/5 flex items-center justify-between gap-3 rounded-xl border p-4">
             <div>
               <p className="text-sm font-semibold">
                 {t("agency.dashboardCta.title")}

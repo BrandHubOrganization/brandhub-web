@@ -47,7 +47,9 @@ export function AcceptInvitationPage() {
         {status === "success" && (
           <>
             <CheckCircle2 className="mx-auto size-10 text-green-600" />
-            <p className="mt-3 font-semibold">{t("agency.accept.successTitle")}</p>
+            <p className="mt-3 font-semibold">
+              {t("agency.accept.successTitle")}
+            </p>
             <p className="text-muted-foreground mt-1 text-sm">
               {t("agency.accept.redirecting")}
             </p>
@@ -56,7 +58,9 @@ export function AcceptInvitationPage() {
         {status === "error" && (
           <>
             <XCircle className="text-destructive mx-auto size-10" />
-            <p className="mt-3 font-semibold">{t("agency.accept.failedTitle")}</p>
+            <p className="mt-3 font-semibold">
+              {t("agency.accept.failedTitle")}
+            </p>
             <p className="text-muted-foreground mt-1 text-sm">{message}</p>
             <Button
               className="bg-brand-orange hover:bg-brand-orange/90 mt-4 cursor-pointer text-white"

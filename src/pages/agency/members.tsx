@@ -28,7 +28,9 @@ export function AgencyMembersPage() {
       .listMembers(id)
       .then(({ data }) => setMembers(data.data))
       .catch((err: unknown) =>
-        toast.error(extractErrorMessage(err, t("agency.errors.membersLoadFailed"))),
+        toast.error(
+          extractErrorMessage(err, t("agency.errors.membersLoadFailed")),
+        ),
       )
       .finally(() => setLoading(false));
   }, [id, t]);
@@ -124,7 +126,7 @@ export function AgencyMembersPage() {
               </Button>
             </form>
             {inviteLink && (
-              <div className="mt-3 flex items-center gap-2 rounded-lg bg-muted p-2">
+              <div className="bg-muted mt-3 flex items-center gap-2 rounded-lg p-2">
                 <code className="min-w-0 flex-1 truncate text-xs">
                   {inviteLink}
                 </code>
@@ -163,14 +165,14 @@ export function AgencyMembersPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium">
+                    <span className="bg-muted rounded-full px-2 py-0.5 text-xs font-medium">
                       {m.role}
                     </span>
                     {isOwner && m.role !== "OWNER" && (
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="cursor-pointer text-xs text-destructive"
+                        className="text-destructive cursor-pointer text-xs"
                         onClick={() => handleRemove(m.id)}
                       >
                         {t("agency.members.remove")}

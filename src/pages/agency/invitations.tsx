@@ -21,7 +21,9 @@ export function AgencyInvitationsPage() {
       .listMyPendingInvitations()
       .then(({ data }) => setInvitations(data.data))
       .catch((err: unknown) =>
-        toast.error(extractErrorMessage(err, t("agency.errors.invitationsLoadFailed"))),
+        toast.error(
+          extractErrorMessage(err, t("agency.errors.invitationsLoadFailed")),
+        ),
       )
       .finally(() => setLoading(false));
   }, [t]);
