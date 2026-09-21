@@ -12,7 +12,6 @@ import {
   ShieldCheck,
   TriangleAlert,
 } from "lucide-react";
-import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/authStore";
@@ -115,10 +114,15 @@ export function ProfilePage() {
   };
 
   return (
-    <PageWrapper
-      title={t("profile.title")}
-      description={t("profile.description")}
-    >
+    <section id="profile" className="scroll-mt-6">
+      <div className="mb-4">
+        <h2 className="text-foreground text-lg font-semibold">
+          {t("profile.title")}
+        </h2>
+        <p className="text-muted-foreground text-sm">
+          {t("profile.description")}
+        </p>
+      </div>
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <div className="border-border bg-card rounded-xl border p-6">
@@ -330,7 +334,7 @@ export function ProfilePage() {
         onClose={() => setAvatarModalOpen(false)}
         onSave={handleAvatarUploaded}
       />
-    </PageWrapper>
+    </section>
   );
 }
 

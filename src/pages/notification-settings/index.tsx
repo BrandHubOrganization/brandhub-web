@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Mail, Smartphone } from "lucide-react";
-import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -60,10 +59,15 @@ export function NotificationSettingsPage() {
   }
 
   return (
-    <PageWrapper
-      title={t("notifications.settings.title")}
-      description={t("notifications.settings.description")}
-    >
+    <section id="notifications" className="scroll-mt-6">
+      <div className="mb-4">
+        <h2 className="text-foreground text-lg font-semibold">
+          {t("notifications.settings.title")}
+        </h2>
+        <p className="text-muted-foreground text-sm">
+          {t("notifications.settings.description")}
+        </p>
+      </div>
       {isLoading && (
         <div className="space-y-4">
           <Skeleton className="h-40 rounded-xl" />
@@ -165,7 +169,7 @@ export function NotificationSettingsPage() {
           </div>
         </div>
       )}
-    </PageWrapper>
+    </section>
   );
 }
 

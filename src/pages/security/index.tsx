@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { ShieldCheck } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authService } from "@/services/authService";
@@ -72,10 +71,15 @@ export function SecurityPage() {
   };
 
   return (
-    <PageWrapper
-      title={t("security.title")}
-      description={t("security.description")}
-    >
+    <section id="security" className="scroll-mt-6">
+      <div className="mb-4">
+        <h2 className="text-foreground text-lg font-semibold">
+          {t("security.title")}
+        </h2>
+        <p className="text-muted-foreground text-sm">
+          {t("security.description")}
+        </p>
+      </div>
       <div className="border-border bg-card max-w-2xl rounded-xl border p-6">
         <div className="border-border flex items-center gap-3 border-b pb-4">
           <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-2">
@@ -211,7 +215,7 @@ export function SecurityPage() {
           </div>
         )}
       </div>
-    </PageWrapper>
+    </section>
   );
 }
 
