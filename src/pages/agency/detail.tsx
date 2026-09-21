@@ -9,7 +9,7 @@ import {
   IdCard,
   Instagram,
   Linkedin,
-  Facebook,
+  Link2,
   MapPin,
   Pencil,
   Phone,
@@ -32,7 +32,12 @@ import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
 import { AGENCY_CATEGORIES, COMPANY_SIZES } from "@/pages/agency/constants";
 import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
-import type { Agency, AgencyCategory, AgencyMember, CompanySize } from "@/types/agency";
+import type {
+  Agency,
+  AgencyCategory,
+  AgencyMember,
+  CompanySize,
+} from "@/types/agency";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -268,9 +273,7 @@ export function AgencyDetailPage() {
                     <div
                       className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg"
                       style={{
-                        background: logoUrl
-                          ? undefined
-                          : `${brandColor}1a`,
+                        background: logoUrl ? undefined : `${brandColor}1a`,
                       }}
                     >
                       {logoUrl ? (
@@ -514,7 +517,7 @@ export function AgencyDetailPage() {
                         rel="noreferrer"
                         className="text-muted-foreground hover:text-foreground"
                       >
-                        <Facebook className="size-4" />
+                        <Link2 className="size-4" />
                       </a>
                     )}
                     {agency.linkedinUrl && (
@@ -608,10 +611,7 @@ export function AgencyDetailPage() {
             ) : (
               <div className="divide-y">
                 {members.slice(0, 5).map((m) => (
-                  <div
-                    key={m.id}
-                    className="flex items-center gap-3 p-3"
-                  >
+                  <div key={m.id} className="flex items-center gap-3 p-3">
                     {m.avatarUrl ? (
                       <img
                         src={m.avatarUrl}
@@ -630,7 +630,7 @@ export function AgencyDetailPage() {
                     </div>
                     <span
                       className={cn(
-                        "rounded-full px-2 py-0.5 text-2xs font-semibold",
+                        "text-2xs rounded-full px-2 py-0.5 font-semibold",
                         m.role === "OWNER"
                           ? "bg-brand-orange-soft text-brand-orange"
                           : "bg-muted text-muted-foreground",

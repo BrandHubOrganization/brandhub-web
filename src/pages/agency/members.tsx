@@ -49,7 +49,10 @@ export function AgencyMembersPage() {
 
   const load = useCallback(() => {
     if (!id) return;
-    Promise.all([agencyService.listMembers(id), agencyService.listInvitations(id)])
+    Promise.all([
+      agencyService.listMembers(id),
+      agencyService.listInvitations(id),
+    ])
       .then(([membersRes, invitationsRes]) => {
         const memberRows: MemberRow[] = membersRes.data.data.map((m) => ({
           id: m.id,

@@ -24,7 +24,5 @@ export const LOGO_ICON_OPTIONS: LogoIconOption[] = [
 ];
 
 export function getLogoIcon(name: string | null | undefined): LucideIcon {
-  return (
-    LOGO_ICON_OPTIONS.find((o) => o.name === name)?.Icon ?? Building2
-  );
+  return LOGO_ICON_OPTIONS.find((o) => o.name === name)?.Icon ?? Building2;
 }
