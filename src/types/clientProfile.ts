@@ -1,6 +1,7 @@
 export interface ClientProfile {
   id: string;
   userId: string;
+  agencyId: string;
   displayName: string;
   company: string | null;
   phone: string | null;

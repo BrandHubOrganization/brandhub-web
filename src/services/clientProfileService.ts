@@ -6,9 +6,13 @@ import type {
 } from "@/types/clientProfile";
 
 export const clientProfileService = {
-  getMyProfile: () =>
-    api.get<ApiResponse<ClientProfile>>("/api/v1/client-profile/me"),
+  getMyProfile: (agencyId: string) =>
+    api.get<ApiResponse<ClientProfile>>("/api/v1/client-profile/me", {
+      params: { agencyId },
+    }),
 
-  updateMyProfile: (data: UpdateClientProfileRequest) =>
-    api.put<ApiResponse<ClientProfile>>("/api/v1/client-profile/me", data),
+  updateMyProfile: (agencyId: string, data: UpdateClientProfileRequest) =>
+    api.put<ApiResponse<ClientProfile>>("/api/v1/client-profile/me", data, {
+      params: { agencyId },
+    }),
 };

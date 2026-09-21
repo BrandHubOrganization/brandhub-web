@@ -2,6 +2,7 @@
   "title": "Client Profile",
   "description": "The profile other agencies see when you join as a client.",
   "notFound": "You do not have a client profile yet. It is created when you accept your first client invitation.",
+  "missingAgencyId": "Could not determine which Agency you're viewing. Please open this page from a specific Agency's Workspace.",
   "displayNameLabel": "Display name",
   "companyLabel": "Company",
   "phoneLabel": "Phone",

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   Building2,
-  Facebook,
   Globe,
-  Linkedin,
+  Link2,
   Mail,
   MapPin,
   Pencil,
@@ -24,6 +24,8 @@ import { extractErrorMessage } from "@/utils/error";
 export function ClientProfilePage() {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
+  const [searchParams] = useSearchParams();
+  const agencyId = searchParams.get("agencyId");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,9 +43,16 @@ export function ClientProfilePage() {
   const [linkedin, setLinkedin] = useState("");
   const [facebook, setFacebook] = useState("");
 
+  const [missingAgencyId, setMissingAgencyId] = useState(false);
+
   useEffect(() => {
+    if (!agencyId) {
+      setLoading(false);
+      setMissingAgencyId(true);
+      return;
+    }
     clientProfileService
-      .getMyProfile()
+      .getMyProfile(agencyId)
       .then((resp) => {
         const p = resp.data.data;
         setDisplayName(p.displayName);
@@ -60,16 +69,17 @@ export function ClientProfilePage() {
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
-  }, []);
+  }, [agencyId]);
 
   const handleSave = async () => {
+    if (!agencyId) return;
     setSaving(true);
     try {
       const socialLinks: Record<string, string> = {};
       if (linkedin.trim()) socialLinks.linkedin = linkedin.trim();
       if (facebook.trim()) socialLinks.facebook = facebook.trim();
 
-      const resp = await clientProfileService.updateMyProfile({
+      const resp = await clientProfileService.updateMyProfile(agencyId, {
         displayName,
         company: company || undefined,
         phone: phone || undefined,
@@ -106,6 +116,22 @@ export function ClientProfilePage() {
 
   if (loading) return null;
 
+  if (missingAgencyId) {
+    return (
+      <PageWrapper
+        title={t("clientProfile.title")}
+        description={t("clientProfile.description")}
+      >
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-14 text-center">
+          <User className="text-muted-foreground size-10" />
+          <p className="text-muted-foreground text-sm">
+            {t("clientProfile.missingAgencyId")}
+          </p>
+        </div>
+      </PageWrapper>
+    );
+  }
+
   if (notFound) {
     return (
       <PageWrapper
@@ -123,8 +149,8 @@ export function ClientProfilePage() {
   }
 
   const socials = [
-    { url: linkedin, icon: Linkedin, label: t("clientProfile.linkedinLabel") },
-    { url: facebook, icon: Facebook, label: t("clientProfile.facebookLabel") },
+    { url: linkedin, icon: Link2, label: t("clientProfile.linkedinLabel") },
+    { url: facebook, icon: Link2, label: t("clientProfile.facebookLabel") },
   ].filter((s) => s.url);
 
   return (
