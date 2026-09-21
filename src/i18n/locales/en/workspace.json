@@ -4,7 +4,25 @@
     "description": "Set up a new workspace for your team or brand.",
     "nameLabel": "Workspace name",
     "industryLabel": "Industry",
+    "industryPlaceholder": "Select industry",
+    "companySizeLabel": "Company size",
+    "companySizePlaceholder": "Select size",
+    "websiteLabel": "Website",
+    "phoneLabel": "Phone",
+    "locationLabel": "Location",
     "submit": "Create workspace"
+  },
+  "industry": {
+    "FNB": "Food & Beverage",
+    "FASHION": "Fashion",
+    "BEAUTY": "Beauty",
+    "TECHNOLOGY": "Technology",
+    "REAL_ESTATE": "Real Estate",
+    "EDUCATION": "Education",
+    "HEALTHCARE": "Healthcare",
+    "SERVICES": "Services",
+    "RETAIL": "Retail",
+    "OTHER": "Other"
   },
   "settings": {
     "title": "Workspace settings",

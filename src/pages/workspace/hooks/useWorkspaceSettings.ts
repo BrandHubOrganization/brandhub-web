@@ -5,7 +5,11 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { workspaceService } from "@/services/workspaceService";
 import { extractErrorMessage } from "@/utils/error";
-import type { ReportFrequency } from "@/types/workspace";
+import type {
+  CompanySize,
+  ReportFrequency,
+  WorkspaceIndustry,
+} from "@/types/workspace";
 
 export const MAX_LOGO_SIZE = 5 * 1024 * 1024;
 export const ACCEPTED_LOGO_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -24,6 +28,11 @@ export function useWorkspaceSettings() {
   const [reportFrequency, setReportFrequency] =
     useState<ReportFrequency | null>(null);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [industry, setIndustry] = useState<WorkspaceIndustry | "">("");
+  const [companySize, setCompanySize] = useState<CompanySize | "">("");
+  const [website, setWebsite] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
   const [canManage, setCanManage] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -39,6 +48,11 @@ export function useWorkspaceSettings() {
           setTimezone(data.data.settings.timezone);
         setDefaultPlatforms(data.data.settings.defaultPlatforms ?? []);
         setReportFrequency(data.data.settings.reportFrequency ?? null);
+        setIndustry(data.data.industry ?? "");
+        setCompanySize(data.data.companySize ?? "");
+        setWebsite(data.data.website ?? "");
+        setPhone(data.data.phone ?? "");
+        setLocation(data.data.location ?? "");
       })
       .catch((err: unknown) =>
         toast.error(extractErrorMessage(err, t("common.loadFailed"))),
@@ -102,6 +116,11 @@ export function useWorkspaceSettings() {
         timezone,
         defaultPlatforms,
         reportFrequency: reportFrequency ?? undefined,
+        industry: industry || undefined,
+        companySize: companySize || undefined,
+        website: website.trim() || undefined,
+        phone: phone.trim() || undefined,
+        location: location.trim() || undefined,
       });
       toast.success(t("workspace.settings.saveSuccess"));
     } catch (err: unknown) {
@@ -122,6 +141,16 @@ export function useWorkspaceSettings() {
     defaultPlatforms,
     reportFrequency,
     logoUrl,
+    industry,
+    setIndustry,
+    companySize,
+    setCompanySize,
+    website,
+    setWebsite,
+    phone,
+    setPhone,
+    location,
+    setLocation,
     canManage,
     uploadingLogo,
     fileInputRef,

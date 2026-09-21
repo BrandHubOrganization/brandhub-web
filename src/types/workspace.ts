@@ -1,3 +1,7 @@
+import type { CompanySize } from "@/types/agency";
+
+export type { CompanySize };
+
 export type MemberRole = "OWNER" | "MANAGER" | "CREATOR" | "CLIENT";
 
 export type WorkspaceIndustry =
@@ -28,6 +32,11 @@ export interface Workspace {
   ownerId: string;
   logoUrl: string | null;
   settings: WorkspaceSettings;
+  industry: WorkspaceIndustry | null;
+  companySize: CompanySize | null;
+  website: string | null;
+  phone: string | null;
+  location: string | null;
   isActive: boolean;
   createdAt: string;
 }

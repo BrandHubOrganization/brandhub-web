@@ -2,6 +2,7 @@ import { api } from "./api";
 import type { ApiResponse } from "./authService";
 import type {
   AuditLogEntry,
+  CompanySize,
   ManagedAuditLogEntry,
   ManagedWorkspace,
   MemberRole,
@@ -16,6 +17,10 @@ import type {
 export interface CreateWorkspaceRequest {
   name: string;
   industry?: WorkspaceIndustry;
+  companySize?: CompanySize;
+  website?: string;
+  phone?: string;
+  location?: string;
 }
 
 export interface UpdateWorkspaceSettingsRequest {
@@ -23,6 +28,11 @@ export interface UpdateWorkspaceSettingsRequest {
   timezone?: string;
   defaultPlatforms?: string[];
   reportFrequency?: ReportFrequency;
+  industry?: WorkspaceIndustry;
+  companySize?: CompanySize;
+  website?: string;
+  phone?: string;
+  location?: string;
 }
 
 export interface InviteMemberRequest {

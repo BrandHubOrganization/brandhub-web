@@ -4,7 +4,25 @@
     "description": "Thiết lập không gian làm việc mới cho đội nhóm hoặc thương hiệu của bạn.",
     "nameLabel": "Tên không gian làm việc",
     "industryLabel": "Ngành hàng",
+    "industryPlaceholder": "Chọn ngành hàng",
+    "companySizeLabel": "Quy mô công ty",
+    "companySizePlaceholder": "Chọn quy mô",
+    "websiteLabel": "Website",
+    "phoneLabel": "Số điện thoại",
+    "locationLabel": "Khu vực hoạt động",
     "submit": "Tạo không gian làm việc"
+  },
+  "industry": {
+    "FNB": "Ẩm thực & Đồ uống",
+    "FASHION": "Thời trang",
+    "BEAUTY": "Làm đẹp",
+    "TECHNOLOGY": "Công nghệ",
+    "REAL_ESTATE": "Bất động sản",
+    "EDUCATION": "Giáo dục",
+    "HEALTHCARE": "Y tế & Sức khỏe",
+    "SERVICES": "Dịch vụ",
+    "RETAIL": "Bán lẻ",
+    "OTHER": "Khác"
   },
   "settings": {
     "title": "Cài đặt không gian làm việc",
