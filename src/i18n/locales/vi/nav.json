@@ -14,6 +14,7 @@
   "editor": "Trình soạn Nội dung",
   "calendar": "Lịch",
   "workspace": "Không gian làm việc",
+  "createWorkspace": "Tạo Workspace",
   "members": "Thành viên",
   "invitations": "Lời mời",
   "portal": "Cổng Khách hàng",
@@ -28,6 +29,8 @@
   "aiStudio": "AI Studio",
   "reports": "Báo cáo",
   "clients": "Thương hiệu Khách hàng",
+  "agency": "Công ty (Agency)",
+  "clientProfile": "Hồ sơ Thương hiệu",
   "settings": "Thiết lập",
   "sections": {
     "overview": "Tổng quan",
@@ -46,5 +49,6 @@
   "roleLabel": "Vai trò: {{role}}",
   "roleLabelPrefix": "Vai trò:",
   "profile": "Hồ sơ",
-  "security": "Bảo mật"
+  "security": "Bảo mật",
+  "settings": "Cài đặt"
 }

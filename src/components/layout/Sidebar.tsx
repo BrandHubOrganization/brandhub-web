@@ -10,9 +10,11 @@ import {
   ShieldAlert,
   ChevronDown,
   FolderKanban,
+  FolderPlus,
   LayoutTemplate,
   Hash,
   UserPlus,
+  Mail,
   Send,
   Link2,
   CreditCard,
@@ -73,6 +75,13 @@ const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.manage",
     items: [
       { to: "/workspace", icon: FolderOpen, labelKey: "nav.workspace" },
+      {
+        to: "/workspaces/create",
+        icon: FolderPlus,
+        labelKey: "nav.createWorkspace",
+      },
+      { to: "/agency", icon: Building2, labelKey: "nav.agency" },
+      { to: "/invitations", icon: Mail, labelKey: "nav.invitations" },
       { to: "/clients", icon: Building2, labelKey: "nav.clients" },
       { to: "/portal", icon: Users, labelKey: "nav.portal" },
       {

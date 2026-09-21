@@ -7,19 +7,15 @@ import {
   ChevronDown,
   Clock,
   Globe,
-  IdCard,
   Info,
   LogOut,
-  Mail,
   Menu,
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
   Shield,
-  ShieldCheck,
   Sun,
-  User as UserIcon,
   XCircle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -348,68 +344,31 @@ export function Navbar({
 
         <div className="bg-border mx-1 h-4 w-px" />
 
-        {/* User Profile Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 outline-none">
-            <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
-              {username.charAt(0).toUpperCase()}
-            </div>
-            <span className="text-foreground hidden max-w-[120px] truncate text-xs font-semibold sm:inline">
-              {username}
-            </span>
-            <ChevronDown className="text-muted-foreground size-3.5" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-xs leading-none font-medium">{username}</p>
-                <p className="text-muted-foreground text-2xs leading-none">
-                  {user?.email || t("nav.noEmail")}
-                </p>
-                <p className="text-brand-orange text-3xs pt-1 leading-none font-bold">
-                  {roleLabel}
-                </p>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="cursor-pointer gap-2 text-xs"
-              onClick={() => navigate("/invitations")}
-            >
-              <Mail className="text-muted-foreground size-3.5" />
-              {t("nav.invitations")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate("/profile")}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              <IdCard className="text-muted-foreground size-3.5" />
-              {t("nav.profile")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate("/security")}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              <ShieldCheck className="text-muted-foreground size-3.5" />
-              {t("nav.security")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate("/change-password")}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              <UserIcon className="text-muted-foreground size-3.5" />
-              {t("nav.changePassword")}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="cursor-pointer text-xs text-rose-500 focus:bg-rose-50 focus:text-rose-600 dark:focus:bg-rose-950/50"
-            >
-              <LogOut className="mr-2 size-3.5" />
-              {t("nav.logout")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* User → click thẳng vào Cài đặt, không qua dropdown */}
+        <button
+          type="button"
+          onClick={() => navigate("/settings")}
+          title={t("nav.settings")}
+          className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 transition-colors outline-none"
+        >
+          <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
+            {username.charAt(0).toUpperCase()}
+          </div>
+          <span className="text-foreground hidden max-w-[120px] truncate text-xs font-semibold sm:inline">
+            {username}
+          </span>
+          <Settings className="text-muted-foreground size-3.5 shrink-0" />
+        </button>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8 text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/50"
+          onClick={handleLogout}
+          title={t("nav.logout")}
+        >
+          <LogOut className="size-4" />
+        </Button>
       </div>
     </header>
   );

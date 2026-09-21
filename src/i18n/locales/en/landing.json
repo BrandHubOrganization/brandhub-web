@@ -472,7 +472,8 @@
     "pricing": "Pricing",
     "faq": "FAQ",
     "login": "Sign in",
-    "register": "Sign up"
+    "register": "Sign up",
+    "dashboard": "Go to Dashboard"
   },
   "team": {
     "title": "Development Team",

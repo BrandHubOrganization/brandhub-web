@@ -9,7 +9,6 @@ export type AccessRule = MemberRole[] | "ADMIN";
  * AuthGuard + Sidebar/Layout đọc chung.
  */
 export const ROUTE_ACCESS: Record<string, AccessRule> = {
-  "/change-password": ["OWNER", "MANAGER", "CREATOR", "CLIENT"],
   "/workspace": ["OWNER"],
   "/workspaces/create": ["OWNER"],
   "/social-accounts": ["OWNER"],

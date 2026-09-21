@@ -62,7 +62,7 @@ export function DashboardPage() {
             variant="outline"
             size="sm"
             className="cursor-pointer gap-1.5 text-xs"
-            onClick={() => navigate("/change-password")}
+            onClick={() => navigate("/settings")}
           >
             <KeyRound className="size-3.5" />
             {t("dashboard.page.changePassword")}

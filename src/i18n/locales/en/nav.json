@@ -14,6 +14,7 @@
   "editor": "Content Editor",
   "calendar": "Calendar",
   "workspace": "Workspaces",
+  "createWorkspace": "Create Workspace",
   "members": "Members",
   "invitations": "Invitations",
   "portal": "Client Portal",
@@ -28,6 +29,8 @@
   "aiStudio": "AI Studio",
   "reports": "Reports",
   "clients": "Clients",
+  "agency": "Agency",
+  "clientProfile": "Brand Profile",
   "settings": "Settings",
   "sections": {
     "overview": "Overview",
@@ -46,5 +49,6 @@
   "roleLabel": "Role: {{role}}",
   "roleLabelPrefix": "Role:",
   "profile": "Profile",
-  "security": "Security"
+  "security": "Security",
+  "settings": "Settings"
 }
