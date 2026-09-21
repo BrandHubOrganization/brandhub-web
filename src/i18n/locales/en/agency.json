@@ -6,7 +6,22 @@
     "emptyTitle": "You don't have an agency yet",
     "emptyDescription": "Create an agency to start inviting your team.",
     "emptyButton": "Create your first agency",
-    "manageMembers": "Manage members"
+    "manageMembers": "Manage members",
+    "viewProfile": "View profile"
+  },
+  "detail": {
+    "title": "Agency Profile",
+    "description": "View and update your agency information.",
+    "logoUrlLabel": "Logo URL",
+    "logoUrlPlaceholder": "https://...",
+    "editButton": "Edit",
+    "saveButton": "Save",
+    "cancelButton": "Cancel",
+    "ownerOnlyHint": "Only the owner can edit this agency",
+    "createWorkspaceCta": "Next, create a Workspace to start inviting clients and managing projects.",
+    "back": "Back to agencies",
+    "saveSuccess": "Agency updated",
+    "viewClientProfile": "View brand profile"
   },
   "create": {
     "title": "Create Agency",
@@ -15,9 +30,40 @@
     "namePlaceholder": "Acme Studio",
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "What does your agency do?",
+    "categoryLabel": "Category",
+    "categoryPlaceholder": "Select category",
+    "companySizeLabel": "Company size",
+    "companySizePlaceholder": "Select size",
+    "websiteLabel": "Website",
+    "websitePlaceholder": "https://...",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "+1 555 0100",
+    "locationLabel": "Location",
+    "locationPlaceholder": "San Francisco, CA",
     "cancel": "Cancel",
     "submit": "Create",
     "success": "Agency created"
+  },
+  "category": {
+    "MARKETING": "Marketing",
+    "FNB": "Food & Beverage",
+    "FASHION": "Fashion",
+    "BEAUTY": "Beauty",
+    "TECHNOLOGY": "Technology",
+    "REAL_ESTATE": "Real Estate",
+    "EDUCATION": "Education",
+    "HEALTHCARE": "Healthcare",
+    "RETAIL": "Retail",
+    "FINANCE": "Finance",
+    "ENTERTAINMENT": "Entertainment",
+    "OTHER": "Other"
+  },
+  "companySize": {
+    "SIZE_1_10": "1 - 10 employees",
+    "SIZE_11_50": "11 - 50 employees",
+    "SIZE_51_200": "51 - 200 employees",
+    "SIZE_201_500": "201 - 500 employees",
+    "SIZE_500_PLUS": "500+ employees"
   },
   "members": {
     "title": "Agency Members",
@@ -71,6 +117,8 @@
     "removeFailed": "Failed to remove member",
     "invitationsLoadFailed": "Failed to load invitations",
     "acceptFailed": "Failed to accept invitation",
-    "declineFailed": "Failed to decline invitation"
+    "declineFailed": "Failed to decline invitation",
+    "loadOneFailed": "Failed to load agency",
+    "updateFailed": "Failed to update agency"
   }
 }

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
-import { Building2, Plus, Users } from "lucide-react";
+import { Building2, Eye, Plus, Users } from "lucide-react";
 import { toast } from "sonner";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
@@ -78,15 +78,26 @@ export function AgencyPage() {
                   </p>
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-4 w-full cursor-pointer gap-1.5"
-                onClick={() => navigate(`/agency/${a.id}/members`)}
-              >
-                <Users className="size-3.5" />
-                {t("agency.list.manageMembers")}
-              </Button>
+              <div className="mt-4 flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 cursor-pointer gap-1.5"
+                  onClick={() => navigate(`/agency/${a.id}`)}
+                >
+                  <Eye className="size-3.5" />
+                  {t("agency.list.viewProfile")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 cursor-pointer gap-1.5"
+                  onClick={() => navigate(`/agency/${a.id}/members`)}
+                >
+                  <Users className="size-3.5" />
+                  {t("agency.list.manageMembers")}
+                </Button>
+              </div>
             </div>
           ))}
         </div>

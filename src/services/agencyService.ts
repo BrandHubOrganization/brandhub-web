@@ -1,11 +1,22 @@
 import { api } from "./api";
 import type { ApiResponse } from "./authService";
-import type { Agency, AgencyInvitation, AgencyMember } from "@/types/agency";
+import type {
+  Agency,
+  AgencyCategory,
+  AgencyInvitation,
+  AgencyMember,
+  CompanySize,
+} from "@/types/agency";
 
 export interface CreateAgencyRequest {
   name: string;
   logoUrl?: string;
   description?: string;
+  category?: AgencyCategory;
+  companySize?: CompanySize;
+  website?: string;
+  phone?: string;
+  location?: string;
 }
 
 export interface InviteAgencyMemberRequest {

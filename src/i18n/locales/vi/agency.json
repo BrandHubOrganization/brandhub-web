@@ -6,7 +6,22 @@
     "emptyTitle": "Bạn chưa có công ty nào",
     "emptyDescription": "Tạo một công ty để bắt đầu mời thành viên.",
     "emptyButton": "Tạo công ty đầu tiên",
-    "manageMembers": "Quản lý thành viên"
+    "manageMembers": "Quản lý thành viên",
+    "viewProfile": "Xem hồ sơ"
+  },
+  "detail": {
+    "title": "Hồ sơ công ty",
+    "description": "Xem và cập nhật thông tin công ty.",
+    "logoUrlLabel": "Đường dẫn logo",
+    "logoUrlPlaceholder": "https://...",
+    "editButton": "Sửa",
+    "saveButton": "Lưu",
+    "cancelButton": "Hủy",
+    "ownerOnlyHint": "Chỉ chủ sở hữu mới sửa được công ty này",
+    "createWorkspaceCta": "Tiếp theo, tạo Workspace để bắt đầu mời Client và quản lý dự án.",
+    "back": "Quay lại danh sách công ty",
+    "saveSuccess": "Đã cập nhật công ty",
+    "viewClientProfile": "Xem hồ sơ thương hiệu"
   },
   "create": {
     "title": "Tạo công ty",
@@ -15,9 +30,40 @@
     "namePlaceholder": "Acme Studio",
     "descriptionLabel": "Mô tả",
     "descriptionPlaceholder": "Công ty của bạn làm gì?",
+    "categoryLabel": "Ngành nghề",
+    "categoryPlaceholder": "Chọn ngành nghề",
+    "companySizeLabel": "Quy mô công ty",
+    "companySizePlaceholder": "Chọn quy mô",
+    "websiteLabel": "Website",
+    "websitePlaceholder": "https://...",
+    "phoneLabel": "Số điện thoại",
+    "phonePlaceholder": "0901234567",
+    "locationLabel": "Khu vực hoạt động",
+    "locationPlaceholder": "TP. Hồ Chí Minh",
     "cancel": "Hủy",
     "submit": "Tạo",
     "success": "Đã tạo công ty"
+  },
+  "category": {
+    "MARKETING": "Marketing",
+    "FNB": "Ẩm thực & Đồ uống",
+    "FASHION": "Thời trang",
+    "BEAUTY": "Làm đẹp",
+    "TECHNOLOGY": "Công nghệ",
+    "REAL_ESTATE": "Bất động sản",
+    "EDUCATION": "Giáo dục",
+    "HEALTHCARE": "Y tế & Sức khỏe",
+    "RETAIL": "Bán lẻ",
+    "FINANCE": "Tài chính",
+    "ENTERTAINMENT": "Giải trí",
+    "OTHER": "Khác"
+  },
+  "companySize": {
+    "SIZE_1_10": "1 - 10 nhân sự",
+    "SIZE_11_50": "11 - 50 nhân sự",
+    "SIZE_51_200": "51 - 200 nhân sự",
+    "SIZE_201_500": "201 - 500 nhân sự",
+    "SIZE_500_PLUS": "Trên 500 nhân sự"
   },
   "members": {
     "title": "Thành viên công ty",
@@ -71,6 +117,8 @@
     "removeFailed": "Xóa thành viên thất bại",
     "invitationsLoadFailed": "Tải lời mời thất bại",
     "acceptFailed": "Chấp nhận lời mời thất bại",
-    "declineFailed": "Từ chối lời mời thất bại"
+    "declineFailed": "Từ chối lời mời thất bại",
+    "loadOneFailed": "Tải thông tin công ty thất bại",
+    "updateFailed": "Cập nhật công ty thất bại"
   }
 }
