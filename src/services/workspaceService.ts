@@ -16,6 +16,7 @@ import type {
 
 export interface CreateWorkspaceRequest {
   name: string;
+  agencyId: string;
   industry?: WorkspaceIndustry;
   companySize?: CompanySize;
   website?: string;

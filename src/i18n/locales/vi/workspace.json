@@ -2,6 +2,7 @@
   "create": {
     "title": "Tạo không gian làm việc",
     "description": "Thiết lập không gian làm việc mới cho đội nhóm hoặc thương hiệu của bạn.",
+    "agencyRequired": "Bạn cần chọn một công ty (Agency) trước khi tạo không gian làm việc",
     "nameLabel": "Tên không gian làm việc",
     "industryLabel": "Ngành hàng",
     "industryPlaceholder": "Chọn ngành hàng",

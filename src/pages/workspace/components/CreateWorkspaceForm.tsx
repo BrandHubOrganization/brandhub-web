@@ -4,7 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { COMPANY_SIZES, WORKSPACE_INDUSTRIES } from "@/pages/workspace/constants";
+import {
+  COMPANY_SIZES,
+  WORKSPACE_INDUSTRIES,
+} from "@/pages/workspace/constants";
 import type { CompanySize, WorkspaceIndustry } from "@/types/workspace";
 
 interface Props {

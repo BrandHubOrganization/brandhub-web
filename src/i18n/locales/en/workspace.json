@@ -2,6 +2,7 @@
   "create": {
     "title": "Create workspace",
     "description": "Set up a new workspace for your team or brand.",
+    "agencyRequired": "Please select an agency before creating a workspace",
     "nameLabel": "Workspace name",
     "industryLabel": "Industry",
     "industryPlaceholder": "Select industry",

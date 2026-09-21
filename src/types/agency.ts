@@ -19,11 +19,7 @@ export type AgencyCategory =
   | "OTHER";
 
 export type CompanySize =
-  | "SIZE_1_10"
-  | "SIZE_11_50"
-  | "SIZE_51_200"
-  | "SIZE_201_500"
-  | "SIZE_500_PLUS";
+  "SIZE_1_10" | "SIZE_11_50" | "SIZE_51_200" | "SIZE_201_500" | "SIZE_500_PLUS";
 
 export interface Agency {
   id: string;
@@ -36,6 +32,13 @@ export interface Agency {
   website: string | null;
   phone: string | null;
   location: string | null;
+  brandColor: string | null;
+  logoIcon: string | null;
+  tagline: string | null;
+  foundedYear: number | null;
+  facebookUrl: string | null;
+  linkedinUrl: string | null;
+  instagramUrl: string | null;
   status: AgencyStatus;
   createdAt: string;
   updatedAt: string;
@@ -47,6 +50,7 @@ export interface AgencyMember {
   userId: string;
   fullName: string | null;
   email: string | null;
+  avatarUrl: string | null;
   role: AgencyMemberRole;
   joinedAt: string;
 }
@@ -58,6 +62,7 @@ export interface AgencyInvitation {
   invitedEmail: string;
   invitedBy: string;
   token: string;
+  note: string | null;
   status: InvitationStatus;
   expiresAt: string;
   acceptedAt: string | null;

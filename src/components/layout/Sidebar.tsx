@@ -75,11 +75,6 @@ const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.manage",
     items: [
       { to: "/workspace", icon: FolderOpen, labelKey: "nav.workspace" },
-      {
-        to: "/workspaces/create",
-        icon: FolderPlus,
-        labelKey: "nav.createWorkspace",
-      },
       { to: "/agency", icon: Building2, labelKey: "nav.agency" },
       { to: "/invitations", icon: Mail, labelKey: "nav.invitations" },
       { to: "/clients", icon: Building2, labelKey: "nav.clients" },
@@ -118,6 +113,9 @@ export interface SidebarProps {
   onSwitchWorkspace: (workspaceId: string) => void;
   className?: string;
   onMobileItemClick?: () => void;
+  /** Đang chọn 1 agency cụ thể hay chưa — chưa chọn agency thì không có
+   * ngữ cảnh để lọc workspace, nên ẩn hẳn ô chọn workspace. */
+  hasAgency?: boolean;
 }
 
 export function Sidebar({
@@ -129,6 +127,7 @@ export function Sidebar({
   onSwitchWorkspace,
   className,
   onMobileItemClick,
+  hasAgency = false,
 }: SidebarProps) {
   const { t } = useTranslation();
   // Filter sections and items based on role permission
@@ -233,57 +232,74 @@ export function Sidebar({
         )}
       </div>
 
-      {/* Workspace Selector Dropdown */}
-      <div
-        className="shrink-0 border-b"
-        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
-      >
-        <DropdownMenu>
-          <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
-            {collapsed ? (
-              <div className="bg-brand-orange-soft text-brand-orange mx-auto my-3 flex size-8 items-center justify-center rounded-md text-xs font-bold">
-                {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
-              </div>
-            ) : (
-              <div className="border-border bg-muted/15 hover:bg-muted/30 mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors">
-                <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold">
+      {/* Workspace Selector Dropdown — chỉ hiện khi đã chọn 1 agency cụ thể */}
+      {hasAgency && (
+        <div
+          className="shrink-0 border-b"
+          style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
+        >
+          <DropdownMenu>
+            <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
+              {collapsed ? (
+                <div className="bg-brand-orange-soft text-brand-orange mx-auto my-3 flex size-8 items-center justify-center rounded-md text-xs font-bold">
                   {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
                 </div>
-                <div className="flex min-w-0 flex-col">
-                  <span className="truncate text-xs leading-tight font-semibold text-white">
-                    {activeWorkspace?.name ??
-                      t("nav.workspaceSwitcher.noWorkspace")}
-                  </span>
-                  <span className="text-muted-foreground text-3xs mt-0.5 leading-none">
-                    {t("nav.workspaceSwitcher.label")}
-                  </span>
+              ) : (
+                <div className="border-border bg-muted/15 hover:bg-muted/30 mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors">
+                  <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold">
+                    {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
+                  </div>
+                  <div className="flex min-w-0 flex-col">
+                    <span className="truncate text-xs leading-tight font-semibold text-white">
+                      {activeWorkspace?.name ??
+                        t("nav.workspaceSwitcher.noWorkspace")}
+                    </span>
+                    <span className="text-muted-foreground text-3xs mt-0.5 leading-none">
+                      {t("nav.workspaceSwitcher.label")}
+                    </span>
+                  </div>
+                  <ChevronDown className="text-muted-foreground ml-auto size-3.5 shrink-0" />
                 </div>
-                <ChevronDown className="text-muted-foreground ml-auto size-3.5 shrink-0" />
-              </div>
-            )}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="ml-2 w-[180px]">
-            <DropdownMenuLabel className="text-muted-foreground text-3xs tracking-wider uppercase">
-              {t("nav.workspaceSwitcher.selectWorkspace")}
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {workspaces.map((ws) => (
-              <DropdownMenuItem
-                key={ws.id}
-                onClick={() => onSwitchWorkspace(ws.id)}
-                className={cn(
-                  "cursor-pointer text-xs",
-                  activeWorkspace?.id === ws.id
-                    ? "text-brand-orange font-semibold"
-                    : "",
-                )}
-              >
-                {ws.name}
+              )}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="ml-2 w-[200px]">
+              <DropdownMenuLabel className="text-muted-foreground text-3xs tracking-wider uppercase">
+                {t("nav.workspaceSwitcher.selectWorkspace")}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {workspaces.length === 0 && (
+                <p className="text-muted-foreground px-2 py-2 text-xs">
+                  {t("nav.workspaceSwitcher.noWorkspace")}
+                </p>
+              )}
+              {workspaces.map((ws) => (
+                <DropdownMenuItem
+                  key={ws.id}
+                  onClick={() => onSwitchWorkspace(ws.id)}
+                  className={cn(
+                    "cursor-pointer text-xs",
+                    activeWorkspace?.id === ws.id
+                      ? "text-brand-orange font-semibold"
+                      : "",
+                  )}
+                >
+                  {ws.name}
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <NavLink
+                  to="/agency"
+                  className="text-brand-orange flex cursor-pointer items-center gap-1.5 text-xs font-semibold"
+                >
+                  <FolderPlus className="size-3.5" />
+                  {t("nav.createWorkspace")}
+                </NavLink>
               </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
 
       {/* Nav List */}
       <nav className="flex flex-1 flex-col gap-4 overflow-y-auto p-2 pt-4">

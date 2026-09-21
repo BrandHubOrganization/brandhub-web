@@ -3,6 +3,7 @@ import { Outlet, NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useAgencyStore } from "@/store/agencyStore";
 import { workspaceService } from "@/services/workspaceService";
 import { userService } from "@/services/userService";
 import { canAccess } from "@/routes/access";
@@ -40,6 +41,14 @@ export function Layout() {
   const setSystemRole = useAuthStore((s) => s.setSystemRole);
 
   const workspaces = useWorkspaceStore((s) => s.workspaceList);
+  const currentAgencyId = useAgencyStore((s) => s.currentAgencyId);
+  const agencyWorkspaces = React.useMemo(
+    () =>
+      currentAgencyId
+        ? workspaces.filter((ws) => ws.agencyId === currentAgencyId)
+        : [],
+    [workspaces, currentAgencyId],
+  );
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
@@ -66,11 +75,12 @@ export function Layout() {
   }, [user?.id]);
 
   const activeWorkspace: Workspace | null = React.useMemo(() => {
-    if (workspaces.length === 0) return null;
+    if (agencyWorkspaces.length === 0) return null;
     return (
-      workspaces.find((ws) => ws.id === currentWorkspace?.id) ?? workspaces[0]
+      agencyWorkspaces.find((ws) => ws.id === currentWorkspace?.id) ??
+      agencyWorkspaces[0]
     );
-  }, [workspaces, currentWorkspace]);
+  }, [agencyWorkspaces, currentWorkspace]);
 
   React.useEffect(() => {
     if (activeWorkspace && activeWorkspace.id !== currentWorkspace?.id) {
@@ -136,7 +146,7 @@ export function Layout() {
   });
 
   const handleSwitchWorkspace = (workspaceId: string) => {
-    const ws = workspaces.find((w) => w.id === workspaceId);
+    const ws = agencyWorkspaces.find((w) => w.id === workspaceId);
     if (ws) setCurrentWorkspace(ws);
   };
 
@@ -148,9 +158,10 @@ export function Layout() {
           collapsed={collapsed}
           role={currentRole}
           systemRole={systemRole}
-          workspaces={workspaces}
+          workspaces={agencyWorkspaces}
           activeWorkspace={activeWorkspace}
           onSwitchWorkspace={handleSwitchWorkspace}
+          hasAgency={!!currentAgencyId}
         />
       </aside>
 
@@ -174,10 +185,11 @@ export function Layout() {
               collapsed={false}
               role={currentRole}
               systemRole={systemRole}
-              workspaces={workspaces}
+              workspaces={agencyWorkspaces}
               activeWorkspace={activeWorkspace}
               onSwitchWorkspace={handleSwitchWorkspace}
               onMobileItemClick={() => setMobileOpen(false)}
+              hasAgency={!!currentAgencyId}
             />
           </SheetContent>
         </Sheet>

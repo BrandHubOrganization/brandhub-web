@@ -28,6 +28,7 @@ export interface WorkspaceSettings {
 export interface Workspace {
   id: string;
   name: string;
+  agencyId: string | null;
   slug: string;
   ownerId: string;
   logoUrl: string | null;

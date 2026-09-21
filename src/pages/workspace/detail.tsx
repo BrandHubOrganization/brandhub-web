@@ -12,7 +12,10 @@ import { LogoUploader } from "./components/LogoUploader";
 import { PlatformToggle } from "./components/PlatformToggle";
 import { FrequencyToggle } from "./components/FrequencyToggle";
 import { TimezoneSelect } from "./components/TimezoneSelect";
-import { COMPANY_SIZES, WORKSPACE_INDUSTRIES } from "@/pages/workspace/constants";
+import {
+  COMPANY_SIZES,
+  WORKSPACE_INDUSTRIES,
+} from "@/pages/workspace/constants";
 import type { CompanySize, WorkspaceIndustry } from "@/types/workspace";
 
 export function WorkspaceSettingsPage() {

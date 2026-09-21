@@ -21,7 +21,24 @@
     "createWorkspaceCta": "Tiếp theo, tạo Workspace để bắt đầu mời Client và quản lý dự án.",
     "back": "Quay lại danh sách công ty",
     "saveSuccess": "Đã cập nhật công ty",
-    "viewClientProfile": "Xem hồ sơ thương hiệu"
+    "viewClientProfile": "Xem hồ sơ thương hiệu",
+    "logoLabel": "Logo",
+    "uploadLogoButton": "Tải logo lên",
+    "uploadLogoSuccess": "Đã cập nhật logo",
+    "uploadLogoFailed": "Tải logo thất bại",
+    "logoPostSaveHint": "Logo được lưu ngay khi tải lên, không cần bấm Lưu.",
+    "viewAllMembers": "Xem tất cả thành viên",
+    "membersPreviewDescription": "5 thành viên gần nhất trong công ty.",
+    "statsDescription": "Tổng quan hoạt động — chi tiết đầy đủ sẽ có ở bản cập nhật sau.",
+    "statsMembers": "Thành viên",
+    "statsWorkspaces": "Không gian làm việc",
+    "statsActivity": "Hoạt động gần đây",
+    "statsActivityPlaceholder": "Chưa có dữ liệu — sẽ cập nhật ở sprint sau.",
+    "nav": {
+      "profile": "Hồ sơ",
+      "members": "Thành viên",
+      "stats": "Thống kê"
+    }
   },
   "create": {
     "title": "Tạo công ty",
@@ -40,6 +57,14 @@
     "phonePlaceholder": "0901234567",
     "locationLabel": "Khu vực hoạt động",
     "locationPlaceholder": "TP. Hồ Chí Minh",
+    "taglineLabel": "Slogan / Tagline",
+    "taglinePlaceholder": "Giải pháp marketing toàn diện",
+    "brandColorLabel": "Màu chủ đạo",
+    "foundedYearLabel": "Năm thành lập",
+    "logoIconLabel": "Icon đại diện (khi chưa có logo)",
+    "facebookUrlLabel": "Facebook",
+    "linkedinUrlLabel": "LinkedIn",
+    "instagramUrlLabel": "Instagram",
     "cancel": "Hủy",
     "submit": "Tạo",
     "success": "Đã tạo công ty"
@@ -72,6 +97,8 @@
     "inviteTitle": "Mời thành viên",
     "emailLabel": "Email",
     "emailPlaceholder": "teammate@company.com",
+    "noteLabel": "Lời nhắn (tuỳ chọn)",
+    "notePlaceholder": "Thêm vài dòng gửi kèm trong email mời...",
     "sendInvite": "Gửi lời mời",
     "copyLink": "Sao chép liên kết",
     "linkCopied": "Đã sao chép liên kết mời",
@@ -80,7 +107,18 @@
     "you": "(bạn)",
     "remove": "Xóa",
     "inviteSuccess": "Đã gửi lời mời tới {{email}}",
-    "removeSuccess": "Đã xóa thành viên"
+    "removeSuccess": "Đã xóa thành viên",
+    "columnName": "Tên",
+    "columnRole": "Vai trò",
+    "columnStatus": "Trạng thái",
+    "columnJoined": "Ngày tham gia",
+    "columnActions": "Hành động",
+    "searchPlaceholder": "Tìm theo tên hoặc email...",
+    "totalCount": "{{total}} thành viên · {{pending}} lời mời đang chờ",
+    "status": {
+      "ACTIVE": "Đang hoạt động",
+      "PENDING": "Đang chờ"
+    }
   },
   "invitations": {
     "title": "Lời mời công ty",

@@ -7,6 +7,7 @@ import { Building2, Eye, Plus, Users } from "lucide-react";
 import { toast } from "sonner";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
+import { useAgencyStore } from "@/store/agencyStore";
 import type { Agency } from "@/types/agency";
 
 export function AgencyPage() {
@@ -14,16 +15,21 @@ export function AgencyPage() {
   const navigate = useNavigate();
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [loading, setLoading] = useState(true);
+  const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
 
   useEffect(() => {
     agencyService
       .list()
-      .then(({ data }) => setAgencies(data.data))
+      .then(({ data }) => {
+        setAgencies(data.data);
+        // Chỉ có 1 agency: tự động chọn luôn, khỏi cần bấm.
+        if (data.data.length === 1) setCurrentAgencyId(data.data[0].id);
+      })
       .catch((err: unknown) =>
         toast.error(extractErrorMessage(err, t("agency.errors.loadFailed"))),
       )
       .finally(() => setLoading(false));
-  }, [t]);
+  }, [t, setCurrentAgencyId]);
 
   if (loading) return null;
 
@@ -65,7 +71,19 @@ export function AgencyPage() {
           {agencies.map((a) => (
             <div
               key={a.id}
-              className="bg-card flex flex-col rounded-xl border p-5 shadow-xs"
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                setCurrentAgencyId(a.id);
+                navigate(`/agency/${a.id}`);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setCurrentAgencyId(a.id);
+                  navigate(`/agency/${a.id}`);
+                }
+              }}
+              className="bg-card hover:border-brand-orange/40 flex cursor-pointer flex-col rounded-xl border p-5 shadow-xs transition-colors"
             >
               <div className="flex items-center gap-3">
                 <div className="bg-brand-orange/10 text-brand-orange flex size-10 shrink-0 items-center justify-center rounded-lg">
@@ -83,7 +101,11 @@ export function AgencyPage() {
                   variant="outline"
                   size="sm"
                   className="flex-1 cursor-pointer gap-1.5"
-                  onClick={() => navigate(`/agency/${a.id}`)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentAgencyId(a.id);
+                    navigate(`/agency/${a.id}`);
+                  }}
                 >
                   <Eye className="size-3.5" />
                   {t("agency.list.viewProfile")}
@@ -92,7 +114,11 @@ export function AgencyPage() {
                   variant="outline"
                   size="sm"
                   className="flex-1 cursor-pointer gap-1.5"
-                  onClick={() => navigate(`/agency/${a.id}/members`)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentAgencyId(a.id);
+                    navigate(`/agency/${a.id}/members`);
+                  }}
                 >
                   <Users className="size-3.5" />
                   {t("agency.list.manageMembers")}

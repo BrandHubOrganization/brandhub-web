@@ -17,10 +17,18 @@ export interface CreateAgencyRequest {
   website?: string;
   phone?: string;
   location?: string;
+  brandColor?: string;
+  logoIcon?: string;
+  tagline?: string;
+  foundedYear?: number;
+  facebookUrl?: string;
+  linkedinUrl?: string;
+  instagramUrl?: string;
 }
 
 export interface InviteAgencyMemberRequest {
   email: string;
+  note?: string;
 }
 
 export const agencyService = {
@@ -73,4 +81,13 @@ export const agencyService = {
     api.get<ApiResponse<AgencyInvitation[]>>(
       "/api/v1/agencies/invitations/my-pending",
     ),
+
+  uploadLogo: (agencyId: string, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<Agency>>(
+      `/api/v1/agencies/${agencyId}/logo`,
+      formData,
+    );
+  },
 };

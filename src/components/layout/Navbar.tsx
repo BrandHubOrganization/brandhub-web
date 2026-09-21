@@ -154,9 +154,7 @@ export function Navbar({
   };
 
   const breadcrumbs = getBreadcrumbs();
-  const roleLabel = memberRole
-    ? t(`workspace.roles.${memberRole}`)
-    : t("workspace.noRole", { defaultValue: "—" });
+  const roleLabel = memberRole ? t(`workspace.roles.${memberRole}`) : null;
 
   return (
     <header
@@ -214,22 +212,24 @@ export function Navbar({
 
       {/* Right: Real Role Badge (Read-only), Language, Theme, Notifications & User Dropdown */}
       <div className="flex items-center gap-2">
-        {/* Real Member Role Badge for the active workspace */}
-        <div
-          className="flex h-8 items-center gap-1.5 rounded-md border border-dashed px-2.5 text-xs font-semibold select-none"
-          style={{
-            borderColor: "hsl(var(--brand-orange, 15 88% 55%))",
-            color: "hsl(var(--brand-orange, 15 88% 55%))",
-            background: "hsl(var(--brand-orange-soft, 15 100% 96%))",
-          }}
-          title={t("nav.realRoleTitle")}
-        >
-          <Shield className="size-3.5 shrink-0" />
-          <span className="hidden sm:inline">
-            {t("nav.roleLabel", { role: roleLabel })}
-          </span>
-          <span className="sm:hidden">{roleLabel.split(" ")[0]}</span>
-        </div>
+        {/* Real Member Role Badge — only shown once inside a workspace */}
+        {roleLabel && (
+          <div
+            className="flex h-8 items-center gap-1.5 rounded-md border border-dashed px-2.5 text-xs font-semibold select-none"
+            style={{
+              borderColor: "hsl(var(--brand-orange, 15 88% 55%))",
+              color: "hsl(var(--brand-orange, 15 88% 55%))",
+              background: "hsl(var(--brand-orange-soft, 15 100% 96%))",
+            }}
+            title={t("nav.realRoleTitle")}
+          >
+            <Shield className="size-3.5 shrink-0" />
+            <span className="hidden sm:inline">
+              {t("nav.roleLabel", { role: roleLabel })}
+            </span>
+            <span className="sm:hidden">{roleLabel.split(" ")[0]}</span>
+          </div>
+        )}
 
         {/* Language Switcher */}
         <Button

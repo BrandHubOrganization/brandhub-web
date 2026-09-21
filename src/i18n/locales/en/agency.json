@@ -21,7 +21,24 @@
     "createWorkspaceCta": "Next, create a Workspace to start inviting clients and managing projects.",
     "back": "Back to agencies",
     "saveSuccess": "Agency updated",
-    "viewClientProfile": "View brand profile"
+    "viewClientProfile": "View brand profile",
+    "logoLabel": "Logo",
+    "uploadLogoButton": "Upload logo",
+    "uploadLogoSuccess": "Logo updated",
+    "uploadLogoFailed": "Failed to upload logo",
+    "logoPostSaveHint": "Logo is saved right away on upload — no need to click Save.",
+    "viewAllMembers": "View all members",
+    "membersPreviewDescription": "The 5 most recent members in this agency.",
+    "statsDescription": "Overview — full detail coming in a future update.",
+    "statsMembers": "Members",
+    "statsWorkspaces": "Workspaces",
+    "statsActivity": "Recent activity",
+    "statsActivityPlaceholder": "No data yet — coming in a future sprint.",
+    "nav": {
+      "profile": "Profile",
+      "members": "Members",
+      "stats": "Stats"
+    }
   },
   "create": {
     "title": "Create Agency",
@@ -40,6 +57,14 @@
     "phonePlaceholder": "+1 555 0100",
     "locationLabel": "Location",
     "locationPlaceholder": "San Francisco, CA",
+    "taglineLabel": "Tagline",
+    "taglinePlaceholder": "Full-service marketing solutions",
+    "brandColorLabel": "Brand color",
+    "foundedYearLabel": "Founded year",
+    "logoIconLabel": "Fallback icon (used when no logo)",
+    "facebookUrlLabel": "Facebook",
+    "linkedinUrlLabel": "LinkedIn",
+    "instagramUrlLabel": "Instagram",
     "cancel": "Cancel",
     "submit": "Create",
     "success": "Agency created"
@@ -72,6 +97,8 @@
     "inviteTitle": "Invite a member",
     "emailLabel": "Email",
     "emailPlaceholder": "teammate@company.com",
+    "noteLabel": "Note (optional)",
+    "notePlaceholder": "Add a few lines to include in the invite email...",
     "sendInvite": "Send invite",
     "copyLink": "Copy link",
     "linkCopied": "Invite link copied",
@@ -80,7 +107,18 @@
     "you": "(you)",
     "remove": "Remove",
     "inviteSuccess": "Invite sent to {{email}}",
-    "removeSuccess": "Member removed"
+    "removeSuccess": "Member removed",
+    "columnName": "Name",
+    "columnRole": "Role",
+    "columnStatus": "Status",
+    "columnJoined": "Joined",
+    "columnActions": "Actions",
+    "searchPlaceholder": "Search by name or email...",
+    "totalCount": "{{total}} members · {{pending}} pending invites",
+    "status": {
+      "ACTIVE": "Active",
+      "PENDING": "Pending"
+    }
   },
   "invitations": {
     "title": "Agency Invitations",
