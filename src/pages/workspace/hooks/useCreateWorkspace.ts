@@ -2,11 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { workspaceService } from "@/services/workspaceService";
-import type { CompanySize, WorkspaceIndustry } from "@/types/workspace";
+import {
+  workspaceService,
+  type AssignEntry,
+} from "@/services/workspaceService";
 import { extractErrorMessage } from "@/utils/error";
 import { useAgencyStore } from "@/store/agencyStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { LOGO_ICON_OPTIONS } from "@/pages/agency/logoIcons";
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 export function useCreateWorkspace() {
   const { t } = useTranslation();
@@ -26,11 +31,12 @@ export function useCreateWorkspace() {
   }, [agencyId, navigate, t]);
 
   const [name, setName] = useState("");
-  const [industry, setIndustry] = useState<WorkspaceIndustry | "">("");
-  const [companySize, setCompanySize] = useState<CompanySize | "">("");
-  const [website, setWebsite] = useState("");
-  const [phone, setPhone] = useState("");
-  const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
+  const [brandColor, setBrandColor] = useState("#f05a28");
+  const [logoIcon, setLogoIcon] = useState(LOGO_ICON_OPTIONS[0].name);
+  const [tagline, setTagline] = useState("");
+  const [foundedYear, setFoundedYear] = useState("");
+  const [assignMembers, setAssignMembers] = useState<AssignEntry[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,14 +44,19 @@ export function useCreateWorkspace() {
     if (!agencyId) return;
     setLoading(true);
     try {
+      const yearNum = foundedYear ? Number(foundedYear) : undefined;
       const { data } = await workspaceService.create({
         name: name.trim(),
         agencyId,
-        industry: industry || undefined,
-        companySize: companySize || undefined,
-        website: website.trim() || undefined,
-        phone: phone.trim() || undefined,
-        location: location.trim() || undefined,
+        description: description.trim() || undefined,
+        brandColor: brandColor || undefined,
+        logoIcon: logoIcon || undefined,
+        tagline: tagline.trim() || undefined,
+        foundedYear:
+          yearNum && yearNum >= 1900 && yearNum <= CURRENT_YEAR
+            ? yearNum
+            : undefined,
+        assignMembers,
       });
       // Workspace mới tạo trở thành agency + workspace đang active.
       setCurrentAgencyId(agencyId);
@@ -62,16 +73,19 @@ export function useCreateWorkspace() {
   return {
     name,
     setName,
-    industry,
-    setIndustry,
-    companySize,
-    setCompanySize,
-    website,
-    setWebsite,
-    phone,
-    setPhone,
-    location,
-    setLocation,
+    description,
+    setDescription,
+    brandColor,
+    setBrandColor,
+    logoIcon,
+    setLogoIcon,
+    tagline,
+    setTagline,
+    foundedYear,
+    setFoundedYear,
+    assignMembers,
+    setAssignMembers,
+    agencyId,
     loading,
     handleSubmit,
   };

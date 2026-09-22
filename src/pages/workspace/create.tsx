@@ -8,16 +8,19 @@ export function CreateWorkspacePage() {
   const {
     name,
     setName,
-    industry,
-    setIndustry,
-    companySize,
-    setCompanySize,
-    website,
-    setWebsite,
-    phone,
-    setPhone,
-    location,
-    setLocation,
+    description,
+    setDescription,
+    brandColor,
+    setBrandColor,
+    logoIcon,
+    setLogoIcon,
+    tagline,
+    setTagline,
+    foundedYear,
+    setFoundedYear,
+    assignMembers,
+    setAssignMembers,
+    agencyId,
     loading,
     handleSubmit,
   } = useCreateWorkspace();
@@ -30,16 +33,19 @@ export function CreateWorkspacePage() {
       <CreateWorkspaceForm
         name={name}
         onNameChange={setName}
-        industry={industry}
-        onIndustryChange={setIndustry}
-        companySize={companySize}
-        onCompanySizeChange={setCompanySize}
-        website={website}
-        onWebsiteChange={setWebsite}
-        phone={phone}
-        onPhoneChange={setPhone}
-        location={location}
-        onLocationChange={setLocation}
+        description={description}
+        onDescriptionChange={setDescription}
+        brandColor={brandColor}
+        onBrandColorChange={setBrandColor}
+        logoIcon={logoIcon}
+        onLogoIconChange={setLogoIcon}
+        tagline={tagline}
+        onTaglineChange={setTagline}
+        foundedYear={foundedYear}
+        onFoundedYearChange={setFoundedYear}
+        agencyId={agencyId}
+        assignMembers={assignMembers}
+        onAssignMembersChange={setAssignMembers}
         submitting={loading}
         onSubmit={handleSubmit}
       />
