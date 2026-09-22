@@ -47,7 +47,7 @@ export function QuickTasksCard({ userName, userRole }: Props) {
             >
               <input
                 type="checkbox"
-                className="border-border text-brand-orange focus:ring-brand-orange size-3.5 rounded"
+                className="border-border accent-brand-orange focus:ring-brand-orange size-3.5 rounded"
               />
               <span>{taskText}</span>
             </label>

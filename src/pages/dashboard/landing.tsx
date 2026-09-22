@@ -1,3 +1,5 @@
+import { Navigate } from "react-router-dom";
+import { useAuthStore } from "@/store/authStore";
 import { Navbar } from "@/components/landing/Navbar";
 import { CinematicHero } from "@/components/landing/cinematic/CinematicHero";
 import { LogoWall } from "@/components/landing/LogoWall";
@@ -13,6 +15,9 @@ import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
 
 export function LandingPage() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+
   return (
     <div style={{ fontFamily: "var(--font-sans)" }}>
       <Navbar />
