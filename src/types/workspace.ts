@@ -38,6 +38,14 @@ export interface Workspace {
   website: string | null;
   phone: string | null;
   location: string | null;
+  description: string | null;
+  brandColor: string | null;
+  logoIcon: string | null;
+  tagline: string | null;
+  foundedYear: number | null;
+  facebookUrl: string | null;
+  linkedinUrl: string | null;
+  instagramUrl: string | null;
   isActive: boolean;
   createdAt: string;
 }
@@ -45,9 +53,10 @@ export interface Workspace {
 export interface WorkspaceMember {
   id: string;
   workspaceId: string;
-  userId: string;
+  userId: string | null;
   fullName: string | null;
   email: string | null;
+  clientProfileId: string | null;
   role: MemberRole;
   joinedAt: string | null;
   isActive: boolean;

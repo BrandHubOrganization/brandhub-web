@@ -11,6 +11,17 @@
     "websiteLabel": "Website",
     "phoneLabel": "Phone",
     "locationLabel": "Location",
+    "descriptionLabel": "Description",
+    "taglineLabel": "Tagline",
+    "taglinePlaceholder": "A short description of this workspace",
+    "brandColorLabel": "Brand color",
+    "foundedYearLabel": "Founded year",
+    "logoIconLabel": "Fallback icon (used when no logo)",
+    "facebookUrlLabel": "Facebook",
+    "linkedinUrlLabel": "LinkedIn",
+    "instagramUrlLabel": "Instagram",
+    "assignMembersLabel": "Add members from agency",
+    "assignMembersHint": "You're the default Manager. Pick someone else as Manager here to hand off that role for this workspace.",
     "submit": "Create workspace"
   },
   "industry": {
@@ -70,7 +81,17 @@
     "removeConfirmTitle": "Remove member?",
     "removeConfirmDescription": "This member will lose access to the workspace.",
     "inviteSuccess": "Invitation sent",
-    "removeSuccess": "Member removed"
+    "removeSuccess": "Member removed",
+    "noteLabel": "Note (optional)",
+    "assignButton": "Add from agency",
+    "assignDialogTitle": "Add members from agency",
+    "assignSuccess": "Member added",
+    "addClientButton": "Add client",
+    "addClientTitle": "Add a collaborating client to this workspace",
+    "addClientEmpty": "No client available to add (none left, or the agency has no clients yet).",
+    "addClientPlaceholder": "Select a client",
+    "addClientSubmit": "Add to workspace",
+    "addClientSuccess": "Client added to workspace"
   },
   "roles": {
     "OWNER": "Owner",

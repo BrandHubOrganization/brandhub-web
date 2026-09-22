@@ -6,6 +6,11 @@ import type {
 } from "@/types/clientProfile";
 
 export const clientProfileService = {
+  listByAgency: (agencyId: string) =>
+    api.get<ApiResponse<ClientProfile[]>>("/api/v1/client-profile", {
+      params: { agencyId },
+    }),
+
   getMyProfile: (agencyId: string) =>
     api.get<ApiResponse<ClientProfile>>("/api/v1/client-profile/me", {
       params: { agencyId },

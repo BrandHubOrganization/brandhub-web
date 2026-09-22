@@ -19,9 +19,10 @@ export function WorkspaceMembersPage() {
 
   if (membersState.loading) return null;
 
-  const internalMembers = membersState.members.filter(
-    (m) => m.role !== "CLIENT",
-  );
+  // Bảng "Internal Members" hiện chung cả MANAGER/CREATOR và CLIENT (thành
+  // viên cộng tác gán từ ClientProfile) — tab "Clients" bên cạnh vẫn là
+  // khái niệm khác (quản lý thương hiệu khách hàng, không phải collaborator).
+  const internalMembers = membersState.members;
 
   return (
     <PageWrapper

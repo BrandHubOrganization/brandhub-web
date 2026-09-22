@@ -11,6 +11,17 @@
     "websiteLabel": "Website",
     "phoneLabel": "Số điện thoại",
     "locationLabel": "Khu vực hoạt động",
+    "descriptionLabel": "Mô tả",
+    "taglineLabel": "Slogan / Tagline",
+    "taglinePlaceholder": "Mô tả ngắn gọn về workspace",
+    "brandColorLabel": "Màu chủ đạo",
+    "foundedYearLabel": "Năm thành lập",
+    "logoIconLabel": "Icon đại diện (khi chưa có logo)",
+    "facebookUrlLabel": "Facebook",
+    "linkedinUrlLabel": "LinkedIn",
+    "instagramUrlLabel": "Instagram",
+    "assignMembersLabel": "Thêm thành viên từ công ty",
+    "assignMembersHint": "Bạn là Quản lý (Manager) mặc định. Chọn người khác làm Manager ở đây nếu muốn chuyển giao vai trò quản lý workspace cho họ.",
     "submit": "Tạo không gian làm việc"
   },
   "industry": {
@@ -70,7 +81,17 @@
     "removeConfirmTitle": "Xóa thành viên?",
     "removeConfirmDescription": "Thành viên này sẽ mất quyền truy cập không gian làm việc.",
     "inviteSuccess": "Đã gửi lời mời",
-    "removeSuccess": "Đã xóa thành viên"
+    "removeSuccess": "Đã xóa thành viên",
+    "noteLabel": "Lời nhắn (tuỳ chọn)",
+    "assignButton": "Thêm từ công ty",
+    "assignDialogTitle": "Thêm thành viên từ công ty",
+    "assignSuccess": "Đã thêm thành viên",
+    "addClientButton": "Thêm client",
+    "addClientTitle": "Thêm client cộng tác vào workspace",
+    "addClientEmpty": "Không có client nào để thêm (đã hết hoặc chưa có client nào trong công ty).",
+    "addClientPlaceholder": "Chọn client",
+    "addClientSubmit": "Thêm vào workspace",
+    "addClientSuccess": "Đã thêm client vào workspace"
   },
   "roles": {
     "OWNER": "Chủ sở hữu",

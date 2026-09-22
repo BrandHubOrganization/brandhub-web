@@ -14,6 +14,11 @@ import type {
   WorkspaceMember,
 } from "@/types/workspace";
 
+export interface AssignEntry {
+  userId: string;
+  role: MemberRole;
+}
+
 export interface CreateWorkspaceRequest {
   name: string;
   agencyId: string;
@@ -22,6 +27,15 @@ export interface CreateWorkspaceRequest {
   website?: string;
   phone?: string;
   location?: string;
+  description?: string;
+  brandColor?: string;
+  logoIcon?: string;
+  tagline?: string;
+  foundedYear?: number;
+  facebookUrl?: string;
+  linkedinUrl?: string;
+  instagramUrl?: string;
+  assignMembers?: AssignEntry[];
 }
 
 export interface UpdateWorkspaceSettingsRequest {
@@ -39,6 +53,7 @@ export interface UpdateWorkspaceSettingsRequest {
 export interface InviteMemberRequest {
   email: string;
   role: MemberRole;
+  note?: string;
 }
 
 export interface AcceptInvitationRequest {
@@ -71,9 +86,21 @@ export const workspaceService = {
       data,
     ),
 
+  assignMembers: (workspaceId: string, members: AssignEntry[]) =>
+    api.post<ApiResponse<WorkspaceMember[]>>(
+      `/api/v1/workspaces/${workspaceId}/members/assign`,
+      { members },
+    ),
+
   removeMember: (workspaceId: string, memberId: string) =>
     api.delete<ApiResponse<void>>(
       `/api/v1/workspaces/${workspaceId}/members/${memberId}`,
+    ),
+
+  addClient: (workspaceId: string, clientProfileId: string) =>
+    api.post<ApiResponse<WorkspaceMember>>(
+      `/api/v1/workspaces/${workspaceId}/clients`,
+      { clientProfileId },
     ),
 
   uploadLogo: (workspaceId: string, file: File) => {
