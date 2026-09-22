@@ -34,7 +34,11 @@ async function resolveCallback() {
   const query = new URLSearchParams(window.location.search);
   const fragment = new URLSearchParams(window.location.hash.slice(1));
   const token = fragment.get("token") ?? query.get("token");
-  window.history.replaceState(window.history.state, "", window.location.pathname);
+  window.history.replaceState(
+    window.history.state,
+    "",
+    window.location.pathname,
+  );
   useAuthStore.getState().clearAuth();
   if (query.has("error") || !token) throw new Error(INVALID_CALLBACK);
 
@@ -56,20 +60,23 @@ function reportCallbackError(error: unknown) {
     : "auth.login.oauthProfileFailed";
 }
 
-async function finishCallback(request: ReturnType<typeof resolveCallback>, context: CallbackContext) {
+async function finishCallback(
+  request: ReturnType<typeof resolveCallback>,
+  context: CallbackContext,
+) {
   try {
     const result = await request;
     if (!context.isActive) return;
     useAuthStore.getState().setAuth(result.user, result.token);
     useAuthStore.getState().setSystemRole(result.user.role);
     toast.success(context.translate("auth.login.successToast"));
-    // Temporary: revert to landing — /dashboard renders empty (backend data stubs).
-    // Re-enable once dashboard data flows: context.navigate("/dashboard", { replace: true });
-    context.navigate("/", { replace: true });
+    context.navigate("/dashboard", { replace: true });
   } catch (error: unknown) {
     if (!context.isActive) return;
     useAuthStore.getState().clearAuth();
-    toast.error(context.translate(reportCallbackError(error)), { duration: ERROR_TOAST_DURATION_MS });
+    toast.error(context.translate(reportCallbackError(error)), {
+      duration: ERROR_TOAST_DURATION_MS,
+    });
     context.navigate("/login", { replace: true });
   }
 }
@@ -82,8 +89,10 @@ export function useOAuthCallback() {
 
   useEffect(() => {
     const context = { isActive: true, translate: t, navigate };
-    const request = pending.current ??= resolveCallback();
+    const request = (pending.current ??= resolveCallback());
     void finishCallback(request, context);
-    return () => { context.isActive = false; };
+    return () => {
+      context.isActive = false;
+    };
   }, [navigate, t]);
 }

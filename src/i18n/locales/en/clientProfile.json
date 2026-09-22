@@ -1,0 +1,22 @@
+{
+  "title": "Client Profile",
+  "description": "The profile other agencies see when you join as a client.",
+  "notFound": "You do not have a client profile yet. It is created when you accept your first client invitation.",
+  "missingAgencyId": "Could not determine which Agency you're viewing. Please open this page from a specific Agency's Workspace.",
+  "displayNameLabel": "Display name",
+  "companyLabel": "Company",
+  "phoneLabel": "Phone",
+  "noteLabel": "Note",
+  "logoUrlLabel": "Logo URL",
+  "websiteLabel": "Website",
+  "industryLabel": "Industry",
+  "locationLabel": "Location",
+  "descriptionLabel": "Company description",
+  "linkedinLabel": "LinkedIn",
+  "facebookLabel": "Facebook",
+  "editButton": "Edit",
+  "cancelEdit": "Cancel",
+  "save": "Save",
+  "saveSuccess": "Client profile updated",
+  "saveError": "Unable to save client profile"
+}

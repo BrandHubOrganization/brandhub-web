@@ -1,27 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Check, Copy, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
-
-/** Tách secret (Base32) từ otpauth:// URI trả về bởi backend. */
-function secretFromUrl(qrCodeUrl: string): string {
-  try {
-    return new URL(qrCodeUrl).searchParams.get("secret") ?? "";
-  } catch {
-    return "";
-  }
-}
-
-/** Hiển thị secret theo nhóm 4 ký tự cho dễ đọc. */
-function formatSecret(secret: string): string {
-  return (secret.match(/.{1,4}/g) ?? []).join(" ");
-}
 
 export function SecurityPage() {
   const { t } = useTranslation();
@@ -30,7 +15,6 @@ export function SecurityPage() {
   const [disabling, setDisabling] = useState(false);
   const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     authService
@@ -40,16 +24,6 @@ export function SecurityPage() {
         /* giữ enabled=false; người dùng vẫn có thể bật 2FA */
       });
   }, []);
-
-  const secret = qrCodeUrl ? secretFromUrl(qrCodeUrl) : "";
-
-  const handleCopy = useCallback(() => {
-    if (!secret) return;
-    navigator.clipboard?.writeText(secret);
-    setCopied(true);
-    toast.success(t("security.2fa.copySuccess"));
-    setTimeout(() => setCopied(false), 1500);
-  }, [secret, t]);
 
   const handleEnable = async () => {
     setSubmitting(true);
@@ -97,10 +71,15 @@ export function SecurityPage() {
   };
 
   return (
-    <PageWrapper
-      title={t("security.title")}
-      description={t("security.description")}
-    >
+    <section id="security" className="scroll-mt-6">
+      <div className="mb-4">
+        <h2 className="text-foreground text-lg font-semibold">
+          {t("security.title")}
+        </h2>
+        <p className="text-muted-foreground text-sm">
+          {t("security.description")}
+        </p>
+      </div>
       <div className="border-border bg-card max-w-2xl rounded-xl border p-6">
         <div className="border-border flex items-center gap-3 border-b pb-4">
           <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-2">
@@ -141,33 +120,6 @@ export function SecurityPage() {
               <p className="text-muted-foreground text-xs">
                 {t("security.2fa.stepHint")}
               </p>
-              {secret && (
-                <div>
-                  <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                    {t("security.2fa.secretLabel")}
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <code className="bg-muted text-foreground rounded-lg px-3 py-2 font-mono text-xs tracking-widest">
-                      {formatSecret(secret)}
-                    </code>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1.5"
-                      onClick={handleCopy}
-                    >
-                      {copied ? (
-                        <Check className="size-3.5 text-emerald-600" />
-                      ) : (
-                        <Copy className="size-3.5" />
-                      )}
-                      {copied
-                        ? t("security.2fa.copied")
-                        : t("security.2fa.copy")}
-                    </Button>
-                  </div>
-                </div>
-              )}
               <Input
                 label={t("security.2fa.verifyCodeLabel")}
                 type="text"
@@ -263,7 +215,7 @@ export function SecurityPage() {
           </div>
         )}
       </div>
-    </PageWrapper>
+    </section>
   );
 }
 

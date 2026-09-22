@@ -2,7 +2,6 @@ import * as React from "react";
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
-  FolderOpen,
   FileEdit,
   CalendarDays,
   Users,
@@ -10,9 +9,11 @@ import {
   ShieldAlert,
   ChevronDown,
   FolderKanban,
+  FolderPlus,
   LayoutTemplate,
   Hash,
   UserPlus,
+  Mail,
   Send,
   Link2,
   CreditCard,
@@ -31,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { MemberRole, Workspace } from "@/types/workspace";
+import type { Agency } from "@/types/agency";
 import type { SystemRole } from "@/store/authStore";
 import { canAccess } from "@/routes/access";
 
@@ -72,7 +74,8 @@ const NAV_SECTIONS: NavSection[] = [
     key: "manage",
     titleKey: "nav.sections.manage",
     items: [
-      { to: "/workspace", icon: FolderOpen, labelKey: "nav.workspace" },
+      { to: "/agency", icon: Building2, labelKey: "nav.agency" },
+      { to: "/invitations", icon: Mail, labelKey: "nav.invitations" },
       { to: "/clients", icon: Building2, labelKey: "nav.clients" },
       { to: "/portal", icon: Users, labelKey: "nav.portal" },
       {
@@ -106,9 +109,18 @@ export interface SidebarProps {
   systemRole?: SystemRole | null;
   workspaces: Workspace[];
   activeWorkspace: Workspace | null;
-  onSwitchWorkspace: (workspaceId: string) => void;
+  onSwitchWorkspace: (agencyId: string, workspaceId: string) => void;
   className?: string;
   onMobileItemClick?: () => void;
+  /** Đang chọn 1 agency cụ thể hay chưa — chưa chọn agency thì không có
+   * ngữ cảnh để lọc workspace, nên ẩn hẳn ô chọn workspace. */
+  hasAgency?: boolean;
+  /** Toàn bộ agency user thuộc về, để build dropdown lồng nhau agency→workspace. */
+  agencyList: Agency[];
+  /** Toàn bộ workspace (không lọc theo agency), để nhóm theo từng agency trong dropdown. */
+  allWorkspaces: Workspace[];
+  currentAgencyId: string | null;
+  onSwitchAgency: (agencyId: string) => void;
 }
 
 export function Sidebar({
@@ -120,8 +132,18 @@ export function Sidebar({
   onSwitchWorkspace,
   className,
   onMobileItemClick,
+  hasAgency = false,
+  agencyList,
+  allWorkspaces,
+  currentAgencyId,
+  onSwitchAgency,
 }: SidebarProps) {
   const { t } = useTranslation();
+  const [expandedAgencyId, setExpandedAgencyId] = React.useState<string | null>(
+    currentAgencyId,
+  );
+  const currentAgencyName =
+    agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.map((section) => {
     const items = section.items.filter((item) =>
@@ -224,7 +246,7 @@ export function Sidebar({
         )}
       </div>
 
-      {/* Workspace Selector Dropdown */}
+      {/* Agency → Workspace switcher — 1 dropdown lồng nhau, luôn hiện để có nơi tạo mới. */}
       <div
         className="shrink-0 border-b"
         style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
@@ -233,45 +255,121 @@ export function Sidebar({
           <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
             {collapsed ? (
               <div className="bg-brand-orange-soft text-brand-orange mx-auto my-3 flex size-8 items-center justify-center rounded-md text-xs font-bold">
-                {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
+                {(activeWorkspace?.name ?? currentAgencyName)
+                  ?.charAt(0)
+                  .toUpperCase() ?? "?"}
               </div>
             ) : (
               <div className="border-border bg-muted/15 hover:bg-muted/30 mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors">
                 <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold">
-                  {activeWorkspace?.name.charAt(0).toUpperCase() ?? "?"}
+                  {(activeWorkspace?.name ?? currentAgencyName)
+                    ?.charAt(0)
+                    .toUpperCase() ?? "?"}
                 </div>
                 <div className="flex min-w-0 flex-col">
                   <span className="truncate text-xs leading-tight font-semibold text-white">
                     {activeWorkspace?.name ??
-                      t("nav.workspaceSwitcher.noWorkspace")}
+                      currentAgencyName ??
+                      t("nav.orgSwitcher.placeholder")}
                   </span>
-                  <span className="text-muted-foreground text-3xs mt-0.5 leading-none">
-                    {t("nav.workspaceSwitcher.label")}
+                  <span className="text-muted-foreground text-3xs mt-0.5 truncate leading-none">
+                    {activeWorkspace
+                      ? currentAgencyName
+                      : t("nav.orgSwitcher.label")}
                   </span>
                 </div>
                 <ChevronDown className="text-muted-foreground ml-auto size-3.5 shrink-0" />
               </div>
             )}
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="ml-2 w-[180px]">
+          <DropdownMenuContent align="start" className="ml-2 w-[220px]">
             <DropdownMenuLabel className="text-muted-foreground text-3xs tracking-wider uppercase">
-              {t("nav.workspaceSwitcher.selectWorkspace")}
+              {t("nav.orgSwitcher.selectAgency")}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {workspaces.map((ws) => (
-              <DropdownMenuItem
-                key={ws.id}
-                onClick={() => onSwitchWorkspace(ws.id)}
-                className={cn(
-                  "cursor-pointer text-xs",
-                  activeWorkspace?.id === ws.id
-                    ? "text-brand-orange font-semibold"
-                    : "",
-                )}
+            {agencyList.length === 0 && (
+              <p className="text-muted-foreground px-2 py-2 text-xs">
+                {t("nav.orgSwitcher.noAgency")}
+              </p>
+            )}
+            {agencyList.map((agency) => {
+              const agencyWs = allWorkspaces.filter(
+                (ws) => ws.agencyId === agency.id,
+              );
+              const isExpanded = expandedAgencyId === agency.id;
+              return (
+                <div key={agency.id}>
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      setExpandedAgencyId(isExpanded ? null : agency.id);
+                    }}
+                    className={cn(
+                      "cursor-pointer justify-between text-xs",
+                      currentAgencyId === agency.id
+                        ? "text-brand-orange font-semibold"
+                        : "",
+                    )}
+                  >
+                    <span className="truncate">{agency.name}</span>
+                    <ChevronDown
+                      className={cn(
+                        "size-3.5 shrink-0 transition-transform",
+                        isExpanded ? "rotate-180" : "",
+                      )}
+                    />
+                  </DropdownMenuItem>
+                  {isExpanded && (
+                    <div className="border-border ml-3 border-l pl-2">
+                      {agencyWs.length === 0 && (
+                        <p className="text-muted-foreground text-3xs px-2 py-1.5">
+                          {t("nav.orgSwitcher.noWorkspace")}
+                        </p>
+                      )}
+                      {agencyWs.map((ws) => (
+                        <DropdownMenuItem
+                          key={ws.id}
+                          onClick={() => onSwitchWorkspace(agency.id, ws.id)}
+                          className={cn(
+                            "cursor-pointer text-xs",
+                            activeWorkspace?.id === ws.id
+                              ? "text-brand-orange font-semibold"
+                              : "",
+                          )}
+                        >
+                          {ws.name}
+                        </DropdownMenuItem>
+                      ))}
+                      <DropdownMenuItem
+                        onClick={() => onSwitchAgency(agency.id)}
+                        className="text-muted-foreground text-3xs cursor-pointer italic"
+                      >
+                        {t("nav.orgSwitcher.viewAgency")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <NavLink
+                          to={`/workspaces/create?agencyId=${agency.id}`}
+                          className="text-brand-orange text-3xs flex cursor-pointer items-center gap-1.5 font-semibold"
+                        >
+                          <FolderPlus className="size-3" />
+                          {t("nav.orgSwitcher.createWorkspace")}
+                        </NavLink>
+                      </DropdownMenuItem>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <NavLink
+                to="/agency/create"
+                className="text-brand-orange flex cursor-pointer items-center gap-1.5 text-xs font-semibold"
               >
-                {ws.name}
-              </DropdownMenuItem>
-            ))}
+                <FolderPlus className="size-3.5" />
+                {t("nav.orgSwitcher.createAgency")}
+              </NavLink>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

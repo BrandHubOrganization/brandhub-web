@@ -7,19 +7,15 @@ import {
   ChevronDown,
   Clock,
   Globe,
-  IdCard,
   Info,
   LogOut,
-  Mail,
   Menu,
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
   Shield,
-  ShieldCheck,
   Sun,
-  User as UserIcon,
   XCircle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -36,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { MemberRole, Workspace } from "@/types/workspace";
+import type { Agency } from "@/types/agency";
 import type { AppNotification, NotificationType } from "@/types/notification";
 import {
   getNotifications,
@@ -55,8 +52,10 @@ const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const NAV_KEY_MAP: Record<string, string> = {
+  dashboard: "nav.dashboard",
   workspace: "nav.workspace",
   workspaces: "nav.workspace",
+  agency: "nav.agency",
   portal: "nav.portal",
   editor: "nav.editor",
   calendar: "nav.calendar",
@@ -65,6 +64,29 @@ const NAV_KEY_MAP: Record<string, string> = {
   settings: "nav.settings",
   members: "workspace.members.title",
   invitations: "nav.invitations",
+  clients: "nav.clients",
+  requests: "nav.requests",
+  templates: "nav.templates",
+  "hashtag-groups": "nav.hashtagGroups",
+  library: "nav.library",
+  "social-accounts": "nav.socialAccounts",
+  publish: "nav.publish",
+  subscription: "nav.subscription",
+  plans: "subscription.plans.title",
+  checkout: "subscription.checkout.title",
+  invoices: "subscription.invoices.title",
+  "ai-studio": "nav.aiStudio",
+  ambassadors: "aiStudio.ambassadors.title",
+  "knowledge-base": "aiStudio.knowledgeBase.title",
+  trends: "aiStudio.trends.title",
+  reports: "nav.reports",
+  create: "nav.sections.create",
+  "notification-settings": "nav.notificationSettings",
+  security: "nav.security",
+  profile: "nav.profile",
+  "client-profile": "nav.clientProfile",
+  video: "aiStudio.video.title",
+  "change-password": "nav.changePassword",
 };
 
 export interface NavbarProps {
@@ -73,6 +95,7 @@ export interface NavbarProps {
   onMobileMenuOpen: () => void;
   memberRole: MemberRole | null;
   workspaces: Workspace[];
+  agencies: Agency[];
 }
 
 export function Navbar({
@@ -81,6 +104,7 @@ export function Navbar({
   onMobileMenuOpen,
   memberRole,
   workspaces,
+  agencies,
 }: NavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -134,8 +158,15 @@ export function Navbar({
     segments.forEach((seg, idx) => {
       const path = "/" + segments.slice(0, idx + 1).join("/");
       if (UUID_REGEX.test(seg)) {
-        const workspace = workspaces.find((ws) => ws.id === seg);
-        if (workspace) crumbs.push({ label: workspace.name, path });
+        // UUID: xác định đây là agency hay workspace dựa vào segment gốc
+        // ("agency" hoặc "workspaces") thay vì chỉ tìm trong workspaces —
+        // trước đây agency id không map được tên nên bị bỏ luôn khỏi breadcrumb.
+        const root = segments[0];
+        const entity =
+          root === "agency"
+            ? agencies.find((a) => a.id === seg)
+            : workspaces.find((ws) => ws.id === seg);
+        crumbs.push({ label: entity?.name ?? seg, path });
         return;
       }
       const navKey = NAV_KEY_MAP[seg];
@@ -158,9 +189,7 @@ export function Navbar({
   };
 
   const breadcrumbs = getBreadcrumbs();
-  const roleLabel = memberRole
-    ? t(`workspace.roles.${memberRole}`)
-    : t("workspace.noRole", { defaultValue: "—" });
+  const roleLabel = memberRole ? t(`workspace.roles.${memberRole}`) : null;
 
   return (
     <header
@@ -218,22 +247,24 @@ export function Navbar({
 
       {/* Right: Real Role Badge (Read-only), Language, Theme, Notifications & User Dropdown */}
       <div className="flex items-center gap-2">
-        {/* Real Member Role Badge for the active workspace */}
-        <div
-          className="flex h-8 items-center gap-1.5 rounded-md border border-dashed px-2.5 text-xs font-semibold select-none"
-          style={{
-            borderColor: "hsl(var(--brand-orange, 15 88% 55%))",
-            color: "hsl(var(--brand-orange, 15 88% 55%))",
-            background: "hsl(var(--brand-orange-soft, 15 100% 96%))",
-          }}
-          title={t("nav.realRoleTitle")}
-        >
-          <Shield className="size-3.5 shrink-0" />
-          <span className="hidden sm:inline">
-            {t("nav.roleLabel", { role: roleLabel })}
-          </span>
-          <span className="sm:hidden">{roleLabel.split(" ")[0]}</span>
-        </div>
+        {/* Real Member Role Badge — only shown once inside a workspace */}
+        {roleLabel && (
+          <div
+            className="flex h-8 items-center gap-1.5 rounded-md border border-dashed px-2.5 text-xs font-semibold select-none"
+            style={{
+              borderColor: "hsl(var(--brand-orange, 15 88% 55%))",
+              color: "hsl(var(--brand-orange, 15 88% 55%))",
+              background: "hsl(var(--brand-orange-soft, 15 100% 96%))",
+            }}
+            title={t("nav.realRoleTitle")}
+          >
+            <Shield className="size-3.5 shrink-0" />
+            <span className="hidden sm:inline">
+              {t("nav.roleLabel", { role: roleLabel })}
+            </span>
+            <span className="sm:hidden">{roleLabel.split(" ")[0]}</span>
+          </div>
+        )}
 
         {/* Language Switcher */}
         <Button
@@ -348,68 +379,31 @@ export function Navbar({
 
         <div className="bg-border mx-1 h-4 w-px" />
 
-        {/* User Profile Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 outline-none">
-            <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
-              {username.charAt(0).toUpperCase()}
-            </div>
-            <span className="text-foreground hidden max-w-[120px] truncate text-xs font-semibold sm:inline">
-              {username}
-            </span>
-            <ChevronDown className="text-muted-foreground size-3.5" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-xs leading-none font-medium">{username}</p>
-                <p className="text-muted-foreground text-2xs leading-none">
-                  {user?.email || t("nav.noEmail")}
-                </p>
-                <p className="text-brand-orange text-3xs pt-1 leading-none font-bold">
-                  {roleLabel}
-                </p>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="cursor-pointer gap-2 text-xs"
-              onClick={() => navigate("/invitations")}
-            >
-              <Mail className="text-muted-foreground size-3.5" />
-              {t("nav.invitations")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate("/profile")}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              <IdCard className="text-muted-foreground size-3.5" />
-              {t("nav.profile")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate("/security")}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              <ShieldCheck className="text-muted-foreground size-3.5" />
-              {t("nav.security")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate("/change-password")}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              <UserIcon className="text-muted-foreground size-3.5" />
-              {t("nav.changePassword")}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="cursor-pointer text-xs text-rose-500 focus:bg-rose-50 focus:text-rose-600 dark:focus:bg-rose-950/50"
-            >
-              <LogOut className="mr-2 size-3.5" />
-              {t("nav.logout")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* User → click thẳng vào Cài đặt, không qua dropdown */}
+        <button
+          type="button"
+          onClick={() => navigate("/settings")}
+          title={t("nav.settings")}
+          className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 transition-colors outline-none"
+        >
+          <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
+            {username.charAt(0).toUpperCase()}
+          </div>
+          <span className="text-foreground hidden max-w-[120px] truncate text-xs font-semibold sm:inline">
+            {username}
+          </span>
+          <Settings className="text-muted-foreground size-3.5 shrink-0" />
+        </button>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8 text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/50"
+          onClick={handleLogout}
+          title={t("nav.logout")}
+        >
+          <LogOut className="size-4" />
+        </Button>
       </div>
     </header>
   );

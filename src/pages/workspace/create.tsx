@@ -5,8 +5,25 @@ import { CreateWorkspaceForm } from "./components/CreateWorkspaceForm";
 
 export function CreateWorkspacePage() {
   const { t } = useTranslation();
-  const { name, setName, industry, setIndustry, loading, handleSubmit } =
-    useCreateWorkspace();
+  const {
+    name,
+    setName,
+    description,
+    setDescription,
+    brandColor,
+    setBrandColor,
+    logoIcon,
+    setLogoIcon,
+    tagline,
+    setTagline,
+    foundedYear,
+    setFoundedYear,
+    assignMembers,
+    setAssignMembers,
+    agencyId,
+    loading,
+    handleSubmit,
+  } = useCreateWorkspace();
 
   return (
     <PageWrapper
@@ -16,8 +33,19 @@ export function CreateWorkspacePage() {
       <CreateWorkspaceForm
         name={name}
         onNameChange={setName}
-        industry={industry}
-        onIndustryChange={setIndustry}
+        description={description}
+        onDescriptionChange={setDescription}
+        brandColor={brandColor}
+        onBrandColorChange={setBrandColor}
+        logoIcon={logoIcon}
+        onLogoIconChange={setLogoIcon}
+        tagline={tagline}
+        onTaglineChange={setTagline}
+        foundedYear={foundedYear}
+        onFoundedYearChange={setFoundedYear}
+        agencyId={agencyId}
+        assignMembers={assignMembers}
+        onAssignMembersChange={setAssignMembers}
         submitting={loading}
         onSubmit={handleSubmit}
       />

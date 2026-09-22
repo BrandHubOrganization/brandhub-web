@@ -1,6 +1,9 @@
 {
   "title": "Thiết lập",
   "description": "Quản lý thông tin tài khoản và tuỳ chọn của bạn.",
+  "nav": {
+    "notifications": "Thông báo"
+  },
   "tabs": {
     "general": "Chung",
     "profile": "Hồ sơ",

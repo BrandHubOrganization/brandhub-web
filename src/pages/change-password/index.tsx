@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 import { authService } from "@/services/authService";
@@ -38,10 +37,15 @@ export function ChangePasswordPage() {
   };
 
   return (
-    <PageWrapper
-      title={t("settings.security.submit")}
-      description={t("settings.security.pageDescription")}
-    >
+    <section id="change-password" className="scroll-mt-6">
+      <div className="mb-4">
+        <h2 className="text-foreground text-lg font-semibold">
+          {t("settings.security.submit")}
+        </h2>
+        <p className="text-muted-foreground text-sm">
+          {t("settings.security.pageDescription")}
+        </p>
+      </div>
       <form
         onSubmit={handleSubmit}
         className="border-border bg-card flex max-w-sm flex-col gap-4 rounded-xl border p-6"
@@ -74,7 +78,7 @@ export function ChangePasswordPage() {
           <ArrowRight className="size-4" />
         </Button>
       </form>
-    </PageWrapper>
+    </section>
   );
 }
 

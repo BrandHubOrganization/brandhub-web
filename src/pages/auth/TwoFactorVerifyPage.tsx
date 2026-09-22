@@ -22,7 +22,9 @@ export function TwoFactorVerifyPage() {
   const [loading, setLoading] = React.useState(false);
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
-  const twoFactorToken = sessionStorage.getItem(TOKEN_KEY);
+  const twoFactorToken =
+    new URLSearchParams(window.location.search).get("twoFactorToken") ??
+    sessionStorage.getItem(TOKEN_KEY);
 
   React.useEffect(() => {
     if (!twoFactorToken) navigate("/login", { replace: true });
@@ -90,9 +92,7 @@ export function TwoFactorVerifyPage() {
       setAuth(realUser, accessToken);
       sessionStorage.removeItem(TOKEN_KEY);
       toast.success(t("auth.twoFactor.successToast"));
-      // Temporary: /dashboard gate needs workspace memberRole (empty for fresh login).
-      // navigate("/dashboard", { replace: true });
-      navigate("/", { replace: true });
+      navigate("/dashboard", { replace: true });
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("auth.twoFactor.errorDefault")));
     } finally {

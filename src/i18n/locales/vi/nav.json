@@ -7,6 +7,16 @@
     "noWorkspace": "Chưa có không gian làm việc",
     "selectWorkspace": "Chọn Không gian làm việc"
   },
+  "orgSwitcher": {
+    "label": "Không gian làm việc",
+    "placeholder": "Chọn công ty",
+    "selectAgency": "Công ty",
+    "noAgency": "Bạn chưa có công ty nào",
+    "noWorkspace": "Chưa có workspace",
+    "viewAgency": "Xem chi tiết công ty",
+    "createAgency": "+ Công ty mới",
+    "createWorkspace": "+ Workspace mới"
+  },
   "home": "Trang chủ",
   "dashboard": "Bảng điều khiển",
   "overview": "Tổng quan Không gian làm việc",
@@ -14,6 +24,7 @@
   "editor": "Trình soạn Nội dung",
   "calendar": "Lịch",
   "workspace": "Không gian làm việc",
+  "createWorkspace": "Tạo Workspace",
   "members": "Thành viên",
   "invitations": "Lời mời",
   "portal": "Cổng Khách hàng",
@@ -28,6 +39,8 @@
   "aiStudio": "AI Studio",
   "reports": "Báo cáo",
   "clients": "Thương hiệu Khách hàng",
+  "agency": "Công ty (Agency)",
+  "clientProfile": "Hồ sơ Thương hiệu",
   "settings": "Thiết lập",
   "sections": {
     "overview": "Tổng quan",
@@ -46,5 +59,7 @@
   "roleLabel": "Vai trò: {{role}}",
   "roleLabelPrefix": "Vai trò:",
   "profile": "Hồ sơ",
-  "security": "Bảo mật"
+  "security": "Bảo mật",
+  "settings": "Cài đặt",
+  "notificationSettings": "Cài đặt thông báo"
 }

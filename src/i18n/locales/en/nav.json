@@ -7,6 +7,16 @@
     "noWorkspace": "No workspace",
     "selectWorkspace": "Select Workspace"
   },
+  "orgSwitcher": {
+    "label": "Workspace",
+    "placeholder": "Select agency",
+    "selectAgency": "Agency",
+    "noAgency": "You don't have any agency yet",
+    "noWorkspace": "No workspace yet",
+    "viewAgency": "View agency details",
+    "createAgency": "+ New agency",
+    "createWorkspace": "+ New workspace"
+  },
   "home": "Home",
   "dashboard": "Dashboard",
   "overview": "Workspace Overview",
@@ -14,6 +24,7 @@
   "editor": "Content Editor",
   "calendar": "Calendar",
   "workspace": "Workspaces",
+  "createWorkspace": "Create Workspace",
   "members": "Members",
   "invitations": "Invitations",
   "portal": "Client Portal",
@@ -28,6 +39,8 @@
   "aiStudio": "AI Studio",
   "reports": "Reports",
   "clients": "Clients",
+  "agency": "Agency",
+  "clientProfile": "Brand Profile",
   "settings": "Settings",
   "sections": {
     "overview": "Overview",
@@ -46,5 +59,7 @@
   "roleLabel": "Role: {{role}}",
   "roleLabelPrefix": "Role:",
   "profile": "Profile",
-  "security": "Security"
+  "security": "Security",
+  "settings": "Settings",
+  "notificationSettings": "Notification Settings"
 }

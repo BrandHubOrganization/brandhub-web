@@ -10,10 +10,12 @@
     "supportedFormats": "PNG, JPG tối đa 5MB",
     "cancel": "Hủy",
     "save": "Lưu ảnh đại diện",
-    "uploadSuccess": "Cập nhật ảnh đại diện thành công"
+    "uploadSuccess": "Cập nhật ảnh đại diện thành công",
+    "uploadError": "Không thể tải ảnh đại diện"
   },
   "editButton": "Chỉnh sửa hồ sơ",
   "cancelEdit": "Hủy",
+  "saveError": "Không thể lưu hồ sơ",
   "view": {
     "roleLabel": "Vai trò",
     "workspaceLabel": "Workspace",
@@ -30,21 +32,16 @@
     "jobTitleLabel": "Chức danh",
     "jobTitlePlaceholder": "VD: Content Director"
   },
-  "identity": {
-    "title": "Xác minh danh tính",
-    "status": "Đã xác minh",
-    "verified": "Đã xác nhận",
-    "selfieLabel": "Ảnh chụp mặt",
-    "retakeButton": "Chụp lại ảnh"
-  },
   "danger": {
     "title": "Vùng nguy hiểm",
     "deactivateHint": "Vô hiệu hóa sẽ khóa tài khoản của bạn. Dữ liệu không bị xóa vĩnh viễn.",
     "deactivateButton": "Vô hiệu hóa tài khoản",
     "confirmTitle": "Vô hiệu hóa tài khoản?",
     "confirmBody": "Bạn sẽ không thể đăng nhập cho đến khi kích hoạt lại. Hành động này có thể hoàn tác bằng cách đăng nhập lại.",
+    "passwordPlaceholder": "Nhập mật khẩu để xác nhận",
     "cancel": "Hủy",
     "confirmDeactivate": "Xác nhận vô hiệu hóa",
+    "deactivateError": "Không thể vô hiệu hóa tài khoản",
     "deactivateSuccess": "Tài khoản đã bị vô hiệu hóa"
   }
 }

@@ -8,6 +8,7 @@ export interface User {
   workspaceId?: string;
   clientId?: string;
   avatar?: string;
+  phone?: string;
   isActive?: boolean;
   lastLoginAt?: string;
   createdAt?: string;

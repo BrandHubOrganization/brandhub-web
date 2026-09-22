@@ -1,3 +1,7 @@
+import type { CompanySize } from "@/types/agency";
+
+export type { CompanySize };
+
 export type MemberRole = "OWNER" | "MANAGER" | "CREATOR" | "CLIENT";
 
 export type WorkspaceIndustry =
@@ -24,10 +28,24 @@ export interface WorkspaceSettings {
 export interface Workspace {
   id: string;
   name: string;
+  agencyId: string | null;
   slug: string;
   ownerId: string;
   logoUrl: string | null;
   settings: WorkspaceSettings;
+  industry: WorkspaceIndustry | null;
+  companySize: CompanySize | null;
+  website: string | null;
+  phone: string | null;
+  location: string | null;
+  description: string | null;
+  brandColor: string | null;
+  logoIcon: string | null;
+  tagline: string | null;
+  foundedYear: number | null;
+  facebookUrl: string | null;
+  linkedinUrl: string | null;
+  instagramUrl: string | null;
   isActive: boolean;
   createdAt: string;
 }
@@ -35,9 +53,10 @@ export interface Workspace {
 export interface WorkspaceMember {
   id: string;
   workspaceId: string;
-  userId: string;
+  userId: string | null;
   fullName: string | null;
   email: string | null;
+  clientProfileId: string | null;
   role: MemberRole;
   joinedAt: string | null;
   isActive: boolean;

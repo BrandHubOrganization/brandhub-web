@@ -1,6 +1,9 @@
 {
   "title": "Settings",
   "description": "Manage your account information and preferences.",
+  "nav": {
+    "notifications": "Notifications"
+  },
   "tabs": {
     "general": "General",
     "profile": "Profile",

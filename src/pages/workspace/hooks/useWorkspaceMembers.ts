@@ -3,7 +3,10 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
-import { workspaceService } from "@/services/workspaceService";
+import {
+  workspaceService,
+  type AssignEntry,
+} from "@/services/workspaceService";
 import { extractErrorMessage } from "@/utils/error";
 import type { MemberRole, WorkspaceMember } from "@/types/workspace";
 
@@ -28,6 +31,7 @@ function seedDemoMembers(members: WorkspaceMember[]): WorkspaceMember[] {
       userId: "demo-u1",
       fullName: "Minh Anh (Demo)",
       email: "minhanh.demo@brandhub.dev",
+      clientProfileId: null,
       role: "CREATOR",
       joinedAt: "2026-07-01T00:00:00Z",
       isActive: true,
@@ -38,6 +42,7 @@ function seedDemoMembers(members: WorkspaceMember[]): WorkspaceMember[] {
       userId: "demo-u2",
       fullName: "Hồng Nhung (Demo)",
       email: "hongnhung.demo@brandhub.dev",
+      clientProfileId: null,
       role: "MANAGER",
       joinedAt: "2026-07-15T00:00:00Z",
       isActive: true,
@@ -56,11 +61,19 @@ export function useWorkspaceMembers() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<MemberRole>("CREATOR");
+  const [inviteNote, setInviteNote] = useState("");
   const [inviting, setInviting] = useState(false);
   const [removeTarget, setRemoveTarget] = useState<WorkspaceMember | null>(
     null,
   );
   const [removing, setRemoving] = useState(false);
+  const [agencyId, setAgencyId] = useState<string | null>(null);
+  const [assignOpen, setAssignOpen] = useState(false);
+  const [assignValues, setAssignValues] = useState<AssignEntry[]>([]);
+  const [assigning, setAssigning] = useState(false);
+  const [addClientOpen, setAddClientOpen] = useState(false);
+  const [addClientId, setAddClientId] = useState("");
+  const [addingClient, setAddingClient] = useState(false);
 
   const loadMembers = useCallback(() => setReloadCount((c) => c + 1), []);
 
@@ -75,6 +88,13 @@ export function useWorkspaceMembers() {
       .finally(() => setLoading(false));
   }, [workspaceId, reloadCount, t]);
 
+  useEffect(() => {
+    if (!workspaceId) return;
+    workspaceService
+      .getById(workspaceId)
+      .then(({ data }) => setAgencyId(data.data.agencyId));
+  }, [workspaceId]);
+
   const currentMember = members.find((m) => m.userId === currentUserId);
   const canManage = currentMember
     ? MANAGE_ROLES.includes(currentMember.role)
@@ -88,14 +108,48 @@ export function useWorkspaceMembers() {
       await workspaceService.inviteMember(workspaceId, {
         email: inviteEmail.trim(),
         role: inviteRole,
+        note: inviteNote.trim() || undefined,
       });
       toast.success(t("workspace.members.inviteSuccess"));
       setInviteOpen(false);
       setInviteEmail("");
+      setInviteNote("");
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("common.actionFailed")));
     } finally {
       setInviting(false);
+    }
+  };
+
+  const handleAssign = async () => {
+    if (!workspaceId || assignValues.length === 0) return;
+    setAssigning(true);
+    try {
+      await workspaceService.assignMembers(workspaceId, assignValues);
+      toast.success(t("workspace.members.assignSuccess"));
+      setAssignOpen(false);
+      setAssignValues([]);
+      loadMembers();
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("common.actionFailed")));
+    } finally {
+      setAssigning(false);
+    }
+  };
+
+  const handleAddClient = async () => {
+    if (!workspaceId || !addClientId) return;
+    setAddingClient(true);
+    try {
+      await workspaceService.addClient(workspaceId, addClientId);
+      toast.success(t("workspace.members.addClientSuccess"));
+      setAddClientOpen(false);
+      setAddClientId("");
+      loadMembers();
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("common.actionFailed")));
+    } finally {
+      setAddingClient(false);
     }
   };
 
@@ -125,11 +179,26 @@ export function useWorkspaceMembers() {
     setInviteEmail,
     inviteRole,
     setInviteRole,
+    inviteNote,
+    setInviteNote,
     inviting,
     handleInvite,
     removeTarget,
     setRemoveTarget,
     removing,
     handleRemove,
+    agencyId,
+    assignOpen,
+    setAssignOpen,
+    assignValues,
+    setAssignValues,
+    assigning,
+    handleAssign,
+    addClientOpen,
+    setAddClientOpen,
+    addClientId,
+    setAddClientId,
+    addingClient,
+    handleAddClient,
   };
 }

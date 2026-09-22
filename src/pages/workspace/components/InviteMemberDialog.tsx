@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,6 +21,8 @@ interface Props {
   onEmailChange: (email: string) => void;
   role: MemberRole;
   onRoleChange: (role: MemberRole) => void;
+  note: string;
+  onNoteChange: (note: string) => void;
   submitting: boolean;
   onSubmit: (e: React.FormEvent) => void;
 }
@@ -31,6 +34,8 @@ export function InviteMemberDialog({
   onEmailChange,
   role,
   onRoleChange,
+  note,
+  onNoteChange,
   submitting,
   onSubmit,
 }: Props) {
@@ -64,6 +69,16 @@ export function InviteMemberDialog({
                 </option>
               ))}
             </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-xs font-semibold tracking-wide">
+              {t("workspace.members.noteLabel")}
+            </Label>
+            <Textarea
+              value={note}
+              onChange={(e) => onNoteChange(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter>
             <Button variant="orange" type="submit" loading={submitting}>

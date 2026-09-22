@@ -10,10 +10,12 @@
     "supportedFormats": "PNG, JPG up to 5MB",
     "cancel": "Cancel",
     "save": "Save avatar",
-    "uploadSuccess": "Avatar updated successfully"
+    "uploadSuccess": "Avatar updated successfully",
+    "uploadError": "Unable to upload avatar"
   },
   "editButton": "Edit profile",
   "cancelEdit": "Cancel",
+  "saveError": "Unable to save profile",
   "view": {
     "roleLabel": "Role",
     "workspaceLabel": "Workspace",
@@ -30,21 +32,16 @@
     "jobTitleLabel": "Job title",
     "jobTitlePlaceholder": "e.g. Content Director"
   },
-  "identity": {
-    "title": "Identity Verification",
-    "status": "Verified",
-    "verified": "Confirmed",
-    "selfieLabel": "Face photo",
-    "retakeButton": "Retake photo"
-  },
   "danger": {
     "title": "Danger Zone",
     "deactivateHint": "Deactivating will lock your account. Data is not permanently deleted.",
     "deactivateButton": "Deactivate account",
     "confirmTitle": "Deactivate account?",
     "confirmBody": "You will not be able to sign in until reactivated. This can be undone by signing back in.",
+    "passwordPlaceholder": "Enter your password to confirm",
     "cancel": "Cancel",
     "confirmDeactivate": "Confirm deactivation",
+    "deactivateError": "Unable to deactivate account",
     "deactivateSuccess": "Account deactivated"
   }
 }

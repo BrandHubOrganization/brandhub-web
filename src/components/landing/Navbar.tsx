@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { Languages, Sun, Moon, Menu, X } from "lucide-react";
+import { Languages, Sun, Moon, Menu, X, LayoutDashboard } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
+import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -46,6 +47,7 @@ function useShowAfterHero() {
 export function Navbar() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { setTheme } = useTheme();
   const isDark = useIsDark();
   const show = useShowAfterHero();
@@ -121,20 +123,33 @@ export function Navbar() {
             {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
           </button>
 
-          <button
-            type="button"
-            onClick={() => navigate("/login")}
-            className="hidden cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 sm:inline-flex dark:text-zinc-200 dark:hover:bg-zinc-800"
-          >
-            {t("landing.nav.login")}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/register")}
-            className="bg-brand-orange hover:bg-brand-orange/90 hidden cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors sm:inline-flex"
-          >
-            {t("landing.nav.register")}
-          </button>
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={() => navigate("/dashboard")}
+              className="bg-brand-orange hover:bg-brand-orange/90 hidden cursor-pointer items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors sm:inline-flex"
+            >
+              <LayoutDashboard className="size-4" />
+              {t("landing.nav.dashboard")}
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => navigate("/login")}
+                className="hidden cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 sm:inline-flex dark:text-zinc-200 dark:hover:bg-zinc-800"
+              >
+                {t("landing.nav.login")}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/register")}
+                className="bg-brand-orange hover:bg-brand-orange/90 hidden cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors sm:inline-flex"
+              >
+                {t("landing.nav.register")}
+              </button>
+            </>
+          )}
 
           <button
             type="button"
@@ -187,20 +202,33 @@ export function Navbar() {
             </button>
           </div>
           <div className="mt-3 flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={() => navigate("/login")}
-              className="cursor-pointer rounded-lg border border-zinc-200 px-4 py-2.5 text-center text-sm font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-200"
-            >
-              {t("landing.nav.login")}
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate("/register")}
-              className="bg-brand-orange cursor-pointer rounded-lg px-4 py-2.5 text-center text-sm font-semibold text-white"
-            >
-              {t("landing.nav.register")}
-            </button>
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard")}
+                className="bg-brand-orange flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-center text-sm font-semibold text-white"
+              >
+                <LayoutDashboard className="size-4" />
+                {t("landing.nav.dashboard")}
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => navigate("/login")}
+                  className="cursor-pointer rounded-lg border border-zinc-200 px-4 py-2.5 text-center text-sm font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-200"
+                >
+                  {t("landing.nav.login")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate("/register")}
+                  className="bg-brand-orange cursor-pointer rounded-lg px-4 py-2.5 text-center text-sm font-semibold text-white"
+                >
+                  {t("landing.nav.register")}
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

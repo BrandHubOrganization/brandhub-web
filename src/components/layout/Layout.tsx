@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useAgencyStore } from "@/store/agencyStore";
 import { workspaceService } from "@/services/workspaceService";
 import { userService } from "@/services/userService";
 import { canAccess } from "@/routes/access";
@@ -35,11 +36,23 @@ const MOBILE_TABS = [
 
 export function Layout() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { user } = useAuthStore();
   const systemRole = useAuthStore((s) => s.systemRole);
   const setSystemRole = useAuthStore((s) => s.setSystemRole);
 
   const workspaces = useWorkspaceStore((s) => s.workspaceList);
+  const currentAgencyId = useAgencyStore((s) => s.currentAgencyId);
+  const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
+  const agencyList = useAgencyStore((s) => s.agencyList);
+  const fetchAgencies = useAgencyStore((s) => s.fetchAgencies);
+  const agencyWorkspaces = React.useMemo(
+    () =>
+      currentAgencyId
+        ? workspaces.filter((ws) => ws.agencyId === currentAgencyId)
+        : [],
+    [workspaces, currentAgencyId],
+  );
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
@@ -51,7 +64,8 @@ export function Layout() {
   React.useEffect(() => {
     if (isDevSession) return;
     fetchWorkspaces();
-  }, [fetchWorkspaces, isDevSession]);
+    fetchAgencies();
+  }, [fetchWorkspaces, fetchAgencies, isDevSession]);
 
   React.useEffect(() => {
     if (!user || isDevSession) return;
@@ -66,11 +80,12 @@ export function Layout() {
   }, [user?.id]);
 
   const activeWorkspace: Workspace | null = React.useMemo(() => {
-    if (workspaces.length === 0) return null;
+    if (agencyWorkspaces.length === 0) return null;
     return (
-      workspaces.find((ws) => ws.id === currentWorkspace?.id) ?? workspaces[0]
+      agencyWorkspaces.find((ws) => ws.id === currentWorkspace?.id) ??
+      agencyWorkspaces[0]
     );
-  }, [workspaces, currentWorkspace]);
+  }, [agencyWorkspaces, currentWorkspace]);
 
   React.useEffect(() => {
     if (activeWorkspace && activeWorkspace.id !== currentWorkspace?.id) {
@@ -135,9 +150,20 @@ export function Layout() {
     return canAccess(tab.to, systemRole, memberRole);
   });
 
-  const handleSwitchWorkspace = (workspaceId: string) => {
+  const handleSwitchWorkspace = (agencyIdArg: string, workspaceId: string) => {
     const ws = workspaces.find((w) => w.id === workspaceId);
-    if (ws) setCurrentWorkspace(ws);
+    if (!ws) return;
+    setCurrentAgencyId(agencyIdArg);
+    setCurrentWorkspace(ws);
+    navigate(`/workspaces/${workspaceId}/settings`);
+  };
+
+  const handleSwitchAgency = (agencyIdArg: string) => {
+    setCurrentAgencyId(agencyIdArg);
+    if (currentWorkspace?.agencyId !== agencyIdArg) {
+      setCurrentWorkspace(null);
+    }
+    navigate(`/agency/${agencyIdArg}`);
   };
 
   return (
@@ -148,9 +174,14 @@ export function Layout() {
           collapsed={collapsed}
           role={currentRole}
           systemRole={systemRole}
-          workspaces={workspaces}
+          workspaces={agencyWorkspaces}
           activeWorkspace={activeWorkspace}
           onSwitchWorkspace={handleSwitchWorkspace}
+          hasAgency={!!currentAgencyId}
+          agencyList={agencyList}
+          allWorkspaces={workspaces}
+          currentAgencyId={currentAgencyId}
+          onSwitchAgency={handleSwitchAgency}
         />
       </aside>
 
@@ -162,6 +193,7 @@ export function Layout() {
           onMobileMenuOpen={() => setMobileOpen(true)}
           memberRole={memberRole}
           workspaces={workspaces}
+          agencies={agencyList}
         />
 
         {/* Dynamic Mobile Sheet Drawer */}
@@ -174,10 +206,15 @@ export function Layout() {
               collapsed={false}
               role={currentRole}
               systemRole={systemRole}
-              workspaces={workspaces}
+              workspaces={agencyWorkspaces}
               activeWorkspace={activeWorkspace}
               onSwitchWorkspace={handleSwitchWorkspace}
               onMobileItemClick={() => setMobileOpen(false)}
+              hasAgency={!!currentAgencyId}
+              agencyList={agencyList}
+              allWorkspaces={workspaces}
+              currentAgencyId={currentAgencyId}
+              onSwitchAgency={handleSwitchAgency}
             />
           </SheetContent>
         </Sheet>

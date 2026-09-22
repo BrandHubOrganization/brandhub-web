@@ -4,12 +4,19 @@ import { toast } from "sonner";
 import { TriangleAlert } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useWorkspaceSettings } from "./hooks/useWorkspaceSettings";
 import { LogoUploader } from "./components/LogoUploader";
 import { PlatformToggle } from "./components/PlatformToggle";
 import { FrequencyToggle } from "./components/FrequencyToggle";
 import { TimezoneSelect } from "./components/TimezoneSelect";
+import {
+  COMPANY_SIZES,
+  WORKSPACE_INDUSTRIES,
+} from "@/pages/workspace/constants";
+import type { CompanySize, WorkspaceIndustry } from "@/types/workspace";
 
 export function WorkspaceSettingsPage() {
   const { t } = useTranslation();
@@ -23,6 +30,16 @@ export function WorkspaceSettingsPage() {
     defaultPlatforms,
     reportFrequency,
     logoUrl,
+    industry,
+    setIndustry,
+    companySize,
+    setCompanySize,
+    website,
+    setWebsite,
+    phone,
+    setPhone,
+    location,
+    setLocation,
     canManage,
     uploadingLogo,
     fileInputRef,
@@ -52,7 +69,7 @@ export function WorkspaceSettingsPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="border-border bg-card flex max-w-sm flex-col gap-4 rounded-xl border p-6"
+        className="border-border bg-card flex max-w-lg flex-col gap-4 rounded-xl border p-6"
       >
         <Input
           label={t("workspace.settings.nameLabel")}
@@ -69,6 +86,65 @@ export function WorkspaceSettingsPage() {
           value={reportFrequency}
           onToggle={toggleReportFrequency}
         />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-xs font-semibold tracking-wide">
+              {t("workspace.create.industryLabel")}
+            </Label>
+            <Select
+              value={industry}
+              onChange={(e) =>
+                setIndustry(e.target.value as WorkspaceIndustry | "")
+              }
+            >
+              <option value="">
+                {t("workspace.create.industryPlaceholder")}
+              </option>
+              {WORKSPACE_INDUSTRIES.map((i) => (
+                <option key={i} value={i}>
+                  {t(`workspace.industry.${i}`)}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-xs font-semibold tracking-wide">
+              {t("workspace.create.companySizeLabel")}
+            </Label>
+            <Select
+              value={companySize}
+              onChange={(e) =>
+                setCompanySize(e.target.value as CompanySize | "")
+              }
+            >
+              <option value="">
+                {t("workspace.create.companySizePlaceholder")}
+              </option>
+              {COMPANY_SIZES.map((s) => (
+                <option key={s} value={s}>
+                  {t(`agency.companySize.${s}`)}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </div>
+        <Input
+          label={t("workspace.create.websiteLabel")}
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Input
+            label={t("workspace.create.phoneLabel")}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+          <Input
+            label={t("workspace.create.locationLabel")}
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+        </div>
         <Button
           variant="orange"
           type="submit"

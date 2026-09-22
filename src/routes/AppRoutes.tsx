@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Import Layout & Security Components
 import { AuthGuard } from "@/components/layout/AuthGuard";
@@ -14,12 +14,17 @@ import { ResetPasswordPage } from "@/pages/auth/ResetPasswordPage";
 import { OAuthCallbackPage } from "@/pages/auth/OAuthCallbackPage";
 import { LandingPage } from "@/pages/dashboard/landing";
 import { DashboardPage } from "@/pages/dashboard";
-import { ChangePasswordPage } from "@/pages/change-password";
 import { WorkspacePage } from "@/pages/workspace";
 import { CreateWorkspacePage } from "@/pages/workspace/create";
 import { WorkspaceSettingsPage } from "@/pages/workspace/detail";
 import { WorkspaceMembersPage } from "@/pages/workspace/members";
 import { InvitationsPage } from "@/pages/workspace/invitations";
+import { AgencyPage } from "@/pages/agency";
+import { AgencyDetailPage } from "@/pages/agency/detail";
+import { CreateAgencyPage } from "@/pages/agency/create";
+import { AgencyMembersPage } from "@/pages/agency/members";
+import { AgencyInvitationsPage } from "@/pages/agency/invitations";
+import { AcceptInvitationPage } from "@/pages/agency/accept";
 import { PortalPage } from "@/pages/portal";
 import { AdminPage } from "@/pages/admin";
 import { EditorPage } from "@/pages/editor";
@@ -41,9 +46,8 @@ import { AmbassadorsPage } from "@/pages/ai-studio/ambassadors";
 import { KnowledgeBasePage } from "@/pages/ai-studio/knowledge-base";
 import { TrendsPage } from "@/pages/ai-studio/trends";
 import { ReportsPage } from "@/pages/reports";
-import { NotificationSettingsPage } from "@/pages/notification-settings";
-import { SecurityPage } from "@/pages/security";
-import { ProfilePage } from "@/pages/profile";
+import { SettingsLayout } from "@/pages/settings/SettingsLayout";
+import { ClientProfilePage } from "@/pages/client-profile";
 import { VideoStudioPage } from "@/pages/ai-studio/video";
 import ExamplesPage from "@/components/examples";
 
@@ -67,7 +71,10 @@ export function AppRoutes() {
           <Route path="/clients" element={<ClientListPage />} />
           <Route path="/clients/create" element={<ClientCreatePage />} />
           <Route path="/clients/:id" element={<ClientDetailPage />} />
-          <Route path="/change-password" element={<ChangePasswordPage />} />
+          <Route
+            path="/change-password"
+            element={<Navigate to="/settings" replace />}
+          />
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
           <Route
@@ -79,6 +86,18 @@ export function AppRoutes() {
             element={<WorkspaceMembersPage />}
           />
           <Route path="/invitations" element={<InvitationsPage />} />
+          <Route
+            path="/invitations/accept"
+            element={<AcceptInvitationPage />}
+          />
+          <Route path="/agency" element={<AgencyPage />} />
+          <Route path="/agency/create" element={<CreateAgencyPage />} />
+          <Route path="/agency/:id" element={<AgencyDetailPage />} />
+          <Route
+            path="/agency/invitations"
+            element={<AgencyInvitationsPage />}
+          />
+          <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/requests" element={<ContentRequestListPage />} />
@@ -109,12 +128,21 @@ export function AppRoutes() {
           />
           <Route path="/ai-studio/trends" element={<TrendsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/settings" element={<SettingsLayout />} />
+          {/* Legacy paths — giữ để không gãy link/bookmark cũ, one-page nên không cần anchor riêng */}
           <Route
             path="/notification-settings"
-            element={<NotificationSettingsPage />}
+            element={<Navigate to="/settings" replace />}
           />
-          <Route path="/security" element={<SecurityPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route
+            path="/security"
+            element={<Navigate to="/settings" replace />}
+          />
+          <Route
+            path="/profile"
+            element={<Navigate to="/settings" replace />}
+          />
+          <Route path="/client-profile" element={<ClientProfilePage />} />
           <Route path="/ai-studio/video" element={<VideoStudioPage />} />
           <Route path="/components/examples" element={<ExamplesPage />} />
         </Route>

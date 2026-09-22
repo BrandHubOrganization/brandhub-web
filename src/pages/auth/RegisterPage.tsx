@@ -23,21 +23,49 @@ export function RegisterPage() {
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
+  type FieldName = "fullName" | "email" | "password" | "confirmPassword";
+
+  // Validate one field against its current value (passwordValue used for the
+  // confirm-password match). Returns "" when valid, so callers can store the
+  // result directly in the errors map.
+  const getFieldError = (
+    name: FieldName,
+    value: string,
+    passwordValue: string,
+  ): string => {
+    switch (name) {
+      case "fullName":
+        return value.trim() ? "" : t("auth.validation.fullNameRequired");
+      case "email":
+        if (!value.trim()) return t("auth.validation.emailRequired");
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+          ? ""
+          : t("auth.validation.emailInvalid");
+      case "password":
+        if (!value) return t("auth.validation.passwordRequired");
+        if (value.length < 8) return t("auth.validation.passwordMinLength");
+        if (!/[0-9]/.test(value)) return t("auth.validation.passwordNeedDigit");
+        return "";
+      case "confirmPassword":
+        return value && value !== passwordValue
+          ? t("auth.validation.passwordMismatch")
+          : "";
+    }
+  };
+
   const validate = (): boolean => {
-    const next: Record<string, string> = {};
-    if (!fullName.trim()) next.fullName = t("auth.validation.fullNameRequired");
-    if (!email.trim()) next.email = t("auth.validation.emailRequired");
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      next.email = t("auth.validation.emailInvalid");
-    if (!password) next.password = t("auth.validation.passwordRequired");
-    else if (password.length < 8)
-      next.password = t("auth.validation.passwordMinLength");
-    else if (!/[0-9]/.test(password))
-      next.password = t("auth.validation.passwordNeedDigit");
-    if (password !== confirmPassword)
-      next.confirmPassword = t("auth.validation.passwordMismatch");
+    const next: Record<string, string> = {
+      fullName: getFieldError("fullName", fullName, password),
+      email: getFieldError("email", email, password),
+      password: getFieldError("password", password, password),
+      confirmPassword: getFieldError(
+        "confirmPassword",
+        confirmPassword,
+        password,
+      ),
+    };
     setErrors(next);
-    return Object.keys(next).length === 0;
+    return Object.values(next).every((e) => !e);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,8 +122,12 @@ export function RegisterPage() {
               placeholder="Nguyễn Văn A"
               value={fullName}
               onChange={(e) => {
-                setFullName(e.target.value);
-                setErrors((p) => ({ ...p, fullName: "" }));
+                const v = e.target.value;
+                setFullName(v);
+                setErrors((p) => ({
+                  ...p,
+                  fullName: getFieldError("fullName", v, password),
+                }));
               }}
               error={errors.fullName}
               required
@@ -106,8 +138,12 @@ export function RegisterPage() {
               placeholder="hello@company.com"
               value={email}
               onChange={(e) => {
-                setEmail(e.target.value);
-                setErrors((p) => ({ ...p, email: "" }));
+                const v = e.target.value;
+                setEmail(v);
+                setErrors((p) => ({
+                  ...p,
+                  email: getFieldError("email", v, password),
+                }));
               }}
               error={errors.email}
               required
@@ -118,8 +154,15 @@ export function RegisterPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => {
-                  setPassword(e.target.value);
-                  setErrors((p) => ({ ...p, password: "" }));
+                  const v = e.target.value;
+                  setPassword(v);
+                  setErrors((p) => ({
+                    ...p,
+                    password: getFieldError("password", v, v),
+                    confirmPassword: confirmPassword
+                      ? getFieldError("confirmPassword", confirmPassword, v)
+                      : "",
+                  }));
                 }}
                 error={errors.password}
                 required
@@ -131,8 +174,16 @@ export function RegisterPage() {
               placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => {
-                setConfirmPassword(e.target.value);
-                setErrors((p) => ({ ...p, confirmPassword: "" }));
+                const v = e.target.value;
+                setConfirmPassword(v);
+                setErrors((p) => ({
+                  ...p,
+                  confirmPassword: getFieldError(
+                    "confirmPassword",
+                    v,
+                    password,
+                  ),
+                }));
               }}
               error={errors.confirmPassword}
               required
