@@ -7,8 +7,6 @@ import {
   FolderOpen,
   Globe,
   IdCard,
-  Instagram,
-  Linkedin,
   Link2,
   MapPin,
   Pencil,
@@ -25,6 +23,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { ProvinceSelect } from "@/components/ui/province-select";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 import { agencyService } from "@/services/agencyService";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
@@ -40,6 +40,8 @@ import type {
 } from "@/types/agency";
 
 const CURRENT_YEAR = new Date().getFullYear();
+const URL_RE = /^https?:\/\/.+/i;
+const PHONE_RE = /^[0-9+\-\s()]{6,20}$/;
 
 const NAV_ITEMS = [
   { id: "profile", icon: IdCard, labelKey: "agency.detail.nav.profile" },
@@ -82,6 +84,53 @@ export function AgencyDetailPage() {
   const [facebookUrl, setFacebookUrl] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
+
+  type FieldErrors = Partial<
+    Record<
+      | "name"
+      | "website"
+      | "phone"
+      | "facebookUrl"
+      | "linkedinUrl"
+      | "instagramUrl"
+      | "foundedYear",
+      string
+    >
+  >;
+  const [errors, setErrors] = useState<FieldErrors>({});
+
+  const validateField = (field: keyof FieldErrors, value: string) => {
+    let message: string | undefined;
+    switch (field) {
+      case "name":
+        if (!value.trim()) message = t("agency.detail.errors.nameRequired");
+        break;
+      case "website":
+      case "facebookUrl":
+      case "linkedinUrl":
+      case "instagramUrl":
+        if (value.trim() && !URL_RE.test(value.trim()))
+          message = t("agency.detail.errors.invalidUrl");
+        break;
+      case "phone":
+        if (value.trim() && !PHONE_RE.test(value.trim()))
+          message = t("agency.detail.errors.invalidPhone");
+        break;
+      case "foundedYear":
+        if (value) {
+          const y = Number(value);
+          if (!Number.isFinite(y) || y < 1900 || y > CURRENT_YEAR)
+            message = t("agency.detail.errors.invalidYear", {
+              max: CURRENT_YEAR,
+            });
+        }
+        break;
+    }
+    setErrors((prev) => ({ ...prev, [field]: message }));
+    return !message;
+  };
+
+  const hasErrors = Object.values(errors).some(Boolean);
 
   const applyAgency = (a: Agency) => {
     setAgency(a);
@@ -167,6 +216,7 @@ export function AgencyDetailPage() {
   const handleCancelEdit = () => {
     if (!agency) return;
     applyAgency(agency);
+    setErrors({});
     setIsEditing(false);
   };
 
@@ -260,8 +310,13 @@ export function AgencyDetailPage() {
               <div className="space-y-4">
                 <Input
                   label={t("agency.create.nameLabel")}
+                  placeholder={t("agency.create.namePlaceholder")}
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    validateField("name", e.target.value);
+                  }}
+                  error={errors.name}
                   required
                 />
 
@@ -318,13 +373,15 @@ export function AgencyDetailPage() {
                   </p>
                 </div>
 
-                <Input
+                <RichTextInput
                   label={t("agency.create.descriptionLabel")}
+                  placeholder={t("agency.create.descriptionPlaceholder")}
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={setDescription}
                 />
                 <Input
                   label={t("agency.create.taglineLabel")}
+                  placeholder={t("agency.create.taglinePlaceholder")}
                   maxLength={140}
                   value={tagline}
                   onChange={(e) => setTagline(e.target.value)}
@@ -373,19 +430,29 @@ export function AgencyDetailPage() {
                 </div>
                 <Input
                   label={t("agency.create.websiteLabel")}
+                  placeholder={t("agency.create.websitePlaceholder")}
                   value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
+                  onChange={(e) => {
+                    setWebsite(e.target.value);
+                    validateField("website", e.target.value);
+                  }}
+                  error={errors.website}
                 />
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Input
                     label={t("agency.create.phoneLabel")}
+                    placeholder={t("agency.create.phonePlaceholder")}
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      validateField("phone", e.target.value);
+                    }}
+                    error={errors.phone}
                   />
-                  <Input
+                  <ProvinceSelect
                     label={t("agency.create.locationLabel")}
                     value={location}
-                    onChange={(e) => setLocation(e.target.value)}
+                    onChange={setLocation}
                   />
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -406,7 +473,11 @@ export function AgencyDetailPage() {
                     min={1900}
                     max={CURRENT_YEAR}
                     value={foundedYear}
-                    onChange={(e) => setFoundedYear(e.target.value)}
+                    onChange={(e) => {
+                      setFoundedYear(e.target.value);
+                      validateField("foundedYear", e.target.value);
+                    }}
+                    error={errors.foundedYear}
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
@@ -434,18 +505,33 @@ export function AgencyDetailPage() {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <Input
                     label={t("agency.create.facebookUrlLabel")}
+                    placeholder="https://facebook.com/..."
                     value={facebookUrl}
-                    onChange={(e) => setFacebookUrl(e.target.value)}
+                    onChange={(e) => {
+                      setFacebookUrl(e.target.value);
+                      validateField("facebookUrl", e.target.value);
+                    }}
+                    error={errors.facebookUrl}
                   />
                   <Input
                     label={t("agency.create.linkedinUrlLabel")}
+                    placeholder="https://linkedin.com/..."
                     value={linkedinUrl}
-                    onChange={(e) => setLinkedinUrl(e.target.value)}
+                    onChange={(e) => {
+                      setLinkedinUrl(e.target.value);
+                      validateField("linkedinUrl", e.target.value);
+                    }}
+                    error={errors.linkedinUrl}
                   />
                   <Input
                     label={t("agency.create.instagramUrlLabel")}
+                    placeholder="https://instagram.com/..."
                     value={instagramUrl}
-                    onChange={(e) => setInstagramUrl(e.target.value)}
+                    onChange={(e) => {
+                      setInstagramUrl(e.target.value);
+                      validateField("instagramUrl", e.target.value);
+                    }}
+                    error={errors.instagramUrl}
                   />
                 </div>
                 <div className="flex gap-2">
@@ -458,6 +544,7 @@ export function AgencyDetailPage() {
                   </Button>
                   <Button
                     loading={saving}
+                    disabled={hasErrors || !name.trim()}
                     onClick={handleSave}
                     className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white"
                   >
@@ -467,9 +554,14 @@ export function AgencyDetailPage() {
               </div>
             ) : (
               <>
-                <p className="text-muted-foreground text-sm">
-                  {agency.description || "—"}
-                </p>
+                {agency.description ? (
+                  <div
+                    className="prose prose-sm dark:prose-invert text-muted-foreground max-w-none text-sm"
+                    dangerouslySetInnerHTML={{ __html: agency.description }}
+                  />
+                ) : (
+                  <p className="text-muted-foreground text-sm">—</p>
+                )}
                 <div className="grid grid-cols-1 gap-3 border-t pt-4 sm:grid-cols-2">
                   <div className="flex items-center gap-2 text-sm">
                     <Briefcase className="text-muted-foreground size-4 shrink-0" />
@@ -527,7 +619,7 @@ export function AgencyDetailPage() {
                         rel="noreferrer"
                         className="text-muted-foreground hover:text-foreground"
                       >
-                        <Linkedin className="size-4" />
+                        <Link2 className="size-4" />
                       </a>
                     )}
                     {agency.instagramUrl && (
@@ -537,7 +629,7 @@ export function AgencyDetailPage() {
                         rel="noreferrer"
                         className="text-muted-foreground hover:text-foreground"
                       >
-                        <Instagram className="size-4" />
+                        <Link2 className="size-4" />
                       </a>
                     )}
                   </div>
