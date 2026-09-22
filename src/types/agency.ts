@@ -1,3 +1,5 @@
+import type { MemberRole } from "@/types/workspace";
+
 export type AgencyMemberRole = "OWNER" | "MEMBER";
 
 export type AgencyStatus = "ACTIVE" | "SOFT_DELETED" | "INACTIVE";
@@ -63,6 +65,9 @@ export interface AgencyInvitation {
   invitedBy: string;
   token: string;
   note: string | null;
+  workspaceId: string | null;
+  workspaceName: string | null;
+  role: MemberRole | null;
   status: InvitationStatus;
   expiresAt: string;
   acceptedAt: string | null;

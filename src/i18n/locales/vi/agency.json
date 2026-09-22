@@ -7,7 +7,8 @@
     "emptyDescription": "Tạo một công ty để bắt đầu mời thành viên.",
     "emptyButton": "Tạo công ty đầu tiên",
     "manageMembers": "Quản lý thành viên",
-    "viewProfile": "Xem hồ sơ"
+    "viewProfile": "Xem hồ sơ",
+    "foundedIn": "Thành lập {{year}}"
   },
   "detail": {
     "title": "Hồ sơ công ty",
@@ -38,6 +39,12 @@
       "profile": "Hồ sơ",
       "members": "Thành viên",
       "stats": "Thống kê"
+    },
+    "errors": {
+      "nameRequired": "Vui lòng nhập tên công ty",
+      "invalidUrl": "URL không hợp lệ, cần bắt đầu bằng http:// hoặc https://",
+      "invalidPhone": "Số điện thoại không hợp lệ",
+      "invalidYear": "Năm thành lập phải từ 1900 đến {{max}}"
     }
   },
   "create": {
@@ -106,8 +113,19 @@
     "empty": "Chưa có thành viên nào. Mời thành viên đầu tiên ở trên.",
     "you": "(bạn)",
     "remove": "Xóa",
+    "cancelInvite": "Hủy lời mời",
+    "inviteeNameLabel": "Tên người được mời (tùy chọn)",
+    "inviteeNamePlaceholder": "vd. Nguyễn Văn A",
+    "expiryLabel": "Hạn lời mời",
+    "expiryDaysOption": "{{count}} ngày",
+    "assignWorkspaceLabel": "Gán vào workspace (tùy chọn)",
+    "assignWorkspaceNone": "Không gán — chỉ mời vào công ty",
+    "assignWorkspaceEmpty": "Công ty chưa có workspace nào",
+    "assignRoleLabel": "Vai trò trong workspace",
+    "assignRolePlaceholder": "Chọn vai trò",
     "inviteSuccess": "Đã gửi lời mời tới {{email}}",
     "removeSuccess": "Đã xóa thành viên",
+    "cancelInviteSuccess": "Đã hủy lời mời",
     "columnName": "Tên",
     "columnRole": "Vai trò",
     "columnStatus": "Trạng thái",
@@ -117,8 +135,13 @@
     "totalCount": "{{total}} thành viên · {{pending}} lời mời đang chờ",
     "status": {
       "ACTIVE": "Đang hoạt động",
-      "PENDING": "Đang chờ"
-    }
+      "PENDING": "Đang chờ",
+      "EXPIRED": "Đã hết hạn"
+    },
+    "expiresInDays": "Còn {{count}} ngày",
+    "expiresInHours": "Còn {{count}} giờ",
+    "expiresInMinutes": "Còn {{count}} phút",
+    "expiresSoon": "Sắp hết hạn"
   },
   "invitations": {
     "title": "Lời mời công ty",
@@ -157,6 +180,7 @@
     "acceptFailed": "Chấp nhận lời mời thất bại",
     "declineFailed": "Từ chối lời mời thất bại",
     "loadOneFailed": "Tải thông tin công ty thất bại",
-    "updateFailed": "Cập nhật công ty thất bại"
+    "updateFailed": "Cập nhật công ty thất bại",
+    "cancelInviteFailed": "Hủy lời mời thất bại"
   }
 }

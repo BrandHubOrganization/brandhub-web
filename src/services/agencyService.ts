@@ -7,6 +7,7 @@ import type {
   AgencyMember,
   CompanySize,
 } from "@/types/agency";
+import type { MemberRole } from "@/types/workspace";
 
 export interface CreateAgencyRequest {
   name: string;
@@ -28,7 +29,11 @@ export interface CreateAgencyRequest {
 
 export interface InviteAgencyMemberRequest {
   email: string;
+  inviteeName?: string;
   note?: string;
+  workspaceId?: string;
+  role?: MemberRole;
+  expiryDays?: number;
 }
 
 export const agencyService = {
@@ -67,6 +72,11 @@ export const agencyService = {
       `/api/v1/agencies/${agencyId}/members/${memberId}`,
     ),
 
+  cancelInvitation: (agencyId: string, invitationId: string) =>
+    api.delete<ApiResponse<void>>(
+      `/api/v1/agencies/${agencyId}/invitations/${invitationId}`,
+    ),
+
   acceptInvitation: (token: string) =>
     api.post<ApiResponse<AgencyMember>>("/api/v1/agencies/invitations/accept", {
       token,
@@ -88,6 +98,7 @@ export const agencyService = {
     return api.post<ApiResponse<Agency>>(
       `/api/v1/agencies/${agencyId}/logo`,
       formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
     );
   },
 };

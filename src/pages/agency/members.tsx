@@ -10,10 +10,31 @@ import { Copy, Mail, Search, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { agencyService } from "@/services/agencyService";
+import { workspaceService } from "@/services/workspaceService";
 import { extractErrorMessage } from "@/utils/error";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
+import { Select } from "@/components/ui/select";
 import type { AgencyMember, AgencyMemberRole } from "@/types/agency";
+import type { MemberRole, Workspace } from "@/types/workspace";
+import type { TFunction } from "i18next";
+
+// Agency invite chỉ gán trực tiếp qua workspace membership (user_id) — CLIENT
+// role gắn với client_profile_id nên không hợp lệ ở đây (giống AssignMemberPicker).
+const ASSIGNABLE_ROLES: MemberRole[] = ["MANAGER", "CREATOR"];
+const EXPIRY_OPTIONS = [3, 7, 14, 30] as const;
+
+// Hiển thị thời gian còn lại của lời mời (vd "Còn 5 ngày", "Còn 3 giờ").
+function formatExpiresIn(expiresAt: string, t: TFunction): string {
+  const diffMs = new Date(expiresAt).getTime() - Date.now();
+  if (diffMs <= 0) return t("agency.members.expiresSoon");
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (days >= 1) return t("agency.members.expiresInDays", { count: days });
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  if (hours >= 1) return t("agency.members.expiresInHours", { count: hours });
+  const minutes = Math.max(1, Math.floor(diffMs / (1000 * 60)));
+  return t("agency.members.expiresInMinutes", { count: minutes });
+}
 
 interface MemberRow {
   id: string;
@@ -21,10 +42,12 @@ interface MemberRow {
   email: string;
   avatarUrl: string | null;
   role: AgencyMemberRole | null;
-  status: "ACTIVE" | "PENDING";
+  status: "ACTIVE" | "PENDING" | "EXPIRED";
   joinedAt: string | null;
+  expiresAt: string | null;
   isCurrentUser: boolean;
   removable: boolean;
+  cancellable: boolean;
 }
 
 export function AgencyMembersPage() {
@@ -42,10 +65,25 @@ export function AgencyMembersPage() {
     if (id) setCurrentAgencyId(id);
   }, [id, setCurrentAgencyId]);
   const [email, setEmail] = useState("");
+  const [inviteeName, setInviteeName] = useState("");
   const [note, setNote] = useState("");
+  const [expiryDays, setExpiryDays] = useState(30);
+  const [inviteWorkspaceId, setInviteWorkspaceId] = useState("");
+  const [inviteRole, setInviteRole] = useState<MemberRole | "">("");
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [inviteLink, setInviteLink] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    workspaceService
+      .list()
+      .then(({ data }) =>
+        setWorkspaces(data.data.filter((w) => w.agencyId === id)),
+      )
+      .catch(() => setWorkspaces([]));
+  }, [id]);
 
   const load = useCallback(() => {
     if (!id) return;
@@ -62,25 +100,31 @@ export function AgencyMembersPage() {
           role: m.role,
           status: "ACTIVE",
           joinedAt: m.joinedAt,
+          expiresAt: null,
           isCurrentUser: m.userId === currentUser?.id,
           removable: m.role !== "OWNER",
+          cancellable: false,
         }));
-        const pendingRows: MemberRow[] = invitationsRes.data.data
-          .filter((inv) => inv.status === "PENDING")
+        const invitationRows: MemberRow[] = invitationsRes.data.data
+          .filter((inv) => inv.status === "PENDING" || inv.status === "EXPIRED")
           .map((inv) => ({
             id: inv.id,
             displayName: inv.invitedEmail,
             email: inv.invitedEmail,
             avatarUrl: null,
             role: null,
-            status: "PENDING",
+            status: inv.status as "PENDING" | "EXPIRED",
             joinedAt: null,
+            expiresAt: inv.expiresAt,
             isCurrentUser: false,
             removable: false,
+            cancellable: inv.status === "PENDING",
           }));
         setMembers(membersRes.data.data);
-        setPendingCount(pendingRows.length);
-        setRows([...memberRows, ...pendingRows]);
+        setPendingCount(
+          invitationRows.filter((r) => r.status === "PENDING").length,
+        );
+        setRows([...memberRows, ...invitationRows]);
       })
       .catch((err: unknown) =>
         toast.error(
@@ -113,14 +157,22 @@ export function AgencyMembersPage() {
     try {
       const { data } = await agencyService.inviteMember(id, {
         email: email.trim(),
+        inviteeName: inviteeName.trim() || undefined,
         note: note.trim() || undefined,
+        workspaceId: inviteWorkspaceId || undefined,
+        role: inviteWorkspaceId && inviteRole ? inviteRole : undefined,
+        expiryDays,
       });
       setInviteLink(
         `${window.location.origin}/invitations/accept?token=${data.data.token}`,
       );
       toast.success(t("agency.members.inviteSuccess", { email: email.trim() }));
       setEmail("");
+      setInviteeName("");
       setNote("");
+      setExpiryDays(30);
+      setInviteWorkspaceId("");
+      setInviteRole("");
       load();
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("agency.errors.inviteFailed")));
@@ -148,6 +200,20 @@ export function AgencyMembersPage() {
       toast.success(t("agency.members.removeSuccess"));
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("agency.errors.removeFailed")));
+    }
+  };
+
+  const handleCancelInvitation = async (invitationId: string) => {
+    if (!id) return;
+    try {
+      await agencyService.cancelInvitation(id, invitationId);
+      setRows((prev) => prev.filter((r) => r.id !== invitationId));
+      setPendingCount((prev) => Math.max(0, prev - 1));
+      toast.success(t("agency.members.cancelInviteSuccess"));
+    } catch (err: unknown) {
+      toast.error(
+        extractErrorMessage(err, t("agency.errors.cancelInviteFailed")),
+      );
     }
   };
 
@@ -205,16 +271,25 @@ export function AgencyMembersPage() {
       header: t("agency.members.columnStatus"),
       accessorKey: "status",
       cell: (row) => (
-        <span
-          className={cn(
-            "rounded-full px-2 py-0.5 text-xs font-semibold",
-            row.status === "ACTIVE"
-              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
-              : "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400",
+        <div className="flex flex-col gap-0.5">
+          <span
+            className={cn(
+              "w-fit rounded-full px-2 py-0.5 text-xs font-semibold",
+              row.status === "ACTIVE" &&
+                "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400",
+              row.status === "PENDING" &&
+                "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400",
+              row.status === "EXPIRED" && "bg-muted text-muted-foreground",
+            )}
+          >
+            {t(`agency.members.status.${row.status}`)}
+          </span>
+          {row.status === "PENDING" && row.expiresAt && (
+            <span className="text-muted-foreground text-2xs">
+              {formatExpiresIn(row.expiresAt, t)}
+            </span>
           )}
-        >
-          {t(`agency.members.status.${row.status}`)}
-        </span>
+        </div>
       ),
     },
     {
@@ -227,19 +302,34 @@ export function AgencyMembersPage() {
     {
       header: t("agency.members.columnActions"),
       accessorKey: "id",
-      cell: (row) =>
-        isOwner && row.status === "ACTIVE" && row.removable ? (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-destructive cursor-pointer text-xs"
-            onClick={() => handleRemove(row.id)}
-          >
-            {t("agency.members.remove")}
-          </Button>
-        ) : (
-          "—"
-        ),
+      cell: (row) => {
+        if (!isOwner) return "—";
+        if (row.status === "ACTIVE" && row.removable) {
+          return (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-destructive cursor-pointer text-xs"
+              onClick={() => handleRemove(row.id)}
+            >
+              {t("agency.members.remove")}
+            </Button>
+          );
+        }
+        if (row.cancellable) {
+          return (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-destructive cursor-pointer text-xs"
+              onClick={() => handleCancelInvitation(row.id)}
+            >
+              {t("agency.members.cancelInvite")}
+            </Button>
+          );
+        }
+        return "—";
+      },
     },
   ];
 
@@ -267,25 +357,21 @@ export function AgencyMembersPage() {
               <UserPlus className="size-4" /> {t("agency.members.inviteTitle")}
             </p>
             <form onSubmit={handleInvite} className="space-y-3">
-              <div className="flex items-end gap-2">
-                <div className="flex-1">
-                  <Input
-                    label={t("agency.members.emailLabel")}
-                    type="email"
-                    placeholder={t("agency.members.emailPlaceholder")}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  loading={inviting}
-                  className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-white"
-                >
-                  <Mail className="size-4" />
-                  {t("agency.members.sendInvite")}
-                </Button>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <Input
+                  label={t("agency.members.inviteeNameLabel")}
+                  placeholder={t("agency.members.inviteeNamePlaceholder")}
+                  value={inviteeName}
+                  onChange={(e) => setInviteeName(e.target.value)}
+                />
+                <Input
+                  label={t("agency.members.emailLabel")}
+                  type="email"
+                  placeholder={t("agency.members.emailPlaceholder")}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
               </div>
               <div>
                 <label className="text-foreground mb-1 block text-xs font-medium">
@@ -298,6 +384,78 @@ export function AgencyMembersPage() {
                   rows={2}
                 />
               </div>
+              <div className="max-w-50">
+                <label className="text-foreground mb-1 block text-xs font-medium">
+                  {t("agency.members.expiryLabel")}
+                </label>
+                <Select
+                  value={String(expiryDays)}
+                  onChange={(e) => setExpiryDays(Number(e.target.value))}
+                >
+                  {EXPIRY_OPTIONS.map((d) => (
+                    <option key={d} value={d}>
+                      {t("agency.members.expiryDaysOption", { count: d })}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="text-foreground mb-1 block text-xs font-medium">
+                    {t("agency.members.assignWorkspaceLabel")}
+                  </label>
+                  <Select
+                    value={inviteWorkspaceId}
+                    disabled={workspaces.length === 0}
+                    onChange={(e) => {
+                      setInviteWorkspaceId(e.target.value);
+                      if (!e.target.value) setInviteRole("");
+                    }}
+                  >
+                    <option value="">
+                      {workspaces.length === 0
+                        ? t("agency.members.assignWorkspaceEmpty")
+                        : t("agency.members.assignWorkspaceNone")}
+                    </option>
+                    {workspaces.map((w) => (
+                      <option key={w.id} value={w.id}>
+                        {w.name}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                {inviteWorkspaceId && (
+                  <div>
+                    <label className="text-foreground mb-1 block text-xs font-medium">
+                      {t("agency.members.assignRoleLabel")}
+                    </label>
+                    <Select
+                      value={inviteRole}
+                      onChange={(e) =>
+                        setInviteRole(e.target.value as MemberRole | "")
+                      }
+                      required
+                    >
+                      <option value="">
+                        {t("agency.members.assignRolePlaceholder")}
+                      </option>
+                      {ASSIGNABLE_ROLES.map((r) => (
+                        <option key={r} value={r}>
+                          {t(`workspace.roles.${r}`)}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+                )}
+              </div>
+              <Button
+                type="submit"
+                loading={inviting}
+                className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-white"
+              >
+                <Mail className="size-4" />
+                {t("agency.members.sendInvite")}
+              </Button>
             </form>
             {inviteLink && (
               <div className="bg-muted mt-3 flex items-center gap-2 rounded-lg p-2">

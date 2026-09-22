@@ -7,7 +7,8 @@
     "emptyDescription": "Create an agency to start inviting your team.",
     "emptyButton": "Create your first agency",
     "manageMembers": "Manage members",
-    "viewProfile": "View profile"
+    "viewProfile": "View profile",
+    "foundedIn": "Founded {{year}}"
   },
   "detail": {
     "title": "Agency Profile",
@@ -38,6 +39,12 @@
       "profile": "Profile",
       "members": "Members",
       "stats": "Stats"
+    },
+    "errors": {
+      "nameRequired": "Please enter a company name",
+      "invalidUrl": "Invalid URL — must start with http:// or https://",
+      "invalidPhone": "Invalid phone number",
+      "invalidYear": "Founded year must be between 1900 and {{max}}"
     }
   },
   "create": {
@@ -106,8 +113,19 @@
     "empty": "No members yet. Invite your first teammate above.",
     "you": "(you)",
     "remove": "Remove",
+    "cancelInvite": "Cancel invite",
+    "inviteeNameLabel": "Invitee name (optional)",
+    "inviteeNamePlaceholder": "e.g. John Doe",
+    "expiryLabel": "Invite expiry",
+    "expiryDaysOption": "{{count}} days",
+    "assignWorkspaceLabel": "Assign to workspace (optional)",
+    "assignWorkspaceNone": "Don't assign — agency invite only",
+    "assignWorkspaceEmpty": "This agency has no workspaces yet",
+    "assignRoleLabel": "Workspace role",
+    "assignRolePlaceholder": "Select role",
     "inviteSuccess": "Invite sent to {{email}}",
     "removeSuccess": "Member removed",
+    "cancelInviteSuccess": "Invite cancelled",
     "columnName": "Name",
     "columnRole": "Role",
     "columnStatus": "Status",
@@ -117,8 +135,13 @@
     "totalCount": "{{total}} members · {{pending}} pending invites",
     "status": {
       "ACTIVE": "Active",
-      "PENDING": "Pending"
-    }
+      "PENDING": "Pending",
+      "EXPIRED": "Expired"
+    },
+    "expiresInDays": "{{count}} day(s) left",
+    "expiresInHours": "{{count}} hour(s) left",
+    "expiresInMinutes": "{{count}} minute(s) left",
+    "expiresSoon": "Expiring soon"
   },
   "invitations": {
     "title": "Agency Invitations",
@@ -157,6 +180,7 @@
     "acceptFailed": "Failed to accept invitation",
     "declineFailed": "Failed to decline invitation",
     "loadOneFailed": "Failed to load agency",
-    "updateFailed": "Failed to update agency"
+    "updateFailed": "Failed to update agency",
+    "cancelInviteFailed": "Failed to cancel invite"
   }
 }
