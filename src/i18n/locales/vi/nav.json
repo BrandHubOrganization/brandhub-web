@@ -7,6 +7,16 @@
     "noWorkspace": "Chưa có không gian làm việc",
     "selectWorkspace": "Chọn Không gian làm việc"
   },
+  "orgSwitcher": {
+    "label": "Không gian làm việc",
+    "placeholder": "Chọn công ty",
+    "selectAgency": "Công ty",
+    "noAgency": "Bạn chưa có công ty nào",
+    "noWorkspace": "Chưa có workspace",
+    "viewAgency": "Xem chi tiết công ty",
+    "createAgency": "+ Công ty mới",
+    "createWorkspace": "+ Workspace mới"
+  },
   "home": "Trang chủ",
   "dashboard": "Bảng điều khiển",
   "overview": "Tổng quan Không gian làm việc",
@@ -50,5 +60,6 @@
   "roleLabelPrefix": "Vai trò:",
   "profile": "Hồ sơ",
   "security": "Bảo mật",
-  "settings": "Cài đặt"
+  "settings": "Cài đặt",
+  "notificationSettings": "Cài đặt thông báo"
 }

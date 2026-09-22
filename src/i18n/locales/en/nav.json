@@ -7,6 +7,16 @@
     "noWorkspace": "No workspace",
     "selectWorkspace": "Select Workspace"
   },
+  "orgSwitcher": {
+    "label": "Workspace",
+    "placeholder": "Select agency",
+    "selectAgency": "Agency",
+    "noAgency": "You don't have any agency yet",
+    "noWorkspace": "No workspace yet",
+    "viewAgency": "View agency details",
+    "createAgency": "+ New agency",
+    "createWorkspace": "+ New workspace"
+  },
   "home": "Home",
   "dashboard": "Dashboard",
   "overview": "Workspace Overview",
@@ -50,5 +60,6 @@
   "roleLabelPrefix": "Role:",
   "profile": "Profile",
   "security": "Security",
-  "settings": "Settings"
+  "settings": "Settings",
+  "notificationSettings": "Notification Settings"
 }
