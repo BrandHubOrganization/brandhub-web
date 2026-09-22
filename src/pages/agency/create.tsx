@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { ProvinceSelect } from "@/components/ui/province-select";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 import { toast } from "sonner";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
@@ -81,11 +83,11 @@ export function CreateAgencyPage() {
           onChange={(e) => setName(e.target.value)}
           required
         />
-        <Input
+        <RichTextInput
           label={t("agency.create.descriptionLabel")}
           placeholder={t("agency.create.descriptionPlaceholder")}
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={setDescription}
         />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
@@ -140,11 +142,10 @@ export function CreateAgencyPage() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
-          <Input
+          <ProvinceSelect
             label={t("agency.create.locationLabel")}
-            placeholder={t("agency.create.locationPlaceholder")}
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={setLocation}
           />
         </div>
 
