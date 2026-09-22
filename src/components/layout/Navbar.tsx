@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { MemberRole, Workspace } from "@/types/workspace";
+import type { Agency } from "@/types/agency";
 import type { AppNotification, NotificationType } from "@/types/notification";
 import {
   getNotifications,
@@ -51,8 +52,10 @@ const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const NAV_KEY_MAP: Record<string, string> = {
+  dashboard: "nav.dashboard",
   workspace: "nav.workspace",
   workspaces: "nav.workspace",
+  agency: "nav.agency",
   portal: "nav.portal",
   editor: "nav.editor",
   calendar: "nav.calendar",
@@ -61,6 +64,29 @@ const NAV_KEY_MAP: Record<string, string> = {
   settings: "nav.settings",
   members: "workspace.members.title",
   invitations: "nav.invitations",
+  clients: "nav.clients",
+  requests: "nav.requests",
+  templates: "nav.templates",
+  "hashtag-groups": "nav.hashtagGroups",
+  library: "nav.library",
+  "social-accounts": "nav.socialAccounts",
+  publish: "nav.publish",
+  subscription: "nav.subscription",
+  plans: "subscription.plans.title",
+  checkout: "subscription.checkout.title",
+  invoices: "subscription.invoices.title",
+  "ai-studio": "nav.aiStudio",
+  ambassadors: "aiStudio.ambassadors.title",
+  "knowledge-base": "aiStudio.knowledgeBase.title",
+  trends: "aiStudio.trends.title",
+  reports: "nav.reports",
+  create: "nav.sections.create",
+  "notification-settings": "nav.notificationSettings",
+  security: "nav.security",
+  profile: "nav.profile",
+  "client-profile": "nav.clientProfile",
+  video: "aiStudio.video.title",
+  "change-password": "nav.changePassword",
 };
 
 export interface NavbarProps {
@@ -69,6 +95,7 @@ export interface NavbarProps {
   onMobileMenuOpen: () => void;
   memberRole: MemberRole | null;
   workspaces: Workspace[];
+  agencies: Agency[];
 }
 
 export function Navbar({
@@ -77,6 +104,7 @@ export function Navbar({
   onMobileMenuOpen,
   memberRole,
   workspaces,
+  agencies,
 }: NavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -130,8 +158,15 @@ export function Navbar({
     segments.forEach((seg, idx) => {
       const path = "/" + segments.slice(0, idx + 1).join("/");
       if (UUID_REGEX.test(seg)) {
-        const workspace = workspaces.find((ws) => ws.id === seg);
-        if (workspace) crumbs.push({ label: workspace.name, path });
+        // UUID: xác định đây là agency hay workspace dựa vào segment gốc
+        // ("agency" hoặc "workspaces") thay vì chỉ tìm trong workspaces —
+        // trước đây agency id không map được tên nên bị bỏ luôn khỏi breadcrumb.
+        const root = segments[0];
+        const entity =
+          root === "agency"
+            ? agencies.find((a) => a.id === seg)
+            : workspaces.find((ws) => ws.id === seg);
+        crumbs.push({ label: entity?.name ?? seg, path });
         return;
       }
       const navKey = NAV_KEY_MAP[seg];
