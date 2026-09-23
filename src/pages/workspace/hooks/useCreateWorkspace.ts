@@ -6,6 +6,7 @@ import {
   workspaceService,
   type AssignEntry,
 } from "@/services/workspaceService";
+import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
 import { useAgencyStore } from "@/store/agencyStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
@@ -37,6 +38,7 @@ export function useCreateWorkspace() {
   const [tagline, setTagline] = useState("");
   const [foundedYear, setFoundedYear] = useState("");
   const [assignMembers, setAssignMembers] = useState<AssignEntry[]>([]);
+  const [clientEmails, setClientEmails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,6 +60,29 @@ export function useCreateWorkspace() {
             : undefined,
         assignMembers,
       });
+      // Gửi lời mời CLIENT (nếu có) kèm sẵn workspace vừa tạo — không chặn
+      // luồng chính nếu 1 email lỗi (email trùng, đã có lời mời, v.v.).
+      const validEmails = clientEmails.map((e) => e.trim()).filter(Boolean);
+      if (validEmails.length > 0) {
+        const results = await Promise.allSettled(
+          validEmails.map((email) =>
+            agencyService.inviteMember(agencyId, {
+              email,
+              workspaceId: data.data.id,
+              role: "CLIENT",
+            }),
+          ),
+        );
+        const failedCount = results.filter(
+          (r) => r.status === "rejected",
+        ).length;
+        if (failedCount > 0) {
+          toast.error(
+            t("workspace.create.clientInviteFailed", { count: failedCount }),
+          );
+        }
+      }
+
       // Workspace mới tạo trở thành agency + workspace đang active.
       setCurrentAgencyId(agencyId);
       setCurrentWorkspace(data.data);
@@ -85,6 +110,8 @@ export function useCreateWorkspace() {
     setFoundedYear,
     assignMembers,
     setAssignMembers,
+    clientEmails,
+    setClientEmails,
     agencyId,
     loading,
     handleSubmit,

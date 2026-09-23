@@ -25,6 +25,13 @@ export interface AvatarResponse {
   avatarUrl: string;
 }
 
+export interface UserLookupResponse {
+  id: string;
+  fullName: string;
+  email: string;
+  avatarUrl: string | null;
+}
+
 export const userService = {
   getProfile: () =>
     api.get<ApiResponse<UserProfileResponse>>("/api/v1/users/me"),
@@ -40,4 +47,11 @@ export const userService = {
       formData,
     );
   },
+
+  // Exact-match lookup — dùng để gợi ý người dùng đã có tài khoản khi điền
+  // email mời thành viên/khách hàng. 404 khi không tìm thấy (không phải lỗi).
+  lookupByEmail: (email: string) =>
+    api.get<ApiResponse<UserLookupResponse>>("/api/v1/users/lookup", {
+      params: { email },
+    }),
 };

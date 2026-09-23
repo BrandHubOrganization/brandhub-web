@@ -1,4 +1,14 @@
 {
+  "invitePresets": {
+    "formal": {
+      "label": "Formal",
+      "message": "Hello,\n\nWe would like to formally invite you to join our team to collaborate on upcoming projects. We look forward to working with you.\n\nBest regards."
+    },
+    "casual": {
+      "label": "Casual",
+      "message": "Hey there! 👋 Come join our team, we've got some exciting projects going on. Just hit accept and you're in!"
+    }
+  },
   "switchLanguage": "Switch language",
   "toggleTheme": "Toggle light/dark theme",
   "loadFailed": "Failed to load data",

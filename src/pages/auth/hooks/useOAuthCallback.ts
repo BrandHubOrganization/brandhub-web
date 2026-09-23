@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { authService } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
+import { consumeAuthRedirect } from "@/utils/authRedirect";
 import type { TFunction } from "i18next";
 import type { NavigateFunction } from "react-router-dom";
 import type { UserProfileResponse } from "@/services/authService";
@@ -70,7 +71,7 @@ async function finishCallback(
     useAuthStore.getState().setAuth(result.user, result.token);
     useAuthStore.getState().setSystemRole(result.user.role);
     toast.success(context.translate("auth.login.successToast"));
-    context.navigate("/dashboard", { replace: true });
+    context.navigate(consumeAuthRedirect(), { replace: true });
   } catch (error: unknown) {
     if (!context.isActive) return;
     useAuthStore.getState().clearAuth();

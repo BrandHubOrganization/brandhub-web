@@ -23,6 +23,7 @@ import { AgencyPage } from "@/pages/agency";
 import { AgencyDetailPage } from "@/pages/agency/detail";
 import { CreateAgencyPage } from "@/pages/agency/create";
 import { AgencyMembersPage } from "@/pages/agency/members";
+import { AgencyStatsPage } from "@/pages/agency/stats";
 import { AgencyInvitationsPage } from "@/pages/agency/invitations";
 import { AcceptInvitationPage } from "@/pages/agency/accept";
 import { PortalPage } from "@/pages/portal";
@@ -98,6 +99,7 @@ export function AppRoutes() {
             element={<AgencyInvitationsPage />}
           />
           <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
+          <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/requests" element={<ContentRequestListPage />} />

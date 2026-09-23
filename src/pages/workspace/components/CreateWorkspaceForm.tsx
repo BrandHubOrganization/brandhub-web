@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { LOGO_ICON_OPTIONS } from "@/pages/agency/logoIcons";
 import { AssignMemberPicker } from "./AssignMemberPicker";
+import { ClientInvitePicker } from "./ClientInvitePicker";
 import { RichTextInput } from "@/components/ui/rich-text-input";
 import type { AssignEntry } from "@/services/workspaceService";
 
@@ -27,6 +28,8 @@ interface Props {
   agencyId: string | null;
   assignMembers: AssignEntry[];
   onAssignMembersChange: (value: AssignEntry[]) => void;
+  clientEmails: string[];
+  onClientEmailsChange: (value: string[]) => void;
   submitting: boolean;
   onSubmit: (e: React.FormEvent) => void;
 }
@@ -51,6 +54,8 @@ export function CreateWorkspaceForm({
   agencyId,
   assignMembers,
   onAssignMembersChange,
+  clientEmails,
+  onClientEmailsChange,
   submitting,
   onSubmit,
 }: Props) {
@@ -144,6 +149,19 @@ export function CreateWorkspaceForm({
           />
         </div>
       )}
+
+      <div className="flex flex-col gap-1.5 md:col-span-2">
+        <Label className="text-xs font-semibold tracking-wide">
+          {t("workspace.create.clientInviteLabel")}
+        </Label>
+        <p className="text-muted-foreground text-xs">
+          {t("workspace.create.clientInviteHint")}
+        </p>
+        <ClientInvitePicker
+          value={clientEmails}
+          onChange={onClientEmailsChange}
+        />
+      </div>
 
       <Button
         variant="orange"

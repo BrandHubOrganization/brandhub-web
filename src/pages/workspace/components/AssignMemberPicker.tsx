@@ -65,7 +65,7 @@ export function AssignMemberPicker({ agencyId, value, onChange }: Props) {
                 onChange={(e) =>
                   setRole(m.userId, e.target.value as MemberRole)
                 }
-                className="w-32"
+                className="w-44 shrink-0"
               >
                 {ASSIGNABLE_ROLES.map((r) => (
                   <option key={r} value={r}>

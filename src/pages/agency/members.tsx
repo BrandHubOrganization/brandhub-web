@@ -11,9 +11,11 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { agencyService } from "@/services/agencyService";
 import { workspaceService } from "@/services/workspaceService";
+import { useUserLookup } from "@/hooks/useUserLookup";
 import { extractErrorMessage } from "@/utils/error";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
+import { InviteMessagePresets } from "@/components/shared/InviteMessagePresets";
 import { Select } from "@/components/ui/select";
 import type { AgencyMember, AgencyMemberRole } from "@/types/agency";
 import type { MemberRole, Workspace } from "@/types/workspace";
@@ -66,6 +68,14 @@ export function AgencyMembersPage() {
   }, [id, setCurrentAgencyId]);
   const [email, setEmail] = useState("");
   const [inviteeName, setInviteeName] = useState("");
+  const rawUserMatch = useUserLookup(email);
+  // Không gợi ý chính mình hoặc người đã là thành viên công ty rồi.
+  const userMatch =
+    rawUserMatch &&
+    rawUserMatch.id !== currentUser?.id &&
+    !members.some((m) => m.userId === rawUserMatch.id)
+      ? rawUserMatch
+      : null;
   const [note, setNote] = useState("");
   const [expiryDays, setExpiryDays] = useState(30);
   const [inviteWorkspaceId, setInviteWorkspaceId] = useState("");
@@ -364,19 +374,49 @@ export function AgencyMembersPage() {
                   value={inviteeName}
                   onChange={(e) => setInviteeName(e.target.value)}
                 />
-                <Input
-                  label={t("agency.members.emailLabel")}
-                  type="email"
-                  placeholder={t("agency.members.emailPlaceholder")}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+                <div>
+                  <Input
+                    label={t("agency.members.emailLabel")}
+                    type="email"
+                    placeholder={t("agency.members.emailPlaceholder")}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  {userMatch && (
+                    <button
+                      type="button"
+                      onClick={() => setInviteeName(userMatch.fullName)}
+                      className="hover:bg-muted mt-1.5 flex w-full cursor-pointer items-center gap-2 rounded-md border p-2 text-left transition-colors"
+                    >
+                      {userMatch.avatarUrl ? (
+                        <img
+                          src={userMatch.avatarUrl}
+                          alt=""
+                          className="size-6 shrink-0 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="bg-brand-orange-soft text-brand-orange text-2xs flex size-6 shrink-0 items-center justify-center rounded-full font-bold">
+                          {userMatch.fullName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span className="min-w-0 flex-1 truncate text-xs">
+                        <span className="font-medium">
+                          {userMatch.fullName}
+                        </span>{" "}
+                        <span className="text-muted-foreground">
+                          {t("agency.members.userMatchHint")}
+                        </span>
+                      </span>
+                    </button>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="text-foreground mb-1 block text-xs font-medium">
                   {t("agency.members.noteLabel")}
                 </label>
+                <InviteMessagePresets onPick={setNote} className="mb-1.5" />
                 <Textarea
                   placeholder={t("agency.members.notePlaceholder")}
                   value={note}

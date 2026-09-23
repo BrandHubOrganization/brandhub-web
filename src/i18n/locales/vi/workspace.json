@@ -22,6 +22,13 @@
     "instagramUrlLabel": "Instagram",
     "assignMembersLabel": "Thêm thành viên từ công ty",
     "assignMembersHint": "Bạn là Quản lý (Manager) mặc định. Chọn người khác làm Manager ở đây nếu muốn chuyển giao vai trò quản lý workspace cho họ.",
+    "clientInviteLabel": "Mời khách hàng (Client)",
+    "clientInviteHint": "Nhập email khách hàng để gửi lời mời tham gia workspace này với vai trò Client. Họ sẽ nhận email và tự tạo hồ sơ khi chấp nhận lời mời.",
+    "clientInvitePlaceholder": "email@khachhang.com",
+    "clientInviteInvalidEmail": "Email không hợp lệ",
+    "clientInviteDuplicate": "Email này đã có trong danh sách",
+    "clientInviteUserMatch": "{{name}} đã có tài khoản",
+    "clientInviteFailed": "Không gửi được {{count}} lời mời khách hàng — có thể email đã tồn tại hoặc đã có lời mời đang chờ",
     "submit": "Tạo không gian làm việc"
   },
   "industry": {
@@ -91,7 +98,12 @@
     "addClientEmpty": "Không có client nào để thêm (đã hết hoặc chưa có client nào trong công ty).",
     "addClientPlaceholder": "Chọn client",
     "addClientSubmit": "Thêm vào workspace",
-    "addClientSuccess": "Đã thêm client vào workspace"
+    "addClientSuccess": "Đã thêm client vào workspace",
+    "roleUpdateSuccess": "Đã cập nhật vai trò thành viên",
+    "leaveButton": "Rời workspace",
+    "leaveSuccess": "Bạn đã rời workspace",
+    "leaveConfirmTitle": "Rời workspace này?",
+    "leaveConfirmDescription": "Bạn sẽ mất quyền truy cập workspace này. Hành động này không thể hoàn tác."
   },
   "roles": {
     "OWNER": "Chủ sở hữu",
