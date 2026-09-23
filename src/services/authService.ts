@@ -91,7 +91,7 @@ export interface LoginResponse {
 }
 
 export interface TwoFactorSetupResponse {
-  qrCodeUrl: string;
+  otpAuthUrl: string;
 }
 
 export interface TwoFactorConfirmRequest {

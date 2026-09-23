@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -12,10 +12,21 @@ import { PasswordInput } from "@/components/auth/PasswordInput";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { authService, oauthUrl } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
+import { saveAuthRedirect } from "@/utils/authRedirect";
 
 export function RegisterPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // AuthGuard hoặc LoginPage có thể redirect tới đây kèm state.from — lưu lại
+  // để dùng làm đích sau khi verify OTP + login xong.
+  React.useEffect(() => {
+    const from = (
+      location.state as { from?: { pathname: string; search: string } }
+    )?.from;
+    if (from) saveAuthRedirect(from.pathname + from.search);
+  }, [location.state]);
   const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");

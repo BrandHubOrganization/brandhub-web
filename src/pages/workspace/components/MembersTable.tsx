@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select } from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -10,15 +11,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { WorkspaceMember } from "@/types/workspace";
+import type { MemberRole, WorkspaceMember } from "@/types/workspace";
+
+const WORKSPACE_ROLES: MemberRole[] = ["MANAGER", "CREATOR", "CLIENT"];
 
 interface Props {
   members: WorkspaceMember[];
   canManage: boolean;
   onRemove: (member: WorkspaceMember) => void;
+  onUpdateRole?: (memberId: string, role: MemberRole) => void;
+  updatingRole?: boolean;
 }
 
-export function MembersTable({ members, canManage, onRemove }: Props) {
+export function MembersTable({
+  members,
+  canManage,
+  onRemove,
+  onUpdateRole,
+  updatingRole,
+}: Props) {
   const { t } = useTranslation();
 
   return (
@@ -42,7 +53,26 @@ export function MembersTable({ members, canManage, onRemove }: Props) {
                   {member.email}
                 </div>
               </TableCell>
-              <TableCell>{t(`workspace.roles.${member.role}`)}</TableCell>
+              <TableCell>
+                {canManage && onUpdateRole ? (
+                  <Select
+                    value={member.role}
+                    disabled={updatingRole}
+                    onChange={(e) =>
+                      onUpdateRole(member.id, e.target.value as MemberRole)
+                    }
+                    aria-label={t("workspace.members.roleLabel")}
+                  >
+                    {WORKSPACE_ROLES.map((role) => (
+                      <option key={role} value={role}>
+                        {t(`workspace.roles.${role}`)}
+                      </option>
+                    ))}
+                  </Select>
+                ) : (
+                  t(`workspace.roles.${member.role}`)
+                )}
+              </TableCell>
               <TableCell>
                 {member.joinedAt
                   ? new Date(member.joinedAt).toLocaleDateString()

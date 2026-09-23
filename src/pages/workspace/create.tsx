@@ -20,6 +20,8 @@ export function CreateWorkspacePage() {
     setFoundedYear,
     assignMembers,
     setAssignMembers,
+    clientEmails,
+    setClientEmails,
     agencyId,
     loading,
     handleSubmit,
@@ -46,6 +48,8 @@ export function CreateWorkspacePage() {
         agencyId={agencyId}
         assignMembers={assignMembers}
         onAssignMembersChange={setAssignMembers}
+        clientEmails={clientEmails}
+        onClientEmailsChange={setClientEmails}
         submitting={loading}
         onSubmit={handleSubmit}
       />

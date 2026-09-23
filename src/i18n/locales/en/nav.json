@@ -40,6 +40,12 @@
   "reports": "Reports",
   "clients": "Clients",
   "agency": "Agency",
+  "agencySub": {
+    "profile": "Agency profile",
+    "members": "Agency members",
+    "stats": "Agency stats"
+  },
+  "agencyInvitationInbox": "Invitations from other agencies",
   "clientProfile": "Brand Profile",
   "settings": "Settings",
   "sections": {

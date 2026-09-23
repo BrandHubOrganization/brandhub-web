@@ -20,6 +20,8 @@ import {
   Sparkles,
   Building2,
   FileBarChart,
+  User,
+  Inbox,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -40,6 +42,12 @@ interface NavItem {
   to: string;
   icon: React.ComponentType<{ className?: string }>;
   labelKey: string;
+  /** Chỉ hiện khi role hiện tại là CLIENT — cần currentAgencyId để build URL. */
+  clientOnly?: boolean;
+  /** URL cần currentAgencyId để build (thay {agencyId} trong `to`) — ẩn nếu chưa có agency active. */
+  agencyScoped?: boolean;
+  /** Ẩn hẳn với role CLIENT (client không phải nhân sự agency nội bộ). */
+  hiddenForClient?: boolean;
 }
 
 interface NavSection {
@@ -74,10 +82,42 @@ const NAV_SECTIONS: NavSection[] = [
     key: "manage",
     titleKey: "nav.sections.manage",
     items: [
-      { to: "/agency", icon: Building2, labelKey: "nav.agency" },
+      {
+        to: "/agency/{agencyId}",
+        icon: Building2,
+        labelKey: "nav.agencySub.profile",
+        agencyScoped: true,
+        hiddenForClient: true,
+      },
+      {
+        to: "/agency/{agencyId}/members",
+        icon: Users,
+        labelKey: "nav.agencySub.members",
+        agencyScoped: true,
+        hiddenForClient: true,
+      },
+      {
+        to: "/agency/{agencyId}/stats",
+        icon: BarChart3,
+        labelKey: "nav.agencySub.stats",
+        agencyScoped: true,
+        hiddenForClient: true,
+      },
+      {
+        to: "/agency/invitations",
+        icon: Inbox,
+        labelKey: "nav.agencyInvitationInbox",
+        hiddenForClient: true,
+      },
       { to: "/invitations", icon: Mail, labelKey: "nav.invitations" },
       { to: "/clients", icon: Building2, labelKey: "nav.clients" },
       { to: "/portal", icon: Users, labelKey: "nav.portal" },
+      {
+        to: "/client-profile",
+        icon: User,
+        labelKey: "nav.clientProfile",
+        clientOnly: true,
+      },
       {
         to: "/social-accounts",
         icon: Link2,
@@ -146,9 +186,23 @@ export function Sidebar({
     agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.map((section) => {
-    const items = section.items.filter((item) =>
-      canAccess(item.to, systemRole, role),
-    );
+    const items = section.items
+      .filter((item) => canAccess(item.to, systemRole, role))
+      .filter((item) => !item.hiddenForClient || role !== "CLIENT")
+      .filter((item) => !item.clientOnly || role === "CLIENT")
+      .filter((item) => !item.agencyScoped || currentAgencyId)
+      .map((item) => {
+        if (item.clientOnly && currentAgencyId) {
+          return { ...item, to: `/client-profile?agencyId=${currentAgencyId}` };
+        }
+        if (item.agencyScoped && currentAgencyId) {
+          return {
+            ...item,
+            to: item.to.replace("{agencyId}", currentAgencyId),
+          };
+        }
+        return item;
+      });
 
     // Members link needs a dynamic workspaceId path — only add once a
     // workspace is active, and only for roles that manage membership.
@@ -387,35 +441,37 @@ export function Sidebar({
             )}
 
             <div className="space-y-0.5">
-              {section.items.map(({ to, icon: Icon, labelKey }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  end={to === "/"}
-                  onClick={onMobileItemClick}
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs transition-colors",
-                      collapsed ? "justify-center" : "",
-                      isActive ? "font-semibold" : "hover:text-white",
-                    )
-                  }
-                  style={({ isActive }) =>
-                    isActive
-                      ? {
-                          background: "hsl(var(--brand-orange, 15 88% 55%))",
-                          color: "#ffffff",
-                        }
-                      : {
-                          color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
-                        }
-                  }
-                  title={collapsed ? t(labelKey) : undefined}
-                >
-                  <Icon className="size-4 shrink-0" />
-                  {!collapsed && <span>{t(labelKey)}</span>}
-                </NavLink>
-              ))}
+              {section.items.map(({ to, icon: Icon, labelKey }) => {
+                return (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    end
+                    onClick={onMobileItemClick}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs transition-colors",
+                        collapsed ? "justify-center" : "",
+                        isActive ? "font-semibold" : "hover:text-white",
+                      )
+                    }
+                    style={({ isActive }) =>
+                      isActive
+                        ? {
+                            background: "hsl(var(--brand-orange, 15 88% 55%))",
+                            color: "#ffffff",
+                          }
+                        : {
+                            color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
+                          }
+                    }
+                    title={collapsed ? t(labelKey) : undefined}
+                  >
+                    <Icon className="size-4 shrink-0" />
+                    {!collapsed && <span>{t(labelKey)}</span>}
+                  </NavLink>
+                );
+              })}
             </div>
           </div>
         ))}

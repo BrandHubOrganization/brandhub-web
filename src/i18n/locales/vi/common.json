@@ -1,4 +1,14 @@
 {
+  "invitePresets": {
+    "formal": {
+      "label": "Trang trọng",
+      "message": "Xin chào,\n\nChúng tôi trân trọng mời bạn tham gia cùng đội nhóm để hợp tác trong các dự án sắp tới. Rất mong nhận được sự đồng hành của bạn.\n\nTrân trọng."
+    },
+    "casual": {
+      "label": "Vui tươi",
+      "message": "Chào bạn! 👋 Vào đội mình chơi chung nha, đang có nhiều dự án hay ho lắm. Bấm chấp nhận lời mời là vào ngay thôi!"
+    }
+  },
   "switchLanguage": "Đổi ngôn ngữ",
   "toggleTheme": "Đổi giao diện sáng/tối",
   "loadFailed": "Tải dữ liệu thất bại",

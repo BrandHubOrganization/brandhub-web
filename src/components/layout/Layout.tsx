@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAgencyStore } from "@/store/agencyStore";
+import { useClientProfileStore } from "@/store/clientProfileStore";
 import { workspaceService } from "@/services/workspaceService";
 import { userService } from "@/services/userService";
 import { canAccess } from "@/routes/access";
@@ -58,6 +59,8 @@ export function Layout() {
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const setCurrentMemberRole = useWorkspaceStore((s) => s.setCurrentMemberRole);
+  const fetchMyClientProfile = useClientProfileStore((s) => s.fetchMyProfile);
+  const resetClientProfile = useClientProfileStore((s) => s.reset);
   const accessToken = useAuthStore((s) => s.accessToken);
   const isDevSession = accessToken?.startsWith("dev-token-") ?? false;
 
@@ -104,6 +107,16 @@ export function Layout() {
       })
       .catch(() => setCurrentMemberRole(null));
   }, [activeWorkspace, user]);
+
+  // CLIENT chỉ có 1 ClientProfile mỗi agency — tự fetch/hiển thị đúng hồ sơ
+  // của agency đang active, không cần màn hình chọn riêng.
+  React.useEffect(() => {
+    if (memberRole !== "CLIENT" || !currentAgencyId) {
+      resetClientProfile();
+      return;
+    }
+    fetchMyClientProfile(currentAgencyId);
+  }, [memberRole, currentAgencyId, fetchMyClientProfile, resetClientProfile]);
 
   const currentRole = memberRole;
 

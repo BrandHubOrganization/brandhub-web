@@ -22,6 +22,13 @@
     "instagramUrlLabel": "Instagram",
     "assignMembersLabel": "Add members from agency",
     "assignMembersHint": "You're the default Manager. Pick someone else as Manager here to hand off that role for this workspace.",
+    "clientInviteLabel": "Invite clients",
+    "clientInviteHint": "Enter client emails to invite them to this workspace as Client. They'll receive an email and set up their own profile when they accept.",
+    "clientInvitePlaceholder": "client@company.com",
+    "clientInviteInvalidEmail": "Invalid email",
+    "clientInviteDuplicate": "This email is already in the list",
+    "clientInviteUserMatch": "{{name}} already has an account",
+    "clientInviteFailed": "Failed to send {{count}} client invitation(s) — the email may already exist or have a pending invite",
     "submit": "Create workspace"
   },
   "industry": {
@@ -91,7 +98,12 @@
     "addClientEmpty": "No client available to add (none left, or the agency has no clients yet).",
     "addClientPlaceholder": "Select a client",
     "addClientSubmit": "Add to workspace",
-    "addClientSuccess": "Client added to workspace"
+    "addClientSuccess": "Client added to workspace",
+    "roleUpdateSuccess": "Member role updated",
+    "leaveButton": "Leave workspace",
+    "leaveSuccess": "You have left the workspace",
+    "leaveConfirmTitle": "Leave this workspace?",
+    "leaveConfirmDescription": "You will lose access to this workspace. This cannot be undone."
   },
   "roles": {
     "OWNER": "Owner",

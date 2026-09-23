@@ -11,6 +11,7 @@ import { AuthMobileHeader } from "@/components/auth/AuthMobileHeader";
 import { BackToHomeLink } from "@/components/auth/BackToHomeLink";
 import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
+import { consumeAuthRedirect } from "@/utils/authRedirect";
 
 const TOKEN_KEY = "brandhub-2fa-token";
 
@@ -92,7 +93,7 @@ export function TwoFactorVerifyPage() {
       setAuth(realUser, accessToken);
       sessionStorage.removeItem(TOKEN_KEY);
       toast.success(t("auth.twoFactor.successToast"));
-      navigate("/dashboard", { replace: true });
+      navigate(consumeAuthRedirect(), { replace: true });
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("auth.twoFactor.errorDefault")));
     } finally {

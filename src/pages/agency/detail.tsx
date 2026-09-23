@@ -4,9 +4,7 @@ import { useTranslation } from "react-i18next";
 import {
   Briefcase,
   Building2,
-  FolderOpen,
   Globe,
-  IdCard,
   Link2,
   MapPin,
   Pencil,
@@ -15,7 +13,6 @@ import {
   Upload,
   User,
   Users,
-  BarChart3,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -28,26 +25,15 @@ import { RichTextInput } from "@/components/ui/rich-text-input";
 import { agencyService } from "@/services/agencyService";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
-import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
 import { AGENCY_CATEGORIES, COMPANY_SIZES } from "@/pages/agency/constants";
 import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
-import type {
-  Agency,
-  AgencyCategory,
-  AgencyMember,
-  CompanySize,
-} from "@/types/agency";
+import { AgencyOrgChart } from "@/pages/agency/components/AgencyOrgChart";
+import type { Agency, AgencyCategory, CompanySize } from "@/types/agency";
 
 const CURRENT_YEAR = new Date().getFullYear();
 const URL_RE = /^https?:\/\/.+/i;
 const PHONE_RE = /^[0-9+\-\s()]{6,20}$/;
-
-const NAV_ITEMS = [
-  { id: "profile", icon: IdCard, labelKey: "agency.detail.nav.profile" },
-  { id: "members", icon: Users, labelKey: "agency.detail.nav.members" },
-  { id: "stats", icon: BarChart3, labelKey: "agency.detail.nav.stats" },
-];
 
 export function AgencyDetailPage() {
   const { t } = useTranslation();
@@ -55,7 +41,6 @@ export function AgencyDetailPage() {
   const { id } = useParams<{ id: string }>();
   const currentUser = useAuthStore((s) => s.user);
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
-  const workspaces = useWorkspaceStore((s) => s.workspaceList);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -63,7 +48,6 @@ export function AgencyDetailPage() {
   }, [id, setCurrentAgencyId]);
 
   const [agency, setAgency] = useState<Agency | null>(null);
-  const [members, setMembers] = useState<AgencyMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -160,23 +144,10 @@ export function AgencyDetailPage() {
         toast.error(extractErrorMessage(err, t("agency.errors.loadOneFailed"))),
       )
       .finally(() => setLoading(false));
-
-    agencyService
-      .listMembers(id)
-      .then(({ data }) => setMembers(data.data))
-      .catch(() => setMembers([]));
   }, [id, t]);
 
   const isOwner =
     !!agency && !!currentUser && agency.ownerId === currentUser.id;
-
-  const agencyWorkspaceCount = workspaces.filter(
-    (ws) => ws.agencyId === id,
-  ).length;
-
-  const scrollToSection = (sectionId: string) => {
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-  };
 
   const handleSave = async () => {
     if (!id) return;
@@ -246,25 +217,9 @@ export function AgencyDetailPage() {
   const FallbackIcon = getLogoIcon(agency.logoIcon);
 
   return (
-    <div className="container mx-auto flex max-w-6xl flex-col gap-6 p-4 pb-24 md:flex-row md:p-8">
-      <aside className="shrink-0 md:sticky md:top-4 md:h-fit md:w-56">
-        <nav className="flex gap-1 overflow-x-auto md:flex-col md:overflow-visible">
-          {NAV_ITEMS.map(({ id: sectionId, icon: Icon, labelKey }) => (
-            <button
-              key={sectionId}
-              type="button"
-              onClick={() => scrollToSection(sectionId)}
-              className="hover:bg-muted text-muted-foreground hover:text-foreground flex shrink-0 cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors"
-            >
-              <Icon className="size-4 shrink-0" />
-              {t(labelKey)}
-            </button>
-          ))}
-        </nav>
-      </aside>
-
-      <div className="min-w-0 flex-1 space-y-10">
-        <section id="profile" className="scroll-mt-6 space-y-6">
+    <div className="container mx-auto max-w-6xl p-4 pb-24 md:p-8">
+      <div className="min-w-0 space-y-10">
+        <section className="space-y-6">
           <div className="bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-xs">
             <div className="flex items-center gap-3">
               <div
@@ -686,7 +641,7 @@ export function AgencyDetailPage() {
 
         <div className="border-border border-t" />
 
-        <section id="members" className="scroll-mt-6 space-y-4">
+        <section className="space-y-4">
           <div>
             <h2 className="text-foreground text-lg font-semibold">
               {t("agency.detail.nav.members")}
@@ -695,93 +650,16 @@ export function AgencyDetailPage() {
               {t("agency.detail.membersPreviewDescription")}
             </p>
           </div>
-          <div className="rounded-xl border">
-            {members.length === 0 ? (
-              <p className="text-muted-foreground p-5 text-sm">
-                {t("agency.members.empty")}
-              </p>
-            ) : (
-              <div className="divide-y">
-                {members.slice(0, 5).map((m) => (
-                  <div key={m.id} className="flex items-center gap-3 p-3">
-                    {m.avatarUrl ? (
-                      <img
-                        src={m.avatarUrl}
-                        alt=""
-                        className="size-8 shrink-0 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="bg-brand-orange-soft text-brand-orange flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold">
-                        {(m.fullName || m.email || "?").charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">
-                        {m.fullName || m.email || "—"}
-                      </p>
-                    </div>
-                    <span
-                      className={cn(
-                        "text-2xs rounded-full px-2 py-0.5 font-semibold",
-                        m.role === "OWNER"
-                          ? "bg-brand-orange-soft text-brand-orange"
-                          : "bg-muted text-muted-foreground",
-                      )}
-                    >
-                      {m.role}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {id && <AgencyOrgChart agencyId={id} />}
           <Button
             variant="outline"
             size="sm"
             className="cursor-pointer gap-1.5"
             onClick={() => navigate(`/agency/${id}/members`)}
           >
-            <Users className="size-3.5" />
+            <User className="size-3.5" />
             {t("agency.detail.viewAllMembers")}
           </Button>
-        </section>
-
-        <div className="border-border border-t" />
-
-        <section id="stats" className="scroll-mt-6 space-y-4">
-          <div>
-            <h2 className="text-foreground text-lg font-semibold">
-              {t("agency.detail.nav.stats")}
-            </h2>
-            <p className="text-muted-foreground text-sm">
-              {t("agency.detail.statsDescription")}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="bg-card rounded-xl border p-4">
-              <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                <Users className="size-3.5" />
-                {t("agency.detail.statsMembers")}
-              </div>
-              <p className="mt-1 text-2xl font-bold">{members.length}</p>
-            </div>
-            <div className="bg-card rounded-xl border p-4">
-              <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                <FolderOpen className="size-3.5" />
-                {t("agency.detail.statsWorkspaces")}
-              </div>
-              <p className="mt-1 text-2xl font-bold">{agencyWorkspaceCount}</p>
-            </div>
-            <div className="bg-card rounded-xl border p-4">
-              <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                <BarChart3 className="size-3.5" />
-                {t("agency.detail.statsActivity")}
-              </div>
-              <p className="text-muted-foreground mt-1 text-sm">
-                {t("agency.detail.statsActivityPlaceholder")}
-              </p>
-            </div>
-          </div>
         </section>
       </div>
     </div>

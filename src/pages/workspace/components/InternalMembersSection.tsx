@@ -10,6 +10,7 @@ import {
 import { MembersTable } from "./MembersTable";
 import { InviteMemberDialog } from "./InviteMemberDialog";
 import { RemoveMemberDialog } from "./RemoveMemberDialog";
+import { LeaveWorkspaceDialog } from "./LeaveWorkspaceDialog";
 import { AssignMemberPicker } from "./AssignMemberPicker";
 import { AddClientDialog } from "./AddClientDialog";
 import type { useWorkspaceMembers } from "../hooks/useWorkspaceMembers";
@@ -51,6 +52,12 @@ export function InternalMembersSection({
   addingClient,
   handleAddClient,
   members,
+  updatingRole,
+  handleUpdateRole,
+  leaving,
+  handleLeave,
+  leaveOpen,
+  setLeaveOpen,
 }: Props) {
   const { t } = useTranslation();
 
@@ -72,12 +79,21 @@ export function InternalMembersSection({
             {t("workspace.members.inviteButton")}
           </Button>
         )}
+        <Button
+          variant="destructive"
+          loading={leaving}
+          onClick={() => setLeaveOpen(true)}
+        >
+          {t("workspace.members.leaveButton")}
+        </Button>
       </div>
 
       <MembersTable
         members={internalMembers}
         canManage={canManage}
         onRemove={setRemoveTarget}
+        onUpdateRole={handleUpdateRole}
+        updatingRole={updatingRole}
       />
 
       <InviteMemberDialog
@@ -98,6 +114,13 @@ export function InternalMembersSection({
         onOpenChange={(open) => !open && setRemoveTarget(null)}
         submitting={removing}
         onSubmit={handleRemove}
+      />
+
+      <LeaveWorkspaceDialog
+        open={leaveOpen}
+        onOpenChange={setLeaveOpen}
+        submitting={leaving}
+        onSubmit={handleLeave}
       />
 
       {agencyId && (

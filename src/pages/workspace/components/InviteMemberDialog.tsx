@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { ALL_ROLES } from "../hooks/useWorkspaceMembers";
 import type { MemberRole } from "@/types/workspace";
+import { InviteMessagePresets } from "@/components/shared/InviteMessagePresets";
 
 interface Props {
   open: boolean;
@@ -74,6 +75,7 @@ export function InviteMemberDialog({
             <Label className="text-xs font-semibold tracking-wide">
               {t("workspace.members.noteLabel")}
             </Label>
+            <InviteMessagePresets onPick={onNoteChange} />
             <Textarea
               value={note}
               onChange={(e) => onNoteChange(e.target.value)}

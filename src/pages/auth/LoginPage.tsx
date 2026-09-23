@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 import { useAuthStore, type SystemRole, type User } from "@/store/authStore";
@@ -13,11 +13,22 @@ import { PasswordInput } from "@/components/auth/PasswordInput";
 import { DevQuickLogin } from "@/components/auth/DevQuickLogin";
 import { authService, oauthUrl } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
+import { consumeAuthRedirect, saveAuthRedirect } from "@/utils/authRedirect";
 
 export function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const setAuth = useAuthStore((state) => state.setAuth);
+
+  // AuthGuard redirect tới đây kèm state.from — lưu lại để giữ qua các bước
+  // trung gian (OTP/2FA) và dùng làm đích cuối cùng sau khi đăng nhập xong.
+  const from =
+    (location.state as { from?: { pathname: string; search: string } })?.from ??
+    null;
+  React.useEffect(() => {
+    if (from) saveAuthRedirect(from.pathname + from.search);
+  }, [from]);
 
   const [identifier, setIdentifier] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -64,7 +75,7 @@ export function LoginPage() {
 
       setAuth(realUser, accessToken);
       toast.success(t("auth.login.successToast"));
-      navigate("/dashboard");
+      navigate(consumeAuthRedirect());
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("auth.login.errorDefault")));
     } finally {

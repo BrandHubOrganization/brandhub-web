@@ -40,6 +40,12 @@
   "reports": "Báo cáo",
   "clients": "Thương hiệu Khách hàng",
   "agency": "Công ty (Agency)",
+  "agencySub": {
+    "profile": "Hồ sơ công ty",
+    "members": "Thành viên công ty",
+    "stats": "Thống kê công ty"
+  },
+  "agencyInvitationInbox": "Lời mời từ công ty khác",
   "clientProfile": "Hồ sơ Thương hiệu",
   "settings": "Thiết lập",
   "sections": {

@@ -97,6 +97,15 @@ export const workspaceService = {
       `/api/v1/workspaces/${workspaceId}/members/${memberId}`,
     ),
 
+  updateMemberRole: (workspaceId: string, memberId: string, role: MemberRole) =>
+    api.patch<ApiResponse<WorkspaceMember>>(
+      `/api/v1/workspaces/${workspaceId}/members/${memberId}/role`,
+      { role },
+    ),
+
+  leaveWorkspace: (workspaceId: string) =>
+    api.delete<ApiResponse<void>>(`/api/v1/workspaces/${workspaceId}/leave`),
+
   addClient: (workspaceId: string, clientProfileId: string) =>
     api.post<ApiResponse<WorkspaceMember>>(
       `/api/v1/workspaces/${workspaceId}/clients`,

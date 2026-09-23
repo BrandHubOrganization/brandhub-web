@@ -34,7 +34,7 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
 );
 
 const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
-const WORKSPACE_SETTINGS_ACCESS: AccessRule = ["OWNER"];
+const WORKSPACE_SETTINGS_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {

@@ -74,6 +74,9 @@ export function useWorkspaceMembers() {
   const [addClientOpen, setAddClientOpen] = useState(false);
   const [addClientId, setAddClientId] = useState("");
   const [addingClient, setAddingClient] = useState(false);
+  const [updatingRole, setUpdatingRole] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [leaveOpen, setLeaveOpen] = useState(false);
 
   const loadMembers = useCallback(() => setReloadCount((c) => c + 1), []);
 
@@ -168,6 +171,35 @@ export function useWorkspaceMembers() {
     }
   };
 
+  const handleUpdateRole = async (memberId: string, role: MemberRole) => {
+    if (!workspaceId) return;
+    setUpdatingRole(true);
+    try {
+      await workspaceService.updateMemberRole(workspaceId, memberId, role);
+      toast.success(t("workspace.members.roleUpdateSuccess"));
+      loadMembers();
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("common.actionFailed")));
+    } finally {
+      setUpdatingRole(false);
+    }
+  };
+
+  const handleLeave = async () => {
+    if (!workspaceId) return;
+    setLeaving(true);
+    try {
+      await workspaceService.leaveWorkspace(workspaceId);
+      toast.success(t("workspace.members.leaveSuccess"));
+      setLeaveOpen(false);
+      loadMembers();
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("common.actionFailed")));
+    } finally {
+      setLeaving(false);
+    }
+  };
+
   return {
     workspaceId,
     members,
@@ -200,5 +232,11 @@ export function useWorkspaceMembers() {
     setAddClientId,
     addingClient,
     handleAddClient,
+    updatingRole,
+    handleUpdateRole,
+    leaving,
+    handleLeave,
+    leaveOpen,
+    setLeaveOpen,
   };
 }

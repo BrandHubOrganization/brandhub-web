@@ -29,7 +29,7 @@ export function SecurityPage() {
     setSubmitting(true);
     try {
       const res = await authService.setupTwoFactor();
-      setQrCodeUrl(res.data.data.qrCodeUrl);
+      setQrCodeUrl(res.data.data.otpAuthUrl);
       setCode("");
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("security.2fa.setupError")));
