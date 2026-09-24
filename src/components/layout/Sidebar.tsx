@@ -139,7 +139,8 @@ const NAV_SECTIONS: NavSection[] = [
   {
     key: "system",
     titleKey: "nav.sections.system",
-    items: [{ to: "/admin", icon: ShieldAlert, labelKey: "nav.admin" }],
+    items: [{ to: "/admin", icon: ShieldAlert, labelKey: "nav.admin" },
+      { to: "/admin/system-health", icon: ShieldAlert, labelKey: "monitoring.title" }],
   },
 ];
 

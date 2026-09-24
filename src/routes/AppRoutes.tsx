@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Import Layout & Security Components
@@ -52,6 +53,7 @@ import { ClientProfilePage } from "@/pages/client-profile";
 import { VideoStudioPage } from "@/pages/ai-studio/video";
 import ExamplesPage from "@/components/examples";
 
+const SystemHealthPage = lazy(() => import("@/pages/admin/system-health"));
 export function AppRoutes() {
   return (
     <Routes>
@@ -102,6 +104,7 @@ export function AppRoutes() {
           <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/system-health" element={<Suspense fallback={null}><SystemHealthPage /></Suspense>} />
           <Route path="/requests" element={<ContentRequestListPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/templates" element={<TemplateBrowserPage />} />
