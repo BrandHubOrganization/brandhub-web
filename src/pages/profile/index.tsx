@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -20,6 +20,8 @@ import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
 import type { User } from "@/types/user";
 import { AvatarUploadModal } from "./components/AvatarUploadModal";
+import { LinkPhoneModal } from "./components/LinkPhoneModal";
+import { TimezoneSelect } from "@/pages/workspace/components/TimezoneSelect";
 
 export function ProfilePage() {
   const { t } = useTranslation();
@@ -30,8 +32,13 @@ export function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [deactivateOpen, setDeactivateOpen] = useState(false);
   const [deactivatePassword, setDeactivatePassword] = useState("");
+  const [deactivateOtp, setDeactivateOtp] = useState("");
   const [deactivating, setDeactivating] = useState(false);
+  const [hasPassword, setHasPassword] = useState(true);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [linkPhoneOpen, setLinkPhoneOpen] = useState(false);
 
   const [name, setName] = useState(user?.name ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
@@ -42,7 +49,21 @@ export function ProfilePage() {
   const [joinedAt, setJoinedAt] = useState<string | null>(
     user?.createdAt ?? null,
   );
+  const [professionalTitle, setProfessionalTitle] = useState("");
+  const [bio, setBio] = useState("");
+  const [portfolioUrls, setPortfolioUrls] = useState<string[]>([]);
+  const [workingLanguage, setWorkingLanguage] = useState("");
+  const [timezone, setTimezone] = useState("Asia/Ho_Chi_Minh");
   const email = user?.email ?? "";
+  const savedProfile = useRef({
+    name: "",
+    phone: "",
+    professionalTitle: "",
+    bio: "",
+    portfolioUrls: [] as string[],
+    workingLanguage: "",
+    timezone: "Asia/Ho_Chi_Minh",
+  });
 
   useEffect(() => {
     userService
@@ -54,9 +75,29 @@ export function ProfilePage() {
         setAvatarUrl(p.avatarUrl);
         setRole(p.role);
         setJoinedAt(p.createdAt);
+        setProfessionalTitle(p.professionalTitle ?? "");
+        setBio(p.bio ?? "");
+        setPortfolioUrls(p.portfolioUrls ?? []);
+        setWorkingLanguage(p.workingLanguage ?? "");
+        setTimezone(p.timezone ?? "Asia/Ho_Chi_Minh");
+        savedProfile.current = {
+          name: p.fullName,
+          phone: p.phone ?? "",
+          professionalTitle: p.professionalTitle ?? "",
+          bio: p.bio ?? "",
+          portfolioUrls: p.portfolioUrls ?? [],
+          workingLanguage: p.workingLanguage ?? "",
+          timezone: p.timezone ?? "Asia/Ho_Chi_Minh",
+        };
       })
       .catch(() => {
         // fall back to authStore data already rendered
+      });
+    authService
+      .me()
+      .then((resp) => setHasPassword(resp.data.data.hasPassword ?? true))
+      .catch(() => {
+        // fall back to password-based deactivate on failure
       });
   }, []);
 
@@ -66,6 +107,11 @@ export function ProfilePage() {
       const resp = await userService.updateProfile({
         fullName: name,
         phone: phone || undefined,
+        professionalTitle: professionalTitle || undefined,
+        bio: bio || undefined,
+        portfolioUrls: portfolioUrls.filter((u) => u.trim() !== ""),
+        workingLanguage: workingLanguage || undefined,
+        timezone: timezone || undefined,
       });
       const p = resp.data.data;
       setUser({
@@ -79,6 +125,20 @@ export function ProfilePage() {
       });
       setName(p.fullName);
       setPhone(p.phone ?? "");
+      setProfessionalTitle(p.professionalTitle ?? "");
+      setBio(p.bio ?? "");
+      setPortfolioUrls(p.portfolioUrls ?? []);
+      setWorkingLanguage(p.workingLanguage ?? "");
+      setTimezone(p.timezone ?? "Asia/Ho_Chi_Minh");
+      savedProfile.current = {
+        name: p.fullName,
+        phone: p.phone ?? "",
+        professionalTitle: p.professionalTitle ?? "",
+        bio: p.bio ?? "",
+        portfolioUrls: p.portfolioUrls ?? [],
+        workingLanguage: p.workingLanguage ?? "",
+        timezone: p.timezone ?? "Asia/Ho_Chi_Minh",
+      };
       setIsEditing(false);
       toast.success(t("settings.profile.saveSuccess"));
     } catch (err) {
@@ -89,8 +149,14 @@ export function ProfilePage() {
   };
 
   const handleCancelEdit = () => {
-    setName(user?.name ?? "");
-    setPhone(user?.phone ?? "");
+    const saved = savedProfile.current;
+    setName(saved.name);
+    setPhone(saved.phone);
+    setProfessionalTitle(saved.professionalTitle);
+    setBio(saved.bio);
+    setPortfolioUrls(saved.portfolioUrls);
+    setWorkingLanguage(saved.workingLanguage);
+    setTimezone(saved.timezone);
     setIsEditing(false);
   };
 
@@ -102,7 +168,10 @@ export function ProfilePage() {
   const handleDeactivate = async () => {
     setDeactivating(true);
     try {
-      await authService.deactivate(deactivatePassword);
+      await authService.deactivate(
+        hasPassword ? deactivatePassword : undefined,
+        hasPassword ? undefined : deactivateOtp,
+      );
       useAuthStore.getState().logout();
       navigate("/login");
     } catch (err) {
@@ -110,6 +179,19 @@ export function ProfilePage() {
         extractErrorMessage(err, t("profile.danger.deactivateError")),
       );
       setDeactivating(false);
+    }
+  };
+
+  const handleSendDeactivateOtp = async () => {
+    setSendingOtp(true);
+    try {
+      await authService.sendDeactivateOtp();
+      setOtpSent(true);
+      toast.success(t("profile.danger.otpSent"));
+    } catch (err) {
+      toast.error(extractErrorMessage(err, t("profile.danger.otpSendError")));
+    } finally {
+      setSendingOtp(false);
     }
   };
 
@@ -203,6 +285,79 @@ export function ProfilePage() {
                       placeholder={t("profile.edit.phonePlaceholder")}
                     />
                   </div>
+                  <div>
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.jobTitleLabel")}
+                    </label>
+                    <Input
+                      value={professionalTitle}
+                      onChange={(e) => setProfessionalTitle(e.target.value)}
+                      placeholder={t("profile.edit.jobTitlePlaceholder")}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.workingLanguageLabel")}
+                    </label>
+                    <Input
+                      value={workingLanguage}
+                      onChange={(e) => setWorkingLanguage(e.target.value)}
+                      placeholder={t("profile.edit.workingLanguagePlaceholder")}
+                    />
+                  </div>
+                  <TimezoneSelect value={timezone} onChange={setTimezone} />
+                  <div className="sm:col-span-2">
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.bioLabel")}
+                    </label>
+                    <textarea
+                      value={bio}
+                      onChange={(e) => setBio(e.target.value)}
+                      placeholder={t("profile.edit.bioPlaceholder")}
+                      rows={3}
+                      className="border-border bg-background text-foreground placeholder:text-muted-foreground w-full rounded-md border px-3 py-2 text-sm outline-none"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.portfolioLabel")}
+                    </label>
+                    <div className="space-y-2">
+                      {portfolioUrls.map((url, idx) => (
+                        <div key={idx} className="flex gap-2">
+                          <Input
+                            value={url}
+                            onChange={(e) => {
+                              const next = [...portfolioUrls];
+                              next[idx] = e.target.value;
+                              setPortfolioUrls(next);
+                            }}
+                            placeholder={t("profile.edit.portfolioPlaceholder")}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              setPortfolioUrls(
+                                portfolioUrls.filter((_, i) => i !== idx),
+                              )
+                            }
+                          >
+                            {t("profile.edit.portfolioRemove")}
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPortfolioUrls([...portfolioUrls, ""])}
+                      >
+                        {t("profile.edit.portfolioAdd")}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
                 <div className="mt-4 flex justify-end gap-2">
                   <Button variant="outline" onClick={handleCancelEdit}>
@@ -232,7 +387,7 @@ export function ProfilePage() {
                 </div>
                 <div className="flex items-center gap-2.5">
                   <Phone className="text-muted-foreground size-4" />
-                  <div>
+                  <div className="flex-1">
                     <p className="text-muted-foreground text-3xs">
                       {t("profile.view.phoneLabel")}
                     </p>
@@ -240,6 +395,15 @@ export function ProfilePage() {
                       {phone || t("profile.view.phoneEmpty")}
                     </p>
                   </div>
+                  <button
+                    type="button"
+                    className="text-brand-orange text-3xs cursor-pointer font-medium hover:underline"
+                    onClick={() => setLinkPhoneOpen(true)}
+                  >
+                    {phone
+                      ? t("profile.linkPhone.changeLink")
+                      : t("profile.linkPhone.addLink")}
+                  </button>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <Calendar className="text-muted-foreground size-4" />
@@ -264,6 +428,63 @@ export function ProfilePage() {
                         : "—"}
                     </p>
                   </div>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-3xs">
+                    {t("profile.view.jobTitleLabel")}
+                  </p>
+                  <p className="text-foreground text-xs font-medium">
+                    {professionalTitle || t("profile.view.jobTitleEmpty")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-3xs">
+                    {t("profile.view.workingLanguageLabel")}
+                  </p>
+                  <p className="text-foreground text-xs font-medium">
+                    {workingLanguage || t("profile.view.workingLanguageEmpty")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-3xs">
+                    {t("profile.view.timezoneLabel")}
+                  </p>
+                  <p className="text-foreground text-xs font-medium">
+                    {timezone}
+                  </p>
+                </div>
+                <div className="sm:col-span-2">
+                  <p className="text-muted-foreground text-3xs">
+                    {t("profile.view.bioLabel")}
+                  </p>
+                  <p className="text-foreground text-xs font-medium whitespace-pre-wrap">
+                    {bio || t("profile.view.bioEmpty")}
+                  </p>
+                </div>
+                <div className="sm:col-span-2">
+                  <p className="text-muted-foreground text-3xs">
+                    {t("profile.view.portfolioLabel")}
+                  </p>
+                  {portfolioUrls.length > 0 ? (
+                    <ul className="mt-1 space-y-1">
+                      {portfolioUrls.map((url) => (
+                        <li key={url}>
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-brand-orange text-xs font-medium hover:underline"
+                          >
+                            {url}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-foreground text-xs font-medium">
+                      {t("profile.view.portfolioEmpty")}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -301,12 +522,32 @@ export function ProfilePage() {
             <p className="text-muted-foreground text-xs">
               {t("profile.danger.confirmBody")}
             </p>
-            <Input
-              type="password"
-              value={deactivatePassword}
-              onChange={(e) => setDeactivatePassword(e.target.value)}
-              placeholder={t("profile.danger.passwordPlaceholder")}
-            />
+            {hasPassword ? (
+              <Input
+                type="password"
+                value={deactivatePassword}
+                onChange={(e) => setDeactivatePassword(e.target.value)}
+                placeholder={t("profile.danger.passwordPlaceholder")}
+              />
+            ) : (
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  loading={sendingOtp}
+                  onClick={handleSendDeactivateOtp}
+                >
+                  {otpSent
+                    ? t("profile.danger.resendOtp")
+                    : t("profile.danger.sendOtp")}
+                </Button>
+                <Input
+                  value={deactivateOtp}
+                  onChange={(e) => setDeactivateOtp(e.target.value)}
+                  placeholder={t("profile.danger.otpPlaceholder")}
+                />
+              </div>
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 variant="outline"
@@ -319,7 +560,10 @@ export function ProfilePage() {
                 variant="destructive"
                 size="sm"
                 loading={deactivating}
-                disabled={!deactivatePassword || deactivating}
+                disabled={
+                  (hasPassword ? !deactivatePassword : !deactivateOtp) ||
+                  deactivating
+                }
                 onClick={handleDeactivate}
               >
                 {t("profile.danger.confirmDeactivate")}
@@ -333,6 +577,15 @@ export function ProfilePage() {
         isOpen={avatarModalOpen}
         onClose={() => setAvatarModalOpen(false)}
         onSave={handleAvatarUploaded}
+      />
+
+      <LinkPhoneModal
+        isOpen={linkPhoneOpen}
+        onClose={() => setLinkPhoneOpen(false)}
+        onLinked={(linkedPhone) => {
+          setPhone(linkedPhone);
+          savedProfile.current.phone = linkedPhone;
+        }}
       />
     </section>
   );
