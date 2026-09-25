@@ -17,7 +17,9 @@ import { DashboardPage } from "@/pages/dashboard";
 import { WorkspacePage } from "@/pages/workspace";
 import { CreateWorkspacePage } from "@/pages/workspace/create";
 import { WorkspaceSettingsPage } from "@/pages/workspace/detail";
+import { WorkspaceDashboardPage } from "@/pages/workspace/dashboard";
 import { WorkspaceMembersPage } from "@/pages/workspace/members";
+import { WorkspaceTemplatesPage } from "@/pages/workspace/templates";
 import { InvitationsPage } from "@/pages/workspace/invitations";
 import { AgencyPage } from "@/pages/agency";
 import { AgencyDetailPage } from "@/pages/agency/detail";
@@ -79,12 +81,20 @@ export function AppRoutes() {
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
           <Route
+            path="/workspaces/:id/dashboard"
+            element={<WorkspaceDashboardPage />}
+          />
+          <Route
             path="/workspaces/:id/settings"
             element={<WorkspaceSettingsPage />}
           />
           <Route
             path="/workspaces/:id/members"
             element={<WorkspaceMembersPage />}
+          />
+          <Route
+            path="/workspaces/templates"
+            element={<WorkspaceTemplatesPage />}
           />
           <Route path="/invitations" element={<InvitationsPage />} />
           <Route

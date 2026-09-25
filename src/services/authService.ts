@@ -104,7 +104,8 @@ export interface TwoFactorVerifyRequest {
 }
 
 export interface DeactivateRequest {
-  password: string;
+  password?: string;
+  otpCode?: string;
 }
 
 export interface RegisterResponse {
@@ -185,8 +186,17 @@ export const authService = {
       code,
     } satisfies TwoFactorVerifyRequest),
 
-  deactivate: (password: string) =>
+  deactivate: (password?: string, otpCode?: string) =>
     api.post<ApiResponse<void>>("/api/v1/auth/deactivate", {
       password,
+      otpCode,
     } satisfies DeactivateRequest),
+
+  sendDeactivateOtp: () =>
+    api.post<ApiResponse<void>>("/api/v1/auth/deactivate/send-otp"),
+
+  // FR 3.2.8 Sign Out — blacklists the access/refresh token server-side
+  // (BR-14). Best-effort: caller should still clear local state even if
+  // this fails (e.g. token already expired) — see Navbar.handleLogout.
+  logout: () => api.post<ApiResponse<void>>("/api/v1/auth/logout"),
 };
