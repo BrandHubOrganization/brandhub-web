@@ -23,8 +23,12 @@ import type { TFunction } from "i18next";
 
 // Agency invite chỉ gán trực tiếp qua workspace membership (user_id) — CLIENT
 // role gắn với client_profile_id nên không hợp lệ ở đây (giống AssignMemberPicker).
-const ASSIGNABLE_ROLES: MemberRole[] = ["MANAGER", "CREATOR"];
-const EXPIRY_OPTIONS = [3, 7, 14, 30] as const;
+// FR 3.4.7 BR-27: role CLIENT requires a Workspace at invite time (validated
+// below); CLIENT joins as WorkspaceMember directly, not as an Agency Member.
+const ASSIGNABLE_ROLES: MemberRole[] = ["MANAGER", "CREATOR", "CLIENT"];
+const MIN_EXPIRY_DAYS = 1;
+const MAX_EXPIRY_DAYS = 30;
+const DEFAULT_EXPIRY_DAYS = 30;
 
 // Hiển thị thời gian còn lại của lời mời (vd "Còn 5 ngày", "Còn 3 giờ").
 function formatExpiresIn(expiresAt: string, t: TFunction): string {
@@ -77,7 +81,7 @@ export function AgencyMembersPage() {
       ? rawUserMatch
       : null;
   const [note, setNote] = useState("");
-  const [expiryDays, setExpiryDays] = useState(30);
+  const [expiryDays, setExpiryDays] = useState(DEFAULT_EXPIRY_DAYS);
   const [inviteWorkspaceId, setInviteWorkspaceId] = useState("");
   const [inviteRole, setInviteRole] = useState<MemberRole | "">("");
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
@@ -163,6 +167,10 @@ export function AgencyMembersPage() {
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id) return;
+    if (inviteRole === "CLIENT" && !inviteWorkspaceId) {
+      toast.error(t("agency.members.clientRequiresWorkspace"));
+      return;
+    }
     setInviting(true);
     try {
       const { data } = await agencyService.inviteMember(id, {
@@ -170,7 +178,7 @@ export function AgencyMembersPage() {
         inviteeName: inviteeName.trim() || undefined,
         note: note.trim() || undefined,
         workspaceId: inviteWorkspaceId || undefined,
-        role: inviteWorkspaceId && inviteRole ? inviteRole : undefined,
+        role: inviteRole || undefined,
         expiryDays,
       });
       setInviteLink(
@@ -180,7 +188,7 @@ export function AgencyMembersPage() {
       setEmail("");
       setInviteeName("");
       setNote("");
-      setExpiryDays(30);
+      setExpiryDays(DEFAULT_EXPIRY_DAYS);
       setInviteWorkspaceId("");
       setInviteRole("");
       load();
@@ -428,29 +436,57 @@ export function AgencyMembersPage() {
                 <label className="text-foreground mb-1 block text-xs font-medium">
                   {t("agency.members.expiryLabel")}
                 </label>
-                <Select
-                  value={String(expiryDays)}
-                  onChange={(e) => setExpiryDays(Number(e.target.value))}
-                >
-                  {EXPIRY_OPTIONS.map((d) => (
-                    <option key={d} value={d}>
-                      {t("agency.members.expiryDaysOption", { count: d })}
-                    </option>
-                  ))}
-                </Select>
+                <Input
+                  type="number"
+                  min={MIN_EXPIRY_DAYS}
+                  max={MAX_EXPIRY_DAYS}
+                  value={expiryDays}
+                  onChange={(e) =>
+                    setExpiryDays(
+                      Math.min(
+                        MAX_EXPIRY_DAYS,
+                        Math.max(
+                          MIN_EXPIRY_DAYS,
+                          Number(e.target.value) || MIN_EXPIRY_DAYS,
+                        ),
+                      ),
+                    )
+                  }
+                />
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label className="text-foreground mb-1 block text-xs font-medium">
+                    {t("agency.members.assignRoleLabel")}
+                  </label>
+                  <Select
+                    value={inviteRole}
+                    onChange={(e) =>
+                      setInviteRole(e.target.value as MemberRole | "")
+                    }
+                  >
+                    <option value="">
+                      {t("agency.members.assignRolePlaceholder")}
+                    </option>
+                    {ASSIGNABLE_ROLES.map((r) => (
+                      <option key={r} value={r}>
+                        {t(`workspace.roles.${r}`)}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-foreground mb-1 block text-xs font-medium">
                     {t("agency.members.assignWorkspaceLabel")}
+                    {inviteRole === "CLIENT" && (
+                      <span className="text-rose-500"> *</span>
+                    )}
                   </label>
                   <Select
                     value={inviteWorkspaceId}
                     disabled={workspaces.length === 0}
-                    onChange={(e) => {
-                      setInviteWorkspaceId(e.target.value);
-                      if (!e.target.value) setInviteRole("");
-                    }}
+                    required={inviteRole === "CLIENT"}
+                    onChange={(e) => setInviteWorkspaceId(e.target.value)}
                   >
                     <option value="">
                       {workspaces.length === 0
@@ -464,29 +500,6 @@ export function AgencyMembersPage() {
                     ))}
                   </Select>
                 </div>
-                {inviteWorkspaceId && (
-                  <div>
-                    <label className="text-foreground mb-1 block text-xs font-medium">
-                      {t("agency.members.assignRoleLabel")}
-                    </label>
-                    <Select
-                      value={inviteRole}
-                      onChange={(e) =>
-                        setInviteRole(e.target.value as MemberRole | "")
-                      }
-                      required
-                    >
-                      <option value="">
-                        {t("agency.members.assignRolePlaceholder")}
-                      </option>
-                      {ASSIGNABLE_ROLES.map((r) => (
-                        <option key={r} value={r}>
-                          {t(`workspace.roles.${r}`)}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
-                )}
               </div>
               <Button
                 type="submit"

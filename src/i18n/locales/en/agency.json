@@ -47,6 +47,21 @@
       "invalidUrl": "Invalid URL — must start with http:// or https://",
       "invalidPhone": "Invalid phone number",
       "invalidYear": "Founded year must be between 1900 and {{max}}"
+    },
+    "danger": {
+      "title": "Danger Zone",
+      "deleteHint": "Deleting a company immediately revokes access for every Workspace, member and Client. It can be restored within 30 days.",
+      "deleteButton": "Delete company",
+      "confirmTitle": "Delete company?",
+      "confirmBody": "Type the company name to confirm. It can be restored within 30 days, after which this cannot be undone.",
+      "cancel": "Cancel",
+      "confirmDelete": "Delete company",
+      "deleteSuccess": "Company deleted — restorable for 30 days",
+      "deleteError": "Failed to delete company",
+      "restoreHint": "This company has been deleted. It can be restored within 30 days of deletion.",
+      "restoreButton": "Restore",
+      "restoreSuccess": "Company restored",
+      "restoreError": "Failed to restore company"
     }
   },
   "create": {
@@ -121,11 +136,12 @@
     "inviteeNamePlaceholder": "e.g. John Doe",
     "expiryLabel": "Invite expiry",
     "expiryDaysOption": "{{count}} days",
-    "assignWorkspaceLabel": "Assign to workspace (optional)",
+    "assignWorkspaceLabel": "Workspace",
     "assignWorkspaceNone": "Don't assign — agency invite only",
     "assignWorkspaceEmpty": "This agency has no workspaces yet",
-    "assignRoleLabel": "Workspace role",
+    "assignRoleLabel": "Role",
     "assignRolePlaceholder": "Select role",
+    "clientRequiresWorkspace": "The Client role requires a workspace",
     "inviteSuccess": "Invite sent to {{email}}",
     "removeSuccess": "Member removed",
     "cancelInviteSuccess": "Invite cancelled",
