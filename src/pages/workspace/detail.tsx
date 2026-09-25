@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { TriangleAlert } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -17,6 +18,9 @@ import {
   WORKSPACE_INDUSTRIES,
 } from "@/pages/workspace/constants";
 import type { CompanySize, WorkspaceIndustry } from "@/types/workspace";
+import { workspaceService } from "@/services/workspaceService";
+import { workspaceTemplateService } from "@/services/workspaceTemplateService";
+import { extractErrorMessage } from "@/utils/error";
 
 export function WorkspaceSettingsPage() {
   const { t } = useTranslation();
@@ -48,7 +52,57 @@ export function WorkspaceSettingsPage() {
     handleLogoChange,
     handleSubmit,
   } = useWorkspaceSettings();
+  const { id: workspaceId } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [confirmName, setConfirmName] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [templateOpen, setTemplateOpen] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [savingTemplate, setSavingTemplate] = useState(false);
+
+  const handleSaveTemplate = async () => {
+    if (!workspaceId || !templateName.trim()) return;
+    setSavingTemplate(true);
+    try {
+      await workspaceTemplateService.save({
+        name: templateName.trim(),
+        sourceWorkspaceId: workspaceId,
+        configSnapshot: JSON.stringify({
+          timezone,
+          defaultPlatforms,
+          reportFrequency,
+        }),
+      });
+      toast.success(t("workspace.settings.template.saveSuccess"));
+      setTemplateOpen(false);
+      setTemplateName("");
+    } catch (err) {
+      toast.error(
+        extractErrorMessage(err, t("workspace.settings.template.saveError")),
+      );
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!workspaceId) return;
+    setDeleting(true);
+    try {
+      await workspaceService.deleteWorkspace(workspaceId);
+      toast.success(t("workspace.settings.danger.deleteSuccess"));
+      navigate("/workspace");
+    } catch (err) {
+      toast.error(
+        extractErrorMessage(err, t("workspace.settings.danger.deleteError")),
+      );
+    } finally {
+      setDeleting(false);
+      setDeleteOpen(false);
+      setConfirmName("");
+    }
+  };
 
   if (loading) return null;
 
@@ -156,6 +210,25 @@ export function WorkspaceSettingsPage() {
       </form>
 
       {canManage && (
+        <div className="flex max-w-sm gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setTemplateOpen(true)}
+          >
+            {t("workspace.settings.template.saveButton")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/workspaces/templates")}
+          >
+            {t("workspace.settings.template.viewAll")}
+          </Button>
+        </div>
+      )}
+
+      {canManage && (
         <div className="max-w-sm">
           <div className="bg-card rounded-xl border border-red-200 p-6 dark:border-red-900/50">
             <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
@@ -177,6 +250,43 @@ export function WorkspaceSettingsPage() {
         </div>
       )}
 
+      {templateOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
+            <h3 className="text-foreground text-sm font-semibold">
+              {t("workspace.settings.template.dialogTitle")}
+            </h3>
+            <Input
+              label={t("workspace.settings.template.nameLabel")}
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+              placeholder={t("workspace.settings.template.namePlaceholder")}
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setTemplateOpen(false);
+                  setTemplateName("");
+                }}
+              >
+                {t("workspace.settings.danger.cancel")}
+              </Button>
+              <Button
+                variant="orange"
+                size="sm"
+                loading={savingTemplate}
+                disabled={!templateName.trim() || savingTemplate}
+                onClick={handleSaveTemplate}
+              >
+                {t("workspace.settings.template.saveButton")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {deleteOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
@@ -189,21 +299,28 @@ export function WorkspaceSettingsPage() {
             <p className="text-muted-foreground text-xs">
               {t("workspace.settings.danger.confirmBody")}
             </p>
+            <Input
+              value={confirmName}
+              onChange={(e) => setConfirmName(e.target.value)}
+              placeholder={name}
+            />
             <div className="flex justify-end gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setDeleteOpen(false)}
+                onClick={() => {
+                  setDeleteOpen(false);
+                  setConfirmName("");
+                }}
               >
                 {t("workspace.settings.danger.cancel")}
               </Button>
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={() => {
-                  setDeleteOpen(false);
-                  toast.success(t("workspace.settings.danger.deleteSuccess"));
-                }}
+                loading={deleting}
+                disabled={confirmName !== name || deleting}
+                onClick={handleDelete}
               >
                 {t("workspace.settings.danger.confirmDelete")}
               </Button>

@@ -1,14 +1,12 @@
 import { api } from "./api";
 import type { ApiResponse } from "./authService";
 import type {
-  AuditLogEntry,
   CompanySize,
-  ManagedAuditLogEntry,
   ManagedWorkspace,
   MemberRole,
-  PageResponse,
   ReportFrequency,
   Workspace,
+  WorkspaceDashboard,
   WorkspaceIndustry,
   WorkspaceInvitation,
   WorkspaceMember,
@@ -128,20 +126,8 @@ export const workspaceService = {
       data,
     ),
 
-  listAuditLogs: (workspaceId: string, page = 0, size = 20) =>
-    api.get<ApiResponse<PageResponse<AuditLogEntry>>>(
-      `/api/v1/workspaces/${workspaceId}/audit-logs`,
-      { params: { page, size } },
-    ),
-
   listManagedWorkspaces: () =>
     api.get<ApiResponse<ManagedWorkspace[]>>("/api/v1/workspaces/my-managed"),
-
-  listManagedAuditLogs: (page = 0, size = 20) =>
-    api.get<ApiResponse<PageResponse<ManagedAuditLogEntry>>>(
-      "/api/v1/workspaces/my-managed/audit-logs",
-      { params: { page, size } },
-    ),
 
   listMyPendingInvitations: () =>
     api.get<ApiResponse<WorkspaceInvitation[]>>(
@@ -152,4 +138,17 @@ export const workspaceService = {
     api.post<ApiResponse<void>>("/api/v1/workspaces/invitations/decline", {
       token,
     }),
+
+  deleteWorkspace: (workspaceId: string) =>
+    api.delete<ApiResponse<void>>(`/api/v1/workspaces/${workspaceId}`),
+
+  restoreWorkspace: (workspaceId: string) =>
+    api.post<ApiResponse<Workspace>>(
+      `/api/v1/workspaces/${workspaceId}/restore`,
+    ),
+
+  getDashboard: (workspaceId: string) =>
+    api.get<ApiResponse<WorkspaceDashboard>>(
+      `/api/v1/workspaces/${workspaceId}/dashboard`,
+    ),
 };

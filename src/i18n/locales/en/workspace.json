@@ -1,4 +1,16 @@
 {
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Overview of this workspace's members, campaigns, and package status.",
+    "loadError": "Unable to load dashboard data",
+    "activeMembers": "Active members",
+    "totalCampaigns": "Total campaigns",
+    "packageStatus": "Package status",
+    "noPackage": "No package",
+    "agencyAiCredits": "Agency AI credits used ({{month}})",
+    "membersByRole": "Members by role",
+    "campaignsByStatus": "Campaigns by status"
+  },
   "create": {
     "title": "Create workspace",
     "description": "Set up a new workspace for your team or brand.",
@@ -58,14 +70,32 @@
     "logoUploadSuccess": "Logo updated",
     "danger": {
       "title": "Danger Zone",
-      "deleteHint": "Deleting a workspace permanently removes all content, members and data. This cannot be undone.",
+      "deleteHint": "Deleting a workspace immediately revokes access for every member and Client. It can be restored within 30 days.",
       "deleteButton": "Delete workspace",
       "confirmTitle": "Delete workspace?",
-      "confirmBody": "This action cannot be undone. All data will be permanently deleted.",
+      "confirmBody": "Type the workspace name to confirm. The workspace can be restored within 30 days, after which this cannot be undone.",
       "cancel": "Cancel",
-      "confirmDelete": "Delete permanently",
-      "deleteSuccess": "Workspace deleted"
+      "confirmDelete": "Delete workspace",
+      "deleteSuccess": "Workspace deleted — restorable for 30 days",
+      "deleteError": "Failed to delete workspace"
+    },
+    "template": {
+      "saveButton": "Save as template",
+      "viewAll": "View all templates",
+      "dialogTitle": "Save workspace configuration as a template",
+      "nameLabel": "Template name",
+      "namePlaceholder": "e.g. Standard FnB template",
+      "saveSuccess": "Workspace template saved",
+      "saveError": "Failed to save workspace template"
     }
+  },
+  "templates": {
+    "title": "Workspace templates",
+    "description": "Saved configuration templates for faster workspace creation.",
+    "empty": "No templates saved yet.",
+    "loadError": "Failed to load templates",
+    "deleteSuccess": "Template deleted",
+    "deleteError": "Failed to delete template"
   },
   "noRole": "—",
   "reportFrequency": {
