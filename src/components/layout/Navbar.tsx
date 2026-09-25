@@ -21,6 +21,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
+import { authService } from "@/services/authService";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -179,6 +180,9 @@ export function Navbar({
   };
 
   const handleLogout = () => {
+    // FR 3.2.8: blacklist token server-side (BR-14). Best-effort — clear
+    // local state regardless of API outcome (token may already be expired).
+    authService.logout().catch(() => {});
     clearAuth();
     navigate("/login");
   };
