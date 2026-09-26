@@ -47,6 +47,21 @@
       "invalidUrl": "URL không hợp lệ, cần bắt đầu bằng http:// hoặc https://",
       "invalidPhone": "Số điện thoại không hợp lệ",
       "invalidYear": "Năm thành lập phải từ 1900 đến {{max}}"
+    },
+    "danger": {
+      "title": "Vùng nguy hiểm",
+      "deleteHint": "Xóa công ty sẽ khiến mọi Workspace, thành viên và Client mất quyền truy cập ngay lập tức. Có thể khôi phục trong 30 ngày.",
+      "deleteButton": "Xóa công ty",
+      "confirmTitle": "Xóa công ty?",
+      "confirmBody": "Nhập tên công ty để xác nhận. Có thể khôi phục trong 30 ngày, sau đó sẽ không thể hoàn tác.",
+      "cancel": "Hủy",
+      "confirmDelete": "Xóa công ty",
+      "deleteSuccess": "Công ty đã được xóa, có thể khôi phục trong 30 ngày",
+      "deleteError": "Không thể xóa công ty",
+      "restoreHint": "Công ty này đã bị xóa. Bạn có thể khôi phục trong 30 ngày kể từ khi xóa.",
+      "restoreButton": "Khôi phục",
+      "restoreSuccess": "Đã khôi phục công ty",
+      "restoreError": "Không thể khôi phục công ty"
     }
   },
   "create": {
@@ -121,11 +136,12 @@
     "inviteeNamePlaceholder": "vd. Nguyễn Văn A",
     "expiryLabel": "Hạn lời mời",
     "expiryDaysOption": "{{count}} ngày",
-    "assignWorkspaceLabel": "Gán vào workspace (tùy chọn)",
+    "assignWorkspaceLabel": "Workspace",
     "assignWorkspaceNone": "Không gán — chỉ mời vào công ty",
     "assignWorkspaceEmpty": "Công ty chưa có workspace nào",
-    "assignRoleLabel": "Vai trò trong workspace",
+    "assignRoleLabel": "Vai trò",
     "assignRolePlaceholder": "Chọn vai trò",
+    "clientRequiresWorkspace": "Vai trò Client cần chọn một workspace",
     "inviteSuccess": "Đã gửi lời mời tới {{email}}",
     "removeSuccess": "Đã xóa thành viên",
     "cancelInviteSuccess": "Đã hủy lời mời",

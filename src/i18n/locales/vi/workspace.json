@@ -1,4 +1,16 @@
 {
+  "dashboard": {
+    "title": "Tổng quan",
+    "description": "Tổng quan thành viên, chiến dịch và trạng thái gói dịch vụ của workspace này.",
+    "loadError": "Không thể tải dữ liệu tổng quan",
+    "activeMembers": "Thành viên đang hoạt động",
+    "totalCampaigns": "Tổng số chiến dịch",
+    "packageStatus": "Trạng thái gói dịch vụ",
+    "noPackage": "Chưa có gói dịch vụ",
+    "agencyAiCredits": "AI credit của Agency đã dùng ({{month}})",
+    "membersByRole": "Thành viên theo vai trò",
+    "campaignsByStatus": "Chiến dịch theo trạng thái"
+  },
   "create": {
     "title": "Tạo không gian làm việc",
     "description": "Thiết lập không gian làm việc mới cho đội nhóm hoặc thương hiệu của bạn.",
@@ -58,14 +70,32 @@
     "logoUploadSuccess": "Đã cập nhật logo",
     "danger": {
       "title": "Vùng nguy hiểm",
-      "deleteHint": "Xóa workspace sẽ xóa vĩnh viễn tất cả nội dung, thành viên và dữ liệu. Không thể hoàn tác.",
+      "deleteHint": "Xóa workspace sẽ khiến mọi thành viên và Client mất quyền truy cập ngay lập tức. Có thể khôi phục trong 30 ngày.",
       "deleteButton": "Xóa workspace",
       "confirmTitle": "Xóa workspace?",
-      "confirmBody": "Thao tác này không thể hoàn tác. Toàn bộ dữ liệu sẽ bị xóa vĩnh viễn.",
+      "confirmBody": "Nhập tên workspace để xác nhận. Workspace có thể khôi phục trong 30 ngày, sau đó sẽ không thể hoàn tác.",
       "cancel": "Hủy",
-      "confirmDelete": "Xóa vĩnh viễn",
-      "deleteSuccess": "Workspace đã được xóa"
+      "confirmDelete": "Xóa workspace",
+      "deleteSuccess": "Workspace đã được xóa, có thể khôi phục trong 30 ngày",
+      "deleteError": "Không thể xóa workspace"
+    },
+    "template": {
+      "saveButton": "Lưu thành mẫu",
+      "viewAll": "Xem tất cả mẫu",
+      "dialogTitle": "Lưu cấu hình workspace thành mẫu",
+      "nameLabel": "Tên mẫu",
+      "namePlaceholder": "VD: Mẫu FnB tiêu chuẩn",
+      "saveSuccess": "Đã lưu mẫu workspace",
+      "saveError": "Không thể lưu mẫu workspace"
     }
+  },
+  "templates": {
+    "title": "Mẫu workspace",
+    "description": "Danh sách mẫu cấu hình đã lưu để tạo workspace nhanh hơn.",
+    "empty": "Chưa có mẫu nào được lưu.",
+    "loadError": "Không thể tải danh sách mẫu",
+    "deleteSuccess": "Đã xóa mẫu",
+    "deleteError": "Không thể xóa mẫu"
   },
   "noRole": "—",
   "reportFrequency": {

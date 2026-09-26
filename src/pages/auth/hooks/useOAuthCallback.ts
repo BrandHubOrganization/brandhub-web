@@ -12,6 +12,7 @@ import type { UserProfileResponse } from "@/services/authService";
 import type { User } from "@/types/user";
 
 const INVALID_CALLBACK = "oauth_failed";
+const ACCOUNT_SUSPENDED = "ACCOUNT_SUSPENDED";
 const ERROR_TOAST_DURATION_MS = 5000;
 
 interface CallbackContext {
@@ -41,6 +42,10 @@ async function resolveCallback() {
     window.location.pathname,
   );
   useAuthStore.getState().clearAuth();
+  // FR 3.2.3: ACCOUNT_SUSPENDED gets its own toast instead of the generic
+  // oauth_failed message, so the user knows why sign-in was rejected.
+  if (query.get("error") === ACCOUNT_SUSPENDED)
+    throw new Error(ACCOUNT_SUSPENDED);
   if (query.has("error") || !token) throw new Error(INVALID_CALLBACK);
 
   useAuthStore.getState().setTokens(token, null);
@@ -56,6 +61,9 @@ function reportCallbackError(error: unknown) {
     category: error instanceof Error ? error.name : "UnknownError",
     status: isAxiosError(error) ? error.response?.status : undefined,
   });
+  if (error instanceof Error && error.message === ACCOUNT_SUSPENDED) {
+    return "auth.login.oauthAccountSuspended";
+  }
   return error instanceof Error && error.message === INVALID_CALLBACK
     ? "auth.login.oauthFailed"
     : "auth.login.oauthProfileFailed";

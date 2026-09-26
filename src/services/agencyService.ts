@@ -51,6 +51,9 @@ export const agencyService = {
   remove: (agencyId: string) =>
     api.delete<ApiResponse<void>>(`/api/v1/agencies/${agencyId}`),
 
+  restore: (agencyId: string) =>
+    api.post<ApiResponse<Agency>>(`/api/v1/agencies/${agencyId}/restore`),
+
   listMembers: (agencyId: string) =>
     api.get<ApiResponse<AgencyMember[]>>(
       `/api/v1/agencies/${agencyId}/members`,

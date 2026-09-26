@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { authService } from "@/services/authService";
 import { dashboardService } from "@/services/mock/mockDashboardService";
 import type { AnalyticsOverview, ActivityEvent } from "@/types/analytics";
 
@@ -63,6 +64,8 @@ export function useDashboardData() {
   }, [loadAllData]);
 
   const handleLogout = () => {
+    // FR 3.2.8: blacklist token server-side (BR-14), same as Navbar.handleLogout.
+    authService.logout().catch(() => {});
     clearAuth();
     navigate("/login", { replace: true });
   };

@@ -103,3 +103,25 @@ export interface WorkspaceInvitation {
   expiresAt: string;
   token: string;
 }
+
+export interface WorkspaceDashboard {
+  workspace: Workspace;
+  totalActiveMembers: number;
+  membersByRole: Record<string, number>;
+  totalCampaigns: number;
+  campaignsByStatus: Record<string, number>;
+  packageNegotiationStatus: string | null;
+  agencyId: string;
+  aiCreditMonth: string;
+  agencyAiCreditsUsedThisMonth: number;
+}
+
+export interface WorkspaceTemplate {
+  id: string;
+  agencyId: string;
+  name: string;
+  sourceWorkspaceId: string | null;
+  configSnapshot: string;
+  createdBy: string;
+  createdAt: string;
+}
