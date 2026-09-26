@@ -184,42 +184,57 @@ export function Sidebar({
   );
   const currentAgencyName =
     agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
+  // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
+  // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
+  // "create" (editor/calendar/publish...) cần context 1 workspace nên ẩn,
+  // chỉ còn "manage" (agency profile/members/stats).
+  const visibleSectionKeys: string[] | null =
+    systemRole === "ADMIN" ? ["system"] : !activeWorkspace ? ["manage"] : null; // null = không lọc theo section, giữ tất cả
+
   // Filter sections and items based on role permission
-  const filteredSections = NAV_SECTIONS.map((section) => {
-    const items = section.items
-      .filter((item) => canAccess(item.to, systemRole, role))
-      .filter((item) => !item.hiddenForClient || role !== "CLIENT")
-      .filter((item) => !item.clientOnly || role === "CLIENT")
-      .filter((item) => !item.agencyScoped || currentAgencyId)
-      .map((item) => {
-        if (item.clientOnly && currentAgencyId) {
-          return { ...item, to: `/client-profile?agencyId=${currentAgencyId}` };
-        }
-        if (item.agencyScoped && currentAgencyId) {
-          return {
-            ...item,
-            to: item.to.replace("{agencyId}", currentAgencyId),
-          };
-        }
-        return item;
-      });
+  const filteredSections = NAV_SECTIONS.filter(
+    (section) =>
+      !visibleSectionKeys || visibleSectionKeys.includes(section.key),
+  )
+    .map((section) => {
+      const items = section.items
+        .filter((item) => canAccess(item.to, systemRole, role))
+        .filter((item) => !item.hiddenForClient || role !== "CLIENT")
+        .filter((item) => !item.clientOnly || role === "CLIENT")
+        .filter((item) => !item.agencyScoped || currentAgencyId)
+        .map((item) => {
+          if (item.clientOnly && currentAgencyId) {
+            return {
+              ...item,
+              to: `/client-profile?agencyId=${currentAgencyId}`,
+            };
+          }
+          if (item.agencyScoped && currentAgencyId) {
+            return {
+              ...item,
+              to: item.to.replace("{agencyId}", currentAgencyId),
+            };
+          }
+          return item;
+        });
 
-    // Members link needs a dynamic workspaceId path — only add once a
-    // workspace is active, and only for roles that manage membership.
-    if (
-      section.key === "manage" &&
-      activeWorkspace &&
-      canAccess(`/workspaces/${activeWorkspace.id}/members`, systemRole, role)
-    ) {
-      items.push({
-        to: `/workspaces/${activeWorkspace.id}/members`,
-        icon: UserPlus,
-        labelKey: "nav.members",
-      });
-    }
+      // Members link needs a dynamic workspaceId path — only add once a
+      // workspace is active, and only for roles that manage membership.
+      if (
+        section.key === "manage" &&
+        activeWorkspace &&
+        canAccess(`/workspaces/${activeWorkspace.id}/members`, systemRole, role)
+      ) {
+        items.push({
+          to: `/workspaces/${activeWorkspace.id}/members`,
+          icon: UserPlus,
+          labelKey: "nav.members",
+        });
+      }
 
-    return { ...section, items };
-  }).filter((section) => section.items.length > 0);
+      return { ...section, items };
+    })
+    .filter((section) => section.items.length > 0);
 
   return (
     <div

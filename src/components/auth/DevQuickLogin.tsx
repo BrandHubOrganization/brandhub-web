@@ -1,82 +1,66 @@
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FlaskConical } from "lucide-react";
-import { useAuthStore } from "@/store/authStore";
-import { useWorkspaceStore } from "@/store/workspaceStore";
-import type { SystemRole, User } from "@/types/user";
-import type { MemberRole, Workspace } from "@/types/workspace";
+import { toast } from "sonner";
+import { useAuthStore, type SystemRole, type User } from "@/store/authStore";
+import { authService } from "@/services/authService";
+import { extractErrorMessage } from "@/utils/error";
 
-interface QuickRole {
-  systemRole: SystemRole;
-  memberRole: MemberRole | null;
-  labelKey: string;
-}
+/**
+ * Dev-only quick login — real accounts seeded by DataSeeder (profile=seed,
+ * see brandhub-business-service/.../seed/README.md), all password
+ * "Password123". Picked for cross-linked data: each covers a different
+ * workspace role so a dev can see real data immediately without memorizing
+ * credentials. Calls the real /auth/login + /users/me endpoints, same as
+ * the manual login form — not a fake/bypassed session.
+ */
+const QUICK_LOGIN_ACCOUNTS = [
+  { email: "admin@brandhub.dev", labelKey: "nav.admin" },
+  { email: "user317@gmail.com", labelKey: "workspace.roles.MANAGER" }, // 11 workspaces
+  { email: "user245@hotmail.com", labelKey: "workspace.roles.CREATOR" },
+  { email: "user36@hotmail.com", labelKey: "workspace.roles.CLIENT" },
+] as const;
 
-const QUICK_ROLES: QuickRole[] = [
-  { systemRole: "ADMIN", memberRole: null, labelKey: "nav.admin" },
-  {
-    systemRole: "USER",
-    memberRole: "OWNER",
-    labelKey: "workspace.roles.OWNER",
-  },
-  {
-    systemRole: "USER",
-    memberRole: "MANAGER",
-    labelKey: "workspace.roles.MANAGER",
-  },
-  {
-    systemRole: "USER",
-    memberRole: "CREATOR",
-    labelKey: "workspace.roles.CREATOR",
-  },
-  {
-    systemRole: "USER",
-    memberRole: "CLIENT",
-    labelKey: "workspace.roles.CLIENT",
-  },
-];
-
-const DEV_WORKSPACE: Workspace = {
-  id: "dev-ws-1",
-  name: "Dev Workspace",
-  slug: "dev-workspace",
-  ownerId: "dev-owner",
-  logoUrl: null,
-  settings: {
-    industry: null,
-    timezone: null,
-    defaultPlatforms: null,
-    reportFrequency: null,
-  },
-  isActive: true,
-  createdAt: new Date().toISOString(),
-};
+const DEV_PASSWORD = "Password123";
 
 export function DevQuickLogin() {
-  if (!import.meta.env.DEV) return null;
-
   const { t } = useTranslation();
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
-  const setSystemRole = useAuthStore((s) => s.setSystemRole);
-  const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
-  const setWorkspaceList = useWorkspaceStore((s) => s.setWorkspaceList);
-  const setCurrentMemberRole = useWorkspaceStore((s) => s.setCurrentMemberRole);
+  const [loadingEmail, setLoadingEmail] = React.useState<string | null>(null);
 
-  function handleQuickLogin(quick: QuickRole) {
-    const devUser: User = {
-      id: `dev-${quick.memberRole ?? "admin"}`,
-      name: `Dev ${t(quick.labelKey)}`,
-      email: `dev-${(quick.memberRole ?? "admin").toLowerCase()}@brandhub.dev`,
-      role: quick.systemRole,
-      workspaceId: DEV_WORKSPACE.id,
-    };
-    setAuth(devUser, `dev-token-${devUser.id}`);
-    setSystemRole(quick.systemRole);
-    setWorkspaceList(quick.memberRole ? [DEV_WORKSPACE] : []);
-    setCurrentWorkspace(quick.memberRole ? DEV_WORKSPACE : null);
-    setCurrentMemberRole(quick.memberRole);
-    navigate("/dashboard");
+  if (!import.meta.env.DEV) return null;
+
+  async function handleQuickLogin(email: string) {
+    setLoadingEmail(email);
+    try {
+      const res = await authService.login({
+        identifier: email,
+        password: DEV_PASSWORD,
+      });
+      const { accessToken } = res.data.data;
+
+      useAuthStore.getState().setTokens(accessToken, null);
+      const profileRes = await authService.getProfile();
+      const profile = profileRes.data.data;
+      if (!profile) throw new Error("Profile load failed");
+
+      const user: User = {
+        id: profile.userId,
+        name: profile.fullName || email,
+        email: profile.email,
+        role: profile.role as SystemRole,
+        workspaceId: profile.workspaceId,
+        avatar: profile.avatarUrl,
+      };
+      setAuth(user, accessToken);
+      navigate(user.role === "ADMIN" ? "/admin" : "/dashboard");
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, "Quick login failed"));
+    } finally {
+      setLoadingEmail(null);
+    }
   }
 
   return (
@@ -85,15 +69,16 @@ export function DevQuickLogin() {
         <FlaskConical className="size-3.5" />
         {t("auth.login.devQuickLoginLabel")}
       </div>
-      <div className="grid grid-cols-3 gap-1.5">
-        {QUICK_ROLES.map((quick) => (
+      <div className="grid grid-cols-2 gap-1.5">
+        {QUICK_LOGIN_ACCOUNTS.map((account) => (
           <button
-            key={quick.memberRole ?? quick.systemRole}
+            key={account.email}
             type="button"
-            onClick={() => handleQuickLogin(quick)}
-            className="border-border hover:bg-accent hover:text-accent-foreground text-2xs cursor-pointer rounded-lg border px-2 py-1.5 font-medium transition-colors"
+            disabled={loadingEmail !== null}
+            onClick={() => handleQuickLogin(account.email)}
+            className="border-border hover:bg-accent hover:text-accent-foreground text-2xs cursor-pointer rounded-lg border px-2 py-1.5 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {t(quick.labelKey)}
+            {loadingEmail === account.email ? "..." : t(account.labelKey)}
           </button>
         ))}
       </div>
