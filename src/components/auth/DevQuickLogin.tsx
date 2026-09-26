@@ -18,8 +18,15 @@ import { extractErrorMessage } from "@/utils/error";
 const QUICK_LOGIN_ACCOUNTS = [
   { email: "admin@brandhub.dev", labelKey: "nav.admin" },
   { email: "user317@gmail.com", labelKey: "workspace.roles.MANAGER" }, // 11 workspaces
-  { email: "user245@hotmail.com", labelKey: "workspace.roles.CREATOR" },
-  { email: "user36@hotmail.com", labelKey: "workspace.roles.CLIENT" },
+  { email: "user1@gmail.com", labelKey: "workspace.roles.CREATOR" }, // 1 workspace, myRole=CREATOR (verified, not lost among OWNER agencies)
+  // CLIENT is never a WorkspaceMember.userId row (only clientProfileId —
+  // see WorkspaceSeeder.seedWorkspaceMembers) — a client user has no
+  // "/workspaces" list to land on, they view via client-profile instead.
+  {
+    email: "user4@gmail.com",
+    labelKey: "workspace.roles.CLIENT",
+    clientProfileAgencyId: "ccbaf388-e756-448e-ae6c-697ce31cc67d",
+  },
 ] as const;
 
 const DEV_PASSWORD = "Password123";
@@ -32,7 +39,10 @@ export function DevQuickLogin() {
 
   if (!import.meta.env.DEV) return null;
 
-  async function handleQuickLogin(email: string) {
+  async function handleQuickLogin(
+    email: string,
+    clientProfileAgencyId?: string,
+  ) {
     setLoadingEmail(email);
     try {
       const res = await authService.login({
@@ -55,7 +65,13 @@ export function DevQuickLogin() {
         avatar: profile.avatarUrl,
       };
       setAuth(user, accessToken);
-      navigate(user.role === "ADMIN" ? "/admin" : "/dashboard");
+      if (user.role === "ADMIN") {
+        navigate("/admin");
+      } else if (clientProfileAgencyId) {
+        navigate(`/client-profile?agencyId=${clientProfileAgencyId}`);
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, "Quick login failed"));
     } finally {
@@ -75,7 +91,14 @@ export function DevQuickLogin() {
             key={account.email}
             type="button"
             disabled={loadingEmail !== null}
-            onClick={() => handleQuickLogin(account.email)}
+            onClick={() =>
+              handleQuickLogin(
+                account.email,
+                "clientProfileAgencyId" in account
+                  ? account.clientProfileAgencyId
+                  : undefined,
+              )
+            }
             className="border-border hover:bg-accent hover:text-accent-foreground text-2xs cursor-pointer rounded-lg border px-2 py-1.5 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loadingEmail === account.email ? "..." : t(account.labelKey)}
