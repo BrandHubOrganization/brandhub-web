@@ -59,6 +59,6 @@
     "changeSuccess": "Password changed successfully",
     "changeFailed": "Failed to change password",
     "mismatch": "New passwords do not match",
-    "pageDescription": "Temporary test page — the official UI will be built later."
+    "pageDescription": "Change your password. You'll stay signed in on this device, but other devices will need to sign in again."
   }
 }

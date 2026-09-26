@@ -59,6 +59,6 @@
     "changeSuccess": "Đổi mật khẩu thành công",
     "changeFailed": "Đổi mật khẩu thất bại",
     "mismatch": "Mật khẩu mới không khớp",
-    "pageDescription": "Trang test tạm — giao diện chính thức làm sau."
+    "pageDescription": "Đổi mật khẩu của bạn. Thiết bị này vẫn giữ đăng nhập, nhưng các thiết bị khác sẽ cần đăng nhập lại."
   }
 }
