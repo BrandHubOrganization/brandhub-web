@@ -131,6 +131,8 @@
     "empty": "No members yet. Invite your first teammate above.",
     "you": "(you)",
     "remove": "Remove",
+    "removeConfirmTitle": "Remove member?",
+    "removeConfirmDescription": "This member will lose access to the agency.",
     "cancelInvite": "Cancel invite",
     "inviteeNameLabel": "Invitee name (optional)",
     "inviteeNamePlaceholder": "e.g. John Doe",

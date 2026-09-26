@@ -16,6 +16,7 @@ import { extractErrorMessage } from "@/utils/error";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { InviteMessagePresets } from "@/components/shared/InviteMessagePresets";
+import { RemoveAgencyMemberDialog } from "./components/RemoveAgencyMemberDialog";
 import { Select } from "@/components/ui/select";
 import type { AgencyMember, AgencyMemberRole } from "@/types/agency";
 import type { MemberRole, Workspace } from "@/types/workspace";
@@ -88,6 +89,8 @@ export function AgencyMembersPage() {
   const [inviteLink, setInviteLink] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState(false);
+  const [removeTargetId, setRemoveTargetId] = useState<string | null>(null);
+  const [removing, setRemoving] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -209,15 +212,19 @@ export function AgencyMembersPage() {
     }
   };
 
-  const handleRemove = async (memberId: string) => {
-    if (!id) return;
+  const handleRemove = async () => {
+    if (!id || !removeTargetId) return;
+    setRemoving(true);
     try {
-      await agencyService.removeMember(id, memberId);
-      setRows((prev) => prev.filter((r) => r.id !== memberId));
-      setMembers((prev) => prev.filter((m) => m.id !== memberId));
+      await agencyService.removeMember(id, removeTargetId);
+      setRows((prev) => prev.filter((r) => r.id !== removeTargetId));
+      setMembers((prev) => prev.filter((m) => m.id !== removeTargetId));
       toast.success(t("agency.members.removeSuccess"));
+      setRemoveTargetId(null);
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("agency.errors.removeFailed")));
+    } finally {
+      setRemoving(false);
     }
   };
 
@@ -328,7 +335,7 @@ export function AgencyMembersPage() {
               variant="ghost"
               size="sm"
               className="text-destructive cursor-pointer text-xs"
-              onClick={() => handleRemove(row.id)}
+              onClick={() => setRemoveTargetId(row.id)}
             >
               {t("agency.members.remove")}
             </Button>
@@ -555,6 +562,13 @@ export function AgencyMembersPage() {
           />
         </div>
       </div>
+
+      <RemoveAgencyMemberDialog
+        open={removeTargetId !== null}
+        onOpenChange={(open) => !open && setRemoveTargetId(null)}
+        submitting={removing}
+        onSubmit={handleRemove}
+      />
     </PageWrapper>
   );
 }

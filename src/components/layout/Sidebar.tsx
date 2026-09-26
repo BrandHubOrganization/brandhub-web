@@ -184,42 +184,58 @@ export function Sidebar({
   );
   const currentAgencyName =
     agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
+  const clientWorkspaces = allWorkspaces.filter((ws) => ws.myRole === "CLIENT");
+  // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
+  // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
+  // "create" (editor/calendar/publish...) cần context 1 workspace nên ẩn,
+  // chỉ còn "manage" (agency profile/members/stats).
+  const visibleSectionKeys: string[] | null =
+    systemRole === "ADMIN" ? ["system"] : !activeWorkspace ? ["manage"] : null; // null = không lọc theo section, giữ tất cả
+
   // Filter sections and items based on role permission
-  const filteredSections = NAV_SECTIONS.map((section) => {
-    const items = section.items
-      .filter((item) => canAccess(item.to, systemRole, role))
-      .filter((item) => !item.hiddenForClient || role !== "CLIENT")
-      .filter((item) => !item.clientOnly || role === "CLIENT")
-      .filter((item) => !item.agencyScoped || currentAgencyId)
-      .map((item) => {
-        if (item.clientOnly && currentAgencyId) {
-          return { ...item, to: `/client-profile?agencyId=${currentAgencyId}` };
-        }
-        if (item.agencyScoped && currentAgencyId) {
-          return {
-            ...item,
-            to: item.to.replace("{agencyId}", currentAgencyId),
-          };
-        }
-        return item;
-      });
+  const filteredSections = NAV_SECTIONS.filter(
+    (section) =>
+      !visibleSectionKeys || visibleSectionKeys.includes(section.key),
+  )
+    .map((section) => {
+      const items = section.items
+        .filter((item) => canAccess(item.to, systemRole, role))
+        .filter((item) => !item.hiddenForClient || role !== "CLIENT")
+        .filter((item) => !item.clientOnly || role === "CLIENT")
+        .filter((item) => !item.agencyScoped || currentAgencyId)
+        .map((item) => {
+          if (item.clientOnly && currentAgencyId) {
+            return {
+              ...item,
+              to: `/client-profile?agencyId=${currentAgencyId}`,
+            };
+          }
+          if (item.agencyScoped && currentAgencyId) {
+            return {
+              ...item,
+              to: item.to.replace("{agencyId}", currentAgencyId),
+            };
+          }
+          return item;
+        });
 
-    // Members link needs a dynamic workspaceId path — only add once a
-    // workspace is active, and only for roles that manage membership.
-    if (
-      section.key === "manage" &&
-      activeWorkspace &&
-      canAccess(`/workspaces/${activeWorkspace.id}/members`, systemRole, role)
-    ) {
-      items.push({
-        to: `/workspaces/${activeWorkspace.id}/members`,
-        icon: UserPlus,
-        labelKey: "nav.members",
-      });
-    }
+      // Members link needs a dynamic workspaceId path — only add once a
+      // workspace is active, and only for roles that manage membership.
+      if (
+        section.key === "manage" &&
+        activeWorkspace &&
+        canAccess(`/workspaces/${activeWorkspace.id}/members`, systemRole, role)
+      ) {
+        items.push({
+          to: `/workspaces/${activeWorkspace.id}/members`,
+          icon: UserPlus,
+          labelKey: "nav.members",
+        });
+      }
 
-    return { ...section, items };
-  }).filter((section) => section.items.length > 0);
+      return { ...section, items };
+    })
+    .filter((section) => section.items.length > 0);
 
   return (
     <div
@@ -346,6 +362,34 @@ export function Sidebar({
                 {t("nav.orgSwitcher.noAgency")}
               </p>
             )}
+            {/* CLIENT chỉ join workspace_members, không phải agency member —
+                không gom theo agency, liệt kê thẳng để họ dễ hiểu. */}
+            {clientWorkspaces.length > 0 && (
+              <>
+                <div className="border-border ml-1 border-l pl-2">
+                  {clientWorkspaces.map((ws) => (
+                    <DropdownMenuItem
+                      key={ws.id}
+                      onClick={() =>
+                        ws.agencyId && onSwitchWorkspace(ws.agencyId, ws.id)
+                      }
+                      className={cn(
+                        "cursor-pointer justify-between gap-2 text-xs",
+                        activeWorkspace?.id === ws.id
+                          ? "text-brand-orange font-semibold"
+                          : "",
+                      )}
+                    >
+                      <span className="truncate">{ws.name}</span>
+                      <span className="text-muted-foreground text-3xs shrink-0 font-normal">
+                        {t("workspace.roles.CLIENT")}
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                </div>
+                <DropdownMenuSeparator />
+              </>
+            )}
             {agencyList.map((agency) => {
               const agencyWs = allWorkspaces.filter(
                 (ws) => ws.agencyId === agency.id,
@@ -385,13 +429,18 @@ export function Sidebar({
                           key={ws.id}
                           onClick={() => onSwitchWorkspace(agency.id, ws.id)}
                           className={cn(
-                            "cursor-pointer text-xs",
+                            "cursor-pointer justify-between gap-2 text-xs",
                             activeWorkspace?.id === ws.id
                               ? "text-brand-orange font-semibold"
                               : "",
                           )}
                         >
-                          {ws.name}
+                          <span className="truncate">{ws.name}</span>
+                          {ws.myRole && (
+                            <span className="text-muted-foreground text-3xs shrink-0 font-normal">
+                              {t(`workspace.roles.${ws.myRole}`)}
+                            </span>
+                          )}
                         </DropdownMenuItem>
                       ))}
                       <DropdownMenuItem

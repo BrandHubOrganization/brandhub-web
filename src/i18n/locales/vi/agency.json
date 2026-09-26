@@ -131,6 +131,8 @@
     "empty": "Chưa có thành viên nào. Mời thành viên đầu tiên ở trên.",
     "you": "(bạn)",
     "remove": "Xóa",
+    "removeConfirmTitle": "Xóa thành viên?",
+    "removeConfirmDescription": "Thành viên này sẽ mất quyền truy cập vào công ty.",
     "cancelInvite": "Hủy lời mời",
     "inviteeNameLabel": "Tên người được mời (tùy chọn)",
     "inviteeNamePlaceholder": "vd. Nguyễn Văn A",
