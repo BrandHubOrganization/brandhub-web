@@ -21,7 +21,7 @@ export function useClients() {
       const data = await mockClientService.getClients({ search: searchTerm });
       setClients(data.content);
       setTotalElements(data.totalElements);
-    } catch (error) {
+    } catch {
       toast.error(t("client.loadListError"));
     } finally {
       setIsLoading(false);

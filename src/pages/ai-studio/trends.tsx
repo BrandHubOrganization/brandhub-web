@@ -9,7 +9,7 @@ import {
   getKeywords,
   getTrendingTopics,
   toggleKeyword,
-  useForContent,
+  addTopicForContent,
 } from "@/services/mock/mockTrendsService";
 import type {
   CrawlFrequency,
@@ -92,7 +92,7 @@ export function TrendsPage() {
 
   async function handleUseForContent(topic: TrendingTopic) {
     try {
-      await useForContent(topic.id);
+      await addTopicForContent(topic.id);
       toast.success(t("aiStudio.trends.useForContentSuccess"));
     } catch (err) {
       console.error("Failed to use topic for content:", err);

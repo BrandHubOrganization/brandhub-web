@@ -73,7 +73,7 @@ export const ReviseRequestModal: React.FC<ReviseRequestModalProps> = ({
         briefNote: briefNote.trim() || undefined,
       });
       onClose();
-    } catch (err) {
+    } catch {
       toast.error(t("requests.revise.error"));
     } finally {
       setIsSubmitting(false);

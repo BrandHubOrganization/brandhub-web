@@ -4,7 +4,6 @@ import {
   AtSign,
   Bell,
   CheckCircle,
-  ChevronDown,
   Clock,
   Globe,
   Info,

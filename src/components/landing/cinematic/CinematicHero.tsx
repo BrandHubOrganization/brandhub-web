@@ -2232,12 +2232,7 @@ function PieGrowBar({ pct, color }: { pct: number; color: string }) {
   );
 }
 
-const AI_GEN_TABS_BASE = [
-  { key: "text" },
-  { key: "image" },
-  { key: "video", label: "Video" },
-] as const;
-type AiGenTab = (typeof AI_GEN_TABS_BASE)[number]["key"];
+type AiGenTab = "text" | "image" | "video";
 
 function useAiGenTabs() {
   const { t } = useTranslation();
