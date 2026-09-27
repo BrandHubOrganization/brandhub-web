@@ -9,7 +9,14 @@
     "noPackage": "No package",
     "agencyAiCredits": "Agency AI credits used ({{month}})",
     "membersByRole": "Members by role",
-    "campaignsByStatus": "Campaigns by status"
+    "campaignsByStatus": "Campaigns by status",
+    "mockBadge": "Sample data",
+    "campaignTrend": "Campaigns by month",
+    "contentByStatus": "Content by status",
+    "upcomingContent": "Upcoming content",
+    "upcomingContentEmpty": "No content scheduled yet.",
+    "recentActivity": "Recent activity",
+    "recentActivityEmpty": "No activity yet."
   },
   "create": {
     "title": "Create workspace",

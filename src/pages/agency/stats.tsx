@@ -12,7 +12,7 @@ import {
   BarStatChart,
   LineStatChart,
   PieStatChart,
-} from "./components/stats/StatCharts";
+} from "@/components/charts/StatCharts";
 
 export function AgencyStatsPage() {
   const { id } = useParams<{ id: string }>();

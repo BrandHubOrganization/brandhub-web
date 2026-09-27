@@ -9,7 +9,14 @@
     "noPackage": "Chưa có gói dịch vụ",
     "agencyAiCredits": "AI credit của Agency đã dùng ({{month}})",
     "membersByRole": "Thành viên theo vai trò",
-    "campaignsByStatus": "Chiến dịch theo trạng thái"
+    "campaignsByStatus": "Chiến dịch theo trạng thái",
+    "mockBadge": "Dữ liệu mẫu",
+    "campaignTrend": "Chiến dịch theo tháng",
+    "contentByStatus": "Nội dung theo trạng thái",
+    "upcomingContent": "Nội dung sắp đăng",
+    "upcomingContentEmpty": "Chưa có nội dung nào được lên lịch.",
+    "recentActivity": "Hoạt động gần đây",
+    "recentActivityEmpty": "Chưa có hoạt động nào."
   },
   "create": {
     "title": "Tạo không gian làm việc",
