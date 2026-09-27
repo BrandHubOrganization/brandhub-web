@@ -101,6 +101,10 @@ export function AppRoutes() {
             element={<WorkspaceMembersPage />}
           />
           <Route
+            path="/workspaces/:id/analytics"
+            element={<AnalyticsPage />}
+          />
+          <Route
             path="/workspaces/templates"
             element={<WorkspaceTemplatesPage />}
           />

@@ -75,7 +75,12 @@ const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.dashboard",
         workspaceScoped: true,
       },
-      { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
+      {
+        to: "/analytics",
+        icon: BarChart3,
+        labelKey: "nav.analytics",
+        workspaceScoped: true,
+      },
     ],
   },
   {
