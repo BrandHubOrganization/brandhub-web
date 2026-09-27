@@ -8,7 +8,6 @@ import { workspaceService } from "@/services/workspaceService";
 import { extractErrorMessage } from "@/utils/error";
 import type { WorkspaceDashboard } from "@/types/workspace";
 import {
-  BarStatChart,
   LineStatChart,
   PieStatChart,
 } from "@/components/charts/StatCharts";

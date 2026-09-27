@@ -87,7 +87,7 @@ function buildDefaults(
 ): ClientProfileFormValues {
   const social = initial?.socialLinks ?? {};
   // Tạo mới thì điền sẵn từ tài khoản đang đăng nhập cho đỡ phải gõ lại.
-  const seed = initial ? "" : (v?: string) => v ?? "";
+  const seed = (v?: string) => (initial ? "" : (v ?? ""));
   return {
     displayName: initial?.displayName ?? "",
     company: initial?.company ?? "",
