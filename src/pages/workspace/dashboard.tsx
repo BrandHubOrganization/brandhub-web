@@ -18,6 +18,10 @@ import {
   MOCK_RECENT_ACTIVITY,
   MOCK_UPCOMING_CONTENT,
 } from "./mockDashboardData";
+import { getAnalyticsSummary } from "@/services/mock/mockAnalyticsService";
+import type { AnalyticsSummary } from "@/types/analytics";
+import { StatCards } from "@/pages/analytics/components/StatCards";
+import { ChannelPerformanceChart } from "@/pages/analytics/components/ChannelPerformanceChart";
 
 // FR 3.4.11 — View Workspace Dashboard. Cards only use data that genuinely
 // exists (member roles, campaign status, package negotiation, Agency-wide
@@ -52,6 +56,7 @@ export function WorkspaceDashboardPage() {
   const { id: workspaceId } = useParams<{ id: string }>();
   const [dashboard, setDashboard] = useState<WorkspaceDashboard | null>(null);
   const [loading, setLoading] = useState(true);
+  const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
 
   useEffect(() => {
     if (!workspaceId) return;
@@ -65,6 +70,13 @@ export function WorkspaceDashboardPage() {
       )
       .finally(() => setLoading(false));
   }, [workspaceId, t]);
+
+  // TODO(mock): same gap as MOCK_* below — no per-workspace analytics
+  // endpoint yet, getAnalyticsSummary() is the same mock service that used
+  // to back the standalone /analytics page.
+  useEffect(() => {
+    getAnalyticsSummary().then(setAnalytics);
+  }, []);
 
   if (loading || !dashboard) return null;
 
@@ -187,6 +199,17 @@ export function WorkspaceDashboardPage() {
           )}
         </div>
       </div>
+
+      {analytics && (
+        <>
+          <div className="mt-6">
+            <StatCards cards={analytics.cards} />
+          </div>
+          <div className="mt-4">
+            <ChannelPerformanceChart channelStats={analytics.channelStats} />
+          </div>
+        </>
+      )}
     </PageWrapper>
   );
 }

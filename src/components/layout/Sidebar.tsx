@@ -79,7 +79,10 @@ const NAV_SECTIONS: NavSection[] = [
         to: "/analytics",
         icon: BarChart3,
         labelKey: "nav.analytics",
-        workspaceScoped: true,
+        // Merged into workspace Dashboard (StatCards + ChannelPerformanceChart
+        // now render inline there) — keep this item for agency-level only,
+        // hide once a workspace is active so it's not a duplicate link.
+        hideInWorkspace: true,
       },
     ],
   },
