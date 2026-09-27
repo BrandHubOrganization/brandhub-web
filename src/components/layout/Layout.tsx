@@ -124,13 +124,16 @@ export function Layout() {
   // Owner gắn với AGENCY (agency.ownerId), không phải workspace — agency
   // chưa có workspace nào (hoặc chưa chọn workspace) vẫn phải hiện "Owner"
   // khi đang xem đúng agency đó. Trước đây memberRole chỉ đọc qua
-  // activeWorkspace.myRole nên owner của agency rỗng bị hiện "—".
-  const isOwnerOfCurrentAgency =
-    !!user &&
-    !!currentAgencyId &&
-    agencyList.some((a) => a.id === currentAgencyId && a.ownerId === user.id);
+  // activeWorkspace.myRole nên owner của agency rỗng bị hiện "—" — và tệ
+  // hơn, agency MEMBER (không phải owner) cũng bị rỗng luôn dù backend đã
+  // biết họ là MEMBER, chỉ vì FE tự suy ownerId thay vì đọc field có sẵn.
+  // Đọc thẳng AgencyResponse.myRole (nguồn sự thật từ backend) thay vì tự
+  // so ownerId === user.id.
+  const currentAgencyMyRole =
+    agencyList.find((a) => a.id === currentAgencyId)?.myRole ?? null;
   const memberRole: MemberRole | null =
-    activeWorkspace?.myRole ?? (isOwnerOfCurrentAgency ? "OWNER" : null);
+    activeWorkspace?.myRole ??
+    (currentAgencyMyRole === "OWNER" ? "OWNER" : null);
 
   // CLIENT chỉ có 1 ClientProfile mỗi agency — tự fetch/hiển thị đúng hồ sơ
   // của agency đang active, không cần màn hình chọn riêng.

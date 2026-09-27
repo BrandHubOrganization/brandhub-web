@@ -44,6 +44,10 @@ export interface Agency {
   status: AgencyStatus;
   createdAt: string;
   updatedAt: string;
+  /** Role của currentUser trong agency này (OWNER/MEMBER) — null nếu response
+   * không tính theo currentUser context. Dùng để hiện đúng menu quản lý
+   * trước khi chọn workspace, thay vì suy luận qua ownerId. */
+  myRole: AgencyMemberRole | null;
 }
 
 export interface AgencyMember {
