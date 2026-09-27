@@ -88,3 +88,42 @@ export function joinLanguages(codes: string[]): string {
   );
   return [...known, ...unknown].join(",");
 }
+
+/**
+ * Chuyên môn gợi ý (chip multi-select). Value lưu thẳng vào mảng JSONB
+ * `users.skills` — không mã hoá, không join chuỗi. Label qua i18n key
+ * `profile.skill.<slug>`.
+ */
+export const SKILLS = [
+  "content-strategy",
+  "copywriting",
+  "social-media",
+  "seo",
+  "branding",
+  "graphic-design",
+  "video-editing",
+  "photography",
+  "motion-graphics",
+  "ui-ux",
+  "community-management",
+  "paid-ads",
+  "email-marketing",
+  "analytics",
+  "campaign-management",
+  "project-management",
+  "account-management",
+  "influencer-marketing",
+  "pr-communications",
+  "event-marketing",
+  "ecommerce",
+  "market-research",
+  "ai-tools",
+  "storytelling",
+] as const;
+
+export type Skill = (typeof SKILLS)[number];
+
+/** true nếu value là 1 chuyên môn trong danh sách gợi ý. */
+export function isSkill(value: string): boolean {
+  return (SKILLS as readonly string[]).includes(value);
+}

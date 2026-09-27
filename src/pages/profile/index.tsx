@@ -1,45 +1,105 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
   BadgeCheck,
+  BellRing,
+  Briefcase,
   Calendar,
   Camera,
   Clock,
+  Eye,
+  ImagePlus,
+  Link2,
+  MapPin,
   Pencil,
   Phone,
   ShieldCheck,
-  TriangleAlert,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/authStore";
 import { userService } from "@/services/userService";
-import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
 import type { User } from "@/types/user";
 import { AvatarUploadModal } from "./components/AvatarUploadModal";
 import { LinkPhoneModal } from "./components/LinkPhoneModal";
 import { JobTitleSelect } from "./components/JobTitleSelect";
 import { LanguageChipSelect } from "./components/LanguageChipSelect";
+import { SkillsChipSelect } from "./components/SkillsChipSelect";
 import { TimezoneSelect } from "@/pages/workspace/components/TimezoneSelect";
-import { isCuratedJobTitle, isLanguage, parseLanguages } from "./constants";
+import {
+  isCuratedJobTitle,
+  isLanguage,
+  isSkill,
+  parseLanguages,
+} from "./constants";
+
+/**
+ * Các trường mở rộng của hồ sơ (skills/vị trí/kinh nghiệm/social/banner).
+ * Gom 1 object để mọi điểm đồng bộ (load / save / cancel) chỉ cần 1 dòng,
+ * thay vì 9 state rời rạc × 6 chỗ.
+ */
+interface ExtendedProfile {
+  skills: string[];
+  location: string;
+  yearsOfExperience: string;
+  linkedinUrl: string;
+  facebookUrl: string;
+  instagramUrl: string;
+  tiktokUrl: string;
+  website: string;
+  bannerUrl: string;
+}
+
+const EMPTY_EXTENDED: ExtendedProfile = {
+  skills: [],
+  location: "",
+  yearsOfExperience: "",
+  linkedinUrl: "",
+  facebookUrl: "",
+  instagramUrl: "",
+  tiktokUrl: "",
+  website: "",
+  bannerUrl: "",
+};
+
+/** API → state. Dùng chung cho cả lần load đầu và lần save (2 chiều đều nhận UserProfileResponse). */
+function toExtended(p: {
+  skills?: string[];
+  location?: string | null;
+  yearsOfExperience?: number | null;
+  linkedinUrl?: string | null;
+  facebookUrl?: string | null;
+  instagramUrl?: string | null;
+  tiktokUrl?: string | null;
+  website?: string | null;
+  bannerUrl?: string | null;
+}): ExtendedProfile {
+  return {
+    skills: p.skills ?? [],
+    location: p.location ?? "",
+    yearsOfExperience:
+      p.yearsOfExperience === null || p.yearsOfExperience === undefined
+        ? ""
+        : String(p.yearsOfExperience),
+    linkedinUrl: p.linkedinUrl ?? "",
+    facebookUrl: p.facebookUrl ?? "",
+    instagramUrl: p.instagramUrl ?? "",
+    tiktokUrl: p.tiktokUrl ?? "",
+    website: p.website ?? "",
+    bannerUrl: p.bannerUrl ?? "",
+  };
+}
 
 export function ProfilePage() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [deactivateOpen, setDeactivateOpen] = useState(false);
-  const [deactivatePassword, setDeactivatePassword] = useState("");
-  const [deactivateOtp, setDeactivateOtp] = useState("");
-  const [deactivating, setDeactivating] = useState(false);
-  const [hasPassword, setHasPassword] = useState(true);
-  const [sendingOtp, setSendingOtp] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const [linkPhoneOpen, setLinkPhoneOpen] = useState(false);
 
@@ -57,6 +117,9 @@ export function ProfilePage() {
   const [portfolioUrls, setPortfolioUrls] = useState<string[]>([]);
   const [workingLanguage, setWorkingLanguage] = useState("");
   const [timezone, setTimezone] = useState("Asia/Ho_Chi_Minh");
+  const [ext, setExt] = useState<ExtendedProfile>(EMPTY_EXTENDED);
+  const [bannerUploading, setBannerUploading] = useState(false);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
   const email = user?.email ?? "";
   const savedProfile = useRef({
     name: "",
@@ -67,6 +130,10 @@ export function ProfilePage() {
     workingLanguage: "",
     timezone: "Asia/Ho_Chi_Minh",
   });
+  const savedExt = useRef<ExtendedProfile>(EMPTY_EXTENDED);
+
+  const patchExt = (patch: Partial<ExtendedProfile>) =>
+    setExt((prev) => ({ ...prev, ...patch }));
 
   useEffect(() => {
     userService
@@ -83,6 +150,9 @@ export function ProfilePage() {
         setPortfolioUrls(p.portfolioUrls ?? []);
         setWorkingLanguage(p.workingLanguage ?? "");
         setTimezone(p.timezone ?? "Asia/Ho_Chi_Minh");
+        const loaded = toExtended(p);
+        setExt(loaded);
+        savedExt.current = loaded;
         savedProfile.current = {
           name: p.fullName,
           phone: p.phone ?? "",
@@ -96,17 +166,12 @@ export function ProfilePage() {
       .catch(() => {
         // fall back to authStore data already rendered
       });
-    authService
-      .me()
-      .then((resp) => setHasPassword(resp.data.data.hasPassword ?? true))
-      .catch(() => {
-        // fall back to password-based deactivate on failure
-      });
   }, []);
 
   const handleSave = async () => {
     setSaving(true);
     try {
+      const years = ext.yearsOfExperience.trim();
       const resp = await userService.updateProfile({
         fullName: name,
         phone: phone || undefined,
@@ -114,6 +179,15 @@ export function ProfilePage() {
         bio: bio || undefined,
         portfolioUrls: portfolioUrls.filter((u) => u.trim() !== ""),
         workingLanguage: workingLanguage || undefined,
+        skills: ext.skills,
+        location: ext.location.trim() || undefined,
+        yearsOfExperience: years === "" ? undefined : Number(years),
+        linkedinUrl: ext.linkedinUrl.trim() || undefined,
+        facebookUrl: ext.facebookUrl.trim() || undefined,
+        instagramUrl: ext.instagramUrl.trim() || undefined,
+        tiktokUrl: ext.tiktokUrl.trim() || undefined,
+        website: ext.website.trim() || undefined,
+        bannerUrl: ext.bannerUrl.trim() || undefined,
         timezone: timezone || undefined,
       });
       const p = resp.data.data;
@@ -133,6 +207,9 @@ export function ProfilePage() {
       setPortfolioUrls(p.portfolioUrls ?? []);
       setWorkingLanguage(p.workingLanguage ?? "");
       setTimezone(p.timezone ?? "Asia/Ho_Chi_Minh");
+      const nextExt = toExtended(p);
+      setExt(nextExt);
+      savedExt.current = nextExt;
       savedProfile.current = {
         name: p.fullName,
         phone: p.phone ?? "",
@@ -160,6 +237,7 @@ export function ProfilePage() {
     setPortfolioUrls(saved.portfolioUrls);
     setWorkingLanguage(saved.workingLanguage);
     setTimezone(saved.timezone);
+    setExt(savedExt.current);
     setIsEditing(false);
   };
 
@@ -168,35 +246,34 @@ export function ProfilePage() {
     if (user) setUser({ ...user, avatar: url });
   };
 
-  const handleDeactivate = async () => {
-    setDeactivating(true);
+  // Upload banner: endpoint ghi URL S3 vào DB ngay, nên state chỉ cần đồng bộ
+  // URL trả về (giống avatar). Dán URL tay thì đi qua handleSave như field thường.
+  const handleBannerFile = async (file: File) => {
+    setBannerUploading(true);
     try {
-      await authService.deactivate(
-        hasPassword ? deactivatePassword : undefined,
-        hasPassword ? undefined : deactivateOtp,
-      );
-      useAuthStore.getState().logout();
-      navigate("/login");
+      const resp = await userService.uploadBanner(file);
+      const url = resp.data.data.bannerUrl;
+      patchExt({ bannerUrl: url });
+      savedExt.current = { ...savedExt.current, bannerUrl: url };
     } catch (err) {
       toast.error(
-        extractErrorMessage(err, t("profile.danger.deactivateError")),
+        extractErrorMessage(err, t("profile.edit.bannerUploadFailed")),
       );
-      setDeactivating(false);
+    } finally {
+      setBannerUploading(false);
     }
   };
 
-  const handleSendDeactivateOtp = async () => {
-    setSendingOtp(true);
-    try {
-      await authService.sendDeactivateOtp();
-      setOtpSent(true);
-      toast.success(t("profile.danger.otpSent"));
-    } catch (err) {
-      toast.error(extractErrorMessage(err, t("profile.danger.otpSendError")));
-    } finally {
-      setSendingOtp(false);
-    }
-  };
+  // Chỉ những kênh user thực sự điền mới hiển thị.
+  const socials = (
+    [
+      { key: "linkedin", url: ext.linkedinUrl },
+      { key: "facebook", url: ext.facebookUrl },
+      { key: "instagram", url: ext.instagramUrl },
+      { key: "tiktok", url: ext.tiktokUrl },
+      { key: "website", url: ext.website },
+    ] as const
+  ).filter((s) => s.url.trim() !== "");
 
   return (
     <section id="profile" className="scroll-mt-6">
@@ -211,6 +288,13 @@ export function ProfilePage() {
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <div className="border-border bg-card rounded-xl border p-6">
+            {ext.bannerUrl && (
+              <img
+                src={ext.bannerUrl}
+                alt={t("profile.edit.bannerLabel")}
+                className="border-border mb-4 h-32 w-full rounded-lg border object-cover"
+              />
+            )}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div className="relative">
@@ -353,6 +437,146 @@ export function ProfilePage() {
                       </Button>
                     </div>
                   </div>
+                  <div className="sm:col-span-2">
+                    <SkillsChipSelect
+                      value={ext.skills}
+                      onChange={(skills) => patchExt({ skills })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.locationLabel")}
+                    </label>
+                    <Input
+                      value={ext.location}
+                      onChange={(e) => patchExt({ location: e.target.value })}
+                      placeholder={t("profile.edit.locationPlaceholder")}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.yearsOfExperienceLabel")}
+                    </label>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={70}
+                      value={ext.yearsOfExperience}
+                      onChange={(e) =>
+                        patchExt({ yearsOfExperience: e.target.value })
+                      }
+                      placeholder={t(
+                        "profile.edit.yearsOfExperiencePlaceholder",
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.linkedinLabel")}
+                    </label>
+                    <Input
+                      value={ext.linkedinUrl}
+                      onChange={(e) =>
+                        patchExt({ linkedinUrl: e.target.value })
+                      }
+                      placeholder={t("profile.edit.socialPlaceholder")}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.facebookLabel")}
+                    </label>
+                    <Input
+                      value={ext.facebookUrl}
+                      onChange={(e) =>
+                        patchExt({ facebookUrl: e.target.value })
+                      }
+                      placeholder={t("profile.edit.socialPlaceholder")}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.instagramLabel")}
+                    </label>
+                    <Input
+                      value={ext.instagramUrl}
+                      onChange={(e) =>
+                        patchExt({ instagramUrl: e.target.value })
+                      }
+                      placeholder={t("profile.edit.socialPlaceholder")}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.tiktokLabel")}
+                    </label>
+                    <Input
+                      value={ext.tiktokUrl}
+                      onChange={(e) => patchExt({ tiktokUrl: e.target.value })}
+                      placeholder={t("profile.edit.socialPlaceholder")}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.websiteLabel")}
+                    </label>
+                    <Input
+                      value={ext.website}
+                      onChange={(e) => patchExt({ website: e.target.value })}
+                      placeholder={t("profile.edit.socialPlaceholder")}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
+                      {t("profile.edit.bannerLabel")}
+                    </label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={ext.bannerUrl}
+                        onChange={(e) =>
+                          patchExt({ bannerUrl: e.target.value })
+                        }
+                        placeholder={t("profile.edit.bannerPlaceholder")}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="shrink-0 gap-1.5"
+                        loading={bannerUploading}
+                        onClick={() => bannerInputRef.current?.click()}
+                      >
+                        <ImagePlus className="size-3.5" />
+                        {t("profile.edit.bannerUpload")}
+                      </Button>
+                      {ext.bannerUrl && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="shrink-0"
+                          title={t("profile.edit.bannerRemove")}
+                          onClick={() => patchExt({ bannerUrl: "" })}
+                        >
+                          <X className="size-3.5" />
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-muted-foreground text-3xs mt-1">
+                      {t("profile.edit.bannerHint")}
+                    </p>
+                    <input
+                      ref={bannerInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) void handleBannerFile(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className="mt-4 flex justify-end gap-2">
                   <Button variant="outline" onClick={handleCancelEdit}>
@@ -491,92 +715,272 @@ export function ProfilePage() {
                     </p>
                   )}
                 </div>
+                <div className="sm:col-span-2">
+                  <p className="text-muted-foreground text-3xs">
+                    {t("profile.view.skillsLabel")}
+                  </p>
+                  {ext.skills.length > 0 ? (
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      {ext.skills.map((slug) => (
+                        <span
+                          key={slug}
+                          className="bg-brand-orange-soft text-brand-orange text-3xs rounded-full px-2 py-0.5 font-medium"
+                        >
+                          {isSkill(slug) ? t(`profile.skill.${slug}`) : slug}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-foreground text-xs font-medium">
+                      {t("profile.view.skillsEmpty")}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <MapPin className="text-muted-foreground size-4" />
+                  <div>
+                    <p className="text-muted-foreground text-3xs">
+                      {t("profile.view.locationLabel")}
+                    </p>
+                    <p className="text-foreground text-xs font-medium">
+                      {ext.location || t("profile.view.locationEmpty")}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <Briefcase className="text-muted-foreground size-4" />
+                  <div>
+                    <p className="text-muted-foreground text-3xs">
+                      {t("profile.view.yearsOfExperienceLabel")}
+                    </p>
+                    <p className="text-foreground text-xs font-medium">
+                      {ext.yearsOfExperience
+                        ? t("profile.view.yearsOfExperienceValue", {
+                            years: Number(ext.yearsOfExperience),
+                          })
+                        : t("profile.view.yearsOfExperienceEmpty")}
+                    </p>
+                  </div>
+                </div>
+                <div className="sm:col-span-2">
+                  <p className="text-muted-foreground text-3xs">
+                    {t("profile.view.socialLabel")}
+                  </p>
+                  {socials.length > 0 ? (
+                    <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+                      {socials.map((s) => (
+                        <li key={s.key}>
+                          <a
+                            href={s.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-brand-orange inline-flex items-center gap-1 text-xs font-medium hover:underline"
+                          >
+                            <Link2 className="size-3" />
+                            {t(`profile.view.${s.key}Label`)}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-foreground text-xs font-medium">
+                      {t("profile.view.socialEmpty")}
+                    </p>
+                  )}
+                </div>
+                <div className="sm:col-span-2">
+                  <Link
+                    to="/settings/notifications"
+                    className="text-brand-orange inline-flex items-center gap-1.5 text-xs font-medium hover:underline"
+                  >
+                    <BellRing className="size-3.5" />
+                    {t("profile.view.notificationsLink")}
+                  </Link>
+                </div>
               </div>
             )}
           </div>
         </div>
 
-        <div className="border-border bg-card rounded-xl border border-red-200 p-6 dark:border-red-900/50">
+        <div className="border-border bg-card rounded-xl border p-6 lg:sticky lg:top-6">
           <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-            <TriangleAlert className="size-4 text-rose-500" />
-            {t("profile.danger.title")}
+            <Eye className="size-4" />
+            {t("profile.preview.title")}
           </h3>
           <p className="text-muted-foreground mt-2 text-xs">
-            {t("profile.danger.deactivateHint")}
+            {t("profile.preview.hint")}
           </p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-4 w-full border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
-            onClick={() => setDeactivateOpen(true)}
-          >
-            {t("profile.danger.deactivateButton")}
-          </Button>
-        </div>
-      </div>
 
-      {deactivateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
-            <div className="flex items-center gap-2">
-              <TriangleAlert className="size-5 text-rose-500" />
-              <h3 className="text-foreground text-sm font-semibold">
-                {t("profile.danger.confirmTitle")}
-              </h3>
-            </div>
-            <p className="text-muted-foreground text-xs">
-              {t("profile.danger.confirmBody")}
-            </p>
-            {hasPassword ? (
-              <Input
-                type="password"
-                value={deactivatePassword}
-                onChange={(e) => setDeactivatePassword(e.target.value)}
-                placeholder={t("profile.danger.passwordPlaceholder")}
+          <div className="border-border mt-4 space-y-4 border-t pt-4">
+            {ext.bannerUrl && (
+              <img
+                src={ext.bannerUrl}
+                alt={t("profile.edit.bannerLabel")}
+                className="border-border h-20 w-full rounded-lg border object-cover"
               />
-            ) : (
-              <div className="space-y-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  loading={sendingOtp}
-                  onClick={handleSendDeactivateOtp}
-                >
-                  {otpSent
-                    ? t("profile.danger.resendOtp")
-                    : t("profile.danger.sendOtp")}
-                </Button>
-                <Input
-                  value={deactivateOtp}
-                  onChange={(e) => setDeactivateOtp(e.target.value)}
-                  placeholder={t("profile.danger.otpPlaceholder")}
+            )}
+            <div className="flex items-center gap-3">
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={name}
+                  className="border-border size-12 rounded-full border object-cover"
                 />
+              ) : (
+                <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-12 items-center justify-center rounded-full border text-base font-bold">
+                  {(name || "?").charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0 space-y-1">
+                <p className="text-foreground truncate text-sm font-semibold">
+                  {name || t("profile.preview.nameEmpty")}
+                </p>
+                <span className="bg-brand-orange-soft text-brand-orange text-3xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium">
+                  <BadgeCheck className="size-3" />
+                  {t("profile.verified")}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground text-3xs">
+                {t("profile.view.jobTitleLabel")}
+              </p>
+              <p className="text-foreground text-xs font-medium">
+                {professionalTitle
+                  ? isCuratedJobTitle(professionalTitle)
+                    ? t(`profile.jobTitle.${professionalTitle}`)
+                    : professionalTitle
+                  : t("profile.view.jobTitleEmpty")}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground text-3xs">
+                {t("profile.view.bioLabel")}
+              </p>
+              <p className="text-foreground text-xs font-medium whitespace-pre-wrap">
+                {bio || t("profile.view.bioEmpty")}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground text-3xs">
+                {t("profile.view.portfolioLabel")}
+              </p>
+              {portfolioUrls.filter((u) => u.trim() !== "").length > 0 ? (
+                <ul className="mt-1 space-y-1">
+                  {portfolioUrls
+                    .filter((u) => u.trim() !== "")
+                    .map((url) => (
+                      <li key={url}>
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-brand-orange text-xs font-medium hover:underline"
+                        >
+                          {url}
+                        </a>
+                      </li>
+                    ))}
+                </ul>
+              ) : (
+                <p className="text-foreground text-xs font-medium">
+                  {t("profile.view.portfolioEmpty")}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <p className="text-muted-foreground text-3xs">
+                {t("profile.view.workingLanguageLabel")}
+              </p>
+              <p className="text-foreground text-xs font-medium">
+                {workingLanguage
+                  ? parseLanguages(workingLanguage)
+                      .map((c) =>
+                        isLanguage(c) ? t(`profile.language.${c}`) : c,
+                      )
+                      .join(", ")
+                  : t("profile.view.workingLanguageEmpty")}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground text-3xs">
+                {t("profile.view.timezoneLabel")}
+              </p>
+              <p className="text-foreground text-xs font-medium">{timezone}</p>
+            </div>
+
+            {ext.skills.length > 0 && (
+              <div>
+                <p className="text-muted-foreground text-3xs">
+                  {t("profile.view.skillsLabel")}
+                </p>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {ext.skills.map((slug) => (
+                    <span
+                      key={slug}
+                      className="bg-brand-orange-soft text-brand-orange text-3xs rounded-full px-2 py-0.5 font-medium"
+                    >
+                      {isSkill(slug) ? t(`profile.skill.${slug}`) : slug}
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setDeactivateOpen(false)}
-              >
-                {t("profile.danger.cancel")}
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                loading={deactivating}
-                disabled={
-                  (hasPassword ? !deactivatePassword : !deactivateOtp) ||
-                  deactivating
-                }
-                onClick={handleDeactivate}
-              >
-                {t("profile.danger.confirmDeactivate")}
-              </Button>
-            </div>
+
+            {ext.location && (
+              <div>
+                <p className="text-muted-foreground text-3xs">
+                  {t("profile.view.locationLabel")}
+                </p>
+                <p className="text-foreground text-xs font-medium">
+                  {ext.location}
+                </p>
+              </div>
+            )}
+
+            {ext.yearsOfExperience && (
+              <div>
+                <p className="text-muted-foreground text-3xs">
+                  {t("profile.view.yearsOfExperienceLabel")}
+                </p>
+                <p className="text-foreground text-xs font-medium">
+                  {t("profile.view.yearsOfExperienceValue", {
+                    years: Number(ext.yearsOfExperience),
+                  })}
+                </p>
+              </div>
+            )}
+
+            {socials.length > 0 && (
+              <div>
+                <p className="text-muted-foreground text-3xs">
+                  {t("profile.view.socialLabel")}
+                </p>
+                <ul className="mt-1 space-y-1">
+                  {socials.map((s) => (
+                    <li key={s.key}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-brand-orange inline-flex items-center gap-1 text-xs font-medium hover:underline"
+                      >
+                        <Link2 className="size-3" />
+                        {t(`profile.view.${s.key}Label`)}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
       <AvatarUploadModal
         isOpen={avatarModalOpen}

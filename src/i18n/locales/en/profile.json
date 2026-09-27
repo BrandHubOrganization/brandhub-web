@@ -54,6 +54,32 @@
     "hi": "Hindi",
     "ar": "Arabic"
   },
+  "skill": {
+    "content-strategy": "Content Strategy",
+    "copywriting": "Copywriting",
+    "social-media": "Social Media",
+    "seo": "SEO",
+    "branding": "Branding",
+    "graphic-design": "Graphic Design",
+    "video-editing": "Video Editing",
+    "photography": "Photography",
+    "motion-graphics": "Motion Graphics",
+    "ui-ux": "UI/UX",
+    "community-management": "Community Management",
+    "paid-ads": "Paid Ads",
+    "email-marketing": "Email Marketing",
+    "analytics": "Analytics",
+    "campaign-management": "Campaign Management",
+    "project-management": "Project Management",
+    "account-management": "Account Management",
+    "influencer-marketing": "Influencer Marketing",
+    "pr-communications": "PR & Communications",
+    "event-marketing": "Event Marketing",
+    "ecommerce": "E-commerce",
+    "market-research": "Market Research",
+    "ai-tools": "AI Tools",
+    "storytelling": "Brand Storytelling"
+  },
   "view": {
     "roleLabel": "Role",
     "workspaceLabel": "Workspace",
@@ -69,7 +95,22 @@
     "portfolioEmpty": "Not set",
     "workingLanguageLabel": "Working language",
     "workingLanguageEmpty": "Not set",
-    "timezoneLabel": "Timezone"
+    "timezoneLabel": "Timezone",
+    "skillsLabel": "Skills",
+    "skillsEmpty": "Not set",
+    "locationLabel": "Location",
+    "locationEmpty": "Not set",
+    "yearsOfExperienceLabel": "Experience",
+    "yearsOfExperienceValue": "{{years}} years of experience",
+    "yearsOfExperienceEmpty": "Not set",
+    "socialLabel": "Links",
+    "socialEmpty": "Not set",
+    "linkedinLabel": "LinkedIn",
+    "facebookLabel": "Facebook",
+    "instagramLabel": "Instagram",
+    "tiktokLabel": "TikTok",
+    "websiteLabel": "Website",
+    "notificationsLink": "Notification settings"
   },
   "edit": {
     "phoneLabel": "Phone",
@@ -84,7 +125,25 @@
     "portfolioRemove": "Remove",
     "workingLanguageLabel": "Working language",
     "workingLanguagePlaceholder": "e.g. vi, en",
-    "workingLanguageHint": "Pick one or more languages you can work in."
+    "workingLanguageHint": "Pick one or more languages you can work in.",
+    "skillsLabel": "Skills",
+    "skillsHint": "Pick the skills you are strongest at.",
+    "locationLabel": "Location",
+    "locationPlaceholder": "e.g. Ho Chi Minh City, Vietnam",
+    "yearsOfExperienceLabel": "Years of experience",
+    "yearsOfExperiencePlaceholder": "e.g. 5",
+    "linkedinLabel": "LinkedIn",
+    "facebookLabel": "Facebook",
+    "instagramLabel": "Instagram",
+    "tiktokLabel": "TikTok",
+    "websiteLabel": "Website",
+    "socialPlaceholder": "https://...",
+    "bannerLabel": "Profile banner",
+    "bannerPlaceholder": "Paste an image URL, or upload a file",
+    "bannerUpload": "Upload",
+    "bannerRemove": "Remove banner",
+    "bannerHint": "PNG, JPG up to 5MB. You can also paste an image URL.",
+    "bannerUploadFailed": "Could not upload banner"
   },
   "linkPhone": {
     "addLink": "Link phone number",
@@ -97,23 +156,12 @@
     "otpPlaceholder": "Enter the confirmation code",
     "verify": "Confirm",
     "verifySuccess": "Phone number linked",
-    "verifyError": "Failed to verify code"
+    "verifyError": "Failed to verify code",
+    "cancel": "Cancel"
   },
-  "danger": {
-    "title": "Danger Zone",
-    "deactivateHint": "Deactivating will lock your account. Data is not permanently deleted.",
-    "deactivateButton": "Deactivate account",
-    "confirmTitle": "Deactivate account?",
-    "confirmBody": "You will not be able to sign in until reactivated. This can be undone by signing back in.",
-    "passwordPlaceholder": "Enter your password to confirm",
-    "sendOtp": "Send confirmation code via email",
-    "resendOtp": "Resend code",
-    "otpPlaceholder": "Enter the confirmation code",
-    "otpSent": "A confirmation code was sent to your email",
-    "otpSendError": "Failed to send confirmation code",
-    "cancel": "Cancel",
-    "confirmDeactivate": "Confirm deactivation",
-    "deactivateError": "Unable to deactivate account",
-    "deactivateSuccess": "Account deactivated"
+  "preview": {
+    "title": "Profile preview",
+    "hint": "This is how other people see your profile.",
+    "nameEmpty": "Not set"
   }
 }

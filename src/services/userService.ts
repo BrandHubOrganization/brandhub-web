@@ -13,6 +13,15 @@ export interface UserProfileResponse {
   bio: string | null;
   portfolioUrls: string[];
   workingLanguage: string | null;
+  skills: string[];
+  location: string | null;
+  yearsOfExperience: number | null;
+  linkedinUrl: string | null;
+  facebookUrl: string | null;
+  instagramUrl: string | null;
+  tiktokUrl: string | null;
+  website: string | null;
+  bannerUrl: string | null;
   timezone: string | null;
   notificationPreferences: Record<string, unknown> | null;
   createdAt: string;
@@ -25,12 +34,25 @@ export interface UpdateProfileRequest {
   bio?: string;
   portfolioUrls?: string[];
   workingLanguage?: string;
+  skills?: string[];
+  location?: string;
+  yearsOfExperience?: number;
+  linkedinUrl?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
+  tiktokUrl?: string;
+  website?: string;
+  bannerUrl?: string;
   timezone?: string;
   notificationPreferences?: Record<string, unknown>;
 }
 
 export interface AvatarResponse {
   avatarUrl: string;
+}
+
+export interface BannerResponse {
+  bannerUrl: string;
 }
 
 export interface UserLookupResponse {
@@ -52,6 +74,15 @@ export const userService = {
     formData.append("file", file);
     return api.post<ApiResponse<AvatarResponse>>(
       "/api/v1/users/me/avatar",
+      formData,
+    );
+  },
+
+  uploadBanner: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<BannerResponse>>(
+      "/api/v1/users/me/banner",
       formData,
     );
   },

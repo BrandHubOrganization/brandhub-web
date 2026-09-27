@@ -95,7 +95,7 @@ export function LinkPhoneModal({
               onClose();
             }}
           >
-            {t("profile.danger.cancel")}
+            {t("profile.linkPhone.cancel")}
           </Button>
           {step === "phone" ? (
             <Button
