@@ -152,6 +152,7 @@
     "createButton": "Tạo Không gian làm việc Mới",
     "members": "{{count}} thành viên",
     "posts": "{{count}} bài đăng",
+    "createdAt": "Tạo {{date}}",
     "empty": "Chưa có không gian làm việc nào. Tạo mới để bắt đầu."
   },
   "permissions": {
