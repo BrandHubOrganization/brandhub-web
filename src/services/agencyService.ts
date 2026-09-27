@@ -5,6 +5,7 @@ import type {
   AgencyCategory,
   AgencyInvitation,
   AgencyMember,
+  AgencyStatsResponse,
   CompanySize,
 } from "@/types/agency";
 import type { MemberRole } from "@/types/workspace";
@@ -57,6 +58,11 @@ export const agencyService = {
   listMembers: (agencyId: string) =>
     api.get<ApiResponse<AgencyMember[]>>(
       `/api/v1/agencies/${agencyId}/members`,
+    ),
+
+  getStats: (agencyId: string) =>
+    api.get<ApiResponse<AgencyStatsResponse>>(
+      `/api/v1/agencies/${agencyId}/stats`,
     ),
 
   inviteMember: (agencyId: string, data: InviteAgencyMemberRequest) =>

@@ -57,6 +57,21 @@ export interface AgencyMember {
   joinedAt: string;
 }
 
+export interface MonthCount {
+  month: string;
+  count: number;
+}
+
+export interface AgencyStatsResponse {
+  memberCount: number;
+  workspaceCount: number;
+  membersByRole: Record<string, number>;
+  workspacesByIndustry: Record<string, number>;
+  contentByStatus: Record<string, number>;
+  memberGrowthByMonth: MonthCount[];
+  postsPublishedByMonth: MonthCount[];
+}
+
 export interface AgencyInvitation {
   id: string;
   agencyId: string;

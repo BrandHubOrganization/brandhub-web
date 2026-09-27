@@ -37,6 +37,12 @@
     "statsWorkspaces": "Không gian làm việc",
     "statsActivity": "Hoạt động gần đây",
     "statsActivityPlaceholder": "Chưa có dữ liệu — sẽ cập nhật ở sprint sau.",
+    "statsMembersByRole": "Thành viên theo vai trò",
+    "statsWorkspacesByIndustry": "Workspace theo ngành",
+    "statsMemberGrowth": "Tăng trưởng thành viên (6 tháng)",
+    "statsContentByStatus": "Nội dung theo trạng thái",
+    "statsPostsPublished": "Bài đăng đã xuất bản theo tháng",
+    "statsNoData": "Chưa có dữ liệu",
     "nav": {
       "profile": "Hồ sơ",
       "members": "Thành viên",

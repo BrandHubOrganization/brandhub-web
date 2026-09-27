@@ -37,6 +37,12 @@
     "statsWorkspaces": "Workspaces",
     "statsActivity": "Recent activity",
     "statsActivityPlaceholder": "No data yet — coming in a future sprint.",
+    "statsMembersByRole": "Members by role",
+    "statsWorkspacesByIndustry": "Workspaces by industry",
+    "statsMemberGrowth": "Member growth (6 months)",
+    "statsContentByStatus": "Content by status",
+    "statsPostsPublished": "Posts published by month",
+    "statsNoData": "No data yet",
     "nav": {
       "profile": "Profile",
       "members": "Members",
