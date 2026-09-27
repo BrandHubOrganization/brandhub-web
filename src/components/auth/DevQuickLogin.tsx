@@ -17,15 +17,27 @@ import { extractErrorMessage } from "@/utils/error";
  */
 const QUICK_LOGIN_ACCOUNTS = [
   { email: "admin@brandhub.dev", labelKey: "nav.admin" },
-  { email: "user317@gmail.com", labelKey: "workspace.roles.MANAGER" }, // 11 workspaces
-  { email: "user1@gmail.com", labelKey: "workspace.roles.CREATOR" }, // 1 workspace, myRole=CREATOR (verified, not lost among OWNER agencies)
+  { email: "user177@hotmail.com", labelKey: "workspace.roles.OWNER" }, // owns 2 agencies (Agency.ownerId) — reseed randomizes owner assignment each run, re-verify via DB if this drifts again
+  // WorkspaceSeeder always makes the workspace creator = the agency owner
+  // = the seeded MANAGER, so myRole normally resolves to "OWNER" (owner
+  // precedence in WorkspaceServiceImpl.listMyWorkspaces) even for a
+  // MANAGER row — WorkspaceSeeder.seedWorkspaceMembers special-cases the
+  // FIRST seeded workspace to give users[1] (first regular user, always
+  // "user1@...") a genuine non-owner MANAGER row so this button is
+  // reachable in seed data.
+  {
+    email: "user1@gmail.com",
+    labelKey: "workspace.roles.MANAGER",
+    landingPath: "/workspaces/a2121783-27fa-4026-bf83-0d7ab8e3270d/dashboard",
+  },
+  { email: "user1@gmail.com", labelKey: "workspace.roles.CREATOR" }, // same account also holds CREATOR at another workspace — realistic multi-role user
   // CLIENT is never a WorkspaceMember.userId row (only clientProfileId —
   // see WorkspaceSeeder.seedWorkspaceMembers) — a client user has no
   // "/workspaces" list to land on, they view via client-profile instead.
   {
-    email: "user4@gmail.com",
+    email: "user59@gmail.com",
     labelKey: "workspace.roles.CLIENT",
-    clientProfileAgencyId: "ccbaf388-e756-448e-ae6c-697ce31cc67d",
+    clientProfileAgencyId: "139feff4-fc33-469a-8e38-a1c3313b7541",
   },
 ] as const;
 
@@ -35,15 +47,17 @@ export function DevQuickLogin() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
-  const [loadingEmail, setLoadingEmail] = React.useState<string | null>(null);
+  const [loadingKey, setLoadingKey] = React.useState<string | null>(null);
 
   if (!import.meta.env.DEV) return null;
 
   async function handleQuickLogin(
+    key: string,
     email: string,
     clientProfileAgencyId?: string,
+    landingPath?: string,
   ) {
-    setLoadingEmail(email);
+    setLoadingKey(key);
     try {
       const res = await authService.login({
         identifier: email,
@@ -69,13 +83,15 @@ export function DevQuickLogin() {
         navigate("/admin");
       } else if (clientProfileAgencyId) {
         navigate(`/client-profile?agencyId=${clientProfileAgencyId}`);
+      } else if (landingPath) {
+        navigate(landingPath);
       } else {
-        navigate("/dashboard");
+        navigate("/agency");
       }
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, "Quick login failed"));
     } finally {
-      setLoadingEmail(null);
+      setLoadingKey(null);
     }
   }
 
@@ -86,24 +102,29 @@ export function DevQuickLogin() {
         {t("auth.login.devQuickLoginLabel")}
       </div>
       <div className="grid grid-cols-2 gap-1.5">
-        {QUICK_LOGIN_ACCOUNTS.map((account) => (
-          <button
-            key={account.email}
-            type="button"
-            disabled={loadingEmail !== null}
-            onClick={() =>
-              handleQuickLogin(
-                account.email,
-                "clientProfileAgencyId" in account
-                  ? account.clientProfileAgencyId
-                  : undefined,
-              )
-            }
-            className="border-border hover:bg-accent hover:text-accent-foreground text-2xs cursor-pointer rounded-lg border px-2 py-1.5 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loadingEmail === account.email ? "..." : t(account.labelKey)}
-          </button>
-        ))}
+        {QUICK_LOGIN_ACCOUNTS.map((account, idx) => {
+          const key = `${account.email}-${account.labelKey}-${idx}`;
+          return (
+            <button
+              key={key}
+              type="button"
+              disabled={loadingKey !== null}
+              onClick={() =>
+                handleQuickLogin(
+                  key,
+                  account.email,
+                  "clientProfileAgencyId" in account
+                    ? account.clientProfileAgencyId
+                    : undefined,
+                  "landingPath" in account ? account.landingPath : undefined,
+                )
+              }
+              className="border-border hover:bg-accent hover:text-accent-foreground text-2xs cursor-pointer rounded-lg border px-2 py-1.5 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loadingKey === key ? "..." : t(account.labelKey)}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
