@@ -1,3 +1,5 @@
+import type { CompanySize } from "@/types/agency";
+
 export interface ClientProfile {
   id: string;
   userId: string;
@@ -15,6 +17,15 @@ export interface ClientProfile {
   location: string | null;
   description: string | null;
   socialLinks: Record<string, string> | null;
+  contactName: string | null;
+  contactEmail: string | null;
+  companySize: CompanySize | null;
+  instagramUrl: string | null;
+  taxCode: string | null;
+  address: string | null;
+  tagline: string | null;
+  foundedYear: number | null;
+  budgetRange: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,4 +41,13 @@ export interface UpdateClientProfileRequest {
   location?: string;
   description?: string;
   socialLinks?: Record<string, string>;
+  contactName?: string;
+  contactEmail?: string;
+  companySize?: CompanySize;
+  instagramUrl?: string;
+  taxCode?: string;
+  address?: string;
+  tagline?: string;
+  foundedYear?: number;
+  budgetRange?: string;
 }

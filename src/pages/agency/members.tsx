@@ -74,9 +74,8 @@ export function AgencyMembersPage() {
   const [memberRows, setMemberRows] = useState<MemberRow[]>([]);
   const [invitationRows, setInvitationRows] = useState<MemberRow[]>([]);
   const [search, setSearch] = useState("");
-  const [profileTarget, setProfileTarget] = useState<MemberProfileTarget | null>(
-    null,
-  );
+  const [profileTarget, setProfileTarget] =
+    useState<MemberProfileTarget | null>(null);
 
   useEffect(() => {
     if (id) setCurrentAgencyId(id);
@@ -285,9 +284,7 @@ export function AgencyMembersPage() {
             {row.displayName}
             {row.isCurrentUser && ` ${t("agency.members.you")}`}
           </p>
-          <p className="text-muted-foreground truncate text-xs">
-            {row.email}
-          </p>
+          <p className="text-muted-foreground truncate text-xs">{row.email}</p>
         </div>
       </div>
     );

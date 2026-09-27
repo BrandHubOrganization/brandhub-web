@@ -42,4 +42,25 @@ export const clientProfileService = {
 
   deleteById: (profileId: string) =>
     api.delete<ApiResponse<void>>(`/api/v1/client-profile/${profileId}`),
+
+  // Upload logo dạng file — song song với việc dán URL vào field logoUrl.
+  // Bản có profileId dùng khi đã có hồ sơ (trang chỉnh sửa).
+  uploadLogo: (profileId: string, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<ClientProfile>>(
+      `/api/v1/client-profile/${profileId}/logo`,
+      formData,
+    );
+  },
+
+  // Form tạo mới chưa có profileId — server chỉ upload rồi trả URL, không lưu DB.
+  uploadLogoDraft: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<string>>(
+      "/api/v1/client-profile/logo",
+      formData,
+    );
+  },
 };

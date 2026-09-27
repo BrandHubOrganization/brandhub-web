@@ -39,7 +39,10 @@ export function MemberProfileDrawer({ agencyId, member, onOpenChange }: Props) {
       .then(({ data }) => setActivity(data.data))
       .catch((err: unknown) =>
         toast.error(
-          extractErrorMessage(err, t("agency.members.profile.activityLoadError")),
+          extractErrorMessage(
+            err,
+            t("agency.members.profile.activityLoadError"),
+          ),
         ),
       )
       .finally(() => setLoading(false));
