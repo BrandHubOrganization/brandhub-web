@@ -161,6 +161,10 @@ export interface SidebarProps {
   allWorkspaces: Workspace[];
   currentAgencyId: string | null;
   onSwitchAgency: (agencyId: string) => void;
+  /** So agency.ownerId để hiện badge "Owner" đúng agency mình sở hữu trong
+   * dropdown — owner gắn theo agency, không phải theo workspace/role hiện
+   * tại (agency chưa có workspace vẫn phải thấy mình là chủ). */
+  currentUserId?: string | null;
 }
 
 export function Sidebar({
@@ -177,6 +181,7 @@ export function Sidebar({
   allWorkspaces,
   currentAgencyId,
   onSwitchAgency,
+  currentUserId = null,
 }: SidebarProps) {
   const { t } = useTranslation();
   const [expandedAgencyId, setExpandedAgencyId] = React.useState<string | null>(
@@ -345,7 +350,11 @@ export function Sidebar({
                   <span className="text-muted-foreground text-3xs mt-0.5 truncate leading-none">
                     {activeWorkspace
                       ? currentAgencyName
-                      : t("nav.orgSwitcher.label")}
+                      : currentAgencyId &&
+                          agencyList.find((a) => a.id === currentAgencyId)
+                            ?.ownerId === currentUserId
+                        ? t("workspace.roles.OWNER")
+                        : t("nav.orgSwitcher.label")}
                   </span>
                 </div>
                 <ChevronDown className="text-muted-foreground ml-auto size-3.5 shrink-0" />
@@ -409,7 +418,14 @@ export function Sidebar({
                         : "",
                     )}
                   >
-                    <span className="truncate">{agency.name}</span>
+                    <span className="flex min-w-0 items-center gap-1.5">
+                      <span className="truncate">{agency.name}</span>
+                      {agency.ownerId === currentUserId && (
+                        <span className="text-brand-orange bg-brand-orange-soft text-3xs shrink-0 rounded px-1 py-0.5 leading-none font-semibold">
+                          {t("workspace.roles.OWNER")}
+                        </span>
+                      )}
+                    </span>
                     <ChevronDown
                       className={cn(
                         "size-3.5 shrink-0 transition-transform",
@@ -449,15 +465,17 @@ export function Sidebar({
                       >
                         {t("nav.orgSwitcher.viewAgency")}
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <NavLink
-                          to={`/workspaces/create?agencyId=${agency.id}`}
-                          className="text-brand-orange text-3xs flex cursor-pointer items-center gap-1.5 font-semibold"
-                        >
-                          <FolderPlus className="size-3" />
-                          {t("nav.orgSwitcher.createWorkspace")}
-                        </NavLink>
-                      </DropdownMenuItem>
+                      {agency.ownerId === currentUserId && (
+                        <DropdownMenuItem asChild>
+                          <NavLink
+                            to={`/workspaces/create?agencyId=${agency.id}`}
+                            className="text-brand-orange text-3xs flex cursor-pointer items-center gap-1.5 font-semibold"
+                          >
+                            <FolderPlus className="size-3" />
+                            {t("nav.orgSwitcher.createWorkspace")}
+                          </NavLink>
+                        </DropdownMenuItem>
+                      )}
                     </div>
                   )}
                 </div>
