@@ -48,6 +48,10 @@ interface NavItem {
   agencyScoped?: boolean;
   /** Ẩn hẳn với role CLIENT (client không phải nhân sự agency nội bộ). */
   hiddenForClient?: boolean;
+  /** Route agency-wide (đọc theo currentAgencyId, không mang workspaceId) —
+   * ẩn khi đang trong 1 workspace cụ thể để tránh bấm nhầm rồi bị đẩy ra
+   * khỏi ngữ cảnh workspace về agency. */
+  hideInWorkspace?: boolean;
 }
 
 interface NavSection {
@@ -88,6 +92,7 @@ const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.agencySub.profile",
         agencyScoped: true,
         hiddenForClient: true,
+        hideInWorkspace: true,
       },
       {
         to: "/agency/{agencyId}/members",
@@ -95,6 +100,7 @@ const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.agencySub.members",
         agencyScoped: true,
         hiddenForClient: true,
+        hideInWorkspace: true,
       },
       {
         to: "/agency/{agencyId}/stats",
@@ -102,15 +108,27 @@ const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.agencySub.stats",
         agencyScoped: true,
         hiddenForClient: true,
+        hideInWorkspace: true,
       },
       {
         to: "/agency/invitations",
         icon: Inbox,
         labelKey: "nav.agencyInvitationInbox",
         hiddenForClient: true,
+        hideInWorkspace: true,
       },
-      { to: "/invitations", icon: Mail, labelKey: "nav.invitations" },
-      { to: "/clients", icon: Building2, labelKey: "nav.clients" },
+      {
+        to: "/invitations",
+        icon: Mail,
+        labelKey: "nav.invitations",
+        hideInWorkspace: true,
+      },
+      {
+        to: "/clients",
+        icon: Building2,
+        labelKey: "nav.clients",
+        hideInWorkspace: true,
+      },
       { to: "/portal", icon: Users, labelKey: "nav.portal" },
       {
         to: "/client-profile",
@@ -122,18 +140,26 @@ const NAV_SECTIONS: NavSection[] = [
         to: "/social-accounts",
         icon: Link2,
         labelKey: "nav.socialAccounts",
+        hideInWorkspace: true,
       },
       {
         to: "/subscription/plans",
         icon: CreditCard,
         labelKey: "nav.subscription",
+        hideInWorkspace: true,
       },
       {
         to: "/ai-studio/ambassadors",
         icon: Sparkles,
         labelKey: "nav.aiStudio",
+        hideInWorkspace: true,
       },
-      { to: "/reports", icon: FileBarChart, labelKey: "nav.reports" },
+      {
+        to: "/reports",
+        icon: FileBarChart,
+        labelKey: "nav.reports",
+        hideInWorkspace: true,
+      },
     ],
   },
   {
@@ -205,6 +231,7 @@ export function Sidebar({
         .filter((item) => !item.hiddenForClient || role !== "CLIENT")
         .filter((item) => !item.clientOnly || role === "CLIENT")
         .filter((item) => !item.agencyScoped || currentAgencyId)
+        .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .map((item) => {
           if (item.clientOnly && currentAgencyId) {
             return {
