@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Star, Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SectionDecor } from "@/components/landing/SectionDecor";
+import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
 const TESTIMONIALS = [
   {
@@ -56,7 +58,11 @@ export function Testimonials() {
   }, [reduce, active]);
 
   return (
-    <section id="testimonials" className="bg-zinc-50 py-24 dark:bg-zinc-900/50">
+    <section
+      id="testimonials"
+      className="relative overflow-hidden bg-zinc-50 py-24 dark:bg-zinc-900/50"
+    >
+      <SectionDecor corner="left" />
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -65,6 +71,7 @@ export function Testimonials() {
           transition={{ duration: 0.5 }}
           className="mx-auto mb-14 max-w-2xl text-center"
         >
+          <SectionEyebrow index={7} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
             {t("landing.testimonials.title")}
           </h2>

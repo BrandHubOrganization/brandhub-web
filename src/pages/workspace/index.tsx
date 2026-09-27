@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { useAgencyStore } from "@/store/agencyStore";
+import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceList } from "./hooks/useWorkspaceList";
 import { WorkspaceCardGrid } from "./components/WorkspaceCardGrid";
 
@@ -11,6 +12,14 @@ export function WorkspacePage() {
   const navigate = useNavigate();
   const { workspaces, loading } = useWorkspaceList();
   const currentAgencyId = useAgencyStore((s) => s.currentAgencyId);
+  const agencyList = useAgencyStore((s) => s.agencyList);
+  const user = useAuthStore((s) => s.user);
+  // Tạo workspace = tài nguyên của agency, chỉ owner agency đó được tạo
+  // (khớp gate isOwner ở agency/detail.tsx) — không phải MANAGER/CREATOR.
+  const isOwnerOfCurrentAgency =
+    !!user &&
+    !!currentAgencyId &&
+    agencyList.some((a) => a.id === currentAgencyId && a.ownerId === user.id);
 
   if (loading) return null;
 
@@ -28,12 +37,14 @@ export function WorkspacePage() {
       title={t("workspace.list.title")}
       description={t("workspace.list.description")}
       actions={
-        <Button
-          className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-xs text-white"
-          onClick={handleCreateClick}
-        >
-          {t("workspace.list.createButton")}
-        </Button>
+        isOwnerOfCurrentAgency ? (
+          <Button
+            className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-xs text-white"
+            onClick={handleCreateClick}
+          >
+            {t("workspace.list.createButton")}
+          </Button>
+        ) : undefined
       }
     >
       {workspaces.length === 0 ? (

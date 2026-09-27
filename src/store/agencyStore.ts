@@ -8,6 +8,10 @@ export interface AgencyState {
   agencyList: Agency[];
   setAgencyList: (list: Agency[]) => void;
   fetchAgencies: () => Promise<void>;
+  /** Xoá agency đang chọn — bắt buộc gọi khi đổi user (login/logout), nếu
+   * không currentAgencyId (persist ở localStorage) sẽ lẫn qua session mới,
+   * làm sidebar hiện agency của user cũ. */
+  reset: () => void;
 }
 
 const STORAGE_KEY = "brandhub_current_agency_id";
@@ -31,5 +35,10 @@ export const useAgencyStore = create<AgencyState>((set) => ({
     } catch {
       set({ agencyList: [] });
     }
+  },
+
+  reset: () => {
+    localStorage.removeItem(STORAGE_KEY);
+    set({ currentAgencyId: null, agencyList: [] });
   },
 }));

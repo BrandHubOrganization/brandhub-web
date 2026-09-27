@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
 import { useAgencyStore } from "@/store/agencyStore";
+import { useAuthStore } from "@/store/authStore";
 import { getLogoIcon } from "@/pages/agency/logoIcons";
 import type { Agency } from "@/types/agency";
 
@@ -25,14 +26,24 @@ export function AgencyPage() {
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [loading, setLoading] = useState(true);
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
+  const user = useAuthStore((s) => s.user);
 
   useEffect(() => {
     agencyService
       .list()
       .then(({ data }) => {
         setAgencies(data.data);
-        // Chỉ có 1 agency: tự động chọn luôn, khỏi cần bấm.
-        if (data.data.length === 1) setCurrentAgencyId(data.data[0].id);
+        // Chỉ có 1 agency: tự động chọn luôn, khỏi cần bấm. Ngược lại (0
+        // hoặc nhiều agency) phải clear currentAgencyId — trước đây store
+        // giữ nguyên agency đã chọn từ lần ghé trước, nên quay lại danh
+        // sách vẫn hiện sidebar/breadcrumb đầy đủ menu của agency cũ thay
+        // vì trạng thái "chưa chọn agency nào" (ẩn hết client-profile
+        // user-level, chỉ thấy menu agency/workspace cụ thể).
+        if (data.data.length === 1) {
+          setCurrentAgencyId(data.data[0].id);
+        } else {
+          setCurrentAgencyId(null);
+        }
       })
       .catch((err: unknown) =>
         toast.error(extractErrorMessage(err, t("agency.errors.loadFailed"))),
@@ -124,6 +135,11 @@ export function AgencyPage() {
                       {a.tagline || "—"}
                     </p>
                   </div>
+                  {a.ownerId === user?.id && (
+                    <span className="text-brand-orange bg-brand-orange-soft text-2xs ml-auto shrink-0 self-start rounded-full px-2 py-0.5 font-semibold">
+                      {t("workspace.roles.OWNER")}
+                    </span>
+                  )}
                 </div>
 
                 {(a.category || a.companySize) && (

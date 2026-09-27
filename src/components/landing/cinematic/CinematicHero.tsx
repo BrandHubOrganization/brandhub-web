@@ -21,6 +21,7 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   TrendingUp,
   BarChart3,
   Eye,
@@ -387,12 +388,13 @@ export function CinematicHero() {
             <CTAButtons />
             <SocialProof />
           </div>
-          {/* Scroll hint */}
-          <div className="scroll-hint flex flex-col items-center gap-1 text-white/25">
+          {/* Scroll hint — mũi tên nảy nhẹ + label, kiểu "scroll to explore"
+              báo user còn nội dung demo tương tác dài phía dưới. */}
+          <div className="scroll-hint flex flex-col items-center gap-1.5 text-white/25">
             <span className="text-[10px] tracking-[0.2em] uppercase">
               {t("landing.hero.scrollDown")}
             </span>
-            <div className="h-8 w-px animate-pulse bg-linear-to-b from-white/30 to-transparent" />
+            <ChevronDown className="size-4 animate-bounce" />
           </div>
         </div>
       </div>

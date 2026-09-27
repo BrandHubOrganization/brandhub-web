@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Mail } from "lucide-react";
+import { SectionDecor } from "@/components/landing/SectionDecor";
 
 const PRODUCT_LINKS = [
   { id: "features", labelKey: "landing.footer.productLinks.features" },
@@ -36,7 +37,8 @@ export function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="border-t border-zinc-100 bg-white py-16 dark:border-zinc-800 dark:bg-zinc-950">
+    <footer className="relative overflow-hidden border-t border-zinc-100 bg-white py-16 dark:border-zinc-800 dark:bg-zinc-950">
+      <SectionDecor corner="left" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           {/* Brand */}
@@ -61,19 +63,18 @@ export function Footer() {
             </a>
             <div className="mt-4 flex gap-3">
               {[
-                { icon: GithubIcon, href: "#", label: "GitHub" },
-                { icon: TwitterIcon, href: "#", label: "Twitter" },
-                { icon: LinkedinIcon, href: "#", label: "LinkedIn" },
-              ].map(({ icon: Icon, href, label }, i) => (
-                <a
+                { icon: GithubIcon, label: "GitHub" },
+                { icon: TwitterIcon, label: "Twitter" },
+                { icon: LinkedinIcon, label: "LinkedIn" },
+              ].map(({ icon: Icon, label }, i) => (
+                <span
                   key={i}
-                  href={href}
-                  aria-label={label}
-                  onClick={(e) => e.preventDefault()}
-                  className="flex size-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-400 transition-colors hover:text-zinc-600 dark:border-zinc-700 dark:hover:text-zinc-300"
+                  aria-label={`${label} — ${t("landing.footer.comingSoon")}`}
+                  title={t("landing.footer.comingSoon")}
+                  className="flex size-8 cursor-not-allowed items-center justify-center rounded-lg border border-zinc-200 text-zinc-300 opacity-50 dark:border-zinc-700 dark:text-zinc-600"
                 >
                   <Icon className="size-4" />
-                </a>
+                </span>
               ))}
             </div>
           </div>

@@ -80,13 +80,13 @@ const NAV_KEY_MAP: Record<string, string> = {
   "knowledge-base": "aiStudio.knowledgeBase.title",
   trends: "aiStudio.trends.title",
   reports: "nav.reports",
+  "client-profiles": "nav.clientProfile",
   create: "nav.sections.create",
   "notification-settings": "nav.notificationSettings",
   security: "nav.security",
   profile: "nav.profile",
   "client-profile": "nav.clientProfile",
   video: "aiStudio.video.title",
-  "change-password": "nav.changePassword",
 };
 
 export interface NavbarProps {
@@ -162,13 +162,28 @@ export function Navbar({
         // ("agency" hoặc "workspaces") thay vì chỉ tìm trong workspaces —
         // trước đây agency id không map được tên nên bị bỏ luôn khỏi breadcrumb.
         const root = segments[0];
-        const entity =
-          root === "agency"
-            ? agencies.find((a) => a.id === seg)
-            : workspaces.find((ws) => ws.id === seg);
+        if (root === "workspaces") {
+          // Workspace luôn thuộc 1 agency — chèn crumb agency (có link) trước
+          // tên workspace để đi đúng phân cấp Agency → Workspace → Dashboard,
+          // thay vì nhảy thẳng vào workspace không rõ thuộc agency nào.
+          const ws = workspaces.find((w) => w.id === seg);
+          if (ws?.agencyId) {
+            const agency = agencies.find((a) => a.id === ws.agencyId);
+            crumbs.push({
+              label: agency?.name ?? t("nav.agency"),
+              path: `/agency/${ws.agencyId}`,
+            });
+          }
+          crumbs.push({ label: ws?.name ?? seg, path });
+          return;
+        }
+        const entity = agencies.find((a) => a.id === seg);
         crumbs.push({ label: entity?.name ?? seg, path });
         return;
       }
+      // "workspaces" root đã được thay bằng crumb agency ở trên — bỏ label
+      // tĩnh "Không gian làm việc" không link để breadcrumb không lặp cấp.
+      if (idx === 0 && seg === "workspaces") return;
       const navKey = NAV_KEY_MAP[seg];
       const label = navKey
         ? t(navKey)

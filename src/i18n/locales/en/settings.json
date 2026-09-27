@@ -25,13 +25,33 @@
     "unlinkSuccess": "Phone number unlinked"
   },
   "connections": {
+    "title": "Sign-in methods",
+    "pageDescription": "Manage how you sign in to BrandHub. Link multiple methods to one account so you don't have to remember several logins.",
+    "howItWorksTitle": "How does linking work?",
+    "howItWorksBody": "Once Google is linked, you can sign in with Google or with your email and password — both land on this same BrandHub account. Your data, role, and permissions do not change.",
+    "emailPasswordLabel": "Email and password",
+    "emailPasswordDescription": "Sign in with {{email}} plus your password.",
+    "passwordSet": "Password set",
+    "passwordNotSet": "No password yet",
+    "googleLabel": "Google",
+    "googleDescription": "Sign in quickly with your Google account.",
     "connect": "Connect",
+    "connecting": "Redirecting…",
     "disconnect": "Disconnect",
     "connectedLabel": "Connected",
     "notConnectedLabel": "Not connected",
     "connectSuccess": "{{provider}} account connected",
-    "disconnectSuccess": "Disconnected",
-    "emailMismatchWarning": "Only use an account with the same current email ({{email}}) to connect.",
+    "disconnectSuccess": "{{provider}} account disconnected",
+    "disconnectTitle": "Disconnect {{provider}}?",
+    "disconnectBody": "You will still be able to sign in with your remaining methods. You can reconnect at any time.",
+    "disconnectConfirm": "Disconnect",
+    "cancel": "Cancel",
+    "emailMismatchWarning": "Only use a Google account with the same current email ({{email}}) to connect.",
+    "onlyMethodHint": "This is your only sign-in method. Set a password before disconnecting, otherwise you will lose access to your account.",
+    "setPasswordCta": "Set a password",
+    "loadError": "Could not load account information",
+    "linkError": "Could not link the account",
+    "unlinkError": "Could not disconnect",
     "error": {
       "OAUTH_EMAIL_MISMATCH": "OAuth account email does not match your current account",
       "OAUTH_ALREADY_LINKED": "This account is already linked to a different account"
@@ -50,15 +70,5 @@
     "uploadSuccess": "Avatar updated",
     "invalidType": "Only JPEG, PNG, or WebP files are accepted",
     "tooLarge": "Image must not exceed 5MB"
-  },
-  "security": {
-    "currentPasswordLabel": "Current password",
-    "newPasswordLabel": "New password",
-    "confirmPasswordLabel": "Confirm new password",
-    "submit": "Change password",
-    "changeSuccess": "Password changed successfully",
-    "changeFailed": "Failed to change password",
-    "mismatch": "New passwords do not match",
-    "pageDescription": "Change your password. You'll stay signed in on this device, but other devices will need to sign in again."
   }
 }

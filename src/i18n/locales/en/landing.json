@@ -359,6 +359,47 @@
       }
     }
   },
+  "aiFeatures": {
+    "badge": "AI-Powered",
+    "title": "Create at the speed of AI",
+    "subtitle": "Generate on-brand images, videos, and copy in seconds — no designer or copywriter required.",
+    "demoLabel": "See it in the demo",
+    "demoAction": "View {{capability}} in the live MacBook demo above",
+    "items": {
+      "image": {
+        "title": "AI Image Generation",
+        "desc": "Turn a prompt into on-brand product photos and social graphics, ready to publish."
+      },
+      "video": {
+        "title": "AI Video Generation",
+        "desc": "Generate short-form video variations for campaigns without a camera crew."
+      },
+      "text": {
+        "title": "AI Copywriting",
+        "desc": "Draft captions, ad copy, and hashtags that match your brand voice instantly."
+      }
+    }
+  },
+  "agencyWorkspace": {
+    "title": "Built for agencies, not just teams",
+    "subtitle": "Run every client, every brand, and every workspace from one login — with the right access for the right role.",
+    "demoLabel": "See it in the demo",
+    "demoAction": "View {{capability}} in the live MacBook demo above",
+    "items": {
+      "multiAgency": {
+        "title": "Multi-Agency Management",
+        "desc": "Own and switch between multiple agencies, each with its own team, clients, and dashboard."
+      },
+      "multiClient": {
+        "title": "Multi-Client Workspaces",
+        "desc": "Spin up a dedicated workspace per client with its own timezone, members, and content."
+      },
+      "roleAccess": {
+        "title": "Role-Based Access",
+        "desc": "Owner, manager, creator, and client each see and do exactly what their role allows."
+      }
+    }
+  },
   "howItWorks": {
     "title": "How it works",
     "subtitle": "Every role has its own workflow, running smoothly on one platform.",
@@ -445,6 +486,24 @@
       "email": {
         "title": "Email Campaigns",
         "desc": "Newsletter templates, drip sequences, and promotional email layouts ready to customize."
+      }
+    }
+  },
+  "mediaPackage": {
+    "title": "From proposal to signed campaign",
+    "subtitle": "Offer ready-made media packages, negotiate terms with clients, and turn approvals into a live campaign — all in one flow.",
+    "items": {
+      "templates": {
+        "title": "Ready-Made Packages",
+        "desc": "Start from pre-built media packages or customize your own for each agency."
+      },
+      "negotiate": {
+        "title": "Client Negotiation",
+        "desc": "Clients can request changes to scope, timeline, or price until both sides agree."
+      },
+      "approve": {
+        "title": "Approve & Launch",
+        "desc": "Once approved, the package turns into a full media campaign with tasks ready to assign."
       }
     }
   },
@@ -580,6 +639,7 @@
     "start": "Start free",
     "login": "Sign in"
   },
+  "backToTop": "Back to top",
   "footer": {
     "tagline": "The all-in-one brand content management platform. Plan, create, schedule, publish, and grow — all in one place.",
     "email": "brandhub404@gmail.com",
@@ -596,18 +656,8 @@
       "pricing": "Pricing"
     },
     "links": {
-      "resources": [
-        "Help Center",
-        "Blog",
-        "Community",
-        "Tutorials"
-      ],
-      "company": [
-        "About",
-        "Careers",
-        "Privacy",
-        "Terms"
-      ]
+      "resources": ["Help Center", "Blog", "Community", "Tutorials"],
+      "company": ["About", "Careers", "Privacy", "Terms"]
     },
     "copyright": "© {{year}} BrandHub. All rights reserved."
   }

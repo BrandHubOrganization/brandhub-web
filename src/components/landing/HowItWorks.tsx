@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
+import { SectionDecor } from "@/components/landing/SectionDecor";
+import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
 interface LaneNode {
   key: string;
@@ -144,8 +146,9 @@ export function HowItWorks() {
     <section
       id="how-it-works"
       ref={sectionRef}
-      className="bg-zinc-50 py-24 dark:bg-zinc-900/50"
+      className="relative overflow-hidden bg-zinc-50 py-24 dark:bg-zinc-900/50"
     >
+      <SectionDecor corner="left" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -154,6 +157,7 @@ export function HowItWorks() {
           transition={{ duration: 0.5 }}
           className="mx-auto mb-16 max-w-2xl text-center"
         >
+          <SectionEyebrow index={4} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
             {t("landing.howItWorks.title")}
           </h2>

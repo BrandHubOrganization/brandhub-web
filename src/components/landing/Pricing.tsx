@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SectionDecor } from "@/components/landing/SectionDecor";
+import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
 const PLANS = [
   { key: "starter", featured: false, monthlyPrice: 0 },
@@ -19,10 +21,15 @@ function formatVnd(amount: number) {
 export function Pricing() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const reduce = useReducedMotion();
   const [yearly, setYearly] = useState(false);
 
   return (
-    <section id="pricing" className="bg-white py-24 dark:bg-zinc-950">
+    <section
+      id="pricing"
+      className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950"
+    >
+      <SectionDecor corner="left" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -31,6 +38,7 @@ export function Pricing() {
           transition={{ duration: 0.5 }}
           className="mx-auto mb-16 max-w-2xl text-center"
         >
+          <SectionEyebrow index={9} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
             {t("landing.pricing.title")}
           </h2>
@@ -101,6 +109,9 @@ export function Pricing() {
                     : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
                 }`}
               >
+                {plan.featured && !reduce && (
+                  <div className="border-brand-orange/40 pointer-events-none absolute inset-0 animate-pulse rounded-2xl border" />
+                )}
                 {plan.featured && (
                   <div className="bg-brand-orange absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-semibold text-white shadow-sm">
                     {t("landing.pricing.mostPopular")}

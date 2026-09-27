@@ -37,6 +37,12 @@
     "statsWorkspaces": "Không gian làm việc",
     "statsActivity": "Hoạt động gần đây",
     "statsActivityPlaceholder": "Chưa có dữ liệu — sẽ cập nhật ở sprint sau.",
+    "statsMembersByRole": "Thành viên theo vai trò",
+    "statsWorkspacesByIndustry": "Workspace theo ngành",
+    "statsMemberGrowth": "Tăng trưởng thành viên (6 tháng)",
+    "statsContentByStatus": "Nội dung theo trạng thái",
+    "statsPostsPublished": "Bài đăng đã xuất bản theo tháng",
+    "statsNoData": "Chưa có dữ liệu",
     "nav": {
       "profile": "Hồ sơ",
       "members": "Thành viên",
@@ -162,7 +168,30 @@
     "expiresInDays": "Còn {{count}} ngày",
     "expiresInHours": "Còn {{count}} giờ",
     "expiresInMinutes": "Còn {{count}} phút",
-    "expiresSoon": "Sắp hết hạn"
+    "expiresSoon": "Sắp hết hạn",
+    "tabMembers": "Thành viên ({{count}})",
+    "tabInvitations": "Lời mời ({{count}})",
+    "invitationsEmpty": "Không có lời mời nào đang chờ hoặc đã hết hạn.",
+    "profile": {
+      "title": "Hồ sơ thành viên",
+      "role": "Vai trò",
+      "joinedAt": "Ngày tham gia",
+      "activityTitle": "Hoạt động gần đây",
+      "activityEmpty": "Chưa có hoạt động nào được ghi nhận.",
+      "activityLoadError": "Không thể tải hoạt động của thành viên này",
+      "close": "Đóng"
+    },
+    "auditAction": {
+      "LOGIN": "Đăng nhập",
+      "LOGOUT": "Đăng xuất",
+      "TOKEN_REFRESH": "Làm mới phiên đăng nhập",
+      "PASSWORD_RESET": "Đặt lại mật khẩu",
+      "CREATE": "Tạo mới {{resource}}",
+      "UPDATE": "Cập nhật {{resource}}",
+      "DELETE": "Xóa {{resource}}",
+      "ROLE_CHANGE": "Đổi vai trò",
+      "PERMISSION_CHANGE": "Đổi quyền hạn"
+    }
   },
   "invitations": {
     "title": "Lời mời công ty",

@@ -5,10 +5,10 @@ import { Mail, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  getPreferences,
-  updatePreferences,
+  DEFAULT_PREFERENCES,
   NOTIFICATION_TYPES,
 } from "@/services/mock/mockNotificationService";
+import { userService } from "@/services/userService";
 import type { NotificationPreferences } from "@/types/notification";
 import { ToggleRow } from "./components/ToggleRow";
 import { NotificationSettingsErrorBanner } from "./components/NotificationSettingsErrorBanner";
@@ -16,6 +16,7 @@ import { NotificationSettingsErrorBanner } from "./components/NotificationSettin
 export function NotificationSettingsPage() {
   const { t } = useTranslation();
   const [prefs, setPrefs] = useState<NotificationPreferences | null>(null);
+  const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -27,8 +28,21 @@ export function NotificationSettingsPage() {
       setIsLoading(true);
       setIsError(false);
       try {
-        const data = await getPreferences();
-        if (!cancelled) setPrefs(data);
+        // Tuỳ chọn thông báo lưu trong preferences của user (PUT /users/me).
+        const resp = await userService.getProfile();
+        if (cancelled) return;
+        const p = resp.data.data;
+        const stored = (p.notificationPreferences ??
+          {}) as Partial<NotificationPreferences>;
+        setFullName(p.fullName);
+        setPrefs({
+          ...DEFAULT_PREFERENCES,
+          ...stored,
+          categories: {
+            ...DEFAULT_PREFERENCES.categories,
+            ...(stored.categories ?? {}),
+          },
+        });
       } catch (err) {
         console.error("Failed to load notification preferences:", err);
         if (!cancelled) setIsError(true);
@@ -47,8 +61,16 @@ export function NotificationSettingsPage() {
     if (!prefs) return;
     setIsSaving(true);
     try {
-      const saved = await updatePreferences(prefs);
-      setPrefs(saved);
+      // fullName bắt buộc ở PUT /users/me; các field khác null sẽ được giữ nguyên.
+      await userService.updateProfile({
+        fullName,
+        notificationPreferences: {
+          inApp: prefs.inApp,
+          email: prefs.email,
+          push: prefs.push,
+          categories: { ...prefs.categories },
+        },
+      });
       toast.success(t("notifications.settings.saveSuccess"));
     } catch (err) {
       console.error("Failed to save notification preferences:", err);
