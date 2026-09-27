@@ -51,7 +51,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
         await onDelete(media.id);
         toast.success(t("library.media.deleteFileSuccess"));
         onClose();
-      } catch (err) {
+      } catch {
         toast.error(t("library.media.deleteError"));
       } finally {
         setIsDeleting(false);

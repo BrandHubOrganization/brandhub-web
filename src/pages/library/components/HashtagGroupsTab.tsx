@@ -26,7 +26,7 @@ export const HashtagGroupsTab: React.FC = () => {
     try {
       const data = await mockContentLibraryService.getHashtagGroups();
       setGroups(data);
-    } catch (err) {
+    } catch {
       toast.error(t("hashtagGroups.loadError"));
     } finally {
       setLoading(false);
@@ -91,7 +91,7 @@ export const HashtagGroupsTab: React.FC = () => {
         toast.success(t("hashtagGroups.createSuccess"));
       }
       setIsModalOpen(false);
-    } catch (err) {
+    } catch {
       toast.error(t("hashtagGroups.saveError"));
     } finally {
       setIsSaving(false);
@@ -104,7 +104,7 @@ export const HashtagGroupsTab: React.FC = () => {
         await mockContentLibraryService.deleteHashtagGroup(id);
         setGroups((prev) => prev.filter((g) => g.id !== id));
         toast.success(t("hashtagGroups.deleteSuccess"));
-      } catch (err) {
+      } catch {
         toast.error(t("hashtagGroups.deleteError"));
       }
     }

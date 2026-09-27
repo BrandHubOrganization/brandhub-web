@@ -33,10 +33,10 @@ apiClient.interceptors.request.use(
 let isRefreshing = false;
 let failedRequestsQueue: Array<{
   resolve: (token: string) => void;
-  reject: (error: any) => void;
+  reject: (error: unknown) => void;
 }> = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedRequestsQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);

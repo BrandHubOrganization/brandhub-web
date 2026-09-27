@@ -48,7 +48,7 @@ export function useContentCalendar() {
         statuses: selectedStatuses,
       });
       setEvents(data);
-    } catch (err) {
+    } catch {
       toast.error(t("calendar.toast.loadFailed"));
     }
   };
@@ -80,7 +80,7 @@ export function useContentCalendar() {
       });
       toast.success(t("calendar.toast.rescheduleSuccess"));
       return true;
-    } catch (err) {
+    } catch {
       toast.error(t("calendar.toast.rescheduleFailed"));
       setEvents(previousEvents);
       return false;

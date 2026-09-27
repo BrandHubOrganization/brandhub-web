@@ -43,7 +43,7 @@ export function useEditorForm() {
     "FACEBOOK",
     "INSTAGRAM",
     "TIKTOK",
-    "THREADS"
+    "THREADS",
   ]);
 
   const [isDirty, setIsDirty] = useState(false);
@@ -161,7 +161,7 @@ export function useEditorForm() {
       await mockEditorService.submitForReview("post-99");
       toast.success(t("editor.submitSuccess"));
       navigate("/requests");
-    } catch (err) {
+    } catch {
       toast.error(t("editor.submitError"));
     } finally {
       setIsSubmitting(false);

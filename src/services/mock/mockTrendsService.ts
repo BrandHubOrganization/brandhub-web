@@ -132,6 +132,6 @@ export async function getTrendingTopics(): Promise<TrendingTopic[]> {
   return Promise.resolve(MOCK_TOPICS.map((t) => ({ ...t })));
 }
 
-export async function useForContent(_topicId: string): Promise<void> {
+export async function addTopicForContent(_topicId: string): Promise<void> {
   return Promise.resolve();
 }

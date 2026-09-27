@@ -32,7 +32,7 @@ export const TemplatesTab: React.FC = () => {
       ]);
       setTemplates(tplData);
       setHashtagGroups(hgData);
-    } catch (err) {
+    } catch {
       toast.error(t("library.templates.loadError"));
     } finally {
       setLoading(false);
@@ -79,7 +79,7 @@ export const TemplatesTab: React.FC = () => {
       setTitle("");
       setCaption("");
       setSelectedHgId("");
-    } catch (err) {
+    } catch {
       toast.error(t("library.templates.createError"));
     } finally {
       setIsSaving(false);
@@ -92,7 +92,7 @@ export const TemplatesTab: React.FC = () => {
         await mockContentLibraryService.deleteTemplate(id);
         setTemplates((prev) => prev.filter((t) => t.id !== id));
         toast.success(t("library.templates.deleteSuccess"));
-      } catch (err) {
+      } catch {
         toast.error(t("library.templates.deleteError"));
       }
     }
