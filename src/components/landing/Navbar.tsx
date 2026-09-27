@@ -44,6 +44,47 @@ function useShowAfterHero() {
   return show;
 }
 
+/** % scroll qua toàn trang, cho thanh progress mỏng trên Navbar. */
+function useScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(window.scrollY / max, 1) * 100 : 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return progress;
+}
+
+/** Section id đang active theo vị trí scroll — highlight link tương ứng. */
+function useActiveSection(ids: string[]) {
+  const [active, setActive] = useState<string | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        }
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ids.join(",")]);
+
+  return active;
+}
+
 export function Navbar() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -51,6 +92,8 @@ export function Navbar() {
   const { setTheme } = useTheme();
   const isDark = useIsDark();
   const show = useShowAfterHero();
+  const progress = useScrollProgress();
+  const activeSection = useActiveSection(NAV_LINKS.map((l) => l.id));
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const toggleLanguage = () => {
@@ -95,7 +138,12 @@ export function Navbar() {
               key={link.id}
               type="button"
               onClick={() => scrollToSection(link.id)}
-              className="cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              className={cn(
+                "cursor-pointer rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                activeSection === link.id
+                  ? "text-brand-orange"
+                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100",
+              )}
             >
               {t(link.labelKey)}
             </button>
@@ -232,6 +280,11 @@ export function Navbar() {
           </div>
         </div>
       )}
+
+      <div
+        className="bg-brand-orange h-0.5 transition-[width] duration-150 ease-out"
+        style={{ width: `${progress}%` }}
+      />
     </nav>
   );
 }

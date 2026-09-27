@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
+import { SectionDecor } from "@/components/landing/SectionDecor";
+import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
 interface Feature {
   key: string;
@@ -79,7 +81,11 @@ export function Features() {
   const goToPage = useLandingDemoStore((s) => s.goToPage);
 
   return (
-    <section id="features" className="bg-white py-24 dark:bg-zinc-950">
+    <section
+      id="features"
+      className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950"
+    >
+      <SectionDecor corner="left" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 24 }}
@@ -88,6 +94,7 @@ export function Features() {
           transition={{ duration: 0.5 }}
           className="mx-auto mb-16 max-w-2xl text-center"
         >
+          <SectionEyebrow index={1} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
             {t("landing.features.title")}
           </h2>

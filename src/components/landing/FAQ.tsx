@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { ChevronDown } from "lucide-react";
+import { SectionDecor } from "@/components/landing/SectionDecor";
+import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
 const FAQS = [
   { key: "q1" },
@@ -17,7 +19,11 @@ export function FAQ() {
   const [open, setOpen] = useState<string | null>(null);
 
   return (
-    <section id="faq" className="bg-white py-24 dark:bg-zinc-950">
+    <section
+      id="faq"
+      className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950"
+    >
+      <SectionDecor corner="right" />
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -26,6 +32,7 @@ export function FAQ() {
           transition={{ duration: 0.5 }}
           className="mb-16 text-center"
         >
+          <SectionEyebrow index={10} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
             {t("landing.faq.title")}
           </h2>
