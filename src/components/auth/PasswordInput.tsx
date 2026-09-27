@@ -2,7 +2,7 @@ import * as React from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Input, type InputProps } from "@/components/ui/input";
 
-interface PasswordInputProps extends Omit<InputProps, "type" | "iconSuffix"> {}
+type PasswordInputProps = Omit<InputProps, "type" | "iconSuffix">;
 
 /**
  * Input mật khẩu có nút toggle hiện/ẩn.
