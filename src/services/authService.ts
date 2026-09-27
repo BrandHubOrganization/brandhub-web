@@ -49,6 +49,11 @@ export interface ChangePasswordRequest {
   newPassword: string;
 }
 
+export interface PasswordChangeOtpRequest {
+  otpCode: string;
+  newPassword: string;
+}
+
 export interface LinkPhoneRequest {
   phone: string;
 }
@@ -160,6 +165,12 @@ export const authService = {
 
   changePassword: (data: ChangePasswordRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/change-password", data),
+
+  sendPasswordChangeOtp: () =>
+    api.post<ApiResponse<void>>("/api/v1/auth/change-password/send-otp"),
+
+  changePasswordWithOtp: (data: PasswordChangeOtpRequest) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/change-password/otp", data),
 
   linkPhone: (data: LinkPhoneRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/link/phone", data),

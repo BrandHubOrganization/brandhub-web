@@ -52,11 +52,9 @@ import { ReportsPage } from "@/pages/reports";
 import { SettingsLayout } from "@/pages/settings/SettingsLayout";
 import { ProfilePage } from "@/pages/profile";
 import { SecurityPage } from "@/pages/security";
-import { ChangePasswordPage } from "@/pages/change-password";
 import { ConnectionsPage } from "@/pages/connections";
 import { NotificationSettingsPage } from "@/pages/notification-settings";
 import { ClientProfileListPage } from "@/pages/client-profiles/list";
-import { ClientProfileDetailPage } from "@/pages/client-profiles/detail";
 import { VideoStudioPage } from "@/pages/ai-studio/video";
 import ExamplesPage from "@/components/examples";
 
@@ -82,7 +80,7 @@ export function AppRoutes() {
           <Route path="/clients/:id" element={<ClientDetailPage />} />
           <Route
             path="/change-password"
-            element={<Navigate to="/settings/change-password" replace />}
+            element={<Navigate to="/settings/security" replace />}
           />
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route
@@ -160,7 +158,10 @@ export function AppRoutes() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="security" element={<SecurityPage />} />
             <Route path="connections" element={<ConnectionsPage />} />
-            <Route path="change-password" element={<ChangePasswordPage />} />
+            <Route
+              path="change-password"
+              element={<Navigate to="/settings/security" replace />}
+            />
             <Route
               path="notifications"
               element={<NotificationSettingsPage />}
@@ -180,10 +181,6 @@ export function AppRoutes() {
             element={<Navigate to="/settings/profile" replace />}
           />
           <Route path="/client-profiles" element={<ClientProfileListPage />} />
-          <Route
-            path="/client-profiles/:id"
-            element={<ClientProfileDetailPage />}
-          />
           <Route path="/ai-studio/video" element={<VideoStudioPage />} />
           <Route path="/components/examples" element={<ExamplesPage />} />
         </Route>

@@ -88,7 +88,6 @@ const NAV_KEY_MAP: Record<string, string> = {
   profile: "nav.profile",
   "client-profile": "nav.clientProfile",
   video: "aiStudio.video.title",
-  "change-password": "nav.changePassword",
 };
 
 export interface NavbarProps {

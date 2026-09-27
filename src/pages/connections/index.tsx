@@ -169,7 +169,7 @@ export function ConnectionsPage() {
               variant="outline"
               size="sm"
               onClick={() => {
-                window.location.href = "/settings/change-password";
+                window.location.href = "/settings/security";
               }}
             >
               {t("settings.connections.setPasswordCta")}

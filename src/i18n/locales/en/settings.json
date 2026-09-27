@@ -70,23 +70,5 @@
     "uploadSuccess": "Avatar updated",
     "invalidType": "Only JPEG, PNG, or WebP files are accepted",
     "tooLarge": "Image must not exceed 5MB"
-  },
-  "security": {
-    "currentPasswordLabel": "Current password",
-    "newPasswordLabel": "New password",
-    "confirmPasswordLabel": "Confirm new password",
-    "submit": "Change password",
-    "changeSuccess": "Password changed successfully",
-    "changeFailed": "Failed to change password",
-    "mismatch": "New passwords do not match",
-    "pageDescription": "Change your password. You'll stay signed in on this device, but other devices will need to sign in again.",
-    "requirements": "Password must be at least 8 characters and contain at least 1 digit.",
-    "passwordTooShort": "Password must be at least 8 characters",
-    "passwordNeedDigit": "Password must contain at least 1 digit",
-    "setPasswordTitle": "Set a password",
-    "setPasswordDescription": "Your account currently signs in with Google. Set a password so you can also sign in with email and password — both still land on the same account.",
-    "setPasswordSubmit": "Set password",
-    "setPasswordSuccess": "Password set successfully",
-    "setPasswordFailed": "Could not set the password"
   }
 }

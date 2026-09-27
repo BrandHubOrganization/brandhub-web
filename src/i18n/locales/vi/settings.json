@@ -70,23 +70,5 @@
     "uploadSuccess": "Đã cập nhật ảnh đại diện",
     "invalidType": "Chỉ nhận file JPEG, PNG hoặc WebP",
     "tooLarge": "Ảnh không được vượt quá 5MB"
-  },
-  "security": {
-    "currentPasswordLabel": "Mật khẩu hiện tại",
-    "newPasswordLabel": "Mật khẩu mới",
-    "confirmPasswordLabel": "Xác nhận mật khẩu mới",
-    "submit": "Đổi mật khẩu",
-    "changeSuccess": "Đổi mật khẩu thành công",
-    "changeFailed": "Đổi mật khẩu thất bại",
-    "mismatch": "Mật khẩu mới không khớp",
-    "pageDescription": "Đổi mật khẩu của bạn. Thiết bị này vẫn giữ đăng nhập, nhưng các thiết bị khác sẽ cần đăng nhập lại.",
-    "requirements": "Mật khẩu cần tối thiểu 8 ký tự và có ít nhất 1 chữ số.",
-    "passwordTooShort": "Mật khẩu phải có ít nhất 8 ký tự",
-    "passwordNeedDigit": "Mật khẩu phải có ít nhất 1 chữ số",
-    "setPasswordTitle": "Đặt mật khẩu",
-    "setPasswordDescription": "Tài khoản của bạn đang đăng nhập bằng Google. Đặt mật khẩu để có thể đăng nhập thêm bằng email và mật khẩu — cả hai vẫn vào cùng một tài khoản.",
-    "setPasswordSubmit": "Đặt mật khẩu",
-    "setPasswordSuccess": "Đặt mật khẩu thành công",
-    "setPasswordFailed": "Đặt mật khẩu thất bại"
   }
 }

@@ -147,25 +147,6 @@ const NAV_SECTIONS: NavSection[] = [
         hideInWorkspace: true,
       },
       {
-        to: "/settings",
-        icon: User,
-        labelKey: "nav.settings",
-        noAgencyOnly: true,
-        children: [
-          { to: "/settings/profile", labelKey: "nav.profile" },
-          { to: "/settings/security", labelKey: "nav.security" },
-          { to: "/settings/connections", labelKey: "nav.connections" },
-          {
-            to: "/settings/change-password",
-            labelKey: "nav.changePassword",
-          },
-          {
-            to: "/settings/notifications",
-            labelKey: "nav.notificationSettings",
-          },
-        ],
-      },
-      {
         to: "/invitations",
         icon: Mail,
         labelKey: "nav.invitations",
@@ -178,6 +159,39 @@ const NAV_SECTIONS: NavSection[] = [
         hideInWorkspace: true,
       },
       { to: "/portal", icon: Users, labelKey: "nav.portal" },
+      {
+        to: "/ai-studio/ambassadors",
+        icon: Sparkles,
+        labelKey: "nav.aiStudio",
+        hideInWorkspace: true,
+      },
+      {
+        to: "/reports",
+        icon: FileBarChart,
+        labelKey: "nav.reports",
+        hideInWorkspace: true,
+      },
+    ],
+  },
+  {
+    key: "settings",
+    titleKey: "nav.sections.settings",
+    items: [
+      {
+        to: "/settings",
+        icon: User,
+        labelKey: "nav.settings",
+        noAgencyOnly: true,
+        children: [
+          { to: "/settings/profile", labelKey: "nav.profile" },
+          { to: "/settings/security", labelKey: "nav.security" },
+          { to: "/settings/connections", labelKey: "nav.connections" },
+          {
+            to: "/settings/notifications",
+            labelKey: "nav.notificationSettings",
+          },
+        ],
+      },
       {
         to: "/client-profiles",
         icon: User,
@@ -194,18 +208,6 @@ const NAV_SECTIONS: NavSection[] = [
         to: "/subscription/plans",
         icon: CreditCard,
         labelKey: "nav.subscription",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/ai-studio/ambassadors",
-        icon: Sparkles,
-        labelKey: "nav.aiStudio",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/reports",
-        icon: FileBarChart,
-        labelKey: "nav.reports",
         hideInWorkspace: true,
       },
     ],
@@ -264,9 +266,13 @@ export function Sidebar({
   // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
   // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
   // "create" (editor/calendar/publish...) cần context 1 workspace nên ẩn,
-  // chỉ còn "manage" (agency profile/members/stats).
+  // chỉ còn "manage" (agency profile/members/stats) và "settings" (tài khoản).
   const visibleSectionKeys: string[] | null =
-    systemRole === "ADMIN" ? ["system"] : !activeWorkspace ? ["manage"] : null; // null = không lọc theo section, giữ tất cả
+    systemRole === "ADMIN"
+      ? ["system"]
+      : !activeWorkspace
+        ? ["manage", "settings"]
+        : null; // null = không lọc theo section, giữ tất cả
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
