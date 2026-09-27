@@ -95,7 +95,7 @@ class MockHashtagGroupService {
     }
 
     const formattedTags = payload.hashtags.map((t) => {
-      let tag = t.trim();
+      const tag = t.trim();
       return tag.startsWith("#") ? tag : `#${tag}`;
     });
 

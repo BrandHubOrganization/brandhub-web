@@ -46,7 +46,7 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
     try {
       await onConfirm(selectedId);
       onClose();
-    } catch (err) {
+    } catch {
       toast.error(t("requests.assigneePicker.assignError"));
     } finally {
       setIsSubmitting(false);

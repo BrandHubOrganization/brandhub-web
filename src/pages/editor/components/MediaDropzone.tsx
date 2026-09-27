@@ -60,7 +60,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
         toast.success(
           t("editor.mediaDropzone.uploadSuccess", { fileName: file.name }),
         );
-      } catch (err) {
+      } catch {
         toast.error(
           t("editor.mediaDropzone.uploadError", { fileName: file.name }),
         );

@@ -86,7 +86,7 @@ export function useContentRequests() {
         myTasksOnly: activeTab === "my-tasks",
       });
       setData(res);
-    } catch (err) {
+    } catch {
       toast.error(t("requests.toast.loadFailed"));
     } finally {
       setLoading(false);
