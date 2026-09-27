@@ -5,6 +5,7 @@ import type {
   AgencyCategory,
   AgencyInvitation,
   AgencyMember,
+  AgencyMemberActivity,
   AgencyStatsResponse,
   CompanySize,
 } from "@/types/agency";
@@ -58,6 +59,11 @@ export const agencyService = {
   listMembers: (agencyId: string) =>
     api.get<ApiResponse<AgencyMember[]>>(
       `/api/v1/agencies/${agencyId}/members`,
+    ),
+
+  getMemberActivity: (agencyId: string, userId: string) =>
+    api.get<ApiResponse<AgencyMemberActivity[]>>(
+      `/api/v1/agencies/${agencyId}/members/${userId}/activity`,
     ),
 
   getStats: (agencyId: string) =>

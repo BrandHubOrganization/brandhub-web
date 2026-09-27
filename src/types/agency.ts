@@ -66,6 +66,27 @@ export interface MonthCount {
   count: number;
 }
 
+export type AuditAction =
+  | "LOGIN"
+  | "LOGOUT"
+  | "TOKEN_REFRESH"
+  | "PASSWORD_RESET"
+  | "CREATE"
+  | "UPDATE"
+  | "DELETE"
+  | "ROLE_CHANGE"
+  | "PERMISSION_CHANGE";
+
+export interface AgencyMemberActivity {
+  id: number;
+  userId: string;
+  userFullName: string | null;
+  action: AuditAction;
+  resourceType: string;
+  resourceId: string | null;
+  createdAt: string;
+}
+
 export interface AgencyStatsResponse {
   memberCount: number;
   workspaceCount: number;

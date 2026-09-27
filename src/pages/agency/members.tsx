@@ -17,7 +17,12 @@ import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { InviteMessagePresets } from "@/components/shared/InviteMessagePresets";
 import { RemoveAgencyMemberDialog } from "./components/RemoveAgencyMemberDialog";
+import {
+  MemberProfileDrawer,
+  type MemberProfileTarget,
+} from "./components/MemberProfileDrawer";
 import { Select } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { AgencyMember, AgencyMemberRole } from "@/types/agency";
 import type { MemberRole, Workspace } from "@/types/workspace";
 import type { TFunction } from "i18next";
@@ -45,6 +50,7 @@ function formatExpiresIn(expiresAt: string, t: TFunction): string {
 
 interface MemberRow {
   id: string;
+  userId: string | null;
   displayName: string;
   email: string;
   avatarUrl: string | null;
@@ -65,8 +71,12 @@ export function AgencyMembersPage() {
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
   const [members, setMembers] = useState<AgencyMember[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
-  const [rows, setRows] = useState<MemberRow[]>([]);
+  const [memberRows, setMemberRows] = useState<MemberRow[]>([]);
+  const [invitationRows, setInvitationRows] = useState<MemberRow[]>([]);
   const [search, setSearch] = useState("");
+  const [profileTarget, setProfileTarget] = useState<MemberProfileTarget | null>(
+    null,
+  );
 
   useEffect(() => {
     if (id) setCurrentAgencyId(id);
@@ -109,8 +119,9 @@ export function AgencyMembersPage() {
       agencyService.listInvitations(id),
     ])
       .then(([membersRes, invitationsRes]) => {
-        const memberRows: MemberRow[] = membersRes.data.data.map((m) => ({
+        const memberRowsData: MemberRow[] = membersRes.data.data.map((m) => ({
           id: m.id,
+          userId: m.userId,
           displayName: m.fullName || m.email || "—",
           email: m.email || "—",
           avatarUrl: m.avatarUrl,
@@ -122,10 +133,11 @@ export function AgencyMembersPage() {
           removable: m.role !== "OWNER",
           cancellable: false,
         }));
-        const invitationRows: MemberRow[] = invitationsRes.data.data
+        const invitationRowsData: MemberRow[] = invitationsRes.data.data
           .filter((inv) => inv.status === "PENDING" || inv.status === "EXPIRED")
           .map((inv) => ({
             id: inv.id,
+            userId: null,
             displayName: inv.invitedEmail,
             email: inv.invitedEmail,
             avatarUrl: null,
@@ -139,9 +151,10 @@ export function AgencyMembersPage() {
           }));
         setMembers(membersRes.data.data);
         setPendingCount(
-          invitationRows.filter((r) => r.status === "PENDING").length,
+          invitationRowsData.filter((r) => r.status === "PENDING").length,
         );
-        setRows([...memberRows, ...invitationRows]);
+        setMemberRows(memberRowsData);
+        setInvitationRows(invitationRowsData);
       })
       .catch((err: unknown) =>
         toast.error(
@@ -157,15 +170,26 @@ export function AgencyMembersPage() {
     (m) => m.userId === currentUser?.id && m.role === "OWNER",
   );
 
-  const filteredRows = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return rows;
-    return rows.filter(
-      (r) =>
-        r.displayName.toLowerCase().includes(q) ||
-        r.email.toLowerCase().includes(q),
-    );
-  }, [rows, search]);
+  const filterByQuery = useCallback(
+    (list: MemberRow[]) => {
+      const q = search.trim().toLowerCase();
+      if (!q) return list;
+      return list.filter(
+        (r) =>
+          r.displayName.toLowerCase().includes(q) ||
+          r.email.toLowerCase().includes(q),
+      );
+    },
+    [search],
+  );
+  const filteredMemberRows = useMemo(
+    () => filterByQuery(memberRows),
+    [filterByQuery, memberRows],
+  );
+  const filteredInvitationRows = useMemo(
+    () => filterByQuery(invitationRows),
+    [filterByQuery, invitationRows],
+  );
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -217,7 +241,7 @@ export function AgencyMembersPage() {
     setRemoving(true);
     try {
       await agencyService.removeMember(id, removeTargetId);
-      setRows((prev) => prev.filter((r) => r.id !== removeTargetId));
+      setMemberRows((prev) => prev.filter((r) => r.id !== removeTargetId));
       setMembers((prev) => prev.filter((m) => m.id !== removeTargetId));
       toast.success(t("agency.members.removeSuccess"));
       setRemoveTargetId(null);
@@ -232,7 +256,7 @@ export function AgencyMembersPage() {
     if (!id) return;
     try {
       await agencyService.cancelInvitation(id, invitationId);
-      setRows((prev) => prev.filter((r) => r.id !== invitationId));
+      setInvitationRows((prev) => prev.filter((r) => r.id !== invitationId));
       setPendingCount((prev) => Math.max(0, prev - 1));
       toast.success(t("agency.members.cancelInviteSuccess"));
     } catch (err: unknown) {
@@ -242,55 +266,113 @@ export function AgencyMembersPage() {
     }
   };
 
-  const columns: Column<MemberRow>[] = [
+  const nameCell = (row: MemberRow, clickable: boolean) => {
+    const content = (
+      <div className="flex items-center gap-2.5">
+        {row.avatarUrl ? (
+          <img
+            src={row.avatarUrl}
+            alt=""
+            className="size-7 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold">
+            {row.displayName.charAt(0).toUpperCase()}
+          </div>
+        )}
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium">
+            {row.displayName}
+            {row.isCurrentUser && ` ${t("agency.members.you")}`}
+          </p>
+          <p className="text-muted-foreground truncate text-xs">
+            {row.email}
+          </p>
+        </div>
+      </div>
+    );
+    if (!clickable || !row.userId) return content;
+    return (
+      <button
+        type="button"
+        className="w-full cursor-pointer text-left"
+        onClick={() =>
+          setProfileTarget({
+            userId: row.userId!,
+            displayName: row.displayName,
+            email: row.email,
+            avatarUrl: row.avatarUrl,
+            role: row.role,
+            joinedAt: row.joinedAt,
+          })
+        }
+      >
+        {content}
+      </button>
+    );
+  };
+
+  const roleCell = (row: MemberRow) =>
+    row.role ? (
+      <span
+        className={cn(
+          "rounded-full px-2 py-0.5 text-xs font-semibold",
+          row.role === "OWNER"
+            ? "bg-brand-orange-soft text-brand-orange"
+            : "bg-muted text-muted-foreground",
+        )}
+      >
+        {row.role}
+      </span>
+    ) : (
+      "—"
+    );
+
+  const memberColumns: Column<MemberRow>[] = [
     {
       header: t("agency.members.columnName"),
       accessorKey: "displayName",
       sortable: true,
-      cell: (row) => (
-        <div className="flex items-center gap-2.5">
-          {row.avatarUrl ? (
-            <img
-              src={row.avatarUrl}
-              alt=""
-              className="size-7 shrink-0 rounded-full object-cover"
-            />
-          ) : (
-            <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold">
-              {row.displayName.charAt(0).toUpperCase()}
-            </div>
-          )}
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium">
-              {row.displayName}
-              {row.isCurrentUser && ` ${t("agency.members.you")}`}
-            </p>
-            <p className="text-muted-foreground truncate text-xs">
-              {row.email}
-            </p>
-          </div>
-        </div>
-      ),
+      cell: (row) => nameCell(row, true),
     },
     {
       header: t("agency.members.columnRole"),
       accessorKey: "role",
       sortable: true,
+      cell: roleCell,
+    },
+    {
+      header: t("agency.members.columnJoined"),
+      accessorKey: "joinedAt",
+      sortable: true,
       cell: (row) =>
-        row.role ? (
-          <span
-            className={cn(
-              "rounded-full px-2 py-0.5 text-xs font-semibold",
-              row.role === "OWNER"
-                ? "bg-brand-orange-soft text-brand-orange"
-                : "bg-muted text-muted-foreground",
-            )}
+        row.joinedAt ? new Date(row.joinedAt).toLocaleDateString() : "—",
+    },
+    {
+      header: t("agency.members.columnActions"),
+      accessorKey: "id",
+      cell: (row) => {
+        if (!isOwner || !row.removable) return "—";
+        return (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive cursor-pointer text-xs"
+            onClick={() => setRemoveTargetId(row.id)}
           >
-            {row.role}
-          </span>
-        ) : (
-          "—"
-        ),
+            {t("agency.members.remove")}
+          </Button>
+        );
+      },
+    },
+  ];
+
+  const invitationColumns: Column<MemberRow>[] = [
+    {
+      header: t("agency.members.columnName"),
+      accessorKey: "displayName",
+      sortable: true,
+      cell: (row) => nameCell(row, false),
     },
     {
       header: t("agency.members.columnStatus"),
@@ -300,8 +382,6 @@ export function AgencyMembersPage() {
           <span
             className={cn(
               "w-fit rounded-full px-2 py-0.5 text-xs font-semibold",
-              row.status === "ACTIVE" &&
-                "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400",
               row.status === "PENDING" &&
                 "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400",
               row.status === "EXPIRED" && "bg-muted text-muted-foreground",
@@ -318,42 +398,20 @@ export function AgencyMembersPage() {
       ),
     },
     {
-      header: t("agency.members.columnJoined"),
-      accessorKey: "joinedAt",
-      sortable: true,
-      cell: (row) =>
-        row.joinedAt ? new Date(row.joinedAt).toLocaleDateString() : "—",
-    },
-    {
       header: t("agency.members.columnActions"),
       accessorKey: "id",
       cell: (row) => {
-        if (!isOwner) return "—";
-        if (row.status === "ACTIVE" && row.removable) {
-          return (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-destructive cursor-pointer text-xs"
-              onClick={() => setRemoveTargetId(row.id)}
-            >
-              {t("agency.members.remove")}
-            </Button>
-          );
-        }
-        if (row.cancellable) {
-          return (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-destructive cursor-pointer text-xs"
-              onClick={() => handleCancelInvitation(row.id)}
-            >
-              {t("agency.members.cancelInvite")}
-            </Button>
-          );
-        }
-        return "—";
+        if (!isOwner || !row.cancellable) return "—";
+        return (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive cursor-pointer text-xs"
+            onClick={() => handleCancelInvitation(row.id)}
+          >
+            {t("agency.members.cancelInvite")}
+          </Button>
+        );
       },
     },
   ];
@@ -554,12 +612,36 @@ export function AgencyMembersPage() {
             </div>
           </div>
 
-          <DataTable
-            columns={columns}
-            data={filteredRows}
-            pageSize={10}
-            emptyState={t("agency.members.empty")}
-          />
+          <Tabs defaultValue="members">
+            <TabsList>
+              <TabsTrigger value="members">
+                {t("agency.members.tabMembers", {
+                  count: memberRows.length,
+                })}
+              </TabsTrigger>
+              <TabsTrigger value="invitations">
+                {t("agency.members.tabInvitations", {
+                  count: invitationRows.length,
+                })}
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="members">
+              <DataTable
+                columns={memberColumns}
+                data={filteredMemberRows}
+                pageSize={10}
+                emptyState={t("agency.members.empty")}
+              />
+            </TabsContent>
+            <TabsContent value="invitations">
+              <DataTable
+                columns={invitationColumns}
+                data={filteredInvitationRows}
+                pageSize={10}
+                emptyState={t("agency.members.invitationsEmpty")}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 
@@ -568,6 +650,12 @@ export function AgencyMembersPage() {
         onOpenChange={(open) => !open && setRemoveTargetId(null)}
         submitting={removing}
         onSubmit={handleRemove}
+      />
+
+      <MemberProfileDrawer
+        agencyId={id ?? ""}
+        member={profileTarget}
+        onOpenChange={(open) => !open && setProfileTarget(null)}
       />
     </PageWrapper>
   );
