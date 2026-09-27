@@ -184,9 +184,6 @@ export function Sidebar({
   currentUserId = null,
 }: SidebarProps) {
   const { t } = useTranslation();
-  const [expandedAgencyId, setExpandedAgencyId] = React.useState<string | null>(
-    currentAgencyId,
-  );
   const currentAgencyName =
     agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
   const clientWorkspaces = allWorkspaces.filter((ws) => ws.myRole === "CLIENT");
@@ -403,17 +400,13 @@ export function Sidebar({
               const agencyWs = allWorkspaces.filter(
                 (ws) => ws.agencyId === agency.id,
               );
-              const isExpanded = expandedAgencyId === agency.id;
               return (
                 <div key={agency.id}>
                   <DropdownMenuItem
-                    onSelect={(e) => {
-                      e.preventDefault();
-                      setExpandedAgencyId(isExpanded ? null : agency.id);
-                    }}
+                    onClick={() => onSwitchAgency(agency.id)}
                     className={cn(
                       "cursor-pointer justify-between text-xs",
-                      currentAgencyId === agency.id
+                      currentAgencyId === agency.id && !activeWorkspace
                         ? "text-brand-orange font-semibold"
                         : "",
                     )}
@@ -426,58 +419,44 @@ export function Sidebar({
                         </span>
                       )}
                     </span>
-                    <ChevronDown
-                      className={cn(
-                        "size-3.5 shrink-0 transition-transform",
-                        isExpanded ? "rotate-180" : "",
-                      )}
-                    />
                   </DropdownMenuItem>
-                  {isExpanded && (
-                    <div className="border-border ml-3 border-l pl-2">
-                      {agencyWs.length === 0 && (
-                        <p className="text-muted-foreground text-3xs px-2 py-1.5">
-                          {t("nav.orgSwitcher.noWorkspace")}
-                        </p>
-                      )}
-                      {agencyWs.map((ws) => (
-                        <DropdownMenuItem
-                          key={ws.id}
-                          onClick={() => onSwitchWorkspace(agency.id, ws.id)}
-                          className={cn(
-                            "cursor-pointer justify-between gap-2 text-xs",
-                            activeWorkspace?.id === ws.id
-                              ? "text-brand-orange font-semibold"
-                              : "",
-                          )}
-                        >
-                          <span className="truncate">{ws.name}</span>
-                          {ws.myRole && (
-                            <span className="text-muted-foreground text-3xs shrink-0 font-normal">
-                              {t(`workspace.roles.${ws.myRole}`)}
-                            </span>
-                          )}
-                        </DropdownMenuItem>
-                      ))}
+                  <div className="border-border ml-3 border-l pl-2">
+                    {agencyWs.length === 0 && (
+                      <p className="text-muted-foreground text-3xs px-2 py-1.5">
+                        {t("nav.orgSwitcher.noWorkspace")}
+                      </p>
+                    )}
+                    {agencyWs.map((ws) => (
                       <DropdownMenuItem
-                        onClick={() => onSwitchAgency(agency.id)}
-                        className="text-muted-foreground text-3xs cursor-pointer italic"
+                        key={ws.id}
+                        onClick={() => onSwitchWorkspace(agency.id, ws.id)}
+                        className={cn(
+                          "cursor-pointer justify-between gap-2 text-xs",
+                          activeWorkspace?.id === ws.id
+                            ? "text-brand-orange font-semibold"
+                            : "",
+                        )}
                       >
-                        {t("nav.orgSwitcher.viewAgency")}
+                        <span className="truncate">{ws.name}</span>
+                        {ws.myRole && (
+                          <span className="text-muted-foreground text-3xs shrink-0 font-normal">
+                            {t(`workspace.roles.${ws.myRole}`)}
+                          </span>
+                        )}
                       </DropdownMenuItem>
-                      {agency.ownerId === currentUserId && (
-                        <DropdownMenuItem asChild>
-                          <NavLink
-                            to={`/workspaces/create?agencyId=${agency.id}`}
-                            className="text-brand-orange text-3xs flex cursor-pointer items-center gap-1.5 font-semibold"
-                          >
-                            <FolderPlus className="size-3" />
-                            {t("nav.orgSwitcher.createWorkspace")}
-                          </NavLink>
-                        </DropdownMenuItem>
-                      )}
-                    </div>
-                  )}
+                    ))}
+                    {agency.ownerId === currentUserId && (
+                      <DropdownMenuItem asChild>
+                        <NavLink
+                          to={`/workspaces/create?agencyId=${agency.id}`}
+                          className="text-brand-orange text-3xs flex cursor-pointer items-center gap-1.5 font-semibold"
+                        >
+                          <FolderPlus className="size-3" />
+                          {t("nav.orgSwitcher.createWorkspace")}
+                        </NavLink>
+                      </DropdownMenuItem>
+                    )}
+                  </div>
                 </div>
               );
             })}

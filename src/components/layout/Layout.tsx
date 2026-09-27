@@ -192,7 +192,7 @@ export function Layout() {
     if (!ws) return;
     setCurrentAgencyId(agencyIdArg);
     setCurrentWorkspace(ws);
-    navigate(`/workspaces/${workspaceId}/settings`);
+    navigate(`/workspaces/${workspaceId}/dashboard`);
   };
 
   const handleSwitchAgency = (agencyIdArg: string) => {
