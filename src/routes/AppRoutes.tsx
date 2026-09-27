@@ -81,6 +81,10 @@ export function AppRoutes() {
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
           <Route
+            path="/workspaces/:id"
+            element={<Navigate to="dashboard" replace />}
+          />
+          <Route
             path="/workspaces/:id/dashboard"
             element={<WorkspaceDashboardPage />}
           />
