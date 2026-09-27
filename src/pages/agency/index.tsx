@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
 import { useAgencyStore } from "@/store/agencyStore";
+import { useAuthStore } from "@/store/authStore";
 import { getLogoIcon } from "@/pages/agency/logoIcons";
 import type { Agency } from "@/types/agency";
 
@@ -25,6 +26,7 @@ export function AgencyPage() {
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [loading, setLoading] = useState(true);
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
+  const user = useAuthStore((s) => s.user);
 
   useEffect(() => {
     agencyService
@@ -124,6 +126,11 @@ export function AgencyPage() {
                       {a.tagline || "—"}
                     </p>
                   </div>
+                  {a.ownerId === user?.id && (
+                    <span className="text-brand-orange bg-brand-orange-soft text-2xs ml-auto shrink-0 self-start rounded-full px-2 py-0.5 font-semibold">
+                      {t("workspace.roles.OWNER")}
+                    </span>
+                  )}
                 </div>
 
                 {(a.category || a.companySize) && (
