@@ -52,6 +52,9 @@ interface NavItem {
    * ẩn khi đang trong 1 workspace cụ thể để tránh bấm nhầm rồi bị đẩy ra
    * khỏi ngữ cảnh workspace về agency. */
   hideInWorkspace?: boolean;
+  /** Chỉ hiện khi CHƯA chọn agency nào (currentAgencyId null) — mục
+   * user-level, không gắn agency/workspace cụ thể nào. */
+  noAgencyOnly?: boolean;
   /** URL đổi theo activeWorkspace — thay {workspaceId} trong `to`. Khi
    * chưa có activeWorkspace, giữ nguyên `to` gốc (route agency-level, vd
    * /dashboard, /analytics landing chung). */
@@ -133,6 +136,12 @@ const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.agencyInvitationInbox",
         hiddenForClient: true,
         hideInWorkspace: true,
+      },
+      {
+        to: "/settings",
+        icon: User,
+        labelKey: "nav.settings",
+        noAgencyOnly: true,
       },
       {
         to: "/invitations",
@@ -249,6 +258,7 @@ export function Sidebar({
         .filter((item) => !item.clientOnly || role === "CLIENT")
         .filter((item) => !item.agencyScoped || currentAgencyId)
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
+        .filter((item) => !item.noAgencyOnly || !currentAgencyId)
         .map((item) => {
           if (item.clientOnly && currentAgencyId) {
             return {

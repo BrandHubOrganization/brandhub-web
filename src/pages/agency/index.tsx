@@ -33,8 +33,17 @@ export function AgencyPage() {
       .list()
       .then(({ data }) => {
         setAgencies(data.data);
-        // Chỉ có 1 agency: tự động chọn luôn, khỏi cần bấm.
-        if (data.data.length === 1) setCurrentAgencyId(data.data[0].id);
+        // Chỉ có 1 agency: tự động chọn luôn, khỏi cần bấm. Ngược lại (0
+        // hoặc nhiều agency) phải clear currentAgencyId — trước đây store
+        // giữ nguyên agency đã chọn từ lần ghé trước, nên quay lại danh
+        // sách vẫn hiện sidebar/breadcrumb đầy đủ menu của agency cũ thay
+        // vì trạng thái "chưa chọn agency nào" (ẩn hết client-profile
+        // user-level, chỉ thấy menu agency/workspace cụ thể).
+        if (data.data.length === 1) {
+          setCurrentAgencyId(data.data[0].id);
+        } else {
+          setCurrentAgencyId(null);
+        }
       })
       .catch((err: unknown) =>
         toast.error(extractErrorMessage(err, t("agency.errors.loadFailed"))),
