@@ -113,3 +113,10 @@ export interface AgencyInvitation {
   acceptedAt: string | null;
   createdAt: string;
 }
+
+export interface InvitationPreviewResponse {
+  invitation: AgencyInvitation;
+  // Chỉ có giá trị khi invitation.role === "CLIENT" — picker chọn/tạo
+  // profile trước khi accept thật.
+  myClientProfiles: import("./clientProfile").ClientProfile[] | null;
+}

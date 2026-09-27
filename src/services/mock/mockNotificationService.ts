@@ -79,7 +79,7 @@ const NOTIFICATIONS: AppNotification[] = [
   },
 ];
 
-const DEFAULT_PREFERENCES: NotificationPreferences = {
+export const DEFAULT_PREFERENCES: NotificationPreferences = {
   inApp: true,
   email: true,
   push: false,

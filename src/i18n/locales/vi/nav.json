@@ -46,8 +46,8 @@
     "stats": "Thống kê công ty"
   },
   "agencyInvitationInbox": "Lời mời từ công ty khác",
+  "agencyList": "Danh sách công ty",
   "clientProfile": "Hồ sơ Thương hiệu",
-  "settings": "Thiết lập",
   "sections": {
     "overview": "Tổng quan",
     "create": "Sáng tạo",
@@ -66,6 +66,7 @@
   "roleLabelPrefix": "Vai trò:",
   "profile": "Hồ sơ",
   "security": "Bảo mật",
+  "connections": "Kết nối tài khoản",
   "settings": "Cài đặt",
   "notificationSettings": "Cài đặt thông báo"
 }

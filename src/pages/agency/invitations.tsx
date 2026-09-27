@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Inbox } from "lucide-react";
 import { toast } from "sonner";
 import { agencyService } from "@/services/agencyService";
-import { extractErrorMessage } from "@/utils/error";
+import { extractErrorMessage, isNotFoundError } from "@/utils/error";
 import type { AgencyInvitation } from "@/types/agency";
 
 export function AgencyInvitationsPage() {
@@ -19,12 +19,14 @@ export function AgencyInvitationsPage() {
   useEffect(() => {
     agencyService
       .listMyPendingInvitations()
-      .then(({ data }) => setInvitations(data.data))
-      .catch((err: unknown) =>
+      .then(({ data }) => setInvitations(data.data ?? []))
+      .catch((err: unknown) => {
+        // Không có lời mời nào (404) là bình thường — hiện empty state, không báo lỗi.
+        if (isNotFoundError(err)) return;
         toast.error(
           extractErrorMessage(err, t("agency.errors.invitationsLoadFailed")),
-        ),
-      )
+        );
+      })
       .finally(() => setLoading(false));
   }, [t]);
 

@@ -73,7 +73,9 @@ export function Layout() {
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
-  const fetchMyClientProfile = useClientProfileStore((s) => s.fetchMyProfile);
+  const fetchClientProfileById = useClientProfileStore(
+    (s) => s.fetchProfileById,
+  );
   const resetClientProfile = useClientProfileStore((s) => s.reset);
   const accessToken = useAuthStore((s) => s.accessToken);
   const isDevSession = accessToken?.startsWith("dev-token-") ?? false;
@@ -135,15 +137,17 @@ export function Layout() {
     activeWorkspace?.myRole ??
     (currentAgencyMyRole === "OWNER" ? "OWNER" : null);
 
-  // CLIENT chỉ có 1 ClientProfile mỗi agency — tự fetch/hiển thị đúng hồ sơ
-  // của agency đang active, không cần màn hình chọn riêng.
+  // BA mới — 1 user có N ClientProfile, gắn theo TỪNG WORKSPACE (không phải
+  // agency) qua activeWorkspace.clientProfileId. Trước đây fetch theo
+  // currentAgencyId, giả định 1 profile dùng chung cả agency — sai vì user
+  // có thể là client của agency đó với 2 profile khác nhau ở 2 workspace.
   React.useEffect(() => {
-    if (memberRole !== "CLIENT" || !currentAgencyId) {
+    if (memberRole !== "CLIENT" || !activeWorkspace?.clientProfileId) {
       resetClientProfile();
       return;
     }
-    fetchMyClientProfile(currentAgencyId);
-  }, [memberRole, currentAgencyId, fetchMyClientProfile, resetClientProfile]);
+    fetchClientProfileById(activeWorkspace.clientProfileId);
+  }, [memberRole, activeWorkspace, fetchClientProfileById, resetClientProfile]);
 
   const currentRole = memberRole;
 

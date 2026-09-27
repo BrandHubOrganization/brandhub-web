@@ -25,13 +25,33 @@
     "unlinkSuccess": "Đã gỡ liên kết số điện thoại"
   },
   "connections": {
+    "title": "Phương thức đăng nhập",
+    "pageDescription": "Quản lý cách bạn đăng nhập vào BrandHub. Liên kết nhiều phương thức vào cùng một tài khoản để không phải nhớ nhiều nơi đăng nhập.",
+    "howItWorksTitle": "Liên kết tài khoản hoạt động thế nào?",
+    "howItWorksBody": "Sau khi liên kết Google, bạn có thể đăng nhập bằng Google hoặc bằng email và mật khẩu — cả hai đều vào đúng tài khoản BrandHub này. Dữ liệu, vai trò và quyền truy cập không thay đổi.",
+    "emailPasswordLabel": "Email và mật khẩu",
+    "emailPasswordDescription": "Đăng nhập bằng email {{email}} kèm mật khẩu của bạn.",
+    "passwordSet": "Đã đặt mật khẩu",
+    "passwordNotSet": "Chưa đặt mật khẩu",
+    "googleLabel": "Google",
+    "googleDescription": "Đăng nhập nhanh bằng tài khoản Google.",
     "connect": "Kết nối",
+    "connecting": "Đang chuyển hướng…",
     "disconnect": "Ngắt kết nối",
     "connectedLabel": "Đã liên kết",
     "notConnectedLabel": "Chưa liên kết",
     "connectSuccess": "Đã liên kết tài khoản {{provider}}",
-    "disconnectSuccess": "Đã ngắt kết nối",
-    "emailMismatchWarning": "Chỉ dùng tài khoản có cùng email hiện tại ({{email}}) để kết nối.",
+    "disconnectSuccess": "Đã ngắt kết nối tài khoản {{provider}}",
+    "disconnectTitle": "Ngắt kết nối {{provider}}?",
+    "disconnectBody": "Sau khi ngắt, bạn vẫn đăng nhập được bằng các phương thức còn lại. Bạn có thể kết nối lại bất cứ lúc nào.",
+    "disconnectConfirm": "Ngắt kết nối",
+    "cancel": "Huỷ",
+    "emailMismatchWarning": "Chỉ dùng tài khoản Google có cùng email hiện tại ({{email}}) để kết nối.",
+    "onlyMethodHint": "Đây là phương thức đăng nhập duy nhất của bạn. Hãy đặt mật khẩu trước khi ngắt kết nối, nếu không bạn sẽ mất quyền truy cập tài khoản.",
+    "setPasswordCta": "Đặt mật khẩu",
+    "loadError": "Không tải được thông tin tài khoản",
+    "linkError": "Không liên kết được tài khoản",
+    "unlinkError": "Không ngắt được kết nối",
     "error": {
       "OAUTH_EMAIL_MISMATCH": "Email tài khoản không khớp email hiện tại của bạn",
       "OAUTH_ALREADY_LINKED": "Tài khoản này đã được liên kết với một tài khoản khác"
@@ -59,6 +79,14 @@
     "changeSuccess": "Đổi mật khẩu thành công",
     "changeFailed": "Đổi mật khẩu thất bại",
     "mismatch": "Mật khẩu mới không khớp",
-    "pageDescription": "Đổi mật khẩu của bạn. Thiết bị này vẫn giữ đăng nhập, nhưng các thiết bị khác sẽ cần đăng nhập lại."
+    "pageDescription": "Đổi mật khẩu của bạn. Thiết bị này vẫn giữ đăng nhập, nhưng các thiết bị khác sẽ cần đăng nhập lại.",
+    "requirements": "Mật khẩu cần tối thiểu 8 ký tự và có ít nhất 1 chữ số.",
+    "passwordTooShort": "Mật khẩu phải có ít nhất 8 ký tự",
+    "passwordNeedDigit": "Mật khẩu phải có ít nhất 1 chữ số",
+    "setPasswordTitle": "Đặt mật khẩu",
+    "setPasswordDescription": "Tài khoản của bạn đang đăng nhập bằng Google. Đặt mật khẩu để có thể đăng nhập thêm bằng email và mật khẩu — cả hai vẫn vào cùng một tài khoản.",
+    "setPasswordSubmit": "Đặt mật khẩu",
+    "setPasswordSuccess": "Đặt mật khẩu thành công",
+    "setPasswordFailed": "Đặt mật khẩu thất bại"
   }
 }

@@ -1,7 +1,7 @@
 {
   "title": "Hồ sơ Client",
   "description": "Thông tin mà các Agency khác nhìn thấy khi bạn tham gia với vai trò Client.",
-  "notFound": "Bạn chưa có hồ sơ Client. Hồ sơ sẽ được tạo khi bạn chấp nhận lời mời Client đầu tiên.",
+  "notFound": "Không tìm thấy hồ sơ này.",
   "missingAgencyId": "Không xác định được Agency đang xem. Vui lòng vào từ Workspace của Agency cụ thể.",
   "displayNameLabel": "Tên hiển thị",
   "companyLabel": "Công ty",
@@ -10,6 +10,7 @@
   "logoUrlLabel": "Logo URL",
   "websiteLabel": "Website",
   "industryLabel": "Ngành nghề",
+  "industryPlaceholder": "Chọn ngành nghề",
   "locationLabel": "Địa điểm",
   "descriptionLabel": "Mô tả công ty",
   "linkedinLabel": "LinkedIn",
@@ -18,5 +19,28 @@
   "cancelEdit": "Hủy",
   "save": "Lưu",
   "saveSuccess": "Đã cập nhật hồ sơ Client",
-  "saveError": "Không thể lưu hồ sơ Client"
+  "saveError": "Không thể lưu hồ sơ Client",
+  "list": {
+    "title": "Hồ sơ thương hiệu của tôi",
+    "description": "Quản lý các hồ sơ thương hiệu/công ty bạn dùng khi làm việc với các Agency với vai trò Client.",
+    "createButton": "+ Tạo hồ sơ mới",
+    "empty": "Chưa có hồ sơ nào. Tạo hồ sơ đầu tiên để bắt đầu.",
+    "loadError": "Không thể tải danh sách hồ sơ",
+    "createSuccess": "Đã tạo hồ sơ mới",
+    "createError": "Không thể tạo hồ sơ",
+    "deleteButton": "Xóa",
+    "deleteConfirmTitle": "Xóa hồ sơ này?",
+    "deleteConfirmDescription": "Hồ sơ sẽ bị xóa vĩnh viễn. Không thể xóa nếu hồ sơ đang được dùng cho 1 workspace đang hoạt động.",
+    "deleteSuccess": "Đã xóa hồ sơ",
+    "deleteError": "Không thể xóa hồ sơ (có thể đang được dùng cho 1 workspace)",
+    "back": "Quay lại danh sách"
+  },
+  "picker": {
+    "title": "Chọn hồ sơ thương hiệu",
+    "description": "Chọn 1 hồ sơ có sẵn hoặc tạo hồ sơ mới để dùng khi tham gia workspace này với vai trò Client.",
+    "useExisting": "Dùng hồ sơ có sẵn",
+    "createNew": "Tạo hồ sơ mới",
+    "confirmButton": "Xác nhận & tham gia",
+    "requiredError": "Vui lòng chọn 1 hồ sơ có sẵn hoặc điền thông tin tạo hồ sơ mới"
+  }
 }

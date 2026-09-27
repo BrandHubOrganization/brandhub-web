@@ -81,6 +81,7 @@ const NAV_KEY_MAP: Record<string, string> = {
   "knowledge-base": "aiStudio.knowledgeBase.title",
   trends: "aiStudio.trends.title",
   reports: "nav.reports",
+  "client-profiles": "nav.clientProfile",
   create: "nav.sections.create",
   "notification-settings": "nav.notificationSettings",
   security: "nav.security",

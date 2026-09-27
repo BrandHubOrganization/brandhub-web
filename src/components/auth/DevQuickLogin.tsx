@@ -82,7 +82,7 @@ export function DevQuickLogin() {
       if (user.role === "ADMIN") {
         navigate("/admin");
       } else if (clientProfileAgencyId) {
-        navigate(`/client-profile?agencyId=${clientProfileAgencyId}`);
+        navigate("/client-profiles");
       } else if (landingPath) {
         navigate(landingPath);
       } else {

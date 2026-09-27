@@ -21,7 +21,10 @@ import { extractErrorMessage } from "@/utils/error";
 import type { User } from "@/types/user";
 import { AvatarUploadModal } from "./components/AvatarUploadModal";
 import { LinkPhoneModal } from "./components/LinkPhoneModal";
+import { JobTitleSelect } from "./components/JobTitleSelect";
+import { LanguageChipSelect } from "./components/LanguageChipSelect";
 import { TimezoneSelect } from "@/pages/workspace/components/TimezoneSelect";
+import { isCuratedJobTitle, isLanguage, parseLanguages } from "./constants";
 
 export function ProfilePage() {
   const { t } = useTranslation();
@@ -286,23 +289,15 @@ export function ProfilePage() {
                     />
                   </div>
                   <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.jobTitleLabel")}
-                    </label>
-                    <Input
+                    <JobTitleSelect
                       value={professionalTitle}
-                      onChange={(e) => setProfessionalTitle(e.target.value)}
-                      placeholder={t("profile.edit.jobTitlePlaceholder")}
+                      onChange={setProfessionalTitle}
                     />
                   </div>
                   <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.workingLanguageLabel")}
-                    </label>
-                    <Input
+                    <LanguageChipSelect
                       value={workingLanguage}
-                      onChange={(e) => setWorkingLanguage(e.target.value)}
-                      placeholder={t("profile.edit.workingLanguagePlaceholder")}
+                      onChange={setWorkingLanguage}
                     />
                   </div>
                   <TimezoneSelect value={timezone} onChange={setTimezone} />
@@ -434,7 +429,11 @@ export function ProfilePage() {
                     {t("profile.view.jobTitleLabel")}
                   </p>
                   <p className="text-foreground text-xs font-medium">
-                    {professionalTitle || t("profile.view.jobTitleEmpty")}
+                    {professionalTitle
+                      ? isCuratedJobTitle(professionalTitle)
+                        ? t(`profile.jobTitle.${professionalTitle}`)
+                        : professionalTitle
+                      : t("profile.view.jobTitleEmpty")}
                   </p>
                 </div>
                 <div>
@@ -442,7 +441,13 @@ export function ProfilePage() {
                     {t("profile.view.workingLanguageLabel")}
                   </p>
                   <p className="text-foreground text-xs font-medium">
-                    {workingLanguage || t("profile.view.workingLanguageEmpty")}
+                    {workingLanguage
+                      ? parseLanguages(workingLanguage)
+                          .map((c) =>
+                            isLanguage(c) ? t(`profile.language.${c}`) : c,
+                          )
+                          .join(", ")
+                      : t("profile.view.workingLanguageEmpty")}
                   </p>
                 </div>
                 <div>

@@ -59,13 +59,13 @@ export const MOCK_RECENT_ACTIVITY: MockActivityItem[] = [
   {
     id: "act-1",
     actor: "Nguyễn Văn A",
-    action: "đã duyệt bài đăng \"Khuyến mãi cuối tuần\"",
+    action: 'đã duyệt bài đăng "Khuyến mãi cuối tuần"',
     at: "2026-09-26T08:15:00Z",
   },
   {
     id: "act-2",
     actor: "Trần Thị B",
-    action: "đã tạo chiến dịch mới \"Back to school\"",
+    action: 'đã tạo chiến dịch mới "Back to school"',
     at: "2026-09-25T15:40:00Z",
   },
   {

@@ -8,8 +8,10 @@ import type {
   AgencyMemberActivity,
   AgencyStatsResponse,
   CompanySize,
+  InvitationPreviewResponse,
 } from "@/types/agency";
 import type { MemberRole } from "@/types/workspace";
+import type { UpdateClientProfileRequest } from "@/types/clientProfile";
 
 export interface CreateAgencyRequest {
   name: string;
@@ -92,9 +94,23 @@ export const agencyService = {
       `/api/v1/agencies/${agencyId}/invitations/${invitationId}`,
     ),
 
-  acceptInvitation: (token: string) =>
+  previewInvitation: (token: string) =>
+    api.get<ApiResponse<InvitationPreviewResponse>>(
+      "/api/v1/agencies/invitations/preview",
+      { params: { token } },
+    ),
+
+  acceptInvitation: (
+    token: string,
+    options?: {
+      clientProfileId?: string;
+      newClientProfile?: UpdateClientProfileRequest;
+    },
+  ) =>
     api.post<ApiResponse<AgencyMember>>("/api/v1/agencies/invitations/accept", {
       token,
+      clientProfileId: options?.clientProfileId,
+      newClientProfile: options?.newClientProfile,
     }),
 
   declineInvitation: (token: string) =>

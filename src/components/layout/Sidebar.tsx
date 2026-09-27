@@ -59,6 +59,9 @@ interface NavItem {
    * chưa có activeWorkspace, giữ nguyên `to` gốc (route agency-level, vd
    * /dashboard, /analytics landing chung). */
   workspaceScoped?: boolean;
+  /** Mục con hiển thị thụt lề dưới item cha. Dùng cho các anchor trong cùng
+   * 1 trang (vd 4 mục của /settings) — `to` gồm cả hash. */
+  children?: { to: string; labelKey: string }[];
 }
 
 interface NavSection {
@@ -107,6 +110,12 @@ const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.manage",
     items: [
       {
+        to: "/agency",
+        icon: Building2,
+        labelKey: "nav.agencyList",
+        noAgencyOnly: true,
+      },
+      {
         to: "/agency/{agencyId}",
         icon: Building2,
         labelKey: "nav.agencySub.profile",
@@ -142,6 +151,19 @@ const NAV_SECTIONS: NavSection[] = [
         icon: User,
         labelKey: "nav.settings",
         noAgencyOnly: true,
+        children: [
+          { to: "/settings/profile", labelKey: "nav.profile" },
+          { to: "/settings/security", labelKey: "nav.security" },
+          { to: "/settings/connections", labelKey: "nav.connections" },
+          {
+            to: "/settings/change-password",
+            labelKey: "nav.changePassword",
+          },
+          {
+            to: "/settings/notifications",
+            labelKey: "nav.notificationSettings",
+          },
+        ],
       },
       {
         to: "/invitations",
@@ -157,10 +179,10 @@ const NAV_SECTIONS: NavSection[] = [
       },
       { to: "/portal", icon: Users, labelKey: "nav.portal" },
       {
-        to: "/client-profile",
+        to: "/client-profiles",
         icon: User,
         labelKey: "nav.clientProfile",
-        clientOnly: true,
+        noAgencyOnly: true,
       },
       {
         to: "/social-accounts",
@@ -260,12 +282,6 @@ export function Sidebar({
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
         .map((item) => {
-          if (item.clientOnly && currentAgencyId) {
-            return {
-              ...item,
-              to: `/client-profile?agencyId=${currentAgencyId}`,
-            };
-          }
           if (item.agencyScoped && currentAgencyId) {
             return {
               ...item,
@@ -547,35 +563,62 @@ export function Sidebar({
             )}
 
             <div className="space-y-0.5">
-              {section.items.map(({ to, icon: Icon, labelKey }) => {
+              {section.items.map(({ to, icon: Icon, labelKey, children }) => {
                 return (
-                  <NavLink
-                    key={to}
-                    to={to}
-                    end
-                    onClick={onMobileItemClick}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs transition-colors",
-                        collapsed ? "justify-center" : "",
-                        isActive ? "font-semibold" : "hover:text-white",
-                      )
-                    }
-                    style={({ isActive }) =>
-                      isActive
-                        ? {
-                            background: "hsl(var(--brand-orange, 15 88% 55%))",
-                            color: "#ffffff",
-                          }
-                        : {
-                            color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
-                          }
-                    }
-                    title={collapsed ? t(labelKey) : undefined}
-                  >
-                    <Icon className="size-4 shrink-0" />
-                    {!collapsed && <span>{t(labelKey)}</span>}
-                  </NavLink>
+                  <div key={to}>
+                    <NavLink
+                      to={to}
+                      end
+                      onClick={onMobileItemClick}
+                      className={({ isActive }) =>
+                        cn(
+                          "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs transition-colors",
+                          collapsed ? "justify-center" : "",
+                          isActive ? "font-semibold" : "hover:text-white",
+                        )
+                      }
+                      style={({ isActive }) =>
+                        isActive
+                          ? {
+                              background:
+                                "hsl(var(--brand-orange, 15 88% 55%))",
+                              color: "#ffffff",
+                            }
+                          : {
+                              color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
+                            }
+                      }
+                      title={collapsed ? t(labelKey) : undefined}
+                    >
+                      <Icon className="size-4 shrink-0" />
+                      {!collapsed && <span>{t(labelKey)}</span>}
+                    </NavLink>
+                    {!collapsed && children && (
+                      <div className="mt-0.5 space-y-0.5">
+                        {children.map((child) => (
+                          <NavLink
+                            key={child.to}
+                            to={child.to}
+                            end
+                            onClick={onMobileItemClick}
+                            className={({ isActive }) =>
+                              cn(
+                                "flex items-center gap-2 rounded-md py-1.5 pr-2.5 pl-7 text-xs transition-colors",
+                                isActive
+                                  ? "text-brand-orange font-semibold"
+                                  : "hover:text-white",
+                              )
+                            }
+                          >
+                            <span className="size-1 shrink-0 rounded-full bg-current" />
+                            <span className="truncate">
+                              {t(child.labelKey)}
+                            </span>
+                          </NavLink>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>

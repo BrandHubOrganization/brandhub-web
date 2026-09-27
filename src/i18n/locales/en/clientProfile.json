@@ -1,7 +1,7 @@
 {
   "title": "Client Profile",
   "description": "The profile other agencies see when you join as a client.",
-  "notFound": "You do not have a client profile yet. It is created when you accept your first client invitation.",
+  "notFound": "This profile could not be found.",
   "missingAgencyId": "Could not determine which Agency you're viewing. Please open this page from a specific Agency's Workspace.",
   "displayNameLabel": "Display name",
   "companyLabel": "Company",
@@ -10,6 +10,7 @@
   "logoUrlLabel": "Logo URL",
   "websiteLabel": "Website",
   "industryLabel": "Industry",
+  "industryPlaceholder": "Select industry",
   "locationLabel": "Location",
   "descriptionLabel": "Company description",
   "linkedinLabel": "LinkedIn",
@@ -18,5 +19,28 @@
   "cancelEdit": "Cancel",
   "save": "Save",
   "saveSuccess": "Client profile updated",
-  "saveError": "Unable to save client profile"
+  "saveError": "Unable to save client profile",
+  "list": {
+    "title": "My brand profiles",
+    "description": "Manage the brand/company profiles you use when working with agencies as a Client.",
+    "createButton": "+ Create profile",
+    "empty": "No profiles yet. Create your first one to get started.",
+    "loadError": "Failed to load your profiles",
+    "createSuccess": "Profile created",
+    "createError": "Failed to create profile",
+    "deleteButton": "Delete",
+    "deleteConfirmTitle": "Delete this profile?",
+    "deleteConfirmDescription": "This will permanently delete the profile. It cannot be deleted while still attached to an active workspace.",
+    "deleteSuccess": "Profile deleted",
+    "deleteError": "Failed to delete profile (it may still be in use by a workspace)",
+    "back": "Back to list"
+  },
+  "picker": {
+    "title": "Choose a brand profile",
+    "description": "Pick an existing profile or create a new one to use when joining this workspace as a Client.",
+    "useExisting": "Use an existing profile",
+    "createNew": "Create a new profile",
+    "confirmButton": "Confirm & join",
+    "requiredError": "Please select an existing profile or fill in a new one"
+  }
 }
