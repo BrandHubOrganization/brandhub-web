@@ -52,6 +52,10 @@ interface NavItem {
    * ẩn khi đang trong 1 workspace cụ thể để tránh bấm nhầm rồi bị đẩy ra
    * khỏi ngữ cảnh workspace về agency. */
   hideInWorkspace?: boolean;
+  /** URL đổi theo activeWorkspace — thay {workspaceId} trong `to`. Khi
+   * chưa có activeWorkspace, giữ nguyên `to` gốc (route agency-level, vd
+   * /dashboard, /analytics landing chung). */
+  workspaceScoped?: boolean;
 }
 
 interface NavSection {
@@ -65,7 +69,12 @@ const NAV_SECTIONS: NavSection[] = [
     key: "overview",
     titleKey: "nav.sections.overview",
     items: [
-      { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
+      {
+        to: "/dashboard",
+        icon: LayoutDashboard,
+        labelKey: "nav.dashboard",
+        workspaceScoped: true,
+      },
       { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
     ],
   },
@@ -243,6 +252,12 @@ export function Sidebar({
             return {
               ...item,
               to: item.to.replace("{agencyId}", currentAgencyId),
+            };
+          }
+          if (item.workspaceScoped && activeWorkspace) {
+            return {
+              ...item,
+              to: `/workspaces/${activeWorkspace.id}${item.to}`,
             };
           }
           return item;
