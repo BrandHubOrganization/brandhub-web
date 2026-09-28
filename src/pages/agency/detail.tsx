@@ -24,13 +24,16 @@ import { Select } from "@/components/ui/select";
 import { ProvinceSelect } from "@/components/ui/province-select";
 import { RichTextInput } from "@/components/ui/rich-text-input";
 import { agencyService } from "@/services/agencyService";
+import { workspaceService } from "@/services/workspaceService";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { extractErrorMessage } from "@/utils/error";
 import { AGENCY_CATEGORIES, COMPANY_SIZES } from "@/pages/agency/constants";
 import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
 import { AgencyOrgChart } from "@/pages/agency/components/AgencyOrgChart";
+import { WorkspaceCardGrid } from "@/pages/workspace/components/WorkspaceCardGrid";
 import type { Agency, AgencyCategory, CompanySize } from "@/types/agency";
+import type { Workspace } from "@/types/workspace";
 
 const CURRENT_YEAR = new Date().getFullYear();
 const URL_RE = /^https?:\/\/.+/i;
@@ -53,6 +56,7 @@ export function AgencyDetailPage() {
   const [confirmName, setConfirmName] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -161,6 +165,18 @@ export function AgencyDetailPage() {
   useEffect(() => {
     if (id && !isClientView) setCurrentAgencyId(id);
   }, [id, isClientView, setCurrentAgencyId]);
+
+  // Card list workspace thuộc agency này — /api/v1/workspaces không filter
+  // theo agency, phải lọc phía FE (cùng cách AgencyOrgChart đang làm).
+  useEffect(() => {
+    if (!id || isClientView) return;
+    workspaceService
+      .list()
+      .then(({ data }) =>
+        setWorkspaces(data.data.filter((w) => w.agencyId === id)),
+      )
+      .catch(() => setWorkspaces([]));
+  }, [id, isClientView]);
 
   const handleSave = async () => {
     if (!id) return;
@@ -685,15 +701,16 @@ export function AgencyDetailPage() {
             </div>
           )}
 
-          {!isEditing && (
-            <Button
-              variant="outline"
-              className="w-fit cursor-pointer gap-1.5"
-              onClick={() => navigate(`/client-profile?agencyId=${id}`)}
-            >
-              <User className="size-3.5" />
-              {t("agency.detail.viewClientProfile")}
-            </Button>
+          {!isEditing && workspaces.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="text-foreground text-sm font-semibold">
+                {t("agency.detail.workspacesTitle")}
+              </h3>
+              <WorkspaceCardGrid
+                workspaces={workspaces}
+                onOpen={(wsId) => navigate(`/workspaces/${wsId}/settings`)}
+              />
+            </div>
           )}
 
           <Button

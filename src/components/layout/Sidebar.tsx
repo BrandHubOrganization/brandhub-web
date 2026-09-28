@@ -13,7 +13,6 @@ import {
   LayoutTemplate,
   Hash,
   UserPlus,
-  Mail,
   Send,
   Link2,
   CreditCard,
@@ -186,12 +185,6 @@ const NAV_SECTIONS: NavSection[] = [
         icon: Inbox,
         labelKey: "nav.agencyInvitationInbox",
         hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/invitations",
-        icon: Mail,
-        labelKey: "nav.invitations",
         hideInWorkspace: true,
       },
       {
