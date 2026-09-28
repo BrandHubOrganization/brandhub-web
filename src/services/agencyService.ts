@@ -6,6 +6,7 @@ import type {
   AgencyInvitation,
   AgencyMember,
   AgencyMemberActivity,
+  AgencyMemberProfile,
   AgencyStatsResponse,
   CompanySize,
   InvitationPreviewResponse,
@@ -68,9 +69,15 @@ export const agencyService = {
       `/api/v1/agencies/${agencyId}/members/${userId}/activity`,
     ),
 
-  getStats: (agencyId: string) =>
+  getMemberProfile: (agencyId: string, userId: string) =>
+    api.get<ApiResponse<AgencyMemberProfile>>(
+      `/api/v1/agencies/${agencyId}/members/${userId}/profile`,
+    ),
+
+  getStats: (agencyId: string, params?: { from?: string; to?: string }) =>
     api.get<ApiResponse<AgencyStatsResponse>>(
       `/api/v1/agencies/${agencyId}/stats`,
+      { params },
     ),
 
   inviteMember: (agencyId: string, data: InviteAgencyMemberRequest) =>

@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Tree, TreeNode } from "react-organizational-chart";
 import { cn } from "@/lib/utils";
 import { agencyService } from "@/services/agencyService";
 import { workspaceService } from "@/services/workspaceService";
+import {
+  MemberProfileDrawer,
+  type MemberProfileTarget,
+} from "./MemberProfileDrawer";
 import type { AgencyMember } from "@/types/agency";
 import type { MemberRole, Workspace, WorkspaceMember } from "@/types/workspace";
 
@@ -15,19 +19,21 @@ interface NodeCardProps {
   name: string;
   role?: MemberRole | "OWNER";
   isRoot?: boolean;
+  onClick?: () => void;
 }
 
-function NodeCard({ name, role, isRoot }: NodeCardProps) {
-  return (
+function NodeCard({ name, role, isRoot, onClick }: NodeCardProps) {
+  const card = (
     <div
       className={cn(
-        "bg-card mx-auto flex w-fit max-w-56 min-w-40 flex-col items-center gap-1 rounded-xl border p-3 shadow-xs",
+        "bg-card flex w-fit min-w-40 items-center gap-2 rounded-xl border p-2.5 shadow-xs",
         isRoot && "border-brand-orange",
+        onClick && "hover:border-brand-orange/50 transition-colors",
       )}
     >
       <div
         className={cn(
-          "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold",
+          "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
           isRoot
             ? "bg-brand-orange text-white"
             : "bg-brand-orange-soft text-brand-orange",
@@ -35,18 +41,46 @@ function NodeCard({ name, role, isRoot }: NodeCardProps) {
       >
         {name.charAt(0).toUpperCase()}
       </div>
-      <p className="w-full truncate text-center text-sm font-medium">{name}</p>
+      <p className="max-w-56 truncate text-sm font-medium">{name}</p>
       {role && (
-        <span className="text-muted-foreground bg-muted text-3xs rounded-full px-2 py-0.5 font-semibold">
+        <span className="text-muted-foreground bg-muted text-3xs shrink-0 rounded-full px-2 py-0.5 font-semibold">
           {role}
         </span>
       )}
+    </div>
+  );
+  if (!onClick) return card;
+  return (
+    <button type="button" onClick={onClick} className="cursor-pointer">
+      {card}
+    </button>
+  );
+}
+
+// Cây phân cấp vẽ tay bằng border (đường nối) — thay cho
+// react-organizational-chart's Tree ngang cũ (bắt cuộn ngang liên tục).
+// Cấp member (trong 1 workspace) xếp DỌC, nối bằng border-left.
+function Branch({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="border-border ml-3.5 space-y-2 border-l-2 pt-2 pl-4">
+      {children}
+    </div>
+  );
+}
+
+// Cấp workspace xếp NGANG cạnh nhau (flex-wrap), mỗi workspace 1 cột dọc
+// riêng — tận dụng bề ngang, đỡ list dài lê thê khi nhiều workspace.
+function WorkspaceRow({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="border-border ml-3.5 flex flex-wrap gap-4 border-l-2 pt-2 pl-4">
+      {children}
     </div>
   );
 }
 
 export function AgencyOrgChart({ agencyId }: Props) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [owner, setOwner] = useState<AgencyMember | null>(null);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
@@ -54,6 +88,8 @@ export function AgencyOrgChart({ agencyId }: Props) {
     Record<string, WorkspaceMember[]>
   >({});
   const [unassigned, setUnassigned] = useState<AgencyMember[]>([]);
+  const [profileTarget, setProfileTarget] =
+    useState<MemberProfileTarget | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -102,39 +138,86 @@ export function AgencyOrgChart({ agencyId }: Props) {
   if (!owner) return null;
 
   return (
-    <div className="overflow-x-auto pb-4">
-      <Tree
-        lineWidth="2px"
-        lineColor="var(--border, #e5e7eb)"
-        lineBorderRadius="8px"
-        nodePadding="16px"
-        label={<NodeCard name={owner.fullName || owner.email || "—"} isRoot />}
-      >
+    <div>
+      <NodeCard
+        name={owner.fullName || owner.email || "—"}
+        isRoot
+        onClick={() =>
+          setProfileTarget({
+            userId: owner.userId,
+            displayName: owner.fullName || owner.email || "—",
+            email: owner.email || "—",
+            avatarUrl: owner.avatarUrl,
+            role: owner.role,
+            joinedAt: owner.joinedAt,
+          })
+        }
+      />
+
+      <WorkspaceRow>
         {workspaces.map((w) => (
-          <TreeNode key={w.id} label={<NodeCard name={w.name} />}>
-            {(membersByWorkspace[w.id] ?? []).map((m) => (
-              <TreeNode
-                key={m.id}
-                label={
-                  <NodeCard name={m.fullName || m.email || "—"} role={m.role} />
-                }
-              />
-            ))}
-          </TreeNode>
+          <div key={w.id} className="w-fit">
+            <NodeCard
+              name={w.name}
+              onClick={() => navigate(`/workspaces/${w.id}/settings`)}
+            />
+            {(membersByWorkspace[w.id] ?? []).length > 0 && (
+              <Branch>
+                {(membersByWorkspace[w.id] ?? []).map((m) => (
+                  <NodeCard
+                    key={m.id}
+                    name={m.fullName || m.email || "—"}
+                    role={m.role}
+                    onClick={
+                      m.userId
+                        ? () =>
+                            setProfileTarget({
+                              userId: m.userId!,
+                              displayName: m.fullName || m.email || "—",
+                              email: m.email || "—",
+                              avatarUrl: null,
+                              role: m.role,
+                              joinedAt: m.joinedAt,
+                            })
+                        : undefined
+                    }
+                  />
+                ))}
+              </Branch>
+            )}
+          </div>
         ))}
+
         {unassigned.length > 0 && (
-          <TreeNode
-            label={<NodeCard name={t("agency.detail.orgChartUnassigned")} />}
-          >
-            {unassigned.map((m) => (
-              <TreeNode
-                key={m.id}
-                label={<NodeCard name={m.fullName || m.email || "—"} />}
-              />
-            ))}
-          </TreeNode>
+          <div className="w-fit">
+            <NodeCard name={t("agency.detail.orgChartUnassigned")} />
+            <Branch>
+              {unassigned.map((m) => (
+                <NodeCard
+                  key={m.id}
+                  name={m.fullName || m.email || "—"}
+                  onClick={() =>
+                    setProfileTarget({
+                      userId: m.userId,
+                      displayName: m.fullName || m.email || "—",
+                      email: m.email || "—",
+                      avatarUrl: m.avatarUrl,
+                      role: m.role,
+                      joinedAt: m.joinedAt,
+                    })
+                  }
+                />
+              ))}
+            </Branch>
+          </div>
         )}
-      </Tree>
+      </WorkspaceRow>
+
+      <MemberProfileDrawer
+        agencyId={agencyId}
+        member={profileTarget}
+        onOpenChange={(open) => !open && setProfileTarget(null)}
+      />
     </div>
   );
 }

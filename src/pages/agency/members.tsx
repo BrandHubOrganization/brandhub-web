@@ -17,6 +17,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { InviteMessagePresets } from "@/components/shared/InviteMessagePresets";
 import { RemoveAgencyMemberDialog } from "./components/RemoveAgencyMemberDialog";
+import { AgencyOrgChart } from "./components/AgencyOrgChart";
 import {
   MemberProfileDrawer,
   type MemberProfileTarget,
@@ -640,6 +641,20 @@ export function AgencyMembersPage() {
             </TabsContent>
           </Tabs>
         </div>
+
+        {id && (
+          <div className="space-y-3">
+            <div>
+              <h2 className="text-foreground text-lg font-semibold">
+                {t("agency.detail.nav.members")}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                {t("agency.detail.membersPreviewDescription")}
+              </p>
+            </div>
+            <AgencyOrgChart agencyId={id} />
+          </div>
+        )}
       </div>
 
       <RemoveAgencyMemberDialog
