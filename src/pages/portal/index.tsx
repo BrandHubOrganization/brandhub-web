@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import {
   approveQueueItem,
   getApprovalQueue,
@@ -18,10 +19,18 @@ type PortalTab = "approvals" | "calendar";
 
 export function PortalPage() {
   const { t } = useTranslation();
+  // CLIENT thật không được tự chọn "xem như Creator/Manager" — viewerStage
+  // (state giả lập demo, tách biệt real role) khoá cứng về "CLIENT" và ẩn
+  // toggle, để nút Phê duyệt/Yêu cầu chỉnh sửa ở ApprovalQueueList (vốn
+  // gate theo viewerStage === pendingStage.stage) chỉ bật đúng lượt CLIENT.
+  const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const isClient = memberRole === "CLIENT";
   const [items, setItems] = useState<ApprovalQueueItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<PortalTab>("approvals");
-  const [viewerStage, setViewerStage] = useState<ApprovalStage>("CREATOR");
+  const [viewerStage, setViewerStage] = useState<ApprovalStage>(
+    isClient ? "CLIENT" : "CREATOR",
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -121,7 +130,12 @@ export function PortalPage() {
         <PortalCalendarView />
       ) : (
         <div className="space-y-4">
-          <ViewerStageSwitcher value={viewerStage} onChange={setViewerStage} />
+          {!isClient && (
+            <ViewerStageSwitcher
+              value={viewerStage}
+              onChange={setViewerStage}
+            />
+          )}
           {isLoading ? (
             <Skeleton className="h-64 rounded-xl" />
           ) : (

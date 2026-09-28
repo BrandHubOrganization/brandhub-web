@@ -66,6 +66,8 @@
     "title": "Workspace settings",
     "description": "Manage your workspace configuration.",
     "nameLabel": "Workspace name",
+    "editButton": "Edit",
+    "cancelButton": "Cancel",
     "timezoneLabel": "Timezone",
     "defaultPlatformsLabel": "Default platforms",
     "reportFrequencyLabel": "Report frequency",
@@ -85,6 +87,11 @@
       "confirmDelete": "Delete workspace",
       "deleteSuccess": "Workspace deleted — restorable for 30 days",
       "deleteError": "Failed to delete workspace"
+    },
+    "preview": {
+      "title": "Preview",
+      "hint": "Updates live as you edit the fields.",
+      "emptyName": "Untitled workspace"
     },
     "template": {
       "saveButton": "Save as template",

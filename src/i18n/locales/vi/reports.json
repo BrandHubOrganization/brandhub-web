@@ -1,21 +1,28 @@
 {
   "title": "Báo cáo",
-  "description": "Năng suất đội nhóm, xuất báo cáo và lịch báo cáo tự động.",
+  "description": "Báo cáo tổng hợp công ty — lọc theo thời gian, tùy chỉnh hiển thị, in/xuất PDF.",
   "loadError": "Không thể tải dữ liệu báo cáo.",
   "retry": "Thử lại",
-  "team": {
-    "title": "Năng suất Đội nhóm",
-    "member": "Thành viên",
-    "postsCreated": "Bài đã tạo",
-    "postsApproved": "Bài đã duyệt",
-    "avgApprovalTime": "TG duyệt TB",
-    "aiGenerationsUsed": "Lượt dùng AI",
-    "hoursValue": "{{value}} giờ"
+  "noAgencySelected": "Chọn 1 công ty để xem báo cáo.",
+  "print": "In / Xuất PDF",
+  "allTime": "Toàn bộ thời gian",
+  "generatedAt": "Tạo lúc",
+  "filters": {
+    "from": "Từ ngày",
+    "to": "Đến ngày"
   },
-  "export": {
-    "pdf": "Xuất PDF",
-    "excel": "Xuất Excel",
-    "unavailable": "Chức năng xuất file không khả dụng trong bản demo."
+  "sections": {
+    "overview": "Tổng quan",
+    "membersByRole": "Thành viên theo vai trò",
+    "workspacesByIndustry": "Workspace theo ngành",
+    "contentByStatus": "Nội dung theo trạng thái",
+    "memberGrowth": "Tăng trưởng thành viên",
+    "postsPublished": "Nội dung xuất bản theo tháng"
+  },
+  "overview": {
+    "memberCount": "Tổng thành viên",
+    "workspaceCount": "Tổng workspace",
+    "contentCount": "Tổng nội dung"
   },
   "scheduled": {
     "title": "Báo cáo Định kỳ",

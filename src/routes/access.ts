@@ -19,13 +19,14 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/invitations": ["OWNER", "MANAGER"],
   "/requests": ["MANAGER", "CREATOR", "CLIENT"],
   "/portal": ["MANAGER", "CLIENT"],
+  "/client-profile": ["CLIENT"],
   "/calendar": ["MANAGER", "CREATOR", "CLIENT"],
   "/library": ["MANAGER", "CREATOR", "CLIENT"],
-  "/editor": ["CREATOR"],
-  "/templates": ["CREATOR"],
-  "/hashtag-groups": ["CREATOR"],
-  "/publish": ["CREATOR"],
-  "/ai-studio": ["CREATOR"],
+  "/editor": ["MANAGER", "CREATOR"],
+  "/templates": ["MANAGER", "CREATOR"],
+  "/hashtag-groups": ["MANAGER", "CREATOR"],
+  "/publish": ["MANAGER", "CREATOR"],
+  "/ai-studio": ["MANAGER", "CREATOR"],
   "/admin": "ADMIN",
 };
 
@@ -44,9 +45,16 @@ export function resolveAccessRule(pathname: string): AccessRule | null {
   if (/^\/workspaces\/[^/]+\/settings$/.test(pathname)) {
     return WORKSPACE_SETTINGS_ACCESS;
   }
+  // ROUTE_ACCESS key theo path gốc chưa namespace (vd "/editor"), nhưng
+  // route thật giờ có thể mang prefix "/workspaces/:id/..." — bỏ prefix đó
+  // trước khi match, không thì mọi rule của nhóm route "create" im lặng
+  // rơi vào null (= cho phép mọi role), lỗ hổng bảo mật chứ không chỉ lỗi
+  // hiển thị. No-op với pathname chưa có prefix (Sidebar gọi canAccess
+  // bằng item.to gốc trước khi áp workspaceScoped substitution).
+  const stripped = pathname.replace(/^\/workspaces\/[^/]+/, "") || "/";
   // Boundary-aware: "/workspace" không được nuốt "/workspaces/*".
   const key = SORTED_KEYS.find(
-    (k) => pathname === k || pathname.startsWith(k + "/"),
+    (k) => stripped === k || stripped.startsWith(k + "/"),
   );
   return key ? ROUTE_ACCESS[key] : null;
 }

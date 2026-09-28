@@ -31,6 +31,7 @@ export function DashboardPage() {
   } = useDashboardData();
 
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
 
   const [hasAgency, setHasAgency] = useState<boolean | null>(null);
   useEffect(() => {
@@ -79,7 +80,10 @@ export function DashboardPage() {
           <Button
             variant="default"
             size="sm"
-            onClick={() => navigate("/editor")}
+            onClick={() =>
+              currentWorkspace &&
+              navigate(`/workspaces/${currentWorkspace.id}/editor`)
+            }
             className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs font-medium text-white"
           >
             <Plus className="size-3.5" />

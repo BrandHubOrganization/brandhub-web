@@ -12,6 +12,7 @@ import { ArrowRight, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 interface TemplatePreviewModalProps {
   isOpen: boolean;
@@ -26,11 +27,13 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
 
   if (!template) return null;
 
   const handleUseTemplate = () => {
-    navigate("/editor", {
+    if (!currentWorkspace) return;
+    navigate(`/workspaces/${currentWorkspace.id}/editor`, {
       state: {
         prefilledCaption: template.caption,
         templateTitle: template.title,

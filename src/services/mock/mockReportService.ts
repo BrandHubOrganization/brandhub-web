@@ -1,51 +1,7 @@
 import type {
   ReportFrequency,
   ScheduledReport,
-  TeamProductivityRow,
 } from "@/pages/reports/types/report";
-
-const MOCK_PRODUCTIVITY: TeamProductivityRow[] = [
-  {
-    memberId: "m-1",
-    memberName: "Nguyễn Văn An",
-    postsCreated: 42,
-    postsApproved: 38,
-    avgApprovalTimeHours: 3.2,
-    aiGenerationsUsed: 120,
-  },
-  {
-    memberId: "m-2",
-    memberName: "Trần Thị Bình",
-    postsCreated: 35,
-    postsApproved: 33,
-    avgApprovalTimeHours: 2.1,
-    aiGenerationsUsed: 95,
-  },
-  {
-    memberId: "m-3",
-    memberName: "Lê Minh Cường",
-    postsCreated: 28,
-    postsApproved: 21,
-    avgApprovalTimeHours: 5.6,
-    aiGenerationsUsed: 64,
-  },
-  {
-    memberId: "m-4",
-    memberName: "Phạm Thu Duyên",
-    postsCreated: 51,
-    postsApproved: 47,
-    avgApprovalTimeHours: 2.8,
-    aiGenerationsUsed: 143,
-  },
-  {
-    memberId: "m-5",
-    memberName: "Đỗ Thanh Hà",
-    postsCreated: 19,
-    postsApproved: 15,
-    avgApprovalTimeHours: 6.4,
-    aiGenerationsUsed: 38,
-  },
-];
 
 const MOCK_SCHEDULED: ScheduledReport[] = [
   {
@@ -72,16 +28,6 @@ const MOCK_SCHEDULED: ScheduledReport[] = [
     isActive: false,
   },
 ];
-
-export async function getTeamProductivity(): Promise<TeamProductivityRow[]> {
-  return Promise.resolve(MOCK_PRODUCTIVITY.map((r) => ({ ...r })));
-}
-
-// ponytail: mock export — no real file generated, just an honest delay + resolve.
-export async function exportReport(_format: "PDF" | "EXCEL"): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 400));
-  return Promise.resolve();
-}
 
 export async function getScheduledReports(): Promise<ScheduledReport[]> {
   return Promise.resolve(MOCK_SCHEDULED.map((r) => ({ ...r })));
