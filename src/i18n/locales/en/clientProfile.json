@@ -52,6 +52,17 @@
   "save": "Save",
   "saveSuccess": "Client profile updated",
   "saveError": "Unable to save client profile",
+  "workspace": {
+    "description": "The brand profile representing you in this workspace.",
+    "empty": "No brand profile linked to this workspace yet.",
+    "currentLabel": "Currently used for this workspace",
+    "switchTitle": "Switch representative profile",
+    "switchDescription": "Pick another profile from your own profiles to use for this workspace instead.",
+    "useThis": "Use this profile",
+    "noDetails": "No extra details yet",
+    "switchSuccess": "Workspace representative profile switched",
+    "switchError": "Unable to switch representative profile"
+  },
   "preview": {
     "title": "Preview",
     "hint": "Updates as you type — this is what the agency sees.",

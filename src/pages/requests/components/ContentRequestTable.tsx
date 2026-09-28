@@ -233,13 +233,18 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           </button>
                         )}
 
-                        <button
-                          onClick={() => handleGoToEditor(req)}
-                          className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
-                          title={t("requests.table.goToEditor")}
-                        >
-                          <ArrowRight className="size-4" />
-                        </button>
+                        {/* /editor cho phép MANAGER + CREATOR (access.ts) —
+                            role khác bấm nút này trước đây bị AuthGuard chặn
+                            im lặng, văng về /dashboard. */}
+                        {(userRole === "MANAGER" || userRole === "CREATOR") && (
+                          <button
+                            onClick={() => handleGoToEditor(req)}
+                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
+                            title={t("requests.table.goToEditor")}
+                          >
+                            <ArrowRight className="size-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

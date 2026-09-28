@@ -41,7 +41,12 @@ const MOBILE_TABS = [
     workspaceScoped: true,
   },
   { to: "/workspace", icon: FolderOpen, labelKey: "nav.workspace" },
-  { to: "/portal", icon: Users, labelKey: "nav.portal" },
+  {
+    to: "/portal",
+    icon: Users,
+    labelKey: "nav.portal",
+    workspaceScoped: true,
+  },
 ];
 
 export function Layout() {

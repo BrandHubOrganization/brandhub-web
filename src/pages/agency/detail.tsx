@@ -44,10 +44,6 @@ export function AgencyDetailPage() {
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (id) setCurrentAgencyId(id);
-  }, [id, setCurrentAgencyId]);
-
   const [agency, setAgency] = useState<Agency | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -153,6 +149,18 @@ export function AgencyDetailPage() {
 
   const isOwner =
     !!agency && !!currentUser && agency.ownerId === currentUser.id;
+  // Backend AgencyServiceImpl.getAgency cho qua 3 trường hợp: owner, agency
+  // member (myRole có giá trị), hoặc CLIENT có client_profile cùng agency
+  // (myRole luôn null vì họ không có agency_members row). Tới được trang
+  // này mà không phải owner và cũng không có myRole = chỉ có thể là case
+  // CLIENT-qua-client_profile — chỉ đọc hồ sơ, không thấy Members/đặt
+  // currentAgencyId (tránh Sidebar's agencyScoped filter lộ lại mục Thành
+  // viên/Thống kê agency, vốn backend vẫn chặn CLIENT ở listMembers/getStats).
+  const isClientView = !!agency && !isOwner && !agency.myRole;
+
+  useEffect(() => {
+    if (id && !isClientView) setCurrentAgencyId(id);
+  }, [id, isClientView, setCurrentAgencyId]);
 
   const handleSave = async () => {
     if (!id) return;
@@ -717,28 +725,32 @@ export function AgencyDetailPage() {
           )}
         </section>
 
-        <div className="border-border border-t" />
+        {!isClientView && (
+          <>
+            <div className="border-border border-t" />
 
-        <section className="space-y-4">
-          <div>
-            <h2 className="text-foreground text-lg font-semibold">
-              {t("agency.detail.nav.members")}
-            </h2>
-            <p className="text-muted-foreground text-sm">
-              {t("agency.detail.membersPreviewDescription")}
-            </p>
-          </div>
-          {id && <AgencyOrgChart agencyId={id} />}
-          <Button
-            variant="outline"
-            size="sm"
-            className="cursor-pointer gap-1.5"
-            onClick={() => navigate(`/agency/${id}/members`)}
-          >
-            <User className="size-3.5" />
-            {t("agency.detail.viewAllMembers")}
-          </Button>
-        </section>
+            <section className="space-y-4">
+              <div>
+                <h2 className="text-foreground text-lg font-semibold">
+                  {t("agency.detail.nav.members")}
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  {t("agency.detail.membersPreviewDescription")}
+                </p>
+              </div>
+              {id && <AgencyOrgChart agencyId={id} />}
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer gap-1.5"
+                onClick={() => navigate(`/agency/${id}/members`)}
+              >
+                <User className="size-3.5" />
+                {t("agency.detail.viewAllMembers")}
+              </Button>
+            </section>
+          </>
+        )}
       </div>
 
       {deleteOpen && (

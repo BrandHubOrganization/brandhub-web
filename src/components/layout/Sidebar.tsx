@@ -59,6 +59,10 @@ interface NavItem {
    * chưa có activeWorkspace, giữ nguyên `to` gốc (route agency-level, vd
    * /dashboard, /analytics landing chung). */
   workspaceScoped?: boolean;
+  /** Route CHỈ tồn tại dạng /workspaces/:id/... — không có bản fallback ở
+   * `to` gốc (khác /dashboard vẫn có cả 2 bản). Thiếu activeWorkspace thì
+   * ẩn hẳn thay vì để `to` trỏ vào route đã bị xoá. */
+  requiresWorkspace?: boolean;
   /** Mục con hiển thị thụt lề dưới item cha. Dùng cho các anchor trong cùng
    * 1 trang (vd 4 mục của /settings) — `to` gồm cả hash. */
   children?: { to: string; labelKey: string }[];
@@ -80,6 +84,9 @@ const NAV_SECTIONS: NavSection[] = [
         icon: LayoutDashboard,
         labelKey: "nav.dashboard",
         workspaceScoped: true,
+        // CLIENT thấy dashboard nhưng dashboard.tsx tự ẩn card nhạy cảm
+        // (thành viên, đàm phán gói, AI credit nội bộ agency) qua isClient —
+        // chỉ còn phần liên quan nội dung (campaign/content status, lịch đăng).
       },
       {
         to: "/analytics",
@@ -193,7 +200,25 @@ const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.clients",
         hideInWorkspace: true,
       },
-      { to: "/portal", icon: Users, labelKey: "nav.portal" },
+      {
+        to: "/portal",
+        icon: Users,
+        labelKey: "nav.portal",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/client-profile",
+        icon: User,
+        labelKey: "nav.workspaceClientProfile",
+        // Hồ sơ thương hiệu GẮN VỚI workspace đang đứng (khác /client-profiles
+        // ở mục Cài đặt — list toàn bộ hồ sơ user sở hữu). Route không có bản
+        // fallback ngoài workspace nên bắt buộc requiresWorkspace, chỉ CLIENT
+        // có client_profile cá nhân theo workspace nên clientOnly.
+        workspaceScoped: true,
+        requiresWorkspace: true,
+        clientOnly: true,
+      },
       {
         to: "/ai-studio/ambassadors",
         icon: Sparkles,
@@ -216,7 +241,14 @@ const NAV_SECTIONS: NavSection[] = [
         to: "/settings",
         icon: User,
         labelKey: "nav.settings",
-        noAgencyOnly: true,
+        // Avatar/logo ở Navbar luôn dẫn vào /settings bất kể đang chọn
+        // agency/workspace nào — mục này phải luôn hiện để sidebar highlight
+        // đúng chỗ đang đứng khi ở NGOÀI workspace (trước đây noAgencyOnly ẩn
+        // mất khi có currentAgencyId, khiến vào /settings/profile mà sidebar
+        // trống trơn). Khi ĐÃ vào 1 workspace cụ thể, user chủ động ẩn mục
+        // này khỏi Sidebar cho mọi role — vẫn vào được /settings qua Navbar
+        // avatar, chỉ không chiếm chỗ trong nav trái nữa.
+        hideInWorkspace: true,
         children: [
           { to: "/settings/profile", labelKey: "nav.profile" },
           { to: "/settings/security", labelKey: "nav.security" },
@@ -320,6 +352,11 @@ export function Sidebar({
         .filter((item) => !item.agencyScoped || currentAgencyId)
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
+        // requiresWorkspace: route KHÔNG có bản fallback ở "to" gốc (khác
+        // /dashboard, có cả bản agency-level lẫn /workspaces/:id/dashboard)
+        // — thiếu activeWorkspace thì không build được URL hợp lệ, ẩn hẳn
+        // thay vì để "to" trỏ vào route đã bị xoá.
+        .filter((item) => !item.requiresWorkspace || activeWorkspace)
         .map((item) => {
           if (item.agencyScoped && currentAgencyId) {
             return {

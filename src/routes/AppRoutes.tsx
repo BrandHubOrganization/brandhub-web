@@ -29,6 +29,7 @@ import { AgencyStatsPage } from "@/pages/agency/stats";
 import { AgencyInvitationsPage } from "@/pages/agency/invitations";
 import { AcceptInvitationPage } from "@/pages/agency/accept";
 import { PortalPage } from "@/pages/portal";
+import { WorkspaceClientProfilePage } from "@/pages/workspace/client-profile";
 import { AdminPage } from "@/pages/admin";
 import { EditorPage } from "@/pages/editor";
 import { CalendarPage } from "@/pages/calendar";
@@ -123,6 +124,11 @@ export function AppRoutes() {
             element={<ContentLibraryPage />}
           />
           <Route path="/workspaces/:id/publish" element={<PublishPage />} />
+          <Route path="/workspaces/:id/portal" element={<PortalPage />} />
+          <Route
+            path="/workspaces/:id/client-profile"
+            element={<WorkspaceClientProfilePage />}
+          />
           <Route
             path="/workspaces/templates"
             element={<WorkspaceTemplatesPage />}
@@ -141,7 +147,6 @@ export function AppRoutes() {
           />
           <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
           <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
-          <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/social-accounts" element={<SocialAccountsPage />} />

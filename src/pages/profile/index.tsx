@@ -29,6 +29,7 @@ import { LinkPhoneModal } from "./components/LinkPhoneModal";
 import { JobTitleSelect } from "./components/JobTitleSelect";
 import { LanguageChipSelect } from "./components/LanguageChipSelect";
 import { SkillsChipSelect } from "./components/SkillsChipSelect";
+import { LocationAutocomplete } from "./components/LocationAutocomplete";
 import { TimezoneSelect } from "@/pages/workspace/components/TimezoneSelect";
 import {
   isCuratedJobTitle,
@@ -447,9 +448,9 @@ export function ProfilePage() {
                     <label className="text-muted-foreground mb-1 block text-xs font-medium">
                       {t("profile.edit.locationLabel")}
                     </label>
-                    <Input
+                    <LocationAutocomplete
                       value={ext.location}
-                      onChange={(e) => patchExt({ location: e.target.value })}
+                      onChange={(location) => patchExt({ location })}
                       placeholder={t("profile.edit.locationPlaceholder")}
                     />
                   </div>
