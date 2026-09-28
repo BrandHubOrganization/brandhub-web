@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Mail, Link2 } from "lucide-react";
+import { SectionDecor } from "@/components/landing/SectionDecor";
+import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
 const TEAM = [
   { key: "member1", photoId: "photo-1500648767791-00dcc994a43e" },
@@ -11,17 +13,23 @@ const TEAM = [
 
 export function TeamSection() {
   const { t } = useTranslation();
+  const reduce = useReducedMotion();
 
   return (
-    <section id="team" className="bg-zinc-50 py-24 dark:bg-zinc-900/50">
+    <section
+      id="team"
+      className="relative overflow-hidden bg-zinc-50 py-24 dark:bg-zinc-900/50"
+    >
+      <SectionDecor corner="right" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="mx-auto mb-16 max-w-2xl text-center"
         >
+          <SectionEyebrow index={8} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
             {t("landing.team.title")}
           </h2>
@@ -34,7 +42,7 @@ export function TeamSection() {
           {TEAM.map((m, i) => (
             <motion.div
               key={m.key}
-              initial={{ opacity: 0, y: 32 }}
+              initial={reduce ? false : { opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}

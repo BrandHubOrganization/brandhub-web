@@ -1,11 +1,10 @@
 import * as React from "react";
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { useClientProfileStore } from "@/store/clientProfileStore";
-import { workspaceService } from "@/services/workspaceService";
 import { userService } from "@/services/userService";
 import { canAccess } from "@/routes/access";
 import { Sidebar } from "./Sidebar";
@@ -24,7 +23,7 @@ import {
   Users,
   BarChart3,
 } from "lucide-react";
-import type { Workspace } from "@/types/workspace";
+import type { MemberRole, Workspace } from "@/types/workspace";
 
 const MOBILE_TABS = [
   { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
@@ -38,6 +37,7 @@ const MOBILE_TABS = [
 export function Layout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuthStore();
   const systemRole = useAuthStore((s) => s.systemRole);
   const setSystemRole = useAuthStore((s) => s.setSystemRole);
@@ -47,6 +47,22 @@ export function Layout() {
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
   const agencyList = useAgencyStore((s) => s.agencyList);
   const fetchAgencies = useAgencyStore((s) => s.fetchAgencies);
+
+  // Vào thẳng URL /workspaces/:id/... (bookmark, refresh, quick-login) mà
+  // chưa từng đi qua /agency picker → currentAgencyId chưa set → sidebar
+  // tưởng "chưa chọn workspace nào", ẩn hết "overview"/"create", role
+  // hiện "—". Tự đồng bộ currentAgencyId từ workspace theo URL khi lệch.
+  const workspaceIdInUrl = location.pathname.match(
+    /^\/workspaces\/([^/]+)/,
+  )?.[1];
+  React.useEffect(() => {
+    if (!workspaceIdInUrl) return;
+    const ws = workspaces.find((w) => w.id === workspaceIdInUrl);
+    if (ws?.agencyId && ws.agencyId !== currentAgencyId) {
+      setCurrentAgencyId(ws.agencyId);
+    }
+  }, [workspaceIdInUrl, workspaces, currentAgencyId, setCurrentAgencyId]);
+
   const agencyWorkspaces = React.useMemo(
     () =>
       currentAgencyId
@@ -57,9 +73,9 @@ export function Layout() {
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
-  const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
-  const setCurrentMemberRole = useWorkspaceStore((s) => s.setCurrentMemberRole);
-  const fetchMyClientProfile = useClientProfileStore((s) => s.fetchMyProfile);
+  const fetchClientProfileById = useClientProfileStore(
+    (s) => s.fetchProfileById,
+  );
   const resetClientProfile = useClientProfileStore((s) => s.reset);
   const accessToken = useAuthStore((s) => s.accessToken);
   const isDevSession = accessToken?.startsWith("dev-token-") ?? false;
@@ -82,13 +98,17 @@ export function Layout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
+  // URL /workspaces/:id/... là nguồn sự thật DUY NHẤT cho "đang ở workspace
+  // nào" — không URL đó (vd /agency/:id) thì KHÔNG có workspace active,
+  // dù currentWorkspace store còn giữ giá trị từ lần ghé workspace trước
+  // đó trong cùng session (mới bắt được: login OWNER, click vào 1
+  // workspace, quay lại /agency/:id vẫn hiện "Vai trò: Creator" của
+  // workspace cũ vì code trước đây fallback arbitrary agencyWorkspaces[0]
+  // bất kể route hiện tại có cần workspace context hay không).
   const activeWorkspace: Workspace | null = React.useMemo(() => {
-    if (agencyWorkspaces.length === 0) return null;
-    return (
-      agencyWorkspaces.find((ws) => ws.id === currentWorkspace?.id) ??
-      agencyWorkspaces[0]
-    );
-  }, [agencyWorkspaces, currentWorkspace]);
+    if (!workspaceIdInUrl) return null;
+    return workspaces.find((ws) => ws.id === workspaceIdInUrl) ?? null;
+  }, [workspaceIdInUrl, workspaces]);
 
   React.useEffect(() => {
     if (activeWorkspace && activeWorkspace.id !== currentWorkspace?.id) {
@@ -97,26 +117,37 @@ export function Layout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWorkspace]);
 
-  React.useEffect(() => {
-    if (!activeWorkspace || !user || isDevSession) return;
-    workspaceService
-      .listMembers(activeWorkspace.id)
-      .then(({ data }) => {
-        const me = data.data.find((m) => m.userId === user.id);
-        setCurrentMemberRole(me?.role ?? null);
-      })
-      .catch(() => setCurrentMemberRole(null));
-  }, [activeWorkspace, user]);
+  // WorkspaceResponse.myRole đã bao gồm case OWNER (qua agency ownership,
+  // không có WorkspaceMember row riêng) — dùng trực tiếp, không tự fetch
+  // listMembers rồi tìm theo userId (bug: bỏ sót owner thuần không có
+  // WorkspaceMember row ở workspace đó → role về null → owner tự bị
+  // chặn /social-accounts, /subscription/*, ẩn mục "manage").
+  //
+  // Owner gắn với AGENCY (agency.ownerId), không phải workspace — agency
+  // chưa có workspace nào (hoặc chưa chọn workspace) vẫn phải hiện "Owner"
+  // khi đang xem đúng agency đó. Trước đây memberRole chỉ đọc qua
+  // activeWorkspace.myRole nên owner của agency rỗng bị hiện "—" — và tệ
+  // hơn, agency MEMBER (không phải owner) cũng bị rỗng luôn dù backend đã
+  // biết họ là MEMBER, chỉ vì FE tự suy ownerId thay vì đọc field có sẵn.
+  // Đọc thẳng AgencyResponse.myRole (nguồn sự thật từ backend) thay vì tự
+  // so ownerId === user.id.
+  const currentAgencyMyRole =
+    agencyList.find((a) => a.id === currentAgencyId)?.myRole ?? null;
+  const memberRole: MemberRole | null =
+    activeWorkspace?.myRole ??
+    (currentAgencyMyRole === "OWNER" ? "OWNER" : null);
 
-  // CLIENT chỉ có 1 ClientProfile mỗi agency — tự fetch/hiển thị đúng hồ sơ
-  // của agency đang active, không cần màn hình chọn riêng.
+  // BA mới — 1 user có N ClientProfile, gắn theo TỪNG WORKSPACE (không phải
+  // agency) qua activeWorkspace.clientProfileId. Trước đây fetch theo
+  // currentAgencyId, giả định 1 profile dùng chung cả agency — sai vì user
+  // có thể là client của agency đó với 2 profile khác nhau ở 2 workspace.
   React.useEffect(() => {
-    if (memberRole !== "CLIENT" || !currentAgencyId) {
+    if (memberRole !== "CLIENT" || !activeWorkspace?.clientProfileId) {
       resetClientProfile();
       return;
     }
-    fetchMyClientProfile(currentAgencyId);
-  }, [memberRole, currentAgencyId, fetchMyClientProfile, resetClientProfile]);
+    fetchClientProfileById(activeWorkspace.clientProfileId);
+  }, [memberRole, activeWorkspace, fetchClientProfileById, resetClientProfile]);
 
   const currentRole = memberRole;
 
@@ -168,7 +199,7 @@ export function Layout() {
     if (!ws) return;
     setCurrentAgencyId(agencyIdArg);
     setCurrentWorkspace(ws);
-    navigate(`/workspaces/${workspaceId}/settings`);
+    navigate(`/workspaces/${workspaceId}/dashboard`);
   };
 
   const handleSwitchAgency = (agencyIdArg: string) => {
@@ -195,6 +226,7 @@ export function Layout() {
           allWorkspaces={workspaces}
           currentAgencyId={currentAgencyId}
           onSwitchAgency={handleSwitchAgency}
+          currentUserId={user?.id ?? null}
         />
       </aside>
 
@@ -228,6 +260,7 @@ export function Layout() {
               allWorkspaces={workspaces}
               currentAgencyId={currentAgencyId}
               onSwitchAgency={handleSwitchAgency}
+              currentUserId={user?.id ?? null}
             />
           </SheetContent>
         </Sheet>

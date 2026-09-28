@@ -1,20 +1,23 @@
 import { useTranslation } from "react-i18next";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SectionDecor } from "@/components/landing/SectionDecor";
 
 export function CTASection() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const reduce = useReducedMotion();
 
   return (
     <section className="relative overflow-hidden bg-zinc-900 py-24 dark:bg-black">
       <div className="bg-brand-orange/20 absolute -top-32 -left-32 size-96 rounded-full blur-[120px]" />
       <div className="absolute -right-32 -bottom-32 size-96 rounded-full bg-orange-500/10 blur-[120px]" />
+      <SectionDecor corner="right" className="text-white opacity-[0.08]" />
 
       <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
         <motion.h2
-          initial={{ opacity: 0, y: 24 }}
+          initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
@@ -23,7 +26,7 @@ export function CTASection() {
           {t("landing.cta.title")}
         </motion.h2>
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
+          initial={reduce ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
@@ -33,7 +36,7 @@ export function CTASection() {
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={reduce ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}

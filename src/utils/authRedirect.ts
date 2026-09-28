@@ -2,7 +2,7 @@ const REDIRECT_KEY = "brandhub-auth-redirect";
 
 /** Lưu đích cần quay lại sau khi đăng nhập/đăng ký xong (vd: link accept invitation). */
 export function saveAuthRedirect(path: string | null | undefined): void {
-  if (!path || path === "/dashboard") return;
+  if (!path || path === "/agency") return;
   sessionStorage.setItem(REDIRECT_KEY, path);
 }
 
@@ -11,8 +11,9 @@ export function peekAuthRedirect(): string | null {
   return sessionStorage.getItem(REDIRECT_KEY);
 }
 
-/** Đọc + xoá đích đã lưu — gọi đúng 1 lần ở bước cuối cùng khi đã có token thật. */
-export function consumeAuthRedirect(fallback = "/dashboard"): string {
+/** Đọc + xoá đích đã lưu — gọi đúng 1 lần ở bước cuối cùng khi đã có token thật.
+ * Mặc định về /agency (chọn công ty trước) thay vì thẳng /dashboard. */
+export function consumeAuthRedirect(fallback = "/agency"): string {
   const target = sessionStorage.getItem(REDIRECT_KEY);
   sessionStorage.removeItem(REDIRECT_KEY);
   return target || fallback;

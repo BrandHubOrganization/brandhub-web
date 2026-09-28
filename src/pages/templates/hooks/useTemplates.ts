@@ -37,7 +37,7 @@ export function useTemplates() {
       setTemplates(res.items);
       setTotal(res.total);
       setTotalPages(res.totalPages);
-    } catch (err) {
+    } catch {
       toast.error(t("templates.toast.loadError"));
     } finally {
       setIsLoading(false);
@@ -59,7 +59,7 @@ export function useTemplates() {
         await mockTemplateService.deleteTemplate(id);
         toast.success(t("templates.toast.deleteSuccess", { title }));
         fetchTemplates();
-      } catch (err) {
+      } catch {
         toast.error(t("templates.toast.deleteError"));
       }
     }

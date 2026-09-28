@@ -359,6 +359,47 @@
       }
     }
   },
+  "aiFeatures": {
+    "badge": "Sức mạnh AI",
+    "title": "Sáng tạo nhanh như AI",
+    "subtitle": "Tạo ảnh, video và nội dung đúng chất thương hiệu chỉ trong vài giây — không cần designer hay copywriter riêng.",
+    "demoLabel": "Xem trong demo",
+    "demoAction": "Xem {{capability}} trong demo MacBook trực tiếp phía trên",
+    "items": {
+      "image": {
+        "title": "Tạo ảnh bằng AI",
+        "desc": "Biến một câu prompt thành ảnh sản phẩm và hình ảnh social đúng chất thương hiệu, sẵn sàng đăng."
+      },
+      "video": {
+        "title": "Tạo video bằng AI",
+        "desc": "Tạo nhiều biến thể video ngắn cho chiến dịch mà không cần ê-kíp quay hình."
+      },
+      "text": {
+        "title": "AI viết nội dung",
+        "desc": "Soạn caption, nội dung quảng cáo và hashtag đúng giọng thương hiệu ngay lập tức."
+      }
+    }
+  },
+  "agencyWorkspace": {
+    "title": "Xây dựng cho agency, không chỉ team",
+    "subtitle": "Quản lý mọi khách hàng, thương hiệu và workspace chỉ với một tài khoản — đúng quyền cho đúng vai trò.",
+    "demoLabel": "Xem trong demo",
+    "demoAction": "Xem {{capability}} trong demo MacBook trực tiếp phía trên",
+    "items": {
+      "multiAgency": {
+        "title": "Quản lý nhiều Agency",
+        "desc": "Sở hữu và chuyển đổi giữa nhiều agency, mỗi agency có team, khách hàng và dashboard riêng."
+      },
+      "multiClient": {
+        "title": "Workspace theo từng khách hàng",
+        "desc": "Tạo workspace riêng cho từng khách hàng với timezone, thành viên và nội dung độc lập."
+      },
+      "roleAccess": {
+        "title": "Phân quyền theo vai trò",
+        "desc": "Owner, manager, creator và client mỗi người chỉ thấy và làm đúng những gì vai trò cho phép."
+      }
+    }
+  },
   "howItWorks": {
     "title": "Cách hoạt động",
     "subtitle": "Mỗi vai trò một quy trình riêng, cùng vận hành trơn tru trên một nền tảng.",
@@ -445,6 +486,24 @@
       "email": {
         "title": "Chiến dịch Email",
         "desc": "Template newsletter, drip sequence và email quảng cáo sẵn sàng tùy chỉnh."
+      }
+    }
+  },
+  "mediaPackage": {
+    "title": "Từ đề xuất đến chiến dịch đã ký",
+    "subtitle": "Cung cấp gói truyền thông có sẵn, thương lượng điều khoản với khách hàng, và biến phê duyệt thành chiến dịch thật — tất cả trong một quy trình.",
+    "items": {
+      "templates": {
+        "title": "Gói dịch vụ có sẵn",
+        "desc": "Bắt đầu từ các gói truyền thông mẫu hoặc tùy chỉnh riêng cho từng agency."
+      },
+      "negotiate": {
+        "title": "Thương lượng với khách hàng",
+        "desc": "Khách hàng có thể yêu cầu điều chỉnh phạm vi, thời gian hoặc giá cho đến khi hai bên thống nhất."
+      },
+      "approve": {
+        "title": "Duyệt & Triển khai",
+        "desc": "Sau khi được duyệt, gói sẽ trở thành chiến dịch truyền thông đầy đủ với công việc sẵn sàng phân công."
       }
     }
   },
@@ -580,6 +639,7 @@
     "start": "Bắt đầu miễn phí",
     "login": "Đăng nhập"
   },
+  "backToTop": "Lên đầu trang",
   "footer": {
     "tagline": "Nền tảng quản lý nội dung thương hiệu toàn diện. Lập kế hoạch, sáng tạo, lên lịch, xuất bản và phát triển — tất cả trong một.",
     "email": "brandhub404@gmail.com",
@@ -596,18 +656,8 @@
       "pricing": "Bảng giá"
     },
     "links": {
-      "resources": [
-        "Trung tâm trợ giúp",
-        "Blog",
-        "Cộng đồng",
-        "Hướng dẫn"
-      ],
-      "company": [
-        "Giới thiệu",
-        "Tuyển dụng",
-        "Bảo mật",
-        "Điều khoản"
-      ]
+      "resources": ["Trung tâm trợ giúp", "Blog", "Cộng đồng", "Hướng dẫn"],
+      "company": ["Giới thiệu", "Tuyển dụng", "Bảo mật", "Điều khoản"]
     },
     "copyright": "© {{year}} BrandHub. Đã đăng ký bản quyền."
   }

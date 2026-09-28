@@ -51,7 +51,11 @@ import { KnowledgeBasePage } from "@/pages/ai-studio/knowledge-base";
 import { TrendsPage } from "@/pages/ai-studio/trends";
 import { ReportsPage } from "@/pages/reports";
 import { SettingsLayout } from "@/pages/settings/SettingsLayout";
-import { ClientProfilePage } from "@/pages/client-profile";
+import { ProfilePage } from "@/pages/profile";
+import { SecurityPage } from "@/pages/security";
+import { ConnectionsPage } from "@/pages/connections";
+import { NotificationSettingsPage } from "@/pages/notification-settings";
+import { ClientProfileListPage } from "@/pages/client-profiles/list";
 import { VideoStudioPage } from "@/pages/ai-studio/video";
 import ExamplesPage from "@/components/examples";
 
@@ -78,10 +82,18 @@ export function AppRoutes() {
           <Route path="/clients/:id" element={<ClientDetailPage />} />
           <Route
             path="/change-password"
-            element={<Navigate to="/settings" replace />}
+            element={<Navigate to="/settings/security" replace />}
           />
           <Route path="/workspace" element={<WorkspacePage />} />
+          <Route
+            path="/workspaces"
+            element={<Navigate to="/workspace" replace />}
+          />
           <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
+          <Route
+            path="/workspaces/:id"
+            element={<Navigate to="dashboard" replace />}
+          />
           <Route
             path="/workspaces/:id/dashboard"
             element={<WorkspaceDashboardPage />}
@@ -143,21 +155,35 @@ export function AppRoutes() {
           />
           <Route path="/ai-studio/trends" element={<TrendsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
-          <Route path="/settings" element={<SettingsLayout />} />
-          {/* Legacy paths — giữ để không gãy link/bookmark cũ, one-page nên không cần anchor riêng */}
+          {/* Cài đặt — mỗi mục 1 route riêng, sub-nav nằm trong Sidebar chính */}
+          <Route path="/settings" element={<SettingsLayout />}>
+            <Route index element={<Navigate to="profile" replace />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="security" element={<SecurityPage />} />
+            <Route path="connections" element={<ConnectionsPage />} />
+            <Route
+              path="change-password"
+              element={<Navigate to="/settings/security" replace />}
+            />
+            <Route
+              path="notifications"
+              element={<NotificationSettingsPage />}
+            />
+          </Route>
+          {/* Legacy paths — giữ để không gãy link/bookmark cũ */}
           <Route
             path="/notification-settings"
-            element={<Navigate to="/settings" replace />}
+            element={<Navigate to="/settings/notifications" replace />}
           />
           <Route
             path="/security"
-            element={<Navigate to="/settings" replace />}
+            element={<Navigate to="/settings/security" replace />}
           />
           <Route
             path="/profile"
-            element={<Navigate to="/settings" replace />}
+            element={<Navigate to="/settings/profile" replace />}
           />
-          <Route path="/client-profile" element={<ClientProfilePage />} />
+          <Route path="/client-profiles" element={<ClientProfileListPage />} />
           <Route path="/ai-studio/video" element={<VideoStudioPage />} />
           <Route path="/components/examples" element={<ExamplesPage />} />
         </Route>

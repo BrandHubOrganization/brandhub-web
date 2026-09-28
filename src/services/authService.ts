@@ -9,6 +9,19 @@ export function oauthUrl(provider: "google"): string {
   return `${API_BASE_URL}/api/v1/auth/oauth/${provider}`;
 }
 
+/**
+ * URL gắn thêm provider vào tài khoản ĐANG đăng nhập (link-mode).
+ * Backend đọc `userId` từ token trong `state`, nên FE phải gửi accessToken kèm.
+ *
+ * LƯU Ý BẢO MẬT: access token nằm trong query string nên có thể lọt vào access
+ * log của server / lịch sử trình duyệt / Referer. Đây là thiết kế sẵn có của
+ * backend (`GoogleOAuthController.link`); muốn siết thì phải đổi backend sang
+ * one-time link token dùng một lần, thay vì truyền access token thật.
+ */
+export function oauthLinkUrl(provider: "google", accessToken: string): string {
+  return `${API_BASE_URL}/api/v1/auth/oauth/${provider}/link?token=${encodeURIComponent(accessToken)}`;
+}
+
 // --- Request types ---
 
 export interface LoginRequest {
@@ -33,6 +46,11 @@ export interface ResetPasswordRequest {
 
 export interface ChangePasswordRequest {
   currentPassword: string;
+  newPassword: string;
+}
+
+export interface PasswordChangeOtpRequest {
+  otpCode: string;
   newPassword: string;
 }
 
@@ -147,6 +165,12 @@ export const authService = {
 
   changePassword: (data: ChangePasswordRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/change-password", data),
+
+  sendPasswordChangeOtp: () =>
+    api.post<ApiResponse<void>>("/api/v1/auth/change-password/send-otp"),
+
+  changePasswordWithOtp: (data: PasswordChangeOtpRequest) =>
+    api.post<ApiResponse<void>>("/api/v1/auth/change-password/otp", data),
 
   linkPhone: (data: LinkPhoneRequest) =>
     api.post<ApiResponse<void>>("/api/v1/auth/link/phone", data),

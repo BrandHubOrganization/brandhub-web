@@ -48,6 +48,12 @@ export interface Workspace {
   instagramUrl: string | null;
   isActive: boolean;
   createdAt: string;
+  /** Vai trò của người dùng hiện tại trong workspace này — chỉ có ở
+   * GET /workspaces (list-mine); null ở các endpoint khác. */
+  myRole: MemberRole | null;
+  /** ClientProfile đang gắn cho workspace này — chỉ có giá trị khi
+   * myRole === "CLIENT" (BA mới: N profile/user, chọn theo workspace). */
+  clientProfileId: string | null;
 }
 
 export interface WorkspaceMember {

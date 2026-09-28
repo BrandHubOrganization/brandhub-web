@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 const LOGOS = [
   "Heineken",
@@ -18,12 +18,13 @@ const LOGOS = [
 
 export function LogoWall() {
   const { t } = useTranslation();
+  const reduce = useReducedMotion();
 
   return (
     <section className="border-b border-zinc-100 bg-white py-16 dark:border-zinc-800 dark:bg-zinc-950">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
+          initial={reduce ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
@@ -33,13 +34,19 @@ export function LogoWall() {
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={reduce ? false : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+          className="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
         >
-          <div className="animate-logo-marquee flex w-max items-center gap-x-14">
+          <div
+            className={
+              reduce
+                ? "flex w-max items-center gap-x-14"
+                : "animate-logo-marquee hover:paused flex w-max items-center gap-x-14"
+            }
+          >
             {[...LOGOS, ...LOGOS].map((name, i) => (
               <div
                 key={`${name}-${i}`}

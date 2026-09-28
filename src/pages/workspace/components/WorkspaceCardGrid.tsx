@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { MapPin, Calendar } from "lucide-react";
 import type { Workspace } from "@/types/workspace";
 
 interface Props {
@@ -6,6 +8,8 @@ interface Props {
 }
 
 export function WorkspaceCardGrid({ workspaces, onOpen }: Props) {
+  const { t, i18n } = useTranslation();
+
   if (workspaces.length === 0) {
     return null;
   }
@@ -21,15 +25,60 @@ export function WorkspaceCardGrid({ workspaces, onOpen }: Props) {
           <div className="bg-brand-orange h-1.5" />
           <div className="flex-1 space-y-4 p-6">
             <div className="flex items-center gap-3">
-              <div className="bg-brand-orange-soft text-brand-orange flex size-10 items-center justify-center rounded-xl text-sm font-bold">
+              <div className="bg-brand-orange-soft text-brand-orange flex size-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold">
                 {ws.name.slice(0, 2).toUpperCase()}
               </div>
-              <div>
-                <h3 className="text-foreground text-sm font-bold">{ws.name}</h3>
-                <p className="text-muted-foreground font-mono text-3xs tracking-wider uppercase">
+              <div className="min-w-0">
+                <h3 className="text-foreground truncate text-sm font-bold">
+                  {ws.name}
+                </h3>
+                <p className="text-muted-foreground text-3xs font-mono tracking-wider uppercase">
                   {ws.slug}
                 </p>
               </div>
+            </div>
+
+            {ws.myRole && (
+              <span className="bg-brand-orange-soft text-brand-orange text-2xs inline-block rounded-full px-2 py-0.5 font-medium">
+                {t(`workspace.roles.${ws.myRole}`)}
+              </span>
+            )}
+
+            {(ws.industry || ws.companySize) && (
+              <div className="flex flex-wrap gap-1.5">
+                {ws.industry && (
+                  <span className="bg-muted text-muted-foreground text-2xs rounded-full px-2 py-0.5 font-medium">
+                    {t(`workspace.industry.${ws.industry}`)}
+                  </span>
+                )}
+                {ws.companySize && (
+                  <span className="bg-muted text-muted-foreground text-2xs rounded-full px-2 py-0.5 font-medium">
+                    {t(`agency.companySize.${ws.companySize}`)}
+                  </span>
+                )}
+              </div>
+            )}
+
+            <div className="text-muted-foreground space-y-1 text-xs">
+              {ws.location && (
+                <div className="flex items-center gap-1.5">
+                  <MapPin className="size-3.5 shrink-0" />
+                  <span className="truncate">{ws.location}</span>
+                </div>
+              )}
+              {ws.createdAt && (
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="size-3.5 shrink-0" />
+                  <span>
+                    {t("workspace.list.createdAt", {
+                      date: new Date(ws.createdAt).toLocaleDateString(
+                        i18n.language === "vi" ? "vi-VN" : "en-US",
+                        { year: "numeric", month: "long" },
+                      ),
+                    })}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </button>

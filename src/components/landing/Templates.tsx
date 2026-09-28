@@ -1,8 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { MousePointerClick } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
+import { SectionDecor } from "@/components/landing/SectionDecor";
+import { SpotlightCard } from "@/components/landing/SpotlightCard";
+import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
 const TEMPLATES = [
   {
@@ -28,18 +30,24 @@ const TEMPLATE_PAGE_INDEX = 1;
 
 export function Templates() {
   const { t } = useTranslation();
+  const reduce = useReducedMotion();
   const goToPage = useLandingDemoStore((s) => s.goToPage);
 
   return (
-    <section id="templates" className="bg-white py-24 dark:bg-zinc-950">
+    <section
+      id="templates"
+      className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950"
+    >
+      <SectionDecor corner="right" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="mx-auto mb-16 max-w-2xl text-center"
         >
+          <SectionEyebrow index={5} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
             {t("landing.templates.title")}
           </h2>
@@ -50,27 +58,17 @@ export function Templates() {
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {TEMPLATES.map(({ key, photo }, i) => (
-            <motion.div
+            <SpotlightCard
               key={key}
-              role="button"
-              tabIndex={0}
               aria-label={t("landing.templates.demoAction", {
                 template: t(`landing.templates.items.${key}.title`),
               })}
-              onClick={() => goToPage(TEMPLATE_PAGE_INDEX)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  goToPage(TEMPLATE_PAGE_INDEX);
-                }
-              }}
-              initial={{ opacity: 0, y: 40 }}
+              onActivate={() => goToPage(TEMPLATE_PAGE_INDEX)}
+              className="items-stretch border-zinc-100 p-0 hover:shadow-xl"
+              initial={reduce ? false : { opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.12 }}
-              className={cn(
-                "group focus-visible:ring-brand-orange relative cursor-pointer overflow-hidden rounded-2xl border border-zinc-100 bg-white shadow-sm transition-all hover:shadow-xl focus-visible:ring-2 focus-visible:outline-none dark:border-zinc-800 dark:bg-zinc-900",
-              )}
             >
               <div className="relative h-48 overflow-hidden">
                 <img
@@ -94,7 +92,7 @@ export function Templates() {
                   {t(`landing.templates.items.${key}.desc`)}
                 </p>
               </div>
-            </motion.div>
+            </SpotlightCard>
           ))}
         </div>
       </div>

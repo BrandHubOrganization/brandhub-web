@@ -5,10 +5,12 @@ import { workspaceService } from "@/services/workspaceService";
 export interface WorkspaceState {
   currentWorkspace: Workspace | null;
   workspaceList: Workspace[];
+  /** Role của user trong currentWorkspace — derive từ Workspace.myRole
+   * (GET /workspaces đã tính đúng cả case OWNER qua agency ownership).
+   * Không set tay: set currentWorkspace là đủ, tránh lệch/stale giữa 2 field. */
   currentMemberRole: MemberRole | null;
   setCurrentWorkspace: (workspace: Workspace | null) => void;
   setWorkspaceList: (workspaces: Workspace[]) => void;
-  setCurrentMemberRole: (role: MemberRole | null) => void;
   fetchWorkspaces: () => Promise<void>;
   reset: () => void;
 }
@@ -18,9 +20,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   workspaceList: [],
   currentMemberRole: null,
 
-  setCurrentWorkspace: (workspace) => set({ currentWorkspace: workspace }),
+  setCurrentWorkspace: (workspace) =>
+    set({
+      currentWorkspace: workspace,
+      currentMemberRole: workspace?.myRole ?? null,
+    }),
   setWorkspaceList: (workspaces) => set({ workspaceList: workspaces }),
-  setCurrentMemberRole: (role) => set({ currentMemberRole: role }),
 
   fetchWorkspaces: async () => {
     try {

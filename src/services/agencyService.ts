@@ -5,9 +5,13 @@ import type {
   AgencyCategory,
   AgencyInvitation,
   AgencyMember,
+  AgencyMemberActivity,
+  AgencyStatsResponse,
   CompanySize,
+  InvitationPreviewResponse,
 } from "@/types/agency";
 import type { MemberRole } from "@/types/workspace";
+import type { UpdateClientProfileRequest } from "@/types/clientProfile";
 
 export interface CreateAgencyRequest {
   name: string;
@@ -59,6 +63,16 @@ export const agencyService = {
       `/api/v1/agencies/${agencyId}/members`,
     ),
 
+  getMemberActivity: (agencyId: string, userId: string) =>
+    api.get<ApiResponse<AgencyMemberActivity[]>>(
+      `/api/v1/agencies/${agencyId}/members/${userId}/activity`,
+    ),
+
+  getStats: (agencyId: string) =>
+    api.get<ApiResponse<AgencyStatsResponse>>(
+      `/api/v1/agencies/${agencyId}/stats`,
+    ),
+
   inviteMember: (agencyId: string, data: InviteAgencyMemberRequest) =>
     api.post<ApiResponse<AgencyInvitation>>(
       `/api/v1/agencies/${agencyId}/invitations`,
@@ -80,9 +94,23 @@ export const agencyService = {
       `/api/v1/agencies/${agencyId}/invitations/${invitationId}`,
     ),
 
-  acceptInvitation: (token: string) =>
+  previewInvitation: (token: string) =>
+    api.get<ApiResponse<InvitationPreviewResponse>>(
+      "/api/v1/agencies/invitations/preview",
+      { params: { token } },
+    ),
+
+  acceptInvitation: (
+    token: string,
+    options?: {
+      clientProfileId?: string;
+      newClientProfile?: UpdateClientProfileRequest;
+    },
+  ) =>
     api.post<ApiResponse<AgencyMember>>("/api/v1/agencies/invitations/accept", {
       token,
+      clientProfileId: options?.clientProfileId,
+      newClientProfile: options?.newClientProfile,
     }),
 
   declineInvitation: (token: string) =>

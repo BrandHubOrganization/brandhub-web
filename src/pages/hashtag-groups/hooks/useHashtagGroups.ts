@@ -19,7 +19,7 @@ export function useHashtagGroups() {
     try {
       const data = await mockHashtagGroupService.getGroups(search);
       setGroups(data);
-    } catch (err) {
+    } catch {
       toast.error(t("hashtagGroups.loadError"));
     } finally {
       setIsLoading(false);
@@ -70,7 +70,7 @@ export function useHashtagGroups() {
       );
       setDeletingGroup(null);
       fetchGroups();
-    } catch (err) {
+    } catch {
       toast.error(t("hashtagGroups.deleteError"));
     } finally {
       setIsDeleting(false);

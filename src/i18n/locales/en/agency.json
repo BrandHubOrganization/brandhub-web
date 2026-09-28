@@ -37,6 +37,12 @@
     "statsWorkspaces": "Workspaces",
     "statsActivity": "Recent activity",
     "statsActivityPlaceholder": "No data yet — coming in a future sprint.",
+    "statsMembersByRole": "Members by role",
+    "statsWorkspacesByIndustry": "Workspaces by industry",
+    "statsMemberGrowth": "Member growth (6 months)",
+    "statsContentByStatus": "Content by status",
+    "statsPostsPublished": "Posts published by month",
+    "statsNoData": "No data yet",
     "nav": {
       "profile": "Profile",
       "members": "Members",
@@ -131,6 +137,8 @@
     "empty": "No members yet. Invite your first teammate above.",
     "you": "(you)",
     "remove": "Remove",
+    "removeConfirmTitle": "Remove member?",
+    "removeConfirmDescription": "This member will lose access to the agency.",
     "cancelInvite": "Cancel invite",
     "inviteeNameLabel": "Invitee name (optional)",
     "inviteeNamePlaceholder": "e.g. John Doe",
@@ -160,7 +168,30 @@
     "expiresInDays": "{{count}} day(s) left",
     "expiresInHours": "{{count}} hour(s) left",
     "expiresInMinutes": "{{count}} minute(s) left",
-    "expiresSoon": "Expiring soon"
+    "expiresSoon": "Expiring soon",
+    "tabMembers": "Members ({{count}})",
+    "tabInvitations": "Invitations ({{count}})",
+    "invitationsEmpty": "No pending or expired invitations.",
+    "profile": {
+      "title": "Member profile",
+      "role": "Role",
+      "joinedAt": "Joined",
+      "activityTitle": "Recent activity",
+      "activityEmpty": "No activity recorded yet.",
+      "activityLoadError": "Failed to load this member's activity",
+      "close": "Close"
+    },
+    "auditAction": {
+      "LOGIN": "Logged in",
+      "LOGOUT": "Logged out",
+      "TOKEN_REFRESH": "Refreshed session",
+      "PASSWORD_RESET": "Reset password",
+      "CREATE": "Created {{resource}}",
+      "UPDATE": "Updated {{resource}}",
+      "DELETE": "Deleted {{resource}}",
+      "ROLE_CHANGE": "Changed role",
+      "PERMISSION_CHANGE": "Changed permissions"
+    }
   },
   "invitations": {
     "title": "Agency Invitations",
