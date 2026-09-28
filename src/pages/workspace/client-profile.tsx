@@ -109,9 +109,7 @@ export function WorkspaceClientProfilePage() {
                 </div>
               )}
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium">
-                  {p.displayName}
-                </p>
+                <p className="truncate text-sm font-medium">{p.displayName}</p>
                 <p className="text-muted-foreground truncate text-xs">
                   {[p.tagline, p.industry, p.company]
                     .filter(Boolean)
