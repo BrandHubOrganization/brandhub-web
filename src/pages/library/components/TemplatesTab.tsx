@@ -8,10 +8,12 @@ import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 export const TemplatesTab: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const [templates, setTemplates] = useState<PostTemplate[]>([]);
   const [hashtagGroups, setHashtagGroups] = useState<HashtagGroup[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,12 +51,14 @@ export const TemplatesTab: React.FC = () => {
       : tpl.caption;
 
     // Navigate to /editor passing pre-fill state
-    navigate("/editor", {
-      state: {
-        prefilledCaption: fullCaption,
-        templateTitle: tpl.title,
-      },
-    });
+    if (currentWorkspace) {
+      navigate(`/workspaces/${currentWorkspace.id}/editor`, {
+        state: {
+          prefilledCaption: fullCaption,
+          templateTitle: tpl.title,
+        },
+      });
+    }
 
     toast.success(t("library.templates.useSuccess", { title: tpl.title }));
   };

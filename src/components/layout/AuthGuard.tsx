@@ -12,6 +12,7 @@ export function AuthGuard() {
   const systemRole = useAuthStore((s) => s.systemRole);
   const setSystemRole = useAuthStore((s) => s.setSystemRole);
   const workspaceList = useWorkspaceStore((s) => s.workspaceList);
+  const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
 
   const accessToken = useAuthStore((s) => s.accessToken);
@@ -38,16 +39,22 @@ export function AuthGuard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user?.id]);
 
-  // Role phải theo ĐÚNG workspace trong URL (/workspaces/:id/...), không
-  // phải workspace[0] bất kỳ — user có role khác nhau ở mỗi workspace.
+  // Role phải theo ĐÚNG workspace trong URL (/workspaces/:id/...) khi có,
+  // không phải workspace[0] bất kỳ — user có role khác nhau ở mỗi workspace.
   // myRole (từ GET /workspaces) đã có case OWNER qua agency ownership,
   // không cần fetch listMembers riêng (bug cũ: bỏ sót owner-thuần).
+  // Các route thao tác trong 1 workspace cụ thể (/editor, /requests, ...)
+  // giờ đều namespace /workspaces/:id/... nên rơi đúng nhánh trên. Fallback
+  // currentMemberRole dưới đây chỉ còn phục vụ route KHÔNG gắn 1 workspace
+  // cụ thể (/clients, /invitations, /portal, ...) — dùng workspaceList[0]
+  // ở đây từng đá nhầm user về /dashboard khi workspace active không phải
+  // workspace đầu tiên trong danh sách.
   const workspaceIdInUrl = location.pathname.match(
     /^\/workspaces\/([^/]+)/,
   )?.[1];
   const memberRole = workspaceIdInUrl
     ? (workspaceList.find((w) => w.id === workspaceIdInUrl)?.myRole ?? null)
-    : (workspaceList[0]?.myRole ?? null);
+    : currentMemberRole;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;

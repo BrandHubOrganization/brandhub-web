@@ -105,6 +105,25 @@ export function AppRoutes() {
             element={<WorkspaceMembersPage />}
           />
           <Route
+            path="/workspaces/:id/requests"
+            element={<ContentRequestListPage />}
+          />
+          <Route path="/workspaces/:id/editor" element={<EditorPage />} />
+          <Route
+            path="/workspaces/:id/templates"
+            element={<TemplateBrowserPage />}
+          />
+          <Route
+            path="/workspaces/:id/hashtag-groups"
+            element={<HashtagGroupsPage />}
+          />
+          <Route path="/workspaces/:id/calendar" element={<CalendarPage />} />
+          <Route
+            path="/workspaces/:id/library"
+            element={<ContentLibraryPage />}
+          />
+          <Route path="/workspaces/:id/publish" element={<PublishPage />} />
+          <Route
             path="/workspaces/templates"
             element={<WorkspaceTemplatesPage />}
           />
@@ -124,15 +143,8 @@ export function AppRoutes() {
           <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
-          <Route path="/requests" element={<ContentRequestListPage />} />
-          <Route path="/editor" element={<EditorPage />} />
-          <Route path="/templates" element={<TemplateBrowserPage />} />
-          <Route path="/hashtag-groups" element={<HashtagGroupsPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/library" element={<ContentLibraryPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/social-accounts" element={<SocialAccountsPage />} />
-          <Route path="/publish" element={<PublishPage />} />
           <Route
             path="/subscription/plans"
             element={<SubscriptionPlansPage />}

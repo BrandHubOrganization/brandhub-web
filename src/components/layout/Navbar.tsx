@@ -20,6 +20,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { authService } from "@/services/authService";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,18 @@ const NOTIFICATION_ICONS: Record<NotificationType, React.ElementType> = {
   SYSTEM: Info,
 };
 
+// Mock notification linkTo values that point at routes now namespaced under
+// /workspaces/:id/... — inject the active workspace id before navigating.
+const WORKSPACE_SCOPED_LINKS = [
+  "/requests",
+  "/editor",
+  "/templates",
+  "/hashtag-groups",
+  "/calendar",
+  "/library",
+  "/publish",
+];
+
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -55,7 +68,7 @@ const NAV_KEY_MAP: Record<string, string> = {
   dashboard: "nav.dashboard",
   workspace: "nav.workspace",
   workspaces: "nav.workspace",
-  agency: "nav.agency",
+  agency: "nav.sections.manage",
   portal: "nav.portal",
   editor: "nav.editor",
   calendar: "nav.calendar",
@@ -109,6 +122,7 @@ export function Navbar({
   const navigate = useNavigate();
   const location = useLocation();
   const { user, clearAuth } = useAuthStore();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
 
   const username = user?.name || user?.email?.split("@")[0] || "User";
 
@@ -141,7 +155,13 @@ export function Navbar({
       );
       await markAsRead(n.id);
     }
-    if (n.linkTo) navigate(n.linkTo);
+    if (n.linkTo) {
+      const resolvedLink =
+        currentWorkspace && WORKSPACE_SCOPED_LINKS.includes(n.linkTo)
+          ? `/workspaces/${currentWorkspace.id}${n.linkTo}`
+          : n.linkTo;
+      navigate(resolvedLink);
+    }
   }
 
   async function handleMarkAllRead() {
