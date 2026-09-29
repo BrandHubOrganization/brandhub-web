@@ -4,6 +4,13 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { workspaceTemplateService } from "@/services/workspaceTemplateService";
 import { extractErrorMessage } from "@/utils/error";
 import type { WorkspaceTemplate } from "@/types/workspace";
@@ -14,6 +21,9 @@ export function WorkspaceTemplatesPage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<WorkspaceTemplate | null>(
+    null,
+  );
 
   useEffect(() => {
     workspaceTemplateService
@@ -27,7 +37,9 @@ export function WorkspaceTemplatesPage() {
       .finally(() => setLoading(false));
   }, [t]);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    const id = deleteTarget.id;
     setDeletingId(id);
     try {
       await workspaceTemplateService.remove(id);
@@ -39,6 +51,7 @@ export function WorkspaceTemplatesPage() {
       );
     } finally {
       setDeletingId(null);
+      setDeleteTarget(null);
     }
   };
 
@@ -74,7 +87,7 @@ export function WorkspaceTemplatesPage() {
                   variant="ghost"
                   size="sm"
                   loading={deletingId === tpl.id}
-                  onClick={() => handleDelete(tpl.id)}
+                  onClick={() => setDeleteTarget(tpl)}
                 >
                   <Trash2 className="size-3.5 text-rose-500" />
                 </Button>
@@ -91,6 +104,33 @@ export function WorkspaceTemplatesPage() {
           ))}
         </div>
       )}
+
+      <Dialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {t("workspace.templates.deleteConfirmTitle")}
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-muted-foreground text-sm">
+            {t("workspace.templates.deleteConfirmDescription", {
+              name: deleteTarget?.name || "",
+            })}
+          </p>
+          <DialogFooter>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              loading={!!deletingId}
+            >
+              {t("workspace.templates.deleteButton")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageWrapper>
   );
 }

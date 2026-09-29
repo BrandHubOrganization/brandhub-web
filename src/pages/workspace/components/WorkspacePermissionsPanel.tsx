@@ -11,10 +11,14 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
+import { workspaceService } from "@/services/workspaceService";
+import { extractErrorMessage } from "@/utils/error";
 import type { MemberRole, WorkspaceMember } from "@/types/workspace";
 
 interface Props {
+  workspaceId: string | undefined;
   members: WorkspaceMember[];
+  onChanged: () => void;
 }
 
 const ROLES: MemberRole[] = ["OWNER", "MANAGER", "CREATOR", "CLIENT"];
@@ -28,34 +32,53 @@ const PERMISSIONS = [
   { key: "editWorkspace", roles: ["OWNER"] },
 ] as const;
 
-export function WorkspacePermissionsPanel({ members }: Props) {
+export function WorkspacePermissionsPanel({
+  workspaceId,
+  members,
+  onChanged,
+}: Props) {
   const { t } = useTranslation();
-  const [roles, setRoles] = useState<Record<string, MemberRole>>(() =>
-    Object.fromEntries(members.map((m) => [m.id, m.role])),
-  );
   const [revokeTarget, setRevokeTarget] = useState<WorkspaceMember | null>(
     null,
   );
+  const [pendingMemberId, setPendingMemberId] = useState<string | null>(null);
 
-  const handleRoleChange = (member: WorkspaceMember, role: MemberRole) => {
-    setRoles((prev) => ({ ...prev, [member.id]: role }));
-    toast.success(
-      t("workspace.permissions.roleChanged", {
-        name: member.fullName,
-        role: t(`workspace.roles.${role}`),
-      }),
-    );
+  const handleRoleChange = async (member: WorkspaceMember, role: MemberRole) => {
+    if (!workspaceId || role === member.role) return;
+    setPendingMemberId(member.id);
+    try {
+      await workspaceService.updateMemberRole(workspaceId, member.id, role);
+      toast.success(
+        t("workspace.permissions.roleChanged", {
+          name: member.fullName,
+          role: t(`workspace.roles.${role}`),
+        }),
+      );
+      onChanged();
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("common.actionFailed")));
+    } finally {
+      setPendingMemberId(null);
+    }
   };
 
-  const handleConfirmRevoke = () => {
-    if (!revokeTarget) return;
-    setRoles((prev) => ({ ...prev, [revokeTarget.id]: "CLIENT" }));
-    toast.success(
-      t("workspace.permissions.revokeSuccess", {
-        name: revokeTarget.fullName,
-      }),
-    );
-    setRevokeTarget(null);
+  const handleConfirmRevoke = async () => {
+    if (!workspaceId || !revokeTarget) return;
+    setPendingMemberId(revokeTarget.id);
+    try {
+      await workspaceService.removeMember(workspaceId, revokeTarget.id);
+      toast.success(
+        t("workspace.permissions.revokeSuccess", {
+          name: revokeTarget.fullName,
+        }),
+      );
+      onChanged();
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("common.actionFailed")));
+    } finally {
+      setPendingMemberId(null);
+      setRevokeTarget(null);
+    }
   };
 
   return (
@@ -82,8 +105,8 @@ export function WorkspacePermissionsPanel({ members }: Props) {
               </div>
               <div className="flex items-center gap-2">
                 <Select
-                  value={roles[member.id]}
-                  disabled={roles[member.id] === "OWNER"}
+                  value={member.role}
+                  disabled={member.role === "OWNER" || pendingMemberId === member.id}
                   onChange={(e) =>
                     handleRoleChange(member, e.target.value as MemberRole)
                   }
@@ -95,11 +118,12 @@ export function WorkspacePermissionsPanel({ members }: Props) {
                     </option>
                   ))}
                 </Select>
-                {roles[member.id] !== "OWNER" &&
-                  roles[member.id] !== "CLIENT" && (
+                {member.role !== "OWNER" &&
+                  member.role !== "CLIENT" && (
                     <Button
                       variant="outline"
                       size="sm"
+                      disabled={pendingMemberId === member.id}
                       className="gap-1.5 border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
                       onClick={() => setRevokeTarget(member)}
                     >
@@ -178,6 +202,7 @@ export function WorkspacePermissionsPanel({ members }: Props) {
               <Button
                 variant="outline"
                 size="sm"
+                disabled={pendingMemberId === revokeTarget.id}
                 onClick={() => setRevokeTarget(null)}
               >
                 {t("workspace.permissions.revokeCancel")}
@@ -185,6 +210,7 @@ export function WorkspacePermissionsPanel({ members }: Props) {
               <Button
                 variant="destructive"
                 size="sm"
+                disabled={pendingMemberId === revokeTarget.id}
                 onClick={handleConfirmRevoke}
               >
                 {t("workspace.permissions.revokeConfirmButton")}

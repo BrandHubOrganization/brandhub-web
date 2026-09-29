@@ -18,39 +18,6 @@ export const ALL_ROLES: MemberRole[] = [
   "CLIENT",
 ];
 
-// Demo seed so Remove Member / Revoke Role stay demonstrable when the
-// backend workspace holds only the owner. Appended only when no other
-// internal member exists — screenshots, not real membership.
-function seedDemoMembers(members: WorkspaceMember[]): WorkspaceMember[] {
-  const internal = members.filter((m) => m.role !== "CLIENT");
-  if (internal.length > 1) return members;
-  const demo: WorkspaceMember[] = [
-    {
-      id: "demo-creator",
-      workspaceId: members[0]?.workspaceId ?? "ws-1",
-      userId: "demo-u1",
-      fullName: "Minh Anh (Demo)",
-      email: "minhanh.demo@brandhub.dev",
-      clientProfileId: null,
-      role: "CREATOR",
-      joinedAt: "2026-07-01T00:00:00Z",
-      isActive: true,
-    },
-    {
-      id: "demo-manager",
-      workspaceId: members[0]?.workspaceId ?? "ws-1",
-      userId: "demo-u2",
-      fullName: "Hồng Nhung (Demo)",
-      email: "hongnhung.demo@brandhub.dev",
-      clientProfileId: null,
-      role: "MANAGER",
-      joinedAt: "2026-07-15T00:00:00Z",
-      isActive: true,
-    },
-  ];
-  return [...members, ...demo];
-}
-
 export function useWorkspaceMembers() {
   const { t } = useTranslation();
   const { id: workspaceId } = useParams<{ id: string }>();
@@ -84,7 +51,7 @@ export function useWorkspaceMembers() {
     if (!workspaceId) return;
     workspaceService
       .listMembers(workspaceId)
-      .then(({ data }) => setMembers(seedDemoMembers(data.data)))
+      .then(({ data }) => setMembers(data.data))
       .catch((err: unknown) =>
         toast.error(extractErrorMessage(err, t("common.loadFailed"))),
       )
@@ -128,8 +95,22 @@ export function useWorkspaceMembers() {
     if (!workspaceId || assignValues.length === 0) return;
     setAssigning(true);
     try {
-      await workspaceService.assignMembers(workspaceId, assignValues);
-      toast.success(t("workspace.members.assignSuccess"));
+      const { data } = await workspaceService.assignMembers(
+        workspaceId,
+        assignValues,
+      );
+      const addedCount = data.data.added.length;
+      const skippedCount = data.data.skippedUserIds.length;
+      if (skippedCount > 0) {
+        toast.success(
+          t("workspace.members.assignPartialSuccess", {
+            added: addedCount,
+            skipped: skippedCount,
+          }),
+        );
+      } else {
+        toast.success(t("workspace.members.assignSuccess"));
+      }
       setAssignOpen(false);
       setAssignValues([]);
       loadMembers();
@@ -205,6 +186,7 @@ export function useWorkspaceMembers() {
     members,
     loading,
     canManage,
+    currentMember,
     inviteOpen,
     setInviteOpen,
     inviteEmail,

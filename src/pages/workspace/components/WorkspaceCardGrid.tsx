@@ -32,9 +32,6 @@ export function WorkspaceCardGrid({ workspaces, onOpen }: Props) {
                 <h3 className="text-foreground truncate text-sm font-bold">
                   {ws.name}
                 </h3>
-                <p className="text-muted-foreground text-3xs font-mono tracking-wider uppercase">
-                  {ws.slug}
-                </p>
               </div>
             </div>
 

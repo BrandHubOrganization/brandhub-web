@@ -74,6 +74,7 @@ export function WorkspaceSettingsPage() {
     location,
     setLocation,
     canManage,
+    canDelete,
     uploadingLogo,
     fileInputRef,
     toggleWorkspacePlatform,
@@ -451,7 +452,7 @@ export function WorkspaceSettingsPage() {
           </div>
         )}
 
-        {canManage && !isEditing && (
+        {canDelete && !isEditing && (
           <div className="max-w-sm">
             <div className="bg-card rounded-xl border border-red-200 p-6 dark:border-red-900/50">
               <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { workspaceService } from "@/services/workspaceService";
+import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
 import type {
   CompanySize,
@@ -34,6 +35,10 @@ export function useWorkspaceSettings() {
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
   const [canManage, setCanManage] = useState(false);
+  // deleteWorkspace ở BE chỉ cho Agency OWNER thật (so ownerId của Agency, không
+  // phải role WorkspaceMember) — canManage (MANAGER/OWNER workspace) không đủ
+  // điều kiện, MANAGER bấm Delete sẽ luôn dính 403 FORBIDDEN nếu chỉ gate bằng canManage.
+  const [canDelete, setCanDelete] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -53,10 +58,13 @@ export function useWorkspaceSettings() {
         setWebsite(data.data.website ?? "");
         setPhone(data.data.phone ?? "");
         setLocation(data.data.location ?? "");
+        return agencyService.getById(data.data.agencyId);
       })
-      .catch((err: unknown) =>
-        toast.error(extractErrorMessage(err, t("common.loadFailed"))),
-      )
+      .then(({ data }) => setCanDelete(data.data.ownerId === userId))
+      .catch((err: unknown) => {
+        setCanDelete(false);
+        toast.error(extractErrorMessage(err, t("common.loadFailed")));
+      })
       .finally(() => setLoading(false));
 
     workspaceService
@@ -152,6 +160,7 @@ export function useWorkspaceSettings() {
     location,
     setLocation,
     canManage,
+    canDelete,
     uploadingLogo,
     fileInputRef,
     toggleWorkspacePlatform,
