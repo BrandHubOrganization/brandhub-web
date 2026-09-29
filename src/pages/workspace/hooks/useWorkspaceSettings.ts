@@ -58,9 +58,11 @@ export function useWorkspaceSettings() {
         setWebsite(data.data.website ?? "");
         setPhone(data.data.phone ?? "");
         setLocation(data.data.location ?? "");
-        return agencyService.getById(data.data.agencyId);
+        return data.data.agencyId
+          ? agencyService.getById(data.data.agencyId)
+          : null;
       })
-      .then(({ data }) => setCanDelete(data.data.ownerId === userId))
+      .then((res) => setCanDelete(res?.data.data.ownerId === userId))
       .catch((err: unknown) => {
         setCanDelete(false);
         toast.error(extractErrorMessage(err, t("common.loadFailed")));

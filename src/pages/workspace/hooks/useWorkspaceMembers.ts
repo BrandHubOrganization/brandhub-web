@@ -185,6 +185,7 @@ export function useWorkspaceMembers() {
     workspaceId,
     members,
     loading,
+    loadMembers,
     canManage,
     currentMember,
     inviteOpen,
