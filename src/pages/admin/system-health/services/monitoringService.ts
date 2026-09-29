@@ -15,6 +15,38 @@ export class MonitoringAccessError extends Error {
   }
 }
 
+export async function readInstallationSettings() {
+  const response = await api.get<
+    ApiResponse<{ apiBaseUrl: string; managed: boolean }>
+  >("/api/monitoring/enrollments", {
+    timeout: 10000,
+    validateStatus: (status) => status < 500,
+  });
+  if ([401, 403].includes(response.status))
+    throw new MonitoringAccessError(response.status);
+  if (response.status !== 200 || !response.data.success)
+    throw new Error("INSTALLATION_SETTINGS_UNAVAILABLE");
+  return response.data.data;
+}
+
+export async function createEnrollment(input: {
+  name: string;
+  environment: string;
+  apiBaseUrl: string;
+}) {
+  const response = await api.post<
+    ApiResponse<{ command: string; expiresAt: string }>
+  >("/api/monitoring/enrollments", input, {
+    timeout: 10000,
+    validateStatus: (status) => status < 500,
+  });
+  if ([401, 403].includes(response.status))
+    throw new MonitoringAccessError(response.status);
+  if (response.status !== 200 || !response.data.success)
+    throw new Error("ENROLLMENT_FAILED");
+  return response.data.data;
+}
+
 async function readPages(
   path: string,
   signal: AbortSignal,

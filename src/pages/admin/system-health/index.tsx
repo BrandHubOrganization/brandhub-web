@@ -13,6 +13,7 @@ import { MonitoringFilters } from "@/pages/admin/system-health/components/Monito
 import { ServerCards } from "@/pages/admin/system-health/components/ServerCards";
 import { TargetCards } from "@/pages/admin/system-health/components/TargetCards";
 import { TargetDetails } from "@/pages/admin/system-health/components/TargetDetails";
+import { AddServer } from "@/pages/admin/system-health/components/AddServer";
 import type { Filters } from "@/pages/admin/system-health/components/MonitoringFilters";
 
 export default function SystemHealthPage() {
@@ -65,6 +66,7 @@ export default function SystemHealthPage() {
       title={t("monitoring.title")}
       description={t("monitoring.description")}
     >
+      <AddServer onDenied={onDenied} />
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="servers">{t("monitoring.servers")}</TabsTrigger>
