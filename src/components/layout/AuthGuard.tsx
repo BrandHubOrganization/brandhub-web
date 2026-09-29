@@ -31,7 +31,9 @@ export function AuthGuard() {
       // hoạt động — thiếu bước này thì Owner/Member vào /reports, /clients
       // (agency-level, không qua workspace cụ thể) bị đá nhầm về /dashboard
       // vì agencyList rỗng lúc canAccess() chạy.
-      fetchAgencies().finally(() => setRoleLoaded(true));
+      Promise.all([fetchWorkspaces(), fetchAgencies()]).finally(() =>
+        setRoleLoaded(true),
+      );
       return;
     }
     setRoleLoaded(false);
@@ -79,9 +81,29 @@ export function AuthGuard() {
           return null;
         })()
       : null;
+  const isLegacyWorkspaceRoute = [
+    "/requests",
+    "/editor",
+    "/templates",
+    "/hashtag-groups",
+    "/calendar",
+    "/library",
+    "/publish",
+    "/portal",
+    "/client-profile",
+  ].some(
+    (route) =>
+      location.pathname === route || location.pathname.startsWith(`${route}/`),
+  );
+  const legacyWorkspaceRole = isLegacyWorkspaceRoute
+    ? (workspaceList.find((workspace) => workspace.agencyId === currentAgencyId)
+        ?.myRole ??
+      workspaceList[0]?.myRole ??
+      null)
+    : null;
   const memberRole = workspaceIdInUrl
     ? (workspaceList.find((w) => w.id === workspaceIdInUrl)?.myRole ?? null)
-    : (currentMemberRole ?? agencyFallbackRole);
+    : (currentMemberRole ?? legacyWorkspaceRole ?? agencyFallbackRole);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;

@@ -29,7 +29,7 @@ export function EditorHeaderActions({
 }: Props) {
   const { t } = useTranslation();
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center justify-end gap-2">
       <div className="border-border bg-card text-muted-foreground flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs">
         {isSaving ? (
           <>
