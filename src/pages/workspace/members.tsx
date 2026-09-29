@@ -46,7 +46,11 @@ export function WorkspaceMembersPage() {
           <ClientsSection />
         )}
 
-        <WorkspacePermissionsPanel members={internalMembers} />
+        <WorkspacePermissionsPanel
+          workspaceId={membersState.workspaceId}
+          members={internalMembers}
+          onChanged={membersState.loadMembers}
+        />
       </div>
     </PageWrapper>
   );

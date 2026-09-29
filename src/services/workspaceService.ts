@@ -17,6 +17,11 @@ export interface AssignEntry {
   role: MemberRole;
 }
 
+export interface AssignMembersResponse {
+  added: WorkspaceMember[];
+  skippedUserIds: string[];
+}
+
 export interface CreateWorkspaceRequest {
   name: string;
   agencyId: string;
@@ -85,7 +90,7 @@ export const workspaceService = {
     ),
 
   assignMembers: (workspaceId: string, members: AssignEntry[]) =>
-    api.post<ApiResponse<WorkspaceMember[]>>(
+    api.post<ApiResponse<AssignMembersResponse>>(
       `/api/v1/workspaces/${workspaceId}/members/assign`,
       { members },
     ),
