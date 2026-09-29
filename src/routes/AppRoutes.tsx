@@ -30,6 +30,7 @@ import { AgencyStatsPage } from "@/pages/agency/stats";
 import { AgencyInvitationsPage } from "@/pages/agency/invitations";
 import { AcceptInvitationPage } from "@/pages/agency/accept";
 import { PortalPage } from "@/pages/portal";
+import { WorkspaceClientProfilePage } from "@/pages/workspace/client-profile";
 import { AdminPage } from "@/pages/admin";
 import { EditorPage } from "@/pages/editor";
 import { CalendarPage } from "@/pages/calendar";
@@ -107,6 +108,30 @@ export function AppRoutes() {
             element={<WorkspaceMembersPage />}
           />
           <Route
+            path="/workspaces/:id/requests"
+            element={<ContentRequestListPage />}
+          />
+          <Route path="/workspaces/:id/editor" element={<EditorPage />} />
+          <Route
+            path="/workspaces/:id/templates"
+            element={<TemplateBrowserPage />}
+          />
+          <Route
+            path="/workspaces/:id/hashtag-groups"
+            element={<HashtagGroupsPage />}
+          />
+          <Route path="/workspaces/:id/calendar" element={<CalendarPage />} />
+          <Route
+            path="/workspaces/:id/library"
+            element={<ContentLibraryPage />}
+          />
+          <Route path="/workspaces/:id/publish" element={<PublishPage />} />
+          <Route path="/workspaces/:id/portal" element={<PortalPage />} />
+          <Route
+            path="/workspaces/:id/client-profile"
+            element={<WorkspaceClientProfilePage />}
+          />
+          <Route
             path="/workspaces/templates"
             element={<WorkspaceTemplatesPage />}
           />
@@ -124,7 +149,6 @@ export function AppRoutes() {
           />
           <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
           <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
-          <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/system-health" element={<Suspense fallback={null}><SystemHealthPage /></Suspense>} />
           <Route path="/requests" element={<ContentRequestListPage />} />
@@ -135,7 +159,6 @@ export function AppRoutes() {
           <Route path="/library" element={<ContentLibraryPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/social-accounts" element={<SocialAccountsPage />} />
-          <Route path="/publish" element={<PublishPage />} />
           <Route
             path="/subscription/plans"
             element={<SubscriptionPlansPage />}

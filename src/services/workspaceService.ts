@@ -110,6 +110,13 @@ export const workspaceService = {
       { clientProfileId },
     ),
 
+  // CLIENT tự đổi profile đại diện mình trong workspace này (chọn từ profile mình sở hữu).
+  switchMyClientProfile: (workspaceId: string, clientProfileId: string) =>
+    api.patch<ApiResponse<WorkspaceMember>>(
+      `/api/v1/workspaces/${workspaceId}/clients/me`,
+      { clientProfileId },
+    ),
+
   uploadLogo: (workspaceId: string, file: File) => {
     const formData = new FormData();
     formData.append("file", file);

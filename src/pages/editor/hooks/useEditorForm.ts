@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { mockEditorService } from "@/services/mock/mockEditorService";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import type { SocialPlatform } from "@/types/editor";
 import type { ContentTemplate } from "@/types/template";
 
@@ -17,6 +18,7 @@ export function useEditorForm() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const locationState = location.state as EditorLocationState;
 
   const [title, setTitle] = useState(
@@ -160,7 +162,9 @@ export function useEditorForm() {
     try {
       await mockEditorService.submitForReview("post-99");
       toast.success(t("editor.submitSuccess"));
-      navigate("/requests");
+      if (currentWorkspace) {
+        navigate(`/workspaces/${currentWorkspace.id}/requests`);
+      }
     } catch {
       toast.error(t("editor.submitError"));
     } finally {

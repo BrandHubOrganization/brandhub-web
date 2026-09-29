@@ -66,6 +66,8 @@
     "title": "Cài đặt không gian làm việc",
     "description": "Quản lý cấu hình không gian làm việc của bạn.",
     "nameLabel": "Tên không gian làm việc",
+    "editButton": "Sửa",
+    "cancelButton": "Hủy",
     "timezoneLabel": "Múi giờ",
     "defaultPlatformsLabel": "Nền tảng mặc định",
     "reportFrequencyLabel": "Tần suất báo cáo",
@@ -85,6 +87,11 @@
       "confirmDelete": "Xóa workspace",
       "deleteSuccess": "Workspace đã được xóa, có thể khôi phục trong 30 ngày",
       "deleteError": "Không thể xóa workspace"
+    },
+    "preview": {
+      "title": "Xem trước",
+      "hint": "Cập nhật theo thông tin bạn đang chỉnh sửa.",
+      "emptyName": "Không gian làm việc chưa đặt tên"
     },
     "template": {
       "saveButton": "Lưu thành mẫu",

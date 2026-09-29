@@ -17,7 +17,7 @@ import { extractErrorMessage } from "@/utils/error";
  */
 const QUICK_LOGIN_ACCOUNTS = [
   { email: "admin@brandhub.dev", labelKey: "nav.admin" },
-  { email: "user177@hotmail.com", labelKey: "workspace.roles.OWNER" }, // owns 2 agencies (Agency.ownerId) — reseed randomizes owner assignment each run, re-verify via DB if this drifts again
+  { email: "user177@hotmail.com", labelKey: "workspace.roles.OWNER" }, // owns 2 agencies (Agency.ownerId) — AgencySeeder.PINNED_OWNER_USER_INDEX pins this user as owner of the first 2 seeded agencies every reseed, no longer random
   // WorkspaceSeeder always makes the workspace creator = the agency owner
   // = the seeded MANAGER, so myRole normally resolves to "OWNER" (owner
   // precedence in WorkspaceServiceImpl.listMyWorkspaces) even for a
@@ -28,7 +28,7 @@ const QUICK_LOGIN_ACCOUNTS = [
   {
     email: "user1@gmail.com",
     labelKey: "workspace.roles.MANAGER",
-    landingPath: "/workspaces/a2121783-27fa-4026-bf83-0d7ab8e3270d/dashboard",
+    landingPath: "/workspaces/23dce5be-d3e1-40e4-b604-d90ccb1b1ce1/dashboard",
   },
   { email: "user1@gmail.com", labelKey: "workspace.roles.CREATOR" }, // same account also holds CREATOR at another workspace — realistic multi-role user
   // CLIENT is never a WorkspaceMember.userId row (only clientProfileId —
@@ -37,7 +37,7 @@ const QUICK_LOGIN_ACCOUNTS = [
   {
     email: "user59@gmail.com",
     labelKey: "workspace.roles.CLIENT",
-    clientProfileAgencyId: "139feff4-fc33-469a-8e38-a1c3313b7541",
+    clientProfileAgencyId: "3bd5e94e-ccba-4b24-9840-24f246e8975e",
   },
 ] as const;
 

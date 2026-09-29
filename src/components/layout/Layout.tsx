@@ -28,10 +28,25 @@ import type { MemberRole, Workspace } from "@/types/workspace";
 const MOBILE_TABS = [
   { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
   { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
-  { to: "/editor", icon: FileEdit, labelKey: "nav.editor" },
-  { to: "/calendar", icon: CalendarDays, labelKey: "nav.calendar" },
+  {
+    to: "/editor",
+    icon: FileEdit,
+    labelKey: "nav.editor",
+    workspaceScoped: true,
+  },
+  {
+    to: "/calendar",
+    icon: CalendarDays,
+    labelKey: "nav.calendar",
+    workspaceScoped: true,
+  },
   { to: "/workspace", icon: FolderOpen, labelKey: "nav.workspace" },
-  { to: "/portal", icon: Users, labelKey: "nav.portal" },
+  {
+    to: "/portal",
+    icon: Users,
+    labelKey: "nav.portal",
+    workspaceScoped: true,
+  },
 ];
 
 export function Layout() {
@@ -199,7 +214,17 @@ export function Layout() {
     if (!ws) return;
     setCurrentAgencyId(agencyIdArg);
     setCurrentWorkspace(ws);
-    navigate(`/workspaces/${workspaceId}/dashboard`);
+    // Giữ nguyên trang đang đứng (vd /editor, /calendar) khi đổi workspace
+    // — chỉ khi đang thật sự đứng trong 1 trang /workspaces/:id/... nào đó.
+    // Đang ở /agency/:id hay trang khác không-workspace-scoped thì phải về
+    // /dashboard, không được ghép nguyên pathname cũ vào (workspaceIdInUrl
+    // undefined nghĩa là không match — .replace() no-op trả nguyên chuỗi
+    // gốc, không phải chuỗi rỗng, nên phải check tường minh, không dựa vào
+    // kết quả replace).
+    const suffix = workspaceIdInUrl
+      ? location.pathname.replace(/^\/workspaces\/[^/]+/, "")
+      : "";
+    navigate(`/workspaces/${workspaceId}${suffix || "/dashboard"}`);
   };
 
   const handleSwitchAgency = (agencyIdArg: string) => {
@@ -279,25 +304,31 @@ export function Layout() {
           borderColor: "hsl(var(--border, 240 5.9% 90%))",
         }}
       >
-        {filteredMobileTabs.slice(0, 5).map(({ to, icon: Icon, labelKey }) => {
-          return (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === "/"}
-              className={({ isActive }) =>
-                `text-3xs flex w-12 cursor-pointer flex-col items-center justify-center gap-1 py-1.5 transition-colors ${
-                  isActive
-                    ? "text-brand-orange font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`
-              }
-            >
-              <Icon className="size-5 shrink-0" />
-              <span className="max-w-[55px] truncate">{t(labelKey)}</span>
-            </NavLink>
-          );
-        })}
+        {filteredMobileTabs
+          .slice(0, 5)
+          .map(({ to, icon: Icon, labelKey, workspaceScoped }) => {
+            const resolvedTo =
+              workspaceScoped && activeWorkspace
+                ? `/workspaces/${activeWorkspace.id}${to}`
+                : to;
+            return (
+              <NavLink
+                key={to}
+                to={resolvedTo}
+                end={to === "/"}
+                className={({ isActive }) =>
+                  `text-3xs flex w-12 cursor-pointer flex-col items-center justify-center gap-1 py-1.5 transition-colors ${
+                    isActive
+                      ? "text-brand-orange font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`
+                }
+              >
+                <Icon className="size-5 shrink-0" />
+                <span className="max-w-[55px] truncate">{t(labelKey)}</span>
+              </NavLink>
+            );
+          })}
       </div>
     </div>
   );

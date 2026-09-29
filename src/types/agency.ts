@@ -87,6 +87,22 @@ export interface AgencyMemberActivity {
   createdAt: string;
 }
 
+export interface AgencyMemberWorkspaceMembership {
+  workspaceId: string;
+  workspaceName: string;
+  role: string;
+}
+
+export interface AgencyMemberProfile {
+  userId: string;
+  fullName: string | null;
+  email: string | null;
+  avatarUrl: string | null;
+  phone: string | null;
+  professionalTitle: string | null;
+  workspaces: AgencyMemberWorkspaceMembership[];
+}
+
 export interface AgencyStatsResponse {
   memberCount: number;
   workspaceCount: number;
