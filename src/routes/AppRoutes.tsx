@@ -59,6 +59,7 @@ import { NotificationSettingsPage } from "@/pages/notification-settings";
 import { ClientProfileListPage } from "@/pages/client-profiles/list";
 import { VideoStudioPage } from "@/pages/ai-studio/video";
 import ExamplesPage from "@/components/examples";
+import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
 
 const SystemHealthPage = lazy(() => import("@/pages/admin/system-health"));
 export function AppRoutes() {
@@ -112,6 +113,10 @@ export function AppRoutes() {
             element={<ContentRequestListPage />}
           />
           <Route path="/workspaces/:id/editor" element={<EditorPage />} />
+          <Route
+            path="/editor"
+            element={<WorkspaceScopedRedirect destination="editor" />}
+          />
           <Route
             path="/workspaces/:id/templates"
             element={<TemplateBrowserPage />}
