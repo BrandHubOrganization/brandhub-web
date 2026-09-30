@@ -22,10 +22,19 @@ export function WorkspaceCardGrid({ workspaces, onOpen }: Props) {
           onClick={() => onOpen(ws.id)}
           className="border-border bg-card hover:border-brand-orange/50 flex cursor-pointer flex-col justify-between overflow-hidden rounded-xl border text-left transition-colors"
         >
-          <div className="bg-brand-orange h-1.5" />
+          <div
+            className="h-1.5"
+            style={{ background: ws.brandColor || "#f05a28" }}
+          />
           <div className="flex-1 space-y-4 p-6">
             <div className="flex items-center gap-3">
-              <div className="bg-brand-orange-soft text-brand-orange flex size-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold">
+              <div
+                className="flex size-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold"
+                style={{
+                  background: `${ws.brandColor || "#f05a28"}1a`,
+                  color: ws.brandColor || "#f05a28",
+                }}
+              >
                 {ws.name.slice(0, 2).toUpperCase()}
               </div>
               <div className="min-w-0">

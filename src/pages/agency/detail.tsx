@@ -31,6 +31,7 @@ import { extractErrorMessage } from "@/utils/error";
 import { AGENCY_CATEGORIES, COMPANY_SIZES } from "@/pages/agency/constants";
 import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
 import { AgencyOrgChart } from "@/pages/agency/components/AgencyOrgChart";
+import { BannerUploader } from "@/components/shared/BannerUploader";
 import { WorkspaceCardGrid } from "@/pages/workspace/components/WorkspaceCardGrid";
 import type { Agency, AgencyCategory, CompanySize } from "@/types/agency";
 import type { Workspace } from "@/types/workspace";
@@ -46,12 +47,14 @@ export function AgencyDetailPage() {
   const currentUser = useAuthStore((s) => s.user);
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
   const logoInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
 
   const [agency, setAgency] = useState<Agency | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [confirmName, setConfirmName] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -274,6 +277,26 @@ export function AgencyDetailPage() {
     }
   };
 
+  const handleBannerFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !id) return;
+    setUploadingBanner(true);
+    try {
+      const { data } = await agencyService.uploadBanner(id, file);
+      applyAgency(data.data);
+      toast.success(t("agency.detail.uploadBannerSuccess"));
+    } catch (err: unknown) {
+      toast.error(
+        extractErrorMessage(err, t("agency.detail.uploadBannerFailed")),
+      );
+    } finally {
+      setUploadingBanner(false);
+    }
+  };
+
   if (loading) return null;
   if (!agency) return null;
 
@@ -302,6 +325,14 @@ export function AgencyDetailPage() {
           </div>
         )}
         <section className="space-y-6">
+          <BannerUploader
+            bannerUrl={agency.bannerUrl}
+            uploading={uploadingBanner}
+            fileInputRef={bannerInputRef}
+            onFileChange={handleBannerFileChange}
+            uploadLabel={t("agency.detail.uploadBannerButton")}
+            emptyLabel={t("agency.detail.bannerEmptyLabel")}
+          />
           <div className="bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-xs">
             <div className="flex items-center gap-3">
               <div

@@ -39,6 +39,7 @@ export interface CreateWorkspaceRequest {
   linkedinUrl?: string;
   instagramUrl?: string;
   assignMembers?: AssignEntry[];
+  industryFields?: Record<string, unknown>;
 }
 
 export interface UpdateWorkspaceSettingsRequest {
@@ -127,6 +128,16 @@ export const workspaceService = {
     formData.append("file", file);
     return api.post<ApiResponse<Workspace>>(
       `/api/v1/workspaces/${workspaceId}/logo`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+  },
+
+  uploadBanner: (workspaceId: string, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<Workspace>>(
+      `/api/v1/workspaces/${workspaceId}/banner`,
       formData,
       { headers: { "Content-Type": "multipart/form-data" } },
     );

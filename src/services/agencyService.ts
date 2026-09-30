@@ -139,4 +139,13 @@ export const agencyService = {
       { headers: { "Content-Type": "multipart/form-data" } },
     );
   },
+  uploadBanner: (agencyId: string, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<Agency>>(
+      `/api/v1/agencies/${agencyId}/banner`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+  },
 };

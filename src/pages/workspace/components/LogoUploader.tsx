@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 interface Props {
   name: string;
   logoUrl: string | null;
+  brandColor?: string | null;
   uploading: boolean;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -13,6 +14,7 @@ interface Props {
 export function LogoUploader({
   name,
   logoUrl,
+  brandColor,
   uploading,
   fileInputRef,
   onFileChange,
@@ -21,7 +23,13 @@ export function LogoUploader({
 
   return (
     <div className="border-border bg-card mb-4 flex max-w-sm flex-col items-center gap-4 rounded-xl border p-6">
-      <div className="bg-brand-orange flex size-20 items-center justify-center overflow-hidden rounded-full text-2xl font-semibold text-white">
+      <div
+        className="flex size-20 items-center justify-center overflow-hidden rounded-full text-2xl font-semibold"
+        style={{
+          background: logoUrl ? undefined : `${brandColor || "#f05a28"}1a`,
+          color: logoUrl ? undefined : brandColor || "#f05a28",
+        }}
+      >
         {logoUrl ? (
           <img src={logoUrl} alt={name} className="size-full object-cover" />
         ) : (
