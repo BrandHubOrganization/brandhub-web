@@ -3,12 +3,10 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
-  Building2,
   Globe,
   MapPin,
   Pencil,
   Phone,
-  Tag,
   TriangleAlert,
   Users,
 } from "lucide-react";
@@ -18,6 +16,7 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useWorkspaceSettings } from "./hooks/useWorkspaceSettings";
 import { LogoUploader } from "./components/LogoUploader";
+import { BannerUploader } from "@/components/shared/BannerUploader";
 import { PlatformToggle } from "./components/PlatformToggle";
 import { FrequencyToggle } from "./components/FrequencyToggle";
 import { TimezoneSelect } from "./components/TimezoneSelect";
@@ -29,27 +28,8 @@ import type { CompanySize, WorkspaceIndustry } from "@/types/workspace";
 import { workspaceService } from "@/services/workspaceService";
 import { workspaceTemplateService } from "@/services/workspaceTemplateService";
 import { extractErrorMessage } from "@/utils/error";
-
-/** Một dòng thông tin trong preview — ẩn khi chưa có giá trị. */
-function PreviewRow({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex items-start gap-2">
-      <Icon className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
-      <div className="min-w-0">
-        <p className="text-muted-foreground text-2xs">{label}</p>
-        <p className="text-foreground truncate text-xs">{value}</p>
-      </div>
-    </div>
-  );
-}
+import { IndustrySpecificFields } from "./components/IndustrySpecificFields";
+import { WorkspacePreviewCard } from "./components/WorkspacePreviewCard";
 
 export function WorkspaceSettingsPage() {
   const { t } = useTranslation();
@@ -63,6 +43,8 @@ export function WorkspaceSettingsPage() {
     defaultPlatforms,
     reportFrequency,
     logoUrl,
+    bannerUrl,
+    brandColor,
     industry,
     setIndustry,
     companySize,
@@ -76,10 +58,13 @@ export function WorkspaceSettingsPage() {
     canManage,
     canDelete,
     uploadingLogo,
+    uploadingBanner,
     fileInputRef,
+    bannerInputRef,
     toggleWorkspacePlatform,
     toggleReportFrequency,
     handleLogoChange,
+    handleBannerChange,
     handleSubmit,
   } = useWorkspaceSettings();
   const { id: workspaceId } = useParams<{ id: string }>();
@@ -91,6 +76,9 @@ export function WorkspaceSettingsPage() {
   const [templateOpen, setTemplateOpen] = useState(false);
   const [templateName, setTemplateName] = useState("");
   const [savingTemplate, setSavingTemplate] = useState(false);
+  const [templateIndustryFields, setTemplateIndustryFields] = useState<
+    Record<string, unknown>
+  >({});
 
   const handleSaveTemplate = async () => {
     if (!workspaceId || !templateName.trim()) return;
@@ -99,15 +87,33 @@ export function WorkspaceSettingsPage() {
       await workspaceTemplateService.save({
         name: templateName.trim(),
         sourceWorkspaceId: workspaceId,
-        configSnapshot: JSON.stringify({
+        config: {
+          industry: industry || null,
+          companySize: companySize || null,
+          website: website.trim() || null,
+          phone: phone.trim() || null,
+          location: location.trim() || null,
+          description: null,
+          brandColor: null,
+          logoIcon: null,
+          tagline: null,
+          foundedYear: null,
+          facebookUrl: null,
+          linkedinUrl: null,
+          instagramUrl: null,
           timezone,
           defaultPlatforms,
           reportFrequency,
-        }),
+          industryFields:
+            Object.keys(templateIndustryFields).length > 0
+              ? templateIndustryFields
+              : null,
+        },
       });
       toast.success(t("workspace.settings.template.saveSuccess"));
       setTemplateOpen(false);
       setTemplateName("");
+      setTemplateIndustryFields({});
     } catch (err) {
       toast.error(
         extractErrorMessage(err, t("workspace.settings.template.saveError")),
@@ -155,13 +161,24 @@ export function WorkspaceSettingsPage() {
         </div>
 
         {canManage && (
-          <LogoUploader
-            name={name}
-            logoUrl={logoUrl}
-            uploading={uploadingLogo}
-            fileInputRef={fileInputRef}
-            onFileChange={handleLogoChange}
-          />
+          <>
+            <BannerUploader
+              bannerUrl={bannerUrl}
+              uploading={uploadingBanner}
+              fileInputRef={bannerInputRef}
+              onFileChange={handleBannerChange}
+              uploadLabel={t("workspace.settings.bannerUploadButton")}
+              emptyLabel={t("workspace.settings.bannerEmptyLabel")}
+            />
+            <LogoUploader
+              name={name}
+              logoUrl={logoUrl}
+              brandColor={brandColor}
+              uploading={uploadingLogo}
+              fileInputRef={fileInputRef}
+              onFileChange={handleLogoChange}
+            />
+          </>
         )}
 
         <div className="bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-xs">
@@ -290,80 +307,17 @@ export function WorkspaceSettingsPage() {
                 <p className="text-muted-foreground mb-4 text-xs">
                   {t("workspace.settings.preview.hint")}
                 </p>
-                <div className="flex items-center gap-3">
-                  {logoUrl ? (
-                    <img
-                      src={logoUrl}
-                      alt=""
-                      className="border-border size-14 shrink-0 rounded-full border object-cover"
-                    />
-                  ) : (
-                    <div className="bg-brand-orange-soft text-brand-orange flex size-14 shrink-0 items-center justify-center rounded-full text-lg font-bold">
-                      {name ? (
-                        name.charAt(0).toUpperCase()
-                      ) : (
-                        <Building2 className="size-6" />
-                      )}
-                    </div>
-                  )}
-                  <div className="min-w-0">
-                    <p className="text-foreground truncate text-sm font-semibold">
-                      {name || t("workspace.settings.preview.emptyName")}
-                    </p>
-                    <p className="text-muted-foreground truncate text-xs">
-                      {timezone}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4 space-y-3">
-                  {industry ? (
-                    <PreviewRow
-                      icon={Tag}
-                      label={t("workspace.create.industryLabel")}
-                      value={t(`workspace.industry.${industry}`)}
-                    />
-                  ) : null}
-                  {companySize ? (
-                    <PreviewRow
-                      icon={Users}
-                      label={t("workspace.create.companySizeLabel")}
-                      value={t(`agency.companySize.${companySize}`)}
-                    />
-                  ) : null}
-                  {website.trim() ? (
-                    <PreviewRow
-                      icon={Globe}
-                      label={t("workspace.create.websiteLabel")}
-                      value={website.trim()}
-                    />
-                  ) : null}
-                  {phone.trim() ? (
-                    <PreviewRow
-                      icon={Phone}
-                      label={t("workspace.create.phoneLabel")}
-                      value={phone.trim()}
-                    />
-                  ) : null}
-                  {location.trim() ? (
-                    <PreviewRow
-                      icon={MapPin}
-                      label={t("workspace.create.locationLabel")}
-                      value={location.trim()}
-                    />
-                  ) : null}
-                </div>
-                {defaultPlatforms.length > 0 && (
-                  <div className="border-border mt-4 flex flex-wrap gap-1.5 border-t pt-4">
-                    {defaultPlatforms.map((p) => (
-                      <span
-                        key={p}
-                        className="bg-muted text-muted-foreground text-2xs rounded-full px-2 py-0.5 font-medium capitalize"
-                      >
-                        {p}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <WorkspacePreviewCard
+                  name={name}
+                  timezone={timezone}
+                  logoUrl={logoUrl}
+                  industry={industry || null}
+                  companySize={companySize || null}
+                  website={website}
+                  phone={phone}
+                  location={location}
+                  defaultPlatforms={defaultPlatforms}
+                />
               </div>
             </div>
           ) : (
@@ -487,6 +441,11 @@ export function WorkspaceSettingsPage() {
               onChange={(e) => setTemplateName(e.target.value)}
               placeholder={t("workspace.settings.template.namePlaceholder")}
             />
+            <IndustrySpecificFields
+              industry={industry}
+              value={templateIndustryFields}
+              onChange={setTemplateIndustryFields}
+            />
             <div className="flex justify-end gap-2">
               <Button
                 variant="outline"
@@ -494,6 +453,7 @@ export function WorkspaceSettingsPage() {
                 onClick={() => {
                   setTemplateOpen(false);
                   setTemplateName("");
+                  setTemplateIndustryFields({});
                 }}
               >
                 {t("workspace.settings.danger.cancel")}

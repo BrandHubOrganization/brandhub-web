@@ -49,7 +49,13 @@
     "clientInviteDuplicate": "This email is already in the list",
     "clientInviteUserMatch": "{{name}} already has an account",
     "clientInviteFailed": "Failed to send {{count}} client invitation(s) — the email may already exist or have a pending invite",
-    "submit": "Create workspace"
+    "submit": "Create workspace",
+    "startFromTemplate": "Start from a template",
+    "templatePlaceholder": "No template",
+    "templateApplied": "Prefilled from template \"{{name}}\" — you can still edit any field.",
+    "noTemplateCard": "No template",
+    "previewDialogTitle": "Template preview",
+    "useThisTemplate": "Use this template"
   },
   "industry": {
     "FNB": "Food & Beverage",
@@ -75,6 +81,9 @@
     "save": "Save changes",
     "saveSuccess": "Settings saved successfully",
     "logoUploadButton": "Upload logo",
+    "bannerUploadButton": "Upload banner",
+    "bannerUploadSuccess": "Banner updated",
+    "bannerEmptyLabel": "No banner yet",
     "logoInvalidType": "Only JPEG, PNG, or WebP files are accepted",
     "logoTooLarge": "Logo must not exceed 5MB",
     "logoUploadSuccess": "Logo updated",
@@ -113,7 +122,22 @@
     "deleteError": "Failed to delete template",
     "deleteConfirmTitle": "Delete template?",
     "deleteConfirmDescription": "\"{{name}}\" will be permanently deleted. This cannot be undone.",
-    "deleteButton": "Delete"
+    "deleteButton": "Delete",
+    "applyButton": "Use template",
+    "applyDialogTitle": "Use this template",
+    "applyToNew": "Create a new workspace from this template",
+    "applyToExisting": "Apply to an existing workspace",
+    "selectWorkspacePlaceholder": "Select a workspace",
+    "selectFieldsHint": "Fields with a value in this template will overwrite the workspace's current settings.",
+    "applySuccess": "Template applied",
+    "applyError": "Failed to apply template",
+    "adminTitle": "Workspace template library",
+    "adminDescription": "All workspace templates across every agency (read-only).",
+    "adminAgencyId": "Agency",
+    "adminGlobalBadge": "Global template",
+    "adminCreateButton": "Create global template",
+    "adminCreateSuccess": "Global template created",
+    "adminCreateError": "Failed to create global template"
   },
   "noRole": "—",
   "reportFrequency": {
@@ -196,6 +220,34 @@
       "manageRoles": "Manage roles",
       "viewAnalytics": "View analytics",
       "editWorkspace": "Edit workspace"
+    }
+  },
+  "industryFields": {
+    "sectionTitle": "Industry-specific details",
+    "fnb": {
+      "cuisineType": "Cuisine type",
+      "seatingCapacity": "Seating capacity",
+      "deliveryPlatforms": "Delivery platforms"
+    },
+    "fashion": {
+      "productCategories": "Product categories",
+      "seasonalCollections": "Seasonal collections"
+    },
+    "beauty": {
+      "serviceTypes": "Service types",
+      "certifications": "Certifications"
+    },
+    "technology": {
+      "techStack": "Tech stack",
+      "productType": "Product type"
+    },
+    "realEstate": {
+      "propertyTypes": "Property types",
+      "serviceAreas": "Service areas"
+    },
+    "other": {
+      "specialization": "Specialization",
+      "specializationOtherPlaceholder": "Enter your specialization"
     }
   }
 }

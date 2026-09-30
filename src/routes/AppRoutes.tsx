@@ -62,6 +62,9 @@ import ExamplesPage from "@/components/examples";
 import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
 
 const SystemHealthPage = lazy(() => import("@/pages/admin/system-health"));
+const WorkspaceTemplateLibraryPage = lazy(
+  () => import("@/pages/admin/WorkspaceTemplateLibrary"),
+);
 export function AppRoutes() {
   return (
     <Routes>
@@ -155,7 +158,22 @@ export function AppRoutes() {
           <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
           <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
           <Route path="/admin" element={<AdminPage />} />
-          <Route path="/admin/system-health" element={<Suspense fallback={null}><SystemHealthPage /></Suspense>} />
+          <Route
+            path="/admin/system-health"
+            element={
+              <Suspense fallback={null}>
+                <SystemHealthPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/workspace-templates"
+            element={
+              <Suspense fallback={null}>
+                <WorkspaceTemplateLibraryPage />
+              </Suspense>
+            }
+          />
           <Route path="/requests" element={<ContentRequestListPage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/templates" element={<TemplateBrowserPage />} />

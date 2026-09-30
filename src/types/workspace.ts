@@ -30,6 +30,7 @@ export interface Workspace {
   name: string;
   agencyId: string | null;
   logoUrl: string | null;
+  bannerUrl: string | null;
   settings: WorkspaceSettings;
   industry: WorkspaceIndustry | null;
   companySize: CompanySize | null;
@@ -119,12 +120,32 @@ export interface WorkspaceDashboard {
   agencyAiCreditsUsedThisMonth: number;
 }
 
+export interface WorkspaceTemplateConfig {
+  industry: WorkspaceIndustry | null;
+  companySize: CompanySize | null;
+  website: string | null;
+  phone: string | null;
+  location: string | null;
+  description: string | null;
+  brandColor: string | null;
+  logoIcon: string | null;
+  tagline: string | null;
+  foundedYear: number | null;
+  facebookUrl: string | null;
+  linkedinUrl: string | null;
+  instagramUrl: string | null;
+  timezone: string | null;
+  defaultPlatforms: string[] | null;
+  reportFrequency: ReportFrequency | null;
+  industryFields: Record<string, unknown> | null;
+}
+
 export interface WorkspaceTemplate {
   id: string;
   agencyId: string;
   name: string;
   sourceWorkspaceId: string | null;
-  configSnapshot: string;
+  config: WorkspaceTemplateConfig;
   createdBy: string;
   createdAt: string;
 }
