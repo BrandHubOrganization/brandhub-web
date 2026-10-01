@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useUserLookup } from "@/hooks/useUserLookup";
 import { useDebounce } from "@/hooks/useDebounce";
 import { agencyService } from "@/services/agencyService";
@@ -24,6 +25,8 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   workspaceId: string;
   agencyId: string;
+  workspaceName: string | null;
+  agencyName: string | null;
   onInvited: () => void;
 }
 
@@ -36,6 +39,8 @@ export function AddClientDialog({
   onOpenChange,
   workspaceId,
   agencyId,
+  workspaceName,
+  agencyName,
   onInvited,
 }: Props) {
   const { t } = useTranslation();
@@ -47,12 +52,23 @@ export function AddClientDialog({
   const userMatch = useUserLookup(email);
 
   useEffect(() => {
-    if (!open) {
+    if (open) {
+      setNote(
+        t("workspace.members.addClientNoteTemplate", {
+          agency:
+            agencyName ?? t("workspace.members.addClientNoteFallbackAgency"),
+          workspace:
+            workspaceName ??
+            t("workspace.members.addClientNoteFallbackWorkspace"),
+        }),
+      );
+    } else {
       setEmail("");
       setNote("");
       setLookup(null);
     }
-  }, [open]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, agencyName, workspaceName]);
 
   useEffect(() => {
     if (!EMAIL_RE.test(debouncedEmail)) {
@@ -135,10 +151,11 @@ export function AddClientDialog({
             </p>
           )}
 
-          <Input
+          <Textarea
             placeholder={t("workspace.members.inviteNotePlaceholder")}
             value={note}
             onChange={(e) => setNote(e.target.value)}
+            rows={3}
           />
         </div>
 

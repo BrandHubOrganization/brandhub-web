@@ -15,8 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useWorkspaceSettings } from "./hooks/useWorkspaceSettings";
-import { LogoUploader } from "./components/LogoUploader";
-import { BannerUploader } from "@/components/shared/BannerUploader";
+import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
 import { PlatformToggle } from "./components/PlatformToggle";
 import { FrequencyToggle } from "./components/FrequencyToggle";
 import { TimezoneSelect } from "./components/TimezoneSelect";
@@ -160,31 +159,49 @@ export function WorkspaceSettingsPage() {
           </p>
         </div>
 
-        {canManage && (
-          <>
-            <BannerUploader
-              bannerUrl={bannerUrl}
-              uploading={uploadingBanner}
-              fileInputRef={bannerInputRef}
-              onFileChange={handleBannerChange}
-              uploadLabel={t("workspace.settings.bannerUploadButton")}
-              emptyLabel={t("workspace.settings.bannerEmptyLabel")}
-            />
-            <LogoUploader
-              name={name}
-              logoUrl={logoUrl}
-              brandColor={brandColor}
-              uploading={uploadingLogo}
-              fileInputRef={fileInputRef}
-              onFileChange={handleLogoChange}
-            />
-          </>
-        )}
-
-        <div className="bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-base font-semibold">{name}</p>
-            {canManage && !isEditing && (
+        <ProfileBannerHeader
+          bannerUrl={bannerUrl}
+          uploadingBanner={uploadingBanner}
+          bannerInputRef={bannerInputRef}
+          onBannerFileChange={handleBannerChange}
+          uploadBannerLabel={t("workspace.settings.bannerUploadButton")}
+          bannerEmptyLabel={t("workspace.settings.bannerEmptyLabel")}
+          canEditBanner={canManage}
+          logo={
+            logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={name}
+                className="size-full object-cover"
+              />
+            ) : (
+              <div
+                className="flex size-full items-center justify-center text-xl font-bold"
+                style={{
+                  background: brandColor ? `${brandColor}1a` : "#f05a281a",
+                  color: brandColor || "#f05a28",
+                }}
+              >
+                {(name || "?").charAt(0).toUpperCase()}
+              </div>
+            )
+          }
+          canEditLogo={canManage && isEditing}
+          uploadingLogo={uploadingLogo}
+          logoInputRef={fileInputRef}
+          onLogoFileChange={handleLogoChange}
+          uploadLogoTitle={t("workspace.settings.logoUpload")}
+          title={name}
+          subtitle={
+            [
+              industry ? t(`workspace.industry.${industry}`) : null,
+              companySize ? t(`agency.companySize.${companySize}`) : null,
+            ]
+              .filter(Boolean)
+              .join(" · ") || null
+          }
+          actions={
+            canManage && !isEditing ? (
               <Button
                 variant="outline"
                 size="sm"
@@ -194,8 +211,9 @@ export function WorkspaceSettingsPage() {
                 <Pencil className="size-3.5" />
                 {t("workspace.settings.editButton")}
               </Button>
-            )}
-          </div>
+            ) : null
+          }
+        >
 
           {isEditing ? (
             <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
@@ -385,7 +403,7 @@ export function WorkspaceSettingsPage() {
               </div>
             </>
           )}
-        </div>
+        </ProfileBannerHeader>
 
         {canManage && !isEditing && (
           <div className="flex max-w-sm gap-2">

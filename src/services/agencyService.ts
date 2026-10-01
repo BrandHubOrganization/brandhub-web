@@ -18,6 +18,7 @@ import type { UpdateClientProfileRequest } from "@/types/clientProfile";
 export interface CreateAgencyRequest {
   name: string;
   logoUrl?: string;
+  bannerUrl?: string;
   description?: string;
   category?: AgencyCategory;
   companySize?: CompanySize;

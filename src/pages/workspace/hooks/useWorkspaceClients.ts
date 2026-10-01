@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { workspaceService } from "@/services/workspaceService";
+import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
 import { MANAGE_ROLES } from "./useWorkspaceMembers";
 import type { WorkspaceMember } from "@/types/workspace";
@@ -18,6 +19,8 @@ export function useWorkspaceClients() {
   const [loading, setLoading] = useState(true);
   const [reloadCount, setReloadCount] = useState(0);
   const [agencyId, setAgencyId] = useState<string | null>(null);
+  const [workspaceName, setWorkspaceName] = useState<string | null>(null);
+  const [agencyName, setAgencyName] = useState<string | null>(null);
   const [addClientOpen, setAddClientOpen] = useState(false);
   const [removeTarget, setRemoveTarget] = useState<WorkspaceMember | null>(
     null,
@@ -39,10 +42,19 @@ export function useWorkspaceClients() {
 
   useEffect(() => {
     if (!workspaceId) return;
-    workspaceService
-      .getById(workspaceId)
-      .then(({ data }) => setAgencyId(data.data.agencyId));
+    workspaceService.getById(workspaceId).then(({ data }) => {
+      setAgencyId(data.data.agencyId);
+      setWorkspaceName(data.data.name);
+    });
   }, [workspaceId]);
+
+  useEffect(() => {
+    if (!agencyId) return;
+    agencyService
+      .getById(agencyId)
+      .then(({ data }) => setAgencyName(data.data.name))
+      .catch(() => setAgencyName(null));
+  }, [agencyId]);
 
   const clients = members.filter((m) => m.role === "CLIENT");
   const internalMember = members.find((m) => m.userId === currentUserId);
@@ -72,6 +84,8 @@ export function useWorkspaceClients() {
     loadMembers,
     canManage,
     agencyId,
+    workspaceName,
+    agencyName,
     addClientOpen,
     setAddClientOpen,
     removeTarget,

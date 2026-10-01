@@ -31,7 +31,7 @@ import { extractErrorMessage } from "@/utils/error";
 import { AGENCY_CATEGORIES, COMPANY_SIZES } from "@/pages/agency/constants";
 import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
 import { AgencyOrgChart } from "@/pages/agency/components/AgencyOrgChart";
-import { BannerUploader } from "@/components/shared/BannerUploader";
+import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
 import { WorkspaceCardGrid } from "@/pages/workspace/components/WorkspaceCardGrid";
 import type { Agency, AgencyCategory, CompanySize } from "@/types/agency";
 import type { Workspace } from "@/types/workspace";
@@ -325,54 +325,93 @@ export function AgencyDetailPage() {
           </div>
         )}
         <section className="space-y-6">
-          <BannerUploader
+          <ProfileBannerHeader
             bannerUrl={agency.bannerUrl}
-            uploading={uploadingBanner}
-            fileInputRef={bannerInputRef}
-            onFileChange={handleBannerFileChange}
-            uploadLabel={t("agency.detail.uploadBannerButton")}
-            emptyLabel={t("agency.detail.bannerEmptyLabel")}
-          />
-          <div className="bg-card flex flex-col gap-4 rounded-xl border p-5 shadow-xs">
-            <div className="flex items-center gap-3">
-              <div
-                className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg"
-                style={{
-                  background: agency.logoUrl
-                    ? undefined
-                    : `${agency.brandColor ?? "#f05a28"}1a`,
-                  color: agency.brandColor ?? undefined,
-                }}
-              >
-                {agency.logoUrl ? (
-                  <img
-                    src={agency.logoUrl}
-                    alt={agency.name}
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  <FallbackIcon
-                    className="size-6"
-                    style={{ color: agency.brandColor ?? undefined }}
-                  />
-                )}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-base font-semibold">
-                  {agency.name}
-                </p>
-                {agency.tagline && (
-                  <p className="text-muted-foreground truncate text-xs">
-                    {agency.tagline}
-                  </p>
-                )}
-                {!isOwner && (
-                  <p className="text-muted-foreground text-xs">
-                    {t("agency.detail.ownerOnlyHint")}
-                  </p>
-                )}
-              </div>
-            </div>
+            uploadingBanner={uploadingBanner}
+            bannerInputRef={bannerInputRef}
+            onBannerFileChange={handleBannerFileChange}
+            uploadBannerLabel={t("agency.detail.uploadBannerButton")}
+            bannerEmptyLabel={t("agency.detail.bannerEmptyLabel")}
+            canEditBanner={isOwner}
+            logo={
+              (isEditing ? logoUrl : agency.logoUrl) ? (
+                <img
+                  src={(isEditing ? logoUrl : agency.logoUrl) || ""}
+                  alt={isEditing ? name || agency.name : agency.name}
+                  className="size-full object-cover"
+                />
+              ) : (
+                (() => {
+                  const CurrentIcon = isEditing
+                    ? getLogoIcon(logoIcon)
+                    : FallbackIcon;
+                  return (
+                    <div
+                      className="flex size-full items-center justify-center"
+                      style={{
+                        background: (isEditing ? brandColor : agency.brandColor)
+                          ? `${isEditing ? brandColor : agency.brandColor}1a`
+                          : "#f05a281a",
+                        color:
+                          (isEditing ? brandColor : agency.brandColor) ||
+                          "#f05a28",
+                      }}
+                    >
+                      <CurrentIcon
+                        className="size-12 sm:size-14"
+                        style={{
+                          color:
+                            (isEditing ? brandColor : agency.brandColor) ||
+                            "#f05a28",
+                        }}
+                      />
+                    </div>
+                  );
+                })()
+              )
+            }
+            canEditLogo={isOwner && isEditing}
+            uploadingLogo={uploadingLogo}
+            logoInputRef={logoInputRef}
+            onLogoFileChange={handleLogoFileChange}
+            uploadLogoTitle={t("agency.detail.uploadLogoButton")}
+            title={isEditing ? name || agency.name : agency.name}
+            subtitle={agency.tagline}
+            hint={!isOwner ? t("agency.detail.ownerOnlyHint") : null}
+            actions={
+              isOwner && !isEditing ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-fit cursor-pointer gap-1.5"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <Pencil className="size-3.5" />
+                  {t("agency.detail.editButton")}
+                </Button>
+              ) : isOwner && isEditing ? (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCancelEdit}
+                    className="cursor-pointer"
+                  >
+                    {t("agency.detail.cancelButton")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    loading={saving}
+                    disabled={hasErrors || !name.trim()}
+                    onClick={handleSave}
+                    className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white"
+                  >
+                    {t("agency.detail.saveButton")}
+                  </Button>
+                </div>
+              ) : null
+            }
+          >
 
             {isEditing ? (
               <div className="space-y-4">
@@ -702,20 +741,9 @@ export function AgencyDetailPage() {
                     )}
                   </div>
                 )}
-                {isOwner && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-fit cursor-pointer gap-1.5"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    <Pencil className="size-3.5" />
-                    {t("agency.detail.editButton")}
-                  </Button>
-                )}
               </>
             )}
-          </div>
+          </ProfileBannerHeader>
 
           {isOwner && !isEditing && (
             <div className="bg-brand-orange-soft flex flex-col gap-3 rounded-xl border border-dashed p-5">

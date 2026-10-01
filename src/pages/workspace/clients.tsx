@@ -43,6 +43,8 @@ export function WorkspaceClientsPage() {
             onOpenChange={state.setAddClientOpen}
             workspaceId={state.workspaceId}
             agencyId={state.agencyId}
+            workspaceName={state.workspaceName}
+            agencyName={state.agencyName}
             onInvited={state.loadMembers}
           />
         )}

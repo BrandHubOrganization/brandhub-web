@@ -6,23 +6,63 @@ import { Button } from "@/components/ui/button";
 import { Inbox } from "lucide-react";
 import { toast } from "sonner";
 import { agencyService } from "@/services/agencyService";
+import { workspaceService } from "@/services/workspaceService";
 import { extractErrorMessage, isNotFoundError } from "@/utils/error";
-import type { AgencyInvitation } from "@/types/agency";
+
+// Gộp 2 nguồn lời mời (agency_invitations cho MANAGER/CREATOR,
+// workspace_invitations cho CLIENT — xem useWorkspaceClients/AddClientDialog)
+// vào cùng 1 tab, nếu không client được mời sẽ không bao giờ thấy lời mời của mình.
+type UnifiedInvitation = {
+  id: string;
+  token: string;
+  source: "AGENCY" | "WORKSPACE";
+  role: string | null;
+  agencyName: string | null;
+  expiresAt: string;
+};
 
 export function AgencyInvitationsPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [invitations, setInvitations] = useState<AgencyInvitation[]>([]);
+  const [invitations, setInvitations] = useState<UnifiedInvitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
 
   useEffect(() => {
-    agencyService
-      .listMyPendingInvitations()
-      .then(({ data }) => setInvitations(data.data ?? []))
+    Promise.all([
+      agencyService.listMyPendingInvitations().catch((err: unknown) => {
+        if (isNotFoundError(err)) return { data: { data: [] } };
+        throw err;
+      }),
+      workspaceService.listMyPendingInvitations().catch((err: unknown) => {
+        if (isNotFoundError(err)) return { data: { data: [] } };
+        throw err;
+      }),
+    ])
+      .then(([agencyRes, workspaceRes]) => {
+        const agencyInvs: UnifiedInvitation[] = (agencyRes.data.data ?? []).map(
+          (inv) => ({
+            id: inv.id,
+            token: inv.token,
+            source: "AGENCY" as const,
+            role: inv.role,
+            agencyName: inv.agencyName,
+            expiresAt: inv.expiresAt,
+          }),
+        );
+        const workspaceInvs: UnifiedInvitation[] = (
+          workspaceRes.data.data ?? []
+        ).map((inv) => ({
+          id: inv.id,
+          token: inv.token,
+          source: "WORKSPACE" as const,
+          role: inv.role,
+          agencyName: inv.workspaceName,
+          expiresAt: inv.expiresAt,
+        }));
+        setInvitations([...agencyInvs, ...workspaceInvs]);
+      })
       .catch((err: unknown) => {
-        // Không có lời mời nào (404) là bình thường — hiện empty state, không báo lỗi.
-        if (isNotFoundError(err)) return;
         toast.error(
           extractErrorMessage(err, t("agency.errors.invitationsLoadFailed")),
         );
@@ -30,7 +70,17 @@ export function AgencyInvitationsPage() {
       .finally(() => setLoading(false));
   }, [t]);
 
-  const handleAccept = async (inv: AgencyInvitation) => {
+  const handleAccept = (inv: UnifiedInvitation) => {
+    // Role CLIENT bắt chọn/tạo ClientProfile trước khi accept — dùng lại
+    // trang picker có sẵn thay vì accept thẳng (xem /agency/accept).
+    if (inv.role === "CLIENT") {
+      navigate(`/invitations/accept?token=${inv.token}`);
+      return;
+    }
+    acceptDirectly(inv);
+  };
+
+  const acceptDirectly = async (inv: UnifiedInvitation) => {
     setBusy(inv.token);
     try {
       await agencyService.acceptInvitation(inv.token);
@@ -47,10 +97,14 @@ export function AgencyInvitationsPage() {
     }
   };
 
-  const handleDecline = async (inv: AgencyInvitation) => {
+  const handleDecline = async (inv: UnifiedInvitation) => {
     setBusy(inv.token);
     try {
-      await agencyService.declineInvitation(inv.token);
+      if (inv.source === "AGENCY") {
+        await agencyService.declineInvitation(inv.token);
+      } else {
+        await workspaceService.declineInvitation(inv.token);
+      }
       setInvitations((prev) => prev.filter((i) => i.id !== inv.id));
       toast.success(t("agency.invitations.declineSuccess"));
     } catch (err: unknown) {

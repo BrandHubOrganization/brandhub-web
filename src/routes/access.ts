@@ -57,6 +57,12 @@ export function resolveAccessRule(pathname: string): AccessRule | null {
   // hiển thị. No-op với pathname chưa có prefix (Sidebar gọi canAccess
   // bằng item.to gốc trước khi áp workspaceScoped substitution).
   const stripped = pathname.replace(/^\/workspaces\/[^/]+/, "") || "/";
+  // /invitations/accept là trang accept lời mời (mọi role đã login dùng
+  // được, kể cả CLIENT chưa thuộc workspace nào) — không ăn theo rule
+  // OWNER/MANAGER của "/invitations" (danh sách lời mời quản lý agency).
+  if (stripped === "/invitations/accept") {
+    return null;
+  }
   // Boundary-aware: "/workspace" không được nuốt "/workspaces/*".
   const key = SORTED_KEYS.find(
     (k) => stripped === k || stripped.startsWith(k + "/"),
