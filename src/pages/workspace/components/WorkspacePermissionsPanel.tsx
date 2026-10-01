@@ -43,7 +43,10 @@ export function WorkspacePermissionsPanel({
   );
   const [pendingMemberId, setPendingMemberId] = useState<string | null>(null);
 
-  const handleRoleChange = async (member: WorkspaceMember, role: MemberRole) => {
+  const handleRoleChange = async (
+    member: WorkspaceMember,
+    role: MemberRole,
+  ) => {
     if (!workspaceId || role === member.role) return;
     setPendingMemberId(member.id);
     try {
@@ -106,7 +109,9 @@ export function WorkspacePermissionsPanel({
               <div className="flex items-center gap-2">
                 <Select
                   value={member.role}
-                  disabled={member.role === "OWNER" || pendingMemberId === member.id}
+                  disabled={
+                    member.role === "OWNER" || pendingMemberId === member.id
+                  }
                   onChange={(e) =>
                     handleRoleChange(member, e.target.value as MemberRole)
                   }
@@ -118,19 +123,18 @@ export function WorkspacePermissionsPanel({
                     </option>
                   ))}
                 </Select>
-                {member.role !== "OWNER" &&
-                  member.role !== "CLIENT" && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={pendingMemberId === member.id}
-                      className="gap-1.5 border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
-                      onClick={() => setRevokeTarget(member)}
-                    >
-                      <ShieldOff className="size-3.5" />
-                      {t("workspace.permissions.revokeButton")}
-                    </Button>
-                  )}
+                {member.role !== "OWNER" && member.role !== "CLIENT" && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={pendingMemberId === member.id}
+                    className="gap-1.5 border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
+                    onClick={() => setRevokeTarget(member)}
+                  >
+                    <ShieldOff className="size-3.5" />
+                    {t("workspace.permissions.revokeButton")}
+                  </Button>
+                )}
               </div>
             </div>
           ))}

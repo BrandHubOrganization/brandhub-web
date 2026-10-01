@@ -118,8 +118,7 @@ export function InternalMembersSection({
         target={removeTarget}
         isLastManager={Boolean(
           removeTarget?.role === "MANAGER" &&
-            members.filter((m) => m.role === "MANAGER" && m.isActive)
-              .length <= 1,
+          members.filter((m) => m.role === "MANAGER" && m.isActive).length <= 1,
         )}
       />
 
@@ -130,8 +129,7 @@ export function InternalMembersSection({
         onSubmit={handleLeave}
         isLastManager={Boolean(
           currentMember?.role === "MANAGER" &&
-            members.filter((m) => m.role === "MANAGER" && m.isActive)
-              .length <= 1,
+          members.filter((m) => m.role === "MANAGER" && m.isActive).length <= 1,
         )}
       />
 

@@ -34,14 +34,19 @@ export function AcceptInvitationPage() {
       clientProfileId?: string;
       newClientProfile?: UpdateClientProfileRequest;
     },
+    wsId?: string | null,
   ) => {
     setStatus("accepting");
+    const targetWsId = wsId ?? preview?.invitation.workspaceId;
     agencyService
       .acceptInvitation(tok, options)
       .then(() => {
         setStatus("success");
         toast.success(t("agency.accept.successToast"));
-        setTimeout(() => navigate("/agency"), 1200);
+        const targetUrl = targetWsId
+          ? `/workspaces/${targetWsId}/dashboard`
+          : "/agency";
+        setTimeout(() => navigate(targetUrl), 1200);
       })
       .catch((err: unknown) => {
         setStatus("error");
@@ -70,7 +75,7 @@ export function AcceptInvitationPage() {
           setStatus("picking");
         } else {
           // Role khác CLIENT: giữ hành vi accept 1 bước như cũ.
-          acceptNow(token);
+          acceptNow(token, undefined, resp.invitation.workspaceId);
         }
       })
       .catch((err: unknown) => {
@@ -86,12 +91,20 @@ export function AcceptInvitationPage() {
       toast.error(t("clientProfile.picker.requiredError"));
       return;
     }
-    acceptNow(token, { clientProfileId: selectedProfileId });
+    acceptNow(
+      token,
+      { clientProfileId: selectedProfileId },
+      preview?.invitation.workspaceId,
+    );
   };
 
   const handleCreateAndAccept = (data: UpdateClientProfileRequest) => {
     if (!token) return;
-    acceptNow(token, { newClientProfile: data });
+    acceptNow(
+      token,
+      { newClientProfile: data },
+      preview?.invitation.workspaceId,
+    );
   };
 
   return (
