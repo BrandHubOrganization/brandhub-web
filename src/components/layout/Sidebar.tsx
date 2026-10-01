@@ -115,6 +115,12 @@ const NAV_SECTIONS: NavSection[] = [
         workspaceScoped: true,
       },
       {
+        to: "/content-writing",
+        icon: FileEdit,
+        labelKey: "nav.contentWriting",
+        workspaceScoped: true,
+      },
+      {
         to: "/templates",
         icon: LayoutTemplate,
         labelKey: "nav.templates",

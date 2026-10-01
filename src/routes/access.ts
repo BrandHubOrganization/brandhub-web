@@ -23,6 +23,7 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/calendar": ["MANAGER", "CREATOR", "CLIENT"],
   "/library": ["MANAGER", "CREATOR", "CLIENT"],
   "/editor": ["MANAGER", "CREATOR"],
+  "/content-writing": ["CREATOR"],
   "/templates": ["MANAGER", "CREATOR"],
   "/hashtag-groups": ["MANAGER", "CREATOR"],
   "/publish": ["MANAGER", "CREATOR"],

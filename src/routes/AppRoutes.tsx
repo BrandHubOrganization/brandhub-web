@@ -33,6 +33,7 @@ import { PortalPage } from "@/pages/portal";
 import { WorkspaceClientProfilePage } from "@/pages/workspace/client-profile";
 import { AdminPage } from "@/pages/admin";
 import { EditorPage } from "@/pages/editor";
+import { ContentWritingPage } from "@/pages/content-writing";
 import { CalendarPage } from "@/pages/calendar";
 import { AnalyticsPage } from "@/pages/analytics";
 import { SocialAccountsPage } from "@/pages/social-accounts";
@@ -121,6 +122,14 @@ export function AppRoutes() {
             element={<WorkspaceScopedRedirect destination="editor" />}
           />
           <Route
+            path="/workspaces/:id/content-writing"
+            element={<ContentWritingPage />}
+          />
+          <Route
+            path="/content-writing"
+            element={<WorkspaceScopedRedirect destination="content-writing" />}
+          />
+          <Route
             path="/workspaces/:id/templates"
             element={<TemplateBrowserPage />}
           />
@@ -176,6 +185,7 @@ export function AppRoutes() {
           />
           <Route path="/requests" element={<ContentRequestListPage />} />
           <Route path="/editor" element={<EditorPage />} />
+          <Route path="/content-writing" element={<ContentWritingPage />} />
           <Route path="/templates" element={<TemplateBrowserPage />} />
           <Route path="/hashtag-groups" element={<HashtagGroupsPage />} />
           <Route path="/calendar" element={<CalendarPage />} />

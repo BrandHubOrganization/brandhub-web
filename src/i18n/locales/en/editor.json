@@ -2,6 +2,10 @@
   "submitSuccess": "Post submitted for approval successfully!",
   "submitEmptyError": "Please write the caption content before submitting for review",
   "submitError": "Error submitting post for review",
+  "contentWritingPage": {
+    "title": "Content Writing",
+    "description": "Google-Docs-style canvas editor — core rendering preview (FR 3.6.10)."
+  },
   "page": {
     "title": "Content Creator Studio",
     "description": "Compose multi-platform content with your AI Co-Pilot assistant.",
