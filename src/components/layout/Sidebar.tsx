@@ -202,7 +202,7 @@ const NAV_SECTIONS: NavSection[] = [
         to: "/social-accounts",
         icon: Link2,
         labelKey: "nav.socialAccounts",
-        hideInWorkspace: true,
+        workspaceScoped: true,
       },
       {
         to: "/subscription/plans",
