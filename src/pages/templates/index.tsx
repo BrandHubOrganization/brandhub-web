@@ -7,10 +7,12 @@ import { Search, Plus } from "lucide-react";
 import { useTemplates } from "./hooks/useTemplates";
 import { TemplateGridView } from "./components/TemplateGridView";
 import { useTranslation } from "react-i18next";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 export function TemplateBrowserPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const {
     searchTerm,
     setSearchTerm,
@@ -34,7 +36,10 @@ export function TemplateBrowserPage() {
       actions={
         <Button
           type="button"
-          onClick={() => navigate("/editor")}
+          onClick={() =>
+            currentWorkspace &&
+            navigate(`/workspaces/${currentWorkspace.id}/editor`)
+          }
           className="bg-brand-orange hover:bg-brand-orange/90 text-xs font-semibold text-white"
           size="sm"
         >
@@ -69,7 +74,10 @@ export function TemplateBrowserPage() {
           page={page}
           totalPages={totalPages}
           isLoading={isLoading}
-          onOpenEditor={() => navigate("/editor")}
+          onOpenEditor={() =>
+            currentWorkspace &&
+            navigate(`/workspaces/${currentWorkspace.id}/editor`)
+          }
           onPreview={handleOpenPreview}
           onDelete={handleDeleteTemplate}
           onPrevPage={() => setPage((p) => Math.max(0, p - 1))}

@@ -39,8 +39,18 @@ export function AssignMemberPicker({ agencyId, value, onChange }: Props) {
 
   if (members.length === 0) return null;
 
+  // Workspace chỉ có đúng 1 MANAGER active tại một thời điểm (MANAGER_ALREADY_ASSIGNED
+  // ở assignMembersInternal) — chặn chọn >1 MANAGER ngay từ UI, tránh tạo entry sẽ
+  // chắc chắn bị BE từ chối giữa batch.
+  const managerAlreadyPicked = value.some((v) => v.role === "MANAGER");
+
   return (
     <div className="border-border flex flex-col gap-2 rounded-lg border p-3">
+      {managerAlreadyPicked && (
+        <p className="text-muted-foreground text-xs">
+          {t("workspace.create.assignManagerLimitHint")}
+        </p>
+      )}
       {members.map((m) => {
         const entry = value.find((v) => v.userId === m.userId);
         return (
@@ -68,7 +78,15 @@ export function AssignMemberPicker({ agencyId, value, onChange }: Props) {
                 className="w-44 shrink-0"
               >
                 {ASSIGNABLE_ROLES.map((r) => (
-                  <option key={r} value={r}>
+                  <option
+                    key={r}
+                    value={r}
+                    disabled={
+                      r === "MANAGER" &&
+                      managerAlreadyPicked &&
+                      entry.role !== "MANAGER"
+                    }
+                  >
                     {t(`workspace.roles.${r}`)}
                   </option>
                 ))}

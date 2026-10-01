@@ -1,21 +1,28 @@
 {
   "title": "Reports",
-  "description": "Team productivity, exports, and scheduled reports.",
+  "description": "Company-wide report — filter by date range, customize visible sections, print/export as PDF.",
   "loadError": "Failed to load reports data.",
   "retry": "Retry",
-  "team": {
-    "title": "Team Productivity",
-    "member": "Member",
-    "postsCreated": "Posts Created",
-    "postsApproved": "Posts Approved",
-    "avgApprovalTime": "Avg. Approval Time",
-    "aiGenerationsUsed": "AI Generations Used",
-    "hoursValue": "{{value}}h"
+  "noAgencySelected": "Select a company to view its report.",
+  "print": "Print / Export PDF",
+  "allTime": "All time",
+  "generatedAt": "Generated at",
+  "filters": {
+    "from": "From",
+    "to": "To"
   },
-  "export": {
-    "pdf": "Export PDF",
-    "excel": "Export Excel",
-    "unavailable": "Export is not available in this demo."
+  "sections": {
+    "overview": "Overview",
+    "membersByRole": "Members by role",
+    "workspacesByIndustry": "Workspaces by industry",
+    "contentByStatus": "Content by status",
+    "memberGrowth": "Member growth",
+    "postsPublished": "Content published by month"
+  },
+  "overview": {
+    "memberCount": "Total members",
+    "workspaceCount": "Total workspaces",
+    "contentCount": "Total content"
   },
   "scheduled": {
     "title": "Scheduled Reports",

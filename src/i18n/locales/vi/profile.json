@@ -143,7 +143,9 @@
     "bannerUpload": "Tải ảnh lên",
     "bannerRemove": "Xóa ảnh bìa",
     "bannerHint": "PNG, JPG tối đa 5MB. Có thể dán URL ảnh trực tiếp.",
-    "bannerUploadFailed": "Không thể tải ảnh bìa"
+    "bannerUploadFailed": "Không thể tải ảnh bìa",
+    "visibilityTitle": "Quyền riêng tư",
+    "visibilityHint": "Chọn thông tin nào hiển thị khi đồng nghiệp trong công ty xem hồ sơ của bạn."
   },
   "linkPhone": {
     "addLink": "Liên kết số điện thoại",

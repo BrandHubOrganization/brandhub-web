@@ -22,6 +22,15 @@ apiClient.interceptors.request.use(
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+    // Instance default Content-Type là application/json (dòng ~13) — nếu để
+    // nguyên, axios sẽ JSON.stringify luôn FormData (ra "{}", mất file) thay
+    // vì tự set multipart/form-data + boundary. Xoá header cố định để axios
+    // tự phát hiện FormData và set đúng Content-Type. Sửa 1 chỗ ở interceptor
+    // thay vì từng service tự thêm header (userService/clientProfileService
+    // đã thiếu, gây lỗi 500 "unexpected error" khi upload avatar/banner/logo).
+    if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
     return config;
   },
   (error) => {

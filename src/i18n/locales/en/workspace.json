@@ -41,6 +41,7 @@
     "instagramUrlLabel": "Instagram",
     "assignMembersLabel": "Add members from agency",
     "assignMembersHint": "You're the default Manager. Pick someone else as Manager here to hand off that role for this workspace.",
+    "assignManagerLimitHint": "A workspace can only have one Manager — pick a different role for the others.",
     "clientInviteLabel": "Invite clients",
     "clientInviteHint": "Enter client emails to invite them to this workspace as Client. They'll receive an email and set up their own profile when they accept.",
     "clientInvitePlaceholder": "client@company.com",
@@ -66,6 +67,8 @@
     "title": "Workspace settings",
     "description": "Manage your workspace configuration.",
     "nameLabel": "Workspace name",
+    "editButton": "Edit",
+    "cancelButton": "Cancel",
     "timezoneLabel": "Timezone",
     "defaultPlatformsLabel": "Default platforms",
     "reportFrequencyLabel": "Report frequency",
@@ -86,6 +89,11 @@
       "deleteSuccess": "Workspace deleted — restorable for 30 days",
       "deleteError": "Failed to delete workspace"
     },
+    "preview": {
+      "title": "Preview",
+      "hint": "Updates live as you edit the fields.",
+      "emptyName": "Untitled workspace"
+    },
     "template": {
       "saveButton": "Save as template",
       "viewAll": "View all templates",
@@ -102,7 +110,10 @@
     "empty": "No templates saved yet.",
     "loadError": "Failed to load templates",
     "deleteSuccess": "Template deleted",
-    "deleteError": "Failed to delete template"
+    "deleteError": "Failed to delete template",
+    "deleteConfirmTitle": "Delete template?",
+    "deleteConfirmDescription": "\"{{name}}\" will be permanently deleted. This cannot be undone.",
+    "deleteButton": "Delete"
   },
   "noRole": "—",
   "reportFrequency": {
@@ -123,13 +134,15 @@
     "active": "Active",
     "removeButton": "Remove",
     "removeConfirmTitle": "Remove member?",
-    "removeConfirmDescription": "This member will lose access to the workspace.",
+    "removeConfirmDescription": "{{name}} will lose access to the workspace.",
+    "removeLastManagerWarning": "This member is the only active Manager — remove blocked. Hand off the Manager role first.",
     "inviteSuccess": "Invitation sent",
     "removeSuccess": "Member removed",
     "noteLabel": "Note (optional)",
     "assignButton": "Add from agency",
     "assignDialogTitle": "Add members from agency",
     "assignSuccess": "Member added",
+    "assignPartialSuccess": "{{added}} member(s) added, {{skipped}} already in this workspace (skipped)",
     "addClientButton": "Add client",
     "addClientTitle": "Add a collaborating client to this workspace",
     "addClientEmpty": "No client available to add (none left, or the agency has no clients yet).",
@@ -140,7 +153,8 @@
     "leaveButton": "Leave workspace",
     "leaveSuccess": "You have left the workspace",
     "leaveConfirmTitle": "Leave this workspace?",
-    "leaveConfirmDescription": "You will lose access to this workspace. This cannot be undone."
+    "leaveConfirmDescription": "You will lose access to this workspace. This cannot be undone.",
+    "leaveLastManagerWarning": "You're the only active Manager — leave blocked. Hand off the Manager role first."
   },
   "roles": {
     "OWNER": "Owner",

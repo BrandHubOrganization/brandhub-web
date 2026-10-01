@@ -7,9 +7,11 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useNavigate } from "react-router-dom";
+import { Briefcase, Phone } from "lucide-react";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
-import type { AgencyMemberActivity } from "@/types/agency";
+import type { AgencyMemberActivity, AgencyMemberProfile } from "@/types/agency";
 
 export interface MemberProfileTarget {
   userId: string;
@@ -28,8 +30,11 @@ interface Props {
 
 export function MemberProfileDrawer({ agencyId, member, onOpenChange }: Props) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activity, setActivity] = useState<AgencyMemberActivity[]>([]);
   const [loading, setLoading] = useState(false);
+  const [profile, setProfile] = useState<AgencyMemberProfile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   useEffect(() => {
     if (!member) return;
@@ -47,6 +52,19 @@ export function MemberProfileDrawer({ agencyId, member, onOpenChange }: Props) {
       )
       .finally(() => setLoading(false));
   }, [agencyId, member, t]);
+
+  useEffect(() => {
+    if (!member) {
+      setProfile(null);
+      return;
+    }
+    setProfileLoading(true);
+    agencyService
+      .getMemberProfile(agencyId, member.userId)
+      .then(({ data }) => setProfile(data.data))
+      .catch(() => setProfile(null))
+      .finally(() => setProfileLoading(false));
+  }, [agencyId, member]);
 
   return (
     <Sheet open={member !== null} onOpenChange={onOpenChange}>
@@ -98,6 +116,63 @@ export function MemberProfileDrawer({ agencyId, member, onOpenChange }: Props) {
                 </p>
               </div>
             </div>
+
+            {!profileLoading &&
+              profile &&
+              (profile.phone || profile.professionalTitle) && (
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  {profile.professionalTitle && (
+                    <div>
+                      <p className="text-muted-foreground flex items-center gap-1 text-xs">
+                        <Briefcase className="size-3" />
+                        {t("agency.members.profile.professionalTitle")}
+                      </p>
+                      <p className="text-foreground font-medium">
+                        {profile.professionalTitle}
+                      </p>
+                    </div>
+                  )}
+                  {profile.phone && (
+                    <div>
+                      <p className="text-muted-foreground flex items-center gap-1 text-xs">
+                        <Phone className="size-3" />
+                        {t("agency.members.profile.phone")}
+                      </p>
+                      <p className="text-foreground font-medium">
+                        {profile.phone}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+            {!profileLoading && profile && profile.workspaces.length > 0 && (
+              <div>
+                <p className="text-foreground mb-3 text-sm font-semibold">
+                  {t("agency.members.profile.workspacesTitle")}
+                </p>
+                <ul className="space-y-2">
+                  {profile.workspaces.map((w) => (
+                    <li key={w.workspaceId}>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          navigate(`/workspaces/${w.workspaceId}/settings`)
+                        }
+                        className="hover:border-brand-orange/50 flex w-full cursor-pointer items-center justify-between rounded-lg border p-2.5 text-left transition-colors"
+                      >
+                        <span className="text-foreground truncate text-sm font-medium">
+                          {w.workspaceName}
+                        </span>
+                        <span className="text-muted-foreground bg-muted text-3xs shrink-0 rounded-full px-2 py-0.5 font-semibold">
+                          {w.role}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div>
               <p className="text-foreground mb-3 text-sm font-semibold">

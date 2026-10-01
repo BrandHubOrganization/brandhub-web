@@ -24,13 +24,16 @@ import { Select } from "@/components/ui/select";
 import { ProvinceSelect } from "@/components/ui/province-select";
 import { RichTextInput } from "@/components/ui/rich-text-input";
 import { agencyService } from "@/services/agencyService";
+import { workspaceService } from "@/services/workspaceService";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { extractErrorMessage } from "@/utils/error";
 import { AGENCY_CATEGORIES, COMPANY_SIZES } from "@/pages/agency/constants";
 import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
 import { AgencyOrgChart } from "@/pages/agency/components/AgencyOrgChart";
+import { WorkspaceCardGrid } from "@/pages/workspace/components/WorkspaceCardGrid";
 import type { Agency, AgencyCategory, CompanySize } from "@/types/agency";
+import type { Workspace } from "@/types/workspace";
 
 const CURRENT_YEAR = new Date().getFullYear();
 const URL_RE = /^https?:\/\/.+/i;
@@ -44,10 +47,6 @@ export function AgencyDetailPage() {
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (id) setCurrentAgencyId(id);
-  }, [id, setCurrentAgencyId]);
-
   const [agency, setAgency] = useState<Agency | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -57,6 +56,7 @@ export function AgencyDetailPage() {
   const [confirmName, setConfirmName] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -153,6 +153,30 @@ export function AgencyDetailPage() {
 
   const isOwner =
     !!agency && !!currentUser && agency.ownerId === currentUser.id;
+  // Backend AgencyServiceImpl.getAgency cho qua 3 trường hợp: owner, agency
+  // member (myRole có giá trị), hoặc CLIENT có client_profile cùng agency
+  // (myRole luôn null vì họ không có agency_members row). Tới được trang
+  // này mà không phải owner và cũng không có myRole = chỉ có thể là case
+  // CLIENT-qua-client_profile — chỉ đọc hồ sơ, không thấy Members/đặt
+  // currentAgencyId (tránh Sidebar's agencyScoped filter lộ lại mục Thành
+  // viên/Thống kê agency, vốn backend vẫn chặn CLIENT ở listMembers/getStats).
+  const isClientView = !!agency && !isOwner && !agency.myRole;
+
+  useEffect(() => {
+    if (id && !isClientView) setCurrentAgencyId(id);
+  }, [id, isClientView, setCurrentAgencyId]);
+
+  // Card list workspace thuộc agency này — /api/v1/workspaces không filter
+  // theo agency, phải lọc phía FE (cùng cách AgencyOrgChart đang làm).
+  useEffect(() => {
+    if (!id || isClientView) return;
+    workspaceService
+      .list()
+      .then(({ data }) =>
+        setWorkspaces(data.data.filter((w) => w.agencyId === id)),
+      )
+      .catch(() => setWorkspaces([]));
+  }, [id, isClientView]);
 
   const handleSave = async () => {
     if (!id) return;
@@ -677,15 +701,16 @@ export function AgencyDetailPage() {
             </div>
           )}
 
-          {!isEditing && (
-            <Button
-              variant="outline"
-              className="w-fit cursor-pointer gap-1.5"
-              onClick={() => navigate(`/client-profile?agencyId=${id}`)}
-            >
-              <User className="size-3.5" />
-              {t("agency.detail.viewClientProfile")}
-            </Button>
+          {!isEditing && workspaces.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="text-foreground text-sm font-semibold">
+                {t("agency.detail.workspacesTitle")}
+              </h3>
+              <WorkspaceCardGrid
+                workspaces={workspaces}
+                onOpen={(wsId) => navigate(`/workspaces/${wsId}/settings`)}
+              />
+            </div>
           )}
 
           <Button
@@ -717,28 +742,32 @@ export function AgencyDetailPage() {
           )}
         </section>
 
-        <div className="border-border border-t" />
+        {!isClientView && (
+          <>
+            <div className="border-border border-t" />
 
-        <section className="space-y-4">
-          <div>
-            <h2 className="text-foreground text-lg font-semibold">
-              {t("agency.detail.nav.members")}
-            </h2>
-            <p className="text-muted-foreground text-sm">
-              {t("agency.detail.membersPreviewDescription")}
-            </p>
-          </div>
-          {id && <AgencyOrgChart agencyId={id} />}
-          <Button
-            variant="outline"
-            size="sm"
-            className="cursor-pointer gap-1.5"
-            onClick={() => navigate(`/agency/${id}/members`)}
-          >
-            <User className="size-3.5" />
-            {t("agency.detail.viewAllMembers")}
-          </Button>
-        </section>
+            <section className="space-y-4">
+              <div>
+                <h2 className="text-foreground text-lg font-semibold">
+                  {t("agency.detail.nav.members")}
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  {t("agency.detail.membersPreviewDescription")}
+                </p>
+              </div>
+              {id && <AgencyOrgChart agencyId={id} />}
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer gap-1.5"
+                onClick={() => navigate(`/agency/${id}/members`)}
+              >
+                <User className="size-3.5" />
+                {t("agency.detail.viewAllMembers")}
+              </Button>
+            </section>
+          </>
+        )}
       </div>
 
       {deleteOpen && (

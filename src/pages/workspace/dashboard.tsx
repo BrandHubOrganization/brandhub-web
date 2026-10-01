@@ -5,12 +5,10 @@ import { toast } from "sonner";
 import { CalendarClock, Sparkles } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { workspaceService } from "@/services/workspaceService";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
 import type { WorkspaceDashboard } from "@/types/workspace";
-import {
-  LineStatChart,
-  PieStatChart,
-} from "@/components/charts/StatCharts";
+import { LineStatChart, PieStatChart } from "@/components/charts/StatCharts";
 import {
   MOCK_CAMPAIGN_TREND,
   MOCK_CONTENT_BY_STATUS,
@@ -53,6 +51,7 @@ function BreakdownList({ data }: { data: Record<string, number> }) {
 export function WorkspaceDashboardPage() {
   const { t } = useTranslation();
   const { id: workspaceId } = useParams<{ id: string }>();
+  const isClient = useWorkspaceStore((s) => s.currentMemberRole) === "CLIENT";
   const [dashboard, setDashboard] = useState<WorkspaceDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
@@ -84,37 +83,48 @@ export function WorkspaceDashboardPage() {
       title={t("workspace.dashboard.title")}
       description={t("workspace.dashboard.description")}
     >
+      {/* activeMembers/packageStatus/agencyAiCredits + membersByRole là dữ liệu
+          nội bộ agency (nhân sự, đàm phán gói, credit) — CLIENT không được xem,
+          chỉ thấy phần liên quan nội dung (campaign/content). */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          label={t("workspace.dashboard.activeMembers")}
-          value={dashboard.totalActiveMembers}
-        />
+        {!isClient && (
+          <StatCard
+            label={t("workspace.dashboard.activeMembers")}
+            value={dashboard.totalActiveMembers}
+          />
+        )}
         <StatCard
           label={t("workspace.dashboard.totalCampaigns")}
           value={dashboard.totalCampaigns}
         />
-        <StatCard
-          label={t("workspace.dashboard.packageStatus")}
-          value={
-            dashboard.packageNegotiationStatus ??
-            t("workspace.dashboard.noPackage")
-          }
-        />
-        <StatCard
-          label={t("workspace.dashboard.agencyAiCredits", {
-            month: dashboard.aiCreditMonth,
-          })}
-          value={dashboard.agencyAiCreditsUsedThisMonth}
-        />
+        {!isClient && (
+          <StatCard
+            label={t("workspace.dashboard.packageStatus")}
+            value={
+              dashboard.packageNegotiationStatus ??
+              t("workspace.dashboard.noPackage")
+            }
+          />
+        )}
+        {!isClient && (
+          <StatCard
+            label={t("workspace.dashboard.agencyAiCredits", {
+              month: dashboard.aiCreditMonth,
+            })}
+            value={dashboard.agencyAiCreditsUsedThisMonth}
+          />
+        )}
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="border-border bg-card rounded-xl border p-4">
-          <p className="text-foreground text-sm font-medium">
-            {t("workspace.dashboard.membersByRole")}
-          </p>
-          <BreakdownList data={dashboard.membersByRole} />
-        </div>
+        {!isClient && (
+          <div className="border-border bg-card rounded-xl border p-4">
+            <p className="text-foreground text-sm font-medium">
+              {t("workspace.dashboard.membersByRole")}
+            </p>
+            <BreakdownList data={dashboard.membersByRole} />
+          </div>
+        )}
         <div className="border-border bg-card rounded-xl border p-4">
           <p className="text-foreground text-sm font-medium">
             {t("workspace.dashboard.campaignsByStatus")}

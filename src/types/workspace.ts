@@ -29,8 +29,6 @@ export interface Workspace {
   id: string;
   name: string;
   agencyId: string | null;
-  slug: string;
-  ownerId: string;
   logoUrl: string | null;
   settings: WorkspaceSettings;
   industry: WorkspaceIndustry | null;
@@ -46,7 +44,6 @@ export interface Workspace {
   facebookUrl: string | null;
   linkedinUrl: string | null;
   instagramUrl: string | null;
-  isActive: boolean;
   createdAt: string;
   /** Vai trò của người dùng hiện tại trong workspace này — chỉ có ở
    * GET /workspaces (list-mine); null ở các endpoint khác. */

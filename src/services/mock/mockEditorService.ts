@@ -112,7 +112,10 @@ class MockEditorService {
     return {
       ...result,
       hashtags,
-      imageUrl: req.contentType === "CAPTION" ? randomImage : undefined,
+      imageUrl:
+        req.generateImage && req.contentType === "CAPTION"
+          ? randomImage
+          : undefined,
       reasoning:
         "Gợi ý nội dung và hình ảnh nghệ thuật Stability AI được tối ưu hóa theo phong cách của bạn.",
     };

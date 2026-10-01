@@ -23,9 +23,17 @@ export function TwoFactorVerifyPage() {
   const [loading, setLoading] = React.useState(false);
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
-  const twoFactorToken =
-    new URLSearchParams(window.location.search).get("twoFactorToken") ??
-    sessionStorage.getItem(TOKEN_KEY);
+  // Đọc 1 LẦN lúc mount, không tính lại mỗi render — verify thành công xoá
+  // sessionStorage (dòng dưới, sau khi điều hướng đi) khiến giá trị tính lại
+  // từ storage sẽ thành null, effect canh "chưa có token → về /login" (dưới)
+  // hiểu nhầm là đã mất token và ghi đè navigate() vừa gọi, kéo user ngược
+  // lại /login dù verify đã thành công (bug: toast "thành công" hiện nhưng
+  // URL vẫn kẹt ở /login).
+  const [twoFactorToken] = React.useState(
+    () =>
+      new URLSearchParams(window.location.search).get("twoFactorToken") ??
+      sessionStorage.getItem(TOKEN_KEY),
+  );
 
   React.useEffect(() => {
     if (!twoFactorToken) navigate("/login", { replace: true });

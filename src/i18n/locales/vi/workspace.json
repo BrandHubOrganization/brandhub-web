@@ -41,6 +41,7 @@
     "instagramUrlLabel": "Instagram",
     "assignMembersLabel": "Thêm thành viên từ công ty",
     "assignMembersHint": "Bạn là Quản lý (Manager) mặc định. Chọn người khác làm Manager ở đây nếu muốn chuyển giao vai trò quản lý workspace cho họ.",
+    "assignManagerLimitHint": "Một workspace chỉ có đúng 1 Manager — chọn vai trò khác cho những người còn lại.",
     "clientInviteLabel": "Mời khách hàng (Client)",
     "clientInviteHint": "Nhập email khách hàng để gửi lời mời tham gia workspace này với vai trò Client. Họ sẽ nhận email và tự tạo hồ sơ khi chấp nhận lời mời.",
     "clientInvitePlaceholder": "email@khachhang.com",
@@ -66,6 +67,8 @@
     "title": "Cài đặt không gian làm việc",
     "description": "Quản lý cấu hình không gian làm việc của bạn.",
     "nameLabel": "Tên không gian làm việc",
+    "editButton": "Sửa",
+    "cancelButton": "Hủy",
     "timezoneLabel": "Múi giờ",
     "defaultPlatformsLabel": "Nền tảng mặc định",
     "reportFrequencyLabel": "Tần suất báo cáo",
@@ -86,6 +89,11 @@
       "deleteSuccess": "Workspace đã được xóa, có thể khôi phục trong 30 ngày",
       "deleteError": "Không thể xóa workspace"
     },
+    "preview": {
+      "title": "Xem trước",
+      "hint": "Cập nhật theo thông tin bạn đang chỉnh sửa.",
+      "emptyName": "Không gian làm việc chưa đặt tên"
+    },
     "template": {
       "saveButton": "Lưu thành mẫu",
       "viewAll": "Xem tất cả mẫu",
@@ -102,7 +110,10 @@
     "empty": "Chưa có mẫu nào được lưu.",
     "loadError": "Không thể tải danh sách mẫu",
     "deleteSuccess": "Đã xóa mẫu",
-    "deleteError": "Không thể xóa mẫu"
+    "deleteError": "Không thể xóa mẫu",
+    "deleteConfirmTitle": "Xoá mẫu này?",
+    "deleteConfirmDescription": "\"{{name}}\" sẽ bị xoá vĩnh viễn. Hành động này không thể hoàn tác.",
+    "deleteButton": "Xoá"
   },
   "noRole": "—",
   "reportFrequency": {
@@ -123,13 +134,15 @@
     "active": "Đang hoạt động",
     "removeButton": "Xóa",
     "removeConfirmTitle": "Xóa thành viên?",
-    "removeConfirmDescription": "Thành viên này sẽ mất quyền truy cập không gian làm việc.",
+    "removeConfirmDescription": "{{name}} sẽ mất quyền truy cập workspace này.",
+    "removeLastManagerWarning": "Đây là Manager active duy nhất — không thể xoá. Hãy chuyển giao vai trò Manager cho người khác trước.",
     "inviteSuccess": "Đã gửi lời mời",
     "removeSuccess": "Đã xóa thành viên",
     "noteLabel": "Lời nhắn (tuỳ chọn)",
     "assignButton": "Thêm từ công ty",
     "assignDialogTitle": "Thêm thành viên từ công ty",
     "assignSuccess": "Đã thêm thành viên",
+    "assignPartialSuccess": "Đã thêm {{added}} thành viên, {{skipped}} người đã có sẵn trong workspace (bỏ qua)",
     "addClientButton": "Thêm client",
     "addClientTitle": "Thêm client cộng tác vào workspace",
     "addClientEmpty": "Không có client nào để thêm (đã hết hoặc chưa có client nào trong công ty).",
@@ -140,7 +153,8 @@
     "leaveButton": "Rời workspace",
     "leaveSuccess": "Bạn đã rời workspace",
     "leaveConfirmTitle": "Rời workspace này?",
-    "leaveConfirmDescription": "Bạn sẽ mất quyền truy cập workspace này. Hành động này không thể hoàn tác."
+    "leaveConfirmDescription": "Bạn sẽ mất quyền truy cập workspace này. Hành động này không thể hoàn tác.",
+    "leaveLastManagerWarning": "Bạn là Manager active duy nhất — không thể rời workspace. Hãy chuyển giao vai trò Manager cho người khác trước."
   },
   "roles": {
     "OWNER": "Chủ sở hữu",

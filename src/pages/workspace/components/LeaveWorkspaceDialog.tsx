@@ -13,6 +13,7 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   submitting: boolean;
   onSubmit: () => void;
+  isLastManager: boolean;
 }
 
 export function LeaveWorkspaceDialog({
@@ -20,6 +21,7 @@ export function LeaveWorkspaceDialog({
   onOpenChange,
   submitting,
   onSubmit,
+  isLastManager,
 }: Props) {
   const { t } = useTranslation();
 
@@ -32,8 +34,18 @@ export function LeaveWorkspaceDialog({
         <p className="text-muted-foreground text-sm">
           {t("workspace.members.leaveConfirmDescription")}
         </p>
+        {isLastManager && (
+          <p className="text-sm font-medium text-rose-600">
+            {t("workspace.members.leaveLastManagerWarning")}
+          </p>
+        )}
         <DialogFooter>
-          <Button variant="destructive" onClick={onSubmit} loading={submitting}>
+          <Button
+            variant="destructive"
+            onClick={onSubmit}
+            loading={submitting}
+            disabled={isLastManager}
+          >
             {t("workspace.members.leaveButton")}
           </Button>
         </DialogFooter>

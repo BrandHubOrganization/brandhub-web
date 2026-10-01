@@ -17,6 +17,11 @@ export interface AssignEntry {
   role: MemberRole;
 }
 
+export interface AssignMembersResponse {
+  added: WorkspaceMember[];
+  skippedUserIds: string[];
+}
+
 export interface CreateWorkspaceRequest {
   name: string;
   agencyId: string;
@@ -85,7 +90,7 @@ export const workspaceService = {
     ),
 
   assignMembers: (workspaceId: string, members: AssignEntry[]) =>
-    api.post<ApiResponse<WorkspaceMember[]>>(
+    api.post<ApiResponse<AssignMembersResponse>>(
       `/api/v1/workspaces/${workspaceId}/members/assign`,
       { members },
     ),
@@ -107,6 +112,13 @@ export const workspaceService = {
   addClient: (workspaceId: string, clientProfileId: string) =>
     api.post<ApiResponse<WorkspaceMember>>(
       `/api/v1/workspaces/${workspaceId}/clients`,
+      { clientProfileId },
+    ),
+
+  // CLIENT tự đổi profile đại diện mình trong workspace này (chọn từ profile mình sở hữu).
+  switchMyClientProfile: (workspaceId: string, clientProfileId: string) =>
+    api.patch<ApiResponse<WorkspaceMember>>(
+      `/api/v1/workspaces/${workspaceId}/clients/me`,
       { clientProfileId },
     ),
 

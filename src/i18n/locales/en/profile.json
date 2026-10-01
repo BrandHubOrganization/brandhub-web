@@ -143,7 +143,9 @@
     "bannerUpload": "Upload",
     "bannerRemove": "Remove banner",
     "bannerHint": "PNG, JPG up to 5MB. You can also paste an image URL.",
-    "bannerUploadFailed": "Could not upload banner"
+    "bannerUploadFailed": "Could not upload banner",
+    "visibilityTitle": "Privacy",
+    "visibilityHint": "Choose which info is visible when a colleague in your company views your profile."
   },
   "linkPhone": {
     "addLink": "Link phone number",

@@ -52,6 +52,17 @@
   "save": "Lưu",
   "saveSuccess": "Đã cập nhật hồ sơ Client",
   "saveError": "Không thể lưu hồ sơ Client",
+  "workspace": {
+    "description": "Hồ sơ thương hiệu đại diện cho bạn trong workspace này.",
+    "empty": "Workspace này chưa gắn hồ sơ thương hiệu nào.",
+    "currentLabel": "Đang dùng cho workspace này",
+    "switchTitle": "Đổi hồ sơ đại diện",
+    "switchDescription": "Chọn 1 hồ sơ khác trong kho hồ sơ của bạn để dùng thay cho workspace này.",
+    "useThis": "Dùng hồ sơ này",
+    "noDetails": "Chưa có thông tin thêm",
+    "switchSuccess": "Đã đổi hồ sơ đại diện workspace",
+    "switchError": "Không thể đổi hồ sơ đại diện"
+  },
   "preview": {
     "title": "Xem trước",
     "hint": "Cập nhật ngay khi bạn nhập — đây là những gì Agency nhìn thấy.",

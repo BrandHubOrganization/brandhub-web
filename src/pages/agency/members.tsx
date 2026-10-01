@@ -17,6 +17,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { InviteMessagePresets } from "@/components/shared/InviteMessagePresets";
 import { RemoveAgencyMemberDialog } from "./components/RemoveAgencyMemberDialog";
+import { AgencyOrgChart } from "./components/AgencyOrgChart";
 import {
   MemberProfileDrawer,
   type MemberProfileTarget,
@@ -113,12 +114,13 @@ export function AgencyMembersPage() {
 
   const load = useCallback(() => {
     if (!id) return;
-    Promise.all([
-      agencyService.listMembers(id),
-      agencyService.listInvitations(id),
-    ])
-      .then(([membersRes, invitationsRes]) => {
-        const memberRowsData: MemberRow[] = membersRes.data.data.map((m) => ({
+    // listMembers và listInvitations tách riêng: listInvitations là owner-only
+    // (throw 403 NOT_AGENCY_OWNER cho non-owner), không được để lỗi đó kéo sập
+    // luôn phần hiển thị members mà mọi member đều có quyền xem.
+    agencyService
+      .listMembers(id)
+      .then(({ data }) => {
+        const memberRowsData: MemberRow[] = data.data.map((m) => ({
           id: m.id,
           userId: m.userId,
           displayName: m.fullName || m.email || "—",
@@ -132,7 +134,20 @@ export function AgencyMembersPage() {
           removable: m.role !== "OWNER",
           cancellable: false,
         }));
-        const invitationRowsData: MemberRow[] = invitationsRes.data.data
+        setMembers(data.data);
+        setMemberRows(memberRowsData);
+      })
+      .catch((err: unknown) =>
+        toast.error(
+          extractErrorMessage(err, t("agency.errors.membersLoadFailed")),
+        ),
+      )
+      .finally(() => setLoading(false));
+
+    agencyService
+      .listInvitations(id)
+      .then(({ data }) => {
+        const invitationRowsData: MemberRow[] = data.data
           .filter((inv) => inv.status === "PENDING" || inv.status === "EXPIRED")
           .map((inv) => ({
             id: inv.id,
@@ -148,19 +163,17 @@ export function AgencyMembersPage() {
             removable: false,
             cancellable: inv.status === "PENDING",
           }));
-        setMembers(membersRes.data.data);
         setPendingCount(
           invitationRowsData.filter((r) => r.status === "PENDING").length,
         );
-        setMemberRows(memberRowsData);
         setInvitationRows(invitationRowsData);
       })
-      .catch((err: unknown) =>
-        toast.error(
-          extractErrorMessage(err, t("agency.errors.membersLoadFailed")),
-        ),
-      )
-      .finally(() => setLoading(false));
+      .catch(() => {
+        // Non-owner: 403 NOT_AGENCY_OWNER là kỳ vọng — chỉ owner mới xem được
+        // danh sách lời mời, im lặng bỏ qua cho member thường.
+        setPendingCount(0);
+        setInvitationRows([]);
+      });
   }, [id, t, currentUser?.id]);
 
   useEffect(load, [load]);
@@ -640,6 +653,20 @@ export function AgencyMembersPage() {
             </TabsContent>
           </Tabs>
         </div>
+
+        {id && (
+          <div className="space-y-3">
+            <div>
+              <h2 className="text-foreground text-lg font-semibold">
+                {t("agency.detail.nav.members")}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                {t("agency.detail.membersPreviewDescription")}
+              </p>
+            </div>
+            <AgencyOrgChart agencyId={id} />
+          </div>
+        )}
       </div>
 
       <RemoveAgencyMemberDialog

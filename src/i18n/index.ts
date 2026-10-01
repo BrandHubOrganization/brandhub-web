@@ -1,3 +1,5 @@
+import viMonitoring from "./locales/vi/monitoring.json";
+import enMonitoring from "./locales/en/monitoring.json";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
@@ -55,7 +57,7 @@ import enProfile from "./locales/en/profile.json";
 import enClientProfile from "./locales/en/clientProfile.json";
 import enAgency from "./locales/en/agency.json";
 
-const vi = {
+const vi = { monitoring: viMonitoring,
   auth: viAuth,
   common: viCommon,
   nav: viNav,
@@ -84,7 +86,7 @@ const vi = {
   agency: viAgency,
 };
 
-const en = {
+const en = { monitoring: enMonitoring,
   auth: enAuth,
   common: enCommon,
   nav: enNav,
