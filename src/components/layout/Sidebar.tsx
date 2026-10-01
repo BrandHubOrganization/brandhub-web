@@ -21,6 +21,7 @@ import {
   FileBarChart,
   User,
   Inbox,
+  UserCheck,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -191,6 +192,12 @@ const NAV_SECTIONS: NavSection[] = [
         icon: Inbox,
         labelKey: "nav.agencyInvitationInbox",
         hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
+        to: "/client/invitations",
+        icon: UserCheck,
+        labelKey: "nav.clientInvitations",
         hideInWorkspace: true,
       },
       {

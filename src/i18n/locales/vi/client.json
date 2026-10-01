@@ -131,5 +131,18 @@
     "description": "Hành động này sẽ ngắt kết nối các tài khoản mạng xã hội và lưu trữ toàn bộ dữ liệu bài viết. Bạn có chắc chắn muốn tiếp tục không?",
     "confirmText": "Xác nhận Xóa",
     "cancelText": "Hủy bỏ"
+  },
+  "invitations": {
+    "title": "Lời mời thành khách hàng",
+    "description": "Các lời mời hợp tác với tư cách khách hàng cho dự án / không gian làm việc.",
+    "empty": "Không có lời mời khách hàng nào đang chờ xử lý.",
+    "unknownWorkspace": "Không gian làm việc",
+    "role": "Khách hàng (Client)",
+    "expires": "Hết hạn: {{date}}",
+    "accept": "Chấp nhận",
+    "decline": "Từ chối",
+    "declineSuccess": "Đã từ chối lời mời khách hàng",
+    "back": "Quay lại danh sách công ty",
+    "noteLabel": "Lời nhắn:"
   }
 }

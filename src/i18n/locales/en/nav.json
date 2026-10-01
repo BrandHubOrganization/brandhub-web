@@ -48,7 +48,8 @@
     "members": "Agency members",
     "stats": "Agency stats"
   },
-  "agencyInvitationInbox": "Invitations from other agencies",
+  "agencyInvitationInbox": "Agency invitations",
+  "clientInvitations": "Client invitations",
   "agencyList": "Company list",
   "clientProfile": "Brand Profile",
   "sections": {

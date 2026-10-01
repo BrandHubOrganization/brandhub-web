@@ -48,7 +48,8 @@
     "members": "Thành viên công ty",
     "stats": "Thống kê công ty"
   },
-  "agencyInvitationInbox": "Lời mời từ công ty khác",
+  "agencyInvitationInbox": "Lời mời công ty",
+  "clientInvitations": "Lời mời thành khách hàng",
   "agencyList": "Danh sách công ty",
   "clientProfile": "Hồ sơ Thương hiệu",
   "sections": {
