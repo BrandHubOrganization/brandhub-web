@@ -38,9 +38,6 @@ export function useWorkspaceMembers() {
   const [assignOpen, setAssignOpen] = useState(false);
   const [assignValues, setAssignValues] = useState<AssignEntry[]>([]);
   const [assigning, setAssigning] = useState(false);
-  const [addClientOpen, setAddClientOpen] = useState(false);
-  const [addClientId, setAddClientId] = useState("");
-  const [addingClient, setAddingClient] = useState(false);
   const [updatingRole, setUpdatingRole] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
@@ -121,22 +118,6 @@ export function useWorkspaceMembers() {
     }
   };
 
-  const handleAddClient = async () => {
-    if (!workspaceId || !addClientId) return;
-    setAddingClient(true);
-    try {
-      await workspaceService.addClient(workspaceId, addClientId);
-      toast.success(t("workspace.members.addClientSuccess"));
-      setAddClientOpen(false);
-      setAddClientId("");
-      loadMembers();
-    } catch (err: unknown) {
-      toast.error(extractErrorMessage(err, t("common.actionFailed")));
-    } finally {
-      setAddingClient(false);
-    }
-  };
-
   const handleRemove = async () => {
     if (!workspaceId || !removeTarget) return;
     setRemoving(true);
@@ -209,12 +190,6 @@ export function useWorkspaceMembers() {
     setAssignValues,
     assigning,
     handleAssign,
-    addClientOpen,
-    setAddClientOpen,
-    addClientId,
-    setAddClientId,
-    addingClient,
-    handleAddClient,
     updatingRole,
     handleUpdateRole,
     leaving,

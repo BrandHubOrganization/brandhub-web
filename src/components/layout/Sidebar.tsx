@@ -281,8 +281,14 @@ const NAV_SECTIONS: NavSection[] = [
   {
     key: "system",
     titleKey: "nav.sections.system",
-    items: [{ to: "/admin", icon: ShieldAlert, labelKey: "nav.admin" },
-      { to: "/admin/system-health", icon: ShieldAlert, labelKey: "monitoring.title" }],
+    items: [
+      { to: "/admin", icon: ShieldAlert, labelKey: "nav.admin" },
+      {
+        to: "/admin/system-health",
+        icon: ShieldAlert,
+        labelKey: "monitoring.title",
+      },
+    ],
   },
 ];
 
@@ -373,8 +379,8 @@ export function Sidebar({
           return item;
         });
 
-      // Members link needs a dynamic workspaceId path — only add once a
-      // workspace is active, and only for roles that manage membership.
+      // Members/Clients link needs a dynamic workspaceId path — only add
+      // once a workspace is active, and only for roles that manage membership.
       if (
         section.key === "manage" &&
         activeWorkspace &&
@@ -384,6 +390,11 @@ export function Sidebar({
           to: `/workspaces/${activeWorkspace.id}/members`,
           icon: UserPlus,
           labelKey: "nav.members",
+        });
+        items.push({
+          to: `/workspaces/${activeWorkspace.id}/clients`,
+          icon: Users,
+          labelKey: "nav.workspaceClients",
         });
       }
 

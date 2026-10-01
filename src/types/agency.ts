@@ -137,3 +137,10 @@ export interface InvitationPreviewResponse {
   // profile trước khi accept thật.
   myClientProfiles: import("./clientProfile").ClientProfile[] | null;
 }
+
+// Gợi ý inline khi mời CLIENT bằng Gmail.
+export interface InviteLookupResponse {
+  userExists: boolean;
+  isAlreadyClientInAgency: boolean;
+  existingWorkspaces: { workspaceId: string; workspaceName: string }[];
+}

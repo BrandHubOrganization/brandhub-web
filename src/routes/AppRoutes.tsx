@@ -20,6 +20,7 @@ import { CreateWorkspacePage } from "@/pages/workspace/create";
 import { WorkspaceSettingsPage } from "@/pages/workspace/detail";
 import { WorkspaceDashboardPage } from "@/pages/workspace/dashboard";
 import { WorkspaceMembersPage } from "@/pages/workspace/members";
+import { WorkspaceClientsPage } from "@/pages/workspace/clients";
 import { WorkspaceTemplatesPage } from "@/pages/workspace/templates";
 import { InvitationsPage } from "@/pages/workspace/invitations";
 import { AgencyPage } from "@/pages/agency";
@@ -111,6 +112,10 @@ export function AppRoutes() {
           <Route
             path="/workspaces/:id/members"
             element={<WorkspaceMembersPage />}
+          />
+          <Route
+            path="/workspaces/:id/clients"
+            element={<WorkspaceClientsPage />}
           />
           <Route
             path="/workspaces/:id/requests"

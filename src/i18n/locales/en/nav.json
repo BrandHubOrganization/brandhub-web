@@ -27,6 +27,7 @@
   "workspace": "Workspaces",
   "createWorkspace": "Create Workspace",
   "members": "Members",
+  "workspaceClients": "Clients",
   "invitations": "Invitations",
   "portal": "Client Portal",
   "workspaceClientProfile": "Brand Profile",

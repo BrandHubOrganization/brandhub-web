@@ -36,12 +36,16 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
 );
 
 const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
+const WORKSPACE_CLIENTS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const WORKSPACE_SETTINGS_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
   if (/^\/workspaces\/[^/]+\/members$/.test(pathname)) {
     return MEMBERS_PAGE_ACCESS;
+  }
+  if (/^\/workspaces\/[^/]+\/clients$/.test(pathname)) {
+    return WORKSPACE_CLIENTS_PAGE_ACCESS;
   }
   if (/^\/workspaces\/[^/]+\/settings$/.test(pathname)) {
     return WORKSPACE_SETTINGS_ACCESS;
