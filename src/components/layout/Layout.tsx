@@ -237,6 +237,22 @@ export function Layout() {
     navigate(`/agency/${agencyIdArg}`);
   };
 
+  const handleLeaveAgency = () => {
+    setCurrentAgencyId(null);
+    setCurrentWorkspace(null);
+    navigate("/agency");
+  };
+
+  const handleLeaveWorkspace = () => {
+    const agencyId = currentWorkspace?.agencyId ?? currentAgencyId;
+    setCurrentWorkspace(null);
+    if (agencyId) {
+      navigate(`/agency/${agencyId}`);
+    } else {
+      navigate("/agency");
+    }
+  };
+
   return (
     <div className="bg-background text-foreground flex h-screen w-screen overflow-hidden font-sans">
       {/* ── SIDEBAR (DESKTOP >= 768px) ── */}
@@ -253,6 +269,8 @@ export function Layout() {
           allWorkspaces={workspaces}
           currentAgencyId={currentAgencyId}
           onSwitchAgency={handleSwitchAgency}
+          onLeaveAgency={handleLeaveAgency}
+          onLeaveWorkspace={handleLeaveWorkspace}
           currentUserId={user?.id ?? null}
         />
       </aside>
@@ -287,6 +305,8 @@ export function Layout() {
               allWorkspaces={workspaces}
               currentAgencyId={currentAgencyId}
               onSwitchAgency={handleSwitchAgency}
+              onLeaveAgency={handleLeaveAgency}
+              onLeaveWorkspace={handleLeaveWorkspace}
               currentUserId={user?.id ?? null}
             />
           </SheetContent>

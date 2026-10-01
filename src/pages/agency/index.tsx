@@ -370,8 +370,12 @@ export function AgencyPage() {
                 return (
                   <div
                     key={a.id}
+                    onClick={() => {
+                      setCurrentAgencyId(a.id);
+                      navigate(`/agency/${a.id}`);
+                    }}
                     className={cn(
-                      "bg-card rounded-xl border border-border p-5 shadow-xs transition-all hover:border-brand-orange/40 flex flex-col",
+                      "bg-card rounded-xl border border-border p-5 shadow-xs transition-all hover:border-brand-orange/40 flex flex-col cursor-pointer",
                       isExpanded && "ring-1 ring-brand-orange/30 border-brand-orange/40",
                     )}
                   >
@@ -461,7 +465,8 @@ export function AgencyPage() {
                         variant="outline"
                         size="sm"
                         className="flex-1 cursor-pointer gap-1.5 text-xs h-8"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setCurrentAgencyId(a.id);
                           navigate(`/agency/${a.id}`);
                         }}
@@ -473,7 +478,8 @@ export function AgencyPage() {
                         variant="outline"
                         size="sm"
                         className="flex-1 cursor-pointer gap-1.5 text-xs h-8"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setCurrentAgencyId(a.id);
                           navigate(`/agency/${a.id}/members`);
                         }}
@@ -487,7 +493,7 @@ export function AgencyPage() {
                     <div className="mt-4 border-t border-border pt-3">
                       <button
                         type="button"
-                        onClick={(e) => toggleAgencyExpand(a.id, e)}
+                        onClick={(e) => { e.stopPropagation(); toggleAgencyExpand(a.id, e); }}
                         className={cn(
                           "flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition-colors cursor-pointer",
                           isExpanded

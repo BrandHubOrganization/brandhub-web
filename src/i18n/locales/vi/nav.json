@@ -82,5 +82,9 @@
   "security": "Bảo mật",
   "connections": "Kết nối tài khoản",
   "settings": "Cài đặt",
-  "notificationSettings": "Cài đặt thông báo"
+  "notificationSettings": "Cài đặt thông báo",
+  "create": "Tạo mới",
+  "accept": "Xác nhận",
+  "leaveAgency": "Thoát agency",
+  "leaveWorkspace": "Thoát workspace"
 }

@@ -23,7 +23,16 @@ import {
   UserCheck,
   Briefcase,
   Settings,
+  ChevronLeft,
+  MapPin,
+  Globe,
+  FolderOpen,
 } from "lucide-react";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
@@ -64,6 +73,11 @@ interface NavItem {
    * `to` gốc (khác /dashboard vẫn có cả 2 bản). Thiếu activeWorkspace thì
    * ẩn hẳn thay vì để `to` trỏ vào route đã bị xoá. */
   requiresWorkspace?: boolean;
+  /** Ẩn khi đang chọn 1 agency cụ thể (currentAgencyId != null). Dùng cho
+   * các mục thuộc "user module" (client-profiles, social-accounts, subscription,
+   * client/invitations, ...) — không gắn với ngữ cảnh agency cụ thể nào,
+   * chỉ hiện khi user chưa vào agency hoặc đang dùng tính năng cá nhân. */
+  hideInAgency?: boolean;
   /** Mục con hiển thị thụt lề dưới item cha. Dùng cho các anchor trong cùng
    * 1 trang (vd 4 mục của /settings) — `to` gồm cả hash. */
   children?: { to: string; labelKey: string }[];
@@ -167,12 +181,6 @@ const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.agency",
     items: [
       {
-        to: "/agency",
-        icon: Building2,
-        labelKey: "nav.agencyList",
-        hideInWorkspace: true,
-      },
-      {
         to: "/agency/{agencyId}",
         icon: Building2,
         labelKey: "nav.agencySub.profile",
@@ -248,6 +256,13 @@ const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.lists",
     items: [
       {
+        to: "/agency",
+        icon: Building2,
+        labelKey: "nav.agencyList",
+        hideInWorkspace: true,
+        hideInAgency: true,
+      },
+      {
         to: "/workspace",
         icon: Briefcase,
         labelKey: "nav.workspaceList",
@@ -258,6 +273,7 @@ const NAV_SECTIONS: NavSection[] = [
         icon: Building2,
         labelKey: "nav.clients",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
       {
         to: "/ai-studio/ambassadors",
@@ -289,6 +305,7 @@ const NAV_SECTIONS: NavSection[] = [
         icon: UserCheck,
         labelKey: "nav.clientInvitations",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
     ],
   },
@@ -323,18 +340,21 @@ const NAV_SECTIONS: NavSection[] = [
         icon: User,
         labelKey: "nav.clientProfile",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
       {
         to: "/social-accounts",
         icon: Link2,
         labelKey: "nav.socialAccounts",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
       {
         to: "/subscription/plans",
         icon: CreditCard,
         labelKey: "nav.subscription",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
     ],
   },
@@ -370,6 +390,10 @@ export interface SidebarProps {
   allWorkspaces: Workspace[];
   currentAgencyId: string | null;
   onSwitchAgency: (agencyId: string) => void;
+  /** Callback khi user bấm "Back" thoát khỏi agency context. */
+  onLeaveAgency?: () => void;
+  /** Callback khi user bấm "Back" thoát khỏi workspace context về agency. */
+  onLeaveWorkspace?: () => void;
   /** So agency.ownerId để hiện badge "Owner" đúng agency mình sở hữu trong
    * dropdown — owner gắn theo agency, không phải theo workspace/role hiện
    * tại (agency chưa có workspace vẫn phải thấy mình là chủ). */
@@ -388,6 +412,8 @@ export function Sidebar({
   allWorkspaces,
   currentAgencyId,
   onSwitchAgency,
+  onLeaveAgency,
+  onLeaveWorkspace,
   currentUserId = null,
 }: SidebarProps) {
   const { t } = useTranslation();
@@ -416,6 +442,7 @@ export function Sidebar({
         .filter((item) => !item.agencyScoped || currentAgencyId)
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
+        .filter((item) => !item.hideInAgency || !currentAgencyId)
         // requiresWorkspace: route KHÔNG có bản fallback ở "to" gốc (khác
         // /dashboard, có cả bản agency-level lẫn /workspaces/:id/dashboard)
         // — thiếu activeWorkspace thì không build được URL hợp lệ, ẩn hẳn
@@ -605,24 +632,94 @@ export function Sidebar({
               );
               return (
                 <div key={agency.id}>
-                  <DropdownMenuItem
-                    onClick={() => onSwitchAgency(agency.id)}
-                    className={cn(
-                      "cursor-pointer justify-between text-xs",
-                      currentAgencyId === agency.id && !activeWorkspace
-                        ? "text-brand-orange font-semibold"
-                        : "",
-                    )}
-                  >
-                    <span className="flex min-w-0 items-center gap-1.5">
-                      <span className="truncate">{agency.name}</span>
-                      {agency.ownerId === currentUserId && (
-                        <span className="text-brand-orange bg-brand-orange-soft text-3xs shrink-0 rounded px-1 py-0.5 leading-none font-semibold">
-                          {t("workspace.roles.OWNER")}
+                  <HoverCard openDelay={300} closeDelay={100}>
+                    <HoverCardTrigger asChild>
+                      <DropdownMenuItem
+                        onClick={() => onSwitchAgency(agency.id)}
+                        className={cn(
+                          "cursor-pointer justify-between text-xs",
+                          currentAgencyId === agency.id && !activeWorkspace
+                            ? "text-brand-orange font-semibold"
+                            : "",
+                        )}
+                      >
+                        <span className="flex min-w-0 items-center gap-1.5">
+                          <span className="truncate">{agency.name}</span>
+                          {agency.ownerId === currentUserId && (
+                            <span className="text-brand-orange bg-brand-orange-soft text-3xs shrink-0 rounded px-1 py-0.5 leading-none font-semibold">
+                              {t("workspace.roles.OWNER")}
+                            </span>
+                          )}
                         </span>
-                      )}
-                    </span>
-                  </DropdownMenuItem>
+                      </DropdownMenuItem>
+                    </HoverCardTrigger>
+                    <HoverCardContent side="right" align="start" className="w-64">
+                      {/* Agency preview card */}
+                      <div className="space-y-2.5">
+                        <div className="flex items-center gap-2.5">
+                          {agency.logoUrl ? (
+                            <img
+                              src={agency.logoUrl}
+                              alt={agency.name}
+                              className="size-9 shrink-0 rounded-lg object-cover border border-border"
+                            />
+                          ) : (
+                            <div
+                              className="flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold"
+                              style={{
+                                background: agency.brandColor
+                                  ? `${agency.brandColor}20`
+                                  : "hsl(var(--brand-orange-soft, 15 100% 96%))",
+                                color:
+                                  agency.brandColor ??
+                                  "hsl(var(--brand-orange, 15 88% 55%))",
+                              }}
+                            >
+                              {agency.name.slice(0, 2).toUpperCase()}
+                            </div>
+                          )}
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold leading-tight truncate">{agency.name}</p>
+                            {agency.tagline && (
+                              <p className="text-muted-foreground text-3xs mt-0.5 truncate">{agency.tagline}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-1 text-3xs text-muted-foreground">
+                          {agency.category && (
+                            <div className="flex items-center gap-1.5">
+                              <Building2 className="size-3 shrink-0 text-brand-orange" />
+                              <span>{t(`agency.category.${agency.category}`)}</span>
+                            </div>
+                          )}
+                          {agency.location && (
+                            <div className="flex items-center gap-1.5">
+                              <MapPin className="size-3 shrink-0 text-brand-orange" />
+                              <span className="truncate">{agency.location}</span>
+                            </div>
+                          )}
+                          {agency.website && (
+                            <div className="flex items-center gap-1.5">
+                              <Globe className="size-3 shrink-0 text-brand-orange" />
+                              <span className="truncate">{agency.website}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+                          <span className="text-3xs text-muted-foreground">
+                            <FolderOpen className="size-3 inline mr-1 text-brand-orange" />
+                            {agencyWs.length} workspace
+                          </span>
+                          {agency.ownerId === currentUserId && (
+                            <span className="text-brand-orange bg-brand-orange/10 text-3xs rounded px-1.5 py-0.5 font-semibold">
+                              {t("workspace.roles.OWNER")}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+
                   <div className="border-border ml-3 border-l pl-2">
                     {agencyWs.length === 0 && (
                       <p className="text-muted-foreground text-3xs px-2 py-1.5">
@@ -630,23 +727,54 @@ export function Sidebar({
                       </p>
                     )}
                     {agencyWs.map((ws) => (
-                      <DropdownMenuItem
-                        key={ws.id}
-                        onClick={() => onSwitchWorkspace(agency.id, ws.id)}
-                        className={cn(
-                          "cursor-pointer justify-between gap-2 text-xs",
-                          activeWorkspace?.id === ws.id
-                            ? "text-brand-orange font-semibold"
-                            : "",
-                        )}
-                      >
-                        <span className="truncate">{ws.name}</span>
-                        {ws.myRole && (
-                          <span className="text-muted-foreground text-3xs shrink-0 font-normal">
-                            {t(`workspace.roles.${ws.myRole}`)}
-                          </span>
-                        )}
-                      </DropdownMenuItem>
+                      <HoverCard key={ws.id} openDelay={300} closeDelay={100}>
+                        <HoverCardTrigger asChild>
+                          <DropdownMenuItem
+                            onClick={() => onSwitchWorkspace(agency.id, ws.id)}
+                            className={cn(
+                              "cursor-pointer justify-between gap-2 text-xs",
+                              activeWorkspace?.id === ws.id
+                                ? "text-brand-orange font-semibold"
+                                : "",
+                            )}
+                          >
+                            <span className="truncate">{ws.name}</span>
+                            {ws.myRole && (
+                              <span className="text-muted-foreground text-3xs shrink-0 font-normal">
+                                {t(`workspace.roles.${ws.myRole}`)}
+                              </span>
+                            )}
+                          </DropdownMenuItem>
+                        </HoverCardTrigger>
+                        <HoverCardContent side="right" align="start" className="w-56">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              {ws.logoUrl ? (
+                                <img
+                                  src={ws.logoUrl}
+                                  alt={ws.name}
+                                  className="size-7 shrink-0 rounded-md object-cover border border-border"
+                                />
+                              ) : (
+                                <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-brand-orange/10 text-brand-orange text-[10px] font-bold">
+                                  {ws.name.slice(0, 1).toUpperCase()}
+                                </div>
+                              )}
+                              <div className="min-w-0">
+                                <p className="text-xs font-semibold truncate">{ws.name}</p>
+                                {ws.myRole && (
+                                  <p className="text-3xs text-muted-foreground mt-0.5">
+                                    {t(`workspace.roles.${ws.myRole}`)}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            <p className="text-3xs text-muted-foreground">
+                              {agency.name}
+                            </p>
+                          </div>
+                        </HoverCardContent>
+                      </HoverCard>
                     ))}
                     {agency.ownerId === currentUserId && (
                       <DropdownMenuItem asChild>
@@ -676,6 +804,54 @@ export function Sidebar({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      {/* Back button — thoát khỏi workspace context về agency */}
+      {activeWorkspace && onLeaveWorkspace && (
+        <div
+          className="shrink-0 border-b px-2 py-1.5"
+          style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
+        >
+          <button
+            type="button"
+            onClick={onLeaveWorkspace}
+            className={cn(
+              "flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors",
+              "text-muted-foreground hover:bg-muted/20 hover:text-white",
+              collapsed ? "justify-center" : "",
+            )}
+            title={collapsed ? t("nav.leaveWorkspace", "Thoát workspace") : undefined}
+          >
+            <ChevronLeft className="size-3.5 shrink-0" />
+            {!collapsed && (
+              <span>{t("nav.leaveWorkspace", "Thoát workspace")}</span>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Back button — thoát khỏi agency context */}
+      {currentAgencyId && !activeWorkspace && onLeaveAgency && (
+        <div
+          className="shrink-0 border-b px-2 py-1.5"
+          style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
+        >
+          <button
+            type="button"
+            onClick={onLeaveAgency}
+            className={cn(
+              "flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors",
+              "text-muted-foreground hover:bg-muted/20 hover:text-white",
+              collapsed ? "justify-center" : "",
+            )}
+            title={collapsed ? t("nav.leaveAgency", "Thoát agency") : undefined}
+          >
+            <ChevronLeft className="size-3.5 shrink-0" />
+            {!collapsed && (
+              <span>{t("nav.leaveAgency", "Thoát agency")}</span>
+            )}
+          </button>
+        </div>
+      )}
 
       {/* Nav List */}
       <nav className="flex flex-1 flex-col gap-4 overflow-y-auto p-2 pt-4">

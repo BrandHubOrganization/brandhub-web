@@ -767,7 +767,7 @@ export function AgencyDetailPage() {
               </h3>
               <WorkspaceCardGrid
                 workspaces={workspaces}
-                onOpen={(wsId) => navigate(`/workspaces/${wsId}/settings`)}
+                onOpen={(wsId) => navigate(`/workspaces/${wsId}/dashboard`)}
               />
             </div>
           )}

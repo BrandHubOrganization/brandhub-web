@@ -338,7 +338,8 @@ export function WorkspacePage() {
                 return (
                   <div
                     key={ws.id}
-                    className="bg-card rounded-xl border border-border overflow-hidden shadow-xs transition-all hover:border-brand-orange/40 flex flex-col group"
+                    onClick={() => navigate(`/workspaces/${ws.id}/dashboard`)}
+                    className="bg-card rounded-xl border border-border overflow-hidden shadow-xs transition-all hover:border-brand-orange/40 flex flex-col group cursor-pointer"
                   >
                     {/* Top Brand Color Strip */}
                     <div
@@ -375,8 +376,7 @@ export function WorkspacePage() {
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
                               <h3
-                                onClick={() => navigate(`/workspaces/${ws.id}/dashboard`)}
-                                className="truncate font-semibold text-sm text-foreground hover:text-brand-orange transition-colors cursor-pointer"
+                                className="truncate font-semibold text-sm text-foreground hover:text-brand-orange transition-colors"
                               >
                                 {ws.name}
                               </h3>
@@ -398,7 +398,7 @@ export function WorkspacePage() {
                           <span className="truncate">
                             {parentAgency ? (
                               <span
-                                onClick={() => navigate(`/agency/${parentAgency.id}`)}
+                                onClick={(e) => { e.stopPropagation(); navigate(`/agency/${parentAgency.id}`); }}
                                 className="hover:text-foreground transition-colors cursor-pointer font-medium"
                               >
                                 {parentAgency.name}
@@ -465,7 +465,10 @@ export function WorkspacePage() {
                       </div>
 
                       {/* Card Action Buttons */}
-                      <div className="mt-4 pt-3 border-t border-border/60 flex items-center gap-2">
+                      <div
+                        className="mt-4 pt-3 border-t border-border/60 flex items-center gap-2"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <Button
                           variant="outline"
                           size="sm"
