@@ -12,7 +12,6 @@ import {
   FolderPlus,
   LayoutTemplate,
   Hash,
-  UserPlus,
   Send,
   Link2,
   CreditCard,
@@ -22,6 +21,8 @@ import {
   User,
   Inbox,
   UserCheck,
+  Briefcase,
+  Settings,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -108,60 +109,68 @@ const NAV_SECTIONS: NavSection[] = [
         icon: FileEdit,
         labelKey: "nav.requests",
         workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/editor",
         icon: FileEdit,
         labelKey: "nav.editor",
         workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/content-writing",
         icon: FileEdit,
         labelKey: "nav.contentWriting",
         workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/templates",
         icon: LayoutTemplate,
         labelKey: "nav.templates",
         workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/hashtag-groups",
         icon: Hash,
         labelKey: "nav.hashtagGroups",
         workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/calendar",
         icon: CalendarDays,
         labelKey: "nav.calendar",
         workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/library",
         icon: FolderKanban,
         labelKey: "nav.library",
         workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/publish",
         icon: Send,
         labelKey: "nav.publish",
         workspaceScoped: true,
+        requiresWorkspace: true,
       },
     ],
   },
   {
-    key: "manage",
-    titleKey: "nav.sections.manage",
+    key: "agency",
+    titleKey: "nav.sections.agency",
     items: [
       {
         to: "/agency",
         icon: Building2,
         labelKey: "nav.agencyList",
-        noAgencyOnly: true,
+        hideInWorkspace: true,
       },
       {
         to: "/agency/{agencyId}",
@@ -187,24 +196,43 @@ const NAV_SECTIONS: NavSection[] = [
         hiddenForClient: true,
         hideInWorkspace: true,
       },
+    ],
+  },
+  {
+    key: "workspaceSettings",
+    titleKey: "nav.sections.workspaceSettings",
+    items: [
       {
-        to: "/agency/invitations",
-        icon: Inbox,
-        labelKey: "nav.agencyInvitationInbox",
+        to: "/settings",
+        icon: Settings,
+        labelKey: "nav.workspaceSub.settings",
+        workspaceScoped: true,
+        requiresWorkspace: true,
         hiddenForClient: true,
-        hideInWorkspace: true,
       },
       {
-        to: "/client/invitations",
-        icon: UserCheck,
-        labelKey: "nav.clientInvitations",
-        hideInWorkspace: true,
+        to: "/members",
+        icon: Users,
+        labelKey: "nav.workspaceSub.members",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+        hiddenForClient: true,
       },
       {
         to: "/clients",
         icon: Building2,
-        labelKey: "nav.clients",
-        hideInWorkspace: true,
+        labelKey: "nav.workspaceSub.clients",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+        hiddenForClient: true,
+      },
+      {
+        to: "/client-profile",
+        icon: User,
+        labelKey: "nav.workspaceClientProfile",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+        clientOnly: true,
       },
       {
         to: "/portal",
@@ -213,17 +241,23 @@ const NAV_SECTIONS: NavSection[] = [
         workspaceScoped: true,
         requiresWorkspace: true,
       },
+    ],
+  },
+  {
+    key: "lists",
+    titleKey: "nav.sections.lists",
+    items: [
       {
-        to: "/client-profile",
-        icon: User,
-        labelKey: "nav.workspaceClientProfile",
-        // Hồ sơ thương hiệu GẮN VỚI workspace đang đứng (khác /client-profiles
-        // ở mục Cài đặt — list toàn bộ hồ sơ user sở hữu). Route không có bản
-        // fallback ngoài workspace nên bắt buộc requiresWorkspace, chỉ CLIENT
-        // có client_profile cá nhân theo workspace nên clientOnly.
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        clientOnly: true,
+        to: "/workspace",
+        icon: Briefcase,
+        labelKey: "nav.workspaceList",
+        hideInWorkspace: true,
+      },
+      {
+        to: "/clients",
+        icon: Building2,
+        labelKey: "nav.clients",
+        hideInWorkspace: true,
       },
       {
         to: "/ai-studio/ambassadors",
@@ -235,6 +269,25 @@ const NAV_SECTIONS: NavSection[] = [
         to: "/reports",
         icon: FileBarChart,
         labelKey: "nav.reports",
+        hideInWorkspace: true,
+      },
+    ],
+  },
+  {
+    key: "invitations",
+    titleKey: "nav.sections.invitations",
+    items: [
+      {
+        to: "/agency/invitations",
+        icon: Inbox,
+        labelKey: "nav.agencyInvitationInbox",
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
+        to: "/client/invitations",
+        icon: UserCheck,
+        labelKey: "nav.clientInvitations",
         hideInWorkspace: true,
       },
     ],
@@ -269,7 +322,7 @@ const NAV_SECTIONS: NavSection[] = [
         to: "/client-profiles",
         icon: User,
         labelKey: "nav.clientProfile",
-        noAgencyOnly: true,
+        hideInWorkspace: true,
       },
       {
         to: "/social-accounts",
@@ -343,14 +396,13 @@ export function Sidebar({
   const clientWorkspaces = allWorkspaces.filter((ws) => ws.myRole === "CLIENT");
   // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
   // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
-  // "create" (editor/calendar/publish...) cần context 1 workspace nên ẩn,
-  // chỉ còn "manage" (agency profile/members/stats) và "settings" (tài khoản).
+  // "create" và "workspaceSettings" ẩn vì cần ngữ cảnh 1 workspace cụ thể.
   const visibleSectionKeys: string[] | null =
     systemRole === "ADMIN"
       ? ["system"]
       : !activeWorkspace
-        ? ["manage", "settings"]
-        : null; // null = không lọc theo section, giữ tất cả
+        ? ["overview", "agency", "lists", "invitations", "settings"]
+        : ["overview", "create", "workspaceSettings"];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
@@ -359,7 +411,6 @@ export function Sidebar({
   )
     .map((section) => {
       const items = section.items
-        .filter((item) => canAccess(item.to, systemRole, role))
         .filter((item) => !item.hiddenForClient || role !== "CLIENT")
         .filter((item) => !item.clientOnly || role === "CLIENT")
         .filter((item) => !item.agencyScoped || currentAgencyId)
@@ -384,26 +435,8 @@ export function Sidebar({
             };
           }
           return item;
-        });
-
-      // Members/Clients link needs a dynamic workspaceId path — only add
-      // once a workspace is active, and only for roles that manage membership.
-      if (
-        section.key === "manage" &&
-        activeWorkspace &&
-        canAccess(`/workspaces/${activeWorkspace.id}/members`, systemRole, role)
-      ) {
-        items.push({
-          to: `/workspaces/${activeWorkspace.id}/members`,
-          icon: UserPlus,
-          labelKey: "nav.members",
-        });
-        items.push({
-          to: `/workspaces/${activeWorkspace.id}/clients`,
-          icon: Users,
-          labelKey: "nav.workspaceClients",
-        });
-      }
+        })
+        .filter((item) => canAccess(item.to, systemRole, role));
 
       return { ...section, items };
     })

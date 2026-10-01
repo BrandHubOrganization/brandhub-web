@@ -87,7 +87,10 @@ export function AgencyInvitationsPage() {
               {t("agency.invitations.empty")}
             </p>
             <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-              Khi một công ty hoặc agency gửi lời mời gia nhập nội bộ cho bạn, lời mời sẽ hiển thị tại đây.
+              {t(
+                "agency.invitations.emptyDescription",
+                "Khi một công ty hoặc agency gửi lời mời gia nhập nội bộ cho bạn, lời mời sẽ hiển thị tại đây."
+              )}
             </p>
           </div>
         </div>

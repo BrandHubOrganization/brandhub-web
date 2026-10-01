@@ -45,4 +45,13 @@ export const clientProfileService = {
       formData,
     );
   },
+
+  uploadBannerDraft: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<string>>(
+      "/api/v1/client-profile/logo",
+      formData,
+    );
+  },
 };

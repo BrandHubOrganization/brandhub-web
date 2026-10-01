@@ -148,7 +148,7 @@ export function WorkspaceSettingsPage() {
   if (loading) return null;
 
   return (
-    <div className="container mx-auto max-w-6xl p-4 pb-24 md:p-8">
+    <div className="w-full space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6">
       <div className="min-w-0 space-y-6">
         <div>
           <h1 className="text-foreground text-xl font-bold">

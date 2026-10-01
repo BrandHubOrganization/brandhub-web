@@ -48,14 +48,24 @@
     "members": "Thành viên công ty",
     "stats": "Thống kê công ty"
   },
+  "workspaceSub": {
+    "settings": "Cài đặt workspace",
+    "members": "Thành viên",
+    "clients": "Khách hàng"
+  },
   "agencyInvitationInbox": "Lời mời công ty",
   "clientInvitations": "Lời mời thành khách hàng",
   "agencyList": "Danh sách công ty",
+  "workspaceList": "Danh sách workspace",
   "clientProfile": "Hồ sơ Thương hiệu",
   "sections": {
     "overview": "Tổng quan",
     "create": "Sáng tạo",
     "manage": "Quản lý",
+    "agency": "Công ty",
+    "workspaceSettings": "Cài đặt Workspace",
+    "lists": "Danh sách",
+    "invitations": "Lời mời",
     "settings": "Cài đặt",
     "system": "Hệ thống"
   },

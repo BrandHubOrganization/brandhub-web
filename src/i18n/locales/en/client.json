@@ -136,6 +136,7 @@
     "title": "Client Invitations",
     "description": "Pending invitations to collaborate as a client representative in workspaces.",
     "empty": "No pending client invitations.",
+    "emptyDescription": "When a company or workspace invites you to collaborate as a client, the invitation will appear here.",
     "unknownWorkspace": "Workspace",
     "role": "Client",
     "expires": "Expires: {{date}}",

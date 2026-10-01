@@ -106,7 +106,7 @@ export function ClientInvitationsPage() {
     >
       {invitations.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center bg-card/40">
-          <div className="flex size-14 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+          <div className="flex size-14 items-center justify-center rounded-2xl bg-brand-orange/10 text-brand-orange">
             <UserCheck className="size-7" />
           </div>
           <div>
@@ -114,7 +114,10 @@ export function ClientInvitationsPage() {
               {t("client.invitations.empty")}
             </p>
             <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-              Khi một công ty hoặc không gian làm việc mời bạn tham gia với tư cách khách hàng (Client), lời mời sẽ hiển thị tại đây.
+              {t(
+                "client.invitations.emptyDescription",
+                "Khi một công ty hoặc không gian làm việc mời bạn tham gia với tư cách khách hàng (Client), lời mời sẽ hiển thị tại đây."
+              )}
             </p>
           </div>
         </div>
@@ -123,10 +126,10 @@ export function ClientInvitationsPage() {
           {invitations.map((inv) => (
             <div
               key={inv.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-xs hover:border-blue-500/40 transition-colors"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-xs hover:border-brand-orange/40 transition-colors"
             >
               <div className="flex items-center gap-3.5 min-w-0">
-                <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-orange/10 text-brand-orange">
                   <Briefcase className="size-5" />
                 </div>
                 <div className="min-w-0">
@@ -134,7 +137,7 @@ export function ClientInvitationsPage() {
                     <h4 className="text-sm font-semibold text-foreground truncate">
                       {inv.title}
                     </h4>
-                    <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                    <span className="rounded-full bg-brand-orange/10 px-2 py-0.5 text-[10px] font-semibold text-brand-orange uppercase tracking-wider">
                       {t("client.invitations.role")}
                     </span>
                   </div>

@@ -304,7 +304,7 @@ export function AgencyDetailPage() {
   const isDeleted = agency.status === "SOFT_DELETED";
 
   return (
-    <div className="container mx-auto max-w-6xl p-4 pb-24 md:p-8">
+    <div className="w-full space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6">
       <div className="min-w-0 space-y-10">
         {isDeleted && isOwner && (
           <div className="bg-card flex items-center justify-between rounded-xl border border-red-200 p-4 dark:border-red-900/50">

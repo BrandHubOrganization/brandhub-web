@@ -136,6 +136,7 @@
     "title": "Lời mời thành khách hàng",
     "description": "Các lời mời hợp tác với tư cách khách hàng cho dự án / không gian làm việc.",
     "empty": "Không có lời mời khách hàng nào đang chờ xử lý.",
+    "emptyDescription": "Khi một công ty hoặc không gian làm việc mời bạn tham gia với tư cách khách hàng (Client), lời mời sẽ hiển thị tại đây.",
     "unknownWorkspace": "Không gian làm việc",
     "role": "Khách hàng (Client)",
     "expires": "Hết hạn: {{date}}",

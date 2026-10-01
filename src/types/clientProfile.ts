@@ -22,6 +22,7 @@ export interface ClientProfile {
   tagline: string | null;
   foundedYear: number | null;
   budgetRange: string | null;
+  bannerUrl: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -32,6 +33,7 @@ export interface UpdateClientProfileRequest {
   phone?: string;
   note?: string;
   logoUrl?: string;
+  bannerUrl?: string;
   website?: string;
   industry?: string;
   location?: string;

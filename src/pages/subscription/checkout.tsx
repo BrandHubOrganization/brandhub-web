@@ -99,10 +99,8 @@ export function SubscriptionCheckoutPage() {
       )}
 
       {!isLoading && !isError && plan && (
-        <div className="mx-auto max-w-lg space-y-6">
-          <OrderSummaryCard plan={plan} cycle={cycle} amount={amount} />
-
-          <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 items-start">
+          <div className="lg:col-span-7 space-y-4 rounded-xl border border-border bg-card p-6">
             <h3 className="text-foreground text-sm font-semibold">
               {t("subscription.checkout.selectMethod")}
             </h3>
@@ -110,17 +108,20 @@ export function SubscriptionCheckoutPage() {
               value={paymentMethod}
               onChange={setPaymentMethod}
             />
+            <Button
+              variant="orange"
+              className="w-full mt-4"
+              disabled={!paymentMethod}
+              loading={isPaying}
+              onClick={handlePay}
+            >
+              {t("subscription.checkout.pay")}
+            </Button>
           </div>
 
-          <Button
-            variant="orange"
-            className="w-full"
-            disabled={!paymentMethod}
-            loading={isPaying}
-            onClick={handlePay}
-          >
-            {t("subscription.checkout.pay")}
-          </Button>
+          <div className="lg:col-span-5">
+            <OrderSummaryCard plan={plan} cycle={cycle} amount={amount} />
+          </div>
         </div>
       )}
     </PageWrapper>

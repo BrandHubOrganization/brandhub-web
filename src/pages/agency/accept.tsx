@@ -10,6 +10,7 @@ import { extractErrorMessage } from "@/utils/error";
 import type { InvitationPreviewResponse } from "@/types/agency";
 import type { UpdateClientProfileRequest } from "@/types/clientProfile";
 import { ClientProfileForm } from "@/pages/client-profiles/components/ClientProfileForm";
+import { cn } from "@/lib/utils";
 
 type Mode = "PICK_EXISTING" | "CREATE_NEW";
 
@@ -109,7 +110,12 @@ export function AcceptInvitationPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md rounded-2xl border p-8 text-center shadow-sm">
+      <div
+        className={cn(
+          "w-full rounded-2xl border bg-card p-8 text-center shadow-sm transition-all duration-200",
+          mode === "CREATE_NEW" ? "max-w-3xl" : "max-w-md",
+        )}
+      >
         {(status === "loading" || status === "accepting") && (
           <p className="text-muted-foreground text-sm">
             {t("agency.accept.loading")}

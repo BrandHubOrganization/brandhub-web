@@ -48,14 +48,24 @@
     "members": "Agency members",
     "stats": "Agency stats"
   },
+  "workspaceSub": {
+    "settings": "Workspace settings",
+    "members": "Members",
+    "clients": "Clients"
+  },
   "agencyInvitationInbox": "Agency invitations",
   "clientInvitations": "Client invitations",
   "agencyList": "Company list",
+  "workspaceList": "Workspace list",
   "clientProfile": "Brand Profile",
   "sections": {
     "overview": "Overview",
     "create": "Create",
     "manage": "Manage",
+    "agency": "Company",
+    "workspaceSettings": "Workspace Settings",
+    "lists": "Lists",
+    "invitations": "Invitations",
     "settings": "Settings",
     "system": "System"
   },

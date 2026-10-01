@@ -238,6 +238,7 @@ export function CreateAgencyPage() {
     <PageWrapper
       title={t("agency.create.title")}
       description={t("agency.create.description")}
+      fullWidth
     >
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-start">
         {/* LEFT COLUMN: Input Form */}
@@ -281,7 +282,7 @@ export function CreateAgencyPage() {
                     2. {t("agency.create.logoLabel")} & {t("agency.create.brandColorLabel")}
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Tùy chỉnh nhận diện thương hiệu cho công ty của bạn
+                    {t("agency.create.logoDesc", "Tùy chỉnh nhận diện thương hiệu cho công ty của bạn")}
                   </p>
                 </div>
 
@@ -342,7 +343,7 @@ export function CreateAgencyPage() {
                       value={brandColor}
                       onChange={(e) => setBrandColor(e.target.value)}
                       className="size-8 cursor-pointer rounded-lg border border-border p-0.5"
-                      title="Chọn mã màu tùy biến"
+                      title={t("agency.create.customColorTitle", "Chọn mã màu tùy biến")}
                     />
                   </div>
                   <div className="flex flex-wrap items-center gap-1.5">
@@ -355,7 +356,7 @@ export function CreateAgencyPage() {
                         className={cn(
                           "size-7 rounded-lg border transition-transform cursor-pointer flex items-center justify-center",
                           brandColor.toLowerCase() === color.toLowerCase()
-                            ? "ring-2 ring-foreground ring-offset-2 scale-110 border-white"
+                            ? "ring-2 ring-foreground ring-offset-2 ring-offset-background scale-110 border-transparent"
                             : "border-transparent hover:scale-105",
                         )}
                         title={color}
@@ -525,7 +526,7 @@ export function CreateAgencyPage() {
                     3. {t("agency.create.bannerLabel")}
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Ảnh bìa khổ rộng hiển thị đầu trang hồ sơ công ty
+                    {t("agency.create.bannerDesc", "Ảnh bìa khổ rộng hiển thị đầu trang hồ sơ công ty")}
                   </p>
                 </div>
 
@@ -664,7 +665,10 @@ export function CreateAgencyPage() {
                         {t("agency.create.uploadClick")}
                       </p>
                       <p className="text-[11px] text-muted-foreground mt-1">
-                        {t("agency.create.uploadHint")} (Tỉ lệ khuyến nghị 16:9 hoặc 3:1)
+                        {t(
+                          "agency.create.uploadBannerHint",
+                          "PNG, JPG, WEBP tối đa 5MB (Tỉ lệ khuyến nghị 16:9 hoặc 3:1)",
+                        )}
                       </p>
                     </div>
                   )}
@@ -675,7 +679,7 @@ export function CreateAgencyPage() {
               {bannerMode === "url" && (
                 <div className="space-y-3 pt-1">
                   <Input
-                    label="URL ảnh bìa"
+                    label={t("agency.create.bannerUrlLabel", "URL ảnh bìa")}
                     placeholder="https://images.unsplash.com/..."
                     value={bannerUrlInput}
                     onChange={(e) => setBannerUrlInput(e.target.value)}
@@ -699,7 +703,7 @@ export function CreateAgencyPage() {
             {/* SECTION 4: Category, Size, Founded Year */}
             <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
               <h3 className="text-sm font-semibold tracking-wide text-foreground">
-                4. Thông tin doanh nghiệp
+                4. {t("agency.create.businessInfo", "Thông tin doanh nghiệp")}
               </h3>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -765,7 +769,7 @@ export function CreateAgencyPage() {
             {/* SECTION 5: Contact & Socials */}
             <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
               <h3 className="text-sm font-semibold tracking-wide text-foreground">
-                5. Liên hệ & Mạng xã hội
+                5. {t("agency.create.contactAndSocial", "Liên hệ & Mạng xã hội")}
               </h3>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -861,7 +865,7 @@ export function CreateAgencyPage() {
                 )}
                 {foundedYear && (
                   <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                    Thành lập {foundedYear}
+                    {t("agency.list.foundedIn", { year: foundedYear })}
                   </span>
                 )}
               </div>
@@ -904,7 +908,7 @@ export function CreateAgencyPage() {
                 </div>
               ) : (
                 <div className="border-t border-border pt-3 text-center text-xs text-muted-foreground/60 italic">
-                  Chưa có mô tả công ty
+                    {t("agency.create.emptyDescription", "Chưa có mô tả công ty")}
                 </div>
               )}
 

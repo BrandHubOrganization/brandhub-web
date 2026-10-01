@@ -277,7 +277,8 @@ export function AgencyPage() {
                   <Select
                     value={categoryFilter}
                     onChange={(e) => setCategoryFilter(e.target.value)}
-                    className="h-8 text-xs py-0 pr-7 w-auto min-w-[140px]"
+                    className="h-8 text-xs py-0 pr-7"
+                    wrapperClassName="w-[150px] sm:w-[170px]"
                   >
                     <option value="">{t("agency.list.filterCategory")}</option>
                     {AGENCY_CATEGORIES.map((c) => (
@@ -292,7 +293,8 @@ export function AgencyPage() {
                 <Select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value as RoleFilter)}
-                  className="h-8 text-xs py-0 pr-7 w-auto min-w-[130px]"
+                  className="h-8 text-xs py-0 pr-7"
+                  wrapperClassName="w-[125px] sm:w-[135px]"
                 >
                   <option value="all">{t("agency.list.filterRole")}</option>
                   <option value="owner">{t("agency.list.filterRoleOwner")}</option>
@@ -305,7 +307,8 @@ export function AgencyPage() {
                   <Select
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value as SortOption)}
-                    className="h-8 text-xs py-0 pr-7 w-auto min-w-[150px]"
+                    className="h-8 text-xs py-0 pr-7"
+                    wrapperClassName="w-[165px] sm:w-[185px]"
                   >
                     <option value="workspaces_desc">{t("agency.list.sortWorkspaces")}</option>
                     <option value="name_asc">{t("agency.list.sortNameAsc")}</option>
@@ -317,9 +320,9 @@ export function AgencyPage() {
               </div>
 
               {/* Counts & Clear Filter summary */}
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                <span>
-                  {filteredAgencies.length} / {agencies.length} công ty
+              <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
+                <span className="font-medium text-foreground/80">
+                  {filteredAgencies.length} / {agencies.length} {t("agency.list.companiesCount", "công ty")}
                 </span>
                 <span>•</span>
                 <span>{workspaces.length} workspace</span>
@@ -344,7 +347,7 @@ export function AgencyPage() {
                 {t("agency.list.noResults")}
               </p>
               <p className="text-xs text-muted-foreground max-w-sm">
-                Thử thay đổi từ khóa tìm kiếm hoặc xóa các bộ lọc để xem danh sách đầy đủ.
+                {t("agency.list.noResultsHint", "Thử thay đổi từ khóa tìm kiếm hoặc xóa các bộ lọc để xem danh sách đầy đủ.")}
               </p>
               <Button
                 variant="outline"
