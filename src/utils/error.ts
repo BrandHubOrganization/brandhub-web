@@ -1,12 +1,33 @@
 /**
  * Trích xuất error message từ backend error response.
- * Backend trả về: { response: { data: { error: { message: string } } } }
+ * Backend trả về: { response: { data: { error: { message, details: { fields } } } } }
+ * VALIDATION_ERROR luôn có message generic ("Request validation failed") —
+ * ưu tiên field lỗi đầu tiên trong details.fields để user biết chỗ sai thật.
  */
 export function extractErrorMessage(err: unknown, defaultMsg: string): string {
-  return (
-    (err as { response?: { data?: { error?: { message?: string } } } })
-      ?.response?.data?.error?.message ?? defaultMsg
-  );
+  const error = (
+    err as {
+      response?: {
+        data?: {
+          error?: {
+            message?: string;
+            details?: { fields?: Record<string, string> };
+          };
+        };
+      };
+    }
+  )?.response?.data?.error;
+
+  const fieldErrors = error?.details?.fields;
+  if (fieldErrors) {
+    const firstEntry = Object.entries(fieldErrors)[0];
+    if (firstEntry) {
+      const [field, message] = firstEntry;
+      return `${field}: ${message}`;
+    }
+  }
+
+  return error?.message ?? defaultMsg;
 }
 
 /**

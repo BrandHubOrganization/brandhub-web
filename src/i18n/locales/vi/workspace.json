@@ -49,7 +49,13 @@
     "clientInviteDuplicate": "Email này đã có trong danh sách",
     "clientInviteUserMatch": "{{name}} đã có tài khoản",
     "clientInviteFailed": "Không gửi được {{count}} lời mời khách hàng — có thể email đã tồn tại hoặc đã có lời mời đang chờ",
-    "submit": "Tạo không gian làm việc"
+    "submit": "Tạo không gian làm việc",
+    "startFromTemplate": "Bắt đầu từ mẫu",
+    "templatePlaceholder": "Không dùng mẫu",
+    "templateApplied": "Đã điền sẵn từ mẫu \"{{name}}\" — bạn vẫn có thể sửa mọi trường.",
+    "noTemplateCard": "Không dùng mẫu",
+    "previewDialogTitle": "Xem trước mẫu",
+    "useThisTemplate": "Dùng mẫu này"
   },
   "industry": {
     "FNB": "Ẩm thực & Đồ uống",
@@ -75,6 +81,9 @@
     "save": "Lưu thay đổi",
     "saveSuccess": "Đã lưu cài đặt thành công",
     "logoUploadButton": "Tải logo lên",
+    "bannerUploadButton": "Tải ảnh bìa lên",
+    "bannerUploadSuccess": "Đã cập nhật ảnh bìa",
+    "bannerEmptyLabel": "Chưa có ảnh bìa",
     "logoInvalidType": "Chỉ nhận file JPEG, PNG hoặc WebP",
     "logoTooLarge": "Logo không được vượt quá 5MB",
     "logoUploadSuccess": "Đã cập nhật logo",
@@ -113,7 +122,22 @@
     "deleteError": "Không thể xóa mẫu",
     "deleteConfirmTitle": "Xoá mẫu này?",
     "deleteConfirmDescription": "\"{{name}}\" sẽ bị xoá vĩnh viễn. Hành động này không thể hoàn tác.",
-    "deleteButton": "Xoá"
+    "deleteButton": "Xoá",
+    "applyButton": "Dùng mẫu",
+    "applyDialogTitle": "Dùng mẫu này",
+    "applyToNew": "Tạo workspace mới từ mẫu này",
+    "applyToExisting": "Áp dụng vào workspace đang có",
+    "selectWorkspacePlaceholder": "Chọn workspace",
+    "selectFieldsHint": "Field có giá trị trong mẫu sẽ ghi đè cài đặt hiện tại của workspace.",
+    "applySuccess": "Đã áp dụng mẫu",
+    "applyError": "Không thể áp dụng mẫu",
+    "adminTitle": "Thư viện mẫu workspace",
+    "adminDescription": "Toàn bộ mẫu workspace của mọi agency (chỉ xem).",
+    "adminAgencyId": "Agency",
+    "adminGlobalBadge": "Mẫu chung",
+    "adminCreateButton": "Tạo mẫu chung",
+    "adminCreateSuccess": "Đã tạo mẫu chung",
+    "adminCreateError": "Không thể tạo mẫu chung"
   },
   "noRole": "—",
   "reportFrequency": {
@@ -194,6 +218,34 @@
       "manageRoles": "Quản lý vai trò",
       "viewAnalytics": "Xem báo cáo",
       "editWorkspace": "Sửa workspace"
+    }
+  },
+  "industryFields": {
+    "sectionTitle": "Thông tin đặc thù ngành",
+    "fnb": {
+      "cuisineType": "Loại hình ẩm thực",
+      "seatingCapacity": "Sức chứa chỗ ngồi",
+      "deliveryPlatforms": "Nền tảng giao hàng"
+    },
+    "fashion": {
+      "productCategories": "Danh mục sản phẩm",
+      "seasonalCollections": "Bộ sưu tập theo mùa"
+    },
+    "beauty": {
+      "serviceTypes": "Loại dịch vụ",
+      "certifications": "Chứng chỉ"
+    },
+    "technology": {
+      "techStack": "Công nghệ sử dụng",
+      "productType": "Loại sản phẩm"
+    },
+    "realEstate": {
+      "propertyTypes": "Loại bất động sản",
+      "serviceAreas": "Khu vực phục vụ"
+    },
+    "other": {
+      "specialization": "Chuyên môn",
+      "specializationOtherPlaceholder": "Nhập chuyên môn của bạn"
     }
   }
 }
