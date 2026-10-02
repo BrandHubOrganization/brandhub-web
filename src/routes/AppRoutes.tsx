@@ -19,6 +19,7 @@ import { WorkspacePage } from "@/pages/workspace";
 import { CreateWorkspacePage } from "@/pages/workspace/create";
 import { WorkspaceSettingsPage } from "@/pages/workspace/detail";
 import { WorkspaceDashboardPage } from "@/pages/workspace/dashboard";
+import { WorkspaceChatPage } from "@/pages/chat";
 import { WorkspaceMembersPage } from "@/pages/workspace/members";
 import { WorkspaceTemplatesPage } from "@/pages/workspace/templates";
 import { InvitationsPage } from "@/pages/workspace/invitations";
@@ -100,6 +101,7 @@ export function AppRoutes() {
             path="/workspaces/:id/dashboard"
             element={<WorkspaceDashboardPage />}
           />
+          <Route path="/workspaces/:id/chat" element={<WorkspaceChatPage />} />
           <Route
             path="/workspaces/:id/settings"
             element={<WorkspaceSettingsPage />}

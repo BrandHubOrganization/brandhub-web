@@ -22,11 +22,18 @@ import {
   CalendarDays,
   Users,
   BarChart3,
+  MessageCircleMore,
 } from "lucide-react";
 import type { MemberRole, Workspace } from "@/types/workspace";
 
 const MOBILE_TABS = [
   { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
+  {
+    to: "/chat",
+    icon: MessageCircleMore,
+    labelKey: "nav.chat",
+    workspaceScoped: true,
+  },
   { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
   {
     to: "/editor",

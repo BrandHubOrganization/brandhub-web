@@ -1,0 +1,33 @@
+{
+  "title": "Trao đổi Workspace",
+  "connection": {
+    "connecting": "Đang kết nối...",
+    "connected": "Đang hoạt động",
+    "reconnecting": "Đang kết nối lại...",
+    "disconnected": "Đã ngắt kết nối"
+  },
+  "empty": {
+    "title": "Bắt đầu cuộc trao đổi",
+    "description": "Gửi tin nhắn đầu tiên để cùng thành viên Workspace trao đổi công việc."
+  },
+  "loadOlder": "Xem tin nhắn cũ hơn",
+  "context": {
+    "media_package": "Media Package",
+    "media_campaign": "Media Campaign"
+  },
+  "delivery": {
+    "sending": "Đang gửi",
+    "sent": "Đã gửi",
+    "failed": "Gửi thất bại"
+  },
+  "composer": {
+    "placeholder": "Nhập tin nhắn...",
+    "offlinePlaceholder": "Đang chờ kết nối...",
+    "ariaLabel": "Nội dung tin nhắn",
+    "send": "Gửi tin nhắn",
+    "contextHint": "Đang thảo luận về {{context}}"
+  },
+  "errors": {
+    "loadHistory": "Không thể tải lịch sử trò chuyện"
+  }
+}

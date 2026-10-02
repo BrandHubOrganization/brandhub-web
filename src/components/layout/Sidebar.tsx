@@ -21,6 +21,7 @@ import {
   FileBarChart,
   User,
   Inbox,
+  MessageCircleMore,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -86,6 +87,13 @@ const NAV_SECTIONS: NavSection[] = [
         // CLIENT thấy dashboard nhưng dashboard.tsx tự ẩn card nhạy cảm
         // (thành viên, đàm phán gói, AI credit nội bộ agency) qua isClient —
         // chỉ còn phần liên quan nội dung (campaign/content status, lịch đăng).
+      },
+      {
+        to: "/chat",
+        icon: MessageCircleMore,
+        labelKey: "nav.chat",
+        workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/analytics",

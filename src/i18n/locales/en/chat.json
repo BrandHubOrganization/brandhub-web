@@ -1,0 +1,33 @@
+{
+  "title": "Workspace Chat",
+  "connection": {
+    "connecting": "Connecting...",
+    "connected": "Active now",
+    "reconnecting": "Reconnecting...",
+    "disconnected": "Disconnected"
+  },
+  "empty": {
+    "title": "Start the conversation",
+    "description": "Send the first message to collaborate with your Workspace members."
+  },
+  "loadOlder": "View older messages",
+  "context": {
+    "media_package": "Media Package",
+    "media_campaign": "Media Campaign"
+  },
+  "delivery": {
+    "sending": "Sending",
+    "sent": "Sent",
+    "failed": "Failed"
+  },
+  "composer": {
+    "placeholder": "Type a message...",
+    "offlinePlaceholder": "Waiting for connection...",
+    "ariaLabel": "Message content",
+    "send": "Send message",
+    "contextHint": "Discussing {{context}}"
+  },
+  "errors": {
+    "loadHistory": "Unable to load chat history"
+  }
+}
