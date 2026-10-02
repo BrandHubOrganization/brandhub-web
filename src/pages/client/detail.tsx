@@ -43,7 +43,10 @@ export function ClientDetailPage() {
     if (!id) return;
     setIsLoading(true);
     try {
-      const data = await mockClientService.getClientById(id);
+      const data = await mockClientService.getClientById(
+        currentWorkspace?.id ?? "",
+        id,
+      );
       setClient(data);
     } catch {
       toast.error(t("client.detail.loadError"));
@@ -206,7 +209,11 @@ export function ClientDetailPage() {
         client={packageOpen ? client : null}
         onClose={() => setPackageOpen(false)}
         onSubmit={async (id, dto) => {
-          await mockClientService.updateServicePackage(id, dto);
+          await mockClientService.updateServicePackage(
+            currentWorkspace?.id ?? "",
+            id,
+            dto,
+          );
           setPackageOpen(false);
           await fetchClientDetail();
         }}
@@ -218,7 +225,11 @@ export function ClientDetailPage() {
         client={settingsOpen ? client : null}
         onClose={() => setSettingsOpen(false)}
         onSubmit={async (id, dto) => {
-          await mockClientService.updateClientSettings(id, dto);
+          await mockClientService.updateClientSettings(
+            currentWorkspace?.id ?? "",
+            id,
+            dto,
+          );
           await fetchClientDetail();
         }}
       />

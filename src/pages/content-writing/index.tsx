@@ -21,15 +21,20 @@ export function ContentWritingPage() {
   const { t } = useTranslation();
   const { id: workspaceId } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [taskId, setTaskId] = useState<string | null>(searchParams.get("taskId"));
+  const [taskId, setTaskId] = useState<string | null>(
+    searchParams.get("taskId"),
+  );
   const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     if (taskId || !workspaceId) return;
     api
-      .post<{ data: { id: string } }>(`/api/v1/workspaces/${workspaceId}/tasks`, {
-        title: "Untitled post",
-      })
+      .post<{ data: { id: string } }>(
+        `/api/v1/workspaces/${workspaceId}/tasks`,
+        {
+          title: "Untitled post",
+        },
+      )
       .then(({ data }) => {
         const newTaskId = data.data.id;
         setTaskId(newTaskId);
@@ -40,7 +45,10 @@ export function ContentWritingPage() {
       });
   }, [taskId, workspaceId, setSearchParams]);
 
-  const { yDoc, isReady, isConnected } = useTaskContentSync(workspaceId ?? "", taskId);
+  const { yDoc, isReady, isConnected } = useTaskContentSync(
+    workspaceId ?? "",
+    taskId,
+  );
 
   const handleRestored = () => {
     // Restoring replaces the snapshot server-side; reloading the page is the

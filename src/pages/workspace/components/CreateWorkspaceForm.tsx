@@ -123,7 +123,7 @@ export function CreateWorkspaceForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="border-border bg-card mx-auto grid max-w-4xl grid-cols-1 gap-4 rounded-xl border p-6 md:grid-cols-2"
+      className="border-border bg-card w-full grid grid-cols-1 gap-4 rounded-xl border p-6 md:grid-cols-2"
     >
       {availableTemplates.length > 0 && (
         <div className="flex flex-col gap-1.5 md:col-span-2">

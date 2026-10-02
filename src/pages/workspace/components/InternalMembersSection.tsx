@@ -12,7 +12,6 @@ import { InviteMemberDialog } from "./InviteMemberDialog";
 import { RemoveMemberDialog } from "./RemoveMemberDialog";
 import { LeaveWorkspaceDialog } from "./LeaveWorkspaceDialog";
 import { AssignMemberPicker } from "./AssignMemberPicker";
-import { AddClientDialog } from "./AddClientDialog";
 import type { useWorkspaceMembers } from "../hooks/useWorkspaceMembers";
 
 type WorkspaceMembersState = ReturnType<typeof useWorkspaceMembers>;
@@ -45,12 +44,6 @@ export function InternalMembersSection({
   setAssignValues,
   assigning,
   handleAssign,
-  addClientOpen,
-  setAddClientOpen,
-  addClientId,
-  setAddClientId,
-  addingClient,
-  handleAddClient,
   members,
   currentMember,
   updatingRole,
@@ -68,11 +61,6 @@ export function InternalMembersSection({
         {canManage && agencyId && (
           <Button variant="outline" onClick={() => setAssignOpen(true)}>
             {t("workspace.members.assignButton")}
-          </Button>
-        )}
-        {canManage && agencyId && (
-          <Button variant="outline" onClick={() => setAddClientOpen(true)}>
-            {t("workspace.members.addClientButton")}
           </Button>
         )}
         {canManage && (
@@ -158,19 +146,6 @@ export function InternalMembersSection({
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )}
-
-      {agencyId && (
-        <AddClientDialog
-          open={addClientOpen}
-          onOpenChange={setAddClientOpen}
-          agencyId={agencyId}
-          existingMembers={members}
-          value={addClientId}
-          onChange={setAddClientId}
-          submitting={addingClient}
-          onSubmit={handleAddClient}
-        />
       )}
     </div>
   );

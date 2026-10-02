@@ -36,6 +36,7 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
 );
 
 const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
+const WORKSPACE_CLIENTS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const WORKSPACE_SETTINGS_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const SOCIAL_ACCOUNTS_ACCESS: AccessRule = ["OWNER", "MANAGER", "CLIENT"];
 
@@ -44,6 +45,9 @@ const SOCIAL_ACCOUNTS_ACCESS: AccessRule = ["OWNER", "MANAGER", "CLIENT"];
 export function resolveAccessRule(pathname: string): AccessRule | null {
   if (/^\/workspaces\/[^/]+\/members$/.test(pathname)) {
     return MEMBERS_PAGE_ACCESS;
+  }
+  if (/^\/workspaces\/[^/]+\/clients$/.test(pathname)) {
+    return WORKSPACE_CLIENTS_PAGE_ACCESS;
   }
   if (/^\/workspaces\/[^/]+\/settings$/.test(pathname)) {
     return WORKSPACE_SETTINGS_ACCESS;
@@ -58,6 +62,12 @@ export function resolveAccessRule(pathname: string): AccessRule | null {
   // hiển thị. No-op với pathname chưa có prefix (Sidebar gọi canAccess
   // bằng item.to gốc trước khi áp workspaceScoped substitution).
   const stripped = pathname.replace(/^\/workspaces\/[^/]+/, "") || "/";
+  // /invitations/accept là trang accept lời mời (mọi role đã login dùng
+  // được, kể cả CLIENT chưa thuộc workspace nào) — không ăn theo rule
+  // OWNER/MANAGER của "/invitations" (danh sách lời mời quản lý agency).
+  if (stripped === "/invitations/accept") {
+    return null;
+  }
   // Boundary-aware: "/workspace" không được nuốt "/workspaces/*".
   const key = SORTED_KEYS.find(
     (k) => stripped === k || stripped.startsWith(k + "/"),

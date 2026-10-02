@@ -3,68 +3,95 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
-import { Building2, Calendar, Check, X, ArrowLeft } from "lucide-react";
+import { UserCheck, Calendar, Check, X, ArrowLeft, MessageSquare, Briefcase } from "lucide-react";
 import { toast } from "sonner";
+import { workspaceService } from "@/services/workspaceService";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage, isNotFoundError } from "@/utils/error";
-import type { AgencyInvitation } from "@/types/agency";
 
-export function AgencyInvitationsPage() {
+export interface ClientInvitationItem {
+  id: string;
+  token: string;
+  source: "WORKSPACE" | "AGENCY";
+  title: string;
+  note?: string | null;
+  role: string | null;
+  expiresAt: string;
+}
+
+export function ClientInvitationsPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [invitations, setInvitations] = useState<AgencyInvitation[]>([]);
+  const [invitations, setInvitations] = useState<ClientInvitationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
 
   useEffect(() => {
-    agencyService
-      .listMyPendingInvitations()
-      .then(({ data }) => {
-        // Lời mời vào công ty (loại trừ role CLIENT nếu có — role CLIENT thuộc trang Lời mời thành khách hàng)
-        const agencyInvs = (data.data ?? []).filter(
-          (inv) => inv.role !== "CLIENT",
+    Promise.all([
+      workspaceService.listMyPendingInvitations().catch((err: unknown) => {
+        if (isNotFoundError(err)) return { data: { data: [] } };
+        throw err;
+      }),
+      agencyService.listMyPendingInvitations().catch((err: unknown) => {
+        if (isNotFoundError(err)) return { data: { data: [] } };
+        throw err;
+      }),
+    ])
+      .then(([workspaceRes, agencyRes]) => {
+        // 1. Lời mời tham gia Workspace với tư cách CLIENT
+        const wsInvs: ClientInvitationItem[] = (workspaceRes.data.data ?? []).map(
+          (inv) => ({
+            id: inv.id,
+            token: inv.token,
+            source: "WORKSPACE",
+            title: inv.workspaceName || t("client.invitations.unknownWorkspace"),
+            note: null,
+            role: inv.role ?? "CLIENT",
+            expiresAt: inv.expiresAt,
+          }),
         );
-        setInvitations(agencyInvs);
+
+        // 2. Lời mời từ Agency nhưng có role là CLIENT
+        const agencyClientInvs: ClientInvitationItem[] = (
+          agencyRes.data.data ?? []
+        )
+          .filter((inv) => inv.role === "CLIENT")
+          .map((inv) => ({
+            id: inv.id,
+            token: inv.token,
+            source: "AGENCY",
+            title: inv.agencyName || t("client.invitations.unknownWorkspace"),
+            note: null,
+            role: "CLIENT",
+            expiresAt: inv.expiresAt,
+          }));
+
+        setInvitations([...wsInvs, ...agencyClientInvs]);
       })
       .catch((err: unknown) => {
-        if (isNotFoundError(err)) {
-          setInvitations([]);
-          return;
-        }
-        toast.error(
-          extractErrorMessage(err, t("agency.errors.invitationsLoadFailed")),
-        );
+        toast.error(extractErrorMessage(err, t("common.loadFailed")));
       })
       .finally(() => setLoading(false));
   }, [t]);
 
-  const handleAccept = async (inv: AgencyInvitation) => {
-    setBusy(inv.token);
-    try {
-      await agencyService.acceptInvitation(inv.token);
-      setInvitations((prev) => prev.filter((i) => i.id !== inv.id));
-      toast.success(
-        t("agency.invitations.acceptSuccess", {
-          agency: inv.agencyName || t("agency.invitations.unknownAgency"),
-        }),
-      );
-      // Điều hướng về danh sách công ty sau khi tham gia thành công
-      navigate("/agency");
-    } catch (err: unknown) {
-      toast.error(extractErrorMessage(err, t("agency.errors.acceptFailed")));
-    } finally {
-      setBusy(null);
-    }
+  const handleAccept = (inv: ClientInvitationItem) => {
+    // Luồng khách hàng: điều hướng tới trang chọn/tạo Hồ sơ thương hiệu (ClientProfile)
+    // trước khi hoàn tất gia nhập workspace
+    navigate(`/invitations/accept?token=${inv.token}`);
   };
 
-  const handleDecline = async (inv: AgencyInvitation) => {
+  const handleDecline = async (inv: ClientInvitationItem) => {
     setBusy(inv.token);
     try {
-      await agencyService.declineInvitation(inv.token);
+      if (inv.source === "AGENCY") {
+        await agencyService.declineInvitation(inv.token);
+      } else {
+        await workspaceService.declineInvitation(inv.token);
+      }
       setInvitations((prev) => prev.filter((i) => i.id !== inv.id));
-      toast.success(t("agency.invitations.declineSuccess"));
+      toast.success(t("client.invitations.declineSuccess"));
     } catch (err: unknown) {
-      toast.error(extractErrorMessage(err, t("agency.errors.declineFailed")));
+      toast.error(extractErrorMessage(err, t("common.actionFailed")));
     } finally {
       setBusy(null);
     }
@@ -74,22 +101,22 @@ export function AgencyInvitationsPage() {
 
   return (
     <PageWrapper
-      title={t("agency.invitations.title")}
-      description={t("agency.invitations.description")}
+      title={t("client.invitations.title")}
+      description={t("client.invitations.description")}
     >
       {invitations.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center bg-card/40">
           <div className="flex size-14 items-center justify-center rounded-2xl bg-brand-orange/10 text-brand-orange">
-            <Building2 className="size-7" />
+            <UserCheck className="size-7" />
           </div>
           <div>
             <p className="text-sm font-semibold text-foreground">
-              {t("agency.invitations.empty")}
+              {t("client.invitations.empty")}
             </p>
             <p className="text-xs text-muted-foreground mt-1 max-w-sm">
               {t(
-                "agency.invitations.emptyDescription",
-                "Khi một công ty hoặc agency gửi lời mời gia nhập nội bộ cho bạn, lời mời sẽ hiển thị tại đây."
+                "client.invitations.emptyDescription",
+                "Khi một công ty hoặc không gian làm việc mời bạn tham gia với tư cách khách hàng (Client), lời mời sẽ hiển thị tại đây."
               )}
             </p>
           </div>
@@ -103,23 +130,27 @@ export function AgencyInvitationsPage() {
             >
               <div className="flex items-center gap-3.5 min-w-0">
                 <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-orange/10 text-brand-orange">
-                  <Building2 className="size-5" />
+                  <Briefcase className="size-5" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <h4 className="text-sm font-semibold text-foreground truncate">
-                      {inv.agencyName || t("agency.invitations.unknownAgency")}
+                      {inv.title}
                     </h4>
-                    {inv.role && (
-                      <span className="rounded-full bg-brand-orange/10 px-2 py-0.5 text-[10px] font-semibold text-brand-orange uppercase tracking-wider">
-                        {inv.role}
-                      </span>
-                    )}
+                    <span className="rounded-full bg-brand-orange/10 px-2 py-0.5 text-[10px] font-semibold text-brand-orange uppercase tracking-wider">
+                      {t("client.invitations.role")}
+                    </span>
                   </div>
+                  {inv.note && (
+                    <p className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5 italic">
+                      <MessageSquare className="size-3 shrink-0" />
+                      <span className="truncate">{inv.note}</span>
+                    </p>
+                  )}
                   <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
                     <span className="flex items-center gap-1">
                       <Calendar className="size-3" />
-                      {t("agency.invitations.expires", {
+                      {t("client.invitations.expires", {
                         date: new Date(inv.expiresAt).toLocaleDateString(),
                       })}
                     </span>
@@ -135,7 +166,7 @@ export function AgencyInvitationsPage() {
                   className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white gap-1.5 shadow-xs text-xs font-medium"
                 >
                   <Check className="size-3.5" />
-                  {t("agency.invitations.accept")}
+                  {t("client.invitations.accept")}
                 </Button>
                 <Button
                   variant="outline"
@@ -145,7 +176,7 @@ export function AgencyInvitationsPage() {
                   className="cursor-pointer text-xs gap-1.5 text-muted-foreground hover:text-destructive"
                 >
                   <X className="size-3.5" />
-                  {t("agency.invitations.decline")}
+                  {t("client.invitations.decline")}
                 </Button>
               </div>
             </div>
@@ -161,11 +192,11 @@ export function AgencyInvitationsPage() {
           onClick={() => navigate("/agency")}
         >
           <ArrowLeft className="size-3.5" />
-          {t("agency.invitations.back")}
+          {t("client.invitations.back")}
         </Button>
       </div>
     </PageWrapper>
   );
 }
 
-export default AgencyInvitationsPage;
+export default ClientInvitationsPage;

@@ -7,9 +7,13 @@ import type {
 } from "../types/client";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 export function useClients() {
   const { t } = useTranslation();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const workspaceId = currentWorkspace?.id ?? "";
+
   const [clients, setClients] = useState<Client[]>([]);
   const [totalElements, setTotalElements] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -18,7 +22,9 @@ export function useClients() {
   const fetchClients = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await mockClientService.getClients({ search: searchTerm });
+      const data = await mockClientService.getClients(workspaceId, {
+        search: searchTerm,
+      });
       setClients(data.content);
       setTotalElements(data.totalElements);
     } catch {
@@ -26,7 +32,7 @@ export function useClients() {
     } finally {
       setIsLoading(false);
     }
-  }, [searchTerm]);
+  }, [searchTerm, workspaceId]);
 
   useEffect(() => {
     fetchClients();
@@ -34,7 +40,7 @@ export function useClients() {
 
   const handleCreateClient = async (dto: CreateClientDTO) => {
     try {
-      const created = await mockClientService.createClient(dto);
+      const created = await mockClientService.createClient(workspaceId, dto);
       setClients((prev) => [created, ...prev]);
       setTotalElements((prev) => prev + 1);
       toast.success(t("client.createSuccess", { name: created.name }));
@@ -50,7 +56,11 @@ export function useClients() {
     dto: UpdateServicePackageDTO,
   ) => {
     try {
-      const updated = await mockClientService.updateServicePackage(id, dto);
+      const updated = await mockClientService.updateServicePackage(
+        workspaceId,
+        id,
+        dto,
+      );
       setClients((prev) => prev.map((c) => (c.id === id ? updated : c)));
       toast.success(t("client.servicePackage.upgradeSuccess"));
       return updated;
@@ -62,7 +72,7 @@ export function useClients() {
 
   const handleDeleteClient = async (id: string) => {
     try {
-      await mockClientService.deleteClient(id);
+      await mockClientService.deleteClient(workspaceId, id);
       setClients((prev) => prev.filter((c) => c.id !== id));
       setTotalElements((prev) => Math.max(0, prev - 1));
       toast.success(t("client.deleteSuccess"));
