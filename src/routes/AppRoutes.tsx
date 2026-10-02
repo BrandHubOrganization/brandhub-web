@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Import Layout & Security Components
@@ -29,8 +30,10 @@ import { AgencyStatsPage } from "@/pages/agency/stats";
 import { AgencyInvitationsPage } from "@/pages/agency/invitations";
 import { AcceptInvitationPage } from "@/pages/agency/accept";
 import { PortalPage } from "@/pages/portal";
+import { WorkspaceClientProfilePage } from "@/pages/workspace/client-profile";
 import { AdminPage } from "@/pages/admin";
 import { EditorPage } from "@/pages/editor";
+import { ContentWritingPage } from "@/pages/content-writing";
 import { CalendarPage } from "@/pages/calendar";
 import { AnalyticsPage } from "@/pages/analytics";
 import { SocialAccountsPage } from "@/pages/social-accounts";
@@ -57,7 +60,12 @@ import { NotificationSettingsPage } from "@/pages/notification-settings";
 import { ClientProfileListPage } from "@/pages/client-profiles/list";
 import { VideoStudioPage } from "@/pages/ai-studio/video";
 import ExamplesPage from "@/components/examples";
+import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
 
+const SystemHealthPage = lazy(() => import("@/pages/admin/system-health"));
+const WorkspaceTemplateLibraryPage = lazy(
+  () => import("@/pages/admin/WorkspaceTemplateLibrary"),
+);
 export function AppRoutes() {
   return (
     <Routes>
@@ -105,8 +113,40 @@ export function AppRoutes() {
             element={<WorkspaceMembersPage />}
           />
           <Route
-            path="/workspaces/:id/social-accounts"
-            element={<SocialAccountsPage />}
+            path="/workspaces/:id/requests"
+            element={<ContentRequestListPage />}
+          />
+          <Route path="/workspaces/:id/editor" element={<EditorPage />} />
+          <Route
+            path="/editor"
+            element={<WorkspaceScopedRedirect destination="editor" />}
+          />
+          <Route
+            path="/workspaces/:id/content-writing"
+            element={<ContentWritingPage />}
+          />
+          <Route
+            path="/content-writing"
+            element={<WorkspaceScopedRedirect destination="content-writing" />}
+          />
+          <Route
+            path="/workspaces/:id/templates"
+            element={<TemplateBrowserPage />}
+          />
+          <Route
+            path="/workspaces/:id/hashtag-groups"
+            element={<HashtagGroupsPage />}
+          />
+          <Route path="/workspaces/:id/calendar" element={<CalendarPage />} />
+          <Route
+            path="/workspaces/:id/library"
+            element={<ContentLibraryPage />}
+          />
+          <Route path="/workspaces/:id/publish" element={<PublishPage />} />
+          <Route path="/workspaces/:id/portal" element={<PortalPage />} />
+          <Route
+            path="/workspaces/:id/client-profile"
+            element={<WorkspaceClientProfilePage />}
           />
           <Route
             path="/workspaces/templates"
@@ -126,17 +166,32 @@ export function AppRoutes() {
           />
           <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
           <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
-          <Route path="/portal" element={<PortalPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route
+            path="/admin/system-health"
+            element={
+              <Suspense fallback={null}>
+                <SystemHealthPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/admin/workspace-templates"
+            element={
+              <Suspense fallback={null}>
+                <WorkspaceTemplateLibraryPage />
+              </Suspense>
+            }
+          />
           <Route path="/requests" element={<ContentRequestListPage />} />
           <Route path="/editor" element={<EditorPage />} />
+          <Route path="/content-writing" element={<ContentWritingPage />} />
           <Route path="/templates" element={<TemplateBrowserPage />} />
           <Route path="/hashtag-groups" element={<HashtagGroupsPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/library" element={<ContentLibraryPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/social-accounts" element={<SocialAccountsPage />} />
-          <Route path="/publish" element={<PublishPage />} />
           <Route
             path="/subscription/plans"
             element={<SubscriptionPlansPage />}

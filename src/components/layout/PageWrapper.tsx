@@ -7,6 +7,7 @@ export interface PageWrapperProps {
   actions?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  compact?: boolean;
 }
 
 export function PageWrapper({
@@ -15,6 +16,7 @@ export function PageWrapper({
   actions,
   children,
   className,
+  compact = false,
 }: PageWrapperProps) {
   React.useEffect(() => {
     document.title = `${title} | BrandHub`;
@@ -24,16 +26,35 @@ export function PageWrapper({
     <div
       className={cn(
         "container mx-auto max-w-6xl space-y-6 p-4 pb-24 md:p-8",
+        compact &&
+          "space-y-3 p-3 pb-24 md:px-5 md:py-4 md:pb-24",
         className,
       )}
     >
-      <div className="border-border flex flex-col justify-between gap-4 border-b pb-6 md:flex-row md:items-center">
+      <div
+        className={cn(
+          "border-border flex flex-col justify-between gap-4 border-b pb-6 md:flex-row md:items-center",
+          compact && "gap-3 pb-3",
+        )}
+      >
         <div className="space-y-1">
-          <h1 className="text-foreground font-sans text-3xl font-bold tracking-tight">
+          <h1
+            className={cn(
+              "text-foreground font-sans text-3xl font-bold tracking-tight",
+              compact && "text-2xl",
+            )}
+          >
             {title}
           </h1>
           {description && (
-            <p className="text-muted-foreground text-sm">{description}</p>
+            <p
+              className={cn(
+                "text-muted-foreground text-sm",
+                compact && "text-xs",
+              )}
+            >
+              {description}
+            </p>
           )}
         </div>
         {actions && (

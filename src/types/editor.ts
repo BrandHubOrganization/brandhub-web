@@ -21,6 +21,7 @@ export type AdObjective = "AWARENESS" | "TRAFFIC" | "CONVERSION";
 export interface AIGenerateRequest {
   prompt: string;
   contentType: AIContentType;
+  generateImage?: boolean;
   topic?: string;
   platforms: SocialPlatform[];
   tone?: string;

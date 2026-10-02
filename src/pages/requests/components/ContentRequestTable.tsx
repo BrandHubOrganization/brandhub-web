@@ -7,6 +7,7 @@ import type {
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, UserPlus, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 interface ContentRequestTableProps {
   requests: ContentRequest[];
@@ -98,9 +99,11 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
 
   const handleGoToEditor = (req: ContentRequest) => {
-    navigate("/editor", {
+    if (!currentWorkspace) return;
+    navigate(`/workspaces/${currentWorkspace.id}/editor`, {
       state: {
         templateTitle: req.topic,
         prefilledCaption: `[Client: ${req.clientName}] ${req.topic}\n\n${t("requests.table.deadlineLabel")}: ${req.deadline}`,
@@ -230,13 +233,18 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           </button>
                         )}
 
-                        <button
-                          onClick={() => handleGoToEditor(req)}
-                          className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
-                          title={t("requests.table.goToEditor")}
-                        >
-                          <ArrowRight className="size-4" />
-                        </button>
+                        {/* /editor cho phép MANAGER + CREATOR (access.ts) —
+                            role khác bấm nút này trước đây bị AuthGuard chặn
+                            im lặng, văng về /dashboard. */}
+                        {(userRole === "MANAGER" || userRole === "CREATOR") && (
+                          <button
+                            onClick={() => handleGoToEditor(req)}
+                            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
+                            title={t("requests.table.goToEditor")}
+                          >
+                            <ArrowRight className="size-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -25,6 +25,28 @@ export function CreateWorkspacePage() {
     agencyId,
     loading,
     handleSubmit,
+    industry,
+    setIndustry,
+    companySize,
+    setCompanySize,
+    website,
+    setWebsite,
+    phone,
+    setPhone,
+    location,
+    setLocation,
+    facebookUrl,
+    setFacebookUrl,
+    linkedinUrl,
+    setLinkedinUrl,
+    instagramUrl,
+    setInstagramUrl,
+    industryFields,
+    setIndustryFields,
+    appliedTemplateName,
+    availableTemplates,
+    selectedTemplateId,
+    handleTemplateSelect,
   } = useCreateWorkspace();
 
   return (
@@ -52,6 +74,28 @@ export function CreateWorkspacePage() {
         onClientEmailsChange={setClientEmails}
         submitting={loading}
         onSubmit={handleSubmit}
+        appliedTemplateName={appliedTemplateName}
+        industry={industry}
+        onIndustryChange={setIndustry}
+        companySize={companySize}
+        onCompanySizeChange={setCompanySize}
+        website={website}
+        onWebsiteChange={setWebsite}
+        phone={phone}
+        onPhoneChange={setPhone}
+        location={location}
+        onLocationChange={setLocation}
+        facebookUrl={facebookUrl}
+        onFacebookUrlChange={setFacebookUrl}
+        linkedinUrl={linkedinUrl}
+        onLinkedinUrlChange={setLinkedinUrl}
+        instagramUrl={instagramUrl}
+        onInstagramUrlChange={setInstagramUrl}
+        industryFields={industryFields}
+        onIndustryFieldsChange={setIndustryFields}
+        availableTemplates={availableTemplates}
+        selectedTemplateId={selectedTemplateId}
+        onTemplateSelect={handleTemplateSelect}
       />
     </PageWrapper>
   );

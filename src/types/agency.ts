@@ -28,6 +28,7 @@ export interface Agency {
   name: string;
   ownerId: string;
   logoUrl: string | null;
+  bannerUrl: string | null;
   description: string | null;
   category: AgencyCategory | null;
   companySize: CompanySize | null;
@@ -85,6 +86,22 @@ export interface AgencyMemberActivity {
   resourceType: string;
   resourceId: string | null;
   createdAt: string;
+}
+
+export interface AgencyMemberWorkspaceMembership {
+  workspaceId: string;
+  workspaceName: string;
+  role: string;
+}
+
+export interface AgencyMemberProfile {
+  userId: string;
+  fullName: string | null;
+  email: string | null;
+  avatarUrl: string | null;
+  phone: string | null;
+  professionalTitle: string | null;
+  workspaces: AgencyMemberWorkspaceMembership[];
 }
 
 export interface AgencyStatsResponse {

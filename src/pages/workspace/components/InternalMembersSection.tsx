@@ -52,6 +52,7 @@ export function InternalMembersSection({
   addingClient,
   handleAddClient,
   members,
+  currentMember,
   updatingRole,
   handleUpdateRole,
   leaving,
@@ -114,6 +115,11 @@ export function InternalMembersSection({
         onOpenChange={(open) => !open && setRemoveTarget(null)}
         submitting={removing}
         onSubmit={handleRemove}
+        target={removeTarget}
+        isLastManager={Boolean(
+          removeTarget?.role === "MANAGER" &&
+          members.filter((m) => m.role === "MANAGER" && m.isActive).length <= 1,
+        )}
       />
 
       <LeaveWorkspaceDialog
@@ -121,6 +127,10 @@ export function InternalMembersSection({
         onOpenChange={setLeaveOpen}
         submitting={leaving}
         onSubmit={handleLeave}
+        isLastManager={Boolean(
+          currentMember?.role === "MANAGER" &&
+          members.filter((m) => m.role === "MANAGER" && m.isActive).length <= 1,
+        )}
       />
 
       {agencyId && (

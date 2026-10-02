@@ -19,13 +19,15 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/invitations": ["OWNER", "MANAGER"],
   "/requests": ["MANAGER", "CREATOR", "CLIENT"],
   "/portal": ["MANAGER", "CLIENT"],
+  "/client-profile": ["CLIENT"],
   "/calendar": ["MANAGER", "CREATOR", "CLIENT"],
   "/library": ["MANAGER", "CREATOR", "CLIENT"],
-  "/editor": ["CREATOR"],
-  "/templates": ["CREATOR"],
-  "/hashtag-groups": ["CREATOR"],
-  "/publish": ["CREATOR"],
-  "/ai-studio": ["CREATOR"],
+  "/editor": ["MANAGER", "CREATOR"],
+  "/content-writing": ["CREATOR"],
+  "/templates": ["MANAGER", "CREATOR"],
+  "/hashtag-groups": ["MANAGER", "CREATOR"],
+  "/publish": ["MANAGER", "CREATOR"],
+  "/ai-studio": ["MANAGER", "CREATOR"],
   "/admin": "ADMIN",
 };
 
@@ -50,7 +52,7 @@ export function resolveAccessRule(pathname: string): AccessRule | null {
   }
   // Boundary-aware: "/workspace" không được nuốt "/workspaces/*".
   const key = SORTED_KEYS.find(
-    (k) => pathname === k || pathname.startsWith(k + "/"),
+    (k) => stripped === k || stripped.startsWith(k + "/"),
   );
   return key ? ROUTE_ACCESS[key] : null;
 }

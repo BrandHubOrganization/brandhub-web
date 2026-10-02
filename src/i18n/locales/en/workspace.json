@@ -41,6 +41,7 @@
     "instagramUrlLabel": "Instagram",
     "assignMembersLabel": "Add members from agency",
     "assignMembersHint": "You're the default Manager. Pick someone else as Manager here to hand off that role for this workspace.",
+    "assignManagerLimitHint": "A workspace can only have one Manager — pick a different role for the others.",
     "clientInviteLabel": "Invite clients",
     "clientInviteHint": "Enter client emails to invite them to this workspace as Client. They'll receive an email and set up their own profile when they accept.",
     "clientInvitePlaceholder": "client@company.com",
@@ -48,7 +49,13 @@
     "clientInviteDuplicate": "This email is already in the list",
     "clientInviteUserMatch": "{{name}} already has an account",
     "clientInviteFailed": "Failed to send {{count}} client invitation(s) — the email may already exist or have a pending invite",
-    "submit": "Create workspace"
+    "submit": "Create workspace",
+    "startFromTemplate": "Start from a template",
+    "templatePlaceholder": "No template",
+    "templateApplied": "Prefilled from template \"{{name}}\" — you can still edit any field.",
+    "noTemplateCard": "No template",
+    "previewDialogTitle": "Template preview",
+    "useThisTemplate": "Use this template"
   },
   "industry": {
     "FNB": "Food & Beverage",
@@ -66,12 +73,17 @@
     "title": "Workspace settings",
     "description": "Manage your workspace configuration.",
     "nameLabel": "Workspace name",
+    "editButton": "Edit",
+    "cancelButton": "Cancel",
     "timezoneLabel": "Timezone",
     "defaultPlatformsLabel": "Default platforms",
     "reportFrequencyLabel": "Report frequency",
     "save": "Save changes",
     "saveSuccess": "Settings saved successfully",
     "logoUploadButton": "Upload logo",
+    "bannerUploadButton": "Upload banner",
+    "bannerUploadSuccess": "Banner updated",
+    "bannerEmptyLabel": "No banner yet",
     "logoInvalidType": "Only JPEG, PNG, or WebP files are accepted",
     "logoTooLarge": "Logo must not exceed 5MB",
     "logoUploadSuccess": "Logo updated",
@@ -85,6 +97,11 @@
       "confirmDelete": "Delete workspace",
       "deleteSuccess": "Workspace deleted — restorable for 30 days",
       "deleteError": "Failed to delete workspace"
+    },
+    "preview": {
+      "title": "Preview",
+      "hint": "Updates live as you edit the fields.",
+      "emptyName": "Untitled workspace"
     },
     "template": {
       "saveButton": "Save as template",
@@ -102,7 +119,25 @@
     "empty": "No templates saved yet.",
     "loadError": "Failed to load templates",
     "deleteSuccess": "Template deleted",
-    "deleteError": "Failed to delete template"
+    "deleteError": "Failed to delete template",
+    "deleteConfirmTitle": "Delete template?",
+    "deleteConfirmDescription": "\"{{name}}\" will be permanently deleted. This cannot be undone.",
+    "deleteButton": "Delete",
+    "applyButton": "Use template",
+    "applyDialogTitle": "Use this template",
+    "applyToNew": "Create a new workspace from this template",
+    "applyToExisting": "Apply to an existing workspace",
+    "selectWorkspacePlaceholder": "Select a workspace",
+    "selectFieldsHint": "Fields with a value in this template will overwrite the workspace's current settings.",
+    "applySuccess": "Template applied",
+    "applyError": "Failed to apply template",
+    "adminTitle": "Workspace template library",
+    "adminDescription": "All workspace templates across every agency (read-only).",
+    "adminAgencyId": "Agency",
+    "adminGlobalBadge": "Global template",
+    "adminCreateButton": "Create global template",
+    "adminCreateSuccess": "Global template created",
+    "adminCreateError": "Failed to create global template"
   },
   "noRole": "—",
   "reportFrequency": {
@@ -123,13 +158,15 @@
     "active": "Active",
     "removeButton": "Remove",
     "removeConfirmTitle": "Remove member?",
-    "removeConfirmDescription": "This member will lose access to the workspace.",
+    "removeConfirmDescription": "{{name}} will lose access to the workspace.",
+    "removeLastManagerWarning": "This member is the only active Manager — remove blocked. Hand off the Manager role first.",
     "inviteSuccess": "Invitation sent",
     "removeSuccess": "Member removed",
     "noteLabel": "Note (optional)",
     "assignButton": "Add from agency",
     "assignDialogTitle": "Add members from agency",
     "assignSuccess": "Member added",
+    "assignPartialSuccess": "{{added}} member(s) added, {{skipped}} already in this workspace (skipped)",
     "addClientButton": "Add client",
     "addClientTitle": "Add a collaborating client to this workspace",
     "addClientEmpty": "No client available to add (none left, or the agency has no clients yet).",
@@ -140,7 +177,8 @@
     "leaveButton": "Leave workspace",
     "leaveSuccess": "You have left the workspace",
     "leaveConfirmTitle": "Leave this workspace?",
-    "leaveConfirmDescription": "You will lose access to this workspace. This cannot be undone."
+    "leaveConfirmDescription": "You will lose access to this workspace. This cannot be undone.",
+    "leaveLastManagerWarning": "You're the only active Manager — leave blocked. Hand off the Manager role first."
   },
   "roles": {
     "OWNER": "Owner",
@@ -182,6 +220,34 @@
       "manageRoles": "Manage roles",
       "viewAnalytics": "View analytics",
       "editWorkspace": "Edit workspace"
+    }
+  },
+  "industryFields": {
+    "sectionTitle": "Industry-specific details",
+    "fnb": {
+      "cuisineType": "Cuisine type",
+      "seatingCapacity": "Seating capacity",
+      "deliveryPlatforms": "Delivery platforms"
+    },
+    "fashion": {
+      "productCategories": "Product categories",
+      "seasonalCollections": "Seasonal collections"
+    },
+    "beauty": {
+      "serviceTypes": "Service types",
+      "certifications": "Certifications"
+    },
+    "technology": {
+      "techStack": "Tech stack",
+      "productType": "Product type"
+    },
+    "realEstate": {
+      "propertyTypes": "Property types",
+      "serviceAreas": "Service areas"
+    },
+    "other": {
+      "specialization": "Specialization",
+      "specializationOtherPlaceholder": "Enter your specialization"
     }
   }
 }

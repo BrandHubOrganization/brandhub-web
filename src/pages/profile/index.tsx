@@ -29,6 +29,7 @@ import { LinkPhoneModal } from "./components/LinkPhoneModal";
 import { JobTitleSelect } from "./components/JobTitleSelect";
 import { LanguageChipSelect } from "./components/LanguageChipSelect";
 import { SkillsChipSelect } from "./components/SkillsChipSelect";
+import { LocationAutocomplete } from "./components/LocationAutocomplete";
 import { TimezoneSelect } from "@/pages/workspace/components/TimezoneSelect";
 import {
   isCuratedJobTitle,
@@ -65,6 +66,64 @@ const EMPTY_EXTENDED: ExtendedProfile = {
   website: "",
   bannerUrl: "",
 };
+
+// Field cá nhân hóa được ẩn/hiện khi agency-mate xem qua MemberProfileDrawer
+// (BE: AgencyServiceImpl.getMemberProfile). fullName/email/avatar/role/
+// workspace list luôn công khai — không đưa vào đây (cần cho công việc).
+const VISIBILITY_FIELDS = [
+  "phone",
+  "professionalTitle",
+  "bio",
+  "location",
+  "yearsOfExperience",
+  "workingLanguage",
+  "skills",
+  "portfolioUrls",
+  "linkedinUrl",
+  "facebookUrl",
+  "instagramUrl",
+  "tiktokUrl",
+  "website",
+] as const;
+type VisibilityField = (typeof VISIBILITY_FIELDS)[number];
+
+// Tái dùng key label sẵn có trong namespace profile.edit.* thay vì tạo key
+// mới trùng nội dung.
+const VISIBILITY_LABEL_KEY: Record<VisibilityField, string> = {
+  phone: "phoneLabel",
+  professionalTitle: "jobTitleLabel",
+  bio: "bioLabel",
+  location: "locationLabel",
+  yearsOfExperience: "yearsOfExperienceLabel",
+  workingLanguage: "workingLanguageLabel",
+  skills: "skillsLabel",
+  portfolioUrls: "portfolioLabel",
+  linkedinUrl: "linkedinLabel",
+  facebookUrl: "facebookLabel",
+  instagramUrl: "instagramLabel",
+  tiktokUrl: "tiktokLabel",
+  website: "websiteLabel",
+};
+
+function defaultVisibility(): Record<VisibilityField, boolean> {
+  return Object.fromEntries(VISIBILITY_FIELDS.map((f) => [f, true])) as Record<
+    VisibilityField,
+    boolean
+  >;
+}
+
+// Field vắng mặt trong response = mặc định public (BE cũng coi vậy —
+// backward-compatible cho user chưa từng cấu hình).
+function toVisibility(
+  raw: Record<string, boolean> | null | undefined,
+): Record<VisibilityField, boolean> {
+  const v = defaultVisibility();
+  if (!raw) return v;
+  for (const f of VISIBILITY_FIELDS) {
+    if (raw[f] === false) v[f] = false;
+  }
+  return v;
+}
 
 /** API → state. Dùng chung cho cả lần load đầu và lần save (2 chiều đều nhận UserProfileResponse). */
 function toExtended(p: {
@@ -118,6 +177,10 @@ export function ProfilePage() {
   const [workingLanguage, setWorkingLanguage] = useState("");
   const [timezone, setTimezone] = useState("Asia/Ho_Chi_Minh");
   const [ext, setExt] = useState<ExtendedProfile>(EMPTY_EXTENDED);
+  const [visibility, setVisibility] =
+    useState<Record<VisibilityField, boolean>>(defaultVisibility());
+  const savedVisibility =
+    useRef<Record<VisibilityField, boolean>>(defaultVisibility());
   const [bannerUploading, setBannerUploading] = useState(false);
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const email = user?.email ?? "";
@@ -153,6 +216,9 @@ export function ProfilePage() {
         const loaded = toExtended(p);
         setExt(loaded);
         savedExt.current = loaded;
+        const loadedVisibility = toVisibility(p.profileVisibility);
+        setVisibility(loadedVisibility);
+        savedVisibility.current = loadedVisibility;
         savedProfile.current = {
           name: p.fullName,
           phone: p.phone ?? "",
@@ -189,6 +255,7 @@ export function ProfilePage() {
         website: ext.website.trim() || undefined,
         bannerUrl: ext.bannerUrl.trim() || undefined,
         timezone: timezone || undefined,
+        profileVisibility: visibility,
       });
       const p = resp.data.data;
       setUser({
@@ -210,6 +277,9 @@ export function ProfilePage() {
       const nextExt = toExtended(p);
       setExt(nextExt);
       savedExt.current = nextExt;
+      const nextVisibility = toVisibility(p.profileVisibility);
+      setVisibility(nextVisibility);
+      savedVisibility.current = nextVisibility;
       savedProfile.current = {
         name: p.fullName,
         phone: p.phone ?? "",
@@ -238,6 +308,7 @@ export function ProfilePage() {
     setWorkingLanguage(saved.workingLanguage);
     setTimezone(saved.timezone);
     setExt(savedExt.current);
+    setVisibility(savedVisibility.current);
     setIsEditing(false);
   };
 
@@ -447,9 +518,9 @@ export function ProfilePage() {
                     <label className="text-muted-foreground mb-1 block text-xs font-medium">
                       {t("profile.edit.locationLabel")}
                     </label>
-                    <Input
+                    <LocationAutocomplete
                       value={ext.location}
-                      onChange={(e) => patchExt({ location: e.target.value })}
+                      onChange={(location) => patchExt({ location })}
                       placeholder={t("profile.edit.locationPlaceholder")}
                     />
                   </div>
@@ -576,6 +647,34 @@ export function ProfilePage() {
                         e.target.value = "";
                       }}
                     />
+                  </div>
+                </div>
+                <div className="border-border mt-6 border-t pt-6">
+                  <p className="text-foreground text-sm font-semibold">
+                    {t("profile.edit.visibilityTitle")}
+                  </p>
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    {t("profile.edit.visibilityHint")}
+                  </p>
+                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {VISIBILITY_FIELDS.map((field) => (
+                      <label
+                        key={field}
+                        className="flex items-center gap-2 text-sm"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={visibility[field]}
+                          onChange={(e) =>
+                            setVisibility((prev) => ({
+                              ...prev,
+                              [field]: e.target.checked,
+                            }))
+                          }
+                        />
+                        {t(`profile.edit.${VISIBILITY_LABEL_KEY[field]}`)}
+                      </label>
+                    ))}
                   </div>
                 </div>
                 <div className="mt-4 flex justify-end gap-2">

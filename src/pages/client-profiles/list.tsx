@@ -130,42 +130,7 @@ export function ClientProfileListPage() {
         ) : null
       }
     >
-      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
-        <div ref={formRef} className="scroll-mt-6 lg:col-span-2">
-          <div className="border-border bg-card rounded-xl border p-6">
-            <div className="mb-4">
-              <h2 className="text-foreground text-lg font-semibold">
-                {editing
-                  ? t("clientProfile.list.formTitleEdit")
-                  : t("clientProfile.list.formTitleCreate")}
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                {editing
-                  ? t("clientProfile.list.formDescriptionEdit")
-                  : t("clientProfile.list.formDescriptionCreate")}
-              </p>
-            </div>
-            <ClientProfileForm
-              key={editing?.id ?? "new"}
-              initial={editing}
-              submitting={saving}
-              submitLabel={
-                editing ? t("clientProfile.save") : t("clientProfile.create")
-              }
-              onSubmit={handleSubmit}
-              onCancel={editing ? () => requestSwitch(null) : undefined}
-              onDirtyChange={setFormDirty}
-              onValuesChange={setPreviewValues}
-            />
-          </div>
-        </div>
-
-        <div className="border-border bg-card rounded-xl border p-6 lg:sticky lg:top-6">
-          <ClientProfilePreview values={previewValues} />
-        </div>
-      </div>
-
-      <section className="mt-10">
+      <section>
         <div className="mb-4">
           <h2 className="text-foreground text-lg font-semibold">
             {t("clientProfile.list.existingTitle")}
@@ -241,6 +206,41 @@ export function ClientProfileListPage() {
           </div>
         )}
       </section>
+
+      <div className="mt-10 grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
+        <div ref={formRef} className="scroll-mt-6 lg:col-span-2">
+          <div className="border-border bg-card rounded-xl border p-6">
+            <div className="mb-4">
+              <h2 className="text-foreground text-lg font-semibold">
+                {editing
+                  ? t("clientProfile.list.formTitleEdit")
+                  : t("clientProfile.list.formTitleCreate")}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                {editing
+                  ? t("clientProfile.list.formDescriptionEdit")
+                  : t("clientProfile.list.formDescriptionCreate")}
+              </p>
+            </div>
+            <ClientProfileForm
+              key={editing?.id ?? "new"}
+              initial={editing}
+              submitting={saving}
+              submitLabel={
+                editing ? t("clientProfile.save") : t("clientProfile.create")
+              }
+              onSubmit={handleSubmit}
+              onCancel={editing ? () => requestSwitch(null) : undefined}
+              onDirtyChange={setFormDirty}
+              onValuesChange={setPreviewValues}
+            />
+          </div>
+        </div>
+
+        <div className="border-border bg-card rounded-xl border p-6 lg:sticky lg:top-6">
+          <ClientProfilePreview values={previewValues} />
+        </div>
+      </div>
 
       <ConfirmDialog
         isOpen={pendingSwitch !== undefined}

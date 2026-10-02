@@ -7,10 +7,16 @@ import {
   type AssignEntry,
 } from "@/services/workspaceService";
 import { agencyService } from "@/services/agencyService";
+import { workspaceTemplateService } from "@/services/workspaceTemplateService";
 import { extractErrorMessage } from "@/utils/error";
 import { useAgencyStore } from "@/store/agencyStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { LOGO_ICON_OPTIONS } from "@/pages/agency/logoIcons";
+import type {
+  CompanySize,
+  WorkspaceIndustry,
+  WorkspaceTemplate,
+} from "@/types/workspace";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -19,6 +25,7 @@ export function useCreateWorkspace() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const agencyId = searchParams.get("agencyId");
+  const templateId = searchParams.get("templateId");
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
   const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
@@ -41,6 +48,74 @@ export function useCreateWorkspace() {
   const [clientEmails, setClientEmails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Field bị ẩn mặc định (trùng Agency) — chỉ hiện khi có template đang áp.
+  const [industry, setIndustry] = useState<WorkspaceIndustry | "">("");
+  const [companySize, setCompanySize] = useState<CompanySize | "">("");
+  const [website, setWebsite] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
+  const [facebookUrl, setFacebookUrl] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
+  const [industryFields, setIndustryFields] = useState<Record<string, unknown>>(
+    {},
+  );
+  const [appliedTemplateName, setAppliedTemplateName] = useState<string | null>(
+    null,
+  );
+  const [availableTemplates, setAvailableTemplates] = useState<
+    WorkspaceTemplate[]
+  >([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState("");
+
+  useEffect(() => {
+    workspaceTemplateService
+      .list()
+      .then(({ data }) => setAvailableTemplates(data.data))
+      .catch(() => setAvailableTemplates([]));
+  }, []);
+
+  const applyTemplateConfig = (tpl: WorkspaceTemplate) => {
+    const cfg = tpl.config;
+    setAppliedTemplateName(tpl.name);
+    if (cfg.industry) setIndustry(cfg.industry);
+    if (cfg.companySize) setCompanySize(cfg.companySize);
+    if (cfg.website) setWebsite(cfg.website);
+    if (cfg.phone) setPhone(cfg.phone);
+    if (cfg.location) setLocation(cfg.location);
+    if (cfg.description) setDescription(cfg.description);
+    if (cfg.brandColor) setBrandColor(cfg.brandColor);
+    if (cfg.logoIcon) setLogoIcon(cfg.logoIcon);
+    if (cfg.tagline) setTagline(cfg.tagline);
+    if (cfg.foundedYear) setFoundedYear(String(cfg.foundedYear));
+    if (cfg.facebookUrl) setFacebookUrl(cfg.facebookUrl);
+    if (cfg.linkedinUrl) setLinkedinUrl(cfg.linkedinUrl);
+    if (cfg.instagramUrl) setInstagramUrl(cfg.instagramUrl);
+    if (cfg.industryFields) setIndustryFields(cfg.industryFields);
+  };
+
+  useEffect(() => {
+    if (!templateId) return;
+    setSelectedTemplateId(templateId);
+    workspaceTemplateService
+      .getById(templateId)
+      .then(({ data }) => applyTemplateConfig(data.data))
+      .catch(() => {
+        /* template load lỗi — không chặn tạo workspace, chỉ bỏ prefill */
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [templateId]);
+
+  const handleTemplateSelect = (id: string) => {
+    setSelectedTemplateId(id);
+    if (!id) {
+      setAppliedTemplateName(null);
+      return;
+    }
+    const tpl = availableTemplates.find((t) => t.id === id);
+    if (tpl) applyTemplateConfig(tpl);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!agencyId) return;
@@ -58,6 +133,16 @@ export function useCreateWorkspace() {
           yearNum && yearNum >= 1900 && yearNum <= CURRENT_YEAR
             ? yearNum
             : undefined,
+        industry: industry || undefined,
+        companySize: companySize || undefined,
+        website: website.trim() || undefined,
+        phone: phone.trim() || undefined,
+        location: location.trim() || undefined,
+        facebookUrl: facebookUrl.trim() || undefined,
+        linkedinUrl: linkedinUrl.trim() || undefined,
+        instagramUrl: instagramUrl.trim() || undefined,
+        industryFields:
+          Object.keys(industryFields).length > 0 ? industryFields : undefined,
         assignMembers,
       });
       // Gửi lời mời CLIENT (nếu có) kèm sẵn workspace vừa tạo — không chặn
@@ -115,5 +200,27 @@ export function useCreateWorkspace() {
     agencyId,
     loading,
     handleSubmit,
+    industry,
+    setIndustry,
+    companySize,
+    setCompanySize,
+    website,
+    setWebsite,
+    phone,
+    setPhone,
+    location,
+    setLocation,
+    facebookUrl,
+    setFacebookUrl,
+    linkedinUrl,
+    setLinkedinUrl,
+    instagramUrl,
+    setInstagramUrl,
+    industryFields,
+    setIndustryFields,
+    appliedTemplateName,
+    availableTemplates,
+    selectedTemplateId,
+    handleTemplateSelect,
   };
 }

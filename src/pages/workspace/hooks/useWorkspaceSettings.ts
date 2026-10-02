@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { workspaceService } from "@/services/workspaceService";
+import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
 import type {
   CompanySize,
@@ -28,14 +29,22 @@ export function useWorkspaceSettings() {
   const [reportFrequency, setReportFrequency] =
     useState<ReportFrequency | null>(null);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [bannerUrl, setBannerUrl] = useState<string | null>(null);
+  const [brandColor, setBrandColor] = useState<string | null>(null);
   const [industry, setIndustry] = useState<WorkspaceIndustry | "">("");
   const [companySize, setCompanySize] = useState<CompanySize | "">("");
   const [website, setWebsite] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
   const [canManage, setCanManage] = useState(false);
+  // deleteWorkspace ở BE chỉ cho Agency OWNER thật (so ownerId của Agency, không
+  // phải role WorkspaceMember) — canManage (MANAGER/OWNER workspace) không đủ
+  // điều kiện, MANAGER bấm Delete sẽ luôn dính 403 FORBIDDEN nếu chỉ gate bằng canManage.
+  const [canDelete, setCanDelete] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!workspaceId) return;
@@ -44,6 +53,8 @@ export function useWorkspaceSettings() {
       .then(({ data }) => {
         setName(data.data.name);
         setLogoUrl(data.data.logoUrl);
+        setBannerUrl(data.data.bannerUrl);
+        setBrandColor(data.data.brandColor);
         if (data.data.settings.timezone)
           setTimezone(data.data.settings.timezone);
         setDefaultPlatforms(data.data.settings.defaultPlatforms ?? []);
@@ -53,10 +64,15 @@ export function useWorkspaceSettings() {
         setWebsite(data.data.website ?? "");
         setPhone(data.data.phone ?? "");
         setLocation(data.data.location ?? "");
+        return data.data.agencyId
+          ? agencyService.getById(data.data.agencyId)
+          : null;
       })
-      .catch((err: unknown) =>
-        toast.error(extractErrorMessage(err, t("common.loadFailed"))),
-      )
+      .then((res) => setCanDelete(res?.data.data.ownerId === userId))
+      .catch((err: unknown) => {
+        setCanDelete(false);
+        toast.error(extractErrorMessage(err, t("common.loadFailed")));
+      })
       .finally(() => setLoading(false));
 
     workspaceService
@@ -106,6 +122,32 @@ export function useWorkspaceSettings() {
     }
   };
 
+  const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !workspaceId) return;
+
+    if (!ACCEPTED_LOGO_TYPES.includes(file.type)) {
+      toast.error(t("workspace.settings.logoInvalidType"));
+      return;
+    }
+    if (file.size > MAX_LOGO_SIZE) {
+      toast.error(t("workspace.settings.logoTooLarge"));
+      return;
+    }
+
+    setUploadingBanner(true);
+    try {
+      const { data } = await workspaceService.uploadBanner(workspaceId, file);
+      setBannerUrl(data.data.bannerUrl);
+      toast.success(t("workspace.settings.bannerUploadSuccess"));
+    } catch (err: unknown) {
+      toast.error(extractErrorMessage(err, t("common.actionFailed")));
+    } finally {
+      setUploadingBanner(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!workspaceId) return;
@@ -141,6 +183,8 @@ export function useWorkspaceSettings() {
     defaultPlatforms,
     reportFrequency,
     logoUrl,
+    bannerUrl,
+    brandColor,
     industry,
     setIndustry,
     companySize,
@@ -152,11 +196,15 @@ export function useWorkspaceSettings() {
     location,
     setLocation,
     canManage,
+    canDelete,
     uploadingLogo,
+    uploadingBanner,
     fileInputRef,
+    bannerInputRef,
     toggleWorkspacePlatform,
     toggleReportFrequency,
     handleLogoChange,
+    handleBannerChange,
     handleSubmit,
   };
 }

@@ -6,6 +6,7 @@ import type {
   AgencyInvitation,
   AgencyMember,
   AgencyMemberActivity,
+  AgencyMemberProfile,
   AgencyStatsResponse,
   CompanySize,
   InvitationPreviewResponse,
@@ -68,9 +69,15 @@ export const agencyService = {
       `/api/v1/agencies/${agencyId}/members/${userId}/activity`,
     ),
 
-  getStats: (agencyId: string) =>
+  getMemberProfile: (agencyId: string, userId: string) =>
+    api.get<ApiResponse<AgencyMemberProfile>>(
+      `/api/v1/agencies/${agencyId}/members/${userId}/profile`,
+    ),
+
+  getStats: (agencyId: string, params?: { from?: string; to?: string }) =>
     api.get<ApiResponse<AgencyStatsResponse>>(
       `/api/v1/agencies/${agencyId}/stats`,
+      { params },
     ),
 
   inviteMember: (agencyId: string, data: InviteAgencyMemberRequest) =>
@@ -128,6 +135,15 @@ export const agencyService = {
     formData.append("file", file);
     return api.post<ApiResponse<Agency>>(
       `/api/v1/agencies/${agencyId}/logo`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+  },
+  uploadBanner: (agencyId: string, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<Agency>>(
+      `/api/v1/agencies/${agencyId}/banner`,
       formData,
       { headers: { "Content-Type": "multipart/form-data" } },
     );

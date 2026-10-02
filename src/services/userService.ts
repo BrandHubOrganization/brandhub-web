@@ -25,6 +25,7 @@ export interface UserProfileResponse {
   timezone: string | null;
   notificationPreferences: Record<string, unknown> | null;
   createdAt: string;
+  profileVisibility: Record<string, boolean> | null;
 }
 
 export interface UpdateProfileRequest {
@@ -45,6 +46,7 @@ export interface UpdateProfileRequest {
   bannerUrl?: string;
   timezone?: string;
   notificationPreferences?: Record<string, unknown>;
+  profileVisibility?: Record<string, boolean>;
 }
 
 export interface AvatarResponse {

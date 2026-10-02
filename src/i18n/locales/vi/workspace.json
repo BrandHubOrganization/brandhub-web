@@ -41,6 +41,7 @@
     "instagramUrlLabel": "Instagram",
     "assignMembersLabel": "Thêm thành viên từ công ty",
     "assignMembersHint": "Bạn là Quản lý (Manager) mặc định. Chọn người khác làm Manager ở đây nếu muốn chuyển giao vai trò quản lý workspace cho họ.",
+    "assignManagerLimitHint": "Một workspace chỉ có đúng 1 Manager — chọn vai trò khác cho những người còn lại.",
     "clientInviteLabel": "Mời khách hàng (Client)",
     "clientInviteHint": "Nhập email khách hàng để gửi lời mời tham gia workspace này với vai trò Client. Họ sẽ nhận email và tự tạo hồ sơ khi chấp nhận lời mời.",
     "clientInvitePlaceholder": "email@khachhang.com",
@@ -48,7 +49,13 @@
     "clientInviteDuplicate": "Email này đã có trong danh sách",
     "clientInviteUserMatch": "{{name}} đã có tài khoản",
     "clientInviteFailed": "Không gửi được {{count}} lời mời khách hàng — có thể email đã tồn tại hoặc đã có lời mời đang chờ",
-    "submit": "Tạo không gian làm việc"
+    "submit": "Tạo không gian làm việc",
+    "startFromTemplate": "Bắt đầu từ mẫu",
+    "templatePlaceholder": "Không dùng mẫu",
+    "templateApplied": "Đã điền sẵn từ mẫu \"{{name}}\" — bạn vẫn có thể sửa mọi trường.",
+    "noTemplateCard": "Không dùng mẫu",
+    "previewDialogTitle": "Xem trước mẫu",
+    "useThisTemplate": "Dùng mẫu này"
   },
   "industry": {
     "FNB": "Ẩm thực & Đồ uống",
@@ -66,12 +73,17 @@
     "title": "Cài đặt không gian làm việc",
     "description": "Quản lý cấu hình không gian làm việc của bạn.",
     "nameLabel": "Tên không gian làm việc",
+    "editButton": "Sửa",
+    "cancelButton": "Hủy",
     "timezoneLabel": "Múi giờ",
     "defaultPlatformsLabel": "Nền tảng mặc định",
     "reportFrequencyLabel": "Tần suất báo cáo",
     "save": "Lưu thay đổi",
     "saveSuccess": "Đã lưu cài đặt thành công",
     "logoUploadButton": "Tải logo lên",
+    "bannerUploadButton": "Tải ảnh bìa lên",
+    "bannerUploadSuccess": "Đã cập nhật ảnh bìa",
+    "bannerEmptyLabel": "Chưa có ảnh bìa",
     "logoInvalidType": "Chỉ nhận file JPEG, PNG hoặc WebP",
     "logoTooLarge": "Logo không được vượt quá 5MB",
     "logoUploadSuccess": "Đã cập nhật logo",
@@ -85,6 +97,11 @@
       "confirmDelete": "Xóa workspace",
       "deleteSuccess": "Workspace đã được xóa, có thể khôi phục trong 30 ngày",
       "deleteError": "Không thể xóa workspace"
+    },
+    "preview": {
+      "title": "Xem trước",
+      "hint": "Cập nhật theo thông tin bạn đang chỉnh sửa.",
+      "emptyName": "Không gian làm việc chưa đặt tên"
     },
     "template": {
       "saveButton": "Lưu thành mẫu",
@@ -102,7 +119,25 @@
     "empty": "Chưa có mẫu nào được lưu.",
     "loadError": "Không thể tải danh sách mẫu",
     "deleteSuccess": "Đã xóa mẫu",
-    "deleteError": "Không thể xóa mẫu"
+    "deleteError": "Không thể xóa mẫu",
+    "deleteConfirmTitle": "Xoá mẫu này?",
+    "deleteConfirmDescription": "\"{{name}}\" sẽ bị xoá vĩnh viễn. Hành động này không thể hoàn tác.",
+    "deleteButton": "Xoá",
+    "applyButton": "Dùng mẫu",
+    "applyDialogTitle": "Dùng mẫu này",
+    "applyToNew": "Tạo workspace mới từ mẫu này",
+    "applyToExisting": "Áp dụng vào workspace đang có",
+    "selectWorkspacePlaceholder": "Chọn workspace",
+    "selectFieldsHint": "Field có giá trị trong mẫu sẽ ghi đè cài đặt hiện tại của workspace.",
+    "applySuccess": "Đã áp dụng mẫu",
+    "applyError": "Không thể áp dụng mẫu",
+    "adminTitle": "Thư viện mẫu workspace",
+    "adminDescription": "Toàn bộ mẫu workspace của mọi agency (chỉ xem).",
+    "adminAgencyId": "Agency",
+    "adminGlobalBadge": "Mẫu chung",
+    "adminCreateButton": "Tạo mẫu chung",
+    "adminCreateSuccess": "Đã tạo mẫu chung",
+    "adminCreateError": "Không thể tạo mẫu chung"
   },
   "noRole": "—",
   "reportFrequency": {
@@ -123,13 +158,15 @@
     "active": "Đang hoạt động",
     "removeButton": "Xóa",
     "removeConfirmTitle": "Xóa thành viên?",
-    "removeConfirmDescription": "Thành viên này sẽ mất quyền truy cập không gian làm việc.",
+    "removeConfirmDescription": "{{name}} sẽ mất quyền truy cập workspace này.",
+    "removeLastManagerWarning": "Đây là Manager active duy nhất — không thể xoá. Hãy chuyển giao vai trò Manager cho người khác trước.",
     "inviteSuccess": "Đã gửi lời mời",
     "removeSuccess": "Đã xóa thành viên",
     "noteLabel": "Lời nhắn (tuỳ chọn)",
     "assignButton": "Thêm từ công ty",
     "assignDialogTitle": "Thêm thành viên từ công ty",
     "assignSuccess": "Đã thêm thành viên",
+    "assignPartialSuccess": "Đã thêm {{added}} thành viên, {{skipped}} người đã có sẵn trong workspace (bỏ qua)",
     "addClientButton": "Thêm client",
     "addClientTitle": "Thêm client cộng tác vào workspace",
     "addClientEmpty": "Không có client nào để thêm (đã hết hoặc chưa có client nào trong công ty).",
@@ -140,7 +177,8 @@
     "leaveButton": "Rời workspace",
     "leaveSuccess": "Bạn đã rời workspace",
     "leaveConfirmTitle": "Rời workspace này?",
-    "leaveConfirmDescription": "Bạn sẽ mất quyền truy cập workspace này. Hành động này không thể hoàn tác."
+    "leaveConfirmDescription": "Bạn sẽ mất quyền truy cập workspace này. Hành động này không thể hoàn tác.",
+    "leaveLastManagerWarning": "Bạn là Manager active duy nhất — không thể rời workspace. Hãy chuyển giao vai trò Manager cho người khác trước."
   },
   "roles": {
     "OWNER": "Chủ sở hữu",
@@ -180,6 +218,34 @@
       "manageRoles": "Quản lý vai trò",
       "viewAnalytics": "Xem báo cáo",
       "editWorkspace": "Sửa workspace"
+    }
+  },
+  "industryFields": {
+    "sectionTitle": "Thông tin đặc thù ngành",
+    "fnb": {
+      "cuisineType": "Loại hình ẩm thực",
+      "seatingCapacity": "Sức chứa chỗ ngồi",
+      "deliveryPlatforms": "Nền tảng giao hàng"
+    },
+    "fashion": {
+      "productCategories": "Danh mục sản phẩm",
+      "seasonalCollections": "Bộ sưu tập theo mùa"
+    },
+    "beauty": {
+      "serviceTypes": "Loại dịch vụ",
+      "certifications": "Chứng chỉ"
+    },
+    "technology": {
+      "techStack": "Công nghệ sử dụng",
+      "productType": "Loại sản phẩm"
+    },
+    "realEstate": {
+      "propertyTypes": "Loại bất động sản",
+      "serviceAreas": "Khu vực phục vụ"
+    },
+    "other": {
+      "specialization": "Chuyên môn",
+      "specializationOtherPlaceholder": "Nhập chuyên môn của bạn"
     }
   }
 }
