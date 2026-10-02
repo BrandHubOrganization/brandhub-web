@@ -1,0 +1,99 @@
+{
+  "agencyPage": {
+    "title": "Quản lý gói truyền thông",
+    "description": "Tạo và quản lý các gói Agency cung cấp cho Workspace, hoặc bắt đầu từ gói mẫu dùng chung của Admin."
+  },
+  "workspacePage": {
+    "title": "Chọn gói truyền thông",
+    "description": "Chọn một trong các gói truyền thông mà Agency đang cung cấp cho Workspace này."
+  },
+  "page": {
+    "title": "Gói truyền thông",
+    "description": "Chọn gói phù hợp cho workspace và theo dõi các điều khoản đang có hiệu lực."
+  },
+  "actions": {
+    "createCustom": "Tạo gói tùy chỉnh",
+    "select": "Chọn gói này",
+    "selected": "Đang sử dụng",
+    "cancel": "Hủy",
+    "retry": "Thử lại",
+    "useTemplate": "Tạo gói từ mẫu này",
+    "hideFromWorkspaces": "Ẩn khỏi Workspace",
+    "showToWorkspaces": "Cho phép Workspace sử dụng"
+  },
+  "badges": {
+    "template": "Gói mẫu",
+    "custom": "Gói tùy chỉnh",
+    "selected": "Đã chọn",
+    "available": "Đang khả dụng",
+    "hidden": "Đã ẩn"
+  },
+  "types": {
+    "BY_DURATION": "Theo thời lượng",
+    "BY_BUDGET": "Theo ngân sách",
+    "FULL_DELEGATION": "Ủy quyền toàn diện"
+  },
+  "values": {
+    "duration": "{{count}} tuần",
+    "fullDelegation": "Toàn bộ chiến dịch"
+  },
+  "status": {
+    "DRAFT": "Bản nháp",
+    "CLIENT_REQUESTED_CHANGE": "Khách hàng yêu cầu thay đổi",
+    "AGENCY_COUNTERED": "Agency đã phản hồi",
+    "APPROVED": "Đã phê duyệt"
+  },
+  "catalog": {
+    "availableTitle": "Gói truyền thông của Agency",
+    "availableDescription": "Chỉ hiển thị các gói mà Owner đang cho phép Workspace sử dụng.",
+    "customTitle": "Gói tùy chỉnh của Agency",
+    "agencyCustomDescription": "Các gói do Owner quản lý và chỉ khả dụng trong Agency này.",
+    "workspaceCustomDescription": "Các gói mà Agency đã chuẩn bị cho khách hàng.",
+    "templatesManagementDescription": "Các gói mẫu toàn cục do Admin quản lý; Owner có thể tham khảo nhưng không chỉnh sửa tại đây.",
+    "templatesTitle": "Gói mẫu có sẵn",
+    "templatesDescription": "Các gói do Admin cung cấp và có thể sử dụng cho mọi Agency.",
+    "createdTitle": "Gói tùy chỉnh vừa tạo",
+    "createdDescription": "Gói được tạo cho Agency trong phiên làm việc này.",
+    "empty": "Chưa có gói truyền thông nào.",
+    "noDescription": "Chưa có mô tả phạm vi công việc."
+  },
+  "selected": {
+    "emptyTitle": "Workspace chưa chọn gói truyền thông",
+    "emptyDescription": "Client có thể chọn một trong các gói mà Agency đang cung cấp.",
+    "termsVersion": "Phiên bản điều khoản {{version}}",
+    "scopeTitle": "Phạm vi công việc",
+    "agencyApproval": "Phê duyệt của Agency",
+    "clientApproval": "Phê duyệt của khách hàng",
+    "notApproved": "Chưa phê duyệt"
+  },
+  "form": {
+    "basedOnTemplate": "Dựa trên mẫu:",
+    "title": "Tạo gói truyền thông tùy chỉnh",
+    "description": "Tạo một gói độc lập cho Agency. Gói có thể được cung cấp cho mọi Workspace trong Agency.",
+    "nameLabel": "Tên gói",
+    "namePlaceholder": "Ví dụ: Chiến dịch ra mắt mùa hè",
+    "typeLabel": "Loại gói",
+    "durationLabel": "Thời lượng (tuần)",
+    "budgetLabel": "Ngân sách (VND)",
+    "scopeLabel": "Phạm vi công việc",
+    "scopePlaceholder": "Mô tả deliverable, kênh truyền thông và phạm vi hỗ trợ...",
+    "errors": {
+      "name": "Vui lòng nhập tên gói.",
+      "duration": "Thời lượng phải lớn hơn 0 tuần.",
+      "budget": "Ngân sách phải lớn hơn 0.",
+      "scopeLength": "Phạm vi công việc không được vượt quá 5.000 ký tự."
+    }
+  },
+  "messages": {
+    "selected": "Đã cập nhật gói truyền thông cho Workspace.",
+    "customCreated": "Đã tạo gói truyền thông cho Agency.",
+    "packageShown": "Đã cho phép các Workspace sử dụng gói này.",
+    "packageHidden": "Đã ẩn gói khỏi danh sách lựa chọn của Workspace."
+  },
+  "errors": {
+    "load": "Không thể tải thông tin gói truyền thông.",
+    "select": "Không thể chọn gói truyền thông.",
+    "createCustom": "Không thể tạo gói truyền thông tùy chỉnh.",
+    "updateAvailability": "Không thể cập nhật trạng thái khả dụng của gói."
+  }
+}

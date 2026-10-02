@@ -19,6 +19,7 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/invitations": ["OWNER", "MANAGER"],
   "/requests": ["MANAGER", "CREATOR", "CLIENT"],
   "/portal": ["MANAGER", "CLIENT"],
+  "/media-package": ["CLIENT"],
   "/client-profile": ["CLIENT"],
   "/calendar": ["MANAGER", "CREATOR", "CLIENT"],
   "/library": ["MANAGER", "CREATOR", "CLIENT"],
@@ -36,9 +37,13 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
 
 const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const WORKSPACE_SETTINGS_ACCESS: AccessRule = ["OWNER", "MANAGER"];
+const AGENCY_MEDIA_PACKAGES_ACCESS: AccessRule = ["OWNER"];
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
+  if (/^\/agency\/[^/]+\/media-packages$/.test(pathname)) {
+    return AGENCY_MEDIA_PACKAGES_ACCESS;
+  }
   if (/^\/workspaces\/[^/]+\/members$/.test(pathname)) {
     return MEMBERS_PAGE_ACCESS;
   }

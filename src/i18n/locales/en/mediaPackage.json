@@ -1,0 +1,99 @@
+{
+  "agencyPage": {
+    "title": "Manage media packages",
+    "description": "Create and manage the packages this Agency offers to its Workspaces, or start from a global Admin template."
+  },
+  "workspacePage": {
+    "title": "Select a media package",
+    "description": "Choose one of the media packages currently offered by the Agency for this Workspace."
+  },
+  "page": {
+    "title": "Media package",
+    "description": "Choose the right package for this workspace and track its effective terms."
+  },
+  "actions": {
+    "createCustom": "Create custom package",
+    "select": "Select this package",
+    "selected": "Currently selected",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "useTemplate": "Create package from template",
+    "hideFromWorkspaces": "Hide from Workspaces",
+    "showToWorkspaces": "Make available to Workspaces"
+  },
+  "badges": {
+    "template": "Template",
+    "custom": "Custom",
+    "selected": "Selected",
+    "available": "Available",
+    "hidden": "Hidden"
+  },
+  "types": {
+    "BY_DURATION": "Duration based",
+    "BY_BUDGET": "Budget based",
+    "FULL_DELEGATION": "Full delegation"
+  },
+  "values": {
+    "duration": "{{count}} weeks",
+    "fullDelegation": "Entire campaign"
+  },
+  "status": {
+    "DRAFT": "Draft",
+    "CLIENT_REQUESTED_CHANGE": "Client requested changes",
+    "AGENCY_COUNTERED": "Agency countered",
+    "APPROVED": "Approved"
+  },
+  "catalog": {
+    "availableTitle": "Agency media packages",
+    "availableDescription": "Only packages the Owner currently makes available to Workspaces are shown.",
+    "customTitle": "Agency custom packages",
+    "agencyCustomDescription": "Packages managed by the Owner and available only within this Agency.",
+    "workspaceCustomDescription": "Custom packages prepared by the Agency for its clients.",
+    "templatesManagementDescription": "Global templates managed by Admin. Owners can review them here but cannot edit them.",
+    "templatesTitle": "Available templates",
+    "templatesDescription": "Admin-provided packages available to every Agency.",
+    "createdTitle": "Newly created custom packages",
+    "createdDescription": "Packages created for this Agency during the current session.",
+    "empty": "No media packages are available yet.",
+    "noDescription": "No scope description has been provided."
+  },
+  "selected": {
+    "emptyTitle": "No media package selected",
+    "emptyDescription": "The Client can select one of the packages currently offered by the Agency.",
+    "termsVersion": "Terms version {{version}}",
+    "scopeTitle": "Scope of work",
+    "agencyApproval": "Agency approval",
+    "clientApproval": "Client approval",
+    "notApproved": "Not approved"
+  },
+  "form": {
+    "basedOnTemplate": "Based on template:",
+    "title": "Create a custom media package",
+    "description": "Create an independent package for this Agency. It can be made available to any Workspace in the Agency.",
+    "nameLabel": "Package name",
+    "namePlaceholder": "Example: Summer launch campaign",
+    "typeLabel": "Package type",
+    "durationLabel": "Duration (weeks)",
+    "budgetLabel": "Budget (VND)",
+    "scopeLabel": "Scope of work",
+    "scopePlaceholder": "Describe deliverables, media channels, and support coverage...",
+    "errors": {
+      "name": "Enter a package name.",
+      "duration": "Duration must be greater than 0 weeks.",
+      "budget": "Budget must be greater than 0.",
+      "scopeLength": "Scope of work cannot exceed 5,000 characters."
+    }
+  },
+  "messages": {
+    "selected": "The Workspace media package has been updated.",
+    "customCreated": "The Agency media package has been created.",
+    "packageShown": "The package is now available to Workspaces.",
+    "packageHidden": "The package has been hidden from Workspace selection."
+  },
+  "errors": {
+    "load": "Unable to load media package information.",
+    "select": "Unable to select the media package.",
+    "createCustom": "Unable to create the custom media package.",
+    "updateAvailability": "Unable to update package availability."
+  }
+}

@@ -21,6 +21,7 @@ import {
   FileBarChart,
   User,
   Inbox,
+  PackageCheck,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -199,6 +200,22 @@ const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.portal",
         workspaceScoped: true,
         requiresWorkspace: true,
+      },
+      {
+        to: "/agency/{agencyId}/media-packages",
+        icon: PackageCheck,
+        labelKey: "nav.manageMediaPackages",
+        agencyScoped: true,
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
+        to: "/media-package",
+        icon: PackageCheck,
+        labelKey: "nav.selectMediaPackage",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+        clientOnly: true,
       },
       {
         to: "/client-profile",

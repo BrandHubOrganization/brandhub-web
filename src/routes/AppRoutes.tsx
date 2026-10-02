@@ -58,6 +58,8 @@ import { ConnectionsPage } from "@/pages/connections";
 import { NotificationSettingsPage } from "@/pages/notification-settings";
 import { ClientProfileListPage } from "@/pages/client-profiles/list";
 import { VideoStudioPage } from "@/pages/ai-studio/video";
+import MediaPackagePage from "@/pages/media-package";
+import AgencyMediaPackagePage from "@/pages/media-package/agency";
 import ExamplesPage from "@/components/examples";
 import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
 
@@ -133,6 +135,10 @@ export function AppRoutes() {
           <Route path="/workspaces/:id/publish" element={<PublishPage />} />
           <Route path="/workspaces/:id/portal" element={<PortalPage />} />
           <Route
+            path="/workspaces/:id/media-package"
+            element={<MediaPackagePage />}
+          />
+          <Route
             path="/workspaces/:id/client-profile"
             element={<WorkspaceClientProfilePage />}
           />
@@ -148,6 +154,10 @@ export function AppRoutes() {
           <Route path="/agency" element={<AgencyPage />} />
           <Route path="/agency/create" element={<CreateAgencyPage />} />
           <Route path="/agency/:id" element={<AgencyDetailPage />} />
+          <Route
+            path="/agency/:id/media-packages"
+            element={<AgencyMediaPackagePage />}
+          />
           <Route
             path="/agency/invitations"
             element={<AgencyInvitationsPage />}

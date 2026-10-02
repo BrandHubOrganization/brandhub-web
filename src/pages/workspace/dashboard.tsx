@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { CalendarClock, Sparkles } from "lucide-react";
+import { CalendarClock, PackageOpen, Sparkles } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
+import { Button } from "@/components/ui/button";
 import { workspaceService } from "@/services/workspaceService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
@@ -50,8 +51,10 @@ function BreakdownList({ data }: { data: Record<string, number> }) {
 
 export function WorkspaceDashboardPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { id: workspaceId } = useParams<{ id: string }>();
-  const isClient = useWorkspaceStore((s) => s.currentMemberRole) === "CLIENT";
+  const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const isClient = currentMemberRole === "CLIENT";
   const [dashboard, setDashboard] = useState<WorkspaceDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
@@ -83,6 +86,39 @@ export function WorkspaceDashboardPage() {
       title={t("workspace.dashboard.title")}
       description={t("workspace.dashboard.description")}
     >
+      {!dashboard.packageNegotiationStatus && (
+        <section className="border-brand-orange/30 bg-brand-orange-soft/60 mb-6 flex flex-col gap-4 rounded-xl border p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="bg-background text-brand-orange flex size-10 shrink-0 items-center justify-center rounded-lg">
+              <PackageOpen className="size-5" />
+            </div>
+            <div>
+              <h2 className="text-foreground font-semibold">
+                {t("workspace.dashboard.packageRequiredTitle")}
+              </h2>
+              <p className="text-muted-foreground mt-1 text-sm">
+                {t(
+                  isClient
+                    ? "workspace.dashboard.packageRequiredClientDescription"
+                    : "workspace.dashboard.packageRequiredAgencyDescription",
+                )}
+              </p>
+            </div>
+          </div>
+          {isClient && workspaceId && (
+            <Button
+              variant="orange"
+              className="w-full shrink-0 sm:w-auto"
+              onClick={() =>
+                navigate(`/workspaces/${workspaceId}/media-package`)
+              }
+            >
+              {t("workspace.dashboard.selectPackage")}
+            </Button>
+          )}
+        </section>
+      )}
+
       {/* activeMembers/packageStatus/agencyAiCredits + membersByRole là dữ liệu
           nội bộ agency (nhân sự, đàm phán gói, credit) — CLIENT không được xem,
           chỉ thấy phần liên quan nội dung (campaign/content). */}

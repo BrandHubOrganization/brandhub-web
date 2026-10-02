@@ -99,6 +99,8 @@ const NAV_KEY_MAP: Record<string, string> = {
   security: "nav.security",
   profile: "nav.profile",
   "client-profile": "nav.clientProfile",
+  "media-package": "nav.mediaPackages",
+  "media-packages": "nav.manageMediaPackages",
   video: "aiStudio.video.title",
 };
 

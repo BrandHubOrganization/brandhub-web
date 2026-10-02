@@ -63,6 +63,13 @@ export function AuthGuard() {
   const workspaceIdInUrl = location.pathname.match(
     /^\/workspaces\/([^/]+)/,
   )?.[1];
+  const agencyIdCandidate = location.pathname.match(/^\/agency\/([^/]+)/)?.[1];
+  const agencyIdInUrl = agencyList.some(
+    (agency) => agency.id === agencyIdCandidate,
+  )
+    ? agencyIdCandidate
+    : null;
+  const agencyContextId = agencyIdInUrl ?? currentAgencyId;
   // Agency-level route (/reports, /clients, ...) truy cập KHÔNG qua 1
   // workspace cụ thể — currentMemberRole (workspace-scoped) luôn null ở đây,
   // đá nhầm agency Owner/Member về /dashboard dù access.ts cho phép
@@ -71,10 +78,10 @@ export function AuthGuard() {
   // xem như OWNER, agency MEMBER (nhân sự nội bộ, không phải CLIENT) xem
   // như MANAGER cho mục đích các trang quản lý cấp agency này.
   const agencyFallbackRole =
-    !workspaceIdInUrl && !currentMemberRole && currentAgencyId
+    !workspaceIdInUrl && !currentMemberRole && agencyContextId
       ? (() => {
           const myRole = agencyList.find(
-            (a) => a.id === currentAgencyId,
+            (a) => a.id === agencyContextId,
           )?.myRole;
           if (myRole === "OWNER") return "OWNER" as const;
           if (myRole === "MEMBER") return "MANAGER" as const;
