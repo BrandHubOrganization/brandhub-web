@@ -27,6 +27,8 @@ import {
   MapPin,
   Globe,
   FolderOpen,
+  Shield,
+  Bell,
 } from "lucide-react";
 import {
   HoverCard,
@@ -314,26 +316,28 @@ const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.settings",
     items: [
       {
-        to: "/settings",
+        to: "/settings/profile",
         icon: User,
-        labelKey: "nav.settings",
-        // Avatar/logo ở Navbar luôn dẫn vào /settings bất kể đang chọn
-        // agency/workspace nào — mục này phải luôn hiện để sidebar highlight
-        // đúng chỗ đang đứng khi ở NGOÀI workspace (trước đây noAgencyOnly ẩn
-        // mất khi có currentAgencyId, khiến vào /settings/profile mà sidebar
-        // trống trơn). Khi ĐÃ vào 1 workspace cụ thể, user chủ động ẩn mục
-        // này khỏi Sidebar cho mọi role — vẫn vào được /settings qua Navbar
-        // avatar, chỉ không chiếm chỗ trong nav trái nữa.
+        labelKey: "nav.profile",
         hideInWorkspace: true,
-        children: [
-          { to: "/settings/profile", labelKey: "nav.profile" },
-          { to: "/settings/security", labelKey: "nav.security" },
-          { to: "/settings/connections", labelKey: "nav.connections" },
-          {
-            to: "/settings/notifications",
-            labelKey: "nav.notificationSettings",
-          },
-        ],
+      },
+      {
+        to: "/settings/security",
+        icon: Shield,
+        labelKey: "nav.security",
+        hideInWorkspace: true,
+      },
+      {
+        to: "/settings/connections",
+        icon: Link2,
+        labelKey: "nav.connections",
+        hideInWorkspace: true,
+      },
+      {
+        to: "/settings/notifications",
+        icon: Bell,
+        labelKey: "nav.notificationSettings",
+        hideInWorkspace: true,
       },
       {
         to: "/client-profiles",

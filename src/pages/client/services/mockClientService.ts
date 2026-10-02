@@ -379,14 +379,21 @@ export const mockClientService = {
   },
 
   async updateClientSettings(
+    workspaceId: string,
     id: string,
     dto: UpdateClientSettingsDTO,
   ): Promise<Client> {
     try {
-      const response = await api.put(`/api/v1/clients/${id}/settings`, dto);
+      const response = await api.put(
+        `/api/v1/workspaces/${workspaceId}/clients/${id}/settings`,
+        dto,
+      );
       return response.data?.data ?? response.data;
     } catch (error) {
-      warnMockFallback(`PUT /api/v1/clients/${id}/settings failed`, error);
+      warnMockFallback(
+        `PUT /api/v1/workspaces/${workspaceId}/clients/${id}/settings failed`,
+        error,
+      );
       const existing = MOCK_CLIENTS.find((c) => c.id === id) || MOCK_CLIENTS[0];
       return {
         ...existing,
