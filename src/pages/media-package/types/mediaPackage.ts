@@ -35,6 +35,7 @@ export interface WorkspaceMediaPackage {
 
 export interface CreateCustomMediaPackageRequest {
   sourceTemplateId?: string;
+  workspaceId?: string;
   name: string;
   type: MediaPackageType;
   durationWeeks?: number;

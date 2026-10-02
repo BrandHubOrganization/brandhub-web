@@ -35,7 +35,7 @@ export const selectWorkspaceMediaPackageId = (
 
 export const selectIsClientHardGated = (state: WorkspaceState): boolean => {
   const role = state.currentMemberRole ?? state.currentWorkspace?.myRole;
-  if (role !== "CLIENT") return false;
+  if (role !== "CLIENT" && role !== "MANAGER") return false;
   return state.currentWorkspace?.packageNegotiationStatus !== "APPROVED";
 };
 

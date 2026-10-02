@@ -139,13 +139,20 @@ export function AuthGuard() {
     (location.pathname === `/workspaces/${workspaceIdInUrl}/chat` ||
       location.pathname.startsWith(`/workspaces/${workspaceIdInUrl}/chat/`));
 
-  const isAllowedHardGateRoute = isMediaPackageRoute || isChatRoute;
+  const isManagerWorkspaceSettingsRoute =
+    memberRole === "MANAGER" &&
+    !!workspaceIdInUrl &&
+    ["settings", "members", "clients"].some(
+      (page) => location.pathname === `/workspaces/${workspaceIdInUrl}/${page}`,
+    );
+  const isAllowedHardGateRoute =
+    isMediaPackageRoute || isChatRoute || isManagerWorkspaceSettingsRoute;
 
   React.useEffect(() => {
     if (
       !roleLoaded ||
       !workspaceIdInUrl ||
-      memberRole !== "CLIENT" ||
+      (memberRole !== "CLIENT" && memberRole !== "MANAGER") ||
       !workspaceInUrl ||
       workspaceInUrl.packageNegotiationStatus !== undefined ||
       checkedPackageWorkspaceIdsRef.current.has(workspaceIdInUrl)
@@ -172,9 +179,9 @@ export function AuthGuard() {
     return null;
   }
 
-  // Hard Gate: cho đến khi gói được cả hai bên chốt (APPROVED), Client chỉ
-  // được truy cập /media-package và /chat. Các trang khác chuyển về negotiation.
-  if (workspaceIdInUrl && memberRole === "CLIENT") {
+  // Trước khi package được duyệt, Client chỉ xem package/chat; Manager còn
+  // được quản lý thiết lập, thành viên và client của Workspace.
+  if (workspaceIdInUrl && (memberRole === "CLIENT" || memberRole === "MANAGER")) {
     if (!isAllowedHardGateRoute) {
       if (workspaceInUrl?.packageNegotiationStatus === undefined) {
         return null;

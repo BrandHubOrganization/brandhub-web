@@ -460,22 +460,24 @@ export function Sidebar({
   const currentAgencyName =
     agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
   const clientWorkspaces = allWorkspaces.filter((ws) => ws.myRole === "CLIENT");
-  const isClientHardGated =
-    role === "CLIENT" &&
+  const isPackageHardGated =
+    (role === "CLIENT" || role === "MANAGER") &&
     !!activeWorkspace &&
     activeWorkspace.packageNegotiationStatus !== "APPROVED";
 
   // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
   // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
   // "create" và "workspaceSettings" ẩn vì cần ngữ cảnh 1 workspace cụ thể.
-  // Khi Client bị chặn cứng (Hard Gate), chỉ mở section "overview" (chứa Gói dịch vụ & Chat).
+  // Trước khi duyệt gói, Manager vẫn quản lý được thiết lập Workspace.
   const visibleSectionKeys: string[] | null =
     systemRole === "ADMIN"
       ? ["system"]
       : !activeWorkspace
         ? ["overview", "agency", "lists", "invitations", "settings"]
-        : isClientHardGated
-          ? ["overview"]
+        : isPackageHardGated
+          ? role === "MANAGER"
+            ? ["overview", "workspaceSettings"]
+            : ["overview"]
           : ["overview", "create", "workspaceSettings"];
 
   // Filter sections and items based on role permission
@@ -492,8 +494,13 @@ export function Sidebar({
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
         .filter((item) => !item.hideInAgency || !currentAgencyId)
         .filter((item) => {
-          if (!isClientHardGated) return true;
-          return item.to === "/media-package" || item.to === "/chat";
+          if (!isPackageHardGated) return true;
+          return (
+            item.to === "/media-package" ||
+            item.to === "/chat" ||
+            (role === "MANAGER" &&
+              ["/settings", "/members", "/clients"].includes(item.to))
+          );
         })
         // requiresWorkspace: route KHÔNG có bản fallback ở "to" gốc (khác
         // /dashboard, có cả bản agency-level lẫn /workspaces/:id/dashboard)

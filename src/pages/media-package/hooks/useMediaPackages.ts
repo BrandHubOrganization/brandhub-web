@@ -38,8 +38,7 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
         });
       const packageRequest = mediaPackageService
         .listAvailableForWorkspace(workspaceId)
-        .then(({ data }) => data.data)
-        .catch(() => [] as MediaPackage[]);
+        .then(({ data }) => data.data);
 
       const [availablePackages, selection] = await Promise.all([
         packageRequest,

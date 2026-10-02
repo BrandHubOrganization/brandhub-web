@@ -199,8 +199,8 @@ export function Layout() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const isClientHardGated =
-    memberRole === "CLIENT" &&
+  const isPackageHardGated =
+    (memberRole === "CLIENT" || memberRole === "MANAGER") &&
     !!activeWorkspace &&
     activeWorkspace.packageNegotiationStatus !== "APPROVED";
 
@@ -213,7 +213,7 @@ export function Layout() {
     ) {
       return false;
     }
-    if (isClientHardGated) {
+    if (isPackageHardGated) {
       return tab.to === "/media-package" || tab.to === "/chat";
     }
     return canAccess(tab.to, systemRole, memberRole);

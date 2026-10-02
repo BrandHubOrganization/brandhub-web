@@ -82,7 +82,7 @@ function WorkspaceIndexRedirect() {
     (currentWorkspace?.id === id ? currentWorkspace : null);
 
   if (
-    workspace?.myRole === "CLIENT" &&
+    (workspace?.myRole === "CLIENT" || workspace?.myRole === "MANAGER") &&
     workspace.packageNegotiationStatus !== "APPROVED"
   ) {
     return <Navigate to="media-package" replace />;
