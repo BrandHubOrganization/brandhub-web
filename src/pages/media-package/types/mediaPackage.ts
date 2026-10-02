@@ -21,6 +21,7 @@ export interface MediaPackage {
 
 export interface WorkspaceMediaPackage {
   workspaceMediaPackageId: string;
+  id?: string;
   workspaceId: string;
   mediaPackage: MediaPackage;
   negotiationStatus: PackageNegotiationStatus;
@@ -38,6 +39,12 @@ export interface CreateCustomMediaPackageRequest {
   type: MediaPackageType;
   durationWeeks?: number;
   budgetAmount?: number;
+  scopeDescription?: string;
+}
+
+export interface NegotiateTermsRequest {
+  budgetAmount?: number;
+  durationWeeks?: number;
   scopeDescription?: string;
 }
 

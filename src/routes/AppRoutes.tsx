@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useParams } from "react-router-dom";
 
 // Import Layout & Security Components
 import { AuthGuard } from "@/components/layout/AuthGuard";
@@ -19,6 +19,7 @@ import { WorkspacePage } from "@/pages/workspace";
 import { CreateWorkspacePage } from "@/pages/workspace/create";
 import { WorkspaceSettingsPage } from "@/pages/workspace/detail";
 import { WorkspaceDashboardPage } from "@/pages/workspace/dashboard";
+import { WorkspaceChatPage } from "@/pages/chat";
 import { WorkspaceMembersPage } from "@/pages/workspace/members";
 import { WorkspaceClientsPage } from "@/pages/workspace/clients";
 import { WorkspaceTemplatesPage } from "@/pages/workspace/templates";
@@ -64,12 +65,30 @@ import { VideoStudioPage } from "@/pages/ai-studio/video";
 import MediaPackagePage from "@/pages/media-package";
 import AgencyMediaPackagePage from "@/pages/media-package/agency";
 import ExamplesPage from "@/components/examples";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
 
 const SystemHealthPage = lazy(() => import("@/pages/admin/system-health"));
 const WorkspaceTemplateLibraryPage = lazy(
   () => import("@/pages/admin/WorkspaceTemplateLibrary"),
 );
+
+function WorkspaceIndexRedirect() {
+  const { id } = useParams<{ id: string }>();
+  const workspaceList = useWorkspaceStore((s) => s.workspaceList);
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const workspace =
+    workspaceList.find((w) => w.id === id) ??
+    (currentWorkspace?.id === id ? currentWorkspace : null);
+
+  if (
+    workspace?.myRole === "CLIENT" &&
+    workspace.packageNegotiationStatus !== "APPROVED"
+  ) {
+    return <Navigate to="media-package" replace />;
+  }
+  return <Navigate to="dashboard" replace />;
+}
 export function AppRoutes() {
   return (
     <Routes>
@@ -102,7 +121,7 @@ export function AppRoutes() {
           <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
           <Route
             path="/workspaces/:id"
-            element={<Navigate to="dashboard" replace />}
+            element={<WorkspaceIndexRedirect />}
           />
           <Route
             path="/workspaces/:id/social-accounts"
@@ -112,6 +131,7 @@ export function AppRoutes() {
             path="/workspaces/:id/dashboard"
             element={<WorkspaceDashboardPage />}
           />
+          <Route path="/workspaces/:id/chat" element={<WorkspaceChatPage />} />
           <Route
             path="/workspaces/:id/settings"
             element={<WorkspaceSettingsPage />}
@@ -159,6 +179,10 @@ export function AppRoutes() {
           <Route
             path="/workspaces/:id/media-package"
             element={<MediaPackagePage />}
+          />
+          <Route
+            path="/media-package"
+            element={<WorkspaceScopedRedirect destination="media-package" />}
           />
           <Route
             path="/workspaces/:id/client-profile"

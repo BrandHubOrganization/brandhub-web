@@ -30,6 +30,7 @@ import {
   FolderOpen,
   Shield,
   Bell,
+  MessageCircleMore,
 } from "lucide-react";
 import {
   HoverCard,
@@ -105,6 +106,20 @@ const NAV_SECTIONS: NavSection[] = [
         // CLIENT thấy dashboard nhưng dashboard.tsx tự ẩn card nhạy cảm
         // (thành viên, đàm phán gói, AI credit nội bộ agency) qua isClient —
         // chỉ còn phần liên quan nội dung (campaign/content status, lịch đăng).
+      },
+      {
+        to: "/media-package",
+        icon: PackageCheck,
+        labelKey: "nav.mediaPackages",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/chat",
+        icon: MessageCircleMore,
+        labelKey: "nav.chat",
+        workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/analytics",
@@ -265,14 +280,6 @@ const NAV_SECTIONS: NavSection[] = [
         agencyScoped: true,
         hiddenForClient: true,
         hideInWorkspace: true,
-      },
-      {
-        to: "/media-package",
-        icon: PackageCheck,
-        labelKey: "nav.selectMediaPackage",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        clientOnly: true,
       },
       {
         to: "/client-profile",
@@ -453,15 +460,23 @@ export function Sidebar({
   const currentAgencyName =
     agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
   const clientWorkspaces = allWorkspaces.filter((ws) => ws.myRole === "CLIENT");
+  const isClientHardGated =
+    role === "CLIENT" &&
+    !!activeWorkspace &&
+    activeWorkspace.packageNegotiationStatus !== "APPROVED";
+
   // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
   // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
   // "create" và "workspaceSettings" ẩn vì cần ngữ cảnh 1 workspace cụ thể.
+  // Khi Client bị chặn cứng (Hard Gate), chỉ mở section "overview" (chứa Gói dịch vụ & Chat).
   const visibleSectionKeys: string[] | null =
     systemRole === "ADMIN"
       ? ["system"]
       : !activeWorkspace
         ? ["overview", "agency", "lists", "invitations", "settings"]
-        : ["overview", "create", "workspaceSettings"];
+        : isClientHardGated
+          ? ["overview"]
+          : ["overview", "create", "workspaceSettings"];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
@@ -476,6 +491,10 @@ export function Sidebar({
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
         .filter((item) => !item.hideInAgency || !currentAgencyId)
+        .filter((item) => {
+          if (!isClientHardGated) return true;
+          return item.to === "/media-package" || item.to === "/chat";
+        })
         // requiresWorkspace: route KHÔNG có bản fallback ở "to" gốc (khác
         // /dashboard, có cả bản agency-level lẫn /workspaces/:id/dashboard)
         // — thiếu activeWorkspace thì không build được URL hợp lệ, ẩn hẳn

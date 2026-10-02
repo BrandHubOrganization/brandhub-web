@@ -3,6 +3,7 @@ import type { ApiResponse } from "@/services/authService";
 import type {
   CreateCustomMediaPackageRequest,
   MediaPackage,
+  NegotiateTermsRequest,
   SelectMediaPackageResponse,
   WorkspaceMediaPackage,
 } from "@/pages/media-package/types/mediaPackage";
@@ -47,4 +48,16 @@ export const mediaPackageService = {
     api.get<ApiResponse<WorkspaceMediaPackage>>(
       `/api/v1/workspaces/${workspaceId}/media-package`,
     ),
+
+  negotiateTerms: (workspaceId: string, terms: NegotiateTermsRequest) =>
+    api.patch<ApiResponse<WorkspaceMediaPackage>>(
+      `/api/v1/workspaces/${workspaceId}/media-package/negotiate`,
+      terms,
+    ),
+
+  approvePackage: (workspaceId: string) =>
+    api.post<ApiResponse<WorkspaceMediaPackage>>(
+      `/api/v1/workspaces/${workspaceId}/media-package/approve`,
+    ),
 };
+

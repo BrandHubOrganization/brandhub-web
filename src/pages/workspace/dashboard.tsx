@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -58,9 +58,14 @@ export function WorkspaceDashboardPage() {
   const [dashboard, setDashboard] = useState<WorkspaceDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
+  const loadedWorkspaceIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!workspaceId) return;
+    // Avoid the duplicate request caused by StrictMode effect replay in dev.
+    if (loadedWorkspaceIdRef.current === workspaceId) return;
+    loadedWorkspaceIdRef.current = workspaceId;
+    setLoading(true);
     workspaceService
       .getDashboard(workspaceId)
       .then(({ data }) => setDashboard(data.data))

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { mediaPackageService } from "@/pages/media-package/services/mediaPackageService";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage, isNotFoundError } from "@/utils/error";
 import type {
   CreateCustomMediaPackageRequest,
@@ -18,6 +19,8 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectingId, setSelectingId] = useState<string | null>(null);
+  const [negotiating, setNegotiating] = useState(false);
+  const [approving, setApproving] = useState(false);
   const loadRequestId = useRef(0);
 
   const load = useCallback(async () => {
@@ -33,13 +36,24 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
           if (isNotFoundError(requestError)) return null;
           throw requestError;
         });
-      const [packageResponse, selection] = await Promise.all([
-        mediaPackageService.listAvailableForWorkspace(workspaceId),
+      const packageRequest = mediaPackageService
+        .listAvailableForWorkspace(workspaceId)
+        .then(({ data }) => data.data)
+        .catch(() => [] as MediaPackage[]);
+
+      const [availablePackages, selection] = await Promise.all([
+        packageRequest,
         selectionRequest,
       ]);
       if (requestId === loadRequestId.current) {
-        setPackages(packageResponse.data.data);
+        setPackages(availablePackages);
         setSelectedPackage(selection);
+        useWorkspaceStore
+          .getState()
+          .setWorkspaceMediaPackage(
+            selection?.workspaceMediaPackageId ?? null,
+            selection?.negotiationStatus ?? null,
+          );
       }
     } catch (requestError: unknown) {
       if (requestId === loadRequestId.current) {
@@ -65,6 +79,12 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
       const { data } =
         await mediaPackageService.getWorkspacePackage(workspaceId);
       setSelectedPackage(data.data);
+      useWorkspaceStore
+        .getState()
+        .setWorkspaceMediaPackage(
+          data.data.workspaceMediaPackageId,
+          data.data.negotiationStatus,
+        );
       toast.success(t("mediaPackage.messages.selected"));
     } catch (requestError: unknown) {
       toast.error(
@@ -75,6 +95,80 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
     }
   };
 
+  const negotiateTerms = async (terms: {
+    budgetAmount?: number;
+    durationWeeks?: number;
+    scopeDescription?: string;
+  }): Promise<boolean> => {
+    if (!workspaceId) return false;
+    setNegotiating(true);
+    try {
+      const { data } = await mediaPackageService.negotiateTerms(
+        workspaceId,
+        terms,
+      );
+      setSelectedPackage(data.data);
+      useWorkspaceStore
+        .getState()
+        .setWorkspaceMediaPackage(
+          data.data.workspaceMediaPackageId,
+          data.data.negotiationStatus,
+        );
+      toast.success(
+        t(
+          "mediaPackage.messages.negotiateSuccess",
+          "Đã gửi đề xuất điều chỉnh điều khoản thành công.",
+        ),
+      );
+      return true;
+    } catch (requestError: unknown) {
+      toast.error(
+        extractErrorMessage(
+          requestError,
+          t(
+            "mediaPackage.errors.negotiate",
+            "Không thể gửi đề xuất điều chỉnh.",
+          ),
+        ),
+      );
+      return false;
+    } finally {
+      setNegotiating(false);
+    }
+  };
+
+  const approvePackage = async (): Promise<boolean> => {
+    if (!workspaceId) return false;
+    setApproving(true);
+    try {
+      const { data } = await mediaPackageService.approvePackage(workspaceId);
+      setSelectedPackage(data.data);
+      useWorkspaceStore
+        .getState()
+        .setWorkspaceMediaPackage(
+          data.data.workspaceMediaPackageId,
+          data.data.negotiationStatus,
+        );
+      toast.success(
+        t(
+          "mediaPackage.messages.approveSuccess",
+          "Đã chấp thuận gói dịch vụ thành công.",
+        ),
+      );
+      return true;
+    } catch (requestError: unknown) {
+      toast.error(
+        extractErrorMessage(
+          requestError,
+          t("mediaPackage.errors.approve", "Không thể chấp thuận gói dịch vụ."),
+        ),
+      );
+      return false;
+    } finally {
+      setApproving(false);
+    }
+  };
+
   return {
     agencyPackages: packages,
     selectedPackage:
@@ -82,8 +176,12 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
     loading,
     error,
     selectingId,
+    negotiating,
+    approving,
     load,
     selectPackage,
+    negotiateTerms,
+    approvePackage,
   };
 }
 

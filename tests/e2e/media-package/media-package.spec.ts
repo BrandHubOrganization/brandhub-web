@@ -39,7 +39,7 @@ function workspace(role: "OWNER" | "CLIENT") {
   };
 }
 
-function agency(role: "OWNER" | "CLIENT") {
+function agency(role: "OWNER" | "CLIENT" | "MANAGER") {
   return {
     id: AGENCY_ID,
     name: "BrandHub Agency",
@@ -61,7 +61,7 @@ function agency(role: "OWNER" | "CLIENT") {
     status: "ACTIVE",
     createdAt: "2026-10-01T00:00:00Z",
     updatedAt: "2026-10-01T00:00:00Z",
-    myRole: role === "OWNER" ? "OWNER" : null,
+    myRole: role === "OWNER" ? "OWNER" : role === "MANAGER" ? "MEMBER" : null,
   };
 }
 
@@ -92,7 +92,7 @@ const agencyPackage = {
 
 async function setupSession(
   page: Page,
-  role: "OWNER" | "CLIENT",
+  role: "OWNER" | "CLIENT" | "MANAGER",
   theme: "light" | "dark" = "light",
 ) {
   await page.addInitScript(
@@ -106,7 +106,12 @@ async function setupSession(
           state: {
             user: {
               id: "test-user",
-              name: activeRole === "CLIENT" ? "Client User" : "Owner User",
+              name:
+                activeRole === "CLIENT"
+                  ? "Client User"
+                  : activeRole === "MANAGER"
+                    ? "Manager User"
+                    : "Owner User",
               email: "test@brandhub.dev",
               role: "USER",
               workspaceId,
@@ -270,25 +275,10 @@ test("Owner creates a validated custom package from Agency management", async ({
   await expect(page.getByText("Đã ẩn", { exact: true })).toBeVisible();
 });
 
-test("Client sees the package selection prompt on the Workspace dashboard", async ({
+test("Client is hard-gated to /media-package when workspace has no package selected", async ({
   page,
 }) => {
   await setupSession(page, "CLIENT");
-  await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/dashboard`, (route) =>
-    route.fulfill({
-      json: envelope({
-        workspace: workspace("CLIENT"),
-        totalActiveMembers: 2,
-        membersByRole: { CLIENT: 1, MANAGER: 1 },
-        totalCampaigns: 0,
-        campaignsByStatus: {},
-        packageNegotiationStatus: null,
-        agencyId: AGENCY_ID,
-        aiCreditMonth: "2026-10",
-        agencyAiCreditsUsedThisMonth: 0,
-      }),
-    }),
-  );
   await page.route(
     `**/api/v1/workspaces/${WORKSPACE_ID}/media-packages`,
     (route) => route.fulfill({ json: envelope([agencyPackage]) }),
@@ -298,16 +288,58 @@ test("Client sees the package selection prompt on the Workspace dashboard", asyn
     (route) => route.fulfill({ status: 404, json: { success: false } }),
   );
 
+  // Attempting to visit /dashboard without selecting package
   await page.goto(`/workspaces/${WORKSPACE_ID}/dashboard`);
-  await expect(
-    page.getByRole("heading", {
-      name: "Workspace chưa chọn gói truyền thông",
-    }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Chọn gói truyền thông" }).click();
+  // Must automatically redirect to /media-package
   await expect(page).toHaveURL(
     new RegExp(`/workspaces/${WORKSPACE_ID}/media-package$`),
   );
+  // Sidebar displays Media Package and Chat for Client under Hard Gate
+  await expect(
+    page.getByRole("link", { name: /Gói dịch vụ|Gói truyền thông/i }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /Trao đổi|Tin nhắn|Chat/i }),
+  ).toBeVisible();
+});
+
+test("Utility redirect /media-package routes to workspace media-package", async ({
+  page,
+}) => {
+  await setupSession(page, "CLIENT");
+  await page.route(
+    `**/api/v1/workspaces/${WORKSPACE_ID}/media-packages`,
+    (route) => route.fulfill({ json: envelope([agencyPackage]) }),
+  );
+  await page.route(
+    `**/api/v1/workspaces/${WORKSPACE_ID}/media-package`,
+    (route) => route.fulfill({ status: 404, json: { success: false } }),
+  );
+
+  await page.goto(`/media-package`);
+  await expect(page).toHaveURL(
+    new RegExp(`/workspaces/${WORKSPACE_ID}/media-package$`),
+  );
+});
+
+test("Manager can access media-package in workspace", async ({ page }) => {
+  await setupSession(page, "MANAGER");
+  await page.route(
+    `**/api/v1/workspaces/${WORKSPACE_ID}/media-packages`,
+    (route) => route.fulfill({ json: envelope([agencyPackage]) }),
+  );
+  await page.route(
+    `**/api/v1/workspaces/${WORKSPACE_ID}/media-package`,
+    (route) => route.fulfill({ status: 404, json: { success: false } }),
+  );
+
+  await page.goto(`/workspaces/${WORKSPACE_ID}/media-package`);
+  await expect(page).toHaveURL(
+    new RegExp(`/workspaces/${WORKSPACE_ID}/media-package$`),
+  );
+  await expect(
+    page.getByRole("heading", { name: "Chọn gói truyền thông", exact: true }),
+  ).toBeVisible();
 });
 
 for (const width of [375, 768, 1440]) {

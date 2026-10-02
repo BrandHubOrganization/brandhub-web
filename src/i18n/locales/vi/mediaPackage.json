@@ -19,7 +19,11 @@
     "retry": "Thử lại",
     "useTemplate": "Tạo gói từ mẫu này",
     "hideFromWorkspaces": "Ẩn khỏi Workspace",
-    "showToWorkspaces": "Cho phép Workspace sử dụng"
+    "showToWorkspaces": "Cho phép Workspace sử dụng",
+    "chatNegotiate": "Đàm phán qua Chat",
+    "proposeAdjustment": "Đề xuất điều chỉnh điều khoản",
+    "clientApprove": "Client: Chấp thuận gói",
+    "agencyApprove": "Agency: Chấp thuận gói"
   },
   "badges": {
     "template": "Gói mẫu",
@@ -64,7 +68,30 @@
     "scopeTitle": "Phạm vi công việc",
     "agencyApproval": "Phê duyệt của Agency",
     "clientApproval": "Phê duyệt của khách hàng",
-    "notApproved": "Chưa phê duyệt"
+    "notApproved": "Chưa phê duyệt",
+    "approvedCompleted": "Đã phê duyệt hoàn tất (APPROVED)",
+    "approvedCompletedBadge": "Đã phê duyệt hoàn tất (APPROVED)",
+    "approvedCompletedDescription": "Cả hai bên đã đồng thuận các điều khoản của gói phiên bản v{{version}}. Gói đã có hiệu lực chính thức.",
+    "dualApprovalTitle": "Quy trình phê duyệt hai phía (Dual Approval)",
+    "dualApprovalDesc": "Cần sự phê duyệt từ cả Khách hàng và Agency để các điều khoản gói có hiệu lực chính thức.",
+    "clientApprovalTitle": "Phía Khách hàng (Client)",
+    "agencyApprovalTitle": "Phía Agency (Manager)"
+  },
+  "approval": {
+    "approvedAt": "Đã duyệt lúc {{time}}",
+    "waiting": "Chờ duyệt",
+    "approvedStatus": "Đã duyệt",
+    "pendingStatus": "Chờ duyệt",
+    "clientAlreadyApproved": "Client: Đã chấp thuận (Chờ Agency)",
+    "agencyAlreadyApproved": "Agency: Đã chấp thuận (Chờ Khách hàng)"
+  },
+  "negotiateModal": {
+    "title": "Đề xuất điều chỉnh điều khoản",
+    "description": "Điều chỉnh các điều khoản dịch vụ để hai bên tiến hành đàm phán và thống nhất.",
+    "budgetLabel": "Ngân sách (VND)",
+    "durationLabel": "Thời lượng (tuần)",
+    "scopeLabel": "Mô tả phạm vi công việc",
+    "submit": "Gửi đề xuất"
   },
   "form": {
     "basedOnTemplate": "Dựa trên mẫu:",
@@ -88,12 +115,16 @@
     "selected": "Đã cập nhật gói truyền thông cho Workspace.",
     "customCreated": "Đã tạo gói truyền thông cho Agency.",
     "packageShown": "Đã cho phép các Workspace sử dụng gói này.",
-    "packageHidden": "Đã ẩn gói khỏi danh sách lựa chọn của Workspace."
+    "packageHidden": "Đã ẩn gói khỏi danh sách lựa chọn của Workspace.",
+    "negotiateSuccess": "Đã gửi đề xuất điều chỉnh điều khoản thành công.",
+    "approveSuccess": "Đã chấp thuận gói dịch vụ thành công."
   },
   "errors": {
     "load": "Không thể tải thông tin gói truyền thông.",
     "select": "Không thể chọn gói truyền thông.",
     "createCustom": "Không thể tạo gói truyền thông tùy chỉnh.",
-    "updateAvailability": "Không thể cập nhật trạng thái khả dụng của gói."
+    "updateAvailability": "Không thể cập nhật trạng thái khả dụng của gói.",
+    "negotiate": "Không thể gửi đề xuất điều chỉnh điều khoản.",
+    "approve": "Không thể chấp thuận gói dịch vụ."
   }
 }
