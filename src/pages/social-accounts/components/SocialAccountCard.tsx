@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Link2Off,
@@ -28,12 +29,14 @@ export function SocialAccountCard({
   const meta = PLATFORM_META[account.platform];
 
   // Tính số ngày còn lại của token
-  const daysRemaining = account.tokenExpiresAt
-    ? Math.ceil(
-        (new Date(account.tokenExpiresAt).getTime() - Date.now()) /
-          (1000 * 60 * 60 * 24),
-      )
-    : null;
+  const daysRemaining = useMemo(() => {
+    if (!account.tokenExpiresAt) return null;
+    return Math.ceil(
+      // eslint-disable-next-line react-hooks/purity
+      (new Date(account.tokenExpiresAt).getTime() - Date.now()) /
+        (1000 * 60 * 60 * 24),
+    );
+  }, [account.tokenExpiresAt]);
 
   // Cảnh báo nếu token còn <= 7 ngày hoặc đã hết hạn
   const isExpired =
