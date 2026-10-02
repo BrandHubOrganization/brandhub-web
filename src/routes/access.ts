@@ -50,6 +50,7 @@ export function resolveAccessRule(pathname: string): AccessRule | null {
   if (/^\/workspaces\/[^/]+\/social-accounts$/.test(pathname)) {
     return SOCIAL_ACCOUNTS_ACCESS;
   }
+  const stripped = pathname.replace(/^\/workspaces\/[^/]+/, "") || "/";
   // Boundary-aware: "/workspace" không được nuốt "/workspaces/*".
   const key = SORTED_KEYS.find(
     (k) => stripped === k || stripped.startsWith(k + "/"),
