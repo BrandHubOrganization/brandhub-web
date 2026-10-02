@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Building2, Pencil, Plus, Trash2 } from "lucide-react";
+import { Building2, Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/dialog";
 import { clientProfileService } from "@/services/clientProfileService";
 import { extractErrorMessage, isNotFoundError } from "@/utils/error";
 import type { ClientProfile } from "@/types/clientProfile";
+import { cn } from "@/lib/utils";
 import {
   ClientProfileForm,
   type ClientProfileFormValues,
 } from "./components/ClientProfileForm";
 import { ClientProfilePreview } from "./components/ClientProfilePreview";
+import { ClientProfileLogo } from "./components/ClientProfileLogo";
+import { BANNER_PRESETS } from "@/pages/agency/bannerPresets";
 
 export function ClientProfileListPage() {
   const { t } = useTranslation();
@@ -117,11 +120,14 @@ export function ClientProfileListPage() {
     <PageWrapper
       title={t("clientProfile.list.title")}
       description={t("clientProfile.list.description")}
+      fullWidth
+      bannerBadge={t("clientProfile.list.badge", "Hồ sơ thương hiệu")}
+      bannerImage={BANNER_PRESETS[0]?.url}
       actions={
         editing ? (
           <Button
             variant="outline"
-            className="gap-1.5"
+            className="gap-1.5 cursor-pointer shadow-xs bg-card/90 backdrop-blur-xs text-foreground hover:bg-card border-white/20"
             onClick={() => requestSwitch(null)}
           >
             <Plus className="size-4" />
@@ -130,114 +136,139 @@ export function ClientProfileListPage() {
         ) : null
       }
     >
-      <section>
-        <div className="mb-4">
-          <h2 className="text-foreground text-lg font-semibold">
-            {t("clientProfile.list.existingTitle")}
-          </h2>
-          <p className="text-muted-foreground text-sm">
-            {t("clientProfile.list.existingDescription")}
-          </p>
+      {/* 1. Existing Profiles List */}
+      <section className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <div>
+            <h2 className="text-foreground text-base font-semibold tracking-tight">
+              {t("clientProfile.list.existingTitle")}
+            </h2>
+            <p className="text-muted-foreground text-xs">
+              {t("clientProfile.list.existingDescription")}
+            </p>
+          </div>
+          {profiles.length > 0 && (
+            <span className="text-xs font-medium text-muted-foreground bg-muted px-2.5 py-0.5 rounded-full w-fit">
+              {profiles.length} {t("clientProfile.list.profilesCount", "hồ sơ")}
+            </span>
+          )}
         </div>
 
         {profiles.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-14 text-center">
-            <Building2 className="text-muted-foreground size-10" />
-            <p className="text-muted-foreground text-sm">
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-12 text-center bg-card/40">
+            <Building2 className="text-muted-foreground/50 size-10" />
+            <p className="text-muted-foreground text-xs max-w-sm">
               {t("clientProfile.list.empty")}
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {profiles.map((p) => (
-              <div
-                key={p.id}
-                className={`bg-card rounded-xl border p-4 ${
-                  editing?.id === p.id ? "border-brand-orange" : "border-border"
-                }`}
-              >
-                <button
-                  type="button"
-                  className="flex w-full cursor-pointer items-center gap-3 text-left"
-                  onClick={() => requestSwitch(p)}
-                >
-                  {p.logoUrl ? (
-                    <img
-                      src={p.logoUrl}
-                      alt=""
-                      className="size-10 shrink-0 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="bg-brand-orange-soft text-brand-orange flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-bold">
-                      {p.displayName.charAt(0).toUpperCase()}
-                    </div>
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {profiles.map((p) => {
+              const isSelected = editing?.id === p.id;
+              return (
+                <div
+                  key={p.id}
+                  className={cn(
+                    "group relative bg-card rounded-xl border p-4 transition-all duration-200 shadow-xs hover:shadow-md",
+                    isSelected
+                      ? "border-brand-orange ring-2 ring-brand-orange/20 bg-brand-orange/[0.02]"
+                      : "border-border hover:border-border/80",
                   )}
-                  <div className="min-w-0">
-                    <p className="text-foreground truncate text-sm font-semibold">
-                      {p.displayName}
-                    </p>
-                    <p className="text-muted-foreground truncate text-xs">
-                      {p.company || "—"}
-                    </p>
-                  </div>
-                </button>
-                <div className="mt-3 flex items-center justify-between">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="gap-1.5 text-xs"
+                >
+                  <button
+                    type="button"
+                    className="flex w-full cursor-pointer items-center gap-3 text-left"
                     onClick={() => requestSwitch(p)}
                   >
-                    <Pencil className="size-3.5" />
-                    {t("clientProfile.editButton")}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-destructive gap-1.5 text-xs"
-                    onClick={() => setDeleteTarget(p)}
-                  >
-                    <Trash2 className="size-3.5" />
-                    {t("clientProfile.list.deleteButton")}
-                  </Button>
+                    <div className="size-11 shrink-0 overflow-hidden rounded-full border border-border bg-muted/40 shadow-xs">
+                      <ClientProfileLogo
+                        logoUrl={p.logoUrl}
+                        displayName={p.displayName}
+                        iconClassName="size-5"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-foreground truncate text-sm font-semibold group-hover:text-brand-orange transition-colors">
+                        {p.displayName}
+                      </p>
+                      <p className="text-muted-foreground truncate text-xs">
+                        {p.company || p.tagline || "—"}
+                      </p>
+                    </div>
+                  </button>
+                  <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-2.5">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-1.5 text-xs h-7 px-2 cursor-pointer"
+                      onClick={() => requestSwitch(p)}
+                    >
+                      <Pencil className="size-3.5 text-muted-foreground" />
+                      {t("clientProfile.editButton")}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-destructive hover:bg-destructive/10 gap-1.5 text-xs h-7 px-2 cursor-pointer"
+                      onClick={() => setDeleteTarget(p)}
+                    >
+                      <Trash2 className="size-3.5" />
+                      {t("clientProfile.list.deleteButton")}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
 
-      <div className="mt-10 grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
-        <div ref={formRef} className="scroll-mt-6 lg:col-span-2">
-          <div className="border-border bg-card rounded-xl border p-6">
-            <div className="mb-4">
-              <h2 className="text-foreground text-lg font-semibold">
-                {editing
-                  ? t("clientProfile.list.formTitleEdit")
-                  : t("clientProfile.list.formTitleCreate")}
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                {editing
-                  ? t("clientProfile.list.formDescriptionEdit")
-                  : t("clientProfile.list.formDescriptionCreate")}
-              </p>
-            </div>
-            <ClientProfileForm
-              key={editing?.id ?? "new"}
-              initial={editing}
-              submitting={saving}
-              submitLabel={
-                editing ? t("clientProfile.save") : t("clientProfile.create")
-              }
-              onSubmit={handleSubmit}
-              onCancel={editing ? () => requestSwitch(null) : undefined}
-              onDirtyChange={setFormDirty}
-              onValuesChange={setPreviewValues}
-            />
+      {/* 2. Form & Live Preview Grid */}
+      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12 items-start">
+        {/* LEFT COLUMN: Input Form */}
+        <div
+          ref={formRef}
+          className="scroll-mt-6 lg:col-span-7 xl:col-span-7 space-y-4"
+        >
+          <div className="space-y-0.5">
+            <h2 className="text-foreground text-lg font-semibold tracking-tight">
+              {editing
+                ? t("clientProfile.list.formTitleEdit")
+                : t("clientProfile.list.formTitleCreate")}
+            </h2>
+            <p className="text-muted-foreground text-xs">
+              {editing
+                ? t("clientProfile.list.formDescriptionEdit")
+                : t("clientProfile.list.formDescriptionCreate")}
+            </p>
           </div>
+
+          <ClientProfileForm
+            key={editing?.id ?? "new"}
+            initial={editing}
+            submitting={saving}
+            submitLabel={
+              editing ? t("clientProfile.save") : t("clientProfile.create")
+            }
+            onSubmit={handleSubmit}
+            onCancel={editing ? () => requestSwitch(null) : undefined}
+            onDirtyChange={setFormDirty}
+            onValuesChange={setPreviewValues}
+          />
         </div>
 
-        <div className="border-border bg-card rounded-xl border p-6 lg:sticky lg:top-6">
+        {/* RIGHT COLUMN: Live Profile Preview (Sticky) */}
+        <div className="lg:col-span-5 xl:col-span-5 lg:sticky lg:top-6 space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <Eye className="size-3.5 text-brand-orange" />
+              {t("clientProfile.preview.title", "Xem trước hồ sơ")}
+            </span>
+            <span className="rounded-full bg-brand-orange/10 px-2.5 py-0.5 text-[11px] font-medium text-brand-orange">
+              {t("agency.create.previewBadge", "Cập nhật trực tiếp")}
+            </span>
+          </div>
+
           <ClientProfilePreview values={previewValues} />
         </div>
       </div>

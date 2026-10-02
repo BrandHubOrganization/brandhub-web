@@ -4,6 +4,7 @@ import { mockClientService } from "../services/mockClientService";
 import type { Client } from "../types/client";
 
 export function useClientListActions(
+  workspaceId: string,
   load: () => Promise<void>,
   setPage: (page: number) => void,
   setClientForPackage: (client: Client | null) => void,
@@ -11,10 +12,10 @@ export function useClientListActions(
   const { t } = useTranslation();
 
   async function handleCreateClient(
-    dto: Parameters<typeof mockClientService.createClient>[0],
+    dto: Parameters<typeof mockClientService.createClient>[1],
   ) {
     try {
-      const created = await mockClientService.createClient(dto);
+      const created = await mockClientService.createClient(workspaceId, dto);
       toast.success(t("client.createSuccess", { name: created.name }));
       setPage(0);
       await load();
@@ -27,10 +28,14 @@ export function useClientListActions(
 
   async function handleUpdatePackage(
     id: string,
-    dto: Parameters<typeof mockClientService.updateServicePackage>[1],
+    dto: Parameters<typeof mockClientService.updateServicePackage>[2],
   ) {
     try {
-      const updated = await mockClientService.updateServicePackage(id, dto);
+      const updated = await mockClientService.updateServicePackage(
+        workspaceId,
+        id,
+        dto,
+      );
       toast.success(t("client.servicePackage.upgradeSuccess"));
       setClientForPackage(null);
       await load();
@@ -43,7 +48,7 @@ export function useClientListActions(
 
   async function handleDeleteClient(id: string) {
     try {
-      await mockClientService.deleteClient(id);
+      await mockClientService.deleteClient(workspaceId, id);
       toast.success(t("client.deleteSuccess"));
       await load();
     } catch {

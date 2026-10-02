@@ -20,6 +20,7 @@ import { CreateWorkspacePage } from "@/pages/workspace/create";
 import { WorkspaceSettingsPage } from "@/pages/workspace/detail";
 import { WorkspaceDashboardPage } from "@/pages/workspace/dashboard";
 import { WorkspaceMembersPage } from "@/pages/workspace/members";
+import { WorkspaceClientsPage } from "@/pages/workspace/clients";
 import { WorkspaceTemplatesPage } from "@/pages/workspace/templates";
 import { InvitationsPage } from "@/pages/workspace/invitations";
 import { AgencyPage } from "@/pages/agency";
@@ -28,6 +29,7 @@ import { CreateAgencyPage } from "@/pages/agency/create";
 import { AgencyMembersPage } from "@/pages/agency/members";
 import { AgencyStatsPage } from "@/pages/agency/stats";
 import { AgencyInvitationsPage } from "@/pages/agency/invitations";
+import { ClientInvitationsPage } from "@/pages/client/invitations";
 import { AcceptInvitationPage } from "@/pages/agency/accept";
 import { PortalPage } from "@/pages/portal";
 import { WorkspaceClientProfilePage } from "@/pages/workspace/client-profile";
@@ -113,6 +115,10 @@ export function AppRoutes() {
             element={<WorkspaceMembersPage />}
           />
           <Route
+            path="/workspaces/:id/clients"
+            element={<WorkspaceClientsPage />}
+          />
+          <Route
             path="/workspaces/:id/requests"
             element={<ContentRequestListPage />}
           />
@@ -163,6 +169,10 @@ export function AppRoutes() {
           <Route
             path="/agency/invitations"
             element={<AgencyInvitationsPage />}
+          />
+          <Route
+            path="/client/invitations"
+            element={<ClientInvitationsPage />}
           />
           <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
           <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />

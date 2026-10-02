@@ -27,6 +27,7 @@
   "workspace": "Không gian làm việc",
   "createWorkspace": "Tạo Workspace",
   "members": "Thành viên",
+  "workspaceClients": "Client",
   "invitations": "Lời mời",
   "portal": "Cổng Khách hàng",
   "workspaceClientProfile": "Hồ sơ Thương hiệu",
@@ -47,13 +48,24 @@
     "members": "Thành viên công ty",
     "stats": "Thống kê công ty"
   },
-  "agencyInvitationInbox": "Lời mời từ công ty khác",
+  "workspaceSub": {
+    "settings": "Cài đặt workspace",
+    "members": "Thành viên",
+    "clients": "Khách hàng"
+  },
+  "agencyInvitationInbox": "Lời mời công ty",
+  "clientInvitations": "Lời mời thành khách hàng",
   "agencyList": "Danh sách công ty",
+  "workspaceList": "Danh sách workspace",
   "clientProfile": "Hồ sơ Thương hiệu",
   "sections": {
     "overview": "Tổng quan",
     "create": "Sáng tạo",
     "manage": "Quản lý",
+    "agency": "Công ty",
+    "workspaceSettings": "Cài đặt Workspace",
+    "lists": "Danh sách",
+    "invitations": "Lời mời",
     "settings": "Cài đặt",
     "system": "Hệ thống"
   },
@@ -70,5 +82,9 @@
   "security": "Bảo mật",
   "connections": "Kết nối tài khoản",
   "settings": "Cài đặt",
-  "notificationSettings": "Cài đặt thông báo"
+  "notificationSettings": "Cài đặt thông báo",
+  "create": "Tạo mới",
+  "accept": "Xác nhận",
+  "leaveAgency": "Thoát agency",
+  "leaveWorkspace": "Thoát workspace"
 }

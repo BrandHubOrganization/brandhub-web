@@ -1,28 +1,20 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { useWorkspaceMembers } from "./hooks/useWorkspaceMembers";
-import { useClients } from "@/pages/client/hooks/useClients";
-import {
-  MembersSectionTabs,
-  type MembersSection,
-} from "./components/MembersSectionTabs";
 import { InternalMembersSection } from "./components/InternalMembersSection";
-import { ClientsSection } from "./components/ClientsSection";
 import { WorkspacePermissionsPanel } from "./components/WorkspacePermissionsPanel";
 
+// Chỉ thành viên nội bộ agency (OWNER/MANAGER/CREATOR). Client cộng tác
+// (role CLIENT, gán từ ClientProfile) có trang riêng: WorkspaceClientsPage.
 export function WorkspaceMembersPage() {
   const { t } = useTranslation();
-  const [section, setSection] = useState<MembersSection>("internal");
   const membersState = useWorkspaceMembers();
-  const { totalElements: clientCount } = useClients();
 
   if (membersState.loading) return null;
 
-  // Bảng "Internal Members" hiện chung cả MANAGER/CREATOR và CLIENT (thành
-  // viên cộng tác gán từ ClientProfile) — tab "Clients" bên cạnh vẫn là
-  // khái niệm khác (quản lý thương hiệu khách hàng, không phải collaborator).
-  const internalMembers = membersState.members;
+  const internalMembers = membersState.members.filter(
+    (m) => m.role !== "CLIENT",
+  );
 
   return (
     <PageWrapper
@@ -30,21 +22,10 @@ export function WorkspaceMembersPage() {
       description={t("workspace.members.description")}
     >
       <div className="space-y-4">
-        <MembersSectionTabs
-          active={section}
-          internalCount={internalMembers.length}
-          clientCount={clientCount}
-          onChange={setSection}
+        <InternalMembersSection
+          {...membersState}
+          internalMembers={internalMembers}
         />
-
-        {section === "internal" ? (
-          <InternalMembersSection
-            {...membersState}
-            internalMembers={internalMembers}
-          />
-        ) : (
-          <ClientsSection />
-        )}
 
         <WorkspacePermissionsPanel
           workspaceId={membersState.workspaceId}

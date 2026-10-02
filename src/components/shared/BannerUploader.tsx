@@ -8,6 +8,7 @@ interface Props {
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   uploadLabel: string;
   emptyLabel: string;
+  canEdit?: boolean;
 }
 
 /** Ảnh bìa ngang full-width dùng chung cho Agency/Workspace detail — khác
@@ -19,6 +20,7 @@ export function BannerUploader({
   onFileChange,
   uploadLabel,
   emptyLabel,
+  canEdit = true,
 }: Props) {
   return (
     <div className="border-border bg-card relative mb-4 h-32 w-full overflow-hidden rounded-xl border sm:h-40">
@@ -29,24 +31,28 @@ export function BannerUploader({
           {emptyLabel}
         </div>
       )}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        hidden
-        onChange={onFileChange}
-      />
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        loading={uploading}
-        className="bg-card/90 absolute right-2 bottom-2 cursor-pointer gap-1.5"
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <Upload className="size-3.5" />
-        {uploadLabel}
-      </Button>
+      {canEdit && (
+        <>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            hidden
+            onChange={onFileChange}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            loading={uploading}
+            className="bg-card/90 absolute right-2 bottom-2 cursor-pointer gap-1.5"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Upload className="size-3.5" />
+            {uploadLabel}
+          </Button>
+        </>
+      )}
     </div>
   );
 }
