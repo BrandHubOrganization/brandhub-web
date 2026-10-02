@@ -20,6 +20,7 @@ import {
   FileBarChart,
   User,
   Inbox,
+  PackageCheck,
   UserCheck,
   Briefcase,
   Settings,
@@ -29,6 +30,7 @@ import {
   FolderOpen,
   Shield,
   Bell,
+  MessageCircleMore,
 } from "lucide-react";
 import {
   HoverCard,
@@ -104,6 +106,20 @@ const NAV_SECTIONS: NavSection[] = [
         // CLIENT thấy dashboard nhưng dashboard.tsx tự ẩn card nhạy cảm
         // (thành viên, đàm phán gói, AI credit nội bộ agency) qua isClient —
         // chỉ còn phần liên quan nội dung (campaign/content status, lịch đăng).
+      },
+      {
+        to: "/media-package",
+        icon: PackageCheck,
+        labelKey: "nav.mediaPackages",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/chat",
+        icon: MessageCircleMore,
+        labelKey: "nav.chat",
+        workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/analytics",
@@ -257,6 +273,26 @@ const NAV_SECTIONS: NavSection[] = [
     key: "lists",
     titleKey: "nav.sections.lists",
     items: [
+      {
+        to: "/agency/{agencyId}/media-packages",
+        icon: PackageCheck,
+        labelKey: "nav.manageMediaPackages",
+        agencyScoped: true,
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
+        to: "/client-profile",
+        icon: User,
+        labelKey: "nav.workspaceClientProfile",
+        // Hồ sơ thương hiệu GẮN VỚI workspace đang đứng (khác /client-profiles
+        // ở mục Cài đặt — list toàn bộ hồ sơ user sở hữu). Route không có bản
+        // fallback ngoài workspace nên bắt buộc requiresWorkspace, chỉ CLIENT
+        // có client_profile cá nhân theo workspace nên clientOnly.
+        workspaceScoped: true,
+        requiresWorkspace: true,
+        clientOnly: true,
+      },
       {
         to: "/agency",
         icon: Building2,
@@ -424,15 +460,25 @@ export function Sidebar({
   const currentAgencyName =
     agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
   const clientWorkspaces = allWorkspaces.filter((ws) => ws.myRole === "CLIENT");
+  const isPackageHardGated =
+    (role === "CLIENT" || role === "MANAGER") &&
+    !!activeWorkspace &&
+    activeWorkspace.packageNegotiationStatus !== "APPROVED";
+
   // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
   // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
   // "create" và "workspaceSettings" ẩn vì cần ngữ cảnh 1 workspace cụ thể.
+  // Trước khi duyệt gói, Manager vẫn quản lý được thiết lập Workspace.
   const visibleSectionKeys: string[] | null =
     systemRole === "ADMIN"
       ? ["system"]
       : !activeWorkspace
         ? ["overview", "agency", "lists", "invitations", "settings"]
-        : ["overview", "create", "workspaceSettings"];
+        : isPackageHardGated
+          ? role === "MANAGER"
+            ? ["overview", "workspaceSettings"]
+            : ["overview"]
+          : ["overview", "create", "workspaceSettings"];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
@@ -447,6 +493,15 @@ export function Sidebar({
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
         .filter((item) => !item.hideInAgency || !currentAgencyId)
+        .filter((item) => {
+          if (!isPackageHardGated) return true;
+          return (
+            item.to === "/media-package" ||
+            item.to === "/chat" ||
+            (role === "MANAGER" &&
+              ["/settings", "/members", "/clients"].includes(item.to))
+          );
+        })
         // requiresWorkspace: route KHÔNG có bản fallback ở "to" gốc (khác
         // /dashboard, có cả bản agency-level lẫn /workspaces/:id/dashboard)
         // — thiếu activeWorkspace thì không build được URL hợp lệ, ẩn hẳn

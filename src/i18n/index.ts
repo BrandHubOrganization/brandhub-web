@@ -29,6 +29,8 @@ import viSecurity from "./locales/vi/security.json";
 import viProfile from "./locales/vi/profile.json";
 import viClientProfile from "./locales/vi/clientProfile.json";
 import viAgency from "./locales/vi/agency.json";
+import viMediaPackage from "./locales/vi/mediaPackage.json";
+import viChat from "./locales/vi/chat.json";
 
 import enAuth from "./locales/en/auth.json";
 import enCommon from "./locales/en/common.json";
@@ -56,8 +58,11 @@ import enSecurity from "./locales/en/security.json";
 import enProfile from "./locales/en/profile.json";
 import enClientProfile from "./locales/en/clientProfile.json";
 import enAgency from "./locales/en/agency.json";
+import enMediaPackage from "./locales/en/mediaPackage.json";
+import enChat from "./locales/en/chat.json";
 
-const vi = { monitoring: viMonitoring,
+const vi = {
+  monitoring: viMonitoring,
   auth: viAuth,
   common: viCommon,
   nav: viNav,
@@ -84,9 +89,12 @@ const vi = { monitoring: viMonitoring,
   profile: viProfile,
   clientProfile: viClientProfile,
   agency: viAgency,
+  mediaPackage: viMediaPackage,
+  chat: viChat,
 };
 
-const en = { monitoring: enMonitoring,
+const en = {
+  monitoring: enMonitoring,
   auth: enAuth,
   common: enCommon,
   nav: enNav,
@@ -113,6 +121,8 @@ const en = { monitoring: enMonitoring,
   profile: enProfile,
   clientProfile: enClientProfile,
   agency: enAgency,
+  mediaPackage: enMediaPackage,
+  chat: enChat,
 };
 
 const savedLang = localStorage.getItem("brandhub-lang");

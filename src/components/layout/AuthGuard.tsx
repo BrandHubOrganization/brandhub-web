@@ -23,9 +23,15 @@ export function AuthGuard() {
   const isDevSession = accessToken?.startsWith("dev-token-") ?? false;
 
   const [roleLoaded, setRoleLoaded] = React.useState(false);
+  const bootstrappedUserIdRef = React.useRef<string | null>(null);
 
   React.useEffect(() => {
     if (!isAuthenticated || !user) return;
+    // React StrictMode replays effects in development. Keep bootstrap idempotent
+    // so opening a workspace does not issue the same three requests twice.
+    if (bootstrappedUserIdRef.current === user.id) return;
+    bootstrappedUserIdRef.current = user.id;
+
     if (isDevSession) {
       // Dev quick-login vẫn cần agencyList để agencyFallbackRole (dưới)
       // hoạt động — thiếu bước này thì Owner/Member vào /reports, /clients
@@ -63,6 +69,13 @@ export function AuthGuard() {
   const workspaceIdInUrl = location.pathname.match(
     /^\/workspaces\/([^/]+)/,
   )?.[1];
+  const agencyIdCandidate = location.pathname.match(/^\/agency\/([^/]+)/)?.[1];
+  const agencyIdInUrl = agencyList.some(
+    (agency) => agency.id === agencyIdCandidate,
+  )
+    ? agencyIdCandidate
+    : null;
+  const agencyContextId = agencyIdInUrl ?? currentAgencyId;
   // Agency-level route (/reports, /clients, ...) truy cập KHÔNG qua 1
   // workspace cụ thể — currentMemberRole (workspace-scoped) luôn null ở đây,
   // đá nhầm agency Owner/Member về /dashboard dù access.ts cho phép
@@ -71,10 +84,10 @@ export function AuthGuard() {
   // xem như OWNER, agency MEMBER (nhân sự nội bộ, không phải CLIENT) xem
   // như MANAGER cho mục đích các trang quản lý cấp agency này.
   const agencyFallbackRole =
-    !workspaceIdInUrl && !currentMemberRole && currentAgencyId
+    !workspaceIdInUrl && !currentMemberRole && agencyContextId
       ? (() => {
           const myRole = agencyList.find(
-            (a) => a.id === currentAgencyId,
+            (a) => a.id === agencyContextId,
           )?.myRole;
           if (myRole === "OWNER") return "OWNER" as const;
           if (myRole === "MEMBER") return "MANAGER" as const;
@@ -101,9 +114,62 @@ export function AuthGuard() {
       workspaceList[0]?.myRole ??
       null)
     : null;
+  const checkWorkspaceMediaPackage = useWorkspaceStore(
+    (s) => s.checkWorkspaceMediaPackage,
+  );
+  const checkedPackageWorkspaceIdsRef = React.useRef(new Set<string>());
+
+  const workspaceInUrl = workspaceIdInUrl
+    ? (workspaceList.find((w) => w.id === workspaceIdInUrl) ?? null)
+    : null;
+
   const memberRole = workspaceIdInUrl
-    ? (workspaceList.find((w) => w.id === workspaceIdInUrl)?.myRole ?? null)
+    ? (workspaceInUrl?.myRole ?? null)
     : (currentMemberRole ?? legacyWorkspaceRole ?? agencyFallbackRole);
+
+  const isMediaPackageRoute =
+    !!workspaceIdInUrl &&
+    (location.pathname === `/workspaces/${workspaceIdInUrl}/media-package` ||
+      location.pathname.startsWith(
+        `/workspaces/${workspaceIdInUrl}/media-package/`,
+      ));
+
+  const isChatRoute =
+    !!workspaceIdInUrl &&
+    (location.pathname === `/workspaces/${workspaceIdInUrl}/chat` ||
+      location.pathname.startsWith(`/workspaces/${workspaceIdInUrl}/chat/`));
+
+  const isManagerWorkspaceSettingsRoute =
+    memberRole === "MANAGER" &&
+    !!workspaceIdInUrl &&
+    ["settings", "members", "clients"].some(
+      (page) => location.pathname === `/workspaces/${workspaceIdInUrl}/${page}`,
+    );
+  const isAllowedHardGateRoute =
+    isMediaPackageRoute || isChatRoute || isManagerWorkspaceSettingsRoute;
+
+  React.useEffect(() => {
+    if (
+      !roleLoaded ||
+      !workspaceIdInUrl ||
+      (memberRole !== "CLIENT" && memberRole !== "MANAGER") ||
+      !workspaceInUrl ||
+      workspaceInUrl.packageNegotiationStatus !== undefined ||
+      checkedPackageWorkspaceIdsRef.current.has(workspaceIdInUrl)
+    ) {
+      return;
+    }
+    // An API error must not immediately retrigger this effect forever. A fresh
+    // page load can retry, while this mounted guard checks each workspace once.
+    checkedPackageWorkspaceIdsRef.current.add(workspaceIdInUrl);
+    void checkWorkspaceMediaPackage(workspaceIdInUrl);
+  }, [
+    roleLoaded,
+    workspaceIdInUrl,
+    memberRole,
+    workspaceInUrl,
+    checkWorkspaceMediaPackage,
+  ]);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
@@ -111,6 +177,24 @@ export function AuthGuard() {
 
   if (!roleLoaded) {
     return null;
+  }
+
+  // Trước khi package được duyệt, Client chỉ xem package/chat; Manager còn
+  // được quản lý thiết lập, thành viên và client của Workspace.
+  if (workspaceIdInUrl && (memberRole === "CLIENT" || memberRole === "MANAGER")) {
+    if (!isAllowedHardGateRoute) {
+      if (workspaceInUrl?.packageNegotiationStatus === undefined) {
+        return null;
+      }
+      if (workspaceInUrl.packageNegotiationStatus !== "APPROVED") {
+        return (
+          <Navigate
+            to={`/workspaces/${workspaceIdInUrl}/media-package`}
+            replace
+          />
+        );
+      }
+    }
   }
 
   if (!canAccess(location.pathname, systemRole, memberRole)) {
