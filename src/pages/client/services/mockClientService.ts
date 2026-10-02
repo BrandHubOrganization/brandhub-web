@@ -241,10 +241,14 @@ function warnMockFallback(context: string, error: unknown): void {
 
 export const mockClientService = {
   async getClients(
-    params?: ClientListParams,
+    workspaceId: string,
+    params?: Omit<ClientListParams, "workspaceId">,
   ): Promise<{ content: Client[]; totalElements: number }> {
     try {
-      const response = await api.get("/api/v1/clients", { params });
+      const response = await api.get(
+        `/api/v1/workspaces/${workspaceId}/clients`,
+        { params },
+      );
       const content =
         response.data?.data?.content ?? response.data?.data ?? response.data;
       const total =
@@ -268,7 +272,10 @@ export const mockClientService = {
       }
       return { content: filtered, totalElements: filtered.length };
     } catch (error) {
-      warnMockFallback("GET /api/v1/clients failed", error);
+      warnMockFallback(
+        `GET /api/v1/workspaces/${workspaceId}/clients failed`,
+        error,
+      );
       let filtered = [...MOCK_CLIENTS];
       if (params?.search) {
         const query = params.search.toLowerCase();
@@ -282,20 +289,28 @@ export const mockClientService = {
     }
   },
 
-  async getClientById(id: string): Promise<Client> {
+  async getClientById(workspaceId: string, id: string): Promise<Client> {
     try {
-      const response = await api.get(`/api/v1/clients/${id}`);
+      const response = await api.get(
+        `/api/v1/workspaces/${workspaceId}/clients/${id}`,
+      );
       return response.data?.data ?? response.data ?? MOCK_CLIENTS[0];
     } catch (error) {
-      warnMockFallback(`GET /api/v1/clients/${id} failed`, error);
+      warnMockFallback(
+        `GET /api/v1/workspaces/${workspaceId}/clients/${id} failed`,
+        error,
+      );
       const found = MOCK_CLIENTS.find((c) => c.id === id);
       return found ?? MOCK_CLIENTS[0];
     }
   },
 
-  async createClient(dto: CreateClientDTO): Promise<Client> {
+  async createClient(workspaceId: string, dto: CreateClientDTO): Promise<Client> {
     try {
-      const response = await api.post("/api/v1/clients", dto);
+      const response = await api.post(
+        `/api/v1/workspaces/${workspaceId}/clients`,
+        dto,
+      );
       return response.data?.data ?? response.data;
     } catch (error) {
       warnMockFallback("POST /api/v1/clients failed", error);
@@ -330,18 +345,19 @@ export const mockClientService = {
   },
 
   async updateServicePackage(
+    workspaceId: string,
     id: string,
     dto: UpdateServicePackageDTO,
   ): Promise<Client> {
     try {
       const response = await api.put(
-        `/api/v1/clients/${id}/service-package`,
+        `/api/v1/workspaces/${workspaceId}/clients/${id}/service-package`,
         dto,
       );
       return response.data?.data ?? response.data;
     } catch (error) {
       warnMockFallback(
-        `PUT /api/v1/clients/${id}/service-package failed`,
+        `PUT /api/v1/workspaces/${workspaceId}/clients/${id}/service-package failed`,
         error,
       );
       const existing = MOCK_CLIENTS.find((c) => c.id === id) || MOCK_CLIENTS[0];
@@ -363,14 +379,21 @@ export const mockClientService = {
   },
 
   async updateClientSettings(
+    workspaceId: string,
     id: string,
     dto: UpdateClientSettingsDTO,
   ): Promise<Client> {
     try {
-      const response = await api.put(`/api/v1/clients/${id}/settings`, dto);
+      const response = await api.put(
+        `/api/v1/workspaces/${workspaceId}/clients/${id}/settings`,
+        dto,
+      );
       return response.data?.data ?? response.data;
     } catch (error) {
-      warnMockFallback(`PUT /api/v1/clients/${id}/settings failed`, error);
+      warnMockFallback(
+        `PUT /api/v1/workspaces/${workspaceId}/clients/${id}/settings failed`,
+        error,
+      );
       const existing = MOCK_CLIENTS.find((c) => c.id === id) || MOCK_CLIENTS[0];
       return {
         ...existing,
@@ -380,11 +403,14 @@ export const mockClientService = {
     }
   },
 
-  async deleteClient(id: string): Promise<void> {
+  async deleteClient(workspaceId: string, id: string): Promise<void> {
     try {
-      await api.delete(`/api/v1/clients/${id}`);
+      await api.delete(`/api/v1/workspaces/${workspaceId}/clients/${id}`);
     } catch (error) {
-      warnMockFallback(`DELETE /api/v1/clients/${id} failed`, error);
+      warnMockFallback(
+        `DELETE /api/v1/workspaces/${workspaceId}/clients/${id} failed`,
+        error,
+      );
     }
   },
 };

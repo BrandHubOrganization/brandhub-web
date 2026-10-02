@@ -9,7 +9,7 @@ export type AccessRule = MemberRole[] | "ADMIN";
  * AuthGuard + Sidebar/Layout đọc chung.
  */
 export const ROUTE_ACCESS: Record<string, AccessRule> = {
-  "/social-accounts": ["OWNER"],
+  "/social-accounts": ["OWNER", "MANAGER", "CLIENT"],
   "/subscription/plans": ["OWNER"],
   "/subscription/checkout": ["OWNER"],
   "/subscription/invoices": ["OWNER"],
@@ -24,6 +24,7 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/calendar": ["MANAGER", "CREATOR", "CLIENT"],
   "/library": ["MANAGER", "CREATOR", "CLIENT"],
   "/editor": ["MANAGER", "CREATOR"],
+  "/content-writing": ["CREATOR"],
   "/templates": ["MANAGER", "CREATOR"],
   "/hashtag-groups": ["MANAGER", "CREATOR"],
   "/publish": ["MANAGER", "CREATOR"],
@@ -36,8 +37,10 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
 );
 
 const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
+const WORKSPACE_CLIENTS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const WORKSPACE_SETTINGS_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const AGENCY_MEDIA_PACKAGES_ACCESS: AccessRule = ["OWNER"];
+const SOCIAL_ACCOUNTS_ACCESS: AccessRule = ["OWNER", "MANAGER", "CLIENT"];
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
@@ -47,8 +50,14 @@ export function resolveAccessRule(pathname: string): AccessRule | null {
   if (/^\/workspaces\/[^/]+\/members$/.test(pathname)) {
     return MEMBERS_PAGE_ACCESS;
   }
+  if (/^\/workspaces\/[^/]+\/clients$/.test(pathname)) {
+    return WORKSPACE_CLIENTS_PAGE_ACCESS;
+  }
   if (/^\/workspaces\/[^/]+\/settings$/.test(pathname)) {
     return WORKSPACE_SETTINGS_ACCESS;
+  }
+  if (/^\/workspaces\/[^/]+\/social-accounts$/.test(pathname)) {
+    return SOCIAL_ACCOUNTS_ACCESS;
   }
   // ROUTE_ACCESS key theo path gốc chưa namespace (vd "/editor"), nhưng
   // route thật giờ có thể mang prefix "/workspaces/:id/..." — bỏ prefix đó
@@ -57,6 +66,12 @@ export function resolveAccessRule(pathname: string): AccessRule | null {
   // hiển thị. No-op với pathname chưa có prefix (Sidebar gọi canAccess
   // bằng item.to gốc trước khi áp workspaceScoped substitution).
   const stripped = pathname.replace(/^\/workspaces\/[^/]+/, "") || "/";
+  // /invitations/accept là trang accept lời mời (mọi role đã login dùng
+  // được, kể cả CLIENT chưa thuộc workspace nào) — không ăn theo rule
+  // OWNER/MANAGER của "/invitations" (danh sách lời mời quản lý agency).
+  if (stripped === "/invitations/accept") {
+    return null;
+  }
   // Boundary-aware: "/workspace" không được nuốt "/workspaces/*".
   const key = SORTED_KEYS.find(
     (k) => stripped === k || stripped.startsWith(k + "/"),

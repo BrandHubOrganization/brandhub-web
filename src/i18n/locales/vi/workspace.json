@@ -53,7 +53,13 @@
     "clientInviteDuplicate": "Email này đã có trong danh sách",
     "clientInviteUserMatch": "{{name}} đã có tài khoản",
     "clientInviteFailed": "Không gửi được {{count}} lời mời khách hàng — có thể email đã tồn tại hoặc đã có lời mời đang chờ",
-    "submit": "Tạo không gian làm việc"
+    "submit": "Tạo không gian làm việc",
+    "startFromTemplate": "Bắt đầu từ mẫu",
+    "templatePlaceholder": "Không dùng mẫu",
+    "templateApplied": "Đã điền sẵn từ mẫu \"{{name}}\" — bạn vẫn có thể sửa mọi trường.",
+    "noTemplateCard": "Không dùng mẫu",
+    "previewDialogTitle": "Xem trước mẫu",
+    "useThisTemplate": "Dùng mẫu này"
   },
   "industry": {
     "FNB": "Ẩm thực & Đồ uống",
@@ -79,6 +85,9 @@
     "save": "Lưu thay đổi",
     "saveSuccess": "Đã lưu cài đặt thành công",
     "logoUploadButton": "Tải logo lên",
+    "bannerUploadButton": "Tải ảnh bìa lên",
+    "bannerUploadSuccess": "Đã cập nhật ảnh bìa",
+    "bannerEmptyLabel": "Chưa có ảnh bìa",
     "logoInvalidType": "Chỉ nhận file JPEG, PNG hoặc WebP",
     "logoTooLarge": "Logo không được vượt quá 5MB",
     "logoUploadSuccess": "Đã cập nhật logo",
@@ -117,7 +126,22 @@
     "deleteError": "Không thể xóa mẫu",
     "deleteConfirmTitle": "Xoá mẫu này?",
     "deleteConfirmDescription": "\"{{name}}\" sẽ bị xoá vĩnh viễn. Hành động này không thể hoàn tác.",
-    "deleteButton": "Xoá"
+    "deleteButton": "Xoá",
+    "applyButton": "Dùng mẫu",
+    "applyDialogTitle": "Dùng mẫu này",
+    "applyToNew": "Tạo workspace mới từ mẫu này",
+    "applyToExisting": "Áp dụng vào workspace đang có",
+    "selectWorkspacePlaceholder": "Chọn workspace",
+    "selectFieldsHint": "Field có giá trị trong mẫu sẽ ghi đè cài đặt hiện tại của workspace.",
+    "applySuccess": "Đã áp dụng mẫu",
+    "applyError": "Không thể áp dụng mẫu",
+    "adminTitle": "Thư viện mẫu workspace",
+    "adminDescription": "Toàn bộ mẫu workspace của mọi agency (chỉ xem).",
+    "adminAgencyId": "Agency",
+    "adminGlobalBadge": "Mẫu chung",
+    "adminCreateButton": "Tạo mẫu chung",
+    "adminCreateSuccess": "Đã tạo mẫu chung",
+    "adminCreateError": "Không thể tạo mẫu chung"
   },
   "noRole": "—",
   "reportFrequency": {
@@ -147,12 +171,19 @@
     "assignDialogTitle": "Thêm thành viên từ công ty",
     "assignSuccess": "Đã thêm thành viên",
     "assignPartialSuccess": "Đã thêm {{added}} thành viên, {{skipped}} người đã có sẵn trong workspace (bỏ qua)",
+    "clientsPageTitle": "Client",
+    "clientsPageDescription": "Quản lý khách hàng cộng tác trong không gian làm việc này.",
+    "clientLabel": "Client",
     "addClientButton": "Thêm client",
-    "addClientTitle": "Thêm client cộng tác vào workspace",
-    "addClientEmpty": "Không có client nào để thêm (đã hết hoặc chưa có client nào trong công ty).",
-    "addClientPlaceholder": "Chọn client",
-    "addClientSubmit": "Thêm vào workspace",
-    "addClientSuccess": "Đã thêm client vào workspace",
+    "addClientTitle": "Mời client cộng tác vào workspace",
+    "addClientEmailPlaceholder": "Nhập Gmail người đại diện",
+    "addClientRecommendHint": "Email này đã là client ở workspace \"{{workspace}}\" cùng công ty — gửi lời mời sẽ tự động dùng chung hồ sơ hiện có.",
+    "addClientSubmit": "Gửi lời mời",
+    "addClientSuccess": "Đã gửi lời mời client",
+    "addClientNoteTemplate": "Chào bạn, {{agency}} mời bạn tham gia workspace \"{{workspace}}\" với vai trò khách hàng để cùng theo dõi và duyệt nội dung.",
+    "addClientNoteFallbackAgency": "Chúng tôi",
+    "addClientNoteFallbackWorkspace": "workspace này",
+    "inviteNotePlaceholder": "Lời nhắn (tuỳ chọn)",
     "roleUpdateSuccess": "Đã cập nhật vai trò thành viên",
     "leaveButton": "Rời workspace",
     "leaveSuccess": "Bạn đã rời workspace",
@@ -172,13 +203,34 @@
     "alreadyMember": "Người này đã là thành viên của không gian làm việc"
   },
   "list": {
-    "title": "Không gian làm việc",
-    "description": "Quản lý các không gian làm việc thương hiệu của đội nhóm bạn.",
-    "createButton": "Tạo Không gian làm việc Mới",
+    "title": "Danh sách workspace",
+    "description": "Quản lý và truy cập các không gian làm việc (workspace) của bạn trên các công ty.",
+    "createButton": "Tạo workspace mới",
     "members": "{{count}} thành viên",
     "posts": "{{count}} bài đăng",
     "createdAt": "Tạo {{date}}",
-    "empty": "Chưa có không gian làm việc nào. Tạo mới để bắt đầu."
+    "empty": "Chưa có không gian làm việc nào. Tạo mới để bắt đầu.",
+    "searchPlaceholder": "Tìm kiếm workspace theo tên, công ty, ngành nghề...",
+    "filterAgency": "Tất cả công ty",
+    "filterRole": "Tất cả vai trò",
+    "filterIndustry": "Tất cả ngành nghề",
+    "sortNameAsc": "Tên A → Z",
+    "sortNameDesc": "Tên Z → A",
+    "sortNewest": "Mới nhất",
+    "sortOldest": "Cũ nhất",
+    "sortRole": "Ưu tiên Owner",
+    "workspacesCount": "workspace",
+    "clearFilter": "Xóa bộ lọc",
+    "noResults": "Không tìm thấy workspace nào",
+    "noResultsHint": "Thử thay đổi từ khóa tìm kiếm hoặc xóa các bộ lọc để xem danh sách đầy đủ.",
+    "emptyTitle": "Chưa có workspace nào",
+    "emptyDescription": "Bạn chưa tham gia không gian làm việc nào. Hãy tạo workspace mới để bắt đầu.",
+    "enterDashboard": "Vào Dashboard",
+    "settings": "Cài đặt",
+    "membersButton": "Thành viên",
+    "clientsButton": "Khách hàng",
+    "unassignedAgency": "Chưa gán công ty",
+    "parentAgency": "Công ty:"
   },
   "permissions": {
     "roleManagement": "Quản lý vai trò",
@@ -198,6 +250,34 @@
       "manageRoles": "Quản lý vai trò",
       "viewAnalytics": "Xem báo cáo",
       "editWorkspace": "Sửa workspace"
+    }
+  },
+  "industryFields": {
+    "sectionTitle": "Thông tin đặc thù ngành",
+    "fnb": {
+      "cuisineType": "Loại hình ẩm thực",
+      "seatingCapacity": "Sức chứa chỗ ngồi",
+      "deliveryPlatforms": "Nền tảng giao hàng"
+    },
+    "fashion": {
+      "productCategories": "Danh mục sản phẩm",
+      "seasonalCollections": "Bộ sưu tập theo mùa"
+    },
+    "beauty": {
+      "serviceTypes": "Loại dịch vụ",
+      "certifications": "Chứng chỉ"
+    },
+    "technology": {
+      "techStack": "Công nghệ sử dụng",
+      "productType": "Loại sản phẩm"
+    },
+    "realEstate": {
+      "propertyTypes": "Loại bất động sản",
+      "serviceAreas": "Khu vực phục vụ"
+    },
+    "other": {
+      "specialization": "Chuyên môn",
+      "specializationOtherPlaceholder": "Nhập chuyên môn của bạn"
     }
   }
 }

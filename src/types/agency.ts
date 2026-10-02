@@ -28,6 +28,7 @@ export interface Agency {
   name: string;
   ownerId: string;
   logoUrl: string | null;
+  bannerUrl: string | null;
   description: string | null;
   category: AgencyCategory | null;
   companySize: CompanySize | null;
@@ -135,4 +136,11 @@ export interface InvitationPreviewResponse {
   // Chỉ có giá trị khi invitation.role === "CLIENT" — picker chọn/tạo
   // profile trước khi accept thật.
   myClientProfiles: import("./clientProfile").ClientProfile[] | null;
+}
+
+// Gợi ý inline khi mời CLIENT bằng Gmail.
+export interface InviteLookupResponse {
+  userExists: boolean;
+  isAlreadyClientInAgency: boolean;
+  existingWorkspaces: { workspaceId: string; workspaceName: string }[];
 }

@@ -7,7 +7,6 @@ import {
   BellRing,
   Briefcase,
   Calendar,
-  Camera,
   Clock,
   Eye,
   ImagePlus,
@@ -25,6 +24,7 @@ import { userService } from "@/services/userService";
 import { extractErrorMessage } from "@/utils/error";
 import type { User } from "@/types/user";
 import { AvatarUploadModal } from "./components/AvatarUploadModal";
+import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
 import { LinkPhoneModal } from "./components/LinkPhoneModal";
 import { JobTitleSelect } from "./components/JobTitleSelect";
 import { LanguageChipSelect } from "./components/LanguageChipSelect";
@@ -335,6 +335,12 @@ export function ProfilePage() {
     }
   };
 
+  const handleBannerFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) void handleBannerFile(file);
+    e.target.value = "";
+  };
+
   // Chỉ những kênh user thực sự điền mới hiển thị.
   const socials = (
     [
@@ -358,51 +364,41 @@ export function ProfilePage() {
       </div>
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <div className="border-border bg-card rounded-xl border p-6">
-            {ext.bannerUrl && (
-              <img
-                src={ext.bannerUrl}
-                alt={t("profile.edit.bannerLabel")}
-                className="border-border mb-4 h-32 w-full rounded-lg border object-cover"
-              />
-            )}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="relative">
-                  {avatarUrl ? (
-                    <img
-                      src={avatarUrl}
-                      alt={name}
-                      className="border-border size-16 rounded-full border object-cover"
-                    />
-                  ) : (
-                    <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-16 items-center justify-center rounded-full border text-xl font-bold">
-                      {(name || "?").charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  {isEditing && (
-                    <button
-                      type="button"
-                      onClick={() => setAvatarModalOpen(true)}
-                      className="bg-brand-orange absolute -right-1 -bottom-1 flex size-6 cursor-pointer items-center justify-center rounded-full text-white shadow-xs"
-                      title={t("profile.avatar.upload")}
-                    >
-                      <Camera className="size-3.5" />
-                    </button>
-                  )}
+          <ProfileBannerHeader
+            bannerUrl={ext.bannerUrl || null}
+            bannerEmptyLabel={t("profile.edit.bannerPlaceholder")}
+            uploadBannerLabel={t("profile.edit.bannerUpload")}
+            uploadingBanner={bannerUploading}
+            bannerInputRef={bannerInputRef}
+            onBannerFileChange={handleBannerFileChange}
+            canEditBanner={isEditing}
+            isAvatarRound={true}
+            logo={
+              avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={name}
+                  className="size-full object-cover"
+                />
+              ) : (
+                <div className="bg-brand-orange-soft text-brand-orange flex size-full items-center justify-center text-xl font-bold">
+                  {(name || "?").charAt(0).toUpperCase()}
                 </div>
-                <div className="space-y-1">
-                  <h2 className="text-foreground text-base font-semibold">
-                    {name}
-                  </h2>
-                  <p className="text-muted-foreground text-xs">{email}</p>
-                  <span className="bg-brand-orange-soft text-brand-orange text-3xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium">
-                    <BadgeCheck className="size-3" />
-                    {t("profile.verified")}
-                  </span>
-                </div>
-              </div>
-              {!isEditing && (
+              )
+            }
+            canEditLogo={isEditing}
+            onLogoClick={() => setAvatarModalOpen(true)}
+            uploadLogoTitle={t("profile.avatar.upload")}
+            title={name}
+            subtitle={email}
+            badges={
+              <span className="bg-brand-orange-soft text-brand-orange text-3xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium">
+                <BadgeCheck className="size-3" />
+                {t("profile.verified")}
+              </span>
+            }
+            actions={
+              !isEditing && (
                 <Button
                   variant="outline"
                   size="sm"
@@ -412,8 +408,9 @@ export function ProfilePage() {
                   <Pencil className="size-3.5" />
                   {t("profile.editButton")}
                 </Button>
-              )}
-            </div>
+              )
+            }
+          >
 
             {isEditing ? (
               <>
@@ -898,7 +895,7 @@ export function ProfilePage() {
                 </div>
               </div>
             )}
-          </div>
+          </ProfileBannerHeader>
         </div>
 
         <div className="border-border bg-card rounded-xl border p-6 lg:sticky lg:top-6">
@@ -910,36 +907,47 @@ export function ProfilePage() {
             {t("profile.preview.hint")}
           </p>
 
-          <div className="border-border mt-4 space-y-4 border-t pt-4">
-            {ext.bannerUrl && (
-              <img
-                src={ext.bannerUrl}
-                alt={t("profile.edit.bannerLabel")}
-                className="border-border h-20 w-full rounded-lg border object-cover"
-              />
-            )}
-            <div className="flex items-center gap-3">
-              {avatarUrl ? (
+          <div className="border-border mt-4 overflow-hidden rounded-xl border">
+            <div className="relative h-20 w-full bg-muted/30">
+              {ext.bannerUrl ? (
                 <img
-                  src={avatarUrl}
-                  alt={name}
-                  className="border-border size-12 rounded-full border object-cover"
+                  src={ext.bannerUrl}
+                  alt={t("profile.edit.bannerLabel")}
+                  className="size-full object-cover"
                 />
               ) : (
-                <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-12 items-center justify-center rounded-full border text-base font-bold">
-                  {(name || "?").charAt(0).toUpperCase()}
+                <div className="flex size-full items-center justify-center bg-gradient-to-r from-orange-500/10 via-brand-orange/5 to-amber-500/10 text-muted-foreground text-3xs">
+                  {t("profile.edit.bannerPlaceholder")}
                 </div>
               )}
-              <div className="min-w-0 space-y-1">
-                <p className="text-foreground truncate text-sm font-semibold">
-                  {name || t("profile.preview.nameEmpty")}
-                </p>
-                <span className="bg-brand-orange-soft text-brand-orange text-3xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium">
-                  <BadgeCheck className="size-3" />
-                  {t("profile.verified")}
-                </span>
-              </div>
             </div>
+            <div className="space-y-4 p-4 pt-0">
+              <div className="flex items-center gap-3">
+                <div className="relative -mt-6 shrink-0 z-10">
+                  <div className="size-12 rounded-full border-2 border-card bg-card shadow-sm overflow-hidden flex items-center justify-center">
+                    {avatarUrl ? (
+                      <img
+                        src={avatarUrl}
+                        alt={name}
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      <div className="bg-brand-orange-soft text-brand-orange flex size-full items-center justify-center text-base font-bold">
+                        {(name || "?").charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="min-w-0 space-y-0.5 mt-1">
+                  <p className="text-foreground truncate text-sm font-semibold">
+                    {name || t("profile.preview.nameEmpty")}
+                  </p>
+                  <span className="bg-brand-orange-soft text-brand-orange text-3xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium">
+                    <BadgeCheck className="size-3" />
+                    {t("profile.verified")}
+                  </span>
+                </div>
+              </div>
 
             <div>
               <p className="text-muted-foreground text-3xs">
@@ -1080,6 +1088,7 @@ export function ProfilePage() {
           </div>
         </div>
       </div>
+    </div>
 
       <AvatarUploadModal
         isOpen={avatarModalOpen}

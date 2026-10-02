@@ -6,25 +6,7 @@ import type {
 } from "@/types/clientProfile";
 
 export const clientProfileService = {
-  // Agency-side: chọn client profile có sẵn để gắn vào workspace (AddClientDialog).
-  listByAgency: (agencyId: string) =>
-    api.get<ApiResponse<ClientProfile[]>>("/api/v1/client-profile", {
-      params: { agencyId },
-    }),
-
-  // Legacy 1-per-agency API — không dùng ở accept-invite/trang quản lý profile
-  // mới nữa (BA đã đổi sang N profile/user), giữ lại phòng chỗ khác còn gọi.
-  getMyProfile: (agencyId: string) =>
-    api.get<ApiResponse<ClientProfile>>("/api/v1/client-profile/me", {
-      params: { agencyId },
-    }),
-
-  updateMyProfile: (agencyId: string, data: UpdateClientProfileRequest) =>
-    api.put<ApiResponse<ClientProfile>>("/api/v1/client-profile/me", data, {
-      params: { agencyId },
-    }),
-
-  // BA mới — N profile/user, không giới hạn theo agency.
+  // N profile/user, không giới hạn theo agency.
   listMine: () =>
     api.get<ApiResponse<ClientProfile[]>>("/api/v1/client-profile/mine"),
 
@@ -56,6 +38,15 @@ export const clientProfileService = {
 
   // Form tạo mới chưa có profileId — server chỉ upload rồi trả URL, không lưu DB.
   uploadLogoDraft: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<string>>(
+      "/api/v1/client-profile/logo",
+      formData,
+    );
+  },
+
+  uploadBannerDraft: (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
     return api.post<ApiResponse<string>>(

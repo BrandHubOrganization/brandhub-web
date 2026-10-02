@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import type { MemberRole, WorkspaceMember } from "@/types/workspace";
 
-const WORKSPACE_ROLES: MemberRole[] = ["MANAGER", "CREATOR", "CLIENT"];
+const WORKSPACE_ROLES: MemberRole[] = ["MANAGER", "CREATOR"];
 
 interface Props {
   members: WorkspaceMember[];

@@ -1,183 +1,200 @@
 import { useTranslation } from "react-i18next";
 import {
-  Building2,
   Calendar,
   Globe,
-  MapPin,
   Mail,
+  MapPin,
   Phone,
-  Quote,
-  Tag,
+  Receipt,
   User,
-  Users,
   Wallet,
 } from "lucide-react";
+import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
+import { BANNER_PRESETS } from "@/pages/agency/bannerPresets";
+import { ClientProfileLogo } from "./ClientProfileLogo";
 import type { ClientProfileFormValues } from "./ClientProfileForm";
 
-/** Một dòng thông tin trong preview — ẩn khi chưa có giá trị. */
-function Row({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex items-start gap-2">
-      <Icon className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
-      <div className="min-w-0">
-        <p className="text-muted-foreground text-2xs">{label}</p>
-        <p className="text-foreground truncate text-xs">{value}</p>
-      </div>
-    </div>
-  );
+interface ClientProfilePreviewProps {
+  values: ClientProfileFormValues | null;
 }
 
 /**
- * Card xem trước hồ sơ thương hiệu, cập nhật ngay khi user gõ ở form bên trái.
- * Dùng raw value của form (chuỗi) — chưa normalize/validate cho tới lúc submit.
+ * Standardized Live Profile Preview for ClientProfile.
+ * Matches CreateAgencyPage's ProfileBannerHeader preview layout.
  */
-export function ClientProfilePreview({
-  values,
-}: {
-  values: ClientProfileFormValues | null;
-}) {
+export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
   const { t } = useTranslation();
   const v = values;
-  const name = v?.displayName.trim() ?? "";
+  const name = v?.displayName?.trim() ?? "";
+  const brandColor = v?.brandColor || "#f05a28";
+
+  // Use dynamic banner from form values, fallback to default preset
+  const bannerUrl = v?.bannerUrl || BANNER_PRESETS[0]?.url || null;
 
   return (
-    <div>
-      <h3 className="text-foreground text-sm font-semibold">
-        {t("clientProfile.preview.title")}
-      </h3>
-      <p className="text-muted-foreground mb-4 text-xs">
-        {t("clientProfile.preview.hint")}
-      </p>
-
-      <div className="flex items-center gap-3">
-        {v?.logoUrl ? (
-          <img
-            src={v.logoUrl}
-            alt=""
-            className="border-border size-14 shrink-0 rounded-full border object-cover"
-          />
+    <ProfileBannerHeader
+      bannerUrl={bannerUrl}
+      bannerEmptyLabel={t("agency.detail.bannerEmptyLabel", "Chưa có ảnh bìa")}
+      canEditBanner={false}
+      canEditLogo={false}
+      title={name || t("clientProfile.preview.emptyName", "Tên thương hiệu")}
+      subtitle={
+        v?.tagline?.trim() ||
+        v?.company?.trim() ||
+        t("clientProfile.preview.emptyTagline", "Chưa có tagline")
+      }
+      badges={
+        <div className="flex flex-wrap items-center gap-1.5 mt-1">
+          {v?.industry && (
+            <span className="inline-flex items-center rounded-full bg-brand-orange/10 px-2.5 py-0.5 text-xs font-medium text-brand-orange">
+              {t(`workspace.industry.${v.industry}`)}
+            </span>
+          )}
+          {v?.companySize && (
+            <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+              {t(`agency.companySize.${v.companySize}`)}
+            </span>
+          )}
+          {v?.foundedYear && (
+            <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+              <Calendar className="mr-1 size-3" />
+              {t("clientProfile.preview.foundedPrefix", "Thành lập")} {v.foundedYear}
+            </span>
+          )}
+          {v?.budgetRange && (
+            <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+              <Wallet className="mr-1 size-3" />
+              {t(`clientProfile.budgetRange.${v.budgetRange}`)}
+            </span>
+          )}
+        </div>
+      }
+      logo={
+        <ClientProfileLogo
+          logoUrl={v?.logoUrl}
+          displayName={name}
+          brandColor={brandColor}
+          className="size-full"
+          iconClassName="size-10 sm:size-12"
+        />
+      }
+    >
+      <div className="space-y-4 pt-2">
+        {/* Description preview */}
+        {v?.description?.trim() ? (
+          <div className="border-t border-border pt-4">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+              {t("clientProfile.descriptionLabel", "Mô tả công ty")}
+            </h4>
+            <p className="text-xs text-foreground/85 line-clamp-4 leading-relaxed whitespace-pre-line">
+              {v.description.trim()}
+            </p>
+          </div>
         ) : (
-          <div className="bg-brand-orange-soft text-brand-orange flex size-14 shrink-0 items-center justify-center rounded-full text-lg font-bold">
-            {name ? (
-              name.charAt(0).toUpperCase()
-            ) : (
-              <Building2 className="size-6" />
+          <div className="border-t border-border pt-3 text-center text-xs text-muted-foreground/60 italic">
+            {t(
+              "clientProfile.preview.emptyDescription",
+              "Chưa có mô tả thương hiệu",
             )}
           </div>
         )}
-        <div className="min-w-0">
-          <p className="text-foreground truncate text-sm font-semibold">
-            {name || t("clientProfile.preview.emptyName")}
-          </p>
-          <p className="text-muted-foreground truncate text-xs">
-            {v?.tagline.trim() ||
-              v?.company.trim() ||
-              t("clientProfile.preview.emptyTagline")}
-          </p>
-        </div>
-      </div>
 
-      <div className="mt-4 space-y-3">
-        {v?.industry ? (
-          <Row
-            icon={Tag}
-            label={t("clientProfile.industryLabel")}
-            value={t(`workspace.industry.${v.industry}`)}
-          />
-        ) : null}
-        {v?.companySize ? (
-          <Row
-            icon={Users}
-            label={t("clientProfile.companySizeLabel")}
-            value={t(`agency.companySize.${v.companySize}`)}
-          />
-        ) : null}
-        {v?.budgetRange ? (
-          <Row
-            icon={Wallet}
-            label={t("clientProfile.budgetRangeLabel")}
-            value={t(`clientProfile.budgetRange.${v.budgetRange}`)}
-          />
-        ) : null}
-        {v?.foundedYear ? (
-          <Row
-            icon={Calendar}
-            label={t("clientProfile.foundedYearLabel")}
-            value={v.foundedYear}
-          />
-        ) : null}
-        {v?.address.trim() || v?.location.trim() ? (
-          <Row
-            icon={MapPin}
-            label={t("clientProfile.locationLabel")}
-            value={v.address.trim() || v.location.trim()}
-          />
-        ) : null}
-        {v?.website.trim() ? (
-          <Row
-            icon={Globe}
-            label={t("clientProfile.websiteLabel")}
-            value={v.website.trim()}
-          />
-        ) : null}
-        {v?.contactName.trim() ? (
-          <Row
-            icon={User}
-            label={t("clientProfile.contactNameLabel")}
-            value={v.contactName.trim()}
-          />
-        ) : null}
-        {v?.contactEmail.trim() ? (
-          <Row
-            icon={Mail}
-            label={t("clientProfile.contactEmailLabel")}
-            value={v.contactEmail.trim()}
-          />
-        ) : null}
-        {v?.phone.trim() ? (
-          <Row
-            icon={Phone}
-            label={t("clientProfile.phoneLabel")}
-            value={v.phone.trim()}
-          />
-        ) : null}
-      </div>
+        {/* Contact info preview */}
+        {(v?.website ||
+          v?.phone ||
+          v?.contactEmail ||
+          v?.contactName ||
+          v?.location ||
+          v?.address ||
+          v?.taxCode) && (
+          <div className="border-t border-border pt-3 space-y-2">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("clientProfile.preview.contactTitle", "Thông tin liên hệ")}
+            </h4>
+            <div className="space-y-1.5 text-xs text-muted-foreground">
+              {v?.website && (
+                <div className="flex items-center gap-2 truncate">
+                  <Globe className="size-3.5 shrink-0 text-brand-orange" />
+                  <span className="truncate text-foreground/80">
+                    {v.website}
+                  </span>
+                </div>
+              )}
+              {v?.phone && (
+                <div className="flex items-center gap-2">
+                  <Phone className="size-3.5 shrink-0 text-brand-orange" />
+                  <span className="text-foreground/80">{v.phone}</span>
+                </div>
+              )}
+              {v?.contactEmail && (
+                <div className="flex items-center gap-2 truncate">
+                  <Mail className="size-3.5 shrink-0 text-brand-orange" />
+                  <span className="truncate text-foreground/80">
+                    {v.contactEmail}
+                  </span>
+                </div>
+              )}
+              {v?.contactName && (
+                <div className="flex items-center gap-2">
+                  <User className="size-3.5 shrink-0 text-brand-orange" />
+                  <span className="text-foreground/80">{v.contactName}</span>
+                </div>
+              )}
+              {(v?.address || v?.location) && (
+                <div className="flex items-center gap-2 truncate">
+                  <MapPin className="size-3.5 shrink-0 text-brand-orange" />
+                  <span className="truncate text-foreground/80">
+                    {v.address || v.location}
+                  </span>
+                </div>
+              )}
+              {v?.taxCode && (
+                <div className="flex items-center gap-2">
+                  <Receipt className="size-3.5 shrink-0 text-brand-orange" />
+                  <span className="text-foreground/80">
+                    {t("clientProfile.taxCodeLabel", "Mã số thuế")}: {v.taxCode}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
-      {v?.description.trim() ? (
-        <div className="border-border mt-4 border-t pt-4">
-          <p className="text-muted-foreground text-2xs mb-1 flex items-center gap-1.5">
-            <Quote className="size-3.5" />
-            {t("clientProfile.descriptionLabel")}
-          </p>
-          <p className="text-foreground text-xs whitespace-pre-line">
-            {v.description.trim()}
-          </p>
-        </div>
-      ) : null}
-
-      {v?.linkedin.trim() || v?.facebook.trim() || v?.instagram.trim() ? (
-        <div className="border-border mt-4 flex flex-wrap gap-2 border-t pt-4">
-          {[v.linkedin, v.facebook, v.instagram]
-            .map((url) => url.trim())
-            .filter(Boolean)
-            .map((url) => (
-              <span
-                key={url}
-                className="bg-muted text-muted-foreground text-2xs max-w-full truncate rounded-full px-2 py-0.5"
-              >
-                {url}
+        {/* Social badges preview */}
+        {(v?.facebook || v?.linkedin || v?.instagram) && (
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            {v.facebook && (
+              <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-600 dark:text-blue-400">
+                Facebook
               </span>
-            ))}
-        </div>
-      ) : null}
-    </div>
+            )}
+            {v.linkedin && (
+              <span className="rounded-md bg-sky-500/10 px-2 py-0.5 text-[10px] font-medium text-sky-600 dark:text-sky-400">
+                LinkedIn
+              </span>
+            )}
+            {v.instagram && (
+              <span className="rounded-md bg-pink-500/10 px-2 py-0.5 text-[10px] font-medium text-pink-600 dark:text-pink-400">
+                Instagram
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Internal note if available */}
+        {v?.note?.trim() && (
+          <div className="border-t border-border pt-3">
+            <div className="rounded-lg bg-muted/40 p-2.5 text-xs">
+              <span className="font-semibold text-muted-foreground block text-[10px] uppercase tracking-wider mb-0.5">
+                {t("clientProfile.noteLabel", "Ghi chú")}:
+              </span>
+              <span className="text-foreground/80 italic">{v.note.trim()}</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </ProfileBannerHeader>
   );
 }
+
+export default ClientProfilePreview;

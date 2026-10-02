@@ -22,6 +22,7 @@ export function ClientListPage() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const isOwner =
     currentMemberRole === "OWNER" || currentMemberRole === "MANAGER";
 
@@ -43,7 +44,11 @@ export function ClientListPage() {
     setIsError(false);
     try {
       const { content, totalElements: total } =
-        await mockClientService.getClients({ search, page, size: PAGE_SIZE });
+        await mockClientService.getClients(currentWorkspace?.id ?? "", {
+          search,
+          page,
+          size: PAGE_SIZE,
+        });
       setClients(content);
       setTotalElements(total);
     } catch (err) {
@@ -66,7 +71,7 @@ export function ClientListPage() {
   }, [load]);
 
   const { handleCreateClient, handleUpdatePackage, handleDeleteClient } =
-    useClientListActions(load, setPage, setClientForPackage);
+    useClientListActions(currentWorkspace?.id ?? "", load, setPage, setClientForPackage);
 
   const totalPages = Math.max(1, Math.ceil(totalElements / PAGE_SIZE));
 

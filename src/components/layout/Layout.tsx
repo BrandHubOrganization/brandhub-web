@@ -146,8 +146,10 @@ export function Layout() {
   // biết họ là MEMBER, chỉ vì FE tự suy ownerId thay vì đọc field có sẵn.
   // Đọc thẳng AgencyResponse.myRole (nguồn sự thật từ backend) thay vì tự
   // so ownerId === user.id.
+  const currentAgency = agencyList.find((a) => a.id === currentAgencyId);
   const currentAgencyMyRole =
-    agencyList.find((a) => a.id === currentAgencyId)?.myRole ?? null;
+    currentAgency?.myRole ??
+    (currentAgency && user?.id && currentAgency.ownerId === user.id ? "OWNER" : null);
   const memberRole: MemberRole | null =
     activeWorkspace?.myRole ??
     (currentAgencyMyRole === "OWNER" ? "OWNER" : null);
@@ -235,6 +237,22 @@ export function Layout() {
     navigate(`/agency/${agencyIdArg}`);
   };
 
+  const handleLeaveAgency = () => {
+    setCurrentAgencyId(null);
+    setCurrentWorkspace(null);
+    navigate("/agency");
+  };
+
+  const handleLeaveWorkspace = () => {
+    const agencyId = currentWorkspace?.agencyId ?? currentAgencyId;
+    setCurrentWorkspace(null);
+    if (agencyId) {
+      navigate(`/agency/${agencyId}`);
+    } else {
+      navigate("/agency");
+    }
+  };
+
   return (
     <div className="bg-background text-foreground flex h-screen w-screen overflow-hidden font-sans">
       {/* ── SIDEBAR (DESKTOP >= 768px) ── */}
@@ -251,6 +269,8 @@ export function Layout() {
           allWorkspaces={workspaces}
           currentAgencyId={currentAgencyId}
           onSwitchAgency={handleSwitchAgency}
+          onLeaveAgency={handleLeaveAgency}
+          onLeaveWorkspace={handleLeaveWorkspace}
           currentUserId={user?.id ?? null}
         />
       </aside>
@@ -285,6 +305,8 @@ export function Layout() {
               allWorkspaces={workspaces}
               currentAgencyId={currentAgencyId}
               onSwitchAgency={handleSwitchAgency}
+              onLeaveAgency={handleLeaveAgency}
+              onLeaveWorkspace={handleLeaveWorkspace}
               currentUserId={user?.id ?? null}
             />
           </SheetContent>

@@ -7,7 +7,7 @@ export interface InputProps extends Omit<
   React.ComponentProps<"input">,
   "prefix"
 > {
-  label?: string;
+  label?: React.ReactNode;
   error?: string;
   iconPrefix?: React.ReactNode;
   iconSuffix?: React.ReactNode;
@@ -38,11 +38,16 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <Label
             htmlFor={inputId}
             className={cn(
-              "text-xs font-semibold tracking-wide",
+              "text-xs font-semibold tracking-wide flex items-center gap-0.5",
               error && "text-destructive",
             )}
           >
-            {label}
+            <span>{label}</span>
+            {Boolean(props.required || props["aria-required"]) && (
+              <span className="text-destructive font-bold ml-0.5" aria-hidden="true">
+                *
+              </span>
+            )}
           </Label>
         )}
         <div className="relative flex w-full items-center">

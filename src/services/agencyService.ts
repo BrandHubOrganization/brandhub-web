@@ -10,6 +10,7 @@ import type {
   AgencyStatsResponse,
   CompanySize,
   InvitationPreviewResponse,
+  InviteLookupResponse,
 } from "@/types/agency";
 import type { MemberRole } from "@/types/workspace";
 import type { UpdateClientProfileRequest } from "@/types/clientProfile";
@@ -17,6 +18,7 @@ import type { UpdateClientProfileRequest } from "@/types/clientProfile";
 export interface CreateAgencyRequest {
   name: string;
   logoUrl?: string;
+  bannerUrl?: string;
   description?: string;
   category?: AgencyCategory;
   companySize?: CompanySize;
@@ -86,6 +88,14 @@ export const agencyService = {
       data,
     ),
 
+  // Gợi ý inline khi mời CLIENT bằng Gmail — email đã là client ở workspace
+  // khác cùng agency?
+  inviteLookup: (agencyId: string, email: string) =>
+    api.get<ApiResponse<InviteLookupResponse>>(
+      `/api/v1/agencies/${agencyId}/invite-lookup`,
+      { params: { email } },
+    ),
+
   listInvitations: (agencyId: string) =>
     api.get<ApiResponse<AgencyInvitation[]>>(
       `/api/v1/agencies/${agencyId}/invitations`,
@@ -135,6 +145,15 @@ export const agencyService = {
     formData.append("file", file);
     return api.post<ApiResponse<Agency>>(
       `/api/v1/agencies/${agencyId}/logo`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+  },
+  uploadBanner: (agencyId: string, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<ApiResponse<Agency>>(
+      `/api/v1/agencies/${agencyId}/banner`,
       formData,
       { headers: { "Content-Type": "multipart/form-data" } },
     );

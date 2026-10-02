@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Building2, Check } from "lucide-react";
+import { Building2, Check, Eye } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { clientProfileService } from "@/services/clientProfileService";
 import { workspaceService } from "@/services/workspaceService";
@@ -15,6 +15,7 @@ import {
   type ClientProfileFormValues,
 } from "@/pages/client-profiles/components/ClientProfileForm";
 import { ClientProfilePreview } from "@/pages/client-profiles/components/ClientProfilePreview";
+import { ClientProfileLogo } from "@/pages/client-profiles/components/ClientProfileLogo";
 
 // Hồ sơ thương hiệu GẮN VỚI workspace đang đứng (workspace_members.clientProfileId).
 // currentClientProfile đã được Layout.tsx tự fetch sẵn khi memberRole === "CLIENT"
@@ -97,17 +98,13 @@ export function WorkspaceClientProfilePage() {
             className="border-border flex items-center justify-between gap-3 rounded-lg border p-3"
           >
             <div className="flex min-w-0 items-center gap-3">
-              {p.logoUrl ? (
-                <img
-                  src={p.logoUrl}
-                  alt=""
-                  className="size-9 shrink-0 rounded-md object-cover"
+              <div className="size-9 shrink-0 overflow-hidden rounded-md border border-border">
+                <ClientProfileLogo
+                  logoUrl={p.logoUrl}
+                  displayName={p.displayName}
+                  iconClassName="size-4"
                 />
-              ) : (
-                <div className="bg-muted flex size-9 shrink-0 items-center justify-center rounded-md">
-                  <Building2 className="text-muted-foreground size-4" />
-                </div>
-              )}
+              </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium">{p.displayName}</p>
                 <p className="text-muted-foreground truncate text-xs">
@@ -155,25 +152,33 @@ export function WorkspaceClientProfilePage() {
       description={t("clientProfile.workspace.description")}
     >
       {switcher}
-      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <div className="border-border bg-card rounded-xl border p-6">
-            <div className="mb-4 flex items-center gap-2 text-sm font-medium">
-              <Check className="text-primary size-4" />
-              {t("clientProfile.workspace.currentLabel")}
-            </div>
-            <ClientProfileForm
-              key={currentClientProfile.id}
-              initial={currentClientProfile}
-              submitting={saving}
-              submitLabel={t("clientProfile.save")}
-              onSubmit={handleSubmit}
-              onValuesChange={setPreviewValues}
-            />
+      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+        <div className="lg:col-span-7 xl:col-span-7 space-y-4">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <Check className="text-primary size-4" />
+            {t("clientProfile.workspace.currentLabel")}
           </div>
+          <ClientProfileForm
+            key={currentClientProfile.id}
+            initial={currentClientProfile}
+            submitting={saving}
+            submitLabel={t("clientProfile.save")}
+            onSubmit={handleSubmit}
+            onValuesChange={setPreviewValues}
+          />
         </div>
 
-        <div className="border-border bg-card rounded-xl border p-6 lg:sticky lg:top-6">
+        <div className="lg:col-span-5 xl:col-span-5 lg:sticky lg:top-6 space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <Eye className="size-3.5 text-brand-orange" />
+              {t("clientProfile.preview.title", "Xem trước hồ sơ")}
+            </span>
+            <span className="rounded-full bg-brand-orange/10 px-2.5 py-0.5 text-[11px] font-medium text-brand-orange">
+              {t("agency.create.previewBadge", "Cập nhật trực tiếp")}
+            </span>
+          </div>
+
           <ClientProfilePreview values={previewValues} />
         </div>
       </div>
