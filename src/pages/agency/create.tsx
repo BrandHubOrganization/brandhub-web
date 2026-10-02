@@ -752,7 +752,7 @@ export function CreateAgencyPage() {
                 <Input
                   label={t("agency.create.foundedYearLabel")}
                   type="number"
-                  min={1900}
+                  min={1}
                   max={CURRENT_YEAR}
                   value={foundedYear}
                   onChange={(e) => setFoundedYear(e.target.value)}

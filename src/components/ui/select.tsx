@@ -18,6 +18,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none",
           className,
         )}
+        style={{ accentColor: "hsl(var(--brand-orange))" }}
         {...props}
       >
         {children}

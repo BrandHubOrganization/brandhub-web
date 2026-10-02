@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // Import Layout & Security Components
 import { AuthGuard } from "@/components/layout/AuthGuard";
 import { Layout } from "@/components/layout/Layout";
+import { PublicHelpLayout } from "@/components/layout/PublicHelpLayout";
 
 // Import Pages
 import { LoginPage } from "@/pages/auth/LoginPage";
@@ -28,6 +29,7 @@ import { AgencyDetailPage } from "@/pages/agency/detail";
 import { CreateAgencyPage } from "@/pages/agency/create";
 import { AgencyMembersPage } from "@/pages/agency/members";
 import { AgencyStatsPage } from "@/pages/agency/stats";
+import { AgencyRolesPage } from "@/pages/agency/roles";
 import { AgencyInvitationsPage } from "@/pages/agency/invitations";
 import { ClientInvitationsPage } from "@/pages/client/invitations";
 import { AcceptInvitationPage } from "@/pages/agency/accept";
@@ -61,6 +63,8 @@ import { ConnectionsPage } from "@/pages/connections";
 import { NotificationSettingsPage } from "@/pages/notification-settings";
 import { ClientProfileListPage } from "@/pages/client-profiles/list";
 import { VideoStudioPage } from "@/pages/ai-studio/video";
+import { HelpFaqPage } from "@/pages/help/FaqPage";
+import { AdminGuidePage } from "@/pages/help/GuidePage";
 import ExamplesPage from "@/components/examples";
 import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
 
@@ -80,6 +84,14 @@ export function AppRoutes() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
+
+      {/* Public Help & FAQ Routes — accessible without authentication */}
+      <Route element={<PublicHelpLayout />}>
+        <Route path="/help/faq" element={<HelpFaqPage />} />
+        <Route path="/help/guide" element={<AdminGuidePage />} />
+        <Route path="/faq" element={<Navigate to="/help/faq" replace />} />
+        <Route path="/guide" element={<Navigate to="/help/guide" replace />} />
+      </Route>
 
       {/* Authenticated Routes — require login */}
       <Route element={<AuthGuard />}>
@@ -175,6 +187,7 @@ export function AppRoutes() {
             element={<ClientInvitationsPage />}
           />
           <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
+          <Route path="/agency/:id/roles" element={<AgencyRolesPage />} />
           <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route

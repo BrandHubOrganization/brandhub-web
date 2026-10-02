@@ -194,6 +194,8 @@ export function AgencyPage() {
     <PageWrapper
       title={t("agency.list.title")}
       description={t("agency.list.description")}
+      introSummary="Công ty (Agency) là tổ chức cấp cao nhất quản lý toàn bộ các Không gian làm việc (Workspaces), nhân sự chiến dịch và gói đăng ký tài khoản. Bạn có thể là chủ sở hữu hoặc tham gia nhiều Agency cùng lúc."
+      guideUrl="/help/guide#agency"
       actions={
         <Button
           className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white shadow-xs"

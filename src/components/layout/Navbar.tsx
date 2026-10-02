@@ -16,6 +16,8 @@ import {
   Shield,
   Sun,
   XCircle,
+  HelpCircle,
+  BookOpen,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -429,7 +431,7 @@ export function Navbar({
 
         <div className="bg-border mx-1 h-4 w-px" />
 
-        {/* User → click thẳng vào Cài đặt, không qua dropdown */}
+        {/* User → click thẳng vào Cài đặt */}
         <button
           type="button"
           onClick={() => navigate("/settings")}
@@ -444,6 +446,45 @@ export function Navbar({
           </span>
           <Settings className="text-muted-foreground size-3.5 shrink-0" />
         </button>
+
+        {/* Trợ giúp & Hướng dẫn Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8 text-muted-foreground hover:text-foreground cursor-pointer"
+              title={t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
+            >
+              <HelpCircle className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56 p-1">
+            <DropdownMenuLabel className="text-muted-foreground text-3xs font-semibold uppercase tracking-wider px-2 py-1.5">
+              {t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
+            </DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigate("/help/faq")}
+              className="cursor-pointer gap-2 text-xs py-2"
+            >
+              <HelpCircle className="size-4 text-brand-orange" />
+              <div>
+                <p className="font-medium text-foreground">{t("nav.faq", "Hỏi đáp (FAQ)")}</p>
+                <p className="text-muted-foreground text-3xs">Câu hỏi thường gặp & giải đáp</p>
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate("/help/guide")}
+              className="cursor-pointer gap-2 text-xs py-2"
+            >
+              <BookOpen className="size-4 text-brand-orange" />
+              <div>
+                <p className="font-medium text-foreground">{t("nav.guide", "Cẩm nang hướng dẫn")}</p>
+                <p className="text-muted-foreground text-3xs">Tài liệu kiến trúc & quản trị</p>
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <Button
           variant="ghost"

@@ -287,7 +287,7 @@ export function CreateWorkspaceForm({
       <Input
         label={t("workspace.create.foundedYearLabel")}
         type="number"
-        min={1900}
+        min={1}
         max={CURRENT_YEAR}
         value={foundedYear}
         onChange={(e) => onFoundedYearChange(e.target.value)}

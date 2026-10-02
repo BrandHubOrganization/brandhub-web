@@ -55,9 +55,6 @@ export function AgencyDetailPage() {
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [confirmName, setConfirmName] = useState("");
-  const [deleting, setDeleting] = useState(false);
   const [restoring, setRestoring] = useState(false);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
@@ -111,7 +108,7 @@ export function AgencyDetailPage() {
       case "foundedYear":
         if (value) {
           const y = Number(value);
-          if (!Number.isFinite(y) || y < 1900 || y > CURRENT_YEAR)
+          if (!Number.isFinite(y) || y <= 0 || y > CURRENT_YEAR)
             message = t("agency.detail.errors.invalidYear", {
               max: CURRENT_YEAR,
             });
@@ -223,23 +220,6 @@ export function AgencyDetailPage() {
     setIsEditing(false);
   };
 
-  const handleDelete = async () => {
-    if (!id) return;
-    setDeleting(true);
-    try {
-      await agencyService.remove(id);
-      toast.success(t("agency.detail.danger.deleteSuccess"));
-      navigate("/agency");
-    } catch (err: unknown) {
-      toast.error(
-        extractErrorMessage(err, t("agency.detail.danger.deleteError")),
-      );
-    } finally {
-      setDeleting(false);
-      setDeleteOpen(false);
-      setConfirmName("");
-    }
-  };
 
   const handleRestore = async () => {
     if (!id) return;
@@ -577,7 +557,7 @@ export function AgencyDetailPage() {
                   <Input
                     label={t("agency.create.foundedYearLabel")}
                     type="number"
-                    min={1900}
+                    min={1}
                     max={CURRENT_YEAR}
                     value={foundedYear}
                     onChange={(e) => {
@@ -780,25 +760,6 @@ export function AgencyDetailPage() {
             {t("agency.detail.back")}
           </Button>
 
-          {isOwner && !isDeleted && !isEditing && (
-            <div className="bg-card max-w-sm rounded-xl border border-red-200 p-6 dark:border-red-900/50">
-              <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                <TriangleAlert className="size-4 text-rose-500" />
-                {t("agency.detail.danger.title")}
-              </h3>
-              <p className="text-muted-foreground mt-2 text-xs">
-                {t("agency.detail.danger.deleteHint")}
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-4 border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
-                onClick={() => setDeleteOpen(true)}
-              >
-                {t("agency.detail.danger.deleteButton")}
-              </Button>
-            </div>
-          )}
         </section>
 
         {!isClientView && (
@@ -829,47 +790,7 @@ export function AgencyDetailPage() {
         )}
       </div>
 
-      {deleteOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
-            <div className="flex items-center gap-2">
-              <TriangleAlert className="size-5 text-rose-500" />
-              <h3 className="text-foreground text-sm font-semibold">
-                {t("agency.detail.danger.confirmTitle")}
-              </h3>
-            </div>
-            <p className="text-muted-foreground text-xs">
-              {t("agency.detail.danger.confirmBody")}
-            </p>
-            <Input
-              value={confirmName}
-              onChange={(e) => setConfirmName(e.target.value)}
-              placeholder={agency.name}
-            />
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setDeleteOpen(false);
-                  setConfirmName("");
-                }}
-              >
-                {t("agency.detail.danger.cancel")}
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                loading={deleting}
-                disabled={confirmName !== agency.name || deleting}
-                onClick={handleDelete}
-              >
-                {t("agency.detail.danger.confirmDelete")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 }

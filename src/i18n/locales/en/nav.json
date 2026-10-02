@@ -46,6 +46,7 @@
   "agencySub": {
     "profile": "Agency profile",
     "members": "Agency members",
+    "roles": "Roles & Permissions",
     "stats": "Agency stats"
   },
   "workspaceSub": {
@@ -67,6 +68,7 @@
     "lists": "Lists",
     "invitations": "Invitations",
     "settings": "Settings",
+    "help": "Help & Resources",
     "system": "System"
   },
   "logout": "Log out",
@@ -82,5 +84,7 @@
   "security": "Security",
   "connections": "Connections",
   "settings": "Settings",
-  "notificationSettings": "Notification Settings"
+  "notificationSettings": "Notification Settings",
+  "faq": "Help & FAQ",
+  "guide": "User & Admin Guide"
 }

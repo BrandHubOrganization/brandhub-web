@@ -153,6 +153,8 @@ export function WorkspacePage() {
     <PageWrapper
       title={t("workspace.list.title", "Danh sách workspace")}
       description={t("workspace.list.description", "Quản lý và truy cập các không gian làm việc (workspace) của bạn trên các công ty.")}
+      introSummary="Không gian làm việc (Workspace) là đơn vị cốt lõi đại diện cho một thương hiệu hoặc chiến dịch. Mỗi workspace chứa lịch nội dung riêng, thư viện bài viết và danh sách cộng tác viên/khách hàng độc lập."
+      guideUrl="/help/guide#workspace"
       actions={
         <Button
           className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white shadow-xs"

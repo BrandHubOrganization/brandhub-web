@@ -123,6 +123,8 @@ export function ClientProfileListPage() {
       fullWidth
       bannerBadge={t("clientProfile.list.badge", "Hồ sơ thương hiệu")}
       bannerImage={BANNER_PRESETS[0]?.url}
+      introSummary="Hồ sơ thương hiệu (Client Profile) định danh phong cách trực quan gồm Logo, Tên pháp nhân, Bảng màu và Tagline. Các thông tin này sẽ được tự động đồng bộ vào bài đăng và hình ảnh quảng cáo của các Workspace thuộc quyền quản lý của bạn."
+      guideUrl="/help/guide#agency"
       actions={
         editing ? (
           <Button

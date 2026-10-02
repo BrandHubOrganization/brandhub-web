@@ -453,7 +453,7 @@ export function ClientProfileForm({
     const year = rawYear ? Number(rawYear) : null;
     if (
       rawYear &&
-      (!Number.isInteger(year) || year! < 1800 || year! > CURRENT_YEAR)
+      (!Number.isInteger(year) || year! <= 0 || year! > CURRENT_YEAR)
     ) {
       next.foundedYear = t("clientProfile.invalidYear");
     }
@@ -1079,7 +1079,7 @@ export function ClientProfileForm({
             label={t("clientProfile.foundedYearLabel", "Năm thành lập")}
             type="number"
             inputMode="numeric"
-            min={1800}
+            min={1}
             max={CURRENT_YEAR}
             value={values.foundedYear}
             onChange={set("foundedYear")}

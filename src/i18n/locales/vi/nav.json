@@ -46,6 +46,7 @@
   "agencySub": {
     "profile": "Hồ sơ công ty",
     "members": "Thành viên công ty",
+    "roles": "Vai trò & Phân quyền",
     "stats": "Thống kê công ty"
   },
   "workspaceSub": {
@@ -67,6 +68,7 @@
     "lists": "Danh sách",
     "invitations": "Lời mời",
     "settings": "Cài đặt",
+    "help": "Trợ giúp & Hướng dẫn",
     "system": "Hệ thống"
   },
   "logout": "Đăng xuất",
@@ -86,5 +88,7 @@
   "create": "Tạo mới",
   "accept": "Xác nhận",
   "leaveAgency": "Thoát agency",
-  "leaveWorkspace": "Thoát workspace"
+  "leaveWorkspace": "Thoát workspace",
+  "faq": "Hỏi đáp (FAQ)",
+  "guide": "Cẩm nang hướng dẫn"
 }

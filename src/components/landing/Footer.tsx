@@ -104,31 +104,87 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Resources/Company — chưa có trang thật, đánh dấu Sắp ra mắt
-              thay vì href="#" giả dẫn người dùng bấm vào chỗ không có gì. */}
-          {(["resources", "company"] as const).map((col) => (
-            <div key={col}>
-              <h4 className="mb-4 text-xs font-semibold tracking-wider text-zinc-900 uppercase dark:text-zinc-100">
-                {t(`landing.footer.columns.${col}`)}
-              </h4>
-              <ul className="space-y-2.5">
-                {(
-                  t(`landing.footer.links.${col}`, {
-                    returnObjects: true,
-                  }) as string[]
-                ).map((link: string, i: number) => (
-                  <li key={i}>
-                    <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-600">
-                      {link}
-                      <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[9px] font-medium text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
-                        {t("landing.footer.comingSoon")}
-                      </span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Resources — Đã có trang thật cho Trung tâm trợ giúp & Hướng dẫn */}
+          <div>
+            <h4 className="mb-4 text-xs font-semibold tracking-wider text-zinc-900 uppercase dark:text-zinc-100">
+              {t("landing.footer.columns.resources")}
+            </h4>
+            <ul className="space-y-2.5">
+              <li>
+                <a
+                  href="/help/faq"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange font-medium"
+                >
+                  Trung tâm trợ giúp (FAQ)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/guide"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange font-medium"
+                >
+                  Cẩm nang hướng dẫn
+                </a>
+              </li>
+              <li>
+                <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-600">
+                  Blog
+                  <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[9px] font-medium text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
+                    {t("landing.footer.comingSoon")}
+                  </span>
+                </span>
+              </li>
+              <li>
+                <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-600">
+                  Cộng đồng
+                  <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[9px] font-medium text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
+                    {t("landing.footer.comingSoon")}
+                  </span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="mb-4 text-xs font-semibold tracking-wider text-zinc-900 uppercase dark:text-zinc-100">
+              {t("landing.footer.columns.company")}
+            </h4>
+            <ul className="space-y-2.5">
+              <li>
+                <a
+                  href="/help/guide#architecture"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
+                >
+                  Giới thiệu kiến trúc
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/guide#roles"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
+                >
+                  Bảo mật & Quyền riêng tư
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/help/guide#notes"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
+                >
+                  Điều khoản dịch vụ
+                </a>
+              </li>
+              <li>
+                <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-600">
+                  Tuyển dụng
+                  <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[9px] font-medium text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
+                    {t("landing.footer.comingSoon")}
+                  </span>
+                </span>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="mt-12 border-t border-zinc-100 pt-8 text-center dark:border-zinc-800">
