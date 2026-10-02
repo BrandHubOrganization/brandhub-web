@@ -103,6 +103,10 @@ export function AppRoutes() {
             element={<Navigate to="dashboard" replace />}
           />
           <Route
+            path="/workspaces/:id/social-accounts"
+            element={<SocialAccountsPage />}
+          />
+          <Route
             path="/workspaces/:id/dashboard"
             element={<WorkspaceDashboardPage />}
           />
@@ -201,7 +205,6 @@ export function AppRoutes() {
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/library" element={<ContentLibraryPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
-          <Route path="/social-accounts" element={<SocialAccountsPage />} />
           <Route
             path="/subscription/plans"
             element={<SubscriptionPlansPage />}

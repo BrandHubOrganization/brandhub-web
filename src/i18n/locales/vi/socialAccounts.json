@@ -16,15 +16,32 @@
   "refreshError": "Không thể làm mới token.",
   "status": {
     "CONNECTED": "Đã kết nối",
+    "ACTIVE": "Đã kết nối",
+    "EXPIRING_SOON": "Sắp hết hạn",
     "EXPIRED": "Hết hạn",
+    "REVOKED": "Bị thu hồi",
     "DISCONNECTED": "Đã ngắt kết nối"
   },
+  "expiringSoonWarning": "Kết nối sắp hết hạn trong {{days}} ngày. Vui lòng kết nối lại để đảm bảo việc đăng bài tự động.",
   "actions": {
     "connect": "Kết nối",
+    "reconnect": "Kết nối lại",
     "disconnect": "Ngắt kết nối",
     "refreshToken": "Làm mới token"
   },
   "connectDialog": {
-    "title": "Chọn nền tảng để kết nối"
+    "title": "Chọn nền tảng để kết nối",
+    "description": "Cấp quyền để hệ thống có thể đăng bài tự động lên tài khoản của bạn."
+  },
+  "disconnectDialog": {
+    "title": "Xác nhận ngắt kết nối tài khoản",
+    "description": "Bạn có chắc chắn muốn ngắt kết nối tài khoản <strong>{{accountName}}</strong> ({{platform}})? Các bài đăng tự động đã lên lịch tới tài khoản này sẽ không thể xuất bản cho đến khi bạn kết nối lại.",
+    "confirmText": "Ngắt kết nối",
+    "cancelText": "Hủy bỏ"
+  },
+  "callback": {
+    "success": "Kết nối tài khoản {{platform}} thành công!",
+    "error": "Kết nối tài khoản {{platform}} thất bại: {{message}}",
+    "unknownError": "Có lỗi xảy ra trong quá trình xác thực."
   }
 }

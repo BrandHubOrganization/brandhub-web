@@ -9,7 +9,7 @@ export type AccessRule = MemberRole[] | "ADMIN";
  * AuthGuard + Sidebar/Layout đọc chung.
  */
 export const ROUTE_ACCESS: Record<string, AccessRule> = {
-  "/social-accounts": ["OWNER"],
+  "/social-accounts": ["OWNER", "MANAGER", "CLIENT"],
   "/subscription/plans": ["OWNER"],
   "/subscription/checkout": ["OWNER"],
   "/subscription/invoices": ["OWNER"],
@@ -38,6 +38,8 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
 const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const WORKSPACE_CLIENTS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const WORKSPACE_SETTINGS_ACCESS: AccessRule = ["OWNER", "MANAGER"];
+const SOCIAL_ACCOUNTS_ACCESS: AccessRule = ["OWNER", "MANAGER", "CLIENT"];
+
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
@@ -49,6 +51,9 @@ export function resolveAccessRule(pathname: string): AccessRule | null {
   }
   if (/^\/workspaces\/[^/]+\/settings$/.test(pathname)) {
     return WORKSPACE_SETTINGS_ACCESS;
+  }
+  if (/^\/workspaces\/[^/]+\/social-accounts$/.test(pathname)) {
+    return SOCIAL_ACCOUNTS_ACCESS;
   }
   // ROUTE_ACCESS key theo path gốc chưa namespace (vd "/editor"), nhưng
   // route thật giờ có thể mang prefix "/workspaces/:id/..." — bỏ prefix đó

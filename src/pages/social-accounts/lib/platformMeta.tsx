@@ -1,5 +1,6 @@
 import type { Platform } from "@/types/post";
-import { Video, AtSign, Share2, Globe, MessageSquare } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa6";
+import { SiThreads } from "react-icons/si";
 
 export interface PlatformMeta {
   label: string;
@@ -10,29 +11,29 @@ export interface PlatformMeta {
 export const PLATFORM_META: Record<Platform, PlatformMeta> = {
   FACEBOOK: {
     label: "Facebook",
-    icon: <Share2 className="h-4 w-4 text-blue-600" />,
+    icon: <FaFacebook className="size-4.5 text-[#1877F2]" />,
     color: "border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-300",
   },
   INSTAGRAM: {
     label: "Instagram",
-    icon: <Globe className="h-4 w-4 text-pink-600" />,
+    icon: <FaInstagram className="size-4.5 text-[#E4405F]" />,
     color: "border-pink-500/30 bg-pink-500/10 text-pink-700 dark:text-pink-300",
   },
   TIKTOK: {
     label: "TikTok",
-    icon: <Video className="h-4 w-4 text-slate-900 dark:text-slate-100" />,
+    icon: <FaTiktok className="text-foreground size-4" />,
     color:
       "border-slate-500/30 bg-slate-500/10 text-slate-900 dark:text-slate-100",
   },
   THREADS: {
     label: "Threads",
-    icon: <AtSign className="h-4 w-4 text-purple-600" />,
+    icon: <SiThreads className="text-foreground size-4" />,
     color:
       "border-purple-500/30 bg-purple-500/10 text-purple-700 dark:text-purple-300",
   },
   YOUTUBE: {
     label: "Youtube",
-    icon: <MessageSquare className="h-4 w-4 text-red-600" />,
+    icon: <FaYoutube className="size-4.5 text-[#FF0000]" />,
     color: "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300",
   },
 };
@@ -42,5 +43,4 @@ export const ALL_PLATFORMS: Platform[] = [
   "INSTAGRAM",
   "TIKTOK",
   "THREADS",
-  "YOUTUBE",
 ];
