@@ -10,7 +10,7 @@ import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 
 // Typed lazy loader supporting both named & default exports
-function lazyNamed<T extends Record<string, any>>(
+function lazyNamed<T extends Record<string, unknown>>(
   importer: () => Promise<T>,
   name?: keyof T,
 ) {
@@ -19,7 +19,7 @@ function lazyNamed<T extends Record<string, any>>(
     const component = name
       ? (mod[name] ?? mod.default)
       : (mod.default ?? Object.values(mod)[0]);
-    return { default: component };
+    return { default: component as React.ComponentType<Record<string, unknown>> };
   });
 }
 

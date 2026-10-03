@@ -102,7 +102,6 @@ export function useCreateWorkspace() {
       .catch(() => {
         /* template load lỗi — không chặn tạo workspace, chỉ bỏ prefill */
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [templateId]);
 
   const handleTemplateSelect = (id: string) => {

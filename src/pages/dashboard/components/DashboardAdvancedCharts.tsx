@@ -72,15 +72,28 @@ export const MOCK_PUBLISH_SCHEDULE = [
   { hour: "21:00", facebook: 8, instagram: 10, tiktok: 11 },
 ];
 
+interface TooltipPayloadItem {
+  name?: string;
+  value?: number | string;
+  color?: string;
+  fill?: string;
+}
+
+interface MinimalTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+  label?: string;
+}
+
 /**
  * Custom Tooltip tối giản
  */
-function MinimalTooltip({ active, payload, label }: any) {
+function MinimalTooltip({ active, payload, label }: MinimalTooltipProps) {
   if (!active || !payload || !payload.length) return null;
   return (
     <div className="border-border bg-card/95 backdrop-blur-md rounded-lg border p-2.5 shadow-lg text-xs">
       <p className="text-foreground font-semibold mb-1">{label}</p>
-      {payload.map((entry: any, index: number) => (
+      {payload.map((entry, index) => (
         <div key={`tip-${index}`} className="flex items-center gap-2 justify-between min-w-28 text-2xs py-0.5">
           <span className="flex items-center gap-1.5 text-muted-foreground">
             <span
