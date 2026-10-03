@@ -31,12 +31,12 @@ export function ClientProfileLogo({
     return (
       <div
         className={cn(
-          "flex size-full items-center justify-center transition-colors",
+          "flex size-full items-center justify-center transition-colors text-white",
           className,
         )}
-        style={{ backgroundColor: `${color}18` }}
+        style={{ backgroundColor: color || brandColor || "#f05a28" }}
       >
-        <Icon className={cn("size-6", iconClassName)} style={{ color }} />
+        <Icon className={cn("size-6 text-white", iconClassName)} />
       </div>
     );
   }
@@ -56,15 +56,15 @@ export function ClientProfileLogo({
   return (
     <div
       className={cn(
-        "flex size-full items-center justify-center font-bold transition-colors select-none",
+        "flex size-full items-center justify-center font-bold transition-colors select-none text-white",
         className,
       )}
       style={{
-        backgroundColor: `${brandColor}18`,
-        color: brandColor,
+        backgroundColor: brandColor || "#f05a28",
+        color: "#ffffff",
       }}
     >
-      {initial || <Building2 className={cn("size-6", iconClassName)} />}
+      {initial || <Building2 className={cn("size-6 text-white", iconClassName)} />}
     </div>
   );
 }

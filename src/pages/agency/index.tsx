@@ -309,8 +309,8 @@ export function AgencyPage() {
                   <Select
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value as SortOption)}
-                    className="h-8 text-xs py-0 pr-7"
-                    wrapperClassName="w-[165px] sm:w-[185px]"
+                    className="h-8 text-xs py-0 pr-8"
+                    wrapperClassName="w-[195px] sm:w-[215px]"
                   >
                     <option value="workspaces_desc">{t("agency.list.sortWorkspaces")}</option>
                     <option value="name_asc">{t("agency.list.sortNameAsc")}</option>
@@ -377,49 +377,70 @@ export function AgencyPage() {
                       navigate(`/agency/${a.id}`);
                     }}
                     className={cn(
-                      "bg-card rounded-xl border border-border p-5 shadow-xs transition-all hover:border-brand-orange/40 flex flex-col cursor-pointer",
+                      "group bg-card rounded-xl border border-border overflow-hidden shadow-xs transition-all duration-200 hover:border-brand-orange/40 hover:shadow-md flex flex-col cursor-pointer",
                       isExpanded && "ring-1 ring-brand-orange/30 border-brand-orange/40",
                     )}
                   >
-                    {/* Header info */}
-                    <div className="flex items-start gap-3">
-                      {a.logoUrl ? (
+                    {/* Top Cover Banner */}
+                    <div className="relative h-28 w-full shrink-0 overflow-hidden bg-muted/40">
+                      {a.bannerUrl ? (
                         <img
-                          src={a.logoUrl}
-                          alt={a.name}
-                          className="size-11 shrink-0 rounded-xl object-cover border border-border"
+                          src={a.bannerUrl}
+                          alt=""
+                          className="size-full object-cover transition-transform duration-500 group-hover:scale-105 select-none"
                         />
                       ) : (
                         <div
-                          className="flex size-11 shrink-0 items-center justify-center rounded-xl transition-colors"
+                          className="size-full select-none"
                           style={{
-                            backgroundColor: a.brandColor
-                              ? `${a.brandColor}18`
-                              : "hsl(var(--brand-orange-soft, 15 100% 96%))",
-                            color:
-                              a.brandColor ??
-                              "hsl(var(--brand-orange, 15 88% 55%))",
+                            background: a.brandColor
+                              ? `linear-gradient(135deg, ${a.brandColor}38 0%, ${a.brandColor}15 50%, ${a.brandColor}08 100%)`
+                              : "linear-gradient(135deg, hsl(var(--brand-orange-soft, 15 100% 96%)) 0%, hsl(var(--muted)/0.25) 100%)",
                           }}
-                        >
-                          <LogoIcon className="size-5" />
-                        </div>
+                        />
                       )}
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <p className="truncate font-semibold text-sm text-foreground">
-                            {a.name}
-                          </p>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
+                    </div>
+
+                    <div className="px-5 pb-5 pt-0 flex-1 flex flex-col justify-between">
+                      {/* Header info */}
+                      <div>
+                        {/* Overlapping Avatar + Role */}
+                        <div className="relative -mt-8 mb-3 flex items-end justify-between gap-3">
+                          {a.logoUrl ? (
+                            <img
+                              src={a.logoUrl}
+                              alt={a.name}
+                              className="size-16 shrink-0 rounded-2xl object-cover border-4 border-card bg-card shadow-md transition-transform duration-300 group-hover:scale-102"
+                            />
+                          ) : (
+                            <div
+                              className="flex size-16 shrink-0 items-center justify-center rounded-2xl border-4 border-card shadow-md select-none transition-transform duration-300 group-hover:scale-102 text-white"
+                              style={{
+                                backgroundColor: a.brandColor || "#f05a28",
+                                color: "#ffffff",
+                              }}
+                            >
+                              <LogoIcon className="size-6 text-white" />
+                            </div>
+                          )}
+
                           {isOwner && (
-                            <span className="rounded-full bg-brand-orange/10 px-2 py-0.5 text-[10px] font-semibold text-brand-orange shrink-0">
+                            <span className="rounded-full bg-brand-orange/10 px-2.5 py-1 text-[11px] font-semibold text-brand-orange shrink-0 border border-brand-orange/20 shadow-2xs">
                               {t("workspace.roles.OWNER")}
                             </span>
                           )}
                         </div>
-                        <p className="text-muted-foreground truncate text-xs mt-0.5">
-                          {a.tagline || "—"}
-                        </p>
-                      </div>
-                    </div>
+
+                        {/* Agency Name & Tagline */}
+                        <div>
+                          <p className="truncate font-semibold text-sm sm:text-base text-foreground group-hover:text-brand-orange transition-colors">
+                            {a.name}
+                          </p>
+                          <p className="text-muted-foreground truncate text-xs mt-1">
+                            {a.tagline || "—"}
+                          </p>
+                        </div>
 
                     {/* Category & Size Badges */}
                     {(a.category || a.companySize) && (
@@ -460,7 +481,10 @@ export function AgencyPage() {
                         </div>
                       )}
                     </div>
+                  </div>
 
+                  {/* Bottom actions & Workspaces expansion */}
+                  <div>
                     {/* Primary Card Buttons */}
                     <div className="mt-4 flex gap-2">
                       <Button
@@ -604,7 +628,9 @@ export function AgencyPage() {
                       )}
                     </div>
                   </div>
-                );
+                </div>
+              </div>
+            );
               })}
             </div>
           )}
