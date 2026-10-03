@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import * as Y from "yjs";
+import { UndoManager } from "yjs";
 import {
   attrsAtIndex,
   attrsOverRange,
@@ -185,13 +186,40 @@ function indexFromPoint(
 export interface CanvasTextEditorProps {
   /** Shared Yjs document — owned by the caller (useTaskContentSync) so it can also wire the WebSocket transport. */
   yDoc: Y.Doc;
+  /** Called whenever the committed text changes — used by parent to mirror text into social preview. */
+  onTextChange?: (text: string) => void;
 }
 
-export function CanvasTextEditor({ yDoc }: CanvasTextEditorProps) {
+export interface CanvasTextEditorHandle {
+  /** Insert a string at the current caret position. */
+  insertText: (value: string) => void;
+}
+
+export const CanvasTextEditor = forwardRef<CanvasTextEditorHandle, CanvasTextEditorProps>(
+  function CanvasTextEditor({ yDoc, onTextChange }, ref) {
   const yTextRef = useRef<Y.Text>(yDoc.getText("content"));
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hiddenInputRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  // UndoManager scoped to this editor's Y.Text — undo/redo are always
+  // local-only (remote edits are not undoable by this client).
+  const undoManager = useMemo(
+    () => new UndoManager(yTextRef.current, { captureTimeout: 500 }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  // Expose insertText so the parent (ContentWritingPage) can insert emojis
+  // or other text at the current caret position without reaching into internals.
+  useImperativeHandle(ref, () => ({
+    insertText: (value: string) => {
+      hiddenInputRef.current?.focus();
+      // Use a microtask so focus settles before the Yjs insert (avoids a
+      // timing issue where the caret position reads stale before focus lands).
+      Promise.resolve().then(() => insertAtCaret(value));
+    },
+  }));
+
   const [text, setText] = useState(() => yTextRef.current.toString());
   // Mirrors `text`/`canvasWidth` for the window-level mousemove/mouseup
   // listeners (bound once, see the drag-selection effect below) — those
@@ -282,8 +310,10 @@ export function CanvasTextEditor({ yDoc }: CanvasTextEditorProps) {
   useEffect(() => {
     const yText = yTextRef.current;
     const observer = (event: Y.YTextEvent) => {
-      setText(yText.toString());
+      const next = yText.toString();
+      setText(next);
       setRuns(deltaToRuns(yText.toDelta()));
+      onTextChange?.(next);
       if (!event.transaction.local) {
         const computeDelta = (index: number) => {
           let delta = 0;
@@ -475,6 +505,14 @@ export function CanvasTextEditor({ yDoc }: CanvasTextEditorProps) {
           ctx.lineTo(x + w, y + 2);
           ctx.stroke();
         }
+        if (segment.attrs.strikethrough) {
+          ctx.strokeStyle = ctx.fillStyle as string;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(x, y - FONT_SIZE * 0.3);
+          ctx.lineTo(x + w, y - FONT_SIZE * 0.3);
+          ctx.stroke();
+        }
         x += w;
       }
     });
@@ -527,6 +565,11 @@ export function CanvasTextEditor({ yDoc }: CanvasTextEditorProps) {
     });
     observer.observe(container);
     return () => observer.disconnect();
+  }, []);
+
+  // Auto-focus when editor mounts so user can type immediately
+  useEffect(() => {
+    hiddenInputRef.current?.focus();
   }, []);
 
   const focusHiddenInput = useCallback(() => {
@@ -680,9 +723,27 @@ export function CanvasTextEditor({ yDoc }: CanvasTextEditorProps) {
     return { ...base, ...pendingAttrsRef.current };
   };
 
-  const toggleFormat = (key: "bold" | "italic" | "underline") => {
+  const toggleFormat = (key: "bold" | "italic" | "underline" | "strikethrough") => {
     const active = currentAttrs()[key];
     applyFormat({ [key]: active && active !== "mixed" ? undefined : true });
+  };
+
+  const clearFormatting = () => {
+    const range = currentSelRange();
+    if (!range) return;
+    yTextRef.current.format(range.start, range.end - range.start, {
+      bold: undefined,
+      italic: undefined,
+      underline: undefined,
+      strikethrough: undefined,
+      color: undefined,
+      highlight: undefined,
+      font: undefined,
+      size: undefined,
+      link: undefined,
+    });
+    setRuns(deltaToRuns(yTextRef.current.toDelta()));
+    setPendingAttrs({});
   };
 
   const setColor = (color: string | undefined) => applyFormat({ color });
@@ -779,6 +840,29 @@ export function CanvasTextEditor({ yDoc }: CanvasTextEditorProps) {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const ctrl = event.ctrlKey || event.metaKey;
+    // --- Keyboard shortcuts ---
+    if (ctrl && !event.shiftKey && event.key.toLowerCase() === "b") {
+      toggleFormat("bold"); event.preventDefault(); return;
+    }
+    if (ctrl && !event.shiftKey && event.key.toLowerCase() === "i") {
+      toggleFormat("italic"); event.preventDefault(); return;
+    }
+    if (ctrl && !event.shiftKey && event.key.toLowerCase() === "u") {
+      toggleFormat("underline"); event.preventDefault(); return;
+    }
+    if (ctrl && event.key.toLowerCase() === "z") {
+      if (event.shiftKey) { undoManager.redo(); } else { undoManager.undo(); }
+      event.preventDefault(); return;
+    }
+    if (ctrl && (event.key.toLowerCase() === "y")) {
+      undoManager.redo(); event.preventDefault(); return;
+    }
+    if (ctrl && event.key.toLowerCase() === "a") {
+      setSelection({ anchor: 0, focus: yTextRef.current.length });
+      setCaretIndex(yTextRef.current.length);
+      event.preventDefault(); return;
+    }
     // Backspace/Delete handled here, not solely via beforeinput's
     // deleteContentBackward/Forward — that inputType is unreliable across
     // browsers/automation tooling, same issue as insertText above.
@@ -831,6 +915,10 @@ export function CanvasTextEditor({ yDoc }: CanvasTextEditorProps) {
     }
   };
 
+  // Word / character count — derived from committed text only.
+  const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+  const charCount = text.length;
+
   return (
     <div className="w-full">
       <FormattingToolbar
@@ -842,15 +930,22 @@ export function CanvasTextEditor({ yDoc }: CanvasTextEditorProps) {
         onSetSize={setFontSize}
         onSetAlign={setAlign}
         onSetLink={setLink}
+        onUndo={() => undoManager.undo()}
+        onRedo={() => undoManager.redo()}
+        onClearFormatting={clearFormatting}
+        onInsertEmoji={(emoji) => insertAtCaret(emoji)}
       />
       <div
         ref={containerRef}
         className="border-border bg-card relative w-full rounded-b-xl border p-2"
+        style={{ minHeight: "200px" }}
+        onClick={focusHiddenInput}
       >
         <canvas
           ref={canvasRef}
           onMouseDown={handleCanvasMouseDown}
-          className="block cursor-text"
+          className="block w-full cursor-text"
+          style={{ minHeight: "200px" }}
         />
         {isFocused && (
           <div
@@ -890,6 +985,22 @@ export function CanvasTextEditor({ yDoc }: CanvasTextEditorProps) {
           {displayText}
         </div>
       </div>
+      {/* Status bar: word/char count + keyboard shortcut hints */}
+      <div className="border-border text-muted-foreground mt-1 flex items-center justify-between rounded-lg border px-3 py-1 text-xs">
+        <span>
+          {wordCount} từ &nbsp;·&nbsp; {charCount} ký tự
+        </span>
+        <span className="hidden gap-3 sm:flex">
+          <span title="Bold"><kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">Ctrl+B</kbd> In đậm</span>
+          <span title="Italic"><kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">Ctrl+I</kbd> Nghiêng</span>
+          <span title="Underline"><kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">Ctrl+U</kbd> Gạch dưới</span>
+          <span title="Undo"><kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">Ctrl+Z</kbd> Hoàn tác</span>
+          <span title="Redo"><kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">Ctrl+Y</kbd> Làm lại</span>
+        </span>
+      </div>
     </div>
   );
-}
+  }, // end forwardRef render
+);
+
+CanvasTextEditor.displayName = "CanvasTextEditor";

@@ -12,6 +12,7 @@ export interface RunAttrs {
   bold?: true;
   italic?: true;
   underline?: true;
+  strikethrough?: true;
   color?: string;
   highlight?: string;
   font?: string;
@@ -87,6 +88,7 @@ export function attrsOverRange(
     "bold",
     "italic",
     "underline",
+    "strikethrough",
     "color",
     "highlight",
     "font",
