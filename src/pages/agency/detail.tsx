@@ -318,7 +318,7 @@ export function AgencyDetailPage() {
 
   if (!agency) {
     return (
-      <div className="py-12 text-center">
+      <div className="w-full px-4 py-12 text-center md:px-8">
         <p className="text-muted-foreground">{t("agency.detail.notFound")}</p>
         <Button
           variant="outline"
@@ -334,7 +334,7 @@ export function AgencyDetailPage() {
   const isDeleted = agency.status === "SOFT_DELETED";
 
   return (
-    <div className="space-y-8">
+    <div className="w-full space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6">
       {/* Soft-Deleted Alert Banner */}
       {isDeleted && (
         <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-900 sm:flex-row sm:items-center sm:justify-between dark:text-amber-200">
