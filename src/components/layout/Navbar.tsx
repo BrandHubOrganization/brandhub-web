@@ -16,6 +16,8 @@ import {
   Shield,
   Sun,
   XCircle,
+  HelpCircle,
+  BookOpen,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -106,6 +108,24 @@ const NAV_KEY_MAP: Record<string, string> = {
   video: "aiStudio.video.title",
   "content-writing": "nav.contentWriting",
   "client": "nav.clients",
+};
+
+const WORKSPACE_SECTION_ROOTS: Record<
+  string,
+  { labelKey: string; defaultPath: string }
+> = {
+  agency: { labelKey: "nav.agencyList", defaultPath: "/agency" },
+  workspace: { labelKey: "nav.workspaceList", defaultPath: "/workspace" },
+  "client-profiles": {
+    labelKey: "nav.clientProfile",
+    defaultPath: "/client-profiles",
+  },
+  clients: { labelKey: "nav.clients", defaultPath: "/clients" },
+  reports: { labelKey: "nav.reports", defaultPath: "/reports" },
+  "ai-studio": {
+    labelKey: "nav.aiStudio",
+    defaultPath: "/ai-studio/ambassadors",
+  },
 };
 
 export interface NavbarProps {
@@ -207,9 +227,11 @@ export function Navbar({
       }
       // "workspaces" root: đã được thay bằng crumb agency ở trên
       if (idx === 0 && seg === "workspaces") return;
-      // "agency" root: link về danh sách công ty
-      if (idx === 0 && seg === "agency") {
-        crumbs.push({ label: t("nav.agencyList"), path: "/agency" });
+      // Các trang thuộc nhóm "Không gian làm việc" (nav.sections.lists)
+      if (idx === 0 && WORKSPACE_SECTION_ROOTS[seg]) {
+        const item = WORKSPACE_SECTION_ROOTS[seg];
+        crumbs.push({ label: t("nav.sections.lists"), path: item.defaultPath });
+        crumbs.push({ label: t(item.labelKey), path: item.defaultPath });
         return;
       }
       // Bỏ qua "client" segment giữa đường (vd /client/invitations)
@@ -278,7 +300,7 @@ export function Navbar({
           {breadcrumbs.map((b, idx) => {
             const isLast = idx === breadcrumbs.length - 1;
             return (
-              <React.Fragment key={b.path}>
+              <React.Fragment key={`${b.path}-${idx}`}>
                 {idx > 0 && <span className="text-muted-foreground/40">/</span>}
                 <span
                   className={cn(
@@ -431,7 +453,7 @@ export function Navbar({
 
         <div className="bg-border mx-1 h-4 w-px" />
 
-        {/* User → click thẳng vào Cài đặt, không qua dropdown */}
+        {/* User → click thẳng vào Cài đặt */}
         <button
           type="button"
           onClick={() => navigate("/settings")}
@@ -446,6 +468,45 @@ export function Navbar({
           </span>
           <Settings className="text-muted-foreground size-3.5 shrink-0" />
         </button>
+
+        {/* Trợ giúp & Hướng dẫn Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8 text-muted-foreground hover:text-foreground cursor-pointer"
+              title={t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
+            >
+              <HelpCircle className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56 p-1">
+            <DropdownMenuLabel className="text-muted-foreground text-3xs font-semibold uppercase tracking-wider px-2 py-1.5">
+              {t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
+            </DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigate("/help/faq")}
+              className="cursor-pointer gap-2 text-xs py-2"
+            >
+              <HelpCircle className="size-4 text-brand-orange" />
+              <div>
+                <p className="font-medium text-foreground">{t("nav.faq", "Hỏi đáp (FAQ)")}</p>
+                <p className="text-muted-foreground text-3xs">Câu hỏi thường gặp & giải đáp</p>
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate("/help/guide")}
+              className="cursor-pointer gap-2 text-xs py-2"
+            >
+              <BookOpen className="size-4 text-brand-orange" />
+              <div>
+                <p className="font-medium text-foreground">{t("nav.guide", "Cẩm nang hướng dẫn")}</p>
+                <p className="text-muted-foreground text-3xs">Tài liệu kiến trúc & quản trị</p>
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <Button
           variant="ghost"

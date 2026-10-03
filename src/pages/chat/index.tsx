@@ -42,25 +42,27 @@ export function WorkspaceChatPage() {
   if (!workspaceId || !user) return <Navigate to="/workspace" replace />;
 
   return (
-    <section className="border-border bg-muted/20 mx-auto flex h-[calc(100dvh-7.5rem)] min-h-[520px] max-w-5xl flex-col overflow-hidden rounded-xl border shadow-sm md:h-[calc(100dvh-5.5rem)]">
-      <ChatHeader
-        workspaceName={workspaceName}
-        connectionState={chat.connectionState}
-      />
-      <ChatMessageList
-        messages={chat.messages}
-        currentUserId={user.id}
-        hasMore={chat.hasMore}
-        loading={chat.loadingHistory}
-        onLoadOlder={() => void chat.loadOlder()}
-      />
-      <ChatComposer
-        connected={chat.connectionState === "CONNECTED"}
-        contextType={context.type}
-        contextId={context.id}
-        onSend={chat.sendMessage}
-      />
-    </section>
+    <div className="w-full p-4 md:p-6">
+      <section className="border-border bg-muted/20 mx-auto flex h-[calc(100dvh-9.5rem)] min-h-[520px] max-w-5xl flex-col overflow-hidden rounded-xl border shadow-sm md:h-[calc(100dvh-6.5rem)]">
+        <ChatHeader
+          workspaceName={workspaceName}
+          connectionState={chat.connectionState}
+        />
+        <ChatMessageList
+          messages={chat.messages}
+          currentUserId={user.id}
+          hasMore={chat.hasMore}
+          loading={chat.loadingHistory}
+          onLoadOlder={() => void chat.loadOlder()}
+        />
+        <ChatComposer
+          connected={chat.connectionState === "CONNECTED"}
+          contextType={context.type}
+          contextId={context.id}
+          onSend={chat.sendMessage}
+        />
+      </section>
+    </div>
   );
 }
 

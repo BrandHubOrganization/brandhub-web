@@ -1,465 +1,118 @@
 import * as React from "react";
-import { NavLink } from "react-router-dom";
-import {
-  LayoutDashboard,
-  FileEdit,
-  CalendarDays,
-  Users,
-  BarChart3,
-  ShieldAlert,
-  ChevronDown,
-  FolderKanban,
-  FolderPlus,
-  LayoutTemplate,
-  Hash,
-  Send,
-  Link2,
-  CreditCard,
-  Sparkles,
-  Building2,
-  FileBarChart,
-  User,
-  Inbox,
-  PackageCheck,
-  UserCheck,
-  Briefcase,
-  Settings,
-  ChevronLeft,
-  MapPin,
-  Globe,
-  FolderOpen,
-  Shield,
-  Bell,
-  MessageCircleMore,
-} from "lucide-react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { NavLink, useLocation } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import type { MemberRole, Workspace } from "@/types/workspace";
 import type { Agency } from "@/types/agency";
 import type { SystemRole } from "@/store/authStore";
 import { canAccess } from "@/routes/access";
+import { NAV_SECTIONS, type NavItem, type NavSection } from "./sidebar/sidebarNavConfig";
+import { SidebarHoverPreview, type HoveredItemInfo } from "./sidebar/SidebarHoverPreview";
+import { OrgSwitcherDropdown } from "./sidebar/OrgSwitcherDropdown";
 
-interface NavItem {
-  to: string;
-  icon: React.ComponentType<{ className?: string }>;
-  labelKey: string;
-  /** Chỉ hiện khi role hiện tại là CLIENT — cần currentAgencyId để build URL. */
-  clientOnly?: boolean;
-  /** URL cần currentAgencyId để build (thay {agencyId} trong `to`) — ẩn nếu chưa có agency active. */
-  agencyScoped?: boolean;
-  /** Ẩn hẳn với role CLIENT (client không phải nhân sự agency nội bộ). */
-  hiddenForClient?: boolean;
-  /** Route agency-wide (đọc theo currentAgencyId, không mang workspaceId) —
-   * ẩn khi đang trong 1 workspace cụ thể để tránh bấm nhầm rồi bị đẩy ra
-   * khỏi ngữ cảnh workspace về agency. */
-  hideInWorkspace?: boolean;
-  /** Chỉ hiện khi CHƯA chọn agency nào (currentAgencyId null) — mục
-   * user-level, không gắn agency/workspace cụ thể nào. */
-  noAgencyOnly?: boolean;
-  /** URL đổi theo activeWorkspace — thay {workspaceId} trong `to`. Khi
-   * chưa có activeWorkspace, giữ nguyên `to` gốc (route agency-level, vd
-   * /dashboard, /analytics landing chung). */
-  workspaceScoped?: boolean;
-  /** Route CHỈ tồn tại dạng /workspaces/:id/... — không có bản fallback ở
-   * `to` gốc (khác /dashboard vẫn có cả 2 bản). Thiếu activeWorkspace thì
-   * ẩn hẳn thay vì để `to` trỏ vào route đã bị xoá. */
-  requiresWorkspace?: boolean;
-  /** Ẩn khi đang chọn 1 agency cụ thể (currentAgencyId != null). Dùng cho
-   * các mục thuộc "user module" (client-profiles, social-accounts, subscription,
-   * client/invitations, ...) — không gắn với ngữ cảnh agency cụ thể nào,
-   * chỉ hiện khi user chưa vào agency hoặc đang dùng tính năng cá nhân. */
-  hideInAgency?: boolean;
-  /** Mục con hiển thị thụt lề dưới item cha. Dùng cho các anchor trong cùng
-   * 1 trang (vd 4 mục của /settings) — `to` gồm cả hash. */
-  children?: { to: string; labelKey: string }[];
-}
+export type { NavItem, NavSection };
 
-interface NavSection {
-  key: string;
-  titleKey: string;
-  items: NavItem[];
-}
-
-const NAV_SECTIONS: NavSection[] = [
-  {
-    key: "overview",
-    titleKey: "nav.sections.overview",
-    items: [
-      {
-        to: "/dashboard",
-        icon: LayoutDashboard,
-        labelKey: "nav.dashboard",
-        workspaceScoped: true,
-        // CLIENT thấy dashboard nhưng dashboard.tsx tự ẩn card nhạy cảm
-        // (thành viên, đàm phán gói, AI credit nội bộ agency) qua isClient —
-        // chỉ còn phần liên quan nội dung (campaign/content status, lịch đăng).
-      },
-      {
-        to: "/media-package",
-        icon: PackageCheck,
-        labelKey: "nav.mediaPackages",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/chat",
-        icon: MessageCircleMore,
-        labelKey: "nav.chat",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/analytics",
-        icon: BarChart3,
-        labelKey: "nav.analytics",
-        // Merged into workspace Dashboard (StatCards + ChannelPerformanceChart
-        // now render inline there) — keep this item for agency-level only,
-        // hide once a workspace is active so it's not a duplicate link.
-        hideInWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "create",
-    titleKey: "nav.sections.create",
-    items: [
-      {
-        to: "/requests",
-        icon: FileEdit,
-        labelKey: "nav.requests",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/editor",
-        icon: FileEdit,
-        labelKey: "nav.editor",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/content-writing",
-        icon: FileEdit,
-        labelKey: "nav.contentWriting",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/templates",
-        icon: LayoutTemplate,
-        labelKey: "nav.templates",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/hashtag-groups",
-        icon: Hash,
-        labelKey: "nav.hashtagGroups",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/calendar",
-        icon: CalendarDays,
-        labelKey: "nav.calendar",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/library",
-        icon: FolderKanban,
-        labelKey: "nav.library",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/publish",
-        icon: Send,
-        labelKey: "nav.publish",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "agency",
-    titleKey: "nav.sections.agency",
-    items: [
-      {
-        to: "/agency/{agencyId}",
-        icon: Building2,
-        labelKey: "nav.agencySub.profile",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/agency/{agencyId}/members",
-        icon: Users,
-        labelKey: "nav.agencySub.members",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/agency/{agencyId}/stats",
-        icon: BarChart3,
-        labelKey: "nav.agencySub.stats",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "workspaceSettings",
-    titleKey: "nav.sections.workspaceSettings",
-    items: [
-      {
-        to: "/settings",
-        icon: Settings,
-        labelKey: "nav.workspaceSub.settings",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        hiddenForClient: true,
-      },
-      {
-        to: "/members",
-        icon: Users,
-        labelKey: "nav.workspaceSub.members",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        hiddenForClient: true,
-      },
-      {
-        to: "/clients",
-        icon: Building2,
-        labelKey: "nav.workspaceSub.clients",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        hiddenForClient: true,
-      },
-      {
-        to: "/client-profile",
-        icon: User,
-        labelKey: "nav.workspaceClientProfile",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        clientOnly: true,
-      },
-      {
-        to: "/portal",
-        icon: Users,
-        labelKey: "nav.portal",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "lists",
-    titleKey: "nav.sections.lists",
-    items: [
-      {
-        to: "/agency/{agencyId}/media-packages",
-        icon: PackageCheck,
-        labelKey: "nav.manageMediaPackages",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/client-profile",
-        icon: User,
-        labelKey: "nav.workspaceClientProfile",
-        // Hồ sơ thương hiệu GẮN VỚI workspace đang đứng (khác /client-profiles
-        // ở mục Cài đặt — list toàn bộ hồ sơ user sở hữu). Route không có bản
-        // fallback ngoài workspace nên bắt buộc requiresWorkspace, chỉ CLIENT
-        // có client_profile cá nhân theo workspace nên clientOnly.
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        clientOnly: true,
-      },
-      {
-        to: "/agency",
-        icon: Building2,
-        labelKey: "nav.agencyList",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/workspace",
-        icon: Briefcase,
-        labelKey: "nav.workspaceList",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/clients",
-        icon: Building2,
-        labelKey: "nav.clients",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/ai-studio/ambassadors",
-        icon: Sparkles,
-        labelKey: "nav.aiStudio",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/reports",
-        icon: FileBarChart,
-        labelKey: "nav.reports",
-        hideInWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "invitations",
-    titleKey: "nav.sections.invitations",
-    items: [
-      {
-        to: "/agency/invitations",
-        icon: Inbox,
-        labelKey: "nav.agencyInvitationInbox",
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/client/invitations",
-        icon: UserCheck,
-        labelKey: "nav.clientInvitations",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-    ],
-  },
-  {
-    key: "settings",
-    titleKey: "nav.sections.settings",
-    items: [
-      {
-        to: "/settings/profile",
-        icon: User,
-        labelKey: "nav.profile",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/settings/security",
-        icon: Shield,
-        labelKey: "nav.security",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/settings/connections",
-        icon: Link2,
-        labelKey: "nav.connections",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/settings/notifications",
-        icon: Bell,
-        labelKey: "nav.notificationSettings",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/client-profiles",
-        icon: User,
-        labelKey: "nav.clientProfile",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/social-accounts",
-        icon: Link2,
-        labelKey: "nav.socialAccounts",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/subscription/plans",
-        icon: CreditCard,
-        labelKey: "nav.subscription",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-    ],
-  },
-  {
-    key: "system",
-    titleKey: "nav.sections.system",
-    items: [
-      { to: "/admin", icon: ShieldAlert, labelKey: "nav.admin" },
-      {
-        to: "/admin/system-health",
-        icon: ShieldAlert,
-        labelKey: "monitoring.title",
-      },
-    ],
-  },
-];
-
-export interface SidebarProps {
-  collapsed: boolean;
+interface SidebarProps {
+  collapsed?: boolean;
+  className?: string;
   role?: MemberRole | null;
   systemRole?: SystemRole | null;
-  workspaces: Workspace[];
-  activeWorkspace: Workspace | null;
-  onSwitchWorkspace: (agencyId: string, workspaceId: string) => void;
-  className?: string;
+  workspaces?: Workspace[];
+  activeWorkspace?: Workspace | null;
+  onSwitchWorkspace?: (agencyIdArg: string, workspaceId: string) => void;
   onMobileItemClick?: () => void;
-  /** Đang chọn 1 agency cụ thể hay chưa — chưa chọn agency thì không có
-   * ngữ cảnh để lọc workspace, nên ẩn hẳn ô chọn workspace. */
   hasAgency?: boolean;
-  /** Toàn bộ agency user thuộc về, để build dropdown lồng nhau agency→workspace. */
-  agencyList: Agency[];
-  /** Toàn bộ workspace (không lọc theo agency), để nhóm theo từng agency trong dropdown. */
-  allWorkspaces: Workspace[];
-  currentAgencyId: string | null;
-  onSwitchAgency: (agencyId: string) => void;
-  /** Callback khi user bấm "Back" thoát khỏi agency context. */
+  agencyList?: Agency[];
+  allWorkspaces?: Workspace[];
+  currentAgencyId?: string | null;
+  onSwitchAgency?: (id: string) => void;
   onLeaveAgency?: () => void;
-  /** Callback khi user bấm "Back" thoát khỏi workspace context về agency. */
   onLeaveWorkspace?: () => void;
-  /** So agency.ownerId để hiện badge "Owner" đúng agency mình sở hữu trong
-   * dropdown — owner gắn theo agency, không phải theo workspace/role hiện
-   * tại (agency chưa có workspace vẫn phải thấy mình là chủ). */
   currentUserId?: string | null;
 }
 
 export function Sidebar({
-  collapsed,
-  role = null,
-  systemRole = null,
+  collapsed = false,
+  className,
+  role,
+  systemRole,
   activeWorkspace,
   onSwitchWorkspace,
-  className,
   onMobileItemClick,
-  agencyList,
-  allWorkspaces,
-  currentAgencyId,
+  agencyList = [],
+  allWorkspaces = [],
+  currentAgencyId = null,
   onSwitchAgency,
   onLeaveAgency,
   onLeaveWorkspace,
-  currentUserId = null,
+  currentUserId,
 }: SidebarProps) {
   const { t } = useTranslation();
-  const currentAgencyName =
-    agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
-  const clientWorkspaces = allWorkspaces.filter((ws) => ws.myRole === "CLIENT");
+  const location = useLocation();
+
+  // State dropdown org switcher
+  const [dropdownOpen, setDropdownOpen] = React.useState(false);
+
+  // Agency đang active
+  const currentAgency = React.useMemo(
+    () => agencyList.find((a) => a.id === currentAgencyId) ?? null,
+    [agencyList, currentAgencyId],
+  );
+  const currentAgencyName = currentAgency?.name ?? null;
+
+  // Lọc workspaces thuộc agency hiện tại (hoặc client workspaces nếu có)
+  const clientWorkspaces = React.useMemo(() => {
+    if (currentAgencyId) {
+      return allWorkspaces.filter((w) => w.agencyId === currentAgencyId);
+    }
+    return allWorkspaces;
+  }, [allWorkspaces, currentAgencyId]);
+
+  // State cho hover preview popup
+  const [hoveredItem, setHoveredItem] = React.useState<HoveredItemInfo | null>(null);
+  const hoverTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearHoveredItem = React.useCallback(() => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    setHoveredItem(null);
+  }, []);
+
+  const handleMouseEnter = (
+    e: React.MouseEvent<HTMLElement>,
+    item: Omit<HoveredItemInfo, "rect">,
+  ) => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    const target = e.currentTarget;
+    hoverTimerRef.current = setTimeout(() => {
+      const rect = target.getBoundingClientRect();
+      setHoveredItem({ ...item, rect });
+    }, 180);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    hoverTimerRef.current = setTimeout(() => setHoveredItem(null), 80);
+  };
+
+  // Tự động ẩn preview card & đóng dropdown ngay khi chuyển route, workspace hoặc agency
+  React.useEffect(() => {
+    clearHoveredItem();
+    setDropdownOpen(false);
+  }, [location.pathname, location.search, activeWorkspace?.id, currentAgencyId, clearHoveredItem]);
+
+  // Data cho preview đang hover
+  const hoveredAgency =
+    hoveredItem?.type === "agency"
+      ? agencyList.find((a) => a.id === hoveredItem.id)
+      : hoveredItem?.type === "workspace"
+        ? agencyList.find((a) => a.id === hoveredItem.agencyId)
+        : null;
+  const hoveredWorkspace =
+    hoveredItem?.type === "workspace"
+      ? allWorkspaces.find((w) => w.id === hoveredItem.id)
+      : null;
+
   const isPackageHardGated =
     (role === "CLIENT" || role === "MANAGER") &&
     !!activeWorkspace &&
@@ -502,10 +155,6 @@ export function Sidebar({
               ["/settings", "/members", "/clients"].includes(item.to))
           );
         })
-        // requiresWorkspace: route KHÔNG có bản fallback ở "to" gốc (khác
-        // /dashboard, có cả bản agency-level lẫn /workspaces/:id/dashboard)
-        // — thiếu activeWorkspace thì không build được URL hợp lệ, ẩn hẳn
-        // thay vì để "to" trỏ vào route đã bị xoá.
         .filter((item) => !item.requiresWorkspace || activeWorkspace)
         .map((item) => {
           if (item.agencyScoped && currentAgencyId) {
@@ -522,7 +171,7 @@ export function Sidebar({
           }
           return item;
         })
-        .filter((item) => canAccess(item.to, systemRole, role));
+        .filter((item) => canAccess(item.to, systemRole ?? null, role ?? null));
 
       return { ...section, items };
     })
@@ -607,262 +256,34 @@ export function Sidebar({
         )}
       </div>
 
-      {/* Agency → Workspace switcher — 1 dropdown lồng nhau, luôn hiện để có nơi tạo mới. */}
-      <div
-        className="shrink-0 border-b"
-        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
-      >
-        <DropdownMenu>
-          <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
-            {collapsed ? (
-              <div className="bg-brand-orange-soft text-brand-orange mx-auto my-3 flex size-8 items-center justify-center rounded-md text-xs font-bold">
-                {(activeWorkspace?.name ?? currentAgencyName)
-                  ?.charAt(0)
-                  .toUpperCase() ?? "?"}
-              </div>
-            ) : (
-              <div className="border-border bg-muted/15 hover:bg-muted/30 mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors">
-                <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold">
-                  {(activeWorkspace?.name ?? currentAgencyName)
-                    ?.charAt(0)
-                    .toUpperCase() ?? "?"}
-                </div>
-                <div className="flex min-w-0 flex-col">
-                  <span className="truncate text-xs leading-tight font-semibold text-white">
-                    {activeWorkspace?.name ??
-                      currentAgencyName ??
-                      t("nav.orgSwitcher.placeholder")}
-                  </span>
-                  <span className="text-muted-foreground text-3xs mt-0.5 truncate leading-none">
-                    {activeWorkspace
-                      ? currentAgencyName
-                      : currentAgencyId &&
-                          agencyList.find((a) => a.id === currentAgencyId)
-                            ?.ownerId === currentUserId
-                        ? t("workspace.roles.OWNER")
-                        : t("nav.orgSwitcher.label")}
-                  </span>
-                </div>
-                <ChevronDown className="text-muted-foreground ml-auto size-3.5 shrink-0" />
-              </div>
-            )}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="ml-2 w-[220px]">
-            <DropdownMenuLabel className="text-muted-foreground text-3xs tracking-wider uppercase">
-              {t("nav.orgSwitcher.selectAgency")}
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {agencyList.length === 0 && (
-              <p className="text-muted-foreground px-2 py-2 text-xs">
-                {t("nav.orgSwitcher.noAgency")}
-              </p>
-            )}
-            {/* CLIENT chỉ join workspace_members, không phải agency member —
-                không gom theo agency, liệt kê thẳng để họ dễ hiểu. */}
-            {clientWorkspaces.length > 0 && (
-              <>
-                <div className="border-border ml-1 border-l pl-2">
-                  {clientWorkspaces.map((ws) => (
-                    <DropdownMenuItem
-                      key={ws.id}
-                      onClick={() =>
-                        ws.agencyId && onSwitchWorkspace(ws.agencyId, ws.id)
-                      }
-                      className={cn(
-                        "cursor-pointer justify-between gap-2 text-xs",
-                        activeWorkspace?.id === ws.id
-                          ? "text-brand-orange font-semibold"
-                          : "",
-                      )}
-                    >
-                      <span className="truncate">{ws.name}</span>
-                      <span className="text-muted-foreground text-3xs shrink-0 font-normal">
-                        {t("workspace.roles.CLIENT")}
-                      </span>
-                    </DropdownMenuItem>
-                  ))}
-                </div>
-                <DropdownMenuSeparator />
-              </>
-            )}
-            {agencyList.map((agency) => {
-              const agencyWs = allWorkspaces.filter(
-                (ws) => ws.agencyId === agency.id,
-              );
-              return (
-                <div key={agency.id}>
-                  <HoverCard openDelay={300} closeDelay={100}>
-                    <HoverCardTrigger asChild>
-                      <DropdownMenuItem
-                        onClick={() => onSwitchAgency(agency.id)}
-                        className={cn(
-                          "cursor-pointer justify-between text-xs",
-                          currentAgencyId === agency.id && !activeWorkspace
-                            ? "text-brand-orange font-semibold"
-                            : "",
-                        )}
-                      >
-                        <span className="flex min-w-0 items-center gap-1.5">
-                          <span className="truncate">{agency.name}</span>
-                          {agency.ownerId === currentUserId && (
-                            <span className="text-brand-orange bg-brand-orange-soft text-3xs shrink-0 rounded px-1 py-0.5 leading-none font-semibold">
-                              {t("workspace.roles.OWNER")}
-                            </span>
-                          )}
-                        </span>
-                      </DropdownMenuItem>
-                    </HoverCardTrigger>
-                    <HoverCardContent side="right" align="start" className="w-64">
-                      {/* Agency preview card */}
-                      <div className="space-y-2.5">
-                        <div className="flex items-center gap-2.5">
-                          {agency.logoUrl ? (
-                            <img
-                              src={agency.logoUrl}
-                              alt={agency.name}
-                              className="size-9 shrink-0 rounded-lg object-cover border border-border"
-                            />
-                          ) : (
-                            <div
-                              className="flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold"
-                              style={{
-                                background: agency.brandColor
-                                  ? `${agency.brandColor}20`
-                                  : "hsl(var(--brand-orange-soft, 15 100% 96%))",
-                                color:
-                                  agency.brandColor ??
-                                  "hsl(var(--brand-orange, 15 88% 55%))",
-                              }}
-                            >
-                              {agency.name.slice(0, 2).toUpperCase()}
-                            </div>
-                          )}
-                          <div className="min-w-0">
-                            <p className="text-xs font-semibold leading-tight truncate">{agency.name}</p>
-                            {agency.tagline && (
-                              <p className="text-muted-foreground text-3xs mt-0.5 truncate">{agency.tagline}</p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="space-y-1 text-3xs text-muted-foreground">
-                          {agency.category && (
-                            <div className="flex items-center gap-1.5">
-                              <Building2 className="size-3 shrink-0 text-brand-orange" />
-                              <span>{t(`agency.category.${agency.category}`)}</span>
-                            </div>
-                          )}
-                          {agency.location && (
-                            <div className="flex items-center gap-1.5">
-                              <MapPin className="size-3 shrink-0 text-brand-orange" />
-                              <span className="truncate">{agency.location}</span>
-                            </div>
-                          )}
-                          {agency.website && (
-                            <div className="flex items-center gap-1.5">
-                              <Globe className="size-3 shrink-0 text-brand-orange" />
-                              <span className="truncate">{agency.website}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 pt-1 border-t border-border/50">
-                          <span className="text-3xs text-muted-foreground">
-                            <FolderOpen className="size-3 inline mr-1 text-brand-orange" />
-                            {agencyWs.length} workspace
-                          </span>
-                          {agency.ownerId === currentUserId && (
-                            <span className="text-brand-orange bg-brand-orange/10 text-3xs rounded px-1.5 py-0.5 font-semibold">
-                              {t("workspace.roles.OWNER")}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
+      {/* Agency → Workspace switcher dropdown */}
+      <OrgSwitcherDropdown
+        collapsed={collapsed}
+        activeWorkspace={activeWorkspace ?? null}
+        currentAgencyId={currentAgencyId}
+        currentAgencyName={currentAgencyName}
+        agencyList={agencyList}
+        allWorkspaces={allWorkspaces}
+        clientWorkspaces={clientWorkspaces}
+        currentUserId={currentUserId}
+        dropdownOpen={dropdownOpen}
+        setDropdownOpen={setDropdownOpen}
+        handleMouseEnter={handleMouseEnter}
+        handleMouseLeave={handleMouseLeave}
+        clearHoveredItem={clearHoveredItem}
+        onSwitchAgency={onSwitchAgency}
+        onSwitchWorkspace={onSwitchWorkspace}
+      />
 
-                  <div className="border-border ml-3 border-l pl-2">
-                    {agencyWs.length === 0 && (
-                      <p className="text-muted-foreground text-3xs px-2 py-1.5">
-                        {t("nav.orgSwitcher.noWorkspace")}
-                      </p>
-                    )}
-                    {agencyWs.map((ws) => (
-                      <HoverCard key={ws.id} openDelay={300} closeDelay={100}>
-                        <HoverCardTrigger asChild>
-                          <DropdownMenuItem
-                            onClick={() => onSwitchWorkspace(agency.id, ws.id)}
-                            className={cn(
-                              "cursor-pointer justify-between gap-2 text-xs",
-                              activeWorkspace?.id === ws.id
-                                ? "text-brand-orange font-semibold"
-                                : "",
-                            )}
-                          >
-                            <span className="truncate">{ws.name}</span>
-                            {ws.myRole && (
-                              <span className="text-muted-foreground text-3xs shrink-0 font-normal">
-                                {t(`workspace.roles.${ws.myRole}`)}
-                              </span>
-                            )}
-                          </DropdownMenuItem>
-                        </HoverCardTrigger>
-                        <HoverCardContent side="right" align="start" className="w-56">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              {ws.logoUrl ? (
-                                <img
-                                  src={ws.logoUrl}
-                                  alt={ws.name}
-                                  className="size-7 shrink-0 rounded-md object-cover border border-border"
-                                />
-                              ) : (
-                                <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-brand-orange/10 text-brand-orange text-[10px] font-bold">
-                                  {ws.name.slice(0, 1).toUpperCase()}
-                                </div>
-                              )}
-                              <div className="min-w-0">
-                                <p className="text-xs font-semibold truncate">{ws.name}</p>
-                                {ws.myRole && (
-                                  <p className="text-3xs text-muted-foreground mt-0.5">
-                                    {t(`workspace.roles.${ws.myRole}`)}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                            <p className="text-3xs text-muted-foreground">
-                              {agency.name}
-                            </p>
-                          </div>
-                        </HoverCardContent>
-                      </HoverCard>
-                    ))}
-                    {agency.ownerId === currentUserId && (
-                      <DropdownMenuItem asChild>
-                        <NavLink
-                          to={`/workspaces/create?agencyId=${agency.id}`}
-                          className="text-brand-orange text-3xs flex cursor-pointer items-center gap-1.5 font-semibold"
-                        >
-                          <FolderPlus className="size-3" />
-                          {t("nav.orgSwitcher.createWorkspace")}
-                        </NavLink>
-                      </DropdownMenuItem>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <NavLink
-                to="/agency/create"
-                className="text-brand-orange flex cursor-pointer items-center gap-1.5 text-xs font-semibold"
-              >
-                <FolderPlus className="size-3.5" />
-                {t("nav.orgSwitcher.createAgency")}
-              </NavLink>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      {/* Shared hover preview popup portal */}
+      <SidebarHoverPreview
+        dropdownOpen={dropdownOpen}
+        hoveredItem={hoveredItem}
+        hoveredAgency={hoveredAgency}
+        hoveredWorkspace={hoveredWorkspace}
+        allWorkspaces={allWorkspaces}
+        currentUserId={currentUserId}
+      />
 
       {/* Back button — thoát khỏi workspace context về agency */}
       {activeWorkspace && onLeaveWorkspace && (

@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
+  Crop,
   Globe,
+  History,
   MapPin,
   Pencil,
   Phone,
@@ -29,6 +31,7 @@ import { workspaceTemplateService } from "@/services/workspaceTemplateService";
 import { extractErrorMessage } from "@/utils/error";
 import { IndustrySpecificFields } from "./components/IndustrySpecificFields";
 import { WorkspacePreviewCard } from "./components/WorkspacePreviewCard";
+import { ImageCropperModal, RecentAssetsModal } from "@/components/shared/image-editor";
 
 export function WorkspaceSettingsPage() {
   const { t } = useTranslation();
@@ -78,6 +81,58 @@ export function WorkspaceSettingsPage() {
   const [templateIndustryFields, setTemplateIndustryFields] = useState<
     Record<string, unknown>
   >({});
+
+  // Cropper & Recent Assets Modals
+  const [logoCropperOpen, setLogoCropperOpen] = useState(false);
+  const [logoCropperSrc, setLogoCropperSrc] = useState<string | null>(null);
+  const [logoRecentModalOpen, setLogoRecentModalOpen] = useState(false);
+
+  const [bannerCropperOpen, setBannerCropperOpen] = useState(false);
+  const [bannerCropperSrc, setBannerCropperSrc] = useState<string | null>(null);
+  const [bannerRecentModalOpen, setBannerRecentModalOpen] = useState(false);
+
+  const onLogoFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setLogoCropperSrc(url);
+    setLogoCropperOpen(true);
+  };
+
+  const onLogoCropConfirm = async (croppedFile: File) => {
+    setLogoCropperOpen(false);
+    const fakeEvent = {
+      target: { files: [croppedFile], value: "" },
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
+    await handleLogoChange(fakeEvent);
+  };
+
+  const onBannerFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setBannerCropperSrc(url);
+    setBannerCropperOpen(true);
+  };
+
+  const onBannerCropConfirm = async (croppedFile: File) => {
+    setBannerCropperOpen(false);
+    await handleBannerChange(croppedFile);
+  };
+
+  const onSelectRecentLogo = (url: string) => {
+    setLogoRecentModalOpen(false);
+    setLogoCropperSrc(url);
+    setLogoCropperOpen(true);
+  };
+
+  const onSelectRecentBanner = (url: string) => {
+    setBannerRecentModalOpen(false);
+    setBannerCropperSrc(url);
+    setBannerCropperOpen(true);
+  };
 
   const handleSaveTemplate = async () => {
     if (!workspaceId || !templateName.trim()) return;
@@ -163,7 +218,7 @@ export function WorkspaceSettingsPage() {
           bannerUrl={bannerUrl}
           uploadingBanner={uploadingBanner}
           bannerInputRef={bannerInputRef}
-          onBannerFileChange={handleBannerChange}
+          onBannerFileChange={onBannerFileSelected}
           uploadBannerLabel={t("workspace.settings.bannerUploadButton")}
           bannerEmptyLabel={t("workspace.settings.bannerEmptyLabel")}
           canEditBanner={canManage}
@@ -189,7 +244,7 @@ export function WorkspaceSettingsPage() {
           canEditLogo={canManage && isEditing}
           uploadingLogo={uploadingLogo}
           logoInputRef={fileInputRef}
-          onLogoFileChange={handleLogoChange}
+          onLogoFileChange={onLogoFileSelected}
           uploadLogoTitle={t("workspace.settings.logoUpload")}
           title={name}
           subtitle={
@@ -211,6 +266,59 @@ export function WorkspaceSettingsPage() {
                 <Pencil className="size-3.5" />
                 {t("workspace.settings.editButton")}
               </Button>
+            ) : canManage && isEditing ? (
+              <div className="flex flex-wrap items-center gap-1.5">
+                {bannerUrl && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 text-xs text-brand-orange border-brand-orange/30 hover:bg-brand-orange/10"
+                    onClick={() => {
+                      setBannerCropperSrc(bannerUrl);
+                      setBannerCropperOpen(true);
+                    }}
+                  >
+                    <Crop className="size-3.5" />
+                    Cắt ảnh bìa
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 text-xs"
+                  onClick={() => setBannerRecentModalOpen(true)}
+                >
+                  <History className="size-3.5 text-muted-foreground" />
+                  Ảnh bìa cũ
+                </Button>
+                {logoUrl && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 text-xs text-brand-orange border-brand-orange/30 hover:bg-brand-orange/10"
+                    onClick={() => {
+                      setLogoCropperSrc(logoUrl);
+                      setLogoCropperOpen(true);
+                    }}
+                  >
+                    <Crop className="size-3.5" />
+                    Cắt logo
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 text-xs"
+                  onClick={() => setLogoRecentModalOpen(true)}
+                >
+                  <History className="size-3.5 text-muted-foreground" />
+                  Logo cũ
+                </Button>
+              </div>
             ) : null
           }
         >
@@ -329,6 +437,8 @@ export function WorkspaceSettingsPage() {
                   name={name}
                   timezone={timezone}
                   logoUrl={logoUrl}
+                  bannerUrl={bannerUrl}
+                  brandColor={brandColor}
                   industry={industry || null}
                   companySize={companySize || null}
                   website={website}
@@ -531,6 +641,37 @@ export function WorkspaceSettingsPage() {
           </div>
         </div>
       )}
+
+      {/* Cropper & Recent Modals */}
+      <ImageCropperModal
+        isOpen={logoCropperOpen}
+        onClose={() => setLogoCropperOpen(false)}
+        cropType="logo"
+        imageUrl={logoCropperSrc}
+        onConfirm={onLogoCropConfirm}
+      />
+
+      <RecentAssetsModal
+        isOpen={logoRecentModalOpen}
+        onClose={() => setLogoRecentModalOpen(false)}
+        category="logo"
+        onSelect={onSelectRecentLogo}
+      />
+
+      <ImageCropperModal
+        isOpen={bannerCropperOpen}
+        onClose={() => setBannerCropperOpen(false)}
+        cropType="banner"
+        imageUrl={bannerCropperSrc}
+        onConfirm={onBannerCropConfirm}
+      />
+
+      <RecentAssetsModal
+        isOpen={bannerRecentModalOpen}
+        onClose={() => setBannerRecentModalOpen(false)}
+        category="banner"
+        onSelect={onSelectRecentBanner}
+      />
     </div>
   );
 }

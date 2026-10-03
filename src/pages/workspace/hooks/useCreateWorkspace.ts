@@ -6,7 +6,6 @@ import {
   workspaceService,
   type AssignEntry,
 } from "@/services/workspaceService";
-import { agencyService } from "@/services/agencyService";
 import { workspaceTemplateService } from "@/services/workspaceTemplateService";
 import { extractErrorMessage } from "@/utils/error";
 import { useAgencyStore } from "@/store/agencyStore";
@@ -103,7 +102,6 @@ export function useCreateWorkspace() {
       .catch(() => {
         /* template load lỗi — không chặn tạo workspace, chỉ bỏ prefill */
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [templateId]);
 
   const handleTemplateSelect = (id: string) => {
@@ -145,15 +143,13 @@ export function useCreateWorkspace() {
           Object.keys(industryFields).length > 0 ? industryFields : undefined,
         assignMembers,
       });
-      // Gửi lời mời CLIENT (nếu có) kèm sẵn workspace vừa tạo — không chặn
-      // luồng chính nếu 1 email lỗi (email trùng, đã có lời mời, v.v.).
+      // Gửi lời mời CLIENT (nếu có) vào workspace vừa tạo — đồng bộ logic với trang Khách hàng (AddClientDialog)
       const validEmails = clientEmails.map((e) => e.trim()).filter(Boolean);
       if (validEmails.length > 0) {
         const results = await Promise.allSettled(
           validEmails.map((email) =>
-            agencyService.inviteMember(agencyId, {
+            workspaceService.inviteMember(data.data.id, {
               email,
-              workspaceId: data.data.id,
               role: "CLIENT",
             }),
           ),

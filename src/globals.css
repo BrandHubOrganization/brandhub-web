@@ -199,6 +199,19 @@
   --radius-sm: calc(var(--radius) - 4px);
 }
 
+/* ─── Select / Dropdown: đồng nhất màu cam + bo góc ─────────────────────── */
+@layer base {
+  /* Màu highlight (option được chọn) dùng cam thương hiệu thay vì xanh mặc định */
+  select {
+    accent-color: hsl(var(--brand-orange));
+  }
+
+  /* Bo góc cho option items (Webkit / Chromium) */
+  select option {
+    border-radius: 6px;
+  }
+}
+
 /* Mini-post live effects: tim bay lên (IG/TikTok) + số đếm "pop" khi tăng */
 @keyframes float-heart {
   0% {

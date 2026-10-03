@@ -8,6 +8,7 @@ import { useClientProfileStore } from "@/store/clientProfileStore";
 import { canAccess } from "@/routes/access";
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
+import { PageFallback } from "./PageFallback";
 import {
   Sheet,
   SheetContent,
@@ -322,7 +323,9 @@ export function Layout() {
 
         {/* Page Content Outlet */}
         <main className="bg-background flex-1 overflow-y-auto pb-16 md:pb-0">
-          <Outlet />
+          <React.Suspense fallback={<PageFallback />}>
+            <Outlet />
+          </React.Suspense>
         </main>
       </div>
 

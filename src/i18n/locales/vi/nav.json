@@ -31,7 +31,7 @@
   "workspaceClients": "Client",
   "invitations": "Lời mời",
   "portal": "Cổng Khách hàng",
-  "workspaceClientProfile": "Hồ sơ Thương hiệu",
+  "workspaceClientProfile": "Hồ sơ Khách hàng",
   "mediaPackages": "Gói dịch vụ",
   "manageMediaPackages": "Quản lý gói truyền thông",
   "selectMediaPackage": "Chọn gói truyền thông",
@@ -50,10 +50,11 @@
   "agencySub": {
     "profile": "Hồ sơ công ty",
     "members": "Thành viên công ty",
+    "roles": "Vai trò & Phân quyền",
     "stats": "Thống kê công ty"
   },
   "workspaceSub": {
-    "settings": "Cài đặt workspace",
+    "settings": "Cài đặt chung",
     "members": "Thành viên",
     "clients": "Khách hàng"
   },
@@ -61,16 +62,17 @@
   "clientInvitations": "Lời mời thành khách hàng",
   "agencyList": "Danh sách công ty",
   "workspaceList": "Danh sách workspace",
-  "clientProfile": "Hồ sơ Thương hiệu",
+  "clientProfile": "Hồ sơ Khách hàng",
   "sections": {
     "overview": "Tổng quan",
     "create": "Sáng tạo",
     "manage": "Quản lý",
     "agency": "Công ty",
     "workspaceSettings": "Cài đặt Workspace",
-    "lists": "Danh sách",
+    "lists": "Không gian làm việc",
     "invitations": "Lời mời",
     "settings": "Cài đặt",
+    "help": "Trợ giúp & Hướng dẫn",
     "system": "Hệ thống"
   },
   "logout": "Đăng xuất",
@@ -90,5 +92,7 @@
   "create": "Tạo mới",
   "accept": "Xác nhận",
   "leaveAgency": "Thoát agency",
-  "leaveWorkspace": "Thoát workspace"
+  "leaveWorkspace": "Thoát workspace",
+  "faq": "Hỏi đáp (FAQ)",
+  "guide": "Cẩm nang hướng dẫn"
 }

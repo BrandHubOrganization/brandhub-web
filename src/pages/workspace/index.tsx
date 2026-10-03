@@ -153,6 +153,8 @@ export function WorkspacePage() {
     <PageWrapper
       title={t("workspace.list.title", "Danh sách workspace")}
       description={t("workspace.list.description", "Quản lý và truy cập các không gian làm việc (workspace) của bạn trên các công ty.")}
+      introSummary="Không gian làm việc (Workspace) là đơn vị cốt lõi đại diện cho một thương hiệu hoặc chiến dịch. Mỗi workspace chứa lịch nội dung riêng, thư viện bài viết và danh sách cộng tác viên/khách hàng độc lập."
+      guideUrl="/help/guide#workspace"
       actions={
         <Button
           className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white shadow-xs"
@@ -339,57 +341,73 @@ export function WorkspacePage() {
                   <div
                     key={ws.id}
                     onClick={() => navigate(`/workspaces/${ws.id}/dashboard`)}
-                    className="bg-card rounded-xl border border-border overflow-hidden shadow-xs transition-all hover:border-brand-orange/40 flex flex-col group cursor-pointer"
+                    className="group bg-card rounded-xl border border-border overflow-hidden shadow-xs transition-all duration-200 hover:border-brand-orange/40 hover:shadow-md flex flex-col cursor-pointer"
                   >
-                    {/* Top Brand Color Strip */}
-                    <div
-                      className="h-1.5 w-full shrink-0"
-                      style={{ backgroundColor: brandColor }}
-                    />
+                    {/* Top Cover Banner */}
+                    <div className="relative h-28 w-full shrink-0 overflow-hidden bg-muted/40">
+                      {ws.bannerUrl ? (
+                        <img
+                          src={ws.bannerUrl}
+                          alt=""
+                          className="size-full object-cover transition-transform duration-500 group-hover:scale-105 select-none"
+                        />
+                      ) : (
+                        <div
+                          className="size-full select-none"
+                          style={{
+                            background: brandColor
+                              ? `linear-gradient(135deg, ${brandColor}38 0%, ${brandColor}15 50%, ${brandColor}08 100%)`
+                              : "linear-gradient(135deg, hsl(var(--muted)/0.7) 0%, hsl(var(--muted)/0.25) 100%)",
+                          }}
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
+                    </div>
 
-                    <div className="p-5 flex-1 flex flex-col justify-between">
+                    <div className="px-5 pb-5 pt-0 flex-1 flex flex-col justify-between">
                       {/* Header info */}
                       <div>
-                        <div className="flex items-start gap-3">
+                        {/* Overlapping Avatar + Role */}
+                        <div className="relative -mt-8 mb-3 flex items-end justify-between gap-3">
                           {ws.logoUrl ? (
                             <img
                               src={ws.logoUrl}
                               alt={ws.name}
-                              className="size-11 shrink-0 rounded-xl object-cover border border-border"
+                              className="size-16 shrink-0 rounded-2xl object-cover border-4 border-card bg-card shadow-md transition-transform duration-300 group-hover:scale-102"
                             />
                           ) : (
                             <div
-                              className="flex size-11 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-colors select-none"
+                              className="flex size-16 shrink-0 items-center justify-center rounded-2xl text-base font-bold border-4 border-card shadow-md select-none transition-transform duration-300 group-hover:scale-102 text-white"
                               style={{
-                                backgroundColor: `${brandColor}18`,
-                                color: brandColor,
+                                backgroundColor: brandColor || "#f05a28",
+                                color: "#ffffff",
                               }}
                             >
                               {ws.logoIcon ? (
-                                <LogoIcon className="size-5" />
+                                <LogoIcon className="size-6 text-white" />
                               ) : (
                                 ws.name.slice(0, 2).toUpperCase()
                               )}
                             </div>
                           )}
 
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-2">
-                              <h3
-                                className="truncate font-semibold text-sm text-foreground hover:text-brand-orange transition-colors"
-                              >
-                                {ws.name}
-                              </h3>
-                              {ws.myRole && (
-                                <span className="rounded-full bg-brand-orange/10 px-2 py-0.5 text-[10px] font-semibold text-brand-orange shrink-0">
-                                  {t(`workspace.roles.${ws.myRole}`, ws.myRole)}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-muted-foreground truncate text-xs mt-0.5">
-                              {ws.tagline || ws.description || "—"}
-                            </p>
-                          </div>
+                          {ws.myRole && (
+                            <span className="rounded-full bg-brand-orange/10 px-2.5 py-1 text-[11px] font-semibold text-brand-orange shrink-0 border border-brand-orange/20 shadow-2xs">
+                              {t(`workspace.roles.${ws.myRole}`, ws.myRole)}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Title & Tagline */}
+                        <div>
+                          <h3
+                            className="truncate font-semibold text-sm sm:text-base text-foreground group-hover:text-brand-orange transition-colors"
+                          >
+                            {ws.name}
+                          </h3>
+                          <p className="text-muted-foreground truncate text-xs mt-1">
+                            {ws.tagline || ws.description || "—"}
+                          </p>
                         </div>
 
                         {/* Parent Company (Agency) Tag */}
@@ -415,12 +433,12 @@ export function WorkspacePage() {
                         {(ws.industry || ws.companySize) && (
                           <div className="mt-3 flex flex-wrap gap-1.5">
                             {ws.industry && (
-                              <span className="bg-brand-orange/10 text-brand-orange text-[11px] rounded-full px-2.5 py-0.5 font-medium">
+                              <span className="bg-brand-orange/10 text-brand-orange text-[11px] rounded-full px-2.5 py-0.5 font-medium border border-brand-orange/15">
                                 {t(`workspace.industry.${ws.industry}`, ws.industry)}
                               </span>
                             )}
                             {ws.companySize && (
-                              <span className="bg-muted text-muted-foreground text-[11px] rounded-full px-2.5 py-0.5 font-medium">
+                              <span className="bg-muted text-muted-foreground text-[11px] rounded-full px-2.5 py-0.5 font-medium border border-border/50">
                                 {t(`agency.companySize.${ws.companySize}`, ws.companySize)}
                               </span>
                             )}
@@ -442,6 +460,7 @@ export function WorkspacePage() {
                                 href={ws.website.startsWith("http") ? ws.website : `https://${ws.website}`}
                                 target="_blank"
                                 rel="noreferrer"
+                                onClick={(e) => e.stopPropagation()}
                                 className="truncate hover:underline hover:text-foreground"
                               >
                                 {ws.website}
@@ -472,7 +491,7 @@ export function WorkspacePage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex-1 cursor-pointer gap-1.5 text-xs h-8 hover:border-brand-orange/50 hover:text-brand-orange"
+                          className="flex-1 cursor-pointer gap-1.5 text-xs h-8.5 hover:border-brand-orange/50 hover:text-brand-orange hover:bg-brand-orange/[0.04]"
                           onClick={() => navigate(`/workspaces/${ws.id}/dashboard`)}
                         >
                           <LayoutDashboard className="size-3.5" />
@@ -485,7 +504,7 @@ export function WorkspacePage() {
                               variant="outline"
                               size="sm"
                               title={t("workspace.list.settings", "Cài đặt")}
-                              className="size-8 p-0 cursor-pointer text-muted-foreground hover:text-foreground"
+                              className="size-8.5 p-0 cursor-pointer text-muted-foreground hover:text-foreground hover:bg-muted/40"
                               onClick={() => navigate(`/workspaces/${ws.id}/settings`)}
                             >
                               <Settings className="size-3.5" />
@@ -494,7 +513,7 @@ export function WorkspacePage() {
                               variant="outline"
                               size="sm"
                               title={t("workspace.list.membersButton", "Thành viên")}
-                              className="size-8 p-0 cursor-pointer text-muted-foreground hover:text-foreground"
+                              className="size-8.5 p-0 cursor-pointer text-muted-foreground hover:text-foreground hover:bg-muted/40"
                               onClick={() => navigate(`/workspaces/${ws.id}/members`)}
                             >
                               <Users className="size-3.5" />
