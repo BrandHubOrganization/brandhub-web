@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 interface EmojiEntry {
   emoji: string;
   annotation: string;
+  hexcode?: string;
   group: string;
   subgroup: string;
   tags: string[];

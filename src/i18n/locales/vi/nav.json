@@ -30,7 +30,7 @@
   "workspaceClients": "Client",
   "invitations": "Lời mời",
   "portal": "Cổng Khách hàng",
-  "workspaceClientProfile": "Hồ sơ Thương hiệu",
+  "workspaceClientProfile": "Hồ sơ Khách hàng",
   "admin": "Quản trị Hệ thống",
   "requests": "Yêu cầu Nội dung",
   "templates": "Mẫu Bài đăng",
@@ -50,7 +50,7 @@
     "stats": "Thống kê công ty"
   },
   "workspaceSub": {
-    "settings": "Cài đặt workspace",
+    "settings": "Cài đặt chung",
     "members": "Thành viên",
     "clients": "Khách hàng"
   },
@@ -58,14 +58,14 @@
   "clientInvitations": "Lời mời thành khách hàng",
   "agencyList": "Danh sách công ty",
   "workspaceList": "Danh sách workspace",
-  "clientProfile": "Hồ sơ Thương hiệu",
+  "clientProfile": "Hồ sơ Khách hàng",
   "sections": {
     "overview": "Tổng quan",
     "create": "Sáng tạo",
     "manage": "Quản lý",
     "agency": "Công ty",
     "workspaceSettings": "Cài đặt Workspace",
-    "lists": "Danh sách",
+    "lists": "Không gian làm việc",
     "invitations": "Lời mời",
     "settings": "Cài đặt",
     "help": "Trợ giúp & Hướng dẫn",

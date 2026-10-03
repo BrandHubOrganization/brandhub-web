@@ -71,7 +71,7 @@ export function ContentWritingPage() {
   const user = useAuthStore((s) => s.user);
   const authorName =
     user
-      ? [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email
+      ? user.name || user.email
       : "BrandHub Creator";
 
   // ── Task creation on first visit ─────────────────────────────────────────

@@ -50,7 +50,7 @@
     "stats": "Agency stats"
   },
   "workspaceSub": {
-    "settings": "Workspace settings",
+    "settings": "General settings",
     "members": "Members",
     "clients": "Clients"
   },
@@ -65,7 +65,7 @@
     "manage": "Manage",
     "agency": "Company",
     "workspaceSettings": "Workspace Settings",
-    "lists": "Lists",
+    "lists": "Workspaces",
     "invitations": "Invitations",
     "settings": "Settings",
     "help": "Help & Resources",

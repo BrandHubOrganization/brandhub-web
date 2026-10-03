@@ -108,6 +108,24 @@ const NAV_KEY_MAP: Record<string, string> = {
   "client": "nav.clients",
 };
 
+const WORKSPACE_SECTION_ROOTS: Record<
+  string,
+  { labelKey: string; defaultPath: string }
+> = {
+  agency: { labelKey: "nav.agencyList", defaultPath: "/agency" },
+  workspace: { labelKey: "nav.workspaceList", defaultPath: "/workspace" },
+  "client-profiles": {
+    labelKey: "nav.clientProfile",
+    defaultPath: "/client-profiles",
+  },
+  clients: { labelKey: "nav.clients", defaultPath: "/clients" },
+  reports: { labelKey: "nav.reports", defaultPath: "/reports" },
+  "ai-studio": {
+    labelKey: "nav.aiStudio",
+    defaultPath: "/ai-studio/ambassadors",
+  },
+};
+
 export interface NavbarProps {
   collapsed: boolean;
   toggleCollapsed: () => void;
@@ -207,9 +225,11 @@ export function Navbar({
       }
       // "workspaces" root: đã được thay bằng crumb agency ở trên
       if (idx === 0 && seg === "workspaces") return;
-      // "agency" root: link về danh sách công ty
-      if (idx === 0 && seg === "agency") {
-        crumbs.push({ label: t("nav.agencyList"), path: "/agency" });
+      // Các trang thuộc nhóm "Không gian làm việc" (nav.sections.lists)
+      if (idx === 0 && WORKSPACE_SECTION_ROOTS[seg]) {
+        const item = WORKSPACE_SECTION_ROOTS[seg];
+        crumbs.push({ label: t("nav.sections.lists"), path: item.defaultPath });
+        crumbs.push({ label: t(item.labelKey), path: item.defaultPath });
         return;
       }
       // Bỏ qua "client" segment giữa đường (vd /client/invitations)
@@ -278,7 +298,7 @@ export function Navbar({
           {breadcrumbs.map((b, idx) => {
             const isLast = idx === breadcrumbs.length - 1;
             return (
-              <React.Fragment key={b.path}>
+              <React.Fragment key={`${b.path}-${idx}`}>
                 {idx > 0 && <span className="text-muted-foreground/40">/</span>}
                 <span
                   className={cn(

@@ -6,6 +6,7 @@ import { useAuthStore } from "@/store/authStore";
 import { workspaceService } from "@/services/workspaceService";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
+import { saveRecentAsset } from "@/utils/recentAssetsStorage";
 import type {
   CompanySize,
   ReportFrequency,
@@ -114,6 +115,7 @@ export function useWorkspaceSettings() {
     try {
       const { data } = await workspaceService.uploadLogo(workspaceId, file);
       setLogoUrl(data.data.logoUrl);
+      if (data.data.logoUrl) saveRecentAsset("logo", data.data.logoUrl);
       toast.success(t("workspace.settings.logoUploadSuccess"));
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("common.actionFailed")));
@@ -122,10 +124,8 @@ export function useWorkspaceSettings() {
     }
   };
 
-  const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file || !workspaceId) return;
+  const handleBannerChange = async (file: File) => {
+    if (!workspaceId) return;
 
     if (!ACCEPTED_LOGO_TYPES.includes(file.type)) {
       toast.error(t("workspace.settings.logoInvalidType"));
@@ -140,6 +140,7 @@ export function useWorkspaceSettings() {
     try {
       const { data } = await workspaceService.uploadBanner(workspaceId, file);
       setBannerUrl(data.data.bannerUrl);
+      if (data.data.bannerUrl) saveRecentAsset("banner", data.data.bannerUrl);
       toast.success(t("workspace.settings.bannerUploadSuccess"));
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("common.actionFailed")));
