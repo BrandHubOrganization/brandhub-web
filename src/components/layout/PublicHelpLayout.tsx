@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { PageFallback } from "./PageFallback";
 import {
   BookOpen,
   HelpCircle,
@@ -129,7 +131,9 @@ export function PublicHelpLayout() {
 
       {/* ── MAIN CONTENT ── */}
       <main className="flex-1 w-full mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <Outlet />
+        <Suspense fallback={<PageFallback />}>
+          <Outlet />
+        </Suspense>
       </main>
 
       {/* ── COMPACT FOOTER ── */}
