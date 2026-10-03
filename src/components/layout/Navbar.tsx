@@ -101,6 +101,8 @@ const NAV_KEY_MAP: Record<string, string> = {
   "notification-settings": "nav.notificationSettings",
   security: "nav.security",
   profile: "nav.profile",
+  "media-package": "nav.mediaPackages",
+  "media-packages": "nav.manageMediaPackages",
   stats: "nav.agencySub.stats",
   accept: "nav.accept",
   video: "aiStudio.video.title",

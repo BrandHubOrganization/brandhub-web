@@ -16,15 +16,32 @@
   "refreshError": "Failed to refresh token.",
   "status": {
     "CONNECTED": "Connected",
+    "ACTIVE": "Connected",
+    "EXPIRING_SOON": "Expiring Soon",
     "EXPIRED": "Expired",
+    "REVOKED": "Revoked",
     "DISCONNECTED": "Disconnected"
   },
+  "expiringSoonWarning": "Connection expires in {{days}} days. Please reconnect to ensure uninterrupted automatic publishing.",
   "actions": {
     "connect": "Connect",
+    "reconnect": "Reconnect",
     "disconnect": "Disconnect",
     "refreshToken": "Refresh Token"
   },
   "connectDialog": {
-    "title": "Select a platform to connect"
+    "title": "Select a platform to connect",
+    "description": "Authorize permissions to allow automatic posting to your social media channels."
+  },
+  "disconnectDialog": {
+    "title": "Disconnect Social Account",
+    "description": "Are you sure you want to disconnect <strong>{{accountName}}</strong> ({{platform}})? Scheduled automatic posts for this channel will not be published until you reconnect.",
+    "confirmText": "Disconnect",
+    "cancelText": "Cancel"
+  },
+  "callback": {
+    "success": "{{platform}} account connected successfully!",
+    "error": "Failed to connect {{platform}} account: {{message}}",
+    "unknownError": "An error occurred during OAuth authorization."
   }
 }

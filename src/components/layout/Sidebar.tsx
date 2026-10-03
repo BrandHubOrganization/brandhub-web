@@ -13,65 +13,68 @@ import { OrgSwitcherDropdown } from "./sidebar/OrgSwitcherDropdown";
 
 export type { NavItem, NavSection };
 
-export interface SidebarProps {
-  collapsed: boolean;
+interface SidebarProps {
+  collapsed?: boolean;
+  className?: string;
   role?: MemberRole | null;
   systemRole?: SystemRole | null;
-  workspaces: Workspace[];
-  activeWorkspace: Workspace | null;
-  onSwitchWorkspace: (agencyId: string, workspaceId: string) => void;
-  className?: string;
+  workspaces?: Workspace[];
+  activeWorkspace?: Workspace | null;
+  onSwitchWorkspace?: (agencyIdArg: string, workspaceId: string) => void;
   onMobileItemClick?: () => void;
-  /** Đang chọn 1 agency cụ thể hay chưa — chưa chọn agency thì không có
-   * ngữ cảnh để lọc workspace, nên ẩn hẳn ô chọn workspace. */
   hasAgency?: boolean;
-  /** Toàn bộ agency user thuộc về, để build dropdown lồng nhau agency→workspace. */
-  agencyList: Agency[];
-  /** Toàn bộ workspace (không lọc theo agency), để nhóm theo từng agency trong dropdown. */
-  allWorkspaces: Workspace[];
-  currentAgencyId: string | null;
-  onSwitchAgency: (agencyId: string) => void;
-  /** Callback khi user bấm "Back" thoát khỏi agency context. */
+  agencyList?: Agency[];
+  allWorkspaces?: Workspace[];
+  currentAgencyId?: string | null;
+  onSwitchAgency?: (id: string) => void;
   onLeaveAgency?: () => void;
-  /** Callback khi user bấm "Back" thoát khỏi workspace context về agency. */
   onLeaveWorkspace?: () => void;
-  /** So agency.ownerId để hiện badge "Owner" đúng agency mình sở hữu trong
-   * dropdown — owner gắn theo agency, không phải theo workspace/role hiện
-   * tại (agency chưa có workspace vẫn phải thấy mình là chủ). */
   currentUserId?: string | null;
 }
 
 export function Sidebar({
-  collapsed,
-  role = null,
-  systemRole = null,
+  collapsed = false,
+  className,
+  role,
+  systemRole,
   activeWorkspace,
   onSwitchWorkspace,
-  className,
   onMobileItemClick,
-  agencyList,
-  allWorkspaces,
-  currentAgencyId,
+  agencyList = [],
+  allWorkspaces = [],
+  currentAgencyId = null,
   onSwitchAgency,
   onLeaveAgency,
   onLeaveWorkspace,
-  currentUserId = null,
+  currentUserId,
 }: SidebarProps) {
   const { t } = useTranslation();
-  const currentAgencyName =
-    agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
-  const clientWorkspaces = allWorkspaces.filter((ws) => ws.myRole === "CLIENT");
-
   const location = useLocation();
+
+  // State dropdown org switcher
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
+
+  // Agency đang active
+  const currentAgency = React.useMemo(
+    () => agencyList.find((a) => a.id === currentAgencyId) ?? null,
+    [agencyList, currentAgencyId],
+  );
+  const currentAgencyName = currentAgency?.name ?? null;
+
+  // Lọc workspaces thuộc agency hiện tại (hoặc client workspaces nếu có)
+  const clientWorkspaces = React.useMemo(() => {
+    if (currentAgencyId) {
+      return allWorkspaces.filter((w) => w.agencyId === currentAgencyId);
+    }
+    return allWorkspaces;
+  }, [allWorkspaces, currentAgencyId]);
+
+  // State cho hover preview popup
   const [hoveredItem, setHoveredItem] = React.useState<HoveredItemInfo | null>(null);
   const hoverTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clearHoveredItem = React.useCallback(() => {
-    if (hoverTimerRef.current) {
-      clearTimeout(hoverTimerRef.current);
-      hoverTimerRef.current = null;
-    }
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     setHoveredItem(null);
   }, []);
 
@@ -80,9 +83,9 @@ export function Sidebar({
     item: Omit<HoveredItemInfo, "rect">,
   ) => {
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
-    if (!dropdownOpen) return;
-    const rect = e.currentTarget.getBoundingClientRect();
+    const target = e.currentTarget;
     hoverTimerRef.current = setTimeout(() => {
+      const rect = target.getBoundingClientRect();
       setHoveredItem({ ...item, rect });
     }, 180);
   };
@@ -110,15 +113,25 @@ export function Sidebar({
       ? allWorkspaces.find((w) => w.id === hoveredItem.id)
       : null;
 
+  const isPackageHardGated =
+    (role === "CLIENT" || role === "MANAGER") &&
+    !!activeWorkspace &&
+    activeWorkspace.packageNegotiationStatus !== "APPROVED";
+
   // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
   // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
   // "create" và "workspaceSettings" ẩn vì cần ngữ cảnh 1 workspace cụ thể.
+  // Trước khi duyệt gói, Manager vẫn quản lý được thiết lập Workspace.
   const visibleSectionKeys: string[] | null =
     systemRole === "ADMIN"
       ? ["system"]
       : !activeWorkspace
         ? ["overview", "agency", "lists", "invitations", "settings"]
-        : ["overview", "create", "workspaceSettings"];
+        : isPackageHardGated
+          ? role === "MANAGER"
+            ? ["overview", "workspaceSettings"]
+            : ["overview"]
+          : ["overview", "create", "workspaceSettings"];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
@@ -133,6 +146,15 @@ export function Sidebar({
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
         .filter((item) => !item.hideInAgency || !currentAgencyId)
+        .filter((item) => {
+          if (!isPackageHardGated) return true;
+          return (
+            item.to === "/media-package" ||
+            item.to === "/chat" ||
+            (role === "MANAGER" &&
+              ["/settings", "/members", "/clients"].includes(item.to))
+          );
+        })
         .filter((item) => !item.requiresWorkspace || activeWorkspace)
         .map((item) => {
           if (item.agencyScoped && currentAgencyId) {
@@ -149,7 +171,7 @@ export function Sidebar({
           }
           return item;
         })
-        .filter((item) => canAccess(item.to, systemRole, role));
+        .filter((item) => canAccess(item.to, systemRole ?? null, role ?? null));
 
       return { ...section, items };
     })
@@ -237,7 +259,7 @@ export function Sidebar({
       {/* Agency → Workspace switcher dropdown */}
       <OrgSwitcherDropdown
         collapsed={collapsed}
-        activeWorkspace={activeWorkspace}
+        activeWorkspace={activeWorkspace ?? null}
         currentAgencyId={currentAgencyId}
         currentAgencyName={currentAgencyName}
         agencyList={agencyList}

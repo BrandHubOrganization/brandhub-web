@@ -29,8 +29,8 @@ export interface OrgSwitcherDropdownProps {
   handleMouseEnter: (e: React.MouseEvent<HTMLElement>, item: Omit<HoveredItemInfo, "rect">) => void;
   handleMouseLeave: () => void;
   clearHoveredItem: () => void;
-  onSwitchAgency: (agencyId: string) => void;
-  onSwitchWorkspace: (agencyId: string, workspaceId: string) => void;
+  onSwitchAgency?: (agencyId: string) => void;
+  onSwitchWorkspace?: (agencyId: string, workspaceId: string) => void;
 }
 
 export function OrgSwitcherDropdown({
@@ -134,7 +134,7 @@ export function OrgSwitcherDropdown({
                     onClick={() => {
                       clearHoveredItem();
                       setDropdownOpen(false);
-                      if (ws.agencyId) onSwitchWorkspace(ws.agencyId, ws.id);
+                      if (ws.agencyId) onSwitchWorkspace?.(ws.agencyId, ws.id);
                     }}
                     className={cn(
                       "cursor-pointer justify-between gap-2 text-xs",
@@ -167,7 +167,7 @@ export function OrgSwitcherDropdown({
                   onClick={() => {
                     clearHoveredItem();
                     setDropdownOpen(false);
-                    onSwitchAgency(agency.id);
+                    onSwitchAgency?.(agency.id);
                   }}
                   className={cn(
                     "cursor-pointer justify-between text-xs",
@@ -206,7 +206,7 @@ export function OrgSwitcherDropdown({
                       onClick={() => {
                         clearHoveredItem();
                         setDropdownOpen(false);
-                        onSwitchWorkspace(agency.id, ws.id);
+                        onSwitchWorkspace?.(agency.id, ws.id);
                       }}
                       className={cn(
                         "cursor-pointer justify-between gap-2 text-xs",

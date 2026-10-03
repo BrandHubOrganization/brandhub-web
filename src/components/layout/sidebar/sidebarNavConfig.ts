@@ -25,6 +25,8 @@ import {
   Bell,
   HelpCircle,
   BookOpen,
+  PackageCheck,
+  MessageCircleMore,
 } from "lucide-react";
 
 export interface NavItem {
@@ -78,6 +80,20 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: LayoutDashboard,
         labelKey: "nav.dashboard",
         workspaceScoped: true,
+      },
+      {
+        to: "/media-package",
+        icon: PackageCheck,
+        labelKey: "nav.mediaPackages",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/chat",
+        icon: MessageCircleMore,
+        labelKey: "nav.chat",
+        workspaceScoped: true,
+        requiresWorkspace: true,
       },
       {
         to: "/analytics",
@@ -228,6 +244,14 @@ export const NAV_SECTIONS: NavSection[] = [
     key: "lists",
     titleKey: "nav.sections.lists",
     items: [
+      {
+        to: "/agency/{agencyId}/media-packages",
+        icon: PackageCheck,
+        labelKey: "nav.manageMediaPackages",
+        agencyScoped: true,
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
       {
         to: "/agency",
         icon: Building2,
