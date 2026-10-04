@@ -1,137 +1,106 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Construction, ArrowLeft } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AdminAccountsPanel } from "@/pages/admin/components/AdminAccountsPanel";
+import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
+import { AdminNotificationsPanel } from "@/pages/admin/components/AdminNotificationsPanel";
+import { AdminReportForm } from "@/pages/admin/components/AdminReportExport";
+import { presetRange } from "@/services/adminRevenueService";
 import {
-  getModerationQueue,
-  getPlatformStats,
-  getSystemHealth,
-  getUsers,
-} from "@/services/mock/mockAdminService";
-import type {
-  AdminUser,
-  ModerationItem,
-  PlatformStat,
-  SystemHealthMetric,
-} from "./types/admin";
-import { AdminUserTable } from "./components/AdminUserTable";
-import { ModerationQueueList } from "./components/ModerationQueueList";
-import { SystemHealthPanel } from "./components/SystemHealthPanel";
-import { PlatformStatsGrid } from "./components/PlatformStatsGrid";
-import { AdminErrorBanner } from "./components/AdminErrorBanner";
-import { useAdminActions } from "./hooks/useAdminActions";
+  AdminOverviewActions,
+  AdminOverviewPanel,
+} from "@/pages/admin/components/AdminOverviewPanel";
+
+const views = [
+  "overview",
+  "users",
+  "moderation",
+  "revenue",
+  "email",
+  "reports",
+];
 
 export function AdminPage() {
   const { t } = useTranslation();
-  const [users, setUsers] = useState<AdminUser[]>([]);
-  const [moderation, setModeration] = useState<ModerationItem[]>([]);
-  const [health, setHealth] = useState<SystemHealthMetric[]>([]);
-  const [stats, setStats] = useState<PlatformStat[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      setIsLoading(true);
-      setIsError(false);
-      try {
-        const [usersData, moderationData, healthData, statsData] =
-          await Promise.all([
-            getUsers(),
-            getModerationQueue(),
-            getSystemHealth(),
-            getPlatformStats(),
-          ]);
-        if (!cancelled) {
-          setUsers(usersData);
-          setModeration(moderationData);
-          setHealth(healthData);
-          setStats(statsData);
-        }
-      } catch (err) {
-        console.error("Failed to load admin data:", err);
-        if (!cancelled) setIsError(true);
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const {
-    handleVerify,
-    handleToggleDisable,
-    handleDeleteUser,
-    handleApproveModeration,
-    handleRemoveModeration,
-  } = useAdminActions(setUsers, setModeration);
-
+  const [params] = useSearchParams();
+  const requested = params.get("view") || "overview";
+  const view = views.includes(requested) ? requested : "overview";
+  const [client] = useState(
+    () => new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+  );
+  const [timezone, setTimezone] = useState("Asia/Ho_Chi_Minh");
   return (
-    <PageWrapper
-      title={t("dashboard.admin.title")}
-      description={t("dashboard.admin.description")}
-    >
-      {isLoading && (
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-80 rounded-lg" />
-          <Skeleton className="h-64 rounded-xl" />
-        </div>
-      )}
-
-      {isError && !isLoading && <AdminErrorBanner />}
-
-      {!isLoading && !isError && (
-        <Tabs defaultValue="users">
-          <TabsList>
-            <TabsTrigger value="users">
-              {t("dashboard.admin.tabs.users")}
-            </TabsTrigger>
-            <TabsTrigger value="moderation">
-              {t("dashboard.admin.tabs.moderation")}
-            </TabsTrigger>
-            <TabsTrigger value="health">
-              {t("dashboard.admin.tabs.health")}
-            </TabsTrigger>
-            <TabsTrigger value="stats">
-              {t("dashboard.admin.tabs.stats")}
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="users" className="mt-4">
-            <AdminUserTable
-              users={users}
-              onVerify={handleVerify}
-              onToggleDisable={handleToggleDisable}
-              onDelete={handleDeleteUser}
+    <QueryClientProvider client={client}>
+      <PageWrapper
+        title={t(
+          view === "overview"
+            ? "admin.overview.title"
+            : `admin.navigation.${view}`,
+        )}
+        description={t(
+          view === "overview"
+            ? "admin.overview.description"
+            : view === "users"
+              ? "admin.accounts.description"
+              : view === "reports"
+                ? "admin.reports.description"
+                : `admin.unavailable.${view}`,
+        )}
+        hideBanner
+        showGuideButton={false}
+        actions={
+          view === "overview" && (
+            <AdminOverviewActions
+              timezone={timezone}
+              onTimezoneChange={setTimezone}
             />
-          </TabsContent>
-
-          <TabsContent value="moderation" className="mt-4">
-            <ModerationQueueList
-              items={moderation}
-              onApprove={handleApproveModeration}
-              onRemove={handleRemoveModeration}
+          )
+        }
+        className="max-w-[1600px] space-y-6 p-4 pb-12 md:p-8 [&>div:first-child]:border-0 [&>div:first-child]:pb-0"
+      >
+        {view === "overview" ? (
+          <AdminOverviewPanel timezone={timezone} />
+        ) : view === "users" ? (
+          <AdminAccountsPanel />
+        ) : view === "revenue" ? (
+          <AdminRevenuePanel />
+        ) : view === "email" ? (
+          <AdminNotificationsPanel />
+        ) : view === "reports" ? (
+          <section className="bg-card border-border max-w-2xl rounded-xl border p-5 lg:p-6">
+            <AdminReportForm
+              defaults={{
+                type: "REVENUE",
+                ...presetRange("month", "Asia/Ho_Chi_Minh"),
+                timezone: "Asia/Ho_Chi_Minh",
+              }}
             />
-          </TabsContent>
-
-          <TabsContent value="health" className="mt-4">
-            <SystemHealthPanel metrics={health} />
-          </TabsContent>
-
-          <TabsContent value="stats" className="mt-4">
-            <PlatformStatsGrid stats={stats} />
-          </TabsContent>
-        </Tabs>
-      )}
-    </PageWrapper>
+          </section>
+        ) : (
+          <section className="bg-card border-border flex min-h-80 flex-col items-center justify-center rounded-xl border p-6 text-center">
+            <span className="bg-muted text-muted-foreground mb-4 rounded-full p-4">
+              <Construction className="size-7" />
+            </span>
+            <h2 className="text-base font-semibold">
+              {t("admin.unavailable.title")}
+            </h2>
+            <p className="text-muted-foreground mt-2 max-w-md text-sm leading-6">
+              {t("admin.unavailable.description")}
+            </p>
+            <Link
+              to="/admin"
+              className="text-foreground focus-visible:outline-ring mt-6 flex items-center gap-2 rounded-md text-sm font-medium focus-visible:outline-2"
+            >
+              <ArrowLeft className="size-4" />
+              {t("admin.unavailable.back")}
+            </Link>
+          </section>
+        )}
+      </PageWrapper>
+    </QueryClientProvider>
   );
 }
-
 export default AdminPage;

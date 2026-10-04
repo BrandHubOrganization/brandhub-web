@@ -7,6 +7,7 @@ import { useAgencyStore } from "@/store/agencyStore";
 import { useClientProfileStore } from "@/store/clientProfileStore";
 import { canAccess } from "@/routes/access";
 import { Sidebar } from "./Sidebar";
+import { AdminMobileNavigation } from "@/components/layout/AdminSidebar";
 import { Navbar } from "./Navbar";
 import { PageFallback } from "./PageFallback";
 import {
@@ -337,7 +338,7 @@ export function Layout() {
           borderColor: "hsl(var(--border, 240 5.9% 90%))",
         }}
       >
-        {filteredMobileTabs
+        {systemRole === "ADMIN" ? <AdminMobileNavigation /> : filteredMobileTabs
           .slice(0, 5)
           .map(({ to, icon: Icon, labelKey, workspaceScoped }) => {
             const resolvedTo =
