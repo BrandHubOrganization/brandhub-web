@@ -247,7 +247,7 @@
     "schedule": "Send time",
     "scheduleHint": "In your device time ({{zone}}).",
     "estimate": "About {{count}} recipients. The final count is set when sending starts.",
-    "channel": "Sent by email",
+    "channel": "Sent by email and as an in-app notification",
     "saveDraft": "Save draft",
     "scheduleSend": "Schedule",
     "sendNow": "Send now",

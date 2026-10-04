@@ -247,7 +247,7 @@
     "schedule": "Thời điểm gửi",
     "scheduleHint": "Theo giờ trên máy của bạn ({{zone}}).",
     "estimate": "Ước tính {{count}} người nhận. Số thực tế được xác định lúc gửi.",
-    "channel": "Gửi qua email",
+    "channel": "Gửi qua email và thông báo trong app",
     "saveDraft": "Lưu nháp",
     "scheduleSend": "Lên lịch",
     "sendNow": "Gửi ngay",

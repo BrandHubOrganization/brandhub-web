@@ -41,7 +41,7 @@ import {
   getNotifications,
   markAllAsRead,
   markAsRead,
-} from "@/services/mock/mockNotificationService";
+} from "@/services/notificationFeed";
 
 const NOTIFICATION_ICONS: Record<NotificationType, React.ElementType> = {
   APPROVAL_REQUEST: Clock,
@@ -183,7 +183,9 @@ export function Navbar({
       );
       await markAsRead(n.id);
     }
-    if (n.linkTo) {
+    if (n.linkTo && /^https?:\/\//.test(n.linkTo)) {
+      window.open(n.linkTo, "_blank", "noopener,noreferrer"); // admin broadcast links are external
+    } else if (n.linkTo) {
       const resolvedLink =
         currentWorkspace && WORKSPACE_SCOPED_LINKS.includes(n.linkTo)
           ? `/workspaces/${currentWorkspace.id}${n.linkTo}`
@@ -390,7 +392,11 @@ export function Navbar({
 
         {/* Notification Bell */}
         {!isAdmin && (
-        <DropdownMenu>
+        <DropdownMenu
+          onOpenChange={(open) => {
+            if (open) getNotifications().then(setNotifications).catch(() => {});
+          }}
+        >
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
