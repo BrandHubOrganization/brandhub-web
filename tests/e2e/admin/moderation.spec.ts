@@ -112,10 +112,10 @@ test("approve needs a 10-character note and a stale decision shows the conflict 
   await expect(page.getByRole("button", { name: "Pending (1)" })).toBeVisible();
   await expect(page.getByText("Handled today: 4 posts")).toBeVisible();
   await page.getByRole("button", { name: "Review and decide" }).click();
-  await expect(page.getByText("https://example.test/a.png")).toBeVisible();
-  const approve = page.getByRole("button", {
-    name: "Dismiss warning and allow publishing",
-  });
+  await expect(page.getByRole("img", { name: "Attachment 1" })).toBeVisible();
+  await expect(page.getByText("Why this post needs review")).toBeVisible();
+  await page.getByText("Dismiss warning and allow publishing").click();
+  const approve = page.getByRole("button", { name: "Allow publishing" });
   await page.locator("textarea").fill("too short");
   await expect(approve).toBeDisabled();
   await page.locator("textarea").fill("License verified with the author");
@@ -135,7 +135,7 @@ test("quick block sends the chosen strike level with the reason and row version"
   });
   await page.goto("/admin?view=moderation");
   await page.getByRole("button", { name: "Quick block" }).click();
-  await page.getByText("Orange", { exact: true }).click();
+  await page.getByRole("button", { name: "Orange", exact: true }).click();
   await page.locator("textarea").fill("Uses an unlicensed photo");
   await page
     .getByRole("button", { name: "Block this version and record the strike" })

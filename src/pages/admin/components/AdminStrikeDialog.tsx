@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -22,9 +23,16 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
+const LEVEL_STYLE = {
+  YELLOW:
+    "border-yellow-500 bg-yellow-400/15 text-yellow-700 dark:text-yellow-300",
+  ORANGE: "border-brand-orange bg-brand-orange-soft text-brand-orange",
+  RED: "border-destructive bg-destructive/10 text-destructive",
+};
+
 type Action =
   | { kind: "strike"; request: Omit<StrikeRequest, "operationId"> }
-  | { kind: "unflag" }
+  | { kind: "unflag"; reason: string }
   | { kind: "confirm"; reviewId: string };
 
 export function AdminStrikeDialog({
@@ -42,6 +50,10 @@ export function AdminStrikeDialog({
   const [category, setCategory] = useState("");
   const [reason, setReason] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+  // Pardon and unflag carry their own reason; they used to depend on the add-strike field.
+  const [pardoning, setPardoning] = useState<string | null>(null);
+  const [pardonReason, setPardonReason] = useState("");
+  const [unflagReason, setUnflagReason] = useState("");
   const operation = useRef<{ payload: string; id: string } | null>(null);
   const history = useQuery({
     queryKey: ["admin-strikes", actorId, userId, page],
@@ -50,7 +62,7 @@ export function AdminStrikeDialog({
   const mutation = useMutation<unknown, Error, Action>({
     mutationFn: (action: Action) => {
       if (action.kind === "unflag")
-        return adminAccountService.unflag(userId, reason.trim());
+        return adminAccountService.unflag(userId, action.reason);
       if (action.kind === "confirm")
         return adminAccountService.confirm(
           userId,
@@ -69,6 +81,9 @@ export function AdminStrikeDialog({
       operation.current = null;
       setReason("");
       setConfirmed(false);
+      setPardoning(null);
+      setPardonReason("");
+      setUnflagReason("");
       toast.success(t("admin.strikes.saved"));
       await Promise.all([
         client.invalidateQueries({
@@ -161,21 +176,31 @@ export function AdminStrikeDialog({
                     <Label htmlFor="strike-level">
                       {t("admin.strikes.level")}
                     </Label>
-                    <select
+                    <div
                       id="strike-level"
-                      value={level}
-                      disabled={mutation.isPending}
-                      onChange={(event) =>
-                        setLevel(event.target.value as StrikeLevel)
-                      }
-                      className="border-input bg-background text-foreground h-10 w-full rounded-md border px-3"
+                      role="radiogroup"
+                      aria-label={t("admin.strikes.level")}
+                      className="flex gap-2"
                     >
                       {(["YELLOW", "ORANGE", "RED"] as const).map((value) => (
-                        <option key={value} value={value}>
+                        <button
+                          key={value}
+                          type="button"
+                          role="radio"
+                          aria-checked={level === value}
+                          disabled={mutation.isPending}
+                          onClick={() => setLevel(value)}
+                          className={cn(
+                            "focus-visible:outline-ring h-10 flex-1 rounded-lg border px-3 text-sm font-medium transition-colors focus-visible:outline-2",
+                            level === value
+                              ? LEVEL_STYLE[value]
+                              : "border-border text-muted-foreground hover:bg-muted",
+                          )}
+                        >
                           {t(`admin.level.${value}`)}
-                        </option>
+                        </button>
                       ))}
-                    </select>
+                    </div>
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="strike-category">
@@ -229,18 +254,44 @@ export function AdminStrikeDialog({
                   >
                     {t("admin.strikes.add")}
                   </Button>
-                  <Button
-                    variant="outline"
-                    disabled={
-                      !ready ||
-                      user.status !== "FLAGGED" ||
-                      user.orange + user.yellow + user.red > 0
-                    }
-                    onClick={() => mutation.mutate({ kind: "unflag" })}
-                  >
-                    {t("admin.strikes.unflag")}
-                  </Button>
                 </div>
+                {user.status === "FLAGGED" && (
+                  <div className="border-border space-y-2 border-t pt-3">
+                    <p className="font-medium">{t("admin.strikes.unflag")}</p>
+                    {user.orange + user.yellow + user.red > 0 ? (
+                      <p className="text-muted-foreground text-sm">
+                        {t("admin.strikes.unflagBlocked")}
+                      </p>
+                    ) : (
+                      <div className="flex flex-col gap-2 sm:flex-row">
+                        <Input
+                          aria-label={t("admin.strikes.unflagReason")}
+                          placeholder={t("admin.strikes.unflagReason")}
+                          maxLength={2000}
+                          value={unflagReason}
+                          disabled={mutation.isPending}
+                          onChange={(event) =>
+                            setUnflagReason(event.target.value)
+                          }
+                        />
+                        <Button
+                          variant="outline"
+                          disabled={
+                            unflagReason.trim().length < 3 || mutation.isPending
+                          }
+                          onClick={() =>
+                            mutation.mutate({
+                              kind: "unflag",
+                              reason: unflagReason.trim(),
+                            })
+                          }
+                        >
+                          {t("admin.strikes.unflag")}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {user.pendingReviewId && (
                   <div className="border-border space-y-3 border-t pt-3">
                     <p className="font-medium">
@@ -314,25 +365,61 @@ export function AdminStrikeDialog({
                   </p>
                 )}
                 {["ACTIVE", "CONVERTED"].includes(strike.state) &&
-                  canManage && (
+                  canManage &&
+                  (pardoning === strike.id ? (
+                    <div className="space-y-2 pt-1">
+                      <Textarea
+                        aria-label={t("admin.strikes.pardonReason")}
+                        placeholder={t("admin.strikes.pardonReason")}
+                        rows={2}
+                        maxLength={2000}
+                        value={pardonReason}
+                        disabled={mutation.isPending}
+                        onChange={(event) =>
+                          setPardonReason(event.target.value)
+                        }
+                      />
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setPardoning(null)}
+                        >
+                          {t("admin.strikes.cancel")}
+                        </Button>
+                        <Button
+                          size="sm"
+                          disabled={
+                            pardonReason.trim().length < 3 || mutation.isPending
+                          }
+                          onClick={() =>
+                            mutation.mutate({
+                              kind: "strike",
+                              request: {
+                                action: "REMOVE",
+                                strikeId: strike.id,
+                                reason: pardonReason.trim(),
+                              },
+                            })
+                          }
+                        >
+                          {t("admin.strikes.confirmPardon")}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
                     <Button
                       variant="outline"
                       size="sm"
-                      disabled={!ready}
-                      onClick={() =>
-                        mutation.mutate({
-                          kind: "strike",
-                          request: {
-                            action: "REMOVE",
-                            strikeId: strike.id,
-                            reason: reason.trim(),
-                          },
-                        })
-                      }
+                      disabled={mutation.isPending}
+                      onClick={() => {
+                        setPardoning(strike.id);
+                        setPardonReason("");
+                      }}
                     >
                       {t("admin.strikes.pardon")}
                     </Button>
-                  )}
+                  ))}
               </article>
             ))}
             <div className="flex justify-end gap-2">

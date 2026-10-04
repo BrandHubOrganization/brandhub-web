@@ -215,6 +215,13 @@ test("composer requires a plan for BY_PLAN, sends trimmed content and maps a pas
   await page
     .locator("textarea")
     .fill("BrandHub will be down from 23:00 to 23:30.");
+  await page.locator("textarea").fill("Too short");
+  await expect(
+    page.getByText("needs at least 10 characters, 1 more").first(),
+  ).toBeVisible();
+  await page
+    .locator("textarea")
+    .fill("BrandHub will be down from 23:00 to 23:30.");
   await page.getByText("By plan", { exact: true }).click();
   await expect(page.getByRole("button", { name: "Send now" })).toBeDisabled();
   await page.locator("label", { hasText: /^Pro$/ }).locator("input").check();

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -16,7 +17,10 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import { errorCode } from "@/services/adminRevenueService";
-import type { StrikeLevel } from "@/services/adminAccountService";
+import {
+  adminAccountService,
+  type StrikeLevel,
+} from "@/services/adminAccountService";
 import {
   adminModerationService,
   type ModerationItem,
@@ -35,8 +39,6 @@ const SOURCE_ICON = {
   COMPLIANCE: AlertTriangle,
   COPYRIGHT: Copyright,
 };
-const field =
-  "border-input bg-card text-foreground focus-visible:outline-ring h-9 rounded-lg border px-3 text-xs focus-visible:outline-2";
 
 export function AdminModerationPanel() {
   const { t, i18n } = useTranslation();
@@ -90,22 +92,21 @@ export function AdminModerationPanel() {
             </button>
           ))}
         </div>
-        <select
-          aria-label={t("admin.moderation.sourceLabel")}
+        <SelectMenu
+          ariaLabel={t("admin.moderation.sourceLabel")}
           value={source}
-          onChange={(e) => {
-            setSource(e.target.value);
+          onChange={(value) => {
+            setSource(value);
             setPage(1);
           }}
-          className={field}
-        >
-          <option value="">{t("admin.moderation.allSources")}</option>
-          {SOURCES.map((value) => (
-            <option key={value} value={value}>
-              {t(`admin.moderation.sources.${value}`)}
-            </option>
-          ))}
-        </select>
+          options={[
+            { value: "", label: t("admin.moderation.allSources") },
+            ...SOURCES.map((value) => ({
+              value,
+              label: t(`admin.moderation.sources.${value}`),
+            })),
+          ]}
+        />
         {data && (
           <p className="text-muted-foreground ml-auto font-mono text-xs">
             {t("admin.moderation.processedToday", {
@@ -222,21 +223,18 @@ export function AdminModerationPanel() {
       )}
       {data && data.total > 0 && (
         <div className="flex flex-wrap items-center justify-end gap-2 text-xs">
-          <select
-            aria-label={t("admin.moderation.pageSize")}
-            value={size}
-            onChange={(e) => {
-              setSize(Number(e.target.value));
+          <SelectMenu
+            ariaLabel={t("admin.moderation.pageSize")}
+            value={String(size)}
+            onChange={(value) => {
+              setSize(Number(value));
               setPage(1);
             }}
-            className={field}
-          >
-            {[10, 20, 50].map((value) => (
-              <option key={value} value={value}>
-                {t("admin.moderation.perPage", { count: value })}
-              </option>
-            ))}
-          </select>
+            options={[10, 20, 50].map((value) => ({
+              value: String(value),
+              label: t("admin.moderation.perPage", { count: value }),
+            }))}
+          />
           <Button
             variant="outline"
             size="sm"
@@ -289,6 +287,12 @@ function StrikeCounts({ item }: { item: ModerationItem }) {
   );
 }
 
+const LEVEL_CHIP: Record<StrikeLevel, string> = {
+  YELLOW: "bg-yellow-400/20 text-yellow-700 dark:text-yellow-300",
+  ORANGE: "bg-brand-orange-soft text-brand-orange",
+  RED: "bg-destructive/10 text-destructive",
+};
+
 function ModerationDialog({
   id,
   startBlocking,
@@ -301,7 +305,9 @@ function ModerationDialog({
   const { t, i18n } = useTranslation();
   const client = useQueryClient();
   const [note, setNote] = useState("");
-  const [blocking, setBlocking] = useState(startBlocking);
+  const [choice, setChoice] = useState<"APPROVE" | "BLOCK" | null>(
+    startBlocking ? "BLOCK" : null,
+  );
   const [level, setLevel] = useState<StrikeLevel>("YELLOW");
   const detail = useQuery({
     queryKey: ["admin-moderation-item", id],
@@ -309,6 +315,16 @@ function ModerationDialog({
     retry: false,
   });
   const item = detail.data;
+  // Why a FLAGGED author's post is here: the author's own live strikes (the post itself is not accused).
+  const strikes = useQuery({
+    queryKey: ["admin-strikes-for-moderation", item?.authorId],
+    queryFn: () => adminAccountService.history(item!.authorId, 1),
+    enabled: !!item,
+    retry: false,
+  });
+  const liveStrikes = (strikes.data?.items ?? []).filter(
+    (s) => s.state === "ACTIVE",
+  );
   const decide = useMutation({
     mutationFn: (decision: "APPROVE" | "BLOCK") =>
       adminModerationService.decide(id, {
@@ -337,21 +353,50 @@ function ModerationDialog({
     item.currentVersion !== item.contentVersion;
   const pending = item?.status === "PENDING" && !outdated;
   const length = note.trim().length;
+  const when = (iso: string) =>
+    new Intl.DateTimeFormat(i18n.language, {
+      dateStyle: "short",
+      timeStyle: "short",
+    }).format(new Date(iso));
+  const canSubmit =
+    choice === "APPROVE"
+      ? length >= 10
+      : choice === "BLOCK"
+        ? length >= 3
+        : false;
 
   return (
-    <Dialog open onOpenChange={(value) => !value && onClose()}>
-      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
+    <Dialog
+      open
+      onOpenChange={(value) => !value && !decide.isPending && onClose()}
+    >
+      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-4xl">
         <DialogHeader>
-          <DialogTitle>
-            {t("admin.moderation.dialogTitle", {
-              version: item?.contentVersion ?? "",
-            })}
-          </DialogTitle>
-          <DialogDescription className="font-mono text-xs">
-            {item?.postId}
+          <DialogTitle>{t("admin.moderation.dialogHeading")}</DialogTitle>
+          <DialogDescription asChild>
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              {item && (
+                <>
+                  <span className="bg-brand-orange-soft text-brand-orange rounded px-1.5 py-0.5 font-mono font-semibold">
+                    {t(`admin.moderation.sources.${item.source}`)}
+                  </span>
+                  <span className="bg-muted rounded px-1.5 py-0.5 font-mono">
+                    {t("admin.moderation.versionLabel", {
+                      version: item.contentVersion,
+                    })}
+                  </span>
+                  <span className="bg-muted rounded px-1.5 py-0.5">
+                    {t(`admin.moderation.status.${item.status}`)}
+                  </span>
+                  <span className="text-muted-foreground font-mono">
+                    {item.postId}
+                  </span>
+                </>
+              )}
+            </div>
           </DialogDescription>
         </DialogHeader>
-        {detail.isPending && <Skeleton className="h-48 rounded-lg" />}
+        {detail.isPending && <Skeleton className="h-64 rounded-lg" />}
         {detail.isError && (
           <p role="alert" className="text-destructive text-sm">
             {t("admin.moderation.notFound")}
@@ -359,58 +404,72 @@ function ModerationDialog({
         )}
         {item && (
           <div className="space-y-5">
-            <section className="bg-muted/40 rounded-lg p-4">
-              <p className="text-muted-foreground text-2xs font-mono tracking-wider uppercase">
-                {t("admin.moderation.snapshot")}
-              </p>
-              <p className="mt-2 text-sm leading-6 whitespace-pre-wrap">
-                {item.snapshot?.contentText || t("admin.moderation.noCaption")}
-              </p>
-              {item.snapshot && item.snapshot.hashtags.length > 0 && (
-                <p className="text-brand-orange mt-2 text-xs">
-                  {item.snapshot.hashtags.join(" ")}
-                </p>
+            <section
+              className={cn(
+                "rounded-xl border p-4",
+                item.source === "FLAGGED_AUTHOR"
+                  ? "border-brand-orange/30 bg-brand-orange-soft/50"
+                  : "border-destructive/25 bg-destructive/5",
               )}
-              {item.snapshot && item.snapshot.media.length > 0 && (
-                <ul className="mt-2 space-y-1 text-xs">
-                  {item.snapshot.media.map((m, i) => (
-                    <li key={i} className="text-muted-foreground font-mono">
-                      {m.media_type ?? "MEDIA"}: {m.external_url ?? m.s3_key}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <p className="text-muted-foreground mt-3 text-xs">
-                {t("admin.moderation.author")}:{" "}
-                <span className="text-foreground font-medium">
-                  {item.authorName}
-                </span>{" "}
-                ({item.authorEmail}) <StrikeCounts item={item} />
-                {item.snapshot &&
-                  item.snapshot.targetPlatforms.length > 0 &&
-                  `, ${item.snapshot.targetPlatforms.join(", ")}`}
+            >
+              <h3
+                className={cn(
+                  "text-sm font-semibold",
+                  item.source === "FLAGGED_AUTHOR"
+                    ? "text-brand-orange"
+                    : "text-destructive",
+                )}
+              >
+                {t(`admin.moderation.why.${item.source}.title`)}
+              </h3>
+              <p className="mt-1 text-sm leading-6">
+                {t(`admin.moderation.why.${item.source}.body`)}
               </p>
-              {item.snapshot && (
-                <p
-                  className="text-muted-foreground mt-1 truncate font-mono text-[11px]"
-                  title={item.snapshot.contentHash}
-                >
-                  SHA-256 {item.snapshot.contentHash.slice(0, 16)}…,{" "}
-                  {new Intl.DateTimeFormat(i18n.language, {
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  }).format(new Date(item.snapshot.capturedAt))}
-                </p>
+              {item.source === "FLAGGED_AUTHOR" ? (
+                <div className="mt-3">
+                  <p className="text-muted-foreground text-xs font-medium">
+                    {t("admin.moderation.authorViolations")}
+                  </p>
+                  {strikes.isPending && (
+                    <Skeleton className="mt-2 h-14 rounded-lg" />
+                  )}
+                  {strikes.data && liveStrikes.length === 0 && (
+                    <p className="mt-2 text-sm">
+                      {t("admin.moderation.noLiveStrikes")}
+                    </p>
+                  )}
+                  <ul className="mt-2 space-y-2">
+                    {liveStrikes.map((strike) => (
+                      <li
+                        key={strike.id}
+                        className="bg-card border-border rounded-lg border p-3 text-sm"
+                      >
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span
+                            className={cn(
+                              "rounded px-1.5 py-0.5 font-mono text-[11px] font-semibold",
+                              LEVEL_CHIP[strike.level],
+                            )}
+                          >
+                            {t(`admin.level.${strike.level}`)}
+                          </span>
+                          <span className="font-medium">{strike.category}</span>
+                          <span className="text-muted-foreground ml-auto font-mono text-[11px]">
+                            {when(strike.createdAt)}
+                          </span>
+                        </div>
+                        <p className="mt-1 leading-6">{strike.reason}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <blockquote className="bg-card border-destructive mt-3 rounded-r-lg border-l-4 px-3 py-2 text-sm leading-6">
+                  {item.reason}
+                </blockquote>
               )}
             </section>
-            <section>
-              <p className="text-destructive text-2xs font-mono tracking-wider uppercase">
-                {t(`admin.moderation.sources.${item.source}`)}
-              </p>
-              <p className="border-destructive/25 bg-destructive/5 mt-2 rounded-lg border p-3 text-sm">
-                {item.reason}
-              </p>
-            </section>
+
             {outdated && (
               <p
                 role="status"
@@ -421,75 +480,249 @@ function ModerationDialog({
                 })}
               </p>
             )}
+
+            <div className="grid gap-4 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+              <section className="border-border rounded-xl border">
+                <div className="border-border flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3">
+                  <h3 className="text-sm font-semibold">
+                    {t("admin.moderation.postPreview")}
+                  </h3>
+                  <div className="flex gap-1">
+                    {(item.snapshot?.targetPlatforms ?? []).map((platform) => (
+                      <span
+                        key={platform}
+                        className="bg-muted rounded px-1.5 py-0.5 font-mono text-[11px]"
+                      >
+                        {platform}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-3 p-4">
+                  <p className="text-sm leading-6 whitespace-pre-wrap">
+                    {item.snapshot?.contentText ||
+                      t("admin.moderation.noCaption")}
+                  </p>
+                  {item.snapshot && item.snapshot.hashtags.length > 0 && (
+                    <p className="text-brand-orange text-sm">
+                      {item.snapshot.hashtags.join(" ")}
+                    </p>
+                  )}
+                  {item.snapshot && item.snapshot.media.length > 0 && (
+                    <div className="grid grid-cols-2 gap-2">
+                      {item.snapshot.media.map((media, index) =>
+                        media.external_url ? (
+                          <img
+                            key={index}
+                            src={media.external_url}
+                            alt={t("admin.moderation.mediaAlt", {
+                              index: index + 1,
+                            })}
+                            loading="lazy"
+                            className="bg-muted aspect-square w-full rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div
+                            key={index}
+                            className="bg-muted text-muted-foreground grid aspect-square place-items-center rounded-lg p-2 text-center font-mono text-[11px] break-all"
+                          >
+                            {media.media_type}: {media.s3_key}
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  )}
+                  {item.snapshot && (
+                    <p
+                      className="text-muted-foreground font-mono text-[11px]"
+                      title={item.snapshot.contentHash}
+                    >
+                      {t("admin.moderation.capturedAt", {
+                        time: when(item.snapshot.capturedAt),
+                      })}
+                      , SHA-256 {item.snapshot.contentHash.slice(0, 12)}
+                    </p>
+                  )}
+                </div>
+              </section>
+
+              <section className="border-border space-y-3 rounded-xl border p-4">
+                <h3 className="text-sm font-semibold">
+                  {t("admin.moderation.author")}
+                </h3>
+                <div className="flex items-center gap-3">
+                  <span className="bg-brand-orange/15 text-brand-orange grid size-10 shrink-0 place-items-center rounded-full font-semibold">
+                    {item.authorName.charAt(0).toUpperCase()}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{item.authorName}</p>
+                    <p className="text-muted-foreground truncate text-xs">
+                      {item.authorEmail}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs">
+                  {t("admin.moderation.accountStatus")}:{" "}
+                  <span className="font-semibold">
+                    {t(`admin.status.${item.authorStatus}`)}
+                  </span>
+                </p>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  {(
+                    [
+                      ["YELLOW", item.yellow, "/3"],
+                      ["ORANGE", item.orange, "/3"],
+                      ["RED", item.red, ""],
+                    ] as const
+                  ).map(([lvl, count, max]) => (
+                    <div
+                      key={lvl}
+                      className={cn("rounded-lg px-2 py-2", LEVEL_CHIP[lvl])}
+                    >
+                      <p className="font-mono text-lg leading-none font-semibold">
+                        {count}
+                        <span className="text-xs opacity-60">{max}</span>
+                      </p>
+                      <p className="mt-1 text-[11px]">
+                        {t(`admin.level.${lvl}`)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-muted-foreground text-xs leading-5">
+                  {t("admin.moderation.strikeRule")}
+                </p>
+              </section>
+            </div>
+
             {item.status !== "PENDING" && (
-              <section className="border-border rounded-lg border p-4 text-sm">
+              <section className="border-border rounded-xl border p-4 text-sm">
                 <p className="font-semibold">
                   {t(`admin.moderation.status.${item.status}`)}
                   {item.strikeLevel &&
-                    ` — ${t(`admin.level.${item.strikeLevel}`)}`}
+                    `, ${t(`admin.level.${item.strikeLevel}`)}`}
+                  {item.reviewedByName && item.reviewedAt && (
+                    <span className="text-muted-foreground font-normal">
+                      {" "}
+                      (
+                      {t("admin.moderation.reviewedAt", {
+                        time: when(item.reviewedAt),
+                        name: item.reviewedByName,
+                      })}
+                      )
+                    </span>
+                  )}
                 </p>
                 <p className="text-muted-foreground mt-1">
                   {item.decisionNote}
                 </p>
               </section>
             )}
+
             {pending && (
               <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                {blocking && (
+                <fieldset>
+                  <legend className="mb-2 text-sm font-semibold">
+                    {t("admin.moderation.decisionLabel")}
+                  </legend>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {(["APPROVE", "BLOCK"] as const).map((value) => (
+                      <label
+                        key={value}
+                        className={cn(
+                          "flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-colors",
+                          choice === value
+                            ? value === "APPROVE"
+                              ? "border-success bg-success/10"
+                              : "border-destructive bg-destructive/5"
+                            : "border-border hover:bg-muted/50",
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          name="decision"
+                          checked={choice === value}
+                          onChange={() => setChoice(value)}
+                          className={cn(
+                            "mt-1",
+                            value === "APPROVE"
+                              ? "accent-success"
+                              : "accent-destructive",
+                          )}
+                        />
+                        <span>
+                          <span className="block text-sm font-semibold">
+                            {t(
+                              value === "APPROVE"
+                                ? "admin.moderation.approveAction"
+                                : "admin.moderation.blockAction",
+                            )}
+                          </span>
+                          <span className="text-muted-foreground mt-0.5 block text-xs leading-5">
+                            {t(
+                              value === "APPROVE"
+                                ? "admin.moderation.approveHint"
+                                : "admin.moderation.blockHintChoice",
+                            )}
+                          </span>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                {choice === "BLOCK" && (
                   <fieldset>
                     <legend className="mb-2 text-sm font-medium">
                       {t("admin.moderation.strikeLevel")}
                     </legend>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex gap-2">
                       {(["YELLOW", "ORANGE", "RED"] as const).map((value) => (
-                        <label
+                        <button
                           key={value}
+                          type="button"
+                          aria-pressed={level === value}
+                          onClick={() => setLevel(value)}
                           className={cn(
-                            "flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm",
+                            "focus-visible:outline-ring h-9 flex-1 rounded-lg border text-sm font-medium focus-visible:outline-2",
                             level === value
-                              ? "border-destructive bg-destructive/5"
-                              : "border-border",
+                              ? cn(LEVEL_CHIP[value], "border-current")
+                              : "border-border text-muted-foreground hover:bg-muted",
                           )}
                         >
-                          <input
-                            type="radio"
-                            name="level"
-                            checked={level === value}
-                            onChange={() => setLevel(value)}
-                            className="accent-destructive"
-                          />
                           {t(`admin.level.${value}`)}
-                        </label>
+                        </button>
                       ))}
                     </div>
                   </fieldset>
                 )}
-                <label className="block space-y-1.5 text-sm font-medium">
-                  <span>
-                    {t(
-                      blocking
-                        ? "admin.moderation.blockReason"
-                        : "admin.moderation.approveNote",
-                    )}{" "}
-                    *
-                  </span>
-                  <Textarea
-                    value={note}
-                    rows={3}
-                    maxLength={2000}
-                    onChange={(e) => setNote(e.target.value)}
-                  />
-                  <span className="text-muted-foreground flex justify-between text-xs font-normal">
+                {choice && (
+                  <label className="block space-y-1.5 text-sm font-medium">
                     <span>
                       {t(
-                        blocking
-                          ? "admin.moderation.blockHint"
-                          : "admin.moderation.noteHint",
-                      )}
+                        choice === "BLOCK"
+                          ? "admin.moderation.blockReason"
+                          : "admin.moderation.approveNote",
+                      )}{" "}
+                      *
                     </span>
-                    <span className="font-mono">{length}/2000</span>
-                  </span>
-                </label>
+                    <Textarea
+                      value={note}
+                      rows={3}
+                      maxLength={2000}
+                      onChange={(e) => setNote(e.target.value)}
+                    />
+                    <span className="text-muted-foreground flex justify-between text-xs font-normal">
+                      <span>
+                        {t(
+                          choice === "BLOCK"
+                            ? "admin.moderation.blockHint"
+                            : "admin.moderation.noteHint",
+                        )}
+                      </span>
+                      <span className="font-mono">{length}/2000</span>
+                    </span>
+                  </label>
+                )}
                 {decide.isError && (
                   <p role="alert" className="text-destructive text-sm">
                     {t(
@@ -503,46 +736,28 @@ function ModerationDialog({
                     )}
                   </p>
                 )}
-                <div className="flex flex-wrap justify-end gap-2">
+                <div className="flex justify-end gap-2">
                   <Button type="button" variant="outline" onClick={onClose}>
                     {t("admin.notifications.close")}
                   </Button>
-                  {blocking ? (
-                    <>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setBlocking(false)}
-                      >
-                        {t("admin.moderation.backToReview")}
-                      </Button>
-                      <Button
-                        type="button"
-                        className="bg-destructive hover:bg-destructive/90 text-white"
-                        disabled={length < 3 || decide.isPending}
-                        onClick={() => decide.mutate("BLOCK")}
-                      >
-                        {t("admin.moderation.confirmBlock")}
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        type="button"
-                        className="bg-destructive hover:bg-destructive/90 text-white"
-                        onClick={() => setBlocking(true)}
-                      >
-                        {t("admin.moderation.blockAction")}
-                      </Button>
-                      <Button
-                        type="button"
-                        className="bg-brand-orange hover:bg-brand-orange/90 text-white"
-                        disabled={length < 10 || decide.isPending}
-                        onClick={() => decide.mutate("APPROVE")}
-                      >
-                        {t("admin.moderation.approveAction")}
-                      </Button>
-                    </>
+                  {choice && (
+                    <Button
+                      type="button"
+                      className={cn(
+                        "text-white",
+                        choice === "BLOCK"
+                          ? "bg-destructive hover:bg-destructive/90"
+                          : "bg-brand-orange hover:bg-brand-orange/90",
+                      )}
+                      disabled={!canSubmit || decide.isPending}
+                      onClick={() => decide.mutate(choice)}
+                    >
+                      {t(
+                        choice === "BLOCK"
+                          ? "admin.moderation.confirmBlock"
+                          : "admin.moderation.confirmApprove",
+                      )}
+                    </Button>
                   )}
                 </div>
               </form>

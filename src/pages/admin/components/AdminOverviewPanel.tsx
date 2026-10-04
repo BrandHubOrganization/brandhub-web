@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { Link } from "react-router-dom";
 import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -35,17 +36,15 @@ export function AdminOverviewActions({
     0;
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <select
-        aria-label={t("admin.overview.timezone")}
+      <SelectMenu
+        ariaLabel={t("admin.overview.timezone")}
         value={timezone}
-        onChange={(e) => onTimezoneChange(e.target.value)}
-        className="border-input bg-card text-foreground focus-visible:outline-ring h-9 max-w-full rounded-lg border px-3 text-xs focus-visible:outline-2"
-      >
-        <option value="Asia/Ho_Chi_Minh">
-          {t("admin.overview.vietnamTime")}
-        </option>
-        <option value="UTC">UTC</option>
-      </select>
+        onChange={onTimezoneChange}
+        options={[
+          { value: "Asia/Ho_Chi_Minh", label: t("admin.overview.vietnamTime") },
+          { value: "UTC", label: "UTC" },
+        ]}
+      />
       <Button
         variant="outline"
         className="h-9"

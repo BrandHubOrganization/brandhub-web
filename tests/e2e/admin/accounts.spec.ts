@@ -16,7 +16,22 @@ const owner = {
   emailVerifiedAt: "2026-10-01T00:00:00Z",
 };
 
+const liveStrike = {
+  id: "44444444-4444-4444-4444-444444444444",
+  level: "ORANGE",
+  category: "SPAM",
+  reason: "Repeated spam posts",
+  createdAt: "2026-10-01T00:00:00Z",
+  expiresAt: "2026-10-31T00:00:00Z",
+  convertedToId: null,
+  removedAt: null,
+  removalReason: null,
+  state: "ACTIVE",
+};
+let removals: Record<string, unknown>[] = [];
+
 test.beforeEach(async ({ page }) => {
+  removals = [];
   await page.addInitScript(() => {
     localStorage.setItem("brandhub-lang", "en");
     localStorage.setItem(
@@ -43,8 +58,10 @@ test.beforeEach(async ({ page }) => {
       data = { role: "ADMIN", fullName: "Admin" };
     if (path === "/api/v1/admin/users")
       data = { items: [owner], page: 1, size: 20, total: 1 };
-    if (path.endsWith("/violations"))
-      data = { user: owner, items: [], page: 1, size: 20, total: 0 };
+    if (path.endsWith("/violations") && route.request().method() === "POST") {
+      removals.push(route.request().postDataJSON());
+    } else if (path.endsWith("/violations"))
+      data = { user: owner, items: [liveStrike], page: 1, size: 20, total: 1 };
     await route.fulfill({ json: { success: true, data } });
   });
 });
@@ -60,9 +77,10 @@ test("account tab uses API and hides retired verify/delete actions", async ({
   ).toHaveCount(0);
   await page.getByRole("button", { name: "Manage strikes" }).click();
   await expect(page.getByRole("dialog")).toContainText("owner@example.test");
+  // Live strikes block unflagging; the dialog now says why instead of a dead button.
   await expect(
-    page.getByRole("button", { name: "Remove flag", exact: true }),
-  ).toBeDisabled();
+    page.getByText("can be unflagged only when it has no live strikes"),
+  ).toBeVisible();
 });
 
 test("returning to unfiltered Users clears the search field", async ({
@@ -70,7 +88,7 @@ test("returning to unfiltered Users clears the search field", async ({
 }) => {
   await page.goto("/admin?view=users");
   await page.getByRole("textbox").fill("Alpha");
-  await page.locator('form button[type="submit"]').click();
+  await page.getByRole("textbox").press("Enter");
   await expect(page).toHaveURL(/search=Alpha/);
   await page.getByRole("link", { name: "Users", exact: true }).click();
   await expect(page).not.toHaveURL(/search=/);
@@ -155,3 +173,40 @@ for (const language of ["vi", "en"]) {
     });
   }
 }
+
+test("search filters while typing, without pressing Enter", async ({
+  page,
+}) => {
+  await page.goto("/admin?view=users");
+  const request = page.waitForRequest(
+    (r) =>
+      r.url().includes("/admin/users?") &&
+      new URL(r.url()).searchParams.get("search") === "Owner",
+  );
+  await page.getByRole("textbox").fill("Owner");
+  await request;
+  await expect(page).toHaveURL(/search=Owner/);
+});
+
+test("removing a strike asks for its own reason and sends it", async ({
+  page,
+}) => {
+  await page.goto("/admin?view=users");
+  await page.getByRole("button", { name: "Manage strikes" }).click();
+  await page.getByRole("button", { name: "Pardon this strike" }).click();
+  const confirm = page.getByRole("button", {
+    name: "Remove strike",
+    exact: true,
+  });
+  await expect(confirm).toBeDisabled();
+  await page
+    .getByPlaceholder("Reason for removing this strike")
+    .fill("Appeal accepted");
+  await confirm.click();
+  await expect.poll(() => removals.length).toBe(1);
+  expect(removals[0]).toMatchObject({
+    action: "REMOVE",
+    strikeId: liveStrike.id,
+    reason: "Appeal accepted",
+  });
+});

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Download, RefreshCw } from "lucide-react";
@@ -142,34 +143,33 @@ export function AdminRevenuePanel() {
             />
           </div>
         )}
-        <select
-          aria-label={t("admin.revenue.plan")}
+        <SelectMenu
+          ariaLabel={t("admin.revenue.plan")}
           value={plan}
-          onChange={(e) => setPlan(e.target.value)}
-          className={field}
-        >
-          <option value="">{t("admin.revenue.allPlans")}</option>
-          {(data?.plans ?? []).map((p) => (
-            <option key={p.plan} value={p.plan}>
-              {p.displayName}
-            </option>
-          ))}
-        </select>
-        <select
-          aria-label={t("admin.overview.timezone")}
+          onChange={setPlan}
+          options={[
+            { value: "", label: t("admin.revenue.allPlans") },
+            ...(data?.plans ?? []).map((p) => ({
+              value: p.plan,
+              label: p.displayName,
+            })),
+          ]}
+        />
+        <SelectMenu
+          ariaLabel={t("admin.overview.timezone")}
           value={timezone}
-          onChange={(e) => {
-            setTimezone(e.target.value);
-            if (preset !== "custom")
-              setRange(presetRange(preset, e.target.value));
+          onChange={(value) => {
+            setTimezone(value);
+            if (preset !== "custom") setRange(presetRange(preset, value));
           }}
-          className={field}
-        >
-          <option value="Asia/Ho_Chi_Minh">
-            {t("admin.overview.vietnamTime")}
-          </option>
-          <option value="UTC">UTC</option>
-        </select>
+          options={[
+            {
+              value: "Asia/Ho_Chi_Minh",
+              label: t("admin.overview.vietnamTime"),
+            },
+            { value: "UTC", label: "UTC" },
+          ]}
+        />
         <div className="ml-auto flex flex-wrap gap-2">
           <Button
             variant="outline"

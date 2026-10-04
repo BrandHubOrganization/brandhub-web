@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -128,16 +129,19 @@ export function AdminReportForm({
         </label>
         <label className="space-y-1.5 text-sm font-medium">
           <span>{t("admin.reports.timezone")}</span>
-          <select
+          <SelectMenu
+            className="h-9 w-full text-sm"
+            ariaLabel={t("admin.reports.timezone")}
             value={timezone}
-            onChange={(e) => setTimezone(e.target.value)}
-            className={field}
-          >
-            <option value="Asia/Ho_Chi_Minh">
-              {t("admin.overview.vietnamTime")}
-            </option>
-            <option value="UTC">UTC</option>
-          </select>
+            onChange={setTimezone}
+            options={[
+              {
+                value: "Asia/Ho_Chi_Minh",
+                label: t("admin.overview.vietnamTime"),
+              },
+              { value: "UTC", label: "UTC" },
+            ]}
+          />
         </label>
       </div>
       <div className="bg-muted/50 border-brand-orange rounded-r-lg border-l-4 px-4 py-3 text-xs leading-5">

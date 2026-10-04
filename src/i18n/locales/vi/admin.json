@@ -66,7 +66,12 @@
     "empty": "Chưa có thẻ phạt.",
     "readOnly": "Chỉ được xem tài khoản này tại đây.",
     "convertedTo": "Đã quy đổi thành thẻ",
-    "removalReason": "Lý do gỡ"
+    "removalReason": "Lý do gỡ",
+    "unflagBlocked": "Chỉ bỏ cờ được khi tài khoản không còn thẻ phạt hiệu lực. Hãy gỡ các thẻ đang hiệu lực ở lịch sử bên dưới trước.",
+    "unflagReason": "Lý do bỏ cờ (tối thiểu 3 ký tự)",
+    "pardonReason": "Lý do gỡ thẻ (tối thiểu 3 ký tự)",
+    "confirmPardon": "Xác nhận gỡ thẻ",
+    "cancel": "Hủy"
   },
   "errors": {
     "FORBIDDEN": "Không được tự xử phạt hoặc xử phạt quản trị viên khác.",
@@ -271,7 +276,10 @@
     "schedulePast": "Thời gian hẹn giờ không hợp lệ hoặc đã qua.",
     "targetRequired": "Chọn ít nhất một gói hoặc vai trò.",
     "conflict": "Thông báo đã bắt đầu gửi hoặc vừa thay đổi. Tải lại để xem trạng thái mới.",
-    "error": "Không lưu được thông báo. Vui lòng thử lại."
+    "error": "Không lưu được thông báo. Vui lòng thử lại.",
+    "titleShort": "Tiêu đề cần ít nhất 5 ký tự (hiện có {{count}}).",
+    "contentShort": "Nội dung cần ít nhất 10 ký tự, còn thiếu {{missing}} (hiện có {{count}}).",
+    "scheduleNeedsTime": "Chọn thời điểm gửi nếu muốn lên lịch; Gửi ngay và Lưu nháp không cần."
   },
   "reports": {
     "title": "Xuất báo cáo PDF",
@@ -348,6 +356,33 @@
     "conflict": "Mục này đã được xử lý hoặc bài đã đổi phiên bản. Tải lại để xem trạng thái mới.",
     "forbiddenTarget": "Không thể ghi thẻ phạt cho chính bạn hoặc cho tài khoản Admin.",
     "notFound": "Không tìm thấy bài viết hoặc mục kiểm duyệt.",
-    "error": "Không tải hoặc lưu được dữ liệu kiểm duyệt. Vui lòng thử lại."
+    "error": "Không tải hoặc lưu được dữ liệu kiểm duyệt. Vui lòng thử lại.",
+    "dialogHeading": "Kiểm duyệt bài viết",
+    "versionLabel": "Phiên bản {{version}}",
+    "why": {
+      "FLAGGED_AUTHOR": {
+        "title": "Vì sao bài này cần duyệt: tác giả đang bị gắn cờ",
+        "body": "Bài viết này chưa bị phát hiện vi phạm. Nó phải chờ Admin duyệt vì tác giả đang có thẻ phạt còn hiệu lực: mọi bài của tài khoản bị gắn cờ, kể cả bài đã lên lịch, đều cần duyệt trước khi xuất bản (BR-64). Hãy đọc nội dung bên dưới và quyết định riêng cho phiên bản này."
+      },
+      "COMPLIANCE": {
+        "title": "Vì sao bài này cần duyệt: hệ thống phát hiện vi phạm chính sách",
+        "body": "Bộ kiểm tra nội dung tự động đánh dấu bài này. Đối chiếu phần bị nêu với nội dung bài để xác nhận hoặc bỏ qua cảnh báo."
+      },
+      "COPYRIGHT": {
+        "title": "Vì sao bài này cần duyệt: nghi vấn vi phạm bản quyền",
+        "body": "Bộ kiểm tra bản quyền tự động đánh dấu bài này. Đối chiếu bằng chứng với nội dung và hình ảnh để xác nhận hoặc bỏ qua cảnh báo."
+      }
+    },
+    "authorViolations": "Các vi phạm đang có hiệu lực của tác giả",
+    "noLiveStrikes": "Tác giả không còn thẻ phạt hiệu lực; có thể cho phép xuất bản nếu nội dung hợp lệ.",
+    "postPreview": "Nội dung bài viết",
+    "mediaAlt": "Ảnh đính kèm {{index}}",
+    "capturedAt": "Chụp lúc {{time}}",
+    "accountStatus": "Trạng thái tài khoản",
+    "strikeRule": "3 thẻ Vàng tự quy đổi thành 1 Cam. Còn thẻ Cam thì bị gắn cờ; 3 Cam hoặc 1 Đỏ tạo yêu cầu xem xét khóa tài khoản.",
+    "decisionLabel": "Phán quyết cho phiên bản này",
+    "approveHint": "Phiên bản này tiếp tục theo luồng và lịch xuất bản. Cần ghi chú tối thiểu 10 ký tự.",
+    "blockHintChoice": "Phiên bản này không được đăng, tác giả nhận thêm thẻ phạt và có thể sửa rồi gửi lại.",
+    "confirmApprove": "Cho phép xuất bản"
   }
 }

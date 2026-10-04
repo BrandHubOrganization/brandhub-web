@@ -82,7 +82,8 @@ test("admin opens real overview metrics and period/timezone controls", async ({
       r.url().includes("/admin/statistics") &&
       new URL(r.url()).searchParams.get("timezone") === "UTC",
   );
-  await page.getByLabel("Time zone", { exact: true }).selectOption("UTC");
+  await page.getByRole("combobox", { name: "Time zone" }).click();
+  await page.getByRole("option", { name: "UTC", exact: true }).click();
   await utc;
 });
 
@@ -131,7 +132,9 @@ test("admin shell does not present sample workspace notifications as real alerts
   ).toHaveCount(0);
   await page.goto("/admin?view=moderation");
   await expect(page.locator("header nav")).toContainText("Moderation");
-  await expect(page.locator('header button[title="Notifications"]')).toHaveCount(0);
+  await expect(
+    page.locator('header button[title="Notifications"]'),
+  ).toHaveCount(0);
 });
 
 test("flagged drill-down preserves status on reload", async ({ page }) => {
@@ -139,13 +142,13 @@ test("flagged drill-down preserves status on reload", async ({ page }) => {
   await page.locator('a[href*="status=FLAGGED"]').first().click();
   await expect(page).toHaveURL(/view=users/);
   await expect(page).toHaveURL(/status=FLAGGED/);
-  await expect(page.getByLabel("Account status", { exact: true })).toHaveValue(
-    "FLAGGED",
-  );
+  await expect(
+    page.getByRole("combobox", { name: "Account status" }),
+  ).toHaveText("Flagged");
   await page.reload();
-  await expect(page.getByLabel("Account status", { exact: true })).toHaveValue(
-    "FLAGGED",
-  );
+  await expect(
+    page.getByRole("combobox", { name: "Account status" }),
+  ).toHaveText("Flagged");
 });
 
 test("failed statistics show an error and retry loads actual data", async ({

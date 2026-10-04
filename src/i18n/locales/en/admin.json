@@ -66,7 +66,12 @@
     "empty": "No strikes recorded.",
     "readOnly": "This account can only be viewed here.",
     "convertedTo": "Converted into strike",
-    "removalReason": "Pardon reason"
+    "removalReason": "Pardon reason",
+    "unflagBlocked": "An account can be unflagged only when it has no live strikes. Remove the live strikes in the history below first.",
+    "unflagReason": "Reason for unflagging (3+ characters)",
+    "pardonReason": "Reason for removing this strike (3+ characters)",
+    "confirmPardon": "Remove strike",
+    "cancel": "Cancel"
   },
   "errors": {
     "FORBIDDEN": "You cannot sanction yourself or another administrator.",
@@ -271,7 +276,10 @@
     "schedulePast": "The scheduled time is invalid or in the past.",
     "targetRequired": "Choose at least one plan or role.",
     "conflict": "This notification has started sending or just changed. Reload to see its current state.",
-    "error": "The notification could not be saved. Try again."
+    "error": "The notification could not be saved. Try again.",
+    "titleShort": "The title needs at least 5 characters (currently {{count}}).",
+    "contentShort": "The message needs at least 10 characters, {{missing}} more (currently {{count}}).",
+    "scheduleNeedsTime": "Pick a send time to schedule; Send now and Save draft do not need one."
   },
   "reports": {
     "title": "Export PDF report",
@@ -348,6 +356,33 @@
     "conflict": "This item was already handled or the post changed version. Reload to see its current state.",
     "forbiddenTarget": "You cannot record a strike for yourself or for an admin account.",
     "notFound": "The post or moderation item was not found.",
-    "error": "Moderation data could not be loaded or saved. Try again."
+    "error": "Moderation data could not be loaded or saved. Try again.",
+    "dialogHeading": "Review post",
+    "versionLabel": "Version {{version}}",
+    "why": {
+      "FLAGGED_AUTHOR": {
+        "title": "Why this post needs review: the author is flagged",
+        "body": "This post has not been found to break any rule. It waits for an admin because its author has live strikes: every post by a flagged account, scheduled ones included, needs review before publishing (BR-64). Read the content below and decide for this version only."
+      },
+      "COMPLIANCE": {
+        "title": "Why this post needs review: a policy violation was detected",
+        "body": "The automated content check flagged this post. Compare the cited part with the post to confirm or dismiss the warning."
+      },
+      "COPYRIGHT": {
+        "title": "Why this post needs review: possible copyright infringement",
+        "body": "The automated copyright check flagged this post. Compare the evidence with the text and images to confirm or dismiss the warning."
+      }
+    },
+    "authorViolations": "The author's live violations",
+    "noLiveStrikes": "The author has no live strikes; you can allow publishing if the content is fine.",
+    "postPreview": "Post content",
+    "mediaAlt": "Attachment {{index}}",
+    "capturedAt": "Captured {{time}}",
+    "accountStatus": "Account status",
+    "strikeRule": "3 yellow strikes convert into 1 orange. A live orange flags the account; 3 orange or 1 red opens a suspension review.",
+    "decisionLabel": "Decision for this version",
+    "approveHint": "This version continues on its workflow and schedule. A note of at least 10 characters is required.",
+    "blockHintChoice": "This version is not published, the author gets a strike and can edit and resubmit.",
+    "confirmApprove": "Allow publishing"
   }
 }

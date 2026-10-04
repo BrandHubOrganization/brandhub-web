@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Download, Search, ShieldCheck } from "lucide-react";
 import {
@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/store/authStore";
 import { adminAccountService } from "@/services/adminAccountService";
 import { Button } from "@/components/ui/button";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -59,6 +60,15 @@ function Accounts() {
       : "",
   };
   const [selected, setSelected] = useState<string | null>(null);
+  // Live search: the list follows typing after a short pause; Enter applies it at once.
+  const [searchText, setSearchText] = useState(filter.search);
+  const [syncedSearch, setSyncedSearch] = useState(filter.search);
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  if (syncedSearch !== filter.search) {
+    // The URL changed elsewhere (drill-down, nav reset): show what is actually applied.
+    setSyncedSearch(filter.search);
+    if (searchText.trim() !== filter.search) setSearchText(filter.search);
+  }
   const [exporting, setExporting] = useState(false);
   const result = useQuery({
     queryKey: ["admin-accounts", actorId, filter],
@@ -79,8 +89,6 @@ function Accounts() {
       { replace: true },
     );
   };
-  const selectClass =
-    "border-input bg-card text-foreground h-10 min-w-0 rounded-lg border px-3 text-xs focus-visible:outline-2 focus-visible:outline-ring";
 
   return (
     <section className="space-y-4" aria-label={t("admin.accounts.title")}>
@@ -99,11 +107,8 @@ function Accounts() {
         className="bg-card border-border flex flex-wrap items-center gap-2 rounded-xl border p-3"
         onSubmit={(event) => {
           event.preventDefault();
-          update({
-            search: String(
-              new FormData(event.currentTarget).get("search") || "",
-            ).trim(),
-          });
+          clearTimeout(searchTimer.current);
+          update({ search: searchText.trim() });
         }}
       >
         <div className="relative min-w-[200px] flex-1 [&>div]:w-full">
@@ -111,49 +116,56 @@ function Accounts() {
           <Input
             aria-label={t("admin.accounts.search")}
             placeholder={t("admin.accounts.search")}
-            key={filter.search}
             name="search"
-            defaultValue={filter.search}
+            value={searchText}
+            onChange={(event) => {
+              const text = event.target.value;
+              setSearchText(text);
+              clearTimeout(searchTimer.current);
+              // Touch only `search` so a filter chosen meanwhile is kept.
+              searchTimer.current = setTimeout(
+                () =>
+                  setParams(
+                    (current) => {
+                      current.set("view", "users");
+                      current.delete("page");
+                      if (text.trim()) current.set("search", text.trim());
+                      else current.delete("search");
+                      return current;
+                    },
+                    { replace: true },
+                  ),
+                300,
+              );
+            }}
             maxLength={255}
             className="h-10 pl-9"
           />
         </div>
-        <select
-          className={selectClass}
-          aria-label={t("admin.accounts.status")}
+        <SelectMenu
+          className="h-10 min-w-44"
+          ariaLabel={t("admin.accounts.status")}
           value={filter.status}
-          onChange={(event) => update({ status: event.target.value })}
-        >
-          <option value="">{t("admin.accounts.allStatuses")}</option>
-          {[
-            "ACTIVE",
-            "FLAGGED",
-            "PENDING_VERIFICATION",
-            "DEACTIVATED",
-            "SUSPENDED",
-            "DELETED",
-          ].map((status) => (
-            <option key={status} value={status}>
-              {t(`admin.status.${status}`)}
-            </option>
-          ))}
-        </select>
-        <select
-          className={selectClass}
-          aria-label={t("admin.accounts.role")}
+          onChange={(status) => update({ status })}
+          options={[
+            { value: "", label: t("admin.accounts.allStatuses") },
+            ...statuses.map((status) => ({
+              value: status,
+              label: t(`admin.status.${status}`),
+            })),
+          ]}
+        />
+        <SelectMenu
+          className="h-10 min-w-36"
+          ariaLabel={t("admin.accounts.role")}
           value={filter.role}
-          onChange={(event) => update({ role: event.target.value })}
-        >
-          <option value="">{t("admin.accounts.allRoles")}</option>
-          <option value="ADMIN">{t("admin.roles.ADMIN")}</option>
-          <option value="USER">{t("admin.roles.USER")}</option>
-        </select>
-        <Button
-          type="submit"
-          className="bg-foreground text-background hover:bg-foreground/90"
-        >
-          {t("admin.accounts.searchAction")}
-        </Button>
+          onChange={(role) => update({ role })}
+          options={[
+            { value: "", label: t("admin.accounts.allRoles") },
+            { value: "ADMIN", label: t("admin.roles.ADMIN") },
+            { value: "USER", label: t("admin.roles.USER") },
+          ]}
+        />
         <Button
           type="button"
           variant="outline"

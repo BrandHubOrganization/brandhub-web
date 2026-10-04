@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -367,6 +368,18 @@ function NotificationComposer({
   const code = errorCode(save.error);
   const trimmedTitle = title.trim().length;
   const trimmedContent = content.trim().length;
+  // Name the exact field that blocks sending (a 9-character message used to show a generic hint).
+  const titleError =
+    title !== "" && trimmedTitle < 5
+      ? t("admin.notifications.titleShort", { count: trimmedTitle })
+      : null;
+  const contentError =
+    content !== "" && trimmedContent < 10
+      ? t("admin.notifications.contentShort", {
+          count: trimmedContent,
+          missing: 10 - trimmedContent,
+        })
+      : null;
   const invalid =
     trimmedTitle < 5 ||
     trimmedTitle > 200 ||
@@ -408,10 +421,21 @@ function NotificationComposer({
             <Input
               value={title}
               maxLength={200}
+              aria-invalid={!!titleError}
+              className={cn(titleError && "border-destructive")}
               onChange={(e) => setTitle(e.target.value)}
             />
-            <span className="text-muted-foreground block text-xs font-normal">
-              {t("admin.notifications.titleHint")}
+            <span className="flex justify-between text-xs font-normal">
+              <span
+                className={
+                  titleError ? "text-destructive" : "text-muted-foreground"
+                }
+              >
+                {titleError ?? t("admin.notifications.titleHint")}
+              </span>
+              <span className="text-muted-foreground font-mono">
+                {trimmedTitle}/200
+              </span>
             </span>
           </label>
           <label className="block space-y-1.5 text-sm font-medium">
@@ -420,26 +444,40 @@ function NotificationComposer({
               value={content}
               rows={5}
               maxLength={5000}
+              aria-invalid={!!contentError}
+              className={cn(contentError && "border-destructive")}
               onChange={(e) => setContent(e.target.value)}
             />
-            <span className="text-muted-foreground flex justify-between text-xs font-normal">
-              <span>{t("admin.notifications.contentHint")}</span>
-              <span className="font-mono">{trimmedContent}/5000</span>
+            <span className="flex justify-between text-xs font-normal">
+              <span
+                className={
+                  contentError ? "text-destructive" : "text-muted-foreground"
+                }
+              >
+                {contentError ?? t("admin.notifications.contentHint")}
+              </span>
+              <span
+                className={cn(
+                  "font-mono",
+                  contentError ? "text-destructive" : "text-muted-foreground",
+                )}
+              >
+                {trimmedContent}/5000
+              </span>
             </span>
           </label>
           <label className="block space-y-1.5 text-sm font-medium">
             <span>{t("admin.notifications.type")}</span>
-            <select
+            <SelectMenu
+              className="h-9 w-full text-sm"
+              ariaLabel={t("admin.notifications.type")}
               value={type}
-              onChange={(e) => setType(e.target.value as NotificationType)}
-              className="border-input bg-card focus-visible:outline-ring h-9 w-full rounded-lg border px-3 text-sm focus-visible:outline-2"
-            >
-              {TYPES.map((value) => (
-                <option key={value} value={value}>
-                  {t(`admin.notifications.types.${value}`)}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => setType(value as NotificationType)}
+              options={TYPES.map((value) => ({
+                value,
+                label: t(`admin.notifications.types.${value}`),
+              }))}
+            />
           </label>
           <fieldset className="space-y-2">
             <legend className="mb-2 text-sm font-medium">
@@ -536,13 +574,21 @@ function NotificationComposer({
               )}
             </p>
           )}
-          {invalid && (title || content) && (
-            <p className="text-muted-foreground text-xs">
-              {t(
-                targetType !== "ALL" && targetValues.length === 0
-                  ? "admin.notifications.targetRequired"
-                  : "admin.notifications.required",
+          {invalid && (
+            <ul className="text-muted-foreground list-inside list-disc text-xs leading-5">
+              {(title.trim() === "" || content.trim() === "") && (
+                <li>{t("admin.notifications.required")}</li>
               )}
+              {titleError && <li>{titleError}</li>}
+              {contentError && <li>{contentError}</li>}
+              {targetType !== "ALL" && targetValues.length === 0 && (
+                <li>{t("admin.notifications.targetRequired")}</li>
+              )}
+            </ul>
+          )}
+          {!invalid && !scheduledAt && (
+            <p className="text-muted-foreground text-xs">
+              {t("admin.notifications.scheduleNeedsTime")}
             </p>
           )}
           <div className="flex flex-wrap justify-end gap-2">
