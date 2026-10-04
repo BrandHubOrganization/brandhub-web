@@ -17,7 +17,7 @@ import { useAuthStore } from "@/store/authStore";
 const sections = [
   { key: "overview", icon: LayoutDashboard, planned: false },
   { key: "users", icon: Users, planned: false },
-  { key: "moderation", icon: ShieldCheck, planned: true },
+  { key: "moderation", icon: ShieldCheck, planned: false },
   { key: "health", icon: Activity, planned: false },
   { key: "revenue", icon: Wallet, planned: false },
   { key: "email", icon: Mail, planned: false },

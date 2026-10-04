@@ -298,5 +298,56 @@
     "empty": "No data in the selected date range. No report was created.",
     "error": "The report could not be created. Try again.",
     "moderationLater": "Moderation reports arrive with content moderation."
+  },
+  "moderation": {
+    "description": "Review content flagged by automated checks and posts by flagged accounts, version by version.",
+    "statusLabel": "Moderation status",
+    "sourceLabel": "Flag source",
+    "allSources": "All flag sources",
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Allowed",
+      "BLOCKED": "Blocked"
+    },
+    "sources": {
+      "FLAGGED_AUTHOR": "Flagged author",
+      "COMPLIANCE": "Policy",
+      "COPYRIGHT": "Copyright"
+    },
+    "processedToday": "Handled today: {{count}} posts",
+    "empty": {
+      "PENDING": "Nothing waiting for review. Posts by flagged accounts or flagged by automated checks appear here.",
+      "APPROVED": "No posts have been allowed yet.",
+      "BLOCKED": "No posts have been blocked yet."
+    },
+    "noCaption": "(No text content)",
+    "author": "Author",
+    "strikes": "Live strikes",
+    "flaggedAt": "Flagged {{time}}",
+    "reviewedAt": "Handled {{time}} by {{name}}",
+    "review": "Review and decide",
+    "view": "View decision",
+    "quickBlock": "Quick block",
+    "pageSize": "Rows per page",
+    "perPage": "{{count}} per page",
+    "dialogTitle": "Review post, version {{version}}",
+    "snapshot": "Content of the submitted version",
+    "outdated": "The post was edited into version {{current}}. This decision does not apply to it; the new version is queued separately.",
+    "strikeLevel": "Strike level",
+    "approveNote": "Decision note",
+    "blockReason": "Violation reason",
+    "noteHint": "At least 10 characters are required to allow publishing.",
+    "blockHint": "The reason is sent to the author and stored with the strike.",
+    "approveAction": "Dismiss warning and allow publishing",
+    "blockAction": "Confirm violation and record a strike",
+    "confirmBlock": "Block this version and record the strike",
+    "backToReview": "Back",
+    "approved": "Publishing allowed for this version.",
+    "blocked": "This post version was blocked and a strike was recorded.",
+    "noteTooShort": "The note must have at least 10 characters to allow publishing.",
+    "conflict": "This item was already handled or the post changed version. Reload to see its current state.",
+    "forbiddenTarget": "You cannot record a strike for yourself or for an admin account.",
+    "notFound": "The post or moderation item was not found.",
+    "error": "Moderation data could not be loaded or saved. Try again."
   }
 }

@@ -6,6 +6,7 @@ import { Construction, ArrowLeft } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { AdminAccountsPanel } from "@/pages/admin/components/AdminAccountsPanel";
 import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
+import { AdminModerationPanel } from "@/pages/admin/components/AdminModerationPanel";
 import { AdminNotificationsPanel } from "@/pages/admin/components/AdminNotificationsPanel";
 import { AdminReportForm } from "@/pages/admin/components/AdminReportExport";
 import { presetRange } from "@/services/adminRevenueService";
@@ -47,7 +48,9 @@ export function AdminPage() {
               ? "admin.accounts.description"
               : view === "reports"
                 ? "admin.reports.description"
-                : `admin.unavailable.${view}`,
+                : view === "moderation"
+                  ? "admin.moderation.description"
+                  : `admin.unavailable.${view}`,
         )}
         hideBanner
         showGuideButton={false}
@@ -65,6 +68,8 @@ export function AdminPage() {
           <AdminOverviewPanel timezone={timezone} />
         ) : view === "users" ? (
           <AdminAccountsPanel />
+        ) : view === "moderation" ? (
+          <AdminModerationPanel />
         ) : view === "revenue" ? (
           <AdminRevenuePanel />
         ) : view === "email" ? (

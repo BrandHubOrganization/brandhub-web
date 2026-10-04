@@ -131,7 +131,7 @@ test("admin shell does not present sample workspace notifications as real alerts
   ).toHaveCount(0);
   await page.goto("/admin?view=moderation");
   await expect(page.locator("header nav")).toContainText("Moderation");
-  await expect(page.locator("main")).toContainText("not available yet");
+  await expect(page.locator('header button[title="Notifications"]')).toHaveCount(0);
 });
 
 test("flagged drill-down preserves status on reload", async ({ page }) => {

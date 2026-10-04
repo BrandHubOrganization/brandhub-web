@@ -298,5 +298,56 @@
     "empty": "Không có dữ liệu trong khoảng ngày đã chọn. Báo cáo không được tạo.",
     "error": "Không tạo được báo cáo. Vui lòng thử lại.",
     "moderationLater": "Báo cáo kiểm duyệt sẽ có khi chức năng kiểm duyệt nội dung hoàn thành."
+  },
+  "moderation": {
+    "description": "Duyệt nội dung bị hệ thống gắn cờ và bài của tài khoản đang bị gắn cờ, theo từng phiên bản.",
+    "statusLabel": "Trạng thái kiểm duyệt",
+    "sourceLabel": "Nguồn gắn cờ",
+    "allSources": "Mọi nguồn vi phạm",
+    "status": {
+      "PENDING": "Chờ duyệt",
+      "APPROVED": "Đã cho phép",
+      "BLOCKED": "Đã chặn"
+    },
+    "sources": {
+      "FLAGGED_AUTHOR": "Tác giả bị gắn cờ",
+      "COMPLIANCE": "Chính sách",
+      "COPYRIGHT": "Bản quyền"
+    },
+    "processedToday": "Đã xử lý hôm nay: {{count}} bài",
+    "empty": {
+      "PENDING": "Không có bài nào chờ duyệt. Bài của tài khoản bị gắn cờ hoặc bị hệ thống đánh dấu sẽ xuất hiện tại đây.",
+      "APPROVED": "Chưa có bài nào được cho phép.",
+      "BLOCKED": "Chưa có bài nào bị chặn."
+    },
+    "noCaption": "(Không có nội dung chữ)",
+    "author": "Tác giả",
+    "strikes": "Thẻ phạt còn hiệu lực",
+    "flaggedAt": "Gắn cờ lúc {{time}}",
+    "reviewedAt": "Xử lý lúc {{time}} bởi {{name}}",
+    "review": "Xem chi tiết & phán quyết",
+    "view": "Xem quyết định",
+    "quickBlock": "Chặn nhanh",
+    "pageSize": "Số dòng mỗi trang",
+    "perPage": "{{count}} dòng/trang",
+    "dialogTitle": "Kiểm duyệt bài viết, phiên bản {{version}}",
+    "snapshot": "Nội dung tại phiên bản được gửi duyệt",
+    "outdated": "Bài đã được sửa thành phiên bản {{current}}. Quyết định không áp dụng cho bản mới; bản mới sẽ vào hàng đợi riêng.",
+    "strikeLevel": "Mức thẻ phạt",
+    "approveNote": "Ghi chú phán quyết",
+    "blockReason": "Lý do vi phạm",
+    "noteHint": "Bắt buộc tối thiểu 10 ký tự khi cho phép xuất bản.",
+    "blockHint": "Lý do được gửi cho tác giả và lưu cùng thẻ phạt.",
+    "approveAction": "Bỏ qua cảnh báo & Cho phép xuất bản",
+    "blockAction": "Xác nhận vi phạm & Ghi nhận thẻ phạt",
+    "confirmBlock": "Chặn phiên bản này & ghi thẻ phạt",
+    "backToReview": "Quay lại",
+    "approved": "Đã lưu quyết định cho phép xuất bản.",
+    "blocked": "Đã chặn phiên bản bài viết và ghi nhận thẻ phạt.",
+    "noteTooShort": "Ghi chú cho phép xuất bản phải có ít nhất 10 ký tự.",
+    "conflict": "Mục này đã được xử lý hoặc bài đã đổi phiên bản. Tải lại để xem trạng thái mới.",
+    "forbiddenTarget": "Không thể ghi thẻ phạt cho chính bạn hoặc cho tài khoản Admin.",
+    "notFound": "Không tìm thấy bài viết hoặc mục kiểm duyệt.",
+    "error": "Không tải hoặc lưu được dữ liệu kiểm duyệt. Vui lòng thử lại."
   }
 }
