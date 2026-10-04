@@ -7,6 +7,7 @@ import type { MemberRole, Workspace } from "@/types/workspace";
 import type { Agency } from "@/types/agency";
 import type { SystemRole } from "@/store/authStore";
 import { canAccess } from "@/routes/access";
+import { AdminSidebar } from "@/components/layout/AdminSidebar";
 import { NAV_SECTIONS, type NavItem, type NavSection } from "./sidebar/sidebarNavConfig";
 import { SidebarHoverPreview, type HoveredItemInfo } from "./sidebar/SidebarHoverPreview";
 import { OrgSwitcherDropdown } from "./sidebar/OrgSwitcherDropdown";
@@ -118,20 +119,26 @@ export function Sidebar({
     !!activeWorkspace &&
     activeWorkspace.packageNegotiationStatus !== "APPROVED";
 
-  // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
-  // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
-  // "create" và "workspaceSettings" ẩn vì cần ngữ cảnh 1 workspace cụ thể.
+  if (systemRole === "ADMIN") {
+    return (
+      <AdminSidebar
+        collapsed={collapsed}
+        className={className}
+        onMobileItemClick={onMobileItemClick}
+      />
+    );
+  }
+
+  // Ở agency-level, create và workspaceSettings cần ngữ cảnh Workspace.
   // Trước khi duyệt gói, Manager vẫn quản lý được thiết lập Workspace.
   const visibleSectionKeys: string[] | null =
-    systemRole === "ADMIN"
-      ? ["system"]
-      : !activeWorkspace
-        ? ["overview", "agency", "lists", "invitations", "settings"]
-        : isPackageHardGated
-          ? role === "MANAGER"
-            ? ["overview", "workspaceSettings"]
-            : ["overview"]
-          : ["overview", "create", "workspaceSettings"];
+    !activeWorkspace
+      ? ["overview", "agency", "lists", "invitations", "settings"]
+      : isPackageHardGated
+        ? role === "MANAGER"
+          ? ["overview", "workspaceSettings"]
+          : ["overview"]
+        : ["overview", "create", "workspaceSettings"];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(

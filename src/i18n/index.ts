@@ -2,6 +2,8 @@ import viMonitoring from "./locales/vi/monitoring.json";
 import enMonitoring from "./locales/en/monitoring.json";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import viAdmin from "./locales/vi/admin.json";
+import enAdmin from "./locales/en/admin.json";
 
 import viAuth from "./locales/vi/auth.json";
 import viCommon from "./locales/vi/common.json";
@@ -62,6 +64,7 @@ import enMediaPackage from "./locales/en/mediaPackage.json";
 import enChat from "./locales/en/chat.json";
 
 const vi = {
+  admin: viAdmin,
   monitoring: viMonitoring,
   auth: viAuth,
   common: viCommon,
@@ -94,6 +97,7 @@ const vi = {
 };
 
 const en = {
+  admin: enAdmin,
   monitoring: enMonitoring,
   auth: enAuth,
   common: enCommon,

@@ -41,7 +41,7 @@ import {
   getNotifications,
   markAllAsRead,
   markAsRead,
-} from "@/services/mock/mockNotificationService";
+} from "@/services/notificationFeed";
 
 const NOTIFICATION_ICONS: Record<NotificationType, React.ElementType> = {
   APPROVAL_REQUEST: Clock,
@@ -147,7 +147,8 @@ export function Navbar({
 }: NavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, clearAuth } = useAuthStore();
+  const { user, clearAuth, systemRole } = useAuthStore();
+  const isAdmin = systemRole === "ADMIN";
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
 
   const username = user?.name || user?.email?.split("@")[0] || "User";
@@ -161,6 +162,7 @@ export function Navbar({
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   React.useEffect(() => {
+    if (isAdmin) return;
     let cancelled = false;
     getNotifications()
       .then((data) => {
@@ -170,7 +172,7 @@ export function Navbar({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isAdmin]);
 
   async function handleNotificationClick(n: AppNotification) {
     if (!n.isRead) {
@@ -181,7 +183,9 @@ export function Navbar({
       );
       await markAsRead(n.id);
     }
-    if (n.linkTo) {
+    if (n.linkTo && /^https?:\/\//.test(n.linkTo)) {
+      window.open(n.linkTo, "_blank", "noopener,noreferrer"); // admin broadcast links are external
+    } else if (n.linkTo) {
       const resolvedLink =
         currentWorkspace && WORKSPACE_SCOPED_LINKS.includes(n.linkTo)
           ? `/workspaces/${currentWorkspace.id}${n.linkTo}`
@@ -196,6 +200,24 @@ export function Navbar({
   }
 
   const getBreadcrumbs = () => {
+    if (isAdmin && location.pathname === "/admin") {
+      const requested =
+        new URLSearchParams(location.search).get("view") || "overview";
+      const view = [
+        "overview",
+        "users",
+        "moderation",
+        "revenue",
+        "email",
+        "reports",
+      ].includes(requested)
+        ? requested
+        : "overview";
+      return [
+        { label: t("admin.navigation.workspace"), path: "/admin" },
+        { label: t(`admin.navigation.${view}`), path: `/admin?view=${view}` },
+      ];
+    }
     const segments = location.pathname.split("/").filter(Boolean);
     if (segments.length === 0)
       return [{ label: t("nav.dashboard"), path: "/" }];
@@ -263,7 +285,8 @@ export function Navbar({
   };
 
   const breadcrumbs = getBreadcrumbs();
-  const roleLabel = memberRole ? t(`workspace.roles.${memberRole}`) : null;
+  const roleLabel =
+    !isAdmin && memberRole ? t(`workspace.roles.${memberRole}`) : null;
 
   return (
     <header
@@ -368,7 +391,12 @@ export function Navbar({
         </Button>
 
         {/* Notification Bell */}
-        <DropdownMenu>
+        {!isAdmin && (
+        <DropdownMenu
+          onOpenChange={(open) => {
+            if (open) getNotifications().then(setNotifications).catch(() => {});
+          }}
+        >
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
@@ -450,6 +478,7 @@ export function Navbar({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        )}
 
         <div className="bg-border mx-1 h-4 w-px" />
 
