@@ -9,9 +9,9 @@ import {
   ShieldCheck,
   Users,
   Wallet,
-  Workflow,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BrandHubLogo } from "@/components/auth/BrandHubLogo";
 import { useAuthStore } from "@/store/authStore";
 
 const sections = [
@@ -100,9 +100,11 @@ export function AdminSidebar({
           collapsed && "justify-center px-0",
         )}
       >
-        <Workflow className="text-brand-orange size-6 shrink-0" />
+        <span className="bg-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md">
+          <BrandHubLogo size={16} />
+        </span>
         {!collapsed && (
-          <span className="text-base font-semibold tracking-tight">
+          <span className="text-sm font-bold tracking-tight text-white">
             Brand<span className="text-brand-orange">Hub</span>
           </span>
         )}
