@@ -51,10 +51,10 @@ export function LoginPage() {
         return;
       }
 
-      const { accessToken } = loginData;
+      const { accessToken, refreshToken } = loginData;
 
       // 1. Lưu token vào store để axios interceptor đính kèm Authorization header
-      useAuthStore.getState().setTokens(accessToken, null);
+      useAuthStore.getState().setTokens(accessToken, refreshToken || null);
 
       // 2. Lấy dữ liệu Profile & Role THẬT 100% từ Database qua /api/v1/users/me
       const profileRes = await authService.getProfile();
@@ -73,7 +73,7 @@ export function LoginPage() {
         avatar: profileData.avatarUrl,
       };
 
-      setAuth(realUser, accessToken);
+      setAuth(realUser, accessToken, refreshToken);
       toast.success(t("auth.login.successToast"));
       navigate(consumeAuthRedirect());
     } catch (err: unknown) {
