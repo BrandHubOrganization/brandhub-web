@@ -393,12 +393,12 @@
     "email": "Email",
     "phone": "Số điện thoại",
     "role": "Vai trò hệ thống",
-    "tempPassword": "Mật khẩu tạm (tùy chọn)",
-    "tempPasswordHint": "Để trống để hệ thống tự sinh. Mật khẩu tạm không dùng để đăng nhập; người dùng tự đặt mật khẩu mới khi kích hoạt.",
+    "tempPassword": "Mật khẩu tạm",
+    "tempPasswordHint": "Bấm Tạo ngẫu nhiên hoặc tự nhập; để trống hệ thống tự sinh. Mật khẩu tạm được gửi qua email cùng link đổi mật khẩu và chỉ dùng để kích hoạt, không đăng nhập trực tiếp.",
     "requestedPlan": "Gói yêu cầu (tùy chọn)",
     "requestedPlanHint": "Chỉ ghi nhận yêu cầu; quyền gói trả phí chỉ có sau khi thanh toán.",
     "noPlan": "Chưa có gói",
-    "activationNote": "Email kích hoạt là bắt buộc: liên kết dùng một lần, hiệu lực 72 giờ, vừa xác thực email vừa đặt mật khẩu.",
+    "activationNote": "Sau khi tạo, hệ thống gửi email gồm mật khẩu tạm và link đổi mật khẩu (dùng một lần, hiệu lực 72 giờ). Người dùng nhập mật khẩu tạm rồi đặt mật khẩu mới để kích hoạt.",
     "createAction": "Tạo tài khoản",
     "created": "Đã tạo tài khoản và xếp email kích hoạt vào hàng gửi.",
     "nameRule": "Họ tên từ 2 đến 100 ký tự.",
@@ -427,7 +427,7 @@
     "saved": "Đã cập nhật người dùng.",
     "pendingActivation": "Tài khoản đang chờ kích hoạt qua email.",
     "resendAction": "Gửi lại email kích hoạt",
-    "resent": "Đã gửi lại email kích hoạt; liên kết cũ không còn dùng được.",
+    "resent": "Đã gửi lại email với mật khẩu tạm mới; link và mật khẩu tạm cũ không còn dùng được.",
     "errors": {
       "emailExists": "Email này đã được dùng cho tài khoản khác.",
       "emailFormat": "Email không đúng định dạng.",
@@ -439,6 +439,7 @@
       "invalid": "Thông tin chưa hợp lệ hoặc gói không có trong danh mục.",
       "notFound": "Không tìm thấy người dùng.",
       "generic": "Không lưu được. Vui lòng thử lại."
-    }
+    },
+    "generatePassword": "Tạo ngẫu nhiên"
   }
 }

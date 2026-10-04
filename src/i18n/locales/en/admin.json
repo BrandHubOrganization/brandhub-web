@@ -393,12 +393,12 @@
     "email": "Email",
     "phone": "Phone",
     "role": "System role",
-    "tempPassword": "Temporary password (optional)",
-    "tempPasswordHint": "Leave blank to generate one. It cannot be used to sign in; the user sets a new password when activating.",
+    "tempPassword": "Temporary password",
+    "tempPasswordHint": "Click Generate or type one; leave blank to have one generated. It is emailed with the change-password link and only works for activation, not for signing in.",
     "requestedPlan": "Requested plan (optional)",
     "requestedPlanHint": "Recorded as a request only; paid access starts after payment.",
     "noPlan": "No plan",
-    "activationNote": "The activation email is mandatory: a single-use link valid for 72 hours verifies the email and sets the password.",
+    "activationNote": "After creation the user gets an email with the temporary password and a change-password link (single use, valid for 72 hours). They enter the temporary password and choose a new one to activate.",
     "createAction": "Create account",
     "created": "Account created and activation email queued.",
     "nameRule": "Full name must be 2 to 100 characters.",
@@ -427,7 +427,7 @@
     "saved": "User updated.",
     "pendingActivation": "This account is waiting for email activation.",
     "resendAction": "Resend activation email",
-    "resent": "Activation email resent; the previous link no longer works.",
+    "resent": "Email resent with a new temporary password; the previous link and password no longer work.",
     "errors": {
       "emailExists": "This email is already used by another account.",
       "emailFormat": "The email format is invalid.",
@@ -439,6 +439,7 @@
       "invalid": "Some details are invalid or the plan is not in the catalog.",
       "notFound": "User not found.",
       "generic": "Could not save. Try again."
-    }
+    },
+    "generatePassword": "Generate"
   }
 }

@@ -10,6 +10,7 @@ import { BackToHomeLink } from "@/components/auth/BackToHomeLink";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { api } from "@/lib/axios";
+import { errorCode } from "@/services/adminRevenueService";
 
 const POLICY = /^(?=.*\d)(?=.*[^A-Za-z0-9]).{8,72}$/;
 
@@ -24,6 +25,7 @@ export function ActivateAccountPage() {
     fullName: string;
   } | null>(null);
   const [invalid, setInvalid] = React.useState(!token);
+  const [tempPassword, setTempPassword] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirm, setConfirm] = React.useState("");
   const [errors, setErrors] = React.useState<Record<string, string>>({});
@@ -43,6 +45,7 @@ export function ActivateAccountPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: Record<string, string> = {};
+    if (!tempPassword) next.temp = t("auth.activation.tempRequired");
     if (!POLICY.test(password)) next.password = t("auth.activation.policy");
     if (password !== confirm)
       next.confirm = t("auth.validation.passwordMismatch");
@@ -50,11 +53,22 @@ export function ActivateAccountPage() {
     if (Object.keys(next).length) return;
     setLoading(true);
     try {
-      await api.post("/api/v1/auth/activation/complete", { token, password });
+      await api.post("/api/v1/auth/activation/complete", {
+        token,
+        tempPassword,
+        password,
+      });
       toast.success(t("auth.activation.done"));
       navigate("/login");
-    } catch {
-      setInvalid(true);
+    } catch (error) {
+      const code = errorCode(error);
+      if (code === "WRONG_CURRENT_PASSWORD")
+        setErrors({ temp: t("auth.activation.wrongTemp") });
+      else if (code === "SAME_AS_CURRENT_PASSWORD")
+        setErrors({ password: t("auth.activation.sameAsTemp") });
+      else if (code === "WEAK_PASSWORD")
+        setErrors({ password: t("auth.activation.policy") });
+      else setInvalid(true);
     } finally {
       setLoading(false);
     }
@@ -90,6 +104,18 @@ export function ActivateAccountPage() {
           </div>
           {account && !invalid && (
             <form onSubmit={submit} className="flex flex-col gap-4">
+              <PasswordInput
+                label={t("auth.activation.tempPassword")}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                value={tempPassword}
+                onChange={(e) => {
+                  setTempPassword(e.target.value);
+                  setErrors((p) => ({ ...p, temp: "" }));
+                }}
+                error={errors.temp}
+                required
+              />
               <div>
                 <PasswordInput
                   label={t("auth.activation.password")}

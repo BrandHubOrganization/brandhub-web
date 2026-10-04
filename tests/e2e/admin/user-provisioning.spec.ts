@@ -98,6 +98,10 @@ test("create user requires a strong password when one is typed and sends the req
   await expect(
     dialog.getByRole("button", { name: "Create account" }),
   ).toBeDisabled();
+  await dialog.getByRole("button", { name: "Generate" }).click();
+  await expect(
+    dialog.getByRole("button", { name: "Create account" }),
+  ).toBeEnabled();
   await dialog.locator('input[type="password"]').fill("");
   await dialog.getByRole("button", { name: "Create account" }).click();
   await expect(
@@ -135,7 +139,12 @@ test("editing a peer admin locks the role, keeps email read-only and needs a rea
     dialog.locator('input[value="peer.admin@example.test"]'),
   ).toBeDisabled();
   const save = dialog.getByRole("button", { name: "Save changes" });
-  await expect(save).toBeDisabled();
+  await save.click();
+  await expect(
+    dialog.getByText("The reason needs at least 5 characters."),
+  ).toBeVisible();
+  await expect(dialog.locator("textarea").last()).toBeFocused();
+  expect(writes).toHaveLength(0);
   await dialog.locator("textarea").last().fill("Ticket 42");
   await save.click();
   await expect.poll(() => writes.length).toBe(1);
@@ -146,14 +155,23 @@ test("editing a peer admin locks the role, keeps email read-only and needs a rea
   expect(writes[0].body).not.toHaveProperty("email");
 });
 
-test("activation page sets the user's own password through the link", async ({
+test("activation page needs the emailed temporary password and sets a new one", async ({
   page,
 }) => {
   const calls: string[] = [];
+  let tempOk = false;
   await page.addInitScript(() => localStorage.setItem("brandhub-lang", "en"));
   await page.route("**/api/v1/auth/activation/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
     calls.push(path);
+    if (path.endsWith("/complete") && !tempOk) {
+      tempOk = true;
+      await route.fulfill({
+        status: 400,
+        json: { success: false, error: { code: "WRONG_CURRENT_PASSWORD" } },
+      });
+      return;
+    }
     await route.fulfill({
       json: {
         success: true,
@@ -165,11 +183,12 @@ test("activation page sets the user's own password through the link", async ({
   });
   await page.goto("/activate-account?token=abc");
   await expect(
-    page.getByText("set a password for new@example.test"),
+    page.getByText("choose a new password for new@example.test"),
   ).toBeVisible();
   const fields = page.locator('input[type="password"]');
-  await fields.nth(0).fill("NoSymbol123");
+  await fields.nth(0).fill("Temp#1234");
   await fields.nth(1).fill("NoSymbol123");
+  await fields.nth(2).fill("NoSymbol123");
   await page.getByRole("button", { name: "Activate account" }).click();
   await expect(
     page
@@ -177,8 +196,13 @@ test("activation page sets the user's own password through the link", async ({
       .first(),
   ).toBeVisible();
   expect(calls).not.toContain("/api/v1/auth/activation/complete");
-  await fields.nth(0).fill("Strong#Pass9");
   await fields.nth(1).fill("Strong#Pass9");
+  await fields.nth(2).fill("Strong#Pass9");
+  await page.getByRole("button", { name: "Activate account" }).click();
+  await expect(
+    page.getByText("The temporary password is incorrect."),
+  ).toBeVisible();
+  await fields.nth(0).fill("Temp#5678");
   await page.getByRole("button", { name: "Activate account" }).click();
   await expect(page).toHaveURL(/\/login/);
   expect(calls).toContain("/api/v1/auth/activation/complete");

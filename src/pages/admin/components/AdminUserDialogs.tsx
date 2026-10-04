@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { MailCheck, UserPlus } from "lucide-react";
+import { MailCheck, UserPlus, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PasswordInput } from "@/components/auth/PasswordInput";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SelectMenu } from "@/components/ui/select-menu";
 import {
@@ -23,6 +24,18 @@ import { adminAccountService } from "@/services/adminAccountService";
 /** BR-02: 8+ characters, a digit and a special character (same rule as the API). */
 const PASSWORD_POLICY = /^(?=.*\d)(?=.*[^A-Za-z0-9]).{8,72}$/;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** 12 letters/digits plus a digit and a symbol, so it always passes PASSWORD_POLICY. */
+function randomPassword() {
+  const pick = (chars: string) =>
+    chars[crypto.getRandomValues(new Uint32Array(1))[0] % chars.length];
+  const alnum = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+  return (
+    Array.from({ length: 12 }, () => pick(alnum)).join("") +
+    pick("0123456789") +
+    pick("!@#$%&*")
+  );
+}
 const ERRORS: Record<string, string> = {
   EMAIL_ALREADY_EXISTS: "admin.users.errors.emailExists",
   WEAK_PASSWORD: "admin.users.errors.weakPassword",
@@ -178,13 +191,23 @@ export function CreateUserDialog({ onClose }: { onClose: () => void }) {
             hint={t("admin.users.tempPasswordHint")}
             error={passwordError}
           >
-            <Input
-              type="password"
-              autoComplete="new-password"
-              value={password}
-              maxLength={72}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="flex gap-2">
+              <PasswordInput
+                autoComplete="new-password"
+                value={password}
+                maxLength={72}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                className="shrink-0 gap-1.5"
+                onClick={() => setPassword(randomPassword())}
+              >
+                <Wand2 className="size-4" />
+                {t("admin.users.generatePassword")}
+              </Button>
+            </div>
           </Field>
           <Field
             label={t("admin.users.requestedPlan")}
@@ -293,6 +316,8 @@ function EditForm({
   const [role, setRole] = useState(user.role);
   const [plan, setPlan] = useState<string>("__keep__");
   const [justification, setJustification] = useState("");
+  const [attempted, setAttempted] = useState(false);
+  const reasonRef = useRef<HTMLTextAreaElement>(null);
   // BR-35/BR-83 mirrored from the API so the reason is visible before saving.
   const roleLock =
     user.id === actorId
@@ -334,8 +359,9 @@ function EditForm({
       : null;
   const nameError =
     fullName.trim().length < 2 ? t("admin.users.nameRule") : null;
+  // Save stays clickable; a missing reason is shown and focused instead of silently disabling the button.
   const justificationError =
-    justification && justification.trim().length < 5
+    (attempted || justification) && justification.trim().length < 5
       ? t("admin.users.justificationRule")
       : null;
   const ready = !nameError && justification.trim().length >= 5;
@@ -351,7 +377,9 @@ function EditForm({
       className="space-y-5"
       onSubmit={(e) => {
         e.preventDefault();
+        setAttempted(true);
         if (ready) save.mutate();
+        else if (justification.trim().length < 5) reasonRef.current?.focus();
       }}
     >
       {user.status === "PENDING_VERIFICATION" && (
@@ -482,6 +510,7 @@ function EditForm({
         error={justificationError}
       >
         <Textarea
+          ref={reasonRef}
           value={justification}
           rows={2}
           maxLength={2000}
@@ -500,7 +529,7 @@ function EditForm({
         <Button
           type="submit"
           className="bg-brand-orange hover:bg-brand-orange/90 text-white"
-          disabled={!ready || save.isPending}
+          disabled={save.isPending}
         >
           {t("admin.users.saveAction")}
         </Button>
