@@ -64,7 +64,78 @@ export interface AccountFilter {
   role: string;
 }
 
+export interface AdminUserDetail {
+  id: string;
+  email: string;
+  fullName: string;
+  phone: string | null;
+  bio: string | null;
+  avatarUrl: string | null;
+  role: "ADMIN" | "USER";
+  status: AccountStatus;
+  requirePasswordReset: boolean;
+  emailVerifiedAt: string | null;
+  createdAt: string;
+  yellow: number;
+  orange: number;
+  red: number;
+  agencyOwner: boolean;
+  currentPlan: string | null;
+  currentPeriodEnd: string | null;
+  pendingPlan: string | null;
+  pendingEffectiveAt: string | null;
+  rowVersion: number;
+}
+export interface CatalogPlan {
+  name: string;
+  displayName: string;
+  priceMonthly: number;
+}
+export interface CreateUserRequest {
+  fullName: string;
+  email: string;
+  phone: string | null;
+  role: "ADMIN" | "USER";
+  password: string | null;
+  requestedPlan: string | null;
+}
+export interface UpdateUserRequest {
+  fullName: string;
+  phone: string | null;
+  bio: string | null;
+  avatarUrl: string | null;
+  role: "ADMIN" | "USER";
+  /** undefined keeps the pending request, "" cancels it, a plan code schedules it for next period. */
+  requestedPlan?: string;
+  justification: string;
+  rowVersion: number;
+}
+
 export const adminAccountService = {
+  async plans(): Promise<CatalogPlan[]> {
+    return (await api.get<{ data: CatalogPlan[] }>("/api/v1/admin/plans")).data
+      .data;
+  },
+  async detail(id: string): Promise<AdminUserDetail> {
+    return (
+      await api.get<{ data: AdminUserDetail }>(`/api/v1/admin/users/${id}`)
+    ).data.data;
+  },
+  async create(body: CreateUserRequest): Promise<AdminUserDetail> {
+    return (
+      await api.post<{ data: AdminUserDetail }>("/api/v1/admin/users", body)
+    ).data.data;
+  },
+  async update(id: string, body: UpdateUserRequest): Promise<AdminUserDetail> {
+    return (
+      await api.patch<{ data: AdminUserDetail }>(
+        `/api/v1/admin/users/${id}`,
+        body,
+      )
+    ).data.data;
+  },
+  resendActivation: (id: string) =>
+    api.post(`/api/v1/admin/users/${id}/activation`),
   async list(filter: AccountFilter): Promise<AccountPage> {
     const params = {
       ...filter,

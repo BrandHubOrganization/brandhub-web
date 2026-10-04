@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Download, Search, ShieldCheck } from "lucide-react";
+import { Download, Pencil, Search, ShieldCheck, UserPlus } from "lucide-react";
 import {
   QueryClient,
   QueryClientProvider,
@@ -23,6 +23,10 @@ import {
 } from "@/components/ui/table";
 import { AdminStrikeDialog } from "@/pages/admin/components/AdminStrikeDialog";
 import { AdminReportDialog } from "@/pages/admin/components/AdminReportExport";
+import {
+  CreateUserDialog,
+  EditUserDialog,
+} from "@/pages/admin/components/AdminUserDialogs";
 import { presetRange } from "@/services/adminRevenueService";
 
 export function AdminAccountsPanel() {
@@ -70,6 +74,8 @@ function Accounts() {
     if (searchText.trim() !== filter.search) setSearchText(filter.search);
   }
   const [exporting, setExporting] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
   const result = useQuery({
     queryKey: ["admin-accounts", actorId, filter],
     queryFn: () => adminAccountService.list(filter),
@@ -174,6 +180,14 @@ function Accounts() {
           <Download className="size-4" />
           {t("admin.revenue.export")}
         </Button>
+        <Button
+          type="button"
+          className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+          onClick={() => setCreating(true)}
+        >
+          <UserPlus className="size-4" />
+          {t("admin.users.createButton")}
+        </Button>
       </form>
       {exporting && (
         <AdminReportDialog
@@ -267,13 +281,24 @@ function Accounts() {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSelected(user.id)}
-                      >
-                        {t("admin.accounts.manage")}
-                      </Button>
+                      <div className="flex gap-1.5">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          aria-label={t("admin.users.editAction")}
+                          title={t("admin.users.editAction")}
+                          onClick={() => setEditing(user.id)}
+                        >
+                          <Pencil className="size-3.5" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelected(user.id)}
+                        >
+                          {t("admin.accounts.manage")}
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -306,6 +331,14 @@ function Accounts() {
             </div>
           </div>
         </>
+      )}
+      {creating && <CreateUserDialog onClose={() => setCreating(false)} />}
+      {editing && (
+        <EditUserDialog
+          key={editing}
+          userId={editing}
+          onClose={() => setEditing(null)}
+        />
       )}
       {selected && (
         <AdminStrikeDialog

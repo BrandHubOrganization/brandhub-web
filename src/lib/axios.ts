@@ -26,6 +26,8 @@ const independentAuthPaths = new Set([
   "/api/v1/auth/verify-otp",
   "/api/v1/auth/resend-otp",
   "/api/v1/auth/2fa/verify",
+  "/api/v1/auth/activation/verify",
+  "/api/v1/auth/activation/complete",
 ]);
 
 function isIndependentAuthRequest(config: { method?: string; url?: string }) {

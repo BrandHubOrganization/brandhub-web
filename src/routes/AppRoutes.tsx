@@ -30,6 +30,7 @@ const VerifyOtpPage = lazyNamed(() => import("@/pages/auth/VerifyOtpPage"), "Ver
 const TwoFactorVerifyPage = lazyNamed(() => import("@/pages/auth/TwoFactorVerifyPage"), "TwoFactorVerifyPage");
 const ForgotPasswordPage = lazyNamed(() => import("@/pages/auth/ForgotPasswordPage"), "ForgotPasswordPage");
 const ResetPasswordPage = lazyNamed(() => import("@/pages/auth/ResetPasswordPage"), "ResetPasswordPage");
+const ActivateAccountPage = lazyNamed(() => import("@/pages/auth/ActivateAccountPage"), "ActivateAccountPage");
 const OAuthCallbackPage = lazyNamed(() => import("@/pages/auth/OAuthCallbackPage"), "OAuthCallbackPage");
 
 // ── Public & Help Pages ──
@@ -138,6 +139,7 @@ export function AppRoutes() {
         <Route path="/2fa-verify" element={<TwoFactorVerifyPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/activate-account" element={<ActivateAccountPage />} />
         <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
 
         {/* Public Help & FAQ Routes — accessible without authentication */}
