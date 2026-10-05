@@ -32,6 +32,7 @@ import {
 } from "@/services/trendService";
 import { AiStudioErrorBanner } from "./components/AiStudioErrorBanner";
 import { RisingTopicsChart } from "./components/RisingTopicsChart";
+import { TrendDetailDialog } from "./components/TrendDetailDialog";
 import { TrendPostList } from "./components/TrendPostList";
 
 const PERIODS: TrendPeriod[] = ["6h", "24h", "7d"];
@@ -64,6 +65,7 @@ function TrendsDashboard() {
   const { t, i18n } = useTranslation();
   const [period, setPeriod] = useState<TrendPeriod>("24h");
   const [topic, setTopic] = useState("");
+  const [selected, setSelected] = useState<TrendItem | null>(null);
   const trends = useQuery({
     queryKey: ["ai-trends", period, topic],
     queryFn: () => fetchTrends(period, topic),
@@ -196,15 +198,32 @@ function TrendsDashboard() {
       {items.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <TrendCard key={item.id} item={item} maxScore={maxScore} />
+            <TrendCard
+              key={item.id}
+              item={item}
+              maxScore={maxScore}
+              onOpen={() => setSelected(item)}
+            />
           ))}
         </div>
+      )}
+
+      {selected && (
+        <TrendDetailDialog item={selected} onClose={() => setSelected(null)} />
       )}
     </PageWrapper>
   );
 }
 
-function TrendCard({ item, maxScore }: { item: TrendItem; maxScore: number }) {
+function TrendCard({
+  item,
+  maxScore,
+  onOpen,
+}: {
+  item: TrendItem;
+  maxScore: number;
+  onOpen: () => void;
+}) {
   const { t } = useTranslation();
   const maxCount = Math.max(1, ...item.dailyCounts);
   const posts = item.posts ?? [];
@@ -216,8 +235,19 @@ function TrendCard({ item, maxScore }: { item: TrendItem; maxScore: number }) {
 
   const card = (
     <article
-      tabIndex={posts.length ? 0 : undefined}
-      className="border-border bg-card hover:border-brand-orange/40 focus-visible:ring-ring flex h-full flex-col gap-3 rounded-xl border p-4 shadow-xs transition-colors focus-visible:ring-2 focus-visible:outline-none"
+      tabIndex={0}
+      aria-label={t("aiStudio.trends.detail.open", { keyword: item.keyword })}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (
+          e.target === e.currentTarget &&
+          (e.key === "Enter" || e.key === " ")
+        ) {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
+      className="border-border bg-card hover:border-brand-orange/40 focus-visible:ring-ring flex h-full cursor-pointer flex-col gap-3 rounded-xl border p-4 shadow-xs transition-colors focus-visible:ring-2 focus-visible:outline-none"
     >
       <header className="flex items-start gap-3">
         <span className="text-muted-foreground font-mono text-xs tabular-nums">
@@ -352,7 +382,10 @@ function TrendCard({ item, maxScore }: { item: TrendItem; maxScore: number }) {
         variant="outline"
         size="sm"
         className={cn("gap-1.5 text-xs", !posts.length && "mt-auto")}
-        onClick={copy}
+        onClick={(e) => {
+          e.stopPropagation();
+          copy();
+        }}
       >
         <Copy className="size-3.5" />
         {t("aiStudio.trends.copyKeyword")}

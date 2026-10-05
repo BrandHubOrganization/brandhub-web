@@ -21,6 +21,10 @@ export interface TrendItem {
   sources: Record<string, number>;
   samplePosts: string[];
   posts?: TrendPost[];
+  /** T4 momentum: posts per active day and the change from the day before. */
+  growth?: { day: string; posts: number; change: number }[];
+  /** Average softmax per author emotion (vui, buồn, ...), 0..1. */
+  emotionDist?: Record<string, number>;
 }
 
 /** A post behind a trend (T7 post_items), shown in the card's hover popup. */
