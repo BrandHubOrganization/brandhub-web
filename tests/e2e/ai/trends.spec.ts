@@ -17,6 +17,12 @@ const trend = {
   keywords: ["áo dài", "tết"],
   sources: {},
   samplePosts: ["Mặc áo dài đi chơi tết"],
+  growth: [
+    { day: "2026-09-12", posts: 1, change: 1 },
+    { day: "2026-09-13", posts: 4, change: 3 },
+    { day: "2026-09-14", posts: 9, change: 5 },
+  ],
+  emotionDist: { vui: 0.62, trung_lập: 0.3, buồn: 0.08 },
   posts: [
     {
       url: "https://www.facebook.com/page/posts/1",
@@ -194,7 +200,9 @@ test("hovering a trend card pops up its posts with a link", async ({
     crawl: null,
   }));
   await page.goto("/ai-studio/trends");
-  await expect(page.getByText("1 post · hover to view")).toBeVisible();
+  await expect(
+    page.getByText("1 post · hover for posts, click for details"),
+  ).toBeVisible();
   await page.getByRole("heading", { name: "áo dài tết" }).hover();
   const popup = page.getByText('1 post on "áo dài tết"');
   await expect(popup).toBeVisible();
@@ -203,4 +211,30 @@ test("hovering a trend card pops up its posts with a link", async ({
     "href",
     "https://www.facebook.com/page/posts/1",
   );
+});
+
+test("clicking a trend card opens its growth chart and emotion breakdown", async ({
+  page,
+}) => {
+  await signIn(page, () => ({
+    items: [trend],
+    topics: [],
+    topicStats: [],
+    crawl: null,
+  }));
+  await page.goto("/ai-studio/trends");
+  await page.getByRole("button", { name: "Copy keyword" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.getByRole("heading", { name: "áo dài tết" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(
+    dialog.getByRole("heading", { name: "Growth (posts per day)" }),
+  ).toBeVisible();
+  await expect(dialog.locator(".recharts-area-curve")).toBeVisible();
+  await expect(
+    dialog.getByRole("rowheader", { name: "2026-09-14" }),
+  ).toBeAttached();
+  await expect(dialog.getByText("Joy")).toBeVisible();
+  await expect(dialog.getByText("62%")).toBeVisible();
+  await expect(dialog.getByText("Thời trang Việt")).toBeVisible();
 });

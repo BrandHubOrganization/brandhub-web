@@ -164,8 +164,24 @@
       "open": "Open post",
       "title_one": "1 post on \"{{keyword}}\"",
       "title_other": "{{count}} posts on \"{{keyword}}\"",
-      "hint_one": "1 post · hover to view",
-      "hint_other": "{{count}} posts · hover to view"
+      "hint_one": "1 post · hover for posts, click for details",
+      "hint_other": "{{count}} posts · hover for posts, click for details"
+    },
+    "detail": {
+      "growth": "Growth (posts per day)",
+      "noGrowth": "Not enough daily data to draw the growth line.",
+      "tooltip": "{{posts}} posts · {{change}} vs the day before",
+      "emotions": "Author emotion",
+      "signals": "Signals",
+      "open": "Open trend details for {{keyword}}"
+    },
+    "emotionName": {
+      "vui": "Joy",
+      "buồn": "Sadness",
+      "tức_giận": "Anger",
+      "lo_sợ": "Fear",
+      "ngạc_nhiên": "Surprise",
+      "trung_lập": "Neutral"
     }
   },
   "video": {
