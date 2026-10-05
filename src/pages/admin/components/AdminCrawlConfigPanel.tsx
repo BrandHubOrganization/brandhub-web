@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SelectMenu } from "@/components/ui/select-menu";
 import { cn } from "@/lib/utils";
 import { errorCode } from "@/services/adminRevenueService";
+import { AdminCrawlRunLog } from "./AdminCrawlRunLog";
 import {
   adminCrawlConfigService,
   type CrawlConfig,
@@ -33,7 +34,12 @@ export function AdminCrawlConfigPanel() {
         {t("admin.crawl.loadError")}
       </p>
     );
-  return <CrawlForm key={JSON.stringify(config.data)} saved={config.data} />;
+  return (
+    <div className="space-y-6">
+      <CrawlForm key={JSON.stringify(config.data)} saved={config.data} />
+      <AdminCrawlRunLog />
+    </div>
+  );
 }
 
 function CrawlForm({ saved }: { saved: CrawlConfig }) {

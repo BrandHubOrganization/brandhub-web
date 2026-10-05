@@ -27,6 +27,7 @@ import {
   BookOpen,
   PackageCheck,
   MessageCircleMore,
+  TrendingUp,
 } from "lucide-react";
 
 export interface NavItem {
@@ -162,6 +163,12 @@ export const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.publish",
         workspaceScoped: true,
         requiresWorkspace: true,
+      },
+      {
+        // FR 3.7.1: platform-wide trends, not workspace data, so the route stays unscoped.
+        to: "/ai-studio/trends",
+        icon: TrendingUp,
+        labelKey: "nav.trends",
       },
     ],
   },

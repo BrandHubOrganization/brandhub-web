@@ -19,7 +19,36 @@ export type CrawlConfigUpdate = {
   postsPerRun: number;
 };
 
+/** One crawl: pages visited, posts per page and errors (FR 3.7.9 run log). */
+export interface CrawlRun {
+  id: string;
+  trigger: "MANUAL" | "SCHEDULE";
+  status: "RUNNING" | "SUCCESS" | "PARTIAL" | "FAILED";
+  startedAt: string | null;
+  finishedAt: string | null;
+  totalPosts: number;
+  deduped: number;
+  creditsRemaining: number | null;
+  pages: {
+    source: string;
+    url: string | null;
+    posts: number;
+    requests: number | null;
+    error: string | null;
+  }[];
+  errors: string[];
+}
+
 export const adminCrawlConfigService = {
+  runs: async () =>
+    (
+      await api.get<{
+        data: { running: CrawlRun | null; history: CrawlRun[] };
+      }>("/api/v1/admin/ai/crawl-runs")
+    ).data.data,
+  runNow: async () =>
+    (await api.post<{ data: CrawlRun }>("/api/v1/admin/ai/crawl-runs")).data
+      .data,
   get: async () =>
     (await api.get<{ data: CrawlConfig }>("/api/v1/admin/ai/crawl-config")).data
       .data,

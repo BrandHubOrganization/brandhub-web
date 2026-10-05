@@ -12,6 +12,35 @@ const saved = {
   sources: ["facebook-groups"],
 };
 
+const lastRun = {
+  id: "r1",
+  trigger: "MANUAL",
+  status: "PARTIAL",
+  startedAt: "2026-10-05T07:00:00Z",
+  finishedAt: "2026-10-05T07:01:00Z",
+  totalPosts: 6,
+  deduped: 0,
+  creditsRemaining: 88,
+  pages: [
+    {
+      source: "facebook",
+      url: "https://www.facebook.com/groups/a",
+      posts: 6,
+      requests: 2,
+      error: null,
+    },
+    {
+      source: "facebook",
+      url: "https://www.facebook.com/broken",
+      posts: 0,
+      requests: 1,
+      error: "HTTP 404: page not found",
+    },
+  ],
+  errors: [],
+};
+const runState = { started: 0 };
+
 async function asAdmin(page: Page, patches: unknown[], reject = false) {
   await page.addInitScript(() => {
     localStorage.setItem("brandhub-lang", "en");
@@ -56,6 +85,17 @@ async function asAdmin(page: Page, patches: unknown[], reject = false) {
     if (path === "/api/v1/users/me")
       data = { role: "ADMIN", fullName: "Admin" };
     if (path === "/api/v1/admin/ai/crawl-config") data = saved;
+    if (path === "/api/v1/admin/ai/crawl-runs") {
+      if (method === "POST") {
+        runState.started += 1;
+        await route.fulfill({
+          status: 202,
+          json: { success: true, data: lastRun },
+        });
+        return;
+      }
+      data = { running: null, history: [lastRun] };
+    }
     await route.fulfill({ json: { success: true, data } });
   });
 }
@@ -113,4 +153,23 @@ test("an invalid page URL blocks saving and a server INVALID_SCHEDULE is shown",
     .fill("99 * * * *");
   await page.getByRole("button", { name: "Save settings" }).click();
   await expect(page.getByText("The cron expression is invalid.")).toBeVisible();
+});
+
+test("the crawl log lists visited pages, posts and errors, and the dev button starts a run", async ({
+  page,
+}) => {
+  await asAdmin(page, []);
+  await page.goto("/admin?view=crawl");
+  await expect(page.getByText("Partly failed")).toBeVisible();
+  await expect(page.getByText("2 sources · 6 posts")).toBeVisible();
+  await expect(page.getByText("88 credits left")).toBeVisible();
+  await expect(
+    page.getByText("https://www.facebook.com/broken: HTTP 404: page not found"),
+  ).toBeVisible();
+  const before = runState.started;
+  await page.getByRole("button", { name: "Crawl now (dev)" }).click();
+  await expect(
+    page.getByText("Crawl started; the log updates itself."),
+  ).toBeVisible();
+  expect(runState.started).toBe(before + 1);
 });
