@@ -475,6 +475,32 @@
     },
     "nextRun": "Lần chạy kế tiếp: {{date}}",
     "sources": "Nguồn đang bật",
-    "noSources": "Chưa cấu hình API key cho scraper."
+    "noSources": "Chưa cấu hình API key cho scraper.",
+    "log": {
+      "title": "Nhật ký crawl",
+      "hint": "Mỗi lần crawl ghi lại các trang đã vào, số bài lấy được và lỗi. Giữ 20 lần gần nhất.",
+      "runNow": "Chạy crawl ngay (dev)",
+      "running": "Đang crawl…",
+      "started": "Đã bắt đầu crawl, nhật ký tự cập nhật.",
+      "alreadyRunning": "Đang có một lần crawl chạy, chờ xong rồi thử lại.",
+      "startError": "Không bắt đầu được crawl. Kiểm tra AI service.",
+      "loadError": "Không tải được nhật ký crawl.",
+      "empty": "Chưa có lần crawl nào.",
+      "status": {
+        "RUNNING": "Đang chạy",
+        "SUCCESS": "Thành công",
+        "PARTIAL": "Có lỗi một phần",
+        "FAILED": "Thất bại"
+      },
+      "trigger": {
+        "MANUAL": "Chạy tay",
+        "SCHEDULE": "Theo lịch"
+      },
+      "totals": "{{pages}} nguồn · {{posts}} bài",
+      "credits": "còn {{count}} credit",
+      "page": "Trang / nguồn",
+      "posts": "Số bài",
+      "failed": "Lỗi"
+    }
   }
 }

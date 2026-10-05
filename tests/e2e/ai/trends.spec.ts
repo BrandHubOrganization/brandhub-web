@@ -107,3 +107,55 @@ test("empty cache shows an empty state, not an error", async ({ page }) => {
   await expect(page.getByText("No trend data yet")).toBeVisible();
   await expect(page.getByText("Could not load trend data.")).toHaveCount(0);
 });
+
+test("a creator inside a workspace reaches Trends from the sidebar", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("brandhub-lang", "en");
+    localStorage.setItem(
+      "brandhub-auth",
+      JSON.stringify({
+        state: {
+          user: { id: "33333333-3333-3333-3333-333333333333", name: "Creator" },
+          accessToken: "test-access",
+          isAuthenticated: true,
+          systemRole: "USER",
+        },
+        version: 0,
+      }),
+    );
+  });
+  await page.route("**/api/v1/**", async (route) => {
+    const path = new URL(route.request().url()).pathname;
+    let data: unknown = [];
+    if (path === "/api/v1/users/me")
+      data = { role: "USER", fullName: "Creator" };
+    if (
+      path === "/api/v1/workspaces" ||
+      path === "/api/v1/workspaces/workspace-1"
+    )
+      data = path.endsWith("workspace-1") ? workspace : [workspace];
+    if (path === "/api/v1/ai/trending-topics")
+      data = { items: [trend], topics: [], crawl: null };
+    await route.fulfill({ json: { success: true, data } });
+  });
+  await page.goto("/workspaces/workspace-1/library");
+  await page.getByRole("link", { name: "Trends", exact: true }).click();
+  await expect(page).toHaveURL(/\/ai-studio\/trends$/);
+  await expect(page.getByRole("heading", { name: "áo dài tết" })).toBeVisible();
+});
+
+const workspace = {
+  id: "workspace-1",
+  name: "Studio",
+  agencyId: "agency-1",
+  slug: "studio",
+  ownerId: "owner",
+  logoUrl: null,
+  settings: {},
+  isActive: true,
+  createdAt: "2026-10-01T00:00:00Z",
+  myRole: "CREATOR",
+  clientProfileId: null,
+};
