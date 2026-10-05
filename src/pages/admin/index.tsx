@@ -9,6 +9,7 @@ import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
 import { AdminModerationPanel } from "@/pages/admin/components/AdminModerationPanel";
 import { AdminNotificationsPanel } from "@/pages/admin/components/AdminNotificationsPanel";
 import { AdminReportForm } from "@/pages/admin/components/AdminReportExport";
+import { AdminCrawlConfigPanel } from "@/pages/admin/components/AdminCrawlConfigPanel";
 import { presetRange } from "@/services/adminRevenueService";
 import {
   AdminOverviewActions,
@@ -22,6 +23,7 @@ const views = [
   "revenue",
   "email",
   "reports",
+  "crawl",
 ];
 
 export function AdminPage() {
@@ -50,7 +52,9 @@ export function AdminPage() {
                 ? "admin.reports.description"
                 : view === "moderation"
                   ? "admin.moderation.description"
-                  : `admin.unavailable.${view}`,
+                  : view === "crawl"
+                    ? "admin.crawl.description"
+                    : `admin.unavailable.${view}`,
         )}
         hideBanner
         showGuideButton={false}
@@ -74,6 +78,8 @@ export function AdminPage() {
           <AdminRevenuePanel />
         ) : view === "email" ? (
           <AdminNotificationsPanel />
+        ) : view === "crawl" ? (
+          <AdminCrawlConfigPanel />
         ) : view === "reports" ? (
           <section className="bg-card border-border max-w-2xl rounded-xl border p-5 lg:p-6">
             <AdminReportForm

@@ -6,6 +6,7 @@ import {
   FileChartColumn,
   LayoutDashboard,
   Mail,
+  Radar,
   ShieldCheck,
   Users,
   Wallet,
@@ -22,6 +23,7 @@ const sections = [
   { key: "revenue", icon: Wallet, planned: false },
   { key: "email", icon: Mail, planned: false },
   { key: "reports", icon: FileChartColumn, planned: false },
+  { key: "crawl", icon: Radar, planned: false },
 ];
 const linkTo = (key: string) =>
   key === "health"
