@@ -1,3 +1,4 @@
+import type { TFunction } from "i18next";
 import { api } from "@/lib/axios";
 
 /** FR 3.7.1: trending keywords from the AI-05 pipeline (T0→T7), proxied by the Business service. */
@@ -21,6 +22,18 @@ export interface TrendItem {
   samplePosts: string[];
 }
 
+/** Display name of a topic-model label such as "thời_trang_làm_đẹp"; unknown labels fall back to plain text. */
+export const topicLabel = (t: TFunction, topic: string) =>
+  t(`aiStudio.trends.topicName.${topic}`, topic.replace(/_/g, " "));
+
+/** Summed trend score, trend count and rising trends of one topic (T3 label). */
+export interface TopicStat {
+  topic: string;
+  score: number;
+  trends: number;
+  rising: number;
+}
+
 /** FR 3.7.9 summary shown on the dashboard; null when the AI service cannot report it. */
 export interface CrawlSummary {
   intervalMinutes: number | null;
@@ -32,7 +45,12 @@ export interface CrawlSummary {
 
 export async function fetchTrends(period: TrendPeriod, topic: string) {
   const res = await api.get<{
-    data: { items: TrendItem[]; topics: string[]; crawl: CrawlSummary | null };
+    data: {
+      items: TrendItem[];
+      topics: string[];
+      topicStats: TopicStat[];
+      crawl: CrawlSummary | null;
+    };
   }>("/api/v1/ai/trending-topics", {
     params: { period, topic: topic || undefined, limit: 30 },
   });

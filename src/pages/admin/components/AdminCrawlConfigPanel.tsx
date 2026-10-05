@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SelectMenu } from "@/components/ui/select-menu";
 import { cn } from "@/lib/utils";
 import { errorCode } from "@/services/adminRevenueService";
-import { AdminCrawlRunLog } from "./AdminCrawlRunLog";
+import { AdminCrawlRunLog, CrawlLiveCard } from "./AdminCrawlRunLog";
 import {
   adminCrawlConfigService,
   type CrawlConfig,
@@ -241,45 +241,48 @@ function CrawlForm({ saved }: { saved: CrawlConfig }) {
         </div>
       </form>
 
-      <aside className="bg-card border-border h-fit space-y-4 rounded-xl border p-5 text-sm">
-        <h2 className="flex items-center gap-2 font-semibold">
-          <Radar className="text-brand-orange size-4" />
-          {t("admin.crawl.status")}
-        </h2>
-        <p className="flex items-center gap-2">
-          <span
-            className={cn(
-              "size-2 rounded-full",
-              status === "running" ? "bg-emerald-500" : "bg-amber-500",
-            )}
-          />
-          {t(`admin.crawl.state.${status}`)}
-        </p>
-        {nextRun && (
-          <p className="text-muted-foreground text-xs">
-            {t("admin.crawl.nextRun", { date: nextRun })}
+      <div className="space-y-6">
+        <aside className="bg-card border-border space-y-4 rounded-xl border p-5 text-sm">
+          <h2 className="flex items-center gap-2 font-semibold">
+            <Radar className="text-brand-orange size-4" />
+            {t("admin.crawl.status")}
+          </h2>
+          <p className="flex items-center gap-2">
+            <span
+              className={cn(
+                "size-2 rounded-full",
+                status === "running" ? "bg-emerald-500" : "bg-amber-500",
+              )}
+            />
+            {t(`admin.crawl.state.${status}`)}
           </p>
-        )}
-        <div>
-          <p className="text-muted-foreground mb-2 text-xs">
-            {t("admin.crawl.sources")}
-          </p>
-          {saved.sources.length ? (
-            <div className="flex flex-wrap gap-1.5">
-              {saved.sources.map((s) => (
-                <span
-                  key={s}
-                  className="bg-muted rounded-full px-2 py-0.5 font-mono text-xs"
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs">{t("admin.crawl.noSources")}</p>
+          {nextRun && (
+            <p className="text-muted-foreground text-xs">
+              {t("admin.crawl.nextRun", { date: nextRun })}
+            </p>
           )}
-        </div>
-      </aside>
+          <div>
+            <p className="text-muted-foreground mb-2 text-xs">
+              {t("admin.crawl.sources")}
+            </p>
+            {saved.sources.length ? (
+              <div className="flex flex-wrap gap-1.5">
+                {saved.sources.map((s) => (
+                  <span
+                    key={s}
+                    className="bg-muted rounded-full px-2 py-0.5 font-mono text-xs"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs">{t("admin.crawl.noSources")}</p>
+            )}
+          </div>
+        </aside>
+        <CrawlLiveCard />
+      </div>
     </div>
   );
 }

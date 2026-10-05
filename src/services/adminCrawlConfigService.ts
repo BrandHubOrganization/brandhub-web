@@ -37,6 +37,8 @@ export interface CrawlRun {
     error: string | null;
   }[];
   errors: string[];
+  /** Pages not crawled yet; only present while the run is in progress. */
+  pending?: string[];
 }
 
 export const adminCrawlConfigService = {

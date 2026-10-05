@@ -780,6 +780,11 @@
       "page": "Page / source",
       "posts": "Posts",
       "failed": "Error"
+    },
+    "live": {
+      "running": "Crawling now",
+      "last": "Last crawl",
+      "posts": "posts crawled"
     }
   }
 }

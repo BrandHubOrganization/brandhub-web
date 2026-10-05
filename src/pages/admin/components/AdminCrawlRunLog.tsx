@@ -18,16 +18,85 @@ const STATUS_STYLE: Record<string, string> = {
   FAILED: "bg-destructive/10 text-destructive",
 };
 
-/** FR 3.7.9 run log: which pages each crawl visited, how many posts it got, and what failed. */
-export function AdminCrawlRunLog() {
-  const { t, i18n } = useTranslation();
-  const client = useQueryClient();
-  const runs = useQuery({
+/** Shared by the log and the live card so both read one poll. */
+function useCrawlRuns() {
+  return useQuery({
     queryKey: ["admin-crawl-runs"],
     queryFn: adminCrawlConfigService.runs,
     // Poll only while a run is in progress.
     refetchInterval: (query) => (query.state.data?.running ? 3000 : false),
   });
+}
+
+/** Side card: posts per page of the running crawl (live) or of the last one. */
+export function CrawlLiveCard() {
+  const { t } = useTranslation();
+  const runs = useCrawlRuns();
+  const run = runs.data?.running ?? runs.data?.history[0];
+  if (!run) return null;
+  const live = run.status === "RUNNING";
+  return (
+    <aside className="bg-card border-border space-y-3 rounded-xl border p-5 text-sm">
+      <h2 className="flex items-center gap-2 font-semibold">
+        {live ? (
+          <Loader2 className="text-brand-orange size-4 animate-spin" />
+        ) : (
+          <ScrollText className="text-brand-orange size-4" />
+        )}
+        {t(live ? "admin.crawl.live.running" : "admin.crawl.live.last")}
+      </h2>
+      <p className="text-3xl font-semibold tabular-nums">
+        {run.totalPosts}
+        <span className="text-muted-foreground ml-1.5 text-xs font-normal">
+          {t("admin.crawl.live.posts")}
+        </span>
+      </p>
+      <ul className="space-y-1.5 text-xs">
+        {run.pages.map((page, i) => (
+          <li key={i} className="flex items-center justify-between gap-2">
+            <span
+              className="truncate font-mono"
+              title={page.url ?? page.source}
+            >
+              {(page.url ?? page.source).replace(/^https:\/\/(www\.)?/, "")}
+            </span>
+            <span
+              className={cn(
+                "shrink-0 font-medium tabular-nums",
+                page.error && "text-destructive",
+              )}
+              title={page.error ?? undefined}
+            >
+              {page.error ? t("admin.crawl.log.failed") : page.posts}
+            </span>
+          </li>
+        ))}
+        {(run.pending ?? []).map((url) => (
+          <li
+            key={url}
+            className="text-muted-foreground flex items-center justify-between gap-2"
+          >
+            <span className="truncate font-mono">
+              {url.replace(/^https:\/\/(www\.)?/, "")}
+            </span>
+            <Loader2 className="size-3 shrink-0 animate-spin" />
+          </li>
+        ))}
+      </ul>
+      {run.creditsRemaining != null && (
+        <p className="text-muted-foreground text-xs">
+          {t("admin.crawl.log.credits", { count: run.creditsRemaining })}
+        </p>
+      )}
+    </aside>
+  );
+}
+
+/** FR 3.7.9 run log: which pages each crawl visited, how many posts it got, and what failed. */
+export function AdminCrawlRunLog() {
+  const { t, i18n } = useTranslation();
+  const client = useQueryClient();
+  const runs = useCrawlRuns();
   const runNow = useMutation({
     mutationFn: adminCrawlConfigService.runNow,
     onSuccess: () => {
