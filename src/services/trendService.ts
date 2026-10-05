@@ -20,6 +20,19 @@ export interface TrendItem {
   keywords: string[];
   sources: Record<string, number>;
   samplePosts: string[];
+  posts?: TrendPost[];
+}
+
+/** A post behind a trend (T7 post_items), shown in the card's hover popup. */
+export interface TrendPost {
+  url: string | null;
+  author: string | null;
+  source: string | null;
+  likes: number;
+  shares: number;
+  comments: number;
+  postedAt: string | null;
+  text: string;
 }
 
 /** Display name of a topic-model label such as "thời_trang_làm_đẹp"; unknown labels fall back to plain text. */

@@ -155,6 +155,15 @@
       "du_lịch": "Du lịch",
       "game": "Game",
       "đời_sống": "Đời sống"
+    },
+    "posts": {
+      "unknownAuthor": "Không rõ tác giả",
+      "likes": "Lượt thích",
+      "comments": "Bình luận",
+      "shares": "Chia sẻ",
+      "open": "Mở bài",
+      "title_other": "{{count}} bài về \"{{keyword}}\"",
+      "hint_other": "{{count}} bài · rê chuột để xem"
     }
   },
   "video": {
