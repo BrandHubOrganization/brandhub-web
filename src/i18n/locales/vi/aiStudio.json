@@ -88,30 +88,54 @@
     "guardVerified": "Đã đối chiếu {{count}} nguồn · không phát hiện ảo giác."
   },
   "trends": {
-    "title": "Xu hướng",
-    "description": "Theo dõi từ khóa và chủ đề đang thịnh hành.",
-    "loadError": "Không thể tải dữ liệu xu hướng.",
+    "title": "Xu hướng thịnh hành",
+    "description": "Từ khóa đang lên từ dữ liệu mạng xã hội, cập nhật theo lịch crawl để bạn bắt trend khi lên nội dung.",
+    "loadError": "Không tải được dữ liệu xu hướng.",
     "retry": "Thử lại",
-    "keywordsTitle": "Cấu hình từ khóa theo dõi",
-    "keywordPlaceholder": "Nhập từ khóa mới",
-    "addKeyword": "Thêm",
-    "activate": "Kích hoạt",
-    "deactivate": "Tắt",
-    "addSuccess": "Đã thêm từ khóa.",
-    "addError": "Thêm từ khóa thất bại.",
-    "toggleSuccess": "Đã cập nhật trạng thái từ khóa.",
-    "toggleError": "Cập nhật từ khóa thất bại.",
-    "deleteConfirm": "Xóa từ khóa này?",
-    "deleteSuccess": "Đã xóa từ khóa.",
-    "deleteError": "Xóa từ khóa thất bại.",
-    "volume": "Lượt thảo luận",
-    "useForContent": "Dùng để sáng tạo nội dung",
-    "useForContentSuccess": "Đã đưa chủ đề vào quy trình sáng tạo nội dung.",
-    "useForContentError": "Thao tác thất bại.",
-    "frequency": {
-      "HOURLY": "Hàng giờ",
-      "DAILY": "Hàng ngày",
-      "WEEKLY": "Hàng tuần"
+    "periodLabel": "Khoảng thời gian",
+    "period": {
+      "6h": "6 giờ qua",
+      "24h": "Hôm nay",
+      "7d": "7 ngày"
+    },
+    "topicFilter": "Lọc theo lĩnh vực",
+    "allTopics": "Tất cả lĩnh vực",
+    "refresh": "Làm mới",
+    "empty": "Chưa có dữ liệu xu hướng",
+    "emptyHint": "Hệ thống chưa crawl hoặc chưa có từ khóa nổi bật trong khoảng thời gian này. Dữ liệu sẽ xuất hiện sau lần crawl kế tiếp.",
+    "score": "Điểm xu hướng",
+    "virality": "Độ lan tỏa",
+    "riskLabel": "Rủi ro thương hiệu",
+    "risk": {
+      "low": "Thấp",
+      "medium": "Trung bình",
+      "high": "Cao"
+    },
+    "moodLabel": "Dư luận",
+    "mood": {
+      "positive": "Tích cực",
+      "negative": "Tiêu cực",
+      "humor": "Hài hước",
+      "controversy": "Tranh cãi",
+      "neutral": "Trung lập"
+    },
+    "status": {
+      "new": "Mới",
+      "rising": "Đang lên",
+      "peaking": "Đỉnh điểm",
+      "declining": "Đang giảm"
+    },
+    "superTrend": "Siêu trend",
+    "dailyPosts": "Số bài theo ngày",
+    "copyKeyword": "Sao chép từ khóa",
+    "copied": "Đã sao chép từ khóa.",
+    "copyError": "Không sao chép được.",
+    "crawl": {
+      "sources": "Nguồn crawl: {{sources}} ({{count}} page)",
+      "everyMinutes": "cập nhật mỗi {{count}} phút",
+      "everyHours": "cập nhật mỗi {{count}} giờ",
+      "cron": "lịch cron {{cron}}",
+      "next": "lần kế tiếp {{date}}"
     }
   },
   "video": {

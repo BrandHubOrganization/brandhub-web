@@ -88,30 +88,54 @@
     "guardVerified": "Verified against {{count}} sources · no hallucination detected."
   },
   "trends": {
-    "title": "Trends",
-    "description": "Track trending keywords and topics.",
-    "loadError": "Failed to load trends data.",
-    "retry": "Retry",
-    "keywordsTitle": "Keyword tracking configuration",
-    "keywordPlaceholder": "Enter new keyword",
-    "addKeyword": "Add",
-    "activate": "Activate",
-    "deactivate": "Deactivate",
-    "addSuccess": "Keyword added.",
-    "addError": "Failed to add keyword.",
-    "toggleSuccess": "Keyword status updated.",
-    "toggleError": "Failed to update keyword.",
-    "deleteConfirm": "Delete this keyword?",
-    "deleteSuccess": "Keyword deleted.",
-    "deleteError": "Failed to delete keyword.",
-    "volume": "Volume",
-    "useForContent": "Use for Content",
-    "useForContentSuccess": "Topic added to content creation pipeline.",
-    "useForContentError": "Action failed.",
-    "frequency": {
-      "HOURLY": "Hourly",
-      "DAILY": "Daily",
-      "WEEKLY": "Weekly"
+    "title": "Trending topics",
+    "description": "Rising keywords from social media data, refreshed on the crawl schedule so you can ride trends in your content.",
+    "loadError": "Could not load trend data.",
+    "retry": "Try again",
+    "periodLabel": "Time window",
+    "period": {
+      "6h": "Last 6 hours",
+      "24h": "Today",
+      "7d": "7 days"
+    },
+    "topicFilter": "Filter by topic",
+    "allTopics": "All topics",
+    "refresh": "Refresh",
+    "empty": "No trend data yet",
+    "emptyHint": "The crawler has not run yet or found no standout keywords in this window. Data appears after the next crawl.",
+    "score": "Trend score",
+    "virality": "Virality",
+    "riskLabel": "Brand risk",
+    "risk": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "moodLabel": "Public mood",
+    "mood": {
+      "positive": "Positive",
+      "negative": "Negative",
+      "humor": "Humorous",
+      "controversy": "Controversial",
+      "neutral": "Neutral"
+    },
+    "status": {
+      "new": "New",
+      "rising": "Rising",
+      "peaking": "Peaking",
+      "declining": "Declining"
+    },
+    "superTrend": "Super trend",
+    "dailyPosts": "Posts per day",
+    "copyKeyword": "Copy keyword",
+    "copied": "Keyword copied.",
+    "copyError": "Could not copy.",
+    "crawl": {
+      "sources": "Crawled from: {{sources}} ({{count}} pages)",
+      "everyMinutes": "refreshed every {{count}} minutes",
+      "everyHours": "refreshed every {{count}} hours",
+      "cron": "cron {{cron}}",
+      "next": "next run {{date}}"
     }
   },
   "video": {
