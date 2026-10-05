@@ -163,7 +163,23 @@
       "shares": "Chia sẻ",
       "open": "Mở bài",
       "title_other": "{{count}} bài về \"{{keyword}}\"",
-      "hint_other": "{{count}} bài · rê chuột để xem"
+      "hint_other": "{{count}} bài · rê chuột xem bài, bấm xem chi tiết"
+    },
+    "detail": {
+      "growth": "Đường phát triển (số bài theo ngày)",
+      "noGrowth": "Chưa đủ dữ liệu theo ngày để vẽ đường phát triển.",
+      "tooltip": "{{posts}} bài · {{change}} so với hôm trước",
+      "emotions": "Cảm xúc tác giả",
+      "signals": "Chỉ số",
+      "open": "Xem chi tiết trend {{keyword}}"
+    },
+    "emotionName": {
+      "vui": "Vui",
+      "buồn": "Buồn",
+      "tức_giận": "Tức giận",
+      "lo_sợ": "Lo sợ",
+      "ngạc_nhiên": "Ngạc nhiên",
+      "trung_lập": "Trung lập"
     }
   },
   "video": {
