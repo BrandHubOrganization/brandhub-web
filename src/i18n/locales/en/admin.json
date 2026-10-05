@@ -332,7 +332,8 @@
     "mailBatches": "System mail batches",
     "invoices": "Payment history",
     "workspaceTemplates": "Workspace templates",
-    "mailSuppressions": "System unsubscribed list"
+    "mailSuppressions": "System unsubscribed list",
+    "crawl": "Crawl settings"
   },
   "overview": {
     "title": "Platform overview",
@@ -720,5 +721,39 @@
       "PARTIAL": "Partially completed",
       "FAILED": "Failed"
     }
+  },
+  "crawl": {
+    "description": "Schedule, sources and posts per run for trend data crawling. Applies platform-wide.",
+    "loadError": "Could not load the crawl settings. Check the AI service.",
+    "schedule": "Crawl schedule",
+    "mode": {
+      "interval": "Interval",
+      "cron": "Cron expression"
+    },
+    "everyMinutes": "Every {{count}} minutes",
+    "everyHours": "Every {{count}} hours",
+    "cronHint": "5 fields: minute hour day month weekday, Vietnam time. Example 0 */6 * * * = every 6 hours.",
+    "cronRule": "A cron needs exactly 5 space-separated fields.",
+    "cronInvalid": "The cron expression is invalid.",
+    "pages": "Source pages/groups",
+    "pagesHint": "One https URL of a Facebook page or group per line.",
+    "pageRule": "Invalid URL: {{page}}",
+    "pageLimit": "At most 50 sources.",
+    "postsPerRun": "Posts per run",
+    "postsHint": "10 to 1000 posts. Larger runs cost more scraper API usage.",
+    "postsRule": "Enter a whole number from 10 to 1000.",
+    "nextRunNote": "Changes apply from the next crawl; a run in progress is not interrupted.",
+    "save": "Save settings",
+    "saved": "Crawl settings saved.",
+    "saveError": "Could not save the settings. Try again.",
+    "status": "Crawler status",
+    "state": {
+      "running": "Running on schedule",
+      "disabled": "Crawler is off (TREND_CRAWLER_ENABLED)",
+      "noSources": "No source has an API key"
+    },
+    "nextRun": "Next run: {{date}}",
+    "sources": "Active sources",
+    "noSources": "No scraper API key is configured."
   }
 }
