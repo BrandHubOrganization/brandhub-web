@@ -71,6 +71,10 @@ test("shows ranked trends and filters by period and topic", async ({
     return {
       items: url.searchParams.get("topic") === "Food" ? [] : [trend],
       topics: ["Fashion", "Food"],
+      topicStats: [
+        { topic: "thể_thao", score: 22.3, trends: 3, rising: 3 },
+        { topic: "Food", score: 4.1, trends: 1, rising: 0 },
+      ],
       crawl: {
         intervalMinutes: 360,
         cron: null,
@@ -96,9 +100,17 @@ test("shows ranked trends and filters by period and topic", async ({
     .poll(() => calls.some((c) => c.includes("period=7d")))
     .toBe(true);
 
+  await expect(
+    page.getByRole("heading", { name: "Rising topics" }),
+  ).toBeVisible();
+  await expect(page.getByRole("rowheader", { name: "Sports" })).toBeAttached();
   await page.getByRole("combobox", { name: "Filter by topic" }).click();
+
   await page.getByRole("option", { name: "Food" }).click();
   await expect(page.getByText("No trend data yet")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Rising topics" }),
+  ).toHaveCount(0);
 });
 
 test("empty cache shows an empty state, not an error", async ({ page }) => {

@@ -501,6 +501,11 @@
       "page": "Trang / nguồn",
       "posts": "Số bài",
       "failed": "Lỗi"
+    },
+    "live": {
+      "running": "Đang crawl",
+      "last": "Lần crawl gần nhất",
+      "posts": "bài đã cào"
     }
   }
 }
