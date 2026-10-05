@@ -17,6 +17,18 @@ const trend = {
   keywords: ["áo dài", "tết"],
   sources: {},
   samplePosts: ["Mặc áo dài đi chơi tết"],
+  posts: [
+    {
+      url: "https://www.facebook.com/page/posts/1",
+      author: "Thời trang Việt",
+      source: "facebook",
+      likes: 1250,
+      shares: 40,
+      comments: 88,
+      postedAt: "2026-09-21T08:00:00",
+      text: "Mặc áo dài đi chơi tết năm nay ai cũng khen",
+    },
+  ],
 };
 
 async function signIn(page: Page, onTrends: (url: URL) => unknown) {
@@ -171,3 +183,24 @@ const workspace = {
   myRole: "CREATOR",
   clientProfileId: null,
 };
+
+test("hovering a trend card pops up its posts with a link", async ({
+  page,
+}) => {
+  await signIn(page, () => ({
+    items: [trend],
+    topics: [],
+    topicStats: [],
+    crawl: null,
+  }));
+  await page.goto("/ai-studio/trends");
+  await expect(page.getByText("1 post · hover to view")).toBeVisible();
+  await page.getByRole("heading", { name: "áo dài tết" }).hover();
+  const popup = page.getByText('1 post on "áo dài tết"');
+  await expect(popup).toBeVisible();
+  await expect(page.getByText("Thời trang Việt")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open post" })).toHaveAttribute(
+    "href",
+    "https://www.facebook.com/page/posts/1",
+  );
+});

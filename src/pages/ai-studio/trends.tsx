@@ -6,11 +6,23 @@ import {
 } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Copy, Flame, Radar, RefreshCw, TrendingUp } from "lucide-react";
+import {
+  Copy,
+  Flame,
+  Newspaper,
+  Radar,
+  RefreshCw,
+  TrendingUp,
+} from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SelectMenu } from "@/components/ui/select-menu";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
 import {
   fetchTrends,
@@ -20,6 +32,7 @@ import {
 } from "@/services/trendService";
 import { AiStudioErrorBanner } from "./components/AiStudioErrorBanner";
 import { RisingTopicsChart } from "./components/RisingTopicsChart";
+import { TrendPostList } from "./components/TrendPostList";
 
 const PERIODS: TrendPeriod[] = ["6h", "24h", "7d"];
 const STATUS_STYLE: Record<string, string> = {
@@ -194,14 +207,18 @@ function TrendsDashboard() {
 function TrendCard({ item, maxScore }: { item: TrendItem; maxScore: number }) {
   const { t } = useTranslation();
   const maxCount = Math.max(1, ...item.dailyCounts);
+  const posts = item.posts ?? [];
   const copy = () =>
     navigator.clipboard
       .writeText(item.keyword)
       .then(() => toast.success(t("aiStudio.trends.copied")))
       .catch(() => toast.error(t("aiStudio.trends.copyError")));
 
-  return (
-    <article className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-xs">
+  const card = (
+    <article
+      tabIndex={posts.length ? 0 : undefined}
+      className="border-border bg-card hover:border-brand-orange/40 focus-visible:ring-ring flex h-full flex-col gap-3 rounded-xl border p-4 shadow-xs transition-colors focus-visible:ring-2 focus-visible:outline-none"
+    >
       <header className="flex items-start gap-3">
         <span className="text-muted-foreground font-mono text-xs tabular-nums">
           #{item.rank}
@@ -324,16 +341,37 @@ function TrendCard({ item, maxScore }: { item: TrendItem; maxScore: number }) {
         </p>
       )}
 
+      {posts.length > 0 && (
+        <p className="text-muted-foreground mt-auto flex items-center gap-1.5 text-xs">
+          <Newspaper className="size-3.5" />
+          {t("aiStudio.trends.posts.hint", { count: posts.length })}
+        </p>
+      )}
+
       <Button
         variant="outline"
         size="sm"
-        className="mt-auto gap-1.5 text-xs"
+        className={cn("gap-1.5 text-xs", !posts.length && "mt-auto")}
         onClick={copy}
       >
         <Copy className="size-3.5" />
         {t("aiStudio.trends.copyKeyword")}
       </Button>
     </article>
+  );
+  if (!posts.length) return card;
+  return (
+    <HoverCard openDelay={250} closeDelay={150}>
+      <HoverCardTrigger asChild>{card}</HoverCardTrigger>
+      <HoverCardContent
+        side="right"
+        align="start"
+        collisionPadding={16}
+        className="w-96 p-0"
+      >
+        <TrendPostList keyword={item.keyword} posts={posts} />
+      </HoverCardContent>
+    </HoverCard>
   );
 }
 

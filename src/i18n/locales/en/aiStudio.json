@@ -155,6 +155,17 @@
       "du_lịch": "Travel",
       "game": "Gaming",
       "đời_sống": "Lifestyle"
+    },
+    "posts": {
+      "unknownAuthor": "Unknown author",
+      "likes": "Likes",
+      "comments": "Comments",
+      "shares": "Shares",
+      "open": "Open post",
+      "title_one": "1 post on \"{{keyword}}\"",
+      "title_other": "{{count}} posts on \"{{keyword}}\"",
+      "hint_one": "1 post · hover to view",
+      "hint_other": "{{count}} posts · hover to view"
     }
   },
   "video": {
