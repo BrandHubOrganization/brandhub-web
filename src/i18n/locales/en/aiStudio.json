@@ -136,6 +136,25 @@
       "everyHours": "refreshed every {{count}} hours",
       "cron": "cron {{cron}}",
       "next": "next run {{date}}"
+    },
+    "chart": {
+      "title": "Rising topics",
+      "hint": "Summed trend score per topic. Click a topic to see its trends.",
+      "tooltip": "Score {{score}} · {{trends}} trends · {{rising}} rising"
+    },
+    "topicName": {
+      "thể_thao": "Sports",
+      "giải_trí": "Entertainment",
+      "thời_sự": "News",
+      "ẩm_thực": "Food",
+      "công_nghệ": "Technology",
+      "thời_trang_làm_đẹp": "Fashion & beauty",
+      "sức_khỏe": "Health",
+      "giáo_dục": "Education",
+      "tài_chính": "Finance",
+      "du_lịch": "Travel",
+      "game": "Gaming",
+      "đời_sống": "Lifestyle"
     }
   },
   "video": {

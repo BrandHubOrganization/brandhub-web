@@ -136,6 +136,25 @@
       "everyHours": "cập nhật mỗi {{count}} giờ",
       "cron": "lịch cron {{cron}}",
       "next": "lần kế tiếp {{date}}"
+    },
+    "chart": {
+      "title": "Lĩnh vực đang nổi",
+      "hint": "Tổng điểm xu hướng theo lĩnh vực. Bấm vào một lĩnh vực để xem các trend của nó.",
+      "tooltip": "Điểm {{score}} · {{trends}} trend · {{rising}} đang lên"
+    },
+    "topicName": {
+      "thể_thao": "Thể thao",
+      "giải_trí": "Giải trí",
+      "thời_sự": "Thời sự",
+      "ẩm_thực": "Ẩm thực",
+      "công_nghệ": "Công nghệ",
+      "thời_trang_làm_đẹp": "Thời trang & làm đẹp",
+      "sức_khỏe": "Sức khỏe",
+      "giáo_dục": "Giáo dục",
+      "tài_chính": "Tài chính",
+      "du_lịch": "Du lịch",
+      "game": "Game",
+      "đời_sống": "Đời sống"
     }
   },
   "video": {

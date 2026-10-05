@@ -14,10 +14,12 @@ import { SelectMenu } from "@/components/ui/select-menu";
 import { cn } from "@/lib/utils";
 import {
   fetchTrends,
+  topicLabel,
   type TrendItem,
   type TrendPeriod,
 } from "@/services/trendService";
 import { AiStudioErrorBanner } from "./components/AiStudioErrorBanner";
+import { RisingTopicsChart } from "./components/RisingTopicsChart";
 
 const PERIODS: TrendPeriod[] = ["6h", "24h", "7d"];
 const STATUS_STYLE: Record<string, string> = {
@@ -55,6 +57,7 @@ function TrendsDashboard() {
     staleTime: 60_000,
   });
   const items = trends.data?.items ?? [];
+  const topicStats = trends.data?.topicStats ?? [];
   const maxScore = Math.max(0, ...items.map((i) => i.score)) || 1;
   const crawl = trends.data?.crawl;
   const schedule = crawl?.cron
@@ -106,7 +109,7 @@ function TrendsDashboard() {
             { value: "", label: t("aiStudio.trends.allTopics") },
             ...(trends.data?.topics ?? []).map((name) => ({
               value: name,
-              label: name,
+              label: topicLabel(t, name),
             })),
           ]}
         />
@@ -163,6 +166,10 @@ function TrendsDashboard() {
         />
       )}
 
+      {!topic && topicStats.length > 0 && (
+        <RisingTopicsChart stats={topicStats} onSelect={setTopic} />
+      )}
+
       {trends.isSuccess && items.length === 0 && (
         <div className="border-border flex flex-col items-center gap-2 rounded-xl border border-dashed px-6 py-14 text-center">
           <TrendingUp className="text-muted-foreground size-8" />
@@ -216,7 +223,7 @@ function TrendCard({ item, maxScore }: { item: TrendItem; maxScore: number }) {
             )}
             {item.topic && (
               <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5">
-                {item.topic}
+                {topicLabel(t, item.topic)}
               </span>
             )}
             {item.crossTopic && (

@@ -161,8 +161,13 @@ test("the crawl log lists visited pages, posts and errors, and the dev button st
   await asAdmin(page, []);
   await page.goto("/admin?view=crawl");
   await expect(page.getByText("Partly failed")).toBeVisible();
+  const live = page
+    .getByRole("complementary")
+    .filter({ hasText: "Last crawl" });
+  await expect(live).toContainText("6posts crawled");
+  await expect(live).toContainText("facebook.com/groups/a");
   await expect(page.getByText("2 sources · 6 posts")).toBeVisible();
-  await expect(page.getByText("88 credits left")).toBeVisible();
+  await expect(page.getByText("88 credits left").first()).toBeVisible();
   await expect(
     page.getByText("https://www.facebook.com/broken: HTTP 404: page not found"),
   ).toBeVisible();
