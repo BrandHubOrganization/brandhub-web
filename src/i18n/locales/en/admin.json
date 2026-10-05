@@ -754,6 +754,32 @@
     },
     "nextRun": "Next run: {{date}}",
     "sources": "Active sources",
-    "noSources": "No scraper API key is configured."
+    "noSources": "No scraper API key is configured.",
+    "log": {
+      "title": "Crawl log",
+      "hint": "Each crawl records the pages it visited, the posts it got and any errors. The last 20 runs are kept.",
+      "runNow": "Crawl now (dev)",
+      "running": "Crawling…",
+      "started": "Crawl started; the log updates itself.",
+      "alreadyRunning": "A crawl is already running. Try again when it finishes.",
+      "startError": "Could not start the crawl. Check the AI service.",
+      "loadError": "Could not load the crawl log.",
+      "empty": "No crawl has run yet.",
+      "status": {
+        "RUNNING": "Running",
+        "SUCCESS": "Succeeded",
+        "PARTIAL": "Partly failed",
+        "FAILED": "Failed"
+      },
+      "trigger": {
+        "MANUAL": "Manual",
+        "SCHEDULE": "Scheduled"
+      },
+      "totals": "{{pages}} sources · {{posts}} posts",
+      "credits": "{{count}} credits left",
+      "page": "Page / source",
+      "posts": "Posts",
+      "failed": "Error"
+    }
   }
 }
