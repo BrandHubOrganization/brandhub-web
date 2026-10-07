@@ -28,6 +28,7 @@ import {
   PackageCheck,
   MessageCircleMore,
   TrendingUp,
+  Clapperboard,
 } from "lucide-react";
 
 export interface NavItem {
@@ -169,6 +170,13 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/ai-studio/trends",
         icon: TrendingUp,
         labelKey: "nav.trends",
+      },
+      {
+        // FR 3.7.6/3.7.7: uses the open workspace for credit and job ownership.
+        to: "/ai-studio/video",
+        icon: Clapperboard,
+        labelKey: "nav.aiVideo",
+        requiresWorkspace: true,
       },
     ],
   },

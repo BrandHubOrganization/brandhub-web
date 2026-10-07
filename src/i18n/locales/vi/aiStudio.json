@@ -184,12 +184,38 @@
   },
   "video": {
     "title": "AI Video Studio",
-    "description": "Tạo video từ kịch bản, sắp xếp cảnh và chọn định dạng xuất.",
-    "scriptLabel": "Kịch bản",
-    "sceneMapping": "Sắp xếp cảnh",
-    "exportLabel": "Định dạng xuất",
-    "previewPlaceholder": "Xem trước video",
+    "description": "Tạo video ngắn bằng AI theo style, có thể dùng Ambassador của thương hiệu.",
+    "promptLabel": "Mô tả video",
+    "promptPlaceholder": "Ví dụ: Ly cà phê muối được rót chậm, khói bốc lên, quán ấm cúng buổi sáng",
+    "promptHint": "Ít nhất 10 ký tự. Mô tả cảnh, chủ thể, hành động; style bên dưới sẽ thêm góc máy và ánh sáng.",
+    "styleTitle": "Style video",
+    "ambassadorTitle": "Ambassador (tuỳ chọn)",
+    "noAmbassador": "Không dùng",
+    "aspect": "Khung hình",
+    "aspects": {
+      "vertical": "Dọc 9:16",
+      "horizontal": "Ngang 16:9"
+    },
+    "credits": "Bạn còn {{count}} credit AI tháng này.",
+    "creditsUnknown": "Không xem được số credit.",
     "generateButton": "Tạo video",
-    "generateSuccess": "Đã tạo video thành công"
+    "download": "Tải video",
+    "retry": "Thử lại",
+    "history": "Video gần đây",
+    "refunded": "Đã hoàn lại credit.",
+    "noWorkspace": "Hãy mở một workspace để tạo video (credit và video được lưu theo workspace).",
+    "status": {
+      "PENDING": "Đang xếp hàng",
+      "PROCESSING": "AI đang tạo video…",
+      "COMPLETED": "Hoàn tất",
+      "FAILED": "Thất bại"
+    },
+    "errors": {
+      "noCredit": "Không đủ credit AI (hết credit của agency hoặc đã chạm hạn mức Owner đặt).",
+      "aiDown": "Dịch vụ tạo video chưa sẵn sàng. Không bị trừ credit.",
+      "failed": "Không bắt đầu được. Kiểm tra style/Ambassador và thử lại.",
+      "timeout": "Quá thời gian tạo video.",
+      "jobFailed": "AI không tạo được video này."
+    }
   }
 }
