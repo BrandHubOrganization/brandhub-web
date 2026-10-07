@@ -321,5 +321,45 @@
       "CAROUSEL": "Carousel",
       "STORY": "Story"
     }
+  },
+  "aiCaption": {
+    "open": "AI caption",
+    "title": "AI caption",
+    "description": "Generate 3 caption options to pick and edit.",
+    "creditsLeft": "Generate 3 caption options to pick and edit. You have {{count}} AI credits left this month.",
+    "topic": "Topic / key message",
+    "topicPlaceholder": "E.g. Launching the autumn coffee menu, 20% off in week one",
+    "topicHint": "At least 10 characters. Starts from your current draft if there is one.",
+    "tone": "Tone",
+    "platform": "Platform",
+    "length": "Length",
+    "tones": {
+      "friendly": "Friendly",
+      "professional": "Professional",
+      "humorous": "Humorous",
+      "inspirational": "Inspirational",
+      "bold": "Bold",
+      "empathetic": "Empathetic",
+      "trendy": "Trendy"
+    },
+    "lengths": {
+      "short": "Short",
+      "medium": "Medium",
+      "long": "Long"
+    },
+    "types": {
+      "HOOK_DRIVEN": "Hook first",
+      "STORYTELLING": "Storytelling",
+      "DIRECT_CTA": "Call to action"
+    },
+    "generate": "Generate captions",
+    "regenerate": "Generate again",
+    "charged": "Used {{count}} credits",
+    "insert": "Insert",
+    "replace": "Replace all",
+    "editAfter": "After inserting you can keep editing the caption as usual.",
+    "noCredit": "Not enough AI credit (the agency ran out or you reached the limit your Owner set).",
+    "aiDown": "The AI could not write captions. No credit was charged; please try again.",
+    "failed": "Could not generate captions. Please try again."
   }
 }
