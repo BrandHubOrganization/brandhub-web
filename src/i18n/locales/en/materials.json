@@ -1,0 +1,25 @@
+{
+  "watermark": {
+    "title": "Apply Brand Watermark",
+    "subtitle": "Stamp brand logo to protect copyright and ensure brand recognition",
+    "selectLogo": "Select Brand Logo",
+    "noLogoWarning": "No logo found in Brand Collection. You can upload a temporary logo below.",
+    "uploadLogoPrompt": "Upload temporary logo from computer",
+    "modeSingle": "Single Placement (9 Points)",
+    "modeTiled": "Draft Copyright Grid (Tiled)",
+    "position": "Placement Position",
+    "opacity": "Opacity",
+    "scale": "Logo Scale (%)",
+    "preview": "Real-time Preview",
+    "applyBtn": "Apply & Save As New",
+    "cancelBtn": "Cancel",
+    "applying": "Applying watermark...",
+    "successToast": "Watermark applied successfully",
+    "failedToast": "Failed to apply watermark. Please try again.",
+    "badgeWatermarked": "Watermarked",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "resetZoom": "Reset",
+    "openButton": "Apply Watermark"
+  }
+}
