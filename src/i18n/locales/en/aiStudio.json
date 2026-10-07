@@ -186,12 +186,38 @@
   },
   "video": {
     "title": "AI Video Studio",
-    "description": "Generate video from a script, map scenes and choose an export format.",
-    "scriptLabel": "Script",
-    "sceneMapping": "Scene Mapping",
-    "exportLabel": "Export format",
-    "previewPlaceholder": "Video preview",
+    "description": "Create short AI videos in a chosen style, optionally with the brand Ambassador.",
+    "promptLabel": "Describe the video",
+    "promptPlaceholder": "E.g. Salted coffee poured slowly, steam rising, a cosy morning café",
+    "promptHint": "At least 10 characters. Describe scene, subject and action; the style adds camera and lighting.",
+    "styleTitle": "Video style",
+    "ambassadorTitle": "Ambassador (optional)",
+    "noAmbassador": "None",
+    "aspect": "Frame",
+    "aspects": {
+      "vertical": "Vertical 9:16",
+      "horizontal": "Horizontal 16:9"
+    },
+    "credits": "You have {{count}} AI credits left this month.",
+    "creditsUnknown": "Credits unavailable.",
     "generateButton": "Generate video",
-    "generateSuccess": "Video generated"
+    "download": "Download video",
+    "retry": "Try again",
+    "history": "Recent videos",
+    "refunded": "Credits refunded.",
+    "noWorkspace": "Open a workspace to create videos (credits and videos belong to a workspace).",
+    "status": {
+      "PENDING": "Queued",
+      "PROCESSING": "AI is creating the video…",
+      "COMPLETED": "Done",
+      "FAILED": "Failed"
+    },
+    "errors": {
+      "noCredit": "Not enough AI credit (the agency ran out or you reached your Owner's limit).",
+      "aiDown": "Video generation is not available right now. No credit was charged.",
+      "failed": "Could not start. Check the style/Ambassador and try again.",
+      "timeout": "Video generation timed out.",
+      "jobFailed": "The AI could not create this video."
+    }
   }
 }
