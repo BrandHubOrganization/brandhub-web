@@ -22,6 +22,8 @@ export interface WatermarkMetadata {
   scale: number;
   paddingPercent?: number;
   rotationAngle?: number;
+  autoContrast?: boolean;
+  dropShadow?: boolean;
 }
 
 export interface MaterialItem {
@@ -49,6 +51,8 @@ export interface ApplyWatermarkRequest {
   scale: number;
   paddingPercent?: number;
   rotationAngle?: number;
+  autoContrast?: boolean;
+  dropShadow?: boolean;
 }
 
 export interface BrandAssetItem {

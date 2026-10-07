@@ -40,6 +40,8 @@ export const WatermarkStudioModal: React.FC<WatermarkStudioModalProps> = ({
   const [position, setPosition] = useState<WatermarkPosition>("BOTTOM_RIGHT");
   const [opacity, setOpacity] = useState<number>(0.85);
   const [scale, setScale] = useState<number>(0.15);
+  const [autoContrast, setAutoContrast] = useState<boolean>(true);
+  const [dropShadow, setDropShadow] = useState<boolean>(false);
 
   const [brandAssets, setBrandAssets] = useState<BrandAssetItem[]>([]);
   const [selectedLogoId, setSelectedLogoId] = useState<string | null>(null);
@@ -76,6 +78,7 @@ export const WatermarkStudioModal: React.FC<WatermarkStudioModalProps> = ({
     isLoading,
     loadError,
     zoom,
+    lumaAnalysis,
     handleZoomIn,
     handleZoomOut,
     handleResetZoom,
@@ -86,6 +89,8 @@ export const WatermarkStudioModal: React.FC<WatermarkStudioModalProps> = ({
     position,
     opacity,
     scale,
+    autoContrast,
+    dropShadow,
   });
 
   if (!isOpen) return null;
@@ -113,6 +118,8 @@ export const WatermarkStudioModal: React.FC<WatermarkStudioModalProps> = ({
           position,
           opacity,
           scale,
+          autoContrast,
+          dropShadow,
         },
       );
 
@@ -291,6 +298,55 @@ export const WatermarkStudioModal: React.FC<WatermarkStudioModalProps> = ({
                     onChange={(e) => setScale(parseFloat(e.target.value))}
                     className="w-full accent-brand-orange cursor-pointer"
                   />
+                </div>
+
+                {/* Smart Contrast & Drop Shadow (Advanced Suite) */}
+                <div className="rounded-2xl border border-border/70 bg-muted/20 p-3 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                      <Sparkles className="size-3.5 text-brand-orange" />
+                      <span>{t("materials.watermark.smartContrast", "Tương phản thông minh")}</span>
+                    </div>
+                    {lumaAnalysis && mode === "SINGLE" && (
+                      <span
+                        className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                          lumaAnalysis.isDarkBackground
+                            ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20"
+                            : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                        }`}
+                      >
+                        {lumaAnalysis.isDarkBackground
+                          ? `Nền tối (${lumaAnalysis.averageLuminance}) • Gợi ý Logo Trắng`
+                          : `Nền sáng (${lumaAnalysis.averageLuminance}) • Gợi ý Logo Đậm`}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={autoContrast}
+                        onChange={(e) => setAutoContrast(e.target.checked)}
+                        className="rounded border-border text-brand-orange focus:ring-brand-orange"
+                      />
+                      <span className="text-muted-foreground text-[11px]">
+                        Tự động đổi màu logo
+                      </span>
+                    </label>
+
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={dropShadow}
+                        onChange={(e) => setDropShadow(e.target.checked)}
+                        className="rounded border-border text-brand-orange focus:ring-brand-orange"
+                      />
+                      <span className="text-muted-foreground text-[11px]">
+                        Bóng mờ (Drop Shadow)
+                      </span>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

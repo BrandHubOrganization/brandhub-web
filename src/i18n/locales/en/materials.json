@@ -20,6 +20,9 @@
     "zoomIn": "Zoom In",
     "zoomOut": "Zoom Out",
     "resetZoom": "Reset",
-    "openButton": "Apply Watermark"
+    "openButton": "Apply Watermark",
+    "smartContrast": "Smart Contrast",
+    "autoContrastToggle": "Auto-adjust logo color",
+    "dropShadowToggle": "Drop Shadow"
   }
 }

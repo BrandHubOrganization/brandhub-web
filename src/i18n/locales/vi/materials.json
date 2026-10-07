@@ -20,6 +20,9 @@
     "zoomIn": "Phóng to",
     "zoomOut": "Thu nhỏ",
     "resetZoom": "Mặc định",
-    "openButton": "Đóng dấu Watermark"
+    "openButton": "Đóng dấu Watermark",
+    "smartContrast": "Tương phản thông minh",
+    "autoContrastToggle": "Tự động đổi màu logo",
+    "dropShadowToggle": "Bóng mờ (Drop Shadow)"
   }
 }
