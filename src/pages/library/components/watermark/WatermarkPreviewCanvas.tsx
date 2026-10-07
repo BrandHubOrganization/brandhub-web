@@ -77,6 +77,10 @@ export const WatermarkPreviewCanvas: React.FC<WatermarkPreviewCanvasProps> = ({
             transform: `scale(${zoom})`,
             transformOrigin: "center center",
             transition: "transform 0.12s ease-out",
+            backgroundImage:
+              "linear-gradient(45deg, rgba(255,255,255,0.06) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,0.06) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.06) 75%), linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.06) 75%)",
+            backgroundSize: "20px 20px",
+            backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
           }}
           className="max-h-full max-w-full flex items-center justify-center shadow-2xl rounded-lg overflow-hidden border border-white/10"
         >

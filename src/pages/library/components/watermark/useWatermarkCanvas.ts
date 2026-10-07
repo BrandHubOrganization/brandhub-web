@@ -60,11 +60,17 @@ export function useWatermarkCanvas({
     ctx.save();
     ctx.globalAlpha = Math.max(0.05, Math.min(1.0, opacity));
 
-    const targetLogoW = Math.max(16, Math.round(baseW * scale));
-    const targetLogoH = Math.max(
+    let targetLogoW = Math.max(16, Math.round(baseW * scale));
+    let targetLogoH = Math.max(
       16,
       Math.round(targetLogoW * (logoH / logoW)),
     );
+
+    const maxAllowedH = Math.max(16, Math.round(baseH * 0.8));
+    if (targetLogoH > maxAllowedH) {
+      targetLogoH = maxAllowedH;
+      targetLogoW = Math.max(16, Math.round(targetLogoH * (logoW / logoH)));
+    }
 
     if (mode === "TILED") {
       const stepX = Math.round(targetLogoW * 2.2);
