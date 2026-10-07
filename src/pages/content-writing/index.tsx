@@ -11,7 +11,7 @@ import {
 } from "@/pages/content-writing/components/CanvasTextEditor";
 import { VersionHistorySidebar } from "@/pages/content-writing/components/VersionHistorySidebar";
 import { SocialPreview } from "@/pages/content-writing/components/SocialPreview";
-import { AiCaptionDialog } from "@/pages/content-writing/components/AiCaptionDialog";
+import { AiCaptionDialog } from "@/components/ai/AiCaptionDialog";
 import { useTaskContentSync } from "@/pages/content-writing/hooks/useTaskContentSync";
 import { useAuthStore } from "@/store/authStore";
 import { api } from "@/services/api";
@@ -381,8 +381,9 @@ export function ContentWritingPage() {
         <AiCaptionDialog
           workspaceId={workspaceId}
           initialTopic={previewText}
-          onInsert={(text) => editorRef.current?.insertText(text)}
-          onReplace={replaceContent}
+          taskId={taskId}
+          onInsert={(pick) => editorRef.current?.insertText(pick.text)}
+          onReplace={(pick) => replaceContent(pick.text)}
           onClose={() => setCaptionOpen(false)}
         />
       )}

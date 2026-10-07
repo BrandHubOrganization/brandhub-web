@@ -515,6 +515,51 @@
     "editAfter": "After inserting you can keep editing the caption as usual.",
     "noCredit": "Not enough AI credit (the agency ran out or you reached the limit your Owner set).",
     "aiDown": "The AI could not write captions. No credit was charged; please try again.",
-    "failed": "Could not generate captions. Please try again."
+    "failed": "Could not generate captions. Please try again.",
+    "openStudio": "AI: 3 caption options",
+    "topicHintTask": "At least 10 characters. AI adds the task title and brand facts itself.",
+    "goal": "Post goal",
+    "goals": {
+      "engagement": "Engagement",
+      "sales": "Sales",
+      "announcement": "Announcement",
+      "storytelling": "Storytelling"
+    },
+    "trend": "Ride a trend",
+    "noTrend": "No trend",
+    "trendRisk": "This trend carries high brand risk (negative or controversial mood); think before using it.",
+    "used": {
+      "label": "AI used:",
+      "brand": "brand facts",
+      "task": "task title",
+      "examples": "{{count}} past posts as examples",
+      "docs": "{{count}} brand document passages"
+    },
+    "signals": {
+      "emotion": "Reads as: {{label}} {{value}}%",
+      "trend": "Uses the trend",
+      "claims": "Please confirm: {{claims}} is not in the topic or brand facts.",
+      "complianceHint": "The content compliance check (FR 3.6.33) will run here once it is connected."
+    },
+    "compliance": {
+      "NOT_CHECKED": "Compliance not checked",
+      "PASSED": "Compliance passed",
+      "WARNING": "Compliance warning",
+      "BLOCKED": "Policy violation"
+    },
+    "tools": "Edit / other platforms",
+    "refines": {
+      "shorter": "Shorter",
+      "longer": "Longer",
+      "add_cta": "Add CTA",
+      "less_emoji": "Fewer emoji",
+      "more_formal": "More formal",
+      "more_casual": "More casual"
+    },
+    "feedbackPlaceholder": "Your feedback, e.g. mention opening hours",
+    "apply": "Apply",
+    "adapt": "Versions for other platforms",
+    "adaptGo": "Create",
+    "trendTopic": "Trend topic: {{topic}}"
   }
 }
