@@ -62,3 +62,22 @@ export interface BrandAssetItem {
   assetType: string;
   source: string;
 }
+
+export interface WatermarkPreset {
+  id: string;
+  workspaceId: string;
+  clientProfileId?: string;
+  name: string;
+  isDefault?: boolean;
+  config: WatermarkMetadata;
+  createdBy?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface CreateWatermarkPresetRequest {
+  clientProfileId?: string;
+  name: string;
+  isDefault?: boolean;
+  config: WatermarkMetadata;
+}

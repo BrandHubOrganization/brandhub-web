@@ -23,6 +23,18 @@
     "openButton": "Apply Watermark",
     "smartContrast": "Smart Contrast",
     "autoContrastToggle": "Auto-adjust logo color",
-    "dropShadowToggle": "Drop Shadow"
+    "dropShadowToggle": "Drop Shadow",
+    "brandPresets": "Brand Presets",
+    "saveAsPreset": "Save as Preset",
+    "presetNamePlaceholder": "Preset name (e.g., Nike Bottom Right 80%)",
+    "presetNameRequired": "Please enter a preset name",
+    "setAsDefault": "Set as default for Client",
+    "saveBtn": "Save",
+    "loadingPresets": "Loading presets...",
+    "noPresets": "No presets yet — You can save a new one",
+    "selectPreset": "— Select saved preset —",
+    "presetApplied": "Preset applied successfully",
+    "presetSaved": "Preset saved successfully",
+    "presetSaveFailed": "Failed to save preset"
   }
 }

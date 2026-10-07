@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import type {
   BrandAssetItem,
   MaterialItem,
+  WatermarkMetadata,
   WatermarkMode,
   WatermarkPosition,
 } from "@/types/material";
@@ -10,6 +11,7 @@ import { useWatermarkCanvas } from "./useWatermarkCanvas";
 import { WatermarkPositionGrid } from "./WatermarkPositionGrid";
 import { BrandLogoSelector } from "./BrandLogoSelector";
 import { WatermarkPreviewCanvas } from "./WatermarkPreviewCanvas";
+import { WatermarkPresetSelector } from "./WatermarkPresetSelector";
 import { X, Stamp, Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -98,6 +100,36 @@ export const WatermarkStudioModal: React.FC<WatermarkStudioModalProps> = ({
   const handleLogoSelect = (logoId: string | null, logoUrl: string) => {
     setSelectedLogoId(logoId);
     setSelectedLogoUrl(logoUrl);
+  };
+
+  const currentConfig: WatermarkMetadata = {
+    logoAssetId: selectedLogoId || undefined,
+    logoUrl: selectedLogoUrl || undefined,
+    mode,
+    position,
+    opacity,
+    scale,
+    autoContrast,
+    dropShadow,
+  };
+
+  const handleApplyPreset = (config: WatermarkMetadata) => {
+    if (config.mode) setMode(config.mode);
+    if (config.position) setPosition(config.position);
+    if (config.opacity !== undefined) setOpacity(config.opacity);
+    if (config.scale !== undefined) setScale(config.scale);
+    if (config.autoContrast !== undefined) setAutoContrast(config.autoContrast);
+    if (config.dropShadow !== undefined) setDropShadow(config.dropShadow);
+    if (config.logoAssetId) {
+      const found = brandAssets.find((a) => a.id === config.logoAssetId);
+      if (found) {
+        setSelectedLogoId(found.id);
+        setSelectedLogoUrl(found.url);
+      }
+    } else if (config.logoUrl) {
+      setSelectedLogoId(null);
+      setSelectedLogoUrl(config.logoUrl);
+    }
   };
 
   const handleApply = async () => {
@@ -191,6 +223,15 @@ export const WatermarkStudioModal: React.FC<WatermarkStudioModalProps> = ({
 
             {/* Right Column: Controllers (5 cols) */}
             <div className="lg:col-span-5 space-y-5 bg-muted/30 border border-border/60 rounded-2xl p-4 sm:p-5">
+              {/* Brand Presets (Advanced Suite) */}
+              <WatermarkPresetSelector
+                workspaceId={workspaceId}
+                currentConfig={currentConfig}
+                onApplyPreset={handleApplyPreset}
+              />
+
+              <div className="h-px bg-border/60" />
+
               {/* Logo Selection */}
               <div>
                 <label className="block text-xs font-semibold text-foreground mb-2">

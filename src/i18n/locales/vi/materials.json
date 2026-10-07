@@ -23,6 +23,18 @@
     "openButton": "Đóng dấu Watermark",
     "smartContrast": "Tương phản thông minh",
     "autoContrastToggle": "Tự động đổi màu logo",
-    "dropShadowToggle": "Bóng mờ (Drop Shadow)"
+    "dropShadowToggle": "Bóng mờ (Drop Shadow)",
+    "brandPresets": "Mẫu thương hiệu (Preset)",
+    "saveAsPreset": "Lưu mẫu mới",
+    "presetNamePlaceholder": "Tên mẫu (vd: Nike Góc Phải 80%)",
+    "presetNameRequired": "Vui lòng nhập tên mẫu cấu hình",
+    "setAsDefault": "Đặt làm mặc định cho Client",
+    "saveBtn": "Lưu mẫu",
+    "loadingPresets": "Đang tải mẫu cấu hình...",
+    "noPresets": "Chưa có mẫu nào — Bạn có thể tạo mẫu mới",
+    "selectPreset": "— Chọn mẫu cấu hình đã lưu —",
+    "presetApplied": "Đã áp dụng mẫu thiết lập",
+    "presetSaved": "Đã lưu mẫu cấu hình thành công",
+    "presetSaveFailed": "Không thể lưu mẫu cấu hình"
   }
 }
