@@ -378,6 +378,51 @@
     "editAfter": "Sau khi chèn, bạn vẫn chỉnh sửa caption như bình thường.",
     "noCredit": "Không đủ credit AI (hết credit của agency hoặc đã chạm hạn mức Owner đặt cho bạn).",
     "aiDown": "AI chưa tạo được caption. Không bị trừ credit, vui lòng thử lại.",
-    "failed": "Không tạo được caption. Vui lòng thử lại."
+    "failed": "Không tạo được caption. Vui lòng thử lại.",
+    "openStudio": "AI tạo 3 phương án caption",
+    "topicHintTask": "Ít nhất 10 ký tự. AI tự thêm tiêu đề task và thông tin thương hiệu.",
+    "goal": "Mục tiêu bài",
+    "goals": {
+      "engagement": "Tăng tương tác",
+      "sales": "Bán hàng",
+      "announcement": "Thông báo",
+      "storytelling": "Kể chuyện"
+    },
+    "trend": "Bắt trend",
+    "noTrend": "Không bắt trend",
+    "trendRisk": "Trend này có rủi ro thương hiệu cao (dư luận tiêu cực/tranh cãi), cân nhắc trước khi dùng.",
+    "used": {
+      "label": "AI đã dùng:",
+      "brand": "thông tin thương hiệu",
+      "task": "tiêu đề task",
+      "examples": "{{count}} bài cũ làm mẫu",
+      "docs": "{{count}} đoạn tài liệu thương hiệu"
+    },
+    "signals": {
+      "emotion": "Đọc lên: {{label}} {{value}}%",
+      "trend": "Có dùng trend",
+      "claims": "Cần xác nhận: {{claims}} không có trong chủ đề hay thông tin thương hiệu.",
+      "complianceHint": "Kiểm tra tuân thủ nội dung (FR 3.6.33) sẽ chạy tại đây khi được nối."
+    },
+    "compliance": {
+      "NOT_CHECKED": "Chưa kiểm tra tuân thủ",
+      "PASSED": "Đạt tuân thủ",
+      "WARNING": "Cảnh báo tuân thủ",
+      "BLOCKED": "Vi phạm chính sách"
+    },
+    "tools": "Chỉnh sửa / nền tảng khác",
+    "refines": {
+      "shorter": "Ngắn lại",
+      "longer": "Dài hơn",
+      "add_cta": "Thêm CTA",
+      "less_emoji": "Bớt emoji",
+      "more_formal": "Trang trọng hơn",
+      "more_casual": "Thân mật hơn"
+    },
+    "feedbackPlaceholder": "Góp ý của bạn, ví dụ: nhắc giờ mở cửa",
+    "apply": "Sửa",
+    "adapt": "Phiên bản cho nền tảng khác",
+    "adaptGo": "Tạo",
+    "trendTopic": "Lĩnh vực của trend: {{topic}}"
   }
 }

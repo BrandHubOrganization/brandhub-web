@@ -43,7 +43,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   // Sync external value updates (e.g. from AI auto-populate)
   useEffect(() => {
-    if (editor && value !== editor.getText()) {
+    if (
+      editor?.isInitialized &&
+      !editor.isDestroyed &&
+      value !== editor.getText()
+    ) {
       editor.commands.setContent(value);
     }
   }, [value, editor]);
