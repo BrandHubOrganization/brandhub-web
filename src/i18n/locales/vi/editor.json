@@ -494,5 +494,45 @@
     "publishBlocked": "Chưa thể đăng: nội dung vi phạm. Hãy sửa nội dung rồi kiểm tra lại.",
     "publishUnavailable": "Chưa thể đăng vì kiểm duyệt chưa hoàn tất. Vui lòng thử lại.",
     "changed": "Nội dung đã thay đổi trong lúc kiểm tra. Vui lòng bấm Đăng ngay lại."
+  },
+  "aiCaption": {
+    "open": "AI tạo caption",
+    "title": "AI tạo caption",
+    "description": "Tạo 3 phương án caption để chọn rồi chỉnh sửa.",
+    "creditsLeft": "Tạo 3 phương án caption để chọn rồi chỉnh sửa. Bạn còn {{count}} credit AI tháng này.",
+    "topic": "Chủ đề / ý chính",
+    "topicPlaceholder": "Ví dụ: Ra mắt menu cà phê mùa thu, giảm 20% tuần đầu",
+    "topicHint": "Ít nhất 10 ký tự. Lấy sẵn nội dung đang soạn nếu có.",
+    "tone": "Giọng điệu",
+    "platform": "Nền tảng",
+    "length": "Độ dài",
+    "tones": {
+      "friendly": "Thân thiện",
+      "professional": "Chuyên nghiệp",
+      "humorous": "Hài hước",
+      "inspirational": "Truyền cảm hứng",
+      "bold": "Mạnh mẽ",
+      "empathetic": "Đồng cảm",
+      "trendy": "Bắt trend"
+    },
+    "lengths": {
+      "short": "Ngắn",
+      "medium": "Vừa",
+      "long": "Dài"
+    },
+    "types": {
+      "HOOK_DRIVEN": "Mở đầu gây chú ý",
+      "STORYTELLING": "Kể chuyện",
+      "DIRECT_CTA": "Kêu gọi hành động"
+    },
+    "generate": "Tạo caption",
+    "regenerate": "Tạo lại",
+    "charged": "Đã dùng {{count}} credit",
+    "insert": "Chèn",
+    "replace": "Thay toàn bộ",
+    "editAfter": "Sau khi chèn, bạn vẫn chỉnh sửa caption như bình thường.",
+    "noCredit": "Không đủ credit AI (hết credit của agency hoặc đã chạm hạn mức Owner đặt cho bạn).",
+    "aiDown": "AI chưa tạo được caption. Không bị trừ credit, vui lòng thử lại.",
+    "failed": "Không tạo được caption. Vui lòng thử lại."
   }
 }
