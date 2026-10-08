@@ -1,4 +1,21 @@
 {
+  "offering": {
+    "title": "Hạng mục dịch vụ", "model": "Cách đóng gói", "legacy": "Gói cũ (chưa phân loại)",
+    "models": { "CAMPAIGN": "Gói theo chiến dịch", "RETAINER": "Gói định kỳ theo tháng", "DELIVERABLE_BUNDLE": "Gói theo sản lượng" },
+    "hints": {
+      "CAMPAIGN": "Phạm vi trọn gói cho một chiến dịch. Gợi ý phân bổ toàn bộ hạng mục.",
+      "RETAINER": "Sản lượng tính riêng từng tháng, không chuyển dư. Manager chủ động tạo Campaign cho từng kỳ.",
+      "DELIVERABLE_BUNDLE": "Tổng sản lượng dùng chung cho các Campaign, không tự cấp lại mỗi tháng."
+    },
+    "services": { "SOCIAL_POST": "Bài đăng mạng xã hội", "EVENT_PLANNING": "Bàn giao kế hoạch sự kiện", "LIVESTREAM_PREPARATION": "Chuẩn bị livestream", "PRESS_RECOMMENDATION": "Gợi ý đối tác báo điện tử", "WORKSHOP_SUPPORT": "Workshop: link Meet và survey" },
+    "service": "Dịch vụ", "name": "Tên hạng mục bàn giao", "quantity": "Số lượng", "unit": "Đơn vị",
+    "description": "Mô tả", "acceptance": "Tiêu chí nghiệm thu", "revisions": "Số lần thay đổi tối đa",
+    "add": "Thêm hạng mục", "remove": "Bỏ hạng mục", "required": "Cần ít nhất một hạng mục bàn giao.",
+    "draftTitle": "Campaign nháp", "campaignName": "Tên Campaign", "period": "Tháng thực hiện",
+    "createDraft": "Tạo Campaign nháp", "draftCreated": "Đã tạo Campaign nháp", "loadError": "Không tải được Campaign. Vui lòng thử lại.",
+    "remaining": "Còn có thể phân bổ: {{count}}", "empty": "Chưa có Campaign.", "draftNotice": "Chỉ tạo bản nháp, chưa sinh task, duyệt hay triển khai.",
+    "allocationRequired": "Chọn ít nhất một hạng mục trong sản lượng còn lại.", "retry": "Thử lại"
+  },
   "agencyPage": {
     "title": "Quản lý gói truyền thông",
     "description": "Tạo và quản lý các gói Agency cung cấp cho Workspace, hoặc bắt đầu từ gói mẫu dùng chung của Admin."
@@ -94,7 +111,7 @@
     "submit": "Gửi đề xuất"
   },
   "form": {
-    "basedOnTemplate": "Dựa trên mẫu:",
+    "basedOnTemplate": "Dựa trên gói:",
     "title": "Tạo gói truyền thông tùy chỉnh",
     "description": "Tạo một gói độc lập cho Agency. Gói có thể được cung cấp cho mọi Workspace trong Agency.",
     "nameLabel": "Tên gói",
