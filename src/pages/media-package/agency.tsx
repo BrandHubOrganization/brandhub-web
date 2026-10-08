@@ -69,6 +69,7 @@ export default function AgencyMediaPackagePage() {
             canSelect={false}
             selectingId={null}
             onSelect={() => undefined}
+            onDuplicate={openCreateDialog}
             canManageAvailability
             updatingPackageId={updatingPackageId}
             onToggleAvailability={(mediaPackage) =>

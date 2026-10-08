@@ -164,13 +164,21 @@ export function Navbar({
   React.useEffect(() => {
     if (isAdmin) return;
     let cancelled = false;
-    getNotifications()
-      .then((data) => {
-        if (!cancelled) setNotifications(data);
-      })
-      .catch((err) => console.error("Failed to load notifications:", err));
+    const refresh = () => {
+      if (document.visibilityState === "hidden") return;
+      getNotifications()
+        .then((data) => {
+          if (!cancelled) setNotifications(data);
+        })
+        .catch((err) => console.error("Failed to load notifications:", err));
+    };
+    refresh();
+    const timer = window.setInterval(refresh, 30_000);
+    window.addEventListener("focus", refresh);
     return () => {
       cancelled = true;
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refresh);
     };
   }, [isAdmin]);
 

@@ -1,4 +1,21 @@
 {
+  "offering": {
+    "title": "Service scope", "model": "Packaging model", "legacy": "Legacy package (no model)",
+    "models": { "CAMPAIGN": "Campaign package", "RETAINER": "Monthly retainer", "DELIVERABLE_BUNDLE": "Deliverable bundle" },
+    "hints": {
+      "CAMPAIGN": "A complete scope for a specific campaign. Suggested allocation: all deliverables.",
+      "RETAINER": "Quantities apply per month, with no rollover. Manager creates each period's campaign manually.",
+      "DELIVERABLE_BUNDLE": "A total allowance shared across campaigns; it does not renew monthly."
+    },
+    "services": { "SOCIAL_POST": "Social media posts", "EVENT_PLANNING": "Event plan delivery", "LIVESTREAM_PREPARATION": "Livestream preparation", "PRESS_RECOMMENDATION": "Press partner recommendations", "WORKSHOP_SUPPORT": "Workshop: Meet link and survey" },
+    "service": "Service", "name": "Deliverable name", "quantity": "Quantity", "unit": "Unit",
+    "description": "Description", "acceptance": "Acceptance criteria", "revisions": "Maximum changes",
+    "add": "Add deliverable", "remove": "Remove deliverable", "required": "Add at least one deliverable.",
+    "draftTitle": "Campaign drafts", "campaignName": "Campaign name", "period": "Month",
+    "createDraft": "Create draft campaign", "draftCreated": "Draft campaign created", "loadError": "Could not load campaigns. Try again.",
+    "remaining": "Available: {{count}}", "empty": "No campaign yet.", "draftNotice": "This creates a draft only; no tasks, approval or deployment.",
+    "allocationRequired": "Select at least one deliverable within the remaining allowance.", "retry": "Retry"
+  },
   "agencyPage": {
     "title": "Manage media packages",
     "description": "Create and manage the packages this Agency offers to its Workspaces, or start from a global Admin template."
@@ -94,7 +111,7 @@
     "submit": "Submit proposal"
   },
   "form": {
-    "basedOnTemplate": "Based on template:",
+    "basedOnTemplate": "Based on package:",
     "title": "Create a custom media package",
     "description": "Create an independent package for this Agency. It can be made available to any Workspace in the Agency.",
     "nameLabel": "Package name",

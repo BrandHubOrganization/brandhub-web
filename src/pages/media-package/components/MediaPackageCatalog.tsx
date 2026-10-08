@@ -16,6 +16,7 @@ interface MediaPackageCatalogProps {
   canManageAvailability?: boolean;
   updatingPackageId?: string | null;
   onUseTemplate?: (mediaPackage: MediaPackage) => void;
+  onDuplicate?: (mediaPackage: MediaPackage) => void;
   onToggleAvailability?: (mediaPackage: MediaPackage) => void;
 }
 
@@ -31,6 +32,7 @@ export function MediaPackageCatalog({
   canManageAvailability,
   updatingPackageId,
   onUseTemplate,
+  onDuplicate,
   onToggleAvailability,
 }: MediaPackageCatalogProps) {
   const { t } = useTranslation();
@@ -62,6 +64,7 @@ export function MediaPackageCatalog({
               canManageAvailability={canManageAvailability}
               updatingAvailability={updatingPackageId === mediaPackage.id}
               onUseTemplate={onUseTemplate}
+              onDuplicate={onDuplicate}
               onToggleAvailability={onToggleAvailability}
             />
           ))}
