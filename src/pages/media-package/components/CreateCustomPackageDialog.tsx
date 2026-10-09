@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { OfferingEditor } from "@/pages/media-package/components/OfferingEditor";
+import type { OfferingFields } from "@/pages/media-package/types/mediaPackage";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -49,6 +51,10 @@ export function CreateCustomPackageDialog({
   onSubmit,
 }: CreateCustomPackageDialogProps) {
   const { t } = useTranslation();
+  const [offering, setOffering] = useState<OfferingFields>({
+    offeringModel: sourceTemplate?.offeringModel,
+    offeringDetails: sourceTemplate?.offeringDetails,
+  });
   const [name, setName] = useState(sourceTemplate?.name ?? "");
   const [type, setType] = useState<MediaPackageType>(
     sourceTemplate?.type ?? "BY_DURATION",
@@ -66,6 +72,7 @@ export function CreateCustomPackageDialog({
 
   const reset = () => {
     setName("");
+    setOffering({});
     setType("BY_DURATION");
     setDurationWeeks("");
     setBudgetAmount("");
@@ -91,9 +98,10 @@ export function CreateCustomPackageDialog({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!validate()) return;
+    if (!validate() || (offering.offeringModel && !offering.offeringDetails?.deliverables.length)) return;
     const success = await onSubmit({
       sourceTemplateId: sourceTemplate?.id,
+      ...offering,
       name: name.trim(),
       type,
       durationWeeks: type === "BY_DURATION" ? Number(durationWeeks) : undefined,
@@ -112,7 +120,7 @@ export function CreateCustomPackageDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("mediaPackage.form.title")}</DialogTitle>
           <DialogDescription>
@@ -207,6 +215,7 @@ export function CreateCustomPackageDialog({
             )}
           </div>
 
+          <OfferingEditor value={offering} onChange={setOffering} />
           <DialogFooter>
             <Button
               type="button"

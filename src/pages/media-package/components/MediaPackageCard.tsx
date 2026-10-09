@@ -7,10 +7,13 @@ import {
   EyeOff,
   PackageCheck,
 } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { OfferingSummary } from "@/pages/media-package/components/OfferingSummary";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   formatPackageType,
   formatPackageValue,
@@ -27,6 +30,7 @@ interface MediaPackageCardProps {
   canManageAvailability?: boolean;
   updatingAvailability?: boolean;
   onUseTemplate?: (mediaPackage: MediaPackage) => void;
+  onDuplicate?: (mediaPackage: MediaPackage) => void;
   onToggleAvailability?: (mediaPackage: MediaPackage) => void;
 }
 
@@ -46,9 +50,11 @@ export function MediaPackageCard({
   canManageAvailability = false,
   updatingAvailability = false,
   onUseTemplate,
+  onDuplicate,
   onToggleAvailability,
 }: MediaPackageCardProps) {
   const { t, i18n } = useTranslation();
+  const [detailOpen, setDetailOpen] = useState(false);
   const Icon = TYPE_ICONS[mediaPackage.type];
 
   return (
@@ -82,6 +88,23 @@ export function MediaPackageCard({
           )}
         </div>
       </div>
+
+      <Button variant="outline" className="mt-4 w-full" onClick={() => setDetailOpen(true)}>
+        <Eye className="size-4" /> {i18n.language === "vi" ? "Xem chi tiết gói" : "View package details"}
+      </Button>
+      {onDuplicate && !mediaPackage.isTemplate && <Button variant="outline" className="mt-2 w-full"
+        onClick={() => onDuplicate(mediaPackage)}><Copy className="size-4" />
+        {i18n.language === "vi" ? "Tạo gói từ gói này" : "Create from this package"}</Button>}
+      <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+          <DialogHeader><DialogTitle>{mediaPackage.name}</DialogTitle>
+            <DialogDescription>{formatPackageType(mediaPackage.type, t)} · {formatPackageValue(mediaPackage, i18n.language, t)}</DialogDescription>
+          </DialogHeader>
+          <p className="whitespace-pre-line text-sm">{mediaPackage.scopeDescription || t("mediaPackage.catalog.noDescription")}</p>
+          <OfferingSummary value={mediaPackage} />
+          <p className="text-xs text-muted-foreground">{i18n.language === "vi" ? "Thời lượng" : "Duration"}: {mediaPackage.durationWeeks ?? "—"} {i18n.language === "vi" ? "tuần" : "weeks"}</p>
+        </DialogContent>
+      </Dialog>
 
       <div className="mt-4 flex-1">
         <p className="text-muted-foreground text-xs font-medium">

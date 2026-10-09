@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { OfferingEditor } from "@/pages/media-package/components/OfferingEditor";
+import { PackageTermsDiff } from "@/pages/media-package/components/PackageTermsDiff";
+import type { OfferingFields } from "@/pages/media-package/types/mediaPackage";
 import { useTranslation } from "react-i18next";
 import { FileEdit, Loader2, Send } from "lucide-react";
 
@@ -26,6 +29,7 @@ export interface NegotiateTermsModalProps {
   mediaPackage: MediaPackage;
   currentTermsVersion: number;
   loading: boolean;
+  clientNegotiation?: boolean;
   onSubmit: (terms: NegotiateTermsRequest) => Promise<boolean>;
 }
 
@@ -42,9 +46,11 @@ export function NegotiateTermsModal({
   mediaPackage,
   currentTermsVersion,
   loading,
+  clientNegotiation = false,
   onSubmit,
 }: NegotiateTermsModalProps) {
   const { t, i18n } = useTranslation();
+  const [offering, setOffering] = useState<OfferingFields>({});
 
   const [budgetAmount, setBudgetAmount] = useState<string>("");
   const [durationWeeks, setDurationWeeks] = useState<string>("");
@@ -53,6 +59,7 @@ export function NegotiateTermsModal({
 
   useEffect(() => {
     if (open) {
+      setOffering({ offeringModel: mediaPackage.offeringModel, offeringDetails: mediaPackage.offeringDetails });
       setBudgetAmount(
         mediaPackage.budgetAmount != null ? String(mediaPackage.budgetAmount) : "",
       );
@@ -104,9 +111,10 @@ export function NegotiateTermsModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate() || loading) return;
+    if (!validate() || loading || (offering.offeringModel && !offering.offeringDetails?.deliverables.length)) return;
 
     const request: NegotiateTermsRequest = {
+      ...offering,
       budgetAmount:
         budgetAmount.trim() !== "" ? Number(budgetAmount) : undefined,
       durationWeeks:
@@ -132,7 +140,7 @@ export function NegotiateTermsModal({
 
   return (
     <Dialog open={open} onOpenChange={(val) => !loading && onOpenChange(val)}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <div className="flex items-center gap-2">
             <span className="flex size-9 items-center justify-center rounded-lg bg-orange-100 text-orange-600 dark:bg-orange-950/50 dark:text-orange-400">
@@ -252,6 +260,17 @@ export function NegotiateTermsModal({
             )}
           </div>
 
+          <OfferingEditor value={offering} onChange={setOffering} allowLegacy={!mediaPackage.offeringModel}
+            clientNegotiation={clientNegotiation} />
+          <PackageTermsDiff
+            before={{ budgetAmount: mediaPackage.budgetAmount, durationWeeks: mediaPackage.durationWeeks,
+              scopeDescription: mediaPackage.scopeDescription, offeringModel: mediaPackage.offeringModel,
+              offeringDetails: mediaPackage.offeringDetails }}
+            after={{ budgetAmount: budgetAmount.trim() ? Number(budgetAmount) : mediaPackage.budgetAmount,
+              durationWeeks: durationWeeks.trim() ? Number(durationWeeks) : mediaPackage.durationWeeks,
+              scopeDescription: scopeDescription.trim() || mediaPackage.scopeDescription,
+              offeringModel: offering.offeringModel,
+              offeringDetails: offering.offeringDetails }} />
           <DialogFooter className="gap-2 pt-2">
             <Button
               type="button"

@@ -1,9 +1,28 @@
 export type MediaPackageType = "BY_DURATION" | "BY_BUDGET" | "FULL_DELEGATION";
 
+export type OfferingModel = "CAMPAIGN" | "RETAINER" | "DELIVERABLE_BUNDLE";
+export type PackageServiceType = "SOCIAL_POST" | "EVENT_PLANNING" | "LIVESTREAM_PREPARATION"
+  | "PRESS_RECOMMENDATION" | "WORKSHOP_SUPPORT";
+export interface PackageDeliverable {
+  id: string;
+  serviceType: PackageServiceType;
+  name: string;
+  quantity: number;
+  unit: string;
+  description?: string;
+  acceptanceCriteria?: string;
+  revisionLimit?: number;
+}
+export interface PackageOfferingDetails { maxChanges?: number | null; deliverables: PackageDeliverable[] }
+export interface OfferingFields {
+  offeringModel?: OfferingModel | null;
+  offeringDetails?: PackageOfferingDetails | null;
+}
+
 export type PackageNegotiationStatus =
   "DRAFT" | "CLIENT_REQUESTED_CHANGE" | "AGENCY_COUNTERED" | "APPROVED";
 
-export interface MediaPackage {
+export interface MediaPackage extends OfferingFields {
   id: string;
   name: string;
   type: MediaPackageType;
@@ -26,14 +45,16 @@ export interface WorkspaceMediaPackage {
   mediaPackage: MediaPackage;
   negotiationStatus: PackageNegotiationStatus;
   finalTerms: Record<string, unknown>;
+  previousTerms?: Record<string, unknown> | null;
   termsVersion: number;
+  clientProposalCount: number;
   approvedByAgencyAt: string | null;
   approvedByClientAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CreateCustomMediaPackageRequest {
+export interface CreateCustomMediaPackageRequest extends OfferingFields {
   sourceTemplateId?: string;
   workspaceId?: string;
   name: string;
@@ -43,7 +64,7 @@ export interface CreateCustomMediaPackageRequest {
   scopeDescription?: string;
 }
 
-export interface NegotiateTermsRequest {
+export interface NegotiateTermsRequest extends OfferingFields {
   budgetAmount?: number;
   durationWeeks?: number;
   scopeDescription?: string;

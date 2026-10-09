@@ -90,6 +90,72 @@ const agencyPackage = {
   sourceTemplateId: TEMPLATE_ID,
 };
 
+for (const model of ["CAMPAIGN", "RETAINER", "DELIVERABLE_BUNDLE"]) {
+  test(`Owner creates structured ${model} package`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: model === "RETAINER" ? 375 : 1440, height: 900 });
+    await setupSession(page, "OWNER", model === "RETAINER" ? "dark" : "light");
+    let submitted = false;
+    await page.route(`**/api/v1/agencies/${AGENCY_ID}/media-package-custom`, async route => {
+      if (route.request().method() === "GET") {
+        await route.fulfill({ json: envelope([]) }); return;
+      }
+      const body = route.request().postDataJSON();
+      expect(body.offeringModel).toBe(model);
+      expect(body.offeringDetails.deliverables).toHaveLength(1);
+      expect(body.offeringDetails.deliverables[0]).toMatchObject({ name: "Social posts", quantity: 12, unit: "posts" });
+      submitted = true;
+      await route.fulfill({ status: 201, json: envelope({ ...agencyPackage, ...body }) });
+    });
+    await page.goto(`/agency/${AGENCY_ID}/media-packages`);
+    await page.getByRole("button", { name: "Tạo gói từ mẫu này" }).click();
+    const dialog = page.getByRole("dialog");
+    await dialog.getByLabel("Cách đóng gói").selectOption(model);
+    await dialog.getByRole("button", { name: "Thêm hạng mục" }).click();
+    await dialog.getByLabel("Tên hạng mục bàn giao").fill("Social posts");
+    await dialog.getByRole("spinbutton", { name: /^Số lượng/ }).fill("12");
+    await dialog.getByRole("textbox", { name: /^Đơn vị/ }).fill("posts");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false);
+    await dialog.screenshot({ path: testInfo.outputPath(`offering-${model}.png`) });
+    await dialog.getByRole("button", { name: "Tạo gói tùy chỉnh" }).click();
+    await expect.poll(() => submitted).toBe(true);
+    await expect(dialog).not.toBeVisible();
+  });
+}
+
+test("Manager allocates a monthly draft from frozen terms", async ({ page }) => {
+  await setupSession(page, "MANAGER", "dark");
+  const deliverableId = "e5000000-0000-4000-8000-000000000301";
+  const offering = { offeringModel: "RETAINER", offeringDetails: { deliverables: [{
+    id: deliverableId, serviceType: "SOCIAL_POST", name: "Frozen posts", quantity: 12, unit: "posts",
+  }] } };
+  await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/media-package`, route => route.fulfill({
+    json: envelope({ workspaceMediaPackageId: "selection-1", workspaceId: WORKSPACE_ID,
+      mediaPackage: { ...agencyPackage, ...offering }, negotiationStatus: "APPROVED",
+      finalTerms: { ...agencyPackage, ...offering }, termsVersion: 3,
+      approvedByAgencyAt: "2026-10-01T00:00:00Z", approvedByClientAt: "2026-10-01T00:00:00Z" }),
+  }));
+  await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/media-packages`, route =>
+    route.fulfill({ json: envelope([]) }));
+  await page.route(`**/api/v1/media-campaigns/workspaces/${WORKSPACE_ID}`, route =>
+    route.fulfill({ json: envelope([]) }));
+  let submitted = false;
+  await page.route("**/api/v1/media-campaigns", async route => {
+    const body = route.request().postDataJSON();
+    expect(body).toMatchObject({ name: "November plan", period: "2026-11",
+      allocations: [{ deliverableId, quantity: 5 }] });
+    submitted = true;
+    await route.fulfill({ status: 201, json: envelope({ id: "draft-1", ...body,
+      status: "DRAFT", allocationPeriod: body.period }) });
+  });
+  await page.goto(`/workspaces/${WORKSPACE_ID}/media-package`);
+  await page.getByLabel("Tên Campaign").fill("November plan");
+  await page.getByLabel("Tháng thực hiện").fill("2026-11");
+  await page.getByLabel("Frozen posts (posts)").fill("5");
+  await page.getByRole("button", { name: "Tạo Campaign nháp" }).click();
+  await expect.poll(() => submitted).toBe(true);
+  await expect(page.getByText("November plan · DRAFT 2026-11")).toBeVisible();
+});
+
 async function setupSession(
   page: Page,
   role: "OWNER" | "CLIENT" | "MANAGER",

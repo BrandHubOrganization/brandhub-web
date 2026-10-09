@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { OfferingSummary } from "@/pages/media-package/components/OfferingSummary";
+import { PackageTermsDiff } from "@/pages/media-package/components/PackageTermsDiff";
+import { CampaignDraftPanel } from "@/pages/media-package/components/CampaignDraftPanel";
 import {
   Building2,
   Check,
@@ -193,6 +196,9 @@ export function SelectedMediaPackage({
     selection.mediaPackage,
     selection.finalTerms,
   );
+  const maxClientProposals = mediaPackage.offeringDetails?.maxChanges;
+  const clientProposalLimitReached = isClient && maxClientProposals != null
+    && (selection.clientProposalCount ?? 0) >= maxClientProposals;
 
   const isClientApproved = Boolean(selection.approvedByClientAt);
   const isAgencyApproved = Boolean(selection.approvedByAgencyAt);
@@ -318,6 +324,9 @@ export function SelectedMediaPackage({
                 version: selection.termsVersion,
               })}
             </p>
+            {maxClientProposals != null && <p className="text-muted-foreground mt-1 text-xs">
+              {i18n.language === "vi" ? "Lượt đề xuất của Client" : "Client proposals"}: {selection.clientProposalCount ?? 0}/{maxClientProposals}
+            </p>}
           </div>
         </div>
 
@@ -372,6 +381,7 @@ export function SelectedMediaPackage({
             type="button"
             variant="outline"
             onClick={() => setNegotiateModalOpen(true)}
+            disabled={isActionLoading || isDualApproved || clientProposalLimitReached}
             className="gap-2 border-border/80 hover:bg-accent hover:text-accent-foreground text-sm font-medium shadow-2xs"
           >
             <FileEdit className="size-4 text-orange-600 dark:text-orange-400" />
@@ -382,6 +392,11 @@ export function SelectedMediaPackage({
               )}
             </span>
           </Button>
+          {clientProposalLimitReached && <p className="w-full text-xs text-amber-700 dark:text-amber-300">
+            {i18n.language === "vi"
+              ? "Đã hết lượt đề xuất. Bạn vẫn có thể chấp thuận điều khoản hiện tại hoặc trao đổi qua Chat."
+              : "Proposal limit reached. You can still approve the current terms or discuss them in Chat."}
+          </p>}
 
           {/* Action 3: Chấp thuận gói dịch vụ (Approve) */}
           {!isDualApproved && (
@@ -524,6 +539,12 @@ export function SelectedMediaPackage({
         </div>
 
         {/* Scope of Work Section */}
+        <OfferingSummary value={mediaPackage} />
+        {selection.previousTerms && <PackageTermsDiff before={selection.previousTerms} after={selection.finalTerms} />}
+        {isDualApproved && mediaPackage.offeringModel && mediaPackage.offeringDetails && (
+          <CampaignDraftPanel key={selection.workspaceMediaPackageId} selection={selection}
+            mediaPackage={mediaPackage} canCreate={isAgency} />
+        )}
         <div className="border-border mt-6 border-t pt-5">
           <h3 className="text-foreground text-sm font-semibold">
             {t("mediaPackage.selected.scopeTitle")}
@@ -542,6 +563,7 @@ export function SelectedMediaPackage({
         mediaPackage={mediaPackage}
         currentTermsVersion={selection.termsVersion}
         loading={isActionLoading}
+        clientNegotiation={isClient}
         onSubmit={handleNegotiate}
       />
     </>
