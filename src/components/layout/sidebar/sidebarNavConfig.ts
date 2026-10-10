@@ -89,6 +89,13 @@ export const NAV_SECTIONS: NavSection[] = [
         requiresWorkspace: true,
       },
       {
+        to: "/campaigns",
+        icon: PackageCheck,
+        labelKey: "campaign.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/chat",
         icon: MessageCircleMore,
         labelKey: "nav.chat",

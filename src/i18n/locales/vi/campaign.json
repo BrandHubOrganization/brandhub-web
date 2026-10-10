@@ -1,0 +1,72 @@
+{
+  "title": "Kế hoạch chiến dịch",
+  "packageRequired": "Cần chốt gói truyền thông trước khi lập Campaign.",
+  "description": "Một Workspace triển khai một Campaign từ gói đã chốt. Client góp ý, Manager chỉnh sửa và hai bên duyệt cùng phiên bản trước khi triển khai.",
+  "name": "Tên chiến dịch",
+  "strategy": "Chiến lược triển khai",
+  "brand": "Hướng dẫn thương hiệu",
+  "startDate": "Ngày bắt đầu",
+  "endDate": "Ngày kết thúc",
+  "milestones": "Các mốc kế hoạch",
+  "date": "Ngày",
+  "itemName": "Tên đầu việc / mốc",
+  "addMilestone": "Thêm mốc",
+  "workItems": "Đầu việc dự kiến",
+  "workItemsHint": "Sản lượng là tổng cả gói. Một sản phẩm có thể cần nhiều đầu việc; thêm đầu việc không làm tăng sản lượng.",
+  "addWorkItem": "Thêm đầu việc",
+  "dueDate": "Hạn hoàn thành (giờ địa phương)",
+  "remove": "Xóa",
+  "save": "Lưu nháp",
+  "cancel": "Hủy",
+  "create": "Tạo Campaign nháp",
+  "edit": "Chỉnh sửa kế hoạch",
+  "empty": "Manager chưa tạo kế hoạch chiến dịch.",
+  "noWorkItems": "Chưa lập đầu việc.",
+  "totalDeliverables": "Sản lượng toàn gói đã chốt",
+  "notSet": "Chưa nhập",
+  "version": "Phiên bản {{version}} · Gói phiên bản {{packageVersion}}",
+  "saved": "Đã lưu kế hoạch.",
+  "reload": "Tải lại",
+  "error": "Không thể tải hoặc lưu kế hoạch. Vui lòng kiểm tra và thử lại.",
+  "review": {
+    "title": "Góp ý và duyệt kế hoạch", "agency": "Agency", "client": "Client",
+    "done": "Đã duyệt", "pending": "Chưa duyệt", "approve": "Duyệt phiên bản này",
+    "alreadyApproved": "Bạn đã duyệt", "approved": "Đã duyệt phiên bản này.",
+    "feedback": "Góp ý cho Manager", "send": "Gửi góp ý", "sent": "Đã gửi góp ý.",
+    "history": "Lịch sử trao đổi", "changes": "So sánh phiên bản", "old": "Bản trước", "new": "Bản mới",
+    "FEEDBACK": "Góp ý", "APPROVE": "Duyệt"
+  },
+  "delivery": {
+    "title": "Triển khai và tiến độ", "deploy": "Đưa đầu việc vào backlog", "retry": "Thử triển khai lại",
+    "queued": "Đã ghi nhận yêu cầu triển khai.", "PENDING": "Đang tạo đầu việc",
+    "FAILED": "Triển khai chưa hoàn tất", "SUCCEEDED": "Đã tạo đầu việc",
+    "attempts": "{{count}} lần thử", "progress": "Hoàn thành {{done}}/{{total}} đầu việc",
+    "openEditor": "Mở Content Writing", "reason": "Lý do hoàn thành chiến dịch",
+    "reasonHint": "Còn đầu việc chưa hoàn thành; vui lòng ghi lý do trước khi kết thúc Campaign.",
+    "complete": "Đánh dấu Campaign hoàn thành", "completed": "Đã hoàn thành Campaign.",
+    "completedAt": "Hoàn thành lúc {{date}}"
+  },
+  "status": {
+    "DRAFT": "Bản nháp",
+    "APPROVED": "Đã duyệt",
+    "IN_PROGRESS": "Đang triển khai",
+    "COMPLETED": "Hoàn thành"
+  },
+  "types": {
+    "POST": "Bài đăng",
+    "LIVESTREAM": "Chuẩn bị livestream",
+    "SURVEY": "Khảo sát",
+    "EVENT_PLAN": "Kế hoạch sự kiện",
+    "PRESS_RECOMMENDATION": "Gợi ý báo chí"
+  },
+  "errors": {
+    "CAMPAIGN_ALREADY_EXISTS": "Workspace đã có Campaign. Hủy chỉnh sửa rồi tải lại.",
+    "CAMPAIGN_VERSION_CONFLICT": "Kế hoạch đã thay đổi. Giữ lại nội dung cần thiết, hủy chỉnh sửa rồi tải lại.",
+    "CAMPAIGN_LEGACY_TERMS": "Gói hoặc Campaign cũ cần rà soát sản lượng. Không tự chuyển sản lượng tháng sang tổng gói.",
+    "CAMPAIGN_IMMUTABLE": "Campaign đã chốt, không thể sửa nội dung."
+    ,"CAMPAIGN_PLAN_INCOMPLETE": "Cần nhập chiến lược, ngày bắt đầu/kết thúc và ít nhất một đầu việc trước khi duyệt.",
+    "CAMPAIGN_COMPLETION_REASON_REQUIRED": "Còn đầu việc chưa hoàn thành; bắt buộc ghi lý do.",
+    "CAMPAIGN_DEPLOYMENT_INCOMPLETE": "Chưa tạo đủ đầu việc; hãy kiểm tra tiến trình triển khai.",
+    "CAMPAIGN_NOT_APPROVED": "Hai bên cần duyệt cùng phiên bản Campaign trước khi triển khai."
+  }
+}

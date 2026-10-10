@@ -1,0 +1,72 @@
+{
+  "title": "Campaign plan",
+  "packageRequired": "Approve the package before planning a Campaign.",
+  "description": "One Workspace runs one Campaign from its approved package. The Client gives feedback, the Manager edits, and both approve the same version before launch.",
+  "name": "Campaign name",
+  "strategy": "Execution strategy",
+  "brand": "Brand guidelines",
+  "startDate": "Start date",
+  "endDate": "End date",
+  "milestones": "Milestones",
+  "date": "Date",
+  "itemName": "Work item / milestone name",
+  "addMilestone": "Add milestone",
+  "workItems": "Planned work items",
+  "workItemsHint": "Quantities cover the whole package. Multiple work items can contribute to one deliverable.",
+  "addWorkItem": "Add work item",
+  "dueDate": "Due date (local time)",
+  "remove": "Remove",
+  "save": "Save draft",
+  "cancel": "Cancel",
+  "create": "Create campaign draft",
+  "edit": "Edit plan",
+  "empty": "No campaign plan yet.",
+  "noWorkItems": "No work items planned.",
+  "totalDeliverables": "Approved total deliverables",
+  "notSet": "Not set",
+  "version": "Version {{version}} · Package version {{packageVersion}}",
+  "saved": "Plan saved.",
+  "reload": "Reload",
+  "error": "Unable to load or save the plan. Check input and try again.",
+  "review": {
+    "title": "Feedback and approval", "agency": "Agency", "client": "Client",
+    "done": "Approved", "pending": "Pending", "approve": "Approve this version",
+    "alreadyApproved": "You approved", "approved": "Version approved.",
+    "feedback": "Feedback for the Manager", "send": "Send feedback", "sent": "Feedback sent.",
+    "history": "Review history", "changes": "Compare versions", "old": "Previous", "new": "Current",
+    "FEEDBACK": "Feedback", "APPROVE": "Approval"
+  },
+  "delivery": {
+    "title": "Deployment and progress", "deploy": "Create backlog tasks", "retry": "Retry deployment",
+    "queued": "Deployment requested.", "PENDING": "Creating tasks",
+    "FAILED": "Deployment incomplete", "SUCCEEDED": "Tasks created",
+    "attempts": "{{count}} attempts", "progress": "{{done}}/{{total}} tasks completed",
+    "openEditor": "Open Content Writing", "reason": "Reason for completing Campaign",
+    "reasonHint": "Some tasks are unfinished. Enter a reason before completing the Campaign.",
+    "complete": "Mark Campaign completed", "completed": "Campaign completed.",
+    "completedAt": "Completed at {{date}}"
+  },
+  "status": {
+    "DRAFT": "Draft",
+    "APPROVED": "Approved",
+    "IN_PROGRESS": "In progress",
+    "COMPLETED": "Completed"
+  },
+  "types": {
+    "POST": "Post",
+    "LIVESTREAM": "Livestream preparation",
+    "SURVEY": "Survey",
+    "EVENT_PLAN": "Event plan",
+    "PRESS_RECOMMENDATION": "Press recommendations"
+  },
+  "errors": {
+    "CAMPAIGN_ALREADY_EXISTS": "A Campaign already exists. Cancel editing and reload.",
+    "CAMPAIGN_VERSION_CONFLICT": "Plan changed. Keep needed input, cancel editing and reload.",
+    "CAMPAIGN_LEGACY_TERMS": "Legacy quantities need review. Monthly quantities are never automatically converted.",
+    "CAMPAIGN_IMMUTABLE": "Approved content cannot be edited."
+    ,"CAMPAIGN_PLAN_INCOMPLETE": "Add strategy, start/end dates and at least one work item before approval.",
+    "CAMPAIGN_COMPLETION_REASON_REQUIRED": "A reason is required while tasks remain unfinished.",
+    "CAMPAIGN_DEPLOYMENT_INCOMPLETE": "Not all tasks were created. Check deployment progress.",
+    "CAMPAIGN_NOT_APPROVED": "Both sides must approve the same Campaign version before deployment."
+  }
+}

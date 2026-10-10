@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { OfferingSummary } from "@/pages/media-package/components/OfferingSummary";
 import { PackageTermsDiff } from "@/pages/media-package/components/PackageTermsDiff";
-import { CampaignDraftPanel } from "@/pages/media-package/components/CampaignDraftPanel";
+import CampaignPanel from "@/pages/campaign";
 import {
   Building2,
   Check,
@@ -542,8 +542,7 @@ export function SelectedMediaPackage({
         <OfferingSummary value={mediaPackage} />
         {selection.previousTerms && <PackageTermsDiff before={selection.previousTerms} after={selection.finalTerms} />}
         {isDualApproved && mediaPackage.offeringModel && mediaPackage.offeringDetails && (
-          <CampaignDraftPanel key={selection.workspaceMediaPackageId} selection={selection}
-            mediaPackage={mediaPackage} canCreate={isAgency} />
+          <CampaignPanel key={selection.workspaceMediaPackageId} selection={selection} canManage={isAgency} />
         )}
         <div className="border-border mt-6 border-t pt-5">
           <h3 className="text-foreground text-sm font-semibold">
