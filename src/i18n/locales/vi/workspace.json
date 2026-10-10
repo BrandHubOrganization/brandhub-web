@@ -232,6 +232,28 @@
     "unassignedAgency": "Chưa gán công ty",
     "parentAgency": "Công ty:"
   },
+  "duplicate": {
+    "title": "Nhân bản workspace",
+    "description": "Tạo workspace độc lập cho chiến dịch tiếp theo. Chọn những thành viên và cài đặt cần giữ lại.",
+    "copySuffix": "Bản sao",
+    "newName": "Tên workspace mới",
+    "copyTimezone": "Sao chép múi giờ từ workspace cũ",
+    "members": "Thành viên muốn sao chép",
+    "ownerAlwaysIncluded": "Bạn luôn là Manager của workspace mới, trừ khi chọn Manager khác.",
+    "oneManager": "Chỉ được chọn một Manager.",
+    "resourcesUnavailable": "Tài nguyên workspace: chưa hỗ trợ sao chép trong phiên bản này.",
+    "noHistory": "Gói truyền thông, Campaign, Task, chat và lịch sử duyệt sẽ không được sao chép.",
+    "summaryName": "Workspace mới: {{name}}",
+    "summaryTimezone": "Múi giờ: {{value}}",
+    "summaryMembers": "Thành viên được chọn: {{count}} (chưa tính bạn)",
+    "review": "Xem lại",
+    "back": "Quay lại",
+    "cancel": "Hủy",
+    "create": "Tạo workspace",
+    "success": "Đã tạo workspace mới",
+    "failed": "Không thể nhân bản workspace",
+    "loadFailed": "Không thể tải danh sách thành viên"
+  },
   "permissions": {
     "roleManagement": "Quản lý vai trò",
     "matrixTitle": "Ma trận quyền",

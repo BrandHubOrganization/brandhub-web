@@ -234,6 +234,28 @@
     "unassignedAgency": "Unassigned agency",
     "parentAgency": "Company:"
   },
+  "duplicate": {
+    "title": "Duplicate workspace",
+    "description": "Create an independent workspace for the next campaign. Choose members and settings to keep.",
+    "copySuffix": "Copy",
+    "newName": "New workspace name",
+    "copyTimezone": "Copy timezone from the source workspace",
+    "members": "Members to copy",
+    "ownerAlwaysIncluded": "You are always the new Manager unless you select another Manager.",
+    "oneManager": "Select at most one Manager.",
+    "resourcesUnavailable": "Workspace resources cannot be copied in this version.",
+    "noHistory": "Media package, Campaign, Tasks, chat and approval history will not be copied.",
+    "summaryName": "New workspace: {{name}}",
+    "summaryTimezone": "Timezone: {{value}}",
+    "summaryMembers": "Selected members: {{count}} (excluding you)",
+    "review": "Review",
+    "back": "Back",
+    "cancel": "Cancel",
+    "create": "Create workspace",
+    "success": "Workspace created",
+    "failed": "Could not duplicate workspace",
+    "loadFailed": "Could not load members"
+  },
   "permissions": {
     "roleManagement": "Role Management",
     "matrixTitle": "Permissions Matrix",
