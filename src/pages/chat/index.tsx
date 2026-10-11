@@ -32,7 +32,8 @@ export function WorkspaceChatPage() {
         t("chat.title");
   const context = useMemo(() => {
     const requested = searchParams.get("contextType") as ChatContextType | null;
-    const type = requested && CONTEXT_TYPES.has(requested) ? requested : "GENERAL";
+    const type =
+      requested && CONTEXT_TYPES.has(requested) ? requested : "GENERAL";
     return {
       type,
       id: type === "GENERAL" ? null : searchParams.get("contextId"),
@@ -42,8 +43,8 @@ export function WorkspaceChatPage() {
   if (!workspaceId || !user) return <Navigate to="/workspace" replace />;
 
   return (
-    <div className="w-full p-4 md:p-6">
-      <section className="border-border bg-muted/20 mx-auto flex h-[calc(100dvh-9.5rem)] min-h-[520px] max-w-5xl flex-col overflow-hidden rounded-xl border shadow-sm md:h-[calc(100dvh-6.5rem)]">
+    <div className="w-full p-3 md:p-6">
+      <section className="border-border bg-muted/20 mx-auto flex h-[calc(100dvh-9.5rem)] min-h-[340px] max-w-6xl flex-col overflow-hidden rounded-xl border md:h-[calc(100dvh-6.5rem)]">
         <ChatHeader
           workspaceName={workspaceName}
           connectionState={chat.connectionState}
@@ -67,4 +68,3 @@ export function WorkspaceChatPage() {
 }
 
 export default WorkspaceChatPage;
-

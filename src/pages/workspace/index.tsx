@@ -19,6 +19,7 @@ import {
   Users,
   X,
   ArrowUpDown,
+  Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 import { workspaceService } from "@/services/workspaceService";
@@ -28,6 +29,8 @@ import { getLogoIcon } from "@/pages/agency/logoIcons";
 import { WORKSPACE_INDUSTRIES } from "@/pages/workspace/constants";
 import type { Workspace, MemberRole } from "@/types/workspace";
 import type { Agency } from "@/types/agency";
+import { useAuthStore } from "@/store/authStore";
+import { DuplicateWorkspaceDialog } from "./components/DuplicateWorkspaceDialog";
 
 type SortOption = "name_asc" | "name_desc" | "newest" | "oldest" | "role";
 type RoleFilter = "all" | MemberRole;
@@ -42,6 +45,8 @@ const ROLE_PRIORITY: Record<string, number> = {
 export function WorkspacePage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const currentUser = useAuthStore((state) => state.user);
+  const [duplicateSource, setDuplicateSource] = useState<Workspace | null>(null);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [loading, setLoading] = useState(true);
@@ -520,6 +525,14 @@ export function WorkspacePage() {
                             </Button>
                           </>
                         )}
+                        {parentAgency?.ownerId === currentUser?.id && (
+                          <Button variant="outline" size="sm"
+                            title={t("workspace.duplicate.title")}
+                            className="size-8.5 p-0 cursor-pointer"
+                            onClick={() => setDuplicateSource(ws)}>
+                            <Copy className="size-3.5" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -529,6 +542,8 @@ export function WorkspacePage() {
           )}
         </div>
       )}
+      <DuplicateWorkspaceDialog source={duplicateSource}
+        onClose={() => setDuplicateSource(null)} />
     </PageWrapper>
   );
 }
