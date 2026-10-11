@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Spinner } from "@/components/ui/spinner";
@@ -16,6 +16,9 @@ export default function CampaignPage() {
     : state.workspaceList.find(workspace => workspace.id === id)?.myRole);
   return <PageWrapper title={t("campaign.title")}>
     {loading && <Spinner />}
+    <Link className="text-primary text-sm underline" to={`/workspaces/${id}/campaign-partners`}>
+      {t("campaign.partners.title")}
+    </Link>
     {!loading && error && <div role="alert">{t("campaign.error")}
       <Button onClick={() => void load()}>{t("campaign.reload")}</Button></div>}
     {!loading && !error && selectedPackage?.negotiationStatus === "APPROVED" &&

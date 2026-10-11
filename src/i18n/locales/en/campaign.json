@@ -1,5 +1,40 @@
 {
   "title": "Campaign plan",
+  "partners": {
+    "title": "Campaign partners",
+    "description": "Manual cooperation tracking. Updating a partner does not change the approved Campaign plan or publish content automatically.",
+    "add": "Link an Agency partner",
+    "choose": "Choose a partner",
+    "assign": "Link partner",
+    "empty": "No partners linked to this Campaign.",
+    "noCampaign": "The Manager must create a Campaign before partners can be linked.",
+    "noDirectory": "The Agency partner directory is empty. Add partners through the E50-08 directory module when available.",
+    "list": "Linked partners",
+    "saved": "Cooperation information saved.",
+    "error": "Unable to load or save partners. Please try again.",
+    "conflict": "Another user updated this partner. The list will reload; review the latest status before retrying.",
+    "forbidden": "You do not have permission to update Campaign partners.",
+    "statusFor": "Cooperation status for {{name}}",
+    "updated": "Updated by {{actor}} · {{date}}",
+    "unknownActor": "Unknown user",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{page}} / {{total}}",
+    "directoryPage": "Directory page {{page}} / {{total}}",
+    "pagination": "Partner pages",
+    "status": {
+      "CONTACTED": "Contacted",
+      "NEGOTIATING": "Negotiating",
+      "CONFIRMED": "Confirmed",
+      "LIVE": "Live"
+    },
+    "types": {
+      "NEWSPAPER": "Press / newspaper",
+      "BANNER": "Banner network",
+      "TV": "Television",
+      "OTHER": "Other"
+    }
+  },
   "packageRequired": "Approve the package before planning a Campaign.",
   "description": "One Workspace runs one Campaign from its approved package. The Client gives feedback, the Manager edits, and both approve the same version before launch.",
   "name": "Campaign name",

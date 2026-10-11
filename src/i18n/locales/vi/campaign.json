@@ -1,5 +1,40 @@
 {
   "title": "Kế hoạch chiến dịch",
+  "partners": {
+    "title": "Đối tác chiến dịch",
+    "description": "Theo dõi hợp tác thủ công. Cập nhật đối tác không thay đổi kế hoạch Campaign đã duyệt và không tự động đăng nội dung.",
+    "add": "Gán đối tác của Agency",
+    "choose": "Chọn đối tác",
+    "assign": "Gán đối tác",
+    "empty": "Chiến dịch chưa có đối tác được gán.",
+    "noCampaign": "Manager cần tạo Campaign trước khi gán đối tác.",
+    "noDirectory": "Agency chưa có đối tác trong danh bạ. Bổ sung đối tác qua module danh bạ E50-08 khi được triển khai.",
+    "list": "Danh sách đối tác",
+    "saved": "Đã lưu thông tin hợp tác.",
+    "error": "Không thể tải hoặc lưu đối tác. Vui lòng thử lại.",
+    "conflict": "Người khác đã cập nhật đối tác này. Danh sách sẽ được tải lại; kiểm tra trạng thái mới trước khi thử lại.",
+    "forbidden": "Bạn không có quyền cập nhật đối tác của chiến dịch.",
+    "statusFor": "Trạng thái hợp tác với {{name}}",
+    "updated": "Cập nhật bởi {{actor}} · {{date}}",
+    "unknownActor": "Người dùng không xác định",
+    "previous": "Trang trước",
+    "next": "Trang sau",
+    "page": "Trang {{page}} / {{total}}",
+    "directoryPage": "Trang danh bạ {{page}} / {{total}}",
+    "pagination": "Phân trang đối tác",
+    "status": {
+      "CONTACTED": "Đã liên hệ",
+      "NEGOTIATING": "Đang thương lượng",
+      "CONFIRMED": "Đã xác nhận",
+      "LIVE": "Đã lên sóng"
+    },
+    "types": {
+      "NEWSPAPER": "Báo chí",
+      "BANNER": "Mạng quảng cáo banner",
+      "TV": "Truyền hình",
+      "OTHER": "Khác"
+    }
+  },
   "packageRequired": "Cần chốt gói truyền thông trước khi lập Campaign.",
   "description": "Một Workspace triển khai một Campaign từ gói đã chốt. Client góp ý, Manager chỉnh sửa và hai bên duyệt cùng phiên bản trước khi triển khai.",
   "name": "Tên chiến dịch",

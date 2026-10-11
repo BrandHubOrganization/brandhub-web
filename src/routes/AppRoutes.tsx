@@ -66,6 +66,7 @@ const InvitationsPage = lazyNamed(() => import("@/pages/workspace/invitations"),
 const WorkspaceClientProfilePage = lazyNamed(() => import("@/pages/workspace/client-profile"), "WorkspaceClientProfilePage");
 const MediaPackagePage = lazy(() => import("@/pages/media-package"));
 const CampaignPage = lazy(() => import("@/pages/campaign/page"));
+const CampaignPartnersPage = lazy(() => import("@/pages/campaign-partners/page"));
 
 // ── Agency Pages ──
 const AgencyPage = lazyNamed(() => import("@/pages/agency"), "AgencyPage");
@@ -226,6 +227,7 @@ export function AppRoutes() {
             <Route path="/workspaces/:id/publish" element={<PublishPage />} />
             <Route path="/workspaces/:id/portal" element={<PortalPage />} />
             <Route path="/workspaces/:id/campaigns" element={<CampaignPage />} />
+            <Route path="/workspaces/:id/campaign-partners" element={<CampaignPartnersPage />} />
             <Route
               path="/workspaces/:id/media-package"
               element={<MediaPackagePage />}
