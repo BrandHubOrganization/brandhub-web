@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  analyzeVariables,
+  mergeRecipients,
+  renderPreviewHtml,
   extractVariables,
   htmlToPlainText,
   isEmail,
@@ -63,5 +66,47 @@ describe("htmlToPlainText", () => {
   it("keeps paragraph breaks and decodes entities", () => {
     expect(htmlToPlainText("<p>Hello &amp; welcome</p><p>Line<br>two</p><ul><li>a</li></ul>"))
       .toBe("Hello & welcome\nLine\ntwo\n- a");
+  });
+});
+
+describe("renderPreviewHtml", () => {
+  it("escapes sample values and highlights unknown variables", () => {
+    const html = renderPreviewHtml("<p>Hi {{name}} {{campaign}}</p>", { name: "<b>An</b>" });
+    expect(html).toContain("&lt;b&gt;An&lt;/b&gt;");
+    expect(html).toContain("[campaign]");
+    expect(html).not.toContain("<b>An</b>");
+  });
+});
+
+describe("analyzeVariables", () => {
+  it("suggests the known variable for a typo", () => {
+    const a = analyzeVariables("Hi {{nmae}}", "<p>{{workspaceNmae}}</p>");
+    expect(a.suggestions).toEqual([
+      { name: "nmae", suggestion: "name" },
+      { name: "workspaceNmae", suggestion: "workspaceName" },
+    ]);
+    expect(a.malformed).toBe(false);
+  });
+
+  it("does not flag well-known or clearly custom variables", () => {
+    const a = analyzeVariables("{{name}}", "<p>{{discountCode}}</p>");
+    expect(a.suggestions).toEqual([]);
+  });
+
+  it("flags broken braces", () => {
+    expect(analyzeVariables("Hi {name}", "<p>x</p>").malformed).toBe(true);
+    expect(analyzeVariables("Hi", "<p>{{ na me }}</p>").malformed).toBe(true);
+    expect(analyzeVariables("Hi {{name}}", "<p>ok</p>").malformed).toBe(false);
+  });
+});
+
+describe("mergeRecipients", () => {
+  it("keeps the first occurrence and ignores case", () => {
+    const merged = mergeRecipients(
+      [{ email: "a@example.test", name: "A" }],
+      [{ email: "A@example.test", name: "Dup" }, { email: "b@example.test" }],
+    );
+    expect(merged.map((r) => r.email)).toEqual(["a@example.test", "b@example.test"]);
+    expect(merged[0].name).toBe("A");
   });
 });

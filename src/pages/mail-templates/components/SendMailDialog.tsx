@@ -17,7 +17,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { errorCode } from "@/services/adminRevenueService";
 import { mailTemplateService } from "../services/mailTemplateService";
 import type { MailQuota, MailTemplate, MailTemplateSummary, Recipient, SendResult } from "../types";
-import { MAX_RECIPIENTS, parseRecipients, userVariables } from "../utils";
+import { clearDraft, loadDraft, saveDraft } from "../drafts";
+import { MAX_RECIPIENTS, mergeRecipients, parseRecipients, userVariables } from "../utils";
+import { RecipientPicker } from "./RecipientPicker";
 
 interface Props {
   workspaceId: string;
@@ -83,7 +85,30 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
     return () => { cancelled = true; };
   }, [templateId, workspaceId]);
 
-  const parsed = useMemo(() => parseRecipients(text), [text]);
+  const [extra, setExtra] = useState<Recipient[]>([]);
+  const parsed = useMemo(() => {
+    const fromText = parseRecipients(text);
+    return { ...fromText, recipients: mergeRecipients(fromText.recipients, extra) };
+  }, [text, extra]);
+  const draftKey = templateId ? `mail-send-draft:${workspaceId}:${templateId}` : null;
+  const hasPreset = (initialRecipients?.length ?? 0) > 0;
+
+  // Resume an unsent list for this template (not when the caller pre-filled recipients).
+  useEffect(() => {
+    if (!open || !draftKey || hasPreset) return;
+    const draft = loadDraft<{ text: string; shared: Record<string, string>; extra: Recipient[] }>(draftKey);
+    if (!draft) return;
+    setText(draft.text ?? "");
+    setShared((current) => ({ ...(draft.shared ?? {}), ...current }));
+    setExtra(draft.extra ?? []);
+  }, [open, draftKey, hasPreset]);
+
+  useEffect(() => {
+    if (!open || !draftKey || result) return;
+    if (!text.trim() && extra.length === 0) return;
+    const timer = window.setTimeout(() => saveDraft(draftKey, { text, shared, extra }), 600);
+    return () => window.clearTimeout(timer);
+  }, [open, draftKey, text, shared, extra, result]);
   const needed = useMemo(
     () => (detail ? userVariables(detail.subject, detail.bodyHtml) : []),
     [detail],
@@ -178,6 +203,7 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
       }
       const res = await mailTemplateService.send(workspaceId, detail.id, payload, attempt.current.key);
       setResult(res);
+      if (draftKey) clearDraft(draftKey);
       onSent?.(res);
     } catch (e) {
       fail(e);
@@ -260,6 +286,16 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
                     onChange={(e) => { void readFile(e.target.files?.[0]); e.target.value = ""; }} />
                 </label>
               </div>
+              <RecipientPicker workspaceId={workspaceId} current={parsed.recipients}
+                onAdd={(rows) => setExtra((current) => mergeRecipients(current, rows))} />
+              {extra.length > 0 && (
+                <p className="text-muted-foreground text-xs font-normal" data-testid="picked-recipients">
+                  {t("mailTemplate.recipients.picked", { count: extra.length })}{" "}
+                  <button type="button" className="text-brand-orange font-medium" onClick={() => setExtra([])}>
+                    {t("mailTemplate.recipients.clearPicked")}
+                  </button>
+                </p>
+              )}
               <p className="text-xs font-normal" data-testid="recipient-summary">
                 {t("mailTemplate.send.parsed", { count: parsed.recipients.length })}
                 {parsed.invalid.length > 0 && (

@@ -51,7 +51,8 @@
     "maxFiles": "Tối đa {{count}} tệp đính kèm.",
     "save": "Lưu",
     "saving": "Đang lưu…",
-    "saved": "Đã lưu mẫu email."
+    "saved": "Đã lưu mẫu email.",
+    "discardConfirm": "Bỏ các thay đổi chưa lưu?"
   },
   "send": {
     "title": "Gửi email",
@@ -113,7 +114,11 @@
       "SENT": "Đã gửi",
       "FAILED": "Lỗi",
       "SUPPRESSED": "Đã hủy đăng ký"
-    }
+    },
+    "resendFailed": "Gửi lại {{count}} email lỗi",
+    "resendDone": "Đã đưa {{count}} email vào hàng đợi lại.",
+    "exportCsv": "Xuất CSV",
+    "autoRefresh": "Đang tự cập nhật…"
   },
   "unsubscribe": {
     "title": "Hủy đăng ký nhận email",
@@ -145,9 +150,61 @@
     "MAIL_BATCH_NOT_CANCELLABLE": "Chỉ hủy được lượt gửi đã hẹn giờ chưa chạy.",
     "EMAIL_SERVICE_UNAVAILABLE": "Dịch vụ email tạm thời không khả dụng, vui lòng thử lại.",
     "RATE_LIMIT_EXCEEDED": "Bạn thao tác quá nhanh, hãy thử lại sau.",
-    "tooMany": "tối đa {{max}} người nhận"
+    "tooMany": "tối đa {{max}} người nhận",
+    "MAIL_BATCH_NOT_RESENDABLE": "Chỉ gửi lại được lô đã kết thúc và có email lỗi.",
+    "MAIL_GROUP_NOT_FOUND": "Nhóm này không còn tồn tại.",
+    "MAIL_GROUP_LIMIT_REACHED": "Đã có quá nhiều nhóm. Hãy xóa bớt một nhóm."
   },
   "client": {
     "sendEmail": "Gửi email"
+  },
+  "preview": {
+    "title": "Xem trước",
+    "device": "Kích thước xem trước",
+    "desktop": "Máy tính",
+    "mobile": "Điện thoại",
+    "frame": "Xem trước email",
+    "noSubject": "(chưa có tiêu đề)",
+    "sample": "Biến dùng giá trị mẫu; giá trị thật được điền khi gửi."
+  },
+  "variables": {
+    "used": "Biến trong email này:",
+    "didYouMean": "{{name}} không phải biến quen thuộc. Có phải bạn muốn dùng {{suggestion}}?",
+    "malformed": "Có dấu ngoặc không tạo thành {{biến}} hợp lệ. Biến có dạng {{name}}, không có khoảng trắng."
+  },
+  "draft": {
+    "restored": "Đã khôi phục bản nháp chưa lưu của bạn.",
+    "discard": "Bỏ bản nháp",
+    "kept": "Đã lưu nháp. Bạn có thể tiếp tục lần sau."
+  },
+  "recipients": {
+    "addFromWorkspace": "Thêm từ Workspace",
+    "search": "Tìm thành viên và Client",
+    "results": "Thành viên và Client",
+    "noResults": "Không có người phù hợp.",
+    "member": "Thành viên",
+    "client": "Client",
+    "addSelected": "Thêm đã chọn ({{count}})",
+    "groups": "Nhóm đã lưu",
+    "chooseGroup": "Chọn nhóm",
+    "addGroup": "Thêm nhóm",
+    "deleteGroup": "Xóa nhóm",
+    "groupName": "Tên nhóm mới",
+    "saveGroup": "Lưu danh sách thành nhóm ({{count}})",
+    "groupSaved": "Đã lưu nhóm.",
+    "groupDeleted": "Đã xóa nhóm.",
+    "picked": "Đã thêm {{count}} người nhận từ Workspace.",
+    "clearPicked": "Bỏ chọn"
+  },
+  "suppressions": {
+    "title": "Địa chỉ đã hủy đăng ký",
+    "subtitle": "Những người đã hủy nhận email của Workspace này. Họ sẽ bị bỏ qua khi gửi.",
+    "link": "Danh sách hủy đăng ký",
+    "search": "Tìm theo email",
+    "empty": "Chưa có ai hủy đăng ký.",
+    "since": "Hủy đăng ký ngày {{when}}",
+    "resubscribe": "Đăng ký lại",
+    "confirm": "Cho phép gửi email tới {{email}} trở lại?",
+    "done": "Đã đăng ký lại địa chỉ."
   }
 }

@@ -123,3 +123,22 @@ export interface TemplatePayload {
   cloneFromId?: string;
   attachmentIds?: string[];
 }
+
+export interface MailSuppression {
+  email: string;
+  reason: string;
+  createdAt: string;
+}
+
+export interface RecipientCandidate {
+  email: string;
+  name: string | null;
+  source: "MEMBER" | "CLIENT";
+}
+
+export interface RecipientGroup {
+  id: string;
+  name: string;
+  count: number;
+  recipients: { email: string; name: string | null }[];
+}

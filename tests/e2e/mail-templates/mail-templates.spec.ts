@@ -125,10 +125,39 @@ async function setup(page: Page, mock: Partial<Mock> = {}): Promise<Mock> {
       }),
     ),
   );
+  await page.route(`${API}/mail-recipients**`, (route) =>
+    route.fulfill(ok([
+      { email: "lan@example.test", name: "Lan Member", source: "MEMBER" },
+      { email: "acme@example.test", name: "Acme Client", source: "CLIENT" },
+    ])),
+  );
+  await page.route(`${API}/mail-recipient-groups**`, async (route) => {
+    const { req } = await record(route);
+    if (req.method() === "POST") {
+      return route.fulfill(ok({ id: "g9", name: "Team", count: 1, recipients: [] }, 201));
+    }
+    if (req.method() === "DELETE") return route.fulfill(ok(null));
+    return route.fulfill(ok([
+      { id: "g1", name: "VIP clients", count: 2,
+        recipients: [{ email: "v1@example.test", name: "V One" }, { email: "v2@example.test", name: "V Two" }] },
+    ]));
+  });
+  await page.route(`${API}/mail-suppressions**`, async (route) => {
+    const { req } = await record(route);
+    if (req.method() === "DELETE") return route.fulfill(ok(null));
+    return route.fulfill(ok({
+      content: [{ email: "gone@example.test", reason: "UNSUBSCRIBED", createdAt: "2026-10-05T00:00:00Z" }],
+      number: 0, size: 20, totalElements: 1, totalPages: 1,
+    }));
+  });
   await page.route(`${API}/mail-batches**`, async (route) => {
     const { req } = await record(route);
     const url = new URL(req.url());
+    if (req.method() === "POST" && url.pathname.endsWith("/resend-failed")) return route.fulfill(ok({ requeued: 2 }));
     if (req.method() === "POST") return route.fulfill(ok(null));
+    if (url.pathname.endsWith("/export.csv")) {
+      return route.fulfill({ status: 200, contentType: "text/csv", body: "recipient,name,status\r\n" });
+    }
     if (/mail-batches\/[^/]+$/.test(url.pathname)) {
       const batch = state.batches[0];
       return route.fulfill(
@@ -586,5 +615,77 @@ test.describe("Unsubscribe page (public)", () => {
     await expect(page.getByRole("alert")).toContainText(
       "invalid or has been modified",
     );
+  });
+});
+
+test.describe("Mail templates - editing aids", () => {
+  test("shows a live preview and warns about a mistyped variable", async ({ page }) => {
+    await setup(page);
+    await page.getByRole("button", { name: "Create template" }).click();
+    await page.getByLabel("Email subject *").fill("Hi {{nmae}}");
+    await page.locator(".ProseMirror").click();
+    await page.keyboard.type("Hello customer");
+    const frame = page.frameLocator('[data-testid="mail-preview-frame"]');
+    await expect(frame.locator("body")).toContainText("Hello customer");
+    await expect(page.getByTestId("variable-hints")).toContainText("Did you mean {{name}}");
+    await page.getByRole("button", { name: "Mobile" }).click();
+    const width = await page.getByTestId("mail-preview-frame").evaluate((el) => (el as HTMLElement).offsetWidth);
+    expect(width).toBeLessThanOrEqual(375);
+  });
+
+  test("keeps an unsaved draft of a new template and restores it", async ({ page }) => {
+    await setup(page);
+    await page.getByRole("button", { name: "Create template" }).click();
+    await page.getByLabel("Template name *").fill("Draft A");
+    await page.waitForTimeout(900);
+    await page.keyboard.press("Escape");
+    await expect(page.getByLabel("Template name *")).toHaveCount(0);
+    await page.getByRole("button", { name: "Create template" }).click();
+    await expect(page.getByLabel("Template name *")).toHaveValue("Draft A");
+    await expect(page.getByText("Your unsaved draft was restored.")).toBeVisible();
+    await page.getByRole("button", { name: "Discard draft" }).click();
+    await expect(page.getByLabel("Template name *")).toHaveValue("");
+  });
+});
+
+test.describe("Mail templates - recipients and history", () => {
+  test("adds recipients from the Workspace and from a saved group", async ({ page }) => {
+    await setup(page);
+    await page.getByRole("button", { name: "Send" }).first().click();
+    await page.getByRole("button", { name: "Add from Workspace" }).click();
+    await page.getByLabel("Lan Member").check();
+    await page.getByRole("button", { name: "Add selected (1)" }).click();
+    await expect(page.getByTestId("recipient-summary")).toContainText("1 valid recipients");
+    await page.getByLabel("Choose a group").selectOption("g1");
+    await page.getByRole("button", { name: "Add group" }).click();
+    await expect(page.getByTestId("recipient-summary")).toContainText("3 valid recipients");
+    await expect(page.getByTestId("picked-recipients")).toBeVisible();
+  });
+
+  test("resends failed emails and exports a CSV from a finished batch", async ({ page }) => {
+    const batch = {
+      id: "b1", templateId: "t1", templateName: "Welcome", kind: "SEND", status: "COMPLETED", subject: "Hi",
+      total: 3, accepted: 3, rejected: 0, sent: 1, failed: 2, suppressed: 0, scheduledAt: null,
+      createdAt: "2026-10-12T00:00:00Z", completedAt: "2026-10-12T00:05:00Z", sentBy: "u1", senderName: "Tester",
+    };
+    const mock = await setup(page, { batches: [batch] });
+    await page.goto(`/workspaces/${WS}/mail-templates/batches`);
+    await page.getByRole("button", { name: /Welcome/ }).click();
+    const download = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Export CSV" }).click();
+    expect((await download).suggestedFilename()).toContain("mail-batch-b1");
+    await page.getByRole("button", { name: "Resend 2 failed" }).click();
+    await expect.poll(() => mock.calls.some((c) => c.url.endsWith("/resend-failed"))).toBeTruthy();
+  });
+
+  test("lists unsubscribed addresses and re-subscribes one", async ({ page }) => {
+    const mock = await setup(page);
+    await page.goto(`/workspaces/${WS}/mail-templates/suppressions`);
+    await expect(page.getByText("gone@example.test")).toBeVisible();
+    page.once("dialog", (d) => void d.accept());
+    await page.getByRole("button", { name: "Re-subscribe" }).click();
+    await expect
+      .poll(() => mock.calls.some((c) => c.method === "DELETE" && c.url.includes("email=gone%40example.test")))
+      .toBeTruthy();
   });
 });

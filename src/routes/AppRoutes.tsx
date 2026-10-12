@@ -69,6 +69,7 @@ const CampaignPage = lazy(() => import("@/pages/campaign/page"));
 const CampaignPartnersPage = lazy(() => import("@/pages/campaign-partners/page"));
 const MailTemplatesPage = lazy(() => import("@/pages/mail-templates/page"));
 const MailBatchesPage = lazy(() => import("@/pages/mail-templates/batches"));
+const MailSuppressionsPage = lazy(() => import("@/pages/mail-templates/suppressions"));
 const MailUnsubscribePage = lazy(() => import("@/pages/mail-templates/UnsubscribePage"));
 
 // ── Agency Pages ──
@@ -234,6 +235,7 @@ export function AppRoutes() {
             <Route path="/workspaces/:id/campaign-partners" element={<CampaignPartnersPage />} />
             <Route path="/workspaces/:id/mail-templates" element={<MailTemplatesPage />} />
             <Route path="/workspaces/:id/mail-templates/batches" element={<MailBatchesPage />} />
+            <Route path="/workspaces/:id/mail-templates/suppressions" element={<MailSuppressionsPage />} />
             <Route
               path="/mail-templates"
               element={<WorkspaceScopedRedirect destination="mail-templates" />}

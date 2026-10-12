@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
@@ -28,19 +28,37 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   const [failed, setFailed] = useState(false);
   const [detail, setDetail] = useState<MailBatchDetail | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setFailed(false);
+  const load = useCallback(async (silent = false) => {
+    if (!silent) {
+      setLoading(true);
+      setFailed(false);
+    }
     try {
       setData(await mailTemplateService.batches(workspaceId, { status: status || undefined, page, size: 20 }));
     } catch {
-      setFailed(true);
+      if (!silent) setFailed(true);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [workspaceId, status, page]);
 
   useEffect(() => { void load(); }, [load]);
+
+  // Keep running batches fresh without a manual reload (polls only while something is in flight).
+  const running =
+    (data?.content ?? []).some((b) => b.status === "QUEUED" || b.status === "SENDING") ||
+    detail?.batch.status === "QUEUED" || detail?.batch.status === "SENDING";
+  const detailId = detail?.batch.id;
+  useEffect(() => {
+    if (!running) return;
+    const timer = window.setInterval(() => {
+      void load(true);
+      if (detailId) {
+        mailTemplateService.batch(workspaceId, detailId, { size: 100 }).then(setDetail).catch(() => undefined);
+      }
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, [running, load, detailId, workspaceId]);
 
   const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString(i18n.language) : "—");
 
@@ -63,6 +81,33 @@ function Panel({ workspaceId }: { workspaceId: string }) {
     }
   };
 
+  const resend = async (batch: MailBatch) => {
+    try {
+      const r = await mailTemplateService.resendFailed(workspaceId, batch.id);
+      toast.success(t("mailTemplate.batches.resendDone", { count: r.requeued }));
+      setDetail(await mailTemplateService.batch(workspaceId, batch.id, { size: 100 }));
+      void load(true);
+    } catch (e) {
+      toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
+    }
+  };
+
+  const exportCsv = async (batch: MailBatch) => {
+    try {
+      const blob = await mailTemplateService.exportBatchCsv(workspaceId, batch.id);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `mail-batch-${batch.id}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
+    }
+  };
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
@@ -76,6 +121,9 @@ function Panel({ workspaceId }: { workspaceId: string }) {
             {BATCH_STATUSES.map((s) => <option key={s} value={s}>{t(`mailTemplate.batches.statuses.${s}`)}</option>)}
           </Select>
         </div>
+        {running && (
+          <span role="status" className="text-muted-foreground text-xs">{t("mailTemplate.batches.autoRefresh")}</span>
+        )}
       </div>
       {loading && <Spinner />}
       {failed && (
@@ -131,9 +179,21 @@ function Panel({ workspaceId }: { workspaceId: string }) {
                   failed: detail.batch.failed, suppressed: detail.batch.suppressed,
                 })}
               </p>
-              {detail.batch.status === "SCHEDULED" && (
-                <Button variant="outline" onClick={() => void cancel(detail.batch)}>{t("mailTemplate.batches.cancel")}</Button>
-              )}
+              <div className="flex flex-wrap gap-2">
+                {detail.batch.status === "SCHEDULED" && (
+                  <Button variant="outline" onClick={() => void cancel(detail.batch)}>{t("mailTemplate.batches.cancel")}</Button>
+                )}
+                {detail.batch.failed > 0 && (detail.batch.status === "COMPLETED" || detail.batch.status === "FAILED") && (
+                  <Button variant="outline" onClick={() => void resend(detail.batch)}>
+                    <RotateCcw className="size-4" />
+                    {t("mailTemplate.batches.resendFailed", { count: detail.batch.failed })}
+                  </Button>
+                )}
+                <Button variant="outline" onClick={() => void exportCsv(detail.batch)}>
+                  <Download className="size-4" />
+                  {t("mailTemplate.batches.exportCsv")}
+                </Button>
+              </div>
               <ul className="divide-y text-sm" aria-label={t("mailTemplate.batches.recipients")}>
                 {detail.deliveries.content.map((d) => (
                   <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 py-2">

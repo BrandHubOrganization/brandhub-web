@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Copy, History, Pencil, Plus, Send, Trash2 } from "lucide-react";
+import { Copy, History, MailX, Pencil, Plus, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
@@ -102,6 +102,9 @@ function Panel({ workspaceId }: { workspaceId: string }) {
         </label>
         <div className="ml-auto flex gap-2">
           <Button asChild variant="outline">
+            <Link to={`/workspaces/${workspaceId}/mail-templates/suppressions`}><MailX className="size-4" />{t("mailTemplate.suppressions.link")}</Link>
+          </Button>
+          <Button asChild variant="outline">
             <Link to={`/workspaces/${workspaceId}/mail-templates/batches`}><History className="size-4" />{t("mailTemplate.batches.title")}</Link>
           </Button>
           <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white"
@@ -169,6 +172,7 @@ function Panel({ workspaceId }: { workspaceId: string }) {
 
       {form && (
         <TemplateFormDialog open key={`${form.mode}-${form.template?.id ?? "new"}`} mode={form.mode}
+          draftKey={`mail-template-draft:${workspaceId}`}
           template={form.template} adapter={adapter} onClose={() => setForm(null)}
           onSaved={() => { setForm(null); void load(); }} />
       )}

@@ -145,3 +145,83 @@ export function htmlToPlainText(html: string): string {
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
+
+const KNOWN_VARIABLES = ["name", "workspaceName", "senderName", "clientName", "company", "campaign"];
+const SAMPLE_VALUES: Record<string, string> = { name: "An", workspaceName: "Your Workspace", senderName: "You" };
+
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
+ * Local preview of an email body: sample values are HTML-escaped, unknown variables show as a highlighted
+ * [name] placeholder. Shown inside a sandboxed iframe only; the server still sanitises on save.
+ */
+export function renderPreviewHtml(bodyHtml: string, values: Record<string, string> = {}): string {
+  const all = { ...SAMPLE_VALUES, ...values };
+  const body = bodyHtml.replace(VARIABLE, (_m, name: string) =>
+    name in all
+      ? escapeHtml(all[name])
+      : `<mark style="background:#fde68a;color:#78350f;padding:0 2px;border-radius:2px">[${escapeHtml(name)}]</mark>`,
+  );
+  return (
+    '<!doctype html><html><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<style>body{font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1f2937;' +
+    "margin:0;padding:16px;word-wrap:break-word}img{max-width:100%;height:auto}a{color:#ea580c}</style>" +
+    `</head><body>${body}</body></html>`
+  );
+}
+
+export function levenshtein(a: string, b: string): number {
+  const dp = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+export interface VariableAnalysis {
+  used: string[];
+  /** Variables that look like a typo of a well-known one (soft hint, never blocks saving). */
+  suggestions: { name: string; suggestion: string }[];
+  /** Text contains "{{" / "}}" or "{name}" that is not a valid {{variable}}. */
+  malformed: boolean;
+}
+
+export function analyzeVariables(subject: string, bodyHtml: string): VariableAnalysis {
+  const used = extractVariables(subject, bodyHtml);
+  const suggestions: { name: string; suggestion: string }[] = [];
+  for (const name of used) {
+    if (KNOWN_VARIABLES.includes(name)) continue;
+    const lower = name.toLowerCase();
+    const near = KNOWN_VARIABLES.find(
+      (k) => k.toLowerCase() === lower || (name.length >= 3 && levenshtein(lower, k.toLowerCase()) <= 2),
+    );
+    if (near) suggestions.push({ name, suggestion: near });
+  }
+  const stripped = `${subject}\n${bodyHtml.replace(/<[^>]+>/g, "")}`.replace(VARIABLE, "");
+  const malformed = /\{\{|\}\}/.test(stripped) || /\{[A-Za-z0-9_ ]+\}/.test(stripped);
+  return { used, suggestions, malformed };
+}
+
+/** Adds recipients that are not yet present (case-insensitive email), keeping the first occurrence. */
+export function mergeRecipients(base: Recipient[], extra: Recipient[]): Recipient[] {
+  const seen = new Set(base.map((r) => r.email.toLowerCase()));
+  const merged = [...base];
+  for (const r of extra) {
+    const key = r.email.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(r);
+  }
+  return merged;
+}

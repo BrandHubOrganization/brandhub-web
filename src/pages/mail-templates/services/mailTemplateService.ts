@@ -5,6 +5,9 @@ import type {
   MailBatch,
   MailBatchDetail,
   MailQuota,
+  MailSuppression,
+  RecipientCandidate,
+  RecipientGroup,
   MailTemplate,
   MailTemplateSummary,
   PageOf,
@@ -75,6 +78,32 @@ export const mailTemplateService = {
     api.get<ApiResponse<MailBatchDetail>>(`${base(workspaceId)}/mail-batches/${id}`, { params }).then(data),
   cancelBatch: (workspaceId: string, id: string) =>
     api.post(`${base(workspaceId)}/mail-batches/${id}/cancel`),
+  resendFailed: (workspaceId: string, id: string) =>
+    api
+      .post<ApiResponse<{ requeued: number }>>(`${base(workspaceId)}/mail-batches/${id}/resend-failed`)
+      .then(data),
+  exportBatchCsv: async (workspaceId: string, id: string) => {
+    const res = await api.get<Blob>(`${base(workspaceId)}/mail-batches/${id}/export.csv`, { responseType: "blob" });
+    return res.data;
+  },
+  suppressions: (workspaceId: string, params: { q?: string; page?: number; size?: number }) =>
+    api
+      .get<ApiResponse<PageOf<MailSuppression>>>(`${base(workspaceId)}/mail-suppressions`, { params })
+      .then(data),
+  resubscribe: (workspaceId: string, email: string) =>
+    api.delete(`${base(workspaceId)}/mail-suppressions`, { params: { email } }),
+  recipientCandidates: (workspaceId: string, q: string) =>
+    api
+      .get<ApiResponse<RecipientCandidate[]>>(`${base(workspaceId)}/mail-recipients`, { params: { q } })
+      .then(data),
+  recipientGroups: (workspaceId: string) =>
+    api.get<ApiResponse<RecipientGroup[]>>(`${base(workspaceId)}/mail-recipient-groups`).then(data),
+  createRecipientGroup: (workspaceId: string, name: string, recipients: { email: string; name?: string }[]) =>
+    api
+      .post<ApiResponse<RecipientGroup>>(`${base(workspaceId)}/mail-recipient-groups`, { name, recipients })
+      .then(data),
+  deleteRecipientGroup: (workspaceId: string, id: string) =>
+    api.delete(`${base(workspaceId)}/mail-recipient-groups/${id}`),
 };
 
 export const adminMailTemplateService = {

@@ -105,6 +105,7 @@ export function AdminMailTemplatesPanel() {
       )}
       {form && (
         <TemplateFormDialog open key={`${form.mode}-${form.template?.id ?? "new"}`} mode={form.mode}
+          draftKey="mail-template-draft:admin"
           template={form.template} adapter={adapter} onClose={() => setForm(null)}
           onSaved={() => { setForm(null); void load(); }} />
       )}

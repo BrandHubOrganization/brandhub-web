@@ -51,7 +51,8 @@
     "maxFiles": "At most {{count}} attachments.",
     "save": "Save",
     "saving": "Saving…",
-    "saved": "Template saved."
+    "saved": "Template saved.",
+    "discardConfirm": "Discard your unsaved changes?"
   },
   "send": {
     "title": "Send email",
@@ -113,7 +114,11 @@
       "SENT": "Sent",
       "FAILED": "Failed",
       "SUPPRESSED": "Unsubscribed"
-    }
+    },
+    "resendFailed": "Resend {{count}} failed",
+    "resendDone": "{{count}} emails queued again.",
+    "exportCsv": "Export CSV",
+    "autoRefresh": "Updating automatically…"
   },
   "unsubscribe": {
     "title": "Unsubscribe from emails",
@@ -145,9 +150,61 @@
     "MAIL_BATCH_NOT_CANCELLABLE": "Only a scheduled send that has not started can be cancelled.",
     "EMAIL_SERVICE_UNAVAILABLE": "The email service is unavailable, please retry.",
     "RATE_LIMIT_EXCEEDED": "You are doing that too fast, please retry later.",
-    "tooMany": "at most {{max}} recipients"
+    "tooMany": "at most {{max}} recipients",
+    "MAIL_BATCH_NOT_RESENDABLE": "Only finished batches with failed emails can be resent.",
+    "MAIL_GROUP_NOT_FOUND": "This group no longer exists.",
+    "MAIL_GROUP_LIMIT_REACHED": "Too many saved groups. Delete one first."
   },
   "client": {
     "sendEmail": "Send email"
+  },
+  "preview": {
+    "title": "Preview",
+    "device": "Preview size",
+    "desktop": "Desktop",
+    "mobile": "Mobile",
+    "frame": "Email preview",
+    "noSubject": "(no subject yet)",
+    "sample": "Sample values are used for variables; real values are filled in when you send."
+  },
+  "variables": {
+    "used": "Variables in this email:",
+    "didYouMean": "{{name}} is not a known variable. Did you mean {{suggestion}}?",
+    "malformed": "Some braces do not form a valid {{variable}}. Variables look like {{name}} with no spaces."
+  },
+  "draft": {
+    "restored": "Your unsaved draft was restored.",
+    "discard": "Discard draft",
+    "kept": "Draft saved. You can continue it next time."
+  },
+  "recipients": {
+    "addFromWorkspace": "Add from Workspace",
+    "search": "Search members and Clients",
+    "results": "Members and Clients",
+    "noResults": "No matching people.",
+    "member": "Member",
+    "client": "Client",
+    "addSelected": "Add selected ({{count}})",
+    "groups": "Saved groups",
+    "chooseGroup": "Choose a group",
+    "addGroup": "Add group",
+    "deleteGroup": "Delete group",
+    "groupName": "New group name",
+    "saveGroup": "Save list as group ({{count}})",
+    "groupSaved": "Group saved.",
+    "groupDeleted": "Group deleted.",
+    "picked": "{{count}} recipients added from the Workspace.",
+    "clearPicked": "Remove them"
+  },
+  "suppressions": {
+    "title": "Unsubscribed addresses",
+    "subtitle": "People who unsubscribed from this Workspace's emails. They are skipped when you send.",
+    "link": "Unsubscribed list",
+    "search": "Search by email",
+    "empty": "Nobody has unsubscribed.",
+    "since": "Unsubscribed on {{when}}",
+    "resubscribe": "Re-subscribe",
+    "confirm": "Allow emails to {{email}} again?",
+    "done": "Address re-subscribed."
   }
 }
