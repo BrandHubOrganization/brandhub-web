@@ -33,6 +33,7 @@ import viClientProfile from "./locales/vi/clientProfile.json";
 import viAgency from "./locales/vi/agency.json";
 import viMediaPackage from "./locales/vi/mediaPackage.json";
 import viChat from "./locales/vi/chat.json";
+import viMailTemplate from "./locales/vi/mailTemplate.json";
 import viMaterials from "./locales/vi/materials.json";
 import viCampaign from "./locales/vi/campaign.json";
 
@@ -64,6 +65,7 @@ import enClientProfile from "./locales/en/clientProfile.json";
 import enAgency from "./locales/en/agency.json";
 import enMediaPackage from "./locales/en/mediaPackage.json";
 import enChat from "./locales/en/chat.json";
+import enMailTemplate from "./locales/en/mailTemplate.json";
 import enMaterials from "./locales/en/materials.json";
 import enCampaign from "./locales/en/campaign.json";
 
@@ -99,6 +101,7 @@ const vi = {
   agency: viAgency,
   mediaPackage: viMediaPackage,
   chat: viChat,
+  mailTemplate: viMailTemplate,
   campaign: viCampaign,
 };
 
@@ -134,6 +137,7 @@ const en = {
   agency: enAgency,
   mediaPackage: enMediaPackage,
   chat: enChat,
+  mailTemplate: enMailTemplate,
   campaign: enCampaign,
 };
 

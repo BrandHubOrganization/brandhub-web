@@ -26,6 +26,7 @@ import {
   type TargetType,
 } from "@/services/adminNotificationService";
 import { errorCode } from "@/services/adminRevenueService";
+import { SystemTemplatePicker } from "@/pages/mail-templates/components/SystemTemplatePicker";
 
 const TYPES: NotificationType[] = [
   "SYSTEM",
@@ -416,6 +417,12 @@ function NotificationComposer({
           </DialogDescription>
         </DialogHeader>
         <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+          <SystemTemplatePicker
+            onPick={(subject, text) => {
+              setTitle(subject.slice(0, 200));
+              setContent(text.slice(0, 5000));
+            }}
+          />
           <label className="block space-y-1.5 text-sm font-medium">
             <span>{t("admin.notifications.title")} *</span>
             <Input
