@@ -80,7 +80,13 @@
     "queuedOk": "{{accepted}} of {{total}} emails were queued.",
     "scheduledOk": "{{accepted}} of {{total}} emails were scheduled.",
     "rejected": "{{count}} rows were rejected",
-    "viewBatches": "View send history"
+    "viewBatches": "View send history",
+    "blocked": {
+      "noRecipients": "Add at least one valid recipient to send.",
+      "tooMany": "Too many recipients in one send. Split the list.",
+      "variables": "Fill in every shared variable above to send.",
+      "quota": "Today's sending quota is not enough. Schedule for later or reduce recipients."
+    }
   },
   "batches": {
     "title": "Send history",

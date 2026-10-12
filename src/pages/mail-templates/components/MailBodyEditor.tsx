@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Bold, ImagePlus, Italic, Link2, List, ListOrdered, Braces } from "lucide-react";
@@ -24,8 +23,7 @@ export function MailBodyEditor({ value, onChange, onUploadImage, disabled }: Pro
   const fileInput = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Link.configure({ openOnClick: false, autolink: true }),
+      StarterKit.configure({ link: { openOnClick: false, autolink: true } }),
       Image,
       Placeholder.configure({ placeholder: t("mailTemplate.form.bodyPlaceholder") }),
     ],

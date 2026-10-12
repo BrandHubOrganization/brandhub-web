@@ -80,7 +80,13 @@
     "queuedOk": "Đã đưa {{accepted}}/{{total}} email vào hàng đợi gửi.",
     "scheduledOk": "Đã hẹn giờ {{accepted}}/{{total}} email.",
     "rejected": "{{count}} dòng bị loại",
-    "viewBatches": "Xem lịch sử gửi"
+    "viewBatches": "Xem lịch sử gửi",
+    "blocked": {
+      "noRecipients": "Thêm ít nhất một người nhận hợp lệ để gửi.",
+      "tooMany": "Quá nhiều người nhận trong một lần gửi. Hãy chia nhỏ danh sách.",
+      "variables": "Điền đủ các biến dùng chung ở trên để gửi.",
+      "quota": "Hạn mức gửi hôm nay không đủ. Hãy hẹn giờ gửi sau hoặc giảm số người nhận."
+    }
   },
   "batches": {
     "title": "Lịch sử gửi",

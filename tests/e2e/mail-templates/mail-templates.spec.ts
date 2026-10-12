@@ -194,6 +194,7 @@ test.describe("Mail templates - send", () => {
     await expect(page.getByText("{{campaign}}")).toBeVisible();
     const send = page.getByRole("button", { name: "Send now" });
     await expect(send).toBeDisabled();
+    await expect(page.getByTestId("send-blocked-reason")).toContainText("shared variable");
     await page.getByLabel("{{campaign}}").fill("Sale");
     await expect(send).toBeEnabled();
     await send.click();

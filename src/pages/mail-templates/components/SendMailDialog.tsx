@@ -184,6 +184,14 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
     sharedNames.every((n) => (shared[n] ?? "").trim() !== "") &&
     (scheduleAt ? true : !overQuota);
 
+  const blockedReason = canSend || busy || !detail
+    ? null
+    : parsed.recipients.length === 0 ? "mailTemplate.send.blocked.noRecipients"
+    : tooMany ? "mailTemplate.send.blocked.tooMany"
+    : sharedNames.some((n) => (shared[n] ?? "").trim() === "") ? "mailTemplate.send.blocked.variables"
+    : scheduleError ? null
+    : "mailTemplate.send.blocked.quota";
+
   const readFile = async (file: File | undefined) => {
     if (!file) return;
     const content = await file.text();
@@ -235,7 +243,7 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
 
             <div className="space-y-1.5 text-sm font-medium">
               <label htmlFor="mail-recipients">{t("mailTemplate.send.recipients")}</label>
-              <Textarea id="mail-recipients" rows={5} value={text} onChange={(e) => setText(e.target.value)}
+              <Textarea id="mail-recipients" rows={5} className="font-normal" value={text} onChange={(e) => setText(e.target.value)}
                 placeholder={t("mailTemplate.send.recipientsPlaceholder")} />
               <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-normal">
                 <span className="text-muted-foreground">{t("mailTemplate.send.recipientsHelp", { max: MAX_RECIPIENTS })}</span>
@@ -306,6 +314,9 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
             )}
 
             {error && <p role="alert" className="text-destructive text-sm">{error}</p>}
+            {blockedReason && (
+              <p className="text-muted-foreground text-xs" data-testid="send-blocked-reason">{t(blockedReason)}</p>
+            )}
 
             <DialogFooter className="flex-wrap gap-2">
               <Button type="button" variant="outline" disabled={!detail || busy} onClick={() => void runPreview()}>
