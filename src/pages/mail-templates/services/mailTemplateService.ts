@@ -52,8 +52,12 @@ export const mailTemplateService = {
         { variables },
       )
       .then(data),
-  send: (workspaceId: string, id: string, payload: SendPayload) =>
-    api.post<ApiResponse<SendResult>>(`${base(workspaceId)}/mail-templates/${id}/send`, payload).then(data),
+  send: (workspaceId: string, id: string, payload: SendPayload, idempotencyKey?: string) =>
+    api
+      .post<ApiResponse<SendResult>>(`${base(workspaceId)}/mail-templates/${id}/send`, payload, {
+        headers: idempotencyKey ? { "Idempotency-Key": idempotencyKey } : undefined,
+      })
+      .then(data),
   sendTest: (workspaceId: string, id: string, variables: Record<string, string>) =>
     api.post(`${base(workspaceId)}/mail-templates/${id}/send-test`, { variables }),
   quota: (workspaceId: string) =>

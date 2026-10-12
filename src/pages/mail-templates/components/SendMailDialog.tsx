@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -51,6 +51,7 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
   const [scheduleAt, setScheduleAt] = useState("");
   const [scheduleError, setScheduleError] = useState<string | null>(null);
   const [quota, setQuota] = useState<MailQuota | null>(null);
+  const attempt = useRef<{ fingerprint: string; key: string } | null>(null);
   const [preview, setPreview] = useState<{ subject: string; bodyHtml: string; missing: string[] } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -164,12 +165,18 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
     setBusy(true);
     setError(null);
     try {
-      const res = await mailTemplateService.send(workspaceId, detail.id, {
+      const payload = {
         recipients: parsed.recipients,
         variables: shared,
         attachmentIds,
         ...(scheduleAt ? { scheduledAt: new Date(scheduleAt).toISOString() } : {}),
-      });
+      };
+      // Same payload = same key, so a double click or a retry after a lost response cannot send twice.
+      const fingerprint = `${detail.id}|${JSON.stringify(payload)}`;
+      if (attempt.current?.fingerprint !== fingerprint) {
+        attempt.current = { fingerprint, key: crypto.randomUUID() };
+      }
+      const res = await mailTemplateService.send(workspaceId, detail.id, payload, attempt.current.key);
       setResult(res);
       onSent?.(res);
     } catch (e) {

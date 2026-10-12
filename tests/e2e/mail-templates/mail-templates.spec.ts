@@ -10,7 +10,7 @@ const API = `**/api/v1/workspaces/${WS}`;
 
 interface Mock {
   templates: Record<string, unknown>[];
-  calls: { method: string; url: string; body: unknown }[];
+  calls: { method: string; url: string; body: unknown; headers: Record<string, string> }[];
   quota: { remainingToday: number };
   batches: Record<string, unknown>[];
 }
@@ -111,7 +111,7 @@ async function setup(page: Page, mock: Partial<Mock> = {}): Promise<Mock> {
     } catch {
       body = null;
     }
-    state.calls.push({ method: req.method(), url: req.url(), body });
+    state.calls.push({ method: req.method(), url: req.url(), body, headers: req.headers() });
     return { req, body };
   };
   await page.route(`${API}/mail-quota`, (route) =>
@@ -393,6 +393,7 @@ test.describe("Mail templates - send", () => {
     const post = mock.calls.find(
       (c) => c.method === "POST" && c.url.endsWith("/send"),
     )!;
+    expect(post.headers["idempotency-key"]).toMatch(/^[0-9a-f-]{36}$/);
     expect(post.body).toMatchObject({
       recipients: [
         { email: "an@example.test", name: "An" },
