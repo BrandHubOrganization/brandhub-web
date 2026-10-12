@@ -22,6 +22,21 @@ export interface AssignMembersResponse {
   skippedUserIds: string[];
 }
 
+export interface DuplicateMemberOption {
+  memberId: string;
+  userId: string | null;
+  name: string;
+  email: string | null;
+  role: MemberRole;
+}
+
+export interface DuplicateWorkspaceRequest {
+  requestId: string;
+  name: string;
+  copyTimezone: boolean;
+  memberIds: string[];
+}
+
 export interface CreateWorkspaceRequest {
   name: string;
   agencyId: string;
@@ -69,6 +84,16 @@ export const workspaceService = {
 
   create: (data: CreateWorkspaceRequest) =>
     api.post<ApiResponse<Workspace>>("/api/v1/workspaces", data),
+
+  duplicateOptions: (workspaceId: string) =>
+    api.get<ApiResponse<DuplicateMemberOption[]>>(
+      `/api/v1/workspaces/${workspaceId}/duplicate-options`,
+    ),
+
+  duplicate: (workspaceId: string, data: DuplicateWorkspaceRequest) =>
+    api.post<ApiResponse<Workspace>>(
+      `/api/v1/workspaces/${workspaceId}/duplicate`, data,
+    ),
 
   getById: (workspaceId: string) =>
     api.get<ApiResponse<Workspace>>(`/api/v1/workspaces/${workspaceId}`),

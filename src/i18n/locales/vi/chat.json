@@ -29,6 +29,16 @@
   },
   "errors": {
     "loadHistory": "Không thể tải lịch sử trò chuyện"
+  },
+  "ui": {
+    "subtitle": "Trao đổi chung trong Workspace",
+    "loading": "Đang tải tin nhắn…",
+    "messages": "Lịch sử tin nhắn",
+    "keyboardHint": "Enter để gửi · Shift + Enter để xuống dòng",
+    "roles": {
+      "MANAGER": "Manager",
+      "CREATOR": "Creator",
+      "CLIENT": "Client"
+    }
   }
 }
-
