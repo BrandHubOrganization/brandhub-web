@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ImagePlus, X, Eye, EyeOff } from "lucide-react";
+import { ImagePlus, X, Eye, EyeOff, Copy, Check } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import {
   CanvasTextEditor,
@@ -13,6 +13,10 @@ import { useTaskContentSync } from "@/pages/content-writing/hooks/useTaskContent
 import { useAuthStore } from "@/store/authStore";
 import { api } from "@/services/api";
 import * as Y from "yjs";
+import {
+  applySnapshotToDoc,
+  toPublishText,
+} from "@/pages/content-writing/contentUtils";
 
 /**
  * FR 3.6.10 Content Writing View — canvas editor + real-time Yjs sync +
@@ -27,9 +31,6 @@ export function ContentWritingPage() {
   );
   const [reloadToken, setReloadToken] = useState(0);
   const editorRef = useRef<CanvasTextEditorHandle>(null);
-
-  // ── Text mirror for social preview ──────────────────────────────────────
-  const [previewText, setPreviewText] = useState("");
 
   // ── Image attachments ────────────────────────────────────────────────────
   const [images, setImages] = useState<string[]>([]);
@@ -69,10 +70,7 @@ export function ContentWritingPage() {
 
   // ── Author info from auth store ──────────────────────────────────────────
   const user = useAuthStore((s) => s.user);
-  const authorName =
-    user
-      ? user.name || user.email
-      : "BrandHub Creator";
+  const authorName = user ? user.name || user.email : "BrandHub Creator";
 
   // ── Task creation on first visit ─────────────────────────────────────────
   useEffect(() => {
@@ -92,12 +90,39 @@ export function ContentWritingPage() {
       });
   }, [taskId, workspaceId, setSearchParams]);
 
-  const { yDoc, isReady, isConnected } = useTaskContentSync(
+  const { yDoc, isReady, isConnected, snapshotCount } = useTaskContentSync(
     workspaceId ?? "",
     taskId,
   );
 
-  const handleRestored = () => {
+  // ── Publish text: what actually gets posted (FR 3.6.10 font conversion) ──
+  // Bold/italic become Unicode styled letters and Vietnamese is NFC-normalized,
+  // so the social preview shows exactly what the platform will display and
+  // the Creator can copy it without a Unikey/Yantext round-trip. The publish
+  // flow (E52) should call toPublishText() on the same delta.
+  const [publishText, setPublishText] = useState("");
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    const yText = yDoc.getText("content");
+    const sync = () => setPublishText(toPublishText(yText.toDelta()));
+    sync();
+    yText.observe(sync);
+    return () => yText.unobserve(sync);
+  }, [yDoc, isReady]);
+
+  const copyPublishText = async () => {
+    try {
+      await navigator.clipboard.writeText(publishText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard can be blocked (permissions / insecure context) — nothing to recover.
+    }
+  };
+
+  const handleRestored = (snapshot: string | null) => {
+    if (!snapshot) return;
+    applySnapshotToDoc(yDoc, snapshot);
     setReloadToken((v) => v + 1);
   };
 
@@ -145,12 +170,30 @@ export function ContentWritingPage() {
             onChange={(e) => handleImageFiles(e.target.files)}
           />
 
+          {/* Copy converted publish text */}
+          <button
+            type="button"
+            onClick={copyPublishText}
+            disabled={publishText === ""}
+            className="border-border bg-card hover:bg-muted flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+            title="Sao chép nội dung đã chuyển font chuẩn để đăng"
+          >
+            {copied ? (
+              <Check className="size-3.5" />
+            ) : (
+              <Copy className="size-3.5" />
+            )}
+            {copied ? "Đã sao chép" : "Sao chép bản đăng"}
+          </button>
+
           {/* Toggle preview */}
           <button
             type="button"
             onClick={() => setShowPreview((v) => !v)}
             className="border-border bg-card hover:bg-muted flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors"
-            title={showPreview ? "Ẩn preview mạng xã hội" : "Xem preview mạng xã hội"}
+            title={
+              showPreview ? "Ẩn preview mạng xã hội" : "Xem preview mạng xã hội"
+            }
           >
             {showPreview ? (
               <EyeOff className="size-3.5" />
@@ -179,21 +222,21 @@ export function ContentWritingPage() {
         onDrop={handleDrop}
       >
         {/* ── Left: Editor + image strip ──────────────────────────────── */}
-        <div className="min-w-0 flex-1 flex flex-col gap-3">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
           {/* Attached images strip */}
           {images.length > 0 && (
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex flex-wrap gap-2">
               {images.map((src, i) => (
-                <div key={i} className="relative group">
+                <div key={i} className="group relative">
                   <img
                     src={src}
                     alt={`ảnh ${i + 1}`}
-                    className="h-20 w-20 rounded-lg object-cover border border-border"
+                    className="border-border h-20 w-20 rounded-lg border object-cover"
                   />
                   <button
                     type="button"
                     onClick={() => removeImage(i)}
-                    className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
+                    className="bg-destructive text-destructive-foreground absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
                   >
                     <X className="size-3" />
                   </button>
@@ -203,7 +246,7 @@ export function ContentWritingPage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="h-20 w-20 rounded-lg border-2 border-dashed border-border flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                  className="border-border text-muted-foreground hover:border-primary hover:text-primary flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed transition-colors"
                 >
                   <ImagePlus className="size-6" />
                 </button>
@@ -217,7 +260,6 @@ export function ContentWritingPage() {
               key={reloadToken}
               ref={editorRef}
               yDoc={yDoc as Y.Doc}
-              onTextChange={setPreviewText}
             />
           ) : (
             <div className="border-border bg-card flex h-48 w-full items-center justify-center rounded-xl border">
@@ -229,14 +271,17 @@ export function ContentWritingPage() {
         </div>
 
         {/* ── Right: Social preview + version history ──────────────────── */}
-        <div className="flex flex-col gap-4" style={{ width: 320, flexShrink: 0 }}>
+        <div
+          className="flex flex-col gap-4"
+          style={{ width: 320, flexShrink: 0 }}
+        >
           {showPreview && (
             <div className="flex flex-col gap-2">
-              <p className="text-muted-foreground text-xs font-semibold uppercase tracking-wide">
+              <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
                 Preview mạng xã hội
               </p>
               <SocialPreview
-                text={previewText}
+                text={publishText}
                 images={images}
                 authorName={authorName}
               />
@@ -248,6 +293,7 @@ export function ContentWritingPage() {
               workspaceId={workspaceId}
               taskId={taskId}
               onRestored={handleRestored}
+              refreshKey={snapshotCount}
             />
           )}
         </div>

@@ -8,6 +8,8 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
+  List,
+  ListOrdered,
   Palette,
   Highlighter,
   Undo2,
@@ -70,6 +72,7 @@ export interface FormattingToolbarProps {
   onSetFont: (font?: string) => void;
   onSetSize: (size?: number) => void;
   onSetAlign: (align: RunAttrs["align"]) => void;
+  onToggleList: (kind: "bullet" | "ordered") => void;
   onSetLink: (url?: string) => void;
   onUndo: () => void;
   onRedo: () => void;
@@ -93,6 +96,7 @@ export function FormattingToolbar({
   onSetFont,
   onSetSize,
   onSetAlign,
+  onToggleList,
   onSetLink,
   onUndo,
   onRedo,
@@ -321,6 +325,30 @@ export function FormattingToolbar({
 
       <div className="bg-border mx-1 h-6 w-px" />
 
+      {/* Lists */}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => onToggleList("bullet")}
+        title="Danh sách gạch đầu dòng"
+        aria-label="Bulleted list"
+      >
+        <List className="size-4" />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => onToggleList("ordered")}
+        title="Danh sách đánh số"
+        aria-label="Numbered list"
+      >
+        <ListOrdered className="size-4" />
+      </Button>
+
+      <div className="bg-border mx-1 h-6 w-px" />
+
       {/* Link */}
       <DropdownMenu open={linkOpen} onOpenChange={setLinkOpen}>
         <DropdownMenuTrigger asChild>
@@ -395,20 +423,11 @@ export function FormattingToolbar({
       {/* Emoji picker */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            title="Chèn emoji"
-          >
+          <Button type="button" variant="ghost" size="icon" title="Chèn emoji">
             <Smile className="size-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          className="p-0"
-          sideOffset={4}
-        >
+        <DropdownMenuContent align="end" className="p-0" sideOffset={4}>
           <EmojiPicker onSelect={onInsertEmoji} />
         </DropdownMenuContent>
       </DropdownMenu>

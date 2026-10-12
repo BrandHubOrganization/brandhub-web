@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -9,6 +10,10 @@ export default defineConfig({
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
     },
+  },
+  // Unit tests only — tests/e2e/** are Playwright specs run by `playwright test`.
+  test: {
+    include: ["src/**/*.test.ts"],
   },
   server: {
     port: 3000,
