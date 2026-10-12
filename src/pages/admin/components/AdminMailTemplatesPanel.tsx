@@ -60,7 +60,6 @@ export function AdminMailTemplatesPanel() {
 
   return (
     <div className="space-y-5">
-      <p className="text-muted-foreground text-sm">{t("mailTemplate.admin.description")}</p>
       <div className="flex flex-wrap items-center gap-3">
         <Input aria-label={t("mailTemplate.search")} placeholder={t("mailTemplate.search")} className="w-full sm:w-64"
           value={query} onChange={(e) => { setPage(0); setQuery(e.target.value); }} />
