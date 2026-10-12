@@ -1,6 +1,7 @@
 {
   "navigationMenu": "Navigation Menu",
   "notifications": "Notifications",
+  "mailTemplates": "Mail templates",
   "noEmail": "No email",
   "workspaceSwitcher": {
     "label": "Workspace",

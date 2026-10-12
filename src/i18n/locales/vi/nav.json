@@ -1,6 +1,7 @@
 {
   "navigationMenu": "Menu điều hướng",
   "notifications": "Thông báo",
+  "mailTemplates": "Mẫu email",
   "noEmail": "Chưa có email",
   "workspaceSwitcher": {
     "label": "Không gian làm việc",
