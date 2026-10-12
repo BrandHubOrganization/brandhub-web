@@ -17,6 +17,10 @@ import { useAuthStore } from "@/store/authStore";
  */
 
 const SNAPSHOT_THRESHOLD = 200;
+// Short social posts never reach SNAPSHOT_THRESHOLD, so also snapshot once
+// the document has been idle this long — otherwise Version History would
+// stay empty for them.
+const SNAPSHOT_IDLE_MS = 20_000;
 const WS_BASE_URL = (
   (typeof import.meta !== "undefined" &&
     import.meta.env &&
@@ -51,6 +55,8 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
   const yDoc = useMemo(() => new Y.Doc(), [taskId]);
   const [isReady, setIsReady] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  // Bumps each time a snapshot is reported, so the Version History list can refresh.
+  const [snapshotCount, setSnapshotCount] = useState(0);
   const sequenceRef = useRef(0);
   const operationsSinceSnapshotRef = useRef(0);
   const clientRef = useRef<Client | null>(null);
@@ -59,6 +65,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
     if (!taskId) return;
     let disposed = false;
     let cleanupUpdateHandler: (() => void) | null = null;
+    let idleTimer: ReturnType<typeof setTimeout> | null = null;
 
     async function init() {
       const { data } = await api.get<{ data: TaskContentResponse }>(
@@ -106,6 +113,11 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
             sequenceRef.current = body.sequenceNumber;
             operationsSinceSnapshotRef.current += 1;
             maybeReportSnapshot();
+            if (idleTimer) clearTimeout(idleTimer);
+            idleTimer = setTimeout(
+              () => maybeReportSnapshot(true),
+              SNAPSHOT_IDLE_MS,
+            );
           });
           while (pendingUpdates.length > 0) {
             sendUpdate(client, pendingUpdates.shift()!);
@@ -141,8 +153,9 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
       cleanupUpdateHandler = () => yDoc.off("update", updateHandler);
     }
 
-    function maybeReportSnapshot() {
-      if (operationsSinceSnapshotRef.current < SNAPSHOT_THRESHOLD) return;
+    function maybeReportSnapshot(force = false) {
+      const pending = operationsSinceSnapshotRef.current;
+      if (pending === 0 || (!force && pending < SNAPSHOT_THRESHOLD)) return;
       operationsSinceSnapshotRef.current = 0;
       const state = toBase64(Y.encodeStateAsUpdate(yDoc));
       api
@@ -153,6 +166,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
             atSequenceNumber: sequenceRef.current,
           },
         )
+        .then(() => setSnapshotCount((c) => c + 1))
         .catch(() => {
           // Best-effort — another client's report, or the next threshold
           // crossing, will eventually capture a snapshot.
@@ -162,11 +176,13 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
     init();
     return () => {
       disposed = true;
+      if (idleTimer) clearTimeout(idleTimer);
+      maybeReportSnapshot(true); // best-effort flush so the last edits become a version
       cleanupUpdateHandler?.();
       clientRef.current?.deactivate();
       clientRef.current = null;
     };
   }, [workspaceId, taskId, yDoc]);
 
-  return { yDoc, isReady, isConnected };
+  return { yDoc, isReady, isConnected, snapshotCount };
 }
