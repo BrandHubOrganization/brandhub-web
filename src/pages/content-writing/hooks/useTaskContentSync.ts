@@ -45,6 +45,37 @@ function fromBase64(base64: string): Uint8Array {
   return bytes;
 }
 
+// Edits made while the socket is down are kept here too, so closing the tab
+// before reconnecting doesn't lose them. Yjs updates are idempotent, so
+// replaying them on the next visit is safe even if some were already sent.
+function pendingKey(taskId: string) {
+  return `brandhub-content-pending:${taskId}`;
+}
+
+function loadPending(taskId: string): Uint8Array[] {
+  try {
+    const raw = window.localStorage.getItem(pendingKey(taskId));
+    return raw ? (JSON.parse(raw) as string[]).map(fromBase64) : [];
+  } catch {
+    return [];
+  }
+}
+
+function savePending(taskId: string, updates: Uint8Array[]) {
+  try {
+    if (updates.length === 0) {
+      window.localStorage.removeItem(pendingKey(taskId));
+    } else {
+      window.localStorage.setItem(
+        pendingKey(taskId),
+        JSON.stringify(updates.map(toBase64)),
+      );
+    }
+  } catch {
+    // Storage unavailable (private mode, quota) — in-memory queue still works.
+  }
+}
+
 interface TaskContentResponse {
   snapshot: string | null;
   operationsSinceSnapshot: string[];
@@ -89,7 +120,8 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
       // be silently dropped — a later Yjs struct whose `origin` points at a
       // never-sent earlier struct becomes a permanently unreachable orphan
       // (parent stays null) once it lands on another client. Queue instead.
-      const pendingUpdates: Uint8Array[] = [];
+      const pendingUpdates: Uint8Array[] = loadPending(taskId!);
+      pendingUpdates.forEach((u) => Y.applyUpdate(yDoc, u, "remote"));
 
       const sendUpdate = (client: Client, update: Uint8Array) => {
         client.publish({
@@ -98,12 +130,36 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         });
       };
 
-      const token = useAuthStore.getState().accessToken;
+      const brokerUrl = () =>
+        `${WS_BASE_URL}/ws/tasks?token=${encodeURIComponent(useAuthStore.getState().accessToken ?? "")}`;
+      // After a drop the server may have broadcast updates we never saw
+      // (the subscription only delivers new ones). Pull the log again and
+      // merge it; Yjs makes re-applying known updates a no-op.
+      const resync = async () => {
+        const { data: fresh } = await api.get<{ data: TaskContentResponse }>(
+          `/api/v1/workspaces/${workspaceId}/tasks/${taskId}/content`,
+        );
+        if (disposed) return;
+        const c = fresh.data;
+        if (c.snapshot) Y.applyUpdate(yDoc, fromBase64(c.snapshot), "remote");
+        c.operationsSinceSnapshot.forEach((u) =>
+          Y.applyUpdate(yDoc, fromBase64(u), "remote"),
+        );
+        sequenceRef.current = Math.max(sequenceRef.current, c.sequenceNumber);
+      };
+      let hasConnectedBefore = false;
       const client = new Client({
-        brokerURL: `${WS_BASE_URL}/ws/tasks?token=${encodeURIComponent(token ?? "")}`,
+        brokerURL: brokerUrl(),
         reconnectDelay: 3000,
+        // The access token is short-lived: a reconnect must not reuse the URL
+        // built at mount time.
+        beforeConnect: (c) => {
+          c.brokerURL = brokerUrl();
+        },
         onConnect: () => {
           setIsConnected(true);
+          if (hasConnectedBefore) void resync().catch(() => undefined);
+          hasConnectedBefore = true;
           client.subscribe(`/topic/tasks/${taskId}/content`, (message) => {
             const body = JSON.parse(message.body) as {
               update: string;
@@ -122,6 +178,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
           while (pendingUpdates.length > 0) {
             sendUpdate(client, pendingUpdates.shift()!);
           }
+          savePending(taskId!, []);
         },
         onDisconnect: () => setIsConnected(false),
         onWebSocketClose: () => setIsConnected(false),
@@ -145,6 +202,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         if (origin === "remote") return;
         if (!client.connected) {
           pendingUpdates.push(update);
+          savePending(taskId!, pendingUpdates);
           return;
         }
         sendUpdate(client, update);
