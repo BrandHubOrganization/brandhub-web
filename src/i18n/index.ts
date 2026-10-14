@@ -34,6 +34,7 @@ import viAgency from "./locales/vi/agency.json";
 import viMediaPackage from "./locales/vi/mediaPackage.json";
 import viChat from "./locales/vi/chat.json";
 import viCampaign from "./locales/vi/campaign.json";
+import viCollaborators from "./locales/vi/collaborators.json";
 
 import enAuth from "./locales/en/auth.json";
 import enCommon from "./locales/en/common.json";
@@ -64,6 +65,7 @@ import enAgency from "./locales/en/agency.json";
 import enMediaPackage from "./locales/en/mediaPackage.json";
 import enChat from "./locales/en/chat.json";
 import enCampaign from "./locales/en/campaign.json";
+import enCollaborators from "./locales/en/collaborators.json";
 
 const vi = {
   admin: viAdmin,
@@ -97,6 +99,7 @@ const vi = {
   mediaPackage: viMediaPackage,
   chat: viChat,
   campaign: viCampaign,
+  collaborators: viCollaborators,
 };
 
 const en = {
@@ -131,6 +134,7 @@ const en = {
   mediaPackage: enMediaPackage,
   chat: enChat,
   campaign: enCampaign,
+  collaborators: enCollaborators,
 };
 
 const savedLang = localStorage.getItem("brandhub-lang");

@@ -47,7 +47,7 @@ const SOCIAL_ACCOUNTS_ACCESS: AccessRule = ["OWNER", "MANAGER", "CLIENT"];
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
-  if (/^\/agency\/[^/]+\/media-packages$/.test(pathname)) {
+  if (/^\/agency\/[^/]+\/(media-packages|collaborators)$/.test(pathname)) {
     return AGENCY_MEDIA_PACKAGES_ACCESS;
   }
   if (/^\/workspaces\/[^/]+\/members$/.test(pathname)) {

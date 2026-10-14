@@ -80,6 +80,7 @@ const ClientInvitationsPage = lazyNamed(() => import("@/pages/client/invitations
 const AcceptInvitationPage = lazyNamed(() => import("@/pages/agency/accept"), "AcceptInvitationPage");
 const AgencyMediaPackagePage = lazy(() => import("@/pages/media-package/agency"));
 
+const DirectoryPage = lazy(() => import("@/pages/collaborators/page"));
 // ── Client Management ──
 const ClientListPage = lazyNamed(() => import("@/pages/client/list"), "ClientListPage");
 const ClientCreatePage = lazyNamed(() => import("@/pages/client/create"), "ClientCreatePage");
@@ -253,6 +254,7 @@ export function AppRoutes() {
             <Route path="/agency/create" element={<CreateAgencyPage />} />
             <Route path="/agency/:id" element={<AgencyDetailPage />} />
             <Route
+            <Route path="/agency/:id/collaborators" element={<DirectoryPage />} />
               path="/agency/:id/media-packages"
               element={<AgencyMediaPackagePage />}
             />
