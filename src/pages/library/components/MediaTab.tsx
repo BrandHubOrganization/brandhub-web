@@ -12,7 +12,11 @@ import {
   Image as ImageIcon,
   Loader2,
   Play,
+  Copy,
+  ExternalLink,
+  Ratio,
 } from "lucide-react";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -27,6 +31,7 @@ export const MediaTab: React.FC = () => {
   // Filters
   const [search, setSearch] = useState<string>("");
   const [filterType, setFilterType] = useState<MediaType | "all">("all");
+  const [filterOrientation, setFilterOrientation] = useState<string>("all");
   const [sort, setSort] = useState<"newest" | "oldest">("newest");
 
   // Detail panel state
@@ -43,8 +48,9 @@ export const MediaTab: React.FC = () => {
       try {
         const res = await mockContentLibraryService.getMedia({
           page: pageToFetch,
-          limit: 6,
+          limit: 8,
           type: filterType,
+          aspectRatio: filterOrientation as any,
           search,
           sort,
         });
@@ -65,14 +71,14 @@ export const MediaTab: React.FC = () => {
         setLoading(false);
       }
     },
-    [filterType, search, sort],
+    [filterType, filterOrientation, search, sort],
   );
 
   // Initial & Filter Change Fetch
   useEffect(() => {
     setPage(1);
     fetchMedia(1, true);
-  }, [filterType, search, sort, fetchMedia]);
+  }, [filterType, filterOrientation, search, sort, fetchMedia]);
 
   // Trigger next page on infinite scroll
   useEffect(() => {
@@ -92,11 +98,17 @@ export const MediaTab: React.FC = () => {
     setMediaList((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const handleQuickCopyUrl = (e: React.MouseEvent, url: string) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(url);
+    toast.success(t("library.media.copyUrlSuccess"));
+  };
+
   return (
     <div className="space-y-6">
       {/* Toolbar Controls */}
-      <div className="border-border bg-card flex flex-col items-stretch justify-between gap-3 rounded-xl border p-4 shadow-xs sm:flex-row sm:items-center">
-        <div className="flex flex-1 items-center gap-3">
+      <div className="border-border bg-card flex flex-col items-stretch justify-between gap-4 rounded-xl border p-4 shadow-xs">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* Search Box */}
           <div className="relative max-w-md flex-1">
             <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
@@ -109,63 +121,90 @@ export const MediaTab: React.FC = () => {
             />
           </div>
 
-          {/* Filter Type */}
-          <div className="border-border bg-muted flex items-center gap-1.5 rounded-xl border p-1">
-            <button
-              onClick={() => setFilterType("all")}
-              className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                filterType === "all"
-                  ? "bg-card text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {t("library.media.filterAll")}
-            </button>
-            <button
-              onClick={() => setFilterType("image")}
-              className={`flex cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                filterType === "image"
-                  ? "bg-brand-orange-soft text-brand-orange font-bold shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <ImageIcon className="size-3.5" />
-              {t("library.media.filterImage")}
-            </button>
-            <button
-              onClick={() => setFilterType("video")}
-              className={`flex cursor-pointer items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                filterType === "video"
-                  ? "bg-brand-orange-soft text-brand-orange font-bold shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Film className="size-3.5" />
-              {t("library.media.filterVideo")}
-            </button>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Filter Type */}
+            <div className="border-border bg-muted flex items-center gap-1 rounded-xl border p-1">
+              <button
+                onClick={() => setFilterType("all")}
+                className={`cursor-pointer rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+                  filterType === "all"
+                    ? "bg-card text-foreground shadow-xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t("library.media.filterAll")}
+              </button>
+              <button
+                onClick={() => setFilterType("image")}
+                className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+                  filterType === "image"
+                    ? "bg-brand-orange-soft text-brand-orange font-bold shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <ImageIcon className="size-3.5" />
+                {t("library.media.filterImage")}
+              </button>
+              <button
+                onClick={() => setFilterType("video")}
+                className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+                  filterType === "video"
+                    ? "bg-brand-orange-soft text-brand-orange font-bold shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Film className="size-3.5" />
+                {t("library.media.filterVideo")}
+              </button>
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="border-border bg-muted flex items-center gap-2 rounded-xl border px-3 py-1.5">
+              <ArrowUpDown className="text-muted-foreground size-3.5" />
+              <Select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
+                className="text-foreground h-auto w-auto min-w-0 cursor-pointer border-0 bg-transparent px-0 py-0 text-xs font-medium shadow-none focus-visible:ring-0"
+              >
+                <option value="newest" className="bg-card">
+                  {t("library.media.sortNewest")}
+                </option>
+                <option value="oldest" className="bg-card">
+                  {t("library.media.sortOldest")}
+                </option>
+              </Select>
+            </div>
+
+            {/* Upload Button */}
+            <MediaUploadButton onUploadSuccess={handleUploadSuccess} />
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Sort Dropdown */}
-          <div className="border-border bg-muted flex items-center gap-2 rounded-xl border px-3 py-1.5">
-            <ArrowUpDown className="text-muted-foreground size-3.5" />
-            <Select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
-              className="text-foreground h-auto w-auto min-w-0 cursor-pointer border-0 bg-transparent px-0 py-0 text-xs font-medium shadow-none focus-visible:ring-0"
+        {/* Orientation Filter Row */}
+        <div className="border-border flex flex-wrap items-center gap-2 border-t pt-3">
+          <span className="text-muted-foreground flex items-center gap-1 text-xs font-medium">
+            <Ratio className="size-3.5" />
+            Tỉ lệ hiển thị:
+          </span>
+          {[
+            { key: "all", label: "Tất cả tỉ lệ" },
+            { key: "1:1", label: "Vuông (1:1)" },
+            { key: "9:16", label: "Dọc Reels/TikTok (9:16)" },
+            { key: "16:9", label: "Ngang Banner (16:9)" },
+            { key: "4:5", label: "Chân dung (4:5)" },
+          ].map((item) => (
+            <button
+              key={item.key}
+              onClick={() => setFilterOrientation(item.key)}
+              className={`cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                filterOrientation === item.key
+                  ? "bg-brand-orange text-white shadow-xs font-semibold"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <option value="newest" className="bg-card">
-                {t("library.media.sortNewest")}
-              </option>
-              <option value="oldest" className="bg-card">
-                {t("library.media.sortOldest")}
-              </option>
-            </Select>
-          </div>
-
-          {/* Upload Button */}
-          <MediaUploadButton onUploadSuccess={handleUploadSuccess} />
+              {item.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -210,22 +249,26 @@ export const MediaTab: React.FC = () => {
                 />
               )}
 
-              {/* Hover Overlay Details */}
-              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 text-white opacity-0 transition-opacity group-hover:opacity-100">
-                <span className="truncate text-xs leading-tight font-semibold">
-                  {media.filename}
-                </span>
-                <span className="text-3xs mt-0.5 font-mono text-white/70">
-                  {formatFileSize(media.sizeBytes)}
-                </span>
+              {/* Badges Top Left: Resolution & Aspect Ratio */}
+              <div className="absolute top-2 left-2 z-10 flex items-center gap-1.5">
+                {media.resolution && (
+                  <span className="rounded-md bg-black/60 px-1.5 py-0.5 text-[10px] font-bold text-white/90 backdrop-blur-xs">
+                    {media.resolution}
+                  </span>
+                )}
+                {media.aspectRatio && (
+                  <span className="bg-brand-orange/80 rounded-md px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-xs">
+                    {media.aspectRatio}
+                  </span>
+                )}
               </div>
 
               {/* Type Badge Top Right */}
-              <div className="text-3xs absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 font-bold text-white uppercase backdrop-blur-xs">
+              <div className="text-3xs absolute top-2 right-2 z-10 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 font-bold text-white uppercase backdrop-blur-xs">
                 {media.type === "video" ? (
                   <>
                     <Film className="text-brand-orange size-3" />{" "}
-                    {t("library.media.typeVideo")}
+                    {media.durationSeconds ? `${media.durationSeconds}s` : t("library.media.typeVideo")}
                   </>
                 ) : (
                   <>
@@ -233,6 +276,43 @@ export const MediaTab: React.FC = () => {
                     {t("library.media.typeImage")}
                   </>
                 )}
+              </div>
+
+              {/* Hover Overlay Details & Quick Actions */}
+              <div className="absolute inset-0 flex flex-col justify-between bg-gradient-to-t from-black/85 via-black/30 to-black/20 p-3 text-white opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="flex justify-end gap-1.5">
+                  <button
+                    onClick={(e) => handleQuickCopyUrl(e, media.url)}
+                    title="Sao chép Link S3"
+                    className="flex size-7 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white/80 backdrop-blur-xs transition-colors hover:bg-black/90 hover:text-white"
+                  >
+                    <Copy className="size-3.5" />
+                  </button>
+                  <button
+                    onClick={() => setSelectedMedia(media)}
+                    title="Xem chi tiết"
+                    className="flex size-7 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white/80 backdrop-blur-xs transition-colors hover:bg-black/90 hover:text-white"
+                  >
+                    <ExternalLink className="size-3.5" />
+                  </button>
+                </div>
+
+                <div>
+                  {media.category && (
+                    <span className="mb-1 inline-block rounded bg-white/20 px-1.5 py-0.5 text-[9px] font-semibold tracking-wider text-white uppercase">
+                      {media.category}
+                    </span>
+                  )}
+                  <div className="truncate text-xs font-semibold leading-tight">
+                    {media.filename}
+                  </div>
+                  <div className="text-3xs mt-0.5 flex items-center gap-2 font-mono text-white/70">
+                    <span>{formatFileSize(media.sizeBytes)}</span>
+                    {media.width && media.height && (
+                      <span>{media.width}x{media.height}</span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}

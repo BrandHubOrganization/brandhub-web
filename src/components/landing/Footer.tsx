@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Mail } from "lucide-react";
 import { SectionDecor } from "@/components/landing/SectionDecor";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const PRODUCT_LINKS = [
   { id: "features", labelKey: "landing.footer.productLinks.features" },
@@ -43,14 +44,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           {/* Brand */}
           <div className="col-span-2">
-            <div className="flex items-center gap-2">
-              <div className="bg-brand-orange flex size-8 items-center justify-center rounded-lg text-sm font-bold text-white">
-                B
-              </div>
-              <span className="text-lg font-extrabold text-zinc-900 dark:text-zinc-100">
-                BrandHub
-              </span>
-            </div>
+            <BrandLogo size="md" />
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
               {t("landing.footer.tagline")}
             </p>

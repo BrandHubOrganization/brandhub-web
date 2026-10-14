@@ -15,6 +15,8 @@ import { useLandingDemoStore } from "@/store/landingDemoStore";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
+import { FeatureCardSvgDecor } from "@/components/landing/FeatureCardSvgDecor";
+
 interface Feature {
   key: string;
   icon: LucideIcon;
@@ -133,13 +135,24 @@ export function Features() {
                   span,
                 )}
               >
-                <div
-                  className={cn(
-                    "bg-brand-orange/10 text-brand-orange mb-5 flex items-center justify-center rounded-xl transition-transform group-hover:scale-110",
-                    boxSize ?? "size-12",
+                <div className="flex items-start justify-between w-full mb-5">
+                  <div
+                    className={cn(
+                      "bg-brand-orange/10 text-brand-orange flex items-center justify-center rounded-xl transition-transform group-hover:scale-110",
+                      boxSize ?? "size-12",
+                    )}
+                  >
+                    <Icon className={iconSize ?? "size-6"} />
+                  </div>
+                  {key === "planning" ? (
+                    <div className="hidden sm:block w-48 h-20">
+                      <FeatureCardSvgDecor featureKey={key} />
+                    </div>
+                  ) : (
+                    <div className="w-24 h-10">
+                      <FeatureCardSvgDecor featureKey={key} />
+                    </div>
                   )}
-                >
-                  <Icon className={iconSize ?? "size-6"} />
                 </div>
                 <h3
                   className={cn(

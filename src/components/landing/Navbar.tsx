@@ -6,6 +6,8 @@ import { useTheme } from "@/components/theme-provider";
 import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 
+import { BrandLogo } from "@/components/brand/BrandLogo";
+
 const NAV_LINKS = [
   { id: "features", labelKey: "landing.nav.features" },
   { id: "how-it-works", labelKey: "landing.nav.howItWorks" },
@@ -122,14 +124,9 @@ export function Navbar() {
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="flex shrink-0 cursor-pointer items-center gap-2"
+          className="flex shrink-0 cursor-pointer items-center"
         >
-          <div className="bg-brand-orange flex size-8 items-center justify-center rounded-lg text-sm font-bold text-white">
-            B
-          </div>
-          <span className="text-lg font-extrabold text-zinc-900 dark:text-zinc-100">
-            BrandHub
-          </span>
+          <BrandLogo size="md" />
         </button>
 
         <div className="hidden items-center gap-1 lg:flex">

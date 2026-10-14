@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { HashtagGroup } from "@/types/contentLibrary";
 import { mockContentLibraryService } from "@/services/mock/mockContentLibraryService";
-import { Hash, Copy, Plus, Edit2, Trash2, Check, X, Tag } from "lucide-react";
+import { Hash, Copy, Plus, Edit2, Trash2, Check, X, Tag, Search } from "lucide-react";
 import { toast } from "sonner";
 import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
@@ -110,23 +110,36 @@ export const HashtagGroupsTab: React.FC = () => {
     }
   };
 
+  const [search, setSearch] = useState("");
+
+  const filteredGroups = groups.filter((g) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return (
+      g.name.toLowerCase().includes(q) ||
+      (g.category && g.category.toLowerCase().includes(q)) ||
+      g.tags.some((t) => t.toLowerCase().includes(q))
+    );
+  });
+
   return (
     <div className="space-y-6">
-      {/* Header & Add Button */}
-      <div className="border-border bg-card flex items-center justify-between rounded-xl border p-4 shadow-xs">
-        <div>
-          <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-            <Hash className="text-brand-orange size-4" />
-            {t("hashtagGroups.headerCount", { count: groups.length })}
-          </h3>
-          <p className="text-muted-foreground text-xs">
-            {t("hashtagGroups.headerDescription")}
-          </p>
+      {/* Header & Search */}
+      <div className="border-border bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative max-w-md flex-1">
+          <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+          <Input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Tìm kiếm nhóm hashtag theo tên hoặc từ khóa (#tag)..."
+            className="border-border bg-muted text-foreground placeholder-muted-foreground rounded-xl pr-4 pl-9 text-xs"
+          />
         </div>
 
         <button
           onClick={() => handleOpenModal()}
-          className="bg-brand-orange hover:bg-brand-orange/90 active:bg-brand-orange/80 flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
+          className="bg-brand-orange hover:bg-brand-orange/90 active:bg-brand-orange/80 flex cursor-pointer items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
         >
           <Plus className="size-4" />
           <span>{t("hashtagGroups.createButton")}</span>
@@ -138,7 +151,7 @@ export const HashtagGroupsTab: React.FC = () => {
         <div className="text-muted-foreground py-12 text-center text-xs">
           {t("hashtagGroups.loading")}
         </div>
-      ) : groups.length === 0 ? (
+      ) : filteredGroups.length === 0 ? (
         <div className="border-border bg-card rounded-xl border border-dashed p-8 py-12 text-center">
           <Hash className="text-muted-foreground mx-auto mb-2 size-10" />
           <p className="text-muted-foreground text-xs">
@@ -147,17 +160,24 @@ export const HashtagGroupsTab: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {groups.map((group) => (
+          {filteredGroups.map((group) => (
             <div
               key={group.id}
-              className="hover:border-brand-orange/40 border-border bg-card group flex flex-col justify-between rounded-xl border p-5 shadow-xs transition-all"
+              className="hover:border-brand-orange/40 border-border bg-card group flex flex-col justify-between rounded-xl border p-5 shadow-xs transition-all hover:shadow-md"
             >
               <div>
-                <div className="mb-3 flex items-center justify-between">
-                  <h4 className="group-hover:text-brand-orange text-foreground flex items-center gap-1.5 text-sm font-semibold transition-colors">
-                    <Tag className="text-brand-orange size-3.5" />
-                    {group.name}
-                  </h4>
+                <div className="mb-3 flex items-start justify-between">
+                  <div>
+                    {group.category && (
+                      <span className="bg-brand-orange/10 text-brand-orange mb-1.5 inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                        {group.category}
+                      </span>
+                    )}
+                    <h4 className="group-hover:text-brand-orange text-foreground flex items-center gap-1.5 text-sm font-semibold transition-colors">
+                      <Tag className="text-brand-orange size-3.5" />
+                      {group.name}
+                    </h4>
+                  </div>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleOpenModal(group)}
@@ -191,11 +211,18 @@ export const HashtagGroupsTab: React.FC = () => {
 
               {/* Copy Action Footer */}
               <div className="border-border flex items-center justify-between border-t pt-3">
-                <span className="text-2xs text-muted-foreground font-mono">
-                  {t("hashtagGroups.hashtagsCount", {
-                    count: group.tags.length,
-                  })}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xs text-muted-foreground font-mono">
+                    {t("hashtagGroups.hashtagsCount", {
+                      count: group.tags.length,
+                    })}
+                  </span>
+                  {group.usageCount && (
+                    <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.2 text-[10px] font-medium">
+                      {group.usageCount} lượt dùng
+                    </span>
+                  )}
+                </div>
                 <button
                   onClick={() => handleCopyGroup(group)}
                   className="hover:bg-brand-orange dark:hover:bg-brand-orange bg-muted text-foreground flex cursor-pointer items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition-colors hover:text-white"

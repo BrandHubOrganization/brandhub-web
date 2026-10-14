@@ -2,9 +2,12 @@ import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 import {
   Sparkles,
-  ImageIcon,
-  Video,
-  PenLine,
+  TrendingUp,
+  UserCheck,
+  Network,
+  Palette,
+  Radio,
+  Handshake,
   MousePointerClick,
   type LucideIcon,
 } from "lucide-react";
@@ -13,9 +16,10 @@ import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SpotlightCard } from "@/components/landing/SpotlightCard";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
-// pageIndex 3 = AI Studio trong CinematicHero (xem NAV_ITEMS). Cả 3 card
-// đều mở cùng trang demo vì text/image/video gen là 3 tab trong 1 màn AI
-// Studio duy nhất, không phải 3 trang riêng.
+import { AiVectorArt } from "@/components/landing/AiVectorArt";
+
+// pageIndex 3 = AI Studio trong CinematicHero (xem NAV_ITEMS). Bấm card
+// sẽ điều hướng demo mở AI Studio.
 const AI_STUDIO_PAGE = 3;
 
 interface AiCapability {
@@ -24,9 +28,12 @@ interface AiCapability {
 }
 
 const CAPABILITIES: AiCapability[] = [
-  { key: "image", icon: ImageIcon },
-  { key: "video", icon: Video },
-  { key: "text", icon: PenLine },
+  { key: "trendCrawler", icon: TrendingUp },
+  { key: "virtualAmbassador", icon: UserCheck },
+  { key: "graphRag", icon: Network },
+  { key: "generativeStudio", icon: Palette },
+  { key: "livestreamScript", icon: Radio },
+  { key: "collaboratorRecommender", icon: Handshake },
 ];
 
 export function AIFeatures() {
@@ -61,7 +68,7 @@ export function AIFeatures() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {CAPABILITIES.map(({ key, icon: Icon }, i) => (
             <SpotlightCard
               key={key}
@@ -72,10 +79,15 @@ export function AIFeatures() {
               initial={reduce ? false : { opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
             >
-              <div className="bg-brand-orange/10 text-brand-orange mb-5 flex size-12 items-center justify-center rounded-xl transition-transform group-hover:scale-110">
-                <Icon className="size-6" />
+              <div className="flex items-start justify-between w-full mb-4">
+                <div className="bg-brand-orange/10 text-brand-orange flex size-12 items-center justify-center rounded-xl transition-transform group-hover:scale-110">
+                  <Icon className="size-6" />
+                </div>
+                <div className="w-24 h-12 text-zinc-400 transition-transform duration-300 group-hover:scale-105 group-hover:text-brand-orange">
+                  <AiVectorArt type={key} />
+                </div>
               </div>
               <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">
                 {t(`landing.aiFeatures.items.${key}.title`)}
