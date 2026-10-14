@@ -4,7 +4,29 @@
   "submitError": "Error submitting post for review",
   "contentWritingPage": {
     "title": "Content Writing",
+    "loadFailed": "Unable to load content. Please try again.",
+    "connectionFailed": "Unable to connect sync. Your edits are kept on this page.",
     "description": "Google-Docs-style canvas editor — core rendering preview (FR 3.6.10)."
+  },
+  "emojiPicker": {
+    "search": "Search emoji (English)…",
+    "results": "Results for \"{{search}}\" · {{count}} emoji",
+    "loading": "Loading emoji…",
+    "loadFailed": "Unable to load emoji. Please try again.",
+    "retry": "Retry",
+    "empty": "No emoji found",
+    "total": "{{count}} emoji",
+    "groups": {
+      "smileys-emotion": "Smileys & Emotion",
+      "people-body": "People & Body",
+      "animals-nature": "Animals & Nature",
+      "food-drink": "Food & Drink",
+      "travel-places": "Travel & Places",
+      "activities": "Activities",
+      "objects": "Objects",
+      "symbols": "Symbols",
+      "flags": "Flags"
+    }
   },
   "page": {
     "title": "Content Creator Studio",
