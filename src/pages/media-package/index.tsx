@@ -53,22 +53,31 @@ export default function WorkspaceMediaPackagePage() {
     currentWorkspace?.myRole ??
     null;
 
-  const canSelectPackages = effectiveRole === "CLIENT" || effectiveRole === null;
+  const canSelectPackages =
+    effectiveRole === "CLIENT" || effectiveRole === null;
   const agencyId = workspaceId
     ? workspaceList.find((workspace) => workspace.id === workspaceId)?.agencyId
     : null;
-  const canCreateCustom = effectiveRole === "MANAGER" && !!agencyId && !!workspaceId;
+  const canCreateCustom =
+    effectiveRole === "MANAGER" && !!agencyId && !!workspaceId;
 
-  const createCustomPackage = async (request: CreateCustomMediaPackageRequest) => {
+  const createCustomPackage = async (
+    request: CreateCustomMediaPackageRequest,
+  ) => {
     if (!agencyId || !workspaceId) return false;
     setCreatingCustom(true);
     try {
-      await mediaPackageService.createCustom(agencyId, { ...request, workspaceId });
+      await mediaPackageService.createCustom(agencyId, {
+        ...request,
+        workspaceId,
+      });
       await load();
       toast.success(t("mediaPackage.messages.customCreated"));
       return true;
     } catch (error: unknown) {
-      toast.error(extractErrorMessage(error, t("mediaPackage.errors.createCustom")));
+      toast.error(
+        extractErrorMessage(error, t("mediaPackage.errors.createCustom")),
+      );
       return false;
     } finally {
       setCreatingCustom(false);
@@ -77,6 +86,7 @@ export default function WorkspaceMediaPackagePage() {
 
   return (
     <PageWrapper
+      hideBanner
       title={t("mediaPackage.workspacePage.title")}
       description={t("mediaPackage.workspacePage.description")}
     >
@@ -126,4 +136,3 @@ export default function WorkspaceMediaPackagePage() {
     </PageWrapper>
   );
 }
-

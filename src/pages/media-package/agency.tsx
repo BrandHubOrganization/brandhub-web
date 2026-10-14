@@ -45,6 +45,7 @@ export default function AgencyMediaPackagePage() {
 
   return (
     <PageWrapper
+      hideBanner
       title={t("mediaPackage.agencyPage.title")}
       description={t("mediaPackage.agencyPage.description")}
     >

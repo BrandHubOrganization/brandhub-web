@@ -10,26 +10,31 @@ import {
   Film,
   Image as ImageIcon,
   Check,
+  Stamp,
 } from "lucide-react";
 import { toast } from "sonner";
 import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
 import { formatFileSize } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { WatermarkStudioModal } from "./watermark/WatermarkStudioModal";
 
 interface MediaDetailPanelProps {
   media: MediaItem | null;
   onClose: () => void;
   onDelete: (id: string) => Promise<void>;
+  onWatermarked?: (newMedia: MediaItem) => void;
 }
 
 export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
   media,
   onClose,
   onDelete,
+  onWatermarked,
 }) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isWatermarkOpen, setIsWatermarkOpen] = useState(false);
 
   if (!media) return null;
 
@@ -197,16 +202,29 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
 
         {/* Footer Actions */}
         <div className="border-border bg-muted flex items-center justify-between border-t p-4">
-          <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-red-50 px-4 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-900/60"
-          >
-            <Trash2 className="size-4" />
-            {isDeleting
-              ? t("library.media.deleting")
-              : t("library.media.deleteFileButton")}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-red-50 px-3.5 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-900/60"
+            >
+              <Trash2 className="size-4" />
+              {isDeleting
+                ? t("library.media.deleting")
+                : t("library.media.deleteFileButton")}
+            </button>
+
+            {media.type === "image" && (
+              <button
+                type="button"
+                onClick={() => setIsWatermarkOpen(true)}
+                className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-brand-orange px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-brand-orange/90"
+              >
+                <Stamp className="size-4" />
+                {t("materials.watermark.openButton")}
+              </button>
+            )}
+          </div>
 
           <button
             onClick={onClose}
@@ -216,6 +234,28 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
           </button>
         </div>
       </div>
+
+      {isWatermarkOpen && (
+        <WatermarkStudioModal
+          isOpen={isWatermarkOpen}
+          onClose={() => setIsWatermarkOpen(false)}
+          material={media}
+          workspaceId={media.workspaceId || "ws-default"}
+          onSuccess={(newMat) => {
+            onWatermarked?.({
+              id: newMat.id,
+              workspaceId: newMat.workspaceId,
+              filename: newMat.name,
+              url: newMat.url,
+              type: "image",
+              sizeBytes: newMat.fileSize || 1000000,
+              createdAt: newMat.createdAt,
+            });
+            setIsWatermarkOpen(false);
+            onClose();
+          }}
+        />
+      )}
     </div>
   );
 };

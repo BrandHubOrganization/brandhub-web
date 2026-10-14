@@ -27,6 +27,7 @@ import {
   BookOpen,
   PackageCheck,
   MessageCircleMore,
+  Mail,
 } from "lucide-react";
 
 export interface NavItem {
@@ -89,6 +90,20 @@ export const NAV_SECTIONS: NavSection[] = [
         requiresWorkspace: true,
       },
       {
+        to: "/campaigns",
+        icon: PackageCheck,
+        labelKey: "campaign.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/campaign-partners",
+        icon: Users,
+        labelKey: "campaign.partners.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/chat",
         icon: MessageCircleMore,
         labelKey: "nav.chat",
@@ -118,6 +133,13 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/editor",
         icon: FileEdit,
         labelKey: "nav.editor",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/mail-templates",
+        icon: Mail,
+        labelKey: "nav.mailTemplates",
         workspaceScoped: true,
         requiresWorkspace: true,
       },
