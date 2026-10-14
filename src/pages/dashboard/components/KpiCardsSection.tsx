@@ -70,32 +70,32 @@ export function KpiCardsSection({
       value: data.totalPosts.toLocaleString("vi-VN"),
       change: t("dashboard.kpi.totalPostsChange"),
       icon: FileText,
-      iconBg: "bg-brand-orange/10 text-brand-orange",
-      accentColor: "border-l-brand-orange",
+      iconBg: "bg-muted text-muted-foreground group-hover:text-foreground",
+      accentColor: "",
     },
     {
       title: t("dashboard.kpi.publishedSuccessTitle"),
       value: data.publishedCount.toLocaleString("vi-VN"),
       change: t("dashboard.kpi.publishedChange"),
       icon: CheckCircle2,
-      iconBg: "bg-emerald-500/10 text-emerald-500",
-      accentColor: "border-l-emerald-500",
+      iconBg: "bg-muted text-muted-foreground group-hover:text-foreground",
+      accentColor: "",
     },
     {
       title: t("dashboard.kpi.failedTitle"),
       value: data.failedCount.toLocaleString("vi-VN"),
       change: t("dashboard.kpi.failedChange"),
       icon: XCircle,
-      iconBg: "bg-rose-500/10 text-rose-500",
-      accentColor: "border-l-rose-500",
+      iconBg: "bg-muted text-muted-foreground group-hover:text-foreground",
+      accentColor: "",
     },
     {
       title: t("dashboard.kpi.successRateTitle"),
       value: `${data.successRate}%`,
       change: t("dashboard.kpi.systemTargetMet"),
       icon: TrendingUp,
-      iconBg: "bg-brand-orange/10 text-brand-orange",
-      accentColor: "border-l-brand-orange",
+      iconBg: "bg-muted text-muted-foreground group-hover:text-foreground",
+      accentColor: "",
     },
   ];
 
@@ -106,7 +106,7 @@ export function KpiCardsSection({
         return (
           <div
             key={idx}
-            className={`group border-border bg-card relative overflow-hidden rounded-xl border border-l-4 p-5 transition-all duration-200 hover:shadow-md ${card.accentColor}`}
+            className="group border-border bg-card hover:border-border/80 relative overflow-hidden rounded-xl border p-5 transition-all duration-200 hover:shadow-xs"
           >
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground text-xs font-medium">

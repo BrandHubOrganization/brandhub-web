@@ -1,445 +1,160 @@
 import * as React from "react";
-import { NavLink } from "react-router-dom";
-import {
-  LayoutDashboard,
-  FileEdit,
-  CalendarDays,
-  Users,
-  BarChart3,
-  ShieldAlert,
-  ChevronDown,
-  FolderKanban,
-  FolderPlus,
-  LayoutTemplate,
-  Hash,
-  Send,
-  Link2,
-  CreditCard,
-  Sparkles,
-  Building2,
-  FileBarChart,
-  User,
-  Inbox,
-  UserCheck,
-  Briefcase,
-  Settings,
-  ChevronLeft,
-  MapPin,
-  Globe,
-  FolderOpen,
-  Shield,
-  Bell,
-} from "lucide-react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { NavLink, useLocation } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import type { MemberRole, Workspace } from "@/types/workspace";
 import type { Agency } from "@/types/agency";
 import type { SystemRole } from "@/store/authStore";
 import { canAccess } from "@/routes/access";
+import { AdminSidebar } from "@/components/layout/AdminSidebar";
+import {
+  NAV_SECTIONS,
+  type NavItem,
+  type NavSection,
+} from "./sidebar/sidebarNavConfig";
+import {
+  SidebarHoverPreview,
+  type HoveredItemInfo,
+} from "./sidebar/SidebarHoverPreview";
+import { OrgSwitcherDropdown } from "./sidebar/OrgSwitcherDropdown";
 
-interface NavItem {
-  to: string;
-  icon: React.ComponentType<{ className?: string }>;
-  labelKey: string;
-  /** Chỉ hiện khi role hiện tại là CLIENT — cần currentAgencyId để build URL. */
-  clientOnly?: boolean;
-  /** URL cần currentAgencyId để build (thay {agencyId} trong `to`) — ẩn nếu chưa có agency active. */
-  agencyScoped?: boolean;
-  /** Ẩn hẳn với role CLIENT (client không phải nhân sự agency nội bộ). */
-  hiddenForClient?: boolean;
-  /** Route agency-wide (đọc theo currentAgencyId, không mang workspaceId) —
-   * ẩn khi đang trong 1 workspace cụ thể để tránh bấm nhầm rồi bị đẩy ra
-   * khỏi ngữ cảnh workspace về agency. */
-  hideInWorkspace?: boolean;
-  /** Chỉ hiện khi CHƯA chọn agency nào (currentAgencyId null) — mục
-   * user-level, không gắn agency/workspace cụ thể nào. */
-  noAgencyOnly?: boolean;
-  /** URL đổi theo activeWorkspace — thay {workspaceId} trong `to`. Khi
-   * chưa có activeWorkspace, giữ nguyên `to` gốc (route agency-level, vd
-   * /dashboard, /analytics landing chung). */
-  workspaceScoped?: boolean;
-  /** Route CHỈ tồn tại dạng /workspaces/:id/... — không có bản fallback ở
-   * `to` gốc (khác /dashboard vẫn có cả 2 bản). Thiếu activeWorkspace thì
-   * ẩn hẳn thay vì để `to` trỏ vào route đã bị xoá. */
-  requiresWorkspace?: boolean;
-  /** Ẩn khi đang chọn 1 agency cụ thể (currentAgencyId != null). Dùng cho
-   * các mục thuộc "user module" (client-profiles, social-accounts, subscription,
-   * client/invitations, ...) — không gắn với ngữ cảnh agency cụ thể nào,
-   * chỉ hiện khi user chưa vào agency hoặc đang dùng tính năng cá nhân. */
-  hideInAgency?: boolean;
-  /** Mục con hiển thị thụt lề dưới item cha. Dùng cho các anchor trong cùng
-   * 1 trang (vd 4 mục của /settings) — `to` gồm cả hash. */
-  children?: { to: string; labelKey: string }[];
-}
+export type { NavItem, NavSection };
 
-interface NavSection {
-  key: string;
-  titleKey: string;
-  items: NavItem[];
-}
-
-const NAV_SECTIONS: NavSection[] = [
-  {
-    key: "overview",
-    titleKey: "nav.sections.overview",
-    items: [
-      {
-        to: "/dashboard",
-        icon: LayoutDashboard,
-        labelKey: "nav.dashboard",
-        workspaceScoped: true,
-        // CLIENT thấy dashboard nhưng dashboard.tsx tự ẩn card nhạy cảm
-        // (thành viên, đàm phán gói, AI credit nội bộ agency) qua isClient —
-        // chỉ còn phần liên quan nội dung (campaign/content status, lịch đăng).
-      },
-      {
-        to: "/analytics",
-        icon: BarChart3,
-        labelKey: "nav.analytics",
-        // Merged into workspace Dashboard (StatCards + ChannelPerformanceChart
-        // now render inline there) — keep this item for agency-level only,
-        // hide once a workspace is active so it's not a duplicate link.
-        hideInWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "create",
-    titleKey: "nav.sections.create",
-    items: [
-      {
-        to: "/requests",
-        icon: FileEdit,
-        labelKey: "nav.requests",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/editor",
-        icon: FileEdit,
-        labelKey: "nav.editor",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/content-writing",
-        icon: FileEdit,
-        labelKey: "nav.contentWriting",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/templates",
-        icon: LayoutTemplate,
-        labelKey: "nav.templates",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/hashtag-groups",
-        icon: Hash,
-        labelKey: "nav.hashtagGroups",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/calendar",
-        icon: CalendarDays,
-        labelKey: "nav.calendar",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/library",
-        icon: FolderKanban,
-        labelKey: "nav.library",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/publish",
-        icon: Send,
-        labelKey: "nav.publish",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "agency",
-    titleKey: "nav.sections.agency",
-    items: [
-      {
-        to: "/agency/{agencyId}",
-        icon: Building2,
-        labelKey: "nav.agencySub.profile",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/agency/{agencyId}/members",
-        icon: Users,
-        labelKey: "nav.agencySub.members",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/agency/{agencyId}/stats",
-        icon: BarChart3,
-        labelKey: "nav.agencySub.stats",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "workspaceSettings",
-    titleKey: "nav.sections.workspaceSettings",
-    items: [
-      {
-        to: "/settings",
-        icon: Settings,
-        labelKey: "nav.workspaceSub.settings",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        hiddenForClient: true,
-      },
-      {
-        to: "/members",
-        icon: Users,
-        labelKey: "nav.workspaceSub.members",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        hiddenForClient: true,
-      },
-      {
-        to: "/clients",
-        icon: Building2,
-        labelKey: "nav.workspaceSub.clients",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        hiddenForClient: true,
-      },
-      {
-        to: "/social-accounts",
-        icon: Link2,
-        labelKey: "nav.socialAccounts",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/client-profile",
-        icon: User,
-        labelKey: "nav.workspaceClientProfile",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-        clientOnly: true,
-      },
-      {
-        to: "/portal",
-        icon: Users,
-        labelKey: "nav.portal",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "lists",
-    titleKey: "nav.sections.lists",
-    items: [
-      {
-        to: "/agency",
-        icon: Building2,
-        labelKey: "nav.agencyList",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/workspace",
-        icon: Briefcase,
-        labelKey: "nav.workspaceList",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/clients",
-        icon: Building2,
-        labelKey: "nav.clients",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/ai-studio/ambassadors",
-        icon: Sparkles,
-        labelKey: "nav.aiStudio",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/reports",
-        icon: FileBarChart,
-        labelKey: "nav.reports",
-        hideInWorkspace: true,
-      },
-    ],
-  },
-  {
-    key: "invitations",
-    titleKey: "nav.sections.invitations",
-    items: [
-      {
-        to: "/agency/invitations",
-        icon: Inbox,
-        labelKey: "nav.agencyInvitationInbox",
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/client/invitations",
-        icon: UserCheck,
-        labelKey: "nav.clientInvitations",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-    ],
-  },
-  {
-    key: "settings",
-    titleKey: "nav.sections.settings",
-    items: [
-      {
-        to: "/settings/profile",
-        icon: User,
-        labelKey: "nav.profile",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/settings/security",
-        icon: Shield,
-        labelKey: "nav.security",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/settings/connections",
-        icon: Link2,
-        labelKey: "nav.connections",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/settings/notifications",
-        icon: Bell,
-        labelKey: "nav.notificationSettings",
-        hideInWorkspace: true,
-      },
-      {
-        to: "/client-profiles",
-        icon: User,
-        labelKey: "nav.clientProfile",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/social-accounts",
-        icon: Link2,
-        labelKey: "nav.socialAccounts",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/subscription/plans",
-        icon: CreditCard,
-        labelKey: "nav.subscription",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-    ],
-  },
-  {
-    key: "system",
-    titleKey: "nav.sections.system",
-    items: [
-      { to: "/admin", icon: ShieldAlert, labelKey: "nav.admin" },
-      {
-        to: "/admin/system-health",
-        icon: ShieldAlert,
-        labelKey: "monitoring.title",
-      },
-    ],
-  },
-];
-
-export interface SidebarProps {
-  collapsed: boolean;
+interface SidebarProps {
+  collapsed?: boolean;
+  className?: string;
   role?: MemberRole | null;
   systemRole?: SystemRole | null;
-  workspaces: Workspace[];
-  activeWorkspace: Workspace | null;
-  onSwitchWorkspace: (agencyId: string, workspaceId: string) => void;
-  className?: string;
+  workspaces?: Workspace[];
+  activeWorkspace?: Workspace | null;
+  onSwitchWorkspace?: (agencyIdArg: string, workspaceId: string) => void;
   onMobileItemClick?: () => void;
-  /** Đang chọn 1 agency cụ thể hay chưa — chưa chọn agency thì không có
-   * ngữ cảnh để lọc workspace, nên ẩn hẳn ô chọn workspace. */
   hasAgency?: boolean;
-  /** Toàn bộ agency user thuộc về, để build dropdown lồng nhau agency→workspace. */
-  agencyList: Agency[];
-  /** Toàn bộ workspace (không lọc theo agency), để nhóm theo từng agency trong dropdown. */
-  allWorkspaces: Workspace[];
-  currentAgencyId: string | null;
-  onSwitchAgency: (agencyId: string) => void;
-  /** Callback khi user bấm "Back" thoát khỏi agency context. */
+  agencyList?: Agency[];
+  allWorkspaces?: Workspace[];
+  currentAgencyId?: string | null;
+  onSwitchAgency?: (id: string) => void;
   onLeaveAgency?: () => void;
-  /** Callback khi user bấm "Back" thoát khỏi workspace context về agency. */
   onLeaveWorkspace?: () => void;
-  /** So agency.ownerId để hiện badge "Owner" đúng agency mình sở hữu trong
-   * dropdown — owner gắn theo agency, không phải theo workspace/role hiện
-   * tại (agency chưa có workspace vẫn phải thấy mình là chủ). */
   currentUserId?: string | null;
 }
 
 export function Sidebar({
-  collapsed,
-  role = null,
-  systemRole = null,
+  collapsed = false,
+  className,
+  role,
+  systemRole,
   activeWorkspace,
   onSwitchWorkspace,
-  className,
   onMobileItemClick,
-  agencyList,
-  allWorkspaces,
-  currentAgencyId,
+  agencyList = [],
+  allWorkspaces = [],
+  currentAgencyId = null,
   onSwitchAgency,
   onLeaveAgency,
   onLeaveWorkspace,
-  currentUserId = null,
+  currentUserId,
 }: SidebarProps) {
   const { t } = useTranslation();
-  const currentAgencyName =
-    agencyList.find((a) => a.id === currentAgencyId)?.name ?? null;
-  const clientWorkspaces = allWorkspaces.filter((ws) => ws.myRole === "CLIENT");
-  // ADMIN chỉ thao tác qua Admin Panel — không vận hành nội dung/workspace,
-  // nên chỉ thấy mục "system". Ở agency-level (chưa chọn workspace cụ thể),
-  // "create" và "workspaceSettings" ẩn vì cần ngữ cảnh 1 workspace cụ thể.
-  const visibleSectionKeys: string[] | null =
-    systemRole === "ADMIN"
-      ? ["system"]
-      : !activeWorkspace
-        ? ["overview", "agency", "lists", "invitations", "settings"]
-        : ["overview", "create", "workspaceSettings"];
+  const location = useLocation();
+
+  // State dropdown org switcher
+  const [dropdownOpen, setDropdownOpen] = React.useState(false);
+
+  // Agency đang active
+  const currentAgency = React.useMemo(
+    () => agencyList.find((a) => a.id === currentAgencyId) ?? null,
+    [agencyList, currentAgencyId],
+  );
+  const currentAgencyName = currentAgency?.name ?? null;
+
+  // Lọc workspaces thuộc agency hiện tại (hoặc client workspaces nếu có)
+  const clientWorkspaces = React.useMemo(() => {
+    if (currentAgencyId) {
+      return allWorkspaces.filter((w) => w.agencyId === currentAgencyId);
+    }
+    return allWorkspaces;
+  }, [allWorkspaces, currentAgencyId]);
+
+  // State cho hover preview popup
+  const [hoveredItem, setHoveredItem] = React.useState<HoveredItemInfo | null>(
+    null,
+  );
+  const hoverTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+
+  const clearHoveredItem = React.useCallback(() => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    setHoveredItem(null);
+  }, []);
+
+  const handleMouseEnter = (
+    e: React.MouseEvent<HTMLElement>,
+    item: Omit<HoveredItemInfo, "rect">,
+  ) => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    const target = e.currentTarget;
+    hoverTimerRef.current = setTimeout(() => {
+      const rect = target.getBoundingClientRect();
+      setHoveredItem({ ...item, rect });
+    }, 180);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    hoverTimerRef.current = setTimeout(() => setHoveredItem(null), 80);
+  };
+
+  // Tự động ẩn preview card & đóng dropdown ngay khi chuyển route, workspace hoặc agency
+  React.useEffect(() => {
+    clearHoveredItem();
+    setDropdownOpen(false);
+  }, [
+    location.pathname,
+    location.search,
+    activeWorkspace?.id,
+    currentAgencyId,
+    clearHoveredItem,
+  ]);
+
+  // Data cho preview đang hover
+  const hoveredAgency =
+    hoveredItem?.type === "agency"
+      ? agencyList.find((a) => a.id === hoveredItem.id)
+      : hoveredItem?.type === "workspace"
+        ? agencyList.find((a) => a.id === hoveredItem.agencyId)
+        : null;
+  const hoveredWorkspace =
+    hoveredItem?.type === "workspace"
+      ? allWorkspaces.find((w) => w.id === hoveredItem.id)
+      : null;
+
+  const isPackageHardGated =
+    (role === "CLIENT" || role === "MANAGER") &&
+    !!activeWorkspace &&
+    activeWorkspace.packageNegotiationStatus !== "APPROVED";
+
+  if (systemRole === "ADMIN") {
+    return (
+      <AdminSidebar
+        collapsed={collapsed}
+        className={className}
+        onMobileItemClick={onMobileItemClick}
+      />
+    );
+  }
+
+  // Ở agency-level, create và workspaceSettings cần ngữ cảnh Workspace.
+  // Trước khi duyệt gói, Manager vẫn quản lý được thiết lập Workspace.
+  const visibleSectionKeys: string[] | null = !activeWorkspace
+    ? ["overview", "agency", "lists", "invitations", "settings"]
+    : isPackageHardGated
+      ? role === "MANAGER"
+        ? ["overview", "workspaceSettings"]
+        : ["overview"]
+      : ["overview", "create", "workspaceSettings"];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
@@ -454,10 +169,15 @@ export function Sidebar({
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
         .filter((item) => !item.hideInAgency || !currentAgencyId)
-        // requiresWorkspace: route KHÔNG có bản fallback ở "to" gốc (khác
-        // /dashboard, có cả bản agency-level lẫn /workspaces/:id/dashboard)
-        // — thiếu activeWorkspace thì không build được URL hợp lệ, ẩn hẳn
-        // thay vì để "to" trỏ vào route đã bị xoá.
+        .filter((item) => {
+          if (!isPackageHardGated) return true;
+          return (
+            item.to === "/media-package" ||
+            item.to === "/chat" ||
+            (role === "MANAGER" &&
+              ["/settings", "/members", "/clients"].includes(item.to))
+          );
+        })
         .filter((item) => !item.requiresWorkspace || activeWorkspace)
         .map((item) => {
           if (item.agencyScoped && currentAgencyId) {
@@ -474,7 +194,7 @@ export function Sidebar({
           }
           return item;
         })
-        .filter((item) => canAccess(item.to, systemRole, role));
+        .filter((item) => canAccess(item.to, systemRole ?? null, role ?? null));
 
       return { ...section, items };
     })

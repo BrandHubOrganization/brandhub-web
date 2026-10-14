@@ -15,11 +15,35 @@ const apiClient = axios.create({
   withCredentials: true, // Send httpOnly cookies if configured
 });
 
+// These POST endpoints validate their own credentials, refresh cookie or challenge.
+// A previous access token must not prevent starting or recovering a session.
+const independentAuthPaths = new Set([
+  "/api/v1/auth/login",
+  "/api/v1/auth/register",
+  "/api/v1/auth/refresh",
+  "/api/v1/auth/forgot-password",
+  "/api/v1/auth/reset-password",
+  "/api/v1/auth/verify-otp",
+  "/api/v1/auth/resend-otp",
+  "/api/v1/auth/2fa/verify",
+  "/api/v1/auth/activation/verify",
+  "/api/v1/auth/activation/complete",
+]);
+
+function isIndependentAuthRequest(config: { method?: string; url?: string }) {
+  const path = new URL(config.url || "", window.location.origin).pathname;
+  return (
+    config.method?.toLowerCase() === "post" && independentAuthPaths.has(path)
+  );
+}
+
 // Request Interceptor: Attach access token from store
 apiClient.interceptors.request.use(
   (config) => {
     const accessToken = useAuthStore.getState().accessToken;
-    if (accessToken) {
+    if (isIndependentAuthRequest(config)) {
+      config.headers.delete("Authorization");
+    } else if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     // Instance default Content-Type là application/json (dòng ~13) — nếu để
@@ -63,7 +87,16 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
 
     // Check if error status is 401 and request has not been retried yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest?._retry) {
+      if (originalRequest && isIndependentAuthRequest(originalRequest)) {
+        return Promise.reject(error);
+      }
+
+      const currentAccessToken = useAuthStore.getState().accessToken;
+      if (currentAccessToken?.startsWith("dev-token-")) {
+        return Promise.reject(error);
+      }
+
       // If we are already refreshing the token, queue the request
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -99,7 +132,7 @@ apiClient.interceptors.response.use(
         // Update tokens in auth store
         useAuthStore
           .getState()
-          .setTokens(newAccessToken, newRefreshToken || null);
+          .setTokens(newAccessToken, newRefreshToken || refreshToken || null);
 
         // Resolve queued requests with the new token
         processQueue(null, newAccessToken);
@@ -115,7 +148,9 @@ apiClient.interceptors.response.use(
         useAuthStore.getState().logout();
 
         // Redirect to login page
-        window.location.href = "/login";
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
 
         return Promise.reject(refreshError);
       } finally {

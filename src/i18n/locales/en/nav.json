@@ -1,6 +1,7 @@
 {
   "navigationMenu": "Navigation Menu",
   "notifications": "Notifications",
+  "mailTemplates": "Mail templates",
   "noEmail": "No email",
   "workspaceSwitcher": {
     "label": "Workspace",
@@ -19,6 +20,7 @@
   },
   "home": "Home",
   "dashboard": "Dashboard",
+  "chat": "Chat",
   "overview": "Workspace Overview",
   "analytics": "Analytics",
   "editor": "Content Editor",
@@ -31,6 +33,9 @@
   "invitations": "Invitations",
   "portal": "Client Portal",
   "workspaceClientProfile": "Brand Profile",
+  "mediaPackages": "Media Package",
+  "manageMediaPackages": "Manage media packages",
+  "selectMediaPackage": "Select media package",
   "admin": "Admin Panel",
   "requests": "Content Requests",
   "templates": "Post Templates",
@@ -46,10 +51,11 @@
   "agencySub": {
     "profile": "Agency profile",
     "members": "Agency members",
+    "roles": "Roles & Permissions",
     "stats": "Agency stats"
   },
   "workspaceSub": {
-    "settings": "Workspace settings",
+    "settings": "General settings",
     "members": "Members",
     "clients": "Clients"
   },
@@ -64,9 +70,10 @@
     "manage": "Manage",
     "agency": "Company",
     "workspaceSettings": "Workspace Settings",
-    "lists": "Lists",
+    "lists": "Workspaces",
     "invitations": "Invitations",
     "settings": "Settings",
+    "help": "Help & Resources",
     "system": "System"
   },
   "logout": "Log out",
@@ -82,5 +89,7 @@
   "security": "Security",
   "connections": "Connections",
   "settings": "Settings",
-  "notificationSettings": "Notification Settings"
+  "notificationSettings": "Notification Settings",
+  "faq": "Help & FAQ",
+  "guide": "User & Admin Guide"
 }

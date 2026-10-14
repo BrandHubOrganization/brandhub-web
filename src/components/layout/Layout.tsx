@@ -5,10 +5,11 @@ import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { useClientProfileStore } from "@/store/clientProfileStore";
-import { userService } from "@/services/userService";
 import { canAccess } from "@/routes/access";
 import { Sidebar } from "./Sidebar";
+import { AdminMobileNavigation } from "@/components/layout/AdminSidebar";
 import { Navbar } from "./Navbar";
+import { PageFallback } from "./PageFallback";
 import {
   Sheet,
   SheetContent,
@@ -22,11 +23,25 @@ import {
   CalendarDays,
   Users,
   BarChart3,
+  MessageCircleMore,
+  PackageCheck,
 } from "lucide-react";
 import type { MemberRole, Workspace } from "@/types/workspace";
 
 const MOBILE_TABS = [
   { to: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
+  {
+    to: "/media-package",
+    icon: PackageCheck,
+    labelKey: "nav.mediaPackages",
+    workspaceScoped: true,
+  },
+  {
+    to: "/chat",
+    icon: MessageCircleMore,
+    labelKey: "nav.chat",
+    workspaceScoped: true,
+  },
   { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
   {
     to: "/editor",
@@ -55,13 +70,11 @@ export function Layout() {
   const location = useLocation();
   const { user } = useAuthStore();
   const systemRole = useAuthStore((s) => s.systemRole);
-  const setSystemRole = useAuthStore((s) => s.setSystemRole);
 
   const workspaces = useWorkspaceStore((s) => s.workspaceList);
   const currentAgencyId = useAgencyStore((s) => s.currentAgencyId);
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
   const agencyList = useAgencyStore((s) => s.agencyList);
-  const fetchAgencies = useAgencyStore((s) => s.fetchAgencies);
 
   // Vào thẳng URL /workspaces/:id/... (bookmark, refresh, quick-login) mà
   // chưa từng đi qua /agency picker → currentAgencyId chưa set → sidebar
@@ -70,6 +83,7 @@ export function Layout() {
   const workspaceIdInUrl = location.pathname.match(
     /^\/workspaces\/([^/]+)/,
   )?.[1];
+  const agencyIdCandidate = location.pathname.match(/^\/agency\/([^/]+)/)?.[1];
   React.useEffect(() => {
     if (!workspaceIdInUrl) return;
     const ws = workspaces.find((w) => w.id === workspaceIdInUrl);
@@ -77,6 +91,16 @@ export function Layout() {
       setCurrentAgencyId(ws.agencyId);
     }
   }, [workspaceIdInUrl, workspaces, currentAgencyId, setCurrentAgencyId]);
+
+  React.useEffect(() => {
+    if (
+      agencyIdCandidate &&
+      agencyIdCandidate !== currentAgencyId &&
+      agencyList.some((agency) => agency.id === agencyIdCandidate)
+    ) {
+      setCurrentAgencyId(agencyIdCandidate);
+    }
+  }, [agencyIdCandidate, agencyList, currentAgencyId, setCurrentAgencyId]);
 
   const agencyWorkspaces = React.useMemo(
     () =>
@@ -87,32 +111,10 @@ export function Layout() {
   );
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
-  const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
   const fetchClientProfileById = useClientProfileStore(
     (s) => s.fetchProfileById,
   );
   const resetClientProfile = useClientProfileStore((s) => s.reset);
-  const accessToken = useAuthStore((s) => s.accessToken);
-  const isDevSession = accessToken?.startsWith("dev-token-") ?? false;
-
-  React.useEffect(() => {
-    if (isDevSession) return;
-    fetchWorkspaces();
-    fetchAgencies();
-  }, [fetchWorkspaces, fetchAgencies, isDevSession]);
-
-  React.useEffect(() => {
-    if (!user || isDevSession) return;
-    userService
-      .getProfile()
-      .then(({ data }) => {
-        const role = data.data.role;
-        setSystemRole(role === "ADMIN" ? "ADMIN" : "USER");
-      })
-      .catch(() => setSystemRole(null));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
-
   // URL /workspaces/:id/... là nguồn sự thật DUY NHẤT cho "đang ở workspace
   // nào" — không URL đó (vd /agency/:id) thì KHÔNG có workspace active,
   // dù currentWorkspace store còn giữ giá trị từ lần ghé workspace trước
@@ -199,6 +201,11 @@ export function Layout() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const isPackageHardGated =
+    (memberRole === "CLIENT" || memberRole === "MANAGER") &&
+    !!activeWorkspace &&
+    activeWorkspace.packageNegotiationStatus !== "APPROVED";
+
   // Filter mobile tabs based on role
   const filteredMobileTabs = MOBILE_TABS.filter((tab) => {
     if (
@@ -207,6 +214,9 @@ export function Layout() {
       tab.to !== "/workspace"
     ) {
       return false;
+    }
+    if (isPackageHardGated) {
+      return tab.to === "/media-package" || tab.to === "/chat";
     }
     return canAccess(tab.to, systemRole, memberRole);
   });
@@ -314,7 +324,9 @@ export function Layout() {
 
         {/* Page Content Outlet */}
         <main className="bg-background flex-1 overflow-y-auto pb-16 md:pb-0">
-          <Outlet />
+          <React.Suspense fallback={<PageFallback />}>
+            <Outlet />
+          </React.Suspense>
         </main>
       </div>
 
@@ -326,7 +338,7 @@ export function Layout() {
           borderColor: "hsl(var(--border, 240 5.9% 90%))",
         }}
       >
-        {filteredMobileTabs
+        {systemRole === "ADMIN" ? <AdminMobileNavigation /> : filteredMobileTabs
           .slice(0, 5)
           .map(({ to, icon: Icon, labelKey, workspaceScoped }) => {
             const resolvedTo =

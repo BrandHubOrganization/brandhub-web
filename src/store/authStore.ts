@@ -46,8 +46,14 @@ export const useAuthStore = create<AuthState>()(
 
       setUser: (user) => set({ user, isAuthenticated: user !== null }),
 
-      setAuth: (user, accessToken, refreshToken = "") => {
-        set({ user, accessToken, refreshToken, isAuthenticated: true });
+      setAuth: (user, accessToken, refreshToken) => {
+        set((state) => ({
+          user,
+          accessToken,
+          refreshToken:
+            refreshToken !== undefined ? refreshToken : state.refreshToken,
+          isAuthenticated: true,
+        }));
         // Đăng nhập user MỚI (kể cả quick-login đổi tài khoản mà không gọi
         // logout() trước) phải xoá agency/workspace đang chọn của session
         // trước — currentAgencyId persist ở localStorage, không tự hết khi

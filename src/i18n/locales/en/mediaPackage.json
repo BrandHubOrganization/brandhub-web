@@ -1,0 +1,230 @@
+{
+  "offering": {
+    "title": "Service scope",
+    "model": "Packaging model",
+    "legacy": "Legacy package (no model)",
+    "models": {
+      "CAMPAIGN": "Campaign package",
+      "RETAINER": "Retainer (total quantity)",
+      "DELIVERABLE_BUNDLE": "Deliverable bundle"
+    },
+    "hints": {
+      "CAMPAIGN": "Quantities cover the entire package, not each month. The maximum changes limit applies to the whole package.",
+      "RETAINER": "Quantities cover the entire package, not each month. The maximum changes limit applies to the whole package.",
+      "DELIVERABLE_BUNDLE": "Quantities cover the entire package, not each month. The maximum changes limit applies to the whole package."
+    },
+    "services": {
+      "SOCIAL_POST": "Social media posts",
+      "EVENT_PLANNING": "Event plan delivery",
+      "LIVESTREAM_PREPARATION": "Livestream preparation",
+      "PRESS_RECOMMENDATION": "Press partner recommendations",
+      "WORKSHOP_SUPPORT": "Workshop: Meet link and survey"
+    },
+    "service": "Service",
+    "name": "Deliverable name",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "description": "Description",
+    "acceptance": "Acceptance criteria",
+    "revisions": "Maximum changes",
+    "add": "Add deliverable",
+    "remove": "Remove deliverable",
+    "required": "Add at least one deliverable.",
+    "draftTitle": "Campaign drafts",
+    "campaignName": "Campaign name",
+    "period": "Month",
+    "createDraft": "Create draft campaign",
+    "draftCreated": "Draft campaign created",
+    "loadError": "Could not load campaigns. Try again.",
+    "remaining": "Available: {{count}}",
+    "empty": "No campaign yet.",
+    "draftNotice": "This creates a draft only; no tasks, approval or deployment.",
+    "allocationRequired": "Select at least one deliverable within the remaining allowance.",
+    "retry": "Retry"
+  },
+  "agencyPage": {
+    "title": "Manage media packages",
+    "description": "Create and manage the packages this Agency offers to its Workspaces, or start from a global Admin template."
+  },
+  "workspacePage": {
+    "title": "Select a media package",
+    "description": "Choose one of the media packages currently offered by the Agency for this Workspace."
+  },
+  "page": {
+    "title": "Media package",
+    "description": "Choose the right package for this workspace and track its effective terms."
+  },
+  "actions": {
+    "createCustom": "Create custom package",
+    "select": "Select this package",
+    "selected": "Currently selected",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "useTemplate": "Create package from template",
+    "hideFromWorkspaces": "Hide from Workspaces",
+    "showToWorkspaces": "Make available to Workspaces",
+    "chatNegotiate": "Negotiate via Chat",
+    "proposeAdjustment": "Propose terms adjustment",
+    "clientApprove": "Client: Approve package",
+    "agencyApprove": "Agency: Approve package"
+  },
+  "badges": {
+    "template": "Template",
+    "custom": "Custom",
+    "selected": "Selected",
+    "available": "Available",
+    "hidden": "Hidden"
+  },
+  "types": {
+    "BY_DURATION": "Duration based",
+    "BY_BUDGET": "Budget based",
+    "FULL_DELEGATION": "Full delegation"
+  },
+  "values": {
+    "duration": "{{count}} weeks",
+    "fullDelegation": "Entire campaign"
+  },
+  "status": {
+    "DRAFT": "Draft",
+    "CLIENT_REQUESTED_CHANGE": "Client requested changes",
+    "AGENCY_COUNTERED": "Agency countered",
+    "APPROVED": "Approved"
+  },
+  "catalog": {
+    "availableTitle": "Agency media packages",
+    "availableDescription": "Only packages the Owner currently makes available to Workspaces are shown.",
+    "customTitle": "Agency custom packages",
+    "agencyCustomDescription": "Packages managed by the Owner and available only within this Agency.",
+    "workspaceCustomDescription": "Custom packages prepared by the Agency for its clients.",
+    "templatesManagementDescription": "Global templates managed by Admin. Owners can review them here but cannot edit them.",
+    "templatesTitle": "Available templates",
+    "templatesDescription": "Admin-provided packages available to every Agency.",
+    "createdTitle": "Newly created custom packages",
+    "createdDescription": "Packages created for this Agency during the current session.",
+    "empty": "No media packages are available yet.",
+    "noDescription": "No scope description has been provided."
+  },
+  "selected": {
+    "emptyTitle": "No media package selected",
+    "emptyDescription": "The Client can select one of the packages currently offered by the Agency.",
+    "termsVersion": "Terms version {{version}}",
+    "scopeTitle": "Scope of work",
+    "agencyApproval": "Agency approval",
+    "clientApproval": "Client approval",
+    "notApproved": "Not approved",
+    "approvedCompleted": "Fully Approved (APPROVED)",
+    "approvedCompletedBadge": "Fully Approved (APPROVED)",
+    "approvedCompletedDescription": "Both parties have agreed upon version v{{version}} of this package. The terms are officially active.",
+    "dualApprovalTitle": "Dual Approval Process",
+    "dualApprovalDesc": "Approval from both Client and Agency is required for the package terms to officially take effect.",
+    "clientApprovalTitle": "Client Side",
+    "agencyApprovalTitle": "Agency Side (Manager)"
+  },
+  "approval": {
+    "approvedAt": "Approved at {{time}}",
+    "waiting": "Pending approval",
+    "approvedStatus": "Approved",
+    "pendingStatus": "Pending",
+    "clientAlreadyApproved": "Client: Approved (Waiting for Agency)",
+    "agencyAlreadyApproved": "Agency: Approved (Waiting for Client)"
+  },
+  "negotiateModal": {
+    "title": "Propose terms adjustment",
+    "description": "Adjust service terms so both parties can negotiate and reach an agreement.",
+    "budgetLabel": "Budget (VND)",
+    "durationLabel": "Duration (weeks)",
+    "scopeLabel": "Scope of work description",
+    "submit": "Submit proposal"
+  },
+  "form": {
+    "basedOnTemplate": "Based on package:",
+    "title": "Create a custom media package",
+    "description": "Create an independent package for this Agency. It can be made available to any Workspace in the Agency.",
+    "nameLabel": "Package name",
+    "namePlaceholder": "Example: Summer launch campaign",
+    "typeLabel": "Package type",
+    "durationLabel": "Duration (weeks)",
+    "budgetLabel": "Budget (VND)",
+    "scopeLabel": "Scope of work",
+    "scopePlaceholder": "Describe deliverables, media channels, and support coverage...",
+    "errors": {
+      "name": "Enter a package name.",
+      "duration": "Duration must be greater than 0 weeks.",
+      "budget": "Budget must be greater than 0.",
+      "scopeLength": "Scope of work cannot exceed 5,000 characters."
+    }
+  },
+  "messages": {
+    "selected": "The Workspace media package has been updated.",
+    "customCreated": "The Agency media package has been created.",
+    "packageShown": "The package is now available to Workspaces.",
+    "packageHidden": "The package has been hidden from Workspace selection.",
+    "negotiateSuccess": "Terms adjustment proposal submitted successfully.",
+    "approveSuccess": "Package approved successfully."
+  },
+  "errors": {
+    "load": "Unable to load media package information.",
+    "select": "Unable to select the media package.",
+    "createCustom": "Unable to create the custom media package.",
+    "updateAvailability": "Unable to update package availability.",
+    "negotiate": "Unable to submit terms adjustment proposal.",
+    "approve": "Unable to approve the media package."
+  },
+  "ui": {
+    "viewDetail": "View package details",
+    "duplicate": "Create from this package",
+    "moreDeliverables": "+ {{count}} more deliverables",
+    "search": "Search by package name or scope…",
+    "availability": "Filter visibility",
+    "allPackages": "All visibility states",
+    "availableOption": "Available packages",
+    "hiddenOption": "Hidden packages",
+    "resultCount": "{{count}} packages",
+    "noResults": "No matching packages. Try another name or filter.",
+    "loadMore": "Show more packages",
+    "deliverables": "Deliverables",
+    "totalQuantity": "Quantities cover the entire package, not each month. The maximum changes limit applies to the whole package.",
+    "approvalHint": "Both parties approve the same terms version. Any terms change requires both parties to approve again.",
+    "clientProposals": "Client proposals: {{count}}/{{limit}}",
+    "proposalLimit": "Proposal limit reached. You can still approve the current terms or discuss them in Chat.",
+    "campaignReady": "Both parties have approved this package. The Manager can now build a Campaign from these terms.",
+    "openCampaign": "View Campaign plan",
+    "browseOtherPackages": "Browse other Agency packages",
+    "compare": "Compare terms",
+    "changeCount": "{{count}} changes",
+    "changed": "Changed",
+    "before": "Previous version",
+    "after": "New version",
+    "noChanges": "No content to compare yet.",
+    "currentPackage": "Current package",
+    "durationExample": "For example: 4",
+    "unsavedTitle": "Discard unsaved changes?",
+    "unsavedDescription": "Your recent edits will not be saved if you close the editor.",
+    "keepEditing": "Keep editing",
+    "discard": "Discard changes",
+    "fields": {
+      "name": "Name",
+      "type": "Type",
+      "budgetAmount": "Budget",
+      "durationWeeks": "Duration (weeks)",
+      "scopeDescription": "Scope",
+      "offeringModel": "Offering model",
+      "maxChanges": "Maximum changes",
+      "serviceType": "Service",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "description": "Description",
+      "acceptanceCriteria": "Acceptance criteria",
+      "strategyDetail": "Implementation strategy",
+      "brandGuideline": "Brand guidelines",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "date": "Date",
+      "dueDate": "Due date",
+      "milestones": "Milestone",
+      "workItems": "Planned work item"
+    },
+    "showUnchanged": "Include unchanged content",
+    "noDifferences": "No changes from the previous version."
+  }
+}

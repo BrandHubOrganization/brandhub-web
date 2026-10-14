@@ -1,6 +1,7 @@
 {
   "navigationMenu": "Menu điều hướng",
   "notifications": "Thông báo",
+  "mailTemplates": "Mẫu email",
   "noEmail": "Chưa có email",
   "workspaceSwitcher": {
     "label": "Không gian làm việc",
@@ -19,6 +20,7 @@
   },
   "home": "Trang chủ",
   "dashboard": "Bảng điều khiển",
+  "chat": "Trao đổi",
   "overview": "Tổng quan Không gian làm việc",
   "analytics": "Phân tích",
   "editor": "Trình soạn Nội dung",
@@ -30,7 +32,10 @@
   "workspaceClients": "Client",
   "invitations": "Lời mời",
   "portal": "Cổng Khách hàng",
-  "workspaceClientProfile": "Hồ sơ Thương hiệu",
+  "workspaceClientProfile": "Hồ sơ Khách hàng",
+  "mediaPackages": "Gói dịch vụ",
+  "manageMediaPackages": "Quản lý gói truyền thông",
+  "selectMediaPackage": "Chọn gói truyền thông",
   "admin": "Quản trị Hệ thống",
   "requests": "Yêu cầu Nội dung",
   "templates": "Mẫu Bài đăng",
@@ -46,10 +51,11 @@
   "agencySub": {
     "profile": "Hồ sơ công ty",
     "members": "Thành viên công ty",
+    "roles": "Vai trò & Phân quyền",
     "stats": "Thống kê công ty"
   },
   "workspaceSub": {
-    "settings": "Cài đặt workspace",
+    "settings": "Cài đặt chung",
     "members": "Thành viên",
     "clients": "Khách hàng"
   },
@@ -57,16 +63,17 @@
   "clientInvitations": "Lời mời thành khách hàng",
   "agencyList": "Danh sách công ty",
   "workspaceList": "Danh sách workspace",
-  "clientProfile": "Hồ sơ Thương hiệu",
+  "clientProfile": "Hồ sơ Khách hàng",
   "sections": {
     "overview": "Tổng quan",
     "create": "Sáng tạo",
     "manage": "Quản lý",
     "agency": "Công ty",
     "workspaceSettings": "Cài đặt Workspace",
-    "lists": "Danh sách",
+    "lists": "Không gian làm việc",
     "invitations": "Lời mời",
     "settings": "Cài đặt",
+    "help": "Trợ giúp & Hướng dẫn",
     "system": "Hệ thống"
   },
   "logout": "Đăng xuất",
@@ -86,5 +93,7 @@
   "create": "Tạo mới",
   "accept": "Xác nhận",
   "leaveAgency": "Thoát agency",
-  "leaveWorkspace": "Thoát workspace"
+  "leaveWorkspace": "Thoát workspace",
+  "faq": "Hỏi đáp (FAQ)",
+  "guide": "Cẩm nang hướng dẫn"
 }

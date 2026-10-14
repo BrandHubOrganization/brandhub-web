@@ -102,6 +102,7 @@ export interface VerifyOtpRequest {
 
 export interface LoginResponse {
   accessToken: string;
+  refreshToken?: string;
   tokenType: string;
   expiresIn: number;
   requireTwoFactor?: boolean;

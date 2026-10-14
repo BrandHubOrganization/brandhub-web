@@ -1,129 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import {
-  BadgeCheck,
-  BellRing,
-  Briefcase,
-  Calendar,
-  Clock,
-  Eye,
-  ImagePlus,
-  Link2,
-  MapPin,
-  Pencil,
-  Phone,
-  ShieldCheck,
-  X,
-} from "lucide-react";
+import { BadgeCheck, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/authStore";
 import { userService } from "@/services/userService";
 import { extractErrorMessage } from "@/utils/error";
 import type { User } from "@/types/user";
 import { AvatarUploadModal } from "./components/AvatarUploadModal";
 import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
+import { ImageCropperModal, RecentAssetsModal } from "@/components/shared/image-editor";
+import { saveRecentAsset } from "@/utils/recentAssetsStorage";
 import { LinkPhoneModal } from "./components/LinkPhoneModal";
-import { JobTitleSelect } from "./components/JobTitleSelect";
-import { LanguageChipSelect } from "./components/LanguageChipSelect";
-import { SkillsChipSelect } from "./components/SkillsChipSelect";
-import { LocationAutocomplete } from "./components/LocationAutocomplete";
-import { TimezoneSelect } from "@/pages/workspace/components/TimezoneSelect";
+import { ProfilePreviewCard } from "./components/ProfilePreviewCard";
+import { ProfileEditForm } from "./components/ProfileEditForm";
+import { ProfileViewDetails } from "./components/ProfileViewDetails";
 import {
-  isCuratedJobTitle,
-  isLanguage,
-  isSkill,
-  parseLanguages,
-} from "./constants";
-
-/**
- * Các trường mở rộng của hồ sơ (skills/vị trí/kinh nghiệm/social/banner).
- * Gom 1 object để mọi điểm đồng bộ (load / save / cancel) chỉ cần 1 dòng,
- * thay vì 9 state rời rạc × 6 chỗ.
- */
-interface ExtendedProfile {
-  skills: string[];
-  location: string;
-  yearsOfExperience: string;
-  linkedinUrl: string;
-  facebookUrl: string;
-  instagramUrl: string;
-  tiktokUrl: string;
-  website: string;
-  bannerUrl: string;
-}
-
-const EMPTY_EXTENDED: ExtendedProfile = {
-  skills: [],
-  location: "",
-  yearsOfExperience: "",
-  linkedinUrl: "",
-  facebookUrl: "",
-  instagramUrl: "",
-  tiktokUrl: "",
-  website: "",
-  bannerUrl: "",
-};
-
-// Field cá nhân hóa được ẩn/hiện khi agency-mate xem qua MemberProfileDrawer
-// (BE: AgencyServiceImpl.getMemberProfile). fullName/email/avatar/role/
-// workspace list luôn công khai — không đưa vào đây (cần cho công việc).
-const VISIBILITY_FIELDS = [
-  "phone",
-  "professionalTitle",
-  "bio",
-  "location",
-  "yearsOfExperience",
-  "workingLanguage",
-  "skills",
-  "portfolioUrls",
-  "linkedinUrl",
-  "facebookUrl",
-  "instagramUrl",
-  "tiktokUrl",
-  "website",
-] as const;
-type VisibilityField = (typeof VISIBILITY_FIELDS)[number];
-
-// Tái dùng key label sẵn có trong namespace profile.edit.* thay vì tạo key
-// mới trùng nội dung.
-const VISIBILITY_LABEL_KEY: Record<VisibilityField, string> = {
-  phone: "phoneLabel",
-  professionalTitle: "jobTitleLabel",
-  bio: "bioLabel",
-  location: "locationLabel",
-  yearsOfExperience: "yearsOfExperienceLabel",
-  workingLanguage: "workingLanguageLabel",
-  skills: "skillsLabel",
-  portfolioUrls: "portfolioLabel",
-  linkedinUrl: "linkedinLabel",
-  facebookUrl: "facebookLabel",
-  instagramUrl: "instagramLabel",
-  tiktokUrl: "tiktokLabel",
-  website: "websiteLabel",
-};
-
-function defaultVisibility(): Record<VisibilityField, boolean> {
-  return Object.fromEntries(VISIBILITY_FIELDS.map((f) => [f, true])) as Record<
-    VisibilityField,
-    boolean
-  >;
-}
-
-// Field vắng mặt trong response = mặc định public (BE cũng coi vậy —
-// backward-compatible cho user chưa từng cấu hình).
-function toVisibility(
-  raw: Record<string, boolean> | null | undefined,
-): Record<VisibilityField, boolean> {
-  const v = defaultVisibility();
-  if (!raw) return v;
-  for (const f of VISIBILITY_FIELDS) {
-    if (raw[f] === false) v[f] = false;
-  }
-  return v;
-}
+  type ExtendedProfile,
+  type VisibilityField,
+  EMPTY_EXTENDED,
+  defaultVisibility,
+  toVisibility,
+} from "./types";
 
 /** API → state. Dùng chung cho cả lần load đầu và lần save (2 chiều đều nhận UserProfileResponse). */
 function toExtended(p: {
@@ -183,6 +81,9 @@ export function ProfilePage() {
     useRef<Record<VisibilityField, boolean>>(defaultVisibility());
   const [bannerUploading, setBannerUploading] = useState(false);
   const bannerInputRef = useRef<HTMLInputElement>(null);
+  const [bannerCropperOpen, setBannerCropperOpen] = useState(false);
+  const [bannerCropperSrc, setBannerCropperSrc] = useState<string | null>(null);
+  const [bannerRecentModalOpen, setBannerRecentModalOpen] = useState(false);
   const email = user?.email ?? "";
   const savedProfile = useRef({
     name: "",
@@ -324,8 +225,10 @@ export function ProfilePage() {
     try {
       const resp = await userService.uploadBanner(file);
       const url = resp.data.data.bannerUrl;
+      saveRecentAsset("banner", url);
       patchExt({ bannerUrl: url });
       savedExt.current = { ...savedExt.current, bannerUrl: url };
+      toast.success(t("profile.edit.bannerUploadSuccess", "Tải ảnh bìa thành công"));
     } catch (err) {
       toast.error(
         extractErrorMessage(err, t("profile.edit.bannerUploadFailed")),
@@ -337,8 +240,22 @@ export function ProfilePage() {
 
   const handleBannerFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) void handleBannerFile(file);
     e.target.value = "";
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setBannerCropperSrc(url);
+    setBannerCropperOpen(true);
+  };
+
+  const handleBannerCropConfirm = (croppedFile: File) => {
+    setBannerCropperOpen(false);
+    void handleBannerFile(croppedFile);
+  };
+
+  const handleSelectRecentBanner = (url: string) => {
+    setBannerRecentModalOpen(false);
+    patchExt({ bannerUrl: url });
+    toast.success("Đã chọn ảnh bìa từ lịch sử");
   };
 
   // Chỉ những kênh user thực sự điền mới hiển thị.
@@ -411,684 +328,72 @@ export function ProfilePage() {
               )
             }
           >
-
             {isEditing ? (
-              <>
-                <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("settings.profile.fullNameLabel")}
-                    </label>
-                    <Input
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("settings.profile.emailLabel")}
-                    </label>
-                    <Input value={email} readOnly />
-                  </div>
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.phoneLabel")}
-                    </label>
-                    <Input
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder={t("profile.edit.phonePlaceholder")}
-                    />
-                  </div>
-                  <div>
-                    <JobTitleSelect
-                      value={professionalTitle}
-                      onChange={setProfessionalTitle}
-                    />
-                  </div>
-                  <div>
-                    <LanguageChipSelect
-                      value={workingLanguage}
-                      onChange={setWorkingLanguage}
-                    />
-                  </div>
-                  <TimezoneSelect value={timezone} onChange={setTimezone} />
-                  <div className="sm:col-span-2">
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.bioLabel")}
-                    </label>
-                    <textarea
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      placeholder={t("profile.edit.bioPlaceholder")}
-                      rows={3}
-                      className="border-border bg-background text-foreground placeholder:text-muted-foreground w-full rounded-md border px-3 py-2 text-sm outline-none"
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.portfolioLabel")}
-                    </label>
-                    <div className="space-y-2">
-                      {portfolioUrls.map((url, idx) => (
-                        <div key={idx} className="flex gap-2">
-                          <Input
-                            value={url}
-                            onChange={(e) => {
-                              const next = [...portfolioUrls];
-                              next[idx] = e.target.value;
-                              setPortfolioUrls(next);
-                            }}
-                            placeholder={t("profile.edit.portfolioPlaceholder")}
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              setPortfolioUrls(
-                                portfolioUrls.filter((_, i) => i !== idx),
-                              )
-                            }
-                          >
-                            {t("profile.edit.portfolioRemove")}
-                          </Button>
-                        </div>
-                      ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPortfolioUrls([...portfolioUrls, ""])}
-                      >
-                        {t("profile.edit.portfolioAdd")}
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="sm:col-span-2">
-                    <SkillsChipSelect
-                      value={ext.skills}
-                      onChange={(skills) => patchExt({ skills })}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.locationLabel")}
-                    </label>
-                    <LocationAutocomplete
-                      value={ext.location}
-                      onChange={(location) => patchExt({ location })}
-                      placeholder={t("profile.edit.locationPlaceholder")}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.yearsOfExperienceLabel")}
-                    </label>
-                    <Input
-                      type="number"
-                      min={0}
-                      max={70}
-                      value={ext.yearsOfExperience}
-                      onChange={(e) =>
-                        patchExt({ yearsOfExperience: e.target.value })
-                      }
-                      placeholder={t(
-                        "profile.edit.yearsOfExperiencePlaceholder",
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.linkedinLabel")}
-                    </label>
-                    <Input
-                      value={ext.linkedinUrl}
-                      onChange={(e) =>
-                        patchExt({ linkedinUrl: e.target.value })
-                      }
-                      placeholder={t("profile.edit.socialPlaceholder")}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.facebookLabel")}
-                    </label>
-                    <Input
-                      value={ext.facebookUrl}
-                      onChange={(e) =>
-                        patchExt({ facebookUrl: e.target.value })
-                      }
-                      placeholder={t("profile.edit.socialPlaceholder")}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.instagramLabel")}
-                    </label>
-                    <Input
-                      value={ext.instagramUrl}
-                      onChange={(e) =>
-                        patchExt({ instagramUrl: e.target.value })
-                      }
-                      placeholder={t("profile.edit.socialPlaceholder")}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.tiktokLabel")}
-                    </label>
-                    <Input
-                      value={ext.tiktokUrl}
-                      onChange={(e) => patchExt({ tiktokUrl: e.target.value })}
-                      placeholder={t("profile.edit.socialPlaceholder")}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.websiteLabel")}
-                    </label>
-                    <Input
-                      value={ext.website}
-                      onChange={(e) => patchExt({ website: e.target.value })}
-                      placeholder={t("profile.edit.socialPlaceholder")}
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                      {t("profile.edit.bannerLabel")}
-                    </label>
-                    <div className="flex gap-2">
-                      <Input
-                        value={ext.bannerUrl}
-                        onChange={(e) =>
-                          patchExt({ bannerUrl: e.target.value })
-                        }
-                        placeholder={t("profile.edit.bannerPlaceholder")}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="shrink-0 gap-1.5"
-                        loading={bannerUploading}
-                        onClick={() => bannerInputRef.current?.click()}
-                      >
-                        <ImagePlus className="size-3.5" />
-                        {t("profile.edit.bannerUpload")}
-                      </Button>
-                      {ext.bannerUrl && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="shrink-0"
-                          title={t("profile.edit.bannerRemove")}
-                          onClick={() => patchExt({ bannerUrl: "" })}
-                        >
-                          <X className="size-3.5" />
-                        </Button>
-                      )}
-                    </div>
-                    <p className="text-muted-foreground text-3xs mt-1">
-                      {t("profile.edit.bannerHint")}
-                    </p>
-                    <input
-                      ref={bannerInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) void handleBannerFile(file);
-                        e.target.value = "";
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="border-border mt-6 border-t pt-6">
-                  <p className="text-foreground text-sm font-semibold">
-                    {t("profile.edit.visibilityTitle")}
-                  </p>
-                  <p className="text-muted-foreground mt-1 text-xs">
-                    {t("profile.edit.visibilityHint")}
-                  </p>
-                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {VISIBILITY_FIELDS.map((field) => (
-                      <label
-                        key={field}
-                        className="flex items-center gap-2 text-sm"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={visibility[field]}
-                          onChange={(e) =>
-                            setVisibility((prev) => ({
-                              ...prev,
-                              [field]: e.target.checked,
-                            }))
-                          }
-                        />
-                        {t(`profile.edit.${VISIBILITY_LABEL_KEY[field]}`)}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-4 flex justify-end gap-2">
-                  <Button variant="outline" onClick={handleCancelEdit}>
-                    {t("profile.cancelEdit")}
-                  </Button>
-                  <Button
-                    variant="orange"
-                    onClick={handleSave}
-                    loading={saving}
-                  >
-                    {t("settings.profile.save")}
-                  </Button>
-                </div>
-              </>
+              <ProfileEditForm
+                name={name}
+                setName={setName}
+                email={email}
+                phone={phone}
+                setPhone={setPhone}
+                professionalTitle={professionalTitle}
+                setProfessionalTitle={setProfessionalTitle}
+                workingLanguage={workingLanguage}
+                setWorkingLanguage={setWorkingLanguage}
+                timezone={timezone}
+                setTimezone={setTimezone}
+                bio={bio}
+                setBio={setBio}
+                portfolioUrls={portfolioUrls}
+                setPortfolioUrls={setPortfolioUrls}
+                ext={ext}
+                patchExt={patchExt}
+                bannerUploading={bannerUploading}
+                bannerInputRef={bannerInputRef}
+                handleBannerFileChange={handleBannerFileChange}
+                onOpenBannerCropper={() => {
+                  if (ext.bannerUrl) {
+                    setBannerCropperSrc(ext.bannerUrl);
+                    setBannerCropperOpen(true);
+                  }
+                }}
+                onOpenBannerRecent={() => setBannerRecentModalOpen(true)}
+                visibility={visibility}
+                setVisibility={setVisibility}
+                handleCancelEdit={handleCancelEdit}
+                handleSave={handleSave}
+                saving={saving}
+              />
             ) : (
-              <div className="border-border mt-6 grid grid-cols-1 gap-4 border-t pt-6 sm:grid-cols-2">
-                <div className="flex items-center gap-2.5">
-                  <ShieldCheck className="text-muted-foreground size-4" />
-                  <div>
-                    <p className="text-muted-foreground text-3xs">
-                      {t("profile.view.roleLabel")}
-                    </p>
-                    <p className="text-foreground text-xs font-medium">
-                      {role}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <Phone className="text-muted-foreground size-4" />
-                  <div className="flex-1">
-                    <p className="text-muted-foreground text-3xs">
-                      {t("profile.view.phoneLabel")}
-                    </p>
-                    <p className="text-foreground text-xs font-medium">
-                      {phone || t("profile.view.phoneEmpty")}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    className="text-brand-orange text-3xs cursor-pointer font-medium hover:underline"
-                    onClick={() => setLinkPhoneOpen(true)}
-                  >
-                    {phone
-                      ? t("profile.linkPhone.changeLink")
-                      : t("profile.linkPhone.addLink")}
-                  </button>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <Calendar className="text-muted-foreground size-4" />
-                  <div>
-                    <p className="text-muted-foreground text-3xs">
-                      {t("profile.view.joinedLabel")}
-                    </p>
-                    <p className="text-foreground text-xs font-medium">
-                      {joinedAt ? new Date(joinedAt).toLocaleDateString() : "—"}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <Clock className="text-muted-foreground size-4" />
-                  <div>
-                    <p className="text-muted-foreground text-3xs">
-                      {t("profile.view.lastLoginLabel")}
-                    </p>
-                    <p className="text-foreground text-xs font-medium">
-                      {user?.lastLoginAt
-                        ? new Date(user.lastLoginAt).toLocaleString()
-                        : "—"}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-muted-foreground text-3xs">
-                    {t("profile.view.jobTitleLabel")}
-                  </p>
-                  <p className="text-foreground text-xs font-medium">
-                    {professionalTitle
-                      ? isCuratedJobTitle(professionalTitle)
-                        ? t(`profile.jobTitle.${professionalTitle}`)
-                        : professionalTitle
-                      : t("profile.view.jobTitleEmpty")}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground text-3xs">
-                    {t("profile.view.workingLanguageLabel")}
-                  </p>
-                  <p className="text-foreground text-xs font-medium">
-                    {workingLanguage
-                      ? parseLanguages(workingLanguage)
-                          .map((c) =>
-                            isLanguage(c) ? t(`profile.language.${c}`) : c,
-                          )
-                          .join(", ")
-                      : t("profile.view.workingLanguageEmpty")}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground text-3xs">
-                    {t("profile.view.timezoneLabel")}
-                  </p>
-                  <p className="text-foreground text-xs font-medium">
-                    {timezone}
-                  </p>
-                </div>
-                <div className="sm:col-span-2">
-                  <p className="text-muted-foreground text-3xs">
-                    {t("profile.view.bioLabel")}
-                  </p>
-                  <p className="text-foreground text-xs font-medium whitespace-pre-wrap">
-                    {bio || t("profile.view.bioEmpty")}
-                  </p>
-                </div>
-                <div className="sm:col-span-2">
-                  <p className="text-muted-foreground text-3xs">
-                    {t("profile.view.portfolioLabel")}
-                  </p>
-                  {portfolioUrls.length > 0 ? (
-                    <ul className="mt-1 space-y-1">
-                      {portfolioUrls.map((url) => (
-                        <li key={url}>
-                          <a
-                            href={url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-brand-orange text-xs font-medium hover:underline"
-                          >
-                            {url}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-foreground text-xs font-medium">
-                      {t("profile.view.portfolioEmpty")}
-                    </p>
-                  )}
-                </div>
-                <div className="sm:col-span-2">
-                  <p className="text-muted-foreground text-3xs">
-                    {t("profile.view.skillsLabel")}
-                  </p>
-                  {ext.skills.length > 0 ? (
-                    <div className="mt-1 flex flex-wrap gap-1.5">
-                      {ext.skills.map((slug) => (
-                        <span
-                          key={slug}
-                          className="bg-brand-orange-soft text-brand-orange text-3xs rounded-full px-2 py-0.5 font-medium"
-                        >
-                          {isSkill(slug) ? t(`profile.skill.${slug}`) : slug}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-foreground text-xs font-medium">
-                      {t("profile.view.skillsEmpty")}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <MapPin className="text-muted-foreground size-4" />
-                  <div>
-                    <p className="text-muted-foreground text-3xs">
-                      {t("profile.view.locationLabel")}
-                    </p>
-                    <p className="text-foreground text-xs font-medium">
-                      {ext.location || t("profile.view.locationEmpty")}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <Briefcase className="text-muted-foreground size-4" />
-                  <div>
-                    <p className="text-muted-foreground text-3xs">
-                      {t("profile.view.yearsOfExperienceLabel")}
-                    </p>
-                    <p className="text-foreground text-xs font-medium">
-                      {ext.yearsOfExperience
-                        ? t("profile.view.yearsOfExperienceValue", {
-                            years: Number(ext.yearsOfExperience),
-                          })
-                        : t("profile.view.yearsOfExperienceEmpty")}
-                    </p>
-                  </div>
-                </div>
-                <div className="sm:col-span-2">
-                  <p className="text-muted-foreground text-3xs">
-                    {t("profile.view.socialLabel")}
-                  </p>
-                  {socials.length > 0 ? (
-                    <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
-                      {socials.map((s) => (
-                        <li key={s.key}>
-                          <a
-                            href={s.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-brand-orange inline-flex items-center gap-1 text-xs font-medium hover:underline"
-                          >
-                            <Link2 className="size-3" />
-                            {t(`profile.view.${s.key}Label`)}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-foreground text-xs font-medium">
-                      {t("profile.view.socialEmpty")}
-                    </p>
-                  )}
-                </div>
-                <div className="sm:col-span-2">
-                  <Link
-                    to="/settings/notifications"
-                    className="text-brand-orange inline-flex items-center gap-1.5 text-xs font-medium hover:underline"
-                  >
-                    <BellRing className="size-3.5" />
-                    {t("profile.view.notificationsLink")}
-                  </Link>
-                </div>
-              </div>
+              <ProfileViewDetails
+                role={role}
+                phone={phone}
+                joinedAt={joinedAt ?? undefined}
+                lastLoginAt={user?.lastLoginAt}
+                professionalTitle={professionalTitle}
+                workingLanguage={workingLanguage}
+                timezone={timezone}
+                bio={bio}
+                portfolioUrls={portfolioUrls}
+                ext={ext}
+                socials={socials}
+                onOpenLinkPhone={() => setLinkPhoneOpen(true)}
+              />
             )}
           </ProfileBannerHeader>
         </div>
 
-        <div className="border-border bg-card rounded-xl border p-6 lg:sticky lg:top-6">
-          <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-            <Eye className="size-4" />
-            {t("profile.preview.title")}
-          </h3>
-          <p className="text-muted-foreground mt-2 text-xs">
-            {t("profile.preview.hint")}
-          </p>
-
-          <div className="border-border mt-4 overflow-hidden rounded-xl border">
-            <div className="relative h-20 w-full bg-muted/30">
-              {ext.bannerUrl ? (
-                <img
-                  src={ext.bannerUrl}
-                  alt={t("profile.edit.bannerLabel")}
-                  className="size-full object-cover"
-                />
-              ) : (
-                <div className="flex size-full items-center justify-center bg-gradient-to-r from-orange-500/10 via-brand-orange/5 to-amber-500/10 text-muted-foreground text-3xs">
-                  {t("profile.edit.bannerPlaceholder")}
-                </div>
-              )}
-            </div>
-            <div className="space-y-4 p-4 pt-0">
-              <div className="flex items-center gap-3">
-                <div className="relative -mt-6 shrink-0 z-10">
-                  <div className="size-12 rounded-full border-2 border-card bg-card shadow-sm overflow-hidden flex items-center justify-center">
-                    {avatarUrl ? (
-                      <img
-                        src={avatarUrl}
-                        alt={name}
-                        className="size-full object-cover"
-                      />
-                    ) : (
-                      <div className="bg-brand-orange-soft text-brand-orange flex size-full items-center justify-center text-base font-bold">
-                        {(name || "?").charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="min-w-0 space-y-0.5 mt-1">
-                  <p className="text-foreground truncate text-sm font-semibold">
-                    {name || t("profile.preview.nameEmpty")}
-                  </p>
-                  <span className="bg-brand-orange-soft text-brand-orange text-3xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium">
-                    <BadgeCheck className="size-3" />
-                    {t("profile.verified")}
-                  </span>
-                </div>
-              </div>
-
-            <div>
-              <p className="text-muted-foreground text-3xs">
-                {t("profile.view.jobTitleLabel")}
-              </p>
-              <p className="text-foreground text-xs font-medium">
-                {professionalTitle
-                  ? isCuratedJobTitle(professionalTitle)
-                    ? t(`profile.jobTitle.${professionalTitle}`)
-                    : professionalTitle
-                  : t("profile.view.jobTitleEmpty")}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-muted-foreground text-3xs">
-                {t("profile.view.bioLabel")}
-              </p>
-              <p className="text-foreground text-xs font-medium whitespace-pre-wrap">
-                {bio || t("profile.view.bioEmpty")}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-muted-foreground text-3xs">
-                {t("profile.view.portfolioLabel")}
-              </p>
-              {portfolioUrls.filter((u) => u.trim() !== "").length > 0 ? (
-                <ul className="mt-1 space-y-1">
-                  {portfolioUrls
-                    .filter((u) => u.trim() !== "")
-                    .map((url) => (
-                      <li key={url}>
-                        <a
-                          href={url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-brand-orange text-xs font-medium hover:underline"
-                        >
-                          {url}
-                        </a>
-                      </li>
-                    ))}
-                </ul>
-              ) : (
-                <p className="text-foreground text-xs font-medium">
-                  {t("profile.view.portfolioEmpty")}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <p className="text-muted-foreground text-3xs">
-                {t("profile.view.workingLanguageLabel")}
-              </p>
-              <p className="text-foreground text-xs font-medium">
-                {workingLanguage
-                  ? parseLanguages(workingLanguage)
-                      .map((c) =>
-                        isLanguage(c) ? t(`profile.language.${c}`) : c,
-                      )
-                      .join(", ")
-                  : t("profile.view.workingLanguageEmpty")}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-muted-foreground text-3xs">
-                {t("profile.view.timezoneLabel")}
-              </p>
-              <p className="text-foreground text-xs font-medium">{timezone}</p>
-            </div>
-
-            {ext.skills.length > 0 && (
-              <div>
-                <p className="text-muted-foreground text-3xs">
-                  {t("profile.view.skillsLabel")}
-                </p>
-                <div className="mt-1 flex flex-wrap gap-1.5">
-                  {ext.skills.map((slug) => (
-                    <span
-                      key={slug}
-                      className="bg-brand-orange-soft text-brand-orange text-3xs rounded-full px-2 py-0.5 font-medium"
-                    >
-                      {isSkill(slug) ? t(`profile.skill.${slug}`) : slug}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {ext.location && (
-              <div>
-                <p className="text-muted-foreground text-3xs">
-                  {t("profile.view.locationLabel")}
-                </p>
-                <p className="text-foreground text-xs font-medium">
-                  {ext.location}
-                </p>
-              </div>
-            )}
-
-            {ext.yearsOfExperience && (
-              <div>
-                <p className="text-muted-foreground text-3xs">
-                  {t("profile.view.yearsOfExperienceLabel")}
-                </p>
-                <p className="text-foreground text-xs font-medium">
-                  {t("profile.view.yearsOfExperienceValue", {
-                    years: Number(ext.yearsOfExperience),
-                  })}
-                </p>
-              </div>
-            )}
-
-            {socials.length > 0 && (
-              <div>
-                <p className="text-muted-foreground text-3xs">
-                  {t("profile.view.socialLabel")}
-                </p>
-                <ul className="mt-1 space-y-1">
-                  {socials.map((s) => (
-                    <li key={s.key}>
-                      <a
-                        href={s.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-brand-orange inline-flex items-center gap-1 text-xs font-medium hover:underline"
-                      >
-                        <Link2 className="size-3" />
-                        {t(`profile.view.${s.key}Label`)}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
+        <ProfilePreviewCard
+          ext={ext}
+          avatarUrl={avatarUrl}
+          name={name}
+          professionalTitle={professionalTitle}
+          bio={bio}
+          portfolioUrls={portfolioUrls}
+          workingLanguage={workingLanguage}
+          timezone={timezone}
+          socials={socials}
+        />
       </div>
-    </div>
 
       <AvatarUploadModal
         isOpen={avatarModalOpen}
@@ -1103,6 +408,21 @@ export function ProfilePage() {
           setPhone(linkedPhone);
           savedProfile.current.phone = linkedPhone;
         }}
+      />
+
+      <ImageCropperModal
+        isOpen={bannerCropperOpen}
+        onClose={() => setBannerCropperOpen(false)}
+        cropType="banner"
+        imageUrl={bannerCropperSrc}
+        onConfirm={handleBannerCropConfirm}
+      />
+
+      <RecentAssetsModal
+        isOpen={bannerRecentModalOpen}
+        onClose={() => setBannerRecentModalOpen(false)}
+        category="banner"
+        onSelect={handleSelectRecentBanner}
       />
     </section>
   );

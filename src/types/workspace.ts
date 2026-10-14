@@ -18,6 +18,12 @@ export type WorkspaceIndustry =
 
 export type ReportFrequency = "WEEKLY" | "MONTHLY";
 
+export type WorkspacePackageNegotiationStatus =
+  | "DRAFT"
+  | "CLIENT_REQUESTED_CHANGE"
+  | "AGENCY_COUNTERED"
+  | "APPROVED";
+
 export interface WorkspaceSettings {
   industry: WorkspaceIndustry | null;
   timezone: string | null;
@@ -52,6 +58,10 @@ export interface Workspace {
   /** ClientProfile đang gắn cho workspace này — chỉ có giá trị khi
    * myRole === "CLIENT" (BA mới: N profile/user, chọn theo workspace). */
   clientProfileId: string | null;
+  /** ID gói media package đang được chọn cho workspace này (nếu có). */
+  workspaceMediaPackageId?: string | null;
+  /** undefined: chưa kiểm tra; null: chưa chọn gói; APPROVED: đã chốt gói. */
+  packageNegotiationStatus?: WorkspacePackageNegotiationStatus | null;
 }
 
 export interface WorkspaceMember {

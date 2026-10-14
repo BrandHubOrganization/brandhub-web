@@ -1,10 +1,15 @@
 import * as React from "react";
-import { Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Sparkles, BookOpen, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface PageWrapperProps {
   title: string;
   description?: string;
+  introSummary?: string; // Đoạn giới thiệu nhỏ về trang
+  guideUrl?: string; // Link đến trang cẩm nang hướng dẫn (mặc định /help/guide)
+  guideLabel?: string;
+  showGuideButton?: boolean;
   actions?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
@@ -19,6 +24,10 @@ export interface PageWrapperProps {
 export function PageWrapper({
   title,
   description,
+  introSummary,
+  guideUrl = "/help/guide",
+  guideLabel,
+  showGuideButton = true,
   actions,
   children,
   className,
@@ -72,11 +81,19 @@ export function PageWrapper({
               </p>
             )}
           </div>
-          {actions && (
-            <div className="flex shrink-0 items-center gap-2 self-start md:self-center">
-              {actions}
-            </div>
-          )}
+          <div className="flex shrink-0 items-center gap-2 self-start md:self-center">
+            {showGuideButton && (
+              <Link
+                to={guideUrl}
+                className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-colors shadow-xs"
+                title="Xem hướng dẫn chi tiết & tài liệu quản trị"
+              >
+                <BookOpen className="size-3.5 text-brand-orange" />
+                <span>{guideLabel || "Hướng dẫn"}</span>
+              </Link>
+            )}
+            {actions}
+          </div>
         </div>
       ) : (
         // Decorative Hero Banner Header
@@ -157,12 +174,48 @@ export function PageWrapper({
               )}
             </div>
 
-            {/* Action Buttons */}
-            {actions && (
-              <div className="relative z-10 flex shrink-0 items-center gap-2.5 self-start md:self-center">
-                {actions}
-              </div>
-            )}
+            {/* Action Buttons & Guide Button */}
+            <div className="relative z-10 flex flex-wrap shrink-0 items-center gap-2 self-start md:self-center">
+              {showGuideButton && (
+                <Link
+                  to={guideUrl}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all shadow-xs border",
+                    bannerImage
+                      ? "bg-black/35 hover:bg-black/50 text-white border-white/20 backdrop-blur-md"
+                      : "bg-background/80 hover:bg-muted text-muted-foreground hover:text-foreground border-border",
+                  )}
+                  title="Xem hướng dẫn chi tiết & tài liệu quản trị"
+                >
+                  <BookOpen className="size-3.5 text-brand-orange" />
+                  <span>{guideLabel || "Hướng dẫn"}</span>
+                </Link>
+              )}
+              {actions}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── OPTIONAL INTRODUCTORY SUMMARY CALLOUT ── */}
+      {introSummary && (
+        <div className="border-border/80 bg-card rounded-xl border p-4 shadow-xs flex items-start gap-3">
+          <div className="bg-brand-orange/10 text-brand-orange rounded-lg p-1.5 shrink-0 mt-0.5">
+            <Info className="size-4" />
+          </div>
+          <div className="space-y-1 flex-1 min-w-0 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-foreground">Giới thiệu nhanh về tính năng:</span>
+              <Link
+                to={guideUrl}
+                className="text-brand-orange hover:underline text-3xs font-medium inline-flex items-center gap-1"
+              >
+                Chi tiết trong cẩm nang <BookOpen className="size-3" />
+              </Link>
+            </div>
+            <p className="text-muted-foreground leading-relaxed">
+              {introSummary}
+            </p>
           </div>
         </div>
       )}

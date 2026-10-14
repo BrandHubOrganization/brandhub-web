@@ -18,12 +18,17 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/reports": ["OWNER", "MANAGER"],
   "/invitations": ["OWNER", "MANAGER"],
   "/requests": ["MANAGER", "CREATOR", "CLIENT"],
+  "/chat": ["MANAGER", "CREATOR", "CLIENT"],
   "/portal": ["MANAGER", "CLIENT"],
+  "/media-package": ["OWNER", "MANAGER", "CLIENT"],
+  "/campaigns": ["OWNER", "MANAGER", "CLIENT"],
+  "/campaign-partners": ["OWNER", "MANAGER", "CREATOR", "CLIENT"],
   "/client-profile": ["CLIENT"],
   "/calendar": ["MANAGER", "CREATOR", "CLIENT"],
   "/library": ["MANAGER", "CREATOR", "CLIENT"],
   "/editor": ["MANAGER", "CREATOR"],
-  "/content-writing": ["CREATOR"],
+  "/content-writing": ["OWNER", "MANAGER", "CREATOR"],
+  "/mail-templates": ["OWNER", "MANAGER", "CREATOR"],
   "/templates": ["MANAGER", "CREATOR"],
   "/hashtag-groups": ["MANAGER", "CREATOR"],
   "/publish": ["MANAGER", "CREATOR"],
@@ -38,11 +43,14 @@ const SORTED_KEYS = Object.keys(ROUTE_ACCESS).sort(
 const MEMBERS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const WORKSPACE_CLIENTS_PAGE_ACCESS: AccessRule = ["OWNER", "MANAGER"];
 const WORKSPACE_SETTINGS_ACCESS: AccessRule = ["OWNER", "MANAGER"];
+const AGENCY_MEDIA_PACKAGES_ACCESS: AccessRule = ["OWNER"];
 const SOCIAL_ACCOUNTS_ACCESS: AccessRule = ["OWNER", "MANAGER", "CLIENT"];
-
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
+  if (/^\/agency\/[^/]+\/media-packages$/.test(pathname)) {
+    return AGENCY_MEDIA_PACKAGES_ACCESS;
+  }
   if (/^\/workspaces\/[^/]+\/members$/.test(pathname)) {
     return MEMBERS_PAGE_ACCESS;
   }
