@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Settings, Package, UserCog } from "lucide-react";
+import { ArrowLeft, Settings, Package, UserCog, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useWorkspaceStore } from "@/store/workspaceStore";
@@ -17,6 +17,7 @@ import { ClientSocialAccounts } from "./components/ClientSocialAccounts";
 import { ClientContentRequests } from "./components/ClientContentRequests";
 import { ServicePackageModal } from "./components/ServicePackageModal";
 import { ClientSettingsModal } from "./components/ClientSettingsModal";
+import { SendMailDialog } from "@/pages/mail-templates/components/SendMailDialog";
 
 const AM_OPTIONS = [
   { id: "am-1", name: "Nguyễn Văn An" },
@@ -37,6 +38,7 @@ export function ClientDetailPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [packageOpen, setPackageOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [mailOpen, setMailOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
 
   const fetchClientDetail = useCallback(async () => {
@@ -123,6 +125,16 @@ export function ClientDetailPage() {
           >
             <ArrowLeft className="size-3.5" /> {t("client.detail.back")}
           </Button>
+          {currentWorkspace && client.contactEmail && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer gap-1.5 text-xs"
+              onClick={() => setMailOpen(true)}
+            >
+              <Mail className="size-3.5" /> {t("mailTemplate.client.sendEmail")}
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -151,6 +163,15 @@ export function ClientDetailPage() {
       }
     >
       <div className="space-y-6">
+        {currentWorkspace && mailOpen && (
+          <SendMailDialog
+            open
+            workspaceId={currentWorkspace.id}
+            initialRecipients={[{ email: client.contactEmail, name: client.name }]}
+            initialVariables={{ clientName: client.name }}
+            onClose={() => setMailOpen(false)}
+          />
+        )}
         {/* Banner Thông tin Thương hiệu */}
         <ClientBanner client={client} />
 

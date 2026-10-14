@@ -65,6 +65,12 @@ const WorkspaceTemplatesPage = lazyNamed(() => import("@/pages/workspace/templat
 const InvitationsPage = lazyNamed(() => import("@/pages/workspace/invitations"), "InvitationsPage");
 const WorkspaceClientProfilePage = lazyNamed(() => import("@/pages/workspace/client-profile"), "WorkspaceClientProfilePage");
 const MediaPackagePage = lazy(() => import("@/pages/media-package"));
+const CampaignPage = lazy(() => import("@/pages/campaign/page"));
+const CampaignPartnersPage = lazy(() => import("@/pages/campaign-partners/page"));
+const MailTemplatesPage = lazy(() => import("@/pages/mail-templates/page"));
+const MailBatchesPage = lazy(() => import("@/pages/mail-templates/batches"));
+const MailSuppressionsPage = lazy(() => import("@/pages/mail-templates/suppressions"));
+const MailUnsubscribePage = lazy(() => import("@/pages/mail-templates/UnsubscribePage"));
 
 // ── Agency Pages ──
 const AgencyPage = lazyNamed(() => import("@/pages/agency"), "AgencyPage");
@@ -141,6 +147,7 @@ export function AppRoutes() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/activate-account" element={<ActivateAccountPage />} />
         <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
+        <Route path="/mail/unsubscribe" element={<MailUnsubscribePage />} />
 
         {/* Public Help & FAQ Routes — accessible without authentication */}
         <Route element={<PublicHelpLayout />}>
@@ -228,6 +235,15 @@ export function AppRoutes() {
             />
             <Route path="/workspaces/:id/publish" element={<PublishPage />} />
             <Route path="/workspaces/:id/portal" element={<PortalPage />} />
+            <Route path="/workspaces/:id/campaigns" element={<CampaignPage />} />
+            <Route path="/workspaces/:id/campaign-partners" element={<CampaignPartnersPage />} />
+            <Route path="/workspaces/:id/mail-templates" element={<MailTemplatesPage />} />
+            <Route path="/workspaces/:id/mail-templates/batches" element={<MailBatchesPage />} />
+            <Route path="/workspaces/:id/mail-templates/suppressions" element={<MailSuppressionsPage />} />
+            <Route
+              path="/mail-templates"
+              element={<WorkspaceScopedRedirect destination="mail-templates" />}
+            />
             <Route
               path="/workspaces/:id/media-package"
               element={<MediaPackagePage />}
