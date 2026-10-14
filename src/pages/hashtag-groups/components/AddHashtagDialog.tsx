@@ -11,7 +11,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { clientHashtagPurposes, hashtagPurposes } from "@/pages/hashtag-groups/types/hashtag";
+import {
+  clientHashtagPurposes,
+  hashtagPurposes,
+} from "@/pages/hashtag-groups/types/hashtag";
 import type { CreateHashtag } from "@/pages/hashtag-groups/types/hashtag";
 import { hashtagErrorKey } from "@/pages/hashtag-groups/services/hashtagService";
 import { useHashtagCampaigns } from "@/pages/hashtag-groups/hooks/useHashtagCampaigns";
@@ -23,10 +26,19 @@ interface Props {
   error: unknown;
   workspaceId: string;
   canRequire: boolean;
+  initialTag?: string;
 }
-export function AddHashtagDialog({ onClose, onSubmit, pending, error, workspaceId, canRequire }: Props) {
+export function AddHashtagDialog({
+  onClose,
+  onSubmit,
+  pending,
+  error,
+  workspaceId,
+  canRequire,
+  initialTag = "",
+}: Props) {
   const { t } = useTranslation();
-  const [tag, setTag] = useState("");
+  const [tag, setTag] = useState(initialTag);
   const [purpose, setPurpose] = useState<CreateHashtag["purpose"]>("BRAND");
   const [campaignId, setCampaignId] = useState("");
   const isEventSpecific = canRequire && purpose === "EVENT_SPECIFIC";
@@ -48,7 +60,12 @@ export function AddHashtagDialog({ onClose, onSubmit, pending, error, workspaceI
           className="space-y-4"
           onSubmit={(event) => {
             event.preventDefault();
-            void onSubmit({ tag, purpose, isRequired: isEventSpecific, campaignId: isEventSpecific ? campaignId : null });
+            void onSubmit({
+              tag,
+              purpose,
+              isRequired: isEventSpecific,
+              campaignId: isEventSpecific ? campaignId : null,
+            });
           }}
         >
           <Input
@@ -67,32 +84,51 @@ export function AddHashtagDialog({ onClose, onSubmit, pending, error, workspaceI
               value={purpose}
               disabled={pending}
               onChange={(event) => {
-                const selected = (canRequire ? clientHashtagPurposes : hashtagPurposes).find(
-                  (value) => value === event.target.value,
-                );
+                const selected = (
+                  canRequire ? clientHashtagPurposes : hashtagPurposes
+                ).find((value) => value === event.target.value);
                 if (selected) {
                   setPurpose(selected);
                   setCampaignId("");
                 }
               }}
             >
-              {(canRequire ? clientHashtagPurposes : hashtagPurposes).map((value) => (
-                <option key={value} value={value}>
-                  {t(prefix + "purposes." + value)}
-                </option>
-              ))}
+              {(canRequire ? clientHashtagPurposes : hashtagPurposes).map(
+                (value) => (
+                  <option key={value} value={value}>
+                    {t(prefix + "purposes." + value)}
+                  </option>
+                ),
+              )}
             </Select>
           </div>
           {isEventSpecific && (
             <div className="space-y-2">
               <Label htmlFor="hashtag-campaign">{t(prefix + "campaign")}</Label>
-              <Select id="hashtag-campaign" value={campaignId} disabled={pending || campaigns.isPending}
-                onChange={(event) => setCampaignId(event.target.value)} required>
+              <Select
+                id="hashtag-campaign"
+                value={campaignId}
+                disabled={pending || campaigns.isPending}
+                onChange={(event) => setCampaignId(event.target.value)}
+                required
+              >
                 <option value="">{t(prefix + "selectCampaign")}</option>
-                {campaigns.data?.map((campaign) => <option key={campaign.id} value={campaign.id}>{campaign.name}</option>)}
+                {campaigns.data?.map((campaign) => (
+                  <option key={campaign.id} value={campaign.id}>
+                    {campaign.name}
+                  </option>
+                ))}
               </Select>
-              {campaigns.isError && <p role="alert" className="text-destructive text-sm">{t(prefix + "campaignLoadError")}</p>}
-              {campaigns.data?.length === 0 && <p className="text-muted-foreground text-sm">{t(prefix + "noCampaigns")}</p>}
+              {campaigns.isError && (
+                <p role="alert" className="text-destructive text-sm">
+                  {t(prefix + "campaignLoadError")}
+                </p>
+              )}
+              {campaigns.data?.length === 0 && (
+                <p className="text-muted-foreground text-sm">
+                  {t(prefix + "noCampaigns")}
+                </p>
+              )}
             </div>
           )}
           {error != null && (
@@ -112,7 +148,12 @@ export function AddHashtagDialog({ onClose, onSubmit, pending, error, workspaceI
             <Button
               type="submit"
               loading={pending}
-              disabled={pending || !tag.trim() || (isEventSpecific && (!campaignId || campaigns.isError || !campaigns.data?.length))}
+              disabled={
+                pending ||
+                !tag.trim() ||
+                (isEventSpecific &&
+                  (!campaignId || campaigns.isError || !campaigns.data?.length))
+              }
             >
               {t(prefix + "save")}
             </Button>

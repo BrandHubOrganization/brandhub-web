@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { ContentCreatorStudioPage } from "../../pages/ContentCreatorStudioPage";
 
 const PIXEL =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
@@ -114,6 +115,111 @@ test("generates and applies real-contract post text", async ({ page }) => {
   await expect(
     page.getByText("#Launch", { exact: true }).first(),
   ).toBeVisible();
+});
+
+test("applies workspace collection hashtags and saves the Post snapshot", async ({
+  page,
+}) => {
+  const studio = new ContentCreatorStudioPage(page);
+  const entries = [
+    {
+      id: "hashtag-1",
+      workspaceId: "workspace-1",
+      tag: "BrandHub",
+      purpose: "BRAND",
+      addedBy: "studio-test-user",
+      addedByName: "Studio Tester",
+      isRequired: false,
+      campaignId: null,
+      version: 0,
+      createdAt: "2026-10-09T08:00:00Z",
+    },
+    {
+      id: "hashtag-required",
+      workspaceId: "workspace-1",
+      tag: "CampaignTag",
+      purpose: "EVENT_SPECIFIC",
+      addedBy: "client-user",
+      addedByName: "Client",
+      isRequired: true,
+      campaignId: "campaign-42",
+      version: 0,
+      createdAt: "2026-10-09T08:00:00Z",
+    },
+  ];
+  let savedHashtags: string[] | undefined;
+  await page.route(
+    "**/api/v1/workspaces/workspace-1/hashtags**",
+    async (route) => {
+      if (route.request().method() === "POST") {
+        const request = route.request().postDataJSON() as {
+          tag: string;
+          purpose: string;
+        };
+        const entry = {
+          ...entries[0],
+          id: "hashtag-2",
+          tag: request.tag.replace(/^#/, ""),
+          purpose: request.purpose,
+        };
+        entries.push(entry);
+        return route.fulfill({
+          status: 201,
+          json: { success: true, data: entry },
+        });
+      }
+      return route.fulfill({
+        json: {
+          success: true,
+          data: {
+            items: entries,
+            page: 0,
+            size: 20,
+            totalElements: entries.length,
+            totalPages: 1,
+          },
+        },
+      });
+    },
+  );
+  await page.route("**/api/v1/workspaces/workspace-1/posts", async (route) => {
+    const body = route.request().postDataJSON() as { hashtags: string[] };
+    savedHashtags = body.hashtags;
+    return route.fulfill({
+      json: {
+        success: true,
+        data: {
+          ...body,
+          id: "post-1",
+          workspaceId: "workspace-1",
+          status: "DRAFT",
+          media: [],
+          createdAt: "2026-10-09T08:00:00Z",
+          updatedAt: "2026-10-09T08:00:00Z",
+        },
+      },
+    });
+  });
+  await page.route(
+    "**/api/v1/workspaces/workspace-1/posts/post-1/submit",
+    (route) =>
+      route.fulfill({ json: { success: true, data: { id: "post-1" } } }),
+  );
+  await page.reload();
+  await studio.clearHashtags();
+  await studio.openCollection();
+  await expect(page.getByText("Campaign campaign-42")).toBeVisible();
+  await expect(
+    page.getByRole("button", {
+      name: "Campaign-required hashtags need a campaign-linked Post.",
+    }),
+  ).toBeDisabled();
+  await studio.applyCollectionTag("BrandHub");
+  await studio.addHashtagWithPurpose("Launch", "CAMPAIGN");
+  await studio.submitForApproval();
+  await expect(page).toHaveURL(/\/workspaces\/workspace-1\/requests$/);
+  expect(entries.map((entry) => entry.tag)).toContain("Launch");
+  expect(savedHashtags).toEqual(["#BrandHub", "#Launch"]);
 });
 
 test("generates one FLUX image and applies it to the post", async ({

@@ -257,6 +257,17 @@
     "previewButton": "Preview Post"
   },
   "hashtagInput": {
+    "loadFromCollectionButton": "Choose from collection",
+    "addTagLabel": "Search or add a hashtag",
+    "collectionTitle": "Workspace hashtag collection",
+    "searchCollection": "Search saved hashtags",
+    "collectionLoading": "Loading workspace hashtags...",
+    "collectionError": "Could not load workspace hashtags.",
+    "collectionEmpty": "No matching hashtags in this workspace collection.",
+    "applyTag": "Apply #{{tag}} to this Post",
+    "campaignTagUnavailable": "Campaign-required hashtags need a campaign-linked Post.",
+    "addedAndApplied": "Hashtag added to the collection and this Post draft.",
+    "removeTag": "Remove hashtag #{{tag}} from this Post",
     "copyAllSuccess": "All hashtags copied to clipboard!",
     "clearAllSuccess": "All hashtags cleared",
     "copied": "Copied",
