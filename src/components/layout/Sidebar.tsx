@@ -237,6 +237,13 @@ const NAV_SECTIONS: NavSection[] = [
         hiddenForClient: true,
       },
       {
+        to: "/social-accounts",
+        icon: Link2,
+        labelKey: "nav.socialAccounts",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/client-profile",
         icon: User,
         labelKey: "nav.workspaceClientProfile",
@@ -657,7 +664,11 @@ export function Sidebar({
                         </span>
                       </DropdownMenuItem>
                     </HoverCardTrigger>
-                    <HoverCardContent side="right" align="start" className="w-64">
+                    <HoverCardContent
+                      side="right"
+                      align="start"
+                      className="w-64"
+                    >
                       {/* Agency preview card */}
                       <div className="space-y-2.5">
                         <div className="flex items-center gap-2.5">
@@ -665,7 +676,7 @@ export function Sidebar({
                             <img
                               src={agency.logoUrl}
                               alt={agency.name}
-                              className="size-9 shrink-0 rounded-lg object-cover border border-border"
+                              className="border-border size-9 shrink-0 rounded-lg border object-cover"
                             />
                           ) : (
                             <div
@@ -683,35 +694,43 @@ export function Sidebar({
                             </div>
                           )}
                           <div className="min-w-0">
-                            <p className="text-xs font-semibold leading-tight truncate">{agency.name}</p>
+                            <p className="truncate text-xs leading-tight font-semibold">
+                              {agency.name}
+                            </p>
                             {agency.tagline && (
-                              <p className="text-muted-foreground text-3xs mt-0.5 truncate">{agency.tagline}</p>
+                              <p className="text-muted-foreground text-3xs mt-0.5 truncate">
+                                {agency.tagline}
+                              </p>
                             )}
                           </div>
                         </div>
-                        <div className="space-y-1 text-3xs text-muted-foreground">
+                        <div className="text-3xs text-muted-foreground space-y-1">
                           {agency.category && (
                             <div className="flex items-center gap-1.5">
-                              <Building2 className="size-3 shrink-0 text-brand-orange" />
-                              <span>{t(`agency.category.${agency.category}`)}</span>
+                              <Building2 className="text-brand-orange size-3 shrink-0" />
+                              <span>
+                                {t(`agency.category.${agency.category}`)}
+                              </span>
                             </div>
                           )}
                           {agency.location && (
                             <div className="flex items-center gap-1.5">
-                              <MapPin className="size-3 shrink-0 text-brand-orange" />
-                              <span className="truncate">{agency.location}</span>
+                              <MapPin className="text-brand-orange size-3 shrink-0" />
+                              <span className="truncate">
+                                {agency.location}
+                              </span>
                             </div>
                           )}
                           {agency.website && (
                             <div className="flex items-center gap-1.5">
-                              <Globe className="size-3 shrink-0 text-brand-orange" />
+                              <Globe className="text-brand-orange size-3 shrink-0" />
                               <span className="truncate">{agency.website}</span>
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+                        <div className="border-border/50 flex items-center gap-2 border-t pt-1">
                           <span className="text-3xs text-muted-foreground">
-                            <FolderOpen className="size-3 inline mr-1 text-brand-orange" />
+                            <FolderOpen className="text-brand-orange mr-1 inline size-3" />
                             {agencyWs.length} workspace
                           </span>
                           {agency.ownerId === currentUserId && (
@@ -750,22 +769,28 @@ export function Sidebar({
                             )}
                           </DropdownMenuItem>
                         </HoverCardTrigger>
-                        <HoverCardContent side="right" align="start" className="w-56">
+                        <HoverCardContent
+                          side="right"
+                          align="start"
+                          className="w-56"
+                        >
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
                               {ws.logoUrl ? (
                                 <img
                                   src={ws.logoUrl}
                                   alt={ws.name}
-                                  className="size-7 shrink-0 rounded-md object-cover border border-border"
+                                  className="border-border size-7 shrink-0 rounded-md border object-cover"
                                 />
                               ) : (
-                                <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-brand-orange/10 text-brand-orange text-[10px] font-bold">
+                                <div className="bg-brand-orange/10 text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-[10px] font-bold">
                                   {ws.name.slice(0, 1).toUpperCase()}
                                 </div>
                               )}
                               <div className="min-w-0">
-                                <p className="text-xs font-semibold truncate">{ws.name}</p>
+                                <p className="truncate text-xs font-semibold">
+                                  {ws.name}
+                                </p>
                                 {ws.myRole && (
                                   <p className="text-3xs text-muted-foreground mt-0.5">
                                     {t(`workspace.roles.${ws.myRole}`)}
@@ -823,7 +848,9 @@ export function Sidebar({
               "text-muted-foreground hover:bg-muted/20 hover:text-white",
               collapsed ? "justify-center" : "",
             )}
-            title={collapsed ? t("nav.leaveWorkspace", "Thoát workspace") : undefined}
+            title={
+              collapsed ? t("nav.leaveWorkspace", "Thoát workspace") : undefined
+            }
           >
             <ChevronLeft className="size-3.5 shrink-0" />
             {!collapsed && (
@@ -850,9 +877,7 @@ export function Sidebar({
             title={collapsed ? t("nav.leaveAgency", "Thoát agency") : undefined}
           >
             <ChevronLeft className="size-3.5 shrink-0" />
-            {!collapsed && (
-              <span>{t("nav.leaveAgency", "Thoát agency")}</span>
-            )}
+            {!collapsed && <span>{t("nav.leaveAgency", "Thoát agency")}</span>}
           </button>
         </div>
       )}
