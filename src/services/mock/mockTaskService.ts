@@ -293,8 +293,8 @@ export const mockTaskService = {
     const isAsc = params.direction === "asc";
 
     items.sort((a, b) => {
-      let valA = a[sortField as keyof TaskListItem] ?? "";
-      let valB = b[sortField as keyof TaskListItem] ?? "";
+      const valA = a[sortField as keyof TaskListItem] ?? "";
+      const valB = b[sortField as keyof TaskListItem] ?? "";
       if (valA < valB) return isAsc ? -1 : 1;
       if (valA > valB) return isAsc ? 1 : -1;
       return 0;
