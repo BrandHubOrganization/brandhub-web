@@ -59,7 +59,6 @@ const ALL_PLATFORMS: SocialPlatform[] = [
   "INSTAGRAM",
   "TIKTOK",
   "THREADS",
-  "YOUTUBE",
 ];
 
 export const ContentRequestFilterBar: React.FC<

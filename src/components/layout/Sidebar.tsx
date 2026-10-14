@@ -279,280 +279,34 @@ export function Sidebar({
         )}
       </div>
 
-      {/* Agency → Workspace switcher — 1 dropdown lồng nhau, luôn hiện để có nơi tạo mới. */}
-      <div
-        className="shrink-0 border-b"
-        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
-      >
-        <DropdownMenu>
-          <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
-            {collapsed ? (
-              <div className="bg-brand-orange-soft text-brand-orange mx-auto my-3 flex size-8 items-center justify-center rounded-md text-xs font-bold">
-                {(activeWorkspace?.name ?? currentAgencyName)
-                  ?.charAt(0)
-                  .toUpperCase() ?? "?"}
-              </div>
-            ) : (
-              <div className="border-border bg-muted/15 hover:bg-muted/30 mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors">
-                <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold">
-                  {(activeWorkspace?.name ?? currentAgencyName)
-                    ?.charAt(0)
-                    .toUpperCase() ?? "?"}
-                </div>
-                <div className="flex min-w-0 flex-col">
-                  <span className="truncate text-xs leading-tight font-semibold text-white">
-                    {activeWorkspace?.name ??
-                      currentAgencyName ??
-                      t("nav.orgSwitcher.placeholder")}
-                  </span>
-                  <span className="text-muted-foreground text-3xs mt-0.5 truncate leading-none">
-                    {activeWorkspace
-                      ? currentAgencyName
-                      : currentAgencyId &&
-                          agencyList.find((a) => a.id === currentAgencyId)
-                            ?.ownerId === currentUserId
-                        ? t("workspace.roles.OWNER")
-                        : t("nav.orgSwitcher.label")}
-                  </span>
-                </div>
-                <ChevronDown className="text-muted-foreground ml-auto size-3.5 shrink-0" />
-              </div>
-            )}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="ml-2 w-[220px]">
-            <DropdownMenuLabel className="text-muted-foreground text-3xs tracking-wider uppercase">
-              {t("nav.orgSwitcher.selectAgency")}
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {agencyList.length === 0 && (
-              <p className="text-muted-foreground px-2 py-2 text-xs">
-                {t("nav.orgSwitcher.noAgency")}
-              </p>
-            )}
-            {/* CLIENT chỉ join workspace_members, không phải agency member —
-                không gom theo agency, liệt kê thẳng để họ dễ hiểu. */}
-            {clientWorkspaces.length > 0 && (
-              <>
-                <div className="border-border ml-1 border-l pl-2">
-                  {clientWorkspaces.map((ws) => (
-                    <DropdownMenuItem
-                      key={ws.id}
-                      onClick={() =>
-                        ws.agencyId && onSwitchWorkspace(ws.agencyId, ws.id)
-                      }
-                      className={cn(
-                        "cursor-pointer justify-between gap-2 text-xs",
-                        activeWorkspace?.id === ws.id
-                          ? "text-brand-orange font-semibold"
-                          : "",
-                      )}
-                    >
-                      <span className="truncate">{ws.name}</span>
-                      <span className="text-muted-foreground text-3xs shrink-0 font-normal">
-                        {t("workspace.roles.CLIENT")}
-                      </span>
-                    </DropdownMenuItem>
-                  ))}
-                </div>
-                <DropdownMenuSeparator />
-              </>
-            )}
-            {agencyList.map((agency) => {
-              const agencyWs = allWorkspaces.filter(
-                (ws) => ws.agencyId === agency.id,
-              );
-              return (
-                <div key={agency.id}>
-                  <HoverCard openDelay={300} closeDelay={100}>
-                    <HoverCardTrigger asChild>
-                      <DropdownMenuItem
-                        onClick={() => onSwitchAgency(agency.id)}
-                        className={cn(
-                          "cursor-pointer justify-between text-xs",
-                          currentAgencyId === agency.id && !activeWorkspace
-                            ? "text-brand-orange font-semibold"
-                            : "",
-                        )}
-                      >
-                        <span className="flex min-w-0 items-center gap-1.5">
-                          <span className="truncate">{agency.name}</span>
-                          {agency.ownerId === currentUserId && (
-                            <span className="text-brand-orange bg-brand-orange-soft text-3xs shrink-0 rounded px-1 py-0.5 leading-none font-semibold">
-                              {t("workspace.roles.OWNER")}
-                            </span>
-                          )}
-                        </span>
-                      </DropdownMenuItem>
-                    </HoverCardTrigger>
-                    <HoverCardContent
-                      side="right"
-                      align="start"
-                      className="w-64"
-                    >
-                      {/* Agency preview card */}
-                      <div className="space-y-2.5">
-                        <div className="flex items-center gap-2.5">
-                          {agency.logoUrl ? (
-                            <img
-                              src={agency.logoUrl}
-                              alt={agency.name}
-                              className="border-border size-9 shrink-0 rounded-lg border object-cover"
-                            />
-                          ) : (
-                            <div
-                              className="flex size-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold"
-                              style={{
-                                background: agency.brandColor
-                                  ? `${agency.brandColor}20`
-                                  : "hsl(var(--brand-orange-soft, 15 100% 96%))",
-                                color:
-                                  agency.brandColor ??
-                                  "hsl(var(--brand-orange, 15 88% 55%))",
-                              }}
-                            >
-                              {agency.name.slice(0, 2).toUpperCase()}
-                            </div>
-                          )}
-                          <div className="min-w-0">
-                            <p className="truncate text-xs leading-tight font-semibold">
-                              {agency.name}
-                            </p>
-                            {agency.tagline && (
-                              <p className="text-muted-foreground text-3xs mt-0.5 truncate">
-                                {agency.tagline}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="text-3xs text-muted-foreground space-y-1">
-                          {agency.category && (
-                            <div className="flex items-center gap-1.5">
-                              <Building2 className="text-brand-orange size-3 shrink-0" />
-                              <span>
-                                {t(`agency.category.${agency.category}`)}
-                              </span>
-                            </div>
-                          )}
-                          {agency.location && (
-                            <div className="flex items-center gap-1.5">
-                              <MapPin className="text-brand-orange size-3 shrink-0" />
-                              <span className="truncate">
-                                {agency.location}
-                              </span>
-                            </div>
-                          )}
-                          {agency.website && (
-                            <div className="flex items-center gap-1.5">
-                              <Globe className="text-brand-orange size-3 shrink-0" />
-                              <span className="truncate">{agency.website}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="border-border/50 flex items-center gap-2 border-t pt-1">
-                          <span className="text-3xs text-muted-foreground">
-                            <FolderOpen className="text-brand-orange mr-1 inline size-3" />
-                            {agencyWs.length} workspace
-                          </span>
-                          {agency.ownerId === currentUserId && (
-                            <span className="text-brand-orange bg-brand-orange/10 text-3xs rounded px-1.5 py-0.5 font-semibold">
-                              {t("workspace.roles.OWNER")}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
+      {/* Agency → Workspace switcher dropdown */}
+      <OrgSwitcherDropdown
+        collapsed={collapsed}
+        activeWorkspace={activeWorkspace ?? null}
+        currentAgencyId={currentAgencyId}
+        currentAgencyName={currentAgencyName}
+        agencyList={agencyList}
+        allWorkspaces={allWorkspaces}
+        clientWorkspaces={clientWorkspaces}
+        currentUserId={currentUserId}
+        dropdownOpen={dropdownOpen}
+        setDropdownOpen={setDropdownOpen}
+        handleMouseEnter={handleMouseEnter}
+        handleMouseLeave={handleMouseLeave}
+        clearHoveredItem={clearHoveredItem}
+        onSwitchAgency={onSwitchAgency}
+        onSwitchWorkspace={onSwitchWorkspace}
+      />
 
-                  <div className="border-border ml-3 border-l pl-2">
-                    {agencyWs.length === 0 && (
-                      <p className="text-muted-foreground text-3xs px-2 py-1.5">
-                        {t("nav.orgSwitcher.noWorkspace")}
-                      </p>
-                    )}
-                    {agencyWs.map((ws) => (
-                      <HoverCard key={ws.id} openDelay={300} closeDelay={100}>
-                        <HoverCardTrigger asChild>
-                          <DropdownMenuItem
-                            onClick={() => onSwitchWorkspace(agency.id, ws.id)}
-                            className={cn(
-                              "cursor-pointer justify-between gap-2 text-xs",
-                              activeWorkspace?.id === ws.id
-                                ? "text-brand-orange font-semibold"
-                                : "",
-                            )}
-                          >
-                            <span className="truncate">{ws.name}</span>
-                            {ws.myRole && (
-                              <span className="text-muted-foreground text-3xs shrink-0 font-normal">
-                                {t(`workspace.roles.${ws.myRole}`)}
-                              </span>
-                            )}
-                          </DropdownMenuItem>
-                        </HoverCardTrigger>
-                        <HoverCardContent
-                          side="right"
-                          align="start"
-                          className="w-56"
-                        >
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              {ws.logoUrl ? (
-                                <img
-                                  src={ws.logoUrl}
-                                  alt={ws.name}
-                                  className="border-border size-7 shrink-0 rounded-md border object-cover"
-                                />
-                              ) : (
-                                <div className="bg-brand-orange/10 text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-[10px] font-bold">
-                                  {ws.name.slice(0, 1).toUpperCase()}
-                                </div>
-                              )}
-                              <div className="min-w-0">
-                                <p className="truncate text-xs font-semibold">
-                                  {ws.name}
-                                </p>
-                                {ws.myRole && (
-                                  <p className="text-3xs text-muted-foreground mt-0.5">
-                                    {t(`workspace.roles.${ws.myRole}`)}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                            <p className="text-3xs text-muted-foreground">
-                              {agency.name}
-                            </p>
-                          </div>
-                        </HoverCardContent>
-                      </HoverCard>
-                    ))}
-                    {agency.ownerId === currentUserId && (
-                      <DropdownMenuItem asChild>
-                        <NavLink
-                          to={`/workspaces/create?agencyId=${agency.id}`}
-                          className="text-brand-orange text-3xs flex cursor-pointer items-center gap-1.5 font-semibold"
-                        >
-                          <FolderPlus className="size-3" />
-                          {t("nav.orgSwitcher.createWorkspace")}
-                        </NavLink>
-                      </DropdownMenuItem>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <NavLink
-                to="/agency/create"
-                className="text-brand-orange flex cursor-pointer items-center gap-1.5 text-xs font-semibold"
-              >
-                <FolderPlus className="size-3.5" />
-                {t("nav.orgSwitcher.createAgency")}
-              </NavLink>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      {/* Shared hover preview popup portal */}
+      <SidebarHoverPreview
+        dropdownOpen={dropdownOpen}
+        hoveredItem={hoveredItem}
+        hoveredAgency={hoveredAgency}
+        hoveredWorkspace={hoveredWorkspace}
+        allWorkspaces={allWorkspaces}
+        currentUserId={currentUserId}
+      />
 
       {/* Back button — thoát khỏi workspace context về agency */}
       {activeWorkspace && onLeaveWorkspace && (

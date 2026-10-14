@@ -13,7 +13,6 @@ const ALL_PLATFORMS: PlatformType[] = [
   "INSTAGRAM",
   "TIKTOK",
   "THREADS",
-  "YOUTUBE",
 ];
 
 const ALL_STATUSES: PostStatus[] = [

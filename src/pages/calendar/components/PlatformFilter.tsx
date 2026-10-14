@@ -1,6 +1,6 @@
 import React from "react";
 import type { PlatformType } from "@/types/calendar";
-import { Video, AtSign, Share2, Globe, MessageSquare } from "lucide-react";
+import { Video, AtSign, Share2, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface PlatformFilterProps {
@@ -17,11 +17,6 @@ const PLATFORMS: {
   { id: "INSTAGRAM", label: "Instagram", icon: <Globe className="size-3.5" /> },
   { id: "TIKTOK", label: "TikTok", icon: <Video className="size-3.5" /> },
   { id: "THREADS", label: "Threads", icon: <AtSign className="size-3.5" /> },
-  {
-    id: "YOUTUBE",
-    label: "Youtube",
-    icon: <MessageSquare className="size-3.5" />,
-  },
 ];
 
 export const PlatformFilter: React.FC<PlatformFilterProps> = ({
