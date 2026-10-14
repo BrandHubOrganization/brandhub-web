@@ -90,7 +90,8 @@
     "email": "Email notifications",
     "reports": "Reports",
     "utilities": "Admin tools",
-    "planned": "Not ready yet"
+    "planned": "Not ready yet",
+    "mailTemplates": "System mail templates"
   },
   "overview": {
     "title": "Platform overview",
