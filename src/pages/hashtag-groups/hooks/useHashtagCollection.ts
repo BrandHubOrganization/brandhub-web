@@ -10,7 +10,11 @@ import type {
   HashtagFilter,
 } from "@/pages/hashtag-groups/types/hashtag";
 
-export function useHashtagCollection(workspaceId: string, userId: string) {
+export function useHashtagCollection(
+  workspaceId: string,
+  userId: string,
+  enabled = true,
+) {
   const client = useQueryClient();
   const [filter, setFilter] = useState<HashtagFilter>({
     q: "",
@@ -22,6 +26,7 @@ export function useHashtagCollection(workspaceId: string, userId: string) {
   const query = useQuery({
     queryKey: [...key, filter],
     queryFn: ({ signal }) => listHashtags(workspaceId, filter, signal),
+    enabled,
     retry: false,
     gcTime: 0,
   });
@@ -33,8 +38,13 @@ export function useHashtagCollection(workspaceId: string, userId: string) {
     },
   });
   const remove = useMutation({
-    mutationFn: ({ hashtagId, version }: { hashtagId: string; version: number }) =>
-      removeHashtag(workspaceId, hashtagId, version),
+    mutationFn: ({
+      hashtagId,
+      version,
+    }: {
+      hashtagId: string;
+      version: number;
+    }) => removeHashtag(workspaceId, hashtagId, version),
     onSuccess: async () => {
       setFilter((previous) => ({ ...previous, page: 0 }));
       await client.invalidateQueries({ queryKey: key });

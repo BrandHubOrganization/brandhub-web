@@ -275,6 +275,17 @@
     "previewButton": "Preview Post"
   },
   "hashtagInput": {
+    "loadFromCollectionButton": "Từ kho hashtag",
+    "addTagLabel": "Tìm hoặc thêm hashtag",
+    "collectionTitle": "Kho hashtag của workspace",
+    "searchCollection": "Tìm hashtag đã lưu",
+    "collectionLoading": "Đang tải hashtag của workspace...",
+    "collectionError": "Không tải được hashtag của workspace.",
+    "collectionEmpty": "Không có hashtag phù hợp trong kho của workspace này.",
+    "applyTag": "Áp dụng #{{tag}} cho bài đăng này",
+    "campaignTagUnavailable": "Hashtag bắt buộc theo campaign cần bài đăng được liên kết với campaign.",
+    "addedAndApplied": "Đã thêm hashtag vào kho và bài đăng nháp này.",
+    "removeTag": "Gỡ hashtag #{{tag}} khỏi bài đăng này",
     "copyAllSuccess": "Đã copy toàn bộ bộ Hashtag vào clipboard!",
     "clearAllSuccess": "Đã xoá toàn bộ Hashtags",
     "copied": "Đã copy",

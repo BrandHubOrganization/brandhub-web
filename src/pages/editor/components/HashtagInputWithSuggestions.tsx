@@ -1,24 +1,30 @@
-import React, { useState, useEffect } from "react";
-import {
-  Hash,
-  X,
-  Plus,
-  FolderKanban,
-  ChevronDown,
-  Sparkles,
-  Copy,
-  Check,
-} from "lucide-react";
-import { mockHashtagGroupService } from "@/services/mock/mockHashtagGroupService";
-import type { HashtagGroup } from "@/types/hashtagGroup";
+import { useState } from "react";
+import type { KeyboardEvent } from "react";
+import { Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
 import { useTranslation } from "react-i18next";
+import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { HashtagCollectionPicker } from "@/pages/editor/components/HashtagCollectionPicker";
+import { HashtagTagList } from "@/pages/editor/components/HashtagTagList";
+import { HashtagInputToolbar } from "@/pages/editor/components/HashtagInputToolbar";
+import {
+  formatPostHashtag,
+  hasPostHashtag,
+  normalizePostHashtag,
+} from "@/pages/editor/utils/postHashtag";
+import { AddHashtagDialog } from "@/pages/hashtag-groups/components/AddHashtagDialog";
+import { useHashtagCollection } from "@/pages/hashtag-groups/hooks/useHashtagCollection";
+import { hashtagErrorKey } from "@/pages/hashtag-groups/services/hashtagService";
+import type { HashtagEntry } from "@/pages/hashtag-groups/types/hashtag";
 
 interface HashtagInputWithSuggestionsProps {
   hashtags: string[];
   onChange: (tags: string[]) => void;
+  workspaceId?: string;
+  userId?: string;
+  canApply: boolean;
 }
 
 const TRENDING_HASHTAGS = [
@@ -38,211 +44,204 @@ const TRENDING_HASHTAGS = [
   "#Virals",
 ];
 
-export const HashtagInputWithSuggestions: React.FC<
-  HashtagInputWithSuggestionsProps
-> = ({ hashtags, onChange }) => {
+export function HashtagInputWithSuggestions({
+  hashtags,
+  onChange,
+  workspaceId = "",
+  userId = "",
+  canApply,
+}: HashtagInputWithSuggestionsProps) {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [groups, setGroups] = useState<HashtagGroup[]>([]);
-  const [showGroupDropdown, setShowGroupDropdown] = useState(false);
+  const [showCollection, setShowCollection] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  const collectionEnabled = canApply && Boolean(workspaceId && userId);
+  const { filter, changeFilter, query, create } = useHashtagCollection(
+    workspaceId,
+    userId,
+    collectionEnabled,
+  );
 
-  useEffect(() => {
-    mockHashtagGroupService.getGroups().then(setGroups).catch(console.error);
-  }, []);
+  const prefix = "editor.hashtagInput.";
 
-  const handleAddTag = (tagToAdd: string) => {
-    let formatted = tagToAdd.trim();
-    if (!formatted) return;
-    if (!formatted.startsWith("#")) formatted = `#${formatted}`;
-
-    if (!hashtags.includes(formatted)) {
-      onChange([...hashtags, formatted]);
+  function appendTag(tag: string) {
+    const formatted = formatPostHashtag(tag);
+    if (!formatted || hasPostHashtag(hashtags, formatted)) {
+      return;
     }
+    onChange([...hashtags, formatted]);
+  }
+
+  function applyEntry(entry: HashtagEntry) {
+    if (entry.isRequired) return;
+    appendTag(entry.tag);
     setInputValue("");
+    changeFilter({ q: "" });
     setShowSuggestions(false);
-  };
+  }
 
-  const handleLoadFromGroup = (group: HashtagGroup) => {
-    const merged = Array.from(new Set([...hashtags, ...group.hashtags]));
-    onChange(merged);
-    setShowGroupDropdown(false);
-    toast.success(
-      t("editor.hashtagInput.loadFromGroupSuccess", {
-        count: group.hashtags.length,
-        name: group.name,
-      }),
+  function applyExistingEntry(tag: string) {
+    const existing = query.data?.items.find(
+      (entry) => normalizePostHashtag(entry.tag) === normalizePostHashtag(tag),
     );
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === " " || e.key === ",") {
-      e.preventDefault();
-      handleAddTag(inputValue);
+    if (!existing) return false;
+    if (existing.isRequired) {
+      toast.info(t(prefix + "campaignTagUnavailable"));
+      return true;
     }
-  };
+    applyEntry(existing);
+    return true;
+  }
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    onChange(hashtags.filter((t) => t !== tagToRemove));
-  };
+  async function handleAddTag(tagToAdd: string) {
+    const formatted = formatPostHashtag(tagToAdd);
+    if (!formatted) return;
+    if (hasPostHashtag(hashtags, formatted)) {
+      setInputValue("");
+      return;
+    }
+    if (!collectionEnabled) {
+      appendTag(formatted);
+      setInputValue("");
+      setShowSuggestions(false);
+      return;
+    }
 
-  const handleCopyAll = () => {
+    if (applyExistingEntry(formatted)) return;
+
+    create.reset();
+    setNewTag(formatted);
+    setAddDialogOpen(true);
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (["Enter", " ", ","].includes(event.key)) {
+      event.preventDefault();
+      void handleAddTag(inputValue);
+    }
+  }
+
+  function handleCopyAll() {
     if (hashtags.length === 0) return;
-    navigator.clipboard.writeText(hashtags.join(" "));
+    void navigator.clipboard.writeText(hashtags.join(" "));
     setCopied(true);
-    toast.success(t("editor.hashtagInput.copyAllSuccess"));
+    toast.success(t(prefix + "copyAllSuccess"));
     setTimeout(() => setCopied(false), COPY_FEEDBACK_DURATION_MS);
-  };
-
-  const handleClearAll = () => {
-    onChange([]);
-    toast.info(t("editor.hashtagInput.clearAllSuccess"));
-  };
+  }
 
   const filteredSuggestions = TRENDING_HASHTAGS.filter(
-    (t) =>
-      !hashtags.includes(t) &&
-      t.toLowerCase().includes(inputValue.toLowerCase()),
+    (tag) =>
+      !hasPostHashtag(hashtags, tag) &&
+      tag.toLowerCase().includes(inputValue.toLowerCase()),
   );
 
   return (
     <div className="space-y-2.5">
-      <div className="flex items-center justify-between">
-        <label className="text-foreground flex items-center gap-1.5 text-xs font-semibold">
-          <Hash className="text-brand-orange size-3.5" />
-          {t("editor.hashtagInput.label", { count: hashtags.length })}
-        </label>
+      <HashtagInputToolbar
+        count={hashtags.length}
+        copied={copied}
+        showCollection={showCollection}
+        canLoadCollection={collectionEnabled}
+        onCopyAll={handleCopyAll}
+        onClear={() => onChange([])}
+        onToggleCollection={() => {
+          const next = !showCollection;
+          setShowCollection(next);
+          if (next) {
+            setInputValue("");
+            changeFilter({ q: "" });
+          }
+        }}
+      />
 
-        <div className="flex items-center gap-2">
-          {/* Copy All Hashtags */}
-          {hashtags.length > 0 && (
-            <button
-              type="button"
-              onClick={handleCopyAll}
-              className="hover:text-brand-orange text-2xs text-muted-foreground flex cursor-pointer items-center gap-1 px-2 py-0.5 font-medium transition-colors"
-            >
-              {copied ? (
-                <Check className="size-3 text-emerald-500" />
-              ) : (
-                <Copy className="size-3" />
-              )}
-              <span>
-                {copied
-                  ? t("editor.hashtagInput.copied")
-                  : t("editor.hashtagInput.copyAllButton")}
-              </span>
-            </button>
-          )}
+      {showCollection && collectionEnabled && (
+        <HashtagCollectionPicker
+          entries={query.data?.items ?? []}
+          isPending={query.isPending}
+          isError={query.isError}
+          search={filter.q}
+          onSearchChange={(value) => changeFilter({ q: value })}
+          onApply={applyEntry}
+        />
+      )}
 
-          {/* Clear All */}
-          {hashtags.length > 0 && (
-            <button
-              type="button"
-              onClick={handleClearAll}
-              className="text-2xs cursor-pointer font-medium text-rose-500 hover:underline"
-            >
-              {t("editor.hashtagInput.clearAllButton")}
-            </button>
-          )}
-
-          {/* Load from Group Dropdown Button */}
-          {groups.length > 0 && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowGroupDropdown(!showGroupDropdown)}
-                className="text-brand-orange bg-brand-orange-soft hover:bg-brand-orange/20 text-2xs flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 font-semibold transition-colors"
-              >
-                <FolderKanban className="size-3.5" />
-                <span>{t("editor.hashtagInput.loadFromGroupButton")}</span>
-                <ChevronDown className="size-3" />
-              </button>
-
-              {showGroupDropdown && (
-                <div className="border-border bg-card absolute top-full right-0 z-30 mt-1 w-64 space-y-1 rounded-xl border p-2 shadow-xl">
-                  <span className="text-3xs text-muted-foreground block px-2 font-semibold tracking-wider uppercase">
-                    {t("editor.hashtagInput.chooseGroupLabel")}
-                  </span>
-                  <div className="max-h-48 space-y-1 overflow-y-auto">
-                    {groups.map((group) => (
-                      <button
-                        key={group.id}
-                        type="button"
-                        onClick={() => handleLoadFromGroup(group)}
-                        className="hover:bg-brand-orange-soft flex w-full cursor-pointer flex-col rounded-lg px-2 py-1.5 text-left text-xs transition-colors"
-                      >
-                        <span className="text-foreground line-clamp-1 font-semibold">
-                          {group.name}
-                        </span>
-                        <span className="text-brand-orange text-3xs truncate font-mono">
-                          {group.hashtags.join(", ")}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Input box */}
       <div className="relative">
         <Input
           type="text"
+          label={t(prefix + "addTagLabel")}
           value={inputValue}
-          onChange={(e) => {
-            setInputValue(e.target.value);
+          onChange={(event) => {
+            setInputValue(event.target.value);
             setShowSuggestions(true);
+            if (collectionEnabled)
+              changeFilter({ q: event.target.value.replace(/^#/, "") });
           }}
           onFocus={() => setShowSuggestions(true)}
           onKeyDown={handleKeyDown}
-          placeholder={t("editor.hashtagInput.inputPlaceholder")}
+          placeholder={t(prefix + "inputPlaceholder")}
           className="border-border bg-muted text-foreground rounded-xl font-mono text-xs"
         />
-
-        {/* Suggestions Popup */}
         {showSuggestions && filteredSuggestions.length > 0 && (
           <div className="border-border bg-card absolute top-full right-0 left-0 z-20 mt-1 max-h-48 space-y-1 overflow-y-auto rounded-xl border p-2 shadow-xl">
             <span className="text-3xs text-muted-foreground mb-1 flex items-center justify-between px-2 font-semibold tracking-wider uppercase">
-              <span>{t("editor.hashtagInput.trendingSuggestionsLabel")}</span>
+              <span>{t(prefix + "trendingSuggestionsLabel")}</span>
               <Sparkles className="text-brand-orange size-3" />
             </span>
             {filteredSuggestions.map((tag) => (
-              <button
+              <Button
                 key={tag}
                 type="button"
-                onClick={() => handleAddTag(tag)}
-                className="text-brand-orange hover:bg-brand-orange-soft flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-1.5 text-left font-mono text-xs transition-colors"
+                variant="ghost"
+                onClick={() => void handleAddTag(tag)}
+                className="text-brand-orange hover:bg-brand-orange-soft flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left font-mono text-xs transition-colors"
               >
                 <span>{tag}</span>
                 <Plus className="size-3.5" />
-              </button>
+              </Button>
             ))}
           </div>
         )}
       </div>
 
-      {/* Selected Tag Badges */}
-      <div className="flex flex-wrap gap-1.5 pt-1">
-        {hashtags.map((tag) => (
-          <span
-            key={tag}
-            className="border-brand-orange/20 bg-brand-orange-soft text-brand-orange inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 font-mono text-xs font-semibold"
-          >
-            <span>{tag}</span>
-            <button
-              type="button"
-              onClick={() => handleRemoveTag(tag)}
-              className="text-brand-orange/70 hover:text-brand-orange cursor-pointer rounded-full"
-            >
-              <X className="size-3" />
-            </button>
-          </span>
-        ))}
-      </div>
+      <HashtagTagList hashtags={hashtags} onChange={onChange} />
+
+      {addDialogOpen && (
+        <AddHashtagDialog
+          workspaceId={workspaceId}
+          canRequire={false}
+          initialTag={newTag}
+          pending={create.isPending}
+          error={create.error}
+          onClose={() => setAddDialogOpen(false)}
+          onSubmit={async (payload) => {
+            try {
+              const entry = await create.mutateAsync(payload);
+              appendTag(entry.tag);
+              setInputValue("");
+              setAddDialogOpen(false);
+              setShowSuggestions(false);
+              toast.success(t(prefix + "addedAndApplied"));
+            } catch (error) {
+              if (hashtagErrorKey(error, "saveError") === "duplicate") {
+                const refreshed = await query.refetch();
+                const entry = refreshed.data?.items.find(
+                  (item) =>
+                    normalizePostHashtag(item.tag) ===
+                    normalizePostHashtag(newTag),
+                );
+                if (entry && !entry.isRequired) {
+                  applyEntry(entry);
+                  setAddDialogOpen(false);
+                  create.reset();
+                }
+              }
+            }
+          }}
+        />
+      )}
     </div>
   );
-};
+}

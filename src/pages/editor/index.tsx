@@ -22,6 +22,9 @@ import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewM
 import { RichTextEditor } from "@/pages/editor/components/RichTextEditor";
 import { StudioPreviewPanel } from "@/pages/editor/components/StudioPreviewPanel";
 import { TemplatePickerModal } from "@/pages/editor/components/TemplatePickerModal";
+import { useAuthStore } from "@/store/authStore";
+import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useParams } from "react-router-dom";
 import { useEditorForm } from "./hooks/useEditorForm";
 
 /**
@@ -31,6 +34,14 @@ import { useEditorForm } from "./hooks/useEditorForm";
  */
 export function EditorPage() {
   const { t } = useTranslation();
+  const { id: routeWorkspaceId } = useParams<{ id: string }>();
+  const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+  const userId = useAuthStore((state) => state.user?.id);
+  const workspaceId = routeWorkspaceId ?? currentWorkspace?.id;
+  const role =
+    currentWorkspace && currentWorkspace.id === workspaceId
+      ? currentWorkspace.myRole
+      : null;
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
   const [isPreviewPanelOpen, setIsPreviewPanelOpen] = useState(true);
   const [aiPanelWidth, setAiPanelWidth] = useState(280);
@@ -254,6 +265,9 @@ export function EditorPage() {
                 <HashtagInputWithSuggestions
                   hashtags={hashtags}
                   onChange={handleHashtagsChange}
+                  workspaceId={workspaceId}
+                  userId={userId}
+                  canApply={role === "CREATOR"}
                 />
               </section>
             </div>

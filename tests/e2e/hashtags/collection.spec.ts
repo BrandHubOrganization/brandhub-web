@@ -1,7 +1,13 @@
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
+import { HashtagCollectionPage } from "../../pages/HashtagCollectionPage";
 
-async function setup(page: Page, language = "en", theme = "light", staleOnRemove = false) {
+async function setup(
+  page: Page,
+  language = "en",
+  theme = "light",
+  staleOnRemove = false,
+) {
   await page.addInitScript(
     ({ language, theme }) => {
       localStorage.setItem(
@@ -130,7 +136,9 @@ async function setup(page: Page, language = "en", theme = "light", staleOnRemove
         json: { success: false, error: { code: "FORBIDDEN" } },
       });
     if (request.method() === "GET" && url.pathname.split("/").length === 7) {
-      const entry = entries.find((item) => item.id === url.pathname.split("/").at(-1) && !item.deleted);
+      const entry = entries.find(
+        (item) => item.id === url.pathname.split("/").at(-1) && !item.deleted,
+      );
       return route.fulfill({
         status: entry ? 200 : 404,
         json: entry
@@ -140,7 +148,8 @@ async function setup(page: Page, language = "en", theme = "light", staleOnRemove
     }
     const items = entries.filter(
       (entry) =>
-        !entry.deleted && entry.workspaceId === workspaceId &&
+        !entry.deleted &&
+        entry.workspaceId === workspaceId &&
         entry.tag
           .toLowerCase()
           .includes((url.searchParams.get("q") ?? "").toLowerCase()),
@@ -219,32 +228,55 @@ test("access loss hides stale data and disables Add", async ({ page }) => {
   ).toBeDisabled();
 });
 
-test("remove confirms soft deletion and preserves the recorded entry", async ({ page }) => {
+test("remove confirms soft deletion and preserves the recorded entry", async ({
+  page,
+}) => {
   const { entries } = await setup(page);
   await page.getByRole("button", { name: "Add hashtag", exact: true }).click();
   await page.getByLabel("Hashtag", { exact: true }).fill("seasonal");
   await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByRole("heading", { name: "#seasonal" })).toBeVisible();
   await page.getByRole("button", { name: "Remove hashtag #seasonal" }).click();
-  await expect(page.getByText("Hashtags already used in existing posts remain unchanged.")).toBeVisible();
-  await page.getByRole("button", { name: "Remove hashtag", exact: true }).click();
+  await expect(
+    page.getByText("Hashtags already used in existing posts remain unchanged."),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Remove hashtag", exact: true })
+    .click();
   await expect(page.getByRole("heading", { name: "#seasonal" })).toHaveCount(0);
   expect(entries).toHaveLength(1);
   expect(entries[0].deleted).toBe(true);
 });
 
-test("stale removal reloads changed scope and requires a second confirmation", async ({ page }) => {
+test("applies a collection entry to a new workspace Post draft", async ({
+  page,
+}) => {
+  await setup(page);
+  const collection = new HashtagCollectionPage(page);
+  await collection.addHashtag("launchday");
+  await collection.applyToPostDraft("launchday");
+});
+
+test("stale removal reloads changed scope and requires a second confirmation", async ({
+  page,
+}) => {
   const { entries } = await setup(page, "en", "light", true);
   await page.getByRole("button", { name: "Add hashtag", exact: true }).click();
   await page.getByLabel("Hashtag", { exact: true }).fill("eventtag");
   await page.getByRole("button", { name: "Save", exact: true }).click();
   await page.getByRole("button", { name: "Remove hashtag #eventtag" }).click();
-  await page.getByRole("button", { name: "Remove hashtag", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("changed since you opened");
+  await page
+    .getByRole("button", { name: "Remove hashtag", exact: true })
+    .click();
+  await expect(page.getByRole("status")).toContainText(
+    "changed since you opened",
+  );
   await expect(page.getByText("Campaign campaign-updated")).toBeVisible();
   await expect(page.getByText("Event-specific", { exact: true })).toBeVisible();
   expect(entries[0].deleted).toBeFalsy();
-  await page.getByRole("button", { name: "Remove hashtag", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Remove hashtag", exact: true })
+    .click();
   await expect(page.getByRole("heading", { name: "#eventtag" })).toHaveCount(0);
   expect(entries[0].deleted).toBe(true);
 });
