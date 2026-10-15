@@ -17,7 +17,7 @@ function ContextBadge({ message }: { message: ChatMessage }) {
     message.contextType === "MEDIA_PACKAGE" ? BriefcaseBusiness : Megaphone;
   return (
     <div className="mb-1.5 flex items-center gap-1 border-b border-current/15 pb-1.5 text-xs font-medium opacity-90">
-      <Icon className="size-3.5" />
+      <Icon className="size-3.5" aria-hidden="true" />
       {t(`chat.context.${message.contextType.toLowerCase()}`)}
     </div>
   );
@@ -29,44 +29,64 @@ export function ChatMessageBubble({
   locale,
 }: ChatMessageBubbleProps) {
   const { t } = useTranslation();
-  const initial = message.senderDisplayName.trim().charAt(0).toUpperCase() || "?";
+  const initial =
+    message.senderDisplayName.trim().charAt(0).toUpperCase() || "?";
   const time = new Intl.DateTimeFormat(locale, {
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(message.createdAt));
 
   return (
-    <article className={cn("flex items-end gap-2", isMine && "flex-row-reverse")}>
+    <article
+      className={cn("flex items-end gap-2", isMine && "flex-row-reverse")}
+    >
       {!isMine && (
         <div className="bg-secondary text-secondary-foreground flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
           {initial}
         </div>
       )}
-      <div className={cn("max-w-[82%] sm:max-w-[68%]", isMine && "text-right")}>
+      <div
+        className={cn(
+          "max-w-[85%] min-w-0 sm:max-w-[72%]",
+          isMine && "text-right",
+        )}
+      >
         {!isMine && (
           <p className="text-muted-foreground mb-1 px-1 text-xs font-medium">
-            {message.senderDisplayName}
+            {message.senderDisplayName}{" "}
+            <span className="ml-1 font-normal">
+              · {t(`chat.ui.roles.${message.senderRole}`)}
+            </span>
           </p>
         )}
         <div
           className={cn(
-            "rounded-2xl px-3.5 py-2 text-left text-sm shadow-sm",
+            "rounded-2xl border px-4 py-3 text-left text-sm",
             isMine
-              ? "bg-brand-orange rounded-br-md text-white"
+              ? "border-brand-orange/20 bg-brand-orange-soft text-foreground rounded-br-md"
               : "border-border bg-card text-card-foreground rounded-bl-md border",
           )}
         >
           <ContextBadge message={message} />
-          <p className="break-words whitespace-pre-wrap">{message.content}</p>
+          <p className="leading-6 [overflow-wrap:anywhere] whitespace-pre-wrap">
+            {message.content}
+          </p>
           <div
             className={cn(
-              "mt-1 flex items-center justify-end gap-1 text-3xs",
-              isMine ? "text-white/75" : "text-muted-foreground",
+              "text-muted-foreground mt-2 flex flex-wrap items-center justify-end gap-2 text-xs",
             )}
           >
-            <span>{time}</span>
+            <time dateTime={message.createdAt}>{time}</time>
             {isMine && message.deliveryStatus && (
-              <span>{t(`chat.delivery.${message.deliveryStatus.toLowerCase()}`)}</span>
+              <span
+                className={
+                  message.deliveryStatus === "FAILED"
+                    ? "text-destructive font-medium"
+                    : undefined
+                }
+              >
+                {t(`chat.delivery.${message.deliveryStatus.toLowerCase()}`)}
+              </span>
             )}
           </div>
         </div>
@@ -74,4 +94,3 @@ export function ChatMessageBubble({
     </article>
   );
 }
-

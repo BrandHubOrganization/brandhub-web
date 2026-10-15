@@ -75,16 +75,14 @@ export function AuthGuard() {
   )
     ? agencyIdCandidate
     : null;
-  const agencyContextId = agencyIdInUrl ?? currentAgencyId;
-  // Agency-level route (/reports, /clients, ...) truy cập KHÔNG qua 1
-  // workspace cụ thể — currentMemberRole (workspace-scoped) luôn null ở đây,
-  // đá nhầm agency Owner/Member về /dashboard dù access.ts cho phép
-  // OWNER/MANAGER. Fallback: nếu chưa ở trong workspace nào VÀ agency hiện
-  // tại có myRole, suy ra quyền tương đương cấp workspace — agency OWNER
-  // xem như OWNER, agency MEMBER (nhân sự nội bộ, không phải CLIENT) xem
-  // như MANAGER cho mục đích các trang quản lý cấp agency này.
+  // A URL scoped to an Agency must never inherit another Agency (or a stale
+  // Workspace) from the persisted selection.
+  const agencyContextId = agencyIdCandidate ? agencyIdInUrl : currentAgencyId;
+  // Agency-level routes use the Agency's own role. A Workspace role can still
+  // be present briefly after leaving a Workspace, but must not authorize or
+  // reject an Agency-scoped page.
   const agencyFallbackRole =
-    !workspaceIdInUrl && !currentMemberRole && agencyContextId
+    !workspaceIdInUrl && agencyContextId
       ? (() => {
           const myRole = agencyList.find(
             (a) => a.id === agencyContextId,
@@ -125,7 +123,9 @@ export function AuthGuard() {
 
   const memberRole = workspaceIdInUrl
     ? (workspaceInUrl?.myRole ?? null)
-    : (currentMemberRole ?? legacyWorkspaceRole ?? agencyFallbackRole);
+    : agencyIdCandidate
+      ? agencyFallbackRole
+      : (agencyFallbackRole ?? legacyWorkspaceRole ?? currentMemberRole);
 
   const isMediaPackageRoute =
     !!workspaceIdInUrl &&

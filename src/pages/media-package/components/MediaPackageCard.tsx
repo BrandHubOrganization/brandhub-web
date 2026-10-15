@@ -1,21 +1,14 @@
-import {
-  Check,
-  Clock3,
-  Coins,
-  Copy,
-  Eye,
-  EyeOff,
-  PackageCheck,
-} from "lucide-react";
+import { Check, Copy, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { MediaPackageDetail } from "./MediaPackageDetail";
 import {
   formatPackageType,
   formatPackageValue,
-} from "@/pages/media-package/lib/formatMediaPackage";
-import type { MediaPackage } from "@/pages/media-package/types/mediaPackage";
+} from "../lib/formatMediaPackage";
+import type { MediaPackage } from "../types/mediaPackage";
 
 interface MediaPackageCardProps {
   mediaPackage: MediaPackage;
@@ -27,14 +20,9 @@ interface MediaPackageCardProps {
   canManageAvailability?: boolean;
   updatingAvailability?: boolean;
   onUseTemplate?: (mediaPackage: MediaPackage) => void;
+  onDuplicate?: (mediaPackage: MediaPackage) => void;
   onToggleAvailability?: (mediaPackage: MediaPackage) => void;
 }
-
-const TYPE_ICONS = {
-  BY_DURATION: Clock3,
-  BY_BUDGET: Coins,
-  FULL_DELEGATION: PackageCheck,
-} as const;
 
 export function MediaPackageCard({
   mediaPackage,
@@ -46,99 +34,154 @@ export function MediaPackageCard({
   canManageAvailability = false,
   updatingAvailability = false,
   onUseTemplate,
+  onDuplicate,
   onToggleAvailability,
 }: MediaPackageCardProps) {
   const { t, i18n } = useTranslation();
-  const Icon = TYPE_ICONS[mediaPackage.type];
+  const [detailOpen, setDetailOpen] = useState(false);
+  const deliverables = mediaPackage.offeringDetails?.deliverables ?? [];
 
   return (
-    <article className="border-border bg-card flex h-full flex-col rounded-xl border p-5 shadow-xs">
-      <div className="flex items-start justify-between gap-3">
-        <div className="bg-brand-orange-soft text-brand-orange flex size-10 shrink-0 items-center justify-center rounded-xl">
-          <Icon className="size-5" />
-        </div>
-        <div className="flex flex-wrap justify-end gap-2">
-          <Badge variant="outline">
-            {mediaPackage.isTemplate
-              ? t("mediaPackage.badges.template")
-              : t("mediaPackage.badges.custom")}
+    <article
+      className={`bg-card flex h-full min-w-0 flex-col rounded-xl border p-5 ${selected ? "border-brand-orange ring-brand-orange ring-1" : "border-border"}`}
+    >
+      <div className="mb-4 flex flex-wrap gap-2">
+        <Badge variant="outline">
+          {t(
+            mediaPackage.isTemplate
+              ? "mediaPackage.badges.template"
+              : "mediaPackage.badges.custom",
+          )}
+        </Badge>
+        {!mediaPackage.isTemplate && (
+          <Badge
+            variant={
+              mediaPackage.availableToWorkspaces ? "APPROVED" : "secondary"
+            }
+          >
+            {t(
+              mediaPackage.availableToWorkspaces
+                ? "mediaPackage.badges.available"
+                : "mediaPackage.badges.hidden",
+            )}
           </Badge>
-          {!mediaPackage.isTemplate && (
-            <Badge
-              variant={
-                mediaPackage.availableToWorkspaces ? "APPROVED" : "secondary"
-              }
-            >
-              {mediaPackage.availableToWorkspaces
-                ? t("mediaPackage.badges.available")
-                : t("mediaPackage.badges.hidden")}
-            </Badge>
-          )}
-          {selected && (
-            <Badge variant="APPROVED" className="gap-1">
-              <Check className="size-3" />
-              {t("mediaPackage.badges.selected")}
-            </Badge>
-          )}
-        </div>
+        )}
+        {selected && (
+          <Badge variant="APPROVED" className="gap-1">
+            <Check className="size-3" aria-hidden="true" />
+            {t("mediaPackage.badges.selected")}
+          </Badge>
+        )}
       </div>
-
-      <div className="mt-4 flex-1">
-        <p className="text-muted-foreground text-xs font-medium">
-          {formatPackageType(mediaPackage.type, t)}
-        </p>
-        <h3 className="text-foreground mt-1 text-lg font-semibold">
+      <div className="flex-1">
+        <h3 className="text-foreground text-lg leading-snug font-semibold break-words">
           {mediaPackage.name}
         </h3>
-        <p className="text-brand-orange mt-3 text-xl font-bold">
+        <p className="text-muted-foreground mt-1 text-xs">
+          {formatPackageType(mediaPackage.type, t)}
+        </p>
+        <p className="text-foreground mt-4 text-2xl font-semibold tracking-tight">
           {formatPackageValue(mediaPackage, i18n.language, t)}
         </p>
         <p className="text-muted-foreground mt-3 line-clamp-3 text-sm leading-6">
           {mediaPackage.scopeDescription ||
             t("mediaPackage.catalog.noDescription")}
         </p>
+        {deliverables.length > 0 && (
+          <ul className="border-border mt-4 space-y-2 border-t pt-4">
+            {deliverables.slice(0, 3).map((item) => (
+              <li key={item.id} className="flex items-start gap-2 text-sm">
+                <Check
+                  className="text-brand-orange mt-0.5 size-4 shrink-0"
+                  aria-hidden="true"
+                />
+                <span className="min-w-0 break-words">
+                  <span className="font-medium">
+                    {item.quantity} {item.unit}
+                  </span>{" "}
+                  · {item.name}
+                </span>
+              </li>
+            ))}
+            {deliverables.length > 3 && (
+              <li className="text-muted-foreground text-xs">
+                {t("mediaPackage.ui.moreDeliverables", {
+                  count: deliverables.length - 3,
+                })}
+              </li>
+            )}
+          </ul>
+        )}
       </div>
-
-      {canSelect && (
-        <Button
-          variant={selected ? "secondary" : "orange"}
-          className="mt-5 w-full"
-          loading={selecting}
-          disabled={selected}
-          onClick={() => onSelect(mediaPackage.id)}
-        >
-          {selected
-            ? t("mediaPackage.actions.selected")
-            : t("mediaPackage.actions.select")}
-        </Button>
-      )}
-      {canUseTemplate && mediaPackage.isTemplate && (
+      <div className="border-border mt-5 space-y-2 border-t pt-4">
+        {canSelect && (
+          <Button
+            variant={selected ? "secondary" : "orange"}
+            className="w-full"
+            loading={selecting}
+            disabled={selected}
+            onClick={() => onSelect(mediaPackage.id)}
+          >
+            {t(
+              selected
+                ? "mediaPackage.actions.selected"
+                : "mediaPackage.actions.select",
+            )}
+          </Button>
+        )}
+        {canUseTemplate && mediaPackage.isTemplate && (
+          <Button
+            variant="orange"
+            className="h-auto min-h-10 w-full whitespace-normal"
+            onClick={() => onUseTemplate?.(mediaPackage)}
+          >
+            <Copy className="size-4 shrink-0" aria-hidden="true" />
+            {t("mediaPackage.actions.useTemplate")}
+          </Button>
+        )}
         <Button
           variant="outline"
-          className="mt-5 w-full"
-          onClick={() => onUseTemplate?.(mediaPackage)}
+          className="w-full"
+          onClick={() => setDetailOpen(true)}
         >
-          <Copy className="size-4" />
-          {t("mediaPackage.actions.useTemplate")}
+          <Eye className="size-4" aria-hidden="true" />
+          {t("mediaPackage.ui.viewDetail")}
         </Button>
-      )}
-      {canManageAvailability && !mediaPackage.isTemplate && (
-        <Button
-          variant="outline"
-          className="mt-5 w-full"
-          loading={updatingAvailability}
-          onClick={() => onToggleAvailability?.(mediaPackage)}
-        >
-          {mediaPackage.availableToWorkspaces ? (
-            <EyeOff className="size-4" />
-          ) : (
-            <Eye className="size-4" />
-          )}
-          {mediaPackage.availableToWorkspaces
-            ? t("mediaPackage.actions.hideFromWorkspaces")
-            : t("mediaPackage.actions.showToWorkspaces")}
-        </Button>
-      )}
+        {onDuplicate && !mediaPackage.isTemplate && (
+          <Button
+            variant="ghost"
+            className="h-auto min-h-10 w-full whitespace-normal"
+            onClick={() => onDuplicate(mediaPackage)}
+          >
+            <Copy className="size-4 shrink-0" aria-hidden="true" />
+            {t("mediaPackage.ui.duplicate")}
+          </Button>
+        )}
+        {canManageAvailability && !mediaPackage.isTemplate && (
+          <Button
+            variant="ghost"
+            className="text-muted-foreground h-auto min-h-10 w-full whitespace-normal"
+            loading={updatingAvailability}
+            onClick={() => onToggleAvailability?.(mediaPackage)}
+          >
+            {mediaPackage.availableToWorkspaces ? (
+              <EyeOff className="size-4 shrink-0" aria-hidden="true" />
+            ) : (
+              <Eye className="size-4 shrink-0" aria-hidden="true" />
+            )}
+            {t(
+              mediaPackage.availableToWorkspaces
+                ? "mediaPackage.actions.hideFromWorkspaces"
+                : "mediaPackage.actions.showToWorkspaces",
+            )}
+          </Button>
+        )}
+      </div>
+      <MediaPackageDetail
+        mediaPackage={mediaPackage}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
     </article>
   );
 }

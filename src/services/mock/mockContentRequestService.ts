@@ -87,7 +87,7 @@ const INITIAL_REQUESTS: ContentRequest[] = [
   {
     id: "req-102",
     topic: "Chiến dịch Mùa Hè Rực Rỡ cùng Heineken",
-    platforms: ["FACEBOOK", "YOUTUBE"],
+    platforms: ["FACEBOOK", "THREADS"],
     clientName: "Heineken Vietnam",
     deadline: "2026-08-28",
     status: "SUBMITTED",
@@ -106,7 +106,7 @@ const INITIAL_REQUESTS: ContentRequest[] = [
   {
     id: "req-104",
     topic: "Teaser ra mắt mẫu xe điện VinFast VF3 mới",
-    platforms: ["FACEBOOK", "INSTAGRAM", "YOUTUBE"],
+    platforms: ["FACEBOOK", "INSTAGRAM", "THREADS"],
     clientName: "VinFast",
     deadline: "2026-08-30",
     status: "SENT_TO_CLIENT",
@@ -136,7 +136,7 @@ const INITIAL_REQUESTS: ContentRequest[] = [
   {
     id: "req-107",
     topic: "Khai trương showroom flagship tại Hà Nội",
-    platforms: ["FACEBOOK", "YOUTUBE"],
+    platforms: ["FACEBOOK", "THREADS"],
     clientName: "Samsung Vietnam",
     deadline: "2026-09-05",
     status: "REJECTED",
@@ -146,7 +146,7 @@ const INITIAL_REQUESTS: ContentRequest[] = [
   {
     id: "req-108",
     topic: "Chuỗi video ngắn món ngon cuối tuần",
-    platforms: ["TIKTOK", "YOUTUBE"],
+    platforms: ["TIKTOK", "THREADS"],
     clientName: "Knorr Vietnam",
     deadline: "2026-08-29",
     status: "IN_PROGRESS",
@@ -175,7 +175,7 @@ const INITIAL_REQUESTS: ContentRequest[] = [
   {
     id: "req-111",
     topic: "Đánh giá ứng dụng ngân hàng số mới",
-    platforms: ["YOUTUBE", "FACEBOOK"],
+    platforms: ["THREADS", "FACEBOOK"],
     clientName: "Techcombank",
     deadline: "2026-09-01",
     status: "ASSIGNED",
@@ -195,7 +195,7 @@ const INITIAL_REQUESTS: ContentRequest[] = [
   {
     id: "req-113",
     topic: "Review tai nghe chống ồn không dây",
-    platforms: ["YOUTUBE", "TIKTOK"],
+    platforms: ["THREADS", "TIKTOK"],
     clientName: "Sony Vietnam",
     deadline: "2026-09-03",
     status: "IN_PROGRESS",
@@ -224,7 +224,7 @@ const INITIAL_REQUESTS: ContentRequest[] = [
   {
     id: "req-116",
     topic: "Hướng dẫn tập Pilates cho người mới bắt đầu",
-    platforms: ["YOUTUBE", "INSTAGRAM"],
+    platforms: ["THREADS", "INSTAGRAM"],
     clientName: "California Fitness",
     deadline: "2026-09-04",
     status: "IN_PROGRESS",
@@ -273,7 +273,7 @@ const INITIAL_REQUESTS: ContentRequest[] = [
   {
     id: "req-121",
     topic: "Video Unboxing bàn phím cơ không dây",
-    platforms: ["YOUTUBE", "TIKTOK"],
+    platforms: ["THREADS", "TIKTOK"],
     clientName: "Logitech Vietnam",
     deadline: "2026-09-12",
     status: "PENDING_REVIEW",

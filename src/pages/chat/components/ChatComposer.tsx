@@ -37,7 +37,11 @@ export function ChatComposer({
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey &&
+      !event.nativeEvent.isComposing
+    ) {
       event.preventDefault();
       send();
     }
@@ -56,7 +60,7 @@ export function ChatComposer({
         <Textarea
           value={content}
           maxLength={MAX_MESSAGE_LENGTH}
-          rows={1}
+          rows={2}
           disabled={!connected}
           placeholder={
             connected
@@ -64,27 +68,33 @@ export function ChatComposer({
               : t("chat.composer.offlinePlaceholder")
           }
           aria-label={t("chat.composer.ariaLabel")}
-          className="max-h-32 min-h-10 resize-none rounded-2xl py-2.5"
+          className="max-h-32 min-h-16 resize-y rounded-xl py-3"
           onChange={(event) => setContent(event.target.value)}
           onKeyDown={handleKeyDown}
         />
         <Button
           variant="orange"
           size="icon"
-          className="size-10 rounded-full"
+          className="size-11 rounded-xl"
           aria-label={t("chat.composer.send")}
           disabled={!connected || !content.trim()}
           onClick={send}
         >
-          <SendHorizontal className="size-4" />
+          <SendHorizontal className="size-4" aria-hidden="true" />
         </Button>
       </div>
-      {content.length > 3500 && (
-        <p className="text-muted-foreground mt-1 text-right text-3xs">
+      <div className="text-muted-foreground mt-2 flex flex-wrap justify-between gap-2 text-xs">
+        <p>
+          {t(
+            connected
+              ? "chat.ui.keyboardHint"
+              : "chat.composer.offlinePlaceholder",
+          )}
+        </p>
+        <p aria-live={content.length > 3500 ? "polite" : "off"}>
           {content.length}/{MAX_MESSAGE_LENGTH}
         </p>
-      )}
+      </div>
     </footer>
   );
 }
-

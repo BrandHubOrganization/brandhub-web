@@ -8,6 +8,7 @@ import { AdminAccountsPanel } from "@/pages/admin/components/AdminAccountsPanel"
 import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
 import { AdminModerationPanel } from "@/pages/admin/components/AdminModerationPanel";
 import { AdminNotificationsPanel } from "@/pages/admin/components/AdminNotificationsPanel";
+import { AdminMailTemplatesPanel } from "@/pages/admin/components/AdminMailTemplatesPanel";
 import { AdminReportForm } from "@/pages/admin/components/AdminReportExport";
 import { AdminCrawlConfigPanel } from "@/pages/admin/components/AdminCrawlConfigPanel";
 import { presetRange } from "@/services/adminRevenueService";
@@ -22,6 +23,7 @@ const views = [
   "moderation",
   "revenue",
   "email",
+  "mailTemplates",
   "reports",
   "crawl",
 ];
@@ -48,7 +50,9 @@ export function AdminPage() {
             ? "admin.overview.description"
             : view === "users"
               ? "admin.accounts.description"
-              : view === "reports"
+              : view === "mailTemplates"
+                ? "mailTemplate.admin.description"
+                : view === "reports"
                 ? "admin.reports.description"
                 : view === "moderation"
                   ? "admin.moderation.description"
@@ -80,6 +84,8 @@ export function AdminPage() {
           <AdminNotificationsPanel />
         ) : view === "crawl" ? (
           <AdminCrawlConfigPanel />
+        ) : view === "mailTemplates" ? (
+          <AdminMailTemplatesPanel />
         ) : view === "reports" ? (
           <section className="bg-card border-border max-w-2xl rounded-xl border p-5 lg:p-6">
             <AdminReportForm

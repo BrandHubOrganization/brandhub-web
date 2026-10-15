@@ -12,7 +12,6 @@ const MOCKUP_SUPPORTED: PlatformType[] = [
   "INSTAGRAM",
   "TIKTOK",
   "THREADS",
-  "YOUTUBE",
 ];
 
 function isMockupSupported(platform: string): platform is PlatformType {

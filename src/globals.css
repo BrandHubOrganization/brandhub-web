@@ -376,3 +376,120 @@
     animation: none;
   }
 }
+
+/* ==========================================================================
+   FullCalendar Modern SaaS Theme Override (Schedule-X Style)
+   Grid borders sắc nét, chuẩn HSL tokens, đồng bộ hoàn toàn Dark/Light mode
+   ========================================================================== */
+.fc {
+  --fc-border-color: hsl(var(--border));
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: hsl(var(--muted) / 0.5);
+  --fc-today-bg-color: hsl(var(--primary) / 0.05);
+  font-family: inherit;
+}
+
+.fc-theme-standard th {
+  border: 1px solid hsl(var(--border)) !important;
+  padding: 10px 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: hsl(var(--muted) / 0.4);
+}
+
+.fc-theme-standard td {
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+.fc-scrollgrid {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+.fc-timegrid-slot {
+  height: 2.75rem !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+}
+
+.fc-timegrid-slot-minor {
+  border-top: 1px dashed hsl(var(--border) / 0.6) !important;
+}
+
+.fc-timegrid-col {
+  border-right: 1px solid hsl(var(--border)) !important;
+}
+
+.fc-timegrid-slot-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  border-right: 1px solid hsl(var(--border)) !important;
+  background: hsl(var(--card));
+}
+
+.fc-timegrid-divider {
+  padding: 0 !important;
+  border-bottom: 2px solid hsl(var(--border)) !important;
+}
+
+.fc-col-header-cell {
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+.fc-daygrid-day-frame,
+.fc-timegrid-col-frame {
+  border-right: 1px solid hsl(var(--border)) !important;
+}
+
+/* Ẩn hoàn toàn scrollbar ở phần Header (ngày) và phần All-Day */
+.fc-col-header .fc-scroller,
+.fc-daygrid-body .fc-scroller,
+.fc-scrollgrid-section-header .fc-scroller,
+.fc-scrollgrid-section-body:not(.fc-scrollgrid-section-liquid) .fc-scroller {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+}
+
+.fc-col-header .fc-scroller::-webkit-scrollbar,
+.fc-daygrid-body .fc-scroller::-webkit-scrollbar,
+.fc-scrollgrid-section-header .fc-scroller::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* CHỈ GIỮ DUY NHẤT 1 thanh scrollbar ở phần thân Timeline giờ (TimeGrid Body) */
+.fc-timegrid-body .fc-scroller,
+.fc-scrollgrid-section-liquid .fc-scroller {
+  overflow-y: scroll !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent !important;
+}
+
+.fc-timegrid-body .fc-scroller::-webkit-scrollbar,
+.fc-scrollgrid-section-liquid .fc-scroller::-webkit-scrollbar {
+  width: 8px !important;
+  display: block !important;
+}
+
+.fc-timegrid-body .fc-scroller::-webkit-scrollbar-track,
+.fc-scrollgrid-section-liquid .fc-scroller::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.fc-timegrid-body .fc-scroller::-webkit-scrollbar-thumb,
+.fc-scrollgrid-section-liquid .fc-scroller::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.35) !important;
+  border-radius: 9999px !important;
+}
+
+.fc-timegrid-body .fc-scroller::-webkit-scrollbar-thumb:hover,
+.fc-scrollgrid-section-liquid .fc-scroller::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.6) !important;
+}
+
+
+
+

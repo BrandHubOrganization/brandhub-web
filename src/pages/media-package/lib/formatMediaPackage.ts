@@ -2,6 +2,8 @@ import type { TFunction } from "i18next";
 import type {
   MediaPackage,
   MediaPackageType,
+  OfferingModel,
+  PackageOfferingDetails,
 } from "@/pages/media-package/types/mediaPackage";
 
 const PACKAGE_TYPES: MediaPackageType[] = [
@@ -30,6 +32,9 @@ export function applyEffectiveTerms(
     : mediaPackage.type;
   return {
     ...mediaPackage,
+    // New structured terms must come from the agreement, never the mutable catalogue.
+    offeringModel: (terms.offeringModel as OfferingModel | null) ?? null,
+    offeringDetails: (terms.offeringDetails as PackageOfferingDetails | null) ?? null,
     name: optionalString(terms.name, mediaPackage.name) ?? mediaPackage.name,
     type,
     durationWeeks: optionalNumber(

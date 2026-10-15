@@ -8,8 +8,15 @@ import type { Agency } from "@/types/agency";
 import type { SystemRole } from "@/store/authStore";
 import { canAccess } from "@/routes/access";
 import { AdminSidebar } from "@/components/layout/AdminSidebar";
-import { NAV_SECTIONS, type NavItem, type NavSection } from "./sidebar/sidebarNavConfig";
-import { SidebarHoverPreview, type HoveredItemInfo } from "./sidebar/SidebarHoverPreview";
+import {
+  NAV_SECTIONS,
+  type NavItem,
+  type NavSection,
+} from "./sidebar/sidebarNavConfig";
+import {
+  SidebarHoverPreview,
+  type HoveredItemInfo,
+} from "./sidebar/SidebarHoverPreview";
 import { OrgSwitcherDropdown } from "./sidebar/OrgSwitcherDropdown";
 
 export type { NavItem, NavSection };
@@ -71,8 +78,12 @@ export function Sidebar({
   }, [allWorkspaces, currentAgencyId]);
 
   // State cho hover preview popup
-  const [hoveredItem, setHoveredItem] = React.useState<HoveredItemInfo | null>(null);
-  const hoverTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [hoveredItem, setHoveredItem] = React.useState<HoveredItemInfo | null>(
+    null,
+  );
+  const hoverTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   const clearHoveredItem = React.useCallback(() => {
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
@@ -100,7 +111,13 @@ export function Sidebar({
   React.useEffect(() => {
     clearHoveredItem();
     setDropdownOpen(false);
-  }, [location.pathname, location.search, activeWorkspace?.id, currentAgencyId, clearHoveredItem]);
+  }, [
+    location.pathname,
+    location.search,
+    activeWorkspace?.id,
+    currentAgencyId,
+    clearHoveredItem,
+  ]);
 
   // Data cho preview đang hover
   const hoveredAgency =
@@ -131,14 +148,13 @@ export function Sidebar({
 
   // Ở agency-level, create và workspaceSettings cần ngữ cảnh Workspace.
   // Trước khi duyệt gói, Manager vẫn quản lý được thiết lập Workspace.
-  const visibleSectionKeys: string[] | null =
-    !activeWorkspace
-      ? ["overview", "agency", "lists", "invitations", "settings"]
-      : isPackageHardGated
-        ? role === "MANAGER"
-          ? ["overview", "workspaceSettings"]
-          : ["overview"]
-        : ["overview", "create", "workspaceSettings"];
+  const visibleSectionKeys: string[] | null = !activeWorkspace
+    ? ["overview", "agency", "lists", "invitations", "settings"]
+    : isPackageHardGated
+      ? role === "MANAGER"
+        ? ["overview", "workspaceSettings"]
+        : ["overview"]
+      : ["overview", "create", "workspaceSettings"];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
@@ -306,7 +322,9 @@ export function Sidebar({
               "text-muted-foreground hover:bg-muted/20 hover:text-white",
               collapsed ? "justify-center" : "",
             )}
-            title={collapsed ? t("nav.leaveWorkspace", "Thoát workspace") : undefined}
+            title={
+              collapsed ? t("nav.leaveWorkspace", "Thoát workspace") : undefined
+            }
           >
             <ChevronLeft className="size-3.5 shrink-0" />
             {!collapsed && (
@@ -333,9 +351,7 @@ export function Sidebar({
             title={collapsed ? t("nav.leaveAgency", "Thoát agency") : undefined}
           >
             <ChevronLeft className="size-3.5 shrink-0" />
-            {!collapsed && (
-              <span>{t("nav.leaveAgency", "Thoát agency")}</span>
-            )}
+            {!collapsed && <span>{t("nav.leaveAgency", "Thoát agency")}</span>}
           </button>
         </div>
       )}

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test": "vitest run",
     "type-check": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
     "preview": "vite preview"
   },
@@ -32,6 +33,7 @@
     "@stomp/stompjs": "^7.3.0",
     "@tailwindcss/vite": "^4.3.0",
     "@tanstack/react-query": "^5.100.14",
+    "@tiptap/extension-image": "3.30.1",
     "@tiptap/extension-link": "3.30.1",
     "@tiptap/extension-placeholder": "^3.30.1",
     "@tiptap/react": "^3.30.1",
@@ -82,6 +84,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
-    "vite": "^8.2.0"
+    "vite": "^8.2.0",
+    "vitest": "^5.0.3"
   }
 }

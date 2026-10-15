@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   AtSign,
   Camera,
-  CirclePlay,
   Globe2,
   Music2,
   PanelRightClose,
@@ -28,7 +27,6 @@ const PLATFORM_ICONS: Record<SocialPlatform, LucideIcon> = {
   INSTAGRAM: Camera,
   TIKTOK: Music2,
   THREADS: AtSign,
-  YOUTUBE: CirclePlay,
 };
 
 export function StudioPreviewPanel({
