@@ -237,6 +237,46 @@ export function useEditorForm() {
     }
   };
 
+  const handlePublishNow = async () => {
+    if (!caption.trim()) {
+      toast.error(t("editor.submitEmptyError"));
+      return;
+    }
+    if (targetPlatforms.length === 0) {
+      toast.error("Vui lòng chọn ít nhất 1 nền tảng mạng xã hội để đăng!");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      if (!currentWorkspace) {
+        throw new Error("Workspace is required");
+      }
+      let postId = draftId;
+      const media = toPostMedia(mediaUrls, mediaStorageKeys);
+      const payload = {
+        caption,
+        hashtags,
+        media,
+        targetPlatforms,
+        aiGenerated: containsAiContent,
+      };
+      const saved = postId
+        ? await postService.updateDraft(currentWorkspace.id, postId, payload)
+        : await postService.createDraft(currentWorkspace.id, payload);
+      postId = saved.id;
+      setDraftId(saved.id);
+
+      await postService.publishNow(currentWorkspace.id, postId);
+      toast.success("Đã bắn job đăng bài qua RabbitMQ tới Publisher Service thành công! 🚀");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Đăng bài thất bại";
+      toast.error(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return {
     caption,
     hashtags,
@@ -257,5 +297,7 @@ export function useEditorForm() {
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,
+    handlePublishNow,
   };
 }
+

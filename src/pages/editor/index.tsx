@@ -56,6 +56,7 @@ export function EditorPage() {
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,
+    handlePublishNow,
   } = useEditorForm();
 
   const handleApplyGeneratedImage = (imageUrl: string, s3Key?: string) => {
@@ -143,6 +144,7 @@ export function EditorPage() {
           onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
           onOpenPreview={() => setIsPreviewOpen(true)}
           onSubmitForReview={handleSubmitForReview}
+          onPublishNow={handlePublishNow}
         />
       }
     >

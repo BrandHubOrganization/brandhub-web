@@ -16,6 +16,7 @@ interface Props {
   onOpenTemplatePicker: () => void;
   onOpenPreview: () => void;
   onSubmitForReview: () => void;
+  onPublishNow?: () => void;
 }
 
 export function EditorHeaderActions({
@@ -26,6 +27,7 @@ export function EditorHeaderActions({
   onOpenTemplatePicker,
   onOpenPreview,
   onSubmitForReview,
+  onPublishNow,
 }: Props) {
   const { t } = useTranslation();
   return (
@@ -68,6 +70,18 @@ export function EditorHeaderActions({
         <Eye className="text-brand-orange size-4" />
         <span>{t("editor.header.previewButton")}</span>
       </button>
+
+      {onPublishNow && (
+        <button
+          type="button"
+          onClick={onPublishNow}
+          disabled={isSubmitting}
+          className="bg-emerald-600 hover:bg-emerald-500 flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-1.5 text-xs font-medium text-white shadow-xs transition-colors disabled:opacity-50"
+        >
+          <Send className="size-3.5" />
+          <span>{isSubmitting ? "Đang xử lý..." : "Đăng ngay (RabbitMQ)"}</span>
+        </button>
+      )}
 
       <button
         type="button"
