@@ -39,7 +39,7 @@ export interface ActivityFeedResponse {
 }
 
 export type AnalyticsPlatform =
-  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
+  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS";
 
 export interface ChannelStat {
   platform: AnalyticsPlatform;

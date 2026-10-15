@@ -10,7 +10,6 @@ const PLATFORM_BAR_COLOR: Record<AnalyticsPlatform, string> = {
   INSTAGRAM: "bg-pink-500",
   TIKTOK: "bg-slate-900 dark:bg-slate-100",
   THREADS: "bg-purple-500",
-  YOUTUBE: "bg-red-500",
 };
 
 const PLATFORM_LABEL: Record<AnalyticsPlatform, string> = {
@@ -18,7 +17,6 @@ const PLATFORM_LABEL: Record<AnalyticsPlatform, string> = {
   INSTAGRAM: "Instagram",
   TIKTOK: "TikTok",
   THREADS: "Threads",
-  YOUTUBE: "Youtube",
 };
 
 export function ChannelPerformanceChart({

@@ -1,5 +1,5 @@
 import type { Platform } from "@/types/post";
-import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa6";
+import { FaFacebook, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { SiThreads } from "react-icons/si";
 
 export interface PlatformMeta {
@@ -30,11 +30,6 @@ export const PLATFORM_META: Record<Platform, PlatformMeta> = {
     icon: <SiThreads className="text-foreground size-4" />,
     color:
       "border-purple-500/30 bg-purple-500/10 text-purple-700 dark:text-purple-300",
-  },
-  YOUTUBE: {
-    label: "Youtube",
-    icon: <FaYoutube className="size-4.5 text-[#FF0000]" />,
-    color: "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300",
   },
 };
 
