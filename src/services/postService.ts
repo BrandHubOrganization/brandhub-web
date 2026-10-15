@@ -59,4 +59,11 @@ export const postService = {
     );
     return response.data.data;
   },
+
+  async publishNow(workspaceId: string, postId: string) {
+    const response = await api.post<ApiResponse<PostResponse>>(
+      `/api/v1/workspaces/${workspaceId}/posts/${postId}/publish`,
+    );
+    return response.data.data;
+  },
 };
