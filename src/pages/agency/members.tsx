@@ -594,8 +594,9 @@ export function AgencyMembersPage() {
               </div>
               <Button
                 type="submit"
+                variant="orange"
                 loading={inviting}
-                className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-white"
+                className="cursor-pointer gap-1.5"
               >
                 <Mail className="size-4" />
                 {t("agency.members.sendInvite")}

@@ -47,6 +47,8 @@ export function CreateWorkspacePage() {
     availableTemplates,
     selectedTemplateId,
     handleTemplateSelect,
+    errors,
+    clearError,
   } = useCreateWorkspace();
 
   return (
@@ -56,7 +58,10 @@ export function CreateWorkspacePage() {
     >
       <CreateWorkspaceForm
         name={name}
-        onNameChange={setName}
+        onNameChange={(val) => {
+          setName(val);
+          clearError("name");
+        }}
         description={description}
         onDescriptionChange={setDescription}
         brandColor={brandColor}
@@ -66,7 +71,10 @@ export function CreateWorkspacePage() {
         tagline={tagline}
         onTaglineChange={setTagline}
         foundedYear={foundedYear}
-        onFoundedYearChange={setFoundedYear}
+        onFoundedYearChange={(val) => {
+          setFoundedYear(val);
+          clearError("foundedYear");
+        }}
         agencyId={agencyId}
         assignMembers={assignMembers}
         onAssignMembersChange={setAssignMembers}
@@ -80,22 +88,38 @@ export function CreateWorkspacePage() {
         companySize={companySize}
         onCompanySizeChange={setCompanySize}
         website={website}
-        onWebsiteChange={setWebsite}
+        onWebsiteChange={(val) => {
+          setWebsite(val);
+          clearError("website");
+        }}
         phone={phone}
-        onPhoneChange={setPhone}
+        onPhoneChange={(val) => {
+          setPhone(val);
+          clearError("phone");
+        }}
         location={location}
         onLocationChange={setLocation}
         facebookUrl={facebookUrl}
-        onFacebookUrlChange={setFacebookUrl}
+        onFacebookUrlChange={(val) => {
+          setFacebookUrl(val);
+          clearError("facebookUrl");
+        }}
         linkedinUrl={linkedinUrl}
-        onLinkedinUrlChange={setLinkedinUrl}
+        onLinkedinUrlChange={(val) => {
+          setLinkedinUrl(val);
+          clearError("linkedinUrl");
+        }}
         instagramUrl={instagramUrl}
-        onInstagramUrlChange={setInstagramUrl}
+        onInstagramUrlChange={(val) => {
+          setInstagramUrl(val);
+          clearError("instagramUrl");
+        }}
         industryFields={industryFields}
         onIndustryFieldsChange={setIndustryFields}
         availableTemplates={availableTemplates}
         selectedTemplateId={selectedTemplateId}
         onTemplateSelect={handleTemplateSelect}
+        errors={errors}
       />
     </PageWrapper>
   );

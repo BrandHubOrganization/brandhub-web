@@ -28,9 +28,12 @@ import {
 } from "./components/AgencyDetailEditForm";
 import { AgencyDetailInfo } from "./components/AgencyDetailInfo";
 
-const CURRENT_YEAR = new Date().getFullYear();
-const URL_RE = /^https?:\/\/.+/i;
-const PHONE_RE = /^[0-9+\-\s()]{6,20}$/;
+import {
+  CURRENT_YEAR,
+  isValidUrl,
+  isValidPhone,
+  isValidFoundedYear,
+} from "@/utils/validation";
 
 export function AgencyDetailPage() {
   const { t } = useTranslation();
@@ -77,6 +80,15 @@ export function AgencyDetailPage() {
 
   const [errors, setErrors] = useState<AgencyDetailFieldErrors>({});
 
+  const clearFieldError = (field: keyof AgencyDetailFieldErrors) => {
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  };
+
   const validateField = (field: keyof AgencyDetailFieldErrors, value: string) => {
     let message: string | undefined;
     switch (field) {
@@ -84,32 +96,30 @@ export function AgencyDetailPage() {
         if (!value.trim()) message = t("agency.detail.errors.nameRequired");
         break;
       case "website":
-        if (value && !URL_RE.test(value))
+        if (value.trim() && !isValidUrl(value))
           message = t("agency.detail.errors.invalidUrl");
         break;
       case "phone":
-        if (value && !PHONE_RE.test(value))
+        if (value.trim() && !isValidPhone(value))
           message = t("agency.detail.errors.invalidPhone");
         break;
       case "facebookUrl":
-        if (value && !URL_RE.test(value))
+        if (value.trim() && !isValidUrl(value))
           message = t("agency.detail.errors.invalidFacebookUrl");
         break;
       case "linkedinUrl":
-        if (value && !URL_RE.test(value))
+        if (value.trim() && !isValidUrl(value))
           message = t("agency.detail.errors.invalidLinkedinUrl");
         break;
       case "instagramUrl":
-        if (value && !URL_RE.test(value))
+        if (value.trim() && !isValidUrl(value))
           message = t("agency.detail.errors.invalidInstagramUrl");
         break;
       case "foundedYear":
-        if (value) {
-          const y = parseInt(value, 10);
-          if (isNaN(y) || y <= 0 || y > CURRENT_YEAR)
-            message = t("agency.detail.errors.invalidYear", {
-              max: CURRENT_YEAR,
-            });
+        if (value.trim() && !isValidFoundedYear(value)) {
+          message = t("agency.detail.errors.invalidYear", {
+            max: CURRENT_YEAR,
+          });
         }
         break;
     }
@@ -471,6 +481,7 @@ export function AgencyDetailPage() {
                 name={name}
                 setName={setName}
                 validateField={validateField}
+                clearFieldError={clearFieldError}
                 errors={errors}
                 logoUrl={logoUrl}
                 brandColor={brandColor}

@@ -39,7 +39,19 @@ export function AvatarUploadModal({
   const [recentModalOpen, setRecentModalOpen] = useState(false);
 
   const handleFile = (pickedFile: File) => {
-    if (!pickedFile.type.startsWith("image/")) return;
+    if (!pickedFile.type.startsWith("image/")) {
+      toast.error(
+        t(
+          "agency.detail.errors.invalidUrl",
+          "File không hợp lệ. Vui lòng chọn tệp hình ảnh.",
+        ),
+      );
+      return;
+    }
+    if (pickedFile.size > 5 * 1024 * 1024) {
+      toast.error(t("agency.create.uploadHint", "Kích thước ảnh tối đa 5MB"));
+      return;
+    }
     const url = URL.createObjectURL(pickedFile);
     setCropperSrc(url);
     setCropperOpen(true);

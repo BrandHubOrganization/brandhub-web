@@ -16,8 +16,12 @@ import type {
   WorkspaceIndustry,
   WorkspaceTemplate,
 } from "@/types/workspace";
-
-const CURRENT_YEAR = new Date().getFullYear();
+import {
+  isValidFoundedYear,
+  normalizeUrl,
+  isValidUrl,
+  isValidPhone,
+} from "@/utils/validation";
 
 export function useCreateWorkspace() {
   const { t } = useTranslation();
@@ -46,6 +50,17 @@ export function useCreateWorkspace() {
   const [assignMembers, setAssignMembers] = useState<AssignEntry[]>([]);
   const [clientEmails, setClientEmails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const clearError = (field: string) => {
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
 
   // Field bị ẩn mặc định (trùng Agency) — chỉ hiện khi có template đang áp.
   const [industry, setIndustry] = useState<WorkspaceIndustry | "">("");
@@ -117,9 +132,63 @@ export function useCreateWorkspace() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!agencyId) return;
+
+    const newErrors: Record<string, string> = {};
+    if (!name.trim()) {
+      newErrors.name = t(
+        "workspace.create.nameRequired",
+        "Vui lòng nhập tên workspace",
+      );
+    }
+    if (foundedYear.trim() && !isValidFoundedYear(foundedYear)) {
+      newErrors.foundedYear = t(
+        "clientProfile.invalidYear",
+        "Năm thành lập không hợp lệ",
+      );
+    }
+    if (website.trim() && !isValidUrl(normalizeUrl(website))) {
+      newErrors.website = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
+    }
+    if (phone.trim() && !isValidPhone(phone)) {
+      newErrors.phone = t(
+        "agency.detail.errors.invalidPhone",
+        "Số điện thoại không hợp lệ (10-11 số)",
+      );
+    }
+    if (facebookUrl.trim() && !isValidUrl(normalizeUrl(facebookUrl))) {
+      newErrors.facebookUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
+    }
+    if (linkedinUrl.trim() && !isValidUrl(normalizeUrl(linkedinUrl))) {
+      newErrors.linkedinUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
+    }
+    if (instagramUrl.trim() && !isValidUrl(normalizeUrl(instagramUrl))) {
+      newErrors.instagramUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error(
+        t("common.formError", "Vui lòng kiểm tra lại các trường thông tin"),
+      );
+      return;
+    }
+    setErrors({});
+
     setLoading(true);
     try {
-      const yearNum = foundedYear ? Number(foundedYear) : undefined;
+      const yearNum = foundedYear.trim() ? Number(foundedYear) : undefined;
       const { data } = await workspaceService.create({
         name: name.trim(),
         agencyId,
@@ -127,10 +196,7 @@ export function useCreateWorkspace() {
         brandColor: brandColor || undefined,
         logoIcon: logoIcon || undefined,
         tagline: tagline.trim() || undefined,
-        foundedYear:
-          yearNum && yearNum >= 1900 && yearNum <= CURRENT_YEAR
-            ? yearNum
-            : undefined,
+        foundedYear: yearNum,
         industry: industry || undefined,
         companySize: companySize || undefined,
         website: website.trim() || undefined,
@@ -218,5 +284,7 @@ export function useCreateWorkspace() {
     availableTemplates,
     selectedTemplateId,
     handleTemplateSelect,
+    errors,
+    clearError,
   };
 }
