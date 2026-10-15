@@ -172,6 +172,7 @@ export function Sidebar({
         .filter((item) => {
           if (!isPackageHardGated) return true;
           return (
+            item.to === "/dashboard" ||
             item.to === "/media-package" ||
             item.to === "/chat" ||
             (role === "MANAGER" &&
