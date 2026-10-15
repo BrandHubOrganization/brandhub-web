@@ -308,3 +308,89 @@ test("stacks the studio without horizontal overflow on mobile", async ({
     )
     .toBe(true);
 });
+
+for (const language of ["vi", "en"] as const) {
+  test(`ambassador portrait flow uses worker defaults (${language})`, async ({
+    page,
+  }, testInfo) => {
+    await page.evaluate((lang) => {
+      localStorage.setItem("brandhub-lang", lang);
+      localStorage.setItem("vite-ui-theme", lang === "vi" ? "light" : "dark");
+    }, language);
+    await page.reload();
+    const requests: unknown[] = [];
+    let sheetRequests = 0;
+    await page.route("**/api/v1/ai/ambassadors/character-sheet", (route) => {
+      sheetRequests += 1;
+      return route.abort();
+    });
+    await page.route("**/api/v1/ai/ambassadors/generate", (route) => {
+      requests.push(route.request().postDataJSON());
+      return route.fulfill({
+        json: {
+          success: true,
+          data: {
+            image_url: PIXEL,
+            image_type: "ambassador",
+            s3_key: "ambassadors/test.png",
+          },
+        },
+      });
+    });
+    await page
+      .getByRole("tab", {
+        name: language === "vi" ? "Hình ảnh" : "Image",
+        exact: true,
+      })
+      .click();
+    await page
+      .getByRole("button", {
+        name:
+          language === "vi"
+            ? "Tạo Ambassador bằng AI"
+            : "Generate AI Ambassador",
+        exact: true,
+      })
+      .click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).not.toContainText(/Character Sheet/i);
+    await page.getByTestId("generate-character").click();
+    await expect(dialog.getByRole("alert")).toBeVisible();
+    expect(requests).toHaveLength(0);
+    await page
+      .getByTestId("character-description")
+      .fill("A Vietnamese model in a cream blazer");
+    await page.screenshot({
+      path: testInfo.outputPath(`ambassador-${language}.png`),
+    });
+    await page.getByTestId("generate-character").click();
+    await expect(page.getByTestId("approve-character")).toBeVisible();
+    expect(requests).toEqual([
+      {
+        prompt: "A Vietnamese model in a cream blazer",
+        steps: 25,
+        width: 832,
+        height: 1248,
+      },
+    ]);
+    await page
+      .getByRole("button", {
+        name: language === "vi" ? "Tạo lại" : "Regenerate",
+        exact: true,
+      })
+      .click();
+    await expect.poll(() => requests.length).toBe(2);
+    await page.getByTestId("approve-character").click();
+    await expect(dialog).not.toBeVisible();
+    await expect(
+      page.getByRole("button", {
+        name:
+          language === "vi"
+            ? "Ambassador do AI tạo"
+            : "AI-generated Ambassador",
+        exact: true,
+      }),
+    ).toBeVisible();
+    expect(sheetRequests).toBe(0);
+  });
+}

@@ -6,7 +6,7 @@ import {
   ImagePlus,
   Loader2,
   Package,
-  ScanFace,
+  PersonStanding,
   Sparkles,
   Upload,
   UserRound,
@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { CharacterSheetGeneratorModal } from "@/pages/editor/components/CharacterSheetGeneratorModal";
+import { AmbassadorGeneratorModal } from "@/pages/editor/components/AmbassadorGeneratorModal";
 import {
   aiGenerationService,
   imageSourceToDataUrl,
@@ -29,7 +29,12 @@ interface AIImageStudioPanelProps {
   onApplyImage: (imageUrl: string, s3Key?: string) => void;
 }
 
-const ASPECT_RATIOS = ["1:1", "4:5", "9:16", "16:9"] as const;
+const ASPECT_RATIOS = ["9:16", "16:9", "4:5"] as const;
+const ASPECT_CLASSES: Record<(typeof ASPECT_RATIOS)[number], string> = {
+  "9:16": "aspect-[9/16]",
+  "16:9": "aspect-[16/9]",
+  "4:5": "aspect-[4/5]",
+};
 const MAX_REFERENCE_BYTES = 10 * 1024 * 1024;
 
 function readImage(file: File): Promise<string> {
@@ -51,24 +56,23 @@ export function AIImageStudioPanel({
   const { t } = useTranslation();
   const productInputRef = useRef<HTMLInputElement>(null);
   const ambassadorInputRef = useRef<HTMLInputElement>(null);
+  const poseInputRef = useRef<HTMLInputElement>(null);
   const [presets, setPresets] = useState<AmbassadorPreset[]>([]);
   const [isLoadingPresets, setIsLoadingPresets] = useState(true);
   const [isPresetPanelOpen, setIsPresetPanelOpen] = useState(false);
   const [uploadedProduct, setUploadedProduct] = useState("");
   const [uploadedAmbassador, setUploadedAmbassador] = useState("");
   const [aiGeneratedAmbassador, setAiGeneratedAmbassador] = useState("");
-  const [characterSheet, setCharacterSheet] = useState("");
+  const [selectedPose, setSelectedPose] = useState("");
   const [isCharacterFlowOpen, setIsCharacterFlowOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(
     referenceMediaUrls[0] ?? "",
   );
   const [selectedAmbassador, setSelectedAmbassador] = useState("");
   const [aspectRatio, setAspectRatio] =
-    useState<(typeof ASPECT_RATIOS)[number]>("1:1");
+    useState<(typeof ASPECT_RATIOS)[number]>("9:16");
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isGeneratingCharacterSheet, setIsGeneratingCharacterSheet] =
-    useState(false);
   const [generatedImage, setGeneratedImage] = useState("");
   const [generatedImageKey, setGeneratedImageKey] = useState<string>();
 
@@ -112,12 +116,11 @@ export function AIImageStudioPanel({
   const selectedAmbassadorImage =
     selectedPreset?.image_url ||
     (selectedAmbassador === "uploaded" ? uploadedAmbassador : "") ||
-    (selectedAmbassador === "ai-generated" ? aiGeneratedAmbassador : "") ||
-    (selectedAmbassador === "character-sheet" ? characterSheet : "");
+    (selectedAmbassador === "ai-generated" ? aiGeneratedAmbassador : "");
 
   const handleReferenceUpload = async (
     event: ChangeEvent<HTMLInputElement>,
-    kind: "product" | "ambassador",
+    kind: "product" | "ambassador" | "pose",
   ) => {
     const file = event.target.files?.[0];
     event.target.value = "";
@@ -136,6 +139,8 @@ export function AIImageStudioPanel({
       if (kind === "product") {
         setUploadedProduct(dataUrl);
         setSelectedProduct(dataUrl);
+      } else if (kind === "pose") {
+        setSelectedPose(dataUrl);
       } else {
         setUploadedAmbassador(dataUrl);
         setSelectedAmbassador("uploaded");
@@ -146,34 +151,13 @@ export function AIImageStudioPanel({
     }
   };
 
-  const handleGenerateCharacterSheet = async () => {
-    if (!selectedAmbassador) {
-      toast.error(t("editor.studio.image.ambassadorRequired"));
-      return;
-    }
-    setIsGeneratingCharacterSheet(true);
-    try {
-      const result = selectedPreset
-        ? await aiGenerationService.generateCharacterSheet({
-            presetId: selectedPreset.id,
-            name: selectedPreset.name,
-          })
-        : await aiGenerationService.generateCharacterSheet({
-            referenceImage: await imageSourceToDataUrl(selectedAmbassadorImage),
-          });
-      setCharacterSheet(result.image_url);
-      setSelectedAmbassador("character-sheet");
-      toast.success(t("editor.studio.image.characterSheetSuccess"));
-    } catch {
-      toast.error(t("editor.studio.image.characterSheetFailed"));
-    } finally {
-      setIsGeneratingCharacterSheet(false);
-    }
-  };
-
   const handleGenerate = async () => {
     if (!prompt.trim()) {
       toast.error(t("editor.studio.image.promptRequired"));
+      return;
+    }
+    if (!selectedPose) {
+      toast.error(t("editor.studio.image.poseRequired"));
       return;
     }
     if (!selectedProduct) {
@@ -189,6 +173,7 @@ export function AIImageStudioPanel({
     setGeneratedImage("");
     setGeneratedImageKey(undefined);
     try {
+      const poseReferenceImage = await imageSourceToDataUrl(selectedPose);
       const productReferenceImage = await imageSourceToDataUrl(selectedProduct);
       const ambassador = selectedPreset
         ? {
@@ -205,6 +190,7 @@ export function AIImageStudioPanel({
       const result = await aiGenerationService.generateCommercialImage({
         prompt,
         aspectRatio,
+        poseReferenceImage,
         productReferenceImage,
         ambassador,
       });
@@ -227,6 +213,51 @@ export function AIImageStudioPanel({
 
   return (
     <div className="border-border bg-card space-y-5 rounded-xl border p-4">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5">
+            <PersonStanding className="text-muted-foreground size-3.5" />
+            <span className="text-muted-foreground text-2xs font-semibold tracking-wider uppercase">
+              {t("editor.studio.image.poseLabel")}
+            </span>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="text-2xs h-7 gap-1 px-2"
+            onClick={() => poseInputRef.current?.click()}
+          >
+            <Upload className="size-3" />
+            {t("editor.studio.image.uploadPoseButton")}
+          </Button>
+          <input
+            ref={poseInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            className="hidden"
+            onChange={(event) => handleReferenceUpload(event, "pose")}
+          />
+        </div>
+        {selectedPose ? (
+          <button
+            type="button"
+            onClick={() => poseInputRef.current?.click()}
+            aria-label={t("editor.studio.image.uploadPoseButton")}
+            className="border-brand-orange bg-muted relative aspect-square w-24 overflow-hidden rounded-lg border-2"
+          >
+            <img src={selectedPose} alt="" className="h-full w-full object-cover" />
+            <span className="bg-brand-orange absolute top-1.5 right-1.5 flex size-5 items-center justify-center rounded-full text-white">
+              <Check className="size-3" />
+            </span>
+          </button>
+        ) : (
+          <p className="text-muted-foreground text-2xs">
+            {t("editor.studio.image.poseRequired")}
+          </p>
+        )}
+      </div>
+
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
@@ -333,9 +364,6 @@ export function AIImageStudioPanel({
                 (selectedAmbassador === "ai-generated"
                   ? t("editor.studio.image.aiGeneratedAmbassador")
                   : "") ||
-                (selectedAmbassador === "character-sheet"
-                  ? t("editor.studio.image.characterSheet")
-                  : "") ||
                 t("editor.studio.image.chooseAmbassador")}
           </span>
           <ChevronDown
@@ -418,29 +446,6 @@ export function AIImageStudioPanel({
                 </span>
               </button>
             )}
-            {characterSheet && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedAmbassador("character-sheet");
-                  setIsPresetPanelOpen(false);
-                }}
-                className={cn(
-                  "border-border bg-background flex min-w-0 items-center gap-2 rounded-lg border p-2 text-left",
-                  selectedAmbassador === "character-sheet" &&
-                    "border-brand-orange bg-brand-orange-soft",
-                )}
-              >
-                <img
-                  src={characterSheet}
-                  alt=""
-                  className="size-10 shrink-0 rounded-md object-cover"
-                />
-                <span className="text-2xs truncate font-medium">
-                  {t("editor.studio.image.characterSheet")}
-                </span>
-              </button>
-            )}
           </div>
         )}
 
@@ -464,30 +469,13 @@ export function AIImageStudioPanel({
           />
           <Button
             type="button"
-            variant="outline"
-            size="sm"
-            className="border-brand-orange/30 text-brand-orange hover:bg-brand-orange-soft h-auto min-h-9 w-full gap-1.5 py-2 text-xs whitespace-normal"
-            disabled={isGeneratingCharacterSheet || !selectedAmbassador}
-            onClick={handleGenerateCharacterSheet}
-          >
-            {isGeneratingCharacterSheet ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : (
-              <ScanFace className="size-3.5" />
-            )}
-            {isGeneratingCharacterSheet
-              ? t("editor.studio.image.generatingCharacterSheet")
-              : t("editor.studio.image.createSheetFromSelectedButton")}
-          </Button>
-          <Button
-            type="button"
             variant="orange"
             size="sm"
             className="h-auto min-h-9 w-full gap-1.5 py-2 text-xs whitespace-normal"
             onClick={() => setIsCharacterFlowOpen(true)}
           >
             <Sparkles className="size-3.5" />
-            {t("editor.studio.image.generateCharacterSheetButton")}
+            {t("editor.studio.image.generateAmbassadorButton")}
           </Button>
         </div>
       </div>
@@ -553,7 +541,12 @@ export function AIImageStudioPanel({
           <p className="text-muted-foreground text-2xs font-semibold tracking-wider uppercase">
             {t("editor.studio.image.resultsLabel")}
           </p>
-          <div className="border-brand-orange relative aspect-square overflow-hidden rounded-lg border-2">
+          <div
+            className={cn(
+              "border-brand-orange relative overflow-hidden rounded-lg border-2",
+              ASPECT_CLASSES[aspectRatio],
+            )}
+          >
             <img
               src={generatedImage}
               alt=""
@@ -575,13 +568,12 @@ export function AIImageStudioPanel({
         </div>
       )}
 
-      <CharacterSheetGeneratorModal
+      <AmbassadorGeneratorModal
         open={isCharacterFlowOpen}
         onOpenChange={setIsCharacterFlowOpen}
-        onComplete={({ characterImageUrl, characterSheetUrl }) => {
+        onComplete={({ characterImageUrl }) => {
           setAiGeneratedAmbassador(characterImageUrl);
-          setCharacterSheet(characterSheetUrl);
-          setSelectedAmbassador("character-sheet");
+          setSelectedAmbassador("ai-generated");
           setIsPresetPanelOpen(false);
         }}
       />
