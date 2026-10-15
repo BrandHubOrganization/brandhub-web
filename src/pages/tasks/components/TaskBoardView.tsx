@@ -70,7 +70,7 @@ export function TaskBoardView({
     }
   };
 
-  const handleDragLeave = (e: React.DragEvent, colStatus: TaskStatus) => {
+  const handleDragLeave = (_e: React.DragEvent, colStatus: TaskStatus) => {
     if (activeDropCol === colStatus) {
       setActiveDropCol(null);
     }
