@@ -3,6 +3,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   useRef,
   useState,
+  useEffect,
 } from "react";
 import {
   PanelLeftClose,
@@ -22,9 +23,10 @@ import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewM
 import { RichTextEditor } from "@/pages/editor/components/RichTextEditor";
 import { StudioPreviewPanel } from "@/pages/editor/components/StudioPreviewPanel";
 import { TemplatePickerModal } from "@/pages/editor/components/TemplatePickerModal";
-// import { useAuthStore } from "@/store/authStore";
-// import { useWorkspaceStore } from "@/store/workspaceStore";
-// import { useParams } from "react-router-dom";
+import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useParams, Link } from "react-router-dom";
+import { AlertTriangle, CheckCircle, ExternalLink } from "lucide-react";
+import { fetchSocialAccounts } from "@/pages/social-accounts/services/socialAccountService";
 import { useEditorForm } from "./hooks/useEditorForm";
 
 /**
@@ -34,15 +36,13 @@ import { useEditorForm } from "./hooks/useEditorForm";
  */
 export function EditorPage() {
   const { t } = useTranslation();
-  // Hashtag collection is temporarily disabled until QueryClientProvider is configured.
-  // const { id: routeWorkspaceId } = useParams<{ id: string }>();
-  // const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-  // const userId = useAuthStore((state) => state.user?.id);
-  // const workspaceId = routeWorkspaceId ?? currentWorkspace?.id;
-  // const role =
-  //   currentWorkspace && currentWorkspace.id === workspaceId
-  //     ? currentWorkspace.myRole
-  //     : null;
+  const { id: routeWorkspaceId } = useParams<{ id: string }>();
+  const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+  const workspaceId = routeWorkspaceId ?? currentWorkspace?.id;
+  const isClient = currentWorkspace?.myRole === "CLIENT";
+
+  const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([]);
+  const [hasLoadedSocial, setHasLoadedSocial] = useState(false);
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
   const [isPreviewPanelOpen, setIsPreviewPanelOpen] = useState(true);
   const [aiPanelWidth, setAiPanelWidth] = useState(280);
@@ -53,6 +53,8 @@ export function EditorPage() {
     hashtags,
     mediaUrls,
     targetPlatforms,
+    toggleTargetPlatform,
+    publishStatus,
     isDirty,
     lastSavedTime,
     isSaving,
@@ -78,6 +80,26 @@ export function EditorPage() {
   const handleApplyGeneratedVideo = (videoUrl: string, s3Key?: string) => {
     handleGeneratedMedia(videoUrl, s3Key, "VIDEO");
   };
+
+  // Fetch danh sách social accounts đã kết nối trong workspace để kiểm tra
+  useEffect(() => {
+    if (!workspaceId) return;
+    fetchSocialAccounts(workspaceId)
+      .then((accs) => {
+        const active = accs
+          .filter((a) => a.status === "CONNECTED")
+          .map((a) => a.platform.toUpperCase());
+        setConnectedPlatforms(active);
+        setHasLoadedSocial(true);
+      })
+      .catch(() => {
+        setHasLoadedSocial(true);
+      });
+  }, [workspaceId]);
+
+  const unlinkedPlatforms = targetPlatforms.filter(
+    (p) => !connectedPlatforms.includes(p),
+  );
 
   const workspaceStyle = {
     "--editor-ai-width": isAiPanelOpen ? `${aiPanelWidth}px` : "44px",
@@ -153,6 +175,7 @@ export function EditorPage() {
           isDirty={isDirty}
           lastSavedTime={lastSavedTime}
           isSubmitting={isSubmitting}
+          publishStatus={publishStatus}
           onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
           onOpenPreview={() => setIsPreviewOpen(true)}
           onSubmitForReview={handleSubmitForReview}
@@ -242,6 +265,76 @@ export function EditorPage() {
             </div>
 
             <div className="space-y-4 p-4 md:p-5">
+              {hasLoadedSocial && unlinkedPlatforms.length > 0 && (
+                <div className="border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200 flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3.5 text-xs">
+                  <div className="flex items-center gap-2.5">
+                    <AlertTriangle className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                    <span>
+                      Chưa kết nối tài khoản cho các nền tảng:{" "}
+                      <strong className="font-semibold text-amber-700 dark:text-amber-300">
+                        {unlinkedPlatforms.join(", ")}
+                      </strong>
+                      .{" "}
+                      {isClient
+                        ? "Vui lòng kết nối tài khoản mạng xã hội để bài đăng có thể tự động xuất bản."
+                        : "Vui lòng nhắc Client của Workspace kết nối tài khoản mạng xã hội để có thể xuất bản."}
+                    </span>
+                  </div>
+                  {isClient && workspaceId && (
+                    <Link
+                      to={`/workspaces/${workspaceId}/social-accounts`}
+                      className="border-amber-500/40 bg-amber-500/20 hover:bg-amber-500/30 text-amber-900 dark:text-amber-100 flex items-center gap-1.5 rounded-lg border px-3 py-1 font-medium transition-colors"
+                    >
+                      <span>Kết nối ngay</span>
+                      <ExternalLink className="size-3" />
+                    </Link>
+                  )}
+                </div>
+              )}
+
+              {hasLoadedSocial && unlinkedPlatforms.length === 0 && (
+                <div className="border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-300 flex items-center gap-2 rounded-xl border px-3.5 py-2 text-2xs">
+                  <CheckCircle className="size-3.5 shrink-0 text-emerald-500" />
+                  <span>
+                    Tất cả các nền tảng ({connectedPlatforms.join(", ")}) đã sẵn sàng để xuất bản.
+                  </span>
+                </div>
+              )}
+
+              {/* Nền tảng mục tiêu xuất bản */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-muted-foreground text-xs font-medium mr-1">
+                  Đăng lên:
+                </span>
+                {(["FACEBOOK", "INSTAGRAM", "TIKTOK", "THREADS"] as const).map((platform) => {
+                  const isSelected = targetPlatforms.includes(platform);
+                  const isConnected = connectedPlatforms.includes(platform);
+                  return (
+                    <button
+                      key={platform}
+                      type="button"
+                      onClick={() => toggleTargetPlatform(platform)}
+                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                        isSelected
+                          ? "bg-brand-orange text-white shadow-xs"
+                          : "border-border bg-card text-muted-foreground hover:bg-muted border"
+                      }`}
+                    >
+                      <span
+                        className={`size-2 rounded-full ${
+                          isConnected ? "bg-emerald-400" : "bg-zinc-400 opacity-60"
+                        }`}
+                        title={isConnected ? "Đã liên kết" : "Chưa liên kết"}
+                      />
+                      <span>{platform}</span>
+                      {isConnected && (
+                        <span className="text-2xs opacity-80">(Sẵn sàng)</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
               <RichTextEditor
                 value={caption}
                 onChange={handleCaptionChange}

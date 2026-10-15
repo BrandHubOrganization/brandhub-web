@@ -13,6 +13,7 @@ interface Props {
   isDirty: boolean;
   lastSavedTime: string;
   isSubmitting: boolean;
+  publishStatus?: "IDLE" | "PUBLISHING" | "PUBLISHED" | "FAILED";
   onOpenTemplatePicker: () => void;
   onOpenPreview: () => void;
   onSubmitForReview: () => void;
@@ -24,6 +25,7 @@ export function EditorHeaderActions({
   isDirty,
   lastSavedTime,
   isSubmitting,
+  publishStatus = "IDLE",
   onOpenTemplatePicker,
   onOpenPreview,
   onSubmitForReview,
@@ -32,6 +34,26 @@ export function EditorHeaderActions({
   const { t } = useTranslation();
   return (
     <div className="flex flex-wrap items-center justify-end gap-2">
+      {publishStatus === "PUBLISHING" && (
+        <div className="border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium">
+          <Clock className="size-3.5 animate-spin text-sky-500" />
+          <span>Đang xuất bản lên Facebook...</span>
+        </div>
+      )}
+
+      {publishStatus === "PUBLISHED" && (
+        <div className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium">
+          <CheckCircle2 className="size-3.5 text-emerald-500" />
+          <span>Đã đăng lên Facebook thành công!</span>
+        </div>
+      )}
+
+      {publishStatus === "FAILED" && (
+        <div className="border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium">
+          <span>Đăng thất bại</span>
+        </div>
+      )}
+
       <div className="border-border bg-card text-muted-foreground flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs">
         {isSaving ? (
           <>
