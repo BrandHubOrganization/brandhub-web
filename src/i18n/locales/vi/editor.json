@@ -4,7 +4,29 @@
   "submitError": "Lỗi khi gửi bài duyệt",
   "contentWritingPage": {
     "title": "Soạn thảo Nội dung",
+    "loadFailed": "Không thể tải nội dung. Vui lòng thử lại.",
+    "connectionFailed": "Chưa thể kết nối đồng bộ. Nội dung đang sửa được giữ trên trang này.",
     "description": "Canvas editor kiểu Google Docs — bản xem trước phần render lõi (FR 3.6.10)."
+  },
+  "emojiPicker": {
+    "search": "Tìm emoji (tiếng Anh)…",
+    "results": "Kết quả cho \"{{search}}\" · {{count}} emoji",
+    "loading": "Đang tải danh sách emoji…",
+    "loadFailed": "Không thể tải danh sách emoji. Vui lòng thử lại.",
+    "retry": "Thử lại",
+    "empty": "Không tìm thấy emoji",
+    "total": "{{count}} emoji",
+    "groups": {
+      "smileys-emotion": "Biểu cảm",
+      "people-body": "Con người",
+      "animals-nature": "Động vật & Thiên nhiên",
+      "food-drink": "Đồ ăn & Uống",
+      "travel-places": "Du lịch & Địa điểm",
+      "activities": "Hoạt động",
+      "objects": "Vật phẩm",
+      "symbols": "Ký hiệu",
+      "flags": "Cờ quốc gia"
+    }
   },
   "page": {
     "title": "Content Creator Studio",
