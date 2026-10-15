@@ -74,11 +74,9 @@ function WorkspaceTaskView({
     </div>
   );
   return (
-    <div className="flex h-full min-h-0 min-w-0 overflow-hidden">
+    <div className="flex h-full min-h-0 min-w-0 flex-col overflow-auto">
       <PageWrapper
-        hideBanner
         showGuideButton={false}
-        className="flex h-full min-h-0 min-w-0 flex-1 flex-col space-y-0 overflow-hidden p-0 md:p-0 [&>div:first-child]:shrink-0 [&>div:first-child]:flex-col [&>div:first-child]:items-stretch [&>div:first-child]:px-5 [&>div:first-child]:pt-4 [&>div:first-child>div:last-child]:flex-wrap [&>div:first-child>div:last-child]:self-stretch [&>div:last-child]:flex [&>div:last-child]:min-h-0 [&>div:last-child]:flex-1 [&>div:last-child]:flex-col"
         title={t("tasks.title")}
         description={t("tasks.description")}
         actions={
