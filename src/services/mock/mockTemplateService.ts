@@ -28,7 +28,7 @@ const INITIAL_TEMPLATES: ContentTemplate[] = [
     mediaUrls: [
       "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000&q=80",
     ],
-    targetPlatforms: ["FACEBOOK", "THREADS", "YOUTUBE"],
+    targetPlatforms: ["FACEBOOK", "THREADS"],
     isTemplate: true,
     lastUsedAt: "2026-08-16T15:30:00Z",
     createdAt: "2026-08-05T14:20:00Z",
@@ -84,7 +84,7 @@ const INITIAL_TEMPLATES: ContentTemplate[] = [
     mediaUrls: [
       "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1000&q=80",
     ],
-    targetPlatforms: ["FACEBOOK", "THREADS", "YOUTUBE"],
+    targetPlatforms: ["FACEBOOK", "THREADS"],
     isTemplate: true,
     lastUsedAt: "2026-08-10T14:00:00Z",
     createdAt: "2026-08-04T08:45:00Z",
