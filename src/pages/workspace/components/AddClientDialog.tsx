@@ -130,6 +130,7 @@ export function AddClientDialog({
                 <img
                   src={userMatch.avatarUrl}
                   alt=""
+                  referrerPolicy="no-referrer"
                   className="size-4 shrink-0 rounded-full object-cover"
                 />
               ) : (

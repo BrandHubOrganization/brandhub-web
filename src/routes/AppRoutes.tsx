@@ -118,19 +118,6 @@ const NotificationSettingsPage = lazyNamed(() => import("@/pages/notification-se
 const ExamplesPage = lazy(() => import("@/components/examples"));
 
 function WorkspaceIndexRedirect() {
-  const { id } = useParams<{ id: string }>();
-  const workspaceList = useWorkspaceStore((s) => s.workspaceList);
-  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
-  const workspace =
-    workspaceList.find((w) => w.id === id) ??
-    (currentWorkspace?.id === id ? currentWorkspace : null);
-
-  if (
-    (workspace?.myRole === "CLIENT" || workspace?.myRole === "MANAGER") &&
-    workspace.packageNegotiationStatus !== "APPROVED"
-  ) {
-    return <Navigate to="media-package" replace />;
-  }
   return <Navigate to="dashboard" replace />;
 }
 
