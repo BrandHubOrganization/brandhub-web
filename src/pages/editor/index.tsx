@@ -16,15 +16,15 @@ import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
 import { ContentCreatorAiPanel } from "@/pages/editor/components/ContentCreatorAiPanel";
 import { EditorHeaderActions } from "@/pages/editor/components/EditorHeaderActions";
-import { HashtagInputWithSuggestions } from "@/pages/editor/components/HashtagInputWithSuggestions";
+// import { HashtagInputWithSuggestions } from "@/pages/editor/components/HashtagInputWithSuggestions";
 import { MediaDropzone } from "@/pages/editor/components/MediaDropzone";
 import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewModal";
 import { RichTextEditor } from "@/pages/editor/components/RichTextEditor";
 import { StudioPreviewPanel } from "@/pages/editor/components/StudioPreviewPanel";
 import { TemplatePickerModal } from "@/pages/editor/components/TemplatePickerModal";
-import { useAuthStore } from "@/store/authStore";
-import { useWorkspaceStore } from "@/store/workspaceStore";
-import { useParams } from "react-router-dom";
+// import { useAuthStore } from "@/store/authStore";
+// import { useWorkspaceStore } from "@/store/workspaceStore";
+// import { useParams } from "react-router-dom";
 import { useEditorForm } from "./hooks/useEditorForm";
 
 /**
@@ -34,14 +34,15 @@ import { useEditorForm } from "./hooks/useEditorForm";
  */
 export function EditorPage() {
   const { t } = useTranslation();
-  const { id: routeWorkspaceId } = useParams<{ id: string }>();
-  const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-  const userId = useAuthStore((state) => state.user?.id);
-  const workspaceId = routeWorkspaceId ?? currentWorkspace?.id;
-  const role =
-    currentWorkspace && currentWorkspace.id === workspaceId
-      ? currentWorkspace.myRole
-      : null;
+  // Hashtag collection is temporarily disabled until QueryClientProvider is configured.
+  // const { id: routeWorkspaceId } = useParams<{ id: string }>();
+  // const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+  // const userId = useAuthStore((state) => state.user?.id);
+  // const workspaceId = routeWorkspaceId ?? currentWorkspace?.id;
+  // const role =
+  //   currentWorkspace && currentWorkspace.id === workspaceId
+  //     ? currentWorkspace.myRole
+  //     : null;
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
   const [isPreviewPanelOpen, setIsPreviewPanelOpen] = useState(true);
   const [aiPanelWidth, setAiPanelWidth] = useState(280);
@@ -61,7 +62,7 @@ export function EditorPage() {
     isTemplatePickerOpen,
     setIsTemplatePickerOpen,
     handleCaptionChange,
-    handleHashtagsChange,
+    // handleHashtagsChange,
     handleMediaUrlsChange,
     handleGeneratedMedia,
     handleApplyAIResult,
@@ -261,7 +262,7 @@ export function EditorPage() {
                 />
               </section>
 
-              <section className="border-border relative z-10 rounded-xl border p-3">
+              {/* <section className="border-border relative z-10 rounded-xl border p-3">
                 <HashtagInputWithSuggestions
                   hashtags={hashtags}
                   onChange={handleHashtagsChange}
@@ -269,7 +270,7 @@ export function EditorPage() {
                   userId={userId}
                   canApply={role === "CREATOR"}
                 />
-              </section>
+              </section> */}
             </div>
           </section>
         </main>
