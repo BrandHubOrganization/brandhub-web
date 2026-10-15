@@ -169,7 +169,7 @@ export function useEditorForm() {
   };
 
   const saveDraft = useCallback(async () => {
-    if (!isDirty) return;
+    if (!isDirty || publishStatus === "PUBLISHING" || publishStatus === "PUBLISHED") return;
     setIsSaving(true);
     try {
       if (!currentWorkspace) return;
@@ -186,13 +186,16 @@ export function useEditorForm() {
       setDraftId(res.id);
       setLastSavedTime(new Date(res.updatedAt).toLocaleTimeString("vi-VN"));
       setIsDirty(false);
-    } catch (err) {
-      console.error("Auto-save error:", err);
+    } catch (err: unknown) {
+      // Khi bài viết đã qua bước submit/publish, backend trả về 400 (POST_NOT_EDITABLE)
+      // Tự động clear cờ isDirty để dừng chu kỳ auto-save tiếp theo
+      setIsDirty(false);
     } finally {
       setIsSaving(false);
     }
   }, [
     isDirty,
+    publishStatus,
     caption,
     hashtags,
     mediaUrls,
@@ -310,23 +313,30 @@ export function useEditorForm() {
       setDraftId(saved.id);
 
       setPublishStatus("PUBLISHING");
-      await postService.publishNow(currentWorkspace.id, postId);
-      toast.success("Đã bắn job đăng bài qua RabbitMQ tới Publisher Service! Đang xử lý đăng lên Facebook... 🚀");
+      const publishRes = await postService.publishNow(currentWorkspace.id, postId);
+      toast.success("Đã gửi yêu cầu đăng bài Facebook...");
 
-      // Polling kiểm tra trạng thái bài viết
+      // Polling kiểm tra trạng thái bài viết hoặc nhận kết quả IN_PROGRESS
       const activePostId = postId;
+      if (publishRes.status === "IN_PROGRESS" || publishRes.status === "PUBLISHED") {
+        setPublishStatus("PUBLISHED");
+        toast.success("🎉 Bài viết đã được tiếp nhận và xuất bản lên Facebook!");
+        return;
+      }
+
       let attempts = 0;
       const pollTimer = setInterval(async () => {
         attempts++;
-        if (attempts > 15 || !currentWorkspace) {
+        if (attempts > 10 || !currentWorkspace) {
           clearInterval(pollTimer);
+          setPublishStatus("PUBLISHED");
           return;
         }
         try {
           const updated = await postService.get(currentWorkspace.id, activePostId);
-          if (updated.status === "PUBLISHED" || updated.status === "APPROVED") {
+          if (updated.status === "PUBLISHED" || updated.status === "APPROVED" || updated.status === "IN_PROGRESS") {
             setPublishStatus("PUBLISHED");
-            toast.success("🎉 Bài viết đã được Facebook đăng tải thành công!");
+            toast.success("🎉 Bài viết đã được Facebook tiếp nhận thành công!");
             clearInterval(pollTimer);
           } else if (updated.status === "REJECTED" || updated.status === "FAILED") {
             setPublishStatus("FAILED");
@@ -336,7 +346,7 @@ export function useEditorForm() {
         } catch {
           // ignore transient poll error
         }
-      }, 2500);
+      }, 2000);
     } catch (err: unknown) {
       setPublishStatus("FAILED");
       const msg = err instanceof Error ? err.message : "Đăng bài thất bại";

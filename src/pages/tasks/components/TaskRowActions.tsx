@@ -46,10 +46,27 @@ export function TaskRowActions({
           }).format(new Date(task.dueDate))
         : t("tasks.missing");
   const eligible = todo && (field === "start" ? creator : manager);
-  if (!eligible)
-    return field === "start" ? null : (
-      <span className="text-xs">{display}</span>
-    );
+  if (!eligible) {
+    if (field === "start") {
+      if (task.type === "POST") {
+        return (
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 border-brand-orange/40 text-brand-orange hover:bg-brand-orange/10 px-2.5 text-xs font-medium"
+            asChild
+            onClick={(e) => e.stopPropagation()}
+          >
+            <a href={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}>
+              Viết bài
+            </a>
+          </Button>
+        );
+      }
+      return null;
+    }
+    return <span className="text-xs">{display}</span>;
+  }
   return (
     <div
       className="max-w-64 min-w-40"
