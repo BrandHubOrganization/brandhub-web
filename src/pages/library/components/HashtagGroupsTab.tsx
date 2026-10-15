@@ -3,3 +3,4 @@ import { HashtagCollection } from "@/pages/hashtag-groups/components/HashtagColl
 export function HashtagGroupsTab() {
   return <HashtagCollection />;
 }
+

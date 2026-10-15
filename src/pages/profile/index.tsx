@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { userService } from "@/services/userService";
 import { extractErrorMessage } from "@/utils/error";
+import { isValidPhone, isValidUrl, normalizeUrl } from "@/utils/validation";
 import type { User } from "@/types/user";
 import { AvatarUploadModal } from "./components/AvatarUploadModal";
 import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
@@ -59,6 +60,7 @@ export function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const [linkPhoneOpen, setLinkPhoneOpen] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [name, setName] = useState(user?.name ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
@@ -136,6 +138,62 @@ export function ProfilePage() {
   }, []);
 
   const handleSave = async () => {
+    const newErrors: Record<string, string> = {};
+    if (!name.trim()) {
+      newErrors.name = t(
+        "settings.profile.fullNameRequired",
+        "Vui lòng nhập họ và tên",
+      );
+    }
+    if (phone.trim() && !isValidPhone(phone)) {
+      newErrors.phone = t(
+        "agency.detail.errors.invalidPhone",
+        "Số điện thoại không hợp lệ (10-11 số)",
+      );
+    }
+    if (ext.website.trim() && !isValidUrl(normalizeUrl(ext.website))) {
+      newErrors.website = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
+    }
+    if (ext.linkedinUrl.trim() && !isValidUrl(normalizeUrl(ext.linkedinUrl))) {
+      newErrors.linkedinUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
+    }
+    if (ext.facebookUrl.trim() && !isValidUrl(normalizeUrl(ext.facebookUrl))) {
+      newErrors.facebookUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
+    }
+    if (
+      ext.instagramUrl.trim() &&
+      !isValidUrl(normalizeUrl(ext.instagramUrl))
+    ) {
+      newErrors.instagramUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
+    }
+    if (ext.tiktokUrl.trim() && !isValidUrl(normalizeUrl(ext.tiktokUrl))) {
+      newErrors.tiktokUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error(
+        t("common.formError", "Vui lòng kiểm tra lại các trường thông tin"),
+      );
+      return;
+    }
+    setErrors({});
+
     setSaving(true);
     try {
       const years = ext.yearsOfExperience.trim();
@@ -200,6 +258,7 @@ export function ProfilePage() {
   };
 
   const handleCancelEdit = () => {
+    setErrors({});
     const saved = savedProfile.current;
     setName(saved.name);
     setPhone(saved.phone);
@@ -362,6 +421,7 @@ export function ProfilePage() {
                 handleCancelEdit={handleCancelEdit}
                 handleSave={handleSave}
                 saving={saving}
+                errors={errors}
               />
             ) : (
               <ProfileViewDetails

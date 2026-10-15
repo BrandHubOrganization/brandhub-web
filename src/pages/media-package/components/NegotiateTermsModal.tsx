@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { OfferingEditor } from "@/pages/media-package/components/OfferingEditor";
 import { PackageTermsDiff } from "@/pages/media-package/components/PackageTermsDiff";
 import type { OfferingFields } from "@/pages/media-package/types/mediaPackage";
+import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { DiscardChangesDialog } from "./DiscardChangesDialog";
 import { useDraftUnloadWarning } from "../hooks/useDraftUnloadWarning";
@@ -218,7 +219,7 @@ export function NegotiateTermsModal({
                   <Badge variant="outline" className="text-xs">
                     v{baseVersion}
                   </Badge>
-                  <span className="text-muted-foreground">→</span>
+                  <ArrowRight className="size-3.5 text-muted-foreground shrink-0" />
                   <Badge
                     variant="secondary"
                     className="text-brand-orange border-brand-orange/30 text-xs font-medium"
