@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { postService, type SavePostMedia } from "@/services/postService";
+import { postService, type SavePostMedia, type SavePostInput, type PostResponse } from "@/services/postService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import type { SocialPlatform } from "@/types/editor";
 import type { ContentTemplate } from "@/types/template";
@@ -64,18 +64,6 @@ export function useEditorForm() {
     "FACEBOOK",
   ]);
 
-  const toggleTargetPlatform = (platform: SocialPlatform) => {
-    setTargetPlatforms((prev) => {
-      if (prev.includes(platform)) {
-        if (prev.length === 1) return prev; // Keep at least one
-        return prev.filter((p) => p !== platform);
-      } else {
-        return [...prev, platform];
-      }
-    });
-    setIsDirty(true);
-  };
-
   const [publishStatus, setPublishStatus] = useState<
     "IDLE" | "PUBLISHING" | "PUBLISHED" | "FAILED"
   >("IDLE");
@@ -92,6 +80,23 @@ export function useEditorForm() {
 
   const [searchParams] = useSearchParams();
   const taskIdParam = searchParams.get("taskId");
+
+  const markDirty = () => {
+    setIsDirty(true);
+    setPublishStatus((prev) => (prev === "PUBLISHING" ? prev : "IDLE"));
+  };
+
+  const toggleTargetPlatform = (platform: SocialPlatform) => {
+    setTargetPlatforms((prev) => {
+      if (prev.includes(platform)) {
+        if (prev.length === 1) return prev; // Keep at least one
+        return prev.filter((p) => p !== platform);
+      } else {
+        return [...prev, platform];
+      }
+    });
+    markDirty();
+  };
 
   useEffect(() => {
     if (locationState?.prefilledCaption) {
@@ -139,15 +144,15 @@ export function useEditorForm() {
 
   const handleCaptionChange = (val: string) => {
     setCaption(val);
-    setIsDirty(true);
+    markDirty();
   };
   const handleHashtagsChange = (tags: string[]) => {
     setHashtags(tags);
-    setIsDirty(true);
+    markDirty();
   };
   const handleMediaUrlsChange = (urls: string[]) => {
     setMediaUrls(urls);
-    setIsDirty(true);
+    markDirty();
   };
 
   const handleGeneratedMedia = (
@@ -165,7 +170,30 @@ export function useEditorForm() {
       }));
     }
     setContainsAiContent(true);
-    setIsDirty(true);
+    markDirty();
+  };
+
+  const saveOrUpdateDraft = async (
+    workspaceId: string,
+    currentDraftId: string | undefined,
+    payload: SavePostInput,
+  ): Promise<PostResponse> => {
+    if (currentDraftId) {
+      try {
+        return await postService.updateDraft(workspaceId, currentDraftId, payload);
+      } catch (err: unknown) {
+        const isNotEditable =
+          typeof err === "object" &&
+          err !== null &&
+          "response" in err &&
+          (err as { response?: { status?: number; data?: { code?: string } } }).response?.status === 400;
+        if (isNotEditable) {
+          return await postService.createDraft(workspaceId, payload);
+        }
+        throw err;
+      }
+    }
+    return await postService.createDraft(workspaceId, payload);
   };
 
   const saveDraft = useCallback(async () => {
@@ -173,22 +201,18 @@ export function useEditorForm() {
     setIsSaving(true);
     try {
       if (!currentWorkspace) return;
-      const payload = {
+      const payload: SavePostInput = {
         caption,
         hashtags,
         media: toPostMedia(mediaUrls, mediaStorageKeys),
         targetPlatforms,
         aiGenerated: containsAiContent,
       };
-      const res = draftId
-        ? await postService.updateDraft(currentWorkspace.id, draftId, payload)
-        : await postService.createDraft(currentWorkspace.id, payload);
+      const res = await saveOrUpdateDraft(currentWorkspace.id, draftId, payload);
       setDraftId(res.id);
       setLastSavedTime(new Date(res.updatedAt).toLocaleTimeString("vi-VN"));
       setIsDirty(false);
-    } catch (err: unknown) {
-      // Khi bài viết đã qua bước submit/publish, backend trả về 400 (POST_NOT_EDITABLE)
-      // Tự động clear cờ isDirty để dừng chu kỳ auto-save tiếp theo
+    } catch {
       setIsDirty(false);
     } finally {
       setIsSaving(false);
@@ -228,7 +252,7 @@ export function useEditorForm() {
       setMediaUrls((prev) => [...prev, imageUrl]);
     }
     setContainsAiContent(true);
-    setIsDirty(true);
+    markDirty();
   };
 
   const handleApplyTemplate = (tpl: ContentTemplate) => {
@@ -240,7 +264,7 @@ export function useEditorForm() {
       setMediaUrls(tpl.mediaUrls);
       setMediaStorageKeys({});
     }
-    setIsDirty(true);
+    markDirty();
   };
 
   const handleSubmitForReview = async () => {
@@ -257,21 +281,20 @@ export function useEditorForm() {
       let postId = draftId;
       if (!postId || isDirty) {
         const media = toPostMedia(mediaUrls, mediaStorageKeys);
-        const payload = {
+        const payload: SavePostInput = {
           caption,
           hashtags,
           media,
           targetPlatforms,
           aiGenerated: containsAiContent,
         };
-        const saved = postId
-          ? await postService.updateDraft(currentWorkspace.id, postId, payload)
-          : await postService.createDraft(currentWorkspace.id, payload);
+        const saved = await saveOrUpdateDraft(currentWorkspace.id, postId, payload);
         postId = saved.id;
         setDraftId(saved.id);
       }
       await postService.submitForReview(currentWorkspace.id, postId);
       toast.success(t("editor.submitSuccess"));
+      setDraftId(undefined);
       if (currentWorkspace) {
         navigate(`/workspaces/${currentWorkspace.id}/requests`);
       }
@@ -299,22 +322,23 @@ export function useEditorForm() {
       }
       let postId = draftId;
       const media = toPostMedia(mediaUrls, mediaStorageKeys);
-      const payload = {
+      const payload: SavePostInput = {
         caption,
         hashtags,
         media,
         targetPlatforms,
         aiGenerated: containsAiContent,
       };
-      const saved = postId
-        ? await postService.updateDraft(currentWorkspace.id, postId, payload)
-        : await postService.createDraft(currentWorkspace.id, payload);
+      const saved = await saveOrUpdateDraft(currentWorkspace.id, postId, payload);
       postId = saved.id;
       setDraftId(saved.id);
 
       setPublishStatus("PUBLISHING");
       const publishRes = await postService.publishNow(currentWorkspace.id, postId);
       toast.success("Đã gửi yêu cầu đăng bài Facebook...");
+
+      // Đã gửi lệnh xuất bản thành công - xóa draftId để những lần sửa tiếp theo tạo draft mới
+      setDraftId(undefined);
 
       // Polling kiểm tra trạng thái bài viết hoặc nhận kết quả IN_PROGRESS
       const activePostId = postId;
