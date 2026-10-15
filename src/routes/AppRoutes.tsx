@@ -45,6 +45,7 @@ const AnalyticsPage = lazyNamed(() => import("@/pages/analytics"), "AnalyticsPag
 const CalendarPage = lazyNamed(() => import("@/pages/calendar"), "CalendarPage");
 const ContentLibraryPage = lazyNamed(() => import("@/pages/library"), "ContentLibraryPage");
 const ContentRequestListPage = lazyNamed(() => import("@/pages/requests"), "ContentRequestListPage");
+const WorkspaceRequestPage = lazyNamed(() => import("@/pages/requests/WorkspaceRequestPage"), "WorkspaceRequestPage");
 const EditorPage = lazyNamed(() => import("@/pages/editor"), "EditorPage");
 const ContentWritingPage = lazyNamed(() => import("@/pages/content-writing"), "ContentWritingPage");
 const PublishPage = lazyNamed(() => import("@/pages/publish"), "PublishPage");
@@ -61,6 +62,7 @@ const WorkspaceDashboardPage = lazyNamed(() => import("@/pages/workspace/dashboa
 const WorkspaceChatPage = lazyNamed(() => import("@/pages/chat"), "WorkspaceChatPage");
 const WorkspaceMembersPage = lazyNamed(() => import("@/pages/workspace/members"), "WorkspaceMembersPage");
 const TaskListPage = lazyNamed(() => import("@/pages/tasks"), "TaskListPage");
+const TaskDetailPage = lazy(() => import("@/pages/tasks/detail"));
 const WorkspaceClientsPage = lazyNamed(() => import("@/pages/workspace/clients"), "WorkspaceClientsPage");
 const WorkspaceTemplatesPage = lazyNamed(() => import("@/pages/workspace/templates"), "WorkspaceTemplatesPage");
 const InvitationsPage = lazyNamed(() => import("@/pages/workspace/invitations"), "InvitationsPage");
@@ -84,6 +86,7 @@ const AgencyInvitationsPage = lazyNamed(() => import("@/pages/agency/invitations
 const ClientInvitationsPage = lazyNamed(() => import("@/pages/client/invitations"), "ClientInvitationsPage");
 const AcceptInvitationPage = lazyNamed(() => import("@/pages/agency/accept"), "AcceptInvitationPage");
 const AgencyMediaPackagePage = lazy(() => import("@/pages/media-package/agency"));
+const DirectoryPage = lazy(() => import("@/pages/collaborators/page"));
 
 // ── Client Management ──
 const ClientListPage = lazyNamed(() => import("@/pages/client/list"), "ClientListPage");
@@ -202,12 +205,13 @@ export function AppRoutes() {
             />
             <Route
               path="/workspaces/:id/requests"
-              element={<ContentRequestListPage />}
+              element={<WorkspaceRequestPage />}
             />
             <Route
               path="/workspaces/:id/tasks"
               element={<TaskListPage />}
             />
+            <Route path="/workspaces/:id/tasks/:taskId/detail" element={<TaskDetailPage />} />
             <Route path="/workspaces/:id/editor" element={<EditorPage />} />
             <Route
               path="/editor"
@@ -273,6 +277,7 @@ export function AppRoutes() {
             <Route path="/agency" element={<AgencyPage />} />
             <Route path="/agency/create" element={<CreateAgencyPage />} />
             <Route path="/agency/:id" element={<AgencyDetailPage />} />
+            <Route path="/agency/:id/collaborators" element={<DirectoryPage />} />
             <Route
               path="/agency/:id/media-packages"
               element={<AgencyMediaPackagePage />}

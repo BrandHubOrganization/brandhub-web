@@ -1,41 +1,25 @@
 /**
- * EmojiPicker — fetches the full Unicode emoji dataset from emoji.family API
- * (https://emoji.family, free, no auth key required) and renders a searchable,
- * categorized picker.
- *
- * API: GET https://www.emoji.family/api/emojis
- * Response: { emoji, hexcode, group, subgroup, annotation, tags, shortcodes }[]
+ * Searchable Unicode emoji picker; versioned data is served from our own origin.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
-
-/* ── Types ─────────────────────────────────────────────────────────────── */
-interface EmojiEntry {
-  emoji: string;
-  annotation: string;
-  hexcode?: string;
-  group: string;
-  subgroup: string;
-  tags: string[];
-  shortcodes: string[];
-}
+import { Button } from "@/components/ui/button";
+import { loadEmojiData, type EmojiEntry } from "@/pages/content-writing/emojiData";
 
 /* ── Constants ──────────────────────────────────────────────────────────── */
-const API_URL = "https://www.emoji.family/api/emojis";
 
-/** Map API group slugs → Vietnamese display labels + representative emoji */
-const GROUP_META: Record<string, { label: string; icon: string }> = {
-  "smileys-emotion": { label: "Biểu cảm", icon: "😀" },
-  "people-body": { label: "Con người", icon: "👋" },
-  "animals-nature": { label: "Động vật & Thiên nhiên", icon: "🐶" },
-  "food-drink": { label: "Đồ ăn & Uống", icon: "🍕" },
-  "travel-places": { label: "Du lịch & Địa điểm", icon: "🚀" },
-  activities: { label: "Hoạt động", icon: "⚽" },
-  objects: { label: "Vật phẩm", icon: "💡" },
-  symbols: { label: "Ký hiệu", icon: "🔣" },
-  flags: { label: "Cờ quốc gia", icon: "🏳️" },
+/** Representative data previews; group labels come from i18n. */
+const GROUP_META: Record<string, { icon: string }> = {
+  "smileys-emotion": { icon: "😀" },
+  "people-body": { icon: "👋" },
+  "animals-nature": { icon: "🐶" },
+  "food-drink": { icon: "🍕" },
+  "travel-places": { icon: "🚀" },
+  activities: { icon: "⚽" }, objects: { icon: "💡" },
+  symbols: { icon: "🔣" }, flags: { icon: "🏳️" },
 };
 
 // Desired group order
@@ -50,44 +34,39 @@ export interface EmojiPickerProps {
 }
 
 export function EmojiPicker({ onSelect }: EmojiPickerProps) {
+  const { t } = useTranslation();
   const [emojis, setEmojis] = useState<EmojiEntry[]>(_cachedEmojis ?? []);
   const [loading, setLoading] = useState(!_cachedEmojis);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeGroup, setActiveGroup] = useState(GROUP_ORDER[0]);
+  const [attempt, setAttempt] = useState(0);
   const searchRef = useRef<HTMLInputElement>(null);
 
   /* ── Fetch ──────────────────────────────────────────────────────────── */
   useEffect(() => {
     if (_cachedEmojis) return; // already loaded
     let cancelled = false;
-    setLoading(true);
 
-    fetch(API_URL)
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json() as Promise<EmojiEntry[]>;
-      })
+    loadEmojiData()
       .then((data) => {
         if (cancelled) return;
         // Filter out skin-tone variants (keep only base emojis) and sort by API order
-        const base = data.filter((e) => !e.hexcode?.includes("-1f3f"));
+        const base = data;
         _cachedEmojis = base;
         setEmojis(base);
         setLoading(false);
       })
-      .catch((err: unknown) => {
+      .catch(() => {
         if (cancelled) return;
-        setError(
-          err instanceof Error ? err.message : "Không thể tải danh sách emoji",
-        );
+        setError("loadFailed");
         setLoading(false);
       });
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   /* ── Derived data ───────────────────────────────────────────────────── */
 
@@ -123,13 +102,14 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
   return (
     <div className="flex w-72 flex-col" style={{ maxHeight: "360px" }}>
       {/* Search bar */}
-      <div className="border-border border-b p-2">
+      <div className="border-border shrink-0 border-b p-2">
         <div className="relative">
           <Search className="text-muted-foreground absolute top-1.5 left-2 size-4" />
           <Input
             ref={searchRef}
             className="h-7 pl-8 text-xs"
-            placeholder="Tìm emoji (tiếng Anh)…"
+            placeholder={t("editor.emojiPicker.search")}
+            aria-label={t("editor.emojiPicker.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             autoFocus
@@ -139,12 +119,14 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
 
       {/* Group tabs — only show when not searching */}
       {!search && !loading && (
-        <div className="border-border flex gap-0.5 overflow-x-auto border-b p-1">
+        <div className="border-border flex shrink-0 gap-0.5 overflow-x-auto border-b p-1">
           {availableGroups.map((g) => (
             <button
               key={g}
               type="button"
-              title={GROUP_META[g]?.label ?? g}
+              title={t(`editor.emojiPicker.groups.${g}`)}
+              aria-label={t(`editor.emojiPicker.groups.${g}`)}
+              aria-pressed={activeGroup === g}
               className={`flex-shrink-0 rounded p-1 text-base transition-colors hover:bg-muted ${
                 activeGroup === g ? "bg-muted ring-1 ring-border" : ""
               }`}
@@ -157,29 +139,30 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
       )}
 
       {/* Category label */}
-      <p className="text-muted-foreground px-2 pt-1.5 pb-0.5 text-[11px] font-semibold">
+      <p className="text-muted-foreground shrink-0 px-2 pt-1.5 pb-0.5 text-xs font-semibold">
         {search
-          ? `Kết quả cho "${search}" · ${displayEmojis.length} emoji`
-          : (GROUP_META[activeGroup]?.label ?? activeGroup)}
+          ? t("editor.emojiPicker.results", { search, count: displayEmojis.length })
+          : t(`editor.emojiPicker.groups.${activeGroup}`)}
       </p>
 
       {/* Body */}
-      <div className="flex-1 overflow-y-auto px-2 pb-2">
+      <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
         {/* Loading */}
         {loading && (
           <div className="flex flex-col items-center justify-center gap-2 py-8">
             <Loader2 className="text-muted-foreground size-6 animate-spin" />
             <p className="text-muted-foreground text-xs">
-              Đang tải {Object.keys(GROUP_META).length} nhóm emoji…
+              {t("editor.emojiPicker.loading")}
             </p>
           </div>
         )}
 
         {/* Error */}
         {error && !loading && (
-          <div className="py-4 text-center">
-            <p className="text-destructive text-xs">{error}</p>
-            <button
+          <div role="alert" className="py-4 text-center">
+            <p className="text-destructive text-xs">{t("editor.emojiPicker.loadFailed")}</p>
+            <Button
+              variant="link"
               type="button"
               className="text-primary mt-2 text-xs underline"
               onClick={() => {
@@ -187,17 +170,18 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
                 setError(null);
                 setLoading(true);
                 setEmojis([]);
+                setAttempt(value => value + 1);
               }}
             >
-              Thử lại
-            </button>
+              {t("editor.emojiPicker.retry")}
+            </Button>
           </div>
         )}
 
         {/* Empty search */}
         {!loading && !error && search && displayEmojis.length === 0 && (
           <p className="text-muted-foreground py-4 text-center text-xs">
-            Không tìm thấy emoji
+            {t("editor.emojiPicker.empty")}
           </p>
         )}
 
@@ -208,6 +192,7 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
               <button
                 key={`${e.emoji}-${i}`}
                 type="button"
+                aria-label={e.annotation}
                 title={`${e.annotation}${e.shortcodes[0] ? ` · ${e.shortcodes[0]}` : ""}`}
                 className="rounded p-1 text-xl leading-none transition-all hover:scale-110 hover:bg-muted"
                 onClick={() => onSelect(e.emoji)}
@@ -221,8 +206,8 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
 
       {/* Footer */}
       {!loading && !error && (
-        <div className="border-border text-muted-foreground border-t px-2 py-1 text-[10px]">
-          {emojis.length.toLocaleString()} emoji · emoji.family API
+        <div className="border-border text-muted-foreground shrink-0 border-t px-2 py-1 text-xs">
+          {t("editor.emojiPicker.total", { count: emojis.length })} · Unicode 17.0
         </div>
       )}
     </div>

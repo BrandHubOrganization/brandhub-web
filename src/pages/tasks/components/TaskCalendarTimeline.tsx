@@ -1,4 +1,6 @@
 import { useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { taskDeadline } from "@/pages/tasks/taskViewData";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -38,6 +40,7 @@ export function TaskCalendarTimeline({
   tasks,
   onTaskClick,
 }: TaskCalendarTimelineProps) {
+  const { t } = useTranslation();
   const calendarRef = useRef<FullCalendar | null>(null);
   const [currentYear, setCurrentYear] = useState(() =>
     new Date().getFullYear(),
@@ -56,98 +59,76 @@ export function TaskCalendarTimeline({
 
   // Map tasks to events
   const calendarEvents = useMemo(() => {
-    return tasks.map((task, idx) => {
-      const now = new Date();
-      let start: Date;
-      let end: Date;
-      const isAllDay = idx % 5 === 0;
+    return tasks
+      .filter((task) => taskDeadline(task) !== null)
+      .map((task, idx) => {
+        const start = taskDeadline(task)!;
 
-      if (task.dueDate) {
-        start = new Date(task.dueDate);
-        end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
-      } else {
-        const dayOffset = (idx % 7) - 3;
-        const hour = 1 + (idx % 6) * 2;
-        start = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate() + dayOffset,
-          Math.floor(hour),
-          (hour % 1) * 60,
-        );
-        end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
-      }
+        const schemes = [
+          {
+            accent:
+              "border-l-orange-500 border-orange-200 dark:border-orange-900/60",
+            bg: "bg-orange-50 dark:bg-orange-950/40 text-orange-950 dark:text-orange-100",
+            pill: "bg-orange-500 text-white",
+            dot: "bg-orange-500",
+            border: "border-orange-300 dark:border-orange-800",
+            type: "Deadline",
+          },
+          {
+            accent:
+              "border-l-indigo-600 border-indigo-200 dark:border-indigo-900/60",
+            bg: "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-100",
+            pill: "bg-indigo-600 text-white",
+            dot: "bg-indigo-600",
+            border: "border-indigo-300 dark:border-indigo-800",
+            type: "Blog Post",
+          },
+          {
+            accent:
+              "border-l-emerald-600 border-emerald-200 dark:border-emerald-900/60",
+            bg: "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100",
+            pill: "bg-emerald-600 text-white",
+            dot: "bg-emerald-600",
+            border: "border-emerald-300 dark:border-emerald-800",
+            type: "Review",
+          },
+          {
+            accent:
+              "border-l-purple-600 border-purple-200 dark:border-purple-900/60",
+            bg: "bg-purple-50 dark:bg-purple-950/40 text-purple-950 dark:text-purple-100",
+            pill: "bg-purple-600 text-white",
+            dot: "bg-purple-600",
+            border: "border-purple-300 dark:border-purple-800",
+            type: "Livestream",
+          },
+          {
+            accent: "border-l-blue-600 border-blue-200 dark:border-blue-900/60",
+            bg: "bg-blue-50 dark:bg-blue-950/40 text-blue-950 dark:text-blue-100",
+            pill: "bg-blue-600 text-white",
+            dot: "bg-blue-600",
+            border: "border-blue-300 dark:border-blue-800",
+            type: "Survey",
+          },
+        ];
 
-      const schemes = [
-        {
-          accent:
-            "border-l-orange-500 border-orange-200 dark:border-orange-900/60",
-          bg: "bg-orange-50 dark:bg-orange-950/40 text-orange-950 dark:text-orange-100",
-          pill: "bg-orange-500 text-white",
-          dot: "bg-orange-500",
-          border: "border-orange-300 dark:border-orange-800",
-          type: "Deadline",
-        },
-        {
-          accent:
-            "border-l-indigo-600 border-indigo-200 dark:border-indigo-900/60",
-          bg: "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-100",
-          pill: "bg-indigo-600 text-white",
-          dot: "bg-indigo-600",
-          border: "border-indigo-300 dark:border-indigo-800",
-          type: "Blog Post",
-        },
-        {
-          accent:
-            "border-l-emerald-600 border-emerald-200 dark:border-emerald-900/60",
-          bg: "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100",
-          pill: "bg-emerald-600 text-white",
-          dot: "bg-emerald-600",
-          border: "border-emerald-300 dark:border-emerald-800",
-          type: "Review",
-        },
-        {
-          accent:
-            "border-l-purple-600 border-purple-200 dark:border-purple-900/60",
-          bg: "bg-purple-50 dark:bg-purple-950/40 text-purple-950 dark:text-purple-100",
-          pill: "bg-purple-600 text-white",
-          dot: "bg-purple-600",
-          border: "border-purple-300 dark:border-purple-800",
-          type: "Livestream",
-        },
-        {
-          accent: "border-l-blue-600 border-blue-200 dark:border-blue-900/60",
-          bg: "bg-blue-50 dark:bg-blue-950/40 text-blue-950 dark:text-blue-100",
-          pill: "bg-blue-600 text-white",
-          dot: "bg-blue-600",
-          border: "border-blue-300 dark:border-blue-800",
-          type: "Survey",
-        },
-      ];
+        const scheme = {
+          ...schemes[idx % schemes.length],
+          type: t(`tasks.types.${task.type}`),
+        };
 
-      const scheme = schemes[idx % schemes.length];
-
-      return {
-        id: task.id,
-        title: task.name,
-        allDay: isAllDay,
-        start: isAllDay
-          ? start.toISOString().split("T")[0]
-          : start.toISOString(),
-        end: isAllDay
-          ? new Date(start.getTime() + 2 * 24 * 60 * 60 * 1000)
-              .toISOString()
-              .split("T")[0]
-          : end.toISOString(),
-        extendedProps: {
-          task,
-          scheme,
-          location:
-            idx % 2 === 0 ? "The grand lecture hall" : "Phòng Studio 302",
-        },
-      };
-    });
-  }, [tasks]);
+        return {
+          id: task.id,
+          title: task.name,
+          allDay: false,
+          start: start.toISOString(),
+          extendedProps: {
+            task,
+            scheme,
+            location: t("tasks.missing"),
+          },
+        };
+      });
+  }, [tasks, t]);
 
   const handlePrev = () => {
     if (currentView === "yearGrid") {
@@ -236,7 +217,9 @@ export function TaskCalendarTimeline({
     setSelectedEvent({
       task,
       title,
-      timeText: timeText || "01:00 AM - 03:00 AM",
+      timeText:
+        timeText ||
+        (taskDeadline(task)?.toLocaleTimeString() ?? t("tasks.missing")),
       location,
       pillColor,
       dateStr,
@@ -501,9 +484,10 @@ export function TaskCalendarTimeline({
               allDayText="ALL DAY"
               events={calendarEvents}
               eventContent={renderEventContent}
-              editable={true}
-              eventResizableFromStart={true}
-              selectable={true}
+              editable={false}
+              displayEventEnd={false}
+              eventResizableFromStart={false}
+              selectable={false}
               nowIndicator={true}
               height={560}
             />
