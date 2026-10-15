@@ -33,11 +33,6 @@ const PLATFORM_COLOR_MAP: Record<
     text: "text-white",
     label: "TH",
   },
-  YOUTUBE: {
-    bg: "bg-red-100 dark:bg-red-950",
-    text: "text-red-600 dark:text-red-400",
-    label: "YT",
-  },
 };
 
 export const TemplateCard: React.FC<TemplateCardProps> = ({
