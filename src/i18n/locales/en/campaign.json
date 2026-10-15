@@ -172,6 +172,8 @@
     "deploymentError": "View deployment error details",
     "taskProgress": "Task completion progress",
     "taskStatuses": {
+      "TODO": "To do",
+      "FINISHED": "Finished",
       "CANCELLED": "Cancelled",
       "BACKLOG": "Backlog",
       "DETAIL_IDENTIFIED": "Details identified",

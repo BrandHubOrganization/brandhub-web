@@ -20,6 +20,8 @@ export function WorkspaceRequestTask({ workspaceId, requestId }: { workspaceId: 
       <p className="break-words">{query.data.name}</p>
       <Badge variant="outline">{t(`requests.v2.taskStatus.${query.data.status}`)}</Badge>
       <p className="text-muted-foreground break-all">{query.data.id}</p>
+      <Button asChild variant="outline"><Link to={`/workspaces/${workspaceId}/tasks?task=${encodeURIComponent(query.data.id)}`}>
+        {t("tasks.workflow.openDetail")}</Link></Button>
       {query.data.canOpenEditor && <Button asChild variant="outline"><Link
         to={`/workspaces/${workspaceId}/content-writing?taskId=${encodeURIComponent(query.data.id)}`}>
         {t("requests.v2.review.openEditor")}</Link></Button>}

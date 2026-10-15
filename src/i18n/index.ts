@@ -1,5 +1,7 @@
 import viMonitoring from "./locales/vi/monitoring.json";
 import enMonitoring from "./locales/en/monitoring.json";
+import viTasks from "./locales/vi/tasks.json";
+import enTasks from "./locales/en/tasks.json";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import viAdmin from "./locales/vi/admin.json";
@@ -72,6 +74,7 @@ import enCampaign from "./locales/en/campaign.json";
 import enCollaborators from "./locales/en/collaborators.json";
 
 const vi = {
+  tasks: viTasks,
   admin: viAdmin,
   monitoring: viMonitoring,
   materials: viMaterials,
@@ -109,6 +112,7 @@ const vi = {
 };
 
 const en = {
+  tasks: enTasks,
   admin: enAdmin,
   monitoring: enMonitoring,
   materials: enMaterials,

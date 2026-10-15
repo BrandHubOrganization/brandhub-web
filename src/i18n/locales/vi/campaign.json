@@ -172,6 +172,8 @@
     "deploymentError": "Xem chi tiết lỗi triển khai",
     "taskProgress": "Tiến độ hoàn thành Task",
     "taskStatuses": {
+      "TODO": "Cần làm",
+      "FINISHED": "Hoàn thành",
       "CANCELLED": "Đã hủy",
       "BACKLOG": "Chờ xác định",
       "DETAIL_IDENTIFIED": "Đã xác định nội dung",

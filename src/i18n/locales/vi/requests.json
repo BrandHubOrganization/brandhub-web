@@ -19,6 +19,7 @@
       "invalidNote": "Ghi chú phải là văn bản, tối đa 2.000 ký tự."
     },
     "taskStatus": {
+      "TODO": "Cần làm", "IN_REVIEW": "Chờ duyệt", "FINISHED": "Hoàn thành", "CANCELLED": "Đã hủy",
       "BACKLOG": "Chờ xác định chi tiết", "DETAIL_IDENTIFIED": "Đã xác định chi tiết", "ASSIGNED": "Đã phân công",
       "IN_PROGRESS": "Đang thực hiện", "QC_REVIEW": "Đang kiểm tra chất lượng", "MANAGER_REVIEW": "Chờ quản lý duyệt",
       "CLIENT_REVIEW": "Chờ khách hàng duyệt", "COMPLETED": "Hoàn thành"
