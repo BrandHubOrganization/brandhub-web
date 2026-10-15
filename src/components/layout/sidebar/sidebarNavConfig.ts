@@ -2,7 +2,6 @@ import type * as React from "react";
 import {
   LayoutDashboard,
   FileEdit,
-  CalendarDays,
   Users,
   BarChart3,
   ShieldAlert,
@@ -27,6 +26,7 @@ import {
   BookOpen,
   PackageCheck,
   MessageCircleMore,
+  Mail,
 } from "lucide-react";
 
 export interface NavItem {
@@ -122,6 +122,13 @@ export const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.create",
     items: [
       {
+        to: "/tasks",
+        icon: FolderKanban,
+        labelKey: "nav.tasks",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/requests",
         icon: FileEdit,
         labelKey: "nav.requests",
@@ -132,6 +139,13 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/editor",
         icon: FileEdit,
         labelKey: "nav.editor",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/mail-templates",
+        icon: Mail,
+        labelKey: "nav.mailTemplates",
         workspaceScoped: true,
         requiresWorkspace: true,
       },
@@ -153,13 +167,6 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/hashtag-groups",
         icon: Hash,
         labelKey: "nav.hashtagGroups",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/calendar",
-        icon: CalendarDays,
-        labelKey: "nav.calendar",
         workspaceScoped: true,
         requiresWorkspace: true,
       },
@@ -262,6 +269,14 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/agency/{agencyId}/media-packages",
         icon: PackageCheck,
         labelKey: "nav.manageMediaPackages",
+        agencyScoped: true,
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
+        to: "/agency/{agencyId}/collaborators",
+        icon: Users,
+        labelKey: "collaborators.title",
         agencyScoped: true,
         hiddenForClient: true,
         hideInWorkspace: true,

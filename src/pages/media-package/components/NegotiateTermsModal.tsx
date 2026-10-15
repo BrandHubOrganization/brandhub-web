@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { OfferingEditor } from "@/pages/media-package/components/OfferingEditor";
 import { PackageTermsDiff } from "@/pages/media-package/components/PackageTermsDiff";
 import type { OfferingFields } from "@/pages/media-package/types/mediaPackage";
@@ -57,9 +57,16 @@ export function NegotiateTermsModal({
   const [durationWeeks, setDurationWeeks] = useState<string>("");
   const [scopeDescription, setScopeDescription] = useState<string>("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const wasOpen = useRef(false);
+  const [baseVersion, setBaseVersion] = useState(currentTermsVersion);
+  const [basePackage, setBasePackage] = useState(mediaPackage);
+  const [note, setNote] = useState("");
 
   useEffect(() => {
-    if (open) {
+    if (open && !wasOpen.current) {
+      setBaseVersion(currentTermsVersion);
+      setBasePackage(mediaPackage);
+      setNote("");
       setOffering({
         offeringModel: mediaPackage.offeringModel,
         offeringDetails: mediaPackage.offeringDetails,
@@ -77,17 +84,18 @@ export function NegotiateTermsModal({
       setScopeDescription(mediaPackage.scopeDescription ?? "");
       setErrors({});
     }
-  }, [open, mediaPackage]);
+    wasOpen.current = open;
+  }, [open, mediaPackage, currentTermsVersion]);
 
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const dirty =
-    budgetAmount !== String(mediaPackage.budgetAmount ?? "") ||
-    durationWeeks !== String(mediaPackage.durationWeeks ?? "") ||
-    scopeDescription !== (mediaPackage.scopeDescription ?? "") ||
+    !!note.trim() || budgetAmount !== String(basePackage.budgetAmount ?? "") ||
+    durationWeeks !== String(basePackage.durationWeeks ?? "") ||
+    scopeDescription !== (basePackage.scopeDescription ?? "") ||
     JSON.stringify(offering) !==
       JSON.stringify({
-        offeringModel: mediaPackage.offeringModel,
-        offeringDetails: mediaPackage.offeringDetails,
+        offeringModel: basePackage.offeringModel,
+        offeringDetails: basePackage.offeringDetails,
       });
   useDraftUnloadWarning(open && dirty);
   const handleOpenChange = (next: boolean) => {
@@ -156,6 +164,8 @@ export function NegotiateTermsModal({
       return;
 
     const request: NegotiateTermsRequest = {
+      expectedTermsVersion: baseVersion,
+      note: note.trim() || undefined,
       ...offering,
       budgetAmount:
         budgetAmount.trim() !== "" ? Number(budgetAmount) : undefined,
@@ -201,19 +211,19 @@ export function NegotiateTermsModal({
                     {t("mediaPackage.ui.currentPackage")}:{" "}
                   </span>
                   <span className="text-foreground font-semibold">
-                    {mediaPackage.name}
+                    {basePackage.name}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Badge variant="outline" className="text-xs">
-                    v{currentTermsVersion}
+                    v{baseVersion}
                   </Badge>
                   <span className="text-muted-foreground">→</span>
                   <Badge
                     variant="secondary"
                     className="text-brand-orange border-brand-orange/30 text-xs font-medium"
                   >
-                    v{currentTermsVersion + 1} (
+                    v{baseVersion + 1} (
                     {i18n.language === "vi" ? "Đề xuất mới" : "New proposal"})
                   </Badge>
                 </div>
@@ -378,26 +388,29 @@ export function NegotiateTermsModal({
               <OfferingEditor
                 value={offering}
                 onChange={setOffering}
-                allowLegacy={!mediaPackage.offeringModel}
+                allowLegacy={!basePackage.offeringModel}
                 clientNegotiation={clientNegotiation}
               />
+              <div className="space-y-2"><Label htmlFor="negotiation-note">{t("mediaPackage.history.note")}</Label>
+                <Textarea id="negotiation-note" value={note} maxLength={2000} disabled={loading}
+                  onChange={event => setNote(event.target.value)} /></div>
               <PackageTermsDiff
                 before={{
-                  budgetAmount: mediaPackage.budgetAmount,
-                  durationWeeks: mediaPackage.durationWeeks,
-                  scopeDescription: mediaPackage.scopeDescription,
-                  offeringModel: mediaPackage.offeringModel,
-                  offeringDetails: mediaPackage.offeringDetails,
+                  budgetAmount: basePackage.budgetAmount,
+                  durationWeeks: basePackage.durationWeeks,
+                  scopeDescription: basePackage.scopeDescription,
+                  offeringModel: basePackage.offeringModel,
+                  offeringDetails: basePackage.offeringDetails,
                 }}
                 after={{
                   budgetAmount: budgetAmount.trim()
                     ? Number(budgetAmount)
-                    : mediaPackage.budgetAmount,
+                    : basePackage.budgetAmount,
                   durationWeeks: durationWeeks.trim()
                     ? Number(durationWeeks)
-                    : mediaPackage.durationWeeks,
+                    : basePackage.durationWeeks,
                   scopeDescription:
-                    scopeDescription.trim() || mediaPackage.scopeDescription,
+                    scopeDescription.trim() || basePackage.scopeDescription,
                   offeringModel: offering.offeringModel,
                   offeringDetails: offering.offeringDetails,
                 }}

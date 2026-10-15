@@ -1,7 +1,7 @@
 import { api } from "@/services/api";
 import type { ApiResponse } from "@/services/authService";
 import type { Campaign, CampaignPlan, CampaignReviewEvent, CampaignVersion,
-  CampaignDeployment, CampaignTask } from "@/pages/campaign/types";
+  CampaignDeployment, CampaignTask, CampaignClosure, CancelReason } from "@/pages/campaign/types";
 
 const base = (workspaceId: string) => `/api/v1/workspaces/${workspaceId}/campaigns`;
 export const campaignService = {
@@ -27,6 +27,13 @@ export const campaignService = {
     api.get<ApiResponse<CampaignDeployment>>(`${base(workspaceId)}/${campaignId}/deployment`),
   tasks: (workspaceId: string, campaignId: string) =>
     api.get<ApiResponse<CampaignTask[]>>(`${base(workspaceId)}/${campaignId}/tasks`),
+  completionCheck: (workspaceId: string, campaignId: string) =>
+    api.get<ApiResponse<CampaignClosure>>(`${base(workspaceId)}/${campaignId}/completion-check`),
+  cancelTasks: (workspaceId: string, campaign: Campaign, tasks: CampaignTask[], reasonCode: CancelReason, note: string) =>
+    api.post<ApiResponse<CampaignClosure>>(`${base(workspaceId)}/${campaign.id}/tasks/cancel`, {
+      expectedVersion: campaign.contentVersion,
+      selections: tasks.map(task => ({ taskId: task.id, status: task.status, updatedAt: task.updatedAt })), reasonCode, note,
+    }),
   complete: (workspaceId: string, campaign: Campaign, reason: string) =>
     api.post<ApiResponse<Campaign>>(`${base(workspaceId)}/${campaign.id}/complete`,
       { expectedVersion: campaign.contentVersion, reason }),

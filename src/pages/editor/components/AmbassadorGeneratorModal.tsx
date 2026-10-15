@@ -4,7 +4,6 @@ import {
   Loader2,
   Pencil,
   RefreshCw,
-  ScanFace,
   Sparkles,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -20,54 +19,38 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  aiGenerationService,
-  imageSourceToDataUrl,
-} from "@/services/aiGenerationService";
+import { aiGenerationService } from "@/services/aiGenerationService";
 import { extractErrorMessage } from "@/utils/error";
 
-type GeneratorPhase =
-  | "describe"
-  | "generating-character"
-  | "review"
-  | "generating-sheet"
-  | "complete";
+type GeneratorPhase = "describe" | "generating-character" | "review";
 
-interface CharacterSheetGeneratorModalProps {
+interface AmbassadorGeneratorModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onComplete: (result: {
-    characterImageUrl: string;
-    characterSheetUrl: string;
-  }) => void;
+  onComplete: (result: { characterImageUrl: string }) => void;
 }
 
 const MIN_DESCRIPTION_LENGTH = 10;
 
-export function CharacterSheetGeneratorModal({
+export function AmbassadorGeneratorModal({
   open,
   onOpenChange,
   onComplete,
-}: CharacterSheetGeneratorModalProps) {
+}: AmbassadorGeneratorModalProps) {
   const { t } = useTranslation();
   const [phase, setPhase] = useState<GeneratorPhase>("describe");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [characterImageUrl, setCharacterImageUrl] = useState("");
-  const [characterImageS3Key, setCharacterImageS3Key] = useState("");
-  const [characterSheetUrl, setCharacterSheetUrl] = useState("");
   const [error, setError] = useState("");
 
-  const isBusy =
-    phase === "generating-character" || phase === "generating-sheet";
+  const isBusy = phase === "generating-character";
 
   const resetFlow = () => {
     setPhase("describe");
     setName("");
     setDescription("");
     setCharacterImageUrl("");
-    setCharacterImageS3Key("");
-    setCharacterSheetUrl("");
     setError("");
   };
 
@@ -90,8 +73,8 @@ export function CharacterSheetGeneratorModal({
       const result = await aiGenerationService.generateAmbassador({
         prompt: normalizedDescription,
       });
+      if (!result.image_url) throw new Error("Missing ambassador image URL");
       setCharacterImageUrl(result.image_url);
-      setCharacterImageS3Key(result.s3_key || "");
       setPhase("review");
     } catch (error) {
       setError(
@@ -104,51 +87,23 @@ export function CharacterSheetGeneratorModal({
     }
   };
 
-  const handleGenerateSheet = async () => {
+  const handleSelectAmbassador = () => {
     if (!characterImageUrl) return;
-    setPhase("generating-sheet");
-    setError("");
-    try {
-      const referenceImage = characterImageS3Key
-        ? undefined
-        : await imageSourceToDataUrl(characterImageUrl);
-      const result = await aiGenerationService.generateCharacterSheet({
-        referenceImage,
-        referenceS3Key: characterImageS3Key || undefined,
-        name: name.trim() || t("editor.studio.image.characterFlow.defaultName"),
-      });
-      setCharacterSheetUrl(result.image_url);
-      setPhase("complete");
-      onComplete({
-        characterImageUrl,
-        characterSheetUrl: result.image_url,
-      });
-      toast.success(t("editor.studio.image.characterSheetSuccess"));
-    } catch (error) {
-      setError(
-        extractErrorMessage(
-          error,
-          t("editor.studio.image.characterSheetFailed"),
-        ),
-      );
-      setPhase("review");
-    }
+    onComplete({ characterImageUrl });
+    toast.success(t("editor.studio.image.ambassadorSelected"));
+    handleOpenChange(false);
   };
 
   const renderProgress = () => {
     const activeStep =
-      phase === "describe" || phase === "generating-character"
-        ? 1
-        : phase === "review" || phase === "generating-sheet"
-          ? 2
-          : 3;
+      phase === "describe" || phase === "generating-character" ? 1 : 2;
 
     return (
       <div
-        className="grid grid-cols-3 gap-2"
+        className="grid grid-cols-2 gap-2"
         aria-label={t("editor.studio.image.characterFlow.progressLabel")}
       >
-        {[1, 2, 3].map((step) => (
+        {[1, 2].map((step) => (
           <div key={step} className="space-y-1.5">
             <div
               className={`h-1.5 rounded-full ${
@@ -237,7 +192,7 @@ export function CharacterSheetGeneratorModal({
           </div>
         )}
 
-        {(phase === "review" || phase === "generating-sheet") && (
+        {phase === "review" && (
           <div className="grid gap-4 py-2 sm:grid-cols-[minmax(0,1fr)_220px]">
             <div className="border-border bg-muted/30 overflow-hidden rounded-xl border">
               <img
@@ -256,30 +211,6 @@ export function CharacterSheetGeneratorModal({
                   {description}
                 </p>
               </div>
-              {phase === "generating-sheet" && (
-                <div className="border-brand-orange/20 bg-brand-orange-soft text-brand-orange flex items-start gap-2 rounded-lg border p-3 text-xs">
-                  <Loader2 className="mt-0.5 size-4 shrink-0 animate-spin" />
-                  <span>
-                    {t("editor.studio.image.characterFlow.generatingSheet")}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {phase === "complete" && (
-          <div className="space-y-3 py-2">
-            <div className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-700 dark:text-emerald-300">
-              <CheckCircle2 className="size-5 shrink-0" />
-              {t("editor.studio.image.characterFlow.complete")}
-            </div>
-            <div className="border-border bg-muted/30 overflow-hidden rounded-xl border">
-              <img
-                src={characterSheetUrl}
-                alt={t("editor.studio.image.characterFlow.sheetPreviewAlt")}
-                className="max-h-[55vh] w-full object-contain"
-              />
             </div>
           </div>
         )}
@@ -334,23 +265,12 @@ export function CharacterSheetGeneratorModal({
                 type="button"
                 variant="orange"
                 data-testid="approve-character"
-                onClick={handleGenerateSheet}
+                onClick={handleSelectAmbassador}
               >
-                <ScanFace className="size-4" />
-                {t("editor.studio.image.characterFlow.approveAndCreateSheet")}
+                <CheckCircle2 className="size-4" />
+                {t("editor.studio.image.characterFlow.useAmbassador")}
               </Button>
             </>
-          )}
-
-          {phase === "complete" && (
-            <Button
-              type="button"
-              variant="orange"
-              onClick={() => handleOpenChange(false)}
-            >
-              <CheckCircle2 className="size-4" />
-              {t("editor.studio.image.characterFlow.finish")}
-            </Button>
           )}
         </DialogFooter>
       </DialogContent>

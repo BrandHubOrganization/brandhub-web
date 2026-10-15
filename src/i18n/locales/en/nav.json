@@ -1,6 +1,7 @@
 {
   "navigationMenu": "Navigation Menu",
   "notifications": "Notifications",
+  "mailTemplates": "Mail templates",
   "noEmail": "No email",
   "workspaceSwitcher": {
     "label": "Workspace",
@@ -37,6 +38,7 @@
   "selectMediaPackage": "Select media package",
   "admin": "Admin Panel",
   "requests": "Content Requests",
+  "tasks": "Tasks",
   "templates": "Post Templates",
   "hashtagGroups": "Hashtag Groups",
   "library": "Content Library",

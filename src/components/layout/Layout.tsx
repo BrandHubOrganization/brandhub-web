@@ -68,6 +68,7 @@ export function Layout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const taskWorkspaceLayout = /^\/workspaces\/[^/]+\/tasks(?:\/[^/]+\/detail)?$/.test(location.pathname);
   const { user } = useAuthStore();
   const systemRole = useAuthStore((s) => s.systemRole);
 
@@ -323,7 +324,7 @@ export function Layout() {
         </Sheet>
 
         {/* Page Content Outlet */}
-        <main className="bg-background flex-1 overflow-y-auto pb-16 md:pb-0">
+        <main className={`bg-background flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}>
           <React.Suspense fallback={<PageFallback />}>
             <Outlet />
           </React.Suspense>

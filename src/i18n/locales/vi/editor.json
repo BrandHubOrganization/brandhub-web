@@ -4,7 +4,29 @@
   "submitError": "Lỗi khi gửi bài duyệt",
   "contentWritingPage": {
     "title": "Soạn thảo Nội dung",
+    "loadFailed": "Không thể tải nội dung. Vui lòng thử lại.",
+    "connectionFailed": "Chưa thể kết nối đồng bộ. Nội dung đang sửa được giữ trên trang này.",
     "description": "Canvas editor kiểu Google Docs — bản xem trước phần render lõi (FR 3.6.10)."
+  },
+  "emojiPicker": {
+    "search": "Tìm emoji (tiếng Anh)…",
+    "results": "Kết quả cho \"{{search}}\" · {{count}} emoji",
+    "loading": "Đang tải danh sách emoji…",
+    "loadFailed": "Không thể tải danh sách emoji. Vui lòng thử lại.",
+    "retry": "Thử lại",
+    "empty": "Không tìm thấy emoji",
+    "total": "{{count}} emoji",
+    "groups": {
+      "smileys-emotion": "Biểu cảm",
+      "people-body": "Con người",
+      "animals-nature": "Động vật & Thiên nhiên",
+      "food-drink": "Đồ ăn & Uống",
+      "travel-places": "Du lịch & Địa điểm",
+      "activities": "Hoạt động",
+      "objects": "Vật phẩm",
+      "symbols": "Ký hiệu",
+      "flags": "Cờ quốc gia"
+    }
   },
   "page": {
     "title": "Content Creator Studio",
@@ -40,9 +62,12 @@
     },
     "image": {
       "title": "AI Image Studio",
-      "subtitle": "Kết hợp sản phẩm và Ambassador bằng FLUX.2",
+      "subtitle": "Kết hợp sản phẩm và Ambassador bằng Qwen Image 2.1",
       "referenceLabel": "Ảnh sản phẩm tham chiếu",
       "referenceItem": "Ảnh tham chiếu {{index}}",
+      "poseLabel": "Ảnh pose",
+      "uploadPoseButton": "Tải ảnh pose",
+      "poseRequired": "Vui lòng tải lên một ảnh pose.",
       "ambassadorLabel": "Chọn Ambassador",
       "ambassadors": {
         "lan-phuong": "Lan Phương",
@@ -61,13 +86,8 @@
       "applySuccess": "Đã thêm ảnh AI vào nội dung.",
       "uploadProductButton": "Tải ảnh sản phẩm",
       "uploadAmbassadorButton": "Tải ảnh Ambassador",
-      "generateCharacterSheetButton": "AI tạo Character Sheet",
-      "createSheetFromSelectedButton": "Tạo Sheet từ ảnh đã chọn",
-      "generatingCharacterSheet": "Đang tạo Character Sheet...",
-      "characterSheetSuccess": "Character Sheet AI đã sẵn sàng và được chọn làm ảnh tham chiếu.",
       "customAmbassador": "Ambassador tải lên",
       "aiGeneratedAmbassador": "Ambassador do AI tạo",
-      "characterSheet": "Character Sheet AI",
       "uploadedBadge": "Ảnh tải lên",
       "referenceHelp": "Mỗi luồng dùng một ảnh sản phẩm và một ảnh Ambassador. Hỗ trợ PNG, JPG hoặc WebP, tối đa 10 MB mỗi ảnh.",
       "uploadImageOnly": "Vui lòng chọn tệp hình ảnh PNG, JPG hoặc WebP.",
@@ -79,15 +99,13 @@
       "chooseAmbassador": "Chọn Ambassador",
       "productRequired": "Vui lòng chọn hoặc tải lên một ảnh sản phẩm.",
       "ambassadorRequired": "Vui lòng chọn hoặc tải lên một Ambassador.",
-      "characterSheetFailed": "Không thể tạo Character Sheet. Vui lòng thử lại.",
-      "generateFailed": "Không thể tạo ảnh FLUX.2. Vui lòng kiểm tra worker và thử lại.",
+      "generateFailed": "Không thể tạo ảnh quảng cáo AI. Vui lòng kiểm tra worker và thử lại.",
       "characterFlow": {
-        "title": "AI tạo nhân vật và Character Sheet",
-        "subtitle": "Mô tả nhân vật, duyệt ảnh AI tạo ra, sau đó tiếp tục dựng Character Sheet.",
-        "progressLabel": "Tiến trình tạo Character Sheet",
+        "title": "Tạo Ambassador bằng AI",
+        "subtitle": "Mô tả nhân vật, duyệt ảnh và chọn làm Ambassador tham chiếu.",
+        "progressLabel": "Tiến trình tạo Ambassador",
         "step1": "Mô tả nhân vật",
         "step2": "Duyệt ảnh",
-        "step3": "Character Sheet",
         "nameLabel": "Tên nhân vật",
         "namePlaceholder": "Ví dụ: Minh Anh",
         "defaultName": "BrandHub Ambassador",
@@ -102,13 +120,11 @@
         "characterPreviewAlt": "Ảnh nhân vật do AI tạo",
         "editDescription": "Sửa mô tả",
         "regenerate": "Tạo lại",
-        "approveAndCreateSheet": "Duyệt và tạo Character Sheet",
-        "generatingSheet": "Đang dùng ảnh đã duyệt để tạo các góc nhìn và biểu cảm. Bước này có thể mất 7–10 phút.",
-        "complete": "Character Sheet đã hoàn tất và được chọn làm ảnh Ambassador.",
-        "sheetPreviewAlt": "Character Sheet hoàn chỉnh",
         "cancel": "Hủy",
-        "finish": "Hoàn tất"
-      }
+        "useAmbassador": "Dùng Ambassador này"
+      },
+      "generateAmbassadorButton": "Tạo Ambassador bằng AI",
+      "ambassadorSelected": "Đã chọn ảnh Ambassador làm tham chiếu."
     },
     "video": {
       "title": "AI Video Assistant",
@@ -145,8 +161,7 @@
         "FACEBOOK": "Facebook",
         "INSTAGRAM": "Instagram",
         "TIKTOK": "TikTok",
-        "THREADS": "Threads",
-        "YOUTUBE": "YouTube"
+        "THREADS": "Threads"
       }
     }
   },
@@ -275,6 +290,17 @@
     "previewButton": "Preview Post"
   },
   "hashtagInput": {
+    "loadFromCollectionButton": "Từ kho hashtag",
+    "addTagLabel": "Tìm hoặc thêm hashtag",
+    "collectionTitle": "Kho hashtag của workspace",
+    "searchCollection": "Tìm hashtag đã lưu",
+    "collectionLoading": "Đang tải hashtag của workspace...",
+    "collectionError": "Không tải được hashtag của workspace.",
+    "collectionEmpty": "Không có hashtag phù hợp trong kho của workspace này.",
+    "applyTag": "Áp dụng #{{tag}} cho bài đăng này",
+    "campaignTagUnavailable": "Hashtag bắt buộc theo campaign cần bài đăng được liên kết với campaign.",
+    "addedAndApplied": "Đã thêm hashtag vào kho và bài đăng nháp này.",
+    "removeTag": "Gỡ hashtag #{{tag}} khỏi bài đăng này",
     "copyAllSuccess": "Đã copy toàn bộ bộ Hashtag vào clipboard!",
     "clearAllSuccess": "Đã xoá toàn bộ Hashtags",
     "copied": "Đã copy",

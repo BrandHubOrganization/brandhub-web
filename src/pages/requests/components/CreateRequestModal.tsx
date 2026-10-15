@@ -15,7 +15,6 @@ const PLATFORMS: SocialPlatform[] = [
   "INSTAGRAM",
   "TIKTOK",
   "THREADS",
-  "YOUTUBE",
 ];
 
 interface CreateRequestModalProps {
