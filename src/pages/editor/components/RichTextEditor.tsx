@@ -18,7 +18,6 @@ const PLATFORM_LIMITS: Record<SocialPlatform, { max: number; label: string }> =
     INSTAGRAM: { max: 2200, label: "Instagram" },
     TIKTOK: { max: 2200, label: "TikTok" },
     THREADS: { max: 500, label: "Threads" },
-    YOUTUBE: { max: 5000, label: "YouTube" },
   };
 
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({

@@ -5,7 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { EventDropArg, EventContentArg } from "@fullcalendar/core";
 import type { CalendarPostEvent, PlatformType } from "@/types/calendar";
-import { Video, AtSign, Share2, Globe, MessageSquare } from "lucide-react";
+import { Video, AtSign, Share2, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface ContentCalendarProps {
@@ -22,17 +22,37 @@ const PLATFORM_ICONS: Record<PlatformType, React.ReactNode> = {
     <Video className="h-3.5 w-3.5 shrink-0 text-slate-800 dark:text-slate-200" />
   ),
   THREADS: <AtSign className="h-3.5 w-3.5 shrink-0 text-purple-500" />,
-  YOUTUBE: <MessageSquare className="h-3.5 w-3.5 shrink-0 text-red-500" />,
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  DRAFT:
-    "bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-300",
-  SCHEDULED:
-    "bg-brand-orange/15 border-brand-orange/30 text-brand-orange dark:text-brand-orange",
-  PUBLISHED:
-    "bg-emerald-500/15 border-emerald-500/30 text-emerald-700 dark:text-emerald-300",
-  FAILED: "bg-rose-500/15 border-rose-500/30 text-rose-700 dark:text-rose-300",
+const STATUS_COLORS: Record<string, { bg: string; text: string; border: string; dot: string; label: string }> = {
+  DRAFT: {
+    bg: "bg-amber-500/10 dark:bg-amber-500/15",
+    border: "border-amber-500/30",
+    text: "text-amber-700 dark:text-amber-300",
+    dot: "bg-amber-500",
+    label: "Bản nháp",
+  },
+  SCHEDULED: {
+    bg: "bg-brand-orange/10 dark:bg-brand-orange/15",
+    border: "border-brand-orange/30",
+    text: "text-brand-orange dark:text-brand-orange",
+    dot: "bg-brand-orange",
+    label: "Lên lịch",
+  },
+  PUBLISHED: {
+    bg: "bg-emerald-500/10 dark:bg-emerald-500/15",
+    border: "border-emerald-500/30",
+    text: "text-emerald-700 dark:text-emerald-300",
+    dot: "bg-emerald-500",
+    label: "Đã đăng",
+  },
+  FAILED: {
+    bg: "bg-rose-500/10 dark:bg-rose-500/15",
+    border: "border-rose-500/30",
+    text: "text-rose-700 dark:text-rose-300",
+    dot: "bg-rose-500",
+    label: "Thất bại",
+  },
 };
 
 export const ContentCalendar: React.FC<ContentCalendarProps> = ({
@@ -58,22 +78,29 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
   const renderEventContent = (eventInfo: EventContentArg) => {
     const extProps = eventInfo.event.extendedProps;
     const platform = extProps?.platform as PlatformType;
-    const status = extProps?.status || "SCHEDULED";
-    const statusColorClass = STATUS_COLORS[status] || STATUS_COLORS.SCHEDULED;
+    const status = (extProps?.status as string) || "SCHEDULED";
+    const statusStyle = STATUS_COLORS[status] || STATUS_COLORS.SCHEDULED;
+
+    const timeText = eventInfo.timeText || "";
 
     return (
       <div
-        className={`group relative flex w-full cursor-grab items-center gap-1.5 overflow-hidden rounded-xl border px-2 py-1 text-xs font-medium transition-all duration-150 active:cursor-grabbing ${statusColorClass}`}
-        title={`${eventInfo.event.title}\n\nCaption: ${extProps?.captionPreview || t("calendar.eventCard.noCaptionPreview")}`}
+        className={`group relative flex w-full cursor-grab items-center gap-1.5 overflow-hidden rounded-lg border px-2 py-1 text-xs font-medium shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing ${statusStyle.bg} ${statusStyle.border} ${statusStyle.text}`}
+        title={`${eventInfo.event.title}\n${timeText ? `Thời gian: ${timeText}\n` : ""}Trạng thái: ${statusStyle.label}\n\nCaption: ${extProps?.captionPreview || t("calendar.eventCard.noCaptionPreview")}`}
       >
-        {PLATFORM_ICONS[platform]}
-        <span className="truncate">{eventInfo.event.title}</span>
+        <span className="flex size-4 shrink-0 items-center justify-center rounded-md bg-white/70 shadow-2xs dark:bg-black/30">
+          {PLATFORM_ICONS[platform]}
+        </span>
+        <span className="truncate font-semibold tracking-tight">{eventInfo.event.title}</span>
+        {timeText && (
+          <span className="ml-auto shrink-0 text-[10px] opacity-75">{timeText}</span>
+        )}
       </div>
     );
   };
 
   return (
-    <div className="border-border bg-card rounded-xl border p-4 shadow-xs">
+    <div className="border-border bg-card rounded-2xl border p-5 shadow-sm">
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -93,7 +120,8 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
           onDatesChange(dateInfo.start, dateInfo.end);
         }}
         height="auto"
-        aspectRatio={1.6}
+        aspectRatio={1.65}
+        dayMaxEvents={3}
       />
     </div>
   );

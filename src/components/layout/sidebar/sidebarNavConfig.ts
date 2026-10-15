@@ -2,7 +2,6 @@ import type * as React from "react";
 import {
   LayoutDashboard,
   FileEdit,
-  CalendarDays,
   Users,
   BarChart3,
   ShieldAlert,
@@ -123,6 +122,13 @@ export const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.create",
     items: [
       {
+        to: "/tasks",
+        icon: FolderKanban,
+        labelKey: "nav.tasks",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/requests",
         icon: FileEdit,
         labelKey: "nav.requests",
@@ -161,13 +167,6 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/hashtag-groups",
         icon: Hash,
         labelKey: "nav.hashtagGroups",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/calendar",
-        icon: CalendarDays,
-        labelKey: "nav.calendar",
         workspaceScoped: true,
         requiresWorkspace: true,
       },
