@@ -354,6 +354,7 @@ export function EditorPage() {
                 <MediaDropzone
                   mediaUrls={mediaUrls}
                   onChange={handleMediaUrlsChange}
+                  workspaceId={workspaceId}
                 />
               </section>
 
