@@ -76,9 +76,9 @@ const MOCK_POSTS: Post[] = [
   ),
   makePost(
     "post-6",
-    "Clip Youtube tổng kết tháng",
+    "Clip ngắn tổng kết tháng",
     "FAILED",
-    [{ platform: "YOUTUBE", postType: "VIDEO", optimizedCaption: "" }],
+    [{ platform: "TIKTOK", postType: "VIDEO", optimizedCaption: "" }],
     "2026-08-18T16:00:00Z",
   ),
 
