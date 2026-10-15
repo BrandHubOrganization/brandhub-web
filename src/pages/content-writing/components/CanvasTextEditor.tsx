@@ -1034,6 +1034,7 @@ export const CanvasTextEditor = forwardRef<
         >
           <canvas
             ref={canvasRef}
+            aria-hidden="true"
             onMouseDown={handleCanvasMouseDown}
             className="block w-full cursor-text"
             style={{ minHeight: "200px" }}
@@ -1067,6 +1068,8 @@ export const CanvasTextEditor = forwardRef<
             }}
             className="fixed top-0 left-0 h-px w-px overflow-hidden opacity-0"
             style={{ transform: "translateX(-10000px)" }}
+            role="textbox"
+            aria-multiline="true"
             aria-label="Content editor input"
             tabIndex={-1}
           />
