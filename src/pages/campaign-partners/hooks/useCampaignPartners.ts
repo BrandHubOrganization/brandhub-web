@@ -33,10 +33,11 @@ export function useCampaignPartners(workspaceId: string) {
     } catch (failure) {
       const code = isAxiosError<{ error?: { code?: string } }>(failure)
         ? failure.response?.data.error?.code : undefined;
-      toast.error(t(code === "COOPERATION_VERSION_CONFLICT" ? "campaign.partners.conflict"
+      toast.error(t(code === "COLLABORATOR_INACTIVE" ? "collaborators.inactive"
+        : code === "COOPERATION_VERSION_CONFLICT" ? "campaign.partners.conflict"
         : code === "FORBIDDEN" || code === "WORKSPACE_ACCESS_DENIED"
           ? "campaign.partners.forbidden" : "campaign.partners.error"));
-      if (code === "COOPERATION_VERSION_CONFLICT") reload();
+      if (code === "COOPERATION_VERSION_CONFLICT" || code === "COLLABORATOR_INACTIVE") reload();
     } finally { setBusy(false); }
   }
   const assign = (id: string) => {

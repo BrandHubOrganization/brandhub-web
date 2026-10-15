@@ -17,6 +17,7 @@ export interface CampaignPartner extends CampaignPartnerLink {
   partnerName: string;
   partnerType: CollaboratorType;
   updatedByName: string | null;
+  partnerActive?: boolean;
 }
 export interface PartnerPage<T> {
   content: T[];

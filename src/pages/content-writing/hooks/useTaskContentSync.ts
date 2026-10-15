@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import * as Y from "yjs";
 import { api } from "@/services/api";
-import { useAuthStore } from "@/store/authStore";
+import { prepareTaskSocket } from "@/pages/content-writing/services/taskSocketSession";
+import { requireApiData } from "@/lib/apiData";
 
 /**
  * FR 3.6.10 real-time sync: loads the Yjs snapshot + operation tail over
@@ -25,8 +26,8 @@ const WS_BASE_URL = (
   (typeof import.meta !== "undefined" &&
     import.meta.env &&
     import.meta.env.VITE_API_BASE_URL) ||
-  "http://localhost:8081"
-).replace(/^http/, "ws");
+  "http://localhost:8080"
+);
 
 function toBase64(update: Uint8Array): string {
   let binary = "";
@@ -55,6 +56,9 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
   const yDoc = useMemo(() => new Y.Doc(), [taskId]);
   const [isReady, setIsReady] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [connectionError, setConnectionError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   // Bumps each time a snapshot is reported, so the Version History list can refresh.
   const [snapshotCount, setSnapshotCount] = useState(0);
   const sequenceRef = useRef(0);
@@ -72,7 +76,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         `/api/v1/workspaces/${workspaceId}/tasks/${taskId}/content`,
       );
       if (disposed) return;
-      const content = data.data;
+      const content = requireApiData<TaskContentResponse>(data);
       if (content.snapshot) {
         Y.applyUpdate(yDoc, fromBase64(content.snapshot));
       }
@@ -98,11 +102,23 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         });
       };
 
-      const token = useAuthStore.getState().accessToken;
       const client = new Client({
-        brokerURL: `${WS_BASE_URL}/ws/tasks?token=${encodeURIComponent(token ?? "")}`,
+        beforeConnect: async () => {
+          try {
+            const brokerURL = await prepareTaskSocket(WS_BASE_URL);
+            if (disposed) { void client.deactivate(); return; }
+            client.brokerURL = brokerURL;
+          } catch {
+            if (!disposed) setConnectionError(true);
+            setIsConnected(false);
+            // Do not reconnect indefinitely with expired/missing credentials.
+            // HTTP refresh handles session failure; existing local edits stay in Y.Doc.
+            void client.deactivate();
+          }
+        },
         reconnectDelay: 3000,
         onConnect: () => {
+          setConnectionError(false);
           setIsConnected(true);
           client.subscribe(`/topic/tasks/${taskId}/content`, (message) => {
             const body = JSON.parse(message.body) as {
@@ -125,6 +141,10 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         },
         onDisconnect: () => setIsConnected(false),
         onWebSocketClose: () => setIsConnected(false),
+        onStompError: () => {
+          if (!disposed) { setConnectionError(true); setIsConnected(false); }
+          void client.deactivate();
+        },
       });
       client.activate();
       clientRef.current = client;
@@ -173,7 +193,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         });
     }
 
-    init();
+    init().catch(() => { if (!disposed) setLoadError(true); });
     return () => {
       disposed = true;
       if (idleTimer) clearTimeout(idleTimer);
@@ -182,7 +202,12 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
       clientRef.current?.deactivate();
       clientRef.current = null;
     };
-  }, [workspaceId, taskId, yDoc]);
+  }, [workspaceId, taskId, yDoc, loadAttempt]);
 
-  return { yDoc, isReady, isConnected, snapshotCount };
+  function retryLoad() {
+    setLoadError(false);
+    setLoadAttempt(attempt => attempt + 1);
+  }
+  function retryConnection() { clientRef.current?.activate(); }
+  return { yDoc, isReady, isConnected, snapshotCount, loadError, retryLoad, connectionError, retryConnection };
 }
