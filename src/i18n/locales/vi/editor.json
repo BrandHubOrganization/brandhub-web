@@ -40,7 +40,7 @@
     },
     "image": {
       "title": "AI Image Studio",
-      "subtitle": "Kết hợp sản phẩm và Ambassador bằng FLUX.2",
+      "subtitle": "Kết hợp sản phẩm và Ambassador bằng Qwen Image 2.1",
       "referenceLabel": "Ảnh sản phẩm tham chiếu",
       "referenceItem": "Ảnh tham chiếu {{index}}",
       "ambassadorLabel": "Chọn Ambassador",
@@ -80,7 +80,7 @@
       "productRequired": "Vui lòng chọn hoặc tải lên một ảnh sản phẩm.",
       "ambassadorRequired": "Vui lòng chọn hoặc tải lên một Ambassador.",
       "characterSheetFailed": "Không thể tạo Character Sheet. Vui lòng thử lại.",
-      "generateFailed": "Không thể tạo ảnh FLUX.2. Vui lòng kiểm tra worker và thử lại.",
+      "generateFailed": "Không thể tạo ảnh quảng cáo AI. Vui lòng kiểm tra worker và thử lại.",
       "characterFlow": {
         "title": "AI tạo nhân vật và Character Sheet",
         "subtitle": "Mô tả nhân vật, duyệt ảnh AI tạo ra, sau đó tiếp tục dựng Character Sheet.",
