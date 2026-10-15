@@ -23,7 +23,7 @@ function WorkspaceRequestView({ workspaceId }: { workspaceId: string }) {
   const state = useWorkspaceRequests(workspaceId);
   const result = state.list.data;
   return <PageWrapper title={t("requests.v2.title")} description={t("requests.v2.description")}
-    guideLabel={t("requests.v2.guide")} hideBanner
+    guideLabel={t("requests.v2.guide")}
     actions={<div className="flex flex-wrap gap-2">
       <Button variant="outline" disabled={state.list.isFetching} onClick={() => void state.refresh()}>
         <RefreshCw aria-hidden="true" className="size-4" />{t("requests.v2.refresh")}</Button>

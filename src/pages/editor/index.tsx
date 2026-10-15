@@ -168,7 +168,6 @@ export function EditorPage() {
       title={t("editor.page.title")}
       description={t("editor.page.description")}
       className="max-w-[1800px]"
-      compact
       actions={
         <EditorHeaderActions
           isSaving={isSaving}

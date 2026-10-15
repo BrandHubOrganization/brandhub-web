@@ -75,6 +75,7 @@ export function CalendarPage() {
         <SchedulePostModal
           isOpen={isModalOpen}
           selectedDate={selectedDateForModal}
+          existingEvents={events}
           onClose={() => setIsModalOpen(false)}
           onSubmit={handleCreatePost}
         />
