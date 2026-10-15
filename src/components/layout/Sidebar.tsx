@@ -69,13 +69,10 @@ export function Sidebar({
   );
   const currentAgencyName = currentAgency?.name ?? null;
 
-  // Lọc workspaces thuộc agency hiện tại (hoặc client workspaces nếu có)
+  // Lọc client workspaces (những workspace mà user tham gia với vai trò CLIENT)
   const clientWorkspaces = React.useMemo(() => {
-    if (currentAgencyId) {
-      return allWorkspaces.filter((w) => w.agencyId === currentAgencyId);
-    }
-    return allWorkspaces;
-  }, [allWorkspaces, currentAgencyId]);
+    return allWorkspaces.filter((w) => w.myRole === "CLIENT");
+  }, [allWorkspaces]);
 
   // State cho hover preview popup
   const [hoveredItem, setHoveredItem] = React.useState<HoveredItemInfo | null>(
