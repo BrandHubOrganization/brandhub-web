@@ -1,4 +1,47 @@
 {
+  "offering": {
+    "title": "Hạng mục dịch vụ",
+    "model": "Cách đóng gói",
+    "legacy": "Gói cũ (chưa phân loại)",
+    "models": {
+      "CAMPAIGN": "Gói theo chiến dịch",
+      "RETAINER": "Gói định kỳ (tổng sản lượng)",
+      "DELIVERABLE_BUNDLE": "Gói theo sản lượng"
+    },
+    "hints": {
+      "CAMPAIGN": "Sản lượng là tổng cho cả gói, không tự nhân theo tháng. Số lần thay đổi tối đa áp dụng chung cho gói.",
+      "RETAINER": "Sản lượng là tổng cho cả gói, không tự nhân theo tháng. Số lần thay đổi tối đa áp dụng chung cho gói.",
+      "DELIVERABLE_BUNDLE": "Sản lượng là tổng cho cả gói, không tự nhân theo tháng. Số lần thay đổi tối đa áp dụng chung cho gói."
+    },
+    "services": {
+      "SOCIAL_POST": "Bài đăng mạng xã hội",
+      "EVENT_PLANNING": "Bàn giao kế hoạch sự kiện",
+      "LIVESTREAM_PREPARATION": "Chuẩn bị livestream",
+      "PRESS_RECOMMENDATION": "Gợi ý đối tác báo điện tử",
+      "WORKSHOP_SUPPORT": "Workshop: link Meet và survey"
+    },
+    "service": "Dịch vụ",
+    "name": "Tên hạng mục bàn giao",
+    "quantity": "Số lượng",
+    "unit": "Đơn vị",
+    "description": "Mô tả",
+    "acceptance": "Tiêu chí nghiệm thu",
+    "revisions": "Số lần thay đổi tối đa",
+    "add": "Thêm hạng mục",
+    "remove": "Bỏ hạng mục",
+    "required": "Cần ít nhất một hạng mục bàn giao.",
+    "draftTitle": "Campaign nháp",
+    "campaignName": "Tên Campaign",
+    "period": "Tháng thực hiện",
+    "createDraft": "Tạo Campaign nháp",
+    "draftCreated": "Đã tạo Campaign nháp",
+    "loadError": "Không tải được Campaign. Vui lòng thử lại.",
+    "remaining": "Còn có thể phân bổ: {{count}}",
+    "empty": "Chưa có Campaign.",
+    "draftNotice": "Chỉ tạo bản nháp, chưa sinh task, duyệt hay triển khai.",
+    "allocationRequired": "Chọn ít nhất một hạng mục trong sản lượng còn lại.",
+    "retry": "Thử lại"
+  },
   "agencyPage": {
     "title": "Quản lý gói truyền thông",
     "description": "Tạo và quản lý các gói Agency cung cấp cho Workspace, hoặc bắt đầu từ gói mẫu dùng chung của Admin."
@@ -22,8 +65,8 @@
     "showToWorkspaces": "Cho phép Workspace sử dụng",
     "chatNegotiate": "Đàm phán qua Chat",
     "proposeAdjustment": "Đề xuất điều chỉnh điều khoản",
-    "clientApprove": "Client: Chấp thuận gói",
-    "agencyApprove": "Agency: Chấp thuận gói"
+    "clientApprove": "Khách hàng: Chấp thuận gói",
+    "agencyApprove": "Công ty: Chấp thuận gói"
   },
   "badges": {
     "template": "Gói mẫu",
@@ -66,24 +109,24 @@
     "emptyDescription": "Client có thể chọn một trong các gói mà Agency đang cung cấp.",
     "termsVersion": "Phiên bản điều khoản {{version}}",
     "scopeTitle": "Phạm vi công việc",
-    "agencyApproval": "Phê duyệt của Agency",
+    "agencyApproval": "Phê duyệt của công ty truyền thông",
     "clientApproval": "Phê duyệt của khách hàng",
     "notApproved": "Chưa phê duyệt",
-    "approvedCompleted": "Đã phê duyệt hoàn tất (APPROVED)",
-    "approvedCompletedBadge": "Đã phê duyệt hoàn tất (APPROVED)",
+    "approvedCompleted": "Đã phê duyệt hoàn tất",
+    "approvedCompletedBadge": "Đã phê duyệt hoàn tất",
     "approvedCompletedDescription": "Cả hai bên đã đồng thuận các điều khoản của gói phiên bản v{{version}}. Gói đã có hiệu lực chính thức.",
-    "dualApprovalTitle": "Quy trình phê duyệt hai phía (Dual Approval)",
-    "dualApprovalDesc": "Cần sự phê duyệt từ cả Khách hàng và Agency để các điều khoản gói có hiệu lực chính thức.",
-    "clientApprovalTitle": "Phía Khách hàng (Client)",
-    "agencyApprovalTitle": "Phía Agency (Manager)"
+    "dualApprovalTitle": "Phê duyệt hai bên",
+    "dualApprovalDesc": "Khách hàng và công ty truyền thông cần cùng phê duyệt để các điều khoản gói có hiệu lực chính thức.",
+    "clientApprovalTitle": "Phía khách hàng",
+    "agencyApprovalTitle": "Phía công ty truyền thông"
   },
   "approval": {
     "approvedAt": "Đã duyệt lúc {{time}}",
     "waiting": "Chờ duyệt",
     "approvedStatus": "Đã duyệt",
     "pendingStatus": "Chờ duyệt",
-    "clientAlreadyApproved": "Client: Đã chấp thuận (Chờ Agency)",
-    "agencyAlreadyApproved": "Agency: Đã chấp thuận (Chờ Khách hàng)"
+    "clientAlreadyApproved": "Khách hàng đã chấp thuận (Chờ công ty)",
+    "agencyAlreadyApproved": "Công ty đã chấp thuận (Chờ khách hàng)"
   },
   "negotiateModal": {
     "title": "Đề xuất điều chỉnh điều khoản",
@@ -94,7 +137,7 @@
     "submit": "Gửi đề xuất"
   },
   "form": {
-    "basedOnTemplate": "Dựa trên mẫu:",
+    "basedOnTemplate": "Dựa trên gói:",
     "title": "Tạo gói truyền thông tùy chỉnh",
     "description": "Tạo một gói độc lập cho Agency. Gói có thể được cung cấp cho mọi Workspace trong Agency.",
     "nameLabel": "Tên gói",
@@ -126,5 +169,62 @@
     "updateAvailability": "Không thể cập nhật trạng thái khả dụng của gói.",
     "negotiate": "Không thể gửi đề xuất điều chỉnh điều khoản.",
     "approve": "Không thể chấp thuận gói dịch vụ."
+  },
+  "ui": {
+    "viewDetail": "Xem chi tiết gói",
+    "duplicate": "Tạo gói từ gói này",
+    "moreDeliverables": "+ {{count}} hạng mục khác",
+    "search": "Tìm theo tên hoặc phạm vi gói…",
+    "availability": "Lọc trạng thái hiển thị",
+    "allPackages": "Tất cả trạng thái",
+    "availableOption": "Cho Workspace sử dụng",
+    "hiddenOption": "Không hiển thị cho Workspace",
+    "resultCount": "{{count}} gói",
+    "noResults": "Không tìm thấy gói phù hợp. Hãy thử tên khác hoặc đổi bộ lọc.",
+    "loadMore": "Xem thêm gói",
+    "deliverables": "Hạng mục bàn giao",
+    "totalQuantity": "Sản lượng là tổng cho cả gói, không tự nhân theo tháng. Số lần thay đổi tối đa áp dụng chung cho gói.",
+    "approvalHint": "Hai bên duyệt cùng phiên bản điều khoản. Nếu điều khoản thay đổi, cả hai cần duyệt lại.",
+    "clientProposals": "Khách hàng đã đề xuất {{count}}/{{limit}} lần",
+    "proposalLimit": "Đã hết lượt đề xuất. Bạn vẫn có thể chấp thuận điều khoản hiện tại hoặc trao đổi qua Chat.",
+    "campaignReady": "Gói đã được hai bên chốt. Người quản lý có thể lập kế hoạch chiến dịch từ các điều khoản này.",
+    "openCampaign": "Xem kế hoạch Campaign",
+    "browseOtherPackages": "Tham khảo các gói khác của Agency",
+    "compare": "Đối chiếu điều khoản",
+    "changeCount": "{{count}} thay đổi",
+    "changed": "Đã thay đổi",
+    "before": "Bản trước",
+    "after": "Bản mới",
+    "noChanges": "Chưa có nội dung để đối chiếu.",
+    "currentPackage": "Gói hiện tại",
+    "durationExample": "Ví dụ: 4",
+    "unsavedTitle": "Bỏ các thay đổi chưa lưu?",
+    "unsavedDescription": "Nội dung bạn vừa nhập sẽ không được lưu nếu đóng phần chỉnh sửa.",
+    "keepEditing": "Tiếp tục chỉnh sửa",
+    "discard": "Bỏ thay đổi",
+    "fields": {
+      "name": "Tên",
+      "type": "Loại",
+      "budgetAmount": "Ngân sách",
+      "durationWeeks": "Thời lượng (tuần)",
+      "scopeDescription": "Phạm vi công việc",
+      "offeringModel": "Cách đóng gói",
+      "maxChanges": "Số lần thay đổi tối đa",
+      "serviceType": "Dịch vụ",
+      "quantity": "Số lượng",
+      "unit": "Đơn vị",
+      "description": "Mô tả",
+      "acceptanceCriteria": "Tiêu chí nghiệm thu",
+      "strategyDetail": "Chiến lược triển khai",
+      "brandGuideline": "Hướng dẫn thương hiệu",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "date": "Ngày",
+      "dueDate": "Hạn hoàn thành",
+      "milestones": "Mốc kế hoạch",
+      "workItems": "Đầu việc dự kiến"
+    },
+    "showUnchanged": "Hiện cả nội dung không thay đổi",
+    "noDifferences": "Chưa có thay đổi so với bản trước."
   }
 }

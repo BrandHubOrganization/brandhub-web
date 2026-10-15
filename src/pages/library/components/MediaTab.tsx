@@ -259,6 +259,9 @@ export const MediaTab: React.FC = () => {
         media={selectedMedia}
         onClose={() => setSelectedMedia(null)}
         onDelete={handleDeleteMedia}
+        onWatermarked={(newMedia) => {
+          setMediaList((prev) => [newMedia, ...prev]);
+        }}
       />
     </div>
   );

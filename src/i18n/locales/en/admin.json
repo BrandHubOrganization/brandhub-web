@@ -91,7 +91,8 @@
     "reports": "Reports",
     "utilities": "Admin tools",
     "planned": "Not ready yet",
-    "crawl": "Crawl settings"
+    "crawl": "Crawl settings",
+    "mailTemplates": "System mail templates"
   },
   "overview": {
     "title": "Platform overview",

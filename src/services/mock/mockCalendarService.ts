@@ -43,7 +43,7 @@ const MOCK_EVENTS: CalendarPostEvent[] = [
     title: "Weekly Tech Tips Summary",
     start: new Date(new Date().setDate(new Date().getDate() + 5)).toISOString(),
     extendedProps: {
-      platform: "YOUTUBE",
+      platform: "THREADS",
       status: "DRAFT",
       captionPreview:
         "5 productivity hacks every content creator needs to know in 2026.",

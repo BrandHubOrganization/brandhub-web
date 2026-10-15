@@ -131,7 +131,6 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                   <option value="INSTAGRAM">Instagram</option>
                   <option value="TIKTOK">TikTok</option>
                   <option value="THREADS">Threads</option>
-                  <option value="YOUTUBE">Youtube</option>
                 </Select>
               </div>
 
@@ -221,7 +220,6 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
             "INSTAGRAM",
             "TIKTOK",
             "THREADS",
-            "YOUTUBE",
           ].filter((v, i, a) => a.indexOf(v) === i) as PlatformType[],
         }}
       />

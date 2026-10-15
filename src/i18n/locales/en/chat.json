@@ -29,6 +29,16 @@
   },
   "errors": {
     "loadHistory": "Unable to load chat history"
+  },
+  "ui": {
+    "subtitle": "Shared Workspace conversation",
+    "loading": "Loading messages…",
+    "messages": "Message history",
+    "keyboardHint": "Enter to send · Shift + Enter for a new line",
+    "roles": {
+      "MANAGER": "Manager",
+      "CREATOR": "Creator",
+      "CLIENT": "Client"
+    }
   }
 }
-

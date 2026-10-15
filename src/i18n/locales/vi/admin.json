@@ -91,7 +91,8 @@
     "reports": "Báo cáo",
     "utilities": "Tiện ích quản trị",
     "planned": "Chưa sẵn sàng",
-    "crawl": "Cấu hình crawl"
+    "crawl": "Cấu hình crawl",
+    "mailTemplates": "Mẫu email hệ thống"
   },
   "overview": {
     "title": "Tổng quan nền tảng",

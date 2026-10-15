@@ -2,7 +2,6 @@ import type * as React from "react";
 import {
   LayoutDashboard,
   FileEdit,
-  CalendarDays,
   Users,
   BarChart3,
   ShieldAlert,
@@ -29,6 +28,7 @@ import {
   MessageCircleMore,
   TrendingUp,
   Clapperboard,
+  Mail,
 } from "lucide-react";
 
 export interface NavItem {
@@ -91,6 +91,20 @@ export const NAV_SECTIONS: NavSection[] = [
         requiresWorkspace: true,
       },
       {
+        to: "/campaigns",
+        icon: PackageCheck,
+        labelKey: "campaign.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/campaign-partners",
+        icon: Users,
+        labelKey: "campaign.partners.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/chat",
         icon: MessageCircleMore,
         labelKey: "nav.chat",
@@ -110,6 +124,13 @@ export const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.create",
     items: [
       {
+        to: "/tasks",
+        icon: FolderKanban,
+        labelKey: "nav.tasks",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/requests",
         icon: FileEdit,
         labelKey: "nav.requests",
@@ -120,6 +141,13 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/editor",
         icon: FileEdit,
         labelKey: "nav.editor",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/mail-templates",
+        icon: Mail,
+        labelKey: "nav.mailTemplates",
         workspaceScoped: true,
         requiresWorkspace: true,
       },
@@ -141,13 +169,6 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/hashtag-groups",
         icon: Hash,
         labelKey: "nav.hashtagGroups",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/calendar",
-        icon: CalendarDays,
-        labelKey: "nav.calendar",
         workspaceScoped: true,
         requiresWorkspace: true,
       },

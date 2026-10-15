@@ -4,6 +4,7 @@ import {
   Activity,
   Clock3,
   FileChartColumn,
+  FileText,
   LayoutDashboard,
   Mail,
   Radar,
@@ -22,6 +23,7 @@ const sections = [
   { key: "health", icon: Activity, planned: false },
   { key: "revenue", icon: Wallet, planned: false },
   { key: "email", icon: Mail, planned: false },
+  { key: "mailTemplates", icon: FileText, planned: false },
   { key: "reports", icon: FileChartColumn, planned: false },
   { key: "crawl", icon: Radar, planned: false },
 ];
