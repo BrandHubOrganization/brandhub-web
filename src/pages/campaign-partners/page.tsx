@@ -29,7 +29,8 @@ function PartnerPanel({ workspaceId }: { workspaceId: string }) {
       {data.partners.content.map(partner => <li key={partner.id} className="space-y-2 rounded-lg border bg-card p-4">
         <div className="flex flex-col justify-between gap-3 sm:flex-row">
           <div className="min-w-0"><h3 className="font-medium break-words">{partner.partnerName}</h3>
-            <p className="text-sm text-muted-foreground">{t(`campaign.partners.types.${partner.partnerType}`)}</p></div>
+            <p className="text-sm text-muted-foreground">{t(`campaign.partners.types.${partner.partnerType}`)}</p>
+            {partner.partnerActive === false && <p className="text-sm font-medium">{t("collaborators.inactive")}</p>}</div>
           {data.canEdit ? <div className="w-full sm:w-52">
             <Select aria-label={t("campaign.partners.statusFor", { name: partner.partnerName })}
               disabled={busy} value={partner.cooperationStatus}

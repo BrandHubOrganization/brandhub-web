@@ -65,6 +65,8 @@ export interface CreateCustomMediaPackageRequest extends OfferingFields {
 }
 
 export interface NegotiateTermsRequest extends OfferingFields {
+  expectedTermsVersion: number;
+  note?: string;
   budgetAmount?: number;
   durationWeeks?: number;
   scopeDescription?: string;
@@ -72,4 +74,22 @@ export interface NegotiateTermsRequest extends OfferingFields {
 
 export interface SelectMediaPackageResponse {
   workspaceMediaPackageId: string;
+}
+
+export interface PackageNegotiationEvent {
+  id: string;
+  termsVersion: number;
+  action: "BASELINE" | "REQUEST_CHANGE" | "COUNTER_OFFER";
+  actorId: string | null;
+  actorRole: "OWNER" | "MANAGER" | "CLIENT" | null;
+  note: string | null;
+  termsSnapshot: Record<string, unknown>;
+  createdAt: string;
+}
+export interface PackageNegotiationHistoryPage {
+  content: PackageNegotiationEvent[];
+  number: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
 }

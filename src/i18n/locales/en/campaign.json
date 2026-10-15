@@ -1,4 +1,36 @@
 {
+  "closure": {
+    "cancelOption": "Cancel Tasks to close the Campaign (optional)",
+    "cancelHelp": "Select only work that will not continue. Cancellation retains content and approval history and requires confirmation.",
+    "title": "Review Campaign completion",
+    "description": "Resolve received Requests and finish all Tasks. Cancelling Tasks retains content and approval history.",
+    "planned": "Planned Tasks",
+    "supplemental": "Additional Tasks from Requests",
+    "sourceRequest": "View source Request",
+    "progress": "{{done}}/{{total}} Tasks ended (including cancelled)",
+    "pending": "{{count}} pending Requests will be cancelled after Campaign completion.",
+    "reviewing": "Received Requests — resolve first",
+    "reviewingHelp": "Open each Request to accept or deny. Accepted Requests create additional Tasks to resolve.",
+    "unfinished": "{{count}} unfinished Tasks",
+    "reason": "Shared reason for selected Tasks",
+    "chooseReason": "Choose a cancellation reason",
+    "otherRequired": "Other reason (required)",
+    "selected": "{{count}} Tasks selected. Maximum 100 per batch.",
+    "confirmBatch": "Confirm cancellation of {{count}} Tasks. Reason: {{reason}}. Content and approval history are retained.",
+    "confirmCancel": "Confirm cancellation",
+    "cancelSelected": "Cancel selected Tasks",
+    "blocked": "Completion blocked. Resolve outstanding items first.",
+    "reload": "Reload check",
+    "close": "Close",
+    "legacy": "{{count}} legacy Request Tasks have no Campaign link. Review the data.",
+    "reasons": {
+      "CLIENT_NO_LONGER_NEEDS": "Client no longer needs the work",
+      "MUTUAL_AGREEMENT": "Both parties agreed not to proceed",
+      "DUPLICATE_OR_REPLACED": "Duplicate or replaced work",
+      "NO_LONGER_SUITABLE": "No longer suitable for the Campaign",
+      "OTHER": "Other"
+    }
+  },
   "title": "Campaign plan",
   "partners": {
     "title": "Campaign partners",
@@ -95,7 +127,7 @@
     "progress": "{{done}}/{{total}} tasks completed",
     "openEditor": "Open Content Writing",
     "reason": "Reason for completing Campaign",
-    "reasonHint": "Some tasks are unfinished. Enter a reason before completing the Campaign.",
+    "reasonHint": "Resolve all unfinished Tasks and received Requests before completing the Campaign.",
     "complete": "Mark Campaign completed",
     "completed": "Campaign completed.",
     "completedAt": "Completed at {{date}}"
@@ -114,6 +146,9 @@
     "PRESS_RECOMMENDATION": "Press recommendations"
   },
   "errors": {
+    "CAMPAIGN_CLOSURE_BLOCKED": "Resolve unfinished Tasks and received Requests before completing.",
+    "CAMPAIGN_TASK_STATE_CONFLICT": "Task state changed. Review the list and select again.",
+    "TASK_SCHEMA_NOT_READY": "Apply the MongoDB Campaign closure migration before cancellation.",
     "CAMPAIGN_ALREADY_EXISTS": "A Campaign already exists. Cancel editing and reload.",
     "CAMPAIGN_VERSION_CONFLICT": "Plan changed. Keep needed input, cancel editing and reload.",
     "CAMPAIGN_LEGACY_TERMS": "This legacy package or plan has no frozen deliverable scope or still uses monthly quantities, so editing is locked pending data review. Monthly quantities are not converted automatically.",
@@ -137,6 +172,9 @@
     "deploymentError": "View deployment error details",
     "taskProgress": "Task completion progress",
     "taskStatuses": {
+      "TODO": "To do",
+      "FINISHED": "Finished",
+      "CANCELLED": "Cancelled",
       "BACKLOG": "Backlog",
       "DETAIL_IDENTIFIED": "Details identified",
       "ASSIGNED": "Assigned",

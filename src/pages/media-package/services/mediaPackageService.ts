@@ -6,6 +6,7 @@ import type {
   NegotiateTermsRequest,
   SelectMediaPackageResponse,
   WorkspaceMediaPackage,
+  PackageNegotiationHistoryPage,
 } from "@/pages/media-package/types/mediaPackage";
 
 export const mediaPackageService = {
@@ -55,9 +56,14 @@ export const mediaPackageService = {
       terms,
     ),
 
-  approvePackage: (workspaceId: string) =>
+  history: (workspaceId: string, page: number) =>
+    api.get<ApiResponse<PackageNegotiationHistoryPage>>(
+      `/api/v1/workspaces/${workspaceId}/media-package/history`, { params: { page, size: 10 } }),
+
+  approvePackage: (workspaceId: string, expectedTermsVersion: number) =>
     api.post<ApiResponse<WorkspaceMediaPackage>>(
       `/api/v1/workspaces/${workspaceId}/media-package/approve`,
+      { expectedTermsVersion },
     ),
 };
 

@@ -17,10 +17,11 @@ import type {
 } from "../types/mediaPackage";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import { extractErrorMessage } from "@/utils/error";
+import { packageMutationError } from "../lib/packageMutationError";
 import { NegotiateTermsModal } from "./NegotiateTermsModal";
 import { OfferingSummary } from "./OfferingSummary";
 import { PackageTermsDiff } from "./PackageTermsDiff";
+import { PackageNegotiationHistory } from "./PackageNegotiationHistory";
 
 export interface SelectedMediaPackageProps {
   selection: WorkspaceMediaPackage | null;
@@ -156,7 +157,7 @@ export function SelectedMediaPackage({
     if (!targetWorkspaceId) return;
     setInternalLoading(true);
     try {
-      await mediaPackageService.approvePackage(targetWorkspaceId);
+      await mediaPackageService.approvePackage(targetWorkspaceId, selection.termsVersion);
       toast.success(
         t(
           "mediaPackage.messages.approveSuccess",
@@ -166,9 +167,10 @@ export function SelectedMediaPackage({
       if (onRefresh) await onRefresh();
     } catch (requestError: unknown) {
       toast.error(
-        extractErrorMessage(
+        packageMutationError(
           requestError,
           t("mediaPackage.errors.approve", "Không thể chấp thuận gói dịch vụ."),
+          t,
         ),
       );
     } finally {
@@ -197,12 +199,13 @@ export function SelectedMediaPackage({
       return true;
     } catch (requestError: unknown) {
       toast.error(
-        extractErrorMessage(
+        packageMutationError(
           requestError,
           t(
             "mediaPackage.errors.negotiate",
             "Không thể gửi đề xuất điều chỉnh.",
           ),
+          t,
         ),
       );
       return false;
@@ -339,6 +342,8 @@ export function SelectedMediaPackage({
           </aside>
         </div>
       </section>
+      <PackageNegotiationHistory key={packageContextId} workspaceId={targetWorkspaceId}
+        currentVersion={selection.termsVersion} currentTerms={selection.finalTerms} />
       <NegotiateTermsModal
         open={negotiateModalOpen}
         onOpenChange={setNegotiateModalOpen}
