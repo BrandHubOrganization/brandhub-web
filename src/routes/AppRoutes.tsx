@@ -19,103 +19,285 @@ function lazyNamed<T extends Record<string, unknown>>(
     const component = name
       ? (mod[name] ?? mod.default)
       : (mod.default ?? Object.values(mod)[0]);
-    return { default: component as React.ComponentType<Record<string, unknown>> };
+    return {
+      default: component as React.ComponentType<Record<string, unknown>>,
+    };
   });
 }
 
 // ── Auth Pages (Code-split) ──
-const LoginPage = lazyNamed(() => import("@/pages/auth/LoginPage"), "LoginPage");
-const RegisterPage = lazyNamed(() => import("@/pages/auth/RegisterPage"), "RegisterPage");
-const VerifyOtpPage = lazyNamed(() => import("@/pages/auth/VerifyOtpPage"), "VerifyOtpPage");
-const TwoFactorVerifyPage = lazyNamed(() => import("@/pages/auth/TwoFactorVerifyPage"), "TwoFactorVerifyPage");
-const ForgotPasswordPage = lazyNamed(() => import("@/pages/auth/ForgotPasswordPage"), "ForgotPasswordPage");
-const ResetPasswordPage = lazyNamed(() => import("@/pages/auth/ResetPasswordPage"), "ResetPasswordPage");
-const ActivateAccountPage = lazyNamed(() => import("@/pages/auth/ActivateAccountPage"), "ActivateAccountPage");
-const OAuthCallbackPage = lazyNamed(() => import("@/pages/auth/OAuthCallbackPage"), "OAuthCallbackPage");
+const LoginPage = lazyNamed(
+  () => import("@/pages/auth/LoginPage"),
+  "LoginPage",
+);
+const RegisterPage = lazyNamed(
+  () => import("@/pages/auth/RegisterPage"),
+  "RegisterPage",
+);
+const VerifyOtpPage = lazyNamed(
+  () => import("@/pages/auth/VerifyOtpPage"),
+  "VerifyOtpPage",
+);
+const TwoFactorVerifyPage = lazyNamed(
+  () => import("@/pages/auth/TwoFactorVerifyPage"),
+  "TwoFactorVerifyPage",
+);
+const ForgotPasswordPage = lazyNamed(
+  () => import("@/pages/auth/ForgotPasswordPage"),
+  "ForgotPasswordPage",
+);
+const ResetPasswordPage = lazyNamed(
+  () => import("@/pages/auth/ResetPasswordPage"),
+  "ResetPasswordPage",
+);
+const ActivateAccountPage = lazyNamed(
+  () => import("@/pages/auth/ActivateAccountPage"),
+  "ActivateAccountPage",
+);
+const OAuthCallbackPage = lazyNamed(
+  () => import("@/pages/auth/OAuthCallbackPage"),
+  "OAuthCallbackPage",
+);
 
 // ── Public & Help Pages ──
-const LandingPage = lazyNamed(() => import("@/pages/dashboard/landing"), "LandingPage");
-const HelpFaqPage = lazyNamed(() => import("@/pages/help/FaqPage"), "HelpFaqPage");
-const AdminGuidePage = lazyNamed(() => import("@/pages/help/GuidePage"), "AdminGuidePage");
+const LandingPage = lazyNamed(
+  () => import("@/pages/dashboard/landing"),
+  "LandingPage",
+);
+const HelpFaqPage = lazyNamed(
+  () => import("@/pages/help/FaqPage"),
+  "HelpFaqPage",
+);
+const AdminGuidePage = lazyNamed(
+  () => import("@/pages/help/GuidePage"),
+  "AdminGuidePage",
+);
 
 // ── Core Dashboard & Work ──
-const DashboardPage = lazyNamed(() => import("@/pages/dashboard"), "DashboardPage");
+const DashboardPage = lazyNamed(
+  () => import("@/pages/dashboard"),
+  "DashboardPage",
+);
 const PortalPage = lazyNamed(() => import("@/pages/portal"), "PortalPage");
-const AnalyticsPage = lazyNamed(() => import("@/pages/analytics"), "AnalyticsPage");
-const CalendarPage = lazyNamed(() => import("@/pages/calendar"), "CalendarPage");
-const ContentLibraryPage = lazyNamed(() => import("@/pages/library"), "ContentLibraryPage");
-const ContentRequestListPage = lazyNamed(() => import("@/pages/requests"), "ContentRequestListPage");
-const WorkspaceRequestPage = lazyNamed(() => import("@/pages/requests/WorkspaceRequestPage"), "WorkspaceRequestPage");
+const AnalyticsPage = lazyNamed(
+  () => import("@/pages/analytics"),
+  "AnalyticsPage",
+);
+const CalendarPage = lazyNamed(
+  () => import("@/pages/calendar"),
+  "CalendarPage",
+);
+const ContentLibraryPage = lazyNamed(
+  () => import("@/pages/library"),
+  "ContentLibraryPage",
+);
+const ContentRequestListPage = lazyNamed(
+  () => import("@/pages/requests"),
+  "ContentRequestListPage",
+);
+const WorkspaceRequestPage = lazyNamed(
+  () => import("@/pages/requests/WorkspaceRequestPage"),
+  "WorkspaceRequestPage",
+);
 const EditorPage = lazyNamed(() => import("@/pages/editor"), "EditorPage");
-const ContentWritingPage = lazyNamed(() => import("@/pages/content-writing"), "ContentWritingPage");
+const ContentWritingPage = lazyNamed(
+  () => import("@/pages/content-writing"),
+  "ContentWritingPage",
+);
 const PublishPage = lazyNamed(() => import("@/pages/publish"), "PublishPage");
-const SocialAccountsPage = lazyNamed(() => import("@/pages/social-accounts"), "SocialAccountsPage");
-const TemplateBrowserPage = lazyNamed(() => import("@/pages/templates"), "TemplateBrowserPage");
-const HashtagGroupsPage = lazyNamed(() => import("@/pages/hashtag-groups"), "HashtagGroupsPage");
+const PostDashboardPage = lazyNamed(
+  () => import("@/pages/publish/dashboard"),
+  "PostDashboardPage",
+);
+const PostDetailPage = lazyNamed(
+  () => import("@/pages/publish/postDetail"),
+  "PostDetailPage",
+);
+const SocialAccountsPage = lazyNamed(
+  () => import("@/pages/social-accounts"),
+  "SocialAccountsPage",
+);
+const TemplateBrowserPage = lazyNamed(
+  () => import("@/pages/templates"),
+  "TemplateBrowserPage",
+);
+const HashtagGroupsPage = lazyNamed(
+  () => import("@/pages/hashtag-groups"),
+  "HashtagGroupsPage",
+);
 const ReportsPage = lazyNamed(() => import("@/pages/reports"), "ReportsPage");
 
 // ── Workspace & Chat Pages ──
-const WorkspacePage = lazyNamed(() => import("@/pages/workspace"), "WorkspacePage");
-const CreateWorkspacePage = lazyNamed(() => import("@/pages/workspace/create"), "CreateWorkspacePage");
-const WorkspaceSettingsPage = lazyNamed(() => import("@/pages/workspace/detail"), "WorkspaceSettingsPage");
-const WorkspaceDashboardPage = lazyNamed(() => import("@/pages/workspace/dashboard"), "WorkspaceDashboardPage");
-const WorkspaceChatPage = lazyNamed(() => import("@/pages/chat"), "WorkspaceChatPage");
-const WorkspaceMembersPage = lazyNamed(() => import("@/pages/workspace/members"), "WorkspaceMembersPage");
+const WorkspacePage = lazyNamed(
+  () => import("@/pages/workspace"),
+  "WorkspacePage",
+);
+const CreateWorkspacePage = lazyNamed(
+  () => import("@/pages/workspace/create"),
+  "CreateWorkspacePage",
+);
+const WorkspaceSettingsPage = lazyNamed(
+  () => import("@/pages/workspace/detail"),
+  "WorkspaceSettingsPage",
+);
+const WorkspaceDashboardPage = lazyNamed(
+  () => import("@/pages/workspace/dashboard"),
+  "WorkspaceDashboardPage",
+);
+const WorkspaceChatPage = lazyNamed(
+  () => import("@/pages/chat"),
+  "WorkspaceChatPage",
+);
+const WorkspaceMembersPage = lazyNamed(
+  () => import("@/pages/workspace/members"),
+  "WorkspaceMembersPage",
+);
 const TaskListPage = lazyNamed(() => import("@/pages/tasks"), "TaskListPage");
 const TaskDetailPage = lazy(() => import("@/pages/tasks/detail"));
-const WorkspaceClientsPage = lazyNamed(() => import("@/pages/workspace/clients"), "WorkspaceClientsPage");
-const WorkspaceTemplatesPage = lazyNamed(() => import("@/pages/workspace/templates"), "WorkspaceTemplatesPage");
-const InvitationsPage = lazyNamed(() => import("@/pages/workspace/invitations"), "InvitationsPage");
-const WorkspaceClientProfilePage = lazyNamed(() => import("@/pages/workspace/client-profile"), "WorkspaceClientProfilePage");
+const WorkspaceClientsPage = lazyNamed(
+  () => import("@/pages/workspace/clients"),
+  "WorkspaceClientsPage",
+);
+const WorkspaceTemplatesPage = lazyNamed(
+  () => import("@/pages/workspace/templates"),
+  "WorkspaceTemplatesPage",
+);
+const InvitationsPage = lazyNamed(
+  () => import("@/pages/workspace/invitations"),
+  "InvitationsPage",
+);
+const WorkspaceClientProfilePage = lazyNamed(
+  () => import("@/pages/workspace/client-profile"),
+  "WorkspaceClientProfilePage",
+);
 const MediaPackagePage = lazy(() => import("@/pages/media-package"));
 const CampaignPage = lazy(() => import("@/pages/campaign/page"));
-const CampaignPartnersPage = lazy(() => import("@/pages/campaign-partners/page"));
+const CampaignPartnersPage = lazy(
+  () => import("@/pages/campaign-partners/page"),
+);
 const MailTemplatesPage = lazy(() => import("@/pages/mail-templates/page"));
 const MailBatchesPage = lazy(() => import("@/pages/mail-templates/batches"));
-const MailSuppressionsPage = lazy(() => import("@/pages/mail-templates/suppressions"));
-const MailUnsubscribePage = lazy(() => import("@/pages/mail-templates/UnsubscribePage"));
+const MailSuppressionsPage = lazy(
+  () => import("@/pages/mail-templates/suppressions"),
+);
+const MailUnsubscribePage = lazy(
+  () => import("@/pages/mail-templates/UnsubscribePage"),
+);
 
 // ── Agency Pages ──
 const AgencyPage = lazyNamed(() => import("@/pages/agency"), "AgencyPage");
-const AgencyDetailPage = lazyNamed(() => import("@/pages/agency/detail"), "AgencyDetailPage");
-const CreateAgencyPage = lazyNamed(() => import("@/pages/agency/create"), "CreateAgencyPage");
-const AgencyMembersPage = lazyNamed(() => import("@/pages/agency/members"), "AgencyMembersPage");
-const AgencyStatsPage = lazyNamed(() => import("@/pages/agency/stats"), "AgencyStatsPage");
-const AgencyRolesPage = lazyNamed(() => import("@/pages/agency/roles"), "AgencyRolesPage");
-const AgencyInvitationsPage = lazyNamed(() => import("@/pages/agency/invitations"), "AgencyInvitationsPage");
-const ClientInvitationsPage = lazyNamed(() => import("@/pages/client/invitations"), "ClientInvitationsPage");
-const AcceptInvitationPage = lazyNamed(() => import("@/pages/agency/accept"), "AcceptInvitationPage");
-const AgencyMediaPackagePage = lazy(() => import("@/pages/media-package/agency"));
+const AgencyDetailPage = lazyNamed(
+  () => import("@/pages/agency/detail"),
+  "AgencyDetailPage",
+);
+const CreateAgencyPage = lazyNamed(
+  () => import("@/pages/agency/create"),
+  "CreateAgencyPage",
+);
+const AgencyMembersPage = lazyNamed(
+  () => import("@/pages/agency/members"),
+  "AgencyMembersPage",
+);
+const AgencyStatsPage = lazyNamed(
+  () => import("@/pages/agency/stats"),
+  "AgencyStatsPage",
+);
+const AgencyRolesPage = lazyNamed(
+  () => import("@/pages/agency/roles"),
+  "AgencyRolesPage",
+);
+const AgencyInvitationsPage = lazyNamed(
+  () => import("@/pages/agency/invitations"),
+  "AgencyInvitationsPage",
+);
+const ClientInvitationsPage = lazyNamed(
+  () => import("@/pages/client/invitations"),
+  "ClientInvitationsPage",
+);
+const AcceptInvitationPage = lazyNamed(
+  () => import("@/pages/agency/accept"),
+  "AcceptInvitationPage",
+);
+const AgencyMediaPackagePage = lazy(
+  () => import("@/pages/media-package/agency"),
+);
 const DirectoryPage = lazy(() => import("@/pages/collaborators/page"));
 
 // ── Client Management ──
-const ClientListPage = lazyNamed(() => import("@/pages/client/list"), "ClientListPage");
-const ClientCreatePage = lazyNamed(() => import("@/pages/client/create"), "ClientCreatePage");
-const ClientDetailPage = lazyNamed(() => import("@/pages/client/detail"), "ClientDetailPage");
-const ClientProfileListPage = lazyNamed(() => import("@/pages/client-profiles/list"), "ClientProfileListPage");
+const ClientListPage = lazyNamed(
+  () => import("@/pages/client/list"),
+  "ClientListPage",
+);
+const ClientCreatePage = lazyNamed(
+  () => import("@/pages/client/create"),
+  "ClientCreatePage",
+);
+const ClientDetailPage = lazyNamed(
+  () => import("@/pages/client/detail"),
+  "ClientDetailPage",
+);
+const ClientProfileListPage = lazyNamed(
+  () => import("@/pages/client-profiles/list"),
+  "ClientProfileListPage",
+);
 
 // ── Subscription & Billing ──
-const SubscriptionPlansPage = lazyNamed(() => import("@/pages/subscription/plans"), "SubscriptionPlansPage");
-const SubscriptionCheckoutPage = lazyNamed(() => import("@/pages/subscription/checkout"), "SubscriptionCheckoutPage");
-const SubscriptionInvoicesPage = lazyNamed(() => import("@/pages/subscription/invoices"), "SubscriptionInvoicesPage");
+const SubscriptionPlansPage = lazyNamed(
+  () => import("@/pages/subscription/plans"),
+  "SubscriptionPlansPage",
+);
+const SubscriptionCheckoutPage = lazyNamed(
+  () => import("@/pages/subscription/checkout"),
+  "SubscriptionCheckoutPage",
+);
+const SubscriptionInvoicesPage = lazyNamed(
+  () => import("@/pages/subscription/invoices"),
+  "SubscriptionInvoicesPage",
+);
 
 // ── AI Studio ──
-const AmbassadorsPage = lazyNamed(() => import("@/pages/ai-studio/ambassadors"), "AmbassadorsPage");
-const KnowledgeBasePage = lazyNamed(() => import("@/pages/ai-studio/knowledge-base"), "KnowledgeBasePage");
-const TrendsPage = lazyNamed(() => import("@/pages/ai-studio/trends"), "TrendsPage");
-const VideoStudioPage = lazyNamed(() => import("@/pages/ai-studio/video"), "VideoStudioPage");
+const AmbassadorsPage = lazyNamed(
+  () => import("@/pages/ai-studio/ambassadors"),
+  "AmbassadorsPage",
+);
+const KnowledgeBasePage = lazyNamed(
+  () => import("@/pages/ai-studio/knowledge-base"),
+  "KnowledgeBasePage",
+);
+const TrendsPage = lazyNamed(
+  () => import("@/pages/ai-studio/trends"),
+  "TrendsPage",
+);
+const VideoStudioPage = lazyNamed(
+  () => import("@/pages/ai-studio/video"),
+  "VideoStudioPage",
+);
 
 // ── Admin Pages ──
 const AdminPage = lazyNamed(() => import("@/pages/admin"), "AdminPage");
 const SystemHealthPage = lazy(() => import("@/pages/admin/system-health"));
-const WorkspaceTemplateLibraryPage = lazy(() => import("@/pages/admin/WorkspaceTemplateLibrary"));
+const WorkspaceTemplateLibraryPage = lazy(
+  () => import("@/pages/admin/WorkspaceTemplateLibrary"),
+);
 
 // ── Settings & Profile ──
-const SettingsLayout = lazyNamed(() => import("@/pages/settings/SettingsLayout"), "SettingsLayout");
+const SettingsLayout = lazyNamed(
+  () => import("@/pages/settings/SettingsLayout"),
+  "SettingsLayout",
+);
 const ProfilePage = lazyNamed(() => import("@/pages/profile"), "ProfilePage");
-const SecurityPage = lazyNamed(() => import("@/pages/security"), "SecurityPage");
-const ConnectionsPage = lazyNamed(() => import("@/pages/connections"), "ConnectionsPage");
-const NotificationSettingsPage = lazyNamed(() => import("@/pages/notification-settings"), "NotificationSettingsPage");
+const SecurityPage = lazyNamed(
+  () => import("@/pages/security"),
+  "SecurityPage",
+);
+const ConnectionsPage = lazyNamed(
+  () => import("@/pages/connections"),
+  "ConnectionsPage",
+);
+const NotificationSettingsPage = lazyNamed(
+  () => import("@/pages/notification-settings"),
+  "NotificationSettingsPage",
+);
 
 // ── Dev / Examples ──
 const ExamplesPage = lazy(() => import("@/components/examples"));
@@ -158,7 +340,10 @@ export function AppRoutes() {
           <Route path="/help/faq" element={<HelpFaqPage />} />
           <Route path="/help/guide" element={<AdminGuidePage />} />
           <Route path="/faq" element={<Navigate to="/help/faq" replace />} />
-          <Route path="/guide" element={<Navigate to="/help/guide" replace />} />
+          <Route
+            path="/guide"
+            element={<Navigate to="/help/guide" replace />}
+          />
         </Route>
 
         {/* Authenticated Routes — require login */}
@@ -177,7 +362,10 @@ export function AppRoutes() {
               path="/workspaces"
               element={<Navigate to="/workspace" replace />}
             />
-            <Route path="/workspaces/create" element={<CreateWorkspacePage />} />
+            <Route
+              path="/workspaces/create"
+              element={<CreateWorkspacePage />}
+            />
             <Route
               path="/workspaces/:id"
               element={<WorkspaceIndexRedirect />}
@@ -190,7 +378,10 @@ export function AppRoutes() {
               path="/workspaces/:id/dashboard"
               element={<WorkspaceDashboardPage />}
             />
-            <Route path="/workspaces/:id/chat" element={<WorkspaceChatPage />} />
+            <Route
+              path="/workspaces/:id/chat"
+              element={<WorkspaceChatPage />}
+            />
             <Route
               path="/workspaces/:id/settings"
               element={<WorkspaceSettingsPage />}
@@ -207,11 +398,11 @@ export function AppRoutes() {
               path="/workspaces/:id/requests"
               element={<WorkspaceRequestPage />}
             />
+            <Route path="/workspaces/:id/tasks" element={<TaskListPage />} />
             <Route
-              path="/workspaces/:id/tasks"
-              element={<TaskListPage />}
+              path="/workspaces/:id/tasks/:taskId/detail"
+              element={<TaskDetailPage />}
             />
-            <Route path="/workspaces/:id/tasks/:taskId/detail" element={<TaskDetailPage />} />
             <Route path="/workspaces/:id/editor" element={<EditorPage />} />
             <Route
               path="/editor"
@@ -223,7 +414,9 @@ export function AppRoutes() {
             />
             <Route
               path="/content-writing"
-              element={<WorkspaceScopedRedirect destination="content-writing" />}
+              element={
+                <WorkspaceScopedRedirect destination="content-writing" />
+              }
             />
             <Route
               path="/workspaces/:id/templates"
@@ -243,12 +436,39 @@ export function AppRoutes() {
               element={<ContentLibraryPage />}
             />
             <Route path="/workspaces/:id/publish" element={<PublishPage />} />
+            <Route
+              path="/workspaces/:id/posts/dashboard"
+              element={<PostDashboardPage />}
+            />
+            <Route
+              path="/workspaces/:id/publish/dashboard"
+              element={<PostDashboardPage />}
+            />
+            <Route
+              path="/workspaces/:id/posts/:postId"
+              element={<PostDetailPage />}
+            />
             <Route path="/workspaces/:id/portal" element={<PortalPage />} />
-            <Route path="/workspaces/:id/campaigns" element={<CampaignPage />} />
-            <Route path="/workspaces/:id/campaign-partners" element={<CampaignPartnersPage />} />
-            <Route path="/workspaces/:id/mail-templates" element={<MailTemplatesPage />} />
-            <Route path="/workspaces/:id/mail-templates/batches" element={<MailBatchesPage />} />
-            <Route path="/workspaces/:id/mail-templates/suppressions" element={<MailSuppressionsPage />} />
+            <Route
+              path="/workspaces/:id/campaigns"
+              element={<CampaignPage />}
+            />
+            <Route
+              path="/workspaces/:id/campaign-partners"
+              element={<CampaignPartnersPage />}
+            />
+            <Route
+              path="/workspaces/:id/mail-templates"
+              element={<MailTemplatesPage />}
+            />
+            <Route
+              path="/workspaces/:id/mail-templates/batches"
+              element={<MailBatchesPage />}
+            />
+            <Route
+              path="/workspaces/:id/mail-templates/suppressions"
+              element={<MailSuppressionsPage />}
+            />
             <Route
               path="/mail-templates"
               element={<WorkspaceScopedRedirect destination="mail-templates" />}
@@ -277,7 +497,10 @@ export function AppRoutes() {
             <Route path="/agency" element={<AgencyPage />} />
             <Route path="/agency/create" element={<CreateAgencyPage />} />
             <Route path="/agency/:id" element={<AgencyDetailPage />} />
-            <Route path="/agency/:id/collaborators" element={<DirectoryPage />} />
+            <Route
+              path="/agency/:id/collaborators"
+              element={<DirectoryPage />}
+            />
             <Route
               path="/agency/:id/media-packages"
               element={<AgencyMediaPackagePage />}
@@ -294,10 +517,7 @@ export function AppRoutes() {
             <Route path="/agency/:id/roles" element={<AgencyRolesPage />} />
             <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
             <Route path="/admin" element={<AdminPage />} />
-            <Route
-              path="/admin/system-health"
-              element={<SystemHealthPage />}
-            />
+            <Route path="/admin/system-health" element={<SystemHealthPage />} />
             <Route
               path="/admin/workspace-templates"
               element={<WorkspaceTemplateLibraryPage />}
@@ -323,7 +543,10 @@ export function AppRoutes() {
               path="/subscription/invoices"
               element={<SubscriptionInvoicesPage />}
             />
-            <Route path="/ai-studio/ambassadors" element={<AmbassadorsPage />} />
+            <Route
+              path="/ai-studio/ambassadors"
+              element={<AmbassadorsPage />}
+            />
             <Route
               path="/ai-studio/knowledge-base"
               element={<KnowledgeBasePage />}
@@ -360,7 +583,10 @@ export function AppRoutes() {
               path="/profile"
               element={<Navigate to="/settings/profile" replace />}
             />
-            <Route path="/client-profiles" element={<ClientProfileListPage />} />
+            <Route
+              path="/client-profiles"
+              element={<ClientProfileListPage />}
+            />
             <Route path="/ai-studio/video" element={<VideoStudioPage />} />
             <Route path="/components/examples" element={<ExamplesPage />} />
           </Route>

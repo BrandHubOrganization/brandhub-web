@@ -131,7 +131,6 @@ export function ContentWritingPage() {
     <PageWrapper
       title={t("editor.contentWritingPage.title")}
       description={t("editor.contentWritingPage.description")}
-      compact
     >
       {/* Top status bar */}
       <div className="mb-3 flex items-center justify-between gap-2">
