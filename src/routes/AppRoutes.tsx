@@ -226,6 +226,10 @@ export function AppRoutes() {
               element={<TemplateBrowserPage />}
             />
             <Route
+              path="/workspaces/:id/hashtags"
+              element={<HashtagGroupsPage />}
+            />
+            <Route
               path="/workspaces/:id/hashtag-groups"
               element={<HashtagGroupsPage />}
             />
