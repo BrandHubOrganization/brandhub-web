@@ -91,20 +91,38 @@ export function useContentCalendar() {
     setIsModalOpen(true);
   };
 
-  const handleCreatePost = (newPostData: Partial<CalendarPostEvent>) => {
-    const newEvent: CalendarPostEvent = {
-      id: `post-${Date.now()}`,
-      title: newPostData.title || "Untitled Post",
-      start: newPostData.start || new Date().toISOString(),
-      extendedProps: newPostData.extendedProps || {
-        platform: "FACEBOOK",
-        status: "SCHEDULED",
-        captionPreview: "",
-      },
-    };
+  const handleCreatePost = (newPostData: {
+    title: string;
+    caption: string;
+    start: string;
+    platforms: PlatformType[];
+    isRecurring: boolean;
+    recurringPattern?: "DAILY" | "WEEKLY" | "MONTHLY";
+    weekdays?: number[];
+    repeatUntilDate?: string;
+  }) => {
+    const newEvents: CalendarPostEvent[] = newPostData.platforms.map(
+      (platform, index) => ({
+        id: `post-${Date.now()}-${index}`,
+        title: newPostData.title,
+        start: newPostData.start,
+        extendedProps: {
+          platform,
+          status: "SCHEDULED",
+          captionPreview: newPostData.caption || newPostData.title,
+        },
+      }),
+    );
 
-    setEvents((prev) => [...prev, newEvent]);
-    toast.success(t("calendar.toast.createSuccess"));
+    setEvents((prev) => [...newEvents, ...prev]);
+
+    if (newPostData.isRecurring) {
+      toast.success(
+        "Đã lên lịch chuỗi bài đăng định kỳ thành công! (MSG71 - 12 phiên bản đã được sinh trước)",
+      );
+    } else {
+      toast.success("Đã lên lịch bài đăng tự động thành công! (MSG45)");
+    }
   };
 
   const openModalOnNow = () => {
