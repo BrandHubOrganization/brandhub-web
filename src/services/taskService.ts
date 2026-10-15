@@ -1,6 +1,5 @@
 import { api } from "@/services/api";
 import type { TaskListItem, TaskListFilterParams } from "@/types/task";
-import { mockTaskService } from "@/services/mock/mockTaskService";
 
 export interface PagedTaskResponse {
   content: TaskListItem[];
@@ -17,7 +16,7 @@ export const taskService = {
     params: TaskListFilterParams = {},
   ): Promise<PagedTaskResponse> => {
     try {
-      const response = await api.get(`/workspaces/${workspaceId}/tasks`, {
+      const response = await api.get(`/api/v1/workspaces/${workspaceId}/tasks`, {
         params: {
           page: params.page ?? 0,
           size: params.size ?? 20,
@@ -30,9 +29,16 @@ export const taskService = {
         return response.data.data;
       }
     } catch (error) {
-      console.warn("Backend API not reachable or empty, falling back to mockTaskService", error);
+      console.error("Error loading workspace tasks from backend:", error);
     }
 
-    return mockTaskService.getWorkspaceTasks(params);
+    return {
+      content: [],
+      page: 0,
+      size: 20,
+      totalElements: 0,
+      totalPages: 0,
+      last: true,
+    };
   },
 };

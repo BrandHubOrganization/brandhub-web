@@ -253,6 +253,13 @@ export const NAV_SECTIONS: NavSection[] = [
         clientOnly: true,
       },
       {
+        to: "/social-accounts",
+        icon: Link2,
+        labelKey: "nav.socialAccounts",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/portal",
         icon: Users,
         labelKey: "nav.portal",
