@@ -155,6 +155,9 @@ export const aiGenerationService = {
       "/api/v1/ai/ambassadors/generate",
       {
         prompt: input.prompt,
+        steps: 25,
+        width: 832,
+        height: 1248,
       },
     );
     const result = unwrap(response);
@@ -182,7 +185,8 @@ export const aiGenerationService = {
 
   async generateCommercialImage(input: {
     prompt: string;
-    aspectRatio: "1:1" | "4:5" | "9:16" | "16:9";
+    aspectRatio: "9:16" | "16:9" | "4:5";
+    poseReferenceImage: string;
     productReferenceImage: string;
     ambassador:
       | { source: "preset"; preset_id: string; reference_images: [] }
@@ -193,6 +197,7 @@ export const aiGenerationService = {
       {
         prompt: input.prompt,
         aspect_ratio: input.aspectRatio,
+        pose_reference_image: input.poseReferenceImage,
         product_reference_image: input.productReferenceImage,
         ambassador: input.ambassador,
       },

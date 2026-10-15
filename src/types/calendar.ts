@@ -1,5 +1,5 @@
 export type PlatformType =
-  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
+  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS";
 export type PostStatus = "DRAFT" | "SCHEDULED" | "PUBLISHED" | "FAILED";
 
 export interface CalendarPostEvent {

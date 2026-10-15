@@ -1,0 +1,32 @@
+{
+  "invalidPhone": "Enter a local or international number with 7–15 digits; + is allowed only at the start.",
+  "invalidEmail": "Enter a valid email address.",
+  "invalidWebsite": "Enter a website starting with http:// or https://.",
+  "invalidContact": "Contact information is invalid or too long.",
+  "title": "Partner directory",
+  "description": "Manage Agency partners. Deactivation prevents new assignments without changing existing Campaign links.",
+  "create": "Add partner", "edit": "Edit", "save": "Save changes", "saving": "Processing…",
+  "close": "Close", "delete": "Delete partner", "deactivate": "Deactivate",
+  "name": "Partner name", "type": "Partner type", "contactName": "Contact person",
+  "email": "Email", "phone": "Phone", "website": "Website", "notes": "Notes",
+  "noNotes": "No notes", "formHint": "This information is shared across the Agency's Campaigns.",
+  "search": "Search by partner name", "status": "Status", "all": "All",
+  "active": "Available", "inactive": "Inactive", "empty": "No matching partners. Change filters or add a partner.",
+  "saved": "Changes saved", "error": "Unable to save changes. Check the information and try again.",
+  "loadError": "Unable to load the directory. Check your Agency Owner access and retry.",
+  "reload": "Reload", "previous": "Previous", "next": "Next", "pagination": "Partner pagination", "total": "{{count}} partners",
+  "blocked": {
+    "USED": "Previously used in a Campaign. Deactivation is allowed; deletion is not.",
+    "HISTORY_UNVERIFIED": "Legacy usage history is unverified. Editing and deactivation are allowed; deletion is not."
+  },
+  "confirm": {
+    "delete": "Permanently delete “{{name}}”? This cannot be undone.",
+    "deactivate": "Deactivate “{{name}}”? New Campaign assignments will be blocked; existing links will remain."
+  },
+  "errors": {
+    "COLLABORATOR_USED": "This partner has been used. Only deactivation is allowed.",
+    "COLLABORATOR_HISTORY_UNVERIFIED": "Legacy usage history is unverified. Deletion is blocked.",
+    "COLLABORATOR_VERSION_CONFLICT": "This partner changed. Close the form and reopen it from the refreshed list.",
+    "FORBIDDEN": "Only the Agency Owner can manage the directory."
+  }
+}

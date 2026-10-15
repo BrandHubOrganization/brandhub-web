@@ -41,15 +41,6 @@ const MOCK_ACCOUNTS: SocialAccount[] = [
     status: "DISCONNECTED",
     connectedAt: "2026-02-01T00:00:00Z",
   },
-  {
-    id: "acc-6",
-    platform: "YOUTUBE",
-    accountName: "BrandHub Channel",
-    accountHandle: "@brandhubchannel",
-    status: "EXPIRED",
-    tokenExpiresAt: "2026-07-15T00:00:00Z",
-    connectedAt: "2026-01-10T00:00:00Z",
-  },
 ];
 
 export async function getSocialAccounts(): Promise<SocialAccount[]> {

@@ -90,7 +90,8 @@
     "email": "Thông báo email",
     "reports": "Báo cáo",
     "utilities": "Tiện ích quản trị",
-    "planned": "Chưa sẵn sàng"
+    "planned": "Chưa sẵn sàng",
+    "mailTemplates": "Mẫu email hệ thống"
   },
   "overview": {
     "title": "Tổng quan nền tảng",

@@ -1,0 +1,32 @@
+{
+  "invalidPhone": "Nhập số điện thoại Việt Nam hoặc quốc tế gồm 7–15 chữ số; dấu + chỉ ở đầu.",
+  "invalidEmail": "Nhập địa chỉ email hợp lệ.",
+  "invalidWebsite": "Nhập địa chỉ website bắt đầu bằng http:// hoặc https://.",
+  "invalidContact": "Thông tin liên hệ không hợp lệ hoặc quá dài.",
+  "title": "Danh bạ đối tác",
+  "description": "Quản lý đối tác của công ty. Ngừng sử dụng sẽ chặn gán mới, không thay đổi các chiến dịch đã liên kết.",
+  "create": "Thêm đối tác", "edit": "Chỉnh sửa", "save": "Lưu thay đổi", "saving": "Đang xử lý…",
+  "close": "Đóng", "delete": "Xóa đối tác", "deactivate": "Ngừng sử dụng",
+  "name": "Tên đối tác", "type": "Loại đối tác", "contactName": "Người liên hệ",
+  "email": "Email", "phone": "Số điện thoại", "website": "Website", "notes": "Ghi chú",
+  "noNotes": "Chưa có ghi chú", "formHint": "Thông tin này dùng chung cho các chiến dịch trong công ty.",
+  "search": "Tìm theo tên đối tác", "status": "Trạng thái", "all": "Tất cả",
+  "active": "Khả dụng", "inactive": "Ngừng sử dụng", "empty": "Không có đối tác phù hợp. Thử đổi bộ lọc hoặc thêm đối tác.",
+  "saved": "Đã lưu thay đổi", "error": "Không thể lưu thay đổi. Kiểm tra thông tin và thử lại.",
+  "loadError": "Không thể tải danh bạ. Kiểm tra quyền Chủ sở hữu của công ty và thử lại.",
+  "reload": "Tải lại", "previous": "Trước", "next": "Sau", "pagination": "Phân trang đối tác", "total": "{{count}} đối tác",
+  "blocked": {
+    "USED": "Đã được sử dụng trong chiến dịch; chỉ được ngừng sử dụng, không thể xóa.",
+    "HISTORY_UNVERIFIED": "Dữ liệu cũ chưa xác minh lịch sử; không thể xóa, vẫn được sửa hoặc ngừng sử dụng."
+  },
+  "confirm": {
+    "delete": "Xóa vĩnh viễn đối tác “{{name}}”? Hành động này không thể hoàn tác.",
+    "deactivate": "Ngừng sử dụng “{{name}}”? Không thể gán vào chiến dịch mới; các liên kết cũ vẫn được giữ."
+  },
+  "errors": {
+    "COLLABORATOR_USED": "Đối tác đã được sử dụng. Chỉ có thể ngừng sử dụng.",
+    "COLLABORATOR_HISTORY_UNVERIFIED": "Dữ liệu cũ chưa xác minh lịch sử, không thể xóa.",
+    "COLLABORATOR_VERSION_CONFLICT": "Đối tác đã thay đổi. Đóng biểu mẫu và mở lại từ danh sách mới nhất.",
+    "FORBIDDEN": "Chỉ Chủ sở hữu công ty được quản lý danh bạ."
+  }
+}
