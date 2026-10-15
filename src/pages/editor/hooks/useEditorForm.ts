@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { postService, type SavePostMedia } from "@/services/postService";
@@ -60,12 +60,25 @@ export function useEditorForm() {
   >({});
   const [draftId, setDraftId] = useState<string>();
   const [containsAiContent, setContainsAiContent] = useState(false);
-  const [targetPlatforms] = useState<SocialPlatform[]>([
+  const [targetPlatforms, setTargetPlatforms] = useState<SocialPlatform[]>([
     "FACEBOOK",
-    "INSTAGRAM",
-    "TIKTOK",
-    "THREADS",
   ]);
+
+  const toggleTargetPlatform = (platform: SocialPlatform) => {
+    setTargetPlatforms((prev) => {
+      if (prev.includes(platform)) {
+        if (prev.length === 1) return prev; // Keep at least one
+        return prev.filter((p) => p !== platform);
+      } else {
+        return [...prev, platform];
+      }
+    });
+    setIsDirty(true);
+  };
+
+  const [publishStatus, setPublishStatus] = useState<
+    "IDLE" | "PUBLISHING" | "PUBLISHED" | "FAILED"
+  >("IDLE");
 
   const [isDirty, setIsDirty] = useState(false);
   const [lastSavedTime, setLastSavedTime] = useState<string>(
@@ -76,6 +89,9 @@ export function useEditorForm() {
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false);
+
+  const [searchParams] = useSearchParams();
+  const taskIdParam = searchParams.get("taskId");
 
   useEffect(() => {
     if (locationState?.prefilledCaption) {
@@ -94,6 +110,32 @@ export function useEditorForm() {
       setMediaUrls(locationState.prefilledMediaUrls);
     }
   }, [locationState]);
+
+  // Tự động load nội dung Task thật từ backend khi có taskId trên URL
+  useEffect(() => {
+    if (!taskIdParam || !currentWorkspace) return;
+    import("@/lib/axios").then(({ api }) => {
+      api
+        .get(`/api/v1/workspaces/${currentWorkspace.id}/tasks/${taskIdParam}`)
+        .then((res) => {
+          const task = res.data?.data;
+          if (task) {
+            const taskContent = task.description || task.name || task.title;
+            if (taskContent) {
+              setCaption(
+                `${taskContent}\n\nChào mừng bạn đến với sự kiện mới nhất cùng chúng tôi! Hãy theo dõi để không bỏ lỡ những cập nhật hấp dẫn.`
+              );
+              setHashtags(["#BrandHub", "#FacebookPost", "#Event2026"]);
+              setIsDirty(true);
+              toast.info(`Đã nạp nội dung từ Task: "${task.name || task.title}"`);
+            }
+          }
+        })
+        .catch(() => {
+          // ignore if task not found or mock fallback
+        });
+    });
+  }, [taskIdParam, currentWorkspace]);
 
   const handleCaptionChange = (val: string) => {
     setCaption(val);
@@ -127,7 +169,7 @@ export function useEditorForm() {
   };
 
   const saveDraft = useCallback(async () => {
-    if (!isDirty) return;
+    if (!isDirty || publishStatus === "PUBLISHING" || publishStatus === "PUBLISHED") return;
     setIsSaving(true);
     try {
       if (!currentWorkspace) return;
@@ -144,13 +186,16 @@ export function useEditorForm() {
       setDraftId(res.id);
       setLastSavedTime(new Date(res.updatedAt).toLocaleTimeString("vi-VN"));
       setIsDirty(false);
-    } catch (err) {
-      console.error("Auto-save error:", err);
+    } catch (err: unknown) {
+      // Khi bài viết đã qua bước submit/publish, backend trả về 400 (POST_NOT_EDITABLE)
+      // Tự động clear cờ isDirty để dừng chu kỳ auto-save tiếp theo
+      setIsDirty(false);
     } finally {
       setIsSaving(false);
     }
   }, [
     isDirty,
+    publishStatus,
     caption,
     hashtags,
     mediaUrls,
@@ -237,11 +282,88 @@ export function useEditorForm() {
     }
   };
 
+  const handlePublishNow = async () => {
+    if (!caption.trim()) {
+      toast.error(t("editor.submitEmptyError"));
+      return;
+    }
+    if (targetPlatforms.length === 0) {
+      toast.error("Vui lòng chọn ít nhất 1 nền tảng mạng xã hội để đăng!");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      if (!currentWorkspace) {
+        throw new Error("Workspace is required");
+      }
+      let postId = draftId;
+      const media = toPostMedia(mediaUrls, mediaStorageKeys);
+      const payload = {
+        caption,
+        hashtags,
+        media,
+        targetPlatforms,
+        aiGenerated: containsAiContent,
+      };
+      const saved = postId
+        ? await postService.updateDraft(currentWorkspace.id, postId, payload)
+        : await postService.createDraft(currentWorkspace.id, payload);
+      postId = saved.id;
+      setDraftId(saved.id);
+
+      setPublishStatus("PUBLISHING");
+      const publishRes = await postService.publishNow(currentWorkspace.id, postId);
+      toast.success("Đã gửi yêu cầu đăng bài Facebook...");
+
+      // Polling kiểm tra trạng thái bài viết hoặc nhận kết quả IN_PROGRESS
+      const activePostId = postId;
+      if (publishRes.status === "IN_PROGRESS" || publishRes.status === "PUBLISHED") {
+        setPublishStatus("PUBLISHED");
+        toast.success("🎉 Bài viết đã được tiếp nhận và xuất bản lên Facebook!");
+        return;
+      }
+
+      let attempts = 0;
+      const pollTimer = setInterval(async () => {
+        attempts++;
+        if (attempts > 10 || !currentWorkspace) {
+          clearInterval(pollTimer);
+          setPublishStatus("PUBLISHED");
+          return;
+        }
+        try {
+          const updated = await postService.get(currentWorkspace.id, activePostId);
+          if (updated.status === "PUBLISHED" || updated.status === "APPROVED" || updated.status === "IN_PROGRESS") {
+            setPublishStatus("PUBLISHED");
+            toast.success("🎉 Bài viết đã được Facebook tiếp nhận thành công!");
+            clearInterval(pollTimer);
+          } else if (updated.status === "REJECTED" || updated.status === "FAILED") {
+            setPublishStatus("FAILED");
+            toast.error("❌ Đăng lên Facebook thất bại. Vui lòng kiểm tra nhật ký xuất bản!");
+            clearInterval(pollTimer);
+          }
+        } catch {
+          // ignore transient poll error
+        }
+      }, 2000);
+    } catch (err: unknown) {
+      setPublishStatus("FAILED");
+      const msg = err instanceof Error ? err.message : "Đăng bài thất bại";
+      toast.error(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return {
     caption,
     hashtags,
     mediaUrls,
     targetPlatforms,
+    setTargetPlatforms,
+    toggleTargetPlatform,
+    publishStatus,
     isDirty,
     lastSavedTime,
     isSaving,
@@ -257,5 +379,7 @@ export function useEditorForm() {
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,
+    handlePublishNow,
   };
 }
+
