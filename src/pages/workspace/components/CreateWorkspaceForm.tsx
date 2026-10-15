@@ -23,6 +23,8 @@ import type {
   WorkspaceTemplate,
 } from "@/types/workspace";
 
+import { CharacterCounter } from "@/components/ui/character-counter";
+
 const CURRENT_YEAR = new Date().getFullYear();
 
 interface Props {
@@ -67,6 +69,7 @@ interface Props {
   availableTemplates: WorkspaceTemplate[];
   selectedTemplateId: string;
   onTemplateSelect: (id: string) => void;
+  errors?: Record<string, string>;
 }
 
 // Các field trùng với Agency (ngành, quy mô, website, phone, khu vực,
@@ -115,6 +118,7 @@ export function CreateWorkspaceForm({
   availableTemplates,
   selectedTemplateId,
   onTemplateSelect,
+  errors,
 }: Props) {
   const { t } = useTranslation();
   const [previewTemplate, setPreviewTemplate] =
@@ -184,6 +188,7 @@ export function CreateWorkspaceForm({
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           required
+          error={errors?.name}
         />
       </div>
 
@@ -241,11 +246,15 @@ export function CreateWorkspaceForm({
             label={t("workspace.create.websiteLabel")}
             value={website}
             onChange={(e) => onWebsiteChange(e.target.value)}
+            error={errors?.website}
           />
           <Input
             label={t("workspace.create.phoneLabel")}
+            type="tel"
+            inputMode="tel"
             value={phone}
             onChange={(e) => onPhoneChange(e.target.value)}
+            error={errors?.phone}
           />
           <Input
             label={t("workspace.create.locationLabel")}
@@ -256,16 +265,19 @@ export function CreateWorkspaceForm({
             label={t("workspace.create.facebookUrlLabel")}
             value={facebookUrl}
             onChange={(e) => onFacebookUrlChange(e.target.value)}
+            error={errors?.facebookUrl}
           />
           <Input
             label={t("workspace.create.linkedinUrlLabel")}
             value={linkedinUrl}
             onChange={(e) => onLinkedinUrlChange(e.target.value)}
+            error={errors?.linkedinUrl}
           />
           <Input
             label={t("workspace.create.instagramUrlLabel")}
             value={instagramUrl}
             onChange={(e) => onInstagramUrlChange(e.target.value)}
+            error={errors?.instagramUrl}
           />
           <div className="md:col-span-2">
             <IndustrySpecificFields
@@ -277,20 +289,30 @@ export function CreateWorkspaceForm({
         </>
       )}
 
-      <Input
-        label={t("workspace.create.taglineLabel")}
-        placeholder={t("workspace.create.taglinePlaceholder")}
-        maxLength={140}
-        value={tagline}
-        onChange={(e) => onTaglineChange(e.target.value)}
-      />
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-semibold tracking-wide">
+            {t("workspace.create.taglineLabel")}
+          </Label>
+          <CharacterCounter current={tagline.length} max={140} />
+        </div>
+        <Input
+          placeholder={t("workspace.create.taglinePlaceholder")}
+          maxLength={140}
+          value={tagline}
+          onChange={(e) => onTaglineChange(e.target.value)}
+        />
+      </div>
       <Input
         label={t("workspace.create.foundedYearLabel")}
         type="number"
+        inputMode="numeric"
         min={1}
         max={CURRENT_YEAR}
         value={foundedYear}
         onChange={(e) => onFoundedYearChange(e.target.value)}
+        placeholder="2020"
+        error={errors?.foundedYear}
       />
 
       <div className="flex flex-col gap-1.5 md:col-span-2">

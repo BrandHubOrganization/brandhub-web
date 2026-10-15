@@ -4,29 +4,36 @@ import { motion, useReducedMotion } from "motion/react";
 
 const STATS = [
   {
-    key: "contents",
-    target: 1_284_000,
+    key: "microservices",
+    target: 8,
+    prefix: "",
     suffix: "+",
-    labelKey: "landing.stats.contents",
+    labelKey: "landing.stats.microservices",
+    sublabel: "Gateway · Core · AI · Publisher · Infra",
   },
   {
-    key: "brands",
-    target: 50_000,
-    suffix: "+",
-    labelKey: "landing.stats.brands",
+    key: "trends",
+    target: 500,
+    prefix: "",
+    suffix: "+/ngày",
+    labelKey: "landing.stats.trends",
+    sublabel: "Facebook GraphQL & Pages Crawler",
   },
   {
-    key: "platforms",
-    target: 12,
-    suffix: "",
-    labelKey: "landing.stats.platforms",
+    key: "latency",
+    target: 120,
+    prefix: "< ",
+    suffix: "ms",
+    labelKey: "landing.stats.latency",
+    sublabel: "Spring WebFlux Netty & Redis 7.2",
   },
   {
-    key: "uptime",
-    target: 99.9,
+    key: "consistency",
+    target: 100,
+    prefix: "",
     suffix: "%",
-    labelKey: "landing.stats.uptime",
-    decimals: 1,
+    labelKey: "landing.stats.consistency",
+    sublabel: "GraphRAG & Bản quyền Watermark",
   },
 ];
 
@@ -67,7 +74,7 @@ export function StatsCounter() {
   const [inView, setInView] = useState(false);
 
   return (
-    <section className="bg-brand-orange py-20">
+    <section className="bg-gradient-to-r from-brand-orange via-orange-600 to-amber-600 py-16 shadow-inner">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0 }}
@@ -80,16 +87,19 @@ export function StatsCounter() {
           {STATS.map((s) => (
             <div key={s.key} className="text-center">
               <p className="text-4xl font-extrabold text-white sm:text-5xl">
+                {s.prefix}
                 <CountValue
                   target={s.target}
                   suffix={s.suffix}
-                  decimals={s.decimals}
                   start={inView}
                   skipAnimation={!!reduce}
                 />
               </p>
-              <p className="mt-2 text-sm font-medium text-white/70">
-                {t(s.labelKey)}
+              <p className="mt-2 text-sm font-bold text-white">
+                {t(s.labelKey, s.key)}
+              </p>
+              <p className="mt-0.5 text-xs text-white/80">
+                {s.sublabel}
               </p>
             </div>
           ))}

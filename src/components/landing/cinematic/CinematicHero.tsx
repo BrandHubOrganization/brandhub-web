@@ -971,7 +971,9 @@ function SocialProof() {
       </div>
       <p className="text-[11px] text-white/60">
         {t("landing.hero.trustedByPrefix")}{" "}
-        <span className="font-semibold text-white/90">50,000+</span>{" "}
+        <span className="font-semibold text-white/90">
+          {t("landing.hero.trustedByHighlight", "Agency & Doanh nghiệp")}
+        </span>{" "}
         {t("landing.hero.trustedBySuffix")}
       </p>
     </div>

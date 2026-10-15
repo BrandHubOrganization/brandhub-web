@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import Link from "@tiptap/extension-link";
 import { Bold, Italic, List, Link2, Heading2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -20,9 +19,8 @@ interface Props {
 export function RichTextInput({ label, placeholder, value, onChange }: Props) {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({ link: { openOnClick: false, autolink: true } }),
       Placeholder.configure({ placeholder }),
-      Link.configure({ openOnClick: false, autolink: true }),
     ],
     content: value,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
@@ -41,7 +39,7 @@ export function RichTextInput({ label, placeholder, value, onChange }: Props) {
   };
 
   useEffect(() => {
-    if (editor && value !== editor.getHTML()) {
+    if (editor && !editor.isDestroyed && value !== editor.getHTML()) {
       editor.commands.setContent(value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

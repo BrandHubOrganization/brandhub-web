@@ -28,8 +28,18 @@ import {
   type BannerMode,
 } from "./ClientProfileBrandingSection";
 
+import {
+  normalizeUrl,
+  isValidUrl,
+  formatPhoneNumber,
+  isValidPhone,
+  isValidTaxCode,
+  isValidFoundedYear,
+  CURRENT_YEAR,
+} from "@/utils/validation";
+import { CharacterCounter } from "@/components/ui/character-counter";
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const CURRENT_YEAR = new Date().getFullYear();
 
 export type ClientProfileFormValues = {
   displayName: string;
@@ -66,19 +76,6 @@ interface Props {
   onValuesChange?: (values: ClientProfileFormValues) => void;
 }
 
-function normalizeUrl(value: string) {
-  const s = value.trim();
-  if (!s) return "";
-  return /^https?:\/\//i.test(s) ? s : `https://${s}`;
-}
-
-function isValidUrl(value: string) {
-  try {
-    return new URL(value).hostname.includes(".");
-  } catch {
-    return false;
-  }
-}
 
 const URL_FIELDS = [
   "website",
@@ -266,8 +263,125 @@ export function ClientProfileForm({
       e: React.ChangeEvent<
         HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
       >,
-    ) =>
-      setValues((prev) => ({ ...prev, [key]: e.target.value }));
+    ) => {
+      const val = e.target.value;
+      setValues((prev) => ({ ...prev, [key]: val }));
+      if (errors[key]) {
+        setErrors((prev) => {
+          const next = { ...prev };
+          delete next[key];
+          return next;
+        });
+      }
+    };
+
+  const handleUrlBlur = (
+    key: "website" | "linkedin" | "facebook" | "instagram",
+  ) => {
+    const raw = values[key];
+    if (!raw.trim()) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+      return;
+    }
+    const normalized = normalizeUrl(raw);
+    setValues((prev) => ({ ...prev, [key]: normalized }));
+    if (!isValidUrl(normalized)) {
+      setErrors((prev) => ({ ...prev, [key]: t("clientProfile.invalidUrl") }));
+    } else {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    const raw = values.phone.trim();
+    if (!raw) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.phone;
+        return next;
+      });
+      return;
+    }
+    const formatted = formatPhoneNumber(raw);
+    setValues((prev) => ({ ...prev, phone: formatted }));
+    if (!isValidPhone(formatted)) {
+      setErrors((prev) => ({
+        ...prev,
+        phone: t(
+          "agency.detail.errors.invalidPhone",
+          "Số điện thoại không hợp lệ (10-11 số)",
+        ),
+      }));
+    } else {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.phone;
+        return next;
+      });
+    }
+  };
+
+  const handleTaxCodeBlur = () => {
+    const raw = values.taxCode.trim();
+    if (!raw) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.taxCode;
+        return next;
+      });
+      return;
+    }
+    if (!isValidTaxCode(raw)) {
+      setErrors((prev) => ({
+        ...prev,
+        taxCode: t(
+          "agency.detail.errors.invalidTaxCode",
+          "Mã số thuế gồm 10 hoặc 13 chữ số",
+        ),
+      }));
+    } else {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.taxCode;
+        return next;
+      });
+    }
+  };
+
+  const handleFoundedYearBlur = () => {
+    const raw = values.foundedYear.trim();
+    if (!raw) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.foundedYear;
+        return next;
+      });
+      return;
+    }
+    if (!isValidFoundedYear(raw)) {
+      setErrors((prev) => ({
+        ...prev,
+        foundedYear: t(
+          "clientProfile.invalidYear",
+          "Năm thành lập không hợp lệ",
+        ),
+      }));
+    } else {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.foundedYear;
+        return next;
+      });
+    }
+  };
 
   // Handle Logo Mode changes
   const handleLogoModeChange = (mode: LogoMode) => {
@@ -450,11 +564,22 @@ export function ClientProfileForm({
 
     const rawYear = values.foundedYear.trim();
     const year = rawYear ? Number(rawYear) : null;
-    if (
-      rawYear &&
-      (!Number.isInteger(year) || year! <= 0 || year! > CURRENT_YEAR)
-    ) {
-      next.foundedYear = t("clientProfile.invalidYear");
+    if (rawYear && !isValidFoundedYear(rawYear)) {
+      next.foundedYear = t("clientProfile.invalidYear", "Năm thành lập không hợp lệ");
+    }
+
+    if (values.phone.trim() && !isValidPhone(values.phone.trim())) {
+      next.phone = t(
+        "agency.detail.errors.invalidPhone",
+        "Số điện thoại không hợp lệ (10-11 số)",
+      );
+    }
+
+    if (values.taxCode.trim() && !isValidTaxCode(values.taxCode.trim())) {
+      next.taxCode = t(
+        "agency.detail.errors.invalidTaxCode",
+        "Mã số thuế gồm 10 hoặc 13 chữ số",
+      );
     }
 
     if (Object.keys(next).length > 0) {
@@ -518,16 +643,23 @@ export function ClientProfileForm({
             value={values.company}
             onChange={set("company")}
           />
-          <Input
-            label={t("clientProfile.taglineLabel", "Khẩu hiệu (Tagline)")}
-            placeholder={t(
-              "clientProfile.taglinePlaceholder",
-              "VD: Cà phê rang xay nguyên chất",
-            )}
-            maxLength={140}
-            value={values.tagline}
-            onChange={set("tagline")}
-          />
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label className="text-xs font-semibold tracking-wide">
+                {t("clientProfile.taglineLabel", "Khẩu hiệu (Tagline)")}
+              </Label>
+              <CharacterCounter current={values.tagline.length} max={140} />
+            </div>
+            <Input
+              placeholder={t(
+                "clientProfile.taglinePlaceholder",
+                "VD: Cà phê rang xay nguyên chất",
+              )}
+              maxLength={140}
+              value={values.tagline}
+              onChange={set("tagline")}
+            />
+          </div>
         </div>
       </div>
 
@@ -651,6 +783,7 @@ export function ClientProfileForm({
             max={CURRENT_YEAR}
             value={values.foundedYear}
             onChange={set("foundedYear")}
+            onBlur={handleFoundedYearBlur}
             placeholder="2020"
             error={errors.foundedYear}
           />
@@ -699,15 +832,18 @@ export function ClientProfileForm({
             placeholder="https://brand.vn"
             value={values.website}
             onChange={set("website")}
+            onBlur={() => handleUrlBlur("website")}
             error={errors.website}
           />
           <Input
             label={t("clientProfile.phoneLabel", "Số điện thoại")}
             type="tel"
             inputMode="tel"
-            placeholder="0901234567"
+            placeholder="0901 234 567"
             value={values.phone}
             onChange={set("phone")}
+            onBlur={handlePhoneBlur}
+            error={errors.phone}
           />
         </div>
 
@@ -741,6 +877,8 @@ export function ClientProfileForm({
             placeholder="0312345678"
             value={values.taxCode}
             onChange={set("taxCode")}
+            onBlur={handleTaxCodeBlur}
+            error={errors.taxCode}
           />
         </div>
 
@@ -767,6 +905,7 @@ export function ClientProfileForm({
             placeholder="https://facebook.com/..."
             value={values.facebook}
             onChange={set("facebook")}
+            onBlur={() => handleUrlBlur("facebook")}
             error={errors.facebook}
           />
           <Input
@@ -774,6 +913,7 @@ export function ClientProfileForm({
             placeholder="https://linkedin.com/in/..."
             value={values.linkedin}
             onChange={set("linkedin")}
+            onBlur={() => handleUrlBlur("linkedin")}
             error={errors.linkedin}
           />
           <Input
@@ -781,17 +921,22 @@ export function ClientProfileForm({
             placeholder="https://instagram.com/..."
             value={values.instagram}
             onChange={set("instagram")}
+            onBlur={() => handleUrlBlur("instagram")}
             error={errors.instagram}
           />
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold tracking-wide">
-            {t("clientProfile.descriptionLabel", "Mô tả / Giới thiệu thương hiệu")}
-          </Label>
+          <div className="flex items-center justify-between">
+            <Label className="text-xs font-semibold tracking-wide">
+              {t("clientProfile.descriptionLabel", "Mô tả / Giới thiệu thương hiệu")}
+            </Label>
+            <CharacterCounter current={values.description.length} max={1000} />
+          </div>
           <Textarea
             value={values.description}
             onChange={set("description")}
+            maxLength={1000}
             placeholder={t(
               "clientProfile.descriptionHint",
               "Giới thiệu ngắn về thương hiệu: sản phẩm chính, khách hàng mục tiêu, định vị thị trường...",
@@ -801,12 +946,16 @@ export function ClientProfileForm({
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-xs font-semibold tracking-wide">
-            {t("clientProfile.noteLabel", "Ghi chú nội bộ")}
-          </Label>
+          <div className="flex items-center justify-between">
+            <Label className="text-xs font-semibold tracking-wide">
+              {t("clientProfile.noteLabel", "Ghi chú nội bộ")}
+            </Label>
+            <CharacterCounter current={values.note.length} max={500} />
+          </div>
           <Textarea
             value={values.note}
             onChange={set("note")}
+            maxLength={500}
             placeholder={t("clientProfile.notePlaceholder", "Ghi chú dành riêng cho bạn khi quản lý hồ sơ này...")}
             rows={2}
           />
@@ -827,9 +976,10 @@ export function ClientProfileForm({
         )}
         <Button
           type="submit"
+          variant="orange"
           loading={submitting}
           disabled={!values.displayName.trim()}
-          className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white px-6 font-medium shadow-sm"
+          className="cursor-pointer px-6 font-medium shadow-sm"
         >
           {submitLabel}
         </Button>

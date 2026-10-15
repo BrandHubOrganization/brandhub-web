@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, MessageSquare, RotateCcw, RefreshCw } from "lucide-react";
+import { Check, MessageSquare, RotateCcw, RefreshCw, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -116,9 +116,7 @@ export function ApprovalQueueList({
                           </div>
                         </div>
                         {i < item.approvalChain.length - 1 && (
-                          <span className="text-muted-foreground/40 text-xs">
-                            →
-                          </span>
+                          <ArrowRight className="size-3 text-muted-foreground/40 shrink-0" />
                         )}
                       </div>
                     ))}
