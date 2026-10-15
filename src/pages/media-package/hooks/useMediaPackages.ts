@@ -5,10 +5,12 @@ import { toast } from "sonner";
 import { mediaPackageService } from "@/pages/media-package/services/mediaPackageService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage, isNotFoundError } from "@/utils/error";
+import { packageMutationError } from "../lib/packageMutationError";
 import type {
   CreateCustomMediaPackageRequest,
   MediaPackage,
   WorkspaceMediaPackage,
+  NegotiateTermsRequest,
 } from "@/pages/media-package/types/mediaPackage";
 
 export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
@@ -94,11 +96,7 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
     }
   };
 
-  const negotiateTerms = async (terms: {
-    budgetAmount?: number;
-    durationWeeks?: number;
-    scopeDescription?: string;
-  }): Promise<boolean> => {
+  const negotiateTerms = async (terms: NegotiateTermsRequest): Promise<boolean> => {
     if (!workspaceId) return false;
     setNegotiating(true);
     try {
@@ -122,12 +120,13 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
       return true;
     } catch (requestError: unknown) {
       toast.error(
-        extractErrorMessage(
+        packageMutationError(
           requestError,
           t(
             "mediaPackage.errors.negotiate",
             "Không thể gửi đề xuất điều chỉnh.",
           ),
+          t,
         ),
       );
       return false;
@@ -137,10 +136,10 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
   };
 
   const approvePackage = async (): Promise<boolean> => {
-    if (!workspaceId) return false;
+    if (!workspaceId || !selectedPackage) return false;
     setApproving(true);
     try {
-      const { data } = await mediaPackageService.approvePackage(workspaceId);
+      const { data } = await mediaPackageService.approvePackage(workspaceId, selectedPackage.termsVersion);
       setSelectedPackage(data.data);
       useWorkspaceStore
         .getState()
@@ -157,9 +156,10 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
       return true;
     } catch (requestError: unknown) {
       toast.error(
-        extractErrorMessage(
+        packageMutationError(
           requestError,
           t("mediaPackage.errors.approve", "Không thể chấp thuận gói dịch vụ."),
+          t,
         ),
       );
       return false;

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/store/authStore";
+import { requireApiData } from "@/lib/apiData";
 
 const API_BASE_URL =
   (typeof import.meta !== "undefined" &&
@@ -87,7 +88,7 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
 
     // Check if error status is 401 and request has not been retried yet
-    if (error.response?.status === 401 && !originalRequest?._retry) {
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       if (originalRequest && isIndependentAuthRequest(originalRequest)) {
         return Promise.reject(error);
       }
@@ -95,6 +96,14 @@ apiClient.interceptors.response.use(
       const currentAccessToken = useAuthStore.getState().accessToken;
       if (currentAccessToken?.startsWith("dev-token-")) {
         return Promise.reject(error);
+      }
+
+      // Every request gets at most one retry, including those queued behind refresh.
+      originalRequest._retry = true;
+      // A late 401 may belong to the token already rotated by another request.
+      if (currentAccessToken && originalRequest.headers.Authorization !== `Bearer ${currentAccessToken}`) {
+        originalRequest.headers.Authorization = `Bearer ${currentAccessToken}`;
+        return apiClient(originalRequest);
       }
 
       // If we are already refreshing the token, queue the request
@@ -112,8 +121,6 @@ apiClient.interceptors.response.use(
         });
       }
 
-      // Mark request as retried to avoid infinite loops
-      originalRequest._retry = true;
       isRefreshing = true;
 
       try {
@@ -127,7 +134,13 @@ apiClient.interceptors.response.use(
         );
 
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-          response.data.data;
+          requireApiData<{ accessToken: string; refreshToken?: string }>(response.data);
+        if (typeof newAccessToken !== "string" || !newAccessToken.trim()) {
+          throw new Error("INVALID_REFRESH_RESPONSE");
+        }
+        if (useAuthStore.getState().accessToken !== currentAccessToken) {
+          throw new Error("AUTH_SESSION_CHANGED");
+        }
 
         // Update tokens in auth store
         useAuthStore
@@ -145,6 +158,8 @@ apiClient.interceptors.response.use(
         processQueue(refreshError, null);
 
         // Log out the user
+        // A late refresh must not resurrect logout or clear a newly signed-in session.
+        if (useAuthStore.getState().accessToken !== currentAccessToken) return Promise.reject(refreshError);
         useAuthStore.getState().logout();
 
         // Redirect to login page
