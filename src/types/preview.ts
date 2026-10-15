@@ -39,9 +39,4 @@ export const PLATFORM_LIMITS: Record<PlatformType, PlatformLimitConfig> = {
     aspectRatioClass: "aspect-square",
     label: "Threads (1:1 Square)",
   },
-  YOUTUBE: {
-    maxCharacters: 5000,
-    aspectRatioClass: "aspect-video",
-    label: "Youtube (16:9 Landscape)",
-  },
 };

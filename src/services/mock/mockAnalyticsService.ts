@@ -12,7 +12,6 @@ const MOCK_ANALYTICS_SUMMARY: AnalyticsSummary = {
     { platform: "INSTAGRAM", postCount: 14, reach: 76400, engagement: 6820 },
     { platform: "TIKTOK", postCount: 6, reach: 51300, engagement: 3210 },
     { platform: "THREADS", postCount: 4, reach: 12600, engagement: 890 },
-    { platform: "YOUTUBE", postCount: 2, reach: 7390, engagement: 360 },
   ],
 };
 

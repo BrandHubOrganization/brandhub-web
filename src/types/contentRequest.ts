@@ -9,7 +9,7 @@ export type ContentRequestStatus =
   | "CANCELLED";
 
 export type SocialPlatform =
-  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
+  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS";
 
 export interface Assignee {
   id: string;

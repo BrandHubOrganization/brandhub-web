@@ -7,8 +7,7 @@ export type PostStatus =
   | "FAILED"
   | "REJECTED";
 export type MediaType = "IMAGE" | "VIDEO" | "NONE";
-export type Platform =
-  "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS" | "YOUTUBE";
+export type Platform = "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "THREADS";
 
 export interface PlatformTarget {
   platform: Platform;
