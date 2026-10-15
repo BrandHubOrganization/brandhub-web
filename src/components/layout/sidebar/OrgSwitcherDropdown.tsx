@@ -157,7 +157,7 @@ export function OrgSwitcherDropdown({
           {/* Agencies and nested workspaces */}
           {agencyList.map((agency) => {
             const agencyWs = allWorkspaces.filter(
-              (ws) => ws.agencyId === agency.id,
+              (ws) => ws.agencyId === agency.id && ws.myRole !== "CLIENT",
             );
             return (
               <div key={agency.id}>
