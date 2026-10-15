@@ -40,7 +40,7 @@
     },
     "image": {
       "title": "AI Image Studio",
-      "subtitle": "Combine product and Ambassador references with FLUX.2",
+      "subtitle": "Combine product and Ambassador references with Qwen Image 2.1",
       "referenceLabel": "Product reference",
       "referenceItem": "Reference image {{index}}",
       "ambassadorLabel": "Choose Ambassador",
@@ -80,7 +80,7 @@
       "productRequired": "Please select or upload one product image.",
       "ambassadorRequired": "Please select or upload one Ambassador.",
       "characterSheetFailed": "Could not generate the Character Sheet. Please try again.",
-      "generateFailed": "Could not generate the FLUX.2 image. Check the worker and try again.",
+      "generateFailed": "Could not generate the advertising image. Check the worker and try again.",
       "characterFlow": {
         "title": "AI Character and Character Sheet",
         "subtitle": "Describe a character, review the generated portrait, then build the Character Sheet.",
