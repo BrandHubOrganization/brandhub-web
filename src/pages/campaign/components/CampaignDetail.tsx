@@ -12,7 +12,10 @@ export function CampaignDetail({ campaign }: { campaign: Campaign }) {
         )
       : t("campaign.notSet");
   return (
-    <article className="border-border bg-card min-w-0 space-y-6 rounded-xl border p-4 sm:p-6">
+    <article
+      id="campaign-plan"
+      className="border-border bg-card min-w-0 scroll-mt-6 space-y-6 rounded-xl border p-4 sm:p-6"
+    >
       <header className="space-y-2">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline">
@@ -100,7 +103,7 @@ export function CampaignDetail({ campaign }: { campaign: Campaign }) {
                 className="flex items-start justify-between gap-3 py-3 text-sm"
               >
                 <span className="min-w-0 break-words">{item.name}</span>
-                <span className="max-w-[45%] break-words text-right font-medium">
+                <span className="max-w-[45%] text-right font-medium break-words">
                   {item.quantity} {item.unit}
                 </span>
               </li>

@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   applyEffectiveTerms,
-  formatPackageType,
   formatPackageValue,
 } from "../lib/formatMediaPackage";
 import { mediaPackageService } from "../services/mediaPackageService";
@@ -18,7 +17,7 @@ import type {
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { packageMutationError } from "../lib/packageMutationError";
-import { NegotiateTermsModal } from "./NegotiateTermsModal";
+import { NegotiateTermsForm } from "./NegotiateTermsForm";
 import { OfferingSummary } from "./OfferingSummary";
 import { PackageTermsDiff } from "./PackageTermsDiff";
 import { PackageNegotiationHistory } from "./PackageNegotiationHistory";
@@ -31,6 +30,7 @@ export interface SelectedMediaPackageProps {
   onApprove?: () => Promise<boolean>;
   negotiating?: boolean;
   approving?: boolean;
+  onEditingChange?: (editing: boolean) => void;
 }
 
 function ApprovalStatus({
@@ -79,11 +79,16 @@ export function SelectedMediaPackage({
   onApprove,
   negotiating = false,
   approving = false,
+  onEditingChange,
 }: SelectedMediaPackageProps) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id: routeWorkspaceId } = useParams<{ id: string }>();
-  const [negotiateModalOpen, setNegotiateModalOpen] = useState(false);
+  const [negotiationOpen, setNegotiationOpen] = useState(false);
+  const changeNegotiationOpen = (open: boolean) => {
+    setNegotiationOpen(open);
+    onEditingChange?.(open);
+  };
   const [internalLoading, setInternalLoading] = useState(false);
 
   const targetWorkspaceId =
@@ -157,7 +162,10 @@ export function SelectedMediaPackage({
     if (!targetWorkspaceId) return;
     setInternalLoading(true);
     try {
-      await mediaPackageService.approvePackage(targetWorkspaceId, selection.termsVersion);
+      await mediaPackageService.approvePackage(
+        targetWorkspaceId,
+        selection.termsVersion,
+      );
       toast.success(
         t(
           "mediaPackage.messages.approveSuccess",
@@ -217,6 +225,18 @@ export function SelectedMediaPackage({
   const isActionLoading = approving || negotiating || internalLoading;
 
   const mineApproved = isClient ? isClientApproved : isAgencyApproved;
+  if (negotiationOpen)
+    return (
+      <NegotiateTermsForm
+        open={negotiationOpen}
+        onOpenChange={changeNegotiationOpen}
+        mediaPackage={mediaPackage}
+        currentTermsVersion={selection.termsVersion}
+        loading={isActionLoading}
+        clientNegotiation={isClient}
+        onSubmit={handleNegotiate}
+      />
+    );
   return (
     <>
       <section className="border-border bg-card space-y-6 rounded-xl border p-4 sm:p-6">
@@ -235,9 +255,6 @@ export function SelectedMediaPackage({
             <h2 className="text-2xl font-semibold tracking-tight break-words">
               {mediaPackage.name}
             </h2>
-            <p className="text-muted-foreground mt-1 text-sm">
-              {formatPackageType(mediaPackage.type, t)}
-            </p>
           </div>
           <p className="shrink-0 text-2xl font-semibold tracking-tight">
             {formatPackageValue(mediaPackage, i18n.language, t)}
@@ -298,7 +315,8 @@ export function SelectedMediaPackage({
                 variant="outline"
                 className="h-auto min-h-10 w-full whitespace-normal"
                 disabled={isActionLoading || clientProposalLimitReached}
-                onClick={() => setNegotiateModalOpen(true)}
+                data-package-negotiate
+                onClick={() => changeNegotiationOpen(true)}
               >
                 {t("mediaPackage.actions.proposeAdjustment")}
               </Button>
@@ -342,16 +360,11 @@ export function SelectedMediaPackage({
           </aside>
         </div>
       </section>
-      <PackageNegotiationHistory key={packageContextId} workspaceId={targetWorkspaceId}
-        currentVersion={selection.termsVersion} currentTerms={selection.finalTerms} />
-      <NegotiateTermsModal
-        open={negotiateModalOpen}
-        onOpenChange={setNegotiateModalOpen}
-        mediaPackage={mediaPackage}
-        currentTermsVersion={selection.termsVersion}
-        loading={isActionLoading}
-        clientNegotiation={isClient}
-        onSubmit={handleNegotiate}
+      <PackageNegotiationHistory
+        key={packageContextId}
+        workspaceId={targetWorkspaceId}
+        currentVersion={selection.termsVersion}
+        currentTerms={selection.finalTerms}
       />
     </>
   );
