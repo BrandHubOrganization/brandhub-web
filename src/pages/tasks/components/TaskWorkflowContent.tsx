@@ -7,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { TaskInlineDetails } from "@/pages/tasks/components/TaskInlineDetails";
 import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
+import { TaskComments } from "@/pages/tasks/components/TaskComments";
 import {
   TaskWorkflowProvider,
   useOptionalTaskEditContext,
@@ -104,6 +105,7 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
               }}
             />
           )}
+          <TaskComments workspaceId={workspaceId} taskId={taskId} />
         </>
       )}
     </div>
