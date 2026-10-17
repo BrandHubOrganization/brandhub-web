@@ -60,21 +60,6 @@ export function TaskInlineAssignment({
       {!onlyAssignee && (
         <>
           <InlineTaskField
-            id={`task-${task.id}-qc`}
-            label={t("tasks.workflow.fields.qcAssigneeId")}
-            value={task.qcAssigneeId || ""}
-            displayValue={task.qcAssigneeName || t("tasks.workflow.noQc")}
-            editable={canAssign && Boolean(task.assigneeId)}
-            options={[
-              { value: "", label: t("tasks.workflow.noQc") },
-              ...creators.filter((option) => option.value !== task.assigneeId),
-            ]}
-            save={(qcAssigneeId) =>
-              state.assign({ qcAssigneeId: qcAssigneeId || null })
-            }
-            retry={state.retry}
-          />
-          <InlineTaskField
             id={`task-${task.id}-client-approval`}
             label={t("tasks.workflow.fields.requiresClientApproval")}
             value={String(task.requiresClientApproval)}
