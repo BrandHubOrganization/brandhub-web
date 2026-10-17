@@ -151,7 +151,7 @@ function References({ task }: { task: TaskWorkflow }) {
   );
 }
 export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const zone = task.dates.timezone || "UTC";
   return (
@@ -180,29 +180,6 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
         <TaskInlineAssignment task={task} />
       </div>
       <TaskDeadlineField task={task} />
-      {task.type === "POST" && (
-        <InlineTaskField
-          id={`task-${task.id}-publish`}
-          label={t("tasks.workflow.fields.plannedPublishAt")}
-          value={taskLocalMinute(task.plannedPublishAt, zone)}
-          displayValue={readableDate(
-            task.plannedPublishAt,
-            zone,
-            i18n.language,
-          )}
-          type="datetime-local"
-          editable={task.allowedActions.canEditDetail && task.dates.ready}
-          min={taskLocalMinute(task.dueDate, zone) || undefined}
-          max={task.dates.maxDate ? `${task.dates.maxDate}T23:59` : undefined}
-          save={(value) =>
-            state.field(
-              "plannedPublishAt",
-              value ? taskInstant(value, zone) : null,
-            )
-          }
-          retry={state.retry}
-        />
-      )}
       <p className="text-muted-foreground text-xs">
         {t("tasks.workflow.timezone", { timezone: zone })}
       </p>
