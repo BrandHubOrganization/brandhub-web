@@ -25,7 +25,6 @@ export type PackageNegotiationStatus =
 export interface MediaPackage extends OfferingFields {
   id: string;
   name: string;
-  type: MediaPackageType;
   durationWeeks: number | null;
   budgetAmount: number | null;
   scopeDescription: string | null;
@@ -58,7 +57,6 @@ export interface CreateCustomMediaPackageRequest extends OfferingFields {
   sourceTemplateId?: string;
   workspaceId?: string;
   name: string;
-  type: MediaPackageType;
   durationWeeks?: number;
   budgetAmount?: number;
   scopeDescription?: string;

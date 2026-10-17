@@ -43,9 +43,9 @@
     "services": {
       "SOCIAL_POST": "Social media posts",
       "EVENT_PLANNING": "Event plan delivery",
-      "LIVESTREAM_PREPARATION": "Livestream preparation",
-      "PRESS_RECOMMENDATION": "Press partner recommendations",
-      "WORKSHOP_SUPPORT": "Workshop: Meet link and survey"
+      "LIVESTREAM_PREPARATION": "Livestream",
+      "PRESS_RECOMMENDATION": "Online press",
+      "WORKSHOP_SUPPORT": "Workshop"
     },
     "service": "Service",
     "name": "Deliverable name",
@@ -108,6 +108,8 @@
     "FULL_DELEGATION": "Full delegation"
   },
   "values": {
+    "optionalFinancials": "Budget and duration are optional. If supplied, values must be positive; duration uses whole weeks.",
+    "toBeAgreed": "Budget and duration: to be agreed",
     "duration": "{{count}} weeks",
     "fullDelegation": "Entire campaign"
   },
@@ -198,6 +200,7 @@
     "approve": "Unable to approve the media package."
   },
   "ui": {
+    "backToPackages": "Back to media packages",
     "viewDetail": "View package details",
     "duplicate": "Create from this package",
     "moreDeliverables": "+ {{count}} more deliverables",
