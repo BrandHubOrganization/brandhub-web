@@ -32,6 +32,8 @@ import { Badge } from "@/components/ui/badge";
 import { workspaceService } from "@/services/workspaceService";
 import { taskService } from "@/services/taskService";
 import { campaignService } from "@/pages/campaign/services/campaignService";
+import { requireApiData } from "@/lib/apiData";
+import { WorkspaceCampaignSummary } from "@/pages/workspace/components/WorkspaceCampaignSummary";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
 import type { WorkspaceDashboard } from "@/types/workspace";
@@ -129,6 +131,8 @@ export function WorkspaceDashboardPage() {
 
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [campaignsLoading, setCampaignsLoading] = useState(true);
+  const [campaignsError, setCampaignsError] = useState(false);
+  const [campaignsAttempt, setCampaignsAttempt] = useState(0);
 
   // Leave Workspace Dialog State
   const [leaveOpen, setLeaveOpen] = useState(false);
@@ -192,19 +196,26 @@ export function WorkspaceDashboardPage() {
   // Load Campaigns
   useEffect(() => {
     if (!workspaceId) return;
+    let disposed = false;
     setCampaignsLoading(true);
+    setCampaignsError(false);
+    setCampaigns([]);
     campaignService
       .list(workspaceId)
       .then((res) => {
-        if (res.data?.success && res.data?.data) {
-          setCampaigns(res.data.data);
-        }
+        if (!disposed) setCampaigns(requireApiData<Campaign[]>(res.data));
       })
       .catch((err) => {
         console.warn("Failed to load workspace campaigns:", err);
+        if (!disposed) setCampaignsError(true);
       })
-      .finally(() => setCampaignsLoading(false));
-  }, [workspaceId]);
+      .finally(() => {
+        if (!disposed) setCampaignsLoading(false);
+      });
+    return () => {
+      disposed = true;
+    };
+  }, [workspaceId, campaignsAttempt]);
 
   // Load Analytics Mock
   useEffect(() => {
@@ -463,11 +474,15 @@ export function WorkspaceDashboardPage() {
         {/* Card 2: Campaigns */}
         <StatCard
           label={t("workspace.dashboard.campaignsOverview")}
-          value={campaigns.length || dashboard.totalCampaigns}
+          value={
+            campaignsLoading || campaignsError || campaigns.length > 1
+              ? "—"
+              : campaigns.length
+          }
           icon={Layers}
           sublabel={
-            campaigns.length > 0
-              ? `${campaigns.filter((c) => c.status === "IN_PROGRESS").length} ${t("workspace.dashboard.tasksByStatus.inProgress")}`
+            !campaignsLoading && !campaignsError && campaigns.length === 1
+              ? t(`campaign.status.${campaigns[0].status}`)
               : undefined
           }
           colorClass="text-brand-orange"
@@ -632,104 +647,14 @@ export function WorkspaceDashboardPage() {
             )}
           </div>
 
-          {/* Active Campaigns Card */}
-          <div className="border-border bg-card rounded-2xl border p-5 shadow-xs">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Layers className="text-brand-orange size-5" />
-                <h3 className="text-foreground font-semibold">
-                  {t("workspace.dashboard.recentCampaigns")}
-                </h3>
-                <span className="border-border bg-muted text-muted-foreground rounded-full border px-2 py-0.5 text-xs font-medium">
-                  {campaigns.length}
-                </span>
-              </div>
-              {workspaceId && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-brand-orange hover:text-brand-orange/80 gap-1 text-xs"
-                  onClick={() =>
-                    navigate(`/workspaces/${workspaceId}/campaigns`)
-                  }
-                >
-                  <span>{t("workspace.dashboard.viewAllCampaigns")}</span>
-                  <ChevronRight className="size-3.5" />
-                </Button>
-              )}
-            </div>
-
-            {campaignsLoading ? (
-              <div className="flex h-24 items-center justify-center">
-                <div className="border-brand-orange size-6 animate-spin rounded-full border-2 border-t-transparent" />
-              </div>
-            ) : campaigns.length === 0 ? (
-              <div className="text-muted-foreground flex flex-col items-center justify-center py-6 text-center">
-                <Layers className="mb-2 size-7 opacity-40" />
-                <p className="text-sm font-medium">
-                  {t("workspace.dashboard.noCampaigns")}
-                </p>
-                {isManagerOrOwner && workspaceId && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-3 gap-1.5"
-                    onClick={() =>
-                      navigate(`/workspaces/${workspaceId}/campaigns/create`)
-                    }
-                  >
-                    <Plus className="size-4" />
-                    <span>{t("workspace.dashboard.createCampaign")}</span>
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {campaigns.slice(0, 4).map((campaign) => (
-                  <div
-                    key={campaign.id}
-                    onClick={() =>
-                      workspaceId &&
-                      navigate(
-                        `/workspaces/${workspaceId}/campaigns/${campaign.id}`,
-                      )
-                    }
-                    className="border-border hover:border-brand-orange/40 hover:bg-muted/40 group flex cursor-pointer flex-col justify-between rounded-xl border p-3.5 transition-colors"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline" className="text-2xs font-bold">
-                          v{campaign.contentVersion}
-                        </Badge>
-                        <Badge
-                          className={`text-2xs font-semibold ${
-                            campaign.status === "COMPLETED"
-                              ? "bg-emerald-500/15 text-emerald-600 border-emerald-500/30"
-                              : campaign.status === "IN_PROGRESS"
-                                ? "bg-amber-500/15 text-amber-600 border-amber-500/30"
-                                : "bg-blue-500/15 text-blue-600 border-blue-500/30"
-                          }`}
-                        >
-                          {campaign.status}
-                        </Badge>
-                      </div>
-                      <p className="text-foreground group-hover:text-brand-orange mt-2 line-clamp-1 font-medium text-sm transition-colors">
-                        {campaign.name}
-                      </p>
-                    </div>
-                    <div className="text-muted-foreground mt-3 flex items-center justify-between text-2xs">
-                      <span>
-                        {campaign.workItems?.length || 0} công việc
-                      </span>
-                      <span className="text-brand-orange flex items-center gap-0.5 font-medium group-hover:underline">
-                        Chi tiết <ChevronRight className="size-3" />
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <WorkspaceCampaignSummary
+            workspaceId={workspaceId}
+            campaigns={campaigns}
+            loading={campaignsLoading}
+            failed={campaignsError}
+            canPlan={isManagerOrOwner}
+            onRetry={() => setCampaignsAttempt((attempt) => attempt + 1)}
+          />
         </div>
 
         {/* Right Column (1 span): Quick Actions & Workspace Info */}

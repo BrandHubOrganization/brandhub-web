@@ -4,15 +4,12 @@ import type { OfferingFields } from "../types/mediaPackage";
 
 export function OfferingSummary({ value }: { value: OfferingFields }) {
   const { t } = useTranslation();
-  if (!value.offeringModel || !value.offeringDetails) return null;
+  if (!value.offeringDetails) return null;
   return (
     <section className="border-border space-y-4 rounded-xl border p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="font-semibold">{t("mediaPackage.ui.deliverables")}</h3>
-          <p className="text-muted-foreground mt-1 text-sm">
-            {t(`mediaPackage.offering.models.${value.offeringModel}`)}
-          </p>
         </div>
         {value.offeringDetails.maxChanges != null && (
           <Badge

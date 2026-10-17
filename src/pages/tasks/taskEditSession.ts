@@ -6,6 +6,7 @@ export class TaskEditSession {
   private listeners = new Set<() => void>();
   private version = 0;
   pending = 0;
+  discardVersion = 0;
   subscribe = (listener: () => void) => {
     this.listeners.add(listener);
     return () => {
@@ -27,6 +28,7 @@ export class TaskEditSession {
     return this.pending > 0 || this.dirty.size > 0;
   }
   discard() {
+    this.discardVersion++;
     this.dirty.clear();
     this.failures.clear();
     this.notify();

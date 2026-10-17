@@ -43,9 +43,9 @@
     "services": {
       "SOCIAL_POST": "Bài đăng mạng xã hội",
       "EVENT_PLANNING": "Bàn giao kế hoạch sự kiện",
-      "LIVESTREAM_PREPARATION": "Chuẩn bị livestream",
-      "PRESS_RECOMMENDATION": "Gợi ý đối tác báo điện tử",
-      "WORKSHOP_SUPPORT": "Workshop: link Meet và survey"
+      "LIVESTREAM_PREPARATION": "Livestream",
+      "PRESS_RECOMMENDATION": "Báo điện tử",
+      "WORKSHOP_SUPPORT": "Workshop"
     },
     "service": "Dịch vụ",
     "name": "Tên hạng mục bàn giao",
@@ -108,6 +108,8 @@
     "FULL_DELEGATION": "Ủy quyền toàn diện"
   },
   "values": {
+    "optionalFinancials": "Ngân sách và thời lượng không bắt buộc. Nếu nhập, giá trị phải lớn hơn 0; thời lượng tính theo số tuần nguyên.",
+    "toBeAgreed": "Ngân sách và thời lượng: thỏa thuận sau",
     "duration": "{{count}} tuần",
     "fullDelegation": "Toàn bộ chiến dịch"
   },
@@ -198,6 +200,7 @@
     "approve": "Không thể chấp thuận gói dịch vụ."
   },
   "ui": {
+    "backToPackages": "Quay lại gói truyền thông",
     "viewDetail": "Xem chi tiết gói",
     "duplicate": "Tạo gói từ gói này",
     "moreDeliverables": "+ {{count}} hạng mục khác",

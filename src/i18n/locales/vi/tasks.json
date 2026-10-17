@@ -132,6 +132,7 @@
     }
   },
   "inline": {
+    "noCreators": "Workspace chưa có người sáng tạo đang hoạt động để giao việc.",
     "refreshError": "Chưa tải lại được danh sách. Dữ liệu đang hiển thị có thể chưa mới nhất; hãy thử Làm mới sau khi lưu xong.",
     "edit": "Chỉnh sửa {{field}}",
     "empty": "Nhấp để bổ sung",
@@ -140,6 +141,9 @@
     "saved": "Đã lưu",
     "waitSaving": "Đang lưu thay đổi. Hãy đợi trước khi chuyển công việc.",
     "discardWarning": "Có thay đổi chưa lưu hoặc lưu chưa thành công. Bỏ các thay đổi này để tiếp tục?",
+    "discardTitle": "Bỏ thay đổi chưa lưu?",
+    "keepEditing": "Tiếp tục chỉnh sửa",
+    "discardChanges": "Bỏ thay đổi",
     "membersError": "Không tải được người phụ trách. Hãy tải bản mới nhất để thử lại.",
     "requirementsFirst": "Cần mô tả yêu cầu và hạn hoàn thành hợp lệ trước khi giao việc.",
     "setupUnavailable": "Tạm thời chưa thể chỉnh sửa công việc. Người quản trị cần cập nhật cấu trúc dữ liệu của hệ thống.",

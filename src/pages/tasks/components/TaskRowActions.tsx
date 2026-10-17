@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { TaskInlineAssignment } from "@/pages/tasks/components/TaskInlineAssignment";
+import { TaskAssigneePicker } from "@/pages/tasks/components/TaskAssigneePicker";
 import { TaskDeadlineField } from "@/pages/tasks/components/TaskInlineDetails";
 import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
@@ -31,7 +31,7 @@ export function TaskRowActions({
         : null),
   );
   const userId = useAuthStore((store) => store.user?.id);
-  const manager = role === "MANAGER" || role === "OWNER";
+  const manager = role === "MANAGER";
   const creator = role === "CREATOR" && userId === task.assigneeId;
   const todo = ["TODO", "BACKLOG", "DETAIL_IDENTIFIED", "ASSIGNED"].includes(
     task.status,
@@ -46,6 +46,9 @@ export function TaskRowActions({
           }).format(new Date(task.dueDate))
         : t("tasks.missing");
   const eligible = todo && (field === "start" ? creator : manager);
+  if (field === "assignee" && eligible) {
+    return <TaskAssigneePicker workspaceId={task.workspaceId} taskId={task.id} assigneeName={task.assigneeName} scope="row" />;
+  }
   if (!eligible) {
     if (field === "start") {
       if (task.type === "POST") {
@@ -71,9 +74,9 @@ export function TaskRowActions({
     <div
       className="max-w-64 min-w-40"
       onClick={(event) => event.stopPropagation()}
-      onKeyDown={(event) => {
+      onKeyDown={async (event) => {
         event.stopPropagation();
-        if (event.key === "Escape" && canLeave()) setOpen(false);
+        if (event.key === "Escape" && (await canLeave())) setOpen(false);
       }}
     >
       {!open ? (
@@ -121,9 +124,6 @@ export function TaskRowActions({
                   )}
                 </p>
               )}
-              {field === "assignee" && (
-                <TaskInlineAssignment task={state.query.data} onlyAssignee />
-              )}
               {field === "deadline" && (
                 <TaskDeadlineField task={state.query.data} scope="row" />
               )}
@@ -141,8 +141,8 @@ export function TaskRowActions({
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => {
-              if (canLeave()) setOpen(false);
+            onClick={async () => {
+              if (await canLeave()) setOpen(false);
             }}
           >
             {t("tasks.close")}

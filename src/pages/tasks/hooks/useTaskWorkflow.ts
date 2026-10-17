@@ -65,7 +65,6 @@ export function useTaskWorkflow(
       return publish(
         await service.assign(workspaceId, taskId, {
           assigneeId: task.assigneeId || "",
-          qcAssigneeId: task.qcAssigneeId,
           requiresClientApproval: task.requiresClientApproval,
           ...changes,
           expectedRevision: task.workflowRevision!,
