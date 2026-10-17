@@ -129,7 +129,10 @@ export function CampaignReview({
     );
   }
   return (
-    <section className="border-border bg-card space-y-5 rounded-xl border p-4 sm:p-6">
+    <section
+      id="campaign-review"
+      className="border-border bg-card scroll-mt-6 space-y-5 rounded-xl border p-4 sm:p-6"
+    >
       <div>
         <h3 className="text-lg font-semibold">{t("campaign.review.title")}</h3>
         <p className="text-muted-foreground mt-1 text-sm leading-6">

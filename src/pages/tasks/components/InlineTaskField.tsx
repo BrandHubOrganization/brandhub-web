@@ -60,7 +60,7 @@ export function InlineTaskField(props: Props) {
     },
   };
   return (
-    <div className="min-w-0 space-y-1.5">
+    <div className="min-w-0 space-y-1.5" aria-busy={pending}>
       <Label htmlFor={props.id} className="text-muted-foreground text-xs">
         {props.label}
       </Label>

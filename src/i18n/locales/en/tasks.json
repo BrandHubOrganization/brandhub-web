@@ -132,6 +132,7 @@
     }
   },
   "inline": {
+    "noCreators": "This Workspace has no active Creator available for assignment.",
     "refreshError": "Could not refresh the list. Displayed rows may be outdated; try Refresh after saving.",
     "edit": "Edit {{field}}",
     "empty": "Click to add",
@@ -140,6 +141,9 @@
     "saved": "Saved",
     "waitSaving": "Changes are being saved. Wait before switching tasks.",
     "discardWarning": "Some changes are unsaved or failed to save. Discard them and continue?",
+    "discardTitle": "Discard unsaved changes?",
+    "keepEditing": "Keep editing",
+    "discardChanges": "Discard changes",
     "membersError": "Unable to load assignees. Reload the latest version to retry.",
     "requirementsFirst": "Add a description and a valid deadline before assigning work.",
     "setupUnavailable": "Task editing is temporarily unavailable. An administrator needs to update the system data structure.",
