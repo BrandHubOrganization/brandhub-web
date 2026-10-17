@@ -30,4 +30,12 @@ node_modules/
 # Playwright
 playwright-report/
 test-results/
+/.playwright-cli/
+/output/playwright/
+
+# Team policy: do not commit test files under src
+/src/**/*.test.*
+/src/**/*.spec.*
+/src/**/__tests__/
+/src/**/tests/
 
