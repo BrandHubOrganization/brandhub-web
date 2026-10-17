@@ -8,3 +8,4 @@ Read `CLAUDE.md`, `rule.md`, and `STRUCTURE.md` before changing this frontend. F
 - Use the installed UI/UX and React skills where relevant. Use React guidance applicable to this Vite SPA; Next.js-specific examples do not justify framework or data-library migrations.
 - Reuse existing route access checks. Explain prerequisites and provide permitted recovery actions; avoid controls that imply unsupported behavior.
 - Keep Vietnamese/English translation keys parallel under `src/i18n/locales/{vi,en}/`. Verify light/dark mode, keyboard operation and responsive behavior for changed interfaces.
+- User policy: do not create or commit test files under `src`; do not force-add ignored test files. Keep local verification artifacts out of commits.
