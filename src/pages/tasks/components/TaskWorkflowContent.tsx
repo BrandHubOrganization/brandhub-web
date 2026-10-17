@@ -26,7 +26,7 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
   const [epoch, setEpoch] = useState(0);
   const task = state.query.data;
   async function reload() {
-    if (!canLeave()) return;
+    if (!(await canLeave())) return;
     const result = await state.reload();
     if (result.isSuccess) setEpoch((value) => value + 1);
   }

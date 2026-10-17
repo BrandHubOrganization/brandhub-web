@@ -36,8 +36,8 @@ function WorkspaceTaskView({
   const [view, setView] = useState("list");
   const panel = useTaskPanel(workspaceId);
   const { canLeave } = useTaskEditContext();
-  const guard = (action: () => void) => {
-    if (canLeave()) action();
+  const guard = async (action: () => void) => {
+    if (await canLeave()) action();
   };
   const views = [
     { key: "list", icon: List },

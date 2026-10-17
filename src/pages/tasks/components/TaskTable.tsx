@@ -215,30 +215,8 @@ export function TaskTable(props: Props) {
                     </td>
 
                     {/* Assignee */}
-                    <td className="px-3 py-2.5">
-                      <div
-                        className="flex items-center gap-2"
-                        title={task.assigneeName ? `Người phụ trách: ${task.assigneeName}` : "Chưa phân công"}
-                      >
-                        {task.assigneeAvatar ? (
-                          <img
-                            src={task.assigneeAvatar}
-                            alt={task.assigneeName || ""}
-                            className="size-5.5 rounded-full object-cover"
-                          />
-                        ) : task.assigneeName ? (
-                          <div className="bg-amber-600/90 flex size-5.5 items-center justify-center rounded-full text-2xs font-semibold text-white">
-                            {task.assigneeName.charAt(0).toUpperCase()}
-                          </div>
-                        ) : (
-                          <div className="bg-muted text-muted-foreground flex size-5.5 items-center justify-center rounded-full text-2xs">
-                            -
-                          </div>
-                        )}
-                        <span className="text-foreground/90 truncate text-xs">
-                          {task.assigneeName ?? t("tasks.unassigned")}
-                        </span>
-                      </div>
+                    <td className="px-3 py-2.5" onClick={(event) => event.stopPropagation()}>
+                      <TaskRowActions task={task} field="assignee" />
                     </td>
 
                     {/* Priority */}
