@@ -23,7 +23,6 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
   const effectiveWorkspaceId = workspaceId ?? currentWorkspace?.id;
 
   const [isDragOver, setIsDragOver] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
 
   const handleFiles = async (files: FileList | File[]) => {
@@ -35,7 +34,6 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
       return;
     }
 
-    setIsUploading(true);
     setUploadProgress(10);
     const newUploadedUrls: string[] = [];
 
@@ -69,7 +67,6 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
     setUploadProgress(100);
     setTimeout(() => {
       setUploadProgress(null);
-      setIsUploading(false);
     }, 300);
 
     if (newUploadedUrls.length > 0) {

@@ -2,7 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { postService, type SavePostMedia, type SavePostInput, type PostResponse } from "@/services/postService";
+import {
+  postService,
+  type SavePostMedia,
+  type SavePostInput,
+  type PostResponse,
+} from "@/services/postService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import type { SocialPlatform } from "@/types/editor";
 import type { ContentTemplate } from "@/types/template";
@@ -38,22 +43,12 @@ export function useEditorForm() {
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const locationState = location.state as EditorLocationState;
 
-  const [caption, setCaption] = useState(
-    locationState?.prefilledCaption ||
-      "Đột phá phong cách với dòng Nike Air Max Pulse hoàn toàn mới! Với đệm khí Air cải tiến mang lại độ đàn hồi vượt trội, đây là sự kết hợp hoàn hảo giữa thời trang đường phố và hiệu năng vận hành.",
-  );
+  const [caption, setCaption] = useState(locationState?.prefilledCaption ?? "");
   const [hashtags, setHashtags] = useState<string[]>(
-    locationState?.prefilledHashtags || [
-      "#NikeAirMax",
-      "#AirMaxPulse",
-      "#Sneakerhead",
-      "#BrandHub",
-    ],
+    locationState?.prefilledHashtags ?? [],
   );
   const [mediaUrls, setMediaUrls] = useState<string[]>(
-    locationState?.prefilledMediaUrls || [
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1000&q=80",
-    ],
+    locationState?.prefilledMediaUrls ?? [],
   );
   const [mediaStorageKeys, setMediaStorageKeys] = useState<
     Record<string, { s3Key: string; mediaType: "IMAGE" | "VIDEO" }>
@@ -127,12 +122,11 @@ export function useEditorForm() {
           if (task) {
             const taskContent = task.description || task.name || task.title;
             if (taskContent) {
-              setCaption(
-                `${taskContent}\n\nChào mừng bạn đến với sự kiện mới nhất cùng chúng tôi! Hãy theo dõi để không bỏ lỡ những cập nhật hấp dẫn.`
-              );
-              setHashtags(["#BrandHub", "#FacebookPost", "#Event2026"]);
+              setCaption(taskContent);
               setIsDirty(true);
-              toast.info(`Đã nạp nội dung từ Task: "${task.name || task.title}"`);
+              toast.info(
+                `Đã nạp nội dung từ Task: "${task.name || task.title}"`,
+              );
             }
           }
         })
@@ -180,13 +174,18 @@ export function useEditorForm() {
   ): Promise<PostResponse> => {
     if (currentDraftId) {
       try {
-        return await postService.updateDraft(workspaceId, currentDraftId, payload);
+        return await postService.updateDraft(
+          workspaceId,
+          currentDraftId,
+          payload,
+        );
       } catch (err: unknown) {
         const isNotEditable =
           typeof err === "object" &&
           err !== null &&
           "response" in err &&
-          (err as { response?: { status?: number; data?: { code?: string } } }).response?.status === 400;
+          (err as { response?: { status?: number; data?: { code?: string } } })
+            .response?.status === 400;
         if (isNotEditable) {
           return await postService.createDraft(workspaceId, payload);
         }
@@ -197,7 +196,12 @@ export function useEditorForm() {
   };
 
   const saveDraft = useCallback(async () => {
-    if (!isDirty || publishStatus === "PUBLISHING" || publishStatus === "PUBLISHED") return;
+    if (
+      !isDirty ||
+      publishStatus === "PUBLISHING" ||
+      publishStatus === "PUBLISHED"
+    )
+      return;
     setIsSaving(true);
     try {
       if (!currentWorkspace) return;
@@ -208,7 +212,11 @@ export function useEditorForm() {
         targetPlatforms,
         aiGenerated: containsAiContent,
       };
-      const res = await saveOrUpdateDraft(currentWorkspace.id, draftId, payload);
+      const res = await saveOrUpdateDraft(
+        currentWorkspace.id,
+        draftId,
+        payload,
+      );
       setDraftId(res.id);
       setLastSavedTime(new Date(res.updatedAt).toLocaleTimeString("vi-VN"));
       setIsDirty(false);
@@ -288,7 +296,11 @@ export function useEditorForm() {
           targetPlatforms,
           aiGenerated: containsAiContent,
         };
-        const saved = await saveOrUpdateDraft(currentWorkspace.id, postId, payload);
+        const saved = await saveOrUpdateDraft(
+          currentWorkspace.id,
+          postId,
+          payload,
+        );
         postId = saved.id;
         setDraftId(saved.id);
       }
@@ -329,12 +341,19 @@ export function useEditorForm() {
         targetPlatforms,
         aiGenerated: containsAiContent,
       };
-      const saved = await saveOrUpdateDraft(currentWorkspace.id, postId, payload);
+      const saved = await saveOrUpdateDraft(
+        currentWorkspace.id,
+        postId,
+        payload,
+      );
       postId = saved.id;
       setDraftId(saved.id);
 
       setPublishStatus("PUBLISHING");
-      const publishRes = await postService.publishNow(currentWorkspace.id, postId);
+      const publishRes = await postService.publishNow(
+        currentWorkspace.id,
+        postId,
+      );
       toast.success("Đã gửi yêu cầu đăng bài Facebook...");
 
       // Đã gửi lệnh xuất bản thành công - xóa draftId để những lần sửa tiếp theo tạo draft mới
@@ -342,9 +361,14 @@ export function useEditorForm() {
 
       // Polling kiểm tra trạng thái bài viết hoặc nhận kết quả IN_PROGRESS
       const activePostId = postId;
-      if (publishRes.status === "IN_PROGRESS" || publishRes.status === "PUBLISHED") {
+      if (
+        publishRes.status === "IN_PROGRESS" ||
+        publishRes.status === "PUBLISHED"
+      ) {
         setPublishStatus("PUBLISHED");
-        toast.success("🎉 Bài viết đã được tiếp nhận và xuất bản lên Facebook!");
+        toast.success(
+          "🎉 Bài viết đã được tiếp nhận và xuất bản lên Facebook!",
+        );
         return;
       }
 
@@ -357,14 +381,26 @@ export function useEditorForm() {
           return;
         }
         try {
-          const updated = await postService.get(currentWorkspace.id, activePostId);
-          if (updated.status === "PUBLISHED" || updated.status === "APPROVED" || updated.status === "IN_PROGRESS") {
+          const updated = await postService.get(
+            currentWorkspace.id,
+            activePostId,
+          );
+          if (
+            updated.status === "PUBLISHED" ||
+            updated.status === "APPROVED" ||
+            updated.status === "IN_PROGRESS"
+          ) {
             setPublishStatus("PUBLISHED");
             toast.success("🎉 Bài viết đã được Facebook tiếp nhận thành công!");
             clearInterval(pollTimer);
-          } else if (updated.status === "REJECTED" || updated.status === "FAILED") {
+          } else if (
+            updated.status === "REJECTED" ||
+            updated.status === "FAILED"
+          ) {
             setPublishStatus("FAILED");
-            toast.error("❌ Đăng lên Facebook thất bại. Vui lòng kiểm tra nhật ký xuất bản!");
+            toast.error(
+              "❌ Đăng lên Facebook thất bại. Vui lòng kiểm tra nhật ký xuất bản!",
+            );
             clearInterval(pollTimer);
           }
         } catch {
@@ -406,4 +442,3 @@ export function useEditorForm() {
     handlePublishNow,
   };
 }
-

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import * as Y from "yjs";
 import { api } from "@/services/api";
-import { prepareTaskSocket } from "@/pages/content-writing/services/taskSocketSession";
+import { useAuthStore } from "@/store/authStore";
 import { requireApiData } from "@/lib/apiData";
 
 /**
