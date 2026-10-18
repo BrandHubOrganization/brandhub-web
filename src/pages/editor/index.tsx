@@ -1,3 +1,4 @@
+import { AiHashtagSuggestions } from "@/pages/editor/components/AiHashtagSuggestions";
 import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
@@ -17,13 +18,14 @@ import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
 import { ContentCreatorAiPanel } from "@/pages/editor/components/ContentCreatorAiPanel";
 import { EditorHeaderActions } from "@/pages/editor/components/EditorHeaderActions";
-// import { HashtagInputWithSuggestions } from "@/pages/editor/components/HashtagInputWithSuggestions";
+import { HashtagInputWithSuggestions } from "@/pages/editor/components/HashtagInputWithSuggestions";
 import { MediaDropzone } from "@/pages/editor/components/MediaDropzone";
 import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewModal";
 import { RichTextEditor } from "@/pages/editor/components/RichTextEditor";
 import { StudioPreviewPanel } from "@/pages/editor/components/StudioPreviewPanel";
 import { TemplatePickerModal } from "@/pages/editor/components/TemplatePickerModal";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useAuthStore } from "@/store/authStore";
 import { useParams, Link } from "react-router-dom";
 import { AlertTriangle, CheckCircle, ExternalLink } from "lucide-react";
 import { fetchSocialAccounts } from "@/pages/social-accounts/services/socialAccountService";
@@ -38,11 +40,23 @@ export function EditorPage() {
   const { t } = useTranslation();
   const { id: routeWorkspaceId } = useParams<{ id: string }>();
   const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+  const userId = useAuthStore((state) => state.user?.id);
+  const role = currentWorkspace?.myRole;
   const workspaceId = routeWorkspaceId ?? currentWorkspace?.id;
   const isClient = currentWorkspace?.myRole === "CLIENT";
 
-  const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([]);
-  const [hasLoadedSocial, setHasLoadedSocial] = useState(false);
+  const [socialConnection, setSocialConnection] = useState<{
+    workspaceId: string;
+    platforms: string[];
+    error: boolean;
+  } | null>(null);
+  const hasLoadedSocial =
+    socialConnection?.workspaceId === workspaceId && !socialConnection?.error;
+  const socialStatusError =
+    socialConnection?.workspaceId === workspaceId && socialConnection?.error;
+  const connectedPlatforms = hasLoadedSocial
+    ? (socialConnection?.platforms ?? [])
+    : [];
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
   const [isPreviewPanelOpen, setIsPreviewPanelOpen] = useState(true);
   const [aiPanelWidth, setAiPanelWidth] = useState(280);
@@ -64,7 +78,7 @@ export function EditorPage() {
     isTemplatePickerOpen,
     setIsTemplatePickerOpen,
     handleCaptionChange,
-    // handleHashtagsChange,
+    handleHashtagsChange,
     handleMediaUrlsChange,
     handleGeneratedMedia,
     handleApplyAIResult,
@@ -84,17 +98,22 @@ export function EditorPage() {
   // Fetch danh sách social accounts đã kết nối trong workspace để kiểm tra
   useEffect(() => {
     if (!workspaceId) return;
+    let cancelled = false;
     fetchSocialAccounts(workspaceId)
       .then((accs) => {
+        if (cancelled) return;
         const active = accs
           .filter((a) => a.status === "CONNECTED")
           .map((a) => a.platform.toUpperCase());
-        setConnectedPlatforms(active);
-        setHasLoadedSocial(true);
+        setSocialConnection({ workspaceId, platforms: active, error: false });
       })
       .catch(() => {
-        setHasLoadedSocial(true);
+        if (!cancelled)
+          setSocialConnection({ workspaceId, platforms: [], error: true });
       });
+    return () => {
+      cancelled = true;
+    };
   }, [workspaceId]);
 
   const unlinkedPlatforms = targetPlatforms.filter(
@@ -264,8 +283,13 @@ export function EditorPage() {
             </div>
 
             <div className="space-y-4 p-4 md:p-5">
+              {socialStatusError && (
+                <p role="alert" className="text-destructive text-xs">
+                  {t("editor.socialStatusError")}
+                </p>
+              )}
               {hasLoadedSocial && unlinkedPlatforms.length > 0 && (
-                <div className="border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200 flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3.5 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-900 dark:text-amber-200">
                   <div className="flex items-center gap-2.5">
                     <AlertTriangle className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
                     <span>
@@ -282,7 +306,7 @@ export function EditorPage() {
                   {isClient && workspaceId && (
                     <Link
                       to={`/workspaces/${workspaceId}/social-accounts`}
-                      className="border-amber-500/40 bg-amber-500/20 hover:bg-amber-500/30 text-amber-900 dark:text-amber-100 flex items-center gap-1.5 rounded-lg border px-3 py-1 font-medium transition-colors"
+                      className="flex items-center gap-1.5 rounded-lg border border-amber-500/40 bg-amber-500/20 px-3 py-1 font-medium text-amber-900 transition-colors hover:bg-amber-500/30 dark:text-amber-100"
                     >
                       <span>Kết nối ngay</span>
                       <ExternalLink className="size-3" />
@@ -292,46 +316,59 @@ export function EditorPage() {
               )}
 
               {hasLoadedSocial && unlinkedPlatforms.length === 0 && (
-                <div className="border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-300 flex items-center gap-2 rounded-xl border px-3.5 py-2 text-2xs">
+                <div className="text-2xs flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-3.5 py-2 text-emerald-800 dark:text-emerald-300">
                   <CheckCircle className="size-3.5 shrink-0 text-emerald-500" />
                   <span>
-                    Tất cả các nền tảng ({connectedPlatforms.join(", ")}) đã sẵn sàng để xuất bản.
+                    Tất cả các nền tảng ({connectedPlatforms.join(", ")}) đã sẵn
+                    sàng để xuất bản.
                   </span>
                 </div>
               )}
 
               {/* Nền tảng mục tiêu xuất bản */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-muted-foreground text-xs font-medium mr-1">
+                <span className="text-muted-foreground mr-1 text-xs font-medium">
                   Đăng lên:
                 </span>
-                {(["FACEBOOK", "INSTAGRAM", "TIKTOK", "THREADS"] as const).map((platform) => {
-                  const isSelected = targetPlatforms.includes(platform);
-                  const isConnected = connectedPlatforms.includes(platform);
-                  return (
-                    <button
-                      key={platform}
-                      type="button"
-                      onClick={() => toggleTargetPlatform(platform)}
-                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-                        isSelected
-                          ? "bg-brand-orange text-white shadow-xs"
-                          : "border-border bg-card text-muted-foreground hover:bg-muted border"
-                      }`}
-                    >
-                      <span
-                        className={`size-2 rounded-full ${
-                          isConnected ? "bg-emerald-400" : "bg-zinc-400 opacity-60"
+                {(["FACEBOOK", "INSTAGRAM", "TIKTOK", "THREADS"] as const).map(
+                  (platform) => {
+                    const isSelected = targetPlatforms.includes(platform);
+                    const isConnected = connectedPlatforms.includes(platform);
+                    return (
+                      <button
+                        key={platform}
+                        type="button"
+                        onClick={() => toggleTargetPlatform(platform)}
+                        className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                          isSelected
+                            ? "bg-brand-orange text-white shadow-xs"
+                            : "border-border bg-card text-muted-foreground hover:bg-muted border"
                         }`}
-                        title={isConnected ? "Đã liên kết" : "Chưa liên kết"}
-                      />
-                      <span>{platform}</span>
-                      {isConnected && (
-                        <span className="text-2xs opacity-80">(Sẵn sàng)</span>
-                      )}
-                    </button>
-                  );
-                })}
+                      >
+                        <span
+                          className={`size-2 rounded-full ${
+                            isConnected
+                              ? "bg-emerald-400"
+                              : "bg-zinc-400 opacity-60"
+                          }`}
+                          title={
+                            !hasLoadedSocial
+                              ? t("editor.socialStatusUnknown")
+                              : isConnected
+                                ? "Đã liên kết"
+                                : "Chưa liên kết"
+                          }
+                        />
+                        <span>{platform}</span>
+                        {isConnected && (
+                          <span className="text-2xs opacity-80">
+                            (Sẵn sàng)
+                          </span>
+                        )}
+                      </button>
+                    );
+                  },
+                )}
               </div>
 
               <RichTextEditor
@@ -357,7 +394,7 @@ export function EditorPage() {
                 />
               </section>
 
-              {/* <section className="border-border relative z-10 rounded-xl border p-3">
+              <section className="border-border relative z-10 rounded-xl border p-3">
                 <HashtagInputWithSuggestions
                   hashtags={hashtags}
                   onChange={handleHashtagsChange}
@@ -365,7 +402,15 @@ export function EditorPage() {
                   userId={userId}
                   canApply={role === "CREATOR"}
                 />
-              </section> */}
+                <AiHashtagSuggestions
+                  caption={caption}
+                  platform={targetPlatforms[0]}
+                  workspaceId={workspaceId}
+                  userId={userId}
+                  hashtags={hashtags}
+                  onChange={handleHashtagsChange}
+                />
+              </section>
             </div>
           </section>
         </main>

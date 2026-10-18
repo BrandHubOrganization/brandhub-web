@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import * as React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -51,7 +52,7 @@ const NOTIFICATION_ICONS: Record<NotificationType, React.ElementType> = {
   SYSTEM: Info,
 };
 
-// Mock notification linkTo values that point at routes now namespaced under
+// Legacy relative notification links that point at routes namespaced under
 // /workspaces/:id/... — inject the active workspace id before navigating.
 const WORKSPACE_SCOPED_LINKS = [
   "/requests",
@@ -103,12 +104,12 @@ const NAV_KEY_MAP: Record<string, string> = {
   profile: "nav.profile",
   "media-package": "nav.mediaPackages",
   "media-packages": "nav.manageMediaPackages",
-  "collaborators": "collaborators.title",
+  collaborators: "collaborators.title",
   stats: "nav.agencySub.stats",
   accept: "nav.accept",
   video: "aiStudio.video.title",
   "content-writing": "nav.contentWriting",
-  "client": "nav.clients",
+  client: "nav.clients",
 };
 
 const WORKSPACE_SECTION_ROOTS: Record<
@@ -160,20 +161,38 @@ export function Navbar({
   const [notifications, setNotifications] = React.useState<AppNotification[]>(
     [],
   );
+  const [notificationsError, setNotificationsError] = React.useState(false);
+  const [notificationsLoading, setNotificationsLoading] = React.useState(false);
   const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  const refreshNotifications = React.useCallback(async () => {
+    setNotificationsLoading(true);
+    setNotificationsError(false);
+    try {
+      setNotifications(await getNotifications());
+    } catch {
+      setNotificationsError(true);
+    } finally {
+      setNotificationsLoading(false);
+    }
+  }, []);
 
   React.useEffect(() => {
     if (isAdmin) return;
     let cancelled = false;
-    const refresh = () => {
+    const refresh = async () => {
       if (document.visibilityState === "hidden") return;
-      getNotifications()
-        .then((data) => {
-          if (!cancelled) setNotifications(data);
-        })
-        .catch((err) => console.error("Failed to load notifications:", err));
+      try {
+        const data = await getNotifications();
+        if (!cancelled) {
+          setNotifications(data);
+          setNotificationsError(false);
+        }
+      } catch {
+        if (!cancelled) setNotificationsError(true);
+      }
     };
-    refresh();
+    void refresh();
     const timer = window.setInterval(refresh, 30_000);
     window.addEventListener("focus", refresh);
     return () => {
@@ -185,15 +204,20 @@ export function Navbar({
 
   async function handleNotificationClick(n: AppNotification) {
     if (!n.isRead) {
-      setNotifications((prev) =>
-        prev.map((item) =>
-          item.id === n.id ? { ...item, isRead: true } : item,
-        ),
-      );
-      await markAsRead(n.id);
+      try {
+        await markAsRead(n.id);
+        setNotifications((prev) =>
+          prev.map((item) =>
+            item.id === n.id ? { ...item, isRead: true } : item,
+          ),
+        );
+      } catch {
+        toast.error(t("notifications.readError"));
+        return;
+      }
     }
     if (n.linkTo && /^https?:\/\//.test(n.linkTo)) {
-      window.open(n.linkTo, "_blank", "noopener,noreferrer"); // admin broadcast links are external
+      window.open(n.linkTo, "_blank", "noopener,noreferrer");
     } else if (n.linkTo) {
       const resolvedLink =
         currentWorkspace && WORKSPACE_SCOPED_LINKS.includes(n.linkTo)
@@ -204,8 +228,14 @@ export function Navbar({
   }
 
   async function handleMarkAllRead() {
-    setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
-    await markAllAsRead();
+    try {
+      await markAllAsRead();
+      setNotifications((prev) =>
+        prev.map((item) => ({ ...item, isRead: true })),
+      );
+    } catch {
+      toast.error(t("notifications.readError"));
+    }
   }
 
   const getBreadcrumbs = () => {
@@ -401,92 +431,119 @@ export function Navbar({
 
         {/* Notification Bell */}
         {!isAdmin && (
-        <DropdownMenu
-          onOpenChange={(open) => {
-            if (open) getNotifications().then(setNotifications).catch(() => {});
-          }}
-        >
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative size-8"
-              title={t("nav.notifications")}
-            >
-              <Bell className="size-4" />
-              {unreadCount > 0 && (
-                <span className="bg-brand-orange text-2xs absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full text-white">
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </span>
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80">
-            <div className="flex items-center justify-between px-2 py-1.5">
-              <DropdownMenuLabel className="p-0 text-xs font-semibold">
-                {t("notifications.title")}
-              </DropdownMenuLabel>
-              {unreadCount > 0 && (
-                <button
-                  type="button"
-                  onClick={handleMarkAllRead}
-                  className="text-brand-orange text-2xs font-medium hover:underline"
-                >
-                  {t("notifications.markAllRead")}
-                </button>
-              )}
-            </div>
-            <DropdownMenuSeparator />
-            <div className="max-h-80 overflow-y-auto">
-              {notifications.length === 0 && (
-                <p className="text-muted-foreground px-2 py-4 text-center text-xs">
-                  {t("notifications.empty")}
-                </p>
-              )}
-              {notifications.map((n) => {
-                const Icon = NOTIFICATION_ICONS[n.type];
-                return (
-                  <DropdownMenuItem
-                    key={n.id}
-                    onClick={() => handleNotificationClick(n)}
-                    className={cn(
-                      "cursor-pointer items-start gap-2 py-2 text-xs",
-                      !n.isRead && "bg-muted/40",
-                    )}
+          <DropdownMenu
+            onOpenChange={(open) => {
+              if (open) void refreshNotifications();
+            }}
+          >
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative size-8"
+                title={t("nav.notifications")}
+                aria-label={t("nav.notifications")}
+              >
+                <Bell className="size-4" />
+                {unreadCount > 0 && (
+                  <span className="bg-brand-orange text-2xs absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full text-white">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-80">
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <DropdownMenuLabel className="p-0 text-xs font-semibold">
+                  {t("notifications.title")}
+                </DropdownMenuLabel>
+                {unreadCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleMarkAllRead}
+                    className="text-brand-orange text-2xs font-medium hover:underline"
                   >
-                    <Icon className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
-                    <div className="flex-1 space-y-0.5">
-                      <p
+                    {t("notifications.markAllRead")}
+                  </button>
+                )}
+              </div>
+              <DropdownMenuSeparator />
+              <div className="max-h-80 overflow-y-auto">
+                {notificationsLoading && (
+                  <p
+                    role="status"
+                    className="text-muted-foreground px-2 py-4 text-xs"
+                  >
+                    {t("notifications.loading")}
+                  </p>
+                )}
+                {notificationsError && (
+                  <div role="alert" className="space-y-2 px-2 py-4 text-xs">
+                    <p className="text-destructive">
+                      {t("notifications.loadError")}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => void refreshNotifications()}
+                      className="text-brand-orange underline"
+                    >
+                      {t("notifications.retry")}
+                    </button>
+                  </div>
+                )}
+                {!notificationsLoading &&
+                  !notificationsError &&
+                  notifications.length === 0 && (
+                    <p className="text-muted-foreground px-2 py-4 text-center text-xs">
+                      {t("notifications.empty")}
+                    </p>
+                  )}
+                {!notificationsLoading &&
+                  !notificationsError &&
+                  notifications.map((n) => {
+                    const Icon = NOTIFICATION_ICONS[n.type];
+                    return (
+                      <DropdownMenuItem
+                        key={n.id}
+                        onClick={() => handleNotificationClick(n)}
                         className={cn(
-                          "font-medium",
-                          n.isRead
-                            ? "text-muted-foreground"
-                            : "text-foreground",
+                          "cursor-pointer items-start gap-2 py-2 text-xs",
+                          !n.isRead && "bg-muted/40",
                         )}
                       >
-                        {n.title}
-                      </p>
-                      <p className="text-muted-foreground text-2xs">
-                        {n.message}
-                      </p>
-                    </div>
-                    {!n.isRead && (
-                      <span className="bg-brand-orange mt-1 size-1.5 shrink-0 rounded-full" />
-                    )}
-                  </DropdownMenuItem>
-                );
-              })}
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => navigate("/notification-settings")}
-              className="cursor-pointer justify-center gap-1.5 text-xs font-medium"
-            >
-              <Settings className="size-3.5" />
-              {t("notifications.viewSettings")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+                        <Icon className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
+                        <div className="flex-1 space-y-0.5">
+                          <p
+                            className={cn(
+                              "font-medium",
+                              n.isRead
+                                ? "text-muted-foreground"
+                                : "text-foreground",
+                            )}
+                          >
+                            {n.title}
+                          </p>
+                          <p className="text-muted-foreground text-2xs">
+                            {n.message}
+                          </p>
+                        </div>
+                        {!n.isRead && (
+                          <span className="bg-brand-orange mt-1 size-1.5 shrink-0 rounded-full" />
+                        )}
+                      </DropdownMenuItem>
+                    );
+                  })}
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => navigate("/notification-settings")}
+                className="cursor-pointer justify-center gap-1.5 text-xs font-medium"
+              >
+                <Settings className="size-3.5" />
+                {t("notifications.viewSettings")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
 
         <div className="bg-border mx-1 h-4 w-px" />
@@ -513,34 +570,42 @@ export function Navbar({
             <Button
               variant="ghost"
               size="icon"
-              className="size-8 text-muted-foreground hover:text-foreground cursor-pointer"
+              className="text-muted-foreground hover:text-foreground size-8 cursor-pointer"
               title={t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
             >
               <HelpCircle className="size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 p-1">
-            <DropdownMenuLabel className="text-muted-foreground text-3xs font-semibold uppercase tracking-wider px-2 py-1.5">
+            <DropdownMenuLabel className="text-muted-foreground text-3xs px-2 py-1.5 font-semibold tracking-wider uppercase">
               {t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
             </DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigate("/help/faq")}
-              className="cursor-pointer gap-2 text-xs py-2"
+              className="cursor-pointer gap-2 py-2 text-xs"
             >
-              <HelpCircle className="size-4 text-brand-orange" />
+              <HelpCircle className="text-brand-orange size-4" />
               <div>
-                <p className="font-medium text-foreground">{t("nav.faq", "Hỏi đáp (FAQ)")}</p>
-                <p className="text-muted-foreground text-3xs">Câu hỏi thường gặp & giải đáp</p>
+                <p className="text-foreground font-medium">
+                  {t("nav.faq", "Hỏi đáp (FAQ)")}
+                </p>
+                <p className="text-muted-foreground text-3xs">
+                  Câu hỏi thường gặp & giải đáp
+                </p>
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => navigate("/help/guide")}
-              className="cursor-pointer gap-2 text-xs py-2"
+              className="cursor-pointer gap-2 py-2 text-xs"
             >
-              <BookOpen className="size-4 text-brand-orange" />
+              <BookOpen className="text-brand-orange size-4" />
               <div>
-                <p className="font-medium text-foreground">{t("nav.guide", "Cẩm nang hướng dẫn")}</p>
-                <p className="text-muted-foreground text-3xs">Tài liệu kiến trúc & quản trị</p>
+                <p className="text-foreground font-medium">
+                  {t("nav.guide", "Cẩm nang hướng dẫn")}
+                </p>
+                <p className="text-muted-foreground text-3xs">
+                  Tài liệu kiến trúc & quản trị
+                </p>
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>

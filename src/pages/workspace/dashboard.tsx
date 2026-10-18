@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useMemo } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
@@ -18,10 +18,7 @@ import {
   Layers,
   Building2,
   Calendar,
-  AlertCircle,
-  ExternalLink,
   ChevronRight,
-  TrendingUp,
   BarChart3,
   BadgeCheck,
   LogOut,
@@ -40,6 +37,7 @@ import type { WorkspaceDashboard } from "@/types/workspace";
 import type { TaskListItem, TaskStatus } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
+import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
 import { LineStatChart, PieStatChart } from "@/components/charts/StatCharts";
 import { LeaveWorkspaceDialog } from "./components/LeaveWorkspaceDialog";
 import {
@@ -267,7 +265,10 @@ export function WorkspaceDashboardPage() {
     packageStatus === "DRAFT" || packageStatus === "NEGOTIATING";
 
   return (
-    <PageWrapper>
+    <PageWrapper
+      title={workspace.name || t("workspace.dashboard.title", "Workspace Dashboard")}
+      hideBanner
+    >
       {/* ── Top Workspace Header ── */}
       <div className="border-border bg-card relative mb-6 overflow-hidden rounded-2xl border p-6 shadow-xs">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -593,9 +594,10 @@ export function WorkspaceDashboardPage() {
             ) : (
               <div className="space-y-2.5">
                 {tasks.map((task) => {
+                  const canonical = canonicalTaskStatus(task.status as TaskStatus);
                   const statusInfo =
-                    STATUS_CONFIG[task.status as TaskStatus] ||
-                    STATUS_CONFIG.ASSIGNED;
+                    STATUS_CONFIG[canonical] ||
+                    STATUS_CONFIG.TODO;
                   return (
                     <div
                       key={task.id}
