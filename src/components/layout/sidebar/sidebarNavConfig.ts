@@ -136,6 +136,13 @@ export const NAV_SECTIONS: NavSection[] = [
         requiresWorkspace: true,
       },
       {
+        to: "/task-approvals",
+        icon: PackageCheck,
+        labelKey: "tasks.approvalPage.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/calendar",
         icon: Calendar,
         labelKey: "calendar.page.title",

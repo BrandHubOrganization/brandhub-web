@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { RefreshCw, PenSquare } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
@@ -78,24 +78,6 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
             </p>
           )}
           <TaskInlineDetails key={epoch} task={task} />
-          {task.type === "POST" && !task.allowedActions.canStart && (
-            <div className="bg-card space-y-2 rounded-xl border p-4">
-              <p className="text-sm font-medium">Nội dung bài viết (Post Content)</p>
-              <p className="text-muted-foreground text-xs">
-                Mở giao diện Editor để tiếp tục chỉnh sửa bài viết và theo dõi trạng thái xuất bản bài đăng lên Facebook.
-              </p>
-              <Button
-                variant="outline"
-                className="gap-2 border-brand-orange text-brand-orange hover:bg-brand-orange/10 mt-2"
-                asChild
-              >
-                <Link to={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}>
-                  <PenSquare className="size-4" />
-                  Mở bài viết trong Editor
-                </Link>
-              </Button>
-            </div>
-          )}
           {task.allowedActions.canStart && (
             <TaskStartAction
               task={task}
@@ -104,6 +86,17 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
                 return state.start();
               }}
             />
+          )}
+          {task.type === "POST" && (
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" asChild>
+                <Link
+                  to={`/workspaces/${workspaceId}/task-approvals?task=${encodeURIComponent(taskId)}`}
+                >
+                  {t("tasks.approvalPage.title")}
+                </Link>
+              </Button>
+            </div>
           )}
           <TaskComments workspaceId={workspaceId} taskId={taskId} />
         </>
