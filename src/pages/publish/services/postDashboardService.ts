@@ -111,9 +111,10 @@ export const postDashboardService = {
 
     // Filter local mock data if platform or status is selected
     let filteredPosts = [...MOCK_DASHBOARD_DATA.recentPosts];
-    if (filters.platform && filters.platform !== "ALL") {
+    const platform = filters.platform;
+    if (platform && platform !== "ALL") {
       filteredPosts = filteredPosts.filter((p) =>
-        p.platforms.includes(filters.platform as any),
+        p.platforms.includes(platform),
       );
     }
     if (filters.status && filters.status !== "ALL") {
