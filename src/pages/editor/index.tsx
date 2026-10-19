@@ -27,6 +27,7 @@ import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useParams, Link } from "react-router-dom";
 import { AlertTriangle, CheckCircle, ExternalLink } from "lucide-react";
 import { fetchSocialAccounts } from "@/pages/social-accounts/services/socialAccountService";
+import { ScheduleModal } from "@/pages/editor/components/ScheduleModal";
 import { useEditorForm } from "./hooks/useEditorForm";
 
 /**
@@ -71,6 +72,10 @@ export function EditorPage() {
     handleApplyTemplate,
     handleSubmitForReview,
     handlePublishNow,
+    isScheduleModalOpen,
+    setIsScheduleModalOpen,
+    scheduledAt,
+    handleSaveSchedule,
   } = useEditorForm();
 
   const handleApplyGeneratedImage = (imageUrl: string, s3Key?: string) => {
@@ -175,10 +180,12 @@ export function EditorPage() {
           lastSavedTime={lastSavedTime}
           isSubmitting={isSubmitting}
           publishStatus={publishStatus}
+          scheduledTime={scheduledAt}
           onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
           onOpenPreview={() => setIsPreviewOpen(true)}
           onSubmitForReview={handleSubmitForReview}
           onPublishNow={handlePublishNow}
+          onOpenSchedule={() => setIsScheduleModalOpen(true)}
         />
       }
     >
@@ -424,6 +431,13 @@ export function EditorPage() {
         isOpen={isTemplatePickerOpen}
         onClose={() => setIsTemplatePickerOpen(false)}
         onSelectTemplate={handleApplyTemplate}
+      />
+
+      <ScheduleModal
+        isOpen={isScheduleModalOpen}
+        initialScheduledAt={scheduledAt}
+        onClose={() => setIsScheduleModalOpen(false)}
+        onSaveSchedule={handleSaveSchedule}
       />
     </PageWrapper>
   );

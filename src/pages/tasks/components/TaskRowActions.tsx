@@ -80,24 +80,29 @@ export function TaskRowActions({
       }}
     >
       {!open ? (
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-auto justify-start px-1 py-1 text-left text-xs font-normal"
-          aria-label={
-            field === "start"
-              ? t("tasks.workflow.start")
-              : t("tasks.inline.edit", {
-                  field:
-                    field === "assignee"
-                      ? t("tasks.assignee")
-                      : t("tasks.deadline"),
-                })
-          }
-          onClick={() => setOpen(true)}
-        >
-          {field === "start" ? t("tasks.workflow.start") : display}
-        </Button>
+        field === "start" ? (
+          <Button
+            size="sm"
+            variant="orange"
+            className="h-7 px-3 text-xs font-medium"
+            onClick={async () => {
+              state.retry();
+              await state.start();
+            }}
+          >
+            {task.type === "POST" ? "Bắt đầu & Soạn bài" : t("tasks.workflow.start")}
+          </Button>
+        ) : (
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-auto justify-start px-1 py-1 text-left text-xs font-normal"
+            aria-label={t("tasks.inline.edit", { field: t("tasks.deadline") })}
+            onClick={() => setOpen(true)}
+          >
+            {display}
+          </Button>
+        )
       ) : (
         <div className="space-y-2 py-1">
           {state.query.isPending && <Spinner />}
@@ -127,15 +132,6 @@ export function TaskRowActions({
               {field === "deadline" && (
                 <TaskDeadlineField task={state.query.data} scope="row" />
               )}
-              {field === "start" &&
-                state.query.data.allowedActions.canStart && (
-                  <TaskStartAction
-                    start={() => {
-                      state.retry();
-                      return state.start();
-                    }}
-                  />
-                )}
             </>
           )}
           <Button

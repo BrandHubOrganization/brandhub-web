@@ -215,16 +215,15 @@ function WorkspaceTaskView({
           {(view !== "list" || state.tasks.length === 0) && pagination}
         </div>
       </PageWrapper>
-      {panel.taskId && (
-        <TaskDetailPanel
-          workspaceId={workspaceId}
-          taskId={panel.taskId}
-          isDesktop={panel.isDesktop}
-          onClose={panel.close}
-          onRestoreFocus={panel.restoreFocus}
-          onUpdated={() => void state.loadTasks(true)}
-        />
-      )}
+      <TaskDetailPanel
+        workspaceId={workspaceId}
+        taskId={panel.taskId}
+        isOpen={Boolean(panel.taskId)}
+        isDesktop={panel.isDesktop}
+        onClose={panel.close}
+        onRestoreFocus={panel.restoreFocus}
+        onUpdated={() => void state.loadTasks(true)}
+      />
     </div>
   );
 }
