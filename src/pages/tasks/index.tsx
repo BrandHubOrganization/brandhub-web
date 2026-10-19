@@ -201,6 +201,8 @@ function WorkspaceTaskView({
                   <TaskCalendarTimeline
                     tasks={state.tasks}
                     onTaskClick={panel.open}
+                    workspaceId={workspaceId}
+                    onUpdated={() => void state.loadTasks(true)}
                   />
                 )}
                 {view === "board" && (

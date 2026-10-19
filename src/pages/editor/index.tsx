@@ -39,8 +39,19 @@ import {
 } from "@/pages/editor/components/TaskEditorControls";
 import { useSearchParams } from "react-router-dom";
 
-type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
+type EditorForm = Omit<
+  ReturnType<typeof useEditorForm>,
+  | "handlePublishNow"
+  | "scheduledAt"
+  | "isScheduleModalOpen"
+  | "setIsScheduleModalOpen"
+  | "handleSaveSchedule"
+> & {
   handlePublishNow?: () => void;
+  scheduledAt?: string | null;
+  isScheduleModalOpen?: boolean;
+  setIsScheduleModalOpen?: (open: boolean) => void;
+  handleSaveSchedule?: (dateIso: string) => Promise<void>;
   taskEditor?: TaskEditorState;
 };
 
@@ -202,12 +213,16 @@ function EditorWorkspace({
             lastSavedTime={lastSavedTime}
             isSubmitting={isSubmitting}
             publishStatus={publishStatus}
-            scheduledTime={scheduledAt}
+            scheduledTime={scheduledAt ?? undefined}
             onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
             onOpenPreview={() => setIsPreviewOpen(true)}
             onSubmitForReview={handleSubmitForReview}
             onPublishNow={handlePublishNow}
-            onOpenSchedule={() => setIsScheduleModalOpen(true)}
+            onOpenSchedule={
+              setIsScheduleModalOpen
+                ? () => setIsScheduleModalOpen(true)
+                : undefined
+            }
           />
         )
       }
@@ -492,12 +507,14 @@ function EditorWorkspace({
         onSelectTemplate={handleApplyTemplate}
       />
 
-      <ScheduleModal
-        isOpen={isScheduleModalOpen}
-        initialScheduledAt={scheduledAt}
-        onClose={() => setIsScheduleModalOpen(false)}
-        onSaveSchedule={handleSaveSchedule}
-      />
+      {handleSaveSchedule && setIsScheduleModalOpen && (
+        <ScheduleModal
+          isOpen={Boolean(isScheduleModalOpen)}
+          initialScheduledAt={scheduledAt ?? undefined}
+          onClose={() => setIsScheduleModalOpen(false)}
+          onSaveSchedule={handleSaveSchedule}
+        />
+      )}
     </PageWrapper>
   );
 }
