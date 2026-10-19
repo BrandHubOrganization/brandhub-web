@@ -54,8 +54,7 @@ function ApprovalWorkspace({
       compact
       showGuideButton={false}
       title={t("tasks.approvalPage.title")}
-      description={t("tasks.approvalPage.description")}
-      className="flex h-full min-h-0 flex-col !space-y-3 !pb-4"
+      className="flex h-full min-h-0 flex-col !space-y-3 !pb-4 [&>div:first-child]:shrink-0 [&>div:last-child]:flex [&>div:last-child]:min-h-0 [&>div:last-child]:flex-1 [&>div:last-child]:flex-col [&>div:last-child]:gap-3 [&>div:last-child]:overflow-hidden"
       actions={
         <Button
           variant="outline"
@@ -83,7 +82,7 @@ function ApprovalWorkspace({
       />
       <div
         className={cn(
-          "grid min-h-0 flex-1 gap-4",
+          "grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-4",
           selected && "lg:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.6fr)]",
         )}
       >
