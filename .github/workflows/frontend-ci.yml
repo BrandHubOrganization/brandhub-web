@@ -2,9 +2,9 @@ name: Frontend CI
 
 on:
   push:
-    branches: ['**']
+    branches: ['main', 'develop', 'feat/tuan-sprint-9']
   pull_request:
-    branches: [develop]
+    branches: ['develop']
 
 permissions:
   contents: read
