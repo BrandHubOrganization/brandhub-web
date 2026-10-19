@@ -30,13 +30,33 @@ import { useParams, Link } from "react-router-dom";
 import { AlertTriangle, CheckCircle, ExternalLink } from "lucide-react";
 import { fetchSocialAccounts } from "@/pages/social-accounts/services/socialAccountService";
 import { useEditorForm } from "./hooks/useEditorForm";
+import {
+  useTaskEditorForm,
+  type TaskEditorState,
+} from "@/pages/editor/hooks/useTaskEditorForm";
+import {
+  TaskEditorActions,
+  TaskEditorNotice,
+} from "@/pages/editor/components/TaskEditorControls";
+import { useSearchParams } from "react-router-dom";
+
+type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
+  handlePublishNow?: () => void;
+  taskEditor?: TaskEditorState;
+};
 
 /**
  * Content Creator workspace based on the approved Figma UI in Uibrandhubs.
  * The editor uses BrandHub components and persists drafts through the Business
  * Service while AI generation is proxied to brandhub-ai-service.
  */
-export function EditorPage() {
+function EditorWorkspace({
+  form,
+  taskId,
+}: {
+  form: EditorForm;
+  taskId?: string;
+}) {
   const { t } = useTranslation();
   const { id: routeWorkspaceId } = useParams<{ id: string }>();
   const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
@@ -85,7 +105,8 @@ export function EditorPage() {
     handleApplyTemplate,
     handleSubmitForReview,
     handlePublishNow,
-  } = useEditorForm();
+    taskEditor,
+  } = form;
 
   const handleApplyGeneratedImage = (imageUrl: string, s3Key?: string) => {
     handleGeneratedMedia(imageUrl, s3Key, "IMAGE");
@@ -188,25 +209,52 @@ export function EditorPage() {
       description={t("editor.page.description")}
       className="max-w-[1800px]"
       actions={
-        <EditorHeaderActions
-          isSaving={isSaving}
-          isDirty={isDirty}
-          lastSavedTime={lastSavedTime}
-          isSubmitting={isSubmitting}
-          publishStatus={publishStatus}
-          onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
-          onOpenPreview={() => setIsPreviewOpen(true)}
-          onSubmitForReview={handleSubmitForReview}
-          onPublishNow={handlePublishNow}
-        />
+        taskEditor ? null : (
+          <EditorHeaderActions
+            isSaving={isSaving}
+            isDirty={isDirty}
+            lastSavedTime={lastSavedTime}
+            isSubmitting={isSubmitting}
+            publishStatus={publishStatus}
+            onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
+            onOpenPreview={() => setIsPreviewOpen(true)}
+            onSubmitForReview={handleSubmitForReview}
+            onPublishNow={handlePublishNow}
+          />
+        )
       }
     >
+      {taskEditor && (
+        <div className="mb-4 flex min-w-0 justify-end">
+          <TaskEditorActions
+            task={taskEditor}
+            isSaving={isSaving}
+            isDirty={isDirty}
+            isSubmitting={isSubmitting}
+            onPreview={() => setIsPreviewOpen(true)}
+            onTemplate={() => setIsTemplatePickerOpen(true)}
+            onSubmit={handleSubmitForReview}
+          />
+        </div>
+      )}
+      {taskEditor && workspaceId && taskId && (
+        <TaskEditorNotice
+          task={taskEditor}
+          isDirty={isDirty}
+          busy={isSaving || isSubmitting}
+          workspaceId={workspaceId}
+          taskId={taskId}
+        />
+      )}
       <div
         ref={workspaceRef}
         style={workspaceStyle}
         className="grid items-start gap-4 xl:grid-cols-[var(--editor-ai-width)_minmax(360px,1fr)_var(--editor-preview-width)]"
       >
-        <aside className="relative order-2 min-w-0 xl:sticky xl:top-0 xl:order-1 xl:max-h-[calc(100dvh-4.5rem)]">
+        <aside
+          inert={taskEditor?.isReadOnly}
+          className="relative order-2 min-w-0 xl:sticky xl:top-0 xl:order-1 xl:max-h-[calc(100dvh-4.5rem)]"
+        >
           {isAiPanelOpen ? (
             <section className="border-border bg-card overflow-hidden rounded-xl border shadow-2xs">
               <div className="border-border bg-muted/40 flex items-center justify-between gap-2 border-b px-3 py-3">
@@ -338,6 +386,7 @@ export function EditorPage() {
                       <button
                         key={platform}
                         type="button"
+                        disabled={taskEditor?.isReadOnly}
                         onClick={() => toggleTargetPlatform(platform)}
                         className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
                           isSelected
@@ -375,6 +424,7 @@ export function EditorPage() {
                 value={caption}
                 onChange={handleCaptionChange}
                 targetPlatforms={targetPlatforms}
+                readOnly={taskEditor?.isReadOnly}
               />
 
               <section className="border-border bg-muted/20 space-y-3 rounded-xl border p-3">
@@ -387,11 +437,13 @@ export function EditorPage() {
                     phỏng.
                   </p>
                 </div>
-                <MediaDropzone
-                  mediaUrls={mediaUrls}
-                  onChange={handleMediaUrlsChange}
-                  workspaceId={workspaceId}
-                />
+                <div inert={taskEditor?.isReadOnly}>
+                  <MediaDropzone
+                    mediaUrls={mediaUrls}
+                    onChange={handleMediaUrlsChange}
+                    workspaceId={workspaceId}
+                  />
+                </div>
               </section>
 
               <section className="border-border relative z-10 rounded-xl border p-3">
@@ -472,6 +524,39 @@ export function EditorPage() {
       />
     </PageWrapper>
   );
+}
+
+function StandaloneEditor() {
+  const form = useEditorForm();
+  return <EditorWorkspace form={form} />;
+}
+
+function LinkedTaskEditor({
+  workspaceId,
+  taskId,
+}: {
+  workspaceId: string;
+  taskId: string;
+}) {
+  const form = useTaskEditorForm(workspaceId, taskId);
+  return <EditorWorkspace form={form} taskId={taskId} />;
+}
+
+export function EditorPage() {
+  const { id } = useParams<{ id: string }>();
+  const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+  const [params] = useSearchParams();
+  const workspaceId = id ?? currentWorkspace?.id;
+  const taskId = params.get("taskId");
+  if (taskId)
+    return workspaceId ? (
+      <LinkedTaskEditor
+        key={`${workspaceId}:${taskId}`}
+        workspaceId={workspaceId}
+        taskId={taskId}
+      />
+    ) : null;
+  return <StandaloneEditor key={workspaceId} />;
 }
 
 export default EditorPage;
