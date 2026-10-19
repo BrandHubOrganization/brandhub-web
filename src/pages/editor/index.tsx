@@ -29,13 +29,33 @@ import { AlertTriangle, CheckCircle, ExternalLink } from "lucide-react";
 import { fetchSocialAccounts } from "@/pages/social-accounts/services/socialAccountService";
 import { ScheduleModal } from "@/pages/editor/components/ScheduleModal";
 import { useEditorForm } from "./hooks/useEditorForm";
+import {
+  useTaskEditorForm,
+  type TaskEditorState,
+} from "@/pages/editor/hooks/useTaskEditorForm";
+import {
+  TaskEditorActions,
+  TaskEditorNotice,
+} from "@/pages/editor/components/TaskEditorControls";
+import { useSearchParams } from "react-router-dom";
+
+type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
+  handlePublishNow?: () => void;
+  taskEditor?: TaskEditorState;
+};
 
 /**
  * Content Creator workspace based on the approved Figma UI in Uibrandhubs.
  * The editor uses BrandHub components and persists drafts through the Business
  * Service while AI generation is proxied to brandhub-ai-service.
  */
-export function EditorPage() {
+function EditorWorkspace({
+  form,
+  taskId,
+}: {
+  form: EditorForm;
+  taskId?: string;
+}) {
   const { t } = useTranslation();
   const { id: routeWorkspaceId } = useParams<{ id: string }>();
   const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
@@ -76,7 +96,8 @@ export function EditorPage() {
     setIsScheduleModalOpen,
     scheduledAt,
     handleSaveSchedule,
-  } = useEditorForm();
+    taskEditor,
+  } = form;
 
   const handleApplyGeneratedImage = (imageUrl: string, s3Key?: string) => {
     handleGeneratedMedia(imageUrl, s3Key, "IMAGE");
@@ -174,27 +195,54 @@ export function EditorPage() {
       description={t("editor.page.description")}
       className="max-w-[1800px]"
       actions={
-        <EditorHeaderActions
-          isSaving={isSaving}
-          isDirty={isDirty}
-          lastSavedTime={lastSavedTime}
-          isSubmitting={isSubmitting}
-          publishStatus={publishStatus}
-          scheduledTime={scheduledAt}
-          onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
-          onOpenPreview={() => setIsPreviewOpen(true)}
-          onSubmitForReview={handleSubmitForReview}
-          onPublishNow={handlePublishNow}
-          onOpenSchedule={() => setIsScheduleModalOpen(true)}
-        />
+        taskEditor ? null : (
+          <EditorHeaderActions
+            isSaving={isSaving}
+            isDirty={isDirty}
+            lastSavedTime={lastSavedTime}
+            isSubmitting={isSubmitting}
+            publishStatus={publishStatus}
+            scheduledTime={scheduledAt}
+            onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
+            onOpenPreview={() => setIsPreviewOpen(true)}
+            onSubmitForReview={handleSubmitForReview}
+            onPublishNow={handlePublishNow}
+            onOpenSchedule={() => setIsScheduleModalOpen(true)}
+          />
+        )
       }
     >
+      {taskEditor && (
+        <div className="mb-4 flex min-w-0 justify-end">
+          <TaskEditorActions
+            task={taskEditor}
+            isSaving={isSaving}
+            isDirty={isDirty}
+            isSubmitting={isSubmitting}
+            onPreview={() => setIsPreviewOpen(true)}
+            onTemplate={() => setIsTemplatePickerOpen(true)}
+            onSubmit={handleSubmitForReview}
+          />
+        </div>
+      )}
+      {taskEditor && workspaceId && taskId && (
+        <TaskEditorNotice
+          task={taskEditor}
+          isDirty={isDirty}
+          busy={isSaving || isSubmitting}
+          workspaceId={workspaceId}
+          taskId={taskId}
+        />
+      )}
       <div
         ref={workspaceRef}
         style={workspaceStyle}
         className="grid items-start gap-4 xl:grid-cols-[var(--editor-ai-width)_minmax(360px,1fr)_var(--editor-preview-width)]"
       >
-        <aside className="relative order-2 min-w-0 xl:sticky xl:top-0 xl:order-1 xl:max-h-[calc(100dvh-4.5rem)]">
+        <aside
+          inert={taskEditor?.isReadOnly}
+          className="relative order-2 min-w-0 xl:sticky xl:top-0 xl:order-1 xl:max-h-[calc(100dvh-4.5rem)]"
+        >
           {isAiPanelOpen ? (
             <section className="border-border bg-card overflow-hidden rounded-xl border shadow-2xs">
               <div className="border-border bg-muted/40 flex items-center justify-between gap-2 border-b px-3 py-3">
@@ -272,7 +320,7 @@ export function EditorPage() {
 
             <div className="space-y-4 p-4 md:p-5">
               {hasLoadedSocial && unlinkedPlatforms.length > 0 && (
-                <div className="border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200 flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3.5 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-900 dark:text-amber-200">
                   <div className="flex items-center gap-2.5">
                     <AlertTriangle className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
                     <span>
@@ -289,7 +337,7 @@ export function EditorPage() {
                   {isClient && workspaceId && (
                     <Link
                       to={`/workspaces/${workspaceId}/social-accounts`}
-                      className="border-amber-500/40 bg-amber-500/20 hover:bg-amber-500/30 text-amber-900 dark:text-amber-100 flex items-center gap-1.5 rounded-lg border px-3 py-1 font-medium transition-colors"
+                      className="flex items-center gap-1.5 rounded-lg border border-amber-500/40 bg-amber-500/20 px-3 py-1 font-medium text-amber-900 transition-colors hover:bg-amber-500/30 dark:text-amber-100"
                     >
                       <span>Kết nối ngay</span>
                       <ExternalLink className="size-3" />
@@ -299,52 +347,61 @@ export function EditorPage() {
               )}
 
               {hasLoadedSocial && unlinkedPlatforms.length === 0 && (
-                <div className="border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-300 flex items-center gap-2 rounded-xl border px-3.5 py-2 text-2xs">
+                <div className="text-2xs flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-3.5 py-2 text-emerald-800 dark:text-emerald-300">
                   <CheckCircle className="size-3.5 shrink-0 text-emerald-500" />
                   <span>
-                    Tất cả các nền tảng ({connectedPlatforms.join(", ")}) đã sẵn sàng để xuất bản.
+                    Tất cả các nền tảng ({connectedPlatforms.join(", ")}) đã sẵn
+                    sàng để xuất bản.
                   </span>
                 </div>
               )}
 
               {/* Nền tảng mục tiêu xuất bản */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-muted-foreground text-xs font-medium mr-1">
+                <span className="text-muted-foreground mr-1 text-xs font-medium">
                   Đăng lên:
                 </span>
-                {(["FACEBOOK", "INSTAGRAM", "TIKTOK", "THREADS"] as const).map((platform) => {
-                  const isSelected = targetPlatforms.includes(platform);
-                  const isConnected = connectedPlatforms.includes(platform);
-                  return (
-                    <button
-                      key={platform}
-                      type="button"
-                      onClick={() => toggleTargetPlatform(platform)}
-                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-                        isSelected
-                          ? "bg-brand-orange text-white shadow-xs"
-                          : "border-border bg-card text-muted-foreground hover:bg-muted border"
-                      }`}
-                    >
-                      <span
-                        className={`size-2 rounded-full ${
-                          isConnected ? "bg-emerald-400" : "bg-zinc-400 opacity-60"
+                {(["FACEBOOK", "INSTAGRAM", "TIKTOK", "THREADS"] as const).map(
+                  (platform) => {
+                    const isSelected = targetPlatforms.includes(platform);
+                    const isConnected = connectedPlatforms.includes(platform);
+                    return (
+                      <button
+                        key={platform}
+                        type="button"
+                        disabled={taskEditor?.isReadOnly}
+                        onClick={() => toggleTargetPlatform(platform)}
+                        className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                          isSelected
+                            ? "bg-brand-orange text-white shadow-xs"
+                            : "border-border bg-card text-muted-foreground hover:bg-muted border"
                         }`}
-                        title={isConnected ? "Đã liên kết" : "Chưa liên kết"}
-                      />
-                      <span>{platform}</span>
-                      {isConnected && (
-                        <span className="text-2xs opacity-80">(Sẵn sàng)</span>
-                      )}
-                    </button>
-                  );
-                })}
+                      >
+                        <span
+                          className={`size-2 rounded-full ${
+                            isConnected
+                              ? "bg-emerald-400"
+                              : "bg-zinc-400 opacity-60"
+                          }`}
+                          title={isConnected ? "Đã liên kết" : "Chưa liên kết"}
+                        />
+                        <span>{platform}</span>
+                        {isConnected && (
+                          <span className="text-2xs opacity-80">
+                            (Sẵn sàng)
+                          </span>
+                        )}
+                      </button>
+                    );
+                  },
+                )}
               </div>
 
               <RichTextEditor
                 value={caption}
                 onChange={handleCaptionChange}
                 targetPlatforms={targetPlatforms}
+                readOnly={taskEditor?.isReadOnly}
               />
 
               <section className="border-border bg-muted/20 space-y-3 rounded-xl border p-3">
@@ -357,11 +414,13 @@ export function EditorPage() {
                     phỏng.
                   </p>
                 </div>
-                <MediaDropzone
-                  mediaUrls={mediaUrls}
-                  onChange={handleMediaUrlsChange}
-                  workspaceId={workspaceId}
-                />
+                <div inert={taskEditor?.isReadOnly}>
+                  <MediaDropzone
+                    mediaUrls={mediaUrls}
+                    onChange={handleMediaUrlsChange}
+                    workspaceId={workspaceId}
+                  />
+                </div>
               </section>
 
               {/* <section className="border-border relative z-10 rounded-xl border p-3">
@@ -441,6 +500,39 @@ export function EditorPage() {
       />
     </PageWrapper>
   );
+}
+
+function StandaloneEditor() {
+  const form = useEditorForm();
+  return <EditorWorkspace form={form} />;
+}
+
+function LinkedTaskEditor({
+  workspaceId,
+  taskId,
+}: {
+  workspaceId: string;
+  taskId: string;
+}) {
+  const form = useTaskEditorForm(workspaceId, taskId);
+  return <EditorWorkspace form={form} taskId={taskId} />;
+}
+
+export function EditorPage() {
+  const { id } = useParams<{ id: string }>();
+  const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+  const [params] = useSearchParams();
+  const workspaceId = id ?? currentWorkspace?.id;
+  const taskId = params.get("taskId");
+  if (taskId)
+    return workspaceId ? (
+      <LinkedTaskEditor
+        key={`${workspaceId}:${taskId}`}
+        workspaceId={workspaceId}
+        taskId={taskId}
+      />
+    ) : null;
+  return <StandaloneEditor key={workspaceId} />;
 }
 
 export default EditorPage;

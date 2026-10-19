@@ -81,6 +81,7 @@ const NAV_KEY_MAP: Record<string, string> = {
   invitations: "nav.invitations",
   clients: "nav.clients",
   requests: "nav.requests",
+  "task-approvals": "tasks.approvalPage.title",
   templates: "nav.templates",
   "hashtag-groups": "nav.hashtagGroups",
   library: "nav.library",

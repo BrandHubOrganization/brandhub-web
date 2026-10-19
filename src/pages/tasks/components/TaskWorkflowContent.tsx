@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { RefreshCw, PenSquare } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
@@ -81,20 +81,26 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
           {task.type === "POST" && !task.allowedActions.canStart && (
             <div className="bg-card space-y-2 rounded-xl border p-4">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold">Nội dung bài viết (Post Content)</p>
-                <span className="bg-brand-orange-soft text-brand-orange rounded-md px-2 py-0.5 text-2xs font-semibold">
+                <p className="text-sm font-semibold">
+                  Nội dung bài viết (Post Content)
+                </p>
+                <span className="bg-brand-orange-soft text-brand-orange text-2xs rounded-md px-2 py-0.5 font-semibold">
                   Tự động đăng
                 </span>
               </div>
               <p className="text-muted-foreground text-xs">
-                Soạn bài và thiết lập <strong>Lịch xuất bản (Publish Date)</strong> trong Editor. Hệ thống sẽ tự động đăng bài lên mạng xã hội khi đến giờ hẹn.
+                Soạn bài và thiết lập{" "}
+                <strong>Lịch xuất bản (Publish Date)</strong> trong Editor. Hệ
+                thống sẽ tự động đăng bài lên mạng xã hội khi đến giờ hẹn.
               </p>
               <Button
                 variant="outline"
-                className="gap-2 border-brand-orange text-brand-orange hover:bg-brand-orange/10 mt-2"
+                className="border-brand-orange text-brand-orange hover:bg-brand-orange/10 mt-2 gap-2"
                 asChild
               >
-                <Link to={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}>
+                <Link
+                  to={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}
+                >
                   <PenSquare className="size-4" />
                   Mở bài viết &amp; Lên lịch trong Editor
                 </Link>
@@ -109,6 +115,17 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
                 return state.start();
               }}
             />
+          )}
+          {task.type === "POST" && (
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" asChild>
+                <Link
+                  to={`/workspaces/${workspaceId}/task-approvals?task=${encodeURIComponent(taskId)}`}
+                >
+                  {t("tasks.approvalPage.title")}
+                </Link>
+              </Button>
+            </div>
           )}
           <TaskComments workspaceId={workspaceId} taskId={taskId} />
         </>
