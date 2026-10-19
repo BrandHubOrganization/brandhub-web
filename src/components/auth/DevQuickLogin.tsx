@@ -16,21 +16,23 @@ import type { MemberRole } from "@/types/workspace";
  */
 const QUICK_LOGIN_ACCOUNTS = [
   { email: "admin@brandhub.dev", labelKey: "nav.admin" },
-  { email: "user177@hotmail.com", labelKey: "workspace.roles.OWNER" },
-  // A user can be Manager and Creator in different workspaces.
   {
-    email: "user1@gmail.com",
+    email: "owner@brandhub.dev",
+    labelKey: "workspace.roles.OWNER",
+    workspaceRole: "OWNER",
+  },
+  {
+    email: "manager@brandhub.dev",
     labelKey: "workspace.roles.MANAGER",
     workspaceRole: "MANAGER",
   },
   {
-    email: "user1@gmail.com",
+    email: "creator@brandhub.dev",
     labelKey: "workspace.roles.CREATOR",
     workspaceRole: "CREATOR",
   },
-  // Clients choose their brand profile before opening an assigned workspace.
   {
-    email: "user59@gmail.com",
+    email: "client@brandhub.dev",
     labelKey: "workspace.roles.CLIENT",
     landingPath: "/client-profiles",
   },

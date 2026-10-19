@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   Clock,
   LayoutTemplate,
+  Calendar,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -14,10 +15,12 @@ interface Props {
   lastSavedTime: string;
   isSubmitting: boolean;
   publishStatus?: "IDLE" | "PUBLISHING" | "PUBLISHED" | "FAILED";
+  scheduledTime?: string;
   onOpenTemplatePicker: () => void;
   onOpenPreview: () => void;
   onSubmitForReview: () => void;
   onPublishNow?: () => void;
+  onOpenSchedule?: () => void;
 }
 
 export function EditorHeaderActions({
@@ -26,10 +29,12 @@ export function EditorHeaderActions({
   lastSavedTime,
   isSubmitting,
   publishStatus = "IDLE",
+  scheduledTime,
   onOpenTemplatePicker,
   onOpenPreview,
   onSubmitForReview,
   onPublishNow,
+  onOpenSchedule,
 }: Props) {
   const { t } = useTranslation();
   return (
@@ -92,6 +97,30 @@ export function EditorHeaderActions({
         <Eye className="text-brand-orange size-4" />
         <span>{t("editor.header.previewButton")}</span>
       </button>
+
+      {onOpenSchedule && (
+        <button
+          type="button"
+          onClick={onOpenSchedule}
+          disabled={isSubmitting}
+          className="border-brand-orange/40 bg-card text-brand-orange hover:bg-brand-orange/10 flex cursor-pointer items-center gap-1.5 rounded-xl border px-3.5 py-1.5 text-xs font-medium shadow-2xs transition-colors disabled:opacity-50"
+        >
+          <Calendar className="size-3.5" />
+          <span>
+            {scheduledTime
+              ? `Lên lịch: ${new Date(scheduledTime).toLocaleDateString(
+                  "vi-VN",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    day: "2-digit",
+                    month: "2-digit",
+                  },
+                )}`
+              : "Lên lịch đăng"}
+          </span>
+        </button>
+      )}
 
       {onPublishNow && (
         <button

@@ -80,9 +80,14 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
           <TaskInlineDetails key={epoch} task={task} />
           {task.type === "POST" && !task.allowedActions.canStart && (
             <div className="bg-card space-y-2 rounded-xl border p-4">
-              <p className="text-sm font-medium">Nội dung bài viết (Post Content)</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold">Nội dung bài viết (Post Content)</p>
+                <span className="bg-brand-orange-soft text-brand-orange rounded-md px-2 py-0.5 text-2xs font-semibold">
+                  Tự động đăng
+                </span>
+              </div>
               <p className="text-muted-foreground text-xs">
-                Mở giao diện Editor để tiếp tục chỉnh sửa bài viết và theo dõi trạng thái xuất bản bài đăng lên Facebook.
+                Soạn bài và thiết lập <strong>Lịch xuất bản (Publish Date)</strong> trong Editor. Hệ thống sẽ tự động đăng bài lên mạng xã hội khi đến giờ hẹn.
               </p>
               <Button
                 variant="outline"
@@ -91,7 +96,7 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
               >
                 <Link to={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}>
                   <PenSquare className="size-4" />
-                  Mở bài viết trong Editor
+                  Mở bài viết &amp; Lên lịch trong Editor
                 </Link>
               </Button>
             </div>

@@ -287,7 +287,30 @@
     "submitForApproval": "Gửi phê duyệt",
     "unsavedDraft": "Chưa lưu nháp",
     "templatePickerButton": "Mẫu Bài Đăng",
-    "previewButton": "Preview Post"
+    "previewButton": "Preview Post",
+    "scheduleButton": "Lên lịch đăng",
+    "scheduledAt": "Lên lịch: {{time}}",
+    "publishNow": "Đăng ngay",
+    "publishing": "Đang xuất bản lên Facebook...",
+    "publishedSuccess": "Bài viết đã được tiếp nhận và xuất bản lên Facebook!",
+    "publishFailed": "Đăng thất bại",
+    "publishingProgress": "Đang xử lý...",
+    "platformRequired": "Vui lòng chọn ít nhất 1 nền tảng mạng xã hội để đăng!"
+  },
+  "scheduleModal": {
+    "title": "Lên lịch đăng bài tự động",
+    "description": "Chọn ngày và giờ để hệ thống tự động xuất bản bài viết lên các mạng xã hội đã chọn.",
+    "publishDate": "Ngày xuất bản (Publish Date)",
+    "publishTime": "Giờ xuất bản (Giờ : Phút)",
+    "rulesTitle": "Quy tắc xuất bản tự động:",
+    "rule1": "Thời gian hẹn giờ phải ở tương lai.",
+    "rule2": "Hệ thống worker chạy ngầm định kỳ quét và đăng bài tự động đúng giờ.",
+    "confirm": "Xác nhận lên lịch",
+    "emptyError": "Vui lòng chọn đầy đủ ngày và giờ xuất bản!",
+    "pastDateError": "Thời gian lên lịch xuất bản không thể ở trong quá khứ! Vui lòng chọn thời gian ở tương lai.",
+    "minFutureError": "Thời gian lên lịch xuất bản nên cách hiện tại ít nhất 5 phút để hệ thống xử lý.",
+    "success": "Đã lên lịch đăng tự động vào lúc {{time}} ngày {{date}}",
+    "saveError": "Không thể lưu lịch đăng bài!"
   },
   "hashtagInput": {
     "loadFromCollectionButton": "Từ kho hashtag",

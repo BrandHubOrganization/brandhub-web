@@ -269,7 +269,30 @@
     "submitForApproval": "Submit for Approval",
     "unsavedDraft": "Unsaved draft",
     "templatePickerButton": "Post Templates",
-    "previewButton": "Preview Post"
+    "previewButton": "Preview Post",
+    "scheduleButton": "Schedule Post",
+    "scheduledAt": "Scheduled: {{time}}",
+    "publishNow": "Publish Now",
+    "publishing": "Publishing to Facebook...",
+    "publishedSuccess": "Post received and successfully published to Facebook!",
+    "publishFailed": "Publishing failed",
+    "publishingProgress": "Processing...",
+    "platformRequired": "Please select at least one social media platform to publish!"
+  },
+  "scheduleModal": {
+    "title": "Automated Post Scheduling",
+    "description": "Choose the date and time for the system to automatically publish your post to selected channels.",
+    "publishDate": "Publish Date",
+    "publishTime": "Publish Time (HH : mm)",
+    "rulesTitle": "Automated publishing rules:",
+    "rule1": "Scheduled time must be in the future.",
+    "rule2": "Background worker scans periodically and publishes posts on schedule.",
+    "confirm": "Confirm Schedule",
+    "emptyError": "Please select both publication date and time!",
+    "pastDateError": "Scheduled publish time cannot be in the past! Please choose a future time.",
+    "minFutureError": "Scheduled publish time should be at least 5 minutes in the future for system processing.",
+    "success": "Automatically scheduled for {{time}} on {{date}}",
+    "saveError": "Failed to save post schedule!"
   },
   "hashtagInput": {
     "loadFromCollectionButton": "Choose from collection",
