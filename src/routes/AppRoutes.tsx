@@ -153,6 +153,7 @@ const WorkspaceMembersPage = lazyNamed(
 );
 const TaskListPage = lazyNamed(() => import("@/pages/tasks"), "TaskListPage");
 const TaskDetailPage = lazy(() => import("@/pages/tasks/detail"));
+const TaskApprovalsPage = lazy(() => import("@/pages/task-approvals"));
 const WorkspaceClientsPage = lazyNamed(
   () => import("@/pages/workspace/clients"),
   "WorkspaceClientsPage",
@@ -385,6 +386,7 @@ export function AppRoutes() {
               element={<WorkspaceRequestPage />}
             />
             <Route path="/workspaces/:id/tasks" element={<TaskListPage />} />
+            <Route path="/workspaces/:id/task-approvals" element={<TaskApprovalsPage />} />
             <Route
               path="/workspaces/:id/tasks/:taskId/detail"
               element={<TaskDetailPage />}
