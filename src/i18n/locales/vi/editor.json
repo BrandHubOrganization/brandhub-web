@@ -234,7 +234,7 @@
       "BLOG": "Ví dụ: Viết bài blog 500 từ giới thiệu sản phẩm mới, có mở bài - thân bài - kết luận...",
       "AD_COPY": "Ví dụ: Viết quảng cáo ngắn kêu gọi mua hàng, nhấn mạnh ưu đãi giới hạn thời gian..."
     },
-    "promptPlaceholder": "Ví dụ: Viết bài đăng phong cách hài hước...",
+    "promptPlaceholder": "Viết bài đăng hấp dẫn, ngắn gọn với giọng văn thu hút và kêu gọi hành động.",
     "generating": "AI đang tạo (~{{seconds}}s)...",
     "generateButton": "Generate with AI",
     "errorServiceUnavailable": "Dịch vụ AI hiện không khả dụng (503)",
@@ -366,8 +366,15 @@
     "clearAllButton": "Xoá tất cả",
     "loadFromGroupButton": "Load từ Nhóm",
     "chooseGroupLabel": "Chọn nhóm hashtag đã lưu:",
-    "inputPlaceholder": "Nhập hashtag và nhấn Enter (hoặc chọn gợi ý)...",
-    "trendingSuggestionsLabel": "Gợi ý hashtag thịnh hành:"
+    "inputPlaceholder": "Nhập hashtag và nhấn Enter...",
+    "trendingSuggestionsLabel": "Gợi ý hashtag thịnh hành:",
+    "aiGenerate": "Gợi ý hashtag từ API · {{platform}}",
+    "aiLoading": "Đang lấy hashtag...",
+    "aiCaptionRequired": "Nhập nội dung bài viết để lấy gợi ý hashtag.",
+    "aiError": "Không lấy được hashtag. Vui lòng thử lại.",
+    "aiEmpty": "API chưa trả về hashtag phù hợp.",
+    "aiResults": "Hashtag gợi ý từ API",
+    "aiApply": "Thêm {{tag}} vào bài viết"
   },
   "imageLightbox": {
     "copySuccess": "Đã copy đường dẫn ảnh vào clipboard!",
@@ -421,5 +428,7 @@
       "CAROUSEL": "Carousel",
       "STORY": "Story"
     }
-  }
+  },
+  "socialStatusError": "Không thể kiểm tra kết nối mạng xã hội. Vui lòng tải lại để thử lại.",
+  "socialStatusUnknown": "Chưa xác định trạng thái kết nối"
 }

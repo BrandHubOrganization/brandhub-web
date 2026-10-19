@@ -83,6 +83,41 @@ test("renders the three-tool creator studio", async ({ page }) => {
   await expect(page.getByText("Live Preview", { exact: true })).toBeVisible();
 });
 
+test("opens a new Post without seeded content or product imagery", async ({
+  page,
+}) => {
+  await expect(page.locator('[contenteditable="true"]')).toHaveText("");
+  await expect(page.getByAltText(/^Media /)).toHaveCount(0);
+  await expect(page.getByAltText("Post content", { exact: true })).toHaveCount(
+    0,
+  );
+  await expect(page.getByText("#NikeAirMax", { exact: true })).toHaveCount(0);
+});
+
+test("loads task content without adding promotional seed text", async ({
+  page,
+}) => {
+  await page.route("**/api/v1/workspaces/workspace-1/tasks/task-1", (route) =>
+    route.fulfill({
+      json: {
+        success: true,
+        data: {
+          name: "Campaign task",
+          description: "Actual task description",
+        },
+      },
+    }),
+  );
+  await page.goto("/workspaces/workspace-1/editor?taskId=task-1");
+  await expect(page.locator('[contenteditable="true"]')).toHaveText(
+    "Actual task description",
+  );
+  await expect(page.getByText("#Event2026", { exact: true })).toHaveCount(0);
+  await expect(page.getByAltText("Post content", { exact: true })).toHaveCount(
+    0,
+  );
+});
+
 test("redirects the legacy /editor bookmark to the active workspace", async ({
   page,
 }) => {
@@ -107,6 +142,10 @@ test("generates and applies real-contract post text", async ({ page }) => {
     }),
   );
 
+  const prompt = page.locator("textarea").first();
+  await expect(prompt).toHaveValue("");
+  await expect(prompt).toHaveAttribute("placeholder", /.+/);
+  await prompt.fill("Write a BrandHub launch post");
   await page.getByTestId("generate-text").click();
   await expect(page.getByTestId("generated-caption")).toHaveValue(
     "BrandHub launch caption",
@@ -120,6 +159,7 @@ test("generates and applies real-contract post text", async ({ page }) => {
 test("applies workspace collection hashtags and saves the Post snapshot", async ({
   page,
 }) => {
+  await page.addInitScript(() => localStorage.setItem("brandhub-lang", "en"));
   const studio = new ContentCreatorStudioPage(page);
   const entries = [
     {
@@ -206,8 +246,33 @@ test("applies workspace collection hashtags and saves the Post snapshot", async 
       route.fulfill({ json: { success: true, data: { id: "post-1" } } }),
   );
   await page.reload();
-  await studio.clearHashtags();
+  await page
+    .locator('[contenteditable="true"]')
+    .fill("Workspace campaign caption");
+  const hashtagInput = page.getByRole("textbox", {
+    name: "Search or add a hashtag",
+  });
+  await expect(
+    page.getByRole("button", { name: "Apply #BrandHub to this Post" }),
+  ).toHaveCount(0);
+  await hashtagInput.focus();
+  await expect(
+    page.getByRole("button", { name: "Apply #BrandHub to this Post" }),
+  ).toBeVisible();
+  const filteredRequest = page.waitForRequest((request) => {
+    const url = new URL(request.url());
+    return (
+      url.pathname.endsWith("/workspace-1/hashtags") &&
+      url.searchParams.get("q") === "Brand"
+    );
+  });
+  await hashtagInput.fill("#Brand");
+  await filteredRequest;
+  await expect(
+    page.getByRole("textbox", { name: "Search saved hashtags" }),
+  ).toHaveValue("Brand");
   await studio.openCollection();
+  await hashtagInput.click();
   await expect(page.getByText("Campaign campaign-42")).toBeVisible();
   await expect(
     page.getByRole("button", {
@@ -394,3 +459,217 @@ for (const language of ["vi", "en"] as const) {
     expect(sheetRequests).toBe(0);
   });
 }
+
+for (const language of ["vi", "en"] as const) {
+  test(`loads API hashtag suggestions without saving to collection (${language})`, async ({
+    page,
+  }) => {
+    await page.evaluate((lang) => {
+      localStorage.setItem("brandhub-lang", lang);
+      localStorage.setItem("vite-ui-theme", lang === "vi" ? "light" : "dark");
+    }, language);
+    await page.reload();
+    let savedToCollection = 0;
+    await page.route("**/api/v1/workspaces/workspace-1/hashtags**", (route) => {
+      if (route.request().method() === "POST") savedToCollection++;
+      return route.fulfill({
+        json: { success: true, data: { items: [], totalPages: 0 } },
+      });
+    });
+    const requests: unknown[] = [];
+    await page.route("**/api/v1/ai/content/hashtags", (route) => {
+      requests.push(route.request().postDataJSON());
+      return route.fulfill({
+        json: {
+          success: true,
+          data: { hashtags: ["#CoffeeLaunch", "coffeelaunch", "#NewBlend"] },
+        },
+      });
+    });
+    const generate = page.getByRole("button", {
+      name:
+        language === "vi" ? /Gợi ý hashtag từ API/ : /Get hashtag suggestions/,
+    });
+    await expect(generate).toBeDisabled();
+    await page
+      .locator('[contenteditable="true"]')
+      .fill("Our new coffee launch");
+    await generate.click();
+    expect(requests).toEqual([
+      { topic: "Our new coffee launch", platform: "facebook", count: 5 },
+    ]);
+    const apply = page.getByRole("button", {
+      name:
+        language === "vi"
+          ? "Thêm #CoffeeLaunch vào bài viết"
+          : "Add #CoffeeLaunch to this Post",
+    });
+    await expect(apply).toHaveCount(1);
+    await apply.focus();
+    await page.keyboard.press("Enter");
+    await expect(apply).toBeDisabled();
+    expect(savedToCollection).toBe(0);
+    await page.locator('[contenteditable="true"]').fill("Another topic");
+    await expect(apply).toHaveCount(0);
+    await page.route("**/api/v1/ai/content/hashtags", (route) =>
+      route.fulfill({ status: 503, json: { success: false } }),
+    );
+    await generate.click();
+    await expect(
+      page.getByRole("alert").filter({
+        hasText:
+          language === "vi"
+            ? "Không lấy được hashtag"
+            : "Could not get hashtags",
+      }),
+    ).toBeVisible();
+    await page.route("**/api/v1/ai/content/hashtags", (route) =>
+      route.fulfill({ json: { success: true, data: { hashtags: [] } } }),
+    );
+    await generate.click();
+    await expect(
+      page.getByText(
+        language === "vi"
+          ? "API chưa trả về hashtag phù hợp."
+          : "The API returned no matching hashtags.",
+        { exact: true },
+      ),
+    ).toBeVisible();
+  });
+}
+
+for (const language of ["vi", "en"] as const) {
+  test(`real notification inbox has empty/error/read states (${language})`, async ({
+    page,
+  }) => {
+    await page.addInitScript((lang) => {
+      const auth = JSON.parse(localStorage.getItem("brandhub-auth")!);
+      auth.state.systemRole = "USER";
+      auth.state.user.role = "USER";
+      localStorage.setItem("brandhub-auth", JSON.stringify(auth));
+      localStorage.setItem("brandhub-lang", lang);
+      localStorage.setItem("vite-ui-theme", lang === "vi" ? "light" : "dark");
+    }, language);
+    let mode = "empty";
+    await page.route("**/api/v1/notifications/me?**", (route) =>
+      mode === "error"
+        ? route.fulfill({ status: 503, json: { success: false } })
+        : route.fulfill({
+            json: {
+              success: true,
+              data: {
+                items:
+                  mode === "empty"
+                    ? []
+                    : [
+                        {
+                          id: "notice-1",
+                          title: "Real server notification",
+                          content: "Actual inbox message",
+                          createdAt: "2026-10-18T01:00:00Z",
+                          readAt: null,
+                          actionUrl: null,
+                        },
+                      ],
+              },
+            },
+          }),
+    );
+    await page.route("**/api/v1/notifications/me/*/read", (route) =>
+      route.fulfill({ status: 503, json: { success: false } }),
+    );
+    await page.reload();
+    const bell = page.getByRole("button", {
+      name: language === "vi" ? "Thông báo" : "Notifications",
+      exact: true,
+    });
+    await bell.click();
+    await expect(
+      page.getByText(
+        language === "vi" ? "Không có thông báo nào." : "No notifications yet.",
+        { exact: true },
+      ),
+    ).toBeVisible();
+    await expect(page.getByRole("menuitem")).toHaveCount(1);
+    await page.keyboard.press("Escape");
+    mode = "error";
+    await bell.click();
+    await expect(
+      page.getByRole("alert").filter({
+        hasText:
+          language === "vi"
+            ? "Không thể tải thông báo."
+            : "Could not load notifications.",
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        language === "vi" ? "Không có thông báo nào." : "No notifications yet.",
+        { exact: true },
+      ),
+    ).toHaveCount(0);
+    mode = "real";
+    const retry = page.getByRole("button", {
+      name: language === "vi" ? "Thử lại" : "Retry",
+      exact: true,
+    });
+    await retry.focus();
+    await page.keyboard.press("Enter");
+    await expect(
+      page.getByText("Real server notification", { exact: true }),
+    ).toBeVisible();
+    await page.getByText("Real server notification", { exact: true }).click();
+    await expect(
+      page.getByText(
+        language === "vi"
+          ? "Không thể đánh dấu đã đọc. Vui lòng thử lại."
+          : "Could not mark notifications as read. Please try again.",
+        { exact: true },
+      ),
+    ).toBeVisible();
+    await bell.click();
+    await expect(
+      page.getByRole("button", {
+        name: language === "vi" ? "Đánh dấu tất cả đã đọc" : "Mark all read",
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
+}
+
+test("social API failure does not claim all platforms are disconnected", async ({
+  page,
+}) => {
+  await page.addInitScript(() => localStorage.setItem("brandhub-lang", "en"));
+  await page.route("**/api/v1/social-accounts?**", (route) =>
+    route.fulfill({ status: 503, json: { success: false } }),
+  );
+  await page.reload();
+  await expect(
+    page
+      .getByRole("alert")
+      .filter({ hasText: "Could not check social account connections." }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Chưa kết nối tài khoản cho các nền tảng:", {
+      exact: false,
+    }),
+  ).toHaveCount(0);
+  await expect(page.getByTitle("Chưa liên kết", { exact: true })).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByTitle("Connection status unknown", { exact: true }),
+  ).toHaveCount(4);
+  await page.goto("/workspaces/workspace-1/social-accounts");
+  await expect(
+    page.getByText("Failed to load social accounts.", { exact: true }),
+  ).toBeVisible();
+  await page.route("**/api/v1/social-accounts?**", (route) =>
+    route.fulfill({ json: { success: true, data: [] } }),
+  );
+  await page.getByRole("button", { name: "Retry", exact: true }).click();
+  await expect(
+    page.getByText("Failed to load social accounts.", { exact: true }),
+  ).toHaveCount(0);
+});

@@ -15,24 +15,21 @@ import type { MemberRole } from "@/types/workspace";
  * Authenticate normally, then select a workspace using the API's actual role.
  */
 const QUICK_LOGIN_ACCOUNTS = [
-  { email: "admin@brandhub.dev", labelKey: "nav.admin" },
+  { email: "admin@demo.brandhub.test", labelKey: "nav.admin" },
+  { email: "user177@demo.brandhub.test", labelKey: "workspace.roles.OWNER" },
+  // A user can be Manager and Creator in different workspaces.
   {
-    email: "owner@brandhub.dev",
-    labelKey: "workspace.roles.OWNER",
-    workspaceRole: "OWNER",
-  },
-  {
-    email: "manager@brandhub.dev",
+    email: "user1@demo.brandhub.test",
     labelKey: "workspace.roles.MANAGER",
     workspaceRole: "MANAGER",
   },
   {
-    email: "creator@brandhub.dev",
+    email: "user1@demo.brandhub.test",
     labelKey: "workspace.roles.CREATOR",
     workspaceRole: "CREATOR",
   },
   {
-    email: "client@brandhub.dev",
+    email: "user59@demo.brandhub.test",
     labelKey: "workspace.roles.CLIENT",
     landingPath: "/client-profiles",
   },

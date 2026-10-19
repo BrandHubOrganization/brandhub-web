@@ -19,9 +19,7 @@ export function InstagramMockup({ data }: MockupProps) {
     authorName = "BrandHub Official",
     authorAvatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
   } = data;
-  const defaultMedia =
-    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80";
-  const mediaSrc = mediaUrls[0] || defaultMedia;
+  const mediaSrc = mediaUrls[0];
   const config = PLATFORM_LIMITS.INSTAGRAM;
   const igFormat = data.instagramFormat ?? "IMAGE";
   const igHandle = authorName.toLowerCase().replace(/\s+/g, "_");
@@ -29,11 +27,13 @@ export function InstagramMockup({ data }: MockupProps) {
   if (igFormat === "REEL") {
     return (
       <div className="relative mx-auto aspect-[9/16] max-w-[280px] overflow-hidden rounded-xl border border-slate-800 bg-slate-950 text-white shadow-2xl">
-        <img
-          src={mediaSrc}
-          alt="Reel"
-          className="h-full w-full object-cover opacity-90"
-        />
+        {mediaSrc && (
+          <img
+            src={mediaSrc}
+            alt="Reel"
+            className="h-full w-full object-cover opacity-90"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80" />
         <div className="absolute right-3 bottom-12 flex flex-col items-center gap-4 text-xs">
           <div className="size-10 overflow-hidden rounded-full border-2 border-white">
@@ -83,11 +83,13 @@ export function InstagramMockup({ data }: MockupProps) {
         <div
           className={`bg-muted relative w-full overflow-hidden ${config.aspectRatioClass}`}
         >
-          <img
-            src={mediaSrc}
-            alt="Post content"
-            className="h-full w-full object-cover"
-          />
+          {mediaSrc && (
+            <img
+              src={mediaSrc}
+              alt="Post content"
+              className="h-full w-full object-cover"
+            />
+          )}
           <span className="bg-background/80 text-foreground text-3xs absolute top-2 right-2 rounded-full px-2 py-0.5 font-semibold">
             1/{Math.max(mediaUrls.length, 3)}
           </span>
@@ -135,11 +137,13 @@ export function InstagramMockup({ data }: MockupProps) {
           />
           <span className="text-xs font-semibold">{igHandle}</span>
         </div>
-        <img
-          src={mediaSrc}
-          alt="Story"
-          className="h-full w-full object-cover"
-        />
+        {mediaSrc && (
+          <img
+            src={mediaSrc}
+            alt="Story"
+            className="h-full w-full object-cover"
+          />
+        )}
         <p className="absolute right-3 bottom-4 left-3 text-center text-xs font-medium text-white drop-shadow-md">
           {caption}
         </p>
@@ -168,11 +172,13 @@ export function InstagramMockup({ data }: MockupProps) {
       <div
         className={`bg-muted w-full overflow-hidden ${config.aspectRatioClass}`}
       >
-        <img
-          src={mediaSrc}
-          alt="Post content"
-          className="h-full w-full object-cover"
-        />
+        {mediaSrc && (
+          <img
+            src={mediaSrc}
+            alt="Post content"
+            className="h-full w-full object-cover"
+          />
+        )}
       </div>
 
       <div className="space-y-2 p-3">

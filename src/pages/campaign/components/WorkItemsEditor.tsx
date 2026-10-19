@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { HelpHint } from "@/components/shared/HelpHint";
 import type {
   PackageDeliverable,
   PackageServiceType,
@@ -33,10 +34,12 @@ export function WorkItemsEditor({
       aria-label={t("campaign.workItems")}
       className="border-border space-y-4 border-t pt-6"
     >
-      <h4 className="font-semibold">{t("campaign.workItems")}</h4>
-      <p className="text-muted-foreground text-sm">
-        {t("campaign.workItemsHint")}
-      </p>
+      <div className="flex items-center gap-1">
+        <h4 className="font-semibold">{t("campaign.workItems")}</h4>
+        <HelpHint label={t("campaign.workItems")}>
+          {t("campaign.workItemsHint")}
+        </HelpHint>
+      </div>
       {deliverables.map((deliverable) => (
         <div
           key={deliverable.id}
