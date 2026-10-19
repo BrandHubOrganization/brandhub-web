@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { HelpHint } from "@/components/shared/HelpHint";
 import { CampaignNextStep } from "@/pages/campaign/components/CampaignNextStep";
 import { CampaignForm } from "@/pages/campaign/components/CampaignForm";
 import { CampaignDetail } from "@/pages/campaign/components/CampaignDetail";
@@ -95,14 +96,14 @@ export default function CampaignPanel({
   const stage = campaign?.status ?? "DRAFT";
   const stages = ["DRAFT", "APPROVED", "IN_PROGRESS", "COMPLETED"] as const;
   return (
-    <section className="text-foreground space-y-6">
-      <header className="border-border bg-card rounded-xl border p-4 sm:p-6">
+    <section className="text-foreground space-y-4">
+      <header className="border-border bg-card rounded-xl border p-3">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h2 className="text-xl font-semibold">{t("campaign.title")}</h2>
-            <p className="text-muted-foreground mt-2 max-w-2xl text-sm leading-6">
+          <div className="flex items-center gap-1 text-sm font-medium">
+            {t("campaign.ui.stages")}
+            <HelpHint label={t("campaign.title")}>
               {t("campaign.description")}
-            </p>
+            </HelpHint>
           </div>
           <Button
             variant="outline"
@@ -119,13 +120,13 @@ export default function CampaignPanel({
         {!loading && !error && (
           <ol
             aria-label={t("campaign.ui.stages")}
-            className="mt-6 grid grid-cols-2 gap-2 lg:grid-cols-4"
+            className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4"
           >
             {stages.map((status, index) => (
               <li
                 key={status}
                 aria-current={stage === status ? "step" : undefined}
-                className={`flex items-center gap-2 rounded-lg border px-3 py-3 text-sm ${stage === status ? "border-brand-orange bg-brand-orange-soft font-medium" : "border-border text-muted-foreground"}`}
+                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm ${stage === status ? "border-brand-orange bg-brand-orange-soft font-medium" : "border-border text-muted-foreground"}`}
               >
                 <span className="bg-background flex size-6 shrink-0 items-center justify-center rounded-full text-xs">
                   {index + 1}
@@ -211,17 +212,22 @@ export default function CampaignPanel({
             </div>
           )}
           {!campaign && !editing && (
-            <div className="border-border bg-card rounded-xl border border-dashed px-6 py-12 text-center">
-              <h3 className="font-semibold">{t("campaign.empty")}</h3>
-              <p className="text-muted-foreground mx-auto mt-2 max-w-xl text-sm leading-6">
+            <div className="border-border bg-muted/20 flex items-center gap-1 rounded-lg border border-dashed p-4 text-sm">
+              <h3 className="font-medium">{t("campaign.empty")}</h3>
+              <HelpHint label={t("campaign.empty")}>
                 {t("campaign.ui.emptyHint")}
-              </p>
+              </HelpHint>
             </div>
           )}
           {editing && (
             <CampaignForm
               campaign={campaign}
               deliverables={campaign?.deliverablePlan ?? deliverables}
+              durationWeeks={
+                typeof terms.durationWeeks === "number"
+                  ? terms.durationWeeks
+                  : null
+              }
               saving={saving}
               onSave={save}
               onCancel={() => setEditing(false)}

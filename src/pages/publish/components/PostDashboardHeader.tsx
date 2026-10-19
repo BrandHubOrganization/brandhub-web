@@ -32,7 +32,12 @@ export function PostDashboardHeader({
         <Calendar className="text-muted-foreground size-4" />
         <select
           value={filters.dateRange}
-          onChange={(e) => onFilterChange({ dateRange: e.target.value as any, page: 1 })}
+          onChange={(e) =>
+            onFilterChange({
+              dateRange: e.target.value as PostDashboardFilters["dateRange"],
+              page: 1,
+            })
+          }
           className="bg-background border-border text-foreground focus:ring-ring h-9 rounded-md border px-2.5 text-xs focus:outline-none focus:ring-2"
         >
           <option value="7d">{t("publish.dashboard.dateRanges.7d", "7 ngày qua")}</option>
@@ -48,7 +53,12 @@ export function PostDashboardHeader({
         <Filter className="text-muted-foreground size-4" />
         <select
           value={filters.platform}
-          onChange={(e) => onFilterChange({ platform: e.target.value as any, page: 1 })}
+          onChange={(e) =>
+            onFilterChange({
+              platform: e.target.value as PostDashboardFilters["platform"],
+              page: 1,
+            })
+          }
           className="bg-background border-border text-foreground focus:ring-ring h-9 rounded-md border px-2.5 text-xs focus:outline-none focus:ring-2"
         >
           <option value="ALL">{t("publish.dashboard.platforms.ALL", "Tất cả nền tảng")}</option>
@@ -62,7 +72,12 @@ export function PostDashboardHeader({
       {/* Status Selector */}
       <select
         value={filters.status}
-        onChange={(e) => onFilterChange({ status: e.target.value as any, page: 1 })}
+        onChange={(e) =>
+          onFilterChange({
+            status: e.target.value as PostDashboardFilters["status"],
+            page: 1,
+          })
+        }
         className="bg-background border-border text-foreground focus:ring-ring h-9 rounded-md border px-2.5 text-xs focus:outline-none focus:ring-2"
       >
         <option value="ALL">{t("publish.dashboard.statusFilters.ALL", "Tất cả trạng thái")}</option>

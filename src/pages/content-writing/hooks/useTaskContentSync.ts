@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import * as Y from "yjs";
 import { api } from "@/services/api";
-import { requireApiData } from "@/lib/apiData";
 import { useAuthStore } from "@/store/authStore";
+import { requireApiData } from "@/lib/apiData";
 
 /**
  * FR 3.6.10 real-time sync: loads the Yjs snapshot + operation tail over

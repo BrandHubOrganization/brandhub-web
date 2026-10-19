@@ -1,4 +1,8 @@
 {
+  "compact": {
+    "durationSuggestion": "Package duration: {{weeks}} weeks · end date is editable",
+    "dateHelp": "Selecting a start date suggests an end date using the approved package duration. You can adjust it; a manually changed end date is preserved when the start date changes."
+  },
   "closure": {
     "cancelOption": "Cancel Tasks to close the Campaign (optional)",
     "cancelHelp": "Select only work that will not continue. Cancellation retains content and approval history and requires confirmation.",

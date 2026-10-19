@@ -46,9 +46,7 @@ export function AIGeneratePanel({
   const [brandTone, setBrandTone] =
     useState<(typeof BRAND_TONES)[number]>("FRIENDLY");
   const [hashtagCount, setHashtagCount] = useState(6);
-  const [prompt, setPrompt] = useState(
-    "Viết bài đăng hấp dẫn, ngắn gọn với giọng văn thu hút và kêu gọi hành động.",
-  );
+  const [prompt, setPrompt] = useState("");
   const [userFeedback, setUserFeedback] = useState("");
   const [showFeedbackInput, setShowFeedbackInput] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -158,7 +156,7 @@ export function AIGeneratePanel({
             rows={4}
             value={prompt}
             onChange={(event) => setPrompt(event.target.value)}
-            placeholder={t("editor.aiGenerate.promptPlaceholders.CAPTION")}
+            placeholder={t("editor.aiGenerate.promptPlaceholder")}
             className="focus:ring-brand-orange/20 focus:border-brand-orange border-border bg-muted text-foreground rounded-xl text-xs"
           />
         </div>
