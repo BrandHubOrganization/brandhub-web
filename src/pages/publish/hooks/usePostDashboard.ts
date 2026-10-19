@@ -15,14 +15,60 @@ const DEFAULT_FILTERS: PostDashboardFilters = {
   limit: 10,
 };
 
+const DATE_RANGES: readonly PostDashboardFilters["dateRange"][] = [
+  "7d",
+  "14d",
+  "30d",
+  "90d",
+  "all",
+];
+const PLATFORMS: readonly PostDashboardFilters["platform"][] = [
+  "ALL",
+  "FACEBOOK",
+  "INSTAGRAM",
+  "TIKTOK",
+  "THREADS",
+];
+const STATUSES: readonly PostDashboardFilters["status"][] = [
+  "ALL",
+  "IN_PROGRESS",
+  "DRAFT",
+  "PENDING_REVIEW",
+  "APPROVED",
+  "SCHEDULED",
+  "PUBLISHED",
+  "FAILED",
+  "REJECTED",
+];
+
+function getFilterValue<T extends string>(
+  value: string | null,
+  allowedValues: readonly T[],
+  fallback: T,
+): T {
+  return allowedValues.find((allowedValue) => allowedValue === value) ?? fallback;
+}
+
 export function usePostDashboard(workspaceId: string) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Read initial filters from URL query parameters (BR-76)
   const [filters, setFilters] = useState<PostDashboardFilters>(() => ({
-    dateRange: (searchParams.get("dateRange") as any) || DEFAULT_FILTERS.dateRange,
-    platform: (searchParams.get("platform") as any) || DEFAULT_FILTERS.platform,
-    status: (searchParams.get("status") as any) || DEFAULT_FILTERS.status,
+    dateRange: getFilterValue(
+      searchParams.get("dateRange"),
+      DATE_RANGES,
+      DEFAULT_FILTERS.dateRange,
+    ),
+    platform: getFilterValue(
+      searchParams.get("platform"),
+      PLATFORMS,
+      DEFAULT_FILTERS.platform,
+    ),
+    status: getFilterValue(
+      searchParams.get("status"),
+      STATUSES,
+      DEFAULT_FILTERS.status,
+    ),
     search: searchParams.get("search") || DEFAULT_FILTERS.search,
     page: Number(searchParams.get("page")) || DEFAULT_FILTERS.page,
     limit: Number(searchParams.get("limit")) || DEFAULT_FILTERS.limit,

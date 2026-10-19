@@ -1,10 +1,8 @@
 import { useState } from "react";
 import type { KeyboardEvent } from "react";
-import { Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { HashtagCollectionPicker } from "@/pages/editor/components/HashtagCollectionPicker";
 import { HashtagTagList } from "@/pages/editor/components/HashtagTagList";
@@ -27,23 +25,6 @@ interface HashtagInputWithSuggestionsProps {
   canApply: boolean;
 }
 
-const TRENDING_HASHTAGS = [
-  "#BrandHub",
-  "#Fashion2026",
-  "#Sneakerhead",
-  "#AirMaxPulse",
-  "#StreetStyle",
-  "#TechNews",
-  "#AIContent",
-  "#Lifestyle",
-  "#TrendingNow",
-  "#SummerVibes",
-  "#MarketingStrategy",
-  "#ContentCreator",
-  "#DigitalMarketing",
-  "#Virals",
-];
-
 export function HashtagInputWithSuggestions({
   hashtags,
   onChange,
@@ -53,7 +34,6 @@ export function HashtagInputWithSuggestions({
 }: HashtagInputWithSuggestionsProps) {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
   const [copied, setCopied] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -66,6 +46,12 @@ export function HashtagInputWithSuggestions({
   );
 
   const prefix = "editor.hashtagInput.";
+
+  function openCollectionFromInput() {
+    if (!collectionEnabled) return;
+    setShowCollection(true);
+    changeFilter({ q: inputValue.replace(/^#/, "") });
+  }
 
   function appendTag(tag: string) {
     const formatted = formatPostHashtag(tag);
@@ -80,7 +66,6 @@ export function HashtagInputWithSuggestions({
     appendTag(entry.tag);
     setInputValue("");
     changeFilter({ q: "" });
-    setShowSuggestions(false);
   }
 
   function applyExistingEntry(tag: string) {
@@ -106,7 +91,7 @@ export function HashtagInputWithSuggestions({
     if (!collectionEnabled) {
       appendTag(formatted);
       setInputValue("");
-      setShowSuggestions(false);
+
       return;
     }
 
@@ -131,12 +116,6 @@ export function HashtagInputWithSuggestions({
     toast.success(t(prefix + "copyAllSuccess"));
     setTimeout(() => setCopied(false), COPY_FEEDBACK_DURATION_MS);
   }
-
-  const filteredSuggestions = TRENDING_HASHTAGS.filter(
-    (tag) =>
-      !hasPostHashtag(hashtags, tag) &&
-      tag.toLowerCase().includes(inputValue.toLowerCase()),
-  );
 
   return (
     <div className="space-y-2.5">
@@ -175,35 +154,16 @@ export function HashtagInputWithSuggestions({
           value={inputValue}
           onChange={(event) => {
             setInputValue(event.target.value);
-            setShowSuggestions(true);
+
             if (collectionEnabled)
               changeFilter({ q: event.target.value.replace(/^#/, "") });
           }}
-          onFocus={() => setShowSuggestions(true)}
+          onFocus={openCollectionFromInput}
+          onClick={openCollectionFromInput}
           onKeyDown={handleKeyDown}
           placeholder={t(prefix + "inputPlaceholder")}
           className="border-border bg-muted text-foreground rounded-xl font-mono text-xs"
         />
-        {showSuggestions && filteredSuggestions.length > 0 && (
-          <div className="border-border bg-card absolute top-full right-0 left-0 z-20 mt-1 max-h-48 space-y-1 overflow-y-auto rounded-xl border p-2 shadow-xl">
-            <span className="text-3xs text-muted-foreground mb-1 flex items-center justify-between px-2 font-semibold tracking-wider uppercase">
-              <span>{t(prefix + "trendingSuggestionsLabel")}</span>
-              <Sparkles className="text-brand-orange size-3" />
-            </span>
-            {filteredSuggestions.map((tag) => (
-              <Button
-                key={tag}
-                type="button"
-                variant="ghost"
-                onClick={() => void handleAddTag(tag)}
-                className="text-brand-orange hover:bg-brand-orange-soft flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left font-mono text-xs transition-colors"
-              >
-                <span>{tag}</span>
-                <Plus className="size-3.5" />
-              </Button>
-            ))}
-          </div>
-        )}
       </div>
 
       <HashtagTagList hashtags={hashtags} onChange={onChange} />
@@ -222,7 +182,7 @@ export function HashtagInputWithSuggestions({
               appendTag(entry.tag);
               setInputValue("");
               setAddDialogOpen(false);
-              setShowSuggestions(false);
+
               toast.success(t(prefix + "addedAndApplied"));
             } catch (error) {
               if (hashtagErrorKey(error, "saveError") === "duplicate") {

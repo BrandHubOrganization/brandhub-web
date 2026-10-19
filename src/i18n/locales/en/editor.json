@@ -216,7 +216,7 @@
       "cta": "Call to action (CTA)"
     },
     "promptLabel": "Prompt",
-    "promptPlaceholder": "e.g. Write an engaging post in a funny tone...",
+    "promptPlaceholder": "Write a short, engaging post with an appealing tone and a call to action.",
     "generating": "AI is generating (~{{seconds}}s)...",
     "generateButton": "Generate with AI",
     "errorServiceUnavailable": "AI service is currently unavailable (503)",
@@ -325,8 +325,15 @@
     "clearAllButton": "Clear all",
     "loadFromGroupButton": "Load from Group",
     "chooseGroupLabel": "Choose a saved hashtag group:",
-    "inputPlaceholder": "Type a hashtag and press Enter (or pick a suggestion)...",
-    "trendingSuggestionsLabel": "Trending hashtag suggestions:"
+    "inputPlaceholder": "Type a hashtag and press Enter...",
+    "trendingSuggestionsLabel": "Trending hashtag suggestions:",
+    "aiGenerate": "Get hashtag suggestions · {{platform}}",
+    "aiLoading": "Loading hashtags...",
+    "aiCaptionRequired": "Enter Post content to get hashtag suggestions.",
+    "aiError": "Could not get hashtags. Please try again.",
+    "aiEmpty": "The API returned no matching hashtags.",
+    "aiResults": "API hashtag suggestions",
+    "aiApply": "Add {{tag}} to this Post"
   },
   "imageLightbox": {
     "copySuccess": "Image URL copied to clipboard!",
@@ -380,5 +387,7 @@
       "CAROUSEL": "Carousel",
       "STORY": "Story"
     }
-  }
+  },
+  "socialStatusError": "Could not check social account connections. Reload to try again.",
+  "socialStatusUnknown": "Connection status unknown"
 }
