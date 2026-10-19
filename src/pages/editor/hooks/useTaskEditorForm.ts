@@ -8,8 +8,8 @@ import {
   emptyTaskDraft,
   postInput,
   taskEditorError,
-} from "@/pages/editor/taskPostDraft";
-import type { TaskPostDraft } from "@/pages/editor/taskPostDraft";
+} from "@/pages/editor/types/taskPostDraft";
+import type { TaskPostDraft } from "@/pages/editor/types/taskPostDraft";
 import type {
   TaskEditorSession as Session,
   TaskEditorState,
