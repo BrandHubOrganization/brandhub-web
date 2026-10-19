@@ -22,13 +22,7 @@ export default function CampaignPage() {
     return state.currentMemberRole ?? currentWorkspace.myRole ?? null;
   });
   return (
-    <PageWrapper hideBanner title={t("campaign.title")}>
-      <Link
-        className="text-primary text-sm underline"
-        to={`/workspaces/${id}/campaign-partners`}
-      >
-        {t("campaign.partners.title")}
-      </Link>
+    <PageWrapper compact showGuideButton={false} title={t("campaign.title")}>
       {loading && <Spinner />}
       {!loading && error && (
         <div role="alert">

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -86,17 +85,6 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
                 return state.start();
               }}
             />
-          )}
-          {task.type === "POST" && (
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" asChild>
-                <Link
-                  to={`/workspaces/${workspaceId}/task-approvals?task=${encodeURIComponent(taskId)}`}
-                >
-                  {t("tasks.approvalPage.title")}
-                </Link>
-              </Button>
-            </div>
           )}
           <TaskComments workspaceId={workspaceId} taskId={taskId} />
         </>

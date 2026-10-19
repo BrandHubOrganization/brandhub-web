@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { HelpHint } from "@/components/shared/HelpHint";
 import { SERVICE_UNITS } from "@/pages/media-package/types/serviceUnits";
 import type {
   OfferingFields,
@@ -56,13 +57,15 @@ export function OfferingEditor({
   return (
     <fieldset className="border-border min-w-0 space-y-4 rounded-xl border p-4 sm:p-5">
       <legend className="px-1 text-sm font-medium">
-        {t("mediaPackage.offering.title")}
+        <span className="inline-flex items-center gap-1">
+          {t("mediaPackage.offering.title")}
+          <HelpHint label={t("mediaPackage.offering.title")}>
+            {t("mediaPackage.ui.totalQuantity")}
+          </HelpHint>
+        </span>
       </legend>
       {
         <>
-          <p className="text-muted-foreground text-xs">
-            {t("mediaPackage.ui.totalQuantity")}
-          </p>
           <Input
             type="number"
             min={0}

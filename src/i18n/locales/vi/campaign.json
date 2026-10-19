@@ -1,4 +1,8 @@
 {
+  "compact": {
+    "durationSuggestion": "Thời lượng gói: {{weeks}} tuần · có thể đổi ngày kết thúc",
+    "dateHelp": "Khi chọn ngày bắt đầu, ngày kết thúc được gợi ý bằng ngày bắt đầu cộng thời lượng gói đã chốt. Bạn vẫn có thể điều chỉnh; hệ thống giữ ngày đã sửa thủ công khi đổi ngày bắt đầu."
+  },
   "closure": {
     "cancelOption": "Hủy đầu việc để kết thúc chiến dịch (tùy chọn)",
     "cancelHelp": "Chỉ chọn các đầu việc không tiếp tục triển khai. Hủy không xóa nội dung hoặc lịch sử duyệt; bạn cần xác nhận trước khi thực hiện.",

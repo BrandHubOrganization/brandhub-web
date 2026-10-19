@@ -1,4 +1,12 @@
 {
+  "compact": {
+    "agreeLater": "Thỏa thuận sau",
+    "duration": "Thời lượng",
+    "requirements": "Mô tả / yêu cầu",
+    "changePackage": "Đổi gói",
+    "backSelected": "Về gói đang chọn",
+    "browsePackages": "Xem các gói khác"
+  },
   "history": {
     "title": "Lịch sử đàm phán",
     "empty": "Chưa có lịch sử đề xuất. Mốc bắt đầu được lưu khi gửi đề xuất đầu tiên.",
