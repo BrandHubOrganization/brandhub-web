@@ -4,7 +4,7 @@ import { motion, useInView, useReducedMotion } from "motion/react";
 import {
   Building2,
   UserPlus,
-  Users2,
+  Briefcase,
   PenTool,
   Sparkles,
   Send,
@@ -55,7 +55,7 @@ const LANES: Lane[] = [
     nodes: [
       { key: "setupWorkspace", icon: Building2, pageIndex: 6 },
       { key: "inviteTeam", icon: UserPlus, pageIndex: 6 },
-      { key: "assignClient", icon: Users2, pageIndex: 6 },
+      { key: "assignClient", icon: Briefcase, pageIndex: 6 },
     ],
   },
   {

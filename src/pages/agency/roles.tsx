@@ -6,6 +6,7 @@ import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select";
 import {
   Shield,
   Plus,
@@ -18,9 +19,11 @@ import {
   Sparkles,
   ShieldCheck,
   RotateCcw,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { CharacterCounter } from "@/components/ui/character-counter";
 import {
   AGENCY_PERMISSIONS,
   AGENCY_ROLES_UPDATED_EVENT,
@@ -94,7 +97,15 @@ export function AgencyRolesPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newRoleName, setNewRoleName] = useState("");
   const [newRoleDesc, setNewRoleDesc] = useState("");
+  const [createRoleError, setCreateRoleError] = useState("");
   const [baseRoleKey, setBaseRoleKey] = useState<string>("CREATOR");
+
+  // State cho Confirmation Modals
+  const [deleteTarget, setDeleteTarget] = useState<{
+    key: string;
+    name: string;
+  } | null>(null);
+  const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
 
   // Load và lắng nghe sự kiện Realtime cập nhật
   useEffect(() => {
@@ -147,33 +158,33 @@ export function AgencyRolesPage() {
 
   const handleResetToDefault = () => {
     if (!agencyId) return;
-    if (
-      confirm(
-        t(
-          "agency.roles.resetConfirm",
-          "Bạn có chắc chắn muốn đặt lại tất cả vai trò và quyền hạn về mặc định không?",
-        ),
-      )
-    ) {
-      agencyRoleService.saveRoles(agencyId, INITIAL_AGENCY_ROLES);
-      setRoles(INITIAL_AGENCY_ROLES);
-      toast.success(
-        t(
-          "agency.roles.resetSuccess",
-          "Đã khôi phục ma trận phân quyền về mặc định.",
-        ),
-      );
-    }
+    setIsResetConfirmOpen(true);
+  };
+
+  const confirmResetToDefault = () => {
+    if (!agencyId) return;
+    agencyRoleService.saveRoles(agencyId, INITIAL_AGENCY_ROLES);
+    setRoles(INITIAL_AGENCY_ROLES);
+    setIsResetConfirmOpen(false);
+    toast.success(
+      t(
+        "agency.roles.resetSuccess",
+        "Đã khôi phục ma trận phân quyền về mặc định.",
+      ),
+    );
   };
 
   const handleCreateRole = () => {
     if (!agencyId || !newRoleName.trim()) {
-      toast.error(t("agency.roles.nameRequired", "Vui lòng nhập tên vai trò."));
+      setCreateRoleError(
+        t("agency.roles.nameRequired", "Vui lòng nhập tên vai trò."),
+      );
       return;
     }
+    setCreateRoleError("");
     const created = agencyRoleService.createCustomRole(agencyId, {
-      name: newRoleName,
-      description: newRoleDesc,
+      name: newRoleName.trim(),
+      description: newRoleDesc.trim(),
       baseRoleKey,
     });
     setRoles(agencyRoleService.getRoles(agencyId));
@@ -185,11 +196,20 @@ export function AgencyRolesPage() {
 
   const handleDeleteRole = (roleKey: string, roleName: string) => {
     if (!agencyId) return;
-    if (confirm(t("agency.roles.deleteConfirm", { name: roleName }))) {
-      const updated = agencyRoleService.deleteCustomRole(agencyId, roleKey);
-      setRoles(updated);
-      toast.success(t("agency.roles.deleteSuccess", { name: roleName }));
-    }
+    setDeleteTarget({ key: roleKey, name: roleName });
+  };
+
+  const confirmDeleteRole = () => {
+    if (!agencyId || !deleteTarget) return;
+    const updated = agencyRoleService.deleteCustomRole(
+      agencyId,
+      deleteTarget.key,
+    );
+    setRoles(updated);
+    toast.success(
+      t("agency.roles.deleteSuccess", { name: deleteTarget.name }),
+    );
+    setDeleteTarget(null);
   };
 
   // Lọc permissions theo search và group
@@ -243,8 +263,10 @@ export function AgencyRolesPage() {
             {t("agency.roles.resetDefault", "Khôi phục mặc định")}
           </Button>
           <Button
+            variant="orange"
+            size="sm"
             onClick={() => setIsCreateOpen(true)}
-            className="bg-brand-primary hover:bg-brand-primary/90 h-9 gap-1.5 text-xs font-medium text-white shadow-sm"
+            className="h-9 gap-1.5 text-xs font-medium shadow-sm"
           >
             <Plus className="h-4 w-4" />
             {t("agency.roles.createButton", "Tạo vai trò mới")}
@@ -254,15 +276,15 @@ export function AgencyRolesPage() {
     >
       <div className="space-y-6">
         {/* Navigation Tabs & Header Stats */}
-        <div className="flex flex-col justify-between gap-4 border-b border-zinc-200 pb-4 sm:flex-row sm:items-center dark:border-zinc-800">
+        <div className="flex flex-col justify-between gap-4 border-b border-border pb-4 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTab("matrix")}
               className={cn(
                 "flex cursor-pointer items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all",
                 activeTab === "matrix"
-                  ? "bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900"
-                  : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800/60",
+                  ? "bg-foreground text-background shadow-sm"
+                  : "text-muted-foreground hover:bg-muted",
               )}
             >
               <Layers className="h-3.5 w-3.5" />
@@ -273,8 +295,8 @@ export function AgencyRolesPage() {
               className={cn(
                 "flex cursor-pointer items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all",
                 activeTab === "roles"
-                  ? "bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900"
-                  : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800/60",
+                  ? "bg-foreground text-background shadow-sm"
+                  : "text-muted-foreground hover:bg-muted",
               )}
             >
               <Users className="h-3.5 w-3.5" />
@@ -283,8 +305,8 @@ export function AgencyRolesPage() {
           </div>
 
           {/* Quick Notice */}
-          <div className="flex items-center gap-1.5 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/60">
-            <ShieldCheck className="text-brand-primary h-3.5 w-3.5 shrink-0" />
+          <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/50 px-3 py-1.5 text-xs text-muted-foreground">
+            <ShieldCheck className="text-brand-orange h-3.5 w-3.5 shrink-0" />
             <span>
               {t(
                 "agency.roles.ownerNotice",
@@ -308,7 +330,7 @@ export function AgencyRolesPage() {
                   )}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="focus-visible:ring-brand-primary h-8.5 border-zinc-200 bg-transparent pl-9 text-xs focus-visible:ring-1 dark:border-zinc-800"
+                  className="focus-visible:ring-brand-orange h-8.5 border-border bg-transparent pl-9 text-xs focus-visible:ring-1"
                 />
               </div>
 
@@ -391,7 +413,7 @@ export function AgencyRolesPage() {
                               className="px-4 py-2 text-[11px] font-bold tracking-wider text-zinc-600 uppercase dark:text-zinc-300"
                             >
                               <div className="flex items-center gap-2">
-                                <span className="bg-brand-primary inline-block h-3 w-1.5 rounded-full" />
+                                <span className="bg-brand-orange inline-block h-3 w-1.5 rounded-full" />
                                 <span>{GROUP_LABELS[groupKey]?.title}</span>
                                 <span className="text-[10px] font-normal text-zinc-400 lowercase">
                                   — {GROUP_LABELS[groupKey]?.subtitle}
@@ -439,7 +461,7 @@ export function AgencyRolesPage() {
                                       className={cn(
                                         "inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border transition-all duration-150 select-none",
                                         isChecked
-                                          ? "bg-brand-primary border-brand-primary text-white shadow-xs hover:brightness-105 active:scale-95"
+                                          ? "bg-brand-orange border-brand-orange text-white shadow-xs hover:brightness-105 active:scale-95"
                                           : "border-zinc-200 bg-zinc-50/60 text-transparent hover:border-zinc-400 hover:bg-zinc-100/70 dark:border-zinc-700/80 dark:bg-zinc-800/40",
                                         isOwner &&
                                           "cursor-not-allowed border-zinc-600 bg-zinc-600 text-white opacity-75 hover:brightness-100 active:scale-100",
@@ -560,15 +582,15 @@ export function AgencyRolesPage() {
             {/* Thẻ tạo vai trò mới */}
             <button
               onClick={() => setIsCreateOpen(true)}
-              className="hover:border-brand-primary/50 hover:bg-brand-primary/5 group flex min-h-[170px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-200 p-5 text-center transition-all dark:border-zinc-800"
+              className="hover:border-brand-orange/50 hover:bg-brand-orange/5 group flex min-h-[170px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border p-5 text-center transition-all"
             >
-              <div className="group-hover:bg-brand-primary/10 group-hover:text-brand-primary flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 transition-colors dark:bg-zinc-800">
+              <div className="group-hover:bg-brand-orange/10 group-hover:text-brand-orange flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors">
                 <Plus className="h-5 w-5" />
               </div>
-              <div className="group-hover:text-brand-primary text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+              <div className="group-hover:text-brand-orange text-sm font-semibold text-foreground">
                 {t("agency.roles.createCardTitle", "Tạo vai trò tùy biến mới")}
               </div>
-              <div className="max-w-[200px] text-xs text-zinc-400">
+              <div className="max-w-[200px] text-xs text-muted-foreground">
                 {t(
                   "agency.roles.createCardDesc",
                   "Thiết lập vai trò riêng biệt theo mô hình phòng ban công ty bạn.",
@@ -581,13 +603,13 @@ export function AgencyRolesPage() {
 
       {/* DIALOG TẠO CUSTOM ROLE */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="max-w-md border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <DialogContent className="max-w-md border-border bg-card">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
-              <Sparkles className="text-brand-primary h-5 w-5" />
+            <DialogTitle className="flex items-center gap-2 text-foreground">
+              <Sparkles className="text-brand-orange h-5 w-5" />
               {t("agency.roles.dialogTitle", "Tạo vai trò mới (Custom Role)")}
             </DialogTitle>
-            <DialogDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+            <DialogDescription className="text-xs text-muted-foreground">
               {t(
                 "agency.roles.dialogDesc",
                 "Định nghĩa một vai trò tùy chỉnh để phân bổ chính xác trách nhiệm công việc cho nhân sự Agency.",
@@ -597,9 +619,9 @@ export function AgencyRolesPage() {
 
           <div className="space-y-4 py-2">
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+              <label className="mb-1.5 block text-xs font-semibold text-foreground">
                 {t("agency.roles.roleNameLabel", "Tên vai trò")}{" "}
-                <span className="text-red-500">*</span>
+                <span className="text-destructive">*</span>
               </label>
               <Input
                 placeholder={t(
@@ -607,15 +629,22 @@ export function AgencyRolesPage() {
                   "Ví dụ: Lead Designer, Copywriter, Media Planner...",
                 )}
                 value={newRoleName}
-                onChange={(e) => setNewRoleName(e.target.value)}
-                className="h-9 border-zinc-200 bg-transparent text-xs dark:border-zinc-800"
+                onChange={(e) => {
+                  setNewRoleName(e.target.value);
+                  if (createRoleError) setCreateRoleError("");
+                }}
+                error={createRoleError}
+                className="h-9 border-border bg-transparent text-xs"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                {t("agency.roles.roleDescLabel", "Mô tả ngắn gọn")}
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-foreground">
+                  {t("agency.roles.roleDescLabel", "Mô tả ngắn gọn")}
+                </label>
+                <CharacterCounter current={newRoleDesc.length} max={200} />
+              </div>
               <Textarea
                 placeholder={t(
                   "agency.roles.roleDescPlaceholder",
@@ -623,19 +652,19 @@ export function AgencyRolesPage() {
                 )}
                 value={newRoleDesc}
                 onChange={(e) => setNewRoleDesc(e.target.value)}
+                maxLength={200}
                 rows={2}
-                className="border-zinc-200 bg-transparent text-xs dark:border-zinc-800"
+                className="border-border bg-transparent text-xs"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+              <label className="mb-1.5 block text-xs font-semibold text-foreground">
                 {t("agency.roles.inheritLabel", "Kế thừa quyền hạn ban đầu từ")}
               </label>
-              <select
+              <Select
                 value={baseRoleKey}
                 onChange={(e) => setBaseRoleKey(e.target.value)}
-                className="focus:ring-brand-primary w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-xs text-zinc-900 focus:ring-1 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
               >
                 <option value="CREATOR">
                   {t("agency.roles.optCreator", "Nhân viên sáng tạo (Creator)")}
@@ -652,8 +681,8 @@ export function AgencyRolesPage() {
                 <option value="VIEWER">
                   {t("agency.roles.optViewer", "Chỉ xem (Viewer)")}
                 </option>
-              </select>
-              <p className="mt-1 text-[11px] text-zinc-400">
+              </Select>
+              <p className="mt-1 text-[11px] text-muted-foreground">
                 {t(
                   "agency.roles.inheritHint",
                   "Sau khi tạo, bạn có thể thoải mái bật/tắt từng quyền riêng lẻ trong bảng ma trận.",
@@ -666,17 +695,90 @@ export function AgencyRolesPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setIsCreateOpen(false)}
-              className="border-zinc-200 text-xs dark:border-zinc-800 dark:bg-zinc-900"
+              onClick={() => {
+                setIsCreateOpen(false);
+                setCreateRoleError("");
+              }}
+              className="text-xs"
+            >
+              {t("agency.roles.cancel", "Hủy")}
+            </Button>
+            <Button
+              variant="orange"
+              size="sm"
+              onClick={handleCreateRole}
+              className="text-xs font-medium shadow-xs"
+            >
+              {t("agency.roles.confirmCreate", "Khởi tạo vai trò")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Dialog: Reset Matrix */}
+      <Dialog open={isResetConfirmOpen} onOpenChange={setIsResetConfirmOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+              <RotateCcw className="size-5 text-amber-500" />
+              {t("agency.roles.resetModalTitle", "Khôi phục phân quyền mặc định?")}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+              {t(
+                "agency.roles.resetConfirm",
+                "Bạn có chắc chắn muốn đặt lại tất cả vai trò và quyền hạn về mặc định không? Mọi chỉnh sửa tùy chỉnh sẽ trở về thiết lập ban đầu.",
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsResetConfirmOpen(false)}
             >
               {t("agency.roles.cancel", "Hủy")}
             </Button>
             <Button
               size="sm"
-              onClick={handleCreateRole}
-              className="bg-brand-primary hover:bg-brand-primary/90 text-xs font-medium text-white shadow-xs"
+              onClick={confirmResetToDefault}
+              className="bg-amber-600 hover:bg-amber-700 text-white"
             >
-              {t("agency.roles.confirmCreate", "Khởi tạo vai trò")}
+              {t("agency.roles.confirmResetBtn", "Đồng ý khôi phục")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Dialog: Delete Custom Role */}
+      <Dialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+              <AlertTriangle className="size-5 text-red-500" />
+              {t("agency.roles.deleteModalTitle", "Xóa vai trò tùy chỉnh?")}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+              {deleteTarget &&
+                t("agency.roles.deleteConfirm", { name: deleteTarget.name })}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setDeleteTarget(null)}
+            >
+              {t("agency.roles.cancel", "Hủy")}
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={confirmDeleteRole}
+            >
+              {t("agency.roles.confirmDeleteBtn", "Xóa vai trò")}
             </Button>
           </DialogFooter>
         </DialogContent>

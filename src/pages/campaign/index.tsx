@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { CampaignNextStep } from "@/pages/campaign/components/CampaignNextStep";
 import { CampaignForm } from "@/pages/campaign/components/CampaignForm";
 import { CampaignDetail } from "@/pages/campaign/components/CampaignDetail";
 import { CampaignReview } from "@/pages/campaign/components/CampaignReview";
@@ -115,23 +116,25 @@ export default function CampaignPanel({
             {t("campaign.reload")}
           </Button>
         </div>
-        <ol
-          aria-label={t("campaign.ui.stages")}
-          className="mt-6 grid grid-cols-2 gap-2 lg:grid-cols-4"
-        >
-          {stages.map((status, index) => (
-            <li
-              key={status}
-              aria-current={stage === status ? "step" : undefined}
-              className={`flex items-center gap-2 rounded-lg border px-3 py-3 text-sm ${stage === status ? "border-brand-orange bg-brand-orange-soft font-medium" : "border-border text-muted-foreground"}`}
-            >
-              <span className="bg-background flex size-6 shrink-0 items-center justify-center rounded-full text-xs">
-                {index + 1}
-              </span>
-              {t(`campaign.status.${status}`)}
-            </li>
-          ))}
-        </ol>
+        {!loading && !error && (
+          <ol
+            aria-label={t("campaign.ui.stages")}
+            className="mt-6 grid grid-cols-2 gap-2 lg:grid-cols-4"
+          >
+            {stages.map((status, index) => (
+              <li
+                key={status}
+                aria-current={stage === status ? "step" : undefined}
+                className={`flex items-center gap-2 rounded-lg border px-3 py-3 text-sm ${stage === status ? "border-brand-orange bg-brand-orange-soft font-medium" : "border-border text-muted-foreground"}`}
+              >
+                <span className="bg-background flex size-6 shrink-0 items-center justify-center rounded-full text-xs">
+                  {index + 1}
+                </span>
+                {t(`campaign.status.${status}`)}
+              </li>
+            ))}
+          </ol>
+        )}
       </header>
       <div className="border-border bg-muted/30 flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm">
         <div className="min-w-0">
@@ -168,6 +171,13 @@ export default function CampaignPanel({
       )}
       {!loading && !error && (
         <>
+          {campaign && !editing && (
+            <CampaignNextStep
+              campaign={campaign}
+              workspaceId={selection.workspaceId}
+              canManage={canManage}
+            />
+          )}
           {legacy && (
             <p
               role="alert"

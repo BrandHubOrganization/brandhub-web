@@ -8,7 +8,6 @@ import {
   FolderKanban,
   LayoutTemplate,
   Hash,
-  Send,
   Link2,
   CreditCard,
   Sparkles,
@@ -29,6 +28,7 @@ import {
   TrendingUp,
   Clapperboard,
   Mail,
+  Calendar,
 } from "lucide-react";
 
 export interface NavItem {
@@ -84,6 +84,13 @@ export const NAV_SECTIONS: NavSection[] = [
         workspaceScoped: true,
       },
       {
+        to: "/posts/dashboard",
+        icon: LayoutDashboard,
+        labelKey: "nav.postsDashboard",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/media-package",
         icon: PackageCheck,
         labelKey: "nav.mediaPackages",
@@ -127,6 +134,20 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/tasks",
         icon: FolderKanban,
         labelKey: "nav.tasks",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/task-approvals",
+        icon: PackageCheck,
+        labelKey: "tasks.approvalPage.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/calendar",
+        icon: Calendar,
+        labelKey: "calendar.page.title",
         workspaceScoped: true,
         requiresWorkspace: true,
       },
@@ -176,13 +197,6 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/library",
         icon: FolderKanban,
         labelKey: "nav.library",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/publish",
-        icon: Send,
-        labelKey: "nav.publish",
         workspaceScoped: true,
         requiresWorkspace: true,
       },
@@ -268,6 +282,13 @@ export const NAV_SECTIONS: NavSection[] = [
         clientOnly: true,
       },
       {
+        to: "/social-accounts",
+        icon: Link2,
+        labelKey: "nav.socialAccounts",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/portal",
         icon: Users,
         labelKey: "nav.portal",
@@ -284,6 +305,14 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/agency/{agencyId}/media-packages",
         icon: PackageCheck,
         labelKey: "nav.manageMediaPackages",
+        agencyScoped: true,
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
+        to: "/agency/{agencyId}/collaborators",
+        icon: Users,
+        labelKey: "collaborators.title",
         agencyScoped: true,
         hiddenForClient: true,
         hideInWorkspace: true,

@@ -1,31 +1,49 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, BadgeCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
-const TESTIMONIALS = [
+interface TestimonialItem {
+  key: string;
+  name: string;
+  role: string;
+  company: string;
+  badge: string;
+  quote: string;
+  stars: number;
+}
+
+const TESTIMONIALS: TestimonialItem[] = [
   {
     key: "minh",
     name: "Minh Nguyễn",
-    role: "Content Director",
-    company: "VCorp Media",
+    role: "Account Director",
+    company: "AdVenture Agency",
+    badge: "Agency Workflow Tester",
+    quote:
+      "Quy trình đàm phán Media Package và duyệt chiến dịch 2 chiều với khách hàng rút ngắn từ 4 ngày xuống còn vài giờ. Khách hàng xem và duyệt trực quan trên từng tác vụ mà không bị thất lạc feedback qua Zalo hay file Excel rời rạc.",
     stars: 5,
   },
   {
-    key: "sarah",
-    name: "Sarah Chen",
-    role: "Marketing Lead",
-    company: "Global Brands",
+    key: "phuong",
+    name: "Trần Hoàng Phương",
+    role: "Lead Content Creator",
+    company: "Digital Buzz Studio",
+    badge: "AI Trend Engine Tester",
+    quote:
+      "Hệ thống AI Trend Crawler phát hiện chủ đề thảo luận nóng trên Facebook rất nhạy. Khi yêu cầu sinh bài, AI tuân thủ đúng Brand Guidelines, tự động đóng Watermark số chuẩn xác nên team hoàn toàn an tâm bàn giao cho khách hàng.",
     stars: 5,
   },
   {
     key: "tuan",
-    name: "Tuấn Lê",
-    role: "Owner",
-    company: "CreativeHub",
+    name: "Lê Quốc Tuấn",
+    role: "Marketing Manager",
+    company: "UrbanStyle F&B Chain",
+    badge: "Client Reviewer",
+    quote:
+      "Là phía Khách hàng (Client), việc được cấp quyền vào Workspace riêng biệt để theo dõi tiến độ, duyệt bài đăng và xem báo cáo minh bạch đã xóa bỏ hoàn toàn khoảng cách nghi ngờ giữa thương hiệu và Agency đối tác.",
     stars: 5,
   },
 ];
@@ -40,15 +58,10 @@ function initials(name: string) {
 }
 
 export function Testimonials() {
-  const { t } = useTranslation();
   const reduce = useReducedMotion();
   const [active, setActive] = useState(0);
   const current = TESTIMONIALS[active];
 
-  // Tự động xoay quote nổi bật; interval reset lại mốc thời gian mỗi khi
-  // `active` đổi (kể cả do người dùng tự bấm avatar) — nhờ vậy chọn 1 quote
-  // luôn có đủ AUTO_ROTATE_MS trước khi bị auto-advance ghi đè, thay vì bị
-  // interval cũ (không phụ thuộc `active`) tự tiếp tục đếm ngầm.
   useEffect(() => {
     if (reduce) return;
     const id = setInterval(() => {
@@ -63,7 +76,7 @@ export function Testimonials() {
       className="relative overflow-hidden bg-zinc-50 py-24 dark:bg-zinc-900/50"
     >
       <SectionDecor corner="left" />
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -73,10 +86,10 @@ export function Testimonials() {
         >
           <SectionEyebrow index={7} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
-            {t("landing.testimonials.title")}
+            Phản hồi từ các <span className="text-brand-orange">Beta Testers</span>
           </h2>
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
-            {t("landing.testimonials.subtitle")}
+            Ghi nhận thực tế từ các Agency và Thương hiệu tham gia thử nghiệm quy trình quản lý chiến dịch và AI của BrandHub.
           </p>
         </motion.div>
 
@@ -85,11 +98,11 @@ export function Testimonials() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="relative rounded-3xl border border-zinc-100 bg-white p-10 shadow-sm sm:p-14 dark:border-zinc-800 dark:bg-zinc-900"
+          className="relative rounded-3xl border border-zinc-200/90 bg-white p-8 shadow-sm sm:p-14 dark:border-zinc-800 dark:bg-zinc-900"
         >
           <Quote className="text-brand-orange/15 absolute top-8 left-8 size-12 sm:top-10 sm:left-10" />
 
-          <div className="relative min-h-40">
+          <div className="relative min-h-48">
             <AnimatePresence mode="wait">
               <motion.div
                 key={current.key}
@@ -98,34 +111,41 @@ export function Testimonials() {
                 exit={reduce ? undefined : { opacity: 0, y: -12 }}
                 transition={{ duration: 0.35 }}
               >
-                <div className="mb-5 flex justify-center gap-0.5">
-                  {Array.from({ length: current.stars }).map((_, s) => (
-                    <Star
-                      key={s}
-                      className="size-4 fill-amber-400 text-amber-400"
-                    />
-                  ))}
+                <div className="mb-4 flex flex-wrap items-center justify-center gap-3">
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: current.stars }).map((_, s) => (
+                      <Star
+                        key={s}
+                        className="size-4 fill-amber-400 text-amber-400"
+                      />
+                    ))}
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                    <BadgeCheck className="size-3.5" />
+                    <span>{current.badge}</span>
+                  </span>
                 </div>
-                <p className="text-center text-lg leading-relaxed font-medium text-zinc-800 sm:text-xl dark:text-zinc-100">
-                  &ldquo;{t(`landing.testimonials.items.${current.key}.quote`)}
-                  &rdquo;
+
+                <p className="text-center text-base leading-relaxed font-medium text-zinc-800 sm:text-lg dark:text-zinc-100">
+                  &ldquo;{current.quote}&rdquo;
                 </p>
+
                 <div className="mt-6 flex flex-col items-center">
-                  <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                     {current.name}
                   </p>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    {current.role}
-                  </p>
-                  <p className="text-brand-orange mt-0.5 text-xs font-semibold">
-                    {current.company}
+                    {current.role} ·{" "}
+                    <span className="text-brand-orange font-semibold">
+                      {current.company}
+                    </span>
                   </p>
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          <div className="mt-10 flex justify-center gap-3">
+          <div className="mt-8 flex justify-center gap-3">
             {TESTIMONIALS.map((tm, i) => (
               <button
                 key={tm.key}

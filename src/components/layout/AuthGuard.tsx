@@ -127,6 +127,10 @@ export function AuthGuard() {
       ? agencyFallbackRole
       : (agencyFallbackRole ?? legacyWorkspaceRole ?? currentMemberRole);
 
+  const isDashboardRoute =
+    !!workspaceIdInUrl &&
+    location.pathname === `/workspaces/${workspaceIdInUrl}/dashboard`;
+
   const isMediaPackageRoute =
     !!workspaceIdInUrl &&
     (location.pathname === `/workspaces/${workspaceIdInUrl}/media-package` ||
@@ -146,7 +150,10 @@ export function AuthGuard() {
       (page) => location.pathname === `/workspaces/${workspaceIdInUrl}/${page}`,
     );
   const isAllowedHardGateRoute =
-    isMediaPackageRoute || isChatRoute || isManagerWorkspaceSettingsRoute;
+    isDashboardRoute ||
+    isMediaPackageRoute ||
+    isChatRoute ||
+    isManagerWorkspaceSettingsRoute;
 
   React.useEffect(() => {
     if (

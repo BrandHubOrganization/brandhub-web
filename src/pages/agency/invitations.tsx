@@ -7,6 +7,14 @@ import { Building2, Calendar, Check, X, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage, isNotFoundError } from "@/utils/error";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import type { AgencyInvitation } from "@/types/agency";
 
 export function AgencyInvitationsPage() {
@@ -15,6 +23,9 @@ export function AgencyInvitationsPage() {
   const [invitations, setInvitations] = useState<AgencyInvitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
+  const [declineTarget, setDeclineTarget] = useState<AgencyInvitation | null>(
+    null,
+  );
 
   useEffect(() => {
     agencyService
@@ -57,12 +68,18 @@ export function AgencyInvitationsPage() {
     }
   };
 
-  const handleDecline = async (inv: AgencyInvitation) => {
-    setBusy(inv.token);
+  const handleDecline = (inv: AgencyInvitation) => {
+    setDeclineTarget(inv);
+  };
+
+  const confirmDecline = async () => {
+    if (!declineTarget) return;
+    setBusy(declineTarget.token);
     try {
-      await agencyService.declineInvitation(inv.token);
-      setInvitations((prev) => prev.filter((i) => i.id !== inv.id));
+      await agencyService.declineInvitation(declineTarget.token);
+      setInvitations((prev) => prev.filter((i) => i.id !== declineTarget.id));
       toast.success(t("agency.invitations.declineSuccess"));
+      setDeclineTarget(null);
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("agency.errors.declineFailed")));
     } finally {
@@ -129,10 +146,11 @@ export function AgencyInvitationsPage() {
 
               <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                 <Button
+                  variant="orange"
                   size="sm"
                   loading={busy === inv.token}
                   onClick={() => handleAccept(inv)}
-                  className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white gap-1.5 shadow-xs text-xs font-medium"
+                  className="cursor-pointer gap-1.5 shadow-xs text-xs font-medium"
                 >
                   <Check className="size-3.5" />
                   {t("agency.invitations.accept")}
@@ -164,6 +182,46 @@ export function AgencyInvitationsPage() {
           {t("agency.invitations.back")}
         </Button>
       </div>
+
+      {/* Confirmation Dialog: Decline Invitation */}
+      <Dialog
+        open={Boolean(declineTarget)}
+        onOpenChange={(open) => !open && setDeclineTarget(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">
+              {t("agency.invitations.declineConfirmTitle", "Từ chối lời mời tham gia?")}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              {declineTarget &&
+                t(
+                  "agency.invitations.declineConfirmDesc",
+                  "Bạn có chắc chắn muốn từ chối lời mời tham gia {{agency}}? Sau khi từ chối, lời mời này sẽ bị hủy bỏ.",
+                  { agency: declineTarget.agencyName || "công ty này" },
+                )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={Boolean(busy)}
+              onClick={() => setDeclineTarget(null)}
+            >
+              {t("agency.invitations.cancel", "Hủy")}
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              loading={busy === declineTarget?.token}
+              onClick={confirmDecline}
+            >
+              {t("agency.invitations.confirmDeclineBtn", "Từ chối")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageWrapper>
   );
 }

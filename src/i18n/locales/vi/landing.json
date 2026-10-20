@@ -5,8 +5,9 @@
     "scrollDown": "Cuộn xuống",
     "ctaStart": "Bắt đầu miễn phí",
     "ctaLogin": "Đăng nhập",
-    "trustedByPrefix": "Được tin dùng bởi",
-    "trustedBySuffix": "thương hiệu & agency"
+    "trustedByPrefix": "Đồng hành cùng",
+    "trustedByHighlight": "Agency & Creative Teams",
+    "trustedBySuffix": "tiên phong"
   },
   "heroDemo": {
     "nav": {
@@ -320,151 +321,167 @@
       ]
     }
   },
-  "trustedBy": "Được tin dùng bởi 50,000+ thương hiệu & agency toàn cầu",
+  "trustedBy": "Hệ sinh thái công nghệ & nền tảng tích hợp chính thức",
   "stats": {
+    "microservices": "Kiến trúc Microservices phân tán",
+    "trends": "Tín hiệu Trend cào & vector hóa mỗi ngày",
+    "latency": "Độ trễ API Gateway trung bình",
+    "consistency": "Nhất quán Brand Tone & Bảo vệ bản quyền",
     "contents": "Nội dung được quản lý",
     "brands": "Thương hiệu & agency",
     "platforms": "Nền tảng tích hợp",
     "uptime": "Cam kết uptime"
   },
   "features": {
-    "title": "Tất cả trong một nền tảng",
-    "subtitle": "Từ lập kế hoạch đến xuất bản, BrandHub tối ưu toàn bộ workflow nội dung của bạn.",
+    "title": "Tất cả trong một nền tảng vận hành truyền thông",
+    "subtitle": "Từ đàm phán gói dịch vụ, lập kế hoạch 3 loại tác vụ đến kiểm duyệt chất lượng 4 cấp và xuất bản đa kênh.",
     "demoLabel": "Xem demo thực tế",
     "demoAction": "Xem {{feature}} trong demo MacBook trực tiếp phía trên",
     "items": {
       "planning": {
-        "title": "Lập kế hoạch nội dung",
-        "desc": "Lịch campaign trực quan với kéo thả, lên lịch trên tất cả các kênh."
+        "title": "Lập kế hoạch Chiến dịch & 3 Loại Task",
+        "desc": "Lịch trực quan quản lý đồng bộ 3 loại tác vụ chuyên sâu: Bài đăng mạng xã hội, Kế hoạch sản xuất Livestream và Biểu mẫu Workshop khảo sát."
       },
       "creation": {
-        "title": "Sáng tạo với AI",
-        "desc": "Tạo và tinh chỉnh nội dung với AI hiểu giọng điệu thương hiệu và nguyên tắc của bạn."
+        "title": "AI Studio & Kiểm Duyệt Brand Guidelines",
+        "desc": "Sáng tạo nội dung với AI tích hợp GraphRAG kiểm tra tone giọng, tạo ảnh/video người mẫu ảo và tự động đóng Watermark số."
       },
       "publishing": {
-        "title": "Xuất bản đa kênh",
-        "desc": "Tự động đăng lên Facebook, Instagram, TikTok, LinkedIn và nhiều nền tảng khác cùng lúc."
+        "title": "Xuất Bản Đa Kênh & Quản Lý Đối Tác Báo Đài",
+        "desc": "Tự động đăng bài qua Meta Graph API, TikTok, Threads đồng thời quản lý tiến độ đối tác truyền thông bên thứ ba (Báo chí, TV, Banner)."
       },
       "analytics": {
-        "title": "Phân tích hiệu suất",
-        "desc": "Dashboard thời gian thực theo dõi tương tác, phạm vi tiếp cận và ROI trên mọi chiến dịch."
+        "title": "Phân Tích Hiệu Suất & Social Listening",
+        "desc": "Dashboard thời gian thực theo dõi tương tác, độ phủ sóng chiến dịch và lắng nghe phản hồi thị trường từ bộ cào dữ liệu xu hướng."
       },
       "collab": {
-        "title": "Cộng tác nhóm",
-        "desc": "Workflow phê duyệt tích hợp, bình luận và phân quyền theo vai trò cho teamwork liền mạch."
+        "title": "Quy Trình Phê Duyệt 4 Cấp Chặt Chẽ",
+        "desc": "Cơ chế kiểm soát chất lượng chuẩn agency: Creator → Peer QC → Agency Manager → Client Approver với luồng phản hồi tức thì."
       },
       "automation": {
-        "title": "Tự động hóa thông minh",
-        "desc": "Tự động lên lịch giờ đăng tối ưu, tạo biến thể hàng loạt và thiết lập chiến dịch định kỳ."
+        "title": "Tự Động Hóa Vòng Đời Chiến Dịch",
+        "desc": "Tự động biến Gói truyền thông thành Task backlog, đồng bộ lịch Google Meet cho Workshop và tối ưu hóa khung giờ xuất bản."
       }
     }
   },
   "aiFeatures": {
-    "badge": "Sức mạnh AI",
-    "title": "Sáng tạo nhanh như AI",
-    "subtitle": "Tạo ảnh, video và nội dung đúng chất thương hiệu chỉ trong vài giây — không cần designer hay copywriter riêng.",
+    "badge": "Bộ công cụ AI Studio & Social Intelligence",
+    "title": "Sức mạnh AI chuyên sâu cho Thương hiệu & Agency",
+    "subtitle": "Từ cào dữ liệu xu hướng thị trường, kiểm soát tone giọng bằng GraphRAG đến sinh người mẫu ảo và kịch bản livestream hoàn chỉnh.",
     "demoLabel": "Xem trong demo",
     "demoAction": "Xem {{capability}} trong demo MacBook trực tiếp phía trên",
     "items": {
-      "image": {
-        "title": "Tạo ảnh bằng AI",
-        "desc": "Biến một câu prompt thành ảnh sản phẩm và hình ảnh social đúng chất thương hiệu, sẵn sàng đăng."
+      "trendCrawler": {
+        "title": "AI Social Trend Crawler",
+        "desc": "Hệ thống tự động cào và phát hiện xu hướng thảo luận thời gian thực từ mạng xã hội, tổng hợp hashtag và sentiment thịnh hành."
       },
-      "video": {
-        "title": "Tạo video bằng AI",
-        "desc": "Tạo nhiều biến thể video ngắn cho chiến dịch mà không cần ê-kíp quay hình."
+      "virtualAmbassador": {
+        "title": "AI Virtual Ambassador",
+        "desc": "Tổng hợp hình ảnh và video người mẫu đại sứ thương hiệu nhất quán 100% gương mặt, vóc dáng và trang phục qua LoRA Model."
       },
-      "text": {
-        "title": "AI viết nội dung",
-        "desc": "Soạn caption, nội dung quảng cáo và hashtag đúng giọng thương hiệu ngay lập tức."
+      "graphRag": {
+        "title": "GraphRAG Brand Consistency",
+        "desc": "Kiểm duyệt tone of voice, phong cách ngôn ngữ và cảnh báo danh sách từ cấm nghiêm ngặt bằng Knowledge Graph Neo4j kết hợp ChromaDB."
+      },
+      "generativeStudio": {
+        "title": "Multi-Modal Generative Studio",
+        "desc": "Sinh ảnh sản phẩm thương mại, video biến thể, copy bài đăng hàng loạt và tự động đóng dấu số Watermark bảo vệ bản quyền thương hiệu."
+      },
+      "livestreamScript": {
+        "title": "AI Livestream Script Generator",
+        "desc": "Tự động lập kịch bản livestream bán hàng từng mốc thời gian (pre/live/post), chiến lược chốt deal và checklist thiết bị phòng live."
+      },
+      "collaboratorRecommender": {
+        "title": "AI Media Collaborator Recommender",
+        "desc": "Đề xuất thông minh các đối tác truyền thông, báo chí trực tuyến, đài truyền hình và KOLs phù hợp nhất với ngân sách chiến dịch."
       }
     }
   },
   "agencyWorkspace": {
-    "title": "Xây dựng cho agency, không chỉ team",
-    "subtitle": "Quản lý mọi khách hàng, thương hiệu và workspace chỉ với một tài khoản — đúng quyền cho đúng vai trò.",
+    "title": "Xây dựng cho Agency & Mạng lưới Khách hàng",
+    "subtitle": "Quản lý tập trung mọi thương hiệu, chiến dịch và workspace khách hàng — cô lập dữ liệu hoàn toàn với cơ chế phân quyền 4 vai trò.",
     "demoLabel": "Xem trong demo",
     "demoAction": "Xem {{capability}} trong demo MacBook trực tiếp phía trên",
     "items": {
       "multiAgency": {
-        "title": "Quản lý nhiều Agency",
-        "desc": "Sở hữu và chuyển đổi giữa nhiều agency, mỗi agency có team, khách hàng và dashboard riêng."
+        "title": "Quản lý Đa Agency & Chi nhánh",
+        "desc": "Sở hữu và chuyển đổi linh hoạt giữa nhiều tổ chức Agency, mỗi đơn vị có hạn mức tài nguyên, đội ngũ và báo cáo độc lập."
       },
       "multiClient": {
-        "title": "Workspace theo từng khách hàng",
-        "desc": "Tạo workspace riêng cho từng khách hàng với timezone, thành viên và nội dung độc lập."
+        "title": "Workspace Chuyên Biệt Từng Khách Hàng",
+        "desc": "Khởi tạo không gian làm việc riêng biệt cho từng thương hiệu với múi giờ, Brand Guidelines và thư viện tài nguyên số tách biệt."
       },
       "roleAccess": {
-        "title": "Phân quyền theo vai trò",
-        "desc": "Owner, manager, creator và client mỗi người chỉ thấy và làm đúng những gì vai trò cho phép."
+        "title": "Phân Quyền 4 Cấp (RBAC)",
+        "desc": "Phân định minh bạch trách nhiệm giữa Agency Owner, Manager, Content Creator và Client Approver trên từng chiến dịch."
       }
     }
   },
   "howItWorks": {
-    "title": "Cách hoạt động",
-    "subtitle": "Mỗi vai trò một quy trình riêng, cùng vận hành trơn tru trên một nền tảng.",
+    "title": "Quy trình vận hành chuẩn mực",
+    "subtitle": "Khép kín từ khâu đàm phán thương mại đến sáng tạo, kiểm duyệt 4 cấp và xuất bản đa kênh tự động.",
     "input": "Đầu vào",
-    "output": "Đầu ra",
+    "output": "Bàn giao",
     "demoAction": "Xem {{step}} trong demo trực tiếp phía trên",
     "roles": {
       "owner": {
-        "roleTag": "Quản trị agency",
+        "roleTag": "Quản trị Agency",
         "setupWorkspace": {
-          "title": "Tạo workspace",
-          "desc": "Khởi tạo không gian làm việc cho agency"
+          "title": "Khởi tạo Workspace",
+          "desc": "Thiết lập không gian làm việc và Brand Guidelines"
         },
         "inviteTeam": {
-          "title": "Mời team",
-          "desc": "Thêm Manager, Creator"
+          "title": "Mời team & Phân vai",
+          "desc": "Cấp quyền cho Manager, Creator & Client"
         },
         "assignClient": {
-          "title": "Gán khách hàng",
-          "desc": "Phân công Client cho từng AM"
+          "title": "Quản lý Gói dịch vụ",
+          "desc": "Tạo gói mẫu và đàm phán điều khoản hợp đồng"
         }
       },
       "creator": {
         "roleTag": "Sáng tạo nội dung",
         "draftContent": {
-          "title": "Soạn nội dung",
-          "desc": "Viết bài theo lịch được giao"
+          "title": "Soạn thảo 3 loại Task",
+          "desc": "Tạo Post, Livestream Plan & Biểu mẫu Workshop"
         },
         "aiAssist": {
-          "title": "AI hỗ trợ",
-          "desc": "Gợi ý caption, hashtag, hình ảnh"
+          "title": "AI Studio & GraphRAG",
+          "desc": "Kiểm tra tone giọng, sinh ảnh & đóng Watermark"
         },
         "submitReview": {
-          "title": "Gửi duyệt",
-          "desc": "Đẩy bài cho Manager xem"
+          "title": "Gửi duyệt nội bộ",
+          "desc": "Đẩy bài qua khâu Peer QC hoặc Agency Manager"
         }
       },
       "manager": {
-        "roleTag": "Quản lý khách hàng",
+        "roleTag": "Quản lý chiến dịch",
         "reviewContent": {
-          "title": "Duyệt nội dung",
-          "desc": "Kiểm tra chất lượng, đúng brand"
+          "title": "Kiểm soát chất lượng",
+          "desc": "Đánh giá chất lượng và sự nhất quán thương hiệu"
         },
         "requestChanges": {
-          "title": "Yêu cầu sửa",
-          "desc": "Phản hồi lại Creator nếu cần chỉnh"
+          "title": "Yêu cầu chỉnh sửa",
+          "desc": "Phản hồi chi tiết điểm cần sửa lại cho Creator"
         },
         "forwardClient": {
-          "title": "Chuyển khách hàng",
-          "desc": "Gửi bản duyệt cuối cho Client"
+          "title": "Trình duyệt Khách hàng",
+          "desc": "Gửi bản hoàn thiện cuối cùng cho Client phê duyệt"
         }
       },
       "client": {
         "roleTag": "Chủ thương hiệu",
         "previewFinal": {
-          "title": "Xem trước",
-          "desc": "Preview đúng định dạng từng nền tảng"
+          "title": "Xem trước đa nền tảng",
+          "desc": "Preview chuẩn xác định dạng Facebook, TikTok, Instagram"
         },
         "approve": {
-          "title": "Phê duyệt",
-          "desc": "Approve hoặc góp ý trực tiếp"
+          "title": "Phê duyệt chính thức",
+          "desc": "Approve hoặc ghi chú góp ý trực tiếp trên bản nháp"
         },
         "autoPublish": {
           "title": "Tự động xuất bản",
-          "desc": "Hệ thống đăng đúng giờ đã lên lịch"
+          "desc": "Hệ thống tự động đăng bài và tracking đối tác báo đài"
         }
       }
     }
@@ -490,20 +507,24 @@
     }
   },
   "mediaPackage": {
-    "title": "Từ đề xuất đến chiến dịch đã ký",
-    "subtitle": "Cung cấp gói truyền thông có sẵn, thương lượng điều khoản với khách hàng, và biến phê duyệt thành chiến dịch thật — tất cả trong một quy trình.",
+    "title": "Từ Đề Xuất Dịch Vụ Đến Chiến Dịch Triển Khai Thực Tế",
+    "subtitle": "Quy trình khép kín từ kho gói dịch vụ truyền thông chuẩn hóa, đàm phán 2 chiều minh bạch đến tự động hóa khởi tạo chiến dịch và phân bổ tác vụ.",
     "items": {
       "templates": {
-        "title": "Gói dịch vụ có sẵn",
-        "desc": "Bắt đầu từ các gói truyền thông mẫu hoặc tùy chỉnh riêng cho từng agency."
+        "title": "Catalog Gói Dịch Vụ Chuẩn Hóa",
+        "desc": "Bắt đầu từ thư viện gói truyền thông mẫu (Standard, Growth, Viral) của hệ thống hoặc tự tạo gói dịch vụ riêng cho Agency."
       },
       "negotiate": {
-        "title": "Thương lượng với khách hàng",
-        "desc": "Khách hàng có thể yêu cầu điều chỉnh phạm vi, thời gian hoặc giá cho đến khi hai bên thống nhất."
+        "title": "Thương Lượng 2 Chiều Minh Bạch",
+        "desc": "Khách hàng gửi yêu cầu điều chỉnh ngân sách, timeline và khối lượng công việc; Agency phản hồi và chốt phụ lục trực tiếp."
       },
-      "approve": {
-        "title": "Duyệt & Triển khai",
-        "desc": "Sau khi được duyệt, gói sẽ trở thành chiến dịch truyền thông đầy đủ với công việc sẵn sàng phân công."
+      "convert": {
+        "title": "Tự Động Kích Hoạt Chiến Dịch",
+        "desc": "1-click biến gói truyền thông đã ký thành Media Campaign thực tế, tự động sinh backlog với 3 loại task (Post, Livestream, Workshop)."
+      },
+      "replicate": {
+        "title": "Tái Sử Dụng & Nhân Bản Workspace",
+        "desc": "Sao chép toàn bộ cấu hình brand guidelines, thành viên và tài nguyên đã duyệt sang các chiến dịch tiếp theo chỉ trong 1 thao tác."
       }
     }
   },
@@ -609,39 +630,39 @@
   },
   "faq": {
     "title": "Câu hỏi thường gặp",
-    "subtitle": "Không tìm thấy câu trả lời? Liên hệ đội hỗ trợ của chúng tôi.",
+    "subtitle": "Giải đáp thắc mắc về kiến trúc, tính năng và quy trình vận hành trên BrandHub.",
     "items": {
       "q1": {
-        "q": "Có gói miễn phí không?",
-        "a": "Có! Gói Starter của chúng tôi miễn phí trọn đời. Bạn nhận được 1 không gian làm việc, 5 thành viên, 3 kênh mạng xã hội và 100 bài đăng mỗi tháng. Không cần thẻ tín dụng."
+        "q": "Có thể dùng thử BrandHub miễn phí không?",
+        "a": "Có! Gói Starter miễn phí cho phép tạo 1 Không gian làm việc, tối đa 5 thành viên, kết nối các kênh mạng xã hội cơ bản và trải nghiệm đầy đủ quy trình lên lịch, soạn thảo bài viết."
       },
       "q2": {
-        "q": "BrandHub hỗ trợ những nền tảng mạng xã hội nào?",
-        "a": "BrandHub hỗ trợ tất cả nền tảng lớn bao gồm Facebook, Instagram, TikTok, LinkedIn, Twitter/X, YouTube, Pinterest và Threads. Chúng tôi liên tục thêm tích hợp mới dựa trên phản hồi người dùng."
+        "q": "BrandHub hỗ trợ liên kết những nền tảng mạng xã hội nào?",
+        "a": "BrandHub tích hợp chính thức qua API của Meta (Facebook Fanpage, Groups, Instagram Professional) và TikTok for Developers. Các bài đăng được lên lịch tự động và phân bổ qua microservice Publisher độc lập."
       },
       "q3": {
-        "q": "Tính năng tạo nội dung AI hoạt động thế nào?",
-        "a": "AI của chúng tôi được huấn luyện trên best practice marketing và thích nghi với giọng điệu thương hiệu của bạn. Bạn cung cấp brief hoặc chủ đề, AI sẽ tạo bản nháp, biến thể và phiên bản bản địa hóa. Bạn luôn có quyền phê duyệt cuối cùng trước khi đăng."
+        "q": "Tính năng AI Trend Crawler & Brand Guidelines hoạt động thế nào?",
+        "a": "BrandHub kết hợp mô hình GraphRAG (Neo4j kết hợp ChromaDB vector search) cùng bộ cào dữ liệu thảo luận thị trường. AI tổng hợp các xu hướng đang thịnh hành, sau đó đối chiếu nghiêm ngặt với Brand Guidelines (tone of voice, từ cấm, định dạng) trước khi đề xuất nội dung và tự động đóng Watermark số."
       },
       "q4": {
-        "q": "Tôi có thể cộng tác với team và khách hàng không?",
-        "a": "Hoàn toàn được. BrandHub có workflow phê duyệt tích hợp, phân quyền theo vai trò và luồng bình luận. Khách hàng có thể xem và phê duyệt nội dung mà không cần đăng nhập vào không gian làm việc chính của bạn."
+        "q": "Quy trình cộng tác & phê duyệt giữa Agency và Khách hàng (Client) diễn ra thế nào?",
+        "a": "Hệ thống xây dựng cơ chế phân quyền 2 lớp (2-Tier RBAC): Team Agency sáng tạo và quản trị chiến dịch; Khách hàng được cấp portal riêng biệt để duyệt từng bài đăng, phản hồi trực tiếp trên từng phiên bản bản nháp mà không cần trao đổi rời rạc qua ứng dụng nhắn tin."
       },
       "q5": {
-        "q": "Dùng thử Pro hoạt động thế nào?",
-        "a": "Bắt đầu dùng thử 14 ngày gói Pro — không cần thẻ tín dụng. Bạn có toàn quyền truy cập tất cả tính năng Pro. Chúng tôi sẽ nhắc bạn trước khi thời gian dùng thử kết thúc và bạn có thể hạ xuống gói Starter bất cứ lúc nào."
+        "q": "Dữ liệu và Access Token mạng xã hội được bảo vệ như thế nào?",
+        "a": "Hệ thống bảo vệ theo tiêu chuẩn kiến trúc Microservices phân tán với Spring Cloud Gateway xác thực tập trung. Toàn bộ OAuth Access Token của mạng xã hội được mã hóa AES-256 trong cơ sở dữ liệu và phiên người dùng được cô lập hoàn toàn."
       }
     }
   },
   "cta": {
     "title": "Sẵn sàng thay đổi workflow nội dung?",
-    "subtitle": "Tham gia cùng 50,000+ thương hiệu và agency đã dùng BrandHub. Bắt đầu miễn phí, không cần thẻ tín dụng.",
+    "subtitle": "Trải nghiệm quy trình quản lý chiến dịch và xuất bản tự động cùng BrandHub. Bắt đầu miễn phí ngay hôm nay.",
     "start": "Bắt đầu miễn phí",
     "login": "Đăng nhập"
   },
   "backToTop": "Lên đầu trang",
   "footer": {
-    "tagline": "Nền tảng quản lý nội dung thương hiệu toàn diện. Lập kế hoạch, sáng tạo, lên lịch, xuất bản và phát triển — tất cả trong một.",
+    "tagline": "Nền tảng quản trị chiến dịch và xuất bản đa kênh chuyên sâu cho Agency & Doanh nghiệp.",
     "email": "brandhub404@gmail.com",
     "columns": {
       "product": "Sản phẩm",
@@ -659,6 +680,6 @@
       "resources": ["Trung tâm trợ giúp", "Blog", "Cộng đồng", "Hướng dẫn"],
       "company": ["Giới thiệu", "Tuyển dụng", "Bảo mật", "Điều khoản"]
     },
-    "copyright": "© {{year}} BrandHub. Đã đăng ký bản quyền."
+    "copyright": "© {{year}} BrandHub · Phát triển bởi SynapForge Engineering Team (Đồ án Kỹ thuật Phần mềm SEP490 - Đại học FPT)."
   }
 }

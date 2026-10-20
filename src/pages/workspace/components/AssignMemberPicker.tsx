@@ -47,9 +47,10 @@ export function AssignMemberPicker({ agencyId, value, onChange }: Props) {
   return (
     <div className="border-border flex flex-col gap-2 rounded-lg border p-3">
       {managerAlreadyPicked && (
-        <p className="text-muted-foreground text-xs">
-          {t("workspace.create.assignManagerLimitHint")}
-        </p>
+        <div className="flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-400">
+          <span className="size-1.5 rounded-full bg-amber-500 shrink-0" />
+          <span>{t("workspace.create.assignManagerLimitHint")}</span>
+        </div>
       )}
       {members.map((m) => {
         const entry = value.find((v) => v.userId === m.userId);

@@ -1,72 +1,54 @@
-import React from "react";
-import {
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  FolderKanban,
-  ChevronDown,
-  RotateCcw,
-} from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ArrowUpDown, ChevronDown, FolderKanban, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/pages/tasks/constants";
+import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { TaskRowActions } from "@/pages/tasks/components/TaskRowActions";
 import type { TaskListItem, TaskPriority } from "@/types/task";
-import { STATUS_CONFIG, PRIORITY_CONFIG } from "../constants";
 
-interface TaskTableProps {
+interface Props {
   tasks: TaskListItem[];
   loading: boolean;
   page: number;
   totalPages: number;
   totalElements: number;
-  onPageChange: (newPage: number) => void;
+  onPageChange: (page: number) => void;
   sortField: "dueDate" | "createdAt" | "name" | "status";
   onSort: (field: "dueDate" | "createdAt" | "name" | "status") => void;
   onTaskClick: (task: TaskListItem) => void;
+  activeTaskId?: string;
   onResetFilters?: () => void;
   isFiltered?: boolean;
 }
 
-export function TaskTable({
-  tasks,
-  loading,
-  page,
-  totalPages,
-  totalElements,
-  onPageChange,
-  sortField,
-  onSort,
-  onTaskClick,
-  onResetFilters,
-  isFiltered,
-}: TaskTableProps) {
-  const [selectedTaskIds, setSelectedTaskIds] = React.useState<string[]>([]);
+export function TaskTable(props: Props) {
+  const { t, i18n } = useTranslation();
+  const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
 
   const toggleSelectAll = () => {
-    if (selectedTaskIds.length === tasks.length) {
+    if (selectedTaskIds.length === props.tasks.length) {
       setSelectedTaskIds([]);
     } else {
-      setSelectedTaskIds(tasks.map((t) => t.id));
+      setSelectedTaskIds(props.tasks.map((t) => t.id));
     }
   };
 
   const toggleSelectTask = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    if (selectedTaskIds.includes(id)) {
-      setSelectedTaskIds(selectedTaskIds.filter((item) => item !== id));
-    } else {
-      setSelectedTaskIds([...selectedTaskIds, id]);
-    }
+    setSelectedTaskIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
   };
 
   const formatDate = (iso?: string | null) => {
-    if (!iso) return "None";
+    if (!iso) return t("tasks.missing");
     try {
       const d = new Date(iso);
-      return new Intl.DateTimeFormat("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
+      if (isNaN(d.getTime())) return iso;
+      return new Intl.DateTimeFormat(i18n.language, {
+        dateStyle: "short",
+        timeStyle: "short",
       }).format(d);
     } catch {
       return iso;
@@ -89,155 +71,152 @@ export function TaskTable({
   };
 
   return (
-    <div className="border-border bg-card/90 overflow-hidden rounded-2xl border shadow-xs">
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-left text-sm">
-          <thead>
+    <div className="border-border bg-card/90 flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border shadow-xs">
+      <div
+        data-task-scroll="list"
+        className="min-h-0 flex-1 overflow-x-auto overflow-y-auto overscroll-contain"
+      >
+        <table className="w-full min-w-[960px] border-collapse text-left text-sm">
+          <thead className="bg-card sticky top-0 z-10 border-b">
             <tr className="border-border bg-muted/40 text-muted-foreground border-b text-xs font-semibold tracking-wider">
               {/* Checkbox column */}
-              <th className="w-10 px-3 py-3.5 text-center">
+              <th className="w-12 px-4 py-3 text-center">
                 <input
                   type="checkbox"
-                  checked={tasks.length > 0 && selectedTaskIds.length === tasks.length}
+                  checked={props.tasks.length > 0 && selectedTaskIds.length === props.tasks.length}
                   onChange={toggleSelectAll}
-                  className="accent-brand-orange size-3.5 rounded-sm cursor-pointer"
+                  aria-label="Chọn tất cả"
+                  className="accent-brand-orange size-3.5 cursor-pointer rounded-sm"
                 />
               </th>
 
-              {/* Work / Task Name */}
+              {/* Work / Title */}
               <th
-                onClick={() => onSort("name")}
-                className="hover:text-foreground min-w-[260px] cursor-pointer px-3 py-3.5 transition-colors"
+                onClick={() => props.onSort("name")}
+                className="hover:text-foreground w-[320px] max-w-[360px] cursor-pointer px-4 py-3 transition-colors"
               >
                 <div className="flex items-center gap-1.5">
-                  <span>Work</span>
+                  <span>{t("tasks.inline.columns.work")}</span>
                   <ArrowUpDown
-                    className={`size-3 ${sortField === "name" ? "text-brand-orange" : "opacity-40"}`}
+                    className={`size-3 ${props.sortField === "name" ? "text-brand-orange" : "opacity-40"}`}
                   />
                 </div>
               </th>
 
               {/* Assignee */}
-              <th className="min-w-[150px] px-3 py-3.5">Assignee</th>
+              <th className="w-[180px] px-3 py-3">{t("tasks.assignee")}</th>
 
               {/* Priority */}
-              <th className="min-w-[110px] px-3 py-3.5">Priority</th>
+              <th className="w-[120px] px-3 py-3">Độ ưu tiên</th>
 
               {/* Status */}
               <th
-                onClick={() => onSort("status")}
-                className="hover:text-foreground min-w-[130px] cursor-pointer px-3 py-3.5 transition-colors"
+                onClick={() => props.onSort("status")}
+                className="hover:text-foreground w-[140px] cursor-pointer px-3 py-3 transition-colors"
               >
                 <div className="flex items-center gap-1.5">
-                  <span>Status</span>
+                  <span>{t("tasks.inline.columns.status")}</span>
                   <ArrowUpDown
-                    className={`size-3 ${sortField === "status" ? "text-brand-orange" : "opacity-40"}`}
+                    className={`size-3 ${props.sortField === "status" ? "text-brand-orange" : "opacity-40"}`}
                   />
                 </div>
               </th>
 
               {/* Due date */}
               <th
-                onClick={() => onSort("dueDate")}
-                className="hover:text-foreground min-w-[140px] cursor-pointer px-3 py-3.5 transition-colors"
+                onClick={() => props.onSort("dueDate")}
+                className="hover:text-foreground w-[160px] cursor-pointer px-3 py-3 transition-colors"
               >
                 <div className="flex items-center gap-1.5">
-                  <span>Due date</span>
+                  <span>{t("tasks.deadline")}</span>
                   <ArrowUpDown
-                    className={`size-3 ${sortField === "dueDate" ? "text-brand-orange" : "opacity-40"}`}
+                    className={`size-3 ${props.sortField === "dueDate" ? "text-brand-orange" : "opacity-40"}`}
                   />
                 </div>
               </th>
+
+              {/* Actions */}
+              <th className="w-[100px] px-4 py-3 text-right">{t("tasks.inline.columns.actions")}</th>
             </tr>
           </thead>
           <tbody className="divide-border divide-y">
-            {loading ? (
+            {props.loading ? (
               Array.from({ length: 6 }).map((_, i) => (
                 <tr key={i} className="animate-pulse">
-                  <td className="px-3 py-3"><div className="bg-muted size-3.5 rounded-sm mx-auto" /></td>
+                  <td className="px-3 py-3"><div className="bg-muted mx-auto size-3.5 rounded-sm" /></td>
                   <td className="px-3 py-3"><div className="bg-muted h-4 w-48 rounded-md" /></td>
                   <td className="px-3 py-3"><div className="bg-muted h-4 w-28 rounded-md" /></td>
                   <td className="px-3 py-3"><div className="bg-muted h-4 w-16 rounded-md" /></td>
                   <td className="px-3 py-3"><div className="bg-muted h-4 w-20 rounded-md" /></td>
                   <td className="px-3 py-3"><div className="bg-muted h-4 w-24 rounded-md" /></td>
+                  <td className="px-3 py-3"><div className="bg-muted ml-auto h-4 w-16 rounded-md" /></td>
                 </tr>
               ))
-            ) : tasks.length === 0 ? (
+            ) : props.tasks.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-12 text-center">
+                <td colSpan={7} className="py-12 text-center">
                   <FolderKanban className="text-muted-foreground/40 mx-auto size-12" />
                   <p className="text-foreground mt-3 font-medium">Không tìm thấy công việc nào</p>
-                  <p className="text-muted-foreground text-xs mt-0.5">
-                    {isFiltered
+                  <p className="text-muted-foreground mt-0.5 text-xs">
+                    {props.isFiltered
                       ? "Không có công việc nào khớp với bộ lọc hiện tại."
                       : "Chưa có công việc nào trong không gian này."}
                   </p>
-                  {isFiltered && onResetFilters && (
+                  {props.isFiltered && props.onResetFilters && (
                     <button
                       type="button"
-                      onClick={onResetFilters}
-                      className="border-border bg-card text-foreground hover:bg-muted mt-3.5 inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium shadow-2xs transition-colors cursor-pointer"
+                      onClick={props.onResetFilters}
+                      className="border-border bg-card text-foreground hover:bg-muted shadow-2xs mt-3.5 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors"
                     >
-                      <RotateCcw className="size-3.5 text-brand-orange" />
+                      <RotateCcw className="text-brand-orange size-3.5" />
                       <span>Xóa bộ lọc</span>
                     </button>
                   )}
                 </td>
               </tr>
             ) : (
-              tasks.map((task) => {
+              props.tasks.map((task) => {
                 const isSelected = selectedTaskIds.includes(task.id);
-                const statusConf = STATUS_CONFIG[task.status] ?? STATUS_CONFIG.BACKLOG;
+                const status = canonicalTaskStatus(task.status);
+                const statusConf = STATUS_CONFIG[status] ?? STATUS_CONFIG.TODO;
 
                 return (
                   <tr
                     key={task.id}
-                    onClick={() => onTaskClick(task)}
+                    onClick={() => props.onTaskClick(task)}
                     className={`hover:bg-muted/40 group cursor-pointer transition-colors ${
                       isSelected ? "bg-muted/30" : ""
-                    }`}
+                    } ${props.activeTaskId === task.id ? "bg-brand-orange/10 font-medium" : ""}`}
                   >
                     {/* Checkbox */}
                     <td
                       onClick={(e) => toggleSelectTask(e, task.id)}
-                      className="px-3 py-2.5 text-center"
+                      className="w-12 px-4 py-2.5 text-center"
                     >
                       <input
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => {}}
-                        className="accent-brand-orange size-3.5 rounded-sm cursor-pointer"
+                        aria-label={`Chọn task ${task.name}`}
+                        className="accent-brand-orange size-3.5 cursor-pointer rounded-sm"
                       />
                     </td>
 
                     {/* Work / Title */}
-                    <td className="px-3 py-2.5">
-                      <div className="flex items-center" title={task.name}>
+                    <td className="w-[320px] max-w-[360px] px-4 py-2.5">
+                      <div className="flex flex-col" title={task.name}>
                         <span className="text-foreground group-hover:text-brand-orange truncate font-medium transition-colors">
                           {task.name}
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                          {t(`tasks.types.${task.type}`)}
                         </span>
                       </div>
                     </td>
 
                     {/* Assignee */}
-                    <td className="px-3 py-2.5">
-                      <div
-                        className="flex items-center gap-2"
-                        title={task.assigneeName ? `Người phụ trách: ${task.assigneeName}` : "Chưa phân công"}
-                      >
-                        {task.assigneeName === "team" ? (
-                          <div className="bg-purple-600 flex size-5.5 items-center justify-center rounded-full text-2xs font-semibold text-white">
-                            T
-                          </div>
-                        ) : (
-                          <div className="bg-amber-600/90 flex size-5.5 items-center justify-center rounded-full text-2xs font-semibold text-white">
-                            {(task.assigneeName ?? "U").charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                        <span className="text-foreground/90 truncate text-xs">
-                          {task.assigneeName ?? "Unassigned"}
-                        </span>
-                      </div>
+                    <td className="px-3 py-2.5" onClick={(event) => event.stopPropagation()}>
+                      <TaskRowActions task={task} field="assignee" />
                     </td>
 
                     {/* Priority */}
@@ -248,10 +227,12 @@ export function TaskTable({
                     {/* Status Badge */}
                     <td className="px-3 py-2.5">
                       <span
-                        title={`Trạng thái: ${statusConf.defaultLabel}`}
+                        title={`Trạng thái: ${t(`tasks.status.${status}`, { defaultValue: task.status })}`}
                         className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-semibold ${statusConf.bg} ${statusConf.text} ${statusConf.border}`}
                       >
-                        <span className="truncate">{statusConf.defaultLabel}</span>
+                        <span className="truncate">
+                          {t(`tasks.status.${status}`, { defaultValue: task.status })}
+                        </span>
                         <ChevronDown className="size-3 shrink-0 opacity-60" />
                       </span>
                     </td>
@@ -259,6 +240,11 @@ export function TaskTable({
                     {/* Due date */}
                     <td className="text-muted-foreground px-3 py-2.5 text-xs whitespace-nowrap">
                       {formatDate(task.dueDate)}
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-3 py-2.5 text-right" onClick={(e) => e.stopPropagation()}>
+                      <TaskRowActions task={task} field="start" />
                     </td>
                   </tr>
                 );
@@ -269,32 +255,34 @@ export function TaskTable({
       </div>
 
       {/* Pagination Footer */}
-      <div className="border-border bg-card/60 flex items-center justify-between border-t px-4 py-3 text-sm">
+      <footer className="border-border bg-card/60 flex shrink-0 flex-wrap items-center justify-between border-t px-4 py-3 text-sm">
         <span className="text-muted-foreground text-xs">
-          Showing <b>{tasks.length}</b> of <b>{totalElements}</b> tasks
+          Showing <b>{props.tasks.length}</b> of <b>{props.totalElements}</b> tasks
         </span>
         <div className="flex items-center gap-2">
-          <button
-            disabled={page <= 0 || loading}
-            onClick={() => onPageChange(page - 1)}
-            className="border-border hover:bg-muted disabled:opacity-40 inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors"
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={props.page <= 0 || props.loading}
+            onClick={() => props.onPageChange(props.page - 1)}
+            className="text-xs"
           >
-            <ChevronLeft className="size-4" />
-            <span>Prev</span>
-          </button>
+            {t("tasks.previous")}
+          </Button>
           <span className="text-muted-foreground text-xs">
-            Page {page + 1} / {totalPages || 1}
+            Page {props.page + 1} / {Math.max(props.totalPages, 1)}
           </span>
-          <button
-            disabled={page + 1 >= totalPages || loading}
-            onClick={() => onPageChange(page + 1)}
-            className="border-border hover:bg-muted disabled:opacity-40 inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors"
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={props.page + 1 >= props.totalPages || props.loading}
+            onClick={() => props.onPageChange(props.page + 1)}
+            className="text-xs"
           >
-            <span>Next</span>
-            <ChevronRight className="size-4" />
-          </button>
+            {t("tasks.next")}
+          </Button>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }

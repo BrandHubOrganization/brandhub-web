@@ -66,5 +66,17 @@
     "confirmDeactivate": "Confirm deactivation",
     "deactivateError": "Unable to deactivate account",
     "deactivateSuccess": "Account deactivated"
+  },
+  "session": {
+    "title": "Session & Sign out",
+    "subtitle": "Manage your current active session on this device.",
+    "hint": "Signing out will end your current session on this device and clear stored authentication credentials from your browser. You will need to sign in again to continue.",
+    "logoutButton": "Log out",
+    "confirmTitle": "Confirm log out",
+    "confirmBody": "Are you sure you want to log out of your account?",
+    "confirmDetails": "Your current active session on this device will end and you will be redirected to the sign-in page.",
+    "cancel": "Cancel",
+    "confirmLogout": "Log out",
+    "logoutSuccess": "Logged out successfully"
   }
 }

@@ -6,7 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { DataTable, type Column } from "@/components/ui/table";
-import { Copy, Mail, Search, UserPlus } from "lucide-react";
+import {
+  Briefcase,
+  Check,
+  CheckCircle2,
+  Copy,
+  Mail,
+  Phone,
+  Search,
+  Sparkles,
+  UserPlus,
+} from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { agencyService } from "@/services/agencyService";
@@ -64,6 +74,42 @@ interface MemberRow {
   cancellable: boolean;
 }
 
+function SafeAvatar({
+  src,
+  name,
+  className = "size-10",
+}: {
+  src?: string | null;
+  name: string;
+  className?: string;
+}) {
+  const [hasError, setHasError] = useState(false);
+  const initial = (name || "U").charAt(0).toUpperCase();
+
+  if (!src || hasError) {
+    return (
+      <div
+        className={cn(
+          "bg-brand-orange-soft text-brand-orange flex shrink-0 items-center justify-center rounded-full font-bold shadow-xs",
+          className,
+        )}
+      >
+        {initial}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={name}
+      referrerPolicy="no-referrer"
+      onError={() => setHasError(true)}
+      className={cn("shrink-0 rounded-full object-cover shadow-xs", className)}
+    />
+  );
+}
+
 export function AgencyMembersPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
@@ -91,6 +137,16 @@ export function AgencyMembersPage() {
     !members.some((m) => m.userId === rawUserMatch.id)
       ? rawUserMatch
       : null;
+
+  useEffect(() => {
+    if (
+      userMatch &&
+      (!inviteeName.trim() || inviteeName === userMatch.fullName)
+    ) {
+      setInviteeName(userMatch.fullName);
+    }
+  }, [userMatch]);
+
   const [note, setNote] = useState("");
   const [expiryDays, setExpiryDays] = useState(DEFAULT_EXPIRY_DAYS);
   const [inviteWorkspaceId, setInviteWorkspaceId] = useState("");
@@ -467,12 +523,6 @@ export function AgencyMembersPage() {
             </p>
             <form onSubmit={handleInvite} className="space-y-3">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Input
-                  label={t("agency.members.inviteeNameLabel")}
-                  placeholder={t("agency.members.inviteeNamePlaceholder")}
-                  value={inviteeName}
-                  onChange={(e) => setInviteeName(e.target.value)}
-                />
                 <div>
                   <Input
                     label={t("agency.members.emailLabel")}
@@ -482,34 +532,105 @@ export function AgencyMembersPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
-                  {userMatch && (
-                    <button
-                      type="button"
-                      onClick={() => setInviteeName(userMatch.fullName)}
-                      className="hover:bg-muted mt-1.5 flex w-full cursor-pointer items-center gap-2 rounded-md border p-2 text-left transition-colors"
-                    >
-                      {userMatch.avatarUrl ? (
-                        <img
-                          src={userMatch.avatarUrl}
-                          alt=""
-                          className="size-6 shrink-0 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="bg-brand-orange-soft text-brand-orange text-2xs flex size-6 shrink-0 items-center justify-center rounded-full font-bold">
-                          {userMatch.fullName.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <span className="min-w-0 flex-1 truncate text-xs">
-                        <span className="font-medium">
-                          {userMatch.fullName}
-                        </span>{" "}
-                        <span className="text-muted-foreground">
-                          {t("agency.members.userMatchHint")}
-                        </span>
-                      </span>
-                    </button>
-                  )}
                 </div>
+                <div>
+                  <Input
+                    label={t("agency.members.inviteeNameLabel")}
+                    placeholder={t("agency.members.inviteeNamePlaceholder")}
+                    value={inviteeName}
+                    onChange={(e) => setInviteeName(e.target.value)}
+                  />
+                </div>
+
+                {userMatch && (
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => {
+                      setInviteeName(userMatch.fullName);
+                      toast.success(
+                        t("agency.members.nameApplied", {
+                          name: userMatch.fullName,
+                        }),
+                      );
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        setInviteeName(userMatch.fullName);
+                      }
+                    }}
+                    className={cn(
+                      "col-span-1 sm:col-span-2 rounded-xl border p-3.5 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs",
+                      inviteeName.trim() === userMatch.fullName
+                        ? "border-emerald-500/40 bg-emerald-500/5 dark:bg-emerald-950/20"
+                        : "border-brand-orange/40 bg-brand-orange/5 hover:bg-brand-orange/10",
+                    )}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <SafeAvatar
+                        src={userMatch.avatarUrl}
+                        name={userMatch.fullName}
+                        className="size-11 border-2 border-background shadow-xs shrink-0"
+                      />
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="font-semibold text-sm text-foreground truncate">
+                            {userMatch.fullName}
+                          </span>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-3xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                            <CheckCircle2 className="size-3 shrink-0" />
+                            {t("agency.members.userMatchBadge")}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Mail className="size-3 shrink-0" />
+                            {userMatch.email}
+                          </span>
+                          {userMatch.phone && (
+                            <span className="flex items-center gap-1">
+                              <Phone className="size-3 shrink-0" />
+                              {userMatch.phone}
+                            </span>
+                          )}
+                          {userMatch.professionalTitle && (
+                            <span className="flex items-center gap-1">
+                              <Briefcase className="size-3 shrink-0" />
+                              {userMatch.professionalTitle}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="shrink-0 flex items-center justify-end">
+                      {inviteeName.trim() === userMatch.fullName ? (
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+                          <Check className="size-3.5" />
+                          {t("agency.members.userMatchApplied")}
+                        </span>
+                      ) : (
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="bg-brand-orange hover:bg-brand-orange/90 text-white text-xs gap-1.5 cursor-pointer shadow-xs"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setInviteeName(userMatch.fullName);
+                            toast.success(
+                              t("agency.members.nameApplied", {
+                                name: userMatch.fullName,
+                              }),
+                            );
+                          }}
+                        >
+                          <Sparkles className="size-3.5" />
+                          {t("agency.members.clickToFillName")}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="text-foreground mb-1 block text-xs font-medium">
@@ -594,8 +715,9 @@ export function AgencyMembersPage() {
               </div>
               <Button
                 type="submit"
+                variant="orange"
                 loading={inviting}
-                className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-white"
+                className="cursor-pointer gap-1.5"
               >
                 <Mail className="size-4" />
                 {t("agency.members.sendInvite")}

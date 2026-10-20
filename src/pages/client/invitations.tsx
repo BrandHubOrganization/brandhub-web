@@ -8,6 +8,14 @@ import { toast } from "sonner";
 import { workspaceService } from "@/services/workspaceService";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage, isNotFoundError } from "@/utils/error";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export interface ClientInvitationItem {
   id: string;
@@ -25,6 +33,8 @@ export function ClientInvitationsPage() {
   const [invitations, setInvitations] = useState<ClientInvitationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
+  const [declineTarget, setDeclineTarget] =
+    useState<ClientInvitationItem | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -80,16 +90,22 @@ export function ClientInvitationsPage() {
     navigate(`/invitations/accept?token=${inv.token}`);
   };
 
-  const handleDecline = async (inv: ClientInvitationItem) => {
-    setBusy(inv.token);
+  const handleDecline = (inv: ClientInvitationItem) => {
+    setDeclineTarget(inv);
+  };
+
+  const confirmDecline = async () => {
+    if (!declineTarget) return;
+    setBusy(declineTarget.token);
     try {
-      if (inv.source === "AGENCY") {
-        await agencyService.declineInvitation(inv.token);
+      if (declineTarget.source === "AGENCY") {
+        await agencyService.declineInvitation(declineTarget.token);
       } else {
-        await workspaceService.declineInvitation(inv.token);
+        await workspaceService.declineInvitation(declineTarget.token);
       }
-      setInvitations((prev) => prev.filter((i) => i.id !== inv.id));
+      setInvitations((prev) => prev.filter((i) => i.id !== declineTarget.id));
       toast.success(t("client.invitations.declineSuccess"));
+      setDeclineTarget(null);
     } catch (err: unknown) {
       toast.error(extractErrorMessage(err, t("common.actionFailed")));
     } finally {
@@ -160,10 +176,11 @@ export function ClientInvitationsPage() {
 
               <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                 <Button
+                  variant="orange"
                   size="sm"
                   loading={busy === inv.token}
                   onClick={() => handleAccept(inv)}
-                  className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white gap-1.5 shadow-xs text-xs font-medium"
+                  className="cursor-pointer gap-1.5 shadow-xs text-xs font-medium"
                 >
                   <Check className="size-3.5" />
                   {t("client.invitations.accept")}
@@ -195,6 +212,46 @@ export function ClientInvitationsPage() {
           {t("client.invitations.back")}
         </Button>
       </div>
+
+      {/* Confirmation Dialog: Decline Client Invitation */}
+      <Dialog
+        open={Boolean(declineTarget)}
+        onOpenChange={(open) => !open && setDeclineTarget(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">
+              {t("client.invitations.declineConfirmTitle", "Từ chối lời mời khách hàng?")}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              {declineTarget &&
+                t(
+                  "client.invitations.declineConfirmDesc",
+                  "Bạn có chắc chắn muốn từ chối lời mời liên kết khách hàng từ {{name}}? Sau khi từ chối, lời mời này sẽ bị hủy bỏ.",
+                  { name: declineTarget.title },
+                )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={Boolean(busy)}
+              onClick={() => setDeclineTarget(null)}
+            >
+              {t("client.invitations.cancel", "Hủy")}
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              loading={busy === declineTarget?.token}
+              onClick={confirmDecline}
+            >
+              {t("client.invitations.confirmDeclineBtn", "Từ chối")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageWrapper>
   );
 }

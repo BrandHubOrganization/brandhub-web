@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import * as Y from "yjs";
 import { api } from "@/services/api";
-import { useAuthStore } from "@/store/authStore";
+import { prepareTaskSocket } from "@/pages/content-writing/services/taskSocketSession";
+import { requireApiData } from "@/lib/apiData";
 
 /**
  * FR 3.6.10 real-time sync: loads the Yjs snapshot + operation tail over
@@ -25,8 +26,8 @@ const WS_BASE_URL = (
   (typeof import.meta !== "undefined" &&
     import.meta.env &&
     import.meta.env.VITE_API_BASE_URL) ||
-  "http://localhost:8081"
-).replace(/^http/, "ws");
+  "http://localhost:8080"
+);
 
 function toBase64(update: Uint8Array): string {
   let binary = "";
@@ -45,6 +46,37 @@ function fromBase64(base64: string): Uint8Array {
   return bytes;
 }
 
+// Edits made while the socket is down are kept here too, so closing the tab
+// before reconnecting doesn't lose them. Yjs updates are idempotent, so
+// replaying them on the next visit is safe even if some were already sent.
+function pendingKey(taskId: string) {
+  return `brandhub-content-pending:${taskId}`;
+}
+
+function loadPending(taskId: string): Uint8Array[] {
+  try {
+    const raw = window.localStorage.getItem(pendingKey(taskId));
+    return raw ? (JSON.parse(raw) as string[]).map(fromBase64) : [];
+  } catch {
+    return [];
+  }
+}
+
+function savePending(taskId: string, updates: Uint8Array[]) {
+  try {
+    if (updates.length === 0) {
+      window.localStorage.removeItem(pendingKey(taskId));
+    } else {
+      window.localStorage.setItem(
+        pendingKey(taskId),
+        JSON.stringify(updates.map(toBase64)),
+      );
+    }
+  } catch {
+    // Storage unavailable (private mode, quota) — in-memory queue still works.
+  }
+}
+
 interface TaskContentResponse {
   snapshot: string | null;
   operationsSinceSnapshot: string[];
@@ -55,6 +87,9 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
   const yDoc = useMemo(() => new Y.Doc(), [taskId]);
   const [isReady, setIsReady] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [connectionError, setConnectionError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   // Bumps each time a snapshot is reported, so the Version History list can refresh.
   const [snapshotCount, setSnapshotCount] = useState(0);
   const sequenceRef = useRef(0);
@@ -72,7 +107,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         `/api/v1/workspaces/${workspaceId}/tasks/${taskId}/content`,
       );
       if (disposed) return;
-      const content = data.data;
+      const content = requireApiData<TaskContentResponse>(data);
       if (content.snapshot) {
         Y.applyUpdate(yDoc, fromBase64(content.snapshot));
       }
@@ -89,7 +124,8 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
       // be silently dropped — a later Yjs struct whose `origin` points at a
       // never-sent earlier struct becomes a permanently unreachable orphan
       // (parent stays null) once it lands on another client. Queue instead.
-      const pendingUpdates: Uint8Array[] = [];
+      const pendingUpdates: Uint8Array[] = loadPending(taskId!);
+      pendingUpdates.forEach((u) => Y.applyUpdate(yDoc, u, "remote"));
 
       const sendUpdate = (client: Client, update: Uint8Array) => {
         client.publish({
@@ -98,12 +134,43 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         });
       };
 
-      const token = useAuthStore.getState().accessToken;
+      // After a drop the server may have broadcast updates we never saw
+      // (the subscription only delivers new ones). Pull the log again and
+      // merge it; Yjs makes re-applying known updates a no-op.
+      const resync = async () => {
+        const { data: fresh } = await api.get<{ data: TaskContentResponse }>(
+          `/api/v1/workspaces/${workspaceId}/tasks/${taskId}/content`,
+        );
+        if (disposed) return;
+        const c = fresh.data;
+        if (c.snapshot) Y.applyUpdate(yDoc, fromBase64(c.snapshot), "remote");
+        c.operationsSinceSnapshot.forEach((u) =>
+          Y.applyUpdate(yDoc, fromBase64(u), "remote"),
+        );
+        sequenceRef.current = Math.max(sequenceRef.current, c.sequenceNumber);
+      };
+      let hasConnectedBefore = false;
       const client = new Client({
-        brokerURL: `${WS_BASE_URL}/ws/tasks?token=${encodeURIComponent(token ?? "")}`,
         reconnectDelay: 3000,
+        // The access token is short-lived: a reconnect must not reuse the URL
+        // built at mount time.
+        beforeConnect: async (c) => {
+          try {
+            c.brokerURL = await prepareTaskSocket(WS_BASE_URL);
+            if (disposed) await c.deactivate();
+          } catch {
+            if (!disposed) {
+              setConnectionError(true);
+              setIsConnected(false);
+            }
+            await c.deactivate();
+          }
+        },
         onConnect: () => {
+          setConnectionError(false);
           setIsConnected(true);
+          if (hasConnectedBefore) void resync().catch(() => undefined);
+          hasConnectedBefore = true;
           client.subscribe(`/topic/tasks/${taskId}/content`, (message) => {
             const body = JSON.parse(message.body) as {
               update: string;
@@ -122,9 +189,14 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
           while (pendingUpdates.length > 0) {
             sendUpdate(client, pendingUpdates.shift()!);
           }
+          savePending(taskId!, []);
         },
         onDisconnect: () => setIsConnected(false),
         onWebSocketClose: () => setIsConnected(false),
+        onStompError: () => {
+          if (!disposed) { setConnectionError(true); setIsConnected(false); }
+          void client.deactivate();
+        },
       });
       client.activate();
       clientRef.current = client;
@@ -145,6 +217,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         if (origin === "remote") return;
         if (!client.connected) {
           pendingUpdates.push(update);
+          savePending(taskId!, pendingUpdates);
           return;
         }
         sendUpdate(client, update);
@@ -173,7 +246,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         });
     }
 
-    init();
+    init().catch(() => { if (!disposed) setLoadError(true); });
     return () => {
       disposed = true;
       if (idleTimer) clearTimeout(idleTimer);
@@ -182,7 +255,12 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
       clientRef.current?.deactivate();
       clientRef.current = null;
     };
-  }, [workspaceId, taskId, yDoc]);
+  }, [workspaceId, taskId, yDoc, loadAttempt]);
 
-  return { yDoc, isReady, isConnected, snapshotCount };
+  function retryLoad() {
+    setLoadError(false);
+    setLoadAttempt(attempt => attempt + 1);
+  }
+  function retryConnection() { clientRef.current?.activate(); }
+  return { yDoc, isReady, isConnected, snapshotCount, loadError, retryLoad, connectionError, retryConnection };
 }

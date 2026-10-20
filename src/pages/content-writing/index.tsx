@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ImagePlus, X, Eye, EyeOff, Sparkles, Copy, Check } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
+import { Button } from "@/components/ui/button";
 import {
   CanvasTextEditor,
   type CanvasTextEditorHandle,
@@ -93,7 +94,7 @@ export function ContentWritingPage() {
       });
   }, [taskId, workspaceId, setSearchParams]);
 
-  const { yDoc, isReady, isConnected, snapshotCount } = useTaskContentSync(
+  const { yDoc, isReady, isConnected, snapshotCount, loadError, retryLoad, connectionError, retryConnection } = useTaskContentSync(
     workspaceId ?? "",
     taskId,
   );
@@ -143,7 +144,6 @@ export function ContentWritingPage() {
     <PageWrapper
       title={t("editor.contentWritingPage.title")}
       description={t("editor.contentWritingPage.description")}
-      compact
     >
       {/* Top status bar */}
       <div className="mb-3 flex items-center justify-between gap-2">
@@ -277,8 +277,17 @@ export function ContentWritingPage() {
             </div>
           )}
 
+          {connectionError && <div role="alert" className="border-border bg-card mb-3 rounded-xl border p-3">
+            <p className="text-destructive text-sm">{t("editor.contentWritingPage.connectionFailed")}</p>
+            <Button variant="outline" className="mt-2" onClick={retryConnection}>{t("editor.emojiPicker.retry")}</Button>
+          </div>}
           {/* Canvas editor */}
-          {isReady ? (
+          {loadError ? (
+            <div role="alert" className="border-border bg-card flex h-48 flex-col items-center justify-center gap-3 rounded-xl border">
+              <p className="text-destructive text-sm">{t("editor.contentWritingPage.loadFailed")}</p>
+              <Button variant="outline" onClick={retryLoad}>{t("editor.emojiPicker.retry")}</Button>
+            </div>
+          ) : isReady ? (
             <CanvasTextEditor
               key={reloadToken}
               ref={editorRef}

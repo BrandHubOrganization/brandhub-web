@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
-import { CreateCustomPackageDialog } from "@/pages/media-package/components/CreateCustomPackageDialog";
+import { CreateCustomPackageForm } from "@/pages/media-package/components/CreateCustomPackageForm";
 import { MediaPackageCatalog } from "@/pages/media-package/components/MediaPackageCatalog";
 import {
   MediaPackageErrorState,
@@ -22,7 +22,8 @@ import { toast } from "sonner";
 export default function WorkspaceMediaPackagePage() {
   const { t } = useTranslation();
   const { id: workspaceId } = useParams<{ id: string }>();
-  const [customDialogOpen, setCustomDialogOpen] = useState(false);
+  const [createFormOpen, setCreateFormOpen] = useState(false);
+  const [editingTerms, setEditingTerms] = useState(false);
   const [creatingCustom, setCreatingCustom] = useState(false);
   const {
     agencyPackages,
@@ -90,46 +91,60 @@ export default function WorkspaceMediaPackagePage() {
       title={t("mediaPackage.workspacePage.title")}
       description={t("mediaPackage.workspacePage.description")}
     >
-      {canCreateCustom && (
-        <div className="mb-6 flex justify-end">
-          <Button variant="orange" onClick={() => setCustomDialogOpen(true)}>
-            <Plus className="size-4" />
-            {t("mediaPackage.actions.createCustom")}
-          </Button>
-        </div>
-      )}
-      {loading && <MediaPackageLoadingState />}
-      {!loading && error && (
-        <MediaPackageErrorState message={error} onRetry={() => void load()} />
-      )}
-      {!loading && !error && (
-        <div className="space-y-8">
-          <SelectedMediaPackage
-            selection={selectedPackage}
-            workspaceId={workspaceId}
-            onRefresh={() => void load()}
-            onNegotiate={negotiateTerms}
-            onApprove={approvePackage}
-            negotiating={negotiating}
-            approving={approving}
-          />
+      {!createFormOpen && (
+        <>
+          {canCreateCustom && !editingTerms && (
+            <div className="mb-6 flex justify-end">
+              <Button
+                data-package-create
+                variant="orange"
+                onClick={() => setCreateFormOpen(true)}
+              >
+                <Plus className="size-4" />
+                {t("mediaPackage.actions.createCustom")}
+              </Button>
+            </div>
+          )}
+          {loading && <MediaPackageLoadingState />}
+          {!loading && error && (
+            <MediaPackageErrorState
+              message={error}
+              onRetry={() => void load()}
+            />
+          )}
+          {!loading && !error && (
+            <div className="space-y-8">
+              <SelectedMediaPackage
+                selection={selectedPackage}
+                workspaceId={workspaceId}
+                onRefresh={() => void load()}
+                onNegotiate={negotiateTerms}
+                onApprove={approvePackage}
+                negotiating={negotiating}
+                approving={approving}
+                onEditingChange={setEditingTerms}
+              />
 
-          <MediaPackageCatalog
-            title={t("mediaPackage.catalog.availableTitle")}
-            description={t("mediaPackage.catalog.availableDescription")}
-            packages={agencyPackages}
-            selectedPackageId={selectedPackageId}
-            canSelect={canSelectPackages}
-            selectingId={selectingId}
-            onSelect={(packageId) => void selectPackage(packageId)}
-          />
-        </div>
+              <div hidden={editingTerms}>
+                <MediaPackageCatalog
+                  title={t("mediaPackage.catalog.availableTitle")}
+                  description={t("mediaPackage.catalog.availableDescription")}
+                  packages={agencyPackages}
+                  selectedPackageId={selectedPackageId}
+                  canSelect={canSelectPackages}
+                  selectingId={selectingId}
+                  onSelect={(packageId) => void selectPackage(packageId)}
+                />
+              </div>
+            </div>
+          )}
+        </>
       )}
-      {canCreateCustom && (
-        <CreateCustomPackageDialog
-          open={customDialogOpen}
+      {canCreateCustom && createFormOpen && (
+        <CreateCustomPackageForm
+          open={createFormOpen}
           loading={creatingCustom}
-          onOpenChange={setCustomDialogOpen}
+          onOpenChange={setCreateFormOpen}
           onSubmit={createCustomPackage}
         />
       )}

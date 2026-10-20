@@ -1,4 +1,31 @@
 {
+  "history": {
+    "title": "Negotiation history",
+    "empty": "No proposals recorded yet. A baseline is captured with the first proposal.",
+    "baseline": "Recording baseline: only this version's terms are known. Earlier negotiation rounds are unavailable.",
+    "error": "Unable to load history. Retry loading.",
+    "reload": "Reload history",
+    "previous": "Previous",
+    "next": "Next",
+    "version": "Version v{{version}}",
+    "current": "Current v{{version}}",
+    "note": "Proposal note (optional)",
+    "compare": "Compare with current",
+    "hide": "Hide comparison",
+    "readOnly": "History is read-only. Approval always targets the current version displayed above.",
+    "unknownActor": "Unknown actor",
+    "conflict": "Terms changed. Keep any needed input, close the form and reload the package before proposing or approving.",
+    "actions": {
+      "BASELINE": "Recording baseline",
+      "REQUEST_CHANGE": "Client proposal",
+      "COUNTER_OFFER": "Agency counter-offer"
+    },
+    "roles": {
+      "OWNER": "Owner",
+      "MANAGER": "Manager",
+      "CLIENT": "Client"
+    }
+  },
   "offering": {
     "title": "Service scope",
     "model": "Packaging model",
@@ -16,9 +43,9 @@
     "services": {
       "SOCIAL_POST": "Social media posts",
       "EVENT_PLANNING": "Event plan delivery",
-      "LIVESTREAM_PREPARATION": "Livestream preparation",
-      "PRESS_RECOMMENDATION": "Press partner recommendations",
-      "WORKSHOP_SUPPORT": "Workshop: Meet link and survey"
+      "LIVESTREAM_PREPARATION": "Livestream",
+      "PRESS_RECOMMENDATION": "Online press",
+      "WORKSHOP_SUPPORT": "Workshop"
     },
     "service": "Service",
     "name": "Deliverable name",
@@ -81,6 +108,8 @@
     "FULL_DELEGATION": "Full delegation"
   },
   "values": {
+    "optionalFinancials": "Budget and duration are optional. If supplied, values must be positive; duration uses whole weeks.",
+    "toBeAgreed": "Budget and duration: to be agreed",
     "duration": "{{count}} weeks",
     "fullDelegation": "Entire campaign"
   },
@@ -171,6 +200,7 @@
     "approve": "Unable to approve the media package."
   },
   "ui": {
+    "backToPackages": "Back to media packages",
     "viewDetail": "View package details",
     "duplicate": "Create from this package",
     "moreDeliverables": "+ {{count}} more deliverables",

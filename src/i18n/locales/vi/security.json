@@ -66,5 +66,17 @@
     "confirmDeactivate": "Xác nhận vô hiệu hóa",
     "deactivateError": "Không thể vô hiệu hóa tài khoản",
     "deactivateSuccess": "Tài khoản đã bị vô hiệu hóa"
+  },
+  "session": {
+    "title": "Phiên đăng nhập & Đăng xuất",
+    "subtitle": "Quản lý phiên làm việc hiện tại của bạn trên thiết bị này.",
+    "hint": "Đăng xuất sẽ kết thúc phiên làm việc hiện tại trên thiết bị này và xóa thông tin xác thực lưu trữ trên trình duyệt. Bạn sẽ cần đăng nhập lại để tiếp tục sử dụng.",
+    "logoutButton": "Đăng xuất",
+    "confirmTitle": "Xác nhận đăng xuất",
+    "confirmBody": "Bạn có chắc chắn muốn đăng xuất khỏi tài khoản của mình không?",
+    "confirmDetails": "Phiên làm việc hiện tại trên thiết bị này sẽ kết thúc. Bạn sẽ được chuyển hướng về trang đăng nhập.",
+    "cancel": "Hủy",
+    "confirmLogout": "Đăng xuất",
+    "logoutSuccess": "Đã đăng xuất thành công"
   }
 }

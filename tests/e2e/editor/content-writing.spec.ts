@@ -97,6 +97,10 @@ interface Backend {
   versions: unknown[];
   versionStates: Record<string, string>;
   restoreCalls: string[];
+  /** Every STOMP socket the page opened, oldest first (so tests can drop one). */
+  sockets: WebSocketRoute[];
+  /** Operations the REST content endpoint reports (tests may add "missed" ones). */
+  ops: string[];
 }
 
 async function setup(
@@ -113,9 +117,12 @@ async function setup(
     versions: opts.versions ?? [],
     versionStates: opts.versionStates ?? {},
     restoreCalls: [],
+    sockets: [],
+    ops: opts.initial?.ops ?? [],
   };
 
   await page.addInitScript(() => {
+    window.localStorage.setItem("brandhub_current_agency_id", "agency-1");
     window.localStorage.setItem(
       "brandhub-auth",
       JSON.stringify({
@@ -125,6 +132,7 @@ async function setup(
             name: "Studio Tester",
             email: "studio@brandhub.dev",
             role: "USER",
+            workspaceId: "workspace-1",
           },
           accessToken: "dev-token",
           refreshToken: "",
@@ -141,6 +149,14 @@ async function setup(
     body: JSON.stringify({ success: true, data: body }),
   });
 
+  await page.route("**/api/v1/**", (route) =>
+    route.request().method() === "GET"
+      ? route.fulfill(json([]))
+      : route.abort(),
+  );
+  await page.route("**/api/v1/users/me", (route) =>
+    route.fulfill(json({ id: "studio-test-user", role: "USER" })),
+  );
   await page.route("**/api/v1/workspaces", (route) =>
     route.fulfill(
       json([
@@ -160,11 +176,25 @@ async function setup(
       ]),
     ),
   );
+  await page.route("**/api/v1/agencies", (route) =>
+    route.fulfill(
+      json([
+        {
+          id: "agency-1",
+          name: "Studio Agency",
+          ownerId: "studio-test-user",
+          myRole: "MEMBER",
+          status: "ACTIVE",
+          createdAt: new Date().toISOString(),
+        },
+      ]),
+    ),
+  );
   await page.route(CONTENT_URL, (route) =>
     route.fulfill(
       json({
         snapshot: opts.initial?.snapshot ?? null,
-        operationsSinceSnapshot: opts.initial?.ops ?? [],
+        operationsSinceSnapshot: backend.ops,
         sequenceNumber: 0,
       }),
     ),
@@ -191,9 +221,10 @@ async function setup(
       }),
     );
   });
-  await page.routeWebSocket(/\/ws\/tasks/, (ws) =>
-    startBroker(ws, backend.broker),
-  );
+  await page.routeWebSocket(/\/ws\/tasks/, (ws) => {
+    backend.sockets.push(ws);
+    startBroker(ws, backend.broker);
+  });
 
   await page.goto(`/workspaces/${WS}/content-writing?taskId=${TASK}`);
   await expect(page.getByLabel("Content editor input")).toBeAttached();
@@ -502,5 +533,59 @@ test.describe("Content Writing View — snapshots & publish text", () => {
     await expect(
       page.getByRole("button", { name: /Sao chép bản đăng/ }),
     ).toBeDisabled();
+  });
+});
+
+test.describe("Content Writing View — offline resilience & accessibility", () => {
+  test("E2E-19 edits typed while disconnected are queued, persisted, then sent on reconnect; missed remote updates are pulled", async ({
+    page,
+  }) => {
+    const backend = await setup(page);
+    await expect(page.getByText("Live", { exact: true })).toBeVisible();
+    await typeText(page, "A");
+    await expect.poll(() => backend.broker.sent.length).toBe(1);
+
+    // a teammate edited while we were away: appears only in the REST log
+    const other = new Y.Doc();
+    Y.applyUpdate(other, Buffer.from(backend.broker.sent[0], "base64"));
+    let missed = "";
+    other.on("update", (u) => (missed = toBase64(u)));
+    other.getText("content").insert(1, "Z");
+    backend.ops = [backend.broker.sent[0], missed];
+
+    const sentBefore = backend.broker.sent.length;
+    await backend.sockets[0].close();
+    await expect(page.getByText("Live", { exact: true })).toBeHidden();
+    await typeText(page, "B");
+    // queued locally and persisted for a possible tab close
+    const stored = await page.evaluate(() =>
+      window.localStorage.getItem("brandhub-content-pending:task-1"),
+    );
+    expect(stored).not.toBeNull();
+    expect(backend.broker.sent.length).toBe(sentBefore);
+
+    // reconnect (stompjs reconnectDelay 3s) flushes the queue and resyncs
+    await expect(page.getByText("Live", { exact: true })).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect.poll(() => backend.broker.sent.length).toBe(sentBefore + 1);
+    await expect(mirror(page)).toContainText("Z");
+    await expect(mirror(page)).toContainText("B");
+    await expect(mirror(page)).toContainText("A");
+    expect(
+      await page.evaluate(() =>
+        window.localStorage.getItem("brandhub-content-pending:task-1"),
+      ),
+    ).toBeNull();
+  });
+
+  test("E2E-20 the hidden input is exposed as a multiline textbox and the canvas is hidden from assistive tech", async ({
+    page,
+  }) => {
+    await setup(page);
+    const input = page.getByRole("textbox", { name: "Content editor input" });
+    await expect(input).toBeAttached();
+    await expect(input).toHaveAttribute("aria-multiline", "true");
+    await expect(page.locator("canvas")).toHaveAttribute("aria-hidden", "true");
   });
 });
