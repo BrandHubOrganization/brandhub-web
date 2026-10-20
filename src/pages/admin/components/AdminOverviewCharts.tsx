@@ -56,8 +56,8 @@ export function AdminRegistrationChart({
   const dateLabel = (value: string) =>
     `${value.slice(8, 10)}/${value.slice(5, 7)}`;
   const tick = {
-    fontSize: 11,
-    fontFamily: "var(--font-mono)",
+    fontSize: 12,
+    fontFamily: "var(--font-sans)",
     fill: "var(--color-muted-foreground)",
   };
   return (
@@ -237,10 +237,10 @@ export function AdminAccountDistribution({ data }: { data: AdminStatistics }) {
           }
         >
           <div className="bg-card flex size-28 flex-col items-center justify-center rounded-full">
-            <span className="font-mono text-2xl font-semibold tabular-nums">
+            <span className="font-sans text-2xl font-semibold tabular-nums">
               {number.format(data.totalUsers)}
             </span>
-            <span className="text-muted-foreground text-2xs mt-1">
+            <span className="text-muted-foreground text-xs mt-1">
               {t("admin.navigation.users")}
             </span>
           </div>
@@ -262,10 +262,10 @@ export function AdminAccountDistribution({ data }: { data: AdminStatistics }) {
               <span className="flex-1">
                 {t(`admin.status.${status.status}`)}
               </span>
-              <span className="font-mono tabular-nums">
+              <span className="font-sans tabular-nums">
                 {number.format(status.count)}
               </span>
-              <span className="text-muted-foreground w-10 text-right font-mono tabular-nums">
+              <span className="text-muted-foreground w-10 text-right font-sans tabular-nums">
                 {data.totalUsers
                   ? Math.round((status.count / data.totalUsers) * 100)
                   : 0}

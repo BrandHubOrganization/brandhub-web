@@ -13,6 +13,7 @@ import {
   YAxis,
 } from "recharts";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -351,8 +352,8 @@ export function AdminRevenuePanel() {
                       axisLine={false}
                       tickLine={false}
                       tick={{
-                        fontSize: 11,
-                        fontFamily: "var(--font-mono)",
+                        fontSize: 12,
+                        fontFamily: "var(--font-sans)",
                         fill: "var(--color-muted-foreground)",
                       }}
                       dy={8}
@@ -363,8 +364,8 @@ export function AdminRevenuePanel() {
                       width={56}
                       tickFormatter={(v) => compact.format(v)}
                       tick={{
-                        fontSize: 11,
-                        fontFamily: "var(--font-mono)",
+                        fontSize: 12,
+                        fontFamily: "var(--font-sans)",
                         fill: "var(--color-muted-foreground)",
                       }}
                     />
@@ -416,7 +417,7 @@ export function AdminRevenuePanel() {
                   <li key={p.plan}>
                     <div className="flex items-baseline justify-between gap-3 text-sm">
                       <span className="font-semibold">{p.displayName}</span>
-                      <span className="font-mono text-sm font-semibold tabular-nums">
+                      <span className="font-sans text-sm font-semibold tabular-nums">
                         {money(p.mrr)}
                       </span>
                     </div>
@@ -495,29 +496,29 @@ export function AdminRevenuePanel() {
                                   formatted: count.format(d.value),
                                 })}
                           </td>
-                          <td className="px-4 py-3 font-mono font-semibold tabular-nums">
+                          <td className="px-4 py-3 font-sans font-semibold tabular-nums">
                             {money(tx.amount, tx.currency)}
                           </td>
                           <td className="px-4 py-3">
-                            <span
-                              className={cn(
-                                "rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold",
+                            <Badge
+                              variant={
                                 tx.status === "COMPLETED"
-                                  ? "bg-success/15 text-success"
-                                  : "bg-muted text-muted-foreground",
-                              )}
+                                  ? "PUBLISHED"
+                                  : "secondary"
+                              }
+                              className="rounded-full"
                             >
                               {t(
                                 tx.status === "COMPLETED"
                                   ? "admin.revenue.completed"
                                   : "admin.revenue.refunded",
                               )}
-                            </span>
+                            </Badge>
                           </td>
                           <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
                             {tx.payosTxId ?? "—"}
                           </td>
-                          <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
+                          <td className="text-muted-foreground px-4 py-3 font-sans text-xs">
                             {new Intl.DateTimeFormat(i18n.language, {
                               dateStyle: "short",
                               timeStyle: "short",
@@ -579,12 +580,12 @@ function Kpi({
       aria-label={label}
       className="bg-card border-border flex min-w-0 flex-col rounded-xl border p-5"
     >
-      <h2 className="text-muted-foreground text-2xs font-mono leading-4 font-medium tracking-wider uppercase">
+      <h2 className="text-muted-foreground text-xs font-sans leading-4 font-medium tracking-wider uppercase">
         {label}
       </h2>
       <p
         className={cn(
-          "mt-3 truncate font-mono text-[22px] leading-none font-semibold tracking-tight tabular-nums",
+          "mt-3 truncate font-sans text-2xl leading-none font-semibold tracking-tight tabular-nums",
           accent && "text-brand-orange",
         )}
         title={value}
