@@ -1,0 +1,166 @@
+{
+  "title": "AI Credit",
+  "ai": {
+    "balance": "Agency không đủ credit. Vui lòng liên hệ Owner.",
+    "limit": "Bạn đã đạt hạn mức credit trong kỳ. Vui lòng liên hệ Owner.",
+    "price": "Thao tác AI chưa có giá được bật. Admin cần cấu hình trước khi sử dụng.",
+    "account": "Quỹ credit của Agency chưa được cấp. Vui lòng liên hệ Owner.",
+    "schema": "Cần cập nhật cấu trúc dữ liệu Credit và AI execution trước khi tạo nội dung.",
+    "pending": "Yêu cầu AI này đang xử lý. Không bấm tạo lại để thử lại cùng yêu cầu.",
+    "unknown": "Chưa xác định được kết quả AI. Credit có thể vẫn đang được giữ để đối soát; không tự động hoàn hoặc tạo lại.",
+    "failed": "AI không tạo được kết quả. Credit đã giữ cho yêu cầu này đã được hoàn.",
+    "conflict": "Mã yêu cầu đã được dùng với nội dung khác. Vui lòng tải lại trang.",
+    "workspace": "Hãy chọn Workspace trước khi sử dụng AI.",
+    "notice": "AI sử dụng credit của Agency. Giá được chốt khi gửi; video giữ credit đến khi có kết quả.",
+    "prices": "Xem giá và mức sử dụng"
+  },
+  "pendingIntegration": "Các thao tác tạo AI qua Business đã được nối với Credit. Thanh toán/cấp credit theo subscription chưa được nối tự động. Kết quả AI chưa xác định vẫn giữ credit để đối soát.",
+  "limit": "Hạn mức mỗi kỳ (credit)",
+  "zeroHint": "Nhập số nguyên không âm. Hạn mức 0 không cho sử dụng; không phải không giới hạn.",
+  "zeroPriceHint": "Nhập số nguyên không âm. Giá 0 là cấu hình miễn phí có chủ đích, không phải giá chưa được thiết lập.",
+  "save": "Lưu cấu hình",
+  "saved": "Đã lưu cấu hình credit.",
+  "reload": "Tải lại bản đã lưu",
+  "retry": "Thử lại",
+  "loading": "Đang tải Credit…",
+  "revision": "Phiên bản {{revision}}",
+  "policy": {
+    "title": "Hạn mức mặc định",
+    "description": "Áp dụng cho thành viên chưa có mức riêng. Khi Agency chưa đặt mức mặc định, hệ thống dùng 10 credit mỗi kỳ. Đây là trần chi tiêu, không cộng credit vào quỹ Agency."
+  },
+  "owner": {
+    "title": "Chủ sở hữu: không giới hạn cá nhân",
+    "description": "Chi tiêu của Chủ sở hữu vẫn được ghi nhận và không được vượt số dư chung của Agency."
+  },
+  "member": {
+    "select": "Thành viên",
+    "choose": "Chọn một thành viên để xem sử dụng và điều chỉnh hạn mức.",
+    "empty": "Chưa có thành viên khác trong Agency.",
+    "title": "Hạn mức thành viên",
+    "search": "Tìm thành viên",
+    "noResults": "Không có thành viên phù hợp.",
+    "selected": "Thành viên: {{name}}"
+  },
+  "source": {
+    "SYSTEM_DEFAULT": "Đang dùng hạn mức hệ thống: 10 credit mỗi kỳ. Lưu tại đây sẽ đặt hạn mức riêng cho thành viên.",
+    "OVERRIDE": "Thành viên đang có hạn mức riêng. Thay đổi chỉ áp dụng cho thành viên này.",
+    "AGENCY_DEFAULT": "Đang dùng hạn mức mặc định Agency. Lưu tại đây sẽ đặt một hạn mức riêng.",
+    "UNCONFIGURED": "Chưa có hạn mức mặc định hoặc hạn mức riêng. Không tự coi đây là không giới hạn.",
+    "OWNER_UNLIMITED": "Chủ sở hữu không có hạn mức cá nhân."
+  },
+  "price": {
+    "title": "Cấu hình giá AI Credit",
+    "operation": "Thao tác AI",
+    "amount": "Giá credit",
+    "status": "Trạng thái giá",
+    "enabled": "Cho phép sử dụng giá",
+    "disabled": "Ngừng sử dụng giá",
+    "missing": "Chưa cấu hình giá cho thao tác này. Không được hiểu là miễn phí.",
+    "versionHint": "Mỗi lần lưu tạo phiên bản mới và giữ giá cũ cho tác vụ đã nhận. Nội dung/hashtag tính theo yêu cầu thành công; ảnh/video tính theo từng sản phẩm thành công."
+  },
+  "operations": {
+    "CONTENT_GENERATE": "Tạo nội dung",
+    "CAPTION_VARIANTS": "Tạo các phương án chú thích",
+    "HASHTAG_GENERATE": "Gợi ý hashtag",
+    "AMBASSADOR_GENERATE": "Tạo đại sứ",
+    "CHARACTER_SHEET": "Tạo bộ ảnh nhân vật",
+    "COMMERCIAL_IMAGE": "Tạo ảnh thương mại",
+    "VIDEO_GENERATE": "Tạo video"
+  },
+  "errors": {
+    "integer": "Nhập số nguyên từ 0 đến 9.007.199.254.740.991, không dùng dấu thập phân hoặc ký hiệu số mũ.",
+    "unsafe": "Giá trị vượt khả năng biểu diễn chính xác của giao diện. Không thể sửa để tránh làm sai dữ liệu.",
+    "stale": "Cấu hình đã được thay đổi. Nội dung bạn nhập vẫn được giữ; hãy tải lại bản đã lưu trước khi sửa tiếp.",
+    "schema": "Database chưa có schema Credit phù hợp. Rà soát migration cấu hình, hạch toán, AI execution và nguồn DEV_SEED; không chạy init trên dữ liệu đang dùng.",
+    "forbidden": "Bạn không có quyền xem hoặc thay đổi cấu hình này.",
+    "generic": "Không xử lý được dữ liệu Credit. Hãy thử lại; nội dung chưa lưu không được gửi tự động.",
+    "account": "Agency chưa thiết lập kỳ Credit. Cần hoàn tất tích hợp cấp credit từ subscription/thanh toán; chưa thể hiển thị báo cáo theo kỳ.",
+    "notFound": "Không tìm thấy Agency hoặc thành viên trong phạm vi truy cập hiện tại."
+  },
+  "refresh": "Làm mới",
+  "integration": {
+    "summary": "Đã nối AI; thanh toán đang chờ tích hợp",
+    "title": "Phạm vi tích hợp"
+  },
+  "balance": {
+    "development": "Credit kiểm thử (DEV_SEED)",
+    "title": "Quỹ Credit của Agency",
+    "available": "Tổng khả dụng",
+    "plan": "Khả dụng từ gói",
+    "purchased": "Khả dụng mua thêm",
+    "held": "Đang giữ",
+    "help": "Tổng khả dụng đã loại trừ credit đang giữ. Ưu tiên dùng credit từ gói trước; credit mua thêm không hết hạn. Hạn mức cá nhân không phải tiền được chia riêng."
+  },
+  "usage": {
+    "title": "Sử dụng trong kỳ",
+    "myUsage": "Xem sử dụng của tôi",
+    "period": "{{start}} → {{end}}",
+    "limit": "Hạn mức cá nhân",
+    "used": "Đã dùng",
+    "held": "Đang giữ",
+    "remaining": "Hạn mức còn lại",
+    "unlimited": "Không áp dụng",
+    "ceilingNote": "Hạn mức cá nhân không phải số dư quỹ.",
+    "remainingHelp": "Phần hạn mức còn lại = hạn mức − đã dùng − đang giữ, tối thiểu là 0. Khả năng sử dụng thực tế còn phụ thuộc quỹ Agency, giá và quyền thao tác. Chủ sở hữu không có trần cá nhân.",
+    "outputs": "Đơn vị thành công",
+    "empty": "Chưa ghi nhận sử dụng Credit trong kỳ này.",
+    "configuredLimit": "Hạn mức hiện tại: {{amount}} credit/kỳ."
+  },
+  "catalog": {
+    "title": "Bảng giá thao tác AI",
+    "description": "Giá hiện hành để tham khảo. Tác vụ được tính theo phiên bản giá khi nhận yêu cầu, không phải giá mới nhất khi hoàn tất.",
+    "unconfigured": "Chưa cấu hình",
+    "active": "Đang áp dụng",
+    "inactive": "Tạm ngừng"
+  },
+  "unit": {
+    "request": "{{amount}} credit / yêu cầu",
+    "image": "{{amount}} credit / ảnh",
+    "video": "{{amount}} credit / video"
+  },
+  "unitName": {
+    "request": "Tính cho mỗi yêu cầu thành công.",
+    "image": "Tính cho mỗi ảnh thành công; bộ nhân vật tính theo ảnh đầu ra, không theo số ô trong ảnh.",
+    "video": "Tính cho mỗi video thành công."
+  },
+  "sourceLabel": {
+    "SYSTEM_DEFAULT": "Theo hệ thống",
+    "AGENCY_DEFAULT": "Theo Agency",
+    "OVERRIDE": "Hạn mức riêng",
+    "UNCONFIGURED": "Chưa cấu hình",
+    "OWNER_UNLIMITED": "Không có trần cá nhân"
+  },
+  "topup": {
+    "action": "Nạp thêm Credit",
+    "title": "Nạp thêm Credit Agency",
+    "description": "Nâng cao hạn ngạch sáng tạo không giới hạn với các gói credit ưu đãi đặc biệt cho Agency.",
+    "starter": "Gói Khởi động",
+    "accelerate": "Gói Tăng tốc",
+    "enterprise": "Gói Doanh nghiệp",
+    "recommended": "Phổ biến nhất",
+    "bonus": "+{{pct}}% bonus",
+    "bestValue": "Tiết kiệm tối đa",
+    "deliverables": {
+      "starter": "~15 bài viết SEO, ~5 ảnh 4K",
+      "accelerate": "~80 bài viết SEO, ~30 ảnh 4K",
+      "enterprise": "~350 bài viết SEO, ~150 ảnh 4K"
+    },
+    "payosNote": "Hỗ trợ thanh toán nhanh quét mã VietQR / PayOS tự động kích hoạt credit tức thì.",
+    "proceedPayOS": "Thanh toán ngay qua PayOS",
+    "close": "Đóng"
+  },
+  "warning": {
+    "safe": "Hạn mức an toàn",
+    "warning": "Sắp đạt hạn mức kỳ",
+    "danger": "Đạt ngưỡng giới hạn",
+    "safeDesc": "Chi tiêu credit trong ngưỡng ổn định (< 75%).",
+    "warningDesc": "Đã sử dụng từ 75% - 90% hạn mức kỳ. Hãy cân nhắc điều chỉnh hạn ngạch.",
+    "dangerDesc": "Đã sử dụng vượt 90% hạn mức kỳ! Các tác vụ AI có thể bị gián đoạn khi chạm trần."
+  },
+  "presets": {
+    "quickSelect": "Chọn nhanh hạn mức:",
+    "agencyDefault": "Mặc định Agency ({{amount}})",
+    "confirmTitle": "Xác nhận cập nhật hạn mức",
+    "confirmDesc": "Bạn có chắc chắn muốn cập nhật hạn mức credit cho thành viên này thành {{amount}} credits/kỳ?"
+  }
+}

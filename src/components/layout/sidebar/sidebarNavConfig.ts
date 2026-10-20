@@ -303,6 +303,14 @@ export const NAV_SECTIONS: NavSection[] = [
         hideInWorkspace: true,
       },
       {
+        to: "/agency/{agencyId}/credit",
+        icon: CreditCard,
+        labelKey: "credit.title",
+        agencyScoped: true,
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
         to: "/agency",
         icon: Building2,
         labelKey: "nav.agencyList",

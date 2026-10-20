@@ -154,6 +154,8 @@ const WorkspaceMembersPage = lazyNamed(
 const TaskListPage = lazyNamed(() => import("@/pages/tasks"), "TaskListPage");
 const TaskDetailPage = lazy(() => import("@/pages/tasks/detail"));
 const TaskApprovalsPage = lazy(() => import("@/pages/task-approvals"));
+const AgencyCreditPage = lazy(() => import("@/pages/credit"));
+const CreditPricesPage = lazy(() => import("@/pages/credit/prices"));
 const WorkspaceClientsPage = lazyNamed(
   () => import("@/pages/workspace/clients"),
   "WorkspaceClientsPage",
@@ -386,7 +388,10 @@ export function AppRoutes() {
               element={<WorkspaceRequestPage />}
             />
             <Route path="/workspaces/:id/tasks" element={<TaskListPage />} />
-            <Route path="/workspaces/:id/task-approvals" element={<TaskApprovalsPage />} />
+            <Route
+              path="/workspaces/:id/task-approvals"
+              element={<TaskApprovalsPage />}
+            />
             <Route
               path="/workspaces/:id/tasks/:taskId/detail"
               element={<TaskDetailPage />}
@@ -503,9 +508,11 @@ export function AppRoutes() {
             />
             <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
             <Route path="/agency/:id/roles" element={<AgencyRolesPage />} />
+            <Route path="/agency/:id/credit" element={<AgencyCreditPage />} />
             <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/system-health" element={<SystemHealthPage />} />
+            <Route path="/admin/credit-prices" element={<CreditPricesPage />} />
             <Route
               path="/admin/workspace-templates"
               element={<WorkspaceTemplateLibraryPage />}

@@ -24,21 +24,29 @@ const sections = [
   { key: "email", icon: Mail, planned: false },
   { key: "mailTemplates", icon: FileText, planned: false },
   { key: "reports", icon: FileChartColumn, planned: false },
+  { key: "credit", icon: Wallet, planned: false },
 ];
 const linkTo = (key: string) =>
-  key === "health"
-    ? "/admin/system-health"
-    : key === "overview"
-      ? "/admin"
-      : `/admin?view=${key}`;
+  key === "credit"
+    ? "/admin/credit-prices"
+    : key === "health"
+      ? "/admin/system-health"
+      : key === "overview"
+        ? "/admin"
+        : `/admin?view=${key}`;
 const labelKey = (key: string) =>
-  key === "health" ? "monitoring.title" : `admin.navigation.${key}`;
+  key === "credit"
+    ? "credit.price.title"
+    : key === "health"
+      ? "monitoring.title"
+      : `admin.navigation.${key}`;
 
 function useAdminView() {
   const [params] = useSearchParams();
   const { pathname } = useLocation();
   const view = params.get("view") || "overview";
   if (pathname === "/admin/system-health") return "health";
+  if (pathname === "/admin/credit-prices") return "credit";
   return sections.some((section) => section.key === view && view !== "health")
     ? view
     : "overview";

@@ -1,0 +1,166 @@
+{
+  "title": "AI Credit",
+  "ai": {
+    "balance": "The Agency has insufficient credits. Please contact the Owner.",
+    "limit": "You have reached your credit limit for this period. Please contact the Owner.",
+    "price": "This AI operation has no enabled price. An Admin must configure it first.",
+    "account": "The Agency credit account has not been funded. Please contact the Owner.",
+    "schema": "Credit and AI execution database migrations are required before generating content.",
+    "pending": "This AI request is still running. Do not regenerate as a retry of the same request.",
+    "unknown": "The AI outcome is not yet known. Credits may remain held for reconciliation; no automatic refund or regeneration.",
+    "failed": "AI produced no usable result. Reserved credits for this request have been released.",
+    "conflict": "This request key was used with different content. Please reload the page.",
+    "workspace": "Select a Workspace before using AI.",
+    "notice": "AI uses Agency credits. The price is fixed on submission; video credits stay held until a result is known.",
+    "prices": "View prices and usage"
+  },
+  "pendingIntegration": "AI generation through Business is connected to Credit. Payment/subscription funding is not automatic yet. Unknown AI outcomes keep credits held for reconciliation.",
+  "limit": "Limit per period (credits)",
+  "zeroHint": "Enter a non-negative whole number. A zero limit blocks usage; it does not mean unlimited.",
+  "zeroPriceHint": "Enter a non-negative whole number. A zero price is explicitly free, not unconfigured.",
+  "save": "Save configuration",
+  "saved": "Credit configuration saved.",
+  "reload": "Reload saved version",
+  "retry": "Retry",
+  "loading": "Loading Credit…",
+  "revision": "Revision {{revision}}",
+  "policy": {
+    "title": "Default member limit",
+    "description": "Applies to members without an override. Without an Agency default, the system uses 10 credits per period. This is a spending ceiling, not a credit grant."
+  },
+  "owner": {
+    "title": "Owner: no personal limit",
+    "description": "Owner spending is still tracked and cannot exceed the Agency's shared balance."
+  },
+  "member": {
+    "select": "Member",
+    "choose": "Select a member to view usage and adjust their limit.",
+    "empty": "No other Agency members yet.",
+    "title": "Member limit",
+    "search": "Find a member",
+    "noResults": "No matching members.",
+    "selected": "Member: {{name}}"
+  },
+  "source": {
+    "SYSTEM_DEFAULT": "Using the system default: 10 credits per period. Saving here creates an individual override.",
+    "OVERRIDE": "This member has an individual limit. Changes apply only to this member.",
+    "AGENCY_DEFAULT": "Using the Agency default. Saving here creates an individual override.",
+    "UNCONFIGURED": "Neither a default nor an individual limit is configured. This does not mean unlimited.",
+    "OWNER_UNLIMITED": "The Owner has no personal limit."
+  },
+  "price": {
+    "title": "AI Credit pricing",
+    "operation": "AI operation",
+    "amount": "Credit price",
+    "status": "Price status",
+    "enabled": "Enable price",
+    "disabled": "Disable price",
+    "missing": "No price configured for this operation. This does not mean free.",
+    "versionHint": "Each save creates a new revision; accepted jobs retain their original price. Content/hashtags are billed per successful request; images/videos per successful output."
+  },
+  "operations": {
+    "CONTENT_GENERATE": "Generate content",
+    "CAPTION_VARIANTS": "Generate caption variants",
+    "HASHTAG_GENERATE": "Suggest hashtags",
+    "AMBASSADOR_GENERATE": "Generate ambassador",
+    "CHARACTER_SHEET": "Generate character sheet",
+    "COMMERCIAL_IMAGE": "Generate commercial image",
+    "VIDEO_GENERATE": "Generate video"
+  },
+  "errors": {
+    "integer": "Enter a whole number between 0 and 9,007,199,254,740,991, without decimals or exponent notation.",
+    "unsafe": "This value cannot be represented precisely in the browser. Editing is disabled to protect the stored data.",
+    "stale": "Configuration changed. Your input is preserved; reload the saved version before editing again.",
+    "schema": "The matching Credit schema is missing. Review the configuration, accounting, AI execution and DEV_SEED-source migrations; never run init on an existing database.",
+    "forbidden": "You do not have permission to view or change this configuration.",
+    "generic": "Credit data could not be processed. Retry; unsaved input is never sent automatically.",
+    "account": "The Agency Credit cycle has not been established. Subscription/payment provisioning must be integrated before period reports are available.",
+    "notFound": "The Agency or member was not found within your current access."
+  },
+  "refresh": "Refresh",
+  "integration": {
+    "summary": "AI connected; payment integration pending",
+    "title": "Integration scope"
+  },
+  "balance": {
+    "development": "Development credits (DEV_SEED)",
+    "title": "Agency Credit balance",
+    "available": "Total available",
+    "plan": "Plan available",
+    "purchased": "Purchased available",
+    "held": "Held",
+    "help": "Available balance already excludes held credits. Plan credits are used first; purchased credits do not expire. Personal limits are not separately allocated funds."
+  },
+  "usage": {
+    "title": "Current-period usage",
+    "myUsage": "View my usage",
+    "period": "{{start}} → {{end}}",
+    "limit": "Personal limit",
+    "used": "Used",
+    "held": "Held",
+    "remaining": "Limit remaining",
+    "unlimited": "Not applicable",
+    "ceilingNote": "A personal ceiling is not a wallet balance.",
+    "remainingHelp": "Remaining ceiling = limit − used − held, with a minimum of zero. Actual availability also depends on Agency funds, pricing and permissions. The Owner has no personal ceiling.",
+    "outputs": "Successful units",
+    "empty": "No Credit usage recorded for this period.",
+    "configuredLimit": "Current limit: {{amount}} credits/period."
+  },
+  "catalog": {
+    "title": "AI operation prices",
+    "description": "Current prices for reference. Jobs retain the price version accepted at submission, not the latest price at completion.",
+    "unconfigured": "Not configured",
+    "active": "Enabled",
+    "inactive": "Disabled"
+  },
+  "unit": {
+    "request": "{{amount}} credits / request",
+    "image": "{{amount}} credits / image",
+    "video": "{{amount}} credits / video"
+  },
+  "unitName": {
+    "request": "Billed per successful request.",
+    "image": "Billed per successful image; character sheets count output images, not panels within an image.",
+    "video": "Billed per successful video."
+  },
+  "sourceLabel": {
+    "SYSTEM_DEFAULT": "System default",
+    "AGENCY_DEFAULT": "Agency default",
+    "OVERRIDE": "Individual override",
+    "UNCONFIGURED": "Not configured",
+    "OWNER_UNLIMITED": "No personal ceiling"
+  },
+  "topup": {
+    "action": "Top Up Credits",
+    "title": "Top Up Agency Credits",
+    "description": "Expand creative quotas with specialized credit packages for your Agency.",
+    "starter": "Starter Package",
+    "accelerate": "Growth Package",
+    "enterprise": "Enterprise Package",
+    "recommended": "Most Popular",
+    "bonus": "+{{pct}}% bonus",
+    "bestValue": "Best Value",
+    "deliverables": {
+      "starter": "~15 SEO articles, ~5 4K images",
+      "accelerate": "~80 SEO articles, ~30 4K images",
+      "enterprise": "~350 SEO articles, ~150 4K images"
+    },
+    "payosNote": "Instant payment via VietQR / PayOS. Credits are credited immediately upon QR scan.",
+    "proceedPayOS": "Pay now with PayOS",
+    "close": "Close"
+  },
+  "warning": {
+    "safe": "Safe Quota",
+    "warning": "Approaching Period Limit",
+    "danger": "Quota Limit Reached",
+    "safeDesc": "Credit consumption within stable thresholds (< 75%).",
+    "warningDesc": "Using between 75% - 90% of period quota. Consider adjusting limits.",
+    "dangerDesc": "Exceeded 90% of period quota! AI jobs may be blocked upon reaching ceiling."
+  },
+  "presets": {
+    "quickSelect": "Quick select limit:",
+    "agencyDefault": "Agency Default ({{amount}})",
+    "confirmTitle": "Confirm Limit Update",
+    "confirmDesc": "Are you sure you want to update credit limit for this member to {{amount}} credits/period?"
+  }
+}
