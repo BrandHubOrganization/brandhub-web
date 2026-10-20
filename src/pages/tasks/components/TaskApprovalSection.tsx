@@ -1,7 +1,15 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ClipboardCheck, RefreshCw } from "lucide-react";
+import {
+  Check,
+  ClipboardCheck,
+  ExternalLink,
+  RefreshCw,
+  RotateCcw,
+  Send,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useTaskApproval } from "@/pages/tasks/hooks/useTaskApproval";
@@ -21,6 +29,40 @@ import type {
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
 const ACTIONS: ReviewAction[] = ["submit", "withdraw", "approve", "reject"];
+
+function getActionButtonProps(action: ReviewAction) {
+  switch (action) {
+    case "approve":
+      return {
+        variant: "default" as const,
+        className:
+          "bg-emerald-600 hover:bg-emerald-700 text-white font-medium shadow-2xs gap-1.5 focus-visible:ring-emerald-500/50",
+        icon: Check,
+      };
+    case "reject":
+      return {
+        variant: "destructive" as const,
+        className:
+          "bg-rose-600 hover:bg-rose-700 text-white font-medium shadow-2xs gap-1.5 focus-visible:ring-rose-500/50",
+        icon: X,
+      };
+    case "submit":
+      return {
+        variant: "orange" as const,
+        className: "font-medium shadow-2xs gap-1.5",
+        icon: Send,
+      };
+    case "withdraw":
+    default:
+      return {
+        variant: "ghost" as const,
+        className:
+          "text-muted-foreground hover:text-foreground hover:bg-muted/80 gap-1.5",
+        icon: RotateCcw,
+      };
+  }
+}
+
 export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
   const { t } = useTranslation();
   const state = useTaskApproval(task);
@@ -62,7 +104,7 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
           tabIndex={-1}
           className="flex items-center gap-2 font-semibold"
         >
-          <ClipboardCheck aria-hidden className="size-4" />
+          <ClipboardCheck aria-hidden className="size-4 text-brand-orange" />
           {t("tasks.review.title")}
         </h3>
         <Button
@@ -78,7 +120,7 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
         </Button>
       </div>
       {state.query.isPending && (
-        <div role="status" className="flex items-center gap-2 text-sm">
+        <div role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
           <Spinner />
           {t("tasks.review.loading")}
         </div>
@@ -110,36 +152,36 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
             </p>
           )}
           {view.linked?.canEdit && task.type === "POST" && (
-            <Button variant="outline" asChild>
+            <Button variant="outline" size="sm" asChild className="gap-1.5">
               <Link
                 to={`/workspaces/${encodeURIComponent(task.workspaceId)}/editor?taskId=${encodeURIComponent(task.id)}`}
               >
+                <ExternalLink className="size-3.5" />
                 {t("tasks.review.openEditor")}
               </Link>
             </Button>
           )}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-border/40">
             {ACTIONS.filter((action) => reviewAllows(view, action)).map(
-              (action) => (
-                <Button
-                  key={action}
-                  variant={
-                    action === "approve" || action === "submit"
-                      ? "orange"
-                      : "outline"
-                  }
-                  className={
-                    action === "reject" ? "text-destructive" : undefined
-                  }
-                  disabled={!canAct}
-                  onClick={(event) => {
-                    opener.current = event.currentTarget;
-                    setDialog({ action, view });
-                  }}
-                >
-                  {t(`tasks.review.actions.${action}`)}
-                </Button>
-              ),
+              (action) => {
+                const btnConfig = getActionButtonProps(action);
+                const ActionIcon = btnConfig.icon;
+                return (
+                  <Button
+                    key={action}
+                    variant={btnConfig.variant}
+                    className={btnConfig.className}
+                    disabled={!canAct}
+                    onClick={(event) => {
+                      opener.current = event.currentTarget;
+                      setDialog({ action, view });
+                    }}
+                  >
+                    <ActionIcon className="size-4 shrink-0" />
+                    <span>{t(`tasks.review.actions.${action}`)}</span>
+                  </Button>
+                );
+              },
             )}
           </div>
         </>

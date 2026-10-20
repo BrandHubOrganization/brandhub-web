@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -95,18 +96,21 @@ export default function CampaignPanel({
   }, []);
   const stage = campaign?.status ?? "DRAFT";
   const stages = ["DRAFT", "APPROVED", "IN_PROGRESS", "COMPLETED"] as const;
+  const currentStageIndex = stages.indexOf(stage);
+
   return (
     <section className="text-foreground space-y-4">
-      <header className="border-border bg-card rounded-xl border p-3">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="flex items-center gap-1 text-sm font-medium">
-            {t("campaign.ui.stages")}
+      <header className="border-border bg-card rounded-xl border p-3.5 sm:p-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-1.5 text-sm font-semibold tracking-tight">
+            <span>{t("campaign.ui.stages")}</span>
             <HelpHint label={t("campaign.title")}>
               {t("campaign.description")}
             </HelpHint>
           </div>
           <Button
             variant="outline"
+            size="sm"
             disabled={loading || saving || editing}
             onClick={() => {
               setLoading(true);
@@ -118,23 +122,67 @@ export default function CampaignPanel({
           </Button>
         </div>
         {!loading && !error && (
-          <ol
+          <nav
             aria-label={t("campaign.ui.stages")}
-            className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4"
+            className="mt-4 overflow-x-auto no-scrollbar py-1"
           >
-            {stages.map((status, index) => (
-              <li
-                key={status}
-                aria-current={stage === status ? "step" : undefined}
-                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm ${stage === status ? "border-brand-orange bg-brand-orange-soft font-medium" : "border-border text-muted-foreground"}`}
-              >
-                <span className="bg-background flex size-6 shrink-0 items-center justify-center rounded-full text-xs">
-                  {index + 1}
-                </span>
-                {t(`campaign.status.${status}`)}
-              </li>
-            ))}
-          </ol>
+            <ol className="flex min-w-[560px] sm:min-w-0 items-center justify-between">
+              {stages.map((status, index) => {
+                const isCurrent = stage === status;
+                const isCompleted = index < currentStageIndex;
+
+                return (
+                  <li
+                    key={status}
+                    aria-current={isCurrent ? "step" : undefined}
+                    className="flex flex-1 items-center last:flex-none"
+                  >
+                    <div
+                      className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs sm:text-sm transition-all duration-200 ${
+                        isCurrent
+                          ? "border-brand-orange bg-brand-orange/10 text-brand-orange font-semibold shadow-xs ring-2 ring-brand-orange/20"
+                          : isCompleted
+                            ? "border-brand-orange/40 bg-card text-foreground"
+                            : "border-border/60 bg-muted/20 text-muted-foreground opacity-75"
+                      }`}
+                    >
+                      <span
+                        className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-200 ${
+                          isCurrent
+                            ? "bg-brand-orange text-white shadow-xs ring-2 ring-brand-orange/30"
+                            : isCompleted
+                              ? "bg-brand-orange text-white"
+                              : "border border-border bg-background text-muted-foreground"
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <Check className="size-3.5 stroke-[2.5]" />
+                        ) : (
+                          index + 1
+                        )}
+                      </span>
+                      <span className="whitespace-nowrap font-medium">
+                        {t(`campaign.status.${status}`)}
+                      </span>
+                    </div>
+
+                    {index < stages.length - 1 && (
+                      <div
+                        className={`mx-2 h-0.5 flex-1 rounded-full transition-colors duration-200 ${
+                          index < currentStageIndex
+                            ? "bg-brand-orange"
+                            : isCurrent
+                              ? "bg-gradient-to-r from-brand-orange to-border"
+                              : "bg-border/60"
+                        }`}
+                        aria-hidden="true"
+                      />
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
         )}
       </header>
       <div className="border-border bg-muted/30 flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm">
@@ -187,28 +235,14 @@ export default function CampaignPanel({
               {t("campaign.errors.CAMPAIGN_LEGACY_TERMS")}
             </p>
           )}
-          {canManage && !legacy && !editing && (
+          {canManage && !legacy && !editing && (!campaign || campaign.status === "DRAFT") && (
             <div className="flex flex-col items-end gap-2">
               <Button
                 variant="orange"
-                disabled={!!campaign && campaign.status !== "DRAFT"}
-                aria-describedby={
-                  campaign && campaign.status !== "DRAFT"
-                    ? "campaign-edit-lock"
-                    : undefined
-                }
                 onClick={() => setEditing(true)}
               >
                 {t(campaign ? "campaign.edit" : "campaign.create")}
               </Button>
-              {campaign && campaign.status !== "DRAFT" && (
-                <p
-                  id="campaign-edit-lock"
-                  className="text-muted-foreground max-w-xl text-sm leading-6"
-                >
-                  {t("campaign.ui.editLocked")}
-                </p>
-              )}
             </div>
           )}
           {!campaign && !editing && (
