@@ -184,6 +184,30 @@
       "trung_lập": "Neutral"
     }
   },
+  "trendFit": {
+    "title": "Trends for your brand today",
+    "notJudged": "AI could not score them; sorted by industry rules",
+    "loading": "Picking trends for your brand…",
+    "error": "Could not load trend suggestions.",
+    "empty": "No trend suits your brand today.",
+    "upcoming": "Coming up: {{list}}",
+    "verdict": { "nen": "Go", "can_nhac": "Consider" },
+    "type": { "moment": "Occasion", "format": "Format", "event": "Event" },
+    "techniques": {
+      "khoanh_khac": "Moment",
+      "choi_chu": "Wordplay",
+      "muon_format": "Borrow the format",
+      "muon_bieu_tuong": "Borrow the symbol",
+      "brand_la_fan": "Brand as a fan"
+    },
+    "techniqueLabel": "Angle: {{name}}",
+    "issues": {
+      "foreign_script": "Contains text in another script.",
+      "prompt_leak": "Shows words from the AI instructions.",
+      "sensitive": "Sensitive word: {{term}}.",
+      "too_long": "Longer than the platform recommends."
+    }
+  },
   "video": {
     "title": "AI Video Studio",
     "description": "Create short AI videos in a chosen style, optionally with the brand Ambassador.",
