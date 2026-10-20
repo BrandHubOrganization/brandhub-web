@@ -61,7 +61,7 @@ export function AdminOverviewActions({
       </Button>
       <Button
         asChild
-        variant="orange"
+        className="bg-brand-orange hover:bg-brand-orange/90 h-9 text-white"
       >
         <Link to="/admin?view=users">
           <Users className="size-3.5" />
@@ -163,7 +163,7 @@ export function AdminOverviewPanel({ timezone }: { timezone: string }) {
                 }).format(new Date(data.generatedAt)),
               })}
             </span>
-            <span className="text-xs font-sans">
+            <span className="text-2xs font-mono">
               {data.timezone === "UTC"
                 ? "UTC"
                 : t("admin.overview.vietnamTime")}

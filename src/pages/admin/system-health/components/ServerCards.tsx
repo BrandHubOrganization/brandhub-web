@@ -38,7 +38,7 @@ export function ServerCards({ servers }: Props) {
                   <dt className="text-muted-foreground text-xs">
                     {t("monitoring." + key)}
                   </dt>
-                  <dd className="font-sans text-lg">{percent(server[key])}</dd>
+                  <dd className="font-mono text-lg">{percent(server[key])}</dd>
                 </div>
               ),
             )}

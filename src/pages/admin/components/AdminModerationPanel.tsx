@@ -108,7 +108,7 @@ export function AdminModerationPanel() {
           ]}
         />
         {data && (
-          <p className="text-muted-foreground ml-auto font-sans text-xs">
+          <p className="text-muted-foreground ml-auto font-mono text-xs">
             {t("admin.moderation.processedToday", {
               count: data.processedToday,
             })}
@@ -163,10 +163,10 @@ export function AdminModerationPanel() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="bg-brand-orange-soft text-brand-orange rounded px-1.5 py-0.5 font-sans text-xs font-semibold">
+                    <span className="bg-brand-orange-soft text-brand-orange rounded px-1.5 py-0.5 font-mono text-[11px] font-semibold">
                       {t(`admin.moderation.sources.${item.source}`)}
                     </span>
-                    <span className="text-muted-foreground font-sans text-xs">
+                    <span className="text-muted-foreground font-mono text-xs">
                       v{item.contentVersion}
                     </span>
                   </div>
@@ -185,7 +185,7 @@ export function AdminModerationPanel() {
                       {item.reason}
                     </span>
                   </p>
-                  <p className="text-muted-foreground mt-1 font-sans text-xs">
+                  <p className="text-muted-foreground mt-1 font-mono text-[11px]">
                     {item.status === "PENDING"
                       ? t("admin.moderation.flaggedAt", {
                           time: time(item.createdAt),
@@ -243,7 +243,7 @@ export function AdminModerationPanel() {
           >
             {t("admin.accounts.previous")}
           </Button>
-          <span className="font-sans">
+          <span className="font-mono">
             {page}/{pages}
           </span>
           <Button
@@ -271,7 +271,7 @@ function StrikeCounts({ item }: { item: ModerationItem }) {
   const { t } = useTranslation();
   return (
     <span
-      className="ml-1 inline-flex gap-1 align-middle font-sans text-xs"
+      className="ml-1 inline-flex gap-1 align-middle font-mono text-[11px]"
       aria-label={t("admin.moderation.strikes")}
     >
       <span className="rounded bg-yellow-400/20 px-1 text-yellow-700 dark:text-yellow-300">
@@ -377,10 +377,10 @@ function ModerationDialog({
             <div className="flex flex-wrap items-center gap-2 text-xs">
               {item && (
                 <>
-                  <span className="bg-brand-orange-soft text-brand-orange rounded px-1.5 py-0.5 font-sans font-semibold">
+                  <span className="bg-brand-orange-soft text-brand-orange rounded px-1.5 py-0.5 font-mono font-semibold">
                     {t(`admin.moderation.sources.${item.source}`)}
                   </span>
-                  <span className="bg-muted rounded px-1.5 py-0.5 font-sans">
+                  <span className="bg-muted rounded px-1.5 py-0.5 font-mono">
                     {t("admin.moderation.versionLabel", {
                       version: item.contentVersion,
                     })}
@@ -447,14 +447,14 @@ function ModerationDialog({
                         <div className="flex flex-wrap items-center gap-2">
                           <span
                             className={cn(
-                              "rounded px-1.5 py-0.5 font-sans text-xs font-semibold",
+                              "rounded px-1.5 py-0.5 font-mono text-[11px] font-semibold",
                               LEVEL_CHIP[strike.level],
                             )}
                           >
                             {t(`admin.level.${strike.level}`)}
                           </span>
                           <span className="font-medium">{strike.category}</span>
-                          <span className="text-muted-foreground ml-auto font-sans text-xs">
+                          <span className="text-muted-foreground ml-auto font-mono text-[11px]">
                             {when(strike.createdAt)}
                           </span>
                         </div>
@@ -491,7 +491,7 @@ function ModerationDialog({
                     {(item.snapshot?.targetPlatforms ?? []).map((platform) => (
                       <span
                         key={platform}
-                        className="bg-muted rounded px-1.5 py-0.5 font-sans text-xs"
+                        className="bg-muted rounded px-1.5 py-0.5 font-mono text-[11px]"
                       >
                         {platform}
                       </span>
@@ -524,7 +524,7 @@ function ModerationDialog({
                         ) : (
                           <div
                             key={index}
-                            className="bg-muted text-muted-foreground grid aspect-square place-items-center rounded-lg p-2 text-center font-mono text-xs break-all"
+                            className="bg-muted text-muted-foreground grid aspect-square place-items-center rounded-lg p-2 text-center font-mono text-[11px] break-all"
                           >
                             {media.media_type}: {media.s3_key}
                           </div>
@@ -534,7 +534,7 @@ function ModerationDialog({
                   )}
                   {item.snapshot && (
                     <p
-                      className="text-muted-foreground font-mono text-xs"
+                      className="text-muted-foreground font-mono text-[11px]"
                       title={item.snapshot.contentHash}
                     >
                       {t("admin.moderation.capturedAt", {
@@ -579,11 +579,11 @@ function ModerationDialog({
                       key={lvl}
                       className={cn("rounded-lg px-2 py-2", LEVEL_CHIP[lvl])}
                     >
-                      <p className="font-sans text-lg leading-none font-semibold">
+                      <p className="font-mono text-lg leading-none font-semibold">
                         {count}
                         <span className="text-xs opacity-60">{max}</span>
                       </p>
-                      <p className="mt-1 text-xs">
+                      <p className="mt-1 text-[11px]">
                         {t(`admin.level.${lvl}`)}
                       </p>
                     </div>
@@ -719,7 +719,7 @@ function ModerationDialog({
                             : "admin.moderation.noteHint",
                         )}
                       </span>
-                      <span className="font-sans">{length}/2000</span>
+                      <span className="font-mono">{length}/2000</span>
                     </span>
                   </label>
                 )}

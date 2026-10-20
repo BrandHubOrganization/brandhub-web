@@ -57,7 +57,7 @@ export function AdminMetrics({ data }: { data: AdminStatistics }) {
         const body = (
           <>
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-muted-foreground text-xs font-sans leading-4 font-medium tracking-wider uppercase">
+              <h2 className="text-muted-foreground text-2xs font-mono leading-4 font-medium tracking-wider uppercase">
                 {t(`admin.overview.${key}`)}
               </h2>
               <span
@@ -73,7 +73,7 @@ export function AdminMetrics({ data }: { data: AdminStatistics }) {
             </div>
             <p
               className={cn(
-                "mt-3 font-sans text-3xl leading-none font-semibold tracking-tight tabular-nums",
+                "mt-3 font-mono text-[28px] leading-none font-semibold tracking-tight tabular-nums",
                 alert && "text-brand-orange",
               )}
             >
@@ -126,7 +126,7 @@ const ATTENTION_TONES = {
   neutral: {
     box: "border-border bg-muted/40",
     title: "text-foreground",
-    button: "bg-primary text-primary-foreground hover:bg-primary/90",
+    button: "bg-foreground hover:bg-foreground/90 text-background",
   },
 };
 
@@ -195,7 +195,7 @@ export function AdminAttention({ data }: { data: AdminStatistics }) {
                   className={cn("text-sm leading-5 font-semibold", style.title)}
                 >
                   {t(`admin.overview.${key}`)}
-                  <span className="ml-1.5 font-sans tabular-nums">
+                  <span className="ml-1.5 font-mono tabular-nums">
                     ({number.format(count)})
                   </span>
                 </p>
@@ -224,8 +224,7 @@ export function AdminAttention({ data }: { data: AdminStatistics }) {
         </Button>
         <Button
           asChild
-          variant="orange"
-          className="text-xs"
+          className="bg-foreground text-background hover:bg-foreground/90 text-xs"
         >
           <Link to="/admin?view=users">{t("admin.overview.manageUsers")}</Link>
         </Button>
@@ -257,7 +256,7 @@ export function AdminStrikeSummary({ data }: { data: AdminStatistics }) {
               aria-hidden="true"
             />
             <span>{t(`admin.level.${level.toUpperCase()}`)}</span>
-            <span className="ml-auto font-sans font-medium tabular-nums">
+            <span className="ml-auto font-mono font-medium tabular-nums">
               {new Intl.NumberFormat(i18n.language).format(data.strikes[level])}
             </span>
           </div>

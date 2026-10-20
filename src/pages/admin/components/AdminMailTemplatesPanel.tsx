@@ -63,7 +63,7 @@ export function AdminMailTemplatesPanel() {
       <div className="flex flex-wrap items-center gap-3">
         <Input aria-label={t("mailTemplate.search")} placeholder={t("mailTemplate.search")} className="w-full sm:w-64"
           value={query} onChange={(e) => { setPage(0); setQuery(e.target.value); }} />
-        <Button variant="orange" className="ml-auto"
+        <Button className="bg-brand-orange hover:bg-brand-orange/90 ml-auto text-white"
           onClick={() => setForm({ mode: "create", template: null })}>
           <Plus className="size-4" />{t("mailTemplate.admin.create")}
         </Button>

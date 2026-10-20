@@ -148,14 +148,14 @@ export function AdminStrikeDialog({
               </Badge>
               <Badge
                 variant="PENDING_REVIEW"
-                className="rounded-full font-sans"
+                className="rounded-full font-mono"
               >
                 {t("admin.level.YELLOW")}: {user.yellow}/3
               </Badge>
-              <Badge variant="SCHEDULED" className="rounded-full font-sans">
+              <Badge variant="SCHEDULED" className="rounded-full font-mono">
                 {t("admin.level.ORANGE")}: {user.orange}/3
               </Badge>
-              <Badge variant="FAILED" className="rounded-full font-sans">
+              <Badge variant="FAILED" className="rounded-full font-mono">
                 {t("admin.level.RED")}: {user.red}
               </Badge>
             </div>

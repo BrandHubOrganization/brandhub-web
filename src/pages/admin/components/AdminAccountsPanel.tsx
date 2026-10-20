@@ -182,7 +182,7 @@ function Accounts() {
         </Button>
         <Button
           type="button"
-          variant="orange"
+          className="bg-brand-orange hover:bg-brand-orange/90 text-white"
           onClick={() => setCreating(true)}
         >
           <UserPlus className="size-4" />
@@ -212,7 +212,7 @@ function Accounts() {
         <>
           <div className="border-border bg-card overflow-x-auto rounded-xl border">
             <Table>
-              <TableHeader className="bg-muted/40 [&_th]:text-xs [&_th]:font-sans [&_th]:tracking-wide [&_th]:uppercase">
+              <TableHeader className="bg-muted/40 [&_th]:text-2xs [&_th]:font-mono [&_th]:tracking-wide [&_th]:uppercase">
                 <TableRow>
                   <TableHead>{t("admin.accounts.name")}</TableHead>
                   <TableHead>{t("admin.accounts.role")}</TableHead>
@@ -250,7 +250,7 @@ function Accounts() {
                     </TableCell>
                     <TableCell>
                       <Badge
-                        className="text-xs rounded-full"
+                        className="text-2xs rounded-full"
                         variant={
                           user.status === "ACTIVE"
                             ? "PUBLISHED"
@@ -263,19 +263,19 @@ function Accounts() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center gap-1.5 font-sans text-xs tabular-nums">
+                      <span className="inline-flex items-center gap-1.5 font-mono text-xs tabular-nums">
                         <span className="bg-warning h-3 w-2 rounded-sm" />
                         {user.yellow}/3
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center gap-1.5 font-sans text-xs tabular-nums">
+                      <span className="inline-flex items-center gap-1.5 font-mono text-xs tabular-nums">
                         <span className="bg-brand-orange h-3 w-2 rounded-sm" />
                         {user.orange}/3
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center gap-1.5 font-sans text-xs tabular-nums">
+                      <span className="inline-flex items-center gap-1.5 font-mono text-xs tabular-nums">
                         <span className="bg-destructive h-3 w-2 rounded-sm" />
                         {user.red}
                       </span>

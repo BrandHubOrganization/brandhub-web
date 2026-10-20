@@ -29,7 +29,7 @@ export function PlatformStatsGrid({ stats }: PlatformStatsGridProps) {
             </div>
             {stat.changePercent !== undefined && (
               <p
-                className={`text-xs mt-1 flex items-center gap-1 ${
+                className={`text-2xs mt-1 flex items-center gap-1 ${
                   isPositive
                     ? "text-emerald-600 dark:text-emerald-400"
                     : "text-rose-600 dark:text-rose-400"

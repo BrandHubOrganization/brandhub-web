@@ -172,7 +172,7 @@ export function AdminReportForm({
         <Button
           type="submit"
           disabled={mutation.isPending || !from || !to}
-          variant="orange"
+          className="bg-foreground text-background hover:bg-foreground/90"
         >
           <Download className="size-4" />
           {t("admin.reports.download")}
