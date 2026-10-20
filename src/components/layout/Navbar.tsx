@@ -83,6 +83,8 @@ const NAV_KEY_MAP: Record<string, string> = {
   clients: "nav.clients",
   requests: "nav.requests",
   "task-approvals": "tasks.approvalPage.title",
+  credit: "credit.title",
+  "credit-prices": "credit.price.title",
   templates: "nav.templates",
   "hashtag-groups": "nav.hashtagGroups",
   library: "nav.library",
