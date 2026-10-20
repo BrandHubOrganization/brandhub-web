@@ -7,7 +7,7 @@
   },
   "plans": {
     "title": "Gói đăng ký",
-    "description": "Quản lý gói đăng ký BrandHub của workspace.",
+    "description": "So sánh gói cá nhân và gói Agency để chọn quyền lợi phù hợp.",
     "loadError": "Không thể tải dữ liệu đăng ký.",
     "retry": "Thử lại",
     "currentTier": "Gói hiện tại",
@@ -22,7 +22,10 @@
     "upgrade": "Nâng cấp",
     "downgrade": "Hạ cấp",
     "upgradeConfirm": "Nâng cấp lên gói {{plan}}?",
-    "downgradeConfirm": "Hạ cấp xuống gói {{plan}}?"
+    "downgradeConfirm": "Hạ cấp xuống gói {{plan}}?",
+    "ownerOnly": "Chỉ owner của agency đang chọn có thể quản lý gói.",
+    "loadingAgencyPlan": "Đang tải gói của agency…",
+    "subscriptionNotReady": "Không tải được trạng thái gói hiện tại. Danh sách gói vẫn hiển thị; vui lòng thử lại sau để nâng cấp."
   },
   "checkout": {
     "title": "Thanh toán",
@@ -39,7 +42,27 @@
     },
     "pay": "Thanh toán ngay",
     "paySuccess": "Thanh toán thành công. Gói đăng ký của bạn đã được cập nhật.",
-    "payError": "Thanh toán thất bại. Vui lòng thử lại."
+    "payError": "Không thể tạo đơn thanh toán. Vui lòng thử lại.",
+    "notConfigured": "Thanh toán Plus chưa được cấu hình. Vui lòng quay lại sau.",
+    "plusAgency": "Nâng Agency lên Plus",
+    "transferInstructions": "Quét mã QR và chuyển khoản đúng số tiền, nội dung. Gói chỉ được kích hoạt sau khi SePay xác nhận giao dịch.",
+    "createQr": "Tạo mã QR thanh toán",
+    "qrAlt": "Mã QR chuyển khoản ngân hàng",
+    "transferContentLabel": "Nội dung chuyển khoản",
+    "status": "Trạng thái",
+    "expiry": "Mã hết hạn lúc {{date}}",
+    "waitingForWebhook": "Đang chờ SePay xác nhận giao dịch…",
+    "activated": "Agency đã được nâng cấp lên Plus.",
+    "startAgain": "Tạo đơn mới",
+    "backToPlans": "Quay lại các gói",
+    "states": {
+      "PENDING_PAYMENT": "Đang chờ thanh toán",
+      "PAID": "Đã nhận thanh toán",
+      "FULFILLED": "Đã kích hoạt",
+      "EXPIRED": "Đơn đã hết hạn",
+      "REVIEW_REQUIRED": "Giao dịch cần được đối soát"
+    },
+    "generatingQr": "Đang tạo mã QR thanh toán…"
   },
   "invoices": {
     "title": "Lịch sử hóa đơn",
@@ -58,5 +81,36 @@
       "PENDING": "Đang chờ",
       "FAILED": "Thất bại"
     }
+  },
+  "catalog": {
+    "loading": "Đang tải danh sách gói…",
+    "errorTitle": "Không tải được danh sách gói",
+    "errorDescription": "Vui lòng thử lại để xem quyền lợi và giá mới nhất.",
+    "retry": "Thử lại",
+    "emptyTitle": "Chưa có gói đăng ký",
+    "emptyDescription": "Danh sách gói đang được cập nhật. Vui lòng quay lại sau.",
+    "personalScope": "Cá nhân",
+    "agencyScope": "Agency",
+    "personalDescription": "Quyền lợi dành riêng cho không gian cá nhân.",
+    "agencyDescription": "Quyền lợi dùng chung cho thành viên trong agency.",
+    "free": "Miễn phí",
+    "pricePending": "Chưa công bố giá",
+    "perMonth": "mỗi tháng",
+    "notOnSale": "Chưa mở bán",
+    "currentPlan": "Gói hiện tại",
+    "subscriptionPending": "Chưa xác định gói",
+    "checkoutUnavailable": "Thanh toán chưa sẵn sàng",
+    "changeUnavailable": "Chưa hỗ trợ đổi gói",
+    "upgrade": "Nâng cấp",
+    "personalSpaces": "{{value}} không gian cá nhân",
+    "workspaces": "{{value}} workspace hoạt động",
+    "members": "{{value}} thành viên nội bộ",
+    "clients": "{{value}} khách hàng",
+    "storage": "{{value}} dung lượng lưu trữ",
+    "credits": "{{value}} AI credit mỗi tháng",
+    "concurrency": "{{value}} tác vụ AI đồng thời",
+    "versionHistory": "Lịch sử phiên bản {{value}} ngày",
+    "trashHistory": "Khôi phục thùng rác trong {{value}} ngày",
+    "activityHistory": "Lịch sử hoạt động {{value}} ngày"
   }
 }

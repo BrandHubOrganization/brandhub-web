@@ -7,7 +7,7 @@
   },
   "plans": {
     "title": "Subscription Plans",
-    "description": "Manage your workspace's BrandHub subscription plan.",
+    "description": "Compare Personal and Agency plans to choose the benefits you need.",
     "loadError": "Failed to load subscription data.",
     "retry": "Retry",
     "currentTier": "Current plan",
@@ -22,7 +22,10 @@
     "upgrade": "Upgrade",
     "downgrade": "Downgrade",
     "upgradeConfirm": "Upgrade to {{plan}}?",
-    "downgradeConfirm": "Downgrade to {{plan}}?"
+    "downgradeConfirm": "Downgrade to {{plan}}?",
+    "ownerOnly": "Only the owner of the selected agency can manage its plan.",
+    "loadingAgencyPlan": "Loading the agency plan…",
+    "subscriptionNotReady": "Could not load the current plan. The plan list remains available; try again later to upgrade."
   },
   "checkout": {
     "title": "Checkout",
@@ -39,7 +42,27 @@
     },
     "pay": "Pay Now",
     "paySuccess": "Payment successful. Your subscription has been updated.",
-    "payError": "Payment failed. Please try again."
+    "payError": "Could not create the payment order. Please try again.",
+    "notConfigured": "Plus checkout is not configured yet. Please try again later.",
+    "plusAgency": "Upgrade agency to Plus",
+    "transferInstructions": "Scan the QR and transfer the exact amount with the exact reference. Plus activates after SePay verifies the transfer.",
+    "createQr": "Create payment QR",
+    "qrAlt": "Bank transfer QR code",
+    "transferContentLabel": "Transfer reference",
+    "status": "Status",
+    "expiry": "Payment code expires at {{date}}",
+    "waitingForWebhook": "Waiting for SePay to confirm the transfer…",
+    "activated": "The agency has been upgraded to Plus.",
+    "startAgain": "Create a new order",
+    "backToPlans": "Back to plans",
+    "states": {
+      "PENDING_PAYMENT": "Waiting for payment",
+      "PAID": "Payment received",
+      "FULFILLED": "Activated",
+      "EXPIRED": "Order expired",
+      "REVIEW_REQUIRED": "Payment needs review"
+    },
+    "generatingQr": "Generating payment QR code…"
   },
   "invoices": {
     "title": "Invoice History",
@@ -58,5 +81,36 @@
       "PENDING": "Pending",
       "FAILED": "Failed"
     }
+  },
+  "catalog": {
+    "loading": "Loading plans…",
+    "errorTitle": "Could not load subscription plans",
+    "errorDescription": "Try again to see the latest benefits and prices.",
+    "retry": "Try again",
+    "emptyTitle": "No subscription plans yet",
+    "emptyDescription": "The plan catalog is being updated. Please check back later.",
+    "personalScope": "Personal",
+    "agencyScope": "Agency",
+    "personalDescription": "Benefits for your own personal space.",
+    "agencyDescription": "Benefits shared by members of the agency.",
+    "free": "Free",
+    "pricePending": "Price not announced",
+    "perMonth": "per month",
+    "notOnSale": "Not available yet",
+    "currentPlan": "Current plan",
+    "subscriptionPending": "Current plan unknown",
+    "checkoutUnavailable": "Checkout not ready",
+    "changeUnavailable": "Plan change unavailable",
+    "upgrade": "Upgrade",
+    "personalSpaces": "{{value}} personal spaces",
+    "workspaces": "{{value}} active workspaces",
+    "members": "{{value}} internal members",
+    "clients": "{{value}} clients",
+    "storage": "{{value}} storage",
+    "credits": "{{value}} AI credits per month",
+    "concurrency": "{{value}} concurrent AI jobs",
+    "versionHistory": "{{value}}-day version history",
+    "trashHistory": "{{value}}-day trash recovery",
+    "activityHistory": "{{value}}-day activity history"
   }
 }

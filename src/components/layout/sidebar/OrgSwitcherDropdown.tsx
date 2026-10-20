@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { agencyBillingService } from "@/services/agencyBillingService";
 import { NavLink } from "react-router-dom";
 import { ChevronDown, FolderPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -51,6 +53,17 @@ export function OrgSwitcherDropdown({
   onSwitchWorkspace,
 }: OrgSwitcherDropdownProps) {
   const { t } = useTranslation();
+  const currentAgency = agencyList.find((agency) => agency.id === currentAgencyId);
+  const subscription = useQuery({
+    queryKey: ["agency-subscription", currentUserId, currentAgencyId],
+    queryFn: () => agencyBillingService.getSubscription(currentAgencyId!),
+    enabled: Boolean(currentUserId && currentAgencyId && currentAgency?.myRole === "OWNER"),
+    staleTime: 30_000,
+    retry: false,
+  });
+  const isPlus = subscription.isSuccess && subscription.data.planCode === "PLUS"
+    && subscription.data.status === "ACTIVE"
+    && (!subscription.data.currentPeriodEnd || Date.parse(subscription.data.currentPeriodEnd) > Date.now());
 
   return (
     <div
@@ -66,27 +79,31 @@ export function OrgSwitcherDropdown({
           }
         }}
       >
-        <DropdownMenuTrigger className="w-full cursor-pointer text-left outline-none">
+        <DropdownMenuTrigger
+          className="w-full cursor-pointer text-left outline-none focus-visible:ring-2 focus-visible:ring-brand-orange"
+          data-testid="agency-switcher"
+          data-plan={isPlus ? "PLUS" : undefined}
+        >
           {collapsed ? (
-            <div className="bg-brand-orange-soft text-brand-orange mx-auto my-3 flex size-8 items-center justify-center rounded-md text-xs font-bold">
+            <div className={cn("bg-brand-orange-soft text-brand-orange relative mx-auto my-3 flex size-8 items-center justify-center rounded-md text-xs font-bold", isPlus && "ring-1 ring-brand-orange/60") }>
               {(activeWorkspace?.name ?? currentAgencyName)
                 ?.charAt(0)
                 .toUpperCase() ?? "?"}
             </div>
           ) : (
-            <div className="border-border bg-muted/15 hover:bg-muted/30 mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors">
+            <div className={cn("mx-3 my-3 flex items-center gap-2 rounded-md border p-1.5 transition-colors", isPlus ? "border-brand-orange/60 bg-brand-orange/10 hover:bg-brand-orange/15" : "border-border bg-muted/15 hover:bg-muted/30")}>
               <div className="bg-brand-orange-soft text-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-bold">
                 {(activeWorkspace?.name ?? currentAgencyName)
                   ?.charAt(0)
                   .toUpperCase() ?? "?"}
               </div>
-              <div className="flex min-w-0 flex-col">
-                <span className="truncate text-xs leading-tight font-semibold text-white">
+              <div className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate text-xs leading-tight font-semibold text-sidebar-foreground">
                   {activeWorkspace?.name ??
                     currentAgencyName ??
                     t("nav.orgSwitcher.placeholder")}
                 </span>
-                <span className="text-muted-foreground text-3xs mt-0.5 truncate leading-none">
+                <span className="text-sidebar-foreground/65 text-3xs mt-0.5 truncate leading-none">
                   {activeWorkspace
                     ? currentAgencyName
                     : currentAgencyId &&
@@ -96,7 +113,12 @@ export function OrgSwitcherDropdown({
                       : t("nav.orgSwitcher.label")}
                 </span>
               </div>
-              <ChevronDown className="text-muted-foreground ml-auto size-3.5 shrink-0" />
+              {isPlus && (
+                <span data-testid="agency-plus-badge" className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-md border border-brand-orange/40 bg-brand-orange/15 px-1.5 py-1 text-[10px] leading-none font-semibold text-brand-orange">
+                  Plus
+                </span>
+              )}
+              <ChevronDown className={cn("size-3.5 shrink-0", isPlus ? "text-brand-orange" : "text-muted-foreground ml-auto")} />
             </div>
           )}
         </DropdownMenuTrigger>

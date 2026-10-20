@@ -10,6 +10,7 @@ export type AccessRule = MemberRole[] | "ADMIN";
  */
 export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/social-accounts": ["OWNER", "MANAGER", "CLIENT"],
+  "/subscription": ["OWNER"],
   "/subscription/plans": ["OWNER"],
   "/subscription/checkout": ["OWNER"],
   "/subscription/invoices": ["OWNER"],

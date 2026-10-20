@@ -520,6 +520,10 @@ export function AppRoutes() {
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/social-accounts" element={<SocialAccountsPage />} />
             <Route
+              path="/subscription"
+              element={<Navigate to="/subscription/plans" replace />}
+            />
+            <Route
               path="/subscription/plans"
               element={<SubscriptionPlansPage />}
             />
