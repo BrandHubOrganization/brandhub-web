@@ -18,6 +18,8 @@ import { useTranslation } from "react-i18next";
 import { PLATFORM_META } from "@/pages/social-accounts/lib/platformMeta";
 import { formatRelativeScheduleTime } from "@/lib/dateUtils";
 
+type RecurringPattern = "DAILY" | "WEEKLY" | "MONTHLY";
+
 interface SchedulePostModalProps {
   isOpen: boolean;
   selectedDate: Date | null;
@@ -29,7 +31,7 @@ interface SchedulePostModalProps {
     start: string;
     platforms: PlatformType[];
     isRecurring: boolean;
-    recurringPattern?: "DAILY" | "WEEKLY" | "MONTHLY";
+    recurringPattern?: RecurringPattern;
     weekdays?: number[]; // 1: Monday, 7: Sunday
     repeatUntilDate?: string;
   }) => void;
@@ -63,9 +65,8 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
 
   // Recurrence
   const [isRecurring, setIsRecurring] = useState(false);
-  const [recurringPattern, setRecurringPattern] = useState<
-    "DAILY" | "WEEKLY" | "MONTHLY"
-  >("WEEKLY");
+  const [recurringPattern, setRecurringPattern] =
+    useState<RecurringPattern>("WEEKLY");
   const [selectedWeekdays, setSelectedWeekdays] = useState<number[]>([1, 3, 5]);
   const [repeatUntil, setRepeatUntil] = useState("");
 
@@ -428,7 +429,7 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                       <Select
                         value={recurringPattern}
                         onChange={(e) =>
-                          setRecurringPattern(e.target.value as any)
+                          setRecurringPattern(e.target.value as RecurringPattern)
                         }
                         className="text-xs"
                       >

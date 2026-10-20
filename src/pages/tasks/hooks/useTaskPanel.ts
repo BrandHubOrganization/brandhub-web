@@ -62,6 +62,7 @@ export function useTaskPanel(workspaceId: string) {
       (document.activeElement instanceof HTMLElement
         ? document.activeElement
         : null);
+    setTaskId(task.id);
     setParams((previous) => {
       const next = new URLSearchParams(previous);
       next.set("task", task.id);
@@ -81,6 +82,7 @@ export function useTaskPanel(workspaceId: string) {
   }, []);
   const close = async () => {
     if (!(await canLeave())) return;
+    setTaskId("");
     setParams((previous) => {
       const next = new URLSearchParams(previous);
       next.delete("task");

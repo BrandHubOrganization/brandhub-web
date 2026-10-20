@@ -1,4 +1,12 @@
 {
+  "compact": {
+    "agreeLater": "To be agreed",
+    "duration": "Duration",
+    "requirements": "Description / requirements",
+    "changePackage": "Change package",
+    "backSelected": "Back to selected package",
+    "browsePackages": "Browse other packages"
+  },
   "history": {
     "title": "Negotiation history",
     "empty": "No proposals recorded yet. A baseline is captured with the first proposal.",

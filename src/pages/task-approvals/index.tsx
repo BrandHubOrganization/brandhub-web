@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { RefreshCw } from "lucide-react";
+import { ClipboardCheck, RefreshCw } from "lucide-react";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { ApprovalFilters } from "@/pages/task-approvals/components/ApprovalFilters";
@@ -56,6 +56,7 @@ function ApprovalWorkspace({
       title={t("tasks.approvalPage.title")}
       description={t("tasks.approvalPage.description")}
       className="flex h-full min-h-0 flex-col !space-y-3 !pb-4"
+      contentClassName="flex min-h-0 flex-1 flex-col gap-3"
       actions={
         <Button
           variant="outline"
@@ -83,8 +84,10 @@ function ApprovalWorkspace({
       />
       <div
         className={cn(
-          "grid min-h-0 flex-1 gap-4",
+          "grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-4",
           selected && "lg:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.6fr)]",
+          "grid min-h-0 flex-1 gap-4",
+          selected && "lg:grid-cols-[minmax(280px,0.85fr)_minmax(0,1.55fr)]",
         )}
       >
         <div
@@ -101,13 +104,30 @@ function ApprovalWorkspace({
             onPage={(next) => void guard(() => setPage(next))}
           />
         </div>
-        {selected && (
+        {selected ? (
           <ApprovalDetail
             key={`${workspaceId}:${selected}`}
             workspaceId={workspaceId}
             taskId={selected}
             onBack={() => select("")}
           />
+        ) : (
+          <div className="bg-card/40 hidden min-h-0 flex-col items-center justify-center rounded-2xl border border-dashed p-8 text-center lg:flex">
+            <div className="bg-brand-orange-soft text-brand-orange mb-3 flex size-14 items-center justify-center rounded-2xl shadow-sm">
+              <ClipboardCheck className="size-7" />
+            </div>
+            <h3 className="text-foreground text-base font-semibold">
+              {t("tasks.approvalPage.selectPromptTitle", {
+                defaultValue: "Chưa chọn nội dung duyệt",
+              })}
+            </h3>
+            <p className="text-muted-foreground mt-1 max-w-sm text-sm">
+              {t("tasks.approvalPage.selectPromptDesc", {
+                defaultValue:
+                  "Vui lòng chọn một bài viết từ danh sách bên trái để xem nội dung chi tiết và thực hiện phê duyệt.",
+              })}
+            </p>
+          </div>
         )}
       </div>
     </PageWrapper>

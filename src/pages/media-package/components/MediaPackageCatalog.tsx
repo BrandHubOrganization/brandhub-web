@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { HelpHint } from "@/components/shared/HelpHint";
 import { MediaPackageCard } from "./MediaPackageCard";
 import { MediaPackageDetail } from "@/pages/media-package/components/MediaPackageDetail";
 import type { MediaPackage } from "../types/mediaPackage";
@@ -84,13 +85,11 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
     );
   return (
     <section aria-labelledby={id} className="space-y-4">
-      <div>
+      <div className="flex items-center gap-1">
         <h2 id={id} className="text-foreground text-lg font-semibold">
           {title}
         </h2>
-        <p className="text-muted-foreground mt-1 text-sm leading-6">
-          {description}
-        </p>
+        <HelpHint label={title}>{description}</HelpHint>
       </div>
       {packages.length > 0 && (
         <div className="flex flex-wrap items-center gap-3">

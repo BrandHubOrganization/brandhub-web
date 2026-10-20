@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { HelpHint } from "@/components/shared/HelpHint";
+import { startDateChange } from "@/pages/campaign/campaignDates";
 import { Textarea } from "@/components/ui/textarea";
 import { DiscardChangesDialog } from "@/pages/media-package/components/DiscardChangesDialog";
 import { useDraftUnloadWarning } from "@/pages/media-package/hooks/useDraftUnloadWarning";
@@ -12,12 +14,14 @@ import type { PackageDeliverable } from "@/pages/media-package/types/mediaPackag
 export function CampaignForm({
   campaign,
   deliverables,
+  durationWeeks,
   saving,
   onSave,
   onCancel,
 }: {
   campaign: Campaign | null;
   deliverables: PackageDeliverable[];
+  durationWeeks?: number | null;
   saving: boolean;
   onSave: (plan: CampaignPlan) => Promise<void>;
   onCancel: () => void;
@@ -48,7 +52,7 @@ export function CampaignForm({
           void onSave(plan);
         }}
       >
-        <fieldset disabled={saving} className="min-w-0 space-y-6">
+        <fieldset disabled={saving} className="min-w-0 space-y-4">
           <Input
             required
             maxLength={255}
@@ -56,55 +60,72 @@ export function CampaignForm({
             value={plan.name}
             onChange={(event) => patch({ name: event.target.value })}
           />
-          <label className="block space-y-2">
-            <span>{t("campaign.strategy")}</span>
-            <Textarea
-              maxLength={10000}
-              value={plan.strategyDetail}
-              onChange={(event) =>
-                patch({ strategyDetail: event.target.value })
-              }
-            />
-          </label>
-          <label className="block space-y-2">
-            <span>{t("campaign.brand")}</span>
-            <Textarea
-              maxLength={10000}
-              value={plan.brandGuideline}
-              onChange={(event) =>
-                patch({ brandGuideline: event.target.value })
-              }
-            />
-          </label>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <label className="block space-y-2">
+              <span>{t("campaign.strategy")}</span>
+              <Textarea
+                maxLength={10000}
+                value={plan.strategyDetail}
+                onChange={(event) =>
+                  patch({ strategyDetail: event.target.value })
+                }
+              />
+            </label>
+            <label className="block space-y-2">
+              <span>{t("campaign.brand")}</span>
+              <Textarea
+                maxLength={10000}
+                value={plan.brandGuideline}
+                onChange={(event) =>
+                  patch({ brandGuideline: event.target.value })
+                }
+              />
+            </label>
+          </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <Input
               type="date"
               label={t("campaign.startDate")}
               value={timeline.startDate ?? ""}
-              max={timeline.endDate}
               onChange={(event) =>
-                patchTimeline({ startDate: event.target.value || undefined })
+                patchTimeline(
+                  startDateChange(timeline, event.target.value, durationWeeks),
+                )
               }
             />
-            <Input
-              type="date"
-              label={t("campaign.endDate")}
-              value={timeline.endDate ?? ""}
-              min={timeline.startDate}
-              onChange={(event) =>
-                patchTimeline({ endDate: event.target.value || undefined })
-              }
-            />
+            <div className="space-y-1">
+              <Input
+                type="date"
+                label={t("campaign.endDate")}
+                value={timeline.endDate ?? ""}
+                min={timeline.startDate}
+                onChange={(event) =>
+                  patchTimeline({ endDate: event.target.value || undefined })
+                }
+              />
+              {durationWeeks != null && (
+                <div className="text-muted-foreground flex items-center gap-1 text-xs">
+                  {t("campaign.compact.durationSuggestion", {
+                    weeks: durationWeeks,
+                  })}
+                  <HelpHint label={t("campaign.endDate")}>
+                    {t("campaign.compact.dateHelp")}
+                  </HelpHint>
+                </div>
+              )}
+            </div>
           </div>
           <section
             aria-label={t("campaign.milestones")}
             className="border-border space-y-6 border-t pt-6"
           >
             <div className="space-y-2">
-              <h4 className="font-semibold">{t("campaign.milestones")}</h4>
-              <p className="text-muted-foreground text-sm leading-6">
-                {t("campaign.ui.milestonesHint")}
-              </p>
+              <div className="flex items-center gap-1">
+                <h4 className="font-semibold">{t("campaign.milestones")}</h4>
+                <HelpHint label={t("campaign.milestones")}>
+                  {t("campaign.ui.milestonesHint")}
+                </HelpHint>
+              </div>
             </div>
             {(timeline.milestones ?? []).map((milestone, index) => (
               <div

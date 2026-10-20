@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { ArrowLeft, ArrowLeftRight, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
@@ -25,6 +25,7 @@ export default function WorkspaceMediaPackagePage() {
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [editingTerms, setEditingTerms] = useState(false);
   const [creatingCustom, setCreatingCustom] = useState(false);
+  const [showCatalog, setShowCatalog] = useState(false);
   const {
     agencyPackages,
     selectedPackage,
@@ -56,6 +57,9 @@ export default function WorkspaceMediaPackagePage() {
 
   const canSelectPackages =
     effectiveRole === "CLIENT" || effectiveRole === null;
+  const canChangePackage =
+    canSelectPackages &&
+    (!selectedPackage || selectedPackage.negotiationStatus === "DRAFT");
   const agencyId = workspaceId
     ? workspaceList.find((workspace) => workspace.id === workspaceId)?.agencyId
     : null;
@@ -87,24 +91,49 @@ export default function WorkspaceMediaPackagePage() {
 
   return (
     <PageWrapper
-      hideBanner
+      compact
+      showGuideButton={false}
       title={t("mediaPackage.workspacePage.title")}
-      description={t("mediaPackage.workspacePage.description")}
-    >
-      {!createFormOpen && (
-        <>
-          {canCreateCustom && !editingTerms && (
-            <div className="mb-6 flex justify-end">
+      actions={
+        !createFormOpen &&
+        !editingTerms && (
+          <div className="flex flex-wrap gap-2">
+            {selectedPackage && (
+              <Button
+                variant="outline"
+                disabled={loading || !!selectingId}
+                onClick={() => setShowCatalog((value) => !value)}
+              >
+                {showCatalog ? (
+                  <ArrowLeft aria-hidden className="size-4" />
+                ) : (
+                  <ArrowLeftRight aria-hidden className="size-4" />
+                )}
+                {t(
+                  showCatalog
+                    ? "mediaPackage.compact.backSelected"
+                    : canChangePackage
+                      ? "mediaPackage.compact.changePackage"
+                      : "mediaPackage.compact.browsePackages",
+                )}
+              </Button>
+            )}
+            {canCreateCustom && (
               <Button
                 data-package-create
                 variant="orange"
                 onClick={() => setCreateFormOpen(true)}
               >
-                <Plus className="size-4" />
+                <Plus aria-hidden className="size-4" />
                 {t("mediaPackage.actions.createCustom")}
               </Button>
-            </div>
-          )}
+            )}
+          </div>
+        )
+      }
+    >
+      {!createFormOpen && (
+        <>
           {loading && <MediaPackageLoadingState />}
           {!loading && error && (
             <MediaPackageErrorState
@@ -113,29 +142,38 @@ export default function WorkspaceMediaPackagePage() {
             />
           )}
           {!loading && !error && (
-            <div className="space-y-8">
-              <SelectedMediaPackage
-                selection={selectedPackage}
-                workspaceId={workspaceId}
-                onRefresh={() => void load()}
-                onNegotiate={negotiateTerms}
-                onApprove={approvePackage}
-                negotiating={negotiating}
-                approving={approving}
-                onEditingChange={setEditingTerms}
-              />
-
-              <div hidden={editingTerms}>
-                <MediaPackageCatalog
-                  title={t("mediaPackage.catalog.availableTitle")}
-                  description={t("mediaPackage.catalog.availableDescription")}
-                  packages={agencyPackages}
-                  selectedPackageId={selectedPackageId}
-                  canSelect={canSelectPackages}
-                  selectingId={selectingId}
-                  onSelect={(packageId) => void selectPackage(packageId)}
+            <div className="space-y-4">
+              {(!showCatalog || !selectedPackage) && (
+                <SelectedMediaPackage
+                  key={selectedPackage?.workspaceMediaPackageId ?? "empty"}
+                  selection={selectedPackage}
+                  workspaceId={workspaceId}
+                  onRefresh={() => void load()}
+                  onNegotiate={negotiateTerms}
+                  onApprove={approvePackage}
+                  negotiating={negotiating}
+                  approving={approving}
+                  onEditingChange={setEditingTerms}
                 />
-              </div>
+              )}
+
+              {(showCatalog || !selectedPackage) && (
+                <div hidden={editingTerms}>
+                  <MediaPackageCatalog
+                    title={t("mediaPackage.catalog.availableTitle")}
+                    description={t("mediaPackage.catalog.availableDescription")}
+                    packages={agencyPackages}
+                    selectedPackageId={selectedPackageId}
+                    canSelect={canChangePackage}
+                    selectingId={selectingId}
+                    onSelect={(packageId) =>
+                      void selectPackage(packageId).then((selected) => {
+                        if (selected) setShowCatalog(false);
+                      })
+                    }
+                  />
+                </div>
+              )}
             </div>
           )}
         </>
