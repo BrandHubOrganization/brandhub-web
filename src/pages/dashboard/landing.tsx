@@ -3,6 +3,7 @@ import { useAuthStore } from "@/store/authStore";
 import { Navbar } from "@/components/landing/Navbar";
 import { CinematicHero } from "@/components/landing/cinematic/CinematicHero";
 import { LogoWall } from "@/components/landing/LogoWall";
+import { IndustryInsights } from "@/components/landing/IndustryInsights";
 import { Features } from "@/components/landing/Features";
 import { AIFeatures } from "@/components/landing/AIFeatures";
 import { AgencyWorkspace } from "@/components/landing/AgencyWorkspace";
@@ -27,6 +28,7 @@ export function LandingPage() {
       <Navbar />
       <CinematicHero />
       <LogoWall />
+      <IndustryInsights />
       <Features />
       <AIFeatures />
       <AgencyWorkspace />

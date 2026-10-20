@@ -11,6 +11,8 @@ import { AGENCY_CATEGORIES, COMPANY_SIZES } from "@/pages/agency/constants";
 import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
 import { cn } from "@/lib/utils";
 import type { AgencyCategory, CompanySize } from "@/types/agency";
+import { normalizeUrl, formatPhoneNumber } from "@/utils/validation";
+import { CharacterCounter } from "@/components/ui/character-counter";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -31,6 +33,7 @@ interface AgencyDetailEditFormProps {
   name: string;
   setName: (v: string) => void;
   validateField: (field: keyof AgencyDetailFieldErrors, value: string) => void;
+  clearFieldError: (field: keyof AgencyDetailFieldErrors) => void;
   errors: AgencyDetailFieldErrors;
   logoUrl: string;
   brandColor: string;
@@ -74,6 +77,7 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
   name,
   setName,
   validateField,
+  clearFieldError,
   errors,
   logoUrl,
   brandColor,
@@ -122,8 +126,9 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
         value={name}
         onChange={(e) => {
           setName(e.target.value);
-          validateField("name", e.target.value);
+          if (errors.name) clearFieldError("name");
         }}
+        onBlur={() => validateField("name", name)}
         error={errors.name}
         required
       />
@@ -205,7 +210,12 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
         onChange={setDescription}
       />
       <Input
-        label={t("agency.create.taglineLabel")}
+        label={
+          <span className="flex items-center justify-between w-full">
+            <span>{t("agency.create.taglineLabel")}</span>
+            <CharacterCounter current={tagline.length} max={140} />
+          </span>
+        }
         placeholder={t("agency.create.taglinePlaceholder")}
         maxLength={140}
         value={tagline}
@@ -251,7 +261,12 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
         value={website}
         onChange={(e) => {
           setWebsite(e.target.value);
-          validateField("website", e.target.value);
+          if (errors.website) clearFieldError("website");
+        }}
+        onBlur={() => {
+          const norm = normalizeUrl(website);
+          if (norm !== website) setWebsite(norm);
+          validateField("website", norm);
         }}
         error={errors.website}
       />
@@ -262,7 +277,12 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
           value={phone}
           onChange={(e) => {
             setPhone(e.target.value);
-            validateField("phone", e.target.value);
+            if (errors.phone) clearFieldError("phone");
+          }}
+          onBlur={() => {
+            const fmt = formatPhoneNumber(phone);
+            if (fmt !== phone) setPhone(fmt);
+            validateField("phone", fmt);
           }}
           error={errors.phone}
         />
@@ -292,8 +312,9 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
           value={foundedYear}
           onChange={(e) => {
             setFoundedYear(e.target.value);
-            validateField("foundedYear", e.target.value);
+            if (errors.foundedYear) clearFieldError("foundedYear");
           }}
+          onBlur={() => validateField("foundedYear", foundedYear)}
           error={errors.foundedYear}
         />
       </div>
@@ -326,7 +347,12 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
           value={facebookUrl}
           onChange={(e) => {
             setFacebookUrl(e.target.value);
-            validateField("facebookUrl", e.target.value);
+            if (errors.facebookUrl) clearFieldError("facebookUrl");
+          }}
+          onBlur={() => {
+            const norm = normalizeUrl(facebookUrl);
+            if (norm !== facebookUrl) setFacebookUrl(norm);
+            validateField("facebookUrl", norm);
           }}
           error={errors.facebookUrl}
         />
@@ -336,7 +362,12 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
           value={linkedinUrl}
           onChange={(e) => {
             setLinkedinUrl(e.target.value);
-            validateField("linkedinUrl", e.target.value);
+            if (errors.linkedinUrl) clearFieldError("linkedinUrl");
+          }}
+          onBlur={() => {
+            const norm = normalizeUrl(linkedinUrl);
+            if (norm !== linkedinUrl) setLinkedinUrl(norm);
+            validateField("linkedinUrl", norm);
           }}
           error={errors.linkedinUrl}
         />
@@ -346,7 +377,12 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
           value={instagramUrl}
           onChange={(e) => {
             setInstagramUrl(e.target.value);
-            validateField("instagramUrl", e.target.value);
+            if (errors.instagramUrl) clearFieldError("instagramUrl");
+          }}
+          onBlur={() => {
+            const norm = normalizeUrl(instagramUrl);
+            if (norm !== instagramUrl) setInstagramUrl(norm);
+            validateField("instagramUrl", norm);
           }}
           error={errors.instagramUrl}
         />
@@ -360,10 +396,11 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
           {t("agency.detail.cancelButton")}
         </Button>
         <Button
+          variant="orange"
           loading={saving}
           disabled={hasErrors || !name.trim()}
           onClick={handleSave}
-          className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white"
+          className="cursor-pointer"
         >
           {t("agency.detail.saveButton")}
         </Button>

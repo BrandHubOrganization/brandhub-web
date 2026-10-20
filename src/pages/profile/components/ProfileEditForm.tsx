@@ -2,6 +2,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { Crop, History, ImagePlus, X } from "lucide-react";
 import { JobTitleSelect } from "./JobTitleSelect";
 import { LanguageChipSelect } from "./LanguageChipSelect";
@@ -14,6 +16,11 @@ import {
   VISIBILITY_FIELDS,
   VISIBILITY_LABEL_KEY,
 } from "../types";
+import { CharacterCounter } from "@/components/ui/character-counter";
+import {
+  normalizeUrl,
+  formatPhoneNumber,
+} from "@/utils/validation";
 
 interface ProfileEditFormProps {
   name: string;
@@ -45,6 +52,7 @@ interface ProfileEditFormProps {
   handleCancelEdit: () => void;
   handleSave: () => void;
   saving: boolean;
+  errors?: Record<string, string>;
 }
 
 export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
@@ -75,6 +83,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
   handleCancelEdit,
   handleSave,
   saving,
+  errors,
 }) => {
   const { t } = useTranslation();
 
@@ -85,7 +94,12 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
           <label className="text-muted-foreground mb-1 block text-xs font-medium">
             {t("settings.profile.fullNameLabel")}
           </label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            error={errors?.name}
+          />
         </div>
         <div>
           <label className="text-muted-foreground mb-1 block text-xs font-medium">
@@ -98,9 +112,13 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             {t("profile.edit.phoneLabel")}
           </label>
           <Input
+            type="tel"
+            inputMode="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder={t("profile.edit.phonePlaceholder")}
+            onBlur={() => phone.trim() && setPhone(formatPhoneNumber(phone.trim()))}
+            placeholder={t("profile.edit.phonePlaceholder", "VD: 0901 234 567")}
+            error={errors?.phone}
           />
         </div>
         <div>
@@ -116,16 +134,20 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
           />
         </div>
         <TimezoneSelect value={timezone} onChange={setTimezone} />
-        <div className="sm:col-span-2">
-          <label className="text-muted-foreground mb-1 block text-xs font-medium">
-            {t("profile.edit.bioLabel")}
-          </label>
-          <textarea
+        <div className="sm:col-span-2 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-muted-foreground block text-xs font-medium">
+              {t("profile.edit.bioLabel")}
+            </label>
+            <CharacterCounter current={bio.length} max={500} />
+          </div>
+          <Textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
+            maxLength={500}
             placeholder={t("profile.edit.bioPlaceholder")}
             rows={3}
-            className="border-border bg-background text-foreground placeholder:text-muted-foreground w-full rounded-md border px-3 py-2 text-sm outline-none"
+            className="border-border bg-background text-foreground placeholder:text-muted-foreground w-full rounded-md border px-3 py-2 text-sm outline-none resize-none"
           />
         </div>
         <div className="sm:col-span-2">
@@ -202,7 +224,13 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
           <Input
             value={ext.linkedinUrl}
             onChange={(e) => patchExt({ linkedinUrl: e.target.value })}
+            onBlur={() => {
+              if (ext.linkedinUrl.trim()) {
+                patchExt({ linkedinUrl: normalizeUrl(ext.linkedinUrl) });
+              }
+            }}
             placeholder={t("profile.edit.socialPlaceholder")}
+            error={errors?.linkedinUrl}
           />
         </div>
         <div>
@@ -212,7 +240,13 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
           <Input
             value={ext.facebookUrl}
             onChange={(e) => patchExt({ facebookUrl: e.target.value })}
+            onBlur={() => {
+              if (ext.facebookUrl.trim()) {
+                patchExt({ facebookUrl: normalizeUrl(ext.facebookUrl) });
+              }
+            }}
             placeholder={t("profile.edit.socialPlaceholder")}
+            error={errors?.facebookUrl}
           />
         </div>
         <div>
@@ -222,7 +256,13 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
           <Input
             value={ext.instagramUrl}
             onChange={(e) => patchExt({ instagramUrl: e.target.value })}
+            onBlur={() => {
+              if (ext.instagramUrl.trim()) {
+                patchExt({ instagramUrl: normalizeUrl(ext.instagramUrl) });
+              }
+            }}
             placeholder={t("profile.edit.socialPlaceholder")}
+            error={errors?.instagramUrl}
           />
         </div>
         <div>
@@ -232,7 +272,13 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
           <Input
             value={ext.tiktokUrl}
             onChange={(e) => patchExt({ tiktokUrl: e.target.value })}
+            onBlur={() => {
+              if (ext.tiktokUrl.trim()) {
+                patchExt({ tiktokUrl: normalizeUrl(ext.tiktokUrl) });
+              }
+            }}
             placeholder={t("profile.edit.socialPlaceholder")}
+            error={errors?.tiktokUrl}
           />
         </div>
         <div>
@@ -242,7 +288,13 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
           <Input
             value={ext.website}
             onChange={(e) => patchExt({ website: e.target.value })}
+            onBlur={() => {
+              if (ext.website.trim()) {
+                patchExt({ website: normalizeUrl(ext.website) });
+              }
+            }}
             placeholder={t("profile.edit.socialPlaceholder")}
+            error={errors?.website}
           />
         </div>
         <div className="sm:col-span-2">
@@ -321,20 +373,24 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
         <p className="text-muted-foreground mt-1 text-xs">
           {t("profile.edit.visibilityHint")}
         </p>
-        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {VISIBILITY_FIELDS.map((field) => (
-            <label key={field} className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
+            <label
+              key={field}
+              className="flex items-center justify-between rounded-lg border border-border/70 bg-muted/20 px-3.5 py-2.5 text-xs font-medium cursor-pointer hover:bg-muted/40 transition-colors"
+            >
+              <span className="text-foreground">
+                {t(`profile.edit.${VISIBILITY_LABEL_KEY[field]}`)}
+              </span>
+              <Switch
                 checked={visibility[field]}
-                onChange={(e) =>
+                onCheckedChange={(checked) =>
                   setVisibility((prev) => ({
                     ...prev,
-                    [field]: e.target.checked,
+                    [field]: checked,
                   }))
                 }
               />
-              {t(`profile.edit.${VISIBILITY_LABEL_KEY[field]}`)}
             </label>
           ))}
         </div>

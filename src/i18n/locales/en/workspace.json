@@ -1,5 +1,18 @@
 {
   "dashboard": {
+    "workspaceCampaign": {
+      "title": "Workspace campaign",
+      "loading": "Loading campaign",
+      "open": "View campaign plan",
+      "empty": "This Workspace has no campaign yet.",
+      "emptyHelp": "The Manager prepares the campaign plan after both sides approve the media package.",
+      "error": "Unable to load the campaign. Please try again.",
+      "retry": "Try again",
+      "conflict": "This Workspace has more than one campaign. Review the data before continuing.",
+      "version": "Version {{version}}",
+      "plannedWork": "Planned work items: {{count}}",
+      "create": "Prepare campaign plan"
+    },
     "title": "Dashboard",
     "description": "Overview of this workspace's members, campaigns, and package status.",
     "loadError": "Unable to load dashboard data",
@@ -20,7 +33,34 @@
     "upcomingContent": "Upcoming content",
     "upcomingContentEmpty": "No content scheduled yet.",
     "recentActivity": "Recent activity",
-    "recentActivityEmpty": "No activity yet."
+    "recentActivityEmpty": "No activity yet.",
+    "tasksOverview": "Workspace Tasks",
+    "recentTasks": "Recent Tasks",
+    "viewAllTasks": "View all tasks",
+    "createTask": "Create task",
+    "noTasks": "No tasks in this workspace yet.",
+    "tasksByStatus": {
+      "todo": "To Do",
+      "inProgress": "In Progress",
+      "review": "Review",
+      "done": "Done"
+    },
+    "campaignsOverview": "Media Campaigns",
+    "recentCampaigns": "Recent Campaigns",
+    "viewAllCampaigns": "View all campaigns",
+    "createCampaign": "Create campaign",
+    "noCampaigns": "No campaigns in this workspace yet.",
+    "quickActions": "Quick Actions",
+    "chatWorkspace": "Chat",
+    "contentEditor": "Post Editor",
+    "contentCalendar": "Content Calendar",
+    "workspaceSettings": "Workspace Settings",
+    "packageApprovedTitle": "Active Media Package",
+    "packageApprovedDescription": "The media package has been approved and is ready for campaigns.",
+    "packageNegotiatingTitle": "Media Package in Negotiation",
+    "packageNegotiatingDescription": "Terms are being agreed upon by both sides. Click to view or negotiate.",
+    "viewPackage": "View media package",
+    "roleInWorkspace": "Your Role"
   },
   "create": {
     "title": "Create workspace",
@@ -60,6 +100,19 @@
     "noTemplateCard": "No template",
     "previewDialogTitle": "Template preview",
     "useThisTemplate": "Use this template"
+  },
+  "createPreview": {
+    "title": "Workspace Live Preview",
+    "badge": "Live Preview",
+    "nameFallback": "New Workspace",
+    "taglineFallback": "Brand Slogan / Tagline",
+    "about": "About",
+    "contact": "Contact Information",
+    "social": "Social Media",
+    "members": "members",
+    "clients": "clients",
+    "industrySpecific": "Industry Specifics",
+    "emptyDescription": "No description provided."
   },
   "industry": {
     "FNB": "Food & Beverage",

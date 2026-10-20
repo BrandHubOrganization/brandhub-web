@@ -24,7 +24,16 @@ import {
 } from "./components/AgencyBrandingSection";
 import { AgencyCreateLivePreview } from "./components/AgencyCreateLivePreview";
 
-const CURRENT_YEAR = new Date().getFullYear();
+import {
+  normalizeUrl,
+  isValidUrl,
+  formatPhoneNumber,
+  isValidPhone,
+  isValidFoundedYear,
+  CURRENT_YEAR,
+} from "@/utils/validation";
+import { CharacterCounter } from "@/components/ui/character-counter";
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 export function CreateAgencyPage() {
@@ -46,6 +55,77 @@ export function CreateAgencyPage() {
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const clearError = (field: string) => {
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
+  const handleUrlBlur = (
+    field: "website" | "facebookUrl" | "linkedinUrl" | "instagramUrl",
+    value: string,
+    setter: (val: string) => void,
+  ) => {
+    if (!value.trim()) {
+      clearError(field);
+      return;
+    }
+    const normalized = normalizeUrl(value);
+    setter(normalized);
+    if (!isValidUrl(normalized)) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ"),
+      }));
+    } else {
+      clearError(field);
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    if (!phone.trim()) {
+      clearError("phone");
+      return;
+    }
+    const formatted = formatPhoneNumber(phone);
+    setPhone(formatted);
+    if (!isValidPhone(formatted)) {
+      setErrors((prev) => ({
+        ...prev,
+        phone: t(
+          "agency.detail.errors.invalidPhone",
+          "Số điện thoại không hợp lệ (10-11 số)",
+        ),
+      }));
+    } else {
+      clearError("phone");
+    }
+  };
+
+  const handleFoundedYearBlur = () => {
+    if (!foundedYear.trim()) {
+      clearError("foundedYear");
+      return;
+    }
+    if (!isValidFoundedYear(foundedYear)) {
+      setErrors((prev) => ({
+        ...prev,
+        foundedYear: t(
+          "agency.detail.errors.invalidFoundedYear",
+          "Năm thành lập không hợp lệ",
+        ),
+      }));
+    } else {
+      clearError("foundedYear");
+    }
+  };
 
   // Logo selection mode & state
   const [logoMode, setLogoMode] = useState<LogoMode>("icon");
@@ -182,10 +262,41 @@ export function CreateAgencyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const newErrors: Record<string, string> = {};
     if (!name.trim()) {
-      toast.error(t("agency.create.nameRequired"));
+      newErrors.name = t("agency.create.nameRequired", "Vui lòng nhập tên agency");
+    }
+    if (website.trim() && !isValidUrl(normalizeUrl(website))) {
+      newErrors.website = t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ");
+    }
+    if (phone.trim() && !isValidPhone(phone)) {
+      newErrors.phone = t(
+        "agency.detail.errors.invalidPhone",
+        "Số điện thoại không hợp lệ (10-11 số)",
+      );
+    }
+    if (foundedYear.trim() && !isValidFoundedYear(foundedYear)) {
+      newErrors.foundedYear = t(
+        "agency.detail.errors.invalidFoundedYear",
+        "Năm thành lập không hợp lệ",
+      );
+    }
+    if (facebookUrl.trim() && !isValidUrl(normalizeUrl(facebookUrl))) {
+      newErrors.facebookUrl = t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ");
+    }
+    if (linkedinUrl.trim() && !isValidUrl(normalizeUrl(linkedinUrl))) {
+      newErrors.linkedinUrl = t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ");
+    }
+    if (instagramUrl.trim() && !isValidUrl(normalizeUrl(instagramUrl))) {
+      newErrors.instagramUrl = t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ");
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error(t("common.formError", "Vui lòng kiểm tra lại các trường thông tin"));
       return;
     }
+    setErrors({});
 
     setLoading(true);
 
@@ -272,17 +383,28 @@ export function CreateAgencyPage() {
                 label={t("agency.create.nameLabel")}
                 placeholder={t("agency.create.namePlaceholder")}
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  clearError("name");
+                }}
                 required
+                error={errors.name}
               />
 
-              <Input
-                label={t("agency.create.taglineLabel")}
-                placeholder={t("agency.create.taglinePlaceholder")}
-                maxLength={140}
-                value={tagline}
-                onChange={(e) => setTagline(e.target.value)}
-              />
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold tracking-wide">
+                    {t("agency.create.taglineLabel")}
+                  </Label>
+                  <CharacterCounter current={tagline.length} max={140} />
+                </div>
+                <Input
+                  placeholder={t("agency.create.taglinePlaceholder")}
+                  maxLength={140}
+                  value={tagline}
+                  onChange={(e) => setTagline(e.target.value)}
+                />
+              </div>
 
               <RichTextInput
                 label={t("agency.create.descriptionLabel")}
@@ -386,11 +508,17 @@ export function CreateAgencyPage() {
                 <Input
                   label={t("agency.create.foundedYearLabel")}
                   type="number"
+                  inputMode="numeric"
                   min={1}
                   max={CURRENT_YEAR}
                   value={foundedYear}
-                  onChange={(e) => setFoundedYear(e.target.value)}
+                  onChange={(e) => {
+                    setFoundedYear(e.target.value);
+                    clearError("foundedYear");
+                  }}
+                  onBlur={handleFoundedYearBlur}
                   placeholder="2020"
+                  error={errors.foundedYear}
                 />
                 <ProvinceSelect
                   label={t("agency.create.locationLabel")}
@@ -411,13 +539,25 @@ export function CreateAgencyPage() {
                   label={t("agency.create.websiteLabel")}
                   placeholder={t("agency.create.websitePlaceholder")}
                   value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
+                  onChange={(e) => {
+                    setWebsite(e.target.value);
+                    clearError("website");
+                  }}
+                  onBlur={() => handleUrlBlur("website", website, setWebsite)}
+                  error={errors.website}
                 />
                 <Input
                   label={t("agency.create.phoneLabel")}
-                  placeholder={t("agency.create.phonePlaceholder")}
+                  type="tel"
+                  inputMode="tel"
+                  placeholder={t("agency.create.phonePlaceholder", "VD: 0901 234 567")}
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    clearError("phone");
+                  }}
+                  onBlur={handlePhoneBlur}
+                  error={errors.phone}
                 />
               </div>
 
@@ -426,19 +566,40 @@ export function CreateAgencyPage() {
                   label={t("agency.create.facebookUrlLabel")}
                   placeholder="https://facebook.com/..."
                   value={facebookUrl}
-                  onChange={(e) => setFacebookUrl(e.target.value)}
+                  onChange={(e) => {
+                    setFacebookUrl(e.target.value);
+                    clearError("facebookUrl");
+                  }}
+                  onBlur={() =>
+                    handleUrlBlur("facebookUrl", facebookUrl, setFacebookUrl)
+                  }
+                  error={errors.facebookUrl}
                 />
                 <Input
                   label={t("agency.create.linkedinUrlLabel")}
                   placeholder="https://linkedin.com/..."
                   value={linkedinUrl}
-                  onChange={(e) => setLinkedinUrl(e.target.value)}
+                  onChange={(e) => {
+                    setLinkedinUrl(e.target.value);
+                    clearError("linkedinUrl");
+                  }}
+                  onBlur={() =>
+                    handleUrlBlur("linkedinUrl", linkedinUrl, setLinkedinUrl)
+                  }
+                  error={errors.linkedinUrl}
                 />
                 <Input
                   label={t("agency.create.instagramUrlLabel")}
                   placeholder="https://instagram.com/..."
                   value={instagramUrl}
-                  onChange={(e) => setInstagramUrl(e.target.value)}
+                  onChange={(e) => {
+                    setInstagramUrl(e.target.value);
+                    clearError("instagramUrl");
+                  }}
+                  onBlur={() =>
+                    handleUrlBlur("instagramUrl", instagramUrl, setInstagramUrl)
+                  }
+                  error={errors.instagramUrl}
                 />
               </div>
             </div>
@@ -455,9 +616,10 @@ export function CreateAgencyPage() {
               </Button>
               <Button
                 type="submit"
+                variant="orange"
                 loading={loading}
                 disabled={!name.trim()}
-                className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white px-6 font-medium shadow-sm"
+                className="cursor-pointer px-6 font-medium shadow-sm"
               >
                 {t("agency.create.submit")}
               </Button>

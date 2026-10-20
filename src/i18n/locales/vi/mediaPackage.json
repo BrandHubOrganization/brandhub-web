@@ -1,4 +1,31 @@
 {
+  "history": {
+    "title": "Lịch sử đàm phán",
+    "empty": "Chưa có lịch sử đề xuất. Mốc bắt đầu được lưu khi gửi đề xuất đầu tiên.",
+    "baseline": "Mốc bắt đầu ghi nhận: chỉ xác nhận điều khoản tại phiên bản này, không có thông tin về các vòng đàm phán trước đó.",
+    "error": "Không thể tải lịch sử. Thử tải lại.",
+    "reload": "Tải lại lịch sử",
+    "previous": "Trước",
+    "next": "Sau",
+    "version": "Phiên bản v{{version}}",
+    "current": "Hiện tại v{{version}}",
+    "note": "Ghi chú đề xuất (không bắt buộc)",
+    "compare": "Đối chiếu với hiện tại",
+    "hide": "Ẩn đối chiếu",
+    "readOnly": "Lịch sử chỉ để tham khảo. Thao tác duyệt luôn áp dụng cho phiên bản hiện tại đang hiển thị phía trên.",
+    "unknownActor": "Không xác định người thực hiện",
+    "conflict": "Điều khoản đã thay đổi. Giữ lại nội dung cần thiết, đóng biểu mẫu và tải lại gói trước khi đề xuất hoặc duyệt.",
+    "actions": {
+      "BASELINE": "Mốc bắt đầu",
+      "REQUEST_CHANGE": "Khách hàng đề xuất",
+      "COUNTER_OFFER": "Công ty phản hồi"
+    },
+    "roles": {
+      "OWNER": "Chủ sở hữu",
+      "MANAGER": "Người quản lý",
+      "CLIENT": "Khách hàng"
+    }
+  },
   "offering": {
     "title": "Hạng mục dịch vụ",
     "model": "Cách đóng gói",
@@ -16,9 +43,9 @@
     "services": {
       "SOCIAL_POST": "Bài đăng mạng xã hội",
       "EVENT_PLANNING": "Bàn giao kế hoạch sự kiện",
-      "LIVESTREAM_PREPARATION": "Chuẩn bị livestream",
-      "PRESS_RECOMMENDATION": "Gợi ý đối tác báo điện tử",
-      "WORKSHOP_SUPPORT": "Workshop: link Meet và survey"
+      "LIVESTREAM_PREPARATION": "Livestream",
+      "PRESS_RECOMMENDATION": "Báo điện tử",
+      "WORKSHOP_SUPPORT": "Workshop"
     },
     "service": "Dịch vụ",
     "name": "Tên hạng mục bàn giao",
@@ -81,6 +108,8 @@
     "FULL_DELEGATION": "Ủy quyền toàn diện"
   },
   "values": {
+    "optionalFinancials": "Ngân sách và thời lượng không bắt buộc. Nếu nhập, giá trị phải lớn hơn 0; thời lượng tính theo số tuần nguyên.",
+    "toBeAgreed": "Ngân sách và thời lượng: thỏa thuận sau",
     "duration": "{{count}} tuần",
     "fullDelegation": "Toàn bộ chiến dịch"
   },
@@ -171,6 +200,7 @@
     "approve": "Không thể chấp thuận gói dịch vụ."
   },
   "ui": {
+    "backToPackages": "Quay lại gói truyền thông",
     "viewDetail": "Xem chi tiết gói",
     "duplicate": "Tạo gói từ gói này",
     "moreDeliverables": "+ {{count}} hạng mục khác",

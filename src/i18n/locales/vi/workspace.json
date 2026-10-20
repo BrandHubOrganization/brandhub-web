@@ -1,5 +1,18 @@
 {
   "dashboard": {
+    "workspaceCampaign": {
+      "title": "Chiến dịch của Workspace",
+      "loading": "Đang tải chiến dịch",
+      "open": "Xem kế hoạch chiến dịch",
+      "empty": "Workspace chưa có chiến dịch.",
+      "emptyHelp": "Quản lý lập kế hoạch chiến dịch sau khi hai bên chốt gói truyền thông.",
+      "error": "Không tải được chiến dịch. Vui lòng thử lại.",
+      "retry": "Thử lại",
+      "conflict": "Workspace đang có nhiều hơn một chiến dịch. Cần kiểm tra dữ liệu trước khi tiếp tục.",
+      "version": "Phiên bản {{version}}",
+      "plannedWork": "Đầu việc trong kế hoạch: {{count}}",
+      "create": "Lập kế hoạch chiến dịch"
+    },
     "title": "Tổng quan",
     "description": "Tổng quan thành viên, chiến dịch và trạng thái gói dịch vụ của workspace này.",
     "loadError": "Không thể tải dữ liệu tổng quan",
@@ -20,7 +33,34 @@
     "upcomingContent": "Nội dung sắp đăng",
     "upcomingContentEmpty": "Chưa có nội dung nào được lên lịch.",
     "recentActivity": "Hoạt động gần đây",
-    "recentActivityEmpty": "Chưa có hoạt động nào."
+    "recentActivityEmpty": "Chưa có hoạt động nào.",
+    "tasksOverview": "Công việc Workspace",
+    "recentTasks": "Công việc gần đây",
+    "viewAllTasks": "Xem tất cả công việc",
+    "createTask": "Tạo công việc",
+    "noTasks": "Chưa có công việc nào trong workspace này.",
+    "tasksByStatus": {
+      "todo": "Cần làm",
+      "inProgress": "Đang làm",
+      "review": "Chờ duyệt",
+      "done": "Hoàn thành"
+    },
+    "campaignsOverview": "Chiến dịch truyền thông",
+    "recentCampaigns": "Chiến dịch gần đây",
+    "viewAllCampaigns": "Xem tất cả chiến dịch",
+    "createCampaign": "Tạo chiến dịch",
+    "noCampaigns": "Chưa có chiến dịch nào trong workspace này.",
+    "quickActions": "Thao tác nhanh",
+    "chatWorkspace": "Trao đổi",
+    "contentEditor": "Soạn thảo bài viết",
+    "contentCalendar": "Lịch nội dung",
+    "workspaceSettings": "Cài đặt workspace",
+    "packageApprovedTitle": "Gói truyền thông đang hoạt động",
+    "packageApprovedDescription": "Gói dịch vụ đã được hai bên phê duyệt và sẵn sàng cho các chiến dịch.",
+    "packageNegotiatingTitle": "Gói truyền thông đang trong quá trình đàm phán",
+    "packageNegotiatingDescription": "Hai bên đang thống nhất các điều khoản gói. Bấm để xem chi tiết hoặc tiếp tục đàm phán.",
+    "viewPackage": "Xem gói truyền thông",
+    "roleInWorkspace": "Vai trò của bạn"
   },
   "create": {
     "title": "Tạo không gian làm việc",
@@ -60,6 +100,19 @@
     "noTemplateCard": "Không dùng mẫu",
     "previewDialogTitle": "Xem trước mẫu",
     "useThisTemplate": "Dùng mẫu này"
+  },
+  "createPreview": {
+    "title": "Xem trước không gian làm việc",
+    "badge": "Cập nhật trực tiếp",
+    "nameFallback": "Không gian làm việc mới",
+    "taglineFallback": "Slogan / Khẩu hiệu thương hiệu",
+    "about": "Giới thiệu",
+    "contact": "Thông tin liên hệ",
+    "social": "Mạng xã hội",
+    "members": "thành viên",
+    "clients": "khách hàng",
+    "industrySpecific": "Thông tin đặc thù",
+    "emptyDescription": "Chưa có mô tả chi tiết."
   },
   "industry": {
     "FNB": "Ẩm thực & Đồ uống",

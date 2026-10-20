@@ -1,4 +1,6 @@
 import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import { SelectMenu } from "@/components/ui/select-menu";
 
 interface TaskFilterBarProps {
@@ -11,22 +13,6 @@ interface TaskFilterBarProps {
   onSearchSubmit: () => void;
 }
 
-const TYPE_OPTIONS = [
-  { value: "ALL", label: "Tất cả loại việc" },
-  { value: "POST", label: "Bài viết (Post)" },
-  { value: "LIVESTREAM", label: "Livestream" },
-  { value: "SURVEY", label: "Khảo sát" },
-];
-
-const STATUS_OPTIONS = [
-  { value: "ALL", label: "Tất cả trạng thái" },
-  { value: "BACKLOG", label: "Backlog" },
-  { value: "ASSIGNED", label: "Cần làm (To Do)" },
-  { value: "IN_PROGRESS", label: "Đang làm (In Progress)" },
-  { value: "MANAGER_REVIEW", label: "Đang duyệt (In Review)" },
-  { value: "COMPLETED", label: "Hoàn thành (Done)" },
-];
-
 export function TaskFilterBar({
   search,
   onSearchChange,
@@ -36,18 +22,39 @@ export function TaskFilterBar({
   onStatusFilterChange,
   onSearchSubmit,
 }: TaskFilterBarProps) {
+  const { t } = useTranslation();
+  const types = [
+    "POST",
+    "LIVESTREAM",
+    "SURVEY",
+    "EVENT_PLAN",
+    "PRESS_RECOMMENDATION",
+  ];
+  const typeOptions = [
+    { value: "ALL", label: t("tasks.allTypes") },
+    ...types.map((value) => ({ value, label: t(`tasks.types.${value}`) })),
+  ];
+  const statusOptions = [
+    { value: "ALL", label: t("tasks.allStatuses") },
+    ...Object.keys(STATUS_CONFIG).map((value) => ({
+      value,
+      label: t(`tasks.status.${value}`),
+    })),
+  ];
   return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+    <div className="flex shrink-0 flex-col flex-wrap items-stretch justify-between gap-3 sm:flex-row sm:items-center">
       {/* Search Input */}
-      <div className="relative flex-1 max-w-md">
+      <div className="relative max-w-md flex-1">
         <Search className="text-muted-foreground/60 absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
         <input
           type="text"
-          placeholder="Tìm kiếm công việc..."
+          placeholder={t("tasks.search")}
+          aria-label={t("tasks.search")}
+          maxLength={200}
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onSearchSubmit()}
-          className="border-border bg-card/90 text-foreground placeholder:text-muted-foreground focus:ring-brand-orange/30 focus:border-brand-orange w-full rounded-xl border py-2 pr-4 pl-10 text-sm shadow-2xs transition-all focus:outline-hidden focus:ring-2"
+          className="border-border bg-card/90 text-foreground placeholder:text-muted-foreground focus:ring-brand-orange/30 focus:border-brand-orange w-full rounded-xl border py-2 pr-4 pl-10 text-sm shadow-2xs transition-all focus:ring-2 focus:outline-hidden"
         />
       </div>
 
@@ -55,23 +62,22 @@ export function TaskFilterBar({
       <div className="flex flex-wrap items-center gap-2.5">
         {/* Type Filter */}
         <SelectMenu
-          ariaLabel="Lọc theo loại công việc"
+          ariaLabel={t("tasks.filterType")}
           value={typeFilter}
           onChange={onTypeFilterChange}
-          options={TYPE_OPTIONS}
-          className="h-9 min-w-[155px] rounded-xl border-border bg-card shadow-2xs"
+          options={typeOptions}
+          className="border-border bg-card h-9 min-w-[155px] rounded-xl shadow-2xs"
         />
 
         {/* Status Filter */}
         <SelectMenu
-          ariaLabel="Lọc theo trạng thái"
+          ariaLabel={t("tasks.filterStatus")}
           value={statusFilter}
           onChange={onStatusFilterChange}
-          options={STATUS_OPTIONS}
-          className="h-9 min-w-[170px] rounded-xl border-border bg-card shadow-2xs"
+          options={statusOptions}
+          className="border-border bg-card h-9 min-w-[170px] rounded-xl shadow-2xs"
         />
       </div>
     </div>
   );
 }
-

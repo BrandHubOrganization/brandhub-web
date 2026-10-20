@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ShieldCheck, TriangleAlert } from "lucide-react";
+import { LogOut, ShieldCheck, TriangleAlert } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/modal";
 import { useAuthStore } from "@/store/authStore";
 import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
@@ -26,6 +27,8 @@ export function SecurityPage() {
   const [hasPassword, setHasPassword] = useState(true);
   const [sendingOtp, setSendingOtp] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     authService
@@ -101,6 +104,19 @@ export function SecurityPage() {
     }
   };
 
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await authService.logout().catch(() => {});
+      useAuthStore.getState().logout();
+      toast.success(t("security.session.logoutSuccess"));
+      navigate("/login");
+    } finally {
+      setLoggingOut(false);
+      setLogoutOpen(false);
+    }
+  };
+
   const handleSendDeactivateOtp = async () => {
     setSendingOtp(true);
     try {
@@ -116,13 +132,24 @@ export function SecurityPage() {
 
   return (
     <section id="security" className="scroll-mt-6">
-      <div className="mb-4">
-        <h2 className="text-foreground text-lg font-semibold">
-          {t("security.title")}
-        </h2>
-        <p className="text-muted-foreground text-sm">
-          {t("security.description")}
-        </p>
+      <div className="mb-4 flex max-w-2xl items-center justify-between">
+        <div>
+          <h2 className="text-foreground text-lg font-semibold">
+            {t("security.title")}
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            {t("security.description")}
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/50 dark:hover:bg-rose-950/40"
+          onClick={() => setLogoutOpen(true)}
+        >
+          <LogOut className="size-4" />
+          {t("security.session.logoutButton")}
+        </Button>
       </div>
       <div className="border-border bg-card max-w-2xl rounded-xl border p-6">
         <div className="border-border flex items-center gap-3 border-b pb-4">
@@ -262,6 +289,39 @@ export function SecurityPage() {
 
       <ChangePasswordCard hasPassword={hasPassword} />
 
+      {/* Phiên đăng nhập & Đăng xuất */}
+      <div className="border-border bg-card mt-6 max-w-2xl rounded-xl border p-6">
+        <div className="border-border flex items-center justify-between border-b pb-4">
+          <div className="flex items-center gap-3">
+            <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-2">
+              <LogOut className="size-5" />
+            </div>
+            <div>
+              <h3 className="text-foreground text-sm font-semibold">
+                {t("security.session.title")}
+              </h3>
+              <p className="text-muted-foreground text-xs">
+                {t("security.session.subtitle")}
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/50 dark:hover:bg-rose-950/40"
+            onClick={() => setLogoutOpen(true)}
+          >
+            <LogOut className="size-4" />
+            {t("security.session.logoutButton")}
+          </Button>
+        </div>
+        <div className="pt-4">
+          <p className="text-muted-foreground text-xs leading-relaxed">
+            {t("security.session.hint")}
+          </p>
+        </div>
+      </div>
+
       <div className="border-border bg-card mt-6 max-w-2xl rounded-xl border border-red-200 p-6 dark:border-red-900/50">
         <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
           <TriangleAlert className="size-4 text-rose-500" />
@@ -342,6 +402,47 @@ export function SecurityPage() {
           </div>
         </div>
       )}
+
+      {/* Modal xác nhận đăng xuất */}
+      <Modal
+        isOpen={logoutOpen}
+        onClose={() => !loggingOut && setLogoutOpen(false)}
+        title={
+          <div className="flex items-center gap-2 text-base font-semibold text-foreground">
+            <div className="rounded-lg bg-rose-100 p-1.5 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">
+              <LogOut className="size-4" />
+            </div>
+            {t("security.session.confirmTitle")}
+          </div>
+        }
+        description={t("security.session.confirmBody")}
+        footer={
+          <div className="flex w-full justify-end gap-2 pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={loggingOut}
+              onClick={() => setLogoutOpen(false)}
+            >
+              {t("security.session.cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              loading={loggingOut}
+              onClick={handleLogout}
+              className="gap-1.5"
+            >
+              <LogOut className="size-3.5" />
+              {t("security.session.confirmLogout")}
+            </Button>
+          </div>
+        }
+      >
+        <p className="text-muted-foreground text-xs leading-relaxed">
+          {t("security.session.confirmDetails")}
+        </p>
+      </Modal>
     </section>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { taskService } from "@/services/taskService";
 import type { TaskListItem } from "@/types/task";
 
@@ -8,37 +8,70 @@ export function useTasks(workspaceId: string) {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
+  const [error, setError] = useState(false);
+  const [refreshError, setRefreshError] = useState(false);
+  const [loadedWorkspace, setLoadedWorkspace] = useState("");
+  const requestSequence = useRef(0);
 
   // Filters & Sorting state
-  const [search, setSearch] = useState("");
+  const [search, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [typeFilter, setTypeFilter] = useState("ALL");
-  const [sortField, setSortField] = useState<"dueDate" | "createdAt" | "name" | "status">("createdAt");
+  const [sortField, setSortField] = useState<
+    "dueDate" | "createdAt" | "name" | "status"
+  >("createdAt");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
-  const loadTasks = useCallback(async () => {
-    if (!workspaceId) return;
-    setLoading(true);
-    try {
-      const res = await taskService.getWorkspaceTasks(workspaceId, {
-        page,
-        size: 15,
-        sort: sortField,
-        direction: sortDirection,
-        status: statusFilter,
-        type: typeFilter,
-        search,
-      });
-      setTasks(res.content);
-      setTotalPages(res.totalPages);
-      setTotalElements(res.totalElements);
-    } finally {
-      setLoading(false);
-    }
-  }, [workspaceId, page, sortField, sortDirection, statusFilter, typeFilter, search]);
+  const loadTasks = useCallback(
+    async (background = false) => {
+      if (!workspaceId) return;
+      const sequence = ++requestSequence.current;
+      if (!background) setLoading(true);
+      setError(false);
+      try {
+        const res = await taskService.getWorkspaceTasks(workspaceId, {
+          page,
+          size: 15,
+          sort: sortField,
+          direction: sortDirection,
+          status: statusFilter,
+          type: typeFilter,
+          search,
+        });
+        if (sequence !== requestSequence.current) return;
+        setTasks(res.content);
+        setRefreshError(false);
+        setLoadedWorkspace(workspaceId);
+        setTotalPages(res.totalPages);
+        setTotalElements(res.totalElements);
+      } catch {
+        if (sequence === requestSequence.current) {
+          // Never unmount row editors/drafts because an automatic refresh failed.
+          if (!background) {
+            setError(true);
+            setTasks([]);
+          } else setRefreshError(true);
+        }
+      } finally {
+        if (sequence === requestSequence.current) setLoading(false);
+      }
+    },
+    [
+      workspaceId,
+      page,
+      sortField,
+      sortDirection,
+      statusFilter,
+      typeFilter,
+      search,
+    ],
+  );
 
   useEffect(() => {
     loadTasks();
+    return () => {
+      requestSequence.current++;
+    };
   }, [loadTasks]);
 
   const handleSort = (field: "dueDate" | "createdAt" | "name" | "status") => {
@@ -58,21 +91,15 @@ export function useTasks(workspaceId: string) {
     setPage(0);
   };
 
-  const updateTaskStatus = (taskId: string, newStatus: TaskListItem["status"]) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t))
-    );
-  };
-
-  const updateTaskDueDate = (taskId: string, newDueDate: string) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, dueDate: newDueDate } : t))
-    );
+  const setSearch = (value: string) => {
+    setSearchValue(value);
+    setPage(0);
   };
 
   return {
-    tasks,
-    setTasks,
+    tasks: loadedWorkspace === workspaceId && !error ? tasks : [],
+    error,
+    refreshError,
     loading,
     page,
     setPage,
@@ -89,7 +116,5 @@ export function useTasks(workspaceId: string) {
     handleSort,
     loadTasks,
     resetFilters,
-    updateTaskStatus,
-    updateTaskDueDate,
   };
 }

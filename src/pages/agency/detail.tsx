@@ -4,11 +4,14 @@ import { useTranslation } from "react-i18next";
 import {
   Pencil,
   Plus,
+  Trash2,
   TriangleAlert,
   User,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/modal";
 import { agencyService } from "@/services/agencyService";
 import { workspaceService } from "@/services/workspaceService";
 import { useAuthStore } from "@/store/authStore";
@@ -28,9 +31,12 @@ import {
 } from "./components/AgencyDetailEditForm";
 import { AgencyDetailInfo } from "./components/AgencyDetailInfo";
 
-const CURRENT_YEAR = new Date().getFullYear();
-const URL_RE = /^https?:\/\/.+/i;
-const PHONE_RE = /^[0-9+\-\s()]{6,20}$/;
+import {
+  CURRENT_YEAR,
+  isValidUrl,
+  isValidPhone,
+  isValidFoundedYear,
+} from "@/utils/validation";
 
 export function AgencyDetailPage() {
   const { t } = useTranslation();
@@ -48,6 +54,9 @@ export function AgencyDetailPage() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [confirmName, setConfirmName] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
   // Cropper & Recent Modals state
@@ -77,6 +86,15 @@ export function AgencyDetailPage() {
 
   const [errors, setErrors] = useState<AgencyDetailFieldErrors>({});
 
+  const clearFieldError = (field: keyof AgencyDetailFieldErrors) => {
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  };
+
   const validateField = (field: keyof AgencyDetailFieldErrors, value: string) => {
     let message: string | undefined;
     switch (field) {
@@ -84,32 +102,30 @@ export function AgencyDetailPage() {
         if (!value.trim()) message = t("agency.detail.errors.nameRequired");
         break;
       case "website":
-        if (value && !URL_RE.test(value))
+        if (value.trim() && !isValidUrl(value))
           message = t("agency.detail.errors.invalidUrl");
         break;
       case "phone":
-        if (value && !PHONE_RE.test(value))
+        if (value.trim() && !isValidPhone(value))
           message = t("agency.detail.errors.invalidPhone");
         break;
       case "facebookUrl":
-        if (value && !URL_RE.test(value))
+        if (value.trim() && !isValidUrl(value))
           message = t("agency.detail.errors.invalidFacebookUrl");
         break;
       case "linkedinUrl":
-        if (value && !URL_RE.test(value))
+        if (value.trim() && !isValidUrl(value))
           message = t("agency.detail.errors.invalidLinkedinUrl");
         break;
       case "instagramUrl":
-        if (value && !URL_RE.test(value))
+        if (value.trim() && !isValidUrl(value))
           message = t("agency.detail.errors.invalidInstagramUrl");
         break;
       case "foundedYear":
-        if (value) {
-          const y = parseInt(value, 10);
-          if (isNaN(y) || y <= 0 || y > CURRENT_YEAR)
-            message = t("agency.detail.errors.invalidYear", {
-              max: CURRENT_YEAR,
-            });
+        if (value.trim() && !isValidFoundedYear(value)) {
+          message = t("agency.detail.errors.invalidYear", {
+            max: CURRENT_YEAR,
+          });
         }
         break;
     }
@@ -308,6 +324,27 @@ export function AgencyDetailPage() {
     }
   };
 
+  const handleDeleteAgency = async () => {
+    if (!id || !agency) return;
+    setDeleting(true);
+    try {
+      await agencyService.remove(id);
+      toast.success(t("agency.detail.danger.deleteSuccess"));
+      if (useAgencyStore.getState().currentAgencyId === id) {
+        useAgencyStore.getState().setCurrentAgencyId(null);
+      }
+      navigate("/agency");
+    } catch (err: unknown) {
+      toast.error(
+        extractErrorMessage(err, t("agency.detail.danger.deleteError")),
+      );
+    } finally {
+      setDeleting(false);
+      setDeleteOpen(false);
+      setConfirmName("");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -471,6 +508,7 @@ export function AgencyDetailPage() {
                 name={name}
                 setName={setName}
                 validateField={validateField}
+                clearFieldError={clearFieldError}
                 errors={errors}
                 logoUrl={logoUrl}
                 brandColor={brandColor}
@@ -581,6 +619,36 @@ export function AgencyDetailPage() {
             </section>
           </>
         )}
+
+        {/* Danger Zone: Only Agency Owner can delete when not deleted and not editing */}
+        {isOwner && !isDeleted && !isEditing && (
+          <>
+            <div className="border-border border-t" />
+
+            <section className="space-y-4">
+              <div className="border-destructive/30 bg-destructive/5 rounded-xl border p-6">
+                <div className="flex items-center gap-2">
+                  <TriangleAlert className="text-destructive size-5" />
+                  <h3 className="text-destructive text-base font-semibold">
+                    {t("agency.detail.danger.title")}
+                  </h3>
+                </div>
+                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                  {t("agency.detail.danger.deleteHint")}
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="mt-4 cursor-pointer gap-1.5"
+                  onClick={() => setDeleteOpen(true)}
+                >
+                  <Trash2 className="size-3.5" />
+                  {t("agency.detail.danger.deleteButton")}
+                </Button>
+              </div>
+            </section>
+          </>
+        )}
       </div>
 
       {/* Modals for Image Cropping and Recent Assets */}
@@ -613,6 +681,64 @@ export function AgencyDetailPage() {
         category="banner"
         onSelect={handleSelectRecentBanner}
       />
+
+      {/* Delete Agency Modal */}
+      <Modal
+        isOpen={deleteOpen}
+        onClose={() => {
+          if (!deleting) {
+            setDeleteOpen(false);
+            setConfirmName("");
+          }
+        }}
+        title={t("agency.detail.danger.confirmTitle")}
+        footer={
+          <div className="flex w-full justify-end gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={deleting}
+              onClick={() => {
+                setDeleteOpen(false);
+                setConfirmName("");
+              }}
+            >
+              {t("agency.detail.danger.cancel")}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              loading={deleting}
+              disabled={
+                confirmName.trim() !== (agency?.name ?? "").trim() || deleting
+              }
+              onClick={handleDeleteAgency}
+              className="gap-1.5"
+            >
+              <Trash2 className="size-3.5" />
+              {t("agency.detail.danger.confirmDelete")}
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {t("agency.detail.danger.confirmBody")}
+          </p>
+          <div className="space-y-2">
+            <label className="text-foreground text-xs font-medium">
+              {t("agency.detail.danger.typeToConfirm", { name: agency?.name })}
+            </label>
+            <Input
+              value={confirmName}
+              onChange={(e) => setConfirmName(e.target.value)}
+              placeholder={agency?.name}
+              disabled={deleting}
+              autoFocus
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

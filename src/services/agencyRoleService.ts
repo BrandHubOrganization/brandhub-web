@@ -112,7 +112,7 @@ export const INITIAL_AGENCY_ROLES: AgencyRoleDefinition[] = [
     key: "OWNER",
     name: "Chủ sở hữu (Owner)",
     description: "Toàn quyền quản trị và sở hữu Agency. Không thể xóa hay hạn chế quyền.",
-    badgeColor: "bg-brand-primary/10 text-brand-primary border-brand-primary/30",
+    badgeColor: "bg-brand-orange/10 text-brand-orange border-brand-orange/30",
     isSystem: true,
     permissions: AGENCY_PERMISSIONS.map((p) => p.key),
     memberCount: 1,

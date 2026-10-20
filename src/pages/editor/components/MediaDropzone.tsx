@@ -3,48 +3,42 @@ import { Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { MAX_MEDIA_UPLOAD_SIZE } from "@/lib/constants";
+import { materialService } from "@/services/materialService";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 interface MediaDropzoneProps {
   mediaUrls: string[];
   onChange: (urls: string[]) => void;
+  workspaceId?: string;
 }
 
 export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
   mediaUrls,
   onChange,
+  workspaceId,
 }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const effectiveWorkspaceId = workspaceId ?? currentWorkspace?.id;
+
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-
-  const simulateProgress = async (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      let progress = 0;
-      setUploadProgress(0);
-
-      const interval = setInterval(() => {
-        progress += 20;
-        setUploadProgress(progress);
-
-        if (progress >= 100) {
-          clearInterval(interval);
-          setUploadProgress(null);
-          const isVideo = file.type.startsWith("video");
-          const mockUrl = isVideo
-            ? "https://assets.mixkit.co/videos/preview/mixkit-pouring-coffee-into-a-cup-42898-large.mp4"
-            : URL.createObjectURL(file);
-          resolve(mockUrl);
-        }
-      }, 150);
-    });
-  };
 
   const handleFiles = async (files: FileList | File[]) => {
     const fileArray = Array.from(files);
     if (fileArray.length === 0) return;
 
-    for (const file of fileArray) {
+    if (!effectiveWorkspaceId) {
+      toast.error("Vui lòng chọn Workspace trước khi tải tệp lên!");
+      return;
+    }
+
+    setUploadProgress(10);
+    const newUploadedUrls: string[] = [];
+
+    for (let i = 0; i < fileArray.length; i++) {
+      const file = fileArray[i];
       if (file.size > MAX_MEDIA_UPLOAD_SIZE) {
         toast.error(
           t("editor.mediaDropzone.sizeExceededError", {
@@ -55,16 +49,28 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
       }
 
       try {
-        const uploadedUrl = await simulateProgress(file);
-        onChange([...mediaUrls, uploadedUrl]);
-        toast.success(
-          t("editor.mediaDropzone.uploadSuccess", { fileName: file.name }),
-        );
+        setUploadProgress(Math.round(((i + 1) / fileArray.length) * 90));
+        const item = await materialService.upload(effectiveWorkspaceId, file);
+        if (item && item.url) {
+          newUploadedUrls.push(item.url);
+          toast.success(
+            t("editor.mediaDropzone.uploadSuccess", { fileName: file.name }),
+          );
+        }
       } catch {
         toast.error(
           t("editor.mediaDropzone.uploadError", { fileName: file.name }),
         );
       }
+    }
+
+    setUploadProgress(100);
+    setTimeout(() => {
+      setUploadProgress(null);
+    }, 300);
+
+    if (newUploadedUrls.length > 0) {
+      onChange([...mediaUrls, ...newUploadedUrls]);
     }
   };
 

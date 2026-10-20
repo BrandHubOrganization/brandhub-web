@@ -108,17 +108,17 @@ for (const model of ["CAMPAIGN", "RETAINER", "DELIVERABLE_BUNDLE"]) {
     });
     await page.goto(`/agency/${AGENCY_ID}/media-packages`);
     await page.getByRole("button", { name: "Tạo gói từ mẫu này" }).click();
-    const dialog = page.getByRole("dialog");
-    await dialog.getByLabel("Cách đóng gói").selectOption(model);
-    await dialog.getByRole("button", { name: "Thêm hạng mục" }).click();
-    await dialog.getByLabel("Tên hạng mục bàn giao").fill("Social posts");
-    await dialog.getByRole("spinbutton", { name: /^Số lượng/ }).fill("12");
-    await dialog.getByRole("textbox", { name: /^Đơn vị/ }).fill("posts");
+    const workArea = page.getByRole("region", { name: "Tạo gói truyền thông tùy chỉnh", exact: true });
+    await workArea.getByLabel("Cách đóng gói").selectOption(model);
+    await workArea.getByRole("button", { name: "Thêm hạng mục" }).click();
+    await workArea.getByLabel("Tên hạng mục bàn giao").fill("Social posts");
+    await workArea.getByRole("spinbutton", { name: /^Số lượng/ }).fill("12");
+    await workArea.getByRole("textbox", { name: /^Đơn vị/ }).fill("posts");
     expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false);
-    await dialog.screenshot({ path: testInfo.outputPath(`offering-${model}.png`) });
-    await dialog.getByRole("button", { name: "Tạo gói tùy chỉnh" }).click();
+    await workArea.screenshot({ path: testInfo.outputPath(`offering-${model}.png`) });
+    await workArea.getByRole("button", { name: "Tạo gói tùy chỉnh" }).click();
     await expect.poll(() => submitted).toBe(true);
-    await expect(dialog).not.toBeVisible();
+    await expect(workArea).not.toBeVisible();
   });
 }
 

@@ -1,6 +1,9 @@
-export type TaskType = "POST" | "LIVESTREAM" | "SURVEY";
+export type TaskType = "POST" | "LIVESTREAM" | "SURVEY" | "EVENT_PLAN" | "PRESS_RECOMMENDATION";
 
 export type TaskStatus =
+  | "TODO"
+  | "IN_REVIEW"
+  | "FINISHED"
   | "BACKLOG"
   | "DETAIL_IDENTIFIED"
   | "ASSIGNED"
@@ -8,7 +11,8 @@ export type TaskStatus =
   | "QC_REVIEW"
   | "MANAGER_REVIEW"
   | "CLIENT_REVIEW"
-  | "COMPLETED";
+  | "COMPLETED"
+  | "CANCELLED";
 
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 
@@ -31,6 +35,9 @@ export interface TaskListItem {
   reporterAvatar?: string | null;
   createdAt: string;
   updatedAt: string;
+  description?: string | null;
+  sourceType?: string | null;
+  sourceRefId?: string | null;
 }
 
 export interface TaskListFilterParams {
@@ -41,4 +48,5 @@ export interface TaskListFilterParams {
   status?: string;
   type?: string;
   search?: string;
+  campaignId?: string;
 }

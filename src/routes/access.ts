@@ -18,6 +18,7 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/reports": ["OWNER", "MANAGER"],
   "/invitations": ["OWNER", "MANAGER"],
   "/requests": ["MANAGER", "CREATOR", "CLIENT"],
+  "/task-approvals": ["MANAGER", "CREATOR", "CLIENT"],
   "/chat": ["MANAGER", "CREATOR", "CLIENT"],
   "/portal": ["MANAGER", "CLIENT"],
   "/media-package": ["OWNER", "MANAGER", "CLIENT"],
@@ -30,7 +31,8 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/content-writing": ["OWNER", "MANAGER", "CREATOR"],
   "/mail-templates": ["OWNER", "MANAGER", "CREATOR"],
   "/templates": ["MANAGER", "CREATOR"],
-  "/hashtag-groups": ["MANAGER", "CREATOR"],
+  "/hashtag-groups": ["MANAGER", "CREATOR", "CLIENT"],
+  "/hashtags": ["MANAGER", "CREATOR", "CLIENT"],
   "/publish": ["MANAGER", "CREATOR"],
   "/ai-studio": ["MANAGER", "CREATOR"],
   "/admin": "ADMIN",
@@ -48,7 +50,7 @@ const SOCIAL_ACCOUNTS_ACCESS: AccessRule = ["OWNER", "MANAGER", "CLIENT"];
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
-  if (/^\/agency\/[^/]+\/media-packages$/.test(pathname)) {
+  if (/^\/agency\/[^/]+\/(media-packages|collaborators)$/.test(pathname)) {
     return AGENCY_MEDIA_PACKAGES_ACCESS;
   }
   if (/^\/workspaces\/[^/]+\/members$/.test(pathname)) {

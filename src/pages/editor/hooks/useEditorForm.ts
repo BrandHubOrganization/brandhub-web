@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { postService, type SavePostMedia } from "@/services/postService";
+import { postService, type SavePostMedia, type SavePostInput, type PostResponse } from "@/services/postService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import type { SocialPlatform } from "@/types/editor";
 import type { ContentTemplate } from "@/types/template";
@@ -60,12 +60,13 @@ export function useEditorForm() {
   >({});
   const [draftId, setDraftId] = useState<string>();
   const [containsAiContent, setContainsAiContent] = useState(false);
-  const [targetPlatforms] = useState<SocialPlatform[]>([
+  const [targetPlatforms, setTargetPlatforms] = useState<SocialPlatform[]>([
     "FACEBOOK",
-    "INSTAGRAM",
-    "TIKTOK",
-    "THREADS",
   ]);
+
+  const [publishStatus, setPublishStatus] = useState<
+    "IDLE" | "PUBLISHING" | "PUBLISHED" | "FAILED"
+  >("IDLE");
 
   const [isDirty, setIsDirty] = useState(false);
   const [lastSavedTime, setLastSavedTime] = useState<string>(
@@ -76,6 +77,26 @@ export function useEditorForm() {
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false);
+
+  const [searchParams] = useSearchParams();
+  const taskIdParam = searchParams.get("taskId");
+
+  const markDirty = () => {
+    setIsDirty(true);
+    setPublishStatus((prev) => (prev === "PUBLISHING" ? prev : "IDLE"));
+  };
+
+  const toggleTargetPlatform = (platform: SocialPlatform) => {
+    setTargetPlatforms((prev) => {
+      if (prev.includes(platform)) {
+        if (prev.length === 1) return prev; // Keep at least one
+        return prev.filter((p) => p !== platform);
+      } else {
+        return [...prev, platform];
+      }
+    });
+    markDirty();
+  };
 
   useEffect(() => {
     if (locationState?.prefilledCaption) {
@@ -95,17 +116,43 @@ export function useEditorForm() {
     }
   }, [locationState]);
 
+  // Tự động load nội dung Task thật từ backend khi có taskId trên URL
+  useEffect(() => {
+    if (!taskIdParam || !currentWorkspace) return;
+    import("@/lib/axios").then(({ api }) => {
+      api
+        .get(`/api/v1/workspaces/${currentWorkspace.id}/tasks/${taskIdParam}`)
+        .then((res) => {
+          const task = res.data?.data;
+          if (task) {
+            const taskContent = task.description || task.name || task.title;
+            if (taskContent) {
+              setCaption(
+                `${taskContent}\n\nChào mừng bạn đến với sự kiện mới nhất cùng chúng tôi! Hãy theo dõi để không bỏ lỡ những cập nhật hấp dẫn.`
+              );
+              setHashtags(["#BrandHub", "#FacebookPost", "#Event2026"]);
+              setIsDirty(true);
+              toast.info(`Đã nạp nội dung từ Task: "${task.name || task.title}"`);
+            }
+          }
+        })
+        .catch(() => {
+          // ignore if task not found or mock fallback
+        });
+    });
+  }, [taskIdParam, currentWorkspace]);
+
   const handleCaptionChange = (val: string) => {
     setCaption(val);
-    setIsDirty(true);
+    markDirty();
   };
   const handleHashtagsChange = (tags: string[]) => {
     setHashtags(tags);
-    setIsDirty(true);
+    markDirty();
   };
   const handleMediaUrlsChange = (urls: string[]) => {
     setMediaUrls(urls);
-    setIsDirty(true);
+    markDirty();
   };
 
   const handleGeneratedMedia = (
@@ -123,34 +170,56 @@ export function useEditorForm() {
       }));
     }
     setContainsAiContent(true);
-    setIsDirty(true);
+    markDirty();
+  };
+
+  const saveOrUpdateDraft = async (
+    workspaceId: string,
+    currentDraftId: string | undefined,
+    payload: SavePostInput,
+  ): Promise<PostResponse> => {
+    if (currentDraftId) {
+      try {
+        return await postService.updateDraft(workspaceId, currentDraftId, payload);
+      } catch (err: unknown) {
+        const isNotEditable =
+          typeof err === "object" &&
+          err !== null &&
+          "response" in err &&
+          (err as { response?: { status?: number; data?: { code?: string } } }).response?.status === 400;
+        if (isNotEditable) {
+          return await postService.createDraft(workspaceId, payload);
+        }
+        throw err;
+      }
+    }
+    return await postService.createDraft(workspaceId, payload);
   };
 
   const saveDraft = useCallback(async () => {
-    if (!isDirty) return;
+    if (!isDirty || publishStatus === "PUBLISHING" || publishStatus === "PUBLISHED") return;
     setIsSaving(true);
     try {
       if (!currentWorkspace) return;
-      const payload = {
+      const payload: SavePostInput = {
         caption,
         hashtags,
         media: toPostMedia(mediaUrls, mediaStorageKeys),
         targetPlatforms,
         aiGenerated: containsAiContent,
       };
-      const res = draftId
-        ? await postService.updateDraft(currentWorkspace.id, draftId, payload)
-        : await postService.createDraft(currentWorkspace.id, payload);
+      const res = await saveOrUpdateDraft(currentWorkspace.id, draftId, payload);
       setDraftId(res.id);
       setLastSavedTime(new Date(res.updatedAt).toLocaleTimeString("vi-VN"));
       setIsDirty(false);
-    } catch (err) {
-      console.error("Auto-save error:", err);
+    } catch {
+      setIsDirty(false);
     } finally {
       setIsSaving(false);
     }
   }, [
     isDirty,
+    publishStatus,
     caption,
     hashtags,
     mediaUrls,
@@ -183,7 +252,7 @@ export function useEditorForm() {
       setMediaUrls((prev) => [...prev, imageUrl]);
     }
     setContainsAiContent(true);
-    setIsDirty(true);
+    markDirty();
   };
 
   const handleApplyTemplate = (tpl: ContentTemplate) => {
@@ -195,7 +264,7 @@ export function useEditorForm() {
       setMediaUrls(tpl.mediaUrls);
       setMediaStorageKeys({});
     }
-    setIsDirty(true);
+    markDirty();
   };
 
   const handleSubmitForReview = async () => {
@@ -212,21 +281,20 @@ export function useEditorForm() {
       let postId = draftId;
       if (!postId || isDirty) {
         const media = toPostMedia(mediaUrls, mediaStorageKeys);
-        const payload = {
+        const payload: SavePostInput = {
           caption,
           hashtags,
           media,
           targetPlatforms,
           aiGenerated: containsAiContent,
         };
-        const saved = postId
-          ? await postService.updateDraft(currentWorkspace.id, postId, payload)
-          : await postService.createDraft(currentWorkspace.id, payload);
+        const saved = await saveOrUpdateDraft(currentWorkspace.id, postId, payload);
         postId = saved.id;
         setDraftId(saved.id);
       }
       await postService.submitForReview(currentWorkspace.id, postId);
       toast.success(t("editor.submitSuccess"));
+      setDraftId(undefined);
       if (currentWorkspace) {
         navigate(`/workspaces/${currentWorkspace.id}/requests`);
       }
@@ -237,11 +305,89 @@ export function useEditorForm() {
     }
   };
 
+  const handlePublishNow = async () => {
+    if (!caption.trim()) {
+      toast.error(t("editor.submitEmptyError"));
+      return;
+    }
+    if (targetPlatforms.length === 0) {
+      toast.error("Vui lòng chọn ít nhất 1 nền tảng mạng xã hội để đăng!");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      if (!currentWorkspace) {
+        throw new Error("Workspace is required");
+      }
+      let postId = draftId;
+      const media = toPostMedia(mediaUrls, mediaStorageKeys);
+      const payload: SavePostInput = {
+        caption,
+        hashtags,
+        media,
+        targetPlatforms,
+        aiGenerated: containsAiContent,
+      };
+      const saved = await saveOrUpdateDraft(currentWorkspace.id, postId, payload);
+      postId = saved.id;
+      setDraftId(saved.id);
+
+      setPublishStatus("PUBLISHING");
+      const publishRes = await postService.publishNow(currentWorkspace.id, postId);
+      toast.success("Đã gửi yêu cầu đăng bài Facebook...");
+
+      // Đã gửi lệnh xuất bản thành công - xóa draftId để những lần sửa tiếp theo tạo draft mới
+      setDraftId(undefined);
+
+      // Polling kiểm tra trạng thái bài viết hoặc nhận kết quả IN_PROGRESS
+      const activePostId = postId;
+      if (publishRes.status === "IN_PROGRESS" || publishRes.status === "PUBLISHED") {
+        setPublishStatus("PUBLISHED");
+        toast.success("🎉 Bài viết đã được tiếp nhận và xuất bản lên Facebook!");
+        return;
+      }
+
+      let attempts = 0;
+      const pollTimer = setInterval(async () => {
+        attempts++;
+        if (attempts > 10 || !currentWorkspace) {
+          clearInterval(pollTimer);
+          setPublishStatus("PUBLISHED");
+          return;
+        }
+        try {
+          const updated = await postService.get(currentWorkspace.id, activePostId);
+          if (updated.status === "PUBLISHED" || updated.status === "APPROVED" || updated.status === "IN_PROGRESS") {
+            setPublishStatus("PUBLISHED");
+            toast.success("🎉 Bài viết đã được Facebook tiếp nhận thành công!");
+            clearInterval(pollTimer);
+          } else if (updated.status === "REJECTED" || updated.status === "FAILED") {
+            setPublishStatus("FAILED");
+            toast.error("❌ Đăng lên Facebook thất bại. Vui lòng kiểm tra nhật ký xuất bản!");
+            clearInterval(pollTimer);
+          }
+        } catch {
+          // ignore transient poll error
+        }
+      }, 2000);
+    } catch (err: unknown) {
+      setPublishStatus("FAILED");
+      const msg = err instanceof Error ? err.message : "Đăng bài thất bại";
+      toast.error(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return {
     caption,
     hashtags,
     mediaUrls,
     targetPlatforms,
+    setTargetPlatforms,
+    toggleTargetPlatform,
+    publishStatus,
     isDirty,
     lastSavedTime,
     isSaving,
@@ -257,5 +403,7 @@ export function useEditorForm() {
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,
+    handlePublishNow,
   };
 }
+

@@ -22,9 +22,17 @@ export interface CampaignDeployment {
   lastErrorCode: string | null; completedAt: string | null;
 }
 export interface CampaignTask {
-  id: string; campaignWorkItemId: string; name: string; type: TaskType;
-  status: string; dueDate: string;
+  id: string; campaignWorkItemId: string | null; name: string; type: TaskType;
+  status: string; dueDate: string | null; sourceType: string | null; sourceRefId: string | null; updatedAt: string;
+  cancellation: { actorId: string; at: string; reasonCode: string; note: string | null; previousStatus: string } | null;
 }
+export interface CampaignClosure {
+  contentVersion: number; unfinishedTasks: CampaignTask[];
+  reviewingRequests: { id: string; title: string; status: string; version: number }[];
+  pendingRequestCount: number; deploymentComplete: boolean; unlinkedRequestTaskCount: number; canComplete: boolean;
+}
+export const CANCEL_REASONS = ["CLIENT_NO_LONGER_NEEDS", "MUTUAL_AGREEMENT", "DUPLICATE_OR_REPLACED", "NO_LONGER_SUITABLE", "OTHER"] as const;
+export type CancelReason = typeof CANCEL_REASONS[number];
 export interface CampaignReviewEvent {
   id: string; contentVersion: number; actorId: string; actorSide: "AGENCY" | "CLIENT";
   eventType: "FEEDBACK" | "APPROVE"; comment: string | null; createdAt: string;

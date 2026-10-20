@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { SERVICE_UNITS } from "@/pages/media-package/types/serviceUnits";
 import type {
   OfferingFields,
-  OfferingModel,
   PackageDeliverable,
   PackageServiceType,
 } from "@/pages/media-package/types/mediaPackage";
 
-const MODELS: OfferingModel[] = ["CAMPAIGN", "RETAINER", "DELIVERABLE_BUNDLE"];
 const SERVICES: PackageServiceType[] = [
   "SOCIAL_POST",
   "EVENT_PLANNING",
@@ -23,12 +23,10 @@ const SERVICES: PackageServiceType[] = [
 export function OfferingEditor({
   value,
   onChange,
-  allowLegacy = true,
   clientNegotiation = false,
 }: {
   value: OfferingFields;
   onChange: (value: OfferingFields) => void;
-  allowLegacy?: boolean;
   clientNegotiation?: boolean;
 }) {
   const { t } = useTranslation();
@@ -51,7 +49,7 @@ export function OfferingEditor({
         serviceType: "SOCIAL_POST",
         name: "",
         quantity: 1,
-        unit: "",
+        unit: SERVICE_UNITS.SOCIAL_POST,
       },
     ]);
 
@@ -60,37 +58,7 @@ export function OfferingEditor({
       <legend className="px-1 text-sm font-medium">
         {t("mediaPackage.offering.title")}
       </legend>
-      <Label htmlFor={fieldId}>{t("mediaPackage.offering.model")}</Label>
-      <Select
-        id={fieldId}
-        value={value.offeringModel ?? ""}
-        disabled={clientNegotiation}
-        onChange={(event) => {
-          const model = event.target.value as OfferingModel;
-          onChange(
-            model
-              ? {
-                  offeringModel: model,
-                  offeringDetails: {
-                    ...value.offeringDetails,
-                    maxChanges: value.offeringDetails?.maxChanges ?? 2,
-                    deliverables: items,
-                  },
-                }
-              : {},
-          );
-        }}
-      >
-        {allowLegacy && (
-          <option value="">{t("mediaPackage.offering.legacy")}</option>
-        )}
-        {MODELS.map((model) => (
-          <option key={model} value={model}>
-            {t(`mediaPackage.offering.models.${model}`)}
-          </option>
-        ))}
-      </Select>
-      {value.offeringModel && (
+      {
         <>
           <p className="text-muted-foreground text-xs">
             {t("mediaPackage.ui.totalQuantity")}
@@ -106,7 +74,8 @@ export function OfferingEditor({
               onChange({
                 ...value,
                 offeringDetails: {
-                  ...value.offeringDetails!,
+                  ...value.offeringDetails,
+                  deliverables: items,
                   maxChanges:
                     event.target.value === ""
                       ? null
@@ -130,6 +99,9 @@ export function OfferingEditor({
                 onChange={(event) =>
                   update(item.id, {
                     serviceType: event.target.value as PackageServiceType,
+                    unit: SERVICE_UNITS[
+                      event.target.value as PackageServiceType
+                    ],
                   })
                 }
               >
@@ -165,23 +137,28 @@ export function OfferingEditor({
                   maxLength={80}
                   label={t("mediaPackage.offering.unit")}
                   value={item.unit}
-                  disabled={clientNegotiation}
-                  onChange={(event) =>
-                    update(item.id, { unit: event.target.value })
-                  }
+                  readOnly
                 />
               </div>
-              <Input
+              <Label htmlFor={`${fieldId}-${index}-description`}>
+                {t("mediaPackage.offering.description")}
+              </Label>
+              <Textarea
+                id={`${fieldId}-${index}-description`}
+                rows={3}
                 maxLength={2000}
-                label={t("mediaPackage.offering.description")}
                 value={item.description ?? ""}
                 onChange={(event) =>
                   update(item.id, { description: event.target.value })
                 }
               />
-              <Input
+              <Label htmlFor={`${fieldId}-${index}-acceptance`}>
+                {t("mediaPackage.offering.acceptance")}
+              </Label>
+              <Textarea
+                id={`${fieldId}-${index}-acceptance`}
+                rows={3}
                 maxLength={2000}
-                label={t("mediaPackage.offering.acceptance")}
                 value={item.acceptanceCriteria ?? ""}
                 onChange={(event) =>
                   update(item.id, { acceptanceCriteria: event.target.value })
@@ -216,7 +193,7 @@ export function OfferingEditor({
             </p>
           )}
         </>
-      )}
+      }
     </fieldset>
   );
 }

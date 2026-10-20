@@ -12,6 +12,9 @@ export interface MediaItem {
   height?: number;
   durationSeconds?: number;
   createdAt: string;
+  aspectRatio?: "1:1" | "16:9" | "9:16" | "4:5";
+  resolution?: string;
+  category?: string;
 }
 
 export interface HashtagGroup {
@@ -21,6 +24,8 @@ export interface HashtagGroup {
   tags: string[];
   createdAt: string;
   updatedAt: string;
+  category?: string;
+  usageCount?: number;
 }
 
 export interface PostTemplate {
@@ -30,11 +35,14 @@ export interface PostTemplate {
   caption: string;
   hashtagGroup?: HashtagGroup;
   createdAt: string;
+  category?: string;
+  platforms?: string[];
 }
 
 export interface MediaQueryParams {
   workspaceId?: string;
   type?: MediaType | "all";
+  aspectRatio?: string;
   search?: string;
   sort?: "newest" | "oldest";
   page: number;

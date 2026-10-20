@@ -5,8 +5,9 @@
     "scrollDown": "Scroll down",
     "ctaStart": "Start free",
     "ctaLogin": "Sign in",
-    "trustedByPrefix": "Trusted by",
-    "trustedBySuffix": "brands & agencies"
+    "trustedByPrefix": "Empowering pioneer",
+    "trustedByHighlight": "Agencies & Creative Teams",
+    "trustedBySuffix": ""
   },
   "heroDemo": {
     "nav": {
@@ -320,151 +321,167 @@
       ]
     }
   },
-  "trustedBy": "Trusted by 50,000+ brands & agencies worldwide",
+  "trustedBy": "Integrated Tech Ecosystem & Official Platforms",
   "stats": {
+    "microservices": "Distributed Microservices Architecture",
+    "trends": "Social Trend Signals Crawled Daily",
+    "latency": "Average API Gateway Latency",
+    "consistency": "Brand Tone Consistency & Watermarking",
     "contents": "Content pieces managed",
     "brands": "Brands & agencies",
     "platforms": "Platform integrations",
     "uptime": "Uptime guarantee"
   },
   "features": {
-    "title": "Everything you need in one platform",
-    "subtitle": "From planning to publishing, BrandHub streamlines your entire content workflow.",
+    "title": "All-in-One Media Operations Platform",
+    "subtitle": "From media package negotiations and 3 specialized task models to 4-tier QA governance and automated multi-channel publishing.",
     "demoLabel": "See it in the demo",
     "demoAction": "View {{feature}} in the live MacBook demo above",
     "items": {
       "planning": {
-        "title": "Content Planning",
-        "desc": "Visual campaign calendar with drag-and-drop scheduling across all channels."
+        "title": "Campaign Planning & 3 Task Models",
+        "desc": "Unified calendar managing 3 specialized task types: Social Media Posts, Livestream Production Plans, and Workshop/Survey Forms."
       },
       "creation": {
-        "title": "AI-Powered Creation",
-        "desc": "Generate and refine content with AI that understands your brand voice and guidelines."
+        "title": "AI Studio & Brand Consistency Engine",
+        "desc": "Create on-brand content with GraphRAG-enforced tone of voice, virtual brand ambassadors, and automated digital watermarking."
       },
       "publishing": {
-        "title": "Multi-Channel Publishing",
-        "desc": "Auto-publish to Facebook, Instagram, TikTok, LinkedIn, and more simultaneously."
+        "title": "Direct Publishing & Media Collaborators",
+        "desc": "Direct API publishing to Meta, TikTok, and Threads, alongside milestone tracking for third-party press, TV, and banner partners."
       },
       "analytics": {
-        "title": "Performance Analytics",
-        "desc": "Real-time dashboards tracking engagement, reach, and ROI across every campaign."
+        "title": "Performance Analytics & Social Listening",
+        "desc": "Real-time engagement dashboards, campaign reach analytics, and social trend monitoring for proactive strategy refinement."
       },
       "collab": {
-        "title": "Team Collaboration",
-        "desc": "Built-in approval workflows, comments, and role-based access for seamless teamwork."
+        "title": "4-Tier Quality Approval Workflow",
+        "desc": "Agency-grade governance: Creator → Peer QC → Agency Manager → Client Approver with granular revision and feedback loops."
       },
       "automation": {
-        "title": "Smart Automation",
-        "desc": "Auto-schedule optimal posting times, batch-create variations, and set recurring campaigns."
+        "title": "End-to-End Campaign Automation",
+        "desc": "Auto-convert Media Packages into task backlogs, generate Google Meet links for workshops, and schedule optimal publish windows."
       }
     }
   },
   "aiFeatures": {
-    "badge": "AI-Powered",
-    "title": "Create at the speed of AI",
-    "subtitle": "Generate on-brand images, videos, and copy in seconds — no designer or copywriter required.",
+    "badge": "AI Studio & Social Intelligence Suite",
+    "title": "Enterprise AI for Modern Brands & Agencies",
+    "subtitle": "From real-time social trend crawling and GraphRAG tone compliance to photorealistic virtual ambassadors and livestream script generation.",
     "demoLabel": "See it in the demo",
     "demoAction": "View {{capability}} in the live MacBook demo above",
     "items": {
-      "image": {
-        "title": "AI Image Generation",
-        "desc": "Turn a prompt into on-brand product photos and social graphics, ready to publish."
+      "trendCrawler": {
+        "title": "AI Social Trend Crawler",
+        "desc": "Automated social listening engine crawling real-time viral trends, sentiment signals, and trending discussions across platforms."
       },
-      "video": {
-        "title": "AI Video Generation",
-        "desc": "Generate short-form video variations for campaigns without a camera crew."
+      "virtualAmbassador": {
+        "title": "AI Virtual Ambassador",
+        "desc": "Synthesize hyper-consistent virtual brand ambassadors across commercial photos and video reels using fine-tuned LoRA models."
       },
-      "text": {
-        "title": "AI Copywriting",
-        "desc": "Draft captions, ad copy, and hashtags that match your brand voice instantly."
+      "graphRag": {
+        "title": "GraphRAG Brand Consistency",
+        "desc": "Strict tone of voice enforcement and negative keyword guardrails powered by Neo4j Knowledge Graph and ChromaDB vector search."
+      },
+      "generativeStudio": {
+        "title": "Multi-Modal Generative Studio",
+        "desc": "Batch-generate high-res commercial imagery, video variations, copywriting, and automatically apply dynamic digital watermarks."
+      },
+      "livestreamScript": {
+        "title": "AI Livestream Script Generator",
+        "desc": "Generate time-slotted livestream sales scripts, host talking points, promotional deal sequences, and technical checklists."
+      },
+      "collaboratorRecommender": {
+        "title": "AI Media Collaborator Recommender",
+        "desc": "Intelligent matching for press outlets, digital publications, broadcast TV networks, and media collaborators within budget."
       }
     }
   },
   "agencyWorkspace": {
-    "title": "Built for agencies, not just teams",
-    "subtitle": "Run every client, every brand, and every workspace from one login — with the right access for the right role.",
+    "title": "Built for Agencies & Client Networks",
+    "subtitle": "Centrally manage every brand, campaign, and client workspace — with complete data isolation and 4-tier role-based access control.",
     "demoLabel": "See it in the demo",
     "demoAction": "View {{capability}} in the live MacBook demo above",
     "items": {
       "multiAgency": {
-        "title": "Multi-Agency Management",
-        "desc": "Own and switch between multiple agencies, each with its own team, clients, and dashboard."
+        "title": "Multi-Agency & Branch Management",
+        "desc": "Own and seamlessly switch between multiple agency organizations, each with independent resource quotas, teams, and analytics."
       },
       "multiClient": {
-        "title": "Multi-Client Workspaces",
-        "desc": "Spin up a dedicated workspace per client with its own timezone, members, and content."
+        "title": "Dedicated Client Workspaces",
+        "desc": "Spin up dedicated workspaces per client with independent timezones, Brand Guidelines, and isolated digital asset vaults."
       },
       "roleAccess": {
-        "title": "Role-Based Access",
-        "desc": "Owner, manager, creator, and client each see and do exactly what their role allows."
+        "title": "4-Tier Role-Based Access (RBAC)",
+        "desc": "Crystal-clear boundary of duties across Agency Owner, Manager, Content Creator, and Client Approver on every campaign flight."
       }
     }
   },
   "howItWorks": {
     "title": "How it works",
-    "subtitle": "Every role has its own workflow, running smoothly on one platform.",
+    "subtitle": "A seamless end-to-end lifecycle from commercial negotiation to AI creation, 4-tier QA, and automated multi-channel publishing.",
     "input": "Input",
-    "output": "Output",
+    "output": "Handoff",
     "demoAction": "View {{step}} in the live demo above",
     "roles": {
       "owner": {
-        "roleTag": "Agency admin",
+        "roleTag": "Agency Admin",
         "setupWorkspace": {
-          "title": "Create workspace",
-          "desc": "Set up the agency's workspace"
+          "title": "Create Workspace",
+          "desc": "Set up client workspace and Brand Guidelines"
         },
         "inviteTeam": {
-          "title": "Invite team",
-          "desc": "Add Managers, Creators"
+          "title": "Invite Team & Roles",
+          "desc": "Assign Managers, Creators, and Client seats"
         },
         "assignClient": {
-          "title": "Assign clients",
-          "desc": "Match each Client to an AM"
+          "title": "Media Package Catalog",
+          "desc": "Configure service packages and negotiate contracts"
         }
       },
       "creator": {
-        "roleTag": "Content creation",
+        "roleTag": "Content Creator",
         "draftContent": {
-          "title": "Draft content",
-          "desc": "Write posts per the assigned schedule"
+          "title": "Draft 3 Task Types",
+          "desc": "Create Posts, Livestream Plans & Workshop Forms"
         },
         "aiAssist": {
-          "title": "AI assist",
-          "desc": "Get caption, hashtag, image suggestions"
+          "title": "AI Studio & GraphRAG",
+          "desc": "Enforce tone compliance, synthesize assets & watermark"
         },
         "submitReview": {
-          "title": "Submit for review",
-          "desc": "Send drafts to the Manager"
+          "title": "Submit for Review",
+          "desc": "Push to Peer QC or Agency Manager"
         }
       },
       "manager": {
-        "roleTag": "Client management",
+        "roleTag": "Campaign Manager",
         "reviewContent": {
-          "title": "Review content",
-          "desc": "Check quality and brand alignment"
+          "title": "Quality Governance",
+          "desc": "Validate deliverables against brand compliance & KPIs"
         },
         "requestChanges": {
-          "title": "Request changes",
-          "desc": "Send feedback back to the Creator"
+          "title": "Request Revisions",
+          "desc": "Send actionable feedback and reject loops to Creator"
         },
         "forwardClient": {
-          "title": "Forward to client",
-          "desc": "Pass the final draft to Client"
+          "title": "Forward to Client",
+          "desc": "Submit polished candidate version for Client approval"
         }
       },
       "client": {
-        "roleTag": "Brand owner",
+        "roleTag": "Brand Owner",
         "previewFinal": {
-          "title": "Preview",
-          "desc": "See exact per-platform formatting"
+          "title": "Cross-Platform Preview",
+          "desc": "Inspect native formatting across Facebook, TikTok, Instagram"
         },
         "approve": {
-          "title": "Approve",
-          "desc": "Approve or leave direct feedback"
+          "title": "Formal Approval",
+          "desc": "Approve or leave direct comments on draft canvas"
         },
         "autoPublish": {
-          "title": "Auto-publish",
-          "desc": "System posts at the scheduled time"
+          "title": "Automated Publishing",
+          "desc": "System publishes on time and tracks media collaborators"
         }
       }
     }
@@ -490,20 +507,24 @@
     }
   },
   "mediaPackage": {
-    "title": "From proposal to signed campaign",
-    "subtitle": "Offer ready-made media packages, negotiate terms with clients, and turn approvals into a live campaign — all in one flow.",
+    "title": "From Service Proposal to Live Campaign Execution",
+    "subtitle": "An integrated workflow from standardized media service catalogs and transparent 2-way client negotiations to auto-generated task backlogs.",
     "items": {
       "templates": {
-        "title": "Ready-Made Packages",
-        "desc": "Start from pre-built media packages or customize your own for each agency."
+        "title": "Standardized Package Catalog",
+        "desc": "Choose from system media packages (Standard, Growth, Viral) or build custom agency retainer offerings."
       },
       "negotiate": {
-        "title": "Client Negotiation",
-        "desc": "Clients can request changes to scope, timeline, or price until both sides agree."
+        "title": "Two-Way Negotiation",
+        "desc": "Clients request adjustments to deliverables, budget, and flight schedules; agencies review and approve revisions directly."
       },
-      "approve": {
-        "title": "Approve & Launch",
-        "desc": "Once approved, the package turns into a full media campaign with tasks ready to assign."
+      "convert": {
+        "title": "Instant Campaign Activation",
+        "desc": "1-click conversion from signed packages into live Media Campaigns with auto-populated tasks across posts, livestreams, and workshops."
+      },
+      "replicate": {
+        "title": "Workspace Cloning & Reuse",
+        "desc": "Instantly duplicate approved brand guidelines, team setups, and creative assets into future campaign workspaces."
       }
     }
   },
@@ -608,40 +629,40 @@
     }
   },
   "faq": {
-    "title": "Frequently asked questions",
-    "subtitle": "Can't find what you're looking for? Contact our support team.",
+    "title": "Frequently Asked Questions",
+    "subtitle": "Clear answers about BrandHub's architecture, security, and collaborative workflows.",
     "items": {
       "q1": {
-        "q": "Is there a free plan available?",
-        "a": "Yes! Our Starter plan is completely free forever. You get 1 workspace, 5 team members, 3 social channels, and 100 scheduled posts per month. No credit card required."
+        "q": "Is there a free tier to get started?",
+        "a": "Yes! The Starter plan is completely free. You can create 1 workspace, collaborate with up to 5 team members, connect core social channels, and explore full scheduling and drafting workflows."
       },
       "q2": {
-        "q": "Which social media platforms do you support?",
-        "a": "BrandHub supports all major platforms including Facebook, Instagram, TikTok, LinkedIn, Twitter/X, YouTube, Pinterest, and Threads. We continuously add new integrations based on user feedback."
+        "q": "Which social platforms are natively supported?",
+        "a": "BrandHub integrates directly with Meta Graph API (Facebook Pages, Groups, Instagram Professional) and TikTok for Developers. Scheduled content is processed asynchronously by our dedicated Publisher microservice."
       },
       "q3": {
-        "q": "How does AI content creation work?",
-        "a": "Our AI is trained on marketing best practices and adapts to your brand voice. You provide a brief or topic, and it generates drafts, variations, and localized versions. You always have final approval before anything goes live."
+        "q": "How does AI Trend Crawler & Brand Guidelines enforcement work?",
+        "a": "BrandHub combines GraphRAG (Neo4j and ChromaDB vector embeddings) with real-time social trend analysis. The AI identifies emerging viral discussions and strictly validates drafts against your Brand Guidelines (voice, tone, forbidden keywords) before automated digital watermarking."
       },
       "q4": {
-        "q": "Can I collaborate with my team and clients?",
-        "a": "Absolutely. BrandHub has built-in approval workflows, role-based permissions, and comment threads. Clients can review and approve content without needing to log into your main workspace."
+        "q": "How does collaboration between Agencies and Clients operate?",
+        "a": "We provide a 2-Tier RBAC architecture: Agency teams draft and manage multi-channel campaigns, while Clients access a dedicated approval portal to review, comment on drafts, and sign off without scattered chat threads."
       },
       "q5": {
-        "q": "How does the Pro trial work?",
-        "a": "Start a 14-day free trial of the Pro plan — no credit card needed. You get full access to all Pro features. We'll remind you before the trial ends, and you can downgrade to Starter anytime."
+        "q": "How are social credentials and access tokens secured?",
+        "a": "Our microservices architecture isolates authentication through Spring Cloud Gateway. Social OAuth tokens are encrypted with AES-256 in the database, with Redis token blacklisting and complete workspace tenant isolation."
       }
     }
   },
   "cta": {
     "title": "Ready to transform your content workflow?",
-    "subtitle": "Join 50,000+ brands and agencies already using BrandHub. Start free, no credit card required.",
+    "subtitle": "Experience modern campaign management and automated publishing with BrandHub. Start free today.",
     "start": "Start free",
     "login": "Sign in"
   },
   "backToTop": "Back to top",
   "footer": {
-    "tagline": "The all-in-one brand content management platform. Plan, create, schedule, publish, and grow — all in one place.",
+    "tagline": "Enterprise-grade campaign governance and multi-channel publishing for modern Agencies and Brands.",
     "email": "brandhub404@gmail.com",
     "columns": {
       "product": "Product",
@@ -659,6 +680,6 @@
       "resources": ["Help Center", "Blog", "Community", "Tutorials"],
       "company": ["About", "Careers", "Privacy", "Terms"]
     },
-    "copyright": "© {{year}} BrandHub. All rights reserved."
+    "copyright": "© {{year}} BrandHub · Engineered by SynapForge Team (SEP490 Capstone Project - FPT University)."
   }
 }
