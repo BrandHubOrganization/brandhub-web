@@ -182,6 +182,30 @@
       "trung_lập": "Trung lập"
     }
   },
+  "trendFit": {
+    "title": "Trend hợp brand hôm nay",
+    "notJudged": "AI chưa chấm được, đang xếp theo luật ngành",
+    "loading": "Đang chọn trend hợp brand…",
+    "error": "Chưa tải được gợi ý trend.",
+    "empty": "Hôm nay chưa có trend nào hợp brand.",
+    "upcoming": "Sắp tới: {{list}}",
+    "verdict": { "nen": "Nên", "can_nhac": "Cân nhắc" },
+    "type": { "moment": "Dịp", "format": "Format", "event": "Sự kiện" },
+    "techniques": {
+      "khoanh_khac": "Khoảnh khắc",
+      "choi_chu": "Chơi chữ",
+      "muon_format": "Mượn format",
+      "muon_bieu_tuong": "Mượn biểu tượng",
+      "brand_la_fan": "Brand là fan"
+    },
+    "techniqueLabel": "Góc nối: {{name}}",
+    "issues": {
+      "foreign_script": "Có chữ nước ngoài lẫn vào bài.",
+      "prompt_leak": "Bài lộ chữ của câu lệnh AI.",
+      "sensitive": "Có từ nhạy cảm: {{term}}.",
+      "too_long": "Dài hơn mức khuyến nghị của nền tảng."
+    }
+  },
   "video": {
     "title": "AI Video Studio",
     "description": "Tạo video ngắn bằng AI theo style, có thể dùng Ambassador của thương hiệu.",
