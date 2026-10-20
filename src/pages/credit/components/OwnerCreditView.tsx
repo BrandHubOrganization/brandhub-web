@@ -6,6 +6,7 @@ import { CreditBalancePanel } from "@/pages/credit/components/CreditBalancePanel
 import { CreditUsagePanel } from "@/pages/credit/components/CreditUsagePanel";
 import { CreditQueryState } from "@/pages/credit/components/CreditQueryState";
 import { MemberCreditPanel } from "@/pages/credit/components/MemberCreditPanel";
+import { TopUpDialog } from "@/pages/credit/components/TopUpDialog";
 import { useAgencyCredit } from "@/pages/credit/hooks/useCreditConfiguration";
 
 export function OwnerCreditView({ agencyId }: { agencyId: string }) {
@@ -13,6 +14,7 @@ export function OwnerCreditView({ agencyId }: { agencyId: string }) {
   const { policy, members, savePolicy, reloadPolicy, userId } =
     useAgencyCredit(agencyId);
   const [showOwnUsage, setShowOwnUsage] = useState(false);
+  const [isTopUpOpen, setIsTopUpOpen] = useState(false);
 
   const policyPresets = [
     { label: "50", value: 50 },
@@ -23,7 +25,11 @@ export function OwnerCreditView({ agencyId }: { agencyId: string }) {
 
   return (
     <div className="space-y-6">
-      <CreditBalancePanel agencyId={agencyId} />
+      {/* Hero Balance Panel with Doppelrand & Top-up Button */}
+      <CreditBalancePanel
+        agencyId={agencyId}
+        onTopUpClick={() => setIsTopUpOpen(true)}
+      />
 
       {/* Grid: Default Agency Policy & Owner Overview */}
       <div className="grid items-start gap-5 xl:grid-cols-2">
@@ -94,6 +100,12 @@ export function OwnerCreditView({ agencyId }: { agencyId: string }) {
         />
       )}
 
+      {/* Top-up Dialog Modal for Agency Owner */}
+      <TopUpDialog
+        isOpen={isTopUpOpen}
+        onClose={() => setIsTopUpOpen(false)}
+        agencyId={agencyId}
+      />
     </div>
   );
 }
