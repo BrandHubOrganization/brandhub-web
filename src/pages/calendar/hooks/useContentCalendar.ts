@@ -65,6 +65,13 @@ export function useContentCalendar() {
     eventId: string,
     newDate: Date,
   ): Promise<boolean> => {
+    // Không cho phép dời lịch xuất bản về thời điểm trong quá khứ
+    const now = new Date();
+    if (newDate.getTime() < now.getTime()) {
+      toast.error("Không thể lên lịch xuất bản vào thời điểm trong quá khứ! Vui lòng chọn thời gian ở tương lai.");
+      return false; // Trả về false để FullCalendar revert lại vị trí ban đầu
+    }
+
     const previousEvents = [...events];
     setEvents((prev) =>
       prev.map((evt) =>

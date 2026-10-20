@@ -195,6 +195,11 @@ export function useEditorForm() {
     return await postService.createDraft(workspaceId, payload);
   };
 
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [scheduledAt, setScheduledAt] = useState<string | undefined>(
+    locationState?.prefilledCaption ? undefined : undefined
+  );
+
   const saveDraft = useCallback(async () => {
     if (
       !isDirty ||
@@ -211,6 +216,8 @@ export function useEditorForm() {
         media: toPostMedia(mediaUrls, mediaStorageKeys),
         targetPlatforms,
         aiGenerated: containsAiContent,
+        taskId: taskIdParam || undefined,
+        scheduledAt: scheduledAt || undefined,
       };
       const res = await saveOrUpdateDraft(
         currentWorkspace.id,
@@ -236,6 +243,8 @@ export function useEditorForm() {
     mediaStorageKeys,
     containsAiContent,
     draftId,
+    taskIdParam,
+    scheduledAt,
   ]);
 
   useEffect(() => {
@@ -323,7 +332,7 @@ export function useEditorForm() {
       return;
     }
     if (targetPlatforms.length === 0) {
-      toast.error("Vui lòng chọn ít nhất 1 nền tảng mạng xã hội để đăng!");
+      toast.error(t("editor.header.platformRequired", "Vui lòng chọn ít nhất 1 nền tảng mạng xã hội để đăng!"));
       return;
     }
 
@@ -350,11 +359,8 @@ export function useEditorForm() {
       setDraftId(saved.id);
 
       setPublishStatus("PUBLISHING");
-      const publishRes = await postService.publishNow(
-        currentWorkspace.id,
-        postId,
-      );
-      toast.success("Đã gửi yêu cầu đăng bài Facebook...");
+      const publishRes = await postService.publishNow(currentWorkspace.id, postId);
+      toast.success(t("editor.header.publishing", "Đang xuất bản lên Facebook..."));
 
       // Đã gửi lệnh xuất bản thành công - xóa draftId để những lần sửa tiếp theo tạo draft mới
       setDraftId(undefined);
@@ -366,9 +372,7 @@ export function useEditorForm() {
         publishRes.status === "PUBLISHED"
       ) {
         setPublishStatus("PUBLISHED");
-        toast.success(
-          "🎉 Bài viết đã được tiếp nhận và xuất bản lên Facebook!",
-        );
+        toast.success(t("editor.header.publishedSuccess", "Bài viết đã được tiếp nhận và xuất bản lên Facebook!"));
         return;
       }
 
@@ -391,16 +395,14 @@ export function useEditorForm() {
             updated.status === "IN_PROGRESS"
           ) {
             setPublishStatus("PUBLISHED");
-            toast.success("🎉 Bài viết đã được Facebook tiếp nhận thành công!");
+            toast.success(t("editor.header.publishedSuccess", "Bài viết đã được tiếp nhận và xuất bản lên Facebook!"));
             clearInterval(pollTimer);
           } else if (
             updated.status === "REJECTED" ||
             updated.status === "FAILED"
           ) {
             setPublishStatus("FAILED");
-            toast.error(
-              "❌ Đăng lên Facebook thất bại. Vui lòng kiểm tra nhật ký xuất bản!",
-            );
+            toast.error(t("editor.header.publishFailed", "Đăng thất bại. Vui lòng kiểm tra nhật ký xuất bản!"));
             clearInterval(pollTimer);
           }
         } catch {
@@ -409,7 +411,7 @@ export function useEditorForm() {
       }, 2000);
     } catch (err: unknown) {
       setPublishStatus("FAILED");
-      const msg = err instanceof Error ? err.message : "Đăng bài thất bại";
+      const msg = err instanceof Error ? err.message : t("editor.header.publishFailed", "Đăng bài thất bại");
       toast.error(msg);
     } finally {
       setIsSubmitting(false);
@@ -442,3 +444,4 @@ export function useEditorForm() {
     handlePublishNow,
   };
 }
+

@@ -10,6 +10,8 @@
     "status": "Filter by status",
     "all": "All statuses",
     "unassigned": "Unassigned",
+    "allCaughtUpTitle": "All caught up!",
+    "allCaughtUpDesc": "No content waiting for your review right now.",
     "previous": "Previous",
     "next": "Next",
     "page": "{{page}} / {{total}}",
@@ -27,6 +29,9 @@
     },
     "legacyStep": "Legacy approval step",
     "submittedAt": "Submitted {{time}}",
+    "copyCaption": "Copy",
+    "copied": "Copied",
+    "captionCopied": "Post content copied to clipboard!",
     "outcomes": {
       "APPROVED": "Approved",
       "REJECTED": "Rejected",
