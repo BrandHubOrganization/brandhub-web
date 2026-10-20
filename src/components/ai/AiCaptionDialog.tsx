@@ -9,6 +9,7 @@ import {
   Replace,
   ShieldQuestion,
   Sparkles,
+  Target,
   TextCursorInput,
   Wand2,
 } from "lucide-react";
@@ -26,11 +27,6 @@ import {
 import { cn } from "@/lib/utils";
 import { errorCode } from "@/services/adminRevenueService";
 import {
-  fetchTrends,
-  topicLabel,
-  type TrendItem,
-} from "@/services/trendService";
-import {
   aiCaptionService,
   type CaptionContextUsed,
   type CaptionDraft,
@@ -38,7 +34,9 @@ import {
   type CaptionLength,
   type CaptionOption,
   type CaptionRequest,
+  type FitTrend,
   type RefineInstruction,
+  type TrendFit,
 } from "@/services/aiCaptionService";
 
 const TONES = [
@@ -105,8 +103,11 @@ export function AiCaptionDialog({
     PLATFORMS.includes(defaultPlatform) ? defaultPlatform : "facebook",
   );
   const [length, setLength] = useState<CaptionLength>("medium");
-  const [trends, setTrends] = useState<TrendItem[]>([]);
-  const [trendId, setTrendId] = useState("");
+  const [fit, setFit] = useState<TrendFit | null>(null);
+  const [fitState, setFitState] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
+  const [fitId, setFitId] = useState("");
   const [options, setOptions] = useState<CaptionOption[]>([]);
   const [generationId, setGenerationId] = useState<string | null>(null);
   const [generatedRequest, setGeneratedRequest] =
@@ -124,12 +125,18 @@ export function AiCaptionDialog({
       .credits(workspaceId)
       .then((b) => setRemaining(b.remaining))
       .catch(() => setRemaining(null));
-    fetchTrends("7d", "")
-      .then((data) => setTrends(data.items.slice(0, 15)))
-      .catch(() => setTrends([]));
+    aiCaptionService
+      .trendFit(workspaceId)
+      .then((data) => {
+        setFit(data);
+        setFitState("ready");
+      })
+      .catch(() => setFitState("error"));
   }, [workspaceId]);
 
-  const trend = trends.find((item) => item.id === trendId);
+  const fitTrend = fit?.trends.find((item) => item.trendId === fitId);
+  const pickFit = (id: string) =>
+    setFitId((current) => (current === id ? "" : id));
   const tooShort = topic.trim().length < 10;
   const failure = (err: unknown) => {
     const code = errorCode(err);
@@ -153,13 +160,8 @@ export function AiCaptionDialog({
         language,
         goal,
         taskId: taskId ?? null,
-        trend: trend
-          ? {
-              keyword: trend.keyword,
-              topic: trend.topic,
-              keywords: trend.keywords.slice(0, 10),
-            }
-          : undefined,
+        trendId: fitTrend?.trendId,
+        techniques: fitTrend?.techniques,
       };
       const result = await aiCaptionService.generate(workspaceId, request);
       setOptions(result.captions);
@@ -210,8 +212,9 @@ export function AiCaptionDialog({
         usedContext.brand && t("editor.aiCaption.used.brand"),
         usedContext.task && t("editor.aiCaption.used.task"),
         usedContext.trend &&
-          generatedRequest?.trend &&
-          `#${generatedRequest.trend.keyword}`,
+          generatedRequest?.trendId &&
+          fit?.trends.find((item) => item.trendId === generatedRequest.trendId)
+            ?.name,
         usedContext.examples > 0 &&
           t("editor.aiCaption.used.examples", { count: usedContext.examples }),
         usedContext.knowledgeChunks > 0 &&
@@ -294,7 +297,7 @@ export function AiCaptionDialog({
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-3">
             <label className="space-y-1.5 text-sm font-medium">
               <span>{t("editor.aiCaption.tone")}</span>
               <SelectMenu
@@ -346,36 +349,14 @@ export function AiCaptionDialog({
                 ))}
               </div>
             </div>
-            <label className="space-y-1.5 text-sm font-medium">
-              <span>{t("editor.aiCaption.trend")}</span>
-              <SelectMenu
-                className="h-9 w-full text-sm"
-                ariaLabel={t("editor.aiCaption.trend")}
-                value={trendId}
-                onChange={setTrendId}
-                options={[
-                  { value: "", label: t("editor.aiCaption.noTrend") },
-                  ...trends.map((item) => ({
-                    value: item.id,
-                    label: item.keyword,
-                  })),
-                ]}
-              />
-            </label>
           </div>
-          {trend?.topic && (
-            <p className="text-muted-foreground -mt-2 text-xs">
-              {t("editor.aiCaption.trendTopic", {
-                topic: topicLabel(t, trend.topic),
-              })}
-            </p>
-          )}
-          {trend?.brandRisk === "high" && (
-            <p className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-amber-300">
-              <AlertTriangle className="size-3.5" />
-              {t("editor.aiCaption.trendRisk")}
-            </p>
-          )}
+
+          <BrandFitTrends
+            fit={fit}
+            state={fitState}
+            selectedId={fitId}
+            onPick={pickFit}
+          />
 
           {error && (
             <p role="alert" className="text-destructive text-sm">
@@ -444,6 +425,129 @@ export function AiCaptionDialog({
         )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+const VERDICT_STYLE: Record<string, string> = {
+  nen: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+  can_nhac: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+};
+
+/** Trend-fit S8: trends that suit this workspace's brand today; picking one feeds its full card to the AI. */
+function BrandFitTrends({
+  fit,
+  state,
+  selectedId,
+  onPick,
+}: {
+  fit: TrendFit | null;
+  state: "loading" | "ready" | "error";
+  selectedId: string;
+  onPick: (id: string) => void;
+}) {
+  const { t, i18n } = useTranslation();
+  const day = (iso: string | null) =>
+    iso
+      ? new Intl.DateTimeFormat(i18n.language, {
+          day: "2-digit",
+          month: "2-digit",
+        }).format(new Date(`${iso}T00:00:00`))
+      : "";
+  const trends = fit?.trends.slice(0, 6) ?? [];
+
+  return (
+    <section
+      aria-label={t("aiStudio.trendFit.title")}
+      className="border-border space-y-2 rounded-xl border p-3"
+    >
+      <header className="flex flex-wrap items-center gap-2 text-sm font-medium">
+        <Target className="text-brand-orange size-4" />
+        {t("aiStudio.trendFit.title")}
+        {fit && !fit.judged && (
+          <span className="text-muted-foreground text-xs font-normal">
+            {t("aiStudio.trendFit.notJudged")}
+          </span>
+        )}
+      </header>
+      {state === "loading" && (
+        <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+          <Loader2 className="size-3.5 animate-spin" />
+          {t("aiStudio.trendFit.loading")}
+        </p>
+      )}
+      {state === "error" && (
+        <p className="text-muted-foreground text-xs">
+          {t("aiStudio.trendFit.error")}
+        </p>
+      )}
+      {state === "ready" && trends.length === 0 && (
+        <p className="text-muted-foreground text-xs">
+          {t("aiStudio.trendFit.empty")}
+        </p>
+      )}
+      {trends.length > 0 && (
+        <div className="grid gap-2 sm:grid-cols-2">
+          {trends.map((item: FitTrend) => (
+            <button
+              key={item.trendId}
+              type="button"
+              aria-pressed={selectedId === item.trendId}
+              onClick={() => onPick(item.trendId)}
+              className={cn(
+                "focus-visible:ring-ring flex flex-col gap-1 rounded-lg border p-2 text-left transition-colors focus-visible:ring-2 focus-visible:outline-none",
+                selectedId === item.trendId
+                  ? "border-brand-orange bg-brand-orange/5"
+                  : "border-border hover:border-brand-orange/40",
+              )}
+            >
+              <span className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                {item.verdict && (
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-0.5 font-medium",
+                      VERDICT_STYLE[item.verdict],
+                    )}
+                  >
+                    {t(`aiStudio.trendFit.verdict.${item.verdict}`)}
+                  </span>
+                )}
+                <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5">
+                  {t(`aiStudio.trendFit.type.${item.type}`)}
+                </span>
+                {item.peak && (
+                  <span className="text-muted-foreground tabular-nums">
+                    {day(item.peak)}
+                  </span>
+                )}
+              </span>
+              <span className="text-sm font-medium">{item.name}</span>
+              {item.reason && (
+                <span className="text-muted-foreground line-clamp-2 text-xs">
+                  {item.reason}
+                </span>
+              )}
+              {item.techniques.length > 0 && (
+                <span className="text-brand-orange text-[11px]">
+                  {item.techniques
+                    .map((tech) => t(`aiStudio.trendFit.techniques.${tech}`))
+                    .join(" · ")}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+      {fit && fit.upcoming.length > 0 && (
+        <p className="text-muted-foreground text-xs">
+          {t("aiStudio.trendFit.upcoming", {
+            list: fit.upcoming
+              .slice(0, 5)
+              .map((m) => `${m.name} (${day(m.peak)})`)
+              .join(" · "),
+          })}
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -582,6 +686,14 @@ function OptionCard({
             {t("editor.aiCaption.signals.trend")}
           </span>
         )}
+        {option.trendTechnique && (
+          <span className="bg-brand-orange/10 text-brand-orange inline-flex items-center gap-1 rounded-full px-2 py-0.5">
+            <Target className="size-3" />
+            {t("aiStudio.trendFit.techniqueLabel", {
+              name: t(`aiStudio.trendFit.techniques.${option.trendTechnique}`),
+            })}
+          </span>
+        )}
         <span
           className="text-muted-foreground inline-flex items-center gap-1 rounded-full px-1 py-0.5"
           title={t("editor.aiCaption.signals.complianceHint")}
@@ -598,6 +710,17 @@ function OptionCard({
           })}
         </p>
       )}
+      {(option.signals.issues ?? []).map((issue) => (
+        <p
+          key={issue}
+          className="flex items-start gap-1.5 rounded-lg bg-amber-500/10 px-2 py-1.5 text-[11px] text-amber-800 dark:text-amber-200"
+        >
+          <AlertTriangle className="mt-0.5 size-3 shrink-0" />
+          {t(`aiStudio.trendFit.issues.${issue.split(":")[0]}`, {
+            term: issue.split(":").slice(1).join(":"),
+          })}
+        </p>
+      ))}
       {option.compliance.issues.map((issue) => (
         <p
           key={issue.code + issue.excerpt}

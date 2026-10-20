@@ -19,6 +19,42 @@ export interface CaptionSignals {
   trendUsed: boolean;
   /** Numbers (price, %, date) not found in the topic or verified brand facts. */
   unverifiedClaims: string[];
+  /** Light checks: foreign_script, prompt_leak, sensitive:<term>, too_long. */
+  issues: string[];
+}
+
+/** Trend-fit: the five ways a post can connect the brand to a trend. */
+export type TrendTechnique =
+  | "khoanh_khac"
+  | "choi_chu"
+  | "muon_format"
+  | "muon_bieu_tuong"
+  | "brand_la_fan";
+
+/** A trend that suits the workspace brand; verdict/reason are null when the AI judge was unavailable. */
+export interface FitTrend {
+  trendId: string;
+  type: "moment" | "format" | "event";
+  name: string;
+  fact: string | null;
+  insight: string | null;
+  peak: string | null;
+  solemn: boolean;
+  hashtags: string[];
+  verdict: "nen" | "can_nhac" | null;
+  relevance: number | null;
+  voiceFit: number | null;
+  timing: number | null;
+  risk: number | null;
+  reason: string | null;
+  techniques: TrendTechnique[];
+}
+
+export interface TrendFit {
+  date: string;
+  judged: boolean;
+  trends: FitTrend[];
+  upcoming: FitTrend[];
 }
 
 export interface CaptionCompliance {
@@ -36,9 +72,12 @@ export interface CaptionOption {
   recommendedMaxChars: number;
   signals: CaptionSignals;
   compliance: CaptionCompliance;
+  /** Trend-fit technique this option used; null without a trend-fit trend. */
+  trendTechnique: TrendTechnique | null;
 }
 
-export interface CaptionDraft extends Omit<CaptionOption, "type" | "title"> {
+export interface CaptionDraft
+  extends Omit<CaptionOption, "type" | "title" | "trendTechnique"> {
   platform: string;
 }
 
@@ -57,8 +96,10 @@ export interface CaptionRequest {
   length: CaptionLength;
   language: "vi" | "en";
   goal: CaptionGoal;
-  trend?: { keyword: string; topic?: string | null; keywords?: string[] };
   taskId?: string | null;
+  /** Trend-fit pick; the AI service looks up the full trend card by id. */
+  trendId?: string;
+  techniques?: TrendTechnique[];
 }
 
 interface Charged {
@@ -126,4 +167,8 @@ export const aiCaptionService = {
         `${base(workspaceId)}/credits`,
       )
     ).data.data,
+  /** Trends that suit the workspace brand today + upcoming moments (not charged). */
+  trendFit: async (workspaceId: string) =>
+    (await api.get<{ data: TrendFit }>(`${base(workspaceId)}/trend-fit`)).data
+      .data,
 };
