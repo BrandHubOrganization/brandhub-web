@@ -70,7 +70,7 @@ export function AdminRecentUsers({
                 {["name", "role", "status", "registered"].map((key) => (
                   <TableHead
                     key={key}
-                    className="text-2xs px-5 font-mono tracking-wide uppercase"
+                    className="text-xs px-5 font-sans tracking-wide uppercase"
                   >
                     {t(`admin.accounts.${key}`)}
                   </TableHead>
@@ -108,12 +108,12 @@ export function AdminRecentUsers({
                             ? "PENDING_REVIEW"
                             : "outline"
                       }
-                      className="text-2xs rounded-full"
+                      className="text-xs rounded-full"
                     >
                       {t(`admin.status.${user.status}`)}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground text-2xs px-5 font-mono">
+                  <TableCell className="text-muted-foreground text-xs px-5 font-sans">
                     {new Intl.DateTimeFormat(i18n.language, {
                       day: "2-digit",
                       month: "2-digit",
