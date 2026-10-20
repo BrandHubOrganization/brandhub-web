@@ -64,7 +64,7 @@ export function TaskAssigneePicker({
             variant="ghost"
             size="sm"
             disabled={pending}
-            className="h-auto min-h-9 max-w-full justify-start gap-2 px-2 font-normal"
+            className="h-8 max-w-full justify-start gap-1.5 px-2 text-xs font-normal text-foreground hover:bg-muted/60"
             aria-label={t("tasks.inline.edit", { field: t("tasks.assignee") })}
           >
             <span className="truncate">{label}</span>

@@ -624,14 +624,14 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
               type="button"
               onClick={() => {
                 const targetUrl = workspaceId
-                  ? `/workspaces/${workspaceId}/posts/${selectedEvent.event.id}`
-                  : `/posts/${selectedEvent.event.id}`;
+                  ? `/workspaces/${workspaceId}/editor?taskId=${selectedEvent.event.id}`
+                  : `/editor?taskId=${selectedEvent.event.id}`;
                 navigate(targetUrl);
               }}
               className="bg-brand-orange hover:bg-brand-orange/90 inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white shadow-2xs transition-all"
             >
               <Eye className="size-3.5" />
-              <span>Xem chi tiết bài</span>
+              <span>Chỉnh sửa / Xem bài</span>
               <ExternalLink className="size-3" />
             </button>
           </div>
@@ -641,10 +641,10 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
       {/* Footer Helper Note */}
       <div className="border-border bg-muted/20 text-2xs text-muted-foreground flex items-center justify-between border-t px-4 py-2">
         <span className="font-mono tracking-wider uppercase">
-          Mẹo: Kéo thả để dời giờ đăng bài (tự động lưu) · Click vào bài đăng để xem nhanh hoặc điều hướng tới trang chi tiết
+          Mẹo: Kéo thả để dời giờ đăng bài (tự động chặn thời điểm quá khứ) · Click vào bài đăng để xem hoặc sửa bài trong Editor
         </span>
         <span className="text-brand-orange font-medium">
-          RabbitMQ Dispatch Engine
+          Auto Publish Engine
         </span>
       </div>
     </div>

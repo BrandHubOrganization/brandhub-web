@@ -5,10 +5,9 @@ import { toast } from "sonner";
 import { ArrowRight, CheckCircle2, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  applyEffectiveTerms,
-  formatPackageValue,
-} from "../lib/formatMediaPackage";
+import { HelpHint } from "@/components/shared/HelpHint";
+import { PackageFacts } from "@/pages/media-package/components/PackageFacts";
+import { applyEffectiveTerms } from "../lib/formatMediaPackage";
 import { mediaPackageService } from "../services/mediaPackageService";
 import type {
   NegotiateTermsRequest,
@@ -81,7 +80,7 @@ export function SelectedMediaPackage({
   approving = false,
   onEditingChange,
 }: SelectedMediaPackageProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id: routeWorkspaceId } = useParams<{ id: string }>();
   const [negotiationOpen, setNegotiationOpen] = useState(false);
@@ -117,13 +116,8 @@ export function SelectedMediaPackage({
 
   if (!selection)
     return (
-      <section className="border-border bg-card rounded-xl border border-dashed px-6 py-10 text-center">
-        <h2 className="font-semibold">
-          {t("mediaPackage.selected.emptyTitle")}
-        </h2>
-        <p className="text-muted-foreground mx-auto mt-2 max-w-xl text-sm leading-6">
-          {t("mediaPackage.selected.emptyDescription")}
-        </p>
+      <section className="border-border bg-muted/20 rounded-lg border border-dashed px-4 py-3 text-sm">
+        <h2 className="font-medium">{t("mediaPackage.selected.emptyTitle")}</h2>
       </section>
     );
 
@@ -239,10 +233,10 @@ export function SelectedMediaPackage({
     );
   return (
     <>
-      <section className="border-border bg-card space-y-6 rounded-xl border p-4 sm:p-6">
+      <section className="border-border bg-card space-y-4 rounded-xl border p-4">
         <header className="flex flex-col justify-between gap-4 sm:flex-row">
           <div className="min-w-0">
-            <div className="mb-3 flex flex-wrap gap-2">
+            <div className="mb-2 flex flex-wrap gap-2">
               <Badge variant={isDualApproved ? "APPROVED" : "secondary"}>
                 {t(`mediaPackage.status.${selection.negotiationStatus}`)}
               </Badge>
@@ -252,25 +246,25 @@ export function SelectedMediaPackage({
                 })}
               </Badge>
             </div>
-            <h2 className="text-2xl font-semibold tracking-tight break-words">
+            <h2 className="text-xl font-semibold tracking-tight break-words">
               {mediaPackage.name}
             </h2>
           </div>
-          <p className="shrink-0 text-2xl font-semibold tracking-tight">
-            {formatPackageValue(mediaPackage, i18n.language, t)}
-          </p>
         </header>
-        <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
-          <div className="min-w-0 space-y-5">
-            <section className="space-y-2">
-              <h3 className="text-sm font-semibold">
-                {t("mediaPackage.selected.scopeTitle")}
-              </h3>
-              <p className="text-muted-foreground text-sm leading-7 break-words whitespace-pre-line">
-                {mediaPackage.scopeDescription ||
-                  t("mediaPackage.catalog.noDescription")}
-              </p>
-            </section>
+        <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_19rem]">
+          <div className="min-w-0 space-y-4">
+            <PackageFacts mediaPackage={mediaPackage} />
+            {mediaPackage.scopeDescription && (
+              <section className="space-y-1 rounded-lg border px-3 py-2">
+                <h3 className="text-sm font-semibold">
+                  {t("mediaPackage.selected.scopeTitle")}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-7 break-words whitespace-pre-line">
+                  {mediaPackage.scopeDescription ||
+                    t("mediaPackage.catalog.noDescription")}
+                </p>
+              </section>
+            )}
             <OfferingSummary value={mediaPackage} />
             {selection.previousTerms && (
               <PackageTermsDiff
@@ -280,13 +274,13 @@ export function SelectedMediaPackage({
             )}
           </div>
           <aside className="border-border space-y-4 rounded-xl border p-4 xl:sticky xl:top-4">
-            <div>
+            <div className="flex items-center gap-1">
               <h3 className="font-semibold">
                 {t("mediaPackage.selected.dualApprovalTitle")}
               </h3>
-              <p className="text-muted-foreground mt-2 text-xs leading-5">
+              <HelpHint label={t("mediaPackage.selected.dualApprovalTitle")}>
                 {t("mediaPackage.ui.approvalHint")}
-              </p>
+              </HelpHint>
             </div>
             <ApprovalStatus
               label={t("mediaPackage.selected.clientApprovalTitle")}
@@ -346,9 +340,6 @@ export function SelectedMediaPackage({
             </Button>
             {isDualApproved && (
               <div className="border-border space-y-3 border-t pt-4">
-                <p className="text-muted-foreground text-sm leading-6">
-                  {t("mediaPackage.ui.campaignReady")}
-                </p>
                 <Button asChild variant="orange" className="w-full">
                   <Link to={`/workspaces/${targetWorkspaceId}/campaigns`}>
                     {t("mediaPackage.ui.openCampaign")}

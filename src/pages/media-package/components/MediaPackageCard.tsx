@@ -2,9 +2,7 @@ import { Check, Copy, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  formatPackageValue,
-} from "../lib/formatMediaPackage";
+import { formatPackageValue } from "../lib/formatMediaPackage";
 import type { MediaPackage } from "../types/mediaPackage";
 
 interface MediaPackageCardProps {
@@ -75,13 +73,28 @@ export function MediaPackageCard({
         <h3 className="text-foreground text-lg leading-snug font-semibold break-words">
           {mediaPackage.name}
         </h3>
-        <p className="text-foreground mt-4 text-2xl font-semibold tracking-tight">
+        <p
+          className={
+            mediaPackage.budgetAmount == null
+              ? "text-muted-foreground mt-3 text-sm font-medium"
+              : "text-foreground mt-3 text-xl font-semibold tracking-tight"
+          }
+        >
           {formatPackageValue(mediaPackage, i18n.language, t)}
         </p>
-        <p className="text-muted-foreground mt-3 line-clamp-3 text-sm leading-6">
-          {mediaPackage.scopeDescription ||
-            t("mediaPackage.catalog.noDescription")}
-        </p>
+        {mediaPackage.budgetAmount != null &&
+          mediaPackage.durationWeeks != null && (
+            <p className="text-muted-foreground mt-1 text-xs">
+              {t("mediaPackage.values.duration", {
+                count: mediaPackage.durationWeeks,
+              })}
+            </p>
+          )}
+        {mediaPackage.scopeDescription && (
+          <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-6">
+            {mediaPackage.scopeDescription}
+          </p>
+        )}
         {deliverables.length > 0 && (
           <ul className="border-border mt-4 space-y-2 border-t pt-4">
             {deliverables.slice(0, 3).map((item) => (

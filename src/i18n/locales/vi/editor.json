@@ -234,7 +234,7 @@
       "BLOG": "Ví dụ: Viết bài blog 500 từ giới thiệu sản phẩm mới, có mở bài - thân bài - kết luận...",
       "AD_COPY": "Ví dụ: Viết quảng cáo ngắn kêu gọi mua hàng, nhấn mạnh ưu đãi giới hạn thời gian..."
     },
-    "promptPlaceholder": "Ví dụ: Viết bài đăng phong cách hài hước...",
+    "promptPlaceholder": "Viết bài đăng hấp dẫn, ngắn gọn với giọng văn thu hút và kêu gọi hành động.",
     "generating": "AI đang tạo (~{{seconds}}s)...",
     "generateButton": "Generate with AI",
     "errorServiceUnavailable": "Dịch vụ AI hiện không khả dụng (503)",
@@ -320,7 +320,30 @@
     "submitForApproval": "Gửi phê duyệt",
     "unsavedDraft": "Chưa lưu nháp",
     "templatePickerButton": "Mẫu Bài Đăng",
-    "previewButton": "Preview Post"
+    "previewButton": "Preview Post",
+    "scheduleButton": "Lên lịch đăng",
+    "scheduledAt": "Lên lịch: {{time}}",
+    "publishNow": "Đăng ngay",
+    "publishing": "Đang xuất bản lên Facebook...",
+    "publishedSuccess": "Bài viết đã được tiếp nhận và xuất bản lên Facebook!",
+    "publishFailed": "Đăng thất bại",
+    "publishingProgress": "Đang xử lý...",
+    "platformRequired": "Vui lòng chọn ít nhất 1 nền tảng mạng xã hội để đăng!"
+  },
+  "scheduleModal": {
+    "title": "Lên lịch đăng bài tự động",
+    "description": "Chọn ngày và giờ để hệ thống tự động xuất bản bài viết lên các mạng xã hội đã chọn.",
+    "publishDate": "Ngày xuất bản (Publish Date)",
+    "publishTime": "Giờ xuất bản (Giờ : Phút)",
+    "rulesTitle": "Quy tắc xuất bản tự động:",
+    "rule1": "Thời gian hẹn giờ phải ở tương lai.",
+    "rule2": "Hệ thống worker chạy ngầm định kỳ quét và đăng bài tự động đúng giờ.",
+    "confirm": "Xác nhận lên lịch",
+    "emptyError": "Vui lòng chọn đầy đủ ngày và giờ xuất bản!",
+    "pastDateError": "Thời gian lên lịch xuất bản không thể ở trong quá khứ! Vui lòng chọn thời gian ở tương lai.",
+    "minFutureError": "Thời gian lên lịch xuất bản nên cách hiện tại ít nhất 5 phút để hệ thống xử lý.",
+    "success": "Đã lên lịch đăng tự động vào lúc {{time}} ngày {{date}}",
+    "saveError": "Không thể lưu lịch đăng bài!"
   },
   "hashtagInput": {
     "loadFromCollectionButton": "Từ kho hashtag",
@@ -343,8 +366,15 @@
     "clearAllButton": "Xoá tất cả",
     "loadFromGroupButton": "Load từ Nhóm",
     "chooseGroupLabel": "Chọn nhóm hashtag đã lưu:",
-    "inputPlaceholder": "Nhập hashtag và nhấn Enter (hoặc chọn gợi ý)...",
-    "trendingSuggestionsLabel": "Gợi ý hashtag thịnh hành:"
+    "inputPlaceholder": "Nhập hashtag và nhấn Enter...",
+    "trendingSuggestionsLabel": "Gợi ý hashtag thịnh hành:",
+    "aiGenerate": "Gợi ý hashtag từ API · {{platform}}",
+    "aiLoading": "Đang lấy hashtag...",
+    "aiCaptionRequired": "Nhập nội dung bài viết để lấy gợi ý hashtag.",
+    "aiError": "Không lấy được hashtag. Vui lòng thử lại.",
+    "aiEmpty": "API chưa trả về hashtag phù hợp.",
+    "aiResults": "Hashtag gợi ý từ API",
+    "aiApply": "Thêm {{tag}} vào bài viết"
   },
   "imageLightbox": {
     "copySuccess": "Đã copy đường dẫn ảnh vào clipboard!",
@@ -483,5 +513,7 @@
     "adapt": "Phiên bản cho nền tảng khác",
     "adaptGo": "Tạo",
     "trendTopic": "Lĩnh vực của trend: {{topic}}"
-  }
+  },
+  "socialStatusError": "Không thể kiểm tra kết nối mạng xã hội. Vui lòng tải lại để thử lại.",
+  "socialStatusUnknown": "Chưa xác định trạng thái kết nối"
 }
