@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
@@ -34,7 +35,7 @@ import { WorkspaceCampaignSummary } from "@/pages/workspace/components/Workspace
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
 import type { WorkspaceDashboard } from "@/types/workspace";
-import type { TaskListItem, TaskStatus } from "@/types/task";
+import type { TaskListItem } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
@@ -75,16 +76,18 @@ function StatCard({
   return (
     <div
       onClick={onClick}
-      className={`border-border bg-card rounded-2xl border p-5 shadow-xs transition-all hover:border-brand-orange/40 hover:shadow-sm ${
+      className={`border-border bg-card hover:border-brand-orange/40 rounded-2xl border p-5 shadow-xs transition-all hover:shadow-sm ${
         onClick ? "cursor-pointer" : ""
       }`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+        <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
           {label}
         </span>
         {Icon && (
-          <div className={`flex size-9 items-center justify-center rounded-xl ${bgIconClass} ${colorClass}`}>
+          <div
+            className={`flex size-9 items-center justify-center rounded-xl ${bgIconClass} ${colorClass}`}
+          >
             <Icon className="size-4.5" />
           </div>
         )}
@@ -100,7 +103,7 @@ function StatCard({
         )}
       </div>
       {sublabel && (
-        <p className="text-muted-foreground mt-1.5 text-xs truncate">
+        <p className="text-muted-foreground mt-1.5 truncate text-xs">
           {sublabel}
         </p>
       )}
@@ -141,7 +144,9 @@ export function WorkspaceDashboardPage() {
     setLeaving(true);
     try {
       await workspaceService.leaveWorkspace(workspaceId);
-      toast.success(t("workspace.members.leaveSuccess", "Bạn đã rời workspace thành công"));
+      toast.success(
+        t("workspace.members.leaveSuccess", "Bạn đã rời workspace thành công"),
+      );
       setLeaveOpen(false);
       useWorkspaceStore.getState().setCurrentWorkspace(null);
       await useWorkspaceStore.getState().fetchWorkspaces();
@@ -266,7 +271,9 @@ export function WorkspaceDashboardPage() {
 
   return (
     <PageWrapper
-      title={workspace.name || t("workspace.dashboard.title", "Workspace Dashboard")}
+      title={
+        workspace.name || t("workspace.dashboard.title", "Workspace Dashboard")
+      }
       hideBanner
     >
       {/* ── Top Workspace Header ── */}
@@ -307,16 +314,17 @@ export function WorkspaceDashboardPage() {
                     variant="outline"
                     className="border-brand-orange/30 bg-brand-orange-soft/50 text-brand-orange text-2xs font-semibold"
                   >
-                    {t("workspace.dashboard.roleInWorkspace")}: {currentMemberRole}
+                    {t("workspace.dashboard.roleInWorkspace")}:{" "}
+                    {currentMemberRole}
                   </Badge>
                 )}
                 {isPackageApproved ? (
-                  <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-500/30 text-2xs">
+                  <Badge className="text-2xs border-emerald-500/30 bg-emerald-500/15 text-emerald-600">
                     <BadgeCheck className="mr-1 size-3" />
                     {t("workspace.dashboard.packageApprovedTitle")}
                   </Badge>
                 ) : isPackageNegotiating ? (
-                  <Badge className="bg-amber-500/15 text-amber-600 border-amber-500/30 text-2xs">
+                  <Badge className="text-2xs border-amber-500/30 bg-amber-500/15 text-amber-600">
                     <Clock className="mr-1 size-3" />
                     {packageStatus}
                   </Badge>
@@ -367,7 +375,9 @@ export function WorkspaceDashboardPage() {
                     variant="outline"
                     size="sm"
                     className="gap-1.5"
-                    onClick={() => navigate(`/workspaces/${workspaceId}/settings`)}
+                    onClick={() =>
+                      navigate(`/workspaces/${workspaceId}/settings`)
+                    }
                   >
                     <Settings className="size-4" />
                     <span className="hidden sm:inline">
@@ -393,7 +403,9 @@ export function WorkspaceDashboardPage() {
                     onClick={() => setLeaveOpen(true)}
                   >
                     <LogOut className="size-4" />
-                    <span>{t("workspace.members.leaveButton", "Rời workspace")}</span>
+                    <span>
+                      {t("workspace.members.leaveButton", "Rời workspace")}
+                    </span>
                   </Button>
                 )}
               </>
@@ -405,7 +417,7 @@ export function WorkspaceDashboardPage() {
       {/* ── Package Status Banner (When not approved yet) ── */}
       {!isPackageApproved && (
         <section
-          className={`mb-6 flex flex-col gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center sm:justify-between shadow-xs ${
+          className={`mb-6 flex flex-col gap-4 rounded-2xl border p-5 shadow-xs sm:flex-row sm:items-center sm:justify-between ${
             isPackageNegotiating
               ? "border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/15"
               : "border-brand-orange/30 bg-brand-orange-soft/60"
@@ -469,7 +481,9 @@ export function WorkspaceDashboardPage() {
           }
           colorClass="text-blue-500"
           bgIconClass="bg-blue-500/10"
-          onClick={() => workspaceId && navigate(`/workspaces/${workspaceId}/tasks`)}
+          onClick={() =>
+            workspaceId && navigate(`/workspaces/${workspaceId}/tasks`)
+          }
         />
 
         {/* Card 2: Campaigns */}
@@ -522,7 +536,11 @@ export function WorkspaceDashboardPage() {
             })}
             value={dashboard.agencyAiCreditsUsedThisMonth}
             icon={Sparkles}
-            sublabel={t("workspace.dashboard.packageStatus") + ": " + (packageStatus || t("workspace.dashboard.noPackage"))}
+            sublabel={
+              t("workspace.dashboard.packageStatus") +
+              ": " +
+              (packageStatus || t("workspace.dashboard.noPackage"))
+            }
             colorClass="text-purple-500"
             bgIconClass="bg-purple-500/10"
           />
@@ -534,7 +552,8 @@ export function WorkspaceDashboardPage() {
             colorClass="text-purple-500"
             bgIconClass="bg-purple-500/10"
             onClick={() =>
-              workspaceId && navigate(`/workspaces/${workspaceId}/media-package`)
+              workspaceId &&
+              navigate(`/workspaces/${workspaceId}/media-package`)
             }
           />
         )}
@@ -594,10 +613,11 @@ export function WorkspaceDashboardPage() {
             ) : (
               <div className="space-y-2.5">
                 {tasks.map((task) => {
-                  const canonical = canonicalTaskStatus(task.status as TaskStatus);
+                  const canonical = canonicalTaskStatus(
+                    task.status as TaskStatus,
+                  );
                   const statusInfo =
-                    STATUS_CONFIG[canonical] ||
-                    STATUS_CONFIG.TODO;
+                    STATUS_CONFIG[canonical] || STATUS_CONFIG.TODO;
                   return (
                     <div
                       key={task.id}
@@ -615,8 +635,8 @@ export function WorkspaceDashboardPage() {
                           <p className="text-foreground group-hover:text-brand-orange truncate text-sm font-medium transition-colors">
                             {task.name}
                           </p>
-                          <div className="text-muted-foreground mt-0.5 flex items-center gap-2 text-2xs">
-                            <span className="font-semibold uppercase tracking-wider">
+                          <div className="text-muted-foreground text-2xs mt-0.5 flex items-center gap-2">
+                            <span className="font-semibold tracking-wider uppercase">
                               {task.type}
                             </span>
                             {task.dueDate && (
@@ -634,7 +654,7 @@ export function WorkspaceDashboardPage() {
 
                       <div className="flex shrink-0 items-center gap-2">
                         <span
-                          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-2xs font-semibold ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`}
+                          className={`text-2xs inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-semibold ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`}
                         >
                           <span
                             className={`size-1.5 rounded-full ${statusInfo.dot}`}
@@ -675,7 +695,7 @@ export function WorkspaceDashboardPage() {
                     className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-blue-500/10 text-blue-600 flex size-8 items-center justify-center rounded-lg">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600">
                         <MessageCircleMore className="size-4" />
                       </div>
                       <div>
@@ -719,7 +739,7 @@ export function WorkspaceDashboardPage() {
                     className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-purple-500/10 text-purple-600 flex size-8 items-center justify-center rounded-lg">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600">
                         <PackageOpen className="size-4" />
                       </div>
                       <div>
@@ -742,7 +762,7 @@ export function WorkspaceDashboardPage() {
                     className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-emerald-500/10 text-emerald-600 flex size-8 items-center justify-center rounded-lg">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600">
                         <FileEdit className="size-4" />
                       </div>
                       <div>
@@ -766,7 +786,7 @@ export function WorkspaceDashboardPage() {
                       className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="bg-slate-500/10 text-slate-600 flex size-8 items-center justify-center rounded-lg">
+                        <div className="flex size-8 items-center justify-center rounded-lg bg-slate-500/10 text-slate-600">
                           <Settings className="size-4" />
                         </div>
                         <div>
@@ -835,7 +855,8 @@ export function WorkspaceDashboardPage() {
           <div className="flex items-center gap-2">
             <BarChart3 className="text-brand-orange size-5" />
             <h3 className="text-foreground text-lg font-bold">
-              {t("nav.analytics")} &amp; {t("workspace.dashboard.campaignTrend")}
+              {t("nav.analytics")} &amp;{" "}
+              {t("workspace.dashboard.campaignTrend")}
             </h3>
           </div>
           <span className="bg-brand-orange-soft text-brand-orange text-2xs inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-semibold">
@@ -898,7 +919,7 @@ export function WorkspaceDashboardPage() {
             <ul className="space-y-3">
               {MOCK_RECENT_ACTIVITY.map((item) => (
                 <li key={item.id} className="flex items-start gap-2.5 text-sm">
-                  <CheckCircle2 className="text-emerald-500 mt-0.5 size-4.5 shrink-0" />
+                  <CheckCircle2 className="mt-0.5 size-4.5 shrink-0 text-emerald-500" />
                   <div className="min-w-0">
                     <p className="text-foreground">
                       <span className="font-semibold">{item.actor}</span>{" "}
@@ -932,8 +953,8 @@ export function WorkspaceDashboardPage() {
         onSubmit={handleLeave}
         isLastManager={Boolean(
           currentMemberRole === "MANAGER" &&
-            dashboard.membersByRole &&
-            (dashboard.membersByRole["MANAGER"] ?? 0) <= 1,
+          dashboard.membersByRole &&
+          (dashboard.membersByRole["MANAGER"] ?? 0) <= 1,
         )}
       />
     </PageWrapper>
