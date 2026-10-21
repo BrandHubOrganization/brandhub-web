@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
-import { reviewMessage, reviewTime } from "@/pages/tasks/taskApprovalView";
+import { reviewMessage, reviewTime } from "@/pages/tasks/utils/taskApprovalView";
 import type { TaskReview } from "@/pages/tasks/types/taskApproval";
 
 export function TaskReviewStatus({ review }: { review: TaskReview }) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronDown } from "lucide-react";
@@ -13,7 +13,7 @@ import {
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
-import { workflowError } from "@/pages/tasks/taskWorkflowErrors";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 
 export function TaskAssigneePicker({
   workspaceId,
@@ -189,13 +189,11 @@ export function TaskAssigneePicker({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <p aria-live="polite" className="text-muted-foreground text-xs">
-        {pending
-          ? t("tasks.inline.saving")
-          : field.status === "saved"
-            ? t("tasks.inline.saved")
-            : field.error}
-      </p>
+      {(pending || field.error) && (
+        <p aria-live="polite" className="text-muted-foreground text-xs">
+          {pending ? t("tasks.inline.saving") : field.error}
+        </p>
+      )}
     </div>
   );
 }

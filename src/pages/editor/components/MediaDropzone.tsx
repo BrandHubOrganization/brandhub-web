@@ -24,6 +24,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const isUploading = uploadProgress !== null;
 
   const handleFiles = async (files: FileList | File[]) => {
     const fileArray = Array.from(files);
