@@ -160,10 +160,6 @@ export function InlineTaskField(props: Props) {
           </div>
         ) : field.status === "saving" ? (
           <span>{t("tasks.inline.saving")}</span>
-        ) : field.status === "saved" ? (
-          <span className="text-muted-foreground">
-            {t("tasks.inline.saved")}
-          </span>
         ) : null}
       </div>
     </div>

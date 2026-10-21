@@ -1,8 +1,9 @@
 import type { TaskListItem } from "@/types/task";
 
 export function taskDeadline(task: TaskListItem): Date | null {
-  if (!task.dueDate) return null;
-  const deadline = new Date(task.dueDate);
+  const dateStr = task.publishDate || task.dueDate;
+  if (!dateStr) return null;
+  const deadline = new Date(dateStr);
   return Number.isNaN(deadline.getTime()) ? null : deadline;
 }
 

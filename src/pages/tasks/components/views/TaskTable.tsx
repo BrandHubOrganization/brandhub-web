@@ -1,9 +1,9 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpDown, ChevronDown, FolderKanban, RotateCcw } from "lucide-react";
+import { ArrowUpDown, FolderKanban, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/pages/tasks/constants";
-import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { TaskRowActions } from "@/pages/tasks/components/TaskRowActions";
 import type { TaskListItem, TaskPriority } from "@/types/task";
 
@@ -136,7 +136,7 @@ export function TaskTable(props: Props) {
               </th>
 
               {/* Actions */}
-              <th className="w-[110px] px-4 py-3 text-right">{t("tasks.inline.columns.actions")}</th>
+              <th className="w-[150px] px-4 py-3 text-right">{t("tasks.inline.columns.actions")}</th>
             </tr>
           </thead>
           <tbody className="divide-border divide-y">

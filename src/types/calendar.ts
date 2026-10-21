@@ -14,6 +14,7 @@ export interface CalendarPostEvent {
     status: PostStatus;
     captionPreview: string;
     mediaUrl?: string;
+    taskId?: string;
   };
 }
 

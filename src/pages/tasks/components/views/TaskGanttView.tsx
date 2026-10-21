@@ -1,8 +1,8 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import type { TaskListItem } from "@/types/task";
-import { deadlineColumn, taskDeadline } from "@/pages/tasks/taskViewData";
+import { deadlineColumn, taskDeadline } from "@/pages/tasks/utils/taskViewData";
 
 export function TaskGanttView({
   tasks,
