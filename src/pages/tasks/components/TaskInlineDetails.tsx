@@ -1,6 +1,17 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Badge } from "@/components/ui/badge";
+import {
+  AlignLeft,
+  Calendar,
+  ExternalLink,
+  FileText,
+  FolderKanban,
+  Globe,
+  Link2,
+  Share2,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TaskReferenceFields } from "@/pages/tasks/components/TaskReferenceFields";
 import { InlineTaskField } from "@/pages/tasks/components/InlineTaskField";
@@ -8,6 +19,9 @@ import { TaskInlineAssignment } from "@/pages/tasks/components/TaskInlineAssignm
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { taskInstant, taskLocalMinute } from "@/pages/tasks/taskWorkflowDates";
+import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { STATUS_CONFIG } from "@/pages/tasks/constants";
+import { cn } from "@/lib/utils";
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
 function readableDate(value: string | null, zone: string, language: string) {
@@ -46,21 +60,27 @@ export function TaskDeadlineField({
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const zone = task.dates.timezone || "UTC";
   return (
-    <InlineTaskField
-      id={`task-${task.id}-${scope}-deadline`}
-      label={t("tasks.deadline")}
-      type="datetime-local"
-      value={taskLocalMinute(task.dueDate, zone)}
-      displayValue={readableDate(task.dueDate, zone, i18n.language)}
-      editable={task.allowedActions.canEditDetail && task.dates.ready}
-      min={task.dates.minDate ? `${task.dates.minDate}T00:00` : undefined}
-      max={task.dates.maxDate ? `${task.dates.maxDate}T23:59` : undefined}
-      required={Boolean(task.assigneeId)}
-      save={(value) =>
-        state.field("dueDate", value ? taskInstant(value, zone) : null)
-      }
-      retry={state.retry}
-    />
+    <div className="space-y-1.5">
+      <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+        <Calendar className="text-muted-foreground size-3.5" />
+        <span>{t("tasks.deadline")}</span>
+      </div>
+      <InlineTaskField
+        id={`task-${task.id}-${scope}-deadline`}
+        label=""
+        type="datetime-local"
+        value={taskLocalMinute(task.dueDate, zone)}
+        displayValue={readableDate(task.dueDate, zone, i18n.language)}
+        editable={task.allowedActions.canEditDetail && task.dates.ready}
+        min={task.dates.minDate ? `${task.dates.minDate}T00:00` : undefined}
+        max={task.dates.maxDate ? `${task.dates.maxDate}T23:59` : undefined}
+        required={Boolean(task.assigneeId)}
+        save={(value) =>
+          state.field("dueDate", value ? taskInstant(value, zone) : null)
+        }
+        retry={state.retry}
+      />
+    </div>
   );
 }
 function References({ task }: { task: TaskWorkflow }) {
@@ -71,35 +91,52 @@ function References({ task }: { task: TaskWorkflow }) {
     task.inputReferences,
     (value) => state.field("inputReferences", value),
   );
-  if (!task.allowedActions.canEditDetail)
+
+  if (!task.allowedActions.canEditDetail) {
+    if (!task.inputReferences || task.inputReferences.length === 0) {
+      return null;
+    }
     return (
-      <section className="space-y-2">
-        <h3 className="text-sm font-medium">
-          {t("tasks.workflow.fields.inputReferences")}
-        </h3>
-        <ul className="space-y-2 text-sm">
-          {task.inputReferences.map((ref, index) => (
-            <li key={index}>
-              {safeReference(ref.url) ? (
-                <a
-                  href={ref.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                >
-                  {ref.label}
-                </a>
-              ) : (
-                ref.label
-              )}
-            </li>
-          ))}
-        </ul>
+      <section className="bg-card/50 border-border/70 space-y-2.5 rounded-xl border p-4 shadow-xs">
+        <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
+          <Link2 className="text-brand-orange size-3.5" />
+          <span>{t("tasks.workflow.fields.inputReferences")}</span>
+        </div>
+        <div className="flex flex-wrap gap-2 pt-0.5">
+          {task.inputReferences.map((ref, index) => {
+            const isUrl = safeReference(ref.url);
+            return isUrl ? (
+              <a
+                key={index}
+                href={ref.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-muted/40 hover:bg-muted/80 border-border/80 text-foreground group inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs transition-colors"
+              >
+                <Link2 className="text-brand-orange size-3.5 shrink-0" />
+                <span className="max-w-[200px] truncate font-medium">
+                  {ref.label || ref.url}
+                </span>
+                <ExternalLink className="text-muted-foreground group-hover:text-foreground size-3 shrink-0" />
+              </a>
+            ) : (
+              <span
+                key={index}
+                className="bg-muted/40 border-border/80 text-muted-foreground inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs"
+              >
+                <Link2 className="size-3.5 shrink-0" />
+                <span>{ref.label}</span>
+              </span>
+            );
+          })}
+        </div>
       </section>
     );
+  }
+
   return (
     <div
-      className="space-y-2"
+      className="bg-card/50 border-border/70 space-y-3 rounded-xl border p-4 shadow-xs"
       onBlur={(event) => {
         if (
           field.status !== "error" &&
@@ -108,6 +145,10 @@ function References({ task }: { task: TaskWorkflow }) {
           void field.commit();
       }}
     >
+      <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
+        <Link2 className="text-brand-orange size-3.5" />
+        <span>{t("tasks.workflow.fields.inputReferences")}</span>
+      </div>
       <fieldset disabled={field.status === "saving"}>
         <TaskReferenceFields
           references={field.value}
@@ -154,60 +195,142 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
   const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const zone = task.dates.timezone || "UTC";
+  const canonical = canonicalTaskStatus(task.status);
+  const statusCfg = STATUS_CONFIG[canonical];
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap gap-2">
-        <Badge variant="outline">{t(`tasks.types.${task.type}`)}</Badge>
-        <Badge variant="outline">{t(`tasks.status.${task.status}`)}</Badge>
+    <div className="space-y-4">
+      {/* Top Status & Type Badges */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
+            statusCfg.bg,
+            statusCfg.text,
+            statusCfg.border,
+          )}
+        >
+          <span
+            className={cn(
+              "size-1.5 rounded-full",
+              statusCfg.dot,
+              canonical === "IN_REVIEW" && "animate-ping",
+            )}
+          />
+          {t(`tasks.status.${task.status}`, {
+            defaultValue: statusCfg.defaultLabel,
+          })}
+        </span>
+
+        <span className="bg-muted/60 text-foreground border-border/80 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium">
+          {task.type === "POST" ? (
+            <Share2 className="text-brand-orange size-3.5" />
+          ) : (
+            <FileText className="text-muted-foreground size-3.5" />
+          )}
+          {t(`tasks.types.${task.type}`)}
+        </span>
+
         {task.reviewStep && (
-          <span className="text-muted-foreground text-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
+            <ShieldCheck className="size-3.5 text-amber-600 dark:text-amber-400" />
             {t(`tasks.inline.reviewSteps.${task.reviewStep}`)}
           </span>
         )}
       </div>
-      <InlineTaskField
-        id={`task-${task.id}-description`}
-        label={t("tasks.workflow.fields.description")}
-        value={task.description || ""}
-        editable={task.allowedActions.canEditDetail}
-        multiline
-        maxLength={10000}
-        required={Boolean(task.assigneeId)}
-        save={(value) => state.field("description", value)}
-        retry={state.retry}
-      />
-      <div className="border-y py-4">
+
+      {/* Description Section */}
+      <div className="bg-card/50 border-border/70 space-y-2 rounded-xl border p-4 shadow-xs">
+        <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
+          <AlignLeft className="text-brand-orange size-3.5" />
+          <span>{t("tasks.workflow.fields.description")}</span>
+        </div>
+        <InlineTaskField
+          id={`task-${task.id}-description`}
+          label=""
+          value={task.description || ""}
+          editable={task.allowedActions.canEditDetail}
+          multiline
+          maxLength={10000}
+          required={Boolean(task.assigneeId)}
+          save={(value) => state.field("description", value)}
+          retry={state.retry}
+        />
+      </div>
+
+      {/* Properties & Assignment Card */}
+      <div className="bg-card/50 border-border/70 space-y-4 rounded-xl border p-4 shadow-xs">
+        <h3 className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
+          <Sparkles className="text-brand-orange size-3.5" />
+          <span>
+            {t("tasks.workflow.properties", {
+              defaultValue: "Thông tin & Phân công",
+            })}
+          </span>
+        </h3>
+
         <TaskInlineAssignment task={task} />
+
+        <div className="border-border/50 border-t pt-3">
+          <TaskDeadlineField task={task} />
+          <div className="text-2xs text-muted-foreground flex items-center gap-1.5 pt-1.5">
+            <Globe className="size-3" />
+            <span>{t("tasks.workflow.timezone", { timezone: zone })}</span>
+          </div>
+        </div>
       </div>
-      <TaskDeadlineField task={task} />
-      <p className="text-muted-foreground text-xs">
-        {t("tasks.workflow.timezone", { timezone: zone })}
-      </p>
+
+      {/* References */}
       <References task={task} />
-      <div className="space-y-2 border-t pt-4 text-sm">
-        <p className="text-muted-foreground">
-          {t("tasks.source")}:{" "}
-          {task.sourceType
-            ? t(`tasks.sources.${task.sourceType}`)
-            : t("tasks.missing")}
-        </p>
-        {task.campaignId && (
-          <Link
-            className="block underline"
-            to={`/workspaces/${task.workspaceId}/campaigns`}
-          >
-            {task.campaignName || t("tasks.openCampaign")}
-          </Link>
-        )}
-        {task.sourceType === "CONTENT_REQUEST" && task.sourceRefId && (
-          <Link
-            className="block underline"
-            to={`/workspaces/${task.workspaceId}/requests?request=${encodeURIComponent(task.sourceRefId)}`}
-          >
-            {t("tasks.openRequest")}
-          </Link>
-        )}
-      </div>
+
+      {/* Context & Campaign Card */}
+      {(task.sourceType || task.campaignId) && (
+        <div className="bg-muted/20 border-border/70 space-y-2.5 rounded-xl border p-3.5 text-xs">
+          <div className="text-muted-foreground flex items-center gap-1.5 font-semibold tracking-wider uppercase">
+            <FolderKanban className="text-brand-orange size-3.5" />
+            <span>Ngữ cảnh &amp; Nguồn gốc</span>
+          </div>
+
+          <div className="space-y-2 pt-0.5">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">{t("tasks.source")}</span>
+              <span className="bg-muted text-foreground rounded-md px-2 py-0.5 font-medium">
+                {task.sourceType
+                  ? t(`tasks.sources.${task.sourceType}`)
+                  : t("tasks.missing")}
+              </span>
+            </div>
+
+            {task.campaignId && (
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-muted-foreground">Chiến dịch</span>
+                <Link
+                  className="text-brand-orange hover:text-brand-orange/80 group flex items-center gap-1 font-medium transition-colors"
+                  to={`/workspaces/${task.workspaceId}/campaigns`}
+                >
+                  <span className="max-w-[200px] truncate">
+                    {task.campaignName || t("tasks.openCampaign")}
+                  </span>
+                  <ExternalLink className="size-3 opacity-70 group-hover:opacity-100" />
+                </Link>
+              </div>
+            )}
+
+            {task.sourceType === "CONTENT_REQUEST" && task.sourceRefId && (
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-muted-foreground">Yêu cầu nội dung</span>
+                <Link
+                  className="text-brand-orange hover:text-brand-orange/80 group flex items-center gap-1 font-medium transition-colors"
+                  to={`/workspaces/${task.workspaceId}/requests?request=${encodeURIComponent(task.sourceRefId)}`}
+                >
+                  <span>{t("tasks.openRequest")}</span>
+                  <ExternalLink className="size-3 opacity-70 group-hover:opacity-100" />
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

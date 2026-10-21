@@ -10,6 +10,8 @@
     "status": "Lọc trạng thái",
     "all": "Tất cả trạng thái",
     "unassigned": "Chưa phân công",
+    "allCaughtUpTitle": "Tất cả đã hoàn tất!",
+    "allCaughtUpDesc": "Không còn bài nào chờ bạn phê duyệt vào lúc này.",
     "previous": "Trước",
     "next": "Sau",
     "page": "{{page}} / {{total}}",
@@ -17,6 +19,11 @@
     "openTask": "Xem công việc"
   },
   "review": {
+    "collapseHistory": "Thu gọn lịch sử",
+    "expandHistory": "Mở rộng lịch sử",
+    "copyFailed": "Không thể sao chép nội dung. Vui lòng thử lại.",
+    "aiGenerated": "Nội dung tạo bằng AI",
+    "zoomImage": "Phóng to ảnh",
     "title": "Phê duyệt kết quả",
     "currentRound": "Lượt {{round}}",
     "waitingStep": "Chờ {{step}} duyệt",
@@ -27,6 +34,9 @@
     },
     "legacyStep": "Bước duyệt cũ",
     "submittedAt": "Gửi lúc {{time}}",
+    "copyCaption": "Sao chép",
+    "copied": "Đã chép",
+    "captionCopied": "Đã sao chép nội dung bài viết!",
     "outcomes": {
       "APPROVED": "Đã duyệt",
       "REJECTED": "Đã từ chối",

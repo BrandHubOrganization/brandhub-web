@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Mail, Pencil, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -36,13 +37,13 @@ const TYPES: NotificationType[] = [
 ];
 const TARGETS: TargetType[] = ["ALL", "BY_PLAN", "BY_ROLE"];
 const EDITABLE: NotificationStatus[] = ["DRAFT", "SCHEDULED"];
-const STATUS_STYLE: Record<NotificationStatus, string> = {
-  DRAFT: "bg-muted text-muted-foreground",
-  SCHEDULED: "bg-brand-orange-soft text-brand-orange",
-  SENDING: "bg-brand-orange-soft text-brand-orange",
-  SENT: "bg-success/15 text-success",
-  FAILED: "bg-destructive/10 text-destructive",
-  CANCELLED: "bg-muted text-muted-foreground line-through",
+const STATUS_VARIANT: Record<NotificationStatus, BadgeProps["variant"]> = {
+  DRAFT: "DRAFT",
+  SCHEDULED: "SCHEDULED",
+  SENDING: "SCHEDULED",
+  SENT: "PUBLISHED",
+  FAILED: "FAILED",
+  CANCELLED: "secondary",
 };
 
 /** datetime-local value in the browser zone <-> ISO instant with offset. */
@@ -103,7 +104,7 @@ export function AdminNotificationsPanel() {
     <div className="space-y-5">
       <div className="flex justify-end">
         <Button
-          className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+          variant="orange"
           onClick={() => setEditing("new")}
         >
           <Send className="size-4" />
@@ -186,26 +187,27 @@ export function AdminNotificationsPanel() {
                     <td className="px-4 py-3 text-xs">
                       {t(`admin.notifications.targets.${n.targetType}`)}
                       {n.targetValues.length > 0 && (
-                        <span className="text-muted-foreground block font-mono">
+                        <span className="text-muted-foreground block font-sans">
                           {n.targetValues.join(", ")}
                         </span>
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span
+                      <Badge
+                        variant={STATUS_VARIANT[n.status]}
                         className={cn(
-                          "rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold",
-                          STATUS_STYLE[n.status],
+                          "rounded-full",
+                          n.status === "CANCELLED" && "line-through",
                         )}
                       >
                         {t(`admin.notifications.status.${n.status}`)}
-                      </span>
+                      </Badge>
                     </td>
-                    <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
+                    <td className="text-muted-foreground px-4 py-3 font-sans text-xs">
                       {time(n.sentAt ?? n.scheduledAt)}
                     </td>
                     <td className="px-4 py-3 text-xs">
-                      <span className="font-mono font-semibold">
+                      <span className="font-sans font-semibold">
                         {n.recipientCount ?? "—"}
                       </span>
                       {n.recipientCount != null && n.recipientCount > 0 && (
@@ -261,7 +263,7 @@ export function AdminNotificationsPanel() {
             >
               {t("admin.accounts.previous")}
             </Button>
-            <span className="font-mono">
+            <span className="font-sans">
               {page}/{pages}
             </span>
             <Button
@@ -440,7 +442,7 @@ function NotificationComposer({
               >
                 {titleError ?? t("admin.notifications.titleHint")}
               </span>
-              <span className="text-muted-foreground font-mono">
+              <span className="text-muted-foreground font-sans">
                 {trimmedTitle}/200
               </span>
             </span>
@@ -465,7 +467,7 @@ function NotificationComposer({
               </span>
               <span
                 className={cn(
-                  "font-mono",
+                  "font-sans",
                   contentError ? "text-destructive" : "text-muted-foreground",
                 )}
               >
@@ -617,7 +619,7 @@ function NotificationComposer({
             </Button>
             <Button
               type="button"
-              className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+              variant="orange"
               disabled={invalid || save.isPending}
               onClick={() => save.mutate("SEND_NOW")}
             >

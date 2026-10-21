@@ -28,7 +28,6 @@ const QUICK_LOGIN_ACCOUNTS = [
     labelKey: "workspace.roles.CREATOR",
     workspaceRole: "CREATOR",
   },
-  // Clients choose their brand profile before opening an assigned workspace.
   {
     email: "user59@gmail.com",
     labelKey: "workspace.roles.CLIENT",

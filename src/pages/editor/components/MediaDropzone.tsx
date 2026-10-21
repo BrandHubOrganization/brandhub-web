@@ -24,6 +24,7 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const isUploading = uploadProgress !== null;
 
   const handleFiles = async (files: FileList | File[]) => {
     const fileArray = Array.from(files);
@@ -107,8 +108,12 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
         }}
         onDragLeave={() => setIsDragOver(false)}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => {
+          if (!isUploading) fileInputRef.current?.click();
+        }}
         className={`cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-all ${
+          isUploading ? "pointer-events-none opacity-75" : ""
+        } ${
           isDragOver
             ? "border-brand-orange bg-brand-orange/10 dark:bg-brand-orange/20"
             : "border-border hover:border-brand-orange bg-muted/50"
