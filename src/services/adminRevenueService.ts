@@ -13,9 +13,11 @@ export interface RevenueTotal {
 export interface PlanRevenue {
   plan: string;
   displayName: string;
-  priceMonthly: number;
+  priceMonthly: number | null;
   subscribers: number;
   mrr: number;
+  revenue: number;
+  paidTransactions: number;
 }
 export interface RevenueTransaction {
   id: string;
@@ -60,11 +62,21 @@ export interface ReportExport {
 
 export const adminRevenueService = {
   async overview(filter: RevenueFilter): Promise<AdminRevenue> {
-    return (
+    const result = (
       await api.get<{ data: AdminRevenue }>("/api/v1/admin/revenue", {
         params: { ...filter, plan: filter.plan || undefined },
       })
     ).data.data;
+    if (
+      !result.plans.every(
+        (item) =>
+          Number.isFinite(item.revenue) &&
+          Number.isFinite(item.paidTransactions),
+      )
+    ) {
+      throw new Error("Revenue API requires the SePay billing update");
+    }
+    return result;
   },
   /** Creates the PDF (FR 3.10.12), then fetches it with the admin session and hands it to the browser. */
   async exportPdf(request: {

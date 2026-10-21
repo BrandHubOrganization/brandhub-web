@@ -38,10 +38,7 @@ interface TaskCalendarTimelineProps {
 }
 
 type CalendarViewType =
-  | "timeGridWeek"
-  | "timeGridDay"
-  | "dayGridMonth"
-  | "yearGrid";
+  "timeGridWeek" | "timeGridDay" | "dayGridMonth" | "yearGrid";
 
 interface ActiveEventDetail {
   task: TaskListItem;
@@ -102,7 +99,9 @@ export function TaskCalendarTimeline({
   });
 
   // Hover & Click Popover modal state
-  const [activeEvent, setActiveEvent] = useState<ActiveEventDetail | null>(null);
+  const [activeEvent, setActiveEvent] = useState<ActiveEventDetail | null>(
+    null,
+  );
   const [isEditingDeadline, setIsEditingDeadline] = useState(false);
   const [editDueDate, setEditDueDate] = useState("");
   const [isSavingDeadline, setIsSavingDeadline] = useState(false);
@@ -120,7 +119,8 @@ export function TaskCalendarTimeline({
     ) {
       return {
         valid: false,
-        error: "Không thể thay đổi hạn chót cho công việc đã hoàn thành hoặc đã hủy.",
+        error:
+          "Không thể thay đổi hạn chót cho công việc đã hoàn thành hoặc đã hủy.",
       };
     }
 
@@ -169,7 +169,8 @@ export function TaskCalendarTimeline({
       if (targetDayStart < todayStart) {
         return {
           valid: false,
-          error: "Công việc quá hạn chỉ có thể dời lên ngày hiện tại hoặc tương lai.",
+          error:
+            "Công việc quá hạn chỉ có thể dời lên ngày hiện tại hoặc tương lai.",
         };
       }
     } else {
@@ -177,7 +178,8 @@ export function TaskCalendarTimeline({
       if (targetDayStart < todayStart) {
         return {
           valid: false,
-          error: "Công việc đang có lịch ở hiện tại/tương lai, không thể dời về quá khứ.",
+          error:
+            "Công việc đang có lịch ở hiện tại/tương lai, không thể dời về quá khứ.",
         };
       }
     }
@@ -340,7 +342,10 @@ export function TaskCalendarTimeline({
     if (rect.right + popoverWidth > window.innerWidth - 20) {
       posX = Math.max(16, rect.left - popoverWidth - 12);
     }
-    const posY = Math.max(80, Math.min(rect.top - 10, window.innerHeight - 380));
+    const posY = Math.max(
+      80,
+      Math.min(rect.top - 10, window.innerHeight - 380),
+    );
     return { posX, posY };
   };
 
@@ -798,7 +803,7 @@ export function TaskCalendarTimeline({
               eventResizableFromStart={false}
               selectable={false}
               nowIndicator={true}
-              eventAllow={(dropInfo, draggedEvent) => {
+              eventAllow={(dropInfo) => {
                 if (!isManager) return false;
                 const targetDate = dropInfo.start;
                 if (!targetDate) return false;
@@ -816,7 +821,8 @@ export function TaskCalendarTimeline({
                 );
 
                 const isTimeView =
-                  currentView === "timeGridWeek" || currentView === "timeGridDay";
+                  currentView === "timeGridWeek" ||
+                  currentView === "timeGridDay";
 
                 // In time grid, block past hour slots (with 5 min grace)
                 // In month/day grid, block days before today
@@ -833,7 +839,9 @@ export function TaskCalendarTimeline({
               eventDrop={async (dropInfo) => {
                 if (!isManager) {
                   dropInfo.revert();
-                  toast.error("Bạn không có quyền quản lý để dời hạn chót công việc!");
+                  toast.error(
+                    "Bạn không có quyền quản lý để dời hạn chót công việc!",
+                  );
                   return;
                 }
                 const rawDate = dropInfo.event.start;
@@ -908,7 +916,8 @@ export function TaskCalendarTimeline({
                     : null;
 
                 const isTimeView =
-                  currentView === "timeGridWeek" || currentView === "timeGridDay";
+                  currentView === "timeGridWeek" ||
+                  currentView === "timeGridDay";
                 const isTargetInPast = isTimeView
                   ? newDate.getTime() < now.getTime() - 5 * 60 * 1000
                   : targetDayStart.getTime() < todayStart.getTime();
@@ -934,7 +943,9 @@ export function TaskCalendarTimeline({
 
                 // 4. Optimistically update local tasks & active event immediately
                 setLocalTasks((prev) =>
-                  prev.map((t) => (t.id === taskId ? { ...t, dueDate: newIsoString } : t)),
+                  prev.map((t) =>
+                    t.id === taskId ? { ...t, dueDate: newIsoString } : t,
+                  ),
                 );
                 setActiveEvent((prev) =>
                   prev && prev.task.id === taskId
@@ -964,7 +975,9 @@ export function TaskCalendarTimeline({
 
                   // 5. Campaign date bounds validation
                   if (workflow.dates?.minDate) {
-                    const minDate = new Date(`${workflow.dates.minDate}T00:00:00`);
+                    const minDate = new Date(
+                      `${workflow.dates.minDate}T00:00:00`,
+                    );
                     if (newDate < minDate) {
                       dropInfo.revert();
                       setLocalTasks(tasks);
@@ -976,7 +989,9 @@ export function TaskCalendarTimeline({
                     }
                   }
                   if (workflow.dates?.maxDate) {
-                    const maxDate = new Date(`${workflow.dates.maxDate}T23:59:59`);
+                    const maxDate = new Date(
+                      `${workflow.dates.maxDate}T23:59:59`,
+                    );
                     if (newDate > maxDate) {
                       dropInfo.revert();
                       setLocalTasks(tasks);
@@ -1039,14 +1054,14 @@ export function TaskCalendarTimeline({
             top: `${activeEvent.y}px`,
             zIndex: 9999,
           }}
-          className="border-border/80 bg-card/95 text-foreground animate-in fade-in zoom-in-95 w-84 rounded-2xl border p-4 shadow-2xl backdrop-blur-md duration-150 space-y-3"
+          className="border-border/80 bg-card/95 text-foreground animate-in fade-in zoom-in-95 w-84 space-y-3 rounded-2xl border p-4 shadow-2xl backdrop-blur-md duration-150"
         >
           {/* Header Row: Status, Type and Close/Pin */}
-          <div className="flex items-center justify-between gap-2 border-b border-border/60 pb-2.5">
-            <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="border-border/60 flex items-center justify-between gap-2 border-b pb-2.5">
+            <div className="flex flex-wrap items-center gap-1.5">
               <span
                 className={cn(
-                  "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-3xs font-semibold border",
+                  "text-3xs inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-semibold",
                   statusCfg.bg,
                   statusCfg.text,
                   statusCfg.border,
@@ -1064,11 +1079,11 @@ export function TaskCalendarTimeline({
                 })}
               </span>
 
-              <span className="bg-muted text-foreground border border-border/70 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-3xs font-medium">
+              <span className="bg-muted text-foreground border-border/70 text-3xs inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-medium">
                 {activeEvent.task.type === "POST" ? (
-                  <Share2 className="size-3 text-brand-orange" />
+                  <Share2 className="text-brand-orange size-3" />
                 ) : (
-                  <FileText className="size-3 text-muted-foreground" />
+                  <FileText className="text-muted-foreground size-3" />
                 )}
                 {t(`tasks.types.${activeEvent.task.type}`)}
               </span>
@@ -1089,37 +1104,37 @@ export function TaskCalendarTimeline({
 
           {/* Title and Short Description */}
           <div className="space-y-1">
-            <h4 className="text-foreground text-sm font-semibold leading-snug line-clamp-2">
+            <h4 className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
               {activeEvent.title}
             </h4>
             {activeEvent.task.description && (
-              <p className="text-2xs text-muted-foreground line-clamp-2 leading-relaxed bg-muted/30 p-2 rounded-lg border border-border/40">
+              <p className="text-2xs text-muted-foreground bg-muted/30 border-border/40 line-clamp-2 rounded-lg border p-2 leading-relaxed">
                 {activeEvent.task.description}
               </p>
             )}
           </div>
 
           {/* Assignee Information */}
-          <div className="flex items-center justify-between text-xs py-0.5">
-            <span className="text-muted-foreground flex items-center gap-1 text-2xs">
-              <User2 className="size-3 text-muted-foreground" />
+          <div className="flex items-center justify-between py-0.5 text-xs">
+            <span className="text-muted-foreground text-2xs flex items-center gap-1">
+              <User2 className="text-muted-foreground size-3" />
               Người thực hiện:
             </span>
             <div className="flex items-center gap-1.5">
-              <div className="bg-brand-orange-soft text-brand-orange size-5 rounded-full text-3xs font-bold flex items-center justify-center">
+              <div className="bg-brand-orange-soft text-brand-orange text-3xs flex size-5 items-center justify-center rounded-full font-bold">
                 {activeEvent.task.assigneeName?.charAt(0).toUpperCase() || "U"}
               </div>
-              <span className="font-medium text-xs text-foreground">
+              <span className="text-foreground text-xs font-medium">
                 {activeEvent.task.assigneeName || t("tasks.unassigned")}
               </span>
             </div>
           </div>
 
           {/* Deadline Field & Manager Edit Section */}
-          <div className="rounded-xl border border-border/60 bg-muted/20 p-2.5 space-y-2">
+          <div className="border-border/60 bg-muted/20 space-y-2 rounded-xl border p-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground flex items-center gap-1 text-2xs font-medium">
-                <Clock className="size-3 text-brand-orange" />
+              <span className="text-muted-foreground text-2xs flex items-center gap-1 font-medium">
+                <Clock className="text-brand-orange size-3" />
                 Hạn chót (Deadline):
               </span>
               {isManager &&
@@ -1136,7 +1151,7 @@ export function TaskCalendarTimeline({
                         toDateTimeLocalValue(activeEvent.task.dueDate),
                       );
                     }}
-                    className="text-brand-orange hover:text-brand-orange/80 inline-flex items-center gap-1 text-2xs font-semibold cursor-pointer transition-colors"
+                    className="text-brand-orange hover:text-brand-orange/80 text-2xs inline-flex cursor-pointer items-center gap-1 font-semibold transition-colors"
                   >
                     <Pencil className="size-2.5" />
                     Sửa thời gian
@@ -1156,7 +1171,12 @@ export function TaskCalendarTimeline({
                 <input
                   type="datetime-local"
                   value={editDueDate}
-                  min={toDateTimeLocalValue(new Date().toISOString()).slice(0, 10) + "T00:00"}
+                  min={
+                    toDateTimeLocalValue(new Date().toISOString()).slice(
+                      0,
+                      10,
+                    ) + "T00:00"
+                  }
                   onChange={(e) => {
                     const nextVal = e.target.value;
                     setEditDueDate(nextVal);
@@ -1166,7 +1186,7 @@ export function TaskCalendarTimeline({
                     }
                   }}
                   className={cn(
-                    "w-full text-xs rounded-lg border bg-background px-2.5 py-1.5 text-foreground focus:outline-hidden focus:ring-1",
+                    "bg-background text-foreground w-full rounded-lg border px-2.5 py-1.5 text-xs focus:ring-1 focus:outline-hidden",
                     deadlineError
                       ? "border-destructive focus:ring-destructive"
                       : "border-border focus:ring-brand-orange",
@@ -1174,7 +1194,7 @@ export function TaskCalendarTimeline({
                 />
 
                 {deadlineError && (
-                  <div className="flex items-center gap-1 text-2xs text-destructive font-medium bg-destructive/10 border border-destructive/20 rounded-md p-1.5 animate-in fade-in">
+                  <div className="text-2xs text-destructive bg-destructive/10 border-destructive/20 animate-in fade-in flex items-center gap-1 rounded-md border p-1.5 font-medium">
                     <AlertCircle className="size-3 shrink-0" />
                     <span>{deadlineError}</span>
                   </div>
@@ -1184,7 +1204,7 @@ export function TaskCalendarTimeline({
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-6 px-2 text-2xs"
+                    className="text-2xs h-6 px-2"
                     onClick={() => {
                       setIsEditingDeadline(false);
                       setDeadlineError(null);
@@ -1196,7 +1216,7 @@ export function TaskCalendarTimeline({
                   <Button
                     size="sm"
                     variant="orange"
-                    className="h-6 px-2.5 text-2xs font-medium"
+                    className="text-2xs h-6 px-2.5 font-medium"
                     onClick={handleSaveDeadline}
                     loading={isSavingDeadline}
                     disabled={Boolean(deadlineError) || !editDueDate}
@@ -1206,8 +1226,8 @@ export function TaskCalendarTimeline({
                 </div>
               </div>
             ) : (
-              <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                <Calendar className="size-3.5 text-muted-foreground" />
+              <div className="text-foreground flex items-center gap-1.5 text-xs font-semibold">
+                <Calendar className="text-muted-foreground size-3.5" />
                 <span>
                   {activeEvent.task.dueDate &&
                   Number.isFinite(Date.parse(activeEvent.task.dueDate))
@@ -1224,7 +1244,7 @@ export function TaskCalendarTimeline({
           </div>
 
           {/* Action Footer */}
-          <div className="flex items-center justify-between gap-2 border-t border-border/60 pt-2.5">
+          <div className="border-border/60 flex items-center justify-between gap-2 border-t pt-2.5">
             <span className="text-3xs text-muted-foreground">
               {isManager ? "Manager có quyền sửa DL" : "Chỉ xem thông tin"}
             </span>
@@ -1232,7 +1252,7 @@ export function TaskCalendarTimeline({
               size="sm"
               variant="orange"
               onClick={() => onTaskClick(activeEvent.task)}
-              className="gap-1.5 h-7 px-3 text-xs shadow-2xs"
+              className="h-7 gap-1.5 px-3 text-xs shadow-2xs"
             >
               <span>Xem chi tiết</span>
               <ExternalLink className="size-3.5" />
@@ -1248,7 +1268,7 @@ export function TaskCalendarTimeline({
             ? "Mẹo: Hover để xem tóm tắt, click hoặc kéo thả trên lịch để đổi hạn chót"
             : "Mẹo: Rà chuột (hover) để xem tóm tắt công việc hoặc nhấp để mở chi tiết"}
         </span>
-        <span className="text-brand-orange font-medium flex items-center gap-1">
+        <span className="text-brand-orange flex items-center gap-1 font-medium">
           <Sparkles className="size-3" />
           {isManager ? "Manager Quản lý DL" : "Calendar Ready"}
         </span>
@@ -1256,4 +1276,3 @@ export function TaskCalendarTimeline({
     </div>
   );
 }
-

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpDown, ChevronDown, FolderKanban, RotateCcw } from "lucide-react";
+import { ArrowUpDown, FolderKanban, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/pages/tasks/constants";
 import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
@@ -37,7 +37,7 @@ export function TaskTable(props: Props) {
   const toggleSelectTask = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     setSelectedTaskIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
 
@@ -83,7 +83,10 @@ export function TaskTable(props: Props) {
               <th className="w-12 px-3 py-3 text-center">
                 <input
                   type="checkbox"
-                  checked={props.tasks.length > 0 && selectedTaskIds.length === props.tasks.length}
+                  checked={
+                    props.tasks.length > 0 &&
+                    selectedTaskIds.length === props.tasks.length
+                  }
                   onChange={toggleSelectAll}
                   aria-label="Chọn tất cả"
                   className="accent-brand-orange size-3.5 cursor-pointer rounded-sm"
@@ -136,27 +139,45 @@ export function TaskTable(props: Props) {
               </th>
 
               {/* Actions */}
-              <th className="w-[110px] px-4 py-3 text-right">{t("tasks.inline.columns.actions")}</th>
+              <th className="w-[110px] px-4 py-3 text-right">
+                {t("tasks.inline.columns.actions")}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-border divide-y">
             {props.loading ? (
               Array.from({ length: 6 }).map((_, i) => (
                 <tr key={i} className="animate-pulse">
-                  <td className="px-3 py-3"><div className="bg-muted mx-auto size-3.5 rounded-sm" /></td>
-                  <td className="px-3 py-3"><div className="bg-muted h-4 w-48 rounded-md" /></td>
-                  <td className="px-3 py-3"><div className="bg-muted h-4 w-28 rounded-md" /></td>
-                  <td className="px-3 py-3"><div className="bg-muted h-4 w-16 rounded-md" /></td>
-                  <td className="px-3 py-3"><div className="bg-muted h-4 w-20 rounded-md" /></td>
-                  <td className="px-3 py-3"><div className="bg-muted h-4 w-24 rounded-md" /></td>
-                  <td className="px-3 py-3"><div className="bg-muted ml-auto h-4 w-16 rounded-md" /></td>
+                  <td className="px-3 py-3">
+                    <div className="bg-muted mx-auto size-3.5 rounded-sm" />
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="bg-muted h-4 w-48 rounded-md" />
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="bg-muted h-4 w-28 rounded-md" />
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="bg-muted h-4 w-16 rounded-md" />
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="bg-muted h-4 w-20 rounded-md" />
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="bg-muted h-4 w-24 rounded-md" />
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="bg-muted ml-auto h-4 w-16 rounded-md" />
+                  </td>
                 </tr>
               ))
             ) : props.tasks.length === 0 ? (
               <tr>
                 <td colSpan={7} className="py-12 text-center">
                   <FolderKanban className="text-muted-foreground/40 mx-auto size-12" />
-                  <p className="text-foreground mt-3 font-medium">Không tìm thấy công việc nào</p>
+                  <p className="text-foreground mt-3 font-medium">
+                    Không tìm thấy công việc nào
+                  </p>
                   <p className="text-muted-foreground mt-0.5 text-xs">
                     {props.isFiltered
                       ? "Không có công việc nào khớp với bộ lọc hiện tại."
@@ -166,7 +187,7 @@ export function TaskTable(props: Props) {
                     <button
                       type="button"
                       onClick={props.onResetFilters}
-                      className="border-border bg-card text-foreground hover:bg-muted shadow-2xs mt-3.5 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors"
+                      className="border-border bg-card text-foreground hover:bg-muted mt-3.5 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium shadow-2xs transition-colors"
                     >
                       <RotateCcw className="text-brand-orange size-3.5" />
                       <span>Xóa bộ lọc</span>
@@ -203,24 +224,33 @@ export function TaskTable(props: Props) {
                     </td>
 
                     {/* Work / Title */}
-                    <td className="w-[280px] px-4 py-2.5 overflow-hidden">
-                      <div className="flex flex-col max-w-[250px] min-w-0" title={task.name}>
+                    <td className="w-[280px] overflow-hidden px-4 py-2.5">
+                      <div
+                        className="flex max-w-[250px] min-w-0 flex-col"
+                        title={task.name}
+                      >
                         <span className="text-foreground group-hover:text-brand-orange truncate font-medium transition-colors">
                           {task.name}
                         </span>
-                        <span className="text-muted-foreground text-xs truncate">
+                        <span className="text-muted-foreground truncate text-xs">
                           {t(`tasks.types.${task.type}`)}
                         </span>
                       </div>
                     </td>
 
                     {/* Assignee */}
-                    <td className="px-3 py-2.5 overflow-hidden" onClick={(event) => event.stopPropagation()}>
+                    <td
+                      className="overflow-hidden px-3 py-2.5"
+                      onClick={(event) => event.stopPropagation()}
+                    >
                       <TaskRowActions task={task} field="assignee" />
                     </td>
 
                     {/* Priority */}
-                    <td className="px-3 py-2.5 whitespace-nowrap" title={`Độ ưu tiên: ${PRIORITY_CONFIG[task.priority ?? "MEDIUM"]?.label ?? "Medium"}`}>
+                    <td
+                      className="px-3 py-2.5 whitespace-nowrap"
+                      title={`Độ ưu tiên: ${PRIORITY_CONFIG[task.priority ?? "MEDIUM"]?.label ?? "Medium"}`}
+                    >
                       {renderPriority(task.priority)}
                     </td>
 
@@ -228,11 +258,15 @@ export function TaskTable(props: Props) {
                     <td className="px-3 py-2.5 whitespace-nowrap">
                       <span
                         title={`Trạng thái: ${t(`tasks.status.${status}`, { defaultValue: task.status })}`}
-                        className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-medium ${statusConf.bg} ${statusConf.text} ${statusConf.border}`}
+                        className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap ${statusConf.bg} ${statusConf.text} ${statusConf.border}`}
                       >
-                        <span className={`size-1.5 rounded-full shrink-0 ${statusConf.dot}`} />
+                        <span
+                          className={`size-1.5 shrink-0 rounded-full ${statusConf.dot}`}
+                        />
                         <span className="truncate">
-                          {t(`tasks.status.${status}`, { defaultValue: task.status })}
+                          {t(`tasks.status.${status}`, {
+                            defaultValue: task.status,
+                          })}
                         </span>
                       </span>
                     </td>
@@ -243,7 +277,10 @@ export function TaskTable(props: Props) {
                     </td>
 
                     {/* Actions */}
-                    <td className="px-4 py-2.5 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                    <td
+                      className="px-4 py-2.5 text-right whitespace-nowrap"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <TaskRowActions task={task} field="start" />
                     </td>
                   </tr>
@@ -257,7 +294,8 @@ export function TaskTable(props: Props) {
       {/* Pagination Footer */}
       <footer className="border-border bg-card/60 flex shrink-0 flex-wrap items-center justify-between border-t px-4 py-3 text-sm">
         <span className="text-muted-foreground text-xs">
-          Showing <b>{props.tasks.length}</b> of <b>{props.totalElements}</b> tasks
+          Showing <b>{props.tasks.length}</b> of <b>{props.totalElements}</b>{" "}
+          tasks
         </span>
         <div className="flex items-center gap-2">
           <Button
