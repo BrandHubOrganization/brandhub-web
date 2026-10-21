@@ -242,7 +242,7 @@ export function CreateUserDialog({ onClose }: { onClose: () => void }) {
             </Button>
             <Button
               type="submit"
-              className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+              variant="orange"
               disabled={!ready || create.isPending}
             >
               {t("admin.users.createAction")}
@@ -498,7 +498,7 @@ function EditForm({
 
       <p className="text-xs">
         {t("admin.users.strikesReadOnly")}{" "}
-        <span className="font-mono">
+        <span className="font-sans">
           {t("admin.level.YELLOW")} {user.yellow}/3, {t("admin.level.ORANGE")}{" "}
           {user.orange}/3, {t("admin.level.RED")} {user.red}
         </span>
@@ -528,7 +528,7 @@ function EditForm({
         </Button>
         <Button
           type="submit"
-          className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+          variant="orange"
           disabled={save.isPending}
         >
           {t("admin.users.saveAction")}

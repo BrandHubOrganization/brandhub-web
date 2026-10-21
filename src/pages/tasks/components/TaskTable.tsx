@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpDown, ChevronDown, FolderKanban, RotateCcw } from "lucide-react";
+import { ArrowUpDown, FolderKanban, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/pages/tasks/constants";
 import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
@@ -76,11 +76,11 @@ export function TaskTable(props: Props) {
         data-task-scroll="list"
         className="min-h-0 flex-1 overflow-x-auto overflow-y-auto overscroll-contain"
       >
-        <table className="w-full min-w-[960px] border-collapse text-left text-sm">
+        <table className="w-full min-w-[960px] table-fixed border-collapse text-left text-sm">
           <thead className="bg-card sticky top-0 z-10 border-b">
             <tr className="border-border bg-muted/40 text-muted-foreground border-b text-xs font-semibold tracking-wider">
               {/* Checkbox column */}
-              <th className="w-12 px-4 py-3 text-center">
+              <th className="w-12 px-3 py-3 text-center">
                 <input
                   type="checkbox"
                   checked={props.tasks.length > 0 && selectedTaskIds.length === props.tasks.length}
@@ -93,7 +93,7 @@ export function TaskTable(props: Props) {
               {/* Work / Title */}
               <th
                 onClick={() => props.onSort("name")}
-                className="hover:text-foreground w-[320px] max-w-[360px] cursor-pointer px-4 py-3 transition-colors"
+                className="hover:text-foreground w-[280px] cursor-pointer px-4 py-3 transition-colors"
               >
                 <div className="flex items-center gap-1.5">
                   <span>{t("tasks.inline.columns.work")}</span>
@@ -107,12 +107,12 @@ export function TaskTable(props: Props) {
               <th className="w-[180px] px-3 py-3">{t("tasks.assignee")}</th>
 
               {/* Priority */}
-              <th className="w-[120px] px-3 py-3">Độ ưu tiên</th>
+              <th className="w-[110px] px-3 py-3">Độ ưu tiên</th>
 
               {/* Status */}
               <th
                 onClick={() => props.onSort("status")}
-                className="hover:text-foreground w-[140px] cursor-pointer px-3 py-3 transition-colors"
+                className="hover:text-foreground w-[130px] cursor-pointer px-3 py-3 transition-colors"
               >
                 <div className="flex items-center gap-1.5">
                   <span>{t("tasks.inline.columns.status")}</span>
@@ -125,7 +125,7 @@ export function TaskTable(props: Props) {
               {/* Due date */}
               <th
                 onClick={() => props.onSort("dueDate")}
-                className="hover:text-foreground w-[160px] cursor-pointer px-3 py-3 transition-colors"
+                className="hover:text-foreground w-[140px] cursor-pointer px-3 py-3 transition-colors"
               >
                 <div className="flex items-center gap-1.5">
                   <span>{t("tasks.deadline")}</span>
@@ -136,7 +136,7 @@ export function TaskTable(props: Props) {
               </th>
 
               {/* Actions */}
-              <th className="w-[100px] px-4 py-3 text-right">{t("tasks.inline.columns.actions")}</th>
+              <th className="w-[110px] px-4 py-3 text-right">{t("tasks.inline.columns.actions")}</th>
             </tr>
           </thead>
           <tbody className="divide-border divide-y">
@@ -191,7 +191,7 @@ export function TaskTable(props: Props) {
                     {/* Checkbox */}
                     <td
                       onClick={(e) => toggleSelectTask(e, task.id)}
-                      className="w-12 px-4 py-2.5 text-center"
+                      className="w-12 px-3 py-2.5 text-center"
                     >
                       <input
                         type="checkbox"
@@ -203,37 +203,37 @@ export function TaskTable(props: Props) {
                     </td>
 
                     {/* Work / Title */}
-                    <td className="w-[320px] max-w-[360px] px-4 py-2.5">
-                      <div className="flex flex-col" title={task.name}>
+                    <td className="w-[280px] px-4 py-2.5 overflow-hidden">
+                      <div className="flex flex-col max-w-[250px] min-w-0" title={task.name}>
                         <span className="text-foreground group-hover:text-brand-orange truncate font-medium transition-colors">
                           {task.name}
                         </span>
-                        <span className="text-muted-foreground text-xs">
+                        <span className="text-muted-foreground text-xs truncate">
                           {t(`tasks.types.${task.type}`)}
                         </span>
                       </div>
                     </td>
 
                     {/* Assignee */}
-                    <td className="px-3 py-2.5" onClick={(event) => event.stopPropagation()}>
+                    <td className="px-3 py-2.5 overflow-hidden" onClick={(event) => event.stopPropagation()}>
                       <TaskRowActions task={task} field="assignee" />
                     </td>
 
                     {/* Priority */}
-                    <td className="px-3 py-2.5" title={`Độ ưu tiên: ${PRIORITY_CONFIG[task.priority ?? "MEDIUM"]?.label ?? "Medium"}`}>
+                    <td className="px-3 py-2.5 whitespace-nowrap" title={`Độ ưu tiên: ${PRIORITY_CONFIG[task.priority ?? "MEDIUM"]?.label ?? "Medium"}`}>
                       {renderPriority(task.priority)}
                     </td>
 
                     {/* Status Badge */}
-                    <td className="px-3 py-2.5">
+                    <td className="px-3 py-2.5 whitespace-nowrap">
                       <span
                         title={`Trạng thái: ${t(`tasks.status.${status}`, { defaultValue: task.status })}`}
-                        className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-semibold ${statusConf.bg} ${statusConf.text} ${statusConf.border}`}
+                        className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-medium ${statusConf.bg} ${statusConf.text} ${statusConf.border}`}
                       >
+                        <span className={`size-1.5 rounded-full shrink-0 ${statusConf.dot}`} />
                         <span className="truncate">
                           {t(`tasks.status.${status}`, { defaultValue: task.status })}
                         </span>
-                        <ChevronDown className="size-3 shrink-0 opacity-60" />
                       </span>
                     </td>
 
@@ -243,7 +243,7 @@ export function TaskTable(props: Props) {
                     </td>
 
                     {/* Actions */}
-                    <td className="px-3 py-2.5 text-right" onClick={(e) => e.stopPropagation()}>
+                    <td className="px-4 py-2.5 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                       <TaskRowActions task={task} field="start" />
                     </td>
                   </tr>

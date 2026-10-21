@@ -5,6 +5,7 @@ import {
   Check,
   ClipboardCheck,
   ExternalLink,
+  Info,
   RefreshCw,
   RotateCcw,
   Send,
@@ -104,7 +105,7 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
           tabIndex={-1}
           className="flex items-center gap-2 font-semibold"
         >
-          <ClipboardCheck aria-hidden className="size-4 text-brand-orange" />
+          <ClipboardCheck aria-hidden className="text-brand-orange size-4" />
           {t("tasks.review.title")}
         </h3>
         <Button
@@ -120,7 +121,10 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
         </Button>
       </div>
       {state.query.isPending && (
-        <div role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div
+          role="status"
+          className="text-muted-foreground flex items-center gap-2 text-sm"
+        >
           <Spinner />
           {t("tasks.review.loading")}
         </div>
@@ -161,7 +165,18 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
               </Link>
             </Button>
           )}
-          <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-border/40">
+          {view.review.reviewStep && !view.review.allowedActions.canApprove && (
+            <p
+              role="status"
+              className="bg-muted/40 text-muted-foreground flex items-center gap-2 rounded-lg border p-3 text-sm"
+            >
+              <Info aria-hidden className="size-4 shrink-0" />
+              {t("tasks.review.waitingStep", {
+                step: t(`tasks.review.steps.${view.review.reviewStep}`),
+              })}
+            </p>
+          )}
+          <div className="border-border/40 flex flex-wrap items-center gap-2.5 border-t pt-2">
             {ACTIONS.filter((action) => reviewAllows(view, action)).map(
               (action) => {
                 const btnConfig = getActionButtonProps(action);
