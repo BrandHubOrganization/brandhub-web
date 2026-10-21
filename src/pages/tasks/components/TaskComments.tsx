@@ -121,21 +121,26 @@ export function TaskComments({
               {t("tasks.comments.historyError")}
             </p>
           )}
-          <ol className="space-y-4">
+          <ol className="space-y-3">
             {items.map((comment) => (
               <li
                 key={comment.id}
-                className="bg-muted/30 space-y-2 rounded-xl border p-3"
+                className="bg-card/60 hover:bg-card border-border/70 space-y-2.5 rounded-xl border p-3.5 shadow-2xs transition-colors"
               >
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                  <span className="text-foreground text-sm font-semibold">
-                    {comment.authorDisplayName}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {t(`tasks.comments.roles.${comment.authorRole}`)}
-                  </span>
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-brand-orange-soft text-brand-orange flex size-6 shrink-0 items-center justify-center rounded-full text-2xs font-semibold">
+                      {comment.authorDisplayName?.charAt(0).toUpperCase() || "U"}
+                    </div>
+                    <span className="text-foreground text-sm font-semibold">
+                      {comment.authorDisplayName}
+                    </span>
+                    <span className="bg-muted text-muted-foreground rounded-md px-1.5 py-0.5 text-2xs font-medium">
+                      {t(`tasks.comments.roles.${comment.authorRole}`)}
+                    </span>
+                  </div>
                   <time
-                    className="text-muted-foreground"
+                    className="text-muted-foreground text-2xs"
                     dateTime={comment.createdAt}
                   >
                     {Number.isFinite(Date.parse(comment.createdAt))
@@ -146,11 +151,11 @@ export function TaskComments({
                       : "—"}
                   </time>
                 </div>
-                <p className="text-sm break-words whitespace-pre-wrap">
+                <p className="text-foreground/90 pl-8 text-sm break-words whitespace-pre-wrap leading-relaxed">
                   {linkedText(comment.content)}
                 </p>
                 {comment.attachmentIds.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 pl-8 pt-1">
                     {comment.attachmentIds.map((id) => (
                       <TaskCommentImage
                         key={id}

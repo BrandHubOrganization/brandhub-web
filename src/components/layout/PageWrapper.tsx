@@ -15,6 +15,7 @@ export interface PageWrapperProps {
   actions?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  contentClassName?: string;
   compact?: boolean;
   fullWidth?: boolean;
   bannerImage?: string;
@@ -33,6 +34,7 @@ export function PageWrapper({
   actions,
   children,
   className,
+  contentClassName,
   compact = false,
   fullWidth = true,
   bannerImage,
@@ -226,7 +228,7 @@ export function PageWrapper({
       )}
 
       {/* ── BODY CONTENT ── */}
-      <div className="w-full">{children}</div>
+      <div className={cn("w-full", contentClassName)}>{children}</div>
     </div>
   );
 }
