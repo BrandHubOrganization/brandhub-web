@@ -1,12 +1,12 @@
-import { useRef } from "react";
+﻿import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Paperclip, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TaskCommentTextInput } from "@/pages/tasks/components/TaskCommentTextInput";
-import type { TaskCommentInputHandle } from "@/pages/tasks/components/TaskCommentTextInput";
-import { TaskCommentMentions } from "@/pages/tasks/components/TaskCommentMentions";
-import { TaskCommentImage } from "@/pages/tasks/components/TaskCommentImage";
+import { TaskCommentTextInput } from "@/pages/tasks/components/comments/TaskCommentTextInput";
+import type { TaskCommentInputHandle } from "@/pages/tasks/components/comments/TaskCommentTextInput";
+import { TaskCommentMentions } from "@/pages/tasks/components/comments/TaskCommentMentions";
+import { TaskCommentImage } from "@/pages/tasks/components/comments/TaskCommentImage";
 import { useTaskCommentComposer } from "@/pages/tasks/hooks/useTaskCommentComposer";
 
 export function TaskCommentComposer({

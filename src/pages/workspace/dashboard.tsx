@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+﻿import { useEffect, useRef, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -35,10 +34,10 @@ import { WorkspaceCampaignSummary } from "@/pages/workspace/components/Workspace
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
 import type { WorkspaceDashboard } from "@/types/workspace";
-import type { TaskListItem } from "@/types/task";
+import type { TaskListItem, TaskStatus } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
-import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { LineStatChart, PieStatChart } from "@/components/charts/StatCharts";
 import { LeaveWorkspaceDialog } from "./components/LeaveWorkspaceDialog";
 import {

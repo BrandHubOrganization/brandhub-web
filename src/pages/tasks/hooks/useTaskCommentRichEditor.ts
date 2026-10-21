@@ -5,7 +5,7 @@ import StarterKit from "@tiptap/starter-kit";
 import {
   TaskCommentInputGuard,
   TaskCommentMentionNode,
-} from "@/pages/tasks/components/TaskCommentMentionNode";
+} from "@/pages/tasks/utils/TaskCommentMentionNode";
 import {
   commentValue,
   plainCommentDocument,
