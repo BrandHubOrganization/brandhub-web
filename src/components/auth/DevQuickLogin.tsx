@@ -24,7 +24,7 @@ const QUICK_LOGIN_ACCOUNTS = [
     workspaceRole: "MANAGER",
   },
   {
-    email: "user1@demo.brandhub.test",
+    email: "user13@demo.brandhub.test",
     labelKey: "workspace.roles.CREATOR",
     workspaceRole: "CREATOR",
   },

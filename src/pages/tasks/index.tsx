@@ -1,78 +1,31 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import {
-  RefreshCw,
-  List,
-  Calendar,
-  Kanban,
-  GitCommitHorizontal,
-} from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useTasks } from "@/pages/tasks/hooks/useTasks";
 import { TaskFilterBar } from "@/pages/tasks/components/TaskFilterBar";
-import { TaskTable } from "@/pages/tasks/components/TaskTable";
-import { TaskCalendarTimeline } from "@/pages/tasks/components/TaskCalendarTimeline";
-import { TaskBoardView } from "@/pages/tasks/components/TaskBoardView";
-import { TaskGanttView } from "@/pages/tasks/components/TaskGanttView";
 import { TaskDetailPanel } from "@/pages/tasks/components/TaskDetailPanel";
+import { TaskPagination } from "@/pages/tasks/components/TaskPagination";
+import { TaskViewSwitcher, type TaskViewMode } from "@/pages/tasks/components/TaskViewSwitcher";
+import { TaskActiveView } from "@/pages/tasks/components/views/TaskActiveView";
 import { useTaskPanel } from "@/pages/tasks/hooks/useTaskPanel";
-import {
-  TaskWorkflowProvider,
-  useTaskEditContext,
-} from "@/pages/tasks/components/TaskWorkflowProvider";
-import { taskDeadline } from "@/pages/tasks/taskViewData";
+import { TaskWorkflowProvider, useTaskEditContext } from "@/pages/tasks/components/TaskWorkflowProvider";
+import { taskDeadline } from "@/pages/tasks/utils/taskViewData";
 
-function WorkspaceTaskView({
-  workspaceId,
-  state,
-}: {
-  workspaceId: string;
-  state: ReturnType<typeof useTasks>;
-}) {
+function WorkspaceTaskView({ workspaceId, state }: { workspaceId: string; state: ReturnType<typeof useTasks> }) {
   const { t } = useTranslation();
-  const [view, setView] = useState("list");
+  const [view, setView] = useState<TaskViewMode>("list");
   const panel = useTaskPanel(workspaceId);
   const { canLeave } = useTaskEditContext();
+
   const guard = async (action: () => void) => {
     if (await canLeave()) action();
   };
-  const views = [
-    { key: "list", icon: List },
-    { key: "calendar", icon: Calendar },
-    { key: "board", icon: Kanban },
-    { key: "gantt", icon: GitCommitHorizontal },
-  ];
+
   const unscheduled = state.tasks.filter((task) => !taskDeadline(task)).length;
-  const pagination = (
-    <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-      <p className="text-muted-foreground">
-        {t("tasks.pagination", {
-          page: state.page + 1,
-          pages: Math.max(state.totalPages, 1),
-          total: state.totalElements,
-        })}
-      </p>
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          disabled={state.page === 0 || state.loading}
-          onClick={() => guard(() => state.setPage(state.page - 1))}
-        >
-          {t("tasks.previous")}
-        </Button>
-        <Button
-          variant="outline"
-          disabled={state.page + 1 >= state.totalPages || state.loading}
-          onClick={() => guard(() => state.setPage(state.page + 1))}
-        >
-          {t("tasks.next")}
-        </Button>
-      </div>
-    </div>
-  );
+
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-col overflow-auto">
       <PageWrapper
@@ -80,30 +33,12 @@ function WorkspaceTaskView({
         title={t("tasks.title")}
         description={t("tasks.description")}
         actions={
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="border-border bg-muted/60 flex flex-wrap items-center rounded-xl border p-1">
-              {views.map(({ key, icon: Icon }) => (
-                <Button
-                  key={key}
-                  variant={view === key ? "secondary" : "ghost"}
-                  size="sm"
-                  aria-pressed={view === key}
-                  onClick={() => guard(() => setView(key))}
-                >
-                  <Icon aria-hidden className="size-3.5" />
-                  {t(`tasks.views.${key}`)}
-                </Button>
-              ))}
-            </div>
-            <Button
-              variant="outline"
-              disabled={state.loading}
-              onClick={() => guard(() => void state.loadTasks())}
-            >
-              <RefreshCw aria-hidden className="size-4" />
-              {t("tasks.refresh")}
-            </Button>
-          </div>
+          <TaskViewSwitcher
+            currentView={view}
+            onViewChange={(v) => guard(() => setView(v))}
+            onRefresh={() => guard(() => void state.loadTasks())}
+            loading={state.loading}
+          />
         }
       >
         <div className="flex min-h-0 flex-1 flex-col gap-3 px-5 py-3">
@@ -112,25 +47,17 @@ function WorkspaceTaskView({
               {t("tasks.inline.refreshError")}
             </p>
           )}
+
           <TaskFilterBar
             search={state.search}
             onSearchChange={(value) => guard(() => state.setSearch(value))}
             typeFilter={state.typeFilter}
-            onTypeFilterChange={(value) => {
-              guard(() => {
-                state.setTypeFilter(value);
-                state.setPage(0);
-              });
-            }}
+            onTypeFilterChange={(v) => guard(() => { state.setTypeFilter(v); state.setPage(0); })}
             statusFilter={state.statusFilter}
-            onStatusFilterChange={(value) => {
-              guard(() => {
-                state.setStatusFilter(value);
-                state.setPage(0);
-              });
-            }}
+            onStatusFilterChange={(v) => guard(() => { state.setStatusFilter(v); state.setPage(0); })}
             onSearchSubmit={() => guard(() => void state.loadTasks())}
           />
+
           <div className="min-h-0 flex-1 overflow-auto">
             {state.loading && (
               <div role="status" className="flex items-center gap-2">
@@ -138,85 +65,40 @@ function WorkspaceTaskView({
                 {t("tasks.loading")}
               </div>
             )}
+
             {!state.loading && state.error && (
-              <div
-                role="alert"
-                className="border-border bg-card rounded-xl border p-4"
-              >
+              <div role="alert" className="border-border bg-card rounded-xl border p-4">
                 <p className="text-destructive">{t("tasks.error")}</p>
-                <Button
-                  variant="outline"
-                  className="mt-3"
-                  onClick={() => void state.loadTasks()}
-                >
+                <Button variant="outline" className="mt-3" onClick={() => void state.loadTasks()}>
                   {t("tasks.retry")}
                 </Button>
               </div>
             )}
+
             {!state.loading && !state.error && (
-              <>
-                {state.tasks.length === 0 && (
-                  <p className="text-muted-foreground rounded-xl border p-6">
-                    {t(
-                      state.search.trim() ||
-                        state.statusFilter !== "ALL" ||
-                        state.typeFilter !== "ALL"
-                        ? "tasks.noMatches"
-                        : "tasks.empty",
-                    )}
-                  </p>
-                )}
-                {view !== "list" && (
-                  <p className="text-muted-foreground text-xs">
-                    {t("tasks.pageNotice")}
-                  </p>
-                )}
-                {(view === "calendar" || view === "gantt") &&
-                  unscheduled > 0 && (
-                    <p role="status" className="text-muted-foreground text-sm">
-                      {t("tasks.unscheduled", { count: unscheduled })}
-                    </p>
-                  )}
-                {view === "list" && state.tasks.length > 0 && (
-                  <TaskTable
-                    tasks={state.tasks}
-                    loading={state.loading}
-                    page={state.page}
-                    totalPages={state.totalPages}
-                    totalElements={state.totalElements}
-                    onPageChange={(value) => guard(() => state.setPage(value))}
-                    sortField={state.sortField}
-                    onSort={(value) => guard(() => state.handleSort(value))}
-                    onResetFilters={() => guard(state.resetFilters)}
-                    isFiltered={Boolean(
-                      state.search ||
-                      state.typeFilter !== "ALL" ||
-                      state.statusFilter !== "ALL",
-                    )}
-                    activeTaskId={panel.taskId}
-                    onTaskClick={panel.open}
-                  />
-                )}
-                {view === "calendar" && (
-                  <TaskCalendarTimeline
-                    tasks={state.tasks}
-                    onTaskClick={panel.open}
-                    workspaceId={workspaceId}
-                    onUpdated={() => void state.loadTasks(true)}
-                  />
-                )}
-                {view === "board" && (
-                  <TaskBoardView tasks={state.tasks} onTaskClick={panel.open} />
-                )}
-                {view === "gantt" && (
-                  <TaskGanttView tasks={state.tasks} onTaskClick={panel.open} />
-                )}
-              </>
+              <TaskActiveView
+                view={view}
+                workspaceId={workspaceId}
+                state={state}
+                panel={panel}
+                guard={guard}
+                unscheduled={unscheduled}
+              />
             )}
           </div>
-          {(view !== "list" || state.tasks.length === 0) && pagination}
+
+          {(view !== "list" || state.tasks.length === 0) && (
+            <TaskPagination
+              page={state.page}
+              totalPages={state.totalPages}
+              totalElements={state.totalElements}
+              loading={state.loading}
+              onPageChange={(newPage) => guard(() => state.setPage(newPage))}
+            />
+          )}
         </div>
       </PageWrapper>
+
       <TaskDetailPanel
         workspaceId={workspaceId}
         taskId={panel.taskId}

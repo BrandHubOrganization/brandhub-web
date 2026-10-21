@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   AlignLeft,
   Calendar,
+  Clock,
   ExternalLink,
   FileText,
   FolderKanban,
@@ -18,10 +19,12 @@ import { InlineTaskField } from "@/pages/tasks/components/InlineTaskField";
 import { TaskInlineAssignment } from "@/pages/tasks/components/TaskInlineAssignment";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
-import { taskInstant, taskLocalMinute } from "@/pages/tasks/taskWorkflowDates";
-import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { taskInstant, taskLocalMinute } from "@/pages/tasks/utils/taskWorkflowDates";
+import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useTaskPost } from "@/pages/tasks/hooks/useTaskPost";
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
 function readableDate(value: string | null, zone: string, language: string) {
@@ -61,8 +64,8 @@ export function TaskDeadlineField({
   const zone = task.dates.timezone || "UTC";
   return (
     <div className="space-y-1.5">
-      <div className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium">
-        <Calendar className="size-3.5 text-muted-foreground" />
+      <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+        <Calendar className="text-muted-foreground size-3.5" />
         <span>{t("tasks.deadline")}</span>
       </div>
       <InlineTaskField
@@ -73,11 +76,115 @@ export function TaskDeadlineField({
         displayValue={readableDate(task.dueDate, zone, i18n.language)}
         editable={task.allowedActions.canEditDetail && task.dates.ready}
         min={task.dates.minDate ? `${task.dates.minDate}T00:00` : undefined}
-        max={task.dates.maxDate ? `${task.dates.maxDate}T23:59` : undefined}
-        required={Boolean(task.assigneeId)}
-        save={(value) =>
-          state.field("dueDate", value ? taskInstant(value, zone) : null)
+        max={
+          task.publishDate
+            ? taskLocalMinute(task.publishDate, zone)
+            : task.dates.maxDate
+              ? `${task.dates.maxDate}T23:59`
+              : undefined
         }
+        required={Boolean(task.assigneeId)}
+        save={(value) => {
+          if (value && task.publishDate) {
+            const nextDue = new Date(taskInstant(value, zone) || "").getTime();
+            const pubTime = new Date(task.publishDate).getTime();
+            if (nextDue >= pubTime) {
+              toast.error(t("tasks.dueDateMustBeBeforePublishDate"));
+              return;
+            }
+          }
+          return state.field(
+            "dueDate",
+            value ? taskInstant(value, zone) : null,
+          );
+        }}
+        retry={state.retry}
+      />
+    </div>
+  );
+}
+
+export function TaskPublishTimeField({
+  task,
+  scope = "detail",
+}: {
+  task: TaskWorkflow;
+  scope?: string;
+}) {
+  const { t, i18n } = useTranslation();
+  const state = useTaskWorkflow(task.workspaceId, task.id);
+  const zone = task.dates.timezone || "UTC";
+  const { data: taskPost } = useTaskPost(
+    task.workspaceId,
+    task.id,
+    task.type === "POST",
+  );
+  const post = taskPost?.post;
+  const currentPublish = task.publishDate || post?.scheduledAt || null;
+
+  return (
+    <div className="space-y-1.5 pt-2">
+      <div className="flex items-center justify-between">
+        <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+          <Clock className="text-brand-orange size-3.5" />
+          <span>{t("tasks.publishTime")}</span>
+        </div>
+        {currentPublish && (
+          <div>
+            {task.status === "FINISHED" || post?.status === "PUBLISHED" ? (
+              <span className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-2xs rounded px-2 py-0.5 font-semibold">
+                Đã đăng
+              </span>
+            ) : post?.status === "FAILED" ? (
+              <span className="bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-2xs rounded px-2 py-0.5 font-semibold">
+                Thất bại
+              </span>
+            ) : post?.status === "IN_PROGRESS" || post?.status === "PUBLISHING" ? (
+              <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-2xs rounded px-2 py-0.5 font-semibold animate-pulse">
+                Đang đăng...
+              </span>
+            ) : (
+              <span className="bg-brand-orange-soft text-brand-orange text-2xs rounded px-2 py-0.5 font-semibold">
+                Lên lịch
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      <InlineTaskField
+        id={`task-${task.id}-${scope}-publishDate`}
+        label=""
+        type="datetime-local"
+        value={taskLocalMinute(currentPublish, zone)}
+        displayValue={
+          currentPublish
+            ? readableDate(currentPublish, zone, i18n.language)
+            : t("tasks.notScheduled")
+        }
+        editable={task.allowedActions.canEditDetail && task.dates.ready}
+        min={
+          task.dueDate
+            ? taskLocalMinute(task.dueDate, zone)
+            : task.dates.minDate
+              ? `${task.dates.minDate}T00:00`
+              : undefined
+        }
+        max={task.dates.maxDate ? `${task.dates.maxDate}T23:59` : undefined}
+        save={(value) => {
+          if (value && task.dueDate) {
+            const nextPub = new Date(taskInstant(value, zone) || "").getTime();
+            const dueTime = new Date(task.dueDate).getTime();
+            if (nextPub <= dueTime) {
+              toast.error(t("tasks.publishDateMustBeAfterDueDate"));
+              return;
+            }
+          }
+          return state.field(
+            "publishDate",
+            value ? taskInstant(value, zone) : null,
+          );
+        }}
         retry={state.retry}
       />
     </div>
@@ -98,9 +205,9 @@ function References({ task }: { task: TaskWorkflow }) {
       return null;
     }
     return (
-      <section className="bg-card/50 border-border/70 rounded-xl border p-4 shadow-xs space-y-2.5">
+      <section className="bg-card/50 border-border/70 space-y-2.5 rounded-xl border p-4 shadow-xs">
         <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
-          <Link2 className="size-3.5 text-brand-orange" />
+          <Link2 className="text-brand-orange size-3.5" />
           <span>{t("tasks.workflow.fields.inputReferences")}</span>
         </div>
         <div className="flex flex-wrap gap-2 pt-0.5">
@@ -137,7 +244,7 @@ function References({ task }: { task: TaskWorkflow }) {
 
   return (
     <div
-      className="bg-card/50 border-border/70 rounded-xl border p-4 shadow-xs space-y-3"
+      className="bg-card/50 border-border/70 space-y-3 rounded-xl border p-4 shadow-xs"
       onBlur={(event) => {
         if (
           field.status !== "error" &&
@@ -147,7 +254,7 @@ function References({ task }: { task: TaskWorkflow }) {
       }}
     >
       <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
-        <Link2 className="size-3.5 text-brand-orange" />
+        <Link2 className="text-brand-orange size-3.5" />
         <span>{t("tasks.workflow.fields.inputReferences")}</span>
       </div>
       <fieldset disabled={field.status === "saving"}>
@@ -157,14 +264,12 @@ function References({ task }: { task: TaskWorkflow }) {
           onChange={field.change}
         />
       </fieldset>
-      <p aria-live="polite" className="text-xs">
-        {field.error ||
-          (field.status === "saving"
-            ? t("tasks.inline.saving")
-            : field.status === "saved"
-              ? t("tasks.inline.saved")
-              : "")}
-      </p>
+      {(field.error || field.status === "saving") && (
+        <p aria-live="polite" className="text-xs">
+          {field.error ||
+            (field.status === "saving" ? t("tasks.inline.saving") : "")}
+        </p>
+      )}
       {field.error && (
         <div className="flex gap-2">
           <Button
@@ -206,7 +311,7 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
       <div className="flex flex-wrap items-center gap-2">
         <span
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border transition-colors",
+            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
             statusCfg.bg,
             statusCfg.text,
             statusCfg.border,
@@ -242,9 +347,9 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
       </div>
 
       {/* Description Section */}
-      <div className="bg-card/50 border-border/70 rounded-xl border p-4 shadow-xs space-y-2">
-        <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-          <AlignLeft className="size-3.5 text-brand-orange" />
+      <div className="bg-card/50 border-border/70 space-y-2 rounded-xl border p-4 shadow-xs">
+        <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
+          <AlignLeft className="text-brand-orange size-3.5" />
           <span>{t("tasks.workflow.fields.description")}</span>
         </div>
         <InlineTaskField
@@ -261,17 +366,22 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
       </div>
 
       {/* Properties & Assignment Card */}
-      <div className="bg-card/50 border-border/70 rounded-xl border p-4 shadow-xs space-y-4">
+      <div className="bg-card/50 border-border/70 space-y-4 rounded-xl border p-4 shadow-xs">
         <h3 className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
           <Sparkles className="text-brand-orange size-3.5" />
-          <span>{t("tasks.workflow.properties", { defaultValue: "Thông tin & Phân công" })}</span>
+          <span>
+            {t("tasks.workflow.properties", {
+              defaultValue: "Thông tin & Phân công",
+            })}
+          </span>
         </h3>
 
         <TaskInlineAssignment task={task} />
 
-        <div className="border-border/50 border-t pt-3">
+        <div className="border-border/50 space-y-3 border-t pt-3">
           <TaskDeadlineField task={task} />
-          <div className="flex items-center gap-1.5 text-2xs text-muted-foreground pt-1.5">
+          {task.type === "POST" && <TaskPublishTimeField task={task} />}
+          <div className="text-2xs text-muted-foreground flex items-center gap-1.5 pt-1.5">
             <Globe className="size-3" />
             <span>{t("tasks.workflow.timezone", { timezone: zone })}</span>
           </div>
@@ -332,4 +442,3 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
     </div>
   );
 }
-

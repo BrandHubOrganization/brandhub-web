@@ -1,19 +1,19 @@
-import { useRef, useState } from "react";
+﻿import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ClipboardCheck, Info, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useTaskApproval } from "@/pages/tasks/hooks/useTaskApproval";
-import { TaskReviewStatus } from "@/pages/tasks/components/TaskReviewStatus";
-import { TaskReviewContent } from "@/pages/tasks/components/TaskReviewContent";
-import { TaskApprovalHistory } from "@/pages/tasks/components/TaskApprovalHistory";
-import { TaskReviewDialog } from "@/pages/tasks/components/TaskReviewDialog";
+import { TaskReviewStatus } from "@/pages/tasks/components/approval/TaskReviewStatus";
+import { TaskReviewContent } from "@/pages/tasks/components/approval/TaskReviewContent";
+import { TaskApprovalHistory } from "@/pages/tasks/components/approval/TaskApprovalHistory";
+import { TaskReviewDialog } from "@/pages/tasks/components/approval/TaskReviewDialog";
 import {
   reviewAllows,
   reviewError,
   reviewMatches,
-} from "@/pages/tasks/taskApprovalView";
+} from "@/pages/tasks/utils/taskApprovalView";
 import type {
   ReviewAction,
   TaskReviewView,
