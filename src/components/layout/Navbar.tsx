@@ -248,6 +248,10 @@ export function Navbar({
   }
 
   const getBreadcrumbs = () => {
+    if (isAdmin && location.pathname === "/admin/invoices") return [
+      {label: t("admin.navigation.workspace"), path: "/admin"},
+      {label: t("admin.navigation.invoices"), path: "/admin/invoices"},
+    ];
     if (isAdmin && location.pathname === "/admin") {
       const requested =
         new URLSearchParams(location.search).get("view") || "overview";

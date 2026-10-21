@@ -1,6 +1,13 @@
+import { Link } from "react-router-dom";
 import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { AgencyPaymentPanel } from "@/pages/subscription/components/AgencyPaymentPanel";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
@@ -13,22 +20,41 @@ import { CatalogPlanCard } from "@/pages/subscription/components/CatalogPlanCard
 import { useSubscriptionCatalog } from "@/pages/subscription/hooks/useSubscriptionCatalog";
 
 export function SubscriptionPlansPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const userId = useAuthStore((state) => state.user?.id);
   const agencyId = useAgencyStore((state) => state.currentAgencyId);
   const scope = `${userId}:${agencyId}:PLUS`;
   const [paymentScope, setPaymentScope] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const refreshSubscription = useCallback(() => {
-    void queryClient.invalidateQueries({ queryKey: ["agency-subscription", userId, agencyId] });
+    void queryClient.invalidateQueries({
+      queryKey: ["ai-credit-balance", userId, agencyId],
+    });
+    void queryClient.invalidateQueries({
+      queryKey: ["agency-subscription", userId, agencyId],
+    });
   }, [queryClient, userId, agencyId]);
   const { isOwner, catalog, subscription } = useSubscriptionCatalog();
+
+  const checkoutAction =
+    subscription.data?.planCode === "PLUS" ? "RENEWAL" : "UPGRADE";
+  const checkoutScope = `${scope}:${checkoutAction}:${subscription.data?.currentPeriodEnd || "initial"}`;
+  const paymentOpen = Boolean(isOwner && paymentScope?.startsWith(`${scope}:`));
 
   return (
     <PageWrapper
       title={t("subscription.plans.title")}
       description={t("subscription.plans.description")}
     >
+      {isOwner && (
+        <div className="mb-5 flex justify-end">
+          <Button variant="outline" asChild>
+            <Link to="/subscription/invoices">
+              {t("subscription.invoices.title")}
+            </Link>
+          </Button>
+        </div>
+      )}
       {!isOwner ? (
         <div
           role="alert"
@@ -84,6 +110,35 @@ export function SubscriptionPlansPage() {
         </div>
       ) : (
         <>
+          {subscription.data?.planCode === "PLUS" &&
+            subscription.data.currentPeriodEnd && (
+              <div
+                role="status"
+                className="border-border bg-card mb-5 space-y-1 rounded-xl border p-4 text-sm"
+              >
+                <p>
+                  {t(
+                    subscription.data.status === "EXPIRED"
+                      ? "subscription.catalog.expiredAt"
+                      : "subscription.catalog.expiresAt",
+                    {
+                      date: new Date(
+                        subscription.data.currentPeriodEnd!,
+                      ).toLocaleString(i18n.language),
+                    },
+                  )}
+                </p>
+                {subscription.data.renewalScheduled && (
+                  <p className="text-muted-foreground">
+                    {t("subscription.catalog.paidThrough", {
+                      date: new Date(
+                        subscription.data.paidThrough!,
+                      ).toLocaleString(i18n.language),
+                    })}
+                  </p>
+                )}
+              </div>
+            )}
           {subscription.isPending && (
             <p role="status" className="text-muted-foreground mb-5 text-sm">
               {t("subscription.plans.loadingAgencyPlan")}
@@ -115,20 +170,40 @@ export function SubscriptionPlansPage() {
                 key={plan.id}
                 plan={plan}
                 subscription={subscription.data}
-                onUpgrade={() => setPaymentScope(scope)}
+                onUpgrade={() => setPaymentScope(checkoutScope)}
               />
             ))}
           </div>
         </>
       )}
-      <Dialog open={isOwner && paymentScope === scope} onOpenChange={(open) => { if (!open) setPaymentScope(null); }}>
+      <Dialog
+        open={paymentOpen}
+        onOpenChange={(open) => {
+          if (!open) setPaymentScope(null);
+        }}
+      >
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{t("subscription.checkout.plusAgency")}</DialogTitle>
-            <DialogDescription>{t("subscription.checkout.description")}</DialogDescription>
+            <DialogTitle>
+              {t(
+                paymentScope?.includes(":RENEWAL:")
+                  ? "subscription.checkout.renewAgency"
+                  : "subscription.checkout.plusAgency",
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {t("subscription.checkout.description")}
+            </DialogDescription>
           </DialogHeader>
-          {isOwner && paymentScope === scope && (
-            <AgencyPaymentPanel key={scope} scope={scope} onFulfilled={refreshSubscription} />
+          {paymentOpen && paymentScope && (
+            <AgencyPaymentPanel
+              key={paymentScope}
+              scope={paymentScope}
+              action={
+                paymentScope.includes(":RENEWAL:") ? "RENEWAL" : "UPGRADE"
+              }
+              onFulfilled={refreshSubscription}
+            />
           )}
         </DialogContent>
       </Dialog>

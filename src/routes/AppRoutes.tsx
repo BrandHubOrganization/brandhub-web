@@ -274,6 +274,7 @@ const VideoStudioPage = lazyNamed(
 );
 
 // ── Admin Pages ──
+const AdminInvoicesPage = lazy(() => import("@/pages/admin/InvoicesPage"));
 const AdminPage = lazyNamed(() => import("@/pages/admin"), "AdminPage");
 const SystemHealthPage = lazy(() => import("@/pages/admin/system-health"));
 const WorkspaceTemplateLibraryPage = lazy(
@@ -505,6 +506,7 @@ export function AppRoutes() {
             <Route path="/agency/:id/roles" element={<AgencyRolesPage />} />
             <Route path="/agency/:id/stats" element={<AgencyStatsPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin/invoices" element={<AdminInvoicesPage />} />
             <Route path="/admin/system-health" element={<SystemHealthPage />} />
             <Route
               path="/admin/workspace-templates"

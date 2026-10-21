@@ -84,19 +84,31 @@ export function CatalogPlanCard({
             currency: plan.currency,
             maximumFractionDigits: 0,
           }).format(BigInt(plan.priceMonthly));
-  const action = isCurrent
-    ? "currentPlan"
-    : !plan.isSellable
-      ? "notOnSale"
-      : isFree
-        ? "free"
-        : !subscription
-          ? "subscriptionPending"
-          : !plan.checkoutEnabled
-            ? "checkoutUnavailable"
-            : !canUpgrade
-              ? "changeUnavailable"
-              : "upgrade";
+  const canRenew =
+    plan.code === "PLUS" &&
+    subscription?.planCode === "PLUS" &&
+    subscription.status !== "SUSPENDED" &&
+    !subscription.renewalScheduled &&
+    plan.isSellable &&
+    plan.checkoutEnabled;
+  const action =
+    subscription?.renewalScheduled && plan.code === "PLUS"
+      ? "renewalScheduled"
+      : canRenew
+        ? "renew"
+        : isCurrent
+          ? "currentPlan"
+          : !plan.isSellable
+            ? "notOnSale"
+            : isFree
+              ? "free"
+              : !subscription
+                ? "subscriptionPending"
+                : !plan.checkoutEnabled
+                  ? "checkoutUnavailable"
+                  : !canUpgrade
+                    ? "changeUnavailable"
+                    : "upgrade";
 
   return (
     <section
@@ -158,8 +170,8 @@ export function CatalogPlanCard({
       </ul>
       <Button
         className="disabled:border-border disabled:bg-muted disabled:text-muted-foreground min-h-11 w-full rounded-lg disabled:opacity-100"
-        variant={canUpgrade ? "orange" : "outline"}
-        disabled={!canUpgrade}
+        variant={canUpgrade || canRenew ? "orange" : "outline"}
+        disabled={!canUpgrade && !canRenew}
         onClick={onUpgrade}
       >
         {t(`subscription.catalog.${action}`)}
