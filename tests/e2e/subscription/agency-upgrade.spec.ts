@@ -107,9 +107,11 @@ test("catalog renders API names and changed quotas without seeded values", async
   await expect(plus.getByRole("button", { name: "Nâng cấp" })).toBeEnabled();
   await plus.getByRole("button", { name: "Nâng cấp" }).click();
   await expect(page).toHaveURL(/\/subscription\/plans$/);
-    await expect(page.getByRole("dialog", { name: "Nâng Agency lên Plus" })).toBeVisible();
-    await page.keyboard.press("Escape");
-    await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(
+    page.getByRole("dialog", { name: "Nâng Agency lên Plus" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
 test("catalog failure has no seeded fallback and keyboard retry recovers", async ({
@@ -323,9 +325,12 @@ test("switching agencies never reuses the previous subscription status", async (
   );
   await page.goto("/subscription/plans");
   await expect(
-    page.getByTestId("plan-PLUS").getByRole("button", { name: "Gói hiện tại" }),
-  ).toBeDisabled();
-  await expect(page.getByTestId("agency-switcher")).toHaveAttribute("data-plan", "PLUS");
+    page.getByTestId("plan-PLUS").getByRole("button", { name: "Gia hạn" }),
+  ).toBeEnabled();
+  await expect(page.getByTestId("agency-switcher")).toHaveAttribute(
+    "data-plan",
+    "PLUS",
+  );
   await expect(page.getByTestId("agency-plus-badge")).toBeVisible();
   await page.getByRole("button", { name: /Test Agency/ }).click();
   await page.getByRole("menuitem", { name: /Second Agency/ }).click();
@@ -440,7 +445,10 @@ test("checkout remains pending until the backend reports SePay fulfillment", asy
   await setupAgency(page, "OWNER");
   const keys: string[] = [];
   page.on("request", (request) => {
-    if (request.method() === "POST" && request.url().endsWith("/agency-1/orders")) {
+    if (
+      request.method() === "POST" &&
+      request.url().endsWith("/agency-1/orders")
+    ) {
       keys.push(request.headers()["idempotency-key"]);
     }
   });
@@ -475,10 +483,17 @@ test("checkout remains pending until the backend reports SePay fulfillment", asy
       ),
   );
   await page.goto("/subscription/plans");
-  await page.getByTestId("plan-PLUS").getByRole("button", { name: "Nâng cấp" }).click();
-  await expect(page.getByRole("dialog", { name: "Nâng Agency lên Plus" })).toBeVisible();
+  await page
+    .getByTestId("plan-PLUS")
+    .getByRole("button", { name: "Nâng cấp" })
+    .click();
+  await expect(
+    page.getByRole("dialog", { name: "Nâng Agency lên Plus" }),
+  ).toBeVisible();
   await expect(page).toHaveURL(/\/subscription\/plans$/);
-  await expect(page.getByRole("button", { name: "Tạo mã QR thanh toán" })).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Tạo mã QR thanh toán" }),
+  ).toHaveCount(0);
   await expect(page.getByTestId("payment-state")).toHaveText(
     "Đang chờ thanh toán",
   );
@@ -489,8 +504,123 @@ test("checkout remains pending until the backend reports SePay fulfillment", asy
   expect(keys[0]).toBeTruthy();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  await page.getByTestId("plan-PLUS").getByRole("button", { name: "Nâng cấp" }).click();
-  await expect(page.getByTestId("payment-state")).toHaveText("Đang chờ thanh toán");
+  await page
+    .getByTestId("plan-PLUS")
+    .getByRole("button", { name: "Nâng cấp" })
+    .click();
+  await expect(page.getByTestId("payment-state")).toHaveText(
+    "Đang chờ thanh toán",
+  );
   expect(keys).toHaveLength(2);
   expect(keys[1]).toBe(keys[0]);
+});
+
+test("Plus owner can renew with a separate payment action and queued period disables another renewal", async ({
+  page,
+}) => {
+  await setupAgency(page, "OWNER");
+  let scheduled = false;
+  let action: string | undefined;
+  await page.route(
+    "**/api/v1/billing/agencies/agency-1/subscription",
+    (route) =>
+      route.fulfill(
+        ok({
+          planCode: "PLUS",
+          status: "ACTIVE",
+          currentPeriodEnd: "2026-10-21T23:59:59+07:00",
+          paidThrough: scheduled
+            ? "2026-11-21T23:59:59+07:00"
+            : "2026-10-21T23:59:59+07:00",
+          renewalScheduled: scheduled,
+        }),
+      ),
+  );
+  await page.route("**/api/v1/billing/agencies/agency-1/orders", (route) => {
+    action = route.request().postDataJSON().action;
+    scheduled = true;
+    return route.fulfill(
+      ok({
+        orderId: "renew-1",
+        planCode: "PLUS",
+        status: "FULFILLED",
+        amount: "5000",
+        currency: "VND",
+        transferContent: "BHRENEW1",
+        qrUrl: "https://example.test/qr.png",
+        expiresAt: new Date(Date.now() + 600000).toISOString(),
+      }),
+    );
+  });
+  await page.goto("/subscription/plans");
+  await page
+    .getByTestId("plan-PLUS")
+    .getByRole("button", { name: "Gia hạn", exact: true })
+    .click();
+  await expect(
+    page.getByRole("dialog", { name: "Gia hạn Agency Plus" }),
+  ).toBeVisible();
+  await expect.poll(() => action).toBe("RENEWAL");
+  await expect(page.getByTestId("payment-state")).toHaveText("Đã ghi nhận gia hạn");
+  await page.keyboard.press("Escape");
+  await expect(
+    page
+      .getByTestId("plan-PLUS")
+      .getByRole("button", { name: "Đã lên lịch gia hạn" }),
+  ).toBeDisabled();
+  await expect(
+    page.getByText(/Credit kỳ mới được cấp khi kỳ mới bắt đầu/),
+  ).toBeVisible();
+});
+
+
+test("QR countdown expires without confirming payment", async ({ page }) => {
+  await setupAgency(page, "OWNER");
+  const start = new Date("2026-10-21T06:00:00Z");
+  await page.clock.install({ time: start });
+  const order = {
+    orderId: "countdown-order", planCode: "PLUS", status: "PENDING_PAYMENT",
+    amount: "5000", currency: "VND", transferContent: "BHCOUNTDOWN",
+    qrUrl: "https://example.test/qr.png",
+    expiresAt: new Date(start.getTime() + 65000).toISOString(),
+  };
+  await page.route("**/api/v1/billing/agencies/agency-1/orders", route => route.fulfill(ok(order)));
+  await page.route("**/api/v1/billing/agencies/agency-1/orders/countdown-order", route => route.fulfill(ok(order)));
+  await page.goto("/subscription/plans");
+  await page.getByTestId("plan-PLUS").getByRole("button", { name: "Nâng cấp" }).click();
+  await expect(page.getByTestId("payment-countdown")).toBeVisible();
+  await page.clock.pauseAt(new Date(start.getTime() + 30000));
+  await expect(page.getByTestId("payment-countdown")).toContainText("00:35");
+  await page.clock.fastForward(10000);
+  await expect(page.getByTestId("payment-countdown")).toContainText("00:25");
+  await page.clock.fastForward(60000);
+  await expect(page.getByTestId("payment-countdown")).toContainText("00:00");
+  await expect(page.getByRole("button", { name: "Tạo đơn mới" })).toBeVisible();
+  await expect(page.getByRole("dialog").locator("img")).toHaveCount(0);
+  await expect(page.getByTestId("payment-state")).toHaveText("Đang chờ thanh toán");
+});
+
+
+test("sidebar credit renders active Plus bigint balance and details", async ({ page }) => {
+  await setupAgency(page, "OWNER");
+  const failed = false;
+  await page.route("**/api/v1/billing/agencies/agency-1/credits/summary", route => route.fulfill(failed ? {status:503,contentType:"application/json",body:JSON.stringify({success:false})} : ok({visible:true,agencyId:"agency-1",workspaceId:null,scope:"AGENCY",available:"9007199254740993",allocated:"18014398509481986",reserved:"10",expiresAt:"2026-12-01T00:00:00Z"})));
+  await page.goto("/subscription/plans");
+  const card = page.getByTestId("sidebar-ai-credit");
+
+  await expect(card.getByRole("button",{name:"9.007.199.254.740.993"})).toBeVisible();
+  await expect(card.getByRole("progressbar")).toHaveAttribute("aria-valuenow","50");
+  await card.getByRole("button",{name:"9.007.199.254.740.993"}).click();
+  await expect(card.getByText("Đang giữ cho tác vụ AI: 10")).toBeVisible();
+  await page.evaluate(() => document.documentElement.classList.add("dark"));
+  await expect(card).toBeVisible();
+});
+
+
+test("credit block is hidden for agencies without active Plus", async ({page}) => {
+  await setupAgency(page,"OWNER");
+  await page.route("**/api/v1/billing/agencies/agency-1/credits/summary", route => route.fulfill(ok({visible:false,agencyId:"agency-1",workspaceId:null,scope:"AGENCY",available:"0",allocated:null,reserved:null,expiresAt:null})));
+  await page.goto("/subscription/plans");
+  await expect(page.getByTestId("agency-plan-list")).toBeVisible();
+  await expect(page.getByTestId("sidebar-ai-credit")).toHaveCount(0);
 });

@@ -1,4 +1,17 @@
 {
+  "credits": {
+    "agency": "AI credit · Agency",
+    "workspace": "AI credit khả dụng",
+    "loading": "Đang tải…",
+    "retry": "Thử lại",
+    "unavailable": "Chưa tải được số dư credit.",
+    "remaining": "Tỷ lệ credit còn lại",
+    "empty": "Đã hết credit khả dụng.",
+    "shared": "Credit dùng chung trong agency. Bấm số dư để thu gọn.",
+    "reserved": "Đang giữ cho tác vụ AI: {{amount}}",
+    "expiry": "Credit gần nhất hết hạn: {{date}}",
+    "scoped": "Số dư đã tính hạn mức workspace và hạn mức cá nhân."
+},
   "status": {
     "ACTIVE": "Đang hoạt động",
     "PAST_DUE": "Quá hạn thanh toán",
@@ -50,6 +63,8 @@
     "qrAlt": "Mã QR chuyển khoản ngân hàng",
     "transferContentLabel": "Nội dung chuyển khoản",
     "status": "Trạng thái",
+    "countdown": "Mã hết hạn sau {{time}}",
+    "qrExpired": "Mã QR đã hết hạn. Vui lòng tạo đơn mới nếu chưa chuyển khoản.",
     "expiry": "Mã hết hạn lúc {{date}}",
     "waitingForWebhook": "Đang chờ SePay xác nhận giao dịch…",
     "activated": "Agency đã được nâng cấp lên Plus.",
@@ -62,25 +77,86 @@
       "EXPIRED": "Đơn đã hết hạn",
       "REVIEW_REQUIRED": "Giao dịch cần được đối soát"
     },
-    "generatingQr": "Đang tạo mã QR thanh toán…"
+    "generatingQr": "Đang tạo mã QR thanh toán…",
+    "renewAgency": "Gia hạn Agency Plus",
+    "renewed": "Đã ghi nhận gia hạn Plus. Nếu kỳ hiện tại còn hiệu lực, kỳ mới sẽ bắt đầu ngay sau đó.",
+    "renewalRecorded": "Đã ghi nhận gia hạn"
   },
   "invoices": {
-    "title": "Lịch sử hóa đơn",
-    "description": "Xem lại các hóa đơn đăng ký trước đây.",
-    "loadError": "Không thể tải hóa đơn.",
+    "title": "Lịch sử thanh toán",
+    "description": "Xem đơn thanh toán, biên nhận và tra cứu giao dịch SePay của agency đang chọn.",
+    "loadError": "Không thể tải lịch sử thanh toán.",
     "retry": "Thử lại",
-    "number": "Hóa đơn",
+    "number": "Mã đơn",
     "tier": "Gói",
     "amount": "Số tiền",
     "status": "Trạng thái",
-    "issuedAt": "Ngày phát hành",
+    "issuedAt": "Ngày tạo",
     "download": "Tải xuống",
     "downloadUnavailable": "Tính năng tải PDF chưa khả dụng trong bản demo.",
     "statuses": {
-      "PAID": "Đã thanh toán",
+      "PAID": "Đã nhận tiền",
+      "FULFILLED": "Đã hoàn tất",
+      "PENDING_PAYMENT": "Chờ thanh toán",
       "PENDING": "Đang chờ",
-      "FAILED": "Thất bại"
-    }
+      "FAILED": "Thất bại",
+      "EXPIRED": "Đã hết hạn",
+      "CANCELLED": "Đã hủy",
+      "REVIEW_REQUIRED": "Cần đối soát"
+    },
+    "empty": "Chưa có đơn thanh toán phù hợp.",
+    "detail": "Chi tiết",
+    "all": "Tất cả",
+    "kind": "Loại giao dịch",
+    "from": "Từ ngày",
+    "to": "Đến ngày",
+    "invalidDates": "Ngày kết thúc phải từ ngày bắt đầu trở đi.",
+    "pagination": "Phân trang lịch sử thanh toán",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "page": "Trang {{value}}",
+    "close": "Đóng chi tiết",
+    "agency": "Agency",
+    "payer": "ID người thanh toán",
+    "paidAt": "Ngày thanh toán",
+    "fulfilledAt": "Ngày cấp quyền lợi",
+    "period": "Kỳ sử dụng",
+    "transferContent": "Nội dung chuyển khoản",
+    "payments": "Khoản tiền BrandHub đã ghi nhận",
+    "noPayments": "BrandHub chưa ghi nhận khoản tiền cho đơn này.",
+    "reference": "Mã tham chiếu",
+    "review": "Cần đối soát",
+    "receipt": "Tải biên nhận (.txt)",
+    "receiptError": "Không thể tải biên nhận. Vui lòng thử lại.",
+    "notTaxInvoice": "Biên nhận thanh toán, không phải hóa đơn thuế.",
+    "lookup": "Tra cứu trên SePay",
+    "lookingUp": "Đang tra cứu…",
+    "providerNote": "Tra cứu chỉ đọc, không tự xác nhận đơn hoặc cấp gói. Giao dịch SePay và trạng thái đơn BrandHub được hiển thị riêng.",
+    "providerNotConfigured": "Chưa cấu hình API token SePay để tra cứu. Lịch sử BrandHub vẫn sử dụng được.",
+    "providerRateLimited": "SePay đang giới hạn lượt tra cứu. Vui lòng đợi rồi thử lại.",
+    "providerError": "Chưa thể tra cứu SePay. Dữ liệu đơn BrandHub không thay đổi.",
+    "providerEmpty": "Chưa tìm thấy giao dịch khớp trong trang kết quả SePay này.",
+    "providerMore": "Còn kết quả SePay ở trang tiếp theo.",
+    "webhook": "Webhook",
+    "kinds": {
+      "SUBSCRIPTION": "Đăng ký gói",
+      "CREDIT_TOPUP": "Mua AI credit"
+    },
+    "verification": {
+      "VERIFIED": "Đã xác minh",
+      "REVIEW_REQUIRED": "Cần đối soát"
+    },
+    "webhookStates": {
+      "sent": "Đã gửi thành công",
+      "notSent": "Chưa gửi hoặc gửi thất bại",
+      "unknown": "Chưa có thông tin"
+    },
+    "adminTitle": "Lịch sử thanh toán toàn hệ thống",
+    "adminDescription": "Tra cứu đơn thanh toán và biên nhận của mọi agency. Chỉ đọc, không xác nhận hoặc sửa giao dịch.",
+    "agencyFilter": "Lọc theo ID agency (UUID)",
+    "allAgencies": "Tất cả agency",
+    "apply": "Áp dụng",
+    "drawerDescription": "Thông tin đơn thanh toán, khoản tiền đã ghi nhận và biên nhận."
   },
   "catalog": {
     "loading": "Đang tải danh sách gói…",
@@ -111,6 +187,11 @@
     "concurrency": "{{value}} tác vụ AI đồng thời",
     "versionHistory": "Lịch sử phiên bản {{value}} ngày",
     "trashHistory": "Khôi phục thùng rác trong {{value}} ngày",
-    "activityHistory": "Lịch sử hoạt động {{value}} ngày"
+    "activityHistory": "Lịch sử hoạt động {{value}} ngày",
+    "renew": "Gia hạn",
+    "renewalScheduled": "Đã lên lịch gia hạn",
+    "expiresAt": "Gói Plus hết hạn: {{date}}",
+    "expiredAt": "Gói Plus đã hết hạn: {{date}}",
+    "paidThrough": "Đã thanh toán đến {{date}}. Credit kỳ mới được cấp khi kỳ mới bắt đầu."
   }
 }

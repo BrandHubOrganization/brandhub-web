@@ -63,7 +63,7 @@ export function OrgSwitcherDropdown({
   });
   const isPlus = subscription.isSuccess && subscription.data.planCode === "PLUS"
     && subscription.data.status === "ACTIVE"
-    && (!subscription.data.currentPeriodEnd || Date.parse(subscription.data.currentPeriodEnd) > Date.now());
+    && (!(subscription.data.paidThrough || subscription.data.currentPeriodEnd) || Date.parse((subscription.data.paidThrough || subscription.data.currentPeriodEnd)!) > Date.now());
 
   return (
     <div
