@@ -20,10 +20,12 @@ import {
   HelpCircle,
   BookOpen,
 } from "lucide-react";
+import { CrownIcon, type CrownIconHandle } from "@animateicons/react/lucide";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useAgencyStore } from "@/store/agencyStore";
 import { authService } from "@/services/authService";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
@@ -153,6 +155,12 @@ export function Navbar({
   const { user, clearAuth, systemRole } = useAuthStore();
   const isAdmin = systemRole === "ADMIN";
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const currentAgencyId = useAgencyStore((s) => s.currentAgencyId);
+  const currentAgency = useAgencyStore((s) =>
+    s.agencyList.find((agency) => agency.id === s.currentAgencyId),
+  );
+  const canUpgradeAgency = !isAdmin && currentAgencyId !== null && currentAgency?.myRole === "OWNER";
+  const crownRef = React.useRef<CrownIconHandle>(null);
 
   const username = user?.name || user?.email?.split("@")[0] || "User";
 
@@ -240,6 +248,10 @@ export function Navbar({
   }
 
   const getBreadcrumbs = () => {
+    if (isAdmin && location.pathname === "/admin/invoices") return [
+      {label: t("admin.navigation.workspace"), path: "/admin"},
+      {label: t("admin.navigation.invoices"), path: "/admin/invoices"},
+    ];
     if (isAdmin && location.pathname === "/admin") {
       const requested =
         new URLSearchParams(location.search).get("view") || "overview";
@@ -545,6 +557,28 @@ export function Navbar({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        )}
+
+        {canUpgradeAgency && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="group relative size-8 text-amber-500 hover:bg-amber-500/10 hover:text-amber-600 dark:text-amber-400 dark:hover:bg-amber-400/15 dark:hover:text-amber-300 transition-colors"
+            onMouseEnter={() => crownRef.current?.startAnimation()}
+            onMouseLeave={() => crownRef.current?.stopAnimation()}
+            onClick={() => navigate("/subscription/plans")}
+            title={t("subscription.plans.upgrade")}
+            aria-label={t("subscription.plans.upgrade")}
+            data-testid="agency-upgrade-button"
+          >
+            <CrownIcon
+              ref={crownRef}
+              size={18}
+              duration={1}
+              color="#f59e0b"
+              className="dark:drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+            />
+          </Button>
         )}
 
         <div className="bg-border mx-1 h-4 w-px" />

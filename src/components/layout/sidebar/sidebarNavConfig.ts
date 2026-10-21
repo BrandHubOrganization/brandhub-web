@@ -228,6 +228,13 @@ export const NAV_SECTIONS: NavSection[] = [
         hiddenForClient: true,
         hideInWorkspace: true,
       },
+      {
+        to: "/subscription/invoices",
+        icon: FileBarChart,
+        labelKey: "subscription.invoices.title",
+        agencyScoped: true,
+        hideInWorkspace: true,
+      },
     ],
   },
   {

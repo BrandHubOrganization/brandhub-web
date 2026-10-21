@@ -91,7 +91,8 @@
     "reports": "Báo cáo",
     "utilities": "Tiện ích quản trị",
     "planned": "Chưa sẵn sàng",
-    "mailTemplates": "Mẫu email hệ thống"
+    "mailTemplates": "Mẫu email hệ thống",
+    "invoices": "Lịch sử thanh toán"
   },
   "overview": {
     "title": "Tổng quan nền tảng",
