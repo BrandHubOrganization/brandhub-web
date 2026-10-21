@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import {
   CheckCircle2,
   ChevronDown,
@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { reviewError, reviewTime } from "@/pages/tasks/taskApprovalView";
+import { reviewError, reviewTime } from "@/pages/tasks/utils/taskApprovalView";
 import type { useTaskApproval } from "@/pages/tasks/hooks/useTaskApproval";
 import type { TaskApprovalDecision } from "@/pages/tasks/types/taskApproval";
 

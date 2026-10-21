@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useTaskEditContext } from "@/pages/tasks/components/TaskWorkflowProvider";
@@ -6,7 +6,7 @@ import {
   MAX_REVIEW_COMMENT,
   reviewAllows,
   reviewError,
-} from "@/pages/tasks/taskApprovalView";
+} from "@/pages/tasks/utils/taskApprovalView";
 import type {
   ReviewAction,
   TaskReviewView,
