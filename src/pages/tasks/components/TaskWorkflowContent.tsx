@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ClipboardCheck, PenSquare, RefreshCw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";

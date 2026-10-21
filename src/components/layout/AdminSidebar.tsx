@@ -20,21 +20,17 @@ const sections = [
   { key: "users", icon: Users, planned: false },
   { key: "moderation", icon: ShieldCheck, planned: false },
   { key: "health", icon: Activity, planned: false },
-  { key: "invoices", icon: FileText, planned: false },
-  { key: "invoices", icon: FileText, planned: false },
   { key: "revenue", icon: Wallet, planned: false },
   { key: "email", icon: Mail, planned: false },
   { key: "mailTemplates", icon: FileText, planned: false },
   { key: "reports", icon: FileChartColumn, planned: false },
 ];
 const linkTo = (key: string) =>
-  key === "invoices"
-    ? "/admin/invoices"
-    : key === "health"
-      ? "/admin/system-health"
-      : key === "overview"
-        ? "/admin"
-        : `/admin?view=${key}`;
+  key === "health"
+    ? "/admin/system-health"
+    : key === "overview"
+      ? "/admin"
+      : `/admin?view=${key}`;
 const labelKey = (key: string) =>
   key === "health" ? "monitoring.title" : `admin.navigation.${key}`;
 
@@ -42,8 +38,6 @@ function useAdminView() {
   const [params] = useSearchParams();
   const { pathname } = useLocation();
   const view = params.get("view") || "overview";
-  if (pathname === "/admin/invoices") return "invoices";
-  if (pathname === "/admin/invoices") return "invoices";
   if (pathname === "/admin/system-health") return "health";
   return sections.some((section) => section.key === view && view !== "health")
     ? view
@@ -64,7 +58,7 @@ export function AdminMobileNavigation() {
           to={linkTo(key)}
           aria-current={active === key ? "page" : undefined}
           className={cn(
-            "focus-visible:outline-ring text-xs flex min-h-14 w-20 flex-col items-center justify-center gap-1 rounded-md focus-visible:outline-2",
+            "focus-visible:outline-ring flex min-h-14 w-20 flex-col items-center justify-center gap-1 rounded-md text-xs focus-visible:outline-2",
             active === key
               ? "text-brand-orange font-semibold"
               : "text-muted-foreground",
@@ -122,12 +116,12 @@ export function AdminSidebar({
         className="flex-1 overflow-y-auto px-3 py-6"
       >
         {[
-          { title: "workspace", entries: sections.slice(0, 5) },
-          { title: "utilities", entries: sections.slice(5) },
+          { title: "workspace", entries: sections.slice(0, 4) },
+          { title: "utilities", entries: sections.slice(4) },
         ].map((group) => (
           <div key={group.title} className="mb-7">
             {!collapsed && (
-              <p className="text-xs mb-3 px-3 font-sans tracking-wide uppercase opacity-50">
+              <p className="mb-3 px-3 font-sans text-xs tracking-wide uppercase opacity-50">
                 {t(`admin.navigation.${group.title}`)}
               </p>
             )}
@@ -185,7 +179,7 @@ export function AdminSidebar({
         {!collapsed && (
           <div className="min-w-0">
             <p className="truncate text-xs font-medium">{username}</p>
-            <p className="text-xs mt-1 font-sans tracking-wide uppercase opacity-50">
+            <p className="mt-1 font-sans text-xs tracking-wide uppercase opacity-50">
               {t("admin.roles.ADMIN")}
             </p>
           </div>
