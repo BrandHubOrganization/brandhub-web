@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ClipboardCheck, RefreshCw } from "lucide-react";
+import { ClipboardCheck, Info, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useTaskApproval } from "@/pages/tasks/hooks/useTaskApproval";
@@ -119,29 +119,67 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
             </Button>
           )}
           <div className="flex flex-wrap gap-2">
-            {ACTIONS.filter((action) => reviewAllows(view, action)).map(
-              (action) => (
-                <Button
+            {ACTIONS.map((action) => {
+              const isAllowed = reviewAllows(view, action);
+              const isDisabled = !canAct || !isAllowed;
+              const stepName = view.review.reviewStep
+                ? t(`tasks.review.steps.${view.review.reviewStep}`, {
+                    defaultValue: view.review.reviewStep,
+                  })
+                : null;
+              const disabledReason = !canAct
+                ? t("tasks.review.loading")
+                : !isAllowed
+                  ? action === "approve" || action === "reject"
+                    ? stepName
+                      ? t("tasks.review.waitingStep", { step: stepName })
+                      : t("tasks.review.errors.WRONG_APPROVAL_STEP")
+                    : t("tasks.review.hint." + action)
+                  : undefined;
+
+              return (
+                <span
                   key={action}
-                  variant={
-                    action === "approve" || action === "submit"
-                      ? "orange"
-                      : "outline"
-                  }
+                  title={disabledReason}
                   className={
-                    action === "reject" ? "text-destructive" : undefined
+                    isDisabled
+                      ? "inline-block cursor-not-allowed"
+                      : "inline-block"
                   }
-                  disabled={!canAct}
-                  onClick={(event) => {
-                    opener.current = event.currentTarget;
-                    setDialog({ action, view });
-                  }}
                 >
-                  {t(`tasks.review.actions.${action}`)}
-                </Button>
-              ),
-            )}
+                  <Button
+                    variant={
+                      action === "approve" || action === "submit"
+                        ? "orange"
+                        : "outline"
+                    }
+                    className={
+                      action === "reject" ? "text-destructive" : undefined
+                    }
+                    disabled={isDisabled}
+                    onClick={(event) => {
+                      opener.current = event.currentTarget;
+                      setDialog({ action, view });
+                    }}
+                  >
+                    {t(`tasks.review.actions.${action}`)}
+                  </Button>
+                </span>
+              );
+            })}
           </div>
+          {view.review.reviewStep && !view.review.allowedActions.canApprove && (
+            <div className="flex items-center gap-2 rounded-lg bg-muted/40 p-2.5 text-xs text-muted-foreground border">
+              <Info className="size-4 shrink-0 text-brand-orange" />
+              <span>
+                {t("tasks.review.waitingStep", {
+                  step: t(`tasks.review.steps.${view.review.reviewStep}`, {
+                    defaultValue: view.review.reviewStep,
+                  }),
+                })}
+              </span>
+            </div>
+          )}
         </>
       )}
       <TaskApprovalHistory history={state.history} />

@@ -18,12 +18,16 @@ export interface SavePostInput {
   media: SavePostMedia[];
   targetPlatforms: SocialPlatform[];
   aiGenerated: boolean;
+  taskId?: string;
+  scheduledAt?: string;
 }
 
 export interface PostResponse extends SavePostInput {
   id: string;
   workspaceId: string;
   status: string;
+  taskId?: string;
+  scheduledAt?: string;
   media: Array<SavePostMedia & { url: string }>;
   createdAt: string;
   updatedAt: string;

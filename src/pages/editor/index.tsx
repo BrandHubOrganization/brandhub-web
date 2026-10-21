@@ -29,6 +29,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useParams, Link } from "react-router-dom";
 import { AlertTriangle, CheckCircle, ExternalLink } from "lucide-react";
 import { fetchSocialAccounts } from "@/pages/social-accounts/services/socialAccountService";
+import { ScheduleModal } from "@/pages/editor/components/ScheduleModal";
 import { useEditorForm } from "./hooks/useEditorForm";
 import {
   useTaskEditorForm,
@@ -40,8 +41,19 @@ import {
 } from "@/pages/editor/components/TaskEditorControls";
 import { useSearchParams } from "react-router-dom";
 
-type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
+type EditorForm = Omit<
+  ReturnType<typeof useEditorForm>,
+  | "handlePublishNow"
+  | "scheduledAt"
+  | "isScheduleModalOpen"
+  | "setIsScheduleModalOpen"
+  | "handleSaveSchedule"
+> & {
   handlePublishNow?: () => void;
+  scheduledAt?: string | null;
+  isScheduleModalOpen?: boolean;
+  setIsScheduleModalOpen?: (open: boolean) => void;
+  handleSaveSchedule?: (dateIso: string) => Promise<void>;
   taskEditor?: TaskEditorState;
 };
 
@@ -105,6 +117,10 @@ function EditorWorkspace({
     handleApplyTemplate,
     handleSubmitForReview,
     handlePublishNow,
+    isScheduleModalOpen,
+    setIsScheduleModalOpen,
+    scheduledAt,
+    handleSaveSchedule,
     taskEditor,
   } = form;
 
@@ -216,10 +232,16 @@ function EditorWorkspace({
             lastSavedTime={lastSavedTime}
             isSubmitting={isSubmitting}
             publishStatus={publishStatus}
+            scheduledTime={scheduledAt ?? undefined}
             onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
             onOpenPreview={() => setIsPreviewOpen(true)}
             onSubmitForReview={handleSubmitForReview}
             onPublishNow={handlePublishNow}
+            onOpenSchedule={
+              setIsScheduleModalOpen
+                ? () => setIsScheduleModalOpen(true)
+                : undefined
+            }
           />
         )
       }
@@ -522,6 +544,15 @@ function EditorWorkspace({
         onClose={() => setIsTemplatePickerOpen(false)}
         onSelectTemplate={handleApplyTemplate}
       />
+
+      {handleSaveSchedule && setIsScheduleModalOpen && (
+        <ScheduleModal
+          isOpen={Boolean(isScheduleModalOpen)}
+          initialScheduledAt={scheduledAt ?? undefined}
+          onClose={() => setIsScheduleModalOpen(false)}
+          onSaveSchedule={handleSaveSchedule}
+        />
+      )}
     </PageWrapper>
   );
 }

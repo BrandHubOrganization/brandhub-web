@@ -64,7 +64,7 @@ export function AdminMobileNavigation() {
           to={linkTo(key)}
           aria-current={active === key ? "page" : undefined}
           className={cn(
-            "focus-visible:outline-ring text-2xs flex min-h-14 w-20 flex-col items-center justify-center gap-1 rounded-md focus-visible:outline-2",
+            "focus-visible:outline-ring text-xs flex min-h-14 w-20 flex-col items-center justify-center gap-1 rounded-md focus-visible:outline-2",
             active === key
               ? "text-brand-orange font-semibold"
               : "text-muted-foreground",
@@ -127,7 +127,7 @@ export function AdminSidebar({
         ].map((group) => (
           <div key={group.title} className="mb-7">
             {!collapsed && (
-              <p className="text-2xs mb-3 px-3 font-mono tracking-wide uppercase opacity-50">
+              <p className="text-xs mb-3 px-3 font-sans tracking-wide uppercase opacity-50">
                 {t(`admin.navigation.${group.title}`)}
               </p>
             )}
@@ -185,7 +185,7 @@ export function AdminSidebar({
         {!collapsed && (
           <div className="min-w-0">
             <p className="truncate text-xs font-medium">{username}</p>
-            <p className="text-2xs mt-1 font-mono tracking-wide uppercase opacity-50">
+            <p className="text-xs mt-1 font-sans tracking-wide uppercase opacity-50">
               {t("admin.roles.ADMIN")}
             </p>
           </div>
