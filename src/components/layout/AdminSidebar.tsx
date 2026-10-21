@@ -20,17 +20,21 @@ const sections = [
   { key: "users", icon: Users, planned: false },
   { key: "moderation", icon: ShieldCheck, planned: false },
   { key: "health", icon: Activity, planned: false },
+  { key: "invoices", icon: FileText, planned: false },
+  { key: "invoices", icon: FileText, planned: false },
   { key: "revenue", icon: Wallet, planned: false },
   { key: "email", icon: Mail, planned: false },
   { key: "mailTemplates", icon: FileText, planned: false },
   { key: "reports", icon: FileChartColumn, planned: false },
 ];
 const linkTo = (key: string) =>
-  key === "health"
-    ? "/admin/system-health"
-    : key === "overview"
-      ? "/admin"
-      : `/admin?view=${key}`;
+  key === "invoices"
+    ? "/admin/invoices"
+    : key === "health"
+      ? "/admin/system-health"
+      : key === "overview"
+        ? "/admin"
+        : `/admin?view=${key}`;
 const labelKey = (key: string) =>
   key === "health" ? "monitoring.title" : `admin.navigation.${key}`;
 
@@ -38,6 +42,8 @@ function useAdminView() {
   const [params] = useSearchParams();
   const { pathname } = useLocation();
   const view = params.get("view") || "overview";
+  if (pathname === "/admin/invoices") return "invoices";
+  if (pathname === "/admin/invoices") return "invoices";
   if (pathname === "/admin/system-health") return "health";
   return sections.some((section) => section.key === view && view !== "health")
     ? view
@@ -135,7 +141,7 @@ export function AdminSidebar({
                   aria-current={active === key ? "page" : undefined}
                   title={
                     planned
-                      ? `${t(labelKey(key))} · ${t("admin.navigation.planned")}`
+                      ? `${t(labelKey(key))} Â· ${t("admin.navigation.planned")}`
                       : t(labelKey(key))
                   }
                   className={cn(
