@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { taskDeadline } from "@/pages/tasks/taskViewData";
+import { useQueryClient } from "@tanstack/react-query";
+import { taskDeadline } from "@/pages/tasks/utils/taskViewData";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -25,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { SelectMenu } from "@/components/ui/select-menu";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
-import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -70,6 +71,7 @@ export function TaskCalendarTimeline({
   onUpdated,
 }: TaskCalendarTimelineProps) {
   const { t, i18n } = useTranslation();
+  const queryClient = useQueryClient();
   const calendarRef = useRef<FullCalendar | null>(null);
   const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -497,6 +499,9 @@ export function TaskCalendarTimeline({
             }
           : null,
       );
+      await queryClient.invalidateQueries({
+        queryKey: ["task-workflow", targetWs, taskId],
+      });
       onUpdated?.();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Lỗi hệ thống";
@@ -1016,6 +1021,9 @@ export function TaskCalendarTimeline({
 
                   toast.success(`Đã dời hạn chót sang ${formattedDate}!`, {
                     id: `drag-${taskId}`,
+                  });
+                  await queryClient.invalidateQueries({
+                    queryKey: ["task-workflow", targetWs, taskId],
                   });
                   onUpdated?.();
                 } catch (err) {

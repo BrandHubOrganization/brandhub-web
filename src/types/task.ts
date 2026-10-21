@@ -27,6 +27,7 @@ export interface TaskListItem {
   priority?: TaskPriority;
   resolution?: string;
   dueDate?: string | null;
+  publishDate?: string | null;
   assigneeId?: string | null;
   assigneeName?: string | null;
   assigneeAvatar?: string | null;

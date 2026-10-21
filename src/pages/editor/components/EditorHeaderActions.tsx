@@ -20,7 +20,6 @@ interface Props {
   onOpenPreview: () => void;
   onSubmitForReview: () => void;
   onPublishNow?: () => void;
-  onOpenSchedule?: () => void;
 }
 
 export function EditorHeaderActions({
@@ -34,7 +33,6 @@ export function EditorHeaderActions({
   onOpenPreview,
   onSubmitForReview,
   onPublishNow,
-  onOpenSchedule,
 }: Props) {
   const { t } = useTranslation();
   return (
@@ -98,28 +96,21 @@ export function EditorHeaderActions({
         <span>{t("editor.header.previewButton")}</span>
       </button>
 
-      {onOpenSchedule && (
-        <button
-          type="button"
-          onClick={onOpenSchedule}
-          disabled={isSubmitting}
-          className="border-brand-orange/40 bg-card text-brand-orange hover:bg-brand-orange/10 flex cursor-pointer items-center gap-1.5 rounded-xl border px-3.5 py-1.5 text-xs font-medium shadow-2xs transition-colors disabled:opacity-50"
-        >
-          <Calendar className="size-3.5" />
+      {scheduledTime && (
+        <div className="border-border bg-card text-muted-foreground flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs">
+          <Calendar className="text-brand-orange size-3.5" />
           <span>
-            {scheduledTime
-              ? `Lên lịch: ${new Date(scheduledTime).toLocaleDateString(
-                  "vi-VN",
-                  {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    day: "2-digit",
-                    month: "2-digit",
-                  },
-                )}`
-              : "Lên lịch đăng"}
+            {`Lịch đăng: ${new Date(scheduledTime).toLocaleDateString(
+              "vi-VN",
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+                day: "2-digit",
+                month: "2-digit",
+              },
+            )}`}
           </span>
-        </button>
+        </div>
       )}
 
       {onPublishNow && (

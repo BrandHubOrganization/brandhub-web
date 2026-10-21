@@ -1,12 +1,12 @@
-import { useEffect, useRef } from "react";
+﻿import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
-import { TaskApprovalSection } from "@/pages/tasks/components/TaskApprovalSection";
-import { workflowError } from "@/pages/tasks/taskWorkflowErrors";
+import { TaskApprovalSection } from "@/pages/tasks/components/approval/TaskApprovalSection";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 
 export function ApprovalDetail({
   workspaceId,

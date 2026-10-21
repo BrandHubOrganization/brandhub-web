@@ -17,6 +17,7 @@ export interface TaskWorkflow {
   sourceRefId: string | null;
   description: string | null;
   dueDate: string | null;
+  publishDate: string | null;
   inputReferences: TaskReference[];
   assigneeId: string | null;
   assigneeName: string | null;
@@ -41,6 +42,7 @@ export interface TaskWorkflow {
 export interface TaskDetailFields {
   description: string;
   dueDate: string | null;
+  publishDate: string | null;
   inputReferences: TaskReference[];
   expectedRevision: number;
 }

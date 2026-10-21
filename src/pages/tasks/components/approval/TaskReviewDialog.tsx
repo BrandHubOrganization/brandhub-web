@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+﻿import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,12 +10,12 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { TaskReviewContent } from "@/pages/tasks/components/TaskReviewContent";
+import { TaskReviewContent } from "@/pages/tasks/components/approval/TaskReviewContent";
 import {
   useTaskReviewDialog,
   type ReviewDialogProps,
 } from "@/pages/tasks/hooks/useTaskReviewDialog";
-import { MAX_REVIEW_COMMENT } from "@/pages/tasks/taskApprovalView";
+import { MAX_REVIEW_COMMENT } from "@/pages/tasks/utils/taskApprovalView";
 
 export function TaskReviewDialog(props: ReviewDialogProps) {
   const { t } = useTranslation();
