@@ -131,7 +131,7 @@ export function TaskPublishTimeField({
         </div>
         {currentPublish && (
           <div>
-            {task.status === "FINISHED" || post?.status === "PUBLISHED" ? (
+            {post?.status === "PUBLISHED" ? (
               <span className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-2xs rounded px-2 py-0.5 font-semibold">
                 Đã đăng
               </span>
