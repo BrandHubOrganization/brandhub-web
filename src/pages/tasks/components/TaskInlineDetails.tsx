@@ -19,7 +19,10 @@ import { InlineTaskField } from "@/pages/tasks/components/InlineTaskField";
 import { TaskInlineAssignment } from "@/pages/tasks/components/TaskInlineAssignment";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
-import { taskInstant, taskLocalMinute } from "@/pages/tasks/utils/taskWorkflowDates";
+import {
+  taskInstant,
+  taskLocalMinute,
+} from "@/pages/tasks/utils/taskWorkflowDates";
 import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import { toast } from "sonner";
@@ -84,13 +87,13 @@ export function TaskDeadlineField({
               : undefined
         }
         required={Boolean(task.assigneeId)}
-        save={(value) => {
+        save={async (value) => {
           if (value && task.publishDate) {
             const nextDue = new Date(taskInstant(value, zone) || "").getTime();
             const pubTime = new Date(task.publishDate).getTime();
             if (nextDue >= pubTime) {
               toast.error(t("tasks.dueDateMustBeBeforePublishDate"));
-              return;
+              throw new Error("INVALID_LOCAL_TIME");
             }
           }
           return state.field(
@@ -132,15 +135,16 @@ export function TaskPublishTimeField({
         {currentPublish && (
           <div>
             {task.status === "FINISHED" || post?.status === "PUBLISHED" ? (
-              <span className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-2xs rounded px-2 py-0.5 font-semibold">
+              <span className="text-2xs rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-600 dark:text-emerald-400">
                 Đã đăng
               </span>
             ) : post?.status === "FAILED" ? (
-              <span className="bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-2xs rounded px-2 py-0.5 font-semibold">
+              <span className="text-2xs rounded border border-rose-500/20 bg-rose-500/10 px-2 py-0.5 font-semibold text-rose-600 dark:text-rose-400">
                 Thất bại
               </span>
-            ) : post?.status === "IN_PROGRESS" || post?.status === "PUBLISHING" ? (
-              <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-2xs rounded px-2 py-0.5 font-semibold animate-pulse">
+            ) : post?.status === "IN_PROGRESS" ||
+              post?.status === "PUBLISHING" ? (
+              <span className="text-2xs animate-pulse rounded border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 font-semibold text-blue-600 dark:text-blue-400">
                 Đang đăng...
               </span>
             ) : (
@@ -171,13 +175,13 @@ export function TaskPublishTimeField({
               : undefined
         }
         max={task.dates.maxDate ? `${task.dates.maxDate}T23:59` : undefined}
-        save={(value) => {
+        save={async (value) => {
           if (value && task.dueDate) {
             const nextPub = new Date(taskInstant(value, zone) || "").getTime();
             const dueTime = new Date(task.dueDate).getTime();
             if (nextPub <= dueTime) {
               toast.error(t("tasks.publishDateMustBeAfterDueDate"));
-              return;
+              throw new Error("INVALID_LOCAL_TIME");
             }
           }
           return state.field(

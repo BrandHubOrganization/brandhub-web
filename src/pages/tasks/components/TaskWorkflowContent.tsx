@@ -55,7 +55,7 @@ function TaskPostScheduleNotice({
   }
 
   if (scheduledAt) {
-    let formatted = "";
+    let formatted: string;
     try {
       formatted = new Intl.DateTimeFormat(i18n.language, {
         timeZone: timezone,
