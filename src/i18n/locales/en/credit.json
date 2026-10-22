@@ -2,7 +2,7 @@
   "title": "AI Credit",
   "ai": {
     "balance": "The Agency has insufficient credits. Please contact the Owner.",
-    "limit": "You have reached your credit limit for this period. Please contact the Owner.",
+    "limit": "This Workspace has reached its period credit cap. Contact the Owner.",
     "price": "This AI operation has no enabled price. An Admin must configure it first.",
     "account": "The Agency credit account has not been funded. Please contact the Owner.",
     "schema": "Credit and AI execution database migrations are required before generating content.",
@@ -89,7 +89,8 @@
     "plan": "Plan available",
     "purchased": "Purchased available",
     "held": "Held",
-    "help": "Available balance already excludes held credits. Plan credits are used first; purchased credits do not expire. Personal limits are not separately allocated funds."
+    "help": "Available Agency funds exclude reservations. Plan credit is spent first; purchased credit does not expire. Workspace caps are not separate wallets.",
+    "other": "Other credit (Trial / Adjustment / Opening)"
   },
   "usage": {
     "title": "Current-period usage",
@@ -108,7 +109,7 @@
   },
   "catalog": {
     "title": "AI operation prices",
-    "description": "Current prices for reference. Jobs retain the price version accepted at submission, not the latest price at completion.",
+    "description": "Current prices for reference. Jobs retain the price version accepted at submission, not the latest price at completion. Caption/refine/adapt, Hashtag and Character sheet are currently free.",
     "unconfigured": "Not configured",
     "active": "Enabled",
     "inactive": "Disabled"
@@ -162,5 +163,19 @@
     "agencyDefault": "Agency Default ({{amount}})",
     "confirmTitle": "Confirm Limit Update",
     "confirmDesc": "Are you sure you want to update credit limit for this member to {{amount}} credits/period?"
+  },
+  "workspace": {
+    "title": "Credit limits by Workspace",
+    "description": "Workspaces share the Agency wallet. Each cap is a period spending ceiling, not a separate wallet; it applies to Owners, Managers and Creators.",
+    "empty": "No accessible Workspaces.",
+    "edit": "Edit limit",
+    "unlimited": "No separate cap",
+    "limited": "Set a cap",
+    "mode": "Limit mode",
+    "cap": "Period cap",
+    "used": "Used",
+    "held": "Reserved",
+    "remaining": "Cap remaining",
+    "hint": "No separate cap uses the Agency wallet. Zero blocks paid actions. The cap persists across cycles; spending and reservations belong to the request's original cycle."
   }
 }

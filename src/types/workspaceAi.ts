@@ -115,11 +115,11 @@ export interface WorkspaceAiBalance {
   agencyId: string;
   allowance: number;
   used: number;
-  creatorLimit: number | null;
-  creatorUsed: number;
+  workspaceLimit: number | null;
+  workspaceUsed: number;
   available: number;
   held: number;
-  creatorHeld: number;
+  workspaceHeld: number;
   remaining: number;
   periodStart: string;
   periodEnd: string;

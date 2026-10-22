@@ -1,6 +1,7 @@
 import { api } from "@/services/api";
 import type { ApiResponse } from "@/services/authService";
 import type {
+  WorkspaceCredit,
   CreditBalance,
   CreditUsage,
   CreditOperation,
@@ -12,6 +13,24 @@ import type {
 const agencyPath = (agencyId: string) =>
   `/api/v1/agencies/${encodeURIComponent(agencyId)}/credit`;
 export const creditService = {
+  workspaces: async (agencyId: string, signal?: AbortSignal) =>
+    (
+      await api.get<ApiResponse<WorkspaceCredit[]>>(
+        `${agencyPath(agencyId)}/workspaces`,
+        { signal },
+      )
+    ).data.data,
+  saveWorkspace: async (
+    agencyId: string,
+    workspace: WorkspaceCredit,
+    cap: number | null,
+  ) =>
+    (
+      await api.put<ApiResponse<WorkspaceCredit>>(
+        `${agencyPath(agencyId)}/workspaces/${encodeURIComponent(workspace.workspaceId)}/limit`,
+        { cap, expectedRevision: workspace.revision },
+      )
+    ).data.data,
   balance: async (agencyId: string, signal?: AbortSignal) =>
     (
       await api.get<ApiResponse<CreditBalance>>(
