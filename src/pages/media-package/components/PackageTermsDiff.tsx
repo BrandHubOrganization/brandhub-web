@@ -67,6 +67,7 @@ export function PackageTermsDiff({
 }) {
   const { t, i18n } = useTranslation();
   const [showUnchanged, setShowUnchanged] = useState(false);
+  const [mobileTab, setMobileTab] = useState<"after" | "before" | "both">("after");
   const oldValues: FlatValues = new Map(),
     newValues: FlatValues = new Map();
   const fields = new Set([
@@ -145,29 +146,75 @@ export function PackageTermsDiff({
   const visiblePaths = showUnchanged
     ? paths
     : paths.filter((path) => changed.has(path));
+
   return (
-    <section className="border-border overflow-hidden rounded-xl border text-sm">
-      <div className="border-border bg-muted/40 flex flex-wrap items-center justify-between gap-2 border-b p-4">
-        <h4 className="font-semibold">
+    <section className="border-border/80 overflow-hidden rounded-xl border text-sm">
+      <div className="border-border/70 bg-muted/30 flex flex-wrap items-center justify-between gap-2 border-b p-4">
+        <h4 className="text-foreground font-semibold">
           {title || t("mediaPackage.ui.compare")}
         </h4>
-        <Badge variant="outline">
-          {t("mediaPackage.ui.changeCount", { count: changed.size })}
-        </Badge>
+        <div className="flex items-center gap-2">
+          {paths.length > changed.size && (
+            <label className="text-muted-foreground flex cursor-pointer items-center gap-1.5 text-xs">
+              <input
+                type="checkbox"
+                checked={showUnchanged}
+                onChange={(event) => setShowUnchanged(event.target.checked)}
+                className="accent-brand-orange size-3.5"
+              />
+              <span>{t("mediaPackage.ui.showUnchanged")}</span>
+            </label>
+          )}
+          <Badge variant="outline" className="text-xs">
+            {t("mediaPackage.ui.changeCount", { count: changed.size })}
+          </Badge>
+        </div>
       </div>
-      {paths.length > changed.size && (
-        <label className="border-border text-muted-foreground flex cursor-pointer items-center gap-2 border-b px-4 py-3 text-xs">
-          <input
-            type="checkbox"
-            checked={showUnchanged}
-            onChange={(event) => setShowUnchanged(event.target.checked)}
-            className="accent-brand-orange size-4"
-          />
-          {t("mediaPackage.ui.showUnchanged")}
-        </label>
-      )}
+
+      {/* Mobile view switcher */}
+      <div className="border-border/60 bg-muted/15 flex items-center justify-between gap-2 border-b px-4 py-2 sm:hidden">
+        <span className="text-muted-foreground text-xs font-medium">
+          {t("mediaPackage.ui.viewMode", { defaultValue: "Chế độ xem:" })}
+        </span>
+        <div className="border-border bg-background/80 flex items-center rounded-lg border p-0.5 text-xs font-medium">
+          <button
+            type="button"
+            onClick={() => setMobileTab("after")}
+            className={`rounded-md px-2.5 py-1 transition-all ${
+              mobileTab === "after"
+                ? "bg-brand-orange text-white font-semibold shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {afterLabel || t("mediaPackage.ui.after")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileTab("before")}
+            className={`rounded-md px-2.5 py-1 transition-all ${
+              mobileTab === "before"
+                ? "bg-muted text-foreground font-semibold shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {beforeLabel || t("mediaPackage.ui.before")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileTab("both")}
+            className={`rounded-md px-2.5 py-1 transition-all ${
+              mobileTab === "both"
+                ? "bg-muted text-foreground font-semibold shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {t("mediaPackage.ui.all", { defaultValue: "Cả hai" })}
+          </button>
+        </div>
+      </div>
+
       {!visiblePaths.length && (
-        <p className="text-muted-foreground p-4">
+        <p className="text-muted-foreground p-4 text-xs">
           {t(
             paths.length
               ? "mediaPackage.ui.noDifferences"
@@ -175,37 +222,151 @@ export function PackageTermsDiff({
           )}
         </p>
       )}
+
       {visiblePaths.map((path) => (
-        <div key={path} className="border-border border-b last:border-b-0">
-          <div className="bg-muted/20 flex flex-wrap items-center gap-2 px-4 py-2 text-xs">
-            <span className="font-medium break-words">{labelFor(path)}</span>
+        <div key={path} className="border-border/60 border-b last:border-b-0">
+          <div className="bg-muted/15 flex flex-wrap items-center gap-2 px-4 py-2 text-xs">
+            <span className="font-medium text-foreground break-words">
+              {labelFor(path)}
+            </span>
             {changed.has(path) && (
-              <Badge variant="secondary">{t("mediaPackage.ui.changed")}</Badge>
+              <Badge
+                variant="outline"
+                className="border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300 text-[11px] font-medium"
+              >
+                {t("mediaPackage.ui.changed")}
+              </Badge>
             )}
           </div>
-          <div className="grid sm:grid-cols-2">
+
+          {/* Desktop view: side-by-side grid */}
+          <div className="hidden sm:grid sm:grid-cols-2">
             <div
-              className={`border-border min-w-0 border-b p-4 sm:border-r sm:border-b-0 ${changed.has(path) ? "bg-destructive/5" : ""}`}
+              className={`border-border/60 min-w-0 border-r p-4 transition-colors ${
+                changed.has(path)
+                  ? "bg-rose-500/5 dark:bg-rose-500/10"
+                  : "bg-card"
+              }`}
             >
-              <p className="text-muted-foreground mb-2 text-xs">
-                {beforeLabel || t("mediaPackage.ui.before")}
-              </p>
-              <p className="[overflow-wrap:anywhere] whitespace-pre-wrap">
+              <div className="mb-1.5 flex items-center justify-between">
+                <p className="text-muted-foreground text-xs font-medium">
+                  {beforeLabel || t("mediaPackage.ui.before")}
+                </p>
+                {changed.has(path) && (
+                  <span className="text-[11px] font-medium text-rose-600 dark:text-rose-400">
+                    {t("mediaPackage.ui.previousValue", {
+                      defaultValue: "Bản trước",
+                    })}
+                  </span>
+                )}
+              </div>
+              <p
+                className={`[overflow-wrap:anywhere] whitespace-pre-wrap text-sm leading-relaxed ${
+                  changed.has(path)
+                    ? "text-rose-950/80 dark:text-rose-200/80 line-through"
+                    : "text-foreground"
+                }`}
+              >
                 {valueFor(oldValues.get(path), path)}
               </p>
             </div>
             <div
-              className={`min-w-0 p-4 ${changed.has(path) ? "bg-success/5" : ""}`}
+              className={`min-w-0 p-4 transition-colors ${
+                changed.has(path)
+                  ? "bg-emerald-500/5 dark:bg-emerald-500/10"
+                  : "bg-card"
+              }`}
             >
-              <p className="text-muted-foreground mb-2 text-xs">
-                {afterLabel || t("mediaPackage.ui.after")}
-              </p>
+              <div className="mb-1.5 flex items-center justify-between">
+                <p className="text-muted-foreground text-xs font-medium">
+                  {afterLabel || t("mediaPackage.ui.after")}
+                </p>
+                {changed.has(path) && (
+                  <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                    {t("mediaPackage.ui.newValue", {
+                      defaultValue: "Bản mới",
+                    })}
+                  </span>
+                )}
+              </div>
               <p
-                className={`[overflow-wrap:anywhere] whitespace-pre-wrap ${changed.has(path) ? "font-medium" : ""}`}
+                className={`[overflow-wrap:anywhere] whitespace-pre-wrap text-sm leading-relaxed ${
+                  changed.has(path)
+                    ? "font-semibold text-emerald-950 dark:text-emerald-100"
+                    : "text-foreground"
+                }`}
               >
                 {valueFor(newValues.get(path), path)}
               </p>
             </div>
+          </div>
+
+          {/* Mobile view: reactive to mobileTab */}
+          <div className="sm:hidden">
+            {(mobileTab === "before" || mobileTab === "both") && (
+              <div
+                className={`border-border/60 min-w-0 p-3.5 transition-colors ${
+                  mobileTab === "both" ? "border-b" : ""
+                } ${
+                  changed.has(path)
+                    ? "bg-rose-500/5 dark:bg-rose-500/10"
+                    : "bg-card"
+                }`}
+              >
+                <div className="mb-1 flex items-center justify-between">
+                  <p className="text-muted-foreground text-xs font-medium">
+                    {beforeLabel || t("mediaPackage.ui.before")}
+                  </p>
+                  {changed.has(path) && (
+                    <span className="text-[11px] font-medium text-rose-600 dark:text-rose-400">
+                      {t("mediaPackage.ui.previousValue", {
+                        defaultValue: "Bản trước",
+                      })}
+                    </span>
+                  )}
+                </div>
+                <p
+                  className={`[overflow-wrap:anywhere] whitespace-pre-wrap text-xs leading-relaxed ${
+                    changed.has(path)
+                      ? "text-rose-950/80 dark:text-rose-200/80 line-through"
+                      : "text-foreground"
+                  }`}
+                >
+                  {valueFor(oldValues.get(path), path)}
+                </p>
+              </div>
+            )}
+            {(mobileTab === "after" || mobileTab === "both") && (
+              <div
+                className={`min-w-0 p-3.5 transition-colors ${
+                  changed.has(path)
+                    ? "bg-emerald-500/5 dark:bg-emerald-500/10"
+                    : "bg-card"
+                }`}
+              >
+                <div className="mb-1 flex items-center justify-between">
+                  <p className="text-muted-foreground text-xs font-medium">
+                    {afterLabel || t("mediaPackage.ui.after")}
+                  </p>
+                  {changed.has(path) && (
+                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                      {t("mediaPackage.ui.newValue", {
+                        defaultValue: "Bản mới",
+                      })}
+                    </span>
+                  )}
+                </div>
+                <p
+                  className={`[overflow-wrap:anywhere] whitespace-pre-wrap text-xs leading-relaxed ${
+                    changed.has(path)
+                      ? "font-semibold text-emerald-950 dark:text-emerald-100"
+                      : "text-foreground"
+                  }`}
+                >
+                  {valueFor(newValues.get(path), path)}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       ))}

@@ -36,17 +36,18 @@ function TaskPostScheduleNotice({
   workspaceId,
   taskId,
   timezone,
-  isTaskFinished,
+  publishDate,
 }: {
   workspaceId: string;
   taskId: string;
   timezone: string;
   isTaskFinished?: boolean;
+  publishDate?: string | null;
 }) {
   const { t, i18n } = useTranslation();
   const { data: taskPost, isLoading } = useTaskPost(workspaceId, taskId);
   const post = taskPost?.post;
-  const scheduledAt = post?.scheduledAt;
+  const scheduledAt = post?.scheduledAt || publishDate;
 
   if (isLoading) {
     return (
@@ -66,7 +67,7 @@ function TaskPostScheduleNotice({
       formatted = scheduledAt;
     }
 
-    const isPublished = post?.status === "PUBLISHED" || isTaskFinished;
+    const isPublished = post?.status === "PUBLISHED";
 
     return (
       <div className="bg-background/90 border-brand-orange/30 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3 shadow-2xs">
@@ -138,6 +139,13 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
   const isAssignee = userId === task?.assigneeId;
   const isOtherCreator = role === "CREATOR" && !isAssignee;
   const isTaskFinished = task?.status === "FINISHED";
+  const { data: taskPost } = useTaskPost(
+    workspaceId,
+    taskId,
+    task?.type === "POST",
+  );
+  const post = taskPost?.post;
+  const isPostPublished = post?.status === "PUBLISHED";
   async function reload() {
     if (!(await canLeave())) return;
     const result = await state.reload();
@@ -231,14 +239,14 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
                 <span
                   className={cn(
                     "text-2xs rounded-md px-2 py-0.5 font-semibold",
-                    isTaskFinished
+                    isPostPublished
                       ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                       : "bg-brand-orange-soft text-brand-orange",
                   )}
                 >
                   {isOtherCreator
                     ? "Chỉ xem"
-                    : isTaskFinished
+                    : isPostPublished
                       ? "Đã đăng"
                       : "Tự động đăng"}
                 </span>
@@ -249,6 +257,7 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
                 taskId={task.id}
                 timezone={task.dates.timezone || "UTC"}
                 isTaskFinished={isTaskFinished}
+                publishDate={task.publishDate}
               />
 
               <p className="text-muted-foreground text-xs leading-relaxed">
@@ -258,7 +267,9 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
                     ? `Bài viết đang ở trạng thái cần làm. Đang chờ người phụ trách (${task.assigneeName || "chưa phân công"}) bắt đầu viết bài.`
                     : "Bạn đang xem bài viết của người phụ trách khác. Chỉ người được giao hoặc Quản lý mới có quyền chỉnh sửa."
                   : isTaskFinished
-                    ? "Bài viết đã hoàn thành phê duyệt và đã được đăng tải tự động lên các kênh mạng xã hội."
+                    ? isPostPublished
+                      ? "Bài viết đã hoàn thành phê duyệt và đã được đăng tải tự động lên các kênh mạng xã hội."
+                      : "Bài viết đã hoàn thành phê duyệt. Hệ thống sẽ tự động xuất bản lên các kênh mạng xã hội theo đúng lịch đăng đã lên."
                     : "Soạn thảo nội dung và chuẩn bị hình ảnh bài viết. Lịch xuất bản do Quản lý thiết lập tại Chi tiết Task sẽ tự động áp dụng khi bài viết được duyệt."}
               </p>
 

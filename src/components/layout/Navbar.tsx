@@ -17,10 +17,10 @@ import {
   Shield,
   Sun,
   XCircle,
+  Crown,
   HelpCircle,
   BookOpen,
 } from "lucide-react";
-import { CrownIcon, type CrownIconHandle } from "@animateicons/react/lucide";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -85,6 +85,8 @@ const NAV_KEY_MAP: Record<string, string> = {
   clients: "nav.clients",
   requests: "nav.requests",
   "task-approvals": "tasks.approvalPage.title",
+  credit: "credit.title",
+  "credit-prices": "credit.price.title",
   templates: "nav.templates",
   "hashtag-groups": "nav.hashtagGroups",
   library: "nav.library",
@@ -160,7 +162,6 @@ export function Navbar({
     s.agencyList.find((agency) => agency.id === s.currentAgencyId),
   );
   const canUpgradeAgency = !isAdmin && currentAgencyId !== null && currentAgency?.myRole === "OWNER";
-  const crownRef = React.useRef<CrownIconHandle>(null);
 
   const username = user?.name || user?.email?.split("@")[0] || "User";
 
@@ -564,19 +565,13 @@ export function Navbar({
             variant="ghost"
             size="icon"
             className="group relative size-8 text-amber-500 hover:bg-amber-500/10 hover:text-amber-600 dark:text-amber-400 dark:hover:bg-amber-400/15 dark:hover:text-amber-300 transition-colors"
-            onMouseEnter={() => crownRef.current?.startAnimation()}
-            onMouseLeave={() => crownRef.current?.stopAnimation()}
             onClick={() => navigate("/subscription/plans")}
             title={t("subscription.plans.upgrade")}
             aria-label={t("subscription.plans.upgrade")}
             data-testid="agency-upgrade-button"
           >
-            <CrownIcon
-              ref={crownRef}
-              size={18}
-              duration={1}
-              color="#f59e0b"
-              className="dark:drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+            <Crown
+              className="size-[18px] text-amber-500 transition-transform group-hover:scale-110 dark:drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
             />
           </Button>
         )}

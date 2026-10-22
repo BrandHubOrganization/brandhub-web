@@ -55,4 +55,3 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
     </div>
   );
 }
-

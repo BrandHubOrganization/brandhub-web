@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { aiGenerationService } from "@/services/aiGenerationService";
+import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 import type { AIErrorType, SocialPlatform } from "@/types/editor";
 
 interface AIGeneratePanelProps {
@@ -85,6 +86,11 @@ export function AIGeneratePanel({
           : t("editor.aiGenerate.generateSuccess"),
       );
     } catch (error) {
+      const creditError = aiCreditErrorMessage(error);
+      if (creditError) {
+        toast.error(creditError, { duration: 8000 });
+        return;
+      }
       const status = axios.isAxiosError(error)
         ? error.response?.status
         : undefined;

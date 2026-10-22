@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   AlignLeft,
@@ -93,7 +93,9 @@ export function TaskDeadlineField({
             const pubTime = new Date(task.publishDate).getTime();
             if (nextDue >= pubTime) {
               toast.error(t("tasks.dueDateMustBeBeforePublishDate"));
-              throw new Error("INVALID_LOCAL_TIME");
+              return Promise.reject(
+                new Error(t("tasks.dueDateMustBeBeforePublishDate")),
+              );
             }
           }
           return state.field(
@@ -134,7 +136,7 @@ export function TaskPublishTimeField({
         </div>
         {currentPublish && (
           <div>
-            {task.status === "FINISHED" || post?.status === "PUBLISHED" ? (
+            {post?.status === "PUBLISHED" ? (
               <span className="text-2xs rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-600 dark:text-emerald-400">
                 Đã đăng
               </span>
@@ -181,7 +183,9 @@ export function TaskPublishTimeField({
             const dueTime = new Date(task.dueDate).getTime();
             if (nextPub <= dueTime) {
               toast.error(t("tasks.publishDateMustBeAfterDueDate"));
-              throw new Error("INVALID_LOCAL_TIME");
+              return Promise.reject(
+                new Error(t("tasks.publishDateMustBeAfterDueDate")),
+              );
             }
           }
           return state.field(
