@@ -48,5 +48,48 @@
     "PUBLISHED": "Published",
     "FAILED": "Failed",
     "REJECTED": "Rejected"
+  },
+  "dashboard": {
+    "title": "Publishing Dashboard",
+    "subtitle": "Track status, performance, and cross-platform post distribution in workspace.",
+    "refresh": "Refresh",
+    "createPost": "Create Post",
+    "searchPlaceholder": "Search by title, caption...",
+    "dateRanges": {
+      "7d": "Last 7 days",
+      "14d": "Last 14 days",
+      "30d": "Last 30 days",
+      "90d": "Last 3 months",
+      "all": "All time"
+    },
+    "platforms": {
+      "title": "Platform Distribution",
+      "subtitle": "Content distribution breakdown",
+      "ALL": "All Platforms"
+    },
+    "statusFilters": {
+      "ALL": "All Statuses",
+      "IN_PROGRESS": "In Progress"
+    },
+    "kpi": {
+      "totalPosts": "Total Posts",
+      "totalPostsDesc": "Includes all published and scheduled posts",
+      "successRate": "Publishing Success Rate",
+      "scheduled": "Scheduled & In Progress",
+      "scheduledDesc": "Queued for automatic dispatch",
+      "failed": "Failed Posts",
+      "failedDesc": "Requires token re-auth or policy review"
+    },
+    "trends": {
+      "title": "Publishing Trends Over Time",
+      "subtitle": "Published vs scheduled timeline statistics"
+    },
+    "recentPosts": {
+      "title": "Recent Publishing Activity",
+      "subtitle": "Latest post dispatch status and channel logs"
+    },
+    "noPostsFound": "No posts found",
+    "noPostsFoundDesc": "No posts match current filters. Try adjusting filter criteria or compose a new post.",
+    "createPostNow": "Create Post Now"
   }
 }

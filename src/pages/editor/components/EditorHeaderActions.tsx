@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   Clock,
   LayoutTemplate,
+  Calendar,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +15,7 @@ interface Props {
   lastSavedTime: string;
   isSubmitting: boolean;
   publishStatus?: "IDLE" | "PUBLISHING" | "PUBLISHED" | "FAILED";
+  scheduledTime?: string;
   onOpenTemplatePicker: () => void;
   onOpenPreview: () => void;
   onSubmitForReview: () => void;
@@ -26,6 +28,7 @@ export function EditorHeaderActions({
   lastSavedTime,
   isSubmitting,
   publishStatus = "IDLE",
+  scheduledTime,
   onOpenTemplatePicker,
   onOpenPreview,
   onSubmitForReview,
@@ -92,6 +95,23 @@ export function EditorHeaderActions({
         <Eye className="text-brand-orange size-4" />
         <span>{t("editor.header.previewButton")}</span>
       </button>
+
+      {scheduledTime && (
+        <div className="border-border bg-card text-muted-foreground flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs">
+          <Calendar className="text-brand-orange size-3.5" />
+          <span>
+            {`Lịch đăng: ${new Date(scheduledTime).toLocaleDateString(
+              "vi-VN",
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+                day: "2-digit",
+                month: "2-digit",
+              },
+            )}`}
+          </span>
+        </div>
+      )}
 
       {onPublishNow && (
         <button

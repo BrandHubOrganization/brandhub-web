@@ -29,13 +29,15 @@ import { Badge } from "@/components/ui/badge";
 import { workspaceService } from "@/services/workspaceService";
 import { taskService } from "@/services/taskService";
 import { campaignService } from "@/pages/campaign/services/campaignService";
+import { requireApiData } from "@/lib/apiData";
+import { WorkspaceCampaignSummary } from "@/pages/workspace/components/WorkspaceCampaignSummary";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
 import type { WorkspaceDashboard } from "@/types/workspace";
 import type { TaskListItem, TaskStatus } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
-import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { LineStatChart, PieStatChart } from "@/components/charts/StatCharts";
 import { LeaveWorkspaceDialog } from "./components/LeaveWorkspaceDialog";
 import {
@@ -73,16 +75,18 @@ function StatCard({
   return (
     <div
       onClick={onClick}
-      className={`border-border bg-card rounded-2xl border p-5 shadow-xs transition-all hover:border-brand-orange/40 hover:shadow-sm ${
+      className={`border-border bg-card hover:border-brand-orange/40 rounded-2xl border p-5 shadow-xs transition-all hover:shadow-sm ${
         onClick ? "cursor-pointer" : ""
       }`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+        <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
           {label}
         </span>
         {Icon && (
-          <div className={`flex size-9 items-center justify-center rounded-xl ${bgIconClass} ${colorClass}`}>
+          <div
+            className={`flex size-9 items-center justify-center rounded-xl ${bgIconClass} ${colorClass}`}
+          >
             <Icon className="size-4.5" />
           </div>
         )}
@@ -98,7 +102,7 @@ function StatCard({
         )}
       </div>
       {sublabel && (
-        <p className="text-muted-foreground mt-1.5 text-xs truncate">
+        <p className="text-muted-foreground mt-1.5 truncate text-xs">
           {sublabel}
         </p>
       )}
@@ -127,6 +131,8 @@ export function WorkspaceDashboardPage() {
 
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [campaignsLoading, setCampaignsLoading] = useState(true);
+  const [campaignsError, setCampaignsError] = useState(false);
+  const [campaignsAttempt, setCampaignsAttempt] = useState(0);
 
   // Leave Workspace Dialog State
   const [leaveOpen, setLeaveOpen] = useState(false);
@@ -137,7 +143,9 @@ export function WorkspaceDashboardPage() {
     setLeaving(true);
     try {
       await workspaceService.leaveWorkspace(workspaceId);
-      toast.success(t("workspace.members.leaveSuccess", "Bạn đã rời workspace thành công"));
+      toast.success(
+        t("workspace.members.leaveSuccess", "Bạn đã rời workspace thành công"),
+      );
       setLeaveOpen(false);
       useWorkspaceStore.getState().setCurrentWorkspace(null);
       await useWorkspaceStore.getState().fetchWorkspaces();
@@ -190,19 +198,26 @@ export function WorkspaceDashboardPage() {
   // Load Campaigns
   useEffect(() => {
     if (!workspaceId) return;
+    let disposed = false;
     setCampaignsLoading(true);
+    setCampaignsError(false);
+    setCampaigns([]);
     campaignService
       .list(workspaceId)
       .then((res) => {
-        if (res.data?.success && res.data?.data) {
-          setCampaigns(res.data.data);
-        }
+        if (!disposed) setCampaigns(requireApiData<Campaign[]>(res.data));
       })
       .catch((err) => {
         console.warn("Failed to load workspace campaigns:", err);
+        if (!disposed) setCampaignsError(true);
       })
-      .finally(() => setCampaignsLoading(false));
-  }, [workspaceId]);
+      .finally(() => {
+        if (!disposed) setCampaignsLoading(false);
+      });
+    return () => {
+      disposed = true;
+    };
+  }, [workspaceId, campaignsAttempt]);
 
   // Load Analytics Mock
   useEffect(() => {
@@ -254,7 +269,12 @@ export function WorkspaceDashboardPage() {
     packageStatus === "DRAFT" || packageStatus === "NEGOTIATING";
 
   return (
-    <PageWrapper title={workspace.name || "Workspace Dashboard"} hideBanner>
+    <PageWrapper
+      title={
+        workspace.name || t("workspace.dashboard.title", "Workspace Dashboard")
+      }
+      hideBanner
+    >
       {/* ── Top Workspace Header ── */}
       <div className="border-border bg-card relative mb-6 overflow-hidden rounded-2xl border p-6 shadow-xs">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -293,16 +313,17 @@ export function WorkspaceDashboardPage() {
                     variant="outline"
                     className="border-brand-orange/30 bg-brand-orange-soft/50 text-brand-orange text-2xs font-semibold"
                   >
-                    {t("workspace.dashboard.roleInWorkspace")}: {currentMemberRole}
+                    {t("workspace.dashboard.roleInWorkspace")}:{" "}
+                    {currentMemberRole}
                   </Badge>
                 )}
                 {isPackageApproved ? (
-                  <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-500/30 text-2xs">
+                  <Badge className="text-2xs border-emerald-500/30 bg-emerald-500/15 text-emerald-600">
                     <BadgeCheck className="mr-1 size-3" />
                     {t("workspace.dashboard.packageApprovedTitle")}
                   </Badge>
                 ) : isPackageNegotiating ? (
-                  <Badge className="bg-amber-500/15 text-amber-600 border-amber-500/30 text-2xs">
+                  <Badge className="text-2xs border-amber-500/30 bg-amber-500/15 text-amber-600">
                     <Clock className="mr-1 size-3" />
                     {packageStatus}
                   </Badge>
@@ -353,7 +374,9 @@ export function WorkspaceDashboardPage() {
                     variant="outline"
                     size="sm"
                     className="gap-1.5"
-                    onClick={() => navigate(`/workspaces/${workspaceId}/settings`)}
+                    onClick={() =>
+                      navigate(`/workspaces/${workspaceId}/settings`)
+                    }
                   >
                     <Settings className="size-4" />
                     <span className="hidden sm:inline">
@@ -379,7 +402,9 @@ export function WorkspaceDashboardPage() {
                     onClick={() => setLeaveOpen(true)}
                   >
                     <LogOut className="size-4" />
-                    <span>{t("workspace.members.leaveButton", "Rời workspace")}</span>
+                    <span>
+                      {t("workspace.members.leaveButton", "Rời workspace")}
+                    </span>
                   </Button>
                 )}
               </>
@@ -391,7 +416,7 @@ export function WorkspaceDashboardPage() {
       {/* ── Package Status Banner (When not approved yet) ── */}
       {!isPackageApproved && (
         <section
-          className={`mb-6 flex flex-col gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center sm:justify-between shadow-xs ${
+          className={`mb-6 flex flex-col gap-4 rounded-2xl border p-5 shadow-xs sm:flex-row sm:items-center sm:justify-between ${
             isPackageNegotiating
               ? "border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/15"
               : "border-brand-orange/30 bg-brand-orange-soft/60"
@@ -455,17 +480,23 @@ export function WorkspaceDashboardPage() {
           }
           colorClass="text-blue-500"
           bgIconClass="bg-blue-500/10"
-          onClick={() => workspaceId && navigate(`/workspaces/${workspaceId}/tasks`)}
+          onClick={() =>
+            workspaceId && navigate(`/workspaces/${workspaceId}/tasks`)
+          }
         />
 
         {/* Card 2: Campaigns */}
         <StatCard
           label={t("workspace.dashboard.campaignsOverview")}
-          value={campaigns.length || dashboard.totalCampaigns}
+          value={
+            campaignsLoading || campaignsError || campaigns.length > 1
+              ? "—"
+              : campaigns.length
+          }
           icon={Layers}
           sublabel={
-            campaigns.length > 0
-              ? `${campaigns.filter((c) => c.status === "IN_PROGRESS").length} ${t("workspace.dashboard.tasksByStatus.inProgress")}`
+            !campaignsLoading && !campaignsError && campaigns.length === 1
+              ? t(`campaign.status.${campaigns[0].status}`)
               : undefined
           }
           colorClass="text-brand-orange"
@@ -504,7 +535,11 @@ export function WorkspaceDashboardPage() {
             })}
             value={dashboard.agencyAiCreditsUsedThisMonth}
             icon={Sparkles}
-            sublabel={t("workspace.dashboard.packageStatus") + ": " + (packageStatus || t("workspace.dashboard.noPackage"))}
+            sublabel={
+              t("workspace.dashboard.packageStatus") +
+              ": " +
+              (packageStatus || t("workspace.dashboard.noPackage"))
+            }
             colorClass="text-purple-500"
             bgIconClass="bg-purple-500/10"
           />
@@ -516,7 +551,8 @@ export function WorkspaceDashboardPage() {
             colorClass="text-purple-500"
             bgIconClass="bg-purple-500/10"
             onClick={() =>
-              workspaceId && navigate(`/workspaces/${workspaceId}/media-package`)
+              workspaceId &&
+              navigate(`/workspaces/${workspaceId}/media-package`)
             }
           />
         )}
@@ -576,7 +612,9 @@ export function WorkspaceDashboardPage() {
             ) : (
               <div className="space-y-2.5">
                 {tasks.map((task) => {
-                  const canonical = canonicalTaskStatus(task.status as TaskStatus);
+                  const canonical = canonicalTaskStatus(
+                    task.status as TaskStatus,
+                  );
                   const statusInfo =
                     STATUS_CONFIG[canonical] || STATUS_CONFIG.TODO;
                   return (
@@ -596,8 +634,8 @@ export function WorkspaceDashboardPage() {
                           <p className="text-foreground group-hover:text-brand-orange truncate text-sm font-medium transition-colors">
                             {task.name}
                           </p>
-                          <div className="text-muted-foreground mt-0.5 flex items-center gap-2 text-2xs">
-                            <span className="font-semibold uppercase tracking-wider">
+                          <div className="text-muted-foreground text-2xs mt-0.5 flex items-center gap-2">
+                            <span className="font-semibold tracking-wider uppercase">
                               {task.type}
                             </span>
                             {task.dueDate && (
@@ -615,7 +653,7 @@ export function WorkspaceDashboardPage() {
 
                       <div className="flex shrink-0 items-center gap-2">
                         <span
-                          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-2xs font-semibold ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`}
+                          className={`text-2xs inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-semibold ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`}
                         >
                           <span
                             className={`size-1.5 rounded-full ${statusInfo.dot}`}
@@ -630,104 +668,14 @@ export function WorkspaceDashboardPage() {
             )}
           </div>
 
-          {/* Active Campaigns Card */}
-          <div className="border-border bg-card rounded-2xl border p-5 shadow-xs">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Layers className="text-brand-orange size-5" />
-                <h3 className="text-foreground font-semibold">
-                  {t("workspace.dashboard.recentCampaigns")}
-                </h3>
-                <span className="border-border bg-muted text-muted-foreground rounded-full border px-2 py-0.5 text-xs font-medium">
-                  {campaigns.length}
-                </span>
-              </div>
-              {workspaceId && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-brand-orange hover:text-brand-orange/80 gap-1 text-xs"
-                  onClick={() =>
-                    navigate(`/workspaces/${workspaceId}/campaigns`)
-                  }
-                >
-                  <span>{t("workspace.dashboard.viewAllCampaigns")}</span>
-                  <ChevronRight className="size-3.5" />
-                </Button>
-              )}
-            </div>
-
-            {campaignsLoading ? (
-              <div className="flex h-24 items-center justify-center">
-                <div className="border-brand-orange size-6 animate-spin rounded-full border-2 border-t-transparent" />
-              </div>
-            ) : campaigns.length === 0 ? (
-              <div className="text-muted-foreground flex flex-col items-center justify-center py-6 text-center">
-                <Layers className="mb-2 size-7 opacity-40" />
-                <p className="text-sm font-medium">
-                  {t("workspace.dashboard.noCampaigns")}
-                </p>
-                {isManagerOrOwner && workspaceId && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-3 gap-1.5"
-                    onClick={() =>
-                      navigate(`/workspaces/${workspaceId}/campaigns/create`)
-                    }
-                  >
-                    <Plus className="size-4" />
-                    <span>{t("workspace.dashboard.createCampaign")}</span>
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {campaigns.slice(0, 4).map((campaign) => (
-                  <div
-                    key={campaign.id}
-                    onClick={() =>
-                      workspaceId &&
-                      navigate(
-                        `/workspaces/${workspaceId}/campaigns/${campaign.id}`,
-                      )
-                    }
-                    className="border-border hover:border-brand-orange/40 hover:bg-muted/40 group flex cursor-pointer flex-col justify-between rounded-xl border p-3.5 transition-colors"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline" className="text-2xs font-bold">
-                          v{campaign.contentVersion}
-                        </Badge>
-                        <Badge
-                          className={`text-2xs font-semibold ${
-                            campaign.status === "COMPLETED"
-                              ? "bg-emerald-500/15 text-emerald-600 border-emerald-500/30"
-                              : campaign.status === "IN_PROGRESS"
-                                ? "bg-amber-500/15 text-amber-600 border-amber-500/30"
-                                : "bg-blue-500/15 text-blue-600 border-blue-500/30"
-                          }`}
-                        >
-                          {campaign.status}
-                        </Badge>
-                      </div>
-                      <p className="text-foreground group-hover:text-brand-orange mt-2 line-clamp-1 font-medium text-sm transition-colors">
-                        {campaign.name}
-                      </p>
-                    </div>
-                    <div className="text-muted-foreground mt-3 flex items-center justify-between text-2xs">
-                      <span>
-                        {campaign.workItems?.length || 0} công việc
-                      </span>
-                      <span className="text-brand-orange flex items-center gap-0.5 font-medium group-hover:underline">
-                        Chi tiết <ChevronRight className="size-3" />
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <WorkspaceCampaignSummary
+            workspaceId={workspaceId}
+            campaigns={campaigns}
+            loading={campaignsLoading}
+            failed={campaignsError}
+            canPlan={isManagerOrOwner}
+            onRetry={() => setCampaignsAttempt((attempt) => attempt + 1)}
+          />
         </div>
 
         {/* Right Column (1 span): Quick Actions & Workspace Info */}
@@ -746,7 +694,7 @@ export function WorkspaceDashboardPage() {
                     className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-blue-500/10 text-blue-600 flex size-8 items-center justify-center rounded-lg">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600">
                         <MessageCircleMore className="size-4" />
                       </div>
                       <div>
@@ -790,7 +738,7 @@ export function WorkspaceDashboardPage() {
                     className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-purple-500/10 text-purple-600 flex size-8 items-center justify-center rounded-lg">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600">
                         <PackageOpen className="size-4" />
                       </div>
                       <div>
@@ -813,7 +761,7 @@ export function WorkspaceDashboardPage() {
                     className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-emerald-500/10 text-emerald-600 flex size-8 items-center justify-center rounded-lg">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600">
                         <FileEdit className="size-4" />
                       </div>
                       <div>
@@ -837,7 +785,7 @@ export function WorkspaceDashboardPage() {
                       className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="bg-slate-500/10 text-slate-600 flex size-8 items-center justify-center rounded-lg">
+                        <div className="flex size-8 items-center justify-center rounded-lg bg-slate-500/10 text-slate-600">
                           <Settings className="size-4" />
                         </div>
                         <div>
@@ -906,7 +854,8 @@ export function WorkspaceDashboardPage() {
           <div className="flex items-center gap-2">
             <BarChart3 className="text-brand-orange size-5" />
             <h3 className="text-foreground text-lg font-bold">
-              {t("nav.analytics")} &amp; {t("workspace.dashboard.campaignTrend")}
+              {t("nav.analytics")} &amp;{" "}
+              {t("workspace.dashboard.campaignTrend")}
             </h3>
           </div>
           <span className="bg-brand-orange-soft text-brand-orange text-2xs inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-semibold">
@@ -969,7 +918,7 @@ export function WorkspaceDashboardPage() {
             <ul className="space-y-3">
               {MOCK_RECENT_ACTIVITY.map((item) => (
                 <li key={item.id} className="flex items-start gap-2.5 text-sm">
-                  <CheckCircle2 className="text-emerald-500 mt-0.5 size-4.5 shrink-0" />
+                  <CheckCircle2 className="mt-0.5 size-4.5 shrink-0 text-emerald-500" />
                   <div className="min-w-0">
                     <p className="text-foreground">
                       <span className="font-semibold">{item.actor}</span>{" "}
@@ -1003,8 +952,8 @@ export function WorkspaceDashboardPage() {
         onSubmit={handleLeave}
         isLastManager={Boolean(
           currentMemberRole === "MANAGER" &&
-            dashboard.membersByRole &&
-            (dashboard.membersByRole["MANAGER"] ?? 0) <= 1,
+          dashboard.membersByRole &&
+          (dashboard.membersByRole["MANAGER"] ?? 0) <= 1,
         )}
       />
     </PageWrapper>

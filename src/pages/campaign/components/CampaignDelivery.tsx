@@ -12,7 +12,7 @@ import type {
   CampaignTask,
 } from "@/pages/campaign/types";
 import { CampaignTaskGroups } from "./CampaignTaskGroups";
-import { CampaignClosureDialog } from "./CampaignClosureDialog";
+import { CampaignClosureSection } from "./CampaignClosureSection";
 
 export function CampaignDelivery({
   workspaceId,
@@ -107,8 +107,25 @@ export function CampaignDelivery({
   const done = tasks.filter((task) =>
     ["FINISHED", "COMPLETED", "CANCELLED"].includes(task.status),
   ).length;
+  if (closing)
+    return (
+      <CampaignClosureSection
+        workspaceId={workspaceId}
+        campaign={campaign}
+        onClose={() => setClosing(false)}
+        onTasksChanged={() => setRevision((value) => value + 1)}
+        onCompleted={(value) => {
+          setClosing(false);
+          onChanged(value);
+          toast.success(t("campaign.delivery.completed"));
+        }}
+      />
+    );
   return (
-    <section className="border-border bg-card space-y-5 rounded-xl border p-4 sm:p-6">
+    <section
+      id="campaign-delivery"
+      className="border-border bg-card scroll-mt-6 space-y-5 rounded-xl border p-4 sm:p-6"
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="text-lg font-semibold">
@@ -189,23 +206,14 @@ export function CampaignDelivery({
       )}
       {canManage && campaign.status === "IN_PROGRESS" && (
         <div className="border-border border-t pt-5">
-          <Button variant="outline" onClick={() => setClosing(true)}>
+          <Button
+            data-campaign-complete
+            variant="outline"
+            onClick={() => setClosing(true)}
+          >
             {t("campaign.delivery.complete")}
           </Button>
         </div>
-      )}
-      {closing && (
-        <CampaignClosureDialog
-          workspaceId={workspaceId}
-          campaign={campaign}
-          onClose={() => setClosing(false)}
-          onTasksChanged={() => setRevision((value) => value + 1)}
-          onCompleted={(value) => {
-            setClosing(false);
-            onChanged(value);
-            toast.success(t("campaign.delivery.completed"));
-          }}
-        />
       )}
       {campaign.status === "COMPLETED" && (
         <div className="bg-success/5 rounded-lg p-4 text-sm">

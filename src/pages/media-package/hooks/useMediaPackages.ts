@@ -87,16 +87,20 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
           data.data.negotiationStatus,
         );
       toast.success(t("mediaPackage.messages.selected"));
+      return true;
     } catch (requestError: unknown) {
       toast.error(
         extractErrorMessage(requestError, t("mediaPackage.errors.select")),
       );
+      return false;
     } finally {
       setSelectingId(null);
     }
   };
 
-  const negotiateTerms = async (terms: NegotiateTermsRequest): Promise<boolean> => {
+  const negotiateTerms = async (
+    terms: NegotiateTermsRequest,
+  ): Promise<boolean> => {
     if (!workspaceId) return false;
     setNegotiating(true);
     try {
@@ -139,7 +143,10 @@ export function useWorkspaceMediaPackages(workspaceId: string | undefined) {
     if (!workspaceId || !selectedPackage) return false;
     setApproving(true);
     try {
-      const { data } = await mediaPackageService.approvePackage(workspaceId, selectedPackage.termsVersion);
+      const { data } = await mediaPackageService.approvePackage(
+        workspaceId,
+        selectedPackage.termsVersion,
+      );
       setSelectedPackage(data.data);
       useWorkspaceStore
         .getState()

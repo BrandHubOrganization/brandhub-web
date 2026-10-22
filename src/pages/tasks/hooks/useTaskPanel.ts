@@ -30,21 +30,30 @@ export function useTaskPanel(workspaceId: string) {
   const [taskId, setTaskId] = useState(urlTaskId);
   useEffect(() => {
     if (urlTaskId === taskId) return;
-    if (canLeave()) setTaskId(urlTaskId);
-    else
-      setParams(
-        (previous) => {
-          const next = new URLSearchParams(previous);
-          if (taskId) next.set("task", taskId);
-          else next.delete("task");
-          return next;
-        },
-        { replace: true },
-      );
+    let active = true;
+    async function syncSelection() {
+      const allowed = await canLeave();
+      if (!active) return;
+      if (allowed) setTaskId(urlTaskId);
+      else
+        setParams(
+          (previous) => {
+            const next = new URLSearchParams(previous);
+            if (taskId) next.set("task", taskId);
+            else next.delete("task");
+            return next;
+          },
+          { replace: true },
+        );
+    }
+    void syncSelection();
+    return () => {
+      active = false;
+    };
   }, [urlTaskId, taskId, canLeave, setParams]);
-  const open = (task: TaskListItem) => {
+  const open = async (task: TaskListItem) => {
     if (task.workspaceId !== workspaceId) return;
-    if (!canLeave()) return;
+    if (!(await canLeave())) return;
     openerTaskId.current = task.id;
     opener.current =
       document.querySelector<HTMLElement>(
@@ -53,6 +62,7 @@ export function useTaskPanel(workspaceId: string) {
       (document.activeElement instanceof HTMLElement
         ? document.activeElement
         : null);
+    setTaskId(task.id);
     setParams((previous) => {
       const next = new URLSearchParams(previous);
       next.set("task", task.id);
@@ -70,8 +80,9 @@ export function useTaskPanel(workspaceId: string) {
       target?.focus({ preventScroll: true });
     });
   }, []);
-  const close = () => {
-    if (!canLeave()) return;
+  const close = async () => {
+    if (!(await canLeave())) return;
+    setTaskId("");
     setParams((previous) => {
       const next = new URLSearchParams(previous);
       next.delete("task");

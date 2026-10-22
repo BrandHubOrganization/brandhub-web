@@ -1,4 +1,4 @@
-import { api } from "@/services/api";
+﻿import { api } from "@/services/api";
 import { requireApiData } from "@/lib/apiData";
 import type { ApiResponse } from "@/services/authService";
 import type {
@@ -7,7 +7,7 @@ import type {
   TaskMemberOption,
   TaskWorkflow,
 } from "@/pages/tasks/types/taskWorkflow";
-import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 
 function scoped(workspaceId: string, taskId: string) {
   return `/api/v1/workspaces/${encodeURIComponent(workspaceId)}/tasks/${encodeURIComponent(taskId)}`;

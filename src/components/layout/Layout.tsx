@@ -68,7 +68,7 @@ export function Layout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const taskWorkspaceLayout = /^\/workspaces\/[^/]+\/tasks(?:\/[^/]+\/detail)?$/.test(location.pathname);
+  const taskWorkspaceLayout = /^\/workspaces\/[^/]+\/(?:tasks(?:\/[^/]+\/detail)?|task-approvals)$/.test(location.pathname);
   const { user } = useAuthStore();
   const systemRole = useAuthStore((s) => s.systemRole);
 
@@ -155,7 +155,11 @@ export function Layout() {
     (currentAgency && user?.id && currentAgency.ownerId === user.id ? "OWNER" : null);
   const memberRole: MemberRole | null =
     activeWorkspace?.myRole ??
-    (currentAgencyMyRole === "OWNER" ? "OWNER" : null);
+    (currentAgencyMyRole === "OWNER"
+      ? "OWNER"
+      : currentAgencyMyRole === "CLIENT"
+        ? "CLIENT"
+        : null);
 
   // BA mới — 1 user có N ClientProfile, gắn theo TỪNG WORKSPACE (không phải
   // agency) qua activeWorkspace.clientProfileId. Trước đây fetch theo

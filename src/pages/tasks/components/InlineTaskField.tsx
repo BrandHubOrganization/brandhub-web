@@ -60,10 +60,12 @@ export function InlineTaskField(props: Props) {
     },
   };
   return (
-    <div className="min-w-0 space-y-1.5">
-      <Label htmlFor={props.id} className="text-muted-foreground text-xs">
-        {props.label}
-      </Label>
+    <div className="min-w-0 space-y-1.5" aria-busy={pending}>
+      {props.label ? (
+        <Label htmlFor={props.id} className="text-muted-foreground text-xs">
+          {props.label}
+        </Label>
+      ) : null}
       {editing && props.editable ? (
         <>
           {props.options ? (
@@ -158,10 +160,6 @@ export function InlineTaskField(props: Props) {
           </div>
         ) : field.status === "saving" ? (
           <span>{t("tasks.inline.saving")}</span>
-        ) : field.status === "saved" ? (
-          <span className="text-muted-foreground">
-            {t("tasks.inline.saved")}
-          </span>
         ) : null}
       </div>
     </div>

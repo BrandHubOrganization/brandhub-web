@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTaskEditContext } from "@/pages/tasks/components/TaskWorkflowProvider";
-import { workflowError } from "@/pages/tasks/taskWorkflowErrors";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 
 export function useInlineTaskField<T>(
   id: string,
@@ -14,7 +14,20 @@ export function useInlineTaskField<T>(
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const pending = useRef(false);
-  useEffect(() => () => session.setDirty(id, false), [id, session]);
+  useEffect(() => {
+    let discardVersion = session.discardVersion;
+    const unsubscribe = session.subscribe(() => {
+      if (discardVersion === session.discardVersion) return;
+      discardVersion = session.discardVersion;
+      setDraft(null);
+      setError("");
+      setStatus("idle");
+    });
+    return () => {
+      unsubscribe();
+      session.setDirty(id, false);
+    };
+  }, [id, session]);
   function change(next: T) {
     setDraft({ value: next });
     session.setDirty(id, true);

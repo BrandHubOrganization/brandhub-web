@@ -21,9 +21,7 @@ export function FacebookMockup({ data }: MockupProps) {
     authorName = "BrandHub Official",
     authorAvatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
   } = data;
-  const defaultMedia =
-    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80";
-  const mediaSrc = mediaUrls[0] || defaultMedia;
+  const mediaSrc = mediaUrls[0];
   const config = PLATFORM_LIMITS.FACEBOOK;
 
   return (
@@ -54,11 +52,13 @@ export function FacebookMockup({ data }: MockupProps) {
       <div
         className={`bg-muted w-full overflow-hidden ${config.aspectRatioClass}`}
       >
-        <img
-          src={mediaSrc}
-          alt="Post content"
-          className="h-full w-full object-cover"
-        />
+        {mediaSrc && (
+          <img
+            src={mediaSrc}
+            alt="Post content"
+            className="h-full w-full object-cover"
+          />
+        )}
       </div>
 
       <div className="border-border text-muted-foreground flex items-center justify-between border-t p-3 text-xs font-medium">

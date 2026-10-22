@@ -13,12 +13,12 @@ import {
   YAxis,
 } from "recharts";
 import { Button } from "@/components/ui/button";
+import { AdminInvoicesPanel } from "@/pages/admin/components/AdminInvoicesPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import {
   adminRevenueService,
-  describeTransaction,
   errorCode,
   presetRange,
   type AdminRevenue,
@@ -68,7 +68,7 @@ export function AdminRevenuePanel() {
   const [exporting, setExporting] = useState(false);
   const filter = { ...range, timezone, plan };
   const result = useQuery({
-    queryKey: ["admin-revenue", actor, filter],
+    queryKey: ["admin-revenue-sepay", actor, filter],
     queryFn: () => adminRevenueService.overview(filter),
     retry: false,
     placeholderData: (previous) => previous,
@@ -90,6 +90,12 @@ export function AdminRevenuePanel() {
   const compact = new Intl.NumberFormat(i18n.language, { notation: "compact" });
   const count = new Intl.NumberFormat(i18n.language);
   const primary = data?.totals.find((x) => x.currency === "VND");
+  const planReceipts =
+    data?.plans.filter((item) => !plan || item.plan === plan) ?? [];
+  const planTotal = planReceipts.reduce(
+    (total, item) => total + item.revenue,
+    0,
+  );
   const others = data?.totals.filter((x) => x.currency !== "VND") ?? [];
 
   return (
@@ -319,14 +325,14 @@ export function AdminRevenuePanel() {
               <div className="text-muted-foreground mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs">
                 <span className="flex items-center gap-2">
                   <span
-                    className="bg-foreground h-2.5 w-8"
+                    className="bg-brand-orange h-2.5 w-8 rounded-sm"
                     aria-hidden="true"
                   />
                   {t("admin.revenue.subscription")}
                 </span>
                 <span className="flex items-center gap-2">
                   <span
-                    className="bg-brand-orange h-2.5 w-8"
+                    className="bg-foreground h-2.5 w-8 rounded-sm"
                     aria-hidden="true"
                   />
                   {t("admin.revenue.aiCredit")}
@@ -340,6 +346,8 @@ export function AdminRevenuePanel() {
                 <ResponsiveContainer width="100%" height="100%" minHeight={240}>
                   <BarChart
                     data={bucket(data.daily, activeGrain)}
+                    barSize={28}
+                    barCategoryGap="25%"
                     margin={{ top: 10, right: 8, left: -4, bottom: 4 }}
                   >
                     <CartesianGrid
@@ -351,8 +359,8 @@ export function AdminRevenuePanel() {
                       axisLine={false}
                       tickLine={false}
                       tick={{
-                        fontSize: 11,
-                        fontFamily: "var(--font-mono)",
+                        fontSize: 12,
+                        fontFamily: "var(--font-sans)",
                         fill: "var(--color-muted-foreground)",
                       }}
                       dy={8}
@@ -363,8 +371,8 @@ export function AdminRevenuePanel() {
                       width={56}
                       tickFormatter={(v) => compact.format(v)}
                       tick={{
-                        fontSize: 11,
-                        fontFamily: "var(--font-mono)",
+                        fontSize: 12,
+                        fontFamily: "var(--font-sans)",
                         fill: "var(--color-muted-foreground)",
                       }}
                     />
@@ -377,20 +385,25 @@ export function AdminRevenuePanel() {
                         border: "1px solid var(--color-border)",
                         color: "var(--color-foreground)",
                       }}
+                      labelStyle={{ color: "var(--color-foreground)" }}
+                      itemStyle={{ color: "var(--color-foreground)" }}
                       formatter={(value) => money(Number(value))}
                     />
                     <Bar
                       dataKey="subscription"
                       name={t("admin.revenue.subscription")}
                       stackId="r"
-                      fill="var(--color-foreground)"
+                      fill="var(--color-brand-orange)"
+                      maxBarSize={40}
+                      radius={[4, 4, 0, 0]}
                       isAnimationActive={false}
                     />
                     <Bar
                       dataKey="aiCredit"
                       name={t("admin.revenue.aiCredit")}
                       stackId="r"
-                      fill="var(--color-brand-orange)"
+                      fill="var(--color-foreground)"
+                      maxBarSize={40}
                       radius={[4, 4, 0, 0]}
                       isAnimationActive={false}
                     />
@@ -412,126 +425,38 @@ export function AdminRevenuePanel() {
                 {t("admin.revenue.plansHint")}
               </p>
               <ul className="mt-5 space-y-4">
-                {data.plans.map((p) => (
+                {planReceipts.map((p) => (
                   <li key={p.plan}>
                     <div className="flex items-baseline justify-between gap-3 text-sm">
                       <span className="font-semibold">{p.displayName}</span>
-                      <span className="font-mono text-sm font-semibold tabular-nums">
-                        {money(p.mrr)}
+                      <span className="font-sans text-sm font-semibold tabular-nums">
+                        {money(p.revenue)}
                       </span>
                     </div>
                     <div className="bg-muted mt-2 h-2 overflow-hidden rounded-full">
                       <div
                         className="bg-brand-orange h-full rounded-full"
                         style={{
-                          width: `${data.mrr ? (p.mrr / data.mrr) * 100 : 0}%`,
+                          width: `${planTotal ? (p.revenue / planTotal) * 100 : 0}%`,
                         }}
                       />
                     </div>
                     <p className="text-muted-foreground mt-1.5 text-xs">
-                      {t("admin.revenue.subscribers", { count: p.subscribers })}
-                      , {money(p.priceMonthly)}
+                      {t("admin.revenue.planPayments", {
+                        count: p.paidTransactions,
+                      })}
+                      {" · "}
+                      {t("admin.revenue.planShare", {
+                        percent: planTotal
+                          ? Math.round((p.revenue / planTotal) * 100)
+                          : 0,
+                      })}
                     </p>
                   </li>
                 ))}
               </ul>
             </section>
           </div>
-
-          <section className="bg-card border-border min-w-0 rounded-xl border p-5 lg:p-6">
-            <h2 className="text-base font-semibold">
-              {t("admin.revenue.transactionsTitle")}
-            </h2>
-            <p className="text-muted-foreground mt-1 text-xs leading-5">
-              {t("admin.revenue.transactionsHint")}
-            </p>
-            {data.transactions.length === 0 ? (
-              <p className="text-muted-foreground mt-6 text-sm">
-                {t("admin.revenue.empty")}
-              </p>
-            ) : (
-              <div className="mt-5 overflow-x-auto">
-                <table className="w-full min-w-[760px] text-left text-sm">
-                  <thead className="bg-muted/60 text-muted-foreground text-xs">
-                    <tr>
-                      {(
-                        [
-                          "customer",
-                          "type",
-                          "amount",
-                          "status",
-                          "payosRef",
-                          "time",
-                        ] as const
-                      ).map((key) => (
-                        <th
-                          key={key}
-                          scope="col"
-                          className="px-4 py-3 font-semibold"
-                        >
-                          {t(`admin.revenue.${key}`)}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.transactions.map((tx) => {
-                      const d = describeTransaction(tx);
-                      return (
-                        <tr
-                          key={tx.id}
-                          className="border-border border-b last:border-0"
-                        >
-                          <td className="px-4 py-3">
-                            <p className="font-medium">{tx.customerName}</p>
-                            <p className="text-muted-foreground text-xs">
-                              {tx.customerEmail}
-                            </p>
-                          </td>
-                          <td className="px-4 py-3">
-                            {d.kind === "plan"
-                              ? t("admin.revenue.planTx", { plan: d.value })
-                              : t("admin.revenue.creditTx", {
-                                  formatted: count.format(d.value),
-                                })}
-                          </td>
-                          <td className="px-4 py-3 font-mono font-semibold tabular-nums">
-                            {money(tx.amount, tx.currency)}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span
-                              className={cn(
-                                "rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold",
-                                tx.status === "COMPLETED"
-                                  ? "bg-success/15 text-success"
-                                  : "bg-muted text-muted-foreground",
-                              )}
-                            >
-                              {t(
-                                tx.status === "COMPLETED"
-                                  ? "admin.revenue.completed"
-                                  : "admin.revenue.refunded",
-                              )}
-                            </span>
-                          </td>
-                          <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
-                            {tx.payosTxId ?? "—"}
-                          </td>
-                          <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
-                            {new Intl.DateTimeFormat(i18n.language, {
-                              dateStyle: "short",
-                              timeStyle: "short",
-                              timeZone: data.timezone,
-                            }).format(new Date(tx.paidAt))}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
 
           <div className="text-muted-foreground border-border flex flex-wrap justify-between gap-2 border-t pt-4 text-xs">
             <span>
@@ -548,6 +473,7 @@ export function AdminRevenuePanel() {
           </div>
         </>
       )}
+      <AdminInvoicesPanel />
       {exporting && (
         <AdminReportDialog
           defaults={{
@@ -579,12 +505,12 @@ function Kpi({
       aria-label={label}
       className="bg-card border-border flex min-w-0 flex-col rounded-xl border p-5"
     >
-      <h2 className="text-muted-foreground text-2xs font-mono leading-4 font-medium tracking-wider uppercase">
+      <h2 className="text-muted-foreground font-sans text-xs leading-4 font-medium tracking-wider uppercase">
         {label}
       </h2>
       <p
         className={cn(
-          "mt-3 truncate font-mono text-[22px] leading-none font-semibold tracking-tight tabular-nums",
+          "mt-3 truncate font-sans text-2xl leading-none font-semibold tracking-tight tabular-nums",
           accent && "text-brand-orange",
         )}
         title={value}

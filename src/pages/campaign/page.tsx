@@ -22,13 +22,7 @@ export default function CampaignPage() {
     return state.currentMemberRole ?? currentWorkspace.myRole ?? null;
   });
   return (
-    <PageWrapper hideBanner title={t("campaign.title")}>
-      <Link
-        className="text-primary text-sm underline"
-        to={`/workspaces/${id}/campaign-partners`}
-      >
-        {t("campaign.partners.title")}
-      </Link>
+    <PageWrapper compact showGuideButton={false} title={t("campaign.title")}>
       {loading && <Spinner />}
       {!loading && error && (
         <div role="alert">
@@ -48,7 +42,17 @@ export default function CampaignPage() {
       {!loading &&
         !error &&
         selectedPackage?.negotiationStatus !== "APPROVED" && (
-          <p>{t("campaign.packageRequired")}</p>
+          <section className="border-border bg-card space-y-3 rounded-xl border p-5 sm:p-6">
+            <h2 className="font-semibold">{t("campaign.packageRequired")}</h2>
+            <p className="text-muted-foreground max-w-2xl text-sm leading-6">
+              {t("campaign.ux.packageHint")}
+            </p>
+            <Button variant="orange" asChild>
+              <Link to={`/workspaces/${id}/media-package`}>
+                {t("campaign.ux.openPackage")}
+              </Link>
+            </Button>
+          </section>
         )}
     </PageWrapper>
   );

@@ -32,5 +32,9 @@
     "pushTitle": "Push Notifications (FCM)",
     "pushBody": "Push notifications delivered to the BrandHub mobile app (iOS/Android) on important events.",
     "pushFootnote": "Preview: enable to receive push notifications on your mobile device."
-  }
+  },
+  "loading": "Loading notifications...",
+  "loadError": "Could not load notifications.",
+  "retry": "Retry",
+  "readError": "Could not mark notifications as read. Please try again."
 }

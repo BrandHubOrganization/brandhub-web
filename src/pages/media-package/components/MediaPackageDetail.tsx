@@ -1,51 +1,29 @@
 import { useTranslation } from "react-i18next";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import type { ReactNode } from "react";
+import { InlineWorkArea } from "@/components/shared/InlineWorkArea";
 import { OfferingSummary } from "./OfferingSummary";
-import {
-  formatPackageType,
-  formatPackageValue,
-} from "../lib/formatMediaPackage";
+import { PackageFacts } from "@/pages/media-package/components/PackageFacts";
 import type { MediaPackage } from "../types/mediaPackage";
 
 export function MediaPackageDetail({
   mediaPackage,
-  open,
-  onOpenChange,
+  onClose,
+  actions,
 }: {
   mediaPackage: MediaPackage;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onClose: () => void;
+  actions?: ReactNode;
 }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85dvh] overflow-y-auto overscroll-contain sm:max-w-3xl">
-        <DialogHeader>
-          <DialogTitle className="pr-6 text-xl break-words">
-            {mediaPackage.name}
-          </DialogTitle>
-          <DialogDescription>
-            {formatPackageType(mediaPackage.type, t)}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="bg-muted/50 rounded-xl p-4">
-          <p className="text-2xl font-semibold tracking-tight">
-            {formatPackageValue(mediaPackage, i18n.language, t)}
-          </p>
-          {mediaPackage.durationWeeks != null && (
-            <p className="text-muted-foreground mt-1 text-sm">
-              {t("mediaPackage.values.duration", {
-                count: mediaPackage.durationWeeks,
-              })}
-            </p>
-          )}
-        </div>
+    <InlineWorkArea
+      title={mediaPackage.name}
+      backLabel={t("mediaPackage.ui.backToPackages")}
+      onBack={onClose}
+      returnFocusTo={`[data-package-details="${CSS.escape(mediaPackage.id)}"]`}
+    >
+      <PackageFacts mediaPackage={mediaPackage} />
+      {mediaPackage.scopeDescription && (
         <section className="space-y-2">
           <h3 className="text-sm font-semibold">
             {t("mediaPackage.selected.scopeTitle")}
@@ -55,8 +33,13 @@ export function MediaPackageDetail({
               t("mediaPackage.catalog.noDescription")}
           </p>
         </section>
-        <OfferingSummary value={mediaPackage} />
-      </DialogContent>
-    </Dialog>
+      )}
+      <OfferingSummary value={mediaPackage} />
+      {actions && (
+        <footer className="border-border flex flex-wrap gap-3 border-t pt-5">
+          {actions}
+        </footer>
+      )}
+    </InlineWorkArea>
   );
 }

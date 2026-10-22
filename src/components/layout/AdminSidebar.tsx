@@ -58,7 +58,7 @@ export function AdminMobileNavigation() {
           to={linkTo(key)}
           aria-current={active === key ? "page" : undefined}
           className={cn(
-            "focus-visible:outline-ring text-2xs flex min-h-14 w-20 flex-col items-center justify-center gap-1 rounded-md focus-visible:outline-2",
+            "focus-visible:outline-ring flex min-h-14 w-20 flex-col items-center justify-center gap-1 rounded-md text-xs focus-visible:outline-2",
             active === key
               ? "text-brand-orange font-semibold"
               : "text-muted-foreground",
@@ -116,12 +116,12 @@ export function AdminSidebar({
         className="flex-1 overflow-y-auto px-3 py-6"
       >
         {[
-          { title: "workspace", entries: sections.slice(0, 5) },
-          { title: "utilities", entries: sections.slice(5) },
+          { title: "workspace", entries: sections.slice(0, 4) },
+          { title: "utilities", entries: sections.slice(4) },
         ].map((group) => (
           <div key={group.title} className="mb-7">
             {!collapsed && (
-              <p className="text-2xs mb-3 px-3 font-mono tracking-wide uppercase opacity-50">
+              <p className="mb-3 px-3 font-sans text-xs tracking-wide uppercase opacity-50">
                 {t(`admin.navigation.${group.title}`)}
               </p>
             )}
@@ -135,7 +135,7 @@ export function AdminSidebar({
                   aria-current={active === key ? "page" : undefined}
                   title={
                     planned
-                      ? `${t(labelKey(key))} · ${t("admin.navigation.planned")}`
+                      ? `${t(labelKey(key))} Â· ${t("admin.navigation.planned")}`
                       : t(labelKey(key))
                   }
                   className={cn(
@@ -179,7 +179,7 @@ export function AdminSidebar({
         {!collapsed && (
           <div className="min-w-0">
             <p className="truncate text-xs font-medium">{username}</p>
-            <p className="text-2xs mt-1 font-mono tracking-wide uppercase opacity-50">
+            <p className="mt-1 font-sans text-xs tracking-wide uppercase opacity-50">
               {t("admin.roles.ADMIN")}
             </p>
           </div>

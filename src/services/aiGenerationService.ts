@@ -98,6 +98,17 @@ function unwrap<T>(response: { data: ApiResponse<T> }): T {
 }
 
 export const aiGenerationService = {
+  async generateHashtags(
+    input: { topic: string; platform: SocialPlatform },
+    signal?: AbortSignal,
+  ): Promise<string[]> {
+    const response = await api.post<ApiResponse<{ hashtags: string[] }>>(
+      "/api/v1/ai/content/hashtags",
+      { topic: input.topic, platform: input.platform.toLowerCase(), count: 5 },
+      { signal },
+    );
+    return unwrap(response).hashtags;
+  },
   async generatePost(input: {
     prompt: string;
     topic?: string;
