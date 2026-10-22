@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   AlignLeft,
@@ -84,7 +84,7 @@ export function TaskDeadlineField({
               : undefined
         }
         required={Boolean(task.assigneeId)}
-        save={(value) => {
+        save={async (value) => {
           if (value && task.publishDate) {
             const nextDue = new Date(taskInstant(value, zone) || "").getTime();
             const pubTime = new Date(task.publishDate).getTime();
@@ -171,7 +171,7 @@ export function TaskPublishTimeField({
               : undefined
         }
         max={task.dates.maxDate ? `${task.dates.maxDate}T23:59` : undefined}
-        save={(value) => {
+        save={async (value) => {
           if (value && task.dueDate) {
             const nextPub = new Date(taskInstant(value, zone) || "").getTime();
             const dueTime = new Date(task.dueDate).getTime();
