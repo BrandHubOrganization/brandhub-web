@@ -88,6 +88,13 @@
     "mockNotice": "AI test mode",
     "mockMode": "Mock",
     "aiPanelLabel": "AI tools panel",
+    "autosaveLabel": "Auto-save draft",
+    "aiContent": {
+      "button": "AI Content",
+      "description": "Your content creation assistant",
+      "greeting": "What would you like to create? Choose text, image or video and describe your request below.",
+      "close": "Close AI Content"
+    },
     "tabs": {
       "text": "Text",
       "image": "Image",

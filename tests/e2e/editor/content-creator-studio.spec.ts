@@ -73,6 +73,7 @@ test.beforeEach(async ({ page }) => {
     }),
   );
   await page.goto("/workspaces/workspace-1/editor");
+  await page.getByRole("button", { name: "AI Content", exact: true }).click();
 });
 
 test("renders the three-tool creator studio", async ({ page }) => {
