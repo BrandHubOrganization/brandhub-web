@@ -31,6 +31,9 @@ export interface PostResponse extends SavePostInput {
   media: Array<SavePostMedia & { url: string }>;
   createdAt: string;
   updatedAt: string;
+  errorCode?: string;
+  errorMessage?: string;
+  platformPostId?: string;
 }
 
 export const postService = {

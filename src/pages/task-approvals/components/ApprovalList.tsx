@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { reviewError } from "@/pages/tasks/taskApprovalView";
+import { reviewError } from "@/pages/tasks/utils/taskApprovalView";
 import type { useApprovalList } from "@/pages/task-approvals/hooks/useApprovalList";
 
 interface Props {

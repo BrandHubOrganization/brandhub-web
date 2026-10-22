@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+﻿import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { useTaskEditContext } from "@/pages/tasks/components/TaskWorkflowProvider";
 import { taskCommentService as service } from "@/pages/tasks/services/taskCommentService";
-import { workflowError } from "@/pages/tasks/taskWorkflowErrors";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 import type { CommentDraft } from "@/pages/tasks/types/taskComment";
 
 const EMPTY_DRAFT: CommentDraft = { content: "", mentions: [], uploads: [] };

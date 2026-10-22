@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { aiGenerationService } from "@/services/aiGenerationService";
 import { AiCaptionDialog } from "@/components/ai/AiCaptionDialog";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 import type { AIErrorType, SocialPlatform } from "@/types/editor";
 
 interface AIGeneratePanelProps {
@@ -91,6 +92,11 @@ export function AIGeneratePanel({
           : t("editor.aiGenerate.generateSuccess"),
       );
     } catch (error) {
+      const creditError = aiCreditErrorMessage(error);
+      if (creditError) {
+        toast.error(creditError, { duration: 8000 });
+        return;
+      }
       const status = axios.isAxiosError(error)
         ? error.response?.status
         : undefined;

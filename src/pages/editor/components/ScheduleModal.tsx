@@ -44,7 +44,7 @@ export function ScheduleModal({
     };
   };
 
-  const initial = getInitialDateTime();
+  const [initial] = useState(getInitialDateTime);
   const [date, setDate] = useState(initial.date);
   const [time, setTime] = useState(initial.time);
   const [isSubmitting, setIsSubmitting] = useState(false);

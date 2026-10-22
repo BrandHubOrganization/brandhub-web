@@ -37,7 +37,7 @@ import type { WorkspaceDashboard } from "@/types/workspace";
 import type { TaskListItem } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
-import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { LineStatChart, PieStatChart } from "@/components/charts/StatCharts";
 import { LeaveWorkspaceDialog } from "./components/LeaveWorkspaceDialog";
 import {
@@ -102,7 +102,10 @@ function StatCard({
         )}
       </div>
       {sublabel && (
-        <p className="text-muted-foreground mt-1.5 truncate text-xs">
+        <p
+          className="text-muted-foreground mt-1.5 text-xs break-words"
+          title={sublabel}
+        >
           {sublabel}
         </p>
       )}
@@ -111,7 +114,7 @@ function StatCard({
 }
 
 export function WorkspaceDashboardPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id: workspaceId } = useParams<{ id: string }>();
   const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
@@ -523,15 +526,23 @@ export function WorkspaceDashboardPage() {
         {/* Card 4: Media Package / AI Credits */}
         {!isClient ? (
           <StatCard
-            label={t("workspace.dashboard.agencyAiCredits", {
-              month: dashboard.aiCreditMonth,
-            })}
-            value={dashboard.agencyAiCreditsUsedThisMonth}
+            label={t("workspace.dashboard.agencyAiCreditsPeriod")}
+            value={
+              dashboard.agencyAiCreditsUsedThisPeriod ??
+              t("workspace.dashboard.creditUnavailable")
+            }
             icon={Sparkles}
             sublabel={
-              t("workspace.dashboard.packageStatus") +
-              ": " +
-              (packageStatus || t("workspace.dashboard.noPackage"))
+              dashboard.aiCreditPeriodStart && dashboard.aiCreditPeriodEnd
+                ? t("workspace.dashboard.creditPeriod", {
+                    start: new Date(
+                      dashboard.aiCreditPeriodStart,
+                    ).toLocaleDateString(i18n.language),
+                    end: new Date(
+                      dashboard.aiCreditPeriodEnd,
+                    ).toLocaleDateString(i18n.language),
+                  })
+                : t("workspace.dashboard.creditSetupRequired")
             }
             colorClass="text-purple-500"
             bgIconClass="bg-purple-500/10"

@@ -5,7 +5,7 @@ import { PenSquare } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { TaskWorkflowError } from "@/pages/tasks/components/TaskWorkflowError";
-import { workflowError } from "@/pages/tasks/taskWorkflowErrors";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
 export function TaskStartAction({

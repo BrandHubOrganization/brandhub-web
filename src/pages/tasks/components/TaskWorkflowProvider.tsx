@@ -1,4 +1,4 @@
-import {
+﻿import {
   createContext,
   useCallback,
   useContext,
@@ -11,7 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { TaskEditSession } from "@/pages/tasks/taskEditSession";
+import { TaskEditSession } from "@/pages/tasks/utils/taskEditSession";
 import { TaskDiscardDialog } from "@/pages/tasks/components/TaskDiscardDialog";
 
 interface SessionValue {

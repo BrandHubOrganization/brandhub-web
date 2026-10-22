@@ -243,6 +243,13 @@ export const NAV_SECTIONS: NavSection[] = [
         hiddenForClient: true,
         hideInWorkspace: true,
       },
+      {
+        to: "/subscription/invoices",
+        icon: FileBarChart,
+        labelKey: "subscription.invoices.title",
+        agencyScoped: true,
+        hideInWorkspace: true,
+      },
     ],
   },
   {
@@ -313,6 +320,14 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/agency/{agencyId}/collaborators",
         icon: Users,
         labelKey: "collaborators.title",
+        agencyScoped: true,
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
+        to: "/agency/{agencyId}/credit",
+        icon: CreditCard,
+        labelKey: "credit.title",
         agencyScoped: true,
         hiddenForClient: true,
         hideInWorkspace: true,

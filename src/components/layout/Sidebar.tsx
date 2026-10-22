@@ -1,3 +1,4 @@
+import { AiCreditBalance } from "@/components/billing/AiCreditBalance";
 import * as React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
@@ -295,6 +296,8 @@ export function Sidebar({
         onSwitchAgency={onSwitchAgency}
         onSwitchWorkspace={onSwitchWorkspace}
       />
+
+      {!collapsed && <AiCreditBalance sidebar />}
 
       {/* Shared hover preview popup portal */}
       <SidebarHoverPreview
