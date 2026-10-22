@@ -1,4 +1,4 @@
-import type { CanonicalTaskStatus } from "@/pages/tasks/taskStatus";
+﻿import type { CanonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 export const STATUS_CONFIG: Record<
   CanonicalTaskStatus,
   {

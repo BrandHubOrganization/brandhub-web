@@ -16,10 +16,12 @@ import {
   ExternalLink,
   X,
   Eye,
+  ListTodo,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SelectMenu } from "@/components/ui/select-menu";
 import { useNavigate, useParams } from "react-router-dom";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { formatRelativeScheduleTime } from "@/lib/dateUtils";
 
 interface ContentCalendarProps {
@@ -124,7 +126,10 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
 }) => {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
-  const { id: workspaceId } = useParams<{ id: string }>();
+  const { id: paramWorkspaceId } = useParams<{ id: string }>();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const workspaceId = paramWorkspaceId || currentWorkspace?.id;
+  const isManager = currentWorkspace?.myRole === "MANAGER";
 
   const calendarRef = useRef<FullCalendar | null>(null);
   const [currentYear, setCurrentYear] = useState(() =>
@@ -202,6 +207,10 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
 
   const handleEventDrop = async (dropInfo: EventDropArg) => {
     const { event, revert } = dropInfo;
+    if (!isManager) {
+      revert();
+      return;
+    }
     const newDate = event.start;
     if (!newDate) return;
 
@@ -525,8 +534,8 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
               slotMaxTime="24:00:00"
               scrollTime="08:00:00"
               allDaySlot={false}
-              editable={true}
-              selectable={true}
+              editable={isManager}
+              selectable={isManager}
               events={events}
               eventDrop={handleEventDrop}
               eventContent={renderEventContent}
@@ -587,6 +596,14 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
+              <span className="text-muted-foreground">Phân loại:</span>
+              <span className="inline-flex items-center gap-1 rounded bg-blue-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
+                <ListTodo className="size-3" />
+                Công việc (Task)
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
               <span className="text-muted-foreground">Kênh:</span>
               <span className="font-medium text-foreground">
                 {
@@ -619,13 +636,33 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
           </div>
 
           {/* Action Footer */}
-          <div className="border-border flex items-center justify-end gap-2 border-t pt-2.5">
+          <div className="border-border flex items-center justify-between gap-2 border-t pt-2.5">
             <button
               type="button"
               onClick={() => {
+                navigate(
+                  workspaceId
+                    ? `/workspaces/${workspaceId}/tasks`
+                    : `/tasks`,
+                );
+              }}
+              className="hover:bg-muted text-muted-foreground hover:text-foreground inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all"
+            >
+              <ListTodo className="size-3.5" />
+              <span>Xem Task List</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const taskId = selectedEvent.event.extendedProps?.taskId;
                 const targetUrl = workspaceId
-                  ? `/workspaces/${workspaceId}/editor?taskId=${selectedEvent.event.id}`
-                  : `/editor?taskId=${selectedEvent.event.id}`;
+                  ? taskId
+                    ? `/workspaces/${workspaceId}/editor?taskId=${taskId}`
+                    : `/workspaces/${workspaceId}/editor?postId=${selectedEvent.event.id}`
+                  : taskId
+                    ? `/editor?taskId=${taskId}`
+                    : `/editor?postId=${selectedEvent.event.id}`;
                 navigate(targetUrl);
               }}
               className="bg-brand-orange hover:bg-brand-orange/90 inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white shadow-2xs transition-all"
@@ -641,7 +678,9 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
       {/* Footer Helper Note */}
       <div className="border-border bg-muted/20 text-2xs text-muted-foreground flex items-center justify-between border-t px-4 py-2">
         <span className="font-mono tracking-wider uppercase">
-          Mẹo: Kéo thả để dời giờ đăng bài (tự động chặn thời điểm quá khứ) · Click vào bài đăng để xem hoặc sửa bài trong Editor
+          {isManager
+            ? "Mẹo: Quản lý có thể kéo thả để dời giờ đăng bài (tự động chặn thời điểm quá khứ) · Click vào bài đăng để xem bài"
+            : "Click vào bài đăng để xem chi tiết hoặc mở bài viết trong Editor"}
         </span>
         <span className="text-brand-orange font-medium">
           Auto Publish Engine

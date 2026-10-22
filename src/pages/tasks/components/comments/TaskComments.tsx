@@ -1,12 +1,12 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { MessageSquare, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { TaskCommentComposer } from "@/pages/tasks/components/TaskCommentComposer";
-import { TaskCommentImage } from "@/pages/tasks/components/TaskCommentImage";
+import { TaskCommentComposer } from "@/pages/tasks/components/comments/TaskCommentComposer";
+import { TaskCommentImage } from "@/pages/tasks/components/comments/TaskCommentImage";
 import { taskCommentService } from "@/pages/tasks/services/taskCommentService";
-import { workflowError } from "@/pages/tasks/taskWorkflowErrors";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 import { useAuthStore } from "@/store/authStore";
 
 function linkedText(content: string): ReactNode[] {

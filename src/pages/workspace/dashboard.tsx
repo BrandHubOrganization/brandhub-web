@@ -37,7 +37,7 @@ import type { WorkspaceDashboard } from "@/types/workspace";
 import type { TaskListItem, TaskStatus } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
-import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { LineStatChart, PieStatChart } from "@/components/charts/StatCharts";
 import { LeaveWorkspaceDialog } from "./components/LeaveWorkspaceDialog";
 import {
