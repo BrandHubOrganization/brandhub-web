@@ -233,7 +233,7 @@ function CrawlForm({ saved }: { saved: CrawlConfig }) {
         <div className="flex justify-end">
           <Button
             type="submit"
-            className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+            variant="orange"
             disabled={save.isPending}
           >
             {t("admin.crawl.save")}
@@ -270,7 +270,7 @@ function CrawlForm({ saved }: { saved: CrawlConfig }) {
                 {saved.sources.map((s) => (
                   <span
                     key={s}
-                    className="bg-muted rounded-full px-2 py-0.5 font-mono text-xs"
+                    className="bg-muted rounded-full px-2 py-0.5 font-sans text-xs"
                   >
                     {s}
                   </span>
