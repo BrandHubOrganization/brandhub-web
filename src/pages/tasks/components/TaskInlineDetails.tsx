@@ -87,7 +87,7 @@ export function TaskDeadlineField({
               : undefined
         }
         required={Boolean(task.assigneeId)}
-        save={(value) => {
+        save={async (value) => {
           if (value && task.publishDate) {
             const nextDue = new Date(taskInstant(value, zone) || "").getTime();
             const pubTime = new Date(task.publishDate).getTime();
@@ -136,7 +136,7 @@ export function TaskPublishTimeField({
         </div>
         {currentPublish && (
           <div>
-            {task.status === "FINISHED" || post?.status === "PUBLISHED" ? (
+            {post?.status === "PUBLISHED" ? (
               <span className="text-2xs rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-600 dark:text-emerald-400">
                 Đã đăng
               </span>
@@ -177,7 +177,7 @@ export function TaskPublishTimeField({
               : undefined
         }
         max={task.dates.maxDate ? `${task.dates.maxDate}T23:59` : undefined}
-        save={(value) => {
+        save={async (value) => {
           if (value && task.dueDate) {
             const nextPub = new Date(taskInstant(value, zone) || "").getTime();
             const dueTime = new Date(task.dueDate).getTime();
