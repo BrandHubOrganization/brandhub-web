@@ -127,7 +127,11 @@ export interface WorkspaceDashboard {
   packageNegotiationStatus: string | null;
   agencyId: string;
   aiCreditMonth: string;
-  agencyAiCreditsUsedThisMonth: number;
+  agencyAiCreditsUsedThisMonth: number | null;
+  agencyAiCreditsUsedThisPeriod?: number | null;
+  aiCreditPeriodStart?: string | null;
+  aiCreditPeriodEnd?: string | null;
+  aiCreditError?: string | null;
 }
 
 export interface WorkspaceTemplateConfig {

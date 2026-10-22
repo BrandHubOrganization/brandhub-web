@@ -92,13 +92,12 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
         <HelpHint label={title}>{description}</HelpHint>
       </div>
       {packages.length > 0 && (
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Input
-            wrapperClassName="min-w-0 sm:min-w-64 sm:basis-64 sm:flex-1 sm:max-w-md"
+            wrapperClassName="min-w-0 flex-1 sm:max-w-md"
             aria-label={t("mediaPackage.ui.search")}
             placeholder={t("mediaPackage.ui.search")}
-            iconPrefix={<Search aria-hidden="true" />}
-            className="h-11"
+            iconPrefix={<Search className="size-4" aria-hidden="true" />}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -107,14 +106,13 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
           />
           {canManageAvailability && (
             <Select
-              wrapperClassName="min-w-0 sm:w-80 sm:shrink-0"
+              wrapperClassName="min-w-0 sm:w-64 sm:shrink-0"
               aria-label={t("mediaPackage.ui.availability")}
               value={availability}
               onChange={(e) => {
                 setAvailability(e.target.value);
                 setVisibleCount(12);
               }}
-              className="h-11"
             >
               <option value="all">{t("mediaPackage.ui.allPackages")}</option>
               <option value="available">
@@ -127,7 +125,7 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
           )}
           <p
             role="status"
-            className="text-muted-foreground shrink-0 text-sm whitespace-nowrap sm:ml-auto"
+            className="text-muted-foreground shrink-0 text-xs sm:text-sm whitespace-nowrap sm:ml-auto"
           >
             {t("mediaPackage.ui.resultCount", { count: filtered.length })}
           </p>

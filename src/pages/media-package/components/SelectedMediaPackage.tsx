@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ArrowRight, CheckCircle2, Clock } from "lucide-react";
+import { ArrowRight, CheckCircle2, Clock, Layers, Wallet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HelpHint } from "@/components/shared/HelpHint";
-import { PackageFacts } from "@/pages/media-package/components/PackageFacts";
 import { applyEffectiveTerms } from "../lib/formatMediaPackage";
 import { mediaPackageService } from "../services/mediaPackageService";
 import type {
@@ -41,21 +40,27 @@ function ApprovalStatus({
 }) {
   const { t, i18n } = useTranslation();
   return (
-    <div className="border-border flex items-start gap-3 rounded-lg border p-3">
+    <div
+      className={`flex items-start gap-3 rounded-lg border p-3 transition-colors ${
+        approvedAt
+          ? "border-emerald-500/25 bg-emerald-500/5 dark:border-emerald-500/30 dark:bg-emerald-500/10"
+          : "border-border/70 bg-muted/20"
+      }`}
+    >
       {approvedAt ? (
         <CheckCircle2
-          className="text-success mt-0.5 size-5 shrink-0"
+          className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400"
           aria-hidden="true"
         />
       ) : (
         <Clock
-          className="text-muted-foreground mt-0.5 size-5 shrink-0"
+          className="text-muted-foreground mt-0.5 size-4 shrink-0"
           aria-hidden="true"
         />
       )}
       <div className="min-w-0">
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-muted-foreground mt-1 text-xs leading-5">
+        <p className="text-foreground text-sm font-medium">{label}</p>
+        <p className="text-muted-foreground mt-0.5 text-xs leading-5">
           {approvedAt
             ? t("mediaPackage.approval.approvedAt", {
                 time: new Intl.DateTimeFormat(i18n.language, {
@@ -80,7 +85,7 @@ export function SelectedMediaPackage({
   approving = false,
   onEditingChange,
 }: SelectedMediaPackageProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id: routeWorkspaceId } = useParams<{ id: string }>();
   const [negotiationOpen, setNegotiationOpen] = useState(false);
@@ -233,38 +238,100 @@ export function SelectedMediaPackage({
     );
   return (
     <>
-      <section className="border-border bg-card space-y-4 rounded-xl border p-4">
-        <header className="flex flex-col justify-between gap-4 sm:flex-row">
-          <div className="min-w-0">
-            <div className="mb-2 flex flex-wrap gap-2">
-              <Badge variant={isDualApproved ? "APPROVED" : "secondary"}>
-                {t(`mediaPackage.status.${selection.negotiationStatus}`)}
-              </Badge>
-              <Badge variant="outline">
-                {t("mediaPackage.selected.termsVersion", {
-                  version: selection.termsVersion,
-                })}
-              </Badge>
+      <section className="border-border/80 bg-card relative space-y-5 rounded-2xl border p-5 shadow-xs ring-1 ring-border/50 ring-offset-2 ring-offset-background sm:p-6">
+        {/* Bento Grid Header & Facts */}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Main Hero Header Tile */}
+          <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4 sm:col-span-2 lg:col-span-3">
+            <div>
+              <div className="mb-2.5 flex flex-wrap items-center gap-2">
+                <Badge
+                  variant={isDualApproved ? "APPROVED" : "secondary"}
+                  className="text-xs"
+                >
+                  {t(`mediaPackage.status.${selection.negotiationStatus}`)}
+                </Badge>
+                <Badge variant="outline" className="text-xs font-normal">
+                  {t("mediaPackage.selected.termsVersion", {
+                    version: selection.termsVersion,
+                  })}
+                </Badge>
+              </div>
+              <h2 className="text-foreground text-xl font-bold tracking-tight break-words sm:text-2xl">
+                {mediaPackage.name}
+              </h2>
             </div>
-            <h2 className="text-xl font-semibold tracking-tight break-words">
-              {mediaPackage.name}
-            </h2>
-          </div>
-        </header>
-        <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_19rem]">
-          <div className="min-w-0 space-y-4">
-            <PackageFacts mediaPackage={mediaPackage} />
             {mediaPackage.scopeDescription && (
-              <section className="space-y-1 rounded-lg border px-3 py-2">
-                <h3 className="text-sm font-semibold">
-                  {t("mediaPackage.selected.scopeTitle")}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-7 break-words whitespace-pre-line">
-                  {mediaPackage.scopeDescription ||
-                    t("mediaPackage.catalog.noDescription")}
-                </p>
-              </section>
+              <p className="text-muted-foreground mt-2.5 text-xs leading-relaxed break-words whitespace-pre-line">
+                {mediaPackage.scopeDescription}
+              </p>
             )}
+          </div>
+
+          {/* Fact 1: Budget */}
+          <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4">
+            <div className="flex items-center justify-between text-muted-foreground">
+              <span className="text-xs font-medium uppercase tracking-wider">
+                {t("mediaPackage.form.budgetLabel")}
+              </span>
+              <Wallet className="text-brand-orange size-4 shrink-0" aria-hidden="true" />
+            </div>
+            <p className="text-foreground mt-3 text-lg font-bold tracking-tight break-words">
+              {mediaPackage.budgetAmount == null
+                ? t("mediaPackage.compact.agreeLater")
+                : new Intl.NumberFormat(i18n.language, {
+                    style: "currency",
+                    currency: "VND",
+                    maximumFractionDigits: 0,
+                  }).format(mediaPackage.budgetAmount)}
+            </p>
+          </div>
+
+          {/* Fact 2: Duration */}
+          <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4">
+            <div className="flex items-center justify-between text-muted-foreground">
+              <span className="text-xs font-medium uppercase tracking-wider">
+                {t("mediaPackage.compact.duration")}
+              </span>
+              <Clock className="text-brand-orange size-4 shrink-0" aria-hidden="true" />
+            </div>
+            <p className="text-foreground mt-3 text-lg font-bold tracking-tight">
+              {mediaPackage.durationWeeks == null
+                ? t("mediaPackage.compact.agreeLater")
+                : t("mediaPackage.values.duration", {
+                    count: mediaPackage.durationWeeks,
+                  })}
+            </p>
+          </div>
+
+          {/* Fact 3: Deliverables summary */}
+          <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4 sm:col-span-2 lg:col-span-1">
+            <div className="flex items-center justify-between text-muted-foreground">
+              <span className="text-xs font-medium uppercase tracking-wider">
+                {t("mediaPackage.ui.deliverables")}
+              </span>
+              <Layers className="text-brand-orange size-4 shrink-0" aria-hidden="true" />
+            </div>
+            <div className="mt-3 flex items-baseline gap-2">
+              <p className="text-foreground text-lg font-bold tracking-tight">
+                {mediaPackage.offeringDetails?.deliverables?.length ?? 0}{" "}
+                <span className="text-xs font-normal text-muted-foreground">
+                  {t("mediaPackage.ui.deliverablesCountUnit", {
+                    defaultValue: "hạng mục",
+                  })}
+                </span>
+              </p>
+              {mediaPackage.offeringDetails?.maxChanges != null && (
+                <span className="text-muted-foreground text-xs">
+                  · {t("mediaPackage.offering.revisions")}: {mediaPackage.offeringDetails.maxChanges}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_18.5rem] xl:grid-cols-[minmax(0,1fr)_20rem]">
+          <div className="min-w-0 space-y-5">
             <OfferingSummary value={mediaPackage} />
             {selection.previousTerms && (
               <PackageTermsDiff
@@ -273,9 +340,9 @@ export function SelectedMediaPackage({
               />
             )}
           </div>
-          <aside className="border-border space-y-4 rounded-xl border p-4 xl:sticky xl:top-4">
+          <aside className="border-border/80 bg-muted/10 space-y-4 rounded-xl border p-4 lg:sticky lg:top-4">
             <div className="flex items-center gap-1">
-              <h3 className="font-semibold">
+              <h3 className="font-semibold text-sm">
                 {t("mediaPackage.selected.dualApprovalTitle")}
               </h3>
               <HelpHint label={t("mediaPackage.selected.dualApprovalTitle")}>
@@ -293,7 +360,7 @@ export function SelectedMediaPackage({
             {!isDualApproved && (isClient || isAgency) && !mineApproved && (
               <Button
                 variant="orange"
-                className="h-auto min-h-10 w-full whitespace-normal"
+                className="w-full font-medium"
                 loading={isActionLoading}
                 onClick={handleApprove}
               >
@@ -307,7 +374,7 @@ export function SelectedMediaPackage({
             {!isDualApproved && (
               <Button
                 variant="outline"
-                className="h-auto min-h-10 w-full whitespace-normal"
+                className="w-full font-medium"
                 disabled={isActionLoading || clientProposalLimitReached}
                 data-package-negotiate
                 onClick={() => changeNegotiationOpen(true)}
@@ -333,14 +400,14 @@ export function SelectedMediaPackage({
             )}
             <Button
               variant="ghost"
-              className="w-full"
+              className="w-full font-medium"
               onClick={handleChatNavigate}
             >
               {t("mediaPackage.actions.chatNegotiate")}
             </Button>
             {isDualApproved && (
               <div className="border-border space-y-3 border-t pt-4">
-                <Button asChild variant="orange" className="w-full">
+                <Button asChild variant="orange" className="w-full font-medium">
                   <Link to={`/workspaces/${targetWorkspaceId}/campaigns`}>
                     {t("mediaPackage.ui.openCampaign")}
                     <ArrowRight className="size-4" aria-hidden="true" />
