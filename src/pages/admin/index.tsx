@@ -10,6 +10,7 @@ import { AdminModerationPanel } from "@/pages/admin/components/AdminModerationPa
 import { AdminNotificationsPanel } from "@/pages/admin/components/AdminNotificationsPanel";
 import { AdminMailTemplatesPanel } from "@/pages/admin/components/AdminMailTemplatesPanel";
 import { AdminReportForm } from "@/pages/admin/components/AdminReportExport";
+import { AdminCrawlConfigPanel } from "@/pages/admin/components/AdminCrawlConfigPanel";
 import { presetRange } from "@/services/adminRevenueService";
 import {
   AdminOverviewActions,
@@ -24,6 +25,7 @@ const views = [
   "email",
   "mailTemplates",
   "reports",
+  "crawl",
 ];
 
 export function AdminPage() {
@@ -54,7 +56,9 @@ export function AdminPage() {
                 ? "admin.reports.description"
                 : view === "moderation"
                   ? "admin.moderation.description"
-                  : `admin.unavailable.${view}`,
+                  : view === "crawl"
+                    ? "admin.crawl.description"
+                    : `admin.unavailable.${view}`,
         )}
         hideBanner
         showGuideButton={false}
@@ -78,6 +82,8 @@ export function AdminPage() {
           <AdminRevenuePanel />
         ) : view === "email" ? (
           <AdminNotificationsPanel />
+        ) : view === "crawl" ? (
+          <AdminCrawlConfigPanel />
         ) : view === "mailTemplates" ? (
           <AdminMailTemplatesPanel />
         ) : view === "reports" ? (

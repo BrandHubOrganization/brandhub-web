@@ -162,4 +162,25 @@ i18n.use(initReactI18next).init({
   interpolation: { escapeValue: false },
 });
 
+if (import.meta.hot) {
+  import.meta.hot.accept(
+    ["./locales/vi/editor.json", "./locales/en/editor.json"],
+    (updates) => {
+      for (const [index, language] of ["vi", "en"].entries()) {
+        const updated = updates[index];
+        if (updated) {
+          i18n.addResourceBundle(
+            language,
+            "translation",
+            { editor: updated.default },
+            true,
+            true,
+          );
+        }
+      }
+      i18n.emit("languageChanged", i18n.language);
+    },
+  );
+}
+
 export default i18n;

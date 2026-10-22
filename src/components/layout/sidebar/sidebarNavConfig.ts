@@ -25,6 +25,8 @@ import {
   BookOpen,
   PackageCheck,
   MessageCircleMore,
+  TrendingUp,
+  Clapperboard,
   Mail,
   Calendar,
 } from "lucide-react";
@@ -196,6 +198,19 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: FolderKanban,
         labelKey: "nav.library",
         workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        // FR 3.7.1: platform-wide trends, not workspace data, so the route stays unscoped.
+        to: "/ai-studio/trends",
+        icon: TrendingUp,
+        labelKey: "nav.trends",
+      },
+      {
+        // FR 3.7.6/3.7.7: uses the open workspace for credit and job ownership.
+        to: "/ai-studio/video",
+        icon: Clapperboard,
+        labelKey: "nav.aiVideo",
         requiresWorkspace: true,
       },
     ],

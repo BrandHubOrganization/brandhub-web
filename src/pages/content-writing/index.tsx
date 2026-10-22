@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ImagePlus, X, Eye, EyeOff, Copy, Check } from "lucide-react";
+import { ImagePlus, X, Eye, EyeOff, Sparkles, Copy, Check } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@/pages/content-writing/components/CanvasTextEditor";
 import { VersionHistorySidebar } from "@/pages/content-writing/components/VersionHistorySidebar";
 import { SocialPreview } from "@/pages/content-writing/components/SocialPreview";
+import { AiCaptionDialog } from "@/components/ai/AiCaptionDialog";
 import { useTaskContentSync } from "@/pages/content-writing/hooks/useTaskContentSync";
 import { useAuthStore } from "@/store/authStore";
 import { api } from "@/services/api";
@@ -68,6 +69,8 @@ export function ContentWritingPage() {
 
   // ── Social preview panel toggle ──────────────────────────────────────────
   const [showPreview, setShowPreview] = useState(true);
+  // FR 3.7.2 AI caption dialog
+  const [captionOpen, setCaptionOpen] = useState(false);
 
   // ── Author info from auth store ──────────────────────────────────────────
   const user = useAuthStore((s) => s.user);
@@ -127,6 +130,16 @@ export function ContentWritingPage() {
     setReloadToken((v) => v + 1);
   };
 
+  // Replacing goes through the shared Yjs text so collaborators see one change.
+  const replaceContent = (text: string) => {
+    const doc = yDoc as Y.Doc;
+    const content = doc.getText("content");
+    doc.transact(() => {
+      content.delete(0, content.length);
+      content.insert(0, text);
+    });
+  };
+
   return (
     <PageWrapper
       title={t("editor.contentWritingPage.title")}
@@ -146,6 +159,16 @@ export function ContentWritingPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          {isReady && workspaceId && (
+            <button
+              type="button"
+              onClick={() => setCaptionOpen(true)}
+              className="bg-brand-orange hover:bg-brand-orange/90 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-white transition-colors"
+            >
+              <Sparkles className="size-3.5" />
+              {t("editor.aiCaption.open")}
+            </button>
+          )}
           {/* Image upload button */}
           <button
             type="button"
@@ -307,6 +330,16 @@ export function ContentWritingPage() {
           )}
         </div>
       </div>
+      {captionOpen && workspaceId && (
+        <AiCaptionDialog
+          workspaceId={workspaceId}
+          initialTopic={publishText}
+          taskId={taskId}
+          onInsert={(pick) => editorRef.current?.insertText(pick.text)}
+          onReplace={(pick) => replaceContent(pick.text)}
+          onClose={() => setCaptionOpen(false)}
+        />
+      )}
     </PageWrapper>
   );
 }

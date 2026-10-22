@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import * as Y from "yjs";
 import { api } from "@/services/api";
-import { useAuthStore } from "@/store/authStore";
+import { prepareTaskSocket } from "@/pages/content-writing/services/taskSocketSession";
 import { requireApiData } from "@/lib/apiData";
 
 /**
@@ -134,8 +134,6 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         });
       };
 
-      const brokerUrl = () =>
-        `${WS_BASE_URL}/ws/tasks?token=${encodeURIComponent(useAuthStore.getState().accessToken ?? "")}`;
       // After a drop the server may have broadcast updates we never saw
       // (the subscription only delivers new ones). Pull the log again and
       // merge it; Yjs makes re-applying known updates a no-op.
@@ -153,12 +151,20 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
       };
       let hasConnectedBefore = false;
       const client = new Client({
-        brokerURL: brokerUrl(),
         reconnectDelay: 3000,
         // The access token is short-lived: a reconnect must not reuse the URL
         // built at mount time.
-        beforeConnect: (c) => {
-          c.brokerURL = brokerUrl();
+        beforeConnect: async (c) => {
+          try {
+            c.brokerURL = await prepareTaskSocket(WS_BASE_URL);
+            if (disposed) await c.deactivate();
+          } catch {
+            if (!disposed) {
+              setConnectionError(true);
+              setIsConnected(false);
+            }
+            await c.deactivate();
+          }
         },
         onConnect: () => {
           setConnectionError(false);

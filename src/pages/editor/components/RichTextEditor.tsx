@@ -52,9 +52,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   // Sync external value updates (e.g. from AI auto-populate)
   useEffect(() => {
-    // Suspense can reconnect this effect after Tiptap destroyed its editor.
-    if (!editor || editor.isDestroyed) return;
-    if (value !== editor.getText()) {
+    if (
+      editor?.isInitialized &&
+      !editor.isDestroyed &&
+      value !== editor.getText()
+    ) {
       editor.commands.setContent(value, { emitUpdate: false });
     }
   }, [value, editor]);

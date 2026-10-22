@@ -88,40 +88,160 @@
     "guardVerified": "Verified against {{count}} sources · no hallucination detected."
   },
   "trends": {
-    "title": "Trends",
-    "description": "Track trending keywords and topics.",
-    "loadError": "Failed to load trends data.",
-    "retry": "Retry",
-    "keywordsTitle": "Keyword tracking configuration",
-    "keywordPlaceholder": "Enter new keyword",
-    "addKeyword": "Add",
-    "activate": "Activate",
-    "deactivate": "Deactivate",
-    "addSuccess": "Keyword added.",
-    "addError": "Failed to add keyword.",
-    "toggleSuccess": "Keyword status updated.",
-    "toggleError": "Failed to update keyword.",
-    "deleteConfirm": "Delete this keyword?",
-    "deleteSuccess": "Keyword deleted.",
-    "deleteError": "Failed to delete keyword.",
-    "volume": "Volume",
-    "useForContent": "Use for Content",
-    "useForContentSuccess": "Topic added to content creation pipeline.",
-    "useForContentError": "Action failed.",
-    "frequency": {
-      "HOURLY": "Hourly",
-      "DAILY": "Daily",
-      "WEEKLY": "Weekly"
+    "title": "Trending topics",
+    "description": "Rising keywords from social media data, refreshed on the crawl schedule so you can ride trends in your content.",
+    "loadError": "Could not load trend data.",
+    "retry": "Try again",
+    "periodLabel": "Time window",
+    "period": {
+      "6h": "Last 6 hours",
+      "24h": "Today",
+      "7d": "7 days"
+    },
+    "topicFilter": "Filter by topic",
+    "allTopics": "All topics",
+    "refresh": "Refresh",
+    "empty": "No trend data yet",
+    "emptyHint": "The crawler has not run yet or found no standout keywords in this window. Data appears after the next crawl.",
+    "score": "Trend score",
+    "virality": "Virality",
+    "riskLabel": "Brand risk",
+    "risk": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "moodLabel": "Public mood",
+    "mood": {
+      "positive": "Positive",
+      "negative": "Negative",
+      "humor": "Humorous",
+      "controversy": "Controversial",
+      "neutral": "Neutral"
+    },
+    "status": {
+      "new": "New",
+      "rising": "Rising",
+      "peaking": "Peaking",
+      "declining": "Declining"
+    },
+    "superTrend": "Super trend",
+    "dailyPosts": "Posts per day",
+    "copyKeyword": "Copy keyword",
+    "copied": "Keyword copied.",
+    "copyError": "Could not copy.",
+    "crawl": {
+      "sources": "Crawled from: {{sources}} ({{count}} pages)",
+      "everyMinutes": "refreshed every {{count}} minutes",
+      "everyHours": "refreshed every {{count}} hours",
+      "cron": "cron {{cron}}",
+      "next": "next run {{date}}"
+    },
+    "chart": {
+      "title": "Rising topics",
+      "hint": "Summed trend score per topic. Click a topic to see its trends.",
+      "tooltip": "Score {{score}} · {{trends}} trends · {{rising}} rising"
+    },
+    "topicName": {
+      "thể_thao": "Sports",
+      "giải_trí": "Entertainment",
+      "thời_sự": "News",
+      "ẩm_thực": "Food",
+      "công_nghệ": "Technology",
+      "thời_trang_làm_đẹp": "Fashion & beauty",
+      "sức_khỏe": "Health",
+      "giáo_dục": "Education",
+      "tài_chính": "Finance",
+      "du_lịch": "Travel",
+      "game": "Gaming",
+      "đời_sống": "Lifestyle"
+    },
+    "posts": {
+      "unknownAuthor": "Unknown author",
+      "likes": "Likes",
+      "comments": "Comments",
+      "shares": "Shares",
+      "open": "Open post",
+      "title_one": "1 post on \"{{keyword}}\"",
+      "title_other": "{{count}} posts on \"{{keyword}}\"",
+      "hint_one": "1 post · hover for posts, click for details",
+      "hint_other": "{{count}} posts · hover for posts, click for details"
+    },
+    "detail": {
+      "growth": "Growth (posts per day)",
+      "noGrowth": "Not enough daily data to draw the growth line.",
+      "tooltip": "{{posts}} posts · {{change}} vs the day before",
+      "emotions": "Author emotion",
+      "signals": "Signals",
+      "open": "Open trend details for {{keyword}}"
+    },
+    "emotionName": {
+      "vui": "Joy",
+      "buồn": "Sadness",
+      "tức_giận": "Anger",
+      "lo_sợ": "Fear",
+      "ngạc_nhiên": "Surprise",
+      "trung_lập": "Neutral"
+    }
+  },
+  "trendFit": {
+    "title": "Trends for your brand today",
+    "notJudged": "AI could not score them; sorted by industry rules",
+    "loading": "Picking trends for your brand…",
+    "error": "Could not load trend suggestions.",
+    "empty": "No trend suits your brand today.",
+    "upcoming": "Coming up: {{list}}",
+    "verdict": { "nen": "Go", "can_nhac": "Consider" },
+    "type": { "moment": "Occasion", "format": "Format", "event": "Event" },
+    "techniques": {
+      "khoanh_khac": "Moment",
+      "choi_chu": "Wordplay",
+      "muon_format": "Borrow the format",
+      "muon_bieu_tuong": "Borrow the symbol",
+      "brand_la_fan": "Brand as a fan"
+    },
+    "techniqueLabel": "Angle: {{name}}",
+    "issues": {
+      "foreign_script": "Contains text in another script.",
+      "prompt_leak": "Shows words from the AI instructions.",
+      "sensitive": "Sensitive word: {{term}}.",
+      "too_long": "Longer than the platform recommends."
     }
   },
   "video": {
     "title": "AI Video Studio",
-    "description": "Generate video from a script, map scenes and choose an export format.",
-    "scriptLabel": "Script",
-    "sceneMapping": "Scene Mapping",
-    "exportLabel": "Export format",
-    "previewPlaceholder": "Video preview",
+    "description": "Create short AI videos in a chosen style, optionally with the brand Ambassador.",
+    "promptLabel": "Describe the video",
+    "promptPlaceholder": "E.g. Salted coffee poured slowly, steam rising, a cosy morning café",
+    "promptHint": "At least 10 characters. Describe scene, subject and action; the style adds camera and lighting.",
+    "styleTitle": "Video style",
+    "ambassadorTitle": "Ambassador (optional)",
+    "noAmbassador": "None",
+    "aspect": "Frame",
+    "aspects": {
+      "vertical": "Vertical 9:16",
+      "horizontal": "Horizontal 16:9"
+    },
+    "credits": "You have {{count}} AI credits left this month.",
+    "creditsUnknown": "Credits unavailable.",
     "generateButton": "Generate video",
-    "generateSuccess": "Video generated"
+    "download": "Download video",
+    "retry": "Try again",
+    "history": "Recent videos",
+    "refunded": "Credits refunded.",
+    "noWorkspace": "Open a workspace to create videos (credits and videos belong to a workspace).",
+    "status": {
+      "PENDING": "Queued",
+      "PROCESSING": "AI is creating the video…",
+      "COMPLETED": "Done",
+      "FAILED": "Failed"
+    },
+    "errors": {
+      "noCredit": "Not enough AI credit (the agency ran out or you reached your Owner's limit).",
+      "aiDown": "Video generation is not available right now. No credit was charged.",
+      "failed": "Could not start. Check the style/Ambassador and try again.",
+      "timeout": "Video generation timed out.",
+      "jobFailed": "The AI could not create this video."
+    }
   }
 }

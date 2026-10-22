@@ -7,6 +7,7 @@ import {
   FileText,
   LayoutDashboard,
   Mail,
+  Radar,
   ShieldCheck,
   Users,
   Wallet,
@@ -24,6 +25,7 @@ const sections = [
   { key: "email", icon: Mail, planned: false },
   { key: "mailTemplates", icon: FileText, planned: false },
   { key: "reports", icon: FileChartColumn, planned: false },
+  { key: "crawl", icon: Radar, planned: false },
   { key: "credit", icon: Wallet, planned: false },
 ];
 const linkTo = (key: string) =>

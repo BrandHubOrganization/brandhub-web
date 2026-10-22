@@ -149,6 +149,14 @@ async function setup(
     body: JSON.stringify({ success: true, data: body }),
   });
 
+  await page.route("**/api/v1/**", (route) =>
+    route.request().method() === "GET"
+      ? route.fulfill(json([]))
+      : route.abort(),
+  );
+  await page.route("**/api/v1/users/me", (route) =>
+    route.fulfill(json({ id: "studio-test-user", role: "USER" })),
+  );
   await page.route("**/api/v1/workspaces", (route) =>
     route.fulfill(
       json([

@@ -34,7 +34,7 @@ import { WorkspaceCampaignSummary } from "@/pages/workspace/components/Workspace
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
 import type { WorkspaceDashboard } from "@/types/workspace";
-import type { TaskListItem, TaskStatus } from "@/types/task";
+import type { TaskListItem } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
@@ -235,21 +235,14 @@ export function WorkspaceDashboardPage() {
     let completedCount = 0;
 
     tasks.forEach((item) => {
-      if (
-        item.status === "BACKLOG" ||
-        item.status === "DETAIL_IDENTIFIED" ||
-        item.status === "ASSIGNED"
-      ) {
+      const status = canonicalTaskStatus(item.status);
+      if (status === "TODO") {
         todoCount++;
-      } else if (item.status === "IN_PROGRESS") {
+      } else if (status === "IN_PROGRESS") {
         inProgressCount++;
-      } else if (
-        item.status === "QC_REVIEW" ||
-        item.status === "MANAGER_REVIEW" ||
-        item.status === "CLIENT_REVIEW"
-      ) {
+      } else if (status === "IN_REVIEW") {
         reviewCount++;
-      } else if (item.status === "COMPLETED") {
+      } else if (status === "FINISHED") {
         completedCount++;
       }
     });
@@ -623,9 +616,7 @@ export function WorkspaceDashboardPage() {
             ) : (
               <div className="space-y-2.5">
                 {tasks.map((task) => {
-                  const canonical = canonicalTaskStatus(
-                    task.status as TaskStatus,
-                  );
+                  const canonical = canonicalTaskStatus(task.status);
                   const statusInfo =
                     STATUS_CONFIG[canonical] || STATUS_CONFIG.TODO;
                   return (
