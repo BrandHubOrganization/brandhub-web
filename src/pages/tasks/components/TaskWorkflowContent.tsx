@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
+  AlertCircle,
   ClipboardCheck,
   Clock,
   Eye,
@@ -259,6 +260,31 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
                 isTaskFinished={isTaskFinished}
                 publishDate={task.publishDate}
               />
+
+              {post?.status === "FAILED" && (
+                <div className="bg-destructive/10 border-destructive/25 flex items-start gap-3 rounded-lg border p-3 text-xs text-destructive">
+                  <AlertCircle className="size-4 shrink-0 mt-0.5 text-destructive" />
+                  <div className="min-w-0 space-y-1">
+                    <div className="font-semibold text-destructive">Xuất bản bài viết thất bại</div>
+                    <p className="text-muted-foreground text-xs leading-relaxed">
+                      {post.errorMessage || "Hệ thống đã thử lại 3 lần nhưng không thể đăng bài lên mạng xã hội."}
+                    </p>
+                    <p className="text-muted-foreground text-2xs">
+                      Vui lòng mở bài viết trong Editor để kiểm tra tài khoản mạng xã hội hoặc đổi lại lịch đăng bài để thử lại.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {post?.status === "IN_PROGRESS" && post?.errorMessage && (
+                <div className="bg-blue-500/10 border-blue-500/20 flex items-start gap-3 rounded-lg border p-3 text-xs text-blue-600 dark:text-blue-400">
+                  <RefreshCw className="size-4 shrink-0 mt-0.5 animate-spin" />
+                  <div className="min-w-0">
+                    <div className="font-semibold">Đang trong tiến trình xuất bản</div>
+                    <p className="text-muted-foreground text-xs mt-0.5">{post.errorMessage}</p>
+                  </div>
+                </div>
+              )}
 
               <p className="text-muted-foreground text-xs leading-relaxed">
                 {isOtherCreator

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
+  AlertCircle,
   AlignLeft,
   Calendar,
   Clock,
@@ -9,6 +10,7 @@ import {
   FolderKanban,
   Globe,
   Link2,
+  RefreshCw,
   Share2,
   ShieldCheck,
   Sparkles,
@@ -25,6 +27,7 @@ import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useTaskPost } from "@/pages/tasks/hooks/useTaskPost";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
 function readableDate(value: string | null, zone: string, language: string) {
@@ -121,6 +124,19 @@ export function TaskPublishTimeField({
   );
   const post = taskPost?.post;
   const currentPublish = task.publishDate || post?.scheduledAt || null;
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const role = currentMemberRole || currentWorkspace?.myRole;
+  const isManager = role === "MANAGER";
+  const isPublishedOrPublishing =
+    post?.status === "PUBLISHED" ||
+    post?.status === "IN_PROGRESS" ||
+    post?.status === "PUBLISHING";
+  const canEditPublish =
+    task.dates.ready &&
+    task.lockReason !== "TASK_CAMPAIGN_COMPLETED" &&
+    (task.allowedActions.canEditDetail ||
+      (isManager && !isPublishedOrPublishing && (task.status as string) !== "CANCELLED"));
 
   return (
     <div className="space-y-1.5 pt-2">
@@ -162,7 +178,7 @@ export function TaskPublishTimeField({
             ? readableDate(currentPublish, zone, i18n.language)
             : t("tasks.notScheduled")
         }
-        editable={task.allowedActions.canEditDetail && task.dates.ready}
+        editable={canEditPublish}
         min={
           task.dueDate
             ? taskLocalMinute(task.dueDate, zone)
@@ -187,6 +203,23 @@ export function TaskPublishTimeField({
         }}
         retry={state.retry}
       />
+
+      {post?.status === "FAILED" && (
+        <div className="bg-destructive/10 border-destructive/20 text-destructive mt-1.5 flex items-start gap-1.5 rounded-md border p-2 text-2xs">
+          <AlertCircle className="size-3.5 shrink-0 mt-0.5" />
+          <div className="leading-tight">
+            <span className="font-semibold">Lỗi đăng bài: </span>
+            <span>{post.errorMessage || "Đã thử lại 3 lần nhưng không thành công"}</span>
+          </div>
+        </div>
+      )}
+
+      {post?.status === "IN_PROGRESS" && post?.errorMessage && (
+        <div className="bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 mt-1.5 flex items-start gap-1.5 rounded-md border p-2 text-2xs">
+          <RefreshCw className="size-3.5 shrink-0 mt-0.5 animate-spin" />
+          <span className="leading-tight">{post.errorMessage}</span>
+        </div>
+      )}
     </div>
   );
 }
