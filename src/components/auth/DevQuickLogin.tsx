@@ -10,26 +10,26 @@ import { workspaceService } from "@/services/workspaceService";
 import type { MemberRole } from "@/types/workspace";
 
 /**
- * Real development accounts from the bulk seed or dev-quick-login.sql.
- * See the business service seed README; development password: Password123.
+ * Existing development accounts linked to the seeded agencies and workspaces.
+ * Development password: Password123.
  * Authenticate normally, then select a workspace using the API's actual role.
  */
 const QUICK_LOGIN_ACCOUNTS = [
-  { email: "admin@demo.brandhub.test", labelKey: "nav.admin" },
-  { email: "user177@demo.brandhub.test", labelKey: "workspace.roles.OWNER" },
+  { email: "admin@brandhub.dev", labelKey: "nav.admin" },
+  { email: "user177@hotmail.com", labelKey: "workspace.roles.OWNER" },
   // A user can be Manager and Creator in different workspaces.
   {
-    email: "user1@demo.brandhub.test",
+    email: "user1@gmail.com",
     labelKey: "workspace.roles.MANAGER",
     workspaceRole: "MANAGER",
   },
   {
-    email: "user13@demo.brandhub.test",
+    email: "user1@gmail.com",
     labelKey: "workspace.roles.CREATOR",
     workspaceRole: "CREATOR",
   },
   {
-    email: "user59@demo.brandhub.test",
+    email: "user59@gmail.com",
     labelKey: "workspace.roles.CLIENT",
     landingPath: "/client-profiles",
   },

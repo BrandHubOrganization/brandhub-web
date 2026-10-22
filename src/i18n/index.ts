@@ -1,5 +1,7 @@
 import viMonitoring from "./locales/vi/monitoring.json";
 import enMonitoring from "./locales/en/monitoring.json";
+import viCredit from "./locales/vi/credit.json";
+import enCredit from "./locales/en/credit.json";
 import viTasks from "./locales/vi/tasks.json";
 import enTasks from "./locales/en/tasks.json";
 import i18n from "i18next";
@@ -74,6 +76,7 @@ import enCampaign from "./locales/en/campaign.json";
 import enCollaborators from "./locales/en/collaborators.json";
 
 const vi = {
+  credit: viCredit,
   tasks: viTasks,
   admin: viAdmin,
   monitoring: viMonitoring,
@@ -112,6 +115,7 @@ const vi = {
 };
 
 const en = {
+  credit: enCredit,
   tasks: enTasks,
   admin: enAdmin,
   monitoring: enMonitoring,

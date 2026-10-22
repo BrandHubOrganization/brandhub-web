@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { AmbassadorGeneratorModal } from "@/pages/editor/components/AmbassadorGeneratorModal";
+import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 import {
   aiGenerationService,
   imageSourceToDataUrl,
@@ -198,8 +199,11 @@ export function AIImageStudioPanel({
       setGeneratedImage(result.image_url);
       setGeneratedImageKey(result.s3_key);
       toast.success(t("editor.studio.image.generateSuccess"));
-    } catch {
-      toast.error(t("editor.studio.image.generateFailed"));
+    } catch (error) {
+      toast.error(
+        aiCreditErrorMessage(error) ?? t("editor.studio.image.generateFailed"),
+        { duration: 8000 },
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -246,7 +250,11 @@ export function AIImageStudioPanel({
             aria-label={t("editor.studio.image.uploadPoseButton")}
             className="border-brand-orange bg-muted relative aspect-square w-24 overflow-hidden rounded-lg border-2"
           >
-            <img src={selectedPose} alt="" className="h-full w-full object-cover" />
+            <img
+              src={selectedPose}
+              alt=""
+              className="h-full w-full object-cover"
+            />
             <span className="bg-brand-orange absolute top-1.5 right-1.5 flex size-5 items-center justify-center rounded-full text-white">
               <Check className="size-3" />
             </span>
