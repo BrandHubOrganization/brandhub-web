@@ -59,6 +59,8 @@ async function openCaptionDialog(page: Page, blockedAdapt = false) {
       ];
     if (path.endsWith("/ai/credits")) data = { remaining: 200 };
     if (path === "/api/v1/ai/trending-topics") data = { items: [] };
+    if (path.endsWith("/ai/trend-fit"))
+      data = { date: "2026-10-23", judged: false, trends: [], upcoming: [] };
     if (path.endsWith("/ai/captions")) {
       generation++;
       data = {
@@ -98,8 +100,9 @@ async function openCaptionDialog(page: Page, blockedAdapt = false) {
     await route.fulfill({ json: { success: true, data } });
   });
   await page.goto("/workspaces/caption-workspace/editor");
+  await page.getByRole("button", { name: "AI Content", exact: true }).click();
   await page.getByRole("button", { name: "AI: 3 caption options" }).click();
-  const dialog = page.getByRole("dialog");
+  const dialog = page.getByRole("dialog", { name: "AI caption", exact: true });
   await dialog
     .getByRole("textbox", { name: "Topic / key message" })
     .fill("Launch our autumn coffee menu");
@@ -113,7 +116,10 @@ async function openCaptionDialog(page: Page, blockedAdapt = false) {
 }
 
 async function adaptFirstOption(page: Page) {
-  const option = page.getByRole("dialog").locator("article").first();
+  const option = page
+    .getByRole("dialog", { name: "AI caption", exact: true })
+    .locator("article")
+    .first();
   await option.getByRole("button", { name: "Edit / other platforms" }).click();
   await option.getByRole("button", { name: "Tiktok", exact: true }).click();
   await option.getByRole("button", { name: "Create", exact: true }).click();

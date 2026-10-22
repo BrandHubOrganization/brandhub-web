@@ -6,17 +6,11 @@ import {
   useState,
   useEffect,
 } from "react";
-import {
-  PanelLeftClose,
-  PanelLeftOpen,
-  PanelRightOpen,
-  Sparkles,
-  Smartphone,
-} from "lucide-react";
+import { PanelRightOpen, Smartphone } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
-import { ContentCreatorAiPanel } from "@/pages/editor/components/ContentCreatorAiPanel";
+import { AiContentPopover } from "@/pages/editor/components/AiContentPopover";
 import { EditorHeaderActions } from "@/pages/editor/components/EditorHeaderActions";
 import { HashtagInputWithSuggestions } from "@/pages/editor/components/HashtagInputWithSuggestions";
 import { MediaDropzone } from "@/pages/editor/components/MediaDropzone";
@@ -81,9 +75,7 @@ function EditorWorkspace({
   const connectedPlatforms = hasLoadedSocial
     ? (socialConnection?.platforms ?? [])
     : [];
-  const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
   const [isPreviewPanelOpen, setIsPreviewPanelOpen] = useState(true);
-  const [aiPanelWidth, setAiPanelWidth] = useState(280);
   const [previewPanelWidth, setPreviewPanelWidth] = useState(300);
   const workspaceRef = useRef<HTMLDivElement>(null);
   const {
@@ -147,66 +139,37 @@ function EditorWorkspace({
   );
 
   const workspaceStyle = {
-    "--editor-ai-width": isAiPanelOpen ? `${aiPanelWidth}px` : "44px",
     "--editor-preview-width": isPreviewPanelOpen
       ? `${previewPanelWidth}px`
       : "44px",
   } as CSSProperties;
 
-  const startPanelResize =
-    (panel: "ai" | "preview") =>
-    (event: ReactPointerEvent<HTMLButtonElement>) => {
-      if (window.innerWidth < 1280 || !workspaceRef.current) return;
-      event.preventDefault();
-      const bounds = workspaceRef.current.getBoundingClientRect();
-      const previousCursor = document.body.style.cursor;
-      const previousSelection = document.body.style.userSelect;
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
+  const startPreviewResize = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (window.innerWidth < 1024 || !workspaceRef.current) return;
+    event.preventDefault();
+    const bounds = workspaceRef.current.getBoundingClientRect();
+    const previousCursor = document.body.style.cursor;
+    const previousSelection = document.body.style.userSelect;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
 
-      const handlePointerMove = (pointerEvent: PointerEvent) => {
-        if (panel === "ai") {
-          const maxWidth = Math.max(
-            240,
-            Math.min(
-              520,
-              bounds.width - (isPreviewPanelOpen ? previewPanelWidth : 0) - 392,
-            ),
-          );
-          setAiPanelWidth(
-            Math.min(
-              maxWidth,
-              Math.max(240, pointerEvent.clientX - bounds.left),
-            ),
-          );
-          return;
-        }
-
-        const maxWidth = Math.max(
-          260,
-          Math.min(
-            520,
-            bounds.width - (isAiPanelOpen ? aiPanelWidth : 0) - 392,
-          ),
-        );
-        setPreviewPanelWidth(
-          Math.min(
-            maxWidth,
-            Math.max(260, bounds.right - pointerEvent.clientX),
-          ),
-        );
-      };
-
-      const stopResizing = () => {
-        window.removeEventListener("pointermove", handlePointerMove);
-        window.removeEventListener("pointerup", stopResizing);
-        document.body.style.cursor = previousCursor;
-        document.body.style.userSelect = previousSelection;
-      };
-
-      window.addEventListener("pointermove", handlePointerMove);
-      window.addEventListener("pointerup", stopResizing);
+    const handlePointerMove = (pointerEvent: PointerEvent) => {
+      const maxWidth = Math.max(260, Math.min(520, bounds.width - 392));
+      setPreviewPanelWidth(
+        Math.min(maxWidth, Math.max(260, bounds.right - pointerEvent.clientX)),
+      );
     };
+
+    const stopResizing = () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", stopResizing);
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousSelection;
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", stopResizing);
+  };
 
   return (
     <PageWrapper
@@ -255,81 +218,29 @@ function EditorWorkspace({
       <div
         ref={workspaceRef}
         style={workspaceStyle}
-        className="grid items-start gap-4 xl:grid-cols-[var(--editor-ai-width)_minmax(360px,1fr)_var(--editor-preview-width)]"
+        className="grid items-start gap-4 lg:grid-cols-[minmax(360px,1fr)_var(--editor-preview-width)]"
       >
-        <aside
-          inert={taskEditor?.isReadOnly}
-          className="relative order-2 min-w-0 xl:sticky xl:top-0 xl:order-1 xl:max-h-[calc(100dvh-4.5rem)]"
-        >
-          {isAiPanelOpen ? (
-            <section className="border-border bg-card overflow-hidden rounded-xl border shadow-2xs">
-              <div className="border-border bg-muted/40 flex items-center justify-between gap-2 border-b px-3 py-3">
-                <div className="flex min-w-0 items-center gap-2">
-                  <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-1.5">
-                    <Sparkles className="size-4" />
-                  </div>
-                  <h2 className="text-foreground truncate text-xs font-semibold tracking-wide uppercase">
-                    AI Generation Panel
-                  </h2>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsAiPanelOpen(false)}
-                  aria-label="Thu gọn AI Generation Panel"
-                  title="Thu gọn AI Generation Panel"
-                  className="text-muted-foreground hover:bg-muted hover:text-foreground flex size-8 shrink-0 items-center justify-center rounded-md transition-colors"
-                >
-                  <PanelLeftClose className="size-4" />
-                </button>
-              </div>
-              <div className="max-h-[calc(100dvh-8.5rem)] overflow-y-auto p-3">
-                <ContentCreatorAiPanel
-                  topic={caption.slice(0, 180)}
-                  targetPlatforms={targetPlatforms}
-                  referenceMediaUrls={mediaUrls}
-                  onApplyText={handleApplyAIResult}
-                  onApplyImage={handleApplyGeneratedImage}
-                  onApplyVideo={handleApplyGeneratedVideo}
-                />
-              </div>
-            </section>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setIsAiPanelOpen(true)}
-              aria-label="Mở AI Generation Panel"
-              title="Mở AI Generation Panel"
-              className="border-border bg-card text-muted-foreground hover:border-brand-orange/40 hover:text-brand-orange flex h-11 w-full items-center justify-center gap-2 rounded-xl border shadow-2xs transition-colors xl:h-40 xl:flex-col"
-            >
-              <PanelLeftOpen className="size-4" />
-              <Sparkles className="size-4" />
-              <span className="text-2xs font-semibold xl:[writing-mode:vertical-rl]">
-                AI Panel
-              </span>
-            </button>
-          )}
-          {isAiPanelOpen && (
-            <button
-              type="button"
-              aria-label="Điều chỉnh chiều rộng AI Panel"
-              onPointerDown={startPanelResize("ai")}
-              className="group absolute top-0 -right-3 z-40 hidden h-full w-2 cursor-col-resize items-center justify-center xl:flex"
-            >
-              <span className="bg-border group-hover:bg-brand-orange h-16 w-1 rounded-full transition-colors" />
-            </button>
-          )}
-        </aside>
-
-        <main className="order-1 min-w-0 xl:order-2">
+        <main className="min-w-0">
           <section className="border-border bg-card relative rounded-xl border shadow-2xs">
             <div className="border-border bg-muted/30 border-b p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-muted-foreground text-2xs font-semibold tracking-wider uppercase">
                   Nội dung bài đăng
                 </span>
-                <Badge variant="secondary" className="text-2xs font-medium">
-                  Lưu nháp tự động
-                </Badge>
+                <div className="ml-auto flex flex-wrap items-center gap-2">
+                  <AiContentPopover
+                    disabled={taskEditor?.isReadOnly}
+                    topic={caption.slice(0, 180)}
+                    targetPlatforms={targetPlatforms}
+                    referenceMediaUrls={mediaUrls}
+                    onApplyText={handleApplyAIResult}
+                    onApplyImage={handleApplyGeneratedImage}
+                    onApplyVideo={handleApplyGeneratedVideo}
+                  />
+                  <Badge variant="secondary" className="text-2xs font-medium">
+                    {t("editor.studio.autosaveLabel")}
+                  </Badge>
+                </div>
               </div>
               <p className="text-muted-foreground mt-2 text-xs">
                 {t("editor.page.postTypeHint.IMAGE")}
@@ -473,14 +384,14 @@ function EditorWorkspace({
           </section>
         </main>
 
-        <aside className="relative order-3 min-w-0 xl:sticky xl:top-0 xl:max-h-[calc(100dvh-4.5rem)]">
+        <aside className="relative min-w-0 lg:sticky lg:top-0 lg:max-h-[calc(100dvh-4.5rem)]">
           {isPreviewPanelOpen ? (
             <>
               <button
                 type="button"
                 aria-label="Điều chỉnh chiều rộng Live Preview"
-                onPointerDown={startPanelResize("preview")}
-                className="group absolute top-0 -left-3 z-40 hidden h-full w-2 cursor-col-resize items-center justify-center xl:flex"
+                onPointerDown={startPreviewResize}
+                className="group absolute top-0 -left-3 z-40 hidden h-full w-2 cursor-col-resize items-center justify-center lg:flex"
               >
                 <span className="bg-border group-hover:bg-brand-orange h-16 w-1 rounded-full transition-colors" />
               </button>
@@ -499,11 +410,11 @@ function EditorWorkspace({
               onClick={() => setIsPreviewPanelOpen(true)}
               aria-label="Mở Live Preview"
               title="Mở Live Preview"
-              className="border-border bg-card text-muted-foreground hover:border-brand-orange/40 hover:text-brand-orange flex h-11 w-full items-center justify-center gap-2 rounded-xl border shadow-2xs transition-colors xl:h-40 xl:flex-col"
+              className="border-border bg-card text-muted-foreground hover:border-brand-orange/40 hover:text-brand-orange flex h-11 w-full items-center justify-center gap-2 rounded-xl border shadow-2xs transition-colors lg:h-40 lg:flex-col"
             >
               <Smartphone className="size-4" />
               <PanelRightOpen className="size-4" />
-              <span className="text-2xs font-semibold xl:[writing-mode:vertical-rl]">
+              <span className="text-2xs font-semibold lg:[writing-mode:vertical-rl]">
                 Live Preview
               </span>
             </button>

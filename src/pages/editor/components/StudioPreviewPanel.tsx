@@ -9,6 +9,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { SocialPlatform } from "@/types/editor";
 import { PlatformMockup } from "./PlatformMockups";
@@ -28,6 +29,7 @@ const PLATFORM_ICONS: Record<SocialPlatform, LucideIcon> = {
   TIKTOK: Music2,
   THREADS: AtSign,
 };
+const PREVIEW_PLATFORMS = Object.keys(PLATFORM_ICONS) as SocialPlatform[];
 
 export function StudioPreviewPanel({
   title,
@@ -38,12 +40,10 @@ export function StudioPreviewPanel({
   onCollapse,
 }: StudioPreviewPanelProps) {
   const { t } = useTranslation();
-  const platforms =
-    targetPlatforms.length > 0
-      ? targetPlatforms
-      : (["FACEBOOK"] as SocialPlatform[]);
   const [activePlatform, setActivePlatform] = useState<SocialPlatform>(
-    platforms.includes("INSTAGRAM") ? "INSTAGRAM" : platforms[0],
+    targetPlatforms.includes("INSTAGRAM")
+      ? "INSTAGRAM"
+      : (targetPlatforms[0] ?? "FACEBOOK"),
   );
   const combinedCaption = [caption, hashtags.join(" ")]
     .filter(Boolean)
@@ -79,24 +79,27 @@ export function StudioPreviewPanel({
         )}
       </div>
 
-      <div className="border-border overflow-x-auto border-b p-2">
-        <div className="flex min-w-max gap-1">
-          {platforms.map((platform) => {
+      <div className="border-border border-b p-2">
+        <div className="flex flex-wrap gap-1">
+          {PREVIEW_PLATFORMS.map((platform) => {
             const Icon = PLATFORM_ICONS[platform];
             return (
-              <button
+              <Button
                 key={platform}
                 type="button"
+                variant="ghost"
+                size="sm"
+                aria-pressed={activePlatform === platform}
                 onClick={() => setActivePlatform(platform)}
                 className={cn(
                   "text-muted-foreground hover:bg-muted flex items-center gap-1.5 rounded-md px-2.5 py-2 text-xs font-medium transition-colors",
                   activePlatform === platform &&
-                    "bg-brand-orange-soft text-brand-orange",
+                    "bg-brand-orange-soft text-brand-orange hover:bg-brand-orange-soft hover:text-brand-orange",
                 )}
               >
                 <Icon className="size-3.5" />
                 {t(`editor.studio.preview.platforms.${platform}`)}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -109,7 +112,7 @@ export function StudioPreviewPanel({
             title,
             caption: combinedCaption,
             mediaUrls,
-            targetPlatforms: platforms,
+            targetPlatforms,
             authorName: "BrandHub Creator",
           }}
         />

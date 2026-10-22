@@ -88,6 +88,13 @@
     "mockNotice": "Chế độ thử nghiệm AI",
     "mockMode": "Mô phỏng",
     "aiPanelLabel": "Bảng công cụ AI",
+    "autosaveLabel": "Lưu nháp tự động",
+    "aiContent": {
+      "button": "AI Content",
+      "description": "Trợ lý sáng tạo nội dung",
+      "greeting": "Bạn muốn tạo nội dung gì? Chọn văn bản, hình ảnh hoặc video và mô tả yêu cầu bên dưới.",
+      "close": "Đóng AI Content"
+    },
     "tabs": {
       "text": "Văn bản",
       "image": "Hình ảnh",
