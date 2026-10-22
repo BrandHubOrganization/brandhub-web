@@ -1,13 +1,14 @@
 export const CREDIT_OPERATIONS = [
   "CONTENT_GENERATE",
-  "CAPTION_VARIANTS",
-  "HASHTAG_GENERATE",
   "AMBASSADOR_GENERATE",
-  "CHARACTER_SHEET",
   "COMMERCIAL_IMAGE",
   "VIDEO_GENERATE",
 ] as const;
-export type CreditOperation = (typeof CREDIT_OPERATIONS)[number];
+export type CreditOperation =
+  | (typeof CREDIT_OPERATIONS)[number]
+  | "CAPTION_VARIANTS"
+  | "HASHTAG_GENERATE"
+  | "CHARACTER_SHEET";
 export interface CreditPolicy {
   agencyId: string;
   defaultMemberLimit: number | null;
@@ -39,6 +40,7 @@ export interface CreditBalance {
   purchasedAvailable: number;
   held: number;
   developmentAvailable?: number;
+  otherAvailable?: number;
 }
 export interface CreditBreakdown {
   operation: CreditOperation;
@@ -55,4 +57,15 @@ export interface CreditUsage {
   periodStart: string;
   periodEnd: string;
   byOperation: CreditBreakdown[];
+}
+export interface WorkspaceCredit {
+  agencyId: string;
+  workspaceId: string;
+  workspaceName: string;
+  cap: number | null;
+  revision: number;
+  used: number;
+  held: number;
+  periodStart: string;
+  periodEnd: string;
 }

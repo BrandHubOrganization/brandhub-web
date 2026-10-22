@@ -8,6 +8,7 @@ import { useWorkspaceStore } from "@/store/workspaceStore";
 const errorKeys: Record<string, string> = {
   CREDIT_BALANCE_INSUFFICIENT: "balance",
   CREDIT_MEMBER_LIMIT_REACHED: "limit",
+  CREDIT_WORKSPACE_LIMIT_REACHED: "limit",
   CREDIT_PRICE_NOT_CONFIGURED: "price",
   CREDIT_ACCOUNT_NOT_READY: "account",
   CREDIT_SCHEMA_NOT_READY: "schema",

@@ -2,7 +2,7 @@
   "title": "AI Credit",
   "ai": {
     "balance": "Agency không đủ credit. Vui lòng liên hệ Owner.",
-    "limit": "Bạn đã đạt hạn mức credit trong kỳ. Vui lòng liên hệ Owner.",
+    "limit": "Workspace đã đạt hạn mức Credit trong kỳ. Vui lòng liên hệ Owner.",
     "price": "Thao tác AI chưa có giá được bật. Admin cần cấu hình trước khi sử dụng.",
     "account": "Quỹ credit của Agency chưa được cấp. Vui lòng liên hệ Owner.",
     "schema": "Cần cập nhật cấu trúc dữ liệu Credit và AI execution trước khi tạo nội dung.",
@@ -89,7 +89,8 @@
     "plan": "Khả dụng từ gói",
     "purchased": "Khả dụng mua thêm",
     "held": "Đang giữ",
-    "help": "Tổng khả dụng đã loại trừ credit đang giữ. Ưu tiên dùng credit từ gói trước; credit mua thêm không hết hạn. Hạn mức cá nhân không phải tiền được chia riêng."
+    "help": "Quỹ Agency đã trừ phần đang giữ. Ưu tiên credit gói trước, credit mua thêm không hết hạn. Hạn mức Workspace không phải ví riêng.",
+    "other": "Credit khác (Trial / Điều chỉnh / Số dư đầu)"
   },
   "usage": {
     "title": "Sử dụng trong kỳ",
@@ -108,7 +109,7 @@
   },
   "catalog": {
     "title": "Bảng giá thao tác AI",
-    "description": "Giá hiện hành để tham khảo. Tác vụ được tính theo phiên bản giá khi nhận yêu cầu, không phải giá mới nhất khi hoàn tất.",
+    "description": "Giá hiện hành để tham khảo. Tác vụ được tính theo phiên bản giá khi nhận yêu cầu, không phải giá mới nhất khi hoàn tất. Caption/refine/adapt, Hashtag và Character sheet hiện miễn phí.",
     "unconfigured": "Chưa cấu hình",
     "active": "Đang áp dụng",
     "inactive": "Tạm ngừng"
@@ -162,5 +163,19 @@
     "agencyDefault": "Mặc định Agency ({{amount}})",
     "confirmTitle": "Xác nhận cập nhật hạn mức",
     "confirmDesc": "Bạn có chắc chắn muốn cập nhật hạn mức credit cho thành viên này thành {{amount}} credits/kỳ?"
+  },
+  "workspace": {
+    "title": "Hạn mức Credit theo Workspace",
+    "description": "Các Workspace dùng chung quỹ Agency. Hạn mức là trần chi tiêu trong kỳ, không phải ví được chia riêng; áp dụng cho cả Owner, Manager và Creator.",
+    "empty": "Chưa có Workspace khả dụng.",
+    "edit": "Điều chỉnh hạn mức",
+    "unlimited": "Không có trần riêng",
+    "limited": "Đặt hạn mức",
+    "mode": "Cách giới hạn",
+    "cap": "Hạn mức mỗi kỳ",
+    "used": "Đã dùng",
+    "held": "Đang giữ",
+    "remaining": "Hạn mức còn lại",
+    "hint": "Không có trần riêng: dùng theo quỹ Agency. Mức 0: chặn thao tác có phí. Hạn mức giữ nguyên khi sang kỳ mới; số đã dùng/đang giữ được tính theo kỳ nhận yêu cầu."
   }
 }
