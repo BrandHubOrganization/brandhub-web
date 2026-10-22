@@ -12,7 +12,6 @@ import {
   CheckCircle2,
   Copy,
   Mail,
-  Phone,
   Search,
   Sparkles,
   UserPlus,
@@ -587,12 +586,6 @@ export function AgencyMembersPage() {
                             <Mail className="size-3 shrink-0" />
                             {userMatch.email}
                           </span>
-                          {userMatch.phone && (
-                            <span className="flex items-center gap-1">
-                              <Phone className="size-3 shrink-0" />
-                              {userMatch.phone}
-                            </span>
-                          )}
                           {userMatch.professionalTitle && (
                             <span className="flex items-center gap-1">
                               <Briefcase className="size-3 shrink-0" />

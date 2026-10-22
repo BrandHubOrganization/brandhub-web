@@ -62,7 +62,6 @@ export interface UserLookupResponse {
   fullName: string;
   email: string;
   avatarUrl: string | null;
-  phone?: string | null;
   professionalTitle?: string | null;
 }
 
