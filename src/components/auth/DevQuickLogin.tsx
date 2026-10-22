@@ -10,8 +10,8 @@ import { workspaceService } from "@/services/workspaceService";
 import type { MemberRole } from "@/types/workspace";
 
 /**
- * Real development accounts from the bulk seed or dev-quick-login.sql.
- * See the business service seed README; development password: Password123.
+ * Existing development accounts linked to the seeded agencies and workspaces.
+ * Development password: Password123.
  * Authenticate normally, then select a workspace using the API's actual role.
  */
 const QUICK_LOGIN_ACCOUNTS = [

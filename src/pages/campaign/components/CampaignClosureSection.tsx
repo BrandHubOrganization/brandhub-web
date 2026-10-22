@@ -2,11 +2,21 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
+import { AlertTriangle } from "lucide-react";
 import { InlineWorkArea } from "@/components/shared/InlineWorkArea";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { campaignService } from "../services/campaignService";
 import {
   CANCEL_REASONS,
@@ -33,7 +43,7 @@ export function CampaignClosureSection({
   const [selected, setSelected] = useState<string[]>([]);
   const [reason, setReason] = useState<CancelReason | "">("");
   const [note, setNote] = useState("");
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -61,7 +71,7 @@ export function CampaignClosureSection({
     setSelected([]);
     setReason("");
     setNote("");
-    setConfirmed(false);
+    setConfirmDialogOpen(false);
   }
   function failed(failure: unknown) {
     const code: unknown = isAxiosError(failure)
@@ -74,7 +84,7 @@ export function CampaignClosureSection({
     resetCancellation();
   }
   async function cancelSelected() {
-    if (!check || !reason || busy || !cancelOpen || !confirmed) return;
+    if (!check || !reason || busy || !cancelOpen) return;
     setBusy(true);
     setError("");
     try {
@@ -213,7 +223,6 @@ export function CampaignClosureSection({
                             }
                             checked={selected.includes(task.id)}
                             onChange={(event) => {
-                              setConfirmed(false);
                               setSelected((previous) =>
                                 event.target.checked
                                   ? [...previous, task.id]
@@ -258,7 +267,6 @@ export function CampaignClosureSection({
                       onChange={(event) => {
                         setReason(event.target.value as CancelReason | "");
                         setNote("");
-                        setConfirmed(false);
                       }}
                     >
                       <option value="">
@@ -283,7 +291,6 @@ export function CampaignClosureSection({
                           disabled={busy}
                           onChange={(event) => {
                             setNote(event.target.value);
-                            setConfirmed(false);
                           }}
                         />
                       </div>
@@ -293,31 +300,95 @@ export function CampaignClosureSection({
                         count: selected.length,
                       })}
                     </p>
-                    {confirmed && (
-                      <p role="alert" className="text-destructive text-sm">
-                        {t("campaign.closure.confirmBatch", {
-                          count: selected.length,
-                          reason: reason
-                            ? t(`campaign.closure.reasons.${reason}`)
-                            : "",
-                        })}
-                      </p>
-                    )}
+
                     <Button
                       variant="destructive"
                       disabled={!validBatch || busy}
                       loading={busy}
-                      onClick={() => {
-                        if (confirmed) void cancelSelected();
-                        else setConfirmed(true);
+                      onClick={() => setConfirmDialogOpen(true)}
+                    >
+                      {t("campaign.closure.cancelSelected")}
+                    </Button>
+
+                    <Dialog
+                      open={confirmDialogOpen}
+                      onOpenChange={(open) => {
+                        if (!busy) setConfirmDialogOpen(open);
                       }}
                     >
-                      {t(
-                        confirmed
-                          ? "campaign.closure.confirmCancel"
-                          : "campaign.closure.cancelSelected",
-                      )}
-                    </Button>
+                      <DialogContent className="sm:max-w-md">
+                        <DialogHeader>
+                          <DialogTitle className="text-destructive flex items-center gap-2 text-base font-bold">
+                            <AlertTriangle className="size-5 shrink-0" />
+                            {t("campaign.closure.confirmCancel")}
+                          </DialogTitle>
+                          <DialogDescription className="text-muted-foreground text-xs leading-relaxed">
+                            {t("campaign.closure.confirmBatch", {
+                              count: selected.length,
+                              reason: reason
+                                ? t(`campaign.closure.reasons.${reason}`)
+                                : "",
+                            })}
+                          </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="bg-destructive/5 border-destructive/20 space-y-2 rounded-lg border p-3.5 text-xs">
+                          <div className="flex items-center justify-between font-semibold">
+                            <span className="text-destructive font-medium">
+                              {t("campaign.closure.selected", {
+                                count: selected.length,
+                              })}
+                            </span>
+                            <Badge variant="destructive" className="text-2xs">
+                              {reason
+                                ? t(`campaign.closure.reasons.${reason}`)
+                                : ""}
+                            </Badge>
+                          </div>
+                          {note.trim() && (
+                            <p className="text-muted-foreground border-destructive/15 pt-1.5 break-words italic border-t">
+                              &ldquo;{note.trim()}&rdquo;
+                            </p>
+                          )}
+                          <div className="border-destructive/15 max-h-36 space-y-1.5 overflow-y-auto pt-2 border-t no-scrollbar">
+                            {check.unfinishedTasks
+                              .filter((task) => selected.includes(task.id))
+                              .map((task) => (
+                                <div
+                                  key={task.id}
+                                  className="text-foreground/80 flex items-center gap-2 text-xs truncate"
+                                >
+                                  <span className="bg-destructive size-1.5 shrink-0 rounded-full" />
+                                  <span className="truncate">{task.name}</span>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+
+                        <DialogFooter className="gap-2 sm:gap-0">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            disabled={busy}
+                            onClick={() => setConfirmDialogOpen(false)}
+                          >
+                            {t("campaign.cancel")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            disabled={busy}
+                            loading={busy}
+                            onClick={async () => {
+                              await cancelSelected();
+                              setConfirmDialogOpen(false);
+                            }}
+                          >
+                            {t("campaign.closure.confirmCancel")}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </>
                 )}
               </div>

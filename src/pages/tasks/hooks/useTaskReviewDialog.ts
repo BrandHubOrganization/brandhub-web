@@ -6,11 +6,12 @@ import {
   MAX_REVIEW_COMMENT,
   reviewAllows,
   reviewError,
-} from "@/pages/tasks/taskApprovalView";
+} from "@/pages/tasks/utils/taskApprovalView";
 import type {
   ReviewAction,
   TaskReviewView,
 } from "@/pages/tasks/types/taskApproval";
+import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
 export interface ReviewDialogProps {
   action: ReviewAction;
@@ -22,6 +23,8 @@ export interface ReviewDialogProps {
     comment: string,
   ) => Promise<boolean>;
   reload: () => Promise<TaskReviewView>;
+  task?: TaskWorkflow;
+  onSetPublishDate?: (dateIso: string | null) => Promise<unknown>;
 }
 
 export function useTaskReviewDialog(props: ReviewDialogProps) {

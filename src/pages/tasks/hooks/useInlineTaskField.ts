@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTaskEditContext } from "@/pages/tasks/components/TaskWorkflowProvider";
-import { workflowError } from "@/pages/tasks/taskWorkflowErrors";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 
 export function useInlineTaskField<T>(
   id: string,

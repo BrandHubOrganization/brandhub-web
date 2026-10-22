@@ -10,6 +10,7 @@ export type AccessRule = MemberRole[] | "ADMIN";
  */
 export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/social-accounts": ["OWNER", "MANAGER", "CLIENT"],
+  "/subscription": ["OWNER"],
   "/subscription/plans": ["OWNER"],
   "/subscription/checkout": ["OWNER"],
   "/subscription/invoices": ["OWNER"],
@@ -27,14 +28,14 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/client-profile": ["CLIENT"],
   "/calendar": ["MANAGER", "CREATOR", "CLIENT"],
   "/library": ["MANAGER", "CREATOR", "CLIENT"],
-  "/editor": ["MANAGER", "CREATOR"],
+  "/editor": ["OWNER", "MANAGER", "CREATOR"],
   "/content-writing": ["OWNER", "MANAGER", "CREATOR"],
   "/mail-templates": ["OWNER", "MANAGER", "CREATOR"],
   "/templates": ["MANAGER", "CREATOR"],
   "/hashtag-groups": ["MANAGER", "CREATOR", "CLIENT"],
   "/hashtags": ["MANAGER", "CREATOR", "CLIENT"],
   "/publish": ["MANAGER", "CREATOR"],
-  "/ai-studio": ["MANAGER", "CREATOR"],
+  "/ai-studio": ["OWNER", "MANAGER", "CREATOR"],
   "/admin": "ADMIN",
 };
 
@@ -50,6 +51,8 @@ const SOCIAL_ACCOUNTS_ACCESS: AccessRule = ["OWNER", "MANAGER", "CLIENT"];
 
 /** Rule access cho pathname, hoặc null nếu không khai báo (mọi authenticated được phép). */
 export function resolveAccessRule(pathname: string): AccessRule | null {
+  if (/^\/agency\/[^/]+\/credit\/?$/.test(pathname))
+    return ["OWNER", "MANAGER", "CREATOR"];
   if (/^\/agency\/[^/]+\/(media-packages|collaborators)$/.test(pathname)) {
     return AGENCY_MEDIA_PACKAGES_ACCESS;
   }

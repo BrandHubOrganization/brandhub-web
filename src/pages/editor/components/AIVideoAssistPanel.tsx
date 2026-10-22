@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { aiVideoService } from "@/services/aiVideoService";
 
@@ -66,9 +67,13 @@ export function AIVideoAssistPanel({ onApplyVideo }: AIVideoAssistPanelProps) {
         }
       }
       throw new Error("Video generation timed out");
-    } catch {
+    } catch (error) {
       if (mountedRef.current)
-        toast.error(t("editor.studio.video.generateFailed"));
+        toast.error(
+          aiCreditErrorMessage(error) ??
+            t("editor.studio.video.generateFailed"),
+          { duration: 8000 },
+        );
     } finally {
       if (mountedRef.current) setIsGenerating(false);
     }
