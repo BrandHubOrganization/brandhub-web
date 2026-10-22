@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { CreditQueryState } from "@/pages/credit/components/CreditQueryState";
-import { CreditIntegrationNote } from "@/pages/credit/components/CreditIntegrationNote";
 import { CreditCatalog } from "@/pages/credit/components/CreditCatalog";
 import { OwnerCreditView } from "@/pages/credit/components/OwnerCreditView";
 import { PersonalCreditView } from "@/pages/credit/components/PersonalCreditView";
@@ -26,7 +25,6 @@ function AgencyCreditContent({ agencyId }: { agencyId: string }) {
         />
       ) : (
         <div key={`${userId}:${agencyId}:${isOwner}`} className="space-y-5">
-          <CreditIntegrationNote />
           {isOwner ? (
             <OwnerCreditView agencyId={agencyId} />
           ) : (

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { TaskAssigneePicker } from "@/pages/tasks/components/TaskAssigneePicker";
 import { TaskDeadlineField } from "@/pages/tasks/components/TaskInlineDetails";
+import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { useTaskEditContext } from "@/pages/tasks/components/TaskWorkflowProvider";
 import { workflowError } from "@/pages/tasks/taskWorkflowErrors";
@@ -58,7 +59,7 @@ export function TaskRowActions({
       );
     }
     return (
-      <div className="flex h-8 items-center px-2 text-xs text-muted-foreground">
+      <div className="text-muted-foreground flex h-8 items-center px-2 text-xs">
         <span className="truncate">{display}</span>
       </div>
     );
@@ -73,7 +74,9 @@ export function TaskRowActions({
           ? "Xem bài"
           : isInReview
             ? "Xem duyệt"
-            : "Viết bài";
+            : creator && task.status === "IN_PROGRESS"
+              ? t("tasks.workflow.writePost")
+              : t("tasks.review.openEditor");
         const link = isInReview
           ? `/workspaces/${task.workspaceId}/task-approvals?task=${task.id}`
           : `/workspaces/${task.workspaceId}/editor?taskId=${task.id}`;
@@ -87,7 +90,7 @@ export function TaskRowActions({
               isFinished
                 ? "border-border text-muted-foreground hover:text-foreground"
                 : isInReview
-                  ? "border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+                  ? "border-amber-500/40 text-amber-600 hover:bg-amber-500/10 dark:text-amber-400"
                   : "border-brand-orange/40 text-brand-orange hover:bg-brand-orange/10",
             )}
             asChild
@@ -112,17 +115,14 @@ export function TaskRowActions({
     >
       {!open ? (
         field === "start" ? (
-          <Button
-            size="sm"
-            variant="orange"
-            className="h-7 px-3 text-xs font-medium"
-            onClick={async () => {
+          <TaskStartAction
+            task={task}
+            presentation="row"
+            start={() => {
               state.retry();
-              await state.start();
+              return state.start();
             }}
-          >
-            {task.type === "POST" ? "Bắt đầu & Soạn bài" : t("tasks.workflow.start")}
-          </Button>
+          />
         ) : (
           <Button
             size="sm"

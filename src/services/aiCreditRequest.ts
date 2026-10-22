@@ -30,23 +30,30 @@ export function aiCreditErrorMessage(error: unknown): string | null {
 }
 
 export function refreshAiCredit(userId = useAuthStore.getState().user?.id) {
-  if (userId)
+  if (userId) {
     void queryClient.invalidateQueries({ queryKey: ["credit", userId] });
+    void queryClient.invalidateQueries({ queryKey: ["workspace-ai", userId] });
+  }
 }
 
 export async function postAiWithCredit<T>(
   path: string,
   payload: unknown,
-  options?: { signal?: AbortSignal },
+  options?: { signal?: AbortSignal; workspaceId?: string },
 ) {
+  const pathWorkspace = path.match(
+    /^\/api\/v1\/workspaces\/([^/]+)\/ai\//,
+  )?.[1];
   const workspaceId =
+    pathWorkspace ??
+    options?.workspaceId ??
     window.location.pathname.match(/^\/workspaces\/([^/]+)(?:\/|$)/)?.[1] ??
     useWorkspaceStore.getState().currentWorkspace?.id;
   if (!workspaceId) throw new Error("AI_WORKSPACE_REQUIRED");
   const userId = useAuthStore.getState().user?.id;
   try {
     return await api.post<T>(path, payload, {
-      ...options,
+      signal: options?.signal,
       headers: {
         "X-AI-Workspace-Id": workspaceId,
         "Idempotency-Key": crypto.randomUUID(),
