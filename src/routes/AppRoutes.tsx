@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route, Navigate, useParams } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Layout & Security Components
 import { AuthGuard } from "@/components/layout/AuthGuard";
@@ -7,7 +7,6 @@ import { Layout } from "@/components/layout/Layout";
 import { PublicHelpLayout } from "@/components/layout/PublicHelpLayout";
 import { PageFallback } from "@/components/layout/PageFallback";
 import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
-import { useWorkspaceStore } from "@/store/workspaceStore";
 
 // Typed lazy loader supporting both named & default exports
 function lazyNamed<T extends Record<string, unknown>>(
