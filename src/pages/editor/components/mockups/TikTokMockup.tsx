@@ -12,17 +12,17 @@ export function TikTokMockup({ data }: MockupProps) {
     authorName = "BrandHub Official",
     authorAvatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
   } = data;
-  const defaultMedia =
-    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80";
-  const mediaSrc = mediaUrls[0] || defaultMedia;
+  const mediaSrc = mediaUrls[0];
 
   return (
     <div className="relative mx-auto aspect-[9/16] max-w-[280px] overflow-hidden rounded-xl border border-slate-800 bg-slate-950 text-white shadow-2xl">
-      <img
-        src={mediaSrc}
-        alt="TikTok"
-        className="h-full w-full object-cover opacity-90"
-      />
+      {mediaSrc && (
+        <img
+          src={mediaSrc}
+          alt="TikTok"
+          className="h-full w-full object-cover opacity-90"
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80" />
 
       <div className="absolute right-3 bottom-12 flex flex-col items-center gap-4 text-xs">

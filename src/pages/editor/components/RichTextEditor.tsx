@@ -10,6 +10,7 @@ interface RichTextEditorProps {
   value: string;
   onChange: (content: string) => void;
   targetPlatforms?: SocialPlatform[];
+  readOnly?: boolean;
 }
 
 const PLATFORM_LIMITS: Record<SocialPlatform, { max: number; label: string }> =
@@ -24,6 +25,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   value,
   onChange,
   targetPlatforms = ["FACEBOOK", "INSTAGRAM", "TIKTOK"],
+  readOnly = false,
 }) => {
   const { t } = useTranslation();
   const editor = useEditor({
@@ -34,6 +36,14 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }),
     ],
     content: value,
+    editable: !readOnly,
+    editorProps: {
+      attributes: {
+        role: "textbox",
+        "aria-label": t("editor.page.captionLabel"),
+        "aria-multiline": "true",
+      },
+    },
     onUpdate: ({ editor }) => {
       const text = editor.getText();
       onChange(text);
@@ -49,6 +59,13 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   }, [value, editor]);
 
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) {
+      editor.setEditable(!readOnly);
+      editor.view.dom.setAttribute("aria-readonly", String(readOnly));
+    }
+  }, [editor, readOnly]);
+
   if (!editor) return null;
 
   const textLength = value.length;
@@ -56,7 +73,10 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div className="border-border bg-card flex min-h-[320px] flex-col overflow-hidden rounded-xl border shadow-xs">
       {/* Formatting Toolbar */}
-      <div className="border-border bg-muted/80 flex flex-wrap items-center justify-between gap-2 border-b p-2.5">
+      <div
+        inert={readOnly}
+        className="border-border bg-muted/80 flex flex-wrap items-center justify-between gap-2 border-b p-2.5"
+      >
         <div className="flex items-center gap-1">
           <button
             type="button"

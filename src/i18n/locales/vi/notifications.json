@@ -32,5 +32,9 @@
     "pushTitle": "Thông báo Push (FCM)",
     "pushBody": "Thông báo đẩy đến ứng dụng di động BrandHub (iOS/Android) khi có sự kiện quan trọng.",
     "pushFootnote": "Preview: bật để nhận thông báo đẩy trên thiết bị di động của bạn."
-  }
+  },
+  "loading": "Đang tải thông báo...",
+  "loadError": "Không thể tải thông báo.",
+  "retry": "Thử lại",
+  "readError": "Không thể đánh dấu đã đọc. Vui lòng thử lại."
 }

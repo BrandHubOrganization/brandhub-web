@@ -1,29 +1,27 @@
-import { Plus, X } from "lucide-react";
+import { X, Building2 } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { PlatformFilter } from "@/pages/calendar/components/PlatformFilter";
 import { StatusFilter } from "@/pages/calendar/components/StatusFilter";
 import { ContentCalendar } from "@/pages/calendar/components/ContentCalendar";
-import { SchedulePostModal } from "@/pages/calendar/components/SchedulePostModal";
 import { useContentCalendar } from "./hooks/useContentCalendar";
 import { useTranslation } from "react-i18next";
+import { Spinner } from "@/components/ui/spinner";
 
 export function CalendarPage() {
   const { t } = useTranslation();
   const {
     events,
+    loading,
+    workspaceId,
+    currentWorkspace,
     selectedPlatforms,
     setSelectedPlatforms,
     selectedStatuses,
     setSelectedStatuses,
     clearFilters,
     setDateRange,
-    isModalOpen,
-    setIsModalOpen,
-    selectedDateForModal,
     handleReschedule,
     handleDateClick,
-    handleCreatePost,
-    openModalOnNow,
   } = useContentCalendar();
 
   return (
@@ -31,16 +29,15 @@ export function CalendarPage() {
       title={t("calendar.page.title")}
       description={t("calendar.page.description")}
       actions={
-        <button
-          onClick={openModalOnNow}
-          className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium text-white shadow-xs transition-all"
-        >
-          <Plus className="size-4" />
-          <span>{t("calendar.page.schedulePostButton")}</span>
-        </button>
+        currentWorkspace ? (
+          <div className="border-border bg-card text-foreground inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium shadow-xs">
+            <Building2 className="text-brand-orange size-3.5" />
+            <span>Workspace: {currentWorkspace.name}</span>
+          </div>
+        ) : null
       }
     >
-      <div className="space-y-6">
+      <div key={workspaceId || "global"} className="space-y-6">
         <div className="space-y-2">
           <PlatformFilter
             selectedPlatforms={selectedPlatforms}
@@ -51,7 +48,8 @@ export function CalendarPage() {
             onChange={setSelectedStatuses}
           />
           <div className="text-muted-foreground flex items-center justify-between px-2 text-xs">
-            <span>
+            <span className="flex items-center gap-2">
+              {loading && <Spinner className="size-3.5" />}
               {t("calendar.filterBar.resultCount", { count: events.length })}
             </span>
             <button
@@ -70,13 +68,6 @@ export function CalendarPage() {
           onReschedule={handleReschedule}
           onDateClick={handleDateClick}
           onDatesChange={(start, end) => setDateRange({ start, end })}
-        />
-
-        <SchedulePostModal
-          isOpen={isModalOpen}
-          selectedDate={selectedDateForModal}
-          onClose={() => setIsModalOpen(false)}
-          onSubmit={handleCreatePost}
         />
       </div>
     </PageWrapper>

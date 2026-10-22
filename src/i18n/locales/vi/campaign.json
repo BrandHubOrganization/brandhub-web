@@ -1,4 +1,8 @@
 {
+  "compact": {
+    "durationSuggestion": "Thời lượng gói: {{weeks}} tuần · có thể đổi ngày kết thúc",
+    "dateHelp": "Khi chọn ngày bắt đầu, ngày kết thúc được gợi ý bằng ngày bắt đầu cộng thời lượng gói đã chốt. Bạn vẫn có thể điều chỉnh; hệ thống giữ ngày đã sửa thủ công khi đổi ngày bắt đầu."
+  },
   "closure": {
     "cancelOption": "Hủy đầu việc để kết thúc chiến dịch (tùy chọn)",
     "cancelHelp": "Chỉ chọn các đầu việc không tiếp tục triển khai. Hủy không xóa nội dung hoặc lịch sử duyệt; bạn cần xác nhận trước khi thực hiện.",
@@ -186,9 +190,26 @@
       "APPROVED": "Đã duyệt",
       "REJECTED": "Cần chỉnh sửa",
       "COMPLETED": "Hoàn thành",
-      "CANCELLED": "Đã hủy",
       "PUBLISHED": "Đã xuất bản",
       "READY_TO_PUBLISH": "Sẵn sàng xuất bản"
+    }
+  },
+  "ux": {
+    "packageHint": "Chọn gói truyền thông, thống nhất điều khoản và để hai bên duyệt gói. Sau đó quay lại đây để lập kế hoạch chiến dịch.",
+    "openPackage": "Mở gói truyền thông",
+    "nextStep": "Bước tiếp theo",
+    "sections": "Đi đến phần trong chiến dịch",
+    "plan": "Xem kế hoạch",
+    "openTasks": "Quản lý công việc",
+    "clientGuidance": {
+      "APPROVED": "Hai bên đã duyệt kế hoạch. Người quản lý sẽ triển khai để tạo công việc. Bạn có thể xem lại kế hoạch và theo dõi tiến độ tại phần triển khai.",
+      "IN_PROGRESS": "Chiến dịch đang được thực hiện. Xem tiến độ và các công việc; người quản lý phụ trách bổ sung yêu cầu và phân công."
+    },
+    "guidance": {
+      "DRAFT": "Kiểm tra kế hoạch và các đầu việc, sau đó đến phần góp ý và duyệt. Hai bên cần duyệt cùng phiên bản trước khi triển khai.",
+      "APPROVED": "Kế hoạch đã được hai bên duyệt. Đến phần triển khai để người quản lý tạo công việc từ các đầu việc đã thống nhất.",
+      "IN_PROGRESS": "Công việc đã được tạo. Mở quản lý công việc để bổ sung yêu cầu, giao người phụ trách và theo dõi thực hiện.",
+      "COMPLETED": "Chiến dịch đã kết thúc. Bạn vẫn có thể xem lại kế hoạch, lịch sử duyệt và các công việc."
     }
   }
 }

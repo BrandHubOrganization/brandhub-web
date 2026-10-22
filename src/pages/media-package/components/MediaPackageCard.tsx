@@ -1,13 +1,8 @@
 import { Check, Copy, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MediaPackageDetail } from "./MediaPackageDetail";
-import {
-  formatPackageType,
-  formatPackageValue,
-} from "../lib/formatMediaPackage";
+import { formatPackageValue } from "../lib/formatMediaPackage";
 import type { MediaPackage } from "../types/mediaPackage";
 
 interface MediaPackageCardProps {
@@ -16,6 +11,7 @@ interface MediaPackageCardProps {
   canSelect: boolean;
   selecting: boolean;
   onSelect: (packageId: string) => void;
+  onViewDetails: (mediaPackage: MediaPackage) => void;
   canUseTemplate?: boolean;
   canManageAvailability?: boolean;
   updatingAvailability?: boolean;
@@ -30,6 +26,7 @@ export function MediaPackageCard({
   canSelect,
   selecting,
   onSelect,
+  onViewDetails,
   canUseTemplate = false,
   canManageAvailability = false,
   updatingAvailability = false,
@@ -38,7 +35,6 @@ export function MediaPackageCard({
   onToggleAvailability,
 }: MediaPackageCardProps) {
   const { t, i18n } = useTranslation();
-  const [detailOpen, setDetailOpen] = useState(false);
   const deliverables = mediaPackage.offeringDetails?.deliverables ?? [];
 
   return (
@@ -77,16 +73,28 @@ export function MediaPackageCard({
         <h3 className="text-foreground text-lg leading-snug font-semibold break-words">
           {mediaPackage.name}
         </h3>
-        <p className="text-muted-foreground mt-1 text-xs">
-          {formatPackageType(mediaPackage.type, t)}
-        </p>
-        <p className="text-foreground mt-4 text-2xl font-semibold tracking-tight">
+        <p
+          className={
+            mediaPackage.budgetAmount == null
+              ? "text-muted-foreground mt-3 text-sm font-medium"
+              : "text-foreground mt-3 text-xl font-semibold tracking-tight"
+          }
+        >
           {formatPackageValue(mediaPackage, i18n.language, t)}
         </p>
-        <p className="text-muted-foreground mt-3 line-clamp-3 text-sm leading-6">
-          {mediaPackage.scopeDescription ||
-            t("mediaPackage.catalog.noDescription")}
-        </p>
+        {mediaPackage.budgetAmount != null &&
+          mediaPackage.durationWeeks != null && (
+            <p className="text-muted-foreground mt-1 text-xs">
+              {t("mediaPackage.values.duration", {
+                count: mediaPackage.durationWeeks,
+              })}
+            </p>
+          )}
+        {mediaPackage.scopeDescription && (
+          <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-6">
+            {mediaPackage.scopeDescription}
+          </p>
+        )}
         {deliverables.length > 0 && (
           <ul className="border-border mt-4 space-y-2 border-t pt-4">
             {deliverables.slice(0, 3).map((item) => (
@@ -134,6 +142,7 @@ export function MediaPackageCard({
             variant="orange"
             className="h-auto min-h-10 w-full whitespace-normal"
             onClick={() => onUseTemplate?.(mediaPackage)}
+            data-package-create-from={mediaPackage.id}
           >
             <Copy className="size-4 shrink-0" aria-hidden="true" />
             {t("mediaPackage.actions.useTemplate")}
@@ -142,7 +151,8 @@ export function MediaPackageCard({
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => setDetailOpen(true)}
+          data-package-details={mediaPackage.id}
+          onClick={() => onViewDetails(mediaPackage)}
         >
           <Eye className="size-4" aria-hidden="true" />
           {t("mediaPackage.ui.viewDetail")}
@@ -152,6 +162,7 @@ export function MediaPackageCard({
             variant="ghost"
             className="h-auto min-h-10 w-full whitespace-normal"
             onClick={() => onDuplicate(mediaPackage)}
+            data-package-create-from={mediaPackage.id}
           >
             <Copy className="size-4 shrink-0" aria-hidden="true" />
             {t("mediaPackage.ui.duplicate")}
@@ -177,11 +188,6 @@ export function MediaPackageCard({
           </Button>
         )}
       </div>
-      <MediaPackageDetail
-        mediaPackage={mediaPackage}
-        open={detailOpen}
-        onOpenChange={setDetailOpen}
-      />
     </article>
   );
 }

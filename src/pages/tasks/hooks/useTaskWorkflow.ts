@@ -19,12 +19,10 @@ export function useTaskWorkflow(
   const query = useQuery({
     queryKey: key,
     queryFn: () => service.read(workspaceId, taskId),
-    // No background read may silently adopt a newer revision under an open draft.
-    // Explicit Reload is guarded; our successful writes update this cache directly.
     retry: false,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    staleTime: Infinity,
+    refetchOnMount: true,
+    staleTime: 30000,
     enabled: enabled && Boolean(workspaceId && taskId),
   });
   async function current() {
@@ -65,7 +63,6 @@ export function useTaskWorkflow(
       return publish(
         await service.assign(workspaceId, taskId, {
           assigneeId: task.assigneeId || "",
-          qcAssigneeId: task.qcAssigneeId,
           requiresClientApproval: task.requiresClientApproval,
           ...changes,
           expectedRevision: task.workflowRevision!,

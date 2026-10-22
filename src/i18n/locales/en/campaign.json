@@ -1,4 +1,8 @@
 {
+  "compact": {
+    "durationSuggestion": "Package duration: {{weeks}} weeks · end date is editable",
+    "dateHelp": "Selecting a start date suggests an end date using the approved package duration. You can adjust it; a manually changed end date is preserved when the start date changes."
+  },
   "closure": {
     "cancelOption": "Cancel Tasks to close the Campaign (optional)",
     "cancelHelp": "Select only work that will not continue. Cancellation retains content and approval history and requires confirmation.",
@@ -186,9 +190,26 @@
       "APPROVED": "Approved",
       "REJECTED": "Changes requested",
       "COMPLETED": "Completed",
-      "CANCELLED": "Cancelled",
       "PUBLISHED": "Published",
       "READY_TO_PUBLISH": "Ready to publish"
+    }
+  },
+  "ux": {
+    "packageHint": "Choose a media package, agree on its terms and have both sides approve it. Then return here to plan the campaign.",
+    "openPackage": "Open media package",
+    "nextStep": "Next step",
+    "sections": "Jump to campaign section",
+    "plan": "View plan",
+    "openTasks": "Manage tasks",
+    "clientGuidance": {
+      "APPROVED": "Both sides have approved the plan. A manager will deploy it to create tasks. You can review the plan and follow progress in the delivery section.",
+      "IN_PROGRESS": "The campaign is underway. View progress and tasks; a manager handles requirements and assignments."
+    },
+    "guidance": {
+      "DRAFT": "Check the plan and work items, then go to feedback and approval. Both sides must approve the same version before deployment.",
+      "APPROVED": "Both sides have approved the plan. Go to deployment so a manager can create tasks from the agreed work items.",
+      "IN_PROGRESS": "Tasks have been created. Open task management to add requirements, assign people and track delivery.",
+      "COMPLETED": "This campaign has ended. You can still review its plan, approval history and tasks."
     }
   }
 }

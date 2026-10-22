@@ -4,7 +4,9 @@ import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { HelpHint } from "@/components/shared/HelpHint";
 import { MediaPackageCard } from "./MediaPackageCard";
+import { MediaPackageDetail } from "@/pages/media-package/components/MediaPackageDetail";
 import type { MediaPackage } from "../types/mediaPackage";
 
 interface MediaPackageCatalogProps {
@@ -30,6 +32,8 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
   const [query, setQuery] = useState("");
   const [availability, setAvailability] = useState("all");
   const [visibleCount, setVisibleCount] = useState(12);
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const detail = packages.find((item) => item.id === detailId);
   const filtered = packages.filter(
     (item) =>
       `${item.name} ${item.scopeDescription ?? ""}`
@@ -38,15 +42,54 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
       (availability === "all" ||
         item.availableToWorkspaces === (availability === "available")),
   );
+  if (detail)
+    return (
+      <MediaPackageDetail
+        mediaPackage={detail}
+        onClose={() => setDetailId(null)}
+        actions={
+          <>
+            {props.canSelect && (
+              <Button
+                variant="orange"
+                loading={props.selectingId === detail.id}
+                disabled={props.selectedPackageId === detail.id}
+                onClick={() => props.onSelect(detail.id)}
+              >
+                {t(
+                  props.selectedPackageId === detail.id
+                    ? "mediaPackage.actions.selected"
+                    : "mediaPackage.actions.select",
+                )}
+              </Button>
+            )}
+            {props.canUseTemplate && detail.isTemplate && (
+              <Button
+                variant="orange"
+                onClick={() => props.onUseTemplate?.(detail)}
+              >
+                {t("mediaPackage.actions.useTemplate")}
+              </Button>
+            )}
+            {props.onDuplicate && !detail.isTemplate && (
+              <Button
+                variant="outline"
+                onClick={() => props.onDuplicate?.(detail)}
+              >
+                {t("mediaPackage.ui.duplicate")}
+              </Button>
+            )}
+          </>
+        }
+      />
+    );
   return (
     <section aria-labelledby={id} className="space-y-4">
-      <div>
+      <div className="flex items-center gap-1">
         <h2 id={id} className="text-foreground text-lg font-semibold">
           {title}
         </h2>
-        <p className="text-muted-foreground mt-1 text-sm leading-6">
-          {description}
-        </p>
+        <HelpHint label={title}>{description}</HelpHint>
       </div>
       {packages.length > 0 && (
         <div className="flex flex-wrap items-center gap-3">
@@ -114,6 +157,7 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
               canSelect={props.canSelect}
               selecting={props.selectingId === mediaPackage.id}
               onSelect={props.onSelect}
+              onViewDetails={(item) => setDetailId(item.id)}
               canUseTemplate={props.canUseTemplate}
               canManageAvailability={canManageAvailability}
               updatingAvailability={props.updatingPackageId === mediaPackage.id}

@@ -50,7 +50,7 @@ export const MediaTab: React.FC = () => {
           page: pageToFetch,
           limit: 8,
           type: filterType,
-          aspectRatio: filterOrientation as any,
+          aspectRatio: filterOrientation,
           search,
           sort,
         });
