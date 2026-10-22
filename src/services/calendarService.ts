@@ -19,7 +19,12 @@ interface ApiResponse<T> {
 function inferPlatform(task: TaskListItem): PlatformType {
   const text = `${task.name} ${task.description || ""}`.toLowerCase();
   if (text.includes("instagram") || text.includes("insta")) return "INSTAGRAM";
-  if (text.includes("tiktok") || text.includes("tik tok") || task.type === "LIVESTREAM") return "TIKTOK";
+  if (
+    text.includes("tiktok") ||
+    text.includes("tik tok") ||
+    task.type === "LIVESTREAM"
+  )
+    return "TIKTOK";
   if (text.includes("thread")) return "THREADS";
   return "FACEBOOK";
 }
@@ -106,7 +111,8 @@ export const calendarService = {
 
     posts.forEach((post) => {
       const rawPlatform = post.targetPlatforms?.[0] || "FACEBOOK";
-      const platform = (rawPlatform.toUpperCase() as PlatformType) || "FACEBOOK";
+      const platform =
+        (rawPlatform.toUpperCase() as PlatformType) || "FACEBOOK";
       const caption = post.caption?.trim() || "";
 
       if (post.taskId && taskIdsInTasks.has(post.taskId)) {
@@ -173,27 +179,23 @@ export const calendarService = {
     }
 
     // 2. Fallback to updating task publishDate / dueDate
+    const wf = await taskWorkflowService.read(workspaceId, payload.postId);
     try {
-      const wf = await taskWorkflowService.read(workspaceId, payload.postId);
-      try {
-        await taskWorkflowService.field(workspaceId, payload.postId, {
-          field: "publishDate",
-          value: payload.newScheduledAt,
-          expectedRevision: wf.workflowRevision ?? 0,
-        });
-      } catch {
-        await taskWorkflowService.field(workspaceId, payload.postId, {
-          field: "dueDate",
-          value: payload.newScheduledAt,
-          expectedRevision: wf.workflowRevision ?? 0,
-        });
-      }
-      return {
-        id: payload.postId,
-        scheduledAt: payload.newScheduledAt,
-      };
-    } catch (taskErr) {
-      throw taskErr;
+      await taskWorkflowService.field(workspaceId, payload.postId, {
+        field: "publishDate",
+        value: payload.newScheduledAt,
+        expectedRevision: wf.workflowRevision ?? 0,
+      });
+    } catch {
+      await taskWorkflowService.field(workspaceId, payload.postId, {
+        field: "dueDate",
+        value: payload.newScheduledAt,
+        expectedRevision: wf.workflowRevision ?? 0,
+      });
     }
+    return {
+      id: payload.postId,
+      scheduledAt: payload.newScheduledAt,
+    };
   },
 };
