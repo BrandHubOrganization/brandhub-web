@@ -1,7 +1,7 @@
-import { api } from "@/services/api";
+﻿import { api } from "@/services/api";
 import type { TaskListItem, TaskListFilterParams } from "@/types/task";
 import { requireApiData } from "@/lib/apiData";
-import { canonicalTaskStatus } from "@/pages/tasks/taskStatus";
+import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import type { ApiResponse } from "@/services/authService";
 
 export interface PagedTaskResponse {

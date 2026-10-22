@@ -1,11 +1,11 @@
-import { useId, useImperativeHandle, useState } from "react";
+﻿import { useId, useImperativeHandle, useState } from "react";
 import type { RefObject } from "react";
 import { EditorContent } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
 import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { TaskCommentMentionDropdown } from "@/pages/tasks/components/TaskCommentMentionDropdown";
+import { TaskCommentMentionDropdown } from "@/pages/tasks/components/comments/TaskCommentMentionDropdown";
 import { useTaskCommentMembers } from "@/pages/tasks/hooks/useTaskCommentMembers";
 import { useTaskCommentRichEditor } from "@/pages/tasks/hooks/useTaskCommentRichEditor";
 import {

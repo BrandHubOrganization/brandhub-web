@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link, useNavigate } from "react-router-dom";
+import { Play, PenSquare, Eye, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { TaskAssigneePicker } from "@/pages/tasks/components/TaskAssigneePicker";
 import { TaskDeadlineField } from "@/pages/tasks/components/TaskInlineDetails";
-import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { useTaskEditContext } from "@/pages/tasks/components/TaskWorkflowProvider";
-import { workflowError } from "@/pages/tasks/taskWorkflowErrors";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
@@ -21,7 +22,9 @@ export function TaskRowActions({
   field: "assignee" | "deadline" | "start";
 }) {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [starting, setStarting] = useState(false);
   const state = useTaskWorkflow(task.workspaceId, task.id, open);
   const { canLeave } = useTaskEditContext();
   const role = useWorkspaceStore(
@@ -59,7 +62,7 @@ export function TaskRowActions({
       );
     }
     return (
-      <div className="text-muted-foreground flex h-8 items-center px-2 text-xs">
+      <div className="flex h-8 items-center px-2 text-xs text-muted-foreground">
         <span className="truncate">{display}</span>
       </div>
     );
@@ -70,33 +73,54 @@ export function TaskRowActions({
         const isFinished =
           task.status === "FINISHED" || task.status === "COMPLETED";
         const isInReview = task.status === "IN_REVIEW";
+        const isTodo = todo;
+        const isOtherCreator = role === "CREATOR" && userId !== task.assigneeId;
+
+        // Creator khác hoặc Client không được phép thấy nút "Viết bài" cho task chưa bắt đầu (TODO)
+        if (isTodo && (isOtherCreator || role === "CLIENT")) {
+          return null;
+        }
+
         const label = isFinished
           ? "Xem bài"
           : isInReview
-            ? "Xem duyệt"
-            : creator && task.status === "IN_PROGRESS"
-              ? t("tasks.workflow.writePost")
-              : t("tasks.review.openEditor");
+            ? manager || role === "CLIENT"
+              ? "Duyệt bài"
+              : "Xem duyệt"
+            : isOtherCreator
+              ? "Xem bài"
+              : "Soạn bài";
         const link = isInReview
           ? `/workspaces/${task.workspaceId}/task-approvals?task=${task.id}`
           : `/workspaces/${task.workspaceId}/editor?taskId=${task.id}`;
+
+        const Icon = isFinished || isOtherCreator
+          ? Eye
+          : isInReview
+            ? ClipboardCheck
+            : PenSquare;
 
         return (
           <Button
             size="sm"
             variant="outline"
             className={cn(
-              "h-7 px-2.5 text-xs font-medium whitespace-nowrap",
+              "h-7.5 px-3 text-xs font-medium rounded-lg gap-1.5 whitespace-nowrap shadow-2xs transition-all",
               isFinished
-                ? "border-border text-muted-foreground hover:text-foreground"
+                ? "border-border/80 text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 : isInReview
-                  ? "border-amber-500/40 text-amber-600 hover:bg-amber-500/10 dark:text-amber-400"
-                  : "border-brand-orange/40 text-brand-orange hover:bg-brand-orange/10",
+                  ? "border-amber-500/30 text-amber-600 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/10 hover:border-amber-500/50"
+                  : isOtherCreator
+                    ? "border-border/80 text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    : "border-brand-orange/30 text-brand-orange bg-brand-orange/5 hover:bg-brand-orange/10 hover:border-brand-orange/50",
             )}
             asChild
             onClick={(e) => e.stopPropagation()}
           >
-            <a href={link}>{label}</a>
+            <Link to={link}>
+              <Icon className="size-3.5 shrink-0" />
+              <span>{label}</span>
+            </Link>
           </Button>
         );
       }
@@ -106,7 +130,7 @@ export function TaskRowActions({
   }
   return (
     <div
-      className="max-w-64 min-w-40"
+      className={field === "start" ? "inline-flex items-center justify-end" : "max-w-64 min-w-40"}
       onClick={(event) => event.stopPropagation()}
       onKeyDown={async (event) => {
         event.stopPropagation();
@@ -115,14 +139,37 @@ export function TaskRowActions({
     >
       {!open ? (
         field === "start" ? (
-          <TaskStartAction
-            task={task}
-            presentation="row"
-            start={() => {
-              state.retry();
-              return state.start();
+          <Button
+            size="sm"
+            variant="orange"
+            loading={starting}
+            className="h-7.5 px-3 text-xs font-medium rounded-lg gap-1.5 shadow-xs hover:shadow transition-all whitespace-nowrap"
+            onClick={async (e) => {
+              e.stopPropagation();
+              setStarting(true);
+              try {
+                state.retry();
+                await state.start();
+                if (task.type === "POST") {
+                  navigate(`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`);
+                }
+              } finally {
+                setStarting(false);
+              }
             }}
-          />
+          >
+            {task.type === "POST" ? (
+              <>
+                <PenSquare className="size-3.5 shrink-0" />
+                <span>Bắt đầu & Soạn bài</span>
+              </>
+            ) : (
+              <>
+                <Play className="size-3.5 shrink-0 fill-current" />
+                <span>{t("tasks.workflow.start")}</span>
+              </>
+            )}
+          </Button>
         ) : (
           <Button
             size="sm"

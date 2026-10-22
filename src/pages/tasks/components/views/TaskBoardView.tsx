@@ -1,12 +1,12 @@
-import { useTranslation } from "react-i18next";
+﻿import { useTranslation } from "react-i18next";
 import { Clock } from "lucide-react";
 import type { TaskListItem } from "@/types/task";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import {
   canonicalTaskStatus,
   type CanonicalTaskStatus,
-} from "@/pages/tasks/taskStatus";
-import { taskDeadline } from "@/pages/tasks/taskViewData";
+} from "@/pages/tasks/utils/taskStatus";
+import { taskDeadline } from "@/pages/tasks/utils/taskViewData";
 
 export function TaskBoardView({
   tasks,

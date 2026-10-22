@@ -1,18 +1,10 @@
 import { useTranslation } from "react-i18next";
-import {
-  CheckCircle2,
-  CheckCheck,
-  CircleDashed,
-  Clock,
-  PlayCircle,
-  User,
-  XCircle,
-} from "lucide-react";
+import { CheckCheck, User2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { reviewError } from "@/pages/tasks/taskApprovalView";
+import { reviewError } from "@/pages/tasks/utils/taskApprovalView";
 import type { useApprovalList } from "@/pages/task-approvals/hooks/useApprovalList";
 
 interface Props {
@@ -22,48 +14,6 @@ interface Props {
   onSelect: (id: string) => void;
   onPage: (page: number) => void;
 }
-
-function getTaskStatusConfig(status: string) {
-  switch (status) {
-    case "IN_REVIEW":
-    case "PENDING":
-      return {
-        className:
-          "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30",
-        icon: Clock,
-      };
-    case "FINISHED":
-    case "APPROVED":
-    case "ACCEPTED":
-      return {
-        className:
-          "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
-        icon: CheckCircle2,
-      };
-    case "REJECTED":
-    case "DENIED":
-    case "CANCELLED":
-      return {
-        className:
-          "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30",
-        icon: XCircle,
-      };
-    case "IN_PROGRESS":
-      return {
-        className:
-          "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/30",
-        icon: PlayCircle,
-      };
-    case "TODO":
-    default:
-      return {
-        className:
-          "bg-brand-orange-soft text-brand-orange border-brand-orange/30",
-        icon: CircleDashed,
-      };
-  }
-}
-
 export function ApprovalList({
   query,
   selected,
@@ -76,88 +26,83 @@ export function ApprovalList({
   return (
     <section
       aria-label={t("tasks.approvalPage.list")}
-      className="bg-card flex h-full min-h-0 flex-col rounded-xl border shadow-xs"
+      className="bg-card flex h-full min-h-0 flex-col rounded-xl border"
     >
       <div className="border-b p-4 text-sm font-medium" role="status">
         {t("tasks.approvalPage.count", { count: data?.totalElements ?? 0 })}
       </div>
       <div
-        className="min-h-0 flex-1 divide-y overflow-y-auto overscroll-contain"
+        className="min-h-0 flex-1 overflow-y-auto"
         aria-busy={query.isFetching}
       >
         {query.isPending && (
-          <div
-            role="status"
-            className="text-muted-foreground flex items-center gap-2 p-5 text-sm"
-          >
+          <div role="status" className="flex items-center gap-2 p-5">
             <Spinner />
             {t("tasks.loading")}
           </div>
         )}
         {query.isError && (
           <div role="alert" className="space-y-3 p-5">
-            <p className="text-destructive text-sm">
-              {reviewError(query.error, t)}
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => void query.refetch()}
-            >
+            <p>{reviewError(query.error, t)}</p>
+            <Button variant="outline" onClick={() => void query.refetch()}>
               {t("tasks.retry")}
             </Button>
           </div>
         )}
         {!query.isPending && !query.isError && !data?.content.length && (
-          <div className="text-muted-foreground flex flex-col items-center gap-3 p-6 text-center">
-            <CheckCheck aria-hidden className="size-8" />
-            <p className="text-sm">{t("tasks.approvalPage.empty")}</p>
+          <div className="flex flex-col items-center justify-center p-8 text-center animate-in fade-in-50 duration-200">
+            <div className="mb-3 flex size-12 items-center justify-center rounded-2xl bg-brand-orange-soft text-brand-orange shadow-xs">
+              <CheckCheck className="size-6" />
+            </div>
+            <h4 className="text-sm font-semibold text-foreground">
+              {t("tasks.approvalPage.allCaughtUpTitle")}
+            </h4>
+            <p className="mt-1 max-w-[200px] text-xs text-muted-foreground">
+              {t("tasks.approvalPage.allCaughtUpDesc")}
+            </p>
           </div>
         )}
         {!query.isError &&
-          data?.content.map((task) => {
-            const statusConfig = getTaskStatusConfig(task.status);
-            const StatusIcon = statusConfig.icon;
-            const isSelected = selected === task.id;
-            return (
-              <Button
-                key={task.id}
-                variant="ghost"
-                aria-pressed={isSelected}
-                onClick={() => onSelect(task.id)}
-                className={cn(
-                  "hover:bg-muted/50 h-auto w-full justify-start rounded-none border-b-0 px-4 py-3.5 text-left whitespace-normal transition-colors",
-                  isSelected &&
-                    "bg-brand-orange/10 border-l-brand-orange text-foreground border-l-3 font-medium",
-                )}
-              >
-                <span className="w-full min-w-0 space-y-2">
-                  <span className="text-foreground line-clamp-2 block text-sm font-medium break-words">
-                    {task.name}
-                  </span>
-                  <span className="flex flex-wrap items-center gap-2 text-xs">
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "text-2xs gap-1 px-2 py-0.5 font-medium",
-                        statusConfig.className,
-                      )}
-                    >
-                      <StatusIcon className="size-3 shrink-0" />
-                      <span>{t(`tasks.status.${task.status}`)}</span>
-                    </Badge>
-                    <span className="text-muted-foreground text-2xs flex items-center gap-1">
-                      <User className="size-3 shrink-0 opacity-70" />
-                      <span className="max-w-[120px] truncate">
-                        {task.assigneeName ||
-                          t("tasks.approvalPage.unassigned")}
-                      </span>
-                    </span>
-                  </span>
+          data?.content.map((task) => (
+            <Button
+              key={task.id}
+              variant="ghost"
+              aria-pressed={selected === task.id}
+              onClick={() => onSelect(task.id)}
+              className={cn(
+                "h-auto w-full justify-start rounded-none border-b p-4 text-left whitespace-normal transition-all duration-150 hover:bg-muted/40",
+                selected === task.id
+                  ? "bg-brand-orange-soft/60 shadow-xs ring-1 ring-inset ring-brand-orange/30 text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <span className="min-w-0 w-full space-y-2.5">
+                <span className="block font-semibold text-foreground text-sm leading-snug break-words">
+                  {task.name}
                 </span>
-              </Button>
-            );
-          })}
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <Badge
+                    variant={
+                      task.status === "IN_REVIEW" ? "PENDING_REVIEW" : "outline"
+                    }
+                    className="font-medium"
+                  >
+                    {task.status === "IN_REVIEW" && (
+                      <span className="relative mr-1.5 flex size-2">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+                        <span className="relative inline-flex size-2 rounded-full bg-amber-500" />
+                      </span>
+                    )}
+                    {t(`tasks.status.${task.status}`)}
+                  </Badge>
+                  <span className="text-muted-foreground flex items-center gap-1.5 font-normal">
+                    <User2 className="size-3.5 text-muted-foreground/70" />
+                    {task.assigneeName || t("tasks.approvalPage.unassigned")}
+                  </span>
+                </div>
+              </span>
+            </Button>
+          ))}
       </div>
       <div className="flex items-center justify-between gap-2 border-t p-3">
         <Button
