@@ -1,10 +1,11 @@
-﻿import { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ClipboardCheck, Info, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useTaskApproval } from "@/pages/tasks/hooks/useTaskApproval";
+import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { TaskReviewStatus } from "@/pages/tasks/components/approval/TaskReviewStatus";
 import { TaskReviewContent } from "@/pages/tasks/components/approval/TaskReviewContent";
 import { TaskApprovalHistory } from "@/pages/tasks/components/approval/TaskApprovalHistory";
@@ -24,6 +25,7 @@ const ACTIONS: ReviewAction[] = ["submit", "withdraw", "approve", "reject"];
 export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
   const { t } = useTranslation();
   const state = useTaskApproval(task);
+  const workflowState = useTaskWorkflow(task.workspaceId, task.id);
   const [dialog, setDialog] = useState<{
     action: ReviewAction;
     view: TaskReviewView;
@@ -191,6 +193,10 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
           act={state.act}
           reload={reload}
           onClose={closeDialog}
+          task={task}
+          onSetPublishDate={(dateIso) =>
+            workflowState.field("publishDate", dateIso)
+          }
         />
       )}
     </section>

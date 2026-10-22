@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useTaskEditContext } from "@/pages/tasks/components/TaskWorkflowProvider";
@@ -11,6 +11,7 @@ import type {
   ReviewAction,
   TaskReviewView,
 } from "@/pages/tasks/types/taskApproval";
+import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
 export interface ReviewDialogProps {
   action: ReviewAction;
@@ -22,6 +23,8 @@ export interface ReviewDialogProps {
     comment: string,
   ) => Promise<boolean>;
   reload: () => Promise<TaskReviewView>;
+  task?: TaskWorkflow;
+  onSetPublishDate?: (dateIso: string | null) => Promise<unknown>;
 }
 
 export function useTaskReviewDialog(props: ReviewDialogProps) {
