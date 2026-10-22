@@ -5,6 +5,7 @@ import type { SocialPlatform } from "@/types/editor";
 import { AIGeneratePanel } from "./AIGeneratePanel";
 import { AIImageStudioPanel } from "./AIImageStudioPanel";
 import { AIVideoAssistPanel } from "./AIVideoAssistPanel";
+import { AiCreditNotice } from "@/pages/editor/components/AiCreditNotice";
 
 interface ContentCreatorAiPanelProps {
   topic: string;
@@ -27,6 +28,7 @@ export function ContentCreatorAiPanel({
 
   return (
     <section aria-label={t("editor.studio.aiPanelLabel")}>
+      <AiCreditNotice />
       <Tabs defaultValue="text" className="w-full">
         <TabsList className="border-border bg-muted/95 sticky top-0 z-30 grid h-10 w-full grid-cols-3 border shadow-sm backdrop-blur">
           <TabsTrigger value="text" className="text-xs">

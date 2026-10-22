@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { aiGenerationService } from "@/services/aiGenerationService";
 import { extractErrorMessage } from "@/utils/error";
+import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 
 type GeneratorPhase = "describe" | "generating-character" | "review";
 
@@ -78,10 +79,11 @@ export function AmbassadorGeneratorModal({
       setPhase("review");
     } catch (error) {
       setError(
-        extractErrorMessage(
-          error,
-          t("editor.studio.image.characterFlow.characterFailed"),
-        ),
+        aiCreditErrorMessage(error) ??
+          extractErrorMessage(
+            error,
+            t("editor.studio.image.characterFlow.characterFailed"),
+          ),
       );
       setPhase("describe");
     }
