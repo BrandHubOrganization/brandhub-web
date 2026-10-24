@@ -44,7 +44,7 @@ export function SaveTemplateModal({
           placeholder={t("workspace.settings.template.namePlaceholder")}
         />
         <IndustrySpecificFields
-          industry={industry}
+          industry={industry || ""}
           value={templateIndustryFields}
           onChange={onIndustryFieldsChange}
         />

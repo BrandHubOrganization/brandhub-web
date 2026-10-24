@@ -63,7 +63,7 @@ export function WorkspaceDashboardPage() {
         currentMemberRole={currentMemberRole}
         isPackageApproved={isPackageApproved}
         isPackageNegotiating={isPackageNegotiating}
-        packageStatus={packageStatus}
+        packageStatus={packageStatus ?? undefined}
         isManagerOrOwner={isManagerOrOwner}
         onOpenLeaveDialog={() => setLeaveOpen(true)}
       />
@@ -96,7 +96,7 @@ export function WorkspaceDashboardPage() {
             campaignsLoading={campaignsLoading}
             campaignsError={campaignsError}
             dashboard={dashboard}
-            packageStatus={packageStatus}
+            packageStatus={packageStatus ?? undefined}
             isClient={isClient}
           />
 

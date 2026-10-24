@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { workspaceService } from "@/services/workspaceService";
 import { workspaceTemplateService } from "@/services/workspaceTemplateService";
 import { extractErrorMessage } from "@/utils/error";
-import type { CompanySize, WorkspaceIndustry } from "@/types/workspace";
+import type { CompanySize, ReportFrequency, WorkspaceIndustry } from "@/types/workspace";
 
 interface UseWorkspaceDetailModalsProps {
   workspaceId?: string;
@@ -17,7 +17,7 @@ interface UseWorkspaceDetailModalsProps {
   location: string;
   timezone: string;
   defaultPlatforms: string[];
-  reportFrequency: string;
+  reportFrequency: ReportFrequency | null;
   handleLogoChange: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
   handleBannerChange: (file: File) => Promise<void>;
 }

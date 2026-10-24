@@ -1,8 +1,3 @@
-import type { ReactNode } from "react";
-import type { WorkspaceDashboard } from "@/types/workspace";
-import type { TaskListItem } from "@/types/task";
-import type { Campaign } from "@/pages/campaign/types";
-import type { AnalyticsSummary } from "@/types/analytics";
 
 export type DashboardTabType = "overview" | "publishing";
 

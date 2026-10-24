@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Globe, MapPin, Phone, Users } from "lucide-react";
-import type { CompanySize, WorkspaceIndustry } from "@/types/workspace";
+import type { CompanySize, ReportFrequency, WorkspaceIndustry } from "@/types/workspace";
 
 interface WorkspaceInfoViewProps {
   website?: string;
@@ -10,7 +10,7 @@ interface WorkspaceInfoViewProps {
   industry?: WorkspaceIndustry | "";
   timezone: string;
   defaultPlatforms: string[];
-  reportFrequency?: string;
+  reportFrequency?: ReportFrequency | null;
 }
 
 export function WorkspaceInfoView({

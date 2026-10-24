@@ -104,6 +104,30 @@ export interface PostStatusData {
   updatedAt: string;
 }
 
+interface RawMediaItem {
+  url?: string;
+  s3Key?: string;
+  mediaType?: "IMAGE" | "VIDEO" | "NONE";
+}
+
+interface RawPostDetailDto {
+  id: string;
+  workspaceId: string;
+  contentText?: string;
+  hashtags?: string[];
+  media?: RawMediaItem[];
+  targetPlatforms?: PostedDetailData["platform"][];
+  platformPostUrl?: string;
+  status: PostedDetailData["status"];
+  reactionCount?: number;
+  commentCount?: number;
+  shareCount?: number;
+  engagementUpdatedAt?: string;
+  createdAt: string;
+  updatedAt?: string;
+  metrics?: PostedDetailData["metrics"];
+}
+
 export const postDetailService = {
   async getPostStatus(
     workspaceId: string,
@@ -134,7 +158,7 @@ export const postDetailService = {
     refreshMetrics = false,
   ): Promise<PostedDetailData> {
     try {
-      const response = await api.get<{ success: boolean; data: any }>(
+      const response = await api.get<{ success: boolean; data: RawPostDetailDto }>(
         `/api/v1/workspaces/${workspaceId}/posts/${postId}/detail`,
         {
           params: { refreshMetrics },
@@ -143,7 +167,7 @@ export const postDetailService = {
       if (response.data && response.data.data) {
         const d = response.data.data;
         if (d.metrics) {
-          return d as PostedDetailData;
+          return d as unknown as PostedDetailData;
         }
         return {
           id: d.id,
@@ -152,7 +176,7 @@ export const postDetailService = {
           title: d.contentText ? (d.contentText.length > 50 ? d.contentText.slice(0, 47) + "..." : d.contentText) : "Bài viết",
           caption: d.contentText || "",
           hashtags: d.hashtags || [],
-          mediaUrls: (d.media || []).map((m: any) => m.url || m.s3Key),
+          mediaUrls: (d.media || []).map((m: RawMediaItem) => m.url || m.s3Key || "").filter(Boolean),
           mediaType: d.media && d.media.length > 0 ? (d.media[0].mediaType || "IMAGE") : "NONE",
           platform: (d.targetPlatforms && d.targetPlatforms[0]) || "FACEBOOK",
           platformUrl: d.platformPostUrl || "",
@@ -160,7 +184,7 @@ export const postDetailService = {
           authorName: "Porter Crona",
           publishedAt: d.updatedAt || d.createdAt,
           createdAt: d.createdAt,
-          updatedAt: d.updatedAt,
+          updatedAt: d.updatedAt || d.createdAt,
           metrics: {
             reactions: d.reactionCount ?? 0,
             likes: d.reactionCount ?? 0,
