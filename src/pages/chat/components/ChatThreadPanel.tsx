@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { X } from "lucide-react";
+import { MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuthStore } from "@/store/authStore";
@@ -45,13 +45,28 @@ export function ChatThreadPanel(props: ThreadProps) {
       ),
     retry: false,
   });
+  const replyCount = Math.max(
+    root.data?.replyCount ?? 0,
+    thread.messages.length,
+  );
   return (
     <section className="bg-card flex h-full min-h-0 flex-col">
-      <div className="border-border flex items-center justify-between border-b p-4">
-        <h2 className="text-base font-semibold">{t("chat.thread.title")}</h2>
+      <div className="border-border/80 flex min-h-14 items-center justify-between gap-2 border-b px-4 py-3">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span
+            aria-hidden="true"
+            className="bg-brand-orange-soft text-brand-orange flex size-8 shrink-0 items-center justify-center rounded-lg"
+          >
+            <MessageSquare className="size-4" />
+          </span>
+          <h2 className="truncate text-base font-semibold tracking-tight">
+            {t("chat.thread.title")}
+          </h2>
+        </div>
         <Button
           variant="ghost"
           size="icon"
+          className="size-9 shrink-0 rounded-lg"
           aria-label={t("chat.actions.close")}
           onClick={props.onClose}
         >
@@ -59,35 +74,51 @@ export function ChatThreadPanel(props: ThreadProps) {
         </Button>
       </div>
       {root.isPending && (
-        <div className="p-5">
+        <div className="flex items-center justify-center p-5">
           <Spinner />
         </div>
       )}
       {root.isError && (
-        <div role="alert" className="p-4 text-sm">
-          <p>{t("chat.errors.loadHistory")}</p>
-          <Button variant="outline" onClick={() => void root.refetch()}>
+        <div role="alert" className="space-y-3 p-4 text-sm">
+          <p className="text-muted-foreground">
+            {t("chat.errors.loadHistory")}
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void root.refetch()}
+          >
             {t("chat.actions.retry")}
           </Button>
         </div>
       )}
       {root.data && !root.isError && (
-        <div className="border-border max-h-56 shrink-0 overflow-y-auto border-b">
-          <ChatMessageRow
-            message={root.data}
-            userId={userId}
-            canPost={props.channel.canPost}
-            busy={thread.busyId === root.data.id}
-            hideThread
-            onThread={() => undefined}
-            onRetry={thread.retry}
-            onMutate={(message, code) => void thread.mutate(message, code)}
-          />
+        <div className="border-border/80 bg-muted/25 shrink-0 border-b">
+          <div className="max-h-56 overflow-y-auto">
+            <ChatMessageRow
+              message={root.data}
+              userId={userId}
+              people={props.people}
+              canPost={props.channel.canPost}
+              busy={thread.busyId === root.data.id}
+              hideThread
+              onThread={() => undefined}
+              onRetry={thread.retry}
+              onMutate={(message, code) => void thread.mutate(message, code)}
+            />
+          </div>
+          <div className="border-border/60 bg-background/60 flex items-center gap-2 border-t px-4 py-1.5">
+            <span className="text-muted-foreground font-mono text-[11px] font-medium tabular-nums">
+              {t("chat.thread.replies", { count: replyCount })}
+            </span>
+            <span className="bg-border/70 h-px flex-1" aria-hidden="true" />
+          </div>
         </div>
       )}
       <ChatTimeline
         messages={thread.history.isError ? [] : thread.messages}
         userId={userId}
+        people={props.people}
         canPost={props.channel.canPost}
         hideThread
         busyId={thread.busyId}

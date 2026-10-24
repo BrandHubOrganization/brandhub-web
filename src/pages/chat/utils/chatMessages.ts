@@ -1,5 +1,7 @@
 import { z } from "zod";
 import type { CollaborationMessage } from "@/types/chatCollaboration";
+import type { ChatRichNode } from "@/pages/chat/types/chatRichContent";
+import { isChatRichDocument } from "@/pages/chat/utils/chatRichContent";
 
 const messageSchema = z.object({
   mentionUserIds: z.array(z.string()).optional(),
@@ -10,6 +12,7 @@ const messageSchema = z.object({
   senderRole: z.enum(["MANAGER", "CREATOR", "CLIENT"]),
   senderDisplayName: z.string(),
   content: z.string(),
+  richContent: z.custom<ChatRichNode>(isChatRichDocument).nullish(),
   clientMessageId: z.string(),
   contextType: z.enum(["GENERAL", "MEDIA_PACKAGE", "MEDIA_CAMPAIGN"]),
   contextId: z.string().nullable(),
@@ -18,9 +21,16 @@ const messageSchema = z.object({
   threadRootId: z.string().nullable().default(null),
   reactions: z
     .object({
+      check: z.array(z.string()).optional(),
+      eyes: z.array(z.string()).optional(),
       like: z.array(z.string()).optional(),
+      hands: z.array(z.string()).optional(),
+      fire: z.array(z.string()).optional(),
       heart: z.array(z.string()).optional(),
       celebrate: z.array(z.string()).optional(),
+      rocket: z.array(z.string()).optional(),
+      laugh: z.array(z.string()).optional(),
+      pray: z.array(z.string()).optional(),
     })
     .default({}),
   pinned: z.boolean().default(false),

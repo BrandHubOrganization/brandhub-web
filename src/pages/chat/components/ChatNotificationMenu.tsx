@@ -10,6 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { chatCollaborationService as service } from "@/services/chatCollaborationService";
 
 interface Props {
@@ -52,9 +53,14 @@ export function ChatNotificationMenu({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
+          variant={silent ? "secondary" : "ghost"}
           size="icon"
-          className="size-11"
+          className={cn(
+            "size-9 rounded-lg transition-colors",
+            silent
+              ? "bg-brand-orange-soft text-brand-orange ring-brand-orange/20 hover:bg-brand-orange-soft/80 hover:text-brand-orange ring-1"
+              : "text-muted-foreground hover:text-foreground",
+          )}
           aria-label={t("chat.notifications.title")}
           title={t("chat.notifications.title")}
         >
@@ -67,14 +73,17 @@ export function ChatNotificationMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-72 max-w-[calc(100vw-2rem)]"
+        className="w-72 max-w-[calc(100vw-2rem)] rounded-xl p-1.5"
       >
-        <DropdownMenuLabel>{t("chat.notifications.title")}</DropdownMenuLabel>
+        <DropdownMenuLabel className="px-2.5 py-1.5 text-xs font-semibold">
+          {t("chat.notifications.title")}
+        </DropdownMenuLabel>
         <DropdownMenuCheckboxItem
           checked={preference.data?.dnd ?? false}
           disabled={disabled}
           onSelect={(event) => event.preventDefault()}
           onCheckedChange={(enabled) => change.mutate({ kind: "dnd", enabled })}
+          className="rounded-lg text-xs"
         >
           {t("chat.notifications.dnd")}
         </DropdownMenuCheckboxItem>
@@ -85,19 +94,20 @@ export function ChatNotificationMenu({
           onCheckedChange={(enabled) =>
             change.mutate({ kind: "mute", enabled })
           }
+          className="rounded-lg text-xs"
         >
           {t("chat.notifications.mute")}
         </DropdownMenuCheckboxItem>
-        <p className="text-muted-foreground px-2 py-2 text-xs">
+        <p className="text-muted-foreground border-border/60 mt-1 border-t px-2.5 pt-2 pb-1.5 text-[11px] leading-relaxed">
           {t("chat.notifications.hint")}
         </p>
         {(preference.isFetching || change.isPending) && (
-          <p role="status" className="px-2 py-2 text-xs">
+          <p role="status" className="text-muted-foreground px-2.5 py-1.5 text-xs">
             {t("chat.notifications.loading")}
           </p>
         )}
         {(preference.isError || change.isError) && (
-          <p role="alert" className="text-destructive px-2 py-2 text-xs">
+          <p role="alert" className="text-destructive px-2.5 py-1.5 text-xs">
             {t("chat.notifications.error")}
           </p>
         )}
@@ -107,6 +117,7 @@ export function ChatNotificationMenu({
               event.preventDefault();
               void preference.refetch();
             }}
+            className="rounded-lg text-xs font-medium"
           >
             {t("chat.actions.retry")}
           </DropdownMenuItem>
