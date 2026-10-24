@@ -31,7 +31,7 @@ export function useTasks(workspaceId: string) {
       try {
         const res = await taskService.getWorkspaceTasks(workspaceId, {
           page,
-          size: 15,
+          size: 10,
           sort: sortField,
           direction: sortDirection,
           status: statusFilter,
