@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { reviewMediaUrl } from "@/pages/tasks/utils/taskApprovalView";
 import { Check, Copy, Globe2, Sparkles } from "lucide-react";

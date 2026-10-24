@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { aiGenerationService } from "@/services/aiGenerationService";
+import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 import type { SocialPlatform } from "@/types/editor";
 import {
   formatPostHashtag,
@@ -67,7 +68,7 @@ export function AiHashtagSuggestions({
       )}
       {query.isError && (
         <p role="alert" className="text-destructive text-xs">
-          {t(prefix + "aiError")}
+          {aiCreditErrorMessage(query.error) ?? t(prefix + "aiError")}
         </p>
       )}
       {!query.isFetching &&

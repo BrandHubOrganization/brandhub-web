@@ -19,6 +19,11 @@
     "openTask": "View task"
   },
   "review": {
+    "collapseHistory": "Collapse history",
+    "expandHistory": "Expand history",
+    "copyFailed": "Could not copy content. Please try again.",
+    "aiGenerated": "AI-generated content",
+    "zoomImage": "Enlarge image",
     "title": "Result approval",
     "currentRound": "Round {{round}}",
     "waitingStep": "Waiting for {{step}} approval",
@@ -210,8 +215,9 @@
     "saved": "Task details saved.",
     "assigned": "Task assigned. The assignee will receive a notification.",
     "start": "Start work",
+    "writePost": "Write post",
     "started": "Work started.",
-    "startHint": "Only Start work moves this task to In progress and locks requirements and reassignment.",
+    "startHint": "Select Write post to start a post task and open the editor. For other task types, select Start work. The task moves to In progress and locks requirements and reassignment.",
     "chooseCreator": "Choose a creator",
     "noCreators": "No available creators in this workspace. Add a member first.",
     "noQc": "No quality review",

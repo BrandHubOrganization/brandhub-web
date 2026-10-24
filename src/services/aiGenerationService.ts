@@ -1,6 +1,7 @@
 import axios from "axios";
 import { api } from "@/lib/axios";
 import type { SocialPlatform } from "@/types/editor";
+import { postAiWithCredit, refreshAiCredit } from "@/services/aiCreditRequest";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -102,7 +103,9 @@ export const aiGenerationService = {
     input: { topic: string; platform: SocialPlatform },
     signal?: AbortSignal,
   ): Promise<string[]> {
-    const response = await api.post<ApiResponse<{ hashtags: string[] }>>(
+    const response = await postAiWithCredit<
+      ApiResponse<{ hashtags: string[] }>
+    >(
       "/api/v1/ai/content/hashtags",
       { topic: input.topic, platform: input.platform.toLowerCase(), count: 5 },
       { signal },
@@ -132,7 +135,7 @@ export const aiGenerationService = {
       .filter(Boolean)
       .join("\n");
 
-    const response = await api.post<ApiResponse<ContentResponse>>(
+    const response = await postAiWithCredit<ApiResponse<ContentResponse>>(
       "/api/v1/ai/content/generate",
       {
         topic,
@@ -162,15 +165,14 @@ export const aiGenerationService = {
   async generateAmbassador(input: {
     prompt: string;
   }): Promise<AmbassadorImageResponse> {
-    const response = await api.post<ApiResponse<AmbassadorImageResponse>>(
-      "/api/v1/ai/ambassadors/generate",
-      {
-        prompt: input.prompt,
-        steps: 25,
-        width: 832,
-        height: 1248,
-      },
-    );
+    const response = await postAiWithCredit<
+      ApiResponse<AmbassadorImageResponse>
+    >("/api/v1/ai/ambassadors/generate", {
+      prompt: input.prompt,
+      steps: 25,
+      width: 832,
+      height: 1248,
+    });
     const result = unwrap(response);
     return { ...result, image_url: resolveAiAssetUrl(result.image_url) };
   },
@@ -181,15 +183,14 @@ export const aiGenerationService = {
     presetId?: string;
     name?: string;
   }): Promise<AmbassadorImageResponse> {
-    const response = await api.post<ApiResponse<AmbassadorImageResponse>>(
-      "/api/v1/ai/ambassadors/character-sheet",
-      {
-        reference_image: input.referenceImage,
-        reference_s3_key: input.referenceS3Key,
-        preset_id: input.presetId,
-        name: input.name || "BrandHub Ambassador",
-      },
-    );
+    const response = await postAiWithCredit<
+      ApiResponse<AmbassadorImageResponse>
+    >("/api/v1/ai/ambassadors/character-sheet", {
+      reference_image: input.referenceImage,
+      reference_s3_key: input.referenceS3Key,
+      preset_id: input.presetId,
+      name: input.name || "BrandHub Ambassador",
+    });
     const result = unwrap(response);
     return { ...result, image_url: resolveAiAssetUrl(result.image_url) };
   },
@@ -203,16 +204,15 @@ export const aiGenerationService = {
       | { source: "preset"; preset_id: string; reference_images: [] }
       | { source: "custom"; reference_images: [string] };
   }): Promise<CommercialImageResponse> {
-    const response = await api.post<ApiResponse<CommercialImageResponse>>(
-      "/api/v1/ai/image/commercial/generate",
-      {
-        prompt: input.prompt,
-        aspect_ratio: input.aspectRatio,
-        pose_reference_image: input.poseReferenceImage,
-        product_reference_image: input.productReferenceImage,
-        ambassador: input.ambassador,
-      },
-    );
+    const response = await postAiWithCredit<
+      ApiResponse<CommercialImageResponse>
+    >("/api/v1/ai/image/commercial/generate", {
+      prompt: input.prompt,
+      aspect_ratio: input.aspectRatio,
+      pose_reference_image: input.poseReferenceImage,
+      product_reference_image: input.productReferenceImage,
+      ambassador: input.ambassador,
+    });
     const result = unwrap(response);
     return {
       ...result,
@@ -226,7 +226,7 @@ export const aiGenerationService = {
     prompt: string;
     clientId: string;
   }): Promise<VideoGenerateResponse> {
-    const response = await api.post<ApiResponse<VideoGenerateResponse>>(
+    const response = await postAiWithCredit<ApiResponse<VideoGenerateResponse>>(
       "/api/v1/ai/video/generate",
       {
         prompt: input.prompt,
@@ -244,6 +244,8 @@ export const aiGenerationService = {
       `/api/v1/ai/video/${encodeURIComponent(jobId)}/status`,
     );
     const result = unwrap(response);
+    if (result.status === "COMPLETED" || result.status === "FAILED")
+      refreshAiCredit();
     return {
       ...result,
       video_url: result.video_url
