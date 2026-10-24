@@ -83,13 +83,41 @@ const MOCK_DASHBOARD_DATA: PostDashboardData = {
   ],
 };
 
+interface RawPlatformMetric {
+  platform: PostDashboardData["platformBreakdown"][number]["platform"];
+  count?: number;
+  percentage?: number;
+  successCount?: number;
+  failedCount?: number;
+}
+
+interface RawRecentPostItem {
+  id: string;
+  postId?: string;
+  title?: string;
+  caption?: string;
+  platforms?: PostDashboardData["recentPosts"][number]["platforms"];
+  status?: PostDashboardData["recentPosts"][number]["status"];
+  authorName?: string;
+  publishedAt?: string;
+  scheduledAt?: string;
+  createdAt?: string;
+}
+
+interface RawDashboardResponse {
+  kpis?: Partial<PostDashboardData["kpis"]>;
+  platformBreakdown?: RawPlatformMetric[];
+  publishingTrends?: PostDashboardData["publishingTrends"];
+  recentPosts?: RawRecentPostItem[];
+}
+
 export const postDashboardService = {
   async getDashboard(
     workspaceId: string,
     filters: Partial<PostDashboardFilters>,
   ): Promise<PostDashboardData> {
     try {
-      const response = await api.get<{ success: boolean; data: any }>(
+      const response = await api.get<{ success: boolean; data: RawDashboardResponse }>(
         `/api/v1/workspaces/${workspaceId}/posts/dashboard`,
         {
           params: {
@@ -113,7 +141,7 @@ export const postDashboardService = {
             failedCount: raw.kpis?.failedCount ?? 0,
             inProgressCount: raw.kpis?.inProgressCount ?? 0,
           },
-          platformBreakdown: (raw.platformBreakdown || []).map((p: any) => ({
+          platformBreakdown: (raw.platformBreakdown || []).map((p: RawPlatformMetric) => ({
             platform: p.platform,
             count: p.count ?? 0,
             percentage: p.percentage ?? 0,
@@ -124,7 +152,7 @@ export const postDashboardService = {
             raw.publishingTrends && raw.publishingTrends.length > 0
               ? raw.publishingTrends
               : MOCK_DASHBOARD_DATA.publishingTrends,
-          recentPosts: (raw.recentPosts || []).map((rp: any) => ({
+          recentPosts: (raw.recentPosts || []).map((rp: RawRecentPostItem) => ({
             id: rp.id,
             postId: rp.postId || rp.id,
             title: rp.title || "Post",

@@ -10,7 +10,7 @@ import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
 import { getAnalyticsSummary } from "@/services/mock/mockAnalyticsService";
 import type { WorkspaceDashboard } from "@/types/workspace";
-import type { TaskListItem, TaskStatus } from "@/types/task";
+import type { TaskListItem } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 import type { AnalyticsSummary } from "@/types/analytics";
 import type { DashboardTabType, TaskStatsSummary } from "../types/dashboard";

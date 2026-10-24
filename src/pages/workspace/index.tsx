@@ -109,10 +109,6 @@ export function WorkspacePage() {
         <DuplicateWorkspaceDialog
           source={duplicateSource}
           onClose={() => setDuplicateSource(null)}
-          onSuccess={(newWs) => {
-            setDuplicateSource(null);
-            navigate(`/workspaces/${newWs.id}/dashboard`);
-          }}
         />
       )}
     </PageWrapper>

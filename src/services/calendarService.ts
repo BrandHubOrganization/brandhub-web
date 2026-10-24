@@ -173,27 +173,23 @@ export const calendarService = {
     }
 
     // 2. Fallback to updating task publishDate / dueDate
+    const wf = await taskWorkflowService.read(workspaceId, payload.postId);
     try {
-      const wf = await taskWorkflowService.read(workspaceId, payload.postId);
-      try {
-        await taskWorkflowService.field(workspaceId, payload.postId, {
-          field: "publishDate",
-          value: payload.newScheduledAt,
-          expectedRevision: wf.workflowRevision ?? 0,
-        });
-      } catch {
-        await taskWorkflowService.field(workspaceId, payload.postId, {
-          field: "dueDate",
-          value: payload.newScheduledAt,
-          expectedRevision: wf.workflowRevision ?? 0,
-        });
-      }
-      return {
-        id: payload.postId,
-        scheduledAt: payload.newScheduledAt,
-      };
-    } catch (taskErr) {
-      throw taskErr;
+      await taskWorkflowService.field(workspaceId, payload.postId, {
+        field: "publishDate",
+        value: payload.newScheduledAt,
+        expectedRevision: wf.workflowRevision ?? 0,
+      });
+    } catch {
+      await taskWorkflowService.field(workspaceId, payload.postId, {
+        field: "dueDate",
+        value: payload.newScheduledAt,
+        expectedRevision: wf.workflowRevision ?? 0,
+      });
     }
+    return {
+      id: payload.postId,
+      scheduledAt: payload.newScheduledAt,
+    };
   },
 };

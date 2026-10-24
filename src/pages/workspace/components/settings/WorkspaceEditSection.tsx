@@ -12,7 +12,7 @@ import {
   COMPANY_SIZES,
   WORKSPACE_INDUSTRIES,
 } from "@/pages/workspace/constants";
-import type { CompanySize, WorkspaceIndustry } from "@/types/workspace";
+import type { CompanySize, ReportFrequency, WorkspaceIndustry } from "@/types/workspace";
 
 interface WorkspaceEditSectionProps {
   name: string;
@@ -21,8 +21,8 @@ interface WorkspaceEditSectionProps {
   setTimezone: (val: string) => void;
   defaultPlatforms: string[];
   toggleWorkspacePlatform: (platform: string) => void;
-  reportFrequency: string;
-  toggleReportFrequency: (freq: string) => void;
+  reportFrequency: ReportFrequency | null;
+  toggleReportFrequency: (freq: ReportFrequency) => void;
   industry: WorkspaceIndustry | "";
   setIndustry: (val: WorkspaceIndustry | "") => void;
   companySize: CompanySize | "";

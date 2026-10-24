@@ -3,7 +3,8 @@ export type {
   WorkspaceMember,
   WorkspaceDashboard,
   WorkspaceInvitation,
-  ClientProfile,
 } from "@/types/workspace";
+
+export type { ClientProfile } from "@/types/clientProfile";
 
 export * from "./dashboard";
