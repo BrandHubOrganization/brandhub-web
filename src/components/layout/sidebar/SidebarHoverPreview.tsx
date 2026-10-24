@@ -102,7 +102,7 @@ export function SidebarHoverPreview({
     >
       {/* Top Cover Banner */}
       <div className="relative h-20 w-full shrink-0 overflow-hidden bg-muted/40">
-        {targetBannerUrl ? (
+        {targetBannerUrl && !targetBannerUrl.startsWith("seed:") ? (
           <img
             src={targetBannerUrl}
             alt=""
@@ -122,7 +122,7 @@ export function SidebarHoverPreview({
       <div className="px-3.5 pb-3.5 pt-0 space-y-2.5">
         {/* Overlapping Avatar + Badges */}
         <div className="relative -mt-6 mb-1.5 flex items-end justify-between gap-2">
-          {targetLogoUrl ? (
+          {targetLogoUrl && !targetLogoUrl.startsWith("seed:") ? (
             <img
               src={targetLogoUrl}
               alt={targetName}

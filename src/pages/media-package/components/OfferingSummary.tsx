@@ -1,71 +1,117 @@
 import { useTranslation } from "react-i18next";
+import {
+  Calendar,
+  CheckCircle2,
+  FileText,
+  Layers,
+  Newspaper,
+  Radio,
+  Share2,
+  Users,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { HelpHint } from "@/components/shared/HelpHint";
-import type { OfferingFields } from "../types/mediaPackage";
+import type { OfferingFields, PackageServiceType } from "../types/mediaPackage";
+
+function getServiceIcon(serviceType: PackageServiceType | string) {
+  switch (serviceType) {
+    case "SOCIAL_POST":
+      return <Share2 className="size-4" aria-hidden="true" />;
+    case "EVENT_PLANNING":
+      return <Calendar className="size-4" aria-hidden="true" />;
+    case "LIVESTREAM_PREPARATION":
+      return <Radio className="size-4" aria-hidden="true" />;
+    case "PRESS_RECOMMENDATION":
+      return <Newspaper className="size-4" aria-hidden="true" />;
+    case "WORKSHOP_SUPPORT":
+      return <Users className="size-4" aria-hidden="true" />;
+    default:
+      return <Layers className="size-4" aria-hidden="true" />;
+  }
+}
 
 export function OfferingSummary({ value }: { value: OfferingFields }) {
   const { t } = useTranslation();
   if (!value.offeringDetails) return null;
+
   return (
     <section className="space-y-3">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex items-center gap-1">
-          <h3 className="font-semibold">{t("mediaPackage.ui.deliverables")}</h3>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5">
+          <h3 className="text-foreground text-sm font-semibold tracking-tight">
+            {t("mediaPackage.ui.deliverables")}
+          </h3>
           <HelpHint label={t("mediaPackage.ui.deliverables")}>
             {t("mediaPackage.ui.totalQuantity")}
           </HelpHint>
         </div>
         {value.offeringDetails.maxChanges != null && (
-          <Badge
-            variant="outline"
-            className="h-auto text-left whitespace-normal"
-          >
+          <Badge variant="outline" className="text-xs font-normal">
             {t("mediaPackage.offering.revisions")}:{" "}
-            {value.offeringDetails.maxChanges}
+            <span className="ml-1 font-semibold">
+              {value.offeringDetails.maxChanges}
+            </span>
           </Badge>
         )}
       </div>
-      <ul className="space-y-3">
+
+      <ul className="space-y-2.5">
         {value.offeringDetails.deliverables.map((item) => (
-          <li key={item.id} className="overflow-hidden rounded-xl border">
-            <div className="bg-muted/30 border-b p-3">
-              <div className="flex items-start justify-between gap-3">
+          <li
+            key={item.id}
+            className="border-border/70 bg-card hover:border-border/90 flex flex-col gap-3 rounded-xl border p-4 transition-colors"
+          >
+            {/* Header: Service icon + Name & Service type | Quantity */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 items-start gap-3">
+                <div className="bg-brand-orange/10 text-brand-orange mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg">
+                  {getServiceIcon(item.serviceType)}
+                </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold break-words">
+                  <h4 className="text-foreground text-sm font-semibold break-words">
                     {item.name}
-                  </p>
-                  <p className="text-muted-foreground mt-1 text-xs">
-                    {t(`mediaPackage.offering.services.${item.serviceType}`)}
+                  </h4>
+                  <p className="text-muted-foreground mt-0.5 text-xs">
+                    {t(`mediaPackage.offering.services.${item.serviceType}`, {
+                      defaultValue: item.serviceType,
+                    })}
                   </p>
                 </div>
-                <span className="bg-brand-orange-soft text-foreground shrink-0 rounded-md border px-2.5 py-1 text-sm font-semibold">
-                  {item.quantity} {item.unit}
-                </span>
               </div>
+              <span className="bg-brand-orange/10 text-brand-orange shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                {item.quantity} {item.unit}
+              </span>
             </div>
+
+            {/* Flat details section without nested boxes */}
             {(item.description || item.acceptanceCriteria) && (
-              <dl className="grid gap-3 p-3 text-sm sm:grid-cols-2">
+              <div className="border-border/50 mt-0.5 grid gap-3 border-t pt-3 text-xs sm:grid-cols-2">
                 {item.description && (
                   <div className="min-w-0">
-                    <dt className="text-muted-foreground mb-1 text-xs font-medium">
-                      {t("mediaPackage.compact.requirements")}
-                    </dt>
-                    <dd className="leading-6 break-words whitespace-pre-line">
+                    <div className="text-muted-foreground mb-1 flex items-center gap-1.5 font-medium">
+                      <FileText className="size-3.5 shrink-0" aria-hidden="true" />
+                      <span>{t("mediaPackage.compact.requirements")}</span>
+                    </div>
+                    <p className="text-foreground/85 leading-relaxed break-words whitespace-pre-line">
                       {item.description}
-                    </dd>
+                    </p>
                   </div>
                 )}
                 {item.acceptanceCriteria && (
-                  <div className="bg-muted/30 min-w-0 rounded-lg p-2.5">
-                    <dt className="mb-1 text-xs font-semibold">
-                      {t("mediaPackage.offering.acceptance")}
-                    </dt>
-                    <dd className="leading-6 break-words whitespace-pre-line">
+                  <div className="min-w-0">
+                    <div className="text-muted-foreground mb-1 flex items-center gap-1.5 font-medium">
+                      <CheckCircle2
+                        className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400"
+                        aria-hidden="true"
+                      />
+                      <span>{t("mediaPackage.offering.acceptance")}</span>
+                    </div>
+                    <p className="text-foreground/85 leading-relaxed break-words whitespace-pre-line">
                       {item.acceptanceCriteria}
-                    </dd>
+                    </p>
                   </div>
                 )}
-              </dl>
+              </div>
             )}
           </li>
         ))}

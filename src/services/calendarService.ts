@@ -19,7 +19,12 @@ interface ApiResponse<T> {
 function inferPlatform(task: TaskListItem): PlatformType {
   const text = `${task.name} ${task.description || ""}`.toLowerCase();
   if (text.includes("instagram") || text.includes("insta")) return "INSTAGRAM";
-  if (text.includes("tiktok") || text.includes("tik tok") || task.type === "LIVESTREAM") return "TIKTOK";
+  if (
+    text.includes("tiktok") ||
+    text.includes("tik tok") ||
+    task.type === "LIVESTREAM"
+  )
+    return "TIKTOK";
   if (text.includes("thread")) return "THREADS";
   return "FACEBOOK";
 }
@@ -106,7 +111,8 @@ export const calendarService = {
 
     posts.forEach((post) => {
       const rawPlatform = post.targetPlatforms?.[0] || "FACEBOOK";
-      const platform = (rawPlatform.toUpperCase() as PlatformType) || "FACEBOOK";
+      const platform =
+        (rawPlatform.toUpperCase() as PlatformType) || "FACEBOOK";
       const caption = post.caption?.trim() || "";
 
       if (post.taskId && taskIdsInTasks.has(post.taskId)) {
