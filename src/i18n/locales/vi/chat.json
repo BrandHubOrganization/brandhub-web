@@ -1,16 +1,43 @@
 {
+  "calls": {
+    "otherTab": "Tài khoản đang sử dụng cuộc gọi ở tab khác.",
+    "resumeAudio": "Phát âm thanh",
+    "unavailable": "Gọi thoại chưa sẵn sàng. Hãy tải lại sau khi dịch vụ và dữ liệu cuộc gọi được chuẩn bị.",
+    "title": "Cuộc gọi thoại",
+    "start": "Gọi thoại",
+    "accept": "Nhận cuộc gọi",
+    "decline": "Từ chối",
+    "end": "Kết thúc",
+    "mute": "Tắt microphone",
+    "unmute": "Bật microphone",
+    "incoming": "Có cuộc gọi đến",
+    "ringing": "Đang gọi…",
+    "connecting": "Đang kết nối âm thanh…",
+    "active": "Đã kết nối cuộc gọi",
+    "error": "Không thực hiện được thao tác gọi. Kiểm tra kết nối và thử lại.",
+    "mediaError": "Kết nối âm thanh đã kết thúc. Hãy kiểm tra quyền microphone, mạng và cấu hình gọi."
+  },
+  "notifications": {
+    "linkedMessage": "Tin nhắn từ thông báo",
+    "title": "Thông báo trò chuyện",
+    "dnd": "Không làm phiền trong Workspace này",
+    "mute": "Tắt cảnh báo cuộc trò chuyện này",
+    "hint": "Vẫn giữ thông báo trong hộp thư. Khi bật gửi cảnh báo, hệ thống sẽ áp dụng các tùy chọn này.",
+    "loading": "Đang đồng bộ tùy chọn…",
+    "error": "Không tải hoặc lưu được tùy chọn. Thiết lập trước đó không thay đổi."
+  },
   "title": "Trao đổi Workspace",
+  "loadOlder": "Xem tin nhắn cũ hơn",
   "connection": {
-    "connecting": "Đang kết nối...",
-    "connected": "Đang hoạt động",
-    "reconnecting": "Đang kết nối lại...",
+    "connecting": "Đang kết nối…",
+    "connected": "Trực tuyến",
+    "reconnecting": "Đang kết nối lại…",
     "disconnected": "Đã ngắt kết nối"
   },
   "empty": {
     "title": "Bắt đầu cuộc trao đổi",
-    "description": "Gửi tin nhắn đầu tiên để cùng thành viên Workspace trao đổi công việc."
+    "description": "Chia sẻ cập nhật, đặt câu hỏi hoặc thảo luận bước tiếp theo cùng nhóm."
   },
-  "loadOlder": "Xem tin nhắn cũ hơn",
   "context": {
     "media_package": "Media Package",
     "media_campaign": "Media Campaign"
@@ -21,24 +48,116 @@
     "failed": "Gửi thất bại"
   },
   "composer": {
-    "placeholder": "Nhập tin nhắn...",
-    "offlinePlaceholder": "Đang chờ kết nối...",
+    "removeMention": "Bỏ nhắc tên thông báo cho {{name}}",
+    "noMembers": "Không có thành viên phù hợp trong danh sách đã tải.",
+    "mentionLimit": "Mỗi tin nhắn được nhắc tối đa 20 người.",
+    "placeholder": "Nhắn tin vào kênh này…",
+    "offlinePlaceholder": "Đang chờ kết nối…",
     "ariaLabel": "Nội dung tin nhắn",
     "send": "Gửi tin nhắn",
-    "contextHint": "Đang thảo luận về {{context}}"
+    "contextHint": "Đang thảo luận về {{context}}",
+    "mention": "Nhắc tên thành viên",
+    "findMember": "Tìm thành viên workspace",
+    "threadPlaceholder": "Trả lời trong luồng này…"
   },
   "errors": {
-    "loadHistory": "Không thể tải lịch sử trò chuyện"
+    "loadHistory": "Không thể tải tin nhắn. Vui lòng thử lại.",
+    "send": "Không thể gửi tin. Chọn Gửi lại tại tin nhắn bị lỗi.",
+    "invalidEvent": "Nhận được cập nhật chat không hợp lệ. Vui lòng tải lại hội thoại.",
+    "action": "Không thể lưu thay đổi. Kiểm tra quyền truy cập và thử lại.",
+    "copy": "Không thể sao chép. Vui lòng kiểm tra quyền clipboard của trình duyệt.",
+    "create": "Không thể tạo hội thoại. Tên kênh hoặc yêu cầu có thể đã được sử dụng.",
+    "invalidContext": "Liên kết thảo luận không đầy đủ hoặc không hợp lệ. Bỏ ngữ cảnh để tiếp tục.",
+    "channelUnavailable": "Kênh không còn khả dụng hoặc quyền truy cập của bạn đã thay đổi."
   },
   "ui": {
-    "subtitle": "Trao đổi chung trong Workspace",
+    "you": "Bạn",
+    "subtitle": "Trao đổi trong workspace",
     "loading": "Đang tải tin nhắn…",
     "messages": "Lịch sử tin nhắn",
     "keyboardHint": "Enter để gửi · Shift + Enter để xuống dòng",
     "roles": {
+      "OWNER": "Owner",
       "MANAGER": "Manager",
       "CREATOR": "Creator",
       "CLIENT": "Client"
     }
+  },
+  "actions": {
+    "retry": "Thử lại",
+    "copy": "Sao chép tin nhắn",
+    "copied": "Đã sao chép tin nhắn",
+    "thread": "Trả lời theo luồng",
+    "pin": "Ghim tin nhắn",
+    "unpin": "Bỏ ghim tin nhắn",
+    "pinned": "Đã ghim trong kênh",
+    "pins": "Tin nhắn đã ghim",
+    "close": "Đóng bảng",
+    "save": "Lưu thay đổi",
+    "clearContext": "Bỏ ngữ cảnh thảo luận"
+  },
+  "reactions": {
+    "like": "Thích",
+    "heart": "Yêu thích",
+    "celebrate": "Chúc mừng"
+  },
+  "search": {
+    "label": "Tìm tin nhắn trong kênh",
+    "placeholder": "Tìm nội dung hoặc người gửi…",
+    "clear": "Xóa tìm kiếm",
+    "scope": "Tìm trong lịch sử đã lưu của kênh này",
+    "searching": "Đang tìm…",
+    "empty": "Không tìm thấy tin nhắn",
+    "emptyDescription": "Thử từ khóa khác hoặc quay lại cuộc trò chuyện."
+  },
+  "thread": {
+    "title": "Luồng thảo luận",
+    "view": "Xem luồng thảo luận",
+    "replies_one": "{{count}} phản hồi",
+    "replies_other": "{{count}} phản hồi"
+  },
+  "channels": {
+    "navigation": "Hội thoại workspace",
+    "workspace": "Không gian trao đổi",
+    "find": "Tìm kênh",
+    "channels": "Kênh trao đổi",
+    "direct": "Tin nhắn trực tiếp",
+    "create": "Tạo kênh",
+    "newDirect": "Tin nhắn trực tiếp mới",
+    "general": "Chung",
+    "archived": "Đã lưu trữ",
+    "noDirect": "Bắt đầu cuộc trò chuyện riêng với thành viên workspace.",
+    "loadMore": "Xem thêm kênh",
+    "privacy": "Kênh riêng và tin nhắn trực tiếp chỉ hiển thị với người tham gia.",
+    "open": "Mở danh sách hội thoại",
+    "details": "Thông tin kênh",
+    "panel": "Bảng hội thoại",
+    "type": {
+      "PUBLIC": "Kênh công khai",
+      "PRIVATE": "Kênh riêng tư",
+      "DIRECT": "Tin nhắn trực tiếp"
+    },
+    "readOnly": "Hội thoại này đang ở chế độ chỉ đọc.",
+    "name": "Tên kênh",
+    "namePlaceholder": "Ví dụ: ke-hoach-noi-dung",
+    "description": "Mô tả",
+    "visibility": "Ai có thể truy cập?",
+    "publicHint": "Thành viên nội bộ workspace có thể đọc. Khách hàng cần được mời.",
+    "privateHint": "Chỉ thành viên được mời mới có thể đọc.",
+    "choosePerson": "Chọn người nhận",
+    "invite": "Thêm thành viên",
+    "invalid": "Nhập tên kênh hoặc chọn người nhận.",
+    "loadingPeople": "Đang tải thành viên workspace…",
+    "loadMorePeople": "Xem thêm thành viên",
+    "startDirect": "Bắt đầu trò chuyện",
+    "managersOnly": "Chỉ người quản lý kênh được đăng tin",
+    "restore": "Khôi phục kênh",
+    "archive": "Lưu trữ kênh",
+    "noDescription": "Chưa có mô tả.",
+    "members": "Thành viên",
+    "saved": "Đã lưu thay đổi",
+    "publicMembership": "Thành viên nội bộ tự động có quyền truy cập. Khách hàng được mời cũng xuất hiện tại đây.",
+    "removePerson": "Xóa {{name}} khỏi kênh này",
+    "backGeneral": "Quay lại kênh Chung"
   }
 }

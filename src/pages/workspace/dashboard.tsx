@@ -200,7 +200,12 @@ export function WorkspaceDashboardPage() {
 
   // Load Campaigns
   useEffect(() => {
-    if (!workspaceId) return;
+    if (!workspaceId || (!isManagerOrOwner && !isClient)) {
+      setCampaigns([]);
+      setCampaignsLoading(false);
+      setCampaignsError(false);
+      return;
+    }
     let disposed = false;
     setCampaignsLoading(true);
     setCampaignsError(false);
@@ -220,7 +225,7 @@ export function WorkspaceDashboardPage() {
     return () => {
       disposed = true;
     };
-  }, [workspaceId, campaignsAttempt]);
+  }, [workspaceId, campaignsAttempt, isManagerOrOwner, isClient]);
 
   // Load Analytics Mock
   useEffect(() => {
@@ -489,26 +494,27 @@ export function WorkspaceDashboardPage() {
         />
 
         {/* Card 2: Campaigns */}
-        <StatCard
-          label={t("workspace.dashboard.campaignsOverview")}
-          value={
-            campaignsLoading || campaignsError || campaigns.length > 1
-              ? "—"
-              : campaigns.length
-          }
-          icon={Layers}
-          sublabel={
-            !campaignsLoading && !campaignsError && campaigns.length === 1
-              ? t(`campaign.status.${campaigns[0].status}`)
-              : undefined
-          }
-          colorClass="text-brand-orange"
-          bgIconClass="bg-brand-orange-soft"
-          onClick={() =>
-            workspaceId && navigate(`/workspaces/${workspaceId}/campaigns`)
-          }
-        />
-
+        {(isManagerOrOwner || isClient) && (
+          <StatCard
+            label={t("workspace.dashboard.campaignsOverview")}
+            value={
+              campaignsLoading || campaignsError || campaigns.length > 1
+                ? "—"
+                : campaigns.length
+            }
+            icon={Layers}
+            sublabel={
+              !campaignsLoading && !campaignsError && campaigns.length === 1
+                ? t(`campaign.status.${campaigns[0].status}`)
+                : undefined
+            }
+            colorClass="text-brand-orange"
+            bgIconClass="bg-brand-orange-soft"
+            onClick={() =>
+              workspaceId && navigate(`/workspaces/${workspaceId}/campaigns`)
+            }
+          />
+        )}
         {/* Card 3: Active Members */}
         {!isClient && (
           <StatCard
@@ -679,14 +685,16 @@ export function WorkspaceDashboardPage() {
             )}
           </div>
 
-          <WorkspaceCampaignSummary
-            workspaceId={workspaceId}
-            campaigns={campaigns}
-            loading={campaignsLoading}
-            failed={campaignsError}
-            canPlan={isManagerOrOwner}
-            onRetry={() => setCampaignsAttempt((attempt) => attempt + 1)}
-          />
+          {(isManagerOrOwner || isClient) && (
+            <WorkspaceCampaignSummary
+              workspaceId={workspaceId}
+              campaigns={campaigns}
+              loading={campaignsLoading}
+              failed={campaignsError}
+              canPlan={isManagerOrOwner}
+              onRetry={() => setCampaignsAttempt((attempt) => attempt + 1)}
+            />
+          )}
         </div>
 
         {/* Right Column (1 span): Quick Actions & Workspace Info */}
