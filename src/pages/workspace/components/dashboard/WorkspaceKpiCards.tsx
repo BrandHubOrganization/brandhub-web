@@ -95,7 +95,7 @@ export function WorkspaceKpiCards({
           label={t("workspace.dashboard.agencyAiCredits", {
             month: dashboard.aiCreditMonth,
           })}
-          value={dashboard.agencyAiCreditsUsedThisMonth}
+          value={dashboard.agencyAiCreditsUsedThisMonth ?? 0}
           icon={Sparkles}
           sublabel={
             t("workspace.dashboard.packageStatus") +
