@@ -1,7 +1,13 @@
-import { Check, Copy, Eye, EyeOff } from "lucide-react";
+import { Check, Copy, Eye, EyeOff, MoreVertical } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { formatPackageValue } from "../lib/formatMediaPackage";
 import type { MediaPackage } from "../types/mediaPackage";
 
@@ -37,12 +43,25 @@ export function MediaPackageCard({
   const { t, i18n } = useTranslation();
   const deliverables = mediaPackage.offeringDetails?.deliverables ?? [];
 
+  const isSelectPrimary = canSelect;
+  const isTemplatePrimary = !canSelect && Boolean(canUseTemplate && mediaPackage.isTemplate);
+
+  const hasSecondaryActions =
+    isSelectPrimary ||
+    isTemplatePrimary ||
+    Boolean(onDuplicate && !mediaPackage.isTemplate) ||
+    Boolean(canManageAvailability && !mediaPackage.isTemplate);
+
   return (
     <article
-      className={`bg-card flex h-full min-w-0 flex-col rounded-xl border p-5 ${selected ? "border-brand-orange ring-brand-orange ring-1" : "border-border"}`}
+      className={`bg-card flex h-full min-w-0 flex-col rounded-xl border p-5 transition-all duration-200 hover:shadow-sm ${
+        selected
+          ? "border-brand-orange ring-1 ring-brand-orange shadow-xs"
+          : "border-border/80"
+      }`}
     >
-      <div className="mb-4 flex flex-wrap gap-2">
-        <Badge variant="outline">
+      <div className="mb-3.5 flex flex-wrap items-center gap-2">
+        <Badge variant="outline" className="text-xs font-normal">
           {t(
             mediaPackage.isTemplate
               ? "mediaPackage.badges.template"
@@ -54,6 +73,7 @@ export function MediaPackageCard({
             variant={
               mediaPackage.availableToWorkspaces ? "APPROVED" : "secondary"
             }
+            className="text-xs"
           >
             {t(
               mediaPackage.availableToWorkspaces
@@ -63,48 +83,57 @@ export function MediaPackageCard({
           </Badge>
         )}
         {selected && (
-          <Badge variant="APPROVED" className="gap-1">
+          <Badge variant="APPROVED" className="gap-1 text-xs">
             <Check className="size-3" aria-hidden="true" />
             {t("mediaPackage.badges.selected")}
           </Badge>
         )}
       </div>
+
       <div className="flex-1">
-        <h3 className="text-foreground text-lg leading-snug font-semibold break-words">
+        <h3 className="text-foreground text-base font-semibold leading-snug break-words">
           {mediaPackage.name}
         </h3>
-        <p
-          className={
-            mediaPackage.budgetAmount == null
-              ? "text-muted-foreground mt-3 text-sm font-medium"
-              : "text-foreground mt-3 text-xl font-semibold tracking-tight"
-          }
-        >
-          {formatPackageValue(mediaPackage, i18n.language, t)}
-        </p>
-        {mediaPackage.budgetAmount != null &&
-          mediaPackage.durationWeeks != null && (
-            <p className="text-muted-foreground mt-1 text-xs">
-              {t("mediaPackage.values.duration", {
-                count: mediaPackage.durationWeeks,
-              })}
-            </p>
-          )}
+
+        <div className="mt-2.5 flex items-baseline gap-2">
+          <span
+            className={
+              mediaPackage.budgetAmount == null
+                ? "text-muted-foreground text-sm font-medium"
+                : "text-foreground text-xl font-bold tracking-tight"
+            }
+          >
+            {formatPackageValue(mediaPackage, i18n.language, t)}
+          </span>
+          {mediaPackage.budgetAmount != null &&
+            mediaPackage.durationWeeks != null && (
+              <span className="text-muted-foreground text-xs font-normal">
+                /{" "}
+                {t("mediaPackage.values.duration", {
+                  count: mediaPackage.durationWeeks,
+                })}
+              </span>
+            )}
+        </div>
+
         {mediaPackage.scopeDescription && (
-          <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-6">
+          <p className="text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed">
             {mediaPackage.scopeDescription}
           </p>
         )}
+
         {deliverables.length > 0 && (
-          <ul className="border-border mt-4 space-y-2 border-t pt-4">
+          <ul className="border-border/60 mt-4 space-y-2 border-t pt-3.5">
             {deliverables.slice(0, 3).map((item) => (
-              <li key={item.id} className="flex items-start gap-2 text-sm">
-                <Check
-                  className="text-brand-orange mt-0.5 size-4 shrink-0"
-                  aria-hidden="true"
-                />
-                <span className="min-w-0 break-words">
-                  <span className="font-medium">
+              <li
+                key={item.id}
+                className="flex items-center gap-2 text-xs text-muted-foreground"
+              >
+                <span className="bg-brand-orange/10 text-brand-orange flex size-4 shrink-0 items-center justify-center rounded-full">
+                  <Check className="size-2.5" aria-hidden="true" />
+                </span>
+                <span className="min-w-0 truncate text-foreground">
+                  <span className="font-semibold text-foreground">
                     {item.quantity} {item.unit}
                   </span>{" "}
                   · {item.name}
@@ -112,7 +141,7 @@ export function MediaPackageCard({
               </li>
             ))}
             {deliverables.length > 3 && (
-              <li className="text-muted-foreground text-xs">
+              <li className="text-muted-foreground pt-0.5 text-xs">
                 {t("mediaPackage.ui.moreDeliverables", {
                   count: deliverables.length - 3,
                 })}
@@ -121,71 +150,114 @@ export function MediaPackageCard({
           </ul>
         )}
       </div>
-      <div className="border-border mt-5 space-y-2 border-t pt-4">
-        {canSelect && (
+
+      <div className="border-border/60 mt-5 flex items-center gap-2 border-t pt-4">
+        {isSelectPrimary ? (
           <Button
             variant={selected ? "secondary" : "orange"}
-            className="w-full"
+            className="flex-1 font-medium"
             loading={selecting}
             disabled={selected}
             onClick={() => onSelect(mediaPackage.id)}
           >
+            {selected && <Check className="size-4 shrink-0" aria-hidden="true" />}
             {t(
               selected
                 ? "mediaPackage.actions.selected"
                 : "mediaPackage.actions.select",
             )}
           </Button>
-        )}
-        {canUseTemplate && mediaPackage.isTemplate && (
+        ) : isTemplatePrimary ? (
           <Button
             variant="orange"
-            className="h-auto min-h-10 w-full whitespace-normal"
+            className="flex-1 font-medium"
             onClick={() => onUseTemplate?.(mediaPackage)}
             data-package-create-from={mediaPackage.id}
           >
             <Copy className="size-4 shrink-0" aria-hidden="true" />
             {t("mediaPackage.actions.useTemplate")}
           </Button>
-        )}
-        <Button
-          variant="outline"
-          className="w-full"
-          data-package-details={mediaPackage.id}
-          onClick={() => onViewDetails(mediaPackage)}
-        >
-          <Eye className="size-4" aria-hidden="true" />
-          {t("mediaPackage.ui.viewDetail")}
-        </Button>
-        {onDuplicate && !mediaPackage.isTemplate && (
+        ) : (
           <Button
-            variant="ghost"
-            className="h-auto min-h-10 w-full whitespace-normal"
-            onClick={() => onDuplicate(mediaPackage)}
-            data-package-create-from={mediaPackage.id}
+            variant="outline"
+            className="flex-1 font-medium"
+            data-package-details={mediaPackage.id}
+            onClick={() => onViewDetails(mediaPackage)}
           >
-            <Copy className="size-4 shrink-0" aria-hidden="true" />
-            {t("mediaPackage.ui.duplicate")}
+            <Eye className="size-4 shrink-0" aria-hidden="true" />
+            {t("mediaPackage.ui.viewDetail")}
           </Button>
         )}
-        {canManageAvailability && !mediaPackage.isTemplate && (
-          <Button
-            variant="ghost"
-            className="text-muted-foreground h-auto min-h-10 w-full whitespace-normal"
-            loading={updatingAvailability}
-            onClick={() => onToggleAvailability?.(mediaPackage)}
-          >
-            {mediaPackage.availableToWorkspaces ? (
-              <EyeOff className="size-4 shrink-0" aria-hidden="true" />
-            ) : (
-              <Eye className="size-4 shrink-0" aria-hidden="true" />
-            )}
-            {t(
-              mediaPackage.availableToWorkspaces
-                ? "mediaPackage.actions.hideFromWorkspaces"
-                : "mediaPackage.actions.showToWorkspaces",
-            )}
-          </Button>
+
+        {hasSecondaryActions && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="size-9 shrink-0 text-muted-foreground hover:text-foreground"
+                aria-label={t("mediaPackage.ui.actions", {
+                  defaultValue: "Thao tác khác",
+                })}
+              >
+                <MoreVertical className="size-4" aria-hidden="true" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              {(isSelectPrimary || isTemplatePrimary) && (
+                <DropdownMenuItem
+                  data-package-details={mediaPackage.id}
+                  onClick={() => onViewDetails(mediaPackage)}
+                  className="cursor-pointer gap-2"
+                >
+                  <Eye className="size-4 shrink-0" aria-hidden="true" />
+                  <span>{t("mediaPackage.ui.viewDetail")}</span>
+                </DropdownMenuItem>
+              )}
+              {isSelectPrimary &&
+                canUseTemplate &&
+                mediaPackage.isTemplate && (
+                  <DropdownMenuItem
+                    data-package-create-from={mediaPackage.id}
+                    onClick={() => onUseTemplate?.(mediaPackage)}
+                    className="cursor-pointer gap-2"
+                  >
+                    <Copy className="size-4 shrink-0" aria-hidden="true" />
+                    <span>{t("mediaPackage.actions.useTemplate")}</span>
+                  </DropdownMenuItem>
+                )}
+              {onDuplicate && !mediaPackage.isTemplate && (
+                <DropdownMenuItem
+                  data-package-create-from={mediaPackage.id}
+                  onClick={() => onDuplicate(mediaPackage)}
+                  className="cursor-pointer gap-2"
+                >
+                  <Copy className="size-4 shrink-0" aria-hidden="true" />
+                  <span>{t("mediaPackage.ui.duplicate")}</span>
+                </DropdownMenuItem>
+              )}
+              {canManageAvailability && !mediaPackage.isTemplate && (
+                <DropdownMenuItem
+                  disabled={updatingAvailability}
+                  onClick={() => onToggleAvailability?.(mediaPackage)}
+                  className="cursor-pointer gap-2"
+                >
+                  {mediaPackage.availableToWorkspaces ? (
+                    <EyeOff className="size-4 shrink-0" aria-hidden="true" />
+                  ) : (
+                    <Eye className="size-4 shrink-0" aria-hidden="true" />
+                  )}
+                  <span>
+                    {t(
+                      mediaPackage.availableToWorkspaces
+                        ? "mediaPackage.actions.hideFromWorkspaces"
+                        : "mediaPackage.actions.showToWorkspaces",
+                    )}
+                  </span>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </article>
