@@ -68,7 +68,7 @@ export function Layout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const taskWorkspaceLayout = /^\/workspaces\/[^/]+\/(?:tasks(?:\/[^/]+\/detail)?|task-approvals)$/.test(location.pathname);
+  const taskWorkspaceLayout = /^\/workspaces\/[^/]+\/(?:tasks(?:\/[^/]+\/detail)?|task-approvals|chat)$/.test(location.pathname);
   const { user } = useAuthStore();
   const systemRole = useAuthStore((s) => s.systemRole);
 

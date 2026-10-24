@@ -388,7 +388,152 @@
   --fc-page-bg-color: transparent;
   --fc-neutral-bg-color: hsl(var(--muted) / 0.5);
   --fc-today-bg-color: hsl(var(--primary) / 0.05);
+  --fc-more-link-text-color: hsl(var(--brand-orange));
+  --fc-more-link-bg-color: hsl(var(--brand-orange) / 0.1);
   font-family: inherit;
+}
+
+/* ==========================================================================
+   FullCalendar More-Popover (Hộp xem thêm bài viết trong ngày)
+   Khắc phục triệt để lỗi trong suốt (transparent), đè chữ và lệch nút đóng
+   ========================================================================== */
+.fc-popover,
+.fc-more-popover {
+  background-color: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.875rem !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.16), 0 8px 10px -6px rgb(0 0 0 / 0.1), 0 0 0 1px hsl(var(--border)) !important;
+  z-index: 1050 !important;
+  width: 280px !important;
+  max-width: calc(100vw - 32px) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+.fc-popover .fc-popover-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 12px !important;
+  background: hsl(var(--muted) / 0.6) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+}
+
+.fc-popover .fc-popover-title {
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  color: hsl(var(--foreground)) !important;
+  letter-spacing: -0.01em !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+.fc-popover .fc-popover-close {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  border-radius: 6px !important;
+  color: hsl(var(--muted-foreground)) !important;
+  opacity: 0.8 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  font-size: 1.125rem !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+}
+
+.fc-popover .fc-popover-close:hover {
+  background: hsl(var(--muted)) !important;
+  color: hsl(var(--foreground)) !important;
+  opacity: 1 !important;
+}
+
+.fc-popover .fc-popover-body {
+  padding: 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  max-height: 280px !important;
+  overflow-y: auto !important;
+  background-color: hsl(var(--card)) !important;
+  box-sizing: border-box !important;
+}
+
+/* Badge "+X" (xem thêm sự kiện) căn chỉnh gọn gàng, không bị tràn ô ngày */
+.fc-daygrid-more-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 1.5px 6px !important;
+  margin-top: 2px !important;
+  border-radius: 9999px !important;
+  color: hsl(var(--brand-orange)) !important;
+  background: hsl(var(--brand-orange) / 0.12) !important;
+  border: 1px solid hsl(var(--brand-orange) / 0.25) !important;
+  text-decoration: none !important;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  max-width: calc(100% - 4px) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.fc-daygrid-more-link:hover {
+  background: hsl(var(--brand-orange) / 0.22) !important;
+  border-color: hsl(var(--brand-orange) / 0.45) !important;
+  transform: translateY(-0.5px) !important;
+  box-shadow: 0 2px 5px rgba(240, 90, 40, 0.18) !important;
+  text-decoration: none !important;
+}
+
+.fc-daygrid-day-top {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  padding: 4px 8px 2px 8px !important;
+}
+
+.fc-daygrid-day-number {
+  padding: 2px 6px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  border-radius: 4px !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.fc-daygrid-day-events {
+  padding: 2px 6px 6px 6px !important;
+  margin: 0 !important;
+}
+
+.fc-daygrid-event {
+  margin-top: 2px !important;
+  margin-bottom: 3px !important;
+  border-radius: 6px !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.fc-daygrid-event-harness {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
 }
 
 .fc-theme-standard th {
@@ -410,6 +555,8 @@
   border-radius: 0.75rem;
   overflow: hidden;
   border: 1px solid hsl(var(--border)) !important;
+  width: 100% !important;
+  table-layout: fixed !important;
 }
 
 .fc-timegrid-slot {
@@ -544,6 +691,25 @@ body,
 }
 
 /* Tiện ích ẩn scrollbar khi cần nhưng vẫn cuộn được */
+[data-chat-rich-lists] ol {
+  list-style-type: decimal;
+}
+[data-chat-rich-lists] ol ol {
+  list-style-type: lower-alpha;
+}
+[data-chat-rich-lists] ol ol ol {
+  list-style-type: lower-roman;
+}
+[data-chat-rich-lists] ul {
+  list-style-type: disc;
+}
+[data-chat-rich-lists] ul ul {
+  list-style-type: circle;
+}
+[data-chat-rich-lists] ul ul ul {
+  list-style-type: square;
+}
+
 .scrollbar-none,
 .scrollbar-none * {
   scrollbar-width: none !important;
@@ -556,4 +722,3 @@ body,
   width: 0 !important;
   height: 0 !important;
 }
-
