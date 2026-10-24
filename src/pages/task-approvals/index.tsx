@@ -84,9 +84,8 @@ function ApprovalWorkspace({
       />
       <div
         className={cn(
-          "grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-4",
-          selected && "lg:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.6fr)]",
-          "grid min-h-0 flex-1 gap-4",
+          "grid min-h-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] gap-4",
+          !selected && "lg:grid-cols-[minmax(280px,0.85fr)_minmax(0,1.55fr)]",
           selected && "lg:grid-cols-[minmax(280px,0.85fr)_minmax(0,1.55fr)]",
         )}
       >
