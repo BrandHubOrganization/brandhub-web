@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Publishing Dashboard",
     "subtitle": "Track status, performance, and cross-platform post distribution in workspace.",
+    "overviewTitle": "Social Publishing Performance",
+    "overviewSubtitle": "Aggregate metrics on post distribution and engagement across connected social channels",
     "refresh": "Refresh",
     "createPost": "Create Post",
     "searchPlaceholder": "Search by title, caption...",

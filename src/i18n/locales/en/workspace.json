@@ -1,5 +1,16 @@
 {
   "dashboard": {
+    "tabs": {
+      "overview": "Workspace Overview",
+      "overviewHint": "Task progress, active campaigns, and workspace resources",
+      "publishing": "Publishing & Social Media",
+      "publishingHint": "Post performance, engagement metrics, and channel share"
+    },
+    "socialSnapshot": {
+      "title": "Social Publishing Performance",
+      "subtitle": "Post delivery metrics across Facebook, Instagram, TikTok & Threads",
+      "viewFull": "View Full Report"
+    },
     "workspaceCampaign": {
       "title": "Workspace campaign",
       "loading": "Loading campaign",

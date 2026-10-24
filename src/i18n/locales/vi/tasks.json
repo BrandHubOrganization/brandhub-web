@@ -128,6 +128,7 @@
   "readOnly": "Đang hiển thị dữ liệu thực tế. Kéo đổi trạng thái và lịch chưa được hỗ trợ trong đợt này.",
   "missing": "Chưa có thông tin",
   "unassigned": "Chưa phân công",
+  "moreItems": "+{{count}}",
   "unknownAssignee": "Chưa xác định tên người phụ trách",
   "views": {
     "list": "Danh sách",

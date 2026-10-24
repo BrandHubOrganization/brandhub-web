@@ -1,5 +1,16 @@
 {
   "dashboard": {
+    "tabs": {
+      "overview": "Tổng quan Workspace",
+      "overviewHint": "Tiến độ công việc, chiến dịch và tổng quan tài nguyên",
+      "publishing": "Xuất bản & Mạng xã hội",
+      "publishingHint": "Hiệu suất đăng bài, tương tác và thị phần đa kênh"
+    },
+    "socialSnapshot": {
+      "title": "Hiệu quả Xuất bản Mạng xã hội",
+      "subtitle": "Số liệu phân phối bài viết trên Facebook, Instagram, TikTok & Threads",
+      "viewFull": "Xem báo cáo chi tiết"
+    },
     "workspaceCampaign": {
       "title": "Chiến dịch của Workspace",
       "loading": "Đang tải chiến dịch",
