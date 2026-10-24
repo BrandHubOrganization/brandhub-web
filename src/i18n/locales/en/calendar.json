@@ -19,8 +19,10 @@
     "clearAll": "Clear filters"
   },
   "eventCard": {
-    "noCaptionPreview": "No preview"
+    "noCaptionPreview": "No preview",
+    "moreLink": "+{{count}}"
   },
+  "moreLink": "+{{count}}",
   "toast": {
     "loadFailed": "Failed to load content calendar posts",
     "rescheduleSuccess": "Post rescheduled successfully!",
