@@ -52,6 +52,8 @@
   "dashboard": {
     "title": "Bảng điều khiển xuất bản",
     "subtitle": "Theo dõi tiến độ, hiệu suất và phân bổ bài đăng đa nền tảng trong workspace.",
+    "overviewTitle": "Hiệu suất Xuất bản Mạng xã hội",
+    "overviewSubtitle": "Tổng hợp chỉ số phân phối bài viết và tương tác qua các kênh mạng xã hội kết nối",
     "refresh": "Làm mới",
     "createPost": "Tạo bài viết",
     "searchPlaceholder": "Tìm theo tiêu đề, nội dung...",

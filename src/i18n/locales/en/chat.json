@@ -1,19 +1,73 @@
 {
+  "rich": {
+    "indent": "Increase indent (Tab)",
+    "outdent": "Decrease indent (Shift+Tab)",
+    "listKeyboardHint": "Enter to send · Shift+Enter: next item · Empty item: Shift+Enter to exit list",
+    "codeKeyboardHint": "Enter to send · Shift+Enter for a new code line",
+    "tooComplex": "Simplify formatting or mentions before sending.",
+    "formatting": "Formatting",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strike": "Strikethrough",
+    "bulletList": "Bullet list",
+    "orderedList": "Numbered list",
+    "blockquote": "Quote",
+    "code": "Inline code",
+    "codeBlock": "Code block",
+    "link": "Insert link",
+    "linkUrl": "Link URL",
+    "invalidLink": "Enter a valid HTTP or HTTPS address.",
+    "apply": "Apply",
+    "removeLink": "Remove link",
+    "undo": "Undo",
+    "redo": "Redo",
+    "emoji": "Choose emoji",
+    "insertEmoji": "Insert {{emoji}}",
+    "tooLong": "Message exceeds the 4,000-character limit."
+  },
   "title": "Workspace Chat",
+  "calls": {
+    "otherTab": "This account is already using voice in another tab.",
+    "resumeAudio": "Play audio",
+    "unavailable": "Voice calling is unavailable. Refresh after the service and call metadata are ready.",
+    "title": "Voice call",
+    "start": "Start voice call",
+    "accept": "Answer",
+    "decline": "Decline",
+    "end": "End call",
+    "mute": "Mute microphone",
+    "unmute": "Unmute microphone",
+    "incoming": "Incoming voice call",
+    "ringing": "Calling…",
+    "connecting": "Connecting audio…",
+    "active": "Call connected",
+    "error": "Cannot complete call action. Check your connection and try again.",
+    "mediaError": "Audio connection ended. Check microphone permissions, network and call configuration."
+  },
+  "notifications": {
+    "linkedMessage": "Message from notification",
+    "title": "Chat notifications",
+    "dnd": "Do not disturb in this workspace",
+    "mute": "Mute this conversation",
+    "hint": "Inbox notifications are kept. Alert delivery will respect these settings when enabled.",
+    "loading": "Syncing preferences…",
+    "error": "Unable to save or load preferences. Your previous settings are unchanged."
+  },
+  "loadOlder": "View older messages",
   "connection": {
-    "connecting": "Connecting...",
-    "connected": "Active now",
-    "reconnecting": "Reconnecting...",
+    "connecting": "Connecting…",
+    "connected": "Live",
+    "reconnecting": "Reconnecting…",
     "disconnected": "Disconnected"
   },
   "empty": {
     "title": "Start the conversation",
-    "description": "Send the first message to collaborate with your Workspace members."
+    "description": "Share an update, ask a question or discuss the next step with your team."
   },
-  "loadOlder": "View older messages",
   "context": {
-    "media_package": "Media Package",
-    "media_campaign": "Media Campaign"
+    "media_package": "Media package",
+    "media_campaign": "Media campaign"
   },
   "delivery": {
     "sending": "Sending",
@@ -21,24 +75,124 @@
     "failed": "Failed"
   },
   "composer": {
-    "placeholder": "Type a message...",
-    "offlinePlaceholder": "Waiting for connection...",
+    "removeMention": "Remove notification mention for {{name}}",
+    "noMembers": "No matching members in the loaded directory.",
+    "mentionLimit": "A message can mention up to 20 people.",
+    "placeholder": "Write a message to this channel…",
+    "offlinePlaceholder": "Waiting for connection…",
     "ariaLabel": "Message content",
     "send": "Send message",
-    "contextHint": "Discussing {{context}}"
+    "contextHint": "Discussing {{context}}",
+    "mention": "Mention a member",
+    "findMember": "Find a workspace member",
+    "threadPlaceholder": "Reply in this thread…"
   },
   "errors": {
-    "loadHistory": "Unable to load chat history"
+    "loadHistory": "Unable to load messages. Please try again.",
+    "send": "Message could not be sent. Use Retry on the failed message.",
+    "invalidEvent": "An invalid chat update was received. Reload the conversation.",
+    "action": "Unable to save this change. Check your access and try again.",
+    "copy": "Unable to copy. Check your browser clipboard permission.",
+    "create": "Unable to create the conversation. The name or request may already be in use.",
+    "invalidContext": "This discussion link is incomplete or invalid. Clear the context to continue.",
+    "channelUnavailable": "This channel is unavailable, or your access has changed."
   },
   "ui": {
-    "subtitle": "Shared Workspace conversation",
+    "you": "You",
+    "subtitle": "Workspace conversation",
     "loading": "Loading messages…",
     "messages": "Message history",
     "keyboardHint": "Enter to send · Shift + Enter for a new line",
     "roles": {
+      "OWNER": "Owner",
       "MANAGER": "Manager",
       "CREATOR": "Creator",
       "CLIENT": "Client"
     }
+  },
+  "actions": {
+    "retry": "Retry",
+    "copy": "Copy message",
+    "copied": "Message copied",
+    "thread": "Reply in thread",
+    "pin": "Pin message",
+    "unpin": "Unpin message",
+    "pinned": "Pinned to this channel",
+    "pins": "Pinned messages",
+    "close": "Close panel",
+    "save": "Save changes",
+    "clearContext": "Clear discussion context"
+  },
+  "reactions": {
+    "add": "Add reaction",
+    "check": "Completed",
+    "eyes": "Taking a look",
+    "like": "Thumbs up",
+    "hands": "Raising hands",
+    "fire": "Fire",
+    "heart": "Love",
+    "celebrate": "Celebrate",
+    "rocket": "Rocket",
+    "laugh": "Laugh",
+    "pray": "Thank you"
+  },
+  "search": {
+    "label": "Search channel messages",
+    "placeholder": "Search messages or sender…",
+    "clear": "Clear search",
+    "scope": "Searching this channel's saved history",
+    "searching": "Searching…",
+    "empty": "No messages found",
+    "emptyDescription": "Try another search, or return to the conversation."
+  },
+  "thread": {
+    "title": "Thread",
+    "view": "View thread",
+    "replies_one": "{{count}} reply",
+    "replies_other": "{{count}} replies"
+  },
+  "channels": {
+    "navigation": "Workspace conversations",
+    "workspace": "Team conversations",
+    "find": "Find a channel",
+    "channels": "Channels",
+    "direct": "Direct messages",
+    "create": "Create channel",
+    "newDirect": "New direct message",
+    "general": "General",
+    "archived": "Archived",
+    "noDirect": "Start a private conversation with a workspace member.",
+    "loadMore": "Load more channels",
+    "privacy": "Private channels and direct messages are visible only to their participants.",
+    "open": "Open conversations",
+    "details": "Channel details",
+    "panel": "Conversation panel",
+    "type": {
+      "PUBLIC": "Public channel",
+      "PRIVATE": "Private channel",
+      "DIRECT": "Direct message"
+    },
+    "readOnly": "This conversation is read-only.",
+    "name": "Channel name",
+    "namePlaceholder": "e.g. content-planning",
+    "description": "Description",
+    "visibility": "Who can access?",
+    "publicHint": "Internal workspace members can read this channel. Clients need an invitation.",
+    "privateHint": "Only invited members can read this channel.",
+    "choosePerson": "Choose a recipient",
+    "invite": "Add members",
+    "invalid": "Enter a channel name or choose a recipient.",
+    "loadingPeople": "Loading workspace members…",
+    "loadMorePeople": "Load more members",
+    "startDirect": "Start conversation",
+    "managersOnly": "Only channel managers can post",
+    "restore": "Restore channel",
+    "archive": "Archive channel",
+    "noDescription": "No description has been added.",
+    "members": "Members",
+    "saved": "Changes saved",
+    "publicMembership": "Internal members can access public channels automatically. Invited clients appear here too.",
+    "removePerson": "Remove {{name}} from this channel",
+    "backGeneral": "Back to General"
   }
 }

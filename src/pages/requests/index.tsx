@@ -6,10 +6,12 @@ import { CreateRequestModal } from "@/pages/requests/components/CreateRequestMod
 import { RequestDetailDrawer } from "@/pages/requests/components/RequestDetailDrawer";
 import { ReviseRequestModal } from "@/pages/requests/components/ReviseRequestModal";
 import { CancelRequestDialog } from "@/pages/requests/components/CancelRequestDialog";
+import { RequestStatsOverview } from "@/pages/requests/components/RequestStatsOverview";
+import { RequestTabs } from "./components/RequestTabs";
 import { RefreshCw, Plus } from "lucide-react";
 import { useContentRequests } from "./hooks/useContentRequests";
-import { RequestTabs } from "./components/RequestTabs";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 
 export function ContentRequestListPage() {
   const { t } = useTranslation();
@@ -54,30 +56,40 @@ export function ContentRequestListPage() {
       description={t("requests.page.description")}
       actions={
         <div className="flex items-center gap-2">
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => fetchRequests()}
-            className="border-border bg-card text-muted-foreground hover:bg-muted cursor-pointer rounded-xl border p-2 transition-colors"
+            aria-label={t("requests.page.refresh")}
+            className="h-8 w-8 p-0 rounded-xl cursor-pointer"
             title={t("requests.page.refresh")}
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-          </button>
-          <button
+            <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
+          </Button>
+          <Button
+            variant="orange"
+            size="sm"
             onClick={() => setIsCreateOpen(true)}
-            className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold text-white transition-colors"
+            className="h-8 rounded-xl px-3 text-xs font-semibold shadow-xs"
           >
-            <Plus className="size-3.5" />
+            <Plus className="size-3.5 mr-1" />
             {t("requests.create.button")}
-          </button>
+          </Button>
         </div>
       }
     >
-      <div className="space-y-6">
+      <div className="space-y-5">
+        {/* Mini Metrics Overview */}
+        <RequestStatsOverview requests={data.items} total={data.total} />
+
+        {/* Status / Role Tabs */}
         <RequestTabs
           activeTab={activeTab}
           totalCount={data.total}
           onTabChange={handleTabChange}
         />
 
+        {/* Filter Bar */}
         <ContentRequestFilterBar
           searchQuery={searchQuery}
           selectedStatuses={selectedStatuses}
@@ -92,6 +104,7 @@ export function ContentRequestListPage() {
           onResetFilters={handleResetFilters}
         />
 
+        {/* Requests Data Table */}
         <ContentRequestTable
           requests={data.items}
           total={data.total}
@@ -102,8 +115,10 @@ export function ContentRequestListPage() {
           onPageChange={handlePageChange}
           onOpenAssignModal={(req) => setSelectedRequestForAssign(req)}
           onOpenDetail={(req) => setSelectedRequestForDetail(req)}
+          onCreateNew={() => setIsCreateOpen(true)}
         />
 
+        {/* Modals & Drawers */}
         <AssigneePickerModal
           isOpen={selectedRequestForAssign !== null}
           requestTitle={selectedRequestForAssign?.topic || ""}
