@@ -84,6 +84,7 @@
   "collapseSidebar": "Collapse sidebar",
   "switchLanguage": "Switch language",
   "toggleTheme": "Toggle theme",
+  "quickSettings": "Quick settings",
   "realRoleTitle": "Actual role from the database",
   "roleLabel": "Role: {{role}}",
   "roleLabelPrefix": "Role:",

@@ -84,6 +84,7 @@
   "collapseSidebar": "Thu gọn sidebar",
   "switchLanguage": "Đổi ngôn ngữ",
   "toggleTheme": "Đổi giao diện",
+  "quickSettings": "Cài đặt nhanh",
   "realRoleTitle": "Vai trò thực tế từ Hệ thống Database",
   "roleLabel": "Vai trò: {{role}}",
   "roleLabelPrefix": "Vai trò:",

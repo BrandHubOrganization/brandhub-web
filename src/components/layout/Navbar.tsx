@@ -161,7 +161,8 @@ export function Navbar({
   const currentAgency = useAgencyStore((s) =>
     s.agencyList.find((agency) => agency.id === s.currentAgencyId),
   );
-  const canUpgradeAgency = !isAdmin && currentAgencyId !== null && currentAgency?.myRole === "OWNER";
+  const canUpgradeAgency =
+    !isAdmin && currentAgencyId !== null && currentAgency?.myRole === "OWNER";
 
   const username = user?.name || user?.email?.split("@")[0] || "User";
 
@@ -249,10 +250,11 @@ export function Navbar({
   }
 
   const getBreadcrumbs = () => {
-    if (isAdmin && location.pathname === "/admin/invoices") return [
-      {label: t("admin.navigation.workspace"), path: "/admin"},
-      {label: t("admin.navigation.invoices"), path: "/admin/invoices"},
-    ];
+    if (isAdmin && location.pathname === "/admin/invoices")
+      return [
+        { label: t("admin.navigation.workspace"), path: "/admin" },
+        { label: t("admin.navigation.invoices"), path: "/admin/invoices" },
+      ];
     if (isAdmin && location.pathname === "/admin") {
       const requested =
         new URLSearchParams(location.search).get("view") || "overview";
@@ -400,12 +402,7 @@ export function Navbar({
         {/* Real Member Role Badge — only shown once inside a workspace */}
         {roleLabel && (
           <div
-            className="flex h-8 items-center gap-1.5 rounded-md border border-dashed px-2.5 text-xs font-semibold select-none"
-            style={{
-              borderColor: "hsl(var(--brand-orange, 15 88% 55%))",
-              color: "hsl(var(--brand-orange, 15 88% 55%))",
-              background: "hsl(var(--brand-orange-soft, 15 100% 96%))",
-            }}
+            className="text-muted-foreground flex h-8 items-center gap-1.5 px-1.5 text-xs font-medium select-none"
             title={t("nav.realRoleTitle")}
           >
             <Shield className="size-3.5 shrink-0" />
@@ -416,32 +413,46 @@ export function Navbar({
           </div>
         )}
 
-        {/* Language Switcher */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleLanguage}
-          className="h-8 gap-1.5 px-2 text-xs font-medium"
-          title={t("nav.switchLanguage")}
-        >
-          <Globe className="size-3.5" />
-          <span className="uppercase">{i18n.language || "vi"}</span>
-        </Button>
-
-        {/* Theme Toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-8"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          title={t("nav.toggleTheme")}
-        >
-          {theme === "dark" ? (
-            <Sun className="size-4 text-amber-400" />
-          ) : (
-            <Moon className="size-4" />
-          )}
-        </Button>
+        {/* Quick settings: language + theme, grouped under one menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              title={t("nav.quickSettings")}
+            >
+              {theme === "dark" ? (
+                <Moon className="size-4" />
+              ) : (
+                <Sun className="size-4" />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44 p-1">
+            <DropdownMenuItem
+              onClick={toggleLanguage}
+              className="cursor-pointer gap-2 text-xs"
+            >
+              <Globe className="size-3.5" />
+              <span className="flex-1">{t("nav.switchLanguage")}</span>
+              <span className="text-muted-foreground uppercase">
+                {i18n.language || "vi"}
+              </span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="cursor-pointer gap-2 text-xs"
+            >
+              {theme === "dark" ? (
+                <Sun className="size-3.5 text-amber-400" />
+              ) : (
+                <Moon className="size-3.5" />
+              )}
+              <span className="flex-1">{t("nav.toggleTheme")}</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Notification Bell */}
         {!isAdmin && (
@@ -564,15 +575,13 @@ export function Navbar({
           <Button
             variant="ghost"
             size="icon"
-            className="group relative size-8 text-amber-500 hover:bg-amber-500/10 hover:text-amber-600 dark:text-amber-400 dark:hover:bg-amber-400/15 dark:hover:text-amber-300 transition-colors"
+            className="group relative size-8 text-amber-500 transition-colors hover:bg-amber-500/10 hover:text-amber-600 dark:text-amber-400 dark:hover:bg-amber-400/15 dark:hover:text-amber-300"
             onClick={() => navigate("/subscription/plans")}
             title={t("subscription.plans.upgrade")}
             aria-label={t("subscription.plans.upgrade")}
             data-testid="agency-upgrade-button"
           >
-            <Crown
-              className="size-[18px] text-amber-500 transition-transform group-hover:scale-110 dark:drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
-            />
+            <Crown className="size-[18px] text-amber-500 transition-transform group-hover:scale-110 dark:drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
           </Button>
         )}
 
