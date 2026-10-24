@@ -64,11 +64,23 @@
     "search": "Tìm theo tiêu đề",
     "filterStatus": "Trạng thái",
     "allStatuses": "Tất cả trạng thái",
+    "filterType": "Loại yêu cầu",
+    "allTypes": "Tất cả loại",
+    "filterSort": "Sắp xếp",
+    "sortNewest": "Mới nhất",
+    "sortOldest": "Cũ nhất",
+    "sortDueAsc": "Hạn gần nhất",
+    "sortDueDesc": "Hạn xa nhất",
+    "resetFilters": "Đặt lại",
     "refresh": "Làm mới",
     "retry": "Thử lại",
     "loading": "Đang tải yêu cầu…",
     "empty": "Chưa có yêu cầu phù hợp",
     "emptyHelp": "Yêu cầu bổ sung sẽ xuất hiện tại đây. Thử thay đổi bộ lọc nếu bạn đã có yêu cầu.",
+    "emptyFilteredTitle": "Không tìm thấy yêu cầu nào",
+    "emptyFilteredHelp": "Không có yêu cầu nào khớp với bộ lọc hiện tại. Thử xóa bớt bộ lọc để hiển thị dữ liệu.",
+    "viewAllHistory": "Xem toàn bộ {{count}} sự kiện lịch sử",
+    "collapseHistory": "Thu gọn lịch sử",
     "count": "{{count}} yêu cầu",
     "count_one": "{{count}} yêu cầu",
     "count_other": "{{count}} yêu cầu",
@@ -209,5 +221,23 @@
   "toast": {
     "loadFailed": "Lỗi khi tải danh sách yêu cầu nội dung",
     "assignSuccess": "Đã phân công thành công cho {{name}}!"
+  },
+  "stats": {
+    "total": "Tổng yêu cầu",
+    "unassigned": "Chờ phân công",
+    "inProgress": "Đang thực hiện",
+    "approved": "Đã hoàn thành"
+  },
+  "smartDeadline": {
+    "today": "Hôm nay",
+    "overdue": "Quá hạn",
+    "daysLeft": "Còn {{count}} ngày"
+  },
+  "emptyState": {
+    "title": "Chưa có yêu cầu nội dung",
+    "description": "Bắt đầu bằng việc tạo một yêu cầu nội dung mới để phân công cho đội ngũ sáng tạo.",
+    "createFirst": "Tạo yêu cầu đầu tiên",
+    "noFilteredTitle": "Không tìm thấy kết quả phù hợp",
+    "noFilteredDesc": "Thử xóa bớt bộ lọc hoặc tìm kiếm với từ khóa khác."
   }
 }

@@ -82,13 +82,6 @@ export const NAV_SECTIONS: NavSection[] = [
         workspaceScoped: true,
       },
       {
-        to: "/posts/dashboard",
-        icon: LayoutDashboard,
-        labelKey: "nav.postsDashboard",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
         to: "/media-package",
         icon: PackageCheck,
         labelKey: "nav.mediaPackages",

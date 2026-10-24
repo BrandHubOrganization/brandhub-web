@@ -19,8 +19,10 @@
     "clearAll": "Xóa bộ lọc"
   },
   "eventCard": {
-    "noCaptionPreview": "Không có xem trước"
+    "noCaptionPreview": "Không có xem trước",
+    "moreLink": "+{{count}}"
   },
+  "moreLink": "+{{count}}",
   "toast": {
     "loadFailed": "Không thể tải bài đăng trên lịch",
     "rescheduleSuccess": "Đã dời lịch bài đăng thành công!",

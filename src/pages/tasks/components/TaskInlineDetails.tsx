@@ -336,7 +336,7 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const zone = task.dates.timezone || "UTC";
   const canonical = canonicalTaskStatus(task.status);
-  const statusCfg = STATUS_CONFIG[canonical];
+  const statusCfg = STATUS_CONFIG[canonical] || STATUS_CONFIG.TODO;
 
   return (
     <div className="space-y-4">

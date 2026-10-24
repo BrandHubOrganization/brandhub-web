@@ -10,9 +10,10 @@ export function useResizablePanelWidth(
   defaultWidth = DEFAULT_PANEL_WIDTH,
   minWidth = MIN_PANEL_WIDTH,
   maxWidth = MAX_PANEL_WIDTH,
+  storageKey = STORAGE_KEY,
 ) {
   const [width, setWidth] = useState<number>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = localStorage.getItem(storageKey);
     if (saved) {
       const parsed = parseInt(saved, 10);
       if (!Number.isNaN(parsed) && parsed >= minWidth && parsed <= maxWidth) {
@@ -76,7 +77,7 @@ export function useResizablePanelWidth(
         document.body.style.userSelect = "";
         // Chỉ re-render state và lưu localStorage 1 lần duy nhất khi nhả chuột
         setWidth(currentWidthRef.current);
-        localStorage.setItem(STORAGE_KEY, String(currentWidthRef.current));
+        localStorage.setItem(storageKey, String(currentWidthRef.current));
       }
     };
 
@@ -89,7 +90,7 @@ export function useResizablePanelWidth(
         cancelAnimationFrame(rafIdRef.current);
       }
     };
-  }, [minWidth, maxWidth]);
+  }, [minWidth, maxWidth, storageKey]);
 
   return { width, panelRef, onMouseDown };
 }
