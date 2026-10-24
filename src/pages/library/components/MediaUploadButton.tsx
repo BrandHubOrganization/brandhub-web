@@ -1,78 +1,63 @@
-import React, { useRef, useState } from "react";
-import { Upload, Loader2 } from "lucide-react";
-import type { MediaItem } from "@/types/contentLibrary";
-import { toast } from "sonner";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Input } from "@/components/ui/input";
-import { MAX_MEDIA_UPLOAD_SIZE } from "@/lib/constants";
+import { Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useWorkspaceStore } from "@/store/workspaceStore";
+import { MaterialUploadForm } from "@/pages/library/components/MaterialUploadForm";
+import type { MaterialItem } from "@/types/material";
+import type { MediaItem } from "@/types/contentLibrary";
 
-interface MediaUploadButtonProps {
-  onUploadSuccess: (newMedia: MediaItem) => void;
+interface Props {
+  onUploadSuccess: (material: MediaItem) => void;
   onUploadStart?: () => void;
 }
 
-export const MediaUploadButton: React.FC<MediaUploadButtonProps> = ({
-  onUploadSuccess,
-  onUploadStart,
-}) => {
+export function MediaUploadButton({ onUploadSuccess, onUploadStart }: Props) {
   const { t } = useTranslation();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const workspace = useWorkspaceStore((state) => state.currentWorkspace);
+  const role = useWorkspaceStore((state) => state.currentMemberRole);
+  const [open, setOpen] = useState(false);
+  if (!workspace || !role || !["MANAGER", "CREATOR", "CLIENT"].includes(role))
+    return null;
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > MAX_MEDIA_UPLOAD_SIZE) {
-      toast.error(t("library.media.sizeLimitError"));
-      return;
-    }
-
-    setIsUploading(true);
-    if (onUploadStart) onUploadStart();
-
-    try {
-      const { mockContentLibraryService } =
-        await import("@/services/mock/mockContentLibraryService");
-      const uploadedItem = await mockContentLibraryService.uploadMedia(file);
-      toast.success(t("library.media.uploadSuccess", { filename: file.name }));
-      onUploadSuccess(uploadedItem);
-    } catch {
-      toast.error(t("library.media.uploadError"));
-    } finally {
-      setIsUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    }
-  };
+  function uploaded(material: MaterialItem) {
+    onUploadSuccess({
+      id: material.id,
+      workspaceId: material.workspaceId,
+      filename: material.name,
+      url: material.previewUrl ?? material.url ?? "",
+      sizeBytes: material.fileSize ?? 0,
+      createdAt: material.createdAt,
+      type:
+        material.mediaKind === "VIDEO"
+          ? "video"
+          : material.mediaKind === "FILE"
+            ? "file"
+            : "image",
+      source: "repository",
+    });
+  }
 
   return (
-    <>
-      <Input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        accept="image/*,video/*"
-        className="hidden"
-      />
-      <button
-        onClick={() => fileInputRef.current?.click()}
-        disabled={isUploading}
-        className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-xs font-medium text-white shadow-xs transition-colors disabled:opacity-50"
+    <div className="w-full space-y-4">
+      <Button
+        variant="orange"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
       >
-        {isUploading ? (
-          <>
-            <Loader2 className="size-4 animate-spin" />
-            <span>{t("library.media.uploading")}</span>
-          </>
-        ) : (
-          <>
-            <Upload className="size-4" />
-            <span>{t("library.media.uploadButton")}</span>
-          </>
-        )}
-      </button>
-    </>
+        <Upload className="size-4" />
+        {t("library.media.uploadButton")}
+      </Button>
+      {open && (
+        <MaterialUploadForm
+          key={workspace.id}
+          workspaceId={workspace.id}
+          isClient={role === "CLIENT"}
+          onSuccess={uploaded}
+          onClose={() => setOpen(false)}
+          onStart={onUploadStart}
+        />
+      )}
+    </div>
   );
-};
+}

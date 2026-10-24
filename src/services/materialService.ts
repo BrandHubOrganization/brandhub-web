@@ -6,6 +6,8 @@ import type {
   MaterialItem,
   MaterialType,
   WatermarkPreset,
+  MaterialUploadOptions,
+  MaterialUploadSession,
 } from "@/types/material";
 
 interface ApiResponse<T> {
@@ -14,6 +16,40 @@ interface ApiResponse<T> {
 }
 
 export const materialService = {
+  async createUploadSession(
+    workspaceId: string,
+    file: File,
+    options: MaterialUploadOptions,
+    clientRequestId: string,
+    signal: AbortSignal,
+  ): Promise<MaterialUploadSession> {
+    const response = await api.post<ApiResponse<MaterialUploadSession>>(
+      `/api/v1/workspaces/${workspaceId}/materials/upload-session`,
+      {
+        ...options,
+        context: "LIBRARY",
+        filename: file.name,
+        contentType: file.type,
+        fileSize: file.size,
+        clientRequestId,
+      },
+      { signal },
+    );
+    return response.data.data;
+  },
+
+  async confirmUploadSession(
+    workspaceId: string,
+    sessionId: string,
+    signal: AbortSignal,
+  ): Promise<MaterialItem> {
+    const response = await api.post<ApiResponse<MaterialItem>>(
+      `/api/v1/workspaces/${workspaceId}/materials/upload-session/confirm`,
+      { sessionId },
+      { signal },
+    );
+    return response.data.data;
+  },
   async applyWatermark(
     workspaceId: string,
     materialId: string,

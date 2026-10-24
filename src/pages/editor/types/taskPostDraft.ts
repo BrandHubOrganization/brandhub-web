@@ -33,12 +33,14 @@ export function draftFromPost(post: PostResponse): TaskPostDraft {
     storedMedia: Object.fromEntries(
       post.media.map((media) => [
         media.url,
-        media.s3Key
-          ? { s3Key: media.s3Key, mediaType: media.mediaType }
-          : {
-              externalUrl: media.externalUrl || media.url,
-              mediaType: media.mediaType,
-            },
+        media.materialId
+          ? { materialId: media.materialId, mediaType: media.mediaType }
+          : media.s3Key
+            ? { s3Key: media.s3Key, mediaType: media.mediaType }
+            : {
+                externalUrl: media.externalUrl || media.url,
+                mediaType: media.mediaType,
+              },
       ]),
     ),
     targetPlatforms: post.targetPlatforms,

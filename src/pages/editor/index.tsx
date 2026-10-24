@@ -40,10 +40,7 @@ import {
 } from "@/pages/editor/components/TaskEditorControls";
 import { useSearchParams } from "react-router-dom";
 
-type EditorForm = Omit<
-  ReturnType<typeof useEditorForm>,
-  "handlePublishNow"
-> & {
+type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
   handlePublishNow?: () => void;
   scheduledAt?: string | null;
   taskEditor?: TaskEditorState;
@@ -105,6 +102,7 @@ function EditorWorkspace({
     handleHashtagsChange,
     handleMediaUrlsChange,
     handleGeneratedMedia,
+    handleRepositoryMedia,
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,
@@ -445,6 +443,7 @@ function EditorWorkspace({
                 </div>
                 <div inert={taskEditor?.isReadOnly}>
                   <MediaDropzone
+                    onUploaded={handleRepositoryMedia}
                     mediaUrls={mediaUrls}
                     onChange={handleMediaUrlsChange}
                     workspaceId={workspaceId}
