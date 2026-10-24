@@ -544,6 +544,25 @@ body,
 }
 
 /* Tiện ích ẩn scrollbar khi cần nhưng vẫn cuộn được */
+[data-chat-rich-lists] ol {
+  list-style-type: decimal;
+}
+[data-chat-rich-lists] ol ol {
+  list-style-type: lower-alpha;
+}
+[data-chat-rich-lists] ol ol ol {
+  list-style-type: lower-roman;
+}
+[data-chat-rich-lists] ul {
+  list-style-type: disc;
+}
+[data-chat-rich-lists] ul ul {
+  list-style-type: circle;
+}
+[data-chat-rich-lists] ul ul ul {
+  list-style-type: square;
+}
+
 .scrollbar-none,
 .scrollbar-none * {
   scrollbar-width: none !important;
@@ -556,4 +575,3 @@ body,
   width: 0 !important;
   height: 0 !important;
 }
-

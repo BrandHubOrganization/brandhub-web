@@ -155,6 +155,7 @@ export function useChannelMessages(
     send({
       clientMessageId: message.clientMessageId,
       content: message.content,
+      richContent: message.richContent,
       contextType: message.contextType,
       contextId: message.contextId,
       threadRootId: message.threadRootId,

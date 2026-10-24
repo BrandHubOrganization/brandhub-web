@@ -174,12 +174,13 @@ export function ChatWorkspace(props: WorkspaceProps) {
       {calls.current.isError && (
         <div
           role="status"
-          className="border-border text-muted-foreground flex items-center gap-3 border-b p-2 text-xs"
+          className="border-border/80 bg-muted/40 text-muted-foreground flex items-center gap-3 border-b px-3 py-2 text-xs sm:mb-2 sm:rounded-xl sm:border"
         >
-          <span className="flex-1">{t("chat.calls.unavailable")}</span>
+          <span className="flex-1 truncate">{t("chat.calls.unavailable")}</span>
           <Button
             variant="ghost"
             size="sm"
+            className="h-7 rounded-lg px-2.5 text-xs"
             onClick={() => void calls.current.refetch()}
           >
             {t("chat.actions.retry")}
@@ -196,9 +197,9 @@ export function ChatWorkspace(props: WorkspaceProps) {
       />
       <section
         aria-label={t("chat.title")}
-        className="border-border flex min-h-0 flex-1 overflow-hidden sm:rounded-xl sm:border"
+        className="border-border/80 bg-card flex min-h-0 flex-1 overflow-hidden shadow-2xs sm:rounded-2xl sm:border"
       >
-        <aside className="border-border hidden w-60 shrink-0 border-r xl:block">
+        <aside className="border-border/80 hidden w-64 shrink-0 border-r xl:block">
           {sidebar}
         </aside>
         {channel ? (
@@ -231,7 +232,7 @@ export function ChatWorkspace(props: WorkspaceProps) {
           <div className="bg-card flex min-w-0 flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
             <Button
               variant="outline"
-              className="xl:hidden"
+              className="rounded-lg xl:hidden"
               onClick={openNavigation}
             >
               <PanelLeft className="size-4" />
@@ -240,29 +241,37 @@ export function ChatWorkspace(props: WorkspaceProps) {
             {chat.selected.isPending ? (
               <Spinner />
             ) : (
-              <>
-                <p className="text-sm">{t("chat.errors.channelUnavailable")}</p>
-                <Button
-                  variant="outline"
-                  onClick={() => void chat.selected.refetch()}
-                >
-                  <RefreshCw className="size-4" />
-                  {t("chat.actions.retry")}
-                </Button>
-                {channelId !== "general" && (
+              <div className="border-border/70 bg-muted/20 flex max-w-sm flex-col items-center gap-3 rounded-2xl border p-6">
+                <p className="text-foreground text-sm font-medium">
+                  {t("chat.errors.channelUnavailable")}
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
                   <Button
-                    variant="ghost"
-                    onClick={() => selectChannel("general")}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-lg"
+                    onClick={() => void chat.selected.refetch()}
                   >
-                    {t("chat.channels.backGeneral")}
+                    <RefreshCw className="size-3.5" />
+                    {t("chat.actions.retry")}
                   </Button>
-                )}
-              </>
+                  {channelId !== "general" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="rounded-lg"
+                      onClick={() => selectChannel("general")}
+                    >
+                      {t("chat.channels.backGeneral")}
+                    </Button>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         )}
         {wide && panelContent && (
-          <aside className="border-border w-80 shrink-0 border-l">
+          <aside className="border-border/80 w-80 shrink-0 border-l">
             {panelContent}
           </aside>
         )}

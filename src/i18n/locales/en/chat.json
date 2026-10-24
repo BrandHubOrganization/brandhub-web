@@ -1,4 +1,31 @@
 {
+  "rich": {
+    "indent": "Increase indent (Tab)",
+    "outdent": "Decrease indent (Shift+Tab)",
+    "listKeyboardHint": "Enter to send · Shift+Enter: next item · Empty item: Shift+Enter to exit list",
+    "codeKeyboardHint": "Enter to send · Shift+Enter for a new code line",
+    "tooComplex": "Simplify formatting or mentions before sending.",
+    "formatting": "Formatting",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strike": "Strikethrough",
+    "bulletList": "Bullet list",
+    "orderedList": "Numbered list",
+    "blockquote": "Quote",
+    "code": "Inline code",
+    "codeBlock": "Code block",
+    "link": "Insert link",
+    "linkUrl": "Link URL",
+    "invalidLink": "Enter a valid HTTP or HTTPS address.",
+    "apply": "Apply",
+    "removeLink": "Remove link",
+    "undo": "Undo",
+    "redo": "Redo",
+    "emoji": "Choose emoji",
+    "insertEmoji": "Insert {{emoji}}",
+    "tooLong": "Message exceeds the 4,000-character limit."
+  },
   "title": "Workspace Chat",
   "calls": {
     "otherTab": "This account is already using voice in another tab.",
@@ -97,9 +124,17 @@
     "clearContext": "Clear discussion context"
   },
   "reactions": {
-    "like": "Like",
+    "add": "Add reaction",
+    "check": "Completed",
+    "eyes": "Taking a look",
+    "like": "Thumbs up",
+    "hands": "Raising hands",
+    "fire": "Fire",
     "heart": "Love",
-    "celebrate": "Celebrate"
+    "celebrate": "Celebrate",
+    "rocket": "Rocket",
+    "laugh": "Laugh",
+    "pray": "Thank you"
   },
   "search": {
     "label": "Search channel messages",

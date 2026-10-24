@@ -39,18 +39,18 @@ export function ChatChannelSidebar(props: SidebarProps) {
   return (
     <nav
       aria-label={t("chat.channels.navigation")}
-      className="bg-muted/25 flex h-full min-h-0 flex-col"
+      className="bg-muted/20 flex h-full min-h-0 flex-col"
     >
-      <div className="border-border border-b p-4">
+      <div className="border-border/80 bg-card/50 border-b p-4">
         <div className="flex items-center gap-3">
-          <div className="bg-brand-orange-soft text-brand-orange flex size-10 shrink-0 items-center justify-center rounded-xl font-semibold">
+          <div className="bg-brand-orange-soft text-brand-orange ring-brand-orange/20 flex size-10 shrink-0 items-center justify-center rounded-xl font-semibold shadow-2xs ring-1">
             {props.workspaceName.charAt(0).toUpperCase()}
           </div>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold">
+          <div className="min-w-0 flex-1">
+            <p className="text-foreground truncate text-sm font-semibold tracking-tight">
               {props.workspaceName}
             </p>
-            <p className="text-muted-foreground text-xs">
+            <p className="text-muted-foreground truncate text-xs font-medium">
               {t("chat.channels.workspace")}
             </p>
           </div>
@@ -61,10 +61,11 @@ export function ChatChannelSidebar(props: SidebarProps) {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           iconPrefix={<Search />}
-          className="bg-background mt-4"
+          wrapperClassName="mt-3.5"
+          className="bg-background/90 h-9 text-sm shadow-2xs"
         />
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto px-2 py-4">
+      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-2.5 py-4">
         {props.loading && (
           <div role="status" className="flex justify-center p-4">
             <Spinner />
@@ -77,16 +78,16 @@ export function ChatChannelSidebar(props: SidebarProps) {
           </Button>
         )}
         {(["channels", "direct"] as const).map((group) => (
-          <section key={group} className="mb-6">
-            <div className="mb-2 flex items-center justify-between px-2">
-              <h2 className="text-muted-foreground text-xs font-semibold">
+          <section key={group} className="space-y-1">
+            <div className="mb-1.5 flex items-center justify-between px-2">
+              <h2 className="text-muted-foreground/85 text-[11px] font-semibold tracking-wider uppercase">
                 {t(`chat.channels.${group}`)}
               </h2>
               {(group === "direct" || props.canCreate) && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-9"
+                  className="text-muted-foreground hover:bg-muted/70 hover:text-foreground size-7 rounded-lg"
                   aria-label={t(
                     group === "direct"
                       ? "chat.channels.newDirect"
@@ -94,7 +95,7 @@ export function ChatChannelSidebar(props: SidebarProps) {
                   )}
                   onClick={() => props.onCreate(group === "direct")}
                 >
-                  <Plus className="size-4" />
+                  <Plus className="size-3.5" />
                 </Button>
               )}
             </div>
@@ -104,6 +105,7 @@ export function ChatChannelSidebar(props: SidebarProps) {
                   (channel.type === "DIRECT") === (group === "direct"),
               )
               .map((channel) => {
+                const isSelected = props.channelId === channel.id;
                 const Icon =
                   channel.type === "DIRECT"
                     ? MessageSquare
@@ -114,21 +116,38 @@ export function ChatChannelSidebar(props: SidebarProps) {
                   <Button
                     key={channel.id}
                     variant="ghost"
-                    aria-current={
-                      props.channelId === channel.id ? "page" : undefined
-                    }
+                    aria-current={isSelected ? "page" : undefined}
                     onClick={() => props.onSelect(channel.id)}
                     className={cn(
-                      "mb-1 min-h-11 w-full justify-start gap-2 px-3",
-                      props.channelId === channel.id &&
-                        "bg-brand-orange-soft text-brand-orange-fg hover:bg-brand-orange-soft",
+                      "relative mb-0.5 min-h-10 w-full justify-start gap-2.5 rounded-lg px-3 text-sm transition-colors",
+                      isSelected
+                        ? "bg-brand-orange-soft text-brand-orange hover:bg-brand-orange-soft hover:text-brand-orange ring-brand-orange/20 font-semibold shadow-2xs ring-1"
+                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+                      !isSelected &&
+                        channel.unreadCount > 0 &&
+                        "text-foreground font-semibold",
                     )}
                   >
-                    <Icon className="size-4 shrink-0" aria-hidden="true" />
+                    {isSelected && (
+                      <span
+                        aria-hidden="true"
+                        className="bg-brand-orange absolute inset-y-2 left-0 w-1 rounded-r-full"
+                      />
+                    )}
+                    <Icon
+                      className={cn(
+                        "size-4 shrink-0 transition-colors",
+                        isSelected
+                          ? "text-brand-orange"
+                          : "text-muted-foreground",
+                      )}
+                      aria-hidden="true"
+                    />
                     <span
                       className={cn(
                         "truncate",
-                        channel.unreadCount > 0 && "font-semibold",
+                        (isSelected || channel.unreadCount > 0) &&
+                          "font-semibold",
                       )}
                     >
                       {channel.id === "general"
@@ -137,12 +156,17 @@ export function ChatChannelSidebar(props: SidebarProps) {
                     </span>
                     {channel.archived && (
                       <Archive
-                        className="text-muted-foreground ml-auto size-3.5"
+                        className="text-muted-foreground ml-auto size-3.5 shrink-0"
                         aria-label={t("chat.channels.archived")}
                       />
                     )}
                     {channel.unreadCount > 0 && (
-                      <span className="bg-brand-orange text-primary-foreground ml-auto rounded-md px-1.5 text-xs">
+                      <span
+                        className={cn(
+                          "bg-brand-orange rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold text-white tabular-nums",
+                          !channel.archived && "ml-auto",
+                        )}
+                      >
                         {channel.unreadCount > 99 ? "99+" : channel.unreadCount}
                       </span>
                     )}
@@ -169,7 +193,7 @@ export function ChatChannelSidebar(props: SidebarProps) {
           </Button>
         )}
       </div>
-      <p className="border-border text-muted-foreground border-t px-4 py-3 text-xs leading-5">
+      <p className="border-border/80 bg-card/30 text-muted-foreground border-t px-4 py-3 text-[11px] leading-relaxed">
         {t("chat.channels.privacy")}
       </p>
     </nav>

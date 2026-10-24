@@ -34,6 +34,17 @@ interface FormProps {
   onClose: () => void;
 }
 
+const ROLE_BADGE_STYLES: Record<string, string> = {
+  OWNER: "border-brand-orange/30 bg-brand-orange-soft text-brand-orange",
+  MANAGER: "border-brand-orange/30 bg-brand-orange-soft text-brand-orange",
+  CREATOR: "border-border bg-secondary text-secondary-foreground",
+  CLIENT: "border-border/80 bg-muted text-muted-foreground",
+};
+
+function getInitials(name: string): string {
+  return name.trim().charAt(0).toUpperCase() || "?";
+}
+
 export function ChatChannelForm(props: FormProps) {
   const { t } = useTranslation();
   const [name, setName] = useState("");
@@ -78,15 +89,27 @@ export function ChatChannelForm(props: FormProps) {
           ? current.filter((id) => id !== userId)
           : [...current, userId],
     );
+  const HeaderIcon = props.direct ? MessageSquare : Hash;
   return (
     <section className="bg-card flex h-full min-h-0 flex-col">
-      <div className="border-border flex items-center justify-between border-b p-4">
-        <h2 className="text-base font-semibold">
-          {t(props.direct ? "chat.channels.newDirect" : "chat.channels.create")}
-        </h2>
+      <div className="border-border/80 flex min-h-14 items-center justify-between gap-2 border-b px-4 py-3">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span
+            aria-hidden="true"
+            className="bg-brand-orange-soft text-brand-orange flex size-8 shrink-0 items-center justify-center rounded-lg"
+          >
+            <HeaderIcon className="size-4" />
+          </span>
+          <h2 className="truncate text-base font-semibold tracking-tight">
+            {t(
+              props.direct ? "chat.channels.newDirect" : "chat.channels.create",
+            )}
+          </h2>
+        </div>
         <Button
           variant="ghost"
           size="icon"
+          className="size-9 shrink-0 rounded-lg"
           aria-label={t("chat.actions.close")}
           onClick={props.onClose}
         >
@@ -121,52 +144,70 @@ export function ChatChannelForm(props: FormProps) {
               </div>
               <div className="space-y-2">
                 <Label>{t("chat.channels.visibility")}</Label>
-                {[false, true].map((isPrivate) => {
-                  const Icon = isPrivate ? LockKeyhole : Hash;
-                  return (
-                    <Button
-                      key={String(isPrivate)}
-                      variant="outline"
-                      type="button"
-                      aria-pressed={privateChannel === isPrivate}
-                      onClick={() => setPrivateChannel(isPrivate)}
-                      className={cn(
-                        "min-h-14 w-full justify-start text-left whitespace-normal",
-                        privateChannel === isPrivate &&
-                          "border-brand-orange bg-brand-orange-soft",
-                      )}
-                    >
-                      <Icon className="size-4 shrink-0" />
-                      <span>
-                        <span className="block">
-                          {t(
-                            isPrivate
-                              ? "chat.channels.type.PRIVATE"
-                              : "chat.channels.type.PUBLIC",
+                <div className="space-y-2">
+                  {[false, true].map((isPrivate) => {
+                    const Icon = isPrivate ? LockKeyhole : Hash;
+                    const active = privateChannel === isPrivate;
+                    return (
+                      <Button
+                        key={String(isPrivate)}
+                        variant="outline"
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => setPrivateChannel(isPrivate)}
+                        className={cn(
+                          "min-h-14 w-full justify-start gap-3 rounded-xl px-3.5 py-2.5 text-left whitespace-normal transition-all",
+                          active &&
+                            "border-brand-orange bg-brand-orange-soft/60 ring-brand-orange/20 ring-1",
+                        )}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={cn(
+                            "bg-muted text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-lg",
+                            active && "bg-brand-orange-soft text-brand-orange",
                           )}
+                        >
+                          <Icon className="size-4" />
                         </span>
-                        <span className="text-muted-foreground block text-xs font-normal">
-                          {t(
-                            isPrivate
-                              ? "chat.channels.privateHint"
-                              : "chat.channels.publicHint",
-                          )}
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-sm font-semibold">
+                            {t(
+                              isPrivate
+                                ? "chat.channels.type.PRIVATE"
+                                : "chat.channels.type.PUBLIC",
+                            )}
+                          </span>
+                          <span className="text-muted-foreground block text-xs font-normal">
+                            {t(
+                              isPrivate
+                                ? "chat.channels.privateHint"
+                                : "chat.channels.publicHint",
+                            )}
+                          </span>
                         </span>
-                      </span>
-                    </Button>
-                  );
-                })}
+                      </Button>
+                    );
+                  })}
+                </div>
               </div>
             </>
           )}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold">
-              {t(
-                props.direct
-                  ? "chat.channels.choosePerson"
-                  : "chat.channels.invite",
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold">
+                {t(
+                  props.direct
+                    ? "chat.channels.choosePerson"
+                    : "chat.channels.invite",
+                )}
+              </h3>
+              {selected.length > 0 && (
+                <span className="border-brand-orange/30 bg-brand-orange-soft text-brand-orange rounded-md border px-2 py-0.5 font-mono text-[11px] font-semibold tabular-nums">
+                  {selected.length}
+                </span>
               )}
-            </h3>
+            </div>
             <Input
               value={query}
               aria-label={t("chat.composer.findMember")}
@@ -178,6 +219,7 @@ export function ChatChannelForm(props: FormProps) {
               <Button
                 type="button"
                 variant="outline"
+                size="sm"
                 onClick={props.onRetryDirectory}
               >
                 {t("chat.actions.retry")}
@@ -188,39 +230,63 @@ export function ChatChannelForm(props: FormProps) {
                 {t("chat.channels.loadingPeople")}
               </p>
             )}
-            {props.people
-              .filter(
-                (person) =>
-                  person.userId !== props.userId &&
-                  person.displayName
-                    .toLocaleLowerCase()
-                    .includes(query.toLocaleLowerCase()),
-              )
-              .map((person) => (
-                <Button
-                  type="button"
-                  key={person.userId}
-                  variant="ghost"
-                  aria-pressed={selected.includes(person.userId)}
-                  className="min-h-12 w-full justify-start"
-                  onClick={() => select(person.userId)}
-                >
-                  <MessageSquare className="text-muted-foreground size-4" />
-                  <span className="min-w-0 flex-1 truncate text-left">
-                    {person.displayName}
-                    <span className="text-muted-foreground ml-2 text-xs">
-                      {t(`chat.ui.roles.${person.role}`)}
-                    </span>
-                  </span>
-                  {selected.includes(person.userId) && (
-                    <Check className="text-brand-orange size-4" />
-                  )}
-                </Button>
-              ))}
+            <div className="space-y-1">
+              {props.people
+                .filter(
+                  (person) =>
+                    person.userId !== props.userId &&
+                    person.displayName
+                      .toLocaleLowerCase()
+                      .includes(query.toLocaleLowerCase()),
+                )
+                .map((person) => {
+                  const isSelected = selected.includes(person.userId);
+                  return (
+                    <Button
+                      type="button"
+                      key={person.userId}
+                      variant="ghost"
+                      aria-pressed={isSelected}
+                      className={cn(
+                        "min-h-12 w-full justify-start gap-2.5 rounded-xl px-2.5",
+                        isSelected && "bg-brand-orange-soft/50",
+                      )}
+                      onClick={() => select(person.userId)}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          "bg-secondary text-secondary-foreground flex size-8 shrink-0 items-center justify-center rounded-lg text-xs font-semibold",
+                          isSelected &&
+                            "bg-brand-orange-soft text-brand-orange",
+                        )}
+                      >
+                        {getInitials(person.displayName)}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
+                        {person.displayName}
+                      </span>
+                      <span
+                        className={cn(
+                          "shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase",
+                          ROLE_BADGE_STYLES[person.role] ??
+                            "border-border/80 bg-muted text-muted-foreground",
+                        )}
+                      >
+                        {t(`chat.ui.roles.${person.role}`)}
+                      </span>
+                      {isSelected && (
+                        <Check className="text-brand-orange size-4 shrink-0" />
+                      )}
+                    </Button>
+                  );
+                })}
+            </div>
             {props.hasMore && (
               <Button
                 type="button"
                 variant="outline"
+                className="w-full"
                 loading={props.loadingMore}
                 onClick={props.onLoadMore}
               >
@@ -229,16 +295,19 @@ export function ChatChannelForm(props: FormProps) {
             )}
           </div>
           {error && (
-            <p role="alert" className="text-destructive text-sm">
+            <p
+              role="alert"
+              className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-3 py-2 text-sm"
+            >
               {error}
             </p>
           )}
         </div>
-        <div className="border-border border-t p-4">
+        <div className="border-border/80 border-t p-4">
           <Button
             type="submit"
             variant="orange"
-            className="w-full"
+            className="w-full transition-transform active:scale-[0.98]"
             loading={saving}
             disabled={
               props.direct

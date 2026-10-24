@@ -1,8 +1,19 @@
 import type { ChatContextType, ChatMessage } from "@/types/chat";
 import type { MemberRole } from "@/types/workspace";
+import type { ChatRichNode } from "@/pages/chat/types/chatRichContent";
 
 export type ChatChannelType = "PUBLIC" | "PRIVATE" | "DIRECT";
-export type ChatReaction = "like" | "heart" | "celebrate";
+export type ChatReaction =
+  | "check"
+  | "eyes"
+  | "like"
+  | "hands"
+  | "fire"
+  | "heart"
+  | "celebrate"
+  | "rocket"
+  | "laugh"
+  | "pray";
 
 export interface ChatChannel {
   id: string;
@@ -26,6 +37,7 @@ export interface ChatDirectoryMember {
 }
 
 export interface CollaborationMessage extends ChatMessage {
+  richContent?: ChatRichNode | null;
   mentionUserIds?: string[];
   channelId: string;
   threadRootId: string | null;
@@ -35,6 +47,7 @@ export interface CollaborationMessage extends ChatMessage {
 }
 
 export interface ChannelMessageRequest {
+  richContent?: ChatRichNode | null;
   mentionUserIds?: string[];
   clientMessageId: string;
   content: string;

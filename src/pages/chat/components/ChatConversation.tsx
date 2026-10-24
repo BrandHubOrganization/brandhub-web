@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { X } from "lucide-react";
+import { Pin, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useChannelMessages } from "@/pages/chat/hooks/useChannelMessages";
 import { useChatRealtime } from "@/pages/chat/hooks/useChatRealtime";
@@ -66,10 +67,12 @@ export function ChatConversation(props: ConversationProps) {
       {props.unavailable && (
         <div
           role="alert"
-          className="border-border flex items-center justify-between gap-2 border-b p-3 text-sm"
+          className="border-destructive/20 bg-destructive/5 flex items-center justify-between gap-3 border-b px-4 py-2.5 text-sm"
         >
-          <p>{t("chat.errors.channelUnavailable")}</p>
-          <Button variant="outline" onClick={props.onRetryChannel}>
+          <p className="text-foreground font-medium">
+            {t("chat.errors.channelUnavailable")}
+          </p>
+          <Button variant="outline" size="sm" onClick={props.onRetryChannel}>
             {t("chat.actions.retry")}
           </Button>
         </div>
@@ -104,33 +107,87 @@ export function ChatConversation(props: ConversationProps) {
         />
       )}
       {(props.contextType !== "GENERAL" || !props.contextValid) && (
-        <div className="border-border bg-muted/30 flex items-center justify-between gap-2 border-b px-4 py-2 text-xs">
-          <p>
-            {props.contextValid
-              ? t("chat.composer.contextHint", {
-                  context: t(`chat.context.${props.contextType.toLowerCase()}`),
-                })
-              : t("chat.errors.invalidContext")}
-          </p>
+        <div
+          className={cn(
+            "flex items-center justify-between gap-3 border-b px-4 py-2 text-xs",
+            props.contextValid
+              ? "border-brand-orange/20 bg-brand-orange-soft/60 text-foreground"
+              : "border-destructive/20 bg-destructive/10 text-destructive",
+          )}
+        >
+          <div className="flex min-w-0 items-center gap-2">
+            <span
+              aria-hidden="true"
+              className={cn(
+                "inline-flex size-5 shrink-0 items-center justify-center rounded-full",
+                props.contextValid
+                  ? "bg-brand-orange/15 text-brand-orange"
+                  : "bg-destructive/15 text-destructive",
+              )}
+            >
+              <Sparkles className="size-3" />
+            </span>
+            <p className="truncate font-medium">
+              {props.contextValid
+                ? t("chat.composer.contextHint", {
+                    context: t(
+                      `chat.context.${props.contextType.toLowerCase()}`,
+                    ),
+                  })
+                : t("chat.errors.invalidContext")}
+            </p>
+          </div>
           <Button
             variant="ghost"
             size="icon"
-            className="size-9"
+            className="hover:bg-brand-orange/15 size-7 shrink-0 rounded-full"
             aria-label={t("chat.actions.clearContext")}
             onClick={props.onClearContext}
           >
-            <X className="size-4" />
+            <X className="size-3.5" />
           </Button>
         </div>
       )}
       {(search || pinned) && (
-        <p
-          role="status"
-          className="text-muted-foreground border-border border-b px-4 py-2 text-xs"
-        >
-          {pinned ? t("chat.actions.pins") : t("chat.search.scope")}
-          {search !== debouncedSearch ? ` · ${t("chat.search.searching")}` : ""}
-        </p>
+        <div className="border-brand-orange/20 bg-brand-orange-soft/40 flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2 text-xs">
+          <div className="flex min-w-0 items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="bg-brand-orange size-2 shrink-0 rounded-full"
+            />
+            <p role="status" className="text-foreground truncate font-medium">
+              {pinned ? t("chat.actions.pins") : t("chat.search.scope")}
+              {search !== debouncedSearch
+                ? ` · ${t("chat.search.searching")}`
+                : ""}
+            </p>
+          </div>
+          <div className="flex shrink-0 items-center gap-1.5">
+            {pinned && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="bg-brand-orange-soft text-brand-orange ring-brand-orange/20 hover:bg-brand-orange/15 hover:text-brand-orange h-7 gap-1.5 rounded-full px-2.5 text-xs font-medium ring-1"
+                onClick={() => setPinned(false)}
+              >
+                <Pin className="size-3" aria-hidden="true" />
+                <span>{t("chat.actions.pins")}</span>
+                <X className="size-3" aria-hidden="true" />
+              </Button>
+            )}
+            {search && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="bg-brand-orange-soft text-brand-orange ring-brand-orange/20 hover:bg-brand-orange/15 hover:text-brand-orange h-7 gap-1.5 rounded-full px-2.5 text-xs font-medium ring-1"
+                onClick={() => setSearch("")}
+              >
+                <span>{t("chat.search.clear")}</span>
+                <X className="size-3" aria-hidden="true" />
+              </Button>
+            )}
+          </div>
+        </div>
       )}
       {!props.contextValid ? (
         <p role="alert" className="text-muted-foreground flex-1 p-5 text-sm">
@@ -144,6 +201,7 @@ export function ChatConversation(props: ConversationProps) {
               : chat.messages
           }
           userId={props.userId}
+          people={props.people}
           canPost={props.channel.canPost}
           busyId={chat.busyId}
           loading={chat.history.isPending}

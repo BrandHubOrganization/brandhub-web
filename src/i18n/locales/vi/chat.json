@@ -1,4 +1,31 @@
 {
+  "rich": {
+    "indent": "Tăng thụt lề (Tab)",
+    "outdent": "Giảm thụt lề (Shift+Tab)",
+    "listKeyboardHint": "Enter để gửi · Shift+Enter: mục tiếp theo · Mục trống: Shift+Enter để thoát danh sách",
+    "codeKeyboardHint": "Enter để gửi · Shift+Enter để xuống dòng mã",
+    "tooComplex": "Hãy giảm định dạng hoặc số người được nhắc trước khi gửi.",
+    "formatting": "Định dạng",
+    "bold": "In đậm",
+    "italic": "In nghiêng",
+    "underline": "Gạch chân",
+    "strike": "Gạch ngang",
+    "bulletList": "Danh sách dấu đầu dòng",
+    "orderedList": "Danh sách đánh số",
+    "blockquote": "Trích dẫn",
+    "code": "Mã trong dòng",
+    "codeBlock": "Khối mã",
+    "link": "Chèn liên kết",
+    "linkUrl": "Địa chỉ liên kết",
+    "invalidLink": "Nhập địa chỉ HTTP hoặc HTTPS hợp lệ.",
+    "apply": "Áp dụng",
+    "removeLink": "Xóa liên kết",
+    "undo": "Hoàn tác",
+    "redo": "Làm lại",
+    "emoji": "Chọn emoji",
+    "insertEmoji": "Chèn {{emoji}}",
+    "tooLong": "Tin nhắn vượt giới hạn 4.000 ký tự."
+  },
   "calls": {
     "otherTab": "Tài khoản đang sử dụng cuộc gọi ở tab khác.",
     "resumeAudio": "Phát âm thanh",
@@ -97,9 +124,17 @@
     "clearContext": "Bỏ ngữ cảnh thảo luận"
   },
   "reactions": {
-    "like": "Thích",
+    "add": "Thả biểu cảm",
+    "check": "Hoàn thành",
+    "eyes": "Đang xem",
+    "like": "Đồng ý",
+    "hands": "Tuyệt vời",
+    "fire": "Quá đỉnh",
     "heart": "Yêu thích",
-    "celebrate": "Chúc mừng"
+    "celebrate": "Chúc mừng",
+    "rocket": "Triển khai",
+    "laugh": "Haha",
+    "pray": "Cảm ơn"
   },
   "search": {
     "label": "Tìm tin nhắn trong kênh",
