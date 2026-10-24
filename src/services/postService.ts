@@ -7,6 +7,7 @@ interface ApiResponse<T> {
 }
 
 export interface SavePostMedia {
+  materialId?: string;
   s3Key?: string;
   externalUrl?: string;
   mediaType: "IMAGE" | "VIDEO";

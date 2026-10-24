@@ -35,11 +35,35 @@ export interface MaterialItem {
   mimeType?: string;
   fileSize?: number;
   url: string;
+  previewUrl?: string;
+  previewExpiresAt?: string;
+  status?: "UPLOADING" | "VALIDATING" | "READY" | "REJECTED" | "FAILED";
+  mediaKind?: "IMAGE" | "VIDEO" | "FILE";
+  purpose?: "MATERIAL" | "BRAND_REFERENCE";
+  visibility?: "INTERNAL" | "CLIENT";
+  clientProfileId?: string;
+  version?: number;
   parentMaterialId?: string;
   watermarkMeta?: WatermarkMetadata;
   createdBy?: string;
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface MaterialUploadOptions {
+  type: "RAW" | "RETOUCHED";
+  purpose: "MATERIAL" | "BRAND_REFERENCE";
+  visibility: "INTERNAL" | "CLIENT";
+  clientProfileId?: string;
+  parentMaterialId?: string;
+}
+
+export interface MaterialUploadSession {
+  sessionId: string;
+  materialId: string;
+  uploadUrl: string;
+  s3Key: string;
+  expiresAt: string;
 }
 
 export interface ApplyWatermarkRequest {

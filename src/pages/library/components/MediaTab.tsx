@@ -15,6 +15,7 @@ import {
   Copy,
   ExternalLink,
   Ratio,
+  FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -56,7 +57,10 @@ export const MediaTab: React.FC = () => {
         });
 
         if (reset) {
-          setMediaList(res.items);
+          setMediaList((previous) => [
+            ...previous.filter((item) => item.source === "repository"),
+            ...res.items,
+          ]);
         } else {
           setMediaList((prev) => {
             const existingIds = new Set(prev.map((i) => i.id));
@@ -128,7 +132,7 @@ export const MediaTab: React.FC = () => {
                 onClick={() => setFilterType("all")}
                 className={`cursor-pointer rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
                   filterType === "all"
-                    ? "bg-card text-foreground shadow-xs font-semibold"
+                    ? "bg-card text-foreground font-semibold shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -176,9 +180,10 @@ export const MediaTab: React.FC = () => {
             </div>
 
             {/* Upload Button */}
-            <MediaUploadButton onUploadSuccess={handleUploadSuccess} />
           </div>
         </div>
+
+        <MediaUploadButton onUploadSuccess={handleUploadSuccess} />
 
         {/* Orientation Filter Row */}
         <div className="border-border flex flex-wrap items-center gap-2 border-t pt-3">
@@ -198,7 +203,7 @@ export const MediaTab: React.FC = () => {
               onClick={() => setFilterOrientation(item.key)}
               className={`cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-medium transition-colors ${
                 filterOrientation === item.key
-                  ? "bg-brand-orange text-white shadow-xs font-semibold"
+                  ? "bg-brand-orange font-semibold text-white shadow-xs"
                   : "bg-muted text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -241,6 +246,11 @@ export const MediaTab: React.FC = () => {
                     </div>
                   </div>
                 </div>
+              ) : media.type === "file" || !media.url ? (
+                <div className="bg-muted text-muted-foreground flex h-full items-center justify-center gap-2 p-4 text-sm">
+                  <FileText className="size-8" />
+                  {t("library.repositoryUpload.filePreview")}
+                </div>
               ) : (
                 <img
                   src={media.url}
@@ -268,7 +278,9 @@ export const MediaTab: React.FC = () => {
                 {media.type === "video" ? (
                   <>
                     <Film className="text-brand-orange size-3" />{" "}
-                    {media.durationSeconds ? `${media.durationSeconds}s` : t("library.media.typeVideo")}
+                    {media.durationSeconds
+                      ? `${media.durationSeconds}s`
+                      : t("library.media.typeVideo")}
                   </>
                 ) : (
                   <>
@@ -303,13 +315,15 @@ export const MediaTab: React.FC = () => {
                       {media.category}
                     </span>
                   )}
-                  <div className="truncate text-xs font-semibold leading-tight">
+                  <div className="truncate text-xs leading-tight font-semibold">
                     {media.filename}
                   </div>
                   <div className="text-3xs mt-0.5 flex items-center gap-2 font-mono text-white/70">
                     <span>{formatFileSize(media.sizeBytes)}</span>
                     {media.width && media.height && (
-                      <span>{media.width}x{media.height}</span>
+                      <span>
+                        {media.width}x{media.height}
+                      </span>
                     )}
                   </div>
                 </div>

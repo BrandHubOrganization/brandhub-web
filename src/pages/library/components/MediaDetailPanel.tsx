@@ -107,6 +107,10 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
                 className="max-h-[300px] w-full object-contain"
                 poster={media.thumbnailUrl}
               />
+            ) : media.type === "file" || !media.url ? (
+              <p className="text-muted-foreground p-4 text-sm">
+                {t("library.repositoryUpload.filePreview")}
+              </p>
             ) : (
               <img
                 src={media.url}
@@ -205,7 +209,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handleDelete}
-              disabled={isDeleting}
+              disabled={isDeleting || media.source === "repository"}
               className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-red-50 px-3.5 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-900/60"
             >
               <Trash2 className="size-4" />
@@ -218,7 +222,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
               <button
                 type="button"
                 onClick={() => setIsWatermarkOpen(true)}
-                className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-brand-orange px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-brand-orange/90"
+                className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
               >
                 <Stamp className="size-4" />
                 {t("materials.watermark.openButton")}
