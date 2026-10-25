@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { taskDeadline } from "@/pages/tasks/utils/taskViewData";
@@ -73,6 +73,7 @@ export function TaskCalendarTimeline({
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const calendarRef = useRef<FullCalendar | null>(null);
+  const calendarContainerRef = useRef<HTMLDivElement | null>(null);
   const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Check Manager/Owner permissions with resilient case-insensitive matching
@@ -99,6 +100,42 @@ export function TaskCalendarTimeline({
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
+
+  // Tự động căn chỉnh vị trí FullCalendar Popover nếu rơi vào các cột sát mép phải
+  useEffect(() => {
+    const calendarEl = calendarContainerRef.current;
+    if (!calendarEl) return;
+
+    const clampPopover = () => {
+      const popover = calendarEl.querySelector(".fc-popover") as HTMLElement;
+      if (!popover) return;
+
+      const calendarRect = calendarEl.getBoundingClientRect();
+      const popoverRect = popover.getBoundingClientRect();
+
+      if (popoverRect.right > calendarRect.right - 12) {
+        const overflow = popoverRect.right - (calendarRect.right - 12);
+        const currentLeft = parseFloat(popover.style.left) || 0;
+        popover.style.left = `${Math.max(8, currentLeft - overflow)}px`;
+      }
+      if (popoverRect.left < calendarRect.left + 8) {
+        const underflow = calendarRect.left + 8 - popoverRect.left;
+        const currentLeft = parseFloat(popover.style.left) || 0;
+        popover.style.left = `${currentLeft + underflow}px`;
+      }
+    };
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.addedNodes.length > 0) {
+          clampPopover();
+        }
+      }
+    });
+
+    observer.observe(calendarEl, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [currentView]);
 
   // Hover & Click Popover modal state
   const [activeEvent, setActiveEvent] = useState<ActiveEventDetail | null>(
@@ -553,14 +590,14 @@ export function TaskCalendarTimeline({
               e,
             )
           }
-          className={`flex w-full items-center gap-1.5 truncate rounded-md border ${scheme.border} ${scheme.bg} cursor-pointer px-2 py-0.5 text-xs font-semibold shadow-2xs transition-all hover:brightness-95`}
+          className={`flex w-full min-w-0 max-w-full items-center gap-1.5 rounded-md border ${scheme.border} ${scheme.bg} cursor-pointer px-1.5 py-0.5 text-xs font-semibold shadow-2xs transition-all hover:brightness-95`}
         >
           <span
-            className={`text-3xs py-0.2 rounded-xs px-1.5 font-bold tracking-wider uppercase ${scheme.pill}`}
+            className={`text-3xs py-0.2 shrink-0 rounded-xs px-1.5 font-bold tracking-wider uppercase ${scheme.pill}`}
           >
             {scheme.type}
           </span>
-          <span className="truncate">{eventInfo.event.title}</span>
+          <span className="min-w-0 flex-1 truncate">{eventInfo.event.title}</span>
         </div>
       );
     }
@@ -788,8 +825,8 @@ export function TaskCalendarTimeline({
         </div>
       ) : (
         /* FullCalendar for Day, Week, and Month with drag & drop for managers */
-        <div className="overflow-x-auto p-3">
-          <div className="fullcalendar-custom min-w-[950px]">
+        <div className="w-full overflow-hidden p-3 sm:p-4">
+          <div ref={calendarContainerRef} className="fullcalendar-custom w-full min-w-0">
             <FullCalendar
               ref={calendarRef}
               plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
@@ -808,6 +845,12 @@ export function TaskCalendarTimeline({
               eventResizableFromStart={false}
               selectable={false}
               nowIndicator={true}
+              height={currentView === "dayGridMonth" ? "auto" : 640}
+              dayMaxEvents={3}
+              moreLinkClick="popover"
+              moreLinkText={(num) =>
+                t("tasks.moreItems", { count: num, defaultValue: `+${num}` })
+              }
               eventAllow={(dropInfo) => {
                 if (!isManager) return false;
                 const targetDate = dropInfo.start;
