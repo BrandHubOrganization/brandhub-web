@@ -133,6 +133,7 @@
   "readOnly": "Showing actual data. Dragging to change status or dates is not supported in this release.",
   "missing": "Not provided",
   "unassigned": "Unassigned",
+  "moreItems": "+{{count}}",
   "unknownAssignee": "Assignee name unavailable",
   "views": {
     "list": "List",

@@ -14,6 +14,8 @@ export function useWorkspaceRequests(workspaceId: string) {
   const page = Number.isInteger(requestedPage) && requestedPage >= 0 && requestedPage <= 2147483647
     ? requestedPage : 0;
   const status = params.get("status") || "";
+  const type = params.get("type") || "";
+  const sort = params.get("sort") || "newest";
   const search = params.get("q") || "";
   const selectedId = params.get("request") || "";
   const key = ["workspace-requests", workspaceId];
@@ -26,7 +28,18 @@ export function useWorkspaceRequests(workspaceId: string) {
     setParams(previous => {
       const next = new URLSearchParams(previous);
       if (value) next.set(name, value); else next.delete(name);
-      if (name === "status" || name === "q") next.delete("page");
+      if (name === "status" || name === "q" || name === "type" || name === "sort") next.delete("page");
+      return next;
+    });
+  }
+  function resetFilters() {
+    setParams(previous => {
+      const next = new URLSearchParams(previous);
+      next.delete("q");
+      next.delete("status");
+      next.delete("type");
+      next.delete("sort");
+      next.delete("page");
       return next;
     });
   }
@@ -50,6 +63,26 @@ export function useWorkspaceRequests(workspaceId: string) {
     setReviewing(null);
     await refresh();
   }
-  return { list, detail, page, status, search, selectedId, editing, cancelling, setEditing, setCancelling,
-    changeParam, refresh, save, cancel, reviewing, setReviewing, review };
+  return {
+    list,
+    detail,
+    page,
+    status,
+    type,
+    sort,
+    search,
+    selectedId,
+    editing,
+    cancelling,
+    setEditing,
+    setCancelling,
+    changeParam,
+    resetFilters,
+    refresh,
+    save,
+    cancel,
+    reviewing,
+    setReviewing,
+    review,
+  };
 }

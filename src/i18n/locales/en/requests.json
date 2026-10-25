@@ -64,11 +64,23 @@
     "search": "Search by title",
     "filterStatus": "Status",
     "allStatuses": "All statuses",
+    "filterType": "Type",
+    "allTypes": "All types",
+    "filterSort": "Sort by",
+    "sortNewest": "Newest",
+    "sortOldest": "Oldest",
+    "sortDueAsc": "Earliest due date",
+    "sortDueDesc": "Latest due date",
+    "resetFilters": "Reset",
     "refresh": "Refresh",
     "retry": "Retry",
     "loading": "Loading requests…",
     "empty": "No matching requests",
     "emptyHelp": "Additional requests appear here. Try changing the filters if you already have requests.",
+    "emptyFilteredTitle": "No matching requests found",
+    "emptyFilteredHelp": "No requests match your current filters. Try resetting filters to view all requests.",
+    "viewAllHistory": "View all {{count}} history events",
+    "collapseHistory": "Collapse history",
     "count": "{{count}} requests",
     "count_one": "{{count}} request",
     "count_other": "{{count}} requests",
@@ -209,5 +221,23 @@
   "toast": {
     "loadFailed": "Error loading content requests",
     "assignSuccess": "Successfully assigned to {{name}}!"
+  },
+  "stats": {
+    "total": "Total Requests",
+    "unassigned": "Pending Assignment",
+    "inProgress": "In Progress",
+    "approved": "Completed"
+  },
+  "smartDeadline": {
+    "today": "Today",
+    "overdue": "Overdue",
+    "daysLeft": "{{count}}d left"
+  },
+  "emptyState": {
+    "title": "No content requests yet",
+    "description": "Start by creating a new content request to assign to your creative team.",
+    "createFirst": "Create first request",
+    "noFilteredTitle": "No matching results found",
+    "noFilteredDesc": "Try clearing some filters or searching with different keywords."
   }
 }

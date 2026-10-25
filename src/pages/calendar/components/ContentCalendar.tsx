@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -77,34 +77,34 @@ const STATUS_CONFIG: Record<
 > = {
   DRAFT: {
     bg: "bg-amber-500/10 dark:bg-amber-500/15",
-    border: "border-amber-300 dark:border-amber-800/70",
-    text: "text-amber-950 dark:text-amber-100",
+    border: "border-amber-500/30 dark:border-amber-700/50 hover:border-amber-500/60",
+    text: "text-foreground",
     pill: "bg-amber-500 text-white",
-    accent: "border-l-amber-500 border-amber-200 dark:border-amber-900/60",
+    accent: "border-l-amber-500 border-border",
     label: "Bản nháp",
   },
   SCHEDULED: {
-    bg: "bg-orange-50 dark:bg-orange-950/40",
-    border: "border-orange-300 dark:border-orange-800/70",
-    text: "text-orange-950 dark:text-orange-100",
+    bg: "bg-brand-orange-soft dark:bg-brand-orange/15",
+    border: "border-brand-orange/30 dark:border-brand-orange/50 hover:border-brand-orange/70",
+    text: "text-foreground",
     pill: "bg-brand-orange text-white",
-    accent: "border-l-orange-500 border-orange-200 dark:border-orange-900/60",
+    accent: "border-l-brand-orange border-border",
     label: "Lên lịch",
   },
   PUBLISHED: {
-    bg: "bg-emerald-50 dark:bg-emerald-950/40",
-    border: "border-emerald-300 dark:border-emerald-800/70",
-    text: "text-emerald-950 dark:text-emerald-100",
+    bg: "bg-emerald-500/10 dark:bg-emerald-500/15",
+    border: "border-emerald-500/30 dark:border-emerald-700/50 hover:border-emerald-500/60",
+    text: "text-foreground",
     pill: "bg-emerald-600 text-white",
-    accent: "border-l-emerald-600 border-emerald-200 dark:border-emerald-900/60",
+    accent: "border-l-emerald-600 border-border",
     label: "Đã đăng",
   },
   FAILED: {
-    bg: "bg-rose-50 dark:bg-rose-950/40",
-    border: "border-rose-300 dark:border-rose-800/70",
-    text: "text-rose-950 dark:text-rose-100",
+    bg: "bg-rose-500/10 dark:bg-rose-500/15",
+    border: "border-rose-500/30 dark:border-rose-700/50 hover:border-rose-500/60",
+    text: "text-foreground",
     pill: "bg-rose-600 text-white",
-    accent: "border-l-rose-600 border-rose-200 dark:border-rose-900/60",
+    accent: "border-l-rose-600 border-border",
     label: "Thất bại",
   },
 };
@@ -124,7 +124,7 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
   onDateClick,
   onDatesChange,
 }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id: paramWorkspaceId } = useParams<{ id: string }>();
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
@@ -132,6 +132,7 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
   const isManager = currentWorkspace?.myRole === "MANAGER";
 
   const calendarRef = useRef<FullCalendar | null>(null);
+  const calendarContainerRef = useRef<HTMLDivElement | null>(null);
   const [currentYear, setCurrentYear] = useState(() =>
     new Date().getFullYear(),
   );
@@ -145,6 +146,44 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
 
   const [selectedEvent, setSelectedEvent] =
     useState<SelectedPopoverState | null>(null);
+
+  // Tự động căn chỉnh vị trí FullCalendar Popover nếu rơi vào các cột sát mép phải
+  useEffect(() => {
+    const calendarEl = calendarContainerRef.current;
+    if (!calendarEl) return;
+
+    const clampPopover = () => {
+      const popover = calendarEl.querySelector(".fc-popover") as HTMLElement;
+      if (!popover) return;
+
+      const calendarRect = calendarEl.getBoundingClientRect();
+      const popoverRect = popover.getBoundingClientRect();
+
+      // Nếu tràn mép phải của khung lịch
+      if (popoverRect.right > calendarRect.right - 12) {
+        const overflow = popoverRect.right - (calendarRect.right - 12);
+        const currentLeft = parseFloat(popover.style.left) || 0;
+        popover.style.left = `${Math.max(8, currentLeft - overflow)}px`;
+      }
+      // Nếu tràn mép trái của khung lịch
+      if (popoverRect.left < calendarRect.left + 8) {
+        const underflow = calendarRect.left + 8 - popoverRect.left;
+        const currentLeft = parseFloat(popover.style.left) || 0;
+        popover.style.left = `${currentLeft + underflow}px`;
+      }
+    };
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.addedNodes.length > 0) {
+          clampPopover();
+        }
+      }
+    });
+
+    observer.observe(calendarEl, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [currentView]);
 
   const handlePrev = () => {
     if (currentView === "yearGrid") {
@@ -280,17 +319,17 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
               e,
             )
           }
-          className={`group relative flex w-full cursor-grab items-center gap-1.5 overflow-hidden rounded-lg border px-2 py-1 text-xs font-semibold shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing ${statusConfig.bg} ${statusConfig.border} ${statusConfig.text}`}
+          className={`group relative flex w-full min-w-0 max-w-full cursor-pointer items-center gap-1.5 overflow-hidden rounded-md border px-2 py-0.5 text-xs font-medium shadow-2xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xs active:scale-[0.99] ${statusConfig.bg} ${statusConfig.border}`}
           title={`${eventInfo.event.title}\nThời gian: ${timeText}\nNền tảng: ${platformConfig.name}\nTrạng thái: ${statusConfig.label}`}
         >
-          <span className="flex size-4 shrink-0 items-center justify-center rounded-md bg-white/80 shadow-2xs dark:bg-black/40">
+          <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-background/80 shadow-2xs">
             {platformConfig.icon}
           </span>
-          <span className="truncate font-semibold tracking-tight">
+          <span className="min-w-0 flex-1 truncate text-xs font-semibold tracking-tight text-foreground">
             {eventInfo.event.title}
           </span>
           {timeText && (
-            <span className="ml-auto shrink-0 text-[10px] font-normal opacity-75">
+            <span className="text-muted-foreground ml-auto shrink-0 pr-1 font-mono text-[10px] font-medium">
               {timeText}
             </span>
           )}
@@ -519,8 +558,8 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
         </div>
       ) : (
         /* FullCalendar Engine with smooth drag-and-drop */
-        <div className="overflow-x-auto p-3">
-          <div className="fullcalendar-custom min-w-[950px]">
+        <div className="w-full overflow-hidden p-3 sm:p-4">
+          <div ref={calendarContainerRef} className="fullcalendar-custom w-full min-w-0">
             <FullCalendar
               ref={calendarRef}
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -541,8 +580,12 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
               eventContent={renderEventContent}
               dateClick={(info) => onDateClick(info.date)}
               nowIndicator={true}
-              height={620}
+              height={currentView === "dayGridMonth" ? "auto" : 620}
               dayMaxEvents={3}
+              moreLinkClick="popover"
+              moreLinkText={(num) =>
+                t("calendar.moreLink", { count: num, defaultValue: `+${num}` })
+              }
             />
           </div>
         </div>

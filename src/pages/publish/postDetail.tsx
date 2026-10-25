@@ -26,7 +26,7 @@ export function PostDetailPage() {
         "Thống kê hiệu quả tương tác thực tế, đường dẫn bài đăng và lịch sử kiểm toán.",
       )}
       actions={
-        <Link to={`/workspaces/${workspaceId}/posts/dashboard`}>
+        <Link to={`/workspaces/${workspaceId}/dashboard?tab=publishing`}>
           <Button variant="outline" size="sm" className="gap-1.5 text-xs">
             <ArrowLeft className="size-3.5" />
             <span>{t("publish.detail.backToDashboard", "Quay lại Bảng điều khiển")}</span>
