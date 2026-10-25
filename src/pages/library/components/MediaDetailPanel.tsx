@@ -22,6 +22,7 @@ interface MediaDetailPanelProps {
   media: MediaItem | null;
   onClose: () => void;
   onDelete: (id: string) => Promise<void>;
+  canDelete?: boolean;
   onWatermarked?: (newMedia: MediaItem) => void;
 }
 
@@ -29,6 +30,7 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
   media,
   onClose,
   onDelete,
+  canDelete = true,
   onWatermarked,
 }) => {
   const { t } = useTranslation();
@@ -46,6 +48,10 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
   };
 
   const handleDelete = async () => {
+    if (media.source === "repository") {
+      await onDelete(media.id);
+      return;
+    }
     if (
       window.confirm(
         t("library.media.deleteConfirm", { filename: media.filename }),
@@ -207,16 +213,18 @@ export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
         {/* Footer Actions */}
         <div className="border-border bg-muted flex items-center justify-between border-t p-4">
           <div className="flex items-center gap-2">
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting || media.source === "repository"}
-              className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-red-50 px-3.5 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-900/60"
-            >
-              <Trash2 className="size-4" />
-              {isDeleting
-                ? t("library.media.deleting")
-                : t("library.media.deleteFileButton")}
-            </button>
+            {canDelete && (
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-red-50 px-3.5 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-900/60"
+              >
+                <Trash2 className="size-4" />
+                {isDeleting
+                  ? t("library.media.deleting")
+                  : t("library.media.deleteFileButton")}
+              </button>
+            )}
 
             {media.type === "image" && (
               <button

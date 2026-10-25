@@ -16,6 +16,37 @@ interface ApiResponse<T> {
 }
 
 export const materialService = {
+  async trash(workspaceId: string, page: number, search: string) {
+    const response = await api.get<
+      ApiResponse<MaterialItem[]> & { meta: { total: number } }
+    >(`/api/v1/workspaces/${workspaceId}/materials`, {
+      params: { deleted: true, page, size: 20, q: search },
+    });
+    return { items: response.data.data, total: response.data.meta.total };
+  },
+
+  async deleteMaterial(
+    workspaceId: string,
+    material: MaterialItem,
+  ): Promise<MaterialItem> {
+    const response = await api.delete<ApiResponse<MaterialItem>>(
+      `/api/v1/workspaces/${workspaceId}/materials/${material.id}`,
+      { params: { expectedVersion: material.version } },
+    );
+    return response.data.data;
+  },
+
+  async restoreMaterial(
+    workspaceId: string,
+    material: MaterialItem,
+  ): Promise<MaterialItem> {
+    const response = await api.post<ApiResponse<MaterialItem>>(
+      `/api/v1/workspaces/${workspaceId}/materials/${material.id}/restore`,
+      {},
+      { params: { expectedVersion: material.version } },
+    );
+    return response.data.data;
+  },
   async createUploadSession(
     workspaceId: string,
     file: File,
