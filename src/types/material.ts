@@ -37,7 +37,19 @@ export interface MaterialItem {
   url: string;
   previewUrl?: string;
   previewExpiresAt?: string;
-  status?: "UPLOADING" | "VALIDATING" | "READY" | "REJECTED" | "FAILED";
+  status?:
+    | "UPLOADING"
+    | "VALIDATING"
+    | "READY"
+    | "REJECTED"
+    | "FAILED"
+    | "DELETED"
+    | "PURGE_IN_PROGRESS"
+    | "PURGED";
+  deletedAt?: string;
+  deletedBy?: string;
+  purgeAfter?: string;
+  purgeBlockedReason?: string;
   mediaKind?: "IMAGE" | "VIDEO" | "FILE";
   purpose?: "MATERIAL" | "BRAND_REFERENCE";
   visibility?: "INTERNAL" | "CLIENT";

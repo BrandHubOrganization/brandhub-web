@@ -81,6 +81,30 @@ for (const [width, theme] of [
   }, testInfo) => {
     await page.setViewportSize({ width, height: 1000 });
     await setup(page, "MANAGER", theme);
+    let confirmed = false;
+    // Library now reads the API rather than merging uploads into a mocked list.
+    await page.route(
+      new RegExp(`/api/v1/workspaces/${workspaceId}/materials(?:\\?.*)?$`),
+      (route) =>
+        route.fulfill({
+          json: envelope(
+            confirmed
+              ? [
+                  {
+                    id: "material-1",
+                    workspaceId,
+                    name: "repository-fixture.pdf",
+                    type: "RAW",
+                    mediaKind: "FILE",
+                    status: "READY",
+                    fileSize: 22,
+                    createdAt: "2026-10-24T00:00:00Z",
+                  },
+                ]
+              : [],
+          ),
+        }),
+    );
     let releaseConfirm!: () => void;
     const pending = new Promise<void>((resolve) => {
       releaseConfirm = resolve;
@@ -122,6 +146,7 @@ for (const [width, theme] of [
       `**/api/v1/workspaces/${workspaceId}/materials/upload-session/confirm`,
       async (route) => {
         await pending;
+        confirmed = true;
         await route.fulfill({
           status: 201,
           json: envelope({
