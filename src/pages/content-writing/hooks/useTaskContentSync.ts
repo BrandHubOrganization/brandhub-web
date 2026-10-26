@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import * as Y from "yjs";
+import {
+  Awareness,
+  applyAwarenessUpdate,
+  encodeAwarenessUpdate,
+} from "y-protocols/awareness";
 import { api } from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
 import { requireApiData } from "@/lib/apiData";
@@ -15,19 +20,37 @@ import { requireApiData } from "@/lib/apiData";
  * crosses a threshold, this hook (not the server) posts the current merged
  * Y.Doc state via POST .../content/snapshot — see plan.md's snapshot-gap
  * decision.
+ *
+ * Presence/multi-cursor: a standard y-protocols Awareness instance rides a
+ * second, unpersisted STOMP topic (/app+/topic/tasks/{taskId}/awareness —
+ * see TaskContentWebSocketController.handleAwareness). Unlike content,
+ * awareness state is never queued while offline and never replayed from
+ * REST on reconnect — it's inherently "right now" state (cursor position),
+ * so a stale queued update would show a peer's cursor somewhere they no
+ * longer are. Awareness's own built-in 30s outdated-state timeout (see
+ * y-protocols/awareness's internal `outdatedTimeout` + check interval)
+ * already clears a peer that goes silent, so no extra cleanup is needed here.
  */
+
+export interface PeerCursor {
+  clientId: number;
+  userId: string;
+  name: string;
+  color: string;
+  caretIndex: number;
+  selection: { anchor: number; focus: number } | null;
+}
 
 const SNAPSHOT_THRESHOLD = 200;
 // Short social posts never reach SNAPSHOT_THRESHOLD, so also snapshot once
 // the document has been idle this long — otherwise Version History would
 // stay empty for them.
 const SNAPSHOT_IDLE_MS = 20_000;
-const WS_BASE_URL = (
+const WS_BASE_URL =
   (typeof import.meta !== "undefined" &&
     import.meta.env &&
     import.meta.env.VITE_API_BASE_URL) ||
-  "http://localhost:8080"
-);
+  "http://localhost:8080";
 
 function toBase64(update: Uint8Array): string {
   let binary = "";
@@ -83,8 +106,30 @@ interface TaskContentResponse {
   sequenceNumber: number;
 }
 
+// Deterministic per-user cursor color — same user always gets the same
+// color across sessions/devices, Google-Docs-style, without a server roundtrip.
+const CURSOR_COLORS = [
+  "#e53935",
+  "#8e24aa",
+  "#3949ab",
+  "#1e88e5",
+  "#00897b",
+  "#43a047",
+  "#fb8c00",
+  "#d81b60",
+  "#6d4c41",
+  "#546e7a",
+];
+function colorForUser(userId: string): string {
+  let hash = 0;
+  for (let i = 0; i < userId.length; i++)
+    hash = (hash * 31 + userId.charCodeAt(i)) | 0;
+  return CURSOR_COLORS[Math.abs(hash) % CURSOR_COLORS.length];
+}
+
 export function useTaskContentSync(workspaceId: string, taskId: string | null) {
   const yDoc = useMemo(() => new Y.Doc(), [taskId]);
+  const awareness = useMemo(() => new Awareness(yDoc), [yDoc]);
   const [isReady, setIsReady] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [loadError, setLoadError] = useState(false);
@@ -92,6 +137,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
   const [loadAttempt, setLoadAttempt] = useState(0);
   // Bumps each time a snapshot is reported, so the Version History list can refresh.
   const [snapshotCount, setSnapshotCount] = useState(0);
+  const [peers, setPeers] = useState<PeerCursor[]>([]);
   const sequenceRef = useRef(0);
   const operationsSinceSnapshotRef = useRef(0);
   const clientRef = useRef<Client | null>(null);
@@ -100,6 +146,8 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
     if (!taskId) return;
     let disposed = false;
     let cleanupUpdateHandler: (() => void) | null = null;
+    let cleanupAwarenessHandler: (() => void) | null = null;
+    let cleanupAwarenessChangeHandler: (() => void) | null = null;
     let idleTimer: ReturnType<typeof setTimeout> | null = null;
 
     async function init() {
@@ -180,6 +228,17 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
               SNAPSHOT_IDLE_MS,
             );
           });
+          client.subscribe(`/topic/tasks/${taskId}/awareness`, (message) => {
+            const body = JSON.parse(message.body) as { update: string };
+            // "remote-ws" origin: distinguishes peers' updates from this
+            // tab's own (origin "local"), so the broadcast loop below never
+            // echoes a peer's cursor back out as if it were ours.
+            applyAwarenessUpdate(
+              awareness,
+              fromBase64(body.update),
+              "remote-ws",
+            );
+          });
           while (pendingUpdates.length > 0) {
             sendUpdate(client, pendingUpdates.shift()!);
           }
@@ -188,12 +247,70 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         onDisconnect: () => setIsConnected(false),
         onWebSocketClose: () => setIsConnected(false),
         onStompError: () => {
-          if (!disposed) { setConnectionError(true); setIsConnected(false); }
+          if (!disposed) {
+            setConnectionError(true);
+            setIsConnected(false);
+          }
           void client.deactivate();
         },
       });
       client.activate();
       clientRef.current = client;
+
+      const currentUser = useAuthStore.getState().user;
+      awareness.setLocalState({
+        userId: currentUser?.id ?? "",
+        name: currentUser?.name || currentUser?.email || "BrandHub Creator",
+        color: colorForUser(currentUser?.id ?? taskId!),
+        caretIndex: 0,
+        selection: null,
+      });
+
+      // Only broadcast changes this tab originated — awareness.on("update")
+      // also fires for changes applyAwarenessUpdate just applied from the
+      // WS subscription above, which must not be re-sent (infinite echo,
+      // same reasoning as updateHandler's origin check for content).
+      const awarenessUpdateHandler = (
+        {
+          added,
+          updated,
+          removed,
+        }: { added: number[]; updated: number[]; removed: number[] },
+        origin: unknown,
+      ) => {
+        if (origin === "remote-ws") return;
+        if (!client.connected) return;
+        const changed = [...added, ...updated, ...removed];
+        client.publish({
+          destination: `/app/tasks/${taskId}/awareness`,
+          body: JSON.stringify({
+            update: toBase64(encodeAwarenessUpdate(awareness, changed)),
+          }),
+        });
+      };
+      awareness.on("update", awarenessUpdateHandler);
+      cleanupAwarenessHandler = () =>
+        awareness.off("update", awarenessUpdateHandler);
+
+      const syncPeers = () => {
+        const localId = awareness.clientID;
+        const next: PeerCursor[] = [];
+        awareness.getStates().forEach((state, clientId) => {
+          if (clientId === localId) return;
+          if (!state?.userId) return;
+          next.push({
+            clientId,
+            userId: state.userId,
+            name: state.name ?? "BrandHub Creator",
+            color: state.color ?? "#546e7a",
+            caretIndex: state.caretIndex ?? 0,
+            selection: state.selection ?? null,
+          });
+        });
+        setPeers(next);
+      };
+      awareness.on("change", syncPeers);
+      cleanupAwarenessChangeHandler = () => awareness.off("change", syncPeers);
 
       // Local edits: forward to the server. "remote"-origin updates (applied
       // above from the WS subscription) must not be re-sent — infinite echo.
@@ -240,21 +357,49 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
         });
     }
 
-    init().catch(() => { if (!disposed) setLoadError(true); });
+    init().catch(() => {
+      if (!disposed) setLoadError(true);
+    });
     return () => {
       disposed = true;
       if (idleTimer) clearTimeout(idleTimer);
       maybeReportSnapshot(true); // best-effort flush so the last edits become a version
       cleanupUpdateHandler?.();
+      cleanupAwarenessHandler?.();
+      cleanupAwarenessChangeHandler?.();
+      awareness.destroy(); // also broadcasts this client's removal, if still connected
       clientRef.current?.deactivate();
       clientRef.current = null;
     };
-  }, [workspaceId, taskId, yDoc, loadAttempt]);
+  }, [workspaceId, taskId, yDoc, awareness, loadAttempt]);
 
   function retryLoad() {
     setLoadError(false);
-    setLoadAttempt(attempt => attempt + 1);
+    setLoadAttempt((attempt) => attempt + 1);
   }
-  function retryConnection() { clientRef.current?.activate(); }
-  return { yDoc, isReady, isConnected, snapshotCount, loadError, retryLoad, connectionError, retryConnection };
+  function retryConnection() {
+    clientRef.current?.activate();
+  }
+  /** Called by CanvasTextEditor on every caret/selection change — merges into the existing local state (userId/name/color) rather than replacing it. */
+  function updateLocalCursor(
+    caretIndex: number,
+    selection: { anchor: number; focus: number } | null,
+  ) {
+    const current = awareness.getLocalState();
+    if (!current) return;
+    awareness.setLocalState({ ...current, caretIndex, selection });
+  }
+  return {
+    yDoc,
+    isReady,
+    isConnected,
+    snapshotCount,
+    loadError,
+    retryLoad,
+    connectionError,
+    retryConnection,
+    awareness,
+    peers,
+    updateLocalCursor,
+  };
 }
