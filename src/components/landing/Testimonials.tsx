@@ -1,9 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Star, Quote, BadgeCheck } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+const BG_PHOTO =
+  "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=900&fit=crop";
 
 interface TestimonialItem {
   key: string;
@@ -61,6 +69,8 @@ export function Testimonials() {
   const reduce = useReducedMotion();
   const [active, setActive] = useState(0);
   const current = TESTIMONIALS[active];
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgPhotoRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (reduce) return;
@@ -70,11 +80,41 @@ export function Testimonials() {
     return () => clearInterval(id);
   }, [reduce, active]);
 
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+      if (!bgPhotoRef.current) return;
+      gsap.to(bgPhotoRef.current, {
+        yPercent: -15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+    },
+    { scope: sectionRef },
+  );
+
   return (
     <section
       id="testimonials"
+      ref={sectionRef}
       className="relative overflow-hidden bg-zinc-50 py-24 dark:bg-zinc-900/50"
     >
+      <img
+        ref={bgPhotoRef}
+        src={BG_PHOTO}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="pointer-events-none absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover opacity-[0.07] will-change-transform dark:opacity-[0.05]"
+      />
       <SectionDecor corner="left" />
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -86,10 +126,12 @@ export function Testimonials() {
         >
           <SectionEyebrow index={7} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
-            Phản hồi từ các <span className="text-brand-orange">Beta Testers</span>
+            Phản hồi từ các{" "}
+            <span className="text-brand-orange">Beta Testers</span>
           </h2>
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
-            Ghi nhận thực tế từ các Agency và Thương hiệu tham gia thử nghiệm quy trình quản lý chiến dịch và AI của BrandHub.
+            Ghi nhận thực tế từ các Agency và Thương hiệu tham gia thử nghiệm
+            quy trình quản lý chiến dịch và AI của BrandHub.
           </p>
         </motion.div>
 
