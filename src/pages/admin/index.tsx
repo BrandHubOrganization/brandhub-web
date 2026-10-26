@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Construction, ArrowLeft } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { AdminAccountsPanel } from "@/pages/admin/components/AdminAccountsPanel";
+import { AdminTrendPanel } from "@/pages/admin/components/AdminTrendPanel";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
 import { AdminModerationPanel } from "@/pages/admin/components/AdminModerationPanel";
 import { AdminNotificationsPanel } from "@/pages/admin/components/AdminNotificationsPanel";
@@ -24,7 +26,22 @@ const views = [
   "email",
   "mailTemplates",
   "reports",
+  "trends",
+  "trendGraph",
 ];
+
+const AdminTrendGraphPanel = lazy(
+  () => import("@/pages/admin/components/AdminTrendGraphPanel"),
+);
+const descriptions: Record<string, string> = {
+  overview: "admin.overview.description",
+  users: "admin.accounts.description",
+  trends: "admin.trends.description",
+  trendGraph: "admin.trendGraph.description",
+  mailTemplates: "mailTemplate.admin.description",
+  reports: "admin.reports.description",
+  moderation: "admin.moderation.description",
+};
 
 export function AdminPage() {
   const { t } = useTranslation();
@@ -43,19 +60,7 @@ export function AdminPage() {
             ? "admin.overview.title"
             : `admin.navigation.${view}`,
         )}
-        description={t(
-          view === "overview"
-            ? "admin.overview.description"
-            : view === "users"
-              ? "admin.accounts.description"
-              : view === "mailTemplates"
-                ? "mailTemplate.admin.description"
-                : view === "reports"
-                ? "admin.reports.description"
-                : view === "moderation"
-                  ? "admin.moderation.description"
-                  : `admin.unavailable.${view}`,
-        )}
+        description={t(descriptions[view] ?? `admin.unavailable.${view}`)}
         hideBanner
         showGuideButton={false}
         actions={
@@ -90,6 +95,19 @@ export function AdminPage() {
               }}
             />
           </section>
+        ) : view === "trends" ? (
+          <AdminTrendPanel />
+        ) : view === "trendGraph" ? (
+          <Suspense
+            fallback={
+              <Skeleton
+                className="h-96 w-full"
+                aria-label={t("admin.loading")}
+              />
+            }
+          >
+            <AdminTrendGraphPanel />
+          </Suspense>
         ) : (
           <section className="bg-card border-border flex min-h-80 flex-col items-center justify-center rounded-xl border p-6 text-center">
             <span className="bg-muted text-muted-foreground mb-4 rounded-full p-4">
