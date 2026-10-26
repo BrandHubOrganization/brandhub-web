@@ -7,7 +7,9 @@ import {
   FileText,
   LayoutDashboard,
   Mail,
+  Network,
   ShieldCheck,
+  TrendingUp,
   Users,
   Wallet,
 } from "lucide-react";
@@ -25,6 +27,8 @@ const sections = [
   { key: "mailTemplates", icon: FileText, planned: false },
   { key: "reports", icon: FileChartColumn, planned: false },
   { key: "credit", icon: Wallet, planned: false },
+  { key: "trends", icon: TrendingUp, planned: false },
+  { key: "trendGraph", icon: Network, planned: false },
 ];
 const linkTo = (key: string) =>
   key === "credit"
