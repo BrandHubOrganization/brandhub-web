@@ -1,5 +1,12 @@
-import { motion, useReducedMotion } from "motion/react";
-import { Clock, ShieldAlert, Sparkles, CheckCircle2, TrendingUp } from "lucide-react";
+import {
+  Clock,
+  ShieldAlert,
+  Sparkles,
+  CheckCircle2,
+  TrendingUp,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 
 interface Insight {
@@ -70,21 +77,26 @@ const INSIGHTS: Insight[] = [
 ];
 
 export function IndustryInsights() {
-  const reduce = useReducedMotion();
+  const { ref: headRef, isIntersecting: headVisible } = useIntersectionObserver(
+    { threshold: 0.15, freezeOnceVisible: true },
+  );
+  const { ref: gridRef, isIntersecting: gridVisible } = useIntersectionObserver(
+    { threshold: 0.1, freezeOnceVisible: true },
+  );
 
   return (
     <section className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950">
       <SectionDecor corner="right" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto mb-16 max-w-3xl text-center"
+        <div
+          ref={headRef}
+          className={cn(
+            "mx-auto mb-16 max-w-3xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            headVisible ? "opacity-100" : "opacity-0",
+          )}
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand-orange/20 bg-brand-orange/10 px-4 py-1.5 text-xs font-semibold text-brand-orange">
+          <div className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold">
             <TrendingUp className="size-3.5" />
             <span>NGHIÊN CỨU & DỮ LIỆU THỰC TẾ NGÀNH MARKETING</span>
           </div>
@@ -93,22 +105,28 @@ export function IndustryInsights() {
             <span className="text-brand-orange">Agency & Khách hàng</span>
           </h2>
           <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-            BrandHub không chỉ là công cụ tạo nội dung thông thường — nền tảng được thiết kế dựa trên các khảo sát và nghiên cứu thực nghiệm nhằm giải phóng hiệu suất làm việc cho cả hai phía.
+            BrandHub không chỉ là công cụ tạo nội dung thông thường — nền tảng
+            được thiết kế dựa trên các khảo sát và nghiên cứu thực nghiệm nhằm
+            giải phóng hiệu suất làm việc cho cả hai phía.
           </p>
-        </motion.div>
+        </div>
 
         {/* 3 Insight Cards */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {INSIGHTS.map((item, idx) => {
+        <div ref={gridRef} className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {INSIGHTS.map((item, i) => {
             const Icon = item.icon;
             return (
-              <motion.div
+              <div
                 key={item.id}
-                initial={reduce ? false : { opacity: 0, y: 32 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.15 }}
-                className="group flex flex-col justify-between rounded-3xl border border-zinc-200/80 bg-zinc-50/60 p-8 transition-all hover:border-brand-orange/40 hover:bg-white hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-brand-orange/40 dark:hover:bg-zinc-900"
+                style={{
+                  transitionDelay: gridVisible ? `${i * 150}ms` : "0ms",
+                }}
+                className={cn(
+                  "insight-card group hover:border-brand-orange/40 dark:hover:border-brand-orange/40 flex flex-col justify-between rounded-3xl border border-zinc-200/80 bg-zinc-50/60 p-8 transition-all duration-500 ease-out hover:bg-white hover:shadow-xl motion-reduce:opacity-100 motion-reduce:transition-none dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:bg-zinc-900",
+                  gridVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0",
+                )}
               >
                 <div>
                   {/* Stat Header */}
@@ -119,7 +137,7 @@ export function IndustryInsights() {
                           {item.statNumber}
                         </span>
                       </div>
-                      <p className="mt-1 text-xs font-bold text-brand-orange uppercase">
+                      <p className="text-brand-orange mt-1 text-xs font-bold uppercase">
                         {item.statLabel}
                       </p>
                       <p className="mt-0.5 text-[11px] text-zinc-400 dark:text-zinc-500">
@@ -148,8 +166,8 @@ export function IndustryInsights() {
                 </div>
 
                 {/* BrandHub Solution Box */}
-                <div className="mt-8 rounded-2xl border border-brand-orange/20 bg-brand-orange/5 p-5 dark:border-brand-orange/20 dark:bg-brand-orange/10">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-brand-orange">
+                <div className="border-brand-orange/20 bg-brand-orange/5 dark:border-brand-orange/20 dark:bg-brand-orange/10 mt-8 rounded-2xl border p-5">
+                  <div className="text-brand-orange flex items-center gap-1.5 text-xs font-bold">
                     <CheckCircle2 className="size-4 shrink-0" />
                     <span>Giải pháp từ BrandHub</span>
                   </div>
@@ -162,13 +180,15 @@ export function IndustryInsights() {
                         key={fIdx}
                         className="flex items-start gap-2 text-[11px] leading-snug text-zinc-600 dark:text-zinc-400"
                       >
-                        <span className="text-brand-orange mt-0.5 text-xs font-bold">✓</span>
+                        <span className="text-brand-orange mt-0.5 text-xs font-bold">
+                          ✓
+                        </span>
                         <span>{feat}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
