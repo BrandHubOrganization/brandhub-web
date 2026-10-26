@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Construction, ArrowLeft } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { AdminAccountsPanel } from "@/pages/admin/components/AdminAccountsPanel";
+import { AdminTrendReplayPanel } from "@/pages/admin/components/AdminTrendReplayPanel";
 import { AdminTrendPanel } from "@/pages/admin/components/AdminTrendPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
@@ -26,6 +27,7 @@ const views = [
   "email",
   "mailTemplates",
   "reports",
+  "trendReplay",
   "trends",
   "trendGraph",
 ];
@@ -36,6 +38,7 @@ const AdminTrendGraphPanel = lazy(
 const descriptions: Record<string, string> = {
   overview: "admin.overview.description",
   users: "admin.accounts.description",
+  trendReplay: "admin.trendReplay.description",
   trends: "admin.trends.description",
   trendGraph: "admin.trendGraph.description",
   mailTemplates: "mailTemplate.admin.description",
@@ -95,6 +98,8 @@ export function AdminPage() {
               }}
             />
           </section>
+        ) : view === "trendReplay" ? (
+          <AdminTrendReplayPanel />
         ) : view === "trends" ? (
           <AdminTrendPanel />
         ) : view === "trendGraph" ? (

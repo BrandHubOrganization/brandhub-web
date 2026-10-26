@@ -27,6 +27,7 @@ const sections = [
   { key: "mailTemplates", icon: FileText, planned: false },
   { key: "reports", icon: FileChartColumn, planned: false },
   { key: "credit", icon: Wallet, planned: false },
+  { key: "trendReplay", icon: Activity, planned: false },
   { key: "trends", icon: TrendingUp, planned: false },
   { key: "trendGraph", icon: Network, planned: false },
 ];

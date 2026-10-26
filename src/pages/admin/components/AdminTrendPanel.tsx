@@ -51,6 +51,12 @@ export function AdminTrendPanel() {
           >
             {t("admin.navigation.trendGraph")}
           </Link>
+          <Link
+            to="/admin?view=trendReplay"
+            className="text-brand-orange-fg hover:opacity-85 transition-opacity focus-visible:outline-ring rounded text-xs font-medium underline underline-offset-4 focus-visible:outline-2"
+          >
+            {t("admin.trends.replay")}
+          </Link>
           <Button
             variant="outline"
             size="sm"
