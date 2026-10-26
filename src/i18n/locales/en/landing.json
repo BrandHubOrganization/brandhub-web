@@ -332,6 +332,9 @@
     "platforms": "Platform integrations",
     "uptime": "Uptime guarantee"
   },
+  "marquee": {
+    "label": "BrandHub — Multi-channel content operations"
+  },
   "features": {
     "title": "All-in-One Media Operations Platform",
     "subtitle": "From media package negotiations and 3 specialized task models to 4-tier QA governance and automated multi-channel publishing.",
