@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { motion, useReducedMotion } from "motion/react";
 import {
   Sparkles,
   TrendingUp,
@@ -11,6 +10,8 @@ import {
   MousePointerClick,
   type LucideIcon,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SpotlightCard } from "@/components/landing/SpotlightCard";
@@ -38,8 +39,13 @@ const CAPABILITIES: AiCapability[] = [
 
 export function AIFeatures() {
   const { t } = useTranslation();
-  const reduce = useReducedMotion();
   const goToPage = useLandingDemoStore((s) => s.goToPage);
+  const { ref: headRef, isIntersecting: headVisible } = useIntersectionObserver(
+    { threshold: 0.15, freezeOnceVisible: true },
+  );
+  const { ref: gridRef, isIntersecting: gridVisible } = useIntersectionObserver(
+    { threshold: 0.1, freezeOnceVisible: true },
+  );
 
   return (
     <section
@@ -48,12 +54,12 @@ export function AIFeatures() {
     >
       <SectionDecor corner="right" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto mb-16 max-w-2xl text-center"
+        <div
+          ref={headRef}
+          className={cn(
+            "mx-auto mb-16 max-w-2xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            headVisible ? "opacity-100" : "opacity-0",
+          )}
         >
           <SectionEyebrow index={2} />
           <span className="bg-brand-orange/10 text-brand-orange mb-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold">
@@ -66,9 +72,12 @@ export function AIFeatures() {
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.aiFeatures.subtitle")}
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+        >
           {CAPABILITIES.map(({ key, icon: Icon }, i) => (
             <SpotlightCard
               key={key}
@@ -76,16 +85,21 @@ export function AIFeatures() {
                 capability: t(`landing.aiFeatures.items.${key}.title`),
               })}
               onActivate={() => goToPage(AI_STUDIO_PAGE)}
-              initial={reduce ? false : { opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
+              style={{
+                transitionDelay: gridVisible ? `${i * 80}ms` : "0ms",
+              }}
+              className={cn(
+                "ai-card transition-all duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+                gridVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0",
+              )}
             >
-              <div className="flex items-start justify-between w-full mb-4">
+              <div className="mb-4 flex w-full items-start justify-between">
                 <div className="bg-brand-orange/10 text-brand-orange flex size-12 items-center justify-center rounded-xl transition-transform group-hover:scale-110">
                   <Icon className="size-6" />
                 </div>
-                <div className="w-24 h-12 text-zinc-400 transition-transform duration-300 group-hover:scale-105 group-hover:text-brand-orange">
+                <div className="group-hover:text-brand-orange h-12 w-24 text-zinc-400 transition-transform duration-300 group-hover:scale-105">
                   <AiVectorArt type={key} />
                 </div>
               </div>

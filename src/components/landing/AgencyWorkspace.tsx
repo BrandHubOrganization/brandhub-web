@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { motion, useReducedMotion } from "motion/react";
 import {
   Building2,
   Users2,
@@ -7,6 +6,8 @@ import {
   MousePointerClick,
   type LucideIcon,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SpotlightCard } from "@/components/landing/SpotlightCard";
@@ -29,8 +30,13 @@ const CAPABILITIES: AgencyCapability[] = [
 
 export function AgencyWorkspace() {
   const { t } = useTranslation();
-  const reduce = useReducedMotion();
   const goToPage = useLandingDemoStore((s) => s.goToPage);
+  const { ref: headRef, isIntersecting: headVisible } = useIntersectionObserver(
+    { threshold: 0.15, freezeOnceVisible: true },
+  );
+  const { ref: gridRef, isIntersecting: gridVisible } = useIntersectionObserver(
+    { threshold: 0.1, freezeOnceVisible: true },
+  );
 
   return (
     <section
@@ -39,12 +45,12 @@ export function AgencyWorkspace() {
     >
       <SectionDecor corner="left" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto mb-16 max-w-2xl text-center"
+        <div
+          ref={headRef}
+          className={cn(
+            "mx-auto mb-16 max-w-2xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            headVisible ? "opacity-100" : "opacity-0",
+          )}
         >
           <SectionEyebrow index={3} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
@@ -53,9 +59,9 @@ export function AgencyWorkspace() {
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.agencyWorkspace.subtitle")}
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div ref={gridRef} className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           {CAPABILITIES.map(({ key, icon: Icon }, i) => (
             <SpotlightCard
               key={key}
@@ -63,11 +69,15 @@ export function AgencyWorkspace() {
                 capability: t(`landing.agencyWorkspace.items.${key}.title`),
               })}
               onActivate={() => goToPage(WORKSPACE_PAGE)}
-              className="border-zinc-100"
-              initial={reduce ? false : { opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              style={{
+                transitionDelay: gridVisible ? `${i * 100}ms` : "0ms",
+              }}
+              className={cn(
+                "workspace-card border-zinc-100 transition-all duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+                gridVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0",
+              )}
             >
               <div className="bg-brand-orange/10 text-brand-orange mb-5 flex size-12 items-center justify-center rounded-xl transition-transform group-hover:scale-110">
                 <Icon className="size-6" />
