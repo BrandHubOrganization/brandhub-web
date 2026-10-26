@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { useInView, useReducedMotion } from "motion/react";
 import {
   Building2,
   UserPlus,
@@ -18,6 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
@@ -118,6 +119,11 @@ export function HowItWorks() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("processing");
   const goToPage = useLandingDemoStore((s) => s.goToPage);
+  const { ref: headRef, isIntersecting: headVisible } = useIntersectionObserver(
+    { threshold: 0.15, freezeOnceVisible: true },
+  );
+  const { ref: lanesRef, isIntersecting: lanesVisible } =
+    useIntersectionObserver({ threshold: 0.1, freezeOnceVisible: true });
 
   // Hiệu ứng "chạy quy trình": mỗi node quay spinner (đang xử lý) rồi bật
   // checkmark (hoàn tất) trước khi node kế tiếp bắt đầu, đúng thứ tự
@@ -150,12 +156,12 @@ export function HowItWorks() {
     >
       <SectionDecor corner="left" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto mb-16 max-w-2xl text-center"
+        <div
+          ref={headRef}
+          className={cn(
+            "mx-auto mb-16 max-w-2xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            headVisible ? "opacity-100" : "opacity-0",
+          )}
         >
           <SectionEyebrow index={4} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
@@ -164,24 +170,26 @@ export function HowItWorks() {
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.howItWorks.subtitle")}
           </p>
-        </motion.div>
+        </div>
 
-        <div className="flex flex-col gap-3">
+        <div ref={lanesRef} className="flex flex-col gap-3">
           {LANES.map((lane, laneIndex) => {
             const laneStartIndex = flatIndex + 1;
             const laneEndIndex = laneStartIndex + lane.nodes.length - 1;
 
             return (
               <div key={lane.key}>
-                <motion.div
-                  initial={{ opacity: 0, x: -24 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: laneIndex * 0.12 }}
+                <div
+                  style={{
+                    transitionDelay: lanesVisible
+                      ? `${laneIndex * 120}ms`
+                      : "0ms",
+                  }}
                   className={cn(
-                    "flex flex-col gap-5 rounded-2xl border border-zinc-100 bg-white p-6 shadow-sm sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900",
-                    "border-l-4",
-                    lane.accent.replace("bg-", "border-l-"),
+                    "lane-card flex flex-col gap-5 rounded-2xl border border-zinc-100 bg-white p-6 shadow-sm transition-all duration-500 ease-out hover:shadow-lg motion-reduce:opacity-100 motion-reduce:transition-none sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900",
+                    lanesVisible
+                      ? "translate-x-0 opacity-100"
+                      : "-translate-x-6 opacity-0",
                   )}
                 >
                   <div className="flex shrink-0 items-center gap-3 sm:w-48">
@@ -345,7 +353,7 @@ export function HowItWorks() {
                       );
                     })}
                   </div>
-                </motion.div>
+                </div>
 
                 {laneIndex < LANES.length - 1 && (
                   <div className="flex justify-center py-2">
