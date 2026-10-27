@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { MessageSquare, X } from "lucide-react";
@@ -6,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useAuthStore } from "@/store/authStore";
 import { chatCollaborationService } from "@/services/chatCollaborationService";
 import { useChannelMessages } from "@/pages/chat/hooks/useChannelMessages";
+import { useScheduleMessage } from "@/pages/chat/hooks/useChatSchedules";
 import { ChatTimeline } from "@/pages/chat/components/ChatTimeline";
 import { ChatMessageRow } from "@/pages/chat/components/ChatMessageRow";
 import { ChatChannelComposer } from "@/pages/chat/components/ChatChannelComposer";
@@ -20,10 +22,12 @@ interface ThreadProps {
   rootId: string;
   people: ChatDirectoryMember[];
   onClose: () => void;
+  widthControl?: ReactNode;
 }
 
 export function ChatThreadPanel(props: ThreadProps) {
   const { t } = useTranslation();
+  const schedule = useScheduleMessage(props.workspaceId, props.channel.id);
   const userId = useAuthStore((state) => state.user?.id ?? "");
   const thread = useChannelMessages(props.workspaceId, props.channel.id, {
     root: props.rootId,
@@ -51,27 +55,30 @@ export function ChatThreadPanel(props: ThreadProps) {
   );
   return (
     <section className="bg-card flex h-full min-h-0 flex-col">
-      <div className="border-border/80 flex min-h-14 items-center justify-between gap-2 border-b px-4 py-3">
-        <div className="flex min-w-0 items-center gap-2.5">
+      <div className="border-border/80 flex min-h-12 items-center justify-between gap-2 border-b px-3 py-2">
+        <div className="flex min-w-0 items-center gap-2">
           <span
             aria-hidden="true"
-            className="bg-brand-orange-soft text-brand-orange flex size-8 shrink-0 items-center justify-center rounded-lg"
+            className="bg-brand-orange-soft text-brand-orange flex size-7.5 shrink-0 items-center justify-center rounded-lg"
           >
             <MessageSquare className="size-4" />
           </span>
-          <h2 className="truncate text-base font-semibold tracking-tight">
+          <h2 className="truncate text-sm font-semibold tracking-tight">
             {t("chat.thread.title")}
           </h2>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-9 shrink-0 rounded-lg"
-          aria-label={t("chat.actions.close")}
-          onClick={props.onClose}
-        >
-          <X className="size-4" />
-        </Button>
+        <div className="flex shrink-0 items-center gap-1">
+          {props.widthControl}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 shrink-0 rounded-lg"
+            aria-label={t("chat.actions.close")}
+            onClick={props.onClose}
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
       </div>
       {root.isPending && (
         <div className="flex items-center justify-center p-5">
@@ -107,8 +114,8 @@ export function ChatThreadPanel(props: ThreadProps) {
               onMutate={(message, code) => void thread.mutate(message, code)}
             />
           </div>
-          <div className="border-border/60 bg-background/60 flex items-center gap-2 border-t px-4 py-1.5">
-            <span className="text-muted-foreground font-mono text-[11px] font-medium tabular-nums">
+          <div className="border-border/60 bg-background/60 flex items-center gap-2 border-t px-3 py-1">
+            <span className="text-muted-foreground font-mono text-[10px] font-medium tabular-nums">
               {t("chat.thread.replies", { count: replyCount })}
             </span>
             <span className="bg-border/70 h-px flex-1" aria-hidden="true" />
@@ -143,6 +150,7 @@ export function ChatThreadPanel(props: ThreadProps) {
           contextId={root.data.contextId}
           threadRootId={props.rootId}
           onSend={thread.send}
+          onSchedule={schedule}
         />
       )}
     </section>
