@@ -8,6 +8,7 @@ import { usePostDetail } from "./hooks/usePostDetail";
 import { PostEngagementCards } from "./components/PostEngagementCards";
 import { PostContentCard } from "./components/PostContentCard";
 import { PostPublishingTimeline } from "./components/PostPublishingTimeline";
+import { PostCommentsSection } from "./components/PostCommentsSection";
 
 export function PostDetailPage() {
   const { id: workspaceId = "", postId = "" } = useParams<{
@@ -79,6 +80,12 @@ export function PostDetailPage() {
               metrics={data.metrics}
               onRefreshMetrics={refreshMetrics}
               isRefreshing={isRefreshing}
+            />
+
+            {/* Social Comments List (Live or Snapshot) */}
+            <PostCommentsSection
+              workspaceId={workspaceId}
+              postId={postId}
             />
 
             {/* Timeline: RabbitMQ Dispatch Logs & Workspace Audit History */}

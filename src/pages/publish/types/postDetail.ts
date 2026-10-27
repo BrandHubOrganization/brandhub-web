@@ -54,3 +54,11 @@ export interface PostedDetailData {
   executionLogs: PostExecutionLog[];
   auditHistory: PostAuditItem[];
 }
+
+export interface PostCommentItem {
+  id: string;
+  authorName: string;
+  authorAvatar?: string | null;
+  content: string;
+  commentedAt: string;
+}
