@@ -85,8 +85,8 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
   return (
     <article
       className={cn(
-        "group relative flex gap-3 px-3 transition-colors sm:px-5",
-        grouped ? "py-1" : "py-2.5",
+        "group relative flex gap-3 px-3 transition-colors sm:px-4",
+        grouped ? "py-0.5" : "py-1.5",
         mine
           ? "border-l-brand-orange bg-brand-orange-soft/25 hover:bg-brand-orange-soft/40 focus-within:bg-brand-orange-soft/40 border-l-2"
           : "hover:bg-muted/40 focus-within:bg-muted/40",
@@ -94,7 +94,7 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
       )}
     >
       {grouped ? (
-        <div className="flex w-9 shrink-0 items-start justify-center pt-1 select-none">
+        <div className="flex w-8 shrink-0 items-start justify-center pt-0.5 select-none">
           <time
             dateTime={message.createdAt}
             className="text-muted-foreground font-mono text-[10px] leading-4 tabular-nums opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
@@ -105,7 +105,7 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
       ) : (
         <div
           className={cn(
-            "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl text-sm font-semibold shadow-2xs",
+            "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg text-xs font-semibold shadow-2xs",
             mine
               ? "bg-brand-orange-soft text-brand-orange ring-brand-orange/30 ring-1"
               : "border-border/60 bg-secondary text-secondary-foreground border",
@@ -122,7 +122,7 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
           </p>
         )}
         {!grouped && (
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
             <span
               className={cn(
                 "text-sm font-semibold tracking-tight",
@@ -177,7 +177,7 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
         )}
         <div
           className={cn(
-            "text-sm leading-6 [overflow-wrap:anywhere] whitespace-pre-wrap",
+            "text-sm leading-snug [overflow-wrap:anywhere] whitespace-pre-wrap",
             !grouped && "mt-0.5",
           )}
         >
@@ -210,11 +210,11 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
         <div
           className={cn(
             "flex flex-wrap items-center justify-between gap-1.5",
-            hasFooterItems ? "mt-1.5" : "max-sm:mt-1",
+            hasFooterItems ? "mt-1" : "max-sm:mt-0.5",
           )}
         >
           {hasFooterItems && (
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1">
               {activeReactions.map((item) => {
                 const { code } = item;
                 const Icon =
@@ -227,7 +227,7 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
                     variant={reacted ? "secondary" : "outline"}
                     size="sm"
                     className={cn(
-                      "h-7 gap-1.5 rounded-full px-2.5 font-mono text-xs tabular-nums shadow-2xs transition-all",
+                      "h-6 gap-1 rounded-full px-2 font-mono text-xs tabular-nums shadow-2xs transition-all",
                       reacted &&
                         "border-brand-orange/40 bg-brand-orange-soft/80 text-brand-orange hover:bg-brand-orange-soft ring-brand-orange/20 ring-1",
                     )}
@@ -237,7 +237,7 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
                     disabled={!props.canPost || props.busy}
                     onClick={() => props.onMutate(message, code)}
                   >
-                    <Icon className="size-4 shrink-0" />
+                    <Icon className="size-3.5 shrink-0" />
                     <span className="font-mono tabular-nums">
                       {message.reactions[code]?.length}
                     </span>
@@ -254,7 +254,7 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
                     variant="outline"
                     size="sm"
                     className={cn(
-                      "text-muted-foreground hover:text-foreground h-7 w-7 rounded-full p-0 shadow-2xs transition-colors",
+                      "text-muted-foreground hover:text-foreground h-6 w-6 rounded-full p-0 shadow-2xs transition-colors",
                       footerPickerOpen && "bg-muted/70 text-foreground",
                     )}
                     disabled={!props.canPost || props.busy}
@@ -264,7 +264,7 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
                     aria-haspopup="true"
                     onClick={() => setFooterPickerOpen((prev) => !prev)}
                   >
-                    <SmilePlus className="size-3.5" />
+                    <SmilePlus className="size-3" />
                   </Button>
                   {footerPickerOpen && (
                     <div className="absolute bottom-full left-0 z-30 pb-1.5">
@@ -313,10 +313,10 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
                 <Button
                   variant="link"
                   size="sm"
-                  className="border-brand-orange/25 bg-brand-orange-soft/40 text-brand-orange hover:bg-brand-orange-soft/80 h-7 gap-1.5 rounded-full border px-2.5 font-mono text-xs font-medium tabular-nums no-underline hover:no-underline"
+                  className="border-brand-orange/25 bg-brand-orange-soft/40 text-brand-orange hover:bg-brand-orange-soft/80 h-6 gap-1 rounded-full border px-2 font-mono text-xs font-medium tabular-nums no-underline hover:no-underline"
                   onClick={() => props.onThread(message)}
                 >
-                  <MessageSquare className="size-3.5" />
+                  <MessageSquare className="size-3" />
                   {message.threadRootId
                     ? t("chat.thread.view")
                     : t("chat.thread.replies", { count: message.replyCount })}
@@ -329,7 +329,7 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
               "max-sm:ml-auto",
               message.deliveryStatus === "FAILED"
                 ? "ml-auto"
-                : "sm:absolute sm:top-1.5 sm:right-4 sm:z-10",
+                : "sm:absolute sm:top-1 sm:right-3 sm:z-10",
             )}
           >
             <ChatMessageActions {...props} />
