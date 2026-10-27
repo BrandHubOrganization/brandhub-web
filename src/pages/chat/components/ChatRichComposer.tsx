@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChatComposerToolbar } from "@/pages/chat/components/ChatComposerToolbar";
 import { ChatComposerEmoji } from "@/pages/chat/components/ChatComposerEmoji";
+import { ChatScheduleSend } from "@/pages/chat/components/ChatScheduleSend";
 import { useChatRichEditor } from "@/pages/chat/hooks/useChatRichEditor";
 import type { ChatRichComposerProps } from "@/pages/chat/types/chatComposer";
 export type { ChatRichComposerProps } from "@/pages/chat/types/chatComposer";
@@ -27,12 +28,14 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
     matches,
     mention,
     send,
+    scheduling,
+    schedule,
   } = useChatRichEditor(props);
   if (!editor) return null;
   return (
     <footer
       ref={box}
-      className="border-border bg-card relative shrink-0 border-t p-3 sm:p-4"
+      className="border-border bg-card relative shrink-0 border-t p-2 sm:px-3 sm:py-2.5"
     >
       {!props.canPost && (
         <p
@@ -42,7 +45,11 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
           {t("chat.channels.readOnly")}
         </p>
       )}
-      <div hidden={!props.canPost}>
+      <fieldset
+        disabled={scheduling}
+        hidden={!props.canPost}
+        className="min-w-0"
+      >
         {props.contextType !== "GENERAL" && (
           <p className="text-muted-foreground mb-2 text-xs">
             {t("chat.composer.contextHint", {
@@ -112,7 +119,7 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
             {length === 0 && (
               <span
                 aria-hidden="true"
-                className="text-muted-foreground pointer-events-none absolute top-3 left-3 text-base sm:text-sm"
+                className="text-muted-foreground pointer-events-none absolute top-2 left-3 text-base sm:text-sm"
               >
                 {t(
                   props.threadRootId
@@ -128,7 +135,7 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="size-10"
+                className="size-8"
                 aria-label={t("chat.rich.formatting")}
                 title={t("chat.rich.formatting")}
                 aria-pressed={formatting}
@@ -140,7 +147,7 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="size-10"
+                className="size-8"
                 aria-label={t("chat.composer.mention")}
                 title={t("chat.composer.mention")}
                 onClick={() => {
@@ -161,32 +168,42 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
               >
                 <AtSign className="size-4" aria-hidden="true" />
               </Button>
-              <span
-                id={hintId}
-                className="text-muted-foreground sr-only text-xs lg:not-sr-only"
-              >
+              <span id={hintId} className="sr-only">
                 {t(keyboardHintKey)}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span
                 className={cn(
-                  "text-xs tabular-nums",
+                  "text-[11px] font-mono tabular-nums",
                   length > 4000 ? "text-destructive" : "text-muted-foreground",
                 )}
               >
                 {length}/4000
               </span>
-              <Button
-                variant="orange"
-                size="icon"
-                className="size-10"
-                disabled={!hasText || length > 4000 || !valid}
-                aria-label={t("chat.composer.send")}
-                onClick={send}
-              >
-                <SendHorizontal className="size-4" aria-hidden="true" />
-              </Button>
+              <div className="flex items-center">
+                <Button
+                  variant="orange"
+                  size="icon"
+                  className={cn(
+                    "size-8",
+                    props.onSchedule && "rounded-r-none",
+                  )}
+                  disabled={scheduling || !hasText || length > 4000 || !valid}
+                  loading={scheduling}
+                  aria-label={t("chat.composer.send")}
+                  onClick={send}
+                >
+                  <SendHorizontal className="size-4" aria-hidden="true" />
+                </Button>
+                {props.onSchedule && props.canPost && (
+                  <ChatScheduleSend
+                    disabled={!hasText || length > 4000 || !valid}
+                    busy={scheduling}
+                    onSchedule={schedule}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -200,7 +217,7 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
             {t("chat.rich.tooComplex")}
           </p>
         )}
-      </div>
+      </fieldset>
     </footer>
   );
 }
