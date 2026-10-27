@@ -7,8 +7,10 @@ import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useChannelMessages } from "@/pages/chat/hooks/useChannelMessages";
 import { useChatRealtime } from "@/pages/chat/hooks/useChatRealtime";
+import { useScheduleMessage } from "@/pages/chat/hooks/useChatSchedules";
 import { ChatChannelHeader } from "@/pages/chat/components/ChatChannelHeader";
 import { ChatChannelComposer } from "@/pages/chat/components/ChatChannelComposer";
+import { ChatChannelScheduleNotice } from "@/pages/chat/components/ChatChannelScheduleNotice";
 import { ChatTimeline } from "@/pages/chat/components/ChatTimeline";
 import { ChatLinkedMessage } from "@/pages/chat/components/ChatLinkedMessage";
 import type { ChatContextType, ChatConnectionState } from "@/types/chat";
@@ -33,10 +35,12 @@ interface ConversationProps {
   onMenu: () => void;
   onSettings: () => void;
   onThread: (rootId: string) => void;
+  onScheduled: () => void;
 }
 
 export function ChatConversation(props: ConversationProps) {
   const { t } = useTranslation();
+  const schedule = useScheduleMessage(props.workspaceId, props.channel.id);
   const [params, setParams] = useSearchParams();
   const linkedMessageId = params.get("message");
   const [connection, setConnection] =
@@ -220,14 +224,24 @@ export function ChatConversation(props: ConversationProps) {
         />
       )}
       {!search && !pinned && (
-        <ChatChannelComposer
-          key={`${props.contextType}:${props.contextId ?? ""}`}
-          canPost={props.channel.canPost && props.contextValid}
-          people={props.people}
-          contextType={props.contextType}
-          contextId={props.contextId}
-          onSend={chat.send}
-        />
+        <>
+          {!props.unavailable && (
+            <ChatChannelScheduleNotice
+              workspaceId={props.workspaceId}
+              channelId={props.channel.id}
+              onOpen={props.onScheduled}
+            />
+          )}
+          <ChatChannelComposer
+            key={`${props.contextType}:${props.contextId ?? ""}`}
+            canPost={props.channel.canPost && props.contextValid}
+            people={props.people}
+            contextType={props.contextType}
+            contextId={props.contextId}
+            onSend={chat.send}
+            onSchedule={schedule}
+          />
+        </>
       )}
     </div>
   );
