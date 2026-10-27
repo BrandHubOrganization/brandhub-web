@@ -41,7 +41,7 @@ export function ChatComposerEmoji({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
-          className="size-10"
+          className="size-8"
           aria-label={t("chat.rich.emoji")}
           title={t("chat.rich.emoji")}
         >

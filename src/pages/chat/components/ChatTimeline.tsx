@@ -163,7 +163,7 @@ export function ChatTimeline(props: TimelineProps) {
           <div className="space-y-4" aria-hidden="true">
             {[0, 1, 2].map((item) => (
               <div key={item} className="flex items-start gap-3">
-                <div className="bg-muted/70 size-9 shrink-0 animate-pulse rounded-xl" />
+                <div className="bg-muted/70 size-8 shrink-0 animate-pulse rounded-lg" />
                 <div className="flex-1 space-y-2 pt-0.5">
                   <div className="flex items-center gap-2">
                     <div className="bg-muted/70 h-3.5 w-24 animate-pulse rounded-md" />
@@ -206,7 +206,7 @@ export function ChatTimeline(props: TimelineProps) {
         aria-label={t("chat.ui.messages")}
         aria-live="polite"
         aria-relevant="additions"
-        className="pb-3"
+        className="pb-2"
       >
         {props.messages.map((message, index) => {
           const prev = index > 0 ? props.messages[index - 1] : undefined;
@@ -231,11 +231,11 @@ export function ChatTimeline(props: TimelineProps) {
           return (
             <Fragment key={message.id}>
               {!sameDay && (
-                <div className="my-4 flex items-center gap-3 px-5">
+                <div className="my-2.5 flex items-center gap-3 px-4 sm:px-5">
                   <span className="bg-border/60 h-px flex-1" />
                   <time
                     dateTime={message.createdAt}
-                    className="border-border/80 bg-muted/60 text-muted-foreground rounded-full border px-3 py-0.5 text-[11px] font-medium shadow-2xs"
+                    className="border-border/80 bg-muted/60 text-muted-foreground rounded-full border px-2.5 py-0.5 text-[10px] font-medium shadow-2xs"
                   >
                     {new Intl.DateTimeFormat(i18n.language, {
                       dateStyle: "medium",

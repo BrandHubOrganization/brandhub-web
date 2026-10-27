@@ -46,24 +46,24 @@ export function ChatChannelHeader(props: HeaderProps) {
       : props.channel.name;
   return (
     <header className="border-border bg-card/85 shrink-0 border-b backdrop-blur-md">
-      <div className="flex flex-wrap items-center gap-2 px-3 py-2.5 sm:gap-2.5 sm:px-4">
+      <div className="flex flex-wrap items-center gap-2 px-3 py-1.5 sm:gap-2 sm:px-4 sm:py-2">
         <Button
           variant="ghost"
           size="icon"
-          className="text-muted-foreground hover:text-foreground size-9 shrink-0 rounded-lg xl:hidden"
+          className="text-muted-foreground hover:text-foreground size-8 shrink-0 rounded-lg xl:hidden"
           aria-label={t("chat.channels.open")}
           onClick={props.onMenu}
         >
           <PanelLeft className="size-4" />
         </Button>
         <div
-          className="bg-brand-orange-soft text-brand-orange ring-brand-orange/15 flex size-8 shrink-0 items-center justify-center rounded-lg ring-1"
+          className="bg-brand-orange-soft text-brand-orange ring-brand-orange/15 flex size-7.5 shrink-0 items-center justify-center rounded-lg ring-1"
           aria-hidden="true"
         >
           <Icon className="size-4 shrink-0" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1">
-          <h1 className="text-foreground truncate text-sm font-semibold tracking-tight sm:text-base">
+          <h1 className="text-foreground truncate text-sm font-semibold tracking-tight">
             {name}
           </h1>
           <p className="text-muted-foreground truncate text-xs">
@@ -73,12 +73,12 @@ export function ChatChannelHeader(props: HeaderProps) {
         </div>
         <span
           role="status"
-          className="border-border/80 bg-muted/40 text-muted-foreground inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px] font-medium"
+          className="border-border/80 bg-muted/40 text-muted-foreground inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium"
         >
           <span
             aria-hidden="true"
             className={cn(
-              "size-2 shrink-0 rounded-full",
+              "size-1.5 shrink-0 rounded-full",
               props.connection === "CONNECTED"
                 ? "bg-emerald-500"
                 : props.connection === "DISCONNECTED"
@@ -99,13 +99,13 @@ export function ChatChannelHeader(props: HeaderProps) {
             value={props.search}
             onChange={(event) => props.onSearch(event.target.value)}
             iconPrefix={<Search />}
-            className="bg-muted/35 h-9 text-xs sm:text-sm"
+            className="bg-muted/35 h-8 text-xs"
           />
           {props.search && (
             <Button
               variant="ghost"
               size="icon"
-              className="size-9 shrink-0 rounded-lg"
+              className="size-8 shrink-0 rounded-lg"
               aria-label={t("chat.search.clear")}
               onClick={() => props.onSearch("")}
             >
@@ -118,7 +118,7 @@ export function ChatChannelHeader(props: HeaderProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:text-foreground size-9 rounded-lg"
+              className="text-muted-foreground hover:text-foreground size-8 rounded-lg"
               aria-label={t("chat.calls.start")}
               title={t("chat.calls.start")}
               disabled={
@@ -141,7 +141,7 @@ export function ChatChannelHeader(props: HeaderProps) {
             variant={props.pinned ? "secondary" : "ghost"}
             size="icon"
             className={cn(
-              "size-9 rounded-lg transition-colors",
+              "size-8 rounded-lg transition-colors",
               props.pinned
                 ? "bg-brand-orange-soft text-brand-orange ring-brand-orange/20 hover:bg-brand-orange-soft/80 hover:text-brand-orange ring-1"
                 : "text-muted-foreground hover:text-foreground",
@@ -156,7 +156,7 @@ export function ChatChannelHeader(props: HeaderProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground hover:text-foreground size-9 rounded-lg"
+            className="text-muted-foreground hover:text-foreground size-8 rounded-lg"
             aria-label={t("chat.channels.details")}
             title={t("chat.channels.details")}
             onClick={props.onSettings}
