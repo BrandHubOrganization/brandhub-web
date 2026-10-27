@@ -1,273 +1,194 @@
-import React, { useState } from "react";
-import type { MediaItem } from "@/types/contentLibrary";
-import {
-  X,
-  Copy,
-  Trash2,
-  Calendar,
-  HardDrive,
-  Maximize2,
-  Film,
-  Image as ImageIcon,
-  Check,
-  Stamp,
-} from "lucide-react";
-import { toast } from "sonner";
-import { COPY_FEEDBACK_DURATION_MS } from "@/lib/constants";
-import { formatFileSize } from "@/lib/utils";
+import { useRef, useState } from "react";
+import { isAxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { WatermarkStudioModal } from "./watermark/WatermarkStudioModal";
+import { X } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import { useAuthStore } from "@/store/authStore";
+import { useMaterialDetail } from "@/pages/library/hooks/useMaterialDetail";
+import { MaterialBadges } from "@/pages/library/components/MaterialBadges";
+import { MaterialPreview } from "@/pages/library/components/MaterialPreview";
+import { MaterialMetadataEditForm } from "@/pages/library/components/MaterialMetadataEditForm";
+import { MaterialDetailFacts } from "@/pages/library/components/MaterialDetailFacts";
+import { MaterialDetailActions } from "@/pages/library/components/MaterialDetailActions";
+import type { MaterialItem } from "@/types/material";
 
-interface MediaDetailPanelProps {
-  media: MediaItem | null;
+interface Props {
+  material: MaterialItem | null;
+  quotaExceeded?: boolean;
+  downloading?: boolean;
+  onDownload?: (material: MaterialItem) => void;
   onClose: () => void;
-  onDelete: (id: string) => Promise<void>;
-  canDelete?: boolean;
-  onWatermarked?: (newMedia: MediaItem) => void;
+  onDelete: (material: MaterialItem) => void;
+  onWatermarked: () => void;
 }
 
-export const MediaDetailPanel: React.FC<MediaDetailPanelProps> = ({
-  media,
+export function MediaDetailPanel(props: Props) {
+  return props.material ? (
+    <DetailView
+      key={`${props.material.workspaceId}:${props.material.id}`}
+      {...props}
+      material={props.material}
+    />
+  ) : null;
+}
+
+function DetailView({
+  material: selected,
+  quotaExceeded,
+  downloading,
+  onDownload,
   onClose,
   onDelete,
-  canDelete = true,
   onWatermarked,
-}) => {
+}: Props & { material: MaterialItem }) {
   const { t } = useTranslation();
-  const [copied, setCopied] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isWatermarkOpen, setIsWatermarkOpen] = useState(false);
-
-  if (!media) return null;
-
-  const handleCopyUrl = () => {
-    navigator.clipboard.writeText(media.url);
-    setCopied(true);
-    toast.success(t("library.media.copyUrlSuccess"));
-    setTimeout(() => setCopied(false), COPY_FEEDBACK_DURATION_MS);
+  const client = useQueryClient();
+  const actor = useAuthStore((state) => state.user?.id);
+  const query = useMaterialDetail(selected.workspaceId, selected.id);
+  const [editing, setEditing] = useState(false);
+  const editButton = useRef<HTMLButtonElement>(null);
+  const trigger = useRef<HTMLElement | null>(null);
+  const material = query.data;
+  const label = (key: string) => t(`library.repository.${key}`);
+  const detailKey = [
+    "material-detail",
+    selected.workspaceId,
+    actor,
+    selected.id,
+  ];
+  const endEdit = () => {
+    setEditing(false);
+    requestAnimationFrame(() => editButton.current?.focus());
   };
-
-  const handleDelete = async () => {
-    if (media.source === "repository") {
-      await onDelete(media.id);
-      return;
-    }
-    if (
-      window.confirm(
-        t("library.media.deleteConfirm", { filename: media.filename }),
-      )
-    ) {
-      setIsDeleting(true);
-      try {
-        await onDelete(media.id);
-        toast.success(t("library.media.deleteFileSuccess"));
-        onClose();
-      } catch {
-        toast.error(t("library.media.deleteError"));
-      } finally {
-        setIsDeleting(false);
-      }
-    }
-  };
-
-  const formatDate = (isoString: string) => {
-    const d = new Date(isoString);
-    return d.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+  function saved(updated: MaterialItem) {
+    client.setQueryData(detailKey, updated);
+    void client.invalidateQueries({
+      queryKey: ["materials", selected.workspaceId, actor],
     });
-  };
-
+    toast.success(label("updateSuccess"));
+    endEdit();
+  }
+  function resetUnavailable() {
+    endEdit();
+    void client.resetQueries({ queryKey: detailKey, exact: true });
+    void client.invalidateQueries({
+      queryKey: ["materials", selected.workspaceId, actor],
+    });
+  }
+  const unavailable =
+    isAxiosError(query.error) &&
+    [403, 404].includes(query.error.response?.status ?? 0);
   return (
-    <div className="fixed inset-0 z-50 flex justify-end overflow-hidden bg-black/40 backdrop-blur-xs transition-opacity">
-      <div className="bg-card border-border flex h-full w-full max-w-md transform flex-col border-l shadow-2xl transition-transform">
-        {/* Header */}
-        <div className="border-border flex items-center justify-between border-b p-4">
-          <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-            {media.type === "video" ? (
-              <Film className="text-brand-orange size-4" />
-            ) : (
-              <ImageIcon className="text-brand-orange size-4" />
-            )}
-            {t("library.media.detailTitle")}
-          </h3>
-          <button
+    <Sheet
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <SheetContent
+        className="w-full overflow-y-auto sm:max-w-md lg:max-w-lg [&>button:last-child]:hidden"
+        onOpenAutoFocus={() => {
+          trigger.current =
+            document.activeElement instanceof HTMLElement
+              ? document.activeElement
+              : null;
+        }}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          if (trigger.current?.isConnected) trigger.current.focus();
+        }}
+        onEscapeKeyDown={(event) => {
+          if (editing) {
+            event.preventDefault();
+            endEdit();
+          }
+        }}
+      >
+        <SheetHeader className="border-border border-b pr-14">
+          <SheetTitle>{material?.name ?? selected.name}</SheetTitle>
+          <SheetDescription>{label("detailDescription")}</SheetDescription>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-3 right-3"
+            aria-label={label("close")}
             onClick={onClose}
-            className="text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer rounded-lg p-1 transition-colors"
           >
-            <X className="size-5" />
-          </button>
-        </div>
-
-        {/* Content Body */}
-        <div className="flex-1 space-y-6 overflow-y-auto p-5">
-          {/* Media Preview Box */}
-          <div className="border-border group relative flex min-h-[220px] items-center justify-center overflow-hidden rounded-xl border bg-zinc-950">
-            {media.type === "video" ? (
-              <video
-                src={media.url}
-                controls
-                className="max-h-[300px] w-full object-contain"
-                poster={media.thumbnailUrl}
-              />
-            ) : media.type === "file" || !media.url ? (
-              <p className="text-muted-foreground p-4 text-sm">
-                {t("library.repositoryUpload.filePreview")}
-              </p>
-            ) : (
-              <img
-                src={media.url}
-                alt={media.filename}
-                className="max-h-[300px] w-full object-contain"
-              />
-            )}
-          </div>
-
-          {/* Title & Badge */}
-          <div>
-            <span className="bg-brand-orange-soft text-brand-orange mb-2 inline-block rounded-full px-2.5 py-1 text-xs font-bold tracking-wide uppercase">
-              {media.type}
-            </span>
-            <h4 className="text-foreground text-base leading-snug font-medium break-all">
-              {media.filename}
-            </h4>
-          </div>
-
-          {/* Metadata Grid */}
-          <div className="bg-muted/50 border-border text-muted-foreground space-y-3 rounded-xl border p-4 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                <HardDrive className="size-4" /> {t("library.media.sizeLabel")}
-              </span>
-              <span className="text-foreground font-mono font-medium">
-                {formatFileSize(media.sizeBytes)}
-              </span>
+            <X />
+          </Button>
+        </SheetHeader>
+        <div className="space-y-5 p-4">
+          {query.isPending && (
+            <p role="status" className="text-muted-foreground text-sm">
+              {t("library.trash.loading")}
+            </p>
+          )}
+          {query.isError ? (
+            <div role="alert" className="space-y-3 text-sm">
+              <p>{label(unavailable ? "unavailable" : "loadError")}</p>
+              {!unavailable && (
+                <Button variant="outline" onClick={() => void query.refetch()}>
+                  {label("retry")}
+                </Button>
+              )}
             </div>
-
-            {media.width && media.height && (
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                  <Maximize2 className="size-4" />{" "}
-                  {t("library.media.resolutionLabel")}
-                </span>
-                <span className="text-foreground font-mono font-medium">
-                  {media.width} × {media.height} px
-                </span>
-              </div>
-            )}
-
-            {media.durationSeconds && (
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                  <Film className="size-4" /> {t("library.media.durationLabel")}
-                </span>
-                <span className="text-foreground font-mono font-medium">
-                  {t("library.media.durationSeconds", {
-                    seconds: media.durationSeconds,
-                  })}
-                </span>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground flex items-center gap-2 text-xs">
-                <Calendar className="size-4" />{" "}
-                {t("library.media.uploadedAtLabel")}
-              </span>
-              <span className="text-foreground text-xs">
-                {formatDate(media.createdAt)}
-              </span>
-            </div>
-          </div>
-
-          {/* S3 Direct Link Input Box */}
-          <div className="space-y-1.5">
-            <label className="text-muted-foreground text-xs font-semibold">
-              {t("library.media.directUrlLabel")}
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                readOnly
-                value={media.url}
-                className="bg-muted border-border text-muted-foreground flex-1 rounded-lg border px-3 py-2 font-mono text-xs focus:outline-hidden"
-              />
-              <button
-                onClick={handleCopyUrl}
-                className="bg-brand-orange hover:bg-brand-orange/90 flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
-              >
-                {copied ? (
-                  <Check className="size-4" />
-                ) : (
-                  <Copy className="size-4" />
+          ) : (
+            material && (
+              <>
+                <MaterialBadges material={material} />
+                {material.rawWarning && (
+                  <p
+                    role="note"
+                    className="bg-muted text-foreground border-border rounded-md border p-3 text-sm"
+                  >
+                    {label("rawWarning")}
+                  </p>
                 )}
-                {copied ? t("library.media.copied") : t("library.media.copy")}
-              </button>
-            </div>
-          </div>
+                {editing ? (
+                  <MaterialMetadataEditForm
+                    key={`${material.id}:${material.version}`}
+                    material={material}
+                    onSaved={saved}
+                    onCancel={endEdit}
+                    onReload={() => void query.refetch()}
+                    onUnavailable={resetUnavailable}
+                  />
+                ) : (
+                  <>
+                    <MaterialPreview
+                      key={`${material.id}:${material.version}:${material.previewExpiresAt}`}
+                      material={material}
+                      onUnavailable={resetUnavailable}
+                    />
+                    <MaterialDetailFacts material={material} />
+                    <MaterialDetailActions
+                      material={material}
+                      quotaExceeded={quotaExceeded}
+                      downloading={downloading}
+                      editRef={editButton}
+                      onDownload={
+                        onDownload ? () => onDownload(material) : undefined
+                      }
+                      onEdit={() => setEditing(true)}
+                      onDelete={() => onDelete(material)}
+                      onChanged={onWatermarked}
+                    />
+                  </>
+                )}
+              </>
+            )
+          )}
         </div>
-
-        {/* Footer Actions */}
-        <div className="border-border bg-muted flex items-center justify-between border-t p-4">
-          <div className="flex items-center gap-2">
-            {canDelete && (
-              <button
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-red-50 px-3.5 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-900/60"
-              >
-                <Trash2 className="size-4" />
-                {isDeleting
-                  ? t("library.media.deleting")
-                  : t("library.media.deleteFileButton")}
-              </button>
-            )}
-
-            {media.type === "image" && (
-              <button
-                type="button"
-                onClick={() => setIsWatermarkOpen(true)}
-                className="bg-brand-orange hover:bg-brand-orange/90 flex cursor-pointer items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition-colors"
-              >
-                <Stamp className="size-4" />
-                {t("materials.watermark.openButton")}
-              </button>
-            )}
-          </div>
-
-          <button
-            onClick={onClose}
-            className="border-border text-foreground hover:bg-muted cursor-pointer rounded-xl border px-4 py-2 text-xs font-medium transition-colors"
-          >
-            {t("library.media.close")}
-          </button>
-        </div>
-      </div>
-
-      {isWatermarkOpen && (
-        <WatermarkStudioModal
-          isOpen={isWatermarkOpen}
-          onClose={() => setIsWatermarkOpen(false)}
-          material={media}
-          workspaceId={media.workspaceId || "ws-default"}
-          onSuccess={(newMat) => {
-            onWatermarked?.({
-              id: newMat.id,
-              workspaceId: newMat.workspaceId,
-              filename: newMat.name,
-              url: newMat.url,
-              type: "image",
-              sizeBytes: newMat.fileSize || 1000000,
-              createdAt: newMat.createdAt,
-            });
-            setIsWatermarkOpen(false);
-            onClose();
-          }}
-        />
-      )}
-    </div>
+      </SheetContent>
+    </Sheet>
   );
-};
+}

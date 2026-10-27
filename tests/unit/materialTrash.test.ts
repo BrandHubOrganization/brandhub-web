@@ -1,8 +1,10 @@
+import { AxiosError, type AxiosResponse } from "axios";
 import { describe, expect, it } from "vitest";
 import {
   canMutateMaterial,
   retentionDays,
 } from "../../src/pages/library/hooks/materialTrashPolicy";
+import { resolveDownloadErrorKey } from "../../src/pages/library/hooks/useMaterialDownload";
 import type { MaterialItem } from "../../src/types/material";
 import en from "../../src/i18n/locales/en/library.json";
 import vi from "../../src/i18n/locales/vi/library.json";
@@ -31,7 +33,27 @@ describe("material trash", () => {
     expect(retentionDays(material, Date.parse("2026-10-30T23:59:59Z"))).toBe(1);
     expect(retentionDays(material, Date.parse("2026-10-31T00:00:00Z"))).toBe(0);
   });
-  it("keeps all trash translation keys parallel", () => {
+  it("keeps all trash and repository translation keys parallel", () => {
     expect(Object.keys(en.trash).sort()).toEqual(Object.keys(vi.trash).sort());
+    expect(Object.keys(en.repository).sort()).toEqual(
+      Object.keys(vi.repository).sort(),
+    );
+  });
+  it("maps download error codes and statuses to i18n keys", () => {
+    const axiosErr = (status: number, code?: string) => {
+      const err = new AxiosError("failed");
+      err.response = {
+        status,
+        data: code ? { error: { code } } : {},
+      } as AxiosResponse;
+      return err;
+    };
+    expect(resolveDownloadErrorKey(axiosErr(409, "MATERIAL_STORAGE_MISSING"))).toBe("storageMissing");
+    expect(resolveDownloadErrorKey(axiosErr(503, "MATERIAL_STORAGE_UNAVAILABLE"))).toBe("storageUnavailable");
+    expect(resolveDownloadErrorKey(axiosErr(409, "MATERIAL_NOT_READY"))).toBe("materialNotReady");
+    expect(resolveDownloadErrorKey(axiosErr(409, "MATERIAL_UNAVAILABLE"))).toBe("unavailable");
+    expect(resolveDownloadErrorKey(axiosErr(404, "MATERIAL_NOT_FOUND"))).toBe("unavailable");
+    expect(resolveDownloadErrorKey(axiosErr(403, "WORKSPACE_ACCESS_DENIED"))).toBe("forbidden");
+    expect(resolveDownloadErrorKey(new Error("generic"))).toBe("downloadFailed");
   });
 });

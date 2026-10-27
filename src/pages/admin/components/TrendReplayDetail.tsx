@@ -154,14 +154,14 @@ export function TrendReplayDetail({
         </p>
       )}
 
-      {/* Gemini API Usage Warning & Start/Resume Button */}
+      {/* Deploy API Usage Warning & Start/Resume Button */}
       {mayStart && job.days.length > 0 && (
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 space-y-3">
           <div className="flex items-start gap-2.5">
             <Sparkles aria-hidden="true" className="size-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <div className="space-y-1">
               <h4 className="text-xs font-semibold text-amber-900 dark:text-amber-200 uppercase tracking-wide">
-                Gemini API Usage & Provider Cost
+                {t("admin.trendReplay.providerCostTitle")}
               </h4>
               <p className="text-muted-foreground text-xs leading-relaxed">
                 {t("admin.trendReplay.costWarning")}

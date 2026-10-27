@@ -9,6 +9,7 @@ interface Props {
   onFile: (file: File | null) => void;
   profiles: { id: string; name: string }[];
   isClient: boolean;
+  canShare?: boolean;
   disabled: boolean;
   id: string;
 }
@@ -19,6 +20,7 @@ export function MaterialUploadFields({
   onFile,
   profiles,
   isClient,
+  canShare = true,
   disabled,
   id,
 }: Props) {
@@ -79,7 +81,7 @@ export function MaterialUploadFields({
         <Select
           id={`${id}-visibility`}
           value={options.visibility}
-          disabled={isClient}
+          disabled={isClient || !canShare}
           onChange={(event) =>
             onChange({
               ...options,
@@ -90,7 +92,9 @@ export function MaterialUploadFields({
           }
         >
           {!isClient && <option value="INTERNAL">{label("internal")}</option>}
-          <option value="CLIENT">{label("client")}</option>
+          {(isClient || canShare || options.visibility === "CLIENT") && (
+            <option value="CLIENT">{label("client")}</option>
+          )}
         </Select>
       </div>
       {options.visibility === "CLIENT" && (

@@ -463,7 +463,7 @@ for (const language of ["vi", "en"] as const) {
 for (const language of ["vi", "en"] as const) {
   test(`loads API hashtag suggestions without saving to collection (${language})`, async ({
     page,
-  }) => {
+  }, testInfo) => {
     await page.evaluate((lang) => {
       localStorage.setItem("brandhub-lang", lang);
       localStorage.setItem("vite-ui-theme", lang === "vi" ? "light" : "dark");
@@ -488,7 +488,9 @@ for (const language of ["vi", "en"] as const) {
     });
     const generate = page.getByRole("button", {
       name:
-        language === "vi" ? /Gợi ý hashtag từ API/ : /Get hashtag suggestions/,
+        language === "vi"
+          ? /Gợi ý hashtag theo nội dung/
+          : /Suggest hashtags for this caption/,
     });
     await expect(generate).toBeDisabled();
     await page
@@ -505,6 +507,28 @@ for (const language of ["vi", "en"] as const) {
           : "Add #CoffeeLaunch to this Post",
     });
     await expect(apply).toHaveCount(1);
+    const ranked = page.getByRole("list", {
+      name:
+        language === "vi"
+          ? "Hashtag theo mức độ phù hợp"
+          : "Hashtags ranked by relevance",
+    });
+    await expect(ranked.getByRole("listitem")).toHaveCount(2);
+    await expect(ranked.getByRole("listitem").nth(0)).toContainText(
+      "#CoffeeLaunch",
+    );
+    await expect(ranked.getByRole("listitem").nth(1)).toContainText(
+      "#NewBlend",
+    );
+    for (const width of [375, 768, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await ranked.scrollIntoViewIfNeeded();
+      const box = await ranked.boundingBox();
+      expect(box?.width).toBeLessThanOrEqual(width);
+      await page.screenshot({
+        path: testInfo.outputPath(`hashtag-rank-${language}-${width}.png`),
+      });
+    }
     await apply.focus();
     await page.keyboard.press("Enter");
     await expect(apply).toBeDisabled();
@@ -530,8 +554,8 @@ for (const language of ["vi", "en"] as const) {
     await expect(
       page.getByText(
         language === "vi"
-          ? "API chưa trả về hashtag phù hợp."
-          : "The API returned no matching hashtags.",
+          ? "Chưa tìm thấy hashtag phù hợp. Hãy bổ sung nội dung cụ thể hơn."
+          : "No relevant hashtags found. Add more specific details to your caption.",
         { exact: true },
       ),
     ).toBeVisible();

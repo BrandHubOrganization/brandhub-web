@@ -1,15 +1,18 @@
-import { FileText, RotateCcw, Trash2 } from "lucide-react";
+import { Download, RotateCcw, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { cn, formatFileSize } from "@/lib/utils";
 import type { MaterialItem } from "@/types/material";
 import { retentionDays } from "@/pages/library/hooks/materialTrashPolicy";
+import { MaterialThumbnail } from "@/pages/library/components/MaterialThumbnail";
+import { MaterialBadges } from "@/pages/library/components/MaterialBadges";
 
 interface Props {
   material: MaterialItem;
   deleted: boolean;
-  canMutate: boolean;
   pending: boolean;
+  downloading?: boolean;
+  onDownload?: () => void;
   onDelete: () => void;
   onRestore: () => void;
   onOpen: () => void;
@@ -18,8 +21,9 @@ interface Props {
 export function MaterialRepositoryCard({
   material,
   deleted,
-  canMutate,
   pending,
+  downloading = false,
+  onDownload,
   onDelete,
   onRestore,
   onOpen,
@@ -29,34 +33,29 @@ export function MaterialRepositoryCard({
   return (
     <article
       className={cn(
-        "border-border bg-card flex min-w-0 flex-col gap-3 rounded-xl border p-4 shadow-xs",
+        "border-border bg-card min-w-0 space-y-3 rounded-xl border p-3 shadow-xs",
         deleted && "border-dashed",
       )}
     >
-      <div className="bg-muted flex aspect-video items-center justify-center overflow-hidden rounded-md">
-        {!deleted &&
-        material.previewUrl &&
-        material.mimeType?.startsWith("image/") ? (
-          <img
-            src={material.previewUrl}
-            alt={material.name}
-            className="size-full object-contain"
-          />
-        ) : (
-          <FileText
-            className={cn(
-              "text-muted-foreground size-10",
-              deleted && "opacity-60",
-            )}
-          />
-        )}
-      </div>
-      <h3
-        className="text-foreground truncate text-sm font-semibold"
-        title={material.name}
+      <Button
+        variant="ghost"
+        className="text-foreground block h-auto w-full min-w-0 space-y-3 p-0 text-left whitespace-normal"
+        disabled={deleted}
+        onClick={onOpen}
+        aria-label={t("library.repository.openLabel", { name: material.name })}
       >
-        {material.name}
-      </h3>
+        <MaterialThumbnail
+          key={material.previewUrl ?? material.id}
+          material={material}
+        />
+        <span
+          className="block truncate text-sm font-semibold"
+          title={material.name}
+        >
+          {material.name}
+        </span>
+      </Button>
+      <MaterialBadges material={material} />
       <p className="text-muted-foreground text-xs">
         {formatFileSize(material.fileSize ?? 0)}
       </p>
@@ -71,42 +70,63 @@ export function MaterialRepositoryCard({
                 : t("library.trash.retentionExpired")}
         </p>
       )}
-      <div className="mt-auto flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         {!deleted && (
           <Button variant="outline" size="sm" onClick={onOpen}>
             {t("library.trash.details")}
           </Button>
         )}
-        {canMutate &&
-          (deleted ? (
+        {!deleted &&
+          material.status === "READY" &&
+          material.capabilities?.canDownload &&
+          onDownload && (
             <Button
               variant="outline"
               size="sm"
-              disabled={
-                pending || days === 0 || material.status === "PURGE_IN_PROGRESS"
-              }
-              aria-label={t("library.trash.restoreLabel", {
+              disabled={downloading}
+              aria-busy={downloading}
+              aria-label={t("library.repository.downloadAriaLabel", {
                 name: material.name,
               })}
-              onClick={onRestore}
+              onClick={onDownload}
             >
-              <RotateCcw />
-              {t("library.trash.restore")}
+              <Download className="size-4" />
+              {t(
+                downloading
+                  ? "library.repository.preparingDownload"
+                  : "library.repository.download",
+              )}
             </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={pending}
-              aria-label={t("library.trash.deleteLabel", {
-                name: material.name,
-              })}
-              onClick={onDelete}
-            >
-              <Trash2 />
-              {t("library.trash.moveToTrash")}
-            </Button>
-          ))}
+          )}
+        {deleted
+          ? material.capabilities?.canRestore && (
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={pending || days === 0}
+                aria-label={t("library.trash.restoreLabel", {
+                  name: material.name,
+                })}
+                onClick={onRestore}
+              >
+                <RotateCcw />
+                {t("library.trash.restore")}
+              </Button>
+            )
+          : material.capabilities?.canDelete && (
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={pending}
+                aria-label={t("library.trash.deleteLabel", {
+                  name: material.name,
+                })}
+                onClick={onDelete}
+              >
+                <Trash2 />
+                {t("library.trash.moveToTrash")}
+              </Button>
+            )}
       </div>
     </article>
   );

@@ -11,8 +11,11 @@ import { WorkspaceKpiCards } from "./components/dashboard/WorkspaceKpiCards";
 import { WorkspaceTasksSection } from "./components/dashboard/WorkspaceTasksSection";
 import { WorkspaceQuickActions } from "./components/dashboard/WorkspaceQuickActions";
 import { WorkspaceVisualAnalytics } from "./components/dashboard/WorkspaceVisualAnalytics";
+import { AgencyStorageCard } from "./components/dashboard/AgencyStorageCard";
+import { useClearStoragePreview } from "./hooks/useClearStoragePreview";
 
 export function WorkspaceDashboardPage() {
+  useClearStoragePreview();
   const { t } = useTranslation();
   const {
     workspaceId,
@@ -53,7 +56,9 @@ export function WorkspaceDashboardPage() {
 
   return (
     <PageWrapper
-      title={workspace.name || t("workspace.dashboard.title", "Workspace Dashboard")}
+      title={
+        workspace.name || t("workspace.dashboard.title", "Workspace Dashboard")
+      }
       hideBanner
     >
       {/* ── Top Workspace Header ── */}
@@ -78,6 +83,7 @@ export function WorkspaceDashboardPage() {
         <PostDashboardView workspaceId={workspaceId} />
       ) : (
         <>
+          <AgencyStorageCard key={workspaceId} workspaceId={workspaceId} />
           {/* ── Package Status Banner (When not approved yet) ── */}
           <PackageStatusBanner
             workspaceId={workspaceId}
@@ -119,7 +125,9 @@ export function WorkspaceDashboardPage() {
               campaignsLoading={campaignsLoading}
               campaignsError={campaignsError}
               isManagerOrOwner={isManagerOrOwner}
-              onRetryCampaigns={() => setCampaignsAttempt((attempt) => attempt + 1)}
+              onRetryCampaigns={() =>
+                setCampaignsAttempt((attempt) => attempt + 1)
+              }
             />
 
             <WorkspaceQuickActions

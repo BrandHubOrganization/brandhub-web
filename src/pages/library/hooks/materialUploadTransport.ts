@@ -34,7 +34,29 @@ export function putMaterialBytes(
     request.onload = () => {
       signal.removeEventListener("abort", abort);
       if (request.status >= 200 && request.status < 300) resolve();
-      else reject(new Error("Storage upload failed"));
+      else {
+        let code = "Storage upload failed";
+        try {
+          const response: unknown = JSON.parse(request.responseText);
+          if (
+            typeof response === "object" &&
+            response !== null &&
+            "error" in response
+          ) {
+            const error = response.error;
+            if (
+              typeof error === "object" &&
+              error !== null &&
+              "code" in error &&
+              error.code === "DRIVE_STORAGE_FULL"
+            )
+              code = error.code;
+          }
+        } catch {
+          /* S3 errors are XML; preserve the generic message. */
+        }
+        reject(new Error(code));
+      }
     };
     request.onerror = request.ontimeout = () => {
       signal.removeEventListener("abort", abort);

@@ -7,6 +7,7 @@ import { MaterialUploadFields } from "@/pages/library/components/MaterialUploadF
 import { useMaterialUpload } from "@/pages/library/hooks/useMaterialUpload";
 import { useMaterialUploadProfiles } from "@/pages/library/hooks/useMaterialUploadProfiles";
 import { materialUploadLimit } from "@/pages/library/hooks/materialUploadTransport";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import type { MaterialItem, MaterialUploadOptions } from "@/types/material";
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
   onSuccess: (material: MaterialItem) => void;
   onClose: () => void;
   onStart?: () => void;
+  initialOptions?: Partial<MaterialUploadOptions>;
 }
 
 export function MaterialUploadForm({
@@ -23,9 +25,12 @@ export function MaterialUploadForm({
   onSuccess,
   onClose,
   onStart,
+  initialOptions,
 }: Props) {
   const { t } = useTranslation();
   const id = useId();
+  const role = useWorkspaceStore((state) => state.currentMemberRole);
+  const canShare = role === "OWNER" || role === "MANAGER";
   const profiles = useMaterialUploadProfiles(workspaceId, isClient);
   const uploader = useMaterialUpload(workspaceId);
   const [file, setFile] = useState<File | null>(null);
@@ -34,6 +39,7 @@ export function MaterialUploadForm({
     type: "RAW",
     purpose: isClient ? "BRAND_REFERENCE" : "MATERIAL",
     visibility: isClient ? "CLIENT" : "INTERNAL",
+    ...initialOptions,
   });
   const label = (key: string) => t(`library.repositoryUpload.${key}`);
 
@@ -64,14 +70,16 @@ export function MaterialUploadForm({
         ? failure.response?.data?.error?.code
         : undefined;
       const key =
-        code === "STORAGE_QUOTA_EXCEEDED"
-          ? "quotaExceeded"
-          : code === "STORAGE_POOL_CAPACITY_EXCEEDED"
-            ? "poolFull"
-            : code === "MATERIAL_STORAGE_UNAVAILABLE" ||
-                code === "STORAGE_SCHEMA_NOT_READY"
-              ? "unavailable"
-              : "failed";
+        code === "DRIVE_NOT_CONNECTED"
+          ? "driveNotConnected"
+          : code === "STORAGE_QUOTA_EXCEEDED"
+            ? "quotaExceeded"
+            : code === "STORAGE_POOL_CAPACITY_EXCEEDED"
+              ? "poolFull"
+              : code === "MATERIAL_STORAGE_UNAVAILABLE" ||
+                  code === "STORAGE_SCHEMA_NOT_READY"
+                ? "unavailable"
+                : "failed";
       setError(label(key));
       toast.error(label(key), { duration: 5000 });
     }
@@ -93,6 +101,7 @@ export function MaterialUploadForm({
         onFile={setFile}
         profiles={profiles.data ?? []}
         isClient={isClient}
+        canShare={canShare}
         disabled={uploader.busy}
       />
       {options.type === "RAW" && file?.type.startsWith("image/") && (
