@@ -6,11 +6,12 @@ import { useAuthStore } from "@/store/authStore";
 export function useMaterialUploadProfiles(
   workspaceId: string,
   isClient: boolean,
+  enabled = true,
 ) {
   const actorId = useAuthStore((state) => state.user?.id);
   return useQuery({
     queryKey: ["repository-upload-profiles", workspaceId, actorId, isClient],
-    enabled: Boolean(actorId),
+    enabled: Boolean(actorId) && Boolean(workspaceId) && enabled,
     queryFn: async () => {
       const members = (await workspaceService.listMembers(workspaceId)).data
         .data;

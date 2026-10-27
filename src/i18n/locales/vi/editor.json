@@ -368,12 +368,13 @@
     "chooseGroupLabel": "Chọn nhóm hashtag đã lưu:",
     "inputPlaceholder": "Nhập hashtag và nhấn Enter...",
     "trendingSuggestionsLabel": "Gợi ý hashtag thịnh hành:",
-    "aiGenerate": "Gợi ý hashtag từ API · {{platform}}",
-    "aiLoading": "Đang lấy hashtag...",
+    "aiGenerate": "Gợi ý hashtag theo nội dung · {{platform}}",
+    "aiLoading": "Đang phân tích nội dung...",
     "aiCaptionRequired": "Nhập nội dung bài viết để lấy gợi ý hashtag.",
     "aiError": "Không lấy được hashtag. Vui lòng thử lại.",
-    "aiEmpty": "API chưa trả về hashtag phù hợp.",
-    "aiResults": "Hashtag gợi ý từ API",
+    "aiEmpty": "Chưa tìm thấy hashtag phù hợp. Hãy bổ sung nội dung cụ thể hơn.",
+    "aiRankHint": "Sắp xếp từ phù hợp nhất xuống dưới. Chọn hashtag để thêm vào bài viết.",
+    "aiResults": "Hashtag theo mức độ phù hợp",
     "aiApply": "Thêm {{tag}} vào bài viết"
   },
   "imageLightbox": {

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { materialService } from "@/services/materialService";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import type { MaterialItem } from "@/types/material";
+import type { MaterialItem, MaterialFilters } from "@/types/material";
 
 interface MutationResult {
   material: MaterialItem;
@@ -25,6 +25,8 @@ function errorKey(error: unknown) {
   const code = isAxiosError(error)
     ? error.response?.data?.error?.code
     : undefined;
+  if (code === "SUPPORT_TICKET_REQUIRED") return "supportTicketRequired";
+  if (code === "ADMIN_SUPPORT_READ_ONLY") return "adminSupportReadOnly";
   if (code === "MATERIAL_RETENTION_EXPIRED") return "retentionExpired";
   if (code === "MATERIAL_MUTATION_FORBIDDEN") return "mutationForbidden";
   return code === "MATERIAL_PURGE_IN_PROGRESS" ? "purging" : "mutationFailed";
@@ -54,8 +56,17 @@ async function mutate(
   const { workspace, actor } = context;
   if (!workspace || !actor || !isCurrent({ workspace, actor }))
     throw new Error("Missing workspace");
+  let ticket: string | undefined;
+  if (restore && useAuthStore.getState().systemRole === "ADMIN") {
+    const promptValue = window.prompt(
+      context.t("library.repository.supportTicketPrompt"),
+    );
+    if (!promptValue || !promptValue.trim())
+      throw new Error("Support ticket required");
+    ticket = promptValue.trim();
+  }
   const result = restore
-    ? await materialService.restoreMaterial(workspace, material)
+    ? await materialService.restoreMaterial(workspace, material, ticket)
     : await materialService.deleteMaterial(workspace, material);
   return { material: result, workspace, actor };
 }
@@ -107,20 +118,36 @@ export function useMaterialTrash(
   deleted: boolean,
   page: number,
   search: string,
+  filters: MaterialFilters = {},
+  accessState?: {
+    blocked: boolean;
+    onForbidden: (workspace: string, actor: string) => void;
+  },
 ) {
   const context = useTrashContext();
   const { workspace, actor, role, refresh } = context;
   const query = useQuery({
-    queryKey: ["materials", workspace, actor, deleted, page, search],
-    enabled: !!workspace && !!actor,
+    queryKey: ["materials", workspace, actor, deleted, page, search, filters],
+    enabled: !!workspace && !!actor && !accessState?.blocked,
     refetchInterval: 60_000,
-    queryFn: async () =>
-      deleted
-        ? materialService.trash(workspace!, page, search)
-        : {
-            items: await materialService.list(workspace!, undefined, search),
-            total: 0,
-          },
+    retry: (count, error) =>
+      !(
+        isAxiosError(error) &&
+        [400, 403, 404, 429].includes(error.response?.status ?? 0)
+      ) && count < 1,
+    queryFn: async ({ signal }) => {
+      try {
+        return await materialService.listPage(
+          workspace!,
+          { ...filters, deleted, page, size: 20, search },
+          signal,
+        );
+      } catch (error) {
+        if (isAxiosError(error) && error.response?.status === 403)
+          accessState?.onForbidden(workspace!, actor!);
+        throw error;
+      }
+    },
   });
   const restore = useRestoreMaterial(context);
   const remove = useDeleteMaterial(context, restore.mutate);

@@ -350,12 +350,13 @@
     "chooseGroupLabel": "Choose a saved hashtag group:",
     "inputPlaceholder": "Type a hashtag and press Enter...",
     "trendingSuggestionsLabel": "Trending hashtag suggestions:",
-    "aiGenerate": "Get hashtag suggestions · {{platform}}",
-    "aiLoading": "Loading hashtags...",
+    "aiGenerate": "Suggest hashtags for this caption · {{platform}}",
+    "aiLoading": "Analyzing caption...",
     "aiCaptionRequired": "Enter Post content to get hashtag suggestions.",
     "aiError": "Could not get hashtags. Please try again.",
-    "aiEmpty": "The API returned no matching hashtags.",
-    "aiResults": "API hashtag suggestions",
+    "aiEmpty": "No relevant hashtags found. Add more specific details to your caption.",
+    "aiRankHint": "Most relevant first. Select a hashtag to add it to your post.",
+    "aiResults": "Hashtags ranked by relevance",
     "aiApply": "Add {{tag}} to this Post"
   },
   "imageLightbox": {

@@ -55,11 +55,74 @@ export interface MaterialItem {
   visibility?: "INTERNAL" | "CLIENT";
   clientProfileId?: string;
   version?: number;
+  rawWarning?: boolean;
+  createdByName?: string;
+  clientDisplayName?: string;
+  updatedBy?: string;
+  previewUnavailableReason?: string;
+  capabilities?: MaterialCapabilities;
   parentMaterialId?: string;
   watermarkMeta?: WatermarkMetadata;
   createdBy?: string;
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface MaterialCapabilities {
+  canPreview: boolean;
+  canDownload: boolean;
+  canRename: boolean;
+  canUpdateType: boolean;
+  canChangeAudience: boolean;
+  canWatermark: boolean;
+  canDelete: boolean;
+  canRestore: boolean;
+}
+
+export interface MaterialFilters {
+  mediaKind?: "IMAGE" | "VIDEO" | "FILE";
+  type?: MaterialType;
+  purpose?: "MATERIAL" | "BRAND_REFERENCE";
+  clientProfileId?: string;
+  sort?: "newest" | "oldest";
+}
+
+export interface MaterialPage {
+  items: MaterialItem[];
+  total: number;
+  page: number;
+  size: number;
+}
+export interface MaterialPreview {
+  materialId: string;
+  previewUrl: string;
+  previewExpiresAt: string;
+  mimeType: string;
+}
+export interface DownloadMaterialResponse {
+  materialId: string;
+  downloadUrl: string;
+  expiresAt: string;
+  filename: string;
+  mimeType: string;
+  fileSize: number;
+}
+export interface MaterialStorageUsage {
+  workspaceUsedBytes: string;
+  agencyUsedBytes: string;
+  agencyReservedBytes: string;
+  agencyQuotaBytes: string;
+  storageMode: string;
+  isQuotaExceeded: boolean;
+  canExpandWithSubscription: boolean;
+}
+export interface UpdateMaterialRequest {
+  expectedVersion: number;
+  name?: string;
+  type?: "RAW" | "RETOUCHED";
+  purpose?: "MATERIAL" | "BRAND_REFERENCE";
+  visibility?: "INTERNAL" | "CLIENT";
+  clientProfileId?: string;
 }
 
 export interface MaterialUploadOptions {

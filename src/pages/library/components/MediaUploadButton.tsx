@@ -10,14 +10,23 @@ import type { MediaItem } from "@/types/contentLibrary";
 interface Props {
   onUploadSuccess: (material: MediaItem) => void;
   onUploadStart?: () => void;
+  disabled?: boolean;
 }
 
-export function MediaUploadButton({ onUploadSuccess, onUploadStart }: Props) {
+export function MediaUploadButton({
+  onUploadSuccess,
+  onUploadStart,
+  disabled,
+}: Props) {
   const { t } = useTranslation();
   const workspace = useWorkspaceStore((state) => state.currentWorkspace);
   const role = useWorkspaceStore((state) => state.currentMemberRole);
   const [open, setOpen] = useState(false);
-  if (!workspace || !role || !["MANAGER", "CREATOR", "CLIENT"].includes(role))
+  if (
+    !workspace ||
+    !role ||
+    !["OWNER", "MANAGER", "CREATOR", "CLIENT"].includes(role)
+  )
     return null;
 
   function uploaded(material: MaterialItem) {
@@ -42,6 +51,7 @@ export function MediaUploadButton({ onUploadSuccess, onUploadStart }: Props) {
     <div className="w-full space-y-4">
       <Button
         variant="orange"
+        disabled={disabled}
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >

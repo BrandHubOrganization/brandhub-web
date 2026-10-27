@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { isAxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { materialService } from "@/services/materialService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
@@ -64,7 +65,7 @@ export function useMaterialUpload(workspaceId: string | undefined) {
         uploaded: false,
       };
     }
-    const currentAttempt = attempt.current;
+    let currentAttempt = attempt.current;
     const active = new AbortController();
     controller.current = active;
     const isCurrent = () =>
@@ -74,42 +75,64 @@ export function useMaterialUpload(workspaceId: string | undefined) {
     setStage("uploading");
     setProgress(0);
     try {
-      currentAttempt.session ??= await materialService.createUploadSession(
-        workspaceId,
-        file,
-        options,
-        currentAttempt.requestId,
-        active.signal,
-      );
-      if (!isCurrent()) return null;
-      if (!currentAttempt.uploaded) {
-        await putMaterialBytes(
-          currentAttempt.session.uploadUrl,
-          file,
-          active.signal,
-          (percent) => {
-            if (isCurrent()) setProgress(percent);
-          },
-        );
-        currentAttempt.uploaded = true;
+      for (let storageAttempt = 0; storageAttempt < 2; storageAttempt++) {
+        try {
+          currentAttempt.session ??= await materialService.createUploadSession(
+            workspaceId,
+            file,
+            options,
+            currentAttempt.requestId,
+            active.signal,
+          );
+          if (!isCurrent()) return null;
+          if (!currentAttempt.uploaded) {
+            await putMaterialBytes(
+              currentAttempt.session.uploadUrl,
+              file,
+              active.signal,
+              (percent) => {
+                if (isCurrent()) setProgress(percent);
+              },
+            );
+            currentAttempt.uploaded = true;
+          }
+          if (!isCurrent()) return null;
+          setStage("validating");
+          const material = await materialService.confirmUploadSession(
+            workspaceId,
+            currentAttempt.session.sessionId,
+            active.signal,
+          );
+          if (!isCurrent()) return null;
+          if (material.status !== "READY")
+            throw new Error("MATERIAL_NOT_READY");
+          attempt.current = null;
+          await queryClient.invalidateQueries({
+            queryKey: ["materials", workspaceId],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: ["materials-storage-usage", workspaceId],
+          });
+          return isCurrent() ? material : null;
+        } catch (failure) {
+          const full =
+            (failure instanceof Error &&
+              failure.message === "DRIVE_STORAGE_FULL") ||
+            (isAxiosError<{ error?: { code?: string } }>(failure) &&
+              failure.response?.data.error?.code === "DRIVE_STORAGE_FULL");
+          if (storageAttempt !== 0 || !full || !isCurrent()) throw failure;
+          currentAttempt = {
+            file,
+            options: optionsKey,
+            requestId: crypto.randomUUID(),
+            uploaded: false,
+          };
+          attempt.current = currentAttempt;
+          setStage("uploading");
+          setProgress(0);
+        }
       }
-      if (!isCurrent()) return null;
-      setStage("validating");
-      const material = await materialService.confirmUploadSession(
-        workspaceId,
-        currentAttempt.session.sessionId,
-        active.signal,
-      );
-      if (!isCurrent()) return null;
-      if (material.status !== "READY") throw new Error("MATERIAL_NOT_READY");
-      attempt.current = null;
-      await queryClient.invalidateQueries({
-        queryKey: ["materials", workspaceId],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["materials-storage-usage", workspaceId],
-      });
-      return isCurrent() ? material : null;
+      return null;
     } finally {
       if (controller.current === active) {
         controller.current = null;

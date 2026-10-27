@@ -7,6 +7,9 @@ import { Layout } from "@/components/layout/Layout";
 import { PublicHelpLayout } from "@/components/layout/PublicHelpLayout";
 import { PageFallback } from "@/components/layout/PageFallback";
 import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
+const CustomerDriveCallback = lazy(
+  () => import("@/pages/library/CustomerDriveCallback"),
+);
 
 // Typed lazy loader supporting both named & default exports
 function lazyNamed<T extends Record<string, unknown>>(
@@ -70,6 +73,14 @@ const HelpFaqPage = lazyNamed(
 const AdminGuidePage = lazyNamed(
   () => import("@/pages/help/GuidePage"),
   "AdminGuidePage",
+);
+const PrivacyPolicyPage = lazyNamed(
+  () => import("@/pages/legal/PrivacyPolicyPage"),
+  "PrivacyPolicyPage",
+);
+const TermsOfServicePage = lazyNamed(
+  () => import("@/pages/legal/TermsOfServicePage"),
+  "TermsOfServicePage",
 );
 
 // ── Core Dashboard & Work ──
@@ -325,7 +336,7 @@ export function AppRoutes() {
         <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
         <Route path="/mail/unsubscribe" element={<MailUnsubscribePage />} />
 
-        {/* Public Help & FAQ Routes — accessible without authentication */}
+        {/* Public Help, Legal & FAQ Routes — accessible without authentication */}
         <Route element={<PublicHelpLayout />}>
           <Route path="/help/faq" element={<HelpFaqPage />} />
           <Route path="/help/guide" element={<AdminGuidePage />} />
@@ -334,10 +345,16 @@ export function AppRoutes() {
             path="/guide"
             element={<Navigate to="/help/guide" replace />}
           />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
         </Route>
 
         {/* Authenticated Routes — require login */}
         <Route element={<AuthGuard />}>
+          <Route
+            path="/storage/drive/callback"
+            element={<CustomerDriveCallback />}
+          />
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/clients" element={<ClientListPage />} />
