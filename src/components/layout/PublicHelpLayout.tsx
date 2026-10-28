@@ -147,6 +147,12 @@ export function PublicHelpLayout() {
             <Link to="/help/guide" className="hover:text-foreground transition-colors">
               Cẩm nang quản trị
             </Link>
+            <Link to="/privacy" className="hover:text-foreground transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">
+              Terms of Service
+            </Link>
             <a href="mailto:brandhub404@gmail.com" className="hover:text-foreground transition-colors">
               brandhub404@gmail.com
             </a>

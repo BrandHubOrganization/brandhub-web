@@ -1,4 +1,7 @@
 import { AiHashtagSuggestions } from "@/pages/editor/components/AiHashtagSuggestions";
+import { useEditorModeration } from "@/pages/editor/hooks/useEditorModeration";
+import { EditorModerationStatus } from "@/pages/editor/components/EditorModerationStatus";
+import { toast } from "sonner";
 import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
@@ -40,11 +43,8 @@ import {
 } from "@/pages/editor/components/TaskEditorControls";
 import { useSearchParams } from "react-router-dom";
 
-type EditorForm = Omit<
-  ReturnType<typeof useEditorForm>,
-  "handlePublishNow"
-> & {
-  handlePublishNow?: () => void;
+type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
+  handlePublishNow?: () => void | Promise<void>;
   scheduledAt?: string | null;
   taskEditor?: TaskEditorState;
 };
@@ -105,6 +105,7 @@ function EditorWorkspace({
     handleHashtagsChange,
     handleMediaUrlsChange,
     handleGeneratedMedia,
+    handleRepositoryMedia,
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,
@@ -112,6 +113,43 @@ function EditorWorkspace({
     scheduledAt,
     taskEditor,
   } = form;
+
+  const moderation = useEditorModeration(
+    workspaceId,
+    [caption, hashtags.join(" ")].filter(Boolean).join("\n"),
+  );
+  const publishing = useRef(false);
+  const [checkingPublish, setCheckingPublish] = useState(false);
+  const publishAfterModeration = async () => {
+    if (!handlePublishNow || publishing.current || isSubmitting) return;
+    if (!caption.trim()) {
+      toast.error(t("editor.submitEmptyError"));
+      return;
+    }
+    publishing.current = true;
+    setCheckingPublish(true);
+    try {
+      const result = await moderation.ensure();
+      if (!result) {
+        toast.error(t("editor.moderation.changed"));
+        return;
+      }
+      if (result.status === "BLOCKED" || result.status === "NOT_CHECKED") {
+        toast.error(
+          t(
+            result.status === "BLOCKED"
+              ? "editor.moderation.publishBlocked"
+              : "editor.moderation.publishUnavailable",
+          ),
+        );
+        return;
+      }
+      await handlePublishNow();
+    } finally {
+      publishing.current = false;
+      setCheckingPublish(false);
+    }
+  };
 
   const handleApplyGeneratedImage = (imageUrl: string, s3Key?: string) => {
     handleGeneratedMedia(imageUrl, s3Key, "IMAGE");
@@ -219,13 +257,13 @@ function EditorWorkspace({
             isSaving={isSaving}
             isDirty={isDirty}
             lastSavedTime={lastSavedTime}
-            isSubmitting={isSubmitting}
+            isSubmitting={isSubmitting || checkingPublish}
             publishStatus={publishStatus}
             scheduledTime={scheduledAt ?? undefined}
             onOpenTemplatePicker={() => setIsTemplatePickerOpen(true)}
             onOpenPreview={() => setIsPreviewOpen(true)}
             onSubmitForReview={handleSubmitForReview}
-            onPublishNow={handlePublishNow}
+            onPublishNow={handlePublishNow ? publishAfterModeration : undefined}
           />
         )
       }
@@ -432,6 +470,7 @@ function EditorWorkspace({
                 targetPlatforms={targetPlatforms}
                 readOnly={taskEditor?.isReadOnly}
               />
+              <EditorModerationStatus snapshot={moderation.snapshot} />
 
               <section className="border-border bg-muted/20 space-y-3 rounded-xl border p-3">
                 <div>
@@ -445,6 +484,7 @@ function EditorWorkspace({
                 </div>
                 <div inert={taskEditor?.isReadOnly}>
                   <MediaDropzone
+                    onUploaded={handleRepositoryMedia}
                     mediaUrls={mediaUrls}
                     onChange={handleMediaUrlsChange}
                     workspaceId={workspaceId}

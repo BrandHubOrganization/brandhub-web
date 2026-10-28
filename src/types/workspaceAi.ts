@@ -1,3 +1,5 @@
+import type { ModerationResult } from "@/types/moderation";
+
 export type CaptionPlatform =
   "facebook" | "instagram" | "tiktok" | "threads" | "linkedin";
 
@@ -35,7 +37,7 @@ export interface CaptionDraft {
     unverifiedClaims: string[];
     issues: string[];
   };
-  compliance: unknown;
+  compliance: ModerationResult;
   trendTechnique?: string | null;
 }
 
