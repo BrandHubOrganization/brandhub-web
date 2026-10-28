@@ -3,24 +3,31 @@ import { Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { MAX_MEDIA_UPLOAD_SIZE } from "@/lib/constants";
-import { materialService } from "@/services/materialService";
+import { useMaterialUpload } from "@/pages/library/hooks/useMaterialUpload";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 
 interface MediaDropzoneProps {
   mediaUrls: string[];
   onChange: (urls: string[]) => void;
   workspaceId?: string;
+  onUploaded: (
+    url: string,
+    materialId: string,
+    mediaType: "IMAGE" | "VIDEO",
+  ) => void;
 }
 
 export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
   mediaUrls,
   onChange,
   workspaceId,
+  onUploaded,
 }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const effectiveWorkspaceId = workspaceId ?? currentWorkspace?.id;
+  const uploader = useMaterialUpload(effectiveWorkspaceId);
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
@@ -51,9 +58,17 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
 
       try {
         setUploadProgress(Math.round(((i + 1) / fileArray.length) * 90));
-        const item = await materialService.upload(effectiveWorkspaceId, file);
+        const item = await uploader.upload(file, {
+          type: "RAW",
+          purpose: "MATERIAL",
+          visibility: "INTERNAL",
+        });
         if (item && item.url) {
-          newUploadedUrls.push(item.url);
+          onUploaded(
+            item.url,
+            item.id,
+            item.mediaKind === "VIDEO" ? "VIDEO" : "IMAGE",
+          );
           toast.success(
             t("editor.mediaDropzone.uploadSuccess", { fileName: file.name }),
           );

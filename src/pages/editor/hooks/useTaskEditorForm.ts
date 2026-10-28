@@ -231,6 +231,16 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
         [url]: s3Key ? { s3Key, mediaType } : { externalUrl: url, mediaType },
       },
     }));
+  const handleRepositoryMedia = (
+    url: string,
+    materialId: string,
+    mediaType: "IMAGE" | "VIDEO",
+  ) =>
+    edit((current) => ({
+      ...current,
+      mediaUrls: Array.from(new Set([...current.mediaUrls, url])),
+      storedMedia: { ...current.storedMedia, [url]: { materialId, mediaType } },
+    }));
   const handleApplyAIResult = (
     caption: string,
     hashtags: string[],
@@ -268,6 +278,7 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
     handleMediaUrlsChange: (mediaUrls: string[]) =>
       edit((current) => ({ ...current, mediaUrls })),
     handleGeneratedMedia,
+    handleRepositoryMedia,
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { api } from "@/lib/axios";
 import type { SocialPlatform } from "@/types/editor";
+import type { ModerationResult } from "@/types/moderation";
 import { postAiWithCredit, refreshAiCredit } from "@/services/aiCreditRequest";
 
 interface ApiResponse<T> {
@@ -10,12 +11,14 @@ interface ApiResponse<T> {
 }
 
 interface ContentResponse {
+  moderation?: ModerationResult;
   text?: string;
   caption?: string;
   hashtags?: string[];
 }
 
 export interface GeneratedPostContent {
+  moderation?: ModerationResult;
   caption: string;
   hashtags: string[];
 }
@@ -98,19 +101,30 @@ function unwrap<T>(response: { data: ApiResponse<T> }): T {
   return response.data.data;
 }
 
+export interface HashtagSuggestion {
+  tag: string;
+  source: "WORKSPACE" | "TREND_CONTEXT" | "AI_GENERATED";
+}
+
 export const aiGenerationService = {
   async generateHashtags(
     input: { topic: string; platform: SocialPlatform },
     signal?: AbortSignal,
-  ): Promise<string[]> {
+  ): Promise<HashtagSuggestion[]> {
     const response = await postAiWithCredit<
-      ApiResponse<{ hashtags: string[] }>
+      ApiResponse<{ hashtags: string[]; suggestions?: HashtagSuggestion[] }>
     >(
       "/api/v1/ai/content/hashtags",
       { topic: input.topic, platform: input.platform.toLowerCase(), count: 5 },
       { signal },
     );
-    return unwrap(response).hashtags;
+    const result = unwrap(response);
+    return result.suggestions?.length
+      ? result.suggestions
+      : result.hashtags.map((tag) => ({
+          tag,
+          source: "AI_GENERATED" as const,
+        }));
   },
   async generatePost(input: {
     prompt: string;
@@ -145,6 +159,7 @@ export const aiGenerationService = {
     );
     const result = unwrap(response);
     return {
+      moderation: result.moderation,
       caption: result.caption || result.text || "",
       hashtags: (result.hashtags || [])
         .slice(0, input.hashtagCount)

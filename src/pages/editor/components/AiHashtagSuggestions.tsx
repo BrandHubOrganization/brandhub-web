@@ -39,13 +39,14 @@ export function AiHashtagSuggestions({
     gcTime: 0,
   });
   const suggestions = (query.data ?? [])
-    .map(formatPostHashtag)
+    .map((item) => ({ ...item, tag: formatPostHashtag(item.tag) }))
     .filter(
       (tag, index, tags) =>
-        tag &&
+        tag.tag &&
         tags.findIndex(
           (candidate) =>
-            normalizePostHashtag(candidate) === normalizePostHashtag(tag),
+            normalizePostHashtag(candidate.tag) ===
+            normalizePostHashtag(tag.tag),
         ) === index,
     );
   return (
@@ -80,27 +81,49 @@ export function AiHashtagSuggestions({
           </p>
         )}
       {!query.isFetching && !query.isError && suggestions.length > 0 && (
-        <div
-          className="flex flex-wrap gap-2"
-          role="group"
-          aria-label={t(prefix + "aiResults")}
-        >
-          {suggestions.map((tag) => (
-            <Button
-              key={normalizePostHashtag(tag)}
-              type="button"
-              variant="outline"
-              size="sm"
-              disabled={hasPostHashtag(hashtags, tag)}
-              aria-label={t(prefix + "aiApply", { tag })}
-              onClick={() => {
-                if (!hasPostHashtag(hashtags, tag))
-                  onChange([...hashtags, tag]);
-              }}
-            >
-              {tag}
-            </Button>
-          ))}
+        <div className="space-y-2">
+          <p className="text-muted-foreground text-xs">
+            {t(prefix + "aiRankHint")}
+          </p>
+          <ol className="space-y-2" aria-label={t(prefix + "aiResults")}>
+            {suggestions.map(({ tag, source }, index) => (
+              <li
+                key={normalizePostHashtag(tag)}
+                className="flex min-w-0 items-center gap-2"
+              >
+                <span
+                  className="text-muted-foreground w-5 shrink-0 text-right text-xs"
+                  aria-hidden="true"
+                >
+                  {index + 1}.
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-auto min-w-0 justify-start break-all whitespace-normal"
+                  disabled={hasPostHashtag(hashtags, tag)}
+                  aria-label={t(prefix + "aiApply", { tag })}
+                  onClick={() => {
+                    if (!hasPostHashtag(hashtags, tag))
+                      onChange([...hashtags, tag]);
+                  }}
+                >
+                  {tag}
+                </Button>
+                <span className="text-muted-foreground shrink-0 text-xs">
+                  {t(
+                    prefix +
+                      (source === "WORKSPACE"
+                        ? "sourceWorkspace"
+                        : source === "TREND_CONTEXT"
+                          ? "sourceTrend"
+                          : "sourceGenerated"),
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
       )}
     </div>
