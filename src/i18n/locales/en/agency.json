@@ -97,7 +97,8 @@
       "restoreButton": "Restore",
       "restoreSuccess": "Company restored",
       "restoreError": "Failed to restore company"
-    }
+    },
+    "mailTemplates": "Mail templates"
   },
   "create": {
     "title": "Create Agency",

@@ -937,14 +937,14 @@ function CTAButtons() {
     <div className="flex flex-col items-center gap-4 sm:flex-row">
       <a
         href="/register"
-        className="bg-brand-orange hover:bg-brand-orange/90 pointer-events-auto inline-flex items-center gap-2 rounded-lg px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:shadow-orange-500/40"
+        className="bg-brand-orange hover:bg-brand-orange/90 pointer-events-auto inline-flex items-center gap-2 rounded-xl px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-500/40 active:translate-y-0 active:scale-[0.98]"
       >
         <Rocket className="size-4" />
         {t("landing.hero.ctaStart")}
       </a>
       <a
         href="/login"
-        className="pointer-events-auto inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-medium text-white backdrop-blur transition-all hover:bg-white/10"
+        className="pointer-events-auto inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-8 py-3.5 text-sm font-medium text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-white/10 active:translate-y-0 active:scale-[0.98]"
       >
         {t("landing.hero.ctaLogin")}
       </a>

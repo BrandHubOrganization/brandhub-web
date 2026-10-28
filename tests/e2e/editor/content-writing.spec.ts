@@ -1,5 +1,6 @@
 import { expect, test, type Page, type WebSocketRoute } from "@playwright/test";
 import * as Y from "yjs";
+import { Awareness, encodeAwarenessUpdate } from "y-protocols/awareness";
 
 /**
  * FR 3.6.10 Content Writing View — browser tests against the real canvas
@@ -31,6 +32,18 @@ function textOf(base64: string): string {
 interface Broker {
   /** Yjs updates the page sent over STOMP SEND frames, in order. */
   sent: string[];
+  /** Awareness (presence/cursor) updates the page sent — kept separate from `sent`, see startBroker. */
+  awarenessSent: string[];
+  /**
+   * Pushes a MESSAGE frame to the page's real awareness subscription, as if
+   * a second client's update had arrived — set by startBroker once the page
+   * subscribes. Playwright's WebSocketRoute.send() only pushes server->client,
+   * so simulating a peer means emitting a MESSAGE directly (there's no way
+   * to inject an inbound SEND as if from another client), targeted at the
+   * subscription id this page actually registered (a made-up id is ignored
+   * by stompjs).
+   */
+  simulatePeerAwareness: (update: string) => void;
 }
 
 /** Minimal STOMP 1.2 broker over a Playwright WebSocketRoute. */
@@ -63,9 +76,36 @@ function startBroker(ws: WebSocketRoute, broker: Broker) {
         ws.send(frame("CONNECTED", { version: "1.2", "heart-beat": "0,0" }));
       } else if (command === "SUBSCRIBE") {
         subs.push({ id: headers.id, destination: headers.destination });
+        if (headers.destination.endsWith("/awareness")) {
+          let msgSeq = 0;
+          broker.simulatePeerAwareness = (update: string) => {
+            msgSeq += 1;
+            ws.send(
+              frame(
+                "MESSAGE",
+                {
+                  destination: headers.destination,
+                  subscription: headers.id,
+                  "message-id": `peer-m${msgSeq}`,
+                  "content-type": "application/json",
+                },
+                JSON.stringify({ update }),
+              ),
+            );
+          };
+        }
       } else if (command === "SEND") {
         const { update } = JSON.parse(body) as { update: string };
-        broker.sent.push(update);
+        const isAwareness = headers.destination.endsWith("/awareness");
+        // Awareness is a separate app-level channel from content (see
+        // TaskContentWebSocketController.handleAwareness) — presence
+        // updates are frequent (every caret move) and must not be counted
+        // alongside, or echoed back shaped as, content Yjs updates.
+        if (isAwareness) {
+          broker.awarenessSent.push(update);
+        } else {
+          broker.sent.push(update);
+        }
         seq += 1;
         const topic = headers.destination.replace("/app/", "/topic/");
         for (const s of subs.filter((x) => x.destination === topic)) {
@@ -78,11 +118,13 @@ function startBroker(ws: WebSocketRoute, broker: Broker) {
                 "message-id": `m${seq}`,
                 "content-type": "application/json",
               },
-              JSON.stringify({
-                update,
-                sequenceNumber: seq,
-                editedBy: "studio-test-user",
-              }),
+              isAwareness
+                ? JSON.stringify({ update })
+                : JSON.stringify({
+                    update,
+                    sequenceNumber: seq,
+                    editedBy: "studio-test-user",
+                  }),
             ),
           );
         }
@@ -112,7 +154,7 @@ async function setup(
   } = {},
 ): Promise<Backend> {
   const backend: Backend = {
-    broker: { sent: [] },
+    broker: { sent: [], awarenessSent: [], simulatePeerAwareness: () => {} },
     snapshotPosts: [],
     versions: opts.versions ?? [],
     versionStates: opts.versionStates ?? {},
@@ -525,6 +567,53 @@ test.describe("Content Writing View — snapshots & publish text", () => {
     await expect(
       page.getByRole("button", { name: /Sao chép bản đăng/ }),
     ).toBeDisabled();
+  });
+});
+
+test.describe("Content Writing View — presence / multi-cursor", () => {
+  /** Encodes a fake peer's awareness state the way y-protocols' Awareness.setLocalState would, for pushing through the mock broker as a real peer. */
+  function fakePeerAwarenessUpdate(state: Record<string, unknown>): string {
+    const doc = new Y.Doc();
+    const awareness = new Awareness(doc);
+    awareness.setLocalState(state);
+    return toBase64(encodeAwarenessUpdate(awareness, [awareness.clientID]));
+  }
+
+  test("E2E-21 a peer's cursor appears with their name and color", async ({
+    page,
+  }) => {
+    // The 30s auto-expiry itself (y-protocols' outdated-state timeout) isn't
+    // covered here: lib0's getUnixTime captures a direct `Date.now`
+    // reference at module load, which page.clock's monkeypatch (applied
+    // after that module already loaded) can't retroactively intercept — a
+    // library/clock-mocking limitation, not something app code controls.
+    const backend = await setup(page);
+    await expect(page.getByText("Live", { exact: true })).toBeVisible();
+    backend.broker.simulatePeerAwareness(
+      fakePeerAwarenessUpdate({
+        userId: "peer-1",
+        name: "Ánh Dương",
+        color: "#3949ab",
+        caretIndex: 0,
+        selection: null,
+      }),
+    );
+    await expect(page.getByTitle("Ánh Dương")).toBeVisible();
+    await expect(page.getByText("Ánh Dương", { exact: true })).toBeVisible();
+  });
+
+  test("E2E-22 this Creator's own caret moves are published to awareness but never rendered as a peer of itself", async ({
+    page,
+  }) => {
+    const backend = await setup(page);
+    await typeText(page, "hello");
+    await expect
+      .poll(() => backend.broker.awarenessSent.length)
+      .toBeGreaterThan(0);
+    // The mock broker echoes every SEND back to the sender too (like a real
+    // multi-subscriber topic) — this Creator's own state must not show up
+    // as a peer avatar of themselves.
+    await expect(page.locator('[title="Studio Tester"]')).toHaveCount(0);
   });
 });
 

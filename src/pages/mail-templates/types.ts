@@ -1,5 +1,13 @@
 export type MailTemplateType = "SYSTEM_DEFAULT" | "CUSTOM";
 
+export type MailTemplateScope =
+  | "CAMPAIGN_BROADCAST"
+  | "WORKSPACE_MANAGER"
+  | "AGENCY_INTERNAL"
+  | "AGENCY_CLIENT"
+  | "ADMIN_SYSTEM_BROADCAST"
+  | "TRANSACTIONAL_AUTO";
+
 export interface MailAttachment {
   attachmentId: string;
   name: string;
@@ -13,6 +21,7 @@ export interface MailTemplateSummary {
   name: string;
   subject: string;
   type: MailTemplateType;
+  scope: MailTemplateScope | null;
   attachmentCount: number;
   createdBy: string | null;
   createdAt: string;
@@ -25,6 +34,9 @@ export interface MailTemplate {
   subject: string;
   bodyHtml: string;
   type: MailTemplateType;
+  scope: MailTemplateScope | null;
+  agencyId: string | null;
+  layoutJson: string | null;
   attachments: MailAttachment[];
   clonedFromId: string | null;
   createdBy: string | null;
@@ -44,6 +56,12 @@ export interface Recipient {
   email: string;
   name?: string;
   variables?: Record<string, string>;
+}
+
+/** Who a scope-resolved template (agency / system) would reach: the total plus a short sample. */
+export interface RecipientPreview {
+  total: number;
+  sample: string[];
 }
 
 export interface SendResult {
@@ -120,6 +138,9 @@ export interface TemplatePayload {
   name?: string;
   subject?: string;
   bodyHtml?: string;
+  layoutJson?: string;
+  scope?: MailTemplateScope;
+  agencyId?: string;
   cloneFromId?: string;
   attachmentIds?: string[];
 }

@@ -15,11 +15,12 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { errorCode } from "@/services/adminRevenueService";
-import { mailTemplateService } from "../services/mailTemplateService";
+import { agencyMailTemplateService, mailTemplateService } from "../services/mailTemplateService";
 import type { MailQuota, MailTemplate, MailTemplateSummary, Recipient, SendResult } from "../types";
 import { clearDraft, loadDraft, saveDraft } from "../drafts";
 import { MAX_RECIPIENTS, mergeRecipients, parseRecipients, userVariables } from "../utils";
 import { RecipientPicker } from "./RecipientPicker";
+import { RecipientPreviewLine } from "./RecipientPreviewLine";
 
 interface Props {
   workspaceId: string;
@@ -27,6 +28,8 @@ interface Props {
   onClose: () => void;
   /** Pre-selected template; when omitted the user picks one. */
   template?: MailTemplateSummary | null;
+  /** The workspace's agency; with an AGENCY_* template the backend resolves recipients from it. */
+  agencyId?: string | null;
   /** Rows pre-filled as an "email,name" list (for example from the Client page). */
   initialRecipients?: Recipient[];
   /** Shared variables pre-filled (for example clientName). */
@@ -42,8 +45,11 @@ function toCsv(rows: Recipient[]): string {
   return ["email,name", ...rows.map((r) => `${q(r.email)},${q(r.name ?? "")}`)].join("\n");
 }
 
-export function SendMailDialog({ workspaceId, open, onClose, template, initialRecipients, initialVariables, onSent }: Props) {
+export function SendMailDialog({ workspaceId, open, onClose, template, agencyId: workspaceAgencyId, initialRecipients, initialVariables, onSent }: Props) {
   const { t } = useTranslation();
+  // Agency-scoped template: the backend resolves recipients from the agency, so no recipient input here.
+  const agencyId = workspaceAgencyId && template?.scope?.startsWith("AGENCY_") ? workspaceAgencyId : null;
+  const agencyMode = !!agencyId;
   const [options, setOptions] = useState<MailTemplateSummary[]>([]);
   const [templateId, setTemplateId] = useState(template?.id ?? "");
   const [detail, setDetail] = useState<MailTemplate | null>(null);
@@ -76,14 +82,17 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
       return;
     }
     let cancelled = false;
-    void mailTemplateService.get(workspaceId, templateId).then((d) => {
+    const loadDetail = agencyId
+      ? agencyMailTemplateService.get(agencyId, templateId)
+      : mailTemplateService.get(workspaceId, templateId);
+    void loadDetail.then((d) => {
       if (cancelled) return;
       setDetail(d);
       setUseAttachments(Object.fromEntries(d.attachments.map((a) => [a.attachmentId, true])));
       setPreview(null);
     });
     return () => { cancelled = true; };
-  }, [templateId, workspaceId]);
+  }, [templateId, workspaceId, agencyId]);
 
   const [extra, setExtra] = useState<Recipient[]>([]);
   const parsed = useMemo(() => {
@@ -124,8 +133,8 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
   );
 
   const remaining = quota?.remainingToday ?? null;
-  const tooMany = parsed.recipients.length > MAX_RECIPIENTS;
-  const overQuota = remaining !== null && parsed.recipients.length > remaining;
+  const tooMany = !agencyMode && parsed.recipients.length > MAX_RECIPIENTS;
+  const overQuota = !agencyMode && remaining !== null && parsed.recipients.length > remaining;
 
   const fail = (e: unknown) => {
     const code = errorCode(e);
@@ -191,7 +200,7 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
     setError(null);
     try {
       const payload = {
-        recipients: parsed.recipients,
+        recipients: agencyMode ? [] : parsed.recipients,
         variables: shared,
         attachmentIds,
         ...(scheduleAt ? { scheduledAt: new Date(scheduleAt).toISOString() } : {}),
@@ -213,13 +222,13 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
   };
 
   const canSend =
-    !!detail && parsed.recipients.length > 0 && !tooMany && !scheduleError && !busy &&
+    !!detail && (agencyMode || parsed.recipients.length > 0) && !tooMany && !scheduleError && !busy &&
     sharedNames.every((n) => (shared[n] ?? "").trim() !== "") &&
     (scheduleAt ? true : !overQuota);
 
   const blockedReason = canSend || busy || !detail
     ? null
-    : parsed.recipients.length === 0 ? "mailTemplate.send.blocked.noRecipients"
+    : !agencyMode && parsed.recipients.length === 0 ? "mailTemplate.send.blocked.noRecipients"
     : tooMany ? "mailTemplate.send.blocked.tooMany"
     : sharedNames.some((n) => (shared[n] ?? "").trim() === "") ? "mailTemplate.send.blocked.variables"
     : scheduleError ? null
@@ -274,6 +283,14 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
             )}
             {detail && <p className="text-muted-foreground text-xs">{detail.subject}</p>}
 
+            {agencyMode ? (
+              <div className="space-y-1.5" data-testid="agency-recipients-note">
+                <p className="text-muted-foreground text-sm">{t("mailTemplate.send.agencyRecipients")}</p>
+                {template && agencyId && (
+                  <RecipientPreviewLine load={() => agencyMailTemplateService.recipientPreview(agencyId, template.id)} />
+                )}
+              </div>
+            ) : (
             <div className="space-y-1.5 text-sm font-medium">
               <label htmlFor="mail-recipients">{t("mailTemplate.send.recipients")}</label>
               <Textarea id="mail-recipients" rows={5} className="font-normal" value={text} onChange={(e) => setText(e.target.value)}
@@ -304,6 +321,7 @@ export function SendMailDialog({ workspaceId, open, onClose, template, initialRe
                 {tooMany && <span className="text-destructive"> · {t("mailTemplate.errors.tooMany", { max: MAX_RECIPIENTS })}</span>}
               </p>
             </div>
+            )}
 
             {sharedNames.length > 0 && (
               <div className="space-y-2">

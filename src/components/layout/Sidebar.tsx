@@ -164,6 +164,7 @@ export function Sidebar({
         .filter((item) => !item.hiddenForClient || role !== "CLIENT")
         .filter((item) => !item.clientOnly || role === "CLIENT")
         .filter((item) => !item.agencyScoped || currentAgencyId)
+        .filter((item) => !item.agencyOwnerOnly || currentAgency?.myRole === "OWNER")
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
         .filter((item) => !item.hideInAgency || !currentAgencyId)

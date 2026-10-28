@@ -1,6 +1,13 @@
-import { motion, useReducedMotion } from "motion/react";
+import { useRef } from "react";
 import { Award, Users } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { cn } from "@/lib/utils";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { SectionDecor } from "@/components/landing/SectionDecor";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 interface TeamMember {
   id: string;
@@ -41,7 +48,13 @@ const TEAM_MEMBERS: TeamMember[] = [
     highlight: "Quán quân Hackathon CV 2026 · Founder SynapForge",
     experience:
       "Founder & Tech Lead điều hành đội ngũ 5 kỹ sư SynapForge. Quản trị sản phẩm & phân rã WBS/Agile. Từng dẫn dắt 6 dev tại The MC Hub và solo architect sàn BienSoVip (61 bảng CSDL, lọc <8ms).",
-    skills: ["Engineering Leadership", "Agile & WBS", "System Arch & DDD", ".NET 8", "Product Strategy"],
+    skills: [
+      "Engineering Leadership",
+      "Agile & WBS",
+      "System Arch & DDD",
+      ".NET 8",
+      "Product Strategy",
+    ],
   },
   {
     id: "nguyen-chon-phuoc",
@@ -66,7 +79,42 @@ const TEAM_MEMBERS: TeamMember[] = [
 ];
 
 export function TeamSection() {
-  const reduce = useReducedMotion();
+  const { ref: headRef, isIntersecting: headVisible } = useIntersectionObserver(
+    { threshold: 0.15, freezeOnceVisible: true },
+  );
+  const gridRef = useRef<HTMLDivElement>(null);
+  const { ref: cardsObserverRef, isIntersecting: gridVisible } =
+    useIntersectionObserver({ threshold: 0.1, freezeOnceVisible: true });
+  const setGridRef = (el: HTMLDivElement | null) => {
+    gridRef.current = el;
+    cardsObserverRef(el);
+  };
+
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+      if (gridRef.current) {
+        gridRef.current
+          .querySelectorAll<HTMLElement>(".team-photo")
+          .forEach((photo) => {
+            gsap.to(photo, {
+              yPercent: -10,
+              ease: "none",
+              scrollTrigger: {
+                trigger: photo.closest(".team-card"),
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true,
+                invalidateOnRefresh: true,
+              },
+            });
+          });
+      }
+    },
+    { scope: gridRef },
+  );
 
   return (
     <section
@@ -75,44 +123,52 @@ export function TeamSection() {
     >
       <SectionDecor corner="right" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto mb-16 max-w-3xl text-center"
+        <div
+          ref={headRef}
+          className={cn(
+            "mx-auto mb-16 max-w-3xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            headVisible ? "opacity-100" : "opacity-0",
+          )}
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand-orange/20 bg-brand-orange/10 px-4 py-1.5 text-xs font-semibold text-brand-orange">
+          <div className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold">
             <Users className="size-3.5" />
             <span>ĐỘI NGŨ PHÁT TRIỂN DỰ ÁN CAPSTONE SEP490</span>
           </div>
           <h2 className="mt-4 text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
-            Kỹ sư xây dựng <span className="text-brand-orange">BrandHub Platform</span>
+            Kỹ sư xây dựng{" "}
+            <span className="text-brand-orange">BrandHub Platform</span>
           </h2>
           <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-            Đội ngũ sinh viên Kỹ thuật phần mềm Đại học FPT Đà Nẵng (SynapForge) kết hợp kinh nghiệm thực chiến từ FPT Software, các giải thưởng công nghệ quốc gia và nghiên cứu khoa học AI.
+            Đội ngũ sinh viên Kỹ thuật phần mềm Đại học FPT Đà Nẵng (SynapForge)
+            kết hợp kinh nghiệm thực chiến từ FPT Software, các giải thưởng công
+            nghệ quốc gia và nghiên cứu khoa học AI.
           </p>
-        </motion.div>
+        </div>
 
         {/* 5-Member Responsive Grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div
+          ref={setGridRef}
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+        >
           {TEAM_MEMBERS.map((member, i) => (
-            <motion.div
+            <div
               key={member.id}
-              initial={reduce ? false : { opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group flex flex-col justify-between rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs transition-all hover:-translate-y-1 hover:border-brand-orange/40 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-brand-orange/40"
+              style={{
+                transitionDelay: gridVisible ? `${i * 100}ms` : "0ms",
+              }}
+              className={cn(
+                "team-card group hover:border-brand-orange/40 dark:hover:border-brand-orange/40 flex flex-col justify-between rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-xl motion-reduce:opacity-100 motion-reduce:transition-none dark:border-zinc-800 dark:bg-zinc-900",
+                gridVisible ? "scale-100 opacity-100" : "scale-95 opacity-0",
+              )}
             >
               <div>
                 {/* Photo & Identity */}
-                <div className="relative mx-auto mb-4 overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 p-1 dark:border-zinc-800 dark:bg-zinc-800/80">
+                <div className="relative mx-auto mb-4 aspect-square w-full overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 p-1 dark:border-zinc-800 dark:bg-zinc-800/80">
                   <img
                     src={member.avatar}
                     alt={member.name}
                     loading="lazy"
-                    className="aspect-square w-full rounded-lg object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                    className="team-photo absolute inset-x-1 -top-[8%] h-[120%] w-[calc(100%-0.5rem)] rounded-lg object-cover object-top transition-transform duration-300 will-change-transform group-hover:scale-105"
                   />
                   <div className="absolute top-2.5 right-2.5 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-xs">
                     FPTU
@@ -122,14 +178,16 @@ export function TeamSection() {
                 <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
                   {member.name}
                 </h3>
-                <span className="mt-1.5 inline-block rounded-md border border-brand-orange/20 bg-brand-orange/10 px-2 py-0.5 text-[11px] font-bold text-brand-orange">
+                <span className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange mt-1.5 inline-block rounded-md border px-2 py-0.5 text-[11px] font-bold">
                   {member.roleBadge}
                 </span>
 
                 {/* Highlight Badge */}
                 <div className="mt-3 flex items-start gap-1.5 rounded-lg bg-zinc-50 p-2 text-[11px] font-medium text-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300">
-                  <Award className="size-3.5 shrink-0 text-amber-500 mt-0.5" />
-                  <span className="line-clamp-2 leading-tight">{member.highlight}</span>
+                  <Award className="mt-0.5 size-3.5 shrink-0 text-amber-500" />
+                  <span className="line-clamp-2 leading-tight">
+                    {member.highlight}
+                  </span>
                 </div>
 
                 {/* Experience Paragraph */}
@@ -151,7 +209,7 @@ export function TeamSection() {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

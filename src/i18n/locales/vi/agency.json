@@ -97,7 +97,8 @@
       "restoreButton": "Khôi phục",
       "restoreSuccess": "Đã khôi phục công ty",
       "restoreError": "Không thể khôi phục công ty"
-    }
+    },
+    "mailTemplates": "Mẫu email"
   },
   "create": {
     "title": "Tạo công ty",

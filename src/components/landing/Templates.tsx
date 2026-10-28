@@ -1,10 +1,16 @@
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 import { MousePointerClick } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SpotlightCard } from "@/components/landing/SpotlightCard";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const TEMPLATES = [
   {
@@ -44,6 +50,32 @@ export function Templates() {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
   const goToPage = useLandingDemoStore((s) => s.goToPage);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+      if (!gridRef.current) return;
+      gridRef.current
+        .querySelectorAll<HTMLElement>(".template-photo")
+        .forEach((photo) => {
+          gsap.to(photo, {
+            yPercent: -14,
+            ease: "none",
+            scrollTrigger: {
+              trigger: photo.closest(".template-card"),
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          });
+        });
+    },
+    { scope: gridRef },
+  );
 
   return (
     <section
@@ -68,7 +100,7 @@ export function Templates() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div ref={gridRef} className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {TEMPLATES.map((item, i) => (
             <SpotlightCard
               key={item.key}
@@ -76,7 +108,7 @@ export function Templates() {
                 template: t(`landing.templates.items.${item.key}.title`),
               })}
               onActivate={() => goToPage(TEMPLATE_PAGE_INDEX)}
-              className="group items-stretch border-zinc-100 p-0 hover:shadow-xl dark:border-zinc-800"
+              className="template-card group items-stretch border-zinc-100 p-0 hover:shadow-xl dark:border-zinc-800"
               initial={reduce ? false : { opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -87,16 +119,16 @@ export function Templates() {
                   src={item.photo}
                   alt=""
                   loading="lazy"
-                  className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="template-photo absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" />
 
                 {/* Top Badges */}
-                <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                  <span className="bg-black/60 text-white backdrop-blur-xs text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                <div className="absolute top-3 right-3 left-3 flex items-center justify-between">
+                  <span className="rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-xs">
                     {item.badge}
                   </span>
-                  <span className="bg-brand-orange text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
+                  <span className="bg-brand-orange rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow-xs">
                     {item.stat}
                   </span>
                 </div>
@@ -113,7 +145,7 @@ export function Templates() {
                   {item.platforms.map((p) => (
                     <span
                       key={p}
-                      className="bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 rounded px-1.5 py-0.5 text-[10px] font-medium"
+                      className="rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
                     >
                       {p}
                     </span>
