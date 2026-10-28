@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ImagePlus, X, Eye, EyeOff, Copy, Check } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
+import { CaptionModeration } from "@/pages/editor/components/CaptionModeration";
 import { Button } from "@/components/ui/button";
 import {
   CanvasTextEditor,
@@ -259,6 +260,7 @@ export function ContentWritingPage() {
             <Button variant="outline" className="mt-2" onClick={retryConnection}>{t("editor.emojiPicker.retry")}</Button>
           </div>}
           {/* Canvas editor */}
+          <CaptionModeration key={workspaceId} workspaceId={workspaceId} text={publishText} />
           {loadError ? (
             <div role="alert" className="border-border bg-card flex h-48 flex-col items-center justify-center gap-3 rounded-xl border">
               <p className="text-destructive text-sm">{t("editor.contentWritingPage.loadFailed")}</p>

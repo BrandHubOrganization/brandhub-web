@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Mail } from "lucide-react";
 import { SectionDecor } from "@/components/landing/SectionDecor";
@@ -154,20 +155,20 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a
-                  href="/help/guide#roles"
+                <Link
+                  to="/privacy"
                   className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
                 >
-                  Bảo mật & Quyền riêng tư
-                </a>
+                  Privacy Policy
+                </Link>
               </li>
               <li>
-                <a
-                  href="/help/guide#notes"
+                <Link
+                  to="/terms"
                   className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
                 >
-                  Điều khoản dịch vụ
-                </a>
+                  Terms of Service
+                </Link>
               </li>
               <li>
                 <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-600">
@@ -181,10 +182,24 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-zinc-100 pt-8 text-center dark:border-zinc-800">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-zinc-100 pt-8 text-center sm:flex-row sm:text-left dark:border-zinc-800">
           <p className="text-xs text-zinc-400 dark:text-zinc-500">
             {t("landing.footer.copyright", { year: new Date().getFullYear() })}
           </p>
+          <div className="flex items-center gap-6 text-xs">
+            <Link
+              to="/privacy"
+              className="text-zinc-500 transition-colors hover:text-brand-orange dark:text-zinc-400"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              to="/terms"
+              className="text-zinc-500 transition-colors hover:text-brand-orange dark:text-zinc-400"
+            >
+              Terms of Service
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
