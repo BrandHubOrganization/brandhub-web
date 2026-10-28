@@ -39,13 +39,14 @@ export function AiHashtagSuggestions({
     gcTime: 0,
   });
   const suggestions = (query.data ?? [])
-    .map(formatPostHashtag)
+    .map((item) => ({ ...item, tag: formatPostHashtag(item.tag) }))
     .filter(
       (tag, index, tags) =>
-        tag &&
+        tag.tag &&
         tags.findIndex(
           (candidate) =>
-            normalizePostHashtag(candidate) === normalizePostHashtag(tag),
+            normalizePostHashtag(candidate.tag) ===
+            normalizePostHashtag(tag.tag),
         ) === index,
     );
   return (
@@ -85,7 +86,7 @@ export function AiHashtagSuggestions({
             {t(prefix + "aiRankHint")}
           </p>
           <ol className="space-y-2" aria-label={t(prefix + "aiResults")}>
-            {suggestions.map((tag, index) => (
+            {suggestions.map(({ tag, source }, index) => (
               <li
                 key={normalizePostHashtag(tag)}
                 className="flex min-w-0 items-center gap-2"
@@ -110,6 +111,16 @@ export function AiHashtagSuggestions({
                 >
                   {tag}
                 </Button>
+                <span className="text-muted-foreground shrink-0 text-xs">
+                  {t(
+                    prefix +
+                      (source === "WORKSPACE"
+                        ? "sourceWorkspace"
+                        : source === "TREND_CONTEXT"
+                          ? "sourceTrend"
+                          : "sourceGenerated"),
+                  )}
+                </span>
               </li>
             ))}
           </ol>

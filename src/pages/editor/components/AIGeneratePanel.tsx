@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { CaptionModeration } from "@/pages/editor/components/CaptionModeration";
+import type { GeneratedPostContent } from "@/services/aiGenerationService";
 import axios from "axios";
 import {
   AlertTriangle,
@@ -44,6 +47,7 @@ export function AIGeneratePanel({
   onApplyAIResult,
 }: AIGeneratePanelProps) {
   const { t } = useTranslation();
+  const { id: workspaceId } = useParams<{ id: string }>();
   const [brandTone, setBrandTone] =
     useState<(typeof BRAND_TONES)[number]>("FRIENDLY");
   const [hashtagCount, setHashtagCount] = useState(6);
@@ -52,10 +56,8 @@ export function AIGeneratePanel({
   const [showFeedbackInput, setShowFeedbackInput] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorState, setErrorState] = useState<AIErrorType>(null);
-  const [generatedResult, setGeneratedResult] = useState<{
-    caption: string;
-    hashtags: string[];
-  } | null>(null);
+  const [generatedResult, setGeneratedResult] =
+    useState<GeneratedPostContent | null>(null);
 
   const handleGenerate = async (regenerate = false) => {
     if (!prompt.trim()) {
@@ -104,7 +106,11 @@ export function AIGeneratePanel({
   };
 
   const handleApply = () => {
-    if (!generatedResult) return;
+    if (
+      !generatedResult?.moderation ||
+      !["PASSED", "WARNING"].includes(generatedResult.moderation.status)
+    )
+      return;
     onApplyAIResult(generatedResult.caption, generatedResult.hashtags);
     toast.success(t("editor.aiGenerate.textOnlyApplySuccess"));
   };
@@ -244,11 +250,33 @@ export function AIGeneratePanel({
               onChange={(event) =>
                 setGeneratedResult((current) =>
                   current
-                    ? { ...current, caption: event.target.value }
+                    ? {
+                        ...current,
+                        caption: event.target.value,
+                        moderation: undefined,
+                      }
                     : current,
                 )
               }
               className="border-border bg-card text-foreground rounded-xl text-xs leading-relaxed"
+            />
+            <CaptionModeration
+              key={`${workspaceId}:${generatedResult.caption}:${JSON.stringify(generatedResult.moderation)}`}
+              workspaceId={workspaceId}
+              text={[
+                generatedResult.caption,
+                generatedResult.hashtags.join(" "),
+              ].join("\n")}
+              initial={generatedResult.moderation}
+              onChecked={(moderation, checkedText) =>
+                setGeneratedResult((current) =>
+                  current &&
+                  [current.caption, current.hashtags.join(" ")].join("\n") ===
+                    checkedText
+                    ? { ...current, moderation }
+                    : current,
+                )
+              }
             />
             <div className="flex flex-wrap gap-1">
               {generatedResult.hashtags.map((tag) => (
@@ -301,8 +329,12 @@ export function AIGeneratePanel({
           <button
             type="button"
             data-testid="apply-text"
+            disabled={
+              !generatedResult.moderation ||
+              !["PASSED", "WARNING"].includes(generatedResult.moderation.status)
+            }
             onClick={handleApply}
-            className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-2 text-xs font-semibold text-white"
+            className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Check className="size-4" />
             {t("editor.aiGenerate.useThisButton")}
