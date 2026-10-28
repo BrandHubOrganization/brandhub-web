@@ -20,6 +20,8 @@ interface Insight {
   solutionFeatures: string[];
   icon: typeof Clock;
   accentColor: string;
+  image: string;
+  imageAlt: string;
 }
 
 const INSIGHTS: Insight[] = [
@@ -39,6 +41,9 @@ const INSIGHTS: Insight[] = [
     ],
     icon: Clock,
     accentColor: "from-amber-500/20 to-orange-500/20 text-amber-500",
+    image:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=700&h=360&fit=crop",
+    imageAlt: "Họp đàm phán duyệt chiến dịch giữa Agency và Khách hàng",
   },
   {
     id: "brand-tone-drift",
@@ -56,6 +61,9 @@ const INSIGHTS: Insight[] = [
     ],
     icon: ShieldAlert,
     accentColor: "from-rose-500/20 to-brand-orange/20 text-rose-500",
+    image:
+      "https://images.unsplash.com/photo-1542744094-3a31f272c490?w=700&h=360&fit=crop",
+    imageAlt: "Đảm bảo tuân thủ Brand Voice và bản quyền nhận diện",
   },
   {
     id: "manual-fatigue",
@@ -73,6 +81,9 @@ const INSIGHTS: Insight[] = [
     ],
     icon: Sparkles,
     accentColor: "from-blue-500/20 to-indigo-500/20 text-blue-500",
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=700&h=360&fit=crop",
+    imageAlt: "Tự động hóa xuất bản và quản lý kênh mạng xã hội",
   },
 ];
 
@@ -151,9 +162,23 @@ export function IndustryInsights() {
                     </div>
                   </div>
 
+                  {/* Photo Context Banner */}
+                  <div className="relative mt-5 h-36 w-full overflow-hidden rounded-2xl border border-zinc-200/60 dark:border-zinc-800/80">
+                    <img
+                      src={item.image}
+                      alt={item.imageAlt}
+                      loading="lazy"
+                      className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <span className="absolute bottom-2.5 left-3 text-[11px] font-medium text-white/90 drop-shadow">
+                      {item.imageAlt}
+                    </span>
+                  </div>
+
                   {/* Problem Description */}
-                  <div className="mt-6">
-                    <span className="inline-block rounded-md bg-rose-500/10 px-2.5 py-1 text-[11px] font-bold text-rose-600 uppercase dark:bg-rose-500/20 dark:text-rose-400">
+                  <div className="mt-5">
+                    <span className="inline-block rounded-md bg-rose-500/10 px-2.5 py-0.5 text-[10px] font-bold text-rose-600 uppercase dark:bg-rose-500/20 dark:text-rose-400">
                       Nỗi đau thị trường
                     </span>
                     <h3 className="mt-2 text-base font-bold text-zinc-900 dark:text-zinc-100">

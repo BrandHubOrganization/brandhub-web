@@ -20,12 +20,32 @@ const WORKSPACE_PAGE = 6;
 interface AgencyCapability {
   key: string;
   icon: LucideIcon;
+  image: string;
+  imageAlt: string;
 }
 
 const CAPABILITIES: AgencyCapability[] = [
-  { key: "multiAgency", icon: Building2 },
-  { key: "multiClient", icon: Users2 },
-  { key: "roleAccess", icon: ShieldCheck },
+  {
+    key: "multiAgency",
+    icon: Building2,
+    image:
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=360&fit=crop",
+    imageAlt: "Không gian làm việc sáng tạo của Agency chuyên nghiệp",
+  },
+  {
+    key: "multiClient",
+    icon: Users2,
+    image:
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&h=360&fit=crop",
+    imageAlt: "Cổng tương tác và thuyết trình chiến dịch cùng Khách hàng",
+  },
+  {
+    key: "roleAccess",
+    icon: ShieldCheck,
+    image:
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&h=360&fit=crop",
+    imageAlt: "Bảo mật tài khoản mạng xã hội và phân quyền RBAC",
+  },
 ];
 
 export function AgencyWorkspace() {
@@ -62,7 +82,7 @@ export function AgencyWorkspace() {
         </div>
 
         <div ref={gridRef} className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {CAPABILITIES.map(({ key, icon: Icon }, i) => (
+          {CAPABILITIES.map(({ key, icon: Icon, image, imageAlt }, i) => (
             <SpotlightCard
               key={key}
               aria-label={t("landing.agencyWorkspace.demoAction", {
@@ -73,22 +93,33 @@ export function AgencyWorkspace() {
                 transitionDelay: gridVisible ? `${i * 100}ms` : "0ms",
               }}
               className={cn(
-                "workspace-card border-zinc-100 transition-all duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+                "workspace-card border-zinc-100 transition-all duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none flex flex-col justify-between",
                 gridVisible
                   ? "translate-y-0 opacity-100"
                   : "translate-y-8 opacity-0",
               )}
             >
-              <div className="bg-brand-orange/10 text-brand-orange mb-5 flex size-12 items-center justify-center rounded-xl transition-transform group-hover:scale-110">
-                <Icon className="size-6" />
+              <div>
+                <div className="relative mb-5 h-40 w-full overflow-hidden rounded-xl border border-zinc-200/60 dark:border-zinc-800">
+                  <img
+                    src={image}
+                    alt={imageAlt}
+                    loading="lazy"
+                    className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="bg-brand-orange/90 text-white absolute bottom-3 left-3 flex size-10 items-center justify-center rounded-xl shadow-lg backdrop-blur">
+                    <Icon className="size-5" />
+                  </div>
+                </div>
+                <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                  {t(`landing.agencyWorkspace.items.${key}.title`)}
+                </h3>
+                <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                  {t(`landing.agencyWorkspace.items.${key}.desc`)}
+                </p>
               </div>
-              <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                {t(`landing.agencyWorkspace.items.${key}.title`)}
-              </h3>
-              <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                {t(`landing.agencyWorkspace.items.${key}.desc`)}
-              </p>
-              <span className="text-brand-orange mt-4 flex items-center gap-1.5 text-xs font-semibold opacity-0 transition-opacity group-hover:opacity-100">
+              <span className="text-brand-orange mt-5 flex items-center gap-1.5 text-xs font-semibold opacity-0 transition-opacity group-hover:opacity-100">
                 <MousePointerClick className="size-3.5" />
                 {t("landing.agencyWorkspace.demoLabel")}
               </span>
