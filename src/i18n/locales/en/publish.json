@@ -93,5 +93,42 @@
     "noPostsFound": "No posts found",
     "noPostsFoundDesc": "No posts match current filters. Try adjusting filter criteria or compose a new post.",
     "createPostNow": "Create Post Now"
+  },
+  "detail": {
+    "title": "Post Detail",
+    "breadcrumb": "Post Detail",
+    "subtitle": "Real-time engagement statistics and social media comments.",
+    "backToDashboard": "Back to Dashboard",
+    "loadError": "Failed to load post detail.",
+    "viewOnPlatform": "View on Social",
+    "editDraft": "Edit Post",
+    "captionTitle": "Post Caption",
+    "noCaption": "No caption provided",
+    "mediaTitle": "Attached Media",
+    "noMedia": "No attached media",
+    "commentsTitle": "Social Media Comments",
+    "noComments": "No comments on this post yet.",
+    "platformFailedTitle": "Publishing to {{platform}} failed",
+    "platformFailedDesc": "Could not publish to this platform. Please verify account connection or try again.",
+    "metrics": {
+      "title": "Real-time Engagement Performance",
+      "lastSynced": "Last synced: ",
+      "syncNow": "Sync Metrics",
+      "likes": "Reactions",
+      "comments": "Comments",
+      "shares": "Shares",
+      "impressions": "Impressions",
+      "reach": "Reach",
+      "clicks": "Clicks",
+      "reactionBreakdown": "Reaction Breakdown",
+      "reactions": {
+        "like": "Like",
+        "love": "Love",
+        "haha": "Haha",
+        "wow": "Wow",
+        "sad": "Sad",
+        "angry": "Angry"
+      }
+    }
   }
 }

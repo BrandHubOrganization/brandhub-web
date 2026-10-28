@@ -92,6 +92,7 @@ const NAV_KEY_MAP: Record<string, string> = {
   library: "nav.library",
   "social-accounts": "nav.socialAccounts",
   publish: "nav.publish",
+  posts: "nav.publish",
   subscription: "nav.subscription",
   plans: "subscription.plans.title",
   checkout: "subscription.checkout.title",
@@ -135,7 +136,18 @@ const WORKSPACE_SECTION_ROOTS: Record<
   },
 };
 
-export interface NavbarProps {
+export function getChildResourceBreadcrumbLabel(
+  prevSeg: string | undefined,
+  t: (key: string, fallback?: string) => string,
+): string {
+  if (prevSeg === "posts") return t("publish.detail.breadcrumb", "Chi tiết bài viết");
+  if (prevSeg === "tasks") return t("tasks.detail.breadcrumb", "Chi tiết công việc");
+  if (prevSeg === "clients") return t("clients.detail.breadcrumb", "Chi tiết khách hàng");
+  if (prevSeg === "campaigns") return t("campaign.detail.breadcrumb", "Chi tiết chiến dịch");
+  return t("common.detail", "Chi tiết");
+}
+
+interface NavbarProps {
   collapsed: boolean;
   toggleCollapsed: () => void;
   onMobileMenuOpen: () => void;
@@ -277,13 +289,12 @@ export function Navbar({
 
     const crumbs: { label: string; path: string }[] = [];
     segments.forEach((seg, idx) => {
-      const path = "/" + segments.slice(0, idx + 1).join("/");
+      let path = "/" + segments.slice(0, idx + 1).join("/");
+      const root = segments[0];
+
       if (UUID_REGEX.test(seg)) {
-        // UUID: xác định đây là agency hay workspace dựa vào segment gốc
-        const root = segments[0];
-        if (root === "workspaces") {
-          // Workspace luôn thuộc 1 agency — chèn crumb agency (có link) trước
-          // tên workspace để đi đúng phân cấp Agency → Workspace → Dashboard.
+        // Workspace UUID: chỉ ở vị trí /workspaces/:id (idx === 1)
+        if (root === "workspaces" && idx === 1) {
           const ws = workspaces.find((w) => w.id === seg);
           if (ws?.agencyId) {
             const agency = agencies.find((a) => a.id === ws.agencyId);
@@ -295,9 +306,17 @@ export function Navbar({
           crumbs.push({ label: ws?.name ?? seg, path });
           return;
         }
-        // Agency UUID
-        const entity = agencies.find((a) => a.id === seg);
-        crumbs.push({ label: entity?.name ?? seg, path });
+        // Agency UUID: chỉ ở vị trí /agency/:id (idx === 1)
+        if (root === "agency" && idx === 1) {
+          const entity = agencies.find((a) => a.id === seg);
+          crumbs.push({ label: entity?.name ?? seg, path });
+          return;
+        }
+        // Child resource UUID (e.g. /workspaces/:id/posts/:postId)
+        crumbs.push({
+          label: getChildResourceBreadcrumbLabel(segments[idx - 1], t),
+          path,
+        });
         return;
       }
       // "workspaces" root: đã được thay bằng crumb agency ở trên
@@ -314,6 +333,9 @@ export function Navbar({
       if (seg === "client" && idx === 0) {
         crumbs.push({ label: t("nav.clients"), path: "/clients" });
         return;
+      }
+      if (seg === "posts" && root === "workspaces") {
+        path = `/${segments.slice(0, idx).join("/")}/posts/dashboard`;
       }
       const navKey = NAV_KEY_MAP[seg];
       const label = navKey

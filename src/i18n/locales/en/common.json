@@ -22,6 +22,7 @@
     "pageInfo": "Page {{current}} / {{total}} ({{count}} rows total)"
   },
   "processing": "Processing...",
+  "detail": "Detail",
   "confirmDialog": {
     "title": "Confirm action",
     "description": "Are you sure you want to perform this action?",
