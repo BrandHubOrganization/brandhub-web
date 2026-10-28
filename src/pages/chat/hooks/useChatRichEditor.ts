@@ -2,6 +2,8 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useEditor, useEditorState, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { canIndentChatList } from "@/pages/chat/utils/chatListActions";
+import { chatComposerRequest } from "@/pages/chat/utils/chatComposerRequest";
+import { useChatDraftSchedule } from "@/pages/chat/hooks/useChatDraftSchedule";
 import { useTranslation } from "react-i18next";
 import {
   ChatMentionNode,
@@ -120,7 +122,7 @@ export function useChatRichEditor(props: ChatRichComposerProps) {
         "aria-describedby": hintId,
         "data-chat-rich-lists": "true",
         class:
-          "min-h-20 max-h-48 overflow-y-auto px-3 py-3 text-base sm:text-sm outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-orange/30 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-3 [&_pre]:bg-muted [&_pre]:p-2 [&_pre]:rounded [&_code]:font-mono [&_a]:text-brand-orange [&_a]:underline [&_p]:min-h-6 [&_.is-editor-empty:first-child]:before:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child]:before:text-muted-foreground [&_.is-editor-empty:first-child]:before:float-left [&_.is-editor-empty:first-child]:before:h-0 [&_.is-editor-empty:first-child]:before:pointer-events-none",
+          "min-h-[38px] max-h-44 overflow-y-auto px-3 py-2 text-base sm:text-sm outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-orange/30 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-3 [&_pre]:bg-muted [&_pre]:p-2 [&_pre]:rounded [&_code]:font-mono [&_a]:text-brand-orange [&_a]:underline [&_p]:min-h-[22px] [&_.is-editor-empty:first-child]:before:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child]:before:text-muted-foreground [&_.is-editor-empty:first-child]:before:float-left [&_.is-editor-empty:first-child]:before:h-0 [&_.is-editor-empty:first-child]:before:pointer-events-none",
       },
       handleKeyDown: (_view, event) => handlers.current.key(event),
     },
@@ -158,36 +160,16 @@ export function useChatRichEditor(props: ChatRichComposerProps) {
       .run();
     setSuggestion(null);
   };
+  const { scheduling, schedule, pending } = useChatDraftSchedule(editor, props);
   const send = () => {
-    if (!editor || !props.canPost) return;
-    const richContent = editor.getJSON() as ChatRichNode;
-    const content = richPlainText(richContent).trim();
-    if (
-      !content ||
-      content.length > 4000 ||
-      richMentionIds(richContent).length > 20 ||
-      !isChatRichDocument(richContent)
-    )
-      return;
-    if (
-      props.onSend({
-        clientMessageId: crypto.randomUUID(),
-        content,
-        richContent,
-        contextType: props.contextType,
-        contextId: props.contextId,
-        threadRootId: props.threadRootId ?? null,
-        mentionUserIds: richMentionIds(richContent),
-      })
-    ) {
+    if (!editor || pending.current) return;
+    const request = chatComposerRequest(editor, props);
+    if (request && props.onSend(request)) {
       editor.commands.clearContent();
       editor.commands.focus();
       setSuggestion(null);
     }
   };
-  useEffect(() => {
-    editor?.setEditable(props.canPost);
-  }, [editor, props.canPost]);
   useEffect(() => {
     if (!editor) return;
     const input = editor.view.dom;
@@ -283,5 +265,7 @@ export function useChatRichEditor(props: ChatRichComposerProps) {
     matches,
     mention,
     send,
+    scheduling,
+    schedule,
   };
 }

@@ -8,6 +8,7 @@ import {
   Search,
   Archive,
   RefreshCw,
+  Clock3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,7 @@ interface SidebarProps {
   onRetry: () => void;
   onSelect: (channelId: string) => void;
   onCreate: (direct: boolean) => void;
+  onScheduled: () => void;
 }
 
 export function ChatChannelSidebar(props: SidebarProps) {
@@ -41,9 +43,9 @@ export function ChatChannelSidebar(props: SidebarProps) {
       aria-label={t("chat.channels.navigation")}
       className="bg-muted/20 flex h-full min-h-0 flex-col"
     >
-      <div className="border-border/80 bg-card/50 border-b p-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-brand-orange-soft text-brand-orange ring-brand-orange/20 flex size-10 shrink-0 items-center justify-center rounded-xl font-semibold shadow-2xs ring-1">
+      <div className="border-border/80 bg-card/50 border-b p-3">
+        <div className="flex items-center gap-2.5">
+          <div className="bg-brand-orange-soft text-brand-orange ring-brand-orange/20 flex size-8.5 shrink-0 items-center justify-center rounded-lg font-semibold shadow-2xs ring-1">
             {props.workspaceName.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
@@ -61,11 +63,19 @@ export function ChatChannelSidebar(props: SidebarProps) {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           iconPrefix={<Search />}
-          wrapperClassName="mt-3.5"
-          className="bg-background/90 h-9 text-sm shadow-2xs"
+          wrapperClassName="mt-2"
+          className="bg-background/90 h-8 text-xs shadow-2xs"
         />
       </div>
-      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-2.5 py-4">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-2 py-3">
+        <Button
+          variant="ghost"
+          className="min-h-8.5 w-full justify-start gap-2 px-2.5 py-1.5 text-xs"
+          onClick={props.onScheduled}
+        >
+          <Clock3 className="size-3.5" aria-hidden="true" />
+          {t("chat.schedule.title")}
+        </Button>
         {props.loading && (
           <div role="status" className="flex justify-center p-4">
             <Spinner />
@@ -119,7 +129,7 @@ export function ChatChannelSidebar(props: SidebarProps) {
                     aria-current={isSelected ? "page" : undefined}
                     onClick={() => props.onSelect(channel.id)}
                     className={cn(
-                      "relative mb-0.5 min-h-10 w-full justify-start gap-2.5 rounded-lg px-3 text-sm transition-colors",
+                      "relative mb-0.5 min-h-8 w-full justify-start gap-2 rounded-lg px-2.5 py-1 text-xs transition-colors",
                       isSelected
                         ? "bg-brand-orange-soft text-brand-orange hover:bg-brand-orange-soft hover:text-brand-orange ring-brand-orange/20 font-semibold shadow-2xs ring-1"
                         : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
@@ -131,12 +141,12 @@ export function ChatChannelSidebar(props: SidebarProps) {
                     {isSelected && (
                       <span
                         aria-hidden="true"
-                        className="bg-brand-orange absolute inset-y-2 left-0 w-1 rounded-r-full"
+                        className="bg-brand-orange absolute inset-y-1.5 left-0 w-1 rounded-r-full"
                       />
                     )}
                     <Icon
                       className={cn(
-                        "size-4 shrink-0 transition-colors",
+                        "size-3.5 shrink-0 transition-colors",
                         isSelected
                           ? "text-brand-orange"
                           : "text-muted-foreground",
@@ -156,14 +166,14 @@ export function ChatChannelSidebar(props: SidebarProps) {
                     </span>
                     {channel.archived && (
                       <Archive
-                        className="text-muted-foreground ml-auto size-3.5 shrink-0"
+                        className="text-muted-foreground ml-auto size-3 shrink-0"
                         aria-label={t("chat.channels.archived")}
                       />
                     )}
                     {channel.unreadCount > 0 && (
                       <span
                         className={cn(
-                          "bg-brand-orange rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold text-white tabular-nums",
+                          "bg-brand-orange rounded-full px-1.5 py-0.5 font-mono text-[10px] font-semibold text-white tabular-nums",
                           !channel.archived && "ml-auto",
                         )}
                       >
@@ -193,7 +203,7 @@ export function ChatChannelSidebar(props: SidebarProps) {
           </Button>
         )}
       </div>
-      <p className="border-border/80 bg-card/30 text-muted-foreground border-t px-4 py-3 text-[11px] leading-relaxed">
+      <p className="border-border/80 bg-card/30 text-muted-foreground border-t px-3 py-2 text-[10px] leading-relaxed">
         {t("chat.channels.privacy")}
       </p>
     </nav>
