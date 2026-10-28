@@ -323,7 +323,8 @@
     "utilities": "Admin tools",
     "planned": "Not ready yet",
     "mailTemplates": "System mail templates",
-    "invoices": "Payment history"
+    "invoices": "Payment history",
+    "workspaceTemplates": "Workspace templates"
   },
   "overview": {
     "title": "Platform overview",
