@@ -52,7 +52,8 @@
     "save": "Save",
     "saving": "Saving…",
     "saved": "Template saved.",
-    "discardConfirm": "Discard your unsaved changes?"
+    "discardConfirm": "Discard your unsaved changes?",
+    "scope": "Audience"
   },
   "send": {
     "title": "Send email",
@@ -61,6 +62,7 @@
     "chooseTemplate": "Choose a template…",
     "recipients": "Recipients",
     "recipientsPlaceholder": "email,name,company\nan@example.com,An,ACME",
+    "agencyRecipients": "Recipients are determined automatically from the agency when you send.",
     "recipientsHelp": "Paste emails or a CSV with an email column (other columns become variables). Up to {{max}} recipients.",
     "uploadCsv": "Upload CSV",
     "parsed": "{{count}} valid recipients",
@@ -206,5 +208,78 @@
     "resubscribe": "Re-subscribe",
     "confirm": "Allow emails to {{email}} again?",
     "done": "Address re-subscribed."
+  },
+  "scopes": {
+    "CAMPAIGN_BROADCAST": "Campaign broadcast",
+    "WORKSPACE_MANAGER": "Workspace members",
+    "AGENCY_INTERNAL": "Agency internal",
+    "AGENCY_CLIENT": "Agency clients",
+    "ADMIN_SYSTEM_BROADCAST": "System broadcast",
+    "TRANSACTIONAL_AUTO": "Automatic transactional"
+  },
+  "agency": {
+    "title": "Agency mail templates",
+    "description": "Compose emails for your agency members or partner clients with the block builder."
+  },
+  "builder": {
+    "palette": "Blocks",
+    "canvas": "Email layout",
+    "empty": "Drag a block here or click a block on the left to start.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "remove": "Remove block",
+    "noProps": "This block has no settings.",
+    "legacy": "This template was written as free-form HTML. Build it again with blocks to save changes.",
+    "blocks": {
+      "header": "Header",
+      "heading": "Heading",
+      "paragraph": "Paragraph",
+      "image_banner": "Image banner",
+      "cta_button": "Button",
+      "divider": "Divider",
+      "spacer": "Spacer",
+      "contact_strip": "Contact strip",
+      "footer": "Footer"
+    },
+    "props": {
+      "text": "Text",
+      "align": "Alignment",
+      "alignLeft": "Left",
+      "alignCenter": "Center",
+      "imageUrl": "Image URL (https)",
+      "imageAlt": "Alt text",
+      "linkUrl": "Link URL (optional)",
+      "label": "Button label",
+      "urlType": "Link to",
+      "customUrl": "Custom URL (https)",
+      "heightPx": "Height (px)",
+      "urlTypes": {
+        "site": "Site",
+        "campaign": "Campaign",
+        "client": "Client",
+        "custom": "Custom URL"
+      }
+    },
+    "errors": {
+      "textRequired": "Enter some text.",
+      "imageRequired": "Image URL and alt text are required.",
+      "urlHttp": "URL must start with http:// or https://.",
+      "labelRequired": "Enter a button label.",
+      "urlRequired": "Enter a URL.",
+      "heightInvalid": "Height must be 0 or more."
+    }
+  },
+  "broadcast": {
+    "title": "Send \"{{name}}\" to all users",
+    "description": "This sends the notice to every active user. Recipients are resolved by the system when you send.",
+    "send": "Send to everyone",
+    "password": "Confirm your password",
+    "passwordRequired": "This broadcast is large. Enter your password to confirm.",
+    "wrongPassword": "Password is incorrect."
+  },
+  "audience": {
+    "total": "Will be sent to {{count}} people",
+    "loading": "Counting recipients...",
+    "failed": "Could not load the recipient list."
   }
 }

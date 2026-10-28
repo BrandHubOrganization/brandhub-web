@@ -7,6 +7,7 @@ import type {
   MailQuota,
   MailSuppression,
   RecipientCandidate,
+  RecipientPreview,
   RecipientGroup,
   MailTemplate,
   MailTemplateSummary,
@@ -33,6 +34,8 @@ export interface SendPayload {
   variables?: Record<string, string>;
   attachmentIds?: string[];
   scheduledAt?: string;
+  /** Admin system broadcast above the server threshold must re-confirm the admin password. */
+  confirmPassword?: string;
 }
 
 export const mailTemplateService = {
@@ -118,6 +121,35 @@ export const adminMailTemplateService = {
   update: (id: string, payload: TemplatePayload) =>
     api.patch<ApiResponse<MailTemplate>>(`/api/v1/admin/mail-templates/${id}`, payload).then(data),
   remove: (id: string) => api.delete(`/api/v1/admin/mail-templates/${id}`),
+  recipientPreview: (id: string) =>
+    api.get<ApiResponse<RecipientPreview>>(`/api/v1/admin/mail-templates/${id}/recipient-preview`).then(data),
+  /** Sends one rendered copy to the admin's own address. */
+  sendTest: (id: string) => api.post(`/api/v1/admin/mail-templates/${id}/send-test`, { variables: {} }),
+  /** ADMIN_SYSTEM_BROADCAST: recipients are resolved by the backend (all active users). */
+  send: (id: string, payload: SendPayload, idempotencyKey?: string) =>
+    api
+      .post<ApiResponse<SendResult>>(`/api/v1/admin/mail-templates/${id}/send`, payload, {
+        headers: idempotencyKey ? { "Idempotency-Key": idempotencyKey } : undefined,
+      })
+      .then(data),
+};
+
+export const agencyMailTemplateService = {
+  list: (agencyId: string, params: { q?: string; page?: number; size?: number }) =>
+    api
+      .get<ApiResponse<PageOf<MailTemplateSummary>>>(`/api/v1/agencies/${agencyId}/mail-templates`, { params })
+      .then(data),
+  get: (agencyId: string, id: string) =>
+    api.get<ApiResponse<MailTemplate>>(`/api/v1/agencies/${agencyId}/mail-templates/${id}`).then(data),
+  create: (agencyId: string, payload: TemplatePayload) =>
+    api.post<ApiResponse<MailTemplate>>(`/api/v1/agencies/${agencyId}/mail-templates`, payload).then(data),
+  update: (agencyId: string, id: string, payload: TemplatePayload) =>
+    api.patch<ApiResponse<MailTemplate>>(`/api/v1/agencies/${agencyId}/mail-templates/${id}`, payload).then(data),
+  remove: (agencyId: string, id: string) => api.delete(`/api/v1/agencies/${agencyId}/mail-templates/${id}`),
+  recipientPreview: (agencyId: string, id: string) =>
+    api
+      .get<ApiResponse<RecipientPreview>>(`/api/v1/agencies/${agencyId}/mail-templates/${id}/recipient-preview`)
+      .then(data),
 };
 
 export const publicMailService = {
