@@ -6,6 +6,14 @@ import type {
   MaterialItem,
   MaterialType,
   WatermarkPreset,
+  MaterialUploadOptions,
+  MaterialUploadSession,
+  MaterialFilters,
+  MaterialPage,
+  MaterialPreview,
+  DownloadMaterialResponse,
+  MaterialStorageUsage,
+  UpdateMaterialRequest,
 } from "@/types/material";
 
 interface ApiResponse<T> {
@@ -14,6 +22,147 @@ interface ApiResponse<T> {
 }
 
 export const materialService = {
+  async listPage(
+    workspaceId: string,
+    params: MaterialFilters & {
+      page: number;
+      size: number;
+      search: string;
+      deleted: boolean;
+    },
+    signal?: AbortSignal,
+  ): Promise<MaterialPage> {
+    const response = await api.get<
+      ApiResponse<MaterialItem[]> & {
+        meta: { page: number; size: number; total: number };
+      }
+    >(`/api/v1/workspaces/${workspaceId}/materials`, { params, signal });
+    return { items: response.data.data, ...response.data.meta };
+  },
+  async storageUsage(
+    workspaceId: string,
+    signal?: AbortSignal,
+  ): Promise<MaterialStorageUsage> {
+    const response = await api.get<ApiResponse<MaterialStorageUsage>>(
+      `/api/v1/workspaces/${workspaceId}/materials/storage-usage`,
+      { signal },
+    );
+    return response.data.data;
+  },
+  async preview(
+    workspaceId: string,
+    materialId: string,
+    signal?: AbortSignal,
+  ): Promise<MaterialPreview> {
+    const response = await api.post<ApiResponse<MaterialPreview>>(
+      `/api/v1/workspaces/${workspaceId}/materials/${materialId}/preview`,
+      {},
+      { signal },
+    );
+    return response.data.data;
+  },
+  async download(
+    workspaceId: string,
+    materialId: string,
+    signal?: AbortSignal,
+    supportTicket?: string,
+  ): Promise<DownloadMaterialResponse> {
+    const response = await api.post<ApiResponse<DownloadMaterialResponse>>(
+      `/api/v1/workspaces/${workspaceId}/materials/${materialId}/download`,
+      {},
+      {
+        headers: supportTicket
+          ? { "X-Support-Ticket": supportTicket }
+          : undefined,
+        signal,
+      },
+    );
+    return response.data.data;
+  },
+  async update(
+    workspaceId: string,
+    materialId: string,
+    request: UpdateMaterialRequest,
+    signal?: AbortSignal,
+  ): Promise<MaterialItem> {
+    const response = await api.patch<ApiResponse<MaterialItem>>(
+      `/api/v1/workspaces/${workspaceId}/materials/${materialId}`,
+      request,
+      { signal },
+    );
+    return response.data.data;
+  },
+  async trash(workspaceId: string, page: number, search: string) {
+    const response = await api.get<
+      ApiResponse<MaterialItem[]> & { meta: { total: number } }
+    >(`/api/v1/workspaces/${workspaceId}/materials`, {
+      params: { deleted: true, page, size: 20, q: search },
+    });
+    return { items: response.data.data, total: response.data.meta.total };
+  },
+
+  async deleteMaterial(
+    workspaceId: string,
+    material: MaterialItem,
+  ): Promise<MaterialItem> {
+    const response = await api.delete<ApiResponse<MaterialItem>>(
+      `/api/v1/workspaces/${workspaceId}/materials/${material.id}`,
+      { params: { expectedVersion: material.version } },
+    );
+    return response.data.data;
+  },
+
+  async restoreMaterial(
+    workspaceId: string,
+    material: MaterialItem,
+    supportTicket?: string,
+  ): Promise<MaterialItem> {
+    const response = await api.post<ApiResponse<MaterialItem>>(
+      `/api/v1/workspaces/${workspaceId}/materials/${material.id}/restore`,
+      {},
+      {
+        params: { expectedVersion: material.version },
+        headers: supportTicket
+          ? { "X-Support-Ticket": supportTicket }
+          : undefined,
+      },
+    );
+    return response.data.data;
+  },
+  async createUploadSession(
+    workspaceId: string,
+    file: File,
+    options: MaterialUploadOptions,
+    clientRequestId: string,
+    signal: AbortSignal,
+  ): Promise<MaterialUploadSession> {
+    const response = await api.post<ApiResponse<MaterialUploadSession>>(
+      `/api/v1/workspaces/${workspaceId}/materials/upload-session`,
+      {
+        ...options,
+        context: "LIBRARY",
+        filename: file.name,
+        contentType: file.type,
+        fileSize: file.size,
+        clientRequestId,
+      },
+      { signal },
+    );
+    return response.data.data;
+  },
+
+  async confirmUploadSession(
+    workspaceId: string,
+    sessionId: string,
+    signal: AbortSignal,
+  ): Promise<MaterialItem> {
+    const response = await api.post<ApiResponse<MaterialItem>>(
+      `/api/v1/workspaces/${workspaceId}/materials/upload-session/confirm`,
+      { sessionId },
+      { signal },
+    );
+    return response.data.data;
+  },
   async applyWatermark(
     workspaceId: string,
     materialId: string,
@@ -40,9 +189,14 @@ export const materialService = {
     return response.data.data;
   },
 
-  async get(workspaceId: string, materialId: string): Promise<MaterialItem> {
+  async get(
+    workspaceId: string,
+    materialId: string,
+    signal?: AbortSignal,
+  ): Promise<MaterialItem> {
     const response = await api.get<ApiResponse<MaterialItem>>(
       `/api/v1/workspaces/${workspaceId}/materials/${materialId}`,
+      { signal },
     );
     return response.data.data;
   },

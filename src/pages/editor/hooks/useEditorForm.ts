@@ -20,12 +20,12 @@ type EditorLocationState = {
 
 function toPostMedia(
   urls: string[],
-  storageKeys: Record<string, { s3Key: string; mediaType: "IMAGE" | "VIDEO" }>,
+  storageKeys: Record<string, SavePostMedia>,
 ): SavePostMedia[] {
   return urls.reduce<SavePostMedia[]>((items, url) => {
     const stored = storageKeys[url];
     if (stored) {
-      items.push({ s3Key: stored.s3Key, mediaType: stored.mediaType });
+      items.push(stored);
     } else if (/^https?:\/\//i.test(url)) {
       items.push({
         externalUrl: url,
@@ -51,7 +51,7 @@ export function useEditorForm() {
     locationState?.prefilledMediaUrls ?? [],
   );
   const [mediaStorageKeys, setMediaStorageKeys] = useState<
-    Record<string, { s3Key: string; mediaType: "IMAGE" | "VIDEO" }>
+    Record<string, SavePostMedia>
   >({});
   const [draftId, setDraftId] = useState<string>();
   const [containsAiContent, setContainsAiContent] = useState(false);
@@ -164,6 +164,21 @@ export function useEditorForm() {
       }));
     }
     setContainsAiContent(true);
+    markDirty();
+  };
+
+  const handleRepositoryMedia = (
+    url: string,
+    materialId: string,
+    mediaType: "IMAGE" | "VIDEO",
+  ) => {
+    setMediaUrls((current) =>
+      current.includes(url) ? current : [...current, url],
+    );
+    setMediaStorageKeys((current) => ({
+      ...current,
+      [url]: { materialId, mediaType },
+    }));
     markDirty();
   };
 
@@ -463,6 +478,7 @@ export function useEditorForm() {
     handleHashtagsChange,
     handleMediaUrlsChange,
     handleGeneratedMedia,
+    handleRepositoryMedia,
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,

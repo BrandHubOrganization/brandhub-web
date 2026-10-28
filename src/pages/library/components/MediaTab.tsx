@@ -1,348 +1,225 @@
-import React, { useEffect, useState, useCallback } from "react";
-import type { MediaItem, MediaType } from "@/types/contentLibrary";
-import { mockContentLibraryService } from "@/services/mock/mockContentLibraryService";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { MediaDetailPanel } from "./MediaDetailPanel";
-import { MediaUploadButton } from "./MediaUploadButton";
-import { formatFileSize } from "@/lib/utils";
-import {
-  Search,
-  ArrowUpDown,
-  Film,
-  Image as ImageIcon,
-  Loader2,
-  Play,
-  Copy,
-  ExternalLink,
-  Ratio,
-} from "lucide-react";
-import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuthStore } from "@/store/authStore";
+import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useMaterialRepository } from "@/pages/library/hooks/useMaterialRepository";
+import { useMaterialDownload } from "@/pages/library/hooks/useMaterialDownload";
+import { MaterialRepositoryCard } from "@/pages/library/components/MaterialRepositoryCard";
+import { ConfirmSoftDeleteModal } from "@/pages/library/components/ConfirmSoftDeleteModal";
+import { MediaUploadButton } from "@/pages/library/components/MediaUploadButton";
+import { MediaDetailPanel } from "@/pages/library/components/MediaDetailPanel";
+import { MaterialToolbar } from "@/pages/library/components/MaterialToolbar";
+import { CustomerDrivePanel } from "@/pages/library/components/CustomerDrivePanel";
+import type { MaterialFilters, MaterialItem } from "@/types/material";
 
-export const MediaTab: React.FC = () => {
+export function MediaTab() {
+  const workspace = useWorkspaceStore((state) => state.currentWorkspace?.id);
+  const actor = useAuthStore((state) => state.user?.id);
+  return <RepositoryMedia key={`${workspace}:${actor}`} />;
+}
+
+function RepositoryMedia() {
   const { t } = useTranslation();
-  const [mediaList, setMediaList] = useState<MediaItem[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  // Filters
-  const [search, setSearch] = useState<string>("");
-  const [filterType, setFilterType] = useState<MediaType | "all">("all");
-  const [filterOrientation, setFilterOrientation] = useState<string>("all");
-  const [sort, setSort] = useState<"newest" | "oldest">("newest");
-
-  // Detail panel state
-  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
-
-  // Intersection observer sentinel for infinite scroll
-  const { ref: sentinelRef, isIntersecting } = useIntersectionObserver({
-    threshold: 0.5,
-  });
-
-  const fetchMedia = useCallback(
-    async (pageToFetch: number, reset: boolean = false) => {
-      setLoading(true);
-      try {
-        const res = await mockContentLibraryService.getMedia({
-          page: pageToFetch,
-          limit: 8,
-          type: filterType,
-          aspectRatio: filterOrientation,
-          search,
-          sort,
-        });
-
-        if (reset) {
-          setMediaList(res.items);
-        } else {
-          setMediaList((prev) => {
-            const existingIds = new Set(prev.map((i) => i.id));
-            const newUnique = res.items.filter((i) => !existingIds.has(i.id));
-            return [...prev, ...newUnique];
-          });
-        }
-        setHasMore(res.hasMore);
-      } catch (err) {
-        console.error("Fetch media error:", err);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [filterType, filterOrientation, search, sort],
-  );
-
-  // Initial & Filter Change Fetch
+  const [deleted, setDeleted] = useState(false);
+  const [page, setPage] = useState(0);
+  const [search, setSearch] = useState("");
+  const [debounced, setDebounced] = useState("");
+  const [filters, setFilters] = useState<MaterialFilters>({});
+  const [confirm, setConfirm] = useState<MaterialItem | null>(null);
+  const [selected, setSelected] = useState<MaterialItem | null>(null);
+  const repository = useMaterialRepository(deleted, page, debounced, filters);
+  const downloader = useMaterialDownload();
+  const client = useQueryClient();
   useEffect(() => {
-    setPage(1);
-    fetchMedia(1, true);
-  }, [filterType, filterOrientation, search, sort, fetchMedia]);
-
-  // Trigger next page on infinite scroll
-  useEffect(() => {
-    if (isIntersecting && hasMore && !loading) {
-      const nextPage = page + 1;
-      setPage(nextPage);
-      fetchMedia(nextPage, false);
-    }
-  }, [isIntersecting, hasMore, loading, page, fetchMedia]);
-
-  const handleUploadSuccess = (newMedia: MediaItem) => {
-    setMediaList((prev) => [newMedia, ...prev]);
+    const timer = setTimeout(() => {
+      setDebounced(search);
+      setPage(0);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+  const items =
+    repository.forbidden || repository.query.isError
+      ? []
+      : (repository.query.data?.items ?? []);
+  const total =
+    repository.forbidden || repository.query.isError
+      ? 0
+      : (repository.query.data?.total ?? 0);
+  const pending = repository.remove.isPending || repository.restore.isPending;
+  const uploaded = () => {
+    void client.invalidateQueries({ queryKey: ["materials"] });
+    void client.invalidateQueries({ queryKey: ["material-storage-usage"] });
   };
-
-  const handleDeleteMedia = async (id: string) => {
-    await mockContentLibraryService.deleteMedia(id);
-    setMediaList((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const handleQuickCopyUrl = (e: React.MouseEvent, url: string) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(url);
-    toast.success(t("library.media.copyUrlSuccess"));
-  };
-
+  const label = (key: string) => t(`library.repository.${key}`);
+  const filtered = !!search || Object.values(filters).some(Boolean);
+  const forbidden =
+    isAxiosError(repository.query.error) &&
+    repository.query.error.response?.status === 403;
   return (
-    <div className="space-y-6">
-      {/* Toolbar Controls */}
-      <div className="border-border bg-card flex flex-col items-stretch justify-between gap-4 rounded-xl border p-4 shadow-xs">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {/* Search Box */}
-          <div className="relative max-w-md flex-1">
-            <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-            <Input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t("library.media.searchPlaceholder")}
-              className="border-border bg-muted text-foreground placeholder-muted-foreground rounded-xl pr-4 pl-9 text-xs"
-            />
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Filter Type */}
-            <div className="border-border bg-muted flex items-center gap-1 rounded-xl border p-1">
-              <button
-                onClick={() => setFilterType("all")}
-                className={`cursor-pointer rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
-                  filterType === "all"
-                    ? "bg-card text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {t("library.media.filterAll")}
-              </button>
-              <button
-                onClick={() => setFilterType("image")}
-                className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
-                  filterType === "image"
-                    ? "bg-brand-orange-soft text-brand-orange font-bold shadow-xs"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <ImageIcon className="size-3.5" />
-                {t("library.media.filterImage")}
-              </button>
-              <button
-                onClick={() => setFilterType("video")}
-                className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
-                  filterType === "video"
-                    ? "bg-brand-orange-soft text-brand-orange font-bold shadow-xs"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Film className="size-3.5" />
-                {t("library.media.filterVideo")}
-              </button>
-            </div>
-
-            {/* Sort Dropdown */}
-            <div className="border-border bg-muted flex items-center gap-2 rounded-xl border px-3 py-1.5">
-              <ArrowUpDown className="text-muted-foreground size-3.5" />
-              <Select
-                value={sort}
-                onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
-                className="text-foreground h-auto w-auto min-w-0 cursor-pointer border-0 bg-transparent px-0 py-0 text-xs font-medium shadow-none focus-visible:ring-0"
-              >
-                <option value="newest" className="bg-card">
-                  {t("library.media.sortNewest")}
-                </option>
-                <option value="oldest" className="bg-card">
-                  {t("library.media.sortOldest")}
-                </option>
-              </Select>
-            </div>
-
-            {/* Upload Button */}
-            <MediaUploadButton onUploadSuccess={handleUploadSuccess} />
-          </div>
-        </div>
-
-        {/* Orientation Filter Row */}
-        <div className="border-border flex flex-wrap items-center gap-2 border-t pt-3">
-          <span className="text-muted-foreground flex items-center gap-1 text-xs font-medium">
-            <Ratio className="size-3.5" />
-            Tỉ lệ hiển thị:
-          </span>
-          {[
-            { key: "all", label: "Tất cả tỉ lệ" },
-            { key: "1:1", label: "Vuông (1:1)" },
-            { key: "9:16", label: "Dọc Reels/TikTok (9:16)" },
-            { key: "16:9", label: "Ngang Banner (16:9)" },
-            { key: "4:5", label: "Chân dung (4:5)" },
-          ].map((item) => (
-            <button
-              key={item.key}
-              onClick={() => setFilterOrientation(item.key)}
-              className={`cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                filterOrientation === item.key
-                  ? "bg-brand-orange text-white shadow-xs font-semibold"
-                  : "bg-muted text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
+    <div className="space-y-4">
+      {!repository.forbidden && !repository.query.isError && (
+        <CustomerDrivePanel />
+      )}
+      <Tabs
+        value={deleted ? "trash" : "active"}
+        onValueChange={(value) => {
+          setDeleted(value === "trash");
+          setPage(0);
+          setSelected(null);
+          setConfirm(null);
+        }}
+      >
+        <TabsList>
+          <TabsTrigger value="active">{t("library.trash.active")}</TabsTrigger>
+          <TabsTrigger value="trash">{t("library.trash.title")}</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      {repository.workspace &&
+        !repository.forbidden &&
+        !repository.query.isError && (
+          <MaterialToolbar
+            workspace={repository.workspace}
+            role={repository.role}
+            search={search}
+            filters={filters}
+            usage={repository.usage.data}
+            onSearch={setSearch}
+            onChange={(next) => {
+              setFilters(next);
+              setPage(0);
+            }}
+          />
+        )}
+      {!deleted && !repository.forbidden && !repository.query.isError && (
+        <MediaUploadButton
+          onUploadSuccess={uploaded}
+          disabled={
+            repository.usage.data?.storageMode !== "CUSTOMER_DRIVE_FIRST" &&
+            repository.usage.data?.isQuotaExceeded
+          }
+        />
+      )}
+      {deleted && (
+        <p className="text-muted-foreground text-sm">
+          {t("library.trash.quotaNotice")}
+        </p>
+      )}
+      <div aria-live="polite" className="text-muted-foreground text-sm">
+        {repository.forbidden
+          ? ""
+          : !repository.workspace
+            ? t("library.trash.chooseWorkspace")
+            : repository.query.isPending
+              ? t("library.trash.loading")
+              : t("library.trash.count", { count: total })}
       </div>
-
-      {/* Media Grid */}
-      {mediaList.length === 0 && !loading ? (
-        <div className="border-border bg-card rounded-xl border border-dashed p-8 py-16 text-center">
-          <ImageIcon className="text-muted-foreground mx-auto mb-3 size-12" />
-          <h3 className="text-foreground mb-1 text-sm font-semibold">
-            {t("library.media.emptyTitle")}
-          </h3>
-          <p className="text-muted-foreground mx-auto max-w-sm text-xs">
-            {t("library.media.emptyDescription")}
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {mediaList.map((media) => (
-            <div
-              key={media.id}
-              onClick={() => setSelectedMedia(media)}
-              className="group hover:border-brand-orange/50 border-border relative aspect-square transform cursor-pointer overflow-hidden rounded-xl border bg-zinc-900 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md"
-            >
-              {/* Media Display */}
-              {media.type === "video" ? (
-                <div className="relative h-full w-full">
-                  <img
-                    src={media.thumbnailUrl || media.url}
-                    alt={media.filename}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <div className="text-brand-orange flex size-10 items-center justify-center rounded-full bg-white/90 shadow-lg transition-transform group-hover:scale-110">
-                      <Play className="ml-0.5 size-5 fill-current" />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <img
-                  src={media.url}
-                  alt={media.filename}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              )}
-
-              {/* Badges Top Left: Resolution & Aspect Ratio */}
-              <div className="absolute top-2 left-2 z-10 flex items-center gap-1.5">
-                {media.resolution && (
-                  <span className="rounded-md bg-black/60 px-1.5 py-0.5 text-[10px] font-bold text-white/90 backdrop-blur-xs">
-                    {media.resolution}
-                  </span>
-                )}
-                {media.aspectRatio && (
-                  <span className="bg-brand-orange/80 rounded-md px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-xs">
-                    {media.aspectRatio}
-                  </span>
-                )}
-              </div>
-
-              {/* Type Badge Top Right */}
-              <div className="text-3xs absolute top-2 right-2 z-10 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 font-bold text-white uppercase backdrop-blur-xs">
-                {media.type === "video" ? (
-                  <>
-                    <Film className="text-brand-orange size-3" />{" "}
-                    {media.durationSeconds ? `${media.durationSeconds}s` : t("library.media.typeVideo")}
-                  </>
-                ) : (
-                  <>
-                    <ImageIcon className="text-brand-orange size-3" />{" "}
-                    {t("library.media.typeImage")}
-                  </>
-                )}
-              </div>
-
-              {/* Hover Overlay Details & Quick Actions */}
-              <div className="absolute inset-0 flex flex-col justify-between bg-gradient-to-t from-black/85 via-black/30 to-black/20 p-3 text-white opacity-0 transition-opacity group-hover:opacity-100">
-                <div className="flex justify-end gap-1.5">
-                  <button
-                    onClick={(e) => handleQuickCopyUrl(e, media.url)}
-                    title="Sao chép Link S3"
-                    className="flex size-7 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white/80 backdrop-blur-xs transition-colors hover:bg-black/90 hover:text-white"
-                  >
-                    <Copy className="size-3.5" />
-                  </button>
-                  <button
-                    onClick={() => setSelectedMedia(media)}
-                    title="Xem chi tiết"
-                    className="flex size-7 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white/80 backdrop-blur-xs transition-colors hover:bg-black/90 hover:text-white"
-                  >
-                    <ExternalLink className="size-3.5" />
-                  </button>
-                </div>
-
-                <div>
-                  {media.category && (
-                    <span className="mb-1 inline-block rounded bg-white/20 px-1.5 py-0.5 text-[9px] font-semibold tracking-wider text-white uppercase">
-                      {media.category}
-                    </span>
-                  )}
-                  <div className="truncate text-xs font-semibold leading-tight">
-                    {media.filename}
-                  </div>
-                  <div className="text-3xs mt-0.5 flex items-center gap-2 font-mono text-white/70">
-                    <span>{formatFileSize(media.sizeBytes)}</span>
-                    {media.width && media.height && (
-                      <span>{media.width}x{media.height}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+      {(repository.forbidden || repository.query.isError) && (
+        <div
+          role="alert"
+          className="text-destructive flex flex-wrap items-center gap-3 text-sm"
+        >
+          {label(repository.forbidden || forbidden ? "forbidden" : "loadError")}
+          <Button
+            variant="outline"
+            onClick={() =>
+              repository.forbidden
+                ? repository.retryAccess()
+                : void repository.refresh()
+            }
+          >
+            {label("retry")}
+          </Button>
         </div>
       )}
-
-      {/* Infinite Scroll Loading Sentinel */}
-      <div ref={sentinelRef} className="flex items-center justify-center py-6">
-        {loading && (
-          <div className="border-border bg-card text-muted-foreground flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium shadow-xs">
-            <Loader2 className="text-brand-orange size-4 animate-spin" />
-            <span>{t("library.media.loadingMore")}</span>
+      {!repository.query.isPending &&
+        !repository.forbidden &&
+        !repository.query.isError &&
+        items.length === 0 && (
+          <div className="border-border text-muted-foreground space-y-3 rounded-xl border border-dashed p-8 text-center">
+            <p>
+              {deleted
+                ? t("library.trash.empty")
+                : label(filtered ? "emptySearch" : "empty")}
+            </p>
+            {filtered && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setFilters({});
+                  setSearch("");
+                  setPage(0);
+                }}
+              >
+                {label("resetFilters")}
+              </Button>
+            )}
           </div>
         )}
-        {!hasMore && mediaList.length > 0 && (
-          <span className="text-muted-foreground text-xs font-medium">
-            {t("library.media.allLoaded")}
-          </span>
-        )}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+        {items.map((material) => (
+          <MaterialRepositoryCard
+            key={`${material.id}:${material.version}`}
+            material={material}
+            deleted={deleted}
+            pending={pending}
+            downloading={downloader.isDownloading(material.id)}
+            onDownload={() => void downloader.download(material)}
+            onDelete={() => setConfirm(material)}
+            onRestore={() => repository.restore.mutate(material)}
+            onOpen={() => setSelected(material)}
+          />
+        ))}
       </div>
-
-      {/* Slide-over Detail Panel */}
-      <MediaDetailPanel
-        media={selectedMedia}
-        onClose={() => setSelectedMedia(null)}
-        onDelete={handleDeleteMedia}
-        onWatermarked={(newMedia) => {
-          setMediaList((prev) => [newMedia, ...prev]);
+      <div className="flex justify-between gap-3">
+        <Button
+          variant="outline"
+          disabled={page === 0 || repository.query.isFetching}
+          onClick={() => setPage(page - 1)}
+        >
+          {t("library.trash.previous")}
+        </Button>
+        <Button
+          variant="outline"
+          disabled={(page + 1) * 20 >= total || repository.query.isFetching}
+          onClick={() => setPage(page + 1)}
+        >
+          {t("library.trash.next")}
+        </Button>
+      </div>
+      <ConfirmSoftDeleteModal
+        material={
+          repository.forbidden || repository.query.isError ? null : confirm
+        }
+        pending={repository.remove.isPending}
+        onClose={() => setConfirm(null)}
+        onConfirm={() => {
+          if (confirm)
+            repository.remove.mutate(confirm, {
+              onSuccess: () => {
+                setConfirm(null);
+                setSelected(null);
+              },
+            });
         }}
+      />
+      <MediaDetailPanel
+        material={
+          repository.forbidden || repository.query.isError ? null : selected
+        }
+        onClose={() => setSelected(null)}
+        quotaExceeded={repository.usage.data?.isQuotaExceeded}
+        downloading={selected ? downloader.isDownloading(selected.id) : false}
+        onDownload={(latest) => void downloader.download(latest)}
+        onDelete={(latest) => {
+          setConfirm(latest);
+          setSelected(null);
+        }}
+        onWatermarked={uploaded}
       />
     </div>
   );
-};
+}

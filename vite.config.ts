@@ -13,7 +13,7 @@ export default defineConfig({
   },
   // Unit tests only — tests/e2e/** are Playwright specs run by `playwright test`.
   test: {
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "tests/unit/**/*.test.ts"],
   },
   server: {
     port: 3000,
@@ -29,7 +29,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes("node_modules/react/") || id.includes("node_modules/react-dom/") || id.includes("node_modules/react-router-dom/")) {
+          if (
+            id.includes("node_modules/react/") ||
+            id.includes("node_modules/react-dom/") ||
+            id.includes("node_modules/react-router-dom/")
+          ) {
             return "vendor-react";
           }
           if (id.includes("node_modules/lucide-react/")) {

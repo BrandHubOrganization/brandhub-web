@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ImagePlus, X, Eye, EyeOff, Copy, Check } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
+import { CaptionModeration } from "@/pages/editor/components/CaptionModeration";
 import { Button } from "@/components/ui/button";
 import {
   CanvasTextEditor,
@@ -295,6 +296,7 @@ export function ContentWritingPage() {
             </div>
           )}
           {/* Canvas editor */}
+          <CaptionModeration key={workspaceId} workspaceId={workspaceId} text={publishText} />
           {loadError ? (
             <div
               role="alert"
