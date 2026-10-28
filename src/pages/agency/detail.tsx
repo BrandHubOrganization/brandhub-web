@@ -7,6 +7,7 @@ import {
   Trash2,
   TriangleAlert,
   User,
+  Mail,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -616,6 +617,17 @@ export function AgencyDetailPage() {
                 <User className="size-3.5" />
                 {t("agency.detail.viewAllMembers")}
               </Button>
+              {isOwner && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="cursor-pointer gap-1.5"
+                  onClick={() => navigate(`/agency/${id}/mail-templates`)}
+                >
+                  <Mail className="size-3.5" />
+                  {t("agency.detail.mailTemplates")}
+                </Button>
+              )}
             </section>
           </>
         )}
