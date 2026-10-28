@@ -27,12 +27,19 @@ import {
   MessageCircleMore,
   Mail,
   Calendar,
+  Send,
+  Activity,
+  Brain,
+  TrendingUp,
+  Clapperboard,
 } from "lucide-react";
 
 export interface NavItem {
   to: string;
   icon: React.ComponentType<{ className?: string }>;
   labelKey: string;
+  /** Chỉ hiện khi user là OWNER của agency đang chọn (vd Mẫu email Agency, B5). */
+  agencyOwnerOnly?: boolean;
   /** Chỉ hiện khi role hiện tại là CLIENT — cần currentAgencyId để build URL. */
   clientOnly?: boolean;
   /** URL cần currentAgencyId để build (thay {agencyId} trong `to`) — ẩn nếu chưa có agency active. */
@@ -164,6 +171,20 @@ export const NAV_SECTIONS: NavSection[] = [
         requiresWorkspace: true,
       },
       {
+        to: "/publish",
+        icon: Send,
+        labelKey: "nav.publish",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/publish/dashboard",
+        icon: Activity,
+        labelKey: "nav.postsDashboard",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/content-writing",
         icon: FileEdit,
         labelKey: "nav.contentWriting",
@@ -218,6 +239,23 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: Shield,
         labelKey: "nav.agencySub.roles",
         agencyScoped: true,
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
+        to: "/agency/{agencyId}/stats",
+        icon: BarChart3,
+        labelKey: "nav.agencySub.stats",
+        agencyScoped: true,
+        hiddenForClient: true,
+        hideInWorkspace: true,
+      },
+      {
+        to: "/agency/{agencyId}/mail-templates",
+        icon: Mail,
+        labelKey: "nav.agencySub.mailTemplates",
+        agencyScoped: true,
+        agencyOwnerOnly: true,
         hiddenForClient: true,
         hideInWorkspace: true,
       },
@@ -344,6 +382,24 @@ export const NAV_SECTIONS: NavSection[] = [
         hideInWorkspace: true,
       },
       {
+        to: "/ai-studio/knowledge-base",
+        icon: Brain,
+        labelKey: "aiStudio.knowledgeBase.title",
+        hideInWorkspace: true,
+      },
+      {
+        to: "/ai-studio/trends",
+        icon: TrendingUp,
+        labelKey: "aiStudio.trends.title",
+        hideInWorkspace: true,
+      },
+      {
+        to: "/ai-studio/video",
+        icon: Clapperboard,
+        labelKey: "aiStudio.video.title",
+        hideInWorkspace: true,
+      },
+      {
         to: "/reports",
         icon: FileBarChart,
         labelKey: "nav.reports",
@@ -355,6 +411,12 @@ export const NAV_SECTIONS: NavSection[] = [
     key: "invitations",
     titleKey: "nav.sections.invitations",
     items: [
+      {
+        to: "/invitations",
+        icon: Mail,
+        labelKey: "nav.invitations",
+        hideInWorkspace: true,
+      },
       {
         to: "/agency/invitations",
         icon: Inbox,
