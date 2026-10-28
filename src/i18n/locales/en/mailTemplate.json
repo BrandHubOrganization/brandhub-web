@@ -266,7 +266,7 @@
       "urlHttp": "URL must start with http:// or https://.",
       "labelRequired": "Enter a button label.",
       "urlRequired": "Enter a URL.",
-      "heightInvalid": "Height must be 0 or more."
+      "heightInvalid": "Height must be between 0 and 200."
     }
   },
   "broadcast": {

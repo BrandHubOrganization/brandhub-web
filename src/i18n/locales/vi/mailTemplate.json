@@ -266,7 +266,7 @@
       "urlHttp": "URL phải bắt đầu bằng http:// hoặc https://.",
       "labelRequired": "Hãy nhập nhãn nút.",
       "urlRequired": "Hãy nhập URL.",
-      "heightInvalid": "Chiều cao phải từ 0 trở lên."
+      "heightInvalid": "Chiều cao phải từ 0 đến 200."
     }
   },
   "broadcast": {

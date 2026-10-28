@@ -29,7 +29,10 @@ export interface MailLayout {
 
 export const CTA_URL_TYPES = ["site", "campaign", "client", "custom"] as const;
 
-export const SCOPES_BY_AUDIENCE: Record<"workspace" | "admin" | "agency", MailTemplateScope[]> = {
+export const SCOPES_BY_AUDIENCE: Record<
+  "workspace" | "admin" | "agency",
+  MailTemplateScope[]
+> = {
   workspace: ["WORKSPACE_MANAGER", "CAMPAIGN_BROADCAST"],
   admin: ["ADMIN_SYSTEM_BROADCAST", "TRANSACTIONAL_AUTO"],
   agency: ["AGENCY_INTERNAL", "AGENCY_CLIENT"],
@@ -72,7 +75,10 @@ export function parseLayout(json: string | null | undefined): MailLayout {
           typeof (b as MailBlock).id === "string" &&
           (BLOCK_TYPES as readonly string[]).includes((b as MailBlock).type),
       )
-      .map((b) => ({ ...b, props: { ...DEFAULT_PROPS[b.type], ...(b.props ?? {}) } }));
+      .map((b) => ({
+        ...b,
+        props: { ...DEFAULT_PROPS[b.type], ...(b.props ?? {}) },
+      }));
     return { version: 1, blocks };
   } catch {
     return emptyLayout();
@@ -83,13 +89,21 @@ export function serializeLayout(layout: MailLayout): string {
   return JSON.stringify({ version: 1, blocks: layout.blocks });
 }
 
-export function insertBlock(blocks: MailBlock[], block: MailBlock, index: number): MailBlock[] {
+export function insertBlock(
+  blocks: MailBlock[],
+  block: MailBlock,
+  index: number,
+): MailBlock[] {
   const at = Math.max(0, Math.min(index, blocks.length));
   return [...blocks.slice(0, at), block, ...blocks.slice(at)];
 }
 
 /** `to` is the final index of the moved block; out-of-range values are clamped. */
-export function moveBlock(blocks: MailBlock[], from: number, to: number): MailBlock[] {
+export function moveBlock(
+  blocks: MailBlock[],
+  from: number,
+  to: number,
+): MailBlock[] {
   if (from < 0 || from >= blocks.length) return blocks;
   const target = Math.max(0, Math.min(to, blocks.length - 1));
   if (target === from) return blocks;
@@ -103,12 +117,19 @@ export function removeBlock(blocks: MailBlock[], id: string): MailBlock[] {
   return blocks.filter((b) => b.id !== id);
 }
 
-export function updateBlockProps(blocks: MailBlock[], id: string, patch: BlockProps): MailBlock[] {
-  return blocks.map((b) => (b.id === id ? { ...b, props: { ...b.props, ...patch } } : b));
+export function updateBlockProps(
+  blocks: MailBlock[],
+  id: string,
+  patch: BlockProps,
+): MailBlock[] {
+  return blocks.map((b) =>
+    b.id === id ? { ...b, props: { ...b.props, ...patch } } : b,
+  );
 }
 
 const isHttp = (url: string) => /^https?:\/\//i.test(url.trim());
-const blank = (v: string | number | undefined) => typeof v !== "string" || !v.trim();
+const blank = (v: string | number | undefined) =>
+  typeof v !== "string" || !v.trim();
 
 /** Mirrors backend MailBlockRenderer.validateBlock; returns an i18n key suffix per failing block id. */
 export function validateBlocks(blocks: MailBlock[]): Record<string, string> {
@@ -120,9 +141,11 @@ export function validateBlocks(blocks: MailBlock[]): Record<string, string> {
         if (blank(props.text)) errors[id] = "textRequired";
         break;
       case "image_banner":
-        if (blank(props.imageUrl) || blank(props.imageAlt)) errors[id] = "imageRequired";
+        if (blank(props.imageUrl) || blank(props.imageAlt))
+          errors[id] = "imageRequired";
         else if (!isHttp(String(props.imageUrl))) errors[id] = "urlHttp";
-        else if (!blank(props.linkUrl) && !isHttp(String(props.linkUrl))) errors[id] = "urlHttp";
+        else if (!blank(props.linkUrl) && !isHttp(String(props.linkUrl)))
+          errors[id] = "urlHttp";
         break;
       case "cta_button":
         if (blank(props.label)) errors[id] = "labelRequired";
@@ -132,7 +155,12 @@ export function validateBlocks(blocks: MailBlock[]): Record<string, string> {
         }
         break;
       case "spacer":
-        if (typeof props.heightPx !== "number" || props.heightPx < 0) errors[id] = "heightInvalid";
+        if (
+          typeof props.heightPx !== "number" ||
+          props.heightPx < 0 ||
+          props.heightPx > 200
+        )
+          errors[id] = "heightInvalid";
         break;
       default:
         break;
