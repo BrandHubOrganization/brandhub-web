@@ -14,12 +14,16 @@ import {
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useChatChannels } from "@/pages/chat/hooks/useChatChannels";
 import { useChatWideLayout } from "@/pages/chat/hooks/useChatWideLayout";
+import { useChatThreadWidth } from "@/pages/chat/hooks/useChatThreadWidth";
+import { ChatResizableThread } from "@/pages/chat/components/ChatResizableThread";
+import { ChatThreadWidthMenu } from "@/pages/chat/components/ChatThreadWidthMenu";
 import { ChatChannelSidebar } from "@/pages/chat/components/ChatChannelSidebar";
 import { ChatChannelForm } from "@/pages/chat/components/ChatChannelForm";
 import { ChatChannelDetails } from "@/pages/chat/components/ChatChannelDetails";
 import { ChatConversation } from "@/pages/chat/components/ChatConversation";
 import { ChatThreadPanel } from "@/pages/chat/components/ChatThreadPanel";
 import { ChatCallBar } from "@/pages/chat/components/ChatCallBar";
+import { ChatScheduledPanel } from "@/pages/chat/components/ChatScheduledPanel";
 import { useChatCall } from "@/pages/chat/hooks/useChatCall";
 import type { ChatContextType } from "@/types/chat";
 import type { ChatChannel } from "@/types/chatCollaboration";
@@ -33,6 +37,7 @@ type Panel =
   | { kind: "create"; direct: boolean }
   | { kind: "details" }
   | { kind: "thread"; rootId: string }
+  | { kind: "scheduled" }
   | null;
 
 export function ChatWorkspace(props: WorkspaceProps) {
@@ -42,6 +47,9 @@ export function ChatWorkspace(props: WorkspaceProps) {
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [panel, setPanel] = useState<Panel>(null);
   const workspaceRef = useRef<HTMLDivElement>(null);
+  const conversationRef = useRef<HTMLElement>(null);
+  const chatNavigationRef = useRef<HTMLElement>(null);
+  const threadWidth = useChatThreadWidth(conversationRef, chatNavigationRef);
   const navigationOpener = useRef<HTMLElement | null>(null);
   const panelOpener = useRef<HTMLElement | null>(null);
   const rememberFocus = () =>
@@ -111,6 +119,10 @@ export function ChatWorkspace(props: WorkspaceProps) {
         setNavigationOpen(false);
         openPanel({ kind: "create", direct });
       }}
+      onScheduled={() => {
+        setNavigationOpen(false);
+        openPanel({ kind: "scheduled" });
+      }}
     />
   );
   const mentionPeople = channel
@@ -122,6 +134,19 @@ export function ChatWorkspace(props: WorkspaceProps) {
       )
     : [];
   let panelContent: ReactNode = null;
+  if (panel?.kind === "scheduled")
+    panelContent = (
+      <ChatScheduledPanel
+        key={props.workspaceId}
+        workspaceId={props.workspaceId}
+        channels={chat.list}
+        onClose={() => setPanel(null)}
+        onNavigate={(id, root) => {
+          setParams(root ? { channel: id, message: root } : { channel: id });
+          setPanel(root ? { kind: "thread", rootId: root } : null);
+        }}
+      />
+    );
   if (panel?.kind === "create")
     panelContent = (
       <ChatChannelForm
@@ -165,6 +190,9 @@ export function ChatWorkspace(props: WorkspaceProps) {
           chat.selected.isError ? { ...channel, canPost: false } : channel
         }
         rootId={panel.rootId}
+        widthControl={
+          wide ? <ChatThreadWidthMenu sizing={threadWidth} /> : undefined
+        }
         people={mentionPeople}
         onClose={() => setPanel(null)}
       />
@@ -196,10 +224,14 @@ export function ChatWorkspace(props: WorkspaceProps) {
         }
       />
       <section
+        ref={conversationRef}
         aria-label={t("chat.title")}
         className="border-border/80 bg-card flex min-h-0 flex-1 overflow-hidden shadow-2xs sm:rounded-2xl sm:border"
       >
-        <aside className="border-border/80 hidden w-64 shrink-0 border-r xl:block">
+        <aside
+          ref={chatNavigationRef}
+          className="border-border/80 hidden w-64 shrink-0 border-r xl:block"
+        >
           {sidebar}
         </aside>
         {channel ? (
@@ -227,6 +259,7 @@ export function ChatWorkspace(props: WorkspaceProps) {
             onMenu={openNavigation}
             onSettings={() => openPanel({ kind: "details" })}
             onThread={(rootId) => openPanel({ kind: "thread", rootId })}
+            onScheduled={() => openPanel({ kind: "scheduled" })}
           />
         ) : (
           <div className="bg-card flex min-w-0 flex-1 flex-col items-center justify-center gap-4 p-6 text-center">
@@ -270,11 +303,17 @@ export function ChatWorkspace(props: WorkspaceProps) {
             )}
           </div>
         )}
-        {wide && panelContent && (
-          <aside className="border-border/80 w-80 shrink-0 border-l">
-            {panelContent}
-          </aside>
-        )}
+        {wide &&
+          panelContent &&
+          (panel?.kind === "thread" ? (
+            <ChatResizableThread sizing={threadWidth}>
+              {panelContent}
+            </ChatResizableThread>
+          ) : (
+            <aside className="border-border/80 w-80 shrink-0 border-l">
+              {panelContent}
+            </aside>
+          ))}
       </section>
       <Sheet open={navigationOpen && !wide} onOpenChange={setNavigationOpen}>
         <SheetContent

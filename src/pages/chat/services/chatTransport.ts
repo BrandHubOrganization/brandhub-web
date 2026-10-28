@@ -54,8 +54,11 @@ export const chatTransport = {
     if (config?.signal?.aborted) return Promise.reject(new CanceledError());
     return request<T>("GET", url, undefined, config);
   },
-  post: <T>(url: string, data?: unknown) => request<T>("POST", url, data),
+  post: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
+    request<T>("POST", url, data, config),
   put: <T>(url: string, data?: unknown) => request<T>("PUT", url, data),
-  patch: <T>(url: string, data?: unknown) => request<T>("PATCH", url, data),
-  delete: <T>(url: string) => request<T>("DELETE", url),
+  patch: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
+    request<T>("PATCH", url, data, config),
+  delete: <T>(url: string, config?: AxiosRequestConfig) =>
+    request<T>("DELETE", url, undefined, config),
 };

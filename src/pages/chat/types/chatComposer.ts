@@ -10,6 +10,11 @@ export interface ChatRichComposerProps {
   contextId: string | null;
   threadRootId?: string;
   onSend: (request: ChannelMessageRequest) => boolean;
+  onSchedule?: (
+    request: ChannelMessageRequest,
+    scheduledAt: string,
+    timeZone: string,
+  ) => Promise<void>;
 }
 export interface ChatComposerSuggestion {
   from: number;
