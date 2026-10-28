@@ -1,47 +1,75 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { errorCode } from "@/services/adminRevenueService";
 import { TemplateFormDialog, type FormAdapter } from "@/pages/mail-templates/components/TemplateFormDialog";
-import { adminMailTemplateService } from "@/pages/mail-templates/services/mailTemplateService";
-import type { MailTemplate, MailTemplateSummary, PageOf } from "@/pages/mail-templates/types";
+import { SCOPES_BY_AUDIENCE } from "@/pages/mail-templates/blocks";
+import { adminMailTemplateService, type SendPayload } from "@/pages/mail-templates/services/mailTemplateService";
+import { AdminBroadcastDialog } from "./AdminBroadcastDialog";
+import type { MailTemplate, MailTemplateScope, MailTemplateSummary, PageOf, RecipientPreview, SendResult, TemplatePayload } from "@/pages/mail-templates/types";
 
-const adapter: FormAdapter = {
-  save: (payload, existing) =>
-    existing ? adminMailTemplateService.update(existing.id, payload) : adminMailTemplateService.create(payload),
-};
+/** CRUD surface shared by the Admin and Agency template libraries. */
+export interface TemplateLibraryService {
+  list: (params: { q?: string; page?: number; size?: number }) => Promise<PageOf<MailTemplateSummary>>;
+  get: (id: string) => Promise<MailTemplate>;
+  create: (payload: TemplatePayload) => Promise<MailTemplate>;
+  update: (id: string, payload: TemplatePayload) => Promise<MailTemplate>;
+  remove: (id: string) => Promise<unknown>;
+  /** Present only for the system library: sends an ADMIN_SYSTEM_BROADCAST template. */
+  send?: (id: string, payload: SendPayload, idempotencyKey: string) => Promise<SendResult>;
+  sendTest?: (id: string) => Promise<unknown>;
+  recipientPreview?: (id: string) => Promise<RecipientPreview>;
+}
 
-/** Admin console: manage the SYSTEM_DEFAULT mail template library (DA-1259). */
-export function AdminMailTemplatesPanel() {
+interface PanelProps {
+  service?: TemplateLibraryService;
+  scopes?: MailTemplateScope[];
+  agencyId?: string;
+  draftKey?: string;
+}
+
+/** Template library with the block builder: Admin (system scopes, DA-1259) or Agency (agency scopes, B5). */
+export function AdminMailTemplatesPanel({
+  service = adminMailTemplateService,
+  scopes = SCOPES_BY_AUDIENCE.admin,
+  agencyId,
+  draftKey = "mail-template-draft:admin",
+}: PanelProps) {
   const { t } = useTranslation();
+  const adapter: FormAdapter = {
+    scopes,
+    agencyId,
+    save: (payload, existing) => (existing ? service.update(existing.id, payload) : service.create(payload)),
+  };
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
   const [data, setData] = useState<PageOf<MailTemplateSummary> | null>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
+  const [broadcast, setBroadcast] = useState<MailTemplateSummary | null>(null);
   const [form, setForm] = useState<{ mode: "create" | "edit"; template: MailTemplate | null } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     setFailed(false);
     try {
-      setData(await adminMailTemplateService.list({ q: query || undefined, page, size: 20 }));
+      setData(await service.list({ q: query || undefined, page, size: 20 }));
     } catch {
       setFailed(true);
     } finally {
       setLoading(false);
     }
-  }, [query, page]);
+  }, [service, query, page]);
 
   useEffect(() => { void load(); }, [load]);
 
   const edit = async (row: MailTemplateSummary) => {
     try {
-      setForm({ mode: "edit", template: await adminMailTemplateService.get(row.id) });
+      setForm({ mode: "edit", template: await service.get(row.id) });
     } catch (e) {
       toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
     }
@@ -50,7 +78,7 @@ export function AdminMailTemplatesPanel() {
   const remove = async (row: MailTemplateSummary) => {
     if (!window.confirm(t("mailTemplate.confirmDelete.body", { name: row.name }))) return;
     try {
-      await adminMailTemplateService.remove(row.id);
+      await service.remove(row.id);
       toast.success(t("mailTemplate.deleted"));
       void load();
     } catch (e) {
@@ -84,8 +112,14 @@ export function AdminMailTemplatesPanel() {
             <li key={row.id} className="bg-card flex items-center gap-3 rounded-lg border p-4">
               <div className="min-w-0 flex-1">
                 <h3 className="font-medium break-words">{row.name}</h3>
+                {row.scope && <p className="text-muted-foreground text-xs">{t(`mailTemplate.scopes.${row.scope}`)}</p>}
                 <p className="text-muted-foreground truncate text-sm">{row.subject}</p>
               </div>
+              {service.send && row.scope === "ADMIN_SYSTEM_BROADCAST" && (
+                <Button size="sm" variant="outline" onClick={() => setBroadcast(row)}>
+                  <Send className="size-3.5" />{t("mailTemplate.actions.send")}
+                </Button>
+              )}
               <Button size="sm" variant="outline" onClick={() => void edit(row)}>
                 <Pencil className="size-3.5" />{t("mailTemplate.actions.edit")}
               </Button>
@@ -103,9 +137,12 @@ export function AdminMailTemplatesPanel() {
           <Button variant="outline" disabled={page + 1 >= data.totalPages} onClick={() => setPage((p) => p + 1)}>{t("mailTemplate.next")}</Button>
         </nav>
       )}
+      {broadcast && service.send && (
+        <AdminBroadcastDialog template={broadcast} send={service.send} sendTest={service.sendTest} recipientPreview={service.recipientPreview} onClose={() => setBroadcast(null)} />
+      )}
       {form && (
         <TemplateFormDialog open key={`${form.mode}-${form.template?.id ?? "new"}`} mode={form.mode}
-          draftKey="mail-template-draft:admin"
+          draftKey={draftKey}
           template={form.template} adapter={adapter} onClose={() => setForm(null)}
           onSaved={() => { setForm(null); void load(); }} />
       )}

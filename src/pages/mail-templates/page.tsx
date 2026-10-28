@@ -18,8 +18,10 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { errorCode } from "@/services/adminRevenueService";
 import { SendMailDialog } from "./components/SendMailDialog";
+import { SCOPES_BY_AUDIENCE } from "./blocks";
 import { TemplateFormDialog, type FormAdapter } from "./components/TemplateFormDialog";
-import { mailTemplateService } from "./services/mailTemplateService";
+import { useWorkspaceStore } from "@/store/workspaceStore";
+import { agencyMailTemplateService, mailTemplateService } from "./services/mailTemplateService";
 import type { MailTemplate, MailTemplateSummary, PageOf } from "./types";
 
 type FormState = { mode: "create" | "edit"; template: MailTemplate | null } | null;
@@ -36,6 +38,20 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   const [sendFor, setSendFor] = useState<MailTemplateSummary | null>(null);
   const [toDelete, setToDelete] = useState<MailTemplateSummary | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const agencyId = useWorkspaceStore((s) => s.currentWorkspace?.agencyId);
+  const [agencyRows, setAgencyRows] = useState<MailTemplateSummary[]>([]);
+
+  // Agency templates are listed only for the agency OWNER (others get 403 -> nothing extra shown).
+  useEffect(() => {
+    if (!agencyId) { setAgencyRows([]); return; }
+    let cancelled = false;
+    agencyMailTemplateService.list(agencyId, { q: query || undefined, size: 100 })
+      .then((p) => { if (!cancelled) setAgencyRows(p.content); })
+      .catch(() => { if (!cancelled) setAgencyRows([]); });
+    return () => { cancelled = true; };
+  }, [agencyId, query]);
+
+  const rows = [...(data?.content ?? []), ...(page === 0 ? agencyRows : [])];
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -56,10 +72,7 @@ function Panel({ workspaceId }: { workspaceId: string }) {
       existing
         ? mailTemplateService.update(workspaceId, existing.id, payload)
         : mailTemplateService.create(workspaceId, payload),
-    uploadImage: async (file) => {
-      const uploaded = await mailTemplateService.upload(workspaceId, file, "images");
-      return uploaded.url ?? "";
-    },
+    scopes: SCOPES_BY_AUDIENCE.workspace,
     uploadAttachment: async (file) => {
       const u = await mailTemplateService.upload(workspaceId, file, "attachments");
       return { attachmentId: u.id, name: u.name, contentType: u.contentType, size: u.size };
@@ -121,17 +134,18 @@ function Panel({ workspaceId }: { workspaceId: string }) {
           <Button onClick={() => void load()}>{t("mailTemplate.retry")}</Button>
         </div>
       )}
-      {!loading && !failed && data && data.content.length === 0 && (
+      {!loading && !failed && data && rows.length === 0 && (
         <p className="text-muted-foreground">{t("mailTemplate.empty")}</p>
       )}
-      {!loading && !failed && data && data.content.length > 0 && (
+      {!loading && !failed && data && rows.length > 0 && (
         <ul className="space-y-3" aria-label={t("mailTemplate.title")}>
-          {data.content.map((row) => (
+          {rows.map((row) => (
             <li key={row.id} className="bg-card flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center">
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-medium break-words">{row.name}</h3>
                   {row.type === "SYSTEM_DEFAULT" && <Badge variant="secondary">{t("mailTemplate.systemBadge")}</Badge>}
+                  {row.scope && <Badge variant="outline">{t(`mailTemplate.scopes.${row.scope}`)}</Badge>}
                   {row.attachmentCount > 0 && (
                     <span className="text-muted-foreground text-xs">{t("mailTemplate.attachmentCount", { count: row.attachmentCount })}</span>
                   )}
@@ -143,7 +157,7 @@ function Panel({ workspaceId }: { workspaceId: string }) {
                 <Button size="sm" variant="outline" onClick={() => setSendFor(row)}>
                   <Send className="size-3.5" />{t("mailTemplate.actions.send")}
                 </Button>
-                {row.type === "SYSTEM_DEFAULT" ? (
+                {row.scope?.startsWith("AGENCY_") ? null : row.type === "SYSTEM_DEFAULT" ? (
                   <Button size="sm" variant="outline" onClick={() => void openEdit(row, "create")}>
                     <Copy className="size-3.5" />{t("mailTemplate.actions.use")}
                   </Button>
@@ -177,7 +191,7 @@ function Panel({ workspaceId }: { workspaceId: string }) {
           onSaved={() => { setForm(null); void load(); }} />
       )}
       {sendFor && (
-        <SendMailDialog open workspaceId={workspaceId} template={sendFor} onClose={() => setSendFor(null)} />
+        <SendMailDialog open workspaceId={workspaceId} template={sendFor} agencyId={agencyId} onClose={() => setSendFor(null)} />
       )}
       <Dialog open={!!toDelete} onOpenChange={(open) => !open && !deleting && setToDelete(null)}>
         <DialogContent>

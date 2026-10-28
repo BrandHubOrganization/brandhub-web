@@ -30,15 +30,21 @@ const sections = [
   { key: "trendReplay", icon: Activity, planned: false },
   { key: "trends", icon: TrendingUp, planned: false },
   { key: "trendGraph", icon: Network, planned: false },
+  { key: "invoices", icon: FileText, planned: false },
+  { key: "workspaceTemplates", icon: LayoutDashboard, planned: false },
 ];
 const linkTo = (key: string) =>
   key === "credit"
     ? "/admin/credit-prices"
-    : key === "health"
-      ? "/admin/system-health"
-      : key === "overview"
-        ? "/admin"
-        : `/admin?view=${key}`;
+    : key === "invoices"
+      ? "/admin/invoices"
+      : key === "workspaceTemplates"
+        ? "/admin/workspace-templates"
+        : key === "health"
+          ? "/admin/system-health"
+          : key === "overview"
+            ? "/admin"
+            : `/admin?view=${key}`;
 const labelKey = (key: string) =>
   key === "credit"
     ? "credit.price.title"
@@ -52,6 +58,8 @@ function useAdminView() {
   const view = params.get("view") || "overview";
   if (pathname === "/admin/system-health") return "health";
   if (pathname === "/admin/credit-prices") return "credit";
+  if (pathname === "/admin/invoices") return "invoices";
+  if (pathname === "/admin/workspace-templates") return "workspaceTemplates";
   return sections.some((section) => section.key === view && view !== "health")
     ? view
     : "overview";

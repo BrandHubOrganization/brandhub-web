@@ -1,9 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Star, Quote, BadgeCheck } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+const BG_PHOTO =
+  "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=900&fit=crop";
 
 interface TestimonialItem {
   key: string;
@@ -13,6 +21,7 @@ interface TestimonialItem {
   badge: string;
   quote: string;
   stars: number;
+  avatar: string;
 }
 
 const TESTIMONIALS: TestimonialItem[] = [
@@ -25,6 +34,8 @@ const TESTIMONIALS: TestimonialItem[] = [
     quote:
       "Quy trình đàm phán Media Package và duyệt chiến dịch 2 chiều với khách hàng rút ngắn từ 4 ngày xuống còn vài giờ. Khách hàng xem và duyệt trực quan trên từng tác vụ mà không bị thất lạc feedback qua Zalo hay file Excel rời rạc.",
     stars: 5,
+    avatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&h=240&fit=crop&crop=faces",
   },
   {
     key: "phuong",
@@ -35,6 +46,8 @@ const TESTIMONIALS: TestimonialItem[] = [
     quote:
       "Hệ thống AI Trend Crawler phát hiện chủ đề thảo luận nóng trên Facebook rất nhạy. Khi yêu cầu sinh bài, AI tuân thủ đúng Brand Guidelines, tự động đóng Watermark số chuẩn xác nên team hoàn toàn an tâm bàn giao cho khách hàng.",
     stars: 5,
+    avatar:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=240&h=240&fit=crop&crop=faces",
   },
   {
     key: "tuan",
@@ -45,22 +58,19 @@ const TESTIMONIALS: TestimonialItem[] = [
     quote:
       "Là phía Khách hàng (Client), việc được cấp quyền vào Workspace riêng biệt để theo dõi tiến độ, duyệt bài đăng và xem báo cáo minh bạch đã xóa bỏ hoàn toàn khoảng cách nghi ngờ giữa thương hiệu và Agency đối tác.",
     stars: 5,
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&h=240&fit=crop&crop=faces",
   },
 ];
 
 const AUTO_ROTATE_MS = 6000;
 
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("");
-}
-
 export function Testimonials() {
   const reduce = useReducedMotion();
   const [active, setActive] = useState(0);
   const current = TESTIMONIALS[active];
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgPhotoRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (reduce) return;
@@ -70,11 +80,41 @@ export function Testimonials() {
     return () => clearInterval(id);
   }, [reduce, active]);
 
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+      if (!bgPhotoRef.current) return;
+      gsap.to(bgPhotoRef.current, {
+        yPercent: -15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+    },
+    { scope: sectionRef },
+  );
+
   return (
     <section
       id="testimonials"
+      ref={sectionRef}
       className="relative overflow-hidden bg-zinc-50 py-24 dark:bg-zinc-900/50"
     >
+      <img
+        ref={bgPhotoRef}
+        src={BG_PHOTO}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="pointer-events-none absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover opacity-[0.07] will-change-transform dark:opacity-[0.05]"
+      />
       <SectionDecor corner="left" />
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -86,10 +126,12 @@ export function Testimonials() {
         >
           <SectionEyebrow index={7} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
-            Phản hồi từ các <span className="text-brand-orange">Beta Testers</span>
+            Phản hồi từ các{" "}
+            <span className="text-brand-orange">Beta Testers</span>
           </h2>
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
-            Ghi nhận thực tế từ các Agency và Thương hiệu tham gia thử nghiệm quy trình quản lý chiến dịch và AI của BrandHub.
+            Ghi nhận thực tế từ các Agency và Thương hiệu tham gia thử nghiệm
+            quy trình quản lý chiến dịch và AI của BrandHub.
           </p>
         </motion.div>
 
@@ -130,7 +172,16 @@ export function Testimonials() {
                   &ldquo;{current.quote}&rdquo;
                 </p>
 
-                <div className="mt-6 flex flex-col items-center">
+                <div className="mt-8 flex flex-col items-center">
+                  <div className="relative mb-3">
+                    <img
+                      src={current.avatar}
+                      alt={current.name}
+                      className="size-16 rounded-full object-cover ring-4 ring-brand-orange/20 shadow-md transition-transform"
+                      loading="lazy"
+                    />
+                    <span className="absolute bottom-0 right-0 size-4 rounded-full border-2 border-white bg-emerald-500 dark:border-zinc-900" />
+                  </div>
                   <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                     {current.name}
                   </p>
@@ -145,7 +196,7 @@ export function Testimonials() {
             </AnimatePresence>
           </div>
 
-          <div className="mt-8 flex justify-center gap-3">
+          <div className="mt-8 flex justify-center gap-4">
             {TESTIMONIALS.map((tm, i) => (
               <button
                 key={tm.key}
@@ -154,13 +205,18 @@ export function Testimonials() {
                 aria-label={tm.name}
                 aria-pressed={active === i}
                 className={cn(
-                  "flex size-11 items-center justify-center rounded-full text-xs font-bold transition-all",
+                  "group relative size-12 overflow-hidden rounded-full transition-all focus:outline-none cursor-pointer",
                   active === i
-                    ? "bg-brand-orange ring-brand-orange/30 scale-110 text-white ring-4"
-                    : "bg-brand-orange/10 text-brand-orange opacity-60 hover:opacity-100",
+                    ? "ring-4 ring-brand-orange scale-110 shadow-lg"
+                    : "opacity-60 hover:opacity-100 ring-2 ring-zinc-300 dark:ring-zinc-700",
                 )}
               >
-                {initials(tm.name)}
+                <img
+                  src={tm.avatar}
+                  alt={tm.name}
+                  className="size-full object-cover transition-transform group-hover:scale-110"
+                  loading="lazy"
+                />
               </button>
             ))}
           </div>
