@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Edit3,
-  RefreshCw,
-  ShieldAlert,
-} from "lucide-react";
+import { Edit3, RefreshCw, ShieldAlert, Upload } from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import {
@@ -23,6 +19,8 @@ import { CreditQueryState } from "@/pages/credit/components/CreditQueryState";
 import { CreditIntegrationNote } from "@/pages/credit/components/CreditIntegrationNote";
 import { CreditPriceKpiRow } from "@/pages/credit/components/CreditPriceKpiRow";
 import { CreditPriceDrawer } from "@/pages/credit/components/CreditPriceDrawer";
+import { CreditPriceCsvImport } from "@/pages/credit/components/CreditPriceCsvImport";
+import { useCreditPriceImport } from "@/pages/credit/hooks/useCreditPriceImport";
 import { OPERATION_CONFIG } from "@/pages/credit/utils/creditOperations";
 import { useCreditPrices } from "@/pages/credit/hooks/useCreditConfiguration";
 import { creditService } from "@/pages/credit/services/creditService";
@@ -35,6 +33,7 @@ const CREDIT_TO_VND_RATE = 200;
 export default function CreditPricesPage() {
   const { t } = useTranslation();
   const { query, save, reload } = useCreditPrices();
+  const csvImport = useCreditPriceImport();
 
   // Drawer state
   const [drawerOperation, setDrawerOperation] =
@@ -119,23 +118,35 @@ export default function CreditPricesPage() {
       title={t("credit.price.title")}
       description="Quản lý ma trận đơn giá AI Credit cho từng tác vụ và điều khiển công tắc khẩn cấp (Kill-Switch) bảo trì model."
       actions={
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => query.refetch()}
-          disabled={query.isFetching}
-          className="gap-2"
-        >
-          <RefreshCw
-            className={`size-3.5 ${query.isFetching ? "animate-spin" : ""}`}
-          />
-          <span>Làm mới bảng giá</span>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="orange"
+            size="sm"
+            onClick={csvImport.choose}
+            disabled={csvImport.busy === "apply"}
+          >
+            <Upload className="size-4" aria-hidden="true" />
+            {t("credit.csv.choose")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => query.refetch()}
+            disabled={query.isFetching}
+            className="gap-2"
+          >
+            <RefreshCw
+              className={`size-3.5 ${query.isFetching ? "animate-spin" : ""}`}
+            />
+            <span>Làm mới bảng giá</span>
+          </Button>
+        </div>
       }
     >
       <div className="space-y-6">
+        <CreditPriceCsvImport state={csvImport} />
         {/* Domain Integration Note */}
-        <div className="rounded-xl border border-border/70 bg-card/60 p-3.5 shadow-2xs backdrop-blur-xs">
+        <div className="border-border/70 bg-card/60 rounded-xl border p-3.5 shadow-2xs backdrop-blur-xs">
           <CreditIntegrationNote />
         </div>
 
@@ -146,10 +157,10 @@ export default function CreditPricesPage() {
         <div className="space-y-3">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
+              <h2 className="text-foreground text-base font-semibold tracking-tight sm:text-lg">
                 Ma trận Bảng giá Runtime (Tokenomics Price Matrix)
               </h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 Cấu hình chi phí credit trực tiếp cho 7 thao tác AI, hỗ trợ
                 kill-switch tức thời khi model bảo trì.
               </p>
@@ -157,7 +168,7 @@ export default function CreditPricesPage() {
           </div>
 
           {query.isPending || query.isError ? (
-            <div className="rounded-2xl border border-border/70 bg-card p-6">
+            <div className="border-border/70 bg-card rounded-2xl border p-6">
               <CreditQueryState
                 loading={query.isPending}
                 error={query.error}
@@ -165,7 +176,7 @@ export default function CreditPricesPage() {
               />
             </div>
           ) : (
-            <div className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-xs">
+            <div className="border-border/80 bg-card overflow-hidden rounded-2xl border shadow-xs">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -209,8 +220,10 @@ export default function CreditPricesPage() {
                     return (
                       <TableRow
                         key={op}
-                        className={`transition-colors hover:bg-muted/20 ${
-                          !isEnabled && isConfigured ? "bg-muted/10 opacity-80" : ""
+                        className={`hover:bg-muted/20 transition-colors ${
+                          !isEnabled && isConfigured
+                            ? "bg-muted/10 opacity-80"
+                            : ""
                         }`}
                       >
                         {/* Cột 1: Thao tác AI (Icon trực quan + Tên thao tác + Mô tả ngắn) */}
@@ -227,16 +240,16 @@ export default function CreditPricesPage() {
                             </div>
                             <div className="min-w-0 space-y-0.5">
                               <div className="flex flex-wrap items-center gap-2">
-                                <span className="font-semibold text-foreground">
+                                <span className="text-foreground font-semibold">
                                   {t(`credit.operations.${op}`, {
                                     defaultValue: meta.label,
                                   })}
                                 </span>
-                                <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                                <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 font-mono text-[10px]">
                                   {op}
                                 </span>
                               </div>
-                              <p className="line-clamp-1 text-xs text-muted-foreground">
+                              <p className="text-muted-foreground line-clamp-1 text-xs">
                                 {meta.description}
                               </p>
                             </div>
@@ -248,11 +261,11 @@ export default function CreditPricesPage() {
                           <div className="space-y-0.5">
                             <Badge
                               variant="secondary"
-                              className="font-medium text-xs"
+                              className="text-xs font-medium"
                             >
                               {meta.unitLabel}
                             </Badge>
-                            <p className="text-[11px] text-muted-foreground">
+                            <p className="text-muted-foreground text-[11px]">
                               Lượt hợp lệ
                             </p>
                           </div>
@@ -262,15 +275,15 @@ export default function CreditPricesPage() {
                         <TableCell className="py-4">
                           {isConfigured ? (
                             <div className="flex items-baseline gap-1">
-                              <span className="font-mono text-lg font-bold tracking-tight text-foreground">
+                              <span className="text-foreground font-mono text-lg font-bold tracking-tight">
                                 {unitCredits}
                               </span>
-                              <span className="font-mono text-xs font-medium text-muted-foreground">
+                              <span className="text-muted-foreground font-mono text-xs font-medium">
                                 Credits
                               </span>
                             </div>
                           ) : (
-                            <span className="text-xs text-muted-foreground italic">
+                            <span className="text-muted-foreground text-xs italic">
                               Chưa cấu hình
                             </span>
                           )}
@@ -280,17 +293,17 @@ export default function CreditPricesPage() {
                         <TableCell className="py-4">
                           {isConfigured ? (
                             <div className="space-y-0.5">
-                              <span className="font-mono text-xs font-semibold text-foreground">
+                              <span className="text-foreground font-mono text-xs font-semibold">
                                 {unitCredits === 0
                                   ? "0 VNĐ (Free)"
                                   : `~${vndFormatted} VNĐ`}
                               </span>
-                              <p className="text-[10px] text-muted-foreground">
+                              <p className="text-muted-foreground text-[10px]">
                                 Tỷ lệ 1:200 VNĐ
                               </p>
                             </div>
                           ) : (
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-muted-foreground text-xs">
                               —
                             </span>
                           )}
@@ -301,7 +314,7 @@ export default function CreditPricesPage() {
                           {isConfigured ? (
                             <Badge
                               variant="outline"
-                              className="font-mono text-xs font-medium text-muted-foreground"
+                              className="text-muted-foreground font-mono text-xs font-medium"
                             >
                               Rev #{price.revision}
                             </Badge>
@@ -328,8 +341,8 @@ export default function CreditPricesPage() {
                                 aria-label={`Bật tắt thao tác ${op}`}
                               />
                               {isToggling && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-background/50">
-                                  <Spinner className="size-3.5 text-primary" />
+                                <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
+                                  <Spinner className="text-primary size-3.5" />
                                 </div>
                               )}
                             </div>
@@ -337,7 +350,7 @@ export default function CreditPricesPage() {
                             {isEnabled ? (
                               <Badge
                                 variant="outline"
-                                className="border-emerald-300 bg-emerald-50 text-[11px] font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 gap-1"
+                                className="gap-1 border-emerald-300 bg-emerald-50 text-[11px] font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
                               >
                                 <span className="size-1.5 rounded-full bg-emerald-500" />
                                 <span>ACTIVE</span>
@@ -345,7 +358,7 @@ export default function CreditPricesPage() {
                             ) : (
                               <Badge
                                 variant="outline"
-                                className="border-amber-300 bg-amber-50 text-[11px] font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300 gap-1"
+                                className="gap-1 border-amber-300 bg-amber-50 text-[11px] font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300"
                                 title="Mô hình AI đang tạm ngừng hoặc bảo trì"
                               >
                                 <ShieldAlert className="size-3 text-amber-600 dark:text-amber-400" />
@@ -361,7 +374,7 @@ export default function CreditPricesPage() {
                             variant="outline"
                             size="sm"
                             onClick={() => handleOpenEdit(op)}
-                            className="gap-1.5 text-xs font-medium hover:border-primary/50 hover:text-primary"
+                            className="hover:border-primary/50 hover:text-primary gap-1.5 text-xs font-medium"
                           >
                             <Edit3 className="size-3.5" />
                             <span>Chỉnh sửa</span>
