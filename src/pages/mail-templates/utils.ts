@@ -87,7 +87,7 @@ export interface ParsedRecipients {
 
 /**
  * Accepts either a CSV with an "email" header (extra columns become variables, "name" is the display name)
- * or a plain list of emails separated by new lines, commas, semicolons or spaces.
+ * or a plain list: one entry per line, either "email, name" or emails separated by commas, semicolons or spaces.
  */
 export function parseRecipients(text: string): ParsedRecipients {
   const rows = parseCsv(text);
@@ -120,11 +120,32 @@ export function parseRecipients(text: string): ParsedRecipients {
     }
     return { recipients, invalid };
   }
-  for (const token of text.split(/[\s,;]+/)) {
-    const email = token.trim();
-    if (!email) continue;
-    if (isEmail(email)) recipients.push({ email });
-    else invalid.push(email);
+  // No header row: one entry per line. A line with commas, semicolons or tabs is "email, name" (or several emails);
+  // a line without them may list emails separated by spaces.
+  for (const line of text.split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    if (/[,;\t]/.test(line)) {
+      let last: Recipient | null = null;
+      for (const cell of line.split(/[,;\t]+/)) {
+        const value = cell.trim();
+        if (!value) continue;
+        if (isEmail(value)) {
+          last = { email: value };
+          recipients.push(last);
+        } else if (last && !last.name) {
+          last.name = value;
+        } else {
+          invalid.push(value);
+        }
+      }
+      continue;
+    }
+    for (const token of line.split(/\s+/)) {
+      const email = token.trim();
+      if (!email) continue;
+      if (isEmail(email)) recipients.push({ email });
+      else invalid.push(email);
+    }
   }
   return { recipients, invalid };
 }
