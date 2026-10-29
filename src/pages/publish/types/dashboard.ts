@@ -36,6 +36,7 @@ export interface RecentPostItem {
   publishedAt?: string;
   scheduledAt?: string;
   createdAt: string;
+  platformPostUrl?: string;
   errorMessage?: string;
 }
 

@@ -73,12 +73,14 @@ export function PostDashboardKpiCards({ kpis }: PostDashboardKpiCardsProps) {
             <span className="text-foreground text-2xl font-bold tracking-tight">
               {kpis.scheduledCount}
             </span>
-            <span className="text-muted-foreground text-2xs ml-1 font-medium">lên lịch</span>
+            <span className="text-muted-foreground text-2xs ml-1 font-medium">
+              {t("publish.dashboard.kpi.scheduledUnit", "lên lịch")}
+            </span>
           </div>
           {kpis.inProgressCount > 0 && (
             <div className="text-warning flex items-center text-xs font-medium">
               <Loader2 className="mr-1 size-3 animate-spin" />
-              {kpis.inProgressCount} đang gửi
+              {kpis.inProgressCount} {t("publish.dashboard.kpi.inProgressUnit", "đang gửi")}
             </div>
           )}
         </div>
@@ -102,9 +104,13 @@ export function PostDashboardKpiCards({ kpis }: PostDashboardKpiCardsProps) {
             {kpis.failedCount}
           </span>
           {kpis.failedCount > 0 ? (
-            <span className="text-destructive text-xs font-medium">Cần xử lý</span>
+            <span className="text-destructive text-xs font-medium">
+              {t("publish.dashboard.kpi.needAttention", "Cần xử lý")}
+            </span>
           ) : (
-            <span className="text-success text-xs font-medium">Hệ thống tối ưu</span>
+            <span className="text-success text-xs font-medium">
+              {t("publish.dashboard.kpi.systemOptimal", "Hệ thống tối ưu")}
+            </span>
           )}
         </div>
         <p className="text-muted-foreground text-2xs mt-1">

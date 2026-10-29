@@ -93,5 +93,42 @@
     "noPostsFound": "Không tìm thấy bài viết nào",
     "noPostsFoundDesc": "Không có bài viết nào phù hợp với bộ lọc hiện tại. Thử thay đổi điều kiện lọc hoặc tạo bài viết mới.",
     "createPostNow": "Tạo bài viết ngay"
+  },
+  "detail": {
+    "title": "Chi tiết bài viết",
+    "breadcrumb": "Chi tiết bài viết",
+    "subtitle": "Thống kê hiệu quả tương tác thực tế và bình luận từ nền tảng mạng xã hội.",
+    "backToDashboard": "Quay lại Bảng điều khiển",
+    "loadError": "Không thể tải chi tiết bài viết.",
+    "viewOnPlatform": "Mở trên MXH",
+    "editDraft": "Chỉnh sửa bài viết",
+    "captionTitle": "Nội dung bài viết",
+    "noCaption": "Không có nội dung mô tả",
+    "mediaTitle": "Hình ảnh / Video đính kèm",
+    "noMedia": "Không có hình ảnh đính kèm",
+    "commentsTitle": "Bình luận từ Mạng xã hội",
+    "noComments": "Chưa có bình luận nào trên bài viết.",
+    "platformFailedTitle": "Đăng bài lên {{platform}} thất bại",
+    "platformFailedDesc": "Không thể xuất bản lên nền tảng này. Vui lòng kiểm tra kết nối tài khoản hoặc thử lại.",
+    "metrics": {
+      "title": "Hiệu suất tương tác thực tế",
+      "lastSynced": "Cập nhật lần cuối: ",
+      "syncNow": "Đồng bộ số liệu",
+      "likes": "Lượt cảm xúc",
+      "comments": "Bình luận",
+      "shares": "Chia sẻ",
+      "impressions": "Hiển thị",
+      "reach": "Tiếp cận",
+      "clicks": "Lượt nhấp",
+      "reactionBreakdown": "Phân bổ cảm xúc thực tế",
+      "reactions": {
+        "like": "Thích",
+        "love": "Yêu thích",
+        "haha": "Haha",
+        "wow": "Wow",
+        "sad": "Buồn",
+        "angry": "Phẫn nộ"
+      }
+    }
   }
 }

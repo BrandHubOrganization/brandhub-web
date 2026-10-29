@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -6,6 +7,8 @@ import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePostDashboard } from "./hooks/usePostDashboard";
+import { postDashboardService } from "./services/postDashboardService";
+import { PostDashboardHeader } from "./components/PostDashboardHeader";
 import { PostDashboardKpiCards } from "./components/PostDashboardKpiCards";
 import { PostDistributionCharts } from "./components/PostDistributionCharts";
 import { RecentPostsTable } from "./components/RecentPostsTable";
@@ -16,16 +19,29 @@ interface PostDashboardViewProps {
 
 export function PostDashboardView({ workspaceId }: PostDashboardViewProps) {
   const { t } = useTranslation();
-  const { data, isLoading, isError, refetch } = usePostDashboard(workspaceId);
+  const [retryingPostId, setRetryingPostId] = useState<string | null>(null);
+  const { data, isLoading, isError, refetch, filters, updateFilters } =
+    usePostDashboard(workspaceId);
 
-  const handleRetry = async (_postId: string) => {
-    toast.info(t("publish.retrySuccess", "Đang thử gửi lại bài viết..."));
-    setTimeout(() => {
+  const handleRetry = async (postId: string) => {
+    setRetryingPostId(postId);
+    const toastId = `retry-${postId}`;
+    toast.loading(t("publish.retrying", "Đang thử gửi lại bài viết..."), { id: toastId });
+    try {
+      await postDashboardService.retryPublish(workspaceId, postId);
       toast.success(
         t("publish.retrySuccess", "Đã khởi động lại tiến trình xuất bản!"),
+        { id: toastId },
       );
       refetch();
-    }, 800);
+    } catch {
+      toast.error(
+        t("publish.retryFailed", "Không thể thử lại bài viết. Vui lòng kiểm tra lại cấu hình tài khoản."),
+        { id: toastId },
+      );
+    } finally {
+      setRetryingPostId(null);
+    }
   };
 
   return (
@@ -66,6 +82,12 @@ export function PostDashboardView({ workspaceId }: PostDashboardViewProps) {
           </Link>
         </div>
       </div>
+
+      {/* Filter and Search Bar */}
+      <PostDashboardHeader
+        filters={filters}
+        onFilterChange={updateFilters}
+      />
 
       {/* Loading skeleton */}
       {isLoading && !data && (
@@ -115,6 +137,7 @@ export function PostDashboardView({ workspaceId }: PostDashboardViewProps) {
             workspaceId={workspaceId}
             posts={data.recentPosts}
             onRetry={handleRetry}
+            retryingPostId={retryingPostId}
           />
         </>
       )}

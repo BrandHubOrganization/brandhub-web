@@ -1,5 +1,14 @@
 import type { Platform, PostStatus } from "@/types/post";
 
+export interface ReactionBreakdown {
+  LIKE: number;
+  LOVE: number;
+  HAHA: number;
+  WOW: number;
+  SAD: number;
+  ANGRY: number;
+}
+
 export interface PostEngagementMetrics {
   reactions: number;
   likes: number;
@@ -8,6 +17,8 @@ export interface PostEngagementMetrics {
   impressions: number;
   reach: number;
   clicks: number;
+  saved: number;
+  reactionBreakdown: ReactionBreakdown;
   engagementRate: number; // e.g. 5.4 (%)
   lastSyncedAt: string;
 }
@@ -31,6 +42,26 @@ export interface PostAuditItem {
   timestamp: string;
 }
 
+export interface PostCommentItem {
+  id: string;
+  authorName: string;
+  authorAvatar?: string | null;
+  content: string;
+  commentedAt: string;
+}
+
+export interface PlatformPostDetail {
+  platform: Platform;
+  platformPostId?: string;
+  platformUrl?: string;
+  status: PostStatus | "IN_PROGRESS";
+  errorCode?: string;
+  errorMessage?: string;
+  publishedAt?: string;
+  metrics: PostEngagementMetrics;
+  comments: PostCommentItem[];
+}
+
 export interface PostedDetailData {
   id: string;
   postId: string;
@@ -41,6 +72,7 @@ export interface PostedDetailData {
   mediaUrls: string[];
   mediaType: "IMAGE" | "VIDEO" | "NONE";
   platform: Platform;
+  targetPlatforms: Platform[];
   platformPostId?: string;
   platformUrl?: string;
   status: PostStatus | "IN_PROGRESS";
@@ -51,6 +83,7 @@ export interface PostedDetailData {
   createdAt: string;
   updatedAt: string;
   metrics: PostEngagementMetrics;
+  platformData?: Partial<Record<Platform, PlatformPostDetail>>;
   executionLogs: PostExecutionLog[];
   auditHistory: PostAuditItem[];
 }
