@@ -420,46 +420,32 @@ export function Navbar({
           </div>
         )}
 
-        {/* Quick settings: language + theme, grouped under one menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              title={t("nav.quickSettings")}
-            >
-              {theme === "dark" ? (
-                <Moon className="size-4" />
-              ) : (
-                <Sun className="size-4" />
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44 p-1">
-            <DropdownMenuItem
-              onClick={toggleLanguage}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              <Globe className="size-3.5" />
-              <span className="flex-1">{t("nav.switchLanguage")}</span>
-              <span className="text-muted-foreground uppercase">
-                {i18n.language || "vi"}
-              </span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              {theme === "dark" ? (
-                <Sun className="size-3.5 text-amber-400" />
-              ) : (
-                <Moon className="size-3.5" />
-              )}
-              <span className="flex-1">{t("nav.toggleTheme")}</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 gap-1.5 px-2 text-xs"
+          onClick={toggleLanguage}
+          title={t("nav.switchLanguage")}
+          aria-label={t("nav.switchLanguage")}
+        >
+          <Globe className="size-4" />
+          <span className="uppercase">{i18n.language || "vi"}</span>
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          title={t("nav.toggleTheme")}
+          aria-label={t("nav.toggleTheme")}
+        >
+          {theme === "dark" ? (
+            <Sun className="size-4 text-amber-400" />
+          ) : (
+            <Moon className="size-4" />
+          )}
+        </Button>
 
         {/* Notification Bell */}
         {!isAdmin && (
