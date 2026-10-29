@@ -92,7 +92,10 @@
     "noHistory": "No approval or rejection decisions yet.",
     "loadMore": "Load older decisions",
     "unknownActor": "Workspace member",
-    "decisions": { "APPROVE": "Approved", "REJECT": "Rejected" },
+    "decisions": {
+      "APPROVE": "Approved",
+      "REJECT": "Rejected"
+    },
     "finishedHint": "The task is finished. Publishing is a separate action; this decision does not publish the post.",
     "errors": {
       "generic": "Approval could not be processed. Reload to check the outcome before trying again.",
@@ -239,7 +242,8 @@
       "assigneeId": "Assigned creator",
       "qcAssigneeId": "Quality reviewer",
       "requiresClientApproval": "Requires client approval",
-      "expectedRevision": "Task version"
+      "expectedRevision": "Task version",
+      "targetPlatforms": "Target Social Platforms"
     },
     "errors": {
       "generic": "Unable to complete this action. Please try again.",
@@ -298,7 +302,11 @@
     "retryImage": "Retry image",
     "viewImage": "View attached image",
     "imageAlt": "Reference image in a task comment",
-    "roles": { "MANAGER": "Manager", "CREATOR": "Creator", "CLIENT": "Client" }
+    "roles": {
+      "MANAGER": "Manager",
+      "CREATOR": "Creator",
+      "CLIENT": "Client"
+    }
   },
   "inline": {
     "noCreators": "This Workspace has no active Creator available for assignment.",
@@ -326,5 +334,19 @@
       "MANAGER": "Awaiting manager review",
       "CLIENT": "Awaiting client review"
     }
+  },
+  "fields": {
+    "targetPlatforms": "Target Social Platforms",
+    "selectPlatforms": "Select platforms",
+    "platformsHelp": "Select target social platforms for this post",
+    "platformsRequired": "Please select at least one social platform",
+    "platformsUpdated": "Target platforms updated.",
+    "platformsError": "Failed to update target platforms."
+  },
+  "platforms": {
+    "FACEBOOK": "Facebook",
+    "INSTAGRAM": "Instagram",
+    "TIKTOK": "TikTok",
+    "THREADS": "Threads"
   }
 }

@@ -22,8 +22,13 @@ export interface MailBlock {
   props: BlockProps;
 }
 
+export const MAIL_LOCALES = ["vi", "en"] as const;
+export type MailLocale = (typeof MAIL_LOCALES)[number];
+
 export interface MailLayout {
   version: 1;
+  /** Language of the fixed lines (contact strip, footer); the server treats a missing value as Vietnamese. */
+  locale?: MailLocale;
   blocks: MailBlock[];
 }
 
@@ -68,7 +73,7 @@ export function emptyLayout(): MailLayout {
 export function parseLayout(json: string | null | undefined): MailLayout {
   if (!json) return emptyLayout();
   try {
-    const raw = JSON.parse(json) as { blocks?: unknown };
+    const raw = JSON.parse(json) as { blocks?: unknown; locale?: unknown };
     if (!Array.isArray(raw.blocks)) return emptyLayout();
     const blocks = raw.blocks
       // The server accepts either case for the type name; the builder works with lowercase.
@@ -88,14 +93,17 @@ export function parseLayout(json: string | null | undefined): MailLayout {
         ...b,
         props: { ...DEFAULT_PROPS[b.type], ...(b.props ?? {}) },
       }));
-    return { version: 1, blocks };
+    const locale = (MAIL_LOCALES as readonly string[]).includes((raw as { locale?: string }).locale ?? "")
+      ? ((raw as { locale?: string }).locale as MailLocale)
+      : undefined;
+    return { version: 1, ...(locale ? { locale } : {}), blocks };
   } catch {
     return emptyLayout();
   }
 }
 
 export function serializeLayout(layout: MailLayout): string {
-  return JSON.stringify({ version: 1, blocks: layout.blocks });
+  return JSON.stringify({ version: 1, locale: layout.locale ?? "vi", blocks: layout.blocks });
 }
 
 export function insertBlock(
@@ -190,7 +198,7 @@ const FONT = "-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
 const ACCENT = "#f05a28";
 
 /** One block as the server renders it (MailBlockRenderer): inline styles only, every value escaped. */
-function previewBlock(type: BlockType, props: BlockProps): string {
+function previewBlock(type: BlockType, props: BlockProps, locale: MailLocale): string {
   switch (type) {
     case "header":
       return `<div style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${ACCENT}">{{workspaceName}}</div>`;
@@ -211,9 +219,9 @@ function previewBlock(type: BlockType, props: BlockProps): string {
       return `<div style="height:${px}px;line-height:${px}px;font-size:1px">&nbsp;</div>`;
     }
     case "contact_strip":
-      return '<div style="background:#fafafa;border:1px solid #e4e4e7;border-radius:6px;padding:14px 16px;font-size:13px;line-height:1.6;color:#52525b">Liên hệ / Contact: <strong style="color:#18181b">{{senderName}}</strong> · {{workspaceName}}</div>';
+      return `<div style="background:#fafafa;border:1px solid #e4e4e7;border-radius:6px;padding:14px 16px;font-size:13px;line-height:1.6;color:#52525b">${locale === "en" ? "Contact" : "Liên hệ / Contact"}: <strong style="color:#18181b">{{senderName}}</strong> · {{workspaceName}}</div>`;
     case "footer":
-      return '<div style="padding-top:8px;font-size:12px;line-height:1.6;color:#71717a;text-align:center">Email được gửi từ {{workspaceName}} qua BrandHub.</div>';
+      return `<div style="padding-top:8px;font-size:12px;line-height:1.6;color:#71717a;text-align:center">${locale === "en" ? "Sent by {{workspaceName}} via BrandHub." : "Email được gửi từ {{workspaceName}} qua BrandHub."}</div>`;
   }
 }
 
@@ -221,11 +229,11 @@ function previewBlock(type: BlockType, props: BlockProps): string {
  * Client-side mirror of the server render, for the live preview only: the same email-safe frame (600px card, accent
  * border, inline styles). `{{workspaceName}}` and `{{senderName}}` are filled with sample values by the preview frame.
  */
-export function renderLayoutPreview(blocks: MailBlock[]): string {
+export function renderLayoutPreview(blocks: MailBlock[], locale: MailLocale = "vi"): string {
   const rows = blocks
     .map(
       ({ type, props }) =>
-        `<tr><td class="mail-block mail-block-${type}" style="padding:${type === "header" ? "12px 32px 4px" : "10px 32px"}">${previewBlock(type, props)}</td></tr>`,
+        `<tr><td class="mail-block mail-block-${type}" style="padding:${type === "header" ? "12px 32px 4px" : "10px 32px"}">${previewBlock(type, props, locale)}</td></tr>`,
     )
     .join("");
   const gap = '<tr><td style="height:12px;line-height:12px;font-size:1px">&nbsp;</td></tr>';

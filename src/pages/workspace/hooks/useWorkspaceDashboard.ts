@@ -8,11 +8,9 @@ import { campaignService } from "@/pages/campaign/services/campaignService";
 import { requireApiData } from "@/lib/apiData";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { extractErrorMessage } from "@/utils/error";
-import { getAnalyticsSummary } from "@/services/mock/mockAnalyticsService";
 import type { WorkspaceDashboard } from "@/types/workspace";
 import type { TaskListItem } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
-import type { AnalyticsSummary } from "@/types/analytics";
 import type { DashboardTabType, TaskStatsSummary } from "../types/dashboard";
 
 export function useWorkspaceDashboard() {
@@ -43,7 +41,6 @@ export function useWorkspaceDashboard() {
 
   const [dashboard, setDashboard] = useState<WorkspaceDashboard | null>(null);
   const [loading, setLoading] = useState(true);
-  const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
   const loadedWorkspaceIdRef = useRef<string | null>(null);
 
   // Tasks Data
@@ -142,11 +139,6 @@ export function useWorkspaceDashboard() {
     };
   }, [workspaceId, campaignsAttempt]);
 
-  // Fetch Analytics
-  useEffect(() => {
-    getAnalyticsSummary().then(setAnalytics);
-  }, []);
-
   // Compute Task Stats
   const taskStats = useMemo<TaskStatsSummary>(() => {
     let todoCount = 0;
@@ -188,7 +180,6 @@ export function useWorkspaceDashboard() {
     handleTabChange,
     dashboard,
     loading,
-    analytics,
     tasks,
     tasksTotal,
     tasksLoading,

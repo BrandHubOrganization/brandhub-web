@@ -27,7 +27,13 @@
     "body": "\"{{name}}\" will be deleted. Past send history is kept.",
     "confirm": "Delete"
   },
+  "locales": {
+    "vi": "Tiếng Việt",
+    "en": "English"
+  },
   "form": {
+    "locale": "Language of the fixed lines",
+    "localeHint": "Sets the language of the footer and contact line. Your own text is not translated.",
     "createTitle": "Create mail template",
     "editTitle": "Edit mail template",
     "name": "Template name",
@@ -209,6 +215,8 @@
     "clearPicked": "Remove them"
   },
   "suppressions": {
+    "loadFailed": "Could not load the unsubscribed list.",
+    "forbidden": "You are not allowed to see this list.",
     "title": "Unsubscribed addresses",
     "subtitle": "People who unsubscribed from this Workspace's emails. They are skipped when you send.",
     "link": "Unsubscribed list",
