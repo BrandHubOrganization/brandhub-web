@@ -119,7 +119,11 @@
     "openPost": "Mở bài nguồn",
     "interactions": "Thích: {{likes}} · Chia sẻ: {{shares}} · Bình luận: {{comments}}",
     "risk": "Rủi ro thương hiệu",
-    "riskLevel": { "low": "Thấp", "medium": "Trung bình", "high": "Cao" },
+    "riskLevel": {
+      "low": "Thấp",
+      "medium": "Trung bình",
+      "high": "Cao"
+    },
     "status": {
       "new": "Mới",
       "rising": "Đang tăng",
@@ -145,7 +149,8 @@
     "postsCollected": "Số bài viết thu thập",
     "crawlSchedule": "Lịch trình thu thập",
     "runNowSuccess": "Đã kích hoạt thu thập dữ liệu thành công.",
-    "runNowError": "Không thể kích hoạt thu thập dữ liệu."
+    "runNowError": "Không thể kích hoạt thu thập dữ liệu.",
+    "publishedTime": "Thời gian công bố"
   },
   "trendVisuals": {
     "sparklineMomentum": "Biểu đồ xu hướng 7 ngày",
@@ -676,5 +681,40 @@
       "generic": "Không lưu được. Vui lòng thử lại."
     },
     "generatePassword": "Tạo ngẫu nhiên"
+  },
+  "trendPipeline": {
+    "title": "Trend pipeline",
+    "runNow": "Chạy pipeline ngay",
+    "history": "Các lượt pipeline gần đây",
+    "ready": "Sẵn sàng chạy toàn bộ flow theo cấu hình hiện tại.",
+    "accepted": "Đã tiếp nhận yêu cầu pipeline. Theo dõi thu thập, xử lý và lưu DB bên dưới.",
+    "busy": "Đang có lượt trend pipeline chạy. Theo dõi tiến độ trước khi chạy lượt mới.",
+    "notReady": "Pipeline chưa sẵn sàng. Kiểm tra bộ thu thập, queue, worker và dịch vụ theo dõi rồi làm mới.",
+    "error": "Chưa tải được trạng thái pipeline. Hãy làm mới và kiểm tra các service.",
+    "schedule": "Lịch tự động",
+    "scheduleDisabled": "Đã tắt lịch tự động; vẫn có thể chạy thủ công.",
+    "scheduleEnabled": "Đã bật lịch tự động.",
+    "schedulerStopped": "Tiến trình chạy lịch chưa hoạt động.",
+    "invalidSchedule": "Lịch không hợp lệ; bộ chạy lịch đang dùng mặc định.",
+    "next": "Lượt tiếp theo: {{at}} (giờ Việt Nam)",
+    "confirmTitle": "Chạy toàn bộ trend pipeline ngay?",
+    "confirmDescription": "Chạy cùng flow của schedule: crawl → queue → xử lý trend → lưu DB. Giữ nguyên nguồn dữ liệu và lịch tự động. Các lời gọi nhà cung cấp có thể phát sinh phí.",
+    "historyDescription": "Chỉ hoàn thành khi xử lý và lưu DB xong, không chỉ khi crawl thành công.",
+    "emptyHistory": "Chưa có lượt pipeline trước đó.",
+    "posts": "{{count}} bài",
+    "batches": "Batch: {{finished}} / {{total}}",
+    "saved": "Đã lưu DB và cập nhật kết quả live.",
+    "historicalSaved": "Đã lưu DB; giữ nguyên kết quả live mới hơn.",
+    "stage": {
+      "STARTING": "Đang khởi động",
+      "CRAWLING": "Đang thu thập và bàn giao dữ liệu",
+      "QUEUED": "Đang chờ worker",
+      "PROCESSING": "Đang xử lý batch",
+      "AGGREGATING": "Đang tổng hợp trend và lưu kết quả",
+      "RESOLVING": "Đang hợp nhất thực thể",
+      "COMPLETED": "Hoàn thành",
+      "PARTIAL": "Hoàn thành một phần",
+      "FAILED": "Thất bại"
+    }
   }
 }

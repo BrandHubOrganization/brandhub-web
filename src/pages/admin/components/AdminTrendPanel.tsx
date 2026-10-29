@@ -7,6 +7,7 @@ import { useTrendView } from "@/pages/admin/hooks/useTrendView";
 import { AdminTrendFilters } from "@/pages/admin/components/AdminTrendFilters";
 import { AdminTrendList } from "@/pages/admin/components/AdminTrendList";
 import { AdminTrendSummary } from "@/pages/admin/components/AdminTrendSummary";
+import { AdminTrendPipelineControl } from "@/pages/admin/components/AdminTrendPipelineControl";
 
 export function AdminTrendPanel() {
   const { t } = useTranslation();
@@ -25,21 +26,21 @@ export function AdminTrendPanel() {
   );
 
   return (
-    <div className="min-w-0 max-w-full space-y-4">
+    <div className="max-w-full min-w-0 space-y-4">
       {/* Top Header Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="bg-primary/10 text-primary flex size-7 items-center justify-center rounded-lg">
               <BarChart2 className="size-4" />
             </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-foreground">
+            <h1 className="text-foreground text-lg font-bold tracking-tight sm:text-xl">
               {t("admin.trends.managementTitle", {
                 defaultValue: "Trends & Crawl Management",
               })}
             </h1>
           </div>
-          <p className="text-xs text-muted-foreground line-clamp-1">
+          <p className="text-muted-foreground line-clamp-1 text-xs">
             {t("admin.trends.description")}
           </p>
         </div>
@@ -47,13 +48,13 @@ export function AdminTrendPanel() {
         <div className="flex flex-wrap items-center gap-2.5">
           <Link
             to="/admin?view=trendGraph"
-            className="text-foreground hover:text-primary transition-colors rounded text-xs font-medium underline underline-offset-4 focus-visible:outline-2"
+            className="text-foreground hover:text-primary rounded text-xs font-medium underline underline-offset-4 transition-colors focus-visible:outline-2"
           >
             {t("admin.navigation.trendGraph")}
           </Link>
           <Link
             to="/admin?view=trendReplay"
-            className="text-brand-orange-fg hover:opacity-85 transition-opacity focus-visible:outline-ring rounded text-xs font-medium underline underline-offset-4 focus-visible:outline-2"
+            className="text-brand-orange-fg focus-visible:outline-ring rounded text-xs font-medium underline underline-offset-4 transition-opacity hover:opacity-85 focus-visible:outline-2"
           >
             {t("admin.trends.replay")}
           </Link>
@@ -72,6 +73,7 @@ export function AdminTrendPanel() {
       </div>
 
       {/* Bento Snapshot & Crawl Control Card */}
+      <AdminTrendPipelineControl />
       <AdminTrendSummary query={view.summary} />
 
       {/* Filter Toolbar */}
@@ -96,7 +98,7 @@ export function AdminTrendPanel() {
           role="alert"
           className="border-destructive/40 bg-card space-y-3 rounded-xl border p-5"
         >
-          <h2 className="font-semibold text-base text-destructive">
+          <h2 className="text-destructive text-base font-semibold">
             {t("admin.trends.errorTitle")}
           </h2>
           <p className="text-muted-foreground text-sm">
