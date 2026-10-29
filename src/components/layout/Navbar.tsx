@@ -267,6 +267,7 @@ export function Navbar({
         "email",
         "mailTemplates",
         "mailBatches",
+        "mailSuppressions",
         "reports",
         "trendReplay",
         "trends",

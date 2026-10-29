@@ -134,9 +134,24 @@ export const adminMailTemplateService = {
       .then(data),
 };
 
+/** The system-wide unsubscribe list (ADMIN_SYSTEM_BROADCAST). */
+export const adminMailSuppressionService = {
+  list: (params: { q?: string; page?: number; size?: number }) =>
+    api.get<ApiResponse<PageOf<MailSuppression>>>("/api/v1/admin/mail-suppressions", { params }).then(data),
+  remove: (email: string) => api.delete("/api/v1/admin/mail-suppressions", { params: { email } }),
+};
+
+/** An agency unsubscribe list (AGENCY_INTERNAL / AGENCY_CLIENT mail). */
+export const agencyMailSuppressionService = {
+  list: (agencyId: string, params: { q?: string; page?: number; size?: number }) =>
+    api.get<ApiResponse<PageOf<MailSuppression>>>(`/api/v1/agencies/${agencyId}/mail-suppressions`, { params }).then(data),
+  remove: (agencyId: string, email: string) =>
+    api.delete(`/api/v1/agencies/${agencyId}/mail-suppressions`, { params: { email } }),
+};
+
 /** Batches that belong to no Workspace (admin broadcasts and agency mail). */
 export const adminMailBatchService = {
-  list: (params: { status?: string; page?: number; size?: number }) =>
+  list: (params: { status?: string; scope?: string; page?: number; size?: number }) =>
     api.get<ApiResponse<PageOf<MailBatch>>>("/api/v1/admin/mail-batches", { params }).then(data),
   get: (id: string, params: { status?: string; page?: number; size?: number }) =>
     api.get<ApiResponse<MailBatchDetail>>(`/api/v1/admin/mail-batches/${id}`, { params }).then(data),

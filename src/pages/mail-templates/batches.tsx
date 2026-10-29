@@ -21,7 +21,7 @@ import { BATCH_STATUSES, type MailBatch, type MailBatchDetail, type PageOf } fro
 
 /** What the panel needs from a backend; the workspace and the Admin console supply their own endpoints. */
 export interface BatchApi {
-  list: (params: { status?: string; page?: number; size?: number }) => Promise<PageOf<MailBatch>>;
+  list: (params: { status?: string; scope?: string; page?: number; size?: number }) => Promise<PageOf<MailBatch>>;
   get: (id: string, params: { size?: number }) => Promise<MailBatchDetail>;
   cancel: (id: string) => Promise<unknown>;
   resendFailed: (id: string) => Promise<{ requeued: number }>;
@@ -30,9 +30,10 @@ export interface BatchApi {
 }
 
 /** Shared by the workspace history page and the Admin console's system batches. */
-export function BatchesPanel({ api, backTo }: { api: BatchApi; backTo?: string }) {
+export function BatchesPanel({ api, backTo, scopes }: { api: BatchApi; backTo?: string; scopes?: readonly string[] }) {
   const { t, i18n } = useTranslation();
   const [status, setStatus] = useState("");
+  const [scope, setScope] = useState("");
   const [page, setPage] = useState(0);
   const [data, setData] = useState<PageOf<MailBatch> | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,13 +46,13 @@ export function BatchesPanel({ api, backTo }: { api: BatchApi; backTo?: string }
       setFailed(false);
     }
     try {
-      setData(await api.list({ status: status || undefined, page, size: 20 }));
+      setData(await api.list({ status: status || undefined, scope: scope || undefined, page, size: 20 }));
     } catch {
       if (!silent) setFailed(true);
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [api, status, page]);
+  }, [api, status, scope, page]);
 
   useEffect(() => { void load(); }, [load]);
 
@@ -135,6 +136,15 @@ export function BatchesPanel({ api, backTo }: { api: BatchApi; backTo?: string }
             {BATCH_STATUSES.map((s) => <option key={s} value={s}>{t(`mailTemplate.batches.statuses.${s}`)}</option>)}
           </Select>
         </div>
+        {scopes && (
+          <div className="w-56">
+            <Select aria-label={t("mailTemplate.batches.scope")} value={scope}
+              onChange={(e) => { setPage(0); setScope(e.target.value); }}>
+              <option value="">{t("mailTemplate.batches.allScopes")}</option>
+              {scopes.map((s) => <option key={s} value={s}>{t(`mailTemplate.batches.scopes.${s}`)}</option>)}
+            </Select>
+          </div>
+        )}
         {running && (
           <span role="status" className="text-muted-foreground text-xs">{t("mailTemplate.batches.autoRefresh")}</span>
         )}
@@ -158,6 +168,12 @@ export function BatchesPanel({ api, backTo }: { api: BatchApi; backTo?: string }
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium">{b.templateName}</span>
                   <Badge variant="secondary">{t(`mailTemplate.batches.statuses.${b.status}`)}</Badge>
+                  {b.scope && (
+                    <Badge variant="outline">
+                      {t(`mailTemplate.batches.scopes.${b.scope}`, { defaultValue: b.scope })}
+                      {b.agencyName ? ` · ${b.agencyName}` : ""}
+                    </Badge>
+                  )}
                 </div>
                 <p className="text-muted-foreground truncate text-sm">{b.subject}</p>
                 <p className="text-muted-foreground text-xs">

@@ -38,6 +38,9 @@ export const SCOPES_BY_AUDIENCE: Record<
   agency: ["AGENCY_INTERNAL", "AGENCY_CLIENT"],
 };
 
+/** Scopes of mail that belongs to no Workspace, for the Admin batch filter. */
+export const SYSTEM_BATCH_SCOPES = ["ADMIN_SYSTEM_BROADCAST", "TRANSACTIONAL_AUTO", "AGENCY_INTERNAL", "AGENCY_CLIENT"] as const;
+
 const DEFAULT_PROPS: Record<BlockType, BlockProps> = {
   header: {},
   heading: { text: "", align: "left" },

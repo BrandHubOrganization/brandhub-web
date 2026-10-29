@@ -119,7 +119,11 @@
     "openPost": "Open source post",
     "interactions": "Likes: {{likes}} · Shares: {{shares}} · Comments: {{comments}}",
     "risk": "Brand risk",
-    "riskLevel": { "low": "Low", "medium": "Medium", "high": "High" },
+    "riskLevel": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
     "status": {
       "new": "New",
       "rising": "Rising",
@@ -326,7 +330,8 @@
     "mailTemplates": "System mail templates",
     "mailBatches": "System mail batches",
     "invoices": "Payment history",
-    "workspaceTemplates": "Workspace templates"
+    "workspaceTemplates": "Workspace templates",
+    "mailSuppressions": "System unsubscribed list"
   },
   "overview": {
     "title": "Platform overview",

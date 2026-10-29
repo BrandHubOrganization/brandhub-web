@@ -33,9 +33,15 @@ export function AgencyMailTemplatesPage() {
       title={t("mailTemplate.agency.title")}
       description={t("mailTemplate.agency.description")}
       actions={
-        <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => navigate(`/agency/${id}`)}>
-          {t("agency.detail.backToProfile")}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="cursor-pointer"
+            onClick={() => navigate(`/agency/${id}/mail-templates/suppressions`)}>
+            {t("mailTemplate.suppressions.link")}
+          </Button>
+          <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => navigate(`/agency/${id}`)}>
+            {t("agency.detail.backToProfile")}
+          </Button>
+        </div>
       }
     >
       <AdminMailTemplatesPanel

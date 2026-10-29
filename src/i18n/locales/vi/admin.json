@@ -119,7 +119,11 @@
     "openPost": "Mở bài nguồn",
     "interactions": "Thích: {{likes}} · Chia sẻ: {{shares}} · Bình luận: {{comments}}",
     "risk": "Rủi ro thương hiệu",
-    "riskLevel": { "low": "Thấp", "medium": "Trung bình", "high": "Cao" },
+    "riskLevel": {
+      "low": "Thấp",
+      "medium": "Trung bình",
+      "high": "Cao"
+    },
     "status": {
       "new": "Mới",
       "rising": "Đang tăng",
@@ -326,7 +330,8 @@
     "mailTemplates": "Mẫu email hệ thống",
     "mailBatches": "Đợt gửi email hệ thống",
     "invoices": "Lịch sử thanh toán",
-    "workspaceTemplates": "Mẫu Workspace"
+    "workspaceTemplates": "Mẫu Workspace",
+    "mailSuppressions": "Danh sách hủy đăng ký hệ thống"
   },
   "overview": {
     "title": "Tổng quan nền tảng",

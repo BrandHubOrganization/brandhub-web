@@ -120,7 +120,15 @@
     "resendFailed": "Gửi lại {{count}} email lỗi",
     "resendDone": "Đã đưa {{count}} email vào hàng đợi lại.",
     "exportCsv": "Xuất CSV",
-    "autoRefresh": "Đang tự cập nhật…"
+    "autoRefresh": "Đang tự cập nhật…",
+    "allScopes": "Mọi loại email",
+    "scope": "Loại email",
+    "scopes": {
+      "ADMIN_SYSTEM_BROADCAST": "Broadcast admin",
+      "TRANSACTIONAL_AUTO": "Sự kiện hệ thống",
+      "AGENCY_INTERNAL": "Nội bộ agency",
+      "AGENCY_CLIENT": "Khách hàng agency"
+    }
   },
   "unsubscribe": {
     "title": "Hủy đăng ký nhận email",
@@ -139,7 +147,8 @@
     "title": "Mẫu email hệ thống",
     "description": "Thư viện mẫu dùng chung: Workspace có thể sao chép, Admin dùng khi soạn thông báo.",
     "batchesDescription": "Tiến độ các đợt gửi broadcast của admin và mail agency. Huỷ đợt đã hẹn giờ hoặc gửi lại các mail lỗi.",
-    "create": "Tạo mẫu hệ thống"
+    "create": "Tạo mẫu hệ thống",
+    "suppressionsDescription": "Những người đã hủy đăng ký nhận email broadcast của admin. Việc đăng ký lại được ghi vào nhật ký kiểm toán."
   },
   "errors": {
     "generic": "Có lỗi xảy ra, vui lòng thử lại.",
@@ -208,7 +217,8 @@
     "since": "Hủy đăng ký ngày {{when}}",
     "resubscribe": "Đăng ký lại",
     "confirm": "Cho phép gửi email tới {{email}} trở lại?",
-    "done": "Đã đăng ký lại địa chỉ."
+    "done": "Đã đăng ký lại địa chỉ.",
+    "agencySubtitle": "Những người đã hủy đăng ký nhận email của agency này. Họ bị bỏ qua khi bạn gửi. Việc đăng ký lại được ghi vào nhật ký kiểm toán."
   },
   "scopes": {
     "CAMPAIGN_BROADCAST": "Truyền thông chiến dịch",
