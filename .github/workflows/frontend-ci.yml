@@ -1,17 +1,25 @@
-name: Frontend CI
+name: Frontend CI/CD
 
 on:
   push:
-    branches: ['main', 'develop']
+    branches:
+      - main
+
   pull_request:
-    branches: ['develop']
+    branches:
+      - main
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
+
+env:
+  NODE_VERSION: '24'
+  AWS_REGION: ap-southeast-1
 
 jobs:
   quality:
@@ -20,12 +28,12 @@ jobs:
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -37,11 +45,13 @@ jobs:
         run: |
           npm run lint &
           lint_pid=$!
+
           npm run type-check &
           typecheck_pid=$!
 
           lint_status=0
           wait "$lint_pid" || lint_status=$?
+
           typecheck_status=0
           wait "$typecheck_pid" || typecheck_status=$?
 
@@ -50,5 +60,69 @@ jobs:
           fi
 
       - name: Build production bundle
-        run: npx vite build
+        run: npm run build
 
+  deploy-prod:
+    name: Deploy PROD to S3 + CloudFront
+    needs: quality
+
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Upload hashed assets with long cache
+        run: |
+          if [ -d "dist/assets" ]; then
+            aws s3 sync dist/assets/ s3://${{ secrets.S3_BUCKET_NAME }}/assets/ \
+              --delete \
+              --cache-control "public,max-age=31536000,immutable"
+          fi
+
+      - name: Upload remaining frontend files
+        run: |
+          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ \
+            --delete \
+            --exclude "assets/*" \
+            --exclude "index.html"
+
+      - name: Upload index.html without cache
+        run: |
+          aws s3 cp dist/index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html \
+            --content-type "text/html" \
+            --cache-control "no-cache,no-store,must-revalidate"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/index.html" "/"
