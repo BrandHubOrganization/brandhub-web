@@ -90,6 +90,8 @@ jobs:
         run: npm ci
 
       - name: Build frontend
+        env:
+          VITE_API_BASE_URL: https://api.brandhub.id.vn
         run: npm run build
 
       - name: Configure AWS credentials
