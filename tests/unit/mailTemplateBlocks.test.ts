@@ -192,3 +192,24 @@ describe("renderLayoutPreview", () => {
     expect(html.indexOf("First")).toBeLessThan(html.indexOf("height:1px"));
   });
 });
+
+describe("layout locale", () => {
+  const fixed = [newBlock("contact_strip"), newBlock("footer")];
+
+  it("defaults to Vietnamese when serialising and keeps a stored locale when parsing", () => {
+    expect(JSON.parse(serializeLayout({ version: 1, blocks: [] })).locale).toBe("vi");
+    expect(JSON.parse(serializeLayout({ version: 1, locale: "en", blocks: [] })).locale).toBe("en");
+    expect(parseLayout('{"version":1,"locale":"en","blocks":[]}').locale).toBe("en");
+    expect(parseLayout('{"version":1,"blocks":[]}').locale).toBeUndefined();
+    expect(parseLayout('{"version":1,"locale":"fr","blocks":[]}').locale).toBeUndefined();
+  });
+
+  it("previews the fixed lines in the chosen language", () => {
+    const vi = renderLayoutPreview(fixed);
+    expect(vi).toContain("Email được gửi từ {{workspaceName}} qua BrandHub.");
+    const en = renderLayoutPreview(fixed, "en");
+    expect(en).toContain("Sent by {{workspaceName}} via BrandHub.");
+    expect(en).toContain("Contact: <strong");
+    expect(en).not.toContain("Email được gửi");
+  });
+});

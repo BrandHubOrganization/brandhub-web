@@ -27,7 +27,13 @@
     "body": "Mẫu \"{{name}}\" sẽ bị xóa. Lịch sử gửi cũ được giữ nguyên.",
     "confirm": "Xóa"
   },
+  "locales": {
+    "vi": "Tiếng Việt",
+    "en": "English"
+  },
   "form": {
+    "locale": "Ngôn ngữ của các dòng cố định",
+    "localeHint": "Chọn ngôn ngữ cho dòng chân thư và dòng liên hệ. Nội dung bạn viết không bị dịch.",
     "createTitle": "Tạo mẫu email",
     "editTitle": "Sửa mẫu email",
     "name": "Tên mẫu",
