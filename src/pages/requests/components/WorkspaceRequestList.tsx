@@ -3,6 +3,7 @@ import { FileText, SearchX, RotateCcw, Check, CheckCircle2, Ban, Eye, Edit3 } fr
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SocialPlatformBadge } from "@/components/common/SocialPlatformBadge";
 import type { RequestPage, ReviewAction, WorkspaceRequest } from "@/pages/requests/types/workspaceRequest";
 
 interface WorkspaceRequestListProps {
@@ -87,7 +88,7 @@ export function WorkspaceRequestList({
               >
                 {request.title}
               </Button>
-              <div className="text-muted-foreground flex flex-wrap items-center gap-2.5 text-xs">
+              <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
                 <Badge
                   variant="outline"
                   className="font-medium border-border/80 bg-background/50"
@@ -97,6 +98,13 @@ export function WorkspaceRequestList({
                 <span className="bg-muted/50 rounded px-2 py-0.5 text-2xs font-medium">
                   {t(`requests.v2.types.${request.type}`)}
                 </span>
+                {request.type === "POST" && request.targetPlatforms && request.targetPlatforms.length > 0 && (
+                  <span className="flex flex-wrap items-center gap-1">
+                    {request.targetPlatforms.map((platform) => (
+                      <SocialPlatformBadge key={platform} platform={platform} size="xs" />
+                    ))}
+                  </span>
+                )}
                 <span className="font-mono text-2xs">
                   {t("requests.v2.due", {
                     date: new Date(request.dueDate).toLocaleDateString(i18n.language),

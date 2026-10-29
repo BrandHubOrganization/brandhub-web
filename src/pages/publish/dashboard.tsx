@@ -130,6 +130,7 @@ export function PostDashboardView({ workspaceId }: PostDashboardViewProps) {
           <PostDistributionCharts
             platformBreakdown={data.platformBreakdown}
             publishingTrends={data.publishingTrends}
+            kpis={data.kpis}
           />
 
           {/* Recent Publishing Feed */}

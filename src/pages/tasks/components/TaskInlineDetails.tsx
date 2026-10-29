@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { TaskReferenceFields } from "@/pages/tasks/components/TaskReferenceFields";
 import { InlineTaskField } from "@/pages/tasks/components/InlineTaskField";
 import { TaskInlineAssignment } from "@/pages/tasks/components/TaskInlineAssignment";
+import { TaskTargetPlatformsPicker } from "@/pages/tasks/components/TaskTargetPlatformsPicker";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import {
@@ -422,6 +423,7 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
         <div className="border-border/50 space-y-3 border-t pt-3">
           <TaskDeadlineField task={task} />
           {task.type === "POST" && <TaskPublishTimeField task={task} />}
+          {task.type === "POST" && <TaskTargetPlatformsPicker task={task} />}
           <div className="text-2xs text-muted-foreground flex items-center gap-1.5 pt-1.5">
             <Globe className="size-3" />
             <span>{t("tasks.workflow.timezone", { timezone: zone })}</span>
