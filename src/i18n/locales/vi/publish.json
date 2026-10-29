@@ -67,13 +67,26 @@
     "platforms": {
       "title": "Phân bổ theo nền tảng",
       "subtitle": "Tỷ trọng phân phối nội dung",
-      "ALL": "Tất cả nền tảng"
+      "performanceTitle": "Hiệu quả theo Kênh xuất bản",
+      "performanceSubtitle": "Lượt tiếp cận theo từng nền tảng trong 30 ngày qua",
+      "totalPostsFooter": "TỔNG BÀI ĐĂNG",
+      "totalReachFooter": "TỔNG TIẾP CẬN",
+      "totalEngagementsFooter": "TỔNG TƯƠNG TÁC",
+      "ALL": "Tất cả nền tảng",
+      "note": "Facebook và Instagram đang chiếm trên 75% lượng nội dung phân phối."
     },
     "statusFilters": {
       "ALL": "Tất cả trạng thái",
       "IN_PROGRESS": "Đang xử lý"
     },
     "kpi": {
+      "reach": "LƯỢT TIẾP CẬN",
+      "engagements": "TƯƠNG TÁC",
+      "posts": "BÀI ĐĂNG",
+      "responseRate": "TỶ LỆ PHẢN HỒI",
+      "vsLastMonth": "So với tháng trước",
+      "sameAsLastMonth": "Bằng với tháng trước",
+      "goodImprovement": "Cải thiện tốt",
       "totalPosts": "Tổng bài viết",
       "totalPostsDesc": "Bao gồm tất cả bài đăng trong workspace",
       "successRate": "Tỷ lệ xuất bản thành công",
@@ -84,7 +97,15 @@
     },
     "trends": {
       "title": "Xu hướng đăng bài theo thời gian",
-      "subtitle": "Thống kê số lượng bài đăng thành công và lên lịch"
+      "subtitle": "Thống kê số lượng bài đăng thành công và lên lịch",
+      "performanceTitle": "Hiệu suất tương tác theo thời gian",
+      "performanceSubtitle": "Tổng hợp lượt tương tác, hiển thị và lượt nhấp từ các bài đăng",
+      "impressions": "Lượt hiển thị",
+      "engagements": "Lượt tương tác",
+      "clicks": "Lượt nhấp",
+      "legendImpressions": "Lượt hiển thị",
+      "legendEngagements": "Lượt tương tác",
+      "legendClicks": "Lượt nhấp"
     },
     "recentPosts": {
       "title": "Hoạt động xuất bản gần đây",

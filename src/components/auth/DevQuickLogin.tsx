@@ -37,7 +37,7 @@ const QUICK_LOGIN_ACCOUNTS = [
   {
     email:
       import.meta.env.VITE_DEV_LOGIN_CREATOR_EMAIL ||
-      "user1@demo.brandhub.test",
+      "user13@demo.brandhub.test",
     labelKey: "workspace.roles.CREATOR",
     workspaceRole: "CREATOR",
   },

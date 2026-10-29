@@ -1,0 +1,8 @@
+{
+  "platforms": {
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "threads": "Threads"
+  }
+}

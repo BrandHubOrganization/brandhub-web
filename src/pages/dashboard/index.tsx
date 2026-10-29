@@ -190,7 +190,7 @@ export function DashboardPage() {
           {/* Card 1: Total Agencies */}
           <div
             onClick={() => navigate("/agency")}
-            className="border-border bg-card hover:border-border hover:bg-muted/30 group cursor-pointer rounded-xl border p-4.5 transition-all shadow-xs"
+            className="border-border bg-card hover:border-border hover:bg-muted/30 group cursor-pointer rounded-xl border p-4.5 shadow-xs transition-all"
           >
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground text-xs font-medium">
@@ -205,7 +205,8 @@ export function DashboardPage() {
                 {agencies.length}
               </span>
               <span className="text-muted-foreground group-hover:text-foreground text-3xs flex items-center gap-1 font-medium transition-colors">
-                {t("dashboard.global.goToAgencies")} <ArrowRight className="size-3" />
+                {t("dashboard.global.goToAgencies")}{" "}
+                <ArrowRight className="size-3" />
               </span>
             </div>
           </div>
@@ -213,7 +214,7 @@ export function DashboardPage() {
           {/* Card 2: Total Workspaces */}
           <div
             onClick={() => navigate("/workspace")}
-            className="border-border bg-card hover:border-border hover:bg-muted/30 group cursor-pointer rounded-xl border p-4.5 transition-all shadow-xs"
+            className="border-border bg-card hover:border-border hover:bg-muted/30 group cursor-pointer rounded-xl border p-4.5 shadow-xs transition-all"
           >
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground text-xs font-medium">
@@ -228,7 +229,8 @@ export function DashboardPage() {
                 {workspaces.length}
               </span>
               <span className="text-muted-foreground group-hover:text-foreground text-3xs flex items-center gap-1 font-medium transition-colors">
-                {t("dashboard.global.goToWorkspaces")} <ArrowRight className="size-3" />
+                {t("dashboard.global.goToWorkspaces")}{" "}
+                <ArrowRight className="size-3" />
               </span>
             </div>
           </div>
@@ -236,7 +238,7 @@ export function DashboardPage() {
           {/* Card 3: Pending Invitations */}
           <div
             onClick={() => navigate("/agency/invitations")}
-            className="border-border bg-card hover:border-border hover:bg-muted/30 group cursor-pointer rounded-xl border p-4.5 transition-all shadow-xs"
+            className="border-border bg-card hover:border-border hover:bg-muted/30 group cursor-pointer rounded-xl border p-4.5 shadow-xs transition-all"
           >
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground text-xs font-medium">
@@ -266,7 +268,7 @@ export function DashboardPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => navigate("/agency/create")}
-                className="hover:border-brand-orange hover:text-brand-orange h-7 text-3xs cursor-pointer gap-1 px-2.5"
+                className="hover:border-brand-orange hover:text-brand-orange text-3xs h-7 cursor-pointer gap-1 px-2.5"
               >
                 <Plus className="size-3" /> {t("dashboard.global.createAgency")}
               </Button>
@@ -277,7 +279,7 @@ export function DashboardPage() {
                   onClick={() =>
                     navigate(`/workspaces/create?agencyId=${agencies[0].id}`)
                   }
-                  className="hover:border-brand-orange hover:text-brand-orange h-7 text-3xs cursor-pointer gap-1 px-2.5"
+                  className="hover:border-brand-orange hover:text-brand-orange text-3xs h-7 cursor-pointer gap-1 px-2.5"
                 >
                   <Plus className="size-3" />{" "}
                   {t("dashboard.global.createWorkspace")}
@@ -308,7 +310,7 @@ export function DashboardPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/agency")}
-                className="text-brand-orange hover:bg-brand-orange/10 h-7 text-xs font-medium cursor-pointer"
+                className="text-brand-orange hover:bg-brand-orange/10 h-7 cursor-pointer text-xs font-medium"
               >
                 {t("dashboard.global.viewAll")} ({agencies.length})
               </Button>
@@ -323,7 +325,7 @@ export function DashboardPage() {
                   variant="orange"
                   size="sm"
                   onClick={() => navigate("/agency/create")}
-                  className="mt-3 h-8 text-xs cursor-pointer"
+                  className="mt-3 h-8 cursor-pointer text-xs"
                 >
                   <Plus className="mr-1.5 size-3.5" />
                   {t("dashboard.global.createAgency")}
@@ -341,12 +343,12 @@ export function DashboardPage() {
                       onClick={() => handleEnterAgency(agency.id)}
                       className="border-border/70 hover:border-brand-orange/40 hover:bg-muted/40 flex cursor-pointer items-center justify-between gap-3 rounded-lg border p-3 transition-colors"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex min-w-0 items-center gap-3">
                         {agency.logoUrl ? (
                           <img
                             src={agency.logoUrl}
                             alt={agency.name}
-                            className="size-8 shrink-0 rounded-md object-cover border border-border"
+                            className="border-border size-8 shrink-0 rounded-md border object-cover"
                           />
                         ) : (
                           <div
@@ -366,7 +368,7 @@ export function DashboardPage() {
                           <p className="text-foreground truncate text-xs font-semibold">
                             {agency.name}
                           </p>
-                          <div className="text-muted-foreground flex items-center gap-2 text-3xs mt-0.5">
+                          <div className="text-muted-foreground text-3xs mt-0.5 flex items-center gap-2">
                             {agency.category && (
                               <span>
                                 {t(`agency.category.${agency.category}`)}
@@ -378,7 +380,7 @@ export function DashboardPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex shrink-0 items-center gap-2">
                         {agency.ownerId === user?.id && (
                           <span className="text-brand-orange bg-brand-orange-soft text-3xs rounded px-1.5 py-0.5 font-semibold">
                             {t("dashboard.global.roleOwner")}
@@ -406,7 +408,7 @@ export function DashboardPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/workspace")}
-                className="text-brand-orange hover:bg-brand-orange/10 h-7 text-xs font-medium cursor-pointer"
+                className="text-brand-orange hover:bg-brand-orange/10 h-7 cursor-pointer text-xs font-medium"
               >
                 {t("dashboard.global.viewAll")} ({workspaces.length})
               </Button>
@@ -424,7 +426,7 @@ export function DashboardPage() {
                     onClick={() =>
                       navigate(`/workspaces/create?agencyId=${agencies[0].id}`)
                     }
-                    className="mt-3 h-8 text-xs cursor-pointer"
+                    className="mt-3 h-8 cursor-pointer text-xs"
                   >
                     <Plus className="mr-1.5 size-3.5" />
                     {t("dashboard.global.createWorkspace")}
@@ -443,12 +445,12 @@ export function DashboardPage() {
                       onClick={() => handleEnterWorkspace(ws)}
                       className="border-border/70 hover:border-brand-orange/40 hover:bg-muted/40 flex cursor-pointer items-center justify-between gap-3 rounded-lg border p-3 transition-colors"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex min-w-0 items-center gap-3">
                         {ws.logoUrl ? (
                           <img
                             src={ws.logoUrl}
                             alt={ws.name}
-                            className="size-8 shrink-0 rounded-md object-cover border border-border"
+                            className="border-border size-8 shrink-0 rounded-md border object-cover"
                           />
                         ) : (
                           <div className="bg-brand-orange/10 text-brand-orange flex size-8 shrink-0 items-center justify-center rounded-md text-xs font-bold">
@@ -459,14 +461,17 @@ export function DashboardPage() {
                           <p className="text-foreground truncate text-xs font-semibold">
                             {ws.name}
                           </p>
-                          <p className="text-muted-foreground truncate text-3xs mt-0.5">
+                          <p className="text-muted-foreground text-3xs mt-0.5 truncate">
                             {parentAgency?.name ??
-                              t("workspace.list.unassignedAgency", "Chưa gán công ty")}
+                              t(
+                                "workspace.list.unassignedAgency",
+                                "Chưa gán công ty",
+                              )}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex shrink-0 items-center gap-2">
                         {ws.myRole && (
                           <span className="text-muted-foreground bg-muted text-3xs rounded px-1.5 py-0.5 font-medium">
                             {t(`workspace.roles.${ws.myRole}`)}
@@ -492,7 +497,10 @@ export function DashboardPage() {
               </span>
             </div>
             <span className="text-muted-foreground text-3xs">
-              {t("dashboard.charts.lastUpdated", "Cập nhật tự động thời gian thực")}
+              {t(
+                "dashboard.charts.lastUpdated",
+                "Cập nhật tự động thời gian thực",
+              )}
             </span>
           </div>
 
