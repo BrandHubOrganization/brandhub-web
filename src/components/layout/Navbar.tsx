@@ -21,6 +21,7 @@ import {
   HelpCircle,
   BookOpen,
 } from "lucide-react";
+import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -137,9 +138,9 @@ const WORKSPACE_SECTION_ROOTS: Record<
   },
 };
 
-export function getChildResourceBreadcrumbLabel(
+function getChildResourceBreadcrumbLabel(
   prevSeg: string | undefined,
-  t: (key: string, fallback?: string) => string,
+  t: TFunction,
 ): string {
   if (prevSeg === "posts") return t("publish.detail.breadcrumb", "Chi tiết bài viết");
   if (prevSeg === "tasks") return t("tasks.detail.breadcrumb", "Chi tiết công việc");
