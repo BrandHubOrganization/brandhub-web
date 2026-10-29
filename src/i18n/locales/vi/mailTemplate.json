@@ -52,7 +52,8 @@
     "save": "Lưu",
     "saving": "Đang lưu…",
     "saved": "Đã lưu mẫu email.",
-    "discardConfirm": "Bỏ các thay đổi chưa lưu?"
+    "discardConfirm": "Bỏ các thay đổi chưa lưu?",
+    "scope": "Đối tượng gửi"
   },
   "send": {
     "title": "Gửi email",
@@ -61,6 +62,7 @@
     "chooseTemplate": "Chọn mẫu…",
     "recipients": "Người nhận",
     "recipientsPlaceholder": "email,name,company\nan@example.com,An,ACME",
+    "agencyRecipients": "Người nhận được hệ thống tự xác định theo Agency khi gửi.",
     "recipientsHelp": "Dán danh sách email hoặc CSV có cột email (cột khác là biến). Tối đa {{max}} người.",
     "uploadCsv": "Tải tệp CSV",
     "parsed": "{{count}} người nhận hợp lệ",
@@ -206,5 +208,78 @@
     "resubscribe": "Đăng ký lại",
     "confirm": "Cho phép gửi email tới {{email}} trở lại?",
     "done": "Đã đăng ký lại địa chỉ."
+  },
+  "scopes": {
+    "CAMPAIGN_BROADCAST": "Truyền thông chiến dịch",
+    "WORKSPACE_MANAGER": "Thành viên Workspace",
+    "AGENCY_INTERNAL": "Nội bộ Agency",
+    "AGENCY_CLIENT": "Khách hàng của Agency",
+    "ADMIN_SYSTEM_BROADCAST": "Thông báo toàn hệ thống",
+    "TRANSACTIONAL_AUTO": "Email giao dịch tự động"
+  },
+  "agency": {
+    "title": "Mẫu email của Agency",
+    "description": "Soạn email gửi thành viên Agency hoặc khách hàng đối tác bằng trình dựng khối."
+  },
+  "builder": {
+    "palette": "Khối",
+    "canvas": "Bố cục email",
+    "empty": "Kéo một khối vào đây hoặc bấm khối bên trái để bắt đầu.",
+    "moveUp": "Lên trên",
+    "moveDown": "Xuống dưới",
+    "remove": "Xóa khối",
+    "noProps": "Khối này không có cài đặt.",
+    "legacy": "Mẫu này được soạn bằng HTML tự do. Hãy dựng lại bằng các khối để lưu thay đổi.",
+    "blocks": {
+      "header": "Đầu thư",
+      "heading": "Tiêu đề",
+      "paragraph": "Đoạn văn",
+      "image_banner": "Ảnh banner",
+      "cta_button": "Nút bấm",
+      "divider": "Đường kẻ",
+      "spacer": "Khoảng cách",
+      "contact_strip": "Dải liên hệ",
+      "footer": "Chân thư"
+    },
+    "props": {
+      "text": "Nội dung",
+      "align": "Căn lề",
+      "alignLeft": "Trái",
+      "alignCenter": "Giữa",
+      "imageUrl": "URL ảnh (https)",
+      "imageAlt": "Mô tả ảnh",
+      "linkUrl": "URL liên kết (không bắt buộc)",
+      "label": "Nhãn nút",
+      "urlType": "Liên kết tới",
+      "customUrl": "URL tùy chọn (https)",
+      "heightPx": "Chiều cao (px)",
+      "urlTypes": {
+        "site": "Trang chủ",
+        "campaign": "Chiến dịch",
+        "client": "Khách hàng",
+        "custom": "URL tùy chọn"
+      }
+    },
+    "errors": {
+      "textRequired": "Hãy nhập nội dung.",
+      "imageRequired": "Cần URL ảnh và mô tả ảnh.",
+      "urlHttp": "URL phải bắt đầu bằng http:// hoặc https://.",
+      "labelRequired": "Hãy nhập nhãn nút.",
+      "urlRequired": "Hãy nhập URL.",
+      "heightInvalid": "Chiều cao phải từ 0 trở lên."
+    }
+  },
+  "broadcast": {
+    "title": "Gửi \"{{name}}\" tới toàn hệ thống",
+    "description": "Thông báo sẽ được gửi tới mọi người dùng đang hoạt động. Người nhận do hệ thống tự xác định khi gửi.",
+    "send": "Gửi cho tất cả",
+    "password": "Xác nhận mật khẩu",
+    "passwordRequired": "Đợt gửi này rất lớn. Nhập mật khẩu để xác nhận.",
+    "wrongPassword": "Mật khẩu không đúng."
+  },
+  "audience": {
+    "total": "Sẽ gửi tới {{count}} người",
+    "loading": "Đang đếm người nhận...",
+    "failed": "Không tải được danh sách người nhận."
   }
 }

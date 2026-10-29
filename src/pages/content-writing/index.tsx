@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ImagePlus, X, Eye, EyeOff, Copy, Check } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
+import { CaptionModeration } from "@/pages/editor/components/CaptionModeration";
 import { Button } from "@/components/ui/button";
 import {
   CanvasTextEditor,
@@ -91,10 +92,18 @@ export function ContentWritingPage() {
       });
   }, [taskId, workspaceId, setSearchParams]);
 
-  const { yDoc, isReady, isConnected, snapshotCount, loadError, retryLoad, connectionError, retryConnection } = useTaskContentSync(
-    workspaceId ?? "",
-    taskId,
-  );
+  const {
+    yDoc,
+    isReady,
+    isConnected,
+    snapshotCount,
+    loadError,
+    retryLoad,
+    connectionError,
+    retryConnection,
+    peers,
+    updateLocalCursor,
+  } = useTaskContentSync(workspaceId ?? "", taskId);
 
   // ── Publish text: what actually gets posted (FR 3.6.10 font conversion) ──
   // Bold/italic become Unicode styled letters and Vietnamese is NFC-normalized,
@@ -143,6 +152,21 @@ export function ContentWritingPage() {
               ? t("editor.contentWritingPage.connected", "Live")
               : t("editor.contentWritingPage.connecting", "Connecting…")}
           </span>
+          {/* Peer presence: who else is viewing/editing this document right now. */}
+          {peers.length > 0 && (
+            <div className="ml-2 flex items-center -space-x-2">
+              {peers.map((p) => (
+                <div
+                  key={p.clientId}
+                  title={p.name}
+                  className="border-card flex size-6 items-center justify-center rounded-full border-2 text-[10px] font-bold text-white"
+                  style={{ backgroundColor: p.color }}
+                >
+                  {p.name.slice(0, 1).toUpperCase()}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -254,21 +278,44 @@ export function ContentWritingPage() {
             </div>
           )}
 
-          {connectionError && <div role="alert" className="border-border bg-card mb-3 rounded-xl border p-3">
-            <p className="text-destructive text-sm">{t("editor.contentWritingPage.connectionFailed")}</p>
-            <Button variant="outline" className="mt-2" onClick={retryConnection}>{t("editor.emojiPicker.retry")}</Button>
-          </div>}
+          {connectionError && (
+            <div
+              role="alert"
+              className="border-border bg-card mb-3 rounded-xl border p-3"
+            >
+              <p className="text-destructive text-sm">
+                {t("editor.contentWritingPage.connectionFailed")}
+              </p>
+              <Button
+                variant="outline"
+                className="mt-2"
+                onClick={retryConnection}
+              >
+                {t("editor.emojiPicker.retry")}
+              </Button>
+            </div>
+          )}
           {/* Canvas editor */}
+          <CaptionModeration key={workspaceId} workspaceId={workspaceId} text={publishText} />
           {loadError ? (
-            <div role="alert" className="border-border bg-card flex h-48 flex-col items-center justify-center gap-3 rounded-xl border">
-              <p className="text-destructive text-sm">{t("editor.contentWritingPage.loadFailed")}</p>
-              <Button variant="outline" onClick={retryLoad}>{t("editor.emojiPicker.retry")}</Button>
+            <div
+              role="alert"
+              className="border-border bg-card flex h-48 flex-col items-center justify-center gap-3 rounded-xl border"
+            >
+              <p className="text-destructive text-sm">
+                {t("editor.contentWritingPage.loadFailed")}
+              </p>
+              <Button variant="outline" onClick={retryLoad}>
+                {t("editor.emojiPicker.retry")}
+              </Button>
             </div>
           ) : isReady ? (
             <CanvasTextEditor
               key={reloadToken}
               ref={editorRef}
               yDoc={yDoc as Y.Doc}
+              peers={peers}
+              onCursorChange={updateLocalCursor}
             />
           ) : (
             <div className="border-border bg-card flex h-48 w-full items-center justify-center rounded-xl border">

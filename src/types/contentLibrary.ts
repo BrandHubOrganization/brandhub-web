@@ -1,6 +1,7 @@
-export type MediaType = "image" | "video";
+export type MediaType = "image" | "video" | "file";
 
 export interface MediaItem {
+  source?: "repository";
   id: string;
   workspaceId: string;
   filename: string;

@@ -332,6 +332,9 @@
     "platforms": "Nền tảng tích hợp",
     "uptime": "Cam kết uptime"
   },
+  "marquee": {
+    "label": "BrandHub — Vận hành nội dung đa kênh"
+  },
   "features": {
     "title": "Tất cả trong một nền tảng vận hành truyền thông",
     "subtitle": "Từ đàm phán gói dịch vụ, lập kế hoạch 3 loại tác vụ đến kiểm duyệt chất lượng 4 cấp và xuất bản đa kênh.",
