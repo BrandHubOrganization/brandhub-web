@@ -209,6 +209,8 @@
     "clearPicked": "Bỏ chọn"
   },
   "suppressions": {
+    "loadFailed": "Không tải được danh sách hủy đăng ký.",
+    "forbidden": "Bạn không có quyền xem danh sách này.",
     "title": "Địa chỉ đã hủy đăng ký",
     "subtitle": "Những người đã hủy nhận email của Workspace này. Họ sẽ bị bỏ qua khi gửi.",
     "link": "Danh sách hủy đăng ký",

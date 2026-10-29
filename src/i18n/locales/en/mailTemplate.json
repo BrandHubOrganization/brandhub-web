@@ -209,6 +209,8 @@
     "clearPicked": "Remove them"
   },
   "suppressions": {
+    "loadFailed": "Could not load the unsubscribed list.",
+    "forbidden": "You are not allowed to see this list.",
     "title": "Unsubscribed addresses",
     "subtitle": "People who unsubscribed from this Workspace's emails. They are skipped when you send.",
     "link": "Unsubscribed list",
