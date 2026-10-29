@@ -119,7 +119,11 @@
     "openPost": "Open source post",
     "interactions": "Likes: {{likes}} · Shares: {{shares}} · Comments: {{comments}}",
     "risk": "Brand risk",
-    "riskLevel": { "low": "Low", "medium": "Medium", "high": "High" },
+    "riskLevel": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
     "status": {
       "new": "New",
       "rising": "Rising",
@@ -145,7 +149,8 @@
     "postsCollected": "Posts collected",
     "crawlSchedule": "Crawl schedule",
     "runNowSuccess": "Crawl job triggered successfully.",
-    "runNowError": "Failed to trigger crawl job."
+    "runNowError": "Failed to trigger crawl job.",
+    "publishedTime": "Published at"
   },
   "trendVisuals": {
     "sparklineMomentum": "7-day momentum sparkline",
@@ -678,5 +683,40 @@
       "generic": "Could not save. Try again."
     },
     "generatePassword": "Generate"
+  },
+  "trendPipeline": {
+    "title": "Trend pipeline",
+    "runNow": "Run pipeline now",
+    "history": "Recent pipeline runs",
+    "ready": "Ready to run the complete flow using the current configuration.",
+    "accepted": "Pipeline request accepted. Collection, processing and database progress are tracked below.",
+    "busy": "A trend pipeline run is already active. Follow its progress before starting another.",
+    "notReady": "The pipeline is not ready. Check ingestion, queue, worker and tracking services, then refresh.",
+    "error": "Could not load pipeline status. Refresh and check the services.",
+    "schedule": "Automatic schedule",
+    "scheduleDisabled": "Automatic scheduling is off; manual execution remains available.",
+    "scheduleEnabled": "Automatic scheduling is on.",
+    "schedulerStopped": "The scheduling process is not running.",
+    "invalidSchedule": "Invalid schedule; the scheduler uses its default.",
+    "next": "Next run: {{at}} (Vietnam time)",
+    "confirmTitle": "Run the complete trend pipeline now?",
+    "confirmDescription": "Start the same flow as the schedule: crawl → queue → trend processing → database. Keep the current sources and automatic schedule. Provider calls may incur costs.",
+    "historyDescription": "Completion requires processing and database publication, not just successful crawling.",
+    "emptyHistory": "No earlier pipeline runs.",
+    "posts": "{{count}} posts",
+    "batches": "Batches: {{finished}} / {{total}}",
+    "saved": "Database saved; live snapshot updated.",
+    "historicalSaved": "Database saved; a newer live snapshot was preserved.",
+    "stage": {
+      "STARTING": "Starting",
+      "CRAWLING": "Collecting and delivering data",
+      "QUEUED": "Waiting for the worker",
+      "PROCESSING": "Processing batches",
+      "AGGREGATING": "Aggregating trends and saving results",
+      "RESOLVING": "Resolving entities",
+      "COMPLETED": "Completed",
+      "PARTIAL": "Partially completed",
+      "FAILED": "Failed"
+    }
   }
 }
