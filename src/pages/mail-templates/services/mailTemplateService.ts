@@ -134,6 +134,17 @@ export const adminMailTemplateService = {
       .then(data),
 };
 
+/** Batches that belong to no Workspace (admin broadcasts and agency mail). */
+export const adminMailBatchService = {
+  list: (params: { status?: string; page?: number; size?: number }) =>
+    api.get<ApiResponse<PageOf<MailBatch>>>("/api/v1/admin/mail-batches", { params }).then(data),
+  get: (id: string, params: { status?: string; page?: number; size?: number }) =>
+    api.get<ApiResponse<MailBatchDetail>>(`/api/v1/admin/mail-batches/${id}`, { params }).then(data),
+  cancel: (id: string) => api.post(`/api/v1/admin/mail-batches/${id}/cancel`),
+  resendFailed: (id: string) =>
+    api.post<ApiResponse<{ requeued: number }>>(`/api/v1/admin/mail-batches/${id}/resend-failed`).then(data),
+};
+
 export const agencyMailTemplateService = {
   list: (agencyId: string, params: { q?: string; page?: number; size?: number }) =>
     api

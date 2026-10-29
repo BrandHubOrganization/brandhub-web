@@ -324,6 +324,7 @@
     "utilities": "Tiện ích quản trị",
     "planned": "Chưa sẵn sàng",
     "mailTemplates": "Mẫu email hệ thống",
+    "mailBatches": "Đợt gửi email hệ thống",
     "invoices": "Lịch sử thanh toán",
     "workspaceTemplates": "Mẫu Workspace"
   },

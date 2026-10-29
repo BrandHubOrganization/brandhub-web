@@ -138,6 +138,7 @@
   "admin": {
     "title": "Mẫu email hệ thống",
     "description": "Thư viện mẫu dùng chung: Workspace có thể sao chép, Admin dùng khi soạn thông báo.",
+    "batchesDescription": "Tiến độ các đợt gửi broadcast của admin và mail agency. Huỷ đợt đã hẹn giờ hoặc gửi lại các mail lỗi.",
     "create": "Tạo mẫu hệ thống"
   },
   "errors": {

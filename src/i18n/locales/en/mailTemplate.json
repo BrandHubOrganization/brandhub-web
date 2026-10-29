@@ -138,6 +138,7 @@
   "admin": {
     "title": "System mail templates",
     "description": "Shared library: Workspaces can clone them and Admins use them when composing notifications.",
+    "batchesDescription": "Progress of admin broadcasts and agency mail. Cancel a scheduled batch or resend the failed ones.",
     "create": "Create system template"
   },
   "errors": {

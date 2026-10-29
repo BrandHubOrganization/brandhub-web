@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
 import { AdminModerationPanel } from "@/pages/admin/components/AdminModerationPanel";
 import { AdminNotificationsPanel } from "@/pages/admin/components/AdminNotificationsPanel";
+import { AdminMailBatchesPanel } from "@/pages/admin/components/AdminMailBatchesPanel";
 import { AdminMailTemplatesPanel } from "@/pages/admin/components/AdminMailTemplatesPanel";
 import { AdminReportForm } from "@/pages/admin/components/AdminReportExport";
 import { presetRange } from "@/services/adminRevenueService";
@@ -26,6 +27,7 @@ const views = [
   "revenue",
   "email",
   "mailTemplates",
+  "mailBatches",
   "reports",
   "trendReplay",
   "trends",
@@ -42,6 +44,7 @@ const descriptions: Record<string, string> = {
   trends: "admin.trends.description",
   trendGraph: "admin.trendGraph.description",
   mailTemplates: "mailTemplate.admin.description",
+  mailBatches: "mailTemplate.admin.batchesDescription",
   reports: "admin.reports.description",
   moderation: "admin.moderation.description",
 };
@@ -88,6 +91,8 @@ export function AdminPage() {
           <AdminNotificationsPanel />
         ) : view === "mailTemplates" ? (
           <AdminMailTemplatesPanel />
+        ) : view === "mailBatches" ? (
+          <AdminMailBatchesPanel />
         ) : view === "reports" ? (
           <section className="bg-card border-border max-w-2xl rounded-xl border p-5 lg:p-6">
             <AdminReportForm

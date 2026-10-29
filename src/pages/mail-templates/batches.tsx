@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Download, RotateCcw } from "lucide-react";
@@ -19,7 +19,18 @@ import { errorCode } from "@/services/adminRevenueService";
 import { mailTemplateService } from "./services/mailTemplateService";
 import { BATCH_STATUSES, type MailBatch, type MailBatchDetail, type PageOf } from "./types";
 
-function Panel({ workspaceId }: { workspaceId: string }) {
+/** What the panel needs from a backend; the workspace and the Admin console supply their own endpoints. */
+export interface BatchApi {
+  list: (params: { status?: string; page?: number; size?: number }) => Promise<PageOf<MailBatch>>;
+  get: (id: string, params: { size?: number }) => Promise<MailBatchDetail>;
+  cancel: (id: string) => Promise<unknown>;
+  resendFailed: (id: string) => Promise<{ requeued: number }>;
+  /** Omitted when the endpoint has no CSV export (the Admin console). */
+  exportCsv?: (id: string) => Promise<Blob>;
+}
+
+/** Shared by the workspace history page and the Admin console's system batches. */
+export function BatchesPanel({ api, backTo }: { api: BatchApi; backTo?: string }) {
   const { t, i18n } = useTranslation();
   const [status, setStatus] = useState("");
   const [page, setPage] = useState(0);
@@ -34,13 +45,13 @@ function Panel({ workspaceId }: { workspaceId: string }) {
       setFailed(false);
     }
     try {
-      setData(await mailTemplateService.batches(workspaceId, { status: status || undefined, page, size: 20 }));
+      setData(await api.list({ status: status || undefined, page, size: 20 }));
     } catch {
       if (!silent) setFailed(true);
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [workspaceId, status, page]);
+  }, [api, status, page]);
 
   useEffect(() => { void load(); }, [load]);
 
@@ -54,17 +65,17 @@ function Panel({ workspaceId }: { workspaceId: string }) {
     const timer = window.setInterval(() => {
       void load(true);
       if (detailId) {
-        mailTemplateService.batch(workspaceId, detailId, { size: 100 }).then(setDetail).catch(() => undefined);
+        api.get(detailId, { size: 100 }).then(setDetail).catch(() => undefined);
       }
     }, 5000);
     return () => window.clearInterval(timer);
-  }, [running, load, detailId, workspaceId]);
+  }, [running, load, detailId, api]);
 
   const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString(i18n.language) : "—");
 
   const open = async (batch: MailBatch) => {
     try {
-      setDetail(await mailTemplateService.batch(workspaceId, batch.id, { size: 100 }));
+      setDetail(await api.get(batch.id, { size: 100 }));
     } catch {
       toast.error(t("mailTemplate.errors.generic"));
     }
@@ -72,7 +83,7 @@ function Panel({ workspaceId }: { workspaceId: string }) {
 
   const cancel = async (batch: MailBatch) => {
     try {
-      await mailTemplateService.cancelBatch(workspaceId, batch.id);
+      await api.cancel(batch.id);
       toast.success(t("mailTemplate.batches.cancelled"));
       setDetail(null);
       void load();
@@ -83,9 +94,9 @@ function Panel({ workspaceId }: { workspaceId: string }) {
 
   const resend = async (batch: MailBatch) => {
     try {
-      const r = await mailTemplateService.resendFailed(workspaceId, batch.id);
+      const r = await api.resendFailed(batch.id);
       toast.success(t("mailTemplate.batches.resendDone", { count: r.requeued }));
-      setDetail(await mailTemplateService.batch(workspaceId, batch.id, { size: 100 }));
+      setDetail(await api.get(batch.id, { size: 100 }));
       void load(true);
     } catch (e) {
       toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
@@ -94,7 +105,8 @@ function Panel({ workspaceId }: { workspaceId: string }) {
 
   const exportCsv = async (batch: MailBatch) => {
     try {
-      const blob = await mailTemplateService.exportBatchCsv(workspaceId, batch.id);
+      if (!api.exportCsv) return;
+      const blob = await api.exportCsv(batch.id);
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -111,9 +123,11 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
-        <Button asChild variant="outline">
-          <Link to={`/workspaces/${workspaceId}/mail-templates`}><ArrowLeft className="size-4" />{t("mailTemplate.batches.back")}</Link>
-        </Button>
+        {backTo && (
+          <Button asChild variant="outline">
+            <Link to={backTo}><ArrowLeft className="size-4" />{t("mailTemplate.batches.back")}</Link>
+          </Button>
+        )}
         <div className="w-48">
           <Select aria-label={t("mailTemplate.batches.status")} value={status}
             onChange={(e) => { setPage(0); setStatus(e.target.value); }}>
@@ -189,10 +203,12 @@ function Panel({ workspaceId }: { workspaceId: string }) {
                     {t("mailTemplate.batches.resendFailed", { count: detail.batch.failed })}
                   </Button>
                 )}
-                <Button variant="outline" onClick={() => void exportCsv(detail.batch)}>
-                  <Download className="size-4" />
-                  {t("mailTemplate.batches.exportCsv")}
-                </Button>
+                {api.exportCsv && (
+                  <Button variant="outline" onClick={() => void exportCsv(detail.batch)}>
+                    <Download className="size-4" />
+                    {t("mailTemplate.batches.exportCsv")}
+                  </Button>
+                )}
               </div>
               <ul className="divide-y text-sm" aria-label={t("mailTemplate.batches.recipients")}>
                 {detail.deliveries.content.map((d) => (
@@ -213,12 +229,24 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   );
 }
 
+function workspaceApi(workspaceId: string): BatchApi {
+  return {
+    list: (params) => mailTemplateService.batches(workspaceId, params),
+    get: (id, params) => mailTemplateService.batch(workspaceId, id, params),
+    cancel: (id) => mailTemplateService.cancelBatch(workspaceId, id),
+    resendFailed: (id) => mailTemplateService.resendFailed(workspaceId, id),
+    exportCsv: (id) => mailTemplateService.exportBatchCsv(workspaceId, id),
+  };
+}
+
 export default function MailBatchesPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
+  // One stable api object per workspace so the panel's effects do not re-run on every render.
+  const api = useMemo(() => (id ? workspaceApi(id) : null), [id]);
   return (
     <PageWrapper title={t("mailTemplate.batches.title")} description={t("mailTemplate.batches.subtitle")}>
-      {id && <Panel key={id} workspaceId={id} />}
+      {id && api && <BatchesPanel key={id} api={api} backTo={`/workspaces/${id}/mail-templates`} />}
     </PageWrapper>
   );
 }

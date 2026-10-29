@@ -324,6 +324,7 @@
     "utilities": "Admin tools",
     "planned": "Not ready yet",
     "mailTemplates": "System mail templates",
+    "mailBatches": "System mail batches",
     "invoices": "Payment history",
     "workspaceTemplates": "Workspace templates"
   },
