@@ -34,6 +34,7 @@
     "totalWorkspaces": "Total Workspaces"
   },
   "detail": {
+    "notFound": "Agency not found or could not be loaded.",
     "title": "Agency Profile",
     "description": "View and update your agency information.",
     "backToProfile": "Back to agency profile",

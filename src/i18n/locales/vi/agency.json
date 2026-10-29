@@ -34,6 +34,7 @@
     "totalWorkspaces": "Tổng Workspace"
   },
   "detail": {
+    "notFound": "Không tìm thấy công ty hoặc không tải được dữ liệu.",
     "title": "Hồ sơ công ty",
     "description": "Xem và cập nhật thông tin công ty.",
     "backToProfile": "Quay lại hồ sơ công ty",
