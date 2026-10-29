@@ -380,7 +380,7 @@ export function ContentWritingPage() {
       {captionOpen && workspaceId && (
         <AiCaptionDialog
           workspaceId={workspaceId}
-          initialTopic={previewText}
+          initialTopic={publishText}
           taskId={taskId}
           onInsert={(pick) => editorRef.current?.insertText(pick.text)}
           onReplace={(pick) => replaceContent(pick.text)}
