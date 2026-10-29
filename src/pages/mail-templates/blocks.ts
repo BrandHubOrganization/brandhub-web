@@ -68,6 +68,12 @@ export function parseLayout(json: string | null | undefined): MailLayout {
     const raw = JSON.parse(json) as { blocks?: unknown };
     if (!Array.isArray(raw.blocks)) return emptyLayout();
     const blocks = raw.blocks
+      // The server accepts either case for the type name; the builder works with lowercase.
+      .map((b) =>
+        b && typeof b === "object" && typeof (b as MailBlock).type === "string"
+          ? { ...(b as MailBlock), type: (b as MailBlock).type.toLowerCase() as BlockType }
+          : b,
+      )
       .filter(
         (b): b is MailBlock =>
           !!b &&
