@@ -1,7 +1,7 @@
 import type { Recipient } from "./types";
 
 /** Supplied by the system when sending; never asked from the user. */
-export const BUILT_IN_VARIABLES = ["workspaceName", "senderName"];
+export const BUILT_IN_VARIABLES = ["workspaceName", "senderName", "ctaSiteUrl", "ctaCampaignUrl", "ctaClientUrl"];
 export const MAX_RECIPIENTS = 200;
 const VARIABLE = /\{\{\s*([A-Za-z0-9_]+)\s*\}\}/g;
 const EMAIL = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
@@ -147,7 +147,14 @@ export function htmlToPlainText(html: string): string {
 }
 
 const KNOWN_VARIABLES = ["name", "workspaceName", "senderName", "clientName", "company", "campaign"];
-const SAMPLE_VALUES: Record<string, string> = { name: "An", workspaceName: "Your Workspace", senderName: "You" };
+const SAMPLE_VALUES: Record<string, string> = {
+  name: "An",
+  workspaceName: "Your Workspace",
+  senderName: "You",
+  ctaSiteUrl: "#",
+  ctaCampaignUrl: "#",
+  ctaClientUrl: "#",
+};
 
 export function escapeHtml(value: string): string {
   return value
