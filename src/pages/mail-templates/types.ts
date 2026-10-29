@@ -108,6 +108,10 @@ export interface MailBatch {
   completedAt: string | null;
   sentBy: string;
   senderName: string | null;
+  /** Set for batches that belong to no Workspace (Admin console). */
+  scope?: string | null;
+  agencyId?: string | null;
+  agencyName?: string | null;
 }
 
 export interface MailDelivery {

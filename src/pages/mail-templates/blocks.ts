@@ -22,18 +22,29 @@ export interface MailBlock {
   props: BlockProps;
 }
 
+export const MAIL_LOCALES = ["vi", "en"] as const;
+export type MailLocale = (typeof MAIL_LOCALES)[number];
+
 export interface MailLayout {
   version: 1;
+  /** Language of the fixed lines (contact strip, footer); the server treats a missing value as Vietnamese. */
+  locale?: MailLocale;
   blocks: MailBlock[];
 }
 
 export const CTA_URL_TYPES = ["site", "campaign", "client", "custom"] as const;
 
-export const SCOPES_BY_AUDIENCE: Record<"workspace" | "admin" | "agency", MailTemplateScope[]> = {
+export const SCOPES_BY_AUDIENCE: Record<
+  "workspace" | "admin" | "agency",
+  MailTemplateScope[]
+> = {
   workspace: ["WORKSPACE_MANAGER", "CAMPAIGN_BROADCAST"],
   admin: ["ADMIN_SYSTEM_BROADCAST", "TRANSACTIONAL_AUTO"],
   agency: ["AGENCY_INTERNAL", "AGENCY_CLIENT"],
 };
+
+/** Scopes of mail that belongs to no Workspace, for the Admin batch filter. */
+export const SYSTEM_BATCH_SCOPES = ["ADMIN_SYSTEM_BROADCAST", "TRANSACTIONAL_AUTO", "AGENCY_INTERNAL", "AGENCY_CLIENT"] as const;
 
 const DEFAULT_PROPS: Record<BlockType, BlockProps> = {
   header: {},
@@ -62,9 +73,15 @@ export function emptyLayout(): MailLayout {
 export function parseLayout(json: string | null | undefined): MailLayout {
   if (!json) return emptyLayout();
   try {
-    const raw = JSON.parse(json) as { blocks?: unknown };
+    const raw = JSON.parse(json) as { blocks?: unknown; locale?: unknown };
     if (!Array.isArray(raw.blocks)) return emptyLayout();
     const blocks = raw.blocks
+      // The server accepts either case for the type name; the builder works with lowercase.
+      .map((b) =>
+        b && typeof b === "object" && typeof (b as MailBlock).type === "string"
+          ? { ...(b as MailBlock), type: (b as MailBlock).type.toLowerCase() as BlockType }
+          : b,
+      )
       .filter(
         (b): b is MailBlock =>
           !!b &&
@@ -72,24 +89,38 @@ export function parseLayout(json: string | null | undefined): MailLayout {
           typeof (b as MailBlock).id === "string" &&
           (BLOCK_TYPES as readonly string[]).includes((b as MailBlock).type),
       )
-      .map((b) => ({ ...b, props: { ...DEFAULT_PROPS[b.type], ...(b.props ?? {}) } }));
-    return { version: 1, blocks };
+      .map((b) => ({
+        ...b,
+        props: { ...DEFAULT_PROPS[b.type], ...(b.props ?? {}) },
+      }));
+    const locale = (MAIL_LOCALES as readonly string[]).includes((raw as { locale?: string }).locale ?? "")
+      ? ((raw as { locale?: string }).locale as MailLocale)
+      : undefined;
+    return { version: 1, ...(locale ? { locale } : {}), blocks };
   } catch {
     return emptyLayout();
   }
 }
 
 export function serializeLayout(layout: MailLayout): string {
-  return JSON.stringify({ version: 1, blocks: layout.blocks });
+  return JSON.stringify({ version: 1, locale: layout.locale ?? "vi", blocks: layout.blocks });
 }
 
-export function insertBlock(blocks: MailBlock[], block: MailBlock, index: number): MailBlock[] {
+export function insertBlock(
+  blocks: MailBlock[],
+  block: MailBlock,
+  index: number,
+): MailBlock[] {
   const at = Math.max(0, Math.min(index, blocks.length));
   return [...blocks.slice(0, at), block, ...blocks.slice(at)];
 }
 
 /** `to` is the final index of the moved block; out-of-range values are clamped. */
-export function moveBlock(blocks: MailBlock[], from: number, to: number): MailBlock[] {
+export function moveBlock(
+  blocks: MailBlock[],
+  from: number,
+  to: number,
+): MailBlock[] {
   if (from < 0 || from >= blocks.length) return blocks;
   const target = Math.max(0, Math.min(to, blocks.length - 1));
   if (target === from) return blocks;
@@ -103,12 +134,19 @@ export function removeBlock(blocks: MailBlock[], id: string): MailBlock[] {
   return blocks.filter((b) => b.id !== id);
 }
 
-export function updateBlockProps(blocks: MailBlock[], id: string, patch: BlockProps): MailBlock[] {
-  return blocks.map((b) => (b.id === id ? { ...b, props: { ...b.props, ...patch } } : b));
+export function updateBlockProps(
+  blocks: MailBlock[],
+  id: string,
+  patch: BlockProps,
+): MailBlock[] {
+  return blocks.map((b) =>
+    b.id === id ? { ...b, props: { ...b.props, ...patch } } : b,
+  );
 }
 
 const isHttp = (url: string) => /^https?:\/\//i.test(url.trim());
-const blank = (v: string | number | undefined) => typeof v !== "string" || !v.trim();
+const blank = (v: string | number | undefined) =>
+  typeof v !== "string" || !v.trim();
 
 /** Mirrors backend MailBlockRenderer.validateBlock; returns an i18n key suffix per failing block id. */
 export function validateBlocks(blocks: MailBlock[]): Record<string, string> {
@@ -120,9 +158,11 @@ export function validateBlocks(blocks: MailBlock[]): Record<string, string> {
         if (blank(props.text)) errors[id] = "textRequired";
         break;
       case "image_banner":
-        if (blank(props.imageUrl) || blank(props.imageAlt)) errors[id] = "imageRequired";
+        if (blank(props.imageUrl) || blank(props.imageAlt))
+          errors[id] = "imageRequired";
         else if (!isHttp(String(props.imageUrl))) errors[id] = "urlHttp";
-        else if (!blank(props.linkUrl) && !isHttp(String(props.linkUrl))) errors[id] = "urlHttp";
+        else if (!blank(props.linkUrl) && !isHttp(String(props.linkUrl)))
+          errors[id] = "urlHttp";
         break;
       case "cta_button":
         if (blank(props.label)) errors[id] = "labelRequired";
@@ -132,7 +172,12 @@ export function validateBlocks(blocks: MailBlock[]): Record<string, string> {
         }
         break;
       case "spacer":
-        if (typeof props.heightPx !== "number" || props.heightPx < 0) errors[id] = "heightInvalid";
+        if (
+          typeof props.heightPx !== "number" ||
+          props.heightPx < 0 ||
+          props.heightPx > 200
+        )
+          errors[id] = "heightInvalid";
         break;
       default:
         break;
@@ -149,32 +194,55 @@ const esc = (v: unknown) =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
-/** Client-side approximation of the server render, for the live preview only. Every value is escaped. */
-export function renderLayoutPreview(blocks: MailBlock[]): string {
-  return blocks
-    .map(({ type, props }) => {
-      switch (type) {
-        case "header":
-          return '<div style="padding:12px 0;font-weight:600">Logo</div>';
-        case "heading":
-          return `<h2 style="text-align:${props.align === "center" ? "center" : "left"}">${esc(props.text)}</h2>`;
-        case "paragraph":
-          return `<p style="white-space:pre-wrap">${esc(props.text)}</p>`;
-        case "image_banner":
-          return isHttp(String(props.imageUrl ?? ""))
-            ? `<img src="${esc(props.imageUrl)}" alt="${esc(props.imageAlt)}" style="max-width:100%"/>`
-            : "";
-        case "cta_button":
-          return `<p><span style="display:inline-block;padding:10px 18px;background:#f05a28;color:#fff;border-radius:6px">${esc(props.label)}</span></p>`;
-        case "divider":
-          return "<hr/>";
-        case "spacer":
-          return `<div style="height:${Math.max(0, Number(props.heightPx) || 0)}px"></div>`;
-        case "contact_strip":
-          return '<div style="padding:8px 0;color:#666;font-size:12px">Contact</div>';
-        case "footer":
-          return '<div style="padding:8px 0;color:#999;font-size:12px">Footer</div>';
-      }
-    })
+const FONT = "-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+const ACCENT = "#f05a28";
+
+/** One block as the server renders it (MailBlockRenderer): inline styles only, every value escaped. */
+function previewBlock(type: BlockType, props: BlockProps, locale: MailLocale): string {
+  switch (type) {
+    case "header":
+      return `<div style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${ACCENT}">{{workspaceName}}</div>`;
+    case "heading":
+      return `<h2 style="margin:0;font-size:24px;line-height:1.3;font-weight:700;color:#18181b;text-align:${props.align === "center" || props.align === "right" ? props.align : "left"}">${esc(props.text)}</h2>`;
+    case "paragraph":
+      return `<p style="margin:0;font-size:15px;line-height:1.65;color:#3f3f46;white-space:pre-wrap">${esc(props.text)}</p>`;
+    case "image_banner":
+      return isHttp(String(props.imageUrl ?? ""))
+        ? `<img src="${esc(props.imageUrl)}" alt="${esc(props.imageAlt)}" width="536" style="display:block;width:100%;max-width:100%;height:auto;border:0;border-radius:6px"/>`
+        : "";
+    case "cta_button":
+      return `<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background:${ACCENT};border-radius:6px"><span style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;line-height:1.2;color:#ffffff">${esc(props.label)}</span></td></tr></table>`;
+    case "divider":
+      return '<div style="height:1px;line-height:1px;font-size:1px;background:#e4e4e7">&nbsp;</div>';
+    case "spacer": {
+      const px = Math.max(0, Number(props.heightPx) || 0);
+      return `<div style="height:${px}px;line-height:${px}px;font-size:1px">&nbsp;</div>`;
+    }
+    case "contact_strip":
+      return `<div style="background:#fafafa;border:1px solid #e4e4e7;border-radius:6px;padding:14px 16px;font-size:13px;line-height:1.6;color:#52525b">${locale === "en" ? "Contact" : "Liên hệ / Contact"}: <strong style="color:#18181b">{{senderName}}</strong> · {{workspaceName}}</div>`;
+    case "footer":
+      return `<div style="padding-top:8px;font-size:12px;line-height:1.6;color:#71717a;text-align:center">${locale === "en" ? "Sent by {{workspaceName}} via BrandHub." : "Email được gửi từ {{workspaceName}} qua BrandHub."}</div>`;
+  }
+}
+
+/**
+ * Client-side mirror of the server render, for the live preview only: the same email-safe frame (600px card, accent
+ * border, inline styles). `{{workspaceName}}` and `{{senderName}}` are filled with sample values by the preview frame.
+ */
+export function renderLayoutPreview(blocks: MailBlock[], locale: MailLocale = "vi"): string {
+  const rows = blocks
+    .map(
+      ({ type, props }) =>
+        `<tr><td class="mail-block mail-block-${type}" style="padding:${type === "header" ? "12px 32px 4px" : "10px 32px"}">${previewBlock(type, props, locale)}</td></tr>`,
+    )
     .join("");
+  const gap = '<tr><td style="height:12px;line-height:12px;font-size:1px">&nbsp;</td></tr>';
+  return (
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:24px 12px"><tr><td align="center">' +
+    `<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:#ffffff;border-top:4px solid ${ACCENT};font-family:${FONT};color:#18181b">` +
+    gap +
+    rows +
+    gap +
+    "</table></td></tr></table>"
+  );
 }

@@ -98,24 +98,47 @@ export function usePostDashboard(workspaceId: string) {
     [setSearchParams],
   );
 
-  const fetchDashboardData = useCallback(async () => {
-    if (!workspaceId) return;
-    setIsLoading(true);
-    setIsError(false);
-    try {
-      const result = await postDashboardService.getDashboard(workspaceId, filters);
-      setData(result);
-    } catch (err) {
-      console.error("Failed to fetch post dashboard data:", err);
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [workspaceId, filters]);
+  const fetchDashboardData = useCallback(
+    async (silent = false) => {
+      if (!workspaceId) return;
+      if (!silent) {
+        setIsLoading(true);
+        setIsError(false);
+      }
+      try {
+        const result = await postDashboardService.getDashboard(
+          workspaceId,
+          filters,
+        );
+        setData(result);
+      } catch (err) {
+        console.error("Failed to fetch post dashboard data:", err);
+        if (!silent) setIsError(true);
+      } finally {
+        if (!silent) setIsLoading(false);
+      }
+    },
+    [workspaceId, filters],
+  );
 
   useEffect(() => {
     fetchDashboardData();
   }, [fetchDashboardData]);
+
+  // Auto-poll silently every 4s if any post is IN_PROGRESS
+  useEffect(() => {
+    const hasInProgress =
+      (data?.kpis?.inProgressCount ?? 0) > 0 ||
+      (data?.recentPosts?.some((p) => p.status === "IN_PROGRESS") ?? false);
+
+    if (!hasInProgress) return;
+
+    const interval = setInterval(() => {
+      fetchDashboardData(true);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [data?.kpis?.inProgressCount, data?.recentPosts, fetchDashboardData]);
 
   return {
     data,
@@ -123,6 +146,6 @@ export function usePostDashboard(workspaceId: string) {
     isError,
     filters,
     updateFilters,
-    refetch: fetchDashboardData,
+    refetch: () => fetchDashboardData(false),
   };
 }

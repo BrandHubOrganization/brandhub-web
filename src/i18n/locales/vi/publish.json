@@ -67,13 +67,26 @@
     "platforms": {
       "title": "Phân bổ theo nền tảng",
       "subtitle": "Tỷ trọng phân phối nội dung",
-      "ALL": "Tất cả nền tảng"
+      "performanceTitle": "Hiệu quả theo Kênh xuất bản",
+      "performanceSubtitle": "Lượt tiếp cận theo từng nền tảng trong 30 ngày qua",
+      "totalPostsFooter": "TỔNG BÀI ĐĂNG",
+      "totalReachFooter": "TỔNG TIẾP CẬN",
+      "totalEngagementsFooter": "TỔNG TƯƠNG TÁC",
+      "ALL": "Tất cả nền tảng",
+      "note": "Facebook và Instagram đang chiếm trên 75% lượng nội dung phân phối."
     },
     "statusFilters": {
       "ALL": "Tất cả trạng thái",
       "IN_PROGRESS": "Đang xử lý"
     },
     "kpi": {
+      "reach": "LƯỢT TIẾP CẬN",
+      "engagements": "TƯƠNG TÁC",
+      "posts": "BÀI ĐĂNG",
+      "responseRate": "TỶ LỆ PHẢN HỒI",
+      "vsLastMonth": "So với tháng trước",
+      "sameAsLastMonth": "Bằng với tháng trước",
+      "goodImprovement": "Cải thiện tốt",
       "totalPosts": "Tổng bài viết",
       "totalPostsDesc": "Bao gồm tất cả bài đăng trong workspace",
       "successRate": "Tỷ lệ xuất bản thành công",
@@ -84,7 +97,15 @@
     },
     "trends": {
       "title": "Xu hướng đăng bài theo thời gian",
-      "subtitle": "Thống kê số lượng bài đăng thành công và lên lịch"
+      "subtitle": "Thống kê số lượng bài đăng thành công và lên lịch",
+      "performanceTitle": "Hiệu suất tương tác theo thời gian",
+      "performanceSubtitle": "Tổng hợp lượt tương tác, hiển thị và lượt nhấp từ các bài đăng",
+      "impressions": "Lượt hiển thị",
+      "engagements": "Lượt tương tác",
+      "clicks": "Lượt nhấp",
+      "legendImpressions": "Lượt hiển thị",
+      "legendEngagements": "Lượt tương tác",
+      "legendClicks": "Lượt nhấp"
     },
     "recentPosts": {
       "title": "Hoạt động xuất bản gần đây",
@@ -93,5 +114,42 @@
     "noPostsFound": "Không tìm thấy bài viết nào",
     "noPostsFoundDesc": "Không có bài viết nào phù hợp với bộ lọc hiện tại. Thử thay đổi điều kiện lọc hoặc tạo bài viết mới.",
     "createPostNow": "Tạo bài viết ngay"
+  },
+  "detail": {
+    "title": "Chi tiết bài viết",
+    "breadcrumb": "Chi tiết bài viết",
+    "subtitle": "Thống kê hiệu quả tương tác thực tế và bình luận từ nền tảng mạng xã hội.",
+    "backToDashboard": "Quay lại Bảng điều khiển",
+    "loadError": "Không thể tải chi tiết bài viết.",
+    "viewOnPlatform": "Mở trên MXH",
+    "editDraft": "Chỉnh sửa bài viết",
+    "captionTitle": "Nội dung bài viết",
+    "noCaption": "Không có nội dung mô tả",
+    "mediaTitle": "Hình ảnh / Video đính kèm",
+    "noMedia": "Không có hình ảnh đính kèm",
+    "commentsTitle": "Bình luận từ Mạng xã hội",
+    "noComments": "Chưa có bình luận nào trên bài viết.",
+    "platformFailedTitle": "Đăng bài lên {{platform}} thất bại",
+    "platformFailedDesc": "Không thể xuất bản lên nền tảng này. Vui lòng kiểm tra kết nối tài khoản hoặc thử lại.",
+    "metrics": {
+      "title": "Hiệu suất tương tác thực tế",
+      "lastSynced": "Cập nhật lần cuối: ",
+      "syncNow": "Đồng bộ số liệu",
+      "likes": "Lượt cảm xúc",
+      "comments": "Bình luận",
+      "shares": "Chia sẻ",
+      "impressions": "Hiển thị",
+      "reach": "Tiếp cận",
+      "clicks": "Lượt nhấp",
+      "reactionBreakdown": "Phân bổ cảm xúc thực tế",
+      "reactions": {
+        "like": "Thích",
+        "love": "Yêu thích",
+        "haha": "Haha",
+        "wow": "Wow",
+        "sad": "Buồn",
+        "angry": "Phẫn nộ"
+      }
+    }
   }
 }

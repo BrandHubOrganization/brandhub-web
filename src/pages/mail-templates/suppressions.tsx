@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
@@ -11,32 +11,39 @@ import { errorCode } from "@/services/adminRevenueService";
 import { mailTemplateService } from "./services/mailTemplateService";
 import type { MailSuppression, PageOf } from "./types";
 
-function Panel({ workspaceId }: { workspaceId: string }) {
+/** What the panel needs from a backend: the workspace, an agency and the Admin console each supply their own. */
+export interface SuppressionApi {
+  list: (params: { q?: string; page?: number; size?: number }) => Promise<PageOf<MailSuppression>>;
+  remove: (email: string) => Promise<unknown>;
+}
+
+/** The unsubscribe list of one scope; re-subscribing is audited by the server. */
+export function SuppressionsPanel({ api, backTo }: { api: SuppressionApi; backTo?: string }) {
   const { t, i18n } = useTranslation();
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
   const [data, setData] = useState<PageOf<MailSuppression> | null>(null);
   const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<"forbidden" | "failed" | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
-    setFailed(false);
+    setFailed(null);
     try {
-      setData(await mailTemplateService.suppressions(workspaceId, { q: query || undefined, page, size: 20 }));
-    } catch {
-      setFailed(true);
+      setData(await api.list({ q: query || undefined, page, size: 20 }));
+    } catch (e) {
+      setFailed(/FORBIDDEN$/.test(errorCode(e) ?? "") ? "forbidden" : "failed");
     } finally {
       setLoading(false);
     }
-  }, [workspaceId, query, page]);
+  }, [api, query, page]);
 
   useEffect(() => { void load(); }, [load]);
 
   const resubscribe = async (row: MailSuppression) => {
     if (!window.confirm(t("mailTemplate.suppressions.confirm", { email: row.email }))) return;
     try {
-      await mailTemplateService.resubscribe(workspaceId, row.email);
+      await api.remove(row.email);
       toast.success(t("mailTemplate.suppressions.done"));
       void load();
     } catch (e) {
@@ -47,17 +54,19 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
-        <Button asChild variant="outline">
-          <Link to={`/workspaces/${workspaceId}/mail-templates`}><ArrowLeft className="size-4" />{t("mailTemplate.batches.back")}</Link>
-        </Button>
+        {backTo && (
+          <Button asChild variant="outline">
+            <Link to={backTo}><ArrowLeft className="size-4" />{t("mailTemplate.batches.back")}</Link>
+          </Button>
+        )}
         <Input aria-label={t("mailTemplate.suppressions.search")} placeholder={t("mailTemplate.suppressions.search")}
           className="w-full sm:w-72" value={query} onChange={(e) => { setPage(0); setQuery(e.target.value); }} />
       </div>
       {loading && <Spinner />}
       {failed && (
         <div role="alert" className="space-y-2">
-          <p>{t("mailTemplate.error")}</p>
-          <Button onClick={() => void load()}>{t("mailTemplate.retry")}</Button>
+          <p>{t(failed === "forbidden" ? "mailTemplate.suppressions.forbidden" : "mailTemplate.suppressions.loadFailed")}</p>
+          {failed === "failed" && <Button onClick={() => void load()}>{t("mailTemplate.retry")}</Button>}
         </div>
       )}
       {!loading && !failed && data && data.content.length === 0 && (
@@ -94,9 +103,17 @@ function Panel({ workspaceId }: { workspaceId: string }) {
 export default function MailSuppressionsPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
+  // One stable api object per workspace so the panel effects do not re-run on every render.
+  const api = useMemo<SuppressionApi | null>(
+    () => (id ? {
+      list: (params) => mailTemplateService.suppressions(id, params),
+      remove: (email) => mailTemplateService.resubscribe(id, email),
+    } : null),
+    [id],
+  );
   return (
     <PageWrapper title={t("mailTemplate.suppressions.title")} description={t("mailTemplate.suppressions.subtitle")}>
-      {id && <Panel key={id} workspaceId={id} />}
+      {id && api && <SuppressionsPanel key={id} api={api} backTo={`/workspaces/${id}/mail-templates`} />}
     </PageWrapper>
   );
 }

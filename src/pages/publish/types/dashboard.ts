@@ -1,10 +1,15 @@
 import type { Platform, PostStatus } from "@/types/post";
 
 export interface PostKpiStats {
+  totalReach?: number;
+  reachGrowth?: number;
+  totalEngagements?: number;
+  engagementsGrowth?: number;
   totalPosts: number;
-  totalPostsGrowth: number; // percentage, e.g. +12.5%
+  totalPostsGrowth: number;
+  successRate: number;
+  successRateGrowth?: number;
   scheduledCount: number;
-  successRate: number; // percentage, e.g. 98.2%
   failedCount: number;
   inProgressCount: number;
 }
@@ -13,6 +18,8 @@ export interface PlatformMetric {
   platform: Platform;
   count: number;
   percentage: number;
+  reach?: number;
+  engagements?: number;
   successCount: number;
   failedCount: number;
 }
@@ -22,6 +29,9 @@ export interface PublishingTrendPoint {
   published: number;
   scheduled: number;
   failed: number;
+  engagements: number;
+  impressions: number;
+  clicks: number;
 }
 
 export interface RecentPostItem {
@@ -36,6 +46,7 @@ export interface RecentPostItem {
   publishedAt?: string;
   scheduledAt?: string;
   createdAt: string;
+  platformPostUrl?: string;
   errorMessage?: string;
 }
 

@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { errorCode } from "@/services/adminRevenueService";
 import type { MailAttachment, MailTemplate, MailTemplateScope, TemplatePayload } from "../types";
-import { emptyLayout, parseLayout, renderLayoutPreview, serializeLayout, validateBlocks, type MailBlock } from "../blocks";
+import { emptyLayout, MAIL_LOCALES, parseLayout, renderLayoutPreview, serializeLayout, validateBlocks, type MailBlock, type MailLocale } from "../blocks";
 import { clearDraft, loadDraft, saveDraft } from "../drafts";
 import { analyzeVariables } from "../utils";
 import { BlockBuilder } from "./BlockBuilder";
@@ -58,7 +58,9 @@ export function TemplateFormDialog({ open, template, mode, adapter, onClose, onS
   const [restored] = useState<Draft | null>(() => (resumable ? loadDraft<Draft>(draftKey!) : null));
   const [name, setName] = useState(restored?.name ?? template?.name ?? "");
   const [subject, setSubject] = useState(restored?.subject ?? template?.subject ?? "");
-  const [blocks, setBlocks] = useState<MailBlock[]>(() => parseLayout(restored?.layoutJson ?? template?.layoutJson).blocks);
+  const [initialLayout] = useState(() => parseLayout(restored?.layoutJson ?? template?.layoutJson));
+  const [blocks, setBlocks] = useState<MailBlock[]>(initialLayout.blocks);
+  const [locale, setLocale] = useState<MailLocale>(initialLayout.locale ?? "vi");
   const [scope, setScope] = useState<MailTemplateScope>(
     restored?.scope && adapter.scopes.includes(restored.scope) ? restored.scope : template?.scope ?? adapter.scopes[0],
   );
@@ -68,8 +70,8 @@ export function TemplateFormDialog({ open, template, mode, adapter, onClose, onS
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const layoutJson = useMemo(() => serializeLayout({ version: 1, blocks }), [blocks]);
-  const previewHtml = useMemo(() => renderLayoutPreview(blocks), [blocks]);
+  const layoutJson = useMemo(() => serializeLayout({ version: 1, locale, blocks }), [locale, blocks]);
+  const previewHtml = useMemo(() => renderLayoutPreview(blocks, locale), [blocks, locale]);
   const blockErrors = useMemo(() => validateBlocks(blocks), [blocks]);
   const analysis = useMemo(() => analyzeVariables(subject, previewHtml), [subject, previewHtml]);
   const dirty =
@@ -184,6 +186,16 @@ export function TemplateFormDialog({ open, template, mode, adapter, onClose, onS
               </select>
             </label>
           )}
+          <label className="block space-y-1.5 text-sm font-medium">
+            <span>{t("mailTemplate.form.locale")}</span>
+            <select className="bg-background w-full rounded border px-3 py-2 text-sm" value={locale}
+              onChange={(e) => setLocale(e.target.value as MailLocale)}>
+              {MAIL_LOCALES.map((l) => (
+                <option key={l} value={l}>{t(`mailTemplate.locales.${l}`)}</option>
+              ))}
+            </select>
+            <span className="text-muted-foreground block text-xs font-normal">{t("mailTemplate.form.localeHint")}</span>
+          </label>
           {isLegacy && (
             <p role="status" className="bg-muted/50 rounded border px-3 py-2 text-xs">{t("mailTemplate.builder.legacy")}</p>
           )}

@@ -92,7 +92,10 @@
     "noHistory": "Chưa có quyết định duyệt hoặc từ chối.",
     "loadMore": "Xem quyết định cũ hơn",
     "unknownActor": "Thành viên không gian làm việc",
-    "decisions": { "APPROVE": "Đã duyệt", "REJECT": "Đã từ chối" },
+    "decisions": {
+      "APPROVE": "Đã duyệt",
+      "REJECT": "Đã từ chối"
+    },
     "finishedHint": "Công việc đã hoàn thành. Xuất bản là thao tác riêng; quyết định này không tự đăng bài.",
     "errors": {
       "generic": "Không thể xử lý phần duyệt. Hãy tải lại để kiểm tra kết quả trước khi thử lại.",
@@ -239,7 +242,8 @@
       "assigneeId": "Người sáng tạo phụ trách",
       "qcAssigneeId": "Người kiểm tra chất lượng",
       "requiresClientApproval": "Cần khách hàng duyệt",
-      "expectedRevision": "Phiên bản công việc"
+      "expectedRevision": "Phiên bản công việc",
+      "targetPlatforms": "Kênh xuất bản mục tiêu"
     },
     "errors": {
       "generic": "Không thể thực hiện thao tác. Vui lòng thử lại.",
@@ -330,5 +334,19 @@
       "MANAGER": "Chờ quản lý duyệt",
       "CLIENT": "Chờ khách hàng duyệt"
     }
+  },
+  "fields": {
+    "targetPlatforms": "Kênh xuất bản mục tiêu",
+    "selectPlatforms": "Chọn nền tảng",
+    "platformsHelp": "Chọn các nền tảng mạng xã hội mục tiêu cho bài viết này",
+    "platformsRequired": "Vui lòng chọn ít nhất 1 nền tảng mạng xã hội",
+    "platformsUpdated": "Đã cập nhật nền tảng mục tiêu.",
+    "platformsError": "Không thể cập nhật nền tảng mục tiêu."
+  },
+  "platforms": {
+    "FACEBOOK": "Facebook",
+    "INSTAGRAM": "Instagram",
+    "TIKTOK": "TikTok",
+    "THREADS": "Threads"
   }
 }

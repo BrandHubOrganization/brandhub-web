@@ -49,17 +49,36 @@ export function FacebookMockup({ data }: MockupProps) {
         {caption}
       </p>
 
-      <div
-        className={`bg-muted w-full overflow-hidden ${config.aspectRatioClass}`}
-      >
-        {mediaSrc && (
+      {mediaUrls.length === 1 && (
+        <div
+          className={`bg-muted w-full overflow-hidden ${config.aspectRatioClass}`}
+        >
           <img
             src={mediaSrc}
             alt="Post content"
             className="h-full w-full object-cover"
           />
-        )}
-      </div>
+        </div>
+      )}
+
+      {mediaUrls.length > 1 && (
+        <div className="grid grid-cols-2 gap-0.5 bg-muted">
+          {mediaUrls.map((url, idx) => (
+            <div
+              key={`${url}-${idx}`}
+              className={`overflow-hidden ${
+                mediaUrls.length === 3 && idx === 0 ? "col-span-2 h-44" : "h-36"
+              }`}
+            >
+              <img
+                src={url}
+                alt={`Post content ${idx + 1}`}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="border-border text-muted-foreground flex items-center justify-between border-t p-3 text-xs font-medium">
         <button className="flex items-center gap-1.5 hover:text-blue-600">

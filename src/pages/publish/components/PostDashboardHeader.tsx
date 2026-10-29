@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, Calendar, Filter } from "lucide-react";
 import type { PostDashboardFilters } from "../types/dashboard";
@@ -12,6 +13,20 @@ export function PostDashboardHeader({
   onFilterChange,
 }: PostDashboardHeaderProps) {
   const { t } = useTranslation();
+  const [searchTerm, setSearchTerm] = useState(filters.search || "");
+
+  useEffect(() => {
+    setSearchTerm(filters.search || "");
+  }, [filters.search]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchTerm !== (filters.search || "")) {
+        onFilterChange({ search: searchTerm, page: 1 });
+      }
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchTerm, filters.search, onFilterChange]);
 
   return (
     <div className="bg-card border-border flex flex-wrap items-center gap-3 rounded-xl border p-3">
@@ -20,8 +35,8 @@ export function PostDashboardHeader({
         <Search className="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
         <input
           type="text"
-          value={filters.search}
-          onChange={(e) => onFilterChange({ search: e.target.value, page: 1 })}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           placeholder={t("publish.dashboard.searchPlaceholder", "Tìm theo tiêu đề, nội dung...")}
           className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:ring-ring h-9 w-full rounded-md border pl-9 pr-3 text-xs focus:outline-none focus:ring-2"
         />

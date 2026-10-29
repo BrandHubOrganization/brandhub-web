@@ -67,13 +67,26 @@
     "platforms": {
       "title": "Platform Distribution",
       "subtitle": "Content distribution breakdown",
-      "ALL": "All Platforms"
+      "performanceTitle": "Channel Publishing Efficiency",
+      "performanceSubtitle": "Reach by platform over the last 30 days",
+      "totalPostsFooter": "TOTAL POSTS",
+      "totalReachFooter": "TOTAL REACH",
+      "totalEngagementsFooter": "TOTAL ENGAGEMENTS",
+      "ALL": "All Platforms",
+      "note": "Facebook and Instagram account for over 75% of distributed content."
     },
     "statusFilters": {
       "ALL": "All Statuses",
       "IN_PROGRESS": "In Progress"
     },
     "kpi": {
+      "reach": "REACH",
+      "engagements": "ENGAGEMENTS",
+      "posts": "POSTS",
+      "responseRate": "RESPONSE RATE",
+      "vsLastMonth": "vs last month",
+      "sameAsLastMonth": "Same as last month",
+      "goodImprovement": "Good improvement",
       "totalPosts": "Total Posts",
       "totalPostsDesc": "Includes all published and scheduled posts",
       "successRate": "Publishing Success Rate",
@@ -84,7 +97,15 @@
     },
     "trends": {
       "title": "Publishing Trends Over Time",
-      "subtitle": "Published vs scheduled timeline statistics"
+      "subtitle": "Published vs scheduled timeline statistics",
+      "performanceTitle": "Social Performance Trends",
+      "performanceSubtitle": "Aggregated engagements, impressions, and clicks over time",
+      "impressions": "Impressions",
+      "engagements": "Engagements",
+      "clicks": "Clicks",
+      "legendImpressions": "Impressions",
+      "legendEngagements": "Engagements",
+      "legendClicks": "Clicks"
     },
     "recentPosts": {
       "title": "Recent Publishing Activity",
@@ -93,5 +114,42 @@
     "noPostsFound": "No posts found",
     "noPostsFoundDesc": "No posts match current filters. Try adjusting filter criteria or compose a new post.",
     "createPostNow": "Create Post Now"
+  },
+  "detail": {
+    "title": "Post Detail",
+    "breadcrumb": "Post Detail",
+    "subtitle": "Real-time engagement statistics and social media comments.",
+    "backToDashboard": "Back to Dashboard",
+    "loadError": "Failed to load post detail.",
+    "viewOnPlatform": "View on Social",
+    "editDraft": "Edit Post",
+    "captionTitle": "Post Caption",
+    "noCaption": "No caption provided",
+    "mediaTitle": "Attached Media",
+    "noMedia": "No attached media",
+    "commentsTitle": "Social Media Comments",
+    "noComments": "No comments on this post yet.",
+    "platformFailedTitle": "Publishing to {{platform}} failed",
+    "platformFailedDesc": "Could not publish to this platform. Please verify account connection or try again.",
+    "metrics": {
+      "title": "Real-time Engagement Performance",
+      "lastSynced": "Last synced: ",
+      "syncNow": "Sync Metrics",
+      "likes": "Reactions",
+      "comments": "Comments",
+      "shares": "Shares",
+      "impressions": "Impressions",
+      "reach": "Reach",
+      "clicks": "Clicks",
+      "reactionBreakdown": "Reaction Breakdown",
+      "reactions": {
+        "like": "Like",
+        "love": "Love",
+        "haha": "Haha",
+        "wow": "Wow",
+        "sad": "Sad",
+        "angry": "Angry"
+      }
+    }
   }
 }

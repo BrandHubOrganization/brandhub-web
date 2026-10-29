@@ -22,6 +22,7 @@
     "pageInfo": "Trang {{current}} / {{total}} (Tổng {{count}} dòng)"
   },
   "processing": "Đang xử lý...",
+  "detail": "Chi tiết",
   "confirmDialog": {
     "title": "Xác nhận hành động",
     "description": "Bạn có chắc chắn muốn thực hiện hành động này không?",

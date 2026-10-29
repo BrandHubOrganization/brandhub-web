@@ -26,6 +26,7 @@ import viRequests from "./locales/vi/requests.json";
 import viTemplates from "./locales/vi/templates.json";
 import viAnalytics from "./locales/vi/analytics.json";
 import viSocialAccounts from "./locales/vi/socialAccounts.json";
+import viSocial from "./locales/vi/social.json";
 import viPublish from "./locales/vi/publish.json";
 import viSubscription from "./locales/vi/subscription.json";
 import viAiStudio from "./locales/vi/aiStudio.json";
@@ -59,6 +60,7 @@ import enRequests from "./locales/en/requests.json";
 import enTemplates from "./locales/en/templates.json";
 import enAnalytics from "./locales/en/analytics.json";
 import enSocialAccounts from "./locales/en/socialAccounts.json";
+import enSocial from "./locales/en/social.json";
 import enPublish from "./locales/en/publish.json";
 import enSubscription from "./locales/en/subscription.json";
 import enAiStudio from "./locales/en/aiStudio.json";
@@ -98,6 +100,7 @@ const vi = {
   templates: viTemplates,
   analytics: viAnalytics,
   socialAccounts: viSocialAccounts,
+  social: viSocial,
   publish: viPublish,
   subscription: viSubscription,
   aiStudio: viAiStudio,
@@ -137,6 +140,7 @@ const en = {
   templates: enTemplates,
   analytics: enAnalytics,
   socialAccounts: enSocialAccounts,
+  social: enSocial,
   publish: enPublish,
   subscription: enSubscription,
   aiStudio: enAiStudio,

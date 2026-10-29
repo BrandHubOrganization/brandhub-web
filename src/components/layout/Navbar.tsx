@@ -21,6 +21,7 @@ import {
   HelpCircle,
   BookOpen,
 } from "lucide-react";
+import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -74,6 +75,7 @@ const NAV_KEY_MAP: Record<string, string> = {
   workspace: "nav.workspaceList",
   workspaces: "nav.workspaceList",
   agency: "nav.agencyList",
+  "mail-templates": "nav.mailTemplates",
   portal: "nav.portal",
   editor: "nav.editor",
   calendar: "nav.calendar",
@@ -92,6 +94,7 @@ const NAV_KEY_MAP: Record<string, string> = {
   library: "nav.library",
   "social-accounts": "nav.socialAccounts",
   publish: "nav.publish",
+  posts: "nav.publish",
   subscription: "nav.subscription",
   plans: "subscription.plans.title",
   checkout: "subscription.checkout.title",
@@ -135,7 +138,18 @@ const WORKSPACE_SECTION_ROOTS: Record<
   },
 };
 
-export interface NavbarProps {
+function getChildResourceBreadcrumbLabel(
+  prevSeg: string | undefined,
+  t: TFunction,
+): string {
+  if (prevSeg === "posts") return t("publish.detail.breadcrumb", "Chi tiết bài viết");
+  if (prevSeg === "tasks") return t("tasks.detail.breadcrumb", "Chi tiết công việc");
+  if (prevSeg === "clients") return t("clients.detail.breadcrumb", "Chi tiết khách hàng");
+  if (prevSeg === "campaigns") return t("campaign.detail.breadcrumb", "Chi tiết chiến dịch");
+  return t("common.detail", "Chi tiết");
+}
+
+interface NavbarProps {
   collapsed: boolean;
   toggleCollapsed: () => void;
   onMobileMenuOpen: () => void;
@@ -264,7 +278,13 @@ export function Navbar({
         "moderation",
         "revenue",
         "email",
+        "mailTemplates",
+        "mailBatches",
+        "mailSuppressions",
         "reports",
+        "trendReplay",
+        "trends",
+        "trendGraph",
       ].includes(requested)
         ? requested
         : "overview";
@@ -279,13 +299,12 @@ export function Navbar({
 
     const crumbs: { label: string; path: string }[] = [];
     segments.forEach((seg, idx) => {
-      const path = "/" + segments.slice(0, idx + 1).join("/");
+      let path = "/" + segments.slice(0, idx + 1).join("/");
+      const root = segments[0];
+
       if (UUID_REGEX.test(seg)) {
-        // UUID: xác định đây là agency hay workspace dựa vào segment gốc
-        const root = segments[0];
-        if (root === "workspaces") {
-          // Workspace luôn thuộc 1 agency — chèn crumb agency (có link) trước
-          // tên workspace để đi đúng phân cấp Agency → Workspace → Dashboard.
+        // Workspace UUID: chỉ ở vị trí /workspaces/:id (idx === 1)
+        if (root === "workspaces" && idx === 1) {
           const ws = workspaces.find((w) => w.id === seg);
           if (ws?.agencyId) {
             const agency = agencies.find((a) => a.id === ws.agencyId);
@@ -297,9 +316,17 @@ export function Navbar({
           crumbs.push({ label: ws?.name ?? seg, path });
           return;
         }
-        // Agency UUID
-        const entity = agencies.find((a) => a.id === seg);
-        crumbs.push({ label: entity?.name ?? seg, path });
+        // Agency UUID: chỉ ở vị trí /agency/:id (idx === 1)
+        if (root === "agency" && idx === 1) {
+          const entity = agencies.find((a) => a.id === seg);
+          crumbs.push({ label: entity?.name ?? seg, path });
+          return;
+        }
+        // Child resource UUID (e.g. /workspaces/:id/posts/:postId)
+        crumbs.push({
+          label: getChildResourceBreadcrumbLabel(segments[idx - 1], t),
+          path,
+        });
         return;
       }
       // "workspaces" root: đã được thay bằng crumb agency ở trên
@@ -316,6 +343,9 @@ export function Navbar({
       if (seg === "client" && idx === 0) {
         crumbs.push({ label: t("nav.clients"), path: "/clients" });
         return;
+      }
+      if (seg === "posts" && root === "workspaces") {
+        path = `/${segments.slice(0, idx).join("/")}/posts/dashboard`;
       }
       const navKey = NAV_KEY_MAP[seg];
       const label = navKey
@@ -413,46 +443,32 @@ export function Navbar({
           </div>
         )}
 
-        {/* Quick settings: language + theme, grouped under one menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              title={t("nav.quickSettings")}
-            >
-              {theme === "dark" ? (
-                <Moon className="size-4" />
-              ) : (
-                <Sun className="size-4" />
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44 p-1">
-            <DropdownMenuItem
-              onClick={toggleLanguage}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              <Globe className="size-3.5" />
-              <span className="flex-1">{t("nav.switchLanguage")}</span>
-              <span className="text-muted-foreground uppercase">
-                {i18n.language || "vi"}
-              </span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="cursor-pointer gap-2 text-xs"
-            >
-              {theme === "dark" ? (
-                <Sun className="size-3.5 text-amber-400" />
-              ) : (
-                <Moon className="size-3.5" />
-              )}
-              <span className="flex-1">{t("nav.toggleTheme")}</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 gap-1.5 px-2 text-xs"
+          onClick={toggleLanguage}
+          title={t("nav.switchLanguage")}
+          aria-label={t("nav.switchLanguage")}
+        >
+          <Globe className="size-4" />
+          <span className="uppercase">{i18n.language || "vi"}</span>
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          title={t("nav.toggleTheme")}
+          aria-label={t("nav.toggleTheme")}
+        >
+          {theme === "dark" ? (
+            <Sun className="size-4 text-amber-400" />
+          ) : (
+            <Moon className="size-4" />
+          )}
+        </Button>
 
         {/* Notification Bell */}
         {!isAdmin && (

@@ -1,7 +1,7 @@
 import type { Recipient } from "./types";
 
 /** Supplied by the system when sending; never asked from the user. */
-export const BUILT_IN_VARIABLES = ["workspaceName", "senderName"];
+export const BUILT_IN_VARIABLES = ["workspaceName", "senderName", "ctaSiteUrl", "ctaCampaignUrl", "ctaClientUrl"];
 export const MAX_RECIPIENTS = 200;
 const VARIABLE = /\{\{\s*([A-Za-z0-9_]+)\s*\}\}/g;
 const EMAIL = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
@@ -87,7 +87,7 @@ export interface ParsedRecipients {
 
 /**
  * Accepts either a CSV with an "email" header (extra columns become variables, "name" is the display name)
- * or a plain list of emails separated by new lines, commas, semicolons or spaces.
+ * or a plain list: one entry per line, either "email, name" or emails separated by commas, semicolons or spaces.
  */
 export function parseRecipients(text: string): ParsedRecipients {
   const rows = parseCsv(text);
@@ -120,11 +120,32 @@ export function parseRecipients(text: string): ParsedRecipients {
     }
     return { recipients, invalid };
   }
-  for (const token of text.split(/[\s,;]+/)) {
-    const email = token.trim();
-    if (!email) continue;
-    if (isEmail(email)) recipients.push({ email });
-    else invalid.push(email);
+  // No header row: one entry per line. A line with commas, semicolons or tabs is "email, name" (or several emails);
+  // a line without them may list emails separated by spaces.
+  for (const line of text.split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    if (/[,;\t]/.test(line)) {
+      let last: Recipient | null = null;
+      for (const cell of line.split(/[,;\t]+/)) {
+        const value = cell.trim();
+        if (!value) continue;
+        if (isEmail(value)) {
+          last = { email: value };
+          recipients.push(last);
+        } else if (last && !last.name) {
+          last.name = value;
+        } else {
+          invalid.push(value);
+        }
+      }
+      continue;
+    }
+    for (const token of line.split(/\s+/)) {
+      const email = token.trim();
+      if (!email) continue;
+      if (isEmail(email)) recipients.push({ email });
+      else invalid.push(email);
+    }
   }
   return { recipients, invalid };
 }
@@ -147,7 +168,14 @@ export function htmlToPlainText(html: string): string {
 }
 
 const KNOWN_VARIABLES = ["name", "workspaceName", "senderName", "clientName", "company", "campaign"];
-const SAMPLE_VALUES: Record<string, string> = { name: "An", workspaceName: "Your Workspace", senderName: "You" };
+const SAMPLE_VALUES: Record<string, string> = {
+  name: "An",
+  workspaceName: "Your Workspace",
+  senderName: "You",
+  ctaSiteUrl: "#",
+  ctaCampaignUrl: "#",
+  ctaClientUrl: "#",
+};
 
 export function escapeHtml(value: string): string {
   return value
