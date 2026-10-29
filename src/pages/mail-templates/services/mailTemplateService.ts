@@ -157,9 +157,12 @@ export const agencyMailTemplateService = {
   update: (agencyId: string, id: string, payload: TemplatePayload) =>
     api.patch<ApiResponse<MailTemplate>>(`/api/v1/agencies/${agencyId}/mail-templates/${id}`, payload).then(data),
   remove: (agencyId: string, id: string) => api.delete(`/api/v1/agencies/${agencyId}/mail-templates/${id}`),
-  recipientPreview: (agencyId: string, id: string) =>
+  /** The Owner previews the whole Agency; a Manager must name the Workspace they send from. */
+  recipientPreview: (agencyId: string, id: string, workspaceId?: string) =>
     api
-      .get<ApiResponse<RecipientPreview>>(`/api/v1/agencies/${agencyId}/mail-templates/${id}/recipient-preview`)
+      .get<ApiResponse<RecipientPreview>>(`/api/v1/agencies/${agencyId}/mail-templates/${id}/recipient-preview`, {
+        params: workspaceId ? { workspaceId } : undefined,
+      })
       .then(data),
 };
 

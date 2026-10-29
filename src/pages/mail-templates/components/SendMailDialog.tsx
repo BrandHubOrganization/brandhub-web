@@ -287,7 +287,7 @@ export function SendMailDialog({ workspaceId, open, onClose, template, agencyId:
               <div className="space-y-1.5" data-testid="agency-recipients-note">
                 <p className="text-muted-foreground text-sm">{t("mailTemplate.send.agencyRecipients")}</p>
                 {template && agencyId && (
-                  <RecipientPreviewLine load={() => agencyMailTemplateService.recipientPreview(agencyId, template.id)} />
+                  <RecipientPreviewLine load={() => agencyMailTemplateService.recipientPreview(agencyId, template.id, workspaceId)} />
                 )}
               </div>
             ) : (
