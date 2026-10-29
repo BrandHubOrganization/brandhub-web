@@ -13,17 +13,21 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { errorCode } from "@/services/adminRevenueService";
-import type { MailAttachment, MailTemplate, TemplatePayload } from "../types";
+import type { MailAttachment, MailTemplate, MailTemplateScope, TemplatePayload } from "../types";
+import { emptyLayout, parseLayout, renderLayoutPreview, serializeLayout, validateBlocks, type MailBlock } from "../blocks";
 import { clearDraft, loadDraft, saveDraft } from "../drafts";
 import { analyzeVariables } from "../utils";
-import { MailBodyEditor } from "./MailBodyEditor";
+import { BlockBuilder } from "./BlockBuilder";
 import { MailPreview } from "./MailPreview";
 import { VariableHints } from "./VariableHints";
 
 export interface FormAdapter {
   save: (payload: TemplatePayload, existing: MailTemplate | null) => Promise<MailTemplate>;
-  uploadImage?: (file: File) => Promise<string>;
   uploadAttachment?: (file: File) => Promise<MailAttachment>;
+  /** Scopes a new template may be created in; the first is the default. */
+  scopes: MailTemplateScope[];
+  /** Set for Agency-level scopes (AGENCY_INTERNAL/AGENCY_CLIENT). */
+  agencyId?: string;
 }
 
 interface Props {
@@ -41,7 +45,8 @@ interface Props {
 interface Draft {
   name: string;
   subject: string;
-  bodyHtml: string;
+  layoutJson: string;
+  scope?: MailTemplateScope;
 }
 
 const MAX_ATTACHMENTS = 3;
@@ -53,32 +58,37 @@ export function TemplateFormDialog({ open, template, mode, adapter, onClose, onS
   const [restored] = useState<Draft | null>(() => (resumable ? loadDraft<Draft>(draftKey!) : null));
   const [name, setName] = useState(restored?.name ?? template?.name ?? "");
   const [subject, setSubject] = useState(restored?.subject ?? template?.subject ?? "");
-  const [bodyHtml, setBodyHtml] = useState(restored?.bodyHtml ?? template?.bodyHtml ?? "");
+  const [blocks, setBlocks] = useState<MailBlock[]>(() => parseLayout(restored?.layoutJson ?? template?.layoutJson).blocks);
+  const [scope, setScope] = useState<MailTemplateScope>(
+    restored?.scope && adapter.scopes.includes(restored.scope) ? restored.scope : template?.scope ?? adapter.scopes[0],
+  );
   const [showRestored, setShowRestored] = useState(!!restored);
-  const [editorKey, setEditorKey] = useState(0);
+  const isLegacy = mode === "edit" && !!template && !template.layoutJson && !!template.bodyHtml;
   const [attachments, setAttachments] = useState<MailAttachment[]>(template?.attachments ?? []);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const analysis = useMemo(() => analyzeVariables(subject, bodyHtml), [subject, bodyHtml]);
+  const layoutJson = useMemo(() => serializeLayout({ version: 1, blocks }), [blocks]);
+  const previewHtml = useMemo(() => renderLayoutPreview(blocks), [blocks]);
+  const blockErrors = useMemo(() => validateBlocks(blocks), [blocks]);
+  const analysis = useMemo(() => analyzeVariables(subject, previewHtml), [subject, previewHtml]);
   const dirty =
     mode === "edit"
-      ? name !== (template?.name ?? "") || subject !== (template?.subject ?? "") || bodyHtml !== (template?.bodyHtml ?? "")
-      : !!(name || subject || bodyHtml.replace(/<[^>]+>/g, "").trim());
+      ? name !== (template?.name ?? "") || subject !== (template?.subject ?? "") || layoutJson !== serializeLayout(parseLayout(template?.layoutJson))
+      : !!(name || subject || blocks.length);
 
   // Autosave the draft of a new template (debounced); cleared on save or when discarded.
   useEffect(() => {
     if (!resumable || !dirty) return;
-    const timer = window.setTimeout(() => saveDraft<Draft>(draftKey!, { name, subject, bodyHtml }), 600);
+    const timer = window.setTimeout(() => saveDraft<Draft>(draftKey!, { name, subject, layoutJson, scope }), 600);
     return () => window.clearTimeout(timer);
-  }, [resumable, dirty, draftKey, name, subject, bodyHtml]);
+  }, [resumable, dirty, draftKey, name, subject, layoutJson, scope]);
 
   const discardDraft = () => {
     if (draftKey) clearDraft(draftKey);
     setName("");
     setSubject("");
-    setBodyHtml("");
-    setEditorKey((k) => k + 1);
+    setBlocks(emptyLayout().blocks);
     setShowRestored(false);
   };
 
@@ -98,7 +108,7 @@ export function TemplateFormDialog({ open, template, mode, adapter, onClose, onS
   };
 
   const submit = async () => {
-    if (!name.trim() || !subject.trim() || !bodyHtml.replace(/<[^>]+>/g, "").trim()) {
+    if (!name.trim() || !subject.trim() || blocks.length === 0 || Object.keys(blockErrors).length > 0) {
       setError(t("mailTemplate.errors.VALIDATION_ERROR"));
       return;
     }
@@ -108,7 +118,8 @@ export function TemplateFormDialog({ open, template, mode, adapter, onClose, onS
       const payload: TemplatePayload = {
         name: name.trim(),
         subject: subject.trim(),
-        bodyHtml,
+        layoutJson,
+        ...(mode === "create" ? { scope, ...(adapter.agencyId ? { agencyId: adapter.agencyId } : {}) } : {}),
         ...(adapter.uploadAttachment ? { attachmentIds: attachments.map((a) => a.attachmentId) } : {}),
       };
       if (mode === "create" && template) payload.cloneFromId = template.id;
@@ -162,9 +173,23 @@ export function TemplateFormDialog({ open, template, mode, adapter, onClose, onS
             <span>{t("mailTemplate.form.subject")} *</span>
             <Input value={subject} maxLength={200} onChange={(e) => setSubject(e.target.value)} />
           </label>
+          {mode === "create" && adapter.scopes.length > 1 && (
+            <label className="block space-y-1.5 text-sm font-medium">
+              <span>{t("mailTemplate.form.scope")}</span>
+              <select className="bg-background w-full rounded border px-3 py-2 text-sm" value={scope}
+                onChange={(e) => setScope(e.target.value as MailTemplateScope)}>
+                {adapter.scopes.map((s) => (
+                  <option key={s} value={s}>{t(`mailTemplate.scopes.${s}`)}</option>
+                ))}
+              </select>
+            </label>
+          )}
+          {isLegacy && (
+            <p role="status" className="bg-muted/50 rounded border px-3 py-2 text-xs">{t("mailTemplate.builder.legacy")}</p>
+          )}
           <div className="space-y-1.5 text-sm">
             <span className="font-medium">{t("mailTemplate.form.body")} *</span>
-            <MailBodyEditor key={editorKey} value={bodyHtml} onChange={setBodyHtml} onUploadImage={adapter.uploadImage} disabled={busy} />
+            <BlockBuilder blocks={blocks} onChange={setBlocks} errors={blockErrors} disabled={busy} />
           </div>
           <VariableHints analysis={analysis} />
           {adapter.uploadAttachment && (
@@ -202,7 +227,7 @@ export function TemplateFormDialog({ open, template, mode, adapter, onClose, onS
           </DialogFooter>
           </div>
           <div className="lg:sticky lg:top-0 lg:self-start">
-            <MailPreview subject={subject} bodyHtml={bodyHtml} />
+            <MailPreview subject={subject} bodyHtml={previewHtml} />
           </div>
         </form>
       </DialogContent>

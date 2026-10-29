@@ -136,6 +136,7 @@ test("generates and applies real-contract post text", async ({ page }) => {
         success: true,
         data: {
           caption: "BrandHub launch caption",
+          moderation: { status: "PASSED", issues: [] },
           hashtags: ["BrandHub", "Launch"],
         },
       }),
@@ -463,7 +464,7 @@ for (const language of ["vi", "en"] as const) {
 for (const language of ["vi", "en"] as const) {
   test(`loads API hashtag suggestions without saving to collection (${language})`, async ({
     page,
-  }) => {
+  }, testInfo) => {
     await page.evaluate((lang) => {
       localStorage.setItem("brandhub-lang", lang);
       localStorage.setItem("vite-ui-theme", lang === "vi" ? "light" : "dark");
@@ -482,13 +483,22 @@ for (const language of ["vi", "en"] as const) {
       return route.fulfill({
         json: {
           success: true,
-          data: { hashtags: ["#CoffeeLaunch", "coffeelaunch", "#NewBlend"] },
+          data: {
+            hashtags: ["#CoffeeLaunch", "coffeelaunch", "#NewBlend"],
+            suggestions: [
+              { tag: "#CoffeeLaunch", source: "WORKSPACE" },
+              { tag: "coffeelaunch", source: "WORKSPACE" },
+              { tag: "#NewBlend", source: "AI_GENERATED" },
+            ],
+          },
         },
       });
     });
     const generate = page.getByRole("button", {
       name:
-        language === "vi" ? /Gợi ý hashtag từ API/ : /Get hashtag suggestions/,
+        language === "vi"
+          ? /Gợi ý hashtag theo nội dung/
+          : /Suggest hashtags for this caption/,
     });
     await expect(generate).toBeDisabled();
     await page
@@ -505,6 +515,34 @@ for (const language of ["vi", "en"] as const) {
           : "Add #CoffeeLaunch to this Post",
     });
     await expect(apply).toHaveCount(1);
+    const ranked = page.getByRole("list", {
+      name:
+        language === "vi"
+          ? "Hashtag theo mức độ phù hợp"
+          : "Hashtags ranked by relevance",
+    });
+    await expect(ranked.getByRole("listitem")).toHaveCount(2);
+    await expect(ranked.getByRole("listitem").nth(0)).toContainText(
+      language === "vi" ? "Trong kho workspace" : "Workspace collection",
+    );
+    await expect(ranked.getByRole("listitem").nth(1)).toContainText(
+      language === "vi" ? "AI đề xuất mới" : "New AI suggestion",
+    );
+    await expect(ranked.getByRole("listitem").nth(0)).toContainText(
+      "#CoffeeLaunch",
+    );
+    await expect(ranked.getByRole("listitem").nth(1)).toContainText(
+      "#NewBlend",
+    );
+    for (const width of [375, 768, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await ranked.scrollIntoViewIfNeeded();
+      const box = await ranked.boundingBox();
+      expect(box?.width).toBeLessThanOrEqual(width);
+      await page.screenshot({
+        path: testInfo.outputPath(`hashtag-rank-${language}-${width}.png`),
+      });
+    }
     await apply.focus();
     await page.keyboard.press("Enter");
     await expect(apply).toBeDisabled();
@@ -530,8 +568,8 @@ for (const language of ["vi", "en"] as const) {
     await expect(
       page.getByText(
         language === "vi"
-          ? "API chưa trả về hashtag phù hợp."
-          : "The API returned no matching hashtags.",
+          ? "Chưa tìm thấy hashtag phù hợp. Hãy bổ sung nội dung cụ thể hơn."
+          : "No relevant hashtags found. Add more specific details to your caption.",
         { exact: true },
       ),
     ).toBeVisible();
@@ -673,3 +711,312 @@ test("social API failure does not claim all platforms are disconnected", async (
     page.getByText("Failed to load social accounts.", { exact: true }),
   ).toHaveCount(0);
 });
+
+for (const status of ["BLOCKED", "NOT_CHECKED", "WARNING"] as const) {
+  test(`caption moderation ${status} controls Apply and invalidates on edit`, async ({
+    page,
+  }) => {
+    await page.route("**/api/v1/ai/content/generate", (route) =>
+      route.fulfill({
+        json: {
+          success: true,
+          data: {
+            caption: "Moderation test caption",
+            hashtags: [],
+            moderation: { status, issues: [] },
+          },
+        },
+      }),
+    );
+    await page.route(
+      "**/api/v1/workspaces/workspace-1/ai/captions/moderate",
+      (route) =>
+        route.fulfill({
+          json: {
+            success: true,
+            data: { status: "PASSED", issues: [] },
+          },
+        }),
+    );
+    await page
+      .locator("textarea")
+      .first()
+      .fill("Write a moderation test caption");
+    await page.getByTestId("generate-text").click();
+    const caption = page.getByTestId("generated-caption");
+    await expect(caption).toHaveValue("Moderation test caption");
+    const apply = page.getByTestId("apply-text");
+    if (status === "WARNING") await expect(apply).toBeEnabled();
+    else await expect(apply).toBeDisabled();
+    await caption.fill("Changed caption");
+    await expect(apply).toBeDisabled();
+    await page
+      .getByRole("button", { name: /Kiểm tra caption|Check caption/ })
+      .click();
+    await expect(apply).toBeEnabled();
+  });
+}
+
+for (const theme of ["light", "dark"]) {
+  test(`caption moderation ${theme} fits mobile and English`, async ({
+    page,
+  }) => {
+    await page.addInitScript((theme) => {
+      localStorage.setItem("brandhub-lang", "en");
+      localStorage.setItem("vite-ui-theme", theme);
+    }, theme);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.reload();
+    await page.route("**/api/v1/ai/content/generate", (route) =>
+      route.fulfill({
+        json: {
+          success: true,
+          data: {
+            caption: "Check this caption",
+            hashtags: [],
+            moderation: {
+              status: "BLOCKED",
+              issues: [{ code: "hate", message: "Review", excerpt: "" }],
+            },
+          },
+        },
+      }),
+    );
+    await page
+      .locator("textarea")
+      .first()
+      .fill("Write a moderation test caption");
+    await page.getByTestId("generate-text").click();
+    await expect(
+      page.getByText("Text safety check", { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByTestId("apply-text")).toBeDisabled();
+    const moderation = page.getByTestId("caption-moderation");
+    await moderation.scrollIntoViewIfNeeded();
+    await expect(page.locator("html")).toHaveClass(new RegExp(theme));
+    const bounds = await moderation.boundingBox();
+    expect(bounds?.width).toBeLessThanOrEqual(390);
+    await moderation.screenshot({
+      path: `test-results/caption-moderation-${theme}.png`,
+    });
+  });
+}
+
+test("main editor moderation waits 3 seconds after the last edit", async ({
+  page,
+}) => {
+  await page.clock.install();
+  const checked: string[] = [];
+  await page.route(
+    "**/api/v1/workspaces/workspace-1/ai/captions/moderate",
+    (route) => {
+      checked.push(route.request().postDataJSON().text);
+      return route.fulfill({
+        json: { success: true, data: { status: "PASSED", issues: [] } },
+      });
+    },
+  );
+  const editor = page.locator('[contenteditable="true"]');
+  await editor.fill("First caption");
+  await page.clock.runFor(2000);
+  expect(checked).toEqual([]);
+  await editor.fill("New caption after typing");
+  await page.clock.runFor(2999);
+  expect(checked).toEqual([]);
+  await page.clock.runFor(1);
+  await expect.poll(() => checked).toEqual(["New caption after typing"]);
+  await expect(page.getByTestId("editor-moderation")).toContainText(
+    /Nội dung an toàn|Content is safe/,
+  );
+});
+
+for (const trigger of ["early", "inflight", "cached", "partial"] as const) {
+  test(`main editor moderation ${trigger} runs before publish API without duplicate checks`, async ({
+    page,
+  }) => {
+    await page.clock.install();
+    const calls: string[] = [];
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route(
+      "**/api/v1/workspaces/workspace-1/ai/captions/moderate",
+      async (route) => {
+        calls.push("moderate");
+        await gate;
+        await route.fulfill({
+          json: { success: true, data: trigger === "partial"
+            ? { status: "WARNING", issues: [{ code: "unsupported_hate", message: "Unsupported category", excerpt: "" }] }
+            : { status: "PASSED", issues: [] } },
+        });
+      },
+    );
+    await page.route("**/api/v1/workspaces/workspace-1/posts", (route) => {
+      calls.push("save");
+      return route.fulfill({
+        json: {
+          success: true,
+          data: {
+            ...route.request().postDataJSON(),
+            id: "moderation-post",
+            updatedAt: "2026-10-28T00:00:00Z",
+          },
+        },
+      });
+    });
+    await page.route(
+      "**/api/v1/workspaces/workspace-1/posts/moderation-post/publish",
+      (route) => {
+        calls.push("publish");
+        return route.fulfill({
+          json: { success: true, data: { status: "PUBLISHED" } },
+        });
+      },
+    );
+    await page.locator('[contenteditable="true"]').fill("Caption to publish");
+    if (trigger !== "early") {
+      await page.clock.runFor(3000);
+      await expect.poll(() => calls).toEqual(["moderate"]);
+    }
+    if (trigger === "cached" || trigger === "partial") {
+      release();
+      await expect(page.getByTestId("editor-moderation")).toContainText(
+        trigger === "partial" ? /Đã kiểm tra các nhóm|Supported categories were checked/ : /Nội dung an toàn|Content is safe/,
+      );
+    }
+    await page.getByRole("button", { name: "Đăng ngay", exact: true }).click();
+    if (trigger !== "cached") {
+      await expect.poll(() => calls).toEqual(["moderate"]);
+      release();
+    }
+    await expect.poll(() => calls).toEqual(["moderate", "save", "publish"]);
+    await page.clock.runFor(3000);
+    expect(calls.filter((call) => call === "moderate")).toHaveLength(1);
+    expect(calls.filter((call) => call === "publish")).toHaveLength(1);
+  });
+}
+
+for (const verdict of [
+  "BLOCKED",
+  "NOT_CHECKED",
+  "HTTP_ERROR",
+  "MALFORMED",
+] as const) {
+  test(`main editor moderation ${verdict} prevents publish`, async ({
+    page,
+  }) => {
+    const postCalls: string[] = [];
+    await page.route("**/api/v1/workspaces/workspace-1/posts**", (route) => {
+      postCalls.push(route.request().url());
+      return route.fulfill({ json: { success: true, data: {} } });
+    });
+    await page.route(
+      "**/api/v1/workspaces/workspace-1/ai/captions/moderate",
+      (route) =>
+        route.fulfill({
+          status: verdict === "HTTP_ERROR" ? 503 : 200,
+          json: {
+            success: true,
+            data:
+              verdict === "MALFORMED" ? {} : { status: verdict, issues: [] },
+          },
+        }),
+    );
+    await page
+      .locator('[contenteditable="true"]')
+      .fill("Caption requiring a check");
+    await page.getByRole("button", { name: "Đăng ngay", exact: true }).click();
+    await expect(page.getByTestId("editor-moderation")).toContainText(
+      verdict === "BLOCKED"
+        ? /bị hạn chế|restricted/
+        : /Chưa thể hoàn tất|could not be completed/,
+    );
+    await expect(
+      page.getByRole("button", { name: "Đăng ngay", exact: true }),
+    ).toBeEnabled();
+    expect(postCalls).toEqual([]);
+    await expect(page.locator('[contenteditable="true"]')).toHaveText(
+      "Caption requiring a check",
+    );
+  });
+}
+
+test("main editor moderation ignores a late pass after typing during Publish Now", async ({
+  page,
+}) => {
+  await page.clock.install();
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let checked = 0;
+  const publishes: string[] = [];
+  await page.route(
+    "**/api/v1/workspaces/workspace-1/ai/captions/moderate",
+    async (route) => {
+      checked++;
+      await gate;
+      await route.fulfill({
+        json: { success: true, data: { status: "PASSED", issues: [] } },
+      });
+    },
+  );
+  await page.route("**/api/v1/workspaces/workspace-1/posts**", (route) => {
+    publishes.push(route.request().url());
+    return route.fulfill({ json: { success: true, data: {} } });
+  });
+  const editor = page.locator('[contenteditable="true"]');
+  await editor.fill("Old caption before checking");
+  await page.getByRole("button", { name: "Đăng ngay", exact: true }).click();
+  await expect.poll(() => checked).toBe(1);
+  await editor.fill("New caption while checking");
+  release();
+  await expect(
+    page.getByRole("button", { name: "Đăng ngay", exact: true }),
+  ).toBeEnabled();
+  await expect(page.getByTestId("editor-moderation")).toContainText(
+    /3 giây|3 seconds/,
+  );
+  expect(publishes).toEqual([]);
+});
+
+for (const theme of ["light", "dark"]) {
+  test(`main editor moderation ${theme} shows inline status on mobile`, async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      (theme) => localStorage.setItem("vite-ui-theme", theme),
+      theme,
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.reload();
+    await page.clock.install();
+    await page.route(
+      "**/api/v1/workspaces/workspace-1/ai/captions/moderate",
+      (route) =>
+        route.fulfill({
+          json: {
+            success: true,
+            data: {
+              status: "BLOCKED",
+              issues: [
+                { code: "profanity", message: "Review", excerpt: "caption" },
+              ],
+            },
+          },
+        }),
+    );
+    await page.locator('[contenteditable="true"]').fill("Test caption");
+    await page.clock.runFor(3000);
+    const status = page.getByTestId("editor-moderation");
+    await expect(status).toContainText(/bị hạn chế|restricted/);
+    await expect(page.locator("html")).toHaveClass(new RegExp(theme));
+    await status.scrollIntoViewIfNeeded();
+    const box = await status.boundingBox();
+    expect(box?.width).toBeLessThanOrEqual(390);
+    await status.screenshot({
+      path: `test-results/main-editor-moderation-${theme}.png`,
+    });
+  });
+}

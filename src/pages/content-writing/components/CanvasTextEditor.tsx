@@ -196,11 +196,27 @@ function indexFromPoint(
   return line.startIndex + bestOffset;
 }
 
+export interface PeerCursor {
+  clientId: number;
+  userId: string;
+  name: string;
+  color: string;
+  caretIndex: number;
+  selection: { anchor: number; focus: number } | null;
+}
+
 export interface CanvasTextEditorProps {
   /** Shared Yjs document — owned by the caller (useTaskContentSync) so it can also wire the WebSocket transport. */
   yDoc: Y.Doc;
   /** Called whenever the committed text changes — used by parent to mirror text into social preview. */
   onTextChange?: (text: string) => void;
+  /** Other Creators currently viewing/editing this document — see useTaskContentSync's awareness state. */
+  peers?: PeerCursor[];
+  /** Fired on every local caret/selection change so the parent can publish it to awareness. */
+  onCursorChange?: (
+    caretIndex: number,
+    selection: { anchor: number; focus: number } | null,
+  ) => void;
 }
 
 export interface CanvasTextEditorHandle {
@@ -212,7 +228,10 @@ export const CanvasTextEditor = forwardRef<
   CanvasTextEditorHandle,
   CanvasTextEditorProps
 >(
-  function CanvasTextEditor({ yDoc, onTextChange }, ref) {
+  function CanvasTextEditor(
+    { yDoc, onTextChange, peers = [], onCursorChange },
+    ref,
+  ) {
     const yTextRef = useRef<Y.Text>(yDoc.getText("content"));
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const hiddenInputRef = useRef<HTMLDivElement>(null);
@@ -395,39 +414,39 @@ export const CanvasTextEditor = forwardRef<
     const displayRuns: Run[] = useMemo(
       () =>
         compositionPreview
-      ? (() => {
-          const caretAttrs = attrsAtIndex(runs, caretIndex);
-          const before: Run[] = [];
-          const after: Run[] = [];
-          for (const run of runs) {
-            const end = run.startIndex + run.text.length;
-            if (end <= caretIndex) {
-              before.push(run);
-            } else if (run.startIndex >= caretIndex) {
-              after.push({
-                ...run,
-                startIndex: run.startIndex + compositionPreview.length,
-              });
-            } else {
-              before.push({
-                ...run,
-                text: run.text.slice(0, caretIndex - run.startIndex),
-              });
-              after.push({
-                ...run,
-                text: run.text.slice(caretIndex - run.startIndex),
-                startIndex: caretIndex + compositionPreview.length,
-              });
-            }
-          }
-          const previewRun: Run = {
-            text: compositionPreview,
-            attrs: caretAttrs,
-            startIndex: caretIndex,
-          };
-          return [...before, previewRun, ...after];
-        })()
-      : runs,
+          ? (() => {
+              const caretAttrs = attrsAtIndex(runs, caretIndex);
+              const before: Run[] = [];
+              const after: Run[] = [];
+              for (const run of runs) {
+                const end = run.startIndex + run.text.length;
+                if (end <= caretIndex) {
+                  before.push(run);
+                } else if (run.startIndex >= caretIndex) {
+                  after.push({
+                    ...run,
+                    startIndex: run.startIndex + compositionPreview.length,
+                  });
+                } else {
+                  before.push({
+                    ...run,
+                    text: run.text.slice(0, caretIndex - run.startIndex),
+                  });
+                  after.push({
+                    ...run,
+                    text: run.text.slice(caretIndex - run.startIndex),
+                    startIndex: caretIndex + compositionPreview.length,
+                  });
+                }
+              }
+              const previewRun: Run = {
+                text: compositionPreview,
+                attrs: caretAttrs,
+                startIndex: caretIndex,
+              };
+              return [...before, previewRun, ...after];
+            })()
+          : runs,
       [runs, compositionPreview, caretIndex],
     );
 
@@ -593,6 +612,15 @@ export const CanvasTextEditor = forwardRef<
     useEffect(() => {
       render();
     }, [render]);
+
+    // Publishes this client's caret/selection to awareness while focused.
+    // Only skips the call on blur — it doesn't clear the peer-visible
+    // cursor, since a brief toolbar click (also a blur) shouldn't flash a
+    // peer's marker away and back; useTaskContentSync.awareness.destroy()
+    // on unmount is what actually removes it when the Creator leaves.
+    useEffect(() => {
+      if (isFocused) onCursorChange?.(caretIndex, selection);
+    }, [caretIndex, selection, isFocused, onCursorChange]);
 
     useEffect(() => {
       const container = containerRef.current;
@@ -902,6 +930,28 @@ export const CanvasTextEditor = forwardRef<
       return wrapLines(ctx, text, canvasWidth - PADDING_X * 2);
     };
 
+    // Peer cursor pixel positions — same caretCoordsFromIndex math as the
+    // local caret, clamped to the live document length since a peer's
+    // reported caretIndex can briefly point past the end right after a
+    // local delete they haven't seen yet.
+    const peerCaretPixels = useMemo(() => {
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext("2d");
+      if (!canvas || !ctx || peers.length === 0) return [];
+      ctx.font = FONT;
+      const lines = wrapLines(ctx, text, canvasWidth - PADDING_X * 2);
+      return peers.map((peer) => {
+        const clamped = Math.max(0, Math.min(peer.caretIndex, text.length));
+        const { x, lineIndex } = caretCoordsFromIndex(ctx, lines, clamped);
+        return {
+          ...peer,
+          x: PADDING_X + x,
+          y: PADDING_Y + lineIndex * LINE_HEIGHT,
+        };
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- canvasWidth/text already drive `render`'s effect; this recomputes alongside it
+    }, [peers, text, canvasWidth]);
+
     /** Moves the caret, extending or clearing the selection depending on shiftKey — shared by every arrow/Home/End handler. */
     const moveCaret = (nextIndex: number, shiftKey: boolean) => {
       const clamped = Math.max(0, Math.min(yTextRef.current.length, nextIndex));
@@ -1026,57 +1076,81 @@ export const CanvasTextEditor = forwardRef<
           onClearFormatting={clearFormatting}
           onInsertEmoji={(emoji) => insertAtCaret(emoji)}
         />
-        <div
-          ref={containerRef}
-          className="border-border bg-card relative w-full rounded-b-xl border p-2"
-          style={{ minHeight: "200px" }}
-          onClick={focusHiddenInput}
-        >
-          <canvas
-            ref={canvasRef}
-            aria-hidden="true"
-            onMouseDown={handleCanvasMouseDown}
-            className="block w-full cursor-text"
-            style={{ minHeight: "200px" }}
-          />
-          {isFocused && (
-            <div
-              className="bg-foreground pointer-events-none absolute w-[1.5px] animate-pulse"
-              style={{
-                left: caretPos.x + 8,
-                top: caretPos.y + 8,
-                height: FONT_SIZE + 2,
-              }}
-            />
-          )}
+        {/* Page canvas: gray "desk" background behind a white paper sheet,
+            like Google Docs / Word's document area — purely visual, the
+            editor's own padding (PADDING_X/PADDING_Y) still owns caret math. */}
+        <div className="border-border rounded-b-xl border-x border-b bg-[#edf0f4] p-6 dark:bg-[#1c1d1f]">
           <div
-            ref={hiddenInputRef}
-            contentEditable
-            suppressContentEditableWarning
-            onBeforeInput={handleBeforeInput}
-            onCompositionStart={() => setIsComposing(true)}
-            onCompositionUpdate={handleCompositionUpdate}
-            onCompositionEnd={handleCompositionEnd}
-            onKeyDown={handleKeyDown}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => {
-              setIsFocused(false);
-              // Defensive: a composition cancelled by focus loss wouldn't
-              // otherwise fire compositionend, leaving a stale preview on screen.
-              setIsComposing(false);
-              setCompositionPreview(null);
-            }}
-            className="fixed top-0 left-0 h-px w-px overflow-hidden opacity-0"
-            style={{ transform: "translateX(-10000px)" }}
-            role="textbox"
-            aria-multiline="true"
-            aria-label="Content editor input"
-            tabIndex={-1}
-          />
-          {/* Accessibility: screen readers can't read canvas pixels — this
+            ref={containerRef}
+            className="relative mx-auto w-full max-w-[816px] rounded-sm bg-white shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)] dark:bg-[#2b2d30]"
+            style={{ minHeight: "200px" }}
+            onClick={focusHiddenInput}
+          >
+            <canvas
+              ref={canvasRef}
+              aria-hidden="true"
+              onMouseDown={handleCanvasMouseDown}
+              className="block w-full cursor-text"
+              style={{ minHeight: "200px" }}
+            />
+            {isFocused && (
+              <div
+                className="bg-foreground pointer-events-none absolute w-[1.5px] animate-pulse"
+                style={{
+                  left: caretPos.x + 8,
+                  top: caretPos.y + 8,
+                  height: FONT_SIZE + 2,
+                }}
+              />
+            )}
+            {/* Peer cursors — colored flag + name label, Google-Docs style. */}
+            {peerCaretPixels.map((peer) => (
+              <div
+                key={peer.clientId}
+                className="pointer-events-none absolute"
+                style={{ left: peer.x + 8, top: peer.y + 8 }}
+              >
+                <div
+                  className="w-[2px]"
+                  style={{ height: FONT_SIZE + 2, backgroundColor: peer.color }}
+                />
+                <span
+                  className="absolute -top-[18px] left-0 rounded-t px-1 py-px text-[10px] whitespace-nowrap text-white"
+                  style={{ backgroundColor: peer.color }}
+                >
+                  {peer.name}
+                </span>
+              </div>
+            ))}
+            <div
+              ref={hiddenInputRef}
+              contentEditable
+              suppressContentEditableWarning
+              onBeforeInput={handleBeforeInput}
+              onCompositionStart={() => setIsComposing(true)}
+              onCompositionUpdate={handleCompositionUpdate}
+              onCompositionEnd={handleCompositionEnd}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => {
+                setIsFocused(false);
+                // Defensive: a composition cancelled by focus loss wouldn't
+                // otherwise fire compositionend, leaving a stale preview on screen.
+                setIsComposing(false);
+                setCompositionPreview(null);
+              }}
+              className="fixed top-0 left-0 h-px w-px overflow-hidden opacity-0"
+              style={{ transform: "translateX(-10000px)" }}
+              role="textbox"
+              aria-multiline="true"
+              aria-label="Content editor input"
+              tabIndex={-1}
+            />
+            {/* Accessibility: screen readers can't read canvas pixels — this
             hidden region mirrors the real text in parallel (see spec.md §4). */}
-          <div className="sr-only" aria-live="polite">
-            {displayText}
+            <div className="sr-only" aria-live="polite">
+              {displayText}
+            </div>
           </div>
         </div>
         {/* Status bar: word/char count + keyboard shortcut hints */}

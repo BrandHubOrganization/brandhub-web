@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 
@@ -17,6 +19,12 @@ export function FAQ() {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
   const [open, setOpen] = useState<string | null>(null);
+  const { ref: headRef, isIntersecting: headVisible } = useIntersectionObserver(
+    { threshold: 0.15, freezeOnceVisible: true },
+  );
+  const { ref: listRef, isIntersecting: listVisible } = useIntersectionObserver(
+    { threshold: 0.1, freezeOnceVisible: true },
+  );
 
   return (
     <section
@@ -25,12 +33,12 @@ export function FAQ() {
     >
       <SectionDecor corner="right" />
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-16 text-center"
+        <div
+          ref={headRef}
+          className={cn(
+            "mb-16 text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            headVisible ? "opacity-100" : "opacity-0",
+          )}
         >
           <SectionEyebrow index={10} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
@@ -39,19 +47,23 @@ export function FAQ() {
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.faq.subtitle")}
           </p>
-        </motion.div>
+        </div>
 
-        <div className="space-y-3">
+        <div ref={listRef} className="space-y-3">
           {FAQS.map(({ key }, i) => {
             const isOpen = open === key;
             return (
-              <motion.div
+              <div
                 key={key}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.06 }}
-                className="overflow-hidden rounded-xl border border-zinc-100 dark:border-zinc-800"
+                style={{
+                  transitionDelay: listVisible ? `${i * 70}ms` : "0ms",
+                }}
+                className={cn(
+                  "faq-row overflow-hidden rounded-xl border border-zinc-100 transition-all duration-400 ease-out motion-reduce:opacity-100 motion-reduce:transition-none dark:border-zinc-800",
+                  listVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-4 opacity-0",
+                )}
               >
                 <button
                   onClick={() => setOpen(isOpen ? null : key)}
@@ -79,7 +91,7 @@ export function FAQ() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             );
           })}
         </div>
