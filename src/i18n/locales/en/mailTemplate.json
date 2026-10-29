@@ -220,6 +220,7 @@
   },
   "agency": {
     "title": "Agency mail templates",
+    "create": "Create agency template",
     "description": "Compose emails for your agency members or partner clients with the block builder."
   },
   "builder": {

@@ -220,6 +220,7 @@
   },
   "agency": {
     "title": "Mẫu email của Agency",
+    "create": "Tạo mẫu Agency",
     "description": "Soạn email gửi thành viên Agency hoặc khách hàng đối tác bằng trình dựng khối."
   },
   "builder": {

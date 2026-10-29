@@ -93,7 +93,7 @@ export function AdminMailTemplatesPanel({
           value={query} onChange={(e) => { setPage(0); setQuery(e.target.value); }} />
         <Button variant="orange" className="ml-auto"
           onClick={() => setForm({ mode: "create", template: null })}>
-          <Plus className="size-4" />{t("mailTemplate.admin.create")}
+          <Plus className="size-4" />{t(agencyId ? "mailTemplate.agency.create" : "mailTemplate.admin.create")}
         </Button>
       </div>
       {loading && <Spinner />}
