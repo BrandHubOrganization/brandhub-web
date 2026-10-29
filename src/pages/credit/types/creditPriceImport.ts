@@ -14,8 +14,8 @@ export interface CreditPriceImportRow {
     unitCredits: number;
     sourceReportId: string;
     profileId: string;
-    width: number;
-    height: number;
+    width: number | null;
+    height: number | null;
     steps: number | null;
     generatedAt: string;
   };
