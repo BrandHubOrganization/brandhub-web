@@ -120,7 +120,15 @@
     "resendFailed": "Resend {{count}} failed",
     "resendDone": "{{count}} emails queued again.",
     "exportCsv": "Export CSV",
-    "autoRefresh": "Updating automatically…"
+    "autoRefresh": "Updating automatically…",
+    "allScopes": "All kinds of mail",
+    "scope": "Kind of mail",
+    "scopes": {
+      "ADMIN_SYSTEM_BROADCAST": "Admin broadcast",
+      "TRANSACTIONAL_AUTO": "System event",
+      "AGENCY_INTERNAL": "Agency internal",
+      "AGENCY_CLIENT": "Agency clients"
+    }
   },
   "unsubscribe": {
     "title": "Unsubscribe from emails",
@@ -138,7 +146,9 @@
   "admin": {
     "title": "System mail templates",
     "description": "Shared library: Workspaces can clone them and Admins use them when composing notifications.",
-    "create": "Create system template"
+    "batchesDescription": "Progress of admin broadcasts and agency mail. Cancel a scheduled batch or resend the failed ones.",
+    "create": "Create system template",
+    "suppressionsDescription": "Everyone who unsubscribed from admin broadcasts. Re-subscribing is recorded in the audit log."
   },
   "errors": {
     "generic": "Something went wrong, please try again.",
@@ -207,7 +217,8 @@
     "since": "Unsubscribed on {{when}}",
     "resubscribe": "Re-subscribe",
     "confirm": "Allow emails to {{email}} again?",
-    "done": "Address re-subscribed."
+    "done": "Address re-subscribed.",
+    "agencySubtitle": "People who unsubscribed from this agency's emails. They are skipped when you send. Re-subscribing is recorded in the audit log."
   },
   "scopes": {
     "CAMPAIGN_BROADCAST": "Campaign broadcast",
@@ -219,6 +230,7 @@
   },
   "agency": {
     "title": "Agency mail templates",
+    "create": "Create agency template",
     "description": "Compose emails for your agency members or partner clients with the block builder."
   },
   "builder": {
@@ -266,7 +278,7 @@
       "urlHttp": "URL must start with http:// or https://.",
       "labelRequired": "Enter a button label.",
       "urlRequired": "Enter a URL.",
-      "heightInvalid": "Height must be 0 or more."
+      "heightInvalid": "Height must be between 0 and 200."
     }
   },
   "broadcast": {

@@ -164,7 +164,13 @@ export function Sidebar({
         .filter((item) => !item.hiddenForClient || role !== "CLIENT")
         .filter((item) => !item.clientOnly || role === "CLIENT")
         .filter((item) => !item.agencyScoped || currentAgencyId)
-        .filter((item) => !item.agencyOwnerOnly || currentAgency?.myRole === "OWNER")
+        .filter(
+          (item) =>
+            !item.agencyStaffOnly ||
+            currentAgency?.myRole === "OWNER" ||
+            // A Workspace MANAGER of this Agency also uses its mail templates (Addendum B5).
+            allWorkspaces.some((w) => w.agencyId === currentAgencyId && w.myRole === "MANAGER"),
+        )
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
         .filter((item) => !item.hideInAgency || !currentAgencyId)

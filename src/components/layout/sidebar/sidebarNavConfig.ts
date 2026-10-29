@@ -39,7 +39,7 @@ export interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
   labelKey: string;
   /** Chỉ hiện khi user là OWNER của agency đang chọn (vd Mẫu email Agency, B5). */
-  agencyOwnerOnly?: boolean;
+  agencyStaffOnly?: boolean;
   /** Chỉ hiện khi role hiện tại là CLIENT — cần currentAgencyId để build URL. */
   clientOnly?: boolean;
   /** URL cần currentAgencyId để build (thay {agencyId} trong `to`) — ẩn nếu chưa có agency active. */
@@ -255,7 +255,7 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: Mail,
         labelKey: "nav.agencySub.mailTemplates",
         agencyScoped: true,
-        agencyOwnerOnly: true,
+        agencyStaffOnly: true,
         hiddenForClient: true,
         hideInWorkspace: true,
       },

@@ -74,6 +74,7 @@ const NAV_KEY_MAP: Record<string, string> = {
   workspace: "nav.workspaceList",
   workspaces: "nav.workspaceList",
   agency: "nav.agencyList",
+  "mail-templates": "nav.mailTemplates",
   portal: "nav.portal",
   editor: "nav.editor",
   calendar: "nav.calendar",
@@ -264,7 +265,13 @@ export function Navbar({
         "moderation",
         "revenue",
         "email",
+        "mailTemplates",
+        "mailBatches",
+        "mailSuppressions",
         "reports",
+        "trendReplay",
+        "trends",
+        "trendGraph",
       ].includes(requested)
         ? requested
         : "overview";

@@ -7,7 +7,7 @@ import { AdminMailTemplatesPanel } from "@/pages/admin/components/AdminMailTempl
 import { SCOPES_BY_AUDIENCE } from "@/pages/mail-templates/blocks";
 import { agencyMailTemplateService } from "@/pages/mail-templates/services/mailTemplateService";
 
-/** Addendum B (B5): AGENCY_INTERNAL / AGENCY_CLIENT templates; the API restricts this to the Agency OWNER. */
+/** Addendum B (B5): AGENCY_INTERNAL / AGENCY_CLIENT templates; the API allows the Agency OWNER and the MANAGER of a Workspace of this Agency. */
 export function AgencyMailTemplatesPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
@@ -33,9 +33,15 @@ export function AgencyMailTemplatesPage() {
       title={t("mailTemplate.agency.title")}
       description={t("mailTemplate.agency.description")}
       actions={
-        <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => navigate(`/agency/${id}`)}>
-          {t("agency.detail.backToProfile")}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="cursor-pointer"
+            onClick={() => navigate(`/agency/${id}/mail-templates/suppressions`)}>
+            {t("mailTemplate.suppressions.link")}
+          </Button>
+          <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => navigate(`/agency/${id}`)}>
+            {t("agency.detail.backToProfile")}
+          </Button>
+        </div>
       }
     >
       <AdminMailTemplatesPanel

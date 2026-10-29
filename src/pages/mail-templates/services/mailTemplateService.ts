@@ -134,6 +134,32 @@ export const adminMailTemplateService = {
       .then(data),
 };
 
+/** The system-wide unsubscribe list (ADMIN_SYSTEM_BROADCAST). */
+export const adminMailSuppressionService = {
+  list: (params: { q?: string; page?: number; size?: number }) =>
+    api.get<ApiResponse<PageOf<MailSuppression>>>("/api/v1/admin/mail-suppressions", { params }).then(data),
+  remove: (email: string) => api.delete("/api/v1/admin/mail-suppressions", { params: { email } }),
+};
+
+/** An agency unsubscribe list (AGENCY_INTERNAL / AGENCY_CLIENT mail). */
+export const agencyMailSuppressionService = {
+  list: (agencyId: string, params: { q?: string; page?: number; size?: number }) =>
+    api.get<ApiResponse<PageOf<MailSuppression>>>(`/api/v1/agencies/${agencyId}/mail-suppressions`, { params }).then(data),
+  remove: (agencyId: string, email: string) =>
+    api.delete(`/api/v1/agencies/${agencyId}/mail-suppressions`, { params: { email } }),
+};
+
+/** Batches that belong to no Workspace (admin broadcasts and agency mail). */
+export const adminMailBatchService = {
+  list: (params: { status?: string; scope?: string; page?: number; size?: number }) =>
+    api.get<ApiResponse<PageOf<MailBatch>>>("/api/v1/admin/mail-batches", { params }).then(data),
+  get: (id: string, params: { status?: string; page?: number; size?: number }) =>
+    api.get<ApiResponse<MailBatchDetail>>(`/api/v1/admin/mail-batches/${id}`, { params }).then(data),
+  cancel: (id: string) => api.post(`/api/v1/admin/mail-batches/${id}/cancel`),
+  resendFailed: (id: string) =>
+    api.post<ApiResponse<{ requeued: number }>>(`/api/v1/admin/mail-batches/${id}/resend-failed`).then(data),
+};
+
 export const agencyMailTemplateService = {
   list: (agencyId: string, params: { q?: string; page?: number; size?: number }) =>
     api
@@ -146,9 +172,12 @@ export const agencyMailTemplateService = {
   update: (agencyId: string, id: string, payload: TemplatePayload) =>
     api.patch<ApiResponse<MailTemplate>>(`/api/v1/agencies/${agencyId}/mail-templates/${id}`, payload).then(data),
   remove: (agencyId: string, id: string) => api.delete(`/api/v1/agencies/${agencyId}/mail-templates/${id}`),
-  recipientPreview: (agencyId: string, id: string) =>
+  /** The Owner previews the whole Agency; a Manager must name the Workspace they send from. */
+  recipientPreview: (agencyId: string, id: string, workspaceId?: string) =>
     api
-      .get<ApiResponse<RecipientPreview>>(`/api/v1/agencies/${agencyId}/mail-templates/${id}/recipient-preview`)
+      .get<ApiResponse<RecipientPreview>>(`/api/v1/agencies/${agencyId}/mail-templates/${id}/recipient-preview`, {
+        params: workspaceId ? { workspaceId } : undefined,
+      })
       .then(data),
 };
 
