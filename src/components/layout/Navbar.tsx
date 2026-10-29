@@ -264,7 +264,12 @@ export function Navbar({
         "moderation",
         "revenue",
         "email",
+        "mailTemplates",
+        "mailBatches",
         "reports",
+        "trendReplay",
+        "trends",
+        "trendGraph",
       ].includes(requested)
         ? requested
         : "overview";
