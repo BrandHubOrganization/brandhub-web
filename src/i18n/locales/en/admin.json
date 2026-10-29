@@ -174,7 +174,70 @@
     "postsCollected": "Posts collected",
     "crawlSchedule": "Crawl schedule",
     "runNowSuccess": "Crawl job triggered successfully.",
-    "runNowError": "Failed to trigger crawl job."
+    "runNowError": "Failed to trigger crawl job.",
+    "description": "Schedule, sources and posts per run for trend data crawling. Applies platform-wide.",
+    "loadError": "Could not load the crawl settings. Check the AI service.",
+    "schedule": "Crawl schedule",
+    "mode": {
+      "interval": "Interval",
+      "cron": "Cron expression"
+    },
+    "everyMinutes": "Every {{count}} minutes",
+    "everyHours": "Every {{count}} hours",
+    "cronHint": "5 fields: minute hour day month weekday, Vietnam time. Example 0 */6 * * * = every 6 hours.",
+    "cronRule": "A cron needs exactly 5 space-separated fields.",
+    "cronInvalid": "The cron expression is invalid.",
+    "pages": "Source pages/groups",
+    "pagesHint": "One https URL of a Facebook page or group per line.",
+    "pageRule": "Invalid URL: {{page}}",
+    "pageLimit": "At most 50 sources.",
+    "postsPerRun": "Posts per run",
+    "postsHint": "10 to 1000 posts. Larger runs cost more scraper API usage.",
+    "postsRule": "Enter a whole number from 10 to 1000.",
+    "nextRunNote": "Changes apply from the next crawl; a run in progress is not interrupted.",
+    "save": "Save settings",
+    "saved": "Crawl settings saved.",
+    "saveError": "Could not save the settings. Try again.",
+    "status": "Crawler status",
+    "state": {
+      "running": "Running on schedule",
+      "disabled": "Crawler is off (TREND_CRAWLER_ENABLED)",
+      "noSources": "No source has an API key"
+    },
+    "nextRun": "Next run: {{date}}",
+    "sources": "Active sources",
+    "noSources": "No scraper API key is configured.",
+    "log": {
+      "title": "Crawl log",
+      "hint": "Each crawl records the pages it visited, the posts it got and any errors. The last 20 runs are kept.",
+      "runNow": "Crawl now (dev)",
+      "running": "Crawling…",
+      "started": "Crawl started; the log updates itself.",
+      "alreadyRunning": "A crawl is already running. Try again when it finishes.",
+      "startError": "Could not start the crawl. Check the AI service.",
+      "loadError": "Could not load the crawl log.",
+      "empty": "No crawl has run yet.",
+      "status": {
+        "RUNNING": "Running",
+        "SUCCESS": "Succeeded",
+        "PARTIAL": "Partly failed",
+        "FAILED": "Failed"
+      },
+      "trigger": {
+        "MANUAL": "Manual",
+        "SCHEDULE": "Scheduled"
+      },
+      "totals": "{{pages}} sources · {{posts}} posts",
+      "credits": "{{count}} credits left",
+      "page": "Page / source",
+      "posts": "Posts",
+      "failed": "Error"
+    },
+    "live": {
+      "running": "Crawling now",
+      "last": "Last crawl",
+      "posts": "posts crawled"
+    }
   },
   "crawlRuns": {
     "title": "Crawl runs & history",
@@ -720,71 +783,6 @@
       "COMPLETED": "Completed",
       "PARTIAL": "Partially completed",
       "FAILED": "Failed"
-    }
-  },
-  "crawl": {
-    "description": "Schedule, sources and posts per run for trend data crawling. Applies platform-wide.",
-    "loadError": "Could not load the crawl settings. Check the AI service.",
-    "schedule": "Crawl schedule",
-    "mode": {
-      "interval": "Interval",
-      "cron": "Cron expression"
-    },
-    "everyMinutes": "Every {{count}} minutes",
-    "everyHours": "Every {{count}} hours",
-    "cronHint": "5 fields: minute hour day month weekday, Vietnam time. Example 0 */6 * * * = every 6 hours.",
-    "cronRule": "A cron needs exactly 5 space-separated fields.",
-    "cronInvalid": "The cron expression is invalid.",
-    "pages": "Source pages/groups",
-    "pagesHint": "One https URL of a Facebook page or group per line.",
-    "pageRule": "Invalid URL: {{page}}",
-    "pageLimit": "At most 50 sources.",
-    "postsPerRun": "Posts per run",
-    "postsHint": "10 to 1000 posts. Larger runs cost more scraper API usage.",
-    "postsRule": "Enter a whole number from 10 to 1000.",
-    "nextRunNote": "Changes apply from the next crawl; a run in progress is not interrupted.",
-    "save": "Save settings",
-    "saved": "Crawl settings saved.",
-    "saveError": "Could not save the settings. Try again.",
-    "status": "Crawler status",
-    "state": {
-      "running": "Running on schedule",
-      "disabled": "Crawler is off (TREND_CRAWLER_ENABLED)",
-      "noSources": "No source has an API key"
-    },
-    "nextRun": "Next run: {{date}}",
-    "sources": "Active sources",
-    "noSources": "No scraper API key is configured.",
-    "log": {
-      "title": "Crawl log",
-      "hint": "Each crawl records the pages it visited, the posts it got and any errors. The last 20 runs are kept.",
-      "runNow": "Crawl now (dev)",
-      "running": "Crawling…",
-      "started": "Crawl started; the log updates itself.",
-      "alreadyRunning": "A crawl is already running. Try again when it finishes.",
-      "startError": "Could not start the crawl. Check the AI service.",
-      "loadError": "Could not load the crawl log.",
-      "empty": "No crawl has run yet.",
-      "status": {
-        "RUNNING": "Running",
-        "SUCCESS": "Succeeded",
-        "PARTIAL": "Partly failed",
-        "FAILED": "Failed"
-      },
-      "trigger": {
-        "MANUAL": "Manual",
-        "SCHEDULE": "Scheduled"
-      },
-      "totals": "{{pages}} sources · {{posts}} posts",
-      "credits": "{{count}} credits left",
-      "page": "Page / source",
-      "posts": "Posts",
-      "failed": "Error"
-    },
-    "live": {
-      "running": "Crawling now",
-      "last": "Last crawl",
-      "posts": "posts crawled"
     }
   }
 }
