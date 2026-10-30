@@ -30,11 +30,13 @@ export function CampaignDelivery({
   campaign,
   canManage,
   onChanged,
+  onTasksAvailable,
 }: {
   workspaceId: string;
   campaign: Campaign;
   canManage: boolean;
   onChanged: (value?: Campaign) => void;
+  onTasksAvailable: (campaignId: string, available: boolean) => void;
 }) {
   const { t, i18n } = useTranslation();
   const [deployment, setDeployment] = useState<CampaignDeployment | null>(null);
@@ -54,24 +56,35 @@ export function CampaignDelivery({
           workspaceId,
           campaign.id,
         );
-        const value = requireApiData<CampaignDeployment>(state.data);
+        const value =
+          state.data.success === true && state.data.data === null
+            ? null
+            : requireApiData<CampaignDeployment>(state.data);
         if (active) {
           setDeployment(value);
           setLoadError(false);
           setLoaded(true);
         }
-        if (value.status === "SUCCEEDED" || campaign.status !== "APPROVED") {
+        if (value?.status === "SUCCEEDED" || campaign.status !== "APPROVED") {
           const list = await campaignService.tasks(workspaceId, campaign.id);
-          if (active) setTasks(requireApiData<CampaignTask[]>(list.data));
+          if (active) {
+            const items = requireApiData<CampaignTask[]>(list.data);
+            setTasks(items);
+            onTasksAvailable(campaign.id, items.length > 0);
+          }
+        } else if (active) {
+          setTasks([]);
+          onTasksAvailable(campaign.id, false);
         }
         if (
           active &&
           campaign.status === "APPROVED" &&
-          value.status === "SUCCEEDED"
+          value?.status === "SUCCEEDED"
         )
           onChanged();
       } catch (error) {
         if (!active) return;
+        onTasksAvailable(campaign.id, false);
         if (isDeploymentNotFound(error) && campaign.status === "APPROVED") {
           setDeployment(null);
           setLoaded(true);
@@ -94,6 +107,7 @@ export function CampaignDelivery({
     campaign.status,
     deployment?.status,
     onChanged,
+    onTasksAvailable,
     t,
     revision,
   ]);
@@ -137,29 +151,32 @@ export function CampaignDelivery({
   const completedCount = tasks.filter((task) =>
     ["COMPLETED", "FINISHED"].includes(task.status),
   ).length;
-  const cancelledCount = tasks.filter((task) => task.status === "CANCELLED").length;
+  const cancelledCount = tasks.filter(
+    (task) => task.status === "CANCELLED",
+  ).length;
   const inProgressCount = tasks.filter(
     (task) => !["COMPLETED", "FINISHED", "CANCELLED"].includes(task.status),
   ).length;
   const done = completedCount + cancelledCount;
-  const progressPercent = totalTasks > 0 ? Math.round((done / totalTasks) * 100) : 0;
+  const progressPercent =
+    totalTasks > 0 ? Math.round((done / totalTasks) * 100) : 0;
 
   return (
     <section
       id="campaign-delivery"
-      className="border-border bg-card scroll-mt-6 space-y-6 rounded-2xl border p-5 sm:p-7 shadow-xs"
+      className="border-border bg-card scroll-mt-6 space-y-6 rounded-2xl border p-5 shadow-xs sm:p-7"
     >
       {/* Top Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h3 className="text-xl font-bold tracking-tight text-foreground">
+            <h3 className="text-foreground text-xl font-bold tracking-tight">
               {t("campaign.delivery.title")}
             </h3>
             {deployment && (
               <span
                 role="status"
-                className="inline-flex items-center gap-1.5 rounded-full bg-muted/80 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+                className="bg-muted/80 text-muted-foreground inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
               >
                 <span
                   className={`size-1.5 rounded-full ${
@@ -167,7 +184,7 @@ export function CampaignDelivery({
                       ? "bg-emerald-500"
                       : deployment.status === "FAILED"
                         ? "bg-rose-500"
-                        : "bg-amber-500 animate-pulse"
+                        : "animate-pulse bg-amber-500"
                   }`}
                 />
                 {t(`campaign.delivery.${deployment.status}`, {
@@ -195,7 +212,7 @@ export function CampaignDelivery({
               variant="orange"
               loading={busy}
               onClick={() => void deploy()}
-              className="gap-2 shadow-sm font-medium"
+              className="gap-2 font-medium shadow-sm"
             >
               <Rocket className="size-4" />
               {t("campaign.delivery.deploy")}
@@ -207,7 +224,7 @@ export function CampaignDelivery({
       {deployment?.status === "PENDING" && (
         <div
           role="status"
-          className="relative overflow-hidden rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 sm:p-5 transition-all"
+          className="relative overflow-hidden rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 transition-all sm:p-5"
         >
           <div className="flex items-center gap-3.5">
             <div className="relative flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400">
@@ -217,8 +234,8 @@ export function CampaignDelivery({
                 <span className="relative inline-flex size-2.5 rounded-full bg-amber-500" />
               </span>
             </div>
-            <div className="space-y-0.5 min-w-0">
-              <p className="font-semibold text-amber-950 dark:text-amber-200 text-sm sm:text-base">
+            <div className="min-w-0 space-y-0.5">
+              <p className="text-sm font-semibold text-amber-950 sm:text-base dark:text-amber-200">
                 {t("campaign.delivery.PENDING", {
                   defaultValue: "Đang tự động khởi tạo đầu việc...",
                 })}
@@ -238,27 +255,27 @@ export function CampaignDelivery({
       {deployment?.status === "FAILED" && (
         <div
           role="alert"
-          className="relative overflow-hidden rounded-xl border border-destructive/40 bg-destructive/10 p-4 sm:p-5 transition-all"
+          className="border-destructive/40 bg-destructive/10 relative overflow-hidden rounded-xl border p-4 transition-all sm:p-5"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div className="flex items-start gap-3.5">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-destructive/20 text-destructive ring-1 ring-destructive/30">
+              <div className="bg-destructive/20 text-destructive ring-destructive/30 flex size-10 shrink-0 items-center justify-center rounded-xl ring-1">
                 <AlertCircle className="size-5" />
               </div>
-              <div className="space-y-1 min-w-0">
-                <p className="font-semibold text-destructive text-sm sm:text-base">
+              <div className="min-w-0 space-y-1">
+                <p className="text-destructive text-sm font-semibold sm:text-base">
                   {t("campaign.delivery.FAILED", {
                     defaultValue: "Triển khai chưa hoàn tất",
                   })}
                 </p>
-                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
                   <span>
                     {t("campaign.delivery.attempts", {
                       count: deployment.attemptCount,
                     })}
                   </span>
                   {deployment.lastErrorCode && (
-                    <span className="font-mono text-destructive bg-destructive/15 px-2 py-0.5 rounded-md font-semibold">
+                    <span className="text-destructive bg-destructive/15 rounded-md px-2 py-0.5 font-mono font-semibold">
                       Mã lỗi: {deployment.lastErrorCode}
                     </span>
                   )}
@@ -271,7 +288,7 @@ export function CampaignDelivery({
                 variant="orange"
                 loading={busy}
                 onClick={() => void deploy()}
-                className="shrink-0 gap-2 shadow-sm font-medium"
+                className="shrink-0 gap-2 font-medium shadow-sm"
               >
                 <RotateCw className="size-4" />
                 {t("campaign.delivery.retry", {
@@ -287,11 +304,13 @@ export function CampaignDelivery({
       {loadError && (
         <div
           role="alert"
-          className="border-destructive/30 bg-destructive/5 rounded-xl border p-4 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+          className="border-destructive/30 bg-destructive/5 flex flex-col justify-between gap-3 rounded-xl border p-4 text-sm sm:flex-row sm:items-center"
         >
           <div className="flex items-center gap-3">
-            <AlertCircle className="size-5 text-destructive shrink-0" />
-            <p className="text-destructive font-medium">{t("campaign.error")}</p>
+            <AlertCircle className="text-destructive size-5 shrink-0" />
+            <p className="text-destructive font-medium">
+              {t("campaign.error")}
+            </p>
           </div>
           <Button
             variant="outline"
@@ -308,10 +327,10 @@ export function CampaignDelivery({
       {/* Deployment last error details if not FAILED status */}
       {deployment?.lastErrorCode && deployment.status !== "FAILED" && (
         <details className="border-destructive/30 bg-destructive/5 rounded-xl border p-3.5 text-sm">
-          <summary className="focus-visible:ring-ring cursor-pointer rounded-sm outline-none font-medium text-destructive focus-visible:ring-2">
+          <summary className="focus-visible:ring-ring text-destructive cursor-pointer rounded-sm font-medium outline-none focus-visible:ring-2">
             {t("campaign.ui.deploymentError")}
           </summary>
-          <p className="mt-2 font-mono text-xs text-muted-foreground break-words bg-card/60 p-2 rounded-md">
+          <p className="text-muted-foreground bg-card/60 mt-2 rounded-md p-2 font-mono text-xs break-words">
             {deployment.lastErrorCode}
           </p>
         </details>
@@ -321,15 +340,15 @@ export function CampaignDelivery({
       {totalTasks > 0 && (
         <div className="space-y-6 pt-1">
           {/* Progress Header & Bar */}
-          <div className="rounded-xl border border-border/60 bg-muted/20 p-4 sm:p-5 space-y-3">
+          <div className="border-border/60 bg-muted/20 space-y-3 rounded-xl border p-4 sm:p-5">
             <div className="flex flex-wrap items-end justify-between gap-2">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
                   {t("campaign.ui.taskProgress", {
                     defaultValue: "Tiến độ hoàn thành Task",
                   })}
                 </span>
-                <p className="text-sm font-medium text-foreground mt-0.5">
+                <p className="text-foreground mt-0.5 text-sm font-medium">
                   {t("campaign.closure.progress", {
                     done,
                     total: totalTasks,
@@ -337,7 +356,7 @@ export function CampaignDelivery({
                 </p>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-brand-orange to-amber-500 bg-clip-text text-transparent">
+                <span className="from-brand-orange bg-gradient-to-r to-amber-500 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl">
                   {progressPercent}%
                 </span>
               </div>
@@ -349,29 +368,29 @@ export function CampaignDelivery({
               aria-valuenow={done}
               aria-valuemin={0}
               aria-valuemax={totalTasks}
-              className="bg-muted/80 h-3 w-full overflow-hidden rounded-full ring-1 ring-border/40"
+              className="bg-muted/80 ring-border/40 h-3 w-full overflow-hidden rounded-full ring-1"
             >
               <div
-                className="h-full rounded-full bg-gradient-to-r from-brand-orange to-amber-500 transition-all duration-500 shadow-xs"
+                className="from-brand-orange h-full rounded-full bg-gradient-to-r to-amber-500 shadow-xs transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
           </div>
 
           {/* 4 Bento Metric Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {/* Bento Card 1: Tổng số task */}
-            <div className="group relative overflow-hidden rounded-xl border border-border/70 bg-card p-4 transition-all duration-200 hover:border-border hover:shadow-xs">
+            <div className="group border-border/70 bg-card hover:border-border relative overflow-hidden rounded-xl border p-4 transition-all duration-200 hover:shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-muted-foreground">
+                <span className="text-muted-foreground text-xs font-medium">
                   Tổng số task
                 </span>
-                <div className="rounded-lg bg-muted p-2 text-muted-foreground">
+                <div className="bg-muted text-muted-foreground rounded-lg p-2">
                   <Layers className="size-4" />
                 </div>
               </div>
               <div className="mt-3">
-                <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                <span className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
                   {totalTasks}
                 </span>
               </div>
@@ -390,7 +409,7 @@ export function CampaignDelivery({
                 </div>
               </div>
               <div className="mt-3">
-                <span className="text-2xl sm:text-3xl font-bold tracking-tight text-sky-700 dark:text-sky-300">
+                <span className="text-2xl font-bold tracking-tight text-sky-700 sm:text-3xl dark:text-sky-300">
                   {inProgressCount}
                 </span>
               </div>
@@ -409,7 +428,7 @@ export function CampaignDelivery({
                 </div>
               </div>
               <div className="mt-3">
-                <span className="text-2xl sm:text-3xl font-bold tracking-tight text-emerald-700 dark:text-emerald-300">
+                <span className="text-2xl font-bold tracking-tight text-emerald-700 sm:text-3xl dark:text-emerald-300">
                   {completedCount}
                 </span>
               </div>
@@ -428,7 +447,7 @@ export function CampaignDelivery({
                 </div>
               </div>
               <div className="mt-3">
-                <span className="text-2xl sm:text-3xl font-bold tracking-tight text-rose-700 dark:text-rose-300">
+                <span className="text-2xl font-bold tracking-tight text-rose-700 sm:text-3xl dark:text-rose-300">
                   {cancelledCount}
                 </span>
               </div>
@@ -446,19 +465,19 @@ export function CampaignDelivery({
 
       {/* Closure CTA Banner: IN_PROGRESS */}
       {canManage && campaign.status === "IN_PROGRESS" && (
-        <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-br from-card via-card to-brand-orange/5 p-5 sm:p-6 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="border-border/80 from-card via-card to-brand-orange/5 relative overflow-hidden rounded-2xl border bg-gradient-to-br p-5 shadow-xs sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3.5">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-orange/10 text-brand-orange ring-1 ring-brand-orange/20">
+              <div className="bg-brand-orange/10 text-brand-orange ring-brand-orange/20 flex size-11 shrink-0 items-center justify-center rounded-xl ring-1">
                 <ShieldCheck className="size-6" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-semibold text-foreground text-base">
+                <h4 className="text-foreground text-base font-semibold">
                   {t("campaign.closure.title", {
                     defaultValue: "Nghiệm thu & Kết thúc chiến dịch",
                   })}
                 </h4>
-                <p className="text-muted-foreground text-xs sm:text-sm max-w-xl">
+                <p className="text-muted-foreground max-w-xl text-xs sm:text-sm">
                   {t("campaign.delivery.reasonHint", {
                     defaultValue:
                       "Cần xử lý mọi đầu việc và yêu cầu đang xem xét trước khi kết thúc chiến dịch.",
@@ -470,7 +489,7 @@ export function CampaignDelivery({
               data-campaign-complete
               variant="orange"
               size="lg"
-              className="shrink-0 gap-2 shadow-sm font-medium"
+              className="shrink-0 gap-2 font-medium shadow-sm"
               onClick={() => setClosing(true)}
             >
               <ShieldCheck className="size-4" />
@@ -484,17 +503,17 @@ export function CampaignDelivery({
 
       {/* COMPLETED Celebration Banner */}
       {campaign.status === "COMPLETED" && (
-        <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent p-5 sm:p-6 text-sm shadow-xs">
+        <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent p-5 text-sm shadow-xs sm:p-6">
           <div className="flex items-start gap-3.5">
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/30">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-600 ring-1 ring-emerald-500/30 dark:text-emerald-400">
               <CheckCircle2 className="size-6" />
             </div>
-            <div className="space-y-2.5 min-w-0 flex-1">
+            <div className="min-w-0 flex-1 space-y-2.5">
               <div>
-                <h4 className="font-bold text-emerald-950 dark:text-emerald-200 text-base sm:text-lg">
+                <h4 className="text-base font-bold text-emerald-950 sm:text-lg dark:text-emerald-200">
                   Chiến dịch đã hoàn tất thành công
                 </h4>
-                <p className="text-xs text-emerald-800/80 dark:text-emerald-400/80 mt-0.5">
+                <p className="mt-0.5 text-xs text-emerald-800/80 dark:text-emerald-400/80">
                   {t("campaign.delivery.completedAt", {
                     date: campaign.completedAt
                       ? new Intl.DateTimeFormat(i18n.language, {
@@ -506,11 +525,11 @@ export function CampaignDelivery({
                 </p>
               </div>
               {campaign.completionReason && (
-                <div className="mt-2 rounded-xl border border-emerald-500/20 bg-card/60 p-3.5">
-                  <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1">
+                <div className="bg-card/60 mt-2 rounded-xl border border-emerald-500/20 p-3.5">
+                  <span className="text-muted-foreground mb-1 block text-[11px] font-semibold tracking-wider uppercase">
                     Lý do nghiệm thu & hoàn tất:
                   </span>
-                  <p className="text-foreground break-words whitespace-pre-wrap text-sm leading-relaxed">
+                  <p className="text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">
                     {campaign.completionReason}
                   </p>
                 </div>

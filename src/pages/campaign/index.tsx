@@ -34,6 +34,10 @@ export default function CampaignPanel({
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [reload, setReload] = useState(0);
+  const [taskCampaignId, setTaskCampaignId] = useState<string | null>(null);
+  const onTasksAvailable = useCallback((id: string, available: boolean) => {
+    setTaskCampaignId(available ? id : null);
+  }, []);
   const terms = selection.finalTerms;
   const source = terms.offeringDetails as
     { deliverables?: PackageDeliverable[] } | undefined;
@@ -124,9 +128,9 @@ export default function CampaignPanel({
         {!loading && !error && (
           <nav
             aria-label={t("campaign.ui.stages")}
-            className="mt-4 overflow-x-auto no-scrollbar py-1"
+            className="no-scrollbar mt-4 overflow-x-auto py-1"
           >
-            <ol className="flex min-w-[560px] sm:min-w-0 items-center justify-between">
+            <ol className="flex min-w-[560px] items-center justify-between sm:min-w-0">
               {stages.map((status, index) => {
                 const isCurrent = stage === status;
                 const isCompleted = index < currentStageIndex;
@@ -138,9 +142,9 @@ export default function CampaignPanel({
                     className="flex flex-1 items-center last:flex-none"
                   >
                     <div
-                      className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs sm:text-sm transition-all duration-200 ${
+                      className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs transition-all duration-200 sm:text-sm ${
                         isCurrent
-                          ? "border-brand-orange bg-brand-orange/10 text-brand-orange font-semibold shadow-xs ring-2 ring-brand-orange/20"
+                          ? "border-brand-orange bg-brand-orange/10 text-brand-orange ring-brand-orange/20 font-semibold shadow-xs ring-2"
                           : isCompleted
                             ? "border-brand-orange/40 bg-card text-foreground"
                             : "border-border/60 bg-muted/20 text-muted-foreground opacity-75"
@@ -149,10 +153,10 @@ export default function CampaignPanel({
                       <span
                         className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-200 ${
                           isCurrent
-                            ? "bg-brand-orange text-white shadow-xs ring-2 ring-brand-orange/30"
+                            ? "bg-brand-orange ring-brand-orange/30 text-white shadow-xs ring-2"
                             : isCompleted
                               ? "bg-brand-orange text-white"
-                              : "border border-border bg-background text-muted-foreground"
+                              : "border-border bg-background text-muted-foreground border"
                         }`}
                       >
                         {isCompleted ? (
@@ -161,7 +165,7 @@ export default function CampaignPanel({
                           index + 1
                         )}
                       </span>
-                      <span className="whitespace-nowrap font-medium">
+                      <span className="font-medium whitespace-nowrap">
                         {t(`campaign.status.${status}`)}
                       </span>
                     </div>
@@ -172,7 +176,7 @@ export default function CampaignPanel({
                           index < currentStageIndex
                             ? "bg-brand-orange"
                             : isCurrent
-                              ? "bg-gradient-to-r from-brand-orange to-border"
+                              ? "from-brand-orange to-border bg-gradient-to-r"
                               : "bg-border/60"
                         }`}
                         aria-hidden="true"
@@ -225,6 +229,7 @@ export default function CampaignPanel({
               campaign={campaign}
               workspaceId={selection.workspaceId}
               canManage={canManage}
+              hasTasks={taskCampaignId === campaign.id}
             />
           )}
           {legacy && (
@@ -235,16 +240,16 @@ export default function CampaignPanel({
               {t("campaign.errors.CAMPAIGN_LEGACY_TERMS")}
             </p>
           )}
-          {canManage && !legacy && !editing && (!campaign || campaign.status === "DRAFT") && (
-            <div className="flex flex-col items-end gap-2">
-              <Button
-                variant="orange"
-                onClick={() => setEditing(true)}
-              >
-                {t(campaign ? "campaign.edit" : "campaign.create")}
-              </Button>
-            </div>
-          )}
+          {canManage &&
+            !legacy &&
+            !editing &&
+            (!campaign || campaign.status === "DRAFT") && (
+              <div className="flex flex-col items-end gap-2">
+                <Button variant="orange" onClick={() => setEditing(true)}>
+                  {t(campaign ? "campaign.edit" : "campaign.create")}
+                </Button>
+              </div>
+            )}
           {!campaign && !editing && (
             <div className="border-border bg-muted/20 flex items-center gap-1 rounded-lg border border-dashed p-4 text-sm">
               <h3 className="font-medium">{t("campaign.empty")}</h3>
@@ -277,10 +282,12 @@ export default function CampaignPanel({
                 onApproved={setCampaign}
               />
               <CampaignDelivery
+                key={campaign.id}
                 workspaceId={selection.workspaceId}
                 campaign={campaign}
                 canManage={canManage}
                 onChanged={refreshCampaign}
+                onTasksAvailable={onTasksAvailable}
               />
             </>
           )}

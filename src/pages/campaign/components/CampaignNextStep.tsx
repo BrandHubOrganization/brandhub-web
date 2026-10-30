@@ -16,10 +16,12 @@ export function CampaignNextStep({
   campaign,
   workspaceId,
   canManage,
+  hasTasks,
 }: {
   campaign: Campaign;
   workspaceId: string;
   canManage: boolean;
+  hasTasks: boolean;
 }) {
   const { t } = useTranslation();
   const stage = campaign.status;
@@ -51,9 +53,11 @@ export function CampaignNextStep({
             {t("campaign.ux.nextStep")}
           </h3>
           <p className="text-muted-foreground mt-1 text-sm leading-6">
-            {t(
-              `campaign.ux.${!canManage && (stage === "APPROVED" || stage === "IN_PROGRESS") ? "clientGuidance" : "guidance"}.${stage}`,
-            )}
+            {!hasTasks && stage === "IN_PROGRESS"
+              ? t("campaign.ux.awaitingTasks")
+              : t(
+                  `campaign.ux.${!canManage && (stage === "APPROVED" || stage === "IN_PROGRESS") ? "clientGuidance" : "guidance"}.${stage}`,
+                )}
           </p>
         </div>
       </div>
@@ -122,19 +126,21 @@ export function CampaignNextStep({
           )}
         </div>
 
-        <div className="ml-auto">
-          <Button
-            variant="orange"
-            size="sm"
-            className="gap-1.5 shadow-2xs"
-            asChild
-          >
-            <Link to={`/workspaces/${workspaceId}/tasks`}>
-              <span>{t("campaign.ux.openTasks")}</span>
-              <ArrowRight className="size-3.5" />
-            </Link>
-          </Button>
-        </div>
+        {hasTasks && (
+          <div className="ml-auto">
+            <Button
+              variant="orange"
+              size="sm"
+              className="gap-1.5 shadow-2xs"
+              asChild
+            >
+              <Link to={`/workspaces/${workspaceId}/tasks`}>
+                <span>{t("campaign.ux.openTasks")}</span>
+                <ArrowRight className="size-3.5" />
+              </Link>
+            </Button>
+          </div>
+        )}
       </nav>
     </section>
   );
