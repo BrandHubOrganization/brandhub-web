@@ -15,7 +15,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { topicLabel, type TrendItem } from "@/services/trendService";
+import {
+  PLATFORM_LABEL,
+  topicLabel,
+  trendPlatforms,
+  type TrendItem,
+} from "@/services/trendService";
 import { TrendPostList } from "./TrendPostList";
 
 /** FR 3.7.1 trend detail (as in the trend-pipeline demo): growth line, emotion breakdown, keywords, posts. */
@@ -48,6 +53,8 @@ export function TrendDetailDialog({
               item.status && t(`aiStudio.trends.status.${item.status}`),
               item.topic && topicLabel(t, item.topic),
               item.crossTopic && t("aiStudio.trends.superTrend"),
+              item.isCampaign && t("aiStudio.trends.campaign"),
+              ...trendPlatforms(item).map((p) => PLATFORM_LABEL[p] ?? p),
               `${t("aiStudio.trends.score")} ${item.score.toFixed(2)}`,
             ]
               .filter(Boolean)
@@ -228,13 +235,83 @@ export function TrendDetailDialog({
                     key={kw}
                     className="bg-muted text-muted-foreground rounded-full px-2 py-0.5"
                   >
-                    #{kw}
+                    {kw.startsWith("#") ? kw : `#${kw}`}
                   </span>
                 ))}
               </div>
             )}
           </section>
         </div>
+
+        {item.isCampaign && (
+          <p className="rounded-lg bg-amber-500/10 px-3 py-2 text-sm text-amber-800 dark:text-amber-200">
+            {t("aiStudio.trends.campaignHint")}
+          </p>
+        )}
+
+        {item.format && (
+          <section className="space-y-2 text-xs">
+            <h3 className="text-sm font-semibold">
+              {t("aiStudio.trends.format.title")}
+            </h3>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5">
+              {item.format.sound && (
+                <>
+                  <dt className="text-muted-foreground">
+                    {t("aiStudio.trends.format.sound")}
+                  </dt>
+                  <dd className="min-w-0 font-medium break-words">
+                    {item.format.sound}
+                    {item.format.soundKind &&
+                      ` (${t(`aiStudio.trends.format.kind.${item.format.soundKind}`)})`}
+                  </dd>
+                </>
+              )}
+              {item.format.sharedSound && (
+                <>
+                  <dt className="text-muted-foreground">
+                    {t("aiStudio.trends.format.sharedSound")}
+                  </dt>
+                  <dd className="min-w-0 font-medium break-words">
+                    {item.format.sharedSound}
+                  </dd>
+                </>
+              )}
+              {item.format.medianDurationS != null && (
+                <>
+                  <dt className="text-muted-foreground">
+                    {t("aiStudio.trends.format.length")}
+                  </dt>
+                  <dd className="font-medium tabular-nums">
+                    {t("aiStudio.trends.format.seconds", {
+                      count: Math.round(item.format.medianDurationS),
+                    })}
+                  </dd>
+                </>
+              )}
+              {item.format.openingLine && (
+                <>
+                  <dt className="text-muted-foreground">
+                    {t("aiStudio.trends.format.opening")}
+                  </dt>
+                  <dd className="min-w-0 break-words italic">
+                    “{item.format.openingLine}”
+                  </dd>
+                </>
+              )}
+            </dl>
+            {item.format.topVideo && (
+              <a
+                href={item.format.topVideo}
+                target="_blank"
+                rel="noreferrer"
+                className="text-brand-orange inline-block font-medium underline-offset-2 hover:underline"
+              >
+                {t("aiStudio.trends.format.topVideo")}
+              </a>
+            )}
+          </section>
+        )}
 
         {(item.posts?.length ?? 0) > 0 && (
           <section className="border-border overflow-hidden rounded-xl border">

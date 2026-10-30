@@ -100,6 +100,8 @@
     },
     "topicFilter": "Lọc theo lĩnh vực",
     "allTopics": "Tất cả lĩnh vực",
+    "platformFilter": "Lọc theo nền tảng",
+    "allPlatforms": "Tất cả nền tảng",
     "refresh": "Làm mới",
     "empty": "Chưa có dữ liệu xu hướng",
     "emptyHint": "Hệ thống chưa crawl hoặc chưa có từ khóa nổi bật trong khoảng thời gian này. Dữ liệu sẽ xuất hiện sau lần crawl kế tiếp.",
@@ -126,6 +128,21 @@
       "declining": "Đang giảm"
     },
     "superTrend": "Siêu trend",
+    "campaign": "Chiến dịch quảng cáo",
+    "campaignHint": "Phần lớn bài của trend này là quảng cáo trả tiền của nhãn hàng khác: nên học cách làm (ý tưởng, format, creator), không nên đu theo.",
+    "format": {
+      "title": "Format video",
+      "sound": "Âm thanh video top",
+      "sharedSound": "Bài hát nhiều video dùng chung",
+      "length": "Độ dài thường gặp",
+      "opening": "Câu mở đầu",
+      "topVideo": "Xem video top",
+      "seconds": "{{count}} giây",
+      "kind": {
+        "music": "bài hát",
+        "original": "giọng của creator"
+      }
+    },
     "dailyPosts": "Số bài theo ngày",
     "copyKeyword": "Sao chép từ khóa",
     "copied": "Đã sao chép từ khóa.",
@@ -189,8 +206,15 @@
     "error": "Chưa tải được gợi ý trend.",
     "empty": "Hôm nay chưa có trend nào hợp brand.",
     "upcoming": "Sắp tới: {{list}}",
-    "verdict": { "nen": "Nên", "can_nhac": "Cân nhắc" },
-    "type": { "moment": "Dịp", "format": "Format", "event": "Sự kiện" },
+    "verdict": {
+      "nen": "Nên",
+      "can_nhac": "Cân nhắc"
+    },
+    "type": {
+      "moment": "Dịp",
+      "format": "Format",
+      "event": "Sự kiện"
+    },
     "techniques": {
       "khoanh_khac": "Khoảnh khắc",
       "choi_chu": "Chơi chữ",
@@ -240,6 +264,8 @@
       "failed": "Không bắt đầu được. Kiểm tra style/Ambassador và thử lại.",
       "timeout": "Quá thời gian tạo video.",
       "jobFailed": "AI không tạo được video này."
-    }
+    },
+    "openVideoSpace": "Mở Video Space",
+    "editInSpace": "Chỉnh sửa trong Video Space"
   }
 }

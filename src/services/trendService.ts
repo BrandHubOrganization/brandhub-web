@@ -25,7 +25,39 @@ export interface TrendItem {
   growth?: { day: string; posts: number; change: number }[];
   /** Average softmax per author emotion (vui, buồn, ...), 0..1. */
   emotionDist?: Record<string, number>;
+  /** Most posts are another brand's paid promotion: study it, don't ride it. */
+  isCampaign?: boolean;
+  /** TikTok only: how the trend's videos are made. */
+  format?: TrendFormat | null;
 }
+
+/** How a TikTok trend's videos are made, so a Creator can borrow the format. */
+export interface TrendFormat {
+  topVideo: string | null;
+  sound: string | null;
+  /** "original" = the creator's own voice; "music" = a song. */
+  soundKind: "music" | "original" | null;
+  /** A song several of the trend's videos use. */
+  sharedSound: string | null;
+  medianDurationS?: number;
+  /** What the creator says first, heard by whisper. */
+  openingLine: string | null;
+  coverUrl: string | null;
+}
+
+export const PLATFORM_LABEL: Record<string, string> = {
+  facebook: "Facebook",
+  threads: "Threads",
+  tiktok: "TikTok",
+};
+
+/** Platforms a trend was seen on: its per-platform post counts, else the posts shown with it. */
+export const trendPlatforms = (item: TrendItem) => {
+  const counted = Object.keys(item.sources ?? {});
+  return counted.length
+    ? counted
+    : [...new Set((item.posts ?? []).map((p) => p.source).filter((s): s is string => !!s))];
+};
 
 /** A post behind a trend (T7 post_items), shown in the card's hover popup. */
 export interface TrendPost {
@@ -60,16 +92,18 @@ export interface CrawlSummary {
   nextRunAt: string | null;
 }
 
-export async function fetchTrends(period: TrendPeriod, topic: string) {
+export async function fetchTrends(period: TrendPeriod, topic: string, platform = "") {
   const res = await api.get<{
     data: {
       items: TrendItem[];
       topics: string[];
+      /** Platforms that have at least one trend in this period. */
+      platforms?: string[];
       topicStats: TopicStat[];
       crawl: CrawlSummary | null;
     };
   }>("/api/v1/ai/trending-topics", {
-    params: { period, topic: topic || undefined, limit: 30 },
+    params: { period, topic: topic || undefined, platform: platform || undefined, limit: 30 },
   });
   return res.data.data;
 }

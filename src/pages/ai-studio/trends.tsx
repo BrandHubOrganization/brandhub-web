@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import {
   Copy,
   Flame,
+  Megaphone,
+  Music2,
   Newspaper,
   Radar,
   RefreshCw,
@@ -26,7 +28,9 @@ import {
 import { cn } from "@/lib/utils";
 import {
   fetchTrends,
+  PLATFORM_LABEL,
   topicLabel,
+  trendPlatforms,
   type TrendItem,
   type TrendPeriod,
 } from "@/services/trendService";
@@ -65,10 +69,11 @@ function TrendsDashboard() {
   const { t, i18n } = useTranslation();
   const [period, setPeriod] = useState<TrendPeriod>("24h");
   const [topic, setTopic] = useState("");
+  const [platform, setPlatform] = useState("");
   const [selected, setSelected] = useState<TrendItem | null>(null);
   const trends = useQuery({
-    queryKey: ["ai-trends", period, topic],
-    queryFn: () => fetchTrends(period, topic),
+    queryKey: ["ai-trends", period, topic, platform],
+    queryFn: () => fetchTrends(period, topic, platform),
     staleTime: 60_000,
   });
   const items = trends.data?.items ?? [];
@@ -125,6 +130,25 @@ function TrendsDashboard() {
             ...(trends.data?.topics ?? []).map((name) => ({
               value: name,
               label: topicLabel(t, name),
+            })),
+          ]}
+        />
+        <SelectMenu
+          className="h-9 w-44 text-sm"
+          ariaLabel={t("aiStudio.trends.platformFilter")}
+          value={platform}
+          onChange={setPlatform}
+          options={[
+            { value: "", label: t("aiStudio.trends.allPlatforms") },
+            // Every crawled platform stays selectable, even on a day it has no trend.
+            ...[
+              ...new Set([
+                ...Object.keys(PLATFORM_LABEL),
+                ...(trends.data?.platforms ?? []),
+              ]),
+            ].map((name) => ({
+              value: name,
+              label: PLATFORM_LABEL[name] ?? name,
             })),
           ]}
         />
@@ -227,6 +251,7 @@ function TrendCard({
   const { t } = useTranslation();
   const maxCount = Math.max(1, ...item.dailyCounts);
   const posts = item.posts ?? [];
+  const platforms = trendPlatforms(item);
   const copy = () =>
     navigator.clipboard
       .writeText(item.keyword)
@@ -279,6 +304,23 @@ function TrendCard({
                 {t("aiStudio.trends.superTrend")}
               </span>
             )}
+            {item.isCampaign && (
+              <span
+                title={t("aiStudio.trends.campaignHint")}
+                className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 font-medium text-amber-700 dark:text-amber-300"
+              >
+                <Megaphone className="size-3" />
+                {t("aiStudio.trends.campaign")}
+              </span>
+            )}
+            {platforms.map((p) => (
+              <span
+                key={p}
+                className="border-border text-muted-foreground rounded-full border px-2 py-0.5"
+              >
+                {PLATFORM_LABEL[p] ?? p}
+              </span>
+            ))}
           </div>
         </div>
       </header>
@@ -363,6 +405,21 @@ function TrendCard({
             </span>
           ))}
         </div>
+      )}
+
+      {item.format?.sound && (
+        <p
+          className="text-muted-foreground flex items-center gap-1.5 text-xs"
+          title={t("aiStudio.trends.format.sound")}
+        >
+          <Music2 className="size-3.5 shrink-0" />
+          <span className="truncate">{item.format.sound}</span>
+          {item.format.medianDurationS != null && (
+            <span className="shrink-0 tabular-nums">
+              · {t("aiStudio.trends.format.seconds", { count: Math.round(item.format.medianDurationS) })}
+            </span>
+          )}
+        </p>
       )}
 
       {item.samplePosts[0] && (

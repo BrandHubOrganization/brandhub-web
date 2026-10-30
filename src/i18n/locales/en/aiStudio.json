@@ -100,6 +100,8 @@
     },
     "topicFilter": "Filter by topic",
     "allTopics": "All topics",
+    "platformFilter": "Filter by platform",
+    "allPlatforms": "All platforms",
     "refresh": "Refresh",
     "empty": "No trend data yet",
     "emptyHint": "The crawler has not run yet or found no standout keywords in this window. Data appears after the next crawl.",
@@ -126,6 +128,21 @@
       "declining": "Declining"
     },
     "superTrend": "Super trend",
+    "campaign": "Paid campaign",
+    "campaignHint": "Most posts in this trend are another brand's paid promotion: study how it was done (idea, format, creators) rather than riding it.",
+    "format": {
+      "title": "Video format",
+      "sound": "Top video sound",
+      "sharedSound": "Song shared by several videos",
+      "length": "Typical length",
+      "opening": "Opening line",
+      "topVideo": "Watch the top video",
+      "seconds": "{{count}} s",
+      "kind": {
+        "music": "a song",
+        "original": "the creator's own voice"
+      }
+    },
     "dailyPosts": "Posts per day",
     "copyKeyword": "Copy keyword",
     "copied": "Keyword copied.",
@@ -191,8 +208,15 @@
     "error": "Could not load trend suggestions.",
     "empty": "No trend suits your brand today.",
     "upcoming": "Coming up: {{list}}",
-    "verdict": { "nen": "Go", "can_nhac": "Consider" },
-    "type": { "moment": "Occasion", "format": "Format", "event": "Event" },
+    "verdict": {
+      "nen": "Go",
+      "can_nhac": "Consider"
+    },
+    "type": {
+      "moment": "Occasion",
+      "format": "Format",
+      "event": "Event"
+    },
     "techniques": {
       "khoanh_khac": "Moment",
       "choi_chu": "Wordplay",
@@ -242,6 +266,8 @@
       "failed": "Could not start. Check the style/Ambassador and try again.",
       "timeout": "Video generation timed out.",
       "jobFailed": "The AI could not create this video."
-    }
+    },
+    "openVideoSpace": "Open Video Space",
+    "editInSpace": "Edit in Video Space"
   }
 }

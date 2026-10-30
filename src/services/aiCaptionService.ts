@@ -48,6 +48,10 @@ export interface FitTrend {
   risk: number | null;
   reason: string | null;
   techniques: TrendTechnique[];
+  /** Another brand's paid campaign: the AI only suggests studying it (verdict at most can_nhac). */
+  campaign: boolean;
+  /** How the trend's top TikTok videos are made (sound, length, opening line), or null. */
+  format: string | null;
 }
 
 export interface TrendFit {

@@ -6,6 +6,8 @@ import {
   Flame,
   Layers,
   Loader2,
+  Megaphone,
+  Music2,
   Replace,
   ShieldQuestion,
   Sparkles,
@@ -514,6 +516,15 @@ function BrandFitTrends({
                 <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5">
                   {t(`aiStudio.trendFit.type.${item.type}`)}
                 </span>
+                {item.campaign && (
+                  <span
+                    title={t("aiStudio.trends.campaignHint")}
+                    className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 font-medium text-amber-700 dark:text-amber-300"
+                  >
+                    <Megaphone className="size-3" />
+                    {t("aiStudio.trends.campaign")}
+                  </span>
+                )}
                 {item.peak && (
                   <span className="text-muted-foreground tabular-nums">
                     {day(item.peak)}
@@ -524,6 +535,15 @@ function BrandFitTrends({
               {item.reason && (
                 <span className="text-muted-foreground line-clamp-2 text-xs">
                   {item.reason}
+                </span>
+              )}
+              {item.format && (
+                <span
+                  title={item.format}
+                  className="text-muted-foreground flex items-start gap-1 text-[11px]"
+                >
+                  <Music2 className="mt-0.5 size-3 shrink-0" />
+                  <span className="line-clamp-1">{item.format}</span>
                 </span>
               )}
               {item.techniques.length > 0 && (
