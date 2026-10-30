@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import {
-  ArrowLeft,
   Network,
   PanelLeftClose,
   PanelLeftOpen,
@@ -153,14 +151,6 @@ export function AdminTrendGraphPanel() {
               <PanelLeftClose aria-hidden="true" className="size-4" />
             )}
           </Button>
-          <Link
-            to="/admin?view=trends"
-            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium underline focus-visible:outline-2"
-          >
-            <ArrowLeft aria-hidden="true" className="size-3.5" />
-            {t("admin.navigation.trends")}
-          </Link>
-          <div className="border-border/80 hidden h-5 w-px border-l sm:block" />
           <div className="flex min-w-0 items-center gap-2.5">
             <span
               aria-hidden="true"

@@ -1,4 +1,21 @@
 {
+  "trendSourceConfig": {
+    "title": "Nguồn crawl và số bài",
+    "sources": "Trang / nhóm Facebook",
+    "sourceHelp": "Mỗi dòng một URL https://www.facebook.com/ten-trang hoặc https://www.facebook.com/groups/id. Tối đa 50 nguồn, không nhập link bài viết.",
+    "maximum": "Số bài tối đa / nguồn",
+    "sourceCountError": "Nhập từ 1 đến 50 trang hoặc nhóm Facebook.",
+    "limitError": "Nhập số nguyên từ 1 đến 1.000.",
+    "total": "{{count}} nguồn · tối đa {{total}} bài / lượt",
+    "appliesNext": "Áp dụng cho lượt chạy tiếp theo, cả chạy ngay và theo lịch. Lượt đang chạy và lượt khôi phục giữ nguyên dữ liệu ban đầu. Số bài thực tế phụ thuộc nguồn.",
+    "save": "Lưu cấu hình",
+    "cancel": "Hoàn tác",
+    "saved": "Đã lưu. Cấu hình mới sẽ dùng từ lượt chạy tiếp theo.",
+    "stale": "Admin khác đã thay đổi cấu hình. Tải lại bản mới nhất trước khi sửa và lưu lại.",
+    "invalid": "Cấu hình chưa hợp lệ. Kiểm tra URL trang/nhóm Facebook, xóa nguồn trùng và nhập số bài từ 1 đến 1.000.",
+    "error": "Chưa tải hoặc lưu được cấu hình. Kiểm tra kết nối dịch vụ rồi thử lại; nếu vừa lưu, hãy tải lại để xác nhận kết quả.",
+    "reload": "Bỏ chỉnh sửa và tải lại"
+  },
   "trendGraph": {
     "description": "Tra cứu Trend và graph bằng chứng đã lưu trong Neo4j. Chỉ đọc, độc lập với bảng xếp hạng đã công bố.",
     "search": "Tìm Trend đã lưu",
@@ -318,6 +335,7 @@
     "trends": "Xem trend",
     "trendReplay": "Replay Trend S3",
     "workspace": "Quản trị nền tảng",
+    "ai": "Trí tuệ nhân tạo (AI)",
     "label": "Điều hướng quản trị",
     "scope": "Toàn bộ Agency",
     "overview": "Tổng quan",
@@ -332,7 +350,8 @@
     "mailBatches": "Đợt gửi email hệ thống",
     "invoices": "Lịch sử thanh toán",
     "workspaceTemplates": "Mẫu Workspace",
-    "mailSuppressions": "Danh sách hủy đăng ký hệ thống"
+    "mailSuppressions": "Danh sách hủy đăng ký hệ thống",
+    "trendPipeline": "Quản lý Crawler Trend"
   },
   "overview": {
     "title": "Tổng quan nền tảng",
@@ -688,7 +707,20 @@
   },
   "trendPipeline": {
     "title": "Trend pipeline",
+    "description": "Giám sát lịch thu thập tự động, điều khiển pipeline và cấu hình các nguồn Facebook.",
     "runNow": "Chạy pipeline ngay",
+    "recover": "Khôi phục lượt này",
+    "recovering": "Đang tiếp nhận khôi phục",
+    "interruptedDescription": "Lượt thu thập đã bị gián đoạn. Các batch đã xong được giữ lại; lượt này hiện không chạy.",
+    "recoveryUnavailable": "Thiếu hoặc không hợp lệ dữ liệu lưu để khôi phục lượt này.",
+    "recoveryNotReady": "Kiểm tra môi trường khôi phục, Redis và queue rồi làm mới.",
+    "recoveryAccepted": "Đã tiếp nhận khôi phục từ dữ liệu đã lưu. Theo dõi tổng hợp và lưu kết quả bên dưới.",
+    "recoveryConflict": "Lượt này đã đổi trạng thái hoặc không còn khôi phục được. Vui lòng làm mới.",
+    "runNotFound": "Không tìm thấy lượt pipeline này. Vui lòng làm mới danh sách.",
+    "confirmRecoveryTitle": "Khôi phục lượt pipeline bị gián đoạn?",
+    "confirmRecoveryDescription": "Dùng dữ liệu đã lưu của lượt này, không mở trình duyệt để crawl mới và không ép chạy lại batch đã xong. Worker sẽ tiếp tục tổng hợp và lưu kết quả; nguồn chưa thu thập được ghi nhận là thiếu. Các lời gọi AI tổng hợp có thể phát sinh phí.",
+    "sessionMissing": "Chưa có phiên Facebook hợp lệ để crawl mới. Vẫn có thể khôi phục dữ liệu đã lưu khi môi trường khôi phục sẵn sàng.",
+    "cancel": "Hủy",
     "history": "Các lượt pipeline gần đây",
     "ready": "Sẵn sàng chạy toàn bộ flow theo cấu hình hiện tại.",
     "accepted": "Đã tiếp nhận yêu cầu pipeline. Theo dõi thu thập, xử lý và lưu DB bên dưới.",
@@ -712,6 +744,8 @@
     "stage": {
       "STARTING": "Đang khởi động",
       "CRAWLING": "Đang thu thập và bàn giao dữ liệu",
+      "RECOVERING": "Đang khôi phục lượt đã lưu",
+      "INTERRUPTED": "Bị gián đoạn — cần khôi phục",
       "QUEUED": "Đang chờ worker",
       "PROCESSING": "Đang xử lý batch",
       "AGGREGATING": "Đang tổng hợp trend và lưu kết quả",

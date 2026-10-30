@@ -12,29 +12,49 @@ import {
   TrendingUp,
   Users,
   Wallet,
+  Workflow,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandHubLogo } from "@/components/auth/BrandHubLogo";
 import { useAuthStore } from "@/store/authStore";
 
-const sections = [
-  { key: "overview", icon: LayoutDashboard, planned: false },
-  { key: "users", icon: Users, planned: false },
-  { key: "moderation", icon: ShieldCheck, planned: false },
-  { key: "health", icon: Activity, planned: false },
-  { key: "revenue", icon: Wallet, planned: false },
-  { key: "email", icon: Mail, planned: false },
-  { key: "mailTemplates", icon: FileText, planned: false },
-  { key: "mailBatches", icon: Mail, planned: false },
-  { key: "mailSuppressions", icon: Mail, planned: false },
-  { key: "reports", icon: FileChartColumn, planned: false },
-  { key: "credit", icon: Wallet, planned: false },
-  { key: "trendReplay", icon: Activity, planned: false },
-  { key: "trends", icon: TrendingUp, planned: false },
-  { key: "trendGraph", icon: Network, planned: false },
-  { key: "invoices", icon: FileText, planned: false },
-  { key: "workspaceTemplates", icon: LayoutDashboard, planned: false },
+const menuGroups = [
+  {
+    title: "workspace",
+    entries: [
+      { key: "overview", icon: LayoutDashboard, planned: false },
+      { key: "users", icon: Users, planned: false },
+      { key: "moderation", icon: ShieldCheck, planned: false },
+      { key: "health", icon: Activity, planned: false },
+    ],
+  },
+  {
+    title: "utilities",
+    entries: [
+      { key: "revenue", icon: Wallet, planned: false },
+      { key: "invoices", icon: FileText, planned: false },
+      { key: "reports", icon: FileChartColumn, planned: false },
+      { key: "email", icon: Mail, planned: false },
+      { key: "mailTemplates", icon: FileText, planned: false },
+      { key: "mailBatches", icon: Mail, planned: false },
+      { key: "mailSuppressions", icon: Mail, planned: false },
+      { key: "workspaceTemplates", icon: LayoutDashboard, planned: false },
+    ],
+  },
+  {
+    title: "ai",
+    entries: [
+      { key: "credit", icon: Wallet, planned: false },
+      { key: "trendPipeline", icon: Workflow, planned: false },
+      { key: "trends", icon: TrendingUp, planned: false },
+      { key: "trendGraph", icon: Network, planned: false },
+      { key: "trendReplay", icon: Activity, planned: false },
+    ],
+  },
 ];
+
+const sections = menuGroups.flatMap((group) => group.entries);
+
 const linkTo = (key: string) =>
   key === "credit"
     ? "/admin/credit-prices"
@@ -47,6 +67,7 @@ const linkTo = (key: string) =>
           : key === "overview"
             ? "/admin"
             : `/admin?view=${key}`;
+
 const labelKey = (key: string) =>
   key === "credit"
     ? "credit.price.title"
@@ -138,10 +159,7 @@ export function AdminSidebar({
         aria-label={t("admin.navigation.label")}
         className="flex-1 overflow-y-auto px-3 py-6"
       >
-        {[
-          { title: "workspace", entries: sections.slice(0, 4) },
-          { title: "utilities", entries: sections.slice(4) },
-        ].map((group) => (
+        {menuGroups.map((group) => (
           <div key={group.title} className="mb-7">
             {!collapsed && (
               <p className="mb-3 px-3 font-sans text-xs tracking-wide uppercase opacity-50">
@@ -158,7 +176,7 @@ export function AdminSidebar({
                   aria-current={active === key ? "page" : undefined}
                   title={
                     planned
-                      ? `${t(labelKey(key))} Â· ${t("admin.navigation.planned")}`
+                      ? `${t(labelKey(key))} · ${t("admin.navigation.planned")}`
                       : t(labelKey(key))
                   }
                   className={cn(
