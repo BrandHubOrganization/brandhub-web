@@ -1,0 +1,33 @@
+name: Main PR policy
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  check-source:
+    name: Main PR source
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Allow only develop from this repository
+        shell: bash
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+          HEAD_BRANCH: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.event.pull_request.base.repo.full_name }}
+        run: |
+          if [[ "$BASE_BRANCH" != "main" ||
+                "$HEAD_BRANCH" != "develop" ||
+                "$HEAD_REPO" != "$BASE_REPO" ]]; then
+            echo "::error::Only develop from this repository can merge into main."
+            exit 1
+          fi
+
+          echo "Valid source: develop -> main"
