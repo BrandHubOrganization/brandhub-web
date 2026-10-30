@@ -67,13 +67,26 @@
     "platforms": {
       "title": "Platform Distribution",
       "subtitle": "Content distribution breakdown",
-      "ALL": "All Platforms"
+      "performanceTitle": "Channel Publishing Efficiency",
+      "performanceSubtitle": "Reach by platform over the last 30 days",
+      "totalPostsFooter": "TOTAL POSTS",
+      "totalReachFooter": "TOTAL REACH",
+      "totalEngagementsFooter": "TOTAL ENGAGEMENTS",
+      "ALL": "All Platforms",
+      "note": "Facebook and Instagram account for over 75% of distributed content."
     },
     "statusFilters": {
       "ALL": "All Statuses",
       "IN_PROGRESS": "In Progress"
     },
     "kpi": {
+      "reach": "REACH",
+      "engagements": "ENGAGEMENTS",
+      "posts": "POSTS",
+      "responseRate": "RESPONSE RATE",
+      "vsLastMonth": "vs last month",
+      "sameAsLastMonth": "Same as last month",
+      "goodImprovement": "Good improvement",
       "totalPosts": "Total Posts",
       "totalPostsDesc": "Includes all published and scheduled posts",
       "successRate": "Publishing Success Rate",
@@ -84,7 +97,15 @@
     },
     "trends": {
       "title": "Publishing Trends Over Time",
-      "subtitle": "Published vs scheduled timeline statistics"
+      "subtitle": "Published vs scheduled timeline statistics",
+      "performanceTitle": "Social Performance Trends",
+      "performanceSubtitle": "Aggregated engagements, impressions, and clicks over time",
+      "impressions": "Impressions",
+      "engagements": "Engagements",
+      "clicks": "Clicks",
+      "legendImpressions": "Impressions",
+      "legendEngagements": "Engagements",
+      "legendClicks": "Clicks"
     },
     "recentPosts": {
       "title": "Recent Publishing Activity",

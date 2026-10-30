@@ -4,6 +4,7 @@ export interface TaskReference {
   label: string;
   url: string;
 }
+
 export interface TaskWorkflow {
   id: string;
   workspaceId: string;
@@ -38,7 +39,12 @@ export interface TaskWorkflow {
     maxDate: string | null;
     ready: boolean;
   };
+  typeMetadata?: {
+    targetPlatforms?: string[];
+    [key: string]: unknown;
+  } | null;
 }
+
 export interface TaskDetailFields {
   description: string;
   dueDate: string | null;
@@ -46,11 +52,13 @@ export interface TaskDetailFields {
   inputReferences: TaskReference[];
   expectedRevision: number;
 }
+
 export interface TaskAssignmentFields {
   assigneeId: string;
   requiresClientApproval: boolean;
   expectedRevision: number;
 }
+
 export interface TaskMemberOption {
   userId: string;
   displayName: string;

@@ -15,6 +15,7 @@ import {
   Edit3,
   ChevronDown,
   ChevronUp,
+  Share2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import { SocialPlatformBadge } from "@/components/common/SocialPlatformBadge";
 import { WorkspaceRequestTask } from "@/pages/requests/components/WorkspaceRequestTask";
 import { useResizablePanelWidth } from "@/pages/tasks/hooks/useResizablePanelWidth";
 import type { ReviewAction, WorkspaceRequest } from "@/pages/requests/types/workspaceRequest";
@@ -176,6 +178,13 @@ export function WorkspaceRequestDetail({
                     <Badge variant="outline" className="text-xs">
                       {t(`requests.v2.types.${displayRequest.type}`)}
                     </Badge>
+                    {displayRequest.type === "POST" && displayRequest.targetPlatforms && displayRequest.targetPlatforms.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1">
+                        {displayRequest.targetPlatforms.map((platform) => (
+                          <SocialPlatformBadge key={platform} platform={platform} size="xs" />
+                        ))}
+                      </div>
+                    )}
                     <span className="text-muted-foreground text-2xs font-mono">
                       {t("requests.v2.version")} {displayRequest.version}
                     </span>
@@ -209,6 +218,19 @@ export function WorkspaceRequestDetail({
 
                 {/* Metadata Grid */}
                 <dl className="grid gap-3 pt-3 border-t border-border/50 text-xs sm:grid-cols-2">
+                  {displayRequest.type === "POST" && displayRequest.targetPlatforms && displayRequest.targetPlatforms.length > 0 && (
+                    <div className="sm:col-span-2">
+                      <dt className="text-muted-foreground flex items-center gap-1.5">
+                        <Share2 className="size-3.5 text-muted-foreground" />
+                        {t("requests.v2.fields.platforms")}
+                      </dt>
+                      <dd className="mt-1 flex flex-wrap gap-1.5">
+                        {displayRequest.targetPlatforms.map((platform) => (
+                          <SocialPlatformBadge key={platform} platform={platform} size="sm" />
+                        ))}
+                      </dd>
+                    </div>
+                  )}
                   <div>
                     <dt className="text-muted-foreground flex items-center gap-1.5">
                       <Calendar className="size-3.5 text-muted-foreground" />

@@ -62,6 +62,9 @@ function ProposalCard({ row }: { row: CreditPriceImportRow }) {
           <Badge variant="secondary">{t("credit.csv.unchanged")}</Badge>
         )}
       </div>
+      <p className="text-muted-foreground text-xs">
+        {t("credit.csv.featurePricing")}
+      </p>
       <dl className="border-border grid gap-3 border-t pt-3 text-xs sm:grid-cols-2 lg:grid-cols-3">
         <div className="min-w-0">
           <dt className="text-muted-foreground">{t("credit.csv.profile")}</dt>
@@ -74,7 +77,10 @@ function ProposalCard({ row }: { row: CreditPriceImportRow }) {
             {t("credit.csv.configuration")}
           </dt>
           <dd className="mt-1">
-            {proposal.width} × {proposal.height} ·{" "}
+            {proposal.width == null && proposal.height == null
+              ? t("credit.csv.allDimensions")
+              : `${proposal.width} × ${proposal.height}`}{" "}
+            ·{" "}
             {t("credit.csv.steps", {
               count: proposal.steps ?? 0,
               value: proposal.steps ?? "—",

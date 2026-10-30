@@ -1,23 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { BarChart3, Sparkles, CalendarClock, CheckCircle2 } from "lucide-react";
 import { LineStatChart, PieStatChart } from "@/components/charts/StatCharts";
-import { StatCards } from "@/pages/analytics/components/StatCards";
-import { ChannelPerformanceChart } from "@/pages/analytics/components/ChannelPerformanceChart";
 import {
   MOCK_CAMPAIGN_TREND,
   MOCK_CONTENT_BY_STATUS,
   MOCK_RECENT_ACTIVITY,
   MOCK_UPCOMING_CONTENT,
 } from "../../mockDashboardData";
-import type { AnalyticsSummary } from "@/types/analytics";
 
-interface WorkspaceVisualAnalyticsProps {
-  analytics: AnalyticsSummary | null;
-}
-
-export function WorkspaceVisualAnalytics({
-  analytics,
-}: WorkspaceVisualAnalyticsProps) {
+export function WorkspaceVisualAnalytics() {
   const { t } = useTranslation();
 
   return (
@@ -108,15 +99,6 @@ export function WorkspaceVisualAnalytics({
           )}
         </div>
       </div>
-
-      {analytics && (
-        <div className="mt-6">
-          <StatCards cards={analytics.cards} />
-          <div className="mt-4">
-            <ChannelPerformanceChart channelStats={analytics.channelStats} />
-          </div>
-        </div>
-      )}
     </>
   );
 }

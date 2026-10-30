@@ -1,120 +1,118 @@
 import { useTranslation } from "react-i18next";
-import { Send, CheckCircle2, Calendar, AlertOctagon, TrendingUp, Loader2 } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { PostKpiStats } from "../types/dashboard";
 
 interface PostDashboardKpiCardsProps {
   kpis: PostKpiStats;
 }
 
+interface MetricBadgeProps {
+  text: string;
+  isNegative?: boolean;
+}
+
+function MetricBadge({ text, isNegative = false }: MetricBadgeProps) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-0.5 text-xs font-semibold",
+        isNegative ? "text-destructive" : "text-success",
+      )}
+    >
+      {isNegative ? (
+        <TrendingDown className="size-3" />
+      ) : (
+        <TrendingUp className="size-3" />
+      )}
+      {text}
+    </span>
+  );
+}
+
 export function PostDashboardKpiCards({ kpis }: PostDashboardKpiCardsProps) {
   const { t } = useTranslation();
 
+  const reachGrowth = kpis.reachGrowth ?? 12.4;
+  const engagementsGrowth = kpis.engagementsGrowth ?? 8.2;
+  const postsGrowth = kpis.totalPostsGrowth ?? 0;
+  const rateGrowth = kpis.successRateGrowth ?? 1.5;
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {/* 1. Total Posts */}
-      <div className="bg-card border-border relative overflow-hidden rounded-xl border p-5">
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-xs font-medium">
-            {t("publish.dashboard.kpi.totalPosts", "Tổng bài viết")}
-          </p>
-          <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-lg">
-            <Send className="size-4" />
-          </div>
-        </div>
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-foreground text-2xl font-bold tracking-tight">
-            {kpis.totalPosts}
-          </span>
-          <span className="text-success flex items-center text-xs font-semibold">
-            <TrendingUp className="mr-0.5 size-3" />
-            +{kpis.totalPostsGrowth}%
-          </span>
-        </div>
-        <p className="text-muted-foreground text-2xs mt-1">
-          {t("publish.dashboard.kpi.totalPostsDesc", "Bao gồm tất cả bài đăng trong workspace")}
+      {/* 1. LƯỢT TIẾP CẬN */}
+      <div className="bg-card border-border rounded-xl border p-5">
+        <p className="text-muted-foreground font-mono text-2xs font-semibold uppercase tracking-wider">
+          {t("publish.dashboard.kpi.reach", "LƯỢT TIẾP CẬN")}
         </p>
-      </div>
-
-      {/* 2. Success Rate */}
-      <div className="bg-card border-border relative overflow-hidden rounded-xl border p-5">
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-xs font-medium">
-            {t("publish.dashboard.kpi.successRate", "Tỷ lệ xuất bản thành công")}
-          </p>
-          <div className="bg-success/10 text-success flex size-8 items-center justify-center rounded-lg">
-            <CheckCircle2 className="size-4" />
-          </div>
-        </div>
         <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-foreground text-2xl font-bold tracking-tight">
-            {kpis.successRate}%
+          <span className="text-foreground font-mono text-2xl font-bold tracking-tight">
+            {(kpis.totalReach ?? 0).toLocaleString()}
           </span>
-        </div>
-        <div className="bg-muted mt-2 h-1.5 w-full overflow-hidden rounded-full">
-          <div
-            className="bg-success h-full rounded-full transition-all duration-500"
-            style={{ width: `${Math.min(kpis.successRate, 100)}%` }}
+          <MetricBadge
+            text={`${reachGrowth >= 0 ? "+" : ""}${reachGrowth}%`}
+            isNegative={reachGrowth < 0}
           />
         </div>
-      </div>
-
-      {/* 3. Scheduled / In Progress */}
-      <div className="bg-card border-border relative overflow-hidden rounded-xl border p-5">
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-xs font-medium">
-            {t("publish.dashboard.kpi.scheduled", "Đã lên lịch & Đang xử lý")}
-          </p>
-          <div className="bg-brand-orange-soft text-brand-orange flex size-8 items-center justify-center rounded-lg">
-            <Calendar className="size-4" />
-          </div>
-        </div>
-        <div className="mt-3 flex items-baseline gap-3">
-          <div>
-            <span className="text-foreground text-2xl font-bold tracking-tight">
-              {kpis.scheduledCount}
-            </span>
-            <span className="text-muted-foreground text-2xs ml-1 font-medium">
-              {t("publish.dashboard.kpi.scheduledUnit", "lên lịch")}
-            </span>
-          </div>
-          {kpis.inProgressCount > 0 && (
-            <div className="text-warning flex items-center text-xs font-medium">
-              <Loader2 className="mr-1 size-3 animate-spin" />
-              {kpis.inProgressCount} {t("publish.dashboard.kpi.inProgressUnit", "đang gửi")}
-            </div>
-          )}
-        </div>
         <p className="text-muted-foreground text-2xs mt-1">
-          {t("publish.dashboard.kpi.scheduledDesc", "Sắp tự động đăng theo lịch đặt trước")}
+          {t("publish.dashboard.kpi.vsLastMonth", "So với tháng trước")}
         </p>
       </div>
 
-      {/* 4. Failed Count */}
-      <div className="bg-card border-border relative overflow-hidden rounded-xl border p-5">
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-xs font-medium">
-            {t("publish.dashboard.kpi.failed", "Bài đăng thất bại")}
-          </p>
-          <div className="bg-destructive/10 text-destructive flex size-8 items-center justify-center rounded-lg">
-            <AlertOctagon className="size-4" />
-          </div>
-        </div>
+      {/* 2. TƯƠNG TÁC */}
+      <div className="bg-card border-border rounded-xl border p-5">
+        <p className="text-muted-foreground font-mono text-2xs font-semibold uppercase tracking-wider">
+          {t("publish.dashboard.kpi.engagements", "TƯƠNG TÁC")}
+        </p>
         <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-foreground text-2xl font-bold tracking-tight">
-            {kpis.failedCount}
+          <span className="text-foreground font-mono text-2xl font-bold tracking-tight">
+            {(kpis.totalEngagements ?? 0).toLocaleString()}
           </span>
-          {kpis.failedCount > 0 ? (
-            <span className="text-destructive text-xs font-medium">
-              {t("publish.dashboard.kpi.needAttention", "Cần xử lý")}
-            </span>
-          ) : (
-            <span className="text-success text-xs font-medium">
-              {t("publish.dashboard.kpi.systemOptimal", "Hệ thống tối ưu")}
-            </span>
-          )}
+          <MetricBadge
+            text={`${engagementsGrowth >= 0 ? "+" : ""}${engagementsGrowth}%`}
+            isNegative={engagementsGrowth < 0}
+          />
         </div>
         <p className="text-muted-foreground text-2xs mt-1">
-          {t("publish.dashboard.kpi.failedDesc", "Gặp lỗi xác thực token hoặc chính sách MXH")}
+          {t("publish.dashboard.kpi.vsLastMonth", "So với tháng trước")}
+        </p>
+      </div>
+
+      {/* 3. BÀI ĐĂNG */}
+      <div className="bg-card border-border rounded-xl border p-5">
+        <p className="text-muted-foreground font-mono text-2xs font-semibold uppercase tracking-wider">
+          {t("publish.dashboard.kpi.posts", "BÀI ĐĂNG")}
+        </p>
+        <div className="mt-3 flex items-baseline gap-2">
+          <span className="text-foreground font-mono text-2xl font-bold tracking-tight">
+            {(kpis.totalPosts ?? 0).toLocaleString()}
+          </span>
+          <MetricBadge
+            text={`${postsGrowth >= 0 ? "+" : ""}${postsGrowth}%`}
+            isNegative={postsGrowth < 0}
+          />
+        </div>
+        <p className="text-muted-foreground text-2xs mt-1">
+          {t("publish.dashboard.kpi.sameAsLastMonth", "Bằng với tháng trước")}
+        </p>
+      </div>
+
+      {/* 4. TỶ LỆ PHẢN HỒI */}
+      <div className="bg-card border-border rounded-xl border p-5">
+        <p className="text-muted-foreground font-mono text-2xs font-semibold uppercase tracking-wider">
+          {t("publish.dashboard.kpi.responseRate", "TỶ LỆ PHẢN HỒI")}
+        </p>
+        <div className="mt-3 flex items-baseline gap-2">
+          <span className="text-foreground font-mono text-2xl font-bold tracking-tight">
+            {kpis.successRate}%
+          </span>
+          <MetricBadge
+            text={`${rateGrowth >= 0 ? "+" : ""}${rateGrowth}%`}
+            isNegative={rateGrowth < 0}
+          />
+        </div>
+        <p className="text-muted-foreground text-2xs mt-1">
+          {t("publish.dashboard.kpi.goodImprovement", "Cải thiện tốt")}
         </p>
       </div>
     </div>

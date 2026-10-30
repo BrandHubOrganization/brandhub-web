@@ -8,21 +8,34 @@
   "cancelledByCompletion": "Automatically cancelled because the Manager marked the Campaign completed.",
   "v2": {
     "review": {
-      "receive": "Receive request", "accept": "Accept request", "deny": "Deny request",
+      "receive": "Receive request",
+      "accept": "Accept request",
+      "deny": "Deny request",
       "receiveHelp": "Receive “{{title}}” for review? The client can no longer edit or cancel it after this step.",
       "acceptHelp": "Accept “{{title}}”? One backlog task will be created outside the campaign plan. This cannot be undone.",
       "denyHelp": "Deny “{{title}}”? No task will be created. The client can read your note and the request cannot reopen.",
-      "receiveSuccess": "Request received.", "acceptSuccess": "Request accepted and task created.",
-      "denySuccess": "Request denied.", "note": "Denial note (optional)",
+      "receiveSuccess": "Request received.",
+      "acceptSuccess": "Request accepted and task created.",
+      "denySuccess": "Request denied.",
+      "note": "Denial note (optional)",
       "noteHelp": "Up to 2,000 characters; the client can also read this note.",
-      "decisionNote": "Decision note", "openEditor": "Open post content",
+      "decisionNote": "Decision note",
+      "openEditor": "Open post content",
       "invalidNote": "The note must be text, up to 2,000 characters."
     },
     "taskStatus": {
-      "TODO": "To do", "IN_REVIEW": "In review", "FINISHED": "Finished", "CANCELLED": "Cancelled",
-      "BACKLOG": "Awaiting task details", "DETAIL_IDENTIFIED": "Details identified", "ASSIGNED": "Assigned",
-      "IN_PROGRESS": "In progress", "QC_REVIEW": "Quality review", "MANAGER_REVIEW": "Manager review",
-      "CLIENT_REVIEW": "Client review", "COMPLETED": "Completed"
+      "TODO": "To do",
+      "IN_REVIEW": "In review",
+      "FINISHED": "Finished",
+      "CANCELLED": "Cancelled",
+      "BACKLOG": "Awaiting task details",
+      "DETAIL_IDENTIFIED": "Details identified",
+      "ASSIGNED": "Assigned",
+      "IN_PROGRESS": "In progress",
+      "QC_REVIEW": "Quality review",
+      "MANAGER_REVIEW": "Manager review",
+      "CLIENT_REVIEW": "Client review",
+      "COMPLETED": "Completed"
     },
     "title": "Additional content requests",
     "description": "Request content outside the campaign plan and track its review.",
@@ -37,7 +50,9 @@
       "title": "Title",
       "description": "Description",
       "type": "Content type",
-      "dueDate": "Due date"
+      "dueDate": "Due date",
+      "platforms": "Target Social Platforms",
+      "platformsHelp": "Select platforms to publish this post"
     },
     "status": {
       "PENDING": "Awaiting receipt",
@@ -121,7 +136,14 @@
       "REQUEST_VERSION_CONFLICT": "The request changed. Close and reopen the latest version; your input is retained for reference.",
       "REQUEST_SCHEMA_NOT_READY": "The request database schema must be updated before using this feature.",
       "CAMPAIGN_NOT_DEPLOYED": "An in-progress campaign with successfully deployed tasks is required.",
-      "VALIDATION_ERROR": "Check the title, description, type and due date."
+      "VALIDATION_ERROR": "Check the title, description, type and due date.",
+      "platformsRequired": "Please select at least one social platform"
+    },
+    "platforms": {
+      "FACEBOOK": "Facebook",
+      "INSTAGRAM": "Instagram",
+      "TIKTOK": "TikTok",
+      "THREADS": "Threads"
     }
   },
   "page": {

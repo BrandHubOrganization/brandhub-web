@@ -27,7 +27,13 @@
     "body": "Mẫu \"{{name}}\" sẽ bị xóa. Lịch sử gửi cũ được giữ nguyên.",
     "confirm": "Xóa"
   },
+  "locales": {
+    "vi": "Tiếng Việt",
+    "en": "English"
+  },
   "form": {
+    "locale": "Ngôn ngữ của các dòng cố định",
+    "localeHint": "Chọn ngôn ngữ cho dòng chân thư và dòng liên hệ. Nội dung bạn viết không bị dịch.",
     "createTitle": "Tạo mẫu email",
     "editTitle": "Sửa mẫu email",
     "name": "Tên mẫu",
@@ -209,6 +215,8 @@
     "clearPicked": "Bỏ chọn"
   },
   "suppressions": {
+    "loadFailed": "Không tải được danh sách hủy đăng ký.",
+    "forbidden": "Bạn không có quyền xem danh sách này.",
     "title": "Địa chỉ đã hủy đăng ký",
     "subtitle": "Những người đã hủy nhận email của Workspace này. Họ sẽ bị bỏ qua khi gửi.",
     "link": "Danh sách hủy đăng ký",

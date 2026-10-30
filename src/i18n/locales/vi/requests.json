@@ -8,21 +8,34 @@
   "cancelledByCompletion": "Tự động hủy vì người quản lý đã đánh dấu chiến dịch hoàn thành.",
   "v2": {
     "review": {
-      "receive": "Tiếp nhận yêu cầu", "accept": "Chấp nhận yêu cầu", "deny": "Từ chối yêu cầu",
+      "receive": "Tiếp nhận yêu cầu",
+      "accept": "Chấp nhận yêu cầu",
+      "deny": "Từ chối yêu cầu",
       "receiveHelp": "Tiếp nhận “{{title}}” để xem xét? Khách hàng sẽ không thể sửa hoặc hủy yêu cầu sau bước này.",
       "acceptHelp": "Chấp nhận “{{title}}”? Hệ thống sẽ tạo một đầu việc chờ xác định chi tiết, ngoài kế hoạch chiến dịch. Thao tác này không thể hoàn tác.",
       "denyHelp": "Từ chối “{{title}}”? Không tạo đầu việc. Khách hàng có thể xem ghi chú bên dưới và yêu cầu không thể mở lại.",
-      "receiveSuccess": "Đã tiếp nhận yêu cầu.", "acceptSuccess": "Đã chấp nhận và tạo đầu việc.",
-      "denySuccess": "Đã từ chối yêu cầu.", "note": "Ghi chú từ chối (không bắt buộc)",
+      "receiveSuccess": "Đã tiếp nhận yêu cầu.",
+      "acceptSuccess": "Đã chấp nhận và tạo đầu việc.",
+      "denySuccess": "Đã từ chối yêu cầu.",
+      "note": "Ghi chú từ chối (không bắt buộc)",
       "noteHelp": "Tối đa 2.000 ký tự; khách hàng cũng xem được ghi chú này.",
-      "decisionNote": "Ghi chú quyết định", "openEditor": "Mở nội dung bài đăng",
+      "decisionNote": "Ghi chú quyết định",
+      "openEditor": "Mở nội dung bài đăng",
       "invalidNote": "Ghi chú phải là văn bản, tối đa 2.000 ký tự."
     },
     "taskStatus": {
-      "TODO": "Cần làm", "IN_REVIEW": "Chờ duyệt", "FINISHED": "Hoàn thành", "CANCELLED": "Đã hủy",
-      "BACKLOG": "Chờ xác định chi tiết", "DETAIL_IDENTIFIED": "Đã xác định chi tiết", "ASSIGNED": "Đã phân công",
-      "IN_PROGRESS": "Đang thực hiện", "QC_REVIEW": "Đang kiểm tra chất lượng", "MANAGER_REVIEW": "Chờ quản lý duyệt",
-      "CLIENT_REVIEW": "Chờ khách hàng duyệt", "COMPLETED": "Hoàn thành"
+      "TODO": "Cần làm",
+      "IN_REVIEW": "Chờ duyệt",
+      "FINISHED": "Hoàn thành",
+      "CANCELLED": "Đã hủy",
+      "BACKLOG": "Chờ xác định chi tiết",
+      "DETAIL_IDENTIFIED": "Đã xác định chi tiết",
+      "ASSIGNED": "Đã phân công",
+      "IN_PROGRESS": "Đang thực hiện",
+      "QC_REVIEW": "Đang kiểm tra chất lượng",
+      "MANAGER_REVIEW": "Chờ quản lý duyệt",
+      "CLIENT_REVIEW": "Chờ khách hàng duyệt",
+      "COMPLETED": "Hoàn thành"
     },
     "title": "Yêu cầu nội dung bổ sung",
     "description": "Gửi yêu cầu ngoài kế hoạch chiến dịch và theo dõi kết quả xem xét.",
@@ -37,7 +50,9 @@
       "title": "Tiêu đề",
       "description": "Mô tả",
       "type": "Loại nội dung",
-      "dueDate": "Hạn hoàn thành"
+      "dueDate": "Hạn hoàn thành",
+      "platforms": "Nền tảng mạng xã hội",
+      "platformsHelp": "Chọn các kênh muốn đăng bài"
     },
     "status": {
       "PENDING": "Chờ tiếp nhận",
@@ -121,7 +136,14 @@
       "REQUEST_VERSION_CONFLICT": "Yêu cầu đã thay đổi. Đóng biểu mẫu và mở lại phiên bản mới; nội dung bạn nhập vẫn được giữ để tham khảo.",
       "REQUEST_SCHEMA_NOT_READY": "Cần cập nhật cấu trúc dữ liệu yêu cầu trước khi sử dụng tính năng.",
       "CAMPAIGN_NOT_DEPLOYED": "Chỉ tạo yêu cầu khi chiến dịch đang triển khai và đã tạo đầu việc thành công.",
-      "VALIDATION_ERROR": "Kiểm tra tiêu đề, mô tả, loại và hạn hoàn thành."
+      "VALIDATION_ERROR": "Kiểm tra tiêu đề, mô tả, loại và hạn hoàn thành.",
+      "platformsRequired": "Vui lòng chọn ít nhất 1 nền tảng mạng xã hội"
+    },
+    "platforms": {
+      "FACEBOOK": "Facebook",
+      "INSTAGRAM": "Instagram",
+      "TIKTOK": "TikTok",
+      "THREADS": "Threads"
     }
   },
   "page": {

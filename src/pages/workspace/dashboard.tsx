@@ -23,7 +23,7 @@ export function WorkspaceDashboardPage() {
     handleTabChange,
     dashboard,
     loading,
-    analytics,
+
     tasks,
     tasksTotal,
     tasksLoading,
@@ -139,7 +139,7 @@ export function WorkspaceDashboardPage() {
           </div>
 
           {/* ── Visual Analytics Section ── */}
-          <WorkspaceVisualAnalytics analytics={analytics} />
+          <WorkspaceVisualAnalytics />
         </>
       )}
 

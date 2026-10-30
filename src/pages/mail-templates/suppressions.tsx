@@ -24,15 +24,15 @@ export function SuppressionsPanel({ api, backTo }: { api: SuppressionApi; backTo
   const [page, setPage] = useState(0);
   const [data, setData] = useState<PageOf<MailSuppression> | null>(null);
   const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<"forbidden" | "failed" | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
-    setFailed(false);
+    setFailed(null);
     try {
       setData(await api.list({ q: query || undefined, page, size: 20 }));
-    } catch {
-      setFailed(true);
+    } catch (e) {
+      setFailed(/FORBIDDEN$/.test(errorCode(e) ?? "") ? "forbidden" : "failed");
     } finally {
       setLoading(false);
     }
@@ -65,8 +65,8 @@ export function SuppressionsPanel({ api, backTo }: { api: SuppressionApi; backTo
       {loading && <Spinner />}
       {failed && (
         <div role="alert" className="space-y-2">
-          <p>{t("mailTemplate.error")}</p>
-          <Button onClick={() => void load()}>{t("mailTemplate.retry")}</Button>
+          <p>{t(failed === "forbidden" ? "mailTemplate.suppressions.forbidden" : "mailTemplate.suppressions.loadFailed")}</p>
+          {failed === "failed" && <Button onClick={() => void load()}>{t("mailTemplate.retry")}</Button>}
         </div>
       )}
       {!loading && !failed && data && data.content.length === 0 && (
