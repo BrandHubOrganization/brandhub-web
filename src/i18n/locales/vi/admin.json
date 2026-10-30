@@ -174,7 +174,70 @@
     "postsCollected": "Số bài viết thu thập",
     "crawlSchedule": "Lịch trình thu thập",
     "runNowSuccess": "Đã kích hoạt thu thập dữ liệu thành công.",
-    "runNowError": "Không thể kích hoạt thu thập dữ liệu."
+    "runNowError": "Không thể kích hoạt thu thập dữ liệu.",
+    "description": "Lịch, nguồn và số bài mỗi lần crawl dữ liệu trend. Áp dụng cho toàn hệ thống.",
+    "loadError": "Không tải được cấu hình crawl. Kiểm tra AI service.",
+    "schedule": "Lịch crawl",
+    "mode": {
+      "interval": "Theo chu kỳ",
+      "cron": "Biểu thức cron"
+    },
+    "everyMinutes": "Mỗi {{count}} phút",
+    "everyHours": "Mỗi {{count}} giờ",
+    "cronHint": "5 trường: phút giờ ngày tháng thứ, theo giờ Việt Nam. Ví dụ 0 */6 * * * = mỗi 6 giờ.",
+    "cronRule": "Cron cần đúng 5 trường cách nhau bởi khoảng trắng.",
+    "cronInvalid": "Biểu thức cron không hợp lệ.",
+    "pages": "Page/nhóm nguồn",
+    "pagesHint": "Mỗi dòng một URL https của page hoặc nhóm Facebook.",
+    "pageRule": "URL không hợp lệ: {{page}}",
+    "pageLimit": "Tối đa 50 nguồn.",
+    "postsPerRun": "Số bài mỗi lần crawl",
+    "postsHint": "Từ 10 đến 1000 bài. Số lớn tốn thêm chi phí API cào dữ liệu.",
+    "postsRule": "Nhập số nguyên từ 10 đến 1000.",
+    "nextRunNote": "Thay đổi áp dụng từ lần crawl kế tiếp; lần đang chạy không bị dừng giữa chừng.",
+    "save": "Lưu cấu hình",
+    "saved": "Đã lưu cấu hình crawl.",
+    "saveError": "Không lưu được cấu hình. Vui lòng thử lại.",
+    "status": "Trạng thái crawler",
+    "state": {
+      "running": "Đang chạy theo lịch",
+      "disabled": "Crawler đang tắt (TREND_CRAWLER_ENABLED)",
+      "noSources": "Chưa có nguồn nào có API key"
+    },
+    "nextRun": "Lần chạy kế tiếp: {{date}}",
+    "sources": "Nguồn đang bật",
+    "noSources": "Chưa cấu hình API key cho scraper.",
+    "log": {
+      "title": "Nhật ký crawl",
+      "hint": "Mỗi lần crawl ghi lại các trang đã vào, số bài lấy được và lỗi. Giữ 20 lần gần nhất.",
+      "runNow": "Chạy crawl ngay (dev)",
+      "running": "Đang crawl…",
+      "started": "Đã bắt đầu crawl, nhật ký tự cập nhật.",
+      "alreadyRunning": "Đang có một lần crawl chạy, chờ xong rồi thử lại.",
+      "startError": "Không bắt đầu được crawl. Kiểm tra AI service.",
+      "loadError": "Không tải được nhật ký crawl.",
+      "empty": "Chưa có lần crawl nào.",
+      "status": {
+        "RUNNING": "Đang chạy",
+        "SUCCESS": "Thành công",
+        "PARTIAL": "Có lỗi một phần",
+        "FAILED": "Thất bại"
+      },
+      "trigger": {
+        "MANUAL": "Chạy tay",
+        "SCHEDULE": "Theo lịch"
+      },
+      "totals": "{{pages}} nguồn · {{posts}} bài",
+      "credits": "còn {{count}} credit",
+      "page": "Trang / nguồn",
+      "posts": "Số bài",
+      "failed": "Lỗi"
+    },
+    "live": {
+      "running": "Đang crawl",
+      "last": "Lần crawl gần nhất",
+      "posts": "bài đã cào"
+    }
   },
   "crawlRuns": {
     "title": "Lịch sử & Đợt crawl",
@@ -332,7 +395,8 @@
     "mailBatches": "Đợt gửi email hệ thống",
     "invoices": "Lịch sử thanh toán",
     "workspaceTemplates": "Mẫu Workspace",
-    "mailSuppressions": "Danh sách hủy đăng ký hệ thống"
+    "mailSuppressions": "Danh sách hủy đăng ký hệ thống",
+    "crawl": "Cấu hình crawl"
   },
   "overview": {
     "title": "Tổng quan nền tảng",

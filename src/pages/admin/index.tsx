@@ -15,6 +15,7 @@ import { AdminMailSuppressionsPanel } from "@/pages/admin/components/AdminMailSu
 import { AdminMailBatchesPanel } from "@/pages/admin/components/AdminMailBatchesPanel";
 import { AdminMailTemplatesPanel } from "@/pages/admin/components/AdminMailTemplatesPanel";
 import { AdminReportForm } from "@/pages/admin/components/AdminReportExport";
+import { AdminCrawlConfigPanel } from "@/pages/admin/components/AdminCrawlConfigPanel";
 import { presetRange } from "@/services/adminRevenueService";
 import {
   AdminOverviewActions,
@@ -31,6 +32,7 @@ const views = [
   "mailBatches",
   "mailSuppressions",
   "reports",
+  "crawl",
   "trendReplay",
   "trends",
   "trendGraph",
@@ -42,6 +44,7 @@ const AdminTrendGraphPanel = lazy(
 const descriptions: Record<string, string> = {
   overview: "admin.overview.description",
   users: "admin.accounts.description",
+  crawl: "admin.crawl.description",
   trendReplay: "admin.trendReplay.description",
   trends: "admin.trends.description",
   trendGraph: "admin.trendGraph.description",
@@ -98,6 +101,8 @@ export function AdminPage() {
           <AdminMailSuppressionsPanel />
         ) : view === "mailBatches" ? (
           <AdminMailBatchesPanel />
+        ) : view === "crawl" ? (
+          <AdminCrawlConfigPanel />
         ) : view === "reports" ? (
           <section className="bg-card border-border max-w-2xl rounded-xl border p-5 lg:p-6">
             <AdminReportForm

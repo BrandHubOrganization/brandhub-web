@@ -10,12 +10,14 @@ import {
   MessageSquare,
   RefreshCw,
   RotateCcw,
+  Sparkles,
   Wand2,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { aiGenerationService } from "@/services/aiGenerationService";
+import { AiCaptionDialog } from "@/components/ai/AiCaptionDialog";
 import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 import type { AIErrorType, SocialPlatform } from "@/types/editor";
 
@@ -56,6 +58,8 @@ export function AIGeneratePanel({
   const [showFeedbackInput, setShowFeedbackInput] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorState, setErrorState] = useState<AIErrorType>(null);
+  // FR 3.7.2 shared caption pipeline (3 options, checks, credit) next to this quick generator.
+  const [captionDialogOpen, setCaptionDialogOpen] = useState(false);
   const [generatedResult, setGeneratedResult] =
     useState<GeneratedPostContent | null>(null);
 
@@ -118,6 +122,25 @@ export function AIGeneratePanel({
   return (
     <div className="border-border bg-card flex h-full flex-col justify-between space-y-4 rounded-xl border p-4 shadow-xs">
       <div className="space-y-4">
+        {workspaceId && (
+          <button
+            type="button"
+            onClick={() => setCaptionDialogOpen(true)}
+            className="bg-brand-orange hover:bg-brand-orange/90 flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-white transition-colors"
+          >
+            <Sparkles className="size-3.5" />
+            {t("editor.aiCaption.openStudio")}
+          </button>
+        )}
+        {captionDialogOpen && workspaceId && (
+          <AiCaptionDialog
+            workspaceId={workspaceId}
+            initialTopic={topic}
+            defaultPlatform={(targetPlatforms[0] ?? "FACEBOOK").toLowerCase()}
+            onInsert={(pick) => onApplyAIResult(pick.caption, pick.hashtags)}
+            onClose={() => setCaptionDialogOpen(false)}
+          />
+        )}
         <div className="space-y-1.5">
           <span className="text-2xs text-muted-foreground block font-semibold tracking-wider uppercase">
             {t("editor.aiGenerate.presetsLabel")}
