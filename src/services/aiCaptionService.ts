@@ -52,7 +52,17 @@ export interface FitTrend {
   campaign: boolean;
   /** How the trend's top TikTok videos are made (sound, length, opening line), or null. */
   format: string | null;
+  /** Where it trends, most posts first; empty = suits any platform (moments, evergreen formats). */
+  platforms: string[];
 }
+
+/** Best verdict first; within it, trends on this platform, then those that suit any platform. */
+export const sortFitTrends = (trends: FitTrend[], platform: string) => {
+  const rank = (item: FitTrend) =>
+    (item.verdict === "nen" ? 0 : 3) +
+    (item.platforms.includes(platform) ? 0 : item.platforms.length ? 2 : 1);
+  return [...trends].sort((a, b) => rank(a) - rank(b));
+};
 
 export interface TrendFit {
   date: string;

@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { errorCode } from "@/services/adminRevenueService";
 import {
   aiCaptionService,
+  sortFitTrends,
   type CaptionContextUsed,
   type CaptionDraft,
   type CaptionGoal,
@@ -40,6 +41,7 @@ import {
   type RefineInstruction,
   type TrendFit,
 } from "@/services/aiCaptionService";
+import { PLATFORM_LABEL } from "@/services/trendService";
 
 const TONES = [
   "friendly",
@@ -358,6 +360,7 @@ export function AiCaptionDialog({
             state={fitState}
             selectedId={fitId}
             onPick={pickFit}
+            platform={platform}
           />
 
           {error && (
@@ -441,11 +444,13 @@ function BrandFitTrends({
   state,
   selectedId,
   onPick,
+  platform,
 }: {
   fit: TrendFit | null;
   state: "loading" | "ready" | "error";
   selectedId: string;
   onPick: (id: string) => void;
+  platform: string;
 }) {
   const { t, i18n } = useTranslation();
   const day = (iso: string | null) =>
@@ -455,7 +460,7 @@ function BrandFitTrends({
           month: "2-digit",
         }).format(new Date(`${iso}T00:00:00`))
       : "";
-  const trends = fit?.trends.slice(0, 6) ?? [];
+  const trends = sortFitTrends(fit?.trends ?? [], platform).slice(0, 6);
 
   return (
     <section
@@ -516,6 +521,13 @@ function BrandFitTrends({
                 <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5">
                   {t(`aiStudio.trendFit.type.${item.type}`)}
                 </span>
+                {item.platforms.length > 0 && (
+                  <span className="text-muted-foreground">
+                    {item.platforms
+                      .map((p) => PLATFORM_LABEL[p] ?? p)
+                      .join(" · ")}
+                  </span>
+                )}
                 {item.campaign && (
                   <span
                     title={t("aiStudio.trends.campaignHint")}
