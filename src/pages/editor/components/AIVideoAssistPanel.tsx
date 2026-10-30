@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { aiGenerationService } from "@/services/aiGenerationService";
 import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { aiVideoService } from "@/services/aiVideoService";
 
 const wait = (milliseconds: number) =>
   new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
@@ -44,24 +44,26 @@ export function AIVideoAssistPanel({ onApplyVideo }: AIVideoAssistPanelProps) {
     setVideoS3Key(undefined);
     setJobStatus("PENDING");
     try {
-      const job = await aiGenerationService.generateVideo({
+      if (!workspaceId) throw new Error("A workspace is required for AI video");
+      // FR 3.7.7: workspace endpoint charges AI credit and refunds a failed/timed-out job.
+      const { job } = await aiVideoService.generate(workspaceId, {
         prompt: brief,
-        clientId: workspaceId || "brandhub-web",
+        aspectRatio: "16:9",
       });
 
       for (let attempt = 0; attempt < 200; attempt += 1) {
         await wait(3000);
         if (!mountedRef.current) return;
-        const status = await aiGenerationService.getVideoStatus(job.job_id);
+        const status = await aiVideoService.status(workspaceId, job.jobId);
         setJobStatus(status.status);
-        if (status.status === "COMPLETED" && status.video_url) {
-          setVideoUrl(status.video_url);
-          setVideoS3Key(status.s3_key);
+        if (status.status === "COMPLETED" && status.videoUrl) {
+          setVideoUrl(status.videoUrl);
+          setVideoS3Key(status.s3Key ?? undefined);
           toast.success(t("editor.studio.video.generateSuccess"));
           return;
         }
         if (status.status === "FAILED") {
-          throw new Error(status.error_message || "Video generation failed");
+          throw new Error(status.errorCode || "Video generation failed");
         }
       }
       throw new Error("Video generation timed out");
