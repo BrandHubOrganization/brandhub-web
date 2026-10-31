@@ -470,7 +470,7 @@ function EditorWorkspace({
                 targetPlatforms={targetPlatforms}
                 readOnly={taskEditor?.isReadOnly}
                 workspaceId={workspaceId}
-                taskId={taskId ?? taskEditor?.taskId}
+                taskId={taskId}
               />
               <EditorModerationStatus snapshot={moderation.snapshot} />
 
