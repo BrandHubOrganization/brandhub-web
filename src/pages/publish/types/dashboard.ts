@@ -50,15 +50,48 @@ export interface RecentPostItem {
   errorMessage?: string;
 }
 
+export interface ContentTypeStat {
+  type: string;
+  label: string;
+  views: number;
+  percentage: number;
+  followerPercentage: number;
+  nonFollowerPercentage: number;
+}
+
+export interface AudienceStat {
+  followerViews: number;
+  followerPercentage: number;
+  nonFollowerViews: number;
+  nonFollowerPercentage: number;
+}
+
 export interface PostDashboardData {
   kpis: PostKpiStats;
   platformBreakdown: PlatformMetric[];
   publishingTrends: PublishingTrendPoint[];
+  contentTypeBreakdown?: ContentTypeStat[];
+  audienceBreakdown?: AudienceStat;
   recentPosts: RecentPostItem[];
 }
 
+export type DatePreset =
+  | "today"
+  | "yesterday"
+  | "7d"
+  | "14d"
+  | "28d"
+  | "30d"
+  | "60d"
+  | "90d"
+  | "this_year"
+  | "all"
+  | "custom";
+
 export interface PostDashboardFilters {
-  dateRange: "7d" | "14d" | "30d" | "90d" | "all";
+  dateRange: DatePreset | (string & {});
+  startDate?: string;
+  endDate?: string;
   platform: Platform | "ALL";
   status: PostStatus | "IN_PROGRESS" | "ALL";
   search: string;

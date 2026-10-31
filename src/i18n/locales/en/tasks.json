@@ -348,5 +348,29 @@
     "INSTAGRAM": "Instagram",
     "TIKTOK": "TikTok",
     "THREADS": "Threads"
+  },
+  "meeting": {
+    "title": "Google Meet",
+    "description": "Generate a Google Meet link for livestream preparation or online discussion.",
+    "generateButton": "Generate Google Meet link",
+    "generating": "Generating link...",
+    "generateSuccess": "Google Meet link generated successfully!",
+    "generateError": "Failed to generate Google Meet link. Please try again.",
+    "copyButton": "Copy",
+    "copiedSuccess": "Google Meet link copied to clipboard!",
+    "copyError": "Failed to copy link. Please try again.",
+    "joinButton": "Join Now",
+    "noLink": "No meeting link yet. Click the button below to generate a Google Meet link automatically.",
+    "readyStatus": "Ready",
+    "pendingStatus": "No link",
+    "openGoogleNew": "Open new Google Meet",
+    "pasteLink": "Paste room link",
+    "saveLink": "Save",
+    "editLink": "Change link",
+    "cancel": "Cancel",
+    "invalidUrl": "Please enter a valid URL (starting with https://)",
+    "regenerateButton": "Generate new link",
+    "regenerating": "Generating new link...",
+    "regenerateSuccess": "New Google Meet link generated and updated!"
   }
 }

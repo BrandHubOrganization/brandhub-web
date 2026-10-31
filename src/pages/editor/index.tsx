@@ -469,6 +469,8 @@ function EditorWorkspace({
                 onChange={handleCaptionChange}
                 targetPlatforms={targetPlatforms}
                 readOnly={taskEditor?.isReadOnly}
+                workspaceId={workspaceId}
+                taskId={taskId}
               />
               <EditorModerationStatus snapshot={moderation.snapshot} />
 

@@ -7,7 +7,7 @@ import type {
 import { postDashboardService } from "../services/postDashboardService";
 
 const DEFAULT_FILTERS: PostDashboardFilters = {
-  dateRange: "7d",
+  dateRange: "28d",
   platform: "ALL",
   status: "ALL",
   search: "",
@@ -16,11 +16,17 @@ const DEFAULT_FILTERS: PostDashboardFilters = {
 };
 
 const DATE_RANGES: readonly PostDashboardFilters["dateRange"][] = [
+  "today",
+  "yesterday",
   "7d",
   "14d",
+  "28d",
   "30d",
+  "60d",
   "90d",
+  "this_year",
   "all",
+  "custom",
 ];
 const PLATFORMS: readonly PostDashboardFilters["platform"][] = [
   "ALL",
@@ -59,6 +65,8 @@ export function usePostDashboard(workspaceId: string) {
       DATE_RANGES,
       DEFAULT_FILTERS.dateRange,
     ),
+    startDate: searchParams.get("startDate") || undefined,
+    endDate: searchParams.get("endDate") || undefined,
     platform: getFilterValue(
       searchParams.get("platform"),
       PLATFORMS,
@@ -85,7 +93,9 @@ export function usePostDashboard(workspaceId: string) {
         const updated = { ...prev, ...newFilters };
         const params = new URLSearchParams();
 
-        if (updated.dateRange !== "7d") params.set("dateRange", updated.dateRange);
+        if (updated.dateRange !== "28d") params.set("dateRange", updated.dateRange);
+        if (updated.startDate) params.set("startDate", updated.startDate);
+        if (updated.endDate) params.set("endDate", updated.endDate);
         if (updated.platform !== "ALL") params.set("platform", updated.platform);
         if (updated.status !== "ALL") params.set("status", updated.status);
         if (updated.search) params.set("search", updated.search);

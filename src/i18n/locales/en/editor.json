@@ -384,7 +384,12 @@
     "orderedListTooltip": "Numbered list",
     "linkUrlPrompt": "Enter the URL:",
     "linkTooltip": "Insert link",
-    "totalChars": "Total characters: {{count}}"
+    "totalChars": "Total characters: {{count}}",
+    "meetTooltip": "Insert Google Meet",
+    "meetGenerating": "Generating Google Meet link...",
+    "meetInsertSuccess": "Google Meet link generated and inserted into the post!",
+    "meetInsertError": "Failed to generate Google Meet link. Please try again.",
+    "meetRequiresTask": "Please save or attach the post to a Task to automatically generate a Google Meet link."
   },
   "templatePicker": {
     "apply": "Apply",

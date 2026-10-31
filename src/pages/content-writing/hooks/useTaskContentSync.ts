@@ -295,7 +295,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
       const syncPeers = () => {
         const localId = awareness.clientID;
         const next: PeerCursor[] = [];
-        awareness.getStates().forEach((state, clientId) => {
+        awareness.getStates().forEach((state: Partial<PeerCursor> | undefined, clientId: number) => {
           if (clientId === localId) return;
           if (!state?.userId) return;
           next.push({

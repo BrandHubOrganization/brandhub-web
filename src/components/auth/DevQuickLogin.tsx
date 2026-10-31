@@ -46,6 +46,7 @@ const QUICK_LOGIN_ACCOUNTS = [
       import.meta.env.VITE_DEV_LOGIN_CLIENT_EMAIL ||
       "user59@demo.brandhub.test",
     labelKey: "workspace.roles.CLIENT",
+    workspaceRole: "CLIENT",
     landingPath: "/client-profiles",
   },
 ] as const;
@@ -154,3 +155,5 @@ export function DevQuickLogin() {
 }
 
 export default DevQuickLogin;
+
+

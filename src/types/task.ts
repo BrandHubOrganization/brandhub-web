@@ -39,6 +39,7 @@ export interface TaskListItem {
   description?: string | null;
   sourceType?: string | null;
   sourceRefId?: string | null;
+  meetingUrl?: string | null;
 }
 
 export interface TaskListFilterParams {

@@ -348,5 +348,29 @@
     "INSTAGRAM": "Instagram",
     "TIKTOK": "TikTok",
     "THREADS": "Threads"
+  },
+  "meeting": {
+    "title": "Google Meet",
+    "description": "Tạo đường dẫn cuộc họp Google Meet để chuẩn bị phiên livestream hoặc trao đổi trực tuyến.",
+    "generateButton": "Tạo link Google Meet",
+    "generating": "Đang tạo link...",
+    "generateSuccess": "Đã tạo link Google Meet thành công!",
+    "generateError": "Không thể tạo link Google Meet. Vui lòng thử lại.",
+    "copyButton": "Sao chép",
+    "copiedSuccess": "Đã sao chép link Google Meet!",
+    "copyError": "Không thể sao chép liên kết. Vui lòng thử lại.",
+    "joinButton": "Tham gia ngay",
+    "noLink": "Chưa có link cuộc họp. Nhấn nút bên dưới để tự động tạo link Google Meet.",
+    "readyStatus": "Sẵn sàng",
+    "pendingStatus": "Chưa có link",
+    "openGoogleNew": "Mở Google Meet mới",
+    "pasteLink": "Dán link phòng",
+    "saveLink": "Lưu",
+    "editLink": "Đổi link",
+    "cancel": "Hủy",
+    "invalidUrl": "Vui lòng nhập link hợp lệ (bắt đầu bằng https://)",
+    "regenerateButton": "Tạo link mới",
+    "regenerating": "Đang tạo link mới...",
+    "regenerateSuccess": "Đã tự động tạo link Google Meet mới thành công!"
   }
 }

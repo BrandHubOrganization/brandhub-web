@@ -28,6 +28,7 @@ export interface TaskWorkflow {
   legacyReviewRequired: boolean;
   schemaReady: boolean;
   lockReason: string | null;
+  meetingUrl?: string | null;
   allowedActions: {
     canEditDetail: boolean;
     canAssign: boolean;
@@ -62,4 +63,10 @@ export interface TaskAssignmentFields {
 export interface TaskMemberOption {
   userId: string;
   displayName: string;
+}
+
+export interface MeetingLinkResponse {
+  meetingUrl: string;
+  taskId: string;
+  generatedAt: string;
 }

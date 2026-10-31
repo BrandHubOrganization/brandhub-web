@@ -17,6 +17,7 @@ import { useTaskPost } from "@/pages/tasks/hooks/useTaskPost";
 import { TaskInlineDetails } from "@/pages/tasks/components/TaskInlineDetails";
 import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
 import { TaskComments } from "@/pages/tasks/components/comments/TaskComments";
+import { TaskMeetingCard } from "@/pages/tasks/components/TaskMeetingCard";
 import {
   TaskWorkflowProvider,
   useOptionalTaskEditContext,
@@ -127,7 +128,7 @@ function TaskPostScheduleNotice({
   );
 }
 
-function TaskWorkflowView({ workspaceId, taskId }: Props) {
+function TaskWorkflowView({ workspaceId, taskId, onUpdated }: Props) {
   const { t } = useTranslation();
   const state = useTaskWorkflow(workspaceId, taskId);
   const task = state.query.data;
@@ -215,6 +216,20 @@ function TaskWorkflowView({ workspaceId, taskId }: Props) {
 
           {/* Core Properties & Metadata Bento */}
           <TaskInlineDetails key={epoch} task={task} />
+
+          {/* Livestream / Event Plan Google Meet Card */}
+          {(task.type === "LIVESTREAM" ||
+            task.type === "EVENT_PLAN" ||
+            Boolean(task.meetingUrl)) && (
+            <TaskMeetingCard
+              workspaceId={task.workspaceId}
+              taskId={task.id}
+              meetingUrl={task.meetingUrl}
+              onMeetingUrlGenerated={() => {
+                onUpdated?.();
+              }}
+            />
+          )}
 
           {/* Social Post Content & Review Action Hub */}
           {task.type === "POST" && !task.allowedActions.canStart && (
