@@ -1,8 +1,9 @@
-﻿import { api } from "@/services/api";
+import { api } from "@/services/api";
 import type { TaskListItem, TaskListFilterParams } from "@/types/task";
 import { requireApiData } from "@/lib/apiData";
 import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import type { ApiResponse } from "@/services/authService";
+import type { MeetingLinkResponse } from "@/pages/tasks/types/taskWorkflow";
 
 export interface PagedTaskResponse {
   content: TaskListItem[];
@@ -61,5 +62,46 @@ export const taskService = {
         status: canonicalTaskStatus(task.status),
       })),
     };
+  },
+
+  generateLivestreamMeetingLink: async (
+    workspaceId: string,
+    taskId: string,
+    options?: { customMeetingUrl?: string; forceNew?: boolean },
+  ): Promise<ApiResponse<MeetingLinkResponse>> => {
+    const query = options?.forceNew ? "?forceNew=true" : "";
+    const payload = {
+      meetingUrl: options?.customMeetingUrl ?? null,
+      forceNew: Boolean(options?.forceNew),
+    };
+    try {
+      const response = await api.post<ApiResponse<MeetingLinkResponse>>(
+        `/api/v1/workspaces/${workspaceId}/tasks/${taskId}/meeting-link${query}`,
+        payload,
+      );
+      return response.data;
+    } catch (error: unknown) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        (error as { response?: { status?: number } }).response?.status === 404
+      ) {
+        const fallback = await api.post<ApiResponse<MeetingLinkResponse>>(
+          `/api/v1/workspaces/${workspaceId}/tasks/${taskId}/livestream/meeting-link${query}`,
+          payload,
+        );
+        return fallback.data;
+      }
+      throw error;
+    }
+  },
+
+  generateTaskMeetingLink: async (
+    workspaceId: string,
+    taskId: string,
+    options?: { customMeetingUrl?: string; forceNew?: boolean },
+  ): Promise<ApiResponse<MeetingLinkResponse>> => {
+    return taskService.generateLivestreamMeetingLink(workspaceId, taskId, options);
   },
 };

@@ -1,4 +1,4 @@
-﻿import { api } from "@/services/api";
+import { api } from "@/services/api";
 import { requireApiData } from "@/lib/apiData";
 import type { ApiResponse } from "@/services/authService";
 import type {
@@ -25,7 +25,9 @@ function workflow(body: unknown, workspaceId: string, taskId: string) {
     typeof result.dates?.ready !== "boolean"
   )
     throw new Error("INVALID_TASK_WORKFLOW");
-  return { ...result, status: canonicalTaskStatus(result.status) };
+  const metadata = (result as unknown as { typeMetadata?: Record<string, unknown> })?.typeMetadata;
+  const meetingUrl = result.meetingUrl ?? (typeof metadata?.meetingUrl === "string" ? metadata.meetingUrl : null);
+  return { ...result, status: canonicalTaskStatus(result.status), meetingUrl };
 }
 export const taskWorkflowService = {
   async field(

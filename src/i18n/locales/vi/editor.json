@@ -402,7 +402,12 @@
     "orderedListTooltip": "Danh sách đánh số",
     "linkUrlPrompt": "Nhập đường dẫn URL:",
     "linkTooltip": "Chèn liên kết",
-    "totalChars": "Tổng số ký tự: {{count}}"
+    "totalChars": "Tổng số ký tự: {{count}}",
+    "meetTooltip": "Chèn Google Meet",
+    "meetGenerating": "Đang tạo liên kết Google Meet...",
+    "meetInsertSuccess": "Đã tạo và chèn link Google Meet vào bài viết!",
+    "meetInsertError": "Không thể tạo liên kết Google Meet. Vui lòng thử lại.",
+    "meetRequiresTask": "Vui lòng lưu hoặc gắn bài viết vào Task để tự động tạo link Google Meet."
   },
   "templatePicker": {
     "apply": "Áp dụng",
