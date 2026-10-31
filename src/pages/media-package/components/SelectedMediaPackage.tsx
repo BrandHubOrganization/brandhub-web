@@ -142,15 +142,12 @@ export function SelectedMediaPackage({
     (isClientApproved && isAgencyApproved) ||
     selection.negotiationStatus === "APPROVED";
 
-  const packageContextId =
-    selection.workspaceMediaPackageId || selection.id || "";
-
   const handleChatNavigate = () => {
     if (!targetWorkspaceId) return;
-    navigate(
-      `/workspaces/${targetWorkspaceId}/chat?contextType=MEDIA_PACKAGE&contextId=${packageContextId}`,
-    );
+    navigate(`/workspaces/${targetWorkspaceId}/chat`);
   };
+  const packageContextId =
+    selection.workspaceMediaPackageId || selection.id || "";
 
   const handleApprove = async () => {
     if (onApprove) {
@@ -238,7 +235,7 @@ export function SelectedMediaPackage({
     );
   return (
     <>
-      <section className="border-border/80 bg-card relative space-y-5 rounded-2xl border p-5 shadow-xs ring-1 ring-border/50 ring-offset-2 ring-offset-background sm:p-6">
+      <section className="border-border/80 bg-card ring-border/50 ring-offset-background relative space-y-5 rounded-2xl border p-5 shadow-xs ring-1 ring-offset-2 sm:p-6">
         {/* Bento Grid Header & Facts */}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {/* Main Hero Header Tile */}
@@ -270,11 +267,14 @@ export function SelectedMediaPackage({
 
           {/* Fact 1: Budget */}
           <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4">
-            <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-xs font-medium uppercase tracking-wider">
+            <div className="text-muted-foreground flex items-center justify-between">
+              <span className="text-xs font-medium tracking-wider uppercase">
                 {t("mediaPackage.form.budgetLabel")}
               </span>
-              <Wallet className="text-brand-orange size-4 shrink-0" aria-hidden="true" />
+              <Wallet
+                className="text-brand-orange size-4 shrink-0"
+                aria-hidden="true"
+              />
             </div>
             <p className="text-foreground mt-3 text-lg font-bold tracking-tight break-words">
               {mediaPackage.budgetAmount == null
@@ -289,11 +289,14 @@ export function SelectedMediaPackage({
 
           {/* Fact 2: Duration */}
           <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4">
-            <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-xs font-medium uppercase tracking-wider">
+            <div className="text-muted-foreground flex items-center justify-between">
+              <span className="text-xs font-medium tracking-wider uppercase">
                 {t("mediaPackage.compact.duration")}
               </span>
-              <Clock className="text-brand-orange size-4 shrink-0" aria-hidden="true" />
+              <Clock
+                className="text-brand-orange size-4 shrink-0"
+                aria-hidden="true"
+              />
             </div>
             <p className="text-foreground mt-3 text-lg font-bold tracking-tight">
               {mediaPackage.durationWeeks == null
@@ -306,16 +309,19 @@ export function SelectedMediaPackage({
 
           {/* Fact 3: Deliverables summary */}
           <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4 sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-xs font-medium uppercase tracking-wider">
+            <div className="text-muted-foreground flex items-center justify-between">
+              <span className="text-xs font-medium tracking-wider uppercase">
                 {t("mediaPackage.ui.deliverables")}
               </span>
-              <Layers className="text-brand-orange size-4 shrink-0" aria-hidden="true" />
+              <Layers
+                className="text-brand-orange size-4 shrink-0"
+                aria-hidden="true"
+              />
             </div>
             <div className="mt-3 flex items-baseline gap-2">
               <p className="text-foreground text-lg font-bold tracking-tight">
                 {mediaPackage.offeringDetails?.deliverables?.length ?? 0}{" "}
-                <span className="text-xs font-normal text-muted-foreground">
+                <span className="text-muted-foreground text-xs font-normal">
                   {t("mediaPackage.ui.deliverablesCountUnit", {
                     defaultValue: "hạng mục",
                   })}
@@ -323,7 +329,8 @@ export function SelectedMediaPackage({
               </p>
               {mediaPackage.offeringDetails?.maxChanges != null && (
                 <span className="text-muted-foreground text-xs">
-                  · {t("mediaPackage.offering.revisions")}: {mediaPackage.offeringDetails.maxChanges}
+                  · {t("mediaPackage.offering.revisions")}:{" "}
+                  {mediaPackage.offeringDetails.maxChanges}
                 </span>
               )}
             </div>
@@ -342,7 +349,7 @@ export function SelectedMediaPackage({
           </div>
           <aside className="border-border/80 bg-muted/10 space-y-4 rounded-xl border p-4 lg:sticky lg:top-4">
             <div className="flex items-center gap-1">
-              <h3 className="font-semibold text-sm">
+              <h3 className="text-sm font-semibold">
                 {t("mediaPackage.selected.dualApprovalTitle")}
               </h3>
               <HelpHint label={t("mediaPackage.selected.dualApprovalTitle")}>

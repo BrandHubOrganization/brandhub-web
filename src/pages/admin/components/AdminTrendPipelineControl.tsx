@@ -2,7 +2,6 @@ import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Clock3, History, Play, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -12,50 +11,19 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useTrendPipeline } from "@/pages/admin/hooks/useTrendPipeline";
+import { AdminTrendPipelineRun } from "@/pages/admin/components/AdminTrendPipelineRun";
+import { AdminTrendSourceConfig } from "@/pages/admin/components/AdminTrendSourceConfig";
 import type { TrendPipelineRun } from "@/pages/admin/types/trendPipeline";
-
-function PipelineRun({ run }: { run: TrendPipelineRun }) {
-  const { t } = useTranslation();
-  return (
-    <article className="border-border bg-muted/30 space-y-2 rounded-lg border p-3 text-xs">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <code className="break-all">{run.pipelineRunId ?? run.id}</code>
-        <Badge
-          className={run.status === "FAILED" ? undefined : "text-foreground"}
-          variant={run.status === "FAILED" ? "destructive" : "outline"}
-        >
-          {t(`admin.trendPipeline.stage.${run.stage}`)}
-        </Badge>
-      </div>
-      <div className="text-muted-foreground flex flex-wrap gap-x-4 gap-y-1">
-        <span>{t("admin.trendPipeline.posts", { count: run.totalPosts })}</span>
-        <span>
-          {t("admin.trendPipeline.batches", {
-            finished: run.batchFinished,
-            total: run.batchTotal,
-          })}
-        </span>
-        {run.databaseSaved && (
-          <span>
-            {t(
-              run.liveUpdated
-                ? "admin.trendPipeline.saved"
-                : "admin.trendPipeline.historicalSaved",
-            )}
-          </span>
-        )}
-      </div>
-    </article>
-  );
-}
 
 export function AdminTrendPipelineControl() {
   const { t, i18n } = useTranslation();
-  const [confirm, setConfirm] = useState(false);
+  const [confirm, setConfirm] = useState<TrendPipelineRun | "start" | null>(
+    null,
+  );
   const [history, setHistory] = useState(false);
   const historyId = useId();
   const pipeline = useTrendPipeline(() => {
-    setConfirm(false);
+    setConfirm(null);
     setHistory(true);
   });
   const data = pipeline.status.data;
@@ -69,6 +37,21 @@ export function AdminTrendPipelineControl() {
     pipeline.runs.isPending ||
     pipeline.runs.isError ||
     Boolean(active);
+  const interrupted = (pipeline.runs.data?.history ?? []).filter(
+    (run) => run.status === "INTERRUPTED",
+  );
+  const recoveryDisabled =
+    pipeline.mutation.isPending ||
+    !data?.recoveryReady ||
+    pipeline.status.isError ||
+    pipeline.runs.isPending ||
+    pipeline.runs.isError ||
+    Boolean(active);
+  const recoveryTarget = confirm && confirm !== "start" ? confirm : null;
+  const confirmDisabled = recoveryTarget
+    ? recoveryDisabled ||
+      !interrupted.some((run) => run.id === recoveryTarget.id && run.canRecover)
+    : disabled;
   const next = data?.nextRunAt && new Date(data.nextRunAt);
   const at =
     next && !Number.isNaN(next.valueOf())
@@ -93,10 +76,14 @@ export function AdminTrendPipelineControl() {
               ? t("admin.loading")
               : pipeline.status.isError || pipeline.runs.isError
                 ? t("admin.trendPipeline.error")
-                : !data?.ready
-                  ? t("admin.trendPipeline.notReady")
-                  : active
-                    ? t(`admin.trendPipeline.stage.${active.stage}`)
+                : active
+                  ? t(`admin.trendPipeline.stage.${active.stage}`)
+                  : !data?.ready
+                    ? t(
+                        data?.readinessReason === "SESSION_MISSING"
+                          ? "admin.trendPipeline.sessionMissing"
+                          : "admin.trendPipeline.notReady",
+                      )
                     : t("admin.trendPipeline.ready")}
           </p>
         </div>
@@ -124,7 +111,7 @@ export function AdminTrendPipelineControl() {
             size="sm"
             disabled={disabled}
             loading={pipeline.mutation.isPending}
-            onClick={() => setConfirm(true)}
+            onClick={() => setConfirm("start")}
           >
             <Play className="size-4" aria-hidden="true" />
             {t("admin.trendPipeline.runNow")}
@@ -133,10 +120,12 @@ export function AdminTrendPipelineControl() {
       </div>
       {data && !pipeline.status.isError && (
         <div className="bg-muted/40 text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg px-3 py-2 text-xs">
-          <span className="inline-flex items-center gap-1.5">
+          <span className="inline-flex flex-wrap items-center gap-1.5">
             <Clock3 className="size-3.5" aria-hidden="true" />
             {t("admin.trendPipeline.schedule")}:{" "}
-            <code className="text-foreground">{data.cron}</code>
+            <code className="text-foreground whitespace-nowrap">
+              {data.cron}
+            </code>
             <span>({data.timezone})</span>
           </span>
           <span>
@@ -155,7 +144,19 @@ export function AdminTrendPipelineControl() {
           )}
         </div>
       )}
-      {active && !pipeline.runs.isError && <PipelineRun run={active} />}
+      {active && !pipeline.runs.isError && (
+        <AdminTrendPipelineRun run={active} />
+      )}
+      {!pipeline.runs.isError &&
+        interrupted.map((run) => (
+          <AdminTrendPipelineRun
+            key={run.id}
+            run={run}
+            recoveryDisabled={recoveryDisabled}
+            recoveryReady={data?.recoveryReady}
+            onRecover={setConfirm}
+          />
+        ))}
       {history && (
         <div id={historyId} className="space-y-2">
           <p className="text-muted-foreground text-xs">
@@ -170,42 +171,61 @@ export function AdminTrendPipelineControl() {
               {t("admin.trendPipeline.emptyHistory")}
             </p>
           ) : (
-            pipeline.runs.data.history.map((run) => (
-              <PipelineRun key={run.id} run={run} />
-            ))
+            pipeline.runs.data.history
+              .filter((run) => run.status !== "INTERRUPTED")
+              .map((run) => <AdminTrendPipelineRun key={run.id} run={run} />)
           )}
         </div>
       )}
+      <AdminTrendSourceConfig />
       <Dialog
-        open={confirm}
+        open={confirm !== null}
         onOpenChange={(open) => {
-          if (!pipeline.mutation.isPending) setConfirm(open);
+          if (!pipeline.mutation.isPending && !open) setConfirm(null);
         }}
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{t("admin.trendPipeline.confirmTitle")}</DialogTitle>
+            <DialogTitle>
+              {t(
+                recoveryTarget
+                  ? "admin.trendPipeline.confirmRecoveryTitle"
+                  : "admin.trendPipeline.confirmTitle",
+              )}
+            </DialogTitle>
             <DialogDescription>
-              {t("admin.trendPipeline.confirmDescription")}
+              {t(
+                recoveryTarget
+                  ? "admin.trendPipeline.confirmRecoveryDescription"
+                  : "admin.trendPipeline.confirmDescription",
+              )}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button
               variant="outline"
               disabled={pipeline.mutation.isPending}
-              onClick={() => setConfirm(false)}
+              onClick={() => setConfirm(null)}
             >
-              {t("common.cancel")}
+              {t("admin.trendPipeline.cancel")}
             </Button>
             <Button
               variant="orange"
-              disabled={disabled}
+              disabled={confirmDisabled}
               loading={pipeline.mutation.isPending}
               onClick={() => {
-                void pipeline.start().catch(() => {});
+                void (
+                  recoveryTarget
+                    ? pipeline.recover(recoveryTarget.id)
+                    : pipeline.start()
+                ).catch(() => {});
               }}
             >
-              {t("admin.trendPipeline.runNow")}
+              {t(
+                recoveryTarget
+                  ? "admin.trendPipeline.recover"
+                  : "admin.trendPipeline.runNow",
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

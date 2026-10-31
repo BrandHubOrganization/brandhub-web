@@ -67,7 +67,7 @@ export function AdminTrendReplayPanel() {
   const busy = replay.preview.isPending || replay.start.isPending;
 
   return (
-    <div className="min-w-0 space-y-6">
+    <div className="min-w-0 space-y-4">
       {/* S3 Raw Archive Preview Form - Doppelrand Surface */}
       <form
         className="relative rounded-2xl border border-border/80 bg-card/95 p-5 shadow-xs ring-1 ring-black/[0.04] dark:ring-white/[0.05] backdrop-blur-xs space-y-4"
@@ -147,7 +147,7 @@ export function AdminTrendReplayPanel() {
       </form>
 
       {/* Main Workspace: History List + Detail */}
-      <div className="grid min-w-0 gap-6 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
+      <div className="grid min-w-0 gap-4 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
         {/* Left Column: Replay History Cards */}
         <section className="bg-card/95 border-border/80 min-w-0 space-y-3 self-start rounded-2xl border p-4 shadow-xs ring-1 ring-black/[0.04] dark:ring-white/[0.05]">
           <div className="flex items-center justify-between gap-2 border-b border-border/50 pb-2.5">

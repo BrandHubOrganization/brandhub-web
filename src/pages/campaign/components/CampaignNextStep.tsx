@@ -15,10 +15,12 @@ export function CampaignNextStep({
   campaign,
   workspaceId,
   canManage,
+  hasTasks,
 }: {
   campaign: Campaign;
   workspaceId: string;
   canManage: boolean;
+  hasTasks: boolean;
 }) {
   const { t } = useTranslation();
   const stage = campaign.status;
@@ -39,9 +41,12 @@ export function CampaignNextStep({
     }
   };
 
-  const guidanceText = t(
-    `campaign.ux.${!canManage && (stage === "APPROVED" || stage === "IN_PROGRESS") ? "clientGuidance" : "guidance"}.${stage}`,
-  );
+  const guidanceText =
+    !hasTasks && stage === "IN_PROGRESS"
+      ? t("campaign.ux.awaitingTasks")
+      : t(
+          `campaign.ux.${!canManage && (stage === "APPROVED" || stage === "IN_PROGRESS") ? "clientGuidance" : "guidance"}.${stage}`,
+        );
 
   return (
     <div className="border-border/80 bg-card/90 flex flex-wrap items-center justify-between gap-3 rounded-xl border px-3.5 py-2.5 shadow-2xs backdrop-blur-xs">
@@ -51,15 +56,13 @@ export function CampaignNextStep({
           <Compass className="size-4" />
         </div>
         <div
-          className="min-w-0 max-w-[280px] truncate text-xs sm:max-w-[380px] md:max-w-[450px] lg:max-w-[550px] xl:max-w-[650px]"
+          className="max-w-[280px] min-w-0 truncate text-xs sm:max-w-[380px] md:max-w-[450px] lg:max-w-[550px] xl:max-w-[650px]"
           title={guidanceText}
         >
-          <span className="font-semibold text-foreground">
+          <span className="text-foreground font-semibold">
             {t("campaign.ux.nextStep")}:
           </span>
-          <span className="text-muted-foreground ml-1.5">
-            {guidanceText}
-          </span>
+          <span className="text-muted-foreground ml-1.5">{guidanceText}</span>
         </div>
       </div>
 
@@ -125,17 +128,19 @@ export function CampaignNextStep({
           )}
         </nav>
 
-        <Button
-          variant="orange"
-          size="sm"
-          className="h-8 gap-1.5 text-xs shadow-2xs"
-          asChild
-        >
-          <Link to={`/workspaces/${workspaceId}/tasks`}>
-            <span>{t("campaign.ux.openTasks")}</span>
-            <ArrowRight className="size-3.5" />
-          </Link>
-        </Button>
+        {hasTasks && (
+          <Button
+            variant="orange"
+            size="sm"
+            className="h-8 gap-1.5 text-xs shadow-2xs"
+            asChild
+          >
+            <Link to={`/workspaces/${workspaceId}/tasks`}>
+              <span>{t("campaign.ux.openTasks")}</span>
+              <ArrowRight className="size-3.5" />
+            </Link>
+          </Button>
+        )}
       </div>
     </div>
   );

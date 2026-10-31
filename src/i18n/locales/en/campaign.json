@@ -198,6 +198,7 @@
     "packageHint": "Choose a media package, agree on its terms and have both sides approve it. Then return here to plan the campaign.",
     "openPackage": "Open media package",
     "nextStep": "Next step",
+    "awaitingTasks": "Check deployment status below. Task management becomes available once created tasks are confirmed.",
     "sections": "Jump to campaign section",
     "plan": "View plan",
     "openTasks": "Manage tasks",

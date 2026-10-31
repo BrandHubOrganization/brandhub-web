@@ -1,4 +1,21 @@
 {
+  "trendSourceConfig": {
+    "title": "Crawl sources and post limit",
+    "sources": "Facebook pages / groups",
+    "sourceHelp": "One URL per line: https://www.facebook.com/page-name or https://www.facebook.com/groups/id. Up to 50 sources; post links are not supported.",
+    "maximum": "Maximum posts / source",
+    "sourceCountError": "Enter between 1 and 50 Facebook pages or groups.",
+    "limitError": "Enter a whole number from 1 to 1,000.",
+    "total": "{{count}} sources · up to {{total}} posts / run",
+    "appliesNext": "Applies to the next manual or scheduled run. Active runs and recovery retain their original data. Actual post counts depend on each source.",
+    "save": "Save settings",
+    "cancel": "Undo changes",
+    "saved": "Saved. The next run will use these settings.",
+    "stale": "Another Admin changed these settings. Reload the latest version before editing and saving again.",
+    "invalid": "Invalid settings. Check Facebook page/group URLs, remove duplicates and enter a post limit from 1 to 1,000.",
+    "error": "Could not load or save settings. Check service connectivity and retry; after a save attempt, reload to confirm the result.",
+    "reload": "Discard edits and reload"
+  },
   "trendGraph": {
     "description": "Inspect persisted Neo4j Trends and their evidence graph. Read-only; independent of published rankings.",
     "search": "Find persisted Trends",
@@ -381,6 +398,7 @@
     "trends": "View trends",
     "trendReplay": "S3 Trend Replay",
     "workspace": "Platform administration",
+    "ai": "Artificial Intelligence (AI)",
     "label": "Admin navigation",
     "scope": "Across all agencies",
     "overview": "Overview",
@@ -396,7 +414,8 @@
     "invoices": "Payment history",
     "workspaceTemplates": "Workspace templates",
     "mailSuppressions": "System unsubscribed list",
-    "crawl": "Crawl settings"
+    "crawl": "Crawl settings",
+    "trendPipeline": "Crawler Trend Pipeline"
   },
   "overview": {
     "title": "Platform overview",
@@ -752,7 +771,20 @@
   },
   "trendPipeline": {
     "title": "Trend pipeline",
+    "description": "Monitor automated crawl schedules, control trend pipelines, and configure Facebook sources.",
     "runNow": "Run pipeline now",
+    "recover": "Recover this run",
+    "recovering": "Requesting recovery",
+    "interruptedDescription": "Collection was interrupted. Completed batches are retained; this run is not currently running.",
+    "recoveryUnavailable": "Saved data required to recover this run is missing or invalid.",
+    "recoveryNotReady": "Check the recovery environment, Redis and queue, then refresh.",
+    "recoveryAccepted": "Recovery from saved data accepted. Aggregation and database progress are tracked below.",
+    "recoveryConflict": "This run changed state or can no longer be recovered. Refresh its status.",
+    "runNotFound": "This pipeline run was not found. Refresh the list.",
+    "confirmRecoveryTitle": "Recover the interrupted pipeline run?",
+    "confirmRecoveryDescription": "Use this run's saved data without opening a browser for new crawling or forcing completed batches to run again. The worker will continue aggregation and save the results; uncollected sources remain recorded as missing. AI aggregation calls may incur provider costs.",
+    "sessionMissing": "A valid Facebook session is required for a new crawl. Saved runs can still be recovered when the recovery environment is ready.",
+    "cancel": "Cancel",
     "history": "Recent pipeline runs",
     "ready": "Ready to run the complete flow using the current configuration.",
     "accepted": "Pipeline request accepted. Collection, processing and database progress are tracked below.",
@@ -776,6 +808,8 @@
     "stage": {
       "STARTING": "Starting",
       "CRAWLING": "Collecting and delivering data",
+      "RECOVERING": "Recovering a saved run",
+      "INTERRUPTED": "Interrupted — recovery required",
       "QUEUED": "Waiting for the worker",
       "PROCESSING": "Processing batches",
       "AGGREGATING": "Aggregating trends and saving results",

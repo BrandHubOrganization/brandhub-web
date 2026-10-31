@@ -2,10 +2,19 @@ import { lazy, Suspense, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Construction, ArrowLeft } from "lucide-react";
+import {
+  Construction,
+  ArrowLeft,
+  TrendingUp,
+  Workflow,
+  Network,
+  Activity,
+} from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
+import { cn } from "@/lib/utils";
 import { AdminAccountsPanel } from "@/pages/admin/components/AdminAccountsPanel";
 import { AdminTrendReplayPanel } from "@/pages/admin/components/AdminTrendReplayPanel";
+import { AdminTrendPipelinePanel } from "@/pages/admin/components/AdminTrendPipelinePanel";
 import { AdminTrendPanel } from "@/pages/admin/components/AdminTrendPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
@@ -34,6 +43,7 @@ const views = [
   "reports",
   "crawl",
   "trendReplay",
+  "trendPipeline",
   "trends",
   "trendGraph",
 ];
@@ -46,6 +56,7 @@ const descriptions: Record<string, string> = {
   users: "admin.accounts.description",
   crawl: "admin.crawl.description",
   trendReplay: "admin.trendReplay.description",
+  trendPipeline: "admin.trendPipeline.description",
   trends: "admin.trends.description",
   trendGraph: "admin.trendGraph.description",
   mailTemplates: "mailTemplate.admin.description",
@@ -54,6 +65,52 @@ const descriptions: Record<string, string> = {
   reports: "admin.reports.description",
   moderation: "admin.moderation.description",
 };
+
+const aiTrendNavItems = [
+  { key: "trends", icon: TrendingUp, labelKey: "admin.navigation.trends" },
+  { key: "crawl", icon: Activity, labelKey: "admin.navigation.crawl" },
+  {
+    key: "trendPipeline",
+    icon: Workflow,
+    labelKey: "admin.navigation.trendPipeline",
+  },
+  { key: "trendGraph", icon: Network, labelKey: "admin.navigation.trendGraph" },
+  {
+    key: "trendReplay",
+    icon: Activity,
+    labelKey: "admin.navigation.trendReplay",
+  },
+] as const;
+
+export function AdminAiNavActions({ currentView }: { currentView: string }) {
+  const { t } = useTranslation();
+  return (
+    <nav
+      aria-label={t("admin.navigation.ai")}
+      className="flex flex-wrap items-center gap-1.5 sm:gap-2"
+    >
+      {aiTrendNavItems.map(({ key, icon: Icon, labelKey }) => {
+        const active = currentView === key;
+        return (
+          <Link
+            key={key}
+            to={`/admin?view=${key}`}
+            aria-current={active ? "page" : undefined}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors",
+              active
+                ? "bg-brand-orange text-white"
+                : "bg-card hover:bg-muted text-muted-foreground border-border border",
+            )}
+          >
+            <Icon className="size-3.5 shrink-0" aria-hidden="true" />
+            <span>{t(labelKey)}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
 
 export function AdminPage() {
   const { t } = useTranslation();
@@ -75,15 +132,27 @@ export function AdminPage() {
         description={t(descriptions[view] ?? `admin.unavailable.${view}`)}
         hideBanner
         showGuideButton={false}
+        compact={view === "trendGraph"}
         actions={
-          view === "overview" && (
+          view === "overview" ? (
             <AdminOverviewActions
               timezone={timezone}
               onTimezoneChange={setTimezone}
             />
-          )
+          ) : [
+              "trends",
+              "crawl",
+              "trendPipeline",
+              "trendGraph",
+              "trendReplay",
+            ].includes(view) ? (
+            <AdminAiNavActions currentView={view} />
+          ) : undefined
         }
-        className="max-w-[1600px] space-y-6 p-4 pb-12 md:p-8 [&>div:first-child]:border-0 [&>div:first-child]:pb-0"
+        className={cn(
+          "max-w-[1600px] space-y-6 p-4 pb-12 md:p-8 [&>div:first-child]:border-0 [&>div:first-child]:pb-0",
+          view === "trendGraph" && "space-y-3 p-3 md:px-5 md:py-4",
+        )}
       >
         {view === "overview" ? (
           <AdminOverviewPanel timezone={timezone} />
@@ -115,6 +184,8 @@ export function AdminPage() {
           </section>
         ) : view === "trendReplay" ? (
           <AdminTrendReplayPanel />
+        ) : view === "trendPipeline" ? (
+          <AdminTrendPipelinePanel />
         ) : view === "trends" ? (
           <AdminTrendPanel />
         ) : view === "trendGraph" ? (
