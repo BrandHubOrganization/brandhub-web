@@ -102,29 +102,59 @@ export default function CampaignPanel({
     <section className="text-foreground space-y-4">
       <header className="border-border bg-card rounded-xl border p-3.5 sm:p-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-1.5 text-sm font-semibold tracking-tight">
-            <span>{t("campaign.ui.stages")}</span>
-            <HelpHint label={t("campaign.title")}>
-              {t("campaign.description")}
-            </HelpHint>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm">
+            <div className="flex items-center gap-1.5 font-semibold tracking-tight">
+              <span>{t("campaign.ui.stages")}</span>
+              <HelpHint label={t("campaign.title")}>
+                {t("campaign.description")}
+              </HelpHint>
+            </div>
+            <div className="hidden h-4 w-px bg-border sm:block" aria-hidden="true" />
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+              <span>{t("campaign.ui.sourcePackage")}:</span>
+              <span className="font-medium text-foreground">
+                {String(terms.name ?? selection.mediaPackage.name)}
+              </span>
+              <Badge variant="outline" className="text-[10px] py-0 px-1 font-normal">
+                v{campaign?.packageTermsVersion ?? selection.termsVersion}
+              </Badge>
+              <Link
+                className="focus-visible:ring-ring hover:text-foreground rounded-sm underline underline-offset-4 outline-none focus-visible:ring-2 ml-0.5"
+                to={`/workspaces/${selection.workspaceId}/media-package`}
+              >
+                {t("campaign.ui.viewPackage")}
+              </Link>
+            </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={loading || saving || editing}
-            onClick={() => {
-              setLoading(true);
-              setError(false);
-              setReload((value) => value + 1);
-            }}
-          >
-            {t("campaign.reload")}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={loading || saving || editing}
+              onClick={() => {
+                setLoading(true);
+                setError(false);
+                setReload((value) => value + 1);
+              }}
+            >
+              {t("campaign.reload")}
+            </Button>
+            {canManage && !legacy && !editing && (!campaign || campaign.status === "DRAFT") && (
+              <Button
+                variant="orange"
+                size="sm"
+                disabled={loading || saving}
+                onClick={() => setEditing(true)}
+              >
+                {t(campaign ? "campaign.edit" : "campaign.create")}
+              </Button>
+            )}
+          </div>
         </div>
         {!loading && !error && (
           <nav
             aria-label={t("campaign.ui.stages")}
-            className="mt-4 overflow-x-auto no-scrollbar py-1"
+            className="mt-3 overflow-x-auto no-scrollbar py-1"
           >
             <ol className="flex min-w-[560px] sm:min-w-0 items-center justify-between">
               {stages.map((status, index) => {
@@ -138,7 +168,7 @@ export default function CampaignPanel({
                     className="flex flex-1 items-center last:flex-none"
                   >
                     <div
-                      className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs sm:text-sm transition-all duration-200 ${
+                      className={`flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-xs sm:text-sm transition-all duration-200 ${
                         isCurrent
                           ? "border-brand-orange bg-brand-orange/10 text-brand-orange font-semibold shadow-xs ring-2 ring-brand-orange/20"
                           : isCompleted
@@ -147,7 +177,7 @@ export default function CampaignPanel({
                       }`}
                     >
                       <span
-                        className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-200 ${
+                        className={`flex size-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold transition-all duration-200 ${
                           isCurrent
                             ? "bg-brand-orange text-white shadow-xs ring-2 ring-brand-orange/30"
                             : isCompleted
@@ -156,7 +186,7 @@ export default function CampaignPanel({
                         }`}
                       >
                         {isCompleted ? (
-                          <Check className="size-3.5 stroke-[2.5]" />
+                          <Check className="size-3 stroke-[2.5]" />
                         ) : (
                           index + 1
                         )}
@@ -185,25 +215,6 @@ export default function CampaignPanel({
           </nav>
         )}
       </header>
-      <div className="border-border bg-muted/30 flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm">
-        <div className="min-w-0">
-          <p className="text-muted-foreground text-xs">
-            {t("campaign.ui.sourcePackage")}
-          </p>
-          <p className="mt-1 font-medium break-words">
-            {String(terms.name ?? selection.mediaPackage.name)}{" "}
-            <Badge variant="outline">
-              v{campaign?.packageTermsVersion ?? selection.termsVersion}
-            </Badge>
-          </p>
-        </div>
-        <Link
-          className="focus-visible:ring-ring rounded-sm text-sm underline underline-offset-4 outline-none focus-visible:ring-2"
-          to={`/workspaces/${selection.workspaceId}/media-package`}
-        >
-          {t("campaign.ui.viewPackage")}
-        </Link>
-      </div>
       {loading && (
         <div role="status" className="flex justify-center p-10">
           <Spinner />
@@ -234,16 +245,6 @@ export default function CampaignPanel({
             >
               {t("campaign.errors.CAMPAIGN_LEGACY_TERMS")}
             </p>
-          )}
-          {canManage && !legacy && !editing && (!campaign || campaign.status === "DRAFT") && (
-            <div className="flex flex-col items-end gap-2">
-              <Button
-                variant="orange"
-                onClick={() => setEditing(true)}
-              >
-                {t(campaign ? "campaign.edit" : "campaign.create")}
-              </Button>
-            </div>
           )}
           {!campaign && !editing && (
             <div className="border-border bg-muted/20 flex items-center gap-1 rounded-lg border border-dashed p-4 text-sm">
