@@ -109,7 +109,7 @@ export function AiHashtagSuggestions({
                       onChange([...hashtags, tag]);
                   }}
                 >
-                  {tag}
+                  + {tag}
                 </Button>
                 <span className="text-muted-foreground shrink-0 text-xs">
                   {t(

@@ -40,7 +40,8 @@ export function InvoiceDetail({
   return (
     <section
       aria-label={t("subscription.invoices.detail")}
-      className="min-w-0 space-y-4"
+      data-testid={detail.isPending ? undefined : "invoice-detail-drawer"}
+      className="min-w-0 space-y-3"
     >
       {detail.isPending ? (
         <Skeleton className="h-40" />
@@ -53,9 +54,10 @@ export function InvoiceDetail({
         </div>
       ) : (
         <>
-          <dl className="grid gap-4 text-sm">
+          <dl className="grid grid-cols-2 gap-2 text-sm">
             {[
               ["number", detail.data.order.id],
+              ["transferContent", detail.data.order.transferContent || "—"],
               ["agency", detail.data.order.agencyId],
               ["payer", detail.data.order.payerUserId],
               [
@@ -73,13 +75,12 @@ export function InvoiceDetail({
                 "period",
                 `${date(detail.data.order.periodStart)} – ${date(detail.data.order.periodEnd)}`,
               ],
-              ["transferContent", detail.data.order.transferContent || "—"],
             ].map(([key, value]) => (
               <div key={key}>
                 <dt className="text-muted-foreground">
                   {t(`subscription.invoices.${key}`)}
                 </dt>
-                <dd className="mt-1 font-medium break-all">{value}</dd>
+                <dd className="mt-0.5 font-medium break-all">{value}</dd>
               </div>
             ))}
           </dl>

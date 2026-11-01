@@ -4,7 +4,7 @@ import { ApplyHashtagToPostButton } from "@/pages/hashtag-groups/components/Appl
 import type { HashtagEntry } from "@/pages/hashtag-groups/types/hashtag";
 import type { MemberRole } from "@/types/workspace";
 import { useTranslation } from "react-i18next";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 
 interface HashtagEntryGridProps {
   entries: HashtagEntry[];
@@ -14,6 +14,7 @@ interface HashtagEntryGridProps {
   campaignNames: Map<string, string>;
   language: string;
   onRemove: (entry: HashtagEntry) => void;
+  onEdit?: (entry: HashtagEntry) => void;
 }
 
 export function HashtagEntryGrid({
@@ -24,6 +25,7 @@ export function HashtagEntryGrid({
   campaignNames,
   language,
   onRemove,
+  onEdit,
 }: HashtagEntryGridProps) {
   const { t } = useTranslation();
   const prefix = "hashtagGroups.collection.";
@@ -38,14 +40,30 @@ export function HashtagEntryGrid({
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-semibold break-all">#{entry.tag}</h3>
             {canRemoveEntry(entry, userId, role) && (
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label={t(prefix + "removeTag", { tag: entry.tag })}
-                onClick={() => onRemove(entry)}
-              >
-                <Trash2 className="size-4" />
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={t(prefix + "removeTag", { tag: entry.tag })}
+                  onClick={() => onRemove(entry)}
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+                {onEdit && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label={t(prefix + "editTag", {
+                      tag: entry.tag,
+                      defaultValue: `Chỉnh sửa #${entry.tag}`,
+                    })}
+                    onClick={() => onEdit(entry)}
+                  >
+                    <Pencil className="mr-1 size-3.5" />
+                    {t(prefix + "edit", "Chỉnh sửa")}
+                  </Button>
+                )}
+              </div>
             )}
           </div>
           <div className="flex flex-wrap gap-2">

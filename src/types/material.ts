@@ -63,6 +63,9 @@ export interface MaterialItem {
   capabilities?: MaterialCapabilities;
   parentMaterialId?: string;
   watermarkMeta?: WatermarkMetadata;
+  draft?: boolean;
+  aiSource?: string;
+  storageProvider?: string;
   createdBy?: string;
   createdAt: string;
   updatedAt?: string;
@@ -85,6 +88,7 @@ export interface MaterialFilters {
   purpose?: "MATERIAL" | "BRAND_REFERENCE";
   clientProfileId?: string;
   sort?: "newest" | "oldest";
+  draft?: boolean;
 }
 
 export interface MaterialPage {

@@ -1,18 +1,24 @@
-import { Download, RotateCcw, Trash2 } from "lucide-react";
+import { FolderPlus, RotateCcw, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { cn, formatFileSize } from "@/lib/utils";
 import type { MaterialItem } from "@/types/material";
-import { retentionDays } from "@/pages/library/hooks/materialTrashPolicy";
+import {
+  draftRetentionDays,
+  retentionDays,
+} from "@/pages/library/hooks/materialTrashPolicy";
 import { MaterialThumbnail } from "@/pages/library/components/MaterialThumbnail";
 import { MaterialBadges } from "@/pages/library/components/MaterialBadges";
+import { DownloadFormatDropdown } from "@/components/common/DownloadFormatDropdown";
+import type { DownloadFormat } from "@/utils/mediaDownloadHelper";
 
 interface Props {
   material: MaterialItem;
   deleted: boolean;
   pending: boolean;
   downloading?: boolean;
-  onDownload?: () => void;
+  onDownload?: (format?: DownloadFormat) => void;
+  onPromote?: () => void;
   onDelete: () => void;
   onRestore: () => void;
   onOpen: () => void;
@@ -24,12 +30,14 @@ export function MaterialRepositoryCard({
   pending,
   downloading = false,
   onDownload,
+  onPromote,
   onDelete,
   onRestore,
   onOpen,
 }: Props) {
   const { t } = useTranslation();
   const days = retentionDays(material);
+  const draftDays = draftRetentionDays(material);
   return (
     <article
       className={cn(
@@ -59,6 +67,11 @@ export function MaterialRepositoryCard({
       <p className="text-muted-foreground text-xs">
         {formatFileSize(material.fileSize ?? 0)}
       </p>
+      {!deleted && material.draft && draftDays > 0 && (
+        <p className="text-amber-600 dark:text-amber-400 text-xs font-medium">
+          {t("library.trash.draftDaysRemaining", { count: draftDays })}
+        </p>
+      )}
       {deleted && (
         <p className="text-muted-foreground text-xs">
           {material.status === "PURGE_IN_PROGRESS"
@@ -80,24 +93,29 @@ export function MaterialRepositoryCard({
           material.status === "READY" &&
           material.capabilities?.canDownload &&
           onDownload && (
-            <Button
-              variant="outline"
-              size="sm"
+            <DownloadFormatDropdown
+              mediaKind={material.mediaKind || "IMAGE"}
               disabled={downloading}
-              aria-busy={downloading}
-              aria-label={t("library.repository.downloadAriaLabel", {
-                name: material.name,
-              })}
-              onClick={onDownload}
-            >
-              <Download className="size-4" />
-              {t(
+              label={t(
                 downloading
                   ? "library.repository.preparingDownload"
                   : "library.repository.download",
               )}
-            </Button>
+              onSelectFormat={(format) => onDownload(format)}
+            />
           )}
+        {!deleted && material.draft && onPromote && (
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={pending}
+            onClick={onPromote}
+            data-testid="promote-draft-btn"
+          >
+            <FolderPlus className="size-4" />
+            {t("library.trash.promoteToLibrary")}
+          </Button>
+        )}
         {deleted
           ? material.capabilities?.canRestore && (
               <Button

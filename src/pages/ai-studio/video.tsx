@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import {
   AlertTriangle,
   Clapperboard,
-  Download,
   Film,
   Loader2,
   RotateCcw,
@@ -19,6 +18,8 @@ import {
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { DownloadFormatDropdown } from "@/components/common/DownloadFormatDropdown";
+import { downloadMediaWithFormat } from "@/utils/mediaDownloadHelper";
 import { cn } from "@/lib/utils";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { errorCode } from "@/services/adminRevenueService";
@@ -380,17 +381,19 @@ function VideoStudio() {
                     controls
                     className="w-full rounded-lg bg-black"
                   />
-                  <Button asChild variant="outline" className="w-full gap-2">
-                    <a
-                      href={current.videoUrl}
-                      download
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Download className="size-4" />
-                      {t("aiStudio.video.download")}
-                    </a>
-                  </Button>
+                  <DownloadFormatDropdown
+                    mediaKind="VIDEO"
+                    label={t("aiStudio.video.download")}
+                    className="w-full gap-2"
+                    onSelectFormat={(format) =>
+                      void downloadMediaWithFormat({
+                        url: current.videoUrl!,
+                        filename: `ai-video-${current.jobId}`,
+                        format,
+                        mediaKind: "VIDEO",
+                      })
+                    }
+                  />
                 </>
               )}
               {current.status === "FAILED" && (

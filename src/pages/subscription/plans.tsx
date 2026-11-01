@@ -37,7 +37,10 @@ export function SubscriptionPlansPage() {
   const { isOwner, catalog, subscription } = useSubscriptionCatalog();
 
   const checkoutAction =
-    subscription.data?.planCode === "PLUS" ? "RENEWAL" : "UPGRADE";
+    subscription.data?.planCode === "PLUS" ||
+    subscription.data?.status === "EXPIRED"
+      ? "RENEWAL"
+      : "UPGRADE";
   const checkoutScope = `${scope}:${checkoutAction}:${subscription.data?.currentPeriodEnd || "initial"}`;
   const paymentOpen = Boolean(isOwner && paymentScope?.startsWith(`${scope}:`));
 
@@ -110,7 +113,8 @@ export function SubscriptionPlansPage() {
         </div>
       ) : (
         <>
-          {subscription.data?.planCode === "PLUS" &&
+          {(subscription.data?.planCode === "PLUS" ||
+            subscription.data?.status === "EXPIRED") &&
             subscription.data.currentPeriodEnd && (
               <div
                 role="status"

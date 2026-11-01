@@ -20,6 +20,40 @@ import {
   AdminAccountDistribution,
 } from "@/pages/admin/components/AdminOverviewCharts";
 import { AdminRecentUsers } from "@/pages/admin/components/AdminRecentUsers";
+import { SystemHealthPanel } from "@/pages/admin/components/SystemHealthPanel";
+import { getSystemHealth } from "@/services/mock/mockAdminService";
+import type { SystemHealthMetric } from "@/types/admin";
+
+const DEFAULT_SYSTEM_HEALTH_METRICS: SystemHealthMetric[] = [
+  {
+    service: "API Gateway",
+    status: "UP",
+    latencyMs: 18,
+    uptimePercent: 99.98,
+    checkedAt: "2026-03-19T06:00:00Z",
+  },
+  {
+    service: "Business Service",
+    status: "UP",
+    latencyMs: 42,
+    uptimePercent: 99.95,
+    checkedAt: "2026-03-19T06:00:00Z",
+  },
+  {
+    service: "AI Generation Service",
+    status: "DEGRADED",
+    latencyMs: 640,
+    uptimePercent: 98.4,
+    checkedAt: "2026-03-19T06:00:00Z",
+  },
+  {
+    service: "Publisher Service",
+    status: "UP",
+    latencyMs: 55,
+    uptimePercent: 99.91,
+    checkedAt: "2026-03-19T06:00:00Z",
+  },
+];
 
 export function AdminOverviewActions({
   timezone,
@@ -92,6 +126,11 @@ export function AdminOverviewPanel({ timezone }: { timezone: string }) {
         status: "",
       }),
     retry: false,
+  });
+  const health = useQuery({
+    queryKey: ["admin-overview-system-health"],
+    queryFn: getSystemHealth,
+    initialData: DEFAULT_SYSTEM_HEALTH_METRICS,
   });
   const forbidden =
     isAxiosError(result.error) && result.error.response?.status === 403;
@@ -171,6 +210,12 @@ export function AdminOverviewPanel({ timezone }: { timezone: string }) {
           </div>
         </>
       )}
+      <section className="space-y-3" data-testid="admin-overview-system-health">
+        <h2 className="text-foreground text-sm font-semibold">
+          {t("dashboard.admin.tabs.health")}
+        </h2>
+        <SystemHealthPanel metrics={health.data ?? DEFAULT_SYSTEM_HEALTH_METRICS} />
+      </section>
     </div>
   );
 }

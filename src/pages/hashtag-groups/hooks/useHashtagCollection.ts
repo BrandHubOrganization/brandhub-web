@@ -4,10 +4,12 @@ import {
   addHashtag,
   listHashtags,
   removeHashtag,
+  updateHashtag,
 } from "@/pages/hashtag-groups/services/hashtagService";
 import type {
   CreateHashtag,
   HashtagFilter,
+  UpdateHashtag,
 } from "@/pages/hashtag-groups/types/hashtag";
 
 export function useHashtagCollection(
@@ -37,6 +39,18 @@ export function useHashtagCollection(
       await client.invalidateQueries({ queryKey: key });
     },
   });
+  const update = useMutation({
+    mutationFn: ({
+      hashtagId,
+      payload,
+    }: {
+      hashtagId: string;
+      payload: UpdateHashtag;
+    }) => updateHashtag(workspaceId, hashtagId, payload),
+    onSuccess: async () => {
+      await client.invalidateQueries({ queryKey: key });
+    },
+  });
   const remove = useMutation({
     mutationFn: ({
       hashtagId,
@@ -57,5 +71,5 @@ export function useHashtagCollection(
       page: change.page ?? 0,
     }));
   }
-  return { filter, changeFilter, query, create, remove };
+  return { filter, changeFilter, query, create, update, remove };
 }

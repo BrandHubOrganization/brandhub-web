@@ -87,6 +87,28 @@ function useRestoreMaterial(context: Context) {
   });
 }
 
+function usePromoteMaterial(context: Context) {
+  return useMutation({
+    mutationFn: async (material: MaterialItem): Promise<MutationResult> => {
+      const { workspace, actor } = context;
+      if (!workspace || !actor || !isCurrent({ workspace, actor }))
+        throw new Error("Missing workspace");
+      const result = await materialService.promoteDraft(workspace, material);
+      return { material: result, workspace, actor };
+    },
+    onSuccess: (result) => {
+      if (!isCurrent(result)) return;
+      toast.success(
+        context.t("library.trash.promotedSuccess", {
+          name: result.material.name,
+        }),
+      );
+      void context.refresh();
+    },
+    onError: context.failure,
+  });
+}
+
 function useDeleteMaterial(
   context: Context,
   restore: (material: MaterialItem) => void,
@@ -150,6 +172,7 @@ export function useMaterialTrash(
     },
   });
   const restore = useRestoreMaterial(context);
+  const promote = usePromoteMaterial(context);
   const remove = useDeleteMaterial(context, restore.mutate);
-  return { query, workspace, role, actor, remove, restore, refresh };
+  return { query, workspace, role, actor, remove, restore, promote, refresh };
 }

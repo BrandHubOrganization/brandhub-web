@@ -33,4 +33,7 @@ export interface CreateHashtag {
   isRequired: boolean;
   campaignId: string | null;
 }
+export interface UpdateHashtag extends CreateHashtag {
+  version: number;
+}
 export interface HashtagCampaign { id: string; name: string }

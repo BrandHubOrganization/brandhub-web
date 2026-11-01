@@ -11,7 +11,6 @@ interface ApplyHashtagToPostButtonProps {
 export function ApplyHashtagToPostButton({
   workspaceId,
   tag,
-  isRequired,
 }: ApplyHashtagToPostButtonProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -21,12 +20,7 @@ export function ApplyHashtagToPostButton({
     <Button
       variant="outline"
       size="sm"
-      disabled={isRequired}
-      aria-label={
-        isRequired
-          ? t(prefix + "campaignApplyUnavailable")
-          : t(prefix + "applyToPost", { tag })
-      }
+      aria-label={t(prefix + "applyToPost", { tag })}
       onClick={() =>
         navigate(`/workspaces/${workspaceId}/editor`, {
           state: { prefilledHashtags: [`#${tag}`] },

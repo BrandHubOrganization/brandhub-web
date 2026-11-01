@@ -27,6 +27,9 @@ interface Props {
   workspaceId: string;
   canRequire: boolean;
   initialTag?: string;
+  initialPurpose?: CreateHashtag["purpose"];
+  initialCampaignId?: string | null;
+  title?: string;
 }
 export function AddHashtagDialog({
   onClose,
@@ -36,14 +39,21 @@ export function AddHashtagDialog({
   workspaceId,
   canRequire,
   initialTag = "",
+  initialPurpose = "BRAND",
+  initialCampaignId = "",
+  title,
 }: Props) {
   const { t } = useTranslation();
   const [tag, setTag] = useState(initialTag);
-  const [purpose, setPurpose] = useState<CreateHashtag["purpose"]>("BRAND");
-  const [campaignId, setCampaignId] = useState("");
-  const isEventSpecific = canRequire && purpose === "EVENT_SPECIFIC";
+  const [purpose, setPurpose] = useState<CreateHashtag["purpose"]>(initialPurpose);
+  const [campaignId, setCampaignId] = useState(initialCampaignId ?? "");
+  const isEventSpecific = (canRequire || initialPurpose === "EVENT_SPECIFIC") && purpose === "EVENT_SPECIFIC";
   const campaigns = useHashtagCampaigns(workspaceId, isEventSpecific);
   const prefix = "hashtagGroups.collection.";
+  const allowedPurposes =
+    canRequire || initialPurpose === "EVENT_SPECIFIC"
+      ? clientHashtagPurposes
+      : hashtagPurposes;
   return (
     <Dialog
       open
@@ -53,7 +63,7 @@ export function AddHashtagDialog({
     >
       <DialogContent className="rounded-xl">
         <DialogHeader>
-          <DialogTitle>{t(prefix + "add")}</DialogTitle>
+          <DialogTitle>{title ?? t(prefix + "add")}</DialogTitle>
           <DialogDescription>{t(prefix + "description")}</DialogDescription>
         </DialogHeader>
         <form
@@ -84,22 +94,20 @@ export function AddHashtagDialog({
               value={purpose}
               disabled={pending}
               onChange={(event) => {
-                const selected = (
-                  canRequire ? clientHashtagPurposes : hashtagPurposes
-                ).find((value) => value === event.target.value);
+                const selected = allowedPurposes.find(
+                  (value) => value === event.target.value,
+                );
                 if (selected) {
                   setPurpose(selected);
                   setCampaignId("");
                 }
               }}
             >
-              {(canRequire ? clientHashtagPurposes : hashtagPurposes).map(
-                (value) => (
-                  <option key={value} value={value}>
-                    {t(prefix + "purposes." + value)}
-                  </option>
-                ),
-              )}
+              {allowedPurposes.map((value) => (
+                <option key={value} value={value}>
+                  {t(prefix + "purposes." + value)}
+                </option>
+              ))}
             </Select>
           </div>
           {isEventSpecific && (

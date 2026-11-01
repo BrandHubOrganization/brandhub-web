@@ -3,6 +3,7 @@ import { api } from "@/services/api";
 import type { ApiResponse } from "@/services/authService";
 import type {
   CreateHashtag,
+  UpdateHashtag,
   HashtagEntry,
   HashtagFilter,
   HashtagPage,
@@ -31,6 +32,17 @@ export async function listHashtags(
 export async function addHashtag(workspaceId: string, payload: CreateHashtag) {
   const { data } = await api.post<ApiResponse<HashtagEntry>>(
     `/api/v1/workspaces/${workspaceId}/hashtags`,
+    payload,
+  );
+  return data.data;
+}
+export async function updateHashtag(
+  workspaceId: string,
+  hashtagId: string,
+  payload: UpdateHashtag,
+) {
+  const { data } = await api.patch<ApiResponse<HashtagEntry>>(
+    `/api/v1/workspaces/${workspaceId}/hashtags/${hashtagId}`,
     payload,
   );
   return data.data;
