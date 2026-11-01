@@ -8,13 +8,25 @@ import { useTasks } from "@/pages/tasks/hooks/useTasks";
 import { TaskFilterBar } from "@/pages/tasks/components/TaskFilterBar";
 import { TaskDetailPanel } from "@/pages/tasks/components/TaskDetailPanel";
 import { TaskPagination } from "@/pages/tasks/components/TaskPagination";
-import { TaskViewSwitcher, type TaskViewMode } from "@/pages/tasks/components/TaskViewSwitcher";
+import {
+  TaskViewSwitcher,
+  type TaskViewMode,
+} from "@/pages/tasks/components/TaskViewSwitcher";
 import { TaskActiveView } from "@/pages/tasks/components/views/TaskActiveView";
 import { useTaskPanel } from "@/pages/tasks/hooks/useTaskPanel";
-import { TaskWorkflowProvider, useTaskEditContext } from "@/pages/tasks/components/TaskWorkflowProvider";
+import {
+  TaskWorkflowProvider,
+  useTaskEditContext,
+} from "@/pages/tasks/components/TaskWorkflowProvider";
 import { taskDeadline } from "@/pages/tasks/utils/taskViewData";
 
-function WorkspaceTaskView({ workspaceId, state }: { workspaceId: string; state: ReturnType<typeof useTasks> }) {
+function WorkspaceTaskView({
+  workspaceId,
+  state,
+}: {
+  workspaceId: string;
+  state: ReturnType<typeof useTasks>;
+}) {
   const { t } = useTranslation();
   const [view, setView] = useState<TaskViewMode>("list");
   const panel = useTaskPanel(workspaceId);
@@ -24,7 +36,7 @@ function WorkspaceTaskView({ workspaceId, state }: { workspaceId: string; state:
     if (await canLeave()) action();
   };
 
-  const unscheduled = state.tasks.filter((task) => !taskDeadline(task)).length;
+  const unscheduled = (state.tasks || []).filter((task) => !taskDeadline(task)).length;
 
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-col overflow-auto">
@@ -52,9 +64,19 @@ function WorkspaceTaskView({ workspaceId, state }: { workspaceId: string; state:
             search={state.search}
             onSearchChange={(value) => guard(() => state.setSearch(value))}
             typeFilter={state.typeFilter}
-            onTypeFilterChange={(v) => guard(() => { state.setTypeFilter(v); state.setPage(0); })}
+            onTypeFilterChange={(v) =>
+              guard(() => {
+                state.setTypeFilter(v);
+                state.setPage(0);
+              })
+            }
             statusFilter={state.statusFilter}
-            onStatusFilterChange={(v) => guard(() => { state.setStatusFilter(v); state.setPage(0); })}
+            onStatusFilterChange={(v) =>
+              guard(() => {
+                state.setStatusFilter(v);
+                state.setPage(0);
+              })
+            }
             onSearchSubmit={() => guard(() => void state.loadTasks())}
           />
 
@@ -67,9 +89,16 @@ function WorkspaceTaskView({ workspaceId, state }: { workspaceId: string; state:
             )}
 
             {!state.loading && state.error && (
-              <div role="alert" className="border-border bg-card rounded-xl border p-4">
+              <div
+                role="alert"
+                className="border-border bg-card rounded-xl border p-4"
+              >
                 <p className="text-destructive">{t("tasks.error")}</p>
-                <Button variant="outline" className="mt-3" onClick={() => void state.loadTasks()}>
+                <Button
+                  variant="outline"
+                  className="mt-3"
+                  onClick={() => void state.loadTasks()}
+                >
                   {t("tasks.retry")}
                 </Button>
               </div>

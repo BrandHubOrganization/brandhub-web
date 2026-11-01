@@ -58,11 +58,45 @@
     "createPost": "Create Post",
     "searchPlaceholder": "Search by title, caption...",
     "dateRanges": {
+      "today": "Today",
+      "yesterday": "Yesterday",
       "7d": "Last 7 days",
       "14d": "Last 14 days",
+      "28d": "Last 28 days",
       "30d": "Last 30 days",
+      "60d": "Last 60 days",
       "90d": "Last 3 months",
-      "all": "All time"
+      "this_year": "This year",
+      "all": "All time",
+      "custom": "Custom"
+    },
+    "datePicker": {
+      "presetsTitle": "Date Range"
+    },
+    "videoMetrics": {
+      "views": "Views",
+      "viewsTooltip": "Number of times your video was played for at least 1 millisecond or replayed.",
+      "views3s": "3-second video views",
+      "views3sTooltip": "Number of times your video was played for at least 3 seconds or nearly its total length.",
+      "views1m": "1-minute video views",
+      "views1mTooltip": "Number of times your video was played for at least 1 minute or nearly its total length.",
+      "watchTime": "Minutes viewed",
+      "watchTimeTooltip": "Total amount of time people spent watching this video."
+    },
+    "insights": {
+      "contentTypeTitle": "Views by content type",
+      "contentTypeSubtitle": "Content format breakdown and reach proportion",
+      "audienceTitle": "Views by followers vs. non-followers",
+      "audienceSubtitle": "Distribution ratio across accounts following or not following the Page",
+      "followers": "Followers",
+      "nonFollowers": "Non-followers"
+    },
+    "contentTypes": {
+      "PHOTO": "Photos",
+      "CAROUSEL": "Carousels",
+      "OTHER": "Other",
+      "VIDEO": "Reels",
+      "TEXT": "Text"
     },
     "platforms": {
       "title": "Platform Distribution",
