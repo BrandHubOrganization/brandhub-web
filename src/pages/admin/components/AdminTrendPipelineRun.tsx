@@ -47,6 +47,27 @@ export function AdminTrendPipelineRun({
           </span>
         )}
       </div>
+      {Boolean(run.platforms?.length) && (
+        <ul
+          className="grid gap-2 sm:grid-cols-3"
+          aria-label={t("admin.trendSettings.collection")}
+        >
+          {run.platforms?.map((p) => (
+            <li
+              key={p.platform}
+              className="border-border space-y-1 rounded-lg border p-2"
+            >
+              <span className="font-medium">
+                {t(`admin.trendSettings.platform.${p.platform}`)}
+              </span>
+              <p className="text-muted-foreground">
+                {t(`admin.trendSettings.collectionStatus.${p.status}`)} ·{" "}
+                {t("admin.trendPipeline.posts", { count: p.posts })}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
       {interrupted && (
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-muted-foreground min-w-0 flex-1 space-y-1">

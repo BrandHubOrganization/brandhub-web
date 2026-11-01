@@ -6,6 +6,8 @@ export interface ReplaySelection {
   prefix: string;
 }
 export interface ReplayFile {
+  platform?: string;
+  platform_counts?: Record<string, number>;
   key: string;
   size: number;
   status: ReplayStatus;
@@ -44,6 +46,11 @@ export type ReplaySummary = Omit<ReplayJob, "days"> & {
   completed_days: number;
   total_files: number;
 };
+export interface ReplayListResponse {
+  bucket?: string;
+  default_prefix?: string;
+  jobs: ReplaySummary[];
+}
 export interface ReplayResult {
   date: string;
   candidates: {

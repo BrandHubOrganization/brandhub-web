@@ -2,8 +2,8 @@ import { api } from "@/lib/axios";
 import { requireApiData } from "@/lib/apiData";
 import type {
   ReplayJob,
+  ReplayListResponse,
   ReplaySelection,
-  ReplaySummary,
   ReplayResult,
 } from "@/pages/admin/types/trendReplay";
 
@@ -15,7 +15,7 @@ export const trendReplayService = {
     );
   },
   async list() {
-    return requireApiData<{ jobs: ReplaySummary[] }>(
+    return requireApiData<ReplayListResponse>(
       (await api.get(path)).data,
     );
   },

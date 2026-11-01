@@ -12,6 +12,7 @@ export type PipelineStage =
   | "FAILED";
 
 export interface TrendPipelineRun {
+  platforms?: { platform: string; status: string; posts: number }[];
   id: string;
   pipelineRunId: string | null;
   trigger: string;
@@ -33,6 +34,7 @@ export interface TrendPipelineRuns {
 }
 
 export interface TrendPipelineStatus {
+  platforms?: string[];
   ready: boolean;
   recoveryReady: boolean;
   readinessReason: string | null;

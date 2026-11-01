@@ -158,7 +158,7 @@ export function AdminTrendSourceConfig() {
     : undefined;
   const stale = code === "TREND_SOURCE_CONFIG_STALE";
   return (
-    <div className="border-border border-t pt-3">
+    <div className="border-border rounded-lg border p-3">
       <Button
         variant="ghost"
         size="sm"

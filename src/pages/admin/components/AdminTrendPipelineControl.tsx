@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import { useTrendPipeline } from "@/pages/admin/hooks/useTrendPipeline";
 import { AdminTrendPipelineRun } from "@/pages/admin/components/AdminTrendPipelineRun";
-import { AdminTrendSourceConfig } from "@/pages/admin/components/AdminTrendSourceConfig";
 import type { TrendPipelineRun } from "@/pages/admin/types/trendPipeline";
 
 export function AdminTrendPipelineControl() {
@@ -80,9 +79,17 @@ export function AdminTrendPipelineControl() {
                   ? t(`admin.trendPipeline.stage.${active.stage}`)
                   : !data?.ready
                     ? t(
-                        data?.readinessReason === "SESSION_MISSING"
-                          ? "admin.trendPipeline.sessionMissing"
-                          : "admin.trendPipeline.notReady",
+                        data?.readinessReason === "THREADS_SESSION_MISSING"
+                          ? "admin.trendSettings.threadsSessionMissing"
+                          : data?.readinessReason ===
+                              "TIKTOK_API_NOT_CONFIGURED"
+                            ? "admin.trendSettings.tiktokApiMissing"
+                            : data?.readinessReason ===
+                                "PIPELINE_CONFIG_UNAVAILABLE"
+                              ? "admin.trendSettings.error"
+                              : data?.readinessReason === "SESSION_MISSING"
+                                ? "admin.trendPipeline.sessionMissing"
+                                : "admin.trendPipeline.notReady",
                       )
                     : t("admin.trendPipeline.ready")}
           </p>
@@ -118,8 +125,21 @@ export function AdminTrendPipelineControl() {
           </Button>
         </div>
       </div>
+      {!active && data?.readinessReason === "THREADS_SESSION_MISSING" && (
+        <p
+          role="alert"
+          className="border-border bg-muted/40 rounded-lg border p-3 text-sm"
+        >
+          {t("admin.trendSettings.threadsSessionRemedy")}
+        </p>
+      )}
       {data && !pipeline.status.isError && (
         <div className="bg-muted/40 text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg px-3 py-2 text-xs">
+          <span>
+            {data.platforms
+              ?.map((p) => t(`admin.trendSettings.platform.${p}`))
+              .join(" → ")}
+          </span>
           <span className="inline-flex flex-wrap items-center gap-1.5">
             <Clock3 className="size-3.5" aria-hidden="true" />
             {t("admin.trendPipeline.schedule")}:{" "}
@@ -177,7 +197,6 @@ export function AdminTrendPipelineControl() {
           )}
         </div>
       )}
-      <AdminTrendSourceConfig />
       <Dialog
         open={confirm !== null}
         onOpenChange={(open) => {
