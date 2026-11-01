@@ -289,6 +289,10 @@ const TrendsPage = lazyNamed(
   () => import("@/pages/ai-studio/trends"),
   "TrendsPage",
 );
+const WorkspaceTrendsPage = lazyNamed(
+  () => import("@/pages/workspace-trends"),
+  "WorkspaceTrendsPage",
+);
 const VideoStudioPage = lazyNamed(
   () => import("@/pages/ai-studio/video"),
   "VideoStudioPage",
@@ -414,6 +418,10 @@ export function AppRoutes() {
               element={<WorkspaceRequestPage />}
             />
             <Route path="/workspaces/:id/tasks" element={<TaskListPage />} />
+            <Route
+              path="/workspaces/:id/trends"
+              element={<WorkspaceTrendsPage />}
+            />
             <Route
               path="/workspaces/:id/task-approvals"
               element={<TaskApprovalsPage />}

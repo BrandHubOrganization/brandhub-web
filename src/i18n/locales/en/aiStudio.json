@@ -102,11 +102,19 @@
     "allTopics": "All topics",
     "platformFilter": "Filter by platform",
     "allPlatforms": "All platforms",
+    "statusFilter": "Filter by status",
+    "allStatuses": "All statuses",
+    "searchPlaceholder": "Search keyword, topic, hashtag...",
+    "clearSearch": "Clear search",
+    "resetFilters": "Reset filters",
     "refresh": "Refresh",
     "empty": "No trend data yet",
     "emptyHint": "The crawler has not run yet or found no standout keywords in this window. Data appears after the next crawl.",
+    "noFilterResults": "No matching trends found",
+    "noFilterResultsHint": "Try adjusting your search query or reset filters to view all trends.",
     "score": "Trend score",
     "virality": "Virality",
+    "engagement": "Engagement",
     "riskLabel": "Brand risk",
     "risk": {
       "low": "Low",
@@ -123,8 +131,10 @@
     },
     "status": {
       "new": "New",
+      "emerging": "New",
       "rising": "Rising",
       "peaking": "Peaking",
+      "peak": "Peaking",
       "declining": "Declining"
     },
     "superTrend": "Super trend",
@@ -148,6 +158,8 @@
     "copied": "Keyword copied.",
     "copyError": "Could not copy.",
     "crawl": {
+      "title": "Crawl Radar",
+      "active": "Scheduled",
       "sources": "Crawled from: {{sources}} ({{count}} pages)",
       "everyMinutes": "refreshed every {{count}} minutes",
       "everyHours": "refreshed every {{count}} hours",
@@ -157,7 +169,8 @@
     "chart": {
       "title": "Rising topics",
       "hint": "Summed trend score per topic. Click a topic to see its trends.",
-      "tooltip": "Score {{score}} · {{trends}} trends · {{rising}} rising"
+      "tooltip": "Score {{score}} · {{trends}} trends · {{rising}} rising",
+      "clearFilter": "Clear"
     },
     "topicName": {
       "thể_thao": "Sports",
@@ -269,5 +282,41 @@
     },
     "openVideoSpace": "Open Video Space",
     "editInSpace": "Edit in Video Space"
+  },
+  "workspaceTrends": {
+    "title": "Explore trends",
+    "description": "Explore current trends and history from collected data.",
+    "search": "Find a topic",
+    "searchPlaceholder": "Start typing a topic name…",
+    "date": "Data date (UTC)",
+    "current": "Current",
+    "topic": "Topic",
+    "score": "Trend score",
+    "postCount": "Observed posts",
+    "redis": "Current snapshot",
+    "neo4j": "Historical data",
+    "updated": "Updated: {{date}}",
+    "fallback": "Showing historical data because the current snapshot is unavailable.",
+    "legacy": "History may be incomplete; — means the value was not recorded.",
+    "refresh": "Refresh",
+    "loading": "Loading trends",
+    "error": "Trends are unavailable or pagination has changed. Retry from the first page.",
+    "historyError": "Trend history is unavailable.",
+    "retry": "Retry",
+    "empty": "No trends match the selected date and prefix.",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{count}}",
+    "close": "Close details",
+    "history": "History window",
+    "days": "{{count}} days",
+    "historyNote": "Dates use UTC. Missing days are gaps, not zero. Scores use a historical window; comparisons across collection scopes are not verified.",
+    "truncated": "History limit reached. Select a shorter window for complete results.",
+    "sources": "Public source posts",
+    "noSources": "No source links were recorded.",
+    "sourceLimit": "Showing up to 20 source links.",
+    "noMetric": "No recorded values in this period.",
+    "dataTable": "View data table",
+    "rank": "Rank"
   }
 }

@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 export interface AiStudioErrorBannerProps {
   messageKey: string;
   retryKey: string;
+  onRetry?: () => void;
 }
 
 export function AiStudioErrorBanner({
   messageKey,
   retryKey,
+  onRetry,
 }: AiStudioErrorBannerProps) {
   const { t } = useTranslation();
 
@@ -22,7 +24,7 @@ export function AiStudioErrorBanner({
       <Button
         variant="outline"
         size="sm"
-        onClick={() => window.location.reload()}
+        onClick={() => (onRetry ? onRetry() : window.location.reload())}
         className="gap-2 text-xs"
       >
         <RefreshCw className="size-3.5" /> {t(retryKey)}

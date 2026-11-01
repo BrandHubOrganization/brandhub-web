@@ -1,30 +1,26 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   QueryClient,
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
 import {
-  Copy,
   Flame,
   Megaphone,
-  Music2,
-  Newspaper,
-  Radar,
   RefreshCw,
+  RotateCcw,
+  Search,
+  ShieldAlert,
+  Sparkles,
   TrendingUp,
+  X,
 } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SelectMenu } from "@/components/ui/select-menu";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
 import {
   fetchTrends,
@@ -35,22 +31,11 @@ import {
   type TrendPeriod,
 } from "@/services/trendService";
 import { AiStudioErrorBanner } from "./components/AiStudioErrorBanner";
-import { RisingTopicsChart } from "./components/RisingTopicsChart";
 import { TrendDetailDialog } from "./components/TrendDetailDialog";
-import { TrendPostList } from "./components/TrendPostList";
+import { TrendSparkline } from "./components/TrendSparkline";
+import { TrendRankBadge } from "@/pages/workspace-trends/components/TrendRankBadge";
 
-const PERIODS: TrendPeriod[] = ["6h", "24h", "7d"];
-const STATUS_STYLE: Record<string, string> = {
-  new: "bg-sky-500/10 text-sky-700 dark:text-sky-300",
-  rising: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-  peaking: "bg-brand-orange/10 text-brand-orange",
-  declining: "bg-muted text-muted-foreground",
-};
-const RISK_STYLE: Record<string, string> = {
-  low: "bg-emerald-500",
-  medium: "bg-amber-500",
-  high: "bg-red-500",
-};
+const PERIODS: TrendPeriod[] = ["24h", "7d"];
 
 /** FR 3.7.1: read-only dashboard of the keywords the trend pipeline currently ranks highest. */
 export function TrendsPage() {
@@ -66,42 +51,85 @@ export function TrendsPage() {
 }
 
 function TrendsDashboard() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [period, setPeriod] = useState<TrendPeriod>("24h");
   const [topic, setTopic] = useState("");
   const [platform, setPlatform] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selected, setSelected] = useState<TrendItem | null>(null);
+
   const trends = useQuery({
     queryKey: ["ai-trends", period, topic, platform],
     queryFn: () => fetchTrends(period, topic, platform),
     staleTime: 60_000,
   });
-  const items = trends.data?.items ?? [];
-  const topicStats = trends.data?.topicStats ?? [];
-  const maxScore = Math.max(0, ...items.map((i) => i.score)) || 1;
-  const crawl = trends.data?.crawl;
-  const schedule = crawl?.cron
-    ? t("aiStudio.trends.crawl.cron", { cron: crawl.cron })
-    : crawl?.intervalMinutes
-      ? crawl.intervalMinutes % 60 === 0
-        ? t("aiStudio.trends.crawl.everyHours", {
-            count: crawl.intervalMinutes / 60,
-          })
-        : t("aiStudio.trends.crawl.everyMinutes", {
-            count: crawl.intervalMinutes,
-          })
-      : null;
+
+  const items = useMemo(
+    () =>
+      [...(trends.data?.items ?? [])].sort(
+        (a, b) => a.rank - b.rank || b.score - a.score,
+      ),
+    [trends.data?.items],
+  );
+
+  const filteredItems = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return items.filter((item) => {
+      if (statusFilter) {
+        const s = (item.status ?? "").toLowerCase();
+        if (statusFilter === "new" && s !== "new" && s !== "emerging") {
+          return false;
+        }
+        if (statusFilter === "peaking" && s !== "peaking" && s !== "peak") {
+          return false;
+        }
+        if (
+          statusFilter !== "new" &&
+          statusFilter !== "peaking" &&
+          s !== statusFilter
+        ) {
+          return false;
+        }
+      }
+      if (q) {
+        const matchKeyword = item.keyword.toLowerCase().includes(q);
+        const matchTopic = item.topic
+          ? item.topic.toLowerCase().includes(q) ||
+            topicLabel(t, item.topic).toLowerCase().includes(q)
+          : false;
+        const matchTags = (item.keywords ?? []).some((kw) =>
+          kw.toLowerCase().includes(q),
+        );
+        if (!matchKeyword && !matchTopic && !matchTags) return false;
+      }
+      return true;
+    });
+  }, [items, searchQuery, statusFilter, t]);
+
+  const hasActiveFilters = Boolean(
+    topic || platform || statusFilter || searchQuery.trim(),
+  );
+
+  const resetFilters = () => {
+    setTopic("");
+    setPlatform("");
+    setStatusFilter("");
+    setSearchQuery("");
+  };
 
   return (
     <PageWrapper
+      compact
       title={t("aiStudio.trends.title")}
       description={t("aiStudio.trends.description")}
     >
-      <div className="mb-5 flex flex-wrap items-center gap-3">
+      {/* Filter Toolbar */}
+      <div className="border-border/70 bg-card/60 mb-5 flex flex-wrap items-center gap-2.5 rounded-xl border p-2.5 shadow-2xs">
         <div
           role="group"
           aria-label={t("aiStudio.trends.periodLabel")}
-          className="bg-muted inline-flex rounded-lg p-1"
+          className="bg-muted inline-flex shrink-0 rounded-lg p-1"
         >
           {PERIODS.map((p) => (
             <button
@@ -120,8 +148,30 @@ function TrendsDashboard() {
             </button>
           ))}
         </div>
+
+        <div className="relative min-w-[200px] flex-1 sm:max-w-xs">
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t("aiStudio.trends.searchPlaceholder")}
+            aria-label={t("aiStudio.trends.searchPlaceholder")}
+            iconPrefix={<Search className="size-4" />}
+            className={cn("h-9 text-sm", searchQuery && "pr-8")}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              aria-label={t("aiStudio.trends.clearSearch")}
+              className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 transition-colors"
+            >
+              <X className="size-3.5" />
+            </button>
+          )}
+        </div>
+
         <SelectMenu
-          className="h-9 w-52 text-sm"
+          className="h-9 w-48 text-sm"
           ariaLabel={t("aiStudio.trends.topicFilter")}
           value={topic}
           onChange={setTopic}
@@ -133,8 +183,9 @@ function TrendsDashboard() {
             })),
           ]}
         />
+
         <SelectMenu
-          className="h-9 w-44 text-sm"
+          className="h-9 w-40 text-sm"
           ariaLabel={t("aiStudio.trends.platformFilter")}
           value={platform}
           onChange={setPlatform}
@@ -152,10 +203,36 @@ function TrendsDashboard() {
             })),
           ]}
         />
+
+        <SelectMenu
+          className="h-9 w-40 text-sm"
+          ariaLabel={t("aiStudio.trends.statusFilter")}
+          value={statusFilter}
+          onChange={setStatusFilter}
+          options={[
+            { value: "", label: t("aiStudio.trends.allStatuses") },
+            { value: "new", label: t("aiStudio.trends.status.new") },
+            { value: "rising", label: t("aiStudio.trends.status.rising") },
+            { value: "peaking", label: t("aiStudio.trends.status.peaking") },
+          ]}
+        />
+
+        {hasActiveFilters && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={resetFilters}
+            className="text-muted-foreground hover:text-foreground h-9 gap-1.5 text-xs"
+          >
+            <RotateCcw className="size-3.5" />
+            {t("aiStudio.trends.resetFilters")}
+          </Button>
+        )}
+
         <Button
           variant="outline"
           size="sm"
-          className="ml-auto gap-1.5"
+          className="ml-auto h-9 gap-1.5"
           disabled={trends.isFetching}
           onClick={() => void trends.refetch()}
         >
@@ -166,69 +243,64 @@ function TrendsDashboard() {
         </Button>
       </div>
 
-      {crawl && (
-        <p className="text-muted-foreground -mt-2 mb-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-          <Radar className="size-3.5" />
-          <span>
-            {t("aiStudio.trends.crawl.sources", {
-              sources: crawl.sources.join(", ") || "—",
-              count: crawl.pageCount,
-            })}
-          </span>
-          {schedule && <span>· {schedule}</span>}
-          {crawl.nextRunAt && (
-            <span>
-              ·{" "}
-              {t("aiStudio.trends.crawl.next", {
-                date: new Intl.DateTimeFormat(i18n.language, {
-                  dateStyle: "short",
-                  timeStyle: "short",
-                }).format(new Date(crawl.nextRunAt)),
-              })}
-            </span>
-          )}
-        </p>
-      )}
-
+      {/* Loading Skeleton (Full-width single-column list) */}
       {trends.isPending && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="space-y-2.5">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <Skeleton key={i} className="h-56 rounded-xl" />
+            <Skeleton
+              key={i}
+              className="h-18 rounded-xl motion-reduce:animate-none"
+            />
           ))}
         </div>
       )}
 
+      {/* Error State */}
       {trends.isError && (
         <AiStudioErrorBanner
           messageKey="aiStudio.trends.loadError"
           retryKey="aiStudio.trends.retry"
+          onRetry={() => void trends.refetch()}
         />
       )}
 
-      {!topic && topicStats.length > 0 && (
-        <RisingTopicsChart stats={topicStats} onSelect={setTopic} />
-      )}
-
-      {trends.isSuccess && items.length === 0 && (
-        <div className="border-border flex flex-col items-center gap-2 rounded-xl border border-dashed px-6 py-14 text-center">
-          <TrendingUp className="text-muted-foreground size-8" />
-          <p className="text-sm font-medium">{t("aiStudio.trends.empty")}</p>
-          <p className="text-muted-foreground max-w-md text-xs">
-            {t("aiStudio.trends.emptyHint")}
-          </p>
-        </div>
-      )}
-
-      {items.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
-            <TrendCard
-              key={item.id}
-              item={item}
-              maxScore={maxScore}
-              onOpen={() => setSelected(item)}
-            />
-          ))}
+      {/* Full-Width Trend List */}
+      {trends.isSuccess && (
+        <div className="space-y-2.5">
+          {filteredItems.length === 0 ? (
+            <div className="border-border flex flex-col items-center gap-2.5 rounded-xl border border-dashed px-6 py-14 text-center">
+              <TrendingUp className="text-muted-foreground size-8" />
+              <p className="text-sm font-medium">
+                {items.length > 0 && hasActiveFilters
+                  ? t("aiStudio.trends.noFilterResults")
+                  : t("aiStudio.trends.empty")}
+              </p>
+              <p className="text-muted-foreground max-w-md text-xs">
+                {items.length > 0 && hasActiveFilters
+                  ? t("aiStudio.trends.noFilterResultsHint")
+                  : t("aiStudio.trends.emptyHint")}
+              </p>
+              {hasActiveFilters && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={resetFilters}
+                  className="mt-1 gap-1.5 text-xs"
+                >
+                  <RotateCcw className="size-3.5" />
+                  {t("aiStudio.trends.resetFilters")}
+                </Button>
+              )}
+            </div>
+          ) : (
+            filteredItems.map((item) => (
+              <TrendCard
+                key={item.id}
+                item={item}
+                onOpen={() => setSelected(item)}
+              />
+            ))
+          )}
         </div>
       )}
 
@@ -239,229 +311,221 @@ function TrendsDashboard() {
   );
 }
 
+const STATUS_BADGE_STYLE: Record<string, string> = {
+  new: "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/20",
+  emerging: "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/20",
+  rising:
+    "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
+  peaking: "bg-brand-orange/10 text-brand-orange border-brand-orange/20",
+  peak: "bg-brand-orange/10 text-brand-orange border-brand-orange/20",
+  declining: "bg-muted text-muted-foreground border-border",
+};
+
 function TrendCard({
   item,
-  maxScore,
   onOpen,
 }: {
   item: TrendItem;
-  maxScore: number;
   onOpen: () => void;
 }) {
-  const { t } = useTranslation();
-  const maxCount = Math.max(1, ...item.dailyCounts);
-  const posts = item.posts ?? [];
-  const platforms = trendPlatforms(item);
-  const copy = () =>
-    navigator.clipboard
-      .writeText(item.keyword)
-      .then(() => toast.success(t("aiStudio.trends.copied")))
-      .catch(() => toast.error(t("aiStudio.trends.copyError")));
+  const { t, i18n } = useTranslation();
 
-  const card = (
-    <article
-      tabIndex={0}
-      aria-label={t("aiStudio.trends.detail.open", { keyword: item.keyword })}
-      onClick={onOpen}
-      onKeyDown={(e) => {
-        if (
-          e.target === e.currentTarget &&
-          (e.key === "Enter" || e.key === " ")
-        ) {
-          e.preventDefault();
-          onOpen();
-        }
-      }}
-      className="border-border bg-card hover:border-brand-orange/40 focus-visible:ring-ring flex h-full cursor-pointer flex-col gap-3 rounded-xl border p-4 shadow-xs transition-colors focus-visible:ring-2 focus-visible:outline-none"
-    >
-      <header className="flex items-start gap-3">
-        <span className="text-muted-foreground font-mono text-xs tabular-nums">
-          #{item.rank}
-        </span>
-        <div className="min-w-0 flex-1">
-          <h3 className="text-foreground truncate text-base font-semibold">
-            {item.keyword}
-          </h3>
-          <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs">
-            {item.status && (
-              <span
-                className={cn(
-                  "rounded-full px-2 py-0.5 font-medium",
-                  STATUS_STYLE[item.status],
-                )}
-              >
-                {t(`aiStudio.trends.status.${item.status}`)}
-              </span>
-            )}
-            {item.topic && (
-              <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5">
-                {topicLabel(t, item.topic)}
-              </span>
-            )}
-            {item.crossTopic && (
-              <span className="bg-brand-orange inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium text-white">
-                <Flame className="size-3" />
-                {t("aiStudio.trends.superTrend")}
-              </span>
-            )}
-            {item.isCampaign && (
-              <span
-                title={t("aiStudio.trends.campaignHint")}
-                className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 font-medium text-amber-700 dark:text-amber-300"
-              >
-                <Megaphone className="size-3" />
-                {t("aiStudio.trends.campaign")}
-              </span>
-            )}
-            {platforms.map((p) => (
-              <span
-                key={p}
-                className="border-border text-muted-foreground rounded-full border px-2 py-0.5"
-              >
-                {PLATFORM_LABEL[p] ?? p}
-              </span>
-            ))}
-          </div>
-        </div>
-      </header>
-
-      <div className="space-y-1">
-        <div className="flex justify-between text-xs">
-          <span className="text-muted-foreground">
-            {t("aiStudio.trends.score")}
-          </span>
-          <span className="font-medium tabular-nums">
-            {item.score.toFixed(2)}
-          </span>
-        </div>
-        <div className="bg-muted h-1.5 overflow-hidden rounded-full">
-          <div
-            className="bg-brand-orange h-full rounded-full"
-            style={{ width: `${Math.max(4, (item.score / maxScore) * 100)}%` }}
-          />
-        </div>
-      </div>
-
-      <div className="flex items-end justify-between gap-3">
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-          <dt className="text-muted-foreground">
-            {t("aiStudio.trends.virality")}
-          </dt>
-          <dd className="font-medium tabular-nums">
-            {Math.round(item.virality)}/100
-          </dd>
-          {item.brandRisk && (
-            <>
-              <dt className="text-muted-foreground">
-                {t("aiStudio.trends.riskLabel")}
-              </dt>
-              <dd className="flex items-center gap-1.5 font-medium">
-                <span
-                  className={cn(
-                    "size-2 rounded-full",
-                    RISK_STYLE[item.brandRisk],
-                  )}
-                />
-                {t(`aiStudio.trends.risk.${item.brandRisk}`)}
-              </dd>
-            </>
-          )}
-          {item.mood && (
-            <>
-              <dt className="text-muted-foreground">
-                {t("aiStudio.trends.moodLabel")}
-              </dt>
-              <dd className="font-medium">
-                {t(`aiStudio.trends.mood.${item.mood}`, item.mood)}
-              </dd>
-            </>
-          )}
-        </dl>
-        {item.dailyCounts.length > 1 && (
-          <div
-            className="flex h-8 items-end gap-0.5"
-            title={t("aiStudio.trends.dailyPosts")}
-            aria-label={t("aiStudio.trends.dailyPosts")}
-          >
-            {item.dailyCounts.slice(-10).map((count, i) => (
-              <span
-                key={i}
-                className="bg-brand-orange/60 w-1.5 rounded-sm"
-                style={{ height: `${Math.max(8, (count / maxCount) * 100)}%` }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {item.keywords.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {item.keywords.slice(0, 6).map((kw) => (
-            <span
-              key={kw}
-              className="bg-muted text-muted-foreground text-3xs rounded-full px-2 py-0.5"
-            >
-              {kw}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {item.format?.sound && (
-        <p
-          className="text-muted-foreground flex items-center gap-1.5 text-xs"
-          title={t("aiStudio.trends.format.sound")}
-        >
-          <Music2 className="size-3.5 shrink-0" />
-          <span className="truncate">{item.format.sound}</span>
-          {item.format.medianDurationS != null && (
-            <span className="shrink-0 tabular-nums">
-              · {t("aiStudio.trends.format.seconds", { count: Math.round(item.format.medianDurationS) })}
-            </span>
-          )}
-        </p>
-      )}
-
-      {item.samplePosts[0] && (
-        <p className="text-muted-foreground border-border line-clamp-2 border-l-2 pl-2 text-xs italic">
-          {item.samplePosts[0]}
-        </p>
-      )}
-
-      {posts.length > 0 && (
-        <p className="text-muted-foreground mt-auto flex items-center gap-1.5 text-xs">
-          <Newspaper className="size-3.5" />
-          {t("aiStudio.trends.posts.hint", { count: posts.length })}
-        </p>
-      )}
-
-      <Button
-        variant="outline"
-        size="sm"
-        className={cn("gap-1.5 text-xs", !posts.length && "mt-auto")}
-        onClick={(e) => {
-          e.stopPropagation();
-          copy();
-        }}
-      >
-        <Copy className="size-3.5" />
-        {t("aiStudio.trends.copyKeyword")}
-      </Button>
-    </article>
+  const sourceEntries = useMemo(
+    () => Object.entries(item.sources ?? {}),
+    [item.sources],
   );
-  if (!posts.length) return card;
+  const platforms = useMemo(() => trendPlatforms(item), [item]);
+  const sampleCount =
+    (item.posts?.length ?? 0) || (item.samplePosts?.length ?? 0);
+  const totalEngagement = useMemo(
+    () =>
+      (item.posts ?? []).reduce(
+        (sum, p) => sum + (p.likes ?? 0) + (p.comments ?? 0) + (p.shares ?? 0),
+        0,
+      ),
+    [item.posts],
+  );
+  const compactFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat(i18n.language || "vi-VN", {
+        notation: "compact",
+      }),
+    [i18n.language],
+  );
+
+  const subKeywords = useMemo(() => {
+    const main = item.keyword.toLowerCase().trim();
+    return (item.keywords ?? []).filter(
+      (kw) => kw.toLowerCase().trim() !== main,
+    );
+  }, [item.keyword, item.keywords]);
+
   return (
-    <HoverCard openDelay={250} closeDelay={150}>
-      <HoverCardTrigger asChild>{card}</HoverCardTrigger>
-      <HoverCardContent
-        side="right"
-        align="start"
-        collisionPadding={16}
-        className="w-96 p-0"
-      >
-        <TrendPostList keyword={item.keyword} posts={posts} />
-      </HoverCardContent>
-    </HoverCard>
+    <article
+      onClick={onOpen}
+      className="border-border bg-card hover:border-brand-orange/40 group flex cursor-pointer flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-xl border px-4 py-3.5 transition-colors shadow-2xs hover:shadow-xs"
+    >
+      {/* Left side: Trend info, status badges & rich metadata */}
+      <div className="flex-1 min-w-0 space-y-2">
+        {/* Row 1: Rank + Keyword + Status badges */}
+        <div className="flex flex-wrap items-center gap-2">
+          <TrendRankBadge rank={item.rank} />
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpen();
+            }}
+            className="focus-visible:ring-ring block max-w-full rounded text-left focus-visible:ring-2 focus-visible:outline-none"
+            aria-label={t("aiStudio.trends.detail.open", {
+              keyword: item.keyword,
+            })}
+          >
+            <h3 className="text-foreground group-hover:text-brand-orange truncate text-base font-semibold tracking-tight transition-colors">
+              {item.keyword}
+            </h3>
+          </button>
+
+          {item.status && (
+            <span
+              className={cn(
+                "rounded-full border px-2 py-0.5 text-[11px] font-medium leading-none",
+                STATUS_BADGE_STYLE[item.status] ??
+                  "border-border bg-muted text-muted-foreground",
+              )}
+            >
+              {t(`aiStudio.trends.status.${item.status}`, item.status)}
+            </span>
+          )}
+
+          {item.crossTopic && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-purple-500/30 bg-purple-500/10 px-2 py-0.5 text-[11px] font-semibold text-purple-700 dark:text-purple-300 leading-none">
+              <Sparkles className="size-3 shrink-0" />
+              {t("aiStudio.trends.superTrend")}
+            </span>
+          )}
+
+          {item.isCampaign && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:text-amber-300 leading-none">
+              <Megaphone className="size-3 shrink-0" />
+              {t("aiStudio.trends.campaign")}
+            </span>
+          )}
+
+          {(item.brandRisk === "high" || item.brandRisk === "medium") && (
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium leading-none",
+                item.brandRisk === "high"
+                  ? "border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300"
+                  : "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+              )}
+            >
+              <ShieldAlert className="size-3 shrink-0" />
+              {t("aiStudio.trends.riskLabel")}:{" "}
+              {t(`aiStudio.trends.risk.${item.brandRisk}`)}
+            </span>
+          )}
+        </div>
+
+        {/* Row 2: Topic + Platforms + Virality + Engagement + Sample posts + Sub-keywords */}
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          {item.topic && (
+            <span className="border-border/70 bg-muted/70 text-foreground/80 inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium">
+              {topicLabel(t, item.topic)}
+            </span>
+          )}
+
+          {sourceEntries.length > 0
+            ? sourceEntries.map(([plat, count]) => (
+                <span
+                  key={plat}
+                  className="border-border/60 bg-muted/40 text-muted-foreground inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px]"
+                >
+                  <span>
+                    {PLATFORM_LABEL[plat.toLowerCase()] ??
+                      PLATFORM_LABEL[plat] ??
+                      plat}
+                  </span>
+                  <span className="text-foreground font-mono font-medium tabular-nums">
+                    · {count}
+                  </span>
+                </span>
+              ))
+            : platforms.map((plat) => (
+                <span
+                  key={plat}
+                  className="border-border/60 bg-muted/40 text-muted-foreground inline-flex items-center rounded-md border px-1.5 py-0.5 text-[11px]"
+                >
+                  {PLATFORM_LABEL[plat] ?? plat}
+                </span>
+              ))}
+
+          {item.virality > 0 && (
+            <span
+              className="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
+              title={t("aiStudio.trends.virality")}
+            >
+              <Flame className="size-3 text-orange-500 shrink-0" />
+              <span>{t("aiStudio.trends.virality")}:</span>
+              <span className="text-foreground font-mono font-medium tabular-nums">
+                {Math.round(item.virality)}/100
+              </span>
+            </span>
+          )}
+
+          {totalEngagement > 0 && (
+            <span
+              className="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
+              title={t("aiStudio.trends.engagement")}
+            >
+              <span>{t("aiStudio.trends.engagement")}:</span>
+              <span className="text-foreground font-mono font-medium tabular-nums">
+                {compactFormatter.format(totalEngagement)}
+              </span>
+            </span>
+          )}
+
+          {sampleCount > 0 && (
+            <span className="border-border/50 bg-muted/30 text-muted-foreground inline-flex items-center rounded-md border px-1.5 py-0.5 text-[11px]">
+              {sampleCount} bài viết mẫu
+            </span>
+          )}
+
+          {subKeywords.length > 0 && (
+            <div className="flex items-center gap-1.5">
+              {subKeywords.slice(0, 3).map((kw) => (
+                <span
+                  key={kw}
+                  className="text-muted-foreground/75 hover:text-foreground text-[11px] transition-colors"
+                >
+                  #{kw}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Right side: Score + Sparkline placed at the FAR RIGHT */}
+      <div className="flex shrink-0 items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-border/60">
+        {/* Trend Score */}
+        <div className="flex min-w-[68px] flex-col items-start sm:items-end justify-center text-left sm:text-right shrink-0">
+          <p className="text-foreground font-mono text-xl font-bold leading-none tabular-nums">
+            {item.score.toFixed(2)}
+          </p>
+          <p className="text-muted-foreground mt-1 text-[11px]">
+            {t("aiStudio.trends.score")}
+          </p>
+        </div>
+
+        {/* Growth Sparkline (posts per day) at the far right */}
+        <div className="w-40 sm:w-52 lg:w-56 shrink-0">
+          <TrendSparkline item={item} />
+        </div>
+      </div>
+    </article>
   );
 }
 
