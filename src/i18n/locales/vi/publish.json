@@ -58,11 +58,45 @@
     "createPost": "Tạo bài viết",
     "searchPlaceholder": "Tìm theo tiêu đề, nội dung...",
     "dateRanges": {
+      "today": "Hôm nay",
+      "yesterday": "Hôm qua",
       "7d": "7 ngày qua",
       "14d": "14 ngày qua",
+      "28d": "28 ngày qua",
       "30d": "30 ngày qua",
+      "60d": "60 ngày qua",
       "90d": "3 tháng qua",
-      "all": "Tất cả thời gian"
+      "this_year": "Năm nay",
+      "all": "Tất cả thời gian",
+      "custom": "Tùy chỉnh"
+    },
+    "datePicker": {
+      "presetsTitle": "Khoảng thời gian"
+    },
+    "videoMetrics": {
+      "views": "Lượt xem",
+      "viewsTooltip": "Số lần video của bạn được phát ít nhất 1 mili giây hoặc số lần video được xem lặp lại.",
+      "views3s": "Lượt xem trong tối thiểu 3 giây",
+      "views3sTooltip": "Số lần video được phát trong tối thiểu 3 giây hoặc gần hết thời lượng nếu video ngắn hơn 3 giây.",
+      "views1m": "Lượt xem trong tối thiểu 1 phút",
+      "views1mTooltip": "Số lần video được phát trong tối thiểu 1 phút hoặc gần hết thời lượng nếu video ngắn hơn 1 phút.",
+      "watchTime": "Thời gian xem",
+      "watchTimeTooltip": "Tổng số thời gian mọi người đã dành để xem video này."
+    },
+    "insights": {
+      "contentTypeTitle": "Lượt xem theo loại nội dung",
+      "contentTypeSubtitle": "Phân đoạn định dạng bài đăng và tỷ lệ tiếp cận",
+      "audienceTitle": "Lượt xem theo người theo dõi so với người chưa theo dõi",
+      "audienceSubtitle": "Tỷ lệ phân phối tới người dùng đã theo dõi hoặc chưa theo dõi Trang",
+      "followers": "Người theo dõi",
+      "nonFollowers": "Người chưa theo dõi"
+    },
+    "contentTypes": {
+      "PHOTO": "Ảnh",
+      "CAROUSEL": "Nhiều ảnh",
+      "OTHER": "Khác",
+      "VIDEO": "Thước phim",
+      "TEXT": "Văn bản"
     },
     "platforms": {
       "title": "Phân bổ theo nền tảng",

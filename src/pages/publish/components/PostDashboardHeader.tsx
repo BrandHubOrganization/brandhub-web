@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, Calendar, Filter } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import type { PostDashboardFilters } from "../types/dashboard";
+import { PostDashboardDatePicker } from "./PostDashboardDatePicker";
 
 interface PostDashboardHeaderProps {
   filters: PostDashboardFilters;
@@ -42,26 +43,20 @@ export function PostDashboardHeader({
         />
       </div>
 
-      {/* Date Range Selector */}
-      <div className="flex items-center gap-1.5">
-        <Calendar className="text-muted-foreground size-4" />
-        <select
-          value={filters.dateRange}
-          onChange={(e) =>
-            onFilterChange({
-              dateRange: e.target.value as PostDashboardFilters["dateRange"],
-              page: 1,
-            })
-          }
-          className="bg-background border-border text-foreground focus:ring-ring h-9 rounded-md border px-2.5 text-xs focus:outline-none focus:ring-2"
-        >
-          <option value="7d">{t("publish.dashboard.dateRanges.7d", "7 ngày qua")}</option>
-          <option value="14d">{t("publish.dashboard.dateRanges.14d", "14 ngày qua")}</option>
-          <option value="30d">{t("publish.dashboard.dateRanges.30d", "30 ngày qua")}</option>
-          <option value="90d">{t("publish.dashboard.dateRanges.90d", "3 tháng qua")}</option>
-          <option value="all">{t("publish.dashboard.dateRanges.all", "Tất cả thời gian")}</option>
-        </select>
-      </div>
+      {/* Facebook-style Date Range Selector */}
+      <PostDashboardDatePicker
+        value={filters.dateRange}
+        startDate={filters.startDate}
+        endDate={filters.endDate}
+        onChange={(val) =>
+          onFilterChange({
+            dateRange: val.dateRange,
+            startDate: val.startDate,
+            endDate: val.endDate,
+            page: 1,
+          })
+        }
+      />
 
       {/* Platform Selector */}
       <div className="flex items-center gap-1.5">
@@ -74,7 +69,7 @@ export function PostDashboardHeader({
               page: 1,
             })
           }
-          className="bg-background border-border text-foreground focus:ring-ring h-9 rounded-md border px-2.5 text-xs focus:outline-none focus:ring-2"
+          className="bg-background border-border text-foreground focus:ring-ring h-9 rounded-md border px-2.5 text-xs focus:outline-none focus:ring-2 cursor-pointer"
         >
           <option value="ALL">{t("publish.dashboard.platforms.ALL", "Tất cả nền tảng")}</option>
           <option value="FACEBOOK">Facebook</option>
@@ -93,7 +88,7 @@ export function PostDashboardHeader({
             page: 1,
           })
         }
-        className="bg-background border-border text-foreground focus:ring-ring h-9 rounded-md border px-2.5 text-xs focus:outline-none focus:ring-2"
+        className="bg-background border-border text-foreground focus:ring-ring h-9 rounded-md border px-2.5 text-xs focus:outline-none focus:ring-2 cursor-pointer"
       >
         <option value="ALL">{t("publish.dashboard.statusFilters.ALL", "Tất cả trạng thái")}</option>
         <option value="PUBLISHED">{t("publish.status.PUBLISHED", "Đã đăng")}</option>

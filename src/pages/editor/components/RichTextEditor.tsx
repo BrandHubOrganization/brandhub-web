@@ -2,15 +2,27 @@ import React, { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import { Bold, Italic, List, ListOrdered, Link } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  Link,
+  Video,
+  Loader2,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { SocialPlatform } from "@/types/editor";
+import { toast } from "sonner";
+import { taskService } from "@/services/taskService";
 
 interface RichTextEditorProps {
   value: string;
   onChange: (content: string) => void;
   targetPlatforms?: SocialPlatform[];
   readOnly?: boolean;
+  workspaceId?: string;
+  taskId?: string;
 }
 
 const PLATFORM_LIMITS: Record<SocialPlatform, { max: number; label: string }> =
@@ -26,8 +38,54 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   onChange,
   targetPlatforms = ["FACEBOOK", "INSTAGRAM", "TIKTOK"],
   readOnly = false,
+  workspaceId,
+  taskId,
 }) => {
   const { t } = useTranslation();
+  const [isGeneratingMeet, setIsGeneratingMeet] = React.useState(false);
+
+  const handleInsertGoogleMeet = async () => {
+    if (!workspaceId || !taskId) {
+      toast.info(
+        t(
+          "editor.richText.meetRequiresTask",
+          "Vui lòng lưu hoặc mở bài viết từ một Task để tự động tạo link Google Meet.",
+        ),
+      );
+      return;
+    }
+
+    setIsGeneratingMeet(true);
+    try {
+      const result = await taskService.generateLivestreamMeetingLink(
+        workspaceId,
+        taskId,
+        { forceNew: false },
+      );
+      const meetingUrl = result.data?.meetingUrl;
+      if (meetingUrl) {
+        const textToInsert = editor?.isEmpty
+          ? `Link Meet: ${meetingUrl}\n`
+          : `\nLink Meet: ${meetingUrl}\n`;
+        editor?.chain().focus().insertContent(textToInsert).run();
+        toast.success(
+          t(
+            "editor.richText.meetInserted",
+            "Đã tạo và chèn link Google Meet vào bài viết!",
+          ),
+        );
+      }
+    } catch {
+      toast.error(
+        t(
+          "editor.richText.meetError",
+          "Không thể tạo link Google Meet. Vui lòng thử lại sau.",
+        ),
+      );
+    } finally {
+      setIsGeneratingMeet(false);
+    }
+  };
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -146,6 +204,21 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             title={t("editor.richText.linkTooltip")}
           >
             <Link className="size-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleInsertGoogleMeet}
+            disabled={readOnly || isGeneratingMeet}
+            className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors disabled:opacity-50"
+            title={t("editor.richText.meetTooltip", "Chèn Google Meet")}
+            aria-label={t("editor.richText.meetTooltip", "Chèn Google Meet")}
+          >
+            {isGeneratingMeet ? (
+              <Loader2 className="text-brand-orange size-4 animate-spin" />
+            ) : (
+              <Video className="size-4" />
+            )}
           </button>
         </div>
 
