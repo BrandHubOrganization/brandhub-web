@@ -961,7 +961,7 @@
     "sessionFile": "File session JSON (tối đa 1 MiB)",
     "endpoint": "Endpoint đã được phép (nhập thay mới)",
     "apiKey": "API key mới",
-    "sessionHelp": "Tạo session bằng công cụ đăng nhập local. File mới áp dụng cho run tiếp theo; file gốc không bị crawler ghi đè.",
+    "sessionHelp": "Nạp file session từ tài khoản hiện có. AI service chỉ giữ trong RAM; bản mới áp dụng cho run tiếp theo. Restart/deploy cần nạp lại.",
     "connectionHelp": "Chỉ chấp nhận host trong allowlist triển khai. Có thể chứa credential proxy; giá trị không được hiển thị lại.",
     "replace": "Nạp / thay thế",
     "probe": "Kiểm tra kết nối",
@@ -1086,6 +1086,8 @@
     },
     "healthScope": "Các mục session, proxy và API kiểm tra cấu hình; kết nối đăng nhập thực tế cần bấm Kiểm tra kết nối. Trạng thái sẵn sàng không bảo đảm nhà cung cấp luôn phản hồi.",
     "threadPreview": "Threads: {{topics}} chủ đề, tối đa {{posts}} bài, {{seconds}} giây.",
-    "tiktokPreview": "TikTok: {{pages}} trang/hashtag, {{posts}} bài được làm giàu/hashtag."
+    "tiktokPreview": "TikTok: {{pages}} trang/hashtag, {{posts}} bài được làm giàu/hashtag.",
+    "sessionMemoryHelp": "Session Facebook/Threads chỉ giữ trong RAM của AI service. Restart hoặc deploy sẽ mất session; admin cần nạp lại. Không cần file khóa mã hóa cho session.",
+    "connectionKeyRequired": "Lưu proxy/API key vẫn cần cấu hình khóa mã hóa. Điều kiện này không ảnh hưởng việc nạp session Facebook/Threads."
   }
 }

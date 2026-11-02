@@ -116,6 +116,11 @@ export function CrawlerCredentialCard({
           void act("save");
         }}
       >
+        {!isSession && !storageReady && (
+          <p className="text-muted-foreground mb-3 text-sm">
+            {t("admin.crawler.connectionKeyRequired")}
+          </p>
+        )}
         <fieldset disabled={pending || !storageReady} className="space-y-3">
           {isSession ? (
             <div className="space-y-2">

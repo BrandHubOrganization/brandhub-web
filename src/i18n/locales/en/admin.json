@@ -961,7 +961,7 @@
     "sessionFile": "Session JSON file (up to 1 MiB)",
     "endpoint": "Allowed endpoint (replacement value)",
     "apiKey": "New API key",
-    "sessionHelp": "Export a session with the local login tool. Replacements apply to the next run; the crawler does not overwrite the uploaded original.",
+    "sessionHelp": "Upload a session from an existing account. AI service keeps it only in memory; replacements apply to the next run. Upload again after a restart or deployment.",
     "connectionHelp": "Only deployment-allowlisted hosts are accepted. This may include proxy credentials; values are never displayed again.",
     "replace": "Upload / replace",
     "probe": "Check connection",
@@ -1086,6 +1086,8 @@
     },
     "healthScope": "Session, proxy and API checks verify configuration. Use Check connection to verify remote sign-in/connectivity. Ready does not guarantee provider availability.",
     "threadPreview": "Threads: {{topics}} topics, up to {{posts}} posts, {{seconds}} seconds.",
-    "tiktokPreview": "TikTok: {{pages}} pages/hashtag, {{posts}} enriched posts/hashtag."
+    "tiktokPreview": "TikTok: {{pages}} pages/hashtag, {{posts}} enriched posts/hashtag.",
+    "sessionMemoryHelp": "Facebook/Threads sessions stay only in AI service memory. Restarting or deploying clears them; an admin must upload them again. Session uploads do not require an encryption key file.",
+    "connectionKeyRequired": "Saving proxy/API credentials still requires encryption key configuration. This does not block Facebook/Threads session uploads."
   }
 }

@@ -32,17 +32,27 @@ export function CrawlerCredentialsPanel() {
       {query.isError && <p role="alert">{t("admin.crawler.loadError")}</p>}
       {query.data && (
         <>
-          {!query.data.storageReady && (
-            <p role="alert" className="text-destructive">
-              {t("admin.crawler.codes.SECRET_STORAGE_UNAVAILABLE")}
+          {query.data.sessionStorage === "memory" && (
+            <p role="status" className="text-muted-foreground text-sm">
+              {t("admin.crawler.sessionMemoryHelp")}
             </p>
           )}
+          {!query.data.storageReady &&
+            query.data.sessionStorage !== "memory" && (
+              <p role="alert" className="text-destructive">
+                {t("admin.crawler.codes.SECRET_STORAGE_UNAVAILABLE")}
+              </p>
+            )}
           <div className="grid items-start gap-4 lg:grid-cols-2">
             {query.data.items.map((item) => (
               <CrawlerCredentialCard
                 key={item.kind}
                 item={item}
-                storageReady={query.data.storageReady}
+                storageReady={
+                  query.data.storageReady ||
+                  (query.data.sessionStorage === "memory" &&
+                    (item.kind === "facebook" || item.kind === "threads"))
+                }
               />
             ))}
           </div>

@@ -20,6 +20,7 @@ export const crawlerManagementService = {
   async credentials(signal?: AbortSignal) {
     return requireApiData<{
       storageReady: boolean;
+      sessionStorage?: "memory";
       items: CredentialMetadata[];
     }>((await api.get(path + "/credentials", { signal })).data);
   },
