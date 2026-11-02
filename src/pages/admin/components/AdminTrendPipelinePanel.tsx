@@ -44,7 +44,7 @@ export function AdminTrendPipelinePanel() {
       return next;
     });
 
-  // Query to inspect if any pipeline runs are RUNNING or INTERRUPTED
+  // Keep the overview visible for the latest run, including finished runs.
   const runsQuery = useQuery({
     queryKey: ["admin", "ai", "trend-pipeline-runs"],
     queryFn: ({ signal }) => trendPipelineService.runs(signal),
@@ -53,9 +53,8 @@ export function AdminTrendPipelinePanel() {
     retry: false,
   });
 
-  const hasActiveOrInterrupted = Boolean(
-    runsQuery.data?.running ||
-      runsQuery.data?.history?.some((run) => run.status === "INTERRUPTED"),
+  const hasRuns = Boolean(
+    runsQuery.data?.running || runsQuery.data?.history?.length,
   );
 
   const handleGlobalRefresh = async () => {
@@ -139,8 +138,7 @@ export function AdminTrendPipelinePanel() {
       {/* Tab Panels */}
       {section === "overview" && (
         <div className="space-y-5">
-          {/* Top Banner: Only rendered when RUNNING or INTERRUPTED */}
-          {hasActiveOrInterrupted && (
+          {hasRuns && (
             <div className="border-brand-orange/30 bg-brand-orange/5 rounded-xl border p-1 shadow-xs">
               <AdminTrendPipelineControl managed />
             </div>

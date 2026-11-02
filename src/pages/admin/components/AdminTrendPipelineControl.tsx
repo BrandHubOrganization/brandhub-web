@@ -40,7 +40,19 @@ export function AdminTrendPipelineControl({
     pipeline.runs.isPending ||
     pipeline.runs.isError ||
     Boolean(active);
-  const interrupted = (pipeline.runs.data?.history ?? []).filter(
+  const recentRuns = pipeline.runs.data?.history ?? [];
+  const latest =
+    active ??
+    recentRuns.reduce<TrendPipelineRun | null>(
+      (newest, run) =>
+        !newest ||
+        (Date.parse(run.startedAt ?? "") || 0) >
+          (Date.parse(newest.startedAt ?? "") || 0)
+          ? run
+          : newest,
+      null,
+    );
+  const interrupted = (managed ? (latest ? [latest] : []) : recentRuns).filter(
     (run) => run.status === "INTERRUPTED",
   );
   const recoveryDisabled =
@@ -65,10 +77,7 @@ export function AdminTrendPipelineControl({
         }).format(next)
       : null;
 
-  const hasActive = Boolean(active && !pipeline.runs.isError);
-  const hasInterrupted = !pipeline.runs.isError && interrupted.length > 0;
-
-  if (managed && !hasActive && !hasInterrupted) {
+  if (managed && (!latest || pipeline.runs.isError)) {
     return null;
   }
 
@@ -141,14 +150,16 @@ export function AdminTrendPipelineControl({
           </div>
         )}
       </div>
-      {!managed && !active && data?.readinessReason === "THREADS_SESSION_MISSING" && (
-        <p
-          role="alert"
-          className="border-border bg-muted/40 rounded-lg border p-3 text-sm"
-        >
-          {t("admin.trendSettings.threadsSessionRemedy")}
-        </p>
-      )}
+      {!managed &&
+        !active &&
+        data?.readinessReason === "THREADS_SESSION_MISSING" && (
+          <p
+            role="alert"
+            className="border-border bg-muted/40 rounded-lg border p-3 text-sm"
+          >
+            {t("admin.trendSettings.threadsSessionRemedy")}
+          </p>
+        )}
       {!managed && data && !pipeline.status.isError && (
         <div className="bg-muted/40 text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg px-3 py-2 text-xs">
           <span>
@@ -183,6 +194,11 @@ export function AdminTrendPipelineControl({
       {active && !pipeline.runs.isError && (
         <AdminTrendPipelineRun run={active} />
       )}
+      {managed &&
+        !active &&
+        latest &&
+        latest.status !== "INTERRUPTED" &&
+        !pipeline.runs.isError && <AdminTrendPipelineRun run={latest} />}
       {!pipeline.runs.isError &&
         interrupted.map((run) => (
           <AdminTrendPipelineRun
