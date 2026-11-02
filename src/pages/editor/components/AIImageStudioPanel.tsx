@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { AmbassadorGeneratorModal } from "@/pages/editor/components/AmbassadorGeneratorModal";
+import { DownloadFormatDropdown } from "@/components/common/DownloadFormatDropdown";
+import { downloadMediaWithFormat } from "@/utils/mediaDownloadHelper";
 import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 import {
   aiGenerationService,
@@ -76,6 +78,7 @@ export function AIImageStudioPanel({
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState("");
   const [generatedImageKey, setGeneratedImageKey] = useState<string>();
+  const [storageProvider, setStorageProvider] = useState<string>();
 
   useEffect(() => {
     let active = true;
@@ -173,6 +176,7 @@ export function AIImageStudioPanel({
     setIsGenerating(true);
     setGeneratedImage("");
     setGeneratedImageKey(undefined);
+    setStorageProvider(undefined);
     try {
       const poseReferenceImage = await imageSourceToDataUrl(selectedPose);
       const productReferenceImage = await imageSourceToDataUrl(selectedProduct);
@@ -198,6 +202,7 @@ export function AIImageStudioPanel({
       if (!result.image_url) throw new Error("Missing generated image URL");
       setGeneratedImage(result.image_url);
       setGeneratedImageKey(result.s3_key);
+      setStorageProvider(result.storage_provider);
       toast.success(t("editor.studio.image.generateSuccess"));
     } catch (error) {
       toast.error(
@@ -564,15 +569,37 @@ export function AIImageStudioPanel({
               <Check className="size-3" />
             </span>
           </div>
-          <Button
-            data-testid="apply-image"
-            variant="outline"
-            className="w-full"
-            onClick={handleApply}
-          >
-            <ImagePlus className="size-4" />
-            {t("editor.studio.image.applyButton")}
-          </Button>
+          <p className="text-muted-foreground text-2xs">
+            Đã tự động lưu vào <strong>Bản nháp (AI)</strong> trong 30 ngày{" "}
+            {storageProvider === "USER_GDRIVE"
+              ? "(Google Drive)"
+              : "(2GB S3 miễn phí)"}
+            .
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              data-testid="apply-image"
+              variant="outline"
+              className="w-full"
+              onClick={handleApply}
+            >
+              <ImagePlus className="size-4" />
+              {t("editor.studio.image.applyButton")}
+            </Button>
+            <DownloadFormatDropdown
+              mediaKind="IMAGE"
+              label={t("library.repository.download")}
+              className="w-full"
+              onSelectFormat={(format) =>
+                void downloadMediaWithFormat({
+                  url: generatedImage,
+                  filename: `ai-commercial-${Date.now()}`,
+                  format,
+                  mediaKind: "IMAGE",
+                })
+              }
+            />
+          </div>
         </div>
       )}
 

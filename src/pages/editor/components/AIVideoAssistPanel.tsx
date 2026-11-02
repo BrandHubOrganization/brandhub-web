@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { DownloadFormatDropdown } from "@/components/common/DownloadFormatDropdown";
+import { downloadMediaWithFormat } from "@/utils/mediaDownloadHelper";
 import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { aiVideoService } from "@/services/aiVideoService";
@@ -157,15 +159,30 @@ export function AIVideoAssistPanel({ onApplyVideo }: AIVideoAssistPanelProps) {
             controls
             className="border-border aspect-video w-full rounded-lg border bg-black"
           />
-          <Button
-            data-testid="apply-video"
-            variant="outline"
-            className="w-full"
-            onClick={() => onApplyVideo(videoUrl, videoS3Key)}
-          >
-            <Play className="size-4" />
-            {t("editor.studio.video.applyButton")}
-          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              data-testid="apply-video"
+              variant="outline"
+              className="w-full"
+              onClick={() => onApplyVideo(videoUrl, videoS3Key)}
+            >
+              <Play className="size-4" />
+              {t("editor.studio.video.applyButton")}
+            </Button>
+            <DownloadFormatDropdown
+              mediaKind="VIDEO"
+              label={t("library.repository.download")}
+              className="w-full"
+              onSelectFormat={(format) =>
+                void downloadMediaWithFormat({
+                  url: videoUrl,
+                  filename: `ai-video-${Date.now()}`,
+                  format,
+                  mediaKind: "VIDEO",
+                })
+              }
+            />
+          </div>
         </div>
       )}
 

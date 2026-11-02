@@ -71,7 +71,6 @@ export function HashtagCollectionPicker({
                 {t(collectionPrefix + "campaignScope", {
                   id: entry.campaignId ?? "",
                 })}
-                . {t(prefix + "campaignTagUnavailable")}
               </p>
             )}
           </div>
@@ -79,12 +78,7 @@ export function HashtagCollectionPicker({
             type="button"
             variant="ghost"
             size="icon"
-            disabled={entry.isRequired}
-            aria-label={
-              entry.isRequired
-                ? t(prefix + "campaignTagUnavailable")
-                : t(prefix + "applyTag", { tag: entry.tag })
-            }
+            aria-label={t(prefix + "applyTag", { tag: entry.tag })}
             onClick={() => onApply(entry)}
             className="text-brand-orange hover:bg-brand-orange-soft rounded-md p-1.5 disabled:opacity-40"
           >

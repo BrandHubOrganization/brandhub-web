@@ -86,7 +86,7 @@ export function CatalogPlanCard({
           }).format(BigInt(plan.priceMonthly));
   const canRenew =
     plan.code === "PLUS" &&
-    subscription?.planCode === "PLUS" &&
+    (subscription?.planCode === "PLUS" || subscription?.status === "EXPIRED") &&
     subscription.status !== "SUSPENDED" &&
     !subscription.renewalScheduled &&
     plan.isSellable &&

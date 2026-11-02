@@ -16,6 +16,8 @@ import { MaterialToolbar } from "@/pages/library/components/MaterialToolbar";
 import { CustomerDrivePanel } from "@/pages/library/components/CustomerDrivePanel";
 import type { MaterialFilters, MaterialItem } from "@/types/material";
 
+type RepositorySubTab = "active" | "drafts" | "trash";
+
 export function MediaTab() {
   const workspace = useWorkspaceStore((state) => state.currentWorkspace?.id);
   const actor = useAuthStore((state) => state.user?.id);
@@ -24,14 +26,25 @@ export function MediaTab() {
 
 function RepositoryMedia() {
   const { t } = useTranslation();
-  const [deleted, setDeleted] = useState(false);
+  const [subTab, setSubTab] = useState<RepositorySubTab>("active");
+  const deleted = subTab === "trash";
+  const isDrafts = subTab === "drafts";
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [debounced, setDebounced] = useState("");
   const [filters, setFilters] = useState<MaterialFilters>({});
   const [confirm, setConfirm] = useState<MaterialItem | null>(null);
   const [selected, setSelected] = useState<MaterialItem | null>(null);
-  const repository = useMaterialRepository(deleted, page, debounced, filters);
+  const effectiveFilters: MaterialFilters = {
+    ...filters,
+    draft: isDrafts ? true : undefined,
+  };
+  const repository = useMaterialRepository(
+    deleted,
+    page,
+    debounced,
+    effectiveFilters,
+  );
   const downloader = useMaterialDownload();
   const client = useQueryClient();
   useEffect(() => {
@@ -49,7 +62,10 @@ function RepositoryMedia() {
     repository.forbidden || repository.query.isError
       ? 0
       : (repository.query.data?.total ?? 0);
-  const pending = repository.remove.isPending || repository.restore.isPending;
+  const pending =
+    repository.remove.isPending ||
+    repository.restore.isPending ||
+    repository.promote.isPending;
   const uploaded = () => {
     void client.invalidateQueries({ queryKey: ["materials"] });
     void client.invalidateQueries({ queryKey: ["material-storage-usage"] });
@@ -65,17 +81,24 @@ function RepositoryMedia() {
         <CustomerDrivePanel />
       )}
       <Tabs
-        value={deleted ? "trash" : "active"}
+        value={subTab}
         onValueChange={(value) => {
-          setDeleted(value === "trash");
+          setSubTab(value as RepositorySubTab);
           setPage(0);
           setSelected(null);
           setConfirm(null);
         }}
       >
         <TabsList>
-          <TabsTrigger value="active">{t("library.trash.active")}</TabsTrigger>
-          <TabsTrigger value="trash">{t("library.trash.title")}</TabsTrigger>
+          <TabsTrigger value="active" data-testid="tab-active-library">
+            {t("library.trash.active")}
+          </TabsTrigger>
+          <TabsTrigger value="drafts" data-testid="tab-ai-drafts">
+            {t("library.trash.drafts")}
+          </TabsTrigger>
+          <TabsTrigger value="trash" data-testid="tab-trash-library">
+            {t("library.trash.title")}
+          </TabsTrigger>
         </TabsList>
       </Tabs>
       {repository.workspace &&
@@ -94,14 +117,21 @@ function RepositoryMedia() {
             }}
           />
         )}
-      {!deleted && !repository.forbidden && !repository.query.isError && (
-        <MediaUploadButton
-          onUploadSuccess={uploaded}
-          disabled={
-            repository.usage.data?.storageMode !== "CUSTOMER_DRIVE_FIRST" &&
-            repository.usage.data?.isQuotaExceeded
-          }
-        />
+      {subTab === "active" &&
+        !repository.forbidden &&
+        !repository.query.isError && (
+          <MediaUploadButton
+            onUploadSuccess={uploaded}
+            disabled={
+              repository.usage.data?.storageMode !== "CUSTOMER_DRIVE_FIRST" &&
+              repository.usage.data?.isQuotaExceeded
+            }
+          />
+        )}
+      {isDrafts && (
+        <p className="text-muted-foreground text-sm">
+          {t("library.trash.draftNotice")}
+        </p>
       )}
       {deleted && (
         <p className="text-muted-foreground text-sm">
@@ -143,7 +173,9 @@ function RepositoryMedia() {
             <p>
               {deleted
                 ? t("library.trash.empty")
-                : label(filtered ? "emptySearch" : "empty")}
+                : isDrafts
+                  ? t("library.trash.emptyDrafts")
+                  : label(filtered ? "emptySearch" : "empty")}
             </p>
             {filtered && (
               <Button
@@ -167,7 +199,12 @@ function RepositoryMedia() {
             deleted={deleted}
             pending={pending}
             downloading={downloader.isDownloading(material.id)}
-            onDownload={() => void downloader.download(material)}
+            onDownload={(format) => void downloader.download(material, format)}
+            onPromote={
+              material.draft
+                ? () => repository.promote.mutate(material)
+                : undefined
+            }
             onDelete={() => setConfirm(material)}
             onRestore={() => repository.restore.mutate(material)}
             onOpen={() => setSelected(material)}
@@ -213,7 +250,14 @@ function RepositoryMedia() {
         onClose={() => setSelected(null)}
         quotaExceeded={repository.usage.data?.isQuotaExceeded}
         downloading={selected ? downloader.isDownloading(selected.id) : false}
-        onDownload={(latest) => void downloader.download(latest)}
+        onDownload={(latest, format) =>
+          void downloader.download(latest, format)
+        }
+        onPromote={(latest) => {
+          repository.promote.mutate(latest, {
+            onSuccess: () => setSelected(null),
+          });
+        }}
         onDelete={(latest) => {
           setConfirm(latest);
           setSelected(null);

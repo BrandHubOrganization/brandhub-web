@@ -1,11 +1,13 @@
 import { useState } from "react";
 import type { Ref } from "react";
 import { useTranslation } from "react-i18next";
-import { Download, Pencil, Stamp, Trash2 } from "lucide-react";
+import { FolderPlus, Pencil, Stamp, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { MaterialUploadForm } from "@/pages/library/components/MaterialUploadForm";
 import { WatermarkStudioModal } from "@/pages/library/components/watermark/WatermarkStudioModal";
+import { DownloadFormatDropdown } from "@/components/common/DownloadFormatDropdown";
+import type { DownloadFormat } from "@/utils/mediaDownloadHelper";
 import type { MaterialItem } from "@/types/material";
 
 interface Props {
@@ -13,7 +15,8 @@ interface Props {
   quotaExceeded?: boolean;
   downloading?: boolean;
   editRef: Ref<HTMLButtonElement>;
-  onDownload?: () => void;
+  onDownload?: (format?: DownloadFormat) => void;
+  onPromote?: () => void;
   onEdit: () => void;
   onDelete: () => void;
   onChanged: () => void;
@@ -25,6 +28,7 @@ export function MaterialDetailActions({
   downloading = false,
   editRef,
   onDownload,
+  onPromote,
   onEdit,
   onDelete,
   onChanged,
@@ -44,19 +48,21 @@ export function MaterialDetailActions({
         {material.status === "READY" &&
           material.capabilities?.canDownload &&
           onDownload && (
-            <Button
+            <DownloadFormatDropdown
+              mediaKind={material.mediaKind || "IMAGE"}
               variant="default"
+              size="default"
               disabled={downloading}
-              aria-busy={downloading}
-              aria-label={t("library.repository.downloadAriaLabel", {
-                name: material.name,
-              })}
-              onClick={onDownload}
-            >
-              <Download className="size-4" />
-              {label(downloading ? "preparingDownload" : "download")}
-            </Button>
+              label={label(downloading ? "preparingDownload" : "download")}
+              onSelectFormat={(format) => onDownload(format)}
+            />
           )}
+        {material.draft && onPromote && (
+          <Button variant="secondary" onClick={onPromote}>
+            <FolderPlus className="size-4" />
+            {t("library.trash.promoteToLibrary")}
+          </Button>
+        )}
         {canEdit && (
           <Button ref={editRef} variant="outline" onClick={onEdit}>
             <Pencil />

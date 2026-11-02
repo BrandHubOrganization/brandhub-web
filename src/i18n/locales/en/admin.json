@@ -281,6 +281,30 @@
     "nextRun": "Next run: {{date}}",
     "sources": "Active sources",
     "noSources": "No scraper API key is configured.",
+    "cookie": {
+      "title": "Facebook cookie",
+      "status": {
+        "valid": "Valid ({{count}} cookies)",
+        "missing": "No cookie configured",
+        "expired": "Cookie expired",
+        "invalid": "Cookie missing c_user or xs"
+      },
+      "account": "Account (c_user): {{user}}",
+      "updatedAt": "Updated: {{date}}",
+      "expiresAt": "Expires: {{date}}",
+      "inputLabel": "Paste Facebook cookie JSON",
+      "placeholder": "[{\"name\": \"c_user\", \"value\": \"...\"}, {\"name\": \"xs\", \"value\": \"...\"}]",
+      "hint": "Export JSON from Cookie-Editor or Playwright storage_state (must include c_user and xs).",
+      "save": "Update cookie",
+      "saving": "Saving…",
+      "saved": "Facebook cookie updated.",
+      "saveError": "Could not save cookie. Check the JSON format.",
+      "errors": {
+        "empty": "Please paste the cookie JSON.",
+        "invalidJson": "Invalid JSON format.",
+        "missingRequired": "JSON must include both c_user and xs cookies."
+      }
+    },
     "log": {
       "title": "Crawl log",
       "hint": "Each crawl records the pages it visited, the posts it got and any errors. The last 20 runs are kept.",
