@@ -18,6 +18,7 @@ import { TaskInlineDetails } from "@/pages/tasks/components/TaskInlineDetails";
 import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
 import { TaskComments } from "@/pages/tasks/components/comments/TaskComments";
 import { TaskMeetingCard } from "@/pages/tasks/components/TaskMeetingCard";
+import { TaskPhoneMedia } from "@/pages/tasks/components/TaskPhoneMedia";
 import {
   TaskWorkflowProvider,
   useOptionalTaskEditContext,
@@ -407,6 +408,15 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated }: Props) {
                 </div>
               )}
             </div>
+          )}
+
+          {role !== "CLIENT" && (
+            <TaskPhoneMedia
+              workspaceId={workspaceId}
+              taskId={taskId}
+              isPostTask={task.type === "POST"}
+              isAssignee={isAssignee}
+            />
           )}
 
           {/* Comments Section */}

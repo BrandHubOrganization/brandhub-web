@@ -65,6 +65,14 @@ export function postInput(draft: TaskPostDraft): SavePostInput {
     aiGenerated: draft.aiGenerated,
   };
 }
+export function postInputWithMaterial(
+  post: PostResponse,
+  materialId: string,
+  mediaType: "IMAGE" | "VIDEO",
+): SavePostInput {
+  const input = postInput(draftFromPost(post));
+  return { ...input, media: [...input.media, { materialId, mediaType }] };
+}
 export function taskEditorError(error: unknown) {
   const response = (
     error as { response?: { data?: { error?: { code?: string } } } }
