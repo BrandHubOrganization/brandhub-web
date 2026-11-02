@@ -22,36 +22,32 @@ import {
 import { AdminRecentUsers } from "@/pages/admin/components/AdminRecentUsers";
 import { SystemHealthPanel } from "@/pages/admin/components/SystemHealthPanel";
 import { getSystemHealth } from "@/services/mock/mockAdminService";
-import type { SystemHealthMetric } from "@/types/admin";
+import type { SystemHealthMetric } from "@/pages/admin/types/admin";
 
 const DEFAULT_SYSTEM_HEALTH_METRICS: SystemHealthMetric[] = [
   {
     service: "API Gateway",
     status: "UP",
     latencyMs: 18,
-    uptimePercent: 99.98,
-    checkedAt: "2026-03-19T06:00:00Z",
+    uptime: 99.98,
   },
   {
     service: "Business Service",
     status: "UP",
     latencyMs: 42,
-    uptimePercent: 99.95,
-    checkedAt: "2026-03-19T06:00:00Z",
+    uptime: 99.95,
   },
   {
     service: "AI Generation Service",
     status: "DEGRADED",
     latencyMs: 640,
-    uptimePercent: 98.4,
-    checkedAt: "2026-03-19T06:00:00Z",
+    uptime: 98.4,
   },
   {
     service: "Publisher Service",
     status: "UP",
     latencyMs: 55,
-    uptimePercent: 99.91,
-    checkedAt: "2026-03-19T06:00:00Z",
+    uptime: 99.91,
   },
 ];
 
