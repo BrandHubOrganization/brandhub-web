@@ -60,7 +60,10 @@ export function ContentCreatorAiPanel({
           />
         </TabsContent>
         <TabsContent value="video" className="mt-3">
-          <AIVideoAssistPanel onApplyVideo={onApplyVideo} />
+          <AIVideoAssistPanel
+            referenceMediaUrls={referenceMediaUrls}
+            onApplyVideo={onApplyVideo}
+          />
         </TabsContent>
       </Tabs>
     </section>
