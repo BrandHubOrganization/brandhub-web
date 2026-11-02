@@ -1,4 +1,3 @@
-import axios from "axios";
 import { api } from "@/lib/axios";
 import type { SocialPlatform } from "@/types/editor";
 import type { ModerationResult } from "@/types/moderation";
@@ -91,9 +90,15 @@ export function resolveAiAssetUrl(url: string): string {
 
 export async function imageSourceToDataUrl(source: string): Promise<string> {
   if (source.startsWith("data:")) return source;
-  const response = await axios.get(resolveAiAssetUrl(source), {
-    responseType: "blob",
+  const resolvedUrl = resolveAiAssetUrl(source);
+  const fetchResponse = await fetch(resolvedUrl, {
+    mode: "cors",
+    cache: "no-store",
   });
+  if (!fetchResponse.ok) {
+    throw new Error(`Không thể tải ảnh tham chiếu (HTTP ${fetchResponse.status})`);
+  }
+  const blob = await fetchResponse.blob();
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () =>
@@ -102,7 +107,7 @@ export async function imageSourceToDataUrl(source: string): Promise<string> {
         : reject(new Error("Không thể đọc ảnh tham chiếu"));
     reader.onerror = () =>
       reject(reader.error ?? new Error("Không thể đọc ảnh"));
-    reader.readAsDataURL(response.data);
+    reader.readAsDataURL(blob);
   });
 }
 

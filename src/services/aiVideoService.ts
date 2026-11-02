@@ -1,4 +1,5 @@
 import { api } from "@/lib/axios";
+import { postAiWithCredit } from "@/services/aiCreditRequest";
 import { resolveAiAssetUrl } from "@/services/aiGenerationService";
 
 /** FR 3.7.6 video style templates and FR 3.7.7 async video jobs, charged in AI credit. */
@@ -45,16 +46,20 @@ export const aiVideoService = {
   generate: async (
     workspaceId: string,
     body: {
-      prompt: string;
+      prompt?: string;
       styleKey?: string | null;
       ambassadorId?: string | null;
       aspectRatio: "16:9" | "9:16";
+      referenceImageBase64?: string | null;
+      poseVideoBase64?: string | null;
+      poseVideoFilename?: string | null;
+      durationSeconds?: number | null;
     },
   ) => {
     const data = (
-      await api.post<{
+      await postAiWithCredit<{
         data: { job: VideoJob; creditsUsed: number; creditsRemaining: number };
-      }>(`${base(workspaceId)}/videos`, body)
+      }>(`${base(workspaceId)}/videos`, body, { workspaceId })
     ).data.data;
     return { ...data, job: withAssetUrl(data.job) };
   },
