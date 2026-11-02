@@ -1,6 +1,8 @@
 export type PipelineStage =
   | "STARTING"
   | "CRAWLING"
+  | "RECOVERING"
+  | "INTERRUPTED"
   | "QUEUED"
   | "PROCESSING"
   | "AGGREGATING"
@@ -10,10 +12,11 @@ export type PipelineStage =
   | "FAILED";
 
 export interface TrendPipelineRun {
+  platforms?: { platform: string; status: string; posts: number }[];
   id: string;
   pipelineRunId: string | null;
   trigger: string;
-  status: "RUNNING" | "COMPLETED" | "PARTIAL" | "FAILED";
+  status: "RUNNING" | "COMPLETED" | "PARTIAL" | "FAILED" | "INTERRUPTED";
   stage: PipelineStage;
   startedAt: string | null;
   totalPosts: number;
@@ -22,6 +25,7 @@ export interface TrendPipelineRun {
   databaseSaved: boolean;
   liveUpdated: boolean;
   resolutionStatus: string;
+  canRecover: boolean;
 }
 
 export interface TrendPipelineRuns {
@@ -30,7 +34,10 @@ export interface TrendPipelineRuns {
 }
 
 export interface TrendPipelineStatus {
+  platforms?: string[];
   ready: boolean;
+  recoveryReady: boolean;
+  readinessReason: string | null;
   cron: string;
   timezone: string;
   scheduleEnabled: boolean;

@@ -1,13 +1,11 @@
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { RefreshCw, BarChart2 } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTrendView } from "@/pages/admin/hooks/useTrendView";
 import { AdminTrendFilters } from "@/pages/admin/components/AdminTrendFilters";
 import { AdminTrendList } from "@/pages/admin/components/AdminTrendList";
 import { AdminTrendSummary } from "@/pages/admin/components/AdminTrendSummary";
-import { AdminTrendPipelineControl } from "@/pages/admin/components/AdminTrendPipelineControl";
 
 export function AdminTrendPanel() {
   const { t } = useTranslation();
@@ -27,54 +25,23 @@ export function AdminTrendPanel() {
 
   return (
     <div className="max-w-full min-w-0 space-y-4">
-      {/* Top Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary/10 text-primary flex size-7 items-center justify-center rounded-lg">
-              <BarChart2 className="size-4" />
-            </div>
-            <h1 className="text-foreground text-lg font-bold tracking-tight sm:text-xl">
-              {t("admin.trends.managementTitle", {
-                defaultValue: "Trends & Crawl Management",
-              })}
-            </h1>
-          </div>
-          <p className="text-muted-foreground line-clamp-1 text-xs">
-            {t("admin.trends.description")}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2.5">
-          <Link
-            to="/admin?view=trendGraph"
-            className="text-foreground hover:text-primary rounded text-xs font-medium underline underline-offset-4 transition-colors focus-visible:outline-2"
-          >
-            {t("admin.navigation.trendGraph")}
-          </Link>
-          <Link
-            to="/admin?view=trendReplay"
-            className="text-brand-orange-fg focus-visible:outline-ring rounded text-xs font-medium underline underline-offset-4 transition-opacity hover:opacity-85 focus-visible:outline-2"
-          >
-            {t("admin.trends.replay")}
-          </Link>
+      {/* Bento Snapshot with Refresh Action */}
+      <AdminTrendSummary
+        query={view.summary}
+        actions={
           <Button
             variant="outline"
             size="sm"
             onClick={view.refresh}
             disabled={view.trends.isFetching || view.summary.isFetching}
             loading={view.trends.isFetching}
-            className="h-8 gap-1.5 text-xs font-medium"
+            className="h-8 gap-1.5 text-xs font-medium shrink-0"
           >
             <RefreshCw aria-hidden="true" className="size-3.5" />
             {t("admin.trends.refresh")}
           </Button>
-        </div>
-      </div>
-
-      {/* Bento Snapshot & Crawl Control Card */}
-      <AdminTrendPipelineControl />
-      <AdminTrendSummary query={view.summary} />
+        }
+      />
 
       {/* Filter Toolbar */}
       <AdminTrendFilters view={view} topics={topics} />

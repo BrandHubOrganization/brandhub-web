@@ -5,14 +5,16 @@ import type { useTrendView } from "@/pages/admin/hooks/useTrendView";
 
 export function AdminTrendSummary({
   query,
+  actions,
 }: {
   query: ReturnType<typeof useTrendView>["summary"];
+  actions?: React.ReactNode;
 }) {
   const { t, i18n } = useTranslation();
   const latest = query.data?.latest_run;
   if (query.isPending || query.isError || !latest)
     return (
-      <div className="border-border bg-card rounded-xl border p-4">
+      <div className="border-border bg-card flex flex-wrap items-center justify-between gap-3 rounded-xl border p-4">
         <p role="status" className="text-muted-foreground text-sm">
           {query.isPending
             ? t("admin.loading")
@@ -20,6 +22,7 @@ export function AdminTrendSummary({
               ? t("admin.trends.summaryError")
               : t("admin.trends.noPublication")}
         </p>
+        {actions}
       </div>
     );
   const published = latest.published_at && new Date(latest.published_at);
@@ -33,18 +36,21 @@ export function AdminTrendSummary({
       : "—";
   return (
     <div className="border-border bg-card/60 space-y-3 rounded-xl border p-4 shadow-2xs">
-      <div className="flex items-center gap-2">
-        <span className="bg-primary/10 text-primary flex size-7 items-center justify-center rounded-lg">
-          <Sparkles className="size-3.5" aria-hidden="true" />
-        </span>
-        <div className="min-w-0">
-          <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-            {t("admin.trends.latest")}
-          </h2>
-          <p className="text-foreground font-mono text-sm font-semibold break-all">
-            {latest.run_id}
-          </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="bg-primary/10 text-primary flex size-7 items-center justify-center rounded-lg shrink-0">
+            <Sparkles className="size-3.5" aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
+            <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+              {t("admin.trends.latest")}
+            </h2>
+            <p className="text-foreground font-mono text-sm font-semibold break-all">
+              {latest.run_id}
+            </p>
+          </div>
         </div>
+        {actions}
       </div>
       <div className="grid grid-cols-1 gap-2.5 pt-1 text-xs sm:grid-cols-3">
         <div className="border-border/50 bg-background/50 space-y-1 rounded-lg border p-2.5">

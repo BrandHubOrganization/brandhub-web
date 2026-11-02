@@ -40,21 +40,30 @@ export function useTrendPipeline(onAccepted: () => void) {
     previous.current = id;
   }, [runs.data, client]);
   const mutation = useMutation({
-    mutationFn: service.start,
+    mutationFn: (runId: string | undefined) =>
+      runId ? service.recover(runId) : service.start(),
     retry: false,
-    onSuccess: (run) => {
+    onSuccess: (run, runId) => {
       client.setQueryData<TrendPipelineRuns>(
         ["admin", "ai", "trend-pipeline-runs"],
         (current) => ({
           running: run.status === "RUNNING" ? run : null,
-          history: current?.history ?? [],
+          history: (current?.history ?? []).filter(
+            (old) => old.pipelineRunId !== run.pipelineRunId,
+          ),
         }),
       );
-      toast.success(t("admin.trendPipeline.accepted"));
+      toast.success(
+        t(
+          runId
+            ? "admin.trendPipeline.recoveryAccepted"
+            : "admin.trendPipeline.accepted",
+        ),
+      );
       refresh();
       onAccepted();
     },
-    onError: (error: unknown) => {
+    onError: (error: unknown, runId) => {
       const code = isAxiosError<{ error?: { code?: string } }>(error)
         ? error.response?.data?.error?.code
         : undefined;
@@ -63,26 +72,34 @@ export function useTrendPipeline(onAccepted: () => void) {
           code === "TREND_PIPELINE_ALREADY_RUNNING"
             ? "admin.trendPipeline.busy"
             : code === "TREND_PIPELINE_NOT_READY"
-              ? "admin.trendPipeline.notReady"
-              : "admin.trendPipeline.error",
+              ? runId
+                ? "admin.trendPipeline.recoveryNotReady"
+                : "admin.trendPipeline.notReady"
+              : code === "TREND_PIPELINE_RECOVERY_NOT_ALLOWED"
+                ? "admin.trendPipeline.recoveryConflict"
+                : code === "TREND_PIPELINE_RUN_NOT_FOUND"
+                  ? "admin.trendPipeline.runNotFound"
+                  : "admin.trendPipeline.error",
         ),
       );
       refresh();
     },
   });
+  const submit = async (runId?: string) => {
+    if (pending.current) return;
+    pending.current = true;
+    try {
+      await mutation.mutateAsync(runId);
+    } finally {
+      pending.current = false;
+    }
+  };
   return {
     status,
     runs,
     mutation,
     refresh,
-    start: async () => {
-      if (pending.current) return;
-      pending.current = true;
-      try {
-        await mutation.mutateAsync();
-      } finally {
-        pending.current = false;
-      }
-    },
+    start: () => submit(),
+    recover: (runId: string) => submit(runId),
   };
 }

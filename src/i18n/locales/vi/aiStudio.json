@@ -102,11 +102,19 @@
     "allTopics": "Tất cả lĩnh vực",
     "platformFilter": "Lọc theo nền tảng",
     "allPlatforms": "Tất cả nền tảng",
+    "statusFilter": "Lọc theo trạng thái",
+    "allStatuses": "Tất cả trạng thái",
+    "searchPlaceholder": "Tìm từ khóa, lĩnh vực, hashtag...",
+    "clearSearch": "Xóa tìm kiếm",
+    "resetFilters": "Đặt lại bộ lọc",
     "refresh": "Làm mới",
     "empty": "Chưa có dữ liệu xu hướng",
     "emptyHint": "Hệ thống chưa crawl hoặc chưa có từ khóa nổi bật trong khoảng thời gian này. Dữ liệu sẽ xuất hiện sau lần crawl kế tiếp.",
+    "noFilterResults": "Không tìm thấy xu hướng phù hợp",
+    "noFilterResultsHint": "Hãy thử đổi từ khóa tìm kiếm hoặc đặt lại bộ lọc để xem toàn bộ danh sách.",
     "score": "Điểm xu hướng",
     "virality": "Độ lan tỏa",
+    "engagement": "Tương tác",
     "riskLabel": "Rủi ro thương hiệu",
     "risk": {
       "low": "Thấp",
@@ -123,8 +131,10 @@
     },
     "status": {
       "new": "Mới",
+      "emerging": "Mới",
       "rising": "Đang lên",
       "peaking": "Đỉnh điểm",
+      "peak": "Đỉnh điểm",
       "declining": "Đang giảm"
     },
     "superTrend": "Siêu trend",
@@ -148,6 +158,8 @@
     "copied": "Đã sao chép từ khóa.",
     "copyError": "Không sao chép được.",
     "crawl": {
+      "title": "Trạng thái thu thập (Crawl Radar)",
+      "active": "Tự động",
       "sources": "Nguồn crawl: {{sources}} ({{count}} page)",
       "everyMinutes": "cập nhật mỗi {{count}} phút",
       "everyHours": "cập nhật mỗi {{count}} giờ",
@@ -157,7 +169,8 @@
     "chart": {
       "title": "Lĩnh vực đang nổi",
       "hint": "Tổng điểm xu hướng theo lĩnh vực. Bấm vào một lĩnh vực để xem các trend của nó.",
-      "tooltip": "Điểm {{score}} · {{trends}} trend · {{rising}} đang lên"
+      "tooltip": "Điểm {{score}} · {{trends}} trend · {{rising}} đang lên",
+      "clearFilter": "Bỏ lọc"
     },
     "topicName": {
       "thể_thao": "Thể thao",
@@ -179,7 +192,9 @@
       "comments": "Bình luận",
       "shares": "Chia sẻ",
       "open": "Mở bài",
+      "title_one": "1 bài về \"{{keyword}}\"",
       "title_other": "{{count}} bài về \"{{keyword}}\"",
+      "hint_one": "1 bài · rê chuột xem bài, bấm xem chi tiết",
       "hint_other": "{{count}} bài · rê chuột xem bài, bấm xem chi tiết"
     },
     "detail": {
@@ -267,5 +282,41 @@
     },
     "openVideoSpace": "Mở Video Space",
     "editInSpace": "Chỉnh sửa trong Video Space"
+  },
+  "workspaceTrends": {
+    "title": "Khám phá xu hướng",
+    "description": "Theo dõi xu hướng hiện tại và lịch sử từ dữ liệu đã thu thập.",
+    "search": "Tìm chủ đề",
+    "searchPlaceholder": "Nhập phần đầu tên chủ đề…",
+    "date": "Ngày dữ liệu (UTC)",
+    "current": "Hiện tại",
+    "topic": "Chủ đề",
+    "score": "Điểm xu hướng",
+    "postCount": "Số bài quan sát",
+    "redis": "Dữ liệu hiện tại",
+    "neo4j": "Dữ liệu lịch sử",
+    "updated": "Cập nhật: {{date}}",
+    "fallback": "Đang xem dữ liệu lịch sử vì snapshot hiện tại chưa khả dụng.",
+    "legacy": "Lịch sử có thể chưa đầy đủ; dấu — là thông tin chưa được lưu.",
+    "refresh": "Làm mới",
+    "loading": "Đang tải xu hướng",
+    "error": "Không tải được xu hướng hoặc phiên phân trang đã thay đổi. Hãy thử lại từ đầu.",
+    "historyError": "Không tải được lịch sử xu hướng.",
+    "retry": "Thử lại",
+    "empty": "Chưa có xu hướng phù hợp với ngày và từ khóa đã chọn.",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "page": "Trang {{count}}",
+    "close": "Đóng chi tiết",
+    "history": "Khoảng lịch sử",
+    "days": "{{count}} ngày",
+    "historyNote": "Ngày tính theo UTC. Ngày thiếu dữ liệu được để trống, không phải 0. Điểm được tính trên cửa sổ lịch sử; chưa xác nhận khả năng so sánh giữa các phạm vi crawl.",
+    "truncated": "Đã đạt giới hạn lịch sử. Chọn khoảng ngắn hơn để xem đầy đủ.",
+    "sources": "Bài nguồn công khai",
+    "noSources": "Chưa có liên kết bài nguồn được lưu.",
+    "sourceLimit": "Đang hiển thị tối đa 20 liên kết bài nguồn.",
+    "noMetric": "Chưa có số liệu được lưu trong khoảng này.",
+    "dataTable": "Xem bảng số liệu",
+    "rank": "Hạng"
   }
 }

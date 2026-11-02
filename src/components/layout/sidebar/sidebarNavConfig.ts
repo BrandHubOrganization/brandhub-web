@@ -143,6 +143,13 @@ export const NAV_SECTIONS: NavSection[] = [
         requiresWorkspace: true,
       },
       {
+        to: "/trends",
+        icon: BarChart3,
+        labelKey: "aiStudio.workspaceTrends.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
         to: "/calendar",
         icon: Calendar,
         labelKey: "calendar.page.title",
