@@ -29,6 +29,14 @@ export function AdminTrendPipelineRun({
           {t(`admin.trendPipeline.stage.${run.stage}`)}
         </Badge>
       </div>
+      {run.test && (
+        <p className="text-muted-foreground">{t("admin.crawler.testMode")}</p>
+      )}
+      {run.stopRequested && run.status === "RUNNING" && (
+        <p role="status">
+          {t("admin.crawler.stopRequested")}. {t("admin.crawler.stopHelp")}
+        </p>
+      )}
       <div className="text-muted-foreground flex flex-wrap gap-x-4 gap-y-1">
         <span>{t("admin.trendPipeline.posts", { count: run.totalPosts })}</span>
         <span>

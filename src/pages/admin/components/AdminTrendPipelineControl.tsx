@@ -14,7 +14,11 @@ import { useTrendPipeline } from "@/pages/admin/hooks/useTrendPipeline";
 import { AdminTrendPipelineRun } from "@/pages/admin/components/AdminTrendPipelineRun";
 import type { TrendPipelineRun } from "@/pages/admin/types/trendPipeline";
 
-export function AdminTrendPipelineControl() {
+export function AdminTrendPipelineControl({
+  managed = false,
+}: {
+  managed?: boolean;
+}) {
   const { t, i18n } = useTranslation();
   const [confirm, setConfirm] = useState<TrendPipelineRun | "start" | null>(
     null,
@@ -70,29 +74,31 @@ export function AdminTrendPipelineControl() {
           <h2 className="text-sm font-semibold">
             {t("admin.trendPipeline.title")}
           </h2>
-          <p role="status" className="text-muted-foreground text-xs">
-            {pipeline.status.isPending
-              ? t("admin.loading")
-              : pipeline.status.isError || pipeline.runs.isError
-                ? t("admin.trendPipeline.error")
-                : active
-                  ? t(`admin.trendPipeline.stage.${active.stage}`)
-                  : !data?.ready
-                    ? t(
-                        data?.readinessReason === "THREADS_SESSION_MISSING"
-                          ? "admin.trendSettings.threadsSessionMissing"
-                          : data?.readinessReason ===
-                              "TIKTOK_API_NOT_CONFIGURED"
-                            ? "admin.trendSettings.tiktokApiMissing"
+          {!managed && (
+            <p role="status" className="text-muted-foreground text-xs">
+              {pipeline.status.isPending
+                ? t("admin.loading")
+                : pipeline.status.isError || pipeline.runs.isError
+                  ? t("admin.trendPipeline.error")
+                  : active
+                    ? t(`admin.trendPipeline.stage.${active.stage}`)
+                    : !data?.ready
+                      ? t(
+                          data?.readinessReason === "THREADS_SESSION_MISSING"
+                            ? "admin.trendSettings.threadsSessionMissing"
                             : data?.readinessReason ===
-                                "PIPELINE_CONFIG_UNAVAILABLE"
-                              ? "admin.trendSettings.error"
-                              : data?.readinessReason === "SESSION_MISSING"
-                                ? "admin.trendPipeline.sessionMissing"
-                                : "admin.trendPipeline.notReady",
-                      )
-                    : t("admin.trendPipeline.ready")}
-          </p>
+                                "TIKTOK_API_NOT_CONFIGURED"
+                              ? "admin.trendSettings.tiktokApiMissing"
+                              : data?.readinessReason ===
+                                  "PIPELINE_CONFIG_UNAVAILABLE"
+                                ? "admin.trendSettings.error"
+                                : data?.readinessReason === "SESSION_MISSING"
+                                  ? "admin.trendPipeline.sessionMissing"
+                                  : "admin.trendPipeline.notReady",
+                        )
+                      : t("admin.trendPipeline.ready")}
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button
@@ -113,16 +119,18 @@ export function AdminTrendPipelineControl() {
             <History className="size-4" aria-hidden="true" />
             {t("admin.trendPipeline.history")}
           </Button>
-          <Button
-            variant="orange"
-            size="sm"
-            disabled={disabled}
-            loading={pipeline.mutation.isPending}
-            onClick={() => setConfirm("start")}
-          >
-            <Play className="size-4" aria-hidden="true" />
-            {t("admin.trendPipeline.runNow")}
-          </Button>
+          {!managed && (
+            <Button
+              variant="orange"
+              size="sm"
+              disabled={disabled}
+              loading={pipeline.mutation.isPending}
+              onClick={() => setConfirm("start")}
+            >
+              <Play className="size-4" aria-hidden="true" />
+              {t("admin.trendPipeline.runNow")}
+            </Button>
+          )}
         </div>
       </div>
       {!active && data?.readinessReason === "THREADS_SESSION_MISSING" && (
