@@ -23,4 +23,15 @@ export const trendPipelineService = {
       (await api.post(path + "/runs", {}, { timeout: 30_000 })).data,
     );
   },
+  async recover(runId: string) {
+    return requireApiData<TrendPipelineRun>(
+      (
+        await api.post(
+          path + "/runs/" + encodeURIComponent(runId) + "/recover",
+          {},
+          { timeout: 30_000 },
+        )
+      ).data,
+    );
+  },
 };

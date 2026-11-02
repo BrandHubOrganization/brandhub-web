@@ -28,6 +28,7 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/client-profile": ["CLIENT"],
   "/calendar": ["MANAGER", "CREATOR", "CLIENT"],
   "/library": ["OWNER", "MANAGER", "CREATOR", "CLIENT"],
+  "/trends": ["OWNER", "MANAGER", "CREATOR", "CLIENT"],
   "/editor": ["OWNER", "MANAGER", "CREATOR"],
   "/content-writing": ["OWNER", "MANAGER", "CREATOR"],
   "/mail-templates": ["OWNER", "MANAGER", "CREATOR"],

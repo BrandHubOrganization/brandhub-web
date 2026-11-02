@@ -14,7 +14,12 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useTrendReplay } from "@/pages/admin/hooks/useTrendReplay";
 import { TrendReplayDetail } from "@/pages/admin/components/TrendReplayDetail";
-import type { ReplaySelection, ReplayStatus } from "@/pages/admin/types/trendReplay";
+import { TrendReplayFlow } from "@/pages/admin/components/TrendReplayFlow";
+import { Link } from "react-router-dom";
+import type {
+  ReplaySelection,
+  ReplayStatus,
+} from "@/pages/admin/types/trendReplay";
 
 function getStatusBadgeStyle(status: ReplayStatus) {
   switch (status) {
@@ -47,59 +52,104 @@ function formatJobTime(iso?: string) {
 export function AdminTrendReplayPanel() {
   const { t } = useTranslation();
   const replay = useTrendReplay();
+  const [attempted, setAttempted] = useState(false);
+  const [prefixTouched, setPrefixTouched] = useState(false);
   const [form, setForm] = useState<ReplaySelection>({
     startDate: "",
     endDate: "",
-    prefix: "crawler-raw/",
+    prefix: "",
   });
 
+  const defaultPrefix = replay.history.data?.default_prefix ?? "";
+  if (!prefixTouched && defaultPrefix && form.prefix !== defaultPrefix) {
+    setForm((current) => ({ ...current, prefix: defaultPrefix }));
+  }
+
   const change = (field: keyof ReplaySelection, value: string) => {
+    if (field === "prefix") setPrefixTouched(true);
     setForm((current) => ({ ...current, [field]: value }));
     replay.invalidatePreview();
   };
 
   const job = replay.detail.data;
+  const activeBucket =
+    replay.history.data?.bucket || job?.bucket || "crawler-social";
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  const span =
+    (Date.parse(form.endDate) - Date.parse(form.startDate)) / 86400000;
+  const valid = Boolean(
+    form.startDate &&
+    form.endDate &&
+    span >= 0 &&
+    span <= 30 &&
+    form.endDate <= today &&
+    form.prefix.trim().length <= 500,
+  );
   const canStart =
     job &&
-    job.processing_mode === "NORMAL_PIPELINE_V2" &&
+    job.processing_mode === "NORMAL_PIPELINE_V3" &&
     ((job.status === "PREVIEW" && replay.previewId === job.id) ||
       ["FAILED", "INTERRUPTED"].includes(job.status));
   const busy = replay.preview.isPending || replay.start.isPending;
 
   return (
-    <div className="min-w-0 space-y-6">
+    <div className="min-w-0 space-y-4">
       {/* S3 Raw Archive Preview Form - Doppelrand Surface */}
       <form
-        className="relative rounded-2xl border border-border/80 bg-card/95 p-5 shadow-xs ring-1 ring-black/[0.04] dark:ring-white/[0.05] backdrop-blur-xs space-y-4"
+        noValidate
+        className="border-border/80 bg-card/95 relative space-y-4 rounded-2xl border p-5 shadow-xs ring-1 ring-black/[0.04] backdrop-blur-xs dark:ring-white/[0.05]"
         onSubmit={(event) => {
           event.preventDefault();
-          replay.preview.mutate(form);
+          setAttempted(true);
+          if (valid && !busy)
+            replay.preview.mutate({ ...form, prefix: form.prefix.trim() });
         }}
       >
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/50 pb-3">
+        <div className="border-border/50 flex flex-wrap items-center justify-between gap-2 border-b pb-3">
           <div className="flex items-center gap-2">
-            <span className="flex size-7 items-center justify-center rounded-lg bg-brand-orange/10 text-brand-orange">
+            <span className="bg-brand-orange/10 text-brand-orange flex size-7 items-center justify-center rounded-lg">
               <Database aria-hidden="true" className="size-4" />
             </span>
             <div>
-              <h2 className="text-sm font-semibold text-foreground">
+              <h2 className="text-foreground text-sm font-semibold">
                 {t("admin.navigation.trendReplay")}
               </h2>
-              <p className="text-[11px] text-muted-foreground">
-                NORMAL_PIPELINE_V2 · Neo4j, Chroma & Redis
+              <p className="text-muted-foreground text-[11px]">
+                {t("admin.trendReplay.multiplatformScope")}
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="text-[11px] font-mono">
-            S3 Raw Replay
-          </Badge>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <div className="border-border/60 bg-muted/40 flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs">
+              <span className="text-muted-foreground font-medium">
+                {t("admin.trendReplay.sourceBucket")}:
+              </span>
+              <code className="text-foreground font-mono font-semibold">
+                s3://{activeBucket}
+              </code>
+            </div>
+            <Link
+              className="text-brand-orange-fg rounded text-sm underline underline-offset-4"
+              to="/admin?view=trendPipeline"
+            >
+              {t("admin.trendReplay.openPipeline")}
+            </Link>
+          </div>
         </div>
 
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+        <TrendReplayFlow stage="PREVIEW" />
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Input
             type="date"
             required
             label={t("admin.trendReplay.from")}
+            max={today}
             value={form.startDate}
             disabled={busy}
             onChange={(e) => change("startDate", e.target.value)}
@@ -110,21 +160,27 @@ export function AdminTrendReplayPanel() {
             label={t("admin.trendReplay.to")}
             value={form.endDate}
             min={form.startDate}
+            max={today}
             disabled={busy}
             onChange={(e) => change("endDate", e.target.value)}
           />
           <Input
-            required
             label={t("admin.trendReplay.prefix")}
+            placeholder={t("admin.trendReplay.prefixPlaceholder")}
             value={form.prefix}
             disabled={busy}
             onChange={(e) => change("prefix", e.target.value)}
           />
         </div>
 
-        <p className="text-muted-foreground text-xs leading-relaxed max-w-3xl">
+        <p className="text-muted-foreground max-w-3xl text-xs leading-relaxed">
           {t("admin.trendReplay.scope")}
         </p>
+        {attempted && !valid && (
+          <p role="alert" className="text-destructive text-sm">
+            {t("admin.trendReplay.selectionInvalid")}
+          </p>
+        )}
 
         <div className="flex flex-wrap items-center gap-3 pt-1">
           <Button
@@ -138,7 +194,10 @@ export function AdminTrendReplayPanel() {
           </Button>
 
           {(replay.preview.isError || replay.start.isError) && (
-            <p role="alert" className="text-destructive text-sm font-medium flex items-center gap-1.5">
+            <p
+              role="alert"
+              className="text-destructive flex items-center gap-1.5 text-sm font-medium"
+            >
               <AlertCircle aria-hidden="true" className="size-4 shrink-0" />
               {t("admin.trendReplay.error")}
             </p>
@@ -147,13 +206,16 @@ export function AdminTrendReplayPanel() {
       </form>
 
       {/* Main Workspace: History List + Detail */}
-      <div className="grid min-w-0 gap-6 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
+      <div className="grid min-w-0 gap-4 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
         {/* Left Column: Replay History Cards */}
         <section className="bg-card/95 border-border/80 min-w-0 space-y-3 self-start rounded-2xl border p-4 shadow-xs ring-1 ring-black/[0.04] dark:ring-white/[0.05]">
-          <div className="flex items-center justify-between gap-2 border-b border-border/50 pb-2.5">
+          <div className="border-border/50 flex items-center justify-between gap-2 border-b pb-2.5">
             <div className="flex items-center gap-2">
-              <Layers aria-hidden="true" className="size-4 text-muted-foreground" />
-              <h2 className="text-sm font-semibold text-foreground">
+              <Layers
+                aria-hidden="true"
+                className="text-muted-foreground size-4"
+              />
+              <h2 className="text-foreground text-sm font-semibold">
                 {t("admin.trendReplay.history")}
               </h2>
             </div>
@@ -169,27 +231,42 @@ export function AdminTrendReplayPanel() {
             >
               <RefreshCw
                 aria-hidden="true"
-                className={cn("size-3.5", replay.history.isFetching && "animate-spin")}
+                className={cn(
+                  "size-3.5",
+                  replay.history.isFetching && "animate-spin",
+                )}
               />
             </Button>
           </div>
 
           {replay.history.isPending && (
-            <div role="status" className="py-6 text-center text-sm text-muted-foreground">
-              <RefreshCw aria-hidden="true" className="size-4 animate-spin mx-auto mb-2 opacity-60" />
+            <div
+              role="status"
+              className="text-muted-foreground py-6 text-center text-sm"
+            >
+              <RefreshCw
+                aria-hidden="true"
+                className="mx-auto mb-2 size-4 animate-spin opacity-60"
+              />
               {t("admin.loading")}
             </div>
           )}
 
           {replay.history.isError && (
-            <p role="alert" className="text-destructive text-xs p-2 rounded-lg bg-destructive/10 border border-destructive/20">
+            <p
+              role="alert"
+              className="text-destructive bg-destructive/10 border-destructive/20 rounded-lg border p-2 text-xs"
+            >
               {t("admin.trendReplay.error")}
             </p>
           )}
 
           {replay.history.data?.jobs.length === 0 && (
-            <div className="py-8 text-center text-xs text-muted-foreground">
-              <Calendar aria-hidden="true" className="size-6 mx-auto mb-2 opacity-40" />
+            <div className="text-muted-foreground py-8 text-center text-xs">
+              <Calendar
+                aria-hidden="true"
+                className="mx-auto mb-2 size-6 opacity-40"
+              />
               <p>{t("admin.trendReplay.empty")}</p>
             </div>
           )}
@@ -206,9 +283,9 @@ export function AdminTrendReplayPanel() {
                   key={item.id}
                   onClick={() => replay.setSelected(item.id)}
                   className={cn(
-                    "group w-full rounded-xl border p-3 text-left transition-all duration-150 relative overflow-hidden block",
+                    "group relative block w-full overflow-hidden rounded-xl border p-3 text-left transition-all duration-150",
                     isSelected
-                      ? "border-brand-orange/60 bg-brand-orange/5 ring-1 ring-brand-orange/20 shadow-xs"
+                      ? "border-brand-orange/60 bg-brand-orange/5 ring-brand-orange/20 shadow-xs ring-1"
                       : "border-border/60 bg-card/60 hover:border-border hover:bg-muted/40",
                   )}
                 >
@@ -216,36 +293,44 @@ export function AdminTrendReplayPanel() {
                   <div className="flex items-center justify-between gap-2">
                     <Badge
                       variant="outline"
-                      className={cn("text-[10px] px-1.5 py-0 font-medium", getStatusBadgeStyle(item.status))}
+                      className={cn(
+                        "px-1.5 py-0 text-[10px] font-medium",
+                        getStatusBadgeStyle(item.status),
+                      )}
                     >
                       {t(`admin.trendReplay.status.${item.status}`)}
                     </Badge>
-                    <span className="font-mono tabular-nums text-[11px] text-muted-foreground">
+                    <span className="text-muted-foreground font-mono text-[11px] tabular-nums">
                       {formatJobTime(item.created_at)}
                     </span>
                   </div>
 
-                  {/* Middle: ID / Prefix */}
+                  {/* Middle: S3 Bucket / Prefix + ID */}
                   <div className="mt-2 min-w-0">
-                    <p className="font-mono text-xs font-medium text-foreground truncate max-w-full">
-                      {item.prefix || item.id}
+                    <p className="text-foreground max-w-full truncate font-mono text-xs font-medium">
+                      {item.prefix
+                        ? `s3://${item.bucket}/${item.prefix.replace(/^\/+/, "")}`
+                        : `s3://${item.bucket}`}
                     </p>
-                    <p className="font-mono text-[10px] text-muted-foreground truncate max-w-full mt-0.5">
+                    <p className="text-muted-foreground mt-0.5 max-w-full truncate font-mono text-[10px]">
                       ID: {item.id}
                     </p>
                   </div>
 
                   {/* Bottom: Progress Bar & Days */}
-                  <div className="mt-2.5 pt-2 border-t border-border/40 flex items-center justify-between text-[11px] text-muted-foreground">
+                  <div className="border-border/40 text-muted-foreground mt-2.5 flex items-center justify-between border-t pt-2 text-[11px]">
                     <span className="font-medium">
-                      {item.completed_days} / {item.total_days} days
+                      {t("admin.trendReplay.progress", {
+                        completed: item.completed_days,
+                        total: item.total_days,
+                      })}
                     </span>
-                    <span className="font-mono text-[10px] tabular-nums font-semibold text-foreground">
+                    <span className="text-foreground font-mono text-[10px] font-semibold tabular-nums">
                       {percent}%
                     </span>
                   </div>
 
-                  <div className="mt-1.5 h-1 w-full bg-muted/70 rounded-full overflow-hidden">
+                  <div className="bg-muted/70 mt-1.5 h-1 w-full overflow-hidden rounded-full">
                     <div
                       className={cn(
                         "h-full rounded-full transition-all duration-300",
@@ -267,27 +352,36 @@ export function AdminTrendReplayPanel() {
         {/* Right Column: Replay Job Details */}
         <div className="min-w-0">
           {replay.selected && replay.detail.isPending && (
-            <div role="status" className="rounded-2xl border border-border/80 bg-card/95 p-8 text-center text-sm text-muted-foreground">
-              <RefreshCw aria-hidden="true" className="size-5 animate-spin mx-auto mb-2 text-brand-orange" />
+            <div
+              role="status"
+              className="border-border/80 bg-card/95 text-muted-foreground rounded-2xl border p-8 text-center text-sm"
+            >
+              <RefreshCw
+                aria-hidden="true"
+                className="text-brand-orange mx-auto mb-2 size-5 animate-spin"
+              />
               {t("admin.loading")}
             </div>
           )}
 
           {replay.detail.isError && (
-            <div role="alert" className="rounded-2xl border border-destructive/30 bg-destructive/10 p-5 text-sm text-destructive">
+            <div
+              role="alert"
+              className="border-destructive/30 bg-destructive/10 text-destructive rounded-2xl border p-5 text-sm"
+            >
               <p className="font-semibold">{t("admin.trendReplay.error")}</p>
             </div>
           )}
 
           {!replay.selected && !job && (
-            <div className="rounded-2xl border border-border/60 bg-card/40 p-12 text-center text-muted-foreground space-y-3">
-              <div className="flex size-12 items-center justify-center rounded-2xl bg-muted/60 mx-auto text-muted-foreground">
+            <div className="border-border/60 bg-card/40 text-muted-foreground space-y-3 rounded-2xl border p-12 text-center">
+              <div className="bg-muted/60 text-muted-foreground mx-auto flex size-12 items-center justify-center rounded-2xl">
                 <Sparkles aria-hidden="true" className="size-6" />
               </div>
-              <h3 className="text-sm font-semibold text-foreground">
+              <h3 className="text-foreground text-sm font-semibold">
                 {t("admin.trendReplay.details")}
               </h3>
-              <p className="text-xs max-w-md mx-auto leading-relaxed">
+              <p className="mx-auto max-w-md text-xs leading-relaxed">
                 {t("admin.trendReplay.description")}
               </p>
             </div>

@@ -130,10 +130,16 @@ export function OfferingEditor({
                   min={1}
                   step={1}
                   label={t("mediaPackage.offering.quantity")}
-                  value={item.quantity}
-                  onChange={(event) =>
-                    update(item.id, { quantity: Number(event.target.value) })
-                  }
+                  value={item.quantity === 0 ? "" : item.quantity}
+                  onChange={(event) => {
+                    // An empty draft must not write a visible 0 back into the
+                    // field. Number inputs can retain 003 even when state is 3.
+                    const raw = event.currentTarget.value;
+                    const normalized = raw.replace(/^0+(?=\d)/, "");
+                    if (normalized !== raw)
+                      event.currentTarget.value = normalized;
+                    update(item.id, { quantity: Number(normalized) });
+                  }}
                 />
                 <Input
                   required
