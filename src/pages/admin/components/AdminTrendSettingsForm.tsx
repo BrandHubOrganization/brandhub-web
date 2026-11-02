@@ -85,6 +85,16 @@ export function AdminTrendSettingsForm({
   return (
     <div className="space-y-4">
       <form noValidate onSubmit={submit}>
+        <Input
+          label={t("admin.crawler.timezone")}
+          value={draft.timezone ?? "UTC"}
+          onChange={(e) => setDraft({ ...draft, timezone: e.target.value })}
+          disabled={pending}
+          required
+        />
+        <p className="text-muted-foreground mb-3 text-xs">
+          {t("admin.crawler.scheduleNotice")}
+        </p>
         <fieldset disabled={pending} className="min-w-0 space-y-4">
           <legend className="sr-only">{t("admin.trendSettings.title")}</legend>
           <div className="grid items-center gap-4 md:grid-cols-2">

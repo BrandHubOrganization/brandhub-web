@@ -12,6 +12,8 @@ export type PipelineStage =
   | "FAILED";
 
 export interface TrendPipelineRun {
+  test?: boolean;
+  stopRequested?: boolean;
   platforms?: { platform: string; status: string; posts: number }[];
   id: string;
   pipelineRunId: string | null;
@@ -22,6 +24,8 @@ export interface TrendPipelineRun {
   totalPosts: number;
   batchTotal: number;
   batchFinished: number;
+  batchProcessing?: number;
+  batchFailed?: number;
   databaseSaved: boolean;
   liveUpdated: boolean;
   resolutionStatus: string;

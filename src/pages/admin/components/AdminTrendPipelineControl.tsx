@@ -14,7 +14,11 @@ import { useTrendPipeline } from "@/pages/admin/hooks/useTrendPipeline";
 import { AdminTrendPipelineRun } from "@/pages/admin/components/AdminTrendPipelineRun";
 import type { TrendPipelineRun } from "@/pages/admin/types/trendPipeline";
 
-export function AdminTrendPipelineControl() {
+export function AdminTrendPipelineControl({
+  managed = false,
+}: {
+  managed?: boolean;
+}) {
   const { t, i18n } = useTranslation();
   const [confirm, setConfirm] = useState<TrendPipelineRun | "start" | null>(
     null,
@@ -60,6 +64,14 @@ export function AdminTrendPipelineControl() {
           timeZone: "Asia/Ho_Chi_Minh",
         }).format(next)
       : null;
+
+  const hasActive = Boolean(active && !pipeline.runs.isError);
+  const hasInterrupted = !pipeline.runs.isError && interrupted.length > 0;
+
+  if (managed && !hasActive && !hasInterrupted) {
+    return null;
+  }
+
   return (
     <section
       aria-label={t("admin.trendPipeline.title")}
@@ -70,62 +82,66 @@ export function AdminTrendPipelineControl() {
           <h2 className="text-sm font-semibold">
             {t("admin.trendPipeline.title")}
           </h2>
-          <p role="status" className="text-muted-foreground text-xs">
-            {pipeline.status.isPending
-              ? t("admin.loading")
-              : pipeline.status.isError || pipeline.runs.isError
-                ? t("admin.trendPipeline.error")
-                : active
-                  ? t(`admin.trendPipeline.stage.${active.stage}`)
-                  : !data?.ready
-                    ? t(
-                        data?.readinessReason === "THREADS_SESSION_MISSING"
-                          ? "admin.trendSettings.threadsSessionMissing"
-                          : data?.readinessReason ===
-                              "TIKTOK_API_NOT_CONFIGURED"
-                            ? "admin.trendSettings.tiktokApiMissing"
+          {!managed && (
+            <p role="status" className="text-muted-foreground text-xs">
+              {pipeline.status.isPending
+                ? t("admin.loading")
+                : pipeline.status.isError || pipeline.runs.isError
+                  ? t("admin.trendPipeline.error")
+                  : active
+                    ? t(`admin.trendPipeline.stage.${active.stage}`)
+                    : !data?.ready
+                      ? t(
+                          data?.readinessReason === "THREADS_SESSION_MISSING"
+                            ? "admin.trendSettings.threadsSessionMissing"
                             : data?.readinessReason ===
-                                "PIPELINE_CONFIG_UNAVAILABLE"
-                              ? "admin.trendSettings.error"
-                              : data?.readinessReason === "SESSION_MISSING"
-                                ? "admin.trendPipeline.sessionMissing"
-                                : "admin.trendPipeline.notReady",
-                      )
-                    : t("admin.trendPipeline.ready")}
-          </p>
+                                "TIKTOK_API_NOT_CONFIGURED"
+                              ? "admin.trendSettings.tiktokApiMissing"
+                              : data?.readinessReason ===
+                                  "PIPELINE_CONFIG_UNAVAILABLE"
+                                ? "admin.trendSettings.error"
+                                : data?.readinessReason === "SESSION_MISSING"
+                                  ? "admin.trendPipeline.sessionMissing"
+                                  : "admin.trendPipeline.notReady",
+                        )
+                      : t("admin.trendPipeline.ready")}
+            </p>
+          )}
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={pipeline.refresh}
-            aria-label={t("admin.trends.refresh")}
-          >
-            <RefreshCw className="size-4" aria-hidden="true" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setHistory(!history)}
-            aria-expanded={history}
-            aria-controls={historyId}
-          >
-            <History className="size-4" aria-hidden="true" />
-            {t("admin.trendPipeline.history")}
-          </Button>
-          <Button
-            variant="orange"
-            size="sm"
-            disabled={disabled}
-            loading={pipeline.mutation.isPending}
-            onClick={() => setConfirm("start")}
-          >
-            <Play className="size-4" aria-hidden="true" />
-            {t("admin.trendPipeline.runNow")}
-          </Button>
-        </div>
+        {!managed && (
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={pipeline.refresh}
+              aria-label={t("admin.trends.refresh")}
+            >
+              <RefreshCw className="size-4" aria-hidden="true" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setHistory(!history)}
+              aria-expanded={history}
+              aria-controls={historyId}
+            >
+              <History className="size-4" aria-hidden="true" />
+              {t("admin.trendPipeline.history")}
+            </Button>
+            <Button
+              variant="orange"
+              size="sm"
+              disabled={disabled}
+              loading={pipeline.mutation.isPending}
+              onClick={() => setConfirm("start")}
+            >
+              <Play className="size-4" aria-hidden="true" />
+              {t("admin.trendPipeline.runNow")}
+            </Button>
+          </div>
+        )}
       </div>
-      {!active && data?.readinessReason === "THREADS_SESSION_MISSING" && (
+      {!managed && !active && data?.readinessReason === "THREADS_SESSION_MISSING" && (
         <p
           role="alert"
           className="border-border bg-muted/40 rounded-lg border p-3 text-sm"
@@ -133,7 +149,7 @@ export function AdminTrendPipelineControl() {
           {t("admin.trendSettings.threadsSessionRemedy")}
         </p>
       )}
-      {data && !pipeline.status.isError && (
+      {!managed && data && !pipeline.status.isError && (
         <div className="bg-muted/40 text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg px-3 py-2 text-xs">
           <span>
             {data.platforms
@@ -177,7 +193,7 @@ export function AdminTrendPipelineControl() {
             onRecover={setConfirm}
           />
         ))}
-      {history && (
+      {!managed && history && (
         <div id={historyId} className="space-y-2">
           <p className="text-muted-foreground text-xs">
             {t("admin.trendPipeline.historyDescription")}
