@@ -281,6 +281,30 @@
     "nextRun": "Lần chạy kế tiếp: {{date}}",
     "sources": "Nguồn đang bật",
     "noSources": "Chưa cấu hình API key cho scraper.",
+    "cookie": {
+      "title": "Cookie Facebook",
+      "status": {
+        "valid": "Hợp lệ ({{count}} cookie)",
+        "missing": "Chưa cấu hình cookie",
+        "expired": "Cookie đã hết hạn",
+        "invalid": "Cookie thiếu c_user hoặc xs"
+      },
+      "account": "Tài khoản (c_user): {{user}}",
+      "updatedAt": "Cập nhật: {{date}}",
+      "expiresAt": "Hết hạn: {{date}}",
+      "inputLabel": "Dán JSON cookie Facebook",
+      "placeholder": "[{\"name\": \"c_user\", \"value\": \"...\"}, {\"name\": \"xs\", \"value\": \"...\"}]",
+      "hint": "Xuất JSON từ Cookie-Editor hoặc Playwright storage_state (bắt buộc có c_user và xs).",
+      "save": "Cập nhật cookie",
+      "saving": "Đang lưu…",
+      "saved": "Đã cập nhật cookie Facebook.",
+      "saveError": "Không lưu được cookie. Kiểm tra định dạng JSON.",
+      "errors": {
+        "empty": "Vui lòng dán nội dung JSON cookie.",
+        "invalidJson": "Định dạng JSON không hợp lệ.",
+        "missingRequired": "JSON phải chứa đủ 2 cookie c_user và xs."
+      }
+    },
     "log": {
       "title": "Nhật ký crawl",
       "hint": "Mỗi lần crawl ghi lại các trang đã vào, số bài lấy được và lỗi. Giữ 20 lần gần nhất.",

@@ -10,6 +10,15 @@ const saved = {
   enabled: true,
   nextRunAt: "2026-10-05T01:00:00Z",
   sources: ["facebook-groups"],
+  fbCookie: {
+    configured: false,
+    valid: false,
+    status: "missing",
+    cookieCount: 0,
+    cUser: null,
+    expiresAt: null,
+    updatedAt: null,
+  },
 };
 
 const lastRun = {
@@ -41,7 +50,12 @@ const lastRun = {
 };
 const runState = { started: 0 };
 
-async function asAdmin(page: Page, patches: unknown[], reject = false) {
+async function asAdmin(
+  page: Page,
+  patches: unknown[],
+  reject = false,
+  cookieUpdates: unknown[] = [],
+) {
   await page.addInitScript(() => {
     localStorage.setItem("brandhub-lang", "en");
     localStorage.setItem(
@@ -78,6 +92,31 @@ async function asAdmin(page: Page, patches: unknown[], reject = false) {
           success: true,
           data: { ...saved, ...body, intervalMinutes: null },
         },
+      });
+      return;
+    }
+    if (path === "/api/v1/admin/ai/crawl-cookie") {
+      if (method === "PUT") {
+        const body = route.request().postDataJSON();
+        cookieUpdates.push(body);
+        await route.fulfill({
+          json: {
+            success: true,
+            data: {
+              configured: true,
+              valid: true,
+              status: "valid",
+              cookieCount: 2,
+              cUser: "1000***78",
+              expiresAt: "2027-01-01T00:00:00Z",
+              updatedAt: "2026-10-05T08:00:00Z",
+            },
+          },
+        });
+        return;
+      }
+      await route.fulfill({
+        json: { success: true, data: saved.fbCookie },
       });
       return;
     }
@@ -118,7 +157,7 @@ test("admin switches to a cron schedule, edits pages and saves", async ({
 
   await cron.fill("0 */6 * * *");
   await page
-    .locator("textarea")
+    .locator("form textarea")
     .fill("https://www.facebook.com/groups/a\nhttps://www.facebook.com/b");
   await page.getByRole("spinbutton").fill("300");
   await page.getByRole("button", { name: "Save settings" }).click();
@@ -139,20 +178,53 @@ test("an invalid page URL blocks saving and a server INVALID_SCHEDULE is shown",
   const patches: unknown[] = [];
   await asAdmin(page, patches, true);
   await page.goto("/admin?view=crawl");
-  await page.locator("textarea").fill("http://insecure.example");
+  await page.locator("form textarea").fill("http://insecure.example");
   await expect(
     page.getByText("Invalid URL: http://insecure.example"),
   ).toBeVisible();
   await page.getByRole("button", { name: "Save settings" }).click();
   expect(patches).toHaveLength(0);
 
-  await page.locator("textarea").fill("");
+  await page.locator("form textarea").fill("");
   await page.getByRole("button", { name: "Cron expression" }).click();
   await page
     .getByRole("textbox", { name: "Cron expression" })
     .fill("99 * * * *");
   await page.getByRole("button", { name: "Save settings" }).click();
   await expect(page.getByText("The cron expression is invalid.")).toBeVisible();
+});
+
+test("admin updates Facebook cookie JSON from the card above Crawler status", async ({
+  page,
+}) => {
+  const cookieUpdates: unknown[] = [];
+  await asAdmin(page, [], false, cookieUpdates);
+  await page.goto("/admin?view=crawl");
+
+  const cookieCard = page.getByRole("complementary", {
+    name: "Facebook cookie",
+  });
+  await expect(cookieCard).toBeVisible();
+  await expect(cookieCard).toContainText("No cookie configured");
+
+  await cookieCard
+    .locator("textarea")
+    .fill('[{"name":"c_user","value":"100012345678"}]');
+  await expect(
+    cookieCard.getByText("JSON must include both c_user and xs cookies."),
+  ).toBeVisible();
+  await cookieCard.getByRole("button", { name: "Update cookie" }).click();
+  expect(cookieUpdates).toHaveLength(0);
+
+  const validJson =
+    '[{"name":"c_user","value":"100012345678"},{"name":"xs","value":"secret"}]';
+  await cookieCard.locator("textarea").fill(validJson);
+  await cookieCard.getByRole("button", { name: "Update cookie" }).click();
+
+  await expect(page.getByText("Facebook cookie updated.")).toBeVisible();
+  await expect(cookieCard).toContainText("Valid (2 cookies)");
+  await expect(cookieCard).toContainText("Account (c_user): 1000***78");
+  expect(cookieUpdates).toEqual([{ cookieJson: validJson }]);
 });
 
 test("the crawl log lists visited pages, posts and errors, and the dev button starts a run", async ({
