@@ -18,7 +18,7 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/analytics": ["OWNER", "MANAGER"],
   "/reports": ["OWNER", "MANAGER"],
   "/invitations": ["OWNER", "MANAGER"],
-  "/requests": ["MANAGER", "CREATOR", "CLIENT"],
+  "/requests": ["OWNER", "MANAGER", "CLIENT"],
   "/task-approvals": ["MANAGER", "CREATOR", "CLIENT"],
   "/chat": ["MANAGER", "CREATOR", "CLIENT"],
   "/portal": ["MANAGER", "CLIENT"],

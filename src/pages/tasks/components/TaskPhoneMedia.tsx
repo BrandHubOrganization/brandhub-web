@@ -158,7 +158,9 @@ export function TaskPhoneMedia({
                           size="sm"
                           disabled={attach.isPending || postFull}
                           title={
-                            postFull ? t("tasks.phoneMedia.postFull") : undefined
+                            postFull
+                              ? t("tasks.phoneMedia.postFull")
+                              : undefined
                           }
                           onClick={() => attach.mutate(item)}
                         >
