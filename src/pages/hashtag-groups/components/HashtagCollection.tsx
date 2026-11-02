@@ -51,16 +51,15 @@ function CollectionContent({
   role: MemberRole | null;
 }) {
   const { t, i18n } = useTranslation();
-  const { filter, changeFilter, query, create, remove } = useHashtagCollection(
-    workspaceId,
-    userId,
-  );
+  const { filter, changeFilter, query, create, update, remove } =
+    useHashtagCollection(workspaceId, userId);
   const canRequire = role === "CLIENT";
   const campaigns = useHashtagCampaigns(workspaceId);
   const campaignNames = new Map(
     (campaigns.data ?? []).map((campaign) => [campaign.id, campaign.name]),
   );
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<HashtagEntry | null>(null);
   const [removing, setRemoving] = useState<HashtagEntry | null>(null);
   const [removalRefreshed, setRemovalRefreshed] = useState(false);
   const prefix = "hashtagGroups.collection.";
@@ -104,6 +103,10 @@ function CollectionContent({
           role={role}
           campaignNames={campaignNames}
           language={i18n.language}
+          onEdit={(entry) => {
+            update.reset();
+            setEditing(entry);
+          }}
           onRemove={(entry) => {
             remove.reset();
             setRemovalRefreshed(false);
@@ -130,6 +133,36 @@ function CollectionContent({
               await create.mutateAsync(payload);
               setOpen(false);
               toast.success(t(prefix + "added"));
+            } catch {
+              /* Mutation error is rendered in the dialog. */
+            }
+          }}
+        />
+      )}
+      {editing && (
+        <AddHashtagDialog
+          pending={update.isPending}
+          error={update.error}
+          workspaceId={workspaceId}
+          canRequire={canRequire}
+          initialTag={`#${editing.tag}`}
+          initialPurpose={editing.purpose}
+          initialCampaignId={editing.campaignId}
+          title={t(prefix + "editTitle", "Chỉnh sửa hashtag")}
+          onClose={() => setEditing(null)}
+          onSubmit={async (payload) => {
+            try {
+              await update.mutateAsync({
+                hashtagId: editing.id,
+                payload: {
+                  ...payload,
+                  version: editing.version,
+                },
+              });
+              setEditing(null);
+              toast.success(
+                t(prefix + "updated", "Đã cập nhật hashtag trong kho."),
+              );
             } catch {
               /* Mutation error is rendered in the dialog. */
             }

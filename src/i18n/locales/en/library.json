@@ -103,8 +103,15 @@
   "trash": {
     "title": "Trash",
     "active": "Library",
+    "drafts": "Drafts (AI)",
     "moveToTrash": "Move to trash",
     "restore": "Restore",
+    "promoteToLibrary": "Save to Main Library",
+    "promotedSuccess": "Moved “{{name}}” to the main library (kept permanently)",
+    "draftDaysRemaining_one": "Auto-deletes in {{count}} day",
+    "draftDaysRemaining_other": "Auto-deletes in {{count}} days",
+    "draftNotice": "AI-generated images and videos are automatically saved in Drafts for 30 days (on your connected Google Drive or 2GB free S3). Click \"Save to Main Library\" to keep permanently.",
+    "emptyDrafts": "No AI drafts from the last 30 days.",
     "undo": "Undo",
     "deleteTitle": "Move this material to trash?",
     "deleteDescription": "“{{name}}” will stay in trash for 30 days. Existing posts and tasks using it will not be affected.",
@@ -233,7 +240,10 @@
     "downloadAriaLabel": "Download material {{name}}",
     "supportTicketRequired": "Admin support operations require a valid Support Ticket.",
     "adminSupportReadOnly": "Admin accounts are restricted to read-only support mode and cannot modify materials.",
-    "supportTicketPrompt": "Enter Support Ticket ID (3-64 characters) to perform this support action:"
+    "supportTicketPrompt": "Enter Support Ticket ID (3-64 characters) to perform this support action:",
+    "aiDraftBadge": "AI Draft",
+    "storageDriveBadge": "Google Drive",
+    "storageS3Badge": "S3 (2GB Free)"
   },
   "drive": {
     "disconnect": "Disconnect",

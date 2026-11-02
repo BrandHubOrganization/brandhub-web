@@ -6,6 +6,10 @@ import { materialService } from "@/services/materialService";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import type { DownloadMaterialResponse, MaterialItem } from "@/types/material";
+import {
+  downloadMediaWithFormat,
+  type DownloadFormat,
+} from "@/utils/mediaDownloadHelper";
 
 const ERROR_TOAST_DURATION_MS = 5000;
 
@@ -110,12 +114,14 @@ export function useMaterialDownload() {
       controller: AbortController,
       requestedUser: string | undefined,
       supportTicket?: string,
+      format?: DownloadFormat,
     ) => {
       const result = await materialService.download(
         material.workspaceId,
         material.id,
         controller.signal,
         supportTicket,
+        format,
       );
       if (
         isStaleContext(
@@ -133,7 +139,16 @@ export function useMaterialDownload() {
         });
         return;
       }
-      triggerBrowserAttachmentDownload(result.downloadUrl);
+      if (format || result.downloadUrl.startsWith("data:")) {
+        await downloadMediaWithFormat({
+          url: result.downloadUrl,
+          filename: result.filename || material.name,
+          format: format || (material.mediaKind === "VIDEO" ? "mp4" : "png"),
+          mediaKind: material.mediaKind || "IMAGE",
+        });
+      } else {
+        triggerBrowserAttachmentDownload(result.downloadUrl);
+      }
       toast.success(
         t("library.repository.downloadStarted", {
           name: result.filename || material.name,
@@ -144,7 +159,7 @@ export function useMaterialDownload() {
   );
 
   const download = useCallback(
-    async (material: MaterialItem) => {
+    async (material: MaterialItem, format?: DownloadFormat) => {
       if (controllers.current.has(material.id)) return;
       let supportTicket: string | undefined;
       if (useAuthStore.getState().systemRole === "ADMIN") {
@@ -157,7 +172,13 @@ export function useMaterialDownload() {
       controllers.current.set(material.id, controller);
       setDownloadingIds((prev) => ({ ...prev, [material.id]: true }));
       try {
-        await executeDownload(material, controller, requestedUser, supportTicket);
+        await executeDownload(
+          material,
+          controller,
+          requestedUser,
+          supportTicket,
+          format,
+        );
       } catch (error: unknown) {
         if (!isCancel(error) && !controller.signal.aborted) {
           const key = resolveDownloadErrorKey(error);

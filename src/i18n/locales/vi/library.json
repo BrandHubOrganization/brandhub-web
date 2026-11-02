@@ -103,8 +103,15 @@
   "trash": {
     "title": "Thùng rác",
     "active": "Kho tài liệu",
+    "drafts": "Bản nháp (AI)",
     "moveToTrash": "Chuyển vào thùng rác",
     "restore": "Khôi phục",
+    "promoteToLibrary": "Lưu vào Kho chính",
+    "promotedSuccess": "Đã chuyển “{{name}}” sang Kho tài liệu chính (giữ vĩnh viễn)",
+    "draftDaysRemaining_one": "Tự xóa sau {{count}} ngày",
+    "draftDaysRemaining_other": "Tự xóa sau {{count}} ngày",
+    "draftNotice": "Ảnh/video do AI tạo ra được lưu tự động tại Bản nháp trong 30 ngày (trên Google Drive đã kết nối hoặc 2GB S3 miễn phí). Nhấn \"Lưu vào Kho chính\" để giữ vĩnh viễn.",
+    "emptyDrafts": "Chưa có bản nháp AI nào trong 30 ngày qua.",
     "undo": "Hoàn tác",
     "deleteTitle": "Chuyển tài liệu vào thùng rác?",
     "deleteDescription": "“{{name}}” sẽ được giữ trong thùng rác 30 ngày. Bài viết và công việc đang dùng tài liệu không bị ảnh hưởng.",
@@ -233,7 +240,10 @@
     "downloadAriaLabel": "Tải xuống tài liệu {{name}}",
     "supportTicketRequired": "Thao tác hỗ trợ của Quản trị viên yêu cầu mã Support Ticket.",
     "adminSupportReadOnly": "Tài khoản Quản trị viên chỉ có quyền xem/hỗ trợ, không được chỉnh sửa tài liệu.",
-    "supportTicketPrompt": "Nhập mã Support Ticket (3-64 ký tự) để thực hiện thao tác hỗ trợ này:"
+    "supportTicketPrompt": "Nhập mã Support Ticket (3-64 ký tự) để thực hiện thao tác hỗ trợ này:",
+    "aiDraftBadge": "Bản nháp AI",
+    "storageDriveBadge": "Google Drive",
+    "storageS3Badge": "S3 (2GB Free)"
   },
   "drive": {
     "disconnect": "Ngắt kết nối",

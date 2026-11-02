@@ -4,6 +4,7 @@ export interface TrendSettings {
   revision: number;
   enabled: boolean;
   cron: string;
+  timezone?: string;
   platforms: TrendPlatform[];
   threads: {
     maxTopics: number;

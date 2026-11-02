@@ -38,6 +38,10 @@ export interface AmbassadorImageResponse {
   inference_time_ms?: number;
   model_name?: string;
   panel_count?: number;
+  material_id?: string;
+  storage_provider?: "USER_GDRIVE" | "SYSTEM_S3";
+  draft?: boolean;
+  draft_expires_at?: string;
 }
 
 export interface CommercialImageResponse {
@@ -49,6 +53,10 @@ export interface CommercialImageResponse {
   width: number;
   height: number;
   seed_used: number;
+  material_id?: string;
+  storage_provider?: "USER_GDRIVE" | "SYSTEM_S3";
+  draft?: boolean;
+  draft_expires_at?: string;
 }
 
 export interface VideoGenerateResponse {
@@ -64,6 +72,10 @@ export interface VideoStatusResponse {
   s3_key?: string;
   error_code?: string;
   error_message?: string;
+  material_id?: string;
+  storage_provider?: "USER_GDRIVE" | "SYSTEM_S3";
+  draft?: boolean;
+  draft_expires_at?: string;
 }
 
 const AI_ASSET_BASE_URL =

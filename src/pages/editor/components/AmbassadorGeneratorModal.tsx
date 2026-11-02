@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { DownloadFormatDropdown } from "@/components/common/DownloadFormatDropdown";
+import { downloadMediaWithFormat } from "@/utils/mediaDownloadHelper";
 import { aiGenerationService } from "@/services/aiGenerationService";
 import { extractErrorMessage } from "@/utils/error";
 import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
@@ -213,6 +215,19 @@ export function AmbassadorGeneratorModal({
                   {description}
                 </p>
               </div>
+              <DownloadFormatDropdown
+                mediaKind="IMAGE"
+                label={t("library.repository.download")}
+                className="w-full"
+                onSelectFormat={(format) =>
+                  void downloadMediaWithFormat({
+                    url: characterImageUrl,
+                    filename: name.trim() || "ai-ambassador",
+                    format,
+                    mediaKind: "IMAGE",
+                  })
+                }
+              />
             </div>
           </div>
         )}

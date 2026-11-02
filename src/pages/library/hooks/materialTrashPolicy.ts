@@ -22,3 +22,12 @@ export function retentionDays(material: MaterialItem, now = Date.now()) {
     ),
   );
 }
+
+export function draftRetentionDays(material: MaterialItem, now = Date.now()) {
+  if (!material.draft) return 0;
+  const targetMs = material.purgeAfter
+    ? Date.parse(material.purgeAfter)
+    : Date.parse(material.createdAt) + 30 * 86_400_000;
+  if (!Number.isFinite(targetMs)) return 30;
+  return Math.max(0, Math.ceil((targetMs - now) / 86_400_000));
+}

@@ -19,13 +19,15 @@ import { MaterialPreview } from "@/pages/library/components/MaterialPreview";
 import { MaterialMetadataEditForm } from "@/pages/library/components/MaterialMetadataEditForm";
 import { MaterialDetailFacts } from "@/pages/library/components/MaterialDetailFacts";
 import { MaterialDetailActions } from "@/pages/library/components/MaterialDetailActions";
+import type { DownloadFormat } from "@/utils/mediaDownloadHelper";
 import type { MaterialItem } from "@/types/material";
 
 interface Props {
   material: MaterialItem | null;
   quotaExceeded?: boolean;
   downloading?: boolean;
-  onDownload?: (material: MaterialItem) => void;
+  onDownload?: (material: MaterialItem, format?: DownloadFormat) => void;
+  onPromote?: (material: MaterialItem) => void;
   onClose: () => void;
   onDelete: (material: MaterialItem) => void;
   onWatermarked: () => void;
@@ -46,6 +48,7 @@ function DetailView({
   quotaExceeded,
   downloading,
   onDownload,
+  onPromote,
   onClose,
   onDelete,
   onWatermarked,
@@ -176,7 +179,12 @@ function DetailView({
                       downloading={downloading}
                       editRef={editButton}
                       onDownload={
-                        onDownload ? () => onDownload(material) : undefined
+                        onDownload
+                          ? (format) => onDownload(material, format)
+                          : undefined
+                      }
+                      onPromote={
+                        onPromote ? () => onPromote(material) : undefined
                       }
                       onEdit={() => setEditing(true)}
                       onDelete={() => onDelete(material)}

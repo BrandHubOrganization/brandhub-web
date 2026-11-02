@@ -37,8 +37,8 @@ export function InvoiceDetailDrawer({
     >
       <SheetContent
         side="right"
-        data-testid="invoice-detail-drawer"
-        className="w-full gap-0 sm:max-w-none lg:w-1/3"
+        className="w-full gap-0 data-[state=open]:animate-none data-[state=open]:duration-0 sm:max-w-none lg:w-1/3"
+        onOpenAutoFocus={(event) => event.preventDefault()}
         onInteractOutside={(event) => event.preventDefault()}
         onCloseAutoFocus={(event) => {
           event.preventDefault();

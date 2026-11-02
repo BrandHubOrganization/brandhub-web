@@ -62,7 +62,6 @@ export function HashtagInputWithSuggestions({
   }
 
   function applyEntry(entry: HashtagEntry) {
-    if (entry.isRequired) return;
     appendTag(entry.tag);
     setInputValue("");
     changeFilter({ q: "" });
@@ -73,10 +72,6 @@ export function HashtagInputWithSuggestions({
       (entry) => normalizePostHashtag(entry.tag) === normalizePostHashtag(tag),
     );
     if (!existing) return false;
-    if (existing.isRequired) {
-      toast.info(t(prefix + "campaignTagUnavailable"));
-      return true;
-    }
     applyEntry(existing);
     return true;
   }
@@ -192,7 +187,7 @@ export function HashtagInputWithSuggestions({
                     normalizePostHashtag(item.tag) ===
                     normalizePostHashtag(newTag),
                 );
-                if (entry && !entry.isRequired) {
+                if (entry) {
                   applyEntry(entry);
                   setAddDialogOpen(false);
                   create.reset();

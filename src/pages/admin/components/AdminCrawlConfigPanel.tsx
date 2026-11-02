@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { CalendarClock, Info, Radar } from "lucide-react";
+import { CalendarClock, Cookie, Info, Radar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,12 +13,24 @@ import { errorCode } from "@/services/adminRevenueService";
 import { AdminCrawlRunLog, CrawlLiveCard } from "./AdminCrawlRunLog";
 import {
   adminCrawlConfigService,
+  validateFbCookieJson,
   type CrawlConfig,
+  type CrawlCookieStatus,
 } from "@/services/adminCrawlConfigService";
 
 const INTERVALS = [15, 30, 60, 180, 360, 720, 1440];
 const CRON = /^(\S+\s+){4}\S+$/;
 const PAGE = /^https:\/\/\S{1,292}$/;
+
+const DEFAULT_COOKIE_STATUS: CrawlCookieStatus = {
+  configured: false,
+  valid: false,
+  status: "missing",
+  cookieCount: 0,
+  cUser: null,
+  expiresAt: null,
+  updatedAt: null,
+};
 
 /** SCR-ADM FR 3.7.9: the only AI setting owned by ADMIN; applies from the next crawl run. */
 export function AdminCrawlConfigPanel() {
@@ -242,6 +254,7 @@ function CrawlForm({ saved }: { saved: CrawlConfig }) {
       </form>
 
       <div className="space-y-6">
+        <FbCookieCard initialCookie={saved.fbCookie} />
         <aside className="bg-card border-border space-y-4 rounded-xl border p-5 text-sm">
           <h2 className="flex items-center gap-2 font-semibold">
             <Radar className="text-brand-orange size-4" />
@@ -284,5 +297,145 @@ function CrawlForm({ saved }: { saved: CrawlConfig }) {
         <CrawlLiveCard />
       </div>
     </div>
+  );
+}
+
+function FbCookieCard({
+  initialCookie,
+}: {
+  initialCookie?: CrawlCookieStatus;
+}) {
+  const { t, i18n } = useTranslation();
+  const client = useQueryClient();
+  const [cookieJson, setCookieJson] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const cookieQuery = useQuery({
+    queryKey: ["admin-crawl-cookie"],
+    queryFn: adminCrawlConfigService.getCookie,
+    initialData: initialCookie,
+  });
+
+  const cookieStatus = cookieQuery.data ?? DEFAULT_COOKIE_STATUS;
+  const validationError = validateFbCookieJson(cookieJson);
+  const showValidationError =
+    (submitted || cookieJson.trim().length > 0) && validationError !== null;
+
+  const saveCookie = useMutation({
+    mutationFn: () => adminCrawlConfigService.updateCookie(cookieJson),
+    onSuccess: (data) => {
+      client.setQueryData(["admin-crawl-cookie"], data);
+      client.setQueryData<CrawlConfig | undefined>(
+        ["admin-crawl-config"],
+        (prev) => (prev ? { ...prev, fbCookie: data } : prev),
+      );
+      setCookieJson("");
+      setSubmitted(false);
+      toast.success(t("admin.crawl.cookie.saved"));
+    },
+  });
+
+  const formatDate = (iso: string | null) => {
+    if (!iso) return null;
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return null;
+    return new Intl.DateTimeFormat(i18n.language, {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "Asia/Ho_Chi_Minh",
+    }).format(d);
+  };
+
+  const updatedAtLabel = formatDate(cookieStatus.updatedAt);
+  const expiresAtLabel = formatDate(cookieStatus.expiresAt);
+  const dotClass =
+    cookieStatus.status === "valid"
+      ? "bg-emerald-500"
+      : cookieStatus.status === "expired" || cookieStatus.status === "invalid"
+        ? "bg-destructive"
+        : "bg-amber-500";
+
+  return (
+    <aside
+      aria-label={t("admin.crawl.cookie.title")}
+      className="bg-card border-border space-y-3 rounded-xl border p-5 text-sm"
+    >
+      <h2 className="flex items-center gap-2 font-semibold">
+        <Cookie className="text-brand-orange size-4" />
+        {t("admin.crawl.cookie.title")}
+      </h2>
+
+      <div className="space-y-1">
+        <p className="flex items-center gap-2">
+          <span className={cn("size-2 rounded-full", dotClass)} />
+          <span>
+            {t(`admin.crawl.cookie.status.${cookieStatus.status}`, {
+              count: cookieStatus.cookieCount,
+            })}
+          </span>
+        </p>
+        {cookieStatus.cUser && (
+          <p className="text-muted-foreground font-mono text-xs">
+            {t("admin.crawl.cookie.account", { user: cookieStatus.cUser })}
+          </p>
+        )}
+        {updatedAtLabel && (
+          <p className="text-muted-foreground text-xs">
+            {t("admin.crawl.cookie.updatedAt", { date: updatedAtLabel })}
+          </p>
+        )}
+        {expiresAtLabel && (
+          <p className="text-muted-foreground text-xs">
+            {t("admin.crawl.cookie.expiresAt", { date: expiresAtLabel })}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2 pt-1">
+        <label className="block space-y-1.5 text-xs font-medium">
+          <span>{t("admin.crawl.cookie.inputLabel")}</span>
+          <Textarea
+            value={cookieJson}
+            rows={4}
+            placeholder={t("admin.crawl.cookie.placeholder")}
+            className="font-mono text-xs"
+            onChange={(e) => setCookieJson(e.target.value)}
+          />
+          <span
+            className={cn(
+              "block text-xs font-normal",
+              showValidationError
+                ? "text-destructive"
+                : "text-muted-foreground",
+            )}
+          >
+            {showValidationError && validationError
+              ? t(`admin.crawl.cookie.errors.${validationError}`)
+              : t("admin.crawl.cookie.hint")}
+          </span>
+        </label>
+
+        {saveCookie.isError && (
+          <p role="alert" className="text-destructive text-xs">
+            {t("admin.crawl.cookie.saveError")}
+          </p>
+        )}
+
+        <Button
+          type="button"
+          size="sm"
+          className="bg-brand-orange hover:bg-brand-orange/90 w-full text-white"
+          disabled={saveCookie.isPending}
+          onClick={() => {
+            setSubmitted(true);
+            if (!validationError) saveCookie.mutate();
+          }}
+        >
+          {saveCookie.isPending
+            ? t("admin.crawl.cookie.saving")
+            : t("admin.crawl.cookie.save")}
+        </Button>
+      </div>
+    </aside>
   );
 }

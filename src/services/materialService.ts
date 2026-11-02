@@ -66,15 +66,30 @@ export const materialService = {
     materialId: string,
     signal?: AbortSignal,
     supportTicket?: string,
+    format?: string,
   ): Promise<DownloadMaterialResponse> {
     const response = await api.post<ApiResponse<DownloadMaterialResponse>>(
       `/api/v1/workspaces/${workspaceId}/materials/${materialId}/download`,
       {},
       {
+        params: format ? { format } : undefined,
         headers: supportTicket
           ? { "X-Support-Ticket": supportTicket }
           : undefined,
         signal,
+      },
+    );
+    return response.data.data;
+  },
+  async promoteDraft(
+    workspaceId: string,
+    material: MaterialItem,
+  ): Promise<MaterialItem> {
+    const response = await api.post<ApiResponse<MaterialItem>>(
+      `/api/v1/workspaces/${workspaceId}/materials/${material.id}/promote`,
+      {},
+      {
+        params: { expectedVersion: material.version },
       },
     );
     return response.data.data;
