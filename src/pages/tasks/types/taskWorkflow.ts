@@ -29,6 +29,8 @@ export interface TaskWorkflow {
   schemaReady: boolean;
   lockReason: string | null;
   meetingUrl?: string | null;
+  meetingExpiresAt?: string | null;
+  isMeetingExpired?: boolean;
   allowedActions: {
     canEditDetail: boolean;
     canAssign: boolean;
@@ -69,4 +71,7 @@ export interface MeetingLinkResponse {
   meetingUrl: string;
   taskId: string;
   generatedAt: string;
+  meetingExpiresAt?: string | null;
+  expiresAt?: string | null;
+  isMeetingExpired?: boolean;
 }

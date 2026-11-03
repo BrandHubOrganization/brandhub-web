@@ -82,6 +82,9 @@ const TermsOfServicePage = lazyNamed(
   () => import("@/pages/legal/TermsOfServicePage"),
   "TermsOfServicePage",
 );
+const PublicSurveyPage = lazy(() =>
+  import("@/pages/public-survey"),
+);
 
 // ── Core Dashboard & Work ──
 const DashboardPage = lazyNamed(
@@ -164,6 +167,7 @@ const WorkspaceMembersPage = lazyNamed(
 );
 const TaskListPage = lazyNamed(() => import("@/pages/tasks"), "TaskListPage");
 const TaskDetailPage = lazy(() => import("@/pages/tasks/detail"));
+const SurveyEditorPage = lazy(() => import("@/pages/tasks/survey-editor"));
 const TaskApprovalsPage = lazy(() => import("@/pages/task-approvals"));
 const AgencyCreditPage = lazy(() => import("@/pages/credit"));
 const CreditPricesPage = lazy(() => import("@/pages/credit/prices"));
@@ -347,6 +351,10 @@ export function AppRoutes() {
         <Route path="/activate-account" element={<ActivateAccountPage />} />
         <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
         <Route path="/mail/unsubscribe" element={<MailUnsubscribePage />} />
+        <Route
+          path="/public/surveys/:token"
+          element={<PublicSurveyPage />}
+        />
 
         {/* Public Help, Legal & FAQ Routes — accessible without authentication */}
         <Route element={<PublicHelpLayout />}>
@@ -429,6 +437,10 @@ export function AppRoutes() {
             <Route
               path="/workspaces/:id/tasks/:taskId/detail"
               element={<TaskDetailPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/survey"
+              element={<SurveyEditorPage />}
             />
             <Route path="/workspaces/:id/editor" element={<EditorPage />} />
             <Route
