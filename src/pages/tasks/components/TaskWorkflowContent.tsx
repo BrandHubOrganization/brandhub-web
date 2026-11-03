@@ -17,7 +17,8 @@ import { useTaskPost } from "@/pages/tasks/hooks/useTaskPost";
 import { TaskInlineDetails } from "@/pages/tasks/components/TaskInlineDetails";
 import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
 import { TaskComments } from "@/pages/tasks/components/comments/TaskComments";
-import { TaskMeetingCard } from "@/pages/tasks/components/TaskMeetingCard";
+import { TaskMeetingCard } from "@/pages/tasks/components/meeting";
+import { SurveyTaskSection } from "@/pages/tasks/components/survey/SurveyTaskSection";
 import { TaskPhoneMedia } from "@/pages/tasks/components/TaskPhoneMedia";
 import {
   TaskWorkflowProvider,
@@ -230,7 +231,21 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated }: Props) {
               workspaceId={task.workspaceId}
               taskId={task.id}
               meetingUrl={task.meetingUrl}
+              meetingExpiresAt={task.meetingExpiresAt}
+              isMeetingExpired={task.isMeetingExpired}
               onMeetingUrlGenerated={() => {
+                onUpdated?.();
+              }}
+            />
+          )}
+
+          {/* Workshop Survey Form Builder & Analysis Hub */}
+          {task.type === "SURVEY" && (
+            <SurveyTaskSection
+              workspaceId={task.workspaceId}
+              taskId={task.id}
+              taskTitle={task.name}
+              onUpdated={() => {
                 onUpdated?.();
               }}
             />
