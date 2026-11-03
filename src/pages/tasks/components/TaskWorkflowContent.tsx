@@ -49,6 +49,9 @@ function TaskPostScheduleNotice({
 }) {
   const { t, i18n } = useTranslation();
   const { data: taskPost, isLoading } = useTaskPost(workspaceId, taskId);
+  const isOwner = useWorkspaceStore(
+    (s) => (s.currentMemberRole || s.currentWorkspace?.myRole) === "OWNER",
+  );
   const post = taskPost?.post;
   const scheduledAt = post?.scheduledAt || publishDate;
 
@@ -123,7 +126,8 @@ function TaskPostScheduleNotice({
     <div className="bg-muted/20 border-border/70 text-muted-foreground flex items-center gap-2.5 rounded-lg border border-dashed p-2.5 text-xs">
       <Clock className="text-muted-foreground size-4 shrink-0" />
       <span>
-        {t("tasks.notScheduled")} &mdash; {t("tasks.scheduleInEditorHint")}
+        {t("tasks.notScheduled")}
+        {!isOwner && <> &mdash; {t("tasks.scheduleInEditorHint")}</>}
       </span>
     </div>
   );
