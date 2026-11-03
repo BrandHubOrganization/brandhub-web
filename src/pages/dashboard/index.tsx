@@ -162,25 +162,27 @@ export function DashboardPage() {
             <LogOut className="size-3.5" />
             {t("dashboard.page.logout")}
           </Button>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => {
-              if (currentWorkspace) {
-                navigate(`/workspaces/${currentWorkspace.id}/editor`);
-              } else if (workspaces.length > 0) {
-                navigate(`/workspaces/${workspaces[0].id}/editor`);
-              } else if (agencies.length > 0) {
-                navigate(`/workspaces/create?agencyId=${agencies[0].id}`);
-              } else {
-                navigate("/agency/create");
-              }
-            }}
-            className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs font-medium text-white"
-          >
-            <Plus className="size-3.5" />
-            {t("dashboard.page.createContent")}
-          </Button>
+          {memberRole !== "OWNER" && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => {
+                if (currentWorkspace) {
+                  navigate(`/workspaces/${currentWorkspace.id}/editor`);
+                } else if (workspaces.length > 0) {
+                  navigate(`/workspaces/${workspaces[0].id}/editor`);
+                } else if (agencies.length > 0) {
+                  navigate(`/workspaces/create?agencyId=${agencies[0].id}`);
+                } else {
+                  navigate("/agency/create");
+                }
+              }}
+              className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs font-medium text-white"
+            >
+              <Plus className="size-3.5" />
+              {t("dashboard.page.createContent")}
+            </Button>
+          )}
         </div>
       }
     >

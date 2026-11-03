@@ -311,20 +311,22 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated }: Props) {
               )}
 
               <p className="text-muted-foreground text-xs leading-relaxed">
-                {isOtherCreator
-                  ? (task.status as string) === "TODO" ||
-                    (task.status as string) === "BACKLOG"
-                    ? `Bài viết đang ở trạng thái cần làm. Đang chờ người phụ trách (${task.assigneeName || "chưa phân công"}) bắt đầu viết bài.`
-                    : "Bạn đang xem bài viết của người phụ trách khác. Chỉ người được giao hoặc Quản lý mới có quyền chỉnh sửa."
-                  : isTaskFinished
-                    ? isPostPublished
-                      ? "Bài viết đã hoàn thành phê duyệt và đã được đăng tải tự động lên các kênh mạng xã hội."
-                      : "Bài viết đã hoàn thành phê duyệt. Hệ thống sẽ tự động xuất bản lên các kênh mạng xã hội theo đúng lịch đăng đã lên."
-                    : "Soạn thảo nội dung và chuẩn bị hình ảnh bài viết. Lịch xuất bản do Quản lý thiết lập tại Chi tiết Task sẽ tự động áp dụng khi bài viết được duyệt."}
+                {role === "OWNER"
+                  ? "Owner theo dõi tiến độ tại đây. Người được giao và Quản lý soạn bài trong Editor."
+                  : isOtherCreator
+                    ? (task.status as string) === "TODO" ||
+                      (task.status as string) === "BACKLOG"
+                      ? `Bài viết đang ở trạng thái cần làm. Đang chờ người phụ trách (${task.assigneeName || "chưa phân công"}) bắt đầu viết bài.`
+                      : "Bạn đang xem bài viết của người phụ trách khác. Chỉ người được giao hoặc Quản lý mới có quyền chỉnh sửa."
+                    : isTaskFinished
+                      ? isPostPublished
+                        ? "Bài viết đã hoàn thành phê duyệt và đã được đăng tải tự động lên các kênh mạng xã hội."
+                        : "Bài viết đã hoàn thành phê duyệt. Hệ thống sẽ tự động xuất bản lên các kênh mạng xã hội theo đúng lịch đăng đã lên."
+                      : "Soạn thảo nội dung và chuẩn bị hình ảnh bài viết. Lịch xuất bản do Quản lý thiết lập tại Chi tiết Task sẽ tự động áp dụng khi bài viết được duyệt."}
               </p>
 
               <div className="flex flex-wrap items-center gap-2 pt-1">
-                {isOtherCreator ? (
+                {role === "OWNER" ? null : isOtherCreator ? (
                   !(
                     (task.status as string) === "TODO" ||
                     (task.status as string) === "BACKLOG"
@@ -428,7 +430,9 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated }: Props) {
           )}
 
           {/* Comments Section */}
-          <TaskComments workspaceId={workspaceId} taskId={taskId} />
+          {role !== "OWNER" && (
+            <TaskComments workspaceId={workspaceId} taskId={taskId} />
+          )}
         </>
       )}
     </div>
