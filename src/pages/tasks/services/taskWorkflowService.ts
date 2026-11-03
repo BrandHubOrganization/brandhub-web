@@ -27,7 +27,22 @@ function workflow(body: unknown, workspaceId: string, taskId: string) {
     throw new Error("INVALID_TASK_WORKFLOW");
   const metadata = (result as unknown as { typeMetadata?: Record<string, unknown> })?.typeMetadata;
   const meetingUrl = result.meetingUrl ?? (typeof metadata?.meetingUrl === "string" ? metadata.meetingUrl : null);
-  return { ...result, status: canonicalTaskStatus(result.status), meetingUrl };
+  const meetingExpiresAt =
+    result.meetingExpiresAt ??
+    (typeof metadata?.meetingExpiresAt === "string" ? metadata.meetingExpiresAt : null);
+  const isMeetingExpired =
+    typeof result.isMeetingExpired === "boolean"
+      ? result.isMeetingExpired
+      : typeof metadata?.isMeetingExpired === "boolean"
+        ? metadata.isMeetingExpired
+        : undefined;
+  return {
+    ...result,
+    status: canonicalTaskStatus(result.status),
+    meetingUrl,
+    meetingExpiresAt,
+    isMeetingExpired,
+  };
 }
 export const taskWorkflowService = {
   async field(
