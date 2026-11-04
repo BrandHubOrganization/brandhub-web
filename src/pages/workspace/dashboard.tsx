@@ -138,7 +138,7 @@ export function WorkspaceDashboardPage() {
           </div>
 
           {/* ── Visual Analytics Section ── */}
-          <WorkspaceVisualAnalytics />
+          <WorkspaceVisualAnalytics workspaceId={workspaceId} />
         </>
       )}
 
