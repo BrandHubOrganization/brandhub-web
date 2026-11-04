@@ -101,7 +101,6 @@ export function Navbar() {
   const toggleLanguage = () => {
     const next = i18n.language === "en" ? "vi" : "en";
     i18n.changeLanguage(next);
-    localStorage.setItem("brandhub-lang", next);
   };
 
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");

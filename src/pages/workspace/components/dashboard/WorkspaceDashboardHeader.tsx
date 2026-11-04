@@ -3,8 +3,6 @@ import { useTranslation } from "react-i18next";
 import {
   Building2,
   Users,
-  MessageCircleMore,
-  Settings,
   FolderKanban,
   LogOut,
   BadgeCheck,
@@ -21,7 +19,6 @@ interface WorkspaceDashboardHeaderProps {
   isPackageApproved: boolean;
   isPackageNegotiating: boolean;
   packageStatus?: string;
-  isManagerOrOwner: boolean;
   onOpenLeaveDialog: () => void;
 }
 
@@ -32,7 +29,6 @@ export function WorkspaceDashboardHeader({
   isPackageApproved,
   isPackageNegotiating,
   packageStatus,
-  isManagerOrOwner,
   onOpenLeaveDialog,
 }: WorkspaceDashboardHeaderProps) {
   const { t } = useTranslation();
@@ -76,7 +72,7 @@ export function WorkspaceDashboardHeader({
                   variant="outline"
                   className="border-brand-orange/30 bg-brand-orange-soft/50 text-brand-orange text-2xs font-semibold"
                 >
-                  {t("workspace.dashboard.roleInWorkspace")}: {currentMemberRole}
+                  {t("workspace.dashboard.roleInWorkspace")}: {t(`workspace.roles.${currentMemberRole}`, currentMemberRole ?? "")}
                 </Badge>
               )}
               {isPackageApproved ? (
@@ -87,7 +83,7 @@ export function WorkspaceDashboardHeader({
               ) : isPackageNegotiating ? (
                 <Badge className="text-2xs border-amber-500/30 bg-amber-500/15 text-amber-600">
                   <Clock className="mr-1 size-3" />
-                  {packageStatus}
+                  {t(`mediaPackage.status.${packageStatus}`, packageStatus ?? "")}
                 </Badge>
               ) : (
                 <Badge variant="secondary" className="text-2xs">
@@ -111,7 +107,7 @@ export function WorkspaceDashboardHeader({
               {workspace.companySize && (
                 <span className="flex items-center gap-1">
                   <Users className="size-3.5" />
-                  {workspace.companySize}
+                  {t(`agency.companySize.${workspace.companySize}`, workspace.companySize)}
                 </span>
               )}
             </div>
@@ -120,28 +116,6 @@ export function WorkspaceDashboardHeader({
 
         {/* Quick Header Actions */}
         <div className="flex flex-wrap items-center gap-2 sm:self-center">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5"
-            onClick={() => navigate(`/workspaces/${workspaceId}/chat`)}
-          >
-            <MessageCircleMore className="size-4" />
-            <span>{t("workspace.dashboard.chatWorkspace")}</span>
-          </Button>
-          {isManagerOrOwner && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-1.5"
-              onClick={() => navigate(`/workspaces/${workspaceId}/settings`)}
-            >
-              <Settings className="size-4" />
-              <span className="hidden sm:inline">
-                {t("workspace.dashboard.workspaceSettings")}
-              </span>
-            </Button>
-          )}
           <Button
             variant="orange"
             size="sm"

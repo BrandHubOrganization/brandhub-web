@@ -22,17 +22,13 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
   const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const systemRole = useAuthStore((s) => s.systemRole);
   const role = currentMemberRole || currentWorkspace?.myRole;
-  const canManage =
-    role === "MANAGER" ||
-    role === "OWNER" ||
-    systemRole === "ADMIN";
 
-  // Cho phép chỉnh sửa nếu không phải CLIENT thuần và task chưa kết thúc
+  // Backend chỉ cho MANAGER phân công (TaskWorkflowPolicy.requireManager).
   const canEdit =
-    (canManage ||
+    (role === "MANAGER" ||
+      systemRole === "ADMIN" ||
       Boolean(task.allowedActions.canAssign) ||
-      Boolean(task.allowedActions.canEditDetail) ||
-      role !== "CLIENT") &&
+      Boolean(task.allowedActions.canEditDetail)) &&
     task.status !== "FINISHED" &&
     task.status !== "CANCELLED";
 

@@ -19,6 +19,7 @@ import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
 import { TaskComments } from "@/pages/tasks/components/comments/TaskComments";
 import { TaskMeetingCard } from "@/pages/tasks/components/meeting";
 import { SurveyTaskSection } from "@/pages/tasks/components/survey/SurveyTaskSection";
+import { TaskPhoneMedia } from "@/pages/tasks/components/TaskPhoneMedia";
 import {
   TaskWorkflowProvider,
   useOptionalTaskEditContext,
@@ -40,12 +41,14 @@ function TaskPostScheduleNotice({
   taskId,
   timezone,
   publishDate,
+  canOpenEditor,
 }: {
   workspaceId: string;
   taskId: string;
   timezone: string;
   isTaskFinished?: boolean;
   publishDate?: string | null;
+  canOpenEditor: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const { data: taskPost, isLoading } = useTaskPost(workspaceId, taskId);
@@ -123,7 +126,8 @@ function TaskPostScheduleNotice({
     <div className="bg-muted/20 border-border/70 text-muted-foreground flex items-center gap-2.5 rounded-lg border border-dashed p-2.5 text-xs">
       <Clock className="text-muted-foreground size-4 shrink-0" />
       <span>
-        {t("tasks.notScheduled")} &mdash; {t("tasks.scheduleInEditorHint")}
+        {t("tasks.notScheduled")}
+        {canOpenEditor && <> &mdash; {t("tasks.scheduleInEditorHint")}</>}
       </span>
     </div>
   );
@@ -289,48 +293,61 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated }: Props) {
                 timezone={task.dates.timezone || "UTC"}
                 isTaskFinished={isTaskFinished}
                 publishDate={task.publishDate}
+                canOpenEditor={
+                  role === "MANAGER" || (role === "CREATOR" && isAssignee)
+                }
               />
 
               {post?.status === "FAILED" && (
-                <div className="bg-destructive/10 border-destructive/25 flex items-start gap-3 rounded-lg border p-3 text-xs text-destructive">
-                  <AlertCircle className="size-4 shrink-0 mt-0.5 text-destructive" />
+                <div className="bg-destructive/10 border-destructive/25 text-destructive flex items-start gap-3 rounded-lg border p-3 text-xs">
+                  <AlertCircle className="text-destructive mt-0.5 size-4 shrink-0" />
                   <div className="min-w-0 space-y-1">
-                    <div className="font-semibold text-destructive">Xuất bản bài viết thất bại</div>
+                    <div className="text-destructive font-semibold">
+                      Xuất bản bài viết thất bại
+                    </div>
                     <p className="text-muted-foreground text-xs leading-relaxed">
-                      {post.errorMessage || "Hệ thống đã thử lại 3 lần nhưng không thể đăng bài lên mạng xã hội."}
+                      {post.errorMessage ||
+                        "Hệ thống đã thử lại 3 lần nhưng không thể đăng bài lên mạng xã hội."}
                     </p>
                     <p className="text-muted-foreground text-2xs">
-                      Vui lòng mở bài viết trong Editor để kiểm tra tài khoản mạng xã hội hoặc đổi lại lịch đăng bài để thử lại.
+                      Vui lòng mở bài viết trong Editor để kiểm tra tài khoản
+                      mạng xã hội hoặc đổi lại lịch đăng bài để thử lại.
                     </p>
                   </div>
                 </div>
               )}
 
               {post?.status === "IN_PROGRESS" && post?.errorMessage && (
-                <div className="bg-blue-500/10 border-blue-500/20 flex items-start gap-3 rounded-lg border p-3 text-xs text-blue-600 dark:text-blue-400">
-                  <RefreshCw className="size-4 shrink-0 mt-0.5 animate-spin" />
+                <div className="flex items-start gap-3 rounded-lg border border-blue-500/20 bg-blue-500/10 p-3 text-xs text-blue-600 dark:text-blue-400">
+                  <RefreshCw className="mt-0.5 size-4 shrink-0 animate-spin" />
                   <div className="min-w-0">
-                    <div className="font-semibold">Đang trong tiến trình xuất bản</div>
-                    <p className="text-muted-foreground text-xs mt-0.5">{post.errorMessage}</p>
+                    <div className="font-semibold">
+                      Đang trong tiến trình xuất bản
+                    </div>
+                    <p className="text-muted-foreground mt-0.5 text-xs">
+                      {post.errorMessage}
+                    </p>
                   </div>
                 </div>
               )}
 
               <p className="text-muted-foreground text-xs leading-relaxed">
-                {isOtherCreator
-                  ? (task.status as string) === "TODO" ||
-                    (task.status as string) === "BACKLOG"
-                    ? `Bài viết đang ở trạng thái cần làm. Đang chờ người phụ trách (${task.assigneeName || "chưa phân công"}) bắt đầu viết bài.`
-                    : "Bạn đang xem bài viết của người phụ trách khác. Chỉ người được giao hoặc Quản lý mới có quyền chỉnh sửa."
-                  : isTaskFinished
-                    ? isPostPublished
-                      ? "Bài viết đã hoàn thành phê duyệt và đã được đăng tải tự động lên các kênh mạng xã hội."
-                      : "Bài viết đã hoàn thành phê duyệt. Hệ thống sẽ tự động xuất bản lên các kênh mạng xã hội theo đúng lịch đăng đã lên."
-                    : "Soạn thảo nội dung và chuẩn bị hình ảnh bài viết. Lịch xuất bản do Quản lý thiết lập tại Chi tiết Task sẽ tự động áp dụng khi bài viết được duyệt."}
+                {role === "OWNER"
+                  ? "Owner theo dõi tiến độ tại đây. Người được giao và Quản lý soạn bài trong Editor."
+                  : isOtherCreator
+                    ? (task.status as string) === "TODO" ||
+                      (task.status as string) === "BACKLOG"
+                      ? `Bài viết đang ở trạng thái cần làm. Đang chờ người phụ trách (${task.assigneeName || "chưa phân công"}) bắt đầu viết bài.`
+                      : "Bạn đang xem bài viết của người phụ trách khác. Chỉ người được giao hoặc Quản lý mới có quyền chỉnh sửa."
+                    : isTaskFinished
+                      ? isPostPublished
+                        ? "Bài viết đã hoàn thành phê duyệt và đã được đăng tải tự động lên các kênh mạng xã hội."
+                        : "Bài viết đã hoàn thành phê duyệt. Hệ thống sẽ tự động xuất bản lên các kênh mạng xã hội theo đúng lịch đăng đã lên."
+                      : "Soạn thảo nội dung và chuẩn bị hình ảnh bài viết. Lịch xuất bản do Quản lý thiết lập tại Chi tiết Task sẽ tự động áp dụng khi bài viết được duyệt."}
               </p>
 
               <div className="flex flex-wrap items-center gap-2 pt-1">
-                {isOtherCreator ? (
+                {role === "OWNER" ? null : isOtherCreator ? (
                   !(
                     (task.status as string) === "TODO" ||
                     (task.status as string) === "BACKLOG"
@@ -424,8 +441,19 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated }: Props) {
             </div>
           )}
 
+          {role !== "CLIENT" && (
+            <TaskPhoneMedia
+              workspaceId={workspaceId}
+              taskId={taskId}
+              isPostTask={task.type === "POST"}
+              isAssignee={isAssignee}
+            />
+          )}
+
           {/* Comments Section */}
-          <TaskComments workspaceId={workspaceId} taskId={taskId} />
+          {role !== "OWNER" && (
+            <TaskComments workspaceId={workspaceId} taskId={taskId} />
+          )}
         </>
       )}
     </div>

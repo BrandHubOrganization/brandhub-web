@@ -166,4 +166,12 @@ i18n.use(initReactI18next).init({
   interpolation: { escapeValue: false },
 });
 
+// Every language switch goes through here, so each screen need not save it itself.
+const applyLanguage = (lng: string) => {
+  localStorage.setItem("brandhub-lang", lng);
+  document.documentElement.lang = lng;
+};
+applyLanguage(i18n.language);
+i18n.on("languageChanged", applyLanguage);
+
 export default i18n;

@@ -1,7 +1,7 @@
 import { AiCreditBalance } from "@/components/billing/AiCreditBalance";
 import * as React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
+import { ChevronDown, ChevronLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import type { MemberRole, Workspace } from "@/types/workspace";
@@ -129,6 +129,16 @@ export function Sidebar({
       ? allWorkspaces.find((w) => w.id === hoveredItem.id)
       : null;
 
+  const [closedSections, setClosedSections] = React.useState<Set<string>>(
+    new Set(),
+  );
+  const toggleSection = (key: string) =>
+    setClosedSections((closed) => {
+      const next = new Set(closed);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
+
   const isPackageHardGated =
     (role === "CLIENT" || role === "MANAGER") &&
     !!activeWorkspace &&
@@ -152,7 +162,7 @@ export function Sidebar({
       ? role === "MANAGER"
         ? ["overview", "workspaceSettings"]
         : ["overview"]
-      : ["overview", "create", "workspaceSettings"];
+      : ["overview", "create", "content", "publish", "workspaceSettings"];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
@@ -369,14 +379,29 @@ export function Sidebar({
         {filteredSections.map((section, idx) => (
           <div key={section.key} className="space-y-1">
             {!collapsed ? (
-              <span className="text-muted-foreground text-3xs mb-1 block px-2.5 font-bold tracking-wider uppercase">
+              <button
+                type="button"
+                onClick={() => toggleSection(section.key)}
+                aria-expanded={!closedSections.has(section.key)}
+                className="text-muted-foreground text-3xs mb-1 flex w-full cursor-pointer items-center justify-between rounded px-2.5 font-bold tracking-wider uppercase hover:text-white"
+              >
                 {t(section.titleKey)}
-              </span>
+                <ChevronDown
+                  className={cn(
+                    "size-3 transition-transform",
+                    closedSections.has(section.key) && "-rotate-90",
+                  )}
+                  aria-hidden="true"
+                />
+              </button>
             ) : (
               idx > 0 && <div className="bg-border mx-1 my-2 h-px opacity-20" />
             )}
 
-            <div className="space-y-0.5">
+            <div
+              className="space-y-0.5"
+              hidden={!collapsed && closedSections.has(section.key)}
+            >
               {section.items.map(({ to, icon: Icon, labelKey, children }) => {
                 return (
                   <div key={to}>

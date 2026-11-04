@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   RefreshCw,
   Plus,
-  KeyRound,
-  LogOut,
   Building2,
   FolderOpen,
   Mail,
@@ -50,7 +48,6 @@ export function DashboardPage() {
     loadAllData,
     fetchAnalytics,
     fetchActivities,
-    handleLogout,
   } = useDashboardData();
 
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
@@ -60,6 +57,8 @@ export function DashboardPage() {
 
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  // ROUTE_ACCESS chặn Owner khỏi Editor, nút tạo nội dung phải trỏ tới workspace vào được.
+  const writableWorkspace = workspaces.find((w) => w.myRole !== "OWNER");
   const [pendingAgencyInvites, setPendingAgencyInvites] = useState<number>(0);
   const [pendingWsInvites, setPendingWsInvites] = useState<number>(0);
   const [analyticsSummary, setAnalyticsSummary] =
@@ -144,43 +143,28 @@ export function DashboardPage() {
             />
             {t("dashboard.page.refresh")}
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="cursor-pointer gap-1.5 text-xs"
-            onClick={() => navigate("/settings/security")}
-          >
-            <KeyRound className="size-3.5" />
-            {t("dashboard.page.changePassword")}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="cursor-pointer gap-1.5 text-xs"
-            onClick={handleLogout}
-          >
-            <LogOut className="size-3.5" />
-            {t("dashboard.page.logout")}
-          </Button>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => {
-              if (currentWorkspace) {
-                navigate(`/workspaces/${currentWorkspace.id}/editor`);
-              } else if (workspaces.length > 0) {
-                navigate(`/workspaces/${workspaces[0].id}/editor`);
-              } else if (agencies.length > 0) {
-                navigate(`/workspaces/create?agencyId=${agencies[0].id}`);
-              } else {
-                navigate("/agency/create");
-              }
-            }}
-            className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs font-medium text-white"
-          >
-            <Plus className="size-3.5" />
-            {t("dashboard.page.createContent")}
-          </Button>
+          {memberRole !== "OWNER" &&
+            (currentWorkspace || !workspaces.length || writableWorkspace) && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => {
+                if (currentWorkspace) {
+                  navigate(`/workspaces/${currentWorkspace.id}/editor`);
+                } else if (writableWorkspace) {
+                  navigate(`/workspaces/${writableWorkspace.id}/editor`);
+                } else if (agencies.length > 0) {
+                  navigate(`/workspaces/create?agencyId=${agencies[0].id}`);
+                } else {
+                  navigate("/agency/create");
+                }
+              }}
+              className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs font-medium text-white"
+            >
+              <Plus className="size-3.5" />
+              {t("dashboard.page.createContent")}
+            </Button>
+          )}
         </div>
       }
     >

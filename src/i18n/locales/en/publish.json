@@ -50,6 +50,11 @@
     "REJECTED": "Rejected"
   },
   "dashboard": {
+    "kpis": {
+      "totalPosts": "Total posts",
+      "successRate": "Success rate",
+      "scheduled": "Scheduled"
+    },
     "title": "Publishing Dashboard",
     "subtitle": "Track status, performance, and cross-platform post distribution in workspace.",
     "overviewTitle": "Social Publishing Performance",

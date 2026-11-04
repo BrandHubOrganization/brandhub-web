@@ -25,6 +25,7 @@ interface SurveyEditorHeaderProps {
   onSave: () => void;
   saving: boolean;
   saveStatus: "idle" | "saving" | "saved" | "error";
+  canEdit: boolean;
 }
 
 export function SurveyEditorHeader({
@@ -41,6 +42,7 @@ export function SurveyEditorHeader({
   onSave,
   saving,
   saveStatus,
+  canEdit,
 }: SurveyEditorHeaderProps) {
   const { t } = useTranslation();
 
@@ -66,7 +68,11 @@ export function SurveyEditorHeader({
               <Input
                 value={formName}
                 onChange={(e) => onFormNameChange(e.target.value)}
-                placeholder={t("tasks.survey.editor.formNamePlaceholder", "Tên biểu mẫu")}
+                readOnly={!canEdit}
+                placeholder={t(
+                  "tasks.survey.editor.formNamePlaceholder",
+                  "Tên biểu mẫu",
+                )}
                 className="hover:border-border focus:border-border h-8 border-transparent bg-transparent px-2 text-sm font-semibold shadow-none"
               />
             </div>
@@ -155,50 +161,54 @@ export function SurveyEditorHeader({
               <Share2 className="size-3.5" />
             </Button>
 
-            <Button
-              type="button"
-              variant="orange"
-              size="sm"
-              className="gap-1.5 shadow-xs"
-              onClick={onSave}
-              disabled={saving}
-            >
-              {saving ? (
-                <Spinner className="size-3.5" />
-              ) : (
-                <Sparkles className="size-3.5" />
-              )}
-              <span>
-                {saving
-                  ? t("tasks.survey.saving")
-                  : isPublished
-                    ? t("tasks.survey.saveButton")
-                    : t("tasks.survey.publishButton")}
-              </span>
-            </Button>
+            {canEdit && (
+              <Button
+                type="button"
+                variant="orange"
+                size="sm"
+                className="gap-1.5 shadow-xs"
+                onClick={onSave}
+                disabled={saving}
+              >
+                {saving ? (
+                  <Spinner className="size-3.5" />
+                ) : (
+                  <Sparkles className="size-3.5" />
+                )}
+                <span>
+                  {saving
+                    ? t("tasks.survey.saving")
+                    : isPublished
+                      ? t("tasks.survey.saveButton")
+                      : t("tasks.survey.publishButton")}
+                </span>
+              </Button>
+            )}
           </div>
         </div>
 
         {/* Center Google Forms Navigation Tabs */}
         <div className="border-border/50 flex items-center justify-center gap-8 border-t">
-          <button
-            type="button"
-            onClick={() => onTabChange("questions")}
-            className={cn(
-              "cursor-pointer border-b-2 px-4 py-2.5 text-xs font-medium transition-all",
-              activeTab === "questions"
-                ? "border-brand-orange text-brand-orange font-semibold"
-                : "text-muted-foreground hover:text-foreground border-transparent",
-            )}
-          >
-            {t("tasks.survey.editor.questionsTab")}
-          </button>
+          {canEdit && (
+            <button
+              type="button"
+              onClick={() => onTabChange("questions")}
+              className={cn(
+                "cursor-pointer border-b-2 px-4 py-2.5 text-xs font-medium transition-all",
+                activeTab === "questions"
+                  ? "border-brand-orange text-brand-orange font-semibold"
+                  : "text-muted-foreground hover:text-foreground border-transparent",
+              )}
+            >
+              {t("tasks.survey.editor.questionsTab")}
+            </button>
+          )}
           <button
             type="button"
             onClick={() => onTabChange("responses")}
             className={cn(
               "flex cursor-pointer items-center gap-1.5 border-b-2 px-4 py-2.5 text-xs font-medium transition-all",
-              activeTab === "responses"
+              activeTab === "responses" || !canEdit
                 ? "border-brand-orange text-brand-orange font-semibold"
                 : "text-muted-foreground hover:text-foreground border-transparent",
             )}

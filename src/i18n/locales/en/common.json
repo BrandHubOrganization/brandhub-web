@@ -1,4 +1,6 @@
 {
+  "guide": "Guide",
+  "guideHint": "Open the detailed guide and admin docs",
   "helpFor": "Help: {{label}}",
   "invitePresets": {
     "formal": {

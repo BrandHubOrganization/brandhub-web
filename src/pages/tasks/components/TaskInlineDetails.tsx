@@ -341,6 +341,9 @@ function References({ task }: { task: TaskWorkflow }) {
 }
 
 export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
+  const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const role = currentMemberRole || currentWorkspace?.myRole;
   const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const zone = task.dates.timezone || "UTC";
@@ -467,7 +470,7 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
               </div>
             )}
 
-            {task.sourceType === "CONTENT_REQUEST" && task.sourceRefId && (
+            {task.sourceType === "CONTENT_REQUEST" && task.sourceRefId && role !== "CREATOR" && (
               <div className="flex items-center justify-between gap-2">
                 <span className="text-muted-foreground">Yêu cầu nội dung</span>
                 <Link

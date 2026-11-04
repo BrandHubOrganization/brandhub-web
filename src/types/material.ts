@@ -88,6 +88,7 @@ export interface MaterialFilters {
   purpose?: "MATERIAL" | "BRAND_REFERENCE";
   clientProfileId?: string;
   sort?: "newest" | "oldest";
+  taskId?: string;
   draft?: boolean;
 }
 
