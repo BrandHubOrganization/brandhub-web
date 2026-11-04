@@ -47,7 +47,6 @@ const QUICK_LOGIN_ACCOUNTS = [
       "user59@demo.brandhub.test",
     labelKey: "workspace.roles.CLIENT",
     workspaceRole: "CLIENT",
-    landingPath: "/client-profiles",
   },
 ] as const;
 
@@ -64,7 +63,6 @@ export function DevQuickLogin() {
   async function handleQuickLogin(
     key: string,
     email: string,
-    landingPath?: string,
     workspaceRole?: MemberRole,
   ) {
     setLoadingKey(key);
@@ -99,16 +97,18 @@ export function DevQuickLogin() {
         navigate("/admin");
       } else if (workspaceRole) {
         const { data } = await workspaceService.list();
-        const workspace = data.data.find(
+        const matches = data.data.filter(
           (item) => item.myRole === workspaceRole,
         );
+        // The seed-linked-demo profile links every account through this Workspace.
+        const workspace =
+          matches.find((item) => item.name.startsWith("TH True Milk")) ??
+          matches[0];
         if (workspace) navigate(`/workspaces/${workspace.id}/dashboard`);
         else {
           toast.info(t("auth.login.devWorkspaceMissing"));
           navigate("/agency");
         }
-      } else if (landingPath) {
-        navigate(landingPath);
       } else {
         navigate("/agency");
       }
@@ -137,7 +137,6 @@ export function DevQuickLogin() {
                 handleQuickLogin(
                   key,
                   account.email,
-                  "landingPath" in account ? account.landingPath : undefined,
                   "workspaceRole" in account
                     ? account.workspaceRole
                     : undefined,
