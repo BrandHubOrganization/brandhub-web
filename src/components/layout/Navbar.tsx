@@ -282,7 +282,9 @@ export function Navbar({
         "mailBatches",
         "mailSuppressions",
         "reports",
+        "crawl",
         "trendReplay",
+        "trendPipeline",
         "trends",
         "trendGraph",
       ].includes(requested)

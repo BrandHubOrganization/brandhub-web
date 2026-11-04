@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   RefreshCw,
   Plus,
-  KeyRound,
-  LogOut,
   Building2,
   FolderOpen,
   Mail,
@@ -50,7 +48,6 @@ export function DashboardPage() {
     loadAllData,
     fetchAnalytics,
     fetchActivities,
-    handleLogout,
   } = useDashboardData();
 
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
@@ -145,24 +142,6 @@ export function DashboardPage() {
               }`}
             />
             {t("dashboard.page.refresh")}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="cursor-pointer gap-1.5 text-xs"
-            onClick={() => navigate("/settings/security")}
-          >
-            <KeyRound className="size-3.5" />
-            {t("dashboard.page.changePassword")}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="cursor-pointer gap-1.5 text-xs"
-            onClick={handleLogout}
-          >
-            <LogOut className="size-3.5" />
-            {t("dashboard.page.logout")}
           </Button>
           {memberRole !== "OWNER" &&
             (currentWorkspace || !workspaces.length || writableWorkspace) && (

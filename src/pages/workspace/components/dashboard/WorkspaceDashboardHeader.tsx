@@ -3,8 +3,6 @@ import { useTranslation } from "react-i18next";
 import {
   Building2,
   Users,
-  MessageCircleMore,
-  Settings,
   FolderKanban,
   LogOut,
   BadgeCheck,
@@ -21,7 +19,6 @@ interface WorkspaceDashboardHeaderProps {
   isPackageApproved: boolean;
   isPackageNegotiating: boolean;
   packageStatus?: string;
-  isManagerOrOwner: boolean;
   onOpenLeaveDialog: () => void;
 }
 
@@ -32,7 +29,6 @@ export function WorkspaceDashboardHeader({
   isPackageApproved,
   isPackageNegotiating,
   packageStatus,
-  isManagerOrOwner,
   onOpenLeaveDialog,
 }: WorkspaceDashboardHeaderProps) {
   const { t } = useTranslation();
@@ -120,28 +116,6 @@ export function WorkspaceDashboardHeader({
 
         {/* Quick Header Actions */}
         <div className="flex flex-wrap items-center gap-2 sm:self-center">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5"
-            onClick={() => navigate(`/workspaces/${workspaceId}/chat`)}
-          >
-            <MessageCircleMore className="size-4" />
-            <span>{t("workspace.dashboard.chatWorkspace")}</span>
-          </Button>
-          {isManagerOrOwner && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-1.5"
-              onClick={() => navigate(`/workspaces/${workspaceId}/settings`)}
-            >
-              <Settings className="size-4" />
-              <span className="hidden sm:inline">
-                {t("workspace.dashboard.workspaceSettings")}
-              </span>
-            </Button>
-          )}
           <Button
             variant="orange"
             size="sm"

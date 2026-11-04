@@ -72,6 +72,8 @@
     "create": "Create",
     "manage": "Manage",
     "agency": "Company",
+    "content": "Content",
+    "publish": "Publishing",
     "workspaceSettings": "Workspace Settings",
     "lists": "Workspaces",
     "invitations": "Invitations",

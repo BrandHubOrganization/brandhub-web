@@ -69,7 +69,6 @@ export function WorkspaceDashboardPage() {
         isPackageApproved={isPackageApproved}
         isPackageNegotiating={isPackageNegotiating}
         packageStatus={packageStatus ?? undefined}
-        isManagerOrOwner={isManagerOrOwner}
         onOpenLeaveDialog={() => setLeaveOpen(true)}
       />
 
