@@ -50,7 +50,7 @@ export function WorkspaceQuickActions({
                       {t("workspace.dashboard.chatWorkspace")}
                     </p>
                     <p className="text-muted-foreground text-2xs">
-                      Trao đổi công việc nội bộ và Client
+                      {t("workspace.dashboard.quickHints.chat")}
                     </p>
                   </div>
                 </div>
@@ -71,7 +71,7 @@ export function WorkspaceQuickActions({
                       {t("workspace.dashboard.tasksOverview")}
                     </p>
                     <p className="text-muted-foreground text-2xs">
-                      Quản lý tiến độ công việc và phân công
+                      {t("workspace.dashboard.quickHints.tasks")}
                     </p>
                   </div>
                 </div>
@@ -94,7 +94,7 @@ export function WorkspaceQuickActions({
                       {t("nav.mediaPackages")}
                     </p>
                     <p className="text-muted-foreground text-2xs">
-                      Điều khoản gói và phê duyệt hai bên
+                      {t("workspace.dashboard.quickHints.package")}
                     </p>
                   </div>
                 </div>
@@ -117,7 +117,7 @@ export function WorkspaceQuickActions({
                       {t("workspace.dashboard.contentEditor")}
                     </p>
                     <p className="text-muted-foreground text-2xs">
-                      Soạn thảo và cộng tác nội dung thời gian thực
+                      {t("workspace.dashboard.quickHints.editor")}
                     </p>
                   </div>
                 </div>
@@ -141,7 +141,7 @@ export function WorkspaceQuickActions({
                         {t("workspace.dashboard.workspaceSettings")}
                       </p>
                       <p className="text-muted-foreground text-2xs">
-                        Cấu hình nhận diện, múi giờ và thành viên
+                        {t("workspace.dashboard.quickHints.settings")}
                       </p>
                     </div>
                   </div>
@@ -167,7 +167,7 @@ export function WorkspaceQuickActions({
                 className="text-brand-orange h-auto p-0 text-xs hover:underline"
                 onClick={() => navigate(`/workspaces/${workspaceId}/members`)}
               >
-                Quản lý
+                {t("workspace.dashboard.manage")}
               </Button>
             )}
           </div>
@@ -179,7 +179,7 @@ export function WorkspaceQuickActions({
               >
                 <span className="text-muted-foreground flex items-center gap-2">
                   <span className="bg-brand-orange size-1.5 rounded-full" />
-                  {role}
+                  {t(`workspace.roles.${role}`, role)}
                 </span>
                 <span className="text-foreground font-semibold">{count}</span>
               </li>

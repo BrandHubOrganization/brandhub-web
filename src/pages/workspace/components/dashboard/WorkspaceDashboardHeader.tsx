@@ -72,7 +72,7 @@ export function WorkspaceDashboardHeader({
                   variant="outline"
                   className="border-brand-orange/30 bg-brand-orange-soft/50 text-brand-orange text-2xs font-semibold"
                 >
-                  {t("workspace.dashboard.roleInWorkspace")}: {currentMemberRole}
+                  {t("workspace.dashboard.roleInWorkspace")}: {t(`workspace.roles.${currentMemberRole}`, currentMemberRole ?? "")}
                 </Badge>
               )}
               {isPackageApproved ? (
@@ -83,7 +83,7 @@ export function WorkspaceDashboardHeader({
               ) : isPackageNegotiating ? (
                 <Badge className="text-2xs border-amber-500/30 bg-amber-500/15 text-amber-600">
                   <Clock className="mr-1 size-3" />
-                  {packageStatus}
+                  {t(`mediaPackage.status.${packageStatus}`, packageStatus ?? "")}
                 </Badge>
               ) : (
                 <Badge variant="secondary" className="text-2xs">
@@ -107,7 +107,7 @@ export function WorkspaceDashboardHeader({
               {workspace.companySize && (
                 <span className="flex items-center gap-1">
                   <Users className="size-3.5" />
-                  {workspace.companySize}
+                  {t(`agency.companySize.${workspace.companySize}`, workspace.companySize)}
                 </span>
               )}
             </div>

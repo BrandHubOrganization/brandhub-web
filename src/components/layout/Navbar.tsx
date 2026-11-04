@@ -118,6 +118,12 @@ const NAV_KEY_MAP: Record<string, string> = {
   video: "aiStudio.video.title",
   "content-writing": "nav.contentWriting",
   client: "nav.clients",
+  campaigns: "campaign.title",
+  "system-health": "monitoring.title",
+  "workspace-templates": "admin.navigation.workspaceTemplates",
+  "campaign-partners": "campaign.partners.title",
+  chat: "nav.chat",
+  tasks: "nav.tasks",
 };
 
 const WORKSPACE_SECTION_ROOTS: Record<

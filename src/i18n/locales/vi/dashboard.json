@@ -111,7 +111,7 @@
     }
   },
   "portal": {
-    "title": "Client Portal",
+    "title": "Cổng Khách hàng",
     "description": "Không gian phê duyệt nội dung của khách hàng.",
     "tabApprovals": "Hàng đợi Phê duyệt",
     "tabCalendar": "Lịch Nội Dung",

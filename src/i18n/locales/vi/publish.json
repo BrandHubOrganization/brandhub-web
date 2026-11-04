@@ -50,6 +50,11 @@
     "REJECTED": "Bị từ chối"
   },
   "dashboard": {
+    "kpis": {
+      "totalPosts": "Tổng bài viết",
+      "successRate": "Tỉ lệ thành công",
+      "scheduled": "Đã lên lịch"
+    },
     "title": "Bảng điều khiển xuất bản",
     "subtitle": "Theo dõi tiến độ, hiệu suất và phân bổ bài đăng đa nền tảng trong workspace.",
     "overviewTitle": "Hiệu suất Xuất bản Mạng xã hội",
