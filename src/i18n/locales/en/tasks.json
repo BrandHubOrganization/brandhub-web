@@ -445,6 +445,7 @@
       "questionsCount": "{{count}} questions",
       "responsesCount": "{{count}} responses",
       "openEditor": "Open Survey",
+      "viewResponses": "View responses",
       "connectedSheets": "Google Sheets connected",
       "notConnected": "No Google Sheet connected",
       "noSurveyYet": "No survey content yet. Open the editor to start designing questions."

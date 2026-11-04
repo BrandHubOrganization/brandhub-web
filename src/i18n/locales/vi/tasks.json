@@ -445,6 +445,7 @@
       "questionsCount": "{{count}} câu hỏi",
       "responsesCount": "{{count}} phản hồi",
       "openEditor": "Mở khảo sát",
+      "viewResponses": "Xem câu trả lời",
       "connectedSheets": "Google Sheets đã kết nối",
       "notConnected": "Chưa kết nối Google Sheets",
       "noSurveyYet": "Chưa có nội dung khảo sát. Mở trình chỉnh sửa để bắt đầu thiết kế câu hỏi."

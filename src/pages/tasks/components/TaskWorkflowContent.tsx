@@ -41,18 +41,17 @@ function TaskPostScheduleNotice({
   taskId,
   timezone,
   publishDate,
+  canOpenEditor,
 }: {
   workspaceId: string;
   taskId: string;
   timezone: string;
   isTaskFinished?: boolean;
   publishDate?: string | null;
+  canOpenEditor: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const { data: taskPost, isLoading } = useTaskPost(workspaceId, taskId);
-  const isOwner = useWorkspaceStore(
-    (s) => (s.currentMemberRole || s.currentWorkspace?.myRole) === "OWNER",
-  );
   const post = taskPost?.post;
   const scheduledAt = post?.scheduledAt || publishDate;
 
@@ -128,7 +127,7 @@ function TaskPostScheduleNotice({
       <Clock className="text-muted-foreground size-4 shrink-0" />
       <span>
         {t("tasks.notScheduled")}
-        {!isOwner && <> &mdash; {t("tasks.scheduleInEditorHint")}</>}
+        {canOpenEditor && <> &mdash; {t("tasks.scheduleInEditorHint")}</>}
       </span>
     </div>
   );
@@ -294,6 +293,9 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated }: Props) {
                 timezone={task.dates.timezone || "UTC"}
                 isTaskFinished={isTaskFinished}
                 publishDate={task.publishDate}
+                canOpenEditor={
+                  role === "MANAGER" || (role === "CREATOR" && isAssignee)
+                }
               />
 
               {post?.status === "FAILED" && (
