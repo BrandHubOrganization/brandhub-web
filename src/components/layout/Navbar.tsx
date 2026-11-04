@@ -142,10 +142,14 @@ function getChildResourceBreadcrumbLabel(
   prevSeg: string | undefined,
   t: TFunction,
 ): string {
-  if (prevSeg === "posts") return t("publish.detail.breadcrumb", "Chi tiết bài viết");
-  if (prevSeg === "tasks") return t("tasks.detail.breadcrumb", "Chi tiết công việc");
-  if (prevSeg === "clients") return t("clients.detail.breadcrumb", "Chi tiết khách hàng");
-  if (prevSeg === "campaigns") return t("campaign.detail.breadcrumb", "Chi tiết chiến dịch");
+  if (prevSeg === "posts")
+    return t("publish.detail.breadcrumb", "Chi tiết bài viết");
+  if (prevSeg === "tasks")
+    return t("tasks.detail.breadcrumb", "Chi tiết công việc");
+  if (prevSeg === "clients")
+    return t("clients.detail.breadcrumb", "Chi tiết khách hàng");
+  if (prevSeg === "campaigns")
+    return t("campaign.detail.breadcrumb", "Chi tiết chiến dịch");
   return t("common.detail", "Chi tiết");
 }
 
@@ -319,7 +323,10 @@ export function Navbar({
         // Agency UUID: chỉ ở vị trí /agency/:id (idx === 1)
         if (root === "agency" && idx === 1) {
           const entity = agencies.find((a) => a.id === seg);
-          crumbs.push({ label: entity?.name ?? seg, path });
+          crumbs.push({
+            label: entity?.name ?? t("common.detail", "Chi tiết"),
+            path,
+          });
           return;
         }
         // Child resource UUID (e.g. /workspaces/:id/posts/:postId)
