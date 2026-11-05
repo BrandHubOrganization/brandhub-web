@@ -33,8 +33,8 @@
     "period": "Creative Center time window",
     "days": "{{count}} days",
     "tiktok": {
-      "pagesPerHashtag": "Result pages / hashtag (1–5)",
-      "topPostsPerHashtag": "Posts enriched with media/comments / hashtag",
+      "pagesPerHashtag": "Pages / hashtag (1–5)",
+      "topPostsPerHashtag": "Enriched posts / hashtag",
       "maxCommentsPerPost": "Maximum comments / post"
     },
     "tiktokLimitsHelp": "Each page requests up to 30 posts; actual results depend on TikTok. The enrichment count is not a cap on all collected posts.",
@@ -967,8 +967,8 @@
     "credentialsTitle": "Sessions & connections",
     "credentialsHelp": "Use existing accounts and providers. Do not enter social account passwords or OTPs here. Secrets can be replaced but cannot be read back.",
     "sessionFile": "Session JSON file (up to 1 MiB)",
-    "endpoint": "Allowed endpoint (replacement value)",
-    "apiKey": "New API key",
+    "endpoint": "Endpoint",
+    "apiKey": "API key",
     "sessionHelp": "Upload a session from an existing account. AI service keeps it only in memory; replacements apply to the next run. Upload again after a restart or deployment.",
     "connectionHelp": "Only deployment-allowlisted hosts are accepted. This may include proxy credentials; values are never displayed again.",
     "replace": "Upload / replace",
@@ -1012,9 +1012,9 @@
     "retryHelp": "Create a new run for failed Facebook sources only. Uses current configuration/session and existing dedup; does not requeue or edit the original run. The new live snapshot may contain only retried-source results; previously successful sources are not automatically merged.",
     "sections": {
       "overview": "Overview",
-      "settings": "Sources, limits & schedule",
+      "settings": "Configuration",
       "credentials": "Sessions & connections",
-      "history": "History & events"
+      "history": "History"
     },
     "credentialKinds": {
       "facebook": "Facebook session",
@@ -1096,6 +1096,6 @@
     "threadPreview": "Threads: {{topics}} topics, up to {{posts}} posts, {{seconds}} seconds.",
     "tiktokPreview": "TikTok: {{pages}} pages/hashtag, {{posts}} enriched posts/hashtag.",
     "sessionMemoryHelp": "Facebook/Threads sessions stay only in AI service memory. Restarting or deploying clears them; an admin must upload them again. Session uploads do not require an encryption key file.",
-    "connectionKeyRequired": "Saving proxy/API credentials still requires encryption key configuration. This does not block Facebook/Threads session uploads."
+    "connectionKeyRequired": "Encryption key required to save proxy/API credentials."
   }
 }

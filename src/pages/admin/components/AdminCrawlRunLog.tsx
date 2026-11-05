@@ -1,13 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { AlertTriangle, FlaskConical, Loader2, ScrollText } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  FlaskConical,
+  Loader2,
+  Radar,
+  ScrollText,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { errorCode } from "@/services/adminRevenueService";
 import {
   adminCrawlConfigService,
+  type CrawlConfig,
   type CrawlRun,
 } from "@/services/adminCrawlConfigService";
 
@@ -28,64 +36,260 @@ function useCrawlRuns() {
   });
 }
 
-/** Side card: posts per page of the running crawl (live) or of the last one. */
-export function CrawlLiveCard() {
-  const { t } = useTranslation();
+/**
+ * Unified Crawl Status & Live Progress Card:
+ * Shows overall crawler schedule status, how many pages have been crawled,
+ * and how many posts each individual page produced.
+ */
+export function CrawlLiveCard({ saved }: { saved?: CrawlConfig }) {
+  const { t, i18n } = useTranslation();
   const runs = useCrawlRuns();
+  const configQuery = useQuery({
+    queryKey: ["admin-crawl-config"],
+    queryFn: adminCrawlConfigService.get,
+    enabled: !saved,
+  });
+
+  const config = saved ?? configQuery.data;
   const run = runs.data?.running ?? runs.data?.history[0];
-  if (!run) return null;
-  const live = run.status === "RUNNING";
+  const live = run?.status === "RUNNING";
+
+  const scheduleStatus = config?.running
+    ? "running"
+    : config && !config.enabled
+      ? "disabled"
+      : "noSources";
+
+  const nextRun = config?.nextRunAt
+    ? new Intl.DateTimeFormat(i18n.language, {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "Asia/Ho_Chi_Minh",
+      }).format(new Date(config.nextRunAt))
+    : null;
+
+  const visitedCount = run?.pages.length ?? 0;
+  const pendingCount = run?.pending?.length ?? 0;
+  const configuredSourceCount = config?.sourcePages.length ?? 0;
+  const totalTargetPages =
+    visitedCount + pendingCount > 0
+      ? visitedCount + pendingCount
+      : configuredSourceCount;
+  const progressPercent =
+    totalTargetPages > 0
+      ? Math.min(100, Math.round((visitedCount / totalTargetPages) * 100))
+      : 0;
+
   return (
-    <aside className="bg-card border-border space-y-3 rounded-xl border p-5 text-sm">
-      <h2 className="flex items-center gap-2 font-semibold">
-        {live ? (
-          <Loader2 className="text-brand-orange size-4 animate-spin" />
-        ) : (
-          <ScrollText className="text-brand-orange size-4" />
-        )}
-        {t(live ? "admin.crawl.live.running" : "admin.crawl.live.last")}
-      </h2>
-      <p className="text-3xl font-semibold tabular-nums">
-        {run.totalPosts}
-        <span className="text-muted-foreground ml-1.5 text-xs font-normal">
-          {t("admin.crawl.live.posts")}
-        </span>
-      </p>
-      <ul className="space-y-1.5 text-xs">
-        {run.pages.map((page, i) => (
-          <li key={i} className="flex items-center justify-between gap-2">
-            <span
-              className="truncate font-mono"
-              title={page.url ?? page.source}
-            >
-              {(page.url ?? page.source).replace(/^https:\/\/(www\.)?/, "")}
-            </span>
+    <aside className="bg-card border-border flex h-full flex-col justify-between space-y-4 rounded-xl border p-5 text-sm shadow-xs">
+      {/* Header: Crawler Status & Schedule State */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="flex items-center gap-2 font-semibold">
+          {live ? (
+            <Loader2 className="text-brand-orange size-4 animate-spin" />
+          ) : (
+            <Radar className="text-brand-orange size-4" />
+          )}
+          <span>
+            {run
+              ? t(live ? "admin.crawl.live.running" : "admin.crawl.live.last")
+              : t("admin.crawl.status")}
+          </span>
+        </h2>
+
+        {config && (
+          <span className="bg-muted/50 border-border/60 inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs font-medium">
             <span
               className={cn(
-                "shrink-0 font-medium tabular-nums",
-                page.error && "text-destructive",
+                "size-2 rounded-full",
+                scheduleStatus === "running"
+                  ? "bg-emerald-500"
+                  : "bg-amber-500",
               )}
-              title={page.error ?? undefined}
-            >
-              {page.error ? t("admin.crawl.log.failed") : page.posts}
-            </span>
-          </li>
-        ))}
-        {(run.pending ?? []).map((url) => (
-          <li
-            key={url}
-            className="text-muted-foreground flex items-center justify-between gap-2"
+            />
+            {t(`admin.crawl.state.${scheduleStatus}`)}
+          </span>
+        )}
+      </div>
+
+      {/* Run Status Badge, Next Run & Credits */}
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        {run && (
+          <span
+            className={cn(
+              "rounded-full px-2.5 py-0.5 font-medium",
+              STATUS_STYLE[run.status],
+            )}
           >
-            <span className="truncate font-mono">
-              {url.replace(/^https:\/\/(www\.)?/, "")}
+            {t(`admin.crawl.log.status.${run.status}`)}
+          </span>
+        )}
+        {run?.creditsRemaining != null && (
+          <span className="text-muted-foreground bg-muted/50 border-border/60 rounded-full border px-2.5 py-0.5 tabular-nums">
+            {t("admin.crawl.log.credits", { count: run.creditsRemaining })}
+          </span>
+        )}
+        {nextRun && (
+          <span className="text-muted-foreground ml-auto text-[11px]">
+            {t("admin.crawl.nextRun", { date: nextRun })}
+          </span>
+        )}
+      </div>
+
+      {/* Active Sources Pills */}
+      {config && config.sources.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          {config.sources.map((s) => (
+            <span
+              key={s}
+              className="bg-muted text-muted-foreground rounded-full px-2.5 py-0.5 font-mono text-[11px]"
+            >
+              {s}
             </span>
-            <Loader2 className="size-3 shrink-0 animate-spin" />
-          </li>
-        ))}
-      </ul>
-      {run.creditsRemaining != null && (
-        <p className="text-muted-foreground text-xs">
-          {t("admin.crawl.log.credits", { count: run.creditsRemaining })}
+          ))}
+        </div>
+      )}
+
+      {/* Progress Summary: Pages Crawled & Total Posts */}
+      {run ? (
+        <>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-muted/25 border-border/60 rounded-lg border p-3">
+              <span className="text-muted-foreground block text-[11px] font-medium">
+                {t("admin.crawl.pagesVisited", {
+                  defaultValue: "Số trang đã cào",
+                })}
+              </span>
+              <p className="mt-1 text-xl font-bold tabular-nums">
+                {visitedCount}
+                <span className="text-muted-foreground text-sm font-normal">
+                  /{totalTargetPages}
+                </span>
+              </p>
+            </div>
+
+            <div className="bg-muted/25 border-border/60 rounded-lg border p-3">
+              <span className="text-muted-foreground block text-[11px] font-medium">
+                {t("admin.crawl.postsCollected", {
+                  defaultValue: "Tổng bài thu thập",
+                })}
+              </span>
+              <p className="mt-1 text-xl font-bold tabular-nums">
+                {run.totalPosts}
+                <span className="text-muted-foreground ml-1 text-xs font-normal">
+                  {t("admin.crawl.live.posts")}
+                </span>
+              </p>
+            </div>
+          </div>
+
+          {/* Page Progress Bar */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground font-medium">
+                Tiến trình trang ({visitedCount}/{totalTargetPages})
+              </span>
+              <span className="font-mono font-semibold tabular-nums">
+                {progressPercent}%
+              </span>
+            </div>
+            <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+              <div
+                className={cn(
+                  "h-full rounded-full transition-all duration-300",
+                  live
+                    ? "bg-brand-orange animate-pulse"
+                    : run.status === "FAILED"
+                      ? "bg-destructive"
+                      : "bg-emerald-500",
+                )}
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Per-Page Posts Breakdown */}
+          <div className="space-y-2">
+            <div className="text-muted-foreground flex items-center justify-between text-xs font-medium">
+              <span>{t("admin.crawl.log.page")}</span>
+              <span>{t("admin.crawl.log.posts")}</span>
+            </div>
+
+            <ul className="divide-border/60 border-border/60 max-h-72 divide-y overflow-y-auto rounded-lg border text-xs">
+              {run.pages.map((page, i) => (
+                <li
+                  key={i}
+                  className="bg-background/50 flex items-center justify-between gap-2.5 px-3 py-2.5"
+                >
+                  <div className="flex min-w-0 items-center gap-2">
+                    {page.error ? (
+                      <AlertTriangle className="text-destructive size-3.5 shrink-0" />
+                    ) : (
+                      <CheckCircle2 className="size-3.5 shrink-0 text-emerald-500" />
+                    )}
+                    <span
+                      className="truncate font-mono"
+                      title={page.url ?? page.source}
+                    >
+                      {(page.url ?? page.source).replace(
+                        /^https:\/\/(www\.)?/,
+                        "",
+                      )}
+                    </span>
+                  </div>
+                  <span
+                    className={cn(
+                      "shrink-0 rounded-md px-2 py-0.5 font-semibold tabular-nums",
+                      page.error
+                        ? "bg-destructive/10 text-destructive"
+                        : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+                    )}
+                    title={page.error ?? undefined}
+                  >
+                    {page.error
+                      ? t("admin.crawl.log.failed")
+                      : `${page.posts} bài`}
+                  </span>
+                </li>
+              ))}
+
+              {(run.pending ?? []).map((url) => (
+                <li
+                  key={url}
+                  className="text-muted-foreground flex items-center justify-between gap-2.5 px-3 py-2.5"
+                >
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Loader2 className="text-brand-orange size-3.5 shrink-0 animate-spin" />
+                    <span className="truncate font-mono">
+                      {url.replace(/^https:\/\/(www\.)?/, "")}
+                    </span>
+                  </div>
+                  <span className="bg-muted rounded-md px-2 py-0.5 text-[11px] font-medium">
+                    {t("admin.crawl.log.running")}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {[
+            ...run.pages
+              .filter((p) => p.error)
+              .map((p) => `${p.url ?? p.source}: ${p.error}`),
+            ...run.errors,
+          ].map((errText, idx) => (
+            <p
+              key={idx}
+              className="bg-destructive/5 border-destructive/20 text-destructive flex items-start gap-1.5 rounded-lg border px-3 py-2 text-xs break-all"
+            >
+              <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+              <span>{errText}</span>
+            </p>
+          ))}
+        </>
+      ) : (
+        <p className="text-muted-foreground border-border/60 flex flex-1 items-center justify-center rounded-lg border border-dashed px-3 py-6 text-center text-xs">
+          {t("admin.crawl.log.empty")}
         </p>
       )}
     </aside>
@@ -124,12 +328,17 @@ export function AdminCrawlRunLog() {
   const list = [...(running ? [running] : []), ...(runs.data?.history ?? [])];
 
   return (
-    <section className="bg-card border-border max-w-5xl space-y-4 rounded-xl border p-5 lg:p-6">
+    <section className="bg-card border-border w-full min-w-0 space-y-4 rounded-xl border p-5 lg:p-6">
       <div className="flex flex-wrap items-center gap-3">
-        <h2 className="flex items-center gap-2 text-sm font-semibold">
-          <ScrollText className="text-brand-orange size-4" />
-          {t("admin.crawl.log.title")}
-        </h2>
+        <div className="min-w-0 flex-1 space-y-1">
+          <h2 className="flex items-center gap-2 text-sm font-semibold">
+            <ScrollText className="text-brand-orange size-4" />
+            {t("admin.crawl.log.title")}
+          </h2>
+          <p className="text-muted-foreground text-xs">
+            {t("admin.crawl.log.hint")}
+          </p>
+        </div>
         {import.meta.env.DEV && (
           <Button
             size="sm"
@@ -147,9 +356,6 @@ export function AdminCrawlRunLog() {
           </Button>
         )}
       </div>
-      <p className="text-muted-foreground text-xs">
-        {t("admin.crawl.log.hint")}
-      </p>
 
       {runs.isPending && <Skeleton className="h-32 rounded-lg" />}
       {runs.isError && (
@@ -245,17 +451,14 @@ function RunItem({
         </table>
       )}
       {errors.length > 0 && (
-        <div className="bg-destructive/5 border-border space-y-1 border-t px-4 py-3">
-          {errors.map((error, i) => (
-            <p
-              key={i}
-              className="text-destructive flex gap-1.5 font-mono text-xs break-all"
-            >
-              <AlertTriangle className="mt-0.5 size-3 shrink-0" />
-              {error}
-            </p>
+        <ul className="bg-destructive/5 border-border text-destructive space-y-1 border-t px-4 py-2.5 text-xs">
+          {errors.map((e, i) => (
+            <li key={i} className="flex items-start gap-1.5">
+              <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+              <span className="break-all">{e}</span>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </li>
   );

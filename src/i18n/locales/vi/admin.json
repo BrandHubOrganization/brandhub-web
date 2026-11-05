@@ -33,8 +33,8 @@
     "period": "Khoảng thời gian Creative Center",
     "days": "{{count}} ngày",
     "tiktok": {
-      "pagesPerHashtag": "Trang kết quả / hashtag (1–5)",
-      "topPostsPerHashtag": "Bài lấy thêm media/bình luận / hashtag",
+      "pagesPerHashtag": "Trang / hashtag (1–5)",
+      "topPostsPerHashtag": "Bài làm giàu / hashtag",
       "maxCommentsPerPost": "Bình luận tối đa / bài"
     },
     "tiktokLimitsHelp": "Mỗi trang yêu cầu tối đa 30 bài; số bài thực tế phụ thuộc TikTok. Số bài lấy thêm media/bình luận không phải giới hạn tổng bài thu thập.",
@@ -967,8 +967,8 @@
     "credentialsTitle": "Session & kết nối",
     "credentialsHelp": "Dùng tài khoản và nhà cung cấp hiện có. Không nhập mật khẩu hoặc OTP mạng xã hội vào đây. Dữ liệu bí mật chỉ được thay thế, không thể đọc lại.",
     "sessionFile": "File session JSON (tối đa 1 MiB)",
-    "endpoint": "Endpoint đã được phép (nhập thay mới)",
-    "apiKey": "API key mới",
+    "endpoint": "Endpoint",
+    "apiKey": "API key",
     "sessionHelp": "Nạp file session từ tài khoản hiện có. AI service chỉ giữ trong RAM; bản mới áp dụng cho run tiếp theo. Restart/deploy cần nạp lại.",
     "connectionHelp": "Chỉ chấp nhận host trong allowlist triển khai. Có thể chứa credential proxy; giá trị không được hiển thị lại.",
     "replace": "Nạp / thay thế",
@@ -1012,9 +1012,9 @@
     "retryHelp": "Tạo run mới chỉ cho nguồn Facebook thất bại. Dùng cấu hình/session hiện tại và dedup hiện có; không requeue hoặc sửa run cũ. Snapshot live mới có thể chỉ chứa kết quả từ các nguồn chạy lại; các nguồn thành công trước đó không được gộp tự động.",
     "sections": {
       "overview": "Tổng quan",
-      "settings": "Nguồn, giới hạn & lịch",
+      "settings": "Cấu hình",
       "credentials": "Session & kết nối",
-      "history": "Lịch sử & nhật ký"
+      "history": "Lịch sử"
     },
     "credentialKinds": {
       "facebook": "Session Facebook",
@@ -1096,6 +1096,6 @@
     "threadPreview": "Threads: {{topics}} chủ đề, tối đa {{posts}} bài, {{seconds}} giây.",
     "tiktokPreview": "TikTok: {{pages}} trang/hashtag, {{posts}} bài được làm giàu/hashtag.",
     "sessionMemoryHelp": "Session Facebook/Threads chỉ giữ trong RAM của AI service. Restart hoặc deploy sẽ mất session; admin cần nạp lại. Không cần file khóa mã hóa cho session.",
-    "connectionKeyRequired": "Lưu proxy/API key vẫn cần cấu hình khóa mã hóa. Điều kiện này không ảnh hưởng việc nạp session Facebook/Threads."
+    "connectionKeyRequired": "Cần cấu hình khóa mã hóa để lưu proxy/API key."
   }
 }
