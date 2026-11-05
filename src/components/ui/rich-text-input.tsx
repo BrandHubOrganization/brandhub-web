@@ -42,7 +42,7 @@ export function RichTextInput({ label, placeholder, value, onChange }: Props) {
     if (editor && !editor.isDestroyed && value !== editor.getHTML()) {
       editor.commands.setContent(value);
     }
-     
+
   }, [value, editor]);
 
   if (!editor) return null;

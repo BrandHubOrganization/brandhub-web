@@ -1,4 +1,20 @@
 {
+  "choices": {
+    "select": "Chọn gợi ý",
+    "other": "Khác — nhập nội dung riêng",
+    "quantityUnit": "Số lượng ({{unit}})",
+    "descriptionAlt": "Lên kế hoạch thực hiện {{service}} theo lịch và yêu cầu của khách hàng.",
+    "acceptanceAlt": "Nội dung đáp ứng brief và các chỉnh sửa đã thống nhất.",
+    "scope": {
+      "launch": "Lập kế hoạch và bàn giao nội dung truyền thông cho chiến dịch ra mắt sản phẩm.",
+      "awareness": "Triển khai nội dung tăng nhận diện thương hiệu theo các kênh đã thống nhất.",
+      "engagement": "Lên kế hoạch nội dung và hoạt động tăng tương tác với khách hàng."
+    },
+    "strategy": {
+      "launch": "Chia theo các giai đoạn chuẩn bị, ra mắt và theo dõi phản hồi.",
+      "awareness": "Triển khai theo từng nhóm nội dung để tăng độ nhận diện trên các kênh đã chọn."
+    }
+  },
   "compact": {
     "agreeLater": "Thỏa thuận sau",
     "duration": "Thời lượng",
@@ -35,6 +51,9 @@
     }
   },
   "offering": {
+    "useTemplate": "Dùng mẫu",
+    "descriptionTemplate": "{{service}} — bàn giao {{count}} đầu ra theo phạm vi đã thống nhất.",
+    "acceptanceTemplate": "Bàn giao đủ {{count}} đầu ra, đúng nội dung và thời hạn đã thống nhất.",
     "title": "Hạng mục dịch vụ",
     "model": "Cách đóng gói",
     "legacy": "Gói cũ (chưa phân loại)",
@@ -57,6 +76,10 @@
     },
     "service": "Dịch vụ",
     "name": "Tên hạng mục bàn giao",
+    "serviceAndName": "Dịch vụ & Hạng mục",
+    "requirementsAndCriteria": "Yêu cầu & Tiêu chí nghiệm thu",
+    "quantityAndUnit": "Số lượng & Đơn vị",
+    "noDeliverables": "Chưa có hạng mục bàn giao nào.",
     "quantity": "Số lượng",
     "unit": "Đơn vị",
     "description": "Mô tả",
@@ -200,6 +223,8 @@
     "approveSuccess": "Đã chấp thuận gói dịch vụ thành công."
   },
   "errors": {
+    "campaignManagerRequired": "Cần có quản lý đang hoạt động trong không gian làm việc để tạo công việc cho chiến dịch.",
+    "campaignTaskStorage": "Chưa thể tạo công việc cho chiến dịch. Hãy thử chấp thuận gói lại.",
     "load": "Không thể tải thông tin gói truyền thông.",
     "select": "Không thể chọn gói truyền thông.",
     "createCustom": "Không thể tạo gói truyền thông tùy chỉnh.",
@@ -221,6 +246,8 @@
     "noResults": "Không tìm thấy gói phù hợp. Hãy thử tên khác hoặc đổi bộ lọc.",
     "loadMore": "Xem thêm gói",
     "deliverables": "Hạng mục bàn giao",
+    "expandAll": "Mở rộng tất cả",
+    "collapseAll": "Thu gọn tất cả",
     "totalQuantity": "Sản lượng là tổng cho cả gói, không tự nhân theo tháng. Số lần thay đổi tối đa áp dụng chung cho gói.",
     "approvalHint": "Hai bên duyệt cùng phiên bản điều khoản. Nếu điều khoản thay đổi, cả hai cần duyệt lại.",
     "clientProposals": "Khách hàng đã đề xuất {{count}}/{{limit}} lần",

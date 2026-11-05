@@ -345,7 +345,7 @@ void main() {
       cleanupFunctionRef.current?.();
       cleanupFunctionRef.current = null;
     };
-     
+
   }, [
     isVisible,
     raysOrigin,

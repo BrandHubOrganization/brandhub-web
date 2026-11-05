@@ -93,6 +93,7 @@ export function SurveyFormBuilder({
       clone,
       ...prev.slice(idx + 1),
     ]);
+
     setActiveQuestionId(clone.id);
   };
   const handleDeleteQuestion = (idx: number) => {

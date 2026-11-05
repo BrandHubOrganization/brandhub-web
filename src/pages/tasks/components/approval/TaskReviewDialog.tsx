@@ -28,7 +28,10 @@ export function TaskReviewDialog(props: ReviewDialogProps) {
   const errorRef = useRef<HTMLParagraphElement>(null);
 
   const isPostApproval =
-    props.action === "approve" && props.task?.type === "POST";
+    props.action === "approve" && state.view.review.canScheduleOnApproval;
+  const awaitsClientApproval =
+    state.view.review.reviewStep === "MANAGER" &&
+    props.task?.requiresClientApproval;
   const post = state.view.linked?.post;
   const currentPublish =
     props.task?.publishDate || post?.scheduledAt || null;
@@ -36,7 +39,7 @@ export function TaskReviewDialog(props: ReviewDialogProps) {
 
   const [publishChoice, setPublishChoice] = useState<
     "keep" | "now" | "schedule" | "later"
-  >(hasNoSchedule ? "schedule" : "keep");
+  >(hasNoSchedule ? "later" : "keep");
   const [scheduleDateTime, setScheduleDateTime] = useState<string>("");
 
   useEffect(() => {
@@ -46,36 +49,18 @@ export function TaskReviewDialog(props: ReviewDialogProps) {
   const hasNote = props.action === "approve" || props.action === "reject";
 
   const handleConfirmAction = async () => {
-    if (isPostApproval) {
-      if (publishChoice === "schedule") {
-        if (!scheduleDateTime) {
-          toast.error("Vui lòng chọn ngày và giờ xuất bản hoặc chọn Đăng ngay / Lên lịch sau.");
-          return;
-        }
-        const chosen = new Date(scheduleDateTime).getTime();
-        if (chosen <= Date.now()) {
-          toast.error("Thời gian hẹn xuất bản phải ở trong tương lai.");
-          return;
-        }
+    let publishDate: string | undefined;
+    if (isPostApproval && publishChoice === "now") {
+      publishDate = new Date().toISOString();
+    } else if (isPostApproval && publishChoice === "schedule") {
+      const chosen = new Date(scheduleDateTime);
+      if (!Number.isFinite(chosen.getTime()) || chosen.getTime() <= Date.now()) {
+        toast.error(t("tasks.review.errors.INVALID_APPROVAL_SCHEDULE"));
+        return;
       }
-
-      if (props.onSetPublishDate) {
-        try {
-          if (publishChoice === "now") {
-            await props.onSetPublishDate(new Date().toISOString());
-            toast.success("Đã thiết lập đăng bài ngay lập tức.");
-          } else if (publishChoice === "schedule" && scheduleDateTime) {
-            await props.onSetPublishDate(new Date(scheduleDateTime).toISOString());
-            toast.success("Đã lưu lịch xuất bản bài viết.");
-          }
-        } catch {
-          toast.error("Không thể cập nhật lịch đăng bài. Vui lòng thử lại.");
-          return;
-        }
-      }
+      publishDate = chosen.toISOString();
     }
-
-    await state.confirm();
+    await state.confirm(publishDate);
   };
 
   return (
@@ -184,9 +169,15 @@ export function TaskReviewDialog(props: ReviewDialogProps) {
                   )}
                 >
                   <Zap className="size-4 text-amber-500" />
-                  <span>Đăng ngay</span>
+                  <span>
+                    {awaitsClientApproval
+                      ? t("tasks.review.publishAfterClientApproval")
+                      : "Đăng ngay"}
+                  </span>
                   <span className="text-3xs text-muted-foreground font-normal">
-                    Xuất bản bài viết lập tức
+                    {awaitsClientApproval
+                      ? t("tasks.review.publishAfterClientApprovalHint")
+                      : "Xuất bản bài viết lập tức"}
                   </span>
                 </button>
 

@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import type { CampaignTask } from "../types";
-import type { TaskStatus } from "@/types/task";
-import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 
 export function CampaignTaskGroups({
   tasks,
@@ -74,13 +72,13 @@ export function CampaignTaskGroups({
                       </Link>
                       <Badge
                         variant={
-                          ["COMPLETED", "FINISHED"].includes(task.status)
+                          task.status === "FINISHED"
                             ? "APPROVED"
                             : "outline"
                         }
                       >
                         {t(
-                          `campaign.ui.taskStatuses.${canonicalTaskStatus(task.status as TaskStatus)}`,
+                          `campaign.ui.taskStatuses.${task.status}`,
                           { defaultValue: task.status },
                         )}
                       </Badge>

@@ -1,4 +1,40 @@
 {
+  "subtasks": {
+    "title": "Công việc con",
+    "add": "Thêm công việc con",
+    "edit": "Chỉnh sửa",
+    "empty": "Chưa có công việc con.",
+    "assignee": "Người thực hiện",
+    "supervisor": "Người giám sát",
+    "parentAssignee": "Theo người phụ trách công việc cha",
+    "parentAssigneeName": "Người phụ trách công việc",
+    "defaultAssignee": "Mặc định",
+    "unassigned": "Chưa phân công",
+    "createQuick": "Tạo công việc con nhanh",
+    "quickHint": "Thông tin chi tiết khác có thể bổ sung trong chi tiết công việc",
+    "createdSuccess": "Đã tạo công việc con thành công!",
+    "createError": "Không thể tạo công việc con. Vui lòng kiểm tra lại thông tin.",
+    "missingAssignee": "Vui lòng chọn người thực hiện cho công việc con.",
+    "whatNeedsToBeDone": "Cần làm gì?",
+    "createAction": "Tạo",
+    "clickToAdd": "+ Thêm",
+    "changeStatus": "Đổi trạng thái của {{name}}",
+    "unknownStatus": "Chưa xác định",
+    "name": "Tên công việc con",
+    "example": "Ví dụ: Chuẩn bị nội dung",
+    "selectMember": "Chọn thành viên",
+    "deadline": "Hạn hoàn thành",
+    "save": "Lưu",
+    "dismiss": "Hủy chỉnh sửa",
+    "error": "Không thể cập nhật công việc con. Hãy thử lại.",
+    "status": {
+      "TODO": "Cần làm",
+      "IN_PROGRESS": "Đang thực hiện",
+      "IN_REVIEW": "Đang xem xét",
+      "FINISHED": "Hoàn thành",
+      "CANCELLED": "Đã hủy"
+    }
+  },
   "phoneMedia": {
     "title": "Tệp từ điện thoại",
     "loading": "Đang tải danh sách tệp...",
@@ -16,6 +52,7 @@
       "VALIDATING": "Đang kiểm tra",
       "REJECTED": "Bị từ chối",
       "FAILED": "Lỗi"
+
     }
   },
   "approvalPage": {
@@ -38,6 +75,8 @@
     "openTask": "Xem công việc"
   },
   "review": {
+    "publishAfterClientApproval": "Đăng sau khi khách hàng duyệt",
+    "publishAfterClientApprovalHint": "Bài sẽ được đưa vào hàng đợi xuất bản sau lượt duyệt cuối.",
     "collapseHistory": "Thu gọn lịch sử",
     "expandHistory": "Mở rộng lịch sử",
     "copyFailed": "Không thể sao chép nội dung. Vui lòng thử lại.",
@@ -47,7 +86,7 @@
     "currentRound": "Lượt {{round}}",
     "waitingStep": "Chờ {{step}} duyệt",
     "steps": {
-      "MANAGER": "Quản lý",
+      "MANAGER": "Người giám sát",
       "CLIENT": "Khách hàng",
       "QC": "Kiểm tra chất lượng (lịch sử)"
     },
@@ -123,12 +162,15 @@
       "TASK_REVIEW_TYPE_UNSUPPORTED": "Loại công việc này chưa tích hợp nội dung để duyệt. Hiện chỉ hỗ trợ Bài đăng; các loại khác sẽ được nối sau.",
       "TASK_REVIEW_CLIENT_REQUIRED": "Chưa có tài khoản Khách hàng đang hoạt động để duyệt. Nhờ Quản lý bổ sung thành viên; không tự bỏ bước Khách hàng.",
       "TASK_REVIEW_MANAGER_REQUIRED": "Chưa có Quản lý đang hoạt động để nhận duyệt. Hãy kiểm tra thành viên không gian làm việc.",
+      "INVALID_TASK_SUPERVISOR": "Người giám sát không còn phù hợp. Hãy chọn thành viên Agency đang hoạt động trong không gian làm việc.",
+      "TASK_SUBTASKS_UNFINISHED": "Hãy hoàn thành hoặc hủy tất cả công việc con trước khi gửi duyệt công việc cha.",
       "TASK_POST_LINK_REQUIRED": "Chưa có bài liên kết. Người thực hiện cần lưu bài từ trình soạn thảo trước khi gửi duyệt.",
       "TASK_POST_LINK_CONFLICT": "Liên kết bài và công việc cần được kiểm tra. Không tạo bài khác để vượt qua lỗi này.",
       "TASK_START_HISTORY_UNVERIFIED": "Lịch sử bắt đầu của công việc cũ chưa được xác minh. Nhờ người quản trị rà soát; không tự đặt lại trạng thái.",
       "TASK_REVISION_CONFLICT": "Công việc đã thay đổi. Tải lại trạng thái và nội dung trước khi quyết định lại.",
       "TASK_APPROVAL_ROUND_CONFLICT": "Lượt duyệt đã thay đổi. Tải lại và kiểm tra lượt hiện tại trước khi quyết định.",
       "POST_CONTENT_CONFLICT": "Nội dung bài đã thay đổi. Tải lại bài và xem lại trước khi quyết định; nhận xét đang nhập vẫn được giữ.",
+      "INVALID_APPROVAL_SCHEDULE": "Hãy chọn ngày và giờ đăng trong tương lai.",
       "TASK_REVIEW_STATE_CONFLICT": "Trạng thái công việc hoặc bài không còn phù hợp. Nếu bài đã về bản nháp, chỉ thu hồi hoặc từ chối theo quyền hiện tại để sửa lại.",
       "TASK_REVIEW_CONTENT_LOCKED": "Nội dung đang duyệt hoặc đã chốt nên không thể sửa.",
       "TASK_WITHDRAW_NOT_ALLOWED": "Không còn được thu hồi; chỉ thu hồi trước khi Quản lý quyết định.",
@@ -203,8 +245,9 @@
   "scheduleInEditorHint": "Vào Editor để cài đặt ngày giờ xuất bản bài viết.",
   "timeline": "Dòng thời gian hạn hoàn thành",
   "noBoardTasks": "Không có công việc",
+  "activity": "Hoạt động",
   "details": "Chi tiết công việc",
-  "assignee": "Người phụ trách",
+  "assignee": "Người thực hiện",
   "source": "Nguồn",
   "descriptionLabel": "Yêu cầu",
   "reporter": "Người tạo",
@@ -220,6 +263,9 @@
     "hint": "Xem yêu cầu, giao việc và bắt đầu công việc ngay bên cạnh danh sách."
   },
   "workflow": {
+    "changeTaskStatus": "Đổi trạng thái công việc",
+    "startUnavailable": "Người thực hiện có thể bắt đầu khi thông tin công việc đã đầy đủ và chiến dịch, nếu có, đang triển khai.",
+    "noStatusActions": "Bạn chưa có thao tác chuyển trạng thái nào ở bước này.",
     "subtitle": "Yêu cầu công việc, người phụ trách và cấu hình duyệt trong không gian làm việc.",
     "openDetail": "Xem chi tiết công việc",
     "back": "Danh sách công việc",
@@ -240,7 +286,7 @@
     "writePost": "Viết bài",
     "started": "Đã bắt đầu công việc.",
     "startHint": "Bấm Viết bài để bắt đầu công việc bài đăng và mở trình soạn thảo. Với loại khác, bấm Bắt đầu làm. Công việc chuyển sang Đang làm và khóa sửa yêu cầu/giao lại.",
-    "chooseCreator": "Chọn người sáng tạo",
+    "chooseCreator": "Chọn thành viên",
     "noCreators": "Workspace chưa có người sáng tạo khả dụng. Hãy thêm thành viên trước.",
     "noQc": "Không yêu cầu kiểm tra chất lượng",
     "yes": "Có",
@@ -258,11 +304,12 @@
       "dueDate": "Hạn hoàn thành",
       "plannedPublishAt": "Ngày đăng dự kiến",
       "inputReferences": "Tài liệu và đầu vào tham khảo",
-      "assigneeId": "Người sáng tạo phụ trách",
+      "assigneeId": "Người thực hiện",
       "qcAssigneeId": "Người kiểm tra chất lượng",
       "requiresClientApproval": "Cần khách hàng duyệt",
       "expectedRevision": "Phiên bản công việc",
-      "targetPlatforms": "Kênh xuất bản mục tiêu"
+      "targetPlatforms": "Kênh xuất bản mục tiêu",
+      "supervisorId": "Người giám sát"
     },
     "errors": {
       "generic": "Không thể thực hiện thao tác. Vui lòng thử lại.",
@@ -281,12 +328,13 @@
       "TASK_REVISION_CONFLICT": "Công việc đã thay đổi. Nội dung bạn nhập vẫn được giữ; tải bản mới nhất sẽ bỏ nội dung chưa lưu.",
       "TASK_DETAIL_NOT_IDENTIFIED": "Cần lưu yêu cầu chi tiết trước khi giao việc.",
       "TASK_WORKFLOW_LOCKED": "Công việc đã bắt đầu hoặc đã kết thúc. Yêu cầu và giao việc hiện bị khóa.",
+      "INVALID_TASK_SUPERVISOR": "Chọn người giám sát thuộc Agency và đang hoạt động trong không gian làm việc.",
       "TASK_START_HISTORY_UNVERIFIED": "Công việc cũ chưa được xác minh lịch sử bắt đầu. Vẫn xem được, nhưng cần rà soát dữ liệu trước khi sửa hoặc giao việc.",
       "TASK_CAMPAIGN_COMPLETED": "Chiến dịch đã hoàn thành. Không thể sửa, giao lại hoặc bắt đầu công việc.",
       "TASK_SCHEMA_NOT_READY": "Cần chạy migration nền Task workflow trước khi lưu hoặc giao việc. Dữ liệu vẫn được xem bình thường.",
       "TASK_STORAGE_UNAVAILABLE": "Kho dữ liệu công việc tạm thời không khả dụng. Hãy tải lại để kiểm tra trước khi thử tiếp.",
       "TASK_TRANSACTIONS_UNAVAILABLE": "MongoDB chưa hỗ trợ giao dịch cần thiết cho thao tác này.",
-      "INVALID_ASSIGNEE": "Người phụ trách phải là người sáng tạo đang hoạt động trong Workspace này.",
+      "INVALID_ASSIGNEE": "Chọn người thực hiện thuộc Agency và đang hoạt động trong không gian làm việc này.",
       "INVALID_QC_ASSIGNEE": "Người kiểm tra chất lượng phải là người sáng tạo đang hoạt động trong Workspace này.",
       "QC_CANNOT_BE_SAME_AS_ASSIGNEE": "Người kiểm tra chất lượng phải khác người thực hiện.",
       "VALIDATION_ERROR": "Có thông tin chưa hợp lệ. Kiểm tra các trường bên dưới."
@@ -328,7 +376,7 @@
     }
   },
   "inline": {
-    "noCreators": "Workspace chưa có người sáng tạo đang hoạt động để giao việc.",
+    "noCreators": "Chưa có thành viên Agency phù hợp để giao việc.",
     "refreshError": "Chưa tải lại được danh sách. Dữ liệu đang hiển thị có thể chưa mới nhất; hãy thử Làm mới sau khi lưu xong.",
     "edit": "Chỉnh sửa {{field}}",
     "empty": "Nhấp để bổ sung",
@@ -362,6 +410,7 @@
     "platformsUpdated": "Đã cập nhật nền tảng mục tiêu.",
     "platformsError": "Không thể cập nhật nền tảng mục tiêu."
   },
+  "platformsTitle": "Nền tảng / Kênh",
   "platforms": {
     "FACEBOOK": "Facebook",
     "INSTAGRAM": "Instagram",
@@ -492,5 +541,8 @@
       "notFound": "Không tìm thấy khảo sát hoặc đường link đã hết hạn.",
       "poweredBy": "Được tạo bởi BrandHub Workshop"
     }
-  }
+  },
+  "supervisor": "Người giám sát",
+  "assigneeId": "Người thực hiện",
+  "supervisorId": "Người giám sát"
 }

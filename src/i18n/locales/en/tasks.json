@@ -1,4 +1,40 @@
 {
+  "subtasks": {
+    "title": "Subtasks",
+    "add": "Add subtask",
+    "edit": "Edit",
+    "empty": "No subtasks yet.",
+    "assignee": "Assignee",
+    "supervisor": "Supervisor",
+    "parentAssignee": "Use parent task assignee",
+    "parentAssigneeName": "Parent task assignee",
+    "defaultAssignee": "Default",
+    "unassigned": "Unassigned",
+    "createQuick": "Quick Create Subtask",
+    "quickHint": "Additional details can be configured in Task Details",
+    "createdSuccess": "Subtask created successfully!",
+    "createError": "Could not create subtask. Please check your inputs.",
+    "missingAssignee": "Please select an assignee for this subtask.",
+    "whatNeedsToBeDone": "What needs to be done?",
+    "createAction": "Create",
+    "clickToAdd": "+ Add",
+    "changeStatus": "Change status for {{name}}",
+    "unknownStatus": "Unknown status",
+    "name": "Subtask name",
+    "example": "For example, prepare content",
+    "selectMember": "Select a member",
+    "deadline": "Deadline",
+    "save": "Save",
+    "dismiss": "Discard edits",
+    "error": "Could not update the subtask. Try again.",
+    "status": {
+      "TODO": "To Do",
+      "IN_PROGRESS": "In Progress",
+      "IN_REVIEW": "In Review",
+      "FINISHED": "Done",
+      "CANCELLED": "Cancelled"
+    }
+  },
   "phoneMedia": {
     "title": "Files from phone",
     "loading": "Loading files...",
@@ -16,6 +52,7 @@
       "VALIDATING": "Checking",
       "REJECTED": "Rejected",
       "FAILED": "Failed"
+
     }
   },
   "approvalPage": {
@@ -38,6 +75,8 @@
     "openTask": "View task"
   },
   "review": {
+    "publishAfterClientApproval": "Publish after client approval",
+    "publishAfterClientApprovalHint": "The post will enter the publishing queue after final approval.",
     "collapseHistory": "Collapse history",
     "expandHistory": "Expand history",
     "copyFailed": "Could not copy content. Please try again.",
@@ -47,7 +86,7 @@
     "currentRound": "Round {{round}}",
     "waitingStep": "Waiting for {{step}} approval",
     "steps": {
-      "MANAGER": "Manager",
+      "MANAGER": "Supervisor",
       "CLIENT": "Client",
       "QC": "Quality check (historical)"
     },
@@ -123,12 +162,15 @@
       "TASK_REVIEW_TYPE_UNSUPPORTED": "Content approval is not integrated for this task type. Only Posts are supported for now; other types will be connected later.",
       "TASK_REVIEW_CLIENT_REQUIRED": "No active Client account is available to approve. Ask the Manager to add one; the Client step is never skipped automatically.",
       "TASK_REVIEW_MANAGER_REQUIRED": "No active Manager can receive the submission. Check the Workspace membership.",
+      "INVALID_TASK_SUPERVISOR": "Choose an active agency member in this workspace.",
+      "TASK_SUBTASKS_UNFINISHED": "Finish or cancel every subtask before submitting the parent task for review.",
       "TASK_POST_LINK_REQUIRED": "No linked post is available. The Creator must save a post in the editor before submitting.",
       "TASK_POST_LINK_CONFLICT": "The task–post link needs checking. Do not create a replacement post to bypass this error.",
       "TASK_START_HISTORY_UNVERIFIED": "The legacy task start history is unverified. Ask an administrator to review it; do not reset its state.",
       "TASK_REVISION_CONFLICT": "The task changed. Reload its state and content before deciding again.",
       "TASK_APPROVAL_ROUND_CONFLICT": "The approval round changed. Reload and check the current round before deciding.",
       "POST_CONTENT_CONFLICT": "The post content changed. Reload and read it before deciding; your note is preserved.",
+      "INVALID_APPROVAL_SCHEDULE": "Choose a publishing date and time in the future.",
       "TASK_REVIEW_STATE_CONFLICT": "The task or post state no longer permits this action. If the post returned to draft, only authorized withdrawal or rejection can reopen editing.",
       "TASK_REVIEW_CONTENT_LOCKED": "The content is in review or finalized and cannot be edited.",
       "TASK_WITHDRAW_NOT_ALLOWED": "Withdrawal is no longer allowed; it is available only before the Manager decides.",
@@ -203,6 +245,7 @@
   "scheduleInEditorHint": "Open Editor to configure publishing date and time.",
   "timeline": "Completion deadline timeline",
   "noBoardTasks": "No tasks",
+  "activity": "Activity",
   "details": "Task details",
   "assignee": "Assignee",
   "source": "Source",
@@ -220,6 +263,9 @@
     "hint": "Review requirements, assign and start work alongside the task list."
   },
   "workflow": {
+    "changeTaskStatus": "Change task status",
+    "startUnavailable": "The assignee can start once the task is ready and its campaign, if any, is in progress.",
+    "noStatusActions": "No status changes are available to you at this step.",
     "subtitle": "Task requirements, assignee and review configuration in this workspace.",
     "openDetail": "View task details",
     "back": "Task list",
@@ -240,7 +286,7 @@
     "writePost": "Write post",
     "started": "Work started.",
     "startHint": "Select Write post to start a post task and open the editor. For other task types, select Start work. The task moves to In progress and locks requirements and reassignment.",
-    "chooseCreator": "Choose a creator",
+    "chooseCreator": "Choose a member",
     "noCreators": "No available creators in this workspace. Add a member first.",
     "noQc": "No quality review",
     "yes": "Yes",
@@ -258,11 +304,12 @@
       "dueDate": "Completion deadline",
       "plannedPublishAt": "Planned publication",
       "inputReferences": "References and inputs",
-      "assigneeId": "Assigned creator",
+      "assigneeId": "Assignee",
       "qcAssigneeId": "Quality reviewer",
       "requiresClientApproval": "Requires client approval",
       "expectedRevision": "Task version",
-      "targetPlatforms": "Target Social Platforms"
+      "targetPlatforms": "Target Social Platforms",
+      "supervisorId": "Supervisor"
     },
     "errors": {
       "generic": "Unable to complete this action. Please try again.",
@@ -281,12 +328,13 @@
       "TASK_REVISION_CONFLICT": "This task changed. Your input is retained; loading the latest version discards unsaved input.",
       "TASK_DETAIL_NOT_IDENTIFIED": "Save detailed requirements before assignment.",
       "TASK_WORKFLOW_LOCKED": "Work has started or ended. Requirements and assignment are locked.",
+      "INVALID_TASK_SUPERVISOR": "Choose an active agency member in this workspace.",
       "TASK_START_HISTORY_UNVERIFIED": "This legacy task has unverified start history. It remains readable; review its data before editing or assignment.",
       "TASK_CAMPAIGN_COMPLETED": "The campaign is complete. Editing, reassignment and starting work are locked.",
       "TASK_SCHEMA_NOT_READY": "Run the Task workflow foundation migration before saving or assigning. Reading remains available.",
       "TASK_STORAGE_UNAVAILABLE": "Task storage is temporarily unavailable. Reload to check before retrying.",
       "TASK_TRANSACTIONS_UNAVAILABLE": "MongoDB transactions required for this action are unavailable.",
-      "INVALID_ASSIGNEE": "The assignee must be an active creator in this workspace.",
+      "INVALID_ASSIGNEE": "Choose an active agency member in this workspace.",
       "INVALID_QC_ASSIGNEE": "The quality reviewer must be an active creator in this workspace.",
       "QC_CANNOT_BE_SAME_AS_ASSIGNEE": "The quality reviewer must differ from the assignee.",
       "VALIDATION_ERROR": "Some fields are invalid. Check the fields below."
@@ -328,7 +376,7 @@
     }
   },
   "inline": {
-    "noCreators": "This Workspace has no active Creator available for assignment.",
+    "noCreators": "There are no eligible agency members to assign.",
     "refreshError": "Could not refresh the list. Displayed rows may be outdated; try Refresh after saving.",
     "edit": "Edit {{field}}",
     "empty": "Click to add",
@@ -362,6 +410,7 @@
     "platformsUpdated": "Target platforms updated.",
     "platformsError": "Failed to update target platforms."
   },
+  "platformsTitle": "Platforms / Channels",
   "platforms": {
     "FACEBOOK": "Facebook",
     "INSTAGRAM": "Instagram",
@@ -492,5 +541,8 @@
       "notFound": "Survey not found or the link has expired.",
       "poweredBy": "Powered by BrandHub Workshop"
     }
-  }
+  },
+  "supervisor": "Supervisor",
+  "assigneeId": "Assignee",
+  "supervisorId": "Supervisor"
 }

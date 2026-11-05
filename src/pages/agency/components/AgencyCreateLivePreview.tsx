@@ -92,7 +92,7 @@ export const AgencyCreateLivePreview: React.FC<AgencyCreateLivePreviewProps> = (
             <div
               className="flex size-full items-center justify-center transition-colors text-white"
               style={{
-                backgroundColor: brandColor || "#ca3d0e",
+                backgroundColor: brandColor || "#f05a28",
                 color: "#ffffff",
               }}
             >

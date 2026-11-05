@@ -14,6 +14,7 @@ export interface TaskReview {
   schemaReady: boolean;
   blockedReason: string | null;
   supportedType: boolean;
+  canScheduleOnApproval: boolean;
   lastSubmission?: {
     round: number;
     submittedBy: string;
@@ -56,4 +57,5 @@ export interface ReviewExpected {
   expectedPostContentVersion?: number;
   expectedStep?: ReviewStep;
   comment?: string;
+  publishDate?: string;
 }

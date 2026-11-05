@@ -16,6 +16,8 @@ const ACTION_KEYS = {
 
 export function reviewMatches(view: TaskReviewView) {
   const { review, linked } = view;
+  if (review.supportedType && !review.postId && !linked && !view.postError)
+    return review.workflowRevision !== null;
   return (
     !view.postError &&
     !!linked?.post &&
@@ -40,7 +42,8 @@ export function reviewExpected(
     expectedApprovalRound: review.approvalRound,
   };
   if (action === "withdraw") return expected;
-  expected.expectedPostContentVersion = review.postContentVersion!;
+  if (review.postContentVersion !== null)
+    expected.expectedPostContentVersion = review.postContentVersion;
   if (action === "submit") return expected;
   if (review.reviewStep !== "MANAGER" && review.reviewStep !== "CLIENT")
     throw new Error("REVIEW_VIEW_STALE");
