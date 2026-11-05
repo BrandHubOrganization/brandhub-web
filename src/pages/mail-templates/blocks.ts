@@ -195,7 +195,7 @@ const esc = (v: unknown) =>
     .replace(/'/g, "&#39;");
 
 const FONT = "-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
-const ACCENT = "#ca3d0e";
+const ACCENT = "#f05a28";
 
 /** One block as the server renders it (MailBlockRenderer): inline styles only, every value escaped. */
 function previewBlock(type: BlockType, props: BlockProps, locale: MailLocale): string {

@@ -6,7 +6,7 @@
 
 export const colors = {
   // Brand & Accent
-  brandOrange: "#ca3d0e",
+  brandOrange: "#f05a28",
   brandOrangeSoft: "#fff0eb",
 
   // Surface
@@ -17,7 +17,7 @@ export const colors = {
   hairline: "#e4e4e7",
   sidebarBg: "#09090b",
   sidebarFg: "#fafafa",
-  sidebarActive: "#ca3d0e",
+  sidebarActive: "#f05a28",
   sidebarActiveFg: "#ffffff",
 
   // Text

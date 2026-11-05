@@ -48,7 +48,7 @@ export function CreateAgencyPage() {
   const [website, setWebsite] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
-  const [brandColor, setBrandColor] = useState("#ca3d0e");
+  const [brandColor, setBrandColor] = useState("#f05a28");
   const [tagline, setTagline] = useState("");
   const [foundedYear, setFoundedYear] = useState("");
   const [facebookUrl, setFacebookUrl] = useState("");

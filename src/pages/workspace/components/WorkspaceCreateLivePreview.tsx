@@ -43,7 +43,7 @@ export const WorkspaceCreateLivePreview: React.FC<
   name,
   tagline,
   description,
-  brandColor = "#ca3d0e",
+  brandColor = "#f05a28",
   logoIcon,
   foundedYear,
   industry,
@@ -113,7 +113,7 @@ export const WorkspaceCreateLivePreview: React.FC<
             <div
               className="size-18 shrink-0 overflow-hidden rounded-2xl border-4 border-card bg-card shadow-md flex items-center justify-center transition-colors duration-300"
               style={{
-                backgroundColor: brandColor || "#ca3d0e",
+                backgroundColor: brandColor || "#f05a28",
                 color: "#ffffff",
               }}
             >

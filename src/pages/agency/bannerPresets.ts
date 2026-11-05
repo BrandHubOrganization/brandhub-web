@@ -13,7 +13,7 @@ export const BANNER_PRESETS: BannerPreset[] = [
     name: "Sunset Ember",
     category: "gradient",
     url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1400&auto=format&fit=crop&q=80",
-    previewGradient: "linear-gradient(135deg, #ca3d0e 0%, #ff8c42 50%, #f9c784 100%)",
+    previewGradient: "linear-gradient(135deg, #f05a28 0%, #ff8c42 50%, #f9c784 100%)",
   },
   {
     id: "deep-ocean",

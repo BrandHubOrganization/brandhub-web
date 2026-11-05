@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 const COLOR_SWATCHES = [
-  "#ca3d0e", // Brand Orange
+  "#f05a28", // Brand Orange
   "#2563eb", // Royal Blue
   "#059669", // Emerald
   "#7c3aed", // Violet
