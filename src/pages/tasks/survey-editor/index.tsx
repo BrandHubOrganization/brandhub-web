@@ -1,291 +1,18 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
-import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
-import { surveyService } from "@/services/surveyService";
-import { useWorkspaceStore } from "@/store/workspaceStore";
-import { SurveyShareDialog } from "@/pages/tasks/components/survey/SurveyShareDialog";
+import { useSurveyEditor } from "@/pages/tasks/hooks/useSurveyEditor";
+import { SurveyEditorHeader } from "@/pages/tasks/components/survey/SurveyEditorHeader";
+import { SurveyQuestionsView } from "@/pages/tasks/components/survey/SurveyQuestionsView";
 import { SurveyAnalysisView } from "@/pages/tasks/components/survey/SurveyAnalysisView";
-import { SurveyEditorHeader } from "./SurveyEditorHeader";
-import { SurveyQuestionsView } from "./SurveyQuestionsView";
-import type {
-  SurveyModel,
-  SurveyQuestion,
-  SurveyAnalysis,
-  SurveySaveRequest,
-} from "@/pages/tasks/types/survey";
-
-const createDefaultQ = (t: TFunction): SurveyQuestion => ({
-  id: "q_" + Math.random().toString(36).slice(2, 9),
-  type: "MULTIPLE_CHOICE",
-  label: "",
-  timeSlot: "00:00",
-  options: [
-    t("tasks.survey.optionPlaceholder", { index: 1 }),
-    t("tasks.survey.optionPlaceholder", { index: 2 }),
-  ],
-  required: true,
-});
-
-const buildSurveyPayload = (
-  rawFormName: string,
-  rawTitle: string,
-  rawDescription: string,
-  rawQuestions: SurveyQuestion[],
-  fallbackTitle: string,
-): SurveySaveRequest => ({
-  formName: rawFormName.trim() || undefined,
-  title: rawTitle.trim() || rawFormName.trim() || "Untitled form",
-  description: rawDescription.trim() || undefined,
-  questions: rawQuestions.map((q) => ({
-    ...q,
-    label: q.label.trim() || fallbackTitle,
-  })),
-});
+import { SurveyShareDialog } from "@/pages/tasks/components/survey/SurveyShareDialog";
 
 export default function SurveyEditorPage() {
   const { id = "", taskId = "" } = useParams<{ id: string; taskId: string }>();
-  const workspaceId = id;
-  const navigate = useNavigate();
   const { t } = useTranslation();
-  // The save API accepts Managers and Creators; Owners and Clients only read the results.
-  const canEdit = useWorkspaceStore((s) => {
-    const role = s.currentMemberRole || s.currentWorkspace?.myRole;
-    return role === "MANAGER" || role === "CREATOR";
-  });
+  const editor = useSurveyEditor(id, taskId);
 
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<
-    "idle" | "saving" | "saved" | "error"
-  >("idle");
-  const isInitialLoadRef = useRef(true);
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastSavedPayloadRef = useRef<string>("");
-
-  const [survey, setSurvey] = useState<SurveyModel | null>(null);
-  const [analysis, setAnalysis] = useState<SurveyAnalysis | null>(null);
-  const [formName, setFormName] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [questions, setQuestions] = useState<SurveyQuestion[]>([]);
-  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"questions" | "responses">(
-    "questions",
-  );
-  const [shareOpen, setShareOpen] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-    const init = async () => {
-      try {
-        const [surveyRes, analysisRes] = await Promise.allSettled([
-          surveyService.getSurvey(workspaceId, taskId),
-          surveyService.getSurveyAnalysis(workspaceId, taskId),
-        ]);
-        if (!mounted) return;
-        if (surveyRes.status === "fulfilled") {
-          const data = surveyRes.value;
-          setSurvey(data);
-          const fVal = data.formName || data.title || "";
-          const tVal = data.title || "";
-          const dVal = data.description || "";
-          const qs = data.questions?.length
-            ? data.questions
-            : [createDefaultQ(t)];
-          setFormName(fVal);
-          setTitle(tVal);
-          setDescription(dVal);
-          setQuestions(qs);
-          setActiveQuestionId(qs[0].id);
-          lastSavedPayloadRef.current = JSON.stringify(
-            buildSurveyPayload(
-              fVal,
-              tVal,
-              dVal,
-              qs,
-              t("tasks.survey.questionTitlePlaceholder"),
-            ),
-          );
-        } else {
-          const fallback = [createDefaultQ(t)];
-          setFormName("");
-          setTitle("");
-          setDescription("");
-          setQuestions(fallback);
-          setActiveQuestionId(fallback[0].id);
-          lastSavedPayloadRef.current = JSON.stringify(
-            buildSurveyPayload(
-              "",
-              "",
-              "",
-              fallback,
-              t("tasks.survey.questionTitlePlaceholder"),
-            ),
-          );
-        }
-        if (analysisRes.status === "fulfilled") {
-          setAnalysis(analysisRes.value);
-        }
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-    void init();
-    return () => {
-      mounted = false;
-    };
-  }, [workspaceId, taskId, t]);
-
-  const handleBack = useCallback(() => {
-    navigate(
-      `/workspaces/${encodeURIComponent(workspaceId)}/tasks?task=${encodeURIComponent(taskId)}`,
-    );
-  }, [navigate, workspaceId, taskId]);
-
-  const handleAddQuestion = () => {
-    const newQ = { ...createDefaultQ(t), required: false };
-    setQuestions((prev) => [...prev, newQ]);
-    setActiveQuestionId(newQ.id);
-  };
-
-  const handleDuplicateQuestion = (idx: number) => {
-    const q = questions[idx];
-    const clone: SurveyQuestion = {
-      ...q,
-      id: "q_" + Math.random().toString(36).slice(2, 9),
-      options: q.options ? [...q.options] : undefined,
-    };
-    setQuestions((prev) => [
-      ...prev.slice(0, idx + 1),
-      clone,
-      ...prev.slice(idx + 1),
-    ]);
-    setActiveQuestionId(clone.id);
-  };
-
-  const handleDeleteQuestion = (idx: number) => {
-    if (questions.length <= 1) {
-      toast.error(t("tasks.survey.emptyQuestions"));
-      return;
-    }
-    const updated = questions.filter((_, i) => i !== idx);
-    setQuestions(updated);
-    if (activeQuestionId === questions[idx]?.id) {
-      setActiveQuestionId(updated[Math.max(0, idx - 1)]?.id || null);
-    }
-  };
-
-  const handleUpdateQuestion = (
-    idx: number,
-    updates: Partial<SurveyQuestion>,
-  ) => {
-    setQuestions((prev) =>
-      prev.map((q, i) => (i === idx ? { ...q, ...updates } : q)),
-    );
-  };
-
-  const handleSave = async () => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-      debounceTimerRef.current = null;
-    }
-    if (questions.length === 0) {
-      toast.error(t("tasks.survey.emptyQuestions"));
-      return;
-    }
-    try {
-      setSaving(true);
-      setSaveStatus("saving");
-      const payload = buildSurveyPayload(
-        formName,
-        title,
-        description,
-        questions,
-        t("tasks.survey.questionTitlePlaceholder"),
-      );
-      const saved = await surveyService.saveSurvey(
-        workspaceId,
-        taskId,
-        payload,
-      );
-      setSurvey(saved);
-      lastSavedPayloadRef.current = JSON.stringify(payload);
-      setSaveStatus("saved");
-      toast.success(t("tasks.survey.savedSuccess"));
-    } catch {
-      setSaveStatus("error");
-      toast.error(t("tasks.survey.saveError"));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  // Debounced auto-save (1500ms)
-  useEffect(() => {
-    if (loading || isInitialLoadRef.current) {
-      if (!loading && isInitialLoadRef.current) {
-        isInitialLoadRef.current = false;
-      }
-      return;
-    }
-
-    if (questions.length === 0 || !canEdit) {
-      return;
-    }
-
-    const payload = buildSurveyPayload(
-      formName,
-      title,
-      description,
-      questions,
-      t("tasks.survey.questionTitlePlaceholder"),
-    );
-    const payloadStr = JSON.stringify(payload);
-    if (payloadStr === lastSavedPayloadRef.current) {
-      return;
-    }
-
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    debounceTimerRef.current = setTimeout(async () => {
-      try {
-        setSaveStatus("saving");
-        const saved = await surveyService.saveSurvey(
-          workspaceId,
-          taskId,
-          payload,
-        );
-        setSurvey(saved);
-        lastSavedPayloadRef.current = payloadStr;
-        setSaveStatus("saved");
-      } catch {
-        setSaveStatus("error");
-      }
-    }, 1500);
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, [
-    formName,
-    title,
-    description,
-    questions,
-    workspaceId,
-    taskId,
-    loading,
-    t,
-    canEdit,
-  ]);
-
-  if (loading) {
+  if (editor.loading) {
     return (
       <div className="bg-background text-muted-foreground flex min-h-screen items-center justify-center p-8 text-sm">
         <Spinner className="text-brand-orange mr-2 size-6" />
@@ -294,62 +21,64 @@ export default function SurveyEditorPage() {
     );
   }
 
-  const isPublished = Boolean(survey?.publicLink || survey?.publicToken);
-  const publicUrl = survey?.publicLink
-    ? survey.publicLink
-    : survey?.publicToken
-      ? `${window.location.origin}/public/surveys/${survey.publicToken}`
-      : "";
-
   return (
     <div className="bg-background min-h-screen">
       <SurveyEditorHeader
-        formName={formName}
-        onFormNameChange={setFormName}
-        isPublished={isPublished}
-        spreadsheetUrl={survey?.spreadsheetUrl}
-        publicUrl={publicUrl}
-        totalResponses={analysis?.totalResponses ?? 0}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        onBack={handleBack}
-        onShare={() => setShareOpen(true)}
-        onSave={() => void handleSave()}
-        saving={saving}
-        saveStatus={saveStatus}
-        canEdit={canEdit}
+        formName={editor.formName}
+        onFormNameChange={editor.setFormName}
+        isPublished={editor.isPublished}
+        spreadsheetUrl={editor.survey?.spreadsheetUrl}
+        publicUrl={editor.publicUrl}
+        totalResponses={editor.analysis?.totalResponses ?? 0}
+        activeTab={editor.activeTab}
+        onTabChange={editor.setActiveTab}
+        onBack={editor.handleBack}
+        onShare={() => editor.setShareOpen(true)}
+        onSave={() => void editor.handleSave()}
+        saving={editor.saving}
+        saveStatus={editor.saveStatus}
+        canEdit={editor.canEdit}
       />
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
-        {canEdit && activeTab === "questions" ? (
+        {editor.canEdit && editor.activeTab === "questions" ? (
           <SurveyQuestionsView
-            title={title}
-            description={description}
-            onTitleChange={setTitle}
-            onDescriptionChange={setDescription}
-            questions={questions}
-            activeQuestionId={activeQuestionId}
-            onSelectQuestion={setActiveQuestionId}
-            onUpdateQuestion={handleUpdateQuestion}
-            onDuplicateQuestion={handleDuplicateQuestion}
-            onDeleteQuestion={handleDeleteQuestion}
-            onAddQuestion={handleAddQuestion}
-            onSave={() => void handleSave()}
-            saving={saving}
-            isPublished={isPublished}
+            title={editor.title}
+            description={editor.description}
+            bannerUrl={editor.bannerUrl}
+            onTitleChange={editor.setTitle}
+            onDescriptionChange={editor.setDescription}
+            onBannerChange={editor.setBannerUrl}
+            questions={editor.questions}
+            activeQuestionId={editor.activeQuestionId}
+            onSelectQuestion={editor.setActiveQuestionId}
+            onUpdateQuestion={editor.handleUpdateQuestion}
+            onDuplicateQuestion={editor.handleDuplicateQuestion}
+            onDeleteQuestion={editor.handleDeleteQuestion}
+            onMoveQuestion={editor.handleMoveQuestion}
+            onAddQuestion={editor.handleAddQuestion}
+            onAddSection={editor.handleAddSection}
+            onMergeSection={editor.handleMergeSection}
+            onDuplicateSection={editor.handleDuplicateSection}
+            onMoveSection={editor.handleMoveSection}
+            onDeleteSection={editor.handleDeleteSection}
+            onUpdateSectionNext={editor.handleUpdateSectionNext}
+            onSave={() => void editor.handleSave()}
+            saving={editor.saving}
+            isPublished={editor.isPublished}
           />
         ) : (
-          <SurveyAnalysisView workspaceId={workspaceId} taskId={taskId} />
+          <SurveyAnalysisView workspaceId={id} taskId={taskId} />
         )}
       </main>
 
-      {isPublished && (
+      {editor.isPublished && (
         <SurveyShareDialog
-          open={shareOpen}
-          onOpenChange={setShareOpen}
-          surveyTitle={title || formName}
-          publicUrl={publicUrl}
-          spreadsheetUrl={survey?.spreadsheetUrl}
+          open={editor.shareOpen}
+          onOpenChange={editor.setShareOpen}
+          surveyTitle={editor.title || editor.formName}
+          publicUrl={editor.publicUrl}
+          spreadsheetUrl={editor.survey?.spreadsheetUrl}
         />
       )}
     </div>
