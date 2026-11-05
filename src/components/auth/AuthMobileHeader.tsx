@@ -7,11 +7,8 @@ import { BrandHubLogo } from "./BrandHubLogo";
 export function AuthMobileHeader() {
   return (
     <div className="mb-10 flex items-center gap-2.5 select-none lg:hidden">
-      <div
-        className="flex h-7 w-7 items-center justify-center rounded-md"
-        style={{ background: "hsl(var(--primary))" }}
-      >
-        <BrandHubLogo size={14} />
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center">
+        <BrandHubLogo size={28} />
       </div>
       <span
         className="text-foreground"

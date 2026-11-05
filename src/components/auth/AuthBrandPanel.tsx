@@ -36,11 +36,8 @@ export function AuthBrandPanel() {
       style={{ background: "hsl(var(--sidebar, 240 6% 4%))" }}
     >
       <div className="flex items-center gap-2.5">
-        <div
-          className="flex h-8 w-8 items-center justify-center rounded-md"
-          style={{ background: "hsl(var(--primary))" }}
-        >
-          <BrandHubLogo />
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center">
+          <BrandHubLogo size={32} />
         </div>
         <span
           style={{
