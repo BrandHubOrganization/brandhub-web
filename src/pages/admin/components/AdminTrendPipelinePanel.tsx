@@ -145,11 +145,11 @@ export function AdminTrendPipelinePanel() {
           )}
 
           {/* 2-Column Balanced Cockpit Layout on Desktop */}
-          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-12">
-            <div className="lg:col-span-5">
+          <div className="grid grid-cols-1 items-stretch gap-5 lg:grid-cols-12">
+            <div className="flex flex-col lg:col-span-5">
               <CrawlerRunLauncher />
             </div>
-            <div className="lg:col-span-7">
+            <div className="flex flex-col lg:col-span-7">
               <HealthPanel hideRefresh />
             </div>
           </div>
