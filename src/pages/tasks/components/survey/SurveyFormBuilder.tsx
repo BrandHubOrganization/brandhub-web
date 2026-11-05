@@ -55,7 +55,7 @@ export function SurveyFormBuilder({ workspaceId, taskId, taskTitle, onUpdated }:
   };
   const handleDuplicateQuestion = (idx: number) => {
     const q = questions[idx];
-    const clone = { ...q, id: "q_" + Math.random().toString(36).slice(2, 9), options: q.options ? [...q.options] : undefined };
+    const clone = { ...q, id: createDefaultQ(t).id, options: q.options ? [...q.options] : undefined };
     setQuestions((prev) => [...prev.slice(0, idx + 1), clone, ...prev.slice(idx + 1)]);
     setActiveQuestionId(clone.id);
   };

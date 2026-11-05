@@ -37,9 +37,7 @@ export function TaskRowActions({
   const userId = useAuthStore((store) => store.user?.id);
   const manager = role === "MANAGER";
   const creator = role === "CREATOR" && userId === task.assigneeId;
-  const todo = ["TODO", "BACKLOG", "DETAIL_IDENTIFIED", "ASSIGNED"].includes(
-    task.status,
-  );
+  const todo = task.status === "TODO";
   let display = task.assigneeName || t("tasks.unassigned");
   if (field === "deadline")
     display =
@@ -70,8 +68,7 @@ export function TaskRowActions({
   if (!eligible) {
     if (field === "start") {
       if (task.type === "POST") {
-        const isFinished =
-          task.status === "FINISHED" || task.status === "COMPLETED";
+        const isFinished = task.status === "FINISHED";
         const isInReview = task.status === "IN_REVIEW";
         const isTodo = todo;
         const isOtherCreator = role === "CREATOR" && userId !== task.assigneeId;

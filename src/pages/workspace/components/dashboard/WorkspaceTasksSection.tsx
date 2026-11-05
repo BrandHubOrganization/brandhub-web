@@ -4,8 +4,7 @@ import { FolderKanban, ChevronRight, Plus, FileEdit, Calendar } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { WorkspaceCampaignSummary } from "../WorkspaceCampaignSummary";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
-import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
-import type { TaskListItem, TaskStatus } from "@/types/task";
+import type { TaskListItem } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 
 interface WorkspaceTasksSectionProps {
@@ -86,7 +85,7 @@ export function WorkspaceTasksSection({
         ) : (
           <div className="space-y-2.5">
             {tasks.map((task) => {
-              const canonical = canonicalTaskStatus(task.status as TaskStatus);
+              const canonical = task.status;
               const statusInfo = STATUS_CONFIG[canonical] || STATUS_CONFIG.TODO;
               return (
                 <div

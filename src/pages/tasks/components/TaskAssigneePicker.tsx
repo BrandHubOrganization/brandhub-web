@@ -14,8 +14,6 @@ import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
 import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
-import { useWorkspaceStore } from "@/store/workspaceStore";
-import { useAuthStore } from "@/store/authStore";
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
 export function TaskAssigneePicker({
@@ -35,19 +33,7 @@ export function TaskAssigneePicker({
   const [open, setOpen] = useState(false);
   const state = useTaskWorkflow(workspaceId, taskId, open || !propTask);
   const task = propTask || state.query.data;
-  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
-  const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
-  const systemRole = useAuthStore((s) => s.systemRole);
-  const role = currentMemberRole || currentWorkspace?.myRole;
-  const canManage =
-    role === "MANAGER" ||
-    role === "OWNER" ||
-    systemRole === "ADMIN";
-  const canPick =
-    canManage ||
-    Boolean(task?.allowedActions?.canAssign) ||
-    Boolean(task?.allowedActions?.canEditDetail) ||
-    (role !== "CLIENT" && task?.status !== "FINISHED" && task?.status !== "CANCELLED");
+  const canPick = task?.allowedActions.canAssign === true;
 
   const field = useInlineTaskField(
     `task-${taskId}-${scope}-assignee`,
@@ -57,7 +43,7 @@ export function TaskAssigneePicker({
   const pending = field.status === "saving";
 
   const options = useQuery({
-    queryKey: ["task-member-options", workspaceId, taskId],
+    queryKey: ["task-member-options", workspaceId, taskId, task?.supervisorId],
     queryFn: () => taskWorkflowService.options(workspaceId, taskId),
     enabled: open && canPick,
     retry: false,
@@ -84,7 +70,7 @@ export function TaskAssigneePicker({
             variant="outline"
             size="sm"
             disabled={pending || !canPick}
-            className="border-input bg-card/60 hover:bg-muted/80 text-foreground h-8 max-w-full justify-between gap-2 px-2.5 text-xs font-normal rounded-lg cursor-pointer shadow-2xs"
+            className="border-input bg-card/60 hover:bg-muted/80 text-foreground h-8 max-w-full cursor-pointer justify-between gap-2 rounded-lg px-2.5 text-xs font-normal shadow-2xs"
             aria-label={t("tasks.inline.edit", { field: t("tasks.assignee") })}
           >
             <span className="truncate font-medium">{label}</span>
@@ -96,7 +82,7 @@ export function TaskAssigneePicker({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="start"
-          className="w-72 max-w-[calc(100vw-2rem)] rounded-xl p-1 shadow-lg z-[70]"
+          className="z-[70] w-72 max-w-[calc(100vw-2rem)] rounded-xl p-1 shadow-lg"
           onEscapeKeyDown={(event) => {
             if (pending) event.preventDefault();
           }}
@@ -104,7 +90,7 @@ export function TaskAssigneePicker({
             if (pending) event.preventDefault();
           }}
         >
-          <DropdownMenuLabel className="text-muted-foreground text-2xs uppercase tracking-wider font-semibold">
+          <DropdownMenuLabel className="text-muted-foreground text-2xs font-semibold tracking-wider uppercase">
             {t("tasks.workflow.chooseCreator")}
           </DropdownMenuLabel>
           {state.query.isPending && (
@@ -138,13 +124,15 @@ export function TaskAssigneePicker({
           {canPick && !state.query.isError && (
             <>
               {options.isPending && (
-                <p role="status" className="p-2 text-xs text-muted-foreground">
+                <p role="status" className="text-muted-foreground p-2 text-xs">
                   {t("tasks.loading")}
                 </p>
               )}
               {options.isError && (
                 <div role="alert" className="space-y-2 p-2 text-sm">
-                  <p className="text-xs text-destructive">{t("tasks.inline.membersError")}</p>
+                  <p className="text-destructive text-xs">
+                    {t("tasks.inline.membersError")}
+                  </p>
                   <Button
                     size="sm"
                     variant="outline"
@@ -166,7 +154,7 @@ export function TaskAssigneePicker({
                     <DropdownMenuItem
                       key={member.userId}
                       disabled={pending}
-                      className="min-h-9 cursor-pointer text-xs rounded-lg flex items-center justify-between"
+                      className="flex min-h-9 cursor-pointer items-center justify-between rounded-lg text-xs"
                       onSelect={(event) => {
                         event.preventDefault();
                         void save(member.userId);
@@ -176,7 +164,10 @@ export function TaskAssigneePicker({
                         {member.displayName}
                       </span>
                       {task?.assigneeId === member.userId && (
-                        <Check aria-hidden className="size-4 shrink-0 text-brand-orange" />
+                        <Check
+                          aria-hidden
+                          className="text-brand-orange size-4 shrink-0"
+                        />
                       )}
                     </DropdownMenuItem>
                   ))}

@@ -36,12 +36,7 @@ function normalizePostStatus(
   const ps = String(postStatus || "").toUpperCase();
   const ts = String(taskStatus || "").toUpperCase();
 
-  if (
-    ps === "PUBLISHED" ||
-    ps === "COMPLETED" ||
-    ts === "FINISHED" ||
-    ts === "COMPLETED"
-  ) {
+  if (ps === "PUBLISHED") {
     return "PUBLISHED";
   }
   if (ps === "FAILED" || ps === "CANCELLED" || ts === "CANCELLED") {
@@ -58,7 +53,7 @@ function normalizePostStatus(
   ) {
     return "SCHEDULED";
   }
-  if (ps === "DRAFT" || ts === "TODO" || ts === "BACKLOG") {
+  if (ps === "DRAFT" || ts === "TODO") {
     return "DRAFT";
   }
   return "SCHEDULED";

@@ -1,7 +1,6 @@
 import { api } from "@/services/api";
 import type { TaskListItem, TaskListFilterParams } from "@/types/task";
 import { requireApiData } from "@/lib/apiData";
-import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import type { ApiResponse } from "@/services/authService";
 import type { MeetingLinkResponse } from "@/pages/tasks/types/taskWorkflow";
 
@@ -55,13 +54,7 @@ export const taskService = {
     ) {
       throw new Error("INVALID_TASK_PAGE");
     }
-    return {
-      ...result,
-      content: result.content.map((task) => ({
-        ...task,
-        status: canonicalTaskStatus(task.status),
-      })),
-    };
+    return result;
   },
 
   generateLivestreamMeetingLink: async (

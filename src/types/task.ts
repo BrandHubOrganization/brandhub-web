@@ -4,14 +4,7 @@ export type TaskStatus =
   | "TODO"
   | "IN_REVIEW"
   | "FINISHED"
-  | "BACKLOG"
-  | "DETAIL_IDENTIFIED"
-  | "ASSIGNED"
   | "IN_PROGRESS"
-  | "QC_REVIEW"
-  | "MANAGER_REVIEW"
-  | "CLIENT_REVIEW"
-  | "COMPLETED"
   | "CANCELLED";
 
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";

@@ -2,16 +2,18 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
-import { Check } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { Check, Layers, Rocket, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { HelpHint } from "@/components/shared/HelpHint";
-import { CampaignNextStep } from "@/pages/campaign/components/CampaignNextStep";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { type CampaignTab } from "@/pages/campaign/components/CampaignNextStep";
 import { CampaignForm } from "@/pages/campaign/components/CampaignForm";
 import { CampaignDetail } from "@/pages/campaign/components/CampaignDetail";
 import { CampaignReview } from "@/pages/campaign/components/CampaignReview";
+import { missingApprovalFields } from "@/pages/campaign/approvalRequirements";
 import { CampaignDelivery } from "@/pages/campaign/components/CampaignDelivery";
 import { campaignService } from "@/pages/campaign/services/campaignService";
 import type { Campaign, CampaignPlan } from "@/pages/campaign/types";
@@ -20,19 +22,33 @@ import type {
   WorkspaceMediaPackage,
 } from "@/pages/media-package/types/mediaPackage";
 
+const VALID_TABS: readonly CampaignTab[] = [
+  "plan",
+  "delivery",
+  "review",
+] as const;
+
+function isValidTab(tab: string | null): tab is CampaignTab {
+  return tab !== null && (VALID_TABS as readonly string[]).includes(tab);
+}
+
 export default function CampaignPanel({
   selection,
   canManage,
+  isManager,
 }: {
   selection: WorkspaceMediaPackage;
   canManage: boolean;
+  isManager: boolean;
 }) {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [draftTasksMissing, setDraftTasksMissing] = useState(false);
   const [reload, setReload] = useState(0);
   const [taskCampaignId, setTaskCampaignId] = useState<string | null>(null);
   const onTasksAvailable = useCallback((id: string, available: boolean) => {
@@ -43,7 +59,7 @@ export default function CampaignPanel({
     { deliverables?: PackageDeliverable[] } | undefined;
   const deliverables = source?.deliverables ?? [];
   const legacy = campaign
-    ? !!campaign.allocationPeriod || !campaign.deliverablePlan.length
+    ? !!campaign.allocationPeriod || !campaign.packageDriven
     : !deliverables.length ||
       (terms.offeringModel === "RETAINER" && terms.quantityBasis !== "TOTAL");
   useEffect(() => {
@@ -51,9 +67,29 @@ export default function CampaignPanel({
     async function load() {
       try {
         const result = await campaignService.list(selection.workspaceId);
-        if (result.data.data.length > 1)
-          throw new Error("Legacy duplicate campaigns require review");
-        if (active) setCampaign(result.data.data[0] ?? null);
+        if (result.data.data.length > 1) throw new Error("Duplicate campaigns for package");
+        const current = result.data.data[0] ?? null;
+        if (active) setCampaign(current);
+        if (
+          current?.packageDriven &&
+          current.status === "DRAFT"
+        ) {
+          const ready = await campaignService
+            .tasks(selection.workspaceId, current.id)
+            .then(
+              (response) => {
+                const planned = new Set(current.workItems.map((item) => item.id));
+                return response.data.data.length === planned.size &&
+                  response.data.data.every((task) =>
+                    task.campaignWorkItemId !== null && planned.has(task.campaignWorkItemId),
+                  );
+              },
+              () => false,
+            );
+          if (active) setDraftTasksMissing(!ready);
+        } else if (active) {
+          setDraftTasksMissing(false);
+        }
       } catch {
         if (active) setError(true);
       } finally {
@@ -66,11 +102,10 @@ export default function CampaignPanel({
     };
   }, [selection.workspaceId, reload]);
   async function save(plan: CampaignPlan) {
+    if (!campaign) return;
     setSaving(true);
     try {
-      const result = campaign
-        ? await campaignService.update(selection.workspaceId, campaign, plan)
-        : await campaignService.create(selection.workspaceId, plan);
+      const result = await campaignService.update(selection.workspaceId, campaign, plan);
       setCampaign(result.data.data);
       setEditing(false);
       toast.success(t("campaign.saved"));
@@ -101,6 +136,49 @@ export default function CampaignPanel({
   const stage = campaign?.status ?? "DRAFT";
   const stages = ["DRAFT", "APPROVED", "IN_PROGRESS", "COMPLETED"] as const;
   const currentStageIndex = stages.indexOf(stage);
+
+  const hasTasks = Boolean(
+    campaign &&
+    (taskCampaignId === campaign.id ||
+      (canManage && campaign.packageDriven === true && !draftTasksMissing)),
+  );
+
+  const isAwaitingReview = Boolean(
+    campaign &&
+    (campaign.status === "DRAFT" ||
+      campaign.approvedByAgencyVersion !== campaign.contentVersion ||
+      campaign.approvedByClientVersion !== campaign.contentVersion),
+  );
+
+  const defaultTab: CampaignTab = (() => {
+    if (!campaign) return "plan";
+    if (["APPROVED", "IN_PROGRESS", "COMPLETED"].includes(campaign.status)) {
+      return hasTasks ||
+        campaign.status === "IN_PROGRESS" ||
+        campaign.status === "COMPLETED"
+        ? "delivery"
+        : "plan";
+    }
+    return "plan";
+  })();
+
+  const rawTab = searchParams.get("tab");
+  const approvalFields = campaign ? missingApprovalFields(campaign, t) : [];
+  const activeTab: CampaignTab = isValidTab(rawTab) ? rawTab : defaultTab;
+
+  const handleTabChange = useCallback(
+    (newTab: string) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set("tab", newTab);
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
   return (
     <section className="text-foreground space-y-4">
@@ -149,17 +227,11 @@ export default function CampaignPanel({
             >
               {t("campaign.reload")}
             </Button>
-            {canManage &&
-              !legacy &&
-              !editing &&
-              (!campaign || campaign.status === "DRAFT") && (
-                <Button
-                  variant="orange"
-                  size="sm"
-                  disabled={loading || saving}
-                  onClick={() => setEditing(true)}
-                >
-                  {t(campaign ? "campaign.edit" : "campaign.create")}
+            {canManage && !legacy && !draftTasksMissing && !editing &&
+              campaign?.status === "DRAFT" && (
+                <Button variant="orange" size="sm" disabled={loading || saving}
+                  onClick={() => setEditing(true)}>
+                  {t("campaign.edit")}
                 </Button>
               )}
           </div>
@@ -244,13 +316,10 @@ export default function CampaignPanel({
       )}
       {!loading && !error && (
         <>
-          {campaign && !editing && (
-            <CampaignNextStep
-              campaign={campaign}
-              workspaceId={selection.workspaceId}
-              canManage={canManage}
-              hasTasks={taskCampaignId === campaign.id}
-            />
+          {draftTasksMissing && (
+            <p role="alert" className="border-destructive/30 bg-destructive/5 rounded-xl border p-4 text-sm">
+              {t("campaign.errors.CAMPAIGN_DEPLOYMENT_INCOMPLETE")}
+            </p>
           )}
           {legacy && (
             <p
@@ -264,13 +333,15 @@ export default function CampaignPanel({
             <div className="border-border bg-muted/20 flex items-center gap-1 rounded-lg border border-dashed p-4 text-sm">
               <h3 className="font-medium">{t("campaign.empty")}</h3>
               <HelpHint label={t("campaign.empty")}>
-                {t("campaign.ui.emptyHint")}
+                {t("campaign.automaticDraftMissing")}
               </HelpHint>
             </div>
           )}
-          {editing && (
+          {editing && campaign && (
             <CampaignForm
               campaign={campaign}
+              workspaceId={selection.workspaceId}
+              manageTasks={isManager}
               deliverables={campaign?.deliverablePlan ?? deliverables}
               durationWeeks={
                 typeof terms.durationWeeks === "number"
@@ -283,23 +354,132 @@ export default function CampaignPanel({
             />
           )}
           {campaign && !editing && (
-            <>
-              <CampaignDetail campaign={campaign} />
-              <CampaignReview
-                workspaceId={selection.workspaceId}
-                campaign={campaign}
-                canManage={canManage}
-                onApproved={setCampaign}
-              />
-              <CampaignDelivery
-                key={campaign.id}
-                workspaceId={selection.workspaceId}
-                campaign={campaign}
-                canManage={canManage}
-                onChanged={refreshCampaign}
-                onTasksAvailable={onTasksAvailable}
-              />
-            </>
+            <Tabs
+              value={activeTab}
+              onValueChange={handleTabChange}
+              className="space-y-4"
+            >
+              <TabsList className="bg-muted/60 border-border/60 flex h-auto flex-wrap gap-1 rounded-xl border p-1">
+                <TabsTrigger
+                  value="plan"
+                  className="data-[state=active]:bg-background data-[state=active]:text-foreground flex cursor-pointer items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-medium transition-all data-[state=active]:shadow-xs sm:text-sm"
+                >
+                  <Layers className="size-4 shrink-0" />
+                  <span>
+                    {t("campaign.tabs.plan", {
+                      defaultValue: "Kế hoạch & Hạng mục",
+                    })}
+                  </span>
+                  {campaign.workItems.length > 0 && (
+                    <span className="bg-muted-foreground/15 text-muted-foreground rounded-full px-1.5 py-0.5 text-[10px] leading-none font-semibold">
+                      {campaign.workItems.length}
+                    </span>
+                  )}
+                </TabsTrigger>
+
+                <TabsTrigger
+                  value="delivery"
+                  className="data-[state=active]:bg-background data-[state=active]:text-foreground flex cursor-pointer items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-medium transition-all data-[state=active]:shadow-xs sm:text-sm"
+                >
+                  <Rocket className="size-4 shrink-0" />
+                  <span>
+                    {t("campaign.tabs.delivery", {
+                      defaultValue: "Triển khai & Đầu việc",
+                    })}
+                  </span>
+                  {hasTasks && (
+                    <span className="bg-brand-orange/15 text-brand-orange rounded-full px-1.5 py-0.5 text-[10px] leading-none font-semibold">
+                      {t(`campaign.status.${campaign.status}`)}
+                    </span>
+                  )}
+                </TabsTrigger>
+
+                <TabsTrigger
+                  value="review"
+                  className="data-[state=active]:bg-background data-[state=active]:text-foreground flex cursor-pointer items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-medium transition-all data-[state=active]:shadow-xs sm:text-sm"
+                >
+                  <ShieldCheck className="size-4 shrink-0" />
+                  <span>
+                    {t("campaign.tabs.review", {
+                      defaultValue: "Biên bản & Lịch sử",
+                    })}
+                  </span>
+                  {isAwaitingReview ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] leading-none font-semibold text-amber-700 dark:text-amber-400">
+                      <span className="size-1.5 animate-pulse rounded-full bg-amber-500" />
+                      <span>v{campaign.contentVersion}</span>
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground/70 text-[10px] leading-none font-medium">
+                      v{campaign.contentVersion}
+                    </span>
+                  )}
+                </TabsTrigger>
+              </TabsList>
+
+              {approvalFields.length > 0 && (
+                <div
+                  role="status"
+                  className="border-brand-orange/30 bg-brand-orange/5 flex flex-wrap items-center justify-between gap-3 rounded-xl border p-4 text-sm"
+                >
+                  <div className="min-w-0 space-y-1">
+                    <p className="font-semibold">
+                      {t("campaign.review.requirementsTitle")}
+                    </p>
+                    <ul className="text-muted-foreground list-disc space-y-1 pl-5">
+                      {approvalFields.map((field, index) => (
+                        <li key={index}>{field}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  {canManage && !legacy && !draftTasksMissing && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditing(true)}
+                    >
+                      {t("campaign.editMissingFields")}
+                    </Button>
+                  )}
+                </div>
+              )}
+              <TabsContent value="plan" className="focus-visible:outline-none">
+                <CampaignDetail
+                  campaign={campaign}
+                  workspaceId={selection.workspaceId}
+                  manageTasks={isManager}
+                />
+              </TabsContent>
+
+              <TabsContent
+                value="delivery"
+                className="focus-visible:outline-none"
+              >
+                <CampaignDelivery
+                  onOpenReview={() => handleTabChange("review")}
+                  key={campaign.id}
+                  workspaceId={selection.workspaceId}
+                  campaign={campaign}
+                  canManage={canManage}
+                  onChanged={refreshCampaign}
+                  canClose={isManager}
+                  onTasksAvailable={onTasksAvailable}
+                />
+              </TabsContent>
+
+              <TabsContent
+                value="review"
+                className="focus-visible:outline-none"
+              >
+                <CampaignReview
+                  workspaceId={selection.workspaceId}
+                  campaign={campaign}
+                  canManage={canManage}
+                  onApproved={setCampaign}
+                />
+              </TabsContent>
+            </Tabs>
           )}
         </>
       )}

@@ -21,10 +21,10 @@ export interface ReviewDialogProps {
     view: TaskReviewView,
     action: ReviewAction,
     comment: string,
+    publishDate?: string,
   ) => Promise<boolean>;
   reload: () => Promise<TaskReviewView>;
   task?: TaskWorkflow;
-  onSetPublishDate?: (dateIso: string | null) => Promise<unknown>;
 }
 
 export function useTaskReviewDialog(props: ReviewDialogProps) {
@@ -50,7 +50,7 @@ export function useTaskReviewDialog(props: ReviewDialogProps) {
     }
     props.onClose();
   }
-  async function confirm() {
+  async function confirm(publishDate?: string) {
     if (pending.current || needsReload || !reviewAllows(view, props.action))
       return;
     if (
@@ -70,7 +70,7 @@ export function useTaskReviewDialog(props: ReviewDialogProps) {
     setBusy(true);
     setError("");
     try {
-      if (await props.act(view, props.action, comment)) {
+      if (await props.act(view, props.action, comment, publishDate)) {
         session.setDirty(identity, false);
         toast.success(t(`tasks.review.success.${props.action}`));
         props.onClose();

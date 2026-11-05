@@ -7,7 +7,6 @@ import type {
   TaskMemberOption,
   TaskWorkflow,
 } from "@/pages/tasks/types/taskWorkflow";
-import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 
 function scoped(workspaceId: string, taskId: string) {
   return `/api/v1/workspaces/${encodeURIComponent(workspaceId)}/tasks/${encodeURIComponent(taskId)}`;
@@ -25,11 +24,17 @@ function workflow(body: unknown, workspaceId: string, taskId: string) {
     typeof result.dates?.ready !== "boolean"
   )
     throw new Error("INVALID_TASK_WORKFLOW");
-  const metadata = (result as unknown as { typeMetadata?: Record<string, unknown> })?.typeMetadata;
-  const meetingUrl = result.meetingUrl ?? (typeof metadata?.meetingUrl === "string" ? metadata.meetingUrl : null);
+  const metadata = (
+    result as unknown as { typeMetadata?: Record<string, unknown> }
+  )?.typeMetadata;
+  const meetingUrl =
+    result.meetingUrl ??
+    (typeof metadata?.meetingUrl === "string" ? metadata.meetingUrl : null);
   const meetingExpiresAt =
     result.meetingExpiresAt ??
-    (typeof metadata?.meetingExpiresAt === "string" ? metadata.meetingExpiresAt : null);
+    (typeof metadata?.meetingExpiresAt === "string"
+      ? metadata.meetingExpiresAt
+      : null);
   const isMeetingExpired =
     typeof result.isMeetingExpired === "boolean"
       ? result.isMeetingExpired
@@ -38,7 +43,6 @@ function workflow(body: unknown, workspaceId: string, taskId: string) {
         : undefined;
   return {
     ...result,
-    status: canonicalTaskStatus(result.status),
     meetingUrl,
     meetingExpiresAt,
     isMeetingExpired,
@@ -62,9 +66,13 @@ export const taskWorkflowService = {
     );
     return workflow(response.data, workspaceId, taskId);
   },
-  async options(workspaceId: string, taskId: string) {
+  async options(
+    workspaceId: string,
+    taskId: string,
+    kind: "assignee" | "supervisor" = "assignee",
+  ) {
     const response = await api.get<ApiResponse<TaskMemberOption[]>>(
-      `${scoped(workspaceId, taskId)}/member-options`,
+      `${scoped(workspaceId, taskId)}/${kind === "supervisor" ? "supervisor-options" : "member-options"}`,
     );
     const options = requireApiData<TaskMemberOption[]>(response.data);
     if (

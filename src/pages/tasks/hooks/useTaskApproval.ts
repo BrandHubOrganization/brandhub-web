@@ -15,7 +15,10 @@ import type {
 } from "@/pages/tasks/types/taskApproval";
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
-export function useTaskApproval(task: TaskWorkflow) {
+export function useTaskApproval(
+  task: TaskWorkflow,
+  { enabled = true, includeHistory = true } = {},
+) {
   const { workspaceId, id: taskId } = task;
   const isPost = task.type === "POST";
   const userId = useAuthStore((state) => state.user?.id);
@@ -32,6 +35,7 @@ export function useTaskApproval(task: TaskWorkflow) {
   ];
   const historyKey = ["task-approvals", userId, workspaceId, taskId];
   const query = useQuery({
+    enabled,
     queryKey: key,
     queryFn: async (): Promise<TaskReviewView> => {
       const [review, post] = await Promise.allSettled([
@@ -51,6 +55,7 @@ export function useTaskApproval(task: TaskWorkflow) {
     refetchOnWindowFocus: false,
   });
   const history = useInfiniteQuery({
+    enabled: enabled && includeHistory,
     queryKey: historyKey,
     queryFn: ({ pageParam }) => service.history(workspaceId, taskId, pageParam),
     initialPageParam: null as string | null,
@@ -66,6 +71,7 @@ export function useTaskApproval(task: TaskWorkflow) {
     view: TaskReviewView,
     action: ReviewAction,
     comment: string,
+    publishDate?: string,
   ) {
     if (pending.current) return false;
     pending.current = true;
@@ -76,7 +82,7 @@ export function useTaskApproval(task: TaskWorkflow) {
       await session.run(identity, () =>
         service.act(workspaceId, taskId, {
           action,
-          expected: reviewExpected(view, action, comment),
+          expected: { ...reviewExpected(view, action, comment), publishDate },
         }),
       );
       // An unread/new Post version must never inherit action rights from the previous preview.

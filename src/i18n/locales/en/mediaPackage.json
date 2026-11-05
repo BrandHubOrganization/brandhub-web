@@ -1,4 +1,20 @@
 {
+  "choices": {
+    "select": "Choose a suggestion",
+    "other": "Other — enter your own",
+    "quantityUnit": "Quantity ({{unit}})",
+    "descriptionAlt": "Plan {{service}} around the client’s schedule and requirements.",
+    "acceptanceAlt": "The content meets the brief and includes the agreed revisions.",
+    "scope": {
+      "launch": "Plan and deliver communications content for a product launch.",
+      "awareness": "Deliver brand awareness content across the agreed channels.",
+      "engagement": "Plan content and activities to increase audience engagement."
+    },
+    "strategy": {
+      "launch": "Organize the campaign into preparation, launch, and feedback phases.",
+      "awareness": "Publish themed content across the selected channels to build brand awareness."
+    }
+  },
   "compact": {
     "agreeLater": "To be agreed",
     "duration": "Duration",
@@ -35,6 +51,9 @@
     }
   },
   "offering": {
+    "useTemplate": "Use template",
+    "descriptionTemplate": "{{service}} — deliver {{count}} items within the agreed scope.",
+    "acceptanceTemplate": "Deliver all {{count}} items with the agreed content by the agreed deadline.",
     "title": "Service scope",
     "model": "Packaging model",
     "legacy": "Legacy package (no model)",
@@ -57,6 +76,10 @@
     },
     "service": "Service",
     "name": "Deliverable name",
+    "serviceAndName": "Service & Deliverable",
+    "requirementsAndCriteria": "Requirements & Acceptance Criteria",
+    "quantityAndUnit": "Quantity & Unit",
+    "noDeliverables": "No deliverables in this package.",
     "quantity": "Quantity",
     "unit": "Unit",
     "description": "Description",
@@ -200,6 +223,8 @@
     "approveSuccess": "Package approved successfully."
   },
   "errors": {
+    "campaignManagerRequired": "An active workspace manager is required to create campaign tasks.",
+    "campaignTaskStorage": "Campaign tasks could not be created. Try approving the package again.",
     "load": "Unable to load media package information.",
     "select": "Unable to select the media package.",
     "createCustom": "Unable to create the custom media package.",
@@ -221,6 +246,8 @@
     "noResults": "No matching packages. Try another name or filter.",
     "loadMore": "Show more packages",
     "deliverables": "Deliverables",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all",
     "totalQuantity": "Quantities cover the entire package, not each month. The maximum changes limit applies to the whole package.",
     "approvalHint": "Both parties approve the same terms version. Any terms change requires both parties to approve again.",
     "clientProposals": "Client proposals: {{count}}/{{limit}}",

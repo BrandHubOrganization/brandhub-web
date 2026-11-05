@@ -1,3 +1,4 @@
+import { QuickNumbers, TextChoices } from "@/components/shared/FieldChoices";
 import { useState } from "react";
 import { DiscardChangesDialog } from "./DiscardChangesDialog";
 import { useDraftUnloadWarning } from "../hooks/useDraftUnloadWarning";
@@ -9,8 +10,6 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { InlineWorkArea } from "@/components/shared/InlineWorkArea";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import type {
   CreateCustomMediaPackageRequest,
   MediaPackage,
@@ -199,53 +198,60 @@ export function CreateCustomPackageForm({
             </p>
             <div className="grid items-start gap-4 sm:grid-cols-2">
               {
-                <Input
-                  aria-describedby={
-                    errors.durationWeeks ? "package-form-errors" : undefined
-                  }
-                  id="package-field-durationWeeks"
-                  type="number"
-                  min="1"
-                  label={t("mediaPackage.form.durationLabel")}
-                  value={durationWeeks}
-                  error={errors.durationWeeks}
-                  onChange={(event) => setDurationWeeks(event.target.value)}
-                />
+                <div className="space-y-2">
+                  <Input
+                    aria-describedby={
+                      errors.durationWeeks ? "package-form-errors" : undefined
+                    }
+                    id="package-field-durationWeeks"
+                    type="number"
+                    min="1"
+                    label={t("mediaPackage.form.durationLabel")}
+                    value={durationWeeks}
+                    error={errors.durationWeeks}
+                    onChange={(event) => setDurationWeeks(event.target.value)}
+                  />
+                  <QuickNumbers
+                    values={[2, 4, 6, 8, 12]}
+                    value={durationWeeks}
+                    onChange={setDurationWeeks}
+                  />
+                </div>
               }
               {
-                <Input
-                  aria-describedby={
-                    errors.budgetAmount ? "package-form-errors" : undefined
-                  }
-                  id="package-field-budgetAmount"
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  label={t("mediaPackage.form.budgetLabel")}
-                  value={budgetAmount}
-                  error={errors.budgetAmount}
-                  onChange={(event) => setBudgetAmount(event.target.value)}
-                />
+                <div className="space-y-2">
+                  <Input
+                    aria-describedby={
+                      errors.budgetAmount ? "package-form-errors" : undefined
+                    }
+                    id="package-field-budgetAmount"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    label={t("mediaPackage.form.budgetLabel")}
+                    value={budgetAmount}
+                    error={errors.budgetAmount}
+                    onChange={(event) => setBudgetAmount(event.target.value)}
+                  />
+                  <QuickNumbers
+                    values={[5000000, 10000000, 18000000, 30000000, 50000000]}
+                    value={budgetAmount}
+                    onChange={setBudgetAmount}
+                    format={(amount) => amount.toLocaleString()}
+                  />
+                </div>
               }
             </div>
             <div className="space-y-1.5">
-              <Label
-                htmlFor="package-field-scopeDescription"
-                className="text-xs font-semibold"
-              >
-                {t("mediaPackage.form.scopeLabel")}
-              </Label>
-              <Textarea
-                aria-describedby={
-                  errors.scopeDescription ? "package-form-errors" : undefined
-                }
+              <TextChoices
                 id="package-field-scopeDescription"
-                rows={5}
-                maxLength={5000}
-                placeholder={t("mediaPackage.form.scopePlaceholder")}
+                label={t("mediaPackage.form.scopeLabel")}
                 value={scopeDescription}
-                aria-invalid={!!errors.scopeDescription}
-                onChange={(event) => setScopeDescription(event.target.value)}
+                onChange={setScopeDescription}
+                maxLength={5000}
+                options={["launch", "awareness", "engagement"].map((key) =>
+                  t(`mediaPackage.choices.scope.${key}`),
+                )}
               />
               {errors.scopeDescription && (
                 <p className="text-destructive text-xs font-medium">

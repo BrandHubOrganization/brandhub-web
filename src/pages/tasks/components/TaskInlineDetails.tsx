@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -6,46 +7,31 @@ import {
   Calendar,
   Clock,
   ExternalLink,
-  FileText,
   FolderKanban,
   Globe,
   Link2,
-  RefreshCw,
   Share2,
   ShieldCheck,
   Sparkles,
+  User2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { JiraDatePicker } from "@/components/ui/jira-date-picker";
 import { TaskReferenceFields } from "@/pages/tasks/components/TaskReferenceFields";
 import { InlineTaskField } from "@/pages/tasks/components/InlineTaskField";
 import { TaskInlineAssignment } from "@/pages/tasks/components/TaskInlineAssignment";
+import { TaskAssigneePicker } from "@/pages/tasks/components/TaskAssigneePicker";
 import { TaskTargetPlatformsPicker } from "@/pages/tasks/components/TaskTargetPlatformsPicker";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
-import {
-  taskInstant,
-  taskLocalMinute,
-} from "@/pages/tasks/utils/taskWorkflowDates";
-import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useTaskPost } from "@/pages/tasks/hooks/useTaskPost";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
-function readableDate(value: string | null, zone: string, language: string) {
-  if (!value || !Number.isFinite(Date.parse(value))) return "";
-  try {
-    return new Intl.DateTimeFormat(language, {
-      timeZone: zone,
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(new Date(value));
-  } catch {
-    return "";
-  }
-}
 function safeReference(value: string) {
   try {
     const url = new URL(value);
@@ -59,6 +45,23 @@ function safeReference(value: string) {
   }
 }
 
+function getPlatformBadgeStyle(platform: string) {
+  const p = platform.toUpperCase();
+  if (p.includes("FACEBOOK")) {
+    return "bg-[#1877F2]/10 text-[#1877F2] border-[#1877F2]/25";
+  }
+  if (p.includes("TIKTOK")) {
+    return "bg-slate-900/10 text-slate-900 dark:bg-white/10 dark:text-white border-slate-900/20 dark:border-white/20";
+  }
+  if (p.includes("INSTAGRAM")) {
+    return "bg-[#E4405F]/10 text-[#E4405F] border-[#E4405F]/25";
+  }
+  if (p.includes("YOUTUBE")) {
+    return "bg-[#FF0000]/10 text-[#FF0000] border-[#FF0000]/25";
+  }
+  return "bg-muted text-muted-foreground border-border";
+}
+
 export function TaskDeadlineField({
   task,
   scope = "detail",
@@ -66,49 +69,61 @@ export function TaskDeadlineField({
   task: TaskWorkflow;
   scope?: string;
 }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const zone = task.dates.timezone || "UTC";
+  const editable = task.allowedActions.canEditDetail && task.dates.ready;
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async (nextIso: string | null) => {
+    if (nextIso && task.publishDate) {
+      const nextDue = new Date(nextIso).getTime();
+      const pubTime = new Date(task.publishDate).getTime();
+      if (nextDue >= pubTime) {
+        toast.error(t("tasks.dueDateMustBeBeforePublishDate", "Hạn hoàn thành phải trước thời gian đăng bài"));
+        return Promise.reject(
+          new Error(t("tasks.dueDateMustBeBeforePublishDate")),
+        );
+      }
+    }
+    setSaving(true);
+    try {
+      await state.field("dueDate", nextIso);
+    } catch (err) {
+      toast.error(workflowError(err, t));
+      throw err;
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
-    <div className="space-y-1.5">
-      <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
-        <Calendar className="text-muted-foreground size-3.5" />
-        <span>{t("tasks.deadline")}</span>
-      </div>
-      <InlineTaskField
+    <div className="space-y-1">
+      <JiraDatePicker
         id={`task-${task.id}-${scope}-deadline`}
-        label=""
-        type="datetime-local"
-        value={taskLocalMinute(task.dueDate, zone)}
-        displayValue={readableDate(task.dueDate, zone, i18n.language)}
-        editable={task.allowedActions.canEditDetail && task.dates.ready}
-        min={task.dates.minDate ? `${task.dates.minDate}T00:00` : undefined}
-        max={
+        value={task.dueDate}
+        onChange={handleSave}
+        timezone={zone}
+        includeTime={true}
+        disabled={!editable || saving}
+        readOnly={!editable}
+        placeholder={t("tasks.deadlinePlaceholder", "Thiết lập thời hạn...")}
+        minDate={task.dates.minDate ? `${task.dates.minDate}T00:00:00Z` : undefined}
+        maxDate={
           task.publishDate
-            ? taskLocalMinute(task.publishDate, zone)
+            ? task.publishDate
             : task.dates.maxDate
-              ? `${task.dates.maxDate}T23:59`
+              ? `${task.dates.maxDate}T23:59:59Z`
               : undefined
         }
-        required={Boolean(task.assigneeId)}
-        save={async (value) => {
-          if (value && task.publishDate) {
-            const nextDue = new Date(taskInstant(value, zone) || "").getTime();
-            const pubTime = new Date(task.publishDate).getTime();
-            if (nextDue >= pubTime) {
-              toast.error(t("tasks.dueDateMustBeBeforePublishDate"));
-              return Promise.reject(
-                new Error(t("tasks.dueDateMustBeBeforePublishDate")),
-              );
-            }
-          }
-          return state.field(
-            "dueDate",
-            value ? taskInstant(value, zone) : null,
-          );
-        }}
-        retry={state.retry}
+        allowClear={!task.assigneeId}
+        ariaLabel={t("tasks.deadline", "Thời hạn hoàn thành")}
       />
+      {saving && (
+        <span className="text-3xs text-muted-foreground italic">
+          {t("tasks.inline.saving", "Đang lưu...")}
+        </span>
+      )}
     </div>
   );
 }
@@ -120,7 +135,7 @@ export function TaskPublishTimeField({
   task: TaskWorkflow;
   scope?: string;
 }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const zone = task.dates.timezone || "UTC";
   const { data: taskPost } = useTaskPost(
@@ -143,31 +158,54 @@ export function TaskPublishTimeField({
     task.lockReason !== "TASK_CAMPAIGN_COMPLETED" &&
     (task.allowedActions.canEditDetail ||
       (isManager && !isPublishedOrPublishing && (task.status as string) !== "CANCELLED"));
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async (nextIso: string | null) => {
+    if (nextIso && task.dueDate) {
+      const nextPub = new Date(nextIso).getTime();
+      const dueTime = new Date(task.dueDate).getTime();
+      if (nextPub <= dueTime) {
+        toast.error(t("tasks.publishDateMustBeAfterDueDate", "Thời gian đăng bài phải sau hạn hoàn thành"));
+        return Promise.reject(
+          new Error(t("tasks.publishDateMustBeAfterDueDate")),
+        );
+      }
+    }
+    setSaving(true);
+    try {
+      await state.field("publishDate", nextIso);
+    } catch (err) {
+      toast.error(workflowError(err, t));
+      throw err;
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
-    <div className="space-y-1.5 pt-2">
+    <div className="space-y-1.5 pt-1">
       <div className="flex items-center justify-between">
-        <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
-          <Clock className="text-brand-orange size-3.5" />
-          <span>{t("tasks.publishTime")}</span>
+        <div className="text-muted-foreground flex items-center gap-1.5 text-2xs font-semibold uppercase tracking-wider">
+          <Clock className="text-brand-orange size-3" />
+          <span>{t("tasks.publishTime", "Lịch đăng")}</span>
         </div>
         {currentPublish && (
           <div>
             {post?.status === "PUBLISHED" ? (
-              <span className="text-2xs rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="text-3xs rounded border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 font-semibold text-emerald-600 dark:text-emerald-400">
                 Đã đăng
               </span>
             ) : post?.status === "FAILED" ? (
-              <span className="text-2xs rounded border border-rose-500/20 bg-rose-500/10 px-2 py-0.5 font-semibold text-rose-600 dark:text-rose-400">
+              <span className="text-3xs rounded border border-rose-500/20 bg-rose-500/10 px-1.5 py-0.5 font-semibold text-rose-600 dark:text-rose-400">
                 Thất bại
               </span>
             ) : post?.status === "IN_PROGRESS" ||
               post?.status === "PUBLISHING" ? (
-              <span className="text-2xs animate-pulse rounded border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 font-semibold text-blue-600 dark:text-blue-400">
+              <span className="text-3xs animate-pulse rounded border border-blue-500/20 bg-blue-500/10 px-1.5 py-0.5 font-semibold text-blue-600 dark:text-blue-400">
                 Đang đăng...
               </span>
             ) : (
-              <span className="bg-brand-orange-soft text-brand-orange text-2xs rounded px-2 py-0.5 font-semibold">
+              <span className="bg-brand-orange/10 text-brand-orange border border-brand-orange/20 text-3xs rounded px-1.5 py-0.5 font-semibold">
                 Lên lịch
               </span>
             )}
@@ -175,65 +213,30 @@ export function TaskPublishTimeField({
         )}
       </div>
 
-      <InlineTaskField
+      <JiraDatePicker
         id={`task-${task.id}-${scope}-publishDate`}
-        label=""
-        type="datetime-local"
-        value={taskLocalMinute(currentPublish, zone)}
-        displayValue={
-          currentPublish
-            ? readableDate(currentPublish, zone, i18n.language)
-            : t("tasks.notScheduled")
-        }
-        editable={canEditPublish}
-        min={
-          task.dueDate
-            ? taskLocalMinute(task.dueDate, zone)
-            : task.dates.minDate
-              ? `${task.dates.minDate}T00:00`
-              : undefined
-        }
-        max={task.dates.maxDate ? `${task.dates.maxDate}T23:59` : undefined}
-        save={async (value) => {
-          if (value && task.dueDate) {
-            const nextPub = new Date(taskInstant(value, zone) || "").getTime();
-            const dueTime = new Date(task.dueDate).getTime();
-            if (nextPub <= dueTime) {
-              toast.error(t("tasks.publishDateMustBeAfterDueDate"));
-              return Promise.reject(
-                new Error(t("tasks.publishDateMustBeAfterDueDate")),
-              );
-            }
-          }
-          return state.field(
-            "publishDate",
-            value ? taskInstant(value, zone) : null,
-          );
-        }}
-        retry={state.retry}
+        value={currentPublish}
+        onChange={handleSave}
+        timezone={zone}
+        includeTime={true}
+        disabled={!canEditPublish || saving}
+        readOnly={!canEditPublish}
+        placeholder={t("tasks.publishPlaceholder", "Thiết lập thời gian đăng...")}
+        minDate={task.dueDate || (task.dates.minDate ? `${task.dates.minDate}T00:00:00Z` : undefined)}
+        maxDate={task.dates.maxDate ? `${task.dates.maxDate}T23:59:59Z` : undefined}
+        allowClear={true}
+        ariaLabel={t("tasks.publishTime", "Lịch đăng")}
       />
-
-      {post?.status === "FAILED" && (
-        <div className="bg-destructive/10 border-destructive/20 text-destructive mt-1.5 flex items-start gap-1.5 rounded-md border p-2 text-2xs">
-          <AlertCircle className="size-3.5 shrink-0 mt-0.5" />
-          <div className="leading-tight">
-            <span className="font-semibold">Lỗi đăng bài: </span>
-            <span>{post.errorMessage || "Đã thử lại 3 lần nhưng không thành công"}</span>
-          </div>
-        </div>
-      )}
-
-      {post?.status === "IN_PROGRESS" && post?.errorMessage && (
-        <div className="bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 mt-1.5 flex items-start gap-1.5 rounded-md border p-2 text-2xs">
-          <RefreshCw className="size-3.5 shrink-0 mt-0.5 animate-spin" />
-          <span className="leading-tight">{post.errorMessage}</span>
-        </div>
+      {saving && (
+        <span className="text-3xs text-muted-foreground italic">
+          {t("tasks.inline.saving", "Đang lưu...")}
+        </span>
       )}
     </div>
   );
 }
 
-function References({ task }: { task: TaskWorkflow }) {
+export function References({ task }: { task: TaskWorkflow }) {
   const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const field = useInlineTaskField(
@@ -244,49 +247,47 @@ function References({ task }: { task: TaskWorkflow }) {
 
   if (!task.allowedActions.canEditDetail) {
     if (!task.inputReferences || task.inputReferences.length === 0) {
-      return null;
+      return (
+        <span className="text-3xs text-muted-foreground italic">
+          Không có tài liệu tham khảo
+        </span>
+      );
     }
     return (
-      <section className="bg-card/50 border-border/70 space-y-2.5 rounded-xl border p-4 shadow-xs">
-        <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
-          <Link2 className="text-brand-orange size-3.5" />
-          <span>{t("tasks.workflow.fields.inputReferences")}</span>
-        </div>
-        <div className="flex flex-wrap gap-2 pt-0.5">
-          {task.inputReferences.map((ref, index) => {
-            const isUrl = safeReference(ref.url);
-            return isUrl ? (
-              <a
-                key={index}
-                href={ref.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-muted/40 hover:bg-muted/80 border-border/80 text-foreground group inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs transition-colors"
-              >
-                <Link2 className="text-brand-orange size-3.5 shrink-0" />
-                <span className="max-w-[200px] truncate font-medium">
-                  {ref.label || ref.url}
-                </span>
-                <ExternalLink className="text-muted-foreground group-hover:text-foreground size-3 shrink-0" />
-              </a>
-            ) : (
-              <span
-                key={index}
-                className="bg-muted/40 border-border/80 text-muted-foreground inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs"
-              >
-                <Link2 className="size-3.5 shrink-0" />
-                <span>{ref.label}</span>
+      <div className="flex flex-wrap gap-1.5 pt-0.5">
+        {task.inputReferences.map((ref, index) => {
+          const isUrl = safeReference(ref.url);
+          return isUrl ? (
+            <a
+              key={index}
+              href={ref.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-muted/40 hover:bg-muted/80 border-border/80 text-foreground group inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-2xs transition-colors"
+            >
+              <Link2 className="text-brand-orange size-3 shrink-0" />
+              <span className="max-w-[150px] truncate font-medium">
+                {ref.label || ref.url}
               </span>
-            );
-          })}
-        </div>
-      </section>
+              <ExternalLink className="text-muted-foreground group-hover:text-foreground size-2.5 shrink-0" />
+            </a>
+          ) : (
+            <span
+              key={index}
+              className="bg-muted/40 border-border/80 text-muted-foreground inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-2xs"
+            >
+              <Link2 className="size-3 shrink-0" />
+              <span>{ref.label}</span>
+            </span>
+          );
+        })}
+      </div>
     );
   }
 
   return (
     <div
-      className="bg-card/50 border-border/70 space-y-3 rounded-xl border p-4 shadow-xs"
+      className="space-y-2 pt-0.5"
       onBlur={(event) => {
         if (
           field.status !== "error" &&
@@ -295,10 +296,6 @@ function References({ task }: { task: TaskWorkflow }) {
           void field.commit();
       }}
     >
-      <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
-        <Link2 className="text-brand-orange size-3.5" />
-        <span>{t("tasks.workflow.fields.inputReferences")}</span>
-      </div>
       <fieldset disabled={field.status === "saving"}>
         <TaskReferenceFields
           references={field.value}
@@ -307,7 +304,7 @@ function References({ task }: { task: TaskWorkflow }) {
         />
       </fieldset>
       {(field.error || field.status === "saving") && (
-        <p aria-live="polite" className="text-xs">
+        <p aria-live="polite" className="text-2xs text-muted-foreground">
           {field.error ||
             (field.status === "saving" ? t("tasks.inline.saving") : "")}
         </p>
@@ -317,6 +314,7 @@ function References({ task }: { task: TaskWorkflow }) {
           <Button
             size="sm"
             variant="outline"
+            className="h-7 text-xs"
             onClick={() => {
               state.retry();
               void field.commit();
@@ -327,6 +325,7 @@ function References({ task }: { task: TaskWorkflow }) {
           <Button
             size="sm"
             variant="ghost"
+            className="h-7 text-xs"
             onClick={() => {
               state.retry();
               field.discard();
@@ -340,11 +339,246 @@ function References({ task }: { task: TaskWorkflow }) {
   );
 }
 
-export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
+export function TaskDescriptionSection({ task }: { task: TaskWorkflow }) {
   const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between text-xs font-semibold text-foreground">
+        <div className="flex items-center gap-1.5 text-muted-foreground uppercase tracking-wider text-2xs font-semibold">
+          <AlignLeft className="size-3.5 text-brand-orange" />
+          <span>{t("tasks.workflow.fields.description", "Mô tả / Yêu cầu chi tiết")}</span>
+        </div>
+      </div>
+
+      <div className="group rounded-xl border border-border/70 bg-card/40 p-4 transition-colors hover:border-border shadow-2xs">
+        <InlineTaskField
+          id={`task-${task.id}-description`}
+          label=""
+          value={task.description || ""}
+          placeholder="Thêm mô tả chi tiết cho công việc này... (Add a description...)"
+          editable={task.allowedActions.canEditDetail}
+          multiline
+          maxLength={10000}
+          required={Boolean(task.assigneeId)}
+          save={(value) => state.field("description", value)}
+          retry={state.retry}
+        />
+
+        {task.sourceType === "CAMPAIGN" && (
+          <div className="mt-4 pt-3.5 border-t border-border/50 space-y-1.5">
+            <div className="text-2xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Sparkles className="size-3 text-brand-orange" />
+              <span>{t("mediaPackage.offering.acceptance", "Tiêu chí nghiệm thu (Acceptance Criteria)")}</span>
+            </div>
+            <InlineTaskField
+              id={`task-${task.id}-acceptance-criteria`}
+              label=""
+              value={task.typeMetadata?.acceptanceCriteria ?? ""}
+              placeholder="Thêm tiêu chí nghiệm thu công việc..."
+              editable={task.allowedActions.canEditDetail}
+              multiline
+              maxLength={2000}
+              save={(value) => state.field("acceptanceCriteria", value)}
+              retry={state.retry}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
+  const { t } = useTranslation();
+  const [openedAt] = useState(Date.now);
   const zone = task.dates.timezone || "UTC";
-  const canonical = canonicalTaskStatus(task.status);
+  const canEditAssignee = task.allowedActions.canAssign;
+
+  const assigneeInitials = task.assigneeName
+    ? task.assigneeName
+        .trim()
+        .split(/\s+/)
+        .map((w) => w[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "U";
+
+  // Overdue check
+  const isOverdue = Boolean(
+    task.dueDate &&
+      Number.isFinite(Date.parse(task.dueDate)) &&
+      new Date(task.dueDate).getTime() < openedAt &&
+      task.status !== "FINISHED" &&
+      task.status !== "CANCELLED",
+  );
+
+  const platforms: string[] = Array.isArray(task.typeMetadata?.targetPlatforms)
+    ? (task.typeMetadata.targetPlatforms as string[])
+    : [];
+
+  return (
+    <aside className="rounded-xl border border-border/70 bg-card/60 p-4 space-y-4 shadow-2xs">
+      <div className="flex items-center justify-between border-b border-border/50 pb-2.5">
+        <h3 className="text-2xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+          <Sparkles className="size-3 text-brand-orange" />
+          <span>{t("tasks.details")}</span>
+        </h3>
+        <span className="font-mono text-3xs text-muted-foreground/60 tabular-nums">
+          #{task.id.slice(-6).toUpperCase()}
+        </span>
+      </div>
+
+      <div className="space-y-4 divide-y divide-border/40">
+        {/* Assignee */}
+        <div className="space-y-1.5 pt-1 first:pt-0">
+          <div className="flex items-center justify-between">
+            <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
+              <User2 className="size-3 text-muted-foreground/70" />
+              {t("tasks.assignee")}
+            </span>
+
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="size-6 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-3xs font-bold uppercase select-none shrink-0 shadow-2xs">
+              {assigneeInitials}
+            </div>
+            <div className="flex-1 min-w-0">
+              {canEditAssignee ? (
+                <TaskAssigneePicker
+                  workspaceId={task.workspaceId}
+                  taskId={task.id}
+                  assigneeName={task.assigneeName}
+                  task={task}
+                />
+              ) : (
+                <span className="text-xs font-medium text-foreground truncate block">
+                  {task.assigneeName || t("tasks.unassigned", "Chưa phân công")}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Approvals / Review & Client Approval Settings */}
+        <div className="space-y-2.5 pt-3">
+          {task.reviewStep && (
+            <div className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-2xs font-semibold text-amber-700 dark:text-amber-400">
+              <ShieldCheck className="size-3" />
+              <span>{t(`tasks.inline.reviewSteps.${task.reviewStep}`, task.reviewStep)}</span>
+            </div>
+          )}
+          <TaskInlineAssignment task={task} />
+        </div>
+
+        {/* Due date */}
+        <div className="space-y-1.5 pt-3">
+          <div className="flex items-center justify-between">
+            <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
+              <Calendar className="size-3 text-muted-foreground/70" />
+              {t("tasks.deadline", "Thời hạn hoàn thành")}
+            </span>
+            {isOverdue && (
+              <span className="inline-flex items-center gap-1 rounded bg-rose-500/10 border border-rose-500/25 px-1.5 py-0.5 text-3xs font-semibold text-rose-600 dark:text-rose-400">
+                <AlertCircle className="size-2.5" />
+                Quá hạn
+              </span>
+            )}
+          </div>
+          <TaskDeadlineField task={task} />
+        </div>
+
+        {/* Publish date (if POST) */}
+        {task.type === "POST" && (
+          <div className="pt-3">
+            <TaskPublishTimeField task={task} />
+          </div>
+        )}
+
+        {/* Platforms */}
+        {(task.type === "POST" || platforms.length > 0) && (
+          <div className="space-y-2 pt-3">
+            <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
+              <Share2 className="size-3 text-muted-foreground/70" />
+              {t("tasks.platformsTitle", "Nền tảng / Kênh")}
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {platforms.length > 0 ? (
+                platforms.map((p) => (
+                  <span
+                    key={p}
+                    className={cn(
+                      "inline-flex items-center gap-1 rounded px-2 py-0.5 text-3xs font-bold uppercase tracking-wider border shadow-2xs",
+                      getPlatformBadgeStyle(p),
+                    )}
+                  >
+                    {t(`tasks.platforms.${p}`, p)}
+                  </span>
+                ))
+              ) : (
+                <span className="text-muted-foreground text-3xs italic">
+                  Chưa cấu hình kênh
+                </span>
+              )}
+            </div>
+            {task.type === "POST" && <TaskTargetPlatformsPicker task={task} />}
+          </div>
+        )}
+
+        {/* Deliverable / Campaign & Source */}
+        {(task.sourceType || task.campaignId) && (
+          <div className="space-y-2 pt-3">
+            <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
+              <FolderKanban className="size-3 text-muted-foreground/70" />
+              {t("tasks.deliverable", "Hạng mục liên kết")}
+            </span>
+
+            {task.campaignId && (
+              <Link
+                to={`/workspaces/${task.workspaceId}/campaigns`}
+                className="group flex items-center justify-between gap-1.5 rounded-lg border border-border/70 bg-muted/20 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted/50 hover:text-brand-orange transition-colors shadow-2xs"
+              >
+                <span className="truncate">{task.campaignName || "Chiến dịch"}</span>
+                <ExternalLink className="size-3 shrink-0 text-muted-foreground group-hover:text-brand-orange" />
+              </Link>
+            )}
+
+            {task.sourceType === "CONTENT_REQUEST" && task.sourceRefId && (
+              <Link
+                to={`/workspaces/${task.workspaceId}/requests?request=${encodeURIComponent(task.sourceRefId)}`}
+                className="group flex items-center justify-between gap-1.5 rounded-lg border border-border/70 bg-muted/20 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted/50 hover:text-brand-orange transition-colors shadow-2xs"
+              >
+                <span className="truncate">Yêu cầu nội dung</span>
+                <ExternalLink className="size-3 shrink-0 text-muted-foreground group-hover:text-brand-orange" />
+              </Link>
+            )}
+          </div>
+        )}
+
+        {/* References */}
+        <div className="space-y-1.5 pt-3">
+          <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
+            <Link2 className="size-3 text-muted-foreground/70" />
+            {t("tasks.workflow.fields.inputReferences", "Tài liệu tham khảo")}
+          </span>
+          <References task={task} />
+        </div>
+
+        {/* Timezone */}
+        <div className="pt-3 flex items-center gap-1.5 text-3xs text-muted-foreground">
+          <Globe className="size-3 shrink-0 text-muted-foreground/70" />
+          <span>{t("tasks.workflow.timezone", { timezone: zone })}</span>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
+  const { t } = useTranslation();
+  const canonical = task.status;
   const statusCfg = STATUS_CONFIG[canonical] || STATUS_CONFIG.TODO;
 
   return (
@@ -353,7 +587,7 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
       <div className="flex flex-wrap items-center gap-2">
         <span
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
+            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors",
             statusCfg.bg,
             statusCfg.text,
             statusCfg.border,
@@ -375,9 +609,9 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
           {task.type === "POST" ? (
             <Share2 className="text-brand-orange size-3.5" />
           ) : (
-            <FileText className="text-muted-foreground size-3.5" />
+            <User2 className="text-muted-foreground size-3.5" />
           )}
-          {t(`tasks.types.${task.type}`)}
+          {t(`tasks.types.${task.type}`, task.type)}
         </span>
 
         {task.reviewStep && (
@@ -388,100 +622,15 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
         )}
       </div>
 
-      {/* Description Section */}
-      <div className="bg-card/50 border-border/70 space-y-2 rounded-xl border p-4 shadow-xs">
-        <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
-          <AlignLeft className="text-brand-orange size-3.5" />
-          <span>{t("tasks.workflow.fields.description")}</span>
+      {/* 2-Column Jira View */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="lg:col-span-7 space-y-4">
+          <TaskDescriptionSection task={task} />
         </div>
-        <InlineTaskField
-          id={`task-${task.id}-description`}
-          label=""
-          value={task.description || ""}
-          editable={task.allowedActions.canEditDetail}
-          multiline
-          maxLength={10000}
-          required={Boolean(task.assigneeId)}
-          save={(value) => state.field("description", value)}
-          retry={state.retry}
-        />
-      </div>
-
-      {/* Properties & Assignment Card */}
-      <div className="bg-card/50 border-border/70 space-y-4 rounded-xl border p-4 shadow-xs">
-        <h3 className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
-          <Sparkles className="text-brand-orange size-3.5" />
-          <span>
-            {t("tasks.workflow.properties", {
-              defaultValue: "Thông tin & Phân công",
-            })}
-          </span>
-        </h3>
-
-        <TaskInlineAssignment task={task} />
-
-        <div className="border-border/50 space-y-3 border-t pt-3">
-          <TaskDeadlineField task={task} />
-          {task.type === "POST" && <TaskPublishTimeField task={task} />}
-          {task.type === "POST" && <TaskTargetPlatformsPicker task={task} />}
-          <div className="text-2xs text-muted-foreground flex items-center gap-1.5 pt-1.5">
-            <Globe className="size-3" />
-            <span>{t("tasks.workflow.timezone", { timezone: zone })}</span>
-          </div>
+        <div className="lg:col-span-5">
+          <TaskDetailsSidebar task={task} />
         </div>
       </div>
-
-      {/* References */}
-      <References task={task} />
-
-      {/* Context & Campaign Card */}
-      {(task.sourceType || task.campaignId) && (
-        <div className="bg-muted/20 border-border/70 space-y-2.5 rounded-xl border p-3.5 text-xs">
-          <div className="text-muted-foreground flex items-center gap-1.5 font-semibold tracking-wider uppercase">
-            <FolderKanban className="text-brand-orange size-3.5" />
-            <span>Ngữ cảnh &amp; Nguồn gốc</span>
-          </div>
-
-          <div className="space-y-2 pt-0.5">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-muted-foreground">{t("tasks.source")}</span>
-              <span className="bg-muted text-foreground rounded-md px-2 py-0.5 font-medium">
-                {task.sourceType
-                  ? t(`tasks.sources.${task.sourceType}`)
-                  : t("tasks.missing")}
-              </span>
-            </div>
-
-            {task.campaignId && (
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-muted-foreground">Chiến dịch</span>
-                <Link
-                  className="text-brand-orange hover:text-brand-orange/80 group flex items-center gap-1 font-medium transition-colors"
-                  to={`/workspaces/${task.workspaceId}/campaigns`}
-                >
-                  <span className="max-w-[200px] truncate">
-                    {task.campaignName || t("tasks.openCampaign")}
-                  </span>
-                  <ExternalLink className="size-3 opacity-70 group-hover:opacity-100" />
-                </Link>
-              </div>
-            )}
-
-            {task.sourceType === "CONTENT_REQUEST" && task.sourceRefId && (
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-muted-foreground">Yêu cầu nội dung</span>
-                <Link
-                  className="text-brand-orange hover:text-brand-orange/80 group flex items-center gap-1 font-medium transition-colors"
-                  to={`/workspaces/${task.workspaceId}/requests?request=${encodeURIComponent(task.sourceRefId)}`}
-                >
-                  <span>{t("tasks.openRequest")}</span>
-                  <ExternalLink className="size-3 opacity-70 group-hover:opacity-100" />
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
