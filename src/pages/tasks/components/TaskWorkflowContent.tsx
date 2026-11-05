@@ -18,7 +18,7 @@ import { TaskInlineDetails } from "@/pages/tasks/components/TaskInlineDetails";
 import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
 import { TaskComments } from "@/pages/tasks/components/comments/TaskComments";
 import { TaskMeetingCard } from "@/pages/tasks/components/meeting";
-import { SurveyTaskSection } from "@/pages/tasks/components/survey/SurveyTaskSection";
+import { SurveyOverviewCard } from "@/pages/tasks/components/survey/SurveyOverviewCard";
 import { TaskPhoneMedia } from "@/pages/tasks/components/TaskPhoneMedia";
 import {
   TaskWorkflowProvider,
@@ -240,14 +240,13 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated }: Props) {
 
           {/* Workshop Survey Form Builder & Analysis Hub */}
           {task.type === "SURVEY" && (
-            <SurveyTaskSection
-              workspaceId={task.workspaceId}
-              taskId={task.id}
-              taskTitle={task.name}
-              onUpdated={() => {
-                onUpdated?.();
-              }}
-            />
+            <div className="space-y-4">
+              <SurveyOverviewCard
+                workspaceId={task.workspaceId}
+                taskId={task.id}
+                taskTitle={task.name}
+              />
+            </div>
           )}
 
           {/* Social Post Content & Review Action Hub */}
