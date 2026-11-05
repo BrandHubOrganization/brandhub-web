@@ -148,8 +148,8 @@ export function AdminSidebar({
           collapsed && "justify-center px-0",
         )}
       >
-        <span className="bg-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md">
-          <BrandHubLogo size={16} />
+        <span className="flex size-7 shrink-0 items-center justify-center">
+          <BrandHubLogo size={28} />
         </span>
         {!collapsed && (
           <span className="text-sm font-bold tracking-tight text-white">

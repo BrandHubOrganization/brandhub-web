@@ -9,6 +9,7 @@ import type { Agency } from "@/types/agency";
 import type { SystemRole } from "@/store/authStore";
 import { canAccess } from "@/routes/access";
 import { AdminSidebar } from "@/components/layout/AdminSidebar";
+import { BrandHubLogo } from "@/components/auth/BrandHubLogo";
 import {
   NAV_SECTIONS,
   type NavItem,
@@ -238,53 +239,8 @@ export function Sidebar({
         )}
         style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
       >
-        <div
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md"
-          style={{ background: "hsl(var(--primary))" }}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <circle cx="8" cy="8" r="2.2" fill="white" />
-            <circle cx="2.5" cy="4" r="1.5" fill="white" />
-            <circle cx="13.5" cy="4" r="1.5" fill="white" />
-            <circle cx="2.5" cy="12" r="1.5" fill="white" />
-            <circle cx="13.5" cy="12" r="1.5" fill="white" />
-            <line
-              x1="5.8"
-              y1="7"
-              x2="3.5"
-              y2="5"
-              stroke="white"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-            />
-            <line
-              x1="10.2"
-              y1="7"
-              x2="12.5"
-              y2="5"
-              stroke="white"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-            />
-            <line
-              x1="5.8"
-              y1="9"
-              x2="3.5"
-              y2="11"
-              stroke="white"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-            />
-            <line
-              x1="10.2"
-              y1="9"
-              x2="12.5"
-              y2="11"
-              stroke="white"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-            />
-          </svg>
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center">
+          <BrandHubLogo size={28} />
         </div>
         {!collapsed && (
           <span className="font-sans text-sm font-bold tracking-tight text-white">
