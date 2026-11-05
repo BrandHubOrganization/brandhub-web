@@ -46,8 +46,13 @@ export const trendSummarySchema = z.object({
 });
 
 export type PublishedTrend = z.infer<typeof publishedTrendSchema>;
+
+export const TREND_PLATFORMS = ["facebook", "threads", "tiktok"] as const;
+
 export interface TrendViewSelection {
   period: "6h" | "24h" | "7d";
+  source: "redis" | "neo4j";
+  platform?: (typeof TREND_PLATFORMS)[number];
   date?: string;
   limit: number;
 }

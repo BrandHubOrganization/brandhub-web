@@ -22,26 +22,27 @@ export function AdminTrendPanel() {
         keyword.toLocaleLowerCase().includes(search),
       ),
   );
+  const refresh = (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={view.refresh}
+      disabled={view.trends.isFetching || (view.source === "redis" && view.summary.isFetching)}
+      loading={view.trends.isFetching}
+      className="h-8 gap-1.5 text-xs font-medium shrink-0"
+    >
+      <RefreshCw aria-hidden="true" className="size-3.5" />
+      {t("admin.trends.refresh")}
+    </Button>
+  );
 
   return (
     <div className="max-w-full min-w-0 space-y-4">
-      {/* Bento Snapshot with Refresh Action */}
-      <AdminTrendSummary
-        query={view.summary}
-        actions={
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={view.refresh}
-            disabled={view.trends.isFetching || view.summary.isFetching}
-            loading={view.trends.isFetching}
-            className="h-8 gap-1.5 text-xs font-medium shrink-0"
-          >
-            <RefreshCw aria-hidden="true" className="size-3.5" />
-            {t("admin.trends.refresh")}
-          </Button>
-        }
-      />
+      {view.source === "redis" ? (
+        <AdminTrendSummary query={view.summary} actions={refresh} />
+      ) : (
+        <div className="flex justify-end">{refresh}</div>
+      )}
 
       {/* Filter Toolbar */}
       <AdminTrendFilters view={view} topics={topics} />
@@ -101,7 +102,7 @@ export function AdminTrendPanel() {
             <section className="bg-card border-border space-y-2 rounded-xl border p-6">
               <h2 className="font-semibold">{t("admin.trends.emptyTitle")}</h2>
               <p className="text-muted-foreground max-w-3xl text-sm leading-6">
-                {t("admin.trends.empty")}
+                {t(view.source === "redis" ? "admin.trends.empty" : "admin.trends.graphEmpty")}
               </p>
             </section>
           ) : filtered.length ? (
