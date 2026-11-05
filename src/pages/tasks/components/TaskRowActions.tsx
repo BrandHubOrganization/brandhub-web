@@ -77,6 +77,8 @@ export function TaskRowActions({
         if (isTodo && (isOtherCreator || role === "CLIENT")) {
           return null;
         }
+        // The Task post API refuses Owners, so there is no editor to open.
+        if (role === "OWNER") return null;
 
         const label = isFinished
           ? "Xem bài"

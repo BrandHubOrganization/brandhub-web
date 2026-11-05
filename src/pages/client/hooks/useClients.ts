@@ -32,7 +32,7 @@ export function useClients() {
     } finally {
       setIsLoading(false);
     }
-  }, [searchTerm, workspaceId]);
+  }, [searchTerm, t, workspaceId]);
 
   useEffect(() => {
     fetchClients();

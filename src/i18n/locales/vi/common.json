@@ -1,4 +1,6 @@
 {
+  "guide": "Hướng dẫn",
+  "guideHint": "Xem hướng dẫn chi tiết & tài liệu quản trị",
   "helpFor": "Trợ giúp: {{label}}",
   "invitePresets": {
     "formal": {

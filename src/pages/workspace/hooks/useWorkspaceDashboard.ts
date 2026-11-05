@@ -117,7 +117,11 @@ export function useWorkspaceDashboard() {
 
   // Fetch Campaigns
   useEffect(() => {
-    if (!workspaceId) return;
+    // The API refuses this list to a Creator, who has no campaign screen either.
+    if (!workspaceId || currentMemberRole === "CREATOR") {
+      setCampaignsLoading(false);
+      return;
+    }
     let disposed = false;
     setCampaignsLoading(true);
     setCampaignsError(false);
@@ -137,7 +141,7 @@ export function useWorkspaceDashboard() {
     return () => {
       disposed = true;
     };
-  }, [workspaceId, campaignsAttempt]);
+  }, [workspaceId, campaignsAttempt, currentMemberRole]);
 
   // Compute Task Stats
   const taskStats = useMemo<TaskStatsSummary>(() => {
@@ -149,6 +153,7 @@ export function useWorkspaceDashboard() {
     tasks.forEach((item) => {
       if (
         item.status === "TODO"
+
       ) {
         todoCount++;
       } else if (item.status === "IN_PROGRESS") {
@@ -158,6 +163,7 @@ export function useWorkspaceDashboard() {
       ) {
         reviewCount++;
       } else if (item.status === "FINISHED") {
+
         completedCount++;
       }
     });

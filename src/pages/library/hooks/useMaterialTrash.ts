@@ -56,17 +56,8 @@ async function mutate(
   const { workspace, actor } = context;
   if (!workspace || !actor || !isCurrent({ workspace, actor }))
     throw new Error("Missing workspace");
-  let ticket: string | undefined;
-  if (restore && useAuthStore.getState().systemRole === "ADMIN") {
-    const promptValue = window.prompt(
-      context.t("library.repository.supportTicketPrompt"),
-    );
-    if (!promptValue || !promptValue.trim())
-      throw new Error("Support ticket required");
-    ticket = promptValue.trim();
-  }
   const result = restore
-    ? await materialService.restoreMaterial(workspace, material, ticket)
+    ? await materialService.restoreMaterial(workspace, material)
     : await materialService.deleteMaterial(workspace, material);
   return { material: result, workspace, actor };
 }
@@ -159,6 +150,20 @@ export function useMaterialTrash(
       ) && count < 1,
     queryFn: async ({ signal }) => {
       try {
+        if (!deleted || role !== "CLIENT") {
+          const browser = await materialService.browse(
+            workspace!,
+            { ...filters, deleted, page, size: 20, search },
+            signal,
+          );
+          return {
+            items: browser.files.items,
+            ...browser.files.meta,
+            folders: browser.folders,
+            breadcrumbs: browser.breadcrumbs,
+            currentFolder: browser.currentFolder,
+          };
+        }
         return await materialService.listPage(
           workspace!,
           { ...filters, deleted, page, size: 20, search },

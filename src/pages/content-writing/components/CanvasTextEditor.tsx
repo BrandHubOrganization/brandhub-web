@@ -240,7 +240,7 @@ export const CanvasTextEditor = forwardRef<
     // local-only (remote edits are not undoable by this client).
     const undoManager = useMemo(
       () => new UndoManager(yTextRef.current, { captureTimeout: 500 }),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+
       [],
     );
 
@@ -949,7 +949,7 @@ export const CanvasTextEditor = forwardRef<
           y: PADDING_Y + lineIndex * LINE_HEIGHT,
         };
       });
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- canvasWidth/text already drive `render`'s effect; this recomputes alongside it
+
     }, [peers, text, canvasWidth]);
 
     /** Moves the caret, extending or clearing the selection depending on shiftKey — shared by every arrow/Home/End handler. */

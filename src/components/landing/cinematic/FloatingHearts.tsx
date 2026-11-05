@@ -76,7 +76,7 @@ export const FloatingHearts = forwardRef<
       cancelled = true;
       clearTimeout(timer);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [minIntervalMs, maxIntervalMs]);
 
   return (

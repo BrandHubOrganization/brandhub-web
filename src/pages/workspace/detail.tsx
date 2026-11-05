@@ -76,8 +76,8 @@ export function WorkspaceSettingsPage() {
                 style={{
                   background: settings.brandColor
                     ? `${settings.brandColor}1a`
-                    : "#f05a281a",
-                  color: settings.brandColor || "#f05a28",
+                    : "#ca3d0e1a",
+                  color: settings.brandColor || "#ca3d0e",
                 }}
               >
                 {(settings.name || "?").charAt(0).toUpperCase()}

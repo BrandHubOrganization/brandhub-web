@@ -21,6 +21,7 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const canEdit = task.allowedActions.canEditDetail;
 
+
   const [clientApprovalOpen, setClientApprovalOpen] = useState(false);
   const [isSavingApproval, setIsSavingApproval] = useState(false);
   const [supervisorOpen, setSupervisorOpen] = useState(false);

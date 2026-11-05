@@ -1,7 +1,7 @@
 import { AiCreditBalance } from "@/components/billing/AiCreditBalance";
 import * as React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
+import { ChevronDown, ChevronLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import type { MemberRole, Workspace } from "@/types/workspace";
@@ -129,6 +129,16 @@ export function Sidebar({
       ? allWorkspaces.find((w) => w.id === hoveredItem.id)
       : null;
 
+  const [closedSections, setClosedSections] = React.useState<Set<string>>(
+    new Set(),
+  );
+  const toggleSection = (key: string) =>
+    setClosedSections((closed) => {
+      const next = new Set(closed);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
+
   const isPackageHardGated =
     (role === "CLIENT" || role === "MANAGER") &&
     !!activeWorkspace &&
@@ -152,7 +162,7 @@ export function Sidebar({
       ? role === "MANAGER"
         ? ["overview", "workspaceSettings"]
         : ["overview"]
-      : ["overview", "create", "workspaceSettings"];
+      : ["overview", "create", "content", "publish", "workspaceSettings"];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
@@ -211,6 +221,7 @@ export function Sidebar({
       className={cn(
         "flex h-full flex-col transition-all duration-200 select-none",
         collapsed ? "w-[60px]" : "w-[220px]",
+        "surface-dark",
         className,
       )}
       style={{
@@ -229,7 +240,7 @@ export function Sidebar({
       >
         <div
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md"
-          style={{ background: "hsl(var(--brand-orange, 15 88% 55%))" }}
+          style={{ background: "hsl(var(--primary))" }}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="2.2" fill="white" />
@@ -278,7 +289,7 @@ export function Sidebar({
         {!collapsed && (
           <span className="font-sans text-sm font-bold tracking-tight text-white">
             Brand
-            <span style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}>
+            <span style={{ color: "hsl(var(--brand-orange))" }}>
               Hub
             </span>
           </span>
@@ -369,14 +380,29 @@ export function Sidebar({
         {filteredSections.map((section, idx) => (
           <div key={section.key} className="space-y-1">
             {!collapsed ? (
-              <span className="text-muted-foreground text-3xs mb-1 block px-2.5 font-bold tracking-wider uppercase">
+              <button
+                type="button"
+                onClick={() => toggleSection(section.key)}
+                aria-expanded={!closedSections.has(section.key)}
+                className="text-muted-foreground text-3xs mb-1 flex w-full cursor-pointer items-center justify-between rounded px-2.5 font-bold tracking-wider uppercase hover:text-white"
+              >
                 {t(section.titleKey)}
-              </span>
+                <ChevronDown
+                  className={cn(
+                    "size-3 transition-transform",
+                    closedSections.has(section.key) && "-rotate-90",
+                  )}
+                  aria-hidden="true"
+                />
+              </button>
             ) : (
               idx > 0 && <div className="bg-border mx-1 my-2 h-px opacity-20" />
             )}
 
-            <div className="space-y-0.5">
+            <div
+              className="space-y-0.5"
+              hidden={!collapsed && closedSections.has(section.key)}
+            >
               {section.items.map(({ to, icon: Icon, labelKey, children }) => {
                 return (
                   <div key={to}>
@@ -395,7 +421,7 @@ export function Sidebar({
                         isActive
                           ? {
                               background:
-                                "hsl(var(--brand-orange, 15 88% 55%))",
+                                "hsl(var(--primary))",
                               color: "#ffffff",
                             }
                           : {

@@ -340,6 +340,7 @@ export function References({ task }: { task: TaskWorkflow }) {
 }
 
 export function TaskDescriptionSection({ task }: { task: TaskWorkflow }) {
+
   const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
 
@@ -391,6 +392,7 @@ export function TaskDescriptionSection({ task }: { task: TaskWorkflow }) {
 }
 
 export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
+  const role = useWorkspaceStore((state) => state.currentMemberRole || state.currentWorkspace?.myRole);
   const { t } = useTranslation();
   const [openedAt] = useState(Date.now);
   const zone = task.dates.timezone || "UTC";
@@ -545,7 +547,7 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
               </Link>
             )}
 
-            {task.sourceType === "CONTENT_REQUEST" && task.sourceRefId && (
+            {task.sourceType === "CONTENT_REQUEST" && task.sourceRefId && role !== "CREATOR" && (
               <Link
                 to={`/workspaces/${task.workspaceId}/requests?request=${encodeURIComponent(task.sourceRefId)}`}
                 className="group flex items-center justify-between gap-1.5 rounded-lg border border-border/70 bg-muted/20 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted/50 hover:text-brand-orange transition-colors shadow-2xs"
@@ -631,6 +633,7 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
           <TaskDetailsSidebar task={task} />
         </div>
       </div>
+
     </div>
   );
 }

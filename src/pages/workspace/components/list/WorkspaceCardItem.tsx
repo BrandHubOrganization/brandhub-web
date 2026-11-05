@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -31,8 +32,7 @@ export function WorkspaceCardItem({
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
-  const brandColor = ws.brandColor || "#f05a28";
-  const LogoIcon = getLogoIcon(ws.logoIcon);
+  const brandColor = ws.brandColor || "#ca3d0e";
   const canManage = ws.myRole === "OWNER" || ws.myRole === "MANAGER";
 
   return (
@@ -76,12 +76,12 @@ export function WorkspaceCardItem({
               <div
                 className="flex size-16 shrink-0 items-center justify-center rounded-2xl text-base font-bold border-4 border-card shadow-md select-none transition-transform duration-300 group-hover:scale-102 text-white"
                 style={{
-                  backgroundColor: brandColor || "#f05a28",
+                  backgroundColor: brandColor || "#ca3d0e",
                   color: "#ffffff",
                 }}
               >
                 {ws.logoIcon ? (
-                  <LogoIcon className="size-6 text-white" />
+                  createElement(getLogoIcon(ws.logoIcon), { className: "size-6 text-white" })
                 ) : (
                   ws.name.slice(0, 2).toUpperCase()
                 )}

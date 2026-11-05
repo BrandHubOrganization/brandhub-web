@@ -26,7 +26,7 @@ export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
   const { t } = useTranslation();
   const v = values;
   const name = v?.displayName?.trim() ?? "";
-  const brandColor = v?.brandColor || "#f05a28";
+  const brandColor = v?.brandColor || "#ca3d0e";
 
   // Use dynamic banner from form values, fallback to default preset
   const bannerUrl = v?.bannerUrl || BANNER_PRESETS[0]?.url || null;

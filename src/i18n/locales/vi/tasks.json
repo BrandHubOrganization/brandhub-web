@@ -35,6 +35,26 @@
       "CANCELLED": "Đã hủy"
     }
   },
+  "phoneMedia": {
+    "title": "Tệp từ điện thoại",
+    "loading": "Đang tải danh sách tệp...",
+    "loadFailed": "Không tải được danh sách tệp.",
+    "retry": "Thử lại",
+    "empty": "Chưa có tệp nào. Video và ảnh Creator gửi từ điện thoại sẽ tự hiện ở đây.",
+    "noDraft": "Task chưa có bài nháp. Hãy tạo bài nháp để đưa tệp vào bài và gửi duyệt.",
+    "preview": "Xem",
+    "attach": "Đưa vào bài",
+    "attached": "Đã đưa tệp vào bài nháp.",
+    "inPost": "Đã trong bài",
+    "postFull": "Bài đã đủ 10 tệp.",
+    "status": {
+      "UPLOADING": "Đang tải lên",
+      "VALIDATING": "Đang kiểm tra",
+      "REJECTED": "Bị từ chối",
+      "FAILED": "Lỗi"
+
+    }
+  },
   "approvalPage": {
     "title": "Duyệt bài",
     "description": "Xem nội dung, đưa ra quyết định và theo dõi lịch sử duyệt bài trong không gian làm việc.",
@@ -474,6 +494,7 @@
       "questionsCount": "{{count}} câu hỏi",
       "responsesCount": "{{count}} phản hồi",
       "openEditor": "Mở khảo sát",
+      "viewResponses": "Xem câu trả lời",
       "connectedSheets": "Google Sheets đã kết nối",
       "notConnected": "Chưa kết nối Google Sheets",
       "noSurveyYet": "Chưa có nội dung khảo sát. Mở trình chỉnh sửa để bắt đầu thiết kế câu hỏi."

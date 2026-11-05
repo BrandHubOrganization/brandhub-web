@@ -14,24 +14,24 @@
   "stats": {
     "reach": {
       "label": "LƯỢT TIẾP CẬN",
-      "desc": "So với tháng trước"
+      "desc": "Tổng; % so với 7 ngày trước"
     },
     "engagement": {
       "label": "TƯƠNG TÁC",
-      "desc": "So với tháng trước"
+      "desc": "Tổng; % so với 7 ngày trước"
     },
     "posts": {
       "label": "BÀI ĐĂNG",
-      "desc": "Bằng với tháng trước"
+      "desc": "Trên các Workspace của bạn"
     },
-    "responseRate": {
-      "label": "TỶ LỆ PHẢN HỒI",
-      "desc": "Cải thiện tốt"
+    "successRate": {
+      "label": "TỶ LỆ ĐĂNG THÀNH CÔNG",
+      "desc": "Đã đăng trên tổng số lần thử đăng"
     }
   },
   "channelPerformance": {
     "title": "Hiệu quả theo Kênh xuất bản",
-    "subtitle": "Lượt tiếp cận theo từng nền tảng trong 30 ngày qua",
+    "subtitle": "Lượt tiếp cận theo từng nền tảng",
     "totalPosts": "Tổng bài đăng",
     "totalReach": "Tổng tiếp cận",
     "totalEngagement": "Tổng tương tác"

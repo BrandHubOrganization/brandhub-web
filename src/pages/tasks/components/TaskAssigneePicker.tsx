@@ -35,6 +35,7 @@ export function TaskAssigneePicker({
   const task = propTask || state.query.data;
   const canPick = task?.allowedActions.canAssign === true;
 
+
   const field = useInlineTaskField(
     `task-${taskId}-${scope}-assignee`,
     task?.assigneeId || "",

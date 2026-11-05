@@ -1,3 +1,4 @@
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FolderKanban, ChevronRight, Plus, FileEdit, Calendar } from "lucide-react";
@@ -5,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { WorkspaceCampaignSummary } from "../WorkspaceCampaignSummary";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import type { TaskListItem } from "@/types/task";
+
 import type { Campaign } from "@/pages/campaign/types";
 
 interface WorkspaceTasksSectionProps {
@@ -31,6 +33,7 @@ export function WorkspaceTasksSection({
   onRetryCampaigns,
 }: WorkspaceTasksSectionProps) {
   const { t } = useTranslation();
+  const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const navigate = useNavigate();
 
   return (
@@ -105,7 +108,7 @@ export function WorkspaceTasksSection({
                       </p>
                       <div className="text-muted-foreground text-2xs mt-0.5 flex items-center gap-2">
                         <span className="font-semibold tracking-wider uppercase">
-                          {task.type}
+                          {t(`tasks.types.${task.type}`, task.type)}
                         </span>
                         {task.dueDate && (
                           <span className="flex items-center gap-1">
@@ -125,7 +128,7 @@ export function WorkspaceTasksSection({
                       <span
                         className={`size-1.5 rounded-full ${statusInfo.dot}`}
                       />
-                      {statusInfo.defaultLabel}
+                      {t(statusInfo.labelKey, statusInfo.defaultLabel)}
                     </span>
                   </div>
                 </div>
@@ -135,14 +138,16 @@ export function WorkspaceTasksSection({
         )}
       </div>
 
-      <WorkspaceCampaignSummary
-        workspaceId={workspaceId}
-        campaigns={campaigns}
-        loading={campaignsLoading}
-        failed={campaignsError}
-        canPlan={isManagerOrOwner}
-        onRetry={onRetryCampaigns}
-      />
+      {currentMemberRole !== "CREATOR" && (
+        <WorkspaceCampaignSummary
+          workspaceId={workspaceId}
+          campaigns={campaigns}
+          loading={campaignsLoading}
+          failed={campaignsError}
+          canPlan={isManagerOrOwner}
+          onRetry={onRetryCampaigns}
+        />
+      )}
     </div>
   );
 }

@@ -169,8 +169,9 @@ export const calendarService = {
           scheduledAt: post.scheduledAt || payload.newScheduledAt,
         };
       }
-    } catch {
-      // If post doesn't exist by this ID, fall back to updating task
+    } catch (error) {
+      // Only "no such post" means this event is a Task; a refusal must reach the user.
+      if ((error as { response?: { status?: number } }).response?.status !== 404) throw error;
     }
 
     // 2. Fallback to updating task publishDate / dueDate

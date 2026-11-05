@@ -35,6 +35,26 @@
       "CANCELLED": "Cancelled"
     }
   },
+  "phoneMedia": {
+    "title": "Files from phone",
+    "loading": "Loading files...",
+    "loadFailed": "Could not load files.",
+    "retry": "Try again",
+    "empty": "No files yet. Videos and photos the Creator sends from their phone appear here automatically.",
+    "noDraft": "This task has no draft yet. Create a draft to add files to the post and submit it for review.",
+    "preview": "View",
+    "attach": "Add to post",
+    "attached": "File added to the draft.",
+    "inPost": "In post",
+    "postFull": "This post already has 10 files.",
+    "status": {
+      "UPLOADING": "Uploading",
+      "VALIDATING": "Checking",
+      "REJECTED": "Rejected",
+      "FAILED": "Failed"
+
+    }
+  },
   "approvalPage": {
     "title": "Post approvals",
     "description": "Review content, make decisions and follow approval history in this workspace.",
@@ -474,6 +494,7 @@
       "questionsCount": "{{count}} questions",
       "responsesCount": "{{count}} responses",
       "openEditor": "Open Survey",
+      "viewResponses": "View responses",
       "connectedSheets": "Google Sheets connected",
       "notConnected": "No Google Sheet connected",
       "noSurveyYet": "No survey content yet. Open the editor to start designing questions."

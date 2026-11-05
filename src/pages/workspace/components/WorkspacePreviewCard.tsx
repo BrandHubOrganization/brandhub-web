@@ -97,7 +97,7 @@ export function WorkspacePreviewCard({
               <div
                 className="flex size-full items-center justify-center text-lg font-bold text-white"
                 style={{
-                  background: brandColor || "#f05a28",
+                  background: brandColor || "#ca3d0e",
                   color: "#ffffff",
                 }}
               >

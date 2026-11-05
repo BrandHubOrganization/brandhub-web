@@ -1,5 +1,24 @@
 {
   "dashboard": {
+    "manage": "Manage",
+    "quickHints": {
+      "chat": "Internal and Client conversations",
+      "tasks": "Track task progress and assignments",
+      "package": "Package terms and two-way approval",
+      "editor": "Write and collaborate on content in real time",
+      "settings": "Set up identity, time zone and members"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "PENDING_APPROVAL": "Pending approval",
+      "SCHEDULED": "Scheduled",
+      "IN_PROGRESS": "Publishing",
+      "PUBLISHING": "Publishing",
+      "REJECTED": "Rejected",
+      "FAILED": "Failed",
+      "APPROVED": "Approved",
+      "PUBLISHED": "Published"
+    },
     "tabs": {
       "overview": "Workspace Overview",
       "overviewHint": "Task progress, active campaigns, and workspace resources",
@@ -42,7 +61,11 @@
     "creditSetupRequired": "Credit information is unavailable. Check setup or reload.",
     "membersByRole": "Members by role",
     "campaignsByStatus": "Campaigns by status",
-    "mockBadge": "Sample data",
+    "tasksDueTrend": "Tasks due by month",
+    "tasksByStatusChart": "Tasks by status",
+    "upcomingTasks": "Upcoming Tasks",
+    "upcomingTasksEmpty": "No Tasks due soon.",
+    "recentlyChanged": "Recently updated Tasks",
     "campaignTrend": "Campaigns by month",
     "contentByStatus": "Content by status",
     "upcomingContent": "Upcoming content",

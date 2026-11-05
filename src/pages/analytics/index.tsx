@@ -1,42 +1,28 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getAnalyticsSummary } from "@/services/mock/mockAnalyticsService";
-import type { AnalyticsSummary } from "@/types/analytics";
+import { analyticsOverviewQuery } from "@/services/analyticsService";
+import { useAuthStore } from "@/store/authStore";
+import type { AnalyticsOverview, StatSummaryCard } from "@/types/analytics";
 import { StatCards } from "./components/StatCards";
 import { ChannelPerformanceChart } from "./components/ChannelPerformanceChart";
 
+function toCards(overview: AnalyticsOverview): StatSummaryCard[] {
+  return [
+    { key: "reach", value: overview.totalReach.toLocaleString(), deltaPercent: overview.reachGrowth },
+    { key: "engagement", value: overview.totalEngagement.toLocaleString(), deltaPercent: overview.engagementGrowth },
+    { key: "posts", value: overview.totalPosts.toLocaleString(), deltaPercent: null },
+    { key: "successRate", value: `${overview.successRate}%`, deltaPercent: null },
+  ];
+}
+
 export function AnalyticsPage() {
   const { t } = useTranslation();
-  const [data, setData] = useState<AnalyticsSummary | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadSummary() {
-      setIsLoading(true);
-      setIsError(false);
-      try {
-        const summary = await getAnalyticsSummary();
-        if (!cancelled) setData(summary);
-      } catch (err) {
-        console.error("Failed to load analytics summary:", err);
-        if (!cancelled) setIsError(true);
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    }
-
-    loadSummary();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const userId = useAuthStore((state) => state.user?.id);
+  const { data, isLoading, isError, refetch } = useQuery(analyticsOverviewQuery(userId));
 
   return (
     <PageWrapper
@@ -60,7 +46,7 @@ export function AnalyticsPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => window.location.reload()}
+            onClick={() => void refetch()}
             className="gap-2 text-xs"
           >
             <RefreshCw className="size-3.5" /> {t("analytics.retry")}
@@ -70,7 +56,7 @@ export function AnalyticsPage() {
 
       {data && !isLoading && !isError && (
         <>
-          <StatCards cards={data.cards} />
+          <StatCards cards={toCards(data)} />
           <ChannelPerformanceChart channelStats={data.channelStats} />
         </>
       )}

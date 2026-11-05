@@ -28,17 +28,19 @@ export function StatCards({ cards }: StatCardsProps) {
             <span className="font-mono text-2xl font-bold tracking-tight">
               {card.value}
             </span>
-            <span
-              className={`font-mono text-xs font-semibold ${
-                card.deltaPercent > 0
-                  ? "text-emerald-500"
-                  : card.deltaPercent < 0
-                    ? "text-rose-500"
-                    : "text-muted-foreground"
-              }`}
-            >
-              {formatDelta(card.deltaPercent)}
-            </span>
+            {card.deltaPercent !== null && (
+              <span
+                className={`font-mono text-xs font-semibold ${
+                  card.deltaPercent > 0
+                    ? "text-emerald-500"
+                    : card.deltaPercent < 0
+                      ? "text-rose-500"
+                      : "text-muted-foreground"
+                }`}
+              >
+                {formatDelta(card.deltaPercent)}
+              </span>
+            )}
           </div>
           <p className="text-muted-foreground text-3xs">
             {t(`analytics.stats.${card.key}.desc`)}

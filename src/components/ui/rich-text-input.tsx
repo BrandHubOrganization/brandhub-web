@@ -42,7 +42,7 @@ export function RichTextInput({ label, placeholder, value, onChange }: Props) {
     if (editor && !editor.isDestroyed && value !== editor.getHTML()) {
       editor.commands.setContent(value);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [value, editor]);
 
   if (!editor) return null;

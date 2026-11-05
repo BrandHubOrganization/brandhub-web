@@ -43,7 +43,7 @@ export function SidebarHoverPreview({
   const targetName = isWs ? hoveredWorkspace!.name : hoveredAgency.name;
   const targetBrandColor =
     (isWs ? hoveredWorkspace!.brandColor : hoveredAgency.brandColor) ||
-    "#f05a28";
+    "#ca3d0e";
   const targetBannerUrl = isWs
     ? hoveredWorkspace!.bannerUrl
     : hoveredAgency.bannerUrl;
@@ -132,7 +132,7 @@ export function SidebarHoverPreview({
             <div
               className="flex size-12 shrink-0 items-center justify-center rounded-xl border-2 border-popover text-xs font-bold shadow-md select-none text-white"
               style={{
-                backgroundColor: targetBrandColor || "#f05a28",
+                backgroundColor: targetBrandColor || "#ca3d0e",
                 color: "#ffffff",
               }}
             >

@@ -1,4 +1,11 @@
 import { useEffect, useState } from "react";
+import {
+  CloudDownload,
+  FolderOpen,
+  Sparkles,
+  Trash2,
+  Users,
+} from "lucide-react";
 import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
@@ -12,11 +19,13 @@ import { MaterialRepositoryCard } from "@/pages/library/components/MaterialRepos
 import { ConfirmSoftDeleteModal } from "@/pages/library/components/ConfirmSoftDeleteModal";
 import { MediaUploadButton } from "@/pages/library/components/MediaUploadButton";
 import { MediaDetailPanel } from "@/pages/library/components/MediaDetailPanel";
+import { MaterialFolderSection } from "@/pages/library/components/MaterialFolderSection";
+import { ShareFromClientVaultModal } from "@/pages/library/components/ShareFromClientVaultModal";
 import { MaterialToolbar } from "@/pages/library/components/MaterialToolbar";
 import { CustomerDrivePanel } from "@/pages/library/components/CustomerDrivePanel";
 import type { MaterialFilters, MaterialItem } from "@/types/material";
 
-type RepositorySubTab = "active" | "drafts" | "trash";
+type RepositorySubTab = "active" | "client-vault" | "drafts" | "trash";
 
 export function MediaTab() {
   const workspace = useWorkspaceStore((state) => state.currentWorkspace?.id);
@@ -26,7 +35,13 @@ export function MediaTab() {
 
 function RepositoryMedia() {
   const { t } = useTranslation();
-  const [subTab, setSubTab] = useState<RepositorySubTab>("active");
+  const currentRole = useWorkspaceStore((state) => state.currentMemberRole);
+  const [subTab, setSubTab] = useState<RepositorySubTab>(
+    currentRole === "CLIENT" ? "client-vault" : "active",
+  );
+  const [folderId, setFolderId] = useState<string>();
+  const [driveOpen, setDriveOpen] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const deleted = subTab === "trash";
   const isDrafts = subTab === "drafts";
   const [page, setPage] = useState(0);
@@ -37,6 +52,8 @@ function RepositoryMedia() {
   const [selected, setSelected] = useState<MaterialItem | null>(null);
   const effectiveFilters: MaterialFilters = {
     ...filters,
+    folderId,
+    tab: subTab === "client-vault" ? "CLIENT_VAULT" : "LIBRARY",
     draft: isDrafts ? true : undefined,
   };
   const repository = useMaterialRepository(
@@ -77,30 +94,121 @@ function RepositoryMedia() {
     repository.query.error.response?.status === 403;
   return (
     <div className="space-y-4">
-      {!repository.forbidden && !repository.query.isError && (
-        <CustomerDrivePanel />
-      )}
-      <Tabs
-        value={subTab}
-        onValueChange={(value) => {
-          setSubTab(value as RepositorySubTab);
-          setPage(0);
-          setSelected(null);
-          setConfirm(null);
-        }}
-      >
-        <TabsList>
-          <TabsTrigger value="active" data-testid="tab-active-library">
-            {t("library.trash.active")}
-          </TabsTrigger>
-          <TabsTrigger value="drafts" data-testid="tab-ai-drafts">
-            {t("library.trash.drafts")}
-          </TabsTrigger>
-          <TabsTrigger value="trash" data-testid="tab-trash-library">
-            {t("library.trash.title")}
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+      {/* Row 1: Source Navigation + Primary Actions */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Tabs
+          value={subTab}
+          onValueChange={(value) => {
+            setSubTab(value as RepositorySubTab);
+            setFolderId(undefined);
+            setPage(0);
+            setSelected(null);
+            setConfirm(null);
+          }}
+        >
+          <TabsList className="bg-muted/60 h-9 max-w-full flex-wrap justify-start gap-1 rounded-lg p-1">
+            {currentRole !== "CLIENT" && (
+              <TabsTrigger
+                value="active"
+                data-testid="tab-active-library"
+                className="gap-1.5 rounded-md px-3 py-1 text-xs"
+              >
+                <FolderOpen className="size-3.5" />
+                {t("library.simple.allFiles")}
+              </TabsTrigger>
+            )}
+            <TabsTrigger
+              value="client-vault"
+              className="gap-1.5 rounded-md px-3 py-1 text-xs"
+            >
+              <Users className="size-3.5" />
+              {t("library.simple.vault")}
+            </TabsTrigger>
+            {currentRole !== "CLIENT" && (
+              <TabsTrigger
+                value="drafts"
+                data-testid="tab-ai-drafts"
+                className="gap-1.5 rounded-md px-3 py-1 text-xs"
+              >
+                <Sparkles className="size-3.5" />
+                {t("library.simple.drafts")}
+              </TabsTrigger>
+            )}
+            {currentRole !== "CLIENT" && (
+              <TabsTrigger
+                value="trash"
+                data-testid="tab-trash-library"
+                className="gap-1.5 rounded-md px-3 py-1 text-xs"
+              >
+                <Trash2 className="size-3.5" />
+                {t("library.trash.title")}
+              </TabsTrigger>
+            )}
+          </TabsList>
+        </Tabs>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {subTab === "client-vault" &&
+            currentRole === "CLIENT" &&
+            repository.workspace && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-9 rounded-lg text-xs"
+                  onClick={() => setSharing(true)}
+                >
+                  {t("materials.repository.shareFromVault")}
+                </Button>
+                <ShareFromClientVaultModal
+                  workspace={repository.workspace}
+                  open={sharing}
+                  onClose={() => setSharing(false)}
+                />
+              </>
+            )}
+
+          {subTab === "active" &&
+            repository.workspace &&
+            !repository.forbidden &&
+            !repository.query.isError && (
+              <Button
+                variant="outline"
+                size="sm"
+                aria-expanded={driveOpen}
+                onClick={() => setDriveOpen(!driveOpen)}
+              >
+                <CloudDownload className="size-4" />
+                {t("library.simple.fromDrive")}
+              </Button>
+            )}
+          {(subTab === "active" ||
+            (currentRole === "CLIENT" && subTab === "client-vault")) &&
+            !repository.forbidden &&
+            !repository.query.isError && (
+              <MediaUploadButton
+                key={`${subTab}:${folderId ?? "root"}`}
+                folderId={folderId}
+                onUploadSuccess={uploaded}
+                disabled={
+                  repository.usage.data?.storageMode !==
+                    "CUSTOMER_DRIVE_FIRST" &&
+                  repository.usage.data?.isQuotaExceeded
+                }
+              />
+            )}
+        </div>
+      </div>
+
+      {subTab === "active" &&
+        repository.workspace &&
+        !repository.forbidden &&
+        !repository.query.isError && (
+          <div hidden={!driveOpen}>
+            <CustomerDrivePanel folderId={folderId} />
+          </div>
+        )}
+      {/* Row 2: Compact Control Bar (Search + Format Chips + Sort + Advanced Filters) */}
       {repository.workspace &&
         !repository.forbidden &&
         !repository.query.isError && (
@@ -117,35 +225,23 @@ function RepositoryMedia() {
             }}
           />
         )}
-      {subTab === "active" &&
-        !repository.forbidden &&
-        !repository.query.isError && (
-          <MediaUploadButton
-            onUploadSuccess={uploaded}
-            disabled={
-              repository.usage.data?.storageMode !== "CUSTOMER_DRIVE_FIRST" &&
-              repository.usage.data?.isQuotaExceeded
-            }
-          />
+
+      {/* Contextual Notice + Count Row */}
+      <div className="text-muted-foreground flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div aria-live="polite" className="font-medium">
+          {repository.forbidden
+            ? ""
+            : !repository.workspace
+              ? t("library.trash.chooseWorkspace")
+              : repository.query.isPending
+                ? t("library.trash.loading")
+                : t("library.trash.count", { count: total })}
+        </div>
+        {subTab === "client-vault" && (
+          <span>{t("materials.repository.vaultNoShare")}</span>
         )}
-      {isDrafts && (
-        <p className="text-muted-foreground text-sm">
-          {t("library.trash.draftNotice")}
-        </p>
-      )}
-      {deleted && (
-        <p className="text-muted-foreground text-sm">
-          {t("library.trash.quotaNotice")}
-        </p>
-      )}
-      <div aria-live="polite" className="text-muted-foreground text-sm">
-        {repository.forbidden
-          ? ""
-          : !repository.workspace
-            ? t("library.trash.chooseWorkspace")
-            : repository.query.isPending
-              ? t("library.trash.loading")
-              : t("library.trash.count", { count: total })}
+        {isDrafts && <span>{t("library.trash.draftNotice")}</span>}
+        {deleted && <span>{t("library.trash.quotaNotice")}</span>}
       </div>
       {(repository.forbidden || repository.query.isError) && (
         <div
@@ -165,18 +261,52 @@ function RepositoryMedia() {
           </Button>
         </div>
       )}
+      {repository.workspace &&
+        !repository.forbidden &&
+        !repository.query.isError && (
+          <MaterialFolderSection
+            workspace={repository.workspace}
+            showFiles={items.length > 0}
+            folders={repository.query.data?.folders ?? []}
+            breadcrumbs={repository.query.data?.breadcrumbs ?? []}
+            folderId={folderId}
+            onOpen={(id) => {
+              setFolderId(id);
+              setPage(0);
+              setSelected(null);
+            }}
+            mutable={
+              (subTab === "client-vault" && repository.role === "CLIENT") ||
+              (subTab !== "client-vault" &&
+                (repository.role === "MANAGER" ||
+                  repository.role === "CREATOR" ||
+                  repository.role === "OWNER"))
+            }
+            deleted={deleted}
+          />
+        )}
       {!repository.query.isPending &&
         !repository.forbidden &&
         !repository.query.isError &&
-        items.length === 0 && (
-          <div className="border-border text-muted-foreground space-y-3 rounded-xl border border-dashed p-8 text-center">
-            <p>
+        items.length === 0 &&
+        !repository.query.data?.folders?.length && (
+          <div className="border-border text-muted-foreground space-y-2 rounded-xl border border-dashed p-5 text-center">
+            <FolderOpen
+              className="text-muted-foreground mx-auto size-8"
+              strokeWidth={1.5}
+            />
+            <p className="text-foreground font-medium">
               {deleted
                 ? t("library.trash.empty")
                 : isDrafts
                   ? t("library.trash.emptyDrafts")
-                  : label(filtered ? "emptySearch" : "empty")}
+                  : filtered
+                    ? label("emptySearch")
+                    : t("library.simple.emptyTitle")}
             </p>
+            {!deleted && !isDrafts && !filtered && (
+              <p className="text-sm">{t("library.simple.emptyHint")}</p>
+            )}
             {filtered && (
               <Button
                 variant="outline"
@@ -191,7 +321,22 @@ function RepositoryMedia() {
             )}
           </div>
         )}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+      <div
+        className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        aria-busy={repository.query.isPending}
+      >
+        {repository.workspace &&
+          repository.query.isPending &&
+          Array.from({ length: 8 }, (_, i) => (
+            <div
+              key={i}
+              className="border-border rounded-xl border p-3"
+              aria-hidden="true"
+            >
+              <div className="bg-muted aspect-video animate-pulse rounded-lg motion-reduce:animate-none" />
+              <div className="bg-muted mt-4 h-4 w-3/4 animate-pulse rounded motion-reduce:animate-none" />
+            </div>
+          ))}
         {items.map((material) => (
           <MaterialRepositoryCard
             key={`${material.id}:${material.version}`}
@@ -211,22 +356,30 @@ function RepositoryMedia() {
           />
         ))}
       </div>
-      <div className="flex justify-between gap-3">
-        <Button
-          variant="outline"
-          disabled={page === 0 || repository.query.isFetching}
-          onClick={() => setPage(page - 1)}
-        >
-          {t("library.trash.previous")}
-        </Button>
-        <Button
-          variant="outline"
-          disabled={(page + 1) * 20 >= total || repository.query.isFetching}
-          onClick={() => setPage(page + 1)}
-        >
-          {t("library.trash.next")}
-        </Button>
-      </div>
+      {total > 20 && (
+        <div className="flex items-center justify-between gap-3">
+          <Button
+            variant="outline"
+            disabled={page === 0 || repository.query.isFetching}
+            onClick={() => setPage(page - 1)}
+          >
+            {t("library.trash.previous")}
+          </Button>
+          <Button
+            variant="outline"
+            disabled={(page + 1) * 20 >= total || repository.query.isFetching}
+            onClick={() => setPage(page + 1)}
+          >
+            {t("library.trash.next")}
+          </Button>
+          <span className="text-muted-foreground text-sm tabular-nums">
+            {t("library.simple.page", {
+              page: page + 1,
+              total: Math.ceil(total / 20),
+            })}
+          </span>
+        </div>
+      )}
       <ConfirmSoftDeleteModal
         material={
           repository.forbidden || repository.query.isError ? null : confirm

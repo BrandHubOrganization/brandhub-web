@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   RefreshCw,
   Plus,
-  KeyRound,
-  LogOut,
   Building2,
   FolderOpen,
   Mail,
@@ -28,10 +26,7 @@ import {
   AudienceGrowthAreaChart,
   ContentStatusDonutChart,
   PeakHoursBarChart,
-  GoalsProgressChart,
 } from "./components/DashboardAdvancedCharts";
-import { getAnalyticsSummary } from "@/services/mock/mockAnalyticsService";
-import type { AnalyticsSummary } from "@/types/analytics";
 import type { Agency } from "@/types/agency";
 import type { Workspace } from "@/types/workspace";
 
@@ -43,14 +38,9 @@ export function DashboardPage() {
     analytics,
     isAnalyticsLoading,
     isAnalyticsError,
-    activities,
-    isActivitiesLoading,
-    isActivitiesError,
     isRefreshing,
     loadAllData,
     fetchAnalytics,
-    fetchActivities,
-    handleLogout,
   } = useDashboardData();
 
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
@@ -60,22 +50,21 @@ export function DashboardPage() {
 
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  // ROUTE_ACCESS chặn Owner khỏi Editor, nút tạo nội dung phải trỏ tới workspace vào được.
+  const writableWorkspace = workspaces.find((w) => w.myRole !== "OWNER");
   const [pendingAgencyInvites, setPendingAgencyInvites] = useState<number>(0);
   const [pendingWsInvites, setPendingWsInvites] = useState<number>(0);
-  const [analyticsSummary, setAnalyticsSummary] =
-    useState<AnalyticsSummary | null>(null);
   const [loadingRealData, setLoadingRealData] = useState(true);
 
   const loadRealOverview = async () => {
     setLoadingRealData(true);
     try {
-      const [agenciesRes, workspacesRes, agencyInvRes, wsInvRes, analyticsRes] =
+      const [agenciesRes, workspacesRes, agencyInvRes, wsInvRes] =
         await Promise.allSettled([
           agencyService.list(),
           workspaceService.list(),
           agencyService.listMyPendingInvitations(),
           workspaceService.listMyPendingInvitations(),
-          getAnalyticsSummary(),
         ]);
 
       if (agenciesRes.status === "fulfilled") {
@@ -89,9 +78,6 @@ export function DashboardPage() {
       }
       if (wsInvRes.status === "fulfilled") {
         setPendingWsInvites(wsInvRes.value.data.data?.length ?? 0);
-      }
-      if (analyticsRes.status === "fulfilled") {
-        setAnalyticsSummary(analyticsRes.value);
       }
     } finally {
       setLoadingRealData(false);
@@ -144,43 +130,28 @@ export function DashboardPage() {
             />
             {t("dashboard.page.refresh")}
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="cursor-pointer gap-1.5 text-xs"
-            onClick={() => navigate("/settings/security")}
-          >
-            <KeyRound className="size-3.5" />
-            {t("dashboard.page.changePassword")}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="cursor-pointer gap-1.5 text-xs"
-            onClick={handleLogout}
-          >
-            <LogOut className="size-3.5" />
-            {t("dashboard.page.logout")}
-          </Button>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => {
-              if (currentWorkspace) {
-                navigate(`/workspaces/${currentWorkspace.id}/editor`);
-              } else if (workspaces.length > 0) {
-                navigate(`/workspaces/${workspaces[0].id}/editor`);
-              } else if (agencies.length > 0) {
-                navigate(`/workspaces/create?agencyId=${agencies[0].id}`);
-              } else {
-                navigate("/agency/create");
-              }
-            }}
-            className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs font-medium text-white"
-          >
-            <Plus className="size-3.5" />
-            {t("dashboard.page.createContent")}
-          </Button>
+          {memberRole !== "OWNER" &&
+            (currentWorkspace || !workspaces.length || writableWorkspace) && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => {
+                  if (currentWorkspace) {
+                    navigate(`/workspaces/${currentWorkspace.id}/editor`);
+                  } else if (writableWorkspace) {
+                    navigate(`/workspaces/${writableWorkspace.id}/editor`);
+                  } else if (agencies.length > 0) {
+                    navigate(`/workspaces/create?agencyId=${agencies[0].id}`);
+                  } else {
+                    navigate("/agency/create");
+                  }
+                }}
+                className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs font-medium text-white"
+              >
+                <Plus className="size-3.5" />
+                {t("dashboard.page.createContent")}
+              </Button>
+            )}
         </div>
       }
     >
@@ -507,25 +478,24 @@ export function DashboardPage() {
           {/* Row 1: Interactive Growth Area Chart + Content Status Donut Chart */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <AudienceGrowthAreaChart />
+              <AudienceGrowthAreaChart
+                trend={analytics?.dailyTrend ?? []}
+                reachGrowth={analytics?.reachGrowth ?? null}
+                engagementGrowth={analytics?.engagementGrowth ?? null}
+              />
             </div>
             <div>
-              <ContentStatusDonutChart />
+              <ContentStatusDonutChart data={analytics?.statusCounts ?? {}} />
             </div>
           </div>
 
-          {/* Row 2: Peak Hours Stacked Bar Chart + Goals Progress Card */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <PeakHoursBarChart />
-            <GoalsProgressChart />
-          </div>
+          {/* Row 2: Peak Hours Stacked Bar Chart */}
+          <PeakHoursBarChart hours={analytics?.publishHours ?? []} />
         </div>
 
         {/* Channel Performance Chart */}
-        {analyticsSummary?.channelStats && (
-          <ChannelPerformanceChart
-            channelStats={analyticsSummary.channelStats}
-          />
+        {analytics?.channelStats && (
+          <ChannelPerformanceChart channelStats={analytics.channelStats} />
         )}
 
         {/* KPI Summary Cards */}
@@ -540,10 +510,10 @@ export function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
             <ActivityFeedSection
-              events={activities}
-              isLoading={isActivitiesLoading}
-              isError={isActivitiesError}
-              onRetry={fetchActivities}
+              events={analytics?.activities ?? []}
+              isLoading={isAnalyticsLoading}
+              isError={isAnalyticsError}
+              onRetry={fetchAnalytics}
             />
           </div>
 

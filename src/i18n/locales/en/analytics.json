@@ -15,24 +15,24 @@
   "stats": {
     "reach": {
       "label": "REACH",
-      "desc": "Compared to last month"
+      "desc": "Total; % vs the previous 7 days"
     },
     "engagement": {
       "label": "ENGAGEMENT",
-      "desc": "Compared to last month"
+      "desc": "Total; % vs the previous 7 days"
     },
     "posts": {
       "label": "POSTS",
-      "desc": "Same as last month"
+      "desc": "Across your Workspaces"
     },
-    "responseRate": {
-      "label": "RESPONSE RATE",
-      "desc": "Good improvement"
+    "successRate": {
+      "label": "PUBLISHING SUCCESS RATE",
+      "desc": "Published out of all publishing attempts"
     }
   },
   "channelPerformance": {
     "title": "Performance by Publishing Channel",
-    "subtitle": "Reach by platform over the last 30 days",
+    "subtitle": "Reach by platform",
     "totalPosts": "Total posts",
     "totalReach": "Total reach",
     "totalEngagement": "Total engagement"

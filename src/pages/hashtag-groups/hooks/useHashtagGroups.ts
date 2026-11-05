@@ -24,7 +24,7 @@ export function useHashtagGroups() {
     } finally {
       setIsLoading(false);
     }
-  }, [search]);
+  }, [search, t]);
 
   useEffect(() => {
     fetchGroups();

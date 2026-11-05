@@ -1,3 +1,6 @@
+import { useAuthStore } from "@/store/authStore";
+import { useWorkspaceStore } from "@/store/workspaceStore";
+import { TaskPhoneMedia } from "@/pages/tasks/components/TaskPhoneMedia";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -146,6 +149,8 @@ function TaskWorkflowView({
   const state = useTaskWorkflow(workspaceId, taskId);
   const task = state.query.data;
   const { canLeave } = useTaskEditContext();
+  const userId = useAuthStore((state) => state.user?.id);
+  const role = useWorkspaceStore((state) => state.currentMemberRole || state.currentWorkspace?.myRole);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleDraft, setTitleDraft] = useState("");
@@ -483,6 +488,7 @@ function TaskWorkflowView({
                 />
 
                 {/* Section Activity (Tabs: All, Comments, History) */}
+                {role !== "CLIENT" && <TaskPhoneMedia workspaceId={workspaceId} taskId={taskId} isPostTask={task.type === "POST"} isAssignee={task.assigneeId === userId} />}
                 <div className="space-y-3.5 pt-4 border-t border-border/60">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -505,7 +511,7 @@ function TaskWorkflowView({
                     </TabsList>
 
                     <TabsContent value="comments" className="pt-3">
-                      <TaskComments workspaceId={workspaceId} taskId={taskId} />
+                      {role !== "OWNER" && <TaskComments workspaceId={workspaceId} taskId={taskId} />}
                     </TabsContent>
 
                     <TabsContent value="history" className="pt-3 space-y-4">
@@ -516,7 +522,7 @@ function TaskWorkflowView({
                     </TabsContent>
 
                     <TabsContent value="all" className="pt-3 space-y-6">
-                      <TaskComments workspaceId={workspaceId} taskId={taskId} />
+                      {role !== "OWNER" && <TaskComments workspaceId={workspaceId} taskId={taskId} />}
                       <div className="border-t border-border/50 pt-4 space-y-3">
                         <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                           Nhật ký hoạt động &amp; Phê duyệt

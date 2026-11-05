@@ -1,5 +1,24 @@
 {
   "dashboard": {
+    "manage": "Quản lý",
+    "quickHints": {
+      "chat": "Trao đổi công việc nội bộ và Client",
+      "tasks": "Quản lý tiến độ công việc và phân công",
+      "package": "Điều khoản gói và phê duyệt hai bên",
+      "editor": "Soạn thảo và cộng tác nội dung thời gian thực",
+      "settings": "Cấu hình nhận diện, múi giờ và thành viên"
+    },
+    "status": {
+      "DRAFT": "Bản nháp",
+      "PENDING_APPROVAL": "Chờ duyệt",
+      "SCHEDULED": "Đã lên lịch",
+      "IN_PROGRESS": "Đang đăng",
+      "PUBLISHING": "Đang đăng",
+      "REJECTED": "Bị từ chối",
+      "FAILED": "Đăng thất bại",
+      "APPROVED": "Đã duyệt",
+      "PUBLISHED": "Đã đăng"
+    },
     "tabs": {
       "overview": "Tổng quan Workspace",
       "overviewHint": "Tiến độ công việc, chiến dịch và tổng quan tài nguyên",
@@ -42,7 +61,11 @@
     "creditSetupRequired": "Chưa có thông tin Credit. Kiểm tra cấu hình hoặc tải lại.",
     "membersByRole": "Thành viên theo vai trò",
     "campaignsByStatus": "Chiến dịch theo trạng thái",
-    "mockBadge": "Dữ liệu mẫu",
+    "tasksDueTrend": "Công việc đến hạn theo tháng",
+    "tasksByStatusChart": "Công việc theo trạng thái",
+    "upcomingTasks": "Công việc sắp đến hạn",
+    "upcomingTasksEmpty": "Chưa có công việc nào sắp đến hạn.",
+    "recentlyChanged": "Công việc vừa cập nhật",
     "campaignTrend": "Chiến dịch theo tháng",
     "contentByStatus": "Nội dung theo trạng thái",
     "upcomingContent": "Nội dung sắp đăng",
