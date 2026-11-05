@@ -7,9 +7,6 @@ import { Layout } from "@/components/layout/Layout";
 import { PublicHelpLayout } from "@/components/layout/PublicHelpLayout";
 import { PageFallback } from "@/components/layout/PageFallback";
 import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
-const CustomerDriveCallback = lazy(
-  () => import("@/pages/library/CustomerDriveCallback"),
-);
 
 // Typed lazy loader supporting both named & default exports
 function lazyNamed<T extends Record<string, unknown>>(
@@ -371,10 +368,6 @@ export function AppRoutes() {
 
         {/* Authenticated Routes — require login */}
         <Route element={<AuthGuard />}>
-          <Route
-            path="/storage/drive/callback"
-            element={<CustomerDriveCallback />}
-          />
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/clients" element={<ClientListPage />} />
