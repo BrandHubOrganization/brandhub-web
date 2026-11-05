@@ -32,7 +32,7 @@ export function WorkspaceCardItem({
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
-  const brandColor = ws.brandColor || "#ca3d0e";
+  const brandColor = ws.brandColor || "#f05a28";
   const canManage = ws.myRole === "OWNER" || ws.myRole === "MANAGER";
 
   return (
@@ -76,7 +76,7 @@ export function WorkspaceCardItem({
               <div
                 className="flex size-16 shrink-0 items-center justify-center rounded-2xl text-base font-bold border-4 border-card shadow-md select-none transition-transform duration-300 group-hover:scale-102 text-white"
                 style={{
-                  backgroundColor: brandColor || "#ca3d0e",
+                  backgroundColor: brandColor || "#f05a28",
                   color: "#ffffff",
                 }}
               >

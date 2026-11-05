@@ -1,4 +1,5 @@
 {
+  "automaticDraftMissing": "The package is approved but its campaign draft is missing. Check the data and package approval process.",
   "compact": {
     "durationSuggestion": "Package duration: {{weeks}} weeks · end date is editable",
     "dateHelp": "Selecting a start date suggests an end date using the approved package duration. You can adjust it; a manually changed end date is preserved when the start date changes."
@@ -13,8 +14,8 @@
     "sourceRequest": "View source Request",
     "progress": "{{done}}/{{total}} Tasks ended (including cancelled)",
     "pending": "{{count}} pending Requests will be cancelled after Campaign completion.",
-    "reviewing": "Received Requests — resolve first",
-    "reviewingHelp": "Open each Request to accept or deny. Accepted Requests create additional Tasks to resolve.",
+    "reviewing": "Received requests blocking completion",
+    "reviewingHelp": "Resolve requests under review. For each accepted request, finish or cancel its linked task.",
     "unfinished": "{{count}} unfinished Tasks",
     "reason": "Shared reason for selected Tasks",
     "chooseReason": "Choose a cancellation reason",
@@ -36,6 +37,11 @@
     }
   },
   "title": "Campaign plan",
+  "tabs": {
+    "plan": "Plan & Deliverables",
+    "delivery": "Delivery & Tasks",
+    "review": "Review & History"
+  },
   "partners": {
     "title": "Campaign partners",
     "description": "Manual cooperation tracking. Updating a partner does not change the approved Campaign plan or publish content automatically.",
@@ -84,13 +90,16 @@
   "workItemName": "Work item name",
   "addMilestone": "Add milestone",
   "workItems": "Planned work items",
-  "workItemsHint": "Specific work grouped by deliverable; each work item becomes a Task when the Campaign is deployed. Adding work items does not increase the agreed package quantities.",
+  "workItemsHint": "Parent tasks come from the agreed package. When saved, a task without its own deadline uses the campaign end date.",
   "addWorkItem": "Add work item",
   "dueDate": "Due date (local time)",
   "remove": "Remove",
   "save": "Save draft",
   "cancel": "Cancel",
-  "create": "Create campaign draft",
+  "create": "Prepare campaign",
+  "retryPreparation": "Retry task preparation",
+  "usePackageScope": "Use agreed package scope",
+  "brandTemplate": "Use the brand’s approved visual identity and tone of voice. Confirm any exceptions with the client.",
   "edit": "Edit plan",
   "empty": "No campaign plan yet.",
   "noWorkItems": "No work items planned.",
@@ -100,7 +109,10 @@
   "saved": "Plan saved.",
   "reload": "Reload",
   "error": "Unable to load or save the plan. Check input and try again.",
+  "editMissingFields": "Complete missing fields",
   "review": {
+    "requirementsTitle": "Complete these fields before approval",
+    "missingDeadline": "Deadline for “{{task}}”",
     "title": "Feedback and approval",
     "agency": "Agency",
     "client": "Client",
@@ -120,8 +132,10 @@
     "APPROVE": "Approval"
   },
   "delivery": {
+    "draftHint": "Review the tasks prepared for this draft. Delivery can start after the agency and client approve the campaign.",
+    "draftEmpty": "No tasks have been generated for this draft yet.",
     "title": "Deployment and progress",
-    "deploy": "Create backlog tasks",
+    "deploy": "Start campaign",
     "retry": "Retry deployment",
     "queued": "Deployment requested.",
     "PENDING": "Creating tasks",
@@ -157,7 +171,7 @@
     "CAMPAIGN_VERSION_CONFLICT": "Plan changed. Keep needed input, cancel editing and reload.",
     "CAMPAIGN_LEGACY_TERMS": "This legacy package or plan has no frozen deliverable scope or still uses monthly quantities, so editing is locked pending data review. Monthly quantities are not converted automatically.",
     "CAMPAIGN_IMMUTABLE": "Approved content cannot be edited.",
-    "CAMPAIGN_PLAN_INCOMPLETE": "Add strategy, start/end dates and at least one work item before approval.",
+    "CAMPAIGN_PLAN_INCOMPLETE": "Save the strategy, start and end dates, and work item deadlines before approval.",
     "CAMPAIGN_COMPLETION_REASON_REQUIRED": "A reason is required while tasks remain unfinished.",
     "CAMPAIGN_DEPLOYMENT_INCOMPLETE": "Not all tasks were created. Check deployment progress.",
     "CAMPAIGN_NOT_APPROVED": "Both sides must approve the same Campaign version before deployment."

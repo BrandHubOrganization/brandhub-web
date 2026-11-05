@@ -1,11 +1,7 @@
 ﻿import { useTranslation } from "react-i18next";
 import { Clock } from "lucide-react";
-import type { TaskListItem } from "@/types/task";
+import type { TaskListItem, TaskStatus } from "@/types/task";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
-import {
-  canonicalTaskStatus,
-  type CanonicalTaskStatus,
-} from "@/pages/tasks/utils/taskStatus";
 import { taskDeadline } from "@/pages/tasks/utils/taskViewData";
 
 export function TaskBoardView({
@@ -18,9 +14,9 @@ export function TaskBoardView({
   const { t, i18n } = useTranslation();
   return (
     <div className="flex gap-4 overflow-x-auto pt-1 pb-4">
-      {(Object.keys(STATUS_CONFIG) as CanonicalTaskStatus[]).map((status) => {
+      {(Object.keys(STATUS_CONFIG) as TaskStatus[]).map((status) => {
         const items = tasks.filter(
-          (task) => canonicalTaskStatus(task.status) === status,
+          (task) => task.status === status,
         );
         const config = STATUS_CONFIG[status];
         return (

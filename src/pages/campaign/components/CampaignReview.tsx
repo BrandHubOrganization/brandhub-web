@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PackageTermsDiff } from "@/pages/media-package/components/PackageTermsDiff";
 import { Button } from "@/components/ui/button";
 import { campaignService } from "@/pages/campaign/services/campaignService";
+import { missingApprovalFields } from "@/pages/campaign/approvalRequirements";
 import type {
   Campaign,
   CampaignReviewEvent,
@@ -27,7 +28,6 @@ function comparison(data: Record<string, unknown>): Record<string, unknown> {
   return {
     name: data.name,
     strategyDetail: data.strategyDetail,
-    brandGuideline: data.brandGuideline,
     ...timeline,
     workItems: data.workItems,
   };
@@ -72,6 +72,7 @@ export function CampaignReview({
   const mine = canManage
     ? campaign.approvedByAgencyVersion === campaign.contentVersion
     : campaign.approvedByClientVersion === campaign.contentVersion;
+  const missing = missingApprovalFields(campaign, t);
   const latest = versions.find(
     (item) => item.contentVersion === (selected ?? campaign.contentVersion),
   );
@@ -118,15 +119,8 @@ export function CampaignReview({
     const code = isAxiosError(error)
       ? error.response?.data?.error?.code
       : undefined;
-    toast.error(
-      t(
-        code === "CAMPAIGN_VERSION_CONFLICT"
-          ? "campaign.errors.CAMPAIGN_VERSION_CONFLICT"
-          : code === "CAMPAIGN_PLAN_INCOMPLETE"
-            ? "campaign.errors.CAMPAIGN_PLAN_INCOMPLETE"
-            : "campaign.error",
-      ),
-    );
+    const key = typeof code === "string" ? `campaign.errors.${code}` : "";
+    toast.error(key && t(key) !== key ? t(key) : t("campaign.error"));
   }
   return (
     <section
@@ -176,7 +170,7 @@ export function CampaignReview({
         <Button
           variant="orange"
           loading={busy}
-          disabled={mine}
+          disabled={mine || missing.length > 0}
           onClick={() => void approve()}
         >
           {mine

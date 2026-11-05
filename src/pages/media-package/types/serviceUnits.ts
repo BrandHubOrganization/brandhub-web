@@ -13,7 +13,6 @@ export const SERVICE_UNITS: Record<PackageServiceType, string> = {
 
 export function copyOfferingDetails(details?: PackageOfferingDetails | null) {
   return {
-    maxChanges: details?.maxChanges ?? 2,
     deliverables: (details?.deliverables ?? []).map((item) => ({
       ...item,
       unit: SERVICE_UNITS[item.serviceType],

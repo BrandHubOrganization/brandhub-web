@@ -108,7 +108,7 @@ export function ReportsPage() {
     return () => {
       cancelled = true;
     };
-     
+
   }, [agencyId, from, to]);
 
   async function handleCreateScheduled(input: {

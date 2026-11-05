@@ -37,6 +37,7 @@ export default function CampaignPage() {
             key={id}
             selection={selectedPackage}
             canManage={role === "MANAGER" || role === "OWNER"}
+            isManager={role === "MANAGER"}
           />
         )}
       {!loading &&

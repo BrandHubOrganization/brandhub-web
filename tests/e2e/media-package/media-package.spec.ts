@@ -90,32 +90,32 @@ const agencyPackage = {
   sourceTemplateId: TEMPLATE_ID,
 };
 
-for (const model of ["CAMPAIGN", "RETAINER", "DELIVERABLE_BUNDLE"]) {
-  test(`Owner creates structured ${model} package`, async ({ page }, testInfo) => {
-    await page.setViewportSize({ width: model === "RETAINER" ? 375 : 1440, height: 900 });
-    await setupSession(page, "OWNER", model === "RETAINER" ? "dark" : "light");
+for (const theme of ["light", "dark"] as const) {
+  test(`Owner selects a service for a structured package in ${theme}`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: theme === "dark" ? 375 : 1440, height: 900 });
+    await setupSession(page, "OWNER", theme);
     let submitted = false;
     await page.route(`**/api/v1/agencies/${AGENCY_ID}/media-package-custom`, async route => {
       if (route.request().method() === "GET") {
         await route.fulfill({ json: envelope([]) }); return;
       }
       const body = route.request().postDataJSON();
-      expect(body.offeringModel).toBe(model);
       expect(body.offeringDetails.deliverables).toHaveLength(1);
-      expect(body.offeringDetails.deliverables[0]).toMatchObject({ name: "Social posts", quantity: 12, unit: "posts" });
+      expect(body.durationWeeks).toBe(6);
+      expect(body.offeringDetails.maxChanges).toBeUndefined();
+      expect(body.offeringDetails.deliverables[0]).toMatchObject({ serviceType: "SOCIAL_POST", quantity: 12, unit: "bài" });
       submitted = true;
       await route.fulfill({ status: 201, json: envelope({ ...agencyPackage, ...body }) });
     });
     await page.goto(`/agency/${AGENCY_ID}/media-packages`);
     await page.getByRole("button", { name: "Tạo gói từ mẫu này" }).click();
     const workArea = page.getByRole("region", { name: "Tạo gói truyền thông tùy chỉnh", exact: true });
-    await workArea.getByLabel("Cách đóng gói").selectOption(model);
-    await workArea.getByRole("button", { name: "Thêm hạng mục" }).click();
-    await workArea.getByLabel("Tên hạng mục bàn giao").fill("Social posts");
+    await workArea.getByRole("button", { name: "6", exact: true }).click();
+    await expect(workArea.getByRole("checkbox")).toHaveCount(4);
+    await workArea.getByRole("checkbox", { name: "Bài đăng mạng xã hội" }).check();
     await workArea.getByRole("spinbutton", { name: /^Số lượng/ }).fill("12");
-    await workArea.getByRole("textbox", { name: /^Đơn vị/ }).fill("posts");
     expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false);
-    await workArea.screenshot({ path: testInfo.outputPath(`offering-${model}.png`) });
+    await workArea.screenshot({ path: testInfo.outputPath(`offering-${theme}.png`) });
     await workArea.getByRole("button", { name: "Tạo gói tùy chỉnh" }).click();
     await expect.poll(() => submitted).toBe(true);
     await expect(workArea).not.toBeVisible();
@@ -126,7 +126,7 @@ test("Manager creates and edits a total-quantity Campaign draft", async ({ page 
   await setupSession(page, "MANAGER", "dark");
   await page.setViewportSize({ width: 375, height: 900 });
   const deliverables = [{ id: "e5000000-0000-4000-8000-000000000301",
-    serviceType: "SOCIAL_POST", name: "Frozen posts", quantity: 12, unit: "posts" }];
+    serviceType: "SOCIAL_POST", name: "Frozen posts", quantity: 1, unit: "bài" }];
   const offering = { offeringModel: "CAMPAIGN", offeringDetails: { deliverables } };
   await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/media-package`, route => route.fulfill({
     json: envelope({ workspaceMediaPackageId: "selection-1", workspaceId: WORKSPACE_ID,
@@ -138,38 +138,194 @@ test("Manager creates and edits a total-quantity Campaign draft", async ({ page 
     route.fulfill({ json: envelope([]) }));
   let campaign: Record<string, unknown> | null = null;
   await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/campaigns`, async route => {
-    if (route.request().method() === "GET") {
-      await route.fulfill({ json: envelope(campaign ? [campaign] : []) }); return;
-    }
-    const body = route.request().postDataJSON();
-    expect(body.period).toBeUndefined();
-    expect(body.workItems).toHaveLength(1);
-    campaign = { id: "draft-1", ...body, status: "DRAFT", contentVersion: 1,
-      deliverablePlan: deliverables, allocationPeriod: null, packageTermsVersion: 3 };
-    await route.fulfill({ status: 201, json: envelope(campaign) });
+    await route.fulfill({ json: envelope(campaign ? [campaign] : []) });
+  });
+  await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/campaigns/prepare`, async route => {
+    expect(route.request().method()).toBe("POST");
+    campaign = { id: "draft-1", name: agencyPackage.name, status: "DRAFT", contentVersion: 1,
+      packageDriven: true, timeline: "{}", deliverablePlan: deliverables, allocationPeriod: null,
+      packageTermsVersion: 3, workItems: [{ id: "work-1", deliverableId: deliverables[0].id,
+        name: "Frozen posts", type: "POST", dueDate: null }] };
+    await route.fulfill({ json: envelope(campaign) });
   });
   await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/campaigns/draft-1`, async route => {
     const body = route.request().postDataJSON();
-    expect(body.expectedVersion).toBe(1);
-    campaign = { ...campaign, ...body, contentVersion: 2 };
+    expect(body.expectedVersion).toBe(campaign?.contentVersion);
+    expect(body.workItems).toHaveLength(1);
+    expect(body.workItems[0].id).toBe("work-1");
+    expect(body.workItems[0].dueDate).toEqual(expect.any(String));
+    campaign = { ...campaign, ...body, contentVersion: body.expectedVersion + 1 };
     await route.fulfill({ json: envelope(campaign) });
   });
+  await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/campaigns/draft-1/tasks`, route =>
+    route.fulfill({ json: envelope([{ id: "task-1", campaignWorkItemId: "work-1", status: "TODO", type: "POST", name: "Frozen posts" }]) }));
+  await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/tasks/task-1/workflow`, route =>
+    route.fulfill({ json: envelope({
+      id: "task-1", workspaceId: WORKSPACE_ID, campaignId: "draft-1", status: "TODO",
+      type: "POST", name: "Frozen posts", description: "Task brief", workflowRevision: 1,
+      dueDate: "2026-12-01T10:00:00Z", inputReferences: [],
+      allowedActions: { canEditDetail: true, canAssign: false, canStart: false },
+      dates: { ready: true, timezone: "Asia/Ho_Chi_Minh" },
+    }) }));
+  await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/tasks/task-1/subtasks`, async route => {
+    const view = { canManage: true, members: [{ userId: "creator-1", displayName: "Creator" }], rows: [] };
+    if (route.request().method() === "GET") {
+      await route.fulfill({ json: envelope(view) });
+      return;
+    }
+    const details = route.request().postDataJSON();
+    expect(details.name).toBe("Prepare visuals");
+    await route.fulfill({ json: envelope({ ...view, rows: [{
+      subtask: { ...details, id: "subtask-1", status: "TODO" },
+      assigneeName: "Creator", supervisorName: null, allowedStatuses: [],
+    }] }) });
+  });
   await page.goto(`/workspaces/${WORKSPACE_ID}/campaigns`);
-  await page.getByRole("button", { name: "Tạo Campaign nháp" }).click();
+  await page.getByRole("button", { name: "Chỉnh sửa kế hoạch" }).click();
   await page.getByLabel("Tên chiến dịch").fill("November plan");
-  await page.getByLabel("Chiến lược triển khai").fill("Launch strategy");
-  await page.getByRole("button", { name: "Thêm đầu việc", exact: true }).click();
-  await page.getByLabel("Hạn hoàn thành (giờ địa phương)").fill("2026-11-10T09:00");
+  await page.getByLabel("Chiến lược triển khai", { exact: true }).selectOption("0");
+  await expect(page.getByRole("button", { name: "Thêm đầu việc", exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Ngày bắt đầu", { exact: true })).not.toHaveValue("");
+  await page.getByLabel("Ngày kết thúc", { exact: true }).fill("2026-12-01");
+  const workItems = page.getByRole("region", { name: "Đầu việc dự kiến" });
+  await workItems.locator("summary").click();
+  await expect(workItems.getByText("Task brief", { exact: true })).toBeVisible();
+  await workItems.getByRole("button", { name: "Thêm công việc con" }).click();
+  await workItems.getByLabel("Tên công việc con").fill("Prepare visuals");
+  await workItems.getByRole("combobox", { name: "Người phụ trách", exact: true }).selectOption("creator-1");
+  await workItems.getByRole("button", { name: "Lưu", exact: true }).click();
+  await expect(workItems.getByText("Prepare visuals", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Tên chiến dịch")).toHaveValue("November plan");
   await page.getByRole("button", { name: "Lưu nháp" }).click();
   await expect(page.getByRole("heading", { name: "November plan" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Tạo Campaign nháp" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Triển khai campaign" })).toHaveCount(0);
   await page.getByRole("button", { name: "Chỉnh sửa kế hoạch" }).click();
   await page.getByLabel("Tên chiến dịch").fill("Revised plan");
   await page.getByRole("button", { name: "Lưu nháp" }).click();
   await expect(page.getByRole("heading", { name: "Revised plan" })).toBeVisible();
-  await expect(page.getByText("Phiên bản 2 · Gói phiên bản 3")).toBeVisible();
+  await expect(page.getByText("Phiên bản 3 · Gói phiên bản 3")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false);
   await page.screenshot({ path: testInfo.outputPath("campaign-mobile-dark.png"), fullPage: true });
+});
+
+for (const initiallyAssigned of [true, false]) test(`Manager changes task settings independently (assigned: ${initiallyAssigned})`, async ({ page }) => {
+  await setupSession(page, "MANAGER");
+  await setupCampaignView(page, false);
+  const deliverable = { id: "service-1", serviceType: "SOCIAL_POST", name: "Social posts", quantity: 1, unit: "bài" };
+  const planned = { id: "work-1", deliverableId: deliverable.id, name: "Draft post", type: "POST", dueDate: "2026-12-01T10:00:00Z" };
+  const workspace = `**/api/v1/workspaces/${WORKSPACE_ID}`;
+  const taskPath = `${workspace}/tasks/task-1`;
+  await page.route(`${workspace}/campaigns`, route => route.fulfill({ json: envelope([{
+    id: "draft-1", name: "Supervisor test plan", status: "IN_PROGRESS", contentVersion: 1, packageDriven: true,
+    deliverablePlan: [deliverable], workItems: [planned], timeline: "{}", packageTermsVersion: 3,
+  }]) }));
+  await page.route(`${workspace}/campaigns/draft-1/tasks`, route => route.fulfill({
+    json: envelope([{ id: "task-1", campaignWorkItemId: planned.id, name: planned.name, status: "TODO", type: "POST" }]),
+  }));
+  let task = {
+    id: "task-1", workspaceId: WORKSPACE_ID, campaignId: "draft-1", name: planned.name, type: "POST",
+    status: "TODO", description: "Task brief", dueDate: planned.dueDate, inputReferences: [],
+    assigneeId: initiallyAssigned ? "manager-1" : null, assigneeName: initiallyAssigned ? "Quản lý A" : null, supervisorId: "manager-1" as string | null,
+    supervisorName: "Quản lý A" as string | null, workflowRevision: 0, requiresClientApproval: false,
+    allowedActions: { canEditDetail: true, canAssign: true, canStart: false },
+    dates: { ready: true, timezone: "Asia/Ho_Chi_Minh" },
+  };
+  await page.route(`${taskPath}/workflow`, route => route.fulfill({ json: envelope(task) }));
+  await page.route(`${taskPath}/supervisor-options`, route => route.fulfill({
+    json: envelope([{ userId: "manager-1", displayName: "Quản lý A" }, { userId: "reviewer-1", displayName: "Người B" }, { userId: "creator-2", displayName: "Người C" }]),
+  }));
+  await page.route(`${taskPath}/member-options`, route => route.fulfill({
+    json: envelope([{ userId: "manager-1", displayName: "Quản lý A" }, { userId: "reviewer-1", displayName: "Người B" }, { userId: "creator-2", displayName: "Người C" }]),
+  }));
+  await page.route(`${taskPath}/field`, route => {
+    const change = route.request().postDataJSON();
+    if (change.field === "requiresClientApproval") {
+      expect(change).toEqual({ field: "requiresClientApproval", value: true, expectedRevision: task.workflowRevision });
+      expect(task.assigneeId).toBe(initiallyAssigned ? "manager-1" : null);
+      task = { ...task, requiresClientApproval: true, workflowRevision: task.workflowRevision + 1 };
+      return route.fulfill({ json: envelope(task) });
+    }
+    expect(change).toEqual({ field: "supervisorId", value: change.value, expectedRevision: task.workflowRevision });
+    task = { ...task, supervisorId: change.value, supervisorName: change.value === "manager-1" ? "Quản lý A" : "Người B", workflowRevision: task.workflowRevision + 1 };
+    return route.fulfill({ json: envelope(task) });
+  });
+  await page.route(`${taskPath}/assign`, route => {
+    const { assigneeId } = route.request().postDataJSON();
+    expect(["creator-2", "manager-1"]).toContain(assigneeId);
+    const assignedToManager = assigneeId === "manager-1";
+    task = { ...task, assigneeId, assigneeName: assignedToManager ? "Quản lý A" : "Người C", workflowRevision: task.workflowRevision + 1,
+      allowedActions: { ...task.allowedActions, canStart: assignedToManager } };
+    return route.fulfill({ json: envelope(task) });
+  });
+  await page.route(`${taskPath}/start`, route => {
+    expect(route.request().postDataJSON()).toEqual({ expectedRevision: task.workflowRevision });
+    task = { ...task, status: "IN_PROGRESS", workflowRevision: task.workflowRevision + 1,
+      allowedActions: { ...task.allowedActions, canStart: false, canAssign: false } };
+    return route.fulfill({ json: envelope(task) });
+  });
+  let status = "TODO";
+  const subtaskView = () => ({ canManage: true, members: [], rows: [{
+    subtask: { id: "child-1", name: "Chuẩn bị hình ảnh", status, assigneeId: "creator-1", dueDate: planned.dueDate },
+    assigneeName: "Người A", allowedStatuses: status === "TODO" ? ["IN_PROGRESS", "IN_REVIEW", "FINISHED", "CANCELLED"] : ["TODO", "FINISHED"],
+  }] });
+  await page.route(`${taskPath}/subtasks`, route => route.fulfill({ json: envelope(subtaskView()) }));
+  await page.route(`${taskPath}/subtasks/child-1/status`, route => {
+    expect(route.request().postDataJSON()).toEqual({ status: "IN_PROGRESS" });
+    status = "IN_PROGRESS";
+    return route.fulfill({ json: envelope(subtaskView()) });
+  });
+
+  await page.goto(`/workspaces/${WORKSPACE_ID}/campaigns?tab=plan`);
+  await page.getByText("Draft post", { exact: true }).click();
+  const supervisor = page.getByRole("button", { name: "Chỉnh sửa Người giám sát", exact: true });
+  const assignee = page.getByRole("button", { name: "Chỉnh sửa Người thực hiện", exact: true });
+  const clientApproval = page.getByRole("button", { name: "Chỉnh sửa Cần khách hàng duyệt", exact: true });
+  const initialAssignee = initiallyAssigned ? "Quản lý A" : "Chưa phân công";
+  await expect(clientApproval).toHaveText("Không");
+  await clientApproval.click();
+  await page.getByRole("menuitem", { name: "Có", exact: true }).click();
+  await expect(clientApproval).toHaveText("Có");
+  await expect(supervisor).toHaveText("Quản lý A");
+  await expect(assignee).toHaveText(initialAssignee);
+  await supervisor.click();
+  await page.getByRole("menuitem", { name: "Người B" }).click();
+  await expect(supervisor).toHaveText("Người B");
+  await expect(assignee).toHaveText(initialAssignee);
+  await assignee.click();
+  await page.getByRole("menuitem", { name: "Người C" }).click();
+  await expect(assignee).toHaveText("Người C");
+  await expect(supervisor).toHaveText("Người B");
+  await supervisor.click();
+  await page.getByRole("menuitem", { name: "Quản lý A" }).click();
+  await expect(supervisor).toHaveText("Quản lý A");
+  const statusButton = page.getByRole("button", { name: "Đổi trạng thái của Chuẩn bị hình ảnh" });
+  await statusButton.click();
+  await expect(page.getByRole("menuitem", { name: "Đã hủy" }).locator("span").first()).toHaveClass(/bg-rose/);
+  await page.getByRole("menuitem", { name: "Đang thực hiện" }).click();
+  await expect(statusButton.getByText("Đang thực hiện")).toHaveClass(/bg-sky/);
+  const taskStatus = page.getByRole("button", { name: "Đổi trạng thái công việc", exact: true });
+  await taskStatus.click();
+  await expect(page.getByRole("menuitem", { name: "Bắt đầu làm" })).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await assignee.click();
+  await page.getByRole("menuitem", { name: "Quản lý A" }).click();
+  await expect(assignee).toHaveText("Quản lý A");
+  await taskStatus.click();
+  await page.getByRole("menuitem", { name: "Bắt đầu làm" }).click();
+  await expect(taskStatus).toHaveText("Đang làm");
+});
+
+test("Draft delivery tab shows generated tasks and the approval step", async ({ page }) => {
+  await setupSession(page, "CLIENT");
+  await setupCampaignView(page, false);
+  await page.route(`**/api/v1/workspaces/${WORKSPACE_ID}/campaigns/draft-1/tasks`, route =>
+    route.fulfill({ json: envelope([{ id: "task-1", name: "Prepared draft task", type: "POST", status: "TODO" }]) }));
+  await page.goto(`/workspaces/${WORKSPACE_ID}/campaigns?tab=delivery`);
+  const delivery = page.getByRole("tabpanel");
+  await expect(delivery.getByText("Prepared draft task")).toBeVisible();
+  await expect(delivery.getByRole("button", { name: "Bắt đầu campaign" })).toHaveCount(0);
+  await delivery.getByRole("button", { name: "Biên bản & Lịch sử" }).click();
+  await expect(page.getByRole("tab", { name: /Biên bản & Lịch sử/ })).toHaveAttribute("aria-selected", "true");
 });
 
 test("Client can view but cannot edit Campaign; desktop light", async ({ page }, testInfo) => {
@@ -392,6 +548,7 @@ test("Owner creates a validated custom package from Agency management", async ({
   await page.getByRole("button", { name: "Tạo gói từ mẫu này" }).click();
   await page.getByLabel("Tên gói").fill("Client Launch Package");
   await page.getByLabel("Thời lượng (tuần)").fill("8");
+  await page.getByRole("checkbox", { name: "Bài đăng mạng xã hội" }).check();
   await page.getByRole("button", { name: "Tạo gói tùy chỉnh" }).last().click();
   await expect(
     page.getByRole("heading", { name: "Client Launch Package" }),

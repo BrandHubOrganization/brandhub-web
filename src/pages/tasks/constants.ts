@@ -1,6 +1,6 @@
-﻿import type { CanonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
+﻿import type { TaskStatus } from "@/types/task";
 export const STATUS_CONFIG: Record<
-  CanonicalTaskStatus,
+  TaskStatus,
   {
     labelKey: string;
     defaultLabel: string;

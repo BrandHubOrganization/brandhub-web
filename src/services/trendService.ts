@@ -107,3 +107,41 @@ export async function fetchTrends(period: TrendPeriod, topic: string, platform =
   });
   return res.data.data;
 }
+
+/** Google Trends "Trending now" row of the crawler's latest S3 snapshot. */
+export interface GoogleBoardItem {
+  keyword: string;
+  search_volume: number | null;
+  growth_pct: number | null;
+  started_at: string | null;
+  active: boolean | null;
+  related_queries: string[];
+  news: { title: string | null; url: string | null; source: string | null }[];
+}
+
+/** TikTok Creative Center hashtag row (VN top 100) of the crawler's latest S3 snapshot. */
+export interface TiktokBoardItem {
+  rank: number | null;
+  hashtag: string;
+  posts: number | null;
+  views: number | null;
+  industry_ids: string[];
+  curve: number[];
+  creators: { nickname: string | null; handle: string | null }[];
+}
+
+export type TrendBoardSource = "google" | "tiktok";
+
+export interface TrendBoard<T> {
+  source: TrendBoardSource;
+  fetched_at: string | null;
+  snapshot: string;
+  items: T[];
+}
+
+export async function fetchTrendBoard<S extends TrendBoardSource>(source: S) {
+  const res = await api.get<{
+    data: TrendBoard<S extends "google" ? GoogleBoardItem : TiktokBoardItem>;
+  }>(`/api/v1/ai/trending-topics/boards/${source}`);
+  return res.data.data;
+}

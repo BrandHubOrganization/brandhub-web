@@ -1,10 +1,8 @@
 import { useId } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
+import { QuickNumbers, TextChoices } from "@/components/shared/FieldChoices";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { HelpHint } from "@/components/shared/HelpHint";
 import { SERVICE_UNITS } from "@/pages/media-package/types/serviceUnits";
 import type {
@@ -16,7 +14,6 @@ import type {
 const SERVICES: PackageServiceType[] = [
   "SOCIAL_POST",
   "EVENT_PLANNING",
-  "LIVESTREAM_PREPARATION",
   "PRESS_RECOMMENDATION",
   "WORKSHOP_SUPPORT",
 ];
@@ -42,15 +39,15 @@ export function OfferingEditor({
     replaceItems(
       items.map((item) => (item.id === id ? { ...item, ...patch } : item)),
     );
-  const add = () =>
+  const add = (serviceType: PackageServiceType) =>
     replaceItems([
       ...items,
       {
         id: crypto.randomUUID(),
-        serviceType: "SOCIAL_POST",
-        name: "",
+        serviceType,
+        name: t(`mediaPackage.offering.services.${serviceType}`),
         quantity: 1,
-        unit: SERVICE_UNITS.SOCIAL_POST,
+        unit: SERVICE_UNITS[serviceType],
       },
     ]);
 
@@ -66,136 +63,104 @@ export function OfferingEditor({
       </legend>
       {
         <>
-          <Input
-            type="number"
-            min={0}
-            step={1}
-            disabled={clientNegotiation}
-            label={t("mediaPackage.offering.revisions")}
-            value={value.offeringDetails?.maxChanges ?? ""}
-            onChange={(event) =>
-              onChange({
-                ...value,
-                offeringDetails: {
-                  ...value.offeringDetails,
-                  deliverables: items,
-                  maxChanges:
-                    event.target.value === ""
-                      ? null
-                      : Number(event.target.value),
-                },
-              })
-            }
-          />
-          {items.map((item, index) => (
-            <div
-              key={item.id}
-              className="border-border bg-muted/20 space-y-3 rounded-lg border p-4"
-            >
-              <Label htmlFor={`${fieldId}-${index}`}>
-                {t("mediaPackage.offering.service")}
-              </Label>
-              <Select
-                id={`${fieldId}-${index}`}
-                value={item.serviceType}
-                disabled={clientNegotiation}
-                onChange={(event) =>
-                  update(item.id, {
-                    serviceType: event.target.value as PackageServiceType,
-                    unit: SERVICE_UNITS[
-                      event.target.value as PackageServiceType
-                    ],
-                  })
-                }
+          {[
+            ...new Set([...SERVICES, ...items.map((item) => item.serviceType)]),
+          ].map((service, index) => {
+            const item = items.find((entry) => entry.serviceType === service);
+            if (!item && clientNegotiation) return null;
+            return (
+              <div
+                key={service}
+                className="border-border bg-muted/20 space-y-3 rounded-lg border p-4"
               >
-                {SERVICES.map((service) => (
-                  <option key={service} value={service}>
-                    {t(`mediaPackage.offering.services.${service}`)}
-                  </option>
-                ))}
-              </Select>
-              <Input
-                required
-                maxLength={255}
-                label={t("mediaPackage.offering.name")}
-                value={item.name}
-                onChange={(event) =>
-                  update(item.id, { name: event.target.value })
-                }
-              />
-              <div className="grid gap-2 sm:grid-cols-2">
-                <Input
-                  required
-                  type="number"
-                  min={1}
-                  step={1}
-                  label={t("mediaPackage.offering.quantity")}
-                  value={item.quantity === 0 ? "" : item.quantity}
-                  onChange={(event) => {
-                    // An empty draft must not write a visible 0 back into the
-                    // field. Number inputs can retain 003 even when state is 3.
-                    const raw = event.currentTarget.value;
-                    const normalized = raw.replace(/^0+(?=\d)/, "");
-                    if (normalized !== raw)
-                      event.currentTarget.value = normalized;
-                    update(item.id, { quantity: Number(normalized) });
-                  }}
-                />
-                <Input
-                  required
-                  maxLength={80}
-                  label={t("mediaPackage.offering.unit")}
-                  value={item.unit}
-                  readOnly
-                />
+                <Label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(item)}
+                    disabled={clientNegotiation}
+                    onChange={() =>
+                      item
+                        ? replaceItems(
+                            items.filter((row) => row.serviceType !== service),
+                          )
+                        : add(service)
+                    }
+                  />
+                  {t(`mediaPackage.offering.services.${service}`)}
+                </Label>
+                {item && (
+                  <>
+                    <Input
+                      required
+                      maxLength={255}
+                      label={t("mediaPackage.offering.name")}
+                      value={item.name}
+                      onChange={(event) =>
+                        update(item.id, { name: event.target.value })
+                      }
+                    />
+                    <div className="space-y-2">
+                      <Input
+                        required
+                        type="number"
+                        min={1}
+                        step={1}
+                        label={t("mediaPackage.choices.quantityUnit", {
+                          unit: item.unit,
+                        })}
+                        value={item.quantity || ""}
+                        onChange={(event) =>
+                          update(item.id, {
+                            quantity: Number(event.target.value),
+                          })
+                        }
+                      />
+                      <QuickNumbers
+                        values={[1, 2, 3, 5, 10, 20]}
+                        value={String(item.quantity)}
+                        onChange={(quantity) =>
+                          update(item.id, { quantity: Number(quantity) })
+                        }
+                      />
+                    </div>
+                    <TextChoices
+                      id={`${fieldId}-${index}-description`}
+                      label={t("mediaPackage.offering.description")}
+                      value={item.description ?? ""}
+                      maxLength={2000}
+                      onChange={(description) =>
+                        update(item.id, { description })
+                      }
+                      options={[
+                        t("mediaPackage.offering.descriptionTemplate", {
+                          service: item.name,
+                          count: item.quantity,
+                        }),
+                        t("mediaPackage.choices.descriptionAlt", {
+                          service: item.name,
+                        }),
+                      ]}
+                    />
+                    <TextChoices
+                      id={`${fieldId}-${index}-acceptance`}
+                      label={t("mediaPackage.offering.acceptance")}
+                      value={item.acceptanceCriteria ?? ""}
+                      maxLength={2000}
+                      onChange={(acceptanceCriteria) =>
+                        update(item.id, { acceptanceCriteria })
+                      }
+                      options={[
+                        t("mediaPackage.offering.acceptanceTemplate", {
+                          count: item.quantity,
+                        }),
+                        t("mediaPackage.choices.acceptanceAlt"),
+                      ]}
+                    />
+                  </>
+                )}
               </div>
-              <Label htmlFor={`${fieldId}-${index}-description`}>
-                {t("mediaPackage.offering.description")}
-              </Label>
-              <Textarea
-                id={`${fieldId}-${index}-description`}
-                rows={3}
-                maxLength={2000}
-                value={item.description ?? ""}
-                onChange={(event) =>
-                  update(item.id, { description: event.target.value })
-                }
-              />
-              <Label htmlFor={`${fieldId}-${index}-acceptance`}>
-                {t("mediaPackage.offering.acceptance")}
-              </Label>
-              <Textarea
-                id={`${fieldId}-${index}-acceptance`}
-                rows={3}
-                maxLength={2000}
-                value={item.acceptanceCriteria ?? ""}
-                onChange={(event) =>
-                  update(item.id, { acceptanceCriteria: event.target.value })
-                }
-              />
-              {!clientNegotiation && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() =>
-                    replaceItems(items.filter((row) => row.id !== item.id))
-                  }
-                >
-                  {t("mediaPackage.offering.remove")}
-                </Button>
-              )}
-            </div>
-          ))}
-          {!clientNegotiation && (
-            <Button
-              type="button"
-              variant="outline"
-              disabled={items.length >= 100}
-              onClick={add}
-            >
-              {t("mediaPackage.offering.add")}
-            </Button>
-          )}
+            );
+          })}
           {!items.length && (
             <p className="text-destructive text-xs">
               {t("mediaPackage.offering.required")}

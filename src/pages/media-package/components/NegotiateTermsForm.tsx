@@ -1,3 +1,4 @@
+import { QuickNumbers, TextChoices } from "@/components/shared/FieldChoices";
 import { useEffect, useRef, useState } from "react";
 import { OfferingEditor } from "@/pages/media-package/components/OfferingEditor";
 import { PackageTermsDiff } from "@/pages/media-package/components/PackageTermsDiff";
@@ -267,6 +268,14 @@ export function NegotiateTermsForm({
                   }}
                   disabled={loading}
                 />
+                <QuickNumbers
+                  values={[5000000, 10000000, 18000000, 30000000, 50000000]}
+                  value={budgetAmount}
+                  onChange={setBudgetAmount}
+                  format={(amount) =>
+                    new Intl.NumberFormat(i18n.language).format(amount)
+                  }
+                />
                 {formattedBudgetPreview && (
                   <p className="text-muted-foreground text-xs font-medium">
                     ≈ {formattedBudgetPreview}
@@ -316,6 +325,11 @@ export function NegotiateTermsForm({
                   }}
                   disabled={loading}
                 />
+                <QuickNumbers
+                  values={[2, 4, 6, 8, 12]}
+                  value={durationWeeks}
+                  onChange={setDurationWeeks}
+                />
                 {errors.durationWeeks && (
                   <p
                     id="negotiate-error-duration"
@@ -330,41 +344,19 @@ export function NegotiateTermsForm({
 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label
-                  htmlFor="negotiate-scope"
-                  className="text-xs font-medium"
-                >
-                  {t(
-                    "mediaPackage.negotiateModal.scopeLabel",
-                    "Mô tả phạm vi công việc",
-                  )}
-                </Label>
                 <span className="text-muted-foreground text-xs">
                   {scopeDescription.length}/5000
                 </span>
               </div>
-              <Textarea
-                aria-invalid={!!errors.scopeDescription}
-                aria-describedby={
-                  errors.scopeDescription ? "negotiate-error-scope" : undefined
-                }
+              <TextChoices
                 id="negotiate-scope"
-                rows={4}
-                placeholder={t(
-                  "mediaPackage.form.scopePlaceholder",
-                  "Mô tả chi tiết các deliverable, số lượng bài đăng, kênh truyền thông, mốc thời gian...",
-                )}
+                label={t("mediaPackage.negotiateModal.scopeLabel")}
                 value={scopeDescription}
-                onChange={(e) => {
-                  setScopeDescription(e.target.value);
-                  if (errors.scopeDescription)
-                    setErrors((prev) => ({
-                      ...prev,
-                      scopeDescription: undefined,
-                    }));
-                }}
-                disabled={loading}
+                onChange={setScopeDescription}
                 maxLength={5000}
+                options={["launch", "awareness", "engagement"].map((key) =>
+                  t(`mediaPackage.choices.scope.${key}`),
+                )}
               />
               {errors.scopeDescription && (
                 <p

@@ -1,4 +1,4 @@
-import type { MouseEvent } from "react";
+import type { MouseEvent, KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -11,21 +11,33 @@ import {
 import { Button } from "@/components/ui/button";
 import type { Campaign } from "@/pages/campaign/types";
 
+export type CampaignTab = "plan" | "delivery" | "review";
+
+export interface CampaignNextStepProps {
+  campaign: Campaign;
+  workspaceId: string;
+  canManage: boolean;
+  hasTasks: boolean;
+  activeTab?: string;
+  onSelectTab?: (tab: CampaignTab) => void;
+}
+
 export function CampaignNextStep({
   campaign,
   workspaceId,
   canManage,
   hasTasks,
-}: {
-  campaign: Campaign;
-  workspaceId: string;
-  canManage: boolean;
-  hasTasks: boolean;
-}) {
+  activeTab,
+  onSelectTab,
+}: CampaignNextStepProps) {
   const { t } = useTranslation();
   const stage = campaign.status;
 
-  const scrollToSection = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
+  const handleTabClick = (
+    e: MouseEvent<HTMLAnchorElement>,
+    tab: CampaignTab,
+    id: string,
+  ) => {
     if (
       e.button === 0 &&
       !e.metaKey &&
@@ -33,11 +45,31 @@ export function CampaignNextStep({
       !e.shiftKey &&
       !e.altKey
     ) {
-      const element = document.getElementById(id);
-      if (element) {
-        e.preventDefault();
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+      e.preventDefault();
+      onSelectTab?.(tab);
+      requestAnimationFrame(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+    }
+  };
+
+  const handleKeyDown = (
+    e: KeyboardEvent<HTMLAnchorElement>,
+    tab: CampaignTab,
+    id: string,
+  ) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSelectTab?.(tab);
+      requestAnimationFrame(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      });
     }
   };
 
@@ -74,20 +106,40 @@ export function CampaignNextStep({
         >
           <a
             href="#campaign-plan"
-            onClick={(e) => scrollToSection(e, "campaign-plan")}
-            className="group border-border/80 bg-background/90 text-muted-foreground hover:border-brand-orange/40 hover:bg-brand-orange-soft/40 hover:text-foreground focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium shadow-2xs transition-all duration-150 focus-visible:ring-2 focus-visible:outline-hidden"
+            role="button"
+            tabIndex={0}
+            onClick={(e) => handleTabClick(e, "plan", "campaign-plan")}
+            onKeyDown={(e) => handleKeyDown(e, "plan", "campaign-plan")}
+            aria-pressed={activeTab === "plan"}
+            className={`group focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-all duration-150 focus-visible:ring-2 focus-visible:outline-hidden ${
+              activeTab === "plan"
+                ? "border-brand-orange bg-brand-orange/15 text-brand-orange font-semibold shadow-2xs"
+                : "border-border/80 bg-background/90 text-muted-foreground hover:border-brand-orange/40 hover:bg-brand-orange-soft/40 hover:text-foreground font-medium shadow-2xs"
+            }`}
           >
-            <FileText className="text-muted-foreground group-hover:text-foreground size-3.5 transition-colors" />
+            <FileText
+              className={`size-3.5 transition-colors ${
+                activeTab === "plan"
+                  ? "text-brand-orange"
+                  : "text-muted-foreground group-hover:text-foreground"
+              }`}
+            />
             <span>{t("campaign.ux.plan")}</span>
           </a>
 
           <a
             href="#campaign-review"
-            onClick={(e) => scrollToSection(e, "campaign-review")}
+            role="button"
+            tabIndex={0}
+            onClick={(e) => handleTabClick(e, "review", "campaign-review")}
+            onKeyDown={(e) => handleKeyDown(e, "review", "campaign-review")}
+            aria-pressed={activeTab === "review"}
             className={`group focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-all duration-150 focus-visible:ring-2 focus-visible:outline-hidden ${
-              stage === "DRAFT"
-                ? "border-brand-orange bg-brand-orange/15 text-brand-orange hover:bg-brand-orange/20 font-semibold shadow-2xs"
-                : "border-border/80 bg-background/90 text-muted-foreground hover:border-brand-orange/40 hover:bg-brand-orange-soft/40 hover:text-foreground font-medium shadow-2xs"
+              activeTab === "review"
+                ? "border-brand-orange bg-brand-orange/15 text-brand-orange font-semibold shadow-2xs"
+                : stage === "DRAFT"
+                  ? "border-brand-orange bg-brand-orange/15 text-brand-orange hover:bg-brand-orange/20 font-semibold shadow-2xs"
+                  : "border-border/80 bg-background/90 text-muted-foreground hover:border-brand-orange/40 hover:bg-brand-orange-soft/40 hover:text-foreground font-medium shadow-2xs"
             }`}
           >
             {stage === "DRAFT" && (
@@ -95,7 +147,7 @@ export function CampaignNextStep({
             )}
             <MessageSquareCheck
               className={`size-3.5 transition-colors ${
-                stage === "DRAFT"
+                activeTab === "review" || stage === "DRAFT"
                   ? "text-brand-orange"
                   : "text-muted-foreground group-hover:text-foreground"
               }`}
@@ -103,29 +155,35 @@ export function CampaignNextStep({
             <span>{t("campaign.review.title")}</span>
           </a>
 
-          {stage !== "DRAFT" && (
-            <a
-              href="#campaign-delivery"
-              onClick={(e) => scrollToSection(e, "campaign-delivery")}
-              className={`group focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-all duration-150 focus-visible:ring-2 focus-visible:outline-hidden ${
-                stage === "APPROVED" || stage === "IN_PROGRESS"
+          <a
+            href="#campaign-delivery"
+            role="button"
+            tabIndex={0}
+            onClick={(e) => handleTabClick(e, "delivery", "campaign-delivery")}
+            onKeyDown={(e) => handleKeyDown(e, "delivery", "campaign-delivery")}
+            aria-pressed={activeTab === "delivery"}
+            className={`group focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-all duration-150 focus-visible:ring-2 focus-visible:outline-hidden ${
+              activeTab === "delivery"
+                ? "border-brand-orange bg-brand-orange/15 text-brand-orange font-semibold shadow-2xs"
+                : stage === "APPROVED" || stage === "IN_PROGRESS"
                   ? "border-brand-orange bg-brand-orange/15 text-brand-orange hover:bg-brand-orange/20 font-semibold shadow-2xs"
                   : "border-border/80 bg-background/90 text-muted-foreground hover:border-brand-orange/40 hover:bg-brand-orange-soft/40 hover:text-foreground font-medium shadow-2xs"
+            }`}
+          >
+            {(stage === "APPROVED" || stage === "IN_PROGRESS") && (
+              <span className="bg-brand-orange size-1.5 shrink-0 animate-pulse rounded-full" />
+            )}
+            <Rocket
+              className={`size-3.5 transition-colors ${
+                activeTab === "delivery" ||
+                stage === "APPROVED" ||
+                stage === "IN_PROGRESS"
+                  ? "text-brand-orange"
+                  : "text-muted-foreground group-hover:text-foreground"
               }`}
-            >
-              {(stage === "APPROVED" || stage === "IN_PROGRESS") && (
-                <span className="bg-brand-orange size-1.5 shrink-0 animate-pulse rounded-full" />
-              )}
-              <Rocket
-                className={`size-3.5 transition-colors ${
-                  stage === "APPROVED" || stage === "IN_PROGRESS"
-                    ? "text-brand-orange"
-                    : "text-muted-foreground group-hover:text-foreground"
-                }`}
-              />
-              <span>{t("campaign.delivery.title")}</span>
-            </a>
-          )}
+            />
+            <span>{t("campaign.delivery.title")}</span>
+          </a>
         </nav>
 
         {hasTasks && (
