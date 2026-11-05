@@ -5,6 +5,7 @@ import { materialService } from "@/services/materialService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAuthStore } from "@/store/authStore";
 import type {
+  MaterialDuplicateConflict,
   MaterialUploadOptions,
   MaterialUploadSession,
 } from "@/types/material";
@@ -33,6 +34,17 @@ export function useMaterialUpload(workspaceId: string | undefined) {
     stageState.workspaceId === workspaceId ? stageState.value : "idle";
   const setStage = (value: Stage) => setStageState({ workspaceId, value });
   const [progress, setProgress] = useState(0);
+  const [conflict, setConflict] = useState<MaterialDuplicateConflict | null>(
+    null,
+  );
+  const conflictResolver = useRef<
+    ((choice: "SKIP" | "KEEP_BOTH" | "OVERWRITE") => void) | null
+  >(null);
+  const resolveConflict = (choice: "SKIP" | "KEEP_BOTH" | "OVERWRITE") => {
+    conflictResolver.current?.(choice);
+    conflictResolver.current = null;
+    setConflict(null);
+  };
   const attempt = useRef<Attempt | null>(null);
   const controller = useRef<AbortController | null>(null);
 
@@ -75,15 +87,76 @@ export function useMaterialUpload(workspaceId: string | undefined) {
     setStage("uploading");
     setProgress(0);
     try {
+      const contentHash =
+        options.contentHash ??
+        Array.from(
+          new Uint8Array(
+            await crypto.subtle.digest("SHA-256", await file.arrayBuffer()),
+          ),
+        )
+          .map((byte) => byte.toString(16).padStart(2, "0"))
+          .join("");
+      let resolvedOptions: MaterialUploadOptions = {
+        ...options,
+        contentHash,
+        conflictResolution: options.conflictResolution ?? "ASK",
+      };
+      const createSession = async () => {
+        for (let count = 0; count < 5; count++) {
+          if (!isCurrent()) return null;
+          try {
+            return await materialService.createUploadSession(
+              workspaceId,
+              file,
+              resolvedOptions,
+              currentAttempt.requestId,
+              active.signal,
+            );
+          } catch (failure) {
+            if (
+              !isAxiosError<{
+                error?: { code?: string; details?: MaterialDuplicateConflict };
+              }>(failure) ||
+              failure.response?.data.error?.code !==
+                "MATERIAL_DUPLICATE_CONFLICT" ||
+              !failure.response.data.error.details
+            )
+              throw failure;
+            const details = failure.response.data.error.details;
+            const choice = await new Promise<
+              "SKIP" | "KEEP_BOTH" | "OVERWRITE"
+            >((resolve) => {
+              const aborted = () => resolve("SKIP");
+              conflictResolver.current = (value) => {
+                active.signal.removeEventListener("abort", aborted);
+                resolve(value);
+              };
+              active.signal.addEventListener("abort", aborted, { once: true });
+              setConflict(details);
+            });
+            if (isCurrent()) setConflict(null);
+            if (choice === "SKIP") {
+              attempt.current = null;
+              return null;
+            }
+            resolvedOptions = {
+              ...resolvedOptions,
+              conflictResolution: choice,
+              overwriteMaterialId:
+                choice === "OVERWRITE" ? details.existingMaterialId : undefined,
+            };
+            currentAttempt.requestId = crypto.randomUUID();
+          }
+        }
+        throw new Error("MATERIAL_DUPLICATE_CONFLICT");
+      };
       for (let storageAttempt = 0; storageAttempt < 2; storageAttempt++) {
         try {
-          currentAttempt.session ??= await materialService.createUploadSession(
-            workspaceId,
-            file,
-            options,
-            currentAttempt.requestId,
-            active.signal,
-          );
+          if (!currentAttempt.session) {
+            const session = await createSession();
+            if (!session || session.skipped) return null;
+            currentAttempt.session = session;
+          }
           if (!isCurrent()) return null;
           if (!currentAttempt.uploaded) {
             await putMaterialBytes(
@@ -93,6 +166,7 @@ export function useMaterialUpload(workspaceId: string | undefined) {
               (percent) => {
                 if (isCurrent()) setProgress(percent);
               },
+              currentAttempt.session.uploadHeaders,
             );
             currentAttempt.uploaded = true;
           }
@@ -147,5 +221,13 @@ export function useMaterialUpload(workspaceId: string | undefined) {
     setStage("idle");
   }
 
-  return { upload, stage, progress, cancel, busy: stage !== "idle" };
+  return {
+    upload,
+    stage,
+    progress,
+    cancel,
+    conflict,
+    resolveConflict,
+    busy: stage !== "idle",
+  };
 }

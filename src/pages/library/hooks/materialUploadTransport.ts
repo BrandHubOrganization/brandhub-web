@@ -10,6 +10,7 @@ export function putMaterialBytes(
   file: File,
   signal: AbortSignal,
   progress: (percent: number) => void,
+  headers: Record<string, string> = {},
 ): Promise<void> {
   if (signal.aborted)
     return Promise.reject(new DOMException("Upload aborted", "AbortError"));
@@ -27,6 +28,10 @@ export function putMaterialBytes(
     request.withCredentials = false;
     request.timeout = 10 * 60 * 1000;
     request.setRequestHeader("Content-Type", file.type);
+    for (const [name, value] of Object.entries(headers)) {
+      if (name.toLowerCase() !== "content-type")
+        request.setRequestHeader(name, value);
+    }
     request.upload.onprogress = (event) => {
       if (event.lengthComputable)
         progress(Math.round((event.loaded / event.total) * 100));

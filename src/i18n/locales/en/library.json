@@ -16,6 +16,7 @@
     "rawWarning": "Unretouched image",
     "profilesFailed": "Client profiles could not be loaded. Close and reopen the form to retry.",
     "invalidFile": "The file is empty, unsupported, or exceeds the size limit.",
+    "invalidContent": "The file format could not be read. Export the file again, then upload it.",
     "success": "Material was added to the repository.",
     "quotaExceeded": "The Agency does not have enough storage. Ask the Owner to upgrade or free storage.",
     "poolFull": "The shared storage pool is full. Nothing was uploaded; please retry later.",
@@ -29,14 +30,19 @@
     "cancelUpload": "Cancel transfer",
     "close": "Close",
     "cancelHint": "Canceling the transfer does not free storage immediately; unfinished sessions expire and are cleaned up.",
-    "filePreview": "PDF document — open details for file information"
+    "filePreview": "PDF document — open details for file information",
+    "chooseFile": "Choose a file",
+    "fileTypes": "Photos · Videos · PDF",
+    "options": "Options",
+    "original": "Original",
+    "edited": "Edited"
   },
   "page": {
-    "title": "Content Library",
-    "description": "Centrally manage the workspace's media assets (S3 Media), hashtag groups, and post templates.",
-    "mediaTab": "Media Library",
-    "hashtagsTab": "Hashtag Groups",
-    "templatesTab": "Post Templates"
+    "title": "Content library",
+    "description": "Your photos, videos and post templates.",
+    "mediaTab": "Files",
+    "hashtagsTab": "Hashtag",
+    "templatesTab": "Post templates"
   },
   "templates": {
     "deleteSuccess": "Post template deleted",
@@ -80,7 +86,7 @@
     "typeVideo": "Video",
     "sortNewest": "Newest",
     "sortOldest": "Oldest",
-    "uploadButton": "Upload Media",
+    "uploadButton": "Upload files",
     "emptyTitle": "No media files found",
     "emptyDescription": "Try changing your search keywords or upload new assets to the library.",
     "allLoaded": "All media assets loaded",
@@ -150,11 +156,11 @@
     "resetFilters": "Reset filters",
     "loadError": "Failed to load materials. Please try again.",
     "retry": "Retry",
-    "searchPlaceholder": "Search materials by filename...",
+    "searchPlaceholder": "Search by file name…",
     "filterAll": "All",
     "filterImage": "Images",
     "filterVideo": "Videos",
-    "filterFile": "Documents (PDF)",
+    "filterFile": "Documents",
     "processingTypeLabel": "Processing Status",
     "typeAll": "All processing types",
     "typeRaw": "Raw (Unedited)",
@@ -259,5 +265,33 @@
     "policy": "Save to the agency Drive first. When Drive has insufficient space, use private S3 if the active BrandHub plan has available storage. Existing files stay where they are.",
     "retry": "Retry",
     "s3Usage": "BrandHub plan S3 storage"
+  },
+  "simple": {
+    "filters": "Filters",
+    "more": "More",
+    "storage": "Storage & Drive import",
+    "allFiles": "All files",
+    "vault": "Client files",
+    "drafts": "AI drafts",
+    "emptyTitle": "No files in this folder",
+    "emptyHint": "Choose “Upload files” to add photos, videos or documents.",
+    "page": "Page {{page}} of {{total}}",
+    "open": "Open",
+    "actions": "Actions for {{name}}",
+    "files": "Files",
+    "fromDrive": "From Drive",
+    "usage": "Used {{used}} / {{quota}}",
+    "storageDetails": "Storage usage",
+    "import": "Import"
+  },
+  "driveImport": {
+    "authorize": "Click Import and allow Google Drive read access to continue.",
+    "expired": "Google access expired. Click Import to authorize again. Imported files are kept.",
+    "denied": "This Google account cannot read the folder or download its files. Use an account with access.",
+    "notFound": "The folder was not found or has not been shared with this Google account.",
+    "popup": "Google popup was blocked. Allow popups and click Import again.",
+    "notConfigured": "Google authorization could not initialize. Retry or check the Google OAuth configuration.",
+    "quota": "Not enough storage to complete the import.",
+    "failed": "Drive import failed. Imported files are kept. Click Import to retry."
   }
 }
