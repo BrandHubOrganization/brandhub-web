@@ -105,9 +105,9 @@ export function CustomerDrivePanel({ folderId }: { folderId?: string }) {
     return t(`library.driveImport.${key}`);
   }
   return (
-    <section className="w-full max-w-md space-y-2 sm:ml-auto">
+    <section className="bg-muted/20 border-border grid min-w-0 gap-3 rounded-lg border p-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
       <form
-        className="flex items-start gap-2"
+        className="flex min-w-0 items-center gap-2"
         onSubmit={(event) => {
           event.preventDefault();
           if (
@@ -166,37 +166,44 @@ export function CustomerDrivePanel({ folderId }: { folderId?: string }) {
           </p>
         )}
       {job.data && (
-        <div role="status">
-          <p>
-            {job.data.status === "FAILED"
-              ? importError(job.data.errorMessage)
-              : label(
-                  job.data.status === "RUNNING"
-                    ? "importRunning"
-                    : job.data.status === "COMPLETED"
-                      ? "importCompleted"
-                      : "importFailed",
-                )}
-          </p>
-          <p>
-            {t("materials.repository.importProgress", {
-              files: job.data.importedFiles,
-              folders: job.data.importedFolders,
-              skipped: job.data.skippedFiles,
-            })}
-          </p>
-          {job.data.status !== "RUNNING" && (
-            <Button
-              variant="ghost"
-              onClick={() =>
-                void client.invalidateQueries({
-                  queryKey: ["materials", workspace],
-                })
-              }
-            >
-              {label("retry")}
-            </Button>
-          )}
+        <div
+          role="status"
+          className="text-muted-foreground min-w-0 text-xs lg:text-right"
+        >
+          <span
+            className={
+              job.data.status === "FAILED"
+                ? "text-destructive font-medium"
+                : "font-medium"
+            }
+          >
+            {t(
+              `library.driveImport.${job.data.status === "FAILED" ? "failedShort" : job.data.status === "COMPLETED" ? "completedShort" : "runningShort"}`,
+            )}
+          </span>
+          <details className="mt-1">
+            <summary className="focus-visible:ring-ring inline-block cursor-pointer rounded-sm underline-offset-4 hover:underline focus-visible:ring-2">
+              {t("library.driveImport.details")}
+            </summary>
+            <p className="mt-2 leading-relaxed">
+              {job.data.status === "FAILED"
+                ? importError(job.data.errorMessage)
+                : label(
+                    job.data.status === "RUNNING"
+                      ? "importRunning"
+                      : job.data.status === "COMPLETED"
+                        ? "importCompleted"
+                        : "importFailed",
+                  )}
+            </p>
+            <p>
+              {t("materials.repository.importProgress", {
+                files: job.data.importedFiles,
+                folders: job.data.importedFolders,
+                skipped: job.data.skippedFiles,
+              })}
+            </p>
+          </details>
         </div>
       )}
       {job.isError && (

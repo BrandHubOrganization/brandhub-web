@@ -84,6 +84,7 @@ export interface MaterialCapabilities {
   canWatermark: boolean;
   canDelete: boolean;
   canRestore: boolean;
+  canPurge?: boolean;
 }
 
 export interface MaterialFilters {

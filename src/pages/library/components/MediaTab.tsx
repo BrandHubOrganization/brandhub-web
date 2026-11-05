@@ -15,7 +15,9 @@ import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useMaterialRepository } from "@/pages/library/hooks/useMaterialRepository";
 import { useMaterialDownload } from "@/pages/library/hooks/useMaterialDownload";
+import { MaterialTrashList } from "@/pages/library/components/MaterialTrashList";
 import { MaterialRepositoryCard } from "@/pages/library/components/MaterialRepositoryCard";
+import { ConfirmPermanentDeleteModal } from "@/pages/library/components/ConfirmPermanentDeleteModal";
 import { ConfirmSoftDeleteModal } from "@/pages/library/components/ConfirmSoftDeleteModal";
 import { MediaUploadButton } from "@/pages/library/components/MediaUploadButton";
 import { MediaDetailPanel } from "@/pages/library/components/MediaDetailPanel";
@@ -42,6 +44,7 @@ function RepositoryMedia() {
   const [folderId, setFolderId] = useState<string>();
   const [driveOpen, setDriveOpen] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [trashBusy, setTrashBusy] = useState(false);
   const deleted = subTab === "trash";
   const isDrafts = subTab === "drafts";
   const [page, setPage] = useState(0);
@@ -49,6 +52,9 @@ function RepositoryMedia() {
   const [debounced, setDebounced] = useState("");
   const [filters, setFilters] = useState<MaterialFilters>({});
   const [confirm, setConfirm] = useState<MaterialItem | null>(null);
+  const [purgeTarget, setPurgeTarget] = useState<MaterialItem | "all" | null>(
+    null,
+  );
   const [selected, setSelected] = useState<MaterialItem | null>(null);
   const effectiveFilters: MaterialFilters = {
     ...filters,
@@ -80,9 +86,11 @@ function RepositoryMedia() {
       ? 0
       : (repository.query.data?.total ?? 0);
   const pending =
+    trashBusy ||
     repository.remove.isPending ||
     repository.restore.isPending ||
-    repository.promote.isPending;
+    repository.promote.isPending ||
+    repository.purge.isPending;
   const uploaded = () => {
     void client.invalidateQueries({ queryKey: ["materials"] });
     void client.invalidateQueries({ queryKey: ["material-storage-usage"] });
@@ -104,12 +112,14 @@ function RepositoryMedia() {
             setPage(0);
             setSelected(null);
             setConfirm(null);
+            setPurgeTarget(null);
           }}
         >
-          <TabsList className="bg-muted/60 h-9 max-w-full flex-wrap justify-start gap-1 rounded-lg p-1">
+          <TabsList className="bg-muted/60 h-auto min-h-9 max-w-full flex-wrap justify-start gap-1 rounded-lg p-1 sm:h-9">
             {currentRole !== "CLIENT" && (
               <TabsTrigger
                 value="active"
+                disabled={pending}
                 data-testid="tab-active-library"
                 className="gap-1.5 rounded-md px-3 py-1 text-xs"
               >
@@ -119,6 +129,7 @@ function RepositoryMedia() {
             )}
             <TabsTrigger
               value="client-vault"
+              disabled={pending}
               className="gap-1.5 rounded-md px-3 py-1 text-xs"
             >
               <Users className="size-3.5" />
@@ -127,6 +138,7 @@ function RepositoryMedia() {
             {currentRole !== "CLIENT" && (
               <TabsTrigger
                 value="drafts"
+                disabled={pending}
                 data-testid="tab-ai-drafts"
                 className="gap-1.5 rounded-md px-3 py-1 text-xs"
               >
@@ -137,6 +149,7 @@ function RepositoryMedia() {
             {currentRole !== "CLIENT" && (
               <TabsTrigger
                 value="trash"
+                disabled={pending}
                 data-testid="tab-trash-library"
                 className="gap-1.5 rounded-md px-3 py-1 text-xs"
               >
@@ -148,6 +161,20 @@ function RepositoryMedia() {
         </Tabs>
 
         <div className="flex flex-wrap items-center gap-2">
+          {deleted &&
+            (repository.role === "MANAGER" || repository.role === "CREATOR") &&
+            !repository.forbidden &&
+            !repository.query.isError && (
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={pending || repository.query.isFetching}
+                onClick={() => setPurgeTarget("all")}
+              >
+                <Trash2 className="size-4" />
+                {t("library.trash.emptyTrash")}
+              </Button>
+            )}
           {subTab === "client-vault" &&
             currentRole === "CLIENT" &&
             repository.workspace && (
@@ -212,18 +239,20 @@ function RepositoryMedia() {
       {repository.workspace &&
         !repository.forbidden &&
         !repository.query.isError && (
-          <MaterialToolbar
-            workspace={repository.workspace}
-            role={repository.role}
-            search={search}
-            filters={filters}
-            usage={repository.usage.data}
-            onSearch={setSearch}
-            onChange={(next) => {
-              setFilters(next);
-              setPage(0);
-            }}
-          />
+          <fieldset disabled={pending} className="min-w-0">
+            <MaterialToolbar
+              workspace={repository.workspace}
+              role={repository.role}
+              search={search}
+              filters={filters}
+              usage={repository.usage.data}
+              onSearch={setSearch}
+              onChange={(next) => {
+                setFilters(next);
+                setPage(0);
+              }}
+            />
+          </fieldset>
         )}
 
       {/* Contextual Notice + Count Row */}
@@ -235,7 +264,12 @@ function RepositoryMedia() {
               ? t("library.trash.chooseWorkspace")
               : repository.query.isPending
                 ? t("library.trash.loading")
-                : t("library.trash.count", { count: total })}
+                : deleted
+                  ? t("library.trash.inventory", {
+                      files: total,
+                      folders: repository.query.data?.folders?.length ?? 0,
+                    })
+                  : t("library.trash.count", { count: total })}
         </div>
         {subTab === "client-vault" && (
           <span>{t("materials.repository.vaultNoShare")}</span>
@@ -261,7 +295,31 @@ function RepositoryMedia() {
           </Button>
         </div>
       )}
-      {repository.workspace &&
+      {deleted &&
+        repository.workspace &&
+        !repository.forbidden &&
+        !repository.query.isError &&
+        !repository.query.isPending && (
+          <MaterialTrashList
+            key={JSON.stringify([
+              repository.workspace,
+              repository.actor,
+              repository.role,
+              page,
+              debounced,
+              effectiveFilters,
+            ])}
+            workspace={repository.workspace}
+            files={items}
+            folders={repository.query.data?.folders ?? []}
+            busy={
+              pending || repository.query.isFetching || search !== debounced
+            }
+            onBusyChange={setTrashBusy}
+          />
+        )}
+      {!deleted &&
+        repository.workspace &&
         !repository.forbidden &&
         !repository.query.isError && (
           <MaterialFolderSection
@@ -337,37 +395,43 @@ function RepositoryMedia() {
               <div className="bg-muted mt-4 h-4 w-3/4 animate-pulse rounded motion-reduce:animate-none" />
             </div>
           ))}
-        {items.map((material) => (
-          <MaterialRepositoryCard
-            key={`${material.id}:${material.version}`}
-            material={material}
-            deleted={deleted}
-            pending={pending}
-            downloading={downloader.isDownloading(material.id)}
-            onDownload={(format) => void downloader.download(material, format)}
-            onPromote={
-              material.draft
-                ? () => repository.promote.mutate(material)
-                : undefined
-            }
-            onDelete={() => setConfirm(material)}
-            onRestore={() => repository.restore.mutate(material)}
-            onOpen={() => setSelected(material)}
-          />
-        ))}
+        {!deleted &&
+          items.map((material) => (
+            <MaterialRepositoryCard
+              key={`${material.id}:${material.version}`}
+              material={material}
+              deleted={deleted}
+              pending={pending}
+              downloading={downloader.isDownloading(material.id)}
+              onDownload={(format) =>
+                void downloader.download(material, format)
+              }
+              onPromote={
+                material.draft
+                  ? () => repository.promote.mutate(material)
+                  : undefined
+              }
+              onDelete={() => setConfirm(material)}
+              onRestore={() => repository.restore.mutate(material)}
+              onPurge={() => setPurgeTarget(material)}
+              onOpen={() => setSelected(material)}
+            />
+          ))}
       </div>
       {total > 20 && (
         <div className="flex items-center justify-between gap-3">
           <Button
             variant="outline"
-            disabled={page === 0 || repository.query.isFetching}
+            disabled={pending || page === 0 || repository.query.isFetching}
             onClick={() => setPage(page - 1)}
           >
             {t("library.trash.previous")}
           </Button>
           <Button
             variant="outline"
-            disabled={(page + 1) * 20 >= total || repository.query.isFetching}
+            disabled={
+              pending || (page + 1) * 20 >= total || repository.query.isFetching
+            }
             onClick={() => setPage(page + 1)}
           >
             {t("library.trash.next")}
@@ -380,6 +444,22 @@ function RepositoryMedia() {
           </span>
         </div>
       )}
+      <ConfirmPermanentDeleteModal
+        target={
+          repository.forbidden || repository.query.isError ? null : purgeTarget
+        }
+        pending={repository.purge.isPending}
+        onClose={() => setPurgeTarget(null)}
+        onConfirm={() => {
+          if (purgeTarget && !repository.purge.isPending)
+            repository.purge.mutate(purgeTarget, {
+              onSuccess: () => {
+                setPurgeTarget(null);
+                setPage(0);
+              },
+            });
+        }}
+      />
       <ConfirmSoftDeleteModal
         material={
           repository.forbidden || repository.query.isError ? null : confirm
