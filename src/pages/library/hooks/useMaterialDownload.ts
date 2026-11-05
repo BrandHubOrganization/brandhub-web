@@ -161,12 +161,7 @@ export function useMaterialDownload() {
   const download = useCallback(
     async (material: MaterialItem, format?: DownloadFormat) => {
       if (controllers.current.has(material.id)) return;
-      let supportTicket: string | undefined;
-      if (useAuthStore.getState().systemRole === "ADMIN") {
-        const input = window.prompt(t("library.repository.supportTicketPrompt"));
-        if (!input || !input.trim()) return;
-        supportTicket = input.trim();
-      }
+      const supportTicket: string | undefined = undefined;
       const controller = new AbortController();
       const requestedUser = useAuthStore.getState().user?.id;
       controllers.current.set(material.id, controller);

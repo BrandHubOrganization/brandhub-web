@@ -1,6 +1,12 @@
 import { api } from "@/lib/axios";
 import type {
   ApplyWatermarkRequest,
+  MaterialBrowserResponse,
+  MaterialFolderItem,
+  MaterialVersionItem,
+  DriveImportJob,
+  StorageAddonPlan,
+  StorageAddonOrder,
   BrandAssetItem,
   CreateWatermarkPresetRequest,
   MaterialItem,
@@ -22,6 +28,193 @@ interface ApiResponse<T> {
 }
 
 export const materialService = {
+  async browse(
+    workspace: string,
+    params: MaterialFilters & {
+      page: number;
+      size: number;
+      search: string;
+      deleted: boolean;
+    },
+    signal?: AbortSignal,
+  ): Promise<MaterialBrowserResponse> {
+    return (
+      await api.get<ApiResponse<MaterialBrowserResponse>>(
+        `/api/v1/workspaces/${workspace}/materials/browser`,
+        { params, signal },
+      )
+    ).data.data;
+  },
+  async createFolder(workspace: string, name: string, parentFolderId?: string) {
+    return (
+      await api.post<ApiResponse<MaterialFolderItem>>(
+        `/api/v1/workspaces/${workspace}/materials/folders`,
+        { name, parentFolderId },
+      )
+    ).data.data;
+  },
+  async renameFolder(workspace: string, id: string, name: string) {
+    return api.patch(
+      `/api/v1/workspaces/${workspace}/materials/folders/${id}`,
+      { name },
+    );
+  },
+  async moveFolder(
+    workspace: string,
+    id: string,
+    targetParentFolderId: string | null,
+  ) {
+    return api.post(
+      `/api/v1/workspaces/${workspace}/materials/folders/${id}/move`,
+      { targetParentFolderId },
+    );
+  },
+  async deleteFolder(workspace: string, id: string) {
+    return api.delete(
+      `/api/v1/workspaces/${workspace}/materials/folders/${id}`,
+    );
+  },
+  async restoreFolder(workspace: string, id: string) {
+    return api.post(
+      `/api/v1/workspaces/${workspace}/materials/folders/${id}/restore`,
+    );
+  },
+  async moveMaterial(
+    workspace: string,
+    id: string,
+    targetFolderId: string | null,
+  ) {
+    return api.post(`/api/v1/workspaces/${workspace}/materials/${id}/move`, {
+      targetFolderId,
+    });
+  },
+  async listVersions(
+    workspace: string,
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<MaterialVersionItem[]> {
+    return (
+      await api.get<ApiResponse<MaterialVersionItem[]>>(
+        `/api/v1/workspaces/${workspace}/materials/${id}/versions`,
+        { signal },
+      )
+    ).data.data;
+  },
+  async restoreVersion(workspace: string, id: string, version: string) {
+    return api.post(
+      `/api/v1/workspaces/${workspace}/materials/${id}/versions/${encodeURIComponent(version)}/restore`,
+    );
+  },
+  async downloadVersion(
+    workspace: string,
+    id: string,
+    version: string,
+  ): Promise<DownloadMaterialResponse> {
+    return (
+      await api.post<ApiResponse<DownloadMaterialResponse>>(
+        `/api/v1/workspaces/${workspace}/materials/${id}/versions/${encodeURIComponent(version)}/download`,
+      )
+    ).data.data;
+  },
+  async deleteVersion(workspace: string, id: string, version: string) {
+    return api.delete(
+      `/api/v1/workspaces/${workspace}/materials/${id}/versions/${encodeURIComponent(version)}`,
+    );
+  },
+  async driveImportConfig(
+    workspace: string,
+    signal?: AbortSignal,
+  ): Promise<{ clientId: string }> {
+    return (
+      await api.get<ApiResponse<{ clientId: string }>>(
+        `/api/v1/workspaces/${workspace}/materials/drive-import/config`,
+        { signal },
+      )
+    ).data.data;
+  },
+  async importDriveFolder(
+    workspace: string,
+    request: {
+      driveFolderId: string;
+      googleAccessToken?: string;
+      targetFolderId?: string;
+      conflictResolution: string;
+    },
+  ): Promise<DriveImportJob> {
+    return (
+      await api.post<ApiResponse<DriveImportJob>>(
+        `/api/v1/workspaces/${workspace}/materials/drive-import`,
+        request,
+      )
+    ).data.data;
+  },
+  async driveImportStatus(
+    workspace: string,
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<DriveImportJob> {
+    return (
+      await api.get<ApiResponse<DriveImportJob>>(
+        `/api/v1/workspaces/${workspace}/materials/drive-import/${id}`,
+        { signal },
+      )
+    ).data.data;
+  },
+  async browseClientVault(
+    params: { folderId?: string; sort?: string; page?: number; size?: number },
+    signal?: AbortSignal,
+  ): Promise<MaterialBrowserResponse> {
+    return (
+      await api.get<ApiResponse<MaterialBrowserResponse>>(
+        "/api/v1/client-vault/browser",
+        { params, signal },
+      )
+    ).data.data;
+  },
+  async shareClientVaultToWorkspace(
+    workspace: string,
+    folderIds: string[],
+    sourceWorkspaceId: string,
+    shareAll = false,
+  ) {
+    return api.post(`/api/v1/workspaces/${workspace}/client-vault/shares`, {
+      folderIds,
+      sourceWorkspaceId,
+      shareAll,
+    });
+  },
+  async listStorageAddons(signal?: AbortSignal): Promise<StorageAddonPlan[]> {
+    return (
+      await api.get<ApiResponse<StorageAddonPlan[]>>("/api/v1/storage/addons", {
+        signal,
+      })
+    ).data.data;
+  },
+  async checkoutStorage(
+    planCode: string,
+    agencyId: string | undefined,
+    payerScope: "AGENCY" | "CLIENT_VAULT",
+    key: string,
+  ): Promise<StorageAddonOrder> {
+    return (
+      await api.post<ApiResponse<StorageAddonOrder>>(
+        "/api/v1/storage/addons/checkout",
+        { planCode, agencyId, payerScope },
+        { headers: { "Idempotency-Key": key } },
+      )
+    ).data.data;
+  },
+  async storageOrder(
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<StorageAddonOrder> {
+    return (
+      await api.get<ApiResponse<StorageAddonOrder>>(
+        `/api/v1/storage/addons/orders/${id}`,
+        { signal },
+      )
+    ).data.data;
+  },
   async listPage(
     workspaceId: string,
     params: MaterialFilters & {

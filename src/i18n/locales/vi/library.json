@@ -16,6 +16,7 @@
     "rawWarning": "Ảnh chưa chỉnh sửa",
     "profilesFailed": "Không tải được danh sách Client. Vui lòng đóng rồi mở lại biểu mẫu.",
     "invalidFile": "Tệp rỗng, định dạng không hỗ trợ hoặc vượt giới hạn dung lượng.",
+    "invalidContent": "Không đọc được định dạng tệp. Hãy xuất lại tệp rồi tải lên.",
     "success": "Đã thêm tư liệu vào kho lưu trữ.",
     "quotaExceeded": "Không còn đủ dung lượng Agency. Liên hệ Owner để nâng cấp hoặc giải phóng dung lượng.",
     "poolFull": "Quỹ lưu trữ dùng chung đang đầy. Tệp chưa được tải lên; vui lòng thử lại sau.",
@@ -29,14 +30,19 @@
     "cancelUpload": "Hủy truyền tệp",
     "close": "Đóng",
     "cancelHint": "Hủy truyền tệp không giải phóng dung lượng ngay; phiên chưa hoàn tất sẽ được dọn theo thời hạn.",
-    "filePreview": "Tài liệu PDF — mở chi tiết để xem thông tin"
+    "filePreview": "Tài liệu PDF — mở chi tiết để xem thông tin",
+    "chooseFile": "Chọn tệp",
+    "fileTypes": "Ảnh · Video · PDF",
+    "options": "Tùy chọn",
+    "original": "Bản gốc",
+    "edited": "Đã chỉnh sửa"
   },
   "page": {
-    "title": "Thư viện Nội dung",
-    "description": "Quản lý tập trung tài nguyên truyền thông (S3 Media), bộ Hashtags và Mẫu bài đăng của không gian làm việc.",
-    "mediaTab": "Media Library",
-    "hashtagsTab": "Hashtag Groups",
-    "templatesTab": "Post Templates"
+    "title": "Kho nội dung",
+    "description": "Ảnh, video và mẫu bài viết của bạn.",
+    "mediaTab": "Tệp",
+    "hashtagsTab": "Hashtag",
+    "templatesTab": "Mẫu bài viết"
   },
   "templates": {
     "deleteSuccess": "Đã xóa mẫu bài viết",
@@ -80,7 +86,7 @@
     "typeVideo": "Video",
     "sortNewest": "Mới nhất",
     "sortOldest": "Cũ nhất",
-    "uploadButton": "Tải lên Media",
+    "uploadButton": "Tải tệp lên",
     "emptyTitle": "Không tìm thấy file media nào",
     "emptyDescription": "Thử thay đổi từ khóa tìm kiếm hoặc tải thêm tài nguyên mới vào thư viện.",
     "allLoaded": "Đã tải tất cả media tài nguyên",
@@ -150,11 +156,11 @@
     "resetFilters": "Xóa bộ lọc",
     "loadError": "Không thể tải danh sách tư liệu. Vui lòng thử lại.",
     "retry": "Thử lại",
-    "searchPlaceholder": "Tìm kiếm tư liệu theo tên tệp...",
+    "searchPlaceholder": "Tìm theo tên tệp…",
     "filterAll": "Tất cả",
     "filterImage": "Ảnh",
     "filterVideo": "Video",
-    "filterFile": "Tài liệu (PDF)",
+    "filterFile": "Tài liệu",
     "processingTypeLabel": "Phân loại xử lý",
     "typeAll": "Mọi trạng thái xử lý",
     "typeRaw": "Ảnh gốc (RAW)",
@@ -259,5 +265,33 @@
     "policy": "Ưu tiên lưu trên Drive của agency. Khi Drive không đủ dung lượng, dùng S3 private nếu gói BrandHub còn hiệu lực và còn dung lượng. File cũ giữ nguyên nơi lưu.",
     "retry": "Thử lại",
     "s3Usage": "Dung lượng S3 của gói BrandHub"
+  },
+  "simple": {
+    "filters": "Bộ lọc",
+    "more": "Thêm",
+    "storage": "Dung lượng & nhập từ Drive",
+    "allFiles": "Tất cả tệp",
+    "vault": "Tệp khách hàng",
+    "drafts": "Bản nháp AI",
+    "emptyTitle": "Chưa có tệp trong thư mục này",
+    "emptyHint": "Bấm “Tải tệp lên” để thêm ảnh, video hoặc tài liệu.",
+    "page": "Trang {{page}} / {{total}}",
+    "open": "Mở",
+    "actions": "Thao tác với {{name}}",
+    "files": "Tệp",
+    "fromDrive": "Từ Drive",
+    "usage": "Đã dùng {{used}} / {{quota}}",
+    "storageDetails": "Dung lượng lưu trữ",
+    "import": "Nhập"
+  },
+  "driveImport": {
+    "authorize": "Bấm Nhập và cho phép Google đọc Drive để tiếp tục.",
+    "expired": "Quyền Google đã hết hạn. Bấm Nhập để cấp quyền lại. Các tệp đã nhập vẫn được giữ.",
+    "denied": "Tài khoản Google chưa có quyền đọc thư mục hoặc tải tệp. Dùng tài khoản được chia sẻ quyền truy cập.",
+    "notFound": "Không tìm thấy thư mục hoặc tài khoản Google chưa được chia sẻ quyền đọc.",
+    "popup": "Trình duyệt chặn cửa sổ Google. Cho phép cửa sổ bật lên rồi bấm Nhập lại.",
+    "notConfigured": "Chưa khởi tạo được cấp quyền Google. Thử lại hoặc kiểm tra cấu hình Google OAuth.",
+    "quota": "Kho không còn đủ dung lượng để nhập.",
+    "failed": "Chưa nhập được từ Drive. Các tệp đã nhập vẫn được giữ. Bấm Nhập để thử lại."
   }
 }

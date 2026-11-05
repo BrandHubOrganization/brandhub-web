@@ -17,6 +17,7 @@ import { useMaterialDetail } from "@/pages/library/hooks/useMaterialDetail";
 import { MaterialBadges } from "@/pages/library/components/MaterialBadges";
 import { MaterialPreview } from "@/pages/library/components/MaterialPreview";
 import { MaterialMetadataEditForm } from "@/pages/library/components/MaterialMetadataEditForm";
+import { MaterialVersionHistoryPanel } from "@/pages/library/components/MaterialVersionHistoryPanel";
 import { MaterialDetailFacts } from "@/pages/library/components/MaterialDetailFacts";
 import { MaterialDetailActions } from "@/pages/library/components/MaterialDetailActions";
 import type { DownloadFormat } from "@/utils/mediaDownloadHelper";
@@ -173,6 +174,7 @@ function DetailView({
                       onUnavailable={resetUnavailable}
                     />
                     <MaterialDetailFacts material={material} />
+                    <MaterialVersionHistoryPanel material={material} />
                     <MaterialDetailActions
                       material={material}
                       quotaExceeded={quotaExceeded}
