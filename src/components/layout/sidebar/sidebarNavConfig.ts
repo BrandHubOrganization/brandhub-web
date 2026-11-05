@@ -27,8 +27,8 @@ import {
   MessageCircleMore,
   Mail,
   Calendar,
-  Send,
-  Activity,
+
+
   Brain,
   TrendingUp,
   Clapperboard,
