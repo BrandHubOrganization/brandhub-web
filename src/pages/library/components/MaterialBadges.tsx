@@ -3,20 +3,26 @@ import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import type { MaterialItem } from "@/types/material";
 
-export function MaterialBadges({ material }: { material: MaterialItem }) {
+export function MaterialBadges({
+  material,
+  compact = false,
+}: {
+  material: MaterialItem;
+  compact?: boolean;
+}) {
   const { t } = useTranslation();
   return (
     <div className="flex flex-wrap gap-1 text-xs">
       {material.draft && (
         <Badge
           variant="default"
-          className="bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30 gap-1"
+          className="gap-1 border-amber-500/30 bg-amber-500/15 text-amber-700 dark:text-amber-300"
         >
           <Sparkles className="size-3" />
           {t("library.repository.aiDraftBadge")}
         </Badge>
       )}
-      {material.storageProvider && (
+      {!compact && material.storageProvider && (
         <Badge variant="outline" className="gap-1">
           {material.storageProvider === "USER_GDRIVE" ? (
             <>
@@ -31,9 +37,11 @@ export function MaterialBadges({ material }: { material: MaterialItem }) {
           )}
         </Badge>
       )}
-      <Badge variant="secondary">
-        {t(`library.repository.type${material.type}`)}
-      </Badge>
+      {!compact && (
+        <Badge variant="secondary">
+          {t(`library.repository.type${material.type}`)}
+        </Badge>
+      )}
       {material.rawWarning && (
         <Badge
           variant="outline"
@@ -48,13 +56,15 @@ export function MaterialBadges({ material }: { material: MaterialItem }) {
           {t("library.repository.purposeBrandReference")}
         </Badge>
       )}
-      <Badge variant="outline">
-        {t(
-          material.visibility === "CLIENT"
-            ? "library.repository.audienceClient"
-            : "library.repository.audienceInternal",
-        )}
-      </Badge>
+      {!compact && (
+        <Badge variant="outline">
+          {t(
+            material.visibility === "CLIENT"
+              ? "library.repository.audienceClient"
+              : "library.repository.audienceInternal",
+          )}
+        </Badge>
+      )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ import {
   Heart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BrandHubLogo } from "@/components/auth/BrandHubLogo";
 import type { Reaction } from "../ReactionPicker";
 
 interface FacebookPostProps {
@@ -97,8 +98,8 @@ export function FacebookPost({
           ) : (
             <div className="relative text-center">
               <div className="absolute top-1/2 left-1/2 size-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-3xl" />
-              <div className="relative mx-auto mb-2 flex size-14 items-center justify-center rounded-2xl bg-white/15 shadow-lg ring-1 ring-white/30 backdrop-blur">
-                <span className="text-xl font-black text-white">B</span>
+              <div className="relative mx-auto mb-2 flex size-14 items-center justify-center overflow-hidden rounded-2xl bg-white/15 shadow-lg ring-1 ring-white/30 backdrop-blur">
+                <BrandHubLogo size={48} />
               </div>
               <p className="relative text-sm font-bold text-white">
                 {t("landing.heroFeed.ui.sourceSite")}

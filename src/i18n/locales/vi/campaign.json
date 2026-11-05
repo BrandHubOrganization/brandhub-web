@@ -1,4 +1,5 @@
 {
+  "automaticDraftMissing": "Gói đã chốt nhưng thiếu chiến dịch nháp. Cần kiểm tra dữ liệu và quá trình chốt gói.",
   "compact": {
     "durationSuggestion": "Thời lượng gói: {{weeks}} tuần · có thể đổi ngày kết thúc",
     "dateHelp": "Khi chọn ngày bắt đầu, ngày kết thúc được gợi ý bằng ngày bắt đầu cộng thời lượng gói đã chốt. Bạn vẫn có thể điều chỉnh; hệ thống giữ ngày đã sửa thủ công khi đổi ngày bắt đầu."
@@ -13,8 +14,8 @@
     "sourceRequest": "Xem yêu cầu nguồn",
     "progress": "Đã kết thúc {{done}}/{{total}} đầu việc (gồm đã hủy)",
     "pending": "Có {{count}} yêu cầu chưa tiếp nhận sẽ tự động hủy sau khi hoàn thành chiến dịch.",
-    "reviewing": "Yêu cầu đang xem xét — cần xử lý trước",
-    "reviewingHelp": "Mở yêu cầu để chấp nhận hoặc từ chối. Yêu cầu được chấp nhận sẽ tạo đầu việc bổ sung cần xử lý.",
+    "reviewing": "Yêu cầu đã nhận đang chặn đóng campaign",
+    "reviewingHelp": "Xử lý các yêu cầu đang xem xét. Với yêu cầu đã chấp nhận, hãy hoàn thành hoặc hủy công việc liên kết.",
     "unfinished": "Còn {{count}} đầu việc chưa kết thúc",
     "reason": "Lý do chung cho các đầu việc đã chọn",
     "chooseReason": "Chọn lý do hủy",
@@ -36,6 +37,11 @@
     }
   },
   "title": "Kế hoạch chiến dịch",
+  "tabs": {
+    "plan": "Kế hoạch & Hạng mục",
+    "delivery": "Triển khai & Đầu việc",
+    "review": "Biên bản & Lịch sử"
+  },
   "partners": {
     "title": "Đối tác chiến dịch",
     "description": "Theo dõi hợp tác thủ công. Cập nhật đối tác không thay đổi kế hoạch Campaign đã duyệt và không tự động đăng nội dung.",
@@ -84,13 +90,16 @@
   "workItemName": "Tên đầu việc",
   "addMilestone": "Thêm mốc",
   "workItems": "Đầu việc dự kiến",
-  "workItemsHint": "Các công việc cụ thể theo từng hạng mục bàn giao; mỗi đầu việc sẽ tạo thành một nhiệm vụ khi triển khai chiến dịch. Thêm đầu việc không làm tăng sản lượng đã chốt của gói.",
+  "workItemsHint": "Đầu việc lớn được sinh từ gói đã chốt. Khi lưu, đầu việc chưa có hạn riêng sẽ dùng ngày kết thúc chiến dịch.",
   "addWorkItem": "Thêm đầu việc",
   "dueDate": "Hạn hoàn thành (giờ địa phương)",
   "remove": "Xóa",
   "save": "Lưu nháp",
   "cancel": "Hủy",
-  "create": "Tạo Campaign nháp",
+  "create": "Triển khai campaign",
+  "retryPreparation": "Thử tạo lại các công việc còn thiếu",
+  "usePackageScope": "Dùng phạm vi gói đã chốt",
+  "brandTemplate": "Sử dụng nhận diện và giọng điệu thương hiệu đã được duyệt. Xác nhận với khách hàng nếu cần ngoại lệ.",
   "edit": "Chỉnh sửa kế hoạch",
   "empty": "Người quản lý chưa tạo kế hoạch chiến dịch.",
   "noWorkItems": "Chưa lập đầu việc.",
@@ -100,7 +109,10 @@
   "saved": "Đã lưu kế hoạch.",
   "reload": "Tải lại",
   "error": "Không thể tải hoặc lưu kế hoạch. Vui lòng kiểm tra và thử lại.",
+  "editMissingFields": "Bổ sung thông tin",
   "review": {
+    "requirementsTitle": "Cần bổ sung trước khi duyệt",
+    "missingDeadline": "Hạn hoàn thành của đầu việc “{{task}}”",
     "title": "Góp ý và duyệt kế hoạch",
     "agency": "Công ty truyền thông",
     "client": "Khách hàng",
@@ -120,8 +132,10 @@
     "APPROVE": "Duyệt"
   },
   "delivery": {
+    "draftHint": "Bạn có thể xem các đầu việc của bản nháp tại đây. Chiến dịch có thể bắt đầu sau khi Agency và khách hàng duyệt.",
+    "draftEmpty": "Bản nháp này chưa có công việc được sinh.",
     "title": "Triển khai và tiến độ",
-    "deploy": "Đưa đầu việc vào backlog",
+    "deploy": "Bắt đầu campaign",
     "retry": "Thử triển khai lại",
     "queued": "Đã ghi nhận yêu cầu triển khai.",
     "PENDING": "Đang tạo đầu việc",
@@ -157,7 +171,7 @@
     "CAMPAIGN_VERSION_CONFLICT": "Kế hoạch đã thay đổi. Giữ lại nội dung cần thiết, hủy chỉnh sửa rồi tải lại.",
     "CAMPAIGN_LEGACY_TERMS": "Gói hoặc kế hoạch cũ chưa có đủ phạm vi bàn giao hoặc còn cách tính theo tháng, nên tạm khóa chỉnh sửa. Cần rà soát dữ liệu trước khi tiếp tục. Không tự chuyển sản lượng tháng sang tổng gói.",
     "CAMPAIGN_IMMUTABLE": "Campaign đã chốt, không thể sửa nội dung.",
-    "CAMPAIGN_PLAN_INCOMPLETE": "Cần nhập chiến lược, ngày bắt đầu/kết thúc và ít nhất một đầu việc trước khi duyệt.",
+    "CAMPAIGN_PLAN_INCOMPLETE": "Hãy lưu chiến lược, ngày bắt đầu, ngày kết thúc và hạn của từng đầu việc trước khi duyệt.",
     "CAMPAIGN_COMPLETION_REASON_REQUIRED": "Còn đầu việc chưa hoàn thành; bắt buộc ghi lý do.",
     "CAMPAIGN_DEPLOYMENT_INCOMPLETE": "Chưa tạo đủ đầu việc; hãy kiểm tra tiến trình triển khai.",
     "CAMPAIGN_NOT_APPROVED": "Hai bên cần duyệt cùng phiên bản Campaign trước khi triển khai."

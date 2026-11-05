@@ -108,8 +108,8 @@ function TrendsAreaChartCard({ publishingTrends }: { publishingTrends: Publishin
                 <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
               </linearGradient>
               <linearGradient id="colorEngagements" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ca3d0e" stopOpacity={0.35} />
-                <stop offset="95%" stopColor="#ca3d0e" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="#f05a28" stopOpacity={0.35} />
+                <stop offset="95%" stopColor="#f05a28" stopOpacity={0.0} />
               </linearGradient>
               <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#10b981" stopOpacity={0.35} />
@@ -133,7 +133,7 @@ function TrendsAreaChartCard({ publishingTrends }: { publishingTrends: Publishin
               type="monotone"
               dataKey="engagements"
               name={t("publish.dashboard.trends.engagements", "Lượt tương tác")}
-              stroke="#ca3d0e"
+              stroke="#f05a28"
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorEngagements)"

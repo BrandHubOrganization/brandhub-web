@@ -29,14 +29,18 @@ export function CampaignDelivery({
   workspaceId,
   campaign,
   canManage,
+  canClose,
   onChanged,
   onTasksAvailable,
+  onOpenReview,
 }: {
   workspaceId: string;
   campaign: Campaign;
   canManage: boolean;
+  canClose: boolean;
   onChanged: (value?: Campaign) => void;
   onTasksAvailable: (campaignId: string, available: boolean) => void;
+  onOpenReview: () => void;
 }) {
   const { t, i18n } = useTranslation();
   const [deployment, setDeployment] = useState<CampaignDeployment | null>(null);
@@ -48,10 +52,19 @@ export function CampaignDelivery({
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (campaign.status === "DRAFT") return;
     let active = true;
     async function refresh() {
       try {
+        if (campaign.status === "DRAFT") {
+          const list = await campaignService.tasks(workspaceId, campaign.id);
+          if (!active) return;
+          const items = requireApiData<CampaignTask[]>(list.data);
+          setTasks(items);
+          setLoaded(true);
+          setLoadError(false);
+          onTasksAvailable(campaign.id, items.length > 0);
+          return;
+        }
         const state = await campaignService.deployment(
           workspaceId,
           campaign.id,
@@ -130,7 +143,64 @@ export function CampaignDelivery({
     }
   }
 
-  if (campaign.status === "DRAFT") return null;
+  if (campaign.status === "DRAFT") {
+    return (
+      <section
+        id="campaign-delivery"
+        className="border-border bg-card space-y-4 rounded-xl border p-5"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="space-y-1">
+            <h3 className="text-lg font-semibold">
+              {t("campaign.tabs.delivery")}
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              {t("campaign.delivery.draftHint")}
+            </p>
+          </div>
+          <Button type="button" variant="outline" onClick={onOpenReview}>
+            {t("campaign.tabs.review")}
+          </Button>
+        </div>
+        {loadError ? (
+          <div role="alert" className="flex flex-wrap items-center gap-3">
+            <p className="text-destructive text-sm">{t("campaign.error")}</p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setRevision((value) => value + 1)}
+            >
+              {t("campaign.reload")}
+            </Button>
+          </div>
+        ) : !loaded ? (
+          <p role="status" className="text-muted-foreground text-sm">
+            {t("tasks.loading")}
+          </p>
+        ) : tasks.length > 0 ? (
+          <CampaignTaskGroups
+            tasks={tasks}
+            workspaceId={workspaceId}
+            canManage={false}
+          />
+        ) : (
+          <div className="border-border space-y-2 rounded-lg border border-dashed p-4">
+            <p className="text-muted-foreground text-sm">
+              {t("campaign.delivery.draftEmpty")}
+            </p>
+            {campaign.workItems.length > 0 && (
+              <ul className="list-disc space-y-1 pl-5 text-sm">
+                {campaign.workItems.map((item) => (
+                  <li key={item.id}>{item.name}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </section>
+    );
+  }
 
   if (closing)
     return (
@@ -149,13 +219,13 @@ export function CampaignDelivery({
 
   const totalTasks = tasks.length;
   const completedCount = tasks.filter((task) =>
-    ["COMPLETED", "FINISHED"].includes(task.status),
+    task.status === "FINISHED",
   ).length;
   const cancelledCount = tasks.filter(
     (task) => task.status === "CANCELLED",
   ).length;
   const inProgressCount = tasks.filter(
-    (task) => !["COMPLETED", "FINISHED", "CANCELLED"].includes(task.status),
+    (task) => !["FINISHED", "CANCELLED"].includes(task.status),
   ).length;
   const done = completedCount + cancelledCount;
   const progressPercent =
@@ -336,121 +406,74 @@ export function CampaignDelivery({
         </details>
       )}
 
-      {/* Bento Stats & Progress Bar */}
+      {/* Metric Toolbar & Task Groups */}
       {totalTasks > 0 && (
-        <div className="space-y-6 pt-1">
-          {/* Progress Header & Bar */}
-          <div className="border-border/60 bg-muted/20 space-y-3 rounded-xl border p-4 sm:p-5">
-            <div className="flex flex-wrap items-end justify-between gap-2">
-              <div>
-                <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                  {t("campaign.ui.taskProgress", {
-                    defaultValue: "Tiến độ hoàn thành Task",
-                  })}
-                </span>
-                <p className="text-foreground mt-0.5 text-sm font-medium">
-                  {t("campaign.closure.progress", {
-                    done,
-                    total: totalTasks,
-                  })}
-                </p>
-              </div>
-              <div className="flex items-baseline gap-1">
-                <span className="from-brand-orange bg-gradient-to-r to-amber-500 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl">
-                  {progressPercent}%
-                </span>
-              </div>
-            </div>
-
-            <div
-              role="progressbar"
-              aria-label={t("campaign.ui.taskProgress")}
-              aria-valuenow={done}
-              aria-valuemin={0}
-              aria-valuemax={totalTasks}
-              className="bg-muted/80 ring-border/40 h-3 w-full overflow-hidden rounded-full ring-1"
-            >
+        <div className="space-y-4 pt-1">
+          {/* Horizontal Metric Toolbar */}
+          <div className="border-border/70 bg-card flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-2.5 shadow-2xs">
+            {/* Left section: Progress Overview */}
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="text-muted-foreground text-xs font-medium whitespace-nowrap">
+                {t("campaign.ui.taskProgress", {
+                  defaultValue: "Tiến độ",
+                })}
+              </span>
               <div
-                className="from-brand-orange h-full rounded-full bg-gradient-to-r to-amber-500 shadow-xs transition-all duration-500"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </div>
-
-          {/* 4 Bento Metric Cards */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            {/* Bento Card 1: Tổng số task */}
-            <div className="group border-border/70 bg-card hover:border-border relative overflow-hidden rounded-xl border p-4 transition-all duration-200 hover:shadow-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs font-medium">
-                  Tổng số task
-                </span>
-                <div className="bg-muted text-muted-foreground rounded-lg p-2">
-                  <Layers className="size-4" />
-                </div>
+                role="progressbar"
+                aria-label={t("campaign.ui.taskProgress")}
+                aria-valuenow={done}
+                aria-valuemin={0}
+                aria-valuemax={totalTasks}
+                className="bg-muted ring-border/40 h-2 w-28 overflow-hidden rounded-full ring-1 sm:w-36"
+              >
+                <div
+                  className="from-brand-orange h-full rounded-full bg-gradient-to-r to-amber-500 shadow-xs transition-all duration-500"
+                  style={{ width: `${progressPercent}%` }}
+                />
               </div>
-              <div className="mt-3">
-                <span className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
-                  {totalTasks}
-                </span>
-              </div>
+              <span className="text-foreground font-mono text-xs font-bold tabular-nums">
+                {progressPercent}%
+              </span>
             </div>
 
-            {/* Bento Card 2: Đang thực hiện (Sky soft) */}
-            <div className="group relative overflow-hidden rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 transition-all duration-200 hover:border-sky-500/30 hover:shadow-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-sky-700 dark:text-sky-300">
+            {/* Right section: Status Metric Badges / Pills */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="bg-muted/60 text-muted-foreground inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium">
+                <Layers className="size-3.5" />
+                <span>
+                  Tổng:{" "}
+                  <b className="text-foreground tabular-nums">{totalTasks}</b>
+                </span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-sky-500/20 bg-sky-500/10 px-2.5 py-1 text-xs font-medium text-sky-700 dark:text-sky-300">
+                <Clock className="size-3.5" />
+                <span>
                   {t("campaign.ui.taskStatuses.IN_PROGRESS", {
                     defaultValue: "Đang thực hiện",
                   })}
+                  : <b className="tabular-nums">{inProgressCount}</b>
                 </span>
-                <div className="rounded-lg bg-sky-500/10 p-2 text-sky-600 dark:text-sky-400">
-                  <Clock className="size-4" />
-                </div>
-              </div>
-              <div className="mt-3">
-                <span className="text-2xl font-bold tracking-tight text-sky-700 sm:text-3xl dark:text-sky-300">
-                  {inProgressCount}
-                </span>
-              </div>
-            </div>
-
-            {/* Bento Card 3: Đã hoàn thành (Emerald soft) */}
-            <div className="group relative overflow-hidden rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 transition-all duration-200 hover:border-emerald-500/30 hover:shadow-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                <CheckCircle2 className="size-3.5" />
+                <span>
                   {t("campaign.ui.taskStatuses.FINISHED", {
                     defaultValue: "Đã hoàn thành",
                   })}
+                  : <b className="tabular-nums">{completedCount}</b>
                 </span>
-                <div className="rounded-lg bg-emerald-500/10 p-2 text-emerald-600 dark:text-emerald-400">
-                  <CheckCircle2 className="size-4" />
-                </div>
-              </div>
-              <div className="mt-3">
-                <span className="text-2xl font-bold tracking-tight text-emerald-700 sm:text-3xl dark:text-emerald-300">
-                  {completedCount}
+              </span>
+              {cancelledCount > 0 && (
+                <span className="inline-flex items-center gap-1.5 rounded-lg border border-rose-500/20 bg-rose-500/10 px-2.5 py-1 text-xs font-medium text-rose-700 dark:text-rose-300">
+                  <Ban className="size-3.5" />
+                  <span>
+                    {t("campaign.ui.taskStatuses.CANCELLED", {
+                      defaultValue: "Đã hủy",
+                    })}
+                    : <b className="tabular-nums">{cancelledCount}</b>
+                  </span>
                 </span>
-              </div>
-            </div>
-
-            {/* Bento Card 4: Đã hủy (Rose soft) */}
-            <div className="group relative overflow-hidden rounded-xl border border-rose-500/20 bg-rose-500/5 p-4 transition-all duration-200 hover:border-rose-500/30 hover:shadow-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-rose-700 dark:text-rose-300">
-                  {t("campaign.ui.taskStatuses.CANCELLED", {
-                    defaultValue: "Đã hủy",
-                  })}
-                </span>
-                <div className="rounded-lg bg-rose-500/10 p-2 text-rose-600 dark:text-rose-400">
-                  <Ban className="size-4" />
-                </div>
-              </div>
-              <div className="mt-3">
-                <span className="text-2xl font-bold tracking-tight text-rose-700 sm:text-3xl dark:text-rose-300">
-                  {cancelledCount}
-                </span>
-              </div>
+              )}
             </div>
           </div>
 
@@ -464,7 +487,7 @@ export function CampaignDelivery({
       )}
 
       {/* Closure CTA Banner: IN_PROGRESS */}
-      {canManage && campaign.status === "IN_PROGRESS" && (
+      {canClose && campaign.status === "IN_PROGRESS" && (
         <div className="border-border/80 from-card via-card to-brand-orange/5 relative overflow-hidden rounded-2xl border bg-gradient-to-br p-5 shadow-xs sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3.5">

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { DuplicateResolutionModal } from "@/pages/library/components/DuplicateResolutionModal";
 import { MaterialUploadFields } from "@/pages/library/components/MaterialUploadFields";
 import { useMaterialUpload } from "@/pages/library/hooks/useMaterialUpload";
 import { useMaterialUploadProfiles } from "@/pages/library/hooks/useMaterialUploadProfiles";
@@ -88,13 +89,45 @@ export function MaterialUploadForm({
   return (
     <form
       onSubmit={submit}
-      className="bg-card text-card-foreground border-border w-full space-y-4 rounded-xl border p-4"
+      className="w-full space-y-3"
       aria-labelledby={`${id}-title`}
     >
-      <h3 id={`${id}-title`} className="text-lg font-semibold">
+      <h3 id={`${id}-title`} className="sr-only">
         {label("title")}
       </h3>
+      <DuplicateResolutionModal
+        conflict={uploader.conflict}
+        onChoose={uploader.resolveConflict}
+      />
       <MaterialUploadFields
+        actions={
+          <div className="flex flex-wrap items-center justify-end gap-2 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                uploader.cancel();
+                if (!uploader.busy) onClose();
+              }}
+            >
+              {label(uploader.busy ? "cancelUpload" : "close")}
+            </Button>
+            <Button
+              type="submit"
+              variant="orange"
+              size="sm"
+              disabled={
+                !file ||
+                uploader.busy ||
+                (options.visibility === "CLIENT" && !options.clientProfileId)
+              }
+              aria-busy={uploader.busy}
+            >
+              {label(error ? "retry" : "submit")}
+            </Button>
+          </div>
+        }
         id={id}
         options={options}
         onChange={setOptions}
@@ -104,9 +137,6 @@ export function MaterialUploadForm({
         canShare={canShare}
         disabled={uploader.busy}
       />
-      {options.type === "RAW" && file?.type.startsWith("image/") && (
-        <p className="text-muted-foreground text-sm">{label("rawWarning")}</p>
-      )}
       {profiles.isError && (
         <p role="alert" className="text-destructive text-sm">
           {label("profilesFailed")}
@@ -134,31 +164,9 @@ export function MaterialUploadForm({
           />
         </div>
       )}
-      <div className="flex flex-wrap gap-2">
-        <Button
-          type="submit"
-          variant="orange"
-          disabled={
-            !file ||
-            uploader.busy ||
-            (options.visibility === "CLIENT" && !options.clientProfileId)
-          }
-          aria-busy={uploader.busy}
-        >
-          {label(error ? "retry" : "submit")}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            uploader.cancel();
-            if (!uploader.busy) onClose();
-          }}
-        >
-          {label(uploader.busy ? "cancelUpload" : "close")}
-        </Button>
-      </div>
-      <p className="text-muted-foreground text-sm">{label("cancelHint")}</p>
+      {uploader.busy && (
+        <p className="text-muted-foreground text-xs">{label("cancelHint")}</p>
+      )}
     </form>
   );
 }

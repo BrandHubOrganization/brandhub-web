@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { ArrowUpDown, FolderKanban, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/pages/tasks/constants";
-import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { TaskRowActions } from "@/pages/tasks/components/TaskRowActions";
 import type { TaskListItem, TaskPriority } from "@/types/task";
 
@@ -198,7 +197,7 @@ export function TaskTable(props: Props) {
             ) : (
               props.tasks.map((task) => {
                 const isSelected = selectedTaskIds.includes(task.id);
-                const status = canonicalTaskStatus(task.status);
+                const status = task.status;
                 const statusConf = STATUS_CONFIG[status] ?? STATUS_CONFIG.TODO;
 
                 return (

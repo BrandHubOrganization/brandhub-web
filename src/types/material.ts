@@ -27,6 +27,10 @@ export interface WatermarkMetadata {
 }
 
 export interface MaterialItem {
+  folderId?: string | null;
+  scopeType?: "WORKSPACE" | "CLIENT_VAULT";
+  ownerUserId?: string;
+  currentVersionNumber?: number;
   id: string;
   workspaceId: string;
   name: string;
@@ -80,19 +84,25 @@ export interface MaterialCapabilities {
   canWatermark: boolean;
   canDelete: boolean;
   canRestore: boolean;
+  canPurge?: boolean;
 }
 
 export interface MaterialFilters {
+  taskId?: string;
   mediaKind?: "IMAGE" | "VIDEO" | "FILE";
   type?: MaterialType;
   purpose?: "MATERIAL" | "BRAND_REFERENCE";
   clientProfileId?: string;
-  sort?: "newest" | "oldest";
-  taskId?: string;
+  sort?: MaterialSort;
+  folderId?: string;
+  tab?: "LIBRARY" | "CLIENT_VAULT";
   draft?: boolean;
 }
 
 export interface MaterialPage {
+  folders?: MaterialFolderItem[];
+  breadcrumbs?: MaterialFolderItem[];
+  currentFolder?: MaterialFolderItem | null;
   items: MaterialItem[];
   total: number;
   page: number;
@@ -131,6 +141,10 @@ export interface UpdateMaterialRequest {
 }
 
 export interface MaterialUploadOptions {
+  folderId?: string;
+  contentHash?: string;
+  conflictResolution?: "ASK" | "SKIP" | "KEEP_BOTH" | "OVERWRITE";
+  overwriteMaterialId?: string;
   type: "RAW" | "RETOUCHED";
   purpose: "MATERIAL" | "BRAND_REFERENCE";
   visibility: "INTERNAL" | "CLIENT";
@@ -139,9 +153,11 @@ export interface MaterialUploadOptions {
 }
 
 export interface MaterialUploadSession {
+  skipped?: boolean;
   sessionId: string;
   materialId: string;
   uploadUrl: string;
+  uploadHeaders?: Record<string, string>;
   s3Key: string;
   expiresAt: string;
 }
@@ -184,4 +200,62 @@ export interface CreateWatermarkPresetRequest {
   name: string;
   isDefault?: boolean;
   config: WatermarkMetadata;
+}
+
+export type MaterialSort = "newest" | "oldest" | "name_asc" | "name_desc";
+export interface MaterialFolderItem {
+  id: string;
+  name: string;
+  parentFolderId?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  itemCount: number;
+}
+export interface MaterialBrowserResponse {
+  currentFolder: MaterialFolderItem | null;
+  breadcrumbs: MaterialFolderItem[];
+  folders: MaterialFolderItem[];
+  files: {
+    items: MaterialItem[];
+    meta: { page: number; size: number; total: number };
+  };
+}
+export interface MaterialVersionItem {
+  id: string;
+  versionNumber: number;
+  fileSize: number;
+  mimeType: string;
+  createdBy: string;
+  createdAt: string;
+}
+export interface MaterialDuplicateConflict {
+  existingMaterialId: string;
+  existingName: string;
+  existingFolderId?: string;
+  conflictType: string;
+}
+export interface DriveImportJob {
+  jobId: string;
+  status: "RUNNING" | "COMPLETED" | "FAILED";
+  totalFiles: number;
+  importedFolders: number;
+  importedFiles: number;
+  skippedFiles: number;
+  totalBytesImported: number;
+  errorMessage?: string;
+}
+export interface StorageAddonPlan {
+  code: string;
+  extraBytes: number;
+  priceMonthlyVnd: string;
+}
+export interface StorageAddonOrder {
+  orderId: string;
+  planCode: string;
+  status: string;
+  amount: string;
+  currency: string;
+  transferContent: string;
+  qrUrl: string;
+  expiresAt: string;
 }

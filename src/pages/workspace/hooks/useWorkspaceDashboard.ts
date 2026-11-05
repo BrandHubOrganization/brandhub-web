@@ -152,22 +152,18 @@ export function useWorkspaceDashboard() {
 
     tasks.forEach((item) => {
       if (
-        item.status === "TODO" ||
-        item.status === "BACKLOG" ||
-        item.status === "DETAIL_IDENTIFIED" ||
-        item.status === "ASSIGNED"
+        item.status === "TODO"
+
       ) {
         todoCount++;
       } else if (item.status === "IN_PROGRESS") {
         inProgressCount++;
       } else if (
-        item.status === "IN_REVIEW" ||
-        item.status === "QC_REVIEW" ||
-        item.status === "MANAGER_REVIEW" ||
-        item.status === "CLIENT_REVIEW"
+        item.status === "IN_REVIEW"
       ) {
         reviewCount++;
-      } else if (item.status === "FINISHED" || item.status === "COMPLETED") {
+      } else if (item.status === "FINISHED") {
+
         completedCount++;
       }
     });

@@ -7,6 +7,8 @@ import {
 import { useTranslation } from "react-i18next";
 import {
   Flame,
+  Globe,
+  Hash,
   Megaphone,
   RefreshCw,
   RotateCcw,
@@ -27,10 +29,12 @@ import {
   PLATFORM_LABEL,
   topicLabel,
   trendPlatforms,
+  type TrendBoardSource,
   type TrendItem,
   type TrendPeriod,
 } from "@/services/trendService";
 import { AiStudioErrorBanner } from "./components/AiStudioErrorBanner";
+import { TrendBoardDialog } from "./components/TrendBoardDialog";
 import { TrendDetailDialog } from "./components/TrendDetailDialog";
 import { TrendSparkline } from "./components/TrendSparkline";
 import { TrendRankBadge } from "@/pages/workspace-trends/components/TrendRankBadge";
@@ -58,6 +62,7 @@ function TrendsDashboard() {
   const [statusFilter, setStatusFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selected, setSelected] = useState<TrendItem | null>(null);
+  const [board, setBoard] = useState<TrendBoardSource | null>(null);
 
   const trends = useQuery({
     queryKey: ["ai-trends", period, topic, platform],
@@ -233,6 +238,25 @@ function TrendsDashboard() {
           variant="outline"
           size="sm"
           className="ml-auto h-9 gap-1.5"
+          onClick={() => setBoard("tiktok")}
+        >
+          <Hash className="size-3.5" />
+          {t("aiStudio.trends.board.open.tiktok")}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-9 gap-1.5"
+          onClick={() => setBoard("google")}
+        >
+          <Globe className="size-3.5" />
+          {t("aiStudio.trends.board.open.google")}
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-9 gap-1.5"
           disabled={trends.isFetching}
           onClick={() => void trends.refetch()}
         >
@@ -307,6 +331,7 @@ function TrendsDashboard() {
       {selected && (
         <TrendDetailDialog item={selected} onClose={() => setSelected(null)} />
       )}
+      <TrendBoardDialog source={board} onClose={() => setBoard(null)} />
     </PageWrapper>
   );
 }

@@ -212,6 +212,31 @@
       "lo_sợ": "Fear",
       "ngạc_nhiên": "Surprise",
       "trung_lập": "Neutral"
+    },
+    "board": {
+      "open": {
+        "tiktok": "TikTok Creative Center",
+        "google": "Google Trends"
+      },
+      "title": {
+        "tiktok": "TikTok Creative Center: top hashtags in Vietnam",
+        "google": "Google Trends: trending now in Vietnam"
+      },
+      "updated": "Updated {{date}} · {{count}} items, ranked by the platform itself (fetched with each crawl).",
+      "hint": "The platform's own ranking, fetched with each crawl.",
+      "empty": "No board in the last 7 days. It appears after the next crawl.",
+      "error": "Could not load the board. Please try again.",
+      "rank": "Rank",
+      "hashtag": "Hashtag",
+      "posts": "Posts",
+      "views": "Views",
+      "curve": "7-day trend",
+      "creators": "Top creators",
+      "keyword": "Keyword",
+      "searches": "Searches",
+      "growth": "Growth",
+      "related": "Related queries",
+      "active": "Active"
     }
   },
   "trendFit": {

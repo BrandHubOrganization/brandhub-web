@@ -12,6 +12,7 @@ interface Props {
   label: string;
   value: string;
   displayValue?: string;
+  placeholder?: string;
   editable: boolean;
   save: (value: string) => Promise<unknown>;
   retry: () => void;
@@ -88,6 +89,7 @@ export function InlineTaskField(props: Props) {
               name={props.id}
               value={field.value}
               rows={5}
+              placeholder={props.placeholder}
               required={props.required}
               maxLength={props.maxLength}
               readOnly={pending}
@@ -102,6 +104,7 @@ export function InlineTaskField(props: Props) {
               name={props.id}
               value={field.value}
               type={props.type || "text"}
+              placeholder={props.placeholder}
               required={props.required}
               maxLength={props.maxLength}
               readOnly={pending}
@@ -122,12 +125,12 @@ export function InlineTaskField(props: Props) {
           onClick={() => setEditing(true)}
         >
           <span className="min-w-0 break-words whitespace-pre-wrap">
-            {props.displayValue || props.value || t("tasks.inline.empty")}
+            {props.displayValue || props.value || props.placeholder || t("tasks.inline.empty")}
           </span>
         </Button>
       ) : (
         <p className="py-2 text-sm break-words whitespace-pre-wrap">
-          {props.displayValue || props.value || t("tasks.missing")}
+          {props.displayValue || props.value || props.placeholder || t("tasks.missing")}
         </p>
       )}
       <div id={`${props.id}-feedback`} aria-live="polite" className="text-xs">

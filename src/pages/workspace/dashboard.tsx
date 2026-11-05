@@ -11,7 +11,6 @@ import { WorkspaceKpiCards } from "./components/dashboard/WorkspaceKpiCards";
 import { WorkspaceTasksSection } from "./components/dashboard/WorkspaceTasksSection";
 import { WorkspaceQuickActions } from "./components/dashboard/WorkspaceQuickActions";
 import { WorkspaceVisualAnalytics } from "./components/dashboard/WorkspaceVisualAnalytics";
-import { AgencyStorageCard } from "./components/dashboard/AgencyStorageCard";
 import { useClearStoragePreview } from "./hooks/useClearStoragePreview";
 
 export function WorkspaceDashboardPage() {
@@ -82,7 +81,6 @@ export function WorkspaceDashboardPage() {
         <PostDashboardView workspaceId={workspaceId} />
       ) : (
         <>
-          <AgencyStorageCard key={workspaceId} workspaceId={workspaceId} />
           {/* ── Package Status Banner (When not approved yet) ── */}
           <PackageStatusBanner
             workspaceId={workspaceId}
