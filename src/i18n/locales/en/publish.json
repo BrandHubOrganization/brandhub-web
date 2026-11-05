@@ -78,23 +78,9 @@
     "datePicker": {
       "presetsTitle": "Date Range"
     },
-    "videoMetrics": {
-      "views": "Views",
-      "viewsTooltip": "Number of times your video was played for at least 1 millisecond or replayed.",
-      "views3s": "3-second video views",
-      "views3sTooltip": "Number of times your video was played for at least 3 seconds or nearly its total length.",
-      "views1m": "1-minute video views",
-      "views1mTooltip": "Number of times your video was played for at least 1 minute or nearly its total length.",
-      "watchTime": "Minutes viewed",
-      "watchTimeTooltip": "Total amount of time people spent watching this video."
-    },
     "insights": {
       "contentTypeTitle": "Views by content type",
-      "contentTypeSubtitle": "Content format breakdown and reach proportion",
-      "audienceTitle": "Views by followers vs. non-followers",
-      "audienceSubtitle": "Distribution ratio across accounts following or not following the Page",
-      "followers": "Followers",
-      "nonFollowers": "Non-followers"
+      "contentTypeSubtitle": "Content format breakdown and reach proportion"
     },
     "contentTypes": {
       "PHOTO": "Photos",
@@ -122,10 +108,8 @@
       "reach": "REACH",
       "engagements": "ENGAGEMENTS",
       "posts": "POSTS",
-      "responseRate": "RESPONSE RATE",
-      "vsLastMonth": "vs last month",
-      "sameAsLastMonth": "Same as last month",
-      "goodImprovement": "Good improvement",
+      "vsPreviousPeriod": "vs previous period",
+      "noPreviousPeriod": "No earlier data to compare",
       "totalPosts": "Total Posts",
       "totalPostsDesc": "Includes all published and scheduled posts",
       "successRate": "Publishing Success Rate",

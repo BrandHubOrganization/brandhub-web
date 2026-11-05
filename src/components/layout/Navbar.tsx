@@ -178,7 +178,9 @@ export function Navbar({
 }: NavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, clearAuth, systemRole } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const clearAuth = useAuthStore((s) => s.clearAuth);
+  const systemRole = useAuthStore((s) => s.systemRole);
   const isAdmin = systemRole === "ADMIN";
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const currentAgencyId = useAgencyStore((s) => s.currentAgencyId);
