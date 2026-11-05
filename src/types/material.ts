@@ -87,6 +87,7 @@ export interface MaterialCapabilities {
 }
 
 export interface MaterialFilters {
+  taskId?: string;
   mediaKind?: "IMAGE" | "VIDEO" | "FILE";
   type?: MaterialType;
   purpose?: "MATERIAL" | "BRAND_REFERENCE";
