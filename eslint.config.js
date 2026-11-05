@@ -40,4 +40,9 @@ export default defineConfig([
       'react-refresh/only-export-components': 'warn',
     },
   },
+  // shadcn primitives co-export variants with their component by design.
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}', '@/components/ui/**/*.{ts,tsx}'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
 ])

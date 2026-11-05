@@ -146,7 +146,7 @@ export function HowItWorks() {
     return () => clearTimeout(timeout);
   }, [reduce, inView]);
 
-  let flatIndex = -1;
+  const laneStarts = LANES.map((_, i) => LANES.slice(0, i).reduce((sum, lane) => sum + lane.nodes.length, 0));
 
   return (
     <section
@@ -174,7 +174,7 @@ export function HowItWorks() {
 
         <div ref={lanesRef} className="flex flex-col gap-3">
           {LANES.map((lane, laneIndex) => {
-            const laneStartIndex = flatIndex + 1;
+            const laneStartIndex = laneStarts[laneIndex];
             const laneEndIndex = laneStartIndex + lane.nodes.length - 1;
 
             return (
@@ -219,7 +219,7 @@ export function HowItWorks() {
 
                   <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
                     {lane.nodes.map((node, nodeIndex) => {
-                      flatIndex += 1;
+                      const flatIndex = laneStartIndex + nodeIndex;
                       const isFirstInLane = nodeIndex === 0;
                       const isLastInLane = nodeIndex === lane.nodes.length - 1;
                       const isActive = !reduce && flatIndex === activeIndex;

@@ -53,7 +53,7 @@ function readBoxType(view: DataView, offset: number): string {
  * `ai-worker-video/ai-worker-video-api/app.py` to read exact frame count (`stsz`)
  * and duration (`mdhd`) so the Web motion node count matches the worker 100%.
  */
-export function parseMp4VideoBoxes(
+function parseMp4VideoBoxes(
   buffer: ArrayBuffer,
 ): Mp4BoxProbeResult | null {
   const view = new DataView(buffer);

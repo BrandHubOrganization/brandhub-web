@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import { Building2 } from "lucide-react";
 import { getLogoIcon } from "@/pages/agency/logoIcons";
 import { cn } from "@/lib/utils";
@@ -19,7 +20,7 @@ interface ClientProfileLogoProps {
 export function ClientProfileLogo({
   logoUrl,
   displayName,
-  brandColor = "#f05a28",
+  brandColor = "#ca3d0e",
   className,
   iconClassName,
 }: ClientProfileLogoProps) {
@@ -27,16 +28,15 @@ export function ClientProfileLogo({
     const parts = logoUrl.split(":");
     const iconName = parts[1];
     const color = parts[2] || brandColor;
-    const Icon = getLogoIcon(iconName);
     return (
       <div
         className={cn(
           "flex size-full items-center justify-center transition-colors text-white",
           className,
         )}
-        style={{ backgroundColor: color || brandColor || "#f05a28" }}
+        style={{ backgroundColor: color || brandColor || "#ca3d0e" }}
       >
-        <Icon className={cn("size-6 text-white", iconClassName)} />
+        {createElement(getLogoIcon(iconName), { className: cn("size-6 text-white", iconClassName) })}
       </div>
     );
   }
@@ -60,7 +60,7 @@ export function ClientProfileLogo({
         className,
       )}
       style={{
-        backgroundColor: brandColor || "#f05a28",
+        backgroundColor: brandColor || "#ca3d0e",
         color: "#ffffff",
       }}
     >

@@ -19,8 +19,8 @@ import { LOGO_ICON_OPTIONS } from "@/pages/agency/logoIcons";
 import { BANNER_PRESETS } from "@/pages/agency/bannerPresets";
 import { cn } from "@/lib/utils";
 
-export const COLOR_SWATCHES = [
-  "#f05a28", // Brand Orange
+const COLOR_SWATCHES = [
+  "#ca3d0e", // Brand Orange
   "#2563eb", // Royal Blue
   "#059669", // Emerald
   "#7c3aed", // Violet

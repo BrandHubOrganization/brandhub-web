@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { X, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,11 +28,11 @@ export function TaskDetailPanel(props: PanelProps) {
 
   // Giữ lại taskId gần nhất trong lúc animation đóng đang trượt ra
   // để nội dung không bị biến thành null đột ngột (gây giật layout trắng trơn)
-  const lastActiveTaskId = useRef(props.taskId);
-  if (props.taskId) {
-    lastActiveTaskId.current = props.taskId;
+  const [lastActiveTaskId, setLastActiveTaskId] = useState(props.taskId);
+  if (props.taskId && props.taskId !== lastActiveTaskId) {
+    setLastActiveTaskId(props.taskId);
   }
-  const displayTaskId = props.taskId || lastActiveTaskId.current;
+  const displayTaskId = props.taskId || lastActiveTaskId;
 
   const content = displayTaskId ? (
     <TaskWorkflowContent
