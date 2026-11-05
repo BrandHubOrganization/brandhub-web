@@ -4,7 +4,9 @@ import {
   FileSpreadsheet,
   Eye,
   Share2,
-  Sparkles,
+  Save,
+  Send,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,12 +48,14 @@ export function SurveyEditorHeader({
 }: SurveyEditorHeaderProps) {
   const { t } = useTranslation();
 
+  const previewUrl = publicUrl
+    ? `${publicUrl}${publicUrl.includes("?") ? "&" : "?"}preview=true`
+    : "";
+
   return (
-    <header className="bg-card/95 border-border sticky top-0 z-30 border-b shadow-2xs backdrop-blur">
+    <header className="border-border/80 bg-card/95 sticky top-0 z-30 border-b shadow-2xs backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        {/* Top Control Bar */}
         <div className="flex h-14 items-center justify-between gap-3">
-          {/* Left: Back & Title */}
           <div className="flex min-w-0 flex-1 items-center gap-2.5">
             <Button
               type="button"
@@ -80,35 +84,29 @@ export function SurveyEditorHeader({
             {saveStatus !== "idle" && (
               <div className="flex shrink-0 items-center gap-1.5 text-xs select-none">
                 {saveStatus === "saving" && (
-                  <>
-                    <span className="text-muted-foreground text-xs">
-                      {t("tasks.survey.editor.saving", "Đang lưu...")}
-                    </span>
-                  </>
+                  <span className="text-muted-foreground text-xs">
+                    {t("tasks.survey.editor.saving", "Đang lưu...")}
+                  </span>
                 )}
                 {saveStatus === "saved" && (
-                  <>
-                    <span className="text-muted-foreground text-xs">
-                      {t("tasks.survey.editor.saved", "Đã lưu")}
-                    </span>
-                  </>
+                  <span className="text-muted-foreground inline-flex items-center gap-1 text-xs">
+                    <Check className="size-3 text-emerald-500" />
+                    {t("tasks.survey.editor.saved", "Đã lưu")}
+                  </span>
                 )}
                 {saveStatus === "error" && (
-                  <>
-                    <span className="text-destructive text-xs">
-                      {t("tasks.survey.editor.saveFailed", "Lỗi khi lưu")}
-                    </span>
-                  </>
+                  <span className="text-destructive text-xs">
+                    {t("tasks.survey.editor.saveFailed", "Lỗi khi lưu")}
+                  </span>
                 )}
               </div>
             )}
           </div>
 
-          {/* Right Action Buttons */}
           <div className="flex shrink-0 items-center gap-2">
             <span
               className={cn(
-                "text-2xs hidden shrink-0 rounded-md px-2 py-0.5 font-semibold sm:inline-flex",
+                "hidden shrink-0 rounded-md px-2.5 py-0.5 text-xs font-medium sm:inline-flex",
                 isPublished
                   ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                   : "bg-muted text-muted-foreground",
@@ -136,7 +134,7 @@ export function SurveyEditorHeader({
               </Button>
             )}
 
-            {isPublished && publicUrl && (
+            {publicUrl && (
               <Button
                 type="button"
                 variant="outline"
@@ -144,7 +142,12 @@ export function SurveyEditorHeader({
                 className="gap-1.5"
                 asChild
               >
-                <a href={publicUrl} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={previewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={t("tasks.survey.editor.preview", "Xem trước")}
+                >
                   <Eye className="size-3.5" />
                 </a>
               </Button>
@@ -172,8 +175,10 @@ export function SurveyEditorHeader({
               >
                 {saving ? (
                   <Spinner className="size-3.5" />
+                ) : isPublished ? (
+                  <Save className="size-3.5" />
                 ) : (
-                  <Sparkles className="size-3.5" />
+                  <Send className="size-3.5" />
                 )}
                 <span>
                   {saving
@@ -187,38 +192,39 @@ export function SurveyEditorHeader({
           </div>
         </div>
 
-        {/* Center Google Forms Navigation Tabs */}
-        <div className="border-border/50 flex items-center justify-center gap-8 border-t">
-          {canEdit && (
+        <div className="border-border/40 flex items-center justify-center border-t py-2">
+          <div className="bg-muted/60 inline-flex items-center gap-1 rounded-lg p-1">
+            {canEdit && (
+              <button
+                type="button"
+                onClick={() => onTabChange("questions")}
+                className={cn(
+                  "cursor-pointer rounded-md px-4 py-1.5 text-xs font-medium transition-all",
+                  activeTab === "questions"
+                    ? "bg-card text-foreground font-semibold shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {t("tasks.survey.editor.questionsTab")}
+              </button>
+            )}
             <button
               type="button"
-              onClick={() => onTabChange("questions")}
+              onClick={() => onTabChange("responses")}
               className={cn(
-                "cursor-pointer border-b-2 px-4 py-2.5 text-xs font-medium transition-all",
-                activeTab === "questions"
-                  ? "border-brand-orange text-brand-orange font-semibold"
-                  : "text-muted-foreground hover:text-foreground border-transparent",
+                "inline-flex cursor-pointer items-center gap-1.5 rounded-md px-4 py-1.5 text-xs font-medium transition-all",
+                activeTab === "responses" || !canEdit
+                  ? "bg-card text-foreground font-semibold shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
-              {t("tasks.survey.editor.questionsTab")}
+              <span>
+                {t("tasks.survey.editor.responsesTab", {
+                  count: totalResponses,
+                })}
+              </span>
             </button>
-          )}
-          <button
-            type="button"
-            onClick={() => onTabChange("responses")}
-            className={cn(
-              "flex cursor-pointer items-center gap-1.5 border-b-2 px-4 py-2.5 text-xs font-medium transition-all",
-              activeTab === "responses" || !canEdit
-                ? "border-brand-orange text-brand-orange font-semibold"
-                : "text-muted-foreground hover:text-foreground border-transparent",
-            )}
-          >
-            <span>
-              {t("tasks.survey.editor.responsesTab", {
-                count: totalResponses,
-              })}
-            </span>
-          </button>
+          </div>
         </div>
       </div>
     </header>

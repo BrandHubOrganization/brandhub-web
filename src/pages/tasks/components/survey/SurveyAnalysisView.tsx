@@ -6,13 +6,12 @@ import {
   Users,
   Star,
   RefreshCw,
-  Clock,
   Inbox,
-  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { surveyService } from "@/services/surveyService";
+import { SurveyQuestionBreakdown } from "@/pages/tasks/components/survey/SurveyQuestionBreakdown";
 import type { SurveyAnalysis } from "@/pages/tasks/types/survey";
 import { cn } from "@/lib/utils";
 
@@ -63,224 +62,191 @@ export function SurveyAnalysisView({
   }
 
   const hasResponses = (analysis?.totalResponses ?? 0) > 0;
+  const overallScore = analysis?.overallSatisfaction ?? 0;
 
   return (
     <div className="space-y-6">
-      {/* Top Overview Bento & Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* Total Responses */}
-        <div className="rounded-xl border border-border/80 bg-card p-4 shadow-2xs space-y-1">
-          <div className="flex items-center justify-between text-muted-foreground text-xs font-medium">
-            <span>{t("tasks.survey.analysis.totalResponses")}</span>
-            <Users className="size-4 text-brand-orange" />
-          </div>
-          <div className="text-2xl font-bold text-foreground">
-            {analysis?.totalResponses ?? 0}
-          </div>
-          <div className="text-2xs text-muted-foreground">
-            {analysis?.totalResponses ?? 0} {t("tasks.survey.analysis.responsesUnit")}
-          </div>
-        </div>
-
-        {/* Average Rating / Satisfaction if present */}
-        <div className="rounded-xl border border-border/80 bg-card p-4 shadow-2xs space-y-1">
-          <div className="flex items-center justify-between text-muted-foreground text-xs font-medium">
-            <span>{t("tasks.survey.analysis.averageRating")}</span>
-            <Star className="size-4 text-amber-500 fill-amber-500" />
-          </div>
-          <div className="text-2xl font-bold text-foreground">
-            {analysis?.overallSatisfaction !== undefined &&
-            analysis.overallSatisfaction > 0
-              ? `${analysis.overallSatisfaction.toFixed(1)} / 5.0`
-              : "—"}
-          </div>
-          <div className="text-2xs text-muted-foreground">
-            {hasResponses
-              ? t("tasks.survey.analysis.ratingSubtitle")
-              : t("tasks.survey.analysis.emptyTitle")}
-          </div>
-        </div>
-
-        {/* Google Sheet & Refresh Actions */}
-        <div className="rounded-xl border border-border/80 bg-card p-4 shadow-2xs flex flex-col justify-between gap-3">
+      {/* Top Bento Metrics Strip */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Metric 1: Total Responses */}
+        <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-xs flex flex-col justify-between gap-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-muted-foreground">
-              {t("tasks.survey.publishCard.openSheet")}
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("tasks.survey.analysis.totalResponses")}
             </span>
+            <div className="flex size-10 items-center justify-center rounded-xl bg-brand-orange-soft text-brand-orange">
+              <Users className="size-5" />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="text-3xl font-extrabold tracking-tight text-foreground">
+              {analysis?.totalResponses ?? 0}
+            </div>
+            <div className="text-xs text-muted-foreground flex items-center gap-1.5">
+              <span
+                className={cn(
+                  "size-1.5 rounded-full",
+                  hasResponses ? "bg-emerald-500" : "bg-muted-foreground/60",
+                )}
+              />
+              <span>
+                {analysis?.totalResponses ?? 0}{" "}
+                {t("tasks.survey.analysis.responsesUnit")}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Metric 2: Average Rating / Satisfaction Gauge */}
+        <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-xs flex flex-col justify-between gap-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("tasks.survey.analysis.averageRating")}
+            </span>
+            <div className="flex size-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 dark:text-amber-400">
+              <Star className="size-5 fill-amber-500" />
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            {overallScore > 0 ? (
+              <>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-extrabold tracking-tight text-foreground">
+                    {overallScore.toFixed(1)}
+                  </span>
+                  <span className="text-sm font-semibold text-muted-foreground">
+                    / 5.0
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star
+                      key={s}
+                      className={cn(
+                        "size-3.5",
+                        s <= Math.round(overallScore)
+                          ? "fill-amber-400 text-amber-400"
+                          : "fill-muted text-muted-foreground/30",
+                      )}
+                    />
+                  ))}
+                  <span className="ml-1 text-xs text-muted-foreground">
+                    {t("tasks.survey.analysis.ratingSubtitle")}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-3xl font-extrabold tracking-tight text-foreground">
+                  —
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {t("tasks.survey.analysis.emptyTitle")}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Metric 3: Google Sheets & Live Sync Status */}
+        <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-xs flex flex-col justify-between gap-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Google Sheets
+              </span>
+              {analysis?.spreadsheetUrl && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <span className="size-1.5 rounded-full bg-emerald-500" />
+                  Live
+                </span>
+              )}
+            </div>
             <Button
               variant="ghost"
               size="icon"
-              className="size-7 text-muted-foreground hover:text-foreground"
+              className="size-8 text-muted-foreground hover:text-foreground"
               onClick={() => void loadData(true)}
               title={t("tasks.survey.analysis.refresh")}
               disabled={refreshing}
             >
               <RefreshCw
-                className={cn("size-3.5", refreshing && "animate-spin text-brand-orange")}
+                className={cn(
+                  "size-4",
+                  refreshing && "animate-spin text-brand-orange",
+                )}
               />
             </Button>
           </div>
-          {analysis?.spreadsheetUrl ? (
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2 border-border/80 hover:border-brand-orange/60 hover:text-brand-orange w-full"
-              asChild
-            >
-              <a
-                href={analysis.spreadsheetUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+
+          <div>
+            {analysis?.spreadsheetUrl ? (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full gap-2 border-border/80 hover:border-brand-orange/60 hover:text-brand-orange font-medium h-9"
+                asChild
               >
-                <FileSpreadsheet className="size-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="truncate">{t("tasks.survey.analysis.openGoogleSheet")}</span>
-                <ExternalLink className="size-3 text-muted-foreground ml-auto shrink-0" />
-              </a>
-            </Button>
-          ) : (
-            <div className="text-2xs text-muted-foreground italic flex items-center gap-1.5 py-1">
-              <FileSpreadsheet className="size-3.5 opacity-60" />
-              <span>{t("tasks.survey.publishCard.noSheet")}</span>
-            </div>
-          )}
+                <a
+                  href={analysis.spreadsheetUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FileSpreadsheet className="size-4 text-emerald-600 dark:text-emerald-400" />
+                  <span className="truncate">
+                    {t("tasks.survey.analysis.openGoogleSheet")}
+                  </span>
+                  <ExternalLink className="size-3.5 ml-auto text-muted-foreground shrink-0" />
+                </a>
+              </Button>
+            ) : (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground italic rounded-lg bg-muted/30 p-2.5 border border-border/60">
+                <FileSpreadsheet className="size-4 opacity-50 shrink-0" />
+                <span className="truncate">
+                  {t("tasks.survey.publishCard.noSheet")}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Main Analysis Body */}
       {!hasResponses ? (
-        <div className="rounded-xl border border-dashed border-border/80 bg-card/50 p-10 text-center space-y-3">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        <div className="rounded-2xl border border-dashed border-border/80 bg-card/40 p-12 text-center space-y-3">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-brand-orange-soft text-brand-orange">
             <Inbox className="size-6" />
           </div>
           <div className="space-y-1">
             <h4 className="text-sm font-semibold text-foreground">
               {t("tasks.survey.analysis.emptyTitle")}
             </h4>
-            <p className="text-xs text-muted-foreground max-w-md mx-auto">
+            <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
               {t("tasks.survey.analysis.emptyDesc")}
             </p>
           </div>
         </div>
       ) : (
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-foreground">
-            {t("tasks.survey.analysis.questionList")}
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground tracking-tight">
+              {t("tasks.survey.analysis.questionList")}
+            </h3>
+            <span className="text-xs text-muted-foreground font-medium">
+              {analysis?.questionBreakdown?.length ?? 0}{" "}
+              {t("tasks.survey.editor.questionsTab")}
+            </span>
+          </div>
 
-          {analysis?.questionBreakdown?.map((q, index) => (
-            <div
-              key={q.questionId || index}
-              className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4"
-            >
-              {/* Question title & timeSlot */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-brand-orange">
-                      #{index + 1}
-                    </span>
-                    <h4 className="text-sm font-medium text-foreground">
-                      {q.label}
-                    </h4>
-                  </div>
-                  <span className="text-2xs text-muted-foreground uppercase font-mono">
-                    {t(`tasks.survey.types.${q.type}` as const)}
-                  </span>
-                </div>
-                {q.timeSlot && (
-                  <div className="flex items-center gap-1 self-start sm:self-center bg-muted/50 border border-border/70 rounded-md px-2 py-0.5 text-2xs text-muted-foreground font-mono">
-                    <Clock className="size-3" />
-                    <span>{q.timeSlot}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Multiple Choice & Checkbox Breakdown */}
-              {(q.type === "MULTIPLE_CHOICE" || q.type === "CHECKBOX") && (
-                <div className="space-y-3 pt-1">
-                  {q.optionsBreakdown?.map((opt, optIdx) => (
-                    <div key={optIdx} className="space-y-1">
-                      <div className="flex items-center justify-between text-xs text-foreground">
-                        <span className="font-medium">{opt.option}</span>
-                        <span className="text-muted-foreground font-mono">
-                          {opt.count} ({opt.percentage}%)
-                        </span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                        <div
-                          className="h-full bg-brand-orange rounded-full transition-all duration-300"
-                          style={{ width: `${Math.min(100, opt.percentage)}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Rating Breakdown */}
-              {q.type === "RATING" && (
-                <div className="space-y-3 pt-1">
-                  {q.averageRating !== undefined && (
-                    <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
-                      <span>{t("tasks.survey.analysis.averageScore")}</span>
-                      <span className="text-brand-orange text-sm font-bold">
-                        {q.averageRating.toFixed(1)} / 5.0
-                      </span>
-                    </div>
-                  )}
-                  <div className="space-y-2">
-                    {q.ratingBreakdown?.map((rate) => (
-                      <div key={rate.rating} className="space-y-1">
-                        <div className="flex items-center justify-between text-xs text-foreground">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-medium">{rate.rating}</span>
-                            <Star className="size-3 text-amber-500 fill-amber-500" />
-                          </div>
-                          <span className="text-muted-foreground font-mono">
-                            {rate.count} ({rate.percentage}%)
-                          </span>
-                        </div>
-                        <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                          <div
-                            className="h-full bg-brand-orange rounded-full transition-all duration-300"
-                            style={{
-                              width: `${Math.min(100, rate.percentage)}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Text Answers List */}
-              {(q.type === "SHORT_TEXT" || q.type === "LONG_TEXT") && (
-                <div className="space-y-2 pt-1">
-                  <div className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                    <MessageSquare className="size-3.5" />
-                    <span>{t("tasks.survey.analysis.textAnswersList")}</span>
-                  </div>
-                  {q.textAnswers && q.textAnswers.length > 0 ? (
-                    <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
-                      {q.textAnswers.map((ans, aIdx) => (
-                        <div
-                          key={aIdx}
-                          className="rounded-lg bg-muted/40 border border-border/60 p-2.5 text-xs text-foreground leading-relaxed"
-                        >
-                          {ans}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-xs text-muted-foreground italic">
-                      {t("tasks.survey.analysis.noTextAnswers")}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
+          <div className="space-y-4">
+            {analysis?.questionBreakdown?.map((q, index) => (
+              <SurveyQuestionBreakdown
+                key={q.questionId || index}
+                question={q}
+                index={index}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

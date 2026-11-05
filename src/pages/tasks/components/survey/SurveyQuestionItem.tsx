@@ -1,142 +1,286 @@
+import { useState, type DragEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { PlusCircle, Copy, Trash2, Clock, Circle, Square, Star, X } from "lucide-react";
+import {
+  Copy,
+  Trash2,
+  Clock,
+  Star,
+  GripVertical,
+  GitBranch,
+  AlignLeft,
+  FileText,
+  CircleDot,
+  CheckSquare,
+  CircleChevronDown,
+  CloudUpload,
+  GitCommitHorizontal,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { SelectMenu, type SelectMenuOption } from "@/components/ui/select-menu";
 import { Switch } from "@/components/ui/switch";
-import type { SurveyQuestion, SurveyQuestionType } from "@/pages/tasks/types/survey";
+import type {
+  SurveyQuestion,
+  SurveyQuestionType,
+  SurveySectionGroup,
+} from "@/pages/tasks/types/survey";
+import {
+  FormattedText,
+  SurveyFormattedInput,
+} from "@/pages/tasks/components/survey/SurveyFormatText";
+import {
+  QuestionOptionsEditor,
+  QuestionLinearScaleEditor,
+  QuestionFileUploadEditor,
+  QuestionRatingEditor,
+} from "@/pages/tasks/components/survey/SurveyQuestionTypeEditors";
 import { cn } from "@/lib/utils";
 
-const QUESTION_TYPES: SurveyQuestionType[] = ["SHORT_TEXT", "LONG_TEXT", "MULTIPLE_CHOICE", "CHECKBOX", "RATING"];
+const TYPE_ITEMS: {
+  type: SurveyQuestionType;
+  Icon: typeof AlignLeft;
+  div?: boolean;
+}[] = [
+  { type: "SHORT_TEXT", Icon: AlignLeft },
+  { type: "LONG_TEXT", Icon: FileText },
+  { type: "MULTIPLE_CHOICE", Icon: CircleDot, div: true },
+  { type: "CHECKBOX", Icon: CheckSquare },
+  { type: "DROPDOWN", Icon: CircleChevronDown },
+  { type: "FILE_UPLOAD", Icon: CloudUpload, div: true },
+  { type: "LINEAR_SCALE", Icon: GitCommitHorizontal, div: true },
+  { type: "RATING", Icon: Star },
+];
 
-interface SurveyQuestionItemProps {
+const OPTION_TYPES = new Set<SurveyQuestionType>([
+  "MULTIPLE_CHOICE",
+  "CHECKBOX",
+  "DROPDOWN",
+]);
+
+export interface SurveyQuestionItemProps {
   question: SurveyQuestion;
+  sections?: SurveySectionGroup[];
   isActive: boolean;
+  isCollapsed?: boolean;
+  isDragging?: boolean;
+  isDropTarget?: boolean;
+  dropPosition?: "before" | "after" | null;
   onSelect: () => void;
   onUpdate: (updates: Partial<SurveyQuestion>) => void;
   onDuplicate: () => void;
   onDelete: () => void;
+  onDragStart?: (e: DragEvent<HTMLDivElement>) => void;
+  onDragOver?: (e: DragEvent<HTMLDivElement>) => void;
+  onDragLeave?: () => void;
+  onDrop?: (e: DragEvent<HTMLDivElement>) => void;
+  onDragEnd?: () => void;
 }
 
-export function SurveyQuestionItem({
-  question,
-  isActive,
-  onSelect,
-  onUpdate,
-  onDuplicate,
-  onDelete,
-}: SurveyQuestionItemProps) {
+export function SurveyQuestionItem(p: SurveyQuestionItemProps) {
   const { t } = useTranslation();
+  const [isGrabbed, setIsGrabbed] = useState(false);
+  const { question, sections, isActive, onUpdate } = p;
+
+  const canBranch =
+    (question.type === "MULTIPLE_CHOICE" || question.type === "DROPDOWN") &&
+    Boolean(sections && sections.length > 1);
+  const hasBranching = Boolean(
+    question.optionTargets && Object.keys(question.optionTargets).length > 0,
+  );
+  const typeOptions: SelectMenuOption[] = TYPE_ITEMS.map(
+    ({ type, Icon, div }) => ({
+      value: type,
+      label: t(`tasks.survey.types.${type}`),
+      icon: <Icon className="size-3.5" />,
+      dividerBefore: div,
+    }),
+  );
 
   const handleTypeChange = (type: SurveyQuestionType) => {
-    const updates: Partial<SurveyQuestion> = { type };
-    if ((type === "MULTIPLE_CHOICE" || type === "CHECKBOX") && !question.options?.length) {
-      updates.options = [t("tasks.survey.optionPlaceholder", { index: 1 }), t("tasks.survey.optionPlaceholder", { index: 2 })];
+    const u: Partial<SurveyQuestion> = { type };
+    if (type === "LINEAR_SCALE") u.options = ["1", "5", "", ""];
+    else if (
+      OPTION_TYPES.has(type) &&
+      (!OPTION_TYPES.has(question.type) || !question.options?.length)
+    ) {
+      u.options = [1, 2].map((index) =>
+        t("tasks.survey.optionPlaceholder", { index }),
+      );
     }
-    onUpdate(updates);
-  };
-
-  const handleAddOption = () => {
-    const current = question.options ?? [];
-    onUpdate({ options: [...current, t("tasks.survey.optionPlaceholder", { index: current.length + 1 })] });
-  };
-
-  const handleUpdateOption = (i: number, val: string) => {
-    const next = [...(question.options ?? [])];
-    next[i] = val;
-    onUpdate({ options: next });
-  };
-
-  const handleDeleteOption = (i: number) => {
-    if ((question.options?.length ?? 0) > 1) onUpdate({ options: question.options!.filter((_, idx) => idx !== i) });
+    if (type !== "MULTIPLE_CHOICE" && type !== "DROPDOWN")
+      u.optionTargets = undefined;
+    onUpdate(u);
   };
 
   return (
     <div
-      onClick={onSelect}
+      draggable={isGrabbed}
+      onClick={p.onSelect}
+      onFocusCapture={p.onSelect}
+      onDragStart={p.onDragStart}
+      onDragOver={p.onDragOver}
+      onDragLeave={p.onDragLeave}
+      onDrop={p.onDrop}
+      onDragEnd={() => (setIsGrabbed(false), p.onDragEnd?.())}
       className={cn(
-        "rounded-xl border bg-card p-4 sm:p-5 shadow-2xs transition-all duration-150 space-y-4",
-        isActive ? "border-l-4 border-l-brand-orange border-border ring-1 ring-brand-orange/20" : "border-border hover:border-border/80",
+        "bg-card cursor-pointer rounded-xl border shadow-2xs transition-all duration-150",
+        p.isCollapsed ? "px-5 py-3.5" : "space-y-3.5 p-4 sm:p-5",
+        isActive
+          ? "border-border border-l-4 border-l-brand-orange shadow-sm"
+          : "border-border hover:border-border/80",
+        p.isDragging &&
+          "border-brand-orange scale-[0.99] border-dashed opacity-45",
+        p.isDropTarget &&
+          p.dropPosition === "before" &&
+          "ring-brand-orange/40 border-t-brand-orange border-t-4 ring-2",
+        p.isDropTarget &&
+          p.dropPosition === "after" &&
+          "ring-brand-orange/40 border-b-brand-orange border-b-4 ring-2",
       )}
     >
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-        <Input
-          value={question.label}
-          onChange={(e) => onUpdate({ label: e.target.value })}
-          placeholder={t("tasks.survey.questionTitlePlaceholder")}
-          className="flex-1 font-medium text-sm sm:text-base bg-muted/30 border-border"
-        />
-        <div className="w-full sm:w-48 shrink-0">
-          <Select value={question.type} onChange={(e) => handleTypeChange(e.target.value as SurveyQuestionType)}>
-            {QUESTION_TYPES.map((type) => (
-              <option key={type} value={type}>{t(`tasks.survey.types.${type}`)}</option>
-            ))}
-          </Select>
-        </div>
+      <div
+        onMouseDown={() => setIsGrabbed(true)}
+        onMouseUp={() => setIsGrabbed(false)}
+        onMouseLeave={() => !p.isDragging && setIsGrabbed(false)}
+        className={cn(
+          "flex cursor-grab items-center justify-center transition-colors select-none active:cursor-grabbing",
+          p.isCollapsed ? "-mt-2.5 mb-1 py-0.5" : "-mt-2 -mb-1 py-1",
+          isActive
+            ? "text-brand-orange"
+            : "text-muted-foreground/40 hover:text-brand-orange",
+        )}
+      >
+        <GripVertical className="size-4 rotate-90" />
       </div>
-
-      <div className="pt-1">
-        {question.type === "SHORT_TEXT" && (
-          <div className="border-b border-border/80 pb-2 text-xs text-muted-foreground w-full max-w-sm">
-            {t("tasks.survey.types.SHORT_TEXT")} (văn bản ngắn)
+      {p.isCollapsed ? (
+        <div className="text-foreground truncate text-sm font-normal">
+          <FormattedText
+            text={question.label || t("tasks.survey.questionTitlePlaceholder")}
+          />
+          {question.required && (
+            <span className="text-destructive ml-1">*</span>
+          )}
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-start">
+            <SurveyFormattedInput
+              value={question.label}
+              onChange={(label) => onUpdate({ label })}
+              placeholder={t("tasks.survey.questionTitlePlaceholder")}
+              variant="box"
+              className="flex-1"
+              inputClassName="text-sm font-medium sm:text-base"
+            />
+            <div className="w-full shrink-0 sm:w-52">
+              <SelectMenu
+                value={question.type}
+                onChange={(val) => handleTypeChange(val as SurveyQuestionType)}
+                options={typeOptions}
+                ariaLabel={t("tasks.survey.questionTitlePlaceholder")}
+                className="bg-background h-9 w-full font-medium shadow-2xs"
+              />
+            </div>
           </div>
-        )}
-        {question.type === "LONG_TEXT" && (
-          <div className="border-b border-border/80 pb-6 text-xs text-muted-foreground w-full">
-            {t("tasks.survey.types.LONG_TEXT")} (đoạn văn dài)
-          </div>
-        )}
-        {(question.type === "MULTIPLE_CHOICE" || question.type === "CHECKBOX") && (
-          <div className="space-y-2.5">
-            {question.options?.map((opt, idx) => (
-              <div key={idx} className="flex items-center gap-2 group">
-                {question.type === "MULTIPLE_CHOICE" ? <Circle className="size-4 shrink-0 text-muted-foreground/60" /> : <Square className="size-4 shrink-0 text-muted-foreground/60" />}
-                <Input
-                  value={opt}
-                  onChange={(e) => handleUpdateOption(idx, e.target.value)}
-                  placeholder={t("tasks.survey.optionPlaceholder", { index: idx + 1 })}
-                  className="h-8 text-xs bg-muted/20 border-border/70 flex-1"
-                />
-                {question.options && question.options.length > 1 && (
-                  <button type="button" onClick={() => handleDeleteOption(idx)} className="size-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-muted/80 transition-colors" title={t("tasks.survey.removeOption")}>
-                    <X className="size-3.5" />
-                  </button>
+          <div className="pt-0.5">
+            {(question.type === "SHORT_TEXT" ||
+              question.type === "LONG_TEXT") && (
+              <div
+                className={cn(
+                  "border-border/70 text-muted-foreground w-full border-b text-xs",
+                  question.type === "SHORT_TEXT" ? "max-w-sm pb-2" : "pb-5",
                 )}
+              >
+                {t(`tasks.survey.types.${question.type}`)}
               </div>
-            ))}
-            <Button type="button" variant="ghost" size="sm" onClick={handleAddOption} className="text-xs text-brand-orange hover:text-brand-orange/90 hover:bg-brand-orange/10 h-8 gap-1.5 px-2">
-              <PlusCircle className="size-3.5" />
-              <span>{t("tasks.survey.addOption")}</span>
-            </Button>
+            )}
+            {OPTION_TYPES.has(question.type) && (
+              <QuestionOptionsEditor
+                question={question}
+                sections={sections}
+                showBranching={canBranch && hasBranching}
+                onUpdate={onUpdate}
+              />
+            )}
+            {question.type === "FILE_UPLOAD" && <QuestionFileUploadEditor />}
+            {question.type === "LINEAR_SCALE" && (
+              <QuestionLinearScaleEditor
+                options={question.options ?? ["1", "5", "", ""]}
+                onChangeOptions={(options) => onUpdate({ options })}
+              />
+            )}
+            {question.type === "RATING" && <QuestionRatingEditor />}
           </div>
-        )}
-        {question.type === "RATING" && (
-          <div className="flex items-center gap-2 py-2">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <div key={star} className="flex flex-col items-center gap-1">
-                <div className="flex size-9 items-center justify-center rounded-lg border border-border bg-muted/30 text-xs font-semibold text-muted-foreground">{star}</div>
-                <Star className="size-3.5 text-brand-orange fill-brand-orange" />
+          <div className="border-border/60 flex flex-wrap items-center justify-between gap-3 border-t pt-3">
+            <div className="border-border/60 bg-muted/30 flex items-center gap-1.5 rounded-md border px-2.5 py-1">
+              <Clock className="text-muted-foreground/70 size-3.5" />
+              <span className="text-muted-foreground text-xs font-medium">
+                {t("tasks.survey.timeSlot")}:
+              </span>
+              <input
+                type="text"
+                value={question.timeSlot || ""}
+                onChange={(e) => onUpdate({ timeSlot: e.target.value })}
+                placeholder={t("tasks.survey.timeSlotPlaceholder")}
+                className="text-foreground placeholder:text-muted-foreground/50 w-20 bg-transparent text-xs outline-none"
+              />
+            </div>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              {canBranch && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    onUpdate({
+                      optionTargets: hasBranching
+                        ? undefined
+                        : { "0": "NEXT" },
+                    })
+                  }
+                  className={cn(
+                    "h-7 gap-1.5 border px-2.5 text-xs transition-colors",
+                    hasBranching
+                      ? "border-brand-orange/40 bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/15 hover:text-brand-orange"
+                      : "text-muted-foreground hover:text-foreground border-transparent",
+                  )}
+                >
+                  <GitBranch className="size-3.5" />
+                  <span>{t("tasks.survey.branchByAnswer")}</span>
+                </Button>
+              )}
+              <div className="border-border/60 flex items-center gap-2 border-r pr-2 sm:pr-3">
+                <span className="text-muted-foreground text-xs select-none">
+                  {t("tasks.survey.required")}
+                </span>
+                <Switch
+                  checked={Boolean(question.required)}
+                  onCheckedChange={(required) => onUpdate({ required })}
+                />
               </div>
-            ))}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={p.onDuplicate}
+                className="text-muted-foreground hover:text-foreground size-8"
+                title={t("tasks.survey.duplicate")}
+              >
+                <Copy className="size-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={p.onDelete}
+                className="text-muted-foreground hover:text-destructive size-8"
+                title={t("tasks.survey.delete")}
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            </div>
           </div>
-        )}
-      </div>
-
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-3">
-        <div className="flex items-center gap-1.5 bg-muted/40 border border-border/70 rounded-md px-2 py-1">
-          <Clock className="size-3.5 text-muted-foreground" />
-          <span className="text-2xs font-medium text-muted-foreground">{t("tasks.survey.timeSlot")}:</span>
-          <input type="text" value={question.timeSlot || ""} onChange={(e) => onUpdate({ timeSlot: e.target.value })} placeholder={t("tasks.survey.timeSlotPlaceholder")} className="w-20 bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/50" />
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 pr-2 border-r border-border/60">
-            <span className="text-xs text-muted-foreground select-none">{t("tasks.survey.required")}</span>
-            <Switch checked={Boolean(question.required)} onCheckedChange={(checked) => onUpdate({ required: checked })} />
-          </div>
-          <Button type="button" variant="ghost" size="icon" onClick={onDuplicate} className="size-8 text-muted-foreground hover:text-foreground" title={t("tasks.survey.duplicate")}><Copy className="size-4" /></Button>
-          <Button type="button" variant="ghost" size="icon" onClick={onDelete} className="size-8 text-muted-foreground hover:text-destructive" title={t("tasks.survey.delete")}><Trash2 className="size-4" /></Button>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
