@@ -6,13 +6,21 @@ import type { MaterialItem } from "@/types/material";
 export function MaterialThumbnail({ material }: { material: MaterialItem }) {
   const { t } = useTranslation();
   const [failed, setFailed] = useState(false);
+  // A new signed URL from polling does not change an already loaded thumbnail.
+  // The card remounts us when the material revision/status changes. If a load
+  // failed, allow the next fresh URL to recover it without refreshing the page.
+  const [source, setSource] = useState(material.previewUrl);
+  if (failed && source !== material.previewUrl) {
+    setSource(material.previewUrl);
+    setFailed(false);
+  }
   const pending =
     material.status === "UPLOADING" || material.status === "VALIDATING";
   const rejected =
     material.status === "REJECTED" || material.status === "FAILED";
   const ready = material.status === "READY" && !material.deletedAt;
   return (
-    <div className="bg-muted text-muted-foreground flex aspect-square w-full items-center justify-center overflow-hidden rounded-md">
+    <div className="bg-muted text-muted-foreground flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-lg">
       {pending ? (
         <div role="status" className="p-2 text-xs">
           <Loader2 className="mx-auto size-6 animate-spin" />
@@ -32,7 +40,7 @@ export function MaterialThumbnail({ material }: { material: MaterialItem }) {
         !failed &&
         material.mediaKind === "IMAGE" ? (
         <img
-          src={material.previewUrl}
+          src={source}
           loading="lazy"
           alt={material.name}
           className="size-full object-cover"
@@ -43,7 +51,7 @@ export function MaterialThumbnail({ material }: { material: MaterialItem }) {
         !failed &&
         material.mediaKind === "VIDEO" ? (
         <video
-          src={material.previewUrl}
+          src={source}
           preload="metadata"
           muted
           playsInline
