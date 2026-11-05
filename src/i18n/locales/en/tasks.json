@@ -508,6 +508,7 @@
       "copyFailed": "Failed to copy link.",
       "qrCode": "QR Code",
       "showQr": "View QR Code",
+      "downloadQr": "Download QR Code",
       "openSheet": "Open Google Sheet",
       "noSheet": "No Google Sheet created"
     },

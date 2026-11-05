@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Copy, Check, FileSpreadsheet, ExternalLink } from "lucide-react";
+import {
+  Copy,
+  Check,
+  FileSpreadsheet,
+  ExternalLink,
+  Download,
+} from "lucide-react";
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
@@ -45,31 +51,67 @@ export function SurveyShareDialog({
     }
   };
 
+  const handleDownloadQr = () => {
+    const svg = document.getElementById("survey-share-qrcode-svg");
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = 360;
+      canvas.height = 360;
+      if (ctx) {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const a = document.createElement("a");
+        a.download = `survey-qr-${Date.now()}.png`;
+        a.href = canvas.toDataURL("image/png");
+        a.click();
+      }
+    };
+    img.src = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgData)))}`;
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="overflow-hidden sm:max-w-md">
         <DialogHeader className="min-w-0 pr-6">
           <DialogTitle>{t("tasks.survey.editor.shareTitle")}</DialogTitle>
-          <DialogDescription className="line-clamp-2 text-xs break-words">
+          <DialogDescription
+            className="text-muted-foreground truncate text-xs break-all"
+            title={cleanTitle}
+          >
             {cleanTitle}
           </DialogDescription>
         </DialogHeader>
 
         <div className="min-w-0 space-y-4">
-          <div className="border-border bg-muted/30 flex flex-col items-center justify-center rounded-xl border p-5">
-            <div
-              className="border-border/60 rounded-xl border p-3.5 shadow-2xs"
-              style={{ backgroundColor: "oklch(1 0 0)" }}
-            >
+          <div className="border-border bg-muted/30 flex flex-col items-center justify-center gap-3 rounded-xl border p-5">
+            <div className="border-border/60 rounded-xl border bg-white p-3.5 shadow-2xs">
               <QRCodeSVG
+                id="survey-share-qrcode-svg"
                 value={publicUrl || window.location.origin}
                 size={180}
                 level="M"
                 includeMargin={false}
-                bgColor="oklch(1 0 0)"
-                fgColor="oklch(0.14 0 0)"
+                bgColor="#ffffff"
+                fgColor="#000000"
               />
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadQr}
+              className="h-8 gap-1.5 px-3 text-xs"
+            >
+              <Download className="size-3.5" />
+              <span>
+                {t("tasks.survey.publishCard.downloadQr", "Tải mã QR")}
+              </span>
+            </Button>
           </div>
 
           <div className="flex min-w-0 items-center gap-2">

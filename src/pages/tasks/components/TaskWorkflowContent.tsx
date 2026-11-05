@@ -1,18 +1,24 @@
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import { TaskPhoneMedia } from "@/pages/tasks/components/TaskPhoneMedia";
+import { useTaskPost } from "@/pages/tasks/hooks/useTaskPost";
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
+  AlertCircle,
   ClipboardCheck,
+  Clock,
   Copy,
+  Eye,
   FileText,
   HelpCircle,
   MessageSquare,
   Pencil,
+  PenSquare,
   RefreshCw,
   Share2,
+  Sparkles,
   Video,
   X,
 } from "lucide-react";
@@ -31,6 +37,7 @@ import { TaskComments } from "@/pages/tasks/components/comments/TaskComments";
 import { TaskMeetingCard } from "@/pages/tasks/components/meeting";
 import { SurveyOverviewCard } from "@/pages/tasks/components/survey/SurveyOverviewCard";
 import { TaskPhoneMedia } from "@/pages/tasks/components/TaskPhoneMedia";
+
 import {
   TaskWorkflowProvider,
   useOptionalTaskEditContext,
@@ -149,6 +156,103 @@ function TaskAuditTimeline({ task }: { task: TaskWorkflow }) {
   );
 }
 
+function TaskPostScheduleNotice({
+  workspaceId,
+  taskId,
+  timezone,
+  publishDate,
+  canOpenEditor,
+}: {
+  workspaceId: string;
+  taskId: string;
+  timezone: string;
+  isTaskFinished?: boolean;
+  publishDate?: string | null;
+  canOpenEditor: boolean;
+}) {
+  const { t, i18n } = useTranslation();
+  const { data: taskPost, isLoading } = useTaskPost(workspaceId, taskId);
+  const post = taskPost?.post;
+  const scheduledAt = post?.scheduledAt || publishDate;
+
+  if (isLoading) {
+    return (
+      <div className="bg-card/50 border-border/70 h-11 animate-pulse rounded-lg border" />
+    );
+  }
+
+  if (scheduledAt) {
+    let formatted: string;
+    try {
+      formatted = new Intl.DateTimeFormat(i18n.language, {
+        timeZone: timezone,
+        dateStyle: "full",
+        timeStyle: "short",
+      }).format(new Date(scheduledAt));
+    } catch {
+      formatted = scheduledAt;
+    }
+
+    const isPublished = post?.status === "PUBLISHED";
+
+    return (
+      <div className="bg-background/90 border-brand-orange/30 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3 shadow-2xs">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <div className="bg-brand-orange/15 text-brand-orange flex size-8 shrink-0 items-center justify-center rounded-md">
+            <Clock className="size-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-muted-foreground text-2xs font-semibold tracking-wider uppercase">
+              {t("tasks.publishTime")}
+            </div>
+            <div className="text-foreground truncate text-xs font-semibold sm:text-sm">
+              {formatted}
+            </div>
+          </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5">
+          {post?.targetPlatforms?.map((platform) => (
+            <span
+              key={platform}
+              className="bg-muted text-foreground border-border/80 text-2xs rounded border px-2 py-0.5 font-medium"
+            >
+              {platform}
+            </span>
+          ))}
+          {isPublished ? (
+            <span className="text-2xs rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-600 dark:text-emerald-400">
+              Đã đăng
+            </span>
+          ) : post?.status === "FAILED" ? (
+            <span className="text-2xs rounded border border-rose-500/20 bg-rose-500/10 px-2 py-0.5 font-semibold text-rose-600 dark:text-rose-400">
+              Thất bại
+            </span>
+          ) : post?.status === "IN_PROGRESS" ||
+            post?.status === "PUBLISHING" ? (
+            <span className="text-2xs animate-pulse rounded border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 font-semibold text-blue-600 dark:text-blue-400">
+              Đang đăng...
+            </span>
+          ) : (
+            <span className="bg-brand-orange-soft text-brand-orange text-2xs rounded px-2 py-0.5 font-semibold">
+              Lên lịch
+            </span>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-muted/20 border-border/70 text-muted-foreground flex items-center gap-2.5 rounded-lg border border-dashed p-2.5 text-xs">
+      <Clock className="text-muted-foreground size-4 shrink-0" />
+      <span>
+        {t("tasks.notScheduled")}
+        {canOpenEditor && <> &mdash; {t("tasks.scheduleInEditorHint")}</>}
+      </span>
+    </div>
+  );
+}
+
 function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
   const { t } = useTranslation();
   const state = useTaskWorkflow(workspaceId, taskId);
@@ -158,6 +262,13 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
   const role = useWorkspaceStore(
     (state) => state.currentMemberRole || state.currentWorkspace?.myRole,
   );
+
+  const isAssignee = userId === task?.assigneeId;
+  const isOtherCreator = role === "CREATOR" && !isAssignee;
+  const isTaskFinished = task?.status === "FINISHED";
+  const { data: taskPost } = useTaskPost(workspaceId, taskId);
+  const post = taskPost?.post;
+  const isPostPublished = post?.status === "PUBLISHED";
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleDraft, setTitleDraft] = useState("");

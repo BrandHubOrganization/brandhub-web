@@ -21,15 +21,23 @@ const ENTITIES: Record<string, string> = {
 
 export function stripHtmlTags(html?: string): string {
   if (!html) return "";
-  return html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&(?:nbsp|amp|lt|gt);/gi, (m) => ENTITIES[m.toLowerCase()] ?? m)
+  const decoded = html.replace(
+    /&(?:lt|gt);/gi,
+    (m) => (m.toLowerCase() === "&lt;" ? "<" : ">"),
+  );
+  const stripped = decoded.replace(/<[^>]*>/g, "");
+  return stripped
+    .replace(/&(?:nbsp|amp);/gi, (m) => ENTITIES[m.toLowerCase()] ?? m)
     .trim();
 }
 
 export function sanitizeFormattedHtml(html?: string): string {
   if (!html) return "";
-  return html
+  const decoded = html.replace(
+    /&(?:lt|gt);/gi,
+    (m) => (m.toLowerCase() === "&lt;" ? "<" : ">"),
+  );
+  return decoded
     .replace(/<(?!\/?(?:b|strong|i|em|u|a|br)\b)[^>]*>/gi, "")
     .replace(/<a\b[^>]*href=["']([^"']*)["'][^>]*>/gi, (_, href: string) => {
       const safeHref = /^(https?:\/\/|mailto:|tel:)/i.test(href.trim())
@@ -41,8 +49,12 @@ export function sanitizeFormattedHtml(html?: string): string {
 
 export function FormattedText(p: { text?: string; className?: string }) {
   if (!p.text) return null;
-  if (!/<\/?[a-z][\s\S]*>/i.test(p.text))
-    return <span className={p.className}>{p.text}</span>;
+  const decoded = p.text.replace(
+    /&(?:lt|gt);/gi,
+    (m) => (m.toLowerCase() === "&lt;" ? "<" : ">"),
+  );
+  if (!/<\/?[a-z][\s\S]*>/i.test(decoded))
+    return <span className={p.className}>{decoded}</span>;
   return (
     <span
       className={p.className}

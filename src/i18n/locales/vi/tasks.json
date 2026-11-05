@@ -508,6 +508,7 @@
       "copyFailed": "Không thể sao chép liên kết.",
       "qrCode": "Mã QR",
       "showQr": "Xem mã QR",
+      "downloadQr": "Tải mã QR",
       "openSheet": "Mở Google Sheet",
       "noSheet": "Chưa tạo Google Sheet"
     },

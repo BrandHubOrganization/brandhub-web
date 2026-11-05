@@ -1,8 +1,5 @@
 import { useTranslation } from "react-i18next";
-import {
-  FormattedText,
-  stripHtmlTags,
-} from "@/pages/tasks/components/survey/SurveyFormatText";
+import { stripHtmlTags } from "@/pages/tasks/components/survey/SurveyFormatText";
 
 interface PublicSurveySuccessProps {
   title?: string;
@@ -39,7 +36,7 @@ export function PublicSurveySuccess({
           <div className="bg-brand-orange h-3 w-full" />
           <div className="space-y-4 p-6 sm:p-8">
             <h1 className="text-foreground text-2xl font-bold tracking-tight break-words sm:text-3xl">
-              <FormattedText text={title || untitledFallback} />
+              {stripHtmlTags(title) || untitledFallback}
             </h1>
             <p className="text-foreground text-sm">
               {t(
