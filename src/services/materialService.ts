@@ -74,6 +74,11 @@ export const materialService = {
       `/api/v1/workspaces/${workspace}/materials/folders/${id}`,
     );
   },
+  async purgeFolder(workspace: string, id: string) {
+    return api.post(
+      `/api/v1/workspaces/${workspace}/materials/folders/${id}/purge`,
+    );
+  },
   async restoreFolder(workspace: string, id: string) {
     return api.post(
       `/api/v1/workspaces/${workspace}/materials/folders/${id}/restore`,
@@ -317,6 +322,37 @@ export const materialService = {
       `/api/v1/workspaces/${workspaceId}/materials/${material.id}`,
       { params: { expectedVersion: material.version } },
     );
+    return response.data.data;
+  },
+
+  async purgeMaterial(
+    workspaceId: string,
+    material: MaterialItem,
+  ): Promise<MaterialItem> {
+    const response = await api.post<ApiResponse<MaterialItem>>(
+      `/api/v1/workspaces/${workspaceId}/materials/${material.id}/purge`,
+      {},
+      { params: { expectedVersion: material.version } },
+    );
+    return response.data.data;
+  },
+
+  async purgeTrash(
+    workspaceId: string,
+  ): Promise<{
+    requested: number;
+    skipped: number;
+    foldersRequested?: number;
+    foldersSkipped?: number;
+  }> {
+    const response = await api.post<
+      ApiResponse<{
+        requested: number;
+        skipped: number;
+        foldersRequested?: number;
+        foldersSkipped?: number;
+      }>
+    >(`/api/v1/workspaces/${workspaceId}/materials/trash/purge`);
     return response.data.data;
   },
 

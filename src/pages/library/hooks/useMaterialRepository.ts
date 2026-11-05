@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { materialService } from "@/services/materialService";
 import { useMaterialTrash } from "@/pages/library/hooks/useMaterialTrash";
 import type { MaterialFilters } from "@/types/material";
@@ -26,6 +26,29 @@ export function useMaterialRepository(
       });
     },
   });
+  const hadPendingPurge = useRef(false);
+  const purgeInProgress =
+    repository.query.data?.items.some(
+      (item) => item.status === "PURGE_IN_PROGRESS",
+    ) ?? false;
+  useEffect(() => {
+    if (hadPendingPurge.current && !purgeInProgress && repository.query.data) {
+      void client.invalidateQueries({
+        queryKey: [
+          "material-storage-usage",
+          repository.workspace,
+          repository.actor,
+        ],
+      });
+    }
+    hadPendingPurge.current = purgeInProgress;
+  }, [
+    purgeInProgress,
+    repository.query.data,
+    repository.workspace,
+    repository.actor,
+    client,
+  ]);
   const usage = useQuery({
     queryKey: [
       "material-storage-usage",
