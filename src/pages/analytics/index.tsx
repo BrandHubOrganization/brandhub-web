@@ -4,14 +4,23 @@ import { AlertCircle, RefreshCw } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getAnalyticsSummary } from "@/services/mock/mockAnalyticsService";
-import type { AnalyticsSummary } from "@/types/analytics";
+import { analyticsService } from "@/services/analyticsService";
+import type { AnalyticsOverview, StatSummaryCard } from "@/types/analytics";
 import { StatCards } from "./components/StatCards";
 import { ChannelPerformanceChart } from "./components/ChannelPerformanceChart";
 
+function toCards(overview: AnalyticsOverview): StatSummaryCard[] {
+  return [
+    { key: "reach", value: overview.totalReach.toLocaleString(), deltaPercent: overview.reachGrowth },
+    { key: "engagement", value: overview.totalEngagement.toLocaleString(), deltaPercent: overview.engagementGrowth },
+    { key: "posts", value: overview.totalPosts.toLocaleString(), deltaPercent: null },
+    { key: "successRate", value: `${overview.successRate}%`, deltaPercent: null },
+  ];
+}
+
 export function AnalyticsPage() {
   const { t } = useTranslation();
-  const [data, setData] = useState<AnalyticsSummary | null>(null);
+  const [data, setData] = useState<AnalyticsOverview | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
@@ -22,7 +31,7 @@ export function AnalyticsPage() {
       setIsLoading(true);
       setIsError(false);
       try {
-        const summary = await getAnalyticsSummary();
+        const summary = await analyticsService.getOverview();
         if (!cancelled) setData(summary);
       } catch (err) {
         console.error("Failed to load analytics summary:", err);
@@ -70,7 +79,7 @@ export function AnalyticsPage() {
 
       {data && !isLoading && !isError && (
         <>
-          <StatCards cards={data.cards} />
+          <StatCards cards={toCards(data)} />
           <ChannelPerformanceChart channelStats={data.channelStats} />
         </>
       )}

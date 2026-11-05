@@ -2,8 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { authService } from "@/services/authService";
-import { dashboardService } from "@/services/mock/mockDashboardService";
-import type { AnalyticsOverview, ActivityEvent } from "@/types/analytics";
+import { analyticsService } from "@/services/analyticsService";
+import type { AnalyticsOverview } from "@/types/analytics";
 
 export function useDashboardData() {
   const navigate = useNavigate();
@@ -13,16 +13,12 @@ export function useDashboardData() {
   const [isAnalyticsLoading, setIsAnalyticsLoading] = useState(true);
   const [isAnalyticsError, setIsAnalyticsError] = useState(false);
 
-  const [activities, setActivities] = useState<ActivityEvent[]>([]);
-  const [isActivitiesLoading, setIsActivitiesLoading] = useState(true);
-  const [isActivitiesError, setIsActivitiesError] = useState(false);
-
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchAnalytics = useCallback(async () => {
     try {
       setIsAnalyticsError(false);
-      const data = await dashboardService.getAnalyticsOverview();
+      const data = await analyticsService.getOverview();
       setAnalytics(data);
     } catch (err) {
       console.error("Failed to fetch analytics overview:", err);
@@ -32,24 +28,11 @@ export function useDashboardData() {
     }
   }, []);
 
-  const fetchActivities = useCallback(async () => {
-    try {
-      setIsActivitiesError(false);
-      const feed = await dashboardService.getActivityFeed(0, 10);
-      setActivities(feed);
-    } catch (err) {
-      console.error("Failed to fetch activity feed:", err);
-      setIsActivitiesError(true);
-    } finally {
-      setIsActivitiesLoading(false);
-    }
-  }, []);
-
   const loadAllData = useCallback(async () => {
     setIsRefreshing(true);
-    await Promise.all([fetchAnalytics(), fetchActivities()]);
+    await fetchAnalytics();
     setIsRefreshing(false);
-  }, [fetchAnalytics, fetchActivities]);
+  }, [fetchAnalytics]);
 
   useEffect(() => {
     loadAllData();
@@ -75,13 +58,9 @@ export function useDashboardData() {
     analytics,
     isAnalyticsLoading,
     isAnalyticsError,
-    activities,
-    isActivitiesLoading,
-    isActivitiesError,
     isRefreshing,
     loadAllData,
     fetchAnalytics,
-    fetchActivities,
     handleLogout,
   };
 }

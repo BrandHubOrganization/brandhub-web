@@ -63,6 +63,7 @@ export function TeamStatsSection({
 
       <div className="space-y-3.5">
         {stats.map((member) => {
+          const name = member.memberName ?? t("dashboard.activityFeed.unknownActor");
           const rate =
             member.postCount > 0
               ? Math.round((member.publishedCount / member.postCount) * 100)
@@ -72,10 +73,10 @@ export function TeamStatsSection({
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <div className="bg-muted text-3xs flex size-6 items-center justify-center rounded-full font-bold">
-                    {member.memberName.charAt(0)}
+                    {name.charAt(0)}
                   </div>
                   <span className="text-foreground font-semibold">
-                    {member.memberName}
+                    {name}
                   </span>
                   <span className="text-muted-foreground bg-muted py-0.2 text-3xs rounded px-1.5">
                     {member.role === "MANAGER"

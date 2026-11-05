@@ -11,6 +11,11 @@
     "status": {
       "DRAFT": "Bản nháp",
       "PENDING_APPROVAL": "Chờ duyệt",
+      "SCHEDULED": "Đã lên lịch",
+      "IN_PROGRESS": "Đang đăng",
+      "PUBLISHING": "Đang đăng",
+      "REJECTED": "Bị từ chối",
+      "FAILED": "Đăng thất bại",
       "APPROVED": "Đã duyệt",
       "PUBLISHED": "Đã đăng"
     },

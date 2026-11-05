@@ -4,10 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import {
   Activity,
-  CheckCircle,
   AlertTriangle,
-  MessageSquare,
-  UserPlus,
   Send,
   RefreshCw,
   AlertCircle,
@@ -26,19 +23,13 @@ export function ActivityFeedSection({
   isError,
   onRetry,
 }: ActivityFeedSectionProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const getEventIcon = (type: ActivityEvent["type"]) => {
     switch (type) {
       case "POST_PUBLISHED":
         return <Send className="size-3.5 text-emerald-500" />;
-      case "POST_APPROVED":
-        return <CheckCircle className="text-brand-orange size-3.5" />;
       case "POST_FAILED":
         return <AlertTriangle className="size-3.5 text-rose-500" />;
-      case "COMMENT_ADDED":
-        return <MessageSquare className="size-3.5 text-amber-500" />;
-      case "TASK_ASSIGNED":
-        return <UserPlus className="size-3.5 text-purple-500" />;
       default:
         return <Activity className="text-muted-foreground size-3.5" />;
     }
@@ -94,21 +85,23 @@ export function ActivityFeedSection({
         </div>
       ) : (
         <div className="divide-border/40 space-y-3 divide-y pt-1">
-          {events.map((event) => (
+          {events.map((event) => {
+            const actor = event.actorName ?? t("dashboard.activityFeed.unknownActor");
+            return (
             <div
               key={event.id}
               className="group flex items-start gap-3 pt-3 first:pt-0"
             >
               <div className="bg-muted border-border text-foreground flex size-8 shrink-0 items-center justify-center rounded-full border text-xs font-bold">
-                {event.actorName.charAt(0).toUpperCase()}
+                {actor.charAt(0).toUpperCase()}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-1.5">
                   <span className="text-foreground text-xs font-semibold">
-                    {event.actorName}
+                    {actor}
                   </span>
                   <span className="text-muted-foreground text-xs">
-                    {event.actionText}
+                    {t(`dashboard.activityFeed.actions.${event.type}`)}
                   </span>
                   {getEventIcon(event.type)}
                 </div>
@@ -118,11 +111,12 @@ export function ActivityFeedSection({
                   </p>
                 )}
                 <span className="text-muted-foreground text-3xs mt-1 block">
-                  {event.timestamp}
+                  {new Date(event.timestamp).toLocaleString(i18n.language)}
                 </span>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
