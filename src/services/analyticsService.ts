@@ -7,6 +7,7 @@ const REFRESH_MS = 5 * 60 * 1000;
 export const analyticsOverviewQuery = (userId: string | undefined) => ({
   queryKey: ["analytics-overview", userId],
   queryFn: () => analyticsService.getOverview(),
+  enabled: !!userId,
   refetchInterval: REFRESH_MS,
   retry: 1,
 });
