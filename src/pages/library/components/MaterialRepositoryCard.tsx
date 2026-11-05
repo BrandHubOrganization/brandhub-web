@@ -1,5 +1,11 @@
-import { FolderPlus, RotateCcw, Trash2 } from "lucide-react";
+import { FolderPlus, MoreHorizontal, RotateCcw, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { cn, formatFileSize } from "@/lib/utils";
 import type { MaterialItem } from "@/types/material";
@@ -41,39 +47,45 @@ export function MaterialRepositoryCard({
   return (
     <article
       className={cn(
-        "border-border bg-card min-w-0 space-y-3 rounded-xl border p-3 shadow-xs",
+        "border-border bg-card hover:border-brand-orange/40 group flex min-w-0 flex-col gap-2 rounded-xl border p-2.5 shadow-2xs transition-all hover:shadow-xs",
         deleted && "border-dashed",
       )}
     >
       <Button
         variant="ghost"
-        className="text-foreground block h-auto w-full min-w-0 space-y-3 p-0 text-left whitespace-normal"
+        className="text-foreground block h-auto w-full min-w-0 space-y-2 p-0 text-left whitespace-normal"
         disabled={deleted}
         onClick={onOpen}
         aria-label={t("library.repository.openLabel", { name: material.name })}
       >
         <MaterialThumbnail
-          key={material.previewUrl ?? material.id}
+          key={`${material.id}:${material.version}:${material.status}:${!!material.previewUrl}`}
           material={material}
         />
-        <span
-          className="block truncate text-sm font-semibold"
-          title={material.name}
-        >
-          {material.name}
-        </span>
+        <div className="flex items-center justify-between gap-2 px-0.5">
+          <span
+            className="group-hover:text-brand-orange block min-w-0 flex-1 truncate text-xs font-semibold transition-colors"
+            title={material.name}
+          >
+            {material.name}
+          </span>
+          <span className="text-muted-foreground shrink-0 text-[11px] tabular-nums">
+            {formatFileSize(material.fileSize ?? 0)}
+          </span>
+        </div>
       </Button>
-      <MaterialBadges material={material} />
-      <p className="text-muted-foreground text-xs">
-        {formatFileSize(material.fileSize ?? 0)}
-      </p>
+      {(material.draft ||
+        material.rawWarning ||
+        material.purpose === "BRAND_REFERENCE") && (
+        <MaterialBadges material={material} compact />
+      )}
       {!deleted && material.draft && draftDays > 0 && (
-        <p className="text-amber-600 dark:text-amber-400 text-xs font-medium">
+        <p className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
           {t("library.trash.draftDaysRemaining", { count: draftDays })}
         </p>
       )}
       {deleted && (
-        <p className="text-muted-foreground text-xs">
+        <p className="text-muted-foreground text-[11px]">
           {material.status === "PURGE_IN_PROGRESS"
             ? t("library.trash.purging")
             : material.purgeBlockedReason
@@ -83,10 +95,15 @@ export function MaterialRepositoryCard({
                 : t("library.trash.retentionExpired")}
         </p>
       )}
-      <div className="flex flex-wrap gap-2">
+      <div className="border-border mt-auto flex flex-wrap items-center gap-1 border-t pt-2">
         {!deleted && (
-          <Button variant="outline" size="sm" onClick={onOpen}>
-            {t("library.trash.details")}
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 px-2 text-xs"
+            onClick={onOpen}
+          >
+            {t("library.simple.open")}
           </Button>
         )}
         {!deleted &&
@@ -96,6 +113,7 @@ export function MaterialRepositoryCard({
             <DownloadFormatDropdown
               mediaKind={material.mediaKind || "IMAGE"}
               disabled={downloading}
+              className="h-7 px-2 text-xs"
               label={t(
                 downloading
                   ? "library.repository.preparingDownload"
@@ -108,11 +126,12 @@ export function MaterialRepositoryCard({
           <Button
             variant="secondary"
             size="sm"
+            className="h-7 px-2 text-xs"
             disabled={pending}
             onClick={onPromote}
             data-testid="promote-draft-btn"
           >
-            <FolderPlus className="size-4" />
+            <FolderPlus className="size-3.5" />
             {t("library.trash.promoteToLibrary")}
           </Button>
         )}
@@ -121,29 +140,42 @@ export function MaterialRepositoryCard({
               <Button
                 variant="outline"
                 size="sm"
+                className="h-7 px-2 text-xs"
                 disabled={pending || days === 0}
                 aria-label={t("library.trash.restoreLabel", {
                   name: material.name,
                 })}
                 onClick={onRestore}
               >
-                <RotateCcw />
+                <RotateCcw className="size-3.5" />
                 {t("library.trash.restore")}
               </Button>
             )
           : material.capabilities?.canDelete && (
-              <Button
-                variant="ghost"
-                size="sm"
-                disabled={pending}
-                aria-label={t("library.trash.deleteLabel", {
-                  name: material.name,
-                })}
-                onClick={onDelete}
-              >
-                <Trash2 />
-                {t("library.trash.moveToTrash")}
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-auto h-7 w-7 p-0 text-xs"
+                    aria-label={t("library.simple.actions", {
+                      name: material.name,
+                    })}
+                  >
+                    <MoreHorizontal className="size-3.5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    variant="destructive"
+                    disabled={pending}
+                    onSelect={onDelete}
+                  >
+                    <Trash2 className="size-4" />
+                    {t("library.trash.moveToTrash")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
       </div>
     </article>
