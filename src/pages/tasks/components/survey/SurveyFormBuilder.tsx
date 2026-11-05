@@ -64,8 +64,9 @@ export function SurveyFormBuilder({
       })
       .catch(() => {
         if (!mounted) return;
-        setQuestions([createDefaultQ(t)]);
-        setActiveQuestionId(questions[0]?.id || null);
+        const fallback = createDefaultQ(t);
+        setQuestions([fallback]);
+        setActiveQuestionId(fallback.id);
       })
       .finally(() => {
         if (mounted) setLoading(false);
