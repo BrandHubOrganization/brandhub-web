@@ -15,8 +15,10 @@ interface SurveyFormBuilderProps {
   workspaceId: string; taskId: string; taskTitle: string; onUpdated?: () => void;
 }
 
+const createQuestionId = () => "q_" + Math.random().toString(36).slice(2, 9);
+
 const createDefaultQ = (t: TFunction): SurveyQuestion => ({
-  id: "q_" + Math.random().toString(36).slice(2, 9), type: "MULTIPLE_CHOICE", label: "", timeSlot: "00:00",
+  id: createQuestionId(), type: "MULTIPLE_CHOICE", label: "", timeSlot: "00:00",
   options: [t("tasks.survey.optionPlaceholder", { index: 1 }), t("tasks.survey.optionPlaceholder", { index: 2 })], required: true,
 });
 
@@ -55,7 +57,7 @@ export function SurveyFormBuilder({ workspaceId, taskId, taskTitle, onUpdated }:
   };
   const handleDuplicateQuestion = (idx: number) => {
     const q = questions[idx];
-    const clone = { ...q, id: "q_" + Math.random().toString(36).slice(2, 9), options: q.options ? [...q.options] : undefined };
+    const clone = { ...q, id: createQuestionId(), options: q.options ? [...q.options] : undefined };
     setQuestions((prev) => [...prev.slice(0, idx + 1), clone, ...prev.slice(idx + 1)]);
     setActiveQuestionId(clone.id);
   };
