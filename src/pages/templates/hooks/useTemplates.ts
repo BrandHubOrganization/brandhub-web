@@ -42,7 +42,7 @@ export function useTemplates() {
     } finally {
       setIsLoading(false);
     }
-  }, [debouncedSearch, page]);
+  }, [debouncedSearch, page, t]);
 
   useEffect(() => {
     fetchTemplates();

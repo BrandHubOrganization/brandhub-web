@@ -11,6 +11,11 @@
     "status": {
       "DRAFT": "Draft",
       "PENDING_APPROVAL": "Pending approval",
+      "SCHEDULED": "Scheduled",
+      "IN_PROGRESS": "Publishing",
+      "PUBLISHING": "Publishing",
+      "REJECTED": "Rejected",
+      "FAILED": "Failed",
       "APPROVED": "Approved",
       "PUBLISHED": "Published"
     },

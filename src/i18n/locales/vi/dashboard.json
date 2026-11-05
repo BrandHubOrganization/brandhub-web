@@ -1,12 +1,12 @@
 {
   "kpi": {
     "publishedSuccessTitle": "Đã xuất bản thành công",
-    "systemTargetMet": "Đạt mục tiêu hệ thống",
-    "totalPostsTitle": "Tổng số bài đăng (Tháng này)",
-    "totalPostsChange": "+12.4% so với tháng trước",
-    "publishedChange": "+8.2% đúng tiến độ",
+    "systemTargetMet": "Đã đăng trên tổng số lần thử đăng",
+    "totalPostsTitle": "Tổng số bài đăng",
+    "totalPostsChange": "Trên các Workspace của bạn",
+    "publishedChange": "Từ trước đến nay",
     "failedTitle": "Bài đăng thất bại",
-    "failedChange": "-2 bài so với tuần trước",
+    "failedChange": "Cần xem lại và đăng lại",
     "successRateTitle": "Tỷ lệ thành công",
     "loadError": "Không thể tải dữ liệu KPI Analytics",
     "retry": "Thử lại"
@@ -16,16 +16,17 @@
     "latestBadge": "10 sự kiện mới nhất",
     "loadError": "Lỗi tải nhật ký hoạt động",
     "retry": "Thử lại",
-    "empty": "Chưa có hoạt động nào được ghi nhận gần đây."
+    "empty": "Chưa có hoạt động nào được ghi nhận gần đây.",
+    "unknownActor": "Thành viên",
+    "actions": {
+      "POST_PUBLISHED": "đã đăng bài",
+      "POST_FAILED": "đăng bài thất bại"
+    }
   },
   "quickTasks": {
     "greeting": "Xin chào trở lại, {{name}}!",
     "defaultUser": "User",
-    "subtitle": "Hệ thống đang hoạt động ổn định. Dưới đây là báo cáo tổng quan chiến dịch của bạn.",
-    "priorityTitle": "Nhiệm vụ ưu tiên hôm nay",
-    "task1": "Phê duyệt bài viết Chiến dịch Heineken (AM)",
-    "task2": "Lên lịch bài đăng Nike Air Max (Creator)",
-    "task3": "Xem báo cáo hiệu năng nội dung tháng 8"
+    "subtitle": "Hệ thống đang hoạt động ổn định. Dưới đây là báo cáo tổng quan chiến dịch của bạn."
   },
   "teamStats": {
     "title": "Hiệu suất thành viên (Team Stats)",
@@ -205,16 +206,20 @@
     "roleMember": "Thành viên"
   },
   "charts": {
-    "lastUpdated": "Cập nhật tự động thời gian thực",
-    "audienceTrendTitle": "Xu hướng tăng trưởng tiếp cận",
+    "lastUpdated": "Tự động cập nhật mỗi 5 phút",
+    "audienceTrendTitle": "Tiếp cận và tương tác",
     "audienceTrendSubtitle": "Dữ liệu độ phủ và tương tác 7 ngày gần nhất",
     "reach": "Lượt tiếp cận (Reach)",
     "engagement": "Tương tác (Interactions)",
-    "growthStat": "+24.8% tuần này so với tuần trước",
+    "growthStat": "{{value}}% so với 7 ngày trước",
+    "noPreviousWeek": "Chưa có dữ liệu 7 ngày trước để so sánh",
+    "empty": "Chưa có dữ liệu",
+    "total": "Tổng",
+    "postsUnit": "bài viết",
     "contentStatusTitle": "Trạng thái quy trình nội dung",
     "contentStatusSubtitle": "Tỷ lệ bài viết qua các giai đoạn duyệt",
-    "peakHoursTitle": "Mật độ bài đăng theo khung giờ",
-    "peakHoursSubtitle": "Khung giờ thu hút lượng tương tác cao nhất trong ngày",
+    "peakHoursTitle": "Bài đã đăng theo khung giờ",
+    "peakHoursSubtitle": "Số bài đã đăng trong từng giờ theo giờ của bạn",
     "goalsTitle": "Tiến độ mục tiêu chiến dịch",
     "goalsSubtitle": "Mức độ hoàn thành các chỉ tiêu marketing quý"
   },

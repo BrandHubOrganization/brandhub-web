@@ -11,8 +11,7 @@ import { postDashboardService } from "./services/postDashboardService";
 import { PostDashboardHeader } from "./components/PostDashboardHeader";
 import { PostDashboardKpiCards } from "./components/PostDashboardKpiCards";
 import { PostDistributionCharts } from "./components/PostDistributionCharts";
-import { PostVideoMetricsCards } from "./components/PostVideoMetricsCards";
-import { PostContentAudienceCharts } from "./components/PostContentAudienceCharts";
+import { PostContentTypeChart } from "./components/PostContentTypeChart";
 import { RecentPostsTable } from "./components/RecentPostsTable";
 
 interface PostDashboardViewProps {
@@ -135,14 +134,7 @@ export function PostDashboardView({ workspaceId }: PostDashboardViewProps) {
             kpis={data.kpis}
           />
 
-          {/* Video & Watch Metrics Cards */}
-          <PostVideoMetricsCards />
-
-          {/* Meta Content & Audience Insights Charts */}
-          <PostContentAudienceCharts
-            contentTypeBreakdown={data.contentTypeBreakdown}
-            audienceBreakdown={data.audienceBreakdown}
-          />
+          <PostContentTypeChart contentTypeBreakdown={data.contentTypeBreakdown} />
 
           {/* Recent Publishing Feed */}
           <RecentPostsTable

@@ -1,14 +1,15 @@
 import type { Platform, PostStatus } from "@/types/post";
 
 export interface PostKpiStats {
-  totalReach?: number;
-  reachGrowth?: number;
-  totalEngagements?: number;
-  engagementsGrowth?: number;
+  totalReach: number;
+  /** Growth is null when the previous period has nothing to compare with. */
+  reachGrowth: number | null;
+  totalEngagements: number;
+  engagementsGrowth: number | null;
   totalPosts: number;
-  totalPostsGrowth: number;
+  totalPostsGrowth: number | null;
   successRate: number;
-  successRateGrowth?: number;
+  successRateGrowth: number | null;
   scheduledCount: number;
   failedCount: number;
   inProgressCount: number;
@@ -55,23 +56,13 @@ export interface ContentTypeStat {
   label: string;
   views: number;
   percentage: number;
-  followerPercentage: number;
-  nonFollowerPercentage: number;
-}
-
-export interface AudienceStat {
-  followerViews: number;
-  followerPercentage: number;
-  nonFollowerViews: number;
-  nonFollowerPercentage: number;
 }
 
 export interface PostDashboardData {
   kpis: PostKpiStats;
   platformBreakdown: PlatformMetric[];
   publishingTrends: PublishingTrendPoint[];
-  contentTypeBreakdown?: ContentTypeStat[];
-  audienceBreakdown?: AudienceStat;
+  contentTypeBreakdown: ContentTypeStat[];
   recentPosts: RecentPostItem[];
 }
 

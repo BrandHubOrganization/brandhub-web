@@ -1,67 +1,14 @@
-import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/authStore";
 import { authService } from "@/services/authService";
-import { dashboardService } from "@/services/mock/mockDashboardService";
-import type { AnalyticsOverview, ActivityEvent } from "@/types/analytics";
+import { analyticsOverviewQuery } from "@/services/analyticsService";
 
 export function useDashboardData() {
   const navigate = useNavigate();
-  const { user, clearAuth } = useAuthStore();
-
-  const [analytics, setAnalytics] = useState<AnalyticsOverview | null>(null);
-  const [isAnalyticsLoading, setIsAnalyticsLoading] = useState(true);
-  const [isAnalyticsError, setIsAnalyticsError] = useState(false);
-
-  const [activities, setActivities] = useState<ActivityEvent[]>([]);
-  const [isActivitiesLoading, setIsActivitiesLoading] = useState(true);
-  const [isActivitiesError, setIsActivitiesError] = useState(false);
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const fetchAnalytics = useCallback(async () => {
-    try {
-      setIsAnalyticsError(false);
-      const data = await dashboardService.getAnalyticsOverview();
-      setAnalytics(data);
-    } catch (err) {
-      console.error("Failed to fetch analytics overview:", err);
-      setIsAnalyticsError(true);
-    } finally {
-      setIsAnalyticsLoading(false);
-    }
-  }, []);
-
-  const fetchActivities = useCallback(async () => {
-    try {
-      setIsActivitiesError(false);
-      const feed = await dashboardService.getActivityFeed(0, 10);
-      setActivities(feed);
-    } catch (err) {
-      console.error("Failed to fetch activity feed:", err);
-      setIsActivitiesError(true);
-    } finally {
-      setIsActivitiesLoading(false);
-    }
-  }, []);
-
-  const loadAllData = useCallback(async () => {
-    setIsRefreshing(true);
-    await Promise.all([fetchAnalytics(), fetchActivities()]);
-    setIsRefreshing(false);
-  }, [fetchAnalytics, fetchActivities]);
-
-  useEffect(() => {
-    loadAllData();
-    const pollingInterval = setInterval(
-      () => {
-        loadAllData();
-      },
-      5 * 60 * 1000,
-    );
-
-    return () => clearInterval(pollingInterval);
-  }, [loadAllData]);
+  const user = useAuthStore((state) => state.user);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const overview = useQuery(analyticsOverviewQuery(user?.id));
 
   const handleLogout = () => {
     // FR 3.2.8: blacklist token server-side (BR-14), same as Navbar.handleLogout.
@@ -72,16 +19,12 @@ export function useDashboardData() {
 
   return {
     user,
-    analytics,
-    isAnalyticsLoading,
-    isAnalyticsError,
-    activities,
-    isActivitiesLoading,
-    isActivitiesError,
-    isRefreshing,
-    loadAllData,
-    fetchAnalytics,
-    fetchActivities,
+    analytics: overview.data ?? null,
+    isAnalyticsLoading: overview.isLoading,
+    isAnalyticsError: overview.isError,
+    isRefreshing: overview.isFetching,
+    loadAllData: overview.refetch,
+    fetchAnalytics: overview.refetch,
     handleLogout,
   };
 }

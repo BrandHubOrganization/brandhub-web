@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface UseFeedRotationOptions {
   intervalMs?: number;
@@ -25,7 +25,6 @@ export function useFeedRotation<T>(
 ) {
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<"idle" | "sliding">("idle");
-  const outgoingRef = useRef<T | null>(null);
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -35,15 +34,11 @@ export function useFeedRotation<T>(
     const cycle = () => {
       const waitTimer = setTimeout(() => {
         if (cancelled) return;
-        setIndex((i) => {
-          outgoingRef.current = slides[i];
-          return (i + 1) % slides.length;
-        });
+        setIndex((i) => (i + 1) % slides.length);
         setPhase("sliding");
         settleTimer = setTimeout(() => {
           if (cancelled) return;
           setPhase("idle");
-          outgoingRef.current = null;
           cycle();
         }, slideMs);
       }, intervalMs);
@@ -60,7 +55,7 @@ export function useFeedRotation<T>(
 
   return {
     slide: slides[index],
-    outgoing: phase === "sliding" ? outgoingRef.current : null,
+    outgoing: phase === "sliding" ? slides[(index - 1 + slides.length) % slides.length] : null,
     index,
     phase,
     slideMs,

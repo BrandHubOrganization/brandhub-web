@@ -91,15 +91,7 @@ export function useContentRequests() {
     } finally {
       setLoading(false);
     }
-  }, [
-    searchQuery,
-    selectedStatuses,
-    selectedPlatforms,
-    startDate,
-    endDate,
-    page,
-    activeTab,
-  ]);
+  }, [searchQuery, selectedStatuses, selectedPlatforms, startDate, endDate, page, activeTab, t]);
 
   useEffect(() => {
     fetchRequests();

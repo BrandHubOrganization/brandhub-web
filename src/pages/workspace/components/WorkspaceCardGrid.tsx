@@ -20,7 +20,7 @@ export function WorkspaceCardGrid({ workspaces, onOpen }: Props) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {workspaces.map((ws) => {
-        const brandColor = ws.brandColor || "#f05a28";
+        const brandColor = ws.brandColor || "#ca3d0e";
         const LogoIcon = getLogoIcon(ws.logoIcon);
 
         return (
@@ -64,7 +64,7 @@ export function WorkspaceCardGrid({ workspaces, onOpen }: Props) {
                     <div
                       className="flex size-16 shrink-0 items-center justify-center rounded-2xl text-base font-bold border-4 border-card shadow-md select-none transition-transform duration-300 group-hover:scale-102 text-white"
                       style={{
-                        backgroundColor: brandColor || "#f05a28",
+                        backgroundColor: brandColor || "#ca3d0e",
                         color: "#ffffff",
                       }}
                     >

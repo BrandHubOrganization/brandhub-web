@@ -1,41 +1,19 @@
 export interface TeamMemberStat {
   memberId: string;
-  memberName: string;
-  avatar?: string;
-  role: string;
+  memberName: string | null;
+  avatar?: string | null;
+  role: string | null;
   postCount: number;
   publishedCount: number;
 }
 
-export interface AnalyticsOverview {
-  totalPosts: number;
-  publishedCount: number;
-  failedCount: number;
-  successRate: number; // e.g. 92.5
-  teamStats?: TeamMemberStat[];
-}
-
 export interface ActivityEvent {
   id: string;
-  actorName: string;
-  actorAvatar?: string;
-  actionText: string;
+  actorName: string | null;
+  actorAvatar?: string | null;
   targetTitle?: string;
   timestamp: string;
-  type:
-    | "POST_PUBLISHED"
-    | "TASK_ASSIGNED"
-    | "COMMENT_ADDED"
-    | "POST_APPROVED"
-    | "POST_FAILED";
-}
-
-export interface ActivityFeedResponse {
-  content: ActivityEvent[];
-  totalElements: number;
-  totalPages: number;
-  page: number;
-  size: number;
+  type: "POST_PUBLISHED" | "POST_FAILED";
 }
 
 export type AnalyticsPlatform =
@@ -48,13 +26,40 @@ export interface ChannelStat {
   engagement: number;
 }
 
-export interface StatSummaryCard {
-  key: "reach" | "engagement" | "posts" | "responseRate";
-  value: string;
-  deltaPercent: number;
+export interface DailyPoint {
+  date: string;
+  reach: number;
+  engagement: number;
+  posts: number;
 }
 
-export interface AnalyticsSummary {
-  cards: StatSummaryCard[];
+export interface HourBucket {
+  hour: number;
+  facebook: number;
+  instagram: number;
+  tiktok: number;
+  threads: number;
+}
+
+export interface AnalyticsOverview {
+  totalPosts: number;
+  publishedCount: number;
+  failedCount: number;
+  successRate: number;
+  totalReach: number;
+  totalEngagement: number;
+  statusCounts: Record<string, number>;
+  teamStats: TeamMemberStat[];
   channelStats: ChannelStat[];
+  dailyTrend: DailyPoint[];
+  reachGrowth: number | null;
+  engagementGrowth: number | null;
+  publishHours: HourBucket[];
+  activities: ActivityEvent[];
+}
+
+export interface StatSummaryCard {
+  key: "reach" | "engagement" | "posts" | "successRate";
+  value: string;
+  deltaPercent: number | null;
 }

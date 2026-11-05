@@ -12,7 +12,7 @@ vi.mock("react-dom/client", () => ({
     },
   }),
 }));
-vi.mock("@/i18n", () => ({}));
+vi.mock("@/i18n", () => ({ i18nReady: Promise.resolve() }));
 vi.mock("@/components/theme-provider", () => ({
   ThemeProvider: ({ children }: { children: ReactNode }) => children,
 }));
@@ -31,6 +31,7 @@ test("application bootstrap provides query context to the hashtag editor hook", 
   vi.stubGlobal("document", { getElementById: () => ({}) });
   try {
     await import("@/main.tsx");
+    await vi.waitFor(() => expect(root.tree).toBeDefined());
     expect(root.tree).toBeDefined();
     expect(() => renderToString(root.tree)).not.toThrow();
     expect(renderToString(root.tree)).toContain("pending");

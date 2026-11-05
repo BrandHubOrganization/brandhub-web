@@ -417,7 +417,7 @@ export function AgencyPage() {
                             <div
                               className="flex size-16 shrink-0 items-center justify-center rounded-2xl border-4 border-card shadow-md select-none transition-transform duration-300 group-hover:scale-102 text-white"
                               style={{
-                                backgroundColor: a.brandColor || "#f05a28",
+                                backgroundColor: a.brandColor || "#ca3d0e",
                                 color: "#ffffff",
                               }}
                             >

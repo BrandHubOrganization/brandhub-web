@@ -221,6 +221,7 @@ export function Sidebar({
       className={cn(
         "flex h-full flex-col transition-all duration-200 select-none",
         collapsed ? "w-[60px]" : "w-[220px]",
+        "surface-dark",
         className,
       )}
       style={{
@@ -239,7 +240,7 @@ export function Sidebar({
       >
         <div
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md"
-          style={{ background: "hsl(var(--brand-orange, 15 88% 55%))" }}
+          style={{ background: "hsl(var(--primary))" }}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="2.2" fill="white" />
@@ -288,7 +289,7 @@ export function Sidebar({
         {!collapsed && (
           <span className="font-sans text-sm font-bold tracking-tight text-white">
             Brand
-            <span style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}>
+            <span style={{ color: "hsl(var(--brand-orange))" }}>
               Hub
             </span>
           </span>
@@ -420,7 +421,7 @@ export function Sidebar({
                         isActive
                           ? {
                               background:
-                                "hsl(var(--brand-orange, 15 88% 55%))",
+                                "hsl(var(--primary))",
                               color: "#ffffff",
                             }
                           : {
