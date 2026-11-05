@@ -26,8 +26,8 @@ export function LogoUploader({
       <div
         className="flex size-20 items-center justify-center overflow-hidden rounded-full text-2xl font-semibold"
         style={{
-          background: logoUrl ? undefined : `${brandColor || "#f05a28"}1a`,
-          color: logoUrl ? undefined : brandColor || "#f05a28",
+          background: logoUrl ? undefined : `${brandColor || "#ca3d0e"}1a`,
+          color: logoUrl ? undefined : brandColor || "#ca3d0e",
         }}
       >
         {logoUrl ? (

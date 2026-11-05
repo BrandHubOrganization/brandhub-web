@@ -95,7 +95,7 @@ function parseInitialLogo(logoUrl?: string | null): {
     return {
       mode: "icon",
       icon: parts[1] || LOGO_ICON_OPTIONS[0].name,
-      color: parts[2] || "#f05a28",
+      color: parts[2] || "#ca3d0e",
       url: "",
     };
   }
@@ -103,14 +103,14 @@ function parseInitialLogo(logoUrl?: string | null): {
     return {
       mode: "url",
       icon: LOGO_ICON_OPTIONS[0].name,
-      color: "#f05a28",
+      color: "#ca3d0e",
       url: logoUrl,
     };
   }
   return {
     mode: "icon",
     icon: LOGO_ICON_OPTIONS[0].name,
-    color: "#f05a28",
+    color: "#ca3d0e",
     url: "",
   };
 }

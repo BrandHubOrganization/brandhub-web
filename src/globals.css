@@ -16,7 +16,7 @@
     --popover-foreground: 222.2 84% 4.9%;
 
     /* Primary = brand orange (CTA/nhấn chính), khớp --ring */
-    --primary: 15 88% 55%;
+    --primary: 15 87% 42%;
     --primary-foreground: 0 0% 100%;
 
     /* Đồng bộ với BrandHub Design: secondary là surface-soft (#f4f4f5) */
@@ -42,7 +42,7 @@
 
     --border: 240 5.9% 90%; /* #e4e4e7 */
     --input: 240 5.9% 90%; /* #e4e4e7 */
-    --ring: 15 88% 55%; /* focus ring dùng màu cam thương hiệu */
+    --ring: 15 87% 42%; /* focus ring dùng màu cam thương hiệu */
     --radius: 0.5rem;
 
     /* Sidebar (nav tối cố định cả light/dark) */
@@ -51,7 +51,7 @@
     --sidebar-border: 240 5% 15%; /* #27272a */
 
     /* Các màu thương hiệu BrandHub đặc trưng */
-    --brand-orange: 15 88% 55%; /* #f05a28 */
+    --brand-orange: 15 87% 42%; /* #ca3d0e */
     --brand-orange-soft: 15 100% 96%; /* #fff0eb */
     --ink: 222.2 84% 4.9%; /* #0a0a0a */
     --canvas: 0 0% 98%; /* #fafafa */
@@ -70,7 +70,7 @@
     --popover-foreground: 210 40% 98%;
 
     /* Primary trong dark mode vẫn là brand orange */
-    --primary: 15 88% 55%;
+    --primary: 15 87% 42%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary trong dark mode là surface-soft dark (#27272a) */
@@ -721,4 +721,20 @@ body,
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+}
+
+/* No orange reads on both white text and a dark page: 4.5:1 needs #ca3d0e under white text and
+   #f05a28 on dark. In dark mode --brand-orange is the text colour, so solid fills use --primary. */
+.dark .bg-brand-orange,
+.dark .hover\:bg-brand-orange:hover,
+.surface-dark .bg-brand-orange,
+.surface-dark .hover\:bg-brand-orange:hover {
+  background-color: hsl(var(--primary));
+}
+.dark .text-primary {
+  color: hsl(var(--brand-orange));
+}
+/* Panels that stay dark in the light theme, such as the sidebar. */
+.surface-dark {
+  --brand-orange: 15 88% 55%;
 }
