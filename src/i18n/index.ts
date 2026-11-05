@@ -1,166 +1,27 @@
-import viMonitoring from "./locales/vi/monitoring.json";
-import enMonitoring from "./locales/en/monitoring.json";
-import viCredit from "./locales/vi/credit.json";
-import enCredit from "./locales/en/credit.json";
-import viTasks from "./locales/vi/tasks.json";
-import enTasks from "./locales/en/tasks.json";
-import i18n from "i18next";
+import i18n, { type BackendModule, type ResourceKey } from "i18next";
 import { initReactI18next } from "react-i18next";
-import viAdmin from "./locales/vi/admin.json";
-import enAdmin from "./locales/en/admin.json";
-
-import viAuth from "./locales/vi/auth.json";
-import viCommon from "./locales/vi/common.json";
-import viNav from "./locales/vi/nav.json";
-import viSettings from "./locales/vi/settings.json";
-import viLanding from "./locales/vi/landing.json";
-import viWorkspace from "./locales/vi/workspace.json";
-import viInvitations from "./locales/vi/invitations.json";
-import viClient from "./locales/vi/client.json";
-import viDashboard from "./locales/vi/dashboard.json";
-import viEditor from "./locales/vi/editor.json";
-import viCalendar from "./locales/vi/calendar.json";
-import viHashtagGroups from "./locales/vi/hashtagGroups.json";
-import viLibrary from "./locales/vi/library.json";
-import viRequests from "./locales/vi/requests.json";
-import viTemplates from "./locales/vi/templates.json";
-import viAnalytics from "./locales/vi/analytics.json";
-import viSocialAccounts from "./locales/vi/socialAccounts.json";
-import viSocial from "./locales/vi/social.json";
-import viPublish from "./locales/vi/publish.json";
-import viSubscription from "./locales/vi/subscription.json";
-import viAiStudio from "./locales/vi/aiStudio.json";
-import viReports from "./locales/vi/reports.json";
-import viNotifications from "./locales/vi/notifications.json";
-import viSecurity from "./locales/vi/security.json";
-import viProfile from "./locales/vi/profile.json";
-import viClientProfile from "./locales/vi/clientProfile.json";
-import viAgency from "./locales/vi/agency.json";
-import viMediaPackage from "./locales/vi/mediaPackage.json";
-import viChat from "./locales/vi/chat.json";
-import viMailTemplate from "./locales/vi/mailTemplate.json";
-import viMaterials from "./locales/vi/materials.json";
-import viCampaign from "./locales/vi/campaign.json";
-import viCollaborators from "./locales/vi/collaborators.json";
-
-import enAuth from "./locales/en/auth.json";
-import enCommon from "./locales/en/common.json";
-import enNav from "./locales/en/nav.json";
-import enSettings from "./locales/en/settings.json";
-import enLanding from "./locales/en/landing.json";
-import enWorkspace from "./locales/en/workspace.json";
-import enInvitations from "./locales/en/invitations.json";
-import enClient from "./locales/en/client.json";
-import enDashboard from "./locales/en/dashboard.json";
-import enEditor from "./locales/en/editor.json";
-import enCalendar from "./locales/en/calendar.json";
-import enHashtagGroups from "./locales/en/hashtagGroups.json";
-import enLibrary from "./locales/en/library.json";
-import enRequests from "./locales/en/requests.json";
-import enTemplates from "./locales/en/templates.json";
-import enAnalytics from "./locales/en/analytics.json";
-import enSocialAccounts from "./locales/en/socialAccounts.json";
-import enSocial from "./locales/en/social.json";
-import enPublish from "./locales/en/publish.json";
-import enSubscription from "./locales/en/subscription.json";
-import enAiStudio from "./locales/en/aiStudio.json";
-import enReports from "./locales/en/reports.json";
-import enNotifications from "./locales/en/notifications.json";
-import enSecurity from "./locales/en/security.json";
-import enProfile from "./locales/en/profile.json";
-import enClientProfile from "./locales/en/clientProfile.json";
-import enAgency from "./locales/en/agency.json";
-import enMediaPackage from "./locales/en/mediaPackage.json";
-import enChat from "./locales/en/chat.json";
-import enMailTemplate from "./locales/en/mailTemplate.json";
-import enMaterials from "./locales/en/materials.json";
-import enCampaign from "./locales/en/campaign.json";
-import enCollaborators from "./locales/en/collaborators.json";
-
-const vi = {
-  credit: viCredit,
-  tasks: viTasks,
-  admin: viAdmin,
-  monitoring: viMonitoring,
-  materials: viMaterials,
-  auth: viAuth,
-  common: viCommon,
-  nav: viNav,
-  settings: viSettings,
-  landing: viLanding,
-  workspace: viWorkspace,
-  invitations: viInvitations,
-  client: viClient,
-  dashboard: viDashboard,
-  editor: viEditor,
-  calendar: viCalendar,
-  hashtagGroups: viHashtagGroups,
-  library: viLibrary,
-  requests: viRequests,
-  templates: viTemplates,
-  analytics: viAnalytics,
-  socialAccounts: viSocialAccounts,
-  social: viSocial,
-  publish: viPublish,
-  subscription: viSubscription,
-  aiStudio: viAiStudio,
-  reports: viReports,
-  notifications: viNotifications,
-  security: viSecurity,
-  profile: viProfile,
-  clientProfile: viClientProfile,
-  agency: viAgency,
-  mediaPackage: viMediaPackage,
-  chat: viChat,
-  mailTemplate: viMailTemplate,
-  campaign: viCampaign,
-  collaborators: viCollaborators,
-};
-
-const en = {
-  credit: enCredit,
-  tasks: enTasks,
-  admin: enAdmin,
-  monitoring: enMonitoring,
-  materials: enMaterials,
-  auth: enAuth,
-  common: enCommon,
-  nav: enNav,
-  settings: enSettings,
-  landing: enLanding,
-  workspace: enWorkspace,
-  invitations: enInvitations,
-  client: enClient,
-  dashboard: enDashboard,
-  editor: enEditor,
-  calendar: enCalendar,
-  hashtagGroups: enHashtagGroups,
-  library: enLibrary,
-  requests: enRequests,
-  templates: enTemplates,
-  analytics: enAnalytics,
-  socialAccounts: enSocialAccounts,
-  social: enSocial,
-  publish: enPublish,
-  subscription: enSubscription,
-  aiStudio: enAiStudio,
-  reports: enReports,
-  notifications: enNotifications,
-  security: enSecurity,
-  profile: enProfile,
-  clientProfile: enClientProfile,
-  agency: enAgency,
-  mediaPackage: enMediaPackage,
-  chat: enChat,
-  mailTemplate: enMailTemplate,
-  campaign: enCampaign,
-  collaborators: enCollaborators,
-};
 
 const savedLang = localStorage.getItem("brandhub-lang");
 
-i18n.use(initReactI18next).init({
-  resources: { vi: { translation: vi }, en: { translation: en } },
+// Each language is its own chunk, so a visitor does not download the one they are not reading.
+const languageChunks: Record<string, () => Promise<{ default: object }>> = {
+  vi: () => import("./locales/vi"),
+  en: () => import("./locales/en"),
+};
+const languageBackend: BackendModule = {
+  type: "backend",
+  init() {},
+  read(language, _namespace, callback) {
+    const load = languageChunks[language];
+    if (!load) return callback(null, {});
+    load().then(
+      (chunk) => callback(null, chunk.default as ResourceKey),
+      (error) => callback(error, null),
+    );
+  },
+};
+
+export const i18nReady = i18n.use(languageBackend).use(initReactI18next).init({
   lng: savedLang === "en" ? "en" : "vi",
   fallbackLng: "vi",
   interpolation: { escapeValue: false },
@@ -171,7 +32,7 @@ const applyLanguage = (lng: string) => {
   localStorage.setItem("brandhub-lang", lng);
   document.documentElement.lang = lng;
 };
-applyLanguage(i18n.language);
+void i18nReady.then(() => applyLanguage(i18n.language));
 i18n.on("languageChanged", applyLanguage);
 
 export default i18n;
