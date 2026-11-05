@@ -118,6 +118,12 @@ const NAV_KEY_MAP: Record<string, string> = {
   video: "aiStudio.video.title",
   "content-writing": "nav.contentWriting",
   client: "nav.clients",
+  campaigns: "campaign.title",
+  "system-health": "monitoring.title",
+  "workspace-templates": "admin.navigation.workspaceTemplates",
+  "campaign-partners": "campaign.partners.title",
+  chat: "nav.chat",
+  tasks: "nav.tasks",
 };
 
 const WORKSPACE_SECTION_ROOTS: Record<
@@ -142,10 +148,14 @@ function getChildResourceBreadcrumbLabel(
   prevSeg: string | undefined,
   t: TFunction,
 ): string {
-  if (prevSeg === "posts") return t("publish.detail.breadcrumb", "Chi tiết bài viết");
-  if (prevSeg === "tasks") return t("tasks.detail.breadcrumb", "Chi tiết công việc");
-  if (prevSeg === "clients") return t("clients.detail.breadcrumb", "Chi tiết khách hàng");
-  if (prevSeg === "campaigns") return t("campaign.detail.breadcrumb", "Chi tiết chiến dịch");
+  if (prevSeg === "posts")
+    return t("publish.detail.breadcrumb", "Chi tiết bài viết");
+  if (prevSeg === "tasks")
+    return t("tasks.detail.breadcrumb", "Chi tiết công việc");
+  if (prevSeg === "clients")
+    return t("clients.detail.breadcrumb", "Chi tiết khách hàng");
+  if (prevSeg === "campaigns")
+    return t("campaign.detail.breadcrumb", "Chi tiết chiến dịch");
   return t("common.detail", "Chi tiết");
 }
 
@@ -168,7 +178,9 @@ export function Navbar({
 }: NavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, clearAuth, systemRole } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const clearAuth = useAuthStore((s) => s.clearAuth);
+  const systemRole = useAuthStore((s) => s.systemRole);
   const isAdmin = systemRole === "ADMIN";
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const currentAgencyId = useAgencyStore((s) => s.currentAgencyId);
@@ -282,7 +294,9 @@ export function Navbar({
         "mailBatches",
         "mailSuppressions",
         "reports",
+        "crawl",
         "trendReplay",
+        "trendPipeline",
         "trends",
         "trendGraph",
       ].includes(requested)
@@ -319,7 +333,10 @@ export function Navbar({
         // Agency UUID: chỉ ở vị trí /agency/:id (idx === 1)
         if (root === "agency" && idx === 1) {
           const entity = agencies.find((a) => a.id === seg);
-          crumbs.push({ label: entity?.name ?? seg, path });
+          crumbs.push({
+            label: entity?.name ?? t("common.detail", "Chi tiết"),
+            path,
+          });
           return;
         }
         // Child resource UUID (e.g. /workspaces/:id/posts/:postId)
@@ -379,11 +396,11 @@ export function Navbar({
       style={{ fontFamily: "var(--font-sans)" }}
     >
       {/* Left: Mobile Menu & Sidebar Toggle & Breadcrumbs */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1 md:gap-3">
         <Button
           variant="ghost"
           size="icon"
-          className="size-8 md:hidden"
+          className="size-11 md:hidden"
           onClick={onMobileMenuOpen}
           title={t("nav.openMenu")}
         >
@@ -428,7 +445,7 @@ export function Navbar({
       </div>
 
       {/* Right: Real Role Badge (Read-only), Language, Theme, Notifications & User Dropdown */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center md:gap-2">
         {/* Real Member Role Badge — only shown once inside a workspace */}
         {roleLabel && (
           <div
@@ -446,7 +463,7 @@ export function Navbar({
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 gap-1.5 px-2 text-xs"
+          className="h-11 gap-1.5 px-2 text-xs md:h-8"
           onClick={toggleLanguage}
           title={t("nav.switchLanguage")}
           aria-label={t("nav.switchLanguage")}
@@ -458,7 +475,7 @@ export function Navbar({
         <Button
           variant="ghost"
           size="icon"
-          className="size-8"
+          className="size-11 md:size-8"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           title={t("nav.toggleTheme")}
           aria-label={t("nav.toggleTheme")}
@@ -481,7 +498,7 @@ export function Navbar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative size-8"
+                className="relative size-11 md:size-8"
                 title={t("nav.notifications")}
                 aria-label={t("nav.notifications")}
               >
@@ -591,7 +608,7 @@ export function Navbar({
           <Button
             variant="ghost"
             size="icon"
-            className="group relative size-8 text-amber-500 transition-colors hover:bg-amber-500/10 hover:text-amber-600 dark:text-amber-400 dark:hover:bg-amber-400/15 dark:hover:text-amber-300"
+            className="group relative size-11 md:size-8 text-amber-500 transition-colors hover:bg-amber-500/10 hover:text-amber-600 dark:text-amber-400 dark:hover:bg-amber-400/15 dark:hover:text-amber-300"
             onClick={() => navigate("/subscription/plans")}
             title={t("subscription.plans.upgrade")}
             aria-label={t("subscription.plans.upgrade")}
@@ -601,14 +618,14 @@ export function Navbar({
           </Button>
         )}
 
-        <div className="bg-border mx-1 h-4 w-px" />
+        <div className="bg-border mx-1 hidden h-4 w-px md:block" />
 
         {/* User → click thẳng vào Cài đặt */}
         <button
           type="button"
           onClick={() => navigate("/settings")}
           title={t("nav.settings")}
-          className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 transition-colors outline-none"
+          className="hover:bg-muted flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 md:min-h-0 transition-colors outline-none"
         >
           <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
             {username.charAt(0).toUpperCase()}
@@ -625,7 +642,7 @@ export function Navbar({
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:text-foreground size-8 cursor-pointer"
+              className="text-muted-foreground hover:text-foreground size-11 cursor-pointer md:size-8"
               title={t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
             >
               <HelpCircle className="size-4" />
@@ -669,7 +686,7 @@ export function Navbar({
         <Button
           variant="ghost"
           size="icon"
-          className="size-8 text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/50"
+          className="size-11 md:size-8 text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/50"
           onClick={handleLogout}
           title={t("nav.logout")}
         >

@@ -113,6 +113,14 @@ function isActive(value: unknown): boolean {
  * Google-Docs-style formatting toolbar for CanvasTextEditor (FR 3.6.10).
  * Purely presentational — all CRDT-touching logic lives in CanvasTextEditor.
  */
+function Divider({ ribbon }: { ribbon: boolean }) {
+  return ribbon ? (
+    <div className="bg-border mx-1 h-10 w-px self-center" />
+  ) : (
+    <div className="bg-border mx-1 h-6 w-px" />
+  );
+}
+
 export function FormattingToolbar({
   currentAttrs,
   onToggle,
@@ -133,13 +141,6 @@ export function FormattingToolbar({
   // Docs mode: one compact icon row (default). Ribbon mode: Word-style
   // grouped row with captions underneath each group.
   const [ribbon, setRibbon] = useState(false);
-
-  const Divider = () =>
-    ribbon ? (
-      <div className="bg-border mx-1 h-10 w-px self-center" />
-    ) : (
-      <div className="bg-border mx-1 h-6 w-px" />
-    );
 
   return (
     <div className="bg-muted/40 border-border rounded-t-xl border border-b-0">
@@ -196,7 +197,7 @@ export function FormattingToolbar({
           </Button>
         </ToolGroup>
 
-        <Divider />
+        <Divider ribbon={ribbon} />
 
         {/* Font family + size */}
         <ToolGroup label="Phông chữ" ribbon={ribbon}>
@@ -232,7 +233,7 @@ export function FormattingToolbar({
           </Select>
         </ToolGroup>
 
-        <Divider />
+        <Divider ribbon={ribbon} />
 
         {/* Bold / Italic / Underline / Strikethrough */}
         <ToolGroup label="Kiểu chữ" ribbon={ribbon}>
@@ -280,7 +281,7 @@ export function FormattingToolbar({
           </Button>
         </ToolGroup>
 
-        <Divider />
+        <Divider ribbon={ribbon} />
 
         {/* Text color + highlight */}
         <ToolGroup label="Màu sắc" ribbon={ribbon}>
@@ -355,7 +356,7 @@ export function FormattingToolbar({
           </DropdownMenu>
         </ToolGroup>
 
-        <Divider />
+        <Divider ribbon={ribbon} />
 
         {/* Alignment */}
         <ToolGroup label="Căn lề" ribbon={ribbon}>
@@ -392,7 +393,7 @@ export function FormattingToolbar({
           </Button>
         </ToolGroup>
 
-        <Divider />
+        <Divider ribbon={ribbon} />
 
         {/* Lists */}
         <ToolGroup label="Danh sách" ribbon={ribbon}>
@@ -418,7 +419,7 @@ export function FormattingToolbar({
           </Button>
         </ToolGroup>
 
-        <Divider />
+        <Divider ribbon={ribbon} />
 
         {/* Link */}
         <ToolGroup label="Chèn" ribbon={ribbon}>
@@ -497,7 +498,7 @@ export function FormattingToolbar({
           </DropdownMenu>
         </ToolGroup>
 
-        <Divider />
+        <Divider ribbon={ribbon} />
 
         {/* Clear formatting */}
         <ToolGroup label="Xóa định dạng" ribbon={ribbon}>

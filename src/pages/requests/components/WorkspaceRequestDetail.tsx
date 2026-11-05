@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   X,
@@ -65,11 +65,11 @@ export function WorkspaceRequestDetail({
 
   // Giữ lại request gần nhất khi animation đóng đang trượt ra
   // để nội dung không bị biến mất đột ngột làm giật layout
-  const lastActiveRequest = useRef<WorkspaceRequest | undefined>(request);
-  if (request) {
-    lastActiveRequest.current = request;
+  const [lastActiveRequest, setLastActiveRequest] = useState(request);
+  if (request && request !== lastActiveRequest) {
+    setLastActiveRequest(request);
   }
-  const displayRequest = request || lastActiveRequest.current;
+  const displayRequest = request || lastActiveRequest;
 
   // Tính số ngày còn lại đến hạn
   const today = new Date();

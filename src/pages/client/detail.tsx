@@ -41,12 +41,13 @@ export function ClientDetailPage() {
   const [mailOpen, setMailOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
 
+  const workspaceId = currentWorkspace?.id;
   const fetchClientDetail = useCallback(async () => {
     if (!id) return;
     setIsLoading(true);
     try {
       const data = await mockClientService.getClientById(
-        currentWorkspace?.id ?? "",
+        workspaceId ?? "",
         id,
       );
       setClient(data);
@@ -55,7 +56,7 @@ export function ClientDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [id]);
+  }, [workspaceId, id, t]);
 
   useEffect(() => {
     fetchClientDetail();

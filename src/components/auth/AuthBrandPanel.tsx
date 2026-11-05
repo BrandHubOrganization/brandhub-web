@@ -32,13 +32,13 @@ export function AuthBrandPanel() {
 
   return (
     <div
-      className="hidden w-[480px] shrink-0 flex-col justify-between rounded-3xl p-12 select-none lg:flex"
+      className="surface-dark hidden w-[480px] shrink-0 flex-col justify-between rounded-3xl p-12 select-none lg:flex"
       style={{ background: "hsl(var(--sidebar, 240 6% 4%))" }}
     >
       <div className="flex items-center gap-2.5">
         <div
           className="flex h-8 w-8 items-center justify-center rounded-md"
-          style={{ background: "hsl(var(--brand-orange, 15 88% 55%))" }}
+          style={{ background: "hsl(var(--primary))" }}
         >
           <BrandHubLogo />
         </div>
@@ -51,7 +51,7 @@ export function AuthBrandPanel() {
           }}
         >
           Brand
-          <span style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}>
+          <span style={{ color: "hsl(var(--brand-orange))" }}>
             Hub
           </span>
         </span>
@@ -63,7 +63,7 @@ export function AuthBrandPanel() {
             fontFamily: "var(--font-mono)",
             fontSize: "0.6875rem",
             letterSpacing: "0.12em",
-            color: "hsl(var(--brand-orange, 15 88% 55%))",
+            color: "hsl(var(--brand-orange))",
             textTransform: "uppercase",
             fontWeight: 500,
           }}
@@ -90,7 +90,7 @@ export function AuthBrandPanel() {
                 border: "1px solid rgba(240,90,40,0.3)",
                 fontSize: "0.8125rem",
                 fontWeight: 600,
-                color: "hsl(var(--brand-orange, 15 88% 55%))",
+                color: "hsl(var(--brand-orange))",
               }}
             >
               {active.initials}
@@ -125,7 +125,7 @@ export function AuthBrandPanel() {
                 width: i === index ? "16px" : "6px",
                 background:
                   i === index
-                    ? "hsl(var(--brand-orange, 15 88% 55%))"
+                    ? "hsl(var(--primary))"
                     : "rgba(255,255,255,0.15)",
               }}
             />

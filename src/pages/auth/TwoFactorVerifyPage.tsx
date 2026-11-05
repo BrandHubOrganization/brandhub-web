@@ -128,7 +128,7 @@ export function TwoFactorVerifyPage() {
             >
               <ShieldCheck
                 className="size-5"
-                style={{ color: "hsl(var(--brand-orange, 15 88% 55%))" }}
+                style={{ color: "hsl(var(--brand-orange))" }}
               />
             </div>
             <h1 className="text-foreground mb-1 text-center text-2xl font-bold tracking-tight">

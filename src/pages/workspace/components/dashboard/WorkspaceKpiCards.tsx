@@ -79,7 +79,7 @@ export function WorkspaceKpiCards({
           sublabel={
             dashboard.membersByRole
               ? Object.entries(dashboard.membersByRole)
-                  .map(([role, count]) => `${count} ${role}`)
+                  .map(([role, count]) => `${count} ${t(`workspace.roles.${role}`, role)}`)
                   .join(", ")
               : undefined
           }
@@ -100,7 +100,7 @@ export function WorkspaceKpiCards({
           sublabel={
             t("workspace.dashboard.packageStatus") +
             ": " +
-            (packageStatus || t("workspace.dashboard.noPackage"))
+            (packageStatus ? t(`mediaPackage.status.${packageStatus}`, packageStatus) : t("workspace.dashboard.noPackage"))
           }
           colorClass="text-purple-500"
           bgIconClass="bg-purple-500/10"
@@ -108,7 +108,7 @@ export function WorkspaceKpiCards({
       ) : (
         <StatCard
           label={t("workspace.dashboard.packageStatus")}
-          value={packageStatus || t("workspace.dashboard.noPackage")}
+          value={packageStatus ? t(`mediaPackage.status.${packageStatus}`, packageStatus) : t("workspace.dashboard.noPackage")}
           icon={PackageOpen}
           colorClass="text-purple-500"
           bgIconClass="bg-purple-500/10"

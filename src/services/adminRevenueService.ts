@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import { isAxiosError } from "axios";
 import { api } from "@/lib/axios";
 
@@ -86,7 +87,10 @@ export const adminRevenueService = {
     timezone: string;
   }): Promise<ReportExport> {
     const report = (
-      await api.post<{ data: ReportExport }>("/api/v1/admin/reports", request)
+      await api.post<{ data: ReportExport }>("/api/v1/admin/reports", {
+        ...request,
+        language: i18n.language?.startsWith("en") ? "en" : "vi",
+      })
     ).data.data;
     const file = await api.get<Blob>(report.downloadUrl, {
       responseType: "blob",

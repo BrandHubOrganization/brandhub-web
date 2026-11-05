@@ -1,12 +1,12 @@
 {
   "kpi": {
     "publishedSuccessTitle": "Published Successfully",
-    "systemTargetMet": "System target met",
-    "totalPostsTitle": "Total Posts (This Month)",
-    "totalPostsChange": "+12.4% vs last month",
-    "publishedChange": "+8.2% on schedule",
+    "systemTargetMet": "Published out of all publishing attempts",
+    "totalPostsTitle": "Total Posts",
+    "totalPostsChange": "Across your Workspaces",
+    "publishedChange": "All time",
     "failedTitle": "Failed Posts",
-    "failedChange": "-2 posts vs last week",
+    "failedChange": "Review and publish again",
     "successRateTitle": "Success Rate",
     "loadError": "Unable to load KPI analytics data",
     "retry": "Retry"
@@ -16,16 +16,17 @@
     "latestBadge": "10 latest events",
     "loadError": "Failed to load activity log",
     "retry": "Retry",
-    "empty": "No recent activity recorded yet."
+    "empty": "No recent activity recorded yet.",
+    "unknownActor": "Member",
+    "actions": {
+      "POST_PUBLISHED": "published a post",
+      "POST_FAILED": "failed to publish a post"
+    }
   },
   "quickTasks": {
     "greeting": "Welcome back, {{name}}!",
     "defaultUser": "User",
-    "subtitle": "The system is running smoothly. Here's an overview of your campaigns.",
-    "priorityTitle": "Today's priority tasks",
-    "task1": "Approve Heineken Campaign post (AM)",
-    "task2": "Schedule Nike Air Max post (Creator)",
-    "task3": "Review August content performance report"
+    "subtitle": "The system is running smoothly. Here's an overview of your campaigns."
   },
   "teamStats": {
     "title": "Team Performance (Team Stats)",
@@ -205,16 +206,20 @@
     "roleMember": "Member"
   },
   "charts": {
-    "lastUpdated": "Auto updated in real time",
-    "audienceTrendTitle": "Audience Reach Growth Trend",
+    "lastUpdated": "Updates automatically every 5 minutes",
+    "audienceTrendTitle": "Reach and engagement",
     "audienceTrendSubtitle": "Reach and engagement dynamics over the last 7 days",
     "reach": "Reach",
     "engagement": "Interactions",
-    "growthStat": "+24.8% this week vs previous week",
+    "growthStat": "{{value}}% vs the previous 7 days",
+    "noPreviousWeek": "No data from the previous 7 days to compare",
+    "empty": "No data yet",
+    "total": "Total",
+    "postsUnit": "posts",
     "contentStatusTitle": "Content Pipeline Status",
     "contentStatusSubtitle": "Distribution across review and publication stages",
-    "peakHoursTitle": "Publishing Density by Peak Hours",
-    "peakHoursSubtitle": "Time slots with highest user engagement during the day",
+    "peakHoursTitle": "Published posts by hour",
+    "peakHoursSubtitle": "Posts published in each hour, in your time",
     "goalsTitle": "Campaign Goal Milestones",
     "goalsSubtitle": "Quarterly marketing targets achievement rate"
   },

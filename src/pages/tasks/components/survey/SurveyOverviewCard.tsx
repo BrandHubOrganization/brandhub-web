@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { surveyService } from "@/services/surveyService";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { SurveyShareDialog } from "./SurveyShareDialog";
 import type { SurveyModel, SurveyAnalysis } from "@/pages/tasks/types/survey";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,10 @@ export function SurveyOverviewCard({
 }: SurveyOverviewCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const canEdit = useWorkspaceStore((s) => {
+    const role = s.currentMemberRole || s.currentWorkspace?.myRole;
+    return role === "MANAGER" || role === "CREATOR";
+  });
 
   const [loading, setLoading] = useState(true);
   const [survey, setSurvey] = useState<SurveyModel | null>(null);
@@ -111,7 +116,10 @@ export function SurveyOverviewCard({
           </div>
           <div className="min-w-0 space-y-0.5">
             <h3 className="text-foreground truncate text-sm font-semibold">
-              {survey?.formName || taskTitle || survey?.title || t("tasks.survey.overview.title")}
+              {survey?.formName ||
+                taskTitle ||
+                survey?.title ||
+                t("tasks.survey.overview.title")}
             </h3>
             <p className="text-muted-foreground text-xs">
               {t("tasks.survey.overview.description")}
@@ -176,15 +184,21 @@ export function SurveyOverviewCard({
 
       {/* Action Buttons */}
       <div className="border-border/60 flex flex-wrap items-center justify-end gap-2 border-t pt-2">
-        <Button
-          type="button"
-          variant="orange"
-          onClick={handleOpenEditor}
-          className="gap-2 shadow-xs"
-        >
-          <ExternalLink className="size-4" />
-          <span>{t("tasks.survey.overview.openEditor")}</span>
-        </Button>
+        {(canEdit || survey) && (
+          <Button
+            type="button"
+            variant="orange"
+            onClick={handleOpenEditor}
+            className="gap-2 shadow-xs"
+          >
+            <ExternalLink className="size-4" />
+            <span>
+              {canEdit
+                ? t("tasks.survey.overview.openEditor")
+                : t("tasks.survey.overview.viewResponses")}
+            </span>
+          </Button>
+        )}
 
         {isPublished && (
           <div className="flex items-center gap-2">

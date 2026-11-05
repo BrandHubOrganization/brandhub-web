@@ -39,15 +39,12 @@ export function TaskAssigneePicker({
   const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const systemRole = useAuthStore((s) => s.systemRole);
   const role = currentMemberRole || currentWorkspace?.myRole;
-  const canManage =
-    role === "MANAGER" ||
-    role === "OWNER" ||
-    systemRole === "ADMIN";
+  // Backend chỉ cho MANAGER phân công (TaskWorkflowPolicy.requireManager).
   const canPick =
-    canManage ||
+    role === "MANAGER" ||
+    systemRole === "ADMIN" ||
     Boolean(task?.allowedActions?.canAssign) ||
-    Boolean(task?.allowedActions?.canEditDetail) ||
-    (role !== "CLIENT" && task?.status !== "FINISHED" && task?.status !== "CANCELLED");
+    Boolean(task?.allowedActions?.canEditDetail);
 
   const field = useInlineTaskField(
     `task-${taskId}-${scope}-assignee`,

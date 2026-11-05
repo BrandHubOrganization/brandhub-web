@@ -317,7 +317,7 @@ export function CinematicHero() {
       >
         <LightRays
           raysOrigin="top-center"
-          raysColor="#f05a28"
+          raysColor="#ca3d0e"
           raysSpeed={1.2}
           lightSpread={1.6}
           rayLength={2.2}

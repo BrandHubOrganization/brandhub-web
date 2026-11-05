@@ -5,6 +5,7 @@ import type { TFunction } from "i18next";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { surveyService } from "@/services/surveyService";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { SurveyShareDialog } from "@/pages/tasks/components/survey/SurveyShareDialog";
 import { SurveyAnalysisView } from "@/pages/tasks/components/survey/SurveyAnalysisView";
 import { SurveyEditorHeader } from "./SurveyEditorHeader";
@@ -49,10 +50,17 @@ export default function SurveyEditorPage() {
   const workspaceId = id;
   const navigate = useNavigate();
   const { t } = useTranslation();
+  // The save API accepts Managers and Creators; Owners and Clients only read the results.
+  const canEdit = useWorkspaceStore((s) => {
+    const role = s.currentMemberRole || s.currentWorkspace?.myRole;
+    return role === "MANAGER" || role === "CREATOR";
+  });
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveStatus, setSaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
   const isInitialLoadRef = useRef(true);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedPayloadRef = useRef<string>("");
@@ -64,7 +72,9 @@ export default function SurveyEditorPage() {
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<SurveyQuestion[]>([]);
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"questions" | "responses">("questions");
+  const [activeTab, setActiveTab] = useState<"questions" | "responses">(
+    "questions",
+  );
   const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
@@ -82,14 +92,22 @@ export default function SurveyEditorPage() {
           const fVal = data.formName || data.title || "";
           const tVal = data.title || "";
           const dVal = data.description || "";
-          const qs = data.questions?.length ? data.questions : [createDefaultQ(t)];
+          const qs = data.questions?.length
+            ? data.questions
+            : [createDefaultQ(t)];
           setFormName(fVal);
           setTitle(tVal);
           setDescription(dVal);
           setQuestions(qs);
           setActiveQuestionId(qs[0].id);
           lastSavedPayloadRef.current = JSON.stringify(
-            buildSurveyPayload(fVal, tVal, dVal, qs, t("tasks.survey.questionTitlePlaceholder")),
+            buildSurveyPayload(
+              fVal,
+              tVal,
+              dVal,
+              qs,
+              t("tasks.survey.questionTitlePlaceholder"),
+            ),
           );
         } else {
           const fallback = [createDefaultQ(t)];
@@ -99,7 +117,13 @@ export default function SurveyEditorPage() {
           setQuestions(fallback);
           setActiveQuestionId(fallback[0].id);
           lastSavedPayloadRef.current = JSON.stringify(
-            buildSurveyPayload("", "", "", fallback, t("tasks.survey.questionTitlePlaceholder")),
+            buildSurveyPayload(
+              "",
+              "",
+              "",
+              fallback,
+              t("tasks.survey.questionTitlePlaceholder"),
+            ),
           );
         }
         if (analysisRes.status === "fulfilled") {
@@ -116,7 +140,9 @@ export default function SurveyEditorPage() {
   }, [workspaceId, taskId, t]);
 
   const handleBack = useCallback(() => {
-    navigate(`/workspaces/${encodeURIComponent(workspaceId)}/tasks?task=${encodeURIComponent(taskId)}`);
+    navigate(
+      `/workspaces/${encodeURIComponent(workspaceId)}/tasks?task=${encodeURIComponent(taskId)}`,
+    );
   }, [navigate, workspaceId, taskId]);
 
   const handleAddQuestion = () => {
@@ -132,7 +158,11 @@ export default function SurveyEditorPage() {
       id: "q_" + Math.random().toString(36).slice(2, 9),
       options: q.options ? [...q.options] : undefined,
     };
-    setQuestions((prev) => [...prev.slice(0, idx + 1), clone, ...prev.slice(idx + 1)]);
+    setQuestions((prev) => [
+      ...prev.slice(0, idx + 1),
+      clone,
+      ...prev.slice(idx + 1),
+    ]);
     setActiveQuestionId(clone.id);
   };
 
@@ -148,8 +178,13 @@ export default function SurveyEditorPage() {
     }
   };
 
-  const handleUpdateQuestion = (idx: number, updates: Partial<SurveyQuestion>) => {
-    setQuestions((prev) => prev.map((q, i) => (i === idx ? { ...q, ...updates } : q)));
+  const handleUpdateQuestion = (
+    idx: number,
+    updates: Partial<SurveyQuestion>,
+  ) => {
+    setQuestions((prev) =>
+      prev.map((q, i) => (i === idx ? { ...q, ...updates } : q)),
+    );
   };
 
   const handleSave = async () => {
@@ -171,7 +206,11 @@ export default function SurveyEditorPage() {
         questions,
         t("tasks.survey.questionTitlePlaceholder"),
       );
-      const saved = await surveyService.saveSurvey(workspaceId, taskId, payload);
+      const saved = await surveyService.saveSurvey(
+        workspaceId,
+        taskId,
+        payload,
+      );
       setSurvey(saved);
       lastSavedPayloadRef.current = JSON.stringify(payload);
       setSaveStatus("saved");
@@ -193,7 +232,7 @@ export default function SurveyEditorPage() {
       return;
     }
 
-    if (questions.length === 0) {
+    if (questions.length === 0 || !canEdit) {
       return;
     }
 
@@ -216,7 +255,11 @@ export default function SurveyEditorPage() {
     debounceTimerRef.current = setTimeout(async () => {
       try {
         setSaveStatus("saving");
-        const saved = await surveyService.saveSurvey(workspaceId, taskId, payload);
+        const saved = await surveyService.saveSurvey(
+          workspaceId,
+          taskId,
+          payload,
+        );
         setSurvey(saved);
         lastSavedPayloadRef.current = payloadStr;
         setSaveStatus("saved");
@@ -230,12 +273,22 @@ export default function SurveyEditorPage() {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [formName, title, description, questions, workspaceId, taskId, loading, t]);
+  }, [
+    formName,
+    title,
+    description,
+    questions,
+    workspaceId,
+    taskId,
+    loading,
+    t,
+    canEdit,
+  ]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-8 text-muted-foreground text-sm">
-        <Spinner className="size-6 mr-2 text-brand-orange" />
+      <div className="bg-background text-muted-foreground flex min-h-screen items-center justify-center p-8 text-sm">
+        <Spinner className="text-brand-orange mr-2 size-6" />
         <span>{t("tasks.loading")}</span>
       </div>
     );
@@ -249,7 +302,7 @@ export default function SurveyEditorPage() {
       : "";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <SurveyEditorHeader
         formName={formName}
         onFormNameChange={setFormName}
@@ -264,10 +317,11 @@ export default function SurveyEditorPage() {
         onSave={() => void handleSave()}
         saving={saving}
         saveStatus={saveStatus}
+        canEdit={canEdit}
       />
 
-      <main className="max-w-4xl mx-auto py-8 px-4 sm:px-6">
-        {activeTab === "questions" ? (
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        {canEdit && activeTab === "questions" ? (
           <SurveyQuestionsView
             title={title}
             description={description}

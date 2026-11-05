@@ -7,12 +7,8 @@ interface PostDashboardKpiCardsProps {
   kpis: PostKpiStats;
 }
 
-interface MetricBadgeProps {
-  text: string;
-  isNegative?: boolean;
-}
-
-function MetricBadge({ text, isNegative = false }: MetricBadgeProps) {
+function MetricBadge({ growth }: { growth: number }) {
+  const isNegative = growth < 0;
   return (
     <span
       className={cn(
@@ -25,7 +21,7 @@ function MetricBadge({ text, isNegative = false }: MetricBadgeProps) {
       ) : (
         <TrendingUp className="size-3" />
       )}
-      {text}
+      {`${growth >= 0 ? "+" : ""}${growth}%`}
     </span>
   );
 }
@@ -33,88 +29,62 @@ function MetricBadge({ text, isNegative = false }: MetricBadgeProps) {
 export function PostDashboardKpiCards({ kpis }: PostDashboardKpiCardsProps) {
   const { t } = useTranslation();
 
-  const reachGrowth = kpis.reachGrowth ?? 12.4;
-  const engagementsGrowth = kpis.engagementsGrowth ?? 8.2;
-  const postsGrowth = kpis.totalPostsGrowth ?? 0;
-  const rateGrowth = kpis.successRateGrowth ?? 1.5;
+  const cards = [
+    {
+      key: "reach",
+      label: t("publish.dashboard.kpi.reach", "LƯỢT TIẾP CẬN"),
+      value: kpis.totalReach.toLocaleString(),
+      growth: kpis.reachGrowth,
+    },
+    {
+      key: "engagements",
+      label: t("publish.dashboard.kpi.engagements", "TƯƠNG TÁC"),
+      value: kpis.totalEngagements.toLocaleString(),
+      growth: kpis.engagementsGrowth,
+    },
+    {
+      key: "posts",
+      label: t("publish.dashboard.kpi.posts", "BÀI ĐĂNG"),
+      value: kpis.totalPosts.toLocaleString(),
+      growth: kpis.totalPostsGrowth,
+    },
+    {
+      key: "successRate",
+      label: t(
+        "publish.dashboard.kpi.successRate",
+        "Tỷ lệ xuất bản thành công",
+      ),
+      value: `${kpis.successRate}%`,
+      growth: kpis.successRateGrowth,
+    },
+  ];
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {/* 1. LƯỢT TIẾP CẬN */}
-      <div className="bg-card border-border rounded-xl border p-5">
-        <p className="text-muted-foreground font-mono text-2xs font-semibold uppercase tracking-wider">
-          {t("publish.dashboard.kpi.reach", "LƯỢT TIẾP CẬN")}
-        </p>
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-foreground font-mono text-2xl font-bold tracking-tight">
-            {(kpis.totalReach ?? 0).toLocaleString()}
-          </span>
-          <MetricBadge
-            text={`${reachGrowth >= 0 ? "+" : ""}${reachGrowth}%`}
-            isNegative={reachGrowth < 0}
-          />
+      {cards.map((card) => (
+        <div
+          key={card.key}
+          className="bg-card border-border rounded-xl border p-5"
+        >
+          <p className="text-muted-foreground text-2xs font-mono font-semibold tracking-wider uppercase">
+            {card.label}
+          </p>
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-foreground font-mono text-2xl font-bold tracking-tight">
+              {card.value}
+            </span>
+            {card.growth !== null && <MetricBadge growth={card.growth} />}
+          </div>
+          <p className="text-muted-foreground text-2xs mt-1">
+            {card.growth !== null
+              ? t("publish.dashboard.kpi.vsPreviousPeriod", "So với kỳ trước")
+              : t(
+                  "publish.dashboard.kpi.noPreviousPeriod",
+                  "Chưa có dữ liệu kỳ trước",
+                )}
+          </p>
         </div>
-        <p className="text-muted-foreground text-2xs mt-1">
-          {t("publish.dashboard.kpi.vsLastMonth", "So với tháng trước")}
-        </p>
-      </div>
-
-      {/* 2. TƯƠNG TÁC */}
-      <div className="bg-card border-border rounded-xl border p-5">
-        <p className="text-muted-foreground font-mono text-2xs font-semibold uppercase tracking-wider">
-          {t("publish.dashboard.kpi.engagements", "TƯƠNG TÁC")}
-        </p>
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-foreground font-mono text-2xl font-bold tracking-tight">
-            {(kpis.totalEngagements ?? 0).toLocaleString()}
-          </span>
-          <MetricBadge
-            text={`${engagementsGrowth >= 0 ? "+" : ""}${engagementsGrowth}%`}
-            isNegative={engagementsGrowth < 0}
-          />
-        </div>
-        <p className="text-muted-foreground text-2xs mt-1">
-          {t("publish.dashboard.kpi.vsLastMonth", "So với tháng trước")}
-        </p>
-      </div>
-
-      {/* 3. BÀI ĐĂNG */}
-      <div className="bg-card border-border rounded-xl border p-5">
-        <p className="text-muted-foreground font-mono text-2xs font-semibold uppercase tracking-wider">
-          {t("publish.dashboard.kpi.posts", "BÀI ĐĂNG")}
-        </p>
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-foreground font-mono text-2xl font-bold tracking-tight">
-            {(kpis.totalPosts ?? 0).toLocaleString()}
-          </span>
-          <MetricBadge
-            text={`${postsGrowth >= 0 ? "+" : ""}${postsGrowth}%`}
-            isNegative={postsGrowth < 0}
-          />
-        </div>
-        <p className="text-muted-foreground text-2xs mt-1">
-          {t("publish.dashboard.kpi.sameAsLastMonth", "Bằng với tháng trước")}
-        </p>
-      </div>
-
-      {/* 4. TỶ LỆ PHẢN HỒI */}
-      <div className="bg-card border-border rounded-xl border p-5">
-        <p className="text-muted-foreground font-mono text-2xs font-semibold uppercase tracking-wider">
-          {t("publish.dashboard.kpi.responseRate", "TỶ LỆ PHẢN HỒI")}
-        </p>
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-foreground font-mono text-2xl font-bold tracking-tight">
-            {kpis.successRate}%
-          </span>
-          <MetricBadge
-            text={`${rateGrowth >= 0 ? "+" : ""}${rateGrowth}%`}
-            isNegative={rateGrowth < 0}
-          />
-        </div>
-        <p className="text-muted-foreground text-2xs mt-1">
-          {t("publish.dashboard.kpi.goodImprovement", "Cải thiện tốt")}
-        </p>
-      </div>
+      ))}
     </div>
   );
 }

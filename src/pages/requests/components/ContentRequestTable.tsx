@@ -356,7 +356,7 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
                           <Eye className="size-3.5" />
                         </Button>
 
-                        {(userRole === "MANAGER" || userRole === "CREATOR") && (
+                        {userRole === "MANAGER" && (
                           <Button
                             variant="ghost"
                             size="sm"

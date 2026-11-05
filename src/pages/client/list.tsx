@@ -39,12 +39,13 @@ export function ClientListPage() {
   const [clientForPackage, setClientForPackage] = useState<Client | null>(null);
   const [clientForDelete, setClientForDelete] = useState<Client | null>(null);
 
+  const workspaceId = currentWorkspace?.id;
   const load = useCallback(async () => {
     setIsLoading(true);
     setIsError(false);
     try {
       const { content, totalElements: total } =
-        await mockClientService.getClients(currentWorkspace?.id ?? "", {
+        await mockClientService.getClients(workspaceId ?? "", {
           search,
           page,
           size: PAGE_SIZE,
@@ -58,7 +59,7 @@ export function ClientListPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [search, page, t]);
+  }, [workspaceId, search, page, t]);
 
   useEffect(() => {
     let cancelled = false;

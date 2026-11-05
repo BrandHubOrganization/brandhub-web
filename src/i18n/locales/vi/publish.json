@@ -50,6 +50,11 @@
     "REJECTED": "Bị từ chối"
   },
   "dashboard": {
+    "kpis": {
+      "totalPosts": "Tổng bài viết",
+      "successRate": "Tỉ lệ thành công",
+      "scheduled": "Đã lên lịch"
+    },
     "title": "Bảng điều khiển xuất bản",
     "subtitle": "Theo dõi tiến độ, hiệu suất và phân bổ bài đăng đa nền tảng trong workspace.",
     "overviewTitle": "Hiệu suất Xuất bản Mạng xã hội",
@@ -73,23 +78,9 @@
     "datePicker": {
       "presetsTitle": "Khoảng thời gian"
     },
-    "videoMetrics": {
-      "views": "Lượt xem",
-      "viewsTooltip": "Số lần video của bạn được phát ít nhất 1 mili giây hoặc số lần video được xem lặp lại.",
-      "views3s": "Lượt xem trong tối thiểu 3 giây",
-      "views3sTooltip": "Số lần video được phát trong tối thiểu 3 giây hoặc gần hết thời lượng nếu video ngắn hơn 3 giây.",
-      "views1m": "Lượt xem trong tối thiểu 1 phút",
-      "views1mTooltip": "Số lần video được phát trong tối thiểu 1 phút hoặc gần hết thời lượng nếu video ngắn hơn 1 phút.",
-      "watchTime": "Thời gian xem",
-      "watchTimeTooltip": "Tổng số thời gian mọi người đã dành để xem video này."
-    },
     "insights": {
       "contentTypeTitle": "Lượt xem theo loại nội dung",
-      "contentTypeSubtitle": "Phân đoạn định dạng bài đăng và tỷ lệ tiếp cận",
-      "audienceTitle": "Lượt xem theo người theo dõi so với người chưa theo dõi",
-      "audienceSubtitle": "Tỷ lệ phân phối tới người dùng đã theo dõi hoặc chưa theo dõi Trang",
-      "followers": "Người theo dõi",
-      "nonFollowers": "Người chưa theo dõi"
+      "contentTypeSubtitle": "Phân đoạn định dạng bài đăng và tỷ lệ tiếp cận"
     },
     "contentTypes": {
       "PHOTO": "Ảnh",
@@ -117,10 +108,8 @@
       "reach": "LƯỢT TIẾP CẬN",
       "engagements": "TƯƠNG TÁC",
       "posts": "BÀI ĐĂNG",
-      "responseRate": "TỶ LỆ PHẢN HỒI",
-      "vsLastMonth": "So với tháng trước",
-      "sameAsLastMonth": "Bằng với tháng trước",
-      "goodImprovement": "Cải thiện tốt",
+      "vsPreviousPeriod": "So với kỳ trước",
+      "noPreviousPeriod": "Chưa có dữ liệu kỳ trước",
       "totalPosts": "Tổng bài viết",
       "totalPostsDesc": "Bao gồm tất cả bài đăng trong workspace",
       "successRate": "Tỷ lệ xuất bản thành công",

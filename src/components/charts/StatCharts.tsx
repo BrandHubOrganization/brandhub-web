@@ -15,9 +15,9 @@ import {
 import { useTranslation } from "react-i18next";
 
 // Brand orange + a few complementary tones for multi-slice charts — matches
-// --brand-orange (#f05a28) in globals.css.
+// --brand-orange (#ca3d0e) in globals.css.
 const PALETTE = [
-  "#f05a28",
+  "#ca3d0e",
   "#2d9cdb",
   "#27ae60",
   "#9b51e0",
@@ -67,7 +67,7 @@ export function BarStatChart({
           <XAxis dataKey="name" tick={{ fontSize: 11 }} />
           <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={28} />
           <Tooltip />
-          <Bar dataKey="value" fill="#f05a28" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="value" fill="#ca3d0e" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </ChartCard>
@@ -123,7 +123,7 @@ export function LineStatChart({
           <Line
             type="monotone"
             dataKey="count"
-            stroke="#f05a28"
+            stroke="#ca3d0e"
             strokeWidth={2}
             dot={{ r: 3 }}
           />

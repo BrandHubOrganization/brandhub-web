@@ -68,7 +68,6 @@ export function WorkspaceDashboardPage() {
         isPackageApproved={isPackageApproved}
         isPackageNegotiating={isPackageNegotiating}
         packageStatus={packageStatus ?? undefined}
-        isManagerOrOwner={isManagerOrOwner}
         onOpenLeaveDialog={() => setLeaveOpen(true)}
       />
 
@@ -137,7 +136,7 @@ export function WorkspaceDashboardPage() {
           </div>
 
           {/* ── Visual Analytics Section ── */}
-          <WorkspaceVisualAnalytics />
+          <WorkspaceVisualAnalytics workspaceId={workspaceId} />
         </>
       )}
 

@@ -77,7 +77,7 @@ export function AgencyDetailPage() {
   const [website, setWebsite] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
-  const [brandColor, setBrandColor] = useState("#f05a28");
+  const [brandColor, setBrandColor] = useState("#ca3d0e");
   const [logoIcon, setLogoIcon] = useState(LOGO_ICON_OPTIONS[0].name);
   const [tagline, setTagline] = useState("");
   const [foundedYear, setFoundedYear] = useState("");
@@ -146,7 +146,7 @@ export function AgencyDetailPage() {
     setWebsite(a.website || "");
     setPhone(a.phone || "");
     setLocation(a.location || "");
-    setBrandColor(a.brandColor || "#f05a28");
+    setBrandColor(a.brandColor || "#ca3d0e");
     setLogoIcon(a.logoIcon || LOGO_ICON_OPTIONS[0].name);
     setTagline(a.tagline || "");
     setFoundedYear(a.foundedYear ? String(a.foundedYear) : "");
@@ -426,7 +426,7 @@ export function AgencyDetailPage() {
                       <div
                         className="flex size-full items-center justify-center transition-colors text-white"
                         style={{
-                          backgroundColor: brandColor || "#f05a28",
+                          backgroundColor: brandColor || "#ca3d0e",
                           color: "#ffffff",
                         }}
                       >
@@ -450,7 +450,7 @@ export function AgencyDetailPage() {
                     <div
                       className="flex size-full items-center justify-center transition-colors text-white"
                       style={{
-                        backgroundColor: agency.brandColor || "#f05a28",
+                        backgroundColor: agency.brandColor || "#ca3d0e",
                         color: "#ffffff",
                       }}
                     >

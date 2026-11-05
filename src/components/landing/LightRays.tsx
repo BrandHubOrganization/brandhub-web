@@ -345,7 +345,7 @@ void main() {
       cleanupFunctionRef.current?.();
       cleanupFunctionRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     isVisible,
     raysOrigin,

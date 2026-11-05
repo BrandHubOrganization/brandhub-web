@@ -43,7 +43,7 @@ export const WorkspaceCreateLivePreview: React.FC<
   name,
   tagline,
   description,
-  brandColor = "#f05a28",
+  brandColor = "#ca3d0e",
   logoIcon,
   foundedYear,
   industry,
@@ -60,7 +60,6 @@ export const WorkspaceCreateLivePreview: React.FC<
   appliedTemplateName,
 }) => {
   const { t } = useTranslation();
-  const IconComponent = getLogoIcon(logoIcon);
 
   // Filter non-empty industry fields
   const activeIndustryEntries = industryFields
@@ -114,11 +113,11 @@ export const WorkspaceCreateLivePreview: React.FC<
             <div
               className="size-18 shrink-0 overflow-hidden rounded-2xl border-4 border-card bg-card shadow-md flex items-center justify-center transition-colors duration-300"
               style={{
-                backgroundColor: brandColor || "#f05a28",
+                backgroundColor: brandColor || "#ca3d0e",
                 color: "#ffffff",
               }}
             >
-              <IconComponent className="size-8 transition-transform" />
+              {React.createElement(getLogoIcon(logoIcon), { className: "size-8 transition-transform" })}
             </div>
 
             {/* Quick stats tags */}

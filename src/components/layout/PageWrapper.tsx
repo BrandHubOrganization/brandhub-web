@@ -2,6 +2,7 @@ import { AiCreditBalance } from "@/components/billing/AiCreditBalance";
 import { useLocation } from "react-router-dom";
 import * as React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Sparkles, BookOpen, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -42,6 +43,7 @@ export function PageWrapper({
   bannerIcon,
   hideBanner = false,
 }: PageWrapperProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   React.useEffect(() => {
     document.title = `${title} | BrandHub`;
@@ -91,10 +93,10 @@ export function PageWrapper({
               <Link
                 to={guideUrl}
                 className="border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium shadow-xs transition-colors"
-                title="Xem hướng dẫn chi tiết & tài liệu quản trị"
+                title={t("common.guideHint")}
               >
                 <BookOpen className="text-brand-orange size-3.5" />
-                <span>{guideLabel || "Hướng dẫn"}</span>
+                <span>{guideLabel || t("common.guide")}</span>
               </Link>
             )}
             {actions}
@@ -190,10 +192,10 @@ export function PageWrapper({
                       ? "border-white/20 bg-black/35 text-white backdrop-blur-md hover:bg-black/50"
                       : "bg-background/80 hover:bg-muted text-muted-foreground hover:text-foreground border-border",
                   )}
-                  title="Xem hướng dẫn chi tiết & tài liệu quản trị"
+                  title={t("common.guideHint")}
                 >
                   <BookOpen className="text-brand-orange size-3.5" />
-                  <span>{guideLabel || "Hướng dẫn"}</span>
+                  <span>{guideLabel || t("common.guide")}</span>
                 </Link>
               )}
               {actions}
