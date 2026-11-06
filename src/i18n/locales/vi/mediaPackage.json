@@ -384,5 +384,86 @@
     "openItem": "Xem chi tiết {{name}}",
     "closeItem": "Thu gọn chi tiết {{name}}",
     "noDetails": "Chưa có mô tả hoặc mục tiêu"
+  },
+  "editor": {
+    "editTitle": "Chỉnh sửa gói truyền thông",
+    "packageInfo": "Thông tin gói",
+    "budgetOptional": "Ngân sách · Tùy chọn",
+    "durationOptional": "Thời lượng · Tùy chọn",
+    "millions": "{{amount}} triệu",
+    "selected": "{{count}}/4 đã chọn",
+    "include": "Thêm {{service}} vào gói",
+    "notSelected": "Chưa chọn",
+    "chooseServices": "Tick dịch vụ để thêm vào gói. Mỗi dịch vụ có một hạng mục.",
+    "editingItem": "Hạng mục đang chỉnh sửa",
+    "nameSuggestions": "Gợi ý tên:",
+    "suggestionHint": "Tick gợi ý để thêm nội dung, hoặc nhập và chỉnh sửa trực tiếp.",
+    "draftHint": "Các thay đổi được giữ khi chuyển hạng mục. Bấm Lưu gói để cập nhật.",
+    "unsaved": "Có thay đổi chưa lưu",
+    "saveHint": "Bấm Lưu gói để cập nhật.",
+    "save": "Lưu gói",
+    "quantityError": "Nhập số nguyên lớn hơn 0.",
+    "characters": "{{count}}/{{max}} ký tự",
+    "legacy": "Hạng mục có sẵn được giữ nguyên. Không tự xóa hoặc gộp dữ liệu cũ.",
+    "suggestions": {
+      "SOCIAL_POST": {
+        "names": ["Bài đăng giới thiệu sản phẩm", "Bài đăng chia sẻ kiến thức"],
+        "descriptions": [
+          "Lên ý tưởng nội dung cho từng bài.",
+          "Biên soạn nội dung theo từng kênh đăng.",
+          "Đề xuất hình ảnh phù hợp thông điệp."
+        ],
+        "outcomes": [
+          "Đúng thông điệp thương hiệu và thông tin sản phẩm.",
+          "Không có lỗi chính tả, ngữ pháp.",
+          "Bàn giao đủ nội dung theo số lượng đã chốt."
+        ]
+      },
+      "PRESS_RECOMMENDATION": {
+        "names": [
+          "Bài báo giới thiệu thương hiệu",
+          "Bài báo giới thiệu sản phẩm"
+        ],
+        "descriptions": [
+          "Xây dựng góc tiếp cận và đề cương bài viết.",
+          "Biên soạn bài báo theo định hướng thương hiệu.",
+          "Chuẩn bị hình ảnh và tư liệu đi kèm."
+        ],
+        "outcomes": [
+          "Thông tin chính xác và có nguồn đối chiếu.",
+          "Đáp ứng phạm vi bài viết đã thống nhất.",
+          "Bàn giao đủ bài báo theo số lượng đã chốt."
+        ]
+      },
+      "EVENT_PLANNING": {
+        "names": ["Sự kiện ra mắt sản phẩm", "Sự kiện gặp gỡ khách hàng"],
+        "descriptions": [
+          "Xây dựng ý tưởng chủ đạo của sự kiện.",
+          "Xây dựng kịch bản và các mốc chuẩn bị.",
+          "Lập kế hoạch nội dung truyền thông sự kiện."
+        ],
+        "outcomes": [
+          "Kịch bản thể hiện rõ trình tự chương trình.",
+          "Kế hoạch phù hợp mục tiêu và đối tượng.",
+          "Các mốc triển khai được xác định rõ."
+        ]
+      },
+      "WORKSHOP_SUPPORT": {
+        "names": [
+          "Workshop chia sẻ kiến thức",
+          "Workshop trải nghiệm sản phẩm"
+        ],
+        "descriptions": [
+          "Xây dựng chủ đề và nội dung workshop.",
+          "Chuẩn bị tài liệu và nội dung trình bày.",
+          "Lên kế hoạch truyền thông cho workshop."
+        ],
+        "outcomes": [
+          "Nội dung phù hợp đối tượng tham dự.",
+          "Tài liệu đủ theo phạm vi đã thống nhất.",
+          "Lịch trình và hoạt động được mô tả rõ."
+        ]
+      }
+    }
   }
 }

@@ -1,9 +1,13 @@
 import { useEffect, useId, useRef, type ReactNode } from "react";
 import { ArrowLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 export function InlineWorkArea({
   title,
+  className,
+  compactHeader = false,
+  headerActions,
   description,
   backLabel,
   onBack,
@@ -13,6 +17,9 @@ export function InlineWorkArea({
   id: sectionId,
 }: {
   title: string;
+  className?: string;
+  compactHeader?: boolean;
+  headerActions?: ReactNode;
   description?: string;
   backLabel: string;
   onBack: () => void;
@@ -41,24 +48,46 @@ export function InlineWorkArea({
       id={sectionId}
       role="region"
       aria-labelledby={id}
-      className="border-border bg-card w-full min-w-0 space-y-6 rounded-xl border p-4 sm:p-6"
+      className={cn(
+        "border-border bg-card w-full min-w-0 space-y-6 rounded-xl border p-4 sm:p-6",
+        className,
+      )}
     >
-      <header className="border-border space-y-4 border-b pb-5">
+      <header
+        className={
+          headerActions
+            ? "border-border flex shrink-0 items-center gap-2 border-b pb-1"
+            : compactHeader
+              ? "flex shrink-0 flex-wrap items-center justify-between gap-3"
+              : "border-border space-y-4 border-b pb-5"
+        }
+      >
         <Button
           variant="outline"
-          className="min-h-11"
+          className={
+            headerActions
+              ? "size-11 shrink-0 p-0 sm:size-9"
+              : compactHeader
+                ? "order-2 ml-auto min-h-11"
+                : "min-h-11"
+          }
+          aria-label={headerActions ? backLabel : undefined}
+          title={headerActions ? backLabel : undefined}
           onClick={onBack}
           disabled={disabled}
         >
           <ArrowLeft aria-hidden className="size-4" />
-          {backLabel}
+          {!headerActions && backLabel}
         </Button>
-        <div className="space-y-2">
+        <div className={headerActions ? "min-w-0 flex-1" : "space-y-2"}>
           <h2
             id={id}
             ref={heading}
             tabIndex={-1}
-            className="focus-visible:ring-ring/50 rounded-sm text-xl font-semibold break-words outline-none focus-visible:ring-2"
+            className={cn(
+              "focus-visible:ring-ring/50 rounded-sm font-semibold break-words outline-none focus-visible:ring-2",
+              headerActions ? "line-clamp-2 text-sm leading-5" : "text-xl",
+            )}
           >
             {title}
           </h2>
@@ -68,6 +97,11 @@ export function InlineWorkArea({
             </p>
           )}
         </div>
+        {headerActions && (
+          <div className="flex shrink-0 items-center gap-2">
+            {headerActions}
+          </div>
+        )}
       </header>
       {children}
     </section>

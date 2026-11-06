@@ -384,5 +384,83 @@
     "openItem": "View details for {{name}}",
     "closeItem": "Collapse details for {{name}}",
     "noDetails": "No description or outcomes yet"
+  },
+  "editor": {
+    "editTitle": "Edit media package",
+    "packageInfo": "Package information",
+    "budgetOptional": "Budget · Optional",
+    "durationOptional": "Duration · Optional",
+    "millions": "{{amount}} million",
+    "selected": "{{count}}/4 selected",
+    "include": "Include {{service}} in package",
+    "notSelected": "Not selected",
+    "chooseServices": "Select services to include. Each service has one deliverable.",
+    "editingItem": "Currently editing this deliverable",
+    "nameSuggestions": "Suggested names:",
+    "suggestionHint": "Select suggestions to add content, or write and edit directly.",
+    "draftHint": "Edits are kept when switching deliverables. Save the package to apply them.",
+    "unsaved": "Unsaved changes",
+    "saveHint": "Save the package to apply changes.",
+    "save": "Save package",
+    "quantityError": "Enter a whole number greater than 0.",
+    "characters": "{{count}}/{{max}} characters",
+    "legacy": "Existing deliverable preserved. Older data is not automatically removed or merged.",
+    "suggestions": {
+      "SOCIAL_POST": {
+        "names": ["Product introduction posts", "Educational posts"],
+        "descriptions": [
+          "Develop content ideas for each post.",
+          "Write content tailored to each channel.",
+          "Propose visuals that match the message."
+        ],
+        "outcomes": [
+          "Match the brand message and product information.",
+          "No spelling or grammar errors.",
+          "Deliver the agreed number of content items."
+        ]
+      },
+      "PRESS_RECOMMENDATION": {
+        "names": [
+          "Brand introduction articles",
+          "Product introduction articles"
+        ],
+        "descriptions": [
+          "Develop the story angle and article outline.",
+          "Write articles aligned with the brand direction.",
+          "Prepare supporting visuals and materials."
+        ],
+        "outcomes": [
+          "Information is accurate and supported by sources.",
+          "Meet the agreed article scope.",
+          "Deliver the agreed number of articles."
+        ]
+      },
+      "EVENT_PLANNING": {
+        "names": ["Product launch event", "Customer meetup event"],
+        "descriptions": [
+          "Develop the event concept.",
+          "Create the programme and preparation milestones.",
+          "Plan event communication content."
+        ],
+        "outcomes": [
+          "The programme clearly describes the event sequence.",
+          "The plan fits its goals and audience.",
+          "Implementation milestones are clearly defined."
+        ]
+      },
+      "WORKSHOP_SUPPORT": {
+        "names": ["Knowledge sharing workshop", "Product experience workshop"],
+        "descriptions": [
+          "Develop the workshop topic and content.",
+          "Prepare handouts and presentation materials.",
+          "Plan workshop communication."
+        ],
+        "outcomes": [
+          "Content fits the intended participants.",
+          "Materials meet the agreed scope.",
+          "The schedule and activities are clearly described."
+        ]
+      }
+    }
   }
 }

@@ -76,6 +76,8 @@ export default function AgencyMediaPackagePage() {
   return (
     <PageWrapper
       hideBanner
+      hideHeader={createFormOpen}
+      className={createFormOpen ? "p-2 pb-2 md:p-3 md:pb-3" : undefined}
       title={t("mediaPackage.agencyPage.title")}
       description={t("mediaPackage.agencyPage.description")}
     >
@@ -146,6 +148,7 @@ export default function AgencyMediaPackagePage() {
         <CreateCustomPackageForm
           key={sourceTemplate?.id ?? "blank-package"}
           open={createFormOpen}
+          editing={Boolean(editingPackage)}
           sourceTemplate={sourceTemplate}
           loading={creatingCustom || updating}
           onOpenChange={handleCreateOpenChange}

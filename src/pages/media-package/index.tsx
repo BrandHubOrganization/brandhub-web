@@ -165,9 +165,10 @@ export default function WorkspaceMediaPackagePage() {
   return (
     <PageWrapper
       compact
+      hideHeader={editing}
       className={
         editing
-          ? "h-full min-h-0 overflow-y-auto"
+          ? "h-full min-h-0 overflow-hidden p-2 pb-2 md:p-3 md:pb-3"
           : "h-full overflow-y-auto pb-4 lg:flex lg:min-h-0 lg:flex-col lg:overflow-hidden lg:pb-4"
       }
       contentClassName={
@@ -231,6 +232,7 @@ export default function WorkspaceMediaPackagePage() {
           <CreateCustomPackageForm
             key={template?.id ?? "new"}
             open
+            editing={Boolean(selection.data)}
             sourceTemplate={template}
             loading={busy}
             onOpenChange={setEditing}
