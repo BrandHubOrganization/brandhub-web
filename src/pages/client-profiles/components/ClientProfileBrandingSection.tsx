@@ -5,7 +5,6 @@ import {
   Upload,
   Link as LinkIcon,
   X,
-  Palette,
   Loader2,
   Check,
   ImageIcon,
@@ -14,21 +13,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { LOGO_ICON_OPTIONS } from "@/pages/agency/logoIcons";
 import { BANNER_PRESETS } from "@/pages/agency/bannerPresets";
 import { cn } from "@/lib/utils";
-
-const COLOR_SWATCHES = [
-  "#f05a28", // Brand Orange
-  "#2563eb", // Royal Blue
-  "#059669", // Emerald
-  "#7c3aed", // Violet
-  "#e11d48", // Rose
-  "#d97706", // Amber
-  "#0891b2", // Cyan
-  "#475569", // Slate
-];
 
 export type LogoMode = "icon" | "upload" | "url";
 export type BannerMode = "preset" | "upload" | "url";
@@ -36,8 +23,6 @@ export type BannerMode = "preset" | "upload" | "url";
 interface ClientProfileBrandingSectionProps {
   logoMode: LogoMode;
   handleLogoModeChange: (mode: LogoMode) => void;
-  brandColor: string;
-  handleSelectBrandColor: (color: string) => void;
   logoIcon: string;
   handleSelectIcon: (iconName: string) => void;
   logoUrl: string;
@@ -72,8 +57,6 @@ export const ClientProfileBrandingSection: React.FC<
 > = ({
   logoMode,
   handleLogoModeChange,
-  brandColor,
-  handleSelectBrandColor,
   logoIcon,
   handleSelectIcon,
   logoUrl,
@@ -111,7 +94,7 @@ export const ClientProfileBrandingSection: React.FC<
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h3 className="text-sm font-semibold tracking-wide text-foreground">
-              2. {t("clientProfile.sectionLogo", "Logo đại diện & Màu sắc")}
+              2. {t("clientProfile.sectionLogo", "Logo đại diện")}
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
               {t(
@@ -122,12 +105,12 @@ export const ClientProfileBrandingSection: React.FC<
           </div>
 
           {/* Mode Tabs for Logo */}
-          <div className="inline-flex rounded-lg bg-muted p-1">
+          <div className="inline-flex max-w-full overflow-x-auto rounded-lg bg-muted p-1 shrink-0">
             <button
               type="button"
               onClick={() => handleLogoModeChange("icon")}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer",
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0",
                 logoMode === "icon"
                   ? "bg-card text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground",
@@ -140,7 +123,7 @@ export const ClientProfileBrandingSection: React.FC<
               type="button"
               onClick={() => handleLogoModeChange("upload")}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer",
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0",
                 logoMode === "upload"
                   ? "bg-card text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground",
@@ -153,7 +136,7 @@ export const ClientProfileBrandingSection: React.FC<
               type="button"
               onClick={() => handleLogoModeChange("url")}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer",
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0",
                 logoMode === "url"
                   ? "bg-card text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground",
@@ -165,45 +148,6 @@ export const ClientProfileBrandingSection: React.FC<
           </div>
         </div>
 
-        {/* Brand Color Picker with Swatches */}
-        <div className="flex flex-col gap-2 pt-1 border-t border-border">
-          <Label className="text-xs font-semibold tracking-wide flex items-center gap-1.5">
-            <Palette className="size-3.5 text-brand-orange" />
-            {t("clientProfile.brandColorLabel", "Màu sắc thương hiệu")}
-          </Label>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative flex items-center">
-              <input
-                type="color"
-                value={brandColor}
-                onChange={(e) => handleSelectBrandColor(e.target.value)}
-                className="size-8 cursor-pointer rounded-lg border border-border p-0.5 bg-card"
-                title={t("clientProfile.customColorTitle", "Chọn mã màu tùy biến")}
-              />
-            </div>
-            <div className="flex flex-wrap items-center gap-1.5">
-              {COLOR_SWATCHES.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => handleSelectBrandColor(color)}
-                  style={{ backgroundColor: color }}
-                  className={cn(
-                    "size-7 rounded-lg border transition-transform cursor-pointer flex items-center justify-center",
-                    brandColor.toLowerCase() === color.toLowerCase()
-                      ? "ring-2 ring-foreground ring-offset-2 ring-offset-background scale-110 border-transparent"
-                      : "border-transparent hover:scale-105",
-                  )}
-                  aria-label={t(
-                    "clientProfile.colorSwatchAria",
-                    "Màu {{color}}",
-                    { color },
-                  )}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
 
         {/* Tab 1: Built-in Icons Grid */}
         {logoMode === "icon" && (
@@ -230,10 +174,12 @@ export const ClientProfileBrandingSection: React.FC<
                     )}
                   >
                     <Icon
-                      className="size-6 transition-transform group-hover:scale-110"
-                      style={{
-                        color: isSelected ? brandColor : "currentColor",
-                      }}
+                      className={cn(
+                        "size-6 transition-transform group-hover:scale-110",
+                        isSelected
+                          ? "text-brand-orange"
+                          : "text-muted-foreground",
+                      )}
                     />
                     <span
                       className={cn(
@@ -405,12 +351,12 @@ export const ClientProfileBrandingSection: React.FC<
           </div>
 
           {/* Mode Tabs for Banner */}
-          <div className="inline-flex rounded-lg bg-muted p-1">
+          <div className="inline-flex max-w-full overflow-x-auto rounded-lg bg-muted p-1 shrink-0">
             <button
               type="button"
               onClick={() => setBannerMode("preset")}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer",
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0",
                 bannerMode === "preset"
                   ? "bg-card text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground",
@@ -423,7 +369,7 @@ export const ClientProfileBrandingSection: React.FC<
               type="button"
               onClick={() => setBannerMode("upload")}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer",
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0",
                 bannerMode === "upload"
                   ? "bg-card text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground",
@@ -436,7 +382,7 @@ export const ClientProfileBrandingSection: React.FC<
               type="button"
               onClick={() => setBannerMode("url")}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer",
+                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0",
                 bannerMode === "url"
                   ? "bg-card text-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground",
@@ -448,7 +394,7 @@ export const ClientProfileBrandingSection: React.FC<
             <button
               type="button"
               onClick={() => onOpenRecentModal("banner")}
-              className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <History className="size-3.5 text-brand-orange" />
               Ảnh cũ đã dùng

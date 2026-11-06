@@ -11,7 +11,6 @@ interface AgencyCreateLivePreviewProps {
   category: string;
   companySize: string;
   foundedYear: string;
-  brandColor: string;
   CurrentIcon: LucideIcon;
   description: string;
   website: string;
@@ -30,7 +29,6 @@ export const AgencyCreateLivePreview: React.FC<AgencyCreateLivePreviewProps> = (
   category,
   companySize,
   foundedYear,
-  brandColor,
   CurrentIcon,
   description,
   website,
@@ -89,13 +87,7 @@ export const AgencyCreateLivePreview: React.FC<AgencyCreateLivePreviewProps> = (
               className="size-full object-cover"
             />
           ) : (
-            <div
-              className="flex size-full items-center justify-center transition-colors text-white"
-              style={{
-                backgroundColor: brandColor || "#f05a28",
-                color: "#ffffff",
-              }}
-            >
+            <div className="flex size-full items-center justify-center transition-colors bg-brand-orange text-white">
               <CurrentIcon
                 className="size-10 sm:size-12 transition-transform text-white"
               />

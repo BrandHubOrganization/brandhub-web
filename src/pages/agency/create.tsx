@@ -48,7 +48,6 @@ export function CreateAgencyPage() {
   const [website, setWebsite] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
-  const [brandColor, setBrandColor] = useState("#f05a28");
   const [tagline, setTagline] = useState("");
   const [foundedYear, setFoundedYear] = useState("");
   const [facebookUrl, setFacebookUrl] = useState("");
@@ -310,7 +309,6 @@ export function CreateAgencyPage() {
         website: website.trim() || undefined,
         phone: phone.trim() || undefined,
         location: location.trim() || undefined,
-        brandColor: brandColor || undefined,
         tagline: tagline.trim() || undefined,
         foundedYear: foundedYear ? parseInt(foundedYear, 10) : undefined,
         facebookUrl: facebookUrl.trim() || undefined,
@@ -320,7 +318,7 @@ export function CreateAgencyPage() {
           logoMode === "url" && logoUrlInput.trim()
             ? logoUrlInput.trim()
             : logoMode === "icon"
-              ? `seed:${logoIcon}:${brandColor}`
+              ? `seed:${logoIcon}`
               : undefined,
         bannerUrl:
           bannerMode === "url" && bannerUrlInput.trim()
@@ -414,12 +412,10 @@ export function CreateAgencyPage() {
               />
             </div>
 
-            {/* SECTION 2 & 3: Logo, Color, Banner */}
+            {/* SECTION 2 & 3: Logo & Banner */}
             <AgencyBrandingSection
               logoMode={logoMode}
               setLogoMode={setLogoMode}
-              brandColor={brandColor}
-              setBrandColor={setBrandColor}
               logoIcon={logoIcon}
               setLogoIcon={setLogoIcon}
               logoPreviewUrl={logoPreviewUrl || ""}
@@ -636,7 +632,6 @@ export function CreateAgencyPage() {
           category={category}
           companySize={companySize}
           foundedYear={foundedYear}
-          brandColor={brandColor}
           CurrentIcon={CurrentIcon}
           description={description}
           website={website}

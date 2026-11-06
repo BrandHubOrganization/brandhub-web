@@ -214,7 +214,6 @@ export function ClientProfileForm({
   // Logo state
   const [logoMode, setLogoMode] = useState<LogoMode>(initialParsed.mode);
   const [logoIcon, setLogoIcon] = useState(initialParsed.icon);
-  const [brandColor, setBrandColor] = useState(initialParsed.color);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -387,11 +386,10 @@ export function ClientProfileForm({
   const handleLogoModeChange = (mode: LogoMode) => {
     setLogoMode(mode);
     if (mode === "icon") {
-      const iconUrl = `icon:${logoIcon}:${brandColor}`;
+      const iconUrl = `icon:${logoIcon}:#f05a28`;
       setValues((prev) => ({
         ...prev,
         logoUrl: iconUrl,
-        brandColor,
       }));
     } else if (mode === "upload") {
       // If currently an icon, clear it so user can upload
@@ -407,26 +405,11 @@ export function ClientProfileForm({
 
   const handleSelectIcon = (iconName: string) => {
     setLogoIcon(iconName);
-    const iconUrl = `icon:${iconName}:${brandColor}`;
+    const iconUrl = `icon:${iconName}:#f05a28`;
     setValues((prev) => ({
       ...prev,
       logoUrl: iconUrl,
-      brandColor,
     }));
-  };
-
-  const handleSelectBrandColor = (color: string) => {
-    setBrandColor(color);
-    if (logoMode === "icon") {
-      const iconUrl = `icon:${logoIcon}:${color}`;
-      setValues((prev) => ({
-        ...prev,
-        logoUrl: iconUrl,
-        brandColor: color,
-      }));
-    } else {
-      setValues((prev) => ({ ...prev, brandColor: color }));
-    }
   };
 
   const handleLogoFileUpload = async (file: File) => {
@@ -667,8 +650,6 @@ export function ClientProfileForm({
       <ClientProfileBrandingSection
         logoMode={logoMode}
         handleLogoModeChange={handleLogoModeChange}
-        brandColor={brandColor}
-        handleSelectBrandColor={handleSelectBrandColor}
         logoIcon={logoIcon}
         handleSelectIcon={handleSelectIcon}
         logoUrl={values.logoUrl}
