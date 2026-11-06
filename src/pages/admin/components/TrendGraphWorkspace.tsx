@@ -31,12 +31,12 @@ export function TrendGraphWorkspace({ graph }: { graph: TrendGraph }) {
     () => new Set(),
   );
   const [hiddenLabels, setHiddenLabels] = useState<Set<string>>(
-    () => new Set(),
+    () => new Set(["CrawledPost"]),
   );
   const [expandingNodeId, setExpandingNodeId] = useState<string | null>(null);
   const [inspectorOpen, setInspectorOpen] = useState(true);
   const [highlightNeighbors, setHighlightNeighbors] = useState(false);
-  const [showEdgeLabels, setShowEdgeLabels] = useState(true);
+  const [showEdgeLabels, setShowEdgeLabels] = useState(false);
 
   const mergedBaseGraph = useMemo(() => {
     if (!extraGraphs.length) return graph;
@@ -46,16 +46,11 @@ export function TrendGraphWorkspace({ graph }: { graph: TrendGraph }) {
     );
   }, [graph, extraGraphs]);
 
-  const activeGraph = useMemo<TrendGraph>(() => {
-    if (hiddenNodeIds.size === 0 && hiddenLabels.size === 0) {
-      return mergedBaseGraph;
-    }
-    const visibleNodes = mergedBaseGraph.nodes.filter((node) => {
-      if (node.id === mergedBaseGraph.rootId) return true;
-      if (hiddenNodeIds.has(node.id)) return false;
-      if (hiddenLabels.has(node.type)) return false;
-      return true;
-    });
+  const baseGraph = useMemo<TrendGraph>(() => {
+    if (hiddenNodeIds.size === 0) return mergedBaseGraph;
+    const visibleNodes = mergedBaseGraph.nodes.filter(
+      (node) => node.id === mergedBaseGraph.rootId || !hiddenNodeIds.has(node.id),
+    );
     const visibleIds = new Set(visibleNodes.map((node) => node.id));
     const visibleEdges = mergedBaseGraph.edges.filter(
       (edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target),
@@ -67,7 +62,29 @@ export function TrendGraphWorkspace({ graph }: { graph: TrendGraph }) {
       nodeCount: visibleNodes.length,
       edgeCount: visibleEdges.length,
     };
-  }, [mergedBaseGraph, hiddenNodeIds, hiddenLabels]);
+  }, [mergedBaseGraph, hiddenNodeIds]);
+
+  const activeGraph = useMemo<TrendGraph>(() => {
+    if (hiddenLabels.size === 0) {
+      return baseGraph;
+    }
+    const visibleNodes = baseGraph.nodes.filter((node) => {
+      if (node.id === baseGraph.rootId) return true;
+      if (hiddenLabels.has(node.type)) return false;
+      return true;
+    });
+    const visibleIds = new Set(visibleNodes.map((node) => node.id));
+    const visibleEdges = baseGraph.edges.filter(
+      (edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target),
+    );
+    return {
+      ...baseGraph,
+      nodes: visibleNodes,
+      edges: visibleEdges,
+      nodeCount: visibleNodes.length,
+      edgeCount: visibleEdges.length,
+    };
+  }, [baseGraph, hiddenLabels]);
 
   const selectedNode = useMemo(
     () =>
@@ -88,8 +105,12 @@ export function TrendGraphWorkspace({ graph }: { graph: TrendGraph }) {
     return count;
   }, [activeGraph.edges, selectedNode]);
 
+  const isDefaultHiddenLabels =
+    hiddenLabels.size === 1 && hiddenLabels.has("CrawledPost");
   const hasSceneModifications =
-    extraGraphs.length > 0 || hiddenNodeIds.size > 0 || hiddenLabels.size > 0;
+    extraGraphs.length > 0 ||
+    hiddenNodeIds.size > 0 ||
+    !isDefaultHiddenLabels;
 
   const handleExpandNode = async (nodeId: string) => {
     if (expandingNodeId) return;
@@ -131,7 +152,7 @@ export function TrendGraphWorkspace({ graph }: { graph: TrendGraph }) {
   const handleResetScene = () => {
     setExtraGraphs([]);
     setHiddenNodeIds(new Set());
-    setHiddenLabels(new Set());
+    setHiddenLabels(new Set(["CrawledPost"]));
     setFocus({ kind: "node", id: graph.rootId });
   };
 
@@ -175,23 +196,6 @@ export function TrendGraphWorkspace({ graph }: { graph: TrendGraph }) {
         </Button>
       </div>
 
-      {activeGraph.truncated && (
-        <div
-          role="status"
-          className="bg-muted space-y-1 rounded-xl border p-3 text-sm"
-        >
-          <p className="font-medium">{t("admin.trendGraph.truncated")}</p>
-          <p>
-            {activeGraph.truncationReasons
-              .map((reason) =>
-                t(`admin.trendGraph.reasons.${reason}`, {
-                  defaultValue: reason,
-                }),
-              )
-              .join(" · ")}
-          </p>
-        </div>
-      )}
 
       {activeGraph.nodeCount === 1 && activeGraph.edgeCount === 0 && (
         <p className="text-muted-foreground text-sm">
@@ -294,7 +298,7 @@ export function TrendGraphWorkspace({ graph }: { graph: TrendGraph }) {
         )}
       >
         <TrendGraphCanvas
-          graph={activeGraph}
+          graph={baseGraph}
           focus={focus}
           onFocus={setFocus}
           onExpandNode={(nodeId) => void handleExpandNode(nodeId)}
