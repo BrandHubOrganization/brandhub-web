@@ -1,18 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ProvinceSelect } from "@/components/ui/province-select";
+import { VietnamAddressPicker } from "@/components/ui/vietnam-address-picker";
 import { BUDGET_RANGES } from "@/pages/client-profiles/constants";
 import { COMPANY_SIZES } from "@/pages/agency/constants";
 import { WORKSPACE_INDUSTRIES } from "@/pages/workspace/constants";
 import { BANNER_PRESETS } from "@/pages/agency/bannerPresets";
 import { clientProfileService } from "@/services/clientProfileService";
-import { ImageCropperModal, RecentAssetsModal } from "@/components/shared/image-editor";
+import {
+  ImageCropperModal,
+  RecentAssetsModal,
+} from "@/components/shared/image-editor";
 import { saveRecentAsset } from "@/utils/recentAssetsStorage";
 import { useAuthStore } from "@/store/authStore";
 import type { CompanySize } from "@/types/agency";
@@ -76,13 +80,7 @@ interface Props {
   onValuesChange?: (values: ClientProfileFormValues) => void;
 }
 
-
-const URL_FIELDS = [
-  "website",
-  "linkedin",
-  "facebook",
-  "instagram",
-] as const;
+const URL_FIELDS = ["website", "linkedin", "facebook", "instagram"] as const;
 
 function parseInitialLogo(logoUrl?: string | null): {
   mode: LogoMode;
@@ -222,8 +220,12 @@ export function ClientProfileForm({
     () => parseInitialBanner(initial?.bannerUrl),
     [initial],
   );
-  const [bannerMode, setBannerMode] = useState<BannerMode>(initialBannerParsed.mode);
-  const [selectedPresetId, setSelectedPresetId] = useState(initialBannerParsed.presetId);
+  const [bannerMode, setBannerMode] = useState<BannerMode>(
+    initialBannerParsed.mode,
+  );
+  const [selectedPresetId, setSelectedPresetId] = useState(
+    initialBannerParsed.presetId,
+  );
   const [bannerUrlInput, setBannerUrlInput] = useState(
     initialBannerParsed.mode === "url" ? initialBannerParsed.url : "",
   );
@@ -238,7 +240,9 @@ export function ClientProfileForm({
   const [cropperUrl, setCropperUrl] = useState<string | null>(null);
   const [cropperType, setCropperType] = useState<"logo" | "banner">("logo");
   const [isCropperOpen, setIsCropperOpen] = useState(false);
-  const [recentModalCategory, setRecentModalCategory] = useState<"logo" | "banner" | null>(null);
+  const [recentModalCategory, setRecentModalCategory] = useState<
+    "logo" | "banner" | null
+  >(null);
 
   const dirty = useMemo(
     () =>
@@ -418,9 +422,7 @@ export function ClientProfileForm({
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
-      toast.error(
-        t("agency.create.uploadHint", "Kích thước ảnh tối đa 5MB"),
-      );
+      toast.error(t("agency.create.uploadHint", "Kích thước ảnh tối đa 5MB"));
       return;
     }
 
@@ -484,7 +486,10 @@ export function ClientProfileForm({
       );
     } catch (err: unknown) {
       toast.error(
-        extractErrorMessage(err, t("common.uploadFailed", "Không thể tải ảnh lên")),
+        extractErrorMessage(
+          err,
+          t("common.uploadFailed", "Không thể tải ảnh lên"),
+        ),
       );
     } finally {
       setUploadingBanner(false);
@@ -548,7 +553,10 @@ export function ClientProfileForm({
     const rawYear = values.foundedYear.trim();
     const year = rawYear ? Number(rawYear) : null;
     if (rawYear && !isValidFoundedYear(rawYear)) {
-      next.foundedYear = t("clientProfile.invalidYear", "Năm thành lập không hợp lệ");
+      next.foundedYear = t(
+        "clientProfile.invalidYear",
+        "Năm thành lập không hợp lệ",
+      );
     }
 
     if (values.phone.trim() && !isValidPhone(values.phone.trim())) {
@@ -602,8 +610,8 @@ export function ClientProfileForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* SECTION 1: Basic Information */}
-      <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
-        <h3 className="text-sm font-semibold tracking-wide text-foreground">
+      <div className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
+        <h3 className="text-foreground text-sm font-semibold tracking-wide">
           1. {t("clientProfile.sectionGeneral", "Thông tin chung")}
         </h3>
 
@@ -622,7 +630,10 @@ export function ClientProfileForm({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Input
             label={t("clientProfile.companyLabel", "Công ty")}
-            placeholder={t("clientProfile.companyPlaceholder", "VD: Công ty TNHH Cà phê Nhà Làm")}
+            placeholder={t(
+              "clientProfile.companyPlaceholder",
+              "VD: Công ty TNHH Cà phê Nhà Làm",
+            )}
             value={values.company}
             onChange={set("company")}
           />
@@ -701,8 +712,8 @@ export function ClientProfileForm({
       />
 
       {/* SECTION 4: Business & Classification */}
-      <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
-        <h3 className="text-sm font-semibold tracking-wide text-foreground">
+      <div className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
+        <h3 className="text-foreground text-sm font-semibold tracking-wide">
           4. {t("clientProfile.sectionBusiness", "Thông tin doanh nghiệp")}
         </h3>
 
@@ -731,10 +742,7 @@ export function ClientProfileForm({
             <Label className="text-xs font-semibold tracking-wide">
               {t("clientProfile.companySizeLabel", "Quy mô công ty")}
             </Label>
-            <Select
-              value={values.companySize}
-              onChange={set("companySize")}
-            >
+            <Select value={values.companySize} onChange={set("companySize")}>
               <option value="">
                 {t("clientProfile.companySizePlaceholder", "Chọn quy mô")}
               </option>
@@ -773,10 +781,7 @@ export function ClientProfileForm({
             <Label className="text-xs font-semibold tracking-wide">
               {t("clientProfile.budgetRangeLabel", "Ngân sách marketing")}
             </Label>
-            <Select
-              value={values.budgetRange}
-              onChange={set("budgetRange")}
-            >
+            <Select value={values.budgetRange} onChange={set("budgetRange")}>
               <option value="">
                 {t(
                   "clientProfile.budgetRangePlaceholder",
@@ -802,8 +807,8 @@ export function ClientProfileForm({
       </div>
 
       {/* SECTION 5: Contact Information */}
-      <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
-        <h3 className="text-sm font-semibold tracking-wide text-foreground">
+      <div className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
+        <h3 className="text-foreground text-sm font-semibold tracking-wide">
           5. {t("clientProfile.sectionContact", "Thông tin liên hệ")}
         </h3>
 
@@ -845,13 +850,6 @@ export function ClientProfileForm({
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <ProvinceSelect
-            label={t("clientProfile.locationLabel", "Tỉnh / Thành phố")}
-            value={values.location}
-            onChange={(val) =>
-              setValues((prev) => ({ ...prev, location: val }))
-            }
-          />
           <Input
             label={t("clientProfile.taxCodeLabel", "Mã số thuế")}
             inputMode="numeric"
@@ -863,20 +861,30 @@ export function ClientProfileForm({
           />
         </div>
 
-        <Input
-          label={t("clientProfile.addressLabel", "Địa chỉ chi tiết")}
-          placeholder={t(
-            "clientProfile.addressPlaceholder",
-            "VD: 12 Nguyễn Huệ, Quận 1, TP.HCM",
-          )}
-          value={values.address}
-          onChange={set("address")}
+        <VietnamAddressPicker
+          locationValue={values.location}
+          addressValue={values.address}
+          onLocationChange={(loc) =>
+            setValues((prev) => ({ ...prev, location: loc }))
+          }
+          onAddressChange={(addr) =>
+            setValues((prev) => ({ ...prev, address: addr }))
+          }
+          disabled={submitting}
+          labels={{
+            province: t("clientProfile.locationLabel", "Tỉnh / Thành phố"),
+            fullAddress: t("clientProfile.addressLabel", "Địa chỉ chi tiết"),
+          }}
+          errors={{
+            location: errors.location,
+            address: errors.address,
+          }}
         />
       </div>
 
       {/* SECTION 6: Social Media & Bio */}
-      <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
-        <h3 className="text-sm font-semibold tracking-wide text-foreground">
+      <div className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
+        <h3 className="text-foreground text-sm font-semibold tracking-wide">
           6. {t("clientProfile.sectionSocial", "Mạng xã hội & Giới thiệu")}
         </h3>
 
@@ -888,6 +896,9 @@ export function ClientProfileForm({
             onChange={set("facebook")}
             onBlur={() => handleUrlBlur("facebook")}
             error={errors.facebook}
+            iconPrefix={
+              <FaFacebook className="size-4 text-blue-600 dark:text-blue-400" />
+            }
           />
           <Input
             label={t("clientProfile.linkedinLabel", "LinkedIn")}
@@ -896,6 +907,9 @@ export function ClientProfileForm({
             onChange={set("linkedin")}
             onBlur={() => handleUrlBlur("linkedin")}
             error={errors.linkedin}
+            iconPrefix={
+              <FaLinkedin className="size-4 text-sky-600 dark:text-sky-400" />
+            }
           />
           <Input
             label={t("clientProfile.instagramLabel", "Instagram")}
@@ -904,13 +918,19 @@ export function ClientProfileForm({
             onChange={set("instagram")}
             onBlur={() => handleUrlBlur("instagram")}
             error={errors.instagram}
+            iconPrefix={
+              <FaInstagram className="size-4 text-pink-600 dark:text-pink-400" />
+            }
           />
         </div>
 
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-semibold tracking-wide">
-              {t("clientProfile.descriptionLabel", "Mô tả / Giới thiệu thương hiệu")}
+              {t(
+                "clientProfile.descriptionLabel",
+                "Mô tả / Giới thiệu thương hiệu",
+              )}
             </Label>
             <CharacterCounter current={values.description.length} max={1000} />
           </div>
@@ -937,7 +957,10 @@ export function ClientProfileForm({
             value={values.note}
             onChange={set("note")}
             maxLength={500}
-            placeholder={t("clientProfile.notePlaceholder", "Ghi chú dành riêng cho bạn khi quản lý hồ sơ này...")}
+            placeholder={t(
+              "clientProfile.notePlaceholder",
+              "Ghi chú dành riêng cho bạn khi quản lý hồ sơ này...",
+            )}
             rows={2}
           />
         </div>
