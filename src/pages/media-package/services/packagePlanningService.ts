@@ -20,6 +20,23 @@ export interface PackagePreparation {
   canEditPackage: boolean;
   canDeploy: boolean;
 }
+export interface PackageAffectedTask {
+  taskId: string;
+  name: string;
+  reason: string;
+}
+export interface PackageRemovalGroup {
+  deliverableId: string;
+  name: string;
+  removeCount: number;
+  candidates: PackageAffectedTask[];
+}
+export interface PackageChangeImpact {
+  termsVersion: number;
+  blocked: boolean;
+  affectedTasks: PackageAffectedTask[];
+  removalGroups?: PackageRemovalGroup[];
+}
 export const packagePlanningService = {
   impact: async (
     id: string,
@@ -28,16 +45,14 @@ export const packagePlanningService = {
     requestId: string,
   ) =>
     (
-      await api.post<
-        ApiResponse<{
-          blocked: boolean;
-          affectedTasks: { taskId: string; name: string; reason: string }[];
-        }>
-      >(`/api/v1/workspaces/${id}/media-package/impact`, {
-        packageDetails,
-        expectedTermsVersion,
-        requestId,
-      })
+      await api.post<ApiResponse<PackageChangeImpact>>(
+        `/api/v1/workspaces/${id}/media-package/impact`,
+        {
+          packageDetails,
+          expectedTermsVersion,
+          requestId,
+        },
+      )
     ).data.data,
   selection: async (id: string) =>
     (
@@ -56,11 +71,17 @@ export const packagePlanningService = {
     packageDetails: CreateCustomMediaPackageRequest,
     expectedTermsVersion: number,
     requestId: string,
+    confirmedRemovedTaskIds?: string[],
   ) =>
     (
       await api.put<ApiResponse<PackagePreparation>>(
         `/api/v1/workspaces/${id}/media-package`,
-        { packageDetails, expectedTermsVersion, requestId },
+        {
+          packageDetails,
+          expectedTermsVersion,
+          requestId,
+          confirmedRemovedTaskIds,
+        },
       )
     ).data.data,
   retry: async (id: string, expectedTermsVersion: number) =>

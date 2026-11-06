@@ -465,5 +465,18 @@
         ]
       }
     }
+  },
+  "impact": {
+    "title": "Xác nhận cập nhật công việc",
+    "choose": "Chọn {{count}} công việc cần bỏ",
+    "selected": "Đã chọn {{count}} công việc",
+    "cancel": "Quay lại chỉnh sửa",
+    "confirm": "Đồng ý và lưu gói",
+    "descriptionRemove": "Bạn có đồng ý bỏ các hạng mục sau khỏi kế hoạch Campaign không?",
+    "descriptionReduce": "Chọn các công việc cần bỏ để cập nhật số lượng trong kế hoạch Campaign.",
+    "descriptionMixed": "Xác nhận các hạng mục bị bỏ và chọn công việc cần bỏ ở những hạng mục giảm số lượng.",
+    "removeItems": "Hạng mục bỏ khỏi kế hoạch",
+    "reduceTasks": "Hạng mục giảm số lượng",
+    "preserveHistory": "Công việc bị loại sẽ được hủy; nội dung, bình luận và lịch sử vẫn được giữ."
   }
 }

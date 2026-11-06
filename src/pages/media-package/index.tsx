@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
+import { PackageImpactDialog } from "@/pages/media-package/components/PackageImpactDialog";
+import { usePackageImpactConfirmation } from "@/pages/media-package/hooks/usePackageImpactConfirmation";
 import { CreateCustomPackageForm } from "@/pages/media-package/components/CreateCustomPackageForm";
 import { WorkspacePackageOverview } from "@/pages/media-package/components/WorkspacePackageOverview";
 import { MediaPackageLoadingState } from "@/pages/media-package/components/MediaPackagePageState";
@@ -35,9 +37,7 @@ export default function WorkspaceMediaPackagePage() {
   const canBrowse = canManage || role === "CLIENT";
   const [template, setTemplate] = useState<MediaPackage | null>(null);
   const [busy, setBusy] = useState(false);
-  const [affectedTasks, setAffectedTasks] = useState<
-    { taskId: string; name: string }[]
-  >([]);
+  const confirmation = usePackageImpactConfirmation(id);
   const request = useRef<{ payload: string; id: string } | null>(null);
   const selection = useQuery({
     queryKey: ["workspace-package", id],
@@ -104,16 +104,22 @@ export default function WorkspaceMediaPackagePage() {
         current?.termsVersion ?? 0,
         request.current.id,
       );
-      setAffectedTasks(impact.affectedTasks);
+      let confirmedRemovedTaskIds: string[] | undefined;
       if (impact.blocked) {
-        toast.error(t("campaign.errors.PACKAGE_IMPACT_BLOCKED"));
-        return false;
+        if (!impact.removalGroups?.length) {
+          toast.error(t("campaign.errors.PACKAGE_IMPACT_BLOCKED"));
+          return false;
+        }
+        const decision = await confirmation.confirm(impact);
+        if (decision === null) return false;
+        confirmedRemovedTaskIds = decision;
       }
       await packagePlanningService.save(
         id,
         packageDetails,
         current?.termsVersion ?? 0,
         request.current.id,
+        confirmedRemovedTaskIds,
       );
       request.current = null;
       setEditing(false);
@@ -159,7 +165,6 @@ export default function WorkspaceMediaPackagePage() {
     if (!canEdit) return;
     setTemplate(value);
     setViewing(value ? { workspaceId: id, packageId: value.id } : null);
-    setAffectedTasks([]);
     setEditing(true);
   }
   return (
@@ -215,18 +220,11 @@ export default function WorkspaceMediaPackagePage() {
               )}
             </section>
           )}
-        {editing && affectedTasks.length > 0 && (
-          <section
-            role="alert"
-            className="border-destructive/40 rounded-xl border p-4"
-          >
-            <p>{t("campaign.errors.PACKAGE_IMPACT_BLOCKED")}</p>
-            <ul className="mt-2 list-disc pl-5">
-              {affectedTasks.map((task) => (
-                <li key={task.taskId}>{task.name}</li>
-              ))}
-            </ul>
-          </section>
+        {confirmation.impact && (
+          <PackageImpactDialog
+            impact={confirmation.impact}
+            onDecide={confirmation.decide}
+          />
         )}
         {editing && (
           <CreateCustomPackageForm

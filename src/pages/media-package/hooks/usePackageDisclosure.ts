@@ -6,7 +6,9 @@ export function usePackageDisclosure(contentKey: string) {
   const [manual, setManual] = useState<Record<string, boolean>>({});
   useEffect(() => {
     const proposal = proposalRef.current;
-    if (!proposal) return;
+    // Size the initial disclosure only. Once the user toggles a row, keep all
+    // other rows as displayed; explicit expansion may require scrolling.
+    if (!proposal || Object.keys(manual).length > 0) return;
     const viewport = proposal.closest<HTMLElement>("[data-package-viewport]");
     const measure = () => {
       const rows = [
@@ -25,13 +27,6 @@ export function usePackageDisclosure(contentKey: string) {
               Math.max(0, proposal.getBoundingClientRect().top) -
               24,
           );
-      const manualHeight = rows.reduce(
-        (height, row) =>
-          manual[row.dataset.packageItemId!] === true
-            ? height + row.getBoundingClientRect().height
-            : height,
-        0,
-      );
       const hidden = rows.map((row) => row.hidden);
       const paragraphs = rows.flatMap((row) => [
         ...row.querySelectorAll<HTMLElement>("[data-package-text]"),
@@ -68,11 +63,10 @@ export function usePackageDisclosure(contentKey: string) {
           element.style.display = displays[index];
         });
       }
-      let remaining = available - baseHeight - manualHeight - 4;
+      let remaining = available - baseHeight - 4;
       const next = new Set<string>();
       rows.forEach((row, index) => {
         const id = row.dataset.packageItemId!;
-        if (Object.hasOwn(manual, id)) return;
         if (heights[index] <= remaining) {
           next.add(id);
           remaining -= heights[index];

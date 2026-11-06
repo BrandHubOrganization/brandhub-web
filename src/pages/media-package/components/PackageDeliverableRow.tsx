@@ -1,5 +1,5 @@
 import { Fragment, useId } from "react";
-import { ChevronDown, ChevronRight, FileText, Target } from "lucide-react";
+import { ChevronRight, FileText, Target } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { usePackageDetailSpace } from "@/pages/media-package/hooks/usePackageDetailSpace";
@@ -24,7 +24,6 @@ export function PackageDeliverableRow({
   const hasDetails = Boolean(
     item.description?.trim() || item.acceptanceCriteria?.trim(),
   );
-  const Icon = open ? ChevronDown : ChevronRight;
   return (
     <Fragment>
       <tr
@@ -79,7 +78,10 @@ export function PackageDeliverableRow({
                   ? "mediaPackage.proposal.collapse"
                   : "mediaPackage.proposal.view",
               )}
-              <Icon className="text-brand-orange size-3.5" aria-hidden="true" />
+              <ChevronRight
+                className={`package-disclosure-chevron text-brand-orange size-3.5 ${open ? "rotate-90" : ""}`}
+                aria-hidden="true"
+              />
             </Button>
           ) : (
             <span

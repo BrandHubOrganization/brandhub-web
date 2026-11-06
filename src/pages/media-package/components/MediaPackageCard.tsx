@@ -59,12 +59,14 @@ export function MediaPackageCard({
 
   return (
     <article
-      className={`relative flex min-w-0 flex-col rounded-xl border transition-all duration-200 hover:shadow-sm ${compact ? "p-4" : "h-full p-5"} ${compact && (viewed === true || (selected && viewed !== false)) ? "bg-brand-orange-soft" : "bg-card"} ${
+      className={`relative flex min-w-0 flex-col rounded-xl border transition-[background-color,border-color,box-shadow] duration-160 hover:shadow-sm motion-reduce:transition-none ${compact ? "border-l-4 p-4 pl-3" : "h-full p-5"} ${compact && (viewed === true || (selected && viewed !== false)) ? "bg-brand-orange-soft" : "bg-card"} ${
         viewed === true || (selected && viewed !== false)
           ? compact
             ? "border-brand-orange border-l-4 pl-3"
             : "border-brand-orange ring-brand-orange shadow-xs ring-1"
-          : "border-border/80"
+          : compact
+            ? "border-border/80 border-l-transparent"
+            : "border-border/80"
       }`}
     >
       <button
@@ -112,7 +114,10 @@ export function MediaPackageCard({
           </Badge>
         )}
         {viewed && (
-          <Badge variant="outline" className="text-xs">
+          <Badge
+            variant="outline"
+            className="border-brand-orange/30 bg-brand-orange-soft text-brand-orange text-xs"
+          >
             {t("mediaPackage.workspace.viewing")}
           </Badge>
         )}

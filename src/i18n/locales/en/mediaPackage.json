@@ -462,5 +462,18 @@
         ]
       }
     }
+  },
+  "impact": {
+    "title": "Confirm task changes",
+    "choose": "Select {{count}} tasks to remove",
+    "selected": "{{count}} tasks selected",
+    "cancel": "Back to editing",
+    "confirm": "Confirm and save package",
+    "descriptionRemove": "Remove the following deliverables from the campaign plan?",
+    "descriptionReduce": "Select the tasks to remove to update the quantities in the campaign plan.",
+    "descriptionMixed": "Confirm the removed deliverables and select the tasks to remove from deliverables with reduced quantities.",
+    "removeItems": "Deliverables to remove",
+    "reduceTasks": "Deliverables with reduced quantities",
+    "preserveHistory": "Removed tasks will be cancelled; their content, comments and history will be preserved."
   }
 }

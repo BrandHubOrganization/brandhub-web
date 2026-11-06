@@ -7,6 +7,7 @@ import { MediaPackageCard } from "@/pages/media-package/components/MediaPackageC
 import { PackageProposalView } from "@/pages/media-package/components/PackageProposalView";
 import { MediaPackageLoadingState } from "@/pages/media-package/components/MediaPackagePageState";
 import { PackageShareActions } from "@/pages/media-package/components/PackageShareActions";
+import "@/pages/media-package/components/packageOverviewMotion.css";
 import type { MediaPackage } from "@/pages/media-package/types/mediaPackage";
 
 interface Props {
@@ -56,7 +57,7 @@ export function WorkspacePackageOverview({
   const isCurrent = viewedPackage?.id === currentPackage?.id;
   return (
     <div
-      className={`grid min-w-0 gap-4 lg:min-h-0 lg:flex-1 lg:overflow-hidden ${canBrowse ? "lg:grid-cols-[minmax(0,1fr)_minmax(17rem,28%)]" : "lg:grid-cols-1"}`}
+      className={`package-overview grid min-w-0 gap-4 lg:min-h-0 lg:flex-1 lg:overflow-hidden ${canBrowse ? "lg:grid-cols-[minmax(0,1fr)_minmax(17rem,28%)]" : "lg:grid-cols-1"}`}
     >
       <section
         className="order-2 flex min-h-0 min-w-0 flex-col lg:order-1 lg:overflow-hidden"
@@ -165,6 +166,41 @@ export function WorkspacePackageOverview({
             role="region"
             tabIndex={0}
             aria-label={t("mediaPackage.workspace.packageList")}
+            onKeyDown={(event) => {
+              const target = event.target as HTMLElement;
+              const card = target.closest<HTMLButtonElement>(
+                "button[data-package-details]",
+              );
+              if (
+                !card ||
+                !["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)
+              )
+                return;
+              const cards = Array.from(
+                event.currentTarget.querySelectorAll<HTMLButtonElement>(
+                  "button[data-package-details]",
+                ),
+              );
+              const index = cards.indexOf(card);
+              const nextIndex =
+                event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? cards.length - 1
+                    : Math.max(
+                        0,
+                        Math.min(
+                          cards.length - 1,
+                          index + (event.key === "ArrowDown" ? 1 : -1),
+                        ),
+                      );
+              const next = cards[nextIndex];
+              if (!next) return;
+              event.preventDefault();
+              next.focus({ preventScroll: true });
+              next.scrollIntoView({ block: "nearest", inline: "nearest" });
+              next.click();
+            }}
             className="focus-visible:ring-ring max-h-96 min-h-0 space-y-3 overflow-y-auto overscroll-contain rounded-xl outline-none focus-visible:ring-2 lg:max-h-none lg:flex-1 lg:pr-2"
           >
             {currentPackage && (
