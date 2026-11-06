@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Crop, History, Upload, X } from "lucide-react";
+import { Crop, History, Upload, X, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -57,10 +57,37 @@ export function AvatarUploadModal({
     setCropperOpen(true);
   };
 
-  const handleCropConfirm = (croppedFile: File, croppedPreviewUrl: string) => {
+  const handleCropConfirm = async (
+    croppedFile: File,
+    croppedPreviewUrl: string,
+  ) => {
     setFile(croppedFile);
     setPreviewUrl(croppedPreviewUrl);
     setCropperOpen(false);
+
+    // Tự động tải lên ngay sau khi cắt ảnh thành công
+    setUploading(true);
+    try {
+      const res = await userService.uploadAvatar(croppedFile);
+      const newAvatarUrl = res.data.data.avatarUrl;
+      saveRecentAsset("logo", newAvatarUrl);
+      onSave(newAvatarUrl);
+      toast.success(
+        t("profile.avatar.uploadSuccess", "Cập nhật ảnh đại diện thành công"),
+      );
+      setPreviewUrl(null);
+      setFile(null);
+      onClose();
+    } catch (err) {
+      toast.error(
+        extractErrorMessage(
+          err,
+          t("profile.avatar.uploadError", "Tải ảnh lên thất bại"),
+        ),
+      );
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSelectRecent = (url: string) => {
@@ -92,20 +119,34 @@ export function AvatarUploadModal({
       const newAvatarUrl = res.data.data.avatarUrl;
       saveRecentAsset("logo", newAvatarUrl);
       onSave(newAvatarUrl);
-      toast.success(t("profile.avatar.uploadSuccess"));
+      toast.success(
+        t("profile.avatar.uploadSuccess", "Cập nhật ảnh đại diện thành công"),
+      );
       setPreviewUrl(null);
       setFile(null);
       onClose();
     } catch (err) {
-      toast.error(extractErrorMessage(err, t("profile.avatar.uploadError")));
+      toast.error(
+        extractErrorMessage(
+          err,
+          t("profile.avatar.uploadError", "Tải ảnh lên thất bại"),
+        ),
+      );
     } finally {
       setUploading(false);
     }
   };
 
+  // Tránh xung đột Radix Dialog lồng nhau: khi cropper hoặc recent assets modal mở,
+  // tạm ẩn modal cha để giải phóng focus trap / overlay chặn tương tác.
+  const isParentOpen = isOpen && !cropperOpen && !recentModalOpen;
+
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+      <Dialog
+        open={isParentOpen}
+        onOpenChange={(open) => !open && handleClose()}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{t("profile.avatar.modalTitle")}</DialogTitle>
@@ -123,7 +164,16 @@ export function AvatarUploadModal({
             className="hidden"
           />
 
-          {previewUrl ? (
+          {uploading && (
+            <div className="flex flex-col items-center justify-center gap-2 py-8">
+              <Loader2 className="text-brand-orange size-8 animate-spin" />
+              <p className="text-muted-foreground text-xs font-medium">
+                {t("profile.avatar.uploading", "Đang tải ảnh đại diện lên...")}
+              </p>
+            </div>
+          )}
+
+          {!uploading && previewUrl ? (
             <div className="flex flex-col items-center gap-3">
               <div className="relative mx-auto size-40">
                 <img
@@ -155,7 +205,7 @@ export function AvatarUploadModal({
                   }}
                   className="gap-1.5 text-xs"
                 >
-                  <Crop className="size-3.5 text-brand-orange" />
+                  <Crop className="text-brand-orange size-3.5" />
                   Cắt / Đổ màu
                 </Button>
                 <Button
@@ -165,69 +215,73 @@ export function AvatarUploadModal({
                   onClick={() => setRecentModalOpen(true)}
                   className="gap-1.5 text-xs"
                 >
-                  <History className="size-3.5 text-muted-foreground" />
+                  <History className="text-muted-foreground size-3.5" />
                   Ảnh cũ
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
-              <div
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setIsDragOver(true);
-                }}
-                onDragLeave={() => setIsDragOver(false)}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-                className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-all ${
-                  isDragOver
-                    ? "border-brand-orange bg-brand-orange/10 dark:bg-brand-orange/20"
-                    : "border-border hover:border-brand-orange bg-muted/50"
-                }`}
-              >
-                <div className="bg-brand-orange-soft dark:bg-brand-orange/20 text-brand-orange dark:text-brand-orange/80 mx-auto flex size-10 items-center justify-center rounded-full shadow-xs">
-                  <Upload className="size-5" />
-                </div>
-                <h4 className="text-foreground mt-2 text-xs font-semibold">
-                  {t("profile.avatar.dragDropText")}{" "}
-                  <span className="text-brand-orange dark:text-brand-orange/80">
-                    {t("profile.avatar.browseText")}
-                  </span>
-                </h4>
-                <p className="text-2xs text-muted-foreground mt-1">
-                  {t("profile.avatar.supportedFormats")}
-                </p>
-              </div>
-
-              <div className="flex justify-center">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setRecentModalOpen(true)}
-                  className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+            !uploading && (
+              <div className="space-y-3">
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragOver(true);
+                  }}
+                  onDragLeave={() => setIsDragOver(false)}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-all ${
+                    isDragOver
+                      ? "border-brand-orange bg-brand-orange/10 dark:bg-brand-orange/20"
+                      : "border-border hover:border-brand-orange bg-muted/50"
+                  }`}
                 >
-                  <History className="size-3.5" />
-                  Chọn từ ảnh đại diện đã dùng trước đây
-                </Button>
+                  <div className="bg-brand-orange-soft dark:bg-brand-orange/20 text-brand-orange dark:text-brand-orange/80 mx-auto flex size-10 items-center justify-center rounded-full shadow-xs">
+                    <Upload className="size-5" />
+                  </div>
+                  <h4 className="text-foreground mt-2 text-xs font-semibold">
+                    {t("profile.avatar.dragDropText")}{" "}
+                    <span className="text-brand-orange dark:text-brand-orange/80">
+                      {t("profile.avatar.browseText")}
+                    </span>
+                  </h4>
+                  <p className="text-2xs text-muted-foreground mt-1">
+                    {t("profile.avatar.supportedFormats")}
+                  </p>
+                </div>
+
+                <div className="flex justify-center">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setRecentModalOpen(true)}
+                    className="text-muted-foreground hover:text-foreground gap-1.5 text-xs"
+                  >
+                    <History className="size-3.5" />
+                    Chọn từ ảnh đại diện đã dùng trước đây
+                  </Button>
+                </div>
               </div>
-            </div>
+            )
           )}
 
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={handleClose}>
-              {t("profile.avatar.cancel")}
-            </Button>
-            <Button
-              variant="orange"
-              disabled={!file || uploading}
-              loading={uploading}
-              onClick={handleSave}
-            >
-              {t("profile.avatar.save")}
-            </Button>
-          </div>
+          {!uploading && (
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={handleClose}>
+                {t("profile.avatar.cancel")}
+              </Button>
+              <Button
+                variant="orange"
+                disabled={!file || uploading}
+                loading={uploading}
+                onClick={handleSave}
+              >
+                {t("profile.avatar.save")}
+              </Button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
@@ -250,4 +304,3 @@ export function AvatarUploadModal({
     </>
   );
 }
-

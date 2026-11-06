@@ -11,7 +11,10 @@ import { isValidPhone, isValidUrl, normalizeUrl } from "@/utils/validation";
 import type { User } from "@/types/user";
 import { AvatarUploadModal } from "./components/AvatarUploadModal";
 import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
-import { ImageCropperModal, RecentAssetsModal } from "@/components/shared/image-editor";
+import {
+  ImageCropperModal,
+  RecentAssetsModal,
+} from "@/components/shared/image-editor";
 import { saveRecentAsset } from "@/utils/recentAssetsStorage";
 import { LinkPhoneModal } from "./components/LinkPhoneModal";
 import { ProfilePreviewCard } from "./components/ProfilePreviewCard";
@@ -289,7 +292,9 @@ export function ProfilePage() {
       saveRecentAsset("banner", url);
       patchExt({ bannerUrl: url });
       savedExt.current = { ...savedExt.current, bannerUrl: url };
-      toast.success(t("profile.edit.bannerUploadSuccess", "Tải ảnh bìa thành công"));
+      toast.success(
+        t("profile.edit.bannerUploadSuccess", "Tải ảnh bìa thành công"),
+      );
     } catch (err) {
       toast.error(
         extractErrorMessage(err, t("profile.edit.bannerUploadFailed")),
@@ -368,7 +373,7 @@ export function ProfilePage() {
                 </div>
               )
             }
-            canEditLogo={isEditing}
+            canEditLogo={true}
             onLogoClick={() => setAvatarModalOpen(true)}
             uploadLogoTitle={t("profile.avatar.upload")}
             title={name}

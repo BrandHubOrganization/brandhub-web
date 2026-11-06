@@ -6,13 +6,19 @@ import {
   Briefcase,
   Calendar,
   Clock,
-  Link2,
+  ExternalLink,
   MapPin,
   Phone,
   ShieldCheck,
 } from "lucide-react";
 import type { ExtendedProfile } from "../types";
-import { isCuratedJobTitle, isLanguage, isSkill, parseLanguages } from "../constants";
+import {
+  isCuratedJobTitle,
+  isLanguage,
+  isSkill,
+  parseLanguages,
+} from "../constants";
+import { SocialGlyph } from "./SocialIcon";
 
 interface ProfileViewDetailsProps {
   role: string;
@@ -148,8 +154,9 @@ export const ProfileViewDetails: React.FC<ProfileViewDetailsProps> = ({
                   href={url}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-brand-orange text-xs font-medium hover:underline"
+                  className="text-brand-orange inline-flex items-center gap-1.5 text-xs font-medium hover:underline"
                 >
+                  <ExternalLink className="size-3 shrink-0" />
                   {url}
                 </a>
               </li>
@@ -213,17 +220,21 @@ export const ProfileViewDetails: React.FC<ProfileViewDetailsProps> = ({
           {t("profile.view.socialLabel")}
         </p>
         {socials.length > 0 ? (
-          <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+          <ul className="mt-2 flex flex-wrap gap-2">
             {socials.map((s) => (
               <li key={s.key}>
                 <a
                   href={s.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-brand-orange inline-flex items-center gap-1 text-xs font-medium hover:underline"
+                  className="border-border bg-card text-foreground hover:bg-muted hover:text-brand-orange group inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium shadow-2xs transition-all"
                 >
-                  <Link2 className="size-3" />
-                  {t(`profile.view.${s.key}Label`)}
+                  <SocialGlyph
+                    socialKey={s.key}
+                    className="size-3.5 transition-transform group-hover:scale-110"
+                  />
+                  <span>{t(`profile.view.${s.key}Label`)}</span>
+                  <ExternalLink className="text-muted-foreground ml-0.5 size-3 opacity-60" />
                 </a>
               </li>
             ))}
