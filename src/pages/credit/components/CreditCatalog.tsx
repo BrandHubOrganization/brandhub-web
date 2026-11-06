@@ -22,7 +22,7 @@ export function CreditCatalog() {
   const [open, setOpen] = useState(false);
   return (
     <details
-      className="border-border bg-card rounded-xl border p-4"
+      className="border-border bg-card rounded-xl border p-4 sm:p-6"
       onToggle={(event) => setOpen(event.currentTarget.open)}
     >
       <summary className="cursor-pointer font-semibold focus-visible:outline focus-visible:outline-2">

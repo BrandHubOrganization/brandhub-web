@@ -16,7 +16,14 @@ function AgencyCreditContent({ agencyId }: { agencyId: string }) {
   const { t } = useTranslation();
   const { query, userId, isOwner } = useCreditContext(agencyId);
   return (
-    <PageWrapper compact showGuideButton={false} title={t("credit.title")}>
+    <PageWrapper
+      title={t("credit.title")}
+      description={t(
+        "credit.subtitle",
+        "Quản lý quỹ AI Credit dùng chung và thiết lập hạn mức chi tiêu theo từng Workspace của Agency.",
+      )}
+      guideUrl="/help/guide"
+    >
       {query.isPending || query.isError ? (
         <CreditQueryState
           loading={query.isPending}
