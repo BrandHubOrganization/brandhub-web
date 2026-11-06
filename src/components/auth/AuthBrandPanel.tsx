@@ -32,7 +32,7 @@ export function AuthBrandPanel() {
 
   return (
     <div
-      className="surface-dark hidden w-[480px] shrink-0 flex-col justify-between rounded-3xl p-12 select-none lg:flex"
+      className="surface-dark hidden w-[480px] shrink-0 flex-col justify-between rounded-r-3xl rounded-l-none p-12 select-none lg:flex"
       style={{ background: "hsl(var(--sidebar, 240 6% 4%))" }}
     >
       <div className="flex items-center gap-2.5">
