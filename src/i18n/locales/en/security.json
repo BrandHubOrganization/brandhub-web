@@ -1,6 +1,6 @@
 {
   "title": "Security",
-  "description": "Manage two-factor authentication (2FA) for your account.",
+  "description": "Manage password, two-factor authentication (2FA), and active sessions for your account.",
   "2fa": {
     "title": "Two-Factor Authentication (2FA)",
     "subtitle": "Strengthen security with a TOTP code on every sign-in.",
@@ -78,5 +78,55 @@
     "cancel": "Cancel",
     "confirmLogout": "Log out",
     "logoutSuccess": "Logged out successfully"
+  },
+  "score": {
+    "title": "Security Score",
+    "subtitle": "Account protection rating according to BrandHub standards",
+    "status": "Protection Level",
+    "veryGood": "Very Strong",
+    "good": "Good Protection",
+    "needsAttention": "Action Recommended",
+    "passwordTitle": "Sign-in Password",
+    "passwordDesc": "Protect your account with a strong password",
+    "passwordSet": "Configured",
+    "passwordNotSet": "Not set",
+    "twoFactorTitle": "Two-Factor Auth (2FA)",
+    "twoFactorDesc": "One-time TOTP security passcode",
+    "twoFactorActive": "Active",
+    "twoFactorInactive": "Disabled",
+    "emailTitle": "Account Email",
+    "emailDesc": "Receive sign-in alerts and recovery codes",
+    "emailVerified": "Verified",
+    "oauthTitle": "Google OAuth Connection",
+    "oauthDesc": "Quick and secure sign-in via Google",
+    "oauthLinked": "Connected",
+    "oauthNotLinked": "Not connected"
+  },
+  "sessions": {
+    "title": "Devices & Active Sessions",
+    "subtitle": "Manage devices currently signed in to your BrandHub account",
+    "currentDevice": "This device",
+    "activeNow": "Active now",
+    "justNow": "Just now",
+    "revokeOthers": "Log out other devices",
+    "confirmRevoke": "Confirm Log Out",
+    "revokeOthersConfirmTitle": "Log out of all other devices?",
+    "revokeOthersConfirmBody": "All sessions on other browsers and devices will be terminated immediately.",
+    "revokeOthersWarning": "If you suspect unauthorized access, please change your password immediately after logging out.",
+    "revokeOthersSuccess": "Successfully logged out of all other devices",
+    "revokeOthersError": "Could not log out of other devices. Please try again."
+  },
+  "tips": {
+    "title": "Security Recommendations",
+    "subtitle": "Best practices to protect your account and brand assets",
+    "tip1Title": "Enable 2-Step Verification (2FA)",
+    "tip1Desc": "Block over 99% of account takeover attempts with TOTP authenticator codes.",
+    "tip2Title": "Use a Unique Password",
+    "tip2Desc": "Do not reuse your BrandHub password for any other online accounts or services.",
+    "tip3Title": "Protect Verification Codes",
+    "tip3Desc": "Never share your OTP or recovery codes with anyone, including BrandHub staff.",
+    "quickLinks": "Quick Shortcuts",
+    "manageConnections": "Connected Accounts",
+    "manageProfile": "Personal Profile & Contact"
   }
 }
