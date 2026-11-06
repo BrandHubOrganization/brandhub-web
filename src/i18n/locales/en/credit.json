@@ -1,5 +1,6 @@
 {
   "title": "AI Credit",
+  "subtitle": "Manage shared Agency AI Credits and configure spending caps across Workspaces.",
   "ai": {
     "balance": "The Agency has insufficient credits. Please contact the Owner.",
     "limit": "This Workspace has reached its period credit cap. Contact the Owner.",
@@ -68,6 +69,7 @@
     "VIDEO_GENERATE": "Generate video"
   },
   "errors": {
+    "required": "Please enter a credit limit.",
     "integer": "Enter a whole number between 0 and 9,007,199,254,740,991, without decimals or exponent notation.",
     "unsafe": "This value cannot be represented precisely in the browser. Editing is disabled to protect the stored data.",
     "stale": "Configuration changed. Your input is preserved; reload the saved version before editing again.",
@@ -133,8 +135,27 @@
   },
   "topup": {
     "action": "Top Up Credits",
-    "title": "Top Up Agency Credits",
-    "description": "Expand creative quotas with specialized credit packages for your Agency.",
+    "title": "Top Up Credits",
+    "description": "Purchase additional credits for the shared Agency wallet (never expires).",
+    "selectPackage": "Select credit package",
+    "customOption": "Custom",
+    "customSubtitle": "Enter any credit amount",
+    "amountLabel": "Credits to top up",
+    "customHint": "Enter a positive integer from 1 to 1,000,000 credits (Rate: 200 VND / credit).",
+    "summaryLabel": "Conversion summary",
+    "payButtonWithPrice": "Pay {{price}}",
+    "payButton": "Pay",
+    "creditsToReceive": "Credits to receive",
+    "changeAmount": "Change amount",
+    "fulfilledNote": "Payment verified and credits added to Agency wallet!",
+    "success": "Payment completed! Credits have been added to the Agency wallet.",
+    "error": "Could not create credit top-up order. Please try again.",
+    "errors": {
+      "required": "Please enter the number of credits to top up.",
+      "integer": "Enter a positive whole number only (no decimals, minus signs, or special characters).",
+      "min": "Credit amount must be at least 1.",
+      "max": "Maximum credit top-up per order is 1,000,000 credits."
+    },
     "starter": "Starter Package",
     "accelerate": "Growth Package",
     "enterprise": "Enterprise Package",
@@ -176,7 +197,13 @@
     "used": "Used",
     "held": "Reserved",
     "remaining": "Cap remaining",
-    "hint": "No separate cap uses the Agency wallet. Zero blocks paid actions. The cap persists across cycles; spending and reservations belong to the request's original cycle."
+    "hint": "No separate cap uses the Agency wallet. Zero blocks paid actions. The cap persists across cycles; spending and reservations belong to the request's original cycle.",
+    "totalCapLabel": "Total maximum cap configured across Workspaces:",
+    "totalCapExceedsWarning": "Warning: The combined maximum cap across Workspaces ({{totalCap}} credits) exceeds the Agency's current available credits ({{available}} credits). Workspaces share the Agency wallet, so actual spending cannot exceed available funds.",
+    "singleCapExceedsWarning": "This Workspace's cap ({{cap}} credits) exceeds the Agency's current available credits ({{available}} credits).",
+    "projectedTotalExceedsWarning": "The combined maximum cap across Workspaces after saving ({{totalCap}} credits) will exceed the Agency's current available credits ({{available}} credits).",
+    "exceedsHint": "You can still save this cap, but actual spending across Workspaces will stop once the Agency wallet is exhausted.",
+    "belowUsedWarning": "This Workspace has already used/reserved {{committed}} credits in this period. Setting the cap to {{cap}} credits will block paid AI operations until the next period."
   },
   "csv": {
     "cancel": "Cancel",

@@ -385,6 +385,7 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: Brain,
         labelKey: "aiStudio.knowledgeBase.title",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
       {
         to: "/ai-studio/trends",
