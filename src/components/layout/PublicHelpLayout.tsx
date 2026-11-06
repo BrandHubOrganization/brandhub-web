@@ -19,6 +19,8 @@ export function PublicHelpLayout() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const systemRole = useAuthStore((s) => s.systemRole);
+  const isAdmin = systemRole === "ADMIN";
   const { theme, setTheme } = useTheme();
 
   const toggleLanguage = () => {
@@ -34,7 +36,7 @@ export function PublicHelpLayout() {
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
       {/* ── TOP PUBLIC HEADER ── */}
       <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-background/90 backdrop-blur-md">
-        <div className="mx-auto flex h-15 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="w-full flex h-15 items-center justify-between px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-16">
           {/* Logo BrandHub */}
           <div className="flex items-center gap-6">
             <Link to="/" className="flex items-center gap-2.5">
@@ -55,13 +57,15 @@ export function PublicHelpLayout() {
                 <HelpCircle className="size-3.5 text-brand-orange" />
                 Hỏi đáp FAQ
               </Link>
-              <Link
-                to="/help/guide"
-                className="text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md px-2.5 py-1.5 transition-colors font-medium flex items-center gap-1.5"
-              >
-                <BookOpen className="size-3.5 text-brand-orange" />
-                Cẩm nang Quản trị
-              </Link>
+              {isAdmin && (
+                <Link
+                  to="/admin/guide"
+                  className="text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md px-2.5 py-1.5 transition-colors font-medium flex items-center gap-1.5"
+                >
+                  <BookOpen className="size-3.5 text-brand-orange" />
+                  Cẩm nang Quản trị
+                </Link>
+              )}
             </nav>
           </div>
 
@@ -130,7 +134,7 @@ export function PublicHelpLayout() {
       </header>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="flex-1 w-full mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <main className="flex-1 w-full px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-16 py-4 sm:py-6">
         <Suspense fallback={<PageFallback />}>
           <Outlet />
         </Suspense>
@@ -138,15 +142,17 @@ export function PublicHelpLayout() {
 
       {/* ── COMPACT FOOTER ── */}
       <footer className="border-t border-border/80 bg-card py-6 text-center text-xs text-muted-foreground">
-        <div className="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="w-full px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-16 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>© {new Date().getFullYear()} BrandHub. Trung tâm Trợ giúp & Tài nguyên.</p>
           <div className="flex items-center gap-4 text-xs">
             <Link to="/help/faq" className="hover:text-foreground transition-colors">
               Hỏi đáp FAQ
             </Link>
-            <Link to="/help/guide" className="hover:text-foreground transition-colors">
-              Cẩm nang quản trị
-            </Link>
+            {isAdmin && (
+              <Link to="/admin/guide" className="hover:text-foreground transition-colors">
+                Cẩm nang quản trị
+              </Link>
+            )}
             <Link to="/privacy" className="hover:text-foreground transition-colors">
               Privacy Policy
             </Link>

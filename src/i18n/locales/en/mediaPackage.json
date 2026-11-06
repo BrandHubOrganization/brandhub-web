@@ -71,13 +71,15 @@
       "SOCIAL_POST": "Social media posts",
       "EVENT_PLANNING": "Event plan delivery",
       "LIVESTREAM_PREPARATION": "Livestream",
-      "PRESS_RECOMMENDATION": "Online press",
+      "PRESS_RECOMMENDATION": "Online press articles",
       "WORKSHOP_SUPPORT": "Workshop"
     },
     "service": "Service",
     "name": "Deliverable name",
     "serviceAndName": "Service & Deliverable",
     "requirementsAndCriteria": "Requirements & Acceptance Criteria",
+    "pressArticleUnit_one": "article",
+    "pressArticleUnit_other": "articles",
     "quantityAndUnit": "Quantity & Unit",
     "noDeliverables": "No deliverables in this package.",
     "quantity": "Quantity",
@@ -290,6 +292,97 @@
       "workItems": "Planned work item"
     },
     "showUnchanged": "Include unchanged content",
-    "noDifferences": "No changes from the previous version."
+    "noDifferences": "No changes from the previous version.",
+    "openPackage": "View package {{name}}"
+  },
+  "share": {
+    "languages": {
+      "vi": "Tiếng Việt",
+      "en": "English"
+    },
+    "copied": "Link copied",
+    "copyManually": "Select and copy the link below",
+    "revoked": "Link revoked",
+    "error": "Could not share or export this package. Please retry.",
+    "copyLink": "Copy share link",
+    "images": "Export JPG",
+    "revoke": "Revoke link",
+    "pdf": "Export PDF",
+    "menu": "Share package"
+  },
+  "guest": {
+    "language": "Display language",
+    "unavailable": "Package unavailable or not shared",
+    "retry": "Retry",
+    "budget": "Budget",
+    "duration": "Duration",
+    "toBeAgreed": "To be agreed",
+    "weeks": "{{count}} weeks"
+  },
+  "workspace": {
+    "saved": "Package saved. Campaign and tasks are being prepared.",
+    "saveError": "Could not save or load this package. Check and retry.",
+    "retry": "Retry preparation",
+    "openCampaign": "View campaign",
+    "edit": "Edit package",
+    "create": "Create workspace package",
+    "chooseTemplate": "Choose a template",
+    "emptyManager": "Choose a template or create a package based on the client agreement.",
+    "emptyClient": "The manager is preparing a package for this workspace.",
+    "preparation": {
+      "LEGACY": "Existing package",
+      "PENDING": "Waiting to prepare tasks",
+      "PROCESSING": "Preparing tasks",
+      "READY": "Plan and tasks are synchronized",
+      "FAILED": "Preparation incomplete. Please retry.",
+      "DEPLOYING": "Plan locked for deployment",
+      "DEPLOYED": "Campaign deployed — package locked"
+    },
+    "otherPackages": "Other packages",
+    "packageList": "Media packages",
+    "packageContent": "Package content",
+    "viewing": "Viewing",
+    "noOtherPackages": "No other packages."
+  },
+  "proposal": {
+    "viewTitle": "Media package details",
+    "deliverables": "Deliverables at a glance",
+    "details": "Deliverable details",
+    "description": "Implementation description",
+    "outcomes": "Expected outcomes",
+    "ordinal": "Number",
+    "quantity": {
+      "SOCIAL_POST_one": "{{count}} social media post",
+      "SOCIAL_POST_other": "{{count}} social media posts",
+      "EVENT_PLANNING_one": "{{count}} event",
+      "EVENT_PLANNING_other": "{{count}} events",
+      "LIVESTREAM_PREPARATION_one": "{{count}} livestream session",
+      "LIVESTREAM_PREPARATION_other": "{{count}} livestream sessions",
+      "PRESS_RECOMMENDATION_one": "{{count}} online press article",
+      "PRESS_RECOMMENDATION_other": "{{count}} online press articles",
+      "WORKSHOP_SUPPORT_one": "{{count}} workshop session",
+      "WORKSHOP_SUPPORT_other": "{{count}} workshop sessions"
+    },
+    "units": {
+      "SOCIAL_POST_one": "post",
+      "SOCIAL_POST_other": "posts",
+      "EVENT_PLANNING_one": "event",
+      "EVENT_PLANNING_other": "events",
+      "LIVESTREAM_PREPARATION_one": "session",
+      "LIVESTREAM_PREPARATION_other": "sessions",
+      "PRESS_RECOMMENDATION_one": "article",
+      "PRESS_RECOMMENDATION_other": "articles",
+      "WORKSHOP_SUPPORT_one": "session",
+      "WORKSHOP_SUPPORT_other": "sessions"
+    },
+    "packageDescription": "Package description",
+    "view": "View",
+    "expand": "Show more",
+    "collapse": "Show less",
+    "item": "Deliverable",
+    "itemDetails": "Details",
+    "openItem": "View details for {{name}}",
+    "closeItem": "Collapse details for {{name}}",
+    "noDetails": "No description or outcomes yet"
   }
 }

@@ -1,3 +1,7 @@
+import { api } from "@/services/api";
+import { toast } from "sonner";
+import { packageMutationError } from "@/pages/media-package/lib/packageMutationError";
+import type { CreateCustomMediaPackageRequest } from "@/pages/media-package/types/mediaPackage";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -17,6 +21,10 @@ import type { MediaPackage } from "@/pages/media-package/types/mediaPackage";
 export default function AgencyMediaPackagePage() {
   const { t } = useTranslation();
   const { id: agencyId } = useParams<{ id: string }>();
+  const [editingPackage, setEditingPackage] = useState<MediaPackage | null>(
+    null,
+  );
+  const [updating, setUpdating] = useState(false);
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [sourceTemplate, setSourceTemplate] = useState<MediaPackage | null>(
     null,
@@ -34,6 +42,7 @@ export default function AgencyMediaPackagePage() {
   } = useAgencyMediaPackages(agencyId);
 
   const openCreateForm = (template: MediaPackage | null = null) => {
+    setEditingPackage(null);
     setSourceTemplate(template);
     setCreateFormOpen(true);
   };
@@ -42,6 +51,27 @@ export default function AgencyMediaPackagePage() {
     setCreateFormOpen(open);
     if (!open) setSourceTemplate(null);
   };
+
+  async function submit(request: CreateCustomMediaPackageRequest) {
+    if (!editingPackage) return createCustomPackage(request);
+    setUpdating(true);
+    try {
+      await api.put(
+        `/api/v1/agencies/${agencyId}/media-packages/${editingPackage.id}`,
+        {
+          packageDetails: request,
+          expectedUpdatedAt: editingPackage.updatedAt,
+        },
+      );
+      await load();
+      return true;
+    } catch (e) {
+      toast.error(packageMutationError(e, t("mediaPackage.share.error"), t));
+      return false;
+    } finally {
+      setUpdating(false);
+    }
+  }
 
   return (
     <PageWrapper
@@ -74,6 +104,12 @@ export default function AgencyMediaPackagePage() {
               <MediaPackageCatalog
                 title={t("mediaPackage.catalog.customTitle")}
                 description={t("mediaPackage.catalog.agencyCustomDescription")}
+                onEdit={(value) => {
+                  setEditingPackage(value);
+                  setSourceTemplate(value);
+                  setCreateFormOpen(true);
+                }}
+                shareAgencyId={agencyId}
                 packages={customPackages}
                 selectedPackageId={null}
                 canSelect={false}
@@ -111,9 +147,9 @@ export default function AgencyMediaPackagePage() {
           key={sourceTemplate?.id ?? "blank-package"}
           open={createFormOpen}
           sourceTemplate={sourceTemplate}
-          loading={creatingCustom}
+          loading={creatingCustom || updating}
           onOpenChange={handleCreateOpenChange}
-          onSubmit={createCustomPackage}
+          onSubmit={submit}
         />
       )}
     </PageWrapper>

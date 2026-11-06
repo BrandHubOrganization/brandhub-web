@@ -23,6 +23,9 @@ export interface PageWrapperProps {
   bannerBadge?: string;
   bannerIcon?: React.ReactNode;
   hideBanner?: boolean;
+  headerTextClassName?: string;
+  titleClassName?: string;
+  descriptionClassName?: string;
 }
 
 export function PageWrapper({
@@ -42,6 +45,9 @@ export function PageWrapper({
   bannerBadge,
   bannerIcon,
   hideBanner = false,
+  headerTextClassName,
+  titleClassName,
+  descriptionClassName,
 }: PageWrapperProps) {
   const { t } = useTranslation();
   const location = useLocation();
@@ -49,10 +55,16 @@ export function PageWrapper({
     document.title = `${title} | BrandHub`;
   }, [title]);
 
+  const isPublicHelp =
+    location.pathname.startsWith("/help") ||
+    location.pathname === "/privacy" ||
+    location.pathname === "/terms";
+
   return (
     <div
       className={cn(
-        "w-full space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6",
+        "w-full max-w-full space-y-6 py-4 pb-24 md:py-6 overflow-x-clip",
+        isPublicHelp ? "px-0" : "px-4 md:px-8",
         !fullWidth && "mx-auto max-w-7xl",
         compact && "space-y-3 p-3 pb-24 md:px-5 md:py-4 md:pb-24",
         className,
@@ -64,15 +76,16 @@ export function PageWrapper({
         // Compact / Minimal Header (for full screen editors)
         <div
           className={cn(
-            "border-border flex flex-col justify-between gap-4 border-b pb-4 md:flex-row md:items-center",
+            "border-border flex flex-col justify-between gap-4 border-b pb-4 md:flex-row md:items-center min-w-0",
             compact && "gap-2 pb-2",
           )}
         >
-          <div className="space-y-1">
+          <div className={cn("space-y-1 min-w-0 flex-1", headerTextClassName)}>
             <h1
               className={cn(
                 "text-foreground font-sans text-2xl font-bold tracking-tight",
                 compact && "text-xl",
+                titleClassName,
               )}
             >
               {title}
@@ -82,13 +95,14 @@ export function PageWrapper({
                 className={cn(
                   "text-muted-foreground text-xs",
                   compact && "text-2xs",
+                  descriptionClassName,
                 )}
               >
                 {description}
               </p>
             )}
           </div>
-          <div className="flex shrink-0 items-center gap-2 self-start md:self-center">
+          <div className="flex shrink-0 flex-wrap items-center gap-2 self-start md:self-center">
             {showGuideButton && (
               <Link
                 to={guideUrl}
@@ -104,7 +118,7 @@ export function PageWrapper({
         </div>
       ) : (
         // Decorative Hero Banner Header
-        <div className="border-border/80 bg-card relative overflow-hidden rounded-2xl border shadow-xs transition-all">
+        <div className="border-border/80 bg-card relative overflow-hidden rounded-2xl border shadow-xs transition-all max-w-full">
           {/* Background Layer: Image or Abstract Gradient Mesh */}
           {bannerImage ? (
             <div className="absolute inset-0 select-none">
@@ -139,8 +153,8 @@ export function PageWrapper({
           )}
 
           {/* Banner Content */}
-          <div className="relative z-10 flex flex-col justify-between gap-4 p-6 sm:p-7 md:flex-row md:items-center md:p-8">
-            <div className="max-w-3xl space-y-1.5">
+          <div className="relative z-10 flex flex-col justify-between gap-4 p-5 sm:p-7 md:flex-row md:items-center md:p-8 min-w-0">
+            <div className={cn("flex-1 min-w-0 space-y-1.5", headerTextClassName)}>
               {/* Optional Badge */}
               {bannerBadge && (
                 <div
@@ -161,6 +175,7 @@ export function PageWrapper({
                 className={cn(
                   "font-sans text-2xl font-bold tracking-tight sm:text-3xl",
                   bannerImage ? "text-white drop-shadow-xs" : "text-foreground",
+                  titleClassName,
                 )}
               >
                 {title}
@@ -174,6 +189,7 @@ export function PageWrapper({
                     bannerImage
                       ? "text-zinc-200/90 drop-shadow-xs"
                       : "text-muted-foreground",
+                    descriptionClassName,
                   )}
                 >
                   {description}
@@ -230,7 +246,7 @@ export function PageWrapper({
       )}
 
       {/* ── BODY CONTENT ── */}
-      <div className={cn("w-full", contentClassName)}>{children}</div>
+      <div className={cn("w-full min-w-0", contentClassName)}>{children}</div>
     </div>
   );
 }

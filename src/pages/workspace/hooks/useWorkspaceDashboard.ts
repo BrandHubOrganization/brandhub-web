@@ -151,19 +151,13 @@ export function useWorkspaceDashboard() {
     let completedCount = 0;
 
     tasks.forEach((item) => {
-      if (
-        item.status === "TODO"
-
-      ) {
+      if (item.status === "TODO") {
         todoCount++;
       } else if (item.status === "IN_PROGRESS") {
         inProgressCount++;
-      } else if (
-        item.status === "IN_REVIEW"
-      ) {
+      } else if (item.status === "IN_REVIEW") {
         reviewCount++;
       } else if (item.status === "FINISHED") {
-
         completedCount++;
       }
     });
@@ -172,9 +166,8 @@ export function useWorkspaceDashboard() {
   }, [tasks]);
 
   const packageStatus = dashboard?.packageNegotiationStatus;
-  const isPackageApproved = packageStatus === "APPROVED";
-  const isPackageNegotiating =
-    packageStatus === "DRAFT" || packageStatus === "NEGOTIATING";
+  const isPackageApproved = packageStatus != null;
+  const isPackageNegotiating = false;
 
   return {
     workspaceId: workspaceId || "",

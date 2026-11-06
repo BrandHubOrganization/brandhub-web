@@ -546,7 +546,10 @@
     "workspaceTemplates": "Workspace templates",
     "mailSuppressions": "System unsubscribed list",
     "crawl": "Crawl settings",
-    "trendPipeline": "Crawler Trend Pipeline"
+    "trendPipeline": "Crawler Trend Pipeline",
+    "guide": "Admin Guide",
+    "help": "Help & Docs",
+    "faq": "FAQ Center"
   },
   "overview": {
     "title": "Platform overview",

@@ -62,7 +62,7 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
           </HelpHint>
         </div>
         <div className="border-border/60 bg-muted/10 text-muted-foreground flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center text-xs">
-          <Layers className="size-6 text-muted-foreground/40 mb-1.5" />
+          <Layers className="text-muted-foreground/40 mb-1.5 size-6" />
           <p className="font-medium">
             {t("mediaPackage.offering.noDeliverables", {
               defaultValue: "Chưa có hạng mục bàn giao nào.",
@@ -73,18 +73,16 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
     );
   }
 
-  const hasAnyDetails = deliverables.some(
-    (item) =>
-      Boolean(
-        item.description || item.acceptanceCriteria,
-      ),
+  const hasAnyDetails = deliverables.some((item) =>
+    Boolean(item.description || item.acceptanceCriteria),
   );
 
   const allExpanded =
     hasAnyDetails &&
     deliverables.every(
       (item) =>
-        !(item.description || item.acceptanceCriteria) || expandedIds.has(item.id),
+        !(item.description || item.acceptanceCriteria) ||
+        expandedIds.has(item.id),
     );
 
   const toggleExpand = (id: string) => {
@@ -105,9 +103,7 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
     } else {
       const all = new Set<string>();
       deliverables.forEach((item) => {
-        if (
-          item.description || item.acceptanceCriteria
-        ) {
+        if (item.description || item.acceptanceCriteria) {
           all.add(item.id);
         }
       });
@@ -125,7 +121,7 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
           </h3>
           <Badge
             variant="secondary"
-            className="font-mono text-2xs px-1.5 py-0 font-normal"
+            className="text-2xs px-1.5 py-0 font-mono font-normal"
           >
             {deliverables.length}
           </Badge>
@@ -142,8 +138,12 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
             onClick={toggleAll}
           >
             {allExpanded
-              ? t("mediaPackage.ui.collapseAll", { defaultValue: "Thu gọn tất cả" })
-              : t("mediaPackage.ui.expandAll", { defaultValue: "Mở rộng tất cả" })}
+              ? t("mediaPackage.ui.collapseAll", {
+                  defaultValue: "Thu gọn tất cả",
+                })
+              : t("mediaPackage.ui.expandAll", {
+                  defaultValue: "Mở rộng tất cả",
+                })}
           </Button>
         )}
       </div>
@@ -152,7 +152,7 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
       <div className="border-border/70 bg-card overflow-hidden rounded-xl border">
         <Table className="min-w-[520px]">
           <TableHeader className="bg-muted/40">
-            <TableRow className="hover:bg-transparent border-b border-border/70">
+            <TableRow className="border-border/70 border-b hover:bg-transparent">
               <TableHead className="text-muted-foreground w-[38%] min-w-[180px] px-3 py-2.5 text-xs font-semibold">
                 {t("mediaPackage.offering.serviceAndName", {
                   defaultValue: "Dịch vụ & Hạng mục",
@@ -202,8 +202,12 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
                             className="text-muted-foreground hover:text-foreground hover:bg-muted/80 -ml-1 flex size-6 shrink-0 items-center justify-center rounded-md transition-colors"
                             aria-label={
                               isExpanded
-                                ? t("common.actions.collapse", { defaultValue: "Thu gọn" })
-                                : t("common.actions.expand", { defaultValue: "Mở rộng" })
+                                ? t("common.actions.collapse", {
+                                    defaultValue: "Thu gọn",
+                                  })
+                                : t("common.actions.expand", {
+                                    defaultValue: "Mở rộng",
+                                  })
                             }
                             aria-expanded={isExpanded}
                           >
@@ -228,9 +232,12 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
                             {item.name}
                           </span>
                           <span className="text-2xs text-muted-foreground truncate">
-                            {t(`mediaPackage.offering.services.${item.serviceType}`, {
-                              defaultValue: item.serviceType,
-                            })}
+                            {t(
+                              `mediaPackage.offering.services.${item.serviceType}`,
+                              {
+                                defaultValue: item.serviceType,
+                              },
+                            )}
                           </span>
                         </div>
                       </div>
@@ -256,7 +263,9 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
                               className="size-3 shrink-0 text-emerald-600 dark:text-emerald-400"
                               aria-hidden="true"
                             />
-                            <span className="truncate">{item.acceptanceCriteria}</span>
+                            <span className="truncate">
+                              {item.acceptanceCriteria}
+                            </span>
                           </p>
                         ) : null}
                         {!item.description && !item.acceptanceCriteria && (
@@ -273,7 +282,12 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
                         variant="outline"
                         className="bg-brand-orange/5 border-brand-orange/20 text-brand-orange font-mono text-xs font-semibold whitespace-nowrap tabular-nums"
                       >
-                        {item.quantity} {item.unit}
+                        {item.quantity}{" "}
+                        {item.serviceType === "PRESS_RECOMMENDATION"
+                          ? t("mediaPackage.offering.pressArticleUnit", {
+                              count: item.quantity,
+                            })
+                          : item.unit}
                       </Badge>
                     </TableCell>
                   </TableRow>
@@ -286,8 +300,13 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
                           {item.description && (
                             <div className="min-w-0 space-y-1">
                               <div className="text-muted-foreground flex items-center gap-1.5 font-medium">
-                                <FileText className="size-3.5 shrink-0" aria-hidden="true" />
-                                <span>{t("mediaPackage.compact.requirements")}</span>
+                                <FileText
+                                  className="size-3.5 shrink-0"
+                                  aria-hidden="true"
+                                />
+                                <span>
+                                  {t("mediaPackage.compact.requirements")}
+                                </span>
                               </div>
                               <p className="text-foreground/90 pl-5 text-xs leading-relaxed break-words whitespace-pre-line">
                                 {item.description}
@@ -301,7 +320,9 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
                                   className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400"
                                   aria-hidden="true"
                                 />
-                                <span>{t("mediaPackage.offering.acceptance")}</span>
+                                <span>
+                                  {t("mediaPackage.offering.acceptance")}
+                                </span>
                               </div>
                               <p className="text-foreground/90 pl-5 text-xs leading-relaxed break-words whitespace-pre-line">
                                 {item.acceptanceCriteria}

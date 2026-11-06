@@ -1,191 +1,261 @@
-import { useState } from "react";
-import { ArrowLeft, ArrowLeftRight, Plus } from "lucide-react";
+import { packageMutationError } from "@/pages/media-package/lib/packageMutationError";
+import { useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-
+import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { CreateCustomPackageForm } from "@/pages/media-package/components/CreateCustomPackageForm";
-import { MediaPackageCatalog } from "@/pages/media-package/components/MediaPackageCatalog";
-import {
-  MediaPackageErrorState,
-  MediaPackageLoadingState,
-} from "@/pages/media-package/components/MediaPackagePageState";
-import { SelectedMediaPackage } from "@/pages/media-package/components/SelectedMediaPackage";
-import { useWorkspaceMediaPackages } from "@/pages/media-package/hooks/useMediaPackages";
-import { useWorkspaceStore } from "@/store/workspaceStore";
+import { WorkspacePackageOverview } from "@/pages/media-package/components/WorkspacePackageOverview";
+import { MediaPackageLoadingState } from "@/pages/media-package/components/MediaPackagePageState";
+import { packagePlanningService } from "@/pages/media-package/services/packagePlanningService";
 import { mediaPackageService } from "@/pages/media-package/services/mediaPackageService";
-import type { CreateCustomMediaPackageRequest } from "@/pages/media-package/types/mediaPackage";
-import { extractErrorMessage } from "@/utils/error";
-import { toast } from "sonner";
+import { useWorkspaceStore } from "@/store/workspaceStore";
+import type {
+  MediaPackage,
+  CreateCustomMediaPackageRequest,
+} from "@/pages/media-package/types/mediaPackage";
 
 export default function WorkspaceMediaPackagePage() {
+  const { id = "" } = useParams<{ id: string }>();
   const { t } = useTranslation();
-  const { id: workspaceId } = useParams<{ id: string }>();
-  const [createFormOpen, setCreateFormOpen] = useState(false);
-  const [editingTerms, setEditingTerms] = useState(false);
-  const [creatingCustom, setCreatingCustom] = useState(false);
-  const [showCatalog, setShowCatalog] = useState(false);
-  const {
-    agencyPackages,
-    selectedPackage,
-    loading,
-    error,
-    selectingId,
-    negotiating,
-    approving,
-    load,
-    selectPackage,
-    negotiateTerms,
-    approvePackage,
-  } = useWorkspaceMediaPackages(workspaceId);
-  const selectedPackageId = selectedPackage?.mediaPackage.id ?? null;
-
-  const currentMemberRole = useWorkspaceStore(
-    (state) => state.currentMemberRole,
+  const client = useQueryClient();
+  const role = useWorkspaceStore(
+    (s) =>
+      s.workspaceList.find((w) => w.id === id)?.myRole ??
+      (s.currentWorkspace?.id === id ? s.currentMemberRole : null),
   );
-  const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-  const workspaceList = useWorkspaceStore((state) => state.workspaceList);
-
-  const effectiveRole =
-    currentMemberRole ??
-    (workspaceId
-      ? workspaceList.find((w) => w.id === workspaceId)?.myRole
-      : null) ??
-    currentWorkspace?.myRole ??
-    null;
-
-  const canSelectPackages =
-    effectiveRole === "CLIENT" || effectiveRole === null;
-  const canChangePackage =
-    canSelectPackages &&
-    (!selectedPackage || selectedPackage.negotiationStatus === "DRAFT");
-  const agencyId = workspaceId
-    ? workspaceList.find((workspace) => workspace.id === workspaceId)?.agencyId
+  const canManage = role === "MANAGER" || role === "OWNER";
+  const [editing, setEditing] = useState(false);
+  const [viewing, setViewing] = useState<{
+    workspaceId: string;
+    packageId: string;
+  } | null>(null);
+  const canBrowse = canManage || role === "CLIENT";
+  const [template, setTemplate] = useState<MediaPackage | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [affectedTasks, setAffectedTasks] = useState<
+    { taskId: string; name: string }[]
+  >([]);
+  const request = useRef<{ payload: string; id: string } | null>(null);
+  const selection = useQuery({
+    queryKey: ["workspace-package", id],
+    queryFn: () => packagePlanningService.selection(id),
+    enabled: !!id,
+  });
+  const preparation = useQuery({
+    queryKey: ["package-preparation", id],
+    queryFn: () => packagePlanningService.status(id),
+    enabled: !!id,
+    refetchInterval: (q) =>
+      ["PENDING", "PROCESSING"].includes(q.state.data?.status ?? "")
+        ? 3000
+        : false,
+  });
+  const catalog = useQuery({
+    queryKey: ["workspace-package-catalog", id],
+    queryFn: async () =>
+      (await mediaPackageService.listAvailableForWorkspace(id)).data.data,
+    enabled: !!id && canBrowse,
+  });
+  const current = selection.data;
+  const details: MediaPackage | null = current
+    ? ({
+        ...current.mediaPackage,
+        ...current.finalTerms,
+        sourceTemplateId: current.mediaPackage.sourceTemplateId,
+      } as MediaPackage)
     : null;
-  const canCreateCustom =
-    effectiveRole === "MANAGER" && !!agencyId && !!workspaceId;
-
-  const createCustomPackage = async (
-    request: CreateCustomMediaPackageRequest,
-  ) => {
-    if (!agencyId || !workspaceId) return false;
-    setCreatingCustom(true);
+  const viewedId = viewing?.workspaceId === id ? viewing.packageId : null;
+  const viewedPackage =
+    viewedId === details?.id
+      ? details
+      : (catalog.data?.find((item) => item.id === viewedId) ??
+        details ??
+        catalog.data?.[0] ??
+        null);
+  const locked = preparation.data
+    ? !preparation.data.canEditPackage
+    : !!current;
+  async function refresh() {
+    await Promise.all([
+      client.invalidateQueries({ queryKey: ["workspace-package", id] }),
+      client.invalidateQueries({ queryKey: ["package-preparation", id] }),
+    ]);
+  }
+  async function save(value: CreateCustomMediaPackageRequest) {
+    setBusy(true);
+    const packageDetails = {
+      ...value,
+      sourceTemplateId:
+        template?.id === current?.mediaPackage.id
+          ? (template?.sourceTemplateId ?? undefined)
+          : template?.id,
+      workspaceId: id,
+    };
+    const payload = JSON.stringify(packageDetails);
+    if (request.current?.payload !== payload)
+      request.current = { payload, id: crypto.randomUUID() };
     try {
-      await mediaPackageService.createCustom(agencyId, {
-        ...request,
-        workspaceId,
-      });
-      await load();
-      toast.success(t("mediaPackage.messages.customCreated"));
+      const impact = await packagePlanningService.impact(
+        id,
+        packageDetails,
+        current?.termsVersion ?? 0,
+        request.current.id,
+      );
+      setAffectedTasks(impact.affectedTasks);
+      if (impact.blocked) {
+        toast.error(t("campaign.errors.PACKAGE_IMPACT_BLOCKED"));
+        return false;
+      }
+      await packagePlanningService.save(
+        id,
+        packageDetails,
+        current?.termsVersion ?? 0,
+        request.current.id,
+      );
+      request.current = null;
+      setEditing(false);
+      setViewing(null);
+      await refresh();
+      toast.success(t("mediaPackage.workspace.saved"));
       return true;
-    } catch (error: unknown) {
+    } catch (e) {
       toast.error(
-        extractErrorMessage(error, t("mediaPackage.errors.createCustom")),
+        packageMutationError(e, t("mediaPackage.workspace.saveError"), t),
       );
       return false;
     } finally {
-      setCreatingCustom(false);
+      setBusy(false);
     }
-  };
-
+  }
+  async function retry() {
+    if (!preparation.data) return;
+    setBusy(true);
+    try {
+      await packagePlanningService.retry(id, preparation.data.termsVersion);
+      await refresh();
+    } catch (e) {
+      toast.error(
+        packageMutationError(e, t("mediaPackage.workspace.saveError"), t),
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+  const pending = ["PENDING", "PROCESSING"].includes(
+    preparation.data?.status ?? "",
+  );
+  const canEdit =
+    canManage &&
+    !locked &&
+    !pending &&
+    !selection.isPending &&
+    !preparation.isPending &&
+    !selection.isError &&
+    !preparation.isError;
+  function edit(value: MediaPackage | null) {
+    if (!canEdit) return;
+    setTemplate(value);
+    setViewing(value ? { workspaceId: id, packageId: value.id } : null);
+    setAffectedTasks([]);
+    setEditing(true);
+  }
   return (
     <PageWrapper
       compact
+      className={
+        editing
+          ? "h-full min-h-0 overflow-y-auto"
+          : "h-full overflow-y-auto pb-4 lg:flex lg:min-h-0 lg:flex-col lg:overflow-hidden lg:pb-4"
+      }
+      contentClassName={
+        editing ? undefined : "lg:flex lg:min-h-0 lg:flex-1 lg:flex-col"
+      }
       showGuideButton={false}
       title={t("mediaPackage.workspacePage.title")}
-      actions={
-        !createFormOpen &&
-        !editingTerms && (
-          <div className="flex flex-wrap gap-2">
-            {selectedPackage && (
-              <Button
-                variant="outline"
-                disabled={loading || !!selectingId}
-                onClick={() => setShowCatalog((value) => !value)}
-              >
-                {showCatalog ? (
-                  <ArrowLeft aria-hidden className="size-4" />
-                ) : (
-                  <ArrowLeftRight aria-hidden className="size-4" />
-                )}
-                {t(
-                  showCatalog
-                    ? "mediaPackage.compact.backSelected"
-                    : canChangePackage
-                      ? "mediaPackage.compact.changePackage"
-                      : "mediaPackage.compact.browsePackages",
-                )}
-              </Button>
-            )}
-            {canCreateCustom && (
-              <Button
-                data-package-create
-                variant="orange"
-                onClick={() => setCreateFormOpen(true)}
-              >
-                <Plus aria-hidden className="size-4" />
-                {t("mediaPackage.actions.createCustom")}
-              </Button>
-            )}
-          </div>
-        )
-      }
     >
-      {!createFormOpen && (
-        <>
-          {loading && <MediaPackageLoadingState />}
-          {!loading && error && (
-            <MediaPackageErrorState
-              message={error}
-              onRetry={() => void load()}
-            />
-          )}
-          {!loading && !error && (
-            <div className="space-y-4">
-              {(!showCatalog || !selectedPackage) && (
-                <SelectedMediaPackage
-                  key={selectedPackage?.workspaceMediaPackageId ?? "empty"}
-                  selection={selectedPackage}
-                  workspaceId={workspaceId}
-                  onRefresh={() => void load()}
-                  onNegotiate={negotiateTerms}
-                  onApprove={approvePackage}
-                  negotiating={negotiating}
-                  approving={approving}
-                  onEditingChange={setEditingTerms}
-                />
+      <div
+        className={
+          editing
+            ? "space-y-4"
+            : "space-y-3 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:gap-3 lg:space-y-0"
+        }
+      >
+        {(selection.isPending || preparation.isPending) && (
+          <MediaPackageLoadingState />
+        )}
+        {(selection.isError || preparation.isError) && (
+          <div role="alert" className="rounded-xl border p-5">
+            {t("mediaPackage.workspace.saveError")}
+            <Button variant="outline" onClick={() => void refresh()}>
+              {t("mediaPackage.guest.retry")}
+            </Button>
+          </div>
+        )}
+        {preparation.data &&
+          ["PENDING", "PROCESSING", "FAILED", "DEPLOYING", "DEPLOYED"].includes(
+            preparation.data.status,
+          ) && (
+            <section
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border p-4"
+              role="status"
+            >
+              <span>
+                {t(
+                  `mediaPackage.workspace.preparation.${preparation.data.status}`,
+                )}
+              </span>
+              {preparation.data.status === "FAILED" && (
+                <Button disabled={busy} onClick={() => void retry()}>
+                  {t("mediaPackage.workspace.retry")}
+                </Button>
               )}
-
-              {(showCatalog || !selectedPackage) && (
-                <div hidden={editingTerms}>
-                  <MediaPackageCatalog
-                    title={t("mediaPackage.catalog.availableTitle")}
-                    description={t("mediaPackage.catalog.availableDescription")}
-                    packages={agencyPackages}
-                    selectedPackageId={selectedPackageId}
-                    canSelect={canChangePackage}
-                    selectingId={selectingId}
-                    onSelect={(packageId) =>
-                      void selectPackage(packageId).then((selected) => {
-                        if (selected) setShowCatalog(false);
-                      })
-                    }
-                  />
-                </div>
-              )}
-            </div>
+            </section>
           )}
-        </>
-      )}
-      {canCreateCustom && createFormOpen && (
-        <CreateCustomPackageForm
-          open={createFormOpen}
-          loading={creatingCustom}
-          onOpenChange={setCreateFormOpen}
-          onSubmit={createCustomPackage}
-        />
-      )}
+        {editing && affectedTasks.length > 0 && (
+          <section
+            role="alert"
+            className="border-destructive/40 rounded-xl border p-4"
+          >
+            <p>{t("campaign.errors.PACKAGE_IMPACT_BLOCKED")}</p>
+            <ul className="mt-2 list-disc pl-5">
+              {affectedTasks.map((task) => (
+                <li key={task.taskId}>{task.name}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+        {editing && (
+          <CreateCustomPackageForm
+            key={template?.id ?? "new"}
+            open
+            sourceTemplate={template}
+            loading={busy}
+            onOpenChange={setEditing}
+            onSubmit={save}
+          />
+        )}
+        {!editing && !selection.isPending && !preparation.isPending && (
+          <WorkspacePackageOverview
+            workspaceId={id}
+            currentPackage={details}
+            viewedPackage={viewedPackage}
+            packages={catalog.data ?? []}
+            canManage={canManage}
+            canBrowse={canBrowse}
+            canEdit={canEdit}
+            catalogPending={catalog.isPending}
+            catalogError={catalog.isError}
+            onRetryCatalog={() => void catalog.refetch()}
+            onView={(value) =>
+              setViewing({ workspaceId: id, packageId: value.id })
+            }
+            onEdit={edit}
+          />
+        )}
+      </div>
     </PageWrapper>
   );
 }

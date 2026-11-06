@@ -50,10 +50,10 @@
     "totalCampaigns": "Total campaigns",
     "packageStatus": "Package status",
     "noPackage": "No package",
-    "packageRequiredTitle": "No media package selected",
-    "packageRequiredClientDescription": "Choose one of the Agency's available packages before starting work in this Workspace.",
-    "packageRequiredAgencyDescription": "The Client needs to select a media package before the campaign workflow can begin.",
-    "selectPackage": "Select media package",
+    "packageRequiredTitle": "No workspace package yet",
+    "packageRequiredClientDescription": "The manager is preparing the package. You can follow progress and chat in the workspace.",
+    "packageRequiredAgencyDescription": "Create the agreed package to prepare the campaign and tasks.",
+    "selectPackage": "View workspace package",
     "agencyAiCredits": "Agency AI credits used ({{month}})",
     "agencyAiCreditsPeriod": "Agency AI credits used this period",
     "creditUnavailable": "Unavailable",
@@ -98,7 +98,8 @@
     "packageNegotiatingTitle": "Media Package in Negotiation",
     "packageNegotiatingDescription": "Terms are being agreed upon by both sides. Click to view or negotiate.",
     "viewPackage": "View media package",
-    "roleInWorkspace": "Your Role"
+    "roleInWorkspace": "Your Role",
+    "packageApproved": "Package configured"
   },
   "create": {
     "title": "Create workspace",

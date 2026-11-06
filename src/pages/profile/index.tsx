@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { BadgeCheck, Pencil } from "lucide-react";
@@ -102,6 +103,7 @@ export function ProfilePage() {
     setExt((prev) => ({ ...prev, ...patch }));
 
   useEffect(() => {
+    if (user?.role === "ADMIN") return;
     userService
       .getProfile()
       .then((resp) => {
@@ -327,6 +329,10 @@ export function ProfilePage() {
       { key: "website", url: ext.website },
     ] as const
   ).filter((s) => s.url.trim() !== "");
+
+  if (user?.role === "ADMIN") {
+    return <Navigate to="/admin" replace />;
+  }
 
   return (
     <section id="profile" className="scroll-mt-6">

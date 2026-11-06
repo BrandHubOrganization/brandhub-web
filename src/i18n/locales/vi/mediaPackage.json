@@ -71,13 +71,15 @@
       "SOCIAL_POST": "Bài đăng mạng xã hội",
       "EVENT_PLANNING": "Bàn giao kế hoạch sự kiện",
       "LIVESTREAM_PREPARATION": "Livestream",
-      "PRESS_RECOMMENDATION": "Báo điện tử",
+      "PRESS_RECOMMENDATION": "Bài báo điện tử",
       "WORKSHOP_SUPPORT": "Workshop"
     },
     "service": "Dịch vụ",
     "name": "Tên hạng mục bàn giao",
     "serviceAndName": "Dịch vụ & Hạng mục",
     "requirementsAndCriteria": "Yêu cầu & Tiêu chí nghiệm thu",
+    "pressArticleUnit_one": "bài",
+    "pressArticleUnit_other": "bài",
     "quantityAndUnit": "Số lượng & Đơn vị",
     "noDeliverables": "Chưa có hạng mục bàn giao nào.",
     "quantity": "Số lượng",
@@ -290,6 +292,97 @@
       "workItems": "Đầu việc dự kiến"
     },
     "showUnchanged": "Hiện cả nội dung không thay đổi",
-    "noDifferences": "Chưa có thay đổi so với bản trước."
+    "noDifferences": "Chưa có thay đổi so với bản trước.",
+    "openPackage": "Xem gói {{name}}"
+  },
+  "share": {
+    "languages": {
+      "vi": "Tiếng Việt",
+      "en": "English"
+    },
+    "copied": "Đã sao chép link",
+    "copyManually": "Chọn và sao chép link bên dưới",
+    "revoked": "Đã thu hồi link",
+    "error": "Không thể chia sẻ hoặc xuất gói. Vui lòng thử lại.",
+    "copyLink": "Sao chép link chia sẻ",
+    "images": "Xuất ảnh JPG",
+    "revoke": "Thu hồi link",
+    "pdf": "Xuất PDF",
+    "menu": "Chia sẻ gói"
+  },
+  "guest": {
+    "language": "Ngôn ngữ hiển thị",
+    "unavailable": "Gói không còn khả dụng hoặc chưa được chia sẻ",
+    "retry": "Thử lại",
+    "budget": "Ngân sách",
+    "duration": "Thời lượng",
+    "toBeAgreed": "Trao đổi thêm",
+    "weeks": "{{count}} tuần"
+  },
+  "workspace": {
+    "saved": "Đã lưu gói. Hệ thống đang chuẩn bị Campaign và công việc.",
+    "saveError": "Không thể lưu hoặc tải gói. Vui lòng kiểm tra và thử lại.",
+    "retry": "Thử chuẩn bị lại",
+    "openCampaign": "Xem Campaign",
+    "edit": "Chỉnh sửa gói",
+    "create": "Tạo gói workspace",
+    "chooseTemplate": "Chọn gói mẫu",
+    "emptyManager": "Chọn gói mẫu hoặc tạo gói mới theo thỏa thuận với khách hàng.",
+    "emptyClient": "Manager đang chuẩn bị gói cho workspace.",
+    "preparation": {
+      "LEGACY": "Gói hiện có",
+      "PENDING": "Đang chờ chuẩn bị công việc",
+      "PROCESSING": "Đang chuẩn bị công việc",
+      "READY": "Kế hoạch và công việc đã đồng bộ",
+      "FAILED": "Chuẩn bị chưa hoàn tất. Hãy thử lại.",
+      "DEPLOYING": "Đã cố định kế hoạch để triển khai",
+      "DEPLOYED": "Chiến dịch đã triển khai — gói được khóa"
+    },
+    "otherPackages": "Các gói khác",
+    "packageList": "Các gói truyền thông",
+    "packageContent": "Nội dung gói",
+    "viewing": "Đang xem",
+    "noOtherPackages": "Không có gói khác."
+  },
+  "proposal": {
+    "viewTitle": "Chi tiết gói truyền thông",
+    "deliverables": "Hạng mục bàn giao",
+    "details": "Chi tiết bàn giao",
+    "description": "Mô tả thực hiện",
+    "outcomes": "Mục tiêu đạt được",
+    "ordinal": "Thứ tự",
+    "quantity": {
+      "SOCIAL_POST_one": "{{count}} bài đăng mạng xã hội",
+      "SOCIAL_POST_other": "{{count}} bài đăng mạng xã hội",
+      "EVENT_PLANNING_one": "{{count}} sự kiện",
+      "EVENT_PLANNING_other": "{{count}} sự kiện",
+      "LIVESTREAM_PREPARATION_one": "{{count}} buổi livestream",
+      "LIVESTREAM_PREPARATION_other": "{{count}} buổi livestream",
+      "PRESS_RECOMMENDATION_one": "{{count}} bài báo điện tử",
+      "PRESS_RECOMMENDATION_other": "{{count}} bài báo điện tử",
+      "WORKSHOP_SUPPORT_one": "{{count}} buổi workshop",
+      "WORKSHOP_SUPPORT_other": "{{count}} buổi workshop"
+    },
+    "units": {
+      "SOCIAL_POST_one": "bài",
+      "SOCIAL_POST_other": "bài",
+      "EVENT_PLANNING_one": "sự kiện",
+      "EVENT_PLANNING_other": "sự kiện",
+      "LIVESTREAM_PREPARATION_one": "buổi",
+      "LIVESTREAM_PREPARATION_other": "buổi",
+      "PRESS_RECOMMENDATION_one": "bài",
+      "PRESS_RECOMMENDATION_other": "bài",
+      "WORKSHOP_SUPPORT_one": "buổi",
+      "WORKSHOP_SUPPORT_other": "buổi"
+    },
+    "packageDescription": "Mô tả gói",
+    "view": "Xem",
+    "expand": "Xem thêm",
+    "collapse": "Thu gọn",
+    "item": "Hạng mục",
+    "itemDetails": "Chi tiết",
+    "openItem": "Xem chi tiết {{name}}",
+    "closeItem": "Thu gọn chi tiết {{name}}",
+    "noDetails": "Chưa có mô tả hoặc mục tiêu"
   }
 }

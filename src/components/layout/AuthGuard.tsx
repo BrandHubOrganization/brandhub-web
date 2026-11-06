@@ -127,34 +127,6 @@ export function AuthGuard() {
       ? agencyFallbackRole
       : (agencyFallbackRole ?? legacyWorkspaceRole ?? currentMemberRole);
 
-  const isDashboardRoute =
-    !!workspaceIdInUrl &&
-    location.pathname === `/workspaces/${workspaceIdInUrl}/dashboard`;
-
-  const isMediaPackageRoute =
-    !!workspaceIdInUrl &&
-    (location.pathname === `/workspaces/${workspaceIdInUrl}/media-package` ||
-      location.pathname.startsWith(
-        `/workspaces/${workspaceIdInUrl}/media-package/`,
-      ));
-
-  const isChatRoute =
-    !!workspaceIdInUrl &&
-    (location.pathname === `/workspaces/${workspaceIdInUrl}/chat` ||
-      location.pathname.startsWith(`/workspaces/${workspaceIdInUrl}/chat/`));
-
-  const isManagerWorkspaceSettingsRoute =
-    memberRole === "MANAGER" &&
-    !!workspaceIdInUrl &&
-    ["settings", "members", "clients"].some(
-      (page) => location.pathname === `/workspaces/${workspaceIdInUrl}/${page}`,
-    );
-  const isAllowedHardGateRoute =
-    isDashboardRoute ||
-    isMediaPackageRoute ||
-    isChatRoute ||
-    isManagerWorkspaceSettingsRoute;
-
   React.useEffect(() => {
     if (
       !roleLoaded ||
@@ -184,24 +156,6 @@ export function AuthGuard() {
 
   if (!roleLoaded) {
     return null;
-  }
-
-  // Trước khi package được duyệt, Client chỉ xem package/chat; Manager còn
-  // được quản lý thiết lập, thành viên và client của Workspace.
-  if (workspaceIdInUrl && (memberRole === "CLIENT" || memberRole === "MANAGER")) {
-    if (!isAllowedHardGateRoute) {
-      if (workspaceInUrl?.packageNegotiationStatus === undefined) {
-        return null;
-      }
-      if (workspaceInUrl.packageNegotiationStatus !== "APPROVED") {
-        return (
-          <Navigate
-            to={`/workspaces/${workspaceIdInUrl}/media-package`}
-            replace
-          />
-        );
-      }
-    }
   }
 
   if (!canAccess(location.pathname, systemRole, memberRole)) {

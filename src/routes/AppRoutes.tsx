@@ -7,6 +7,7 @@ import { Layout } from "@/components/layout/Layout";
 import { PublicHelpLayout } from "@/components/layout/PublicHelpLayout";
 import { PageFallback } from "@/components/layout/PageFallback";
 import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
+import { useAuthStore } from "@/store/authStore";
 
 // Typed lazy loader supporting both named & default exports
 function lazyNamed<T extends Record<string, unknown>>(
@@ -79,9 +80,8 @@ const TermsOfServicePage = lazyNamed(
   () => import("@/pages/legal/TermsOfServicePage"),
   "TermsOfServicePage",
 );
-const PublicSurveyPage = lazy(() =>
-  import("@/pages/public-survey"),
-);
+const GuestMediaPackagePage = lazy(() => import("@/pages/media-package/guest"));
+const PublicSurveyPage = lazy(() => import("@/pages/public-survey"));
 
 // ── Core Dashboard & Work ──
 const DashboardPage = lazyNamed(
@@ -333,12 +333,24 @@ function WorkspaceIndexRedirect() {
   return <Navigate to="dashboard" replace />;
 }
 
+export function HelpGuideRedirect() {
+  const systemRole = useAuthStore((s) => s.systemRole);
+  if (systemRole === "ADMIN") {
+    return <Navigate to="/admin/guide" replace />;
+  }
+  return <Navigate to="/help/faq" replace />;
+}
+
 export function AppRoutes() {
   return (
     <Suspense fallback={<PageFallback fullScreen />}>
       <Routes>
         {/* Public Routes — accessible without authentication */}
         <Route path="/" element={<LandingPage />} />
+        <Route
+          path="/packages/share/:token"
+          element={<GuestMediaPackagePage />}
+        />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
@@ -348,20 +360,12 @@ export function AppRoutes() {
         <Route path="/activate-account" element={<ActivateAccountPage />} />
         <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
         <Route path="/mail/unsubscribe" element={<MailUnsubscribePage />} />
-        <Route
-          path="/public/surveys/:token"
-          element={<PublicSurveyPage />}
-        />
+        <Route path="/public/surveys/:token" element={<PublicSurveyPage />} />
 
-        {/* Public Help, Legal & FAQ Routes — accessible without authentication */}
+        {/* Public Help & Legal Routes — accessible without authentication */}
         <Route element={<PublicHelpLayout />}>
-          <Route path="/help/faq" element={<HelpFaqPage />} />
-          <Route path="/help/guide" element={<AdminGuidePage />} />
-          <Route path="/faq" element={<Navigate to="/help/faq" replace />} />
-          <Route
-            path="/guide"
-            element={<Navigate to="/help/guide" replace />}
-          />
+          <Route path="/help/guide" element={<HelpGuideRedirect />} />
+          <Route path="/guide" element={<HelpGuideRedirect />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
         </Route>
@@ -565,6 +569,9 @@ export function AppRoutes() {
               path="/admin/workspace-templates"
               element={<WorkspaceTemplateLibraryPage />}
             />
+            <Route path="/admin/guide" element={<AdminGuidePage />} />
+            <Route path="/help/faq" element={<HelpFaqPage />} />
+            <Route path="/faq" element={<Navigate to="/help/faq" replace />} />
             <Route path="/requests" element={<ContentRequestListPage />} />
             <Route path="/editor" element={<EditorPage />} />
             <Route path="/content-writing" element={<ContentWritingPage />} />

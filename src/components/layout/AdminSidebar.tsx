@@ -2,9 +2,11 @@ import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Activity,
+  BookOpen,
   Clock3,
   FileChartColumn,
   FileText,
+  HelpCircle,
   LayoutDashboard,
   Mail,
   Network,
@@ -53,6 +55,13 @@ const menuGroups = [
       { key: "trendReplay", icon: Activity, planned: false },
     ],
   },
+  {
+    title: "help",
+    entries: [
+      { key: "guide", icon: BookOpen, planned: false },
+      { key: "faq", icon: HelpCircle, planned: false },
+    ],
+  },
 ];
 
 const sections = menuGroups.flatMap((group) => group.entries);
@@ -66,21 +75,30 @@ const linkTo = (key: string) =>
         ? "/admin/workspace-templates"
         : key === "health"
           ? "/admin/system-health"
-          : key === "overview"
-            ? "/admin"
-            : `/admin?view=${key}`;
+          : key === "guide"
+            ? "/admin/guide"
+            : key === "faq"
+              ? "/help/faq"
+              : key === "overview"
+                ? "/admin"
+                : `/admin?view=${key}`;
 
 const labelKey = (key: string) =>
   key === "credit"
     ? "credit.price.title"
     : key === "health"
       ? "monitoring.title"
-      : `admin.navigation.${key}`;
+      : key === "guide"
+        ? "admin.navigation.guide"
+        : key === "faq"
+          ? "admin.navigation.faq"
+          : `admin.navigation.${key}`;
 
 function useAdminView() {
   const [params] = useSearchParams();
   const { pathname } = useLocation();
   const view = params.get("view") || "overview";
+  if (pathname === "/admin/guide") return "guide";
   if (pathname === "/admin/system-health") return "health";
   if (pathname === "/admin/credit-prices") return "credit";
   if (pathname === "/admin/invoices") return "invoices";

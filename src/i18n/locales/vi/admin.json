@@ -546,7 +546,10 @@
     "workspaceTemplates": "Mẫu Workspace",
     "mailSuppressions": "Danh sách hủy đăng ký hệ thống",
     "crawl": "Cấu hình crawl",
-    "trendPipeline": "Quản lý Crawler Trend"
+    "trendPipeline": "Quản lý Crawler Trend",
+    "guide": "Cẩm nang Quản trị",
+    "help": "Trợ giúp & Tài liệu",
+    "faq": "Hỏi đáp FAQ"
   },
   "overview": {
     "title": "Tổng quan nền tảng",

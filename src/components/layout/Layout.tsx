@@ -69,6 +69,7 @@ export function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const taskWorkspaceLayout = /^\/workspaces\/[^/]+\/(?:tasks(?:\/[^/]+\/detail)?|task-approvals|chat)$/.test(location.pathname);
+  const packageWorkspaceLayout = /^\/workspaces\/[^/]+\/media-package\/?$/.test(location.pathname);
   const user = useAuthStore((s) => s.user);
   const systemRole = useAuthStore((s) => s.systemRole);
 
@@ -328,7 +329,7 @@ export function Layout() {
         </Sheet>
 
         {/* Page Content Outlet */}
-        <main className={`bg-background flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}>
+        <main className={`bg-background flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}>
           <React.Suspense fallback={<PageFallback />}>
             <Outlet />
           </React.Suspense>
