@@ -27,6 +27,7 @@ import {
 } from "@/services/agencyBillingService";
 import { formatCredits } from "@/pages/credit/utils/creditFormat";
 import { creditKeys } from "@/pages/credit/utils/creditQuery";
+import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 
 const CREDIT_UNIT_PRICE_VND = 200;
@@ -90,6 +91,7 @@ function validateCreditInput(
 }
 
 export function OwnerCreditView({ agencyId }: { agencyId: string }) {
+  const userId = useAuthStore((state) => state.user?.id);
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [topUpOpen, setTopUpOpen] = useState(false);
@@ -145,7 +147,7 @@ export function OwnerCreditView({ agencyId }: { agencyId: string }) {
   useEffect(() => {
     if (order?.status !== "FULFILLED") return;
     void queryClient.invalidateQueries({
-      queryKey: creditKeys.all,
+      queryKey: creditKeys.scope(userId, agencyId),
     });
     void queryClient.invalidateQueries({
       queryKey: ["ai-credit-balance"],
@@ -156,7 +158,7 @@ export function OwnerCreditView({ agencyId }: { agencyId: string }) {
         "Thanh toán thành công! Đã cộng Credit vào quỹ Agency.",
       ),
     );
-  }, [order?.status, queryClient, t]);
+  }, [order?.status, queryClient, t, userId, agencyId]);
 
   // 1s countdown timer while QR is pending
   useEffect(() => {

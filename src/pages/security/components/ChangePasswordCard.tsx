@@ -11,6 +11,8 @@ import { extractErrorMessage } from "@/utils/error";
 
 interface ChangePasswordCardProps {
   hasPassword: boolean;
+  onPasswordSet?: () => void;
+  className?: string;
 }
 
 /**
@@ -18,7 +20,11 @@ interface ChangePasswordCardProps {
  * - "password": nhập mật khẩu hiện tại (hoặc đặt mật khẩu cho tài khoản OAuth chưa có).
  * - "otp": quên mật khẩu hiện tại → nhận mã 6 số qua email rồi đặt mật khẩu mới.
  */
-export function ChangePasswordCard({ hasPassword }: ChangePasswordCardProps) {
+export function ChangePasswordCard({
+  hasPassword,
+  onPasswordSet,
+  className,
+}: ChangePasswordCardProps) {
   const { t } = useTranslation();
   const [mode, setMode] = React.useState<"password" | "otp">("password");
   const [currentPassword, setCurrentPassword] = React.useState("");
@@ -91,6 +97,7 @@ export function ChangePasswordCard({ hasPassword }: ChangePasswordCardProps) {
       } else if (isSetPasswordMode) {
         await authService.setPassword({ password: newPassword });
         toast.success(t("security.password.setPasswordSuccess"));
+        onPasswordSet?.();
       } else {
         await authService.changePassword({ currentPassword, newPassword });
         toast.success(t("security.password.changeSuccess"));
@@ -112,7 +119,11 @@ export function ChangePasswordCard({ hasPassword }: ChangePasswordCardProps) {
   };
 
   return (
-    <div className="border-border bg-card mt-6 max-w-2xl rounded-xl border p-6">
+    <div
+      className={
+        className ?? "border-border bg-card rounded-xl border p-6 shadow-sm"
+      }
+    >
       <div className="border-border flex items-center gap-3 border-b pb-4">
         <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-2">
           <KeyRound className="size-5" />

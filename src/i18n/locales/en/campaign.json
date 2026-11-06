@@ -40,7 +40,7 @@
   "tabs": {
     "plan": "Plan & Deliverables",
     "delivery": "Delivery & Tasks",
-    "review": "Review & History"
+    "review": "Feedback & History"
   },
   "partners": {
     "title": "Campaign partners",
@@ -77,7 +77,7 @@
       "OTHER": "Other"
     }
   },
-  "packageRequired": "Approve the package before planning a Campaign.",
+  "packageRequired": "No workspace package yet",
   "description": "One Workspace runs one Campaign from its approved package. The Client gives feedback, the Manager edits, and both approve the same version before launch.",
   "name": "Campaign name",
   "strategy": "Execution strategy",
@@ -111,7 +111,7 @@
   "error": "Unable to load or save the plan. Check input and try again.",
   "editMissingFields": "Complete missing fields",
   "review": {
-    "requirementsTitle": "Complete these fields before approval",
+    "requirementsTitle": "Complete before deployment",
     "missingDeadline": "Deadline for “{{task}}”",
     "title": "Feedback and approval",
     "agency": "Agency",
@@ -174,7 +174,10 @@
     "CAMPAIGN_PLAN_INCOMPLETE": "Save the strategy, start and end dates, and work item deadlines before approval.",
     "CAMPAIGN_COMPLETION_REASON_REQUIRED": "A reason is required while tasks remain unfinished.",
     "CAMPAIGN_DEPLOYMENT_INCOMPLETE": "Not all tasks were created. Check deployment progress.",
-    "CAMPAIGN_NOT_APPROVED": "Both sides must approve the same Campaign version before deployment."
+    "CAMPAIGN_NOT_APPROVED": "Both sides must approve the same Campaign version before deployment.",
+    "PACKAGE_PREPARATION_PENDING": "Package tasks are not ready or the plan is already locked.",
+    "PACKAGE_IMPACT_BLOCKED": "Cannot remove or change existing tasks. Current data is preserved.",
+    "PACKAGE_WORKFLOW_REPLACED": "Use the manager-led workspace package workflow."
   },
   "ui": {
     "editLocked": "The approved plan is locked and its content cannot be edited. Only a Draft plan can be edited.",
@@ -209,7 +212,7 @@
     }
   },
   "ux": {
-    "packageHint": "Choose a media package, agree on its terms and have both sides approve it. Then return here to plan the campaign.",
+    "packageHint": "The manager creates a package to prepare the campaign and tasks.",
     "openPackage": "Open media package",
     "nextStep": "Next step",
     "awaitingTasks": "Check deployment status below. Task management becomes available once created tasks are confirmed.",
@@ -217,14 +220,20 @@
     "plan": "View plan",
     "openTasks": "Manage tasks",
     "clientGuidance": {
-      "APPROVED": "Both sides have approved the plan. A manager will deploy it to create tasks. You can review the plan and follow progress in the delivery section.",
-      "IN_PROGRESS": "The campaign is underway. View progress and tasks; a manager handles requirements and assignments."
+      "APPROVED": "Complete the plan and tasks before deployment. Clients can view and leave feedback.",
+      "IN_PROGRESS": "The campaign is underway. View progress and tasks; a manager handles requirements and assignments.",
+      "DRAFT": "Complete the plan and tasks before deployment. Clients can view and leave feedback."
     },
     "guidance": {
-      "DRAFT": "Check the plan and work items, then go to feedback and approval. Both sides must approve the same version before deployment.",
-      "APPROVED": "Both sides have approved the plan. Go to deployment so a manager can create tasks from the agreed work items.",
+      "DRAFT": "Complete the plan and tasks before deployment. Clients can view and leave feedback.",
+      "APPROVED": "Complete the plan and tasks before deployment. Clients can view and leave feedback.",
       "IN_PROGRESS": "Tasks have been created. Open task management to add requirements, assign people and track delivery.",
       "COMPLETED": "This campaign has ended. You can still review its plan, approval history and tasks."
-    }
+    },
+    "review": "Plan feedback"
+  },
+  "feedback": {
+    "title": "Feedback and plan history",
+    "hint": "Feedback on plan version {{version}}. The manager decides when to deploy."
   }
 }

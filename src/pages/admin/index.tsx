@@ -13,6 +13,7 @@ import {
 import PageWrapper from "@/components/layout/PageWrapper";
 import { cn } from "@/lib/utils";
 import { AdminAccountsPanel } from "@/pages/admin/components/AdminAccountsPanel";
+import { AdminTrendPipelinePanel } from "@/pages/admin/components/AdminTrendPipelinePanel";
 import { AdminTrendReplayPanel } from "@/pages/admin/components/AdminTrendReplayPanel";
 import { AdminTrendPanel } from "@/pages/admin/components/AdminTrendPanel";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -55,7 +56,7 @@ const descriptions: Record<string, string> = {
   users: "admin.accounts.description",
   crawl: "admin.crawl.description",
   trendReplay: "admin.trendReplay.description",
-  trendPipeline: "admin.crawl.description",
+  trendPipeline: "admin.trendPipeline.description",
   trends: "admin.trends.description",
   trendGraph: "admin.trendGraph.description",
   mailTemplates: "mailTemplate.admin.description",
@@ -68,6 +69,11 @@ const descriptions: Record<string, string> = {
 const aiTrendNavItems = [
   { key: "trends", icon: TrendingUp, labelKey: "admin.navigation.trends" },
   { key: "crawl", icon: Radar, labelKey: "admin.navigation.crawl" },
+  {
+    key: "trendPipeline",
+    icon: Radar,
+    labelKey: "admin.navigation.trendPipeline",
+  },
   { key: "trendGraph", icon: Network, labelKey: "admin.navigation.trendGraph" },
   {
     key: "trendReplay",
@@ -78,14 +84,13 @@ const aiTrendNavItems = [
 
 export function AdminAiNavActions({ currentView }: { currentView: string }) {
   const { t } = useTranslation();
-  const normalizedView = currentView === "trendPipeline" ? "crawl" : currentView;
   return (
     <nav
       aria-label={t("admin.navigation.ai")}
       className="flex flex-wrap items-center gap-1.5 sm:gap-2"
     >
       {aiTrendNavItems.map(({ key, icon: Icon, labelKey }) => {
-        const active = normalizedView === key;
+        const active = currentView === key;
         return (
           <Link
             key={key}
@@ -123,7 +128,7 @@ export function AdminPage() {
           view === "overview"
             ? "admin.overview.title"
             : view === "trendPipeline"
-              ? "admin.navigation.crawl"
+              ? "admin.navigation.trendPipeline"
               : `admin.navigation.${view}`,
         )}
         description={t(descriptions[view] ?? `admin.unavailable.${view}`)}
@@ -167,7 +172,9 @@ export function AdminPage() {
           <AdminMailSuppressionsPanel />
         ) : view === "mailBatches" ? (
           <AdminMailBatchesPanel />
-        ) : view === "crawl" || view === "trendPipeline" ? (
+        ) : view === "trendPipeline" ? (
+          <AdminTrendPipelinePanel />
+        ) : view === "crawl" ? (
           <AdminCrawlConfigPanel />
         ) : view === "reports" ? (
           <section className="bg-card border-border w-full rounded-xl border p-5 lg:p-6">

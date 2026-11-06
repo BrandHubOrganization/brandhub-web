@@ -1,7 +1,8 @@
-import { QuickNumbers, TextChoices } from "@/components/shared/FieldChoices";
-import { useState } from "react";
+import { QuickNumbers } from "@/components/shared/FieldChoices";
+import { useId, useState } from "react";
 import { DiscardChangesDialog } from "./DiscardChangesDialog";
 import { useDraftUnloadWarning } from "../hooks/useDraftUnloadWarning";
+import { usePackageEditorHeight } from "@/pages/media-package/hooks/usePackageEditorHeight";
 import { OfferingEditor } from "@/pages/media-package/components/OfferingEditor";
 import { copyOfferingDetails } from "@/pages/media-package/types/serviceUnits";
 import type { OfferingFields } from "@/pages/media-package/types/mediaPackage";
@@ -10,6 +11,8 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { InlineWorkArea } from "@/components/shared/InlineWorkArea";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import type {
   CreateCustomMediaPackageRequest,
   MediaPackage,
@@ -17,6 +20,7 @@ import type {
 
 interface CreateCustomPackageFormProps {
   open: boolean;
+  editing?: boolean;
   sourceTemplate?: MediaPackage | null;
   loading: boolean;
   onOpenChange: (open: boolean) => void;
@@ -25,6 +29,7 @@ interface CreateCustomPackageFormProps {
 
 interface FormErrors {
   name?: string;
+  offering?: string;
   durationWeeks?: string;
   budgetAmount?: string;
   scopeDescription?: string;
@@ -32,12 +37,15 @@ interface FormErrors {
 
 export function CreateCustomPackageForm({
   open,
+  editing = false,
   sourceTemplate,
   loading,
   onOpenChange,
   onSubmit,
 }: CreateCustomPackageFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const formId = useId();
+  const { ref: editorRef, height: editorHeight } = usePackageEditorHeight(open);
   const [offering, setOffering] = useState<OfferingFields>({
     offeringDetails: copyOfferingDetails(sourceTemplate?.offeringDetails),
   });
@@ -104,6 +112,8 @@ export function CreateCustomPackageForm({
     if (scopeDescription.length > 5000) {
       nextErrors.scopeDescription = t("mediaPackage.form.errors.scopeLength");
     }
+    if (!offering.offeringDetails?.deliverables.length)
+      nextErrors.offering = t("mediaPackage.offering.required");
     setErrors(nextErrors);
     const first = Object.keys(nextErrors)[0];
     if (first) document.getElementById(`package-field-${first}`)?.focus();
@@ -144,139 +154,158 @@ export function CreateCustomPackageForm({
   if (!open) return null;
   return (
     <>
-      <InlineWorkArea
-        title={t("mediaPackage.form.title")}
-        description={t("mediaPackage.form.description")}
-        backLabel={t("mediaPackage.ui.backToPackages")}
-        onBack={() => handleOpenChange(false)}
-        disabled={loading}
-        returnFocusTo={
-          sourceTemplate
-            ? `[data-package-create-from="${CSS.escape(sourceTemplate.id)}"]`
-            : "[data-package-create]"
-        }
+      <div
+        ref={editorRef}
+        style={{ height: editorHeight }}
+        className="min-h-0 min-w-0"
       >
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <fieldset disabled={loading} className="min-w-0 space-y-5">
-            {sourceTemplate && (
-              <div className="border-border bg-muted/40 rounded-lg border px-3 py-2 text-sm">
-                <span className="text-muted-foreground">
-                  {t("mediaPackage.form.basedOnTemplate")}
-                </span>{" "}
-                <span className="text-foreground font-medium">
-                  {sourceTemplate.name}
-                </span>
-              </div>
-            )}
-
-            {Object.values(errors).some(Boolean) && (
-              <div
-                id="package-form-errors"
-                role="alert"
-                className="border-destructive/30 bg-destructive/5 text-destructive rounded-lg border p-3 text-sm"
-              >
-                {Object.values(errors)
-                  .filter(Boolean)
-                  .map((message) => (
-                    <p key={message}>{message}</p>
-                  ))}
-              </div>
-            )}
-            <Input
-              aria-describedby={errors.name ? "package-form-errors" : undefined}
-              id="package-field-name"
-              label={t("mediaPackage.form.nameLabel")}
-              placeholder={t("mediaPackage.form.namePlaceholder")}
-              value={name}
-              maxLength={255}
-              error={errors.name}
-              onChange={(event) => setName(event.target.value)}
-            />
-
-            <p className="text-muted-foreground text-sm">
-              {t("mediaPackage.values.optionalFinancials")}
-            </p>
-            <div className="grid items-start gap-4 sm:grid-cols-2">
-              {
-                <div className="space-y-2">
-                  <Input
-                    aria-describedby={
-                      errors.durationWeeks ? "package-form-errors" : undefined
-                    }
-                    id="package-field-durationWeeks"
-                    type="number"
-                    min="1"
-                    label={t("mediaPackage.form.durationLabel")}
-                    value={durationWeeks}
-                    error={errors.durationWeeks}
-                    onChange={(event) => setDurationWeeks(event.target.value)}
-                  />
-                  <QuickNumbers
-                    values={[2, 4, 6, 8, 12]}
-                    value={durationWeeks}
-                    onChange={setDurationWeeks}
-                  />
-                </div>
-              }
-              {
-                <div className="space-y-2">
-                  <Input
-                    aria-describedby={
-                      errors.budgetAmount ? "package-form-errors" : undefined
-                    }
-                    id="package-field-budgetAmount"
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    label={t("mediaPackage.form.budgetLabel")}
-                    value={budgetAmount}
-                    error={errors.budgetAmount}
-                    onChange={(event) => setBudgetAmount(event.target.value)}
-                  />
-                  <QuickNumbers
-                    values={[5000000, 10000000, 18000000, 30000000, 50000000]}
-                    value={budgetAmount}
-                    onChange={setBudgetAmount}
-                    format={(amount) => amount.toLocaleString()}
-                  />
-                </div>
-              }
-            </div>
-            <div className="space-y-1.5">
-              <TextChoices
-                id="package-field-scopeDescription"
-                label={t("mediaPackage.form.scopeLabel")}
-                value={scopeDescription}
-                onChange={setScopeDescription}
-                maxLength={5000}
-                options={["launch", "awareness", "engagement"].map((key) =>
-                  t(`mediaPackage.choices.scope.${key}`),
+        <InlineWorkArea
+          className="flex h-full min-h-0 flex-col gap-1 space-y-0 overflow-hidden p-2 sm:p-2"
+          compactHeader
+          headerActions={
+            <>
+              <span className="sr-only" role="status">
+                {t(
+                  dirty
+                    ? "mediaPackage.editor.unsaved"
+                    : "mediaPackage.editor.saveHint",
                 )}
-              />
-              {errors.scopeDescription && (
-                <p className="text-destructive text-xs font-medium">
-                  {errors.scopeDescription}
-                </p>
-              )}
-            </div>
-
-            <OfferingEditor value={offering} onChange={setOffering} />
-            <footer className="border-border flex flex-wrap justify-end gap-2 border-t pt-4">
+              </span>
               <Button
-                type="button"
-                variant="outline"
-                disabled={loading}
-                onClick={() => handleOpenChange(false)}
+                type="submit"
+                form={formId}
+                variant="orange"
+                className="h-11 min-h-11 px-3 text-sm sm:h-9 sm:min-h-9"
+                loading={loading}
               >
-                {t("mediaPackage.actions.cancel")}
+                {t("mediaPackage.editor.save")}
               </Button>
-              <Button type="submit" variant="orange" loading={loading}>
-                {t("mediaPackage.actions.createCustom")}
-              </Button>
-            </footer>
-          </fieldset>
-        </form>
-      </InlineWorkArea>
+            </>
+          }
+          title={t(
+            editing
+              ? "mediaPackage.editor.editTitle"
+              : "mediaPackage.form.title",
+          )}
+          backLabel={t("mediaPackage.ui.backToPackages")}
+          onBack={() => handleOpenChange(false)}
+          disabled={loading}
+          returnFocusTo={
+            sourceTemplate
+              ? `[data-package-create-from="${CSS.escape(sourceTemplate.id)}"]`
+              : "[data-package-create]"
+          }
+        >
+          <form
+            id={formId}
+            onSubmit={handleSubmit}
+            className="flex min-h-0 min-w-0 flex-1 flex-col"
+          >
+            <fieldset
+              data-package-editor-scroll
+              disabled={loading}
+              className="min-h-0 min-w-0 flex-1 [scrollbar-gutter:stable] space-y-5 overflow-y-auto overscroll-contain px-1 pb-2"
+            >
+              {Object.values(errors).some(Boolean) && (
+                <div
+                  id="package-form-errors"
+                  role="alert"
+                  className="border-destructive/30 bg-destructive/5 text-destructive rounded-lg border p-3 text-sm"
+                >
+                  {Object.values(errors)
+                    .filter(Boolean)
+                    .map((message) => (
+                      <p key={message}>{message}</p>
+                    ))}
+                </div>
+              )}
+              <section
+                className="border-border bg-card min-w-0 space-y-4 rounded-xl border p-4 sm:p-5"
+                aria-labelledby="package-info-title"
+              >
+                <h3 id="package-info-title" className="text-sm font-semibold">
+                  {t("mediaPackage.editor.packageInfo")}
+                </h3>
+                <div className="grid items-start gap-4 lg:grid-cols-[1.5fr_1fr_1fr]">
+                  <Input
+                    required
+                    id="package-field-name"
+                    label={t("mediaPackage.form.nameLabel")}
+                    value={name}
+                    maxLength={255}
+                    error={errors.name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <div className="[&_button[aria-pressed=true]]:border-brand-orange [&_button[aria-pressed=true]]:bg-brand-orange-soft [&_button[aria-pressed=true]]:text-foreground [&_button]:bg-muted space-y-2 [&_button]:min-h-9">
+                    <Input
+                      id="package-field-budgetAmount"
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      label={t("mediaPackage.editor.budgetOptional")}
+                      value={budgetAmount}
+                      iconSuffix={<span className="text-xs">VND</span>}
+                      error={errors.budgetAmount}
+                      onChange={(e) => setBudgetAmount(e.target.value)}
+                    />
+                    <QuickNumbers
+                      values={[10000000, 25000000, 50000000]}
+                      value={budgetAmount}
+                      onChange={setBudgetAmount}
+                      format={(amount) =>
+                        t("mediaPackage.editor.millions", {
+                          amount: new Intl.NumberFormat(
+                            i18n.resolvedLanguage ?? i18n.language,
+                          ).format(amount / 1000000),
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="[&_button[aria-pressed=true]]:border-brand-orange [&_button[aria-pressed=true]]:bg-brand-orange-soft [&_button[aria-pressed=true]]:text-foreground [&_button]:bg-muted space-y-2 [&_button]:min-h-9">
+                    <Input
+                      id="package-field-durationWeeks"
+                      type="number"
+                      min={1}
+                      step={1}
+                      label={t("mediaPackage.editor.durationOptional")}
+                      value={durationWeeks}
+                      error={errors.durationWeeks}
+                      onChange={(e) => setDurationWeeks(e.target.value)}
+                    />
+                    <QuickNumbers
+                      values={[2, 4, 6, 8]}
+                      value={durationWeeks}
+                      onChange={setDurationWeeks}
+                      format={(count) =>
+                        t("mediaPackage.values.duration", { count })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="package-field-scopeDescription">
+                    {t("mediaPackage.proposal.packageDescription")}
+                  </Label>
+                  <Textarea
+                    id="package-field-scopeDescription"
+                    rows={2}
+                    maxLength={5000}
+                    value={scopeDescription}
+                    aria-invalid={Boolean(errors.scopeDescription)}
+                    aria-describedby={
+                      errors.scopeDescription
+                        ? "package-form-errors"
+                        : undefined
+                    }
+                    onChange={(e) => setScopeDescription(e.target.value)}
+                  />
+                </div>
+              </section>
+              <OfferingEditor value={offering} onChange={setOffering} />
+            </fieldset>
+          </form>
+        </InlineWorkArea>
+      </div>
       <DiscardChangesDialog
         open={confirmDiscard}
         onKeep={() => setConfirmDiscard(false)}

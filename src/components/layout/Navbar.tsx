@@ -620,68 +620,93 @@ export function Navbar({
 
         <div className="bg-border mx-1 hidden h-4 w-px md:block" />
 
-        {/* User → click thẳng vào Cài đặt */}
-        <button
-          type="button"
-          onClick={() => navigate("/settings")}
-          title={t("nav.settings")}
-          className="hover:bg-muted flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 md:min-h-0 transition-colors outline-none"
-        >
-          <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
-            {username.charAt(0).toUpperCase()}
+        {/* User: Admin -> badge hiển thị tĩnh; Non-admin -> navigate to /settings */}
+        {isAdmin ? (
+          <div className="flex min-h-11 select-none items-center gap-2 rounded-md px-1.5 py-1 md:min-h-0">
+            <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
+              {username.charAt(0).toUpperCase()}
+            </div>
+            <span className="text-foreground hidden max-w-[120px] truncate text-xs font-semibold sm:inline">
+              {username}
+            </span>
           </div>
-          <span className="text-foreground hidden max-w-[120px] truncate text-xs font-semibold sm:inline">
-            {username}
-          </span>
-          <Settings className="text-muted-foreground size-3.5 shrink-0" />
-        </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => navigate("/settings")}
+            title={t("nav.settings")}
+            className="hover:bg-muted flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 md:min-h-0 transition-colors outline-none"
+          >
+            <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
+              {username.charAt(0).toUpperCase()}
+            </div>
+            <span className="text-foreground hidden max-w-[120px] truncate text-xs font-semibold sm:inline">
+              {username}
+            </span>
+            <Settings className="text-muted-foreground size-3.5 shrink-0" />
+          </button>
+        )}
 
-        {/* Trợ giúp & Hướng dẫn Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:text-foreground size-11 cursor-pointer md:size-8"
-              title={t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
-            >
-              <HelpCircle className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 p-1">
-            <DropdownMenuLabel className="text-muted-foreground text-3xs px-2 py-1.5 font-semibold tracking-wider uppercase">
-              {t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
-            </DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigate("/help/faq")}
-              className="cursor-pointer gap-2 py-2 text-xs"
-            >
-              <HelpCircle className="text-brand-orange size-4" />
-              <div>
-                <p className="text-foreground font-medium">
-                  {t("nav.faq", "Hỏi đáp (FAQ)")}
-                </p>
-                <p className="text-muted-foreground text-3xs">
-                  Câu hỏi thường gặp & giải đáp
-                </p>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate("/help/guide")}
-              className="cursor-pointer gap-2 py-2 text-xs"
-            >
-              <BookOpen className="text-brand-orange size-4" />
-              <div>
-                <p className="text-foreground font-medium">
-                  {t("nav.guide", "Cẩm nang hướng dẫn")}
-                </p>
-                <p className="text-muted-foreground text-3xs">
-                  Tài liệu kiến trúc & quản trị
-                </p>
-              </div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Trợ giúp & Hướng dẫn: Admin có Dropdown chọn FAQ/Guide, Non-admin điều hướng trực tiếp /help/faq */}
+        {isAdmin ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground size-11 cursor-pointer md:size-8"
+                title={t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
+                aria-label={t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
+              >
+                <HelpCircle className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 p-1">
+              <DropdownMenuLabel className="text-muted-foreground text-3xs px-2 py-1.5 font-semibold tracking-wider uppercase">
+                {t("nav.sections.help", "Trợ giúp & Hướng dẫn")}
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigate("/help/faq")}
+                className="cursor-pointer gap-2 py-2 text-xs"
+              >
+                <HelpCircle className="text-brand-orange size-4" />
+                <div>
+                  <p className="text-foreground font-medium">
+                    {t("nav.faq", "Hỏi đáp (FAQ)")}
+                  </p>
+                  <p className="text-muted-foreground text-3xs">
+                    Câu hỏi thường gặp & giải đáp
+                  </p>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => navigate("/admin/guide")}
+                className="cursor-pointer gap-2 py-2 text-xs"
+              >
+                <BookOpen className="text-brand-orange size-4" />
+                <div>
+                  <p className="text-foreground font-medium">
+                    {t("nav.guide", "Cẩm nang hướng dẫn")}
+                  </p>
+                  <p className="text-muted-foreground text-3xs">
+                    Tài liệu kiến trúc & quản trị
+                  </p>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-muted-foreground hover:text-foreground size-11 cursor-pointer md:size-8"
+            onClick={() => navigate("/help/faq")}
+            title={t("nav.faq", "Hỏi đáp (FAQ)")}
+            aria-label={t("nav.faq", "Hỏi đáp (FAQ)")}
+          >
+            <HelpCircle className="size-4" />
+          </Button>
+        )}
 
         <Button
           variant="ghost"

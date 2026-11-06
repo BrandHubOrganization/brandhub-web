@@ -4,11 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Crop, History, ImagePlus, X } from "lucide-react";
+import { Crop, History, ImagePlus, X, Globe } from "lucide-react";
+import {
+  FacebookGlyph,
+  LinkedInGlyph,
+  InstagramGlyph,
+  TikTokGlyph,
+} from "./SocialIcon";
 import { JobTitleSelect } from "./JobTitleSelect";
 import { LanguageChipSelect } from "./LanguageChipSelect";
 import { SkillsChipSelect } from "./SkillsChipSelect";
-import { LocationAutocomplete } from "./LocationAutocomplete";
+import { VietnamAddressPicker } from "@/components/ui/vietnam-address-picker";
 import { TimezoneSelect } from "@/pages/workspace/components/TimezoneSelect";
 import {
   type ExtendedProfile,
@@ -17,10 +23,7 @@ import {
   VISIBILITY_LABEL_KEY,
 } from "../types";
 import { CharacterCounter } from "@/components/ui/character-counter";
-import {
-  normalizeUrl,
-  formatPhoneNumber,
-} from "@/utils/validation";
+import { normalizeUrl, formatPhoneNumber } from "@/utils/validation";
 
 interface ProfileEditFormProps {
   name: string;
@@ -89,8 +92,8 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
 
   return (
     <>
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div>
+      <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="w-full min-w-0">
           <label className="text-muted-foreground mb-1 block text-xs font-medium">
             {t("settings.profile.fullNameLabel")}
           </label>
@@ -99,15 +102,16 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             onChange={(e) => setName(e.target.value)}
             required
             error={errors?.name}
+            className="w-full min-w-0"
           />
         </div>
-        <div>
+        <div className="w-full min-w-0">
           <label className="text-muted-foreground mb-1 block text-xs font-medium">
             {t("settings.profile.emailLabel")}
           </label>
-          <Input value={email} readOnly />
+          <Input value={email} readOnly className="w-full min-w-0" />
         </div>
-        <div>
+        <div className="w-full min-w-0">
           <label className="text-muted-foreground mb-1 block text-xs font-medium">
             {t("profile.edit.phoneLabel")}
           </label>
@@ -116,25 +120,30 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             inputMode="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            onBlur={() => phone.trim() && setPhone(formatPhoneNumber(phone.trim()))}
+            onBlur={() =>
+              phone.trim() && setPhone(formatPhoneNumber(phone.trim()))
+            }
             placeholder={t("profile.edit.phonePlaceholder", "VD: 0901 234 567")}
             error={errors?.phone}
+            className="w-full min-w-0"
           />
         </div>
-        <div>
+        <div className="w-full min-w-0">
           <JobTitleSelect
             value={professionalTitle}
             onChange={setProfessionalTitle}
           />
         </div>
-        <div>
+        <div className="w-full min-w-0">
           <LanguageChipSelect
             value={workingLanguage}
             onChange={setWorkingLanguage}
           />
         </div>
-        <TimezoneSelect value={timezone} onChange={setTimezone} />
-        <div className="sm:col-span-2 space-y-1.5">
+        <div className="w-full min-w-0">
+          <TimezoneSelect value={timezone} onChange={setTimezone} />
+        </div>
+        <div className="w-full min-w-0 space-y-1.5 sm:col-span-2">
           <div className="flex items-center justify-between">
             <label className="text-muted-foreground block text-xs font-medium">
               {t("profile.edit.bioLabel")}
@@ -147,16 +156,16 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             maxLength={500}
             placeholder={t("profile.edit.bioPlaceholder")}
             rows={3}
-            className="border-border bg-background text-foreground placeholder:text-muted-foreground w-full rounded-md border px-3 py-2 text-sm outline-none resize-none"
+            className="border-border bg-background text-foreground placeholder:text-muted-foreground w-full resize-none rounded-md border px-3 py-2 text-sm outline-none"
           />
         </div>
-        <div className="sm:col-span-2">
+        <div className="w-full min-w-0 sm:col-span-2">
           <label className="text-muted-foreground mb-1 block text-xs font-medium">
             {t("profile.edit.portfolioLabel")}
           </label>
           <div className="space-y-2">
             {portfolioUrls.map((url, idx) => (
-              <div key={idx} className="flex gap-2">
+              <div key={idx} className="flex w-full min-w-0 gap-2">
                 <Input
                   value={url}
                   onChange={(e) => {
@@ -165,11 +174,13 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                     setPortfolioUrls(next);
                   }}
                   placeholder={t("profile.edit.portfolioPlaceholder")}
+                  className="min-w-0 flex-1"
                 />
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
+                  className="shrink-0"
                   onClick={() =>
                     setPortfolioUrls(portfolioUrls.filter((_, i) => i !== idx))
                   }
@@ -188,23 +199,38 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             </Button>
           </div>
         </div>
-        <div className="sm:col-span-2">
+        <div className="w-full min-w-0 sm:col-span-2">
           <SkillsChipSelect
             value={ext.skills}
             onChange={(skills) => patchExt({ skills })}
           />
         </div>
-        <div>
-          <label className="text-muted-foreground mb-1 block text-xs font-medium">
-            {t("profile.edit.locationLabel")}
-          </label>
-          <LocationAutocomplete
-            value={ext.location}
-            onChange={(location) => patchExt({ location })}
-            placeholder={t("profile.edit.locationPlaceholder")}
+        <div className="w-full min-w-0 sm:col-span-2">
+          <VietnamAddressPicker
+            locationValue={ext.location}
+            addressValue={ext.location}
+            onLocationChange={(loc) => patchExt({ location: loc })}
+            onAddressChange={(addr) => patchExt({ location: addr })}
+            disabled={saving}
+            labels={{
+              province: t(
+                "profile.edit.locationProvinceLabel",
+                "Tỉnh / Thành phố",
+              ),
+              district: t("profile.edit.locationDistrictLabel", "Quận / Huyện"),
+              ward: t("profile.edit.locationWardLabel", "Phường / Xã"),
+              street: t(
+                "profile.edit.locationStreetLabel",
+                "Số nhà, tên đường (tùy chọn)",
+              ),
+              fullAddress: t("profile.edit.locationLabel", "Khu vực / Địa chỉ"),
+            }}
+            errors={{
+              location: errors?.location,
+            }}
           />
         </div>
-        <div>
+        <div className="w-full min-w-0">
           <label className="text-muted-foreground mb-1 block text-xs font-medium">
             {t("profile.edit.yearsOfExperienceLabel")}
           </label>
@@ -215,13 +241,16 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             value={ext.yearsOfExperience}
             onChange={(e) => patchExt({ yearsOfExperience: e.target.value })}
             placeholder={t("profile.edit.yearsOfExperiencePlaceholder")}
+            className="w-full min-w-0"
           />
         </div>
-        <div>
-          <label className="text-muted-foreground mb-1 block text-xs font-medium">
-            {t("profile.edit.linkedinLabel")}
+        <div className="w-full min-w-0">
+          <label className="text-muted-foreground mb-1 flex items-center gap-1.5 text-xs font-medium">
+            <LinkedInGlyph className="size-3.5" />
+            <span>{t("profile.edit.linkedinLabel")}</span>
           </label>
           <Input
+            iconPrefix={<LinkedInGlyph className="size-4" />}
             value={ext.linkedinUrl}
             onChange={(e) => patchExt({ linkedinUrl: e.target.value })}
             onBlur={() => {
@@ -231,13 +260,16 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             }}
             placeholder={t("profile.edit.socialPlaceholder")}
             error={errors?.linkedinUrl}
+            className="w-full min-w-0"
           />
         </div>
-        <div>
-          <label className="text-muted-foreground mb-1 block text-xs font-medium">
-            {t("profile.edit.facebookLabel")}
+        <div className="w-full min-w-0">
+          <label className="text-muted-foreground mb-1 flex items-center gap-1.5 text-xs font-medium">
+            <FacebookGlyph className="size-3.5" />
+            <span>{t("profile.edit.facebookLabel")}</span>
           </label>
           <Input
+            iconPrefix={<FacebookGlyph className="size-4" />}
             value={ext.facebookUrl}
             onChange={(e) => patchExt({ facebookUrl: e.target.value })}
             onBlur={() => {
@@ -247,13 +279,16 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             }}
             placeholder={t("profile.edit.socialPlaceholder")}
             error={errors?.facebookUrl}
+            className="w-full min-w-0"
           />
         </div>
-        <div>
-          <label className="text-muted-foreground mb-1 block text-xs font-medium">
-            {t("profile.edit.instagramLabel")}
+        <div className="w-full min-w-0">
+          <label className="text-muted-foreground mb-1 flex items-center gap-1.5 text-xs font-medium">
+            <InstagramGlyph className="size-3.5" />
+            <span>{t("profile.edit.instagramLabel")}</span>
           </label>
           <Input
+            iconPrefix={<InstagramGlyph className="size-4" />}
             value={ext.instagramUrl}
             onChange={(e) => patchExt({ instagramUrl: e.target.value })}
             onBlur={() => {
@@ -263,13 +298,16 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             }}
             placeholder={t("profile.edit.socialPlaceholder")}
             error={errors?.instagramUrl}
+            className="w-full min-w-0"
           />
         </div>
-        <div>
-          <label className="text-muted-foreground mb-1 block text-xs font-medium">
-            {t("profile.edit.tiktokLabel")}
+        <div className="w-full min-w-0">
+          <label className="text-muted-foreground mb-1 flex items-center gap-1.5 text-xs font-medium">
+            <TikTokGlyph className="size-3.5" />
+            <span>{t("profile.edit.tiktokLabel")}</span>
           </label>
           <Input
+            iconPrefix={<TikTokGlyph className="size-4" />}
             value={ext.tiktokUrl}
             onChange={(e) => patchExt({ tiktokUrl: e.target.value })}
             onBlur={() => {
@@ -279,13 +317,16 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             }}
             placeholder={t("profile.edit.socialPlaceholder")}
             error={errors?.tiktokUrl}
+            className="w-full min-w-0"
           />
         </div>
-        <div>
-          <label className="text-muted-foreground mb-1 block text-xs font-medium">
-            {t("profile.edit.websiteLabel")}
+        <div className="w-full min-w-0">
+          <label className="text-muted-foreground mb-1 flex items-center gap-1.5 text-xs font-medium">
+            <Globe className="text-brand-orange size-3.5" />
+            <span>{t("profile.edit.websiteLabel")}</span>
           </label>
           <Input
+            iconPrefix={<Globe className="text-brand-orange size-4" />}
             value={ext.website}
             onChange={(e) => patchExt({ website: e.target.value })}
             onBlur={() => {
@@ -295,9 +336,10 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             }}
             placeholder={t("profile.edit.socialPlaceholder")}
             error={errors?.website}
+            className="w-full min-w-0"
           />
         </div>
-        <div className="sm:col-span-2">
+        <div className="w-full min-w-0 sm:col-span-2">
           <label className="text-muted-foreground mb-1 block text-xs font-medium">
             {t("profile.edit.bannerLabel")}
           </label>
@@ -324,7 +366,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="shrink-0 gap-1.5 text-xs text-brand-orange border-brand-orange/30 hover:bg-brand-orange/10"
+                className="text-brand-orange border-brand-orange/30 hover:bg-brand-orange/10 shrink-0 gap-1.5 text-xs"
                 onClick={onOpenBannerCropper}
               >
                 <Crop className="size-3.5" />
@@ -335,7 +377,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
               type="button"
               variant="outline"
               size="sm"
-              className="shrink-0 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground shrink-0 gap-1.5 text-xs"
               onClick={onOpenBannerRecent}
             >
               <History className="size-3.5" />
@@ -366,23 +408,24 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
           />
         </div>
       </div>
-      <div className="border-border mt-6 border-t pt-6">
+      <div className="border-border mt-6 w-full min-w-0 border-t pt-6">
         <p className="text-foreground text-sm font-semibold">
           {t("profile.edit.visibilityTitle")}
         </p>
         <p className="text-muted-foreground mt-1 text-xs">
           {t("profile.edit.visibilityHint")}
         </p>
-        <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+        <div className="mt-3 grid w-full min-w-0 grid-cols-1 gap-2.5 sm:grid-cols-2">
           {VISIBILITY_FIELDS.map((field) => (
             <label
               key={field}
-              className="flex items-center justify-between rounded-lg border border-border/70 bg-muted/20 px-3.5 py-2.5 text-xs font-medium cursor-pointer hover:bg-muted/40 transition-colors"
+              className="border-border/70 bg-muted/20 hover:bg-muted/40 flex w-full min-w-0 cursor-pointer items-center justify-between overflow-hidden rounded-lg border px-3.5 py-2.5 text-xs font-medium transition-colors"
             >
-              <span className="text-foreground">
+              <span className="text-foreground min-w-0 truncate pr-2">
                 {t(`profile.edit.${VISIBILITY_LABEL_KEY[field]}`)}
               </span>
               <Switch
+                className="shrink-0"
                 checked={visibility[field]}
                 onCheckedChange={(checked) =>
                   setVisibility((prev) => ({

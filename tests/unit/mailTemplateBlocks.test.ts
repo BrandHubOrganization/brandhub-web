@@ -172,7 +172,7 @@ describe("renderLayoutPreview", () => {
   it("wraps the blocks in the same email-safe frame as the server", () => {
     const html = renderLayoutPreview([newBlock("header"), { ...newBlock("heading"), props: { text: "Hi", align: "center" } }]);
     expect(html).toContain("max-width:600px");
-    expect(html).toContain("border-top:4px solid #ca3d0e");
+    expect(html).toContain("border-top:4px solid #f05a28");
     expect(html).toContain("{{workspaceName}}");
     expect(html).toContain("text-align:center");
     expect(html).not.toContain("<script");
@@ -180,7 +180,7 @@ describe("renderLayoutPreview", () => {
 
   it("renders the CTA as a table button and escapes its label", () => {
     const html = renderLayoutPreview([{ ...newBlock("cta_button"), props: { label: "Go <now>", urlType: "site", customUrl: "" } }]);
-    expect(html).toContain("background:#ca3d0e");
+    expect(html).toContain("background:#f05a28");
     expect(html).toContain("Go &lt;now&gt;");
   });
 

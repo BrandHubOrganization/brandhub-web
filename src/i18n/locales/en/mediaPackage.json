@@ -71,13 +71,15 @@
       "SOCIAL_POST": "Social media posts",
       "EVENT_PLANNING": "Event plan delivery",
       "LIVESTREAM_PREPARATION": "Livestream",
-      "PRESS_RECOMMENDATION": "Online press",
+      "PRESS_RECOMMENDATION": "Online press articles",
       "WORKSHOP_SUPPORT": "Workshop"
     },
     "service": "Service",
     "name": "Deliverable name",
     "serviceAndName": "Service & Deliverable",
     "requirementsAndCriteria": "Requirements & Acceptance Criteria",
+    "pressArticleUnit_one": "article",
+    "pressArticleUnit_other": "articles",
     "quantityAndUnit": "Quantity & Unit",
     "noDeliverables": "No deliverables in this package.",
     "quantity": "Quantity",
@@ -290,6 +292,188 @@
       "workItems": "Planned work item"
     },
     "showUnchanged": "Include unchanged content",
-    "noDifferences": "No changes from the previous version."
+    "noDifferences": "No changes from the previous version.",
+    "openPackage": "View package {{name}}"
+  },
+  "share": {
+    "languages": {
+      "vi": "Tiếng Việt",
+      "en": "English"
+    },
+    "copied": "Link copied",
+    "copyManually": "Select and copy the link below",
+    "revoked": "Link revoked",
+    "error": "Could not share or export this package. Please retry.",
+    "copyLink": "Copy share link",
+    "images": "Export JPG",
+    "revoke": "Revoke link",
+    "pdf": "Export PDF",
+    "menu": "Share package"
+  },
+  "guest": {
+    "language": "Display language",
+    "unavailable": "Package unavailable or not shared",
+    "retry": "Retry",
+    "budget": "Budget",
+    "duration": "Duration",
+    "toBeAgreed": "To be agreed",
+    "weeks": "{{count}} weeks"
+  },
+  "workspace": {
+    "saved": "Package saved. Campaign and tasks are being prepared.",
+    "saveError": "Could not save or load this package. Check and retry.",
+    "retry": "Retry preparation",
+    "openCampaign": "View campaign",
+    "edit": "Edit package",
+    "create": "Create workspace package",
+    "chooseTemplate": "Choose a template",
+    "emptyManager": "Choose a template or create a package based on the client agreement.",
+    "emptyClient": "The manager is preparing a package for this workspace.",
+    "preparation": {
+      "LEGACY": "Existing package",
+      "PENDING": "Waiting to prepare tasks",
+      "PROCESSING": "Preparing tasks",
+      "READY": "Plan and tasks are synchronized",
+      "FAILED": "Preparation incomplete. Please retry.",
+      "DEPLOYING": "Plan locked for deployment",
+      "DEPLOYED": "Campaign deployed — package locked"
+    },
+    "otherPackages": "Other packages",
+    "packageList": "Media packages",
+    "packageContent": "Package content",
+    "viewing": "Viewing",
+    "noOtherPackages": "No other packages."
+  },
+  "proposal": {
+    "viewTitle": "Media package details",
+    "deliverables": "Deliverables at a glance",
+    "details": "Deliverable details",
+    "description": "Implementation description",
+    "outcomes": "Expected outcomes",
+    "ordinal": "Number",
+    "quantity": {
+      "SOCIAL_POST_one": "{{count}} social media post",
+      "SOCIAL_POST_other": "{{count}} social media posts",
+      "EVENT_PLANNING_one": "{{count}} event",
+      "EVENT_PLANNING_other": "{{count}} events",
+      "LIVESTREAM_PREPARATION_one": "{{count}} livestream session",
+      "LIVESTREAM_PREPARATION_other": "{{count}} livestream sessions",
+      "PRESS_RECOMMENDATION_one": "{{count}} online press article",
+      "PRESS_RECOMMENDATION_other": "{{count}} online press articles",
+      "WORKSHOP_SUPPORT_one": "{{count}} workshop session",
+      "WORKSHOP_SUPPORT_other": "{{count}} workshop sessions"
+    },
+    "units": {
+      "SOCIAL_POST_one": "post",
+      "SOCIAL_POST_other": "posts",
+      "EVENT_PLANNING_one": "event",
+      "EVENT_PLANNING_other": "events",
+      "LIVESTREAM_PREPARATION_one": "session",
+      "LIVESTREAM_PREPARATION_other": "sessions",
+      "PRESS_RECOMMENDATION_one": "article",
+      "PRESS_RECOMMENDATION_other": "articles",
+      "WORKSHOP_SUPPORT_one": "session",
+      "WORKSHOP_SUPPORT_other": "sessions"
+    },
+    "packageDescription": "Package description",
+    "view": "View",
+    "expand": "Show more",
+    "collapse": "Show less",
+    "item": "Deliverable",
+    "itemDetails": "Details",
+    "openItem": "View details for {{name}}",
+    "closeItem": "Collapse details for {{name}}",
+    "noDetails": "No description or outcomes yet"
+  },
+  "editor": {
+    "editTitle": "Edit media package",
+    "packageInfo": "Package information",
+    "budgetOptional": "Budget · Optional",
+    "durationOptional": "Duration · Optional",
+    "millions": "{{amount}} million",
+    "selected": "{{count}}/4 selected",
+    "include": "Include {{service}} in package",
+    "notSelected": "Not selected",
+    "chooseServices": "Select services to include. Each service has one deliverable.",
+    "editingItem": "Currently editing this deliverable",
+    "nameSuggestions": "Suggested names:",
+    "suggestionHint": "Select suggestions to add content, or write and edit directly.",
+    "draftHint": "Edits are kept when switching deliverables. Save the package to apply them.",
+    "unsaved": "Unsaved changes",
+    "saveHint": "Save the package to apply changes.",
+    "save": "Save package",
+    "quantityError": "Enter a whole number greater than 0.",
+    "characters": "{{count}}/{{max}} characters",
+    "legacy": "Existing deliverable preserved. Older data is not automatically removed or merged.",
+    "suggestions": {
+      "SOCIAL_POST": {
+        "names": ["Product introduction posts", "Educational posts"],
+        "descriptions": [
+          "Develop content ideas for each post.",
+          "Write content tailored to each channel.",
+          "Propose visuals that match the message."
+        ],
+        "outcomes": [
+          "Match the brand message and product information.",
+          "No spelling or grammar errors.",
+          "Deliver the agreed number of content items."
+        ]
+      },
+      "PRESS_RECOMMENDATION": {
+        "names": [
+          "Brand introduction articles",
+          "Product introduction articles"
+        ],
+        "descriptions": [
+          "Develop the story angle and article outline.",
+          "Write articles aligned with the brand direction.",
+          "Prepare supporting visuals and materials."
+        ],
+        "outcomes": [
+          "Information is accurate and supported by sources.",
+          "Meet the agreed article scope.",
+          "Deliver the agreed number of articles."
+        ]
+      },
+      "EVENT_PLANNING": {
+        "names": ["Product launch event", "Customer meetup event"],
+        "descriptions": [
+          "Develop the event concept.",
+          "Create the programme and preparation milestones.",
+          "Plan event communication content."
+        ],
+        "outcomes": [
+          "The programme clearly describes the event sequence.",
+          "The plan fits its goals and audience.",
+          "Implementation milestones are clearly defined."
+        ]
+      },
+      "WORKSHOP_SUPPORT": {
+        "names": ["Knowledge sharing workshop", "Product experience workshop"],
+        "descriptions": [
+          "Develop the workshop topic and content.",
+          "Prepare handouts and presentation materials.",
+          "Plan workshop communication."
+        ],
+        "outcomes": [
+          "Content fits the intended participants.",
+          "Materials meet the agreed scope.",
+          "The schedule and activities are clearly described."
+        ]
+      }
+    }
+  },
+  "impact": {
+    "title": "Confirm task changes",
+    "choose": "Select {{count}} tasks to remove",
+    "selected": "{{count}} tasks selected",
+    "cancel": "Back to editing",
+    "confirm": "Confirm and save package",
+    "descriptionRemove": "Remove the following deliverables from the campaign plan?",
+    "descriptionReduce": "Select the tasks to remove to update the quantities in the campaign plan.",
+    "descriptionMixed": "Confirm the removed deliverables and select the tasks to remove from deliverables with reduced quantities.",
+    "removeItems": "Deliverables to remove",
+    "reduceTasks": "Deliverables with reduced quantities",
+    "preserveHistory": "Removed tasks will be cancelled; their content, comments and history will be preserved."
   }
 }

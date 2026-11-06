@@ -50,10 +50,10 @@
     "totalCampaigns": "Tổng số chiến dịch",
     "packageStatus": "Trạng thái gói dịch vụ",
     "noPackage": "Chưa có gói dịch vụ",
-    "packageRequiredTitle": "Workspace chưa chọn gói truyền thông",
-    "packageRequiredClientDescription": "Hãy chọn một gói do Agency cung cấp trước khi bắt đầu làm việc trong Workspace.",
-    "packageRequiredAgencyDescription": "Client cần chọn một gói truyền thông trước khi quy trình chiến dịch bắt đầu.",
-    "selectPackage": "Chọn gói truyền thông",
+    "packageRequiredTitle": "Workspace chưa có gói thực hiện",
+    "packageRequiredClientDescription": "Manager đang chuẩn bị gói. Bạn có thể theo dõi và trao đổi trong workspace.",
+    "packageRequiredAgencyDescription": "Tạo gói theo thỏa thuận với khách để chuẩn bị Campaign và công việc.",
+    "selectPackage": "Xem gói workspace",
     "agencyAiCredits": "AI credit của Agency đã dùng ({{month}})",
     "agencyAiCreditsPeriod": "AI Credit Agency đã dùng trong kỳ",
     "creditUnavailable": "Chưa sẵn sàng",
@@ -98,7 +98,8 @@
     "packageNegotiatingTitle": "Gói truyền thông đang trong quá trình đàm phán",
     "packageNegotiatingDescription": "Hai bên đang thống nhất các điều khoản gói. Bấm để xem chi tiết hoặc tiếp tục đàm phán.",
     "viewPackage": "Xem gói truyền thông",
-    "roleInWorkspace": "Vai trò của bạn"
+    "roleInWorkspace": "Vai trò của bạn",
+    "packageApproved": "Đã thiết lập gói"
   },
   "create": {
     "title": "Tạo không gian làm việc",

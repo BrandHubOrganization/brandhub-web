@@ -492,7 +492,7 @@ export const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.faq",
       },
       {
-        to: "/help/guide",
+        to: "/admin/guide",
         icon: BookOpen,
         labelKey: "nav.guide",
       },

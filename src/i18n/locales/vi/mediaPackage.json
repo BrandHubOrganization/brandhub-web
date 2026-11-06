@@ -71,13 +71,15 @@
       "SOCIAL_POST": "Bài đăng mạng xã hội",
       "EVENT_PLANNING": "Bàn giao kế hoạch sự kiện",
       "LIVESTREAM_PREPARATION": "Livestream",
-      "PRESS_RECOMMENDATION": "Báo điện tử",
+      "PRESS_RECOMMENDATION": "Bài báo điện tử",
       "WORKSHOP_SUPPORT": "Workshop"
     },
     "service": "Dịch vụ",
     "name": "Tên hạng mục bàn giao",
     "serviceAndName": "Dịch vụ & Hạng mục",
     "requirementsAndCriteria": "Yêu cầu & Tiêu chí nghiệm thu",
+    "pressArticleUnit_one": "bài",
+    "pressArticleUnit_other": "bài",
     "quantityAndUnit": "Số lượng & Đơn vị",
     "noDeliverables": "Chưa có hạng mục bàn giao nào.",
     "quantity": "Số lượng",
@@ -290,6 +292,191 @@
       "workItems": "Đầu việc dự kiến"
     },
     "showUnchanged": "Hiện cả nội dung không thay đổi",
-    "noDifferences": "Chưa có thay đổi so với bản trước."
+    "noDifferences": "Chưa có thay đổi so với bản trước.",
+    "openPackage": "Xem gói {{name}}"
+  },
+  "share": {
+    "languages": {
+      "vi": "Tiếng Việt",
+      "en": "English"
+    },
+    "copied": "Đã sao chép link",
+    "copyManually": "Chọn và sao chép link bên dưới",
+    "revoked": "Đã thu hồi link",
+    "error": "Không thể chia sẻ hoặc xuất gói. Vui lòng thử lại.",
+    "copyLink": "Sao chép link chia sẻ",
+    "images": "Xuất ảnh JPG",
+    "revoke": "Thu hồi link",
+    "pdf": "Xuất PDF",
+    "menu": "Chia sẻ gói"
+  },
+  "guest": {
+    "language": "Ngôn ngữ hiển thị",
+    "unavailable": "Gói không còn khả dụng hoặc chưa được chia sẻ",
+    "retry": "Thử lại",
+    "budget": "Ngân sách",
+    "duration": "Thời lượng",
+    "toBeAgreed": "Trao đổi thêm",
+    "weeks": "{{count}} tuần"
+  },
+  "workspace": {
+    "saved": "Đã lưu gói. Hệ thống đang chuẩn bị Campaign và công việc.",
+    "saveError": "Không thể lưu hoặc tải gói. Vui lòng kiểm tra và thử lại.",
+    "retry": "Thử chuẩn bị lại",
+    "openCampaign": "Xem Campaign",
+    "edit": "Chỉnh sửa gói",
+    "create": "Tạo gói workspace",
+    "chooseTemplate": "Chọn gói mẫu",
+    "emptyManager": "Chọn gói mẫu hoặc tạo gói mới theo thỏa thuận với khách hàng.",
+    "emptyClient": "Manager đang chuẩn bị gói cho workspace.",
+    "preparation": {
+      "LEGACY": "Gói hiện có",
+      "PENDING": "Đang chờ chuẩn bị công việc",
+      "PROCESSING": "Đang chuẩn bị công việc",
+      "READY": "Kế hoạch và công việc đã đồng bộ",
+      "FAILED": "Chuẩn bị chưa hoàn tất. Hãy thử lại.",
+      "DEPLOYING": "Đã cố định kế hoạch để triển khai",
+      "DEPLOYED": "Chiến dịch đã triển khai — gói được khóa"
+    },
+    "otherPackages": "Các gói khác",
+    "packageList": "Các gói truyền thông",
+    "packageContent": "Nội dung gói",
+    "viewing": "Đang xem",
+    "noOtherPackages": "Không có gói khác."
+  },
+  "proposal": {
+    "viewTitle": "Chi tiết gói truyền thông",
+    "deliverables": "Hạng mục bàn giao",
+    "details": "Chi tiết bàn giao",
+    "description": "Mô tả thực hiện",
+    "outcomes": "Mục tiêu đạt được",
+    "ordinal": "Thứ tự",
+    "quantity": {
+      "SOCIAL_POST_one": "{{count}} bài đăng mạng xã hội",
+      "SOCIAL_POST_other": "{{count}} bài đăng mạng xã hội",
+      "EVENT_PLANNING_one": "{{count}} sự kiện",
+      "EVENT_PLANNING_other": "{{count}} sự kiện",
+      "LIVESTREAM_PREPARATION_one": "{{count}} buổi livestream",
+      "LIVESTREAM_PREPARATION_other": "{{count}} buổi livestream",
+      "PRESS_RECOMMENDATION_one": "{{count}} bài báo điện tử",
+      "PRESS_RECOMMENDATION_other": "{{count}} bài báo điện tử",
+      "WORKSHOP_SUPPORT_one": "{{count}} buổi workshop",
+      "WORKSHOP_SUPPORT_other": "{{count}} buổi workshop"
+    },
+    "units": {
+      "SOCIAL_POST_one": "bài",
+      "SOCIAL_POST_other": "bài",
+      "EVENT_PLANNING_one": "sự kiện",
+      "EVENT_PLANNING_other": "sự kiện",
+      "LIVESTREAM_PREPARATION_one": "buổi",
+      "LIVESTREAM_PREPARATION_other": "buổi",
+      "PRESS_RECOMMENDATION_one": "bài",
+      "PRESS_RECOMMENDATION_other": "bài",
+      "WORKSHOP_SUPPORT_one": "buổi",
+      "WORKSHOP_SUPPORT_other": "buổi"
+    },
+    "packageDescription": "Mô tả gói",
+    "view": "Xem",
+    "expand": "Xem thêm",
+    "collapse": "Thu gọn",
+    "item": "Hạng mục",
+    "itemDetails": "Chi tiết",
+    "openItem": "Xem chi tiết {{name}}",
+    "closeItem": "Thu gọn chi tiết {{name}}",
+    "noDetails": "Chưa có mô tả hoặc mục tiêu"
+  },
+  "editor": {
+    "editTitle": "Chỉnh sửa gói truyền thông",
+    "packageInfo": "Thông tin gói",
+    "budgetOptional": "Ngân sách · Tùy chọn",
+    "durationOptional": "Thời lượng · Tùy chọn",
+    "millions": "{{amount}} triệu",
+    "selected": "{{count}}/4 đã chọn",
+    "include": "Thêm {{service}} vào gói",
+    "notSelected": "Chưa chọn",
+    "chooseServices": "Tick dịch vụ để thêm vào gói. Mỗi dịch vụ có một hạng mục.",
+    "editingItem": "Hạng mục đang chỉnh sửa",
+    "nameSuggestions": "Gợi ý tên:",
+    "suggestionHint": "Tick gợi ý để thêm nội dung, hoặc nhập và chỉnh sửa trực tiếp.",
+    "draftHint": "Các thay đổi được giữ khi chuyển hạng mục. Bấm Lưu gói để cập nhật.",
+    "unsaved": "Có thay đổi chưa lưu",
+    "saveHint": "Bấm Lưu gói để cập nhật.",
+    "save": "Lưu gói",
+    "quantityError": "Nhập số nguyên lớn hơn 0.",
+    "characters": "{{count}}/{{max}} ký tự",
+    "legacy": "Hạng mục có sẵn được giữ nguyên. Không tự xóa hoặc gộp dữ liệu cũ.",
+    "suggestions": {
+      "SOCIAL_POST": {
+        "names": ["Bài đăng giới thiệu sản phẩm", "Bài đăng chia sẻ kiến thức"],
+        "descriptions": [
+          "Lên ý tưởng nội dung cho từng bài.",
+          "Biên soạn nội dung theo từng kênh đăng.",
+          "Đề xuất hình ảnh phù hợp thông điệp."
+        ],
+        "outcomes": [
+          "Đúng thông điệp thương hiệu và thông tin sản phẩm.",
+          "Không có lỗi chính tả, ngữ pháp.",
+          "Bàn giao đủ nội dung theo số lượng đã chốt."
+        ]
+      },
+      "PRESS_RECOMMENDATION": {
+        "names": [
+          "Bài báo giới thiệu thương hiệu",
+          "Bài báo giới thiệu sản phẩm"
+        ],
+        "descriptions": [
+          "Xây dựng góc tiếp cận và đề cương bài viết.",
+          "Biên soạn bài báo theo định hướng thương hiệu.",
+          "Chuẩn bị hình ảnh và tư liệu đi kèm."
+        ],
+        "outcomes": [
+          "Thông tin chính xác và có nguồn đối chiếu.",
+          "Đáp ứng phạm vi bài viết đã thống nhất.",
+          "Bàn giao đủ bài báo theo số lượng đã chốt."
+        ]
+      },
+      "EVENT_PLANNING": {
+        "names": ["Sự kiện ra mắt sản phẩm", "Sự kiện gặp gỡ khách hàng"],
+        "descriptions": [
+          "Xây dựng ý tưởng chủ đạo của sự kiện.",
+          "Xây dựng kịch bản và các mốc chuẩn bị.",
+          "Lập kế hoạch nội dung truyền thông sự kiện."
+        ],
+        "outcomes": [
+          "Kịch bản thể hiện rõ trình tự chương trình.",
+          "Kế hoạch phù hợp mục tiêu và đối tượng.",
+          "Các mốc triển khai được xác định rõ."
+        ]
+      },
+      "WORKSHOP_SUPPORT": {
+        "names": [
+          "Workshop chia sẻ kiến thức",
+          "Workshop trải nghiệm sản phẩm"
+        ],
+        "descriptions": [
+          "Xây dựng chủ đề và nội dung workshop.",
+          "Chuẩn bị tài liệu và nội dung trình bày.",
+          "Lên kế hoạch truyền thông cho workshop."
+        ],
+        "outcomes": [
+          "Nội dung phù hợp đối tượng tham dự.",
+          "Tài liệu đủ theo phạm vi đã thống nhất.",
+          "Lịch trình và hoạt động được mô tả rõ."
+        ]
+      }
+    }
+  },
+  "impact": {
+    "title": "Xác nhận cập nhật công việc",
+    "choose": "Chọn {{count}} công việc cần bỏ",
+    "selected": "Đã chọn {{count}} công việc",
+    "cancel": "Quay lại chỉnh sửa",
+    "confirm": "Đồng ý và lưu gói",
+    "descriptionRemove": "Bạn có đồng ý bỏ các hạng mục sau khỏi kế hoạch Campaign không?",
+    "descriptionReduce": "Chọn các công việc cần bỏ để cập nhật số lượng trong kế hoạch Campaign.",
+    "descriptionMixed": "Xác nhận các hạng mục bị bỏ và chọn công việc cần bỏ ở những hạng mục giảm số lượng.",
+    "removeItems": "Hạng mục bỏ khỏi kế hoạch",
+    "reduceTasks": "Hạng mục giảm số lượng",
+    "preserveHistory": "Công việc bị loại sẽ được hủy; nội dung, bình luận và lịch sử vẫn được giữ."
   }
 }

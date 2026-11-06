@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { BadgeCheck, Pencil } from "lucide-react";
@@ -10,7 +11,10 @@ import { isValidPhone, isValidUrl, normalizeUrl } from "@/utils/validation";
 import type { User } from "@/types/user";
 import { AvatarUploadModal } from "./components/AvatarUploadModal";
 import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
-import { ImageCropperModal, RecentAssetsModal } from "@/components/shared/image-editor";
+import {
+  ImageCropperModal,
+  RecentAssetsModal,
+} from "@/components/shared/image-editor";
 import { saveRecentAsset } from "@/utils/recentAssetsStorage";
 import { LinkPhoneModal } from "./components/LinkPhoneModal";
 import { ProfilePreviewCard } from "./components/ProfilePreviewCard";
@@ -102,6 +106,7 @@ export function ProfilePage() {
     setExt((prev) => ({ ...prev, ...patch }));
 
   useEffect(() => {
+    if (user?.role === "ADMIN") return;
     userService
       .getProfile()
       .then((resp) => {
@@ -287,7 +292,9 @@ export function ProfilePage() {
       saveRecentAsset("banner", url);
       patchExt({ bannerUrl: url });
       savedExt.current = { ...savedExt.current, bannerUrl: url };
-      toast.success(t("profile.edit.bannerUploadSuccess", "Tải ảnh bìa thành công"));
+      toast.success(
+        t("profile.edit.bannerUploadSuccess", "Tải ảnh bìa thành công"),
+      );
     } catch (err) {
       toast.error(
         extractErrorMessage(err, t("profile.edit.bannerUploadFailed")),
@@ -328,6 +335,10 @@ export function ProfilePage() {
     ] as const
   ).filter((s) => s.url.trim() !== "");
 
+  if (user?.role === "ADMIN") {
+    return <Navigate to="/admin" replace />;
+  }
+
   return (
     <section id="profile" className="scroll-mt-6">
       <div className="mb-4">
@@ -362,7 +373,7 @@ export function ProfilePage() {
                 </div>
               )
             }
-            canEditLogo={isEditing}
+            canEditLogo={true}
             onLogoClick={() => setAvatarModalOpen(true)}
             uploadLogoTitle={t("profile.avatar.upload")}
             title={name}
