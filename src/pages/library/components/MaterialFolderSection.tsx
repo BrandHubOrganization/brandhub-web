@@ -1,3 +1,4 @@
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -11,6 +12,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { materialService } from "@/services/materialService";
 import { MaterialFolderPicker } from "@/pages/library/components/MaterialFolderPicker";
 import type { MaterialFolderItem } from "@/types/material";
@@ -37,17 +45,28 @@ export function MaterialFolderSection({
   const client = useQueryClient();
   const [editing, setEditing] = useState<MaterialFolderItem | null>();
   const [moving, setMoving] = useState<MaterialFolderItem>();
+  const [deleting, setDeleting] = useState<MaterialFolderItem>();
+  const [purging, setPurging] = useState<MaterialFolderItem>();
   const [name, setName] = useState("");
   const label = (key: string) => t(`materials.repository.${key}`);
   const mutation = useMutation({
     mutationFn: async (action: () => Promise<unknown>) => action(),
     onSuccess: () => {
+      if (purging) toast.success(t("library.trash.folderPurged"));
+      setPurging(undefined);
+      setDeleting(undefined);
       setEditing(undefined);
       setMoving(undefined);
       void client.invalidateQueries({ queryKey: ["materials"] });
       void client.invalidateQueries({ queryKey: ["material-folder-picker"] });
     },
-    onError: () => toast.error(label("failed")),
+    onError: (error) =>
+      toast.error(
+        isAxiosError(error) &&
+          error.response?.data?.error?.code === "MATERIAL_REFERENCED"
+          ? t("library.trash.folderPurgeBlocked")
+          : label("failed"),
+      ),
   });
   return (
     <section className="space-y-2.5">
@@ -123,7 +142,11 @@ export function MaterialFolderSection({
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
-          <Button size="sm" className="h-8 text-xs" disabled={mutation.isPending}>
+          <Button
+            size="sm"
+            className="h-8 text-xs"
+            disabled={mutation.isPending}
+          >
             {label("save")}
           </Button>
           <Button
@@ -170,19 +193,30 @@ export function MaterialFolderSection({
               {mutable && (
                 <div className="flex flex-wrap gap-1">
                   {deleted ? (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 px-2 text-xs"
-                      disabled={mutation.isPending}
-                      onClick={() =>
-                        mutation.mutate(() =>
-                          materialService.restoreFolder(workspace, folder.id),
-                        )
-                      }
-                    >
-                      {label("restore")}
-                    </Button>
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 px-2 text-xs"
+                        disabled={mutation.isPending}
+                        onClick={() =>
+                          mutation.mutate(() =>
+                            materialService.restoreFolder(workspace, folder.id),
+                          )
+                        }
+                      >
+                        {label("restore")}
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="h-7 px-2 text-xs"
+                        disabled={mutation.isPending}
+                        onClick={() => setPurging(folder)}
+                      >
+                        {t("library.trash.purge")}
+                      </Button>
+                    </>
                   ) : (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -219,15 +253,7 @@ export function MaterialFolderSection({
                         <DropdownMenuItem
                           variant="destructive"
                           disabled={mutation.isPending}
-                          onSelect={() => {
-                            if (window.confirm(label("deleteFolderConfirm")))
-                              mutation.mutate(() =>
-                                materialService.deleteFolder(
-                                  workspace,
-                                  folder.id,
-                                ),
-                              );
-                          }}
+                          onSelect={() => setDeleting(folder)}
                         >
                           {label("delete")}
                         </DropdownMenuItem>
@@ -240,6 +266,69 @@ export function MaterialFolderSection({
           ))}
         </div>
       )}
+
+      <Dialog
+        open={!!deleting || !!purging}
+        onOpenChange={(open) => {
+          if (!open && !mutation.isPending) {
+            setDeleting(undefined);
+            setPurging(undefined);
+          }
+        }}
+      >
+        <DialogContent
+          className="rounded-xl"
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            document.getElementById("cancel-folder-delete")?.focus();
+          }}
+        >
+          <DialogTitle>
+            {purging
+              ? t("library.trash.folderPurgeTitle")
+              : label("deleteFolderConfirm")}
+          </DialogTitle>
+          <DialogDescription className="break-words">
+            {purging
+              ? t("library.trash.folderPurgeDescription", {
+                  name: purging.name,
+                })
+              : deleting?.name}
+          </DialogDescription>
+
+          <DialogFooter>
+            <Button
+              id="cancel-folder-delete"
+              variant="outline"
+              disabled={mutation.isPending}
+              onClick={() => {
+                setDeleting(undefined);
+                setPurging(undefined);
+              }}
+            >
+              {label("cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              loading={mutation.isPending}
+              disabled={mutation.isPending}
+              onClick={() => {
+                if (mutation.isPending) return;
+                if (purging)
+                  mutation.mutate(() =>
+                    materialService.purgeFolder(workspace, purging.id),
+                  );
+                else if (deleting)
+                  mutation.mutate(() =>
+                    materialService.deleteFolder(workspace, deleting.id),
+                  );
+              }}
+            >
+              {t(`library.trash.${purging ? "purge" : "moveToTrash"}`)}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {showFiles && folders.length > 0 && (
         <h3 className="text-muted-foreground pt-1 text-xs font-semibold tracking-wider uppercase">

@@ -1,441 +1,238 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { CalendarClock, Cookie, Info, Radar } from "lucide-react";
+import { Activity, Play, RefreshCw, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Skeleton } from "@/components/ui/skeleton";
-import { SelectMenu } from "@/components/ui/select-menu";
 import { cn } from "@/lib/utils";
-import { errorCode } from "@/services/adminRevenueService";
-import { AdminCrawlRunLog, CrawlLiveCard } from "./AdminCrawlRunLog";
-import {
-  adminCrawlConfigService,
-  validateFbCookieJson,
-  type CrawlConfig,
-  type CrawlCookieStatus,
-} from "@/services/adminCrawlConfigService";
+import { CrawlLiveCard } from "./AdminCrawlRunLog";
+import { AdminTrendPipelineControl } from "./AdminTrendPipelineControl";
+import { AdminTrendSettings } from "./AdminTrendSettings";
+import { CrawlerHealthPanel } from "./CrawlerHealthPanel";
+import { CrawlerCredentialsPanel } from "./CrawlerCredentialsPanel";
+import { CrawlerRunLauncher } from "./CrawlerRunLauncher";
+import { CrawlerRunHistory } from "./CrawlerRunHistory";
+import { trendPipelineService } from "@/pages/admin/services/trendPipelineService";
+import { adminCrawlConfigService } from "@/services/adminCrawlConfigService";
 
-const INTERVALS = [15, 30, 60, 180, 360, 720, 1440];
-const CRON = /^(\S+\s+){4}\S+$/;
-const PAGE = /^https:\/\/\S{1,292}$/;
+const HealthPanel = CrawlerHealthPanel as React.ComponentType<{
+  hideRefresh?: boolean;
+}>;
 
-const DEFAULT_COOKIE_STATUS: CrawlCookieStatus = {
-  configured: false,
-  valid: false,
-  status: "missing",
-  cookieCount: 0,
-  cUser: null,
-  expiresAt: null,
-  updatedAt: null,
-};
+type ConsoleTab = "settings" | "runs" | "monitoring";
 
-/** SCR-ADM FR 3.7.9: the only AI setting owned by ADMIN; applies from the next crawl run. */
+function normalizeTab(raw: string | null): ConsoleTab {
+  if (raw === "runs" || raw === "history") return "runs";
+  if (raw === "settings") return "settings";
+  return "monitoring";
+}
+
+/**
+ * Unified Crawler Console combining Overview & Sessions (monitoring),
+ * Configuration (settings), and Run History (runs).
+ */
 export function AdminCrawlConfigPanel() {
   const { t } = useTranslation();
-  const config = useQuery({
-    queryKey: ["admin-crawl-config"],
-    queryFn: adminCrawlConfigService.get,
-  });
-  if (config.isPending) return <Skeleton className="h-96 rounded-xl" />;
-  if (config.isError)
-    return (
-      <p role="alert" className="text-destructive text-sm">
-        {t("admin.crawl.loadError")}
-      </p>
-    );
-  return (
-    <div className="space-y-6">
-      <CrawlForm key={JSON.stringify(config.data)} saved={config.data} />
-      <AdminCrawlRunLog />
-    </div>
-  );
-}
-
-function CrawlForm({ saved }: { saved: CrawlConfig }) {
-  const { t, i18n } = useTranslation();
   const client = useQueryClient();
-  const [mode, setMode] = useState<"interval" | "cron">(
-    saved.cron ? "cron" : "interval",
+  const [params, setParams] = useSearchParams();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const activeTab = normalizeTab(params.get("crawlerTab"));
+
+  const setTab = (tab: ConsoleTab) =>
+    setParams((previous) => {
+      const next = new URLSearchParams(previous);
+      if (tab === "monitoring") {
+        next.delete("crawlerTab");
+      } else {
+        next.set("crawlerTab", tab);
+      }
+      return next;
+    });
+
+  const crawlRuns = useQuery({
+    queryKey: ["admin-crawl-runs"],
+    queryFn: adminCrawlConfigService.runs,
+    retry: false,
+  });
+
+  const pipelineRuns = useQuery({
+    queryKey: ["admin", "ai", "trend-pipeline-runs"],
+    queryFn: ({ signal }) => trendPipelineService.runs(signal),
+    staleTime: 5_000,
+    refetchInterval: (q) => (q.state.data?.running ? 3_000 : 15_000),
+    retry: false,
+  });
+
+  const runCount =
+    (crawlRuns.data?.history?.length ?? 0) ||
+    (pipelineRuns.data?.history?.length ?? 0);
+
+  const hasPipelineRuns = Boolean(
+    pipelineRuns.data?.running || pipelineRuns.data?.history?.length,
   );
-  const [intervalMinutes, setIntervalMinutes] = useState(
-    String(saved.intervalMinutes ?? 60),
-  );
-  const [cron, setCron] = useState(saved.cron ?? "0 */6 * * *");
-  const [pages, setPages] = useState(saved.sourcePages.join("\n"));
-  const [posts, setPosts] = useState(String(saved.postsPerRun));
-  const pageList = pages
-    .split("\n")
-    .map((p) => p.trim())
-    .filter(Boolean);
-  const badPage = pageList.find((p) => !PAGE.test(p));
-  const postsNumber = Number(posts);
-  const errors = {
-    cron:
-      mode === "cron" && !CRON.test(cron.trim())
-        ? t("admin.crawl.cronRule")
-        : null,
-    pages: badPage
-      ? t("admin.crawl.pageRule", { page: badPage.slice(0, 60) })
-      : pageList.length > 50
-        ? t("admin.crawl.pageLimit")
-        : null,
-    posts:
-      !Number.isInteger(postsNumber) || postsNumber < 10 || postsNumber > 1000
-        ? t("admin.crawl.postsRule")
-        : null,
+
+  const handleGlobalRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        client.invalidateQueries({ queryKey: ["admin-crawl-config"] }),
+        client.invalidateQueries({ queryKey: ["admin-crawl-runs"] }),
+        client.invalidateQueries({ queryKey: ["admin", "crawler-health"] }),
+        client.invalidateQueries({
+          queryKey: ["admin", "ai", "trend-pipeline"],
+        }),
+        client.invalidateQueries({
+          queryKey: ["admin", "ai", "trend-pipeline-runs"],
+        }),
+      ]);
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 400);
+    }
   };
-  const save = useMutation({
-    mutationFn: () =>
-      adminCrawlConfigService.update({
-        ...(mode === "cron"
-          ? { cron: cron.trim() }
-          : { intervalMinutes: Number(intervalMinutes) }),
-        sourcePages: pageList,
-        postsPerRun: postsNumber,
+
+  const tabs: Array<{
+    key: ConsoleTab;
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+    badge?: number;
+  }> = [
+    {
+      key: "monitoring",
+      icon: Activity,
+      label: t("admin.crawler.sections.overview", {
+        defaultValue: "Tổng quan",
       }),
-    onSuccess: (data) => {
-      client.setQueryData(["admin-crawl-config"], data);
-      toast.success(t("admin.crawl.saved"));
     },
-  });
-  const code = errorCode(save.error);
-  const intervalOptions = [
-    ...new Set([...INTERVALS, saved.intervalMinutes ?? 60]),
-  ].sort((a, b) => a - b);
-  const nextRun = saved.nextRunAt
-    ? new Intl.DateTimeFormat(i18n.language, {
-        dateStyle: "medium",
-        timeStyle: "short",
-        timeZone: "Asia/Ho_Chi_Minh",
-      }).format(new Date(saved.nextRunAt))
-    : null;
-  const status = saved.running
-    ? "running"
-    : !saved.enabled
-      ? "disabled"
-      : "noSources";
+    {
+      key: "settings",
+      icon: Settings2,
+      label: t("admin.crawler.sections.settings", {
+        defaultValue: "Cấu hình",
+      }),
+    },
+    {
+      key: "runs",
+      icon: Play,
+      label: t("admin.crawler.sections.history", { defaultValue: "Lịch sử" }),
+      badge: runCount,
+    },
+  ];
 
   return (
-    <div className="grid max-w-5xl gap-6 lg:grid-cols-[1fr_280px]">
-      <form
-        className="bg-card border-border space-y-6 rounded-xl border p-5 lg:p-6"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!errors.cron && !errors.pages && !errors.posts) save.mutate();
-        }}
-      >
-        <section className="space-y-3">
-          <h2 className="flex items-center gap-2 text-sm font-semibold">
-            <CalendarClock className="text-brand-orange size-4" />
-            {t("admin.crawl.schedule")}
-          </h2>
-          <div
-            role="group"
-            aria-label={t("admin.crawl.schedule")}
-            className="bg-muted inline-flex rounded-lg p-1"
-          >
-            {(["interval", "cron"] as const).map((m) => (
+    <div className="w-full min-w-0 space-y-5">
+      {/* Top Tab Bar */}
+      <div className="border-border/70 flex flex-wrap items-center justify-between gap-3 border-b pb-3">
+        <nav
+          className="flex flex-wrap items-center gap-1.5"
+          aria-label={t("admin.crawler.navigation", {
+            defaultValue: "Crawler tabs",
+          })}
+          role="tablist"
+        >
+          {tabs.map(({ key, icon: Icon, label, badge }) => {
+            const isActive = activeTab === key;
+            return (
               <button
-                key={m}
+                key={key}
                 type="button"
-                aria-pressed={mode === m}
-                onClick={() => setMode(m)}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setTab(key)}
                 className={cn(
-                  "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
-                  mode === m
-                    ? "bg-background text-foreground shadow-xs"
-                    : "text-muted-foreground hover:text-foreground",
+                  "inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all",
+                  isActive
+                    ? "border-border bg-card text-foreground font-semibold shadow-xs"
+                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground border-transparent",
                 )}
               >
-                {t(`admin.crawl.mode.${m}`)}
-              </button>
-            ))}
-          </div>
-          {mode === "interval" ? (
-            <SelectMenu
-              className="h-9 w-64 text-sm"
-              ariaLabel={t("admin.crawl.mode.interval")}
-              value={intervalMinutes}
-              onChange={setIntervalMinutes}
-              options={intervalOptions.map((m) => ({
-                value: String(m),
-                label:
-                  m % 60 === 0
-                    ? t("admin.crawl.everyHours", { count: m / 60 })
-                    : t("admin.crawl.everyMinutes", { count: m }),
-              }))}
-            />
-          ) : (
-            <label className="block max-w-sm space-y-1.5 text-sm">
-              <Input
-                aria-label={t("admin.crawl.mode.cron")}
-                value={cron}
-                maxLength={100}
-                className="font-mono"
-                onChange={(e) => setCron(e.target.value)}
-              />
-              <span
-                className={cn(
-                  "block text-xs",
-                  errors.cron || code === "INVALID_SCHEDULE"
-                    ? "text-destructive"
-                    : "text-muted-foreground",
-                )}
-              >
-                {errors.cron ??
-                  (code === "INVALID_SCHEDULE"
-                    ? t("admin.crawl.cronInvalid")
-                    : t("admin.crawl.cronHint"))}
-              </span>
-            </label>
-          )}
-        </section>
-
-        <label className="block space-y-1.5 text-sm font-semibold">
-          <span>{t("admin.crawl.pages")}</span>
-          <Textarea
-            value={pages}
-            rows={6}
-            placeholder="https://www.facebook.com/groups/..."
-            className="font-mono text-xs"
-            onChange={(e) => setPages(e.target.value)}
-          />
-          <span
-            className={cn(
-              "flex justify-between text-xs font-normal",
-              errors.pages ? "text-destructive" : "text-muted-foreground",
-            )}
-          >
-            <span>{errors.pages ?? t("admin.crawl.pagesHint")}</span>
-            <span className="tabular-nums">{pageList.length}/50</span>
-          </span>
-        </label>
-
-        <label className="block max-w-xs space-y-1.5 text-sm font-semibold">
-          <span>{t("admin.crawl.postsPerRun")}</span>
-          <Input
-            type="number"
-            min={10}
-            max={1000}
-            value={posts}
-            onChange={(e) => setPosts(e.target.value)}
-          />
-          <span
-            className={cn(
-              "block text-xs font-normal",
-              errors.posts ? "text-destructive" : "text-muted-foreground",
-            )}
-          >
-            {errors.posts ?? t("admin.crawl.postsHint")}
-          </span>
-        </label>
-
-        <div className="bg-muted/50 border-brand-orange flex gap-2 rounded-r-lg border-l-4 px-4 py-3 text-xs leading-5">
-          <Info className="text-brand-orange mt-0.5 size-4 shrink-0" />
-          <span>{t("admin.crawl.nextRunNote")}</span>
-        </div>
-        {save.isError && code !== "INVALID_SCHEDULE" && (
-          <p role="alert" className="text-destructive text-sm">
-            {t("admin.crawl.saveError")}
-          </p>
-        )}
-        <div className="flex justify-end">
-          <Button
-            type="submit"
-            className="bg-brand-orange hover:bg-brand-orange/90 text-white"
-            disabled={save.isPending}
-          >
-            {t("admin.crawl.save")}
-          </Button>
-        </div>
-      </form>
-
-      <div className="space-y-6">
-        <FbCookieCard initialCookie={saved.fbCookie} />
-        <aside className="bg-card border-border space-y-4 rounded-xl border p-5 text-sm">
-          <h2 className="flex items-center gap-2 font-semibold">
-            <Radar className="text-brand-orange size-4" />
-            {t("admin.crawl.status")}
-          </h2>
-          <p className="flex items-center gap-2">
-            <span
-              className={cn(
-                "size-2 rounded-full",
-                status === "running" ? "bg-emerald-500" : "bg-amber-500",
-              )}
-            />
-            {t(`admin.crawl.state.${status}`)}
-          </p>
-          {nextRun && (
-            <p className="text-muted-foreground text-xs">
-              {t("admin.crawl.nextRun", { date: nextRun })}
-            </p>
-          )}
-          <div>
-            <p className="text-muted-foreground mb-2 text-xs">
-              {t("admin.crawl.sources")}
-            </p>
-            {saved.sources.length ? (
-              <div className="flex flex-wrap gap-1.5">
-                {saved.sources.map((s) => (
+                <Icon
+                  className={cn(
+                    "size-3.5",
+                    isActive ? "text-brand-orange" : "opacity-75",
+                  )}
+                />
+                <span>{label}</span>
+                {typeof badge === "number" && (
                   <span
-                    key={s}
-                    className="bg-muted rounded-full px-2 py-0.5 font-mono text-xs"
+                    className={cn(
+                      "rounded-full px-1.5 py-0.2 text-[11px] tabular-nums",
+                      isActive
+                        ? "bg-brand-orange/15 text-brand-orange font-semibold"
+                        : "bg-muted text-muted-foreground",
+                    )}
                   >
-                    {s}
+                    {badge}
                   </span>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs">{t("admin.crawl.noSources")}</p>
-            )}
-          </div>
-        </aside>
-        <CrawlLiveCard />
-      </div>
-    </div>
-  );
-}
-
-function FbCookieCard({
-  initialCookie,
-}: {
-  initialCookie?: CrawlCookieStatus;
-}) {
-  const { t, i18n } = useTranslation();
-  const client = useQueryClient();
-  const [cookieJson, setCookieJson] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const cookieQuery = useQuery({
-    queryKey: ["admin-crawl-cookie"],
-    queryFn: adminCrawlConfigService.getCookie,
-    initialData: initialCookie,
-  });
-
-  const cookieStatus = cookieQuery.data ?? DEFAULT_COOKIE_STATUS;
-  const validationError = validateFbCookieJson(cookieJson);
-  const showValidationError =
-    (submitted || cookieJson.trim().length > 0) && validationError !== null;
-
-  const saveCookie = useMutation({
-    mutationFn: () => adminCrawlConfigService.updateCookie(cookieJson),
-    onSuccess: (data) => {
-      client.setQueryData(["admin-crawl-cookie"], data);
-      client.setQueryData<CrawlConfig | undefined>(
-        ["admin-crawl-config"],
-        (prev) => (prev ? { ...prev, fbCookie: data } : prev),
-      );
-      setCookieJson("");
-      setSubmitted(false);
-      toast.success(t("admin.crawl.cookie.saved"));
-    },
-  });
-
-  const formatDate = (iso: string | null) => {
-    if (!iso) return null;
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return null;
-    return new Intl.DateTimeFormat(i18n.language, {
-      dateStyle: "medium",
-      timeStyle: "short",
-      timeZone: "Asia/Ho_Chi_Minh",
-    }).format(d);
-  };
-
-  const updatedAtLabel = formatDate(cookieStatus.updatedAt);
-  const expiresAtLabel = formatDate(cookieStatus.expiresAt);
-  const dotClass =
-    cookieStatus.status === "valid"
-      ? "bg-emerald-500"
-      : cookieStatus.status === "expired" || cookieStatus.status === "invalid"
-        ? "bg-destructive"
-        : "bg-amber-500";
-
-  return (
-    <aside
-      aria-label={t("admin.crawl.cookie.title")}
-      className="bg-card border-border space-y-3 rounded-xl border p-5 text-sm"
-    >
-      <h2 className="flex items-center gap-2 font-semibold">
-        <Cookie className="text-brand-orange size-4" />
-        {t("admin.crawl.cookie.title")}
-      </h2>
-
-      <div className="space-y-1">
-        <p className="flex items-center gap-2">
-          <span className={cn("size-2 rounded-full", dotClass)} />
-          <span>
-            {t(`admin.crawl.cookie.status.${cookieStatus.status}`, {
-              count: cookieStatus.cookieCount,
-            })}
-          </span>
-        </p>
-        {cookieStatus.cUser && (
-          <p className="text-muted-foreground font-mono text-xs">
-            {t("admin.crawl.cookie.account", { user: cookieStatus.cUser })}
-          </p>
-        )}
-        {updatedAtLabel && (
-          <p className="text-muted-foreground text-xs">
-            {t("admin.crawl.cookie.updatedAt", { date: updatedAtLabel })}
-          </p>
-        )}
-        {expiresAtLabel && (
-          <p className="text-muted-foreground text-xs">
-            {t("admin.crawl.cookie.expiresAt", { date: expiresAtLabel })}
-          </p>
-        )}
-      </div>
-
-      <div className="space-y-2 pt-1">
-        <label className="block space-y-1.5 text-xs font-medium">
-          <span>{t("admin.crawl.cookie.inputLabel")}</span>
-          <Textarea
-            value={cookieJson}
-            rows={4}
-            placeholder={t("admin.crawl.cookie.placeholder")}
-            className="font-mono text-xs"
-            onChange={(e) => setCookieJson(e.target.value)}
-          />
-          <span
-            className={cn(
-              "block text-xs font-normal",
-              showValidationError
-                ? "text-destructive"
-                : "text-muted-foreground",
-            )}
-          >
-            {showValidationError && validationError
-              ? t(`admin.crawl.cookie.errors.${validationError}`)
-              : t("admin.crawl.cookie.hint")}
-          </span>
-        </label>
-
-        {saveCookie.isError && (
-          <p role="alert" className="text-destructive text-xs">
-            {t("admin.crawl.cookie.saveError")}
-          </p>
-        )}
+                )}
+              </button>
+            );
+          })}
+        </nav>
 
         <Button
-          type="button"
+          variant="outline"
           size="sm"
-          className="bg-brand-orange hover:bg-brand-orange/90 w-full text-white"
-          disabled={saveCookie.isPending}
-          onClick={() => {
-            setSubmitted(true);
-            if (!validationError) saveCookie.mutate();
-          }}
+          disabled={isRefreshing}
+          onClick={() => void handleGlobalRefresh()}
+          className="ml-auto inline-flex items-center gap-2 text-xs font-medium"
         >
-          {saveCookie.isPending
-            ? t("admin.crawl.cookie.saving")
-            : t("admin.crawl.cookie.save")}
+          <RefreshCw
+            className={cn("size-3.5", isRefreshing && "animate-spin")}
+          />
+          <span>
+            {t("admin.trends.refresh", { defaultValue: "Làm mới" })}
+          </span>
         </Button>
       </div>
-    </aside>
+
+      {/* Tab 1: Cấu hình (Settings) */}
+      {activeTab === "settings" && (
+        <div className="space-y-6">
+          <AdminTrendSettings />
+        </div>
+      )}
+
+      {/* Tab 2: Lịch sử (Run History) */}
+      {activeTab === "runs" && (
+        <div className="space-y-6">
+          <CrawlerRunHistory />
+        </div>
+      )}
+
+      {/* Tab 3: Tổng quan (Pipeline Launcher, Health, Live Crawl Progress & Sessions) */}
+      {activeTab === "monitoring" && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
+            <div className="flex flex-col gap-4 lg:col-span-8">
+              {hasPipelineRuns && (
+                <div className="border-brand-orange/30 bg-brand-orange/5 rounded-xl border p-1 shadow-xs">
+                  <AdminTrendPipelineControl managed />
+                </div>
+              )}
+              <div className="flex-1">
+                <CrawlerRunLauncher />
+              </div>
+            </div>
+            <div className="flex flex-col lg:col-span-4">
+              <CrawlLiveCard />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
+            <div className="flex flex-col lg:col-span-8">
+              <HealthPanel hideRefresh />
+            </div>
+            <div className="lg:col-span-4">
+              <CrawlerCredentialsPanel
+                filter="session"
+                hideHeader
+                columns={1}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

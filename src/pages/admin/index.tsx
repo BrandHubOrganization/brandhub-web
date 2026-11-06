@@ -6,15 +6,15 @@ import {
   Construction,
   ArrowLeft,
   TrendingUp,
-  Workflow,
+  Radar,
   Network,
   Activity,
 } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { cn } from "@/lib/utils";
 import { AdminAccountsPanel } from "@/pages/admin/components/AdminAccountsPanel";
-import { AdminTrendReplayPanel } from "@/pages/admin/components/AdminTrendReplayPanel";
 import { AdminTrendPipelinePanel } from "@/pages/admin/components/AdminTrendPipelinePanel";
+import { AdminTrendReplayPanel } from "@/pages/admin/components/AdminTrendReplayPanel";
 import { AdminTrendPanel } from "@/pages/admin/components/AdminTrendPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
@@ -68,10 +68,10 @@ const descriptions: Record<string, string> = {
 
 const aiTrendNavItems = [
   { key: "trends", icon: TrendingUp, labelKey: "admin.navigation.trends" },
-  { key: "crawl", icon: Activity, labelKey: "admin.navigation.crawl" },
+  { key: "crawl", icon: Radar, labelKey: "admin.navigation.crawl" },
   {
     key: "trendPipeline",
-    icon: Workflow,
+    icon: Radar,
     labelKey: "admin.navigation.trendPipeline",
   },
   { key: "trendGraph", icon: Network, labelKey: "admin.navigation.trendGraph" },
@@ -127,7 +127,9 @@ export function AdminPage() {
         title={t(
           view === "overview"
             ? "admin.overview.title"
-            : `admin.navigation.${view}`,
+            : view === "trendPipeline"
+              ? "admin.navigation.trendPipeline"
+              : `admin.navigation.${view}`,
         )}
         description={t(descriptions[view] ?? `admin.unavailable.${view}`)}
         hideBanner
@@ -170,10 +172,12 @@ export function AdminPage() {
           <AdminMailSuppressionsPanel />
         ) : view === "mailBatches" ? (
           <AdminMailBatchesPanel />
+        ) : view === "trendPipeline" ? (
+          <AdminTrendPipelinePanel />
         ) : view === "crawl" ? (
           <AdminCrawlConfigPanel />
         ) : view === "reports" ? (
-          <section className="bg-card border-border max-w-2xl rounded-xl border p-5 lg:p-6">
+          <section className="bg-card border-border w-full rounded-xl border p-5 lg:p-6">
             <AdminReportForm
               defaults={{
                 type: "REVENUE",
@@ -184,8 +188,6 @@ export function AdminPage() {
           </section>
         ) : view === "trendReplay" ? (
           <AdminTrendReplayPanel />
-        ) : view === "trendPipeline" ? (
-          <AdminTrendPipelinePanel />
         ) : view === "trends" ? (
           <AdminTrendPanel />
         ) : view === "trendGraph" ? (

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PageFallback } from "./PageFallback";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import {
   BookOpen,
   HelpCircle,
@@ -40,12 +41,7 @@ export function PublicHelpLayout() {
           {/* Logo BrandHub */}
           <div className="flex items-center gap-6">
             <Link to="/" className="flex items-center gap-2.5">
-              <div className="bg-brand-orange flex size-8 items-center justify-center rounded-lg text-sm font-bold text-white shadow-xs">
-                B
-              </div>
-              <span className="text-base font-extrabold tracking-tight text-foreground">
-                BrandHub
-              </span>
+              <BrandLogo size="md" />
             </Link>
 
             {/* Quick Links */}

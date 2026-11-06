@@ -190,7 +190,7 @@ function CreditPriceDrawerContent({
       {/* Drawer Header */}
       <SheetHeader className="border-b border-border/80 bg-muted/15 p-5 sm:p-6">
         <div className="flex items-start gap-4">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-muted text-foreground">
             <IconComponent className="size-6" />
           </div>
           <div className="min-w-0 flex-1 space-y-1">
@@ -309,11 +309,11 @@ function CreditPriceDrawerContent({
           </p>
         </div>
 
-        {/* Realtime VND Reference Preview Bento */}
+        {/* Realtime VND Reference Preview */}
         <div className="relative overflow-hidden rounded-2xl border border-border/70 bg-muted/30 p-4 transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className="flex size-7 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                 <Coins className="size-4" />
               </div>
               <span className="text-xs font-medium text-muted-foreground">
@@ -322,7 +322,7 @@ function CreditPriceDrawerContent({
             </div>
             <Badge
               variant="outline"
-              className="border-primary/30 text-[10px] text-primary"
+              className="text-[10px] text-muted-foreground"
             >
               Tham chiếu
             </Badge>
@@ -369,12 +369,12 @@ function CreditPriceDrawerContent({
 
           <div className="flex items-center gap-2 pt-1 border-t border-border/40">
             {enabledDraft ? (
-              <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+              <div className="flex items-center gap-1.5 text-xs font-medium text-foreground">
                 <CheckCircle2 className="size-3.5" />
                 <span>Đang hoạt động (ACTIVE) — Sẵn sàng phục vụ</span>
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+              <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                 <ShieldAlert className="size-3.5" />
                 <span>Tạm ngưng (DISABLED) — Cảnh báo bảo trì model</span>
               </div>

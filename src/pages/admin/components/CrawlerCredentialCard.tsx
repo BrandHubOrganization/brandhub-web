@@ -33,12 +33,14 @@ export function CrawlerCredentialCard({
   >(null);
   const [revoke, setRevoke] = useState(false);
   const isSession = item.kind === "facebook" || item.kind === "threads";
+
   const refresh = () =>
     Promise.all([
       client.invalidateQueries({ queryKey: ["admin", "crawler-credentials"] }),
       client.invalidateQueries({ queryKey: ["admin", "crawler-health"] }),
       client.invalidateQueries({ queryKey: ["admin", "ai", "trend-pipeline"] }),
     ]);
+
   async function act(action: "save" | "probe" | "revoke") {
     if (pending) return;
     setFeedback(null);
@@ -82,123 +84,175 @@ export function CrawlerCredentialCard({
       setPending(false);
     }
   }
+
   return (
     <section
-      className="border-border bg-card space-y-3 rounded-xl border p-4"
+      id={`crawler-credential-${item.kind}`}
+      className="border-border bg-card flex h-full flex-col justify-between gap-2.5 rounded-xl border p-3.5 shadow-xs"
       aria-labelledby={id + "-title"}
     >
-      <h3 id={id + "-title"} className="font-semibold">
-        {t(`admin.crawler.credentialKinds.${item.kind}`)}
-      </h3>
-      <p className="text-muted-foreground text-sm">
-        {t(`admin.crawler.credentialStates.${item.status}`, {
-          defaultValue: t("admin.crawler.checkUnavailable"),
-        })}
-      </p>
-      {item.updatedAt && (
-        <p className="text-muted-foreground text-xs">
-          {t("admin.crawler.updatedAt")}:{" "}
-          {new Date(item.updatedAt * 1000).toLocaleString()}
-        </p>
-      )}
-      {item.checkedAt && (
-        <p className="text-muted-foreground text-xs">
-          {t("admin.crawler.checkedAt")}:{" "}
-          {new Date(item.checkedAt * 1000).toLocaleString()} ·{" "}
-          {t(`admin.crawler.codes.${item.probeCode}`, {
-            defaultValue: t("admin.crawler.checkUnavailable"),
-          })}
-        </p>
-      )}
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          void act("save");
-        }}
-      >
-        {!isSession && !storageReady && (
-          <p className="text-muted-foreground mb-3 text-sm">
-            {t("admin.crawler.connectionKeyRequired")}
-          </p>
+      <div className="space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 id={id + "-title"} className="text-sm font-medium">
+            {t(`admin.crawler.credentialKinds.${item.kind}`)}
+          </h3>
+          <span className="bg-muted/60 border-border/60 text-muted-foreground rounded-md border px-2 py-0.5 text-xs font-medium">
+            {t(`admin.crawler.credentialStates.${item.status}`, {
+              defaultValue: t("admin.crawler.checkUnavailable"),
+            })}
+          </span>
+        </div>
+
+        {(item.updatedAt || item.checkedAt) && (
+          <div className="bg-muted/30 border-border/50 space-y-0.5 rounded-lg border px-2.5 py-1.5 text-xs">
+            {item.updatedAt && (
+              <p className="text-muted-foreground">
+                {t("admin.crawler.updatedAt")}:{" "}
+                {new Date(item.updatedAt * 1000).toLocaleString()}
+              </p>
+            )}
+            {item.checkedAt && (
+              <p className="text-muted-foreground">
+                {t("admin.crawler.checkedAt")}:{" "}
+                {new Date(item.checkedAt * 1000).toLocaleString()} ·{" "}
+                {t(`admin.crawler.codes.${item.probeCode}`, {
+                  defaultValue: t("admin.crawler.checkUnavailable"),
+                })}
+              </p>
+            )}
+          </div>
         )}
-        <fieldset disabled={pending || !storageReady} className="space-y-3">
+
+        <form
+          id={id + "-form"}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void act("save");
+          }}
+        >
           {isSession ? (
-            <div className="space-y-2">
-              <label htmlFor={id + "-file"} className="text-sm font-medium">
-                {t("admin.crawler.sessionFile")}
-              </label>
-              <input
-                ref={file}
-                id={id + "-file"}
-                className="border-input w-full rounded-md border p-2 text-sm"
-                type="file"
-                accept="application/json,.json"
-                required
-                aria-describedby={id + "-help"}
-              />
-            </div>
+            <input
+              ref={file}
+              id={id + "-file"}
+              type="file"
+              accept="application/json,.json"
+              className="sr-only"
+              disabled={pending || !storageReady}
+              aria-label={t("admin.crawler.sessionFile")}
+              onChange={() => {
+                if (file.current?.files?.length) {
+                  void act("save");
+                }
+              }}
+            />
           ) : (
-            <>
-              <Input
-                ref={endpoint}
-                id={id + "-endpoint"}
-                type="password"
-                autoComplete="off"
-                required
-                label={t("admin.crawler.endpoint")}
-              />
-              {item.kind === "tiktok" && (
+            <fieldset
+              disabled={pending || !storageReady}
+              className="space-y-2"
+            >
+              {!storageReady && (
+                <p className="text-muted-foreground text-xs">
+                  {t("admin.crawler.connectionKeyRequired")}
+                </p>
+              )}
+              <div
+                className={
+                  item.kind === "tiktok"
+                    ? "grid items-end gap-2 sm:grid-cols-2"
+                    : "space-y-2"
+                }
+              >
                 <Input
-                  ref={key}
-                  id={id + "-key"}
+                  ref={endpoint}
+                  id={id + "-endpoint"}
                   type="password"
                   autoComplete="off"
                   required
-                  label={t("admin.crawler.apiKey")}
+                  className="h-8 text-xs"
+                  label={t("admin.crawler.endpoint")}
                 />
-              )}
-            </>
+                {item.kind === "tiktok" && (
+                  <Input
+                    ref={key}
+                    id={id + "-key"}
+                    type="password"
+                    autoComplete="off"
+                    required
+                    className="h-8 text-xs"
+                    label={t("admin.crawler.apiKey")}
+                  />
+                )}
+              </div>
+            </fieldset>
           )}
-          <p id={id + "-help"} className="text-muted-foreground text-xs">
-            {t(
-              isSession
-                ? "admin.crawler.sessionHelp"
-                : "admin.crawler.connectionHelp",
-            )}
+        </form>
+
+        {feedback && (
+          <p
+            role={
+              feedback === "failed" || feedback === "oversize"
+                ? "alert"
+                : "status"
+            }
+            className="text-xs font-medium"
+          >
+            {t(`admin.crawler.feedback.${feedback}`)}
           </p>
-          <Button type="submit" variant="outline" loading={pending}>
+        )}
+      </div>
+
+      <div className="border-border/60 flex flex-wrap items-center gap-1.5 border-t pt-2.5">
+        {isSession ? (
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="h-7 px-2.5 text-xs"
+            disabled={pending || !storageReady}
+            loading={pending}
+            onClick={() => {
+              if (file.current?.files?.length) {
+                void act("save");
+              } else {
+                file.current?.click();
+              }
+            }}
+          >
             {t("admin.crawler.replace")}
           </Button>
-        </fieldset>
-      </form>
-      <div className="flex flex-wrap gap-2">
+        ) : (
+          <Button
+            type="submit"
+            form={id + "-form"}
+            size="sm"
+            variant="outline"
+            className="h-7 px-2.5 text-xs"
+            disabled={pending || !storageReady}
+            loading={pending}
+          >
+            {t("admin.crawler.replace")}
+          </Button>
+        )}
         <Button
+          size="sm"
           variant="outline"
+          className="h-7 px-2.5 text-xs"
           disabled={pending || !item.configured}
           onClick={() => void act("probe")}
         >
           {t("admin.crawler.probe")}
         </Button>
         <Button
+          size="sm"
           variant="outline"
+          className="ml-auto h-7 px-2.5 text-xs"
           disabled={pending || !item.configured}
           onClick={() => setRevoke(true)}
         >
           {t("admin.crawler.revoke")}
         </Button>
       </div>
-      {feedback && (
-        <p
-          role={
-            feedback === "failed" || feedback === "oversize"
-              ? "alert"
-              : "status"
-          }
-          className="text-sm"
-        >
-          {t(`admin.crawler.feedback.${feedback}`)}
-        </p>
-      )}
+
       <Dialog
         open={revoke}
         onOpenChange={(open) => {
@@ -220,7 +274,12 @@ export function CrawlerCredentialCard({
             >
               {t("admin.crawler.cancel")}
             </Button>
-            <Button disabled={pending} onClick={() => void act("revoke")}>
+            <Button
+              variant="destructive"
+              loading={pending}
+              disabled={pending}
+              onClick={() => void act("revoke")}
+            >
               {t("admin.crawler.confirm")}
             </Button>
           </DialogFooter>

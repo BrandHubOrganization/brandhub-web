@@ -27,6 +27,7 @@ interface Props {
   onPromote?: () => void;
   onDelete: () => void;
   onRestore: () => void;
+  onPurge?: () => void;
   onOpen: () => void;
 }
 
@@ -39,6 +40,7 @@ export function MaterialRepositoryCard({
   onPromote,
   onDelete,
   onRestore,
+  onPurge,
   onOpen,
 }: Props) {
   const { t } = useTranslation();
@@ -133,6 +135,18 @@ export function MaterialRepositoryCard({
           >
             <FolderPlus className="size-3.5" />
             {t("library.trash.promoteToLibrary")}
+          </Button>
+        )}
+        {deleted && material.capabilities?.canPurge && onPurge && (
+          <Button
+            variant="destructive"
+            size="sm"
+            className="ml-auto h-7 px-2 text-xs"
+            disabled={pending}
+            onClick={onPurge}
+          >
+            <Trash2 className="size-3.5" />
+            {t("library.trash.purge")}
           </Button>
         )}
         {deleted

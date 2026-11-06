@@ -13,24 +13,23 @@ export function AdminTrendSettings() {
     ? mutation.error.response?.data?.error?.code
     : undefined;
   const stale = code === "TREND_PIPELINE_CONFIG_STALE";
+
   return (
     <section
-      className="border-border bg-card min-w-0 space-y-4 rounded-xl border p-4"
+      className="min-w-0 space-y-4"
       aria-label={t("admin.trendSettings.title")}
     >
-      <div className="space-y-1">
-        <h2 className="font-semibold">{t("admin.trendSettings.title")}</h2>
-        <p className="text-muted-foreground text-xs">
-          {t("admin.trendSettings.appliesNext")}
+      {query.isPending && (
+        <p role="status" className="text-muted-foreground text-sm">
+          {t("admin.loading")}
         </p>
-      </div>
-      {query.isPending && <p role="status">{t("admin.loading")}</p>}
+      )}
       {(query.isError || mutation.isError) && (
         <div
           role="alert"
-          className="border-destructive/30 space-y-2 rounded-lg border p-3 text-sm"
+          className="border-destructive/30 bg-card flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3.5 text-sm"
         >
-          <p>
+          <p className="text-destructive">
             {t(
               stale
                 ? "admin.trendSourceConfig.stale"
@@ -40,6 +39,7 @@ export function AdminTrendSettings() {
             )}
           </p>
           <Button
+            size="sm"
             variant="outline"
             disabled={query.isFetching || mutation.isPending}
             onClick={() => {
@@ -56,7 +56,10 @@ export function AdminTrendSettings() {
         </div>
       )}
       {mutation.isSuccess && (
-        <p role="status" className="text-sm">
+        <p
+          role="status"
+          className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2 text-xs font-medium text-emerald-600 dark:text-emerald-400"
+        >
           {t("admin.trendSourceConfig.saved")}
         </p>
       )}

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-// FR 3.7.9: ADMIN configures the trend crawl schedule, source pages and posts per run.
+// FR 3.7.9: ADMIN configures the trend crawl schedule, sources and pipeline runs.
 const saved = {
   intervalMinutes: 60,
   cron: null,
@@ -19,6 +19,36 @@ const saved = {
     expiresAt: null,
     updatedAt: null,
   },
+};
+
+const trendSettings = {
+  revision: 1,
+  enabled: true,
+  cron: "0 8 * * *",
+  timezone: "UTC",
+  platforms: ["facebook", "threads", "tiktok"],
+  threads: {
+    maxTopics: 10,
+    maxPostsPerTopic: 10,
+    maxPosts: 100,
+    maxSeconds: 300,
+    maxCommentsPerPost: 10,
+  },
+  tiktok: {
+    hashtags: ["#dulich"],
+    useCreativeCenter: true,
+    periodDays: 7,
+    pagesPerHashtag: 2,
+    topPostsPerHashtag: 10,
+    maxCommentsPerPost: 10,
+    collectMedia: false,
+  },
+};
+
+const trendSourceConfig = {
+  revision: 1,
+  sourceUrls: ["https://www.facebook.com/groups/a"],
+  maxPostsPerSource: 200,
 };
 
 const lastRun = {
@@ -48,13 +78,11 @@ const lastRun = {
   ],
   errors: [],
 };
-const runState = { started: 0 };
 
 async function asAdmin(
   page: Page,
   patches: unknown[],
   reject = false,
-  cookieUpdates: unknown[] = [],
 ) {
   await page.addInitScript(() => {
     localStorage.setItem("brandhub-lang", "en");
@@ -77,46 +105,70 @@ async function asAdmin(
   await page.route("**/api/v1/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
     const method = route.request().method();
-    if (path === "/api/v1/admin/ai/crawl-config" && method === "PATCH") {
-      const body = route.request().postDataJSON();
-      patches.push(body);
-      if (reject) {
-        await route.fulfill({
-          status: 400,
-          json: { success: false, error: { code: "INVALID_SCHEDULE" } },
-        });
-        return;
-      }
-      await route.fulfill({
-        json: {
-          success: true,
-          data: { ...saved, ...body, intervalMinutes: null },
-        },
-      });
-      return;
-    }
-    if (path === "/api/v1/admin/ai/crawl-cookie") {
-      if (method === "PUT") {
+    if (path === "/api/v1/admin/ai/trend-pipeline/source-config") {
+      if (method === "PATCH") {
         const body = route.request().postDataJSON();
-        cookieUpdates.push(body);
+        patches.push(body);
+        if (reject) {
+          await route.fulfill({
+            status: 400,
+            json: {
+              success: false,
+              error: { code: "TREND_SOURCE_CONFIG_INVALID" },
+            },
+          });
+          return;
+        }
         await route.fulfill({
           json: {
             success: true,
-            data: {
-              configured: true,
-              valid: true,
-              status: "valid",
-              cookieCount: 2,
-              cUser: "1000***78",
-              expiresAt: "2027-01-01T00:00:00Z",
-              updatedAt: "2026-10-05T08:00:00Z",
-            },
+            data: { ...trendSourceConfig, ...body, revision: 2 },
           },
         });
         return;
       }
       await route.fulfill({
-        json: { success: true, data: saved.fbCookie },
+        json: { success: true, data: trendSourceConfig },
+      });
+      return;
+    }
+    if (path === "/api/v1/admin/ai/trend-pipeline/config") {
+      if (method === "PATCH") {
+        const body = route.request().postDataJSON();
+        patches.push(body);
+        await route.fulfill({
+          json: {
+            success: true,
+            data: { ...trendSettings, ...body, revision: 2 },
+          },
+        });
+        return;
+      }
+      await route.fulfill({
+        json: { success: true, data: trendSettings },
+      });
+      return;
+    }
+    if (path === "/api/v1/admin/ai/trend-pipeline/management/health") {
+      await route.fulfill({
+        json: {
+          success: true,
+          data: {
+            manualReady: false,
+            schedulerHealthy: true,
+            checkedAt: "2026-10-05T08:00:00Z",
+            checks: [
+              {
+                component: "session",
+                platform: "facebook",
+                status: "BLOCKED",
+                code: "SESSION_MISSING",
+                required: true,
+                checkedAt: "2026-10-05T08:00:00Z",
+              },
+            ],
+          },
+        },
       });
       return;
     }
@@ -125,128 +177,121 @@ async function asAdmin(
       data = { role: "ADMIN", fullName: "Admin" };
     if (path === "/api/v1/admin/ai/crawl-config") data = saved;
     if (path === "/api/v1/admin/ai/crawl-runs") {
-      if (method === "POST") {
-        runState.started += 1;
-        await route.fulfill({
-          status: 202,
-          json: { success: true, data: lastRun },
-        });
-        return;
-      }
       data = { running: null, history: [lastRun] };
     }
     await route.fulfill({ json: { success: true, data } });
   });
 }
 
-test("admin switches to a cron schedule, edits pages and saves", async ({
-  page,
-}) => {
-  const patches: unknown[] = [];
-  await asAdmin(page, patches);
-  await page.goto("/admin?view=crawl");
-  await expect(page.getByText("Running on schedule")).toBeVisible();
-  await expect(page.getByText("facebook-groups")).toBeVisible();
-
-  await page.getByRole("button", { name: "Cron expression" }).click();
-  const cron = page.getByRole("textbox", { name: "Cron expression" });
-  await cron.fill("0 */6 * *");
-  await expect(page.getByText("A cron needs exactly 5")).toBeVisible();
-  await page.getByRole("button", { name: "Save settings" }).click();
-  expect(patches).toHaveLength(0);
-
-  await cron.fill("0 */6 * * *");
-  await page
-    .locator("form textarea")
-    .fill("https://www.facebook.com/groups/a\nhttps://www.facebook.com/b");
-  await page.getByRole("spinbutton").fill("300");
-  await page.getByRole("button", { name: "Save settings" }).click();
-  await expect(page.getByText("Crawl settings saved.")).toBeVisible();
-  expect(patches[0]).toEqual({
-    cron: "0 */6 * * *",
-    sourcePages: [
-      "https://www.facebook.com/groups/a",
-      "https://www.facebook.com/b",
-    ],
-    postsPerRun: 300,
-  });
-});
-
-test("an invalid page URL blocks saving and a server INVALID_SCHEDULE is shown", async ({
-  page,
-}) => {
-  const patches: unknown[] = [];
-  await asAdmin(page, patches, true);
-  await page.goto("/admin?view=crawl");
-  await page.locator("form textarea").fill("http://insecure.example");
-  await expect(
-    page.getByText("Invalid URL: http://insecure.example"),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Save settings" }).click();
-  expect(patches).toHaveLength(0);
-
-  await page.locator("form textarea").fill("");
-  await page.getByRole("button", { name: "Cron expression" }).click();
-  await page
-    .getByRole("textbox", { name: "Cron expression" })
-    .fill("99 * * * *");
-  await page.getByRole("button", { name: "Save settings" }).click();
-  await expect(page.getByText("The cron expression is invalid.")).toBeVisible();
-});
-
-test("admin updates Facebook cookie JSON from the card above Crawler status", async ({
-  page,
-}) => {
-  const cookieUpdates: unknown[] = [];
-  await asAdmin(page, [], false, cookieUpdates);
-  await page.goto("/admin?view=crawl");
-
-  const cookieCard = page.getByRole("complementary", {
-    name: "Facebook cookie",
-  });
-  await expect(cookieCard).toBeVisible();
-  await expect(cookieCard).toContainText("No cookie configured");
-
-  await cookieCard
-    .locator("textarea")
-    .fill('[{"name":"c_user","value":"100012345678"}]');
-  await expect(
-    cookieCard.getByText("JSON must include both c_user and xs cookies."),
-  ).toBeVisible();
-  await cookieCard.getByRole("button", { name: "Update cookie" }).click();
-  expect(cookieUpdates).toHaveLength(0);
-
-  const validJson =
-    '[{"name":"c_user","value":"100012345678"},{"name":"xs","value":"secret"}]';
-  await cookieCard.locator("textarea").fill(validJson);
-  await cookieCard.getByRole("button", { name: "Update cookie" }).click();
-
-  await expect(page.getByText("Facebook cookie updated.")).toBeVisible();
-  await expect(cookieCard).toContainText("Valid (2 cookies)");
-  await expect(cookieCard).toContainText("Account (c_user): 1000***78");
-  expect(cookieUpdates).toEqual([{ cookieJson: validJson }]);
-});
-
-test("the crawl log lists visited pages, posts and errors, and the dev button starts a run", async ({
+test("admin sees Overview, Configuration, and History tabs with Overview first, and pipeline launcher is in Overview tab", async ({
   page,
 }) => {
   await asAdmin(page, []);
   await page.goto("/admin?view=crawl");
-  await expect(page.getByText("Partly failed")).toBeVisible();
+
+  const tablist = page.getByRole("tablist", {
+    name: "Crawler management sections",
+  });
+  await expect(tablist.getByRole("tab", { name: "Input" })).toHaveCount(0);
+  await expect(
+    tablist.getByRole("tab", { name: "Overview" }),
+  ).toHaveAttribute("aria-selected", "true");
+  await expect(tablist.getByRole("tab", { name: "Configuration" })).toBeVisible();
+  await expect(tablist.getByRole("tab", { name: /History/ })).toBeVisible();
+
+  await expect(page.getByRole("button", { name: "Preview run" })).toBeVisible();
+  await expect(page.getByText("Small test, no live publication")).toHaveCount(0);
+
+  // Unmet check is shown in Overview tab
+  const unmetCheck = page.getByRole("button", { name: /Session · Facebook/ });
+  await expect(unmetCheck).toBeVisible();
+});
+
+test("admin adds Facebook source URL and saves in Configuration tab", async ({
+  page,
+}) => {
+  const patches: unknown[] = [];
+  await asAdmin(page, patches);
+  await page.goto("/admin?view=crawl&crawlerTab=settings");
+
+  await page.getByRole("button", { name: "Add", exact: true }).click();
+  await page
+    .locator('input[type="url"]')
+    .nth(1)
+    .fill("https://www.facebook.com/b");
+  await page.getByRole("button", { name: "Save settings" }).click();
+  await expect(
+    page.getByText("Saved. The next run will use these settings."),
+  ).toBeVisible();
+  expect(patches[0]).toEqual({
+    revision: 1,
+    sourceUrls: [
+      "https://www.facebook.com/groups/a",
+      "https://www.facebook.com/b",
+    ],
+    maxPostsPerSource: 200,
+  });
+
+  // Add 9 more rows (total 11 rows) to verify 10-per-page pagination
+  for (let i = 0; i < 9; i++) {
+    await page.getByRole("button", { name: "Add", exact: true }).click();
+  }
+  const pagination = page.getByRole("navigation", {
+    name: "Facebook sources pagination",
+  });
+  await expect(pagination).toBeVisible();
+  await expect(page.locator('input[type="url"]')).toHaveCount(1);
+  await pagination.getByRole("button", { name: "1", exact: true }).click();
+  await expect(page.locator('input[type="url"]')).toHaveCount(10);
+});
+
+test("admin sees Facebook and Threads session cards at the top of the Overview tab with only 3 action buttons", async ({
+  page,
+}) => {
+  await asAdmin(page, []);
+  await page.goto("/admin?view=crawl&crawlerTab=monitoring");
+
+  await expect(
+    page.getByRole("complementary", { name: "Facebook cookie" }),
+  ).toHaveCount(0);
+
+  await expect(
+    page.getByRole("heading", { name: "Facebook session" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Threads session" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "TikTok API" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Crawler proxy" }),
+  ).toBeVisible();
+
+  await expect(
+    page.getByRole("button", { name: "Upload / replace" }),
+  ).toHaveCount(4);
+  await expect(
+    page.getByRole("button", { name: "Check connection" }),
+  ).toHaveCount(4);
+  await expect(
+    page.getByRole("button", { name: "Stop using" }),
+  ).toHaveCount(4);
+});
+
+test("the live crawl status card in Overview tab lists visited pages, posts and errors", async ({
+  page,
+}) => {
+  await asAdmin(page, []);
+  await page.goto("/admin?view=crawl&crawlerTab=monitoring");
+  await expect(page.getByText("Partly failed").first()).toBeVisible();
   const live = page
     .getByRole("complementary")
     .filter({ hasText: "Last crawl" });
   await expect(live).toContainText("6posts crawled");
   await expect(live).toContainText("facebook.com/groups/a");
-  await expect(page.getByText("2 sources · 6 posts")).toBeVisible();
   await expect(page.getByText("88 credits left").first()).toBeVisible();
   await expect(
     page.getByText("https://www.facebook.com/broken: HTTP 404: page not found"),
   ).toBeVisible();
-  const before = runState.started;
-  await page.getByRole("button", { name: "Crawl now (dev)" }).click();
-  await expect(
-    page.getByText("Crawl started; the log updates itself."),
-  ).toBeVisible();
-  expect(runState.started).toBe(before + 1);
 });

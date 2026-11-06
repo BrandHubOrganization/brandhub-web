@@ -5,7 +5,11 @@ import { useTranslation } from "react-i18next";
 import { materialService } from "@/services/materialService";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import type { MaterialItem, MaterialFilters } from "@/types/material";
+import type {
+  MaterialItem,
+  MaterialFilters,
+  MaterialPage,
+} from "@/types/material";
 
 interface MutationResult {
   material: MaterialItem;
@@ -27,6 +31,8 @@ function errorKey(error: unknown) {
     : undefined;
   if (code === "SUPPORT_TICKET_REQUIRED") return "supportTicketRequired";
   if (code === "ADMIN_SUPPORT_READ_ONLY") return "adminSupportReadOnly";
+  if (code === "MATERIAL_REFERENCED") return "referenced";
+  if (code === "STORAGE_SCHEMA_NOT_READY") return "purgeUnavailable";
   if (code === "MATERIAL_RETENTION_EXPIRED") return "retentionExpired";
   if (code === "MATERIAL_MUTATION_FORBIDDEN") return "mutationForbidden";
   return code === "MATERIAL_PURGE_IN_PROGRESS" ? "purging" : "mutationFailed";
@@ -139,10 +145,15 @@ export function useMaterialTrash(
 ) {
   const context = useTrashContext();
   const { workspace, actor, role, refresh } = context;
-  const query = useQuery({
+  const query = useQuery<MaterialPage>({
     queryKey: ["materials", workspace, actor, deleted, page, search, filters],
     enabled: !!workspace && !!actor && !accessState?.blocked,
-    refetchInterval: 60_000,
+    refetchInterval: (query) =>
+      query.state.data?.items.some(
+        (item) => item.status === "PURGE_IN_PROGRESS",
+      )
+        ? 3000
+        : 60_000,
     retry: (count, error) =>
       !(
         isAxiosError(error) &&
@@ -179,5 +190,46 @@ export function useMaterialTrash(
   const restore = useRestoreMaterial(context);
   const promote = usePromoteMaterial(context);
   const remove = useDeleteMaterial(context, restore.mutate);
-  return { query, workspace, role, actor, remove, restore, promote, refresh };
+  const purge = useMutation({
+    mutationFn: async (target: MaterialItem | "all") => {
+      if (!workspace || !actor || !isCurrent({ workspace, actor }))
+        throw new Error("Missing workspace");
+      let result: {
+        requested: number;
+        skipped: number;
+        foldersRequested?: number;
+        foldersSkipped?: number;
+      };
+      if (target === "all")
+        result = await materialService.purgeTrash(workspace);
+      else {
+        await materialService.purgeMaterial(workspace, target);
+        result = { requested: 1, skipped: 0 };
+      }
+      return { ...result, workspace, actor };
+    },
+    onSuccess: (result) => {
+      if (!isCurrent(result)) return;
+      toast.success(
+        context.t("library.trash.bulkPurgeQueued", {
+          ...result,
+          foldersRequested: result.foldersRequested ?? 0,
+          foldersSkipped: result.foldersSkipped ?? 0,
+        }),
+      );
+      void refresh();
+    },
+    onError: context.failure,
+  });
+  return {
+    query,
+    workspace,
+    role,
+    actor,
+    remove,
+    restore,
+    promote,
+    purge,
+    refresh,
+  };
 }

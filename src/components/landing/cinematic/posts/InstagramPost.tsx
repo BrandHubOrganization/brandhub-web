@@ -8,6 +8,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BrandHubLogo } from "@/components/auth/BrandHubLogo";
 
 interface InstagramPostProps {
   /** Class bổ sung — dùng để định vị/scale từ ngoài (post-ig, GSAP). */
@@ -80,8 +81,8 @@ export function InstagramPost({
           <div className="absolute top-1/3 right-1/4 size-24 rounded-full bg-fuchsia-400/30 blur-3xl" />
           <div className="absolute bottom-1/4 left-1/3 size-28 rounded-full bg-white/20 blur-3xl" />
           <div className="relative text-center">
-            <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-2xl bg-white/15 shadow-lg ring-1 ring-white/30 backdrop-blur">
-              <span className="text-2xl font-black text-white">B</span>
+            <div className="mx-auto mb-3 flex size-16 items-center justify-center overflow-hidden rounded-2xl bg-white/15 shadow-lg ring-1 ring-white/30 backdrop-blur">
+              <BrandHubLogo size={56} />
             </div>
             <p className="text-sm font-bold tracking-wide text-white">
               BrandHub Campaign

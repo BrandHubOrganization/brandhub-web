@@ -42,6 +42,7 @@ import {
   type TrendFit,
 } from "@/services/aiCaptionService";
 import { PLATFORM_LABEL } from "@/services/trendService";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const TONES = [
   "friendly",
@@ -108,6 +109,9 @@ export function AiCaptionDialog({
   );
   const [length, setLength] = useState<CaptionLength>("medium");
   const [fit, setFit] = useState<TrendFit | null>(null);
+  const [fitFor, setFitFor] = useState("");
+  const brief = useDebounce(topic.trim(), 700);
+  const fitKey = JSON.stringify([workspaceId, topic.trim(), platform]);
   const [fitState, setFitState] = useState<"loading" | "ready" | "error">(
     "loading",
   );
@@ -129,16 +133,34 @@ export function AiCaptionDialog({
       .credits(workspaceId)
       .then((b) => setRemaining(b.remaining))
       .catch(() => setRemaining(null));
-    aiCaptionService
-      .trendFit(workspaceId)
-      .then((data) => {
-        setFit(data);
-        setFitState("ready");
-      })
-      .catch(() => setFitState("error"));
   }, [workspaceId]);
 
-  const fitTrend = fit?.trends.find((item) => item.trendId === fitId);
+  useEffect(() => {
+    let active = true;
+    const key = JSON.stringify([workspaceId, brief, platform]);
+    aiCaptionService
+      .trendFit(workspaceId, brief, platform)
+      .then((data) => {
+        if (!active) return;
+        setFit(data);
+        setFitFor(key);
+        setFitId("");
+        setFitState("ready");
+      })
+      .catch(() => {
+        if (!active) return;
+        setFit(null);
+        setFitFor(key);
+        setFitId("");
+        setFitState("error");
+      });
+    return () => {
+      active = false;
+    };
+  }, [workspaceId, brief, platform]);
+
+  const currentFit = fitFor === fitKey ? fit : null;
+  const fitTrend = currentFit?.trends.find((item) => item.trendId === fitId);
   const pickFit = (id: string) =>
     setFitId((current) => (current === id ? "" : id));
   const tooShort = topic.trim().length < 10;
@@ -356,9 +378,9 @@ export function AiCaptionDialog({
           </div>
 
           <BrandFitTrends
-            fit={fit}
-            state={fitState}
-            selectedId={fitId}
+            fit={currentFit}
+            state={fitFor === fitKey ? fitState : "loading"}
+            selectedId={fitTrend?.trendId ?? ""}
             onPick={pickFit}
             platform={platform}
           />
@@ -470,6 +492,11 @@ function BrandFitTrends({
       <header className="flex flex-wrap items-center gap-2 text-sm font-medium">
         <Target className="text-brand-orange size-4" />
         {t("aiStudio.trendFit.title")}
+        {fit?.provisional && (
+          <span className="text-muted-foreground text-xs font-normal">
+            {t("aiStudio.trendFit.provisional")}
+          </span>
+        )}
         {fit && !fit.judged && (
           <span className="text-muted-foreground text-xs font-normal">
             {t("aiStudio.trendFit.notJudged")}

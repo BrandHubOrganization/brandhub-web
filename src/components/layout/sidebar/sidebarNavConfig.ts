@@ -27,8 +27,8 @@ import {
   MessageCircleMore,
   Mail,
   Calendar,
-  Send,
-  Activity,
+
+
   Brain,
   TrendingUp,
   Clapperboard,
@@ -214,26 +214,6 @@ export const NAV_SECTIONS: NavSection[] = [
     ],
   },
   {
-    key: "publish",
-    titleKey: "nav.sections.publish",
-    items: [
-      {
-        to: "/publish",
-        icon: Send,
-        labelKey: "nav.publish",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/publish/dashboard",
-        icon: Activity,
-        labelKey: "nav.postsDashboard",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-    ],
-  },
-  {
     key: "agency",
     titleKey: "nav.sections.agency",
     items: [
@@ -405,6 +385,7 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: Brain,
         labelKey: "aiStudio.knowledgeBase.title",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
       {
         to: "/ai-studio/trends",

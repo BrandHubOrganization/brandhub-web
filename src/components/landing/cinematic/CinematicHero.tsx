@@ -57,6 +57,7 @@ import { FacebookPost } from "./posts/FacebookPost";
 import { LinkedInPost } from "./posts/LinkedInPost";
 import { MiniPosts } from "./MiniPosts";
 import { LightRays } from "@/components/landing/LightRays";
+import { BrandHubLogo } from "@/components/auth/BrandHubLogo";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -734,8 +735,8 @@ function BrandHubDashboardBg({
                       <div className="flex">
                         <div className="hidden w-44 shrink-0 border-r border-zinc-200 bg-zinc-50/40 p-3 sm:block">
                           <div className="mb-3 flex items-center gap-2 px-1">
-                            <div className="bg-brand-orange flex size-5 items-center justify-center rounded-md text-[10px] font-bold text-white">
-                              B
+                            <div className="flex size-5 shrink-0 items-center justify-center overflow-hidden rounded-md">
+                              <BrandHubLogo size={20} />
                             </div>
                             <span className="text-xs font-semibold text-zinc-900">
                               BrandHub
@@ -774,8 +775,8 @@ function BrandHubDashboardBg({
                     <div className="absolute inset-x-0 bottom-0.5 z-30 flex items-center justify-center">
                       <div className="flex items-end gap-1.5 rounded-2xl rounded-b-xl bg-black/25 px-2 py-1.5 ring-1 ring-white/20 backdrop-blur-md">
                         {/* BrandHub đang chạy — logo thương hiệu thay chỗ Mail/Facetime */}
-                        <div className="relative flex size-5 items-center justify-center rounded-[22%] bg-linear-to-tr from-orange-500 to-orange-300 text-[9px] font-bold text-white shadow">
-                          B
+                        <div className="relative flex size-5 items-center justify-center rounded-[22%] shadow">
+                          <BrandHubLogo size={20} className="rounded-[22%]" />
                           <span className="absolute -bottom-1 left-1/2 size-[3px] -translate-x-1/2 rounded-full bg-black/70" />
                         </div>
                         {/* Finder */}
@@ -880,8 +881,8 @@ function IPhoneFrame({
             {/* Top bar app: tên trang hiện tại */}
             <div className="absolute inset-x-0 top-9 z-10 flex h-9 items-center justify-center border-b border-zinc-100 bg-white px-4">
               <span className="flex items-center gap-1.5 text-xs font-semibold text-zinc-900">
-                <div className="bg-brand-orange flex size-4 items-center justify-center rounded text-[8px] font-bold text-white">
-                  B
+                <div className="flex size-4 shrink-0 items-center justify-center overflow-hidden rounded">
+                  <BrandHubLogo size={16} />
                 </div>
                 {NAV_ITEMS[page].label}
               </span>

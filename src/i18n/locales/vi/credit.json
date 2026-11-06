@@ -1,5 +1,6 @@
 {
   "title": "AI Credit",
+  "subtitle": "Quản lý quỹ AI Credit dùng chung và thiết lập hạn mức chi tiêu theo từng Workspace của Agency.",
   "ai": {
     "balance": "Agency không đủ credit. Vui lòng liên hệ Owner.",
     "limit": "Workspace đã đạt hạn mức Credit trong kỳ. Vui lòng liên hệ Owner.",
@@ -68,6 +69,7 @@
     "VIDEO_GENERATE": "Tạo video"
   },
   "errors": {
+    "required": "Vui lòng nhập hạn mức credit.",
     "integer": "Nhập số nguyên từ 0 đến 9.007.199.254.740.991, không dùng dấu thập phân hoặc ký hiệu số mũ.",
     "unsafe": "Giá trị vượt khả năng biểu diễn chính xác của giao diện. Không thể sửa để tránh làm sai dữ liệu.",
     "stale": "Cấu hình đã được thay đổi. Nội dung bạn nhập vẫn được giữ; hãy tải lại bản đã lưu trước khi sửa tiếp.",
@@ -133,8 +135,27 @@
   },
   "topup": {
     "action": "Nạp thêm Credit",
-    "title": "Nạp thêm Credit Agency",
-    "description": "Nâng cao hạn ngạch sáng tạo không giới hạn với các gói credit ưu đãi đặc biệt cho Agency.",
+    "title": "Nạp thêm Credit",
+    "description": "Mua lẻ Credit bổ sung cho quỹ dùng chung của Agency (không hết hạn cuối kỳ).",
+    "selectPackage": "Chọn gói Credit",
+    "customOption": "Tùy chọn (Custom)",
+    "customSubtitle": "Nhập số lượng bất kỳ",
+    "amountLabel": "Số lượng Credit cần nạp",
+    "customHint": "Nhập số nguyên dương từ 1 đến 1.000.000 credit (Đơn giá: 200 VND / credit).",
+    "summaryLabel": "Số lượng quy đổi",
+    "payButtonWithPrice": "Thanh toán {{price}}",
+    "payButton": "Thanh toán",
+    "creditsToReceive": "Số Credit nạp",
+    "changeAmount": "Chọn lại số lượng",
+    "fulfilledNote": "Đã nhận thanh toán và cộng Credit vào ví Agency!",
+    "success": "Thanh toán thành công! Đã cộng Credit vào quỹ Agency.",
+    "error": "Không thể khởi tạo đơn thanh toán Credit. Vui lòng thử lại.",
+    "errors": {
+      "required": "Vui lòng nhập số lượng Credit cần nạp.",
+      "integer": "Chỉ nhập số nguyên dương (không dùng số thập phân, dấu âm hoặc ký tự đặc biệt).",
+      "min": "Số lượng Credit cần nạp phải từ 1 trở lên.",
+      "max": "Số lượng Credit tối đa mỗi lần nạp là 1.000.000 credit."
+    },
     "starter": "Gói Khởi động",
     "accelerate": "Gói Tăng tốc",
     "enterprise": "Gói Doanh nghiệp",
@@ -176,7 +197,13 @@
     "used": "Đã dùng",
     "held": "Đang giữ",
     "remaining": "Hạn mức còn lại",
-    "hint": "Không có trần riêng: dùng theo quỹ Agency. Mức 0: chặn thao tác có phí. Hạn mức giữ nguyên khi sang kỳ mới; số đã dùng/đang giữ được tính theo kỳ nhận yêu cầu."
+    "hint": "Không có trần riêng: dùng theo quỹ Agency. Mức 0: chặn thao tác có phí. Hạn mức giữ nguyên khi sang kỳ mới; số đã dùng/đang giữ được tính theo kỳ nhận yêu cầu.",
+    "totalCapLabel": "Tổng giới hạn tối đa đã đặt cho các Workspace:",
+    "totalCapExceedsWarning": "Cảnh báo: Tổng giới hạn tối đa của các Workspace ({{totalCap}} credit) đang lớn hơn số dư Credit hiện tại của Agency ({{available}} credit). Các Workspace dùng chung quỹ Agency nên tổng chi tiêu thực tế không thể vượt quá số dư hiện có.",
+    "singleCapExceedsWarning": "Hạn mức của Workspace này ({{cap}} credit) lớn hơn số dư Credit hiện tại của Agency ({{available}} credit).",
+    "projectedTotalExceedsWarning": "Tổng giới hạn tối đa của các Workspace sau khi lưu ({{totalCap}} credit) vượt quá số dư Credit hiện tại của Agency ({{available}} credit).",
+    "exceedsHint": "Bạn vẫn có thể lưu hạn mức này, nhưng tổng chi tiêu thực tế của các Workspace sẽ bị chặn khi quỹ Agency hết số dư.",
+    "belowUsedWarning": "Workspace này đã dùng/giữ {{committed}} credit trong kỳ. Đặt hạn mức {{cap}} credit sẽ tạm chặn các thao tác AI có phí cho đến kỳ tiếp theo."
   },
   "csv": {
     "cancel": "Hủy",
