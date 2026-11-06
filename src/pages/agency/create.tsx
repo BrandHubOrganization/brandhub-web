@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -15,7 +16,10 @@ import { AGENCY_CATEGORIES, COMPANY_SIZES } from "@/pages/agency/constants";
 import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
 import { BANNER_PRESETS } from "@/pages/agency/bannerPresets";
 import type { AgencyCategory, CompanySize } from "@/types/agency";
-import { ImageCropperModal, RecentAssetsModal } from "@/components/shared/image-editor";
+import {
+  ImageCropperModal,
+  RecentAssetsModal,
+} from "@/components/shared/image-editor";
 import { saveRecentAsset } from "@/utils/recentAssetsStorage";
 import {
   AgencyBrandingSection,
@@ -81,7 +85,10 @@ export function CreateAgencyPage() {
     if (!isValidUrl(normalized)) {
       setErrors((prev) => ({
         ...prev,
-        [field]: t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ"),
+        [field]: t(
+          "agency.detail.errors.invalidUrl",
+          "Định dạng URL không hợp lệ",
+        ),
       }));
     } else {
       clearError(field);
@@ -181,7 +188,10 @@ export function CreateAgencyPage() {
     setLogoCropperOpen(true);
   };
 
-  const handleLogoCropConfirm = (croppedFile: File, croppedPreviewUrl: string) => {
+  const handleLogoCropConfirm = (
+    croppedFile: File,
+    croppedPreviewUrl: string,
+  ) => {
     if (logoPreviewUrl) URL.revokeObjectURL(logoPreviewUrl);
     setLogoFile(croppedFile);
     setLogoPreviewUrl(croppedPreviewUrl);
@@ -221,7 +231,10 @@ export function CreateAgencyPage() {
     setBannerCropperOpen(true);
   };
 
-  const handleBannerCropConfirm = (croppedFile: File, croppedPreviewUrl: string) => {
+  const handleBannerCropConfirm = (
+    croppedFile: File,
+    croppedPreviewUrl: string,
+  ) => {
     if (bannerPreviewUrl) URL.revokeObjectURL(bannerPreviewUrl);
     setBannerFile(croppedFile);
     setBannerPreviewUrl(croppedPreviewUrl);
@@ -263,10 +276,16 @@ export function CreateAgencyPage() {
 
     const newErrors: Record<string, string> = {};
     if (!name.trim()) {
-      newErrors.name = t("agency.create.nameRequired", "Vui lòng nhập tên agency");
+      newErrors.name = t(
+        "agency.create.nameRequired",
+        "Vui lòng nhập tên agency",
+      );
     }
     if (website.trim() && !isValidUrl(normalizeUrl(website))) {
-      newErrors.website = t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ");
+      newErrors.website = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
     }
     if (phone.trim() && !isValidPhone(phone)) {
       newErrors.phone = t(
@@ -281,18 +300,29 @@ export function CreateAgencyPage() {
       );
     }
     if (facebookUrl.trim() && !isValidUrl(normalizeUrl(facebookUrl))) {
-      newErrors.facebookUrl = t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ");
+      newErrors.facebookUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
     }
     if (linkedinUrl.trim() && !isValidUrl(normalizeUrl(linkedinUrl))) {
-      newErrors.linkedinUrl = t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ");
+      newErrors.linkedinUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
     }
     if (instagramUrl.trim() && !isValidUrl(normalizeUrl(instagramUrl))) {
-      newErrors.instagramUrl = t("agency.detail.errors.invalidUrl", "Định dạng URL không hợp lệ");
+      newErrors.instagramUrl = t(
+        "agency.detail.errors.invalidUrl",
+        "Định dạng URL không hợp lệ",
+      );
     }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      toast.error(t("common.formError", "Vui lòng kiểm tra lại các trường thông tin"));
+      toast.error(
+        t("common.formError", "Vui lòng kiểm tra lại các trường thông tin"),
+      );
       return;
     }
     setErrors({});
@@ -334,7 +364,8 @@ export function CreateAgencyPage() {
       if (logoMode === "upload" && logoFile) {
         try {
           const resp = await agencyService.uploadLogo(agencyId, logoFile);
-          if (resp.data.data.logoUrl) saveRecentAsset("logo", resp.data.data.logoUrl);
+          if (resp.data.data.logoUrl)
+            saveRecentAsset("logo", resp.data.data.logoUrl);
         } catch (uploadErr) {
           console.error("Failed to upload logo:", uploadErr);
         }
@@ -344,7 +375,8 @@ export function CreateAgencyPage() {
       if (bannerMode === "upload" && bannerFile) {
         try {
           const resp = await agencyService.uploadBanner(agencyId, bannerFile);
-          if (resp.data.data.bannerUrl) saveRecentAsset("banner", resp.data.data.bannerUrl);
+          if (resp.data.data.bannerUrl)
+            saveRecentAsset("banner", resp.data.data.bannerUrl);
         } catch (uploadErr) {
           console.error("Failed to upload banner:", uploadErr);
         }
@@ -367,13 +399,13 @@ export function CreateAgencyPage() {
       description={t("agency.create.description")}
       fullWidth
     >
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-start">
+      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
         {/* LEFT COLUMN: Input Form */}
         <div className="lg:col-span-7 xl:col-span-7">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* SECTION 1: Basic Information */}
-            <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
-              <h3 className="text-sm font-semibold tracking-wide text-foreground">
+            <div className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
+              <h3 className="text-foreground text-sm font-semibold tracking-wide">
                 1. {t("agency.create.title")}
               </h3>
 
@@ -453,8 +485,8 @@ export function CreateAgencyPage() {
             />
 
             {/* SECTION 4: Category, Size, Founded Year */}
-            <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
-              <h3 className="text-sm font-semibold tracking-wide text-foreground">
+            <div className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
+              <h3 className="text-foreground text-sm font-semibold tracking-wide">
                 4. {t("agency.create.businessInfo", "Thông tin doanh nghiệp")}
               </h3>
 
@@ -469,7 +501,9 @@ export function CreateAgencyPage() {
                       setCategory(e.target.value as AgencyCategory | "")
                     }
                   >
-                    <option value="">{t("agency.create.categoryPlaceholder")}</option>
+                    <option value="">
+                      {t("agency.create.categoryPlaceholder")}
+                    </option>
                     {AGENCY_CATEGORIES.map((c) => (
                       <option key={c} value={c}>
                         {t(`agency.category.${c}`)}
@@ -525,9 +559,10 @@ export function CreateAgencyPage() {
             </div>
 
             {/* SECTION 5: Contact & Socials */}
-            <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
-              <h3 className="text-sm font-semibold tracking-wide text-foreground">
-                5. {t("agency.create.contactAndSocial", "Liên hệ & Mạng xã hội")}
+            <div className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
+              <h3 className="text-foreground text-sm font-semibold tracking-wide">
+                5.{" "}
+                {t("agency.create.contactAndSocial", "Liên hệ & Mạng xã hội")}
               </h3>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -546,7 +581,10 @@ export function CreateAgencyPage() {
                   label={t("agency.create.phoneLabel")}
                   type="tel"
                   inputMode="tel"
-                  placeholder={t("agency.create.phonePlaceholder", "VD: 0901 234 567")}
+                  placeholder={t(
+                    "agency.create.phonePlaceholder",
+                    "VD: 0901 234 567",
+                  )}
                   value={phone}
                   onChange={(e) => {
                     setPhone(e.target.value);
@@ -570,6 +608,9 @@ export function CreateAgencyPage() {
                     handleUrlBlur("facebookUrl", facebookUrl, setFacebookUrl)
                   }
                   error={errors.facebookUrl}
+                  iconPrefix={
+                    <FaFacebook className="size-4 text-blue-600 dark:text-blue-400" />
+                  }
                 />
                 <Input
                   label={t("agency.create.linkedinUrlLabel")}
@@ -583,6 +624,9 @@ export function CreateAgencyPage() {
                     handleUrlBlur("linkedinUrl", linkedinUrl, setLinkedinUrl)
                   }
                   error={errors.linkedinUrl}
+                  iconPrefix={
+                    <FaLinkedin className="size-4 text-sky-600 dark:text-sky-400" />
+                  }
                 />
                 <Input
                   label={t("agency.create.instagramUrlLabel")}
@@ -596,6 +640,9 @@ export function CreateAgencyPage() {
                     handleUrlBlur("instagramUrl", instagramUrl, setInstagramUrl)
                   }
                   error={errors.instagramUrl}
+                  iconPrefix={
+                    <FaInstagram className="size-4 text-pink-600 dark:text-pink-400" />
+                  }
                 />
               </div>
             </div>
