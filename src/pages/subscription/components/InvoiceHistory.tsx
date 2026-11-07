@@ -15,7 +15,6 @@ import {
   Sparkles,
   Coins,
   ReceiptText,
-  Building2,
   XCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

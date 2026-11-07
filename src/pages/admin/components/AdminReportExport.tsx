@@ -21,8 +21,6 @@ import {
 } from "@/services/adminRevenueService";
 
 const TYPES: ReportType[] = ["REVENUE", "USER", "PLATFORM"];
-const field =
-  "border-input bg-card text-foreground focus-visible:outline-ring h-9 w-full rounded-lg border px-3 text-sm focus-visible:outline-2";
 
 export interface ReportDefaults {
   type: ReportType;
@@ -114,7 +112,9 @@ export function AdminReportForm({
       </fieldset>
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="space-y-1.5 text-sm font-medium sm:col-span-2">
-          <span>{t("admin.revenue.dateRangePicker.title", "Khoảng thời gian")}</span>
+          <span>
+            {t("admin.revenue.dateRangePicker.title", "Khoảng thời gian")}
+          </span>
           <DateRangePicker
             from={from}
             to={to}

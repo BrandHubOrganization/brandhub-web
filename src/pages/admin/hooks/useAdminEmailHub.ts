@@ -206,7 +206,7 @@ export function useAdminEmailHub(
         subject: title || "Test Email",
         scope: "ADMIN_SYSTEM_BROADCAST",
         layoutJson: serializeLayout({ version: 1, locale, blocks }),
-        attachments: [],
+        attachmentIds: [],
       });
       await adminMailTemplateService.sendTest(tempTemplate.id);
       await adminMailTemplateService
@@ -237,7 +237,7 @@ export function useAdminEmailHub(
         subject: title || templateName.trim(),
         scope: "ADMIN_SYSTEM_BROADCAST",
         layoutJson: serializeLayout({ version: 1, locale, blocks }),
-        attachments: [],
+        attachmentIds: [],
       });
       toast.success(t("admin.emailHub.templateSaved"));
       setSaveAsTemplateOpen(false);

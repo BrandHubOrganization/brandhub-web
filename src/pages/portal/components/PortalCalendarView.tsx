@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { CalendarDays } from "lucide-react";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { calendarService } from "@/services/calendarService";
 import type { CalendarPostEvent, PostStatus } from "@/types/calendar";
 
@@ -16,6 +17,8 @@ const STATUS_BADGE_VARIANT: Record<PostStatus, BadgeProps["variant"]> = {
 
 export function PortalCalendarView() {
   const { t } = useTranslation();
+  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
+  const workspaceId = currentWorkspace?.id ?? "";
   const [events, setEvents] = useState<CalendarPostEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -23,9 +26,13 @@ export function PortalCalendarView() {
     let cancelled = false;
 
     async function load() {
+      if (!workspaceId) {
+        setIsLoading(false);
+        return;
+      }
       setIsLoading(true);
       try {
-        const data = await calendarService.getCalendarPosts({
+        const data = await calendarService.getCalendarPosts(workspaceId, {
           startDate: new Date(0).toISOString(),
           endDate: new Date(8640000000000000).toISOString(),
         });
@@ -44,7 +51,7 @@ export function PortalCalendarView() {
     return () => {
       cancelled = true;
     };
-  }, [t]);
+  }, [workspaceId, t]);
 
   if (isLoading) {
     return <Skeleton className="h-64 rounded-xl" />;
