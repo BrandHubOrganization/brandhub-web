@@ -52,7 +52,7 @@ export function PageWrapper({
   return (
     <div
       className={cn(
-        "w-full space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6",
+        "w-full min-w-0 space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6",
         !fullWidth && "mx-auto max-w-7xl",
         compact && "space-y-3 p-3 pb-24 md:px-5 md:py-4 md:pb-24",
         className,
@@ -230,7 +230,7 @@ export function PageWrapper({
       )}
 
       {/* ── BODY CONTENT ── */}
-      <div className={cn("w-full", contentClassName)}>{children}</div>
+      <div className={cn("w-full min-w-0", contentClassName)}>{children}</div>
     </div>
   );
 }

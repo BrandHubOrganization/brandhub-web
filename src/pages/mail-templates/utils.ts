@@ -200,7 +200,8 @@ export function renderPreviewHtml(bodyHtml: string, values: Record<string, strin
   return (
     '<!doctype html><html><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<style>body{font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1f2937;' +
+    '<style>html,body{height:100%;min-height:100%;box-sizing:border-box;background:#f4f4f5}' +
+    "body{font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1f2937;" +
     "margin:0;padding:16px;word-wrap:break-word}img{max-width:100%;height:auto}a{color:#ea580c}</style>" +
     `</head><body>${body}</body></html>`
   );

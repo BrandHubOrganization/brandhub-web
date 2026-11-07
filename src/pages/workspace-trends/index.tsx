@@ -10,6 +10,7 @@ import { RefreshCw } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { cn } from "@/lib/utils";
 import { listWorkspaceTrends } from "@/pages/workspace-trends/services/trends";
 import { TrendSkeleton } from "@/pages/workspace-trends/components/TrendSkeleton";
@@ -82,15 +83,14 @@ function Dashboard() {
             placeholder={t("aiStudio.workspaceTrends.searchPlaceholder")}
           />
         </label>
-        <label className="space-y-1 text-sm">
-          <span>{t("aiStudio.workspaceTrends.date")}</span>
-          <Input
-            type="date"
+        <div className="w-48">
+          <DatePicker
+            label={t("aiStudio.workspaceTrends.date")}
             value={date}
             max={new Date().toISOString().slice(0, 10)}
-            onChange={(event) => update("date", event.target.value)}
+            onChange={(val) => update("date", val)}
           />
-        </label>
+        </div>
         <Button
           variant={date ? "outline" : "default"}
           onClick={() => update("date", "")}

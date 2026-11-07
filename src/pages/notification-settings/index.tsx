@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   DEFAULT_PREFERENCES,
   NOTIFICATION_TYPES,
-} from "@/services/mock/mockNotificationService";
+} from "@/types/notification";
 import { userService } from "@/services/userService";
 import type { NotificationPreferences } from "@/types/notification";
 import { ToggleRow } from "./components/ToggleRow";

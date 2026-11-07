@@ -30,6 +30,7 @@ import { useAgencyStore } from "@/store/agencyStore";
 import { authService } from "@/services/authService";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
+import { getAdminBreadcrumbData } from "@/components/layout/AdminSidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -276,36 +277,14 @@ export function Navbar({
   }
 
   const getBreadcrumbs = () => {
-    if (isAdmin && location.pathname === "/admin/invoices")
-      return [
-        { label: t("admin.navigation.workspace"), path: "/admin" },
-        { label: t("admin.navigation.invoices"), path: "/admin/invoices" },
-      ];
-    if (isAdmin && location.pathname === "/admin") {
-      const requested =
-        new URLSearchParams(location.search).get("view") || "overview";
-      const view = [
-        "overview",
-        "users",
-        "moderation",
-        "revenue",
-        "email",
-        "mailTemplates",
-        "mailBatches",
-        "mailSuppressions",
-        "reports",
-        "crawl",
-        "trendReplay",
-        "trendPipeline",
-        "trends",
-        "trendGraph",
-      ].includes(requested)
-        ? requested
-        : "overview";
-      return [
-        { label: t("admin.navigation.workspace"), path: "/admin" },
-        { label: t(`admin.navigation.${view}`), path: `/admin?view=${view}` },
-      ];
+    if (isAdmin && location.pathname.startsWith("/admin")) {
+      const data = getAdminBreadcrumbData(location.pathname, location.search);
+      if (data) {
+        return [
+          { label: t(data.groupTitleKey), path: data.groupPath },
+          { label: t(data.itemLabelKey), path: data.itemPath },
+        ];
+      }
     }
     const segments = location.pathname.split("/").filter(Boolean);
     if (segments.length === 0)

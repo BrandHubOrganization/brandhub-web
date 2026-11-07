@@ -1,19 +1,12 @@
 import { createElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  Plus,
-  Search,
-  Trash2,
-  X,
-} from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Plus, Search, Trash2, X } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
+import { SelectMenu } from "@/components/ui/select-menu";
 import {
   Dialog,
   DialogContent,
@@ -476,47 +469,53 @@ export function WorkspaceTemplateLibraryPage() {
                   <Label className="text-xs font-medium">
                     {t("workspace.create.industryLabel")}
                   </Label>
-                  <Select
+                  <SelectMenu
+                    ariaLabel={t("workspace.create.industryLabel")}
+                    className="w-full"
                     value={industry}
-                    onChange={(e) => {
-                      const nextInd = e.target.value as WorkspaceIndustry | "";
+                    onChange={(nextValue) => {
+                      const nextInd = nextValue as WorkspaceIndustry | "";
                       setIndustry(nextInd);
                       if (nextInd) {
                         setLogoIcon(INDUSTRY_DEFAULT_ICON[nextInd]);
                         setBrandColor(INDUSTRY_TONE[nextInd]);
                       }
                     }}
-                  >
-                    <option value="">
-                      {t("workspace.create.industryPlaceholder")}
-                    </option>
-                    {WORKSPACE_INDUSTRIES.map((i) => (
-                      <option key={i} value={i}>
-                        {t(`workspace.industry.${i}`)}
-                      </option>
-                    ))}
-                  </Select>
+                    options={[
+                      {
+                        value: "",
+                        label: t("workspace.create.industryPlaceholder"),
+                      },
+                      ...WORKSPACE_INDUSTRIES.map((i) => ({
+                        value: i,
+                        label: t(`workspace.industry.${i}`),
+                      })),
+                    ]}
+                  />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
                   <Label className="text-xs font-medium">
                     {t("workspace.create.companySizeLabel")}
                   </Label>
-                  <Select
+                  <SelectMenu
+                    ariaLabel={t("workspace.create.companySizeLabel")}
+                    className="w-full"
                     value={companySize}
-                    onChange={(e) =>
-                      setCompanySize(e.target.value as CompanySize | "")
+                    onChange={(nextValue) =>
+                      setCompanySize(nextValue as CompanySize | "")
                     }
-                  >
-                    <option value="">
-                      {t("workspace.create.companySizePlaceholder")}
-                    </option>
-                    {COMPANY_SIZES.map((s) => (
-                      <option key={s} value={s}>
-                        {t(`agency.companySize.${s}`)}
-                      </option>
-                    ))}
-                  </Select>
+                    options={[
+                      {
+                        value: "",
+                        label: t("workspace.create.companySizePlaceholder"),
+                      },
+                      ...COMPANY_SIZES.map((s) => ({
+                        value: s,
+                        label: t(`agency.companySize.${s}`),
+                      })),
+                    ]}
+                  />
                 </div>
 
                 <Input
@@ -559,7 +558,8 @@ export function WorkspaceTemplateLibraryPage() {
                   Nhận diện & Vận hành
                 </h3>
                 <p className="text-muted-foreground mt-0.5 text-xs">
-                  Màu sắc, biểu tượng đại diện, múi giờ và lịch báo cáo mặc định.
+                  Màu sắc, biểu tượng đại diện, múi giờ và lịch báo cáo mặc
+                  định.
                 </p>
               </div>
 
@@ -904,25 +904,30 @@ export function WorkspaceTemplateLibraryPage() {
                 </button>
               )}
 
-              <Select
+              <SelectMenu
+                ariaLabel={t("workspace.templates.sortLabel", "Sắp xếp")}
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="h-8.5 py-0 pr-7 text-xs"
-                wrapperClassName="w-[136px]"
-              >
-                <option value="newest">
-                  {t("workspace.templates.sortNewest", "Mới nhất")}
-                </option>
-                <option value="oldest">
-                  {t("workspace.templates.sortOldest", "Cũ nhất")}
-                </option>
-                <option value="name_asc">
-                  {t("workspace.templates.sortNameAsc", "Tên A → Z")}
-                </option>
-                <option value="name_desc">
-                  {t("workspace.templates.sortNameDesc", "Tên Z → A")}
-                </option>
-              </Select>
+                onChange={(nextSort) => setSortBy(nextSort as SortOption)}
+                className="h-8.5 w-[136px] text-xs"
+                options={[
+                  {
+                    value: "newest",
+                    label: t("workspace.templates.sortNewest", "Mới nhất"),
+                  },
+                  {
+                    value: "oldest",
+                    label: t("workspace.templates.sortOldest", "Cũ nhất"),
+                  },
+                  {
+                    value: "name_asc",
+                    label: t("workspace.templates.sortNameAsc", "Tên A → Z"),
+                  },
+                  {
+                    value: "name_desc",
+                    label: t("workspace.templates.sortNameDesc", "Tên Z → A"),
+                  },
+                ]}
+              />
             </div>
           </div>
 
@@ -961,8 +966,7 @@ export function WorkspaceTemplateLibraryPage() {
               {filteredTemplates.map((tpl) => {
                 const cfg = tpl.config;
                 const isDefaultColor =
-                  !cfg.brandColor ||
-                  cfg.brandColor.toLowerCase() === "#f05a28";
+                  !cfg.brandColor || cfg.brandColor.toLowerCase() === "#f05a28";
                 const tone =
                   !isDefaultColor && cfg.brandColor
                     ? cfg.brandColor
@@ -1021,7 +1025,7 @@ export function WorkspaceTemplateLibraryPage() {
                             })}
                           </div>
                           <div className="min-w-0">
-                            <h3 className="text-foreground truncate text-sm font-semibold leading-snug">
+                            <h3 className="text-foreground truncate text-sm leading-snug font-semibold">
                               {tpl.name}
                             </h3>
                             <p className="text-muted-foreground mt-0.5 truncate text-xs">

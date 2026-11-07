@@ -1,9 +1,8 @@
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Activity,
   Clock3,
-  FileChartColumn,
   FileText,
   LayoutDashboard,
   Mail,
@@ -33,10 +32,7 @@ const menuGroups = [
     entries: [
       { key: "revenue", icon: Wallet, planned: false },
       { key: "invoices", icon: FileText, planned: false },
-      { key: "reports", icon: FileChartColumn, planned: false },
       { key: "email", icon: Mail, planned: false },
-      { key: "mailTemplates", icon: FileText, planned: false },
-      { key: "mailBatches", icon: Mail, planned: false },
       { key: "mailSuppressions", icon: Mail, planned: false },
       { key: "workspaceTemplates", icon: LayoutDashboard, planned: false },
     ],
@@ -55,38 +51,71 @@ const menuGroups = [
 
 const sections = menuGroups.flatMap((group) => group.entries);
 
-const linkTo = (key: string) =>
+export const linkTo = (key: string) =>
   key === "credit"
     ? "/admin/credit-prices"
-    : key === "invoices"
-      ? "/admin/invoices"
-      : key === "workspaceTemplates"
-        ? "/admin/workspace-templates"
-        : key === "health"
-          ? "/admin/system-health"
-          : key === "overview"
-            ? "/admin"
-            : `/admin?view=${key}`;
+    : key === "workspaceTemplates"
+      ? "/admin/workspace-templates"
+      : key === "health"
+        ? "/admin/system-health"
+        : key === "overview"
+          ? "/admin"
+          : `/admin?view=${key}`;
 
-const labelKey = (key: string) =>
+export const labelKey = (key: string) =>
   key === "credit"
     ? "credit.price.title"
     : key === "health"
       ? "monitoring.title"
       : `admin.navigation.${key}`;
 
-function useAdminView() {
-  const [params] = useSearchParams();
-  const { pathname } = useLocation();
-  const rawView = params.get("view") || "overview";
-  const view = rawView === "trendPipeline" ? "crawl" : rawView;
+export function resolveAdminActiveKey(pathname: string, search: string): string {
   if (pathname === "/admin/system-health") return "health";
   if (pathname === "/admin/credit-prices") return "credit";
   if (pathname === "/admin/invoices") return "invoices";
   if (pathname === "/admin/workspace-templates") return "workspaceTemplates";
+
+  const params = new URLSearchParams(search);
+  const rawView = params.get("view") || "overview";
+  if (rawView === "reports") return "overview";
+  const view = rawView === "trendPipeline" ? "crawl" : rawView;
+
   return sections.some((section) => section.key === view && view !== "health")
     ? view
     : "overview";
+}
+
+export interface AdminBreadcrumbData {
+  groupTitleKey: string;
+  groupPath: string;
+  itemLabelKey: string;
+  itemPath: string;
+}
+
+export function getAdminBreadcrumbData(
+  pathname: string,
+  search: string,
+): AdminBreadcrumbData | null {
+  if (!pathname.startsWith("/admin")) return null;
+
+  const activeKey = resolveAdminActiveKey(pathname, search);
+  const group = menuGroups.find((g) =>
+    g.entries.some((entry) => entry.key === activeKey),
+  );
+
+  if (!group) return null;
+
+  return {
+    groupTitleKey: `admin.navigation.${group.title}`,
+    groupPath: linkTo(group.entries[0].key),
+    itemLabelKey: labelKey(activeKey),
+    itemPath: linkTo(activeKey),
+  };
+}
+
+function useAdminView() {
+  const { pathname, search } = useLocation();
+  return resolveAdminActiveKey(pathname, search);
 }
 
 export function AdminMobileNavigation() {

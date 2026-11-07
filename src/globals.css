@@ -116,6 +116,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html,
+  body,
+  #root {
+    @apply w-full h-full min-w-0;
+  }
   body {
     @apply bg-background text-foreground;
     font-feature-settings:

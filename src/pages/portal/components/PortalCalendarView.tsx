@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { CalendarDays } from "lucide-react";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { calendarService } from "@/services/mock/mockCalendarService";
+import { calendarService } from "@/services/calendarService";
 import type { CalendarPostEvent, PostStatus } from "@/types/calendar";
 
 const STATUS_BADGE_VARIANT: Record<PostStatus, BadgeProps["variant"]> = {

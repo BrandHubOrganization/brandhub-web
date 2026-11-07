@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-range-picker";
+import { SelectMenu } from "@/components/ui/select-menu";
 import {
   Dialog,
   DialogContent,
@@ -94,58 +96,62 @@ export function CrawlerRunHistory() {
   return (
     <section className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
       <div className="border-border/60 flex flex-col gap-3 border-b pb-4 lg:flex-row lg:items-end lg:justify-between">
-        <h2 className="text-sm font-semibold">{t("admin.crawler.historyTitle")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("admin.crawler.historyTitle")}
+        </h2>
         <div className="grid w-full items-end gap-3 sm:grid-cols-3 lg:max-w-2xl">
           <label className="space-y-1 text-xs font-medium">
             <span className="block">{t("admin.crawler.platforms")}</span>
-            <select
-              className="border-input bg-background block h-9 w-full rounded-md border px-2.5 text-xs"
+            <SelectMenu
+              ariaLabel={t("admin.crawler.platforms")}
+              className="h-9 w-full text-xs"
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
+              onChange={(nextPlatform) => {
+                setSearch(nextPlatform);
                 setHistoryPage(0);
               }}
-            >
-              <option value="">{t("admin.crawler.all")}</option>
-              {["facebook", "threads", "tiktok"].map((p) => (
-                <option key={p} value={p}>
-                  {t(`admin.trendSettings.platform.${p}`)}
-                </option>
-              ))}
-            </select>
+              options={[
+                { value: "", label: t("admin.crawler.all") },
+                ...["facebook", "threads", "tiktok"].map((p) => ({
+                  value: p,
+                  label: t(`admin.trendSettings.platform.${p}`),
+                })),
+              ]}
+            />
           </label>
           <label className="space-y-1 text-xs font-medium">
             <span className="block">{t("admin.crawler.status")}</span>
-            <select
-              className="border-input bg-background block h-9 w-full rounded-md border px-2.5 text-xs"
+            <SelectMenu
+              ariaLabel={t("admin.crawler.status")}
+              className="h-9 w-full text-xs"
               value={status}
-              onChange={(e) => {
-                setStatus(e.target.value);
+              onChange={(nextStatus) => {
+                setStatus(nextStatus);
                 setHistoryPage(0);
               }}
-            >
-              <option value="">{t("admin.crawler.all")}</option>
-              {[
-                "RUNNING",
-                "COMPLETED",
-                "PARTIAL",
-                "FAILED",
-                "INTERRUPTED",
-              ].map((s) => (
-                <option key={s} value={s}>
-                  {t(
+              options={[
+                { value: "", label: t("admin.crawler.all") },
+                ...[
+                  "RUNNING",
+                  "COMPLETED",
+                  "PARTIAL",
+                  "FAILED",
+                  "INTERRUPTED",
+                ].map((s) => ({
+                  value: s,
+                  label: t(
                     `admin.trendPipeline.stage.${s === "RUNNING" ? "CRAWLING" : s}`,
-                  )}
-                </option>
-              ))}
-            </select>
+                  ),
+                })),
+              ]}
+            />
           </label>
-          <Input
-            type="date"
+          <DatePicker
             label={t("admin.crawler.date")}
             value={date}
-            onChange={(e) => {
-              setDate(e.target.value);
+            placeholder={t("admin.crawler.date")}
+            onChange={(val) => {
+              setDate(val);
               setHistoryPage(0);
             }}
           />

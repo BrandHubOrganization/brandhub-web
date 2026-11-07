@@ -9,7 +9,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTrendGraph } from "@/pages/admin/hooks/useTrendGraph";
 import { TrendGraphSearch } from "@/pages/admin/components/TrendGraphSearch";
@@ -165,7 +165,7 @@ export function AdminTrendGraphPanel() {
                 </span>
                 <span
                   aria-hidden="true"
-                  className="border-emerald-500/30 bg-emerald-500/10 rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-600 dark:text-emerald-400"
+                  className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-600 dark:text-emerald-400"
                 >
                   READ-ONLY
                 </span>
@@ -182,37 +182,31 @@ export function AdminTrendGraphPanel() {
             <span className="text-muted-foreground block text-[11px]">
               {t("admin.trendGraph.depth")}
             </span>
-            <Select
-              aria-label={t("admin.trendGraph.depth")}
-              value={view.depth}
-              onChange={(event) => view.change({ depth: event.target.value })}
+            <SelectMenu
+              ariaLabel={t("admin.trendGraph.depth")}
+              value={String(view.depth)}
+              onChange={(depth) => view.change({ depth })}
               className="h-9 min-w-[110px]"
-            >
-              {[1, 2].map((depth) => (
-                <option key={depth} value={depth}>
-                  {t("admin.trendGraph.hops", { count: depth })}
-                </option>
-              ))}
-            </Select>
+              options={[1, 2].map((depth) => ({
+                value: String(depth),
+                label: t("admin.trendGraph.hops", { count: depth }),
+              }))}
+            />
           </label>
           <label className="space-y-1 text-xs font-medium">
             <span className="text-muted-foreground block text-[11px]">
               {t("admin.trendGraph.maxNodes")}
             </span>
-            <Select
-              aria-label={t("admin.trendGraph.maxNodes")}
-              value={view.maxNodes}
-              onChange={(event) =>
-                view.change({ maxNodes: event.target.value })
-              }
+            <SelectMenu
+              ariaLabel={t("admin.trendGraph.maxNodes")}
+              value={String(view.maxNodes)}
+              onChange={(maxNodes) => view.change({ maxNodes })}
               className="h-9 min-w-[90px]"
-            >
-              {[50, 100, 200].map((limit) => (
-                <option key={limit} value={limit}>
-                  {limit}
-                </option>
-              ))}
-            </Select>
+              options={[50, 100, 200].map((limit) => ({
+                value: String(limit),
+                label: String(limit),
+              }))}
+            />
           </label>
           <Button
             variant="outline"

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { mockHashtagGroupService } from "@/services/mock/mockHashtagGroupService";
+import { hashtagService } from "@/services/hashtagService";
 import type { HashtagGroup } from "@/types/hashtagGroup";
 
 export function useHashtagGroups() {
@@ -17,7 +17,7 @@ export function useHashtagGroups() {
   const fetchGroups = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await mockHashtagGroupService.getGroups(search);
+      const data = await hashtagService.getGroups(search);
       setGroups(data);
     } catch {
       toast.error(t("hashtagGroups.loadError"));
@@ -45,12 +45,12 @@ export function useHashtagGroups() {
     hashtags: string[];
   }) => {
     if (editingGroup) {
-      await mockHashtagGroupService.updateGroup(editingGroup.id, payload);
+      await hashtagService.updateGroup(editingGroup.id, payload);
       toast.success(
         t("hashtagGroups.toast.updateSuccess", { name: payload.name }),
       );
     } else {
-      await mockHashtagGroupService.createGroup(payload);
+      await hashtagService.createGroup(payload);
       toast.success(
         t("hashtagGroups.toast.createSuccess", { name: payload.name }),
       );
@@ -62,7 +62,7 @@ export function useHashtagGroups() {
     if (!deletingGroup) return;
     setIsDeleting(true);
     try {
-      await mockHashtagGroupService.deleteGroup(deletingGroup.id);
+      await hashtagService.deleteGroup(deletingGroup.id);
       toast.success(
         t("hashtagGroups.toast.deleteSuccessNamed", {
           name: deletingGroup.name,

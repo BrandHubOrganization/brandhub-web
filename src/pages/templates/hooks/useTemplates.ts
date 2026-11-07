@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { mockTemplateService } from "@/services/mock/mockTemplateService";
+import { templateService } from "@/services/templateService";
 import type { ContentTemplate } from "@/types/template";
 
 export function useTemplates() {
@@ -29,7 +29,7 @@ export function useTemplates() {
   const fetchTemplates = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await mockTemplateService.getTemplates({
+      const res = await templateService.getTemplates({
         search: debouncedSearch,
         page,
         size: 20,
@@ -56,7 +56,7 @@ export function useTemplates() {
   const handleDeleteTemplate = async (id: string, title: string) => {
     if (window.confirm(t("templates.toast.deleteConfirm", { title }))) {
       try {
-        await mockTemplateService.deleteTemplate(id);
+        await templateService.deleteTemplate(id);
         toast.success(t("templates.toast.deleteSuccess", { title }));
         fetchTemplates();
       } catch {

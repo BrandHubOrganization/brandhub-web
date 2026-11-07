@@ -126,7 +126,7 @@
     "noPayments": "BrandHub chưa ghi nhận khoản tiền cho đơn này.",
     "reference": "Mã tham chiếu",
     "review": "Cần đối soát",
-    "receipt": "Tải biên nhận (.txt)",
+    "receipt": "Tải biên nhận (.pdf)",
     "receiptError": "Không thể tải biên nhận. Vui lòng thử lại.",
     "notTaxInvoice": "Biên nhận thanh toán, không phải hóa đơn thuế.",
     "lookup": "Tra cứu trên SePay",
@@ -156,7 +156,28 @@
     "agencyFilter": "Lọc theo ID agency (UUID)",
     "allAgencies": "Tất cả agency",
     "apply": "Áp dụng",
-    "drawerDescription": "Thông tin đơn thanh toán, khoản tiền đã ghi nhận và biên nhận."
+    "invalidAgencyId": "Định dạng UUID không hợp lệ (ví dụ: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)",
+    "drawerDescription": "Thông tin đơn thanh toán, khoản tiền đã ghi nhận và biên nhận.",
+    "kpi": {
+      "total": "Tổng giao dịch",
+      "fulfilled": "Đã hoàn tất",
+      "pending": "Chờ thanh toán",
+      "review": "Cần xử lý",
+      "fulfilledRevenue": "Doanh thu hoàn tất"
+    },
+    "resetFilters": "Đặt lại bộ lọc",
+    "searchAgency": "Lọc Agency ID",
+    "searchAgencyPlaceholder": "Nhập UUID của Agency...",
+    "copied": "Đã sao chép vào bộ nhớ tạm",
+    "copyCode": "Sao chép mã",
+    "emptyTitle": "Không tìm thấy hóa đơn nào",
+    "emptyDescription": "Thử điều chỉnh lại bộ lọc trạng thái, loại dịch vụ hoặc khoảng thời gian tìm kiếm.",
+    "orderInfo": "Thông tin đơn hàng",
+    "paymentInfo": "Thông tin thanh toán",
+    "servicePeriod": "Kỳ hạn dịch vụ",
+    "receiptDownload": "Tải biên lai thanh toán (PDF)",
+    "receiptDownloading": "Đang tạo biên lai PDF...",
+    "viewDetail": "Chi tiết"
   },
   "catalog": {
     "loading": "Đang tải danh sách gói…",

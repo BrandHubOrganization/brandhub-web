@@ -93,5 +93,33 @@
     "environment": "Environment",
     "serverId": "Server",
     "kind": "Type"
+  },
+  "taskManager": {
+    "title": "Real-Time Performance",
+    "subtitle": "Track CPU, RAM and Disk activity in real-time with Windows Task Manager style telemetry.",
+    "live": "LIVE",
+    "allServers": "All servers (Combined)",
+    "allServersHint": "Aggregated telemetry from all servers",
+    "allMetrics": "Overview",
+    "cpu": "CPU",
+    "ram": "Memory (RAM)",
+    "disk": "Disk",
+    "usage": "Utilization",
+    "utilization": "Capacity",
+    "speed": "Speed",
+    "stable": "Normal",
+    "activeServices": "Active Services",
+    "servicesCount": "{{count}} services",
+    "timeRange60s": "60 seconds",
+    "timeRange5m": "5 minutes",
+    "timeRange15m": "15 minutes",
+    "history": "Activity history",
+    "samplingRate": "Sampling rate: 2s",
+    "currentMetrics": "Current metrics",
+    "selectServer": "Select server:",
+    "noServerSelected": "No server selected",
+    "emptyHistory": "Connecting to telemetry stream...",
+    "paused": "Paused",
+    "resume": "Resume"
   }
 }

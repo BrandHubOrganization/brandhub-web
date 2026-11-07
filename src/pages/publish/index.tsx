@@ -8,7 +8,7 @@ import {
   createPost,
   getScheduledPosts,
   retryPost,
-} from "@/services/mock/mockPublishService";
+} from "@/services/publishService";
 import {
   ComposerForm,
   type ComposerFormState,
