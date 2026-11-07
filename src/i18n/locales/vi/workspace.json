@@ -297,7 +297,13 @@
     "leaveSuccess": "Bạn đã rời workspace",
     "leaveConfirmTitle": "Rời workspace này?",
     "leaveConfirmDescription": "Bạn sẽ mất quyền truy cập workspace này. Hành động này không thể hoàn tác.",
-    "leaveLastManagerWarning": "Bạn là Manager active duy nhất — không thể rời workspace. Hãy chuyển giao vai trò Manager cho người khác trước."
+    "leaveLastManagerWarning": "Bạn là Manager active duy nhất — không thể rời workspace. Hãy chuyển giao vai trò Manager cho người khác trước.",
+    "actionsLabel": "Thao tác",
+    "revokeManagerTooltip": "Thu hồi quyền quản lý về Người tạo nội dung",
+    "removeTooltip": "Xóa người dùng khỏi không gian làm việc",
+    "revokeManagerConfirmTitle": "Xác nhận thu hồi quyền Quản lý",
+    "revokeManagerConfirmBody": "Bạn có chắc chắn muốn thu hồi quyền Quản lý của **{{name}}** về Người tạo nội dung không?",
+    "revokeManagerConfirmButton": "Xác nhận thu hồi"
   },
   "roles": {
     "OWNER": "Chủ sở hữu",
@@ -373,6 +379,13 @@
     "revokeConfirmButton": "Xác nhận thu hồi",
     "revokeCancel": "Hủy",
     "revokeSuccess": "Đã thu hồi vai trò của {{name}}",
+    "promoteManagerConfirmTitle": "Xác nhận chỉ định Quản lý workspace",
+    "promoteManagerConfirmBody": "Bạn đang chuẩn bị chuyển giao quyền Quản lý workspace cho **{{name}}**. Quản lý hiện tại sẽ tự động chuyển thành Người tạo nội dung. Bạn có chắc chắn muốn tiếp tục?",
+    "promoteManagerConfirmButton": "Xác nhận phân quyền",
+    "promoteManagerCancel": "Hủy",
+    "promoteOwnerConfirmTitle": "Xác nhận chuyển giao quyền Chủ sở hữu",
+    "promoteOwnerConfirmBody": "Bạn đang chuẩn bị chuyển quyền Chủ sở hữu workspace cho **{{name}}**. Bạn có chắc chắn muốn tiếp tục?",
+    "promoteOwnerConfirmButton": "Xác nhận chuyển quyền",
     "perms": {
       "publish": "Đăng nội dung",
       "approve": "Duyệt nội dung",

@@ -297,7 +297,13 @@
     "leaveSuccess": "You have left the workspace",
     "leaveConfirmTitle": "Leave this workspace?",
     "leaveConfirmDescription": "You will lose access to this workspace. This cannot be undone.",
-    "leaveLastManagerWarning": "You're the only active Manager — leave blocked. Hand off the Manager role first."
+    "leaveLastManagerWarning": "You're the only active Manager — leave blocked. Hand off the Manager role first.",
+    "actionsLabel": "Actions",
+    "revokeManagerTooltip": "Revoke manager role back to Content Creator",
+    "removeTooltip": "Remove user from workspace",
+    "revokeManagerConfirmTitle": "Confirm Revoking Manager Role",
+    "revokeManagerConfirmBody": "Are you sure you want to revoke the Manager role of **{{name}}** back to Content Creator?",
+    "revokeManagerConfirmButton": "Confirm Revoke"
   },
   "roles": {
     "OWNER": "Owner",
@@ -375,6 +381,13 @@
     "revokeConfirmButton": "Confirm revoke",
     "revokeCancel": "Cancel",
     "revokeSuccess": "Revoked {{name}}'s role",
+    "promoteManagerConfirmTitle": "Confirm Workspace Manager Designation",
+    "promoteManagerConfirmBody": "You are about to transfer Workspace Manager permissions to **{{name}}**. The current manager will automatically become a Creator. Are you sure you want to continue?",
+    "promoteManagerConfirmButton": "Confirm role assignment",
+    "promoteManagerCancel": "Cancel",
+    "promoteOwnerConfirmTitle": "Confirm Workspace Owner Transfer",
+    "promoteOwnerConfirmBody": "You are about to transfer Workspace Owner permissions to **{{name}}**. Are you sure you want to continue?",
+    "promoteOwnerConfirmButton": "Confirm transfer",
     "perms": {
       "publish": "Publish content",
       "approve": "Approve content",
