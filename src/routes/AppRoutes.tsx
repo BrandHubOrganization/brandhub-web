@@ -224,10 +224,6 @@ const AgencyMailSuppressionsPage = lazyNamed(
   () => import("@/pages/agency/mailSuppressions"),
   "AgencyMailSuppressionsPage",
 );
-const AgencyRolesPage = lazyNamed(
-  () => import("@/pages/agency/roles"),
-  "AgencyRolesPage",
-);
 const AgencyInvitationsPage = lazyNamed(
   () => import("@/pages/agency/invitations"),
   "AgencyInvitationsPage",
@@ -550,7 +546,6 @@ export function AppRoutes() {
               element={<ClientInvitationsPage />}
             />
             <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
-            <Route path="/agency/:id/roles" element={<AgencyRolesPage />} />
             <Route
               path="/agency/:id/mail-templates"
               element={<AgencyMailTemplatesPage />}
