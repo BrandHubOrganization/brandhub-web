@@ -121,6 +121,19 @@ export interface AgencyMemberProfile {
   avatarUrl: string | null;
   phone: string | null;
   professionalTitle: string | null;
+  bio?: string | null;
+  skills?: string[];
+  workingLanguage?: string | null;
+  location?: string | null;
+  yearsOfExperience?: number | null;
+  linkedinUrl?: string | null;
+  facebookUrl?: string | null;
+  instagramUrl?: string | null;
+  tiktokUrl?: string | null;
+  website?: string | null;
+  portfolioUrls?: string[];
+  bannerUrl?: string | null;
+  timezone?: string | null;
   workspaces: AgencyMemberWorkspaceMembership[];
 }
 
