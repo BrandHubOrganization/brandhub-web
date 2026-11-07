@@ -22,7 +22,13 @@ export default function CampaignPage() {
     return state.currentMemberRole ?? currentWorkspace.myRole ?? null;
   });
   return (
-    <PageWrapper compact showGuideButton={false} title={t("campaign.title")}>
+    <PageWrapper
+      compact
+      hideHeader
+      className="!pb-4"
+      showGuideButton={false}
+      title={t("campaign.title")}
+    >
       {loading && <Spinner />}
       {!loading && error && (
         <div role="alert">

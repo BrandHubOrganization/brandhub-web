@@ -68,8 +68,13 @@ export function Layout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const taskWorkspaceLayout = /^\/workspaces\/[^/]+\/(?:tasks(?:\/[^/]+\/detail)?|task-approvals|chat)$/.test(location.pathname);
-  const packageWorkspaceLayout = /^\/workspaces\/[^/]+\/media-package\/?$/.test(location.pathname);
+  const taskWorkspaceLayout =
+    /^\/workspaces\/[^/]+\/(?:tasks(?:\/[^/]+\/detail)?|task-approvals|chat)$/.test(
+      location.pathname,
+    );
+  const packageWorkspaceLayout = /^\/workspaces\/[^/]+\/media-package\/?$/.test(
+    location.pathname,
+  );
   const user = useAuthStore((s) => s.user);
   const systemRole = useAuthStore((s) => s.systemRole);
 
@@ -153,7 +158,9 @@ export function Layout() {
   const currentAgency = agencyList.find((a) => a.id === currentAgencyId);
   const currentAgencyMyRole =
     currentAgency?.myRole ??
-    (currentAgency && user?.id && currentAgency.ownerId === user.id ? "OWNER" : null);
+    (currentAgency && user?.id && currentAgency.ownerId === user.id
+      ? "OWNER"
+      : null);
   const memberRole: MemberRole | null =
     activeWorkspace?.myRole ??
     (currentAgencyMyRole === "OWNER"
@@ -210,7 +217,7 @@ export function Layout() {
   const isPackageHardGated =
     (memberRole === "CLIENT" || memberRole === "MANAGER") &&
     !!activeWorkspace &&
-    activeWorkspace.packageNegotiationStatus !== "APPROVED";
+    !activeWorkspace.workspaceMediaPackageId;
 
   // Filter mobile tabs based on role
   const filteredMobileTabs = MOBILE_TABS.filter((tab) => {
@@ -329,7 +336,9 @@ export function Layout() {
         </Sheet>
 
         {/* Page Content Outlet */}
-        <main className={`bg-background flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}>
+        <main
+          className={`bg-background flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
+        >
           <React.Suspense fallback={<PageFallback />}>
             <Outlet />
           </React.Suspense>
@@ -344,31 +353,35 @@ export function Layout() {
           borderColor: "hsl(var(--border, 240 5.9% 90%))",
         }}
       >
-        {systemRole === "ADMIN" ? <AdminMobileNavigation /> : filteredMobileTabs
-          .slice(0, 5)
-          .map(({ to, icon: Icon, labelKey, workspaceScoped }) => {
-            const resolvedTo =
-              workspaceScoped && activeWorkspace
-                ? `/workspaces/${activeWorkspace.id}${to}`
-                : to;
-            return (
-              <NavLink
-                key={to}
-                to={resolvedTo}
-                end={to === "/"}
-                className={({ isActive }) =>
-                  `text-3xs flex w-12 cursor-pointer flex-col items-center justify-center gap-1 py-1.5 transition-colors ${
-                    isActive
-                      ? "text-brand-orange font-semibold"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`
-                }
-              >
-                <Icon className="size-5 shrink-0" />
-                <span className="max-w-[55px] truncate">{t(labelKey)}</span>
-              </NavLink>
-            );
-          })}
+        {systemRole === "ADMIN" ? (
+          <AdminMobileNavigation />
+        ) : (
+          filteredMobileTabs
+            .slice(0, 5)
+            .map(({ to, icon: Icon, labelKey, workspaceScoped }) => {
+              const resolvedTo =
+                workspaceScoped && activeWorkspace
+                  ? `/workspaces/${activeWorkspace.id}${to}`
+                  : to;
+              return (
+                <NavLink
+                  key={to}
+                  to={resolvedTo}
+                  end={to === "/"}
+                  className={({ isActive }) =>
+                    `text-3xs flex w-12 cursor-pointer flex-col items-center justify-center gap-1 py-1.5 transition-colors ${
+                      isActive
+                        ? "text-brand-orange font-semibold"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`
+                  }
+                >
+                  <Icon className="size-5 shrink-0" />
+                  <span className="max-w-[55px] truncate">{t(labelKey)}</span>
+                </NavLink>
+              );
+            })
+        )}
       </div>
     </div>
   );
