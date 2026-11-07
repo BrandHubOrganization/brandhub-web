@@ -80,6 +80,8 @@ export function InternalMembersSection({
       <MembersTable
         members={internalMembers}
         canManage={canManage}
+        currentRole={currentMember?.role}
+        currentUserId={currentMember?.userId}
         onRemove={setRemoveTarget}
         onUpdateRole={handleUpdateRole}
         updatingRole={updatingRole}

@@ -13,14 +13,27 @@
   },
   "activityFeed": {
     "title": "Recent Activity",
+    "unifiedTitle": "Unified Work & Activity Timeline",
+    "unifiedSubtitle": "Track task workflows, content approvals, and social publishing",
+    "eventsCount": "events",
+    "filterAll": "All",
+    "filterTask": "Tasks",
+    "filterReview": "Approvals",
+    "filterPublish": "Publishing",
+    "viewMore": "Load more activities",
+    "allLoaded": "All activity events loaded",
     "latestBadge": "10 latest events",
     "loadError": "Failed to load activity log",
     "retry": "Retry",
-    "empty": "No recent activity recorded yet.",
+    "empty": "No activities recorded in this category yet.",
     "unknownActor": "Member",
     "actions": {
       "POST_PUBLISHED": "published a post",
-      "POST_FAILED": "failed to publish a post"
+      "POST_FAILED": "failed to publish a post",
+      "TASK_CREATED": "created a task",
+      "TASK_SUBMITTED": "submitted task for review",
+      "TASK_APPROVED": "completed task",
+      "TASK_STATUS_CHANGED": "updated task status"
     }
   },
   "quickTasks": {
@@ -41,7 +54,49 @@
     "refresh": "Refresh",
     "changePassword": "Change password",
     "logout": "Log out",
-    "createContent": "Create New Content"
+    "createContent": "Create New Content",
+    "exportReport": "Export Report"
+  },
+  "reportExport": {
+    "title": "Export Agency Report",
+    "description": "Preview overview metrics, print PDF report or download agency statistical data sheet.",
+    "selectAgency": "Company for report",
+    "selectAgencyPlaceholder": "Select company",
+    "dateRange": "Time range",
+    "presets": {
+      "last7Days": "Last 7 days",
+      "last30Days": "Last 30 days",
+      "thisMonth": "This month",
+      "allTime": "All time"
+    },
+    "from": "From date",
+    "to": "To date",
+    "previewTitle": "Overview Report Preview",
+    "memberCount": "Total Members",
+    "workspaceCount": "Total Workspaces",
+    "contentCount": "Total Posts",
+    "completionRate": "Completion Rate",
+    "contentDistribution": "Content by Status",
+    "membersByRole": "Members by Role",
+    "workspacesByIndustry": "Workspaces by Industry",
+    "noData": "No statistical data available for this time range.",
+    "noAgencies": "No company found to export report.",
+    "printPdf": "Print / Export PDF",
+    "exportCsv": "Download CSV",
+    "viewFullReports": "Advanced Reports Page",
+    "systemGenerated": "Report automatically generated from BrandHub Management System.",
+    "generatedAt": "Generated at: {{time}}",
+    "loadError": "Failed to load agency report data.",
+    "retry": "Retry",
+    "statusLabels": {
+      "PUBLISHED": "Published",
+      "FINISHED": "Finished",
+      "APPROVED": "Approved",
+      "IN_REVIEW": "In Review",
+      "DRAFT": "Draft",
+      "REJECTED": "Rejected",
+      "FAILED": "Failed"
+    }
   },
   "admin": {
     "title": "Admin Panel",
@@ -234,5 +289,53 @@
     "guideBadge": "Technical Docs & Guide",
     "backToFaq": "FAQ Center",
     "backToDashboard": "Back to Dashboard"
+  },
+  "scopeFilter": {
+    "title": "Scope of Activity",
+    "summarizing": "Summarizing: {{agencyCount}} Agencies · {{workspaceCount}} Workspaces",
+    "resetAll": "Reset to All",
+    "agencyLabel": "Agency:",
+    "allAgencies": "All Agencies",
+    "workspaceLabel": "Workspace:",
+    "allWorkspaces": "All Workspaces"
+  },
+  "smartPriority": {
+    "title": "Smart Recommendations: What to do next?",
+    "subtitle": "Intelligent scoring based on deadlines, workflow bottlenecks, and your direct role",
+    "badgeSps": "SPS Algorithm • Top 3",
+    "emptyTitle": "Great! No urgent tasks",
+    "emptyDesc": "All tasks are on track or there is nothing requiring your immediate attention.",
+    "actions": {
+      "edit": "Open Editor",
+      "review": "Review & Approve",
+      "view": "View task"
+    },
+    "urgency": {
+      "overdue": "Overdue {{days}}d",
+      "dueToday": "Due Today",
+      "inReview": "In Review",
+      "urgent": "Urgent"
+    }
+  },
+  "myTasks": {
+    "title": "My Tasks",
+    "subtitle": "Track deadlines and process prioritized work items by timeframe",
+    "onlyMine": "Only my tasks",
+    "statusInReview": "In Review",
+    "openEditor": "Open Editor",
+    "viewTask": "View Task",
+    "noDueDate": "No due date",
+    "overdueDays": "Overdue {{days}}d",
+    "todayDue": "Today {{time}}",
+    "emptyTitle": "No tasks found",
+    "emptyOverdue": "Awesome! No tasks are overdue.",
+    "emptyGeneric": "There are no tasks in this category currently.",
+    "tabs": {
+      "overdue": "Overdue",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "inReview": "In Review",
+      "all": "All"
+    }
   }
 }

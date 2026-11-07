@@ -234,22 +234,6 @@ export const NAV_SECTIONS: NavSection[] = [
         hideInWorkspace: true,
       },
       {
-        to: "/agency/{agencyId}/roles",
-        icon: Shield,
-        labelKey: "nav.agencySub.roles",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/agency/{agencyId}/stats",
-        icon: BarChart3,
-        labelKey: "nav.agencySub.stats",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
         to: "/agency/{agencyId}/mail-templates",
         icon: Mail,
         labelKey: "nav.agencySub.mailTemplates",
@@ -399,24 +383,12 @@ export const NAV_SECTIONS: NavSection[] = [
         labelKey: "aiStudio.video.title",
         hideInWorkspace: true,
       },
-      {
-        to: "/reports",
-        icon: FileBarChart,
-        labelKey: "nav.reports",
-        hideInWorkspace: true,
-      },
     ],
   },
   {
     key: "invitations",
     titleKey: "nav.sections.invitations",
     items: [
-      {
-        to: "/invitations",
-        icon: Mail,
-        labelKey: "nav.invitations",
-        hideInWorkspace: true,
-      },
       {
         to: "/agency/invitations",
         icon: Inbox,

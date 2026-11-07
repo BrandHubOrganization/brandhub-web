@@ -143,7 +143,7 @@ export function Sidebar({
   const isPackageHardGated =
     (role === "CLIENT" || role === "MANAGER") &&
     !!activeWorkspace &&
-    activeWorkspace.packageNegotiationStatus !== "APPROVED";
+    !activeWorkspace.workspaceMediaPackageId;
 
   if (systemRole === "ADMIN") {
     return (
@@ -180,7 +180,9 @@ export function Sidebar({
             !item.agencyStaffOnly ||
             currentAgency?.myRole === "OWNER" ||
             // A Workspace MANAGER of this Agency also uses its mail templates (Addendum B5).
-            allWorkspaces.some((w) => w.agencyId === currentAgencyId && w.myRole === "MANAGER"),
+            allWorkspaces.some(
+              (w) => w.agencyId === currentAgencyId && w.myRole === "MANAGER",
+            ),
         )
         .filter((item) => !item.hideInWorkspace || !activeWorkspace)
         .filter((item) => !item.noAgencyOnly || !currentAgencyId)
@@ -245,9 +247,7 @@ export function Sidebar({
         {!collapsed && (
           <span className="font-sans text-sm font-bold tracking-tight text-white">
             Brand
-            <span style={{ color: "hsl(var(--brand-orange))" }}>
-              Hub
-            </span>
+            <span style={{ color: "hsl(var(--brand-orange))" }}>Hub</span>
           </span>
         )}
       </div>
@@ -376,8 +376,7 @@ export function Sidebar({
                       style={({ isActive }) =>
                         isActive
                           ? {
-                              background:
-                                "hsl(var(--primary))",
+                              background: "hsl(var(--primary))",
                               color: "#ffffff",
                             }
                           : {

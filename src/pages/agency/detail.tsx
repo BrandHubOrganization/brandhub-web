@@ -4,15 +4,12 @@ import { useTranslation } from "react-i18next";
 import {
   Pencil,
   Plus,
-  Trash2,
   TriangleAlert,
   User,
-  Mail,
+  UserPlus,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Modal } from "@/components/ui/modal";
 import { agencyService } from "@/services/agencyService";
 import { workspaceService } from "@/services/workspaceService";
 import { useAuthStore } from "@/store/authStore";
@@ -31,9 +28,11 @@ import {
   type AgencyDetailFieldErrors,
 } from "./components/AgencyDetailEditForm";
 import { AgencyDetailInfo } from "./components/AgencyDetailInfo";
+import { AgencyDetailLivePreview } from "./components/AgencyDetailLivePreview";
 
 import {
   CURRENT_YEAR,
+  normalizeUrl,
   isValidUrl,
   isValidPhone,
   isValidFoundedYear,
@@ -55,9 +54,6 @@ export function AgencyDetailPage() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   const [restoring, setRestoring] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [confirmName, setConfirmName] = useState("");
-  const [deleting, setDeleting] = useState(false);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
   // Cropper & Recent Modals state
@@ -111,22 +107,39 @@ export function AgencyDetailPage() {
           message = t("agency.detail.errors.invalidPhone");
         break;
       case "facebookUrl":
-        if (value.trim() && !isValidUrl(value))
-          message = t("agency.detail.errors.invalidFacebookUrl");
+        if (value.trim() && !isValidUrl(normalizeUrl(value)))
+          message = t(
+            "agency.detail.errors.invalidFacebookUrl",
+            "Đường dẫn Facebook không hợp lệ",
+          );
         break;
       case "linkedinUrl":
-        if (value.trim() && !isValidUrl(value))
-          message = t("agency.detail.errors.invalidLinkedinUrl");
+        if (value.trim() && !isValidUrl(normalizeUrl(value)))
+          message = t(
+            "agency.detail.errors.invalidLinkedinUrl",
+            "Đường dẫn LinkedIn không hợp lệ",
+          );
         break;
       case "instagramUrl":
-        if (value.trim() && !isValidUrl(value))
-          message = t("agency.detail.errors.invalidInstagramUrl");
+        if (value.trim() && !isValidUrl(normalizeUrl(value)))
+          message = t(
+            "agency.detail.errors.invalidInstagramUrl",
+            "Đường dẫn Instagram không hợp lệ",
+          );
         break;
       case "foundedYear":
-        if (value.trim() && !isValidFoundedYear(value)) {
-          message = t("agency.detail.errors.invalidYear", {
-            max: CURRENT_YEAR,
-          });
+        if (value.trim()) {
+          if (!/^\d+$/.test(value.trim())) {
+            message = t(
+              "agency.detail.errors.invalidYearDigits",
+              "Năm thành lập phải là số",
+            );
+          } else if (!isValidFoundedYear(value)) {
+            message = t("agency.detail.errors.invalidYear", {
+              max: CURRENT_YEAR,
+              defaultValue: `Năm thành lập phải từ 1800 đến ${CURRENT_YEAR}`,
+            });
+          }
         }
         break;
     }
@@ -325,27 +338,6 @@ export function AgencyDetailPage() {
     }
   };
 
-  const handleDeleteAgency = async () => {
-    if (!id || !agency) return;
-    setDeleting(true);
-    try {
-      await agencyService.remove(id);
-      toast.success(t("agency.detail.danger.deleteSuccess"));
-      if (useAgencyStore.getState().currentAgencyId === id) {
-        useAgencyStore.getState().setCurrentAgencyId(null);
-      }
-      navigate("/agency");
-    } catch (err: unknown) {
-      toast.error(
-        extractErrorMessage(err, t("agency.detail.danger.deleteError")),
-      );
-    } finally {
-      setDeleting(false);
-      setDeleteOpen(false);
-      setConfirmName("");
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -370,6 +362,8 @@ export function AgencyDetailPage() {
   }
 
   const isDeleted = agency.status === "SOFT_DELETED";
+  const effectiveBannerUrl = agency.bannerUrl || null;
+  const effectiveLogoUrl = logoUrl.trim() || agency.logoUrl || null;
 
   return (
     <div className="w-full space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6">
@@ -403,160 +397,184 @@ export function AgencyDetailPage() {
       {/* Main Agency Content */}
       <div className="space-y-6">
         <section id="agency-detail" className="scroll-mt-6 space-y-6">
-          <ProfileBannerHeader
-            bannerUrl={agency.bannerUrl || null}
-            bannerEmptyLabel={t("agency.detail.bannerEmptyLabel")}
-            uploadBannerLabel={t("agency.detail.uploadBannerButton")}
-            uploadingBanner={uploadingBanner}
-            bannerInputRef={bannerInputRef}
-            onBannerFileChange={handleBannerFileChange}
-            canEditBanner={Boolean(isOwner && isEditing)}
-            logo={
-              isEditing ? (
-                logoUrl ? (
+          {isEditing ? (
+            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+              <div className="space-y-6 lg:col-span-7">
+                <ProfileBannerHeader
+                  bannerUrl={effectiveBannerUrl}
+                  bannerEmptyLabel={t("agency.detail.bannerEmptyLabel")}
+                  uploadBannerLabel={t("agency.detail.uploadBannerButton")}
+                  uploadingBanner={uploadingBanner}
+                  bannerInputRef={bannerInputRef}
+                  onBannerFileChange={handleBannerFileChange}
+                  canEditBanner={isOwner}
+                  logo={
+                    effectiveLogoUrl ? (
+                      <img
+                        src={effectiveLogoUrl}
+                        alt={name || agency.name}
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      (() => {
+                        const CurrentLogoIcon = getLogoIcon(logoIcon);
+                        return (
+                          <div className="bg-brand-orange flex size-full items-center justify-center text-white transition-colors">
+                            <CurrentLogoIcon className="size-10 sm:size-12 transition-transform text-white" />
+                          </div>
+                        );
+                      })()
+                    )
+                  }
+                  canEditLogo={isOwner}
+                  uploadingLogo={uploadingLogo}
+                  logoInputRef={logoInputRef}
+                  onLogoFileChange={handleLogoFileChange}
+                  uploadLogoTitle={t("agency.detail.uploadLogoButton")}
+                  title={name.trim() || agency.name}
+                  subtitle={tagline.trim() || agency.tagline}
+                  hint={!isOwner ? t("agency.detail.ownerOnlyHint") : null}
+                  actions={
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleCancelEdit}
+                        className="cursor-pointer"
+                      >
+                        {t("agency.detail.cancelButton")}
+                      </Button>
+                      <Button
+                        size="sm"
+                        loading={saving}
+                        disabled={hasErrors || !name.trim()}
+                        onClick={handleSave}
+                        className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white"
+                      >
+                        {t("agency.detail.saveButton")}
+                      </Button>
+                    </div>
+                  }
+                >
+                  <AgencyDetailEditForm
+                    name={name}
+                    setName={setName}
+                    validateField={validateField}
+                    clearFieldError={clearFieldError}
+                    errors={errors}
+                    logoUrl={logoUrl}
+                    logoIcon={logoIcon}
+                    setLogoIcon={setLogoIcon}
+                    logoInputRef={logoInputRef}
+                    handleLogoFileChange={handleLogoFileChange}
+                    uploadingLogo={uploadingLogo}
+                    onOpenLogoCropper={() => {
+                      if (logoUrl) {
+                        setLogoCropperSrc(logoUrl);
+                        setLogoCropperOpen(true);
+                      }
+                    }}
+                    onOpenLogoRecent={() => setLogoRecentModalOpen(true)}
+                    description={description}
+                    setDescription={setDescription}
+                    tagline={tagline}
+                    setTagline={setTagline}
+                    category={category}
+                    setCategory={setCategory}
+                    companySize={companySize}
+                    setCompanySize={setCompanySize}
+                    website={website}
+                    setWebsite={setWebsite}
+                    phone={phone}
+                    setPhone={setPhone}
+                    location={location}
+                    setLocation={setLocation}
+                    foundedYear={foundedYear}
+                    setFoundedYear={setFoundedYear}
+                    facebookUrl={facebookUrl}
+                    setFacebookUrl={setFacebookUrl}
+                    linkedinUrl={linkedinUrl}
+                    setLinkedinUrl={setLinkedinUrl}
+                    instagramUrl={instagramUrl}
+                    setInstagramUrl={setInstagramUrl}
+                    handleCancelEdit={handleCancelEdit}
+                    handleSave={handleSave}
+                    saving={saving}
+                    hasErrors={hasErrors}
+                  />
+                </ProfileBannerHeader>
+              </div>
+
+              <AgencyDetailLivePreview
+                effectiveBannerUrl={effectiveBannerUrl}
+                effectiveLogoUrl={effectiveLogoUrl}
+                name={name}
+                tagline={tagline}
+                category={category}
+                companySize={companySize}
+                foundedYear={foundedYear}
+                logoIcon={logoIcon}
+                description={description}
+                website={website}
+                phone={phone}
+                location={location}
+                facebookUrl={facebookUrl}
+                linkedinUrl={linkedinUrl}
+                instagramUrl={instagramUrl}
+              />
+            </div>
+          ) : (
+            <ProfileBannerHeader
+              bannerUrl={agency.bannerUrl || null}
+              bannerEmptyLabel={t("agency.detail.bannerEmptyLabel")}
+              uploadBannerLabel={t("agency.detail.uploadBannerButton")}
+              uploadingBanner={uploadingBanner}
+              bannerInputRef={bannerInputRef}
+              onBannerFileChange={handleBannerFileChange}
+              canEditBanner={false}
+              logo={
+                agency.logoUrl ? (
                   <img
-                    src={logoUrl}
-                    alt={name}
+                    src={agency.logoUrl}
+                    alt={agency.name}
                     className="size-full object-cover"
                   />
                 ) : (
                   (() => {
-                    const CurrentLogoIcon = getLogoIcon(logoIcon);
+                    const CurrentLogoIcon = getLogoIcon(agency.logoIcon);
                     return (
-                      <div
-                        className="flex size-full items-center justify-center transition-colors text-white"
-                        style={{
-                          backgroundColor: brandColor || "#f05a28",
-                          color: "#ffffff",
-                        }}
-                      >
-                        <CurrentLogoIcon
-                          className="size-10 sm:size-12 transition-transform text-white"
-                        />
+                      <div className="bg-brand-orange flex size-full items-center justify-center text-white transition-colors">
+                        <CurrentLogoIcon className="size-10 sm:size-12 transition-transform text-white" />
                       </div>
                     );
                   })()
                 )
-              ) : agency.logoUrl ? (
-                <img
-                  src={agency.logoUrl}
-                  alt={agency.name}
-                  className="size-full object-cover"
-                />
-              ) : (
-                (() => {
-                  const CurrentLogoIcon = getLogoIcon(agency.logoIcon);
-                  return (
-                    <div
-                      className="flex size-full items-center justify-center transition-colors text-white"
-                      style={{
-                        backgroundColor: agency.brandColor || "#f05a28",
-                        color: "#ffffff",
-                      }}
-                    >
-                      <CurrentLogoIcon
-                        className="size-10 sm:size-12 transition-transform text-white"
-                      />
-                    </div>
-                  );
-                })()
-              )
-            }
-            canEditLogo={Boolean(isOwner && isEditing)}
-            uploadingLogo={uploadingLogo}
-            logoInputRef={logoInputRef}
-            onLogoFileChange={handleLogoFileChange}
-            uploadLogoTitle={t("agency.detail.uploadLogoButton")}
-            title={isEditing ? name || agency.name : agency.name}
-            subtitle={agency.tagline}
-            hint={!isOwner ? t("agency.detail.ownerOnlyHint") : null}
-            actions={
-              isOwner && !isEditing ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-fit cursor-pointer gap-1.5"
-                  onClick={() => setIsEditing(true)}
-                >
-                  <Pencil className="size-3.5" />
-                  {t("agency.detail.editButton")}
-                </Button>
-              ) : isOwner && isEditing ? (
-                <div className="flex gap-2">
+              }
+              canEditLogo={false}
+              uploadingLogo={uploadingLogo}
+              logoInputRef={logoInputRef}
+              onLogoFileChange={handleLogoFileChange}
+              uploadLogoTitle={t("agency.detail.uploadLogoButton")}
+              title={agency.name}
+              subtitle={agency.tagline}
+              hint={!isOwner ? t("agency.detail.ownerOnlyHint") : null}
+              actions={
+                isOwner ? (
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={handleCancelEdit}
-                    className="cursor-pointer"
+                    className="w-fit cursor-pointer gap-1.5"
+                    onClick={() => setIsEditing(true)}
                   >
-                    {t("agency.detail.cancelButton")}
+                    <Pencil className="size-3.5" />
+                    {t("agency.detail.editButton")}
                   </Button>
-                  <Button
-                    size="sm"
-                    loading={saving}
-                    disabled={hasErrors || !name.trim()}
-                    onClick={handleSave}
-                    className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer text-white"
-                  >
-                    {t("agency.detail.saveButton")}
-                  </Button>
-                </div>
-              ) : null
-            }
-          >
-            {isEditing ? (
-              <AgencyDetailEditForm
-                name={name}
-                setName={setName}
-                validateField={validateField}
-                clearFieldError={clearFieldError}
-                errors={errors}
-                logoUrl={logoUrl}
-                brandColor={brandColor}
-                setBrandColor={setBrandColor}
-                logoIcon={logoIcon}
-                setLogoIcon={setLogoIcon}
-                logoInputRef={logoInputRef}
-                handleLogoFileChange={handleLogoFileChange}
-                uploadingLogo={uploadingLogo}
-                onOpenLogoCropper={() => {
-                  if (logoUrl) {
-                    setLogoCropperSrc(logoUrl);
-                    setLogoCropperOpen(true);
-                  }
-                }}
-                onOpenLogoRecent={() => setLogoRecentModalOpen(true)}
-                description={description}
-                setDescription={setDescription}
-                tagline={tagline}
-                setTagline={setTagline}
-                category={category}
-                setCategory={setCategory}
-                companySize={companySize}
-                setCompanySize={setCompanySize}
-                website={website}
-                setWebsite={setWebsite}
-                phone={phone}
-                setPhone={setPhone}
-                location={location}
-                setLocation={setLocation}
-                foundedYear={foundedYear}
-                setFoundedYear={setFoundedYear}
-                facebookUrl={facebookUrl}
-                setFacebookUrl={setFacebookUrl}
-                linkedinUrl={linkedinUrl}
-                setLinkedinUrl={setLinkedinUrl}
-                instagramUrl={instagramUrl}
-                setInstagramUrl={setInstagramUrl}
-                handleCancelEdit={handleCancelEdit}
-                handleSave={handleSave}
-                saving={saving}
-                hasErrors={hasErrors}
-              />
-            ) : (
+                ) : null
+              }
+            >
               <AgencyDetailInfo agency={agency} />
-            )}
-          </ProfileBannerHeader>
+            </ProfileBannerHeader>
+          )}
 
           {isOwner && !isEditing && (
             <div className="bg-brand-orange-soft flex flex-col gap-3 rounded-xl border border-dashed p-5">
@@ -608,55 +626,27 @@ export function AgencyDetailPage() {
                 </p>
               </div>
               {id && <AgencyOrgChart agencyId={id} />}
-              <Button
-                variant="outline"
-                size="sm"
-                className="cursor-pointer gap-1.5"
-                onClick={() => navigate(`/agency/${id}/members`)}
-              >
-                <User className="size-3.5" />
-                {t("agency.detail.viewAllMembers")}
-              </Button>
-              {isOwner && (
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   className="cursor-pointer gap-1.5"
-                  onClick={() => navigate(`/agency/${id}/mail-templates`)}
+                  onClick={() => navigate(`/agency/${id}/members`)}
                 >
-                  <Mail className="size-3.5" />
-                  {t("agency.detail.mailTemplates")}
+                  <User className="size-3.5" />
+                  {t("agency.detail.viewAllMembers")}
                 </Button>
-              )}
-            </section>
-          </>
-        )}
-
-        {/* Danger Zone: Only Agency Owner can delete when not deleted and not editing */}
-        {isOwner && !isDeleted && !isEditing && (
-          <>
-            <div className="border-border border-t" />
-
-            <section className="space-y-4">
-              <div className="border-destructive/30 bg-destructive/5 rounded-xl border p-6">
-                <div className="flex items-center gap-2">
-                  <TriangleAlert className="text-destructive size-5" />
-                  <h3 className="text-destructive text-base font-semibold">
-                    {t("agency.detail.danger.title")}
-                  </h3>
-                </div>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                  {t("agency.detail.danger.deleteHint")}
-                </p>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="mt-4 cursor-pointer gap-1.5"
-                  onClick={() => setDeleteOpen(true)}
-                >
-                  <Trash2 className="size-3.5" />
-                  {t("agency.detail.danger.deleteButton")}
-                </Button>
+                {isOwner && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="cursor-pointer gap-1.5"
+                    onClick={() => navigate(`/agency/${id}/members`)}
+                  >
+                    <UserPlus className="size-3.5" />
+                    {t("agency.detail.inviteMembers", "Mời thêm thành viên")}
+                  </Button>
+                )}
               </div>
             </section>
           </>
@@ -693,64 +683,6 @@ export function AgencyDetailPage() {
         category="banner"
         onSelect={handleSelectRecentBanner}
       />
-
-      {/* Delete Agency Modal */}
-      <Modal
-        isOpen={deleteOpen}
-        onClose={() => {
-          if (!deleting) {
-            setDeleteOpen(false);
-            setConfirmName("");
-          }
-        }}
-        title={t("agency.detail.danger.confirmTitle")}
-        footer={
-          <div className="flex w-full justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={deleting}
-              onClick={() => {
-                setDeleteOpen(false);
-                setConfirmName("");
-              }}
-            >
-              {t("agency.detail.danger.cancel")}
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              loading={deleting}
-              disabled={
-                confirmName.trim() !== (agency?.name ?? "").trim() || deleting
-              }
-              onClick={handleDeleteAgency}
-              className="gap-1.5"
-            >
-              <Trash2 className="size-3.5" />
-              {t("agency.detail.danger.confirmDelete")}
-            </Button>
-          </div>
-        }
-      >
-        <div className="space-y-4">
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            {t("agency.detail.danger.confirmBody")}
-          </p>
-          <div className="space-y-2">
-            <label className="text-foreground text-xs font-medium">
-              {t("agency.detail.danger.typeToConfirm", { name: agency?.name })}
-            </label>
-            <Input
-              value={confirmName}
-              onChange={(e) => setConfirmName(e.target.value)}
-              placeholder={agency?.name}
-              disabled={deleting}
-              autoFocus
-            />
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }

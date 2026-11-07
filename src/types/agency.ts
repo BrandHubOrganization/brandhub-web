@@ -2,25 +2,6 @@ import type { MemberRole } from "@/types/workspace";
 
 export type AgencyMemberRole = "OWNER" | "ADMIN" | "PROJECT_MANAGER" | "CREATOR" | "VIEWER" | "MEMBER" | string;
 
-export type PermissionScopeGroup = "AGENCY" | "WORKSPACE" | "CONTENT" | "ANALYTICS";
-
-export interface AgencyPermissionItem {
-  key: string;
-  name: string;
-  description: string;
-  group: PermissionScopeGroup;
-}
-
-export interface AgencyRoleDefinition {
-  id: string;
-  key: string;
-  name: string;
-  description: string;
-  badgeColor: string;
-  isSystem: boolean; // role hệ thống không cho xóa
-  permissions: string[]; // danh sách permission keys
-  memberCount?: number;
-}
 
 export type AgencyStatus = "ACTIVE" | "SOFT_DELETED" | "INACTIVE";
 
@@ -121,6 +102,19 @@ export interface AgencyMemberProfile {
   avatarUrl: string | null;
   phone: string | null;
   professionalTitle: string | null;
+  bio?: string | null;
+  skills?: string[];
+  workingLanguage?: string | null;
+  location?: string | null;
+  yearsOfExperience?: number | null;
+  linkedinUrl?: string | null;
+  facebookUrl?: string | null;
+  instagramUrl?: string | null;
+  tiktokUrl?: string | null;
+  website?: string | null;
+  portfolioUrls?: string[];
+  bannerUrl?: string | null;
+  timezone?: string | null;
   workspaces: AgencyMemberWorkspaceMembership[];
 }
 

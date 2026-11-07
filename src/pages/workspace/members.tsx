@@ -31,6 +31,8 @@ export function WorkspaceMembersPage() {
           workspaceId={membersState.workspaceId}
           members={internalMembers}
           onChanged={membersState.loadMembers}
+          currentRole={membersState.currentMember?.role}
+          currentUserId={membersState.currentMember?.userId}
         />
       </div>
     </PageWrapper>

@@ -176,10 +176,6 @@ const WorkspaceTemplatesPage = lazyNamed(
   () => import("@/pages/workspace/templates"),
   "WorkspaceTemplatesPage",
 );
-const InvitationsPage = lazyNamed(
-  () => import("@/pages/workspace/invitations"),
-  "InvitationsPage",
-);
 const WorkspaceClientProfilePage = lazyNamed(
   () => import("@/pages/workspace/client-profile"),
   "WorkspaceClientProfilePage",
@@ -223,10 +219,6 @@ const AgencyMailTemplatesPage = lazyNamed(
 const AgencyMailSuppressionsPage = lazyNamed(
   () => import("@/pages/agency/mailSuppressions"),
   "AgencyMailSuppressionsPage",
-);
-const AgencyRolesPage = lazyNamed(
-  () => import("@/pages/agency/roles"),
-  "AgencyRolesPage",
 );
 const AgencyInvitationsPage = lazyNamed(
   () => import("@/pages/agency/invitations"),
@@ -525,7 +517,6 @@ export function AppRoutes() {
               path="/workspaces/templates"
               element={<WorkspaceTemplatesPage />}
             />
-            <Route path="/invitations" element={<InvitationsPage />} />
             <Route
               path="/invitations/accept"
               element={<AcceptInvitationPage />}
@@ -550,7 +541,6 @@ export function AppRoutes() {
               element={<ClientInvitationsPage />}
             />
             <Route path="/agency/:id/members" element={<AgencyMembersPage />} />
-            <Route path="/agency/:id/roles" element={<AgencyRolesPage />} />
             <Route
               path="/agency/:id/mail-templates"
               element={<AgencyMailTemplatesPage />}
