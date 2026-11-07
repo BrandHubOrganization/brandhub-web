@@ -81,7 +81,11 @@
       "nameRequired": "Please enter a company name",
       "invalidUrl": "Invalid URL — must start with http:// or https://",
       "invalidPhone": "Invalid phone number",
-      "invalidYear": "Founded year cannot exceed {{max}}"
+      "invalidFacebookUrl": "Invalid Facebook URL",
+      "invalidLinkedinUrl": "Invalid LinkedIn URL",
+      "invalidInstagramUrl": "Invalid Instagram URL",
+      "invalidYearDigits": "Founded year must be numeric",
+      "invalidYear": "Founded year must be between 1800 and {{max}}"
     },
     "danger": {
       "title": "Danger Zone",
@@ -99,7 +103,8 @@
       "restoreSuccess": "Company restored",
       "restoreError": "Failed to restore company"
     },
-    "mailTemplates": "Mail templates"
+    "mailTemplates": "Mail templates",
+    "inviteMembers": "Invite members"
   },
   "create": {
     "title": "Create Agency",
