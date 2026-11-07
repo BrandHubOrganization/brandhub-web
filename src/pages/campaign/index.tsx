@@ -1,3 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
+import { packagePlanningService } from "@/pages/media-package/services/packagePlanningService";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
@@ -54,6 +56,17 @@ export default function CampaignPanel({
   const onTasksAvailable = useCallback((id: string, available: boolean) => {
     setTaskCampaignId(available ? id : null);
   }, []);
+  const preparation = useQuery({
+    queryKey: ["package-preparation", selection.workspaceId],
+    queryFn: () => packagePlanningService.status(selection.workspaceId),
+    refetchInterval: (query) =>
+      ["PENDING", "PROCESSING", "DEPLOYING"].includes(
+        query.state.data?.status ?? "",
+      )
+        ? 5000
+        : false,
+  });
+  const planEditable = preparation.data?.canEditPackage === true;
   const terms = selection.finalTerms;
   const source = terms.offeringDetails as
     { deliverables?: PackageDeliverable[] } | undefined;
@@ -67,22 +80,26 @@ export default function CampaignPanel({
     async function load() {
       try {
         const result = await campaignService.list(selection.workspaceId);
-        if (result.data.data.length > 1) throw new Error("Duplicate campaigns for package");
+        if (result.data.data.length > 1)
+          throw new Error("Duplicate campaigns for package");
         const current = result.data.data[0] ?? null;
         if (active) setCampaign(current);
-        if (
-          current?.packageDriven &&
-          current.status === "DRAFT"
-        ) {
+        if (current?.packageDriven && current.status === "DRAFT") {
           const ready = await campaignService
             .tasks(selection.workspaceId, current.id)
             .then(
               (response) => {
-                const planned = new Set(current.workItems.map((item) => item.id));
-                return response.data.data.length === planned.size &&
-                  response.data.data.every((task) =>
-                    task.campaignWorkItemId !== null && planned.has(task.campaignWorkItemId),
-                  );
+                const planned = new Set(
+                  current.workItems.map((item) => item.id),
+                );
+                return (
+                  response.data.data.length === planned.size &&
+                  response.data.data.every(
+                    (task) =>
+                      task.campaignWorkItemId !== null &&
+                      planned.has(task.campaignWorkItemId),
+                  )
+                );
               },
               () => false,
             );
@@ -100,12 +117,16 @@ export default function CampaignPanel({
     return () => {
       active = false;
     };
-  }, [selection.workspaceId, reload]);
+  }, [selection.workspaceId, reload, preparation.data?.status]);
   async function save(plan: CampaignPlan) {
     if (!campaign) return;
     setSaving(true);
     try {
-      const result = await campaignService.update(selection.workspaceId, campaign, plan);
+      const result = await campaignService.update(
+        selection.workspaceId,
+        campaign,
+        plan,
+      );
       setCampaign(result.data.data);
       setEditing(false);
       toast.success(t("campaign.saved"));
@@ -133,8 +154,9 @@ export default function CampaignPanel({
       setReload((current) => current + 1);
     }
   }, []);
-  const stage = campaign?.status ?? "DRAFT";
-  const stages = ["DRAFT", "APPROVED", "IN_PROGRESS", "COMPLETED"] as const;
+  const stage =
+    campaign?.status === "APPROVED" ? "DRAFT" : (campaign?.status ?? "DRAFT");
+  const stages = ["DRAFT", "IN_PROGRESS", "COMPLETED"] as const;
   const currentStageIndex = stages.indexOf(stage);
 
   const hasTasks = Boolean(
@@ -143,12 +165,7 @@ export default function CampaignPanel({
       (canManage && campaign.packageDriven === true && !draftTasksMissing)),
   );
 
-  const isAwaitingReview = Boolean(
-    campaign &&
-    (campaign.status === "DRAFT" ||
-      campaign.approvedByAgencyVersion !== campaign.contentVersion ||
-      campaign.approvedByClientVersion !== campaign.contentVersion),
-  );
+  const isAwaitingReview = false;
 
   const defaultTab: CampaignTab = (() => {
     if (!campaign) return "plan";
@@ -227,10 +244,18 @@ export default function CampaignPanel({
             >
               {t("campaign.reload")}
             </Button>
-            {canManage && !legacy && !draftTasksMissing && !editing &&
+            {canManage &&
+              planEditable &&
+              !legacy &&
+              !draftTasksMissing &&
+              !editing &&
               campaign?.status === "DRAFT" && (
-                <Button variant="orange" size="sm" disabled={loading || saving}
-                  onClick={() => setEditing(true)}>
+                <Button
+                  variant="orange"
+                  size="sm"
+                  disabled={loading || saving}
+                  onClick={() => setEditing(true)}
+                >
                   {t("campaign.edit")}
                 </Button>
               )}
@@ -317,7 +342,10 @@ export default function CampaignPanel({
       {!loading && !error && (
         <>
           {draftTasksMissing && (
-            <p role="alert" className="border-destructive/30 bg-destructive/5 rounded-xl border p-4 text-sm">
+            <p
+              role="alert"
+              className="border-destructive/30 bg-destructive/5 rounded-xl border p-4 text-sm"
+            >
               {t("campaign.errors.CAMPAIGN_DEPLOYMENT_INCOMPLETE")}
             </p>
           )}
@@ -432,16 +460,19 @@ export default function CampaignPanel({
                       ))}
                     </ul>
                   </div>
-                  {canManage && !legacy && !draftTasksMissing && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setEditing(true)}
-                    >
-                      {t("campaign.editMissingFields")}
-                    </Button>
-                  )}
+                  {canManage &&
+                    planEditable &&
+                    !legacy &&
+                    !draftTasksMissing && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditing(true)}
+                      >
+                        {t("campaign.editMissingFields")}
+                      </Button>
+                    )}
                 </div>
               )}
               <TabsContent value="plan" className="focus-visible:outline-none">
@@ -457,11 +488,11 @@ export default function CampaignPanel({
                 className="focus-visible:outline-none"
               >
                 <CampaignDelivery
-                  onOpenReview={() => handleTabChange("review")}
                   key={campaign.id}
                   workspaceId={selection.workspaceId}
                   campaign={campaign}
                   canManage={canManage}
+                  canDeploy={preparation.data?.canDeploy === true}
                   onChanged={refreshCampaign}
                   canClose={isManager}
                   onTasksAvailable={onTasksAvailable}
@@ -476,7 +507,6 @@ export default function CampaignPanel({
                   workspaceId={selection.workspaceId}
                   campaign={campaign}
                   canManage={canManage}
-                  onApproved={setCampaign}
                 />
               </TabsContent>
             </Tabs>

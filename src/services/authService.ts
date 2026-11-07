@@ -93,6 +93,16 @@ export interface UserProfileResponse {
   createdAt?: string;
 }
 
+export interface UserSession {
+  id: string;
+  deviceType: "DESKTOP" | "MOBILE" | "TABLET" | "UNKNOWN";
+  os: string;
+  browser: string;
+  ipAddress: string;
+  lastActive: string;
+  current: boolean;
+}
+
 export interface VerifyOtpRequest {
   email: string;
   otpCode: string;
@@ -224,4 +234,10 @@ export const authService = {
   // (BR-14). Best-effort: caller should still clear local state even if
   // this fails (e.g. token already expired) — see Navbar.handleLogout.
   logout: () => api.post<ApiResponse<void>>("/api/v1/auth/logout"),
+
+  getSessions: () =>
+    api.get<ApiResponse<UserSession[]>>("/api/v1/auth/sessions"),
+
+  revokeOtherSessions: () =>
+    api.post<ApiResponse<void>>("/api/v1/auth/sessions/revoke-others"),
 };

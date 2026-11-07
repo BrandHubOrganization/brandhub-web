@@ -40,7 +40,7 @@
   "tabs": {
     "plan": "Kế hoạch & Hạng mục",
     "delivery": "Triển khai & Đầu việc",
-    "review": "Biên bản & Lịch sử"
+    "review": "Góp ý & Lịch sử"
   },
   "partners": {
     "title": "Đối tác chiến dịch",
@@ -77,7 +77,7 @@
       "OTHER": "Khác"
     }
   },
-  "packageRequired": "Cần chốt gói truyền thông trước khi lập Campaign.",
+  "packageRequired": "Workspace chưa có gói thực hiện",
   "description": "Mỗi không gian làm việc triển khai một chiến dịch từ gói đã chốt. Khách hàng góp ý, người quản lý chỉnh sửa và hai bên duyệt cùng phiên bản trước khi triển khai.",
   "name": "Tên chiến dịch",
   "strategy": "Chiến lược triển khai",
@@ -111,7 +111,7 @@
   "error": "Không thể tải hoặc lưu kế hoạch. Vui lòng kiểm tra và thử lại.",
   "editMissingFields": "Bổ sung thông tin",
   "review": {
-    "requirementsTitle": "Cần bổ sung trước khi duyệt",
+    "requirementsTitle": "Cần hoàn thiện trước khi triển khai",
     "missingDeadline": "Hạn hoàn thành của đầu việc “{{task}}”",
     "title": "Góp ý và duyệt kế hoạch",
     "agency": "Công ty truyền thông",
@@ -174,7 +174,10 @@
     "CAMPAIGN_PLAN_INCOMPLETE": "Hãy lưu chiến lược, ngày bắt đầu, ngày kết thúc và hạn của từng đầu việc trước khi duyệt.",
     "CAMPAIGN_COMPLETION_REASON_REQUIRED": "Còn đầu việc chưa hoàn thành; bắt buộc ghi lý do.",
     "CAMPAIGN_DEPLOYMENT_INCOMPLETE": "Chưa tạo đủ đầu việc; hãy kiểm tra tiến trình triển khai.",
-    "CAMPAIGN_NOT_APPROVED": "Hai bên cần duyệt cùng phiên bản Campaign trước khi triển khai."
+    "CAMPAIGN_NOT_APPROVED": "Hai bên cần duyệt cùng phiên bản Campaign trước khi triển khai.",
+    "PACKAGE_PREPARATION_PENDING": "Gói và công việc chưa sẵn sàng hoặc kế hoạch đã được cố định.",
+    "PACKAGE_IMPACT_BLOCKED": "Chưa thể giảm hoặc đổi loại hạng mục có công việc. Dữ liệu hiện tại được giữ nguyên.",
+    "PACKAGE_WORKFLOW_REPLACED": "Sử dụng luồng gói workspace do Manager quản lý."
   },
   "ui": {
     "stages": "Các giai đoạn Campaign",
@@ -209,7 +212,7 @@
     }
   },
   "ux": {
-    "packageHint": "Chọn gói truyền thông, thống nhất điều khoản và để hai bên duyệt gói. Sau đó quay lại đây để lập kế hoạch chiến dịch.",
+    "packageHint": "Manager tạo gói để chuẩn bị Campaign và công việc.",
     "openPackage": "Mở gói truyền thông",
     "nextStep": "Bước tiếp theo",
     "awaitingTasks": "Xem trạng thái triển khai bên dưới. Mở quản lý công việc sau khi xác nhận có công việc được tạo.",
@@ -217,14 +220,20 @@
     "plan": "Xem kế hoạch",
     "openTasks": "Quản lý công việc",
     "clientGuidance": {
-      "APPROVED": "Hai bên đã duyệt kế hoạch. Người quản lý sẽ triển khai để tạo công việc. Bạn có thể xem lại kế hoạch và theo dõi tiến độ tại phần triển khai.",
-      "IN_PROGRESS": "Chiến dịch đang được thực hiện. Xem tiến độ và các công việc; người quản lý phụ trách bổ sung yêu cầu và phân công."
+      "APPROVED": "Hoàn thiện kế hoạch và công việc trước khi triển khai. Client có thể xem và góp ý.",
+      "IN_PROGRESS": "Chiến dịch đang được thực hiện. Xem tiến độ và các công việc; người quản lý phụ trách bổ sung yêu cầu và phân công.",
+      "DRAFT": "Hoàn thiện kế hoạch và công việc trước khi triển khai. Client có thể xem và góp ý."
     },
     "guidance": {
-      "DRAFT": "Kiểm tra kế hoạch và các đầu việc, sau đó đến phần góp ý và duyệt. Hai bên cần duyệt cùng phiên bản trước khi triển khai.",
-      "APPROVED": "Kế hoạch đã được hai bên duyệt. Đến phần triển khai để người quản lý tạo công việc từ các đầu việc đã thống nhất.",
+      "DRAFT": "Hoàn thiện kế hoạch và công việc trước khi triển khai. Client có thể xem và góp ý.",
+      "APPROVED": "Hoàn thiện kế hoạch và công việc trước khi triển khai. Client có thể xem và góp ý.",
       "IN_PROGRESS": "Công việc đã được tạo. Mở quản lý công việc để bổ sung yêu cầu, giao người phụ trách và theo dõi thực hiện.",
       "COMPLETED": "Chiến dịch đã kết thúc. Bạn vẫn có thể xem lại kế hoạch, lịch sử duyệt và các công việc."
-    }
+    },
+    "review": "Góp ý kế hoạch"
+  },
+  "feedback": {
+    "title": "Góp ý và lịch sử kế hoạch",
+    "hint": "Góp ý cho kế hoạch phiên bản {{version}}. Manager quyết định thời điểm triển khai."
   }
 }

@@ -7,7 +7,7 @@ export const SERVICE_UNITS: Record<PackageServiceType, string> = {
   SOCIAL_POST: "bài",
   EVENT_PLANNING: "sự kiện",
   LIVESTREAM_PREPARATION: "buổi",
-  PRESS_RECOMMENDATION: "danh sách đề xuất",
+  PRESS_RECOMMENDATION: "bài",
   WORKSHOP_SUPPORT: "buổi",
 };
 

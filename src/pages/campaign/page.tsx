@@ -30,31 +30,27 @@ export default function CampaignPage() {
           <Button onClick={() => void load()}>{t("campaign.reload")}</Button>
         </div>
       )}
-      {!loading &&
-        !error &&
-        selectedPackage?.negotiationStatus === "APPROVED" && (
-          <CampaignPanel
-            key={id}
-            selection={selectedPackage}
-            canManage={role === "MANAGER" || role === "OWNER"}
-            isManager={role === "MANAGER"}
-          />
-        )}
-      {!loading &&
-        !error &&
-        selectedPackage?.negotiationStatus !== "APPROVED" && (
-          <section className="border-border bg-card space-y-3 rounded-xl border p-5 sm:p-6">
-            <h2 className="font-semibold">{t("campaign.packageRequired")}</h2>
-            <p className="text-muted-foreground max-w-2xl text-sm leading-6">
-              {t("campaign.ux.packageHint")}
-            </p>
-            <Button variant="orange" asChild>
-              <Link to={`/workspaces/${id}/media-package`}>
-                {t("campaign.ux.openPackage")}
-              </Link>
-            </Button>
-          </section>
-        )}
+      {!loading && !error && !!selectedPackage && (
+        <CampaignPanel
+          key={id}
+          selection={selectedPackage}
+          canManage={role === "MANAGER" || role === "OWNER"}
+          isManager={role === "MANAGER"}
+        />
+      )}
+      {!loading && !error && !selectedPackage && (
+        <section className="border-border bg-card space-y-3 rounded-xl border p-5 sm:p-6">
+          <h2 className="font-semibold">{t("campaign.packageRequired")}</h2>
+          <p className="text-muted-foreground max-w-2xl text-sm leading-6">
+            {t("campaign.ux.packageHint")}
+          </p>
+          <Button variant="orange" asChild>
+            <Link to={`/workspaces/${id}/media-package`}>
+              {t("campaign.ux.openPackage")}
+            </Link>
+          </Button>
+        </section>
+      )}
     </PageWrapper>
   );
 }

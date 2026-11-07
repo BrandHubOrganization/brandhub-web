@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { trendGraphService } from "@/pages/admin/services/trendGraphService";
 
@@ -47,8 +47,6 @@ export function useTrendGraph() {
   const search = {
     q: selected.q,
     date: selected.date || undefined,
-    offset: selected.offset,
-    limit: GRAPH_PAGE_SIZE,
   };
   const nodeSearch = {
     q: selected.q,
@@ -62,9 +60,18 @@ export function useTrendGraph() {
     depth: selected.depth,
     maxNodes: selected.maxNodes,
   };
-  const trends = useQuery({
+  const trends = useInfiniteQuery({
     queryKey: ["admin-trend-graph-search", search],
-    queryFn: ({ signal }) => trendGraphService.search(search, signal),
+    initialPageParam: 0,
+    queryFn: ({ pageParam = 0, signal }) =>
+      trendGraphService.search(
+        { ...search, offset: pageParam as number, limit: GRAPH_PAGE_SIZE },
+        signal,
+      ),
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore && lastPage.offset + lastPage.limit <= 10000
+        ? lastPage.offset + lastPage.limit
+        : undefined,
     staleTime: 30000,
   });
   const nodes = useQuery({
@@ -114,9 +121,15 @@ export function useTrendGraph() {
       queryKey: ["admin-trend-graph-search"],
       refetchType: "none",
     });
+    void client.resetQueries({
+      queryKey: ["admin-trend-graph-search"],
+    });
     void client.invalidateQueries({
       queryKey: ["admin-trend-graph-nodes"],
       refetchType: "none",
+    });
+    void client.resetQueries({
+      queryKey: ["admin-trend-graph-nodes"],
     });
     change({
       q,

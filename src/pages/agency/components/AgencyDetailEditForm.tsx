@@ -1,4 +1,5 @@
 import React from "react";
+import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { Crop, History, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -179,7 +180,7 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="cursor-pointer gap-1.5 text-xs text-brand-orange border-brand-orange/30 hover:bg-brand-orange/10"
+                className="text-brand-orange border-brand-orange/30 hover:bg-brand-orange/10 cursor-pointer gap-1.5 text-xs"
                 onClick={onOpenLogoCropper}
               >
                 <Crop className="size-3.5" />
@@ -190,7 +191,7 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
               type="button"
               variant="outline"
               size="sm"
-              className="cursor-pointer gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground cursor-pointer gap-1.5 text-xs"
               onClick={onOpenLogoRecent}
             >
               <History className="size-3.5" />
@@ -211,7 +212,7 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
       />
       <Input
         label={
-          <span className="flex items-center justify-between w-full">
+          <span className="flex w-full items-center justify-between">
             <span>{t("agency.create.taglineLabel")}</span>
             <CharacterCounter current={tagline.length} max={140} />
           </span>
@@ -246,7 +247,9 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
             value={companySize}
             onChange={(e) => setCompanySize(e.target.value as CompanySize | "")}
           >
-            <option value="">{t("agency.create.companySizePlaceholder")}</option>
+            <option value="">
+              {t("agency.create.companySizePlaceholder")}
+            </option>
             {COMPANY_SIZES.map((s) => (
               <option key={s} value={s}>
                 {t(`agency.companySize.${s}`)}
@@ -355,6 +358,9 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
             validateField("facebookUrl", norm);
           }}
           error={errors.facebookUrl}
+          iconPrefix={
+            <FaFacebook className="size-4 text-blue-600 dark:text-blue-400" />
+          }
         />
         <Input
           label={t("agency.create.linkedinUrlLabel")}
@@ -370,6 +376,9 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
             validateField("linkedinUrl", norm);
           }}
           error={errors.linkedinUrl}
+          iconPrefix={
+            <FaLinkedin className="size-4 text-sky-600 dark:text-sky-400" />
+          }
         />
         <Input
           label={t("agency.create.instagramUrlLabel")}
@@ -385,6 +394,9 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
             validateField("instagramUrl", norm);
           }}
           error={errors.instagramUrl}
+          iconPrefix={
+            <FaInstagram className="size-4 text-pink-600 dark:text-pink-400" />
+          }
         />
       </div>
       <div className="flex gap-2">

@@ -60,7 +60,7 @@ export function TrendGraphCanvas({
   const { t } = useTranslation();
   const [layoutMode, setLayoutMode] = useState<GraphLayoutMode>("force");
   const [localHiddenLabels, setLocalHiddenLabels] = useState<Set<string>>(
-    () => new Set(),
+    () => new Set(["CrawledPost"]),
   );
   const [localHighlight, setLocalHighlight] = useState(false);
   const [localEdgeLabels, setLocalEdgeLabels] = useState(false);
@@ -105,24 +105,35 @@ export function TrendGraphCanvas({
     setLocalEdgeLabels((prev) => !prev);
   }, [onToggleEdgeLabels]);
 
-  const visibleGraph = useMemo<TrendGraph>(() => {
-    if (!activeHiddenLabels.size) return graph;
-    const nodes = graph.nodes.filter(
-      (node) =>
-        node.id === graph.rootId || !activeHiddenLabels.has(node.type),
-    );
-    const nodeIds = new Set(nodes.map((node) => node.id));
-    const edges = graph.edges.filter(
-      (edge) => nodeIds.has(edge.source) && nodeIds.has(edge.target),
-    );
-    return {
-      ...graph,
-      nodes,
-      edges,
-      nodeCount: nodes.length,
-      edgeCount: edges.length,
-    };
-  }, [activeHiddenLabels, graph]);
+  const hopDistances = useMemo(() => {
+    const distances = new Map<string, number>();
+    if (!graph.rootId) return distances;
+
+    const adj = new Map<string, string[]>();
+    for (const edge of graph.edges) {
+      if (!adj.has(edge.source)) adj.set(edge.source, []);
+      if (!adj.has(edge.target)) adj.set(edge.target, []);
+      adj.get(edge.source)!.push(edge.target);
+      adj.get(edge.target)!.push(edge.source);
+    }
+
+    distances.set(graph.rootId, 0);
+    const queue: string[] = [graph.rootId];
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      const currentDist = distances.get(current)!;
+      const neighbors = adj.get(current) ?? [];
+      for (const neighbor of neighbors) {
+        if (!distances.has(neighbor)) {
+          distances.set(neighbor, currentDist + 1);
+          queue.push(neighbor);
+        }
+      }
+    }
+
+    return distances;
+  }, [graph.rootId, graph.edges]);
 
   const bounds = useMemo(() => graphBounds(graph), [graph]);
   const {
@@ -137,6 +148,31 @@ export function TrendGraphCanvas({
     handlers,
     labelSize,
   } = useGraphViewport(bounds);
+
+  const isOverviewZoom = zoom < 0.85;
+
+  const visibleGraph = useMemo<TrendGraph>(() => {
+    const nodes = graph.nodes.filter((node) => {
+      if (node.id === graph.rootId) return true;
+      if (activeHiddenLabels.has(node.type)) return false;
+      if (!isOverviewZoom) {
+        const dist = hopDistances.get(node.id);
+        return dist !== undefined && dist <= 2;
+      }
+      return true;
+    });
+    const nodeIds = new Set(nodes.map((node) => node.id));
+    const edges = graph.edges.filter(
+      (edge) => nodeIds.has(edge.source) && nodeIds.has(edge.target),
+    );
+    return {
+      ...graph,
+      nodes,
+      edges,
+      nodeCount: nodes.length,
+      edgeCount: edges.length,
+    };
+  }, [activeHiddenLabels, graph, hopDistances, isOverviewZoom]);
 
   const basePositions = useMemo(
     () =>
@@ -272,6 +308,42 @@ export function TrendGraphCanvas({
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
+              isOverviewZoom
+                ? "border-sky-500/40 bg-sky-500/15 font-semibold text-sky-600 shadow-xs dark:text-sky-400"
+                : "border-border/80 bg-muted/50 text-muted-foreground",
+            )}
+            title={
+              isOverviewZoom
+                ? t("admin.trendGraph.hopsOverviewTooltip", {
+                    defaultValue:
+                      "Đang mở rộng hiển thị toàn cảnh tất cả các liên kết (>2 bước liên kết).",
+                  })
+                : t("admin.trendGraph.hopsLimitedTooltip", {
+                    defaultValue:
+                      "Đang giới hạn hiển thị trong 2 bước liên kết. Thu nhỏ (zoom < 85%) để tự động xem toàn cảnh.",
+                  })
+            }
+          >
+            <span
+              className={cn(
+                "size-1.5 rounded-full",
+                isOverviewZoom
+                  ? "animate-pulse bg-sky-500"
+                  : "bg-muted-foreground/60",
+              )}
+              aria-hidden="true"
+            />
+            {isOverviewZoom
+              ? t("admin.trendGraph.hopsOverview", {
+                  defaultValue: "Toàn cảnh (>2 Hops)",
+                })
+              : t("admin.trendGraph.hopsLimited", {
+                  defaultValue: "2 Hops (Thu nhỏ để xem thêm)",
+                })}
+          </span>
           <Button
             type="button"
             variant={layoutMode === "force" ? "secondary" : "outline"}
@@ -378,20 +450,36 @@ export function TrendGraphCanvas({
                 aria-pressed={!hidden}
                 onClick={() => handleToggleLabel(type)}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-opacity",
-                  hidden ? "opacity-40 line-through" : "opacity-100",
+                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-opacity cursor-pointer",
+                  hidden
+                    ? "opacity-40 line-through border-dashed"
+                    : "opacity-100",
                 )}
                 style={{
                   borderColor: visual.stroke,
                   backgroundColor: visual.fill,
                 }}
+                title={
+                  hidden
+                    ? t("admin.trendGraph.showCategoryHint", {
+                        defaultValue: "Bấm để hiển thị lại {{type}}",
+                        type,
+                      })
+                    : t("admin.trendGraph.hideCategoryHint", {
+                        defaultValue: "Bấm để ẩn {{type}}",
+                        type,
+                      })
+                }
               >
                 <span
-                  className="size-2 rounded-full"
+                  className={cn(
+                    "size-2 rounded-full",
+                    hidden && "opacity-60",
+                  )}
                   style={{ backgroundColor: visual.color }}
                   aria-hidden="true"
                 />
-                <span>
+                <span className={cn(hidden && "line-through text-muted-foreground")}>
                   {visual.code} ·{" "}
                   {t(`admin.trendGraph.${visual.labelKey}`, {
                     defaultValue: type,

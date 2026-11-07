@@ -80,6 +80,7 @@
     "searchAction": "Tìm kiếm",
     "clear": "Bỏ lọc",
     "range": "Kết quả {{start}}–{{end}}",
+    "loadedCount": "Đã tải {{count}} kết quả",
     "empty": "Không tìm thấy Trend phù hợp. Bỏ lọc ngày hoặc thử tên khác.",
     "previous": "Trước",
     "next": "Sau",
@@ -101,6 +102,12 @@
     "panRight": "Di chuyển phải",
     "panUp": "Di chuyển lên",
     "panDown": "Di chuyển xuống",
+    "hopsLimited": "2 Hops (Thu nhỏ để xem thêm)",
+    "hopsOverview": "Toàn cảnh (>2 Hops)",
+    "hopsLimitedTooltip": "Đang giới hạn hiển thị trong 2 bước liên kết. Thu nhỏ (zoom < 85%) để tự động xem toàn cảnh.",
+    "hopsOverviewTooltip": "Đang mở rộng hiển thị toàn cảnh tất cả các liên kết (>2 bước liên kết).",
+    "showCategoryHint": "Bấm để hiển thị lại {{type}}",
+    "hideCategoryHint": "Bấm để ẩn {{type}}",
     "trendType": "Trend",
     "postType": "Bài nguồn",
     "entityType": "Thực thể (viền nét đứt)",
@@ -546,7 +553,10 @@
     "workspaceTemplates": "Mẫu Workspace",
     "mailSuppressions": "Danh sách hủy đăng ký hệ thống",
     "crawl": "Cấu hình crawl",
-    "trendPipeline": "Quản lý Crawler Trend"
+    "trendPipeline": "Quản lý Crawler Trend",
+    "guide": "Cẩm nang Quản trị",
+    "help": "Trợ giúp & Tài liệu",
+    "faq": "Hỏi đáp FAQ"
   },
   "overview": {
     "title": "Tổng quan nền tảng",

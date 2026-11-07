@@ -80,6 +80,7 @@
     "searchAction": "Search",
     "clear": "Clear filters",
     "range": "Results {{start}}–{{end}}",
+    "loadedCount": "Loaded {{count}} results",
     "empty": "No Trends match. Clear the date or try another name.",
     "previous": "Previous",
     "next": "Next",
@@ -101,6 +102,12 @@
     "panRight": "Pan right",
     "panUp": "Pan up",
     "panDown": "Pan down",
+    "hopsLimited": "2 Hops (Zoom out to see more)",
+    "hopsOverview": "Overview (>2 Hops)",
+    "hopsLimitedTooltip": "Limiting view to 2 hops. Zoom out (<85%) to automatically see all hops.",
+    "hopsOverviewTooltip": "Expanded overview showing all remaining hops (>2 hops).",
+    "showCategoryHint": "Click to show {{type}}",
+    "hideCategoryHint": "Click to hide {{type}}",
     "trendType": "Trend",
     "postType": "Source post",
     "entityType": "Entity (dashed border)",
@@ -546,7 +553,10 @@
     "workspaceTemplates": "Workspace templates",
     "mailSuppressions": "System unsubscribed list",
     "crawl": "Crawl settings",
-    "trendPipeline": "Crawler Trend Pipeline"
+    "trendPipeline": "Crawler Trend Pipeline",
+    "guide": "Admin Guide",
+    "help": "Help & Docs",
+    "faq": "FAQ Center"
   },
   "overview": {
     "title": "Platform overview",
