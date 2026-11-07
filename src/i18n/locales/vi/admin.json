@@ -978,6 +978,8 @@
     "credentialsHelp": "Dùng tài khoản và nhà cung cấp hiện có. Không nhập mật khẩu hoặc OTP mạng xã hội vào đây. Dữ liệu bí mật chỉ được thay thế, không thể đọc lại.",
     "sessionFile": "File session JSON (tối đa 1 MiB)",
     "endpoint": "Endpoint",
+    "proxyKey": "Proxy Key",
+    "proxyKeyPlaceholder": "Nhập key proxy (VD: K0b6ba...)",
     "apiKey": "API key",
     "sessionHelp": "Nạp file session từ tài khoản hiện có. AI service chỉ giữ trong RAM; bản mới áp dụng cho run tiếp theo. Restart/deploy cần nạp lại.",
     "connectionHelp": "Chỉ chấp nhận host trong allowlist triển khai. Có thể chứa credential proxy; giá trị không được hiển thị lại.",

@@ -96,7 +96,9 @@ export async function imageSourceToDataUrl(source: string): Promise<string> {
     cache: "no-store",
   });
   if (!fetchResponse.ok) {
-    throw new Error(`Không thể tải ảnh tham chiếu (HTTP ${fetchResponse.status})`);
+    throw new Error(
+      `Không thể tải ảnh tham chiếu (HTTP ${fetchResponse.status})`,
+    );
   }
   const blob = await fetchResponse.blob();
   return new Promise((resolve, reject) => {
@@ -228,7 +230,8 @@ export const aiGenerationService = {
   },
 
   async generateCommercialImage(input: {
-    prompt: string;
+    prompt?: string;
+    preset?: "reference" | "studio" | "lifestyle";
     aspectRatio: "9:16" | "16:9" | "4:5";
     poseReferenceImage: string;
     productReferenceImage: string;
@@ -239,7 +242,8 @@ export const aiGenerationService = {
     const response = await postAiWithCredit<
       ApiResponse<CommercialImageResponse>
     >("/api/v1/ai/image/commercial/generate", {
-      prompt: input.prompt,
+      prompt: input.prompt ?? "",
+      preset: input.preset ?? "reference",
       aspect_ratio: input.aspectRatio,
       pose_reference_image: input.poseReferenceImage,
       product_reference_image: input.productReferenceImage,

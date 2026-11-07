@@ -15,7 +15,6 @@ import {
   TrendingUp,
   Users,
   Wallet,
-  Workflow,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandHubLogo } from "@/components/auth/BrandHubLogo";
@@ -49,7 +48,6 @@ const menuGroups = [
     entries: [
       { key: "credit", icon: Wallet, planned: false },
       { key: "crawl", icon: Radar, planned: false },
-      { key: "trendPipeline", icon: Workflow, planned: false },
       { key: "trends", icon: TrendingUp, planned: false },
       { key: "trendGraph", icon: Network, planned: false },
       { key: "trendReplay", icon: Activity, planned: false },
@@ -97,7 +95,8 @@ const labelKey = (key: string) =>
 function useAdminView() {
   const [params] = useSearchParams();
   const { pathname } = useLocation();
-  const view = params.get("view") || "overview";
+  const rawView = params.get("view") || "overview";
+  const view = rawView === "trendPipeline" ? "crawl" : rawView;
   if (pathname === "/admin/guide") return "guide";
   if (pathname === "/admin/system-health") return "health";
   if (pathname === "/admin/credit-prices") return "credit";

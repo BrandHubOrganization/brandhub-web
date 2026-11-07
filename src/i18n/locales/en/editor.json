@@ -106,7 +106,11 @@
         "lan-phuong": "Lan Phuong",
         "minh-quan": "Minh Quan"
       },
-      "promptLabel": "Image description",
+      "styleLabel": "Image style",
+      "style_reference": "Match pose reference",
+      "style_studio": "Studio",
+      "style_lifestyle": "Lifestyle",
+      "promptLabel": "Additional instructions (optional)",
       "promptPlaceholder": "Example: premium perfume campaign on a beach, summer light, photorealistic...",
       "promptRequired": "Please enter an image description.",
       "aspectRatioLabel": "Aspect ratio",
