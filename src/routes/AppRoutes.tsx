@@ -176,10 +176,6 @@ const WorkspaceTemplatesPage = lazyNamed(
   () => import("@/pages/workspace/templates"),
   "WorkspaceTemplatesPage",
 );
-const InvitationsPage = lazyNamed(
-  () => import("@/pages/workspace/invitations"),
-  "InvitationsPage",
-);
 const WorkspaceClientProfilePage = lazyNamed(
   () => import("@/pages/workspace/client-profile"),
   "WorkspaceClientProfilePage",
@@ -521,7 +517,6 @@ export function AppRoutes() {
               path="/workspaces/templates"
               element={<WorkspaceTemplatesPage />}
             />
-            <Route path="/invitations" element={<InvitationsPage />} />
             <Route
               path="/invitations/accept"
               element={<AcceptInvitationPage />}
