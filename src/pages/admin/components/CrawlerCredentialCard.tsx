@@ -14,6 +14,17 @@ import {
 import { crawlerManagementService as service } from "@/pages/admin/services/crawlerManagementService";
 import type { CredentialMetadata } from "@/pages/admin/types/crawlerManagement";
 
+export function buildProxyCredentialPayload(
+  rawInput: string,
+  revision: number,
+): Record<string, unknown> {
+  const trimmed = rawInput.trim();
+  if (/^(https?|socks5):\/\//i.test(trimmed)) {
+    return { revision, endpoint: trimmed };
+  }
+  return { revision, proxyKey: trimmed };
+}
+
 export function CrawlerCredentialCard({
   item,
   storageReady,
@@ -33,6 +44,7 @@ export function CrawlerCredentialCard({
   >(null);
   const [revoke, setRevoke] = useState(false);
   const isSession = item.kind === "facebook" || item.kind === "threads";
+  const isProxy = item.kind === "proxy";
 
   const refresh = () =>
     Promise.all([
@@ -59,6 +71,14 @@ export function CrawlerCredentialCard({
             revision: item.revision,
             session,
           });
+        } else if (isProxy) {
+          await service.replace(
+            item.kind,
+            buildProxyCredentialPayload(
+              endpoint.current?.value ?? "",
+              item.revision,
+            ),
+          );
         } else {
           await service.replace(item.kind, {
             revision: item.revision,
@@ -169,7 +189,20 @@ export function CrawlerCredentialCard({
                   autoComplete="off"
                   required
                   className="h-8 text-xs"
-                  label={t("admin.crawler.endpoint")}
+                  label={
+                    isProxy
+                      ? t("admin.crawler.proxyKey", {
+                          defaultValue: "Proxy Key",
+                        })
+                      : t("admin.crawler.endpoint")
+                  }
+                  placeholder={
+                    isProxy
+                      ? t("admin.crawler.proxyKeyPlaceholder", {
+                          defaultValue: "Nhập key proxy (VD: K0b6ba...)",
+                        })
+                      : undefined
+                  }
                 />
                 {item.kind === "tiktok" && (
                   <Input

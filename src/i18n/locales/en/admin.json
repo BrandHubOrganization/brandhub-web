@@ -978,6 +978,8 @@
     "credentialsHelp": "Use existing accounts and providers. Do not enter social account passwords or OTPs here. Secrets can be replaced but cannot be read back.",
     "sessionFile": "Session JSON file (up to 1 MiB)",
     "endpoint": "Endpoint",
+    "proxyKey": "Proxy Key",
+    "proxyKeyPlaceholder": "Enter proxy key (e.g., K0b6ba...)",
     "apiKey": "API key",
     "sessionHelp": "Upload a session from an existing account. AI service keeps it only in memory; replacements apply to the next run. Upload again after a restart or deployment.",
     "connectionHelp": "Only deployment-allowlisted hosts are accepted. This may include proxy credentials; values are never displayed again.",
