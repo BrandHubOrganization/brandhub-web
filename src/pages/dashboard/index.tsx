@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -8,19 +8,28 @@ import {
   Plus,
   Building2,
   FolderOpen,
-  Mail,
   ArrowRight,
   Sparkles,
+  FileBarChart,
 } from "lucide-react";
 import { KpiCardsSection } from "@/pages/dashboard/components/KpiCardsSection";
-import { ActivityFeedSection } from "@/pages/dashboard/components/ActivityFeedSection";
+import {
+  ActivityFeedSection,
+  type UnifiedTimelineEvent,
+} from "@/pages/dashboard/components/ActivityFeedSection";
 import { TeamStatsSection } from "@/pages/dashboard/components/TeamStatsSection";
 import { useDashboardData } from "./hooks/useDashboardData";
 import { QuickTasksCard } from "./components/QuickTasksCard";
+import { DashboardScopeFilter } from "./components/DashboardScopeFilter";
+import { SmartPriorityRecommendation } from "./components/SmartPriorityRecommendation";
+import { MyTasksSection } from "./components/MyTasksSection";
+import { AgencyReportExportModal } from "./components/AgencyReportExportModal";
+import { getTopPriorityRecommendations } from "./utils/smartPriorityAlgorithm";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { agencyService } from "@/services/agencyService";
 import { workspaceService } from "@/services/workspaceService";
+import { taskService } from "@/services/taskService";
 import { ChannelPerformanceChart } from "@/pages/analytics/components/ChannelPerformanceChart";
 import {
   AudienceGrowthAreaChart,
@@ -29,6 +38,7 @@ import {
 } from "./components/DashboardAdvancedCharts";
 import type { Agency } from "@/types/agency";
 import type { Workspace } from "@/types/workspace";
+import type { TaskListItem } from "@/types/task";
 
 export function DashboardPage() {
   const { t } = useTranslation();
@@ -50,34 +60,60 @@ export function DashboardPage() {
 
   const [agencies, setAgencies] = useState<Agency[]>([]);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  // ROUTE_ACCESS chặn Owner khỏi Editor, nút tạo nội dung phải trỏ tới workspace vào được.
-  const writableWorkspace = workspaces.find((w) => w.myRole !== "OWNER");
-  const [pendingAgencyInvites, setPendingAgencyInvites] = useState<number>(0);
-  const [pendingWsInvites, setPendingWsInvites] = useState<number>(0);
   const [loadingRealData, setLoadingRealData] = useState(true);
 
+  // Scope filter state
+  const [selectedAgencyIds, setSelectedAgencyIds] = useState<string[]>([]);
+  const [selectedWorkspaceIds, setSelectedWorkspaceIds] = useState<string[]>([]);
+
+  // Report export modal state
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+  // Aggregated tasks from selected workspaces
+  const [aggregatedTasks, setAggregatedTasks] = useState<TaskListItem[]>([]);
+  const [isTasksLoading, setIsTasksLoading] = useState(false);
+
+  // Workspaces filtered by user selection
+  const filteredWorkspaces = useMemo(() => {
+    if (selectedWorkspaceIds.length > 0) {
+      return workspaces.filter((ws) => selectedWorkspaceIds.includes(ws.id));
+    }
+    if (selectedAgencyIds.length > 0) {
+      return workspaces.filter(
+        (ws) => ws.agencyId && selectedAgencyIds.includes(ws.agencyId),
+      );
+    }
+    return workspaces;
+  }, [workspaces, selectedAgencyIds, selectedWorkspaceIds]);
+
+  // Map workspace id -> name for fast lookup
+  const workspaceNamesMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    workspaces.forEach((w) => {
+      map[w.id] = w.name;
+    });
+    return map;
+  }, [workspaces]);
+
+  // ROUTE_ACCESS chặn Owner khỏi Editor, nút tạo nội dung phải trỏ tới workspace vào được.
+  const writableWorkspace =
+    filteredWorkspaces.find((w) => w.myRole !== "OWNER") ||
+    workspaces.find((w) => w.myRole !== "OWNER");
+
+  // Fetch basic agencies and workspaces
   const loadRealOverview = async () => {
     setLoadingRealData(true);
     try {
-      const [agenciesRes, workspacesRes, agencyInvRes, wsInvRes] =
-        await Promise.allSettled([
-          agencyService.list(),
-          workspaceService.list(),
-          agencyService.listMyPendingInvitations(),
-          workspaceService.listMyPendingInvitations(),
-        ]);
+      const [agenciesRes, workspacesRes] = await Promise.allSettled([
+        agencyService.list(),
+        workspaceService.list(),
+      ]);
 
       if (agenciesRes.status === "fulfilled") {
         setAgencies(agenciesRes.value.data.data ?? []);
       }
       if (workspacesRes.status === "fulfilled") {
         setWorkspaces(workspacesRes.value.data.data ?? []);
-      }
-      if (agencyInvRes.status === "fulfilled") {
-        setPendingAgencyInvites(agencyInvRes.value.data.data?.length ?? 0);
-      }
-      if (wsInvRes.status === "fulfilled") {
-        setPendingWsInvites(wsInvRes.value.data.data?.length ?? 0);
       }
     } finally {
       setLoadingRealData(false);
@@ -88,8 +124,46 @@ export function DashboardPage() {
     loadRealOverview();
   }, []);
 
+  // Fetch tasks for the currently filtered workspaces
+  const loadTasksForWorkspaces = useCallback(
+    async (targetWorkspaces: Workspace[]) => {
+      if (targetWorkspaces.length === 0) {
+        setAggregatedTasks([]);
+        return;
+      }
+      setIsTasksLoading(true);
+      try {
+        const results = await Promise.allSettled(
+          targetWorkspaces.map((ws) =>
+            taskService.getWorkspaceTasks(ws.id, { size: 50 }),
+          ),
+        );
+        const tasks: TaskListItem[] = [];
+        results.forEach((res) => {
+          if (res.status === "fulfilled" && Array.isArray(res.value?.content)) {
+            tasks.push(...res.value.content);
+          }
+        });
+        setAggregatedTasks(tasks);
+      } catch (error) {
+        console.error("Failed to load workspace tasks:", error);
+      } finally {
+        setIsTasksLoading(false);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    loadTasksForWorkspaces(filteredWorkspaces);
+  }, [filteredWorkspaces, loadTasksForWorkspaces]);
+
   const handleRefresh = async () => {
-    await Promise.all([loadAllData(), loadRealOverview()]);
+    await Promise.all([
+      loadAllData(),
+      loadRealOverview(),
+      loadTasksForWorkspaces(filteredWorkspaces),
+    ]);
   };
 
   const handleEnterAgency = (agencyId: string) => {
@@ -104,13 +178,125 @@ export function DashboardPage() {
     navigate(`/workspaces/${ws.id}/dashboard`);
   };
 
-  const totalInvites = pendingAgencyInvites + pendingWsInvites;
+  const handleNavigateTask = (task: TaskListItem, action?: string) => {
+    const targetWs = workspaces.find((w) => w.id === task.workspaceId);
+    if (targetWs) {
+      setCurrentWorkspace(targetWs);
+      if (targetWs.agencyId) {
+        setCurrentAgencyId(targetWs.agencyId);
+      }
+    }
+
+    if (action === "edit") {
+      navigate(`/workspaces/${task.workspaceId}/editor`);
+    } else {
+      // Mở trực tiếp Task Detail thông qua query param ?task=
+      navigate(`/workspaces/${task.workspaceId}/tasks?task=${encodeURIComponent(task.id)}`);
+    }
+  };
+
+  // Top 5 priority recommendations computed via SPS algorithm
+  const topPriorityRecommendations = useMemo(() => {
+    return getTopPriorityRecommendations(aggregatedTasks, user?.id, 5);
+  }, [aggregatedTasks, user?.id]);
+
+  // Unified activity timeline from tasks and analytics activities
+  const unifiedActivityEvents = useMemo<UnifiedTimelineEvent[]>(() => {
+    const events: UnifiedTimelineEvent[] = [];
+
+    // 1. Task events from aggregated tasks
+    aggregatedTasks.forEach((task) => {
+      const wsName = workspaceNamesMap[task.workspaceId] || "";
+
+      if (task.createdAt) {
+        events.push({
+          id: `task-created-${task.id}`,
+          actorName: task.reporterName || null,
+          actorAvatar: task.reporterAvatar || null,
+          actionText: t(
+            "dashboard.activityFeed.actions.TASK_CREATED",
+            "đã tạo công việc",
+          ),
+          targetTitle: task.name,
+          targetKey: task.key,
+          workspaceName: wsName,
+          timestamp: task.createdAt,
+          category: "TASK",
+          type: "TASK_CREATED",
+        });
+      }
+
+      if (task.status === "IN_REVIEW" && task.updatedAt) {
+        events.push({
+          id: `task-review-${task.id}`,
+          actorName: task.assigneeName || task.reporterName || null,
+          actorAvatar: task.assigneeAvatar || task.reporterAvatar || null,
+          actionText: t(
+            "dashboard.activityFeed.actions.TASK_SUBMITTED",
+            "đã nộp bài chờ phê duyệt",
+          ),
+          targetTitle: task.name,
+          targetKey: task.key,
+          workspaceName: wsName,
+          timestamp: task.updatedAt,
+          category: "REVIEW",
+          type: "TASK_SUBMITTED",
+        });
+      } else if (task.status === "FINISHED" && task.updatedAt) {
+        events.push({
+          id: `task-finished-${task.id}`,
+          actorName: task.reporterName || task.assigneeName || null,
+          actorAvatar: task.reporterAvatar || task.assigneeAvatar || null,
+          actionText: t(
+            "dashboard.activityFeed.actions.TASK_APPROVED",
+            "đã hoàn thành công việc",
+          ),
+          targetTitle: task.name,
+          targetKey: task.key,
+          workspaceName: wsName,
+          timestamp: task.updatedAt,
+          category: "REVIEW",
+          type: "TASK_APPROVED",
+        });
+      }
+    });
+
+    // 2. Publication events from analytics
+    (analytics?.activities ?? []).forEach((act) => {
+      events.push({
+        id: act.id,
+        actorName: act.actorName,
+        actorAvatar: act.actorAvatar,
+        actionText:
+          act.type === "POST_PUBLISHED"
+            ? t(
+                "dashboard.activityFeed.actions.POST_PUBLISHED",
+                "đã xuất bản bài viết thành công",
+              )
+            : t(
+                "dashboard.activityFeed.actions.POST_FAILED",
+                "xuất bản bài viết thất bại",
+              ),
+        targetTitle: act.targetTitle,
+        timestamp: act.timestamp,
+        category: "PUBLISH",
+        type: act.type,
+      });
+    });
+
+    // Sort descending by timestamp
+    events.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
+
+    return events;
+  }, [aggregatedTasks, analytics?.activities, workspaceNamesMap, t]);
 
   return (
     <PageWrapper
       title={t("dashboard.page.title")}
       description={t("dashboard.page.description")}
-      introSummary="Bảng điều khiển trung tâm (Hub Dashboard) tổng hợp toàn bộ các Công ty, Không gian làm việc và thống kê hiệu suất nội dung của bạn. Chọn một Không gian làm việc bất kỳ để bắt đầu lên kế hoạch và sản xuất bài viết."
       guideUrl="/help/guide#architecture"
       actions={
         <div className="flex flex-wrap items-center gap-2">
@@ -119,16 +305,25 @@ export function DashboardPage() {
             size="sm"
             className="cursor-pointer gap-1.5 text-xs"
             onClick={handleRefresh}
-            disabled={isRefreshing || loadingRealData}
+            disabled={isRefreshing || loadingRealData || isTasksLoading}
           >
             <RefreshCw
               className={`size-3.5 ${
-                isRefreshing || loadingRealData
+                isRefreshing || loadingRealData || isTasksLoading
                   ? "text-brand-orange animate-spin"
                   : ""
               }`}
             />
             {t("dashboard.page.refresh")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsReportModalOpen(true)}
+            className="hover:border-brand-orange/60 hover:text-brand-orange active:scale-95 cursor-pointer gap-1.5 text-xs transition-all"
+          >
+            <FileBarChart className="size-3.5" />
+            {t("dashboard.page.exportReport", "Tải báo cáo")}
           </Button>
           {memberRole !== "OWNER" &&
             (currentWorkspace || !workspaces.length || writableWorkspace) && (
@@ -155,118 +350,119 @@ export function DashboardPage() {
         </div>
       }
     >
-      <div className="space-y-6">
-        {/* Real Summary Metrics Bar */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Card 1: Total Agencies */}
-          <div
-            onClick={() => navigate("/agency")}
-            className="border-border bg-card hover:border-border hover:bg-muted/30 group cursor-pointer rounded-xl border p-4.5 shadow-xs transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground text-xs font-medium">
-                {t("dashboard.global.totalAgencies")}
-              </span>
-              <div className="bg-muted text-foreground group-hover:bg-brand-orange/10 group-hover:text-brand-orange rounded-lg p-2 transition-colors">
-                <Building2 className="size-4.5" />
-              </div>
-            </div>
-            <div className="mt-3 flex items-baseline justify-between">
-              <span className="text-foreground text-2xl font-bold tracking-tight">
-                {agencies.length}
-              </span>
-              <span className="text-muted-foreground group-hover:text-foreground text-3xs flex items-center gap-1 font-medium transition-colors">
-                {t("dashboard.global.goToAgencies")}{" "}
-                <ArrowRight className="size-3" />
-              </span>
-            </div>
-          </div>
-
-          {/* Card 2: Total Workspaces */}
-          <div
-            onClick={() => navigate("/workspace")}
-            className="border-border bg-card hover:border-border hover:bg-muted/30 group cursor-pointer rounded-xl border p-4.5 shadow-xs transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground text-xs font-medium">
-                {t("dashboard.global.totalWorkspaces")}
-              </span>
-              <div className="bg-muted text-foreground group-hover:bg-brand-orange/10 group-hover:text-brand-orange rounded-lg p-2 transition-colors">
-                <FolderOpen className="size-4.5" />
-              </div>
-            </div>
-            <div className="mt-3 flex items-baseline justify-between">
-              <span className="text-foreground text-2xl font-bold tracking-tight">
-                {workspaces.length}
-              </span>
-              <span className="text-muted-foreground group-hover:text-foreground text-3xs flex items-center gap-1 font-medium transition-colors">
-                {t("dashboard.global.goToWorkspaces")}{" "}
-                <ArrowRight className="size-3" />
-              </span>
-            </div>
-          </div>
-
-          {/* Card 3: Pending Invitations */}
-          <div
-            onClick={() => navigate("/agency/invitations")}
-            className="border-border bg-card hover:border-border hover:bg-muted/30 group cursor-pointer rounded-xl border p-4.5 shadow-xs transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground text-xs font-medium">
-                {t("dashboard.global.totalPendingInvites")}
-              </span>
-              <div className="bg-muted text-foreground group-hover:bg-brand-orange/10 group-hover:text-brand-orange rounded-lg p-2 transition-colors">
-                <Mail className="size-4.5" />
-              </div>
-            </div>
-            <div className="mt-3 flex items-baseline justify-between">
-              <span className="text-foreground text-2xl font-bold tracking-tight">
-                {totalInvites}
-              </span>
-              <span className="text-muted-foreground group-hover:text-foreground text-3xs flex items-center gap-1 font-medium transition-colors">
-                {pendingAgencyInvites} Agency · {pendingWsInvites} WS
-              </span>
-            </div>
-          </div>
-
-          {/* Card 4: Quick Action Hub */}
-          <div className="border-border bg-card rounded-xl border p-4.5 shadow-xs">
-            <span className="text-muted-foreground text-xs font-medium">
-              {t("dashboard.global.quickNavigation")}
-            </span>
-            <div className="mt-2.5 flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/agency/create")}
-                className="hover:border-brand-orange hover:text-brand-orange text-3xs h-7 cursor-pointer gap-1 px-2.5"
-              >
-                <Plus className="size-3" /> {t("dashboard.global.createAgency")}
-              </Button>
-              {agencies.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    navigate(`/workspaces/create?agencyId=${agencies[0].id}`)
-                  }
-                  className="hover:border-brand-orange hover:text-brand-orange text-3xs h-7 cursor-pointer gap-1 px-2.5"
-                >
-                  <Plus className="size-3" />{" "}
-                  {t("dashboard.global.createWorkspace")}
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Greeting & Priority Tasks */}
+      <div className="space-y-4">
+        {/* Greeting Card */}
         <QuickTasksCard
           userName={user?.name || ""}
           userRole={memberRole ?? t("dashboard.global.roleMember")}
         />
 
-        {/* Real Entities Quick-Cards: Agencies & Workspaces */}
+        {/* 1. Multi-Select Scope Selector */}
+        <DashboardScopeFilter
+          agencies={agencies}
+          workspaces={workspaces}
+          selectedAgencyIds={selectedAgencyIds}
+          selectedWorkspaceIds={selectedWorkspaceIds}
+          onAgencyChange={setSelectedAgencyIds}
+          onWorkspaceChange={setSelectedWorkspaceIds}
+          onReset={() => {
+            setSelectedAgencyIds([]);
+            setSelectedWorkspaceIds([]);
+          }}
+        />
+
+        {/* 2. Side-by-Side Tasks Grid: Smart Priority Recommendations (Left) & My Tasks (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+          <div className="lg:col-span-5 flex flex-col">
+            <SmartPriorityRecommendation
+              recommendations={topPriorityRecommendations}
+              workspaces={filteredWorkspaces}
+              onNavigateTask={handleNavigateTask}
+              isLoading={isTasksLoading}
+              className="h-full"
+            />
+          </div>
+          <div className="lg:col-span-7 flex flex-col">
+            <MyTasksSection
+              tasks={aggregatedTasks}
+              currentUserId={user?.id}
+              workspaceNames={workspaceNamesMap}
+              onNavigateTask={handleNavigateTask}
+              loading={isTasksLoading}
+              className="h-full"
+            />
+          </div>
+        </div>
+
+        {/* 4. Global Analytics & Trends Section - Diversified Professional Charts */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="bg-muted text-muted-foreground text-2xs inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-medium">
+                <Sparkles className="size-3" />
+                {t("dashboard.global.campaignTrend")}
+              </span>
+            </div>
+            <span className="text-muted-foreground text-3xs">
+              {t(
+                "dashboard.charts.lastUpdated",
+                "Cập nhật tự động thời gian thực",
+              )}
+            </span>
+          </div>
+
+          {/* Row 1: Interactive Growth Area Chart + Content Status Donut Chart */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              <AudienceGrowthAreaChart
+                trend={analytics?.dailyTrend ?? []}
+                reachGrowth={analytics?.reachGrowth ?? null}
+                engagementGrowth={analytics?.engagementGrowth ?? null}
+              />
+            </div>
+            <div>
+              <ContentStatusDonutChart data={analytics?.statusCounts ?? {}} />
+            </div>
+          </div>
+
+          {/* Row 2: Peak Hours Stacked Bar Chart */}
+          <PeakHoursBarChart hours={analytics?.publishHours ?? []} />
+        </div>
+
+        {/* Channel Performance Chart */}
+        {analytics?.channelStats && (
+          <ChannelPerformanceChart channelStats={analytics.channelStats} />
+        )}
+
+        {/* KPI Summary Cards */}
+        <KpiCardsSection
+          data={analytics}
+          isLoading={isAnalyticsLoading}
+          isError={isAnalyticsError}
+          onRetry={fetchAnalytics}
+        />
+
+        {/* Activity Feed & Team Stats */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
+            <ActivityFeedSection
+              events={unifiedActivityEvents}
+              isLoading={isAnalyticsLoading || isTasksLoading}
+              isError={isAnalyticsError}
+              onRetry={fetchAnalytics}
+            />
+          </div>
+
+          <div className="space-y-6">
+            <TeamStatsSection
+              stats={analytics?.teamStats}
+              userRole={memberRole ?? "MANAGER"}
+              isLoading={isAnalyticsLoading}
+            />
+          </div>
+        </div>
+
+        {/* Recent Entities Quick-Cards: Agencies & Workspaces */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Recent Agencies */}
           <div className="border-border bg-card space-y-3.5 rounded-xl border p-5 shadow-xs">
@@ -457,75 +653,18 @@ export function DashboardPage() {
             )}
           </div>
         </div>
-
-        {/* Global Analytics & Trends Section - Diversified Professional Charts */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="bg-muted text-muted-foreground text-2xs inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-medium">
-                <Sparkles className="size-3" />
-                {t("dashboard.global.campaignTrend")}
-              </span>
-            </div>
-            <span className="text-muted-foreground text-3xs">
-              {t(
-                "dashboard.charts.lastUpdated",
-                "Cập nhật tự động thời gian thực",
-              )}
-            </span>
-          </div>
-
-          {/* Row 1: Interactive Growth Area Chart + Content Status Donut Chart */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-              <AudienceGrowthAreaChart
-                trend={analytics?.dailyTrend ?? []}
-                reachGrowth={analytics?.reachGrowth ?? null}
-                engagementGrowth={analytics?.engagementGrowth ?? null}
-              />
-            </div>
-            <div>
-              <ContentStatusDonutChart data={analytics?.statusCounts ?? {}} />
-            </div>
-          </div>
-
-          {/* Row 2: Peak Hours Stacked Bar Chart */}
-          <PeakHoursBarChart hours={analytics?.publishHours ?? []} />
-        </div>
-
-        {/* Channel Performance Chart */}
-        {analytics?.channelStats && (
-          <ChannelPerformanceChart channelStats={analytics.channelStats} />
-        )}
-
-        {/* KPI Summary Cards */}
-        <KpiCardsSection
-          data={analytics}
-          isLoading={isAnalyticsLoading}
-          isError={isAnalyticsError}
-          onRetry={fetchAnalytics}
-        />
-
-        {/* Activity Feed & Team Stats */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
-            <ActivityFeedSection
-              events={analytics?.activities ?? []}
-              isLoading={isAnalyticsLoading}
-              isError={isAnalyticsError}
-              onRetry={fetchAnalytics}
-            />
-          </div>
-
-          <div className="space-y-6">
-            <TeamStatsSection
-              stats={analytics?.teamStats}
-              userRole={memberRole ?? "MANAGER"}
-              isLoading={isAnalyticsLoading}
-            />
-          </div>
-        </div>
       </div>
+
+      <AgencyReportExportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        agencies={agencies}
+        defaultAgencyId={
+          selectedAgencyIds[0] ||
+          useAgencyStore.getState().currentAgencyId ||
+          agencies[0]?.id
+        }
+      />
     </PageWrapper>
   );
 }
