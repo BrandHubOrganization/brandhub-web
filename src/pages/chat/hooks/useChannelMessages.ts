@@ -160,6 +160,7 @@ export function useChannelMessages(
       contextId: message.contextId,
       threadRootId: message.threadRootId,
       mentionUserIds: message.mentionUserIds ?? [],
+      attachmentIds: message.attachmentIds ?? [],
     });
   const mutate = async (message: CollaborationMessage, code?: ChatReaction) => {
     if (busyId) return;

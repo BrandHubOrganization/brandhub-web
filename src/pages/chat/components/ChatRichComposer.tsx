@@ -1,3 +1,8 @@
+import { useChatAttachmentDraft } from "@/pages/chat/hooks/useChatAttachmentDraft";
+import {
+  ChatAttachmentActions,
+  ChatAttachmentDrafts,
+} from "@/pages/chat/components/ChatAttachmentComposer";
 import { EditorContent } from "@tiptap/react";
 import { AtSign, SendHorizontal, Type, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +15,10 @@ import type { ChatRichComposerProps } from "@/pages/chat/types/chatComposer";
 export type { ChatRichComposerProps } from "@/pages/chat/types/chatComposer";
 
 export function ChatRichComposer(props: ChatRichComposerProps) {
+  const attachments = useChatAttachmentDraft(
+    props.workspaceId,
+    props.channelId,
+  );
   const {
     t,
     editor,
@@ -30,11 +39,36 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
     send,
     scheduling,
     schedule,
-  } = useChatRichEditor(props);
+  } = useChatRichEditor({
+    ...props,
+    attachmentIds: attachments.ids,
+    attachmentBusy: attachments.busy,
+    onDraftSent: attachments.clear,
+  });
   if (!editor) return null;
   return (
     <footer
       ref={box}
+      onDragOver={(event) => {
+        if (
+          props.canPost &&
+          !scheduling &&
+          Array.from(event.dataTransfer.types).includes("Files")
+        )
+          event.preventDefault();
+      }}
+      onDrop={(event) => {
+        if (props.canPost && !scheduling && event.dataTransfer.files.length) {
+          event.preventDefault();
+          attachments.addFiles(Array.from(event.dataTransfer.files));
+        }
+      }}
+      onPasteCapture={(event) => {
+        if (props.canPost && !scheduling && event.clipboardData.files.length) {
+          event.preventDefault();
+          attachments.addFiles(Array.from(event.clipboardData.files));
+        }
+      }}
       className="border-border bg-card relative shrink-0 border-t p-2 sm:px-3 sm:py-2.5"
     >
       {!props.canPost && (
@@ -128,10 +162,18 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
                 )}
               </span>
             )}
+            <ChatAttachmentDrafts draft={attachments} disabled={scheduling} />
             <EditorContent editor={editor} />
           </div>
           <div className="border-border flex items-center justify-between gap-2 border-t px-2 py-1">
             <div className="flex items-center gap-0.5">
+              {props.workspaceId && props.channelId && (
+                <ChatAttachmentActions
+                  draft={attachments}
+                  workspace={props.workspaceId}
+                  disabled={scheduling || !props.canPost}
+                />
+              )}
               <Button
                 variant="ghost"
                 size="icon"
@@ -144,30 +186,32 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
                 <Type className="size-4" aria-hidden="true" />
               </Button>
               <ChatComposerEmoji editor={editor} />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8"
-                aria-label={t("chat.composer.mention")}
-                title={t("chat.composer.mention")}
-                onClick={() => {
-                  const before =
-                    editor.state.selection.$from.parent.textBetween(
-                      0,
-                      editor.state.selection.$from.parentOffset,
-                    );
-                  editor
-                    .chain()
-                    .focus()
-                    .insertContent({
-                      type: "text",
-                      text: before && !/\s$/.test(before) ? " @" : "@",
-                    })
-                    .run();
-                }}
-              >
-                <AtSign className="size-4" aria-hidden="true" />
-              </Button>
+              {props.allowMentions !== false && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  aria-label={t("chat.composer.mention")}
+                  title={t("chat.composer.mention")}
+                  onClick={() => {
+                    const before =
+                      editor.state.selection.$from.parent.textBetween(
+                        0,
+                        editor.state.selection.$from.parentOffset,
+                      );
+                    editor
+                      .chain()
+                      .focus()
+                      .insertContent({
+                        type: "text",
+                        text: before && !/\s$/.test(before) ? " @" : "@",
+                      })
+                      .run();
+                  }}
+                >
+                  <AtSign className="size-4" aria-hidden="true" />
+                </Button>
+              )}
               <span id={hintId} className="sr-only">
                 {t(keyboardHintKey)}
               </span>
@@ -175,7 +219,7 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
             <div className="flex items-center gap-2">
               <span
                 className={cn(
-                  "text-[11px] font-mono tabular-nums",
+                  "font-mono text-[11px] tabular-nums",
                   length > 4000 ? "text-destructive" : "text-muted-foreground",
                 )}
               >
@@ -185,11 +229,14 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
                 <Button
                   variant="orange"
                   size="icon"
-                  className={cn(
-                    "size-8",
-                    props.onSchedule && "rounded-r-none",
-                  )}
-                  disabled={scheduling || !hasText || length > 4000 || !valid}
+                  className={cn("size-8", props.onSchedule && "rounded-r-none")}
+                  disabled={
+                    scheduling ||
+                    attachments.busy ||
+                    (!hasText && !attachments.ids.length) ||
+                    length > 4000 ||
+                    !valid
+                  }
                   loading={scheduling}
                   aria-label={t("chat.composer.send")}
                   onClick={send}
@@ -198,7 +245,12 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
                 </Button>
                 {props.onSchedule && props.canPost && (
                   <ChatScheduleSend
-                    disabled={!hasText || length > 4000 || !valid}
+                    disabled={
+                      attachments.busy ||
+                      (!hasText && !attachments.ids.length) ||
+                      length > 4000 ||
+                      !valid
+                    }
                     busy={scheduling}
                     onSchedule={schedule}
                   />
