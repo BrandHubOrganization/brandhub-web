@@ -1,8 +1,23 @@
 import { useTranslation } from "react-i18next";
-import { Globe, MapPin, Phone, Users } from "lucide-react";
-import type { CompanySize, ReportFrequency, WorkspaceIndustry } from "@/types/workspace";
+import { WorkspaceSocialLinks } from "@/pages/workspace/components/WorkspaceSocialLinks";
+import {
+  Building2,
+  Calendar,
+  Clock,
+  Globe,
+  MapPin,
+  Phone,
+  Users,
+} from "lucide-react";
+import type {
+  CompanySize,
+  ReportFrequency,
+  WorkspaceIndustry,
+} from "@/types/workspace";
 
 interface WorkspaceInfoViewProps {
+  description?: string;
+  foundedYear?: string | number | null;
   website?: string;
   phone?: string;
   location?: string;
@@ -11,9 +26,14 @@ interface WorkspaceInfoViewProps {
   timezone: string;
   defaultPlatforms: string[];
   reportFrequency?: ReportFrequency | null;
+  facebookUrl?: string;
+  linkedinUrl?: string;
+  instagramUrl?: string;
 }
 
 export function WorkspaceInfoView({
+  description,
+  foundedYear,
   website,
   phone,
   location,
@@ -22,42 +42,83 @@ export function WorkspaceInfoView({
   timezone,
   defaultPlatforms,
   reportFrequency,
+  facebookUrl,
+  linkedinUrl,
+  instagramUrl,
 }: WorkspaceInfoViewProps) {
   const { t } = useTranslation();
+  const yearStr =
+    foundedYear !== undefined && foundedYear !== null
+      ? String(foundedYear).trim()
+      : "";
+  const hasSocials = Boolean(
+    facebookUrl?.trim() || linkedinUrl?.trim() || instagramUrl?.trim(),
+  );
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-3 border-t pt-4 sm:grid-cols-2">
-        <div className="flex items-center gap-2 text-sm">
-          <Globe className="text-muted-foreground size-4 shrink-0" />
-          <span className="truncate">{website || "—"}</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <Phone className="text-muted-foreground size-4 shrink-0" />
-          <span>{phone || "—"}</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <MapPin className="text-muted-foreground size-4 shrink-0" />
-          <span>{location || "—"}</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <Users className="text-muted-foreground size-4 shrink-0" />
-          <span>
-            {companySize ? t(`agency.companySize.${companySize}`) : "—"}
-          </span>
-        </div>
-        <div className="text-sm">
-          <span className="text-muted-foreground">
-            {t("workspace.create.industryLabel")}:{" "}
-          </span>
-          {industry ? t(`workspace.industry.${industry}`) : "—"}
-        </div>
-        <div className="text-sm">
-          <span className="text-muted-foreground">
-            {t("workspace.settings.timezoneLabel")}:{" "}
-          </span>
-          {timezone}
-        </div>
+      {description?.trim() && (
+        <div
+          className="prose prose-sm dark:prose-invert text-muted-foreground max-w-none border-t pt-4 text-sm"
+          dangerouslySetInnerHTML={{ __html: description }}
+        />
+      )}
+
+      <div className="border-border grid grid-cols-1 gap-x-5 gap-y-4 border-t pt-4 sm:grid-cols-2">
+        {[
+          {
+            Icon: Globe,
+            label: t("workspace.create.websiteLabel"),
+            value: website,
+          },
+          {
+            Icon: Phone,
+            label: t("workspace.create.phoneLabel"),
+            value: phone,
+          },
+          {
+            Icon: MapPin,
+            label: t("workspace.create.locationLabel"),
+            value: location,
+          },
+          {
+            Icon: Users,
+            label: t("workspace.create.companySizeLabel"),
+            value: companySize ? t(`agency.companySize.${companySize}`) : "",
+          },
+          {
+            Icon: Building2,
+            label: t("workspace.create.industryLabel"),
+            value: industry ? t(`workspace.industry.${industry}`) : "",
+          },
+          {
+            Icon: Clock,
+            label: t("workspace.settings.timezoneLabel"),
+            value: timezone,
+          },
+          ...(yearStr
+            ? [
+                {
+                  Icon: Calendar,
+                  label: t("workspace.create.foundedYearLabel"),
+                  value: yearStr,
+                },
+              ]
+            : []),
+        ].map(({ Icon, label, value }) => (
+          <div key={label} className="flex min-w-0 items-start gap-2.5">
+            <Icon
+              className="text-brand-orange mt-0.5 size-4 shrink-0"
+              aria-hidden="true"
+            />
+            <div className="min-w-0 space-y-0.5">
+              <p className="text-muted-foreground text-2xs">{label}</p>
+              <p className="text-foreground text-xs font-medium break-words">
+                {value || "—"}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="border-t pt-4">
@@ -88,6 +149,19 @@ export function WorkspaceInfoView({
             : "—"}
         </span>
       </div>
+
+      {hasSocials && (
+        <div className="border-border space-y-2 border-t pt-4">
+          <p className="text-muted-foreground text-xs font-semibold tracking-wide">
+            {t("workspace.createPreview.social")}
+          </p>
+          <WorkspaceSocialLinks
+            facebookUrl={facebookUrl}
+            linkedinUrl={linkedinUrl}
+            instagramUrl={instagramUrl}
+          />
+        </div>
+      )}
     </>
   );
 }
