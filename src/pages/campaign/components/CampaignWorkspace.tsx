@@ -19,6 +19,7 @@ import { CampaignDeploymentPanel } from "@/pages/campaign/components/CampaignDep
 import { CampaignFeedbackRail } from "@/pages/campaign/components/CampaignFeedbackRail";
 import { CampaignTaskDialog } from "@/pages/campaign/components/CampaignTaskDialog";
 import { CampaignClosureSection } from "@/pages/campaign/components/CampaignClosureSection";
+import { CampaignLoadingState } from "@/pages/campaign/components/CampaignLoadingState";
 import {
   parseTimeline,
   patchTimeline,
@@ -50,7 +51,6 @@ function CampaignWorkspaceLoaded({
   const plan = useCampaignPlanSave(selection.workspaceId, campaign, onSaved);
   const { ref: workspaceRef, height: workspaceHeight } = useCampaignViewport();
   const [taskId, setTaskId] = useState<string | null>(null);
-  const [closing, setClosing] = useState(false);
   const editable = canManage && campaign.status === "DRAFT";
   const role = useWorkspaceStore(
     (s) =>
@@ -119,6 +119,13 @@ function CampaignWorkspaceLoaded({
         >
           <RefreshCw className="size-3.5" />
         </Button>
+        <CampaignPlanEditor
+          campaign={campaign}
+          busy={plan.saving}
+          disabled={!editable}
+          onSave={plan.save}
+          onDirty={plan.dirty}
+        />
       </header>
       <div className="ct-workspace-grid">
         {state.isPending ? (
@@ -177,6 +184,35 @@ function CampaignWorkspaceLoaded({
                 ))}
               </div>
             }
+            campaignActions={
+              <div className="ml-auto flex items-center gap-2">
+                <Badge variant="outline" className="text-[10px]">
+                  {t(`campaign.status.${campaign.status}`)}
+                </Badge>
+                {isManager && campaign.status === "IN_PROGRESS" && (
+                  <CampaignClosureSection
+                    workspaceId={selection.workspaceId}
+                    campaign={campaign}
+                    onCompleted={onSaved}
+                    onTasksChanged={refreshTasks}
+                  />
+                )}
+                <CampaignDeploymentPanel
+                  workspaceId={selection.workspaceId}
+                  campaign={campaign}
+                  data={state.data}
+                  canDeploy={canDeploy}
+                  canManage={canManage}
+                  blocked={
+                    plan.hasUnsaved ||
+                    plan.saving ||
+                    state.busy ||
+                    state.isError
+                  }
+                  onChanged={onReload}
+                />
+              </div>
+            }
             canEditMilestones={editable}
             milestoneBusy={state.busy || plan.saving}
             milestoneBlocked={[...plan.dirtyFields].some(
@@ -193,54 +229,14 @@ function CampaignWorkspaceLoaded({
             }
           />
         )}
-        <aside className="ct-workspace-rail">
-          <div className="ct-strategy-panel">
-            <div className="flex items-center justify-end pb-2">
-              <Badge variant="outline" className="text-[10px]">
-                {t(`campaign.status.${campaign.status}`)}
-              </Badge>
-            </div>
-            <CampaignPlanEditor
-              campaign={campaign}
-              busy={plan.saving}
-              disabled={!editable}
-              onSave={plan.save}
-              onDirty={plan.dirty}
-            />
-          </div>
-          <CampaignDeploymentPanel
-            workspaceId={selection.workspaceId}
-            campaign={campaign}
-            data={state.data}
-            canDeploy={canDeploy}
-            canManage={canManage}
-            blocked={
-              plan.hasUnsaved || plan.saving || state.busy || state.isError
-            }
-            canClose={isManager}
-            onChanged={onReload}
-            onClose={() => setClosing(true)}
-          />
-          <CampaignFeedbackRail
-            workspaceId={selection.workspaceId}
-            campaign={campaign}
-            userId={state.userId}
-            canComment={role === "CLIENT"}
-          />
-        </aside>
       </div>
-      {closing && (
-        <CampaignClosureSection
-          workspaceId={selection.workspaceId}
-          campaign={campaign}
-          onClose={() => setClosing(false)}
-          onCompleted={(value) => {
-            setClosing(false);
-            onSaved(value);
-          }}
-          onTasksChanged={refreshTasks}
-        />
-      )}
+      <CampaignFeedbackRail
+        key={`${state.userId}:${campaign.id}`}
+        workspaceId={selection.workspaceId}
+        campaign={campaign}
+        userId={state.userId}
+        canComment={role === "CLIENT" || isManager}
+      />
       <CampaignTaskDialog
         workspaceId={selection.workspaceId}
         taskId={taskId}
@@ -287,13 +283,7 @@ export function CampaignWorkspace(props: Props) {
     },
     [client, userId, workspaceId],
   );
-  if (query.isPending)
-    return (
-      <div className="space-y-3">
-        <Skeleton className="h-20" />
-        <Skeleton className="h-[65vh]" />
-      </div>
-    );
+  if (query.isPending) return <CampaignLoadingState />;
   if (query.isError)
     return (
       <div role="alert" className="space-y-3">

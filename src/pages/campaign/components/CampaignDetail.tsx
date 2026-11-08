@@ -26,6 +26,7 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import { CampaignStrategyInput } from "@/pages/campaign/components/CampaignStrategyInput";
 import { cn } from "@/lib/utils";
 import type { Campaign, Timeline } from "../types";
 
@@ -254,7 +255,7 @@ export function CampaignDetail({
                                 className={cn(
                                   "h-9 transition-colors",
                                   taskIds.has(item.id)
-                                    ? "cursor-pointer hover:bg-muted/50"
+                                    ? "hover:bg-muted/50 cursor-pointer"
                                     : "hover:bg-muted/30",
                                   expandedWorkItemSubtasks.has(item.id) &&
                                     "bg-muted/20",
@@ -265,20 +266,20 @@ export function CampaignDetail({
                                   }
                                 }}
                               >
-                                <TableCell className="max-w-[200px] px-3 py-2 pl-7 text-xs align-middle sm:max-w-xs">
+                                <TableCell className="max-w-[200px] px-3 py-2 pl-7 align-middle text-xs sm:max-w-xs">
                                   <div className="flex min-w-0 items-center gap-1.5">
                                     <span className="text-muted-foreground/40 text-2xs font-mono select-none">
                                       ↳
                                     </span>
                                     <span
-                                      className="text-foreground truncate font-medium group-hover:text-brand-orange"
+                                      className="text-foreground group-hover:text-brand-orange truncate font-medium"
                                       title={item.name}
                                     >
                                       {item.name}
                                     </span>
                                   </div>
                                 </TableCell>
-                                <TableCell className="px-3 py-2 text-xs align-middle whitespace-nowrap">
+                                <TableCell className="px-3 py-2 align-middle text-xs whitespace-nowrap">
                                   <Badge
                                     variant="outline"
                                     className="text-2xs py-0 font-normal"
@@ -286,7 +287,7 @@ export function CampaignDetail({
                                     {t(`campaign.types.${item.type}`)}
                                   </Badge>
                                 </TableCell>
-                                <TableCell className="px-3 py-2 font-mono text-xs align-middle whitespace-nowrap">
+                                <TableCell className="px-3 py-2 align-middle font-mono text-xs whitespace-nowrap">
                                   <span className="text-muted-foreground text-2xs inline-flex items-center gap-1 tabular-nums">
                                     <Clock className="text-muted-foreground/60 size-3" />
                                     {item.dueDate
@@ -297,14 +298,14 @@ export function CampaignDetail({
                                       : t("campaign.notSet")}
                                   </span>
                                 </TableCell>
-                                <TableCell className="px-3 py-2 text-right text-xs align-middle whitespace-normal">
+                                <TableCell className="px-3 py-2 text-right align-middle text-xs whitespace-normal">
                                   {taskIds.has(item.id) ? (
                                     <div className="inline-flex items-center justify-end gap-1.5 text-right">
                                       <Button
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className="text-brand-orange hover:bg-brand-orange/10 h-7 gap-1 px-2 text-xs font-medium cursor-pointer"
+                                        className="text-brand-orange hover:bg-brand-orange/10 h-7 cursor-pointer gap-1 px-2 text-xs font-medium"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           toggleSubtasks(item.id);
@@ -312,7 +313,10 @@ export function CampaignDetail({
                                       >
                                         <ListTree className="size-3.5" />
                                         <span>
-                                          {t("tasks.subtasks.title", "Subtasks")}
+                                          {t(
+                                            "tasks.subtasks.title",
+                                            "Subtasks",
+                                          )}
                                         </span>
                                         <ChevronDown
                                           className={cn(
@@ -333,7 +337,7 @@ export function CampaignDetail({
                               </TableRow>
                               {taskIds.has(item.id) &&
                                 expandedWorkItemSubtasks.has(item.id) && (
-                                  <TableRow className="bg-muted/10 border-b hover:bg-muted/10">
+                                  <TableRow className="bg-muted/10 hover:bg-muted/10 border-b">
                                     <TableCell colSpan={4} className="p-3 pl-8">
                                       <WorkItemSubtasksList
                                         workspaceId={workspaceId}
@@ -384,7 +388,7 @@ export function CampaignDetail({
                             className={cn(
                               "h-9 transition-colors",
                               taskIds.has(item.id)
-                                ? "cursor-pointer hover:bg-muted/50"
+                                ? "hover:bg-muted/50 cursor-pointer"
                                 : "hover:bg-muted/30",
                               expandedWorkItemSubtasks.has(item.id) &&
                                 "bg-muted/20",
@@ -395,20 +399,20 @@ export function CampaignDetail({
                               }
                             }}
                           >
-                            <TableCell className="max-w-[200px] px-3 py-2 pl-7 text-xs align-middle sm:max-w-xs">
+                            <TableCell className="max-w-[200px] px-3 py-2 pl-7 align-middle text-xs sm:max-w-xs">
                               <div className="flex min-w-0 items-center gap-1.5">
                                 <span className="text-muted-foreground/40 text-2xs font-mono select-none">
                                   ↳
                                 </span>
                                 <span
-                                  className="text-foreground truncate font-medium group-hover:text-brand-orange"
+                                  className="text-foreground group-hover:text-brand-orange truncate font-medium"
                                   title={item.name}
                                 >
                                   {item.name}
                                 </span>
                               </div>
                             </TableCell>
-                            <TableCell className="px-3 py-2 text-xs align-middle whitespace-nowrap">
+                            <TableCell className="px-3 py-2 align-middle text-xs whitespace-nowrap">
                               <Badge
                                 variant="outline"
                                 className="text-2xs py-0 font-normal"
@@ -416,7 +420,7 @@ export function CampaignDetail({
                                 {t(`campaign.types.${item.type}`)}
                               </Badge>
                             </TableCell>
-                            <TableCell className="px-3 py-2 font-mono text-xs align-middle whitespace-nowrap">
+                            <TableCell className="px-3 py-2 align-middle font-mono text-xs whitespace-nowrap">
                               <span className="text-muted-foreground text-2xs inline-flex items-center gap-1 tabular-nums">
                                 <Clock className="text-muted-foreground/60 size-3" />
                                 {item.dueDate
@@ -427,14 +431,14 @@ export function CampaignDetail({
                                   : t("campaign.notSet")}
                               </span>
                             </TableCell>
-                            <TableCell className="px-3 py-2 text-right text-xs align-middle whitespace-normal">
+                            <TableCell className="px-3 py-2 text-right align-middle text-xs whitespace-normal">
                               {taskIds.has(item.id) ? (
                                 <div className="inline-flex items-center justify-end gap-1.5 text-right">
                                   <Button
                                     type="button"
                                     variant="ghost"
                                     size="sm"
-                                    className="text-brand-orange hover:bg-brand-orange/10 h-7 gap-1 px-2 text-xs font-medium cursor-pointer"
+                                    className="text-brand-orange hover:bg-brand-orange/10 h-7 cursor-pointer gap-1 px-2 text-xs font-medium"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       toggleSubtasks(item.id);
@@ -447,9 +451,8 @@ export function CampaignDetail({
                                     <ChevronDown
                                       className={cn(
                                         "size-3 transition-transform duration-200",
-                                        expandedWorkItemSubtasks.has(
-                                          item.id,
-                                        ) && "rotate-180",
+                                        expandedWorkItemSubtasks.has(item.id) &&
+                                          "rotate-180",
                                       )}
                                     />
                                   </Button>
@@ -463,7 +466,7 @@ export function CampaignDetail({
                           </TableRow>
                           {taskIds.has(item.id) &&
                             expandedWorkItemSubtasks.has(item.id) && (
-                              <TableRow className="bg-muted/10 border-b hover:bg-muted/10">
+                              <TableRow className="bg-muted/10 hover:bg-muted/10 border-b">
                                 <TableCell colSpan={4} className="p-3 pl-8">
                                   <WorkItemSubtasksList
                                     workspaceId={workspaceId}
@@ -503,7 +506,7 @@ export function CampaignDetail({
                   <button
                     type="button"
                     onClick={() => setStrategyExpanded(!strategyExpanded)}
-                    className="text-brand-orange hover:text-brand-orange/80 cursor-pointer text-xs font-medium transition-colors shrink-0"
+                    className="text-brand-orange hover:text-brand-orange/80 shrink-0 cursor-pointer text-xs font-medium transition-colors"
                   >
                     {strategyExpanded
                       ? i18n.language.startsWith("vi")
@@ -515,14 +518,17 @@ export function CampaignDetail({
                   </button>
                 )}
             </div>
-            <p
+            <div
               className={cn(
-                "text-muted-foreground text-xs leading-relaxed break-words whitespace-pre-wrap transition-all",
-                !strategyExpanded && "line-clamp-4",
+                "text-muted-foreground text-xs",
+                !strategyExpanded && "max-h-32 overflow-hidden",
               )}
             >
-              {campaign.strategyDetail || t("campaign.notSet")}
-            </p>
+              <CampaignStrategyInput
+                value={campaign.strategyDetail || t("campaign.notSet")}
+                readOnly
+              />
+            </div>
           </div>
 
           {/* b) Dates & Duration Card */}

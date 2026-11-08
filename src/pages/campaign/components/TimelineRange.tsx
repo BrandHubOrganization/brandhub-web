@@ -1,4 +1,8 @@
-import { useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { addDays, dayNumber } from "@/pages/campaign/utils/timelineDates";
 import { TimelineUnscheduledRange } from "@/pages/campaign/components/TimelineUnscheduledRange";
+import { TimelinePendingRange } from "@/pages/campaign/components/TimelinePendingRange";
 import { cn } from "@/lib/utils";
 export function TimelineRange({
   start,
@@ -37,25 +42,42 @@ export function TimelineRange({
   );
   const [form, setForm] = useState<{ start: string; end: string } | null>(null);
   const [open, setOpen] = useState(false);
+  const [committing, setCommitting] = useState(false);
+  const saveLock = useRef(false);
   const shown = preview ?? { start, end };
   const duration =
     start && end
       ? Math.max(1, dayNumber(shown.end) - dayNumber(shown.start) + 1)
       : 0;
   async function save(s: string, e: string) {
-    if (!s || !e || e <= s) return;
+    if (!s || !e || e <= s || busy || saveLock.current) return;
+    saveLock.current = true;
+    setPreview({ start: s, end: e });
+    setCommitting(true);
     try {
       await onSave(s, e);
       setOpen(false);
     } catch {
       /* Mutation reports the error and keeps editor open. */
+    } finally {
+      saveLock.current = false;
+      setCommitting(false);
+      setPreview(null);
     }
   }
   function begin(
     event: ReactPointerEvent<HTMLButtonElement>,
     mode: "move" | "start" | "end",
   ) {
-    if (!editable || busy || !start || !end || event.button !== 0) return;
+    if (
+      !editable ||
+      busy ||
+      saveLock.current ||
+      !start ||
+      !end ||
+      event.button !== 0
+    )
+      return;
     event.preventDefault();
     const button = event.currentTarget;
     const x = event.clientX;
@@ -91,7 +113,7 @@ export function TimelineRange({
       if (button.hasPointerCapture(e.pointerId))
         button.releasePointerCapture(e.pointerId);
       if (!cancel && (next.start !== start || next.end !== end))
-        void save(next.start, next.end).finally(() => setPreview(null));
+        void save(next.start, next.end);
       else setPreview(null);
     };
     const up = (e: PointerEvent) => finish(e);
@@ -106,7 +128,13 @@ export function TimelineRange({
   }
   return (
     <>
-      {start && end ? (
+      {committing && preview ? (
+        <TimelinePendingRange
+          {...preview}
+          viewStart={viewStart}
+          dayWidth={dayWidth}
+        />
+      ) : start && end ? (
         <div
           className={cn(
             "ct-range",

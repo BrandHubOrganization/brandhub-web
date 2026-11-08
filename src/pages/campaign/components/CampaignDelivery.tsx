@@ -46,7 +46,6 @@ export function CampaignDelivery({
   const [deployment, setDeployment] = useState<CampaignDeployment | null>(null);
   const [tasks, setTasks] = useState<CampaignTask[]>([]);
   const [busy, setBusy] = useState(false);
-  const [closing, setClosing] = useState(false);
   const [revision, setRevision] = useState(0);
   const [loadError, setLoadError] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -135,21 +134,6 @@ export function CampaignDelivery({
       setBusy(false);
     }
   }
-
-  if (closing)
-    return (
-      <CampaignClosureSection
-        workspaceId={workspaceId}
-        campaign={campaign}
-        onClose={() => setClosing(false)}
-        onTasksChanged={() => setRevision((value) => value + 1)}
-        onCompleted={(value) => {
-          setClosing(false);
-          onChanged(value);
-          toast.success(t("campaign.delivery.completed"));
-        }}
-      />
-    );
 
   const totalTasks = tasks.length;
   const completedCount = tasks.filter(
@@ -445,18 +429,15 @@ export function CampaignDelivery({
                 </p>
               </div>
             </div>
-            <Button
-              data-campaign-complete
-              variant="orange"
-              size="lg"
-              className="shrink-0 gap-2 font-medium shadow-sm"
-              onClick={() => setClosing(true)}
-            >
-              <ShieldCheck className="size-4" />
-              {t("campaign.closure.cta", {
-                defaultValue: "Nghiệm thu & Đóng chiến dịch",
-              })}
-            </Button>
+            <CampaignClosureSection
+              workspaceId={workspaceId}
+              campaign={campaign}
+              onTasksChanged={() => setRevision((value) => value + 1)}
+              onCompleted={(value) => {
+                onChanged(value);
+                toast.success(t("campaign.delivery.completed"));
+              }}
+            />
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { Spinner } from "@/components/ui/spinner";
+import { CampaignLoadingState } from "@/pages/campaign/components/CampaignLoadingState";
 import { Button } from "@/components/ui/button";
 import CampaignPanel from "@/pages/campaign";
 import { useWorkspaceMediaPackages } from "@/pages/media-package/hooks/useMediaPackages";
@@ -29,7 +29,7 @@ export default function CampaignPage() {
       showGuideButton={false}
       title={t("campaign.title")}
     >
-      {loading && <Spinner />}
+      {loading && <CampaignLoadingState />}
       {!loading && error && (
         <div role="alert">
           {t("campaign.error")}

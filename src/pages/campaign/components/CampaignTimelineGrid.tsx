@@ -59,6 +59,7 @@ export function CampaignTimelineGrid({
   edit,
   onOpenTask,
   campaignDates,
+  campaignActions,
   canEditMilestones,
   milestoneBusy,
   milestoneBlocked,
@@ -73,6 +74,7 @@ export function CampaignTimelineGrid({
   edit: (value: TimelineEdit) => Promise<unknown>;
   onOpenTask: (id: string) => void;
   campaignDates: ReactNode;
+  campaignActions?: ReactNode;
   canEditMilestones: boolean;
   milestoneBusy: boolean;
   milestoneBlocked: boolean;
@@ -483,6 +485,7 @@ export function CampaignTimelineGrid({
     <section className="border-border bg-card ct-timeline-shell flex min-w-0 flex-col overflow-hidden rounded-xl border">
       <div className="border-border flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2">
         {campaignDates}
+        {campaignActions}
       </div>
       <TimelineFilterBar
         filters={filters}
