@@ -10,52 +10,67 @@ import {
 import * as Y from "yjs";
 import { UndoManager } from "yjs";
 import {
+  DEFAULT_FONT_SIZE,
   attrsAtIndex,
   attrsOverRange,
+  caretCoordsFromLaidOutLines,
+  clearRunWrapCache,
   deltaToRuns,
   fontStringFor,
+  indexFromLaidOutLinesPoint,
+  layoutRunLines,
+  measureLinePrefixWidth,
+  snapToCodePointBoundary,
   wrapRuns,
   type AttrsOrMixed,
+  type CaretVisualCoords,
+  type DeltaOp,
+  type LaidOutRunLine,
   type Run,
   type RunAttrs,
 } from "./richText";
-import { FormattingToolbar } from "./FormattingToolbar";
+import { FormattingToolbar, type HeadingPreset } from "./FormattingToolbar";
 import {
   planListContinuation,
   planListToggle,
   type ListKind,
 } from "../listUtils";
+import {
+  copyTextToClipboard,
+  findWordBoundaryLeft,
+  findWordBoundaryRight,
+  parseImportedDocumentToDelta,
+  styleRunText,
+  toPublishText,
+  transformTextCase,
+  type TextCaseMode,
+} from "../contentUtils";
 
 /**
- * Core Google-Docs-style canvas text editor (FR 3.6.10, see
+ * Core Google-Docs / Microsoft-Word style canvas text editor (FR 3.6.10, see
  * brandhub-infrastructure/docs/feature/content-task-workflow/3-6-10-content-writting-view/).
  *
  * Text is drawn on <canvas> (not DOM) — pixel-accurate, avoids cross-browser
  * line-shift. A hidden offscreen contenteditable captures keystrokes/IME
  * (Vietnamese diacritics need compositionstart/update/end, not raw keydown).
- * The blinking cursor is a CSS div positioned from canvas text measurement.
+ * The blinking cursor is a CSS div positioned from exact per-run canvas text
+ * measurement (matching the painted font family, size, bold/italic weight,
+ * and paragraph alignment).
  *
  * Content lives in a Yjs Y.Text (CRDT), not plain React state — see plan.md
  * §6 direction B: concurrent edits from other Creators are merged via Yjs
- * instead of hand-written Operational Transformation. The editor doesn't
- * open the WebSocket connection itself — see useTaskContentSync (caller
- * wires yDoc updates in/out over the wire).
+ * instead of hand-written Operational Transformation.
  */
 
-const FONT_SIZE = 16;
-const LINE_HEIGHT = 24;
+const FONT_SIZE = DEFAULT_FONT_SIZE;
 const FONT = `${FONT_SIZE}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
 const PADDING_X = 24;
 const PADDING_Y = 20;
 
-interface Line {
-  text: string;
-  startIndex: number;
-}
-
 // measureText is the hot path for wrapping/caret math — memoize per
-// font|string. Capped well above anything this short-form editor will ever
-// see; a real cache-eviction policy would be overkill here.
+// font|string. Always sets `ctx.font = font` before measuring so bold/italic,
+// custom font families (Georgia, Courier New, Times New Roman, Script, etc.),
+// and custom font sizes (10..64px) are measured with their exact glyph widths.
 const measureCache = new Map<string, number>();
 const MEASURE_CACHE_LIMIT = 5000;
 function measureWidth(
@@ -63,137 +78,17 @@ function measureWidth(
   font: string,
   str: string,
 ): number {
+  if (str.length === 0) return 0;
   const key = font + "|" + str;
   const cached = measureCache.get(key);
   if (cached !== undefined) return cached;
+  if (ctx.font !== font) {
+    ctx.font = font;
+  }
   const width = ctx.measureText(str).width;
   if (measureCache.size >= MEASURE_CACHE_LIMIT) measureCache.clear();
   measureCache.set(key, width);
   return width;
-}
-
-// Per-paragraph wrap cache — re-wrapping the whole document on every
-// keystroke is the main source of input lag. Keyed by paragraph text + the
-// layout inputs that affect wrapping, so editing one paragraph never
-// invalidates the others.
-const wrapCache = new Map<string, Line[]>();
-
-function wrapParagraph(
-  ctx: CanvasRenderingContext2D,
-  font: string,
-  paragraph: string,
-  maxWidth: number,
-): Line[] {
-  if (paragraph === "") return [{ text: "", startIndex: 0 }];
-
-  const cacheKey = `${font}|${maxWidth}|${paragraph}`;
-  const cached = wrapCache.get(cacheKey);
-  if (cached) return cached;
-
-  const lines: Line[] = [];
-  let current = "";
-  let currentStart = 0;
-  const words = paragraph.split(/(\s+)/);
-
-  for (const word of words) {
-    const candidate = current + word;
-    if (current !== "" && measureWidth(ctx, font, candidate) > maxWidth) {
-      lines.push({ text: current, startIndex: currentStart });
-      currentStart += current.length;
-      current = word;
-    } else {
-      current = candidate;
-    }
-  }
-  lines.push({ text: current, startIndex: currentStart });
-
-  wrapCache.set(cacheKey, lines);
-  return lines;
-}
-
-function wrapLines(
-  ctx: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number,
-): Line[] {
-  const paragraphs = text.split("\n");
-  const lines: Line[] = [];
-  let globalIndex = 0;
-
-  for (const paragraph of paragraphs) {
-    const paragraphLines = wrapParagraph(ctx, FONT, paragraph, maxWidth);
-    for (const line of paragraphLines) {
-      lines.push({
-        text: line.text,
-        startIndex: globalIndex + line.startIndex,
-      });
-    }
-    const lastLine = paragraphLines[paragraphLines.length - 1];
-    globalIndex += lastLine.startIndex + lastLine.text.length + 1; // +1 for the "\n" consumed between paragraphs
-  }
-
-  return lines;
-}
-
-function caretCoordsFromIndex(
-  ctx: CanvasRenderingContext2D,
-  lines: Line[],
-  index: number,
-): { x: number; lineIndex: number } {
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const lineEnd = line.startIndex + line.text.length;
-    const isLastLine = i === lines.length - 1;
-    if (index <= lineEnd || isLastLine) {
-      const offset = Math.max(
-        0,
-        Math.min(index - line.startIndex, line.text.length),
-      );
-      const x = measureWidth(ctx, FONT, line.text.slice(0, offset));
-      return { x, lineIndex: i };
-    }
-  }
-  return { x: 0, lineIndex: 0 };
-}
-
-// Binary search over character offset — measureWidth(prefix) is monotonic
-// non-decreasing for LTR text, so this turns click-to-caret from O(n) into
-// O(log n) measureText calls.
-function indexFromPoint(
-  ctx: CanvasRenderingContext2D,
-  lines: Line[],
-  clickX: number,
-  clickY: number,
-): number {
-  const lineIndex = Math.max(
-    0,
-    Math.min(Math.floor(clickY / LINE_HEIGHT), lines.length - 1),
-  );
-  const line = lines[lineIndex];
-  if (!line) return 0;
-
-  let lo = 0;
-  let hi = line.text.length;
-  while (lo < hi) {
-    const mid = Math.ceil((lo + hi) / 2);
-    const width = measureWidth(ctx, FONT, line.text.slice(0, mid));
-    if (width <= clickX) {
-      lo = mid;
-    } else {
-      hi = mid - 1;
-    }
-  }
-
-  // lo now sits just at-or-before clickX; check whether lo+1 is actually closer.
-  const widthLo = measureWidth(ctx, FONT, line.text.slice(0, lo));
-  const widthNext =
-    lo < line.text.length
-      ? measureWidth(ctx, FONT, line.text.slice(0, lo + 1))
-      : widthLo;
-  const bestOffset =
-    Math.abs(widthNext - clickX) < Math.abs(widthLo - clickX) ? lo + 1 : lo;
-
-  return line.startIndex + bestOffset;
 }
 
 export interface PeerCursor {
@@ -222,6 +117,12 @@ export interface CanvasTextEditorProps {
 export interface CanvasTextEditorHandle {
   /** Insert a string at the current caret position. */
   insertText: (value: string) => void;
+  /** Apply imported Delta operations (from Google Docs / .docx / .md / .txt) into the editor. */
+  applyDeltaOps: (ops: DeltaOp[], mode?: "replace" | "append") => void;
+  /** Transform casing of selection or entire document. */
+  transformCase: (mode: TextCaseMode) => void;
+  /** Wrap active selection with prefix/suffix callout markers. */
+  wrapSelection: (prefix: string, suffix: string) => void;
 }
 
 export const CanvasTextEditor = forwardRef<
@@ -240,33 +141,31 @@ export const CanvasTextEditor = forwardRef<
     // local-only (remote edits are not undoable by this client).
     const undoManager = useMemo(
       () => new UndoManager(yTextRef.current, { captureTimeout: 500 }),
-       
       [],
     );
 
-    // Expose insertText so the parent (ContentWritingPage) can insert emojis
-    // or other text at the current caret position without reaching into internals.
+    // Expose imperative methods so the parent (ContentWritingPage) can insert
+    // emojis, import Google Docs / .docx Delta operations, or trigger creative tools.
     useImperativeHandle(ref, () => ({
       insertText: (value: string) => {
         hiddenInputRef.current?.focus();
-        // Use a microtask so focus settles before the Yjs insert (avoids a
-        // timing issue where the caret position reads stale before focus lands).
         Promise.resolve().then(() => insertAtCaret(value));
+      },
+      applyDeltaOps: (ops: DeltaOp[], mode = "replace") => {
+        applyImportedDeltaOps(ops, mode);
+      },
+      transformCase: (mode: TextCaseMode) => {
+        handleTransformCase(mode);
+      },
+      wrapSelection: (prefix: string, suffix: string) => {
+        handleWrapSelection(prefix, suffix);
       },
     }));
 
     const [text, setText] = useState(() => yTextRef.current.toString());
-    // Mirrors `text`/`canvasWidth` for the window-level mousemove/mouseup
-    // listeners (bound once, see the drag-selection effect below) — those
-    // closures would otherwise see the text/width from whichever render
-    // happened to be active when the effect last ran, not the current value.
     const textRef = useRef(text);
     textRef.current = text;
     const [caretIndex, setCaretIndexState] = useState(0);
-    // caretIndex (state) lags a render behind rapid consecutive keystrokes —
-    // yText.insert() needs the true current position synchronously, not a
-    // stale value from the last completed render, or fast typing inserts
-    // every character at the same spot (or the wrong spot after a delete).
     const caretIndexRef = useRef(0);
     const setCaretIndex = useCallback(
       (updater: number | ((prev: number) => number)) => {
@@ -279,9 +178,9 @@ export const CanvasTextEditor = forwardRef<
       },
       [],
     );
+
     // Selection range — anchor is where the drag/shift-select started, focus
-    // is the end currently being moved. Never pre-sorted: Shift+Home/End and
-    // reversed drags need to know which end is "moving".
+    // is the end currently being moved.
     const [selection, setSelectionState] = useState<{
       anchor: number;
       focus: number;
@@ -300,9 +199,7 @@ export const CanvasTextEditor = forwardRef<
     const isDraggingRef = useRef(false);
 
     // Runs derived from yText.toDelta() — the attributed-text source of
-    // truth for rendering. Kept alongside the plain `text` string: caret
-    // math/wrapping for plain measurement stays on `text` (unchanged,
-    // already correct), only the paint step reads `runs`.
+    // truth for both rendering and caret/click/selection geometry.
     const [runs, setRunsState] = useState<Run[]>(() =>
       deltaToRuns(yTextRef.current.toDelta()),
     );
@@ -311,9 +208,9 @@ export const CanvasTextEditor = forwardRef<
       runsRef.current = next;
       setRunsState(next);
     }, []);
+
     // Format for the next typed character when there's no active selection —
-    // Google Docs' "click Bold, keep typing" behavior. Reset on any plain
-    // (non-shift) caret move.
+    // Google Docs' "click Bold, keep typing" behavior.
     const [pendingAttrs, setPendingAttrsState] = useState<RunAttrs>({});
     const pendingAttrsRef = useRef(pendingAttrs);
     const setPendingAttrs = useCallback((next: RunAttrs) => {
@@ -322,26 +219,22 @@ export const CanvasTextEditor = forwardRef<
     }, []);
 
     const [isComposing, setIsComposing] = useState(false);
-    // In-progress IME syllable (Vietnamese Unikey/Telex/VNI), updated on every
-    // compositionupdate. Spliced into the rendered text at the caret so the
-    // user sees what they're typing immediately — without this, the canvas
-    // shows nothing until compositionend fires, which looks like "nothing
-    // happens until I press Tab/Space" even though composition is working
-    // correctly under the hood. Never written to Y.Text until commit.
     const [compositionPreview, setCompositionPreview] = useState<string | null>(
       null,
     );
     const [isFocused, setIsFocused] = useState(false);
-    const [caretPos, setCaretPos] = useState({ x: 0, y: 0 });
+    const [caretPos, setCaretPos] = useState<CaretVisualCoords>({
+      x: PADDING_X,
+      y: PADDING_Y,
+      height: FONT_SIZE + 4,
+      lineIndex: 0,
+      baselineY: PADDING_Y + FONT_SIZE,
+    });
     const [canvasWidth, setCanvasWidth] = useState(800);
     const canvasWidthRef = useRef(canvasWidth);
     canvasWidthRef.current = canvasWidth;
 
-    // yText is the source of truth; local caretIndex/selection just track this
-    // client's cursor position and are nudged when remote edits land before
-    // them — same delta-accumulation logic applied to both, since a remote
-    // edit during an active local selection must shift the highlight exactly
-    // as it shifts the caret, or the two desync from the real text.
+    // Observe Y.Text mutations (both local and remote)
     useEffect(() => {
       const yText = yTextRef.current;
       const observer = (event: Y.YTextEvent) => {
@@ -392,12 +285,11 @@ export const CanvasTextEditor = forwardRef<
       };
       yText.observe(observer);
       return () => yText.unobserve(observer);
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- caretIndex/selection read via closure intentionally, re-subscribing per keystroke would be wasteful
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- caretIndex/selection read via closure intentionally
     }, []);
 
     // Composed display text = committed text with the in-progress IME
-    // syllable spliced in at the caret. Y.Text itself is untouched until
-    // compositionend commits — this only affects what's drawn.
+    // syllable spliced in at the caret.
     const displayText = compositionPreview
       ? text.slice(0, caretIndex) + compositionPreview + text.slice(caretIndex)
       : text;
@@ -405,17 +297,15 @@ export const CanvasTextEditor = forwardRef<
       ? caretIndex + compositionPreview.length
       : caretIndex;
 
-    // Runs with the in-progress IME syllable spliced in as a plain-attrs run
-    // at the caret — mirrors displayText's splice but for the attributed
-    // model. Reuses the attrs at the caret so the preview doesn't visually
-    // jump when it commits.
-    // Memoized: a fresh array every render would change `render`'s identity,
-    // re-fire its effect, and (via setCaretPos) loop forever while composing.
+    // Runs with the in-progress IME syllable spliced in at the caret
     const displayRuns: Run[] = useMemo(
       () =>
         compositionPreview
           ? (() => {
-              const caretAttrs = attrsAtIndex(runs, caretIndex);
+              const caretAttrs = {
+                ...attrsAtIndex(runs, caretIndex),
+                ...pendingAttrs,
+              };
               const before: Run[] = [];
               const after: Run[] = [];
               for (const run of runs) {
@@ -447,7 +337,29 @@ export const CanvasTextEditor = forwardRef<
               return [...before, previewRun, ...after];
             })()
           : runs,
-      [runs, compositionPreview, caretIndex],
+      [runs, compositionPreview, caretIndex, pendingAttrs],
+    );
+
+    const getLaidOutLines = useCallback(
+      (
+        ctx: CanvasRenderingContext2D,
+        targetRuns: Run[],
+        width: number,
+        fallback?: RunAttrs,
+      ): LaidOutRunLine[] => {
+        const maxTextWidth = Math.max(80, width - PADDING_X * 2);
+        const rawLines = wrapRuns(ctx, targetRuns, maxTextWidth, measureWidth);
+        return layoutRunLines(
+          ctx,
+          rawLines,
+          maxTextWidth,
+          PADDING_X,
+          PADDING_Y,
+          measureWidth,
+          fallback,
+        );
+      },
+      [],
     );
 
     const render = useCallback(() => {
@@ -457,22 +369,28 @@ export const CanvasTextEditor = forwardRef<
 
       const dpr = window.devicePixelRatio || 1;
       const cssWidth = canvasWidth;
-      const maxTextWidth = cssWidth - PADDING_X * 2;
-
-      ctx.font = FONT;
-      const lines = wrapLines(ctx, displayText, maxTextWidth);
-      const runLines = wrapRuns(ctx, displayRuns, maxTextWidth, measureWidth);
-      const cssHeight = Math.max(
-        200,
-        lines.length * LINE_HEIGHT + PADDING_Y * 2,
+      const activeCaretAttrs = {
+        ...attrsAtIndex(displayRuns, displayCaretIndex),
+        ...pendingAttrs,
+      };
+      const laidOutLines = getLaidOutLines(
+        ctx,
+        displayRuns,
+        cssWidth,
+        activeCaretAttrs,
       );
+      const lastLine = laidOutLines[laidOutLines.length - 1];
+      const totalLinesBottom = lastLine
+        ? lastLine.yTop + lastLine.lineHeight
+        : PADDING_Y + 24;
+      const cssHeight = Math.max(460, totalLinesBottom + PADDING_Y * 2);
 
       if (
-        canvas.width !== cssWidth * dpr ||
-        canvas.height !== cssHeight * dpr
+        canvas.width !== Math.round(cssWidth * dpr) ||
+        canvas.height !== Math.round(cssHeight * dpr)
       ) {
-        canvas.width = cssWidth * dpr;
-        canvas.height = cssHeight * dpr;
+        canvas.width = Math.round(cssWidth * dpr);
+        canvas.height = Math.round(cssHeight * dpr);
         canvas.style.width = `${cssWidth}px`;
         canvas.style.height = `${cssHeight}px`;
       }
@@ -482,76 +400,83 @@ export const CanvasTextEditor = forwardRef<
       ctx.font = FONT;
       ctx.textBaseline = "alphabetic";
 
-      // Selection highlight band, drawn before the text so glyphs paint on
-      // top of it. Composition preview and active selection don't coexist in
-      // practice (typing collapses selection first), so displayText's indices
-      // are safe to use directly here.
+      // Subtle Google Docs corner margin crop marks (visual-only)
+      ctx.strokeStyle = "rgba(154, 160, 166, 0.35)";
+      ctx.lineWidth = 1;
+      const cropLen = 8;
+      // Top-left margin corner
+      ctx.beginPath();
+      ctx.moveTo(PADDING_X - cropLen, PADDING_Y);
+      ctx.lineTo(PADDING_X, PADDING_Y);
+      ctx.lineTo(PADDING_X, PADDING_Y - cropLen);
+      // Top-right margin corner
+      ctx.moveTo(cssWidth - PADDING_X + cropLen, PADDING_Y);
+      ctx.lineTo(cssWidth - PADDING_X, PADDING_Y);
+      ctx.lineTo(cssWidth - PADDING_X, PADDING_Y - cropLen);
+      ctx.stroke();
+
+      // Empty document placeholder on canvas (like Google Docs "Nhập @ để chèn...")
+      if (displayText.length === 0) {
+        ctx.font = `italic ${FONT_SIZE}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+        ctx.fillStyle = "#9aa0a6";
+        ctx.fillText(
+          "Bắt đầu soạn thảo bài đăng hoặc nhấn 'Nhập Google Docs / File' để tự động điền nội dung…",
+          PADDING_X,
+          PADDING_Y + FONT_SIZE,
+        );
+        ctx.font = FONT;
+      }
+
+      // 1. Selection highlight band, drawn using exact per-run measurements and lineStartX
       if (selection && selection.anchor !== selection.focus) {
         const selStart = Math.min(selection.anchor, selection.focus);
         const selEnd = Math.max(selection.anchor, selection.focus);
-        ctx.fillStyle = "rgba(66, 133, 244, 0.35)";
-        lines.forEach((line, i) => {
+        ctx.fillStyle = "rgba(66, 133, 244, 0.28)";
+        for (const line of laidOutLines) {
           const lineStart = line.startIndex;
           const lineEnd = line.startIndex + line.text.length;
           const rangeStart = Math.max(selStart, lineStart);
           const rangeEnd = Math.min(selEnd, lineEnd);
-          if (rangeStart >= rangeEnd) return;
-          const x1 = measureWidth(
+          if (rangeStart >= rangeEnd) continue;
+          const x1 = measureLinePrefixWidth(
             ctx,
-            FONT,
-            line.text.slice(0, rangeStart - lineStart),
+            line,
+            rangeStart - lineStart,
+            measureWidth,
           );
-          const x2 = measureWidth(
+          const x2 = measureLinePrefixWidth(
             ctx,
-            FONT,
-            line.text.slice(0, rangeEnd - lineStart),
+            line,
+            rangeEnd - lineStart,
+            measureWidth,
           );
           ctx.fillRect(
-            PADDING_X + x1,
-            PADDING_Y + i * LINE_HEIGHT,
-            x2 - x1,
-            LINE_HEIGHT,
+            line.lineStartX + x1,
+            line.yTop,
+            Math.max(2, x2 - x1),
+            line.lineHeight,
           );
-        });
+        }
       }
 
-      // Per-run paint: each segment gets its own font/color/decoration. Line
-      // y-offsets come from the plain-text `lines` (identical wrap points,
-      // since wrapRuns mirrors the same word-break algorithm) — runLines are
-      // only consulted for their per-segment styling.
-      runLines.forEach((runLine, i) => {
-        const align = runLine.segments[0]?.attrs.align ?? "left";
-        const lineWidth = runLine.segments.reduce(
-          (sum, seg) =>
-            sum + measureWidth(ctx, fontStringFor(seg.attrs), seg.text),
-          0,
-        );
-        const lineStartX =
-          align === "center"
-            ? PADDING_X + (maxTextWidth - lineWidth) / 2
-            : align === "right"
-              ? PADDING_X + (maxTextWidth - lineWidth)
-              : PADDING_X;
-
-        let x = lineStartX;
-        const y = PADDING_Y + i * LINE_HEIGHT + FONT_SIZE;
-        for (const segment of runLine.segments) {
-          ctx.font = fontStringFor(segment.attrs);
-          ctx.fillStyle = segment.attrs.color ?? "#1f2937";
-          const w = measureWidth(
-            ctx,
-            fontStringFor(segment.attrs),
-            segment.text,
-          );
+      // 2. Per-run paint: each segment gets its exact font, size, color, highlight, and decoration
+      for (const line of laidOutLines) {
+        let x = line.lineStartX;
+        const y = line.baselineY;
+        for (const segment of line.segments) {
+          const fontStr = fontStringFor(segment.attrs);
+          const segFontSize = segment.attrs.size ?? FONT_SIZE;
+          const w = measureWidth(ctx, fontStr, segment.text);
           if (segment.attrs.highlight) {
             ctx.fillStyle = segment.attrs.highlight;
-            ctx.fillRect(x, PADDING_Y + i * LINE_HEIGHT, w, LINE_HEIGHT);
-            ctx.fillStyle = segment.attrs.color ?? "#1f2937";
+            ctx.fillRect(x, line.yTop, w, line.lineHeight);
           }
+          ctx.font = fontStr;
+          ctx.fillStyle = segment.attrs.color ?? "#1f2937";
           ctx.fillText(segment.text, x, y);
           if (segment.attrs.underline || segment.attrs.link) {
             ctx.strokeStyle = ctx.fillStyle as string;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = Math.max(1, Math.round(segFontSize / 14));
             ctx.beginPath();
             ctx.moveTo(x, y + 2);
             ctx.lineTo(x + w, y + 2);
@@ -559,65 +484,92 @@ export const CanvasTextEditor = forwardRef<
           }
           if (segment.attrs.strikethrough) {
             ctx.strokeStyle = ctx.fillStyle as string;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = Math.max(1, Math.round(segFontSize / 14));
             ctx.beginPath();
-            ctx.moveTo(x, y - FONT_SIZE * 0.3);
-            ctx.lineTo(x + w, y - FONT_SIZE * 0.3);
+            ctx.moveTo(x, y - segFontSize * 0.3);
+            ctx.lineTo(x + w, y - segFontSize * 0.3);
             ctx.stroke();
           }
           x += w;
         }
-      });
+      }
       ctx.font = FONT;
 
+      // 3. IME composition underline
       if (compositionPreview) {
-        const start = caretCoordsFromIndex(ctx, lines, caretIndex);
-        const end = caretCoordsFromIndex(
+        const start = caretCoordsFromLaidOutLines(
           ctx,
-          lines,
+          laidOutLines,
+          caretIndex,
+          measureWidth,
+          activeCaretAttrs,
+        );
+        const end = caretCoordsFromLaidOutLines(
+          ctx,
+          laidOutLines,
           caretIndex + compositionPreview.length,
+          measureWidth,
+          activeCaretAttrs,
         );
         if (start.lineIndex === end.lineIndex) {
-          const y = PADDING_Y + start.lineIndex * LINE_HEIGHT + FONT_SIZE + 2;
+          const y = start.baselineY + 2;
           ctx.strokeStyle = "#1f2937";
-          ctx.lineWidth = 1;
+          ctx.lineWidth = 1.5;
           ctx.beginPath();
-          ctx.moveTo(PADDING_X + start.x, y);
-          ctx.lineTo(PADDING_X + end.x, y);
+          ctx.moveTo(start.x, y);
+          ctx.lineTo(end.x, y);
           ctx.stroke();
         }
       }
 
-      const { x, lineIndex } = caretCoordsFromIndex(
+      // 4. Local Caret Position — computed from the exact same laidOutLines
+      const nextCaret = caretCoordsFromLaidOutLines(
         ctx,
-        lines,
+        laidOutLines,
         displayCaretIndex,
+        measureWidth,
+        activeCaretAttrs,
       );
-      const nextX = PADDING_X + x;
-      const nextY = PADDING_Y + lineIndex * LINE_HEIGHT;
-      // Same position → keep the previous object so React bails out of the re-render.
       setCaretPos((prev) =>
-        prev.x === nextX && prev.y === nextY ? prev : { x: nextX, y: nextY },
+        prev.x === nextCaret.x &&
+        prev.y === nextCaret.y &&
+        prev.height === nextCaret.height &&
+        prev.lineIndex === nextCaret.lineIndex
+          ? prev
+          : nextCaret,
       );
     }, [
-      displayText,
       displayRuns,
       displayCaretIndex,
       caretIndex,
       compositionPreview,
       canvasWidth,
       selection,
+      pendingAttrs,
+      getLaidOutLines,
     ]);
 
     useEffect(() => {
       render();
     }, [render]);
 
-    // Publishes this client's caret/selection to awareness while focused.
-    // Only skips the call on blur — it doesn't clear the peer-visible
-    // cursor, since a brief toolbar click (also a blur) shouldn't flash a
-    // peer's marker away and back; useTaskContentSync.awareness.destroy()
-    // on unmount is what actually removes it when the Creator leaves.
+    // Re-measure and re-render once browser web fonts finish loading so
+    // custom fonts never keep stale fallback widths.
+    useEffect(() => {
+      let active = true;
+      if (typeof document !== "undefined" && document.fonts?.ready) {
+        document.fonts.ready.then(() => {
+          if (!active) return;
+          measureCache.clear();
+          clearRunWrapCache();
+          render();
+        });
+      }
+      return () => {
+        active = false;
+      };
+    }, [render]);
+
     useEffect(() => {
       if (isFocused) onCursorChange?.(caretIndex, selection);
     }, [caretIndex, selection, isFocused, onCursorChange]);
@@ -625,9 +577,13 @@ export const CanvasTextEditor = forwardRef<
     useEffect(() => {
       const container = containerRef.current;
       if (!container) return;
+      const initialWidth = container.clientWidth;
+      if (initialWidth > 0) {
+        setCanvasWidth(initialWidth);
+      }
       const observer = new ResizeObserver((entries) => {
         const width = entries[0]?.contentRect.width;
-        if (width) setCanvasWidth(width);
+        if (width && width > 0) setCanvasWidth(width);
       });
       observer.observe(container);
       return () => observer.disconnect();
@@ -642,10 +598,10 @@ export const CanvasTextEditor = forwardRef<
       hiddenInputRef.current?.focus();
     }, []);
 
-    // Reads text/canvasWidth via ref, not the closed-over state value — this
-    // is called from the window-level drag-selection listeners (bound once,
-    // see below), which would otherwise see whatever text/width was current
-    // when that effect last ran instead of the live value.
+    /**
+     * Converts a mouse event's viewport coordinates `(clientX, clientY)` into
+     * the exact document character index under the pointer.
+     */
     const indexFromEvent = (
       clientX: number,
       clientY: number,
@@ -654,15 +610,25 @@ export const CanvasTextEditor = forwardRef<
       const ctx = canvas?.getContext("2d");
       if (!canvas || !ctx) return null;
       const rect = canvas.getBoundingClientRect();
-      const x = clientX - rect.left - PADDING_X;
-      const y = clientY - rect.top - PADDING_Y;
-      ctx.font = FONT;
-      const lines = wrapLines(
+      const effectiveWidth =
+        rect.width > 0 ? canvasWidthRef.current : canvasWidthRef.current;
+      const scaleX = rect.width > 0 ? effectiveWidth / rect.width : 1;
+      const canvasX = (clientX - rect.left) * scaleX;
+      const canvasY = clientY - rect.top;
+
+      const laidOutLines = getLaidOutLines(
         ctx,
-        textRef.current,
-        canvasWidthRef.current - PADDING_X * 2,
+        runsRef.current,
+        effectiveWidth,
+        pendingAttrsRef.current,
       );
-      return indexFromPoint(ctx, lines, x, y);
+      return indexFromLaidOutLinesPoint(
+        ctx,
+        laidOutLines,
+        canvasX,
+        canvasY,
+        measureWidth,
+      );
     };
 
     const handleCanvasMouseDown = (
@@ -670,15 +636,68 @@ export const CanvasTextEditor = forwardRef<
     ) => {
       const index = indexFromEvent(event.clientX, event.clientY);
       if (index === null) return;
+
+      // Triple-click (event.detail >= 3) selects the entire paragraph, matching Google Docs / Word
+      if (event.detail >= 3) {
+        const t = textRef.current;
+        const paraStart = t.lastIndexOf("\n", Math.max(0, index - 1)) + 1;
+        const nextBreak = t.indexOf("\n", index);
+        const paraEnd = nextBreak === -1 ? t.length : nextBreak;
+        isDraggingRef.current = false;
+        setSelection({ anchor: paraStart, focus: paraEnd });
+        setCaretIndex(paraEnd);
+        setPendingAttrs({});
+        focusHiddenInput();
+        return;
+      }
+
+      // Double-click (event.detail === 2) is handled by onDoubleClick — avoid resetting selection
+      if (event.detail === 2) {
+        isDraggingRef.current = false;
+        focusHiddenInput();
+        return;
+      }
+
       isDraggingRef.current = true;
-      setCaretIndex(index);
-      setSelection({ anchor: index, focus: index });
+      if (event.shiftKey) {
+        const anchor = selectionRef.current?.anchor ?? caretIndexRef.current;
+        setSelection(anchor === index ? null : { anchor, focus: index });
+        setCaretIndex(index);
+      } else {
+        setCaretIndex(index);
+        setSelection({ anchor: index, focus: index });
+      }
       setPendingAttrs({});
       focusHiddenInput();
     };
 
-    // Mouse-drag selection: window-level listeners while dragging, mirroring
-    // the ResizeObserver effect's lifecycle pattern (attach only while active).
+    // Double-click on canvas selects the word under the cursor, matching Google Docs / Word
+    const handleCanvasDoubleClick = (
+      event: React.MouseEvent<HTMLCanvasElement>,
+    ) => {
+      const index = indexFromEvent(event.clientX, event.clientY);
+      if (index === null) return;
+      const t = textRef.current;
+      if (t.length === 0) return;
+
+      const isWordChar = (ch: string) => /[^\s.,;!?()[\]{}"'“”‘’<>\\/|]/.test(ch);
+      let start = Math.min(index, t.length);
+      let end = start;
+      if (start > 0 && !isWordChar(t[start] ?? "") && isWordChar(t[start - 1])) {
+        start -= 1;
+        end = start;
+      }
+      while (start > 0 && isWordChar(t[start - 1])) start--;
+      while (end < t.length && isWordChar(t[end])) end++;
+
+      if (end > start) {
+        setSelection({ anchor: start, focus: end });
+        setCaretIndex(end);
+      }
+      focusHiddenInput();
+    };
+
+    // Mouse-drag selection: window-level listeners while dragging
     useEffect(() => {
       const handleMouseMove = (event: MouseEvent) => {
         if (!isDraggingRef.current) return;
@@ -694,8 +713,6 @@ export const CanvasTextEditor = forwardRef<
       const handleMouseUp = () => {
         if (!isDraggingRef.current) return;
         isDraggingRef.current = false;
-        // A plain click (no actual drag) collapses to a caret move, not a
-        // zero-width selection.
         setSelection((prev) =>
           prev && prev.anchor === prev.focus ? null : prev,
         );
@@ -706,7 +723,7 @@ export const CanvasTextEditor = forwardRef<
         window.removeEventListener("mousemove", handleMouseMove);
         window.removeEventListener("mouseup", handleMouseUp);
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- text/canvasWidth read via closure (indexFromEvent), re-binding window listeners per keystroke would be wasteful
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- reads live refs
     }, []);
 
     const clearSelection = () => setSelection(null);
@@ -727,11 +744,6 @@ export const CanvasTextEditor = forwardRef<
     const insertAtCaret = (value: string) => {
       const collapsedAt = deleteSelectionIfAny();
       const at = collapsedAt ?? caretIndexRef.current;
-      // Inherit the left-neighbor's formatting by default (typing continues
-      // whatever style surrounds the caret), overridden by any pendingAttrs
-      // set via the toolbar with no active selection — same precedence as
-      // Google Docs' "click Bold, keep typing". Yjs rejects attribute objects
-      // carrying explicit `undefined` values, so strip those out first.
       const merged = {
         ...attrsAtIndex(runsRef.current, at),
         ...pendingAttrsRef.current,
@@ -747,24 +759,30 @@ export const CanvasTextEditor = forwardRef<
       setCaretIndex(at + value.length);
     };
 
-    const deleteBackward = () => {
+    const deleteBackward = (byWord = false) => {
       if (deleteSelectionIfAny() !== null) return;
-      if (caretIndexRef.current === 0) return;
-      yTextRef.current.delete(caretIndexRef.current - 1, 1);
-      setCaretIndex((prev) => prev - 1);
+      const cur = caretIndexRef.current;
+      if (cur === 0) return;
+      const prevBoundary = byWord
+        ? findWordBoundaryLeft(textRef.current, cur)
+        : snapToCodePointBoundary(textRef.current, cur - 1, "left");
+      const deleteLen = Math.max(1, cur - prevBoundary);
+      yTextRef.current.delete(prevBoundary, deleteLen);
+      setCaretIndex(prevBoundary);
     };
 
-    const deleteForward = () => {
+    const deleteForward = (byWord = false) => {
       if (deleteSelectionIfAny() !== null) return;
-      if (caretIndexRef.current >= yTextRef.current.length) return;
-      yTextRef.current.delete(caretIndexRef.current, 1);
+      const cur = caretIndexRef.current;
+      if (cur >= yTextRef.current.length) return;
+      const nextBoundary = byWord
+        ? findWordBoundaryRight(textRef.current, cur)
+        : snapToCodePointBoundary(textRef.current, cur + 1, "right");
+      const deleteLen = Math.max(1, nextBoundary - cur);
+      yTextRef.current.delete(cur, deleteLen);
     };
 
     // --- Formatting toolbar wiring -------------------------------------
-    // Every format action branches on whether there's an active selection:
-    // a non-collapsed selection formats that range directly via
-    // yText.format(); with no selection it just updates pendingAttrs for the
-    // next typed character (Google Docs' "click Bold, keep typing").
 
     const currentSelRange = (): { start: number; end: number } | null => {
       const sel = selectionRef.current;
@@ -783,6 +801,7 @@ export const CanvasTextEditor = forwardRef<
       } else {
         setPendingAttrs({ ...pendingAttrsRef.current, ...patch });
       }
+      hiddenInputRef.current?.focus();
     };
 
     const currentAttrs = (): AttrsOrMixed => {
@@ -801,7 +820,10 @@ export const CanvasTextEditor = forwardRef<
 
     const clearFormatting = () => {
       const range = currentSelRange();
-      if (!range) return;
+      if (!range) {
+        setPendingAttrs({});
+        return;
+      }
       yTextRef.current.format(range.start, range.end - range.start, {
         bold: undefined,
         italic: undefined,
@@ -815,6 +837,7 @@ export const CanvasTextEditor = forwardRef<
       });
       setRuns(deltaToRuns(yTextRef.current.toDelta()));
       setPendingAttrs({});
+      hiddenInputRef.current?.focus();
     };
 
     const setColor = (color: string | undefined) => applyFormat({ color });
@@ -824,7 +847,7 @@ export const CanvasTextEditor = forwardRef<
     const setFontSize = (size: number | undefined) => applyFormat({ size });
     const setLink = (link: string | undefined) => applyFormat({ link });
 
-    /** Alignment is paragraph-scoped: finds the paragraph's full char range around the caret (or selection) and formats the whole thing via Y.Text, regardless of what's selected. */
+    /** Alignment is paragraph-scoped: finds the paragraph's full char range around the caret (or selection) and formats the whole thing via Y.Text. */
     const setAlign = (align: RunAttrs["align"]) => {
       const t = textRef.current;
       const sel = selectionRef.current;
@@ -834,17 +857,18 @@ export const CanvasTextEditor = forwardRef<
       const focusIndex = sel
         ? Math.max(sel.anchor, sel.focus)
         : caretIndexRef.current;
-      const paraStart = t.lastIndexOf("\n", anchorIndex - 1) + 1;
+      const paraStart = t.lastIndexOf("\n", Math.max(0, anchorIndex - 1)) + 1;
       const nextBreak = t.indexOf("\n", focusIndex);
       const paraEnd = nextBreak === -1 ? t.length : nextBreak;
       if (paraEnd > paraStart) {
         yTextRef.current.format(paraStart, paraEnd - paraStart, { align });
         setRuns(deltaToRuns(yTextRef.current.toDelta()));
+      } else {
+        setPendingAttrs({ ...pendingAttrsRef.current, align });
       }
+      hiddenInputRef.current?.focus();
     };
 
-    // List logic (prefix toggling, Enter continuation) is pure and lives in
-    // ../listUtils so it can be unit-tested without the canvas.
     const toggleList = (kind: ListKind) => {
       const sel = selectionRef.current;
       const from = sel ? sel.anchor : caretIndexRef.current;
@@ -859,12 +883,207 @@ export const CanvasTextEditor = forwardRef<
       });
       setSelection(null);
       setCaretIndex(caret);
-      // Clicking the toolbar button moved focus off the hidden input; hand it
-      // back so the Creator can keep typing the next list item right away.
       hiddenInputRef.current?.focus();
     };
 
-    /** Text to insert for Enter: carries a list marker onto the new line; an empty item ends the list instead (returns ""). */
+    const handleTransformCase = (mode: TextCaseMode) => {
+      const yText = yTextRef.current;
+      const range = currentSelRange();
+      if (range) {
+        const slice = textRef.current.slice(range.start, range.end);
+        const transformed = transformTextCase(slice, mode);
+        const preservedAttrs = attrsAtIndex(runsRef.current, range.start + 1);
+        yText.doc?.transact(() => {
+          yText.delete(range.start, range.end - range.start);
+          if (Object.keys(preservedAttrs).length > 0) {
+            yText.insert(range.start, transformed, preservedAttrs);
+          } else {
+            yText.insert(range.start, transformed);
+          }
+        });
+        setSelection({
+          anchor: range.start,
+          focus: range.start + transformed.length,
+        });
+        setCaretIndex(range.start + transformed.length);
+      } else if (textRef.current.length > 0) {
+        const currentDelta = yText.toDelta();
+        const transformedDelta: DeltaOp[] = currentDelta.map((op) => ({
+          insert:
+            typeof op.insert === "string"
+              ? transformTextCase(op.insert, mode)
+              : "",
+          ...(op.attributes ? { attributes: op.attributes } : {}),
+        }));
+        yText.doc?.transact(() => {
+          yText.delete(0, yText.length);
+          yText.applyDelta(transformedDelta);
+        });
+      }
+      hiddenInputRef.current?.focus();
+    };
+
+    const handleWrapSelection = (prefix: string, suffix: string) => {
+      const yText = yTextRef.current;
+      const range = currentSelRange();
+      if (range) {
+        const slice = textRef.current.slice(range.start, range.end);
+        const wrapped = `${prefix}${slice}${suffix}`;
+        const preservedAttrs = {
+          ...attrsAtIndex(runsRef.current, range.start + 1),
+          bold: true,
+        };
+        yText.doc?.transact(() => {
+          yText.delete(range.start, range.end - range.start);
+          yText.insert(range.start, wrapped, preservedAttrs);
+        });
+        setSelection({
+          anchor: range.start,
+          focus: range.start + wrapped.length,
+        });
+        setCaretIndex(range.start + wrapped.length);
+      } else {
+        insertAtCaret(`${prefix}Nội dung nổi bật${suffix}`);
+      }
+      hiddenInputRef.current?.focus();
+    };
+
+    const insertDeltaOpExact = (
+      yText: Y.Text,
+      cursor: number,
+      op: DeltaOp,
+    ): number => {
+      if (!op.insert) return cursor;
+      yText.insert(cursor, op.insert, {
+        bold: null,
+        italic: null,
+        underline: null,
+        strikethrough: null,
+        color: null,
+        highlight: null,
+        font: null,
+        size: null,
+        link: null,
+        ...(op.attributes ?? {}),
+      });
+      return cursor + op.insert.length;
+    };
+
+    const applyImportedDeltaOps = (
+      ops: DeltaOp[],
+      mode: "replace" | "append" = "replace",
+    ) => {
+      const yText = yTextRef.current;
+      yText.doc?.transact(() => {
+        if (mode === "replace") {
+          yText.delete(0, yText.length);
+          let cursor = 0;
+          for (const op of ops) {
+            cursor = insertDeltaOpExact(yText, cursor, op);
+          }
+          setSelection(null);
+          setCaretIndex(cursor);
+        } else {
+          let cursor = yText.length;
+          if (cursor > 0 && !textRef.current.endsWith("\n")) {
+            cursor = insertDeltaOpExact(yText, cursor, { insert: "\n\n" });
+          }
+          for (const op of ops) {
+            cursor = insertDeltaOpExact(yText, cursor, op);
+          }
+          setSelection(null);
+          setCaretIndex(cursor);
+        }
+      });
+      setRuns(deltaToRuns(yText.toDelta()));
+      hiddenInputRef.current?.focus();
+      setTimeout(() => hiddenInputRef.current?.focus(), 0);
+    };
+
+    const handleApplyHeadingPreset = (preset: HeadingPreset) => {
+      const t = textRef.current;
+      const sel = selectionRef.current;
+      const anchorIndex = sel
+        ? Math.min(sel.anchor, sel.focus)
+        : caretIndexRef.current;
+      const focusIndex = sel
+        ? Math.max(sel.anchor, sel.focus)
+        : caretIndexRef.current;
+      const paraStart = t.lastIndexOf("\n", Math.max(0, anchorIndex - 1)) + 1;
+      const nextBreak = t.indexOf("\n", focusIndex);
+      const paraEnd = nextBreak === -1 ? t.length : nextBreak;
+
+      const patch: RunAttrs =
+        preset === "h1"
+          ? { size: 28, bold: true }
+          : preset === "h2"
+            ? { size: 22, bold: true }
+            : preset === "h3"
+              ? { size: 18, bold: true }
+              : { size: 16, bold: undefined };
+
+      if (paraEnd > paraStart) {
+        yTextRef.current.format(paraStart, paraEnd - paraStart, patch);
+        setRuns(deltaToRuns(yTextRef.current.toDelta()));
+      } else {
+        setPendingAttrs({ ...pendingAttrsRef.current, ...patch });
+      }
+      hiddenInputRef.current?.focus();
+    };
+
+    const handleApplyZantextPreset = (
+      attrs: RunAttrs,
+      customText?: string,
+    ) => {
+      const yText = yTextRef.current;
+      const range = currentSelRange();
+      const formatPatch = {
+        bold: attrs.bold ?? null,
+        italic: attrs.italic ?? null,
+        underline: attrs.underline ?? null,
+        strikethrough: attrs.strikethrough ?? null,
+        font: attrs.font ?? null,
+      };
+      if (range) {
+        yText.doc?.transact(() => {
+          if (
+            customText &&
+            customText !== textRef.current.slice(range.start, range.end)
+          ) {
+            yText.delete(range.start, range.end - range.start);
+            insertDeltaOpExact(yText, range.start, {
+              insert: customText,
+              attributes: attrs,
+            });
+            setSelection({
+              anchor: range.start,
+              focus: range.start + customText.length,
+            });
+            setCaretIndex(range.start + customText.length);
+          } else {
+            yText.format(range.start, range.end - range.start, formatPatch);
+          }
+        });
+      } else if (customText) {
+        yText.doc?.transact(() => {
+          const at = caretIndexRef.current;
+          const nextCursor = insertDeltaOpExact(yText, at, {
+            insert: customText,
+            attributes: attrs,
+          });
+          setSelection({ anchor: at, focus: nextCursor });
+          setCaretIndex(nextCursor);
+        });
+      } else if (yText.length > 0) {
+        yText.doc?.transact(() => {
+          yText.format(0, yText.length, formatPatch);
+        });
+      }
+      setRuns(deltaToRuns(yText.toDelta()));
+      hiddenInputRef.current?.focus();
+      setTimeout(() => hiddenInputRef.current?.focus(), 0);
+    };
+
     const newlineWithListContinuation = (): string => {
       const plan = planListContinuation(textRef.current, caretIndexRef.current);
       if (plan.kind === "exit") {
@@ -875,18 +1094,10 @@ export const CanvasTextEditor = forwardRef<
       return plan.insert;
     };
 
-    // IME-aware: during composition (Vietnamese Unikey/Telex/VNI), the browser
-    // fires intermediate "input" events with partial syllables — forwarding
-    // those into the Y.Text mid-composition garbles diacritics. Only commit
-    // once compositionend fires.
     const handleBeforeInput = (event: React.FormEvent<HTMLDivElement>) => {
       const nativeEvent = event.nativeEvent as InputEvent;
       if (isComposing) return;
 
-      // `inputType` is unreliable across browsers/automation (observed empty
-      // in some environments) — `data`/`inputType === "insertLineBreak"` are
-      // what we actually need, so branch on those instead of trusting
-      // inputType for the common insertText case.
       const data = nativeEvent.data;
       if (
         nativeEvent.inputType === "insertLineBreak" ||
@@ -899,8 +1110,67 @@ export const CanvasTextEditor = forwardRef<
         insertAtCaret(data);
         event.preventDefault();
       }
-      // Backspace/Delete are handled in handleKeyDown instead — same
-      // inputType-unreliability issue, and keydown is more robust for them.
+    };
+
+    const getSelectedStyledText = (): string => {
+      const range = currentSelRange();
+      if (!range) return "";
+      let out = "";
+      for (const run of runsRef.current) {
+        const runEnd = run.startIndex + run.text.length;
+        const start = Math.max(range.start, run.startIndex);
+        const end = Math.min(range.end, runEnd);
+        if (start >= end) continue;
+        const slice = run.text.slice(start - run.startIndex, end - run.startIndex);
+        out += styleRunText(slice, run.attrs);
+      }
+      return out;
+    };
+
+    const handleCopy = (event: React.ClipboardEvent<HTMLDivElement>) => {
+      const styled = getSelectedStyledText();
+      if (!styled) return;
+      event.clipboardData?.setData("text/plain", styled);
+      event.preventDefault();
+    };
+
+    const handleCut = (event: React.ClipboardEvent<HTMLDivElement>) => {
+      const styled = getSelectedStyledText();
+      if (!styled) return;
+      event.clipboardData?.setData("text/plain", styled);
+      deleteSelectionIfAny();
+      event.preventDefault();
+    };
+
+    const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+      const html = event.clipboardData?.getData("text/html") ?? "";
+      const hasRichFormatting =
+        /<(b|strong|i|em|u|s|strike|del|h1|h2|h3|li)\b|font-weight\s*:\s*(700|800|900|bold)|font-style\s*:\s*italic|text-decoration[^"]*underline/i.test(
+          html,
+        );
+      if (hasRichFormatting) {
+        const ops = parseImportedDocumentToDelta(html, "html");
+        if (ops.length > 0) {
+          const yText = yTextRef.current;
+          yText.doc?.transact(() => {
+            const collapsedAt = deleteSelectionIfAny();
+            let cursor = collapsedAt ?? caretIndexRef.current;
+            for (const op of ops) {
+              cursor = insertDeltaOpExact(yText, cursor, op);
+            }
+            setCaretIndex(cursor);
+          });
+          setRuns(deltaToRuns(yText.toDelta()));
+          event.preventDefault();
+          return;
+        }
+      }
+
+      const pasted = event.clipboardData?.getData("text/plain");
+      if (pasted) {
+        insertAtCaret(pasted.replace(/\r\n/g, "\n"));
+        event.preventDefault();
+      }
     };
 
     const handleCompositionUpdate = (
@@ -917,42 +1187,46 @@ export const CanvasTextEditor = forwardRef<
       if (event.data) {
         insertAtCaret(event.data);
       }
-      // Clear the hidden input so the composed syllable isn't re-read next time.
       if (hiddenInputRef.current) hiddenInputRef.current.textContent = "";
     };
 
-    /** Lines for the current committed text, used by Home/End to find paragraph boundaries. */
-    const currentLines = () => {
+    /** Laid-out lines for the current committed text, used by Home/End/ArrowUp/ArrowDown. */
+    const currentLaidOutLines = (): LaidOutRunLine[] => {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");
-      if (!canvas || !ctx) return [] as Line[];
-      ctx.font = FONT;
-      return wrapLines(ctx, text, canvasWidth - PADDING_X * 2);
+      if (!canvas || !ctx) return [];
+      return getLaidOutLines(
+        ctx,
+        runsRef.current,
+        canvasWidthRef.current,
+        pendingAttrsRef.current,
+      );
     };
 
-    // Peer cursor pixel positions — same caretCoordsFromIndex math as the
-    // local caret, clamped to the live document length since a peer's
-    // reported caretIndex can briefly point past the end right after a
-    // local delete they haven't seen yet.
+    // Peer cursor pixel positions — computed from the exact same laid-out lines
     const peerCaretPixels = useMemo(() => {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");
       if (!canvas || !ctx || peers.length === 0) return [];
-      ctx.font = FONT;
-      const lines = wrapLines(ctx, text, canvasWidth - PADDING_X * 2);
+      const laidOutLines = getLaidOutLines(ctx, runs, canvasWidth);
       return peers.map((peer) => {
         const clamped = Math.max(0, Math.min(peer.caretIndex, text.length));
-        const { x, lineIndex } = caretCoordsFromIndex(ctx, lines, clamped);
+        const coords = caretCoordsFromLaidOutLines(
+          ctx,
+          laidOutLines,
+          clamped,
+          measureWidth,
+        );
         return {
           ...peer,
-          x: PADDING_X + x,
-          y: PADDING_Y + lineIndex * LINE_HEIGHT,
+          x: coords.x,
+          y: coords.y,
+          height: coords.height,
         };
       });
-       
-    }, [peers, text, canvasWidth]);
+    }, [peers, runs, text.length, canvasWidth, getLaidOutLines]);
 
-    /** Moves the caret, extending or clearing the selection depending on shiftKey — shared by every arrow/Home/End handler. */
+    /** Moves the caret, extending or clearing the selection depending on shiftKey. */
     const moveCaret = (nextIndex: number, shiftKey: boolean) => {
       const clamped = Math.max(0, Math.min(yTextRef.current.length, nextIndex));
       if (shiftKey) {
@@ -1003,54 +1277,156 @@ export const CanvasTextEditor = forwardRef<
         event.preventDefault();
         return;
       }
-      // Backspace/Delete handled here, not solely via beforeinput's
-      // deleteContentBackward/Forward — that inputType is unreliable across
-      // browsers/automation tooling, same issue as insertText above.
+      if (ctrl && !event.shiftKey && event.key.toLowerCase() === "c") {
+        const styled =
+          getSelectedStyledText() ||
+          toPublishText(yTextRef.current.toDelta());
+        if (styled) {
+          void copyTextToClipboard(styled);
+        }
+        event.preventDefault();
+        return;
+      }
+      if (ctrl && !event.shiftKey && event.key.toLowerCase() === "x") {
+        const styled = getSelectedStyledText();
+        if (styled) {
+          void copyTextToClipboard(styled);
+          deleteSelectionIfAny();
+        }
+        event.preventDefault();
+        return;
+      }
       if (event.key === "Backspace") {
-        deleteBackward();
+        deleteBackward(ctrl || event.altKey);
         event.preventDefault();
       } else if (event.key === "Delete") {
-        deleteForward();
+        deleteForward(ctrl || event.altKey);
         event.preventDefault();
       } else if (event.key === " " && !isComposing) {
-        // beforeinput's insertText isn't consistently fired for Space across
-        // environments (observed dropped in some automation/browser paths) —
-        // handle it directly here as a safety net, same as Backspace/Delete.
         insertAtCaret(" ");
         event.preventDefault();
-      } else if (
-        (event.ctrlKey || event.metaKey) &&
-        event.key.toLowerCase() === "a"
-      ) {
-        setSelection({ anchor: 0, focus: yTextRef.current.length });
-        setCaretIndex(yTextRef.current.length);
-        event.preventDefault();
       } else if (event.key === "ArrowLeft") {
-        moveCaret(caretIndexRef.current - 1, event.shiftKey);
+        const nextIdx =
+          ctrl || event.altKey
+            ? findWordBoundaryLeft(textRef.current, caretIndexRef.current)
+            : snapToCodePointBoundary(
+                textRef.current,
+                caretIndexRef.current - 1,
+                "left",
+              );
+        moveCaret(nextIdx, event.shiftKey);
         event.preventDefault();
       } else if (event.key === "ArrowRight") {
-        moveCaret(caretIndexRef.current + 1, event.shiftKey);
+        const nextIdx =
+          ctrl || event.altKey
+            ? findWordBoundaryRight(textRef.current, caretIndexRef.current)
+            : snapToCodePointBoundary(
+                textRef.current,
+                caretIndexRef.current + 1,
+                "right",
+              );
+        moveCaret(nextIdx, event.shiftKey);
+        event.preventDefault();
+      } else if (event.key === "ArrowUp") {
+        const canvas = canvasRef.current;
+        const ctx = canvas?.getContext("2d");
+        const lines = currentLaidOutLines();
+        if (ctx && lines.length > 0) {
+          const curCoords = caretCoordsFromLaidOutLines(
+            ctx,
+            lines,
+            caretIndexRef.current,
+            measureWidth,
+          );
+          if (curCoords.lineIndex > 0) {
+            const targetLine = lines[curCoords.lineIndex - 1];
+            const nextIdx = indexFromLaidOutLinesPoint(
+              ctx,
+              lines,
+              curCoords.x,
+              targetLine.yTop + targetLine.lineHeight / 2,
+              measureWidth,
+            );
+            moveCaret(nextIdx, event.shiftKey);
+          } else {
+            moveCaret(0, event.shiftKey);
+          }
+        }
+        event.preventDefault();
+      } else if (event.key === "ArrowDown") {
+        const canvas = canvasRef.current;
+        const ctx = canvas?.getContext("2d");
+        const lines = currentLaidOutLines();
+        if (ctx && lines.length > 0) {
+          const curCoords = caretCoordsFromLaidOutLines(
+            ctx,
+            lines,
+            caretIndexRef.current,
+            measureWidth,
+          );
+          if (curCoords.lineIndex < lines.length - 1) {
+            const targetLine = lines[curCoords.lineIndex + 1];
+            const nextIdx = indexFromLaidOutLinesPoint(
+              ctx,
+              lines,
+              curCoords.x,
+              targetLine.yTop + targetLine.lineHeight / 2,
+              measureWidth,
+            );
+            moveCaret(nextIdx, event.shiftKey);
+          } else {
+            moveCaret(yTextRef.current.length, event.shiftKey);
+          }
+        }
         event.preventDefault();
       } else if (event.key === "Home") {
-        const lines = currentLines();
-        const line = lines.find(
-          (l) =>
-            caretIndexRef.current >= l.startIndex &&
-            caretIndexRef.current <= l.startIndex + l.text.length,
-        );
-        moveCaret(line ? line.startIndex : 0, event.shiftKey);
+        if (ctrl) {
+          moveCaret(0, event.shiftKey);
+          event.preventDefault();
+          return;
+        }
+        const canvas = canvasRef.current;
+        const ctx = canvas?.getContext("2d");
+        const lines = currentLaidOutLines();
+        if (ctx && lines.length > 0) {
+          const curCoords = caretCoordsFromLaidOutLines(
+            ctx,
+            lines,
+            caretIndexRef.current,
+            measureWidth,
+          );
+          const line = lines[curCoords.lineIndex];
+          moveCaret(line ? line.startIndex : 0, event.shiftKey);
+        } else {
+          moveCaret(0, event.shiftKey);
+        }
         event.preventDefault();
       } else if (event.key === "End") {
-        const lines = currentLines();
-        const line = lines.find(
-          (l) =>
-            caretIndexRef.current >= l.startIndex &&
-            caretIndexRef.current <= l.startIndex + l.text.length,
-        );
-        moveCaret(
-          line ? line.startIndex + line.text.length : yTextRef.current.length,
-          event.shiftKey,
-        );
+        if (ctrl) {
+          moveCaret(yTextRef.current.length, event.shiftKey);
+          event.preventDefault();
+          return;
+        }
+        const canvas = canvasRef.current;
+        const ctx = canvas?.getContext("2d");
+        const lines = currentLaidOutLines();
+        if (ctx && lines.length > 0) {
+          const curCoords = caretCoordsFromLaidOutLines(
+            ctx,
+            lines,
+            caretIndexRef.current,
+            measureWidth,
+          );
+          const line = lines[curCoords.lineIndex];
+          const lineEnd = line
+            ? line.softWrappedToNext && line.text.length > 0
+              ? line.startIndex + line.text.length - 1
+              : line.startIndex + line.text.length
+            : yTextRef.current.length;
+          moveCaret(lineEnd, event.shiftKey);
+        } else {
+          moveCaret(yTextRef.current.length, event.shiftKey);
+        }
         event.preventDefault();
       }
     };
@@ -1059,8 +1435,15 @@ export const CanvasTextEditor = forwardRef<
     const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
     const charCount = text.length;
 
+    const readingTimeSec = Math.max(0, Math.ceil((wordCount / 200) * 60));
+
+    const activeRange = currentSelRange();
+    const selectedPlainText = activeRange
+      ? text.slice(activeRange.start, activeRange.end)
+      : text;
+
     return (
-      <div className="w-full">
+      <div className="border-border w-full overflow-hidden rounded-b-xl border bg-[#f9fbfd] shadow-xs dark:bg-zinc-900">
         <FormattingToolbar
           currentAttrs={currentAttrs()}
           onToggle={toggleFormat}
@@ -1075,31 +1458,71 @@ export const CanvasTextEditor = forwardRef<
           onRedo={() => undoManager.redo()}
           onClearFormatting={clearFormatting}
           onInsertEmoji={(emoji) => insertAtCaret(emoji)}
+          onTransformCase={handleTransformCase}
+          onWrapSelection={handleWrapSelection}
+          onInsertSnippet={(snippet) => insertAtCaret(snippet)}
+          onInsertTemplateOps={(ops) => applyImportedDeltaOps(ops, "append")}
+          onApplyHeadingPreset={handleApplyHeadingPreset}
+          selectedPlainText={selectedPlainText}
+          onApplyZantextPreset={handleApplyZantextPreset}
         />
-        {/* Page canvas: gray "desk" background behind a white paper sheet,
-            like Google Docs / Word's document area — purely visual, the
-            editor's own padding (PADDING_X/PADDING_Y) still owns caret math. */}
-        <div className="border-border rounded-b-xl border-x border-b bg-[#edf0f4] p-6 dark:bg-[#1c1d1f]">
+
+        {/* Google Docs Horizontal Ruler */}
+        <div
+          data-testid="gdocs-ruler"
+          aria-hidden="true"
+          className="border-border relative flex h-5 items-end justify-center border-y bg-[#f1f3f4] select-none dark:bg-zinc-800/80"
+        >
+          <div className="relative flex h-full w-full max-w-[816px] items-end justify-between bg-white px-6 dark:bg-zinc-900">
+            {/* Left & Right Margin Indent Triangles (Google Docs blue markers) */}
+            <span
+              className="absolute top-0 left-[22px] text-[9px] leading-none text-blue-600"
+              title="Lề trái (Left Margin)"
+            >
+              ▼
+            </span>
+            <span
+              className="absolute top-0 right-[22px] text-[9px] leading-none text-blue-600"
+              title="Lề phải (Right Margin)"
+            >
+              ▼
+            </span>
+            {Array.from({ length: 16 }, (_, i) => i + 1).map((cm) => (
+              <div key={cm} className="flex flex-col items-center">
+                <span className="text-[8px] leading-none font-medium text-[#5f6368] dark:text-zinc-400">
+                  {cm}
+                </span>
+                <div className="mt-0.5 h-1.5 w-px bg-[#dadce0] dark:bg-zinc-600" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Page canvas: Google Docs "#f8f9fa" workspace desk behind an A4 white paper sheet.
+            Purely visual — the editor's own padding (PADDING_X/PADDING_Y) owns caret math. */}
+        <div className="bg-[#f8f9fa] px-4 py-6 sm:px-8 dark:bg-[#1c1d1f]">
           <div
             ref={containerRef}
-            className="relative mx-auto w-full max-w-[816px] rounded-sm bg-white shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)] dark:bg-[#2b2d30]"
-            style={{ minHeight: "200px" }}
+            className="relative mx-auto w-full max-w-[816px] rounded-[2px] bg-white shadow-[0_1px_3px_1px_rgba(60,64,67,0.15),0_1px_2px_0_rgba(60,64,67,0.3)] dark:bg-[#2b2d30]"
+            style={{ minHeight: "460px" }}
             onClick={focusHiddenInput}
           >
             <canvas
               ref={canvasRef}
               aria-hidden="true"
               onMouseDown={handleCanvasMouseDown}
+              onDoubleClick={handleCanvasDoubleClick}
               className="block w-full cursor-text"
-              style={{ minHeight: "200px" }}
+              style={{ minHeight: "460px" }}
             />
             {isFocused && (
               <div
-                className="bg-foreground pointer-events-none absolute w-[1.5px] animate-pulse"
+                data-testid="canvas-caret"
+                className="bg-foreground pointer-events-none absolute w-[2px] animate-pulse"
                 style={{
-                  left: caretPos.x + 8,
-                  top: caretPos.y + 8,
-                  height: FONT_SIZE + 2,
+                  left: caretPos.x,
+                  top: caretPos.y,
+                  height: caretPos.height,
                 }}
               />
             )}
@@ -1108,11 +1531,14 @@ export const CanvasTextEditor = forwardRef<
               <div
                 key={peer.clientId}
                 className="pointer-events-none absolute"
-                style={{ left: peer.x + 8, top: peer.y + 8 }}
+                style={{ left: peer.x, top: peer.y }}
               >
                 <div
                   className="w-[2px]"
-                  style={{ height: FONT_SIZE + 2, backgroundColor: peer.color }}
+                  style={{
+                    height: peer.height,
+                    backgroundColor: peer.color,
+                  }}
                 />
                 <span
                   className="absolute -top-[18px] left-0 rounded-t px-1 py-px text-[10px] whitespace-nowrap text-white"
@@ -1127,6 +1553,9 @@ export const CanvasTextEditor = forwardRef<
               contentEditable
               suppressContentEditableWarning
               onBeforeInput={handleBeforeInput}
+              onCopy={handleCopy}
+              onCut={handleCut}
+              onPaste={handlePaste}
               onCompositionStart={() => setIsComposing(true)}
               onCompositionUpdate={handleCompositionUpdate}
               onCompositionEnd={handleCompositionEnd}
@@ -1134,8 +1563,6 @@ export const CanvasTextEditor = forwardRef<
               onFocus={() => setIsFocused(true)}
               onBlur={() => {
                 setIsFocused(false);
-                // Defensive: a composition cancelled by focus loss wouldn't
-                // otherwise fire compositionend, leaving a stale preview on screen.
                 setIsComposing(false);
                 setCompositionPreview(null);
               }}
@@ -1153,11 +1580,18 @@ export const CanvasTextEditor = forwardRef<
             </div>
           </div>
         </div>
-        {/* Status bar: word/char count + keyboard shortcut hints */}
-        <div className="border-border text-muted-foreground mt-1 flex items-center justify-between rounded-lg border px-3 py-1 text-xs">
-          <span>
-            {wordCount} từ &nbsp;·&nbsp; {charCount} ký tự
-          </span>
+        {/* Status bar: word/char count + reading time + keyboard shortcut hints */}
+        <div className="border-border text-muted-foreground flex items-center justify-between border-t bg-white px-4 py-1.5 text-xs dark:bg-zinc-900">
+          <div className="flex items-center gap-3">
+            <span className="font-medium">
+              {wordCount} từ &nbsp;·&nbsp; {charCount} ký tự
+            </span>
+            {wordCount > 0 && (
+              <span className="text-muted-foreground/80 hidden text-[11px] md:inline">
+                (~{readingTimeSec}s đọc)
+              </span>
+            )}
+          </div>
           <span className="hidden gap-3 sm:flex">
             <span title="Bold">
               <kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">

@@ -32,7 +32,17 @@ const applyLanguage = (lng: string) => {
   localStorage.setItem("brandhub-lang", lng);
   document.documentElement.lang = lng;
 };
-void i18nReady.then(() => applyLanguage(i18n.language));
+void i18nReady.then(() => {
+  const currentSaved = localStorage.getItem("brandhub-lang");
+  if (currentSaved === "en" && i18n.language !== "en") {
+    void i18n.changeLanguage("en");
+    return;
+  }
+  if (!currentSaved) {
+    localStorage.setItem("brandhub-lang", i18n.language);
+  }
+  document.documentElement.lang = i18n.language;
+});
 i18n.on("languageChanged", applyLanguage);
 
 export default i18n;
