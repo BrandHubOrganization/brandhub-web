@@ -2,9 +2,24 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ArrowRight, CheckCircle2, Clock, Layers, Wallet } from "lucide-react";
+import {
+  ArrowLeftRight,
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  History,
+  Info,
+  Layers,
+  Wallet,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { HelpHint } from "@/components/shared/HelpHint";
 import { applyEffectiveTerms } from "../lib/formatMediaPackage";
 import { mediaPackageService } from "../services/mediaPackageService";
@@ -130,12 +145,6 @@ export function SelectedMediaPackage({
     selection.mediaPackage,
     selection.finalTerms,
   );
-  const maxClientProposals = mediaPackage.offeringDetails?.maxChanges;
-  const clientProposalLimitReached =
-    isClient &&
-    maxClientProposals != null &&
-    (selection.clientProposalCount ?? 0) >= maxClientProposals;
-
   const isClientApproved = Boolean(selection.approvedByClientAt);
   const isAgencyApproved = Boolean(selection.approvedByAgencyAt);
   const isDualApproved =
@@ -221,6 +230,26 @@ export function SelectedMediaPackage({
   const isActionLoading = approving || negotiating || internalLoading;
 
   const mineApproved = isClient ? isClientApproved : isAgencyApproved;
+
+  const formattedBudget =
+    mediaPackage.budgetAmount == null
+      ? t("mediaPackage.compact.agreeLater")
+      : new Intl.NumberFormat(i18n.language, {
+          style: "currency",
+          currency: "VND",
+          maximumFractionDigits: 0,
+        }).format(mediaPackage.budgetAmount);
+
+  const formattedDuration =
+    mediaPackage.durationWeeks == null
+      ? t("mediaPackage.compact.agreeLater")
+      : t("mediaPackage.values.duration", {
+          count: mediaPackage.durationWeeks,
+        });
+
+  const deliverablesCount =
+    mediaPackage.offeringDetails?.deliverables?.length ?? 0;
+
   if (negotiationOpen)
     return (
       <NegotiateTermsForm
@@ -233,204 +262,192 @@ export function SelectedMediaPackage({
         onSubmit={handleNegotiate}
       />
     );
+
   return (
-    <>
-      <section className="border-border/80 bg-card ring-border/50 ring-offset-background relative space-y-5 rounded-2xl border p-5 shadow-xs ring-1 ring-offset-2 sm:p-6">
-        {/* Bento Grid Header & Facts */}
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {/* Main Hero Header Tile */}
-          <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4 sm:col-span-2 lg:col-span-3">
-            <div>
-              <div className="mb-2.5 flex flex-wrap items-center gap-2">
-                <Badge
-                  variant={isDualApproved ? "APPROVED" : "secondary"}
-                  className="text-xs"
-                >
-                  {t(`mediaPackage.status.${selection.negotiationStatus}`)}
-                </Badge>
-                <Badge variant="outline" className="text-xs font-normal">
-                  {t("mediaPackage.selected.termsVersion", {
-                    version: selection.termsVersion,
-                  })}
-                </Badge>
-              </div>
-              <h2 className="text-foreground text-xl font-bold tracking-tight break-words sm:text-2xl">
-                {mediaPackage.name}
-              </h2>
-            </div>
-            {mediaPackage.scopeDescription && (
-              <p className="text-muted-foreground mt-2.5 text-xs leading-relaxed break-words whitespace-pre-line">
-                {mediaPackage.scopeDescription}
-              </p>
-            )}
-          </div>
-
-          {/* Fact 1: Budget */}
-          <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4">
-            <div className="text-muted-foreground flex items-center justify-between">
-              <span className="text-xs font-medium tracking-wider uppercase">
-                {t("mediaPackage.form.budgetLabel")}
-              </span>
-              <Wallet
-                className="text-brand-orange size-4 shrink-0"
-                aria-hidden="true"
-              />
-            </div>
-            <p className="text-foreground mt-3 text-lg font-bold tracking-tight break-words">
-              {mediaPackage.budgetAmount == null
-                ? t("mediaPackage.compact.agreeLater")
-                : new Intl.NumberFormat(i18n.language, {
-                    style: "currency",
-                    currency: "VND",
-                    maximumFractionDigits: 0,
-                  }).format(mediaPackage.budgetAmount)}
-            </p>
-          </div>
-
-          {/* Fact 2: Duration */}
-          <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4">
-            <div className="text-muted-foreground flex items-center justify-between">
-              <span className="text-xs font-medium tracking-wider uppercase">
-                {t("mediaPackage.compact.duration")}
-              </span>
-              <Clock
-                className="text-brand-orange size-4 shrink-0"
-                aria-hidden="true"
-              />
-            </div>
-            <p className="text-foreground mt-3 text-lg font-bold tracking-tight">
-              {mediaPackage.durationWeeks == null
-                ? t("mediaPackage.compact.agreeLater")
-                : t("mediaPackage.values.duration", {
-                    count: mediaPackage.durationWeeks,
-                  })}
-            </p>
-          </div>
-
-          {/* Fact 3: Deliverables summary */}
-          <div className="border-border/70 bg-muted/15 flex flex-col justify-between rounded-xl border p-4 sm:col-span-2 lg:col-span-1">
-            <div className="text-muted-foreground flex items-center justify-between">
-              <span className="text-xs font-medium tracking-wider uppercase">
-                {t("mediaPackage.ui.deliverables")}
-              </span>
-              <Layers
-                className="text-brand-orange size-4 shrink-0"
-                aria-hidden="true"
-              />
-            </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <p className="text-foreground text-lg font-bold tracking-tight">
-                {mediaPackage.offeringDetails?.deliverables?.length ?? 0}{" "}
-                <span className="text-muted-foreground text-xs font-normal">
-                  {t("mediaPackage.ui.deliverablesCountUnit", {
-                    defaultValue: "hạng mục",
-                  })}
-                </span>
-              </p>
-              {mediaPackage.offeringDetails?.maxChanges != null && (
-                <span className="text-muted-foreground text-xs">
-                  · {t("mediaPackage.offering.revisions")}:{" "}
-                  {mediaPackage.offeringDetails.maxChanges}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_18.5rem] xl:grid-cols-[minmax(0,1fr)_20rem]">
-          <div className="min-w-0 space-y-5">
-            <OfferingSummary value={mediaPackage} />
-            {selection.previousTerms && (
-              <PackageTermsDiff
-                before={selection.previousTerms}
-                after={selection.finalTerms}
-              />
-            )}
-          </div>
-          <aside className="border-border/80 bg-muted/10 space-y-4 rounded-xl border p-4 lg:sticky lg:top-4">
-            <div className="flex items-center gap-1">
-              <h3 className="text-sm font-semibold">
-                {t("mediaPackage.selected.dualApprovalTitle")}
-              </h3>
-              <HelpHint label={t("mediaPackage.selected.dualApprovalTitle")}>
-                {t("mediaPackage.ui.approvalHint")}
-              </HelpHint>
-            </div>
-            <ApprovalStatus
-              label={t("mediaPackage.selected.clientApprovalTitle")}
-              approvedAt={selection.approvedByClientAt}
-            />
-            <ApprovalStatus
-              label={t("mediaPackage.selected.agencyApprovalTitle")}
-              approvedAt={selection.approvedByAgencyAt}
-            />
-            {!isDualApproved && (isClient || isAgency) && !mineApproved && (
-              <Button
-                variant="orange"
-                className="w-full font-medium"
-                loading={isActionLoading}
-                onClick={handleApprove}
-              >
-                {t(
-                  isClient
-                    ? "mediaPackage.actions.clientApprove"
-                    : "mediaPackage.actions.agencyApprove",
-                )}
-              </Button>
-            )}
-            {!isDualApproved && (
-              <Button
-                variant="outline"
-                className="w-full font-medium"
-                disabled={isActionLoading || clientProposalLimitReached}
-                data-package-negotiate
-                onClick={() => changeNegotiationOpen(true)}
-              >
-                {t("mediaPackage.actions.proposeAdjustment")}
-              </Button>
-            )}
-            {maxClientProposals != null && (
-              <p className="text-muted-foreground text-xs leading-5">
-                {t("mediaPackage.ui.clientProposals", {
-                  count: selection.clientProposalCount ?? 0,
-                  limit: maxClientProposals,
-                })}
-              </p>
-            )}
-            {clientProposalLimitReached && (
-              <p
-                role="status"
-                className="text-muted-foreground text-xs leading-5"
-              >
-                {t("mediaPackage.ui.proposalLimit")}
-              </p>
-            )}
-            <Button
-              variant="ghost"
-              className="w-full font-medium"
-              onClick={handleChatNavigate}
+    <div className="space-y-4">
+      {/* A. Compact Header Strip */}
+      <div className="border border-border/70 bg-card rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
+        {/* Left: Package Name, Status Badge, Version Badge */}
+        <div className="flex flex-wrap items-center gap-2.5 min-w-0">
+          <h2
+            className="text-base sm:text-lg font-bold tracking-tight text-foreground truncate max-w-xs sm:max-w-md"
+            title={mediaPackage.name}
+          >
+            {mediaPackage.name}
+          </h2>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Badge
+              variant={isDualApproved ? "APPROVED" : "secondary"}
+              className="text-xs"
             >
-              {t("mediaPackage.actions.chatNegotiate")}
-            </Button>
-            {isDualApproved && (
-              <div className="border-border space-y-3 border-t pt-4">
-                <Button asChild variant="orange" className="w-full font-medium">
-                  <Link to={`/workspaces/${targetWorkspaceId}/campaigns`}>
-                    {t("mediaPackage.ui.openCampaign")}
-                    <ArrowRight className="size-4" aria-hidden="true" />
-                  </Link>
-                </Button>
-              </div>
-            )}
-          </aside>
+              {t(`mediaPackage.status.${selection.negotiationStatus}`)}
+            </Badge>
+            <Badge variant="outline" className="text-xs font-normal">
+              {t("mediaPackage.selected.termsVersion", {
+                version: selection.termsVersion,
+              })}
+            </Badge>
+          </div>
         </div>
-      </section>
-      <PackageNegotiationHistory
-        key={packageContextId}
-        workspaceId={targetWorkspaceId}
-        currentVersion={selection.termsVersion}
-        currentTerms={selection.finalTerms}
-      />
-    </>
+
+        {/* Right: Compact stats pills inline */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg bg-muted/60 text-muted-foreground">
+            <Wallet className="size-3.5 text-brand-orange" aria-hidden="true" />
+            <b className="text-foreground font-mono tabular-nums">{formattedBudget}</b>
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg bg-muted/60 text-muted-foreground">
+            <Clock className="size-3.5 text-brand-orange" aria-hidden="true" />
+            <b className="text-foreground font-mono tabular-nums">{formattedDuration}</b>
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg bg-muted/60 text-muted-foreground">
+            <Layers className="size-3.5 text-brand-orange" aria-hidden="true" />
+            <b className="text-foreground font-mono tabular-nums">{deliverablesCount}</b>{" "}
+            {t("mediaPackage.ui.deliverablesCountUnit", { defaultValue: "hạng mục" })}
+          </span>
+        </div>
+      </div>
+
+      {/* B. Main Layout: 2 Columns */}
+      <div className="grid items-start gap-5 lg:grid-cols-12">
+        {/* Left Column: Master Canvas */}
+        <div className="min-w-0 lg:col-span-8 space-y-4">
+          <Tabs defaultValue="deliverables" className="w-full">
+            <TabsList className="h-9 bg-muted/60 p-1 border border-border/60 rounded-lg flex items-center justify-start gap-1 w-full sm:w-auto">
+              <TabsTrigger value="deliverables" className="gap-1.5 text-xs">
+                <Layers className="size-3.5" aria-hidden="true" />
+                <span>{t("mediaPackage.ui.deliverables", "Hạng mục & Gói dịch vụ")}</span>
+              </TabsTrigger>
+              <TabsTrigger value="termsDiff" className="gap-1.5 text-xs">
+                <ArrowLeftRight className="size-3.5" aria-hidden="true" />
+                <span>{t("mediaPackage.ui.compare", "So sánh điều khoản")}</span>
+                {Boolean(selection.previousTerms) && (
+                  <Badge
+                    variant="secondary"
+                    className="ml-1 px-1.5 py-0 text-[10px] leading-tight font-medium"
+                  >
+                    {t("mediaPackage.ui.changed", "Đã đổi")}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="history" className="gap-1.5 text-xs">
+                <History className="size-3.5" aria-hidden="true" />
+                <span>{t("mediaPackage.history.title", "Lịch sử thương lượng")}</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="deliverables" className="mt-4 space-y-4 outline-none">
+              {mediaPackage.scopeDescription && (
+                <div className="rounded-xl border border-border/70 bg-card p-4 text-xs leading-relaxed text-muted-foreground">
+                  <p className="font-semibold text-foreground text-xs uppercase tracking-wider mb-1.5">
+                    {t("mediaPackage.selected.scopeTitle", "Phạm vi công việc")}
+                  </p>
+                  <p className="whitespace-pre-line">{mediaPackage.scopeDescription}</p>
+                </div>
+              )}
+              <OfferingSummary value={mediaPackage} />
+            </TabsContent>
+
+            <TabsContent value="termsDiff" className="mt-4 outline-none">
+              {selection.previousTerms ? (
+                <PackageTermsDiff
+                  before={selection.previousTerms}
+                  after={selection.finalTerms}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-muted/10 p-8 text-center text-muted-foreground">
+                  <Info className="mb-2 size-6 text-muted-foreground/60" aria-hidden="true" />
+                  <p className="text-sm font-medium text-foreground">
+                    {t("mediaPackage.ui.noDifferences", "Chưa có phiên bản điều chỉnh trước đó")}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground max-w-sm">
+                    {t(
+                      "mediaPackage.history.baseline",
+                      "Mốc bắt đầu ghi nhận: chỉ xác nhận điều khoản tại phiên bản này, không có thông tin về các vòng đàm phán trước đó.",
+                    )}
+                  </p>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="history" className="mt-4 outline-none">
+              <PackageNegotiationHistory
+                key={packageContextId}
+                workspaceId={targetWorkspaceId}
+                currentVersion={selection.termsVersion}
+                currentTerms={selection.finalTerms}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        {/* Right Column: Sticky Inspector Sidebar */}
+        <aside className="border border-border/80 bg-card space-y-4 rounded-xl p-4 shadow-2xs lg:col-span-4 lg:sticky lg:top-4">
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-foreground text-sm font-semibold">
+              {t("mediaPackage.selected.dualApprovalTitle")}
+            </h3>
+            <HelpHint label={t("mediaPackage.selected.dualApprovalTitle")}>
+              {t("mediaPackage.ui.approvalHint")}
+            </HelpHint>
+          </div>
+
+          <ApprovalStatus
+            label={t("mediaPackage.selected.clientApprovalTitle")}
+            approvedAt={selection.approvedByClientAt}
+          />
+          <ApprovalStatus
+            label={t("mediaPackage.selected.agencyApprovalTitle")}
+            approvedAt={selection.approvedByAgencyAt}
+          />
+
+          {!isDualApproved && (isClient || isAgency) && !mineApproved && (
+            <Button
+              variant="orange"
+              className="w-full font-medium"
+              loading={isActionLoading}
+              onClick={handleApprove}
+            >
+              {t(
+                isClient
+                  ? "mediaPackage.actions.clientApprove"
+                  : "mediaPackage.actions.agencyApprove",
+              )}
+            </Button>
+          )}
+
+          {!isDualApproved && (
+            <Button
+              variant="outline"
+              className="w-full font-medium"
+              disabled={isActionLoading}
+              data-package-negotiate
+              onClick={() => changeNegotiationOpen(true)}
+            >
+              {t("mediaPackage.actions.proposeAdjustment")}
+            </Button>
+          )}
+
+          <Button
+            variant="ghost"
+            className="w-full font-medium"
+            onClick={handleChatNavigate}
+          >
+            {t("mediaPackage.actions.chatNegotiate")}
+          </Button>
+
+          {isDualApproved && (
+            <div className="border-border space-y-3 border-t pt-4">
+              <Button asChild variant="orange" className="w-full font-medium">
+                <Link to={`/workspaces/${targetWorkspaceId}/campaigns`}>
+                  {t("mediaPackage.ui.openCampaign")}
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+              </Button>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
   );
 }

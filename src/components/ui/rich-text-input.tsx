@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  label?: string;
+  label?: React.ReactNode;
   placeholder?: string;
   value: string;
   onChange: (html: string) => void;
@@ -42,7 +42,7 @@ export function RichTextInput({ label, placeholder, value, onChange }: Props) {
     if (editor && !editor.isDestroyed && value !== editor.getHTML()) {
       editor.commands.setContent(value);
     }
-     
+
   }, [value, editor]);
 
   if (!editor) return null;

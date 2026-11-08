@@ -84,9 +84,11 @@ export interface MaterialCapabilities {
   canWatermark: boolean;
   canDelete: boolean;
   canRestore: boolean;
+  canPurge?: boolean;
 }
 
 export interface MaterialFilters {
+  taskId?: string;
   mediaKind?: "IMAGE" | "VIDEO" | "FILE";
   type?: MaterialType;
   purpose?: "MATERIAL" | "BRAND_REFERENCE";

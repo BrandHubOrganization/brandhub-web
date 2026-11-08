@@ -15,3 +15,6 @@ export * from "./sheet";
 export * from "./select";
 export * from "./textarea";
 export * from "./tabs";
+export * from "./popover";
+export * from "./jira-date-picker";
+export * from "./vietnam-address-picker";

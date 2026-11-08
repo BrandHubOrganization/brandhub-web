@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa6";
 import {
   Calendar,
   Globe,
@@ -26,7 +27,7 @@ export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
   const { t } = useTranslation();
   const v = values;
   const name = v?.displayName?.trim() ?? "";
-  const brandColor = v?.brandColor || "#ca3d0e";
+  const brandColor = v?.brandColor || "#f05a28";
 
   // Use dynamic banner from form values, fallback to default preset
   const bannerUrl = v?.bannerUrl || BANNER_PRESETS[0]?.url || null;
@@ -44,25 +45,26 @@ export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
         t("clientProfile.preview.emptyTagline", "Chưa có tagline")
       }
       badges={
-        <div className="flex flex-wrap items-center gap-1.5 mt-1">
+        <div className="mt-1 flex flex-wrap items-center gap-1.5">
           {v?.industry && (
-            <span className="inline-flex items-center rounded-full bg-brand-orange/10 px-2.5 py-0.5 text-xs font-medium text-brand-orange">
+            <span className="bg-brand-orange/10 text-brand-orange inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
               {t(`workspace.industry.${v.industry}`)}
             </span>
           )}
           {v?.companySize && (
-            <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+            <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
               {t(`agency.companySize.${v.companySize}`)}
             </span>
           )}
           {v?.foundedYear && (
-            <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+            <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
               <Calendar className="mr-1 size-3" />
-              {t("clientProfile.preview.foundedPrefix", "Thành lập")} {v.foundedYear}
+              {t("clientProfile.preview.foundedPrefix", "Thành lập")}{" "}
+              {v.foundedYear}
             </span>
           )}
           {v?.budgetRange && (
-            <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+            <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
               <Wallet className="mr-1 size-3" />
               {t(`clientProfile.budgetRange.${v.budgetRange}`)}
             </span>
@@ -82,16 +84,16 @@ export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
       <div className="space-y-4 pt-2">
         {/* Description preview */}
         {v?.description?.trim() ? (
-          <div className="border-t border-border pt-4">
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+          <div className="border-border border-t pt-4">
+            <h4 className="text-muted-foreground mb-1.5 text-[11px] font-semibold tracking-wider uppercase">
               {t("clientProfile.descriptionLabel", "Mô tả công ty")}
             </h4>
-            <p className="text-xs text-foreground/85 line-clamp-4 leading-relaxed whitespace-pre-line">
+            <p className="text-foreground/85 line-clamp-4 text-xs leading-relaxed whitespace-pre-line">
               {v.description.trim()}
             </p>
           </div>
         ) : (
-          <div className="border-t border-border pt-3 text-center text-xs text-muted-foreground/60 italic">
+          <div className="border-border text-muted-foreground/60 border-t pt-3 text-center text-xs italic">
             {t(
               "clientProfile.preview.emptyDescription",
               "Chưa có mô tả thương hiệu",
@@ -107,50 +109,50 @@ export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
           v?.location ||
           v?.address ||
           v?.taxCode) && (
-          <div className="border-t border-border pt-3 space-y-2">
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="border-border space-y-2 border-t pt-3">
+            <h4 className="text-muted-foreground text-[11px] font-semibold tracking-wider uppercase">
               {t("clientProfile.preview.contactTitle", "Thông tin liên hệ")}
             </h4>
-            <div className="space-y-1.5 text-xs text-muted-foreground">
+            <div className="text-muted-foreground space-y-1.5 text-xs">
               {v?.website && (
                 <div className="flex items-center gap-2 truncate">
-                  <Globe className="size-3.5 shrink-0 text-brand-orange" />
-                  <span className="truncate text-foreground/80">
+                  <Globe className="text-brand-orange size-3.5 shrink-0" />
+                  <span className="text-foreground/80 truncate">
                     {v.website}
                   </span>
                 </div>
               )}
               {v?.phone && (
                 <div className="flex items-center gap-2">
-                  <Phone className="size-3.5 shrink-0 text-brand-orange" />
+                  <Phone className="text-brand-orange size-3.5 shrink-0" />
                   <span className="text-foreground/80">{v.phone}</span>
                 </div>
               )}
               {v?.contactEmail && (
                 <div className="flex items-center gap-2 truncate">
-                  <Mail className="size-3.5 shrink-0 text-brand-orange" />
-                  <span className="truncate text-foreground/80">
+                  <Mail className="text-brand-orange size-3.5 shrink-0" />
+                  <span className="text-foreground/80 truncate">
                     {v.contactEmail}
                   </span>
                 </div>
               )}
               {v?.contactName && (
                 <div className="flex items-center gap-2">
-                  <User className="size-3.5 shrink-0 text-brand-orange" />
+                  <User className="text-brand-orange size-3.5 shrink-0" />
                   <span className="text-foreground/80">{v.contactName}</span>
                 </div>
               )}
               {(v?.address || v?.location) && (
                 <div className="flex items-center gap-2 truncate">
-                  <MapPin className="size-3.5 shrink-0 text-brand-orange" />
-                  <span className="truncate text-foreground/80">
+                  <MapPin className="text-brand-orange size-3.5 shrink-0" />
+                  <span className="text-foreground/80 truncate">
                     {v.address || v.location}
                   </span>
                 </div>
               )}
               {v?.taxCode && (
                 <div className="flex items-center gap-2">
-                  <Receipt className="size-3.5 shrink-0 text-brand-orange" />
+                  <Receipt className="text-brand-orange size-3.5 shrink-0" />
                   <span className="text-foreground/80">
                     {t("clientProfile.taxCodeLabel", "Mã số thuế")}: {v.taxCode}
                   </span>
@@ -164,17 +166,20 @@ export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
         {(v?.facebook || v?.linkedin || v?.instagram) && (
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
             {v.facebook && (
-              <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-600 dark:text-blue-400">
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-600 dark:text-blue-400">
+                <FaFacebook className="size-3" />
                 Facebook
               </span>
             )}
             {v.linkedin && (
-              <span className="rounded-md bg-sky-500/10 px-2 py-0.5 text-[10px] font-medium text-sky-600 dark:text-sky-400">
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-sky-500/10 px-2 py-0.5 text-[10px] font-medium text-sky-600 dark:text-sky-400">
+                <FaLinkedin className="size-3" />
                 LinkedIn
               </span>
             )}
             {v.instagram && (
-              <span className="rounded-md bg-pink-500/10 px-2 py-0.5 text-[10px] font-medium text-pink-600 dark:text-pink-400">
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-pink-500/10 px-2 py-0.5 text-[10px] font-medium text-pink-600 dark:text-pink-400">
+                <FaInstagram className="size-3" />
                 Instagram
               </span>
             )}
@@ -183,9 +188,9 @@ export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
 
         {/* Internal note if available */}
         {v?.note?.trim() && (
-          <div className="border-t border-border pt-3">
-            <div className="rounded-lg bg-muted/40 p-2.5 text-xs">
-              <span className="font-semibold text-muted-foreground block text-[10px] uppercase tracking-wider mb-0.5">
+          <div className="border-border border-t pt-3">
+            <div className="bg-muted/40 rounded-lg p-2.5 text-xs">
+              <span className="text-muted-foreground mb-0.5 block text-[10px] font-semibold tracking-wider uppercase">
                 {t("clientProfile.noteLabel", "Ghi chú")}:
               </span>
               <span className="text-foreground/80 italic">{v.note.trim()}</span>

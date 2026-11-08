@@ -1,4 +1,5 @@
 import { api } from "@/lib/axios";
+import { postAiWithCredit } from "@/services/aiCreditRequest";
 
 /** FR 3.7.2 caption pipeline inside a workspace, charged in AI credit. */
 export type CaptionLength = "short" | "medium" | "long";
@@ -67,6 +68,7 @@ export const sortFitTrends = (trends: FitTrend[], platform: string) => {
 export interface TrendFit {
   date: string;
   judged: boolean;
+  provisional?: boolean;
   trends: FitTrend[];
   upcoming: FitTrend[];
 }
@@ -90,8 +92,10 @@ export interface CaptionOption {
   trendTechnique: TrendTechnique | null;
 }
 
-export interface CaptionDraft
-  extends Omit<CaptionOption, "type" | "title" | "trendTechnique"> {
+export interface CaptionDraft extends Omit<
+  CaptionOption,
+  "type" | "title" | "trendTechnique"
+> {
   platform: string;
 }
 
@@ -126,7 +130,7 @@ const base = (workspaceId: string) => `/api/v1/workspaces/${workspaceId}/ai`;
 export const aiCaptionService = {
   generate: async (workspaceId: string, body: CaptionRequest) =>
     (
-      await api.post<{
+      await postAiWithCredit<{
         data: Charged & {
           generationId: string;
           captions: CaptionOption[];
@@ -146,7 +150,7 @@ export const aiCaptionService = {
     },
   ) =>
     (
-      await api.post<{ data: Charged & { drafts: CaptionDraft[] } }>(
+      await postAiWithCredit<{ data: Charged & { drafts: CaptionDraft[] } }>(
         `${base(workspaceId)}/captions/refine`,
         body,
       )
@@ -161,7 +165,7 @@ export const aiCaptionService = {
     },
   ) =>
     (
-      await api.post<{ data: Charged & { drafts: CaptionDraft[] } }>(
+      await postAiWithCredit<{ data: Charged & { drafts: CaptionDraft[] } }>(
         `${base(workspaceId)}/captions/adapt`,
         body,
       )
@@ -182,7 +186,14 @@ export const aiCaptionService = {
       )
     ).data.data,
   /** Trends that suit the workspace brand today + upcoming moments (not charged). */
-  trendFit: async (workspaceId: string) =>
-    (await api.get<{ data: TrendFit }>(`${base(workspaceId)}/trend-fit`)).data
-      .data,
+  trendFit: async (
+    workspaceId: string,
+    description = "",
+    platform = "facebook",
+  ) =>
+    (
+      await api.get<{ data: TrendFit }>(`${base(workspaceId)}/trend-fit`, {
+        params: { description: description.slice(0, 1000), platform },
+      })
+    ).data.data,
 };

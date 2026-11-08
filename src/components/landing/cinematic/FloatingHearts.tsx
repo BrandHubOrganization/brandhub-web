@@ -76,7 +76,7 @@ export const FloatingHearts = forwardRef<
       cancelled = true;
       clearTimeout(timer);
     };
-     
+
   }, [minIntervalMs, maxIntervalMs]);
 
   return (

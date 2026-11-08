@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 import { TrendingUp, Calendar, Layers } from "lucide-react";
 import type { DailyPoint, HourBucket } from "@/types/analytics";
 
-const BRAND_ORANGE_HEX = "#ca3d0e";
+const BRAND_ORANGE_HEX = "#f05a28";
 const NEUTRAL_SLATE = "#64748b";
 
 const STATUS_COLORS: Record<string, string> = {

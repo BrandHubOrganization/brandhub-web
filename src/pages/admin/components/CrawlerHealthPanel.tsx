@@ -26,11 +26,11 @@ export function CrawlerHealthPanel({
   });
   return (
     <section
-      className="border-border bg-card space-y-4 rounded-xl border p-4"
+      className="border-border bg-card flex h-full flex-col space-y-4 rounded-xl border p-5 shadow-xs"
       aria-labelledby="crawler-health-title"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="crawler-health-title" className="font-semibold">
+        <h2 id="crawler-health-title" className="text-sm font-semibold">
           {t("admin.crawler.healthTitle")}
         </h2>
         {!hideRefresh && (
@@ -59,19 +59,16 @@ export function CrawlerHealthPanel({
       )}
       {query.data && (
         <>
-          <p className="text-muted-foreground text-sm">
-            {t("admin.crawler.healthScope")}
-          </p>
           {!!query.data.alerts?.length && (
             <div
               role="status"
-              className="border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-300 rounded-lg border p-3 text-sm space-y-1.5"
+              className="space-y-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-800 dark:text-amber-300"
             >
-              <div className="flex items-center gap-1.5 font-semibold text-amber-900 dark:text-amber-200">
+              <div className="flex items-center gap-1.5 text-sm font-semibold text-amber-900 dark:text-amber-200">
                 <AlertTriangle className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
                 <span>{t("admin.crawler.warningTitle")}</span>
               </div>
-              <ul className="list-inside list-disc pl-1 text-xs space-y-0.5">
+              <ul className="list-inside list-disc space-y-0.5 pl-1 text-xs">
                 {query.data.alerts.map((alert, index) => (
                   <li key={`${alert.component}-${index}`}>
                     {t(`admin.crawler.codes.${alert.code}`, {
@@ -82,7 +79,10 @@ export function CrawlerHealthPanel({
               </ul>
             </div>
           )}
-          <div className="flex flex-wrap items-center gap-2.5 text-xs" role="status">
+          <div
+            className="flex flex-wrap items-center gap-2.5 text-xs"
+            role="status"
+          >
             <div
               className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-medium ${
                 query.data.manualReady
@@ -131,10 +131,10 @@ export function CrawlerHealthPanel({
               </span>
             </div>
 
-            <div className="text-muted-foreground inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/30 px-2.5 py-1">
-              <Clock className="size-3 text-muted-foreground/80" />
+            <div className="text-muted-foreground border-border/60 bg-muted/30 inline-flex items-center gap-1 rounded-full border px-2.5 py-1">
+              <Clock className="text-muted-foreground/80 size-3" />
               <span>{t("admin.crawler.checkedAt")}:</span>
-              <span className="font-mono tabular-nums text-foreground">
+              <span className="text-foreground font-mono tabular-nums">
                 {new Date(query.data.checkedAt).toLocaleTimeString(
                   i18n.language,
                 )}
@@ -144,7 +144,7 @@ export function CrawlerHealthPanel({
 
           {Boolean(query.data.nextRuns?.length) && (
             <div className="text-muted-foreground bg-muted/30 border-border/50 flex flex-wrap items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs">
-              <span className="font-medium text-foreground">
+              <span className="text-foreground font-medium">
                 {t("admin.crawler.nextRuns")} ({query.data.timezone}):
               </span>
               <span className="font-mono tabular-nums">
@@ -160,7 +160,7 @@ export function CrawlerHealthPanel({
           )}
 
           <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-            {query.data.checks.map((check) => {
+            {(query.data.checks ?? []).map((check) => {
               const isOk = check.status === "OK";
               const statusClasses = isOk
                 ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
@@ -176,7 +176,7 @@ export function CrawlerHealthPanel({
               return (
                 <div
                   key={`${check.component}-${check.platform ?? ""}`}
-                  className="border-border/70 bg-card/60 space-y-1.5 rounded-lg border p-3 transition-colors hover:border-border"
+                  className="border-border/70 bg-card/60 hover:border-border space-y-1.5 rounded-lg border p-3 transition-colors"
                 >
                   <div className="flex items-center justify-between gap-2 text-sm font-medium">
                     <span className="truncate">
@@ -202,7 +202,7 @@ export function CrawlerHealthPanel({
                     </p>
                   )}
                   {check.consumers !== undefined && (
-                    <p className="text-muted-foreground font-mono tabular-nums text-xs">
+                    <p className="text-muted-foreground font-mono text-xs tabular-nums">
                       {t("admin.crawler.queueCounts", {
                         consumers: check.consumers,
                         messages: check.messagesReady,

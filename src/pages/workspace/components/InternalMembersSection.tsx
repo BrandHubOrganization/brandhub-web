@@ -46,6 +46,8 @@ export function InternalMembersSection({
   handleAssign,
   members,
   currentMember,
+  currentRole,
+  currentUserId,
   updatingRole,
   handleUpdateRole,
   leaving,
@@ -68,18 +70,22 @@ export function InternalMembersSection({
             {t("workspace.members.inviteButton")}
           </Button>
         )}
-        <Button
-          variant="destructive"
-          loading={leaving}
-          onClick={() => setLeaveOpen(true)}
-        >
-          {t("workspace.members.leaveButton")}
-        </Button>
+        {currentMember && (
+          <Button
+            variant="destructive"
+            loading={leaving}
+            onClick={() => setLeaveOpen(true)}
+          >
+            {t("workspace.members.leaveButton")}
+          </Button>
+        )}
       </div>
 
       <MembersTable
         members={internalMembers}
         canManage={canManage}
+        currentRole={currentRole ?? currentMember?.role}
+        currentUserId={currentUserId ?? currentMember?.userId}
         onRemove={setRemoveTarget}
         onUpdateRole={handleUpdateRole}
         updatingRole={updatingRole}

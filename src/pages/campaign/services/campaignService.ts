@@ -16,8 +16,6 @@ const base = (workspaceId: string) =>
 export const campaignService = {
   list: (workspaceId: string) =>
     api.get<ApiResponse<Campaign[]>>(base(workspaceId)),
-  create: (workspaceId: string, plan: CampaignPlan) =>
-    api.post<ApiResponse<Campaign>>(base(workspaceId), plan),
   update: (workspaceId: string, campaign: Campaign, plan: CampaignPlan) =>
     api.patch<ApiResponse<Campaign>>(`${base(workspaceId)}/${campaign.id}`, {
       ...plan,

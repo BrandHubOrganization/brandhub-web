@@ -34,6 +34,7 @@ export function useChatDraftSchedule(
     try {
       await props.onSchedule(message, scheduledAt, timeZone);
       retry.current = null;
+      props.onDraftSent?.();
       if (!editor.isDestroyed && JSON.stringify(editor.getJSON()) === captured)
         editor.commands.clearContent();
       requestAnimationFrame(() => {

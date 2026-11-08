@@ -33,7 +33,7 @@ export interface ImageCropperModalProps {
 }
 
 const OVERLAY_COLORS = [
-  { name: "Cam BrandHub", value: "#ca3d0e" },
+  { name: "Cam BrandHub", value: "#f05a28" },
   { name: "Xanh biển", value: "#2563eb" },
   { name: "Xanh ngọc", value: "#059669" },
   { name: "Tím", value: "#7c3aed" },
@@ -65,7 +65,7 @@ export function ImageCropperModal({
 
   // Color overlay and filter states
   const [activeTab, setActiveTab] = useState<"crop" | "filter">("crop");
-  const [overlayColor, setOverlayColor] = useState<string>("#ca3d0e");
+  const [overlayColor, setOverlayColor] = useState<string>("#f05a28");
   const [overlayOpacity, setOverlayOpacity] = useState<number>(0); // 0 to 50%
   const [brightness, setBrightness] = useState<number>(100); // 80% - 130%
   const [contrast, setContrast] = useState<number>(100); // 80% - 130%

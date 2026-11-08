@@ -51,7 +51,7 @@ function NodeCard({ name, role, isRoot, onClick }: NodeCardProps) {
   );
   if (!onClick) return card;
   return (
-    <button type="button" onClick={onClick} className="cursor-pointer">
+    <button type="button" onClick={onClick} className="cursor-pointer text-left">
       {card}
     </button>
   );
@@ -62,7 +62,7 @@ function NodeCard({ name, role, isRoot, onClick }: NodeCardProps) {
 // Cấp member (trong 1 workspace) xếp DỌC, nối bằng border-left.
 function Branch({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border-border ml-3.5 space-y-2 border-l-2 pt-2 pl-4">
+    <div className="border-border ml-3.5 flex flex-wrap items-center gap-3.5 border-l-2 pt-2.5 pb-1 pl-4">
       {children}
     </div>
   );
@@ -72,7 +72,7 @@ function Branch({ children }: { children: React.ReactNode }) {
 // riêng — tận dụng bề ngang, đỡ list dài lê thê khi nhiều workspace.
 function WorkspaceRow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border-border ml-3.5 flex flex-wrap gap-4 border-l-2 pt-2 pl-4">
+    <div className="border-border ml-3.5 flex flex-wrap gap-6 border-l-2 pt-2 pl-4">
       {children}
     </div>
   );

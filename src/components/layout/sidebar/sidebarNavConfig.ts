@@ -27,8 +27,8 @@ import {
   MessageCircleMore,
   Mail,
   Calendar,
-  Send,
-  Activity,
+
+
   Brain,
   TrendingUp,
   Clapperboard,
@@ -214,26 +214,6 @@ export const NAV_SECTIONS: NavSection[] = [
     ],
   },
   {
-    key: "publish",
-    titleKey: "nav.sections.publish",
-    items: [
-      {
-        to: "/publish",
-        icon: Send,
-        labelKey: "nav.publish",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/publish/dashboard",
-        icon: Activity,
-        labelKey: "nav.postsDashboard",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-    ],
-  },
-  {
     key: "agency",
     titleKey: "nav.sections.agency",
     items: [
@@ -249,22 +229,6 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/agency/{agencyId}/members",
         icon: Users,
         labelKey: "nav.agencySub.members",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/agency/{agencyId}/roles",
-        icon: Shield,
-        labelKey: "nav.agencySub.roles",
-        agencyScoped: true,
-        hiddenForClient: true,
-        hideInWorkspace: true,
-      },
-      {
-        to: "/agency/{agencyId}/stats",
-        icon: BarChart3,
-        labelKey: "nav.agencySub.stats",
         agencyScoped: true,
         hiddenForClient: true,
         hideInWorkspace: true,
@@ -405,6 +369,7 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: Brain,
         labelKey: "aiStudio.knowledgeBase.title",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
       {
         to: "/ai-studio/trends",
@@ -418,24 +383,12 @@ export const NAV_SECTIONS: NavSection[] = [
         labelKey: "aiStudio.video.title",
         hideInWorkspace: true,
       },
-      {
-        to: "/reports",
-        icon: FileBarChart,
-        labelKey: "nav.reports",
-        hideInWorkspace: true,
-      },
     ],
   },
   {
     key: "invitations",
     titleKey: "nav.sections.invitations",
     items: [
-      {
-        to: "/invitations",
-        icon: Mail,
-        labelKey: "nav.invitations",
-        hideInWorkspace: true,
-      },
       {
         to: "/agency/invitations",
         icon: Inbox,
@@ -511,7 +464,7 @@ export const NAV_SECTIONS: NavSection[] = [
         labelKey: "nav.faq",
       },
       {
-        to: "/help/guide",
+        to: "/admin/guide",
         icon: BookOpen,
         labelKey: "nav.guide",
       },

@@ -20,7 +20,7 @@ interface ClientProfileLogoProps {
 export function ClientProfileLogo({
   logoUrl,
   displayName,
-  brandColor = "#ca3d0e",
+  brandColor = "#f05a28",
   className,
   iconClassName,
 }: ClientProfileLogoProps) {
@@ -34,7 +34,7 @@ export function ClientProfileLogo({
           "flex size-full items-center justify-center transition-colors text-white",
           className,
         )}
-        style={{ backgroundColor: color || brandColor || "#ca3d0e" }}
+        style={{ backgroundColor: color || brandColor || "#f05a28" }}
       >
         {createElement(getLogoIcon(iconName), { className: cn("size-6 text-white", iconClassName) })}
       </div>
@@ -60,7 +60,7 @@ export function ClientProfileLogo({
         className,
       )}
       style={{
-        backgroundColor: brandColor || "#ca3d0e",
+        backgroundColor: brandColor || "#f05a28",
         color: "#ffffff",
       }}
     >

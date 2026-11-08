@@ -22,6 +22,8 @@ export interface TaskWorkflow {
   inputReferences: TaskReference[];
   assigneeId: string | null;
   assigneeName: string | null;
+  supervisorId?: string | null;
+  supervisorName?: string | null;
   requiresClientApproval: boolean;
   workflowRevision: number | null;
   firstStartedAt: string | null;
@@ -44,6 +46,7 @@ export interface TaskWorkflow {
   };
   typeMetadata?: {
     targetPlatforms?: string[];
+    acceptanceCriteria?: string;
     [key: string]: unknown;
   } | null;
 }

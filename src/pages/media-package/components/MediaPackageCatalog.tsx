@@ -1,3 +1,4 @@
+import { PackageShareActions } from "@/pages/media-package/components/PackageShareActions";
 import { PackageOpen, Search } from "lucide-react";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,6 +23,8 @@ interface MediaPackageCatalogProps {
   updatingPackageId?: string | null;
   onUseTemplate?: (mediaPackage: MediaPackage) => void;
   onDuplicate?: (mediaPackage: MediaPackage) => void;
+  onEdit?: (mediaPackage: MediaPackage) => void;
+  shareAgencyId?: string;
   onToggleAvailability?: (mediaPackage: MediaPackage) => void;
 }
 
@@ -49,6 +52,16 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
         onClose={() => setDetailId(null)}
         actions={
           <>
+            {props.onEdit && !detail.isTemplate && (
+              <Button variant="outline" onClick={() => props.onEdit?.(detail)}>
+                {t("mediaPackage.workspace.edit")}
+              </Button>
+            )}
+            {props.shareAgencyId && !detail.isTemplate && (
+              <PackageShareActions
+                basePath={`/api/v1/agencies/${props.shareAgencyId}/media-packages/${detail.id}`}
+              />
+            )}
             {props.canSelect && (
               <Button
                 variant="orange"
@@ -89,7 +102,7 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
         <h2 id={id} className="text-foreground text-lg font-semibold">
           {title}
         </h2>
-        <HelpHint label={title}>{description}</HelpHint>
+        {description && <HelpHint label={title}>{description}</HelpHint>}
       </div>
       {packages.length > 0 && (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -125,7 +138,7 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
           )}
           <p
             role="status"
-            className="text-muted-foreground shrink-0 text-xs sm:text-sm whitespace-nowrap sm:ml-auto"
+            className="text-muted-foreground shrink-0 text-xs whitespace-nowrap sm:ml-auto sm:text-sm"
           >
             {t("mediaPackage.ui.resultCount", { count: filtered.length })}
           </p>
@@ -148,21 +161,38 @@ export function MediaPackageCatalog(props: MediaPackageCatalogProps) {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filtered.slice(0, visibleCount).map((mediaPackage) => (
-            <MediaPackageCard
-              key={mediaPackage.id}
-              mediaPackage={mediaPackage}
-              selected={props.selectedPackageId === mediaPackage.id}
-              canSelect={props.canSelect}
-              selecting={props.selectingId === mediaPackage.id}
-              onSelect={props.onSelect}
-              onViewDetails={(item) => setDetailId(item.id)}
-              canUseTemplate={props.canUseTemplate}
-              canManageAvailability={canManageAvailability}
-              updatingAvailability={props.updatingPackageId === mediaPackage.id}
-              onUseTemplate={props.onUseTemplate}
-              onDuplicate={props.onDuplicate}
-              onToggleAvailability={props.onToggleAvailability}
-            />
+            <div key={mediaPackage.id} className="flex min-w-0 flex-col gap-2">
+              <MediaPackageCard
+                mediaPackage={mediaPackage}
+                selected={props.selectedPackageId === mediaPackage.id}
+                canSelect={props.canSelect}
+                selecting={props.selectingId === mediaPackage.id}
+                onSelect={props.onSelect}
+                onViewDetails={(item) => setDetailId(item.id)}
+                canUseTemplate={props.canUseTemplate}
+                canManageAvailability={canManageAvailability}
+                updatingAvailability={
+                  props.updatingPackageId === mediaPackage.id
+                }
+                onUseTemplate={props.onUseTemplate}
+                onDuplicate={props.onDuplicate}
+                onToggleAvailability={props.onToggleAvailability}
+              />
+              {props.onEdit && !mediaPackage.isTemplate && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => props.onEdit?.(mediaPackage)}
+                >
+                  {t("mediaPackage.workspace.edit")}
+                </Button>
+              )}
+              {props.shareAgencyId && !mediaPackage.isTemplate && (
+                <PackageShareActions
+                  basePath={`/api/v1/agencies/${props.shareAgencyId}/media-packages/${mediaPackage.id}`}
+                />
+              )}
+            </div>
           ))}
         </div>
       )}

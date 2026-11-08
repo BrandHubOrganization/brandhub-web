@@ -1,4 +1,5 @@
 {
+  "automaticDraftMissing": "The package is approved but its campaign draft is missing. Check the data and package approval process.",
   "compact": {
     "durationSuggestion": "Package duration: {{weeks}} weeks · end date is editable",
     "dateHelp": "Selecting a start date suggests an end date using the approved package duration. You can adjust it; a manually changed end date is preserved when the start date changes."
@@ -13,8 +14,8 @@
     "sourceRequest": "View source Request",
     "progress": "{{done}}/{{total}} Tasks ended (including cancelled)",
     "pending": "{{count}} pending Requests will be cancelled after Campaign completion.",
-    "reviewing": "Received Requests — resolve first",
-    "reviewingHelp": "Open each Request to accept or deny. Accepted Requests create additional Tasks to resolve.",
+    "reviewing": "Received requests blocking completion",
+    "reviewingHelp": "Resolve requests under review. For each accepted request, finish or cancel its linked task.",
     "unfinished": "{{count}} unfinished Tasks",
     "reason": "Shared reason for selected Tasks",
     "chooseReason": "Choose a cancellation reason",
@@ -33,9 +34,22 @@
       "DUPLICATE_OR_REPLACED": "Duplicate or replaced work",
       "NO_LONGER_SUITABLE": "No longer suitable for the Campaign",
       "OTHER": "Other"
-    }
+    },
+    "loading": "Checking completion conditions",
+    "pin": "Keep checklist open",
+    "checkDeployment": "Deployment completed",
+    "checkTasks": "All tasks finished or cancelled",
+    "checkRequests": "No requests under review",
+    "checkLinks": "Supplemental tasks linked to the campaign",
+    "confirmComplete": "Complete campaign?",
+    "completeDescription": "Confirm campaign completion based on the current checklist."
   },
   "title": "Campaign plan",
+  "tabs": {
+    "plan": "Plan & Deliverables",
+    "delivery": "Delivery & Tasks",
+    "review": "Feedback & History"
+  },
   "partners": {
     "title": "Campaign partners",
     "description": "Manual cooperation tracking. Updating a partner does not change the approved Campaign plan or publish content automatically.",
@@ -71,7 +85,7 @@
       "OTHER": "Other"
     }
   },
-  "packageRequired": "Approve the package before planning a Campaign.",
+  "packageRequired": "No workspace package yet",
   "description": "One Workspace runs one Campaign from its approved package. The Client gives feedback, the Manager edits, and both approve the same version before launch.",
   "name": "Campaign name",
   "strategy": "Execution strategy",
@@ -84,13 +98,16 @@
   "workItemName": "Work item name",
   "addMilestone": "Add milestone",
   "workItems": "Planned work items",
-  "workItemsHint": "Specific work grouped by deliverable; each work item becomes a Task when the Campaign is deployed. Adding work items does not increase the agreed package quantities.",
+  "workItemsHint": "Parent tasks come from the agreed package. When saved, a task without its own deadline uses the campaign end date.",
   "addWorkItem": "Add work item",
   "dueDate": "Due date (local time)",
   "remove": "Remove",
   "save": "Save draft",
   "cancel": "Cancel",
-  "create": "Create campaign draft",
+  "create": "Prepare campaign",
+  "retryPreparation": "Retry task preparation",
+  "usePackageScope": "Use agreed package scope",
+  "brandTemplate": "Use the brand’s approved visual identity and tone of voice. Confirm any exceptions with the client.",
   "edit": "Edit plan",
   "empty": "No campaign plan yet.",
   "noWorkItems": "No work items planned.",
@@ -100,7 +117,10 @@
   "saved": "Plan saved.",
   "reload": "Reload",
   "error": "Unable to load or save the plan. Check input and try again.",
+  "editMissingFields": "Complete missing fields",
   "review": {
+    "requirementsTitle": "Complete before deployment",
+    "missingDeadline": "Deadline for “{{task}}”",
     "title": "Feedback and approval",
     "agency": "Agency",
     "client": "Client",
@@ -120,8 +140,10 @@
     "APPROVE": "Approval"
   },
   "delivery": {
+    "draftHint": "Review the tasks prepared for this draft. Delivery can start after the agency and client approve the campaign.",
+    "draftEmpty": "No tasks have been generated for this draft yet.",
     "title": "Deployment and progress",
-    "deploy": "Create backlog tasks",
+    "deploy": "Start campaign",
     "retry": "Retry deployment",
     "queued": "Deployment requested.",
     "PENDING": "Creating tasks",
@@ -157,10 +179,13 @@
     "CAMPAIGN_VERSION_CONFLICT": "Plan changed. Keep needed input, cancel editing and reload.",
     "CAMPAIGN_LEGACY_TERMS": "This legacy package or plan has no frozen deliverable scope or still uses monthly quantities, so editing is locked pending data review. Monthly quantities are not converted automatically.",
     "CAMPAIGN_IMMUTABLE": "Approved content cannot be edited.",
-    "CAMPAIGN_PLAN_INCOMPLETE": "Add strategy, start/end dates and at least one work item before approval.",
+    "CAMPAIGN_PLAN_INCOMPLETE": "Save the strategy, start and end dates, and work item deadlines before approval.",
     "CAMPAIGN_COMPLETION_REASON_REQUIRED": "A reason is required while tasks remain unfinished.",
     "CAMPAIGN_DEPLOYMENT_INCOMPLETE": "Not all tasks were created. Check deployment progress.",
-    "CAMPAIGN_NOT_APPROVED": "Both sides must approve the same Campaign version before deployment."
+    "CAMPAIGN_NOT_APPROVED": "Both sides must approve the same Campaign version before deployment.",
+    "PACKAGE_PREPARATION_PENDING": "Package tasks are not ready or the plan is already locked.",
+    "PACKAGE_IMPACT_BLOCKED": "Cannot remove or change existing tasks. Current data is preserved.",
+    "PACKAGE_WORKFLOW_REPLACED": "Use the manager-led workspace package workflow."
   },
   "ui": {
     "editLocked": "The approved plan is locked and its content cannot be edited. Only a Draft plan can be edited.",
@@ -195,7 +220,7 @@
     }
   },
   "ux": {
-    "packageHint": "Choose a media package, agree on its terms and have both sides approve it. Then return here to plan the campaign.",
+    "packageHint": "The manager creates a package to prepare the campaign and tasks.",
     "openPackage": "Open media package",
     "nextStep": "Next step",
     "awaitingTasks": "Check deployment status below. Task management becomes available once created tasks are confirmed.",
@@ -203,14 +228,146 @@
     "plan": "View plan",
     "openTasks": "Manage tasks",
     "clientGuidance": {
-      "APPROVED": "Both sides have approved the plan. A manager will deploy it to create tasks. You can review the plan and follow progress in the delivery section.",
-      "IN_PROGRESS": "The campaign is underway. View progress and tasks; a manager handles requirements and assignments."
+      "APPROVED": "Complete the plan and tasks before deployment. Clients can view and leave feedback.",
+      "IN_PROGRESS": "The campaign is underway. View progress and tasks; a manager handles requirements and assignments.",
+      "DRAFT": "Complete the plan and tasks before deployment. Clients can view and leave feedback."
     },
     "guidance": {
-      "DRAFT": "Check the plan and work items, then go to feedback and approval. Both sides must approve the same version before deployment.",
-      "APPROVED": "Both sides have approved the plan. Go to deployment so a manager can create tasks from the agreed work items.",
+      "DRAFT": "Complete the plan and tasks before deployment. Clients can view and leave feedback.",
+      "APPROVED": "Complete the plan and tasks before deployment. Clients can view and leave feedback.",
       "IN_PROGRESS": "Tasks have been created. Open task management to add requirements, assign people and track delivery.",
       "COMPLETED": "This campaign has ended. You can still review its plan, approval history and tasks."
-    }
-  }
+    },
+    "review": "Plan feedback"
+  },
+  "feedback": {
+    "title": "Feedback and plan history",
+    "hint": "Feedback on plan version {{version}}. The manager decides when to deploy."
+  },
+  "timeline": {
+    "all": "All",
+    "title": "Campaign timeline",
+    "search": "Search Tasks or subtasks…",
+    "assignee": "Assignee",
+    "unassigned": "Unassigned",
+    "findMember": "Search members…",
+    "noMembers": "No matching members",
+    "filters": "Filters",
+    "mine": "My involvement",
+    "clearFilters": "Clear filters",
+    "from": "From",
+    "to": "To",
+    "columnsTitle": "Visible columns",
+    "resizeColumn": "Resize {{column}} column",
+    "zoom": "Zoom",
+    "today": "Today",
+    "otherTasks": "Other Tasks",
+    "noResults": "No Tasks match the filters.",
+    "expandSubtasks": "Expand subtasks of {{name}}",
+    "addSubtask": "Add subtask",
+    "subtaskName": "Subtask name…",
+    "deadline": "Due date",
+    "plannedStart": "Planned start",
+    "add": "Add",
+    "cancel": "Cancel",
+    "done": "Done",
+    "resizeStart": "Resize planned start",
+    "resizeEnd": "Resize due date",
+    "moveRange": "Move schedule from {{start}} to {{end}}",
+    "days": "{{count}} days",
+    "setSchedule": "Set schedule",
+    "taskDuration": "Bar: Task duration",
+    "milestones": "Milestones",
+    "newMilestone": "New milestone",
+    "addMilestone": "Add milestone",
+    "milestoneName": "Milestone name",
+    "date": "Date",
+    "removeMilestone": "Remove milestone",
+    "confirmRemove": "Confirm removal",
+    "saveError": "Could not save. Refresh and check permissions or recent changes.",
+    "planSaveError": "Plan not saved. Data may have changed; review and retry.",
+    "loadError": "Could not load the timeline. Check connectivity and Task configuration, then retry.",
+    "unsaved": "Unsaved changes",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "retry": "Retry",
+    "campaignInfo": "Campaign information",
+    "feedback": "Campaign feedback",
+    "noFeedback": "No feedback yet.",
+    "feedbackPlaceholder": "Comment on the Campaign plan…",
+    "feedbackError": "Feedback not sent. Your text is retained for retry.",
+    "packageReady": "Package synchronized",
+    "campaignDates": "Valid Campaign dates",
+    "taskDates": "Task deadlines set",
+    "prerequisites": "Deployment prerequisites",
+    "deploy": "Deploy",
+    "deploying": "Deploying…",
+    "deploymentFailed": "Deployment incomplete. Check and retry.",
+    "deployConfirm": "Deploy Campaign?",
+    "deployDescription": "Begin work using the current plan. The package and Campaign plan will be locked after deployment.",
+    "closeCampaign": "Complete campaign",
+    "retryPreparation": "Retry plan preparation",
+    "taskDialogDescription": "Details, subtasks and comments for the selected Task.",
+    "columns": {
+      "name": "Work",
+      "status": "Status",
+      "assignee": "Assignee",
+      "relation": "My role"
+    },
+    "relations": {
+      "assignee": "Assignee",
+      "supervisor": "Supervisor",
+      "both": "Both"
+    },
+    "mineOptions": {
+      "all": "All Tasks",
+      "related": "Related to me",
+      "assignee": "Assigned to me",
+      "supervisor": "Supervised by me"
+    },
+    "filterFields": {
+      "assignee": "Assignee",
+      "supervisor": "Supervisor",
+      "statuses": "Status",
+      "types": "Work type",
+      "deliverable": "Deliverable",
+      "schedule": "Schedule"
+    },
+    "scheduleOptions": {
+      "all": "All schedules",
+      "missing": "Unscheduled",
+      "overdue": "Overdue"
+    },
+    "zoomOptions": {
+      "day": "Days",
+      "week": "Weeks",
+      "month": "Months",
+      "fit": "Fit to view"
+    },
+    "currentServerValue": "Current server value: {{value}}",
+    "fit": "Fit to view",
+    "unscheduled": "Unscheduled",
+    "createRange": "Create a task date range",
+    "milestoneRail": "Milestone rail",
+    "milestonePlaceholder": "Milestone name…",
+    "milestoneDate": "Milestone date",
+    "milestoneChanged": "This milestone has changed. Cancel and reopen to review the latest data.",
+    "milestoneLimit": "A campaign supports up to 100 milestones.",
+    "milestoneRow": "Milestone",
+    "horizontalScroll": "Scroll timeline horizontally",
+    "startAnchor": "Go to campaign start",
+    "endAnchor": "Go to campaign end",
+    "scrollCaption": "Daily timeline",
+    "previousDay": "Previous day",
+    "nextDay": "Next day",
+    "moveMilestone": "Drag to reschedule · ←/→ move one day",
+    "newClientFeedback": "{{count}} new Client feedback",
+    "closeFeedback": "Close feedback",
+    "workspaceChat": "Open Workspace chat",
+    "strategyHint": "Outline the goal, audience, channels and key activities.",
+    "strategyTooLong": "Formatted content exceeds 10,000 characters. Shorten it before saving.",
+    "strategyConflict": "The strategy has changed on the server. Review it before retrying.",
+    "savingSchedule": "Saving schedule…"
+  },
+  "loading": "Loading campaign"
 }

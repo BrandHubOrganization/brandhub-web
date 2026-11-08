@@ -11,22 +11,32 @@ import { useAuthStore } from "@/store/authStore";
 import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
 import { ChangePasswordCard } from "./components/ChangePasswordCard";
+import { SecurityScoreCard } from "./components/SecurityScoreCard";
+import { ActiveSessionsCard } from "./components/ActiveSessionsCard";
+import { SecurityTipsCard } from "./components/SecurityTipsCard";
 
 export function SecurityPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [enabled, setEnabled] = useState(false);
+
+  const user = useAuthStore((s) => s.user);
+  const [email, setEmail] = useState<string>(user?.email || "");
+  const [isGoogleLinked, setIsGoogleLinked] = useState<boolean>(false);
+  const [hasPassword, setHasPassword] = useState<boolean>(true);
+  const [enabled, setEnabled] = useState<boolean>(false);
+
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [disabling, setDisabling] = useState(false);
   const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
   const [deactivateOpen, setDeactivateOpen] = useState(false);
   const [deactivatePassword, setDeactivatePassword] = useState("");
   const [deactivateOtp, setDeactivateOtp] = useState("");
   const [deactivating, setDeactivating] = useState(false);
-  const [hasPassword, setHasPassword] = useState(true);
   const [sendingOtp, setSendingOtp] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -34,11 +44,14 @@ export function SecurityPage() {
     authService
       .me()
       .then((res) => {
-        setEnabled(Boolean(res.data.data.twoFactorEnabled));
-        setHasPassword(res.data.data.hasPassword ?? true);
+        const data = res.data.data;
+        if (data.email) setEmail(data.email);
+        setEnabled(Boolean(data.twoFactorEnabled));
+        setHasPassword(data.hasPassword ?? true);
+        setIsGoogleLinked(Boolean(data.linkedProviders?.includes("google")));
       })
       .catch(() => {
-        /* giữ enabled=false; người dùng vẫn có thể bật 2FA */
+        /* giữ state fallback từ authStore */
       });
   }, []);
 
@@ -131,10 +144,11 @@ export function SecurityPage() {
   };
 
   return (
-    <section id="security" className="scroll-mt-6">
-      <div className="mb-4 flex max-w-2xl items-center justify-between">
+    <section id="security" className="w-full scroll-mt-6">
+      {/* Header trải rộng w-full */}
+      <div className="mb-6 flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-foreground text-lg font-semibold">
+          <h2 className="text-foreground text-xl font-bold tracking-tight">
             {t("security.title")}
           </h2>
           <p className="text-muted-foreground text-sm">
@@ -144,204 +158,202 @@ export function SecurityPage() {
         <Button
           variant="outline"
           size="sm"
-          className="gap-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/50 dark:hover:bg-rose-950/40"
+          className="gap-2 self-start border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 sm:self-auto dark:border-rose-900/50 dark:hover:bg-rose-950/40"
           onClick={() => setLogoutOpen(true)}
         >
           <LogOut className="size-4" />
           {t("security.session.logoutButton")}
         </Button>
       </div>
-      <div className="border-border bg-card max-w-2xl rounded-xl border p-6">
-        <div className="border-border flex items-center gap-3 border-b pb-4">
-          <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-2">
-            <ShieldCheck className="size-5" />
-          </div>
-          <div>
-            <h2 className="text-foreground text-sm font-semibold">
-              {t("security.2fa.title")}
-            </h2>
-            <p className="text-muted-foreground text-xs">
-              {t("security.2fa.subtitle")}
-            </p>
-          </div>
-        </div>
 
-        {/* Chưa bật 2FA */}
-        {!enabled && !qrCodeUrl && !disabling && (
-          <div className="pt-6">
-            <Button
-              variant="orange"
-              className="gap-2"
-              onClick={handleEnable}
-              loading={submitting}
-            >
-              <ShieldCheck className="size-4" />
-              {t("security.2fa.enableButton")}
-            </Button>
-          </div>
-        )}
+      {/* Layout 2 cột responsive */}
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+        {/* Cột trái: Quản lý bảo mật chính */}
+        <div className="space-y-6 lg:col-span-7 xl:col-span-8">
+          {/* 1. Đổi mật khẩu */}
+          <ChangePasswordCard
+            hasPassword={hasPassword}
+            onPasswordSet={() => setHasPassword(true)}
+          />
 
-        {/* Đang thiết lập (QR + secret + nhập mã) */}
-        {!enabled && qrCodeUrl && (
-          <div className="grid grid-cols-1 gap-6 pt-6 sm:grid-cols-[auto_1fr]">
-            <div className="border-border bg-card flex aspect-square w-44 items-center justify-center rounded-lg border p-2">
-              <QRCodeSVG value={qrCodeUrl} size={160} />
+          {/* 2. Xác thực hai bước (2FA) */}
+          <div className="border-border bg-card rounded-xl border p-6 shadow-sm">
+            <div className="border-border flex items-center gap-3 border-b pb-4">
+              <div className="bg-brand-orange-soft text-brand-orange rounded-xl p-2.5">
+                <ShieldCheck className="size-5" />
+              </div>
+              <div>
+                <h2 className="text-foreground text-sm font-semibold">
+                  {t("security.2fa.title")}
+                </h2>
+                <p className="text-muted-foreground text-xs">
+                  {t("security.2fa.subtitle")}
+                </p>
+              </div>
             </div>
-            <div className="space-y-4">
-              <p className="text-muted-foreground text-xs">
-                {t("security.2fa.stepHint")}
-              </p>
-              <Input
-                label={t("security.2fa.verifyCodeLabel")}
-                type="text"
-                inputMode="numeric"
-                maxLength={6}
-                placeholder="000000"
-                value={code}
-                onChange={(e) =>
-                  setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-                }
-              />
-              <div className="flex gap-2">
+
+            {/* Chưa bật 2FA */}
+            {!enabled && !qrCodeUrl && !disabling && (
+              <div className="pt-6">
                 <Button
                   variant="orange"
                   className="gap-2"
-                  onClick={handleConfirmEnable}
+                  onClick={handleEnable}
                   loading={submitting}
-                  disabled={code.trim().length !== 6}
                 >
                   <ShieldCheck className="size-4" />
-                  {t("security.2fa.confirmEnable")}
+                  {t("security.2fa.enableButton")}
                 </Button>
+              </div>
+            )}
+
+            {/* Đang thiết lập (QR + secret + nhập mã) */}
+            {!enabled && qrCodeUrl && (
+              <div className="grid grid-cols-1 gap-6 pt-6 sm:grid-cols-[auto_1fr]">
+                <div className="border-border bg-card flex aspect-square w-44 items-center justify-center rounded-lg border p-2 shadow-inner">
+                  <QRCodeSVG value={qrCodeUrl} size={160} />
+                </div>
+                <div className="space-y-4">
+                  <p className="text-muted-foreground text-xs leading-relaxed">
+                    {t("security.2fa.stepHint")}
+                  </p>
+                  <Input
+                    label={t("security.2fa.verifyCodeLabel")}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    placeholder="000000"
+                    value={code}
+                    onChange={(e) =>
+                      setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                    }
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      variant="orange"
+                      className="gap-2"
+                      onClick={handleConfirmEnable}
+                      loading={submitting}
+                      disabled={code.trim().length !== 6}
+                    >
+                      <ShieldCheck className="size-4" />
+                      {t("security.2fa.confirmEnable")}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setQrCodeUrl(null);
+                        setCode("");
+                      }}
+                    >
+                      {t("security.2fa.cancel")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Đã bật 2FA */}
+            {enabled && !disabling && (
+              <div className="pt-6">
+                <p className="text-muted-foreground mb-4 text-sm">
+                  {t("security.2fa.enabledHint")}
+                </p>
                 <Button
                   variant="outline"
+                  className="gap-2"
                   onClick={() => {
-                    setQrCodeUrl(null);
+                    setDisabling(true);
                     setCode("");
                   }}
                 >
-                  {t("security.2fa.cancel")}
+                  {t("security.2fa.disableButton")}
                 </Button>
               </div>
-            </div>
-          </div>
-        )}
+            )}
 
-        {/* Đã bật 2FA */}
-        {enabled && !disabling && (
-          <div className="pt-6">
-            <p className="text-muted-foreground mb-4 text-sm">
-              {t("security.2fa.enabledHint")}
+            {/* Xác nhận tắt 2FA */}
+            {enabled && disabling && (
+              <div className="space-y-4 pt-6">
+                <p className="text-muted-foreground text-sm">
+                  {t("security.2fa.disableHint")}
+                </p>
+                <Input
+                  label={t("security.2fa.verifyCodeLabel")}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="000000"
+                  value={code}
+                  onChange={(e) =>
+                    setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                  }
+                />
+                <div className="flex gap-2">
+                  <Button
+                    variant="orange"
+                    className="gap-2"
+                    onClick={handleConfirmDisable}
+                    loading={submitting}
+                    disabled={code.trim().length !== 6}
+                  >
+                    {t("security.2fa.confirmDisable")}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setDisabling(false);
+                      setCode("");
+                    }}
+                  >
+                    {t("security.2fa.cancel")}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 3. Phiên hoạt động & Thiết bị */}
+          <ActiveSessionsCard />
+
+          {/* 4. Vùng nguy hiểm */}
+          <div className="border-border bg-card rounded-xl border border-rose-200 p-6 shadow-sm dark:border-rose-900/50">
+            <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
+              <TriangleAlert className="size-4 text-rose-500" />
+              {t("security.danger.title")}
+            </h3>
+            <p className="text-muted-foreground mt-2 text-xs leading-relaxed">
+              {t("security.danger.deactivateHint")}
             </p>
             <Button
               variant="outline"
-              className="gap-2"
-              onClick={() => {
-                setDisabling(true);
-                setCode("");
-              }}
+              size="sm"
+              className="mt-4 border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
+              onClick={() => setDeactivateOpen(true)}
             >
-              {t("security.2fa.disableButton")}
+              {t("security.danger.deactivateButton")}
             </Button>
           </div>
-        )}
-
-        {/* Xác nhận tắt 2FA */}
-        {enabled && disabling && (
-          <div className="space-y-4 pt-6">
-            <p className="text-muted-foreground text-sm">
-              {t("security.2fa.disableHint")}
-            </p>
-            <Input
-              label={t("security.2fa.verifyCodeLabel")}
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              placeholder="000000"
-              value={code}
-              onChange={(e) =>
-                setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-              }
-            />
-            <div className="flex gap-2">
-              <Button
-                variant="orange"
-                className="gap-2"
-                onClick={handleConfirmDisable}
-                loading={submitting}
-                disabled={code.trim().length !== 6}
-              >
-                {t("security.2fa.confirmDisable")}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setDisabling(false);
-                  setCode("");
-                }}
-              >
-                {t("security.2fa.cancel")}
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <ChangePasswordCard hasPassword={hasPassword} />
-
-      {/* Phiên đăng nhập & Đăng xuất */}
-      <div className="border-border bg-card mt-6 max-w-2xl rounded-xl border p-6">
-        <div className="border-border flex items-center justify-between border-b pb-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-brand-orange-soft text-brand-orange rounded-lg p-2">
-              <LogOut className="size-5" />
-            </div>
-            <div>
-              <h3 className="text-foreground text-sm font-semibold">
-                {t("security.session.title")}
-              </h3>
-              <p className="text-muted-foreground text-xs">
-                {t("security.session.subtitle")}
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/50 dark:hover:bg-rose-950/40"
-            onClick={() => setLogoutOpen(true)}
-          >
-            <LogOut className="size-4" />
-            {t("security.session.logoutButton")}
-          </Button>
         </div>
-        <div className="pt-4">
-          <p className="text-muted-foreground text-xs leading-relaxed">
-            {t("security.session.hint")}
-          </p>
+
+        {/* Cột phải: Điểm an toàn & Khuyến nghị (Sticky) */}
+        <div className="space-y-6 lg:sticky lg:top-6 lg:col-span-5 xl:col-span-4">
+          {/* 1. Thẻ điểm an toàn */}
+          <SecurityScoreCard
+            enabled2fa={enabled}
+            hasPassword={hasPassword}
+            email={email}
+            isGoogleLinked={isGoogleLinked}
+          />
+
+          {/* 2. Thẻ mẹo & Lối tắt bảo mật */}
+          <SecurityTipsCard />
         </div>
       </div>
 
-      <div className="border-border bg-card mt-6 max-w-2xl rounded-xl border border-red-200 p-6 dark:border-red-900/50">
-        <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-          <TriangleAlert className="size-4 text-rose-500" />
-          {t("security.danger.title")}
-        </h3>
-        <p className="text-muted-foreground mt-2 text-xs">
-          {t("security.danger.deactivateHint")}
-        </p>
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-4 border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
-          onClick={() => setDeactivateOpen(true)}
-        >
-          {t("security.danger.deactivateButton")}
-        </Button>
-      </div>
-
+      {/* Modal vô hiệu hóa tài khoản */}
       {deactivateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
           <div className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
             <div className="flex items-center gap-2">
               <TriangleAlert className="size-5 text-rose-500" />
@@ -349,7 +361,7 @@ export function SecurityPage() {
                 {t("security.danger.confirmTitle")}
               </h3>
             </div>
-            <p className="text-muted-foreground text-xs">
+            <p className="text-muted-foreground text-xs leading-relaxed">
               {t("security.danger.confirmBody")}
             </p>
             {hasPassword ? (
@@ -408,7 +420,7 @@ export function SecurityPage() {
         isOpen={logoutOpen}
         onClose={() => !loggingOut && setLogoutOpen(false)}
         title={
-          <div className="flex items-center gap-2 text-base font-semibold text-foreground">
+          <div className="text-foreground flex items-center gap-2 text-base font-semibold">
             <div className="rounded-lg bg-rose-100 p-1.5 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">
               <LogOut className="size-4" />
             </div>

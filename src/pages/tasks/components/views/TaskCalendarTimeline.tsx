@@ -26,7 +26,6 @@ import { Button } from "@/components/ui/button";
 import { SelectMenu } from "@/components/ui/select-menu";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
-import { canonicalTaskStatus } from "@/pages/tasks/utils/taskStatus";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -153,7 +152,7 @@ export function TaskCalendarTimeline({
   ): { valid: boolean; error: string | null } => {
     if (
       task.status === "FINISHED" ||
-      task.status === "COMPLETED" ||
+
       task.status === "CANCELLED"
     ) {
       return {
@@ -670,7 +669,7 @@ export function TaskCalendarTimeline({
 
   // Canonical status for active event
   const canonical = activeEvent
-    ? canonicalTaskStatus(activeEvent.task.status)
+    ? activeEvent.task.status
     : "TODO";
   const statusCfg = STATUS_CONFIG[canonical];
 
@@ -901,7 +900,7 @@ export function TaskCalendarTimeline({
                 // 1. Task status validation
                 if (
                   task.status === "FINISHED" ||
-                  task.status === "COMPLETED" ||
+
                   task.status === "CANCELLED"
                 ) {
                   dropInfo.revert();
@@ -1191,7 +1190,7 @@ export function TaskCalendarTimeline({
               {isManager &&
                 !isEditingDeadline &&
                 activeEvent.task.status !== "FINISHED" &&
-                activeEvent.task.status !== "COMPLETED" &&
+
                 activeEvent.task.status !== "CANCELLED" && (
                   <button
                     type="button"
@@ -1209,7 +1208,7 @@ export function TaskCalendarTimeline({
                   </button>
                 )}
               {(activeEvent.task.status === "FINISHED" ||
-                activeEvent.task.status === "COMPLETED" ||
+
                 activeEvent.task.status === "CANCELLED") && (
                 <span className="text-3xs text-muted-foreground font-medium italic">
                   Không thể sửa

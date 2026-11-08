@@ -2,9 +2,11 @@ import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Activity,
+  BookOpen,
   Clock3,
   FileChartColumn,
   FileText,
+  HelpCircle,
   LayoutDashboard,
   Mail,
   Network,
@@ -13,7 +15,6 @@ import {
   TrendingUp,
   Users,
   Wallet,
-  Workflow,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandHubLogo } from "@/components/auth/BrandHubLogo";
@@ -47,10 +48,16 @@ const menuGroups = [
     entries: [
       { key: "credit", icon: Wallet, planned: false },
       { key: "crawl", icon: Radar, planned: false },
-      { key: "trendPipeline", icon: Workflow, planned: false },
       { key: "trends", icon: TrendingUp, planned: false },
       { key: "trendGraph", icon: Network, planned: false },
       { key: "trendReplay", icon: Activity, planned: false },
+    ],
+  },
+  {
+    title: "help",
+    entries: [
+      { key: "guide", icon: BookOpen, planned: false },
+      { key: "faq", icon: HelpCircle, planned: false },
     ],
   },
 ];
@@ -66,21 +73,31 @@ const linkTo = (key: string) =>
         ? "/admin/workspace-templates"
         : key === "health"
           ? "/admin/system-health"
-          : key === "overview"
-            ? "/admin"
-            : `/admin?view=${key}`;
+          : key === "guide"
+            ? "/admin/guide"
+            : key === "faq"
+              ? "/help/faq"
+              : key === "overview"
+                ? "/admin"
+                : `/admin?view=${key}`;
 
 const labelKey = (key: string) =>
   key === "credit"
     ? "credit.price.title"
     : key === "health"
       ? "monitoring.title"
-      : `admin.navigation.${key}`;
+      : key === "guide"
+        ? "admin.navigation.guide"
+        : key === "faq"
+          ? "admin.navigation.faq"
+          : `admin.navigation.${key}`;
 
 function useAdminView() {
   const [params] = useSearchParams();
   const { pathname } = useLocation();
-  const view = params.get("view") || "overview";
+  const rawView = params.get("view") || "overview";
+  const view = rawView === "trendPipeline" ? "crawl" : rawView;
+  if (pathname === "/admin/guide") return "guide";
   if (pathname === "/admin/system-health") return "health";
   if (pathname === "/admin/credit-prices") return "credit";
   if (pathname === "/admin/invoices") return "invoices";
@@ -148,8 +165,8 @@ export function AdminSidebar({
           collapsed && "justify-center px-0",
         )}
       >
-        <span className="bg-brand-orange flex size-7 shrink-0 items-center justify-center rounded-md">
-          <BrandHubLogo size={16} />
+        <span className="flex size-7 shrink-0 items-center justify-center">
+          <BrandHubLogo size={28} />
         </span>
         {!collapsed && (
           <span className="text-sm font-bold tracking-tight text-white">

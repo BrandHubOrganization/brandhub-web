@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
-import { CheckCircle2, Clock } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { PackageTermsDiff } from "@/pages/media-package/components/PackageTermsDiff";
@@ -27,7 +26,6 @@ function comparison(data: Record<string, unknown>): Record<string, unknown> {
   return {
     name: data.name,
     strategyDetail: data.strategyDetail,
-    brandGuideline: data.brandGuideline,
     ...timeline,
     workItems: data.workItems,
   };
@@ -37,12 +35,10 @@ export function CampaignReview({
   workspaceId,
   campaign,
   canManage,
-  onApproved,
 }: {
   workspaceId: string;
   campaign: Campaign;
   canManage: boolean;
-  onApproved: (value: Campaign) => void;
 }) {
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState<CampaignReviewEvent[]>([]);
@@ -69,9 +65,6 @@ export function CampaignReview({
       active = false;
     };
   }, [workspaceId, campaign.id, campaign.contentVersion, t]);
-  const mine = canManage
-    ? campaign.approvedByAgencyVersion === campaign.contentVersion
-    : campaign.approvedByClientVersion === campaign.contentVersion;
   const latest = versions.find(
     (item) => item.contentVersion === (selected ?? campaign.contentVersion),
   );
@@ -84,18 +77,6 @@ export function CampaignReview({
   const previousData = previous
     ? (JSON.parse(previous.snapshot) as Record<string, unknown>)
     : null;
-  async function approve() {
-    setBusy(true);
-    try {
-      const result = await campaignService.approve(workspaceId, campaign);
-      onApproved(result.data.data);
-      toast.success(t("campaign.review.approved"));
-    } catch (error) {
-      showError(error);
-    } finally {
-      setBusy(false);
-    }
-  }
   async function sendFeedback() {
     if (!comment.trim()) return;
     setBusy(true);
@@ -118,15 +99,8 @@ export function CampaignReview({
     const code = isAxiosError(error)
       ? error.response?.data?.error?.code
       : undefined;
-    toast.error(
-      t(
-        code === "CAMPAIGN_VERSION_CONFLICT"
-          ? "campaign.errors.CAMPAIGN_VERSION_CONFLICT"
-          : code === "CAMPAIGN_PLAN_INCOMPLETE"
-            ? "campaign.errors.CAMPAIGN_PLAN_INCOMPLETE"
-            : "campaign.error",
-      ),
-    );
+    const key = typeof code === "string" ? `campaign.errors.${code}` : "";
+    toast.error(key && t(key) !== key ? t(key) : t("campaign.error"));
   }
   return (
     <section
@@ -134,57 +108,14 @@ export function CampaignReview({
       className="border-border bg-card scroll-mt-6 space-y-5 rounded-xl border p-4 sm:p-6"
     >
       <div>
-        <h3 className="text-lg font-semibold">{t("campaign.review.title")}</h3>
+        <h3 className="text-lg font-semibold">
+          {t("campaign.feedback.title")}
+        </h3>
         <p className="text-muted-foreground mt-1 text-sm leading-6">
-          {t("campaign.ui.approvalHint", { version: campaign.contentVersion })}
+          {t("campaign.feedback.hint", { version: campaign.contentVersion })}
         </p>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {(["agency", "client"] as const).map((side) => {
-          const approved =
-            (side === "agency"
-              ? campaign.approvedByAgencyVersion
-              : campaign.approvedByClientVersion) === campaign.contentVersion;
-          const Icon = approved ? CheckCircle2 : Clock;
-          return (
-            <div
-              key={side}
-              className="border-border flex items-center gap-3 rounded-lg border p-4"
-            >
-              <Icon
-                className={`size-5 shrink-0 ${approved ? "text-success" : "text-muted-foreground"}`}
-                aria-hidden="true"
-              />
-              <div>
-                <p className="text-sm font-medium">
-                  {t(`campaign.review.${side}`)}
-                </p>
-                <p className="text-muted-foreground mt-1 text-xs">
-                  {t(
-                    approved
-                      ? "campaign.review.done"
-                      : "campaign.review.pending",
-                  )}{" "}
-                  · v{campaign.contentVersion}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      {campaign.status === "DRAFT" && (
-        <Button
-          variant="orange"
-          loading={busy}
-          disabled={mine}
-          onClick={() => void approve()}
-        >
-          {mine
-            ? t("campaign.review.alreadyApproved")
-            : t("campaign.review.approve")}
-        </Button>
-      )}
-      {!canManage && campaign.status === "DRAFT" && (
+      {!canManage && (
         <div className="bg-muted/30 space-y-3 rounded-lg p-4">
           <label
             htmlFor="campaign-feedback"

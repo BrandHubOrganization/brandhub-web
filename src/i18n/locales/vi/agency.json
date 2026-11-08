@@ -81,7 +81,11 @@
       "nameRequired": "Vui lòng nhập tên công ty",
       "invalidUrl": "URL không hợp lệ, cần bắt đầu bằng http:// hoặc https://",
       "invalidPhone": "Số điện thoại không hợp lệ",
-      "invalidYear": "Năm thành lập không được vượt quá năm {{max}}"
+      "invalidFacebookUrl": "Đường dẫn Facebook không hợp lệ",
+      "invalidLinkedinUrl": "Đường dẫn LinkedIn không hợp lệ",
+      "invalidInstagramUrl": "Đường dẫn Instagram không hợp lệ",
+      "invalidYearDigits": "Năm thành lập phải là số",
+      "invalidYear": "Năm thành lập phải từ 1800 đến {{max}}"
     },
     "danger": {
       "title": "Vùng nguy hiểm",
@@ -99,7 +103,8 @@
       "restoreSuccess": "Đã khôi phục công ty",
       "restoreError": "Không thể khôi phục công ty"
     },
-    "mailTemplates": "Mẫu email"
+    "mailTemplates": "Mẫu email",
+    "inviteMembers": "Mời thêm thành viên"
   },
   "create": {
     "title": "Tạo công ty",
@@ -209,9 +214,9 @@
     "expiryLabel": "Hạn lời mời",
     "expiryDaysOption": "{{count}} ngày",
     "assignWorkspaceLabel": "Workspace",
-    "assignWorkspaceNone": "Không gán — chỉ mời vào công ty",
+    "assignWorkspaceNone": "Thành viên",
     "assignWorkspaceEmpty": "Công ty chưa có workspace nào",
-    "assignRoleLabel": "Vai trò",
+    "assignRoleLabel": "Vị trí (Vai trò)",
     "assignRolePlaceholder": "Chọn vai trò",
     "clientRequiresWorkspace": "Vai trò Client cần chọn một workspace",
     "inviteSuccess": "Đã gửi lời mời tới {{email}}",
@@ -236,6 +241,8 @@
     "tabMembers": "Thành viên ({{count}})",
     "tabInvitations": "Lời mời ({{count}})",
     "invitationsEmpty": "Không có lời mời nào đang chờ hoặc đã hết hạn.",
+    "viewList": "Dạng danh sách",
+    "viewTree": "Sơ đồ tổ chức",
     "profile": {
       "title": "Hồ sơ thành viên",
       "role": "Vai trò",
@@ -246,7 +253,33 @@
       "activityTitle": "Hoạt động gần đây",
       "activityEmpty": "Chưa có hoạt động nào được ghi nhận.",
       "activityLoadError": "Không thể tải hoạt động của thành viên này",
-      "close": "Đóng"
+      "close": "Đóng",
+      "tabOverview": "Tổng quan",
+      "tabWorkspaces": "Workspace tham gia ({{count}})",
+      "tabActivity": "Lịch sử hoạt động ({{count}})",
+      "deployCampaign": "Triển khai chiến dịch mới",
+      "createTask": "Tạo mới công việc",
+      "updateTask": "Cập nhật công việc",
+      "deleteTask": "Xóa công việc",
+      "location": "Địa điểm",
+      "experience": "Kinh nghiệm",
+      "yearsExp": "{{count}} năm kinh nghiệm",
+      "workingLanguage": "Ngôn ngữ làm việc",
+      "timezone": "Múi giờ",
+      "bioTitle": "Giới thiệu",
+      "skillsTitle": "Kỹ năng chuyên môn",
+      "portfolioTitle": "Portfolio & Dự án tiêu biểu",
+      "socialTitle": "Liên kết & Mạng xã hội",
+      "noWorkspaces": "Thành viên chưa tham gia workspace nào.",
+      "noActivity": "Không có lịch sử hoạt động nào trong công ty."
+    },
+    "resourceType": {
+      "task": "công việc (task)",
+      "campaign_deployment": "triển khai chiến dịch",
+      "media_campaign": "chiến dịch truyền thông",
+      "workspace": "không gian làm việc",
+      "agency_member": "thành viên",
+      "client_profile": "hồ sơ khách hàng"
     },
     "auditAction": {
       "LOGIN": "Đăng nhập",
@@ -258,7 +291,13 @@
       "DELETE": "Xóa {{resource}}",
       "ROLE_CHANGE": "Đổi vai trò",
       "PERMISSION_CHANGE": "Đổi quyền hạn"
-    }
+    },
+    "assignRoleOnlyAgency": "Thành viên (chọn workspace để gán vị trí)",
+    "presetsLabel": "Mẫu lời nhắn",
+    "presetFormal": "Trang trọng",
+    "presetProject": "Hợp tác dự án",
+    "presetCasual": "Thân mật",
+    "presetApplied": "Đã áp dụng mẫu \"{{name}}\""
   },
   "invitations": {
     "title": "Lời mời công ty",

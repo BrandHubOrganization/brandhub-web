@@ -106,7 +106,11 @@
         "lan-phuong": "Lan Phương",
         "minh-quan": "Minh Quân"
       },
-      "promptLabel": "Mô tả hình ảnh",
+      "styleLabel": "Phong cách ảnh",
+      "style_reference": "Theo ảnh pose",
+      "style_studio": "Studio",
+      "style_lifestyle": "Đời thường",
+      "promptLabel": "Yêu cầu thêm (không bắt buộc)",
       "promptPlaceholder": "Ví dụ: ảnh quảng cáo nước hoa cao cấp trên bãi biển, ánh sáng mùa hè, chân thực...",
       "promptRequired": "Vui lòng nhập mô tả hình ảnh cần tạo.",
       "aspectRatioLabel": "Tỷ lệ khung hình",

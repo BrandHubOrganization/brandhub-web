@@ -33,8 +33,8 @@
     "period": "Khoảng thời gian Creative Center",
     "days": "{{count}} ngày",
     "tiktok": {
-      "pagesPerHashtag": "Trang kết quả / hashtag (1–5)",
-      "topPostsPerHashtag": "Bài lấy thêm media/bình luận / hashtag",
+      "pagesPerHashtag": "Trang / hashtag (1–5)",
+      "topPostsPerHashtag": "Bài làm giàu / hashtag",
       "maxCommentsPerPost": "Bình luận tối đa / bài"
     },
     "tiktokLimitsHelp": "Mỗi trang yêu cầu tối đa 30 bài; số bài thực tế phụ thuộc TikTok. Số bài lấy thêm media/bình luận không phải giới hạn tổng bài thu thập.",
@@ -80,6 +80,7 @@
     "searchAction": "Tìm kiếm",
     "clear": "Bỏ lọc",
     "range": "Kết quả {{start}}–{{end}}",
+    "loadedCount": "Đã tải {{count}} kết quả",
     "empty": "Không tìm thấy Trend phù hợp. Bỏ lọc ngày hoặc thử tên khác.",
     "previous": "Trước",
     "next": "Sau",
@@ -101,6 +102,12 @@
     "panRight": "Di chuyển phải",
     "panUp": "Di chuyển lên",
     "panDown": "Di chuyển xuống",
+    "hopsLimited": "2 Hops (Thu nhỏ để xem thêm)",
+    "hopsOverview": "Toàn cảnh (>2 Hops)",
+    "hopsLimitedTooltip": "Đang giới hạn hiển thị trong 2 bước liên kết. Thu nhỏ (zoom < 85%) để tự động xem toàn cảnh.",
+    "hopsOverviewTooltip": "Đang mở rộng hiển thị toàn cảnh tất cả các liên kết (>2 bước liên kết).",
+    "showCategoryHint": "Bấm để hiển thị lại {{type}}",
+    "hideCategoryHint": "Bấm để ẩn {{type}}",
     "trendType": "Trend",
     "postType": "Bài nguồn",
     "entityType": "Thực thể (viền nét đứt)",
@@ -156,8 +163,16 @@
   "trends": {
     "description": "Khám phá kết quả trend đã công bố từ pipeline crawl hoặc replay S3.",
     "period": "Phạm vi",
+    "dataSource": "Nguồn dữ liệu",
+    "platform": "Nền tảng",
+    "allPlatforms": "Tất cả nền tảng",
+    "platformNames": { "facebook": "Facebook", "threads": "Threads", "tiktok": "TikTok" },
+    "today": "Hôm nay",
+    "redisHint": "Snapshot đã công bố được lưu trong Redis trong 7 ngày.",
+    "neo4jHint": "Neo4j hiển thị các trend đã lưu. Trend cũ cần có liên kết bài viết để xuất hiện khi lọc theo nền tảng.",
+    "graphEmpty": "Không có trend Neo4j khớp khoảng ngày và nền tảng đã chọn.",
     "live": "Snapshot live mới nhất",
-    "daily": "Theo ngày",
+    "daily": "Ngày cụ thể",
     "weekly": "7 ngày đến ngày đã chọn",
     "date": "Ngày dữ liệu / ngày kết thúc",
     "limit": "Số trend tối đa",
@@ -172,10 +187,10 @@
     "replay": "Đến Replay S3",
     "viewPublished": "Xem trend đã công bố của ngày",
     "count": "{{count}} / {{total}} trend trong kết quả tải về · Tối đa {{limit}} ứng viên. Bộ lọc áp dụng trên kết quả này.",
-    "emptyTitle": "Chưa có trend đã công bố trong phạm vi này",
+    "emptyTitle": "Chưa có trend trong phạm vi này",
     "empty": "Chọn đúng ngày dữ liệu hoặc snapshot live mới nhất. Nếu replay đang lỗi lưu DB, hãy khôi phục kết nối rồi tiếp tục job đó; xử lý xong file chưa đồng nghĩa kết quả đã được công bố. Dữ liệu cache được giữ 7 ngày kể từ khi công bố.",
     "errorTitle": "Không tải được trend",
-    "error": "Kiểm tra quyền Admin, Business/AI Service và Redis, rồi thử lại. Lỗi kết nối không được thay bằng dữ liệu mẫu.",
+    "error": "Kiểm tra quyền Admin và kết nối đến nguồn dữ liệu đã chọn, rồi thử lại.",
     "retry": "Thử lại",
     "noMatches": "Không có trend khớp bộ lọc trong kết quả tải về.",
     "clear": "Xóa bộ lọc tìm kiếm và chủ đề",
@@ -538,7 +553,10 @@
     "workspaceTemplates": "Mẫu Workspace",
     "mailSuppressions": "Danh sách hủy đăng ký hệ thống",
     "crawl": "Cấu hình crawl",
-    "trendPipeline": "Quản lý Crawler Trend"
+    "trendPipeline": "Quản lý Crawler Trend",
+    "guide": "Cẩm nang Quản trị",
+    "help": "Trợ giúp & Tài liệu",
+    "faq": "Hỏi đáp FAQ"
   },
   "overview": {
     "title": "Tổng quan nền tảng",
@@ -959,8 +977,10 @@
     "credentialsTitle": "Session & kết nối",
     "credentialsHelp": "Dùng tài khoản và nhà cung cấp hiện có. Không nhập mật khẩu hoặc OTP mạng xã hội vào đây. Dữ liệu bí mật chỉ được thay thế, không thể đọc lại.",
     "sessionFile": "File session JSON (tối đa 1 MiB)",
-    "endpoint": "Endpoint đã được phép (nhập thay mới)",
-    "apiKey": "API key mới",
+    "endpoint": "Endpoint",
+    "proxyKey": "Proxy Key",
+    "proxyKeyPlaceholder": "Nhập key proxy (VD: K0b6ba...)",
+    "apiKey": "API key",
     "sessionHelp": "Nạp file session từ tài khoản hiện có. AI service chỉ giữ trong RAM; bản mới áp dụng cho run tiếp theo. Restart/deploy cần nạp lại.",
     "connectionHelp": "Chỉ chấp nhận host trong allowlist triển khai. Có thể chứa credential proxy; giá trị không được hiển thị lại.",
     "replace": "Nạp / thay thế",
@@ -1004,9 +1024,9 @@
     "retryHelp": "Tạo run mới chỉ cho nguồn Facebook thất bại. Dùng cấu hình/session hiện tại và dedup hiện có; không requeue hoặc sửa run cũ. Snapshot live mới có thể chỉ chứa kết quả từ các nguồn chạy lại; các nguồn thành công trước đó không được gộp tự động.",
     "sections": {
       "overview": "Tổng quan",
-      "settings": "Nguồn, giới hạn & lịch",
+      "settings": "Cấu hình",
       "credentials": "Session & kết nối",
-      "history": "Lịch sử & nhật ký"
+      "history": "Lịch sử"
     },
     "credentialKinds": {
       "facebook": "Session Facebook",
@@ -1088,6 +1108,6 @@
     "threadPreview": "Threads: {{topics}} chủ đề, tối đa {{posts}} bài, {{seconds}} giây.",
     "tiktokPreview": "TikTok: {{pages}} trang/hashtag, {{posts}} bài được làm giàu/hashtag.",
     "sessionMemoryHelp": "Session Facebook/Threads chỉ giữ trong RAM của AI service. Restart hoặc deploy sẽ mất session; admin cần nạp lại. Không cần file khóa mã hóa cho session.",
-    "connectionKeyRequired": "Lưu proxy/API key vẫn cần cấu hình khóa mã hóa. Điều kiện này không ảnh hưởng việc nạp session Facebook/Threads."
+    "connectionKeyRequired": "Cần cấu hình khóa mã hóa để lưu proxy/API key."
   }
 }

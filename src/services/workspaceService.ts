@@ -58,15 +58,24 @@ export interface CreateWorkspaceRequest {
 }
 
 export interface UpdateWorkspaceSettingsRequest {
+  clearFields?: ("industry" | "companySize" | "foundedYear")[];
   name?: string;
   timezone?: string;
   defaultPlatforms?: string[];
-  reportFrequency?: ReportFrequency;
+  reportFrequency?: ReportFrequency | "";
   industry?: WorkspaceIndustry;
   companySize?: CompanySize;
   website?: string;
   phone?: string;
   location?: string;
+  description?: string;
+  brandColor?: string;
+  logoIcon?: string;
+  tagline?: string;
+  foundedYear?: number;
+  facebookUrl?: string;
+  linkedinUrl?: string;
+  instagramUrl?: string;
 }
 
 export interface InviteMemberRequest {
@@ -92,7 +101,8 @@ export const workspaceService = {
 
   duplicate: (workspaceId: string, data: DuplicateWorkspaceRequest) =>
     api.post<ApiResponse<Workspace>>(
-      `/api/v1/workspaces/${workspaceId}/duplicate`, data,
+      `/api/v1/workspaces/${workspaceId}/duplicate`,
+      data,
     ),
 
   getById: (workspaceId: string) =>

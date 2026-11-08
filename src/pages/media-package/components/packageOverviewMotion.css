@@ -1,0 +1,37 @@
+/* Scoped to workspace browsing: no effect on exports or guest proposals. */
+@keyframes package-preview-enter {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes package-fields-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.package-overview [data-package-proposal] {
+  animation: package-preview-enter 160ms ease-out;
+}
+.package-overview .package-disclosure-chevron {
+  transition: transform 180ms ease-out;
+}
+.package-overview [data-package-detail-row]:not([hidden]) > td > div {
+  animation: package-fields-enter 180ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .package-overview [data-package-proposal],
+  .package-overview [data-package-detail-row]:not([hidden]) > td > div {
+    animation: none;
+  }
+  .package-overview .package-disclosure-chevron {
+    transition: none;
+  }
+}

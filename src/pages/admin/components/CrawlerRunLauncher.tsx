@@ -1,17 +1,15 @@
 import { useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import {
   AlertTriangle,
-  Check,
-  FlaskConical,
+  ArrowRight,
   Info,
   Rocket,
   Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -21,26 +19,15 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
 import { useTrendSettings } from "@/pages/admin/hooks/useTrendSettings";
 import { crawlerManagementService as service } from "@/pages/admin/services/crawlerManagementService";
 import type { TrendPlatform } from "@/pages/admin/types/trendSettings";
 import type { RunPreview } from "@/pages/admin/types/crawlerManagement";
 
-const PLATFORM_ITEMS: Array<{
-  id: TrendPlatform;
-  badge: string;
-}> = [
-  { id: "facebook", badge: "FB" },
-  { id: "threads", badge: "TH" },
-  { id: "tiktok", badge: "TT" },
-];
-
-function LauncherForm({ defaults }: { defaults: TrendPlatform[] }) {
+function LauncherForm({ platforms }: { platforms: TrendPlatform[] }) {
   const { t } = useTranslation();
   const client = useQueryClient();
-  const [platforms, setPlatforms] = useState<TrendPlatform[]>(defaults);
-  const [test, setTest] = useState(true);
+  const [, setParams] = useSearchParams();
   const [preview, setPreview] = useState<RunPreview | null>(null);
   const request = useRef(crypto.randomUUID());
 
@@ -52,7 +39,7 @@ function LauncherForm({ defaults }: { defaults: TrendPlatform[] }) {
   });
 
   const prepare = useMutation({
-    mutationFn: () => service.preview({ platforms, test }),
+    mutationFn: () => service.preview({ platforms, test: false }),
     onSuccess: setPreview,
     retry: false,
   });
@@ -61,7 +48,7 @@ function LauncherForm({ defaults }: { defaults: TrendPlatform[] }) {
     mutationFn: () =>
       service.start({
         platforms,
-        test,
+        test: false,
         revision: preview!.revision,
         sourceRevision: preview!.sourceRevision,
         requestId: request.current,
@@ -80,144 +67,109 @@ function LauncherForm({ defaults }: { defaults: TrendPlatform[] }) {
   });
 
   const pending = prepare.isPending || start.isPending;
-  const blocked =
-    !health.data ||
-    health.data.checks.some((c) => {
-      if (c.platform)
-        return (
-          platforms.includes(c.platform as TrendPlatform) && c.status !== "OK"
-        );
-      if (c.component === "tiktok")
-        return platforms.includes("tiktok") && c.status !== "OK";
-      if (c.component === "proxy" || c.component === "browser")
-        return platforms.some((p) => p !== "tiktok") && c.status !== "OK";
-      return c.required && c.status !== "OK";
-    });
 
-  const togglePlatform = (p: TrendPlatform) => {
-    setPlatforms((old) =>
-      old.includes(p) ? old.filter((v) => v !== p) : [...old, p],
-    );
-    request.current = crypto.randomUUID();
+  const failingChecks = (health.data?.checks ?? []).filter((c) => {
+    if (c.status === "OK") return false;
+    if (c.platform) return platforms.includes(c.platform as TrendPlatform);
+    if (c.component === "tiktok") return platforms.includes("tiktok");
+    if (c.component === "proxy" || c.component === "browser")
+      return platforms.some((p) => p !== "tiktok");
+    return c.required;
+  });
+
+  const blocked = !health.data || failingChecks.length > 0;
+
+  const navigateToFix = (component: string, platform?: string | null) => {
+    if (component === "configuration") {
+      setParams((previous) => {
+        const next = new URLSearchParams(previous);
+        next.set("crawlerTab", "settings");
+        return next;
+      });
+      return;
+    }
+    const targetKind =
+      component === "session" && (platform === "facebook" || platform === "threads")
+        ? platform
+        : component === "proxy" || component === "tiktok"
+          ? component
+          : null;
+    if (targetKind) {
+      document
+        .getElementById(`crawler-credential-${targetKind}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   };
 
   return (
-    <section className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
-      <div className="space-y-1">
+    <section className="border-border bg-card flex h-full flex-col justify-between space-y-3 rounded-xl border p-4 shadow-xs">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Rocket className="text-brand-orange size-4 shrink-0" />
-          <h2 className="font-semibold text-foreground text-sm tracking-tight">
+          <h2 className="text-foreground text-sm font-semibold tracking-tight">
             {t("admin.crawler.runTitle")}
           </h2>
         </div>
-        <p className="text-muted-foreground text-xs leading-relaxed">
-          {t("admin.crawler.runHelp")}
-        </p>
+
+        <Button
+          variant="orange"
+          size="sm"
+          className="h-9 font-medium shadow-xs"
+          disabled={pending || !platforms.length || blocked}
+          loading={prepare.isPending}
+          onClick={() => prepare.mutate()}
+        >
+          <Sparkles className="size-4" />
+          {t("admin.crawler.preview")}
+        </Button>
       </div>
 
-      {/* Platform Toggle Chips */}
-      <div className="space-y-2">
-        <label className="text-muted-foreground block text-xs font-medium">
-          {t("admin.crawler.platforms")}
-        </label>
-        <div className="grid grid-cols-3 gap-2.5">
-          {PLATFORM_ITEMS.map(({ id, badge }) => {
-            const isSelected = platforms.includes(id);
-            return (
-              <button
-                key={id}
-                type="button"
-                role="checkbox"
-                aria-checked={isSelected}
-                disabled={pending}
-                onClick={() => togglePlatform(id)}
-                className={cn(
-                  "relative flex min-h-12 cursor-pointer flex-col justify-between rounded-lg border p-2.5 text-left transition-all select-none disabled:cursor-not-allowed disabled:opacity-50",
-                  isSelected
-                    ? "border-brand-orange bg-brand-orange/10 text-brand-orange ring-1 ring-brand-orange/30 shadow-xs"
-                    : "border-border bg-background/50 text-muted-foreground hover:border-muted-foreground/30 hover:text-foreground",
-                )}
-              >
-                <div className="flex w-full items-center justify-between gap-1">
-                  <span
-                    className={cn(
-                      "font-mono text-[10px] font-bold tracking-wider",
-                      isSelected ? "text-brand-orange" : "text-muted-foreground/70",
-                    )}
-                  >
-                    {badge}
-                  </span>
-                  <span
-                    className={cn(
-                      "flex size-4 items-center justify-center rounded-full transition-colors",
-                      isSelected
-                        ? "bg-brand-orange text-white"
-                        : "border-border border bg-muted/40",
-                    )}
-                  >
-                    {isSelected && <Check className="size-2.5 stroke-[3]" />}
-                  </span>
-                </div>
-                <span className="mt-1 text-xs font-medium">
-                  {t(`admin.trendSettings.platform.${id}`)}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Separate Test Mode (Dry-run) Box */}
-      <div className="border-border/80 bg-muted/20 flex flex-col justify-between gap-3 rounded-lg border p-3.5 sm:flex-row sm:items-center">
-        <div className="min-w-0 space-y-1">
-          <div className="flex items-center gap-2">
-            <FlaskConical className="text-muted-foreground size-3.5 shrink-0" />
-            <span className="text-foreground text-xs font-semibold">
-              {t("admin.crawler.testMode")}
-            </span>
-            {test ? (
-              <Badge
-                variant="outline"
-                className="border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-[10px] font-bold"
-              >
-                DRY RUN
-              </Badge>
-            ) : (
-              <Badge
-                variant="outline"
-                className="border-brand-orange/40 bg-brand-orange/10 text-brand-orange font-mono text-[10px] font-bold"
-              >
-                LIVE RUN
-              </Badge>
-            )}
-          </div>
-          <p className="text-muted-foreground text-[11px] leading-relaxed">
-            {test
-              ? "Chế độ chạy thử nghiệm (không ghi vào cơ sở dữ liệu chính)."
-              : "Dữ liệu cào sẽ được nạp trực tiếp vào pipeline phân tích xu hướng trực tiếp."}
-          </p>
-        </div>
-        <div className="flex items-center gap-2 self-end sm:self-center">
-          <Switch
-            id="crawler-test-mode"
-            checked={test}
-            disabled={pending}
-            onCheckedChange={(checked) => {
-              setTest(checked);
-              request.current = crypto.randomUUID();
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Health check warning */}
-      {blocked && (
+      {/* Unmet configuration checks with direct navigation */}
+      {failingChecks.length > 0 && (
         <div
           role="status"
-          className="border-destructive/30 bg-destructive/10 text-destructive flex items-start gap-2.5 rounded-lg border p-3 text-xs"
+          className="border-destructive/30 bg-destructive/5 space-y-2 rounded-lg border p-3 text-xs"
         >
-          <AlertTriangle className="size-4 shrink-0 mt-0.5" />
-          <p className="leading-relaxed">{t("admin.crawler.fixChecks")}</p>
+          <div className="text-destructive flex items-center justify-between gap-2 font-medium">
+            <span className="inline-flex items-center gap-1.5">
+              <AlertTriangle className="size-3.5 shrink-0" />
+              <span>{t("admin.crawler.fixChecks")}</span>
+            </span>
+          </div>
+
+          <ul className="grid gap-1.5 sm:grid-cols-2">
+            {failingChecks.map((check) => {
+              const title =
+                t(`admin.crawler.components.${check.component}`, {
+                  defaultValue: check.component,
+                }) +
+                (check.platform
+                  ? ` · ${t(`admin.trendSettings.platform.${check.platform}`)}`
+                  : "");
+              const message = t(`admin.crawler.codes.${check.code}`, {
+                defaultValue: t("admin.crawler.checkUnavailable"),
+              });
+              return (
+                <li key={`${check.component}-${check.platform ?? ""}`}>
+                  <button
+                    type="button"
+                    onClick={() => navigateToFix(check.component, check.platform)}
+                    className="border-border/80 bg-card hover:border-brand-orange/40 flex w-full items-center justify-between gap-2 rounded-md border px-2.5 py-1.5 text-left transition-colors"
+                  >
+                    <div className="min-w-0">
+                      <span className="text-foreground block truncate font-semibold">
+                        {title}
+                      </span>
+                      <span className="text-muted-foreground block truncate text-[11px]">
+                        {message}
+                      </span>
+                    </div>
+                    <ArrowRight className="text-brand-orange size-3.5 shrink-0" />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       )}
 
@@ -227,22 +179,10 @@ function LauncherForm({ defaults }: { defaults: TrendPlatform[] }) {
           role="alert"
           className="border-destructive/40 bg-destructive/10 text-destructive flex items-start gap-2.5 rounded-lg border p-3 text-xs font-medium"
         >
-          <AlertTriangle className="size-4 shrink-0 mt-0.5" />
+          <AlertTriangle className="mt-0.5 size-4 shrink-0" />
           <p className="leading-relaxed">{t("admin.crawler.commandError")}</p>
         </div>
       )}
-
-      {/* Launch Action */}
-      <Button
-        variant="orange"
-        className="w-full font-medium shadow-xs sm:w-auto"
-        disabled={pending || !platforms.length || blocked}
-        loading={prepare.isPending}
-        onClick={() => prepare.mutate()}
-      >
-        <Sparkles className="size-4" />
-        {t("admin.crawler.preview")}
-      </Button>
 
       {/* Modern Dialog Preview */}
       <Dialog
@@ -268,10 +208,9 @@ function LauncherForm({ defaults }: { defaults: TrendPlatform[] }) {
 
           {preview && (
             <div className="space-y-4 py-1">
-              {/* Alert Warning Box */}
               {preview.publishesLive ? (
-                <div className="border-amber-500/50 bg-amber-500/10 text-amber-900 dark:text-amber-200 flex items-start gap-3 rounded-lg border p-3.5">
-                  <AlertTriangle className="text-amber-600 dark:text-amber-400 mt-0.5 size-5 shrink-0" />
+                <div className="flex items-start gap-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-3.5 text-amber-900 dark:text-amber-200">
+                  <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
                   <div className="space-y-1 text-xs">
                     <p className="font-semibold text-amber-800 dark:text-amber-300">
                       Chế độ ghi dữ liệu chính thức (Live Production)
@@ -290,7 +229,6 @@ function LauncherForm({ defaults }: { defaults: TrendPlatform[] }) {
                 </div>
               )}
 
-              {/* Param Cards */}
               <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 <div className="border-border/70 bg-card space-y-1.5 rounded-lg border p-3">
                   <span className="text-muted-foreground text-xs font-medium">
@@ -390,21 +328,12 @@ export function CrawlerRunLauncher() {
 
   if (query.isPending) {
     return (
-      <div className="border-border bg-card space-y-4 rounded-xl border p-5 shadow-xs">
-        <div className="space-y-1.5">
-          <Skeleton className="h-5 w-44" />
-          <Skeleton className="h-4 w-72" />
-        </div>
-        <div className="grid grid-cols-3 gap-2.5">
-          <Skeleton className="h-12 rounded-lg" />
-          <Skeleton className="h-12 rounded-lg" />
-          <Skeleton className="h-12 rounded-lg" />
-        </div>
-        <Skeleton className="h-16 w-full rounded-lg" />
+      <div className="border-border bg-card flex items-center justify-between gap-4 rounded-xl border p-4 shadow-xs">
+        <Skeleton className="h-5 w-40" />
         <Skeleton className="h-9 w-32 rounded-lg" />
       </div>
     );
   }
 
-  return query.data ? <LauncherForm defaults={query.data.platforms} /> : null;
+  return query.data ? <LauncherForm platforms={query.data.platforms} /> : null;
 }

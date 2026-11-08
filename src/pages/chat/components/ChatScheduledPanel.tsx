@@ -101,6 +101,7 @@ export function ChatScheduledPanel(props: Props) {
           )}
         {queue.items.map((message) => (
           <ChatScheduledMessageCard
+            workspaceId={props.workspaceId}
             key={message.id}
             message={message}
             busy={busy}

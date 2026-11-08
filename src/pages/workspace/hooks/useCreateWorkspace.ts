@@ -6,6 +6,8 @@ import {
   workspaceService,
   type AssignEntry,
 } from "@/services/workspaceService";
+import { agencyService } from "@/services/agencyService";
+import { useAuthStore } from "@/store/authStore";
 import { workspaceTemplateService } from "@/services/workspaceTemplateService";
 import { extractErrorMessage } from "@/utils/error";
 import { useAgencyStore } from "@/store/agencyStore";
@@ -27,8 +29,12 @@ export function useCreateWorkspace() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const agencyId = searchParams.get("agencyId");
+  const currentAgencyId = useAgencyStore((s) => s.currentAgencyId);
+  const agencyId = searchParams.get("agencyId") || currentAgencyId;
   const templateId = searchParams.get("templateId");
+  const userId = useAuthStore((s) => s.user?.id);
+  const [verifiedAgencyId, setVerifiedAgencyId] = useState<string | null>(null);
+  const canCreate = Boolean(agencyId && verifiedAgencyId === agencyId);
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
   const setCurrentWorkspace = useWorkspaceStore((s) => s.setCurrentWorkspace);
   const fetchWorkspaces = useWorkspaceStore((s) => s.fetchWorkspaces);
@@ -41,9 +47,33 @@ export function useCreateWorkspace() {
     }
   }, [agencyId, navigate, t]);
 
+  useEffect(() => {
+    if (!agencyId || !userId) return;
+    let cancelled = false;
+    agencyService
+      .getById(agencyId)
+      .then(({ data }) => {
+        if (cancelled) return;
+        if (data.data.ownerId !== userId) {
+          toast.error(t("workspace.create.ownerRequired"));
+          navigate("/agency", { replace: true });
+          return;
+        }
+        setVerifiedAgencyId(agencyId);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        toast.error(extractErrorMessage(err, t("common.actionFailed")));
+        navigate("/agency", { replace: true });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [agencyId, userId, navigate, t]);
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [brandColor, setBrandColor] = useState("#ca3d0e");
+  const [brandColor, setBrandColor] = useState("#f05a28");
   const [logoIcon, setLogoIcon] = useState(LOGO_ICON_OPTIONS[0].name);
   const [tagline, setTagline] = useState("");
   const [foundedYear, setFoundedYear] = useState("");
@@ -83,11 +113,12 @@ export function useCreateWorkspace() {
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
 
   useEffect(() => {
+    if (!canCreate) return;
     workspaceTemplateService
       .list()
       .then(({ data }) => setAvailableTemplates(data.data))
       .catch(() => setAvailableTemplates([]));
-  }, []);
+  }, [canCreate]);
 
   const applyTemplateConfig = (tpl: WorkspaceTemplate) => {
     const cfg = tpl.config;
@@ -131,7 +162,7 @@ export function useCreateWorkspace() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agencyId) return;
+    if (!agencyId || !canCreate) return;
 
     const newErrors: Record<string, string> = {};
     if (!name.trim()) {
@@ -260,7 +291,7 @@ export function useCreateWorkspace() {
     clientEmails,
     setClientEmails,
     agencyId,
-    loading,
+    loading: loading || !canCreate,
     handleSubmit,
     industry,
     setIndustry,

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { User2, ShieldCheck, ChevronDown, Check } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { ShieldCheck, ChevronDown, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,31 +11,48 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { TaskAssigneePicker } from "@/pages/tasks/components/TaskAssigneePicker";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
-import { useWorkspaceStore } from "@/store/workspaceStore";
-import { useAuthStore } from "@/store/authStore";
+import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
+import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
 export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
   const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
-  const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
-  const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
-  const systemRole = useAuthStore((s) => s.systemRole);
-  const role = currentMemberRole || currentWorkspace?.myRole;
+  const canEdit = task.allowedActions.canEditDetail;
 
-  // Backend chỉ cho MANAGER phân công (TaskWorkflowPolicy.requireManager).
-  const canEdit =
-    (role === "MANAGER" ||
-      systemRole === "ADMIN" ||
-      Boolean(task.allowedActions.canAssign) ||
-      Boolean(task.allowedActions.canEditDetail)) &&
-    task.status !== "FINISHED" &&
-    task.status !== "CANCELLED";
 
   const [clientApprovalOpen, setClientApprovalOpen] = useState(false);
   const [isSavingApproval, setIsSavingApproval] = useState(false);
+  const [supervisorOpen, setSupervisorOpen] = useState(false);
+  const [savingSupervisor, setSavingSupervisor] = useState(false);
+  const supervisorOptions = useQuery({
+    queryKey: [
+      "task-supervisor-options",
+      task.workspaceId,
+      task.id,
+      task.assigneeId,
+    ],
+    queryFn: () =>
+      taskWorkflowService.options(task.workspaceId, task.id, "supervisor"),
+    enabled: supervisorOpen,
+  });
+  const supervisorName = task.supervisorId
+    ? (task.supervisorName ?? t("tasks.unknownAssignee"))
+    : t("tasks.unassigned");
+
+  async function selectSupervisor(id: string) {
+    if (task.supervisorId === id) return;
+    setSavingSupervisor(true);
+    state.retry();
+    try {
+      await state.field("supervisorId", id);
+    } catch (error) {
+      toast.error(workflowError(error, t));
+    } finally {
+      setSavingSupervisor(false);
+    }
+  }
 
   async function handleSelectApproval(requiresApproval: boolean) {
     if (requiresApproval === task.requiresClientApproval) {
@@ -41,40 +60,80 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
       return;
     }
     setIsSavingApproval(true);
+    state.retry();
     try {
-      await state.assign({ requiresClientApproval: requiresApproval });
+      await state.field("requiresClientApproval", requiresApproval);
       setClientApprovalOpen(false);
+    } catch (error) {
+      toast.error(workflowError(error, t));
     } finally {
       setIsSavingApproval(false);
     }
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {/* 1. Người phụ trách (Assignee) */}
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {/* 1. Người giám sát (Supervisor) */}
       <div className="space-y-1.5">
-        <div className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium">
-          <User2 className="size-3.5 text-muted-foreground" />
-          <span>{t("tasks.assignee")}</span>
+        <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+          <ShieldCheck className="text-muted-foreground size-3.5" />
+          <span>{t("tasks.supervisor")}</span>
         </div>
-        {canEdit ? (
-          <TaskAssigneePicker
-            workspaceId={task.workspaceId}
-            taskId={task.id}
-            assigneeName={task.assigneeName}
-            task={task}
-          />
+        {task.allowedActions.canEditDetail ? (
+          <DropdownMenu open={supervisorOpen} onOpenChange={setSupervisorOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={savingSupervisor}
+                aria-label={t("tasks.inline.edit", {
+                  field: t("tasks.supervisor"),
+                })}
+                className="h-8 max-w-full justify-between gap-2 rounded-lg px-2.5 text-xs"
+              >
+                <span className="truncate">{supervisorName}</span>
+                <ChevronDown className="size-3.5 shrink-0" aria-hidden />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="z-[70] w-56">
+              {supervisorOptions.isPending && (
+                <DropdownMenuItem disabled>
+                  {t("tasks.loading")}
+                </DropdownMenuItem>
+              )}
+              {supervisorOptions.isError && (
+                <DropdownMenuItem
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    void supervisorOptions.refetch();
+                  }}
+                >
+                  {t("tasks.retry")}
+                </DropdownMenuItem>
+              )}
+              {supervisorOptions.data?.map((member) => (
+                <DropdownMenuItem
+                  key={member.userId}
+                  onSelect={() => void selectSupervisor(member.userId)}
+                >
+                  <span className="truncate">{member.displayName}</span>
+                  {task.supervisorId === member.userId && (
+                    <Check className="ml-auto size-4" aria-hidden />
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
-          <p className="py-1 px-2 text-xs font-normal text-foreground">
-            {task.assigneeName || t("tasks.unassigned")}
-          </p>
+          <p className="py-1.5 text-xs">{supervisorName}</p>
         )}
       </div>
 
       {/* 2. Vai trò khách hàng duyệt (Requires Client Approval) */}
       <div className="space-y-1.5">
-        <div className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium">
-          <ShieldCheck className="size-3.5 text-muted-foreground" />
+        <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+          <ShieldCheck className="text-muted-foreground size-3.5" />
           <span>{t("tasks.workflow.fields.requiresClientApproval")}</span>
         </div>
 
@@ -90,7 +149,7 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
                 variant="outline"
                 size="sm"
                 disabled={isSavingApproval}
-                className="border-input bg-card/60 hover:bg-muted/80 text-foreground h-8 max-w-full justify-between gap-2 px-2.5 text-xs font-normal rounded-lg cursor-pointer shadow-2xs"
+                className="border-input bg-card/60 hover:bg-muted/80 text-foreground h-8 max-w-full cursor-pointer justify-between gap-2 rounded-lg px-2.5 text-xs font-normal shadow-2xs"
                 aria-label={t("tasks.inline.edit", {
                   field: t("tasks.workflow.fields.requiresClientApproval"),
                 })}
@@ -106,29 +165,32 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
                 />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48 rounded-xl p-1 shadow-lg z-[70]">
+            <DropdownMenuContent
+              align="start"
+              className="z-[70] w-48 rounded-xl p-1 shadow-lg"
+            >
               <DropdownMenuItem
-                className="flex items-center justify-between py-2 text-xs cursor-pointer rounded-lg"
+                className="flex cursor-pointer items-center justify-between rounded-lg py-2 text-xs"
                 onSelect={() => void handleSelectApproval(true)}
               >
                 <span>{t("tasks.workflow.yes")}</span>
                 {task.requiresClientApproval && (
-                  <Check className="size-3.5 text-brand-orange" />
+                  <Check className="text-brand-orange size-3.5" />
                 )}
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="flex items-center justify-between py-2 text-xs cursor-pointer rounded-lg"
+                className="flex cursor-pointer items-center justify-between rounded-lg py-2 text-xs"
                 onSelect={() => void handleSelectApproval(false)}
               >
                 <span>{t("tasks.workflow.no")}</span>
                 {!task.requiresClientApproval && (
-                  <Check className="size-3.5 text-brand-orange" />
+                  <Check className="text-brand-orange size-3.5" />
                 )}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <p className="py-1 px-2 text-xs font-normal text-foreground">
+          <p className="text-foreground px-2 py-1 text-xs font-normal">
             {task.requiresClientApproval
               ? t("tasks.workflow.yes")
               : t("tasks.workflow.no")}

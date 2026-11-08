@@ -72,34 +72,41 @@ export function AdminReportForm({
         <legend className="mb-2 text-sm font-medium">
           {t("admin.reports.type")}
         </legend>
-        {TYPES.map((value) => (
-          <label
-            key={value}
-            className={cn(
-              "flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors",
-              type === value
-                ? "border-brand-orange bg-brand-orange-soft/60"
-                : "border-border hover:bg-muted/50",
-            )}
-          >
-            <input
-              type="radio"
-              name="report-type"
-              value={value}
-              checked={type === value}
-              onChange={() => setType(value)}
-              className="accent-brand-orange mt-1"
-            />
-            <span>
-              <span className="block text-sm font-semibold">
-                {t(`admin.reports.types.${value}`)}
+        <div
+          className={cn(
+            "grid gap-3",
+            !onCancel ? "lg:grid-cols-3" : "grid-cols-1",
+          )}
+        >
+          {TYPES.map((value) => (
+            <label
+              key={value}
+              className={cn(
+                "flex cursor-pointer items-start gap-3 rounded-lg border p-3.5 transition-colors",
+                type === value
+                  ? "border-brand-orange bg-brand-orange-soft/60"
+                  : "border-border hover:bg-muted/50",
+              )}
+            >
+              <input
+                type="radio"
+                name="report-type"
+                value={value}
+                checked={type === value}
+                onChange={() => setType(value)}
+                className="accent-brand-orange mt-1"
+              />
+              <span>
+                <span className="block text-sm font-semibold">
+                  {t(`admin.reports.types.${value}`)}
+                </span>
+                <span className="text-muted-foreground mt-0.5 block text-xs leading-5">
+                  {t(`admin.reports.typeHints.${value}`)}
+                </span>
               </span>
-              <span className="text-muted-foreground mt-0.5 block text-xs leading-5">
-                {t(`admin.reports.typeHints.${value}`)}
-              </span>
-            </span>
-          </label>
-        ))}
+            </label>
+          ))}
+        </div>
         <p className="text-muted-foreground text-xs">
           {t("admin.reports.moderationLater")}
         </p>
@@ -144,13 +151,30 @@ export function AdminReportForm({
           />
         </label>
       </div>
-      <div className="bg-muted/50 border-brand-orange rounded-r-lg border-l-4 px-4 py-3 text-xs leading-5">
-        <p className="font-mono">
-          {t("admin.reports.fileName", { name: fileName })}
-        </p>
-        <p className="text-muted-foreground mt-1">
-          {t("admin.reports.expiry")}
-        </p>
+      <div className="border-border/60 flex flex-col gap-4 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="bg-muted/50 border-brand-orange flex-1 rounded-r-lg border-l-4 px-4 py-2.5 text-xs leading-5">
+          <p className="font-mono">
+            {t("admin.reports.fileName", { name: fileName })}
+          </p>
+          <p className="text-muted-foreground mt-0.5">
+            {t("admin.reports.expiry")}
+          </p>
+        </div>
+        <div className="flex shrink-0 justify-end gap-2">
+          {onCancel && (
+            <Button type="button" variant="outline" onClick={onCancel}>
+              {t("admin.reports.cancel")}
+            </Button>
+          )}
+          <Button
+            type="submit"
+            disabled={mutation.isPending || !from || !to}
+            variant="orange"
+          >
+            <Download className="size-4" />
+            {t("admin.reports.download")}
+          </Button>
+        </div>
       </div>
       {mutation.isError && (
         <p role="alert" className="text-destructive text-sm">
@@ -163,21 +187,6 @@ export function AdminReportForm({
           )}
         </p>
       )}
-      <div className="flex justify-end gap-2">
-        {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel}>
-            {t("admin.reports.cancel")}
-          </Button>
-        )}
-        <Button
-          type="submit"
-          disabled={mutation.isPending || !from || !to}
-          variant="orange"
-        >
-          <Download className="size-4" />
-          {t("admin.reports.download")}
-        </Button>
-      </div>
     </form>
   );
 }

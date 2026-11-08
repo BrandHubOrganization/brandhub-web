@@ -143,6 +143,9 @@ export function ChatThreadPanel(props: ThreadProps) {
       />
       {root.data && !root.isError && (
         <ChatChannelComposer
+          workspaceId={props.workspaceId}
+          channelId={props.channel.id}
+          allowMentions={props.channel.type !== "DIRECT"}
           key={props.rootId}
           canPost={props.channel.canPost}
           people={props.people}

@@ -212,6 +212,31 @@
       "lo_sợ": "Lo sợ",
       "ngạc_nhiên": "Ngạc nhiên",
       "trung_lập": "Trung lập"
+    },
+    "board": {
+      "open": {
+        "tiktok": "TikTok Creative Center",
+        "google": "Google Trends"
+      },
+      "title": {
+        "tiktok": "TikTok Creative Center: top hashtag Việt Nam",
+        "google": "Google Trends: đang thịnh hành tại Việt Nam"
+      },
+      "updated": "Cập nhật {{date}} · {{count}} mục, xếp hạng theo chính nền tảng (lấy mỗi lần cào).",
+      "hint": "Bảng xếp hạng do nền tảng công bố, lấy mỗi lần cào.",
+      "empty": "Chưa có dữ liệu trong 7 ngày qua. Bảng sẽ có sau lần cào tiếp theo.",
+      "error": "Không tải được bảng xếp hạng. Vui lòng thử lại.",
+      "rank": "Hạng",
+      "hashtag": "Hashtag",
+      "posts": "Bài đăng",
+      "views": "Lượt xem",
+      "curve": "Xu hướng 7 ngày",
+      "creators": "Creator nổi bật",
+      "keyword": "Từ khoá",
+      "searches": "Lượt tìm",
+      "growth": "Tăng",
+      "related": "Truy vấn liên quan",
+      "active": "Đang hoạt động"
     }
   },
   "trendFit": {
@@ -243,7 +268,8 @@
       "prompt_leak": "Bài lộ chữ của câu lệnh AI.",
       "sensitive": "Có từ nhạy cảm: {{term}}.",
       "too_long": "Dài hơn mức khuyến nghị của nền tảng."
-    }
+    },
+    "provisional": "Gợi ý sơ bộ từ mô tả của bạn; hồ sơ brand chưa đầy đủ."
   },
   "video": {
     "title": "AI Video Studio",

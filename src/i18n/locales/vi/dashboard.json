@@ -13,14 +13,27 @@
   },
   "activityFeed": {
     "title": "Hoạt động gần đây",
+    "unifiedTitle": "Lịch sử công việc & hoạt động hợp nhất",
+    "unifiedSubtitle": "Theo dõi luồng xử lý task, phê duyệt và xuất bản bài viết",
+    "eventsCount": "sự kiện",
+    "filterAll": "Tất cả",
+    "filterTask": "Công việc",
+    "filterReview": "Duyệt bài",
+    "filterPublish": "Xuất bản",
+    "viewMore": "Xem thêm lịch sử",
+    "allLoaded": "Đã hiển thị toàn bộ lịch sử",
     "latestBadge": "10 sự kiện mới nhất",
     "loadError": "Lỗi tải nhật ký hoạt động",
     "retry": "Thử lại",
-    "empty": "Chưa có hoạt động nào được ghi nhận gần đây.",
+    "empty": "Chưa có hoạt động nào trong danh mục này",
     "unknownActor": "Thành viên",
     "actions": {
-      "POST_PUBLISHED": "đã đăng bài",
-      "POST_FAILED": "đăng bài thất bại"
+      "POST_PUBLISHED": "đã xuất bản bài viết thành công",
+      "POST_FAILED": "xuất bản bài viết thất bại",
+      "TASK_CREATED": "đã tạo công việc",
+      "TASK_SUBMITTED": "đã nộp bài chờ phê duyệt",
+      "TASK_APPROVED": "đã hoàn thành công việc",
+      "TASK_STATUS_CHANGED": "đã cập nhật trạng thái"
     }
   },
   "quickTasks": {
@@ -41,7 +54,49 @@
     "refresh": "Làm mới",
     "changePassword": "Đổi mật khẩu",
     "logout": "Đăng xuất",
-    "createContent": "Tạo Nội Dung Mới"
+    "createContent": "Tạo Nội Dung Mới",
+    "exportReport": "Tải báo cáo"
+  },
+  "reportExport": {
+    "title": "Tải báo cáo công ty",
+    "description": "Xem trước số liệu tổng quan, in báo cáo PDF hoặc tải bảng dữ liệu thống kê của công ty.",
+    "selectAgency": "Công ty cần báo cáo",
+    "selectAgencyPlaceholder": "Chọn công ty",
+    "dateRange": "Khoảng thời gian",
+    "presets": {
+      "last7Days": "7 ngày qua",
+      "last30Days": "30 ngày qua",
+      "thisMonth": "Tháng này",
+      "allTime": "Toàn bộ"
+    },
+    "from": "Từ ngày",
+    "to": "Đến ngày",
+    "previewTitle": "Xem trước báo cáo tổng quan",
+    "memberCount": "Tổng thành viên",
+    "workspaceCount": "Tổng Workspace",
+    "contentCount": "Tổng bài viết",
+    "completionRate": "Tỷ lệ hoàn thành",
+    "contentDistribution": "Phân bổ bài viết theo trạng thái",
+    "membersByRole": "Thành viên theo vai trò",
+    "workspacesByIndustry": "Workspace theo ngành",
+    "noData": "Chưa có dữ liệu thống kê cho khoảng thời gian này.",
+    "noAgencies": "Không tìm thấy công ty nào để xuất báo cáo.",
+    "printPdf": "In / Xuất PDF",
+    "exportCsv": "Tải CSV",
+    "viewFullReports": "Trang báo cáo chuyên sâu",
+    "systemGenerated": "Báo cáo được trích xuất tự động từ BrandHub Management System.",
+    "generatedAt": "Tạo lúc: {{time}}",
+    "loadError": "Không thể tải dữ liệu báo cáo công ty.",
+    "retry": "Thử lại",
+    "statusLabels": {
+      "PUBLISHED": "Đã xuất bản",
+      "FINISHED": "Hoàn thành",
+      "APPROVED": "Đã phê duyệt",
+      "IN_REVIEW": "Chờ duyệt",
+      "DRAFT": "Bản nháp",
+      "REJECTED": "Từ chối",
+      "FAILED": "Thất bại"
+    }
   },
   "admin": {
     "title": "Admin Panel",
@@ -234,5 +289,53 @@
     "guideBadge": "Tài liệu kỹ thuật & Cẩm nang",
     "backToFaq": "Hỏi đáp FAQ",
     "backToDashboard": "Về Dashboard"
+  },
+  "scopeFilter": {
+    "title": "Phạm vi hoạt động",
+    "summarizing": "Đang tổng hợp: {{agencyCount}} Công ty · {{workspaceCount}} Không gian làm việc",
+    "resetAll": "Đặt lại về Tất cả",
+    "agencyLabel": "Công ty:",
+    "allAgencies": "Tất cả Công ty",
+    "workspaceLabel": "Workspace:",
+    "allWorkspaces": "Tất cả Workspace"
+  },
+  "smartPriority": {
+    "title": "Gợi ý ưu tiên: Bạn nên làm gì trước?",
+    "subtitle": "Phân tích thông minh dựa trên hạn chót, trạng thái quy trình và vai trò trực tiếp của bạn",
+    "badgeSps": "SPS Algorithm • Top 3",
+    "emptyTitle": "Tuyệt vời! Không có nhiệm vụ nào khẩn cấp",
+    "emptyDesc": "Tất cả công việc đều đang đúng tiến độ hoặc bạn chưa có task nào cần xử lý ngay lúc này.",
+    "actions": {
+      "edit": "Mở Soạn thảo",
+      "review": "Kiểm tra & Duyệt bài",
+      "view": "Xem task"
+    },
+    "urgency": {
+      "overdue": "Quá hạn {{days}} ngày",
+      "dueToday": "Đến hạn hôm nay",
+      "inReview": "Chờ duyệt bài",
+      "urgent": "Khẩn cấp"
+    }
+  },
+  "myTasks": {
+    "title": "Công việc của tôi",
+    "subtitle": "Theo dõi tiến độ và xử lý các đầu việc ưu tiên theo mốc thời gian",
+    "onlyMine": "Chỉ việc của tôi",
+    "statusInReview": "Chờ duyệt",
+    "openEditor": "Mở Soạn thảo",
+    "viewTask": "Xem task",
+    "noDueDate": "Không có hạn",
+    "overdueDays": "Quá hạn {{days}} ngày",
+    "todayDue": "Hôm nay {{time}}",
+    "emptyTitle": "Không có công việc nào",
+    "emptyOverdue": "Tuyệt vời! Không có công việc nào bị quá hạn.",
+    "emptyGeneric": "Hiện chưa có đầu việc nào trong mục này.",
+    "tabs": {
+      "overdue": "Quá hạn",
+      "today": "Hôm nay",
+      "thisWeek": "Tuần này",
+      "inReview": "Chờ duyệt",
+      "all": "Tất cả"
+    }
   }
 }
