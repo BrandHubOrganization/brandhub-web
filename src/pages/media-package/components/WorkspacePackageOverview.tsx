@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MediaPackageCard } from "@/pages/media-package/components/MediaPackageCard";
 import { PackageProposalView } from "@/pages/media-package/components/PackageProposalView";
-import { MediaPackageLoadingState } from "@/pages/media-package/components/MediaPackagePageState";
+import { PackageCatalogLoadingState } from "@/pages/media-package/components/MediaPackagePageState";
 import { PackageShareActions } from "@/pages/media-package/components/PackageShareActions";
 import "@/pages/media-package/components/packageOverviewMotion.css";
 import type { MediaPackage } from "@/pages/media-package/types/mediaPackage";
@@ -216,7 +216,7 @@ export function WorkspacePackageOverview({
               />
             )}
             {catalogPending ? (
-              <MediaPackageLoadingState />
+              <PackageCatalogLoadingState />
             ) : catalogError ? (
               <section
                 role="alert"

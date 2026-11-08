@@ -407,7 +407,10 @@
     "legacy": "Existing deliverable preserved. Older data is not automatically removed or merged.",
     "suggestions": {
       "SOCIAL_POST": {
-        "names": ["Product introduction posts", "Educational posts"],
+        "names": [
+          "Product introduction posts",
+          "Educational posts"
+        ],
         "descriptions": [
           "Develop content ideas for each post.",
           "Write content tailored to each channel.",
@@ -436,7 +439,10 @@
         ]
       },
       "EVENT_PLANNING": {
-        "names": ["Product launch event", "Customer meetup event"],
+        "names": [
+          "Product launch event",
+          "Customer meetup event"
+        ],
         "descriptions": [
           "Develop the event concept.",
           "Create the programme and preparation milestones.",
@@ -449,7 +455,10 @@
         ]
       },
       "WORKSHOP_SUPPORT": {
-        "names": ["Knowledge sharing workshop", "Product experience workshop"],
+        "names": [
+          "Knowledge sharing workshop",
+          "Product experience workshop"
+        ],
         "descriptions": [
           "Develop the workshop topic and content.",
           "Prepare handouts and presentation materials.",
@@ -475,5 +484,6 @@
     "removeItems": "Deliverables to remove",
     "reduceTasks": "Deliverables with reduced quantities",
     "preserveHistory": "Removed tasks will be cancelled; their content, comments and history will be preserved."
-  }
+  },
+  "loading": "Loading media packages"
 }

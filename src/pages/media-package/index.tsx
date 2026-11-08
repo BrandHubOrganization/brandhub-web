@@ -10,7 +10,7 @@ import { PackageImpactDialog } from "@/pages/media-package/components/PackageImp
 import { usePackageImpactConfirmation } from "@/pages/media-package/hooks/usePackageImpactConfirmation";
 import { CreateCustomPackageForm } from "@/pages/media-package/components/CreateCustomPackageForm";
 import { WorkspacePackageOverview } from "@/pages/media-package/components/WorkspacePackageOverview";
-import { MediaPackageLoadingState } from "@/pages/media-package/components/MediaPackagePageState";
+import { WorkspacePackageLoadingState } from "@/pages/media-package/components/MediaPackagePageState";
 import { packagePlanningService } from "@/pages/media-package/services/packagePlanningService";
 import { mediaPackageService } from "@/pages/media-package/services/mediaPackageService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
@@ -190,7 +190,7 @@ export default function WorkspaceMediaPackagePage() {
         }
       >
         {(selection.isPending || preparation.isPending) && (
-          <MediaPackageLoadingState />
+          <WorkspacePackageLoadingState />
         )}
         {(selection.isError || preparation.isError) && (
           <div role="alert" className="rounded-xl border p-5">
