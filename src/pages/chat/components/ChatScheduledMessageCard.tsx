@@ -1,3 +1,4 @@
+import { ChatMessageAttachments } from "@/pages/chat/components/ChatMessageAttachments";
 import { useTranslation } from "react-i18next";
 import { Clock3, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import type { ScheduledChatMessage } from "@/pages/chat/types/chatSchedule";
 
 interface Props {
   message: ScheduledChatMessage;
+  workspaceId: string;
   channelName: string;
   busy: boolean;
   onChange: () => void;
@@ -17,6 +19,7 @@ interface Props {
 
 export function ChatScheduledMessageCard({
   message,
+  workspaceId,
   channelName,
   busy,
   onChange,
@@ -69,6 +72,11 @@ export function ChatScheduledMessageCard({
           fallback={message.content}
         />
       </div>
+      <ChatMessageAttachments
+        workspace={workspaceId}
+        channel={message.channelId}
+        ids={message.attachmentIds}
+      />
       <p className="text-muted-foreground flex items-start gap-1.5 text-xs">
         <Clock3 className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
         <span>

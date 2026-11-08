@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
-import { AlertTriangle } from "lucide-react";
-import { InlineWorkArea } from "@/components/shared/InlineWorkArea";
+import { AlertTriangle, Check, Circle, Pin, RefreshCw, X } from "lucide-react";
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
@@ -18,28 +24,43 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { campaignService } from "../services/campaignService";
-import {
-  CANCEL_REASONS,
-  type CancelReason,
-  type Campaign,
-  type CampaignClosure,
-} from "../types";
+import { CANCEL_REASONS, type CancelReason, type Campaign } from "../types";
 
-export function CampaignClosureSection({
+function ClosureContent({
   workspaceId,
   campaign,
   onClose,
   onCompleted,
   onTasksChanged,
+  onDismissLockChange,
+  pinAction,
 }: {
   workspaceId: string;
   campaign: Campaign;
   onClose: () => void;
   onCompleted: (value: Campaign) => void;
   onTasksChanged: () => void;
+  onDismissLockChange: (locked: boolean) => void;
+  pinAction: ReactNode;
 }) {
   const { t } = useTranslation();
-  const [check, setCheck] = useState<CampaignClosure>();
+  const queryClient = useQueryClient();
+  const queryKey = [
+    "campaign-completion",
+    workspaceId,
+    campaign.id,
+    campaign.contentVersion,
+  ];
+  const query = useQuery({
+    queryKey,
+    queryFn: async () =>
+      (await campaignService.completionCheck(workspaceId, campaign.id)).data
+        .data,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+  const check = query.isError ? undefined : query.data;
+  const loading = query.isFetching;
   const [selected, setSelected] = useState<string[]>([]);
   const [reason, setReason] = useState<CancelReason | "">("");
   const [note, setNote] = useState("");
@@ -47,24 +68,12 @@ export function CampaignClosureSection({
   const [cancelOpen, setCancelOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [revision, setRevision] = useState(0);
+  const [completeOpen, setCompleteOpen] = useState(false);
   useEffect(() => {
-    let active = true;
-    campaignService
-      .completionCheck(workspaceId, campaign.id)
-      .then((result) => {
-        if (active) {
-          setCheck(result.data.data);
-          setSelected([]);
-        }
-      })
-      .catch(() => {
-        if (active) setError(t("campaign.error"));
-      });
-    return () => {
-      active = false;
-    };
-  }, [workspaceId, campaign.id, revision, t]);
+    onDismissLockChange(
+      busy || cancelOpen || confirmDialogOpen || completeOpen,
+    );
+  }, [busy, cancelOpen, confirmDialogOpen, completeOpen, onDismissLockChange]);
 
   function resetCancellation() {
     setCancelOpen(false);
@@ -79,12 +88,11 @@ export function CampaignClosureSection({
       : undefined;
     const key = typeof code === "string" ? `campaign.errors.${code}` : "";
     setError(key && t(key) !== key ? t(key) : t("campaign.error"));
-    setCheck(undefined);
-    setRevision((value) => value + 1);
+    void query.refetch();
     resetCancellation();
   }
   async function cancelSelected() {
-    if (!check || !reason || busy || !cancelOpen) return;
+    if (!check || !validBatch || !reason || busy || !cancelOpen) return;
     setBusy(true);
     setError("");
     try {
@@ -95,7 +103,7 @@ export function CampaignClosureSection({
         reason,
         note.trim(),
       );
-      setCheck(result.data.data);
+      queryClient.setQueryData(queryKey, result.data.data);
       resetCancellation();
       onTasksChanged();
     } catch (failure) {
@@ -123,31 +131,104 @@ export function CampaignClosureSection({
     !!reason &&
     (reason !== "OTHER" || !!note.trim());
   return (
-    <InlineWorkArea
-      id="campaign-delivery"
-      title={t("campaign.closure.title")}
-      description={t("campaign.closure.description")}
-      backLabel={t("campaign.closure.close")}
-      onBack={onClose}
-      disabled={busy}
-      returnFocusTo="[data-campaign-complete]"
-    >
-      {error && (
+    <div className="space-y-3 text-sm" aria-busy={loading || busy}>
+      <div className="flex items-center justify-between gap-2 border-b pb-3">
+        <h2 className="font-semibold">{t("campaign.closure.title")}</h2>
+        <div className="flex gap-1">
+          {pinAction}
+          <Button
+            size="icon"
+            variant="ghost"
+            className="size-8"
+            aria-label={t("campaign.closure.reload")}
+            disabled={busy || loading}
+            onClick={() => {
+              setError("");
+              setSelected([]);
+              void query.refetch();
+            }}
+          >
+            <RefreshCw className="size-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="size-8"
+            aria-label={t("campaign.closure.close")}
+            disabled={busy}
+            onClick={onClose}
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
+      </div>
+      {loading && (
+        <div
+          role="status"
+          aria-label={t("campaign.closure.loading")}
+          className="space-y-3"
+        >
+          <Skeleton className="h-4 w-4/5" />
+          <Skeleton className="h-4 w-3/5" />
+          <Skeleton className="h-4 w-4/5" />
+        </div>
+      )}
+      {(error || query.isError) && (
         <p role="alert" className="text-destructive">
-          {error}
+          {error || t("campaign.error")}
         </p>
       )}
-      {!check && (
+      {!check && !loading && (
         <Button
           variant="outline"
           disabled={busy}
-          onClick={() => setRevision((value) => value + 1)}
+          onClick={() => {
+            setSelected([]);
+            void query.refetch();
+          }}
         >
           {t("campaign.closure.reload")}
         </Button>
       )}
-      {check && (
-        <div className="space-y-5">
+      {check && !loading && (
+        <div className="space-y-3">
+          <ul className="bg-muted/50 space-y-2.5 rounded-lg p-3">
+            {(
+              [
+                [
+                  t("campaign.closure.checkDeployment"),
+                  check.deploymentComplete,
+                ],
+                [
+                  t("campaign.closure.checkTasks"),
+                  check.unfinishedTasks.length === 0,
+                ],
+                [
+                  t("campaign.closure.checkRequests"),
+                  check.reviewingRequests.length === 0,
+                ],
+                [
+                  t("campaign.closure.checkLinks"),
+                  check.unlinkedRequestTaskCount === 0,
+                ],
+              ] as [string, boolean][]
+            ).map(([label, ready]) => (
+              <li key={label} className="flex items-start gap-2">
+                {ready ? (
+                  <Check
+                    aria-hidden
+                    className="text-brand-orange mt-0.5 size-4 shrink-0"
+                  />
+                ) : (
+                  <Circle
+                    aria-hidden
+                    className="text-muted-foreground mt-0.5 size-4 shrink-0"
+                  />
+                )}
+                <span>{label}</span>
+              </li>
+            ))}
+          </ul>
           {!check.deploymentComplete && (
             <p role="alert" className="text-destructive">
               {t("campaign.errors.CAMPAIGN_DEPLOYMENT_INCOMPLETE")}
@@ -160,11 +241,13 @@ export function CampaignClosureSection({
               })}
             </p>
           )}
-          <p className="bg-muted rounded-lg p-3 text-sm">
-            {t("campaign.closure.pending", {
-              count: check.pendingRequestCount,
-            })}
-          </p>
+          {check.pendingRequestCount > 0 && (
+            <p className="bg-brand-orange/10 rounded-lg p-3 text-sm">
+              {t("campaign.closure.pending", {
+                count: check.pendingRequestCount,
+              })}
+            </p>
+          )}
           {check.reviewingRequests.length > 0 && (
             <section className="space-y-2">
               <h3 className="font-semibold">
@@ -188,12 +271,12 @@ export function CampaignClosureSection({
             </section>
           )}
           {check.unfinishedTasks.length > 0 && (
-            <section className="space-y-3">
-              <h3 className="font-semibold" role="alert">
+            <details className="space-y-3" open={cancelOpen || undefined}>
+              <summary className="cursor-pointer font-semibold">
                 {t("campaign.closure.unfinished", {
                   count: check.unfinishedTasks.length,
                 })}
-              </h3>
+              </summary>
               <Button
                 variant="outline"
                 className="h-auto min-h-11 text-left whitespace-normal"
@@ -208,7 +291,7 @@ export function CampaignClosureSection({
                 {t("campaign.closure.cancelOption")}
               </Button>
               <div id="campaign-cancel-options" className="space-y-3">
-                <ul className="space-y-2 rounded-lg border p-3">
+                <ul className="max-h-52 space-y-2 overflow-y-auto rounded-lg border p-3">
                   {check.unfinishedTasks.map((task) => (
                     <li key={task.id}>
                       {cancelOpen ? (
@@ -316,7 +399,7 @@ export function CampaignClosureSection({
                         if (!busy) setConfirmDialogOpen(open);
                       }}
                     >
-                      <DialogContent className="sm:max-w-md">
+                      <DialogContent className="z-[80] sm:max-w-md">
                         <DialogHeader>
                           <DialogTitle className="text-destructive flex items-center gap-2 text-base font-bold">
                             <AlertTriangle className="size-5 shrink-0" />
@@ -346,17 +429,17 @@ export function CampaignClosureSection({
                             </Badge>
                           </div>
                           {note.trim() && (
-                            <p className="text-muted-foreground border-destructive/15 pt-1.5 break-words italic border-t">
+                            <p className="text-muted-foreground border-destructive/15 border-t pt-1.5 break-words italic">
                               &ldquo;{note.trim()}&rdquo;
                             </p>
                           )}
-                          <div className="border-destructive/15 max-h-36 space-y-1.5 overflow-y-auto pt-2 border-t no-scrollbar">
+                          <div className="border-destructive/15 no-scrollbar max-h-36 space-y-1.5 overflow-y-auto border-t pt-2">
                             {check.unfinishedTasks
                               .filter((task) => selected.includes(task.id))
                               .map((task) => (
                                 <div
                                   key={task.id}
-                                  className="text-foreground/80 flex items-center gap-2 text-xs truncate"
+                                  className="text-foreground/80 flex items-center gap-2 truncate text-xs"
                                 >
                                   <span className="bg-destructive size-1.5 shrink-0 rounded-full" />
                                   <span className="truncate">{task.name}</span>
@@ -392,7 +475,7 @@ export function CampaignClosureSection({
                   </>
                 )}
               </div>
-            </section>
+            </details>
           )}
           {!check.canComplete && (
             <p className="text-muted-foreground text-sm">
@@ -407,13 +490,174 @@ export function CampaignClosureSection({
               variant="orange"
               disabled={!check.canComplete || busy}
               loading={busy}
-              onClick={() => void complete()}
+              onClick={() => setCompleteOpen(true)}
             >
               {t("campaign.delivery.complete")}
             </Button>
           </div>
         </div>
       )}
-    </InlineWorkArea>
+      <Dialog
+        open={completeOpen}
+        onOpenChange={(open) => {
+          if (!busy) setCompleteOpen(open);
+        }}
+      >
+        <DialogContent className="z-[80] sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("campaign.closure.confirmComplete")}</DialogTitle>
+            <DialogDescription>
+              {t("campaign.closure.completeDescription")}
+            </DialogDescription>
+          </DialogHeader>
+          {!!check?.pendingRequestCount && (
+            <p className="bg-brand-orange/10 rounded-lg p-3 text-sm">
+              {t("campaign.closure.pending", {
+                count: check.pendingRequestCount,
+              })}
+            </p>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              disabled={busy}
+              onClick={() => setCompleteOpen(false)}
+            >
+              {t("campaign.cancel")}
+            </Button>
+            <Button
+              variant="orange"
+              loading={busy}
+              disabled={!check?.canComplete || busy}
+              onClick={async () => {
+                await complete();
+                setCompleteOpen(false);
+              }}
+            >
+              {t("campaign.delivery.complete")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+export function CampaignClosureSection(
+  props: Omit<
+    Parameters<typeof ClosureContent>[0],
+    "onClose" | "onDismissLockChange" | "pinAction"
+  >,
+) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const [dismissLocked, setDismissLocked] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearTimer = () => {
+    if (timer.current) clearTimeout(timer.current);
+  };
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
+  const show = () => {
+    clearTimer();
+    setOpen(true);
+  };
+  const hide = () => {
+    clearTimer();
+    if (!pinned) timer.current = setTimeout(() => setOpen(false), 220);
+  };
+  const close = () => {
+    clearTimer();
+    setOpen(false);
+    setPinned(false);
+  };
+  return (
+    <Popover
+      open={open}
+      onOpenChange={(value) => {
+        if (!value && !pinned) close();
+      }}
+    >
+      <PopoverAnchor asChild>
+        <Button
+          data-campaign-complete
+          variant="orange"
+          size="sm"
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          onMouseEnter={show}
+          onMouseLeave={hide}
+          onFocus={show}
+          onBlur={hide}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowDown") {
+              event.preventDefault();
+              show();
+              setPinned(true);
+              requestAnimationFrame(() =>
+                contentRef.current
+                  ?.querySelector<HTMLButtonElement>("button")
+                  ?.focus(),
+              );
+            }
+          }}
+          onClick={() => {
+            show();
+            setPinned(true);
+          }}
+        >
+          {t("campaign.timeline.closeCampaign")}
+        </Button>
+      </PopoverAnchor>
+      <PopoverContent
+        ref={contentRef}
+        align="end"
+        aria-label={t("campaign.closure.title")}
+        className="max-h-[min(640px,var(--radix-popover-content-available-height))] w-[min(440px,calc(100vw-24px))] overflow-y-auto p-4"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onFocusCapture={() => {
+          clearTimer();
+          setPinned(true);
+        }}
+        onPointerDownCapture={() => setPinned(true)}
+        onEscapeKeyDown={(e) => {
+          if (dismissLocked) e.preventDefault();
+          else close();
+        }}
+        onInteractOutside={(e) => {
+          if (pinned) e.preventDefault();
+        }}
+      >
+        <ClosureContent
+          {...props}
+          pinAction={
+            <Button
+              size="icon"
+              variant={pinned ? "secondary" : "ghost"}
+              className="size-7"
+              aria-label={t("campaign.closure.pin")}
+              aria-pressed={pinned}
+              onClick={() => setPinned((v) => !v)}
+            >
+              <Pin className="size-3.5" />
+            </Button>
+          }
+          onDismissLockChange={setDismissLocked}
+          onClose={close}
+          onCompleted={(value) => {
+            close();
+            props.onCompleted(value);
+          }}
+        />
+      </PopoverContent>
+    </Popover>
   );
 }

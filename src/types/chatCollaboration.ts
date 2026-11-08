@@ -37,6 +37,7 @@ export interface ChatDirectoryMember {
 }
 
 export interface CollaborationMessage extends ChatMessage {
+  attachmentIds?: string[];
   richContent?: ChatRichNode | null;
   mentionUserIds?: string[];
   channelId: string;
@@ -47,6 +48,7 @@ export interface CollaborationMessage extends ChatMessage {
 }
 
 export interface ChannelMessageRequest {
+  attachmentIds?: string[];
   richContent?: ChatRichNode | null;
   mentionUserIds?: string[];
   clientMessageId: string;

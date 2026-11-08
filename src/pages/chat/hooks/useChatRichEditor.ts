@@ -48,10 +48,14 @@ export function useChatRichEditor(props: ChatRichComposerProps) {
     setLength(richPlainText(document).length);
     setHasText(Boolean(richPlainText(document).trim()));
     setValid(
-      isChatRichDocument(document) && richMentionIds(document).length <= 20,
+      isChatRichDocument(document) &&
+        richMentionIds(document).length <= 20 &&
+        (props.allowMentions !== false ||
+          richMentionIds(document).length === 0),
     );
     const { selection } = editor.state;
     if (
+      props.allowMentions === false ||
       !selection.empty ||
       dismissedAt.current === selection.from ||
       editor.isActive("codeBlock") ||
@@ -144,7 +148,7 @@ export function useChatRichEditor(props: ChatRichComposerProps) {
     }) ?? "chat.ui.keyboardHint";
 
   const mention = (person: ChatDirectoryMember) => {
-    if (!editor || !suggestion) return;
+    if (props.allowMentions === false || !editor || !suggestion) return;
     const ids = richMentionIds(editor.getJSON() as ChatRichNode);
     if (!ids.includes(person.userId) && ids.length >= 20) return;
     editor
@@ -165,6 +169,7 @@ export function useChatRichEditor(props: ChatRichComposerProps) {
     if (!editor || pending.current) return;
     const request = chatComposerRequest(editor, props);
     if (request && props.onSend(request)) {
+      props.onDraftSent?.();
       editor.commands.clearContent();
       editor.commands.focus();
       setSuggestion(null);

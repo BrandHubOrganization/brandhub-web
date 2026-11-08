@@ -4,6 +4,7 @@ import type { ChatRichNode } from "@/pages/chat/types/chatRichContent";
 import { isChatRichDocument } from "@/pages/chat/utils/chatRichContent";
 
 const messageSchema = z.object({
+  attachmentIds: z.array(z.string()).max(5).optional(),
   mentionUserIds: z.array(z.string()).optional(),
   id: z.string().min(1),
   workspaceId: z.string(),

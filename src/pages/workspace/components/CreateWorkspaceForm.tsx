@@ -1,3 +1,4 @@
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa6";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
@@ -127,7 +128,7 @@ export function CreateWorkspaceForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="border-border bg-card w-full grid grid-cols-1 gap-4 rounded-xl border p-6 md:grid-cols-2"
+      className="border-border bg-card grid w-full grid-cols-1 gap-4 rounded-xl border p-6 md:grid-cols-2"
     >
       {availableTemplates.length > 0 && (
         <div className="flex flex-col gap-1.5 md:col-span-2">
@@ -263,18 +264,24 @@ export function CreateWorkspaceForm({
           />
           <Input
             label={t("workspace.create.facebookUrlLabel")}
+            iconPrefix={<FaFacebook aria-hidden="true" />}
+            inputMode="url"
             value={facebookUrl}
             onChange={(e) => onFacebookUrlChange(e.target.value)}
             error={errors?.facebookUrl}
           />
           <Input
             label={t("workspace.create.linkedinUrlLabel")}
+            iconPrefix={<FaLinkedin aria-hidden="true" />}
+            inputMode="url"
             value={linkedinUrl}
             onChange={(e) => onLinkedinUrlChange(e.target.value)}
             error={errors?.linkedinUrl}
           />
           <Input
             label={t("workspace.create.instagramUrlLabel")}
+            iconPrefix={<FaInstagram aria-hidden="true" />}
+            inputMode="url"
             value={instagramUrl}
             onChange={(e) => onInstagramUrlChange(e.target.value)}
             error={errors?.instagramUrl}

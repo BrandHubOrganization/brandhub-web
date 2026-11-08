@@ -250,5 +250,30 @@
     "publicMembership": "Thành viên nội bộ tự động có quyền truy cập. Khách hàng được mời cũng xuất hiện tại đây.",
     "removePerson": "Xóa {{name}} khỏi kênh này",
     "backGeneral": "Quay lại kênh Chung"
+  },
+  "attachments": {
+    "add": "Thêm ảnh hoặc ấn phẩm",
+    "upload": "Tải ảnh / PDF từ máy",
+    "repository": "Lấy ấn phẩm từ kho chung",
+    "root": "Kho tài nguyên",
+    "back": "Thư mục cha",
+    "search": "Tìm tên ấn phẩm…",
+    "loading": "Đang tải kho tài nguyên",
+    "repositoryError": "Chưa tải được kho. Kiểm tra quyền truy cập rồi thử lại.",
+    "version": "Phiên bản {{version}}",
+    "empty": "Không tìm thấy ấn phẩm.",
+    "previous": "Trước",
+    "next": "Sau",
+    "selected": "Đã chọn {{count}} ấn phẩm",
+    "attach": "Đính kèm",
+    "failed": "Chưa đính kèm được. Thử lại hoặc bỏ file để tiếp tục.",
+    "invalidFile": "Chỉ hỗ trợ JPEG, PNG, WebP và PDF; tối đa 10 MB/file.",
+    "limit": "Mỗi tin nhắn tối đa 5 file.",
+    "uploading": "Đang đính kèm…",
+    "uploaded": "Đã tải lên",
+    "remove": "Bỏ {{name}}",
+    "download": "Tải file",
+    "denied": "Bạn không có quyền xem ấn phẩm này.",
+    "unavailable": "File hiện không khả dụng."
   }
 }

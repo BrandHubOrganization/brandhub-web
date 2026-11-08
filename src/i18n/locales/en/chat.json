@@ -250,5 +250,30 @@
     "publicMembership": "Internal members can access public channels automatically. Invited clients appear here too.",
     "removePerson": "Remove {{name}} from this channel",
     "backGeneral": "Back to General"
+  },
+  "attachments": {
+    "add": "Add image or asset",
+    "upload": "Upload image / PDF",
+    "repository": "Choose from shared repository",
+    "root": "Repository",
+    "back": "Parent folder",
+    "search": "Search asset name…",
+    "loading": "Loading repository",
+    "repositoryError": "Cannot load repository. Check access and retry.",
+    "version": "Version {{version}}",
+    "empty": "No assets found.",
+    "previous": "Previous",
+    "next": "Next",
+    "selected": "{{count}} assets selected",
+    "attach": "Attach",
+    "failed": "Could not attach. Retry or remove the file to continue.",
+    "invalidFile": "JPEG, PNG, WebP and PDF only; maximum 10 MB/file.",
+    "limit": "Maximum 5 files per message.",
+    "uploading": "Attaching…",
+    "uploaded": "Uploaded",
+    "remove": "Remove {{name}}",
+    "download": "Download file",
+    "denied": "You do not have access to this asset.",
+    "unavailable": "This file is currently unavailable."
   }
 }

@@ -233,7 +233,10 @@ export function ChatConversation(props: ConversationProps) {
             />
           )}
           <ChatChannelComposer
-            key={`${props.contextType}:${props.contextId ?? ""}`}
+            workspaceId={props.workspaceId}
+            channelId={props.channel.id}
+            allowMentions={props.channel.type !== "DIRECT"}
+            key={`${props.workspaceId}:${props.channel.id}:${props.contextType}:${props.contextId ?? ""}`}
             canPost={props.channel.canPost && props.contextValid}
             people={props.people}
             contextType={props.contextType}

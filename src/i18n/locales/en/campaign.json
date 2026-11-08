@@ -34,7 +34,15 @@
       "DUPLICATE_OR_REPLACED": "Duplicate or replaced work",
       "NO_LONGER_SUITABLE": "No longer suitable for the Campaign",
       "OTHER": "Other"
-    }
+    },
+    "loading": "Checking completion conditions",
+    "pin": "Keep checklist open",
+    "checkDeployment": "Deployment completed",
+    "checkTasks": "All tasks finished or cancelled",
+    "checkRequests": "No requests under review",
+    "checkLinks": "Supplemental tasks linked to the campaign",
+    "confirmComplete": "Complete campaign?",
+    "completeDescription": "Confirm campaign completion based on the current checklist."
   },
   "title": "Campaign plan",
   "tabs": {
@@ -297,7 +305,7 @@
     "deploymentFailed": "Deployment incomplete. Check and retry.",
     "deployConfirm": "Deploy Campaign?",
     "deployDescription": "Begin work using the current plan. The package and Campaign plan will be locked after deployment.",
-    "closeCampaign": "Check completion",
+    "closeCampaign": "Complete campaign",
     "retryPreparation": "Retry plan preparation",
     "taskDialogDescription": "Details, subtasks and comments for the selected Task.",
     "columns": {
@@ -352,6 +360,14 @@
     "scrollCaption": "Daily timeline",
     "previousDay": "Previous day",
     "nextDay": "Next day",
-    "moveMilestone": "Drag to reschedule · ←/→ move one day"
-  }
+    "moveMilestone": "Drag to reschedule · ←/→ move one day",
+    "newClientFeedback": "{{count}} new Client feedback",
+    "closeFeedback": "Close feedback",
+    "workspaceChat": "Open Workspace chat",
+    "strategyHint": "Outline the goal, audience, channels and key activities.",
+    "strategyTooLong": "Formatted content exceeds 10,000 characters. Shorten it before saving.",
+    "strategyConflict": "The strategy has changed on the server. Review it before retrying.",
+    "savingSchedule": "Saving schedule…"
+  },
+  "loading": "Loading campaign"
 }

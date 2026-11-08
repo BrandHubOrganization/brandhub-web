@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Check, Circle, Rocket } from "lucide-react";
+import { Check, ChevronDown, Circle, Rocket } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { campaignService } from "@/pages/campaign/services/campaignService";
 import { parseTimeline } from "@/pages/campaign/utils/timelineDates";
 import type { Campaign } from "@/pages/campaign/types";
@@ -22,9 +28,7 @@ export function CampaignDeploymentPanel({
   canDeploy,
   canManage,
   blocked,
-  canClose,
   onChanged,
-  onClose,
 }: {
   workspaceId: string;
   campaign: Campaign;
@@ -32,12 +36,25 @@ export function CampaignDeploymentPanel({
   canDeploy: boolean;
   canManage: boolean;
   blocked: boolean;
-  canClose: boolean;
   onChanged: () => void;
-  onClose: () => void;
 }) {
   const { t } = useTranslation();
   const [confirm, setConfirm] = useState(false);
+  const [conditionsOpen, setConditionsOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showConditions = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setConditionsOpen(true);
+  };
+  const hideConditions = () => {
+    closeTimer.current = setTimeout(() => setConditionsOpen(false), 180);
+  };
+  useEffect(
+    () => () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    },
+    [],
+  );
   const timeline = parseTimeline(campaign.timeline);
   const query = useQuery({
     queryKey: ["campaign-deployment", workspaceId, campaign.id],
@@ -88,70 +105,105 @@ export function CampaignDeploymentPanel({
     },
   });
   return (
-    <section className="border-border bg-card shrink-0 space-y-3 rounded-xl border p-3">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xs font-semibold">
-          {t("campaign.timeline.prerequisites")}
-        </h2>
-        <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-[10px]">
-          {count}/{conditions.length}
-        </span>
-      </div>
-      <ul className="space-y-2.5">
-        {conditions.map(([label, ready]) => (
-          <li key={label} className="flex gap-2 text-[11px]">
-            {ready ? (
-              <Check className="text-brand-orange size-3.5 shrink-0" />
-            ) : (
-              <Circle className="text-muted-foreground size-3.5 shrink-0" />
-            )}
-            <span>{label}</span>
-          </li>
-        ))}
-      </ul>
-      {query.isError && (
-        <p role="alert" className="text-destructive text-xs">
-          {t("campaign.error")}
-        </p>
-      )}
-      {deployment?.status === "FAILED" && (
-        <p role="alert" className="text-destructive text-xs">
-          {t("campaign.timeline.deploymentFailed")}
-        </p>
-      )}
-      {canManage &&
-        canDeploy &&
-        ["DRAFT", "APPROVED"].includes(campaign.status) && (
-          <Button
-            variant="orange"
-            size="sm"
-            className="w-full text-xs"
-            disabled={
-              blocked ||
-              count !== conditions.length ||
-              deploy.isPending ||
-              query.isPending ||
-              query.isError ||
-              deployment?.status === "PENDING"
-            }
-            onClick={() => setConfirm(true)}
+    <>
+      <Popover open={conditionsOpen} onOpenChange={setConditionsOpen}>
+        <PopoverAnchor asChild>
+          <div
+            className="flex items-center gap-1"
+            onMouseEnter={showConditions}
+            onMouseLeave={hideConditions}
           >
-            <Rocket className="size-3.5" />
-            {deployment?.status === "PENDING"
-              ? t("campaign.timeline.deploying")
-              : t("campaign.timeline.deploy")}
-          </Button>
-        )}
-      {canClose && campaign.status === "IN_PROGRESS" && (
-        <Button
-          size="sm"
-          variant="outline"
-          className="w-full text-xs"
-          onClick={onClose}
+            {canManage && ["DRAFT", "APPROVED"].includes(campaign.status) && (
+              <Button
+                variant="orange"
+                size="sm"
+                className="gap-2 text-xs"
+                disabled={
+                  !canDeploy ||
+                  blocked ||
+                  count !== conditions.length ||
+                  deploy.isPending ||
+                  query.isPending ||
+                  query.isError ||
+                  deployment?.status === "PENDING"
+                }
+                onFocus={showConditions}
+                onClick={() => {
+                  setConditionsOpen(false);
+                  setConfirm(true);
+                }}
+              >
+                <Rocket className="size-3.5" />
+                {deployment?.status === "PENDING"
+                  ? t("campaign.timeline.deploying")
+                  : t("campaign.timeline.deploy")}
+                <span className="rounded bg-white/15 px-1 text-[10px]">
+                  {count}/{conditions.length}
+                </span>
+              </Button>
+            )}
+            <PopoverTrigger asChild>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="size-8"
+                aria-label={t("campaign.timeline.prerequisites")}
+              >
+                <ChevronDown className="size-3.5" />
+              </Button>
+            </PopoverTrigger>
+          </div>
+        </PopoverAnchor>
+        <PopoverContent
+          align="end"
+          onOpenAutoFocus={(event) => event.preventDefault()}
+          onCloseAutoFocus={(event) => event.preventDefault()}
+          onMouseEnter={showConditions}
+          onMouseLeave={hideConditions}
         >
-          {t("campaign.timeline.closeCampaign")}
-        </Button>
-      )}
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-xs font-semibold">
+              {t("campaign.timeline.prerequisites")}
+            </h2>
+            <span className="text-muted-foreground text-xs">
+              {count}/{conditions.length}
+            </span>
+          </div>
+          <ul className="mt-3 space-y-2.5">
+            {conditions.map(([label, ready]) => (
+              <li key={label} className="flex gap-2 text-xs">
+                {ready ? (
+                  <Check
+                    aria-hidden
+                    className="text-brand-orange size-3.5 shrink-0"
+                  />
+                ) : (
+                  <Circle
+                    aria-hidden
+                    className="text-muted-foreground size-3.5 shrink-0"
+                  />
+                )}
+                <span>{label}</span>
+              </li>
+            ))}
+          </ul>
+          {query.isError && (
+            <p role="alert" className="text-destructive mt-3 text-xs">
+              {t("campaign.error")}
+            </p>
+          )}
+          {deployment?.status === "FAILED" && (
+            <p role="alert" className="text-destructive mt-3 text-xs">
+              {t("campaign.timeline.deploymentFailed")}
+            </p>
+          )}
+          {blocked && (
+            <p className="text-muted-foreground mt-3 text-xs">
+              {t("campaign.timeline.unsaved")}
+            </p>
+          )}
+        </PopoverContent>
+      </Popover>
       <Dialog open={confirm} onOpenChange={setConfirm}>
         <DialogContent>
           <DialogHeader>
@@ -179,6 +231,6 @@ export function CampaignDeploymentPanel({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </section>
+    </>
   );
 }

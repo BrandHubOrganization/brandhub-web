@@ -35,7 +35,7 @@ function PopoverContent({
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Content>) {
   return (
-    <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal forceMount={props.forceMount}>
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}
@@ -50,4 +50,10 @@ function PopoverContent({
   );
 }
 
-export { Popover, PopoverTrigger, PopoverAnchor, PopoverPortal, PopoverContent };
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverAnchor,
+  PopoverPortal,
+  PopoverContent,
+};

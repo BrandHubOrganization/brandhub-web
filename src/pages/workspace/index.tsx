@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
+import { useAgencyStore } from "@/store/agencyStore";
 import { useWorkspaceList } from "./hooks/useWorkspaceList";
 import { WorkspaceToolbar } from "./components/list/WorkspaceToolbar";
 import { WorkspaceCardItem } from "./components/list/WorkspaceCardItem";
@@ -14,6 +15,7 @@ export function WorkspacePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const currentUser = useAuthStore((state) => state.user);
+  const currentAgencyId = useAgencyStore((state) => state.currentAgencyId);
 
   const {
     workspaces,
@@ -51,7 +53,13 @@ export function WorkspacePage() {
       actions={
         <Button
           className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white shadow-xs"
-          onClick={() => navigate("/workspaces/create")}
+          onClick={() =>
+            navigate(
+              currentAgencyId
+                ? `/workspaces/create?agencyId=${encodeURIComponent(currentAgencyId)}`
+                : "/workspaces/create",
+            )
+          }
         >
           <Plus className="size-3.5" />
           {t("workspace.list.createButton", "Tạo workspace mới")}
@@ -89,12 +97,14 @@ export function WorkspacePage() {
             />
           ) : (
             /* WORKSPACE CARDS GRID */
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 items-start">
+            <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filteredWorkspaces.map((ws) => (
                 <WorkspaceCardItem
                   key={ws.id}
                   workspace={ws}
-                  parentAgency={ws.agencyId ? agenciesById.get(ws.agencyId) : null}
+                  parentAgency={
+                    ws.agencyId ? agenciesById.get(ws.agencyId) : null
+                  }
                   currentUserId={currentUser?.id}
                   onDuplicate={setDuplicateSource}
                 />

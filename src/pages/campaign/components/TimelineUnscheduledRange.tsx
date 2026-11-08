@@ -2,6 +2,7 @@ import { useRef, useState, type PointerEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
 import { addDays, dayNumber } from "@/pages/campaign/utils/timelineDates";
+import { TimelinePendingRange } from "@/pages/campaign/components/TimelinePendingRange";
 
 export function TimelineUnscheduledRange({
   viewStart,
@@ -21,17 +22,22 @@ export function TimelineUnscheduledRange({
     null,
   );
   const [dragging, setDragging] = useState(false);
-  const [committing, setCommitting] = useState(false);
+  const [pendingRange, setPendingRange] = useState<{
+    start: string;
+    end: string;
+  } | null>(null);
+  const committing = pendingRange !== null;
   const lock = useRef(false);
   async function commit(start: string, end: string) {
     if (lock.current || busy) return;
     lock.current = true;
-    setCommitting(true);
+    setPendingRange({ start, end });
     try {
       await onCommit(start, end);
     } finally {
       lock.current = false;
-      setCommitting(false);
+      setPendingRange(null);
+      setPreview(null);
     }
   }
   const dayAt = (event: PointerEvent<HTMLButtonElement>) =>
@@ -94,41 +100,51 @@ export function TimelineUnscheduledRange({
     document.addEventListener("keydown", key);
   }
   return (
-    <button
-      type="button"
-      className="ct-unscheduled-lane"
-      disabled={busy || committing}
-      aria-label={t("campaign.timeline.createRange")}
-      onPointerMove={(e) => {
-        if (!dragging && !busy) {
-          const start = dayAt(e);
-          setPreview({ start, end: addDays(start, 3) });
-        }
-      }}
-      onPointerLeave={() => {
-        if (!dragging) setPreview(null);
-      }}
-      onPointerDown={begin}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          void commit(today, addDays(today, 3));
-        }
-      }}
-    >
-      {preview && (
-        <span
-          className="ct-range ct-range-preview"
-          style={{
-            left: (dayNumber(preview.start) - dayNumber(viewStart)) * dayWidth,
-            width:
-              (dayNumber(preview.end) - dayNumber(preview.start) + 1) *
-              dayWidth,
-          }}
-        >
-          <Plus className="size-3" />
-        </span>
+    <>
+      <button
+        type="button"
+        className="ct-unscheduled-lane"
+        disabled={busy || committing}
+        aria-label={t("campaign.timeline.createRange")}
+        onPointerMove={(e) => {
+          if (!dragging && !busy) {
+            const start = dayAt(e);
+            setPreview({ start, end: addDays(start, 3) });
+          }
+        }}
+        onPointerLeave={() => {
+          if (!dragging) setPreview(null);
+        }}
+        onPointerDown={begin}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            void commit(today, addDays(today, 3));
+          }
+        }}
+      >
+        {preview && !committing && (
+          <span
+            className="ct-range ct-range-preview"
+            style={{
+              left:
+                (dayNumber(preview.start) - dayNumber(viewStart)) * dayWidth,
+              width:
+                (dayNumber(preview.end) - dayNumber(preview.start) + 1) *
+                dayWidth,
+            }}
+          >
+            <Plus className="size-3" />
+          </span>
+        )}
+      </button>
+      {pendingRange && (
+        <TimelinePendingRange
+          {...pendingRange}
+          viewStart={viewStart}
+          dayWidth={dayWidth}
+        />
       )}
-    </button>
+    </>
   );
 }

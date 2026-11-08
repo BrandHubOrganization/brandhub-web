@@ -179,6 +179,11 @@
   background: hsl(var(--secondary));
   color: hsl(var(--foreground));
 }
+.ct-range.ct-range-pending {
+  background: hsl(var(--muted));
+  border-color: hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
 .ct-range .ct-range-body {
   height: 100%;
   flex: 1;
@@ -282,6 +287,7 @@
 }
 .ct-workspace-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
@@ -289,25 +295,10 @@
 }
 .ct-workspace-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 285px;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
   min-height: 0;
   flex: 1;
-}
-.ct-workspace-rail {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-  min-height: 0;
-  scrollbar-width: thin;
-}
-.ct-workspace-rail > section {
-  flex-shrink: 0;
-}
-.ct-workspace-rail > section:last-child {
-  flex: 1;
-  min-height: 230px;
 }
 .ct-timeline-shell {
   height: 100%;
@@ -486,9 +477,6 @@
     height: min(720px, 85dvh);
     min-height: 420px;
   }
-  .ct-workspace-rail {
-    overflow: visible;
-  }
   .ct-task-dialog {
     width: 96vw;
     height: 94dvh;
@@ -605,9 +593,6 @@
   width: 340px;
   min-width: 160px;
 }
-.ct-strategy-panel {
-  flex-shrink: 0;
-}
 .ct-scrollbar-shell {
   flex-shrink: 0;
   height: 18px;
@@ -709,4 +694,13 @@
 }
 .ct-milestone-lane .ct-milestone:not(:disabled):active {
   cursor: grabbing;
+}
+
+.ct-strategy-rich
+  .tiptap:has(> p:only-child > br.ProseMirror-trailingBreak)::before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  float: left;
+  height: 0;
 }

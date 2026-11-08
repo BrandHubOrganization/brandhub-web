@@ -12,19 +12,23 @@ export function chatComposerRequest(
   editor: Editor | null,
   props: ChatRichComposerProps,
 ): ChannelMessageRequest | null {
-  if (!editor || editor.isDestroyed || !props.canPost) return null;
+  if (!editor || editor.isDestroyed || !props.canPost || props.attachmentBusy)
+    return null;
   const richContent = editor.getJSON() as ChatRichNode;
   const content = richPlainText(richContent).trim();
   const mentionUserIds = richMentionIds(richContent);
   if (
-    !content ||
+    (!content && !props.attachmentIds?.length) ||
+    (props.attachmentIds?.length ?? 0) > 5 ||
     content.length > 4000 ||
     mentionUserIds.length > 20 ||
+    (props.allowMentions === false && mentionUserIds.length > 0) ||
     !isChatRichDocument(richContent)
   )
     return null;
   return {
     clientMessageId: crypto.randomUUID(),
+    attachmentIds: props.attachmentIds ?? [],
     content,
     richContent,
     mentionUserIds,

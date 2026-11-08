@@ -104,6 +104,7 @@
   "create": {
     "title": "Tạo không gian làm việc",
     "description": "Thiết lập không gian làm việc mới cho đội nhóm hoặc thương hiệu của bạn.",
+    "ownerRequired": "Chỉ Chủ sở hữu công ty mới được tạo không gian làm việc. Hãy đăng nhập bằng tài khoản Chủ sở hữu.",
     "agencyRequired": "Bạn cần chọn một công ty (Agency) trước khi tạo không gian làm việc",
     "nameLabel": "Tên không gian làm việc",
     "industryLabel": "Ngành hàng",
@@ -123,7 +124,7 @@
     "linkedinUrlLabel": "LinkedIn",
     "instagramUrlLabel": "Instagram",
     "assignMembersLabel": "Thêm thành viên từ công ty",
-    "assignMembersHint": "Bạn là Quản lý (Manager) mặc định. Chọn người khác làm Manager ở đây nếu muốn chuyển giao vai trò quản lý workspace cho họ.",
+    "assignMembersHint": "Chọn thành viên tham gia workspace. Nếu bạn không bổ nhiệm ai làm Quản lý (Manager), bạn sẽ mặc định giữ vai trò Quản lý; nếu chọn người khác làm Quản lý, bạn vẫn truy cập workspace với quyền Chủ sở hữu (Owner).",
     "assignManagerLimitHint": "Một workspace chỉ có đúng 1 Manager — chọn vai trò khác cho những người còn lại.",
     "clientInviteLabel": "Mời khách hàng (Client)",
     "clientInviteHint": "Nhập email khách hàng để gửi lời mời tham gia workspace này với vai trò Client. Họ sẽ nhận email và tự tạo hồ sơ khi chấp nhận lời mời.",
@@ -303,7 +304,14 @@
     "removeTooltip": "Xóa người dùng khỏi không gian làm việc",
     "revokeManagerConfirmTitle": "Xác nhận thu hồi quyền Quản lý",
     "revokeManagerConfirmBody": "Bạn có chắc chắn muốn thu hồi quyền Quản lý của **{{name}}** về Người tạo nội dung không?",
-    "revokeManagerConfirmButton": "Xác nhận thu hồi"
+    "revokeManagerConfirmButton": "Xác nhận thu hồi",
+    "fullNameLabel": "Họ và tên",
+    "noClients": "Chưa có khách hàng nào trong workspace này.",
+    "viewProfileTooltip": "Xem hồ sơ khách hàng",
+    "removeClientTooltip": "Xóa khách hàng khỏi workspace",
+    "clientProfileModalTitle": "Hồ sơ thương hiệu khách hàng",
+    "clientProfileNotSet": "Khách hàng chưa cập nhật hồ sơ thương hiệu chi tiết",
+    "clientAccountInfo": "Thông tin tài khoản cộng tác"
   },
   "roles": {
     "OWNER": "Chủ sở hữu",
