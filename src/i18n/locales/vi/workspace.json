@@ -304,7 +304,14 @@
     "removeTooltip": "Xóa người dùng khỏi không gian làm việc",
     "revokeManagerConfirmTitle": "Xác nhận thu hồi quyền Quản lý",
     "revokeManagerConfirmBody": "Bạn có chắc chắn muốn thu hồi quyền Quản lý của **{{name}}** về Người tạo nội dung không?",
-    "revokeManagerConfirmButton": "Xác nhận thu hồi"
+    "revokeManagerConfirmButton": "Xác nhận thu hồi",
+    "fullNameLabel": "Họ và tên",
+    "noClients": "Chưa có khách hàng nào trong workspace này.",
+    "viewProfileTooltip": "Xem hồ sơ khách hàng",
+    "removeClientTooltip": "Xóa khách hàng khỏi workspace",
+    "clientProfileModalTitle": "Hồ sơ thương hiệu khách hàng",
+    "clientProfileNotSet": "Khách hàng chưa cập nhật hồ sơ thương hiệu chi tiết",
+    "clientAccountInfo": "Thông tin tài khoản cộng tác"
   },
   "roles": {
     "OWNER": "Chủ sở hữu",
