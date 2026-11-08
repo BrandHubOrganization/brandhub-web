@@ -15,11 +15,15 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { DownloadFormatDropdown } from "@/components/common/DownloadFormatDropdown";
 import { downloadMediaWithFormat } from "@/utils/mediaDownloadHelper";
 import { aiCreditErrorMessage } from "@/services/aiCreditRequest";
-import { imageSourceToDataUrl } from "@/services/aiGenerationService";
+import {
+  aiGenerationService,
+  imageSourceToDataUrl,
+} from "@/services/aiGenerationService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { aiVideoService } from "@/services/aiVideoService";
 
@@ -278,6 +282,7 @@ export function AIVideoAssistPanel({
   const [isProbingVideo, setIsProbingVideo] = useState(false);
 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [videoBrief, setVideoBrief] = useState("");
   const [jobStatus, setJobStatus] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [videoS3Key, setVideoS3Key] = useState<string>();
@@ -395,11 +400,16 @@ export function AIVideoAssistPanel({
   };
 
   const handleGenerate = async () => {
-    if (!selectedImage) {
-      toast.error(t("editor.studio.video.imageRequired"));
-      return;
-    }
-    if (!poseVideoDataUrl || poseVideoDuration === null) {
+    const hasMotionInputs =
+      Boolean(selectedImage) &&
+      Boolean(poseVideoDataUrl) &&
+      poseVideoDuration !== null;
+
+    if (!hasMotionInputs && !videoBrief.trim()) {
+      if (!selectedImage) {
+        toast.error(t("editor.studio.video.imageRequired"));
+        return;
+      }
       toast.error(t("editor.studio.video.videoRequired"));
       return;
     }
@@ -409,6 +419,33 @@ export function AIVideoAssistPanel({
     setVideoS3Key(undefined);
     setJobStatus("PENDING");
     try {
+      if (!hasMotionInputs && videoBrief.trim()) {
+        const job = await aiGenerationService.generateVideo({
+          prompt: videoBrief.trim(),
+          clientId: workspaceId || "studio",
+        });
+        for (let attempt = 0; attempt < 600; attempt += 1) {
+          await wait(500);
+          if (!mountedRef.current) return;
+          const status = await aiGenerationService.getVideoStatus(job.job_id);
+          setJobStatus(status.status);
+          if (status.status === "COMPLETED" && status.video_url) {
+            setVideoUrl(status.video_url);
+            setVideoS3Key(status.s3_key ?? undefined);
+            toast.success(t("editor.studio.video.generateSuccess"));
+            return;
+          }
+          if (status.status === "FAILED") {
+            throw new Error(
+              status.error_message ||
+                status.error_code ||
+                "Video generation failed",
+            );
+          }
+        }
+        throw new Error("Video generation timed out");
+      }
+
       if (!workspaceId) throw new Error("A workspace is required for AI video");
       const referenceImageBase64 = await imageSourceToDataUrl(selectedImage);
       const aspectRatio: "16:9" | "9:16" =
@@ -418,11 +455,12 @@ export function AIVideoAssistPanel({
           : "9:16";
 
       const { job } = await aiVideoService.generate(workspaceId, {
+        prompt: videoBrief.trim() || undefined,
         aspectRatio,
         referenceImageBase64,
         poseVideoBase64: poseVideoDataUrl,
         poseVideoFilename: poseVideoName || "pose_video.mp4",
-        durationSeconds: Math.round(poseVideoDuration * 100) / 100,
+        durationSeconds: Math.round(poseVideoDuration! * 100) / 100,
       });
 
       for (let attempt = 0; attempt < 600; attempt += 1) {
@@ -460,6 +498,23 @@ export function AIVideoAssistPanel({
 
   return (
     <div className="border-border bg-card space-y-5 rounded-xl border p-4">
+      <div className="space-y-2">
+        <label
+          htmlFor="studio-video-brief"
+          className="text-muted-foreground text-xs font-semibold"
+        >
+          {t("editor.studio.video.briefLabel")}
+        </label>
+        <Textarea
+          id="studio-video-brief"
+          rows={3}
+          value={videoBrief}
+          onChange={(event) => setVideoBrief(event.target.value)}
+          placeholder={t("editor.studio.video.briefPlaceholder")}
+          className="border-border bg-muted text-foreground rounded-lg text-xs"
+        />
+      </div>
+
       {/* 1. Reference Image (1 ảnh tham chiếu) */}
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-2">

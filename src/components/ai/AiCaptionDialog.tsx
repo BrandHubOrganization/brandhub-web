@@ -132,13 +132,17 @@ export function AiCaptionDialog({
     aiCaptionService
       .trendFit(workspaceId)
       .then((data) => {
-        setFit(data);
+        setFit(
+          data && Array.isArray(data.trends)
+            ? { ...data, upcoming: Array.isArray(data.upcoming) ? data.upcoming : [] }
+            : { date: "", judged: false, trends: [], upcoming: [] },
+        );
         setFitState("ready");
       })
       .catch(() => setFitState("error"));
   }, [workspaceId]);
 
-  const fitTrend = fit?.trends.find((item) => item.trendId === fitId);
+  const fitTrend = fit?.trends?.find((item) => item.trendId === fitId);
   const pickFit = (id: string) =>
     setFitId((current) => (current === id ? "" : id));
   const tooShort = topic.trim().length < 10;
@@ -370,10 +374,27 @@ export function AiCaptionDialog({
           )}
           <div className="flex flex-wrap items-center justify-end gap-3">
             {contextLine.length > 0 && (
-              <span className="text-muted-foreground mr-auto text-xs">
+              <span
+                data-testid="ai-caption-bk-status"
+                data-kb-chunks={usedContext?.knowledgeChunks ?? 0}
+                className="text-muted-foreground mr-auto text-xs"
+              >
                 {t("editor.aiCaption.used.label")} {contextLine.join(" · ")}
               </span>
             )}
+            {usedContext &&
+              contextLine.length === 0 &&
+              !usedContext.brand &&
+              usedContext.knowledgeChunks === 0 && (
+                <span
+                  data-testid="ai-caption-no-bk-status"
+                  className="text-muted-foreground mr-auto text-xs"
+                >
+                  {language === "en"
+                    ? "Free-style mode (No Brand Knowledge documents)"
+                    : "Chế độ phong cách tự do (Chưa có tài liệu Brand Knowledge)"}
+                </span>
+              )}
             {used != null && (
               <span className="text-muted-foreground text-xs">
                 {t("editor.aiCaption.charged", { count: used })}
@@ -569,7 +590,7 @@ function BrandFitTrends({
           ))}
         </div>
       )}
-      {fit && fit.upcoming.length > 0 && (
+      {fit && Array.isArray(fit.upcoming) && fit.upcoming.length > 0 && (
         <p className="text-muted-foreground text-xs">
           {t("aiStudio.trendFit.upcoming", {
             list: fit.upcoming
