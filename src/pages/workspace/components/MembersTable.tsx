@@ -125,7 +125,9 @@ export function MembersTable({
         <TableBody>
           {members.map((member) => {
             const isTargetOwner = member.role === "OWNER";
-            const isSelf = member.userId === currentUserId;
+            const isSelf = Boolean(
+              currentUserId && member.userId === currentUserId,
+            );
             const canAct = canManage && !isTargetOwner && !isSelf;
 
             return (

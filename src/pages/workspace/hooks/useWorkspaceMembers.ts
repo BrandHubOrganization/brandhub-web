@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import {
   workspaceService,
   type AssignEntry,
@@ -22,7 +23,14 @@ export function useWorkspaceMembers() {
   const { t } = useTranslation();
   const { id: workspaceId } = useParams<{ id: string }>();
   const currentUserId = useAuthStore((s) => s.user?.id);
+  const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
+  const workspaceInStore = useWorkspaceStore((s) =>
+    s.workspaceList.find((w) => w.id === workspaceId),
+  );
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
+  const [workspaceMyRole, setWorkspaceMyRole] = useState<MemberRole | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [reloadCount, setReloadCount] = useState(0);
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -59,12 +67,21 @@ export function useWorkspaceMembers() {
     if (!workspaceId) return;
     workspaceService
       .getById(workspaceId)
-      .then(({ data }) => setAgencyId(data.data.agencyId));
+      .then(({ data }) => {
+        setAgencyId(data.data.agencyId);
+        setWorkspaceMyRole(data.data.myRole);
+      });
   }, [workspaceId]);
 
   const currentMember = members.find((m) => m.userId === currentUserId);
-  const canManage = currentMember
-    ? MANAGE_ROLES.includes(currentMember.role)
+  const currentRole: MemberRole | undefined =
+    currentMember?.role ??
+    workspaceMyRole ??
+    workspaceInStore?.myRole ??
+    currentMemberRole ??
+    undefined;
+  const canManage = currentRole
+    ? MANAGE_ROLES.includes(currentRole)
     : false;
 
   const handleInvite = async (e: React.FormEvent) => {
@@ -169,6 +186,8 @@ export function useWorkspaceMembers() {
     loadMembers,
     canManage,
     currentMember,
+    currentRole,
+    currentUserId,
     inviteOpen,
     setInviteOpen,
     inviteEmail,
