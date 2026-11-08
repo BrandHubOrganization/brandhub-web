@@ -1,3 +1,4 @@
+import { WorkspaceSocialLinks } from "@/pages/workspace/components/WorkspaceSocialLinks";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -64,42 +65,51 @@ export const WorkspaceCreateLivePreview: React.FC<
   // Filter non-empty industry fields
   const activeIndustryEntries = industryFields
     ? Object.entries(industryFields).filter(
-        ([, val]) => val !== undefined && val !== null && String(val).trim() !== "",
+        ([, val]) =>
+          val !== undefined && val !== null && String(val).trim() !== "",
       )
     : [];
 
   return (
-    <div className="lg:col-span-5 xl:col-span-5 lg:sticky lg:top-6 space-y-3">
+    <div className="flex min-w-0 flex-col gap-3 lg:sticky lg:top-4 lg:col-span-5 lg:max-h-[calc(100dvh-7rem)] xl:col-span-5">
       {/* Top Preview Title Bar */}
-      <div className="flex items-center justify-between px-1">
-        <span className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 px-1">
+        <span className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase">
           <Eye className="text-brand-orange size-3.5" />
           {t("workspace.createPreview.title", "Xem trước không gian làm việc")}
         </span>
-        <span className="bg-brand-orange-soft text-brand-orange rounded-full px-2.5 py-0.5 text-2xs font-semibold">
+        <span className="bg-brand-orange-soft text-brand-orange text-2xs rounded-full px-2.5 py-0.5 font-semibold">
           {t("workspace.createPreview.badge", "Cập nhật trực tiếp")}
         </span>
       </div>
 
       {/* Main Preview Card */}
-      <div className="border-border bg-card overflow-hidden rounded-2xl border shadow-xs transition-all">
+      <div
+        role="region"
+        aria-label={t(
+          "workspace.createPreview.title",
+          "Xem trước không gian làm việc",
+        )}
+        tabIndex={0}
+        className="border-border bg-card min-h-0 rounded-2xl border shadow-xs lg:overflow-y-auto lg:overscroll-contain"
+      >
         {/* 1. Cover Banner with dynamic brand color gradient */}
         <div
-          className="relative h-28 sm:h-32 w-full transition-colors duration-300"
+          className="relative h-24 w-full rounded-t-2xl transition-colors duration-300 lg:h-20"
           style={{
             background: brandColor
               ? `linear-gradient(135deg, ${brandColor}40 0%, ${brandColor}15 60%, hsl(var(--card)) 100%)`
               : "linear-gradient(135deg, hsl(var(--brand-orange)/0.25) 0%, hsl(var(--card)) 100%)",
           }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(#00000010_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff10_1px,transparent_1px)] [background-size:12px_12px] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(#00000010_1px,transparent_1px)] [background-size:12px_12px] opacity-40 dark:bg-[radial-gradient(#ffffff10_1px,transparent_1px)]" />
           {appliedTemplateName && (
             <div className="absolute top-3 right-3">
               <Badge
                 variant="outline"
-                className="bg-background/80 text-foreground backdrop-blur-xs text-3xs font-medium border-border/80"
+                className="bg-background/80 text-foreground text-3xs border-border/80 font-medium backdrop-blur-xs"
               >
-                <Sparkles className="mr-1 size-2.5 text-brand-orange" />
+                <Sparkles className="text-brand-orange mr-1 size-2.5" />
                 {appliedTemplateName}
               </Badge>
             </div>
@@ -111,27 +121,31 @@ export const WorkspaceCreateLivePreview: React.FC<
           {/* Overlapping Logo / Icon */}
           <div className="relative -mt-10 mb-3 flex items-end justify-between">
             <div
-              className="size-18 shrink-0 overflow-hidden rounded-2xl border-4 border-card bg-card shadow-md flex items-center justify-center transition-colors duration-300"
+              className="border-card bg-card flex size-18 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-4 shadow-md transition-colors duration-300"
               style={{
                 backgroundColor: brandColor || "#f05a28",
                 color: "#ffffff",
               }}
             >
-              {React.createElement(getLogoIcon(logoIcon), { className: "size-8 transition-transform" })}
+              {React.createElement(getLogoIcon(logoIcon), {
+                className: "size-8 transition-transform",
+              })}
             </div>
 
             {/* Quick stats tags */}
             <div className="flex flex-wrap items-center gap-1.5 pb-1">
               {assignMembers.length > 0 && (
-                <span className="bg-muted text-muted-foreground flex items-center gap-1 rounded-md px-2 py-0.5 text-3xs font-medium">
-                  <UserCheck className="size-3 text-brand-orange" />
-                  {assignMembers.length} {t("workspace.createPreview.members", "thành viên")}
+                <span className="bg-muted text-muted-foreground text-3xs flex items-center gap-1 rounded-md px-2 py-0.5 font-medium">
+                  <UserCheck className="text-brand-orange size-3" />
+                  {assignMembers.length}{" "}
+                  {t("workspace.createPreview.members", "thành viên")}
                 </span>
               )}
               {clientEmails.length > 0 && (
-                <span className="bg-muted text-muted-foreground flex items-center gap-1 rounded-md px-2 py-0.5 text-3xs font-medium">
-                  <Mail className="size-3 text-brand-orange" />
-                  {clientEmails.length} {t("workspace.createPreview.clients", "khách hàng")}
+                <span className="bg-muted text-muted-foreground text-3xs flex items-center gap-1 rounded-md px-2 py-0.5 font-medium">
+                  <Mail className="text-brand-orange size-3" />
+                  {clientEmails.length}{" "}
+                  {t("workspace.createPreview.clients", "khách hàng")}
                 </span>
               )}
             </div>
@@ -139,30 +153,42 @@ export const WorkspaceCreateLivePreview: React.FC<
 
           {/* Name & Tagline */}
           <div className="space-y-1">
-            <h3 className="text-foreground text-base sm:text-lg font-bold leading-tight break-words">
-              {name.trim() || t("workspace.createPreview.nameFallback", "Không gian làm việc mới")}
+            <h3 className="text-foreground text-base leading-tight font-bold break-words sm:text-lg">
+              {name.trim() ||
+                t(
+                  "workspace.createPreview.nameFallback",
+                  "Không gian làm việc mới",
+                )}
             </h3>
             <p className="text-muted-foreground text-xs italic">
-              {tagline.trim() || t("workspace.createPreview.taglineFallback", "Slogan / Khẩu hiệu thương hiệu")}
+              {tagline.trim() ||
+                t(
+                  "workspace.createPreview.taglineFallback",
+                  "Slogan / Khẩu hiệu thương hiệu",
+                )}
             </p>
           </div>
 
           {/* Metadata Badges */}
           <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
             {industry && (
-              <span className="bg-brand-orange-soft text-brand-orange inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-2xs font-semibold">
+              <span className="bg-brand-orange-soft text-brand-orange text-2xs inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-semibold">
                 <Building2 className="size-3" />
-                {t(`workspace.industry.${industry}`, { defaultValue: industry })}
+                {t(`workspace.industry.${industry}`, {
+                  defaultValue: industry,
+                })}
               </span>
             )}
             {companySize && (
-              <span className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-2xs font-medium">
+              <span className="bg-muted text-muted-foreground text-2xs inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-medium">
                 <Users className="size-3" />
-                {t(`agency.companySize.${companySize}`, { defaultValue: companySize })}
+                {t(`agency.companySize.${companySize}`, {
+                  defaultValue: companySize,
+                })}
               </span>
             )}
             {foundedYear && (
-              <span className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-2xs font-medium">
+              <span className="bg-muted text-muted-foreground text-2xs inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-medium">
                 <Calendar className="size-3" />
                 {foundedYear}
               </span>
@@ -170,33 +196,38 @@ export const WorkspaceCreateLivePreview: React.FC<
           </div>
 
           {/* Description Section */}
-          <div className="mt-4 border-t border-border pt-3.5">
-            <h4 className="text-muted-foreground text-3xs font-bold uppercase tracking-wider mb-1.5">
+          <div className="border-border mt-4 border-t pt-3.5">
+            <h4 className="text-muted-foreground text-3xs mb-1.5 font-bold tracking-wider uppercase">
               {t("workspace.createPreview.about", "Giới thiệu")}
             </h4>
             {description.trim() ? (
               <div
-                className="prose prose-sm dark:prose-invert max-w-none text-xs text-foreground/85 line-clamp-4 leading-relaxed"
+                className="prose prose-sm dark:prose-invert text-foreground/85 line-clamp-4 max-w-none text-xs leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             ) : (
               <p className="text-muted-foreground/60 text-xs italic">
-                {t("workspace.createPreview.emptyDescription", "Chưa có mô tả chi tiết.")}
+                {t(
+                  "workspace.createPreview.emptyDescription",
+                  "Chưa có mô tả chi tiết.",
+                )}
               </p>
             )}
           </div>
 
           {/* Contact Details Section */}
           {(website.trim() || phone.trim() || location.trim()) && (
-            <div className="mt-3.5 border-t border-border pt-3 space-y-2">
-              <h4 className="text-muted-foreground text-3xs font-bold uppercase tracking-wider">
+            <div className="border-border mt-3.5 space-y-2 border-t pt-3">
+              <h4 className="text-muted-foreground text-3xs font-bold tracking-wider uppercase">
                 {t("workspace.createPreview.contact", "Thông tin liên hệ")}
               </h4>
-              <div className="space-y-1.5 text-xs text-muted-foreground">
+              <div className="text-muted-foreground space-y-1.5 text-xs">
                 {website.trim() && (
                   <div className="flex items-center gap-2 truncate">
                     <Globe className="text-brand-orange size-3.5 shrink-0" />
-                    <span className="text-foreground/85 truncate">{website}</span>
+                    <span className="text-foreground/85 truncate">
+                      {website}
+                    </span>
                   </div>
                 )}
                 {phone.trim() && (
@@ -216,44 +247,40 @@ export const WorkspaceCreateLivePreview: React.FC<
           )}
 
           {/* Social Links Badges */}
-          {(facebookUrl.trim() || linkedinUrl.trim() || instagramUrl.trim()) && (
-            <div className="mt-3.5 border-t border-border pt-3">
-              <h4 className="text-muted-foreground text-3xs font-bold uppercase tracking-wider mb-2">
+          {(facebookUrl.trim() ||
+            linkedinUrl.trim() ||
+            instagramUrl.trim()) && (
+            <div className="border-border mt-3.5 border-t pt-3">
+              <h4 className="text-muted-foreground text-3xs mb-2 font-bold tracking-wider uppercase">
                 {t("workspace.createPreview.social", "Mạng xã hội")}
               </h4>
-              <div className="flex flex-wrap items-center gap-1.5">
-                {facebookUrl.trim() && (
-                  <span className="bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-md px-2 py-0.5 text-3xs font-semibold">
-                    Facebook
-                  </span>
-                )}
-                {linkedinUrl.trim() && (
-                  <span className="bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-md px-2 py-0.5 text-3xs font-semibold">
-                    LinkedIn
-                  </span>
-                )}
-                {instagramUrl.trim() && (
-                  <span className="bg-pink-500/10 text-pink-600 dark:text-pink-400 rounded-md px-2 py-0.5 text-3xs font-semibold">
-                    Instagram
-                  </span>
-                )}
-              </div>
+              <WorkspaceSocialLinks
+                facebookUrl={facebookUrl}
+                linkedinUrl={linkedinUrl}
+                instagramUrl={instagramUrl}
+              />
             </div>
           )}
 
           {/* Industry Specific Fields Preview */}
           {activeIndustryEntries.length > 0 && (
-            <div className="mt-3.5 border-t border-border pt-3">
-              <h4 className="text-muted-foreground text-3xs font-bold uppercase tracking-wider mb-2">
-                {t("workspace.createPreview.industrySpecific", "Thông tin đặc thù")}
+            <div className="border-border mt-3.5 border-t pt-3">
+              <h4 className="text-muted-foreground text-3xs mb-2 font-bold tracking-wider uppercase">
+                {t(
+                  "workspace.createPreview.industrySpecific",
+                  "Thông tin đặc thù",
+                )}
               </h4>
-              <div className="grid grid-cols-2 gap-2 text-2xs">
+              <div className="text-2xs grid grid-cols-2 gap-2">
                 {activeIndustryEntries.map(([key, val]) => (
-                  <div key={key} className="bg-muted/40 rounded-lg p-2 border border-border/50">
-                    <span className="text-muted-foreground block text-3xs capitalize truncate">
+                  <div
+                    key={key}
+                    className="bg-muted/40 border-border/50 rounded-lg border p-2"
+                  >
+                    <span className="text-muted-foreground text-3xs block truncate capitalize">
                       {key.replace(/([A-Z])/g, " $1")}
                     </span>
-                    <span className="text-foreground font-medium truncate block mt-0.5">
+                    <span className="text-foreground mt-0.5 block truncate font-medium">
                       {String(val)}
                     </span>
                   </div>

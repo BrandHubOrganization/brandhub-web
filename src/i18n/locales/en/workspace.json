@@ -104,6 +104,7 @@
   "create": {
     "title": "Create workspace",
     "description": "Set up a new workspace for your team or brand.",
+    "ownerRequired": "Only the agency owner can create a workspace. Sign in with the owner account.",
     "agencyRequired": "Please select an agency before creating a workspace",
     "nameLabel": "Workspace name",
     "industryLabel": "Industry",
@@ -123,7 +124,7 @@
     "linkedinUrlLabel": "LinkedIn",
     "instagramUrlLabel": "Instagram",
     "assignMembersLabel": "Add members from agency",
-    "assignMembersHint": "You're the default Manager. Pick someone else as Manager here to hand off that role for this workspace.",
+    "assignMembersHint": "Select agency members to join this workspace. If you do not assign anyone as Manager, you will default to Manager; if you assign another member as Manager, you will still access the workspace with Owner privileges.",
     "assignManagerLimitHint": "A workspace can only have one Manager — pick a different role for the others.",
     "clientInviteLabel": "Invite clients",
     "clientInviteHint": "Enter client emails to invite them to this workspace as Client. They'll receive an email and set up their own profile when they accept.",
