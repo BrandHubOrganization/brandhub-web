@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
+import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 type SupportStatus = "full" | "partial" | "none";
 
@@ -154,9 +155,7 @@ export function ComparisonMatrix() {
             <Layers className="size-3.5" />
             <span>{t("landing.comparison.badge")}</span>
           </div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-100">
-            {t("landing.comparison.title")}
-          </h2>
+          <SplitHeading text={t("landing.comparison.title")} />
           <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
             {t("landing.comparison.subtitle")}
           </p>
@@ -165,7 +164,7 @@ export function ComparisonMatrix() {
         <div
           ref={tableRef}
           className={cn(
-            "overflow-hidden rounded-3xl border border-zinc-200/90 bg-white shadow-sm transition-all duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none dark:border-zinc-800 dark:bg-zinc-950",
+            "bh-stage-reveal overflow-hidden rounded-[28px] border border-zinc-200/90 bg-white shadow-sm transition-all duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none dark:border-zinc-800 dark:bg-zinc-950",
             tableVisible
               ? "translate-y-0 opacity-100"
               : "translate-y-6 opacity-0",

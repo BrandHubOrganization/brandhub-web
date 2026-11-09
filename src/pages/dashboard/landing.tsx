@@ -23,6 +23,10 @@ import { FAQ } from "@/components/landing/FAQ";
 import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
 import { BackToTop } from "@/components/landing/BackToTop";
+import {
+  FloatingCtaStamp,
+  LandingMotionOrchestrator,
+} from "@/components/landing/MotionPrimitives";
 import { SeoHead } from "@/components/seo/SeoHead";
 
 const LANDING_FAQ_JSONLD = {
@@ -127,6 +131,8 @@ export function LandingPage() {
       <FAQ />
       <CTASection />
       <Footer />
+      <FloatingCtaStamp />
+      <LandingMotionOrchestrator />
       <BackToTop />
     </div>
   );

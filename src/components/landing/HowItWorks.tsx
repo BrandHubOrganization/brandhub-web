@@ -22,6 +22,7 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
+import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 interface LaneNode {
   key: string;
@@ -34,6 +35,9 @@ interface LaneNode {
 interface Lane {
   key: string;
   roleLabel: string;
+  floatingBadge: string;
+  cardTheme: string;
+  pillTheme: string;
   accent: string;
   accentText: string;
   accentSoft: string;
@@ -48,10 +52,14 @@ const LANES: Lane[] = [
   {
     key: "owner",
     roleLabel: "Owner",
-    accent: "bg-orange-600",
-    accentText: "text-orange-600 dark:text-orange-400",
-    accentSoft: "bg-orange-600/10 text-orange-700 dark:text-orange-400",
-    accentRing: "ring-orange-600/20",
+    floatingBadge: "STAGE 01 · WORKSPACE & GOVERNANCE",
+    cardTheme:
+      "from-orange-50/90 via-white to-amber-50/40 border-orange-200/90 dark:from-orange-950/25 dark:via-zinc-900 dark:to-zinc-900 dark:border-orange-800/40",
+    pillTheme: "bg-brand-orange text-white shadow-orange-500/25",
+    accent: "bg-brand-orange",
+    accentText: "text-brand-orange dark:text-orange-400",
+    accentSoft: "bg-brand-orange/10 text-brand-orange dark:text-orange-400",
+    accentRing: "ring-brand-orange/30",
     photoSeed: "brandhub-agency-owner-portrait",
     nodes: [
       { key: "setupWorkspace", icon: Building2, pageIndex: 6 },
@@ -62,10 +70,14 @@ const LANES: Lane[] = [
   {
     key: "creator",
     roleLabel: "Creator",
-    accent: "bg-brand-orange",
-    accentText: "text-brand-orange",
-    accentSoft: "bg-brand-orange/10 text-brand-orange",
-    accentRing: "ring-brand-orange/20",
+    floatingBadge: "STAGE 02 · AI STUDIO & CONTENT PRODUCTION",
+    cardTheme:
+      "from-violet-50/90 via-white to-fuchsia-50/40 border-violet-200/90 dark:from-violet-950/25 dark:via-zinc-900 dark:to-zinc-900 dark:border-violet-800/40",
+    pillTheme: "bg-violet-600 text-white shadow-violet-500/25",
+    accent: "bg-violet-600",
+    accentText: "text-violet-600 dark:text-violet-400",
+    accentSoft: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
+    accentRing: "ring-violet-500/30",
     photoSeed: "brandhub-content-creator-portrait",
     nodes: [
       { key: "draftContent", icon: PenTool, pageIndex: 1 },
@@ -76,10 +88,14 @@ const LANES: Lane[] = [
   {
     key: "manager",
     roleLabel: "Manager",
-    accent: "bg-orange-400",
-    accentText: "text-orange-500 dark:text-orange-300",
-    accentSoft: "bg-orange-400/10 text-orange-600 dark:text-orange-300",
-    accentRing: "ring-orange-400/20",
+    floatingBadge: "STAGE 03 · INTERNAL QA & CLIENT HANDOFF",
+    cardTheme:
+      "from-indigo-50/90 via-white to-sky-50/40 border-indigo-200/90 dark:from-indigo-950/25 dark:via-zinc-900 dark:to-zinc-900 dark:border-indigo-800/40",
+    pillTheme: "bg-indigo-600 text-white shadow-indigo-500/25",
+    accent: "bg-indigo-600",
+    accentText: "text-indigo-600 dark:text-indigo-400",
+    accentSoft: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300",
+    accentRing: "ring-indigo-500/30",
     photoSeed: "brandhub-account-manager-portrait",
     nodes: [
       { key: "reviewContent", icon: ClipboardCheck, pageIndex: 1 },
@@ -90,10 +106,14 @@ const LANES: Lane[] = [
   {
     key: "client",
     roleLabel: "Client",
-    accent: "bg-orange-300",
-    accentText: "text-orange-500 dark:text-orange-300",
-    accentSoft: "bg-orange-300/15 text-orange-600 dark:text-orange-300",
-    accentRing: "ring-orange-300/25",
+    floatingBadge: "STAGE 04 · FINAL SIGN-OFF & 4-CHANNEL PUBLISH",
+    cardTheme:
+      "from-emerald-50/90 via-white to-teal-50/40 border-emerald-200/90 dark:from-emerald-950/25 dark:via-zinc-900 dark:to-zinc-900 dark:border-emerald-800/40",
+    pillTheme: "bg-emerald-600 text-white shadow-emerald-500/25",
+    accent: "bg-emerald-600",
+    accentText: "text-emerald-600 dark:text-emerald-400",
+    accentSoft: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    accentRing: "ring-emerald-500/30",
     photoSeed: "brandhub-brand-client-portrait",
     nodes: [
       { key: "previewFinal", icon: Eye, pageIndex: 7 },
@@ -122,8 +142,6 @@ export function HowItWorks() {
   const { ref: headRef, isIntersecting: headVisible } = useIntersectionObserver(
     { threshold: 0.15, freezeOnceVisible: true },
   );
-  const { ref: lanesRef, isIntersecting: lanesVisible } =
-    useIntersectionObserver({ threshold: 0.1, freezeOnceVisible: true });
 
   // Hiệu ứng "chạy quy trình": mỗi node quay spinner (đang xử lý) rồi bật
   // checkmark (hoàn tất) trước khi node kế tiếp bắt đầu, đúng thứ tự
@@ -164,15 +182,13 @@ export function HowItWorks() {
           )}
         >
           <SectionEyebrow index={4} />
-          <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
-            {t("landing.howItWorks.title")}
-          </h2>
+          <SplitHeading text={t("landing.howItWorks.title")} />
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.howItWorks.subtitle")}
           </p>
         </div>
 
-        <div ref={lanesRef} className="flex flex-col gap-3">
+        <div className="flex flex-col gap-5 pt-2">
           {LANES.map((lane, laneIndex) => {
             const laneStartIndex = laneStarts[laneIndex];
             const laneEndIndex = laneStartIndex + lane.nodes.length - 1;
@@ -180,35 +196,47 @@ export function HowItWorks() {
             return (
               <div key={lane.key}>
                 <div
-                  style={{
-                    transitionDelay: lanesVisible
-                      ? `${laneIndex * 120}ms`
-                      : "0ms",
-                  }}
                   className={cn(
-                    "lane-card flex flex-col gap-5 rounded-2xl border border-zinc-100 bg-white p-6 shadow-sm transition-all duration-500 ease-out hover:shadow-lg motion-reduce:opacity-100 motion-reduce:transition-none sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900",
-                    lanesVisible
-                      ? "translate-x-0 opacity-100"
-                      : "-translate-x-6 opacity-0",
+                    "bh-reveal-card lane-card relative flex flex-col gap-5 rounded-[28px] rounded-br-[56px] border bg-gradient-to-r p-6 pt-8 shadow-sm transition-all duration-500 hover:shadow-xl sm:flex-row sm:items-center",
+                    lane.cardTheme,
                   )}
                 >
+                  {/* Floating 3D Stage Badge (Khối nổi) */}
+                  <div
+                    data-bh-float
+                    className={cn(
+                      "absolute -top-3.5 left-6 z-20 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-[9px] font-black tracking-wider uppercase shadow-md",
+                      lane.pillTheme,
+                    )}
+                  >
+                    <span>{lane.floatingBadge}</span>
+                  </div>
+
+                  {/* Bottom-Right Cutout Pocket (Khối cắt) */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute -right-2 -bottom-2 z-10 flex size-12 items-center justify-center rounded-tl-[20px] rounded-br-[20px] border-t border-l border-zinc-200/80 bg-zinc-50 font-mono text-xs font-black text-zinc-400 dark:border-zinc-800 dark:bg-zinc-950"
+                  >
+                    0{laneIndex + 1}
+                  </div>
+
                   <div className="flex shrink-0 items-center gap-3 sm:w-48">
                     <img
                       src={`https://images.unsplash.com/${PHOTO_IDS[lane.key]}?w=96&h=96&fit=crop&crop=faces`}
                       alt=""
                       loading="lazy"
                       className={cn(
-                        "size-11 shrink-0 rounded-full object-cover ring-2",
+                        "size-12 shrink-0 rounded-2xl object-cover ring-2 shadow-sm",
                         lane.accentRing,
                       )}
                     />
                     <div className="min-w-0">
-                      <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                      <p className="text-sm font-extrabold text-zinc-900 dark:text-zinc-100">
                         {lane.roleLabel}
                       </p>
                       <p
                         className={cn(
-                          "w-fit rounded px-1.5 py-0.5 text-[10px] font-medium",
+                          "mt-0.5 w-fit rounded-full px-2 py-0.5 text-[10px] font-bold",
                           lane.accentSoft,
                         )}
                       >
