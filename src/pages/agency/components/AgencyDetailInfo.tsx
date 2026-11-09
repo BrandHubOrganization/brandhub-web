@@ -1,10 +1,10 @@
 import React from "react";
+import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import {
   Briefcase,
   Building2,
   Globe,
-  Link2,
   MapPin,
   Phone,
   Users,
@@ -15,7 +15,9 @@ interface AgencyDetailInfoProps {
   agency: Agency;
 }
 
-export const AgencyDetailInfo: React.FC<AgencyDetailInfoProps> = ({ agency }) => {
+export const AgencyDetailInfo: React.FC<AgencyDetailInfoProps> = ({
+  agency,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -71,7 +73,7 @@ export const AgencyDetailInfo: React.FC<AgencyDetailInfoProps> = ({ agency }) =>
               rel="noreferrer"
               className="text-muted-foreground hover:text-foreground"
             >
-              <Link2 className="size-4" />
+              <FaFacebook className="size-4 text-blue-600 hover:text-blue-700 dark:text-blue-400" />
             </a>
           )}
           {agency.linkedinUrl && (
@@ -81,7 +83,7 @@ export const AgencyDetailInfo: React.FC<AgencyDetailInfoProps> = ({ agency }) =>
               rel="noreferrer"
               className="text-muted-foreground hover:text-foreground"
             >
-              <Link2 className="size-4" />
+              <FaLinkedin className="size-4 text-sky-600 hover:text-sky-700 dark:text-sky-400" />
             </a>
           )}
           {agency.instagramUrl && (
@@ -91,7 +93,7 @@ export const AgencyDetailInfo: React.FC<AgencyDetailInfoProps> = ({ agency }) =>
               rel="noreferrer"
               className="text-muted-foreground hover:text-foreground"
             >
-              <Link2 className="size-4" />
+              <FaInstagram className="size-4 text-pink-600 hover:text-pink-700 dark:text-pink-400" />
             </a>
           )}
         </div>

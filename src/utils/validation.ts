@@ -25,7 +25,14 @@ export function isValidUrl(value: string): boolean {
   try {
     const normalized = normalizeUrl(s);
     const parsed = new URL(normalized);
-    return Boolean(parsed.hostname && parsed.hostname.includes("."));
+    if (!parsed.protocol || !/^https?:$/i.test(parsed.protocol)) return false;
+    const host = parsed.hostname.toLowerCase();
+    const isLocalhost =
+      host === "localhost" ||
+      host.endsWith(".localhost") ||
+      host === "127.0.0.1" ||
+      host === "::1";
+    return Boolean(host && (host.includes(".") || isLocalhost));
   } catch {
     return false;
   }
@@ -72,6 +79,7 @@ export function isValidFoundedYear(
 ): boolean {
   const s = yearStr.trim();
   if (!s) return true;
-  const num = parseInt(s, 10);
+  if (!/^\d{4}$/.test(s)) return false;
+  const num = Number(s);
   return !isNaN(num) && Number.isInteger(num) && num >= minYear && num <= maxYear;
 }

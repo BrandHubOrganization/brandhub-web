@@ -177,9 +177,9 @@ export function layoutForceGraph(
         const fb = forces.get(ids[j])!;
         const dx = b.x - a.x;
         const dy = b.y - a.y;
-        const distSq = Math.max(900, dx * dx + dy * dy);
+        const distSq = Math.max(1200, dx * dx + dy * dy);
         const dist = Math.sqrt(distSq);
-        const repulse = 26000 / distSq;
+        const repulse = 38000 / distSq;
         const fx = (dx / dist) * repulse;
         const fy = (dy / dist) * repulse;
         fa.x -= fx;
@@ -198,7 +198,7 @@ export function layoutForceGraph(
       const dx = target.x - source.x;
       const dy = target.y - source.y;
       const dist = Math.hypot(dx, dy) || 1;
-      const displacement = dist - 180;
+      const displacement = dist - 220;
       const spring = displacement * 0.045;
       const fx = (dx / dist) * spring;
       const fy = (dy / dist) * spring;
@@ -220,8 +220,8 @@ export function layoutForceGraph(
       const mag = Math.hypot(f.x, f.y) || 1;
       const maxStep = 26 * alpha;
       const scale = mag > maxStep ? maxStep / mag : alpha;
-      pos.x = Math.min(1020, Math.max(180, pos.x + f.x * scale));
-      pos.y = Math.min(760, Math.max(180, pos.y + f.y * scale));
+      pos.x = Math.min(1150, Math.max(50, pos.x + f.x * scale));
+      pos.y = Math.min(950, Math.max(50, pos.y + f.y * scale));
     }
   }
 
@@ -252,15 +252,26 @@ export function layoutGraph(graph: TrendGraph) {
   const positions = new Map<string, GraphPoint>([
     [graph.rootId, { x: 600, y: 500 }],
   ]);
-  for (const depth of [1, 2]) {
-    const ring = graph.nodes.filter(
-      (node) =>
-        node.id !== graph.rootId && (distances.get(node.id) ?? 2) === depth,
-    );
+  for (const depth of [1, 2, 3]) {
+    const ring = graph.nodes.filter((node) => {
+      if (node.id === graph.rootId) return false;
+      const dist = distances.get(node.id) ?? 2;
+      if (depth === 3) return dist >= 3;
+      return dist === depth;
+    });
     ring.sort((a, b) => a.id.localeCompare(b.id));
+    const stagger =
+      ring.length > 0
+        ? depth === 2
+          ? Math.PI / ring.length
+          : depth >= 3
+            ? Math.PI / (2 * ring.length)
+            : 0
+        : 0;
     ring.forEach((node, index) => {
-      const angle = -Math.PI / 2 + (2 * Math.PI * index) / ring.length;
-      const radius = depth === 1 ? 230 : 430;
+      const angle =
+        -Math.PI / 2 + (2 * Math.PI * index) / ring.length + stagger;
+      const radius = depth === 1 ? 260 : depth === 2 ? 480 : 700;
       positions.set(node.id, {
         x: 600 + Math.cos(angle) * radius,
         y: 500 + Math.sin(angle) * radius,
@@ -281,37 +292,42 @@ export function layoutEdges(
     groups.set(pair, [...(groups.get(pair) ?? []), edge]);
   }
   return [...groups.values()].flatMap((edges) =>
-    edges.map((edge, index) => {
-      const start = positions.get(edge.source)!;
-      const end = positions.get(edge.target)!;
+    edges.flatMap((edge, index) => {
+      const start = positions.get(edge.source);
+      const end = positions.get(edge.target);
+      if (!start || !end) return [];
       if (edge.source === edge.target) {
         const radius = 45 + index * 16;
-        return {
-          edge,
-          controlPoints: [
-            { x: start.x - radius * 2, y: start.y - radius * 2 },
-            { x: start.x + radius * 2, y: start.y - radius * 2 },
-          ],
-          path: `M ${start.x - 12} ${start.y - 23} C ${start.x - radius * 2} ${start.y - radius * 2}, ${start.x + radius * 2} ${start.y - radius * 2}, ${start.x + 12} ${start.y - 23}`,
-        };
+        return [
+          {
+            edge,
+            controlPoints: [
+              { x: start.x - radius * 2, y: start.y - radius * 2 },
+              { x: start.x + radius * 2, y: start.y - radius * 2 },
+            ],
+            path: `M ${start.x - 12} ${start.y - 23} C ${start.x - radius * 2} ${start.y - radius * 2}, ${start.x + radius * 2} ${start.y - radius * 2}, ${start.x + 12} ${start.y - 23}`,
+          },
+        ];
       }
-      const length = Math.hypot(end.x - start.x, end.y - start.y);
+      const length = Math.hypot(end.x - start.x, end.y - start.y) || 1;
       const dx = (end.x - start.x) / length,
         dy = (end.y - start.y) / length;
       const offset =
         (index - (edges.length - 1) / 2) *
         40 *
         (edge.source < edge.target ? 1 : -1);
-      return {
-        edge,
-        controlPoints: [
-          {
-            x: (start.x + end.x) / 2 - dy * offset,
-            y: (start.y + end.y) / 2 + dx * offset,
-          },
-        ],
-        path: `M ${start.x + dx * GRAPH_RADIUS} ${start.y + dy * GRAPH_RADIUS} Q ${(start.x + end.x) / 2 - dy * offset} ${(start.y + end.y) / 2 + dx * offset}, ${end.x - dx * (GRAPH_RADIUS + 5)} ${end.y - dy * (GRAPH_RADIUS + 5)}`,
-      };
+      return [
+        {
+          edge,
+          controlPoints: [
+            {
+              x: (start.x + end.x) / 2 - dy * offset,
+              y: (start.y + end.y) / 2 + dx * offset,
+            },
+          ],
+          path: `M ${start.x + dx * GRAPH_RADIUS} ${start.y + dy * GRAPH_RADIUS} Q ${(start.x + end.x) / 2 - dy * offset} ${(start.y + end.y) / 2 + dx * offset}, ${end.x - dx * (GRAPH_RADIUS + 5)} ${end.y - dy * (GRAPH_RADIUS + 5)}`,
+        },
+      ];
     }),
   );
 }
@@ -323,15 +339,28 @@ export function graphBounds(graph: TrendGraph): GraphBounds {
     ...positions.values(),
     ...layoutEdges(graph, positions).flatMap((edge) => edge.controlPoints),
   ];
+  if (points.length === 0) {
+    return {
+      x: 0,
+      y: 0,
+      width: GRAPH_WIDTH,
+      height: GRAPH_HEIGHT,
+    };
+  }
   const x = points.map((point) => point.x),
     y = points.map((point) => point.y);
-  const left = Math.min(...x) - 100,
-    top = Math.min(...y) - 100;
-  const width = Math.max(400, Math.max(...x) - left + 100);
-  const height = Math.max(400, Math.max(...y) - top + 100);
+  const minX = Math.min(...x);
+  const maxX = Math.max(...x);
+  const minY = Math.min(...y);
+  const maxY = Math.max(...y);
+  const padding = 120;
+  const width = Math.max(GRAPH_WIDTH, maxX - minX + padding * 2);
+  const height = Math.max(GRAPH_HEIGHT, maxY - minY + padding * 2);
+  const centerX = (minX + maxX) / 2;
+  const centerY = (minY + maxY) / 2;
   return {
-    x: (Math.min(...x) + Math.max(...x) - width) / 2,
-    y: (Math.min(...y) + Math.max(...y) - height) / 2,
+    x: centerX - width / 2,
+    y: centerY - height / 2,
     width,
     height,
   };

@@ -1,6 +1,6 @@
 {
   "title": "Bảo mật",
-  "description": "Quản lý xác thực hai lớp (2FA) cho tài khoản của bạn.",
+  "description": "Quản lý mật khẩu, xác thực hai lớp (2FA) và các phiên đăng nhập của bạn.",
   "2fa": {
     "title": "Xác thực hai lớp (2FA)",
     "subtitle": "Tăng cường bảo mật bằng mã TOTP mỗi khi đăng nhập.",
@@ -78,5 +78,55 @@
     "cancel": "Hủy",
     "confirmLogout": "Đăng xuất",
     "logoutSuccess": "Đã đăng xuất thành công"
+  },
+  "score": {
+    "title": "Điểm an toàn tài khoản",
+    "subtitle": "Đánh giá mức độ an toàn theo tiêu chuẩn BrandHub",
+    "status": "Đánh giá mức độ",
+    "veryGood": "Bảo vệ rất tốt",
+    "good": "Khá an toàn",
+    "needsAttention": "Cần tăng cường bảo mật",
+    "passwordTitle": "Mật khẩu đăng nhập",
+    "passwordDesc": "Bảo vệ tài khoản bằng mật khẩu mạnh",
+    "passwordSet": "Đã thiết lập",
+    "passwordNotSet": "Chưa đặt",
+    "twoFactorTitle": "Xác thực 2 bước (2FA)",
+    "twoFactorDesc": "Mã bảo mật TOTP dùng một lần",
+    "twoFactorActive": "Đã kích hoạt",
+    "twoFactorInactive": "Chưa bật",
+    "emailTitle": "Email tài khoản",
+    "emailDesc": "Nhận cảnh báo đăng nhập và khôi phục",
+    "emailVerified": "Đã xác thực",
+    "oauthTitle": "Liên kết Google OAuth",
+    "oauthDesc": "Đăng nhập an toàn và tiện lợi",
+    "oauthLinked": "Đã liên kết",
+    "oauthNotLinked": "Chưa liên kết"
+  },
+  "sessions": {
+    "title": "Thiết bị & Phiên hoạt động",
+    "subtitle": "Quản lý các thiết bị đang đăng nhập vào tài khoản BrandHub của bạn",
+    "currentDevice": "Thiết bị này",
+    "activeNow": "Đang hoạt động",
+    "justNow": "Vừa xong",
+    "revokeOthers": "Đăng xuất thiết bị khác",
+    "confirmRevoke": "Xác nhận đăng xuất",
+    "revokeOthersConfirmTitle": "Đăng xuất khỏi tất cả thiết bị khác?",
+    "revokeOthersConfirmBody": "Tất cả các phiên làm việc trên trình duyệt và thiết bị khác sẽ bị chấm dứt ngay lập tức.",
+    "revokeOthersWarning": "Nếu bạn nghi ngờ tài khoản bị truy cập trái phép, vui lòng đổi mật khẩu ngay sau khi đăng xuất.",
+    "revokeOthersSuccess": "Đã đăng xuất khỏi tất cả các thiết bị khác thành công",
+    "revokeOthersError": "Không thể đăng xuất các thiết bị khác. Vui lòng thử lại sau."
+  },
+  "tips": {
+    "title": "Mẹo bảo mật",
+    "subtitle": "Khuyến nghị giúp bảo vệ tài khoản và tài sản thương hiệu",
+    "tip1Title": "Kích hoạt xác thực 2 bước (2FA)",
+    "tip1Desc": "Ngăn chặn hơn 99% nguy cơ bị xâm nhập trái phép bằng mã xác thực TOTP.",
+    "tip2Title": "Sử dụng mật khẩu duy nhất",
+    "tip2Desc": "Không dùng lại mật khẩu BrandHub cho bất kỳ dịch vụ hoặc nền tảng nào khác.",
+    "tip3Title": "Cảnh giác với mã xác thực",
+    "tip3Desc": "Không bao giờ chia sẻ mã OTP hoặc mã khôi phục cho bất kỳ ai, kể cả nhân viên BrandHub.",
+    "quickLinks": "Lối tắt cài đặt",
+    "manageConnections": "Quản lý liên kết OAuth",
+    "manageProfile": "Hồ sơ cá nhân & Liên hệ"
   }
 }

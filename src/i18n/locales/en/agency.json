@@ -81,7 +81,11 @@
       "nameRequired": "Please enter a company name",
       "invalidUrl": "Invalid URL — must start with http:// or https://",
       "invalidPhone": "Invalid phone number",
-      "invalidYear": "Founded year cannot exceed {{max}}"
+      "invalidFacebookUrl": "Invalid Facebook URL",
+      "invalidLinkedinUrl": "Invalid LinkedIn URL",
+      "invalidInstagramUrl": "Invalid Instagram URL",
+      "invalidYearDigits": "Founded year must be numeric",
+      "invalidYear": "Founded year must be between 1800 and {{max}}"
     },
     "danger": {
       "title": "Danger Zone",
@@ -99,7 +103,8 @@
       "restoreSuccess": "Company restored",
       "restoreError": "Failed to restore company"
     },
-    "mailTemplates": "Mail templates"
+    "mailTemplates": "Mail templates",
+    "inviteMembers": "Invite members"
   },
   "create": {
     "title": "Create Agency",
@@ -209,9 +214,9 @@
     "expiryLabel": "Invite expiry",
     "expiryDaysOption": "{{count}} days",
     "assignWorkspaceLabel": "Workspace",
-    "assignWorkspaceNone": "Don't assign — agency invite only",
+    "assignWorkspaceNone": "Member",
     "assignWorkspaceEmpty": "This agency has no workspaces yet",
-    "assignRoleLabel": "Role",
+    "assignRoleLabel": "Role (Position)",
     "assignRolePlaceholder": "Select role",
     "clientRequiresWorkspace": "The Client role requires a workspace",
     "inviteSuccess": "Invite sent to {{email}}",
@@ -236,6 +241,8 @@
     "tabMembers": "Members ({{count}})",
     "tabInvitations": "Invitations ({{count}})",
     "invitationsEmpty": "No pending or expired invitations.",
+    "viewList": "List view",
+    "viewTree": "Org tree",
     "profile": {
       "title": "Member profile",
       "role": "Role",
@@ -246,7 +253,33 @@
       "activityTitle": "Recent activity",
       "activityEmpty": "No activity recorded yet.",
       "activityLoadError": "Failed to load this member's activity",
-      "close": "Close"
+      "close": "Close",
+      "tabOverview": "Overview",
+      "tabWorkspaces": "Workspaces ({{count}})",
+      "tabActivity": "Activity history ({{count}})",
+      "deployCampaign": "Deploy new campaign",
+      "createTask": "Create task",
+      "updateTask": "Update task",
+      "deleteTask": "Delete task",
+      "location": "Location",
+      "experience": "Experience",
+      "yearsExp": "{{count}} years exp",
+      "workingLanguage": "Working language",
+      "timezone": "Timezone",
+      "bioTitle": "About",
+      "skillsTitle": "Skills & Expertise",
+      "portfolioTitle": "Portfolio & Projects",
+      "socialTitle": "Social & Links",
+      "noWorkspaces": "Member has not joined any workspace yet.",
+      "noActivity": "No activity recorded in this agency yet."
+    },
+    "resourceType": {
+      "task": "task",
+      "campaign_deployment": "campaign deployment",
+      "media_campaign": "media campaign",
+      "workspace": "workspace",
+      "agency_member": "member",
+      "client_profile": "client profile"
     },
     "auditAction": {
       "LOGIN": "Logged in",
@@ -258,7 +291,13 @@
       "DELETE": "Deleted {{resource}}",
       "ROLE_CHANGE": "Changed role",
       "PERMISSION_CHANGE": "Changed permissions"
-    }
+    },
+    "assignRoleOnlyAgency": "Member (select workspace to assign role)",
+    "presetsLabel": "Message presets",
+    "presetFormal": "Formal",
+    "presetProject": "Project collaboration",
+    "presetCasual": "Casual",
+    "presetApplied": "Applied \"{{name}}\" preset"
   },
   "invitations": {
     "title": "Agency Invitations",

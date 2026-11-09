@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -11,7 +11,9 @@ import {
   Check,
   CheckCircle2,
   Copy,
+  List,
   Mail,
+  Network,
   Search,
   Sparkles,
   UserPlus,
@@ -24,7 +26,6 @@ import { useUserLookup } from "@/hooks/useUserLookup";
 import { extractErrorMessage } from "@/utils/error";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
-import { InviteMessagePresets } from "@/components/shared/InviteMessagePresets";
 import { RemoveAgencyMemberDialog } from "./components/RemoveAgencyMemberDialog";
 import { AgencyOrgChart } from "./components/AgencyOrgChart";
 import {
@@ -33,7 +34,7 @@ import {
 } from "./components/MemberProfileDrawer";
 import { Select } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { AgencyMember, AgencyMemberRole } from "@/types/agency";
+import type { Agency, AgencyMember, AgencyMemberRole } from "@/types/agency";
 import type { MemberRole, Workspace } from "@/types/workspace";
 import type { TFunction } from "i18next";
 
@@ -109,12 +110,149 @@ function SafeAvatar({
   );
 }
 
+
+type InvitePresetType = "formal" | "project" | "casual";
+
+interface PresetItem {
+  id: InvitePresetType;
+  labelKey: string;
+}
+
+const PRESET_LIST: PresetItem[] = [
+  { id: "formal", labelKey: "agency.members.presetFormal" },
+  { id: "project", labelKey: "agency.members.presetProject" },
+  { id: "casual", labelKey: "agency.members.presetCasual" },
+];
+
+function buildInviteMessage(
+  type: InvitePresetType,
+  agency: Agency | null,
+  currentUser: { fullName?: string | null; email?: string | null } | null,
+  inviteeName: string,
+  _t: TFunction,
+  isEn?: boolean,
+  workspaceName?: string,
+  roleName?: string,
+): string {
+  const targetName = inviteeName.trim() || (isEn ? "there" : "bạn");
+  const senderName =
+    currentUser?.fullName?.trim() ||
+    currentUser?.email?.trim() ||
+    (isEn ? "me" : "tôi");
+  const agencyName = agency?.name?.trim() || (isEn ? "our company" : "công ty");
+  const tagline = agency?.tagline?.trim() || "";
+  const phone = agency?.phone?.trim() || "";
+  const website = agency?.website?.trim() || "";
+  const location = agency?.location?.trim() || "";
+
+  const footerParts: string[] = [];
+  if (phone) footerParts.push(`📞 ${phone}`);
+  if (website) footerParts.push(`🌐 ${website}`);
+  if (location) footerParts.push(`📍 ${location}`);
+  const footer = footerParts.length > 0 ? `\n---\n${footerParts.join(" | ")}` : "";
+
+  let inviteSentence: string;
+  if (isEn) {
+    if (workspaceName && roleName) {
+      inviteSentence = `I cordially invite you to join the workspace "${workspaceName}" under ${agencyName} as ${roleName} on the BrandHub platform.`;
+    } else if (workspaceName) {
+      inviteSentence = `I cordially invite you to join the workspace "${workspaceName}" under ${agencyName} on the BrandHub platform.`;
+    } else {
+      inviteSentence = `I cordially invite you to join as a member of ${agencyName} on the BrandHub platform to collaborate on upcoming projects.`;
+    }
+  } else {
+    if (workspaceName && roleName) {
+      inviteSentence = `Tôi trân trọng gửi lời mời bạn tham gia vào không gian làm việc "${workspaceName}" thuộc công ty ${agencyName} với vai trò ${roleName} trên nền tảng BrandHub.`;
+    } else if (workspaceName) {
+      inviteSentence = `Tôi trân trọng gửi lời mời bạn tham gia vào không gian làm việc "${workspaceName}" thuộc công ty ${agencyName} trên nền tảng BrandHub.`;
+    } else {
+      inviteSentence = `Tôi trân trọng gửi lời mời bạn tham gia làm thành viên của công ty ${agencyName} trên nền tảng BrandHub để cùng hợp tác trong các dự án sắp tới.`;
+    }
+  }
+
+  if (isEn) {
+    if (type === "formal") {
+      return `Hello ${targetName},
+
+I am ${senderName} from ${agencyName}. ${inviteSentence}
+
+Looking forward to having you with us!
+
+Best regards,
+${senderName}
+${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
+    }
+
+    if (type === "project") {
+      return `Hello ${targetName},
+
+I am ${senderName} representing ${agencyName}. ${inviteSentence}
+
+Looking forward to working together!
+
+Warm regards,
+${senderName}
+${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
+    }
+
+    // casual
+    return `Hi ${targetName}! 👋
+
+I am ${senderName} from ${agencyName}. ${inviteSentence}
+
+See you soon in our projects!
+
+Best regards,
+${senderName}
+${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
+  }
+
+  // Vietnamese
+  if (type === "formal") {
+    return `Xin chào ${targetName},
+
+Tôi là ${senderName} thuộc công ty ${agencyName}. ${inviteSentence}
+
+Rất mong nhận được sự đồng hành của bạn!
+
+Trân trọng,
+${senderName}
+${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
+  }
+
+  if (type === "project") {
+    return `Xin chào ${targetName},
+
+Tôi là ${senderName} đại diện công ty ${agencyName}. ${inviteSentence}
+
+Rất mong có cơ hội cùng bạn bắt đầu công việc!
+
+Thân mến,
+${senderName}
+${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
+  }
+
+  // casual
+  return `Chào ${targetName}! 👋
+
+Tôi là ${senderName} từ ${agencyName}. ${inviteSentence}
+
+Hẹn sớm gặp bạn trong các dự án của nhóm!
+
+Trân trọng,
+${senderName}
+${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
+}
+
 export function AgencyMembersPage() {
   const { id } = useParams<{ id: string }>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language?.toLowerCase().startsWith("en");
   const navigate = useNavigate();
   const currentUser = useAuthStore((s) => s.user);
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
+  const [agency, setAgency] = useState<Agency | null>(null);
+  const hasAutoFilledRef = useRef(false);
   const [members, setMembers] = useState<AgencyMember[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
   const [memberRows, setMemberRows] = useState<MemberRow[]>([]);
@@ -122,10 +260,13 @@ export function AgencyMembersPage() {
   const [search, setSearch] = useState("");
   const [profileTarget, setProfileTarget] =
     useState<MemberProfileTarget | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("members");
+  const [memberViewMode, setMemberViewMode] = useState<"list" | "tree">("list");
 
   useEffect(() => {
     if (id) setCurrentAgencyId(id);
   }, [id, setCurrentAgencyId]);
+
   const [email, setEmail] = useState("");
   const [inviteeName, setInviteeName] = useState("");
   const rawUserMatch = useUserLookup(email);
@@ -146,6 +287,8 @@ export function AgencyMembersPage() {
     }
   }, [userMatch]);
 
+  const [currentPreset, setCurrentPreset] =
+    useState<InvitePresetType>("formal");
   const [note, setNote] = useState("");
   const [expiryDays, setExpiryDays] = useState(DEFAULT_EXPIRY_DAYS);
   const [inviteWorkspaceId, setInviteWorkspaceId] = useState("");
@@ -156,6 +299,28 @@ export function AgencyMembersPage() {
   const [inviting, setInviting] = useState(false);
   const [removeTargetId, setRemoveTargetId] = useState<string | null>(null);
   const [removing, setRemoving] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    agencyService
+      .getById(id)
+      .then(({ data }) => {
+        const agencyData = data.data;
+        setAgency(agencyData);
+        if (!hasAutoFilledRef.current) {
+          hasAutoFilledRef.current = true;
+          setNote((prev) => {
+            if (!prev.trim()) {
+              return buildInviteMessage("formal", agencyData, currentUser, inviteeName, t, isEn);
+            }
+            return prev;
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load agency profile:", err);
+      });
+  }, [id, currentUser, inviteeName, t, isEn]);
 
   useEffect(() => {
     if (!id) return;
@@ -261,18 +426,18 @@ export function AgencyMembersPage() {
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id) return;
-    if (inviteRole === "CLIENT" && !inviteWorkspaceId) {
-      toast.error(t("agency.members.clientRequiresWorkspace"));
-      return;
-    }
+
+    const finalWorkspaceId = inviteWorkspaceId.trim() ? inviteWorkspaceId : undefined;
+    const finalRole = finalWorkspaceId ? (inviteRole || undefined) : undefined;
+
     setInviting(true);
     try {
       const { data } = await agencyService.inviteMember(id, {
         email: email.trim(),
         inviteeName: inviteeName.trim() || undefined,
         note: note.trim() || undefined,
-        workspaceId: inviteWorkspaceId || undefined,
-        role: inviteRole || undefined,
+        workspaceId: finalWorkspaceId,
+        role: finalRole,
         expiryDays,
       });
       setInviteLink(
@@ -281,7 +446,8 @@ export function AgencyMembersPage() {
       toast.success(t("agency.members.inviteSuccess", { email: email.trim() }));
       setEmail("");
       setInviteeName("");
-      setNote("");
+      setCurrentPreset("formal");
+      setNote(buildInviteMessage("formal", agency, currentUser, "", t, isEn));
       setExpiryDays(DEFAULT_EXPIRY_DAYS);
       setInviteWorkspaceId("");
       setInviteRole("");
@@ -626,15 +792,61 @@ export function AgencyMembersPage() {
                 )}
               </div>
               <div>
-                <label className="text-foreground mb-1 block text-xs font-medium">
-                  {t("agency.members.noteLabel")}
-                </label>
-                <InviteMessagePresets onPick={setNote} className="mb-1.5" />
+                <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
+                  <label className="text-foreground text-xs font-medium">
+                    {t("agency.members.noteLabel")}
+                  </label>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-muted-foreground text-3xs font-medium">
+                      {t("agency.members.presetsLabel")}:
+                    </span>
+                    {PRESET_LIST.map((preset) => (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        onClick={() => {
+                          setCurrentPreset(preset.id);
+                          const wsName = inviteWorkspaceId
+                            ? workspaces.find((w) => w.id === inviteWorkspaceId)?.name
+                            : undefined;
+                          const roleName = inviteRole
+                            ? t(`workspace.roles.${inviteRole}`)
+                            : undefined;
+                          const msg = buildInviteMessage(
+                            preset.id,
+                            agency,
+                            currentUser,
+                            inviteeName,
+                            t,
+                            isEn,
+                            wsName,
+                            roleName,
+                          );
+                          setNote(msg);
+                          toast.success(
+                            t("agency.members.presetApplied", {
+                              name: t(preset.labelKey),
+                            }),
+                          );
+                        }}
+                        className={cn(
+                          "active:scale-95 cursor-pointer rounded-full border px-2.5 py-0.5 text-xs font-medium transition-all",
+                          currentPreset === preset.id
+                            ? "border-brand-orange bg-brand-orange/10 text-brand-orange"
+                            : "border-border text-muted-foreground hover:border-brand-orange hover:text-brand-orange",
+                        )}
+                      >
+                        {t(preset.labelKey)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <Textarea
                   placeholder={t("agency.members.notePlaceholder")}
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  rows={2}
+                  rows={9}
+                  className="min-h-[210px] resize-y font-normal leading-relaxed text-xs sm:text-sm"
                 />
               </div>
               <div className="max-w-50">
@@ -662,36 +874,37 @@ export function AgencyMembersPage() {
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label className="text-foreground mb-1 block text-xs font-medium">
-                    {t("agency.members.assignRoleLabel")}
-                  </label>
-                  <Select
-                    value={inviteRole}
-                    onChange={(e) =>
-                      setInviteRole(e.target.value as MemberRole | "")
-                    }
-                  >
-                    <option value="">
-                      {t("agency.members.assignRolePlaceholder")}
-                    </option>
-                    {ASSIGNABLE_ROLES.map((r) => (
-                      <option key={r} value={r}>
-                        {t(`workspace.roles.${r}`)}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-foreground mb-1 block text-xs font-medium">
                     {t("agency.members.assignWorkspaceLabel")}
-                    {inviteRole === "CLIENT" && (
-                      <span className="text-rose-500"> *</span>
-                    )}
                   </label>
                   <Select
                     value={inviteWorkspaceId}
                     disabled={workspaces.length === 0}
-                    required={inviteRole === "CLIENT"}
-                    onChange={(e) => setInviteWorkspaceId(e.target.value)}
+                    onChange={(e) => {
+                      const nextWsId = e.target.value;
+                      setInviteWorkspaceId(nextWsId);
+                      const nextRole = nextWsId ? inviteRole : "";
+                      if (!nextWsId) {
+                        setInviteRole("");
+                      }
+                      const wsName = nextWsId
+                        ? workspaces.find((w) => w.id === nextWsId)?.name
+                        : undefined;
+                      const roleName = nextRole
+                        ? t(`workspace.roles.${nextRole}`)
+                        : undefined;
+                      setNote(
+                        buildInviteMessage(
+                          currentPreset,
+                          agency,
+                          currentUser,
+                          inviteeName,
+                          t,
+                          isEn,
+                          wsName,
+                          roleName,
+                        ),
+                      );
+                    }}
                   >
                     <option value="">
                       {workspaces.length === 0
@@ -703,6 +916,54 @@ export function AgencyMembersPage() {
                         {w.name}
                       </option>
                     ))}
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-foreground mb-1 block text-xs font-medium">
+                    {t("agency.members.assignRoleLabel")}
+                  </label>
+                  <Select
+                    value={inviteWorkspaceId ? inviteRole : ""}
+                    disabled={!inviteWorkspaceId}
+                    onChange={(e) => {
+                      const nextRole = e.target.value as MemberRole | "";
+                      setInviteRole(nextRole);
+                      const wsName = inviteWorkspaceId
+                        ? workspaces.find((w) => w.id === inviteWorkspaceId)?.name
+                        : undefined;
+                      const roleName = nextRole
+                        ? t(`workspace.roles.${nextRole}`)
+                        : undefined;
+                      setNote(
+                        buildInviteMessage(
+                          currentPreset,
+                          agency,
+                          currentUser,
+                          inviteeName,
+                          t,
+                          isEn,
+                          wsName,
+                          roleName,
+                        ),
+                      );
+                    }}
+                  >
+                    {!inviteWorkspaceId ? (
+                      <option value="">
+                        {t("agency.members.assignRoleOnlyAgency")}
+                      </option>
+                    ) : (
+                      <>
+                        <option value="">
+                          {t("agency.members.assignRolePlaceholder")}
+                        </option>
+                        {ASSIGNABLE_ROLES.map((r) => (
+                          <option key={r} value={r}>
+                            {t(`workspace.roles.${r}`)}
+                          </option>
+                        ))}
+                      </>
+                    )}
                   </Select>
                 </div>
               </div>
@@ -753,28 +1014,70 @@ export function AgencyMembersPage() {
             </div>
           </div>
 
-          <Tabs defaultValue="members">
-            <TabsList>
-              <TabsTrigger value="members">
-                {t("agency.members.tabMembers", {
-                  count: memberRows.length,
-                })}
-              </TabsTrigger>
-              <TabsTrigger value="invitations">
-                {t("agency.members.tabInvitations", {
-                  count: invitationRows.length,
-                })}
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="members">
-              <DataTable
-                columns={memberColumns}
-                data={filteredMemberRows}
-                pageSize={10}
-                emptyState={t("agency.members.empty")}
-              />
+          <Tabs
+            defaultValue="members"
+            value={activeTab}
+            onValueChange={setActiveTab}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <TabsList>
+                <TabsTrigger value="members">
+                  {t("agency.members.tabMembers", {
+                    count: memberRows.length,
+                  })}
+                </TabsTrigger>
+                <TabsTrigger value="invitations">
+                  {t("agency.members.tabInvitations", {
+                    count: invitationRows.length,
+                  })}
+                </TabsTrigger>
+              </TabsList>
+
+              {activeTab === "members" && (
+                <div className="bg-muted inline-flex h-9 items-center rounded-lg p-1 text-muted-foreground">
+                  <button
+                    type="button"
+                    onClick={() => setMemberViewMode("list")}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs sm:text-sm font-medium transition-all cursor-pointer",
+                      memberViewMode === "list"
+                        ? "bg-background text-foreground shadow-xs font-semibold"
+                        : "hover:text-foreground",
+                    )}
+                  >
+                    <List className="size-3.5 sm:size-4" />
+                    {t("agency.members.viewList")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMemberViewMode("tree")}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs sm:text-sm font-medium transition-all cursor-pointer",
+                      memberViewMode === "tree"
+                        ? "bg-background text-foreground shadow-xs font-semibold"
+                        : "hover:text-foreground",
+                    )}
+                  >
+                    <Network className="size-3.5 sm:size-4" />
+                    {t("agency.members.viewTree")}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <TabsContent value="members" className="mt-3">
+              {memberViewMode === "list" ? (
+                <DataTable
+                  columns={memberColumns}
+                  data={filteredMemberRows}
+                  pageSize={10}
+                  emptyState={t("agency.members.empty")}
+                />
+              ) : (
+                id && <AgencyOrgChart agencyId={id} />
+              )}
             </TabsContent>
-            <TabsContent value="invitations">
+            <TabsContent value="invitations" className="mt-3">
               <DataTable
                 columns={invitationColumns}
                 data={filteredInvitationRows}
@@ -784,20 +1087,6 @@ export function AgencyMembersPage() {
             </TabsContent>
           </Tabs>
         </div>
-
-        {id && (
-          <div className="space-y-3">
-            <div>
-              <h2 className="text-foreground text-lg font-semibold">
-                {t("agency.detail.nav.members")}
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                {t("agency.detail.membersPreviewDescription")}
-              </p>
-            </div>
-            <AgencyOrgChart agencyId={id} />
-          </div>
-        )}
       </div>
 
       <RemoveAgencyMemberDialog

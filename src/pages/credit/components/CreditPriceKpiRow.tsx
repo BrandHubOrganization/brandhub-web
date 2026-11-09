@@ -40,7 +40,7 @@ export function CreditPriceKpiRow({
           <span className="text-xs font-medium text-muted-foreground">
             Tổng số thao tác AI
           </span>
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 transition-colors group-hover:bg-amber-500/15 dark:text-amber-400">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors group-hover:bg-muted/80">
             <Zap className="size-4.5" />
           </div>
         </div>
@@ -51,7 +51,7 @@ export function CreditPriceKpiRow({
           <span className="text-xs text-muted-foreground">thao tác AI</span>
         </div>
         <div className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span className="size-1.5 rounded-full bg-amber-500" />
+          <span className="size-1.5 rounded-full bg-muted-foreground/40" />
           <span>Danh mục model runtime</span>
         </div>
       </div>
@@ -62,23 +62,23 @@ export function CreditPriceKpiRow({
           <span className="text-xs font-medium text-muted-foreground">
             Đang kích hoạt
           </span>
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 transition-colors group-hover:bg-emerald-500/15 dark:text-emerald-400">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors group-hover:bg-muted/80">
             <CheckCircle2 className="size-4.5" />
           </div>
         </div>
         <div className="mt-3 flex items-baseline gap-2">
-          <span className="font-mono text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
+          <span className="font-mono text-2xl font-bold tracking-tight text-foreground">
             {activeOps}/{totalOps}
           </span>
           <Badge
-            variant="outline"
-            className="border-emerald-300 bg-emerald-50 text-[11px] font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+            variant="secondary"
+            className="text-[11px] font-semibold"
           >
             Active
           </Badge>
         </div>
         <div className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span className="size-1.5 rounded-full bg-emerald-500" />
+          <span className="size-1.5 rounded-full bg-muted-foreground/40" />
           <span>
             {activeOps === totalOps
               ? "Tất cả mô hình đang hoạt động"
@@ -93,7 +93,7 @@ export function CreditPriceKpiRow({
           <span className="text-xs font-medium text-muted-foreground">
             Đơn giá trung bình
           </span>
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 transition-colors group-hover:bg-blue-500/15 dark:text-blue-400">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors group-hover:bg-muted/80">
             <Coins className="size-4.5" />
           </div>
         </div>
@@ -106,7 +106,7 @@ export function CreditPriceKpiRow({
           </span>
         </div>
         <div className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span className="size-1.5 rounded-full bg-blue-500" />
+          <span className="size-1.5 rounded-full bg-muted-foreground/40" />
           <span>Quy đổi ~{avgVnd} VNĐ / lượt</span>
         </div>
       </div>
@@ -117,7 +117,7 @@ export function CreditPriceKpiRow({
           <span className="text-xs font-medium text-muted-foreground">
             Phiên bản cấu hình
           </span>
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 text-violet-600 transition-colors group-hover:bg-violet-500/15 dark:text-violet-400">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors group-hover:bg-muted/80">
             <Shield className="size-4.5" />
           </div>
         </div>
@@ -126,14 +126,14 @@ export function CreditPriceKpiRow({
             Rev #{maxRevision}
           </span>
           <Badge
-            variant="outline"
-            className="border-violet-300 bg-violet-50 text-[11px] font-semibold text-violet-700 dark:border-violet-800 dark:bg-violet-950/40 dark:text-violet-300"
+            variant="secondary"
+            className="text-[11px] font-semibold"
           >
             Concurrency safe
           </Badge>
         </div>
         <div className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span className="size-1.5 rounded-full bg-violet-500" />
+          <span className="size-1.5 rounded-full bg-muted-foreground/40" />
           <span>Kiểm soát xung đột phiên bản</span>
         </div>
       </div>

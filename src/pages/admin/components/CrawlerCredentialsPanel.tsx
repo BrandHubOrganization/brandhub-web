@@ -3,7 +3,22 @@ import { useTranslation } from "react-i18next";
 import { crawlerManagementService as service } from "@/pages/admin/services/crawlerManagementService";
 import { CrawlerCredentialCard } from "@/pages/admin/components/CrawlerCredentialCard";
 import { Button } from "@/components/ui/button";
-import type { CredentialMetadata } from "@/pages/admin/types/crawlerManagement";
+import type {
+  CredentialKind,
+  CredentialMetadata,
+} from "@/pages/admin/types/crawlerManagement";
+
+export function isCredentialStorageReady(
+  kind: CredentialKind,
+  storageReady?: boolean,
+  sessionStorage: string = "memory",
+): boolean {
+  return (
+    Boolean(storageReady) ||
+    (sessionStorage === "memory" &&
+      (kind === "facebook" || kind === "threads" || kind === "proxy"))
+  );
+}
 
 const DEFAULT_SESSION_ITEMS: CredentialMetadata[] = [
   {
@@ -139,11 +154,11 @@ export function CrawlerCredentialsPanel({
               <CrawlerCredentialCard
                 key={item.kind}
                 item={item}
-                storageReady={
-                  Boolean(query.data?.storageReady) ||
-                  ((query.data?.sessionStorage ?? "memory") === "memory" &&
-                    (item.kind === "facebook" || item.kind === "threads"))
-                }
+                storageReady={isCredentialStorageReady(
+                  item.kind,
+                  query.data?.storageReady,
+                  query.data?.sessionStorage ?? "memory",
+                )}
               />
             ))}
           </div>

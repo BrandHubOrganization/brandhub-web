@@ -3,7 +3,7 @@ import { requireApiData } from "@/lib/apiData";
 
 export interface AgencyBillingOrder {
   orderId: string;
-  planCode: "PLUS";
+  planCode: "PLUS" | "CREDIT_TOPUP" | string;
   status:
     "PENDING_PAYMENT" | "PAID" | "FULFILLED" | "EXPIRED" | "REVIEW_REQUIRED";
   amount: string;
@@ -53,6 +53,19 @@ export const agencyBillingService = {
     const response = await api.post(
       `/api/v1/billing/agencies/${agencyId}/orders`,
       { planCode: "PLUS", action },
+      { headers: { "Idempotency-Key": idempotencyKey } },
+    );
+    return requireApiData<AgencyBillingOrder>(response.data);
+  },
+
+  async createCreditTopUpOrder(
+    agencyId: string,
+    credits: number,
+    idempotencyKey: string,
+  ) {
+    const response = await api.post(
+      `/api/v1/billing/agencies/${agencyId}/credits/orders`,
+      { credits, amount: credits, paymentMethod: "SEPAY", agencyId },
       { headers: { "Idempotency-Key": idempotencyKey } },
     );
     return requireApiData<AgencyBillingOrder>(response.data);

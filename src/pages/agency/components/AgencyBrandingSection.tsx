@@ -13,21 +13,9 @@ import {
   Image as ImageIcon,
   X,
   Check,
-  Palette,
   Crop,
   History,
 } from "lucide-react";
-
-const COLOR_SWATCHES = [
-  "#f05a28", // Brand Orange
-  "#2563eb", // Royal Blue
-  "#059669", // Emerald
-  "#7c3aed", // Violet
-  "#e11d48", // Rose
-  "#d97706", // Amber
-  "#0891b2", // Cyan
-  "#475569", // Slate
-];
 
 export type LogoMode = "upload" | "url" | "icon";
 export type BannerMode = "upload" | "url" | "preset";
@@ -35,8 +23,6 @@ export type BannerMode = "upload" | "url" | "preset";
 interface AgencyBrandingSectionProps {
   logoMode: LogoMode;
   setLogoMode: (mode: LogoMode) => void;
-  brandColor: string;
-  setBrandColor: (color: string) => void;
   logoIcon: string;
   setLogoIcon: (icon: string) => void;
   logoPreviewUrl: string;
@@ -67,8 +53,6 @@ interface AgencyBrandingSectionProps {
 export const AgencyBrandingSection: React.FC<AgencyBrandingSectionProps> = ({
   logoMode,
   setLogoMode,
-  brandColor,
-  setBrandColor,
   logoIcon,
   setLogoIcon,
   logoPreviewUrl,
@@ -98,12 +82,12 @@ export const AgencyBrandingSection: React.FC<AgencyBrandingSectionProps> = ({
 
   return (
     <>
-      {/* SECTION 2: Logo & Brand Color */}
+      {/* SECTION 2: Logo */}
       <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-xs">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h3 className="text-sm font-semibold tracking-wide text-foreground">
-              2. {t("agency.create.logoLabel")} & {t("agency.create.brandColorLabel")}
+              2. {t("agency.create.logoLabel")}
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
               {t("agency.create.logoDesc", "Tùy chỉnh nhận diện thương hiệu cho công ty của bạn")}
@@ -151,49 +135,6 @@ export const AgencyBrandingSection: React.FC<AgencyBrandingSectionProps> = ({
               <LinkIcon className="size-3.5" />
               {t("agency.create.tabUrl")}
             </button>
-          </div>
-        </div>
-
-        {/* Brand Color Picker with Swatches */}
-        <div className="flex flex-col gap-2 pt-1 border-t border-border">
-          <Label className="text-xs font-semibold tracking-wide flex items-center gap-1.5">
-            <Palette className="size-3.5 text-brand-orange" />
-            {t("agency.create.brandColorLabel")}
-          </Label>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative flex items-center">
-              <input
-                type="color"
-                value={brandColor}
-                onChange={(e) => setBrandColor(e.target.value)}
-                className="size-8 cursor-pointer rounded-lg border border-border p-0.5"
-                title={t("agency.create.customColorTitle", "Chọn mã màu tùy biến")}
-              />
-            </div>
-            <div className="flex flex-wrap items-center gap-1.5">
-              {COLOR_SWATCHES.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => setBrandColor(color)}
-                  style={{ backgroundColor: color }}
-                  className={cn(
-                    "size-7 rounded-lg border transition-transform cursor-pointer flex items-center justify-center",
-                    brandColor.toLowerCase() === color.toLowerCase()
-                      ? "ring-2 ring-foreground ring-offset-2 ring-offset-background scale-110 border-transparent"
-                      : "border-transparent hover:scale-105",
-                  )}
-                  title={color}
-                >
-                  {brandColor.toLowerCase() === color.toLowerCase() && (
-                    <Check className="size-3.5 text-white drop-shadow-xs" />
-                  )}
-                </button>
-              ))}
-            </div>
-            <span className="font-mono text-xs text-muted-foreground ml-auto">
-              {brandColor.toUpperCase()}
-            </span>
           </div>
         </div>
 
@@ -354,10 +295,10 @@ export const AgencyBrandingSection: React.FC<AgencyBrandingSectionProps> = ({
                     )}
                   >
                     <Icon
-                      className="size-5"
-                      style={{
-                        color: isSelected ? brandColor : undefined,
-                      }}
+                      className={cn(
+                        "size-5",
+                        isSelected ? "text-brand-orange" : "text-muted-foreground",
+                      )}
                     />
                     <span
                       className={cn(

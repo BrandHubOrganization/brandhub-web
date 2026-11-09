@@ -1,11 +1,24 @@
 import React from "react";
+import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
-import { Crop, History, Upload } from "lucide-react";
+import {
+  Crop,
+  History,
+  Upload,
+  Building2,
+  Tag,
+  Briefcase,
+  Users,
+  Globe,
+  Phone,
+  Calendar,
+  FileText,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { ProvinceSelect } from "@/components/ui/province-select";
+import { VietnamAddressPicker } from "@/components/ui/vietnam-address-picker";
 import { RichTextInput } from "@/components/ui/rich-text-input";
 import { AGENCY_CATEGORIES, COMPANY_SIZES } from "@/pages/agency/constants";
 import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
@@ -14,7 +27,6 @@ import type { AgencyCategory, CompanySize } from "@/types/agency";
 import { normalizeUrl, formatPhoneNumber } from "@/utils/validation";
 import { CharacterCounter } from "@/components/ui/character-counter";
 
-const CURRENT_YEAR = new Date().getFullYear();
 
 export type AgencyDetailFieldErrors = Partial<
   Record<
@@ -36,8 +48,6 @@ interface AgencyDetailEditFormProps {
   clearFieldError: (field: keyof AgencyDetailFieldErrors) => void;
   errors: AgencyDetailFieldErrors;
   logoUrl: string;
-  brandColor: string;
-  setBrandColor: (v: string) => void;
   logoIcon: string;
   setLogoIcon: (v: string) => void;
   logoInputRef: React.RefObject<HTMLInputElement | null>;
@@ -80,8 +90,6 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
   clearFieldError,
   errors,
   logoUrl,
-  brandColor,
-  setBrandColor,
   logoIcon,
   setLogoIcon,
   logoInputRef,
@@ -131,6 +139,7 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
         onBlur={() => validateField("name", name)}
         error={errors.name}
         required
+        iconPrefix={<Building2 className="text-muted-foreground size-4" />}
       />
 
       <div className="flex flex-col gap-1.5">
@@ -138,20 +147,13 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
           {t("agency.detail.logoLabel")}
         </Label>
         <div className="flex items-center gap-3">
-          <div
-            className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg"
-            style={{
-              background: logoUrl ? undefined : `${brandColor}1a`,
-            }}
-          >
+          <div className="bg-brand-orange/10 flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg">
             {logoUrl ? (
               <img src={logoUrl} alt="" className="size-full object-cover" />
             ) : (
               (() => {
                 const Icon = getLogoIcon(logoIcon);
-                return (
-                  <Icon className="size-6" style={{ color: brandColor }} />
-                );
+                return <Icon className="text-brand-orange size-6" />;
               })()
             )}
           </div>
@@ -179,7 +181,7 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="cursor-pointer gap-1.5 text-xs text-brand-orange border-brand-orange/30 hover:bg-brand-orange/10"
+                className="text-brand-orange border-brand-orange/30 hover:bg-brand-orange/10 cursor-pointer gap-1.5 text-xs"
                 onClick={onOpenLogoCropper}
               >
                 <Crop className="size-3.5" />
@@ -190,7 +192,7 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
               type="button"
               variant="outline"
               size="sm"
-              className="cursor-pointer gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground cursor-pointer gap-1.5 text-xs"
               onClick={onOpenLogoRecent}
             >
               <History className="size-3.5" />
@@ -204,14 +206,19 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
       </div>
 
       <RichTextInput
-        label={t("agency.create.descriptionLabel")}
+        label={
+          <span className="flex items-center gap-1.5">
+            <FileText className="text-brand-orange size-3.5" />
+            {t("agency.create.descriptionLabel")}
+          </span>
+        }
         placeholder={t("agency.create.descriptionPlaceholder")}
         value={description}
         onChange={setDescription}
       />
       <Input
         label={
-          <span className="flex items-center justify-between w-full">
+          <span className="flex w-full items-center justify-between">
             <span>{t("agency.create.taglineLabel")}</span>
             <CharacterCounter current={tagline.length} max={140} />
           </span>
@@ -220,10 +227,12 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
         maxLength={140}
         value={tagline}
         onChange={(e) => setTagline(e.target.value)}
+        iconPrefix={<Tag className="text-muted-foreground size-4" />}
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-semibold tracking-wide">
+          <Label className="flex items-center gap-1.5 text-xs font-semibold tracking-wide">
+            <Briefcase className="text-brand-orange size-3.5" />
             {t("agency.create.categoryLabel")}
           </Label>
           <Select
@@ -239,14 +248,17 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
           </Select>
         </div>
         <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-semibold tracking-wide">
+          <Label className="flex items-center gap-1.5 text-xs font-semibold tracking-wide">
+            <Users className="text-brand-orange size-3.5" />
             {t("agency.create.companySizeLabel")}
           </Label>
           <Select
             value={companySize}
             onChange={(e) => setCompanySize(e.target.value as CompanySize | "")}
           >
-            <option value="">{t("agency.create.companySizePlaceholder")}</option>
+            <option value="">
+              {t("agency.create.companySizePlaceholder")}
+            </option>
             {COMPANY_SIZES.map((s) => (
               <option key={s} value={s}>
                 {t(`agency.companySize.${s}`)}
@@ -269,6 +281,7 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
           validateField("website", norm);
         }}
         error={errors.website}
+        iconPrefix={<Globe className="text-muted-foreground size-4" />}
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Input
@@ -285,37 +298,37 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
             validateField("phone", fmt);
           }}
           error={errors.phone}
+          iconPrefix={<Phone className="text-muted-foreground size-4" />}
         />
-        <ProvinceSelect
-          label={t("agency.create.locationLabel")}
-          value={location}
-          onChange={setLocation}
-        />
-      </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-semibold tracking-wide">
-            {t("agency.create.brandColorLabel")}
-          </Label>
-          <input
-            type="color"
-            value={brandColor}
-            onChange={(e) => setBrandColor(e.target.value)}
-            className="border-input h-9 w-full cursor-pointer rounded-md border"
-          />
-        </div>
         <Input
           label={t("agency.create.foundedYearLabel")}
-          type="number"
-          min={1}
-          max={CURRENT_YEAR}
+          type="text"
+          inputMode="numeric"
           value={foundedYear}
           onChange={(e) => {
-            setFoundedYear(e.target.value);
-            if (errors.foundedYear) clearFieldError("foundedYear");
+            const val = e.target.value;
+            setFoundedYear(val);
+            validateField("foundedYear", val);
           }}
           onBlur={() => validateField("foundedYear", foundedYear)}
           error={errors.foundedYear}
+          iconPrefix={<Calendar className="text-muted-foreground size-4" />}
+        />
+      </div>
+      <div className="sm:col-span-2">
+        <VietnamAddressPicker
+          locationValue={location}
+          addressValue={location}
+          onLocationChange={setLocation}
+          onAddressChange={setLocation}
+          disabled={saving}
+          labels={{
+            province: t("agency.create.locationProvinceLabel", "Tỉnh / Thành phố"),
+            district: t("agency.create.locationDistrictLabel", "Quận / Huyện"),
+            ward: t("agency.create.locationWardLabel", "Phường / Xã"),
+            street: t("agency.create.locationStreetLabel", "Số nhà, tên đường (tùy chọn)"),
+            fullAddress: t("agency.create.locationLabel", "Khu vực / Vị trí"),
+          }}
         />
       </div>
       <div className="flex flex-col gap-1.5">
@@ -355,6 +368,9 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
             validateField("facebookUrl", norm);
           }}
           error={errors.facebookUrl}
+          iconPrefix={
+            <FaFacebook className="size-4 text-blue-600 dark:text-blue-400" />
+          }
         />
         <Input
           label={t("agency.create.linkedinUrlLabel")}
@@ -370,6 +386,9 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
             validateField("linkedinUrl", norm);
           }}
           error={errors.linkedinUrl}
+          iconPrefix={
+            <FaLinkedin className="size-4 text-sky-600 dark:text-sky-400" />
+          }
         />
         <Input
           label={t("agency.create.instagramUrlLabel")}
@@ -385,6 +404,9 @@ export const AgencyDetailEditForm: React.FC<AgencyDetailEditFormProps> = ({
             validateField("instagramUrl", norm);
           }}
           error={errors.instagramUrl}
+          iconPrefix={
+            <FaInstagram className="size-4 text-pink-600 dark:text-pink-400" />
+          }
         />
       </div>
       <div className="flex gap-2">

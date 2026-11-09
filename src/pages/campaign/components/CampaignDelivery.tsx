@@ -29,24 +29,23 @@ export function CampaignDelivery({
   workspaceId,
   campaign,
   canManage,
+  canDeploy,
   canClose,
   onChanged,
   onTasksAvailable,
-  onOpenReview,
 }: {
   workspaceId: string;
   campaign: Campaign;
   canManage: boolean;
+  canDeploy: boolean;
   canClose: boolean;
   onChanged: (value?: Campaign) => void;
   onTasksAvailable: (campaignId: string, available: boolean) => void;
-  onOpenReview: () => void;
 }) {
   const { t, i18n } = useTranslation();
   const [deployment, setDeployment] = useState<CampaignDeployment | null>(null);
   const [tasks, setTasks] = useState<CampaignTask[]>([]);
   const [busy, setBusy] = useState(false);
-  const [closing, setClosing] = useState(false);
   const [revision, setRevision] = useState(0);
   const [loadError, setLoadError] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -55,16 +54,6 @@ export function CampaignDelivery({
     let active = true;
     async function refresh() {
       try {
-        if (campaign.status === "DRAFT") {
-          const list = await campaignService.tasks(workspaceId, campaign.id);
-          if (!active) return;
-          const items = requireApiData<CampaignTask[]>(list.data);
-          setTasks(items);
-          setLoaded(true);
-          setLoadError(false);
-          onTasksAvailable(campaign.id, items.length > 0);
-          return;
-        }
         const state = await campaignService.deployment(
           workspaceId,
           campaign.id,
@@ -91,14 +80,17 @@ export function CampaignDelivery({
         }
         if (
           active &&
-          campaign.status === "APPROVED" &&
+          ["DRAFT", "APPROVED"].includes(campaign.status) &&
           value?.status === "SUCCEEDED"
         )
           onChanged();
       } catch (error) {
         if (!active) return;
         onTasksAvailable(campaign.id, false);
-        if (isDeploymentNotFound(error) && campaign.status === "APPROVED") {
+        if (
+          isDeploymentNotFound(error) &&
+          ["DRAFT", "APPROVED"].includes(campaign.status)
+        ) {
           setDeployment(null);
           setLoaded(true);
           setLoadError(false);
@@ -143,83 +135,9 @@ export function CampaignDelivery({
     }
   }
 
-  if (campaign.status === "DRAFT") {
-    return (
-      <section
-        id="campaign-delivery"
-        className="border-border bg-card space-y-4 rounded-xl border p-5"
-      >
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold">
-              {t("campaign.tabs.delivery")}
-            </h3>
-            <p className="text-muted-foreground text-sm">
-              {t("campaign.delivery.draftHint")}
-            </p>
-          </div>
-          <Button type="button" variant="outline" onClick={onOpenReview}>
-            {t("campaign.tabs.review")}
-          </Button>
-        </div>
-        {loadError ? (
-          <div role="alert" className="flex flex-wrap items-center gap-3">
-            <p className="text-destructive text-sm">{t("campaign.error")}</p>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setRevision((value) => value + 1)}
-            >
-              {t("campaign.reload")}
-            </Button>
-          </div>
-        ) : !loaded ? (
-          <p role="status" className="text-muted-foreground text-sm">
-            {t("tasks.loading")}
-          </p>
-        ) : tasks.length > 0 ? (
-          <CampaignTaskGroups
-            tasks={tasks}
-            workspaceId={workspaceId}
-            canManage={false}
-          />
-        ) : (
-          <div className="border-border space-y-2 rounded-lg border border-dashed p-4">
-            <p className="text-muted-foreground text-sm">
-              {t("campaign.delivery.draftEmpty")}
-            </p>
-            {campaign.workItems.length > 0 && (
-              <ul className="list-disc space-y-1 pl-5 text-sm">
-                {campaign.workItems.map((item) => (
-                  <li key={item.id}>{item.name}</li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
-      </section>
-    );
-  }
-
-  if (closing)
-    return (
-      <CampaignClosureSection
-        workspaceId={workspaceId}
-        campaign={campaign}
-        onClose={() => setClosing(false)}
-        onTasksChanged={() => setRevision((value) => value + 1)}
-        onCompleted={(value) => {
-          setClosing(false);
-          onChanged(value);
-          toast.success(t("campaign.delivery.completed"));
-        }}
-      />
-    );
-
   const totalTasks = tasks.length;
-  const completedCount = tasks.filter((task) =>
-    task.status === "FINISHED",
+  const completedCount = tasks.filter(
+    (task) => task.status === "FINISHED",
   ).length;
   const cancelledCount = tasks.filter(
     (task) => task.status === "CANCELLED",
@@ -274,9 +192,10 @@ export function CampaignDelivery({
 
         {/* Deploy button for initial start */}
         {canManage &&
+          canDeploy &&
           loaded &&
           !loadError &&
-          campaign.status === "APPROVED" &&
+          ["DRAFT", "APPROVED"].includes(campaign.status) &&
           !deployment && (
             <Button
               variant="orange"
@@ -353,19 +272,21 @@ export function CampaignDelivery({
               </div>
             </div>
 
-            {canManage && campaign.status === "APPROVED" && (
-              <Button
-                variant="orange"
-                loading={busy}
-                onClick={() => void deploy()}
-                className="shrink-0 gap-2 font-medium shadow-sm"
-              >
-                <RotateCw className="size-4" />
-                {t("campaign.delivery.retry", {
-                  defaultValue: "Thử lại triển khai",
-                })}
-              </Button>
-            )}
+            {canManage &&
+              canDeploy &&
+              ["DRAFT", "APPROVED"].includes(campaign.status) && (
+                <Button
+                  variant="orange"
+                  loading={busy}
+                  onClick={() => void deploy()}
+                  className="shrink-0 gap-2 font-medium shadow-sm"
+                >
+                  <RotateCw className="size-4" />
+                  {t("campaign.delivery.retry", {
+                    defaultValue: "Thử lại triển khai",
+                  })}
+                </Button>
+              )}
           </div>
         </div>
       )}
@@ -508,18 +429,15 @@ export function CampaignDelivery({
                 </p>
               </div>
             </div>
-            <Button
-              data-campaign-complete
-              variant="orange"
-              size="lg"
-              className="shrink-0 gap-2 font-medium shadow-sm"
-              onClick={() => setClosing(true)}
-            >
-              <ShieldCheck className="size-4" />
-              {t("campaign.closure.cta", {
-                defaultValue: "Nghiệm thu & Đóng chiến dịch",
-              })}
-            </Button>
+            <CampaignClosureSection
+              workspaceId={workspaceId}
+              campaign={campaign}
+              onTasksChanged={() => setRevision((value) => value + 1)}
+              onCompleted={(value) => {
+                onChanged(value);
+                toast.success(t("campaign.delivery.completed"));
+              }}
+            />
           </div>
         </div>
       )}

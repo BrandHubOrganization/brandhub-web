@@ -26,7 +26,6 @@ import {
 } from "./components/ClientProfileForm";
 import { ClientProfilePreview } from "./components/ClientProfilePreview";
 import { ClientProfileLogo } from "./components/ClientProfileLogo";
-import { BANNER_PRESETS } from "@/pages/agency/bannerPresets";
 
 type SortOption = "newest" | "oldest" | "name_asc" | "name_desc";
 
@@ -175,18 +174,17 @@ export function ClientProfileListPage() {
       title={t("clientProfile.list.title")}
       description={t("clientProfile.list.description")}
       fullWidth
-      bannerBadge={t("clientProfile.list.badge", "Hồ sơ khách hàng")}
-      bannerImage={BANNER_PRESETS[0]?.url}
       introSummary="Hồ sơ khách hàng (Client Profile) định danh phong cách trực quan gồm Logo, Tên pháp nhân, Bảng màu và Tagline. Các thông tin này sẽ được tự động đồng bộ vào bài đăng và hình ảnh quảng cáo của các Workspace thuộc quyền quản lý của bạn."
       guideUrl="/help/guide#agency"
       actions={
         editing ? (
           <Button
             variant="outline"
-            className="gap-1.5 cursor-pointer shadow-xs bg-card/90 backdrop-blur-xs text-foreground hover:bg-card border-white/20"
+            size="sm"
+            className="gap-1.5 cursor-pointer text-xs shadow-xs"
             onClick={() => requestSwitch(null)}
           >
-            <Plus className="size-4" />
+            <Plus className="size-3.5" />
             {t("clientProfile.list.createButton")}
           </Button>
         ) : null

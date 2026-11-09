@@ -75,6 +75,9 @@ export function AIImageStudioPanel({
   const [aspectRatio, setAspectRatio] =
     useState<(typeof ASPECT_RATIOS)[number]>("9:16");
   const [prompt, setPrompt] = useState("");
+  const [imageStyle, setImageStyle] = useState<
+    "reference" | "studio" | "lifestyle"
+  >("reference");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState("");
   const [generatedImageKey, setGeneratedImageKey] = useState<string>();
@@ -160,40 +163,39 @@ export function AIImageStudioPanel({
       toast.error(t("editor.studio.image.promptRequired"));
       return;
     }
-    if (!selectedPose) {
-      toast.error(t("editor.studio.image.poseRequired"));
-      return;
-    }
-    if (!selectedProduct) {
-      toast.error(t("editor.studio.image.productRequired"));
-      return;
-    }
-    if (!selectedAmbassador) {
-      toast.error(t("editor.studio.image.ambassadorRequired"));
-      return;
-    }
 
     setIsGenerating(true);
     setGeneratedImage("");
     setGeneratedImageKey(undefined);
     setStorageProvider(undefined);
     try {
-      const poseReferenceImage = await imageSourceToDataUrl(selectedPose);
-      const productReferenceImage = await imageSourceToDataUrl(selectedProduct);
+      const poseReferenceImage = selectedPose
+        ? await imageSourceToDataUrl(selectedPose)
+        : "";
+      const productReferenceImage = selectedProduct
+        ? await imageSourceToDataUrl(selectedProduct)
+        : "";
       const ambassador = selectedPreset
         ? {
             source: "preset" as const,
             preset_id: selectedPreset.id,
             reference_images: [] as [],
           }
-        : {
-            source: "custom" as const,
-            reference_images: [
-              await imageSourceToDataUrl(selectedAmbassadorImage),
-            ] as [string],
-          };
+        : selectedAmbassadorImage
+          ? {
+              source: "custom" as const,
+              reference_images: [
+                await imageSourceToDataUrl(selectedAmbassadorImage),
+              ] as [string],
+            }
+          : {
+              source: "preset" as const,
+              preset_id: selectedAmbassador || presets[0]?.id || "default",
+              reference_images: [] as [],
+            };
       const result = await aiGenerationService.generateCommercialImage({
         prompt,
+        preset: imageStyle,
         aspectRatio,
         poseReferenceImage,
         productReferenceImage,
@@ -490,6 +492,27 @@ export function AIImageStudioPanel({
             <Sparkles className="size-3.5" />
             {t("editor.studio.image.generateAmbassadorButton")}
           </Button>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <span className="text-muted-foreground text-xs font-semibold">
+          {t("editor.studio.image.styleLabel")}
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {(["reference", "studio", "lifestyle"] as const).map((style) => (
+            <Button
+              key={style}
+              type="button"
+              size="sm"
+              variant={imageStyle === style ? "orange" : "outline"}
+              aria-pressed={imageStyle === style}
+              disabled={isGenerating}
+              onClick={() => setImageStyle(style)}
+            >
+              {t(`editor.studio.image.style_${style}`)}
+            </Button>
+          ))}
         </div>
       </div>
 

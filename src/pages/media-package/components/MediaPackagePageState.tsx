@@ -17,6 +17,54 @@ export function MediaPackageLoadingState() {
   );
 }
 
+export function PackageCatalogLoadingState() {
+  const { t } = useTranslation();
+  return (
+    <div
+      role="status"
+      aria-label={t("mediaPackage.loading")}
+      aria-busy="true"
+      className="space-y-3"
+    >
+      {[0, 1, 2].map((item) => (
+        <Skeleton
+          key={item}
+          className="h-24 w-full rounded-xl motion-reduce:animate-none"
+        />
+      ))}
+    </div>
+  );
+}
+
+export function WorkspacePackageLoadingState() {
+  const { t } = useTranslation();
+  return (
+    <section
+      role="status"
+      aria-label={t("mediaPackage.loading")}
+      aria-busy="true"
+      className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,28%)]"
+    >
+      <div className="border-border bg-card space-y-4 rounded-xl border p-5">
+        <Skeleton className="h-8 w-2/3 motion-reduce:animate-none" />
+        <Skeleton className="h-12 w-3/4 motion-reduce:animate-none" />
+        <Skeleton className="h-16 w-full motion-reduce:animate-none" />
+        {[0, 1, 2].map((item) => (
+          <Skeleton
+            key={item}
+            className="h-24 w-full motion-reduce:animate-none"
+          />
+        ))}
+      </div>
+      <div className="space-y-3">
+        <Skeleton className="h-8 w-2/3 motion-reduce:animate-none" />
+        <Skeleton className="h-9 w-full motion-reduce:animate-none" />
+        <PackageCatalogLoadingState />
+      </div>
+    </section>
+  );
+}
+
 interface MediaPackageErrorStateProps {
   message: string;
   onRetry: () => void;

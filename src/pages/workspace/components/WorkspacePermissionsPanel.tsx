@@ -1,24 +1,13 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import {
-  Check,
-  Minus,
-  Shield,
-  ShieldOff,
-  TriangleAlert,
-  UserCog,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
-import { workspaceService } from "@/services/workspaceService";
-import { extractErrorMessage } from "@/utils/error";
+import { Check, Minus, Shield } from "lucide-react";
 import type { MemberRole, WorkspaceMember } from "@/types/workspace";
 
 interface Props {
-  workspaceId: string | undefined;
-  members: WorkspaceMember[];
-  onChanged: () => void;
+  workspaceId?: string;
+  members?: WorkspaceMember[];
+  onChanged?: () => void;
+  currentRole?: MemberRole;
+  currentUserId?: string | null;
 }
 
 const ROLES: MemberRole[] = ["OWNER", "MANAGER", "CREATOR", "CLIENT"];
@@ -32,197 +21,54 @@ const PERMISSIONS = [
   { key: "editWorkspace", roles: ["OWNER"] },
 ] as const;
 
-export function WorkspacePermissionsPanel({
-  workspaceId,
-  members,
-  onChanged,
-}: Props) {
+export function WorkspacePermissionsPanel(_props: Props = {}) {
   const { t } = useTranslation();
-  const [revokeTarget, setRevokeTarget] = useState<WorkspaceMember | null>(
-    null,
-  );
-  const [pendingMemberId, setPendingMemberId] = useState<string | null>(null);
-
-  const handleRoleChange = async (
-    member: WorkspaceMember,
-    role: MemberRole,
-  ) => {
-    if (!workspaceId || role === member.role) return;
-    setPendingMemberId(member.id);
-    try {
-      await workspaceService.updateMemberRole(workspaceId, member.id, role);
-      toast.success(
-        t("workspace.permissions.roleChanged", {
-          name: member.fullName,
-          role: t(`workspace.roles.${role}`),
-        }),
-      );
-      onChanged();
-    } catch (err: unknown) {
-      toast.error(extractErrorMessage(err, t("common.actionFailed")));
-    } finally {
-      setPendingMemberId(null);
-    }
-  };
-
-  const handleConfirmRevoke = async () => {
-    if (!workspaceId || !revokeTarget) return;
-    setPendingMemberId(revokeTarget.id);
-    try {
-      await workspaceService.removeMember(workspaceId, revokeTarget.id);
-      toast.success(
-        t("workspace.permissions.revokeSuccess", {
-          name: revokeTarget.fullName,
-        }),
-      );
-      onChanged();
-    } catch (err: unknown) {
-      toast.error(extractErrorMessage(err, t("common.actionFailed")));
-    } finally {
-      setPendingMemberId(null);
-      setRevokeTarget(null);
-    }
-  };
 
   return (
-    <div className="space-y-4">
-      {/* Role management */}
-      <div className="border-border bg-card rounded-xl border p-5">
-        <div className="border-border flex items-center gap-2 border-b pb-3">
-          <UserCog className="text-brand-orange size-5" />
-          <h3 className="text-foreground text-sm font-semibold">
-            {t("workspace.permissions.roleManagement")}
-          </h3>
-        </div>
-        <div className="divide-border mt-3 divide-y">
-          {members.map((member) => (
-            <div
-              key={member.id}
-              className="flex items-center justify-between py-2.5"
-            >
-              <div className="space-y-0.5">
-                <p className="text-foreground text-xs font-medium">
-                  {member.fullName}
-                </p>
-                <p className="text-muted-foreground text-2xs">{member.email}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Select
-                  value={member.role}
-                  disabled={
-                    member.role === "OWNER" || pendingMemberId === member.id
-                  }
-                  onChange={(e) =>
-                    handleRoleChange(member, e.target.value as MemberRole)
-                  }
-                  className="border-border bg-card text-foreground h-auto cursor-pointer rounded-lg border px-2 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {ROLES.map((role) => (
-                    <option key={role} value={role}>
-                      {t(`workspace.roles.${role}`)}
-                    </option>
-                  ))}
-                </Select>
-                {member.role !== "OWNER" && member.role !== "CLIENT" && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={pendingMemberId === member.id}
-                    className="gap-1.5 border-rose-300 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-950/40"
-                    onClick={() => setRevokeTarget(member)}
-                  >
-                    <ShieldOff className="size-3.5" />
-                    {t("workspace.permissions.revokeButton")}
-                  </Button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+    <div className="border-border bg-card overflow-hidden rounded-xl border">
+      <div className="border-border flex items-center gap-2 border-b p-4">
+        <Shield className="text-brand-orange size-5" />
+        <h3 className="text-foreground text-sm font-semibold">
+          {t("workspace.permissions.matrixTitle")}
+        </h3>
       </div>
-
-      {/* Permissions matrix */}
-      <div className="border-border bg-card overflow-hidden rounded-xl border">
-        <div className="border-border flex items-center gap-2 border-b p-4">
-          <Shield className="text-brand-orange size-5" />
-          <h3 className="text-foreground text-sm font-semibold">
-            {t("workspace.permissions.matrixTitle")}
-          </h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-border bg-muted/20 border-b">
-                <th className="text-muted-foreground px-4 py-2.5 font-semibold">
-                  {t("workspace.permissions.permission")}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-xs">
+          <thead>
+            <tr className="border-border bg-muted/20 border-b">
+              <th className="text-muted-foreground px-4 py-2.5 font-semibold">
+                {t("workspace.permissions.permission")}
+              </th>
+              {ROLES.map((role) => (
+                <th
+                  key={role}
+                  className="text-muted-foreground px-3 py-2.5 text-center font-semibold"
+                >
+                  {t(`workspace.roles.${role}`)}
                 </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {PERMISSIONS.map((perm) => (
+              <tr key={perm.key} className="border-border border-b">
+                <td className="text-foreground px-4 py-2.5 font-medium">
+                  {t(`workspace.permissions.perms.${perm.key}`)}
+                </td>
                 {ROLES.map((role) => (
-                  <th
-                    key={role}
-                    className="text-muted-foreground px-3 py-2.5 text-center font-semibold"
-                  >
-                    {t(`workspace.roles.${role}`)}
-                  </th>
+                  <td key={role} className="px-3 py-2.5 text-center">
+                    {(perm.roles as readonly string[]).includes(role) ? (
+                      <Check className="text-brand-orange mx-auto size-4" />
+                    ) : (
+                      <Minus className="text-muted-foreground/40 mx-auto size-4" />
+                    )}
+                  </td>
                 ))}
               </tr>
-            </thead>
-            <tbody>
-              {PERMISSIONS.map((perm) => (
-                <tr key={perm.key} className="border-border border-b">
-                  <td className="text-foreground px-4 py-2.5 font-medium">
-                    {t(`workspace.permissions.perms.${perm.key}`)}
-                  </td>
-                  {ROLES.map((role) => (
-                    <td key={role} className="px-3 py-2.5 text-center">
-                      {(perm.roles as readonly string[]).includes(role) ? (
-                        <Check className="text-brand-orange mx-auto size-4" />
-                      ) : (
-                        <Minus className="text-muted-foreground/40 mx-auto size-4" />
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
-
-      {revokeTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
-            <div className="flex items-center gap-2">
-              <TriangleAlert className="size-5 text-rose-500" />
-              <h3 className="text-foreground text-sm font-semibold">
-                {t("workspace.permissions.revokeConfirmTitle")}
-              </h3>
-            </div>
-            <p className="text-muted-foreground text-xs">
-              {t("workspace.permissions.revokeConfirmBody", {
-                name: revokeTarget.fullName,
-              })}
-            </p>
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={pendingMemberId === revokeTarget.id}
-                onClick={() => setRevokeTarget(null)}
-              >
-                {t("workspace.permissions.revokeCancel")}
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                disabled={pendingMemberId === revokeTarget.id}
-                onClick={handleConfirmRevoke}
-              >
-                {t("workspace.permissions.revokeConfirmButton")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

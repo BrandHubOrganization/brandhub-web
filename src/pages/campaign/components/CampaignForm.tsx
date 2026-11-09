@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/date-range-picker";
 import { Badge } from "@/components/ui/badge";
 import { HelpHint } from "@/components/shared/HelpHint";
-import { TextChoices } from "@/components/shared/FieldChoices";
+import { CampaignStrategyInput } from "@/pages/campaign/components/CampaignStrategyInput";
 import { startDateChange } from "@/pages/campaign/campaignDates";
 import { DiscardChangesDialog } from "@/pages/media-package/components/DiscardChangesDialog";
 import { useDraftUnloadWarning } from "@/pages/media-package/hooks/useDraftUnloadWarning";
@@ -220,9 +220,7 @@ export function CampaignForm({
                   type="button"
                   variant="outline"
                   disabled={saving}
-                  onClick={() =>
-                    dirty ? setConfirmDiscard(true) : onCancel()
-                  }
+                  onClick={() => (dirty ? setConfirmDiscard(true) : onCancel())}
                 >
                   {t("campaign.cancel")}
                 </Button>
@@ -241,23 +239,10 @@ export function CampaignForm({
                     {t("campaign.strategy")}
                   </h4>
                 </div>
-                <TextChoices
-                  label={t("campaign.strategy")}
+                <CampaignStrategyInput
                   value={plan.strategyDetail}
                   onChange={(strategyDetail) => patch({ strategyDetail })}
-                  maxLength={10000}
-                  options={[
-                    ...["launch", "awareness"].map((key) =>
-                      t(`mediaPackage.choices.strategy.${key}`),
-                    ),
-                    ...deliverables
-                      .slice(0, 1)
-                      .map(() =>
-                        deliverables
-                          .map((item) => `${item.name} × ${item.quantity}`)
-                          .join("\n"),
-                      ),
-                  ]}
+                  disabled={saving}
                 />
               </div>
 
@@ -341,7 +326,7 @@ export function CampaignForm({
                     timeline.milestones.map((milestone, index) => (
                       <div
                         key={index}
-                        className="border-border/60 bg-muted/20 relative space-y-2 rounded-lg border p-2.5 transition-colors focus-within:border-brand-orange/40"
+                        className="border-border/60 bg-muted/20 focus-within:border-brand-orange/40 relative space-y-2 rounded-lg border p-2.5 transition-colors"
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-muted-foreground text-2xs font-mono font-medium">
@@ -389,6 +374,7 @@ export function CampaignForm({
                           disabled={saving}
                           required
                           triggerClassName="h-8.5 text-xs font-mono"
+                          placeholder={t("campaign.date")}
                           value={milestone.date}
                           min={timeline.startDate}
                           max={timeline.endDate}
@@ -446,9 +432,7 @@ export function CampaignForm({
                   variant="outline"
                   className="w-full justify-center"
                   disabled={saving}
-                  onClick={() =>
-                    dirty ? setConfirmDiscard(true) : onCancel()
-                  }
+                  onClick={() => (dirty ? setConfirmDiscard(true) : onCancel())}
                 >
                   {t("campaign.cancel")}
                 </Button>

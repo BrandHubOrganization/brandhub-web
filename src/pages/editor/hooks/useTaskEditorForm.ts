@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { api } from "@/lib/axios";
 import { taskPostService } from "@/pages/editor/services/taskPostService";
 import { taskApprovalService } from "@/pages/tasks/services/taskApprovalService";
 import {
@@ -62,6 +63,63 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
       setDraft(next);
       setIsDirty(false);
     } catch (error) {
+      const explicitCode = (
+        error as { response?: { data?: { error?: { code?: string } } } }
+      )?.response?.data?.error?.code;
+      const isTaskReviewDomainError =
+        typeof explicitCode === "string" &&
+        (explicitCode.startsWith("TASK_") ||
+          explicitCode.startsWith("POST_") ||
+          explicitCode === "FORBIDDEN" ||
+          explicitCode === "VALIDATION_ERROR");
+      if (!isTaskReviewDomainError) {
+        try {
+          const res = await api.get<{
+            data?: { name?: string; title?: string; description?: string };
+          }>(`/api/v1/workspaces/${workspaceId}/tasks/${taskId}`);
+          const task = res.data?.data;
+          if (
+            task &&
+            lifecycle.current.live &&
+            lifecycle.current.epoch === epoch
+          ) {
+            const next: TaskPostDraft = {
+              ...emptyTaskDraft(),
+              caption: task.description || task.name || task.title || "",
+            };
+            const fallbackSession: Session = {
+              linked: {
+                taskId,
+                taskRevision: 1,
+                post: null,
+                canEdit: true,
+                blockedReason: null,
+              },
+              review: {
+                taskId,
+                taskStatus: "IN_PROGRESS",
+                revision: 1,
+                currentRound: 0,
+                activeStep: null,
+                steps: [],
+                logs: [],
+              } as unknown as Session["review"],
+            };
+            latest.current = {
+              draft: next,
+              session: fallbackSession,
+              dirty: false,
+            };
+            setSession(fallbackSession);
+            setDraft(next);
+            setIsDirty(false);
+            setErrorCode(null);
+            return;
+          }
+        } catch {
+          // Fall through to standard error state
+        }
+      }
       if (lifecycle.current.live && lifecycle.current.epoch === epoch)
         setErrorCode(taskEditorError(error));
     } finally {

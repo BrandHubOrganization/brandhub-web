@@ -5,6 +5,7 @@ import { useWorkspaceClients } from "./hooks/useWorkspaceClients";
 import { ClientsTable } from "./components/ClientsTable";
 import { AddClientDialog } from "./components/AddClientDialog";
 import { RemoveMemberDialog } from "./components/RemoveMemberDialog";
+import { ClientProfileViewModal } from "./components/ClientProfileViewModal";
 
 // Client cộng tác (role CLIENT, gán từ ClientProfile) — trang riêng, tách
 // khỏi WorkspaceMembersPage (thành viên nội bộ agency).
@@ -34,7 +35,14 @@ export function WorkspaceClientsPage() {
         <ClientsTable
           clients={state.clients}
           canManage={state.canManage}
+          onViewProfile={state.setViewingClient}
           onRemove={state.setRemoveTarget}
+        />
+
+        <ClientProfileViewModal
+          client={state.viewingClient}
+          open={!!state.viewingClient}
+          onOpenChange={(open) => !open && state.setViewingClient(null)}
         />
 
         {state.agencyId && state.workspaceId && (

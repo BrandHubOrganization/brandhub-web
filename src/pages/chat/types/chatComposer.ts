@@ -5,6 +5,12 @@ import type {
 } from "@/types/chatCollaboration";
 export interface ChatRichComposerProps {
   canPost: boolean;
+  workspaceId?: string;
+  channelId?: string;
+  attachmentIds?: string[];
+  attachmentBusy?: boolean;
+  onDraftSent?: () => void;
+  allowMentions?: boolean;
   people: ChatDirectoryMember[];
   contextType: ChatContextType;
   contextId: string | null;

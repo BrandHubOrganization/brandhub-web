@@ -225,13 +225,13 @@ export default function CreditPricesPage() {
                             : ""
                         }`}
                       >
-                        {/* Cột 1: Thao tác AI (Icon trực quan + Tên thao tác + Mô tả ngắn) */}
+                        {/* Cột 1: Thao tác AI */}
                         <TableCell className="py-4">
                           <div className="flex items-start gap-3">
                             <div
                               className={`flex size-10 shrink-0 items-center justify-center rounded-xl transition-colors ${
                                 isEnabled
-                                  ? "bg-primary/10 text-primary"
+                                  ? "bg-muted text-foreground"
                                   : "bg-muted text-muted-foreground"
                               }`}
                             >
@@ -270,7 +270,7 @@ export default function CreditPricesPage() {
                           </div>
                         </TableCell>
 
-                        {/* Cột 3: Đơn giá (unitCredits dạng Geist Mono to đậm) */}
+                        {/* Cột 3: Đơn giá */}
                         <TableCell className="py-4">
                           {isConfigured ? (
                             <div className="flex items-baseline gap-1">
@@ -288,7 +288,7 @@ export default function CreditPricesPage() {
                           )}
                         </TableCell>
 
-                        {/* Cột 4: Quy đổi tham chiếu (~X VNĐ / lượt) */}
+                        {/* Cột 4: Quy đổi tham chiếu */}
                         <TableCell className="py-4">
                           {isConfigured ? (
                             <div className="space-y-0.5">
@@ -308,7 +308,7 @@ export default function CreditPricesPage() {
                           )}
                         </TableCell>
 
-                        {/* Cột 5: Phiên bản (Rev #X) */}
+                        {/* Cột 5: Phiên bản */}
                         <TableCell className="py-4">
                           {isConfigured ? (
                             <Badge
@@ -320,14 +320,14 @@ export default function CreditPricesPage() {
                           ) : (
                             <Badge
                               variant="outline"
-                              className="text-[11px] text-amber-600 dark:text-amber-400"
+                              className="text-[11px] text-muted-foreground"
                             >
                               Mới
                             </Badge>
                           )}
                         </TableCell>
 
-                        {/* Cột 6: Trạng thái & Công tắc (Kill-Switch) */}
+                        {/* Cột 6: Trạng thái & Kill-Switch */}
                         <TableCell className="py-4">
                           <div className="flex items-center gap-3">
                             <div className="relative flex items-center">
@@ -341,39 +341,39 @@ export default function CreditPricesPage() {
                               />
                               {isToggling && (
                                 <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
-                                  <Spinner className="text-primary size-3.5" />
+                                  <Spinner className="text-foreground size-3.5" />
                                 </div>
                               )}
                             </div>
 
                             {isEnabled ? (
                               <Badge
-                                variant="outline"
-                                className="gap-1 border-emerald-300 bg-emerald-50 text-[11px] font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+                                variant="secondary"
+                                className="gap-1 text-[11px] font-semibold"
                               >
-                                <span className="size-1.5 rounded-full bg-emerald-500" />
+                                <span className="size-1.5 rounded-full bg-foreground/50" />
                                 <span>ACTIVE</span>
                               </Badge>
                             ) : (
                               <Badge
                                 variant="outline"
-                                className="gap-1 border-amber-300 bg-amber-50 text-[11px] font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300"
+                                className="gap-1 text-[11px] font-semibold text-muted-foreground"
                                 title="Mô hình AI đang tạm ngừng hoặc bảo trì"
                               >
-                                <ShieldAlert className="size-3 text-amber-600 dark:text-amber-400" />
+                                <ShieldAlert className="size-3 text-muted-foreground" />
                                 <span>DISABLED</span>
                               </Badge>
                             )}
                           </div>
                         </TableCell>
 
-                        {/* Cột 7: Hành động (Nút Chỉnh sửa mở Drawer) */}
+                        {/* Cột 7: Hành động */}
                         <TableCell className="py-4 text-right">
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleOpenEdit(op)}
-                            className="hover:border-primary/50 hover:text-primary gap-1.5 text-xs font-medium"
+                            className="hover:border-border hover:text-foreground gap-1.5 text-xs font-medium"
                           >
                             <Edit3 className="size-3.5" />
                             <span>Chỉnh sửa</span>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-import { Layers, Search, Sparkles } from "lucide-react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { Layers, Loader2, Search, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/date-range-picker";
@@ -45,26 +45,54 @@ export function TrendGraphSearch({
   const [nodeInputQ, setNodeInputQ] = useState("");
   const [submittedNodeQ, setSubmittedNodeQ] = useState("");
   const [nodeLabel, setNodeLabel] = useState("");
-  const [nodeOffset, setNodeOffset] = useState(0);
-
-  const page = view.trends.data;
 
   const nodeSearchSelection = {
     q: submittedNodeQ,
     label: nodeLabel || undefined,
-    offset: nodeOffset,
-    limit: GRAPH_PAGE_SIZE,
   };
 
-  const nodesQuery = useQuery({
+  const nodesQuery = useInfiniteQuery({
     queryKey: ["admin-trend-graph-nodes", nodeSearchSelection],
     enabled: mode === "nodes",
-    queryFn: ({ signal }) =>
-      trendGraphService.searchNodes(nodeSearchSelection, signal),
+    initialPageParam: 0,
+    queryFn: ({ pageParam = 0, signal }) =>
+      trendGraphService.searchNodes(
+        {
+          ...nodeSearchSelection,
+          offset: pageParam as number,
+          limit: GRAPH_PAGE_SIZE,
+        },
+        signal,
+      ),
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore && lastPage.offset + lastPage.limit <= 10000
+        ? lastPage.offset + lastPage.limit
+        : undefined,
     staleTime: 30000,
   });
 
-  const nodesPage = nodesQuery.data;
+  const trendItems =
+    view.trends.data?.pages.flatMap((page) => page.items) ?? [];
+  const nodeItems =
+    nodesQuery.data?.pages.flatMap((page) => page.items) ?? [];
+
+  const handleTrendsScroll = (event: React.UIEvent<HTMLUListElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    if (scrollHeight - scrollTop - clientHeight < 50) {
+      if (view.trends.hasNextPage && !view.trends.isFetchingNextPage) {
+        void view.trends.fetchNextPage();
+      }
+    }
+  };
+
+  const handleNodesScroll = (event: React.UIEvent<HTMLUListElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    if (scrollHeight - scrollTop - clientHeight < 50) {
+      if (nodesQuery.hasNextPage && !nodesQuery.isFetchingNextPage) {
+        void nodesQuery.fetchNextPage();
+      }
+    }
+  };
 
   return (
     <aside className="bg-card/95 border-border/80 min-w-0 rounded-2xl border p-4 shadow-sm">
@@ -128,7 +156,9 @@ export function TrendGraphSearch({
               <Button
                 type="submit"
                 variant="outline"
-                loading={view.trends.isFetching}
+                loading={
+                  view.trends.isFetching && !view.trends.isFetchingNextPage
+                }
               >
                 {t("admin.trendGraph.searchAction")}
               </Button>
@@ -172,20 +202,20 @@ export function TrendGraphSearch({
                   className="text-muted-foreground mb-2 font-mono text-xs tabular-nums"
                   role="status"
                 >
-                  {t("admin.trendGraph.range", {
-                    start: page!.items.length ? view.offset + 1 : 0,
-                    end: page!.items.length
-                      ? view.offset + page!.items.length
-                      : 0,
+                  {t("admin.trendGraph.loadedCount", {
+                    count: trendItems.length,
                   })}
                 </p>
-                {!page!.items.length && (
+                {!trendItems.length && (
                   <p className="text-muted-foreground py-4 text-sm">
                     {t("admin.trendGraph.empty")}
                   </p>
                 )}
-                <ul className="max-h-96 space-y-1.5 overflow-y-auto pr-0.5">
-                  {page!.items.map((node) => {
+                <ul
+                  onScroll={handleTrendsScroll}
+                  className="max-h-96 space-y-1.5 overflow-y-auto pr-0.5"
+                >
+                  {trendItems.map((node) => {
                     const isSelected =
                       !customNodeId && view.trendId === node.businessId;
                     return (
@@ -221,39 +251,15 @@ export function TrendGraphSearch({
                       </li>
                     );
                   })}
+                  {view.trends.isFetchingNextPage && (
+                    <li className="flex items-center justify-center py-2.5">
+                      <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+                        <Loader2 className="text-brand-orange size-3.5 animate-spin" />
+                        <span>{t("admin.loading")}</span>
+                      </div>
+                    </li>
+                  )}
                 </ul>
-                <div className="mt-3 flex justify-between gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={view.offset === 0 || view.trends.isFetching}
-                    onClick={() =>
-                      view.change({
-                        offset: String(
-                          Math.max(0, view.offset - GRAPH_PAGE_SIZE),
-                        ),
-                      })
-                    }
-                  >
-                    {t("admin.trendGraph.previous")}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={
-                      !page!.hasMore ||
-                      view.offset + GRAPH_PAGE_SIZE > 10000 ||
-                      view.trends.isFetching
-                    }
-                    onClick={() =>
-                      view.change({
-                        offset: String(view.offset + GRAPH_PAGE_SIZE),
-                      })
-                    }
-                  >
-                    {t("admin.trendGraph.next")}
-                  </Button>
-                </div>
               </>
             )}
           </div>
@@ -264,8 +270,12 @@ export function TrendGraphSearch({
             className="space-y-3"
             onSubmit={(event) => {
               event.preventDefault();
-              setSubmittedNodeQ(nodeInputQ.trim());
-              setNodeOffset(0);
+              const nextQ = nodeInputQ.trim();
+              if (nextQ === submittedNodeQ) {
+                void nodesQuery.refetch();
+              } else {
+                setSubmittedNodeQ(nextQ);
+              }
             }}
           >
             <label className="block space-y-1 text-xs font-medium">
@@ -276,7 +286,6 @@ export function TrendGraphSearch({
                 value={nodeLabel}
                 onChange={(nextLabel) => {
                   setNodeLabel(nextLabel);
-                  setNodeOffset(0);
                 }}
                 options={NODE_CATEGORIES.map((category) => ({
                   value: category.value,
@@ -297,7 +306,9 @@ export function TrendGraphSearch({
               <Button
                 type="submit"
                 variant="outline"
-                loading={nodesQuery.isFetching}
+                loading={
+                  nodesQuery.isFetching && !nodesQuery.isFetchingNextPage
+                }
               >
                 {t("admin.trendGraph.searchAction")}
               </Button>
@@ -308,7 +319,6 @@ export function TrendGraphSearch({
                   setNodeInputQ("");
                   setSubmittedNodeQ("");
                   setNodeLabel("");
-                  setNodeOffset(0);
                 }}
               >
                 {t("admin.trendGraph.clear")}
@@ -342,20 +352,20 @@ export function TrendGraphSearch({
                   className="text-muted-foreground mb-2 font-mono text-xs tabular-nums"
                   role="status"
                 >
-                  {t("admin.trendGraph.range", {
-                    start: nodesPage!.items.length ? nodeOffset + 1 : 0,
-                    end: nodesPage!.items.length
-                      ? nodeOffset + nodesPage!.items.length
-                      : 0,
+                  {t("admin.trendGraph.loadedCount", {
+                    count: nodeItems.length,
                   })}
                 </p>
-                {!nodesPage!.items.length && (
+                {!nodeItems.length && (
                   <p className="text-muted-foreground py-4 text-sm">
                     {t("admin.trendGraph.empty")}
                   </p>
                 )}
-                <ul className="max-h-96 space-y-1.5 overflow-y-auto pr-0.5">
-                  {nodesPage!.items.map((node) => {
+                <ul
+                  onScroll={handleNodesScroll}
+                  className="max-h-96 space-y-1.5 overflow-y-auto pr-0.5"
+                >
+                  {nodeItems.map((node) => {
                     const color = getNodeVisual(node.type).color;
                     const active = customNodeId === node.id;
                     return (
@@ -392,35 +402,15 @@ export function TrendGraphSearch({
                       </li>
                     );
                   })}
+                  {nodesQuery.isFetchingNextPage && (
+                    <li className="flex items-center justify-center py-2.5">
+                      <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+                        <Loader2 className="size-3.5 animate-spin text-violet-500" />
+                        <span>{t("admin.loading")}</span>
+                      </div>
+                    </li>
+                  )}
                 </ul>
-                <div className="mt-3 flex justify-between gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={nodeOffset === 0 || nodesQuery.isFetching}
-                    onClick={() =>
-                      setNodeOffset((prev) =>
-                        Math.max(0, prev - GRAPH_PAGE_SIZE),
-                      )
-                    }
-                  >
-                    {t("admin.trendGraph.previous")}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={
-                      !nodesPage!.hasMore ||
-                      nodeOffset + GRAPH_PAGE_SIZE > 10000 ||
-                      nodesQuery.isFetching
-                    }
-                    onClick={() =>
-                      setNodeOffset((prev) => prev + GRAPH_PAGE_SIZE)
-                    }
-                  >
-                    {t("admin.trendGraph.next")}
-                  </Button>
-                </div>
               </>
             )}
           </div>

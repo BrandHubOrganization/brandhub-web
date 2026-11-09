@@ -23,12 +23,13 @@ export function JobTitleSelect({ value, onChange }: Props) {
   const selectValue = curated ? value : JOB_TITLE_OTHER;
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <Label className="text-xs font-semibold tracking-wide">
+    <div className="flex w-full max-w-full min-w-0 flex-col gap-1.5">
+      <Label className="truncate text-xs font-semibold tracking-wide">
         {t("profile.edit.jobTitleLabel")}
       </Label>
       <Select
         value={selectValue}
+        className="w-full min-w-0"
         onChange={(e) =>
           onChange(e.target.value === JOB_TITLE_OTHER ? "" : e.target.value)
         }
@@ -47,6 +48,7 @@ export function JobTitleSelect({ value, onChange }: Props) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={t("profile.edit.jobTitlePlaceholder")}
+          className="w-full min-w-0"
         />
       )}
     </div>
