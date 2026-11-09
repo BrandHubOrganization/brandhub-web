@@ -908,7 +908,7 @@ export const CanvasTextEditor = forwardRef<
         setCaretIndex(range.start + transformed.length);
       } else if (textRef.current.length > 0) {
         const currentDelta = yText.toDelta();
-        const transformedDelta: DeltaOp[] = currentDelta.map((op) => ({
+        const transformedDelta: DeltaOp[] = currentDelta.map((op: DeltaOp) => ({
           insert:
             typeof op.insert === "string"
               ? transformTextCase(op.insert, mode)

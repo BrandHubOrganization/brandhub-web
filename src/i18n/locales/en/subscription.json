@@ -126,7 +126,7 @@
     "noPayments": "BrandHub has not recorded a payment for this order.",
     "reference": "Reference",
     "review": "Review required",
-    "receipt": "Download receipt (.txt)",
+    "receipt": "Download receipt (.pdf)",
     "receiptError": "Could not download the receipt. Please try again.",
     "notTaxInvoice": "Payment receipt, not a tax invoice.",
     "lookup": "Look up on SePay",
@@ -156,7 +156,28 @@
     "agencyFilter": "Filter by agency ID (UUID)",
     "allAgencies": "All agencies",
     "apply": "Apply",
-    "drawerDescription": "Payment order details, recorded transfers and receipt."
+    "invalidAgencyId": "Invalid UUID format (e.g. xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)",
+    "drawerDescription": "Payment order details, recorded transfers and receipt.",
+    "kpi": {
+      "total": "Total Invoices",
+      "fulfilled": "Paid & Fulfilled",
+      "pending": "Pending Payment",
+      "review": "Action Required",
+      "fulfilledRevenue": "Fulfilled Revenue"
+    },
+    "resetFilters": "Reset filters",
+    "searchAgency": "Filter Agency ID",
+    "searchAgencyPlaceholder": "Enter Agency UUID...",
+    "copied": "Copied to clipboard",
+    "copyCode": "Copy code",
+    "emptyTitle": "No invoices found",
+    "emptyDescription": "Try adjusting status, transaction type or date range filters.",
+    "orderInfo": "Order Information",
+    "paymentInfo": "Payment Information",
+    "servicePeriod": "Service Period",
+    "receiptDownload": "Download payment receipt (PDF)",
+    "receiptDownloading": "Generating PDF receipt...",
+    "viewDetail": "Details"
   },
   "catalog": {
     "loading": "Loading plans…",

@@ -93,5 +93,33 @@
     "environment": "Môi trường",
     "serverId": "Máy chủ",
     "kind": "Loại"
+  },
+  "taskManager": {
+    "title": "Hiệu năng thời gian thực",
+    "subtitle": "Biểu đồ dao động xung nhịp CPU, RAM và Disk theo thời gian thực chuẩn Windows Task Manager.",
+    "live": "TRỰC TIẾP",
+    "allServers": "Tất cả máy chủ (Tổng hợp)",
+    "allServersHint": "Tổng hợp telemetry tất cả máy chủ",
+    "allMetrics": "Tổng quan",
+    "cpu": "CPU",
+    "ram": "Bộ nhớ (RAM)",
+    "disk": "Ổ đĩa (Disk)",
+    "usage": "Mức sử dụng",
+    "utilization": "Khả dụng",
+    "speed": "Tốc độ",
+    "stable": "Ổn định",
+    "activeServices": "Dịch vụ hoạt động",
+    "servicesCount": "{{count}} dịch vụ",
+    "timeRange60s": "60 giây",
+    "timeRange5m": "5 phút",
+    "timeRange15m": "15 phút",
+    "history": "Lịch sử hoạt động",
+    "samplingRate": "Tần số lấy mẫu: 2s",
+    "currentMetrics": "Chỉ số hiện tại",
+    "selectServer": "Chọn máy chủ:",
+    "noServerSelected": "Chưa chọn máy chủ",
+    "emptyHistory": "Đang kết nối luồng telemetry...",
+    "paused": "Tạm dừng",
+    "resume": "Tiếp tục"
   }
 }

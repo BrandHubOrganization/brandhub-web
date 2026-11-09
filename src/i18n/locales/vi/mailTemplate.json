@@ -3,6 +3,7 @@
   "subtitle": "Soạn mẫu email có biến, gửi cho Client hoặc danh sách người nhận, theo dõi lịch sử gửi.",
   "create": "Tạo mẫu email",
   "search": "Tìm theo tên mẫu",
+  "itemLabel": "mẫu email",
   "includeSystem": "Hiện mẫu hệ thống",
   "systemBadge": "Hệ thống",
   "attachmentCount": "{{count}} tệp đính kèm",

@@ -8,6 +8,7 @@ import type {
 } from "@/types/contentRequest";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { Textarea } from "@/components/ui/textarea";
 
 const PLATFORMS: { key: SocialPlatform; label: string; icon: React.ReactNode; color: string }[] = [
@@ -165,19 +166,13 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
                 required
               />
             </div>
-            <div className="space-y-1.5">
-              <label className="text-foreground text-xs font-semibold">
-                {t("requests.create.deadlineLabel")} <span className="text-destructive">*</span>
-              </label>
-              <Input
-                type="date"
-                value={deadline}
-                min={new Date().toISOString().split("T")[0]}
-                onChange={(e) => setDeadline(e.target.value)}
-                className="text-xs cursor-pointer"
-                required
-              />
-            </div>
+            <DatePicker
+              label={t("requests.create.deadlineLabel")}
+              required
+              value={deadline}
+              min={new Date().toISOString().split("T")[0]}
+              onChange={setDeadline}
+            />
           </div>
 
           {/* Publishing Platforms Cards */}

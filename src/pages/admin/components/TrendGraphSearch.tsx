@@ -4,7 +4,8 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { Layers, Loader2, Search, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/date-range-picker";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { useTrendGraph } from "@/pages/admin/hooks/useTrendGraph";
 import { GRAPH_PAGE_SIZE } from "@/pages/admin/hooks/useTrendGraph";
@@ -146,12 +147,10 @@ export function TrendGraphSearch({
               onChange={(event) => setQ(event.target.value)}
               iconPrefix={<Search />}
             />
-            <Input
+            <DatePicker
               label={t("admin.trendGraph.date")}
-              type="date"
               value={date}
-              onChange={(event) => setDate(event.target.value)}
-              className="[color-scheme:light] dark:[color-scheme:dark]"
+              onChange={setDate}
             />
             <div className="flex flex-wrap gap-2">
               <Button
@@ -281,21 +280,20 @@ export function TrendGraphSearch({
           >
             <label className="block space-y-1 text-xs font-medium">
               {t("admin.trendGraph.nodeCategory")}
-              <Select
-                aria-label={t("admin.trendGraph.nodeCategory")}
+              <SelectMenu
+                ariaLabel={t("admin.trendGraph.nodeCategory")}
+                className="w-full"
                 value={nodeLabel}
-                onChange={(event) => {
-                  setNodeLabel(event.target.value);
+                onChange={(nextLabel) => {
+                  setNodeLabel(nextLabel);
                 }}
-              >
-                {NODE_CATEGORIES.map((category) => (
-                  <option key={category.value} value={category.value}>
-                    {category.value
-                      ? `${t(`admin.trendGraph.${category.key}`)} (${category.value})`
-                      : t(`admin.trendGraph.${category.key}`)}
-                  </option>
-                ))}
-              </Select>
+                options={NODE_CATEGORIES.map((category) => ({
+                  value: category.value,
+                  label: category.value
+                    ? `${t(`admin.trendGraph.${category.key}`)} (${category.value})`
+                    : t(`admin.trendGraph.${category.key}`),
+                }))}
+              />
             </label>
             <Input
               label={t("admin.trendGraph.searchModeNodes")}

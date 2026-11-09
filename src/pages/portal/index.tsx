@@ -9,7 +9,7 @@ import {
   getApprovalQueue,
   requestQueueItemRevision,
   resubmitQueueItem,
-} from "@/services/mock/mockPortalService";
+} from "@/services/portalService";
 import type { ApprovalQueueItem, ApprovalStage } from "@/types/portal";
 import { ApprovalQueueList } from "./components/ApprovalQueueList";
 import { PortalCalendarView } from "./components/PortalCalendarView";

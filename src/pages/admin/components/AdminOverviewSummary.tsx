@@ -50,7 +50,7 @@ export function AdminMetrics({ data }: { data: AdminStatistics }) {
     },
   ];
   return (
-    <div className="grid grid-cols-1 gap-4 min-[460px]:grid-cols-2 xl:grid-cols-5">
+    <div className="grid w-full min-w-0 grid-cols-1 gap-4 min-[460px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       {metrics.map(({ key, hint, value, icon: Icon, to }) => {
         const alert =
           (key === "flagged" || key === "pendingSanctions") && value > 0;

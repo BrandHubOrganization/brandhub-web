@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewModal";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -332,18 +333,13 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="text-muted-foreground mb-1 block text-2xs font-medium">
-                    Ngày đăng bài
-                  </label>
-                  <div className="relative">
-                    <Input
-                      type="date"
-                      required
-                      value={scheduleDate}
-                      onChange={(e) => setScheduleDate(e.target.value)}
-                      className="border-border bg-background focus:ring-brand-orange/20 focus:border-brand-orange text-xs font-medium"
-                    />
-                  </div>
+                  <DatePicker
+                    label="Ngày đăng bài"
+                    required
+                    value={scheduleDate}
+                    onChange={setScheduleDate}
+                    allowClear={false}
+                  />
                   {scheduleDate && scheduleTime && (
                     <div className="mt-1.5 flex items-center gap-1.5">
                       <span className="bg-brand-orange-soft text-brand-orange inline-flex items-center rounded-md px-1.5 py-0.5 text-3xs font-semibold">
@@ -440,14 +436,11 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-muted-foreground mb-1 block text-2xs font-medium">
-                        Lặp lại đến ngày
-                      </label>
-                      <Input
-                        type="date"
+                      <DatePicker
+                        label="Lặp lại đến ngày"
                         value={repeatUntil}
-                        onChange={(e) => setRepeatUntil(e.target.value)}
-                        className="text-xs"
+                        onChange={setRepeatUntil}
+                        allowClear
                       />
                     </div>
                   </div>

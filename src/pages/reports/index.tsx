@@ -5,7 +5,7 @@ import { Printer } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { agencyService } from "@/services/agencyService";
 import { useAgencyStore } from "@/store/agencyStore";
 import type { Agency, AgencyStatsResponse } from "@/types/agency";
@@ -19,7 +19,7 @@ import {
   deleteScheduledReport,
   getScheduledReports,
   toggleScheduledReport,
-} from "@/services/mock/mockReportService";
+} from "@/services/reportService";
 import type { ReportFrequency, ScheduledReport } from "./types/report";
 import { ScheduledReportsPanel } from "./components/ScheduledReportsPanel";
 import { ReportsErrorBanner } from "./components/ReportsErrorBanner";
@@ -190,24 +190,15 @@ export function ReportsPage() {
             <div className="flex flex-wrap items-end gap-3">
               <div>
                 <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                  {t("reports.filters.from")}
+                  {t("reports.filters.dateRange", "Khoảng thời gian")}
                 </label>
-                <Input
-                  type="date"
-                  value={from}
-                  onChange={(e) => setFrom(e.target.value)}
-                  className="w-40"
-                />
-              </div>
-              <div>
-                <label className="text-muted-foreground mb-1 block text-xs font-medium">
-                  {t("reports.filters.to")}
-                </label>
-                <Input
-                  type="date"
-                  value={to}
-                  onChange={(e) => setTo(e.target.value)}
-                  className="w-40"
+                <DateRangePicker
+                  from={from}
+                  to={to}
+                  onChange={(f, t) => {
+                    setFrom(f);
+                    setTo(t);
+                  }}
                 />
               </div>
               <Button

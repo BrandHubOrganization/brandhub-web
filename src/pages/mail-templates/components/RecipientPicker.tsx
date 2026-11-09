@@ -4,10 +4,14 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { SelectMenu } from "@/components/ui/select-menu";
 import { errorCode } from "@/services/adminRevenueService";
-import { mailTemplateService } from "../services/mailTemplateService";
-import type { Recipient, RecipientCandidate, RecipientGroup } from "../types";
+import { mailTemplateService } from "@/pages/mail-templates/services/mailTemplateService";
+import type {
+  Recipient,
+  RecipientCandidate,
+  RecipientGroup,
+} from "@/pages/mail-templates/types";
 
 interface Props {
   workspaceId: string;
@@ -47,7 +51,10 @@ export function RecipientPicker({ workspaceId, current, onAdd }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    mailTemplateService.recipientGroups(workspaceId).then(setGroups).catch(() => setGroups([]));
+    mailTemplateService
+      .recipientGroups(workspaceId)
+      .then(setGroups)
+      .catch(() => setGroups([]));
   }, [open, workspaceId]);
 
   const toggle = (email: string) =>
@@ -69,7 +76,12 @@ export function RecipientPicker({ workspaceId, current, onAdd }: Props) {
   const addGroup = () => {
     const group = groups.find((g) => g.id === groupId);
     if (!group) return;
-    onAdd(group.recipients.map((r) => ({ email: r.email, ...(r.name ? { name: r.name } : {}) })));
+    onAdd(
+      group.recipients.map((r) => ({
+        email: r.email,
+        ...(r.name ? { name: r.name } : {}),
+      })),
+    );
   };
 
   const saveGroup = async () => {
@@ -80,11 +92,17 @@ export function RecipientPicker({ workspaceId, current, onAdd }: Props) {
         groupName.trim(),
         current.map((r) => ({ email: r.email, name: r.name })),
       );
-      setGroups((prev) => [...prev, created].sort((a, b) => a.name.localeCompare(b.name)));
+      setGroups((prev) =>
+        [...prev, created].sort((a, b) => a.name.localeCompare(b.name)),
+      );
       setGroupName("");
       toast.success(t("mailTemplate.recipients.groupSaved"));
     } catch (e) {
-      toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
+      toast.error(
+        t(`mailTemplate.errors.${errorCode(e)}`, {
+          defaultValue: t("mailTemplate.errors.generic"),
+        }),
+      );
     }
   };
 
@@ -96,68 +114,141 @@ export function RecipientPicker({ workspaceId, current, onAdd }: Props) {
       setGroupId("");
       toast.success(t("mailTemplate.recipients.groupDeleted"));
     } catch (e) {
-      toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
+      toast.error(
+        t(`mailTemplate.errors.${errorCode(e)}`, {
+          defaultValue: t("mailTemplate.errors.generic"),
+        }),
+      );
     }
   };
 
   return (
     <div className="space-y-2 text-sm">
-      <Button type="button" variant="outline" size="sm" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
         <Users className="size-4" />
         {t("mailTemplate.recipients.addFromWorkspace")}
       </Button>
       {open && (
-        <div className="bg-muted/30 space-y-3 rounded-lg border p-3" data-testid="recipient-picker">
-          <Input aria-label={t("mailTemplate.recipients.search")} placeholder={t("mailTemplate.recipients.search")}
-            value={query} onChange={(e) => setQuery(e.target.value)} />
-          <ul className="max-h-40 space-y-1 overflow-y-auto" aria-label={t("mailTemplate.recipients.results")}>
+        <div
+          className="bg-muted/30 space-y-3 rounded-lg border p-3"
+          data-testid="recipient-picker"
+        >
+          <Input
+            aria-label={t("mailTemplate.recipients.search")}
+            placeholder={t("mailTemplate.recipients.search")}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <ul
+            className="max-h-40 space-y-1 overflow-y-auto"
+            aria-label={t("mailTemplate.recipients.results")}
+          >
             {!loading && candidates.length === 0 && (
-              <li className="text-muted-foreground text-xs">{t("mailTemplate.recipients.noResults")}</li>
+              <li className="text-muted-foreground text-xs">
+                {t("mailTemplate.recipients.noResults")}
+              </li>
             )}
             {candidates.map((c) => (
               <li key={c.email}>
                 <label className="flex cursor-pointer items-center gap-2">
-                  <input type="checkbox" checked={checked.has(c.email)} onChange={() => toggle(c.email)} />
+                  <input
+                    type="checkbox"
+                    checked={checked.has(c.email)}
+                    onChange={() => toggle(c.email)}
+                  />
                   <span className="min-w-0 flex-1 truncate">
-                    {c.name ? `${c.name} · ` : ""}<span className="text-muted-foreground">{c.email}</span>
+                    {c.name ? `${c.name} · ` : ""}
+                    <span className="text-muted-foreground">{c.email}</span>
                   </span>
                   <span className="text-muted-foreground text-xs">
-                    {t(c.source === "CLIENT" ? "mailTemplate.recipients.client" : "mailTemplate.recipients.member")}
+                    {t(
+                      c.source === "CLIENT"
+                        ? "mailTemplate.recipients.client"
+                        : "mailTemplate.recipients.member",
+                    )}
                   </span>
                 </label>
               </li>
             ))}
           </ul>
-          <Button type="button" size="sm" disabled={checked.size === 0} onClick={addChecked}>
+          <Button
+            type="button"
+            size="sm"
+            disabled={checked.size === 0}
+            onClick={addChecked}
+          >
             {t("mailTemplate.recipients.addSelected", { count: checked.size })}
           </Button>
 
           <div className="space-y-2 border-t pt-3">
-            <p className="text-xs font-medium">{t("mailTemplate.recipients.groups")}</p>
+            <p className="text-xs font-medium">
+              {t("mailTemplate.recipients.groups")}
+            </p>
             <div className="flex flex-wrap items-center gap-2">
               <div className="min-w-40 flex-1">
-                <Select aria-label={t("mailTemplate.recipients.chooseGroup")} value={groupId}
-                  onChange={(e) => setGroupId(e.target.value)}>
-                  <option value="">{t("mailTemplate.recipients.chooseGroup")}</option>
-                  {groups.map((g) => <option key={g.id} value={g.id}>{`${g.name} (${g.count})`}</option>)}
-                </Select>
+                <SelectMenu
+                  ariaLabel={t("mailTemplate.recipients.chooseGroup")}
+                  className="w-full"
+                  value={groupId}
+                  onChange={(nextId) => setGroupId(nextId)}
+                  options={[
+                    {
+                      value: "",
+                      label: t("mailTemplate.recipients.chooseGroup"),
+                    },
+                    ...groups.map((g) => ({
+                      value: g.id,
+                      label: `${g.name} (${g.count})`,
+                    })),
+                  ]}
+                />
               </div>
-              <Button type="button" size="sm" variant="outline" disabled={!groupId} onClick={addGroup}>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={!groupId}
+                onClick={addGroup}
+              >
                 {t("mailTemplate.recipients.addGroup")}
               </Button>
-              <Button type="button" size="sm" variant="outline" disabled={!groupId}
-                aria-label={t("mailTemplate.recipients.deleteGroup")} onClick={() => void removeGroup()}>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={!groupId}
+                aria-label={t("mailTemplate.recipients.deleteGroup")}
+                onClick={() => void removeGroup()}
+              >
                 <Trash2 className="size-4" />
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <div className="min-w-40 flex-1">
-                <Input aria-label={t("mailTemplate.recipients.groupName")} placeholder={t("mailTemplate.recipients.groupName")}
-                  maxLength={80} value={groupName} onChange={(e) => setGroupName(e.target.value)} />
+                <Input
+                  aria-label={t("mailTemplate.recipients.groupName")}
+                  placeholder={t("mailTemplate.recipients.groupName")}
+                  maxLength={80}
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                />
               </div>
-              <Button type="button" size="sm" variant="outline"
-                disabled={!groupName.trim() || current.length === 0} onClick={() => void saveGroup()}>
-                {t("mailTemplate.recipients.saveGroup", { count: current.length })}
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={!groupName.trim() || current.length === 0}
+                onClick={() => void saveGroup()}
+              >
+                {t("mailTemplate.recipients.saveGroup", {
+                  count: current.length,
+                })}
               </Button>
             </div>
           </div>

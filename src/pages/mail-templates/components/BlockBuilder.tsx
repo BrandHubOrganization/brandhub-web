@@ -4,6 +4,7 @@ import { Flip } from "gsap/Flip";
 import { ArrowDown, ArrowUp, GripVertical, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
+import { SelectMenu } from "@/components/ui/select-menu";
 import {
   BLOCK_TYPES,
   CTA_URL_TYPES,
@@ -15,7 +16,7 @@ import {
   type BlockProps,
   type BlockType,
   type MailBlock,
-} from "../blocks";
+} from "@/pages/mail-templates/blocks";
 
 interface Props {
   blocks: MailBlock[];
@@ -44,18 +45,25 @@ export function BlockBuilder({ blocks, onChange, errors, disabled }: Props) {
   // Structural changes (add / move / remove) animate so the user sees which block went where.
   // Typing in a block uses onChange directly and does not animate.
   const change = (next: MailBlock[]) => {
-    if (listRef.current) flipState.current = Flip.getState(Array.from(listRef.current.children));
+    if (listRef.current)
+      flipState.current = Flip.getState(Array.from(listRef.current.children));
     onChange(next);
   };
 
   useLayoutEffect(() => {
     const state = flipState.current;
     flipState.current = null;
-    if (!state || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!state || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return;
     Flip.from(state, {
       duration: 0.25,
       ease: "power2.out",
-      onEnter: (els) => gsap.fromTo(els, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.25 }),
+      onEnter: (els) =>
+        gsap.fromTo(
+          els,
+          { opacity: 0, y: 8 },
+          { opacity: 1, y: 0, duration: 0.25 },
+        ),
     });
   }, [blocks]);
 
@@ -107,7 +115,7 @@ export function BlockBuilder({ blocks, onChange, errors, disabled }: Props) {
                 e.dataTransfer.setData("text/plain", PALETTE_PREFIX + type)
               }
               onClick={() => add(type)}
-              className="hover:bg-muted focus-visible:ring-ring flex w-full items-center gap-1.5 rounded border px-2 py-1.5 text-left text-xs transition-transform focus-visible:outline-none focus-visible:ring-2 active:scale-[0.98] disabled:opacity-40"
+              className="hover:bg-muted focus-visible:ring-ring flex w-full items-center gap-1.5 rounded border px-2 py-1.5 text-left text-xs transition-transform focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98] disabled:opacity-40"
             >
               <Plus className="size-3.5 shrink-0" />
               {t(`mailTemplate.builder.blocks.${type}`)}
@@ -120,7 +128,10 @@ export function BlockBuilder({ blocks, onChange, errors, disabled }: Props) {
         aria-label={t("mailTemplate.builder.canvas")}
         data-testid="builder-canvas"
         className={`min-h-40 space-y-2 rounded border border-dashed p-2 ${overIndex === blocks.length ? "ring-brand-orange ring-2" : ""}`}
-        onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOverIndex(null); }}
+        onDragLeave={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node))
+            setOverIndex(null);
+        }}
         onDragOver={(e) => allowDrop(e, blocks.length)}
         onDrop={(e) => drop(e, blocks.length)}
       >
@@ -152,17 +163,23 @@ export function BlockBuilder({ blocks, onChange, errors, disabled }: Props) {
                     draggable={!disabled}
                     aria-hidden="true"
                     onDragStart={(e) => {
-                      e.dataTransfer.setData("text/plain", BLOCK_PREFIX + index);
+                      e.dataTransfer.setData(
+                        "text/plain",
+                        BLOCK_PREFIX + index,
+                      );
                       setDragIndex(index);
                     }}
-                    onDragEnd={() => { setDragIndex(null); setOverIndex(null); }}
+                    onDragEnd={() => {
+                      setDragIndex(null);
+                      setOverIndex(null);
+                    }}
                     className="cursor-grab active:cursor-grabbing"
                   >
                     <GripVertical className="size-4" />
                   </span>
                   <button
                     type="button"
-                    className="focus-visible:ring-ring flex-1 truncate rounded px-1 text-left text-sm font-medium focus-visible:outline-none focus-visible:ring-2"
+                    className="focus-visible:ring-ring flex-1 truncate rounded px-1 text-left text-sm font-medium focus-visible:ring-2 focus-visible:outline-none"
                     aria-expanded={open}
                     onClick={() => setOpenId(open ? null : block.id)}
                   >
@@ -257,19 +274,23 @@ function PropsEditor({
           {field("text", "mailTemplate.builder.props.text", { maxLength: 200 })}
           <label className="block space-y-1 text-xs font-medium">
             <span>{t("mailTemplate.builder.props.align")}</span>
-            <select
-              className="bg-background w-full rounded border px-2 py-1.5 text-sm"
+            <SelectMenu
+              ariaLabel={t("mailTemplate.builder.props.align")}
+              className="w-full"
               disabled={disabled}
               value={String(props.align)}
-              onChange={(e) => onPatch({ align: e.target.value })}
-            >
-              <option value="left">
-                {t("mailTemplate.builder.props.alignLeft")}
-              </option>
-              <option value="center">
-                {t("mailTemplate.builder.props.alignCenter")}
-              </option>
-            </select>
+              onChange={(align) => onPatch({ align })}
+              options={[
+                {
+                  value: "left",
+                  label: t("mailTemplate.builder.props.alignLeft"),
+                },
+                {
+                  value: "center",
+                  label: t("mailTemplate.builder.props.alignCenter"),
+                },
+              ]}
+            />
           </label>
         </>
       );
@@ -304,18 +325,17 @@ function PropsEditor({
           })}
           <label className="block space-y-1 text-xs font-medium">
             <span>{t("mailTemplate.builder.props.urlType")}</span>
-            <select
-              className="bg-background w-full rounded border px-2 py-1.5 text-sm"
+            <SelectMenu
+              ariaLabel={t("mailTemplate.builder.props.urlType")}
+              className="w-full"
               disabled={disabled}
               value={String(props.urlType)}
-              onChange={(e) => onPatch({ urlType: e.target.value })}
-            >
-              {CTA_URL_TYPES.map((u) => (
-                <option key={u} value={u}>
-                  {t(`mailTemplate.builder.props.urlTypes.${u}`)}
-                </option>
-              ))}
-            </select>
+              onChange={(urlType) => onPatch({ urlType })}
+              options={CTA_URL_TYPES.map((u) => ({
+                value: u,
+                label: t(`mailTemplate.builder.props.urlTypes.${u}`),
+              }))}
+            />
           </label>
           {props.urlType === "custom" &&
             field("customUrl", "mailTemplate.builder.props.customUrl")}

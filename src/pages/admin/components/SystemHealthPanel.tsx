@@ -21,7 +21,7 @@ export function SystemHealthPanel({ metrics }: SystemHealthPanelProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
       {metrics.map((metric) => (
         <div
           key={metric.service}

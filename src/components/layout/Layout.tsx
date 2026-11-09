@@ -277,7 +277,7 @@ export function Layout() {
   };
 
   return (
-    <div className="bg-background text-foreground flex h-screen w-screen overflow-hidden font-sans">
+    <div className="bg-background text-foreground flex h-screen w-full min-w-0 overflow-hidden font-sans">
       {/* ── SIDEBAR (DESKTOP >= 768px) ── */}
       <aside className="hidden h-full shrink-0 md:block">
         <Sidebar
@@ -299,7 +299,7 @@ export function Layout() {
       </aside>
 
       {/* ── MAIN CONTENT CONTAINER ── */}
-      <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
+      <div className="relative flex min-w-0 flex-1 w-full flex-col overflow-hidden">
         <Navbar
           collapsed={collapsed}
           toggleCollapsed={toggleCollapsed}
@@ -337,7 +337,7 @@ export function Layout() {
 
         {/* Page Content Outlet */}
         <main
-          className={`bg-background flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
+          className={`bg-background flex-1 w-full min-w-0 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
         >
           <React.Suspense fallback={<PageFallback />}>
             <Outlet />

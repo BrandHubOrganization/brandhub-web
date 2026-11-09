@@ -183,14 +183,11 @@ export const invoiceHistoryService = {
         ? new Date(`${filters.to}T23:59:59.999`).toISOString()
         : undefined,
     };
-    return requireApiData<BillingHistoryPage>(
-      (
-        await api.get(
-          admin ? "/api/v1/admin/billing/invoices" : historyPath(agencyId),
-          { params },
-        )
-      ).data,
+    const response = await api.get(
+      admin ? "/api/v1/admin/billing/invoices" : historyPath(agencyId),
+      { params },
     );
+    return requireApiData<BillingHistoryPage>(response.data);
   },
   async detail(agencyId: string, orderId: string, admin = false) {
     return requireApiData<BillingHistoryDetail>(
@@ -220,7 +217,7 @@ export const invoiceHistoryService = {
     const url = URL.createObjectURL(response.data);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `brandhub-receipt-${orderId}.txt`;
+    anchor.download = `brandhub-receipt-${orderId}.pdf`;
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();

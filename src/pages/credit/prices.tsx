@@ -113,6 +113,7 @@ export default function CreditPricesPage() {
 
   return (
     <PageWrapper
+      showGuideButton={false}
       title={t("credit.price.title")}
       description="Quản lý ma trận đơn giá AI Credit cho từng tác vụ và điều khiển công tắc khẩn cấp (Kill-Switch) bảo trì model."
       actions={
