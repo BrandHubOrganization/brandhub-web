@@ -7,7 +7,7 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/" />
   </url>
   <url>
@@ -16,7 +16,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/help/faq" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/help/faq" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/help/faq?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/help/faq" />
   </url>
   <url>
@@ -25,7 +25,7 @@
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/privacy" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/privacy" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/privacy?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/privacy" />
   </url>
   <url>
@@ -34,7 +34,7 @@
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/terms" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/terms" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/terms?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/terms" />
   </url>
 </urlset>

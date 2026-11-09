@@ -11,6 +11,94 @@ if (!fs.existsSync(baseHtmlPath)) {
 
 const baseHtml = fs.readFileSync(baseHtmlPath, "utf8");
 
+const SR_ONLY_STYLE =
+  "position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;";
+
+const HOME_SEMANTIC_HTML = `
+      <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>BrandHub — Nền tảng Quản trị Thương hiệu &amp; Xuất bản Nội dung Đa kênh AI</h1>
+        <p>
+          BrandHub (<a href="https://brandhub.id.vn">https://brandhub.id.vn</a>) là nền tảng SaaS B2B2C giúp các Agency truyền thông và Thương hiệu tại Việt Nam quản lý trọn vẹn vòng đời chiến dịch nội dung số: từ xây dựng Gói truyền thông (Media Package), lập kế hoạch Chiến dịch (Media Campaign), sáng tạo nội dung bằng AI GraphRAG (Neo4j + ChromaDB), kiểm duyệt an toàn nội dung, phê duyệt đa cấp (Owner, Manager, Creator, Client) đến xuất bản tự động lên 4 nền tảng mạng xã hội (Facebook, Instagram, TikTok, Threads).
+        </p>
+        <h2>Các nhóm tính năng cốt lõi</h2>
+        <ul>
+          <li><strong>Quản trị Agency &amp; đa Workspace:</strong> Cô lập dữ liệu thương hiệu khách hàng, quản lý thành viên và phân quyền RBAC theo 6 vai trò chuẩn (Guest, Owner, Manager, Creator, Client, Admin).</li>
+          <li><strong>Gói truyền thông &amp; Chiến dịch (Media Package &amp; Media Campaign):</strong> Chia sẻ liên kết báo giá cho khách hàng không cần đăng nhập, đàm phán 2 chiều và chuyển đổi thành backlog công việc tự động.</li>
+          <li><strong>AI Studio &amp; GraphRAG Brand Knowledge:</strong> Sinh bài viết chuẩn giọng văn thương hiệu, tạo ảnh/video sản phẩm với đại sứ ảo AI, kiểm duyệt tuân thủ cộng đồng và bắt xu hướng TikTok Creative Center &amp; Google Trends.</li>
+          <li><strong>Xuất bản Đa kênh &amp; Phân tích:</strong> Đặt lịch đăng tự động và theo dõi chỉ số tăng trưởng thời gian thực trên Facebook, Instagram, TikTok và Threads.</li>
+        </ul>
+        <h2>Bảng so sánh BrandHub với công cụ truyền thống</h2>
+        <table>
+          <caption>So sánh tính năng giữa BrandHub, các công cụ lên lịch mạng xã hội truyền thống và quy trình thủ công</caption>
+          <thead>
+            <tr>
+              <th scope="col">Tiêu chí vận hành &amp; công nghệ</th>
+              <th scope="col">BrandHub Platform</th>
+              <th scope="col">Tool đăng bài truyền thống (Buffer / Planable / Hootsuite)</th>
+              <th scope="col">Quy trình thủ công (Sheets + Drive + Chat)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Kiến trúc Đa Agency &amp; Cô lập Workspace (6 vai trò RBAC)</th>
+              <td>Hỗ trợ nguyên bản (Guest, Owner, Manager, Creator, Client, Admin)</td>
+              <td>Giới hạn / Phụ phí cao</td>
+              <td>Rời rạc, dễ lộ dữ liệu</td>
+            </tr>
+            <tr>
+              <th scope="row">Đàm phán Gói dịch vụ (Media Package) &amp; Tự động tạo Campaign</th>
+              <td>Tự động hóa khép kín 1-click</td>
+              <td>Không hỗ trợ</td>
+              <td>Làm hợp đồng &amp; nhập tay</td>
+            </tr>
+            <tr>
+              <th scope="row">AI GraphRAG Brand Guidelines &amp; Virtual Ambassador</th>
+              <td>Neo4j + ChromaDB + LoRA Studio</td>
+              <td>Chỉ gợi ý caption cơ bản</td>
+              <td>Không có kiểm chứng tự động</td>
+            </tr>
+            <tr>
+              <th scope="row">AI Social Trend Crawler thời gian thực</th>
+              <td>Cập nhật liên tục mỗi ngày (TikTok &amp; Google Trends)</td>
+              <td>Không tích hợp sẵn</td>
+              <td>Tìm kiếm thủ công tốn giờ</td>
+            </tr>
+            <tr>
+              <th scope="row">Luồng Phê duyệt Đa cấp (Creator → Manager → Client)</th>
+              <td>Luồng duyệt 3 cấp chuẩn Agency</td>
+              <td>Duyệt phẳng, thiếu vai trò</td>
+              <td>Trôi tin nhắn qua chat</td>
+            </tr>
+            <tr>
+              <th scope="row">Xuất bản Đa kênh &amp; Quản lý Đối tác Báo đài</th>
+              <td>Facebook, Instagram, TikTok, Threads + Báo chí/TV</td>
+              <td>Chỉ đăng mạng xã hội</td>
+              <td>Đăng tay từng kênh</td>
+            </tr>
+            <tr>
+              <th scope="row">Thanh toán Nội địa &amp; Hỗ trợ Thị trường Việt Nam</th>
+              <td>VietQR tự động (SePay / PayOS) + AI tiếng Việt</td>
+              <td>Chỉ thẻ quốc tế (USD)</td>
+              <td>Đối soát sao kê thủ công</td>
+            </tr>
+          </tbody>
+        </table>
+        <nav aria-label="Liên kết công khai">
+          <a href="https://brandhub.id.vn/help/faq">Trung tâm Trợ giúp &amp; Câu hỏi thường gặp (FAQ)</a> |
+          <a href="https://brandhub.id.vn/privacy">Chính sách Quyền riêng tư (Privacy Policy)</a> |
+          <a href="https://brandhub.id.vn/terms">Điều khoản Dịch vụ (Terms of Service)</a> |
+          <a href="https://brandhub.id.vn/login">Đăng nhập</a> |
+          <a href="https://brandhub.id.vn/register">Đăng ký miễn phí</a>
+        </nav>
+      </main>`;
+
+// Inject semantic HTML into dist/index.html #root so Wave 1 crawlers see full content immediately
+const enrichedHomeHtml = baseHtml.replace(
+  /<div id="root"><\/div>/,
+  `<div id="root"><div style="${SR_ONLY_STYLE}">${HOME_SEMANTIC_HTML}</div></div>`,
+);
+fs.writeFileSync(baseHtmlPath, enrichedHomeHtml, "utf8");
+
 const PUBLIC_ROUTES = [
   {
     routePath: "help/faq",
@@ -184,7 +272,7 @@ for (const route of PUBLIC_ROUTES) {
     )
     .replace(
       /<link\s+rel="alternate"\s+hreflang="en"\s+href="[^"]*"\s*\/>/,
-      `<link rel="alternate" hreflang="en" href="${route.canonicalUrl}" />`,
+      `<link rel="alternate" hreflang="en" href="${route.canonicalUrl}?lang=en" />`,
     )
     .replace(
       /<link\s+rel="alternate"\s+hreflang="x-default"\s+href="[^"]*"\s*\/>/,
@@ -215,6 +303,10 @@ for (const route of PUBLIC_ROUTES) {
       `<meta name="twitter:description" content="${escapedDesc}" />`,
     )
     .replace(
+      /<div id="root"><\/div>/,
+      `<div id="root"><div style="${SR_ONLY_STYLE}">${route.noscriptHtml}</div></div>`,
+    )
+    .replace(
       /<noscript>[\s\S]*?<\/noscript>/,
       `<noscript>${route.noscriptHtml}\n    </noscript>`,
     );
@@ -241,5 +333,5 @@ for (const route of PUBLIC_ROUTES) {
 }
 
 console.log(
-  `[prerender-public-routes] Generated static SEO HTML for ${PUBLIC_ROUTES.map((r) => `/${r.routePath}`).join(", ")}`,
+  `[prerender-public-routes] Generated static SEO HTML for /, ${PUBLIC_ROUTES.map((r) => `/${r.routePath}`).join(", ")}`,
 );

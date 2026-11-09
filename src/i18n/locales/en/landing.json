@@ -224,7 +224,7 @@
     },
     "tiktok": {
       "0": {
-        "caption": "POV: you just found a tool that automates your entire content calendar across 5 platforms in one click. Content team went from 6 people to 3. My boss stopped asking 'where's the post' every morning."
+        "caption": "POV: you just found a tool that automates your entire content calendar across 4 platforms in one click. Content team went from 6 people to 3. My boss stopped asking 'where's the post' every morning."
       },
       "1": {
         "caption": "One tool replacing Canva + Google Calendar + Trello + Google Drive + Messenger. Sounds fake but it's real. This is the actual stack our team uses to run 8 clients at once. Who said agencies have to be chaos?"
@@ -247,7 +247,7 @@
       "2": {
         "authorName": "Duc Anh",
         "authorRole": "COO, NextGen Media Group",
-        "content": "Running the Tet 2026 campaign for 5 brands at once with an 8-person team. Without BrandHub, I honestly don't think we'd have survived January. Cross-platform publishing sends one post to 5 channels (FB, IG, TikTok, LinkedIn, X) with a single click. The content calendar gives us a bird's-eye view of every campaign on one screen — we catch double-bookings and duplicate content instantly. Our team's output is up 240%, and review meeting time is down 80%. Measurable ROI: roughly $3,200/month saved on tooling and headcount."
+        "content": "Running the Tet 2026 campaign for 5 brands at once with an 8-person team. Without BrandHub, I honestly don't think we'd have survived January. Cross-platform publishing sends one post to 4 channels (FB, IG, TikTok, Threads) with a single click. The content calendar gives us a bird's-eye view of every campaign on one screen — we catch double-bookings and duplicate content instantly. Our team's output is up 240%, and review meeting time is down 80%. Measurable ROI: roughly $3,200/month saved on tooling and headcount."
       }
     },
     "linkedin": {
@@ -556,11 +556,87 @@
     "templates": "Templates",
     "testimonials": "Testimonials",
     "team": "Team",
+    "comparison": "Compare",
     "pricing": "Pricing",
     "faq": "FAQ",
     "login": "Sign in",
     "register": "Sign up",
     "dashboard": "Go to Dashboard"
+  },
+  "comparison": {
+    "badge": "Media Operations Platform Comparison",
+    "title": "Why Agencies & Brands Choose BrandHub Over Fragmented Tools",
+    "subtitle": "Compare BrandHub's unified architecture against legacy social media schedulers (Buffer, Hootsuite, Planable) and manual spreadsheet workflows.",
+    "caption": "Feature comparison matrix across BrandHub, legacy social schedulers, and manual workflows",
+    "columns": {
+      "criteria": "Operational & Technical Capability",
+      "brandhub": "BrandHub Platform",
+      "brandhubSub": "All-in-One Agency & AI",
+      "legacyTools": "Legacy Schedulers",
+      "legacySub": "Buffer / Planable / Hootsuite",
+      "manual": "Manual Workflow",
+      "manualSub": "Sheets + Drive + Chat"
+    },
+    "rows": {
+      "agencyWorkspace": {
+        "feature": "Multi-Agency Architecture & Workspace Isolation",
+        "desc": "Strict tenant data isolation, independent timezones, and 6 canonical roles (Guest, Owner, Manager, Creator, Client, Admin)",
+        "brandhub": "Native multi-tenant RBAC",
+        "legacy": "Limited / Costly add-ons",
+        "manual": "Fragmented & error-prone"
+      },
+      "mediaPackage": {
+        "feature": "Media Package Negotiation & Auto-Campaigns",
+        "desc": "Standardized service catalogs, two-way Client contract negotiation, and 1-click task backlog generation",
+        "brandhub": "End-to-end automated",
+        "legacy": "Not supported",
+        "manual": "Manual contracts & spreadsheets"
+      },
+      "graphRag": {
+        "feature": "AI GraphRAG Brand Guidelines & Virtual Model",
+        "desc": "Tone-of-voice enforcement via Neo4j + ChromaDB and hyper-consistent LoRA virtual brand ambassadors",
+        "brandhub": "GraphRAG + LoRA Studio",
+        "legacy": "Basic caption prompts only",
+        "manual": "No automated verification"
+      },
+      "trendCrawler": {
+        "feature": "Real-Time AI Social Trend Crawler",
+        "desc": "Automated trend discovery from TikTok Creative Center & Google Trends with instant brief suggestions",
+        "brandhub": "Daily automated crawling",
+        "legacy": "Not natively integrated",
+        "manual": "Hours of manual research"
+      },
+      "complianceGuard": {
+        "feature": "Automated AI Content Compliance Guard",
+        "desc": "Pre-approval screening for community safety, profanity, and platform policy violations",
+        "brandhub": "Proactive AI safety guardrails",
+        "legacy": "None",
+        "manual": "Manual human review only"
+      },
+      "approvalWorkflow": {
+        "feature": "Multi-Tier Approval (Creator → Manager → Client)",
+        "desc": "Versioned draft reviews, native multi-platform previews, and transparent audit trails",
+        "brandhub": "3-tier agency governance",
+        "legacy": "Flat approvals",
+        "manual": "Lost in chat threads"
+      },
+      "multiChannel": {
+        "feature": "Multi-Channel Publishing & Press/TV Collaborators",
+        "desc": "Direct API publishing to Facebook, Instagram, TikTok, Threads plus third-party Press, TV & Banner tracking",
+        "brandhub": "4 Social APIs + Press/TV",
+        "legacy": "Social posts only",
+        "manual": "Manual posting per channel"
+      },
+      "vietQrBilling": {
+        "feature": "Instant VietQR Billing & Native Vietnamese AI",
+        "desc": "Seamless SePay / PayOS VietQR checkout and culturally fluent Vietnamese copywriting",
+        "brandhub": "Instant VietQR + Native VI AI",
+        "legacy": "USD credit card only",
+        "manual": "Manual bank reconciliation"
+      }
+    },
+    "footerNote": "Comparison reflects BrandHub's official 141-feature enterprise specification against standard social media scheduling tools in 2026.",
+    "cta": "Start Free Today"
   },
   "team": {
     "title": "Development Team",
@@ -600,7 +676,7 @@
         "features": [
           "1 workspace",
           "5 team members",
-          "3 social channels",
+          "4 social channels (FB, IG, TikTok, Threads)",
           "Basic analytics",
           "100 scheduled posts/mo"
         ]

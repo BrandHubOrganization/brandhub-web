@@ -19,7 +19,13 @@ import {
 } from "lucide-react";
 
 export function PrivacyPolicyPage() {
-  const [lang, setLang] = useState<"en" | "vi">("vi");
+  const [lang, setLang] = useState<"en" | "vi">(() => {
+    if (typeof window !== "undefined") {
+      const urlLang = new URLSearchParams(window.location.search).get("lang");
+      if (urlLang === "en" || urlLang === "vi") return urlLang;
+    }
+    return "vi";
+  });
 
   return (
     <div className="mx-auto max-w-4xl py-6 sm:py-10">

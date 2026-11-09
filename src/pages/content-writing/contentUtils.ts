@@ -782,23 +782,23 @@ const ALL_UNICODE_SETS: UnicodeAlphabetSet[] = [
 const REVERSE_UNICODE_MAP: Map<string, string> = (() => {
   const map = new Map<string, string>();
   for (const set of ALL_UNICODE_SETS) {
-    for (let i = 0; i < 26; i++) {
-      const lowerAscii = String.fromCharCode(0x61 + i);
-      const lowerStyled = mapCharToSet(lowerAscii, set);
-      if (lowerStyled !== lowerAscii && !map.has(lowerStyled)) {
-        map.set(lowerStyled, lowerAscii);
-      }
-      const upperAscii = String.fromCharCode(0x41 + i);
-      const upperStyled = mapCharToSet(upperAscii, set);
-      if (upperStyled !== upperAscii) {
-        map.set(upperStyled, upperAscii);
-      }
-    }
     for (let d = 0; d < 10; d++) {
       const digitAscii = String.fromCharCode(0x30 + d);
       const digitStyled = mapCharToSet(digitAscii, set);
       if (digitStyled !== digitAscii && !map.has(digitStyled)) {
         map.set(digitStyled, digitAscii);
+      }
+    }
+    for (let i = 0; i < 26; i++) {
+      const upperAscii = String.fromCharCode(0x41 + i);
+      const upperStyled = mapCharToSet(upperAscii, set);
+      if (upperStyled !== upperAscii && !map.has(upperStyled)) {
+        map.set(upperStyled, upperAscii);
+      }
+      const lowerAscii = String.fromCharCode(0x61 + i);
+      const lowerStyled = mapCharToSet(lowerAscii, set);
+      if (lowerStyled !== lowerAscii && !map.has(lowerStyled)) {
+        map.set(lowerStyled, lowerAscii);
       }
     }
   }
@@ -860,8 +860,9 @@ export function stripUnicodeStyling(text: string): string {
   // 3. Collapse Regional Indicator spacing (🇦 🇧 🇨 -> 🇦🇧🇨, triple space -> single space)
   if (/[\u{1F1E6}-\u{1F1FF}]/u.test(working)) {
     working = working
-      .replace(/([\u{1F1E6}-\u{1F1FF}])\s+(?=[\u{1F1E6}-\u{1F1FF}])/gu, "$1")
-      .replace(/\s{2,}/g, " ");
+      .replace(/ {3}/g, "\uE000")
+      .replace(/([\u{1F1E6}-\u{1F1FF}]) (?=[\u{1F1E6}-\u{1F1FF}])/gu, "$1")
+      .replace(/\uE000/g, " ");
   }
 
   // 4. Detect Upside-Down text (contains distinct upside-down code points) and un-reverse
@@ -894,6 +895,8 @@ export type ZantextCategoryId =
   | "luxury"
   | "modern"
   | "creative";
+
+export type ZantextCategory = ZantextCategoryId;
 
 export interface ZantextCategoryMeta {
   id: ZantextCategoryId;
@@ -1356,18 +1359,25 @@ export function styleRunText(
     return cleanBase
       .split("\n")
       .map((line) => {
-        const tokens: string[] = [];
-        for (const ch of Array.from(line)) {
+        const chars = Array.from(line);
+        let outLine = "";
+        for (let i = 0; i < chars.length; i++) {
+          const ch = chars[i];
           const code = ch.toUpperCase().charCodeAt(0);
           if (code >= 0x41 && code <= 0x5a) {
-            tokens.push(String.fromCodePoint(0x1f1e6 + code - 0x41));
-          } else if (/\s/.test(ch)) {
-            tokens.push(" ");
+            outLine += String.fromCodePoint(0x1f1e6 + code - 0x41);
+            const nextCh = i + 1 < chars.length ? chars[i + 1] : "";
+            const nextCode = nextCh ? nextCh.toUpperCase().charCodeAt(0) : 0;
+            if (nextCode >= 0x41 && nextCode <= 0x5a) {
+              outLine += " ";
+            }
+          } else if (ch === " ") {
+            outLine += "   ";
           } else {
-            tokens.push(ch);
+            outLine += ch;
           }
         }
-        return tokens.join(" ").replace(/\s{3,}/g, "   ");
+        return outLine;
       })
       .join("\n");
   }

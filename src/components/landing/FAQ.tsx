@@ -40,7 +40,7 @@ export function FAQ() {
             headVisible ? "opacity-100" : "opacity-0",
           )}
         >
-          <SectionEyebrow index={10} />
+          <SectionEyebrow index={11} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
             {t("landing.faq.title")}
           </h2>

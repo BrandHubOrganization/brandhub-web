@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Languages, Sun, Moon, Menu, X, LayoutDashboard } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useAuthStore } from "@/store/authStore";
@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { id: "templates", labelKey: "landing.nav.templates" },
   { id: "testimonials", labelKey: "landing.nav.testimonials" },
   { id: "team", labelKey: "landing.nav.team" },
+  { id: "comparison", labelKey: "landing.nav.comparison" },
   { id: "pricing", labelKey: "landing.nav.pricing" },
   { id: "faq", labelKey: "landing.nav.faq" },
 ];
@@ -89,18 +90,17 @@ function useActiveSection(ids: string[]) {
 
 export function Navbar() {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { setTheme } = useTheme();
   const isDark = useIsDark();
-  const show = useShowAfterHero();
+  const scrolledPastHero = useShowAfterHero();
   const progress = useScrollProgress();
   const activeSection = useActiveSection(NAV_LINKS.map((l) => l.id));
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const toggleLanguage = () => {
     const next = i18n.language === "en" ? "vi" : "en";
-    i18n.changeLanguage(next);
+    void i18n.changeLanguage(next);
   };
 
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");
@@ -112,37 +112,49 @@ export function Navbar() {
 
   return (
     <nav
+      aria-label="Main navigation"
       className={cn(
         "fixed inset-x-0 top-0 z-50 border-b transition-all duration-300",
-        show
+        scrolledPastHero
           ? "translate-y-0 border-zinc-200 bg-white/90 opacity-100 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90"
-          : "pointer-events-none -translate-y-full border-transparent opacity-0",
+          : "translate-y-0 border-white/10 bg-zinc-950/55 opacity-100 backdrop-blur-md",
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        <a
+          href="#top"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
           className="flex shrink-0 cursor-pointer items-center"
         >
-          <BrandLogo size="md" />
-        </button>
+          <BrandLogo
+            size="md"
+            className={cn(!scrolledPastHero && "[&_span]:text-white")}
+          />
+        </a>
 
         <div className="hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => (
-            <button
+            <a
               key={link.id}
-              type="button"
-              onClick={() => scrollToSection(link.id)}
+              href={`#${link.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection(link.id);
+              }}
               className={cn(
                 "cursor-pointer rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 activeSection === link.id
                   ? "text-brand-orange"
-                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100",
+                  : scrolledPastHero
+                    ? "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                    : "text-zinc-200 hover:bg-white/10 hover:text-white",
               )}
             >
               {t(link.labelKey)}
-            </button>
+            </a>
           ))}
         </div>
 
@@ -152,7 +164,12 @@ export function Navbar() {
             onClick={toggleLanguage}
             aria-label={t("common.switchLanguage")}
             title={t("common.switchLanguage")}
-            className="hidden cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-zinc-600 transition-colors hover:bg-zinc-100 sm:flex dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className={cn(
+              "hidden cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors sm:flex",
+              scrolledPastHero
+                ? "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                : "text-zinc-200 hover:bg-white/10",
+            )}
           >
             <Languages className="size-3.5" />
             {i18n.language === "en" ? "EN" : "VI"}
@@ -162,36 +179,43 @@ export function Navbar() {
             onClick={toggleTheme}
             aria-label={t("common.toggleTheme")}
             title={t("common.toggleTheme")}
-            className="hidden size-8 cursor-pointer items-center justify-center rounded-full text-zinc-600 transition-colors hover:bg-zinc-100 sm:flex dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className={cn(
+              "hidden size-8 cursor-pointer items-center justify-center rounded-full transition-colors sm:flex",
+              scrolledPastHero
+                ? "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                : "text-zinc-200 hover:bg-white/10",
+            )}
           >
             {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
           </button>
 
           {isAuthenticated ? (
-            <button
-              type="button"
-              onClick={() => navigate("/dashboard")}
+            <Link
+              to="/dashboard"
               className="bg-brand-orange hover:bg-brand-orange/90 hidden cursor-pointer items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors sm:inline-flex"
             >
               <LayoutDashboard className="size-4" />
               {t("landing.nav.dashboard")}
-            </button>
+            </Link>
           ) : (
             <>
-              <button
-                type="button"
-                onClick={() => navigate("/login")}
-                className="hidden cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 sm:inline-flex dark:text-zinc-200 dark:hover:bg-zinc-800"
+              <Link
+                to="/login"
+                className={cn(
+                  "hidden cursor-pointer rounded-lg px-4 py-2 text-sm font-medium transition-colors sm:inline-flex",
+                  scrolledPastHero
+                    ? "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                    : "text-zinc-100 hover:bg-white/10",
+                )}
               >
                 {t("landing.nav.login")}
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate("/register")}
+              </Link>
+              <Link
+                to="/register"
                 className="bg-brand-orange hover:bg-brand-orange/90 hidden cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors sm:inline-flex"
               >
                 {t("landing.nav.register")}
-              </button>
+              </Link>
             </>
           )}
 
@@ -199,7 +223,12 @@ export function Navbar() {
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            className="flex size-9 cursor-pointer items-center justify-center rounded-md text-zinc-600 lg:hidden dark:text-zinc-300"
+            className={cn(
+              "flex size-9 cursor-pointer items-center justify-center rounded-md lg:hidden",
+              scrolledPastHero
+                ? "text-zinc-600 dark:text-zinc-300"
+                : "text-zinc-200",
+            )}
           >
             {mobileOpen ? (
               <X className="size-5" />
@@ -214,14 +243,17 @@ export function Navbar() {
         <div className="border-t border-zinc-100 bg-white px-4 py-4 lg:hidden dark:border-zinc-800 dark:bg-zinc-950">
           <div className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
-              <button
+              <a
                 key={link.id}
-                type="button"
-                onClick={() => scrollToSection(link.id)}
+                href={`#${link.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(link.id);
+                }}
                 className="cursor-pointer rounded-md px-3 py-2.5 text-left text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
               >
                 {t(link.labelKey)}
-              </button>
+              </a>
             ))}
           </div>
           <div className="mt-3 flex items-center gap-2 border-t border-zinc-100 pt-3 dark:border-zinc-800">
@@ -247,30 +279,27 @@ export function Navbar() {
           </div>
           <div className="mt-3 flex flex-col gap-2">
             {isAuthenticated ? (
-              <button
-                type="button"
-                onClick={() => navigate("/dashboard")}
+              <Link
+                to="/dashboard"
                 className="bg-brand-orange flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-center text-sm font-semibold text-white"
               >
                 <LayoutDashboard className="size-4" />
                 {t("landing.nav.dashboard")}
-              </button>
+              </Link>
             ) : (
               <>
-                <button
-                  type="button"
-                  onClick={() => navigate("/login")}
+                <Link
+                  to="/login"
                   className="cursor-pointer rounded-lg border border-zinc-200 px-4 py-2.5 text-center text-sm font-medium text-zinc-700 dark:border-zinc-700 dark:text-zinc-200"
                 >
                   {t("landing.nav.login")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate("/register")}
+                </Link>
+                <Link
+                  to="/register"
                   className="bg-brand-orange cursor-pointer rounded-lg px-4 py-2.5 text-center text-sm font-semibold text-white"
                 >
                   {t("landing.nav.register")}
-                </button>
+                </Link>
               </>
             )}
           </div>

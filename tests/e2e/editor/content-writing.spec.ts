@@ -1807,4 +1807,83 @@ test.describe("Content Writing View — cursor precision, font conversion & publ
       fullPage: true,
     });
   });
+
+  test("E2E-33 V6 YayText 36-Style Expansion: Category Tabs, Favorite Pinning, Smart Vietnamese Diacritic Auto-Strip, Black Bubble & Slashthrough Price", async ({
+    page,
+    context,
+  }, testInfo) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setup(page);
+
+    // 1. Open the 36-Style Zantext / YayText Popover
+    await page.getByTestId("zantext-panel-trigger").click();
+    await expect(page.getByTestId("zantext-preview-input")).toBeVisible();
+
+    // 2. Type Vietnamese promotional text in the live preview input
+    await page
+      .getByTestId("zantext-preview-input")
+      .fill("Khuyến mãi Đặc Biệt 50%");
+
+    // 3. Filter by "Khung Nổi bật" (enclosed) and verify Black Bubble auto-strips Vietnamese diacritics cleanly
+    await page.getByTestId("zantext-cat-enclosed").click();
+    await expect(
+      page.getByTestId("zantext-preview-black-bubble"),
+    ).toContainText("🅚🅗🅤🅨🅔🅝 🅜🅐🅘 🅓🅐🅒 🅑🅘🅔🅣 ➎⓿%");
+    await expect(
+      page.getByTestId("zantext-preview-black-square"),
+    ).toContainText("🅺🅷🆄🆈🅴🅽 🅼🅰🅸 🅳🅰🅲 🅱🅸🅴🆃 ➎⓿%");
+
+    // 4. Switch OS font preview switcher between Default, iOS, and Android
+    await page.getByTestId("zantext-os-preview-select").selectOption("ios");
+    await page.getByTestId("zantext-os-preview-select").selectOption("android");
+    await page.getByTestId("zantext-os-preview-select").selectOption("default");
+
+    // 5. Filter by "Sale & Gạch giá" (lines) and test Slashthrough Price (9̸9̸0̸.̸0̸0̸0̸đ̸)
+    await page.getByTestId("zantext-cat-lines").click();
+    await page.getByTestId("zantext-preview-input").fill("990.000đ");
+    await page.getByTestId("zantext-copy-slashthrough").click();
+    const slashClipboard = await page.evaluate(() =>
+      navigator.clipboard.readText(),
+    );
+    expect(slashClipboard).toContain("9\u03389\u03380\u0338");
+
+    // 6. Pin "double-underline" to Favorites and filter by Favorites ("⭐ Yêu thích")
+    await page.getByTestId("zantext-fav-double-underline").click();
+    await page.getByTestId("zantext-cat-favorites").click();
+    await expect(
+      page.getByTestId("zantext-preview-double-underline"),
+    ).toBeVisible();
+
+    // 7. Toggle Vietnamese diacritic stripping ("Lược dấu chuẩn khung") on "all" tab
+    await page.getByTestId("zantext-cat-all").click();
+    await page.getByTestId("zantext-preview-input").fill("Siêu Sale Mùa Hè");
+    await page.getByTestId("zantext-strip-accents-toggle").check();
+    await expect(page.getByTestId("zantext-preview-sans-bold")).toContainText(
+      "𝗦𝗶𝗲𝘂 𝗦𝗮𝗹𝗲 𝗠𝘂𝗮 𝗛𝗲",
+    );
+    await page.getByTestId("zantext-strip-accents-toggle").uncheck();
+
+    // Close popover, type into editor, apply Black Bubble from toolbar font dropdown, and paste into Facebook Sandbox
+    await page.getByTestId("zantext-close-btn").click();
+    await typeText(page, "FLASH SALE 50%");
+    await page.keyboard.press("Control+a");
+    await page
+      .locator('select[title="Font chữ"]')
+      .selectOption('"Black Bubble", sans-serif');
+
+    await expect(page.getByTestId("social-preview-text")).toContainText(
+      "🅕🅛🅐🅢🅗 🅢🅐🅛🅔 ➎⓿%",
+    );
+    await page.getByTestId("social-preview-copy-btn").click();
+    await page.getByTestId("facebook-paste-sandbox-toggle").click();
+    await page.getByTestId("facebook-paste-from-clipboard-btn").click();
+    await expect(
+      page.getByTestId("facebook-paste-sandbox-input"),
+    ).toHaveValue("🅕🅛🅐🅢🅗 🅢🅐🅛🅔 ➎⓿%");
+
+    await page.screenshot({
+      path: testInfo.outputPath("yaytext-36-styles-v6-verified.png"),
+      fullPage: true,
+    });
+  });
 });

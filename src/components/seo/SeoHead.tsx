@@ -48,10 +48,14 @@ function upsertCanonical(href: string) {
   link.setAttribute("href", href);
 }
 
-function syncHreflangLinks(href: string, noindex: boolean) {
-  const langs = ["vi", "en", "x-default"] as const;
+function syncHreflangLinks(baseHref: string, noindex: boolean) {
+  const langs = [
+    { lang: "vi", href: baseHref },
+    { lang: "en", href: `${baseHref}?lang=en` },
+    { lang: "x-default", href: baseHref },
+  ] as const;
   if (noindex) {
-    for (const lang of langs) {
+    for (const { lang } of langs) {
       const existing = document.head.querySelector<HTMLLinkElement>(
         `link[rel="alternate"][hreflang="${lang}"]`,
       );
@@ -62,7 +66,7 @@ function syncHreflangLinks(href: string, noindex: boolean) {
     return;
   }
 
-  for (const lang of langs) {
+  for (const { lang, href } of langs) {
     let link = document.head.querySelector<HTMLLinkElement>(
       `link[rel="alternate"][hreflang="${lang}"]`,
     );
@@ -89,9 +93,16 @@ export function SeoHead({
     const cleanTitle = title.includes("BrandHub")
       ? title
       : `${title} | BrandHub`;
-    const canonicalUrl = canonicalPath.startsWith("http")
+    const baseCanonicalUrl = canonicalPath.startsWith("http")
       ? canonicalPath
       : `${SITE_ORIGIN}${canonicalPath.startsWith("/") ? canonicalPath : `/${canonicalPath}`}`;
+    const isUrlLangEn =
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("lang") === "en";
+    const canonicalUrl =
+      !noindex && isUrlLangEn
+        ? `${baseCanonicalUrl}?lang=en`
+        : baseCanonicalUrl;
     const robotsValue = noindex
       ? "noindex, nofollow"
       : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
@@ -101,10 +112,11 @@ export function SeoHead({
     upsertMeta("name", "description", description);
     upsertMeta("name", "robots", robotsValue);
     upsertCanonical(canonicalUrl);
-    syncHreflangLinks(canonicalUrl, noindex);
+    syncHreflangLinks(baseCanonicalUrl, noindex);
 
     // Open Graph synchronization (must agree with canonical, title, description)
     upsertMeta("property", "og:type", ogType);
+    upsertMeta("property", "og:locale", isUrlLangEn ? "en_US" : "vi_VN");
     upsertMeta("property", "og:title", cleanTitle);
     upsertMeta("property", "og:description", description);
     upsertMeta("property", "og:url", canonicalUrl);

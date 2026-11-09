@@ -224,7 +224,7 @@
     },
     "tiktok": {
       "0": {
-        "caption": "POV: bạn vừa phát hiện ra 1 tool tự động hóa toàn bộ content calendar cho 5 nền tảng chỉ trong 1 click. Team content từ 6 người xuống 3. Sếp không còn hỏi 'bài đăng đâu' mỗi sáng nữa."
+        "caption": "POV: bạn vừa phát hiện ra 1 tool tự động hóa toàn bộ content calendar cho 4 nền tảng chỉ trong 1 click. Team content từ 6 người xuống 3. Sếp không còn hỏi 'bài đăng đâu' mỗi sáng nữa."
       },
       "1": {
         "caption": "1 công cụ thay thế Canva + Google Calendar + Trello + Google Drive + Messenger. Nghe ảo nhưng thật. Đây là stack thực tế team mình dùng để quản lý 8 client cùng lúc. Ai bảo agency lúc nào cũng hỗn loạn?"
@@ -247,7 +247,7 @@
       "2": {
         "authorName": "Đức Anh",
         "authorRole": "COO, NextGen Media Group",
-        "content": "Quản lý chiến dịch Tết 2026 cho 5 brand cùng lúc với team 8 người. Nếu không có BrandHub, chắc mình đã không sống sót qua tháng 1. Tính năng cross-platform publishing giúp 1 bài đăng đi 5 kênh (FB, IG, TT, LI, X) chỉ với 1 cú click. Content calendar cho phép nhìn toàn cảnh tất cả campaign trên 1 màn hình — phát hiện ngay được lỗi trùng giờ, trùng nội dung. Team mình tăng 240% output, giảm 80% thời gian họp duyệt bài. ROI đo được: tiết kiệm ~$3,200/tháng chi phí công cụ + nhân sự."
+        "content": "Quản lý chiến dịch Tết 2026 cho 5 brand cùng lúc với team 8 người. Nếu không có BrandHub, chắc mình đã không sống sót qua tháng 1. Tính năng cross-platform publishing giúp 1 bài đăng đi 4 kênh (FB, IG, TikTok, Threads) chỉ với 1 cú click. Content calendar cho phép nhìn toàn cảnh tất cả campaign trên 1 màn hình — phát hiện ngay được lỗi trùng giờ, trùng nội dung. Team mình tăng 240% output, giảm 80% thời gian họp duyệt bài. ROI đo được: tiết kiệm ~$3,200/tháng chi phí công cụ + nhân sự."
       }
     },
     "linkedin": {
@@ -556,11 +556,87 @@
     "templates": "Template",
     "testimonials": "Đánh giá",
     "team": "Đội ngũ",
+    "comparison": "So sánh",
     "pricing": "Bảng giá",
     "faq": "FAQ",
     "login": "Đăng nhập",
     "register": "Đăng ký",
     "dashboard": "Vào Dashboard"
+  },
+  "comparison": {
+    "badge": "So sánh Nền tảng Quản trị Truyền thông",
+    "title": "Tại sao Agency & Thương hiệu chọn BrandHub thay vì công cụ rời rạc?",
+    "subtitle": "Đối chiếu kiến trúc All-in-One của BrandHub với các công cụ lên lịch mạng xã hội truyền thống (Buffer, Hootsuite, Planable) và quy trình quản lý thủ công qua bảng tính.",
+    "caption": "Bảng so sánh tính năng giữa BrandHub, các công cụ lên lịch mạng xã hội truyền thống và quy trình thủ công",
+    "columns": {
+      "criteria": "Tiêu chí vận hành & công nghệ",
+      "brandhub": "BrandHub Platform",
+      "brandhubSub": "All-in-One Agency & AI",
+      "legacyTools": "Tool đăng bài truyền thống",
+      "legacySub": "Buffer / Planable / Hootsuite",
+      "manual": "Quy trình thủ công",
+      "manualSub": "Sheets + Drive + Chat"
+    },
+    "rows": {
+      "agencyWorkspace": {
+        "feature": "Kiến trúc Đa Agency & Cô lập Workspace",
+        "desc": "Tách biệt dữ liệu thương hiệu, múi giờ và phân quyền 6 vai trò chuẩn (Guest, Owner, Manager, Creator, Client, Admin)",
+        "brandhub": "Hỗ trợ nguyên bản",
+        "legacy": "Giới hạn / Phụ phí cao",
+        "manual": "Rời rạc, dễ lộ dữ liệu"
+      },
+      "mediaPackage": {
+        "feature": "Đàm phán Gói dịch vụ & Tự động tạo Campaign",
+        "desc": "Catalog gói truyền thông chuẩn, thương lượng 2 chiều với Client và 1-click sinh task backlog",
+        "brandhub": "Tự động hóa khép kín",
+        "legacy": "Không hỗ trợ",
+        "manual": "Làm hợp đồng & nhập tay"
+      },
+      "graphRag": {
+        "feature": "AI GraphRAG Brand Guidelines & Virtual Model",
+        "desc": "Đối chiếu tone giọng bằng Neo4j + ChromaDB và sinh ảnh/video đại sứ thương hiệu ảo đồng nhất",
+        "brandhub": "GraphRAG + LoRA Studio",
+        "legacy": "Chỉ gợi ý caption cơ bản",
+        "manual": "Không có kiểm chứng tự động"
+      },
+      "trendCrawler": {
+        "feature": "AI Social Trend Crawler thời gian thực",
+        "desc": "Tự động cào và phân tích xu hướng thảo luận từ TikTok Creative Center & Google Trends",
+        "brandhub": "Cập nhật liên tục mỗi ngày",
+        "legacy": "Không tích hợp sẵn",
+        "manual": "Tìm kiếm thủ công tốn giờ"
+      },
+      "complianceGuard": {
+        "feature": "Kiểm duyệt An toàn Cộng đồng tự động (Compliance)",
+        "desc": "Tự động quét ngôn từ nhạy cảm, vi phạm chính sách nền tảng trước khi gửi duyệt",
+        "brandhub": "Chặn rủi ro tự động bằng AI",
+        "legacy": "Không có",
+        "manual": "Duyệt bằng mắt, dễ sót lỗi"
+      },
+      "approvalWorkflow": {
+        "feature": "Luồng Phê duyệt Đa cấp (Creator → Manager → Client)",
+        "desc": "Phê duyệt từng phiên bản bản nháp, preview trực quan và lưu vết lịch sử chỉnh sửa minh bạch",
+        "brandhub": "Luồng duyệt 3 cấp chuẩn Agency",
+        "legacy": "Duyệt phẳng, thiếu vai trò",
+        "manual": "Trôi tin nhắn qua Zalo/Messenger"
+      },
+      "multiChannel": {
+        "feature": "Xuất bản Đa kênh & Quản lý Đối tác Báo đài",
+        "desc": "Đăng trực tiếp Facebook, Instagram, TikTok, Threads và theo dõi tiến độ báo chí, TV, Banner",
+        "brandhub": "4 MXH + Đối tác Báo chí/TV",
+        "legacy": "Chỉ đăng mạng xã hội",
+        "manual": "Đăng tay từng kênh"
+      },
+      "vietQrBilling": {
+        "feature": "Thanh toán Nội địa & Hỗ trợ Thị trường Việt Nam",
+        "desc": "Tích hợp thanh toán VietQR (SePay / PayOS) tức thì và tối ưu ngôn ngữ tiếng Việt tự nhiên",
+        "brandhub": "VietQR tự động + AI tiếng Việt",
+        "legacy": "Chỉ thẻ quốc tế (USD)",
+        "manual": "Đối soát sao kê thủ công"
+      }
+    },
+    "footerNote": "Số liệu đối chiếu dựa trên kiến trúc sản phẩm chính thức của BrandHub (141 tính năng chuyên sâu) so với mặt bằng công cụ quản lý mạng xã hội phổ thông năm 2026.",
+    "cta": "Trải nghiệm miễn phí ngay"
   },
   "team": {
     "title": "Đội ngũ phát triển",
@@ -600,7 +676,7 @@
         "features": [
           "1 không gian làm việc",
           "5 thành viên",
-          "3 kênh mạng xã hội",
+          "4 kênh mạng xã hội (FB, IG, TikTok, Threads)",
           "Phân tích cơ bản",
           "100 bài đăng/tháng"
         ]

@@ -45,7 +45,7 @@ export function Pricing() {
             headVisible ? "opacity-100" : "opacity-0",
           )}
         >
-          <SectionEyebrow index={9} />
+          <SectionEyebrow index={10} />
           <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
             {t("landing.pricing.title")}
           </h2>
@@ -206,11 +206,14 @@ export function Pricing() {
                         ))}
                     </ul>
                     <button
-                      onClick={() =>
-                        navigate(
-                          plan.key === "enterprise" ? "/contact" : "/register",
-                        )
-                      }
+                      onClick={() => {
+                        if (plan.key === "enterprise") {
+                          window.location.href =
+                            "mailto:brandhub404@gmail.com?subject=BrandHub%20Enterprise%20Inquiry";
+                          return;
+                        }
+                        navigate("/register");
+                      }}
                       className={cn(
                         "mt-6 ml-[4.5rem] cursor-pointer rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.98]",
                         plan.featured

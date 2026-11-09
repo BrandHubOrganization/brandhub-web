@@ -16,13 +16,17 @@ import {
   Copy,
   Check,
   Wand2,
+  Star,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { SocialPlatform } from "@/types/editor";
 import { toast } from "sonner";
 import { taskService } from "@/services/taskService";
 import {
+  ZANTEXT_CATEGORIES,
   ZANTEXT_STYLE_PRESETS,
+  type ZantextCategory,
+  convertPlainTextToSocialStyle,
   copyTextToClipboard,
   stripUnicodeStyling,
   styleRunText,
@@ -166,6 +170,40 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [copiedZantextId, setCopiedZantextId] = React.useState<string | null>(
     null,
   );
+  const [activeCategory, setActiveCategory] = React.useState<
+    "all" | "favorites" | ZantextCategory
+  >("all");
+  const [stripAccentsOverride, setStripAccentsOverride] =
+    React.useState(false);
+  const [favoriteIds, setFavoriteIds] = React.useState<string[]>(() => {
+    try {
+      const saved = window.localStorage.getItem("brandhub-zantext-favorites");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {
+      // ignore storage error
+    }
+    return ["sans-bold", "serif-bold", "black-bubble", "slashthrough"];
+  });
+
+  const toggleFavoriteStyle = (styleId: string) => {
+    setFavoriteIds((prev) => {
+      const next = prev.includes(styleId)
+        ? prev.filter((id) => id !== styleId)
+        : [...prev, styleId];
+      try {
+        window.localStorage.setItem(
+          "brandhub-zantext-favorites",
+          JSON.stringify(next),
+        );
+      } catch {
+        // ignore storage error
+      }
+      return next;
+    });
+  };
   const selectedFontRef = useRef<string>("");
   const lastEmittedValueRef = useRef<string>(value);
 
@@ -481,7 +519,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
-          {/* Zantext-style 14 Font Quick Converter & 1-Click Copy Popover */}
+          {/* Zantext & YayText 36-Style Quick Converter & 1-Click Copy Popover */}
           <div className="relative">
             <button
               type="button"
@@ -489,21 +527,24 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
               disabled={readOnly}
               onClick={() => setZantextOpen((o) => !o)}
               className="flex shrink-0 items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap text-purple-700 transition-colors hover:bg-purple-500/20 disabled:opacity-50 dark:border-purple-400/30 dark:bg-purple-500/20 dark:text-purple-300"
-              title="Bộ đổi Font Zantext (14 kiểu chữ Unicode cho Facebook / Instagram / TikTok / Threads)"
+              title="Bộ đổi Font Zantext & YayText (36 kiểu chữ Unicode cho Facebook / Instagram / TikTok / Threads)"
             >
               <Wand2 className="size-3.5" />
               <span>Font Zantext</span>
+              <span className="rounded bg-purple-600 px-1 py-0.2 text-[9px] font-bold text-white">
+                36
+              </span>
             </button>
 
             {zantextOpen && (
               <div
                 data-testid="studio-zantext-popover"
-                className="border-border bg-popover text-popover-foreground absolute top-full right-0 z-50 mt-1 w-80 rounded-xl border p-3 shadow-xl"
+                className="border-border bg-popover text-popover-foreground absolute top-full right-0 z-50 mt-1 w-96 rounded-xl border p-3 shadow-xl"
               >
                 <div className="mb-2 flex items-center justify-between">
                   <div>
                     <p className="text-xs font-bold">
-                      Bộ chuyển đổi Font MXH (Zantext)
+                      Bộ chuyển đổi 36 Font MXH (Zantext & YayText)
                     </p>
                     <p className="text-muted-foreground text-[10px]">
                       Chọn kiểu font để áp dụng hoặc Copy dán thẳng lên Facebook
@@ -517,18 +558,86 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
                     Đóng
                   </button>
                 </div>
+
+                {/* Category Filter Tabs */}
+                <div className="mb-2 flex flex-wrap gap-1">
+                  {ZANTEXT_CATEGORIES.map((cat) => {
+                    const isActive = activeCategory === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        data-testid={`studio-zantext-cat-${cat.id}`}
+                        onClick={() => setActiveCategory(cat.id)}
+                        className={`rounded-md px-2 py-0.5 text-[10px] font-semibold transition-colors ${
+                          isActive
+                            ? "bg-purple-600 text-white"
+                            : "bg-muted text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {cat.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Smart Vietnamese Diacritic Toggle */}
+                <div className="border-border bg-muted/40 mb-2 flex items-center justify-between gap-2 rounded-lg border px-2 py-1">
+                  <label className="flex cursor-pointer items-center gap-1.5 text-[10px] font-medium">
+                    <input
+                      type="checkbox"
+                      data-testid="studio-zantext-strip-accents-toggle"
+                      checked={stripAccentsOverride}
+                      onChange={(e) =>
+                        setStripAccentsOverride(e.target.checked)
+                      }
+                      className="size-3 rounded accent-purple-600"
+                    />
+                    <span>Lược dấu Tiếng Việt (chuẩn khung 🅑🅤🅑 / 🅱🅻🅰)</span>
+                  </label>
+                </div>
+
                 <div className="max-h-64 space-y-1.5 overflow-y-auto pr-1">
-                  {ZANTEXT_STYLE_PRESETS.map((preset) => {
+                  {ZANTEXT_STYLE_PRESETS.filter((preset) => {
+                    if (activeCategory === "all") return true;
+                    if (activeCategory === "favorites") {
+                      return favoriteIds.includes(preset.id);
+                    }
+                    return preset.category === activeCategory;
+                  }).map((preset) => {
                     const sourceText =
                       stripUnicodeStyling(value).trim() ||
                       "BrandHub Social Font";
-                    const converted = styleRunText(sourceText, preset.attrs);
+                    const converted = convertPlainTextToSocialStyle(
+                      sourceText,
+                      preset.id,
+                      { stripAccents: stripAccentsOverride },
+                    );
                     const isCopied = copiedZantextId === preset.id;
+                    const isFav = favoriteIds.includes(preset.id);
                     return (
                       <div
                         key={preset.id}
                         className="border-border bg-muted/30 hover:bg-muted/60 flex items-center justify-between gap-2 rounded-lg border p-2 transition-colors"
                       >
+                        <button
+                          type="button"
+                          data-testid={`studio-zantext-fav-${preset.id}`}
+                          onClick={() => toggleFavoriteStyle(preset.id)}
+                          title={
+                            isFav ? "Bỏ ghim yêu thích" : "Ghim vào Yêu thích"
+                          }
+                          className={`shrink-0 rounded p-0.5 transition-colors ${
+                            isFav
+                              ? "text-amber-500"
+                              : "text-muted-foreground/40 hover:text-amber-400"
+                          }`}
+                        >
+                          <Star
+                            className="size-3.5"
+                            fill={isFav ? "currentColor" : "none"}
+                          />
+                        </button>
                         <button
                           type="button"
                           onClick={() => {
@@ -549,6 +658,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
                             <span className="bg-muted text-foreground rounded px-1 py-0.2 text-[9px] font-bold">
                               {preset.badge}
                             </span>
+                            {preset.vietnameseMode === "strip-accents-auto" && (
+                              <span className="rounded bg-amber-500/15 px-1 py-0.2 text-[8px] font-semibold text-amber-700 dark:text-amber-300">
+                                Tự lược dấu
+                              </span>
+                            )}
                           </div>
                           <p
                             className="text-foreground truncate text-xs font-medium"

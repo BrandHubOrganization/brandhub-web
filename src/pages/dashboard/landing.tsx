@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAuthStore } from "@/store/authStore";
 import { Navbar } from "@/components/landing/Navbar";
@@ -16,6 +17,7 @@ import { Templates } from "@/components/landing/Templates";
 import { MediaPackage } from "@/components/landing/MediaPackage";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { TeamSection } from "@/components/landing/TeamSection";
+import { ComparisonMatrix } from "@/components/landing/ComparisonMatrix";
 import { Pricing } from "@/components/landing/Pricing";
 import { FAQ } from "@/components/landing/FAQ";
 import { CTASection } from "@/components/landing/CTASection";
@@ -73,6 +75,8 @@ const LANDING_FAQ_JSONLD = {
 
 export function LandingPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const { i18n } = useTranslation();
+  const isEn = i18n.language === "en";
 
   // Hero's pinned scroll spacer (end:"+=3500") finalizes its height only
   // after mount, which shifts every ScrollTrigger below it (the 4 sections
@@ -91,8 +95,16 @@ export function LandingPage() {
   return (
     <div style={{ fontFamily: "var(--font-sans)" }}>
       <SeoHead
-        title="BrandHub — Nền tảng Quản trị Thương hiệu & Nội dung Đa kênh AI"
-        description="Nền tảng quản trị Agency, lập kế hoạch Media Campaign, sáng tạo với AI GraphRAG, duyệt bài đa cấp và đăng tự động Facebook, Instagram, TikTok, Threads."
+        title={
+          isEn
+            ? "BrandHub — All-in-One AI Brand & Multi-Channel Media Operations Platform"
+            : "BrandHub — Nền tảng Quản trị Thương hiệu & Nội dung Đa kênh AI"
+        }
+        description={
+          isEn
+            ? "Multi-agency workspace platform with Media Package negotiation, AI GraphRAG Brand Guidelines, 3-tier approval workflows, and automated publishing to Facebook, Instagram, TikTok, and Threads."
+            : "Nền tảng quản trị Agency, lập kế hoạch Media Campaign, sáng tạo với AI GraphRAG, duyệt bài đa cấp và đăng tự động Facebook, Instagram, TikTok, Threads."
+        }
         canonicalPath="/"
         jsonLd={LANDING_FAQ_JSONLD}
       />
@@ -110,6 +122,7 @@ export function LandingPage() {
       <MediaPackage />
       <Testimonials />
       <TeamSection />
+      <ComparisonMatrix />
       <Pricing />
       <FAQ />
       <CTASection />
