@@ -573,65 +573,83 @@
       "brandhub": "BrandHub Platform",
       "brandhubSub": "All-in-One Agency & AI",
       "legacyTools": "Legacy Schedulers",
+      "scheduler": "Legacy Schedulers",
       "legacySub": "Buffer / Planable / Hootsuite",
+      "schedulerSub": "Buffer / Planable / Hootsuite",
       "manual": "Manual Workflow",
       "manualSub": "Sheets + Drive + Chat"
     },
     "rows": {
       "agencyWorkspace": {
         "feature": "Multi-Agency Architecture & Workspace Isolation",
+        "criteria": "Multi-Agency Architecture & Workspace Isolation",
         "desc": "Strict tenant data isolation, independent timezones, and 6 canonical roles (Guest, Owner, Manager, Creator, Client, Admin)",
         "brandhub": "Native multi-tenant RBAC",
         "legacy": "Limited / Costly add-ons",
+        "scheduler": "Limited / Costly add-ons",
         "manual": "Fragmented & error-prone"
       },
       "mediaPackage": {
         "feature": "Media Package Negotiation & Auto-Campaigns",
+        "criteria": "Media Package Negotiation & Auto-Campaigns",
         "desc": "Standardized service catalogs, two-way Client contract negotiation, and 1-click task backlog generation",
         "brandhub": "End-to-end automated",
         "legacy": "Not supported",
+        "scheduler": "Not supported",
         "manual": "Manual contracts & spreadsheets"
       },
       "graphRag": {
         "feature": "AI GraphRAG Brand Guidelines & Virtual Model",
+        "criteria": "AI GraphRAG Brand Guidelines & Virtual Model",
         "desc": "Tone-of-voice enforcement via Neo4j + ChromaDB and hyper-consistent LoRA virtual brand ambassadors",
         "brandhub": "GraphRAG + LoRA Studio",
         "legacy": "Basic caption prompts only",
+        "scheduler": "Basic caption prompts only",
         "manual": "No automated verification"
       },
       "trendCrawler": {
         "feature": "Real-Time AI Social Trend Crawler",
+        "criteria": "Real-Time AI Social Trend Crawler",
         "desc": "Automated trend discovery from TikTok Creative Center & Google Trends with instant brief suggestions",
         "brandhub": "Daily automated crawling",
         "legacy": "Not natively integrated",
+        "scheduler": "Not natively integrated",
         "manual": "Hours of manual research"
       },
       "complianceGuard": {
         "feature": "Automated AI Content Compliance Guard",
+        "criteria": "Automated AI Content Compliance Guard",
         "desc": "Pre-approval screening for community safety, profanity, and platform policy violations",
         "brandhub": "Proactive AI safety guardrails",
         "legacy": "None",
+        "scheduler": "None",
         "manual": "Manual human review only"
       },
       "approvalWorkflow": {
         "feature": "Multi-Tier Approval (Creator → Manager → Client)",
+        "criteria": "Multi-Tier Approval (Creator → Manager → Client)",
         "desc": "Versioned draft reviews, native multi-platform previews, and transparent audit trails",
         "brandhub": "3-tier agency governance",
         "legacy": "Flat approvals",
+        "scheduler": "Flat approvals",
         "manual": "Lost in chat threads"
       },
       "multiChannel": {
         "feature": "Multi-Channel Publishing & Press/TV Collaborators",
+        "criteria": "Multi-Channel Publishing & Press/TV Collaborators",
         "desc": "Direct API publishing to Facebook, Instagram, TikTok, Threads plus third-party Press, TV & Banner tracking",
         "brandhub": "4 Social APIs + Press/TV",
         "legacy": "Social posts only",
+        "scheduler": "Social posts only",
         "manual": "Manual posting per channel"
       },
       "vietQrBilling": {
         "feature": "Instant VietQR Billing & Native Vietnamese AI",
+        "criteria": "Instant VietQR Billing & Native Vietnamese AI",
         "desc": "Seamless SePay / PayOS VietQR checkout and culturally fluent Vietnamese copywriting",
         "brandhub": "Instant VietQR + Native VI AI",
         "legacy": "USD credit card only",
+        "scheduler": "USD credit card only",
         "manual": "Manual bank reconciliation"
       }
     },

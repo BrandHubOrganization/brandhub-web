@@ -573,65 +573,83 @@
       "brandhub": "BrandHub Platform",
       "brandhubSub": "All-in-One Agency & AI",
       "legacyTools": "Tool đăng bài truyền thống",
+      "scheduler": "Tool đăng bài truyền thống",
       "legacySub": "Buffer / Planable / Hootsuite",
+      "schedulerSub": "Buffer / Planable / Hootsuite",
       "manual": "Quy trình thủ công",
       "manualSub": "Sheets + Drive + Chat"
     },
     "rows": {
       "agencyWorkspace": {
         "feature": "Kiến trúc Đa Agency & Cô lập Workspace",
+        "criteria": "Kiến trúc Đa Agency & Cô lập Workspace",
         "desc": "Tách biệt dữ liệu thương hiệu, múi giờ và phân quyền 6 vai trò chuẩn (Guest, Owner, Manager, Creator, Client, Admin)",
         "brandhub": "Hỗ trợ nguyên bản",
         "legacy": "Giới hạn / Phụ phí cao",
+        "scheduler": "Giới hạn / Phụ phí cao",
         "manual": "Rời rạc, dễ lộ dữ liệu"
       },
       "mediaPackage": {
         "feature": "Đàm phán Gói dịch vụ & Tự động tạo Campaign",
+        "criteria": "Đàm phán Gói dịch vụ & Tự động tạo Campaign",
         "desc": "Catalog gói truyền thông chuẩn, thương lượng 2 chiều với Client và 1-click sinh task backlog",
         "brandhub": "Tự động hóa khép kín",
         "legacy": "Không hỗ trợ",
+        "scheduler": "Không hỗ trợ",
         "manual": "Làm hợp đồng & nhập tay"
       },
       "graphRag": {
         "feature": "AI GraphRAG Brand Guidelines & Virtual Model",
+        "criteria": "AI GraphRAG Brand Guidelines & Virtual Model",
         "desc": "Đối chiếu tone giọng bằng Neo4j + ChromaDB và sinh ảnh/video đại sứ thương hiệu ảo đồng nhất",
         "brandhub": "GraphRAG + LoRA Studio",
         "legacy": "Chỉ gợi ý caption cơ bản",
+        "scheduler": "Chỉ gợi ý caption cơ bản",
         "manual": "Không có kiểm chứng tự động"
       },
       "trendCrawler": {
         "feature": "AI Social Trend Crawler thời gian thực",
+        "criteria": "AI Social Trend Crawler thời gian thực",
         "desc": "Tự động cào và phân tích xu hướng thảo luận từ TikTok Creative Center & Google Trends",
         "brandhub": "Cập nhật liên tục mỗi ngày",
         "legacy": "Không tích hợp sẵn",
+        "scheduler": "Không tích hợp sẵn",
         "manual": "Tìm kiếm thủ công tốn giờ"
       },
       "complianceGuard": {
         "feature": "Kiểm duyệt An toàn Cộng đồng tự động (Compliance)",
+        "criteria": "Kiểm duyệt An toàn Cộng đồng tự động (Compliance)",
         "desc": "Tự động quét ngôn từ nhạy cảm, vi phạm chính sách nền tảng trước khi gửi duyệt",
         "brandhub": "Chặn rủi ro tự động bằng AI",
         "legacy": "Không có",
+        "scheduler": "Không có",
         "manual": "Duyệt bằng mắt, dễ sót lỗi"
       },
       "approvalWorkflow": {
         "feature": "Luồng Phê duyệt Đa cấp (Creator → Manager → Client)",
+        "criteria": "Luồng Phê duyệt Đa cấp (Creator → Manager → Client)",
         "desc": "Phê duyệt từng phiên bản bản nháp, preview trực quan và lưu vết lịch sử chỉnh sửa minh bạch",
         "brandhub": "Luồng duyệt 3 cấp chuẩn Agency",
         "legacy": "Duyệt phẳng, thiếu vai trò",
+        "scheduler": "Duyệt phẳng, thiếu vai trò",
         "manual": "Trôi tin nhắn qua Zalo/Messenger"
       },
       "multiChannel": {
         "feature": "Xuất bản Đa kênh & Quản lý Đối tác Báo đài",
+        "criteria": "Xuất bản Đa kênh & Quản lý Đối tác Báo đài",
         "desc": "Đăng trực tiếp Facebook, Instagram, TikTok, Threads và theo dõi tiến độ báo chí, TV, Banner",
         "brandhub": "4 MXH + Đối tác Báo chí/TV",
         "legacy": "Chỉ đăng mạng xã hội",
+        "scheduler": "Chỉ đăng mạng xã hội",
         "manual": "Đăng tay từng kênh"
       },
       "vietQrBilling": {
         "feature": "Thanh toán Nội địa & Hỗ trợ Thị trường Việt Nam",
+        "criteria": "Thanh toán Nội địa & Hỗ trợ Thị trường Việt Nam",
         "desc": "Tích hợp thanh toán VietQR (SePay / PayOS) tức thì và tối ưu ngôn ngữ tiếng Việt tự nhiên",
         "brandhub": "VietQR tự động + AI tiếng Việt",
         "legacy": "Chỉ thẻ quốc tế (USD)",
+        "scheduler": "Chỉ thẻ quốc tế (USD)",
         "manual": "Đối soát sao kê thủ công"
       }
     },

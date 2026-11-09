@@ -9,6 +9,7 @@ interface StatItem {
   target: number;
   prefix: string;
   suffix: string;
+  unit?: string;
   labelKey: string;
   sublabel: string;
   floatingBadge: string;
@@ -37,7 +38,8 @@ const STATS: StatItem[] = [
     key: "trends",
     target: 500,
     prefix: "",
-    suffix: "+/ngày",
+    suffix: "+",
+    unit: "/ ngày",
     labelKey: "landing.stats.trends",
     sublabel: "TikTok · Facebook · Google Trends Crawler",
     floatingBadge: "REAL-TIME TREND STREAM",
@@ -51,7 +53,8 @@ const STATS: StatItem[] = [
     key: "latency",
     target: 120,
     prefix: "< ",
-    suffix: "ms",
+    suffix: "",
+    unit: "ms",
     labelKey: "landing.stats.latency",
     sublabel: "Spring WebFlux Netty & Redis 7.2 Cache",
     floatingBadge: "ULTRA-LOW LATENCY",
@@ -132,7 +135,7 @@ export function StatsCounter() {
           viewport={{ once: true }}
           onViewportEnter={() => setInView(true)}
           transition={{ duration: 0.5 }}
-          className="grid grid-cols-1 gap-7 pt-3 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid grid-cols-1 gap-8 pt-8 sm:grid-cols-2 sm:pt-10 lg:grid-cols-4"
         >
           {STATS.map((s) => {
             const Icon = s.icon;
@@ -140,7 +143,7 @@ export function StatsCounter() {
               <div
                 key={s.key}
                 className={cn(
-                  "bh-reveal-card group relative rounded-[28px] rounded-tr-[56px] border bg-gradient-to-br p-6 pt-8 shadow-xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl",
+                  "bh-reveal-card group relative flex min-h-[190px] flex-col justify-between rounded-[28px] rounded-tr-[56px] border bg-gradient-to-br p-6 pt-9 shadow-xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl",
                   s.cardSurface,
                 )}
               >
@@ -171,19 +174,29 @@ export function StatsCounter() {
                   </div>
                 </div>
 
-                <p className="text-4xl font-black tracking-tight text-white tabular-nums sm:text-5xl">
-                  {s.prefix}
-                  <CountValue
-                    target={s.target}
-                    suffix={s.suffix}
-                    start={inView}
-                    skipAnimation={!!reduce}
-                  />
-                </p>
-                <p className="mt-2.5 text-sm font-bold text-zinc-100">
-                  {t(s.labelKey, s.key)}
-                </p>
-                <p className="mt-1 font-mono text-[11px] text-zinc-400">
+                <div>
+                  <div className="my-2 flex flex-wrap items-baseline gap-1.5">
+                    <span className="text-3xl font-black tracking-tight text-white tabular-nums sm:text-4xl lg:text-[2.65rem] leading-none">
+                      {s.prefix}
+                      <CountValue
+                        target={s.target}
+                        suffix={s.suffix}
+                        start={inView}
+                        skipAnimation={!!reduce}
+                      />
+                    </span>
+                    {s.unit && (
+                      <span className="font-mono text-xs font-bold text-zinc-400 sm:text-sm">
+                        {s.unit}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-2 text-sm font-bold text-zinc-100">
+                    {t(s.labelKey, s.key)}
+                  </p>
+                </div>
+
+                <p className="mt-3 border-t border-white/10 pt-2.5 font-mono text-[11px] text-zinc-400">
                   {s.sublabel}
                 </p>
               </div>

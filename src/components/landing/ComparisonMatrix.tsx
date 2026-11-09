@@ -217,10 +217,12 @@ export function ComparisonMatrix() {
                     className="w-[22%] px-6 py-5 text-xs font-bold text-zinc-700 dark:text-zinc-300"
                   >
                     <span className="block text-sm font-bold">
-                      {t("landing.comparison.columns.scheduler")}
+                      {t("landing.comparison.columns.legacyTools") ||
+                        t("landing.comparison.columns.scheduler")}
                     </span>
                     <span className="text-[11px] font-normal text-zinc-400 dark:text-zinc-500">
-                      {t("landing.comparison.columns.schedulerSub")}
+                      {t("landing.comparison.columns.legacySub") ||
+                        t("landing.comparison.columns.schedulerSub")}
                     </span>
                   </th>
                 </tr>
@@ -235,7 +237,8 @@ export function ComparisonMatrix() {
                       scope="row"
                       className="px-6 py-4 text-xs font-bold text-zinc-900 sm:text-sm dark:text-zinc-100"
                     >
-                      {t(`landing.comparison.rows.${row.key}.criteria`)}
+                      {t(`landing.comparison.rows.${row.key}.feature`) ||
+                        t(`landing.comparison.rows.${row.key}.criteria`)}
                     </th>
                     <td className="border-brand-orange/15 bg-brand-orange/[0.03] dark:border-brand-orange/15 dark:bg-brand-orange/[0.06] border-x px-6 py-4">
                       <StatusBadge
@@ -253,7 +256,10 @@ export function ComparisonMatrix() {
                     <td className="px-6 py-4">
                       <StatusBadge
                         status={row.schedulerStatus}
-                        text={t(`landing.comparison.rows.${row.key}.scheduler`)}
+                        text={
+                          t(`landing.comparison.rows.${row.key}.legacy`) ||
+                          t(`landing.comparison.rows.${row.key}.scheduler`)
+                        }
                       />
                     </td>
                   </tr>
