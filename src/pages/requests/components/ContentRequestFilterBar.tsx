@@ -3,7 +3,8 @@ import type {
   ContentRequestStatus,
   SocialPlatform,
 } from "@/types/contentRequest";
-import { Search, Calendar, RotateCcw, X, Share2, Video, Globe, AtSign } from "lucide-react";
+import { Search, Calendar, RotateCcw, X } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 
@@ -67,22 +68,22 @@ const PLATFORM_ICONS: Record<
 > = {
   FACEBOOK: {
     label: "Facebook",
-    icon: <Share2 className="size-3.5" />,
+    icon: <FaFacebook className="size-3.5" />,
     activeClass: "bg-blue-600 text-white border-blue-600",
   },
   INSTAGRAM: {
     label: "Instagram",
-    icon: <Globe className="size-3.5" />,
+    icon: <FaInstagram className="size-3.5" />,
     activeClass: "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-pink-500",
   },
   TIKTOK: {
     label: "TikTok",
-    icon: <Video className="size-3.5" />,
+    icon: <FaTiktok className="size-3.5" />,
     activeClass: "bg-foreground text-background border-foreground",
   },
   THREADS: {
     label: "Threads",
-    icon: <AtSign className="size-3.5" />,
+    icon: <FaThreads className="size-3.5" />,
     activeClass: "bg-foreground text-background border-foreground",
   },
 };

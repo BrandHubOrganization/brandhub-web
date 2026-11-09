@@ -1,4 +1,5 @@
-import { Heart, MessageCircle, Repeat2, Send, AtSign } from "lucide-react";
+import { Heart, MessageCircle, Repeat2, Send } from "lucide-react";
+import { FaThreads } from "react-icons/fa6";
 import { PLATFORM_LIMITS } from "@/types/preview";
 import type { PostPreviewData } from "@/types/preview";
 
@@ -29,13 +30,13 @@ export function ThreadsMockup({ data }: MockupProps) {
             <span className="text-foreground text-xs font-semibold">
               {authorName.toLowerCase().replace(/\s+/g, "")}
             </span>
-            <AtSign className="text-muted-foreground size-3" />
+            <FaThreads className="text-muted-foreground size-3" />
           </div>
           <p
             className="text-foreground text-xs leading-relaxed whitespace-pre-wrap"
             style={{
               fontFamily:
-                'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+                'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
             }}
           >
             {caption}

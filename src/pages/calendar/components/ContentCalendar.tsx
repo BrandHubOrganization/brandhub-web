@@ -6,10 +6,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import type { EventDropArg, EventContentArg } from "@fullcalendar/core";
 import type { CalendarPostEvent, PlatformType, PostStatus } from "@/types/calendar";
 import {
-  Video,
-  AtSign,
-  Share2,
-  Globe,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -18,6 +14,7 @@ import {
   Eye,
   ListTodo,
 } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { SelectMenu } from "@/components/ui/select-menu";
 import { useNavigate, useParams } from "react-router-dom";
@@ -44,23 +41,23 @@ const PLATFORM_CONFIG: Record<
 > = {
   FACEBOOK: {
     name: "Facebook",
-    icon: <Share2 className="size-3.5 shrink-0 text-blue-500" />,
+    icon: <FaFacebook className="size-3.5 shrink-0 text-[#1877F2]" />,
     color: "bg-blue-500 text-white",
   },
   INSTAGRAM: {
     name: "Instagram",
-    icon: <Globe className="size-3.5 shrink-0 text-pink-500" />,
+    icon: <FaInstagram className="size-3.5 shrink-0 text-[#E1306C]" />,
     color: "bg-pink-500 text-white",
   },
   TIKTOK: {
     name: "TikTok",
-    icon: <Video className="size-3.5 shrink-0 text-slate-800 dark:text-slate-200" />,
+    icon: <FaTiktok className="size-3.5 shrink-0 text-slate-800 dark:text-slate-200" />,
     color: "bg-slate-900 text-white dark:bg-slate-200 dark:text-slate-900",
   },
   THREADS: {
     name: "Threads",
-    icon: <AtSign className="size-3.5 shrink-0 text-purple-500" />,
-    color: "bg-purple-600 text-white",
+    icon: <FaThreads className="size-3.5 shrink-0 text-slate-800 dark:text-slate-200" />,
+    color: "bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900",
   },
 };
 

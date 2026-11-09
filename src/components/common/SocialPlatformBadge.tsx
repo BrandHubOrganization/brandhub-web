@@ -1,6 +1,8 @@
 import type { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { AtSign, Camera, Share2, Video } from "lucide-react";
+import { Share2 } from "lucide-react";
+import type { IconType } from "react-icons";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 
 export const SOCIAL_PLATFORMS = [
@@ -23,20 +25,52 @@ interface SocialPlatformBadgeProps {
   showLabel?: boolean;
 }
 
+export const PLATFORM_ICON: Record<SocialPlatform, IconType> = {
+  FACEBOOK: FaFacebook,
+  INSTAGRAM: FaInstagram,
+  TIKTOK: FaTiktok,
+  THREADS: FaThreads,
+};
+
+export const PLATFORM_BRAND: Record<
+  SocialPlatform,
+  { icon: string; active: string }
+> = {
+  FACEBOOK: {
+    icon: "text-[#1877F2]",
+    active: "bg-[#1877F2] text-white border-[#1877F2]",
+  },
+  INSTAGRAM: {
+    icon: "text-[#E1306C]",
+    active:
+      "bg-gradient-to-r from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white border-transparent",
+  },
+  TIKTOK: {
+    icon: "text-black dark:text-white",
+    active: "bg-black text-white border-black dark:border-zinc-600",
+  },
+  THREADS: {
+    icon: "text-black dark:text-white",
+    active:
+      "bg-black text-white border-black dark:bg-white dark:text-black dark:border-white",
+  },
+};
+
+export function isSocialPlatform(value: string): value is SocialPlatform {
+  return (SOCIAL_PLATFORMS as readonly string[]).includes(value);
+}
+
 function getPlatformIcon(platform: string, sizeClass: string) {
   const norm = platform.toUpperCase();
-  switch (norm) {
-    case "FACEBOOK":
-      return <Share2 className={sizeClass} aria-hidden="true" />;
-    case "INSTAGRAM":
-      return <Camera className={sizeClass} aria-hidden="true" />;
-    case "TIKTOK":
-      return <Video className={sizeClass} aria-hidden="true" />;
-    case "THREADS":
-      return <AtSign className={sizeClass} aria-hidden="true" />;
-    default:
-      return <Share2 className={sizeClass} aria-hidden="true" />;
-  }
+  if (!isSocialPlatform(norm))
+    return <Share2 className={sizeClass} aria-hidden="true" />;
+  const Icon = PLATFORM_ICON[norm];
+  return (
+    <Icon
+      className={cn(sizeClass, PLATFORM_BRAND[norm].icon)}
+      aria-hidden="true"
+    />
+  );
 }
 
 export const SocialPlatformBadge: FC<SocialPlatformBadgeProps> = ({
@@ -97,7 +131,7 @@ export const SocialPlatformBadge: FC<SocialPlatformBadgeProps> = ({
         sizeClass,
         styleClass,
         interactive &&
-          "cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand-orange/40 disabled:pointer-events-none disabled:opacity-50",
+          "focus-visible:ring-brand-orange/40 cursor-pointer focus-visible:ring-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50",
         className,
       )}
     >
