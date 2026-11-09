@@ -106,19 +106,25 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <a
-                  href="/help/faq"
+                <Link
+                  to="/help/faq"
                   className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange font-medium"
                 >
                   Trung tâm trợ giúp (FAQ)
-                </a>
+                </Link>
               </li>
               <li>
                 <a
-                  href="/help/guide"
+                  href="#how-it-works"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document
+                      .getElementById("how-it-works")
+                      ?.scrollIntoView({ behavior: "smooth" });
+                  }}
                   className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange font-medium"
                 >
-                  Cẩm nang hướng dẫn
+                  Cẩm nang quy trình
                 </a>
               </li>
               <li>
@@ -148,10 +154,16 @@ export function Footer() {
             <ul className="space-y-2.5">
               <li>
                 <a
-                  href="/help/guide#architecture"
+                  href="#ai-features"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document
+                      .getElementById("ai-features")
+                      ?.scrollIntoView({ behavior: "smooth" });
+                  }}
                   className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
                 >
-                  Giới thiệu kiến trúc
+                  Kiến trúc AI &amp; Hệ thống
                 </a>
               </li>
               <li>

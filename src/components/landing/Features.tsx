@@ -201,7 +201,10 @@ export function Features() {
                         <img
                           src={photo}
                           alt={photoAlt}
+                          width={600}
+                          height={300}
                           loading="lazy"
+                          decoding="async"
                           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
@@ -233,7 +236,10 @@ export function Features() {
                         <img
                           src={photo}
                           alt={photoAlt}
+                          width={800}
+                          height={420}
                           loading="lazy"
+                          decoding="async"
                           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -248,7 +254,10 @@ export function Features() {
                         <img
                           src={photo}
                           alt={photoAlt}
+                          width={1000}
+                          height={280}
                           loading="lazy"
+                          decoding="async"
                           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/80 via-transparent to-zinc-950/60" />

@@ -333,6 +333,11 @@ export function HelpGuideRedirect() {
   return <Navigate to="/help/faq" replace />;
 }
 
+function AdaptiveHelpLayout() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return isAuthenticated ? <Layout /> : <PublicHelpLayout />;
+}
+
 export function AppRoutes() {
   return (
     <Suspense fallback={<PageFallback fullScreen />}>
@@ -360,6 +365,12 @@ export function AppRoutes() {
           <Route path="/guide" element={<HelpGuideRedirect />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
+        </Route>
+
+        {/* FAQ Route — public via PublicHelpLayout for guests/search engines, full sidebar Layout for authenticated users */}
+        <Route element={<AdaptiveHelpLayout />}>
+          <Route path="/help/faq" element={<HelpFaqPage />} />
+          <Route path="/faq" element={<Navigate to="/help/faq" replace />} />
         </Route>
 
         {/* Authenticated Routes — require login */}
@@ -560,8 +571,6 @@ export function AppRoutes() {
               element={<WorkspaceTemplateLibraryPage />}
             />
             <Route path="/admin/guide" element={<AdminGuidePage />} />
-            <Route path="/help/faq" element={<HelpFaqPage />} />
-            <Route path="/faq" element={<Navigate to="/help/faq" replace />} />
             <Route path="/requests" element={<ContentRequestListPage />} />
             <Route path="/editor" element={<EditorPage />} />
             <Route path="/content-writing" element={<ContentWritingPage />} />

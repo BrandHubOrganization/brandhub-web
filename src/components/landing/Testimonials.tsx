@@ -40,11 +40,11 @@ const TESTIMONIALS: TestimonialItem[] = [
   {
     key: "phuong",
     name: "Trần Hoàng Phương",
-    role: "Lead Content Creator",
+    role: "Lead Creator",
     company: "Digital Buzz Studio",
     badge: "AI Trend Engine Tester",
     quote:
-      "Hệ thống AI Trend Crawler phát hiện chủ đề thảo luận nóng trên Facebook rất nhạy. Khi yêu cầu sinh bài, AI tuân thủ đúng Brand Guidelines, tự động đóng Watermark số chuẩn xác nên team hoàn toàn an tâm bàn giao cho khách hàng.",
+      "Hệ thống AI Trend Crawler phát hiện chủ đề thảo luận nóng rất nhạy. Khi yêu cầu sinh bài, AI tuân thủ đúng Brand Guidelines, tự động kiểm duyệt an toàn cộng đồng chuẩn xác nên team hoàn toàn an tâm bàn giao cho khách hàng.",
     stars: 5,
     avatar:
       "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=240&h=240&fit=crop&crop=faces",
@@ -112,7 +112,10 @@ export function Testimonials() {
         src={BG_PHOTO}
         alt=""
         aria-hidden
+        width={1200}
+        height={900}
         loading="lazy"
+        decoding="async"
         className="pointer-events-none absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover opacity-[0.07] will-change-transform dark:opacity-[0.05]"
       />
       <SectionDecor corner="left" />
@@ -177,8 +180,11 @@ export function Testimonials() {
                     <img
                       src={current.avatar}
                       alt={current.name}
+                      width={64}
+                      height={64}
                       className="size-16 rounded-full object-cover ring-4 ring-brand-orange/20 shadow-md transition-transform"
                       loading="lazy"
+                      decoding="async"
                     />
                     <span className="absolute bottom-0 right-0 size-4 rounded-full border-2 border-white bg-emerald-500 dark:border-zinc-900" />
                   </div>
@@ -214,8 +220,11 @@ export function Testimonials() {
                 <img
                   src={tm.avatar}
                   alt={tm.name}
+                  width={48}
+                  height={48}
                   className="size-full object-cover transition-transform group-hover:scale-110"
                   loading="lazy"
+                  decoding="async"
                 />
               </button>
             ))}

@@ -11,6 +11,7 @@ import { PublicSurveyHeader } from "@/pages/public-survey/components/PublicSurve
 import { PublicQuestionCard } from "@/pages/public-survey/components/PublicQuestionCard";
 import { PublicSurveySuccess } from "@/pages/public-survey/components/PublicSurveySuccess";
 import { stripHtmlTags } from "@/pages/tasks/components/survey/SurveyFormatText";
+import { SeoHead } from "@/components/seo/SeoHead";
 
 function isAnswerEmpty(val: string | string[] | undefined): boolean {
   if (!val) return true;
@@ -206,6 +207,11 @@ export default function PublicSurveyPage() {
 
   return (
     <div className="bg-background min-h-screen px-4 py-8 sm:px-6">
+      <SeoHead
+        title={survey.title ? `${survey.title} — Khảo sát | BrandHub` : "Biểu mẫu Khảo sát | BrandHub"}
+        canonicalPath="/public/surveys"
+        noindex
+      />
       <div className="mx-auto max-w-xl space-y-5">
         {isPreview && (
           <div className="flex items-center gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-700 dark:text-amber-300">

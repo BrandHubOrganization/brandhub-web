@@ -10,6 +10,7 @@ import { AuthMobileHeader } from "@/components/auth/AuthMobileHeader";
 import { BackToHomeLink } from "@/components/auth/BackToHomeLink";
 import { authService } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
+import { SeoHead } from "@/components/seo/SeoHead";
 
 export function ForgotPasswordPage() {
   const { t } = useTranslation();
@@ -43,6 +44,11 @@ export function ForgotPasswordPage() {
       className="bg-background flex min-h-screen"
       style={{ fontFamily: "var(--font-sans)" }}
     >
+      <SeoHead
+        title="Quên mật khẩu | BrandHub"
+        canonicalPath="/forgot-password"
+        noindex
+      />
       <AuthBrandPanel />
       <div className="flex flex-1 items-center justify-center px-4 sm:px-8">
         <div className="w-full max-w-[400px]">

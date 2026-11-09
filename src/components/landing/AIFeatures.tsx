@@ -5,7 +5,7 @@ import {
   UserCheck,
   Network,
   Palette,
-  Radio,
+  ShieldCheck,
   Handshake,
   MousePointerClick,
   type LucideIcon,
@@ -33,7 +33,7 @@ const CAPABILITIES: AiCapability[] = [
   { key: "virtualAmbassador", icon: UserCheck },
   { key: "graphRag", icon: Network },
   { key: "generativeStudio", icon: Palette },
-  { key: "livestreamScript", icon: Radio },
+  { key: "complianceCheck", icon: ShieldCheck },
   { key: "collaboratorRecommender", icon: Handshake },
 ];
 

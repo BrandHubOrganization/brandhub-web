@@ -104,7 +104,10 @@ export function AgencyWorkspace() {
                   <img
                     src={image}
                     alt={imageAlt}
+                    width={600}
+                    height={360}
                     loading="lazy"
+                    decoding="async"
                     className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

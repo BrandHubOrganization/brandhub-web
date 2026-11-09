@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { SeoHead } from "@/components/seo/SeoHead";
 import {
   ShieldCheck,
   Lock,
@@ -18,21 +19,23 @@ import {
 } from "lucide-react";
 
 export function PrivacyPolicyPage() {
-  const [lang, setLang] = useState<"en" | "vi">("en");
-
-  useEffect(() => {
-    document.title = "BrandHub - Privacy Policy";
-    let metaDescription = document.querySelector('meta[name="description"]');
-    if (!metaDescription) {
-      metaDescription = document.createElement("meta");
-      metaDescription.setAttribute("name", "description");
-      document.head.appendChild(metaDescription);
-    }
-    metaDescription.setAttribute("content", "Privacy Policy for BrandHub");
-  }, []);
+  const [lang, setLang] = useState<"en" | "vi">("vi");
 
   return (
     <div className="mx-auto max-w-4xl py-6 sm:py-10">
+      <SeoHead
+        title={
+          lang === "en"
+            ? "Privacy Policy | BrandHub"
+            : "Chính Sách Quyền Riêng Tư (Privacy Policy) | BrandHub"
+        }
+        description={
+          lang === "en"
+            ? "Learn how BrandHub collects, uses, protects, and safeguards personal data, workspace assets, and Google OAuth user data on https://brandhub.id.vn."
+            : "Chính sách quyền riêng tư giải thích cách BrandHub thu thập, sử dụng và bảo vệ dữ liệu cá nhân, tài nguyên Workspace và dữ liệu người dùng trên https://brandhub.id.vn."
+        }
+        canonicalPath="/privacy"
+      />
       {/* Back button & Language Switcher */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <Link
@@ -351,7 +354,7 @@ export function PrivacyPolicyPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-1 size-1.5 rounded-full bg-brand-orange" />
-                    <span><strong>Google Drive Disconnection:</strong> Workspace Managers can disconnect Google Drive at any time in Workspace Storage Settings. Disconnecting immediately invalidates and purges the stored OAuth refresh token from BrandHub.</span>
+                    <span><strong>Google Drive Disconnection:</strong> Managers can disconnect Google Drive at any time in Workspace Storage Settings. Disconnecting immediately invalidates and purges the stored OAuth refresh token from BrandHub.</span>
                   </li>
                 </ul>
               </section>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PackageProposalView } from "@/pages/media-package/components/PackageProposalView";
 import { MediaPackageLoadingState } from "@/pages/media-package/components/MediaPackagePageState";
 import type { PackageOfferingDetails } from "@/pages/media-package/types/mediaPackage";
+import { SeoHead } from "@/components/seo/SeoHead";
 
 interface PublicPackage {
   agencyName: string;
@@ -47,6 +48,11 @@ export default function GuestMediaPackagePage() {
   const p = query.data;
   return (
     <main className="bg-background text-foreground min-h-dvh px-4 py-10 sm:px-8">
+      <SeoHead
+        title={p?.name ? `${p.name} — Đề xuất Gói Truyền thông | BrandHub` : "Đề xuất Gói Truyền thông | BrandHub"}
+        canonicalPath="/packages/share"
+        noindex
+      />
       <div className="mx-auto max-w-4xl space-y-6">
         <div
           role="group"

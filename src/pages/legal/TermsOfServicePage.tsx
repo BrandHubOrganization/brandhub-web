@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { SeoHead } from "@/components/seo/SeoHead";
 import {
   FileText,
   Shield,
@@ -16,21 +17,23 @@ import {
 } from "lucide-react";
 
 export function TermsOfServicePage() {
-  const [lang, setLang] = useState<"en" | "vi">("en");
-
-  useEffect(() => {
-    document.title = "BrandHub - Terms of Service";
-    let metaDescription = document.querySelector('meta[name="description"]');
-    if (!metaDescription) {
-      metaDescription = document.createElement("meta");
-      metaDescription.setAttribute("name", "description");
-      document.head.appendChild(metaDescription);
-    }
-    metaDescription.setAttribute("content", "Terms of Service for BrandHub");
-  }, []);
+  const [lang, setLang] = useState<"en" | "vi">("vi");
 
   return (
     <div className="mx-auto max-w-4xl py-6 sm:py-10">
+      <SeoHead
+        title={
+          lang === "en"
+            ? "Terms of Service | BrandHub"
+            : "Điều Khoản Dịch Vụ (Terms of Service) | BrandHub"
+        }
+        description={
+          lang === "en"
+            ? "Terms of Service governing access, workspace roles (Owner, Manager, Creator, Client), AI credits, and multi-channel publishing on BrandHub (https://brandhub.id.vn)."
+            : "Điều khoản dịch vụ quy định quyền truy cập, phân quyền vai trò (Owner, Manager, Creator, Client), AI Credits và xuất bản đa kênh trên BrandHub (https://brandhub.id.vn)."
+        }
+        canonicalPath="/terms"
+      />
       {/* Back button & Language Switcher */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <Link
@@ -131,7 +134,7 @@ export function TermsOfServicePage() {
                   2. Description of BrandHub
                 </h2>
                 <p className="text-muted-foreground">
-                  BrandHub is a multi-tenant cloud software platform engineered for Marketing Agencies, Brand Managers, and Content Creators. The platform facilitates:
+                  BrandHub is a multi-tenant cloud software platform engineered for Marketing Agencies (Owners, Managers, Creators) and Brand Clients. The platform facilitates:
                 </p>
                 <ul className="space-y-1.5 text-muted-foreground">
                   <li>• Agency organization management and isolated client workspaces.</li>

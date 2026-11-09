@@ -172,8 +172,11 @@ export function MediaPackage() {
                       <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl sm:size-28">
                         <img
                           src={photo}
-                          alt=""
+                          alt={t(`landing.mediaPackage.items.${key}.title`)}
+                          width={500}
+                          height={500}
                           loading="lazy"
+                          decoding="async"
                           className="timeline-photo absolute inset-0 h-[130%] w-full object-cover will-change-transform"
                         />
                       </div>

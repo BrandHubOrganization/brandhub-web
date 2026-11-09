@@ -33,7 +33,7 @@ const STATS = [
     prefix: "",
     suffix: "%",
     labelKey: "landing.stats.consistency",
-    sublabel: "GraphRAG & Bản quyền Watermark",
+    sublabel: "GraphRAG & Kiểm duyệt Compliance AI",
   },
 ];
 

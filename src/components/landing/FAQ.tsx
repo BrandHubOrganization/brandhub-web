@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
@@ -66,6 +66,8 @@ export function FAQ() {
                 )}
               >
                 <button
+                  type="button"
+                  aria-expanded={isOpen}
                   onClick={() => setOpen(isOpen ? null : key)}
                   className="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900"
                 >
@@ -76,21 +78,17 @@ export function FAQ() {
                     className={`size-5 shrink-0 text-zinc-400 ${reduce ? "" : "transition-transform"} ${isOpen ? "rotate-180" : ""}`}
                   />
                 </button>
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={reduce ? false : { height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={reduce ? undefined : { height: 0, opacity: 0 }}
-                      transition={{ duration: reduce ? 0 : 0.25 }}
-                      className="overflow-hidden"
-                    >
-                      <p className="px-6 pb-5 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                        {t(`landing.faq.items.${key}.a`)}
-                      </p>
-                    </motion.div>
+                <div
+                  hidden={!isOpen}
+                  className={cn(
+                    "overflow-hidden transition-all duration-200",
+                    isOpen ? "block" : "hidden",
                   )}
-                </AnimatePresence>
+                >
+                  <p className="px-6 pb-5 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    {t(`landing.faq.items.${key}.a`)}
+                  </p>
+                </div>
               </div>
             );
           })}

@@ -50,20 +50,20 @@ const INSIGHTS: Insight[] = [
     statNumber: "68%",
     statLabel: "Marketers đối mặt rủi ro Brand Voice",
     source: "HubSpot State of Marketing 2024",
-    problemTitle: "AI tự do gây loãng nhận diện và rủi ro bản quyền",
+    problemTitle: "AI tự do gây loãng nhận diện và rủi ro vi phạm chính sách",
     problemDesc:
-      "Dùng AI không có khung kiểm soát dẫn đến bài đăng sai lệch giọng điệu thương hiệu, thiếu thống nhất màu sắc hình ảnh và nguy cơ bị đánh cắp tài sản truyền thông.",
+      "Dùng AI không có khung kiểm soát dẫn đến bài đăng sai lệch giọng điệu thương hiệu, thiếu thống nhất màu sắc hình ảnh và nguy cơ vi phạm tiêu chuẩn cộng đồng.",
     solutionTitle: "GraphRAG & Bộ lọc kiểm soát Brand Guidelines",
     solutionFeatures: [
       "Neo4j Knowledge Graph & ChromaDB neo giữ quy chuẩn thương hiệu",
-      "AI Trend Crawler tự động bắt nhịp thảo luận nóng từ Facebook MXH",
-      "Tự động đóng Watermark số bản quyền theo preset từng Workspace",
+      "AI Trend Crawler tự động bắt nhịp thảo luận nóng từ TikTok & Google Trends",
+      "Tự động kiểm duyệt an toàn nội dung cộng đồng (Compliance Guard) trước khi gửi duyệt",
     ],
     icon: ShieldAlert,
     accentColor: "from-rose-500/20 to-brand-orange/20 text-rose-500",
     image:
       "https://images.unsplash.com/photo-1542744094-3a31f272c490?w=700&h=360&fit=crop",
-    imageAlt: "Đảm bảo tuân thủ Brand Voice và bản quyền nhận diện",
+    imageAlt: "Đảm bảo tuân thủ Brand Voice và an toàn nội dung thương hiệu",
   },
   {
     id: "manual-fatigue",
@@ -167,7 +167,10 @@ export function IndustryInsights() {
                     <img
                       src={item.image}
                       alt={item.imageAlt}
+                      width={700}
+                      height={360}
                       loading="lazy"
+                      decoding="async"
                       className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

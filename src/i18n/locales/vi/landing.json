@@ -326,7 +326,7 @@
     "microservices": "Kiến trúc Microservices phân tán",
     "trends": "Tín hiệu Trend cào & vector hóa mỗi ngày",
     "latency": "Độ trễ API Gateway trung bình",
-    "consistency": "Nhất quán Brand Tone & Bảo vệ bản quyền",
+    "consistency": "Nhất quán Brand Tone & Kiểm duyệt AI",
     "contents": "Nội dung được quản lý",
     "brands": "Thương hiệu & agency",
     "platforms": "Nền tảng tích hợp",
@@ -337,46 +337,46 @@
   },
   "features": {
     "title": "Tất cả trong một nền tảng vận hành truyền thông",
-    "subtitle": "Từ đàm phán gói dịch vụ, lập kế hoạch 3 loại tác vụ đến kiểm duyệt chất lượng 4 cấp và xuất bản đa kênh.",
+    "subtitle": "Từ đàm phán gói dịch vụ, lập kế hoạch chiến dịch đa tác vụ đến kiểm duyệt chất lượng đa cấp và xuất bản đa kênh.",
     "demoLabel": "Xem demo thực tế",
     "demoAction": "Xem {{feature}} trong demo MacBook trực tiếp phía trên",
     "items": {
       "planning": {
-        "title": "Lập kế hoạch Chiến dịch & 3 Loại Task",
-        "desc": "Lịch trực quan quản lý đồng bộ 3 loại tác vụ chuyên sâu: Bài đăng mạng xã hội, Kế hoạch sản xuất Livestream và Biểu mẫu Workshop khảo sát."
+        "title": "Lập kế hoạch Chiến dịch & Quản trị Tác vụ",
+        "desc": "Lịch trực quan quản lý đồng bộ các loại tác vụ chuyên sâu: Bài đăng mạng xã hội, Sản xuất Media đa định dạng và Biểu mẫu khảo sát khách hàng."
       },
       "creation": {
         "title": "AI Studio & Kiểm Duyệt Brand Guidelines",
-        "desc": "Sáng tạo nội dung với AI tích hợp GraphRAG kiểm tra tone giọng, tạo ảnh/video người mẫu ảo và tự động đóng Watermark số."
+        "desc": "Sáng tạo nội dung với AI tích hợp GraphRAG kiểm tra tone giọng, tạo ảnh/video người mẫu ảo và tự động kiểm duyệt an toàn nội dung cộng đồng."
       },
       "publishing": {
         "title": "Xuất Bản Đa Kênh & Quản Lý Đối Tác Báo Đài",
-        "desc": "Tự động đăng bài qua Meta Graph API, TikTok, Threads đồng thời quản lý tiến độ đối tác truyền thông bên thứ ba (Báo chí, TV, Banner)."
+        "desc": "Tự động đăng bài lên Facebook, Instagram, TikTok, Threads đồng thời quản lý tiến độ đối tác truyền thông bên thứ ba (Báo chí, TV, Banner)."
       },
       "analytics": {
         "title": "Phân Tích Hiệu Suất & Social Listening",
         "desc": "Dashboard thời gian thực theo dõi tương tác, độ phủ sóng chiến dịch và lắng nghe phản hồi thị trường từ bộ cào dữ liệu xu hướng."
       },
       "collab": {
-        "title": "Quy Trình Phê Duyệt 4 Cấp Chặt Chẽ",
-        "desc": "Cơ chế kiểm soát chất lượng chuẩn agency: Creator → Peer QC → Agency Manager → Client Approver với luồng phản hồi tức thì."
+        "title": "Quy Trình Phê Duyệt Đa Cấp Chặt Chẽ",
+        "desc": "Cơ chế kiểm soát chất lượng chuẩn agency: Creator → Manager → Client với luồng phản hồi tức thì và lịch sử kiểm tra minh bạch."
       },
       "automation": {
         "title": "Tự Động Hóa Vòng Đời Chiến Dịch",
-        "desc": "Tự động biến Gói truyền thông thành Task backlog, đồng bộ lịch Google Meet cho Workshop và tối ưu hóa khung giờ xuất bản."
+        "desc": "Tự động biến Gói truyền thông thành Task backlog, đồng bộ lịch xuất bản và tối ưu hóa khung giờ đăng bài trên 4 nền tảng."
       }
     }
   },
   "aiFeatures": {
     "badge": "Bộ công cụ AI Studio & Social Intelligence",
     "title": "Sức mạnh AI chuyên sâu cho Thương hiệu & Agency",
-    "subtitle": "Từ cào dữ liệu xu hướng thị trường, kiểm soát tone giọng bằng GraphRAG đến sinh người mẫu ảo và kịch bản livestream hoàn chỉnh.",
+    "subtitle": "Từ cào dữ liệu xu hướng thị trường, kiểm soát tone giọng bằng GraphRAG đến sinh người mẫu ảo và kiểm duyệt an toàn nội dung tự động.",
     "demoLabel": "Xem trong demo",
     "demoAction": "Xem {{capability}} trong demo MacBook trực tiếp phía trên",
     "items": {
       "trendCrawler": {
         "title": "AI Social Trend Crawler",
-        "desc": "Hệ thống tự động cào và phát hiện xu hướng thảo luận thời gian thực từ mạng xã hội, tổng hợp hashtag và sentiment thịnh hành."
+        "desc": "Hệ thống tự động cào và phát hiện xu hướng thảo luận thời gian thực từ TikTok Creative Center, Google Trends và mạng xã hội."
       },
       "virtualAmbassador": {
         "title": "AI Virtual Ambassador",
@@ -388,11 +388,15 @@
       },
       "generativeStudio": {
         "title": "Multi-Modal Generative Studio",
-        "desc": "Sinh ảnh sản phẩm thương mại, video biến thể, copy bài đăng hàng loạt và tự động đóng dấu số Watermark bảo vệ bản quyền thương hiệu."
+        "desc": "Sinh ảnh sản phẩm thương mại, video biến thể, copy bài đăng đa kênh và tự động đồng bộ quy chuẩn nhận diện thương hiệu."
+      },
+      "complianceCheck": {
+        "title": "AI Content Compliance Guard",
+        "desc": "Tự động kiểm tra an toàn cộng đồng, phát hiện ngôn từ nhạy cảm và đánh giá mức độ tuân thủ quy chuẩn nền tảng trước khi gửi duyệt."
       },
       "livestreamScript": {
-        "title": "AI Livestream Script Generator",
-        "desc": "Tự động lập kịch bản livestream bán hàng từng mốc thời gian (pre/live/post), chiến lược chốt deal và checklist thiết bị phòng live."
+        "title": "AI Content Compliance Guard",
+        "desc": "Tự động kiểm tra an toàn cộng đồng, phát hiện ngôn từ nhạy cảm và đánh giá mức độ tuân thủ quy chuẩn nền tảng trước khi gửi duyệt."
       },
       "collaboratorRecommender": {
         "title": "AI Media Collaborator Recommender",
@@ -402,7 +406,7 @@
   },
   "agencyWorkspace": {
     "title": "Xây dựng cho Agency & Mạng lưới Khách hàng",
-    "subtitle": "Quản lý tập trung mọi thương hiệu, chiến dịch và workspace khách hàng — cô lập dữ liệu hoàn toàn với cơ chế phân quyền 4 vai trò.",
+    "subtitle": "Quản lý tập trung mọi thương hiệu, chiến dịch và workspace khách hàng — cô lập dữ liệu hoàn toàn với cơ chế phân quyền chuẩn.",
     "demoLabel": "Xem trong demo",
     "demoAction": "Xem {{capability}} trong demo MacBook trực tiếp phía trên",
     "items": {
@@ -415,20 +419,20 @@
         "desc": "Khởi tạo không gian làm việc riêng biệt cho từng thương hiệu với múi giờ, Brand Guidelines và thư viện tài nguyên số tách biệt."
       },
       "roleAccess": {
-        "title": "Phân Quyền 4 Cấp (RBAC)",
-        "desc": "Phân định minh bạch trách nhiệm giữa Agency Owner, Manager, Content Creator và Client Approver trên từng chiến dịch."
+        "title": "Phân Quyền Vai Trò Chuẩn (RBAC)",
+        "desc": "Phân định minh bạch trách nhiệm giữa Owner, Manager, Creator và Client trên từng chiến dịch và không gian làm việc."
       }
     }
   },
   "howItWorks": {
     "title": "Quy trình vận hành chuẩn mực",
-    "subtitle": "Khép kín từ khâu đàm phán thương mại đến sáng tạo, kiểm duyệt 4 cấp và xuất bản đa kênh tự động.",
+    "subtitle": "Khép kín từ khâu đàm phán thương mại đến sáng tạo, kiểm duyệt đa cấp và xuất bản đa kênh tự động.",
     "input": "Đầu vào",
     "output": "Bàn giao",
     "demoAction": "Xem {{step}} trong demo trực tiếp phía trên",
     "roles": {
       "owner": {
-        "roleTag": "Quản trị Agency",
+        "roleTag": "Owner",
         "setupWorkspace": {
           "title": "Khởi tạo Workspace",
           "desc": "Thiết lập không gian làm việc và Brand Guidelines"
@@ -438,27 +442,27 @@
           "desc": "Cấp quyền cho Manager, Creator & Client"
         },
         "assignClient": {
-          "title": "Quản lý Gói dịch vụ",
+          "title": "Gói dịch vụ truyền thông",
           "desc": "Tạo gói mẫu và đàm phán điều khoản hợp đồng"
         }
       },
       "creator": {
-        "roleTag": "Sáng tạo nội dung",
+        "roleTag": "Creator",
         "draftContent": {
-          "title": "Soạn thảo 3 loại Task",
-          "desc": "Tạo Post, Livestream Plan & Biểu mẫu Workshop"
+          "title": "Soạn thảo Nội dung & Khảo sát",
+          "desc": "Soạn bài đăng đa kênh, tài nguyên media & biểu mẫu khảo sát"
         },
         "aiAssist": {
           "title": "AI Studio & GraphRAG",
-          "desc": "Kiểm tra tone giọng, sinh ảnh & đóng Watermark"
+          "desc": "Kiểm tra tone giọng, sinh ảnh & kiểm duyệt an toàn"
         },
         "submitReview": {
           "title": "Gửi duyệt nội bộ",
-          "desc": "Đẩy bài qua khâu Peer QC hoặc Agency Manager"
+          "desc": "Đẩy bài qua khâu kiểm duyệt của Manager"
         }
       },
       "manager": {
-        "roleTag": "Quản lý chiến dịch",
+        "roleTag": "Manager",
         "reviewContent": {
           "title": "Kiểm soát chất lượng",
           "desc": "Đánh giá chất lượng và sự nhất quán thương hiệu"
@@ -473,10 +477,10 @@
         }
       },
       "client": {
-        "roleTag": "Chủ thương hiệu",
+        "roleTag": "Client",
         "previewFinal": {
           "title": "Xem trước đa nền tảng",
-          "desc": "Preview chuẩn xác định dạng Facebook, TikTok, Instagram"
+          "desc": "Preview chuẩn xác định dạng Facebook, Instagram, TikTok, Threads"
         },
         "approve": {
           "title": "Phê duyệt chính thức",
@@ -497,7 +501,7 @@
     "items": {
       "social": {
         "title": "Bộ Social Media",
-        "desc": "Template có sẵn cho bài đăng và story Instagram, Facebook, TikTok, LinkedIn."
+        "desc": "Template có sẵn cho bài đăng và story Facebook, Instagram, TikTok, Threads."
       },
       "blog": {
         "title": "Blog & Bài viết",
@@ -523,7 +527,7 @@
       },
       "convert": {
         "title": "Tự Động Kích Hoạt Chiến Dịch",
-        "desc": "1-click biến gói truyền thông đã ký thành Media Campaign thực tế, tự động sinh backlog với 3 loại task (Post, Livestream, Workshop)."
+        "desc": "1-click biến gói truyền thông đã ký thành Media Campaign thực tế, tự động sinh backlog tác vụ sáng tạo và lịch xuất bản."
       },
       "replicate": {
         "title": "Tái Sử Dụng & Nhân Bản Workspace",
@@ -641,15 +645,15 @@
       },
       "q2": {
         "q": "BrandHub hỗ trợ liên kết những nền tảng mạng xã hội nào?",
-        "a": "BrandHub tích hợp chính thức qua API của Meta (Facebook Fanpage, Groups, Instagram Professional) và TikTok for Developers. Các bài đăng được lên lịch tự động và phân bổ qua microservice Publisher độc lập."
+        "a": "BrandHub tích hợp chính thức 4 nền tảng mạng xã hội: Facebook, Instagram, TikTok và Threads. Các bài đăng được lên lịch tự động và phân bổ qua microservice Publisher độc lập."
       },
       "q3": {
         "q": "Tính năng AI Trend Crawler & Brand Guidelines hoạt động thế nào?",
-        "a": "BrandHub kết hợp mô hình GraphRAG (Neo4j kết hợp ChromaDB vector search) cùng bộ cào dữ liệu thảo luận thị trường. AI tổng hợp các xu hướng đang thịnh hành, sau đó đối chiếu nghiêm ngặt với Brand Guidelines (tone of voice, từ cấm, định dạng) trước khi đề xuất nội dung và tự động đóng Watermark số."
+        "a": "BrandHub kết hợp mô hình GraphRAG (Neo4j kết hợp ChromaDB vector search) cùng bộ cào dữ liệu thảo luận thị trường. AI tổng hợp các xu hướng đang thịnh hành, sau đó đối chiếu nghiêm ngặt với Brand Guidelines (tone of voice, từ cấm, định dạng) và tự động kiểm duyệt an toàn nội dung cộng đồng trước khi đề xuất."
       },
       "q4": {
         "q": "Quy trình cộng tác & phê duyệt giữa Agency và Khách hàng (Client) diễn ra thế nào?",
-        "a": "Hệ thống xây dựng cơ chế phân quyền 2 lớp (2-Tier RBAC): Team Agency sáng tạo và quản trị chiến dịch; Khách hàng được cấp portal riêng biệt để duyệt từng bài đăng, phản hồi trực tiếp trên từng phiên bản bản nháp mà không cần trao đổi rời rạc qua ứng dụng nhắn tin."
+        "a": "Hệ thống xây dựng cơ chế phân quyền chuẩn theo 6 vai trò (Guest, Owner, Manager, Creator, Client, Admin): Đội ngũ Agency (Owner, Manager, Creator) sáng tạo và quản trị chiến dịch; Khách hàng (Client) được cấp không gian riêng biệt để duyệt từng bài đăng và phản hồi trực tiếp trên từng phiên bản bản nháp."
       },
       "q5": {
         "q": "Dữ liệu và Access Token mạng xã hội được bảo vệ như thế nào?",

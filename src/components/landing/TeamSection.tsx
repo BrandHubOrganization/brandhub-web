@@ -166,8 +166,11 @@ export function TeamSection() {
                 <div className="relative mx-auto mb-4 aspect-square w-full overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 p-1 dark:border-zinc-800 dark:bg-zinc-800/80">
                   <img
                     src={member.avatar}
-                    alt={member.name}
+                    alt={`${member.name} — ${member.roleBadge}`}
+                    width={400}
+                    height={400}
                     loading="lazy"
+                    decoding="async"
                     className="team-photo absolute inset-x-1 -top-[8%] h-[120%] w-[calc(100%-0.5rem)] rounded-lg object-cover object-top transition-transform duration-300 will-change-transform group-hover:scale-105"
                   />
                   <div className="absolute top-2.5 right-2.5 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-xs">
