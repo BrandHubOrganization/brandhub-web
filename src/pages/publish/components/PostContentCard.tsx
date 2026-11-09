@@ -207,7 +207,13 @@ function PostCaptionBlock({ caption, hashtags }: { caption: string; hashtags: st
     <div className="flex h-full flex-col justify-between space-y-6">
       <div className="space-y-4">
         {caption ? (
-          <p className="text-foreground text-sm sm:text-base leading-relaxed whitespace-pre-line font-normal">
+          <p
+            className="text-foreground text-sm leading-relaxed font-normal whitespace-pre-wrap sm:text-base"
+            style={{
+              fontFamily:
+                'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+            }}
+          >
             {caption}
           </p>
         ) : (

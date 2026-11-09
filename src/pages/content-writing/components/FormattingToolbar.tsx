@@ -30,6 +30,7 @@ import {
   Copy,
   Check,
   Type,
+  Star,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -46,8 +47,10 @@ import {
   copyTextToClipboard,
   CREATIVE_TEMPLATES,
   styleRunText,
+  ZANTEXT_CATEGORIES,
   ZANTEXT_STYLE_PRESETS,
   type TextCaseMode,
+  type ZantextCategoryId,
 } from "../contentUtils";
 
 export const FONT_FAMILIES = [
@@ -70,8 +73,13 @@ export const FONT_FAMILIES = [
   },
   { label: "Small Caps (ᴀʙᴄ)", value: '"Small Caps", sans-serif' },
   { label: "Circled (ⒶⒷⒸ)", value: '"Circled", sans-serif' },
+  { label: "Black Bubble (🅑🅤🅑)", value: '"Black Bubble", sans-serif' },
   { label: "Squared (🄰🄱🄲)", value: '"Squared", sans-serif' },
+  { label: "Black Square (🅱🅻🅰)", value: '"Black Square", sans-serif' },
+  { label: "Parenthesized (⒫⒜⒭)", value: '"Parenthesized", sans-serif' },
   { label: "Fullwidth (ＡＢＣ)", value: '"Fullwidth", monospace' },
+  { label: "Superscript (ˢᵘᵖᵉʳ)", value: '"Superscript", sans-serif' },
+  { label: "Slash Price (9̸9̸0̸k̸)", value: '"Slash Price", sans-serif' },
 ];
 
 export const FONT_SIZES = [10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64];
@@ -99,6 +107,16 @@ const HIGHLIGHT_SWATCHES = [
   "#f0fdf4",
   "#fdf4ff",
 ];
+
+const FAVORITES_STORAGE_KEY = "brandhub-zantext-favorites";
+
+const OS_FONT_STACKS: Record<"default" | "ios" | "android", string> = {
+  default:
+    'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+  ios: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Apple Symbols", "Apple Color Emoji", sans-serif',
+  android:
+    'Roboto, "Noto Sans", "Noto Sans Math", "Noto Sans Symbols", "Droid Sans", sans-serif',
+};
 
 export type HeadingPreset = "normal" | "h1" | "h2" | "h3";
 
@@ -136,7 +154,11 @@ function ToolGroup({
   children: ReactNode;
 }) {
   if (!ribbon) {
-    return <div className="flex items-center gap-0.5">{children}</div>;
+    return (
+      <div className="flex max-w-full shrink-0 flex-wrap items-center gap-0.5">
+        {children}
+      </div>
+    );
   }
   return (
     <div className="flex flex-col items-center gap-1 px-2">
@@ -162,6 +184,17 @@ function Divider({ ribbon }: { ribbon: boolean }) {
   ) : (
     <div className="mx-0.5 h-4 w-px bg-[#c7d0dd] dark:bg-zinc-700" />
   );
+}
+
+function loadSavedFavorites(): string[] {
+  try {
+    const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+    if (!raw) return ["sans-bold", "black-bubble", "slashthrough"];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return ["sans-bold", "black-bubble", "slashthrough"];
+  }
 }
 
 export function FormattingToolbar({
@@ -191,14 +224,44 @@ export function FormattingToolbar({
   const [creativeOpen, setCreativeOpen] = useState(false);
   const [zantextOpen, setZantextOpen] = useState(false);
   const [zantextInput, setZantextInput] = useState("");
+  const [zantextCategory, setZantextCategory] =
+    useState<ZantextCategoryId>("all");
+  const [osPreviewMode, setOsPreviewMode] = useState<
+    "default" | "ios" | "android"
+  >("default");
+  const [favoriteIds, setFavoriteIds] = useState<string[]>(loadSavedFavorites);
   const [copiedPresetId, setCopiedPresetId] = useState<string | null>(null);
   // Docs mode: Google Docs rounded pill bar (default). Ribbon mode: Word-style grouped row.
   const [ribbon, setRibbon] = useState(false);
+
+  const toggleFavoriteStyle = (id: string) => {
+    setFavoriteIds((prev) => {
+      const next = prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [id, ...prev];
+      try {
+        localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // Ignore storage quota errors
+      }
+      return next;
+    });
+  };
 
   const effectiveZantextSource =
     zantextInput.trim() ||
     (selectedPlainText && selectedPlainText.trim()) ||
     "Chiến dịch Ra mắt Mùa Hè 2026";
+
+  const filteredPresets = ZANTEXT_STYLE_PRESETS.filter((preset) => {
+    if (zantextCategory === "all") return true;
+    if (zantextCategory === "favorites") return favoriteIds.includes(preset.id);
+    return preset.category === zantextCategory;
+  }).sort((a, b) => {
+    const aFav = favoriteIds.includes(a.id) ? 0 : 1;
+    const bFav = favoriteIds.includes(b.id) ? 0 : 1;
+    return aFav - bFav;
+  });
 
   const currentNumericSize =
     typeof currentAttrs.size === "number" ? currentAttrs.size : 16;
@@ -215,12 +278,15 @@ export function FormattingToolbar({
   const stepFontSize = (delta: number) => {
     const idx = FONT_SIZES.findIndex((s) => s >= currentNumericSize);
     const curIdx = idx === -1 ? FONT_SIZES.length - 1 : idx;
-    const nextIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, curIdx + delta));
+    const nextIdx = Math.max(
+      0,
+      Math.min(FONT_SIZES.length - 1, curIdx + delta),
+    );
     onSetSize(FONT_SIZES[nextIdx]);
   };
 
   return (
-    <div className="border-border bg-[#f9fbfd] px-2.5 pt-2 pb-1.5 dark:bg-zinc-900">
+    <div className="border-border @container bg-[#f9fbfd] px-2 pt-2 pb-1.5 dark:bg-zinc-900">
       <div
         className={
           ribbon
@@ -262,7 +328,8 @@ export function FormattingToolbar({
             <Select
               aria-label="Kiểu văn bản"
               title="Kiểu đoạn văn (Heading)"
-              className="h-7 w-[118px] rounded-md border-transparent bg-transparent px-1 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
+              wrapperClassName="w-auto shrink-0"
+              className="h-7 w-auto rounded-md border-transparent bg-transparent pr-7 pl-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
               value={currentHeadingPreset}
               onChange={(e) =>
                 onApplyHeadingPreset(e.target.value as HeadingPreset)
@@ -276,7 +343,8 @@ export function FormattingToolbar({
           )}
 
           <Select
-            className="h-7 w-28 rounded-md border-transparent bg-transparent px-1 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
+            wrapperClassName="w-auto shrink-0"
+            className="h-7 w-[118px] rounded-md border-transparent bg-transparent pr-6 pl-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
             value={
               typeof currentAttrs.font === "string" ? currentAttrs.font : ""
             }
@@ -304,7 +372,8 @@ export function FormattingToolbar({
               <Minus className="size-3" />
             </Button>
             <Select
-              className="h-7 w-12 rounded-md border-transparent bg-white/80 px-1 text-center text-xs font-semibold tabular-nums dark:bg-zinc-900/70"
+              wrapperClassName="w-auto shrink-0"
+              className="h-7 w-14 rounded-md border-transparent bg-white/80 pr-5 pl-1.5 text-center text-xs font-semibold tabular-nums dark:bg-zinc-900/70"
               value={String(currentNumericSize)}
               onChange={(e) => onSetSize(Number(e.target.value))}
               title="Cỡ chữ"
@@ -645,7 +714,7 @@ export function FormattingToolbar({
                 title="Bộ công cụ sáng tạo nội dung & biến đổi chữ"
               >
                 <Wand2 className="size-3" />
-                <span className="hidden md:inline">Sáng tạo</span>
+                <span className="hidden @4xl:inline">Sáng tạo</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -824,7 +893,7 @@ export function FormattingToolbar({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Zantext / YayText Built-in Social Font Converter & 1-Click Copy */}
+          {/* Zantext / YayText Built-in 36-Style Social Font Converter & 1-Click Copy */}
           <DropdownMenu
             open={zantextOpen}
             onOpenChange={(open) => {
@@ -841,32 +910,44 @@ export function FormattingToolbar({
                 size="sm"
                 data-testid="zantext-panel-trigger"
                 className="border-brand-orange/30 bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/20 h-6 gap-1 rounded-full border px-2 text-[11px] font-semibold whitespace-nowrap"
-                title="Bảng chuyển đổi & Copy Font chữ nhanh kiểu Zantext / YayText (dán trực tiếp lên Facebook)"
+                title="Bảng chuyển đổi & Copy 36 kiểu Font chữ nhanh chuẩn YayText / Zantext (dán trực tiếp lên Facebook)"
               >
                 <Type className="size-3" />
-                <span className="hidden md:inline">Font Zantext</span>
+                <span className="hidden @4xl:inline">Font Zantext</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
               side="bottom"
               sideOffset={6}
-              collisionPadding={16}
+              avoidCollisions={false}
               onCloseAutoFocus={(e) => e.preventDefault()}
-              className="border-border bg-card w-96 space-y-2.5 p-3 text-xs shadow-xl"
+              className="border-border bg-card w-[420px] max-w-[94vw] space-y-2.5 p-3 text-xs shadow-xl"
             >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <p className="text-foreground flex items-center gap-1.5 text-xs font-bold">
                     <Type className="text-brand-orange size-3.5" />
-                    Bộ Chuyển & Copy Font Nhanh (Kiểu Zantext)
+                    Bộ Chuyển & Copy Font MXH (Chuẩn YayText / Zantext)
                   </p>
-                  <span className="bg-brand-orange/15 text-brand-orange rounded-full px-2 py-0.5 text-[10px] font-bold">
-                    14 Font MXH
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="bg-brand-orange/15 text-brand-orange rounded-full px-2 py-0.5 text-[10px] font-bold">
+                      36 Font MXH
+                    </span>
+                    <button
+                      type="button"
+                      data-testid="zantext-close-btn"
+                      onClick={() => setZantextOpen(false)}
+                      className="text-muted-foreground hover:text-foreground rounded px-1.5 py-0.5 text-[10px] font-semibold"
+                    >
+                      Đóng
+                    </button>
+                  </div>
                 </div>
                 <p className="text-muted-foreground text-[11px] leading-snug">
-                  Tự động đổi chữ sang Unicode chuẩn Facebook / Instagram / TikTok / Threads. Bấm <strong>Copy</strong> để dán thẳng lên bài đăng hoặc <strong>Áp dụng</strong> vào trình soạn thảo.
+                  Tự động đổi chữ sang Unicode chuẩn Facebook / Instagram /
+                  TikTok / Threads. Bấm <strong>Copy</strong> để dán thẳng lên
+                  bài đăng hoặc <strong>Áp dụng</strong> vào trình soạn thảo.
                 </p>
               </div>
 
@@ -878,19 +959,61 @@ export function FormattingToolbar({
                   placeholder={
                     selectedPlainText?.trim()
                       ? `Đang chọn: "${selectedPlainText.slice(0, 36)}"`
-                      : "Nhập hoặc bôi đen chữ cần đổi font (VD: Khuyến mãi Mùa Hè 2026)…"
+                      : "Nhập chữ hoặc giá cần đổi font (VD: Sale 990.000đ)…"
                   }
                   className="h-8 text-xs"
                 />
               </div>
 
+              {/* Category Filter Tabs */}
+              <div
+                data-testid="zantext-category-tabs"
+                className="flex flex-wrap gap-1"
+              >
+                {ZANTEXT_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    data-testid={`zantext-cat-${cat.id}`}
+                    onClick={() => setZantextCategory(cat.id)}
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold transition-colors ${
+                      zantextCategory === cat.id
+                        ? "bg-brand-orange text-white"
+                        : "bg-muted text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* OS Font Preview Switcher */}
+              <div className="border-border bg-muted/30 flex flex-wrap items-center justify-end gap-2 rounded-lg border px-2 py-1.5">
+                <select
+                  aria-label="Chế độ xem trước hệ điều hành"
+                  data-testid="zantext-os-preview-select"
+                  value={osPreviewMode}
+                  onChange={(e) =>
+                    setOsPreviewMode(
+                      e.target.value as "default" | "ios" | "android",
+                    )
+                  }
+                  className="border-border bg-card text-foreground rounded border px-1.5 py-0.5 text-[10px] font-semibold"
+                >
+                  <option value="default">Preview: Mặc định</option>
+                  <option value="ios">Preview: iOS (San Francisco)</option>
+                  <option value="android">Preview: Android (Roboto)</option>
+                </select>
+              </div>
+
               <div className="max-h-72 space-y-1.5 overflow-y-auto pr-1">
-                {ZANTEXT_STYLE_PRESETS.map((preset) => {
+                {filteredPresets.map((preset) => {
                   const converted = styleRunText(
                     effectiveZantextSource,
                     preset.attrs,
                   );
                   const isCopied = copiedPresetId === preset.id;
+                  const isFav = favoriteIds.includes(preset.id);
                   return (
                     <div
                       key={preset.id}
@@ -898,20 +1021,43 @@ export function FormattingToolbar({
                       className="border-border bg-muted/20 hover:bg-muted/50 flex items-center justify-between gap-2 rounded-xl border p-2 transition-colors"
                     >
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <button
+                            type="button"
+                            data-testid={`zantext-fav-${preset.id}`}
+                            onClick={() => toggleFavoriteStyle(preset.id)}
+                            title={
+                              isFav
+                                ? "Bỏ ghim khỏi Yêu thích"
+                                : "Ghim kiểu chữ này lên đầu"
+                            }
+                            className="text-muted-foreground hover:text-amber-500"
+                          >
+                            <Star
+                              className={`size-3 ${
+                                isFav
+                                  ? "fill-amber-400 text-amber-500"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
+                          </button>
                           <span className="text-muted-foreground text-[10px] font-semibold">
                             {preset.label}
                           </span>
-                          <span className="bg-muted text-foreground rounded px-1 py-0.2 text-[9px] font-bold">
+                          <span className="bg-muted text-foreground py-0.2 rounded px-1 text-[9px] font-bold">
                             {preset.badge}
+                          </span>
+                          <span className="py-0.2 rounded bg-emerald-500/10 px-1 text-[9px] font-medium text-emerald-700 dark:text-emerald-300">
+                            {preset.compatibility === "Universal"
+                              ? "iOS/Android ✓"
+                              : "Modern OS"}
                           </span>
                         </div>
                         <p
                           data-testid={`zantext-preview-${preset.id}`}
                           className="text-foreground mt-0.5 truncate text-xs font-medium"
                           style={{
-                            fontFamily:
-                              'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+                            fontFamily: OS_FONT_STACKS[osPreviewMode],
                           }}
                         >
                           {converted}
@@ -984,28 +1130,34 @@ export function FormattingToolbar({
         </ToolGroup>
 
         {/* Right-aligned Mode Switch: Google Docs pill bar vs. Word Ribbon */}
-        <div className="ml-auto flex items-center gap-0.5 pl-1">
+        <div
+          role="group"
+          aria-label="Kiểu thanh công cụ"
+          className="ml-auto flex items-center gap-0.5 rounded-full bg-white/70 p-0.5 dark:bg-zinc-900/60"
+        >
           <Button
             type="button"
             variant={!ribbon ? "secondary" : "ghost"}
-            size="sm"
-            className="h-6 gap-1 rounded-full px-2 text-[11px]"
+            size="icon"
+            className="size-6 rounded-full"
             onClick={() => setRibbon(false)}
-            title="Chế độ thanh công cụ (Google Docs)"
+            aria-pressed={!ribbon}
+            aria-label="Thanh công cụ Google Docs"
+            title="Thanh công cụ Google Docs"
           >
             <Rows3 className="size-3" />
-            Docs
           </Button>
           <Button
             type="button"
             variant={ribbon ? "secondary" : "ghost"}
-            size="sm"
-            className="h-6 gap-1 rounded-full px-2 text-[11px]"
+            size="icon"
+            className="size-6 rounded-full"
             onClick={() => setRibbon(true)}
-            title="Chế độ dải lệnh (Microsoft Word)"
+            aria-pressed={ribbon}
+            aria-label="Dải lệnh Microsoft Word"
+            title="Dải lệnh Microsoft Word"
           >
             <LayoutGrid className="size-3" />
-            Ribbon
           </Button>
         </div>
       </div>

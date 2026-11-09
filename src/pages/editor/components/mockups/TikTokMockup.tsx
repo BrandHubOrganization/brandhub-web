@@ -51,7 +51,15 @@ export function TikTokMockup({ data }: MockupProps) {
         <h5 className="text-xs font-semibold text-white">
           @{authorName.toLowerCase().replace(/\s+/g, "")}
         </h5>
-        <p className="text-2xs line-clamp-2 text-slate-200">{caption}</p>
+        <p
+          className="text-2xs line-clamp-3 text-slate-200 whitespace-pre-wrap"
+          style={{
+            fontFamily:
+              'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+          }}
+        >
+          {caption}
+        </p>
       </div>
     </div>
   );

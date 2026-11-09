@@ -1,13 +1,12 @@
-import { useRef } from "react";
-import { Award, Users } from "lucide-react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { Award, Users, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { SectionDecor } from "@/components/landing/SectionDecor";
-
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
+import {
+  SplitHeading,
+  SpinningSeal,
+} from "@/components/landing/MotionPrimitives";
 
 interface TeamMember {
   id: string;
@@ -17,6 +16,7 @@ interface TeamMember {
   experience: string;
   skills: string[];
   highlight: string;
+  isLead?: boolean;
 }
 
 const TEAM_MEMBERS: TeamMember[] = [
@@ -55,6 +55,7 @@ const TEAM_MEMBERS: TeamMember[] = [
       ".NET 8",
       "Product Strategy",
     ],
+    isLead: true,
   },
   {
     id: "nguyen-chon-phuoc",
@@ -82,39 +83,8 @@ export function TeamSection() {
   const { ref: headRef, isIntersecting: headVisible } = useIntersectionObserver(
     { threshold: 0.15, freezeOnceVisible: true },
   );
-  const gridRef = useRef<HTMLDivElement>(null);
   const { ref: cardsObserverRef, isIntersecting: gridVisible } =
     useIntersectionObserver({ threshold: 0.1, freezeOnceVisible: true });
-  const setGridRef = (el: HTMLDivElement | null) => {
-    gridRef.current = el;
-    cardsObserverRef(el);
-  };
-
-  useGSAP(
-    () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        return;
-      }
-      if (gridRef.current) {
-        gridRef.current
-          .querySelectorAll<HTMLElement>(".team-photo")
-          .forEach((photo) => {
-            gsap.to(photo, {
-              yPercent: -10,
-              ease: "none",
-              scrollTrigger: {
-                trigger: photo.closest(".team-card"),
-                start: "top bottom",
-                end: "bottom top",
-                scrub: true,
-                invalidateOnRefresh: true,
-              },
-            });
-          });
-      }
-    },
-    { scope: gridRef },
-  );
 
   return (
     <section
@@ -126,18 +96,19 @@ export function TeamSection() {
         <div
           ref={headRef}
           className={cn(
-            "mx-auto mb-16 max-w-3xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            "mx-auto mb-14 max-w-3xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
             headVisible ? "opacity-100" : "opacity-0",
           )}
         >
-          <div className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold">
+          <SectionEyebrow index={8} />
+          <div className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold">
             <Users className="size-3.5" />
             <span>ĐỘI NGŨ PHÁT TRIỂN DỰ ÁN CAPSTONE SEP490</span>
           </div>
-          <h2 className="mt-4 text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
-            Kỹ sư xây dựng{" "}
-            <span className="text-brand-orange">BrandHub Platform</span>
-          </h2>
+          <SplitHeading
+            text="Kỹ sư xây dựng"
+            highlightText="BrandHub Platform"
+          />
           <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
             Đội ngũ sinh viên Kỹ thuật phần mềm Đại học FPT Đà Nẵng (SynapForge)
             kết hợp kinh nghiệm thực chiến từ FPT Software, các giải thưởng công
@@ -145,9 +116,48 @@ export function TeamSection() {
           </p>
         </div>
 
-        {/* 5-Member Responsive Grid */}
+        {/* Real SynapForge Team Group Banner with Architectural Rounded Frame & Spinning Seal */}
+        <div className="bh-stage-reveal relative mx-auto mb-16 max-w-5xl">
+          <div className="group relative overflow-hidden rounded-[32px] border border-orange-200/80 bg-zinc-900 shadow-2xl dark:border-zinc-800">
+            <div className="relative aspect-[16/8] w-full overflow-hidden sm:aspect-[21/9]">
+              <img
+                src="/team/synapforge-team-trunglc-center.png"
+                alt="Đội ngũ kỹ sư SynapForge phát triển nền tảng BrandHub tại Đại học FPT Đà Nẵng"
+                width={1400}
+                height={600}
+                loading="lazy"
+                decoding="async"
+                className="size-full object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/25 to-transparent" />
+            </div>
+
+            {/* Pill Overlay Card inspired by `.act--hole` in giaimamanhai.vercel.app */}
+            <div className="relative flex flex-col justify-between gap-4 bg-zinc-950/90 p-6 text-white backdrop-blur-md sm:absolute sm:bottom-5 sm:left-5 sm:max-w-xl sm:rounded-l-[24px] sm:rounded-r-[999px] sm:border sm:border-white/15 sm:bg-zinc-950/80 sm:py-5 sm:pr-12 sm:pl-7">
+              <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-orange-400 uppercase">
+                <Sparkles className="size-3.5" />
+                <span>SYNAPFORGE ENGINEERING COLLECTIVE · FPT UNIVERSITY</span>
+              </div>
+              <p className="text-sm leading-relaxed text-zinc-200">
+                5 kỹ sư Full-Stack, AI GraphRAG &amp; Cloud DevOps đồng kiến tạo
+                hệ sinh thái 141 tính năng quản trị thương hiệu và xuất bản đa
+                kênh tự động.
+              </p>
+            </div>
+          </div>
+
+          <SpinningSeal
+            text="FPT UNIVERSITY DA NANG • SYNAPFORGE • "
+            centerTop="SEP"
+            centerBottom="490"
+            variant="orange"
+            className="absolute -top-6 -right-4 hidden size-24 sm:block"
+          />
+        </div>
+
+        {/* 5-Member Staggered Portrait Grid */}
         <div
-          ref={setGridRef}
+          ref={cardsObserverRef}
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
         >
           {TEAM_MEMBERS.map((member, i) => (
@@ -157,33 +167,46 @@ export function TeamSection() {
                 transitionDelay: gridVisible ? `${i * 100}ms` : "0ms",
               }}
               className={cn(
-                "team-card group hover:border-brand-orange/40 dark:hover:border-brand-orange/40 flex flex-col justify-between rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-xl motion-reduce:opacity-100 motion-reduce:transition-none dark:border-zinc-800 dark:bg-zinc-900",
+                "team-card group flex flex-col justify-between rounded-[28px] border p-5 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-2xl motion-reduce:opacity-100 motion-reduce:transition-none xl:even:mt-8",
+                member.isLead
+                  ? "border-brand-orange/60 bg-gradient-to-b from-orange-50/70 via-white to-white shadow-md dark:border-brand-orange/50 dark:from-orange-950/25 dark:via-zinc-900 dark:to-zinc-900"
+                  : "hover:border-brand-orange/40 dark:hover:border-brand-orange/40 border-zinc-200/90 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900",
                 gridVisible ? "scale-100 opacity-100" : "scale-95 opacity-0",
               )}
             >
               <div>
-                {/* Photo & Identity */}
-                <div className="relative mx-auto mb-4 aspect-square w-full overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 p-1 dark:border-zinc-800 dark:bg-zinc-800/80">
+                {/* Rectangular Portrait Frame (no arch curve so full head is visible) */}
+                <div
+                  className={cn(
+                    "relative mx-auto mb-5 aspect-[4/4.5] w-full overflow-hidden rounded-2xl border bg-zinc-100 p-1.5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-zinc-800/80",
+                    member.isLead
+                      ? "border-brand-orange ring-brand-orange/25 ring-4"
+                      : "border-zinc-200 dark:border-zinc-700",
+                  )}
+                >
                   <img
                     src={member.avatar}
-                    alt={member.name}
+                    alt={`${member.name} — ${member.roleBadge}`}
+                    width={400}
+                    height={450}
                     loading="lazy"
-                    className="team-photo absolute inset-x-1 -top-[8%] h-[120%] w-[calc(100%-0.5rem)] rounded-lg object-cover object-top transition-transform duration-300 will-change-transform group-hover:scale-105"
+                    decoding="async"
+                    className="h-full w-full rounded-xl object-cover object-top transition-transform duration-500 will-change-transform group-hover:scale-105"
                   />
-                  <div className="absolute top-2.5 right-2.5 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-xs">
-                    FPTU
+                  <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-xs">
+                    {member.isLead ? "TECH LEAD · FPTU" : "FPTU"}
                   </div>
                 </div>
 
                 <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
                   {member.name}
                 </h3>
-                <span className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange mt-1.5 inline-block rounded-md border px-2 py-0.5 text-[11px] font-bold">
+                <span className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange mt-1.5 inline-block rounded-full border px-2.5 py-0.5 text-[11px] font-bold">
                   {member.roleBadge}
                 </span>
 
                 {/* Highlight Badge */}
-                <div className="mt-3 flex items-start gap-1.5 rounded-lg bg-zinc-50 p-2 text-[11px] font-medium text-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300">
+                <div className="mt-3 flex items-start gap-1.5 rounded-2xl bg-zinc-50 p-2.5 text-[11px] font-medium text-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300">
                   <Award className="mt-0.5 size-3.5 shrink-0 text-amber-500" />
                   <span className="line-clamp-2 leading-tight">
                     {member.highlight}
@@ -202,7 +225,7 @@ export function TeamSection() {
                   {member.skills.map((skill, sIdx) => (
                     <span
                       key={sIdx}
-                      className="rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                      className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-[10px] font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
                     >
                       {skill}
                     </span>

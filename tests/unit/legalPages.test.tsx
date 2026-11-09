@@ -15,6 +15,7 @@ vi.mock("react-i18next", () => ({
 
 describe("Legal Pages and Navigation Verification", () => {
   it("renders PrivacyPolicyPage with all required Google OAuth and Google Drive disclosures", () => {
+    vi.stubGlobal("window", { location: { search: "?lang=en" } });
     const html = renderToString(
       createElement(MemoryRouter, null, createElement(PrivacyPolicyPage)),
     );
@@ -41,6 +42,7 @@ describe("Legal Pages and Navigation Verification", () => {
   });
 
   it("renders TermsOfServicePage with all required governance and legal terms", () => {
+    vi.stubGlobal("window", { location: { search: "?lang=en" } });
     const html = renderToString(
       createElement(MemoryRouter, null, createElement(TermsOfServicePage)),
     );

@@ -307,6 +307,20 @@ export function CinematicHero() {
       id="hero-cinematic"
       className="relative min-h-[100dvh] w-full overflow-hidden bg-zinc-950"
     >
+      <header className="sr-only">
+        <h1>
+          {t(
+            "landing.hero.seoH1",
+            "BrandHub — Nền tảng Quản trị Thương hiệu & Xuất bản Nội dung Đa kênh AI",
+          )}
+        </h1>
+        <p>
+          {t(
+            "landing.hero.subtitle",
+            "Giải pháp quản trị Agency, lập kế hoạch Media Package & Campaign, sáng tạo nội dung với AI Studio GraphRAG (Neo4j + ChromaDB), phê duyệt đa cấp (Owner, Manager, Creator, Client) và xuất bản tự động lên Facebook, Instagram, TikTok, Threads.",
+          )}
+        </p>
+      </header>
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -1369,13 +1383,13 @@ const KANBAN_ITEMS: KanbanItem[] = [
     tag: "Quảng cáo",
   },
   {
-    title: "Livestream: Q&A với founder",
+    title: "Workshop: Q&A với founder",
     channel: "facebook",
     time: "CN tuần sau 20:00",
     status: "review",
     cover:
       "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=200&q=60",
-    tag: "Live",
+    tag: "Sự kiện",
   },
   {
     title: "Reel: 3 mẹo tăng reach hữu cơ",
@@ -1885,7 +1899,7 @@ const CALENDAR_POSTS: Record<
   ],
   19: [
     { title: "Unboxing Serie B", channel: "tiktok", time: "19:00" },
-    { title: "Livestream Q&A founder", channel: "facebook", time: "20:00" },
+    { title: "Workshop Q&A founder", channel: "facebook", time: "20:00" },
   ],
   22: [
     { title: "Banner khuyến mãi T8", channel: "facebook", time: "15:00" },
@@ -2283,7 +2297,7 @@ const AI_TEMPLATES = [
   "Nước hoa nam, tông gỗ, sang trọng, studio",
   "Kem chống nắng, nền biển, tươi mát",
   "Giày chạy bộ, đầy năng lượng, motion",
-  "Banner livestream, gradient cam",
+  "Banner chiến dịch Flash Sale, gradient cam",
 ];
 
 const AI_PROMPT_HISTORY = [
@@ -2292,7 +2306,7 @@ const AI_PROMPT_HISTORY = [
   { title: "Caption case study BrandHub", time: "Hôm qua" },
   { title: "Story Instagram quán cà phê — tông ấm", time: "Hôm qua" },
   { title: "Tiêu đề blog SEO: 'Cách tăng reach 2026'", time: "2 ngày trước" },
-  { title: "Banner livestream T8 — nền gradient cam", time: "3 ngày trước" },
+  { title: "Banner chiến dịch T8 — nền gradient cam", time: "3 ngày trước" },
   { title: "Email khuyến mãi 20% khách hàng thân thiết", time: "1 tuần trước" },
 ];
 
@@ -2529,7 +2543,7 @@ const PUBLISH_QUEUE = [
     title: "Reel: 3 mẹo tăng reach hữu cơ",
     channel: "instagram" as CalChannel,
   },
-  { title: "Livestream Q&A với founder", channel: "facebook" as CalChannel },
+  { title: "Workshop Q&A với founder", channel: "facebook" as CalChannel },
 ];
 
 type WsStatus = "active" | "review" | "paused";

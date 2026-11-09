@@ -13,6 +13,7 @@ import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { authService, oauthUrl } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
 import { saveAuthRedirect } from "@/utils/authRedirect";
+import { SeoHead } from "@/components/seo/SeoHead";
 
 export function RegisterPage() {
   const { t } = useTranslation();
@@ -103,6 +104,11 @@ export function RegisterPage() {
       className="bg-background flex min-h-screen"
       style={{ fontFamily: "var(--font-sans)" }}
     >
+      <SeoHead
+        title="Đăng ký tài khoản miễn phí | BrandHub"
+        canonicalPath="/register"
+        noindex
+      />
       <AuthBrandPanel />
       <div className="flex flex-1 items-center justify-center px-4 sm:px-8">
         <div className="w-full max-w-[400px]">

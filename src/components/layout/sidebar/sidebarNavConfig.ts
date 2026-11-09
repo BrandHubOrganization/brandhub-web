@@ -181,13 +181,6 @@ export const NAV_SECTIONS: NavSection[] = [
         requiresWorkspace: true,
       },
       {
-        to: "/content-writing",
-        icon: FileEdit,
-        labelKey: "nav.contentWriting",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
         to: "/templates",
         icon: LayoutTemplate,
         labelKey: "nav.templates",

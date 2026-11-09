@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { X, FilePlus, Share2, Globe, Video, AtSign, Check, Sparkles } from "lucide-react";
+import { X, FilePlus, Check, Sparkles } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import type {
@@ -15,25 +16,25 @@ const PLATFORMS: { key: SocialPlatform; label: string; icon: React.ReactNode; co
   {
     key: "FACEBOOK",
     label: "Facebook",
-    icon: <Share2 className="size-4" />,
+    icon: <FaFacebook className="size-4" />,
     color: "text-blue-500",
   },
   {
     key: "INSTAGRAM",
     label: "Instagram",
-    icon: <Globe className="size-4" />,
+    icon: <FaInstagram className="size-4" />,
     color: "text-pink-500",
   },
   {
     key: "TIKTOK",
     label: "TikTok",
-    icon: <Video className="size-4" />,
+    icon: <FaTiktok className="size-4" />,
     color: "text-foreground",
   },
   {
     key: "THREADS",
     label: "Threads",
-    icon: <AtSign className="size-4" />,
+    icon: <FaThreads className="size-4" />,
     color: "text-foreground",
   },
 ];

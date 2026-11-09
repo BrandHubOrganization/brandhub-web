@@ -104,7 +104,7 @@ export function WorkspaceQuickActions({
               <button
                 type="button"
                 onClick={() =>
-                  navigate(`/workspaces/${workspaceId}/content-writing`)
+                  navigate(`/workspaces/${workspaceId}/editor`)
                 }
                 className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors cursor-pointer"
               >
