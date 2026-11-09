@@ -29,8 +29,8 @@ export function TermsOfServicePage() {
         }
         description={
           lang === "en"
-            ? "Terms of Service governing access, workspace roles (Owner, Manager, Creator, Client), AI credits, and multi-channel publishing on BrandHub (https://brandhub.id.vn)."
-            : "Điều khoản dịch vụ quy định quyền truy cập, phân quyền vai trò (Owner, Manager, Creator, Client), AI Credits và xuất bản đa kênh trên BrandHub (https://brandhub.id.vn)."
+            ? "Terms of Service governing access, roles (Owner, Manager, Creator, Client), AI credits, and multi-channel publishing on https://brandhub.id.vn."
+            : "Điều khoản dịch vụ quy định quyền truy cập, phân quyền (Owner, Manager, Creator, Client), AI Credits và xuất bản đa kênh trên https://brandhub.id.vn."
         }
         canonicalPath="/terms"
       />

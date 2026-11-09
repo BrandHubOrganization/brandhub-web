@@ -92,7 +92,7 @@ export function LandingPage() {
     <div style={{ fontFamily: "var(--font-sans)" }}>
       <SeoHead
         title="BrandHub — Nền tảng Quản trị Thương hiệu & Nội dung Đa kênh AI"
-        description="Giải pháp quản trị Agency, lập kế hoạch Media Campaign, sáng tạo nội dung với AI GraphRAG, phê duyệt đa cấp và xuất bản tự động Facebook, Instagram, TikTok, Threads."
+        description="Nền tảng quản trị Agency, lập kế hoạch Media Campaign, sáng tạo với AI GraphRAG, duyệt bài đa cấp và đăng tự động Facebook, Instagram, TikTok, Threads."
         canonicalPath="/"
         jsonLd={LANDING_FAQ_JSONLD}
       />

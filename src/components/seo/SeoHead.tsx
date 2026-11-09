@@ -4,7 +4,7 @@ export const SITE_ORIGIN = "https://brandhub.id.vn";
 export const DEFAULT_TITLE =
   "BrandHub — Nền tảng Quản trị Thương hiệu & Nội dung Đa kênh AI";
 export const DEFAULT_DESCRIPTION =
-  "Giải pháp quản trị Agency, lập kế hoạch Media Campaign, sáng tạo nội dung với AI GraphRAG, phê duyệt đa cấp và xuất bản tự động Facebook, Instagram, TikTok, Threads.";
+  "Nền tảng quản trị Agency, lập kế hoạch Media Campaign, sáng tạo với AI GraphRAG, duyệt bài đa cấp và đăng tự động Facebook, Instagram, TikTok, Threads.";
 export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-banner.png`;
 
 export interface SeoHeadProps {

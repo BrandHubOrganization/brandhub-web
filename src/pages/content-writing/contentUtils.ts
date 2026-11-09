@@ -92,12 +92,13 @@ export function diffText(before: string, after: string): DiffPart[] {
   return parts;
 }
 
-// ── Publish text (Unicode font & style conversion) ──────────────────────
+// ── Publish text (Unicode font & style conversion — YayText / Zantext V6) ──
 
 // Social platforms (Facebook, Instagram, TikTok, Threads) render plain
 // Unicode only — rich HTML bold/italic/font-family from the editor would be
-// stripped. Convert styled runs into Mathematical Alphanumeric Unicode symbols
-// so Creators never have to copy-paste through external YayText/Yantext tools.
+// stripped. Convert styled runs into Mathematical Alphanumeric Unicode symbols,
+// Enclosed Alphanumerics, Phonetic Modifiers, and Combining Overlays so Creators
+// never have to copy-paste through external YayText/Zantext tools.
 
 interface UnicodeAlphabetSet {
   upper: number;
@@ -106,7 +107,7 @@ interface UnicodeAlphabetSet {
   exceptions?: Record<string, string>;
 }
 
-// Sans-Serif (Default / Inter / Arial / Verdana)
+// 1. Sans-Serif (Default / Inter / Arial / Verdana / Montserrat)
 const SANS_BOLD: UnicodeAlphabetSet = {
   upper: 0x1d5d4,
   lower: 0x1d5ee,
@@ -123,7 +124,7 @@ const SANS_BOLD_ITALIC: UnicodeAlphabetSet = {
   digit: 0x1d7ec,
 };
 
-// Serif (Georgia / Times New Roman)
+// 2. Serif (Georgia / Times New Roman / Playfair Display)
 const SERIF_BOLD: UnicodeAlphabetSet = {
   upper: 0x1d400,
   lower: 0x1d41a,
@@ -141,14 +142,14 @@ const SERIF_BOLD_ITALIC: UnicodeAlphabetSet = {
   digit: 0x1d7ce,
 };
 
-// Monospace (Courier New)
+// 3. Monospace (Courier New)
 const MONOSPACE: UnicodeAlphabetSet = {
   upper: 0x1d670,
   lower: 0x1d68a,
   digit: 0x1d7f6,
 };
 
-// Script / Calligraphy (Brush Script MT / Cursive)
+// 4. Script / Calligraphy (Brush Script MT / Cursive / Pacifico)
 const SCRIPT_REGULAR: UnicodeAlphabetSet = {
   upper: 0x1d49c,
   lower: 0x1d4b6,
@@ -173,7 +174,7 @@ const SCRIPT_BOLD: UnicodeAlphabetSet = {
   digit: 0x1d7ce,
 };
 
-// Double-Struck (Chữ nét đôi)
+// 5. Double-Struck (Chữ nét đôi: 𝔸𝔹ℂ 𝕒𝕓𝕔 𝟘𝟙𝟚)
 const DOUBLE_STRUCK: UnicodeAlphabetSet = {
   upper: 0x1d538,
   lower: 0x1d552,
@@ -189,7 +190,7 @@ const DOUBLE_STRUCK: UnicodeAlphabetSet = {
   },
 };
 
-// Fraktur / Gothic (Chữ cổ điển)
+// 6. Fraktur / Gothic (Chữ cổ điển: 𝔉𝔯𝔞𝔨𝔱𝔲𝔯 / 𝕭𝖔𝖑𝖉 𝕱𝖗𝖆𝖐𝖙𝖚𝖗)
 const FRAKTUR_REGULAR: UnicodeAlphabetSet = {
   upper: 0x1d504,
   lower: 0x1d51e,
@@ -208,7 +209,7 @@ const FRAKTUR_BOLD: UnicodeAlphabetSet = {
   digit: 0x1d7ce,
 };
 
-// Small Caps (Chữ in hoa nhỏ: BʀᴀɴᴅHᴜʙ)
+// 7. Small Caps (Chữ in hoa nhỏ: BʀᴀɴᴅHᴜʙ)
 const SMALL_CAPS_MAP: Record<string, string> = {
   a: "ᴀ",
   b: "ʙ",
@@ -244,7 +245,7 @@ const SMALL_CAPS_SET: UnicodeAlphabetSet = {
   exceptions: SMALL_CAPS_MAP,
 };
 
-// Circled (Chữ đóng khung tròn: ⒷⓡⓐⓝⓓⒽⓤⓑ ①②③)
+// 8. Circled / White Bubble (Chữ đóng khung tròn trắng: ⒷⓡⓐⓝⓓⒽⓤⓑ ①②③)
 const CIRCLED_SET: UnicodeAlphabetSet = {
   upper: 0x24b6,
   lower: 0x24d0,
@@ -254,19 +255,304 @@ const CIRCLED_SET: UnicodeAlphabetSet = {
   },
 };
 
-// Squared (Chữ đóng khung vuông: 🄱🅁🄰🄽🄳🄷🅄🄱)
+// 9. Black Bubble / Negative Circled (Chữ tròn nền đen YayText: 🅑🅤🅑🅑🅛🅔 ⓿➊➋)
+const BLACK_BUBBLE_DIGITS: Record<string, string> = {
+  "0": "\u24ff", // ⓿
+  "1": "\u278a", // ➊
+  "2": "\u278b", // ➋
+  "3": "\u278c", // ➌
+  "4": "\u278d", // ➍
+  "5": "\u278e", // ➎
+  "6": "\u278f", // ➏
+  "7": "\u2790", // ➐
+  "8": "\u2791", // ➑
+  "9": "\u2792", // ➒
+};
+const BLACK_BUBBLE_SET: UnicodeAlphabetSet = {
+  upper: 0x1f150,
+  lower: 0x1f150,
+  digit: null,
+  exceptions: BLACK_BUBBLE_DIGITS,
+};
+
+// 10. Squared / White Square (Chữ đóng khung vuông trắng: 🄱🅁🄰🄽🄳🄷🅄🄱)
 const SQUARED_SET: UnicodeAlphabetSet = {
   upper: 0x1f130,
   lower: 0x1f130,
   digit: null,
 };
 
-// Fullwidth / Vaporwave (Chữ giãn cách: ＢｒａｎｄＨｕｂ ２０２６)
+// 11. Black Square / Negative Squared (Chữ vuông nền đen YayText: 🅱🆁🅰🅽🅳🅷🆄🅱)
+const BLACK_SQUARE_SET: UnicodeAlphabetSet = {
+  upper: 0x1f170,
+  lower: 0x1f170,
+  digit: null,
+  exceptions: BLACK_BUBBLE_DIGITS,
+};
+
+// 12. Parenthesized (Chữ đóng khung ngoặc đơn YayText: ⒫⒜⒭⒠⒩ ⑴⑵⑶)
+const PARENTHESIZED_SET: UnicodeAlphabetSet = {
+  upper: 0x249c,
+  lower: 0x249c,
+  digit: 0x2473, // '1' -> 0x2474 (⑴)
+  exceptions: {
+    "0": "\u24ea",
+  },
+};
+
+// 13. Fullwidth / Vaporwave (Chữ giãn cách: ＢｒａｎｄＨｕｂ ２０２６)
 const FULLWIDTH_SET: UnicodeAlphabetSet = {
   upper: 0xff21,
   lower: 0xff41,
   digit: 0xff10,
 };
+
+// 14. Superscript (Chữ mũ nhỏ YayText: ˢᵘᵖᵉʳˢᶜʳᶦᵖᵗ ⁰¹²³⁴⁵⁶⁷⁸⁹)
+const SUPERSCRIPT_MAP: Record<string, string> = {
+  A: "ᴬ",
+  B: "ᴮ",
+  C: "ᶜ",
+  D: "ᴰ",
+  E: "ᴱ",
+  F: "ᶠ",
+  G: "ᴳ",
+  H: "ᴴ",
+  I: "ᴵ",
+  J: "ᴶ",
+  K: "ᴷ",
+  L: "ᴸ",
+  M: "ᴹ",
+  N: "ᴺ",
+  O: "ᴼ",
+  P: "ᴾ",
+  Q: "Q",
+  R: "ᴿ",
+  S: "ˢ",
+  T: "ᵀ",
+  U: "ᵁ",
+  V: "ⱽ",
+  W: "ᵂ",
+  X: "ˣ",
+  Y: "ʸ",
+  Z: "ᶻ",
+  a: "ᵃ",
+  b: "ᵇ",
+  c: "ᶜ",
+  d: "ᵈ",
+  e: "ᵉ",
+  f: "ᶠ",
+  g: "ᵍ",
+  h: "ʰ",
+  i: "ᶦ",
+  j: "ʲ",
+  k: "ᵏ",
+  l: "ˡ",
+  m: "ᵐ",
+  n: "ⁿ",
+  o: "ᵒ",
+  p: "ᵖ",
+  q: "۹",
+  r: "ʳ",
+  s: "ˢ",
+  t: "ᵗ",
+  u: "ᵘ",
+  v: "ᵛ",
+  w: "ʷ",
+  x: "ˣ",
+  y: "ʸ",
+  z: "ᶻ",
+  "0": "⁰",
+  "1": "¹",
+  "2": "²",
+  "3": "³",
+  "4": "⁴",
+  "5": "⁵",
+  "6": "⁶",
+  "7": "⁷",
+  "8": "⁸",
+  "9": "⁹",
+  "+": "⁺",
+  "-": "⁻",
+  "=": "⁼",
+  "(": "⁽",
+  ")": "⁾",
+};
+const SUPERSCRIPT_SET: UnicodeAlphabetSet = {
+  upper: 0x41,
+  lower: 0x61,
+  digit: null,
+  exceptions: SUPERSCRIPT_MAP,
+};
+
+// 15. Subscript (Chữ chỉ số dưới YayText: ₛᵤ₆ₛ꜀ᵣᵢₚₜ ₀₁₂₃₄₅₆₇₈₉)
+const SUBSCRIPT_MAP: Record<string, string> = {
+  a: "ₐ",
+  b: "₆",
+  c: "꜀",
+  d: "𝒹",
+  e: "ₑ",
+  f: "𝒻",
+  g: "₉",
+  h: "ₕ",
+  i: "ᵢ",
+  j: "ⱼ",
+  k: "ₖ",
+  l: "ₗ",
+  m: "ₘ",
+  n: "ₙ",
+  o: "ₒ",
+  p: "ₚ",
+  q: "q",
+  r: "ᵣ",
+  s: "ₛ",
+  t: "ₜ",
+  u: "ᵤ",
+  v: "ᵥ",
+  w: "w",
+  x: "ₓ",
+  y: "ᵧ",
+  z: "₂",
+  A: "ₐ",
+  B: "₆",
+  C: "꜀",
+  D: "𝒹",
+  E: "ₑ",
+  F: "𝒻",
+  G: "₉",
+  H: "ₕ",
+  I: "ᵢ",
+  J: "ⱼ",
+  K: "ₖ",
+  L: "ₗ",
+  M: "ₘ",
+  N: "ₙ",
+  O: "ₒ",
+  P: "ₚ",
+  Q: "Q",
+  R: "ᵣ",
+  S: "ₛ",
+  T: "ₜ",
+  U: "ᵤ",
+  V: "ᵥ",
+  W: "W",
+  X: "ₓ",
+  Y: "ᵧ",
+  Z: "₂",
+  "0": "₀",
+  "1": "₁",
+  "2": "₂",
+  "3": "₃",
+  "4": "₄",
+  "5": "₅",
+  "6": "₆",
+  "7": "₇",
+  "8": "₈",
+  "9": "₉",
+  "+": "₊",
+  "-": "₋",
+  "=": "₌",
+  "(": "₍",
+  ")": "₎",
+};
+const SUBSCRIPT_SET: UnicodeAlphabetSet = {
+  upper: 0x41,
+  lower: 0x61,
+  digit: null,
+  exceptions: SUBSCRIPT_MAP,
+};
+
+// 16. Upside-Down Flip (Chữ lộn ngược 180° YayText: qnpuɐɹB)
+const UPSIDE_DOWN_MAP: Record<string, string> = {
+  a: "ɐ",
+  b: "q",
+  c: "ɔ",
+  d: "p",
+  e: "ǝ",
+  f: "ɟ",
+  g: "ƃ",
+  h: "ɥ",
+  i: "ᴉ",
+  j: "ɾ",
+  k: "ʞ",
+  l: "ן",
+  m: "ɯ",
+  n: "u",
+  o: "o",
+  p: "d",
+  q: "b",
+  r: "ɹ",
+  s: "s",
+  t: "ʇ",
+  u: "n",
+  v: "ʌ",
+  w: "ʍ",
+  x: "x",
+  y: "ʎ",
+  z: "z",
+  A: "∀",
+  B: "ᙠ",
+  C: "Ɔ",
+  D: "ᗡ",
+  E: "Ǝ",
+  F: "Ⅎ",
+  G: "⅁",
+  H: "H",
+  I: "I",
+  J: "ſ",
+  K: "ʞ",
+  L: "˥",
+  M: "W",
+  N: "N",
+  O: "O",
+  P: "Ԁ",
+  Q: "Ό",
+  R: "ᴚ",
+  S: "S",
+  T: "⊥",
+  U: "∩",
+  V: "Λ",
+  W: "M",
+  X: "X",
+  Y: "⅄",
+  Z: "Z",
+  "0": "0",
+  "1": "Ɩ",
+  "2": "ᄅ",
+  "3": "Ɛ",
+  "4": "ㄣ",
+  "5": "ϛ",
+  "6": "9",
+  "7": "ㄥ",
+  "8": "8",
+  "9": "6",
+  "?": "¿",
+  "!": "¡",
+  ".": "˙",
+  ",": "'",
+};
+
+const REVERSE_UPSIDE_DOWN_MAP: Map<string, string> = (() => {
+  const m = new Map<string, string>();
+  for (const [k, v] of Object.entries(UPSIDE_DOWN_MAP)) {
+    if (!m.has(v)) m.set(v, k);
+  }
+  return m;
+})();
+
+/**
+ * Strips Vietnamese diacritics to clean ASCII base letters (`Khuyến mãi Đặc Biệt` -> `Khuyen mai Dac Biet`).
+ * Used automatically for Enclosed shapes (`Black Bubble`, `Black Square`, `Regional Flag`, `Upside-Down`)
+ * or when the user enables the `Lược dấu chuẩn khung` toggle so glyphs never break on iOS/Android.
+ */
+export function stripVietnameseAccents(text: string): string {
+  if (!text) return "";
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .normalize("NFC");
+}
 
 export type SocialFontCategory =
   | "sans"
@@ -281,18 +567,74 @@ export type SocialFontCategory =
   | "script-bold"
   | "double-struck"
   | "fraktur"
+  | "fraktur-bold"
   | "small-caps"
   | "circled"
+  | "black-bubble"
   | "squared"
-  | "fullwidth";
+  | "black-square"
+  | "parenthesized"
+  | "regional-indicator"
+  | "fullwidth"
+  | "superscript"
+  | "subscript"
+  | "double-underline"
+  | "slashthrough"
+  | "tilde-strike"
+  | "overline"
+  | "under-asterisks"
+  | "lightning-above"
+  | "upside-down"
+  | "air-quotes"
+  | "lenticular-brackets"
+  | "sparkles-decorator"
+  | "stars-wave-decorator"
+  | "arrow-pointer-decorator";
 
 export function classifyFontFamily(font?: string): SocialFontCategory {
   if (!font) return "sans";
   const lower = font.toLowerCase();
+  if (lower.includes("black bubble") || lower.includes("negative circled")) {
+    return "black-bubble";
+  }
+  if (lower.includes("black square") || lower.includes("negative squared")) {
+    return "black-square";
+  }
+  if (lower.includes("parenthesized")) return "parenthesized";
+  if (lower.includes("regional flag") || lower.includes("regional indicator")) {
+    return "regional-indicator";
+  }
+  if (lower.includes("superscript")) return "superscript";
+  if (lower.includes("subscript")) return "subscript";
+  if (lower.includes("double underline")) return "double-underline";
+  if (lower.includes("slash price") || lower.includes("slashthrough")) {
+    return "slashthrough";
+  }
+  if (lower.includes("tilde wave") || lower.includes("tilde strike")) {
+    return "tilde-strike";
+  }
+  if (lower.includes("overline")) return "overline";
+  if (lower.includes("under asterisks") || lower.includes("star below")) {
+    return "under-asterisks";
+  }
+  if (lower.includes("lightning above") || lower.includes("zigzag flash")) {
+    return "lightning-above";
+  }
+  if (lower.includes("upside down") || lower.includes("flip")) {
+    return "upside-down";
+  }
+  if (lower.includes("air quotes")) return "air-quotes";
+  if (lower.includes("bold brackets") || lower.includes("lenticular")) {
+    return "lenticular-brackets";
+  }
+  if (lower.includes("sparkles banner")) return "sparkles-decorator";
+  if (lower.includes("star wave banner")) return "stars-wave-decorator";
+  if (lower.includes("arrow pointer")) return "arrow-pointer-decorator";
   if (lower.includes("fullwidth")) return "fullwidth";
   if (lower.includes("squared")) return "squared";
   if (lower.includes("circled")) return "circled";
   if (lower.includes("small caps")) return "small-caps";
+  if (lower.includes("bold fraktur")) return "fraktur-bold";
   if (
     lower.includes("fraktur") ||
     lower.includes("old english") ||
@@ -345,14 +687,31 @@ function selectUnicodeSet(attrs: RunAttrs): UnicodeAlphabetSet | null {
       return DOUBLE_STRUCK;
     case "fraktur":
       return bold ? FRAKTUR_BOLD : FRAKTUR_REGULAR;
+    case "fraktur-bold":
+      return FRAKTUR_BOLD;
     case "small-caps":
       return SMALL_CAPS_SET;
     case "circled":
       return CIRCLED_SET;
+    case "black-bubble":
+      return BLACK_BUBBLE_SET;
     case "squared":
       return SQUARED_SET;
+    case "black-square":
+      return BLACK_SQUARE_SET;
+    case "parenthesized":
+      return PARENTHESIZED_SET;
     case "fullwidth":
       return FULLWIDTH_SET;
+    case "superscript":
+      return SUPERSCRIPT_SET;
+    case "subscript":
+      return SUBSCRIPT_SET;
+    case "sparkles-decorator":
+    case "arrow-pointer-decorator":
+      return SANS_BOLD;
+    case "stars-wave-decorator":
+      return SCRIPT_BOLD;
     case "serif-bold-italic":
       return SERIF_BOLD_ITALIC;
     case "serif-italic":
@@ -411,8 +770,13 @@ const ALL_UNICODE_SETS: UnicodeAlphabetSet[] = [
   FRAKTUR_BOLD,
   SMALL_CAPS_SET,
   CIRCLED_SET,
+  BLACK_BUBBLE_SET,
   SQUARED_SET,
+  BLACK_SQUARE_SET,
+  PARENTHESIZED_SET,
   FULLWIDTH_SET,
+  SUPERSCRIPT_SET,
+  SUBSCRIPT_SET,
 ];
 
 const REVERSE_UNICODE_MAP: Map<string, string> = (() => {
@@ -421,7 +785,7 @@ const REVERSE_UNICODE_MAP: Map<string, string> = (() => {
     for (let i = 0; i < 26; i++) {
       const lowerAscii = String.fromCharCode(0x61 + i);
       const lowerStyled = mapCharToSet(lowerAscii, set);
-      if (lowerStyled !== lowerAscii) {
+      if (lowerStyled !== lowerAscii && !map.has(lowerStyled)) {
         map.set(lowerStyled, lowerAscii);
       }
       const upperAscii = String.fromCharCode(0x41 + i);
@@ -433,158 +797,473 @@ const REVERSE_UNICODE_MAP: Map<string, string> = (() => {
     for (let d = 0; d < 10; d++) {
       const digitAscii = String.fromCharCode(0x30 + d);
       const digitStyled = mapCharToSet(digitAscii, set);
-      if (digitStyled !== digitAscii) {
+      if (digitStyled !== digitAscii && !map.has(digitStyled)) {
         map.set(digitStyled, digitAscii);
       }
     }
   }
+  // Regional Indicator Symbols (🇦..🇿 -> A..Z)
+  for (let i = 0; i < 26; i++) {
+    map.set(String.fromCodePoint(0x1f1e6 + i), String.fromCharCode(0x41 + i));
+  }
   return map;
 })();
 
+const DECORATOR_BANNERS: Array<[string, string]> = [
+  ["˜”*°•.˜”*°• ", " •°*”˜.•°*”˜"],
+  ["¸,ø¤º°`°º¤ø,¸ ", " ¸,ø¤º°°º¤ø,¸"],
+  ["»»——⍟ ", " ⍟——««"],
+];
+
+const COMBINING_STYLE_MARKS = new Set([
+  "\u0332", // single underline
+  "\u0333", // double underline
+  "\u0336", // single strikethrough
+  "\u0338", // long solidus (slashthrough)
+  "\u0334", // tilde overlay
+  "\u0305", // overline
+  "\u0359", // asterisk below
+  "\u035b", // zigzag above
+]);
+
 /**
- * Strips Mathematical Alphanumeric / Circled / Small-Caps / Fullwidth Unicode
- * styling and combining underline/strikethrough marks (\u0332, \u0336) back to
- * standard NFC plain text while keeping all Vietnamese diacritics intact.
+ * Strips all 36 YayText / Zantext Unicode styles, enclosed shapes, regional flags,
+ * character brackets (`『c』`, `【c】`), decorator banners, and combining overlays
+ * (`\u0332`, `\u0333`, `\u0336`, `\u0338`, `\u0334`, `\u0305`, `\u0359`, `\u035b`)
+ * back to standard NFC plain text while keeping Vietnamese diacritics intact.
  */
 export function stripUnicodeStyling(text: string): string {
   if (!text) return "";
+  let working = text;
+
+  // 1. Strip line-level decorator banners if present
+  for (const [prefix, suffix] of DECORATOR_BANNERS) {
+    working = working
+      .split("\n")
+      .map((line) => {
+        let l = line;
+        if (l.startsWith(prefix)) l = l.slice(prefix.length);
+        if (l.endsWith(suffix)) l = l.slice(0, -suffix.length);
+        return l;
+      })
+      .join("\n");
+  }
+
+  // 2. Strip character-level Air Quotes 『c』 and Bold Brackets 【c】
+  if (working.includes("『") && working.includes("』")) {
+    working = working.replace(/『([^』])』/g, "$1");
+  }
+  if (working.includes("【") && working.includes("】")) {
+    working = working.replace(/【([^】])】/g, "$1");
+  }
+
+  // 3. Collapse Regional Indicator spacing (🇦 🇧 🇨 -> 🇦🇧🇨, triple space -> single space)
+  if (/[\u{1F1E6}-\u{1F1FF}]/u.test(working)) {
+    working = working
+      .replace(/([\u{1F1E6}-\u{1F1FF}])\s+(?=[\u{1F1E6}-\u{1F1FF}])/gu, "$1")
+      .replace(/\s{2,}/g, " ");
+  }
+
+  // 4. Detect Upside-Down text (contains distinct upside-down code points) and un-reverse
+  if (/[ɐɔǝɟƃɥᴉɾʞןɯɹʇʌʍʎ∀ᙠƆᗡƎℲ⅁˥ԀΌᴚ⊥∩Λ⅄¿¡]/.test(working)) {
+    working = working
+      .split("\n")
+      .map((line) =>
+        Array.from(line)
+          .reverse()
+          .map((ch) => REVERSE_UPSIDE_DOWN_MAP.get(ch) ?? ch)
+          .join(""),
+      )
+      .join("\n");
+  }
+
   let out = "";
-  for (const ch of Array.from(text)) {
-    if (ch === "\u0332" || ch === "\u0336") continue;
+  for (const ch of Array.from(working)) {
+    if (COMBINING_STYLE_MARKS.has(ch)) continue;
     out += REVERSE_UNICODE_MAP.get(ch) ?? ch;
   }
   return out.normalize("NFC");
 }
 
+export type ZantextCategoryId =
+  | "all"
+  | "favorites"
+  | "emphasis"
+  | "lines"
+  | "enclosed"
+  | "luxury"
+  | "modern"
+  | "creative";
+
+export interface ZantextCategoryMeta {
+  id: ZantextCategoryId;
+  label: string;
+}
+
+export const ZANTEXT_CATEGORIES: ZantextCategoryMeta[] = [
+  { id: "all", label: "Tất cả (36)" },
+  { id: "favorites", label: "⭐ Yêu thích" },
+  { id: "emphasis", label: "Tiêu đề (7)" },
+  { id: "lines", label: "Sale & Gạch giá (8)" },
+  { id: "enclosed", label: "Khung Nổi bật (6)" },
+  { id: "luxury", label: "Sang trọng (4)" },
+  { id: "modern", label: "Hiện đại (5)" },
+  { id: "creative", label: "Độc lạ (6)" },
+];
+
 export interface ZantextStylePreset {
   id: string;
   label: string;
   badge: string;
+  category: Exclude<ZantextCategoryId, "all" | "favorites">;
+  compatibility: "Universal" | "Modern OS";
+  vietnameseMode: "keep-marks" | "strip-accents-auto";
   attrs: RunAttrs;
 }
 
 export const ZANTEXT_STYLE_PRESETS: ZantextStylePreset[] = [
+  // ── Category 1: emphasis (Tiêu đề & Nhấn mạnh — 7 styles) ──
   {
     id: "sans-bold",
     label: "Sans Đậm (Chuẩn Facebook)",
     badge: "𝗔𝗕𝗖",
+    category: "emphasis",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { bold: true },
   },
   {
     id: "sans-italic",
     label: "Sans Nghiêng (Tinh tế)",
     badge: "𝘈𝘉𝘊",
+    category: "emphasis",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { italic: true },
   },
   {
     id: "sans-bold-italic",
     label: "Sans Đậm Nghiêng (Nổi bật)",
     badge: "𝘼𝘽𝘾",
+    category: "emphasis",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { bold: true, italic: true },
   },
   {
     id: "serif-bold",
-    label: "Serif Đậm (Báo chí / Sang trọng)",
+    label: "Serif Đậm (Báo chí / Editorial)",
     badge: "𝐀𝐁𝐂",
+    category: "emphasis",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { font: "Georgia, serif", bold: true },
   },
   {
     id: "serif-italic",
-    label: "Serif Nghiêng (Editorial)",
+    label: "Serif Nghiêng (Classic)",
     badge: "𝐴𝐵𝐶",
+    category: "emphasis",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { font: '"Times New Roman", serif', italic: true },
   },
   {
     id: "serif-bold-italic",
     label: "Serif Đậm Nghiêng (Luxury)",
     badge: "𝑨𝑩𝑪",
+    category: "emphasis",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { font: '"Playfair Display", serif', bold: true, italic: true },
-  },
-  {
-    id: "script",
-    label: "Chữ Viết Tay (Calligraphy)",
-    badge: "𝒜𝒷𝒸",
-    attrs: { font: '"Brush Script MT", cursive' },
-  },
-  {
-    id: "script-bold",
-    label: "Chữ Nghệ Thuật Đậm (Script Bold)",
-    badge: "𝓐𝓫𝓬",
-    attrs: { font: "Cursive, serif", bold: true },
-  },
-  {
-    id: "monospace",
-    label: "Monospace (Code / Tech)",
-    badge: "𝙰𝙱𝙲",
-    attrs: { font: '"Courier New", monospace' },
   },
   {
     id: "double-struck",
     label: "Chữ Nét Đôi (Double-Struck)",
     badge: "𝔸𝔹ℂ",
+    category: "emphasis",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { font: '"Double Struck", serif' },
+  },
+
+  // ── Category 2: luxury (Sang trọng & Nghệ thuật — 4 styles) ──
+  {
+    id: "script",
+    label: "Chữ Viết Tay (Calligraphy)",
+    badge: "𝒜𝒷𝒸",
+    category: "luxury",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Brush Script MT", cursive' },
+  },
+  {
+    id: "script-bold",
+    label: "Chữ Nghệ Thuật Đậm (Bold Script)",
+    badge: "𝓐𝓫𝓬",
+    category: "luxury",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: "Pacifico, cursive", bold: true },
+  },
+  {
+    id: "fraktur",
+    label: "Fraktur Gothic (Cổ Điển)",
+    badge: "𝔉𝔯𝔞",
+    category: "luxury",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"UnifrakturMaguntia", "Old English Text MT", serif' },
+  },
+  {
+    id: "bold-fraktur",
+    label: "Bold Fraktur (Gothic Đậm)",
+    badge: "𝕭𝖔𝖑𝖉",
+    category: "luxury",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: {
+      font: '"Bold Fraktur", "Old English Text MT", serif',
+      bold: true,
+    },
+  },
+
+  // ── Category 3: modern (Hiện đại & Ghi chú — 5 styles) ──
+  {
+    id: "monospace",
+    label: "Monospace (Code / Tech)",
+    badge: "𝙰𝙱𝙲",
+    category: "modern",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Courier New", monospace' },
   },
   {
     id: "small-caps",
     label: "Chữ In Hoa Nhỏ (Small Caps)",
-    badge: "Aʙᴄ",
+    badge: "ꜱᴍᴀʟʟ",
+    category: "modern",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { font: '"Small Caps", sans-serif' },
   },
   {
-    id: "circled",
-    label: "Chữ Khung Tròn (Circled)",
-    badge: "Ⓐⓑⓒ",
-    attrs: { font: '"Circled", sans-serif' },
-  },
-  {
     id: "fullwidth",
-    label: "Chữ Giãn Cách (Fullwidth)",
+    label: "Chữ Giãn Cách (Vaporwave)",
     badge: "ＡＢＣ",
+    category: "modern",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { font: '"Fullwidth", sans-serif' },
   },
   {
+    id: "superscript",
+    label: "Chữ Mũ Nhỏ (Superscript / Ghi chú giá)",
+    badge: "ˢᵘᵖᵉʳ",
+    category: "modern",
+    compatibility: "Universal",
+    vietnameseMode: "strip-accents-auto",
+    attrs: { font: '"Superscript", sans-serif' },
+  },
+  {
+    id: "subscript",
+    label: "Chữ Chỉ Số Dưới (Subscript)",
+    badge: "ₛᵤ₆",
+    category: "modern",
+    compatibility: "Modern OS",
+    vietnameseMode: "strip-accents-auto",
+    attrs: { font: '"Subscript", sans-serif' },
+  },
+
+  // ── Category 4: enclosed (Khung Nổi bật & Sale — 6 styles) ──
+  {
+    id: "circled",
+    label: "Khung Tròn Trắng (Circled Bubble)",
+    badge: "Ⓐⓑⓒ",
+    category: "enclosed",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Circled", sans-serif' },
+  },
+  {
+    id: "black-bubble",
+    label: "Khung Tròn Đen (Black Bubble Sale)",
+    badge: "🅑🅤🅑",
+    category: "enclosed",
+    compatibility: "Universal",
+    vietnameseMode: "strip-accents-auto",
+    attrs: { font: '"Black Bubble", sans-serif' },
+  },
+  {
+    id: "squared",
+    label: "Khung Vuông Trắng (Squared)",
+    badge: "🄰🄱🄲",
+    category: "enclosed",
+    compatibility: "Universal",
+    vietnameseMode: "strip-accents-auto",
+    attrs: { font: '"Squared", sans-serif' },
+  },
+  {
+    id: "black-square",
+    label: "Khung Vuông Đen (Black Square Hot)",
+    badge: "🅱🅻🅰",
+    category: "enclosed",
+    compatibility: "Universal",
+    vietnameseMode: "strip-accents-auto",
+    attrs: { font: '"Black Square", sans-serif' },
+  },
+  {
+    id: "parenthesized",
+    label: "Khung Ngoặc Đơn (Parenthesized)",
+    badge: "⒫⒜⒭",
+    category: "enclosed",
+    compatibility: "Universal",
+    vietnameseMode: "strip-accents-auto",
+    attrs: { font: '"Parenthesized", sans-serif' },
+  },
+  {
+    id: "regional-indicator",
+    label: "Chữ Cờ Xanh (Regional Indicator)",
+    badge: "🇧 🇷 🇦",
+    category: "enclosed",
+    compatibility: "Modern OS",
+    vietnameseMode: "strip-accents-auto",
+    attrs: { font: '"Regional Flag", sans-serif' },
+  },
+
+  // ── Category 5: lines (Gạch giá & Hiệu ứng dòng — 8 styles) ──
+  {
     id: "underline",
-    label: "Gạch Chân (Underline)",
+    label: "Gạch Chân Đơn (Underline)",
     badge: "A̲B̲C̲",
+    category: "lines",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { underline: true },
   },
   {
+    id: "double-underline",
+    label: "Gạch Chân Kép (Double Underline)",
+    badge: "A̳B̳C̳",
+    category: "lines",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Double Underline", sans-serif' },
+  },
+  {
     id: "strikethrough",
-    label: "Gạch Ngang (Giá gốc / Sale)",
+    label: "Gạch Ngang Đơn (Strikethrough)",
     badge: "A̶B̶C̶",
+    category: "lines",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
     attrs: { strikethrough: true },
+  },
+  {
+    id: "slashthrough",
+    label: "Gạch Chéo Giá Gốc (Slash Price 9̸9̸0̸k̸)",
+    badge: "9̸9̸0̸k̸",
+    category: "lines",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Slash Price", sans-serif' },
+  },
+  {
+    id: "tilde-strike",
+    label: "Gạch Lượn Sóng (Tilde Wave)",
+    badge: "A̴B̴C̴",
+    category: "lines",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Tilde Wave", sans-serif' },
+  },
+  {
+    id: "overline",
+    label: "Gạch Trên Đầu (Overline)",
+    badge: "A̅B̅C̅",
+    category: "lines",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Overline", sans-serif' },
+  },
+  {
+    id: "under-asterisks",
+    label: "Sao Dưới Chân (Under-Asterisks)",
+    badge: "A͙B͙C͙",
+    category: "lines",
+    compatibility: "Modern OS",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Under Asterisks", sans-serif' },
+  },
+  {
+    id: "lightning-above",
+    label: "Tia Chớp Trên Đầu (Zigzag Flash)",
+    badge: "A͛B͛C͛",
+    category: "lines",
+    compatibility: "Modern OS",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Lightning Above", sans-serif' },
+  },
+
+  // ── Category 6: creative (Độc lạ & Trang trí — 6 styles) ──
+  {
+    id: "upside-down",
+    label: "Chữ Lộn Ngược 180° (Upside-Down Flip)",
+    badge: "qnpuɐɹB",
+    category: "creative",
+    compatibility: "Universal",
+    vietnameseMode: "strip-accents-auto",
+    attrs: { font: '"Upside Down", sans-serif' },
+  },
+  {
+    id: "air-quotes",
+    label: "Khung Ngoặc Nhật (Air Quotes)",
+    badge: "『A』『B』",
+    category: "creative",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Air Quotes", sans-serif' },
+  },
+  {
+    id: "lenticular-brackets",
+    label: "Khung Ngoặc Đen (Bold Brackets)",
+    badge: "【A】【B】",
+    category: "creative",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Bold Brackets", sans-serif' },
+  },
+  {
+    id: "sparkles-decorator",
+    label: "Viền Lấp Lánh (Sparkles Banner)",
+    badge: "˜”*°•.",
+    category: "creative",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Sparkles Banner", sans-serif' },
+  },
+  {
+    id: "stars-wave-decorator",
+    label: "Viền Sóng Sao (Star Wave Banner)",
+    badge: "¸,ø¤º°",
+    category: "creative",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Star Wave Banner", sans-serif' },
+  },
+  {
+    id: "arrow-pointer-decorator",
+    label: "Viền Mũi Tên Tâm Điểm (Pointer)",
+    badge: "»»——⍟",
+    category: "creative",
+    compatibility: "Universal",
+    vietnameseMode: "keep-marks",
+    attrs: { font: '"Arrow Pointer", sans-serif' },
   },
 ];
 
-/**
- * Converts a single plain string with `RunAttrs` into its Unicode social-ready string.
- */
-export function styleRunText(text: string, attrs: RunAttrs = {}): string {
-  const set = selectUnicodeSet(attrs);
-  const hasUnderline = !!attrs.underline;
-  const hasStrike = !!attrs.strikethrough;
-
-  if (!set && !hasUnderline && !hasStrike) {
-    return text.normalize("NFC");
-  }
-
-  let styled = "";
-  if (set) {
-    const cleanBase = stripUnicodeStyling(text);
-    for (const ch of cleanBase.normalize("NFD")) {
-      styled += mapCharToSet(ch, set);
-    }
-  } else {
-    styled = text.normalize("NFC");
-  }
-
-  if (!hasUnderline && !hasStrike) {
-    return styled;
-  }
-
-  // Apply combining low-line (\u0332) or long-stroke overlay (\u0336) per grapheme cluster
-  // on non-whitespace characters so underline/strikethrough survives social publishing.
-  const suffix = (hasUnderline ? "\u0332" : "") + (hasStrike ? "\u0336" : "");
+function applyCombiningMarkPerGrapheme(styled: string, mark: string): string {
+  if (!mark) return styled;
   const chars = Array.from(styled);
   let decorated = "";
   for (let i = 0; i < chars.length; i++) {
@@ -593,20 +1272,188 @@ export function styleRunText(text: string, attrs: RunAttrs = {}): string {
     const nextCode = i + 1 < chars.length ? chars[i + 1].codePointAt(0)! : 0;
     const isNextCombining = nextCode >= 0x0300 && nextCode <= 0x036f;
     if (!isNextCombining && !/\s/.test(ch)) {
-      decorated += suffix;
+      decorated += mark;
     }
   }
   return decorated;
+}
+
+export interface StyleRunOptions {
+  /**
+   * When `true`, strips Vietnamese diacritics (`Khuyến mãi` -> `Khuyen mai`) before applying Unicode styling.
+   * Enclosed shapes (`black-bubble`, `black-square`, `regional-indicator`, `upside-down`) automatically strip
+   * diacritics by default unless `stripAccents` is explicitly `false`.
+   */
+  stripAccents?: boolean;
+}
+
+/**
+ * Converts a single plain string with `RunAttrs` into its Unicode social-ready string.
+ * Supports all 36 YayText / Zantext styles, combining line overlays, character brackets,
+ * decorator banners, and Smart Vietnamese Diacritic Handling.
+ */
+export function styleRunText(
+  text: string,
+  attrs: RunAttrs = {},
+  options?: StyleRunOptions,
+): string {
+  if (!text) return "";
+  const category = classifyFontFamily(attrs.font);
+  const set = selectUnicodeSet(attrs);
+  const hasUnderline = !!attrs.underline;
+  const hasStrike = !!attrs.strikethrough;
+
+  const isSpecialCategory =
+    category === "regional-indicator" ||
+    category === "double-underline" ||
+    category === "slashthrough" ||
+    category === "tilde-strike" ||
+    category === "overline" ||
+    category === "under-asterisks" ||
+    category === "lightning-above" ||
+    category === "upside-down" ||
+    category === "air-quotes" ||
+    category === "lenticular-brackets" ||
+    category === "sparkles-decorator" ||
+    category === "stars-wave-decorator" ||
+    category === "arrow-pointer-decorator";
+
+  if (!set && !hasUnderline && !hasStrike && !isSpecialCategory) {
+    return options?.stripAccents
+      ? stripVietnameseAccents(text)
+      : text.normalize("NFC");
+  }
+
+  // Determine whether Vietnamese diacritics should be stripped for clean glyph boxes
+  const autoStripCategory =
+    category === "black-bubble" ||
+    category === "black-square" ||
+    category === "regional-indicator" ||
+    category === "upside-down";
+  const shouldStripAccents =
+    options?.stripAccents ?? autoStripCategory;
+
+  let cleanBase = stripUnicodeStyling(text);
+  if (shouldStripAccents) {
+    cleanBase = stripVietnameseAccents(cleanBase);
+  }
+
+  // Handle special structural categories first
+  if (category === "upside-down") {
+    const flipped = cleanBase
+      .split("\n")
+      .map((line) =>
+        Array.from(line)
+          .reverse()
+          .map((ch) => UPSIDE_DOWN_MAP[ch] ?? ch)
+          .join(""),
+      )
+      .join("\n");
+    return flipped;
+  }
+
+  if (category === "regional-indicator") {
+    return cleanBase
+      .split("\n")
+      .map((line) => {
+        const tokens: string[] = [];
+        for (const ch of Array.from(line)) {
+          const code = ch.toUpperCase().charCodeAt(0);
+          if (code >= 0x41 && code <= 0x5a) {
+            tokens.push(String.fromCodePoint(0x1f1e6 + code - 0x41));
+          } else if (/\s/.test(ch)) {
+            tokens.push(" ");
+          } else {
+            tokens.push(ch);
+          }
+        }
+        return tokens.join(" ").replace(/\s{3,}/g, "   ");
+      })
+      .join("\n");
+  }
+
+  if (category === "air-quotes") {
+    return Array.from(cleanBase.normalize("NFC"))
+      .map((ch) => (/\s/.test(ch) ? ch : `『${ch}』`))
+      .join("");
+  }
+
+  if (category === "lenticular-brackets") {
+    return Array.from(cleanBase.normalize("NFC"))
+      .map((ch) => (/\s/.test(ch) ? ch : `【${ch}】`))
+      .join("");
+  }
+
+  let styled = "";
+  if (set) {
+    const normalizedInput =
+      category === "superscript" ||
+      category === "subscript" ||
+      category === "parenthesized" ||
+      category === "squared"
+        ? stripVietnameseAccents(cleanBase)
+        : cleanBase;
+    for (const ch of normalizedInput.normalize("NFD")) {
+      styled += mapCharToSet(ch, set);
+    }
+  } else {
+    styled = cleanBase.normalize("NFC");
+  }
+
+  // Apply line-banner decorators if selected
+  if (category === "sparkles-decorator") {
+    styled = styled
+      .split("\n")
+      .map((l) => (l.trim() ? `˜”*°•.˜”*°• ${l} •°*”˜.•°*”˜` : l))
+      .join("\n");
+  } else if (category === "stars-wave-decorator") {
+    styled = styled
+      .split("\n")
+      .map((l) => (l.trim() ? `¸,ø¤º°\`°º¤ø,¸ ${l} ¸,ø¤º°°º¤ø,¸` : l))
+      .join("\n");
+  } else if (category === "arrow-pointer-decorator") {
+    styled = styled
+      .split("\n")
+      .map((l) => (l.trim() ? `»»——⍟ ${l} ⍟——««` : l))
+      .join("\n");
+  }
+
+  // Determine combining overlay suffix
+  let overlayMark = "";
+  if (category === "double-underline") overlayMark += "\u0333";
+  if (category === "slashthrough") overlayMark += "\u0338";
+  if (category === "tilde-strike") overlayMark += "\u0334";
+  if (category === "overline") overlayMark += "\u0305";
+  if (category === "under-asterisks") overlayMark += "\u0359";
+  if (category === "lightning-above") overlayMark += "\u035b";
+  if (hasUnderline) overlayMark += "\u0332";
+  if (hasStrike) overlayMark += "\u0336";
+
+  if (!overlayMark) {
+    return styled;
+  }
+
+  return applyCombiningMarkPerGrapheme(styled, overlayMark);
+}
+
+/**
+ * Convenience helper to convert plain text directly using any of the 36 YayText / Zantext style IDs.
+ */
+export function convertPlainTextToSocialStyle(
+  text: string,
+  styleId: string,
+  options?: StyleRunOptions,
+): string {
+  const preset = ZANTEXT_STYLE_PRESETS.find((p) => p.id === styleId);
+  if (!preset) return text.normalize("NFC");
+  return styleRunText(text, preset.attrs, options);
 }
 
 /**
  * Converts the editor's rich-text delta to the plain Unicode string to post.
  * - Always NFC-normalizes plain text (fixes decomposed Vietnamese from mixed input methods).
  * - Bold/italic/font-family runs become Unicode styled letters (Sans-Serif, Serif,
- *   Monospace, Script/Cursive, Double-Struck). Vietnamese letters are decomposed (NFD),
- *   the base Latin letter is styled and its combining marks kept; `đ/Đ` and any
- *   non-Latin character have no styled glyph and stay plain.
- * - Underline and strikethrough append combining marks (`\u0332`, `\u0336`).
+ *   Monospace, Script/Cursive, Double-Struck, Enclosed, Combining Overlays, Decorators).
  * - List prefixes ("• ", "1. ") are already literal text, so they pass through.
  */
 export function toPublishText(delta: DeltaOp[]): string {

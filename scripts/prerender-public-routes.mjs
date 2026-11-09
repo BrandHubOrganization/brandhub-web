@@ -96,7 +96,7 @@ const PUBLIC_ROUTES = [
     canonicalUrl: "https://brandhub.id.vn/privacy",
     title: "Chính Sách Quyền Riêng Tư (Privacy Policy) | BrandHub",
     description:
-      "Chính sách quyền riêng tư giải thích cách BrandHub thu thập, sử dụng và bảo vệ dữ liệu cá nhân, tài nguyên Workspace và dữ liệu người dùng trên https://brandhub.id.vn.",
+      "Chính sách quyền riêng tư giải thích cách BrandHub thu thập, mã hóa và bảo vệ dữ liệu cá nhân, tài nguyên Workspace trên https://brandhub.id.vn.",
     pageJsonLd: {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -128,7 +128,7 @@ const PUBLIC_ROUTES = [
     canonicalUrl: "https://brandhub.id.vn/terms",
     title: "Điều Khoản Dịch Vụ (Terms of Service) | BrandHub",
     description:
-      "Điều khoản dịch vụ quy định quyền truy cập, phân quyền vai trò (Owner, Manager, Creator, Client), AI Credits và xuất bản đa kênh trên BrandHub (https://brandhub.id.vn).",
+      "Điều khoản dịch vụ quy định quyền truy cập, phân quyền (Owner, Manager, Creator, Client), AI Credits và xuất bản đa kênh trên https://brandhub.id.vn.",
     pageJsonLd: {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet, Link, useLocation } from "react-router-dom";
 
 // Layout & Security Components
 import { AuthGuard } from "@/components/layout/AuthGuard";
@@ -8,6 +8,7 @@ import { PublicHelpLayout } from "@/components/layout/PublicHelpLayout";
 import { PageFallback } from "@/components/layout/PageFallback";
 import { WorkspaceScopedRedirect } from "@/routes/WorkspaceScopedRedirect";
 import { useAuthStore } from "@/store/authStore";
+import { SeoHead } from "@/components/seo/SeoHead";
 
 // Typed lazy loader supporting both named & default exports
 function lazyNamed<T extends Record<string, unknown>>(
@@ -338,26 +339,77 @@ function AdaptiveHelpLayout() {
   return isAuthenticated ? <Layout /> : <PublicHelpLayout />;
 }
 
+function NoIndexRouteLayout() {
+  const location = useLocation();
+  return (
+    <>
+      <SeoHead canonicalPath={location.pathname} noindex />
+      <Outlet />
+    </>
+  );
+}
+
+function NotFoundRoute() {
+  const location = useLocation();
+  return (
+    <main className="bg-background text-foreground flex min-h-dvh flex-col items-center justify-center px-4 text-center">
+      <SeoHead
+        title="404 — Không tìm thấy trang | BrandHub"
+        description="Trang bạn tìm kiếm không tồn tại hoặc đã được di chuyển trên BrandHub."
+        canonicalPath={location.pathname}
+        noindex
+      />
+      <p className="text-brand-orange text-sm font-bold tracking-widest uppercase">
+        404 Not Found
+      </p>
+      <h1 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
+        Không tìm thấy trang yêu cầu
+      </h1>
+      <p className="text-muted-foreground mt-2 max-w-md text-sm">
+        Đường dẫn bạn truy cập không tồn tại hoặc đã hết hạn. Vui lòng quay lại trang chủ hoặc Trung tâm trợ giúp.
+      </p>
+      <div className="mt-6 flex items-center gap-3">
+        <Link
+          to="/"
+          className="bg-brand-orange hover:bg-brand-orange/90 rounded-lg px-4 py-2 text-xs font-semibold text-white transition-colors"
+        >
+          Về trang chủ BrandHub
+        </Link>
+        <Link
+          to="/help/faq"
+          className="border-border hover:bg-muted rounded-lg border px-4 py-2 text-xs font-semibold transition-colors"
+        >
+          Trung tâm trợ giúp (FAQ)
+        </Link>
+      </div>
+    </main>
+  );
+}
+
 export function AppRoutes() {
   return (
     <Suspense fallback={<PageFallback fullScreen />}>
       <Routes>
-        {/* Public Routes — accessible without authentication */}
+        {/* Indexable Public Landing Route */}
         <Route path="/" element={<LandingPage />} />
-        <Route
-          path="/packages/share/:token"
-          element={<GuestMediaPackagePage />}
-        />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/verify-otp" element={<VerifyOtpPage />} />
-        <Route path="/2fa-verify" element={<TwoFactorVerifyPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/activate-account" element={<ActivateAccountPage />} />
-        <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
-        <Route path="/mail/unsubscribe" element={<MailUnsubscribePage />} />
-        <Route path="/public/surveys/:token" element={<PublicSurveyPage />} />
+
+        {/* Non-indexable Auth, Transactional & Tokenized Public Routes */}
+        <Route element={<NoIndexRouteLayout />}>
+          <Route
+            path="/packages/share/:token"
+            element={<GuestMediaPackagePage />}
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-otp" element={<VerifyOtpPage />} />
+          <Route path="/2fa-verify" element={<TwoFactorVerifyPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/activate-account" element={<ActivateAccountPage />} />
+          <Route path="/oauth-callback" element={<OAuthCallbackPage />} />
+          <Route path="/mail/unsubscribe" element={<MailUnsubscribePage />} />
+          <Route path="/public/surveys/:token" element={<PublicSurveyPage />} />
+        </Route>
 
         {/* Public Help & Legal Routes — accessible without authentication */}
         <Route element={<PublicHelpLayout />}>
@@ -644,6 +696,9 @@ export function AppRoutes() {
             <Route path="/components/examples" element={<ExamplesPage />} />
           </Route>
         </Route>
+
+        {/* Catch-all 404 Not Found Route (prevents SPA Soft 404s in Google Search Console) */}
+        <Route path="*" element={<NotFoundRoute />} />
       </Routes>
     </Suspense>
   );

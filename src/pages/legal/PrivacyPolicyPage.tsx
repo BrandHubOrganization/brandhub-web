@@ -31,8 +31,8 @@ export function PrivacyPolicyPage() {
         }
         description={
           lang === "en"
-            ? "Learn how BrandHub collects, uses, protects, and safeguards personal data, workspace assets, and Google OAuth user data on https://brandhub.id.vn."
-            : "Chính sách quyền riêng tư giải thích cách BrandHub thu thập, sử dụng và bảo vệ dữ liệu cá nhân, tài nguyên Workspace và dữ liệu người dùng trên https://brandhub.id.vn."
+            ? "Learn how BrandHub collects, protects, and encrypts personal data, Workspace assets, and Google OAuth user data on https://brandhub.id.vn."
+            : "Chính sách quyền riêng tư giải thích cách BrandHub thu thập, mã hóa và bảo vệ dữ liệu cá nhân, tài nguyên Workspace trên https://brandhub.id.vn."
         }
         canonicalPath="/privacy"
       />
