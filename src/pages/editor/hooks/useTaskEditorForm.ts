@@ -89,7 +89,6 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
             };
             const fallbackSession: Session = {
               linked: {
-                taskId,
                 taskRevision: 1,
                 post: null,
                 canEdit: true,
