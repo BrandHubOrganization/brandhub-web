@@ -1,5 +1,12 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route, Navigate, Outlet, Link, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  Link,
+  useLocation,
+} from "react-router-dom";
 
 // Layout & Security Components
 import { AuthGuard } from "@/components/layout/AuthGuard";
@@ -111,10 +118,6 @@ const WorkspaceRequestPage = lazyNamed(
   "WorkspaceRequestPage",
 );
 const EditorPage = lazyNamed(() => import("@/pages/editor"), "EditorPage");
-const ContentWritingPage = lazyNamed(
-  () => import("@/pages/content-writing"),
-  "ContentWritingPage",
-);
 const PublishPage = lazyNamed(() => import("@/pages/publish"), "PublishPage");
 const PostDashboardPage = lazyNamed(
   () => import("@/pages/publish/dashboard"),
@@ -326,6 +329,12 @@ function WorkspaceIndexRedirect() {
   return <Navigate to="dashboard" replace />;
 }
 
+// The content-writing page was merged into the post editor's Docs mode.
+function ContentWritingRedirect() {
+  const { search } = useLocation();
+  return <Navigate to={`../editor${search}`} relative="path" replace />;
+}
+
 export function HelpGuideRedirect() {
   const systemRole = useAuthStore((s) => s.systemRole);
   if (systemRole === "ADMIN") {
@@ -366,7 +375,8 @@ function NotFoundRoute() {
         Không tìm thấy trang yêu cầu
       </h1>
       <p className="text-muted-foreground mt-2 max-w-md text-sm">
-        Đường dẫn bạn truy cập không tồn tại hoặc đã hết hạn. Vui lòng quay lại trang chủ hoặc Trung tâm trợ giúp.
+        Đường dẫn bạn truy cập không tồn tại hoặc đã hết hạn. Vui lòng quay lại
+        trang chủ hoặc Trung tâm trợ giúp.
       </p>
       <div className="mt-6 flex items-center gap-3">
         <Link
@@ -501,13 +511,11 @@ export function AppRoutes() {
             />
             <Route
               path="/workspaces/:id/content-writing"
-              element={<ContentWritingPage />}
+              element={<ContentWritingRedirect />}
             />
             <Route
               path="/content-writing"
-              element={
-                <WorkspaceScopedRedirect destination="content-writing" />
-              }
+              element={<WorkspaceScopedRedirect destination="editor" />}
             />
             <Route
               path="/workspaces/:id/templates"
@@ -625,7 +633,10 @@ export function AppRoutes() {
             <Route path="/admin/guide" element={<AdminGuidePage />} />
             <Route path="/requests" element={<ContentRequestListPage />} />
             <Route path="/editor" element={<EditorPage />} />
-            <Route path="/content-writing" element={<ContentWritingPage />} />
+            <Route
+              path="/content-writing"
+              element={<ContentWritingRedirect />}
+            />
             <Route path="/templates" element={<TemplateBrowserPage />} />
             <Route path="/hashtag-groups" element={<HashtagGroupsPage />} />
             <Route path="/calendar" element={<CalendarPage />} />

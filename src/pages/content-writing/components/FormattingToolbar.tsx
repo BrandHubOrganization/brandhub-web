@@ -112,7 +112,7 @@ const FAVORITES_STORAGE_KEY = "brandhub-zantext-favorites";
 
 const OS_FONT_STACKS: Record<"default" | "ios" | "android", string> = {
   default:
-    'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+    'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
   ios: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Apple Symbols", "Apple Color Emoji", sans-serif',
   android:
     'Roboto, "Noto Sans", "Noto Sans Math", "Noto Sans Symbols", "Droid Sans", sans-serif',
@@ -154,7 +154,11 @@ function ToolGroup({
   children: ReactNode;
 }) {
   if (!ribbon) {
-    return <div className="flex items-center gap-0.5">{children}</div>;
+    return (
+      <div className="flex max-w-full shrink-0 flex-wrap items-center gap-0.5">
+        {children}
+      </div>
+    );
   }
   return (
     <div className="flex flex-col items-center gap-1 px-2">
@@ -222,7 +226,6 @@ export function FormattingToolbar({
   const [zantextInput, setZantextInput] = useState("");
   const [zantextCategory, setZantextCategory] =
     useState<ZantextCategoryId>("all");
-  const [stripAccentsOverride, setStripAccentsOverride] = useState(false);
   const [osPreviewMode, setOsPreviewMode] = useState<
     "default" | "ios" | "android"
   >("default");
@@ -275,12 +278,15 @@ export function FormattingToolbar({
   const stepFontSize = (delta: number) => {
     const idx = FONT_SIZES.findIndex((s) => s >= currentNumericSize);
     const curIdx = idx === -1 ? FONT_SIZES.length - 1 : idx;
-    const nextIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, curIdx + delta));
+    const nextIdx = Math.max(
+      0,
+      Math.min(FONT_SIZES.length - 1, curIdx + delta),
+    );
     onSetSize(FONT_SIZES[nextIdx]);
   };
 
   return (
-    <div className="border-border bg-[#f9fbfd] px-2.5 pt-2 pb-1.5 dark:bg-zinc-900">
+    <div className="border-border @container bg-[#f9fbfd] px-2 pt-2 pb-1.5 dark:bg-zinc-900">
       <div
         className={
           ribbon
@@ -322,7 +328,8 @@ export function FormattingToolbar({
             <Select
               aria-label="Kiểu văn bản"
               title="Kiểu đoạn văn (Heading)"
-              className="h-7 w-[118px] rounded-md border-transparent bg-transparent px-1 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
+              wrapperClassName="w-auto shrink-0"
+              className="h-7 w-auto rounded-md border-transparent bg-transparent pr-7 pl-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
               value={currentHeadingPreset}
               onChange={(e) =>
                 onApplyHeadingPreset(e.target.value as HeadingPreset)
@@ -336,7 +343,8 @@ export function FormattingToolbar({
           )}
 
           <Select
-            className="h-7 w-28 rounded-md border-transparent bg-transparent px-1 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
+            wrapperClassName="w-auto shrink-0"
+            className="h-7 w-[118px] rounded-md border-transparent bg-transparent pr-6 pl-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
             value={
               typeof currentAttrs.font === "string" ? currentAttrs.font : ""
             }
@@ -364,7 +372,8 @@ export function FormattingToolbar({
               <Minus className="size-3" />
             </Button>
             <Select
-              className="h-7 w-12 rounded-md border-transparent bg-white/80 px-1 text-center text-xs font-semibold tabular-nums dark:bg-zinc-900/70"
+              wrapperClassName="w-auto shrink-0"
+              className="h-7 w-14 rounded-md border-transparent bg-white/80 pr-5 pl-1.5 text-center text-xs font-semibold tabular-nums dark:bg-zinc-900/70"
               value={String(currentNumericSize)}
               onChange={(e) => onSetSize(Number(e.target.value))}
               title="Cỡ chữ"
@@ -705,7 +714,7 @@ export function FormattingToolbar({
                 title="Bộ công cụ sáng tạo nội dung & biến đổi chữ"
               >
                 <Wand2 className="size-3" />
-                <span className="hidden md:inline">Sáng tạo</span>
+                <span className="hidden @4xl:inline">Sáng tạo</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -904,7 +913,7 @@ export function FormattingToolbar({
                 title="Bảng chuyển đổi & Copy 36 kiểu Font chữ nhanh chuẩn YayText / Zantext (dán trực tiếp lên Facebook)"
               >
                 <Type className="size-3" />
-                <span className="hidden md:inline">Font Zantext</span>
+                <span className="hidden @4xl:inline">Font Zantext</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -936,7 +945,9 @@ export function FormattingToolbar({
                   </div>
                 </div>
                 <p className="text-muted-foreground text-[11px] leading-snug">
-                  Tự động đổi chữ sang Unicode chuẩn Facebook / Instagram / TikTok / Threads. Bấm <strong>Copy</strong> để dán thẳng lên bài đăng hoặc <strong>Áp dụng</strong> vào trình soạn thảo.
+                  Tự động đổi chữ sang Unicode chuẩn Facebook / Instagram /
+                  TikTok / Threads. Bấm <strong>Copy</strong> để dán thẳng lên
+                  bài đăng hoặc <strong>Áp dụng</strong> vào trình soạn thảo.
                 </p>
               </div>
 
@@ -976,19 +987,8 @@ export function FormattingToolbar({
                 ))}
               </div>
 
-              {/* Smart Vietnamese Diacritic Toggle & OS Font Preview Switcher */}
-              <div className="border-border bg-muted/30 flex flex-wrap items-center justify-between gap-2 rounded-lg border px-2 py-1.5">
-                <label className="flex cursor-pointer items-center gap-1.5 text-[10px] font-medium">
-                  <input
-                    type="checkbox"
-                    data-testid="zantext-strip-accents-toggle"
-                    checked={stripAccentsOverride}
-                    onChange={(e) => setStripAccentsOverride(e.target.checked)}
-                    className="accent-brand-orange size-3.5 rounded"
-                  />
-                  <span>Lược dấu Tiếng Việt (Chuẩn 100% khung iOS/Android)</span>
-                </label>
-
+              {/* OS Font Preview Switcher */}
+              <div className="border-border bg-muted/30 flex flex-wrap items-center justify-end gap-2 rounded-lg border px-2 py-1.5">
                 <select
                   aria-label="Chế độ xem trước hệ điều hành"
                   data-testid="zantext-os-preview-select"
@@ -1011,7 +1011,6 @@ export function FormattingToolbar({
                   const converted = styleRunText(
                     effectiveZantextSource,
                     preset.attrs,
-                    stripAccentsOverride ? { stripAccents: true } : undefined,
                   );
                   const isCopied = copiedPresetId === preset.id;
                   const isFav = favoriteIds.includes(preset.id);
@@ -1045,10 +1044,10 @@ export function FormattingToolbar({
                           <span className="text-muted-foreground text-[10px] font-semibold">
                             {preset.label}
                           </span>
-                          <span className="bg-muted text-foreground rounded px-1 py-0.2 text-[9px] font-bold">
+                          <span className="bg-muted text-foreground py-0.2 rounded px-1 text-[9px] font-bold">
                             {preset.badge}
                           </span>
-                          <span className="rounded bg-emerald-500/10 px-1 py-0.2 text-[9px] font-medium text-emerald-700 dark:text-emerald-300">
+                          <span className="py-0.2 rounded bg-emerald-500/10 px-1 text-[9px] font-medium text-emerald-700 dark:text-emerald-300">
                             {preset.compatibility === "Universal"
                               ? "iOS/Android ✓"
                               : "Modern OS"}
@@ -1131,28 +1130,34 @@ export function FormattingToolbar({
         </ToolGroup>
 
         {/* Right-aligned Mode Switch: Google Docs pill bar vs. Word Ribbon */}
-        <div className="ml-auto flex items-center gap-0.5 pl-1">
+        <div
+          role="group"
+          aria-label="Kiểu thanh công cụ"
+          className="ml-auto flex items-center gap-0.5 rounded-full bg-white/70 p-0.5 dark:bg-zinc-900/60"
+        >
           <Button
             type="button"
             variant={!ribbon ? "secondary" : "ghost"}
-            size="sm"
-            className="h-6 gap-1 rounded-full px-2 text-[11px]"
+            size="icon"
+            className="size-6 rounded-full"
             onClick={() => setRibbon(false)}
-            title="Chế độ thanh công cụ (Google Docs)"
+            aria-pressed={!ribbon}
+            aria-label="Thanh công cụ Google Docs"
+            title="Thanh công cụ Google Docs"
           >
             <Rows3 className="size-3" />
-            Docs
           </Button>
           <Button
             type="button"
             variant={ribbon ? "secondary" : "ghost"}
-            size="sm"
-            className="h-6 gap-1 rounded-full px-2 text-[11px]"
+            size="icon"
+            className="size-6 rounded-full"
             onClick={() => setRibbon(true)}
-            title="Chế độ dải lệnh (Microsoft Word)"
+            aria-pressed={ribbon}
+            aria-label="Dải lệnh Microsoft Word"
+            title="Dải lệnh Microsoft Word"
           >
             <LayoutGrid className="size-3" />
-            Ribbon
           </Button>
         </div>
       </div>

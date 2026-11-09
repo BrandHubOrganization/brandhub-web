@@ -211,7 +211,7 @@ function PostCaptionBlock({ caption, hashtags }: { caption: string; hashtags: st
             className="text-foreground text-sm leading-relaxed font-normal whitespace-pre-wrap sm:text-base"
             style={{
               fontFamily:
-                'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+                'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
             }}
           >
             {caption}

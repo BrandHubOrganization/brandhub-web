@@ -55,7 +55,7 @@ export function TikTokMockup({ data }: MockupProps) {
           className="text-2xs line-clamp-3 text-slate-200 whitespace-pre-wrap"
           style={{
             fontFamily:
-              'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+              'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
           }}
         >
           {caption}

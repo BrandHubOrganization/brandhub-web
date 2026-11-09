@@ -49,7 +49,7 @@ export function FacebookMockup({ data }: MockupProps) {
         className="text-foreground px-3.5 pb-3 text-sm leading-relaxed whitespace-pre-wrap"
         style={{
           fontFamily:
-            'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+            'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
         }}
       >
         {caption}

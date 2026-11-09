@@ -34,7 +34,10 @@ import {
 } from "@/pages/content-writing/contentUtils";
 import { FONT_FAMILIES } from "@/pages/content-writing/components/FormattingToolbar";
 import { ImportDocumentModal } from "@/pages/content-writing/components/ImportDocumentModal";
-import type { DeltaOp, RunAttrs } from "@/pages/content-writing/components/richText";
+import type {
+  DeltaOp,
+  RunAttrs,
+} from "@/pages/content-writing/components/richText";
 
 interface RichTextEditorProps {
   value: string;
@@ -173,8 +176,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [activeCategory, setActiveCategory] = React.useState<
     "all" | "favorites" | ZantextCategory
   >("all");
-  const [stripAccentsOverride, setStripAccentsOverride] =
-    React.useState(false);
   const [favoriteIds, setFavoriteIds] = React.useState<string[]>(() => {
     try {
       const saved = window.localStorage.getItem("brandhub-zantext-favorites");
@@ -359,10 +360,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   // Sync external value updates (e.g. from AI auto-populate or template)
   useEffect(() => {
     if (!editor || editor.isDestroyed || !editor.isInitialized) return;
-    if (
-      value !== lastEmittedValueRef.current &&
-      value !== editor.getText()
-    ) {
+    if (value !== lastEmittedValueRef.current && value !== editor.getText()) {
       lastEmittedValueRef.current = value;
       editor.commands.setContent(plainTextOrHtmlToTiptapContent(value), {
         emitUpdate: false,
@@ -531,7 +529,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             >
               <Wand2 className="size-3.5" />
               <span>Font Zantext</span>
-              <span className="rounded bg-purple-600 px-1 py-0.2 text-[9px] font-bold text-white">
+              <span className="py-0.2 rounded bg-purple-600 px-1 text-[9px] font-bold text-white">
                 36
               </span>
             </button>
@@ -581,22 +579,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
                   })}
                 </div>
 
-                {/* Smart Vietnamese Diacritic Toggle */}
-                <div className="border-border bg-muted/40 mb-2 flex items-center justify-between gap-2 rounded-lg border px-2 py-1">
-                  <label className="flex cursor-pointer items-center gap-1.5 text-[10px] font-medium">
-                    <input
-                      type="checkbox"
-                      data-testid="studio-zantext-strip-accents-toggle"
-                      checked={stripAccentsOverride}
-                      onChange={(e) =>
-                        setStripAccentsOverride(e.target.checked)
-                      }
-                      className="size-3 rounded accent-purple-600"
-                    />
-                    <span>Lược dấu Tiếng Việt (chuẩn khung 🅑🅤🅑 / 🅱🅻🅰)</span>
-                  </label>
-                </div>
-
                 <div className="max-h-64 space-y-1.5 overflow-y-auto pr-1">
                   {ZANTEXT_STYLE_PRESETS.filter((preset) => {
                     if (activeCategory === "all") return true;
@@ -611,7 +593,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
                     const converted = convertPlainTextToSocialStyle(
                       sourceText,
                       preset.id,
-                      { stripAccents: stripAccentsOverride },
                     );
                     const isCopied = copiedZantextId === preset.id;
                     const isFav = favoriteIds.includes(preset.id);
@@ -655,11 +636,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
                             <span className="text-muted-foreground text-[10px] font-medium">
                               {preset.label}
                             </span>
-                            <span className="bg-muted text-foreground rounded px-1 py-0.2 text-[9px] font-bold">
+                            <span className="bg-muted text-foreground py-0.2 rounded px-1 text-[9px] font-bold">
                               {preset.badge}
                             </span>
                             {preset.vietnameseMode === "strip-accents-auto" && (
-                              <span className="rounded bg-amber-500/15 px-1 py-0.2 text-[8px] font-semibold text-amber-700 dark:text-amber-300">
+                              <span className="py-0.2 rounded bg-amber-500/15 px-1 text-[8px] font-semibold text-amber-700 dark:text-amber-300">
                                 Tự lược dấu
                               </span>
                             )}
@@ -668,7 +649,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
                             className="text-foreground truncate text-xs font-medium"
                             style={{
                               fontFamily:
-                                'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+                                'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
                             }}
                           >
                             {converted}
@@ -686,7 +667,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
                             );
                             setTimeout(() => setCopiedZantextId(null), 1600);
                           }}
-                          className="bg-brand-orange/15 text-brand-orange hover:bg-brand-orange hover:text-white flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold transition-colors"
+                          className="bg-brand-orange/15 text-brand-orange hover:bg-brand-orange flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold transition-colors hover:text-white"
                         >
                           {isCopied ? (
                             <Check className="size-3" />
@@ -783,7 +764,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         style={{
           fontFamily:
             selectedFont ||
-            'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+            'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
         }}
       >
         <EditorContent

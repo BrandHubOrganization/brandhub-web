@@ -402,7 +402,8 @@
     "uploading": "Uploading media...",
     "dragDropText": "Drag & drop images/videos here or",
     "browseText": "browse from your computer",
-    "supportedFormats": "Supports JPG, PNG, GIF, MP4 (up to 50MB)"
+    "supportedFormats": "Supports JPG, PNG, GIF, MP4 (up to 50MB)",
+    "applyWatermark": "Apply watermark"
   },
   "richText": {
     "contentPlaceholder": "Start writing your post content here...",

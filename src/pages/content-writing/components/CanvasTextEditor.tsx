@@ -467,27 +467,90 @@ export const CanvasTextEditor = forwardRef<
           const fontStr = fontStringFor(segment.attrs);
           const segFontSize = segment.attrs.size ?? FONT_SIZE;
           const w = measureWidth(ctx, fontStr, segment.text);
+          const lowerFont = (segment.attrs.font ?? "").toLowerCase();
+          const isDarkEnclosed =
+            lowerFont.includes("black bubble") ||
+            lowerFont.includes("black square");
+          const isOutlineEnclosed =
+            !isDarkEnclosed &&
+            (lowerFont.includes("circled") ||
+              lowerFont.includes("squared") ||
+              lowerFont.includes("parenthesized"));
+
           if (segment.attrs.highlight) {
             ctx.fillStyle = segment.attrs.highlight;
             ctx.fillRect(x, line.yTop, w, line.lineHeight);
+          } else if (isDarkEnclosed && segment.text.trim().length > 0) {
+            ctx.fillStyle = "#18181b";
+            ctx.fillRect(
+              x - 1,
+              line.yTop + 2,
+              w + 2,
+              Math.max(12, line.lineHeight - 4),
+            );
+          } else if (isOutlineEnclosed && segment.text.trim().length > 0) {
+            ctx.strokeStyle = "#64748b";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(
+              x,
+              line.yTop + 2,
+              w,
+              Math.max(12, line.lineHeight - 4),
+            );
           }
+
           ctx.font = fontStr;
-          ctx.fillStyle = segment.attrs.color ?? "#1f2937";
+          ctx.fillStyle =
+            isDarkEnclosed && !segment.attrs.color
+              ? "#ffffff"
+              : (segment.attrs.color ?? "#1f2937");
           ctx.fillText(segment.text, x, y);
-          if (segment.attrs.underline || segment.attrs.link) {
-            ctx.strokeStyle = ctx.fillStyle as string;
+
+          const strokeColor =
+            isDarkEnclosed && !segment.attrs.color
+              ? "#18181b"
+              : (ctx.fillStyle as string);
+          if (
+            segment.attrs.underline ||
+            segment.attrs.link ||
+            lowerFont.includes("double underline")
+          ) {
+            ctx.strokeStyle = strokeColor;
             ctx.lineWidth = Math.max(1, Math.round(segFontSize / 14));
             ctx.beginPath();
             ctx.moveTo(x, y + 2);
             ctx.lineTo(x + w, y + 2);
+            if (lowerFont.includes("double underline")) {
+              ctx.moveTo(x, y + 4.5);
+              ctx.lineTo(x + w, y + 4.5);
+            }
             ctx.stroke();
           }
-          if (segment.attrs.strikethrough) {
-            ctx.strokeStyle = ctx.fillStyle as string;
+          if (
+            segment.attrs.strikethrough ||
+            lowerFont.includes("tilde wave")
+          ) {
+            ctx.strokeStyle = strokeColor;
             ctx.lineWidth = Math.max(1, Math.round(segFontSize / 14));
             ctx.beginPath();
             ctx.moveTo(x, y - segFontSize * 0.3);
             ctx.lineTo(x + w, y - segFontSize * 0.3);
+            ctx.stroke();
+          }
+          if (lowerFont.includes("slash price")) {
+            ctx.strokeStyle = "#dc2626";
+            ctx.lineWidth = Math.max(1.5, Math.round(segFontSize / 12));
+            ctx.beginPath();
+            ctx.moveTo(x, y + 1);
+            ctx.lineTo(x + w, y - segFontSize * 0.65);
+            ctx.stroke();
+          }
+          if (lowerFont.includes("overline")) {
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = Math.max(1, Math.round(segFontSize / 14));
+            ctx.beginPath();
+            ctx.moveTo(x, y - segFontSize * 0.82);
+            ctx.lineTo(x + w, y - segFontSize * 0.82);
             ctx.stroke();
           }
           x += w;
@@ -1500,7 +1563,7 @@ export const CanvasTextEditor = forwardRef<
 
         {/* Page canvas: Google Docs "#f8f9fa" workspace desk behind an A4 white paper sheet.
             Purely visual — the editor's own padding (PADDING_X/PADDING_Y) owns caret math. */}
-        <div className="bg-[#f8f9fa] px-4 py-6 sm:px-8 dark:bg-[#1c1d1f]">
+        <div className="bg-[#f8f9fa] px-2 py-4 sm:px-4 dark:bg-[#1c1d1f]">
           <div
             ref={containerRef}
             className="relative mx-auto w-full max-w-[816px] rounded-[2px] bg-white shadow-[0_1px_3px_1px_rgba(60,64,67,0.15),0_1px_2px_0_rgba(60,64,67,0.3)] dark:bg-[#2b2d30]"
@@ -1581,47 +1644,47 @@ export const CanvasTextEditor = forwardRef<
           </div>
         </div>
         {/* Status bar: word/char count + reading time + keyboard shortcut hints */}
-        <div className="border-border text-muted-foreground flex items-center justify-between border-t bg-white px-4 py-1.5 text-xs dark:bg-zinc-900">
-          <div className="flex items-center gap-3">
+        <div className="border-border text-muted-foreground flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-t bg-white px-4 py-2 text-xs dark:bg-zinc-900">
+          <div className="flex items-center gap-2.5 whitespace-nowrap tabular-nums">
             <span className="font-medium">
               {wordCount} từ &nbsp;·&nbsp; {charCount} ký tự
             </span>
             {wordCount > 0 && (
-              <span className="text-muted-foreground/80 hidden text-[11px] md:inline">
+              <span className="text-muted-foreground/80 text-[11px]">
                 (~{readingTimeSec}s đọc)
               </span>
             )}
           </div>
-          <span className="hidden gap-3 sm:flex">
-            <span title="Bold">
+          <span className="hidden flex-wrap items-center gap-2.5 whitespace-nowrap sm:flex">
+            <span title="Bold" className="inline-flex items-center gap-1 whitespace-nowrap">
               <kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">
                 Ctrl+B
-              </kbd>{" "}
-              In đậm
+              </kbd>
+              <span>In đậm</span>
             </span>
-            <span title="Italic">
+            <span title="Italic" className="inline-flex items-center gap-1 whitespace-nowrap">
               <kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">
                 Ctrl+I
-              </kbd>{" "}
-              Nghiêng
+              </kbd>
+              <span>Nghiêng</span>
             </span>
-            <span title="Underline">
+            <span title="Underline" className="inline-flex items-center gap-1 whitespace-nowrap">
               <kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">
                 Ctrl+U
-              </kbd>{" "}
-              Gạch dưới
+              </kbd>
+              <span>Gạch dưới</span>
             </span>
-            <span title="Undo">
+            <span title="Undo" className="inline-flex items-center gap-1 whitespace-nowrap">
               <kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">
                 Ctrl+Z
-              </kbd>{" "}
-              Hoàn tác
+              </kbd>
+              <span>Hoàn tác</span>
             </span>
-            <span title="Redo">
+            <span title="Redo" className="inline-flex items-center gap-1 whitespace-nowrap">
               <kbd className="bg-muted rounded px-1 py-0.5 font-mono text-[10px]">
                 Ctrl+Y
-              </kbd>{" "}
-              Làm lại
+              </kbd>
+              <span>Làm lại</span>
             </span>
           </span>
         </div>

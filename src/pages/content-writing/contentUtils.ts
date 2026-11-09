@@ -387,7 +387,7 @@ const SUPERSCRIPT_SET: UnicodeAlphabetSet = {
 // 15. Subscript (Chữ chỉ số dưới YayText: ₛᵤ₆ₛ꜀ᵣᵢₚₜ ₀₁₂₃₄₅₆₇₈₉)
 const SUBSCRIPT_MAP: Record<string, string> = {
   a: "ₐ",
-  b: "₆",
+  b: "ᵦ",
   c: "꜀",
   d: "𝒹",
   e: "ₑ",
@@ -413,7 +413,7 @@ const SUBSCRIPT_MAP: Record<string, string> = {
   y: "ᵧ",
   z: "₂",
   A: "ₐ",
-  B: "₆",
+  B: "ᵦ",
   C: "꜀",
   D: "𝒹",
   E: "ₑ",

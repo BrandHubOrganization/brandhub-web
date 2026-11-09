@@ -1,15 +1,10 @@
 import { useState } from "react";
 import {
-  AtSign,
-  Camera,
   Check,
   ClipboardPaste,
   Copy,
-  Globe2,
-  Music2,
   PanelRightClose,
   Smartphone,
-  type LucideIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -17,6 +12,10 @@ import { cn } from "@/lib/utils";
 import type { SocialPlatform } from "@/types/editor";
 import { copyTextToClipboard } from "@/pages/content-writing/contentUtils";
 import { PlatformMockup } from "./PlatformMockups";
+import {
+  PLATFORM_BRAND,
+  PLATFORM_ICON,
+} from "@/components/common/SocialPlatformBadge";
 
 interface StudioPreviewPanelProps {
   title: string;
@@ -26,13 +25,6 @@ interface StudioPreviewPanelProps {
   targetPlatforms: SocialPlatform[];
   onCollapse?: () => void;
 }
-
-const PLATFORM_ICONS: Record<SocialPlatform, LucideIcon> = {
-  FACEBOOK: Globe2,
-  INSTAGRAM: Camera,
-  TIKTOK: Music2,
-  THREADS: AtSign,
-};
 
 export function StudioPreviewPanel({
   title,
@@ -120,19 +112,26 @@ export function StudioPreviewPanel({
       <div className="border-border overflow-x-auto border-b p-2">
         <div className="flex min-w-max gap-1">
           {platforms.map((platform) => {
-            const Icon = PLATFORM_ICONS[platform];
+            const Icon = PLATFORM_ICON[platform];
+            const isActive = activePlatform === platform;
             return (
               <button
                 key={platform}
                 type="button"
                 onClick={() => setActivePlatform(platform)}
                 className={cn(
-                  "text-muted-foreground hover:bg-muted flex items-center gap-1.5 rounded-md px-2.5 py-2 text-xs font-medium transition-colors",
-                  activePlatform === platform &&
-                    "bg-brand-orange-soft text-brand-orange",
+                  "flex items-center gap-1.5 rounded-md border px-2.5 py-2 text-xs font-medium transition-colors",
+                  isActive
+                    ? PLATFORM_BRAND[platform].active
+                    : "text-muted-foreground hover:bg-muted border-transparent",
                 )}
               >
-                <Icon className="size-3.5" />
+                <Icon
+                  className={cn(
+                    "size-3.5",
+                    !isActive && PLATFORM_BRAND[platform].icon,
+                  )}
+                />
                 {t(`editor.studio.preview.platforms.${platform}`)}
               </button>
             );
@@ -188,18 +187,18 @@ export function StudioPreviewPanel({
 
           {showPasteSandbox && (
             <div className="border-border bg-muted/20 space-y-1.5 rounded-lg border p-2">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-[10px] font-semibold">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-muted-foreground truncate text-[10px] font-semibold">
                   Ô đăng Facebook thường (Plain-Text):
                 </span>
                 <button
                   type="button"
                   data-testid="studio-facebook-paste-from-clipboard-btn"
                   onClick={handlePasteIntoFacebookSandbox}
-                  className="text-brand-orange flex items-center gap-1 text-[10px] font-bold hover:underline"
+                  className="bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/20 flex shrink-0 items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold whitespace-nowrap transition-colors"
                 >
                   <ClipboardPaste className="size-3" />
-                  Dán từ Clipboard
+                  <span>Dán từ Clipboard</span>
                 </button>
               </div>
               <textarea
@@ -211,7 +210,7 @@ export function StudioPreviewPanel({
                 className="border-border bg-card text-foreground w-full rounded-lg border p-2 text-xs leading-relaxed focus:outline-hidden"
                 style={{
                   fontFamily:
-                    'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+                    'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
                 }}
               />
             </div>
