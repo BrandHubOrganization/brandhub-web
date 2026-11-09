@@ -190,10 +190,17 @@ export const aiGenerationService = {
     const response = await api.get<ApiResponse<AmbassadorPreset[]>>(
       "/api/v1/ai/ambassadors/presets",
     );
-    return unwrap(response).map((preset) => ({
-      ...preset,
-      image_url: resolveAiAssetUrl(preset.image_url),
-    }));
+    return unwrap(response)
+      .filter(
+        (preset) =>
+          preset.id !== "ngoc_chau_22" &&
+          !preset.name?.toLowerCase().includes("ngọc châu") &&
+          !preset.name?.toLowerCase().includes("ngoc chau"),
+      )
+      .map((preset) => ({
+        ...preset,
+        image_url: resolveAiAssetUrl(preset.image_url),
+      }));
   },
 
   async generateAmbassador(input: {

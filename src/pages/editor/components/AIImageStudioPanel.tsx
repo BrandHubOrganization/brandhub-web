@@ -387,7 +387,10 @@ export function AIImageStudioPanel({
           />
         </button>
 
-        {isPresetPanelOpen && (
+        {isPresetPanelOpen &&
+          (presets.length > 0 ||
+            Boolean(uploadedAmbassador) ||
+            Boolean(aiGeneratedAmbassador)) && (
           <div className="border-border bg-muted/30 grid max-h-64 grid-cols-2 gap-2 overflow-y-auto rounded-lg border p-2">
             {presets.map((preset) => (
               <button
