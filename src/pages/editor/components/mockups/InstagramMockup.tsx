@@ -12,6 +12,9 @@ interface MockupProps {
   data: PostPreviewData;
 }
 
+const UNICODE_FONT_STACK =
+  'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif';
+
 export function InstagramMockup({ data }: MockupProps) {
   const {
     caption,
@@ -55,7 +58,12 @@ export function InstagramMockup({ data }: MockupProps) {
         </div>
         <div className="absolute right-14 bottom-4 left-3 space-y-1">
           <h5 className="text-xs font-semibold text-white">@{igHandle}</h5>
-          <p className="text-2xs line-clamp-2 text-slate-200">{caption}</p>
+          <p
+            className="text-2xs line-clamp-2 text-slate-200 whitespace-pre-wrap"
+            style={{ fontFamily: UNICODE_FONT_STACK }}
+          >
+            {caption}
+          </p>
         </div>
       </div>
     );
@@ -114,7 +122,10 @@ export function InstagramMockup({ data }: MockupProps) {
             </div>
             <Bookmark className="size-5 cursor-pointer" />
           </div>
-          <p className="text-foreground line-clamp-3 text-xs">
+          <p
+            className="text-foreground line-clamp-3 text-xs whitespace-pre-wrap"
+            style={{ fontFamily: UNICODE_FONT_STACK }}
+          >
             <span className="mr-1.5 font-semibold">{igHandle}</span>
             {caption}
           </p>
@@ -144,7 +155,10 @@ export function InstagramMockup({ data }: MockupProps) {
             className="h-full w-full object-cover"
           />
         )}
-        <p className="absolute right-3 bottom-4 left-3 text-center text-xs font-medium text-white drop-shadow-md">
+        <p
+          className="absolute right-3 bottom-4 left-3 text-center text-xs font-medium text-white whitespace-pre-wrap drop-shadow-md"
+          style={{ fontFamily: UNICODE_FONT_STACK }}
+        >
           {caption}
         </p>
       </div>
@@ -191,7 +205,10 @@ export function InstagramMockup({ data }: MockupProps) {
           <Bookmark className="size-5 cursor-pointer" />
         </div>
 
-        <p className="text-foreground line-clamp-3 text-xs">
+        <p
+          className="text-foreground line-clamp-3 text-xs whitespace-pre-wrap"
+          style={{ fontFamily: UNICODE_FONT_STACK }}
+        >
           <span className="mr-1.5 font-semibold">{igHandle}</span>
           {caption}
         </p>

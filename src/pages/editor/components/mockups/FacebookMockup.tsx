@@ -45,7 +45,13 @@ export function FacebookMockup({ data }: MockupProps) {
         <MoreHorizontal className="text-muted-foreground size-5" />
       </div>
 
-      <p className="text-foreground px-3.5 pb-3 text-sm whitespace-pre-wrap">
+      <p
+        className="text-foreground px-3.5 pb-3 text-sm leading-relaxed whitespace-pre-wrap"
+        style={{
+          fontFamily:
+            'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+        }}
+      >
         {caption}
       </p>
 

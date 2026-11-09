@@ -271,6 +271,8 @@ const FULLWIDTH_SET: UnicodeAlphabetSet = {
 export type SocialFontCategory =
   | "sans"
   | "sans-bold"
+  | "sans-italic"
+  | "sans-bold-italic"
   | "serif-bold"
   | "serif-italic"
   | "serif-bold-italic"
@@ -300,7 +302,11 @@ export function classifyFontFamily(font?: string): SocialFontCategory {
   }
   if (lower.includes("pacifico")) return "script-bold";
   if (lower.includes("playfair")) return "serif-bold-italic";
-  if (lower.includes("montserrat")) return "sans-bold";
+  if (lower.includes("verdana")) return "sans-bold-italic";
+  if (lower.includes("roboto")) return "sans-italic";
+  if (lower.includes("montserrat") || lower.includes("arial")) {
+    return "sans-bold";
+  }
   if (lower.includes("courier") || lower.includes("monospace")) {
     return "monospace";
   }
@@ -357,6 +363,10 @@ function selectUnicodeSet(attrs: RunAttrs): UnicodeAlphabetSet | null {
       if (bold && italic) return SERIF_BOLD_ITALIC;
       if (italic) return SERIF_ITALIC;
       return SERIF_BOLD;
+    case "sans-bold-italic":
+      return SANS_BOLD_ITALIC;
+    case "sans-italic":
+      return bold ? SANS_BOLD_ITALIC : SANS_ITALIC;
     case "sans-bold":
       return italic ? SANS_BOLD_ITALIC : SANS_BOLD;
     case "sans":

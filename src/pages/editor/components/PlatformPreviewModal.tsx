@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { copyTextToClipboard } from "@/pages/content-writing/contentUtils";
 
 interface PlatformPreviewModalProps {
   isOpen: boolean;
@@ -62,9 +63,11 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
     PLATFORM_LIMITS[activePlatform] || PLATFORM_LIMITS.FACEBOOK;
   const isOverLimit = caption.length > activeConfig.maxCharacters;
 
-  const handleCopyCaption = () => {
-    navigator.clipboard.writeText(caption);
-    toast.success(t("editor.preview.copyCaptionSuccess"));
+  const handleCopyCaption = async () => {
+    await copyTextToClipboard(caption.trim());
+    toast.success(t("editor.preview.copyCaptionSuccess"), {
+      id: "brandhub-editor-toast",
+    });
   };
 
   return (

@@ -31,7 +31,13 @@ export function ThreadsMockup({ data }: MockupProps) {
             </span>
             <AtSign className="text-muted-foreground size-3" />
           </div>
-          <p className="text-foreground text-xs whitespace-pre-wrap">
+          <p
+            className="text-foreground text-xs leading-relaxed whitespace-pre-wrap"
+            style={{
+              fontFamily:
+                'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+            }}
+          >
             {caption}
           </p>
           {mediaUrls.length > 0 && (
