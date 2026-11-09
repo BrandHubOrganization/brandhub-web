@@ -159,16 +159,8 @@ export function AIImageStudioPanel({
   };
 
   const handleGenerate = async () => {
-    if (!selectedPose) {
-      toast.error(t("editor.studio.image.poseRequired"));
-      return;
-    }
-    if (!selectedProduct) {
-      toast.error(t("editor.studio.image.productRequired"));
-      return;
-    }
-    if (!selectedAmbassador) {
-      toast.error(t("editor.studio.image.ambassadorRequired"));
+    if (!prompt.trim()) {
+      toast.error(t("editor.studio.image.promptRequired"));
       return;
     }
 
@@ -177,20 +169,30 @@ export function AIImageStudioPanel({
     setGeneratedImageKey(undefined);
     setStorageProvider(undefined);
     try {
-      const poseReferenceImage = await imageSourceToDataUrl(selectedPose);
-      const productReferenceImage = await imageSourceToDataUrl(selectedProduct);
+      const poseReferenceImage = selectedPose
+        ? await imageSourceToDataUrl(selectedPose)
+        : "";
+      const productReferenceImage = selectedProduct
+        ? await imageSourceToDataUrl(selectedProduct)
+        : "";
       const ambassador = selectedPreset
         ? {
             source: "preset" as const,
             preset_id: selectedPreset.id,
             reference_images: [] as [],
           }
-        : {
-            source: "custom" as const,
-            reference_images: [
-              await imageSourceToDataUrl(selectedAmbassadorImage),
-            ] as [string],
-          };
+        : selectedAmbassadorImage
+          ? {
+              source: "custom" as const,
+              reference_images: [
+                await imageSourceToDataUrl(selectedAmbassadorImage),
+              ] as [string],
+            }
+          : {
+              source: "preset" as const,
+              preset_id: selectedAmbassador || presets[0]?.id || "default",
+              reference_images: [] as [],
+            };
       const result = await aiGenerationService.generateCommercialImage({
         prompt,
         preset: imageStyle,
