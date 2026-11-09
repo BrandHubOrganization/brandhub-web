@@ -54,19 +54,17 @@ export const adminModerationService = {
     source: string;
     page: number;
     size: number;
-  }) {
-    return (
-      await api.get<{ data: ModerationPage }>("/api/v1/admin/moderation", {
-        params: { ...filter, source: filter.source || undefined },
-      })
-    ).data.data;
+  }): Promise<ModerationPage> {
+    const resp = await api.get<{ data: ModerationPage }>("/api/v1/admin/moderation", {
+      params: { ...filter, source: filter.source || undefined },
+    });
+    return resp.data.data;
   },
-  async detail(id: string) {
-    return (
-      await api.get<{ data: ModerationItem }>(`/api/v1/admin/moderation/${id}`)
-    ).data.data;
+  async detail(id: string): Promise<ModerationItem> {
+    const resp = await api.get<{ data: ModerationItem }>(`/api/v1/admin/moderation/${id}`);
+    return resp.data.data;
   },
-  decide: (
+  async decide(
     id: string,
     body: {
       decision: "APPROVE" | "BLOCK";
@@ -74,5 +72,8 @@ export const adminModerationService = {
       strikeLevel?: StrikeLevel;
       rowVersion: number;
     },
-  ) => api.post(`/api/v1/admin/moderation/${id}/decision`, body),
+  ) {
+    const resp = await api.post(`/api/v1/admin/moderation/${id}/decision`, body);
+    return resp.data;
+  },
 };

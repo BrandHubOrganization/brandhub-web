@@ -17,6 +17,7 @@ import {
 import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { SelectMenu } from "@/components/ui/select-menu";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { useNavigate, useParams } from "react-router-dom";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { formatRelativeScheduleTime } from "@/lib/dateUtils";
@@ -463,15 +464,13 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
             className="border-border bg-card h-8 min-w-[130px] rounded-lg text-xs shadow-2xs"
           />
 
-          <div className="border-border bg-card flex items-center rounded-lg border px-2.5 py-1 text-xs shadow-2xs">
-            <span className="text-muted-foreground text-2xs mr-1.5">Ngày:</span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => handleDateChange(e.target.value)}
-              className="text-foreground cursor-pointer bg-transparent text-xs font-medium focus:outline-hidden"
-            />
-          </div>
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            triggerClassName="h-8 rounded-lg text-xs"
+            className="w-auto"
+            allowClear={false}
+          />
         </div>
       </div>
 

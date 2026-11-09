@@ -22,6 +22,8 @@ export interface AdminAccount {
   pendingReviewId: string | null;
   createdAt: string;
   emailVerifiedAt: string | null;
+  phone?: string | null;
+  avatarUrl?: string | null;
 }
 export interface AccountPage {
   items: AdminAccount[];
@@ -62,6 +64,8 @@ export interface AccountFilter {
   search: string;
   status: string;
   role: string;
+  strikeFilter?: string;
+  sortBy?: string;
 }
 
 export interface AdminUserDetail {
@@ -112,6 +116,15 @@ export interface UpdateUserRequest {
 }
 
 export const adminAccountService = {
+  async uploadAvatar(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append("file", file);
+    const resp = await api.post<{ data: string }>(
+      "/api/v1/client-profile/logo",
+      formData,
+    );
+    return resp.data.data;
+  },
   async plans(): Promise<CatalogPlan[]> {
     return (await api.get<{ data: CatalogPlan[] }>("/api/v1/admin/plans")).data
       .data;
@@ -141,18 +154,19 @@ export const adminAccountService = {
       ...filter,
       status: filter.status || undefined,
       role: filter.role || undefined,
+      strikeFilter: filter.strikeFilter || undefined,
+      sortBy: filter.sortBy || undefined,
     };
     return (
       await api.get<{ data: AccountPage }>("/api/v1/admin/users", { params })
     ).data.data;
   },
   async history(id: string, page: number): Promise<StrikeHistory> {
-    return (
-      await api.get<{ data: StrikeHistory }>(
-        `/api/v1/admin/users/${id}/violations`,
-        { params: { page, size: 20 } },
-      )
-    ).data.data;
+    const resp = await api.get<{ data: StrikeHistory }>(
+      `/api/v1/admin/users/${id}/violations`,
+      { params: { page, size: 20 } },
+    );
+    return resp.data.data;
   },
   record: (id: string, request: StrikeRequest) =>
     api.post(`/api/v1/admin/users/${id}/violations`, request),

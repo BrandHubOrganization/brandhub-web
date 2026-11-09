@@ -15,6 +15,7 @@ export interface Assignee {
   id: string;
   name: string;
   avatarUrl?: string;
+  avatar?: string;
   email: string;
   role: string;
 }
@@ -47,6 +48,7 @@ export interface ContentRequestQueryParams {
   endDate?: string;
   page: number;
   limit: number;
+  size?: number;
   myTasksOnly?: boolean;
 }
 
@@ -55,6 +57,7 @@ export interface ContentRequestPaginatedResponse {
   total: number;
   page: number;
   limit: number;
+  size?: number;
   totalPages: number;
 }
 

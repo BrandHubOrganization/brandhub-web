@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { LayoutTemplate, Search, Check, X } from "lucide-react";
-import { mockTemplateService } from "@/services/mock/mockTemplateService";
+import { templateService } from "@/services/templateService";
 import type { ContentTemplate } from "@/types/template";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -25,7 +25,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setIsLoading(true);
-      mockTemplateService
+      templateService
         .getTemplates({ search, page: 0, size: 20 })
         .then((res) => setTemplates(res.items))
         .catch(console.error)

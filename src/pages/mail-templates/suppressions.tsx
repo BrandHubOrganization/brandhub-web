@@ -5,6 +5,14 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { errorCode } from "@/services/adminRevenueService";
@@ -25,6 +33,8 @@ export function SuppressionsPanel({ api, backTo }: { api: SuppressionApi; backTo
   const [data, setData] = useState<PageOf<MailSuppression> | null>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState<"forbidden" | "failed" | null>(null);
+  const [confirmRow, setConfirmRow] = useState<MailSuppression | null>(null);
+  const [resubscribing, setResubscribing] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -40,14 +50,18 @@ export function SuppressionsPanel({ api, backTo }: { api: SuppressionApi; backTo
 
   useEffect(() => { void load(); }, [load]);
 
-  const resubscribe = async (row: MailSuppression) => {
-    if (!window.confirm(t("mailTemplate.suppressions.confirm", { email: row.email }))) return;
+  const confirmResubscribe = async () => {
+    if (!confirmRow) return;
+    setResubscribing(true);
     try {
-      await api.remove(row.email);
+      await api.remove(confirmRow.email);
       toast.success(t("mailTemplate.suppressions.done"));
+      setConfirmRow(null);
       void load();
     } catch (e) {
       toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
+    } finally {
+      setResubscribing(false);
     }
   };
 
@@ -82,7 +96,7 @@ export function SuppressionsPanel({ api, backTo }: { api: SuppressionApi; backTo
                   {t("mailTemplate.suppressions.since", { when: new Date(row.createdAt).toLocaleDateString(i18n.language) })}
                 </p>
               </div>
-              <Button size="sm" variant="outline" onClick={() => void resubscribe(row)}>
+              <Button size="sm" variant="outline" onClick={() => setConfirmRow(row)}>
                 {t("mailTemplate.suppressions.resubscribe")}
               </Button>
             </li>
@@ -96,6 +110,24 @@ export function SuppressionsPanel({ api, backTo }: { api: SuppressionApi; backTo
           <Button variant="outline" disabled={page + 1 >= data.totalPages} onClick={() => setPage((p) => p + 1)}>{t("mailTemplate.next")}</Button>
         </nav>
       )}
+      <Dialog open={!!confirmRow} onOpenChange={(open) => !open && !resubscribing && setConfirmRow(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("common.confirmDialog.title")}</DialogTitle>
+            <DialogDescription>
+              {t("mailTemplate.suppressions.confirm", { email: confirmRow?.email ?? "" })}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button type="button" variant="outline" disabled={resubscribing} onClick={() => setConfirmRow(null)}>
+              {t("common.confirmDialog.cancel")}
+            </Button>
+            <Button type="button" variant="orange" disabled={resubscribing} onClick={() => void confirmResubscribe()}>
+              {t("common.confirmDialog.confirm")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

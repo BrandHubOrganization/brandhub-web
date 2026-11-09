@@ -30,5 +30,32 @@
     "description": "Bạn có chắc chắn muốn thực hiện hành động này không?",
     "confirm": "Xác nhận",
     "cancel": "Hủy bỏ"
+  },
+  "datePicker": {
+    "selectDate": "Chọn ngày",
+    "selectRange": "Chọn khoảng thời gian",
+    "today": "Hôm nay",
+    "yesterday": "Hôm qua",
+    "tomorrow": "Ngày mai",
+    "last7Days": "7 ngày",
+    "last30Days": "30 ngày",
+    "thisMonth": "Tháng này",
+    "apply": "Áp dụng",
+    "reset": "Khôi phục",
+    "clear": "Xóa",
+    "daysCount": "ngày",
+    "prevMonth": "Tháng trước",
+    "nextMonth": "Tháng sau",
+    "selectingEndDate": "Đang chọn ngày kết thúc"
+  },
+  "pagination": {
+    "showing": "Hiển thị {{from}} – {{to}} trên tổng {{total}} {{item}}",
+    "total": "Tổng cộng {{count}} {{item}}",
+    "perPage": "/ trang",
+    "defaultItem": "mục",
+    "first": "Trang đầu",
+    "previous": "Trang trước",
+    "next": "Trang sau",
+    "last": "Trang cuối"
   }
 }

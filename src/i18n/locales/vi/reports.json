@@ -9,7 +9,8 @@
   "generatedAt": "Tạo lúc",
   "filters": {
     "from": "Từ ngày",
-    "to": "Đến ngày"
+    "to": "Đến ngày",
+    "dateRange": "Khoảng thời gian"
   },
   "sections": {
     "overview": "Tổng quan",

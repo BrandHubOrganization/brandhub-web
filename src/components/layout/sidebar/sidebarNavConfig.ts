@@ -17,7 +17,6 @@ import {
   User,
   Inbox,
   UserCheck,
-  Briefcase,
   Settings,
   Shield,
   Bell,
@@ -27,8 +26,6 @@ import {
   MessageCircleMore,
   Mail,
   Calendar,
-
-
   Brain,
   TrendingUp,
   Clapperboard,
@@ -328,13 +325,6 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/agency",
         icon: Building2,
         labelKey: "nav.agencyList",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/workspace",
-        icon: Briefcase,
-        labelKey: "nav.workspaceList",
         hideInWorkspace: true,
       },
       {

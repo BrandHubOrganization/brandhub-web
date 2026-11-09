@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SelectMenu } from "@/components/ui/select-menu";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
@@ -735,15 +736,13 @@ export function TaskCalendarTimeline({
             className="border-border bg-card h-8 min-w-[130px] rounded-lg text-xs shadow-2xs"
           />
 
-          <div className="border-border bg-card flex items-center rounded-lg border px-2.5 py-1 text-xs shadow-2xs">
-            <span className="text-muted-foreground text-2xs mr-1.5">Date:</span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => handleDateChange(e.target.value)}
-              className="text-foreground cursor-pointer bg-transparent text-xs font-medium focus:outline-hidden"
-            />
-          </div>
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            triggerClassName="h-8 rounded-lg text-xs"
+            className="w-auto"
+            allowClear={false}
+          />
         </div>
       </div>
 
