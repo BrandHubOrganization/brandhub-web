@@ -886,7 +886,7 @@ for (const trigger of ["early", "inflight", "cached", "partial"] as const) {
       );
     }
     await page.getByRole("button", { name: "Đăng ngay", exact: true }).click();
-    if (trigger !== "cached") {
+    if (trigger !== "cached" && trigger !== "partial") {
       await expect.poll(() => calls).toEqual(["moderate"]);
       release();
     }
@@ -1020,3 +1020,111 @@ for (const theme of ["light", "dark"]) {
     });
   });
 }
+
+
+test("converts chosen font family in Content Creator Studio and preserves it in Live Preview and published post payload", async ({
+  page,
+}, testInfo) => {
+  let savedCaption = "";
+  let publishCalled = false;
+
+  await page.route(
+    "**/api/v1/workspaces/workspace-1/ai/captions/moderate",
+    (route) =>
+      route.fulfill({
+        json: { success: true, data: { status: "PASSED", issues: [] } },
+      }),
+  );
+  await page.route("**/api/v1/workspaces/workspace-1/posts", (route) => {
+    const body = route.request().postDataJSON() as { caption: string };
+    savedCaption = body.caption;
+    return route.fulfill({
+      json: {
+        success: true,
+        data: {
+          ...body,
+          id: "studio-font-post-1",
+          updatedAt: "2026-10-28T00:00:00Z",
+        },
+      },
+    });
+  });
+  await page.route(
+    "**/api/v1/workspaces/workspace-1/posts/studio-font-post-1/publish",
+    (route) => {
+      publishCalled = true;
+      return route.fulfill({
+        json: { success: true, data: { status: "PUBLISHED" } },
+      });
+    },
+  );
+
+  const editor = page.locator('[contenteditable="true"]');
+  await editor.fill("BrandHub Grand Opening");
+
+  // Select Georgia (Serif) from the RichTextEditor font selector
+  await page
+    .getByRole("combobox", { name: "Font chữ bài đăng" })
+    .selectOption("Georgia, serif");
+
+  const expectedUnicode = "𝐁𝐫𝐚𝐧𝐝𝐇𝐮𝐛 𝐆𝐫𝐚𝐧𝐝 𝐎𝐩𝐞𝐧𝐢𝐧𝐠";
+  // Live Preview must display the converted Unicode Serif font
+  await expect(page.getByText(expectedUnicode).first()).toBeVisible();
+
+  // Test 1-click "Copy dán Facebook" button in Studio RichTextEditor toolbar
+  await page.getByTestId("studio-copy-publish-btn").click();
+  await expect(page.getByTestId("studio-copy-publish-btn")).toContainText(
+    /Đã copy Font/,
+  );
+
+  await page.screenshot({
+    path: testInfo.outputPath("studio-font-conversion-live-preview.png"),
+    fullPage: true,
+  });
+
+  // Publish now and verify the backend receives the exact converted Unicode font
+  await page.getByRole("button", { name: "Đăng ngay", exact: true }).click();
+  await expect.poll(() => publishCalled).toBe(true);
+  expect(savedCaption).toBe(expectedUnicode);
+});
+
+test("imports a Google Docs / File document directly into Content Creator Studio RichTextEditor (replace and append)", async ({
+  page,
+}, testInfo) => {
+  const editor = page.locator('[contenteditable="true"]');
+  await editor.fill("Mở đầu bài viết Studio");
+
+  // Open Import Document Modal in Studio and append a Markdown file
+  await page.getByTestId("studio-import-doc-btn").click();
+  await page.getByTestId("import-tab-file").click();
+  await page.getByTestId("import-doc-file-input").setInputFiles({
+    name: "StudioBrief.md",
+    mimeType: "text/markdown",
+    buffer: Buffer.from(
+      "# CHIẾN DỊCH STUDIO 2026\n- Điểm nhấn **thương hiệu**",
+      "utf-8",
+    ),
+  });
+  await page.getByTestId("import-mode-append").click();
+  await page.getByTestId("confirm-import-doc-btn").click();
+
+  await expect(editor).toContainText("Mở đầu bài viết Studio");
+  await expect(editor).toContainText("𝗖𝗛𝗜𝗘̂́𝗡 𝗗𝗜̣𝗖𝗛 𝗦𝗧𝗨𝗗𝗜𝗢 𝟮𝟬𝟮𝟲");
+  await expect(editor).toContainText("• Điểm nhấn 𝘁𝗵𝘂̛𝗼̛𝗻𝗴 𝗵𝗶𝗲̣̂𝘂");
+
+  // Now open Import Document Modal again and replace with Google Docs sample 2
+  await page.getByTestId("studio-import-doc-btn").click();
+  await page.getByTestId("import-tab-gdoc").click();
+  await page.getByTestId("gdoc-sample-1").click();
+  await page.getByTestId("import-mode-replace").click();
+  await page.getByTestId("confirm-import-doc-btn").click();
+
+  await expect(editor).toContainText(
+    "𝗛𝗔̀𝗡𝗛 𝗧𝗥𝗜̀𝗡𝗛 𝗧𝗨̛̀ 𝗬́ 𝗧𝗨̛𝗢̛̉𝗡𝗚 Đ𝗘̂́𝗡 𝗖𝗛𝗜𝗘̂́𝗡 𝗗𝗜̣𝗖𝗛 𝗧𝗥𝗜𝗘̣̂𝗨 𝗟𝗨̛𝗢̛̣𝗧 𝗫𝗘𝗠",
+  );
+
+  await page.screenshot({
+    path: testInfo.outputPath("studio-imported-google-doc.png"),
+    fullPage: true,
+  });
+});

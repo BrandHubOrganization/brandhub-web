@@ -78,7 +78,12 @@ export function HashtagCollectionPicker({
             type="button"
             variant="ghost"
             size="icon"
-            aria-label={t(prefix + "applyTag", { tag: entry.tag })}
+            disabled={Boolean(entry.isRequired && entry.campaignId)}
+            aria-label={
+              entry.isRequired && entry.campaignId
+                ? t(prefix + "campaignTagUnavailable")
+                : t(prefix + "applyTag", { tag: entry.tag })
+            }
             onClick={() => onApply(entry)}
             className="text-brand-orange hover:bg-brand-orange-soft rounded-md p-1.5 disabled:opacity-40"
           >

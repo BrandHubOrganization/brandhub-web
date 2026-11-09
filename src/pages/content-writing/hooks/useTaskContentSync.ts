@@ -134,6 +134,7 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
   const [isConnected, setIsConnected] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [connectionError, setConnectionError] = useState(false);
+  const [offlineMode, setOfflineMode] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
   // Bumps each time a snapshot is reported, so the Version History list can refresh.
   const [snapshotCount, setSnapshotCount] = useState(0);
@@ -151,6 +152,22 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
     let idleTimer: ReturnType<typeof setTimeout> | null = null;
 
     async function init() {
+      const isLocalOnly = taskId!.startsWith("local-draft-") || offlineMode;
+      if (isLocalOnly) {
+        const pendingUpdates: Uint8Array[] = loadPending(taskId!);
+        pendingUpdates.forEach((u) => Y.applyUpdate(yDoc, u, "remote"));
+        setIsReady(true);
+        setLoadError(false);
+        const localUpdateHandler = (update: Uint8Array, origin: unknown) => {
+          if (origin === "remote") return;
+          pendingUpdates.push(update);
+          savePending(taskId!, pendingUpdates);
+        };
+        yDoc.on("update", localUpdateHandler);
+        cleanupUpdateHandler = () => yDoc.off("update", localUpdateHandler);
+        return;
+      }
+
       const { data } = await api.get<{ data: TaskContentResponse }>(
         `/api/v1/workspaces/${workspaceId}/tasks/${taskId}/content`,
       );
@@ -371,11 +388,15 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
       clientRef.current?.deactivate();
       clientRef.current = null;
     };
-  }, [workspaceId, taskId, yDoc, awareness, loadAttempt]);
+  }, [workspaceId, taskId, yDoc, awareness, loadAttempt, offlineMode]);
 
   function retryLoad() {
     setLoadError(false);
     setLoadAttempt((attempt) => attempt + 1);
+  }
+  function enableOfflineMode() {
+    setLoadError(false);
+    setOfflineMode(true);
   }
   function retryConnection() {
     clientRef.current?.activate();
@@ -396,6 +417,8 @@ export function useTaskContentSync(workspaceId: string, taskId: string | null) {
     snapshotCount,
     loadError,
     retryLoad,
+    enableOfflineMode,
+    offlineMode,
     connectionError,
     retryConnection,
     awareness,

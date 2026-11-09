@@ -18,7 +18,20 @@ import {
   Smile,
   LayoutGrid,
   Rows3,
+  Minus,
+  Plus,
+  Wand2,
+  CaseUpper,
+  CaseLower,
+  CaseSensitive,
+  Sparkles,
+  SeparatorHorizontal,
+  FileSpreadsheet,
+  Copy,
+  Check,
+  Type,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -27,20 +40,41 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { AttrsOrMixed, RunAttrs } from "./richText";
+import type { AttrsOrMixed, DeltaOp, RunAttrs } from "./richText";
 import { EmojiPicker } from "./EmojiPicker";
+import {
+  copyTextToClipboard,
+  CREATIVE_TEMPLATES,
+  styleRunText,
+  ZANTEXT_STYLE_PRESETS,
+  type TextCaseMode,
+} from "../contentUtils";
 
-const FONT_FAMILIES = [
+export const FONT_FAMILIES = [
   { label: "Default", value: "" },
   { label: "Inter", value: "Inter, sans-serif" },
+  { label: "Roboto", value: "Roboto, sans-serif" },
   { label: "Arial", value: "Arial, sans-serif" },
+  { label: "Verdana", value: "Verdana, sans-serif" },
+  { label: "Montserrat (Sans Đậm)", value: "Montserrat, sans-serif" },
   { label: "Georgia", value: "Georgia, serif" },
   { label: "Times New Roman", value: '"Times New Roman", serif' },
+  { label: "Playfair Display", value: '"Playfair Display", serif' },
   { label: "Courier New", value: '"Courier New", monospace' },
-  { label: "Verdana", value: "Verdana, sans-serif" },
+  { label: "Brush Script", value: '"Brush Script MT", cursive' },
+  { label: "Pacifico (Script Đậm)", value: "Pacifico, cursive" },
+  { label: "Double Struck", value: '"Double Struck", serif' },
+  {
+    label: "Fraktur Gothic",
+    value: '"UnifrakturMaguntia", "Old English Text MT", serif',
+  },
+  { label: "Small Caps (ᴀʙᴄ)", value: '"Small Caps", sans-serif' },
+  { label: "Circled (ⒶⒷⒸ)", value: '"Circled", sans-serif' },
+  { label: "Squared (🄰🄱🄲)", value: '"Squared", sans-serif' },
+  { label: "Fullwidth (ＡＢＣ)", value: '"Fullwidth", monospace' },
 ];
 
-const FONT_SIZES = [10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64];
+export const FONT_SIZES = [10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64];
 
 const SWATCHES = [
   "#1f2937",
@@ -66,6 +100,8 @@ const HIGHLIGHT_SWATCHES = [
   "#fdf4ff",
 ];
 
+export type HeadingPreset = "normal" | "h1" | "h2" | "h3";
+
 export interface FormattingToolbarProps {
   currentAttrs: AttrsOrMixed;
   onToggle: (key: "bold" | "italic" | "underline" | "strikethrough") => void;
@@ -80,6 +116,13 @@ export interface FormattingToolbarProps {
   onRedo: () => void;
   onClearFormatting: () => void;
   onInsertEmoji: (emoji: string) => void;
+  onTransformCase?: (mode: TextCaseMode) => void;
+  onWrapSelection?: (prefix: string, suffix: string) => void;
+  onInsertSnippet?: (text: string) => void;
+  onInsertTemplateOps?: (ops: DeltaOp[]) => void;
+  onApplyHeadingPreset?: (preset: HeadingPreset) => void;
+  selectedPlainText?: string;
+  onApplyZantextPreset?: (attrs: RunAttrs, customText?: string) => void;
 }
 
 /** A labeled group wrapper — Word ribbon groups controls under a caption; Docs mode ignores the label. */
@@ -110,14 +153,14 @@ function isActive(value: unknown): boolean {
 }
 
 /**
- * Google-Docs-style formatting toolbar for CanvasTextEditor (FR 3.6.10).
+ * Authentic Google-Docs pill toolbar + Microsoft Word Ribbon mode for CanvasTextEditor (FR 3.6.10).
  * Purely presentational — all CRDT-touching logic lives in CanvasTextEditor.
  */
 function Divider({ ribbon }: { ribbon: boolean }) {
   return ribbon ? (
     <div className="bg-border mx-1 h-10 w-px self-center" />
   ) : (
-    <div className="bg-border mx-1 h-6 w-px" />
+    <div className="mx-0.5 h-4 w-px bg-[#c7d0dd] dark:bg-zinc-700" />
   );
 }
 
@@ -135,43 +178,55 @@ export function FormattingToolbar({
   onRedo,
   onClearFormatting,
   onInsertEmoji,
+  onTransformCase,
+  onWrapSelection,
+  onInsertSnippet,
+  onInsertTemplateOps,
+  onApplyHeadingPreset,
+  selectedPlainText,
+  onApplyZantextPreset,
 }: FormattingToolbarProps) {
   const [linkInput, setLinkInput] = useState("");
   const [linkOpen, setLinkOpen] = useState(false);
-  // Docs mode: one compact icon row (default). Ribbon mode: Word-style
-  // grouped row with captions underneath each group.
+  const [creativeOpen, setCreativeOpen] = useState(false);
+  const [zantextOpen, setZantextOpen] = useState(false);
+  const [zantextInput, setZantextInput] = useState("");
+  const [copiedPresetId, setCopiedPresetId] = useState<string | null>(null);
+  // Docs mode: Google Docs rounded pill bar (default). Ribbon mode: Word-style grouped row.
   const [ribbon, setRibbon] = useState(false);
 
-  return (
-    <div className="bg-muted/40 border-border rounded-t-xl border border-b-0">
-      {/* Mode switch — Google Docs icon bar vs. Word ribbon */}
-      <div className="border-border flex items-center justify-end gap-1 border-b px-2 py-1">
-        <Button
-          type="button"
-          variant={!ribbon ? "secondary" : "ghost"}
-          size="sm"
-          className="h-6 gap-1 px-2 text-[11px]"
-          onClick={() => setRibbon(false)}
-          title="Chế độ thanh công cụ (Google Docs)"
-        >
-          <Rows3 className="size-3.5" />
-          Docs
-        </Button>
-        <Button
-          type="button"
-          variant={ribbon ? "secondary" : "ghost"}
-          size="sm"
-          className="h-6 gap-1 px-2 text-[11px]"
-          onClick={() => setRibbon(true)}
-          title="Chế độ dải lệnh (Microsoft Word)"
-        >
-          <LayoutGrid className="size-3.5" />
-          Ribbon
-        </Button>
-      </div>
+  const effectiveZantextSource =
+    zantextInput.trim() ||
+    (selectedPlainText && selectedPlainText.trim()) ||
+    "Chiến dịch Ra mắt Mùa Hè 2026";
 
+  const currentNumericSize =
+    typeof currentAttrs.size === "number" ? currentAttrs.size : 16;
+
+  const currentHeadingPreset: HeadingPreset =
+    currentNumericSize >= 28
+      ? "h1"
+      : currentNumericSize >= 22
+        ? "h2"
+        : currentNumericSize >= 18 && isActive(currentAttrs.bold)
+          ? "h3"
+          : "normal";
+
+  const stepFontSize = (delta: number) => {
+    const idx = FONT_SIZES.findIndex((s) => s >= currentNumericSize);
+    const curIdx = idx === -1 ? FONT_SIZES.length - 1 : idx;
+    const nextIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, curIdx + delta));
+    onSetSize(FONT_SIZES[nextIdx]);
+  };
+
+  return (
+    <div className="border-border bg-[#f9fbfd] px-2.5 pt-2 pb-1.5 dark:bg-zinc-900">
       <div
-        className={`bg-card flex flex-wrap items-center gap-0.5 p-1.5 ${ribbon ? "items-stretch" : ""}`}
+        className={
+          ribbon
+            ? "border-border bg-card flex flex-wrap items-stretch gap-x-1 gap-y-1.5 rounded-xl border p-2 shadow-2xs"
+            : "flex flex-wrap items-center gap-x-0.5 gap-y-1.5 rounded-2xl bg-[#edf2fa] px-3 py-1.5 dark:bg-zinc-800/90"
+        }
       >
         {/* Undo / Redo */}
         <ToolGroup label="Hoàn tác" ribbon={ribbon}>
@@ -179,30 +234,49 @@ export function FormattingToolbar({
             type="button"
             variant="ghost"
             size="icon"
+            className="size-7 rounded-full"
             onClick={onUndo}
             title="Hoàn tác (Ctrl+Z)"
             aria-label="Undo"
           >
-            <Undo2 className="size-4" />
+            <Undo2 className="size-3.5" />
           </Button>
           <Button
             type="button"
             variant="ghost"
             size="icon"
+            className="size-7 rounded-full"
             onClick={onRedo}
             title="Làm lại (Ctrl+Y)"
             aria-label="Redo"
           >
-            <Redo2 className="size-4" />
+            <Redo2 className="size-3.5" />
           </Button>
         </ToolGroup>
 
         <Divider ribbon={ribbon} />
 
-        {/* Font family + size */}
+        {/* Paragraph / Heading Style + Font family + Size stepper (Google Docs layout) */}
         <ToolGroup label="Phông chữ" ribbon={ribbon}>
+          {onApplyHeadingPreset && (
+            <Select
+              aria-label="Kiểu văn bản"
+              title="Kiểu đoạn văn (Heading)"
+              className="h-7 w-[118px] rounded-md border-transparent bg-transparent px-1 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
+              value={currentHeadingPreset}
+              onChange={(e) =>
+                onApplyHeadingPreset(e.target.value as HeadingPreset)
+              }
+            >
+              <option value="normal">Văn bản thường</option>
+              <option value="h1">Tiêu đề 1 (H1)</option>
+              <option value="h2">Tiêu đề 2 (H2)</option>
+              <option value="h3">Tiêu đề 3 (H3)</option>
+            </Select>
+          )}
+
           <Select
-            className="h-8 w-36 text-xs"
+            className="h-7 w-28 rounded-md border-transparent bg-transparent px-1 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/10"
             value={
               typeof currentAttrs.font === "string" ? currentAttrs.font : ""
             }
@@ -215,22 +289,45 @@ export function FormattingToolbar({
               </option>
             ))}
           </Select>
-          <Select
-            className="h-8 w-16 text-xs"
-            value={
-              typeof currentAttrs.size === "number"
-                ? String(currentAttrs.size)
-                : "16"
-            }
-            onChange={(e) => onSetSize(Number(e.target.value))}
-            title="Cỡ chữ"
-          >
-            {FONT_SIZES.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </Select>
+
+          <div className="flex items-center gap-0.5">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              data-testid="decrease-font-size-btn"
+              className="size-6 rounded-full"
+              onClick={() => stepFontSize(-1)}
+              title="Giảm cỡ chữ"
+              aria-label="Decrease font size"
+            >
+              <Minus className="size-3" />
+            </Button>
+            <Select
+              className="h-7 w-12 rounded-md border-transparent bg-white/80 px-1 text-center text-xs font-semibold tabular-nums dark:bg-zinc-900/70"
+              value={String(currentNumericSize)}
+              onChange={(e) => onSetSize(Number(e.target.value))}
+              title="Cỡ chữ"
+            >
+              {FONT_SIZES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </Select>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              data-testid="increase-font-size-btn"
+              className="size-6 rounded-full"
+              onClick={() => stepFontSize(1)}
+              title="Tăng cỡ chữ"
+              aria-label="Increase font size"
+            >
+              <Plus className="size-3" />
+            </Button>
+          </div>
         </ToolGroup>
 
         <Divider ribbon={ribbon} />
@@ -241,31 +338,46 @@ export function FormattingToolbar({
             type="button"
             variant={isActive(currentAttrs.bold) ? "secondary" : "ghost"}
             size="icon"
+            className={`size-7 rounded-md ${
+              isActive(currentAttrs.bold)
+                ? "bg-[#d3e3fd] text-[#041e49] dark:bg-blue-500/30 dark:text-blue-200"
+                : ""
+            }`}
             aria-pressed={isActive(currentAttrs.bold)}
             onClick={() => onToggle("bold")}
             title="In đậm (Ctrl+B)"
           >
-            <Bold className="size-4" />
+            <Bold className="size-3.5" />
           </Button>
           <Button
             type="button"
             variant={isActive(currentAttrs.italic) ? "secondary" : "ghost"}
             size="icon"
+            className={`size-7 rounded-md ${
+              isActive(currentAttrs.italic)
+                ? "bg-[#d3e3fd] text-[#041e49] dark:bg-blue-500/30 dark:text-blue-200"
+                : ""
+            }`}
             aria-pressed={isActive(currentAttrs.italic)}
             onClick={() => onToggle("italic")}
             title="In nghiêng (Ctrl+I)"
           >
-            <Italic className="size-4" />
+            <Italic className="size-3.5" />
           </Button>
           <Button
             type="button"
             variant={isActive(currentAttrs.underline) ? "secondary" : "ghost"}
             size="icon"
+            className={`size-7 rounded-md ${
+              isActive(currentAttrs.underline)
+                ? "bg-[#d3e3fd] text-[#041e49] dark:bg-blue-500/30 dark:text-blue-200"
+                : ""
+            }`}
             aria-pressed={isActive(currentAttrs.underline)}
             onClick={() => onToggle("underline")}
             title="Gạch dưới (Ctrl+U)"
           >
-            <Underline className="size-4" />
+            <Underline className="size-3.5" />
           </Button>
           <Button
             type="button"
@@ -273,11 +385,16 @@ export function FormattingToolbar({
               isActive(currentAttrs.strikethrough) ? "secondary" : "ghost"
             }
             size="icon"
+            className={`size-7 rounded-md ${
+              isActive(currentAttrs.strikethrough)
+                ? "bg-[#d3e3fd] text-[#041e49] dark:bg-blue-500/30 dark:text-blue-200"
+                : ""
+            }`}
             aria-pressed={isActive(currentAttrs.strikethrough)}
             onClick={() => onToggle("strikethrough")}
             title="Gạch ngang"
           >
-            <Strikethrough className="size-4" />
+            <Strikethrough className="size-3.5" />
           </Button>
         </ToolGroup>
 
@@ -287,9 +404,15 @@ export function FormattingToolbar({
         <ToolGroup label="Màu sắc" ribbon={ribbon}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button type="button" variant="ghost" size="icon" title="Màu chữ">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-7 rounded-md"
+                title="Màu chữ"
+              >
                 <div className="relative">
-                  <Palette className="size-4" />
+                  <Palette className="size-3.5" />
                   {typeof currentAttrs.color === "string" && (
                     <span
                       className="absolute -bottom-0.5 left-0.5 h-1 w-3 rounded-full"
@@ -322,9 +445,15 @@ export function FormattingToolbar({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button type="button" variant="ghost" size="icon" title="Tô sáng">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-7 rounded-md"
+                title="Tô sáng"
+              >
                 <div className="relative">
-                  <Highlighter className="size-4" />
+                  <Highlighter className="size-3.5" />
                   {typeof currentAttrs.highlight === "string" && (
                     <span
                       className="absolute -bottom-0.5 left-0.5 h-1 w-3 rounded-full"
@@ -368,28 +497,31 @@ export function FormattingToolbar({
                 : "ghost"
             }
             size="icon"
+            className="size-7 rounded-md"
             onClick={() => onSetAlign("left")}
             title="Căn trái"
           >
-            <AlignLeft className="size-4" />
+            <AlignLeft className="size-3.5" />
           </Button>
           <Button
             type="button"
             variant={currentAttrs.align === "center" ? "secondary" : "ghost"}
             size="icon"
+            className="size-7 rounded-md"
             onClick={() => onSetAlign("center")}
             title="Căn giữa"
           >
-            <AlignCenter className="size-4" />
+            <AlignCenter className="size-3.5" />
           </Button>
           <Button
             type="button"
             variant={currentAttrs.align === "right" ? "secondary" : "ghost"}
             size="icon"
+            className="size-7 rounded-md"
             onClick={() => onSetAlign("right")}
             title="Căn phải"
           >
-            <AlignRight className="size-4" />
+            <AlignRight className="size-3.5" />
           </Button>
         </ToolGroup>
 
@@ -401,28 +533,30 @@ export function FormattingToolbar({
             type="button"
             variant="ghost"
             size="icon"
+            className="size-7 rounded-md"
             onClick={() => onToggleList("bullet")}
             title="Danh sách gạch đầu dòng"
             aria-label="Bulleted list"
           >
-            <List className="size-4" />
+            <List className="size-3.5" />
           </Button>
           <Button
             type="button"
             variant="ghost"
             size="icon"
+            className="size-7 rounded-md"
             onClick={() => onToggleList("ordered")}
             title="Danh sách đánh số"
             aria-label="Numbered list"
           >
-            <ListOrdered className="size-4" />
+            <ListOrdered className="size-3.5" />
           </Button>
         </ToolGroup>
 
         <Divider ribbon={ribbon} />
 
-        {/* Link */}
-        <ToolGroup label="Chèn" ribbon={ribbon}>
+        {/* Link + Emoji + Creative Content Tools */}
+        <ToolGroup label="Chèn & Sáng tạo" ribbon={ribbon}>
           <DropdownMenu open={linkOpen} onOpenChange={setLinkOpen}>
             <DropdownMenuTrigger asChild>
               <Button
@@ -431,9 +565,10 @@ export function FormattingToolbar({
                   typeof currentAttrs.link === "string" ? "secondary" : "ghost"
                 }
                 size="icon"
+                className="size-7 rounded-md"
                 title="Chèn liên kết"
               >
-                <Link2 className="size-4" />
+                <Link2 className="size-3.5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="flex w-72 flex-col gap-2 p-2">
@@ -487,13 +622,347 @@ export function FormattingToolbar({
                 type="button"
                 variant="ghost"
                 size="icon"
+                className="size-7 rounded-md"
                 title="Chèn emoji"
               >
-                <Smile className="size-4" />
+                <Smile className="size-3.5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="p-0" sideOffset={4}>
               <EmojiPicker onSelect={onInsertEmoji} />
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Creative Content Writing Studio Toolkit */}
+          <DropdownMenu open={creativeOpen} onOpenChange={setCreativeOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                data-testid="creative-tools-trigger"
+                className="h-6 gap-1 rounded-full bg-amber-500/15 px-2 text-[11px] font-semibold whitespace-nowrap text-amber-800 hover:bg-amber-500/25 dark:bg-amber-500/20 dark:text-amber-300"
+                title="Bộ công cụ sáng tạo nội dung & biến đổi chữ"
+              >
+                <Wand2 className="size-3" />
+                <span className="hidden md:inline">Sáng tạo</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              side="bottom"
+              sideOffset={6}
+              collisionPadding={16}
+              onCloseAutoFocus={(e) => e.preventDefault()}
+              className="border-border bg-card w-80 space-y-2.5 p-3 text-xs shadow-xl"
+            >
+              {/* 1. Case Transformations */}
+              <div>
+                <p className="text-muted-foreground mb-1.5 flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase">
+                  <CaseSensitive className="size-3" />
+                  Chuyển đổi kiểu chữ (Vùng chọn / Toàn bài)
+                </p>
+                <div className="grid grid-cols-3 gap-1.5">
+                  <button
+                    type="button"
+                    data-testid="transform-case-upper"
+                    onClick={() => {
+                      onTransformCase?.("upper");
+                      setCreativeOpen(false);
+                    }}
+                    className="border-border hover:bg-muted flex items-center justify-center gap-1 rounded-lg border px-2 py-1.5 text-[11px] font-semibold transition-colors"
+                  >
+                    <CaseUpper className="size-3.5" />
+                    IN HOA
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="transform-case-lower"
+                    onClick={() => {
+                      onTransformCase?.("lower");
+                      setCreativeOpen(false);
+                    }}
+                    className="border-border hover:bg-muted flex items-center justify-center gap-1 rounded-lg border px-2 py-1.5 text-[11px] font-semibold transition-colors"
+                  >
+                    <CaseLower className="size-3.5" />
+                    chữ thường
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="transform-case-title"
+                    onClick={() => {
+                      onTransformCase?.("title");
+                      setCreativeOpen(false);
+                    }}
+                    className="border-border hover:bg-muted flex items-center justify-center gap-1 rounded-lg border px-2 py-1.5 text-[11px] font-semibold transition-colors"
+                  >
+                    <CaseSensitive className="size-3.5" />
+                    Hoa Đầu Từ
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. Highlight Callout Wrappers */}
+              <div>
+                <p className="text-muted-foreground mb-1.5 flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase">
+                  <Sparkles className="size-3" />
+                  Đóng khung nhấn mạnh (Hook / Callout)
+                </p>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <button
+                    type="button"
+                    data-testid="wrap-callout-brackets"
+                    onClick={() => {
+                      onWrapSelection?.("【", "】");
+                      setCreativeOpen(false);
+                    }}
+                    className="border-border hover:bg-muted rounded-lg border px-2 py-1 text-left text-[11px] font-medium transition-colors"
+                  >
+                    【 Khung tiêu đề 】
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="wrap-callout-sparkles"
+                    onClick={() => {
+                      onWrapSelection?.("✨ ", " ✨");
+                      setCreativeOpen(false);
+                    }}
+                    className="border-border hover:bg-muted rounded-lg border px-2 py-1 text-left text-[11px] font-medium transition-colors"
+                  >
+                    ✨ Điểm nhấn ✨
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="wrap-callout-fire"
+                    onClick={() => {
+                      onWrapSelection?.("🔥 ", " 🔥");
+                      setCreativeOpen(false);
+                    }}
+                    className="border-border hover:bg-muted rounded-lg border px-2 py-1 text-left text-[11px] font-medium transition-colors"
+                  >
+                    🔥 Hot Deal 🔥
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="wrap-callout-quote"
+                    onClick={() => {
+                      onWrapSelection?.("❝ ", " ❞");
+                      setCreativeOpen(false);
+                    }}
+                    className="border-border hover:bg-muted rounded-lg border px-2 py-1 text-left text-[11px] font-medium transition-colors"
+                  >
+                    ❝ Trích dẫn ❞
+                  </button>
+                </div>
+              </div>
+
+              {/* 3. Aesthetic Dividers */}
+              <div>
+                <p className="text-muted-foreground mb-1.5 flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase">
+                  <SeparatorHorizontal className="size-3" />
+                  Chèn dòng phân cách nghệ thuật
+                </p>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <button
+                    type="button"
+                    data-testid="insert-divider-solid"
+                    onClick={() => {
+                      onInsertSnippet?.("\n━━━━━━━━━━━━━━\n");
+                      setCreativeOpen(false);
+                    }}
+                    className="border-border hover:bg-muted rounded-lg border px-2 py-1 text-center font-mono text-[11px] transition-colors"
+                  >
+                    ━━━━━━━━━━
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="insert-divider-stars"
+                    onClick={() => {
+                      onInsertSnippet?.("\n✦ • ✦ • ✦ • ✦\n");
+                      setCreativeOpen(false);
+                    }}
+                    className="border-border hover:bg-muted rounded-lg border px-2 py-1 text-center text-[11px] transition-colors"
+                  >
+                    ✦ • ✦ • ✦ • ✦
+                  </button>
+                </div>
+              </div>
+
+              {/* 4. Copywriting Frameworks */}
+              <div>
+                <p className="text-muted-foreground mb-1.5 flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase">
+                  <FileSpreadsheet className="size-3" />
+                  Chèn khung mẫu Copywriting
+                </p>
+                <div className="space-y-1">
+                  {CREATIVE_TEMPLATES.map((tpl) => (
+                    <button
+                      key={tpl.id}
+                      type="button"
+                      data-testid={`insert-template-${tpl.id}`}
+                      onClick={() => {
+                        onInsertTemplateOps?.(tpl.ops);
+                        setCreativeOpen(false);
+                      }}
+                      className="border-border hover:bg-muted flex w-full items-center justify-between gap-2 rounded-lg border px-2.5 py-1.5 text-left transition-colors"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-foreground truncate text-[11px] font-semibold">
+                          {tpl.label}
+                        </p>
+                        <p className="text-muted-foreground truncate text-[10px]">
+                          {tpl.description}
+                        </p>
+                      </div>
+                      <span className="bg-brand-orange/15 text-brand-orange shrink-0 rounded px-1.5 py-0.5 text-[9px] font-bold">
+                        {tpl.badge}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Zantext / YayText Built-in Social Font Converter & 1-Click Copy */}
+          <DropdownMenu
+            open={zantextOpen}
+            onOpenChange={(open) => {
+              setZantextOpen(open);
+              if (open && selectedPlainText?.trim()) {
+                setZantextInput(selectedPlainText);
+              }
+            }}
+          >
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                data-testid="zantext-panel-trigger"
+                className="border-brand-orange/30 bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/20 h-6 gap-1 rounded-full border px-2 text-[11px] font-semibold whitespace-nowrap"
+                title="Bảng chuyển đổi & Copy Font chữ nhanh kiểu Zantext / YayText (dán trực tiếp lên Facebook)"
+              >
+                <Type className="size-3" />
+                <span className="hidden md:inline">Font Zantext</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              side="bottom"
+              sideOffset={6}
+              collisionPadding={16}
+              onCloseAutoFocus={(e) => e.preventDefault()}
+              className="border-border bg-card w-96 space-y-2.5 p-3 text-xs shadow-xl"
+            >
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-foreground flex items-center gap-1.5 text-xs font-bold">
+                    <Type className="text-brand-orange size-3.5" />
+                    Bộ Chuyển & Copy Font Nhanh (Kiểu Zantext)
+                  </p>
+                  <span className="bg-brand-orange/15 text-brand-orange rounded-full px-2 py-0.5 text-[10px] font-bold">
+                    14 Font MXH
+                  </span>
+                </div>
+                <p className="text-muted-foreground text-[11px] leading-snug">
+                  Tự động đổi chữ sang Unicode chuẩn Facebook / Instagram / TikTok / Threads. Bấm <strong>Copy</strong> để dán thẳng lên bài đăng hoặc <strong>Áp dụng</strong> vào trình soạn thảo.
+                </p>
+              </div>
+
+              <div>
+                <Input
+                  data-testid="zantext-preview-input"
+                  value={zantextInput}
+                  onChange={(e) => setZantextInput(e.target.value)}
+                  placeholder={
+                    selectedPlainText?.trim()
+                      ? `Đang chọn: "${selectedPlainText.slice(0, 36)}"`
+                      : "Nhập hoặc bôi đen chữ cần đổi font (VD: Khuyến mãi Mùa Hè 2026)…"
+                  }
+                  className="h-8 text-xs"
+                />
+              </div>
+
+              <div className="max-h-72 space-y-1.5 overflow-y-auto pr-1">
+                {ZANTEXT_STYLE_PRESETS.map((preset) => {
+                  const converted = styleRunText(
+                    effectiveZantextSource,
+                    preset.attrs,
+                  );
+                  const isCopied = copiedPresetId === preset.id;
+                  return (
+                    <div
+                      key={preset.id}
+                      data-testid={`zantext-row-${preset.id}`}
+                      className="border-border bg-muted/20 hover:bg-muted/50 flex items-center justify-between gap-2 rounded-xl border p-2 transition-colors"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-muted-foreground text-[10px] font-semibold">
+                            {preset.label}
+                          </span>
+                          <span className="bg-muted text-foreground rounded px-1 py-0.2 text-[9px] font-bold">
+                            {preset.badge}
+                          </span>
+                        </div>
+                        <p
+                          data-testid={`zantext-preview-${preset.id}`}
+                          className="text-foreground mt-0.5 truncate text-xs font-medium"
+                          style={{
+                            fontFamily:
+                              'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+                          }}
+                        >
+                          {converted}
+                        </p>
+                      </div>
+
+                      <div className="flex shrink-0 items-center gap-1">
+                        <button
+                          type="button"
+                          data-testid={`zantext-copy-${preset.id}`}
+                          onClick={async () => {
+                            await copyTextToClipboard(converted);
+                            setCopiedPresetId(preset.id);
+                            toast.success(
+                              `Đã copy font "${preset.label}"! Dán (Ctrl+V) trực tiếp lên Facebook.`,
+                              { id: "brandhub-editor-toast" },
+                            );
+                            setTimeout(() => setCopiedPresetId(null), 1500);
+                          }}
+                          className="border-border bg-card hover:bg-muted flex items-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-semibold transition-colors"
+                          title="Copy kiểu chữ này để dán trực tiếp lên Facebook"
+                        >
+                          {isCopied ? (
+                            <Check className="size-3 text-emerald-600" />
+                          ) : (
+                            <Copy className="size-3" />
+                          )}
+                          <span>{isCopied ? "Đã copy" : "Copy"}</span>
+                        </button>
+                        {onApplyZantextPreset && (
+                          <button
+                            type="button"
+                            data-testid={`zantext-apply-${preset.id}`}
+                            onClick={() => {
+                              onApplyZantextPreset(
+                                preset.attrs,
+                                zantextInput.trim() || undefined,
+                              );
+                              setZantextOpen(false);
+                            }}
+                            className="bg-brand-orange hover:bg-brand-orange/90 rounded-lg px-2 py-1 text-[10px] font-semibold text-white transition-colors"
+                            title="Áp dụng kiểu font này vào vùng văn bản trong trình soạn thảo"
+                          >
+                            Áp dụng
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
         </ToolGroup>
@@ -506,12 +975,39 @@ export function FormattingToolbar({
             type="button"
             variant="ghost"
             size="icon"
+            className="size-7 rounded-md"
             onClick={onClearFormatting}
             title="Xóa định dạng (chọn text trước)"
           >
-            <RemoveFormatting className="size-4" />
+            <RemoveFormatting className="size-3.5" />
           </Button>
         </ToolGroup>
+
+        {/* Right-aligned Mode Switch: Google Docs pill bar vs. Word Ribbon */}
+        <div className="ml-auto flex items-center gap-0.5 pl-1">
+          <Button
+            type="button"
+            variant={!ribbon ? "secondary" : "ghost"}
+            size="sm"
+            className="h-6 gap-1 rounded-full px-2 text-[11px]"
+            onClick={() => setRibbon(false)}
+            title="Chế độ thanh công cụ (Google Docs)"
+          >
+            <Rows3 className="size-3" />
+            Docs
+          </Button>
+          <Button
+            type="button"
+            variant={ribbon ? "secondary" : "ghost"}
+            size="sm"
+            className="h-6 gap-1 rounded-full px-2 text-[11px]"
+            onClick={() => setRibbon(true)}
+            title="Chế độ dải lệnh (Microsoft Word)"
+          >
+            <LayoutGrid className="size-3" />
+            Ribbon
+          </Button>
+        </div>
       </div>
     </div>
   );
