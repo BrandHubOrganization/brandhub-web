@@ -613,5 +613,16 @@
     "adapt": "Phiên bản cho nền tảng khác",
     "adaptGo": "Tạo",
     "trendTopic": "Lĩnh vực của trend: {{topic}}"
+  },
+  "sections": {
+    "internal": "Nội bộ, Client không thấy",
+    "owner": "Phần của {{names}}",
+    "lockedSubmitted": "Đã nộp, chờ duyệt",
+    "lockedApproved": "Đã duyệt",
+    "lockedNoRight": "Bạn chỉ xem được phần này",
+    "returned": "Bị trả lại:",
+    "conflict": "Người khác vừa lưu phần này. Nội dung bạn đang gõ vẫn còn; bấm Tải lại để lấy bản mới nhất (bản đang gõ sẽ bị thay).",
+    "emptyHint": "Chưa có nội dung. Bắt đầu nhập phần việc của bạn.",
+    "empty": "Chưa có nội dung."
   }
 }

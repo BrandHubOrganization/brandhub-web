@@ -595,5 +595,16 @@
     "adapt": "Versions for other platforms",
     "adaptGo": "Create",
     "trendTopic": "Trend topic: {{topic}}"
+  },
+  "sections": {
+    "internal": "Internal, hidden from Client",
+    "owner": "Owned by {{names}}",
+    "lockedSubmitted": "Submitted, waiting for review",
+    "lockedApproved": "Approved",
+    "lockedNoRight": "You can only view this section",
+    "returned": "Returned:",
+    "conflict": "Someone else just saved this section. Your typing is kept; Reload to get the latest copy (it replaces your typing).",
+    "emptyHint": "Nothing here yet. Start with your part.",
+    "empty": "Nothing here yet."
   }
 }

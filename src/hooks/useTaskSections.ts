@@ -204,6 +204,8 @@ export function useTaskSections(
   );
 
   return {
+    workspaceId,
+    taskId,
     sections: query.data,
     isLoading: query.isLoading,
     error: query.error,
