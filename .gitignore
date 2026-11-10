@@ -39,3 +39,8 @@ test-results/
 /src/**/__tests__/
 /src/**/tests/
 
+# Generated static editor; source and licensed inputs live under vendor/video-space.
+/public/video-space/
+/vendor/video-space/public/library/manifest.json
+/vendor/video-space/rust/target/
+

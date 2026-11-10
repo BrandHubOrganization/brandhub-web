@@ -1,0 +1,22 @@
+{
+  "title": "Video Space",
+  "backToVideo": "Quay lại Video AI",
+  "loading": "Đang mở trình dựng video…",
+  "loadError": "Không mở được trình dựng video. Vui lòng thử lại.",
+  "retry": "Thử lại",
+  "noWorkspace": "Hãy chọn workspace để mở Video Space.",
+  "frameTitle": "Trình dựng video BrandHub",
+  "unsupportedBrowser": "Dùng trình duyệt Chrome hoặc Edge trên máy tính để chỉnh sửa video.",
+  "sessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+  "requestFailed": "Không kết nối được với Video Space. Vui lòng thử lại.",
+  "draftSaveFailed": "Chưa lưu được bản nháp. Hãy thử lại trước khi rời trang.",
+  "conflict": "Dự án đã thay đổi ở phiên khác. Hãy mở lại bản mới nhất trước khi lưu.",
+  "uploadFailed": "Chưa tải được tài nguyên lên. Vui lòng thử lại.",
+  "quotaExceeded": "Workspace không còn đủ dung lượng để lưu tài nguyên này.",
+  "projectUnavailable": "Không tìm thấy dự án hoặc tài nguyên này trong workspace.",
+  "sourceUnavailable": "Video chưa sẵn sàng hoặc bạn không có quyền mở video này.",
+  "invalidMedia": "Định dạng tài nguyên không được hỗ trợ.",
+  "requestDenied": "Bạn không có quyền truy cập tài nguyên này.",
+  "snapshotInvalid": "Dữ liệu dự án chưa hợp lệ để lưu.",
+  "fileTooLarge": "Tài nguyên vượt quá dung lượng cho phép. Mỗi tệp tối đa 128 MB."
+}

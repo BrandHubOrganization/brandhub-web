@@ -51,6 +51,7 @@ export const aiVideoService = {
       ambassadorId?: string | null;
       aspectRatio: "16:9" | "9:16";
       referenceImageBase64?: string | null;
+      characterImageBase64?: string | null;
       poseVideoBase64?: string | null;
       poseVideoFilename?: string | null;
       durationSeconds?: number | null;

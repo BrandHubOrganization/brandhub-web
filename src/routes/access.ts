@@ -36,6 +36,8 @@ export const ROUTE_ACCESS: Record<string, AccessRule> = {
   "/hashtags": ["MANAGER", "CREATOR", "CLIENT"],
   "/publish": ["MANAGER", "CREATOR"],
   "/ai-studio": ["OWNER", "MANAGER", "CREATOR"],
+  "/video-space": ["OWNER", "MANAGER", "CREATOR"],
+  "/product-video": ["OWNER", "MANAGER", "CREATOR"],
   "/admin": "ADMIN",
 };
 

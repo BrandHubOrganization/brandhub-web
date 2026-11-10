@@ -211,6 +211,20 @@ export const NAV_SECTIONS: NavSection[] = [
         workspaceScoped: true,
         requiresWorkspace: true,
       },
+      {
+        to: "/video-space",
+        icon: Clapperboard,
+        labelKey: "nav.videoSpace",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/ai-studio/video",
+        icon: Clapperboard,
+        labelKey: "aiStudio.video.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
     ],
   },
   {
