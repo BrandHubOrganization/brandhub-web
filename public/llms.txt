@@ -1,0 +1,33 @@
+# BrandHub — AI-Powered Brand & Multi-Channel Content Management Platform
+
+> BrandHub (https://brandhub.id.vn) là nền tảng SaaS B2B2C giúp các Agency truyền thông và Thương hiệu tại Việt Nam quản trị trọn vẹn vòng đời chiến dịch nội dung số: từ xây dựng Gói truyền thông (Media Package), lập kế hoạch Chiến dịch (Media Campaign), sáng tạo nội dung đa phương thức bằng AI Studio tích hợp GraphRAG (Neo4j + ChromaDB), kiểm duyệt an toàn cộng đồng, phê duyệt đa cấp minh bạch đến xuất bản tự động lên 4 nền tảng mạng xã hội (Facebook, Instagram, TikTok, Threads).
+
+## Canonical Public Pages
+- [Trang chủ BrandHub](https://brandhub.id.vn/): Tổng quan nền tảng, kiến trúc AI GraphRAG, quy trình cộng tác 6 vai trò, bảng giá và demo tương tác.
+- [Trung tâm Trợ giúp & Câu hỏi thường gặp (FAQ)](https://brandhub.id.vn/help/faq): 30+ hướng dẫn chi tiết về vận hành Agency, Workspace, Media Package, AI Studio, phê duyệt nội dung và thanh toán.
+- [Chính sách Quyền riêng tư (Privacy Policy)](https://brandhub.id.vn/privacy): Chính sách bảo vệ dữ liệu cá nhân, cô lập tài nguyên Workspace và bảo mật OAuth Access Token (AES-256).
+- [Điều khoản Dịch vụ (Terms of Service)](https://brandhub.id.vn/terms): Quy định sử dụng dịch vụ, phân quyền vai trò, AI Credits và xuất bản đa kênh.
+
+## 6 Vai trò Hệ thống Chuẩn (Canonical System Roles)
+- **Guest**: Khách truy cập xem trang chủ, tài liệu trợ giúp, liên kết chia sẻ gói truyền thông và khảo sát công khai.
+- **Owner**: Chủ sở hữu Agency — thiết lập tổ chức, quản lý gói đăng ký (Subscription), phân bổ hạn mức AI Credits và khởi tạo Workspace.
+- **Manager**: Quản lý chiến dịch và không gian làm việc — lập kế hoạch Media Campaign, giao việc, kiểm soát chất lượng nội bộ và trình duyệt cho khách hàng.
+- **Creator**: Chuyên viên sáng tạo nội dung — soạn thảo bài đăng đa kênh, sử dụng AI Studio GraphRAG, thiết kế ấn phẩm/video và gửi duyệt.
+- **Client**: Đại diện thương hiệu khách hàng — đàm phán Gói truyền thông (Media Package), xem trước bài đăng chuẩn định dạng mạng xã hội và phê duyệt chính thức.
+- **Admin**: Quản trị viên hệ thống — giám sát sức khỏe hạ tầng microservices, quản lý gói dịch vụ hệ thống, kiểm duyệt nội dung cộng đồng và đối soát thanh toán.
+
+## 9 Nhóm Chức năng Cốt lõi (141 Atomic Functional Requirements)
+1. **Authentication & Authorization**: Đăng ký, đăng nhập Email/Google OAuth, xác thực hai lớp (2FA TOTP), phân quyền RBAC đa tầng.
+2. **User & Client Profile**: Quản lý hồ sơ cá nhân, bảo mật tài khoản và hồ sơ thương hiệu khách hàng.
+3. **Agency & Workspace**: Quản trị đa Agency, cô lập dữ liệu theo từng Workspace khách hàng, quản lý thành viên, danh bạ đối tác báo đài (Newspaper, TV, Banner) và kho lưu trữ số (Google Drive / S3).
+4. **Media Package & Media Campaign**: Xây dựng catalog Gói truyền thông, chia sẻ liên kết báo giá cho khách hàng, thương lượng 2 chiều và tự động chuyển đổi thành Chiến dịch truyền thông (Media Campaign).
+5. **Content & Workflow**: Quản lý công việc (Task & Subtask), soạn thảo nội dung đa định dạng, biểu mẫu khảo sát (Survey), kiểm duyệt tuân thủ an toàn cộng đồng (Compliance Check) và quy trình phê duyệt đa cấp (Creator -> Manager -> Client).
+6. **AI Features (AI Studio & GraphRAG)**: Sinh văn bản/caption chuẩn Brand Guidelines với Neo4j Knowledge Graph + ChromaDB, tạo ảnh thương mại, tạo đại sứ ảo AI (Virtual Ambassador LoRA), dựng video AI, cào dữ liệu xu hướng thời gian thực (TikTok Creative Center & Google Trends) và gợi ý đối tác truyền thông.
+7. **Publishing & Social**: Kết nối OAuth an toàn, đặt lịch xuất bản tự động, theo dõi lịch đăng (Content Calendar) và phân tích chỉ số hiệu suất trên 4 nền tảng chính thức: **Facebook, Instagram, TikTok, và Threads**.
+8. **Subscription & Billing**: Nâng cấp gói dịch vụ (Starter Miễn phí / Pro 590.000 VNĐ/tháng), mua thêm gói AI Credits không giới hạn thời hạn và thanh toán tự động qua **SePay / PayOS (VietQR)**.
+9. **Admin Functions**: Quản trị người dùng, quản lý thư viện Workspace Template, hàng đợi kiểm duyệt nội dung (Content Moderation Queue), quản lý gói cước và giám sát hệ thống.
+
+## Thông tin Liên hệ
+- Website: https://brandhub.id.vn
+- Email hỗ trợ: brandhub404@gmail.com
+

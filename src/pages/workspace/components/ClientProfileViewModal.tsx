@@ -189,9 +189,10 @@ export function ClientProfileViewModal({
                     <h4 className="text-muted-foreground mb-1.5 text-[11px] font-semibold tracking-wider uppercase">
                       {t("clientProfile.descriptionLabel", "Mô tả công ty")}
                     </h4>
-                    <p className="text-foreground/85 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
-                      {profile.description.trim()}
-                    </p>
+                    <div
+                      className="prose prose-sm dark:prose-invert text-foreground/85 max-w-none text-xs sm:text-sm leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: profile.description }}
+                    />
                   </div>
                 )}
 
@@ -423,9 +424,10 @@ export function ClientProfileViewModal({
                       <span className="text-muted-foreground mb-0.5 block text-[10px] font-semibold tracking-wider uppercase">
                         {t("clientProfile.noteLabel", "Ghi chú")}:
                       </span>
-                      <span className="text-foreground/80 italic">
-                        {profile.note.trim()}
-                      </span>
+                      <div
+                        className="prose prose-sm dark:prose-invert text-foreground/80 max-w-none text-xs italic leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: profile.note }}
+                      />
                     </div>
                   </div>
                 )}

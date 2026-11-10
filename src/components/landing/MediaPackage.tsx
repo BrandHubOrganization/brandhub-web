@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Package,
   MessagesSquare,
   Rocket,
   CopyCheck,
+  CheckCircle2,
   type LucideIcon,
 } from "lucide-react";
 import gsap from "gsap";
@@ -14,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
+import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -22,6 +24,8 @@ interface MediaPackagePoint {
   icon: LucideIcon;
   step: string;
   photo: string;
+  metric: string;
+  frameShape: string;
 }
 
 const POINTS: MediaPackagePoint[] = [
@@ -30,33 +34,42 @@ const POINTS: MediaPackagePoint[] = [
     icon: Package,
     step: "01",
     photo:
-      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=720&h=720&fit=crop",
+    metric: "Standard · Growth · Viral Catalog",
+    frameShape: "rounded-t-[999px] rounded-b-[24px]",
   },
   {
     key: "negotiate",
     icon: MessagesSquare,
     step: "02",
     photo:
-      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=720&h=720&fit=crop",
+    metric: "2-Way Proposal & Contract Sign-Off",
+    frameShape: "rounded-l-[24px] rounded-r-[999px]",
   },
   {
     key: "convert",
     icon: Rocket,
     step: "03",
     photo:
-      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=720&h=720&fit=crop",
+    metric: "1-Click Campaign & Task Backlog",
+    frameShape: "rounded-l-[999px] rounded-r-[24px]",
   },
   {
     key: "replicate",
     icon: CopyCheck,
     step: "04",
     photo:
-      "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=720&h=720&fit=crop",
+    metric: "Instant Workspace & Guideline Clone",
+    frameShape: "rounded-[28px]",
   },
 ];
 
 export function MediaPackage() {
   const { t } = useTranslation();
+  const [activeStep, setActiveStep] = useState(0);
   const { ref: headRef, isIntersecting: headVisible } = useIntersectionObserver(
     { threshold: 0.15, freezeOnceVisible: true },
   );
@@ -109,46 +122,158 @@ export function MediaPackage() {
     { scope: timelineRef },
   );
 
+  const currentPoint = POINTS[activeStep];
+  const ActiveIcon = currentPoint.icon;
+
   return (
     <section
       id="media-package"
       className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950"
     >
       <SectionDecor corner="right" />
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div
           ref={headRef}
           className={cn(
-            "mx-auto mb-20 max-w-2xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            "mx-auto mb-16 max-w-2xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
             headVisible ? "opacity-100" : "opacity-0",
           )}
         >
           <SectionEyebrow index={6} />
-          <h2 className="text-3xl font-extrabold text-zinc-900 sm:text-4xl dark:text-zinc-100">
-            {t("landing.mediaPackage.title")}
-          </h2>
+          <SplitHeading text={t("landing.mediaPackage.title")} />
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.mediaPackage.subtitle")}
           </p>
         </div>
 
-        <div ref={setTimelineRef} className="relative">
+        {/* Architectural Radial-Cutout Stage inspired by `.decode-stage` & `.decode-window` in giaimamanhai.vercel.app */}
+        <div className="mb-20 grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+          <div className="space-y-4 lg:col-span-4">
+            <span className="text-brand-orange font-mono text-xs font-extrabold tracking-widest uppercase">
+              INTERACTIVE PACKAGE STAGE · {currentPoint.step} / 04
+            </span>
+            <h3 className="text-2xl font-extrabold text-zinc-900 dark:text-zinc-100">
+              {t(`landing.mediaPackage.items.${currentPoint.key}.title`)}
+            </h3>
+            <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+              {t(`landing.mediaPackage.items.${currentPoint.key}.desc`)}
+            </p>
+
+            {/* Progress bar */}
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+              <div
+                className="bg-brand-orange h-full rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                style={{ width: `${((activeStep + 1) / POINTS.length) * 100}%` }}
+              />
+            </div>
+
+            {/* Step pills */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              {POINTS.map((pt, idx) => (
+                <button
+                  key={pt.key}
+                  type="button"
+                  onClick={() => setActiveStep(idx)}
+                  className={cn(
+                    "cursor-pointer rounded-full px-4 py-2 text-xs font-bold transition-all duration-300",
+                    activeStep === idx
+                      ? "bg-brand-orange text-white shadow-md shadow-orange-500/25 scale-105"
+                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800",
+                  )}
+                >
+                  Bước {pt.step}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Radial-Cutout Panel + Circular Window */}
+          <div className="bh-stage-reveal relative lg:col-span-8 lg:pl-20">
+            {/* Circular Window nestled inside left edge */}
+            <div className="mx-auto mb-6 size-44 overflow-hidden rounded-full border-4 border-white shadow-2xl ring-4 ring-brand-orange/30 lg:absolute lg:top-1/2 lg:left-20 lg:z-10 lg:mb-0 lg:size-52 lg:-translate-x-1/2 lg:-translate-y-1/2 dark:border-zinc-900">
+              <img
+                src={currentPoint.photo}
+                alt={t(`landing.mediaPackage.items.${currentPoint.key}.title`)}
+                width={500}
+                height={500}
+                loading="lazy"
+                decoding="async"
+                style={{
+                  transform: `rotate(${activeStep * 6}deg) scale(${1 + activeStep * 0.04})`,
+                }}
+                className="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              />
+            </div>
+
+            {/* Rounded Architectural Panel */}
+            <div className="relative overflow-hidden rounded-[32px] border border-orange-200/70 bg-gradient-to-br from-orange-50/90 via-white to-orange-50/40 p-8 shadow-xl lg:pl-36 dark:border-zinc-800 dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="bg-brand-orange/15 text-brand-orange inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold">
+                  <ActiveIcon className="size-4" />
+                  <span>{currentPoint.metric}</span>
+                </span>
+                <span className="text-brand-orange/25 font-mono text-4xl font-extrabold tabular-nums">
+                  {currentPoint.step}
+                </span>
+              </div>
+
+              <h4 className="mt-4 text-xl font-extrabold text-zinc-900 sm:text-2xl dark:text-zinc-100">
+                {t(`landing.mediaPackage.items.${currentPoint.key}.title`)}
+              </h4>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                {t(`landing.mediaPackage.items.${currentPoint.key}.desc`)}
+              </p>
+
+              <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                {POINTS.map((pt, idx) => (
+                  <button
+                    key={pt.key}
+                    type="button"
+                    onClick={() => setActiveStep(idx)}
+                    className={cn(
+                      "flex cursor-pointer items-center gap-2.5 rounded-2xl border px-3.5 py-2.5 text-left text-xs font-semibold transition-all",
+                      activeStep === idx
+                        ? "border-brand-orange bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-100"
+                        : "border-zinc-200/60 bg-white/60 text-zinc-500 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400",
+                    )}
+                  >
+                    <CheckCircle2
+                      className={cn(
+                        "size-4 shrink-0",
+                        activeStep === idx
+                          ? "text-brand-orange"
+                          : "text-zinc-300 dark:text-zinc-600",
+                      )}
+                    />
+                    <span className="truncate">
+                      {pt.step}. {t(`landing.mediaPackage.items.${pt.key}.title`)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 4-Step Parallax Timeline with Arch & Pill Photo Frames */}
+        <div ref={setTimelineRef} className="relative mx-auto max-w-4xl">
           <div
             aria-hidden
-            className="timeline-line bg-brand-orange/20 absolute top-0 bottom-0 left-6 w-px origin-top sm:left-1/2 sm:-translate-x-1/2"
+            className="timeline-line bg-brand-orange/25 absolute top-0 bottom-0 left-6 w-0.5 origin-top sm:left-1/2 sm:-translate-x-1/2"
           />
 
-          <div className="flex flex-col gap-16">
-            {POINTS.map(({ key, icon: Icon, step, photo }, i) => {
+          <div className="flex flex-col gap-14">
+            {POINTS.map(({ key, icon: Icon, step, photo, frameShape }, i) => {
               const reversed = i % 2 === 1;
               return (
                 <div
                   key={key}
+                  onMouseEnter={() => setActiveStep(i)}
                   style={{
-                    transitionDelay: rowsVisible ? `${i * 180}ms` : "0ms",
+                    transitionDelay: rowsVisible ? `${i * 150}ms` : "0ms",
                   }}
                   className={cn(
-                    "timeline-row relative flex flex-col gap-6 transition-all duration-700 ease-out motion-reduce:opacity-100 motion-reduce:transition-none sm:flex-row sm:items-center",
+                    "timeline-row group relative flex flex-col gap-6 transition-all duration-700 ease-out motion-reduce:opacity-100 motion-reduce:transition-none sm:flex-row sm:items-center",
                     rowsVisible
                       ? "translate-y-0 opacity-100"
                       : "translate-y-10 opacity-0",
@@ -157,24 +282,35 @@ export function MediaPackage() {
                 >
                   <div
                     aria-hidden
-                    className="bg-brand-orange ring-brand-orange/20 absolute top-6 left-6 z-10 flex size-4 -translate-x-1/2 items-center justify-center rounded-full ring-4 sm:left-1/2"
+                    className={cn(
+                      "bg-brand-orange ring-brand-orange/20 absolute top-6 left-6 z-10 flex size-4 -translate-x-1/2 items-center justify-center rounded-full ring-4 transition-transform duration-300 sm:left-1/2",
+                      activeStep === i && "scale-125 ring-8",
+                    )}
                   />
 
                   <div className="pl-14 sm:w-1/2 sm:pl-0">
                     <div
                       className={cn(
-                        "flex flex-col gap-4 sm:flex-row sm:items-center",
+                        "mp-card flex flex-col gap-4 rounded-[26px] border border-zinc-200/80 bg-zinc-50/60 p-5 transition-all duration-300 group-hover:-translate-y-1 group-hover:border-orange-200 group-hover:bg-white group-hover:shadow-lg sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900/50 dark:group-hover:bg-zinc-900",
                         reversed
                           ? "sm:flex-row-reverse sm:text-right"
                           : "sm:text-left",
                       )}
                     >
-                      <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl sm:size-28">
+                      <div
+                        className={cn(
+                          "relative size-24 shrink-0 overflow-hidden border border-orange-200/60 shadow-md sm:size-28 dark:border-zinc-700",
+                          frameShape,
+                        )}
+                      >
                         <img
                           src={photo}
-                          alt=""
+                          alt={t(`landing.mediaPackage.items.${key}.title`)}
+                          width={500}
+                          height={500}
                           loading="lazy"
-                          className="timeline-photo absolute inset-0 h-[130%] w-full object-cover will-change-transform"
+                          decoding="async"
+                          className="timeline-photo absolute inset-0 h-[130%] w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-110"
                         />
                       </div>
                       <div>
@@ -184,7 +320,7 @@ export function MediaPackage() {
                             reversed && "sm:justify-end",
                           )}
                         >
-                          <span className="bg-brand-orange/10 text-brand-orange flex size-8 items-center justify-center rounded-lg">
+                          <span className="bg-brand-orange/10 text-brand-orange flex size-8 items-center justify-center rounded-xl">
                             <Icon className="size-4" />
                           </span>
                           <span className="text-brand-orange font-mono text-[11px] font-bold tracking-wider">

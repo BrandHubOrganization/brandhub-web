@@ -10,6 +10,8 @@ import {
   useEffect,
 } from "react";
 import {
+  FileText,
+  PenLine,
   PanelLeftClose,
   PanelLeftOpen,
   PanelRightOpen,
@@ -25,6 +27,7 @@ import { HashtagInputWithSuggestions } from "@/pages/editor/components/HashtagIn
 import { MediaDropzone } from "@/pages/editor/components/MediaDropzone";
 import { PlatformPreviewModal } from "@/pages/editor/components/PlatformPreviewModal";
 import { RichTextEditor } from "@/pages/editor/components/RichTextEditor";
+import { DocsCaptionEditor } from "@/pages/editor/components/DocsCaptionEditor";
 import { StudioPreviewPanel } from "@/pages/editor/components/StudioPreviewPanel";
 import { TemplatePickerModal } from "@/pages/editor/components/TemplatePickerModal";
 import { useWorkspaceStore } from "@/store/workspaceStore";
@@ -42,11 +45,31 @@ import {
   TaskEditorNotice,
 } from "@/pages/editor/components/TaskEditorControls";
 import { useSearchParams } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import {
+  PLATFORM_BRAND,
+  PLATFORM_ICON,
+} from "@/components/common/SocialPlatformBadge";
 
 type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
   handlePublishNow?: () => void | Promise<void>;
   scheduledAt?: string | null;
   taskEditor?: TaskEditorState;
+  storedMedia?: Record<
+    string,
+    {
+      materialId?: string;
+      s3Key?: string;
+      externalUrl?: string;
+      mediaType?: "IMAGE" | "VIDEO";
+    }
+  >;
+  handleReplaceMedia?: (
+    oldUrl: string,
+    newUrl: string,
+    materialId: string,
+    mediaType: "IMAGE" | "VIDEO",
+  ) => void;
 };
 
 /**
@@ -83,6 +106,7 @@ function EditorWorkspace({
     : [];
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
   const [isPreviewPanelOpen, setIsPreviewPanelOpen] = useState(true);
+  const [isDocsMode, setIsDocsMode] = useState(false);
   const [aiPanelWidth, setAiPanelWidth] = useState(280);
   const [previewPanelWidth, setPreviewPanelWidth] = useState(300);
   const workspaceRef = useRef<HTMLDivElement>(null);
@@ -90,6 +114,7 @@ function EditorWorkspace({
     caption,
     hashtags,
     mediaUrls,
+    storedMedia,
     targetPlatforms,
     toggleTargetPlatform,
     publishStatus,
@@ -106,6 +131,7 @@ function EditorWorkspace({
     handleMediaUrlsChange,
     handleGeneratedMedia,
     handleRepositoryMedia,
+    handleReplaceMedia,
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,
@@ -250,7 +276,6 @@ function EditorWorkspace({
     <PageWrapper
       title={t("editor.page.title")}
       description={t("editor.page.description")}
-      className="max-w-[1800px]"
       actions={
         taskEditor ? null : (
           <EditorHeaderActions
@@ -365,9 +390,41 @@ function EditorWorkspace({
                 <span className="text-muted-foreground text-2xs font-semibold tracking-wider uppercase">
                   Nội dung bài đăng
                 </span>
-                <Badge variant="secondary" className="text-2xs font-medium">
-                  Lưu nháp tự động
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <div
+                    role="group"
+                    aria-label="Chế độ soạn thảo"
+                    className="border-border bg-card flex rounded-lg border p-0.5"
+                  >
+                    {(
+                      [
+                        [false, PenLine, "Soạn nhanh"],
+                        [true, FileText, "Tài liệu (Docs)"],
+                      ] as const
+                    ).map(([docs, Icon, label]) => (
+                      <button
+                        key={label}
+                        type="button"
+                        aria-pressed={isDocsMode === docs}
+                        onClick={() => {
+                          setIsDocsMode(docs);
+                          if (docs) setIsAiPanelOpen(false);
+                        }}
+                        className={`text-2xs flex items-center gap-1 rounded-md px-2 py-1 font-medium transition-colors ${
+                          isDocsMode === docs
+                            ? "bg-brand-orange text-white"
+                            : "text-muted-foreground hover:bg-muted"
+                        }`}
+                      >
+                        <Icon className="size-3" />
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <Badge variant="secondary" className="text-2xs font-medium">
+                    Lưu nháp tự động
+                  </Badge>
+                </div>
               </div>
               <p className="text-muted-foreground mt-2 text-xs">
                 {t("editor.page.postTypeHint.IMAGE")}
@@ -426,18 +483,27 @@ function EditorWorkspace({
                   (platform) => {
                     const isSelected = targetPlatforms.includes(platform);
                     const isConnected = connectedPlatforms.includes(platform);
+                    const Icon = PLATFORM_ICON[platform];
                     return (
                       <button
                         key={platform}
                         type="button"
                         disabled={taskEditor?.isReadOnly}
                         onClick={() => toggleTargetPlatform(platform)}
-                        className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                        className={cn(
+                          "flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all",
                           isSelected
-                            ? "bg-brand-orange text-white shadow-xs"
-                            : "border-border bg-card text-muted-foreground hover:bg-muted border"
-                        }`}
+                            ? cn(PLATFORM_BRAND[platform].active, "shadow-xs")
+                            : "border-border bg-card text-muted-foreground hover:bg-muted",
+                        )}
                       >
+                        <Icon
+                          aria-hidden="true"
+                          className={cn(
+                            "size-3.5",
+                            !isSelected && PLATFORM_BRAND[platform].icon,
+                          )}
+                        />
                         <span
                           className={`size-2 rounded-full ${
                             isConnected
@@ -464,14 +530,22 @@ function EditorWorkspace({
                 )}
               </div>
 
-              <RichTextEditor
-                value={caption}
-                onChange={handleCaptionChange}
-                targetPlatforms={targetPlatforms}
-                readOnly={taskEditor?.isReadOnly}
-                workspaceId={workspaceId}
-                taskId={taskId}
-              />
+              {isDocsMode ? (
+                <DocsCaptionEditor
+                  value={caption}
+                  onChange={handleCaptionChange}
+                  readOnly={taskEditor?.isReadOnly}
+                />
+              ) : (
+                <RichTextEditor
+                  value={caption}
+                  onChange={handleCaptionChange}
+                  targetPlatforms={targetPlatforms}
+                  readOnly={taskEditor?.isReadOnly}
+                  workspaceId={workspaceId}
+                  taskId={taskId}
+                />
+              )}
               <EditorModerationStatus snapshot={moderation.snapshot} />
 
               <section className="border-border bg-muted/20 space-y-3 rounded-xl border p-3">
@@ -490,6 +564,15 @@ function EditorWorkspace({
                     mediaUrls={mediaUrls}
                     onChange={handleMediaUrlsChange}
                     workspaceId={workspaceId}
+                    storedMedia={storedMedia}
+                    onWatermarked={(oldUrl, newMaterial, mediaType) =>
+                      handleReplaceMedia?.(
+                        oldUrl,
+                        newMaterial.url,
+                        newMaterial.id,
+                        mediaType,
+                      )
+                    }
                   />
                 </div>
               </section>

@@ -80,7 +80,12 @@ export function TaskDeadlineField({
       const nextDue = new Date(nextIso).getTime();
       const pubTime = new Date(task.publishDate).getTime();
       if (nextDue >= pubTime) {
-        toast.error(t("tasks.dueDateMustBeBeforePublishDate", "Hạn hoàn thành phải trước thời gian đăng bài"));
+        toast.error(
+          t(
+            "tasks.dueDateMustBeBeforePublishDate",
+            "Hạn hoàn thành phải trước thời gian đăng bài",
+          ),
+        );
         return Promise.reject(
           new Error(t("tasks.dueDateMustBeBeforePublishDate")),
         );
@@ -108,7 +113,9 @@ export function TaskDeadlineField({
         disabled={!editable || saving}
         readOnly={!editable}
         placeholder={t("tasks.deadlinePlaceholder", "Thiết lập thời hạn...")}
-        minDate={task.dates.minDate ? `${task.dates.minDate}T00:00:00Z` : undefined}
+        minDate={
+          task.dates.minDate ? `${task.dates.minDate}T00:00:00Z` : undefined
+        }
         maxDate={
           task.publishDate
             ? task.publishDate
@@ -157,7 +164,9 @@ export function TaskPublishTimeField({
     task.dates.ready &&
     task.lockReason !== "TASK_CAMPAIGN_COMPLETED" &&
     (task.allowedActions.canEditDetail ||
-      (isManager && !isPublishedOrPublishing && (task.status as string) !== "CANCELLED"));
+      (isManager &&
+        !isPublishedOrPublishing &&
+        (task.status as string) !== "CANCELLED"));
   const [saving, setSaving] = useState(false);
 
   const handleSave = async (nextIso: string | null) => {
@@ -165,7 +174,12 @@ export function TaskPublishTimeField({
       const nextPub = new Date(nextIso).getTime();
       const dueTime = new Date(task.dueDate).getTime();
       if (nextPub <= dueTime) {
-        toast.error(t("tasks.publishDateMustBeAfterDueDate", "Thời gian đăng bài phải sau hạn hoàn thành"));
+        toast.error(
+          t(
+            "tasks.publishDateMustBeAfterDueDate",
+            "Thời gian đăng bài phải sau hạn hoàn thành",
+          ),
+        );
         return Promise.reject(
           new Error(t("tasks.publishDateMustBeAfterDueDate")),
         );
@@ -185,7 +199,7 @@ export function TaskPublishTimeField({
   return (
     <div className="space-y-1.5 pt-1">
       <div className="flex items-center justify-between">
-        <div className="text-muted-foreground flex items-center gap-1.5 text-2xs font-semibold uppercase tracking-wider">
+        <div className="text-muted-foreground text-2xs flex items-center gap-1.5 font-semibold tracking-wider uppercase">
           <Clock className="text-brand-orange size-3" />
           <span>{t("tasks.publishTime", "Lịch đăng")}</span>
         </div>
@@ -205,7 +219,7 @@ export function TaskPublishTimeField({
                 Đang đăng...
               </span>
             ) : (
-              <span className="bg-brand-orange/10 text-brand-orange border border-brand-orange/20 text-3xs rounded px-1.5 py-0.5 font-semibold">
+              <span className="bg-brand-orange/10 text-brand-orange border-brand-orange/20 text-3xs rounded border px-1.5 py-0.5 font-semibold">
                 Lên lịch
               </span>
             )}
@@ -221,9 +235,17 @@ export function TaskPublishTimeField({
         includeTime={true}
         disabled={!canEditPublish || saving}
         readOnly={!canEditPublish}
-        placeholder={t("tasks.publishPlaceholder", "Thiết lập thời gian đăng...")}
-        minDate={task.dueDate || (task.dates.minDate ? `${task.dates.minDate}T00:00:00Z` : undefined)}
-        maxDate={task.dates.maxDate ? `${task.dates.maxDate}T23:59:59Z` : undefined}
+        placeholder={t(
+          "tasks.publishPlaceholder",
+          "Thiết lập thời gian đăng...",
+        )}
+        minDate={
+          task.dueDate ||
+          (task.dates.minDate ? `${task.dates.minDate}T00:00:00Z` : undefined)
+        }
+        maxDate={
+          task.dates.maxDate ? `${task.dates.maxDate}T23:59:59Z` : undefined
+        }
         allowClear={true}
         ariaLabel={t("tasks.publishTime", "Lịch đăng")}
       />
@@ -263,7 +285,7 @@ export function References({ task }: { task: TaskWorkflow }) {
               href={ref.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-muted/40 hover:bg-muted/80 border-border/80 text-foreground group inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-2xs transition-colors"
+              className="bg-muted/40 hover:bg-muted/80 border-border/80 text-foreground group text-2xs inline-flex items-center gap-1.5 rounded-md border px-2 py-1 transition-colors"
             >
               <Link2 className="text-brand-orange size-3 shrink-0" />
               <span className="max-w-[150px] truncate font-medium">
@@ -274,7 +296,7 @@ export function References({ task }: { task: TaskWorkflow }) {
           ) : (
             <span
               key={index}
-              className="bg-muted/40 border-border/80 text-muted-foreground inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-2xs"
+              className="bg-muted/40 border-border/80 text-muted-foreground text-2xs inline-flex items-center gap-1.5 rounded-md border px-2 py-1"
             >
               <Link2 className="size-3 shrink-0" />
               <span>{ref.label}</span>
@@ -340,20 +362,21 @@ export function References({ task }: { task: TaskWorkflow }) {
 }
 
 export function TaskDescriptionSection({ task }: { task: TaskWorkflow }) {
-
   const { t } = useTranslation();
   const state = useTaskWorkflow(task.workspaceId, task.id);
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs font-semibold text-foreground">
-        <div className="flex items-center gap-1.5 text-muted-foreground uppercase tracking-wider text-2xs font-semibold">
-          <AlignLeft className="size-3.5 text-brand-orange" />
-          <span>{t("tasks.workflow.fields.description", "Mô tả / Yêu cầu chi tiết")}</span>
+      <div className="text-foreground flex items-center justify-between text-xs font-semibold">
+        <div className="text-muted-foreground text-2xs flex items-center gap-1.5 font-semibold tracking-wider uppercase">
+          <AlignLeft className="text-brand-orange size-3.5" />
+          <span>
+            {t("tasks.workflow.fields.description", "Mô tả / Yêu cầu chi tiết")}
+          </span>
         </div>
       </div>
 
-      <div className="group rounded-xl border border-border/70 bg-card/40 p-4 transition-colors hover:border-border shadow-2xs">
+      <div className="group border-border/70 bg-card/40 hover:border-border rounded-xl border p-4 shadow-2xs transition-colors">
         <InlineTaskField
           id={`task-${task.id}-description`}
           label=""
@@ -368,10 +391,15 @@ export function TaskDescriptionSection({ task }: { task: TaskWorkflow }) {
         />
 
         {task.sourceType === "CAMPAIGN" && (
-          <div className="mt-4 pt-3.5 border-t border-border/50 space-y-1.5">
-            <div className="text-2xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Sparkles className="size-3 text-brand-orange" />
-              <span>{t("mediaPackage.offering.acceptance", "Tiêu chí nghiệm thu (Acceptance Criteria)")}</span>
+          <div className="border-border/50 mt-4 space-y-1.5 border-t pt-3.5">
+            <div className="text-2xs text-muted-foreground flex items-center gap-1.5 font-semibold tracking-wider uppercase">
+              <Sparkles className="text-brand-orange size-3" />
+              <span>
+                {t(
+                  "mediaPackage.offering.acceptance",
+                  "Tiêu chí nghiệm thu (Acceptance Criteria)",
+                )}
+              </span>
             </div>
             <InlineTaskField
               id={`task-${task.id}-acceptance-criteria`}
@@ -392,7 +420,9 @@ export function TaskDescriptionSection({ task }: { task: TaskWorkflow }) {
 }
 
 export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
-  const role = useWorkspaceStore((state) => state.currentMemberRole || state.currentWorkspace?.myRole);
+  const role = useWorkspaceStore(
+    (state) => state.currentMemberRole || state.currentWorkspace?.myRole,
+  );
   const { t } = useTranslation();
   const [openedAt] = useState(Date.now);
   const zone = task.dates.timezone || "UTC";
@@ -411,10 +441,10 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
   // Overdue check
   const isOverdue = Boolean(
     task.dueDate &&
-      Number.isFinite(Date.parse(task.dueDate)) &&
-      new Date(task.dueDate).getTime() < openedAt &&
-      task.status !== "FINISHED" &&
-      task.status !== "CANCELLED",
+    Number.isFinite(Date.parse(task.dueDate)) &&
+    new Date(task.dueDate).getTime() < openedAt &&
+    task.status !== "FINISHED" &&
+    task.status !== "CANCELLED",
   );
 
   const platforms: string[] = Array.isArray(task.typeMetadata?.targetPlatforms)
@@ -422,32 +452,31 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
     : [];
 
   return (
-    <aside className="rounded-xl border border-border/70 bg-card/60 p-4 space-y-4 shadow-2xs">
-      <div className="flex items-center justify-between border-b border-border/50 pb-2.5">
-        <h3 className="text-2xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-          <Sparkles className="size-3 text-brand-orange" />
+    <aside className="border-border/70 bg-card/60 space-y-4 rounded-xl border p-4 shadow-2xs">
+      <div className="border-border/50 flex items-center justify-between border-b pb-2.5">
+        <h3 className="text-2xs text-muted-foreground flex items-center gap-1.5 font-bold tracking-wider uppercase">
+          <Sparkles className="text-brand-orange size-3" />
           <span>{t("tasks.details")}</span>
         </h3>
-        <span className="font-mono text-3xs text-muted-foreground/60 tabular-nums">
+        <span className="text-3xs text-muted-foreground/60 font-mono tabular-nums">
           #{task.id.slice(-6).toUpperCase()}
         </span>
       </div>
 
-      <div className="space-y-4 divide-y divide-border/40">
+      <div className="divide-border/40 space-y-4 divide-y">
         {/* Assignee */}
         <div className="space-y-1.5 pt-1 first:pt-0">
           <div className="flex items-center justify-between">
-            <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
-              <User2 className="size-3 text-muted-foreground/70" />
+            <span className="text-2xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+              <User2 className="text-muted-foreground/70 size-3" />
               {t("tasks.assignee")}
             </span>
-
           </div>
           <div className="flex items-center gap-2">
-            <div className="size-6 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-3xs font-bold uppercase select-none shrink-0 shadow-2xs">
+            <div className="text-3xs flex size-6 shrink-0 items-center justify-center rounded-full border border-indigo-200 bg-indigo-100 font-bold text-indigo-700 uppercase shadow-2xs select-none dark:border-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">
               {assigneeInitials}
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               {canEditAssignee ? (
                 <TaskAssigneePicker
                   workspaceId={task.workspaceId}
@@ -456,7 +485,7 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
                   task={task}
                 />
               ) : (
-                <span className="text-xs font-medium text-foreground truncate block">
+                <span className="text-foreground block truncate text-xs font-medium">
                   {task.assigneeName || t("tasks.unassigned", "Chưa phân công")}
                 </span>
               )}
@@ -467,9 +496,14 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
         {/* Approvals / Review & Client Approval Settings */}
         <div className="space-y-2.5 pt-3">
           {task.reviewStep && (
-            <div className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-2xs font-semibold text-amber-700 dark:text-amber-400">
+            <div className="text-2xs inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1 font-semibold text-amber-700 dark:text-amber-400">
               <ShieldCheck className="size-3" />
-              <span>{t(`tasks.inline.reviewSteps.${task.reviewStep}`, task.reviewStep)}</span>
+              <span>
+                {t(
+                  `tasks.inline.reviewSteps.${task.reviewStep}`,
+                  task.reviewStep,
+                )}
+              </span>
             </div>
           )}
           <TaskInlineAssignment task={task} />
@@ -478,12 +512,12 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
         {/* Due date */}
         <div className="space-y-1.5 pt-3">
           <div className="flex items-center justify-between">
-            <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
-              <Calendar className="size-3 text-muted-foreground/70" />
+            <span className="text-2xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+              <Calendar className="text-muted-foreground/70 size-3" />
               {t("tasks.deadline", "Thời hạn hoàn thành")}
             </span>
             {isOverdue && (
-              <span className="inline-flex items-center gap-1 rounded bg-rose-500/10 border border-rose-500/25 px-1.5 py-0.5 text-3xs font-semibold text-rose-600 dark:text-rose-400">
+              <span className="text-3xs inline-flex items-center gap-1 rounded border border-rose-500/25 bg-rose-500/10 px-1.5 py-0.5 font-semibold text-rose-600 dark:text-rose-400">
                 <AlertCircle className="size-2.5" />
                 Quá hạn
               </span>
@@ -502,8 +536,8 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
         {/* Platforms */}
         {(task.type === "POST" || platforms.length > 0) && (
           <div className="space-y-2 pt-3">
-            <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
-              <Share2 className="size-3 text-muted-foreground/70" />
+            <span className="text-2xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+              <Share2 className="text-muted-foreground/70 size-3" />
               {t("tasks.platformsTitle", "Nền tảng / Kênh")}
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -512,7 +546,7 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
                   <span
                     key={p}
                     className={cn(
-                      "inline-flex items-center gap-1 rounded px-2 py-0.5 text-3xs font-bold uppercase tracking-wider border shadow-2xs",
+                      "text-3xs inline-flex items-center gap-1 rounded border px-2 py-0.5 font-bold tracking-wider uppercase shadow-2xs",
                       getPlatformBadgeStyle(p),
                     )}
                   >
@@ -532,45 +566,49 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
         {/* Deliverable / Campaign & Source */}
         {(task.sourceType || task.campaignId) && (
           <div className="space-y-2 pt-3">
-            <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
-              <FolderKanban className="size-3 text-muted-foreground/70" />
+            <span className="text-2xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+              <FolderKanban className="text-muted-foreground/70 size-3" />
               {t("tasks.deliverable", "Hạng mục liên kết")}
             </span>
 
             {task.campaignId && (
               <Link
                 to={`/workspaces/${task.workspaceId}/campaigns`}
-                className="group flex items-center justify-between gap-1.5 rounded-lg border border-border/70 bg-muted/20 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted/50 hover:text-brand-orange transition-colors shadow-2xs"
+                className="group border-border/70 bg-muted/20 text-foreground hover:bg-muted/50 hover:text-brand-orange flex items-center justify-between gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium shadow-2xs transition-colors"
               >
-                <span className="truncate">{task.campaignName || "Chiến dịch"}</span>
-                <ExternalLink className="size-3 shrink-0 text-muted-foreground group-hover:text-brand-orange" />
+                <span className="truncate">
+                  {task.campaignName || "Chiến dịch"}
+                </span>
+                <ExternalLink className="text-muted-foreground group-hover:text-brand-orange size-3 shrink-0" />
               </Link>
             )}
 
-            {task.sourceType === "CONTENT_REQUEST" && task.sourceRefId && role !== "CREATOR" && (
-              <Link
-                to={`/workspaces/${task.workspaceId}/requests?request=${encodeURIComponent(task.sourceRefId)}`}
-                className="group flex items-center justify-between gap-1.5 rounded-lg border border-border/70 bg-muted/20 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted/50 hover:text-brand-orange transition-colors shadow-2xs"
-              >
-                <span className="truncate">Yêu cầu nội dung</span>
-                <ExternalLink className="size-3 shrink-0 text-muted-foreground group-hover:text-brand-orange" />
-              </Link>
-            )}
+            {task.sourceType === "CONTENT_REQUEST" &&
+              task.sourceRefId &&
+              role !== "CREATOR" && (
+                <Link
+                  to={`/workspaces/${task.workspaceId}/requests?request=${encodeURIComponent(task.sourceRefId)}`}
+                  className="group border-border/70 bg-muted/20 text-foreground hover:bg-muted/50 hover:text-brand-orange flex items-center justify-between gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium shadow-2xs transition-colors"
+                >
+                  <span className="truncate">Yêu cầu nội dung</span>
+                  <ExternalLink className="text-muted-foreground group-hover:text-brand-orange size-3 shrink-0" />
+                </Link>
+              )}
           </div>
         )}
 
         {/* References */}
         <div className="space-y-1.5 pt-3">
-          <span className="text-2xs font-semibold text-muted-foreground flex items-center gap-1.5">
-            <Link2 className="size-3 text-muted-foreground/70" />
+          <span className="text-2xs text-muted-foreground flex items-center gap-1.5 font-semibold">
+            <Link2 className="text-muted-foreground/70 size-3" />
             {t("tasks.workflow.fields.inputReferences", "Tài liệu tham khảo")}
           </span>
           <References task={task} />
         </div>
 
         {/* Timezone */}
-        <div className="pt-3 flex items-center gap-1.5 text-3xs text-muted-foreground">
-          <Globe className="size-3 shrink-0 text-muted-foreground/70" />
+        <div className="text-3xs text-muted-foreground flex items-center gap-1.5 pt-3">
+          <Globe className="text-muted-foreground/70 size-3 shrink-0" />
           <span>{t("tasks.workflow.timezone", { timezone: zone })}</span>
         </div>
       </div>
@@ -625,15 +663,14 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
       </div>
 
       {/* 2-Column Jira View */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-7 space-y-4">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+        <div className="space-y-4 lg:col-span-7">
           <TaskDescriptionSection task={task} />
         </div>
         <div className="lg:col-span-5">
           <TaskDetailsSidebar task={task} />
         </div>
       </div>
-
     </div>
   );
 }

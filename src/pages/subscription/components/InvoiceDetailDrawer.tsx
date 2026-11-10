@@ -1,5 +1,6 @@
 import type { RefObject } from "react";
 import { useTranslation } from "react-i18next";
+import { Receipt } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -27,6 +28,7 @@ export function InvoiceDetailDrawer({
   triggerRef: RefObject<HTMLElement | null>;
 }) {
   const { t } = useTranslation();
+
   return (
     <Sheet
       modal={false}
@@ -37,7 +39,7 @@ export function InvoiceDetailDrawer({
     >
       <SheetContent
         side="right"
-        className="w-full gap-0 data-[state=open]:animate-none data-[state=open]:duration-0 sm:max-w-none lg:w-1/3"
+        className="w-full sm:max-w-lg lg:max-w-xl p-0 gap-0 border-l border-border bg-background flex flex-col shadow-2xl"
         onOpenAutoFocus={(event) => event.preventDefault()}
         onInteractOutside={(event) => event.preventDefault()}
         onCloseAutoFocus={(event) => {
@@ -45,13 +47,21 @@ export function InvoiceDetailDrawer({
           triggerRef.current?.focus();
         }}
       >
-        <SheetHeader className="border-border shrink-0 border-b pr-12">
-          <SheetTitle>{t("subscription.invoices.detail")}</SheetTitle>
-          <SheetDescription>
+        <SheetHeader className="border-border shrink-0 border-b p-5 pr-12 text-left bg-card/60 backdrop-blur-xs">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="size-7 rounded-lg bg-brand-orange-soft text-brand-orange flex items-center justify-center">
+              <Receipt className="size-4" />
+            </div>
+            <SheetTitle className="text-base font-semibold text-foreground">
+              {t("subscription.invoices.detail")}
+            </SheetTitle>
+          </div>
+          <SheetDescription className="text-xs text-muted-foreground">
             {t("subscription.invoices.drawerDescription")}
           </SheetDescription>
         </SheetHeader>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5">
+
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5 space-y-4">
           {orderId && (
             <InvoiceDetail
               key={`${agencyId}:${orderId}`}
@@ -62,9 +72,10 @@ export function InvoiceDetailDrawer({
             />
           )}
         </div>
-        <div className="border-border shrink-0 border-t p-4">
+
+        <div className="border-border shrink-0 border-t p-4 bg-card/60">
           <SheetClose asChild>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full rounded-xl text-xs font-medium">
               {t("subscription.invoices.close")}
             </Button>
           </SheetClose>
@@ -73,3 +84,5 @@ export function InvoiceDetailDrawer({
     </Sheet>
   );
 }
+
+export default InvoiceDetailDrawer;

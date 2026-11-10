@@ -3,6 +3,7 @@
   "subtitle": "Write email templates with variables, send them to Clients or a recipient list, and track delivery.",
   "create": "Create template",
   "search": "Search templates by name",
+  "itemLabel": "templates",
   "includeSystem": "Show system templates",
   "systemBadge": "System",
   "attachmentCount": "{{count}} attachments",

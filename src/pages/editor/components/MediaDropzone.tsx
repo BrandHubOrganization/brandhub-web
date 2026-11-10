@@ -1,10 +1,19 @@
 import React, { useRef, useState } from "react";
-import { Upload, X, Loader2 } from "lucide-react";
+import { Upload, X, Loader2, Stamp } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { MAX_MEDIA_UPLOAD_SIZE } from "@/lib/constants";
 import { useMaterialUpload } from "@/pages/library/hooks/useMaterialUpload";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { WatermarkStudioModal } from "@/pages/library/components/watermark/WatermarkStudioModal";
+import type { MaterialItem } from "@/types/material";
+
+interface StoredMediaEntry {
+  materialId?: string;
+  s3Key?: string;
+  externalUrl?: string;
+  mediaType?: "IMAGE" | "VIDEO";
+}
 
 interface MediaDropzoneProps {
   mediaUrls: string[];
@@ -15,6 +24,12 @@ interface MediaDropzoneProps {
     materialId: string,
     mediaType: "IMAGE" | "VIDEO",
   ) => void;
+  storedMedia?: Record<string, StoredMediaEntry>;
+  onWatermarked?: (
+    oldUrl: string,
+    newMaterial: MaterialItem,
+    mediaType: "IMAGE" | "VIDEO",
+  ) => void;
 }
 
 export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
@@ -22,12 +37,18 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
   onChange,
   workspaceId,
   onUploaded,
+  storedMedia,
+  onWatermarked,
 }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const effectiveWorkspaceId = workspaceId ?? currentWorkspace?.id;
   const uploader = useMaterialUpload(effectiveWorkspaceId);
+  const [watermarkTarget, setWatermarkTarget] = useState<{
+    url: string;
+    materialId: string;
+  } | null>(null);
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
@@ -173,6 +194,8 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
         <div className="grid grid-cols-3 gap-3 pt-1 sm:grid-cols-4">
           {mediaUrls.map((url, idx) => {
             const isVideo = url.endsWith(".mp4") || url.includes("mixkit");
+            const materialId = storedMedia?.[url]?.materialId;
+            const canWatermark = !isVideo && Boolean(materialId);
             return (
               <div
                 key={idx}
@@ -188,6 +211,19 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
                   />
                 )}
 
+                {canWatermark && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setWatermarkTarget({ url, materialId: materialId! })
+                    }
+                    title={t("editor.mediaDropzone.applyWatermark")}
+                    className="hover:bg-brand-orange absolute bottom-1.5 left-1.5 rounded-full bg-black/60 p-1 text-white transition-colors"
+                  >
+                    <Stamp className="size-3.5" />
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={() => handleRemoveMedia(idx)}
@@ -199,6 +235,22 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
             );
           })}
         </div>
+      )}
+
+      {watermarkTarget && effectiveWorkspaceId && (
+        <WatermarkStudioModal
+          isOpen
+          onClose={() => setWatermarkTarget(null)}
+          workspaceId={effectiveWorkspaceId}
+          material={{
+            id: watermarkTarget.materialId,
+            url: watermarkTarget.url,
+          }}
+          onSuccess={(newMaterial) => {
+            onWatermarked?.(watermarkTarget.url, newMaterial, "IMAGE");
+            setWatermarkTarget(null);
+          }}
+        />
       )}
     </div>
   );

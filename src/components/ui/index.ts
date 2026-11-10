@@ -17,4 +17,6 @@ export * from "./textarea";
 export * from "./tabs";
 export * from "./popover";
 export * from "./jira-date-picker";
+export * from "./date-range-picker";
+export * from "./pagination";
 export * from "./vietnam-address-picker";

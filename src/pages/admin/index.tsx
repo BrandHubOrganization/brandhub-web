@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -11,35 +11,36 @@ import {
   Activity,
 } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { AdminAccountsPanel } from "@/pages/admin/components/AdminAccountsPanel";
-import { AdminTrendReplayPanel } from "@/pages/admin/components/AdminTrendReplayPanel";
-import { AdminTrendPanel } from "@/pages/admin/components/AdminTrendPanel";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
-import { AdminModerationPanel } from "@/pages/admin/components/AdminModerationPanel";
-import { AdminNotificationsPanel } from "@/pages/admin/components/AdminNotificationsPanel";
-import { AdminMailSuppressionsPanel } from "@/pages/admin/components/AdminMailSuppressionsPanel";
-import { AdminMailBatchesPanel } from "@/pages/admin/components/AdminMailBatchesPanel";
-import { AdminMailTemplatesPanel } from "@/pages/admin/components/AdminMailTemplatesPanel";
-import { AdminReportForm } from "@/pages/admin/components/AdminReportExport";
 import { AdminCrawlConfigPanel } from "@/pages/admin/components/AdminCrawlConfigPanel";
-import { presetRange } from "@/services/adminRevenueService";
+import {
+  AdminEmailHubPanel,
+  AdminEmailHubTabs,
+} from "@/pages/admin/components/AdminEmailHubPanel";
+import { AdminInvoicesPanel } from "@/pages/admin/components/AdminInvoicesPanel";
+import { AdminMailSuppressionsPanel } from "@/pages/admin/components/AdminMailSuppressionsPanel";
+import { AdminModerationPanel } from "@/pages/admin/components/AdminModerationPanel";
 import {
   AdminOverviewActions,
   AdminOverviewPanel,
 } from "@/pages/admin/components/AdminOverviewPanel";
+import { AdminRevenuePanel } from "@/pages/admin/components/AdminRevenuePanel";
+import { AdminTrendPanel } from "@/pages/admin/components/AdminTrendPanel";
+import { AdminTrendReplayPanel } from "@/pages/admin/components/AdminTrendReplayPanel";
+import type { EmailHubTab } from "@/pages/admin/hooks/useAdminEmailHub";
 
 const views = [
   "overview",
   "users",
   "moderation",
   "revenue",
+  "invoices",
   "email",
   "mailTemplates",
   "mailBatches",
   "mailSuppressions",
-  "reports",
   "crawl",
   "trendReplay",
   "trendPipeline",
@@ -47,21 +48,33 @@ const views = [
   "trendGraph",
 ];
 
+const AI_VIEWS = [
+  "trends",
+  "crawl",
+  "trendPipeline",
+  "trendGraph",
+  "trendReplay",
+];
+
+const EMAIL_HUB_VIEWS = ["email", "mailTemplates", "mailBatches"];
+
 const AdminTrendGraphPanel = lazy(
   () => import("@/pages/admin/components/AdminTrendGraphPanel"),
 );
+
 const descriptions: Record<string, string> = {
   overview: "admin.overview.description",
   users: "admin.accounts.description",
+  invoices: "subscription.invoices.adminDescription",
   crawl: "admin.crawl.description",
   trendReplay: "admin.trendReplay.description",
   trendPipeline: "admin.crawl.description",
   trends: "admin.trends.description",
   trendGraph: "admin.trendGraph.description",
+  email: "admin.emailHub.subtitle",
   mailTemplates: "mailTemplate.admin.description",
   mailBatches: "mailTemplate.admin.batchesDescription",
   mailSuppressions: "mailTemplate.admin.suppressionsDescription",
-  reports: "admin.reports.description",
   moderation: "admin.moderation.description",
 };
 
@@ -86,15 +99,15 @@ export function AdminAiNavActions({ currentView }: { currentView: string }) {
       className="flex flex-wrap items-center gap-1.5 sm:gap-2"
     >
       {aiTrendNavItems.map(({ key, icon: Icon, labelKey }) => {
-        const active = normalizedView === key;
+        const isActive = normalizedView === key;
         return (
           <Link
             key={key}
             to={`/admin?view=${key}`}
-            aria-current={active ? "page" : undefined}
+            aria-current={isActive ? "page" : undefined}
             className={cn(
               "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors",
-              active
+              isActive
                 ? "bg-brand-orange text-white"
                 : "bg-card hover:bg-muted text-muted-foreground border-border border",
             )}
@@ -108,94 +121,118 @@ export function AdminAiNavActions({ currentView }: { currentView: string }) {
   );
 }
 
+function resolveView(requested: string): string {
+  if (requested === "reports") return "overview";
+  return views.includes(requested) ? requested : "overview";
+}
+
+function resolveEmailHubTab(view: string): EmailHubTab {
+  if (view === "mailTemplates") return "templates";
+  if (view === "mailBatches") return "history";
+  return "compose";
+}
+
+function resolveTitleKey(view: string): string {
+  if (view === "overview") return "admin.overview.title";
+  if (view === "trendPipeline") return "admin.navigation.crawl";
+  if (EMAIL_HUB_VIEWS.includes(view)) return "admin.emailHub.title";
+  return `admin.navigation.${view}`;
+}
+
+interface AdminRenderOptions {
+  view: string;
+  timezone: string;
+  onTimezoneChange: (timezone: string) => void;
+  emailTab: EmailHubTab;
+  onEmailTabChange: (tab: EmailHubTab) => void;
+  loadingLabel: string;
+}
+
+function renderAdminContent(options: AdminRenderOptions) {
+  const { view, timezone, emailTab, onEmailTabChange, loadingLabel } = options;
+  if (view === "overview") return <AdminOverviewPanel timezone={timezone} />;
+  if (view === "users") return <AdminAccountsPanel />;
+  if (view === "moderation") return <AdminModerationPanel />;
+  if (view === "revenue") return <AdminRevenuePanel />;
+  if (view === "invoices") return <AdminInvoicesPanel />;
+  if (EMAIL_HUB_VIEWS.includes(view)) {
+    return (
+      <AdminEmailHubPanel initialTab={resolveEmailHubTab(view)} activeTab={emailTab} onTabChange={onEmailTabChange} />
+    );
+  }
+  if (view === "mailSuppressions") return <AdminMailSuppressionsPanel />;
+  if (view === "crawl" || view === "trendPipeline") return <AdminCrawlConfigPanel />;
+  if (view === "trendReplay") return <AdminTrendReplayPanel />;
+  if (view === "trends") return <AdminTrendPanel />;
+  if (view === "trendGraph") {
+    return (
+      <Suspense fallback={<Skeleton className="h-96 w-full" aria-label={loadingLabel} />}>
+        <AdminTrendGraphPanel />
+      </Suspense>
+    );
+  }
+  return null;
+}
+
+function renderAdminHeaderActions(options: AdminRenderOptions) {
+  const { view, timezone, onTimezoneChange, emailTab, onEmailTabChange } =
+    options;
+  if (view === "overview") {
+    return (
+      <AdminOverviewActions
+        timezone={timezone}
+        onTimezoneChange={onTimezoneChange}
+      />
+    );
+  }
+  if (AI_VIEWS.includes(view)) {
+    return <AdminAiNavActions currentView={view} />;
+  }
+  if (EMAIL_HUB_VIEWS.includes(view)) {
+    return (
+      <AdminEmailHubTabs activeTab={emailTab} onTabChange={onEmailTabChange} />
+    );
+  }
+  return undefined;
+}
+
 export function AdminPage() {
   const { t } = useTranslation();
   const [params] = useSearchParams();
-  const requested = params.get("view") || "overview";
-  const view = views.includes(requested) ? requested : "overview";
+  const view = resolveView(params.get("view") || "overview");
   const [client] = useState(
     () => new QueryClient({ defaultOptions: { queries: { retry: false } } }),
   );
   const [timezone, setTimezone] = useState("Asia/Ho_Chi_Minh");
+  const [emailTab, setEmailTab] = useState<EmailHubTab>(() =>
+    resolveEmailHubTab(view),
+  );
+
+  useEffect(() => {
+    setEmailTab(resolveEmailHubTab(view));
+  }, [view]);
+
+  const renderOptions: AdminRenderOptions = {
+    view,
+    timezone,
+    onTimezoneChange: setTimezone,
+    emailTab,
+    onEmailTabChange: setEmailTab,
+    loadingLabel: t("admin.loading"),
+  };
+  const content = renderAdminContent(renderOptions);
+  const headerActions = renderAdminHeaderActions(renderOptions);
+
   return (
     <QueryClientProvider client={client}>
       <PageWrapper
-        title={t(
-          view === "overview"
-            ? "admin.overview.title"
-            : view === "trendPipeline"
-              ? "admin.navigation.crawl"
-              : `admin.navigation.${view}`,
-        )}
+        title={t(resolveTitleKey(view))}
         description={t(descriptions[view] ?? `admin.unavailable.${view}`)}
-        hideBanner
-        showGuideButton={false}
-        compact={view === "trendGraph"}
-        actions={
-          view === "overview" ? (
-            <AdminOverviewActions
-              timezone={timezone}
-              onTimezoneChange={setTimezone}
-            />
-          ) : [
-              "trends",
-              "crawl",
-              "trendPipeline",
-              "trendGraph",
-              "trendReplay",
-            ].includes(view) ? (
-            <AdminAiNavActions currentView={view} />
-          ) : undefined
-        }
-        className={cn(
-          "max-w-[1600px] space-y-6 p-4 pb-12 md:p-8 [&>div:first-child]:border-0 [&>div:first-child]:pb-0",
-          view === "trendGraph" && "space-y-3 p-3 md:px-5 md:py-4",
-        )}
+        guideUrl="/help/guide#admin"
+        actions={headerActions}
+        className="w-full space-y-6 p-4 pb-12 md:p-8"
       >
-        {view === "overview" ? (
-          <AdminOverviewPanel timezone={timezone} />
-        ) : view === "users" ? (
-          <AdminAccountsPanel />
-        ) : view === "moderation" ? (
-          <AdminModerationPanel />
-        ) : view === "revenue" ? (
-          <AdminRevenuePanel />
-        ) : view === "email" ? (
-          <AdminNotificationsPanel />
-        ) : view === "mailTemplates" ? (
-          <AdminMailTemplatesPanel />
-        ) : view === "mailSuppressions" ? (
-          <AdminMailSuppressionsPanel />
-        ) : view === "mailBatches" ? (
-          <AdminMailBatchesPanel />
-        ) : view === "crawl" || view === "trendPipeline" ? (
-          <AdminCrawlConfigPanel />
-        ) : view === "reports" ? (
-          <section className="bg-card border-border w-full rounded-xl border p-5 lg:p-6">
-            <AdminReportForm
-              defaults={{
-                type: "REVENUE",
-                ...presetRange("month", "Asia/Ho_Chi_Minh"),
-                timezone: "Asia/Ho_Chi_Minh",
-              }}
-            />
-          </section>
-        ) : view === "trendReplay" ? (
-          <AdminTrendReplayPanel />
-        ) : view === "trends" ? (
-          <AdminTrendPanel />
-        ) : view === "trendGraph" ? (
-          <Suspense
-            fallback={
-              <Skeleton
-                className="h-96 w-full"
-                aria-label={t("admin.loading")}
-              />
-            }
-          >
-            <AdminTrendGraphPanel />
-          </Suspense>
-        ) : (
+        {content ?? (
           <section className="bg-card border-border flex min-h-80 flex-col items-center justify-center rounded-xl border p-6 text-center">
             <span className="bg-muted text-muted-foreground mb-4 rounded-full p-4">
               <Construction className="size-7" />

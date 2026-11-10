@@ -65,7 +65,7 @@ export function PageWrapper({
   return (
     <div
       className={cn(
-        "w-full max-w-full space-y-6 overflow-x-clip py-4 pb-24 md:py-6",
+        "w-full max-w-full min-w-0 space-y-6 overflow-x-clip py-4 pb-24 md:py-6",
         isPublicHelp ? "px-0" : "px-4 md:px-8",
         !fullWidth && "mx-auto max-w-7xl",
         compact && "space-y-3 p-3 pb-24 md:px-5 md:py-4 md:pb-24",
@@ -107,7 +107,7 @@ export function PageWrapper({
                 </p>
               )}
             </div>
-            <div className="flex shrink-0 flex-wrap items-center gap-2 self-start md:self-center">
+            <div className="flex min-w-0 flex-wrap items-center gap-2 self-start md:max-w-[60%] md:justify-end md:self-center">
               {showGuideButton && (
                 <Link
                   to={guideUrl}
@@ -210,7 +210,7 @@ export function PageWrapper({
               </div>
 
               {/* Action Buttons & Guide Button */}
-              <div className="relative z-10 flex shrink-0 flex-wrap items-center gap-2 self-start md:self-center">
+              <div className="relative z-10 flex min-w-0 flex-wrap items-center gap-2 self-start md:max-w-[60%] md:justify-end md:self-center">
                 {showGuideButton && (
                   <Link
                     to={guideUrl}

@@ -20,6 +20,7 @@ import PageWrapper from "@/components/layout/PageWrapper";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
+import { SeoHead } from "@/components/seo/SeoHead";
 
 export interface FaqItem {
   id: string;
@@ -336,7 +337,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "general",
     question: "Accidentally submitted the wrong post content, how can I withdraw it?",
     answer:
-      "Post withdrawal process on BrandHub:\n\n• Method 1 - Direct Self-Withdrawal (For Content Creators / Assignees):\n  - Step 1: Navigate to 'Tasks' (/workspaces/:id/tasks) in the sidebar and open the relevant task details.\n  - Step 2: In the 'Result approval' section, while the task is in 'Pending Approval' status (before Manager decision), click the 'Withdraw submission' button (RotateCcw icon).\n  - Step 3: Confirm in the dialog. The task will immediately return to 'In Progress' status and automatically unlock the 'Open Editor' button so you can update your draft.\n\n• Method 2 - Reviewer Rejection in 'Post approvals' (/task-approvals):\n  - If a Manager or Client is reviewing, they can open 'Post approvals' (/task-approvals) or the task details and click 'Reject' with feedback notes. The task reverts to 'In Progress' status, allowing you to update and click 'Submit for approval' in a new review round.",
+      "Post withdrawal process on BrandHub:\n\n• Method 1 - Direct Self-Withdrawal (For Creators / Assignees):\n  - Step 1: Navigate to 'Tasks' (/workspaces/:id/tasks) in the sidebar and open the relevant task details.\n  - Step 2: In the 'Result approval' section, while the task is in 'Pending Approval' status (before Manager decision), click the 'Withdraw submission' button (RotateCcw icon).\n  - Step 3: Confirm in the dialog. The task will immediately return to 'In Progress' status and automatically unlock the 'Open Editor' button so you can update your draft.\n\n• Method 2 - Reviewer Rejection in 'Post approvals' (/task-approvals):\n  - If a Manager or Client is reviewing, they can open 'Post approvals' (/task-approvals) or the task details and click 'Reject' with feedback notes. The task reverts to 'In Progress' status, allowing you to update and click 'Submit for approval' in a new review round.",
     tags: ["withdraw post", "submitted by mistake", "pending approval", "edit post", "resubmit", "tasks"],
   },
   {
@@ -408,7 +409,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "workspace",
     question: "Why can't the assignee be changed once a task is in progress?",
     answer:
-      "Cause: To maintain accountability, clear ownership, and audit trail integrity, once an assignee clicks 'Start Working' (task transitions to 'In Progress'), the assignee, initial brief, and deadline are locked. Neither Managers nor Agency Owners can directly reassign a task that is actively in progress.\n\nHow to hand over work:\n• Step 1: The Manager opens task details in 'Tasks' (/workspaces/:id/tasks) and selects 'Cancel Task' with handover notes.\n• Step 2: The Manager creates or assigns a new task from the 'Campaigns' (/campaigns) plan to the new assignee to take over smoothly.",
+      "Cause: To maintain accountability, clear ownership, and audit trail integrity, once an assignee clicks 'Start Working' (task transitions to 'In Progress'), the assignee, initial brief, and deadline are locked. Neither Managers nor Owners can directly reassign a task that is actively in progress.\n\nHow to hand over work:\n• Step 1: The Manager opens task details in 'Tasks' (/workspaces/:id/tasks) and selects 'Cancel Task' with handover notes.\n• Step 2: The Manager creates or assigns a new task from the 'Campaigns' (/campaigns) plan to the new assignee to take over smoothly.",
     tags: ["assignee", "assignment locked", "in progress", "role permissions", "task handover", "tasks"],
   },
   {
@@ -512,7 +513,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "security",
     question: "How to resolve 'Insufficient AI Credits' error when generating copy or images?",
     answer:
-      "Cause: Two possibilities: 1) Your individual user quota has been exhausted; 2) The agency's shared monthly credit pool is fully depleted.\n\nResolution:\n• Team Members / Content Creators: Visit 'AI Credits' (/agency/:id/credit) to check your consumed credits and assigned quota. Contact your Agency Administrator if you need an individual quota increase.\n• Administrators: Visit 'AI Credits' (/agency/:id/credit) to reallocate member limits, top up instant credits via PayOS VietQR bank transfer, or upgrade subscription tier under 'Billing & Plans' / 'Subscription Plans' (/subscription/plans).",
+      "Cause: Two possibilities: 1) Your individual user quota has been exhausted; 2) The agency's shared monthly credit pool is fully depleted.\n\nResolution:\n• Team Members / Creators: Visit 'AI Credits' (/agency/:id/credit) to check your consumed credits and assigned quota. Contact your Owner if you need an individual quota increase.\n• Owners: Visit 'AI Credits' (/agency/:id/credit) to reallocate member limits, top up instant credits via PayOS VietQR bank transfer, or upgrade subscription tier under 'Billing & Plans' / 'Subscription Plans' (/subscription/plans).",
     tags: ["ai credits", "credit quota", "ai credit management", "top up credits", "administrator", "payos", "ai studio"],
   },
   {
@@ -629,6 +630,46 @@ export function HelpFaqPage() {
     });
   }, [FAQ_DATA, searchQuery, selectedCategory]);
 
+  const faqBreadcrumbSchema = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "BrandHub",
+              item: "https://brandhub.id.vn/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: isEn
+                ? "Help Center & FAQ"
+                : "Trung Tâm Trợ Giúp & Câu Hỏi Thường Gặp",
+              item: "https://brandhub.id.vn/help/faq",
+            },
+          ],
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://brandhub.id.vn/help/faq#faqpage",
+          mainEntity: FAQ_DATA.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.answer,
+            },
+          })),
+        },
+      ],
+    }),
+    [isEn, FAQ_DATA],
+  );
+
   return (
     <PageWrapper
       title={
@@ -667,6 +708,20 @@ export function HelpFaqPage() {
         ) : undefined
       }
     >
+      <SeoHead
+        title={
+          isEn
+            ? "Help Center & Frequently Asked Questions (FAQ) | BrandHub"
+            : "Trung Tâm Trợ Giúp & Câu Hỏi Thường Gặp (FAQ) | BrandHub"
+        }
+        description={
+          isEn
+            ? "Find answers on Agency & Workspace setup, Media Package proposals, AI Studio GraphRAG, 4-tier content approval, and social publishing on BrandHub."
+            : "Giải đáp chi tiết về quản trị Agency & Workspace, Gói truyền thông Media Package, AI Studio GraphRAG, phê duyệt nội dung và xuất bản đa kênh trên BrandHub."
+        }
+        canonicalPath="/help/faq"
+        jsonLd={faqBreadcrumbSchema}
+      />
       <div className="space-y-6 sm:space-y-8 max-w-4xl xl:max-w-5xl mx-auto w-full min-w-0">
         {/* Search Bar & Quick Categories */}
         <div className="border-border bg-card rounded-2xl border p-4 sm:p-6 shadow-xs space-y-4 sm:space-y-5 w-full min-w-0">
@@ -764,6 +819,7 @@ export function HelpFaqPage() {
                   >
                     <button
                       type="button"
+                      aria-expanded={isExpanded}
                       onClick={() => setExpandedId(isExpanded ? null : faq.id)}
                       className="w-full flex items-center justify-between p-4 text-left cursor-pointer hover:bg-muted/30 transition-colors"
                     >
@@ -777,21 +833,24 @@ export function HelpFaqPage() {
                       />
                     </button>
 
-                    {isExpanded && (
-                      <div className="border-t border-border/60 bg-muted/15 p-4.5 text-xs text-foreground/90 leading-relaxed space-y-3">
-                        <p className="whitespace-pre-line break-words">{faq.answer}</p>
-                        <div className="flex flex-wrap gap-1.5 pt-1">
-                          {faq.tags.map((tag, idx) => (
-                            <span
-                              key={idx}
-                              className="bg-muted text-muted-foreground text-3xs rounded-md px-2 py-0.5"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
+                    <div
+                      hidden={!isExpanded}
+                      className={`border-t border-border/60 bg-muted/15 p-4.5 text-xs text-foreground/90 leading-relaxed space-y-3 ${
+                        isExpanded ? "block" : "hidden"
+                      }`}
+                    >
+                      <p className="whitespace-pre-line break-words">{faq.answer}</p>
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {faq.tags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-muted text-muted-foreground text-3xs rounded-md px-2 py-0.5"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
                       </div>
-                    )}
+                    </div>
                   </div>
                 );
               })}

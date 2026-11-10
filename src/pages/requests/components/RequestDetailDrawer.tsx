@@ -4,10 +4,6 @@ import {
   FileEdit,
   Ban,
   Clock,
-  Share2,
-  Globe,
-  Video,
-  AtSign,
   Building2,
   Calendar,
   User,
@@ -15,6 +11,7 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import type { ContentRequest, SocialPlatform } from "@/types/contentRequest";
 import { Button } from "@/components/ui/button";
@@ -35,10 +32,10 @@ interface RequestDetailDrawerProps {
 }
 
 const PLATFORM_ICONS: Record<SocialPlatform, React.ReactNode> = {
-  FACEBOOK: <Share2 className="size-3" />,
-  INSTAGRAM: <Globe className="size-3" />,
-  TIKTOK: <Video className="size-3" />,
-  THREADS: <AtSign className="size-3" />,
+  FACEBOOK: <FaFacebook className="size-3 text-[#1877F2]" />,
+  INSTAGRAM: <FaInstagram className="size-3 text-[#E1306C]" />,
+  TIKTOK: <FaTiktok className="size-3" />,
+  THREADS: <FaThreads className="size-3" />,
 };
 
 export const RequestDetailDrawer: React.FC<RequestDetailDrawerProps> = ({

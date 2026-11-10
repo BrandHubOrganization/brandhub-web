@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Calendar as CalendarIcon, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import {
   Dialog,
   DialogContent,
@@ -115,18 +116,13 @@ export function ScheduleModal({
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          <div className="space-y-1.5">
-            <label className="text-foreground text-xs font-medium">
-              Ngày xuất bản (Publish Date)
-            </label>
-            <input
-              type="date"
-              value={date}
-              min={new Date().toISOString().split("T")[0]}
-              onChange={(e) => setDate(e.target.value)}
-              className="border-border bg-card text-foreground focus:border-brand-orange focus:ring-brand-orange/20 h-10 w-full rounded-xl border px-3 text-sm transition-all focus:ring-2 focus:outline-hidden"
-            />
-          </div>
+          <DatePicker
+            label="Ngày xuất bản (Publish Date)"
+            value={date}
+            min={new Date().toISOString().split("T")[0]}
+            onChange={setDate}
+            triggerClassName="h-10 rounded-xl"
+          />
 
           <div className="space-y-1.5">
             <label className="text-foreground text-xs font-medium">

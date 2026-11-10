@@ -1,0 +1,26 @@
+{
+  "name": "BrandHub — Nền tảng Quản trị Thương hiệu & Nội dung Đa kênh AI",
+  "short_name": "BrandHub",
+  "description": "Giải pháp quản trị Agency, lập kế hoạch Media Campaign, sáng tạo nội dung với AI GraphRAG, phê duyệt đa cấp và xuất bản tự động Facebook, Instagram, TikTok, Threads.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#F05A28",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

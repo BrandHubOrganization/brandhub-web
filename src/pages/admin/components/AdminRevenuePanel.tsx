@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { SelectMenu } from "@/components/ui/select-menu";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -13,7 +14,6 @@ import {
   YAxis,
 } from "recharts";
 import { Button } from "@/components/ui/button";
-import { AdminInvoicesPanel } from "@/pages/admin/components/AdminInvoicesPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -24,11 +24,10 @@ import {
   type AdminRevenue,
 } from "@/services/adminRevenueService";
 import { AdminReportDialog } from "@/pages/admin/components/AdminReportExport";
+import { AdminDateRangePicker } from "@/pages/admin/components/AdminDateRangePicker";
 
 type Preset = "month" | "quarter" | "year" | "custom";
 type Grain = "byDay" | "byWeek" | "byMonth";
-const field =
-  "border-input bg-card text-foreground focus-visible:outline-ring h-9 rounded-lg border px-3 text-xs focus-visible:outline-2";
 
 /** Groups daily receipts into weeks (from the period start) or calendar months. */
 function bucket(daily: AdminRevenue["daily"], grain: Grain) {
@@ -64,7 +63,6 @@ export function AdminRevenuePanel() {
     presetRange("month", "Asia/Ho_Chi_Minh"),
   );
   const [plan, setPlan] = useState("");
-  const [grain, setGrain] = useState<Grain | null>(null);
   const [exporting, setExporting] = useState(false);
   const filter = { ...range, timezone, plan };
   const result = useQuery({
@@ -78,9 +76,28 @@ export function AdminRevenuePanel() {
     setPreset(value);
     if (value !== "custom") setRange(presetRange(value, timezone));
   };
-  const days = data?.daily.length ?? 0;
+  const diffDays =
+    range.from && range.to
+      ? Math.max(
+          1,
+          Math.round(
+            (new Date(range.to).getTime() - new Date(range.from).getTime()) /
+              (1000 * 60 * 60 * 24),
+          ) + 1,
+        )
+      : (data?.daily.length ?? 0);
   const activeGrain: Grain =
-    grain ?? (days > 62 ? "byMonth" : days > 14 ? "byWeek" : "byDay");
+    preset === "month"
+      ? "byDay"
+      : preset === "quarter"
+        ? "byWeek"
+        : preset === "year"
+          ? "byMonth"
+          : diffDays <= 31
+            ? "byDay"
+            : diffDays <= 120
+              ? "byWeek"
+              : "byMonth";
   const money = (value: number, currency = "VND") =>
     new Intl.NumberFormat(i18n.language, {
       style: "currency",
@@ -90,8 +107,7 @@ export function AdminRevenuePanel() {
   const compact = new Intl.NumberFormat(i18n.language, { notation: "compact" });
   const count = new Intl.NumberFormat(i18n.language);
   const primary = data?.totals.find((x) => x.currency === "VND");
-  const planReceipts =
-    data?.plans.filter((item) => !plan || item.plan === plan) ?? [];
+  const planReceipts = data?.plans ?? [];
   const planTotal = planReceipts.reduce(
     (total, item) => total + item.revenue,
     0,
@@ -99,8 +115,8 @@ export function AdminRevenuePanel() {
   const others = data?.totals.filter((x) => x.currency !== "VND") ?? [];
 
   return (
-    <div className="space-y-5">
-      <section className="bg-card border-border flex flex-wrap items-center gap-3 rounded-xl border p-3">
+    <div className="w-full min-w-0 space-y-5">
+      <section className="bg-card border-border flex w-full min-w-0 flex-wrap items-center gap-3 rounded-xl border p-3">
         <div
           role="group"
           aria-label={t("admin.revenue.period")}
@@ -124,30 +140,11 @@ export function AdminRevenuePanel() {
           ))}
         </div>
         {preset === "custom" && (
-          <div className="flex flex-wrap items-center gap-2">
-            <input
-              type="date"
-              aria-label={t("admin.revenue.from")}
-              value={range.from}
-              max={range.to}
-              onChange={(e) =>
-                e.target.value &&
-                setRange((r) => ({ ...r, from: e.target.value }))
-              }
-              className={field}
-            />
-            <input
-              type="date"
-              aria-label={t("admin.revenue.to")}
-              value={range.to}
-              min={range.from}
-              onChange={(e) =>
-                e.target.value &&
-                setRange((r) => ({ ...r, to: e.target.value }))
-              }
-              className={field}
-            />
-          </div>
+          <AdminDateRangePicker
+            from={range.from}
+            to={range.to}
+            onChange={(from, to) => setRange({ from, to })}
+          />
         )}
         <SelectMenu
           ariaLabel={t("admin.revenue.plan")}
@@ -241,7 +238,7 @@ export function AdminRevenuePanel() {
 
       {data && (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+          <div className="grid w-full min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
             <Kpi
               label={t("admin.revenue.mrr")}
               value={money(data.mrr)}
@@ -288,7 +285,7 @@ export function AdminRevenuePanel() {
             </p>
           ))}
 
-          <div className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
+          <div className="grid w-full min-w-0 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
             <section className="bg-card border-border min-w-0 rounded-xl border p-5 lg:p-6">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -299,27 +296,14 @@ export function AdminRevenuePanel() {
                     {t("admin.revenue.chartHint", { currency: "VND" })}
                   </p>
                 </div>
-                <div
-                  role="group"
-                  aria-label={t("admin.revenue.chartTitle")}
-                  className="bg-muted/60 border-border flex rounded-lg border p-1"
-                >
-                  {(["byDay", "byWeek", "byMonth"] as const).map((value) => (
-                    <button
-                      key={value}
-                      type="button"
-                      aria-pressed={activeGrain === value}
-                      onClick={() => setGrain(value)}
-                      className={cn(
-                        "focus-visible:outline-ring rounded-md px-3 py-1.5 text-xs transition-colors focus-visible:outline-2",
-                        activeGrain === value
-                          ? "bg-card text-foreground font-semibold shadow-xs"
-                          : "text-muted-foreground hover:text-foreground",
-                      )}
-                    >
-                      {t(`admin.revenue.${value}`)}
-                    </button>
-                  ))}
+                <div className="bg-muted/50 border-border text-muted-foreground inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium">
+                  <span className="size-1.5 rounded-full bg-brand-orange" />
+                  <span>
+                    {t("admin.revenue.grouping", "Hiển thị")}:{" "}
+                    <strong className="text-foreground font-semibold">
+                      {t(`admin.revenue.${activeGrain}`)}
+                    </strong>
+                  </span>
                 </div>
               </div>
               <div className="text-muted-foreground mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs">
@@ -424,36 +408,73 @@ export function AdminRevenuePanel() {
               <p className="text-muted-foreground mt-1 text-xs leading-5">
                 {t("admin.revenue.plansHint")}
               </p>
-              <ul className="mt-5 space-y-4">
-                {planReceipts.map((p) => (
-                  <li key={p.plan}>
-                    <div className="flex items-baseline justify-between gap-3 text-sm">
-                      <span className="font-semibold">{p.displayName}</span>
-                      <span className="font-sans text-sm font-semibold tabular-nums">
-                        {money(p.revenue)}
-                      </span>
-                    </div>
-                    <div className="bg-muted mt-2 h-2 overflow-hidden rounded-full">
-                      <div
-                        className="bg-brand-orange h-full rounded-full"
-                        style={{
-                          width: `${planTotal ? (p.revenue / planTotal) * 100 : 0}%`,
-                        }}
-                      />
-                    </div>
-                    <p className="text-muted-foreground mt-1.5 text-xs">
-                      {t("admin.revenue.planPayments", {
-                        count: p.paidTransactions,
-                      })}
-                      {" · "}
-                      {t("admin.revenue.planShare", {
-                        percent: planTotal
-                          ? Math.round((p.revenue / planTotal) * 100)
-                          : 0,
-                      })}
-                    </p>
-                  </li>
-                ))}
+              <ul className="mt-5 space-y-2">
+                {planReceipts.map((p) => {
+                  const isSelected = plan === p.plan;
+                  return (
+                    <li
+                      key={p.plan}
+                      role="button"
+                      tabIndex={0}
+                      aria-pressed={isSelected}
+                      onClick={() => setPlan(isSelected ? "" : p.plan)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setPlan(isSelected ? "" : p.plan);
+                        }
+                      }}
+                      className={cn(
+                        "group -mx-2.5 cursor-pointer rounded-xl p-2.5 transition-all outline-none",
+                        isSelected
+                          ? "border-brand-orange/40 bg-brand-orange/10 dark:bg-brand-orange/15 shadow-xs border"
+                          : "hover:bg-muted/60 border border-transparent",
+                      )}
+                    >
+                      <div className="flex items-baseline justify-between gap-3 text-sm">
+                        <span
+                          className={cn(
+                            "font-semibold transition-colors",
+                            isSelected
+                              ? "text-brand-orange font-bold"
+                              : "text-foreground group-hover:text-foreground",
+                          )}
+                        >
+                          {p.displayName}
+                        </span>
+                        <span className="font-sans text-sm font-semibold tabular-nums">
+                          {money(p.revenue)}
+                        </span>
+                      </div>
+                      <div className="bg-muted mt-2 h-2 overflow-hidden rounded-full">
+                        <div
+                          className="bg-brand-orange h-full rounded-full transition-all duration-300"
+                          style={{
+                            width: `${planTotal ? (p.revenue / planTotal) * 100 : 0}%`,
+                          }}
+                        />
+                      </div>
+                      <div className="text-muted-foreground mt-1.5 flex items-center justify-between text-xs">
+                        <span>
+                          {t("admin.revenue.planPayments", {
+                            count: p.paidTransactions,
+                          })}
+                          {" · "}
+                          {t("admin.revenue.planShare", {
+                            percent: planTotal
+                              ? Math.round((p.revenue / planTotal) * 100)
+                              : 0,
+                          })}
+                        </span>
+                        {isSelected && (
+                          <span className="text-brand-orange text-[11px] font-medium">
+                            {t("admin.revenue.filtering", "Đang lọc")}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           </div>
@@ -473,7 +494,21 @@ export function AdminRevenuePanel() {
           </div>
         </>
       )}
-      <AdminInvoicesPanel />
+      <div className="bg-card border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border p-4">
+        <div>
+          <h4 className="text-foreground text-sm font-semibold">
+            {t("admin.revenue.invoicesCtaTitle", "Tra cứu lịch sử thanh toán toàn hệ thống")}
+          </h4>
+          <p className="text-muted-foreground text-xs">
+            {t("admin.revenue.invoicesCtaDesc", "Xem danh sách chi tiết các hóa đơn, giao dịch PayOS/SePay và trạng thái thanh toán.")}
+          </p>
+        </div>
+        <Button variant="outline" size="sm" asChild className="shrink-0">
+          <Link to="/admin?view=invoices">
+            {t("admin.revenue.viewInvoices", "Xem lịch sử thanh toán")} →
+          </Link>
+        </Button>
+      </div>
       {exporting && (
         <AdminReportDialog
           defaults={{

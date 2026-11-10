@@ -420,7 +420,8 @@
     "uploading": "Đang tải phương tiện lên...",
     "dragDropText": "Kéo thả hình ảnh/video vào đây hoặc",
     "browseText": "duyệt từ máy tính",
-    "supportedFormats": "Hỗ trợ JPG, PNG, GIF, MP4 (tối đa 50MB)"
+    "supportedFormats": "Hỗ trợ JPG, PNG, GIF, MP4 (tối đa 50MB)",
+    "applyWatermark": "Áp watermark"
   },
   "richText": {
     "contentPlaceholder": "Bắt đầu soạn thảo nội dung bài đăng của bạn tại đây...",

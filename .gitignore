@@ -39,3 +39,7 @@ test-results/
 /src/**/__tests__/
 /src/**/tests/
 
+# Graphify Knowledge Graph outputs
+graphify-out/
+
+
