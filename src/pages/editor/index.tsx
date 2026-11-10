@@ -394,7 +394,12 @@ function EditorWorkspace({
       )}
       {taskEditor && workspaceId && taskId && (
         <TaskEditorNotice
-          task={taskEditor}
+          task={
+            // Role tasks: each section shows its own lock reason, no page-wide "no permission".
+            postSections?.sections && taskEditor.blockedReason === "FORBIDDEN"
+              ? { ...taskEditor, blockedReason: null }
+              : taskEditor
+          }
           isDirty={isDirty}
           busy={isSaving || isSubmitting}
           workspaceId={workspaceId}
