@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
   useRef,
   useState,
   useEffect,
@@ -46,6 +47,12 @@ import {
 } from "@/pages/editor/components/TaskEditorControls";
 import { useSearchParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { SectionFrame } from "@/components/task-sections/SectionFrame";
+import {
+  SectionFieldsBlock,
+  SectionSlot,
+} from "@/components/task-sections/SectionFieldsBlock";
+import { useTaskSections, type TaskSectionsApi } from "@/hooks/useTaskSections";
 import {
   PLATFORM_BRAND,
   PLATFORM_ICON,
@@ -55,6 +62,7 @@ type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
   handlePublishNow?: () => void | Promise<void>;
   scheduledAt?: string | null;
   taskEditor?: TaskEditorState;
+  postSections?: PostSections;
   storedMedia?: Record<
     string,
     {
@@ -72,6 +80,52 @@ type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
   ) => void;
 };
 
+type PostSections = ReturnType<typeof useTaskEditorForm>["postSections"];
+type PostPart = "CAPTION" | "MEDIA" | "CHANNELS";
+
+/**
+ * Post area (caption, media, channels) of a task with role subtasks: framed as its section, saved
+ * through the post editor. Without role subtasks it renders the area unchanged.
+ */
+function PostSectionFrame({
+  sectionKey,
+  api,
+  post,
+  reload,
+  isEmpty,
+  children,
+}: {
+  sectionKey: string;
+  api?: TaskSectionsApi;
+  post?: PostSections;
+  reload?: () => void;
+  isEmpty?: boolean;
+  children: ReactNode;
+}) {
+  const section = api?.sections?.find((s) => s.key === sectionKey);
+  if (!api || !post?.sections || !section) return <>{children}</>;
+  const dirty = post.dirtyKeys.includes(sectionKey);
+  return (
+    <SectionFrame
+      section={section}
+      api={api}
+      isEmpty={isEmpty}
+      saveBinding={{
+        dirty,
+        state: post.conflictKeys.includes(sectionKey)
+          ? "conflict"
+          : dirty && post.isSaving
+            ? "saving"
+            : undefined,
+        save: post.save,
+        reload,
+      }}
+    >
+      {children}
+    </SectionFrame>
+  );
+}
+
 /**
  * Content Creator workspace based on the approved Figma UI in Uibrandhubs.
  * The editor uses BrandHub components and persists drafts through the Business
@@ -80,9 +134,11 @@ type EditorForm = Omit<ReturnType<typeof useEditorForm>, "handlePublishNow"> & {
 function EditorWorkspace({
   form,
   taskId,
+  sectionsApi,
 }: {
   form: EditorForm;
   taskId?: string;
+  sectionsApi?: TaskSectionsApi;
 }) {
   const { t } = useTranslation();
   const { id: routeWorkspaceId } = useParams<{ id: string }>();
@@ -138,7 +194,37 @@ function EditorWorkspace({
     handlePublishNow,
     scheduledAt,
     taskEditor,
+    postSections,
   } = form;
+  const sectionList = postSections?.sections
+    ? sectionsApi?.sections
+    : undefined;
+  const sectionOf = (key: string) => sectionList?.find((s) => s.key === key);
+  const video = Boolean(sectionList?.some((s) => s.key.startsWith("VIDEO.")));
+  const partKey = (part: PostPart) =>
+    video
+      ? part === "MEDIA"
+        ? "VIDEO.EDIT"
+        : `VIDEO.${part}`
+      : `POST.${part}`;
+  /** Read-only for the whole post, or for this section when the task has role subtasks. */
+  const lockedPart = (part: PostPart) =>
+    Boolean(taskEditor?.isReadOnly) ||
+    sectionOf(partKey(part))?.canEdit === false;
+  const frame = (part: PostPart, isEmpty: boolean, children: ReactNode) => (
+    <PostSectionFrame
+      sectionKey={partKey(part)}
+      api={sectionsApi}
+      post={postSections}
+      reload={taskEditor?.reload}
+      isEmpty={isEmpty}
+    >
+      {children}
+    </PostSectionFrame>
+  );
+  const ownSections = ["POST.BRIEF", "VIDEO.SCRIPT", "VIDEO.SHOOT"]
+    .map(sectionOf)
+    .filter((s) => s !== undefined);
 
   const moderation = useEditorModeration(
     workspaceId,
@@ -383,7 +469,23 @@ function EditorWorkspace({
           )}
         </aside>
 
-        <main className="order-1 min-w-0 xl:order-2">
+        <main className="order-1 min-w-0 space-y-4 xl:order-2">
+          {sectionsApi &&
+            ownSections.map((section) =>
+              section.key === "VIDEO.SHOOT" ? (
+                <SectionSlot
+                  key={section.key}
+                  section={section}
+                  api={sectionsApi}
+                />
+              ) : (
+                <SectionFieldsBlock
+                  key={section.key}
+                  section={section}
+                  api={sectionsApi}
+                />
+              ),
+            )}
           <section className="border-border bg-card relative rounded-xl border shadow-2xs">
             <div className="border-border bg-muted/30 border-b p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -475,12 +577,16 @@ function EditorWorkspace({
               )}
 
               {/* Nền tảng mục tiêu xuất bản */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-muted-foreground mr-1 text-xs font-medium">
-                  Đăng lên:
-                </span>
-                {(["FACEBOOK", "INSTAGRAM", "TIKTOK", "THREADS"] as const).map(
-                  (platform) => {
+              {frame(
+                "CHANNELS",
+                targetPlatforms.length === 0,
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-muted-foreground mr-1 text-xs font-medium">
+                    Đăng lên:
+                  </span>
+                  {(
+                    ["FACEBOOK", "INSTAGRAM", "TIKTOK", "THREADS"] as const
+                  ).map((platform) => {
                     const isSelected = targetPlatforms.includes(platform);
                     const isConnected = connectedPlatforms.includes(platform);
                     const Icon = PLATFORM_ICON[platform];
@@ -488,7 +594,7 @@ function EditorWorkspace({
                       <button
                         key={platform}
                         type="button"
-                        disabled={taskEditor?.isReadOnly}
+                        disabled={lockedPart("CHANNELS")}
                         onClick={() => toggleTargetPlatform(platform)}
                         className={cn(
                           "flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all",
@@ -526,74 +632,83 @@ function EditorWorkspace({
                         )}
                       </button>
                     );
-                  },
-                )}
-              </div>
-
-              {isDocsMode ? (
-                <DocsCaptionEditor
-                  value={caption}
-                  onChange={handleCaptionChange}
-                  readOnly={taskEditor?.isReadOnly}
-                />
-              ) : (
-                <RichTextEditor
-                  value={caption}
-                  onChange={handleCaptionChange}
-                  targetPlatforms={targetPlatforms}
-                  readOnly={taskEditor?.isReadOnly}
-                  workspaceId={workspaceId}
-                  taskId={taskId}
-                />
+                  })}
+                </div>,
               )}
-              <EditorModerationStatus snapshot={moderation.snapshot} />
 
-              <section className="border-border bg-muted/20 space-y-3 rounded-xl border p-3">
-                <div>
-                  <h2 className="text-foreground text-xs font-semibold">
-                    Tài nguyên bài đăng
-                  </h2>
-                  <p className="text-muted-foreground text-2xs mt-0.5">
-                    Ảnh được chọn sẽ trở thành reference cho AI và phần mô
-                    phỏng.
-                  </p>
-                </div>
-                <div inert={taskEditor?.isReadOnly}>
-                  <MediaDropzone
-                    onUploaded={handleRepositoryMedia}
-                    mediaUrls={mediaUrls}
-                    onChange={handleMediaUrlsChange}
-                    workspaceId={workspaceId}
-                    storedMedia={storedMedia}
-                    onWatermarked={(oldUrl, newMaterial, mediaType) =>
-                      handleReplaceMedia?.(
-                        oldUrl,
-                        newMaterial.url,
-                        newMaterial.id,
-                        mediaType,
-                      )
-                    }
-                  />
-                </div>
-              </section>
+              {frame(
+                "CAPTION",
+                !caption.trim() && hashtags.length === 0,
+                <div className="space-y-4">
+                  {isDocsMode ? (
+                    <DocsCaptionEditor
+                      value={caption}
+                      onChange={handleCaptionChange}
+                      readOnly={lockedPart("CAPTION")}
+                    />
+                  ) : (
+                    <RichTextEditor
+                      value={caption}
+                      onChange={handleCaptionChange}
+                      targetPlatforms={targetPlatforms}
+                      readOnly={lockedPart("CAPTION")}
+                      workspaceId={workspaceId}
+                      taskId={taskId}
+                    />
+                  )}
+                  <EditorModerationStatus snapshot={moderation.snapshot} />
+                  <section className="border-border relative z-10 rounded-xl border p-3">
+                    <HashtagInputWithSuggestions
+                      hashtags={hashtags}
+                      onChange={handleHashtagsChange}
+                      workspaceId={workspaceId}
+                      userId={userId}
+                      canApply={role === "CREATOR"}
+                    />
+                    <AiHashtagSuggestions
+                      caption={caption}
+                      platform={targetPlatforms[0]}
+                      workspaceId={workspaceId}
+                      userId={userId}
+                      hashtags={hashtags}
+                      onChange={handleHashtagsChange}
+                    />
+                  </section>
+                </div>,
+              )}
 
-              <section className="border-border relative z-10 rounded-xl border p-3">
-                <HashtagInputWithSuggestions
-                  hashtags={hashtags}
-                  onChange={handleHashtagsChange}
-                  workspaceId={workspaceId}
-                  userId={userId}
-                  canApply={role === "CREATOR"}
-                />
-                <AiHashtagSuggestions
-                  caption={caption}
-                  platform={targetPlatforms[0]}
-                  workspaceId={workspaceId}
-                  userId={userId}
-                  hashtags={hashtags}
-                  onChange={handleHashtagsChange}
-                />
-              </section>
+              {frame(
+                "MEDIA",
+                mediaUrls.length === 0,
+                <section className="border-border bg-muted/20 space-y-3 rounded-xl border p-3">
+                  <div>
+                    <h2 className="text-foreground text-xs font-semibold">
+                      Tài nguyên bài đăng
+                    </h2>
+                    <p className="text-muted-foreground text-2xs mt-0.5">
+                      Ảnh được chọn sẽ trở thành reference cho AI và phần mô
+                      phỏng.
+                    </p>
+                  </div>
+                  <div inert={lockedPart("MEDIA")}>
+                    <MediaDropzone
+                      onUploaded={handleRepositoryMedia}
+                      mediaUrls={mediaUrls}
+                      onChange={handleMediaUrlsChange}
+                      workspaceId={workspaceId}
+                      storedMedia={storedMedia}
+                      onWatermarked={(oldUrl, newMaterial, mediaType) =>
+                        handleReplaceMedia?.(
+                          oldUrl,
+                          newMaterial.url,
+                          newMaterial.id,
+                          mediaType,
+                        )
+                      }
+                    />
+                  </div>
+                </section>,
+              )}
             </div>
           </section>
         </main>
@@ -670,7 +785,16 @@ function LinkedTaskEditor({
   taskId: string;
 }) {
   const form = useTaskEditorForm(workspaceId, taskId);
-  return <EditorWorkspace form={form} taskId={taskId} />;
+  const sections = form.postSections.sections;
+  const sectionsApi = useTaskSections(workspaceId, taskId, Boolean(sections));
+  const { replaceAll } = sectionsApi;
+  // Post reads/saves return the fresh section list (revisions moved by our own save).
+  useEffect(() => {
+    if (sections) replaceAll(sections);
+  }, [sections, replaceAll]);
+  return (
+    <EditorWorkspace form={form} taskId={taskId} sectionsApi={sectionsApi} />
+  );
 }
 
 export function EditorPage() {

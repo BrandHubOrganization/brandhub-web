@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -305,7 +306,7 @@ export function MyTasksSection({
               workspaceNames[task.workspaceId] ||
               task.workspaceId.slice(0, 8);
 
-            const isPostType = task.type === "POST";
+            const isPostType = opensPostEditor(task.type);
 
             return (
               <div

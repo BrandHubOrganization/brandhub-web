@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +27,7 @@ export function TaskStartAction({
     try {
       await start();
       toast.success(t("tasks.workflow.started"));
-      if (task?.type === "POST") {
+      if (task && opensPostEditor(task.type)) {
         navigate(`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`);
       }
     } catch (failure) {
@@ -42,7 +43,7 @@ export function TaskStartAction({
       <TaskWorkflowError message={error} />
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="orange" loading={pending} onClick={() => void submit()}>
-          {task?.type === "POST" ? (
+          {opensPostEditor(task?.type) ? (
             <>
               <PenSquare className="mr-1.5 size-4" />
               Bắt đầu &amp; Soạn bài viết

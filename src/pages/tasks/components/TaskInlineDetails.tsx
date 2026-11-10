@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -148,7 +149,7 @@ export function TaskPublishTimeField({
   const { data: taskPost } = useTaskPost(
     task.workspaceId,
     task.id,
-    task.type === "POST",
+    opensPostEditor(task.type),
   );
   const post = taskPost?.post;
   const currentPublish = task.publishDate || post?.scheduledAt || null;

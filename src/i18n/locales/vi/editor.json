@@ -623,6 +623,8 @@
     "returned": "Bị trả lại:",
     "conflict": "Người khác vừa lưu phần này. Nội dung bạn đang gõ vẫn còn; bấm Tải lại để lấy bản mới nhất (bản đang gõ sẽ bị thay).",
     "emptyHint": "Chưa có nội dung. Bắt đầu nhập phần việc của bạn.",
-    "empty": "Chưa có nội dung."
+    "empty": "Chưa có nội dung.",
+    "onePerLine": "Mỗi dòng một mục",
+    "comingSoon": "Khu vực làm việc của phần này sẽ có ở bản sau. Bạn vẫn có thể nộp, duyệt hoặc trả lại phần ở trên."
   }
 }

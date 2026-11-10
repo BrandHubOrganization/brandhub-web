@@ -605,6 +605,8 @@
     "returned": "Returned:",
     "conflict": "Someone else just saved this section. Your typing is kept; Reload to get the latest copy (it replaces your typing).",
     "emptyHint": "Nothing here yet. Start with your part.",
-    "empty": "Nothing here yet."
+    "empty": "Nothing here yet.",
+    "onePerLine": "One item per line",
+    "comingSoon": "This section's workspace comes in a later release. You can still submit, approve or return it above."
   }
 }

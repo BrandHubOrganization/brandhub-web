@@ -645,5 +645,77 @@
     "INTERNAL_APPROVED": "Đã duyệt nội bộ",
     "CLIENT_APPROVED": "Client đã duyệt",
     "RETURNED": "Bị trả lại"
+  },
+  "sections": {
+    "POST": {
+      "BRIEF": {
+        "title": "Brief & nghiên cứu",
+        "emptyHint": "Ghi chú phỏng vấn, nguồn tham khảo và tư liệu cho người viết.",
+        "fields": {
+          "notes": "Ghi chú",
+          "sources": "Nguồn tham khảo",
+          "materials": "Tư liệu"
+        }
+      },
+      "CAPTION": {
+        "title": "Nội dung bài viết",
+        "emptyHint": "Viết caption và hashtag cho bài đăng.",
+        "fields": {
+          "caption": "Caption",
+          "hashtags": "Hashtag"
+        }
+      },
+      "MEDIA": {
+        "title": "Hình ảnh / Video",
+        "emptyHint": "Tải lên hoặc chọn ảnh, video cho bài đăng.",
+        "fields": {
+          "media": "Tệp media"
+        }
+      },
+      "CHANNELS": {
+        "title": "Kênh đăng & lịch",
+        "emptyHint": "Chọn nền tảng sẽ đăng bài.",
+        "fields": {
+          "targetPlatforms": "Nền tảng",
+          "scheduledAt": "Lịch đăng"
+        }
+      }
+    },
+    "VIDEO": {
+      "SCRIPT": {
+        "title": "Ý tưởng & kịch bản",
+        "emptyHint": "Mô tả ý tưởng và liệt kê từng cảnh quay.",
+        "fields": {
+          "idea": "Ý tưởng",
+          "scenes": "Các cảnh"
+        }
+      },
+      "SHOOT": {
+        "title": "Quay"
+      },
+      "EDIT": {
+        "title": "Dựng video",
+        "emptyHint": "Tải lên video đã dựng.",
+        "fields": {
+          "media": "Tệp video"
+        }
+      },
+      "CAPTION": {
+        "title": "Caption video",
+        "emptyHint": "Viết caption và hashtag cho video.",
+        "fields": {
+          "caption": "Caption",
+          "hashtags": "Hashtag"
+        }
+      },
+      "CHANNELS": {
+        "title": "Kênh đăng & lịch",
+        "emptyHint": "Chọn nền tảng sẽ đăng video.",
+        "fields": {
+          "targetPlatforms": "Nền tảng",
+          "scheduledAt": "Lịch đăng"
+        }
+      }
+    }
   }
 }

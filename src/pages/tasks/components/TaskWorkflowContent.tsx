@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useTaskPost } from "@/pages/tasks/hooks/useTaskPost";
@@ -563,7 +564,7 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
                 )}
 
                 {/* Social Post Content & Review Action Hub */}
-                {task.type === "POST" && !task.allowedActions.canStart && (
+                {opensPostEditor(task.type) && !task.allowedActions.canStart && (
                   <div className="border-brand-orange/30 from-brand-orange/10 via-card to-card relative space-y-3 overflow-hidden rounded-xl border bg-gradient-to-br p-4 shadow-xs">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
@@ -738,7 +739,7 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
                         return state.start();
                       }}
                     />
-                    {task.type === "POST" && (
+                    {opensPostEditor(task.type) && (
                       <div className="flex flex-wrap gap-2">
                         <Button
                           variant="outline"
@@ -784,7 +785,7 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
                   <TaskPhoneMedia
                     workspaceId={workspaceId}
                     taskId={taskId}
-                    isPostTask={task.type === "POST"}
+                    isPostTask={opensPostEditor(task.type)}
                     isAssignee={task.assigneeId === userId}
                   />
                 )}

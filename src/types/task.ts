@@ -11,6 +11,9 @@ export type TaskType =
 
 /** Task types whose content lives in the post editor (`/editor`). */
 export const POST_EDITOR_TYPES: readonly TaskType[] = ["POST", "SHORT_VIDEO"];
+/** True for task types written in the post editor (`pages/editor`). */
+export const opensPostEditor = (type: string | null | undefined) =>
+  (POST_EDITOR_TYPES as readonly (string | null | undefined)[]).includes(type);
 
 export type TaskStatus =
   | "TODO"

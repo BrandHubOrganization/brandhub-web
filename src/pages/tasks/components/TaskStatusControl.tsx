@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -34,7 +35,7 @@ export function TaskStatusControl({ task }: { task: TaskWorkflow }) {
   const status = task.status;
   const reviewable =
     (status === "IN_PROGRESS" || status === "IN_REVIEW") &&
-    (task.type === "POST" ||
+    (opensPostEditor(task.type) ||
       (task.campaignId !== null &&
         (task.sourceType === "CAMPAIGN" ||
           task.sourceType === "CONTENT_REQUEST")));

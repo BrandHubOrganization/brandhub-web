@@ -81,13 +81,16 @@ export function useTaskSections(
     [t],
   );
 
-  const edit = useCallback((section: TaskSection, patch: Record<string, unknown>) => {
-    setDrafts((prev) => {
-      const next = editDraft(prev, section, patch);
-      draftsRef.current = next;
-      return next;
-    });
-  }, []);
+  const edit = useCallback(
+    (section: TaskSection, patch: Record<string, unknown>) => {
+      setDrafts((prev) => {
+        const next = editDraft(prev, section, patch);
+        draftsRef.current = next;
+        return next;
+      });
+    },
+    [],
+  );
 
   /** Saves the section's draft; resolves false when it could not be saved. */
   const save = useCallback(
@@ -111,7 +114,8 @@ export function useTaskSections(
           return true;
         })
         .catch((err) => {
-          if (errorCode(err) === "TASK_REVISION_CONFLICT") mark(key, "conflict");
+          if (errorCode(err) === "TASK_REVISION_CONFLICT")
+            mark(key, "conflict");
           else {
             mark(key, "error");
             fail(err);
@@ -189,12 +193,19 @@ export function useTaskSections(
         mark(section.key, null);
         return next;
       } catch (err) {
-        if (errorCode(err) === "TASK_REVISION_CONFLICT") mark(section.key, "conflict");
+        if (errorCode(err) === "TASK_REVISION_CONFLICT")
+          mark(section.key, "conflict");
         else fail(err);
         return null;
       }
     },
     [workspaceId, taskId, put, mark, fail],
+  );
+
+  /** Replace the list from another response (e.g. `TaskPostResponse.sections`). */
+  const replaceAll = useCallback(
+    (list: TaskSection[]) => qc.setQueryData(queryKey, list),
+    [qc, queryKey],
   );
 
   /** Content to render: the local draft when there is one, else the server copy. */
@@ -217,8 +228,7 @@ export function useTaskSections(
     reload,
     act,
     restore,
-    /** Replace the list from another response (e.g. `TaskPostResponse.sections`). */
-    replaceAll: (list: TaskSection[]) => qc.setQueryData(queryKey, list),
+    replaceAll,
   };
 }
 export type TaskSectionsApi = ReturnType<typeof useTaskSections>;

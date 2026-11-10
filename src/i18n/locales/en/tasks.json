@@ -645,5 +645,77 @@
     "INTERNAL_APPROVED": "Approved internally",
     "CLIENT_APPROVED": "Approved by Client",
     "RETURNED": "Returned"
+  },
+  "sections": {
+    "POST": {
+      "BRIEF": {
+        "title": "Brief & research",
+        "emptyHint": "Interview notes, sources and material for the writer.",
+        "fields": {
+          "notes": "Notes",
+          "sources": "Sources",
+          "materials": "Material"
+        }
+      },
+      "CAPTION": {
+        "title": "Post copy",
+        "emptyHint": "Write the caption and hashtags.",
+        "fields": {
+          "caption": "Caption",
+          "hashtags": "Hashtags"
+        }
+      },
+      "MEDIA": {
+        "title": "Images / Video",
+        "emptyHint": "Upload or pick images and videos for the post.",
+        "fields": {
+          "media": "Media files"
+        }
+      },
+      "CHANNELS": {
+        "title": "Channels & schedule",
+        "emptyHint": "Pick the platforms to post to.",
+        "fields": {
+          "targetPlatforms": "Platforms",
+          "scheduledAt": "Schedule"
+        }
+      }
+    },
+    "VIDEO": {
+      "SCRIPT": {
+        "title": "Idea & script",
+        "emptyHint": "Describe the idea and list each scene.",
+        "fields": {
+          "idea": "Idea",
+          "scenes": "Scenes"
+        }
+      },
+      "SHOOT": {
+        "title": "Shoot"
+      },
+      "EDIT": {
+        "title": "Video edit",
+        "emptyHint": "Upload the edited video.",
+        "fields": {
+          "media": "Video file"
+        }
+      },
+      "CAPTION": {
+        "title": "Video caption",
+        "emptyHint": "Write the caption and hashtags for the video.",
+        "fields": {
+          "caption": "Caption",
+          "hashtags": "Hashtags"
+        }
+      },
+      "CHANNELS": {
+        "title": "Channels & schedule",
+        "emptyHint": "Pick the platforms to post the video to.",
+        "fields": {
+          "targetPlatforms": "Platforms",
+          "scheduledAt": "Schedule"
+        }
+      }
+    }
   }
 }
