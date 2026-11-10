@@ -13,6 +13,7 @@ import { ChatChannelComposer } from "@/pages/chat/components/ChatChannelComposer
 import { ChatChannelScheduleNotice } from "@/pages/chat/components/ChatChannelScheduleNotice";
 import { ChatTimeline } from "@/pages/chat/components/ChatTimeline";
 import { ChatLinkedMessage } from "@/pages/chat/components/ChatLinkedMessage";
+import { ChatMediaLightbox } from "@/pages/chat/components/ChatMediaLightbox";
 import type { ChatContextType, ChatConnectionState } from "@/types/chat";
 import type {
   ChatChannel,
@@ -246,6 +247,7 @@ export function ChatConversation(props: ConversationProps) {
           />
         </>
       )}
+      <ChatMediaLightbox />
     </div>
   );
 }

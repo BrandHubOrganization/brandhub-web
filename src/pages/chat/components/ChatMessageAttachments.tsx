@@ -2,25 +2,35 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
-import { Download, FileText, LockKeyhole } from "lucide-react";
+import { Download, FileText, LockKeyhole, Maximize2 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { chatAttachmentService as service } from "@/pages/chat/services/chatAttachmentService";
 import { AdobePdfIcon } from "@/pages/chat/components/ChatAttachmentComposer";
+import { useChatMediaLightbox } from "@/pages/chat/hooks/useChatMediaLightbox";
 import { cn, formatFileSize } from "@/lib/utils";
 
 function Attachment({
   workspace,
   channel,
   id,
+  senderName,
+  senderAvatar,
+  sentAt,
+  channelName,
 }: {
   workspace: string;
   channel: string;
   id: string;
+  senderName?: string;
+  senderAvatar?: string;
+  sentAt?: string;
+  channelName?: string;
 }) {
   const { t } = useTranslation();
   const actor = useAuthStore((s) => s.user?.id);
+  const openLightbox = useChatMediaLightbox((s) => s.openLightbox);
   const host = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -60,7 +70,7 @@ function Attachment({
     ["video/mp4", "video/quicktime"].includes(meta.data.mimeType);
   const isPdf = !!meta.data && meta.data.mimeType === "application/pdf";
   const previewable =
-    (isImage || isVideo) &&
+    (isImage || isVideo || isPdf) &&
     (meta.data?.byteSize ?? 0) <= 50 * 1024 * 1024;
 
   const preview = useQuery({
@@ -90,11 +100,27 @@ function Attachment({
     };
   }, [allowed, preview.data]);
 
+  const handlePreview = () => {
+    if (!contentUrl || !meta.data) return;
+    openLightbox({
+      url: contentUrl,
+      filename: meta.data.filename,
+      mimeType: meta.data.mimeType,
+      byteSize: meta.data.byteSize,
+      senderName,
+      senderAvatar,
+      sentAt,
+      channelName,
+      workspaceId: workspace,
+      channelId: channel,
+      attachmentId: id,
+    });
+  };
+
   const download = async () => {
     setDownloading(true);
     setDownloadError("");
     try {
-      // Re-authorize both metadata and binary on every explicit open/download.
       const current = await service.inspect(workspace, channel, id);
       const blob = await service.content(workspace, channel, id);
       const url = URL.createObjectURL(blob);
@@ -154,13 +180,23 @@ function Attachment({
             <img
               src={contentUrl}
               alt={meta.data.filename}
-              className="max-h-80 w-auto cursor-pointer rounded-xl object-contain transition-opacity hover:opacity-95"
+              className="max-h-80 w-auto cursor-pointer rounded-xl object-contain transition-transform hover:scale-[1.01]"
               loading="lazy"
-              onClick={() => void download()}
-              title={meta.data.filename}
+              onClick={handlePreview}
+              title={`${meta.data.filename} - Bấm để phóng to`}
             />
           )}
-          <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100">
+          <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80"
+              onClick={handlePreview}
+              aria-label="Xem trước phóng to"
+              title="Xem ảnh phóng to"
+            >
+              <Maximize2 className="size-3.5" />
+            </Button>
             <Button
               variant="secondary"
               size="icon"
@@ -169,6 +205,7 @@ function Attachment({
               disabled={downloading}
               onClick={() => void download()}
               aria-label={t("chat.attachments.download")}
+              title="Tải về máy"
             >
               <Download className="size-3.5" />
             </Button>
@@ -187,7 +224,17 @@ function Attachment({
               className="max-h-72 w-full max-w-md rounded-xl border border-border/70 bg-black"
             />
           )}
-          <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100">
+          <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80"
+              onClick={handlePreview}
+              aria-label="Xem trước video toàn màn hình"
+              title="Xem toàn màn hình"
+            >
+              <Maximize2 className="size-3.5" />
+            </Button>
             <Button
               variant="secondary"
               size="icon"
@@ -196,13 +243,22 @@ function Attachment({
               disabled={downloading}
               onClick={() => void download()}
               aria-label={t("chat.attachments.download")}
+              title="Tải về máy"
             >
               <Download className="size-3.5" />
             </Button>
           </div>
         </div>
       ) : (
-        <div className="group relative flex h-[76px] min-w-[220px] max-w-sm items-center gap-3 rounded-2xl border border-border/80 bg-card p-3 shadow-2xs transition-colors hover:border-border">
+        <div
+          className={cn(
+            "group relative flex h-[76px] min-w-[220px] max-w-sm items-center gap-3 rounded-2xl border border-border/80 bg-card p-3 shadow-2xs transition-colors hover:border-border",
+            isPdf && contentUrl && "cursor-pointer hover:bg-muted/30",
+          )}
+          onClick={() => {
+            if (isPdf && contentUrl) handlePreview();
+          }}
+        >
           <div
             className={cn(
               "flex size-12 shrink-0 items-center justify-center rounded-xl font-bold text-white shadow-2xs",
@@ -233,17 +289,38 @@ function Attachment({
                 : ""}
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8 shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
-            loading={downloading}
-            disabled={downloading}
-            onClick={() => void download()}
-            aria-label={t("chat.attachments.download")}
-          >
-            <Download className="size-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            {isPdf && contentUrl && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePreview();
+                }}
+                aria-label="Xem trước PDF"
+                title="Xem trước PDF"
+              >
+                <Maximize2 className="size-4" />
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8 shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
+              loading={downloading}
+              disabled={downloading}
+              onClick={(e) => {
+                e.stopPropagation();
+                void download();
+              }}
+              aria-label={t("chat.attachments.download")}
+              title="Tải về máy"
+            >
+              <Download className="size-4" />
+            </Button>
+          </div>
         </div>
       )}
       {downloadError && (
@@ -259,16 +336,33 @@ export function ChatMessageAttachments({
   workspace,
   channel,
   ids,
+  senderName,
+  senderAvatar,
+  sentAt,
+  channelName,
 }: {
   workspace: string;
   channel: string;
   ids?: string[];
+  senderName?: string;
+  senderAvatar?: string;
+  sentAt?: string;
+  channelName?: string;
 }) {
   if (!ids?.length) return null;
   return (
     <div className="mt-2 flex flex-wrap items-start gap-2.5">
       {ids.slice(0, 5).map((id) => (
-        <Attachment key={id} workspace={workspace} channel={channel} id={id} />
+        <Attachment
+          key={id}
+          workspace={workspace}
+          channel={channel}
+          id={id}
+          senderName={senderName}
+          senderAvatar={senderAvatar}
+          sentAt={sentAt}
+          channelName={channelName}
+        />
       ))}
     </div>
   );
