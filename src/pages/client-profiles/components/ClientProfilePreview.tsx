@@ -88,9 +88,10 @@ export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
             <h4 className="text-muted-foreground mb-1.5 text-[11px] font-semibold tracking-wider uppercase">
               {t("clientProfile.descriptionLabel", "Mô tả công ty")}
             </h4>
-            <p className="text-foreground/85 line-clamp-4 text-xs leading-relaxed whitespace-pre-line">
-              {v.description.trim()}
-            </p>
+            <div
+              className="prose prose-sm dark:prose-invert text-foreground/85 line-clamp-4 max-w-none text-xs leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: v.description }}
+            />
           </div>
         ) : (
           <div className="border-border text-muted-foreground/60 border-t pt-3 text-center text-xs italic">
@@ -193,7 +194,10 @@ export function ClientProfilePreview({ values }: ClientProfilePreviewProps) {
               <span className="text-muted-foreground mb-0.5 block text-[10px] font-semibold tracking-wider uppercase">
                 {t("clientProfile.noteLabel", "Ghi chú")}:
               </span>
-              <span className="text-foreground/80 italic">{v.note.trim()}</span>
+              <div
+                className="prose prose-sm dark:prose-invert text-foreground/80 max-w-none text-xs italic leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: v.note }}
+              />
             </div>
           </div>
         )}

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 import { VietnamAddressPicker } from "@/components/ui/vietnam-address-picker";
 import { BUDGET_RANGES } from "@/pages/client-profiles/constants";
 import { COMPANY_SIZES } from "@/pages/agency/constants";
@@ -924,46 +924,30 @@ export function ClientProfileForm({
           />
         </div>
 
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <Label className="text-xs font-semibold tracking-wide">
-              {t(
-                "clientProfile.descriptionLabel",
-                "Mô tả / Giới thiệu thương hiệu",
-              )}
-            </Label>
-            <CharacterCounter current={values.description.length} max={1000} />
-          </div>
-          <Textarea
-            value={values.description}
-            onChange={set("description")}
-            maxLength={1000}
-            placeholder={t(
-              "clientProfile.descriptionHint",
-              "Giới thiệu ngắn về thương hiệu: sản phẩm chính, khách hàng mục tiêu, định vị thị trường...",
-            )}
-            rows={4}
-          />
-        </div>
+        <RichTextInput
+          label={t(
+            "clientProfile.descriptionLabel",
+            "Mô tả / Giới thiệu thương hiệu",
+          )}
+          placeholder={t(
+            "clientProfile.descriptionHint",
+            "Giới thiệu ngắn về thương hiệu: sản phẩm chính, khách hàng mục tiêu, định vị thị trường...",
+          )}
+          value={values.description}
+          onChange={(html) =>
+            setValues((prev) => ({ ...prev, description: html }))
+          }
+        />
 
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <Label className="text-xs font-semibold tracking-wide">
-              {t("clientProfile.noteLabel", "Ghi chú nội bộ")}
-            </Label>
-            <CharacterCounter current={values.note.length} max={500} />
-          </div>
-          <Textarea
-            value={values.note}
-            onChange={set("note")}
-            maxLength={500}
-            placeholder={t(
-              "clientProfile.notePlaceholder",
-              "Ghi chú dành riêng cho bạn khi quản lý hồ sơ này...",
-            )}
-            rows={2}
-          />
-        </div>
+        <RichTextInput
+          label={t("clientProfile.noteLabel", "Ghi chú nội bộ")}
+          placeholder={t(
+            "clientProfile.notePlaceholder",
+            "Ghi chú dành riêng cho bạn khi quản lý hồ sơ này...",
+          )}
+          value={values.note}
+          onChange={(html) => setValues((prev) => ({ ...prev, note: html }))}
+        />
       </div>
 
       {/* Action Buttons */}
