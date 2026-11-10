@@ -48,7 +48,7 @@ import {
 
 /**
  * Core Google-Docs / Microsoft-Word style canvas text editor (FR 3.6.10, see
- * brandhub-infrastructure/docs/feature/content-task-workflow/3-6-10-content-writting-view/).
+ * brandhub-infrastructure/docs/feature/3-6-content-task-workflow/3-6-10-content-writing-view/).
  *
  * Text is drawn on <canvas> (not DOM) — pixel-accurate, avoids cross-browser
  * line-shift. A hidden offscreen contenteditable captures keystrokes/IME

@@ -128,12 +128,31 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-600">
-                  Blog
-                  <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[9px] font-medium text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
-                    {t("landing.footer.comingSoon")}
+                <Link
+                  to="/blog"
+                  className="inline-flex items-center gap-1.5 text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange font-medium"
+                >
+                  <span>Blog &amp; Kiến thức SEO</span>
+                  <span className="rounded bg-brand-orange/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-orange">
+                    Mới
                   </span>
-                </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
+                >
+                  Quản trị dự án như Jira / Notion
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
+                >
+                  Cẩm nang Gói Truyền thông
+                </Link>
               </li>
               <li>
                 <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-600">

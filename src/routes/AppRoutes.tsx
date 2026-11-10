@@ -88,6 +88,14 @@ const TermsOfServicePage = lazyNamed(
   () => import("@/pages/legal/TermsOfServicePage"),
   "TermsOfServicePage",
 );
+const BlogHubPage = lazyNamed(
+  () => import("@/pages/blog/BlogHubPage"),
+  "BlogHubPage",
+);
+const BlogPostPage = lazyNamed(
+  () => import("@/pages/blog/BlogPostPage"),
+  "BlogPostPage",
+);
 const GuestMediaPackagePage = lazy(() => import("@/pages/media-package/guest"));
 const PublicSurveyPage = lazy(() => import("@/pages/public-survey"));
 
@@ -429,10 +437,12 @@ export function AppRoutes() {
           <Route path="/terms" element={<TermsOfServicePage />} />
         </Route>
 
-        {/* FAQ Route — public via PublicHelpLayout for guests/search engines, full sidebar Layout for authenticated users */}
+        {/* FAQ & Blog Routes — public via PublicHelpLayout for guests/search engines, full sidebar Layout for authenticated users */}
         <Route element={<AdaptiveHelpLayout />}>
           <Route path="/help/faq" element={<HelpFaqPage />} />
           <Route path="/faq" element={<Navigate to="/help/faq" replace />} />
+          <Route path="/blog" element={<BlogHubPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
         </Route>
 
         {/* Authenticated Routes — require login */}
