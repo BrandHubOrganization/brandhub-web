@@ -72,7 +72,10 @@
       "EVENT_PLANNING": "Event plan delivery",
       "LIVESTREAM_PREPARATION": "Livestream",
       "PRESS_RECOMMENDATION": "Online press articles",
-      "WORKSHOP_SUPPORT": "Workshop"
+      "WORKSHOP_SUPPORT": "Workshop",
+      "SHORT_VIDEO": "Short video",
+      "KOL_BOOKING": "KOL/Influencer booking",
+      "EMAIL_NEWSLETTER": "Email newsletter"
     },
     "service": "Service",
     "name": "Deliverable name",
@@ -361,7 +364,13 @@
       "PRESS_RECOMMENDATION_one": "{{count}} online press article",
       "PRESS_RECOMMENDATION_other": "{{count}} online press articles",
       "WORKSHOP_SUPPORT_one": "{{count}} workshop session",
-      "WORKSHOP_SUPPORT_other": "{{count}} workshop sessions"
+      "WORKSHOP_SUPPORT_other": "{{count}} workshop sessions",
+      "SHORT_VIDEO_one": "{{count}} short video",
+      "SHORT_VIDEO_other": "{{count}} short videos",
+      "KOL_BOOKING_one": "{{count}} KOL",
+      "KOL_BOOKING_other": "{{count}} KOLs",
+      "EMAIL_NEWSLETTER_one": "{{count}} email newsletter",
+      "EMAIL_NEWSLETTER_other": "{{count}} email newsletters"
     },
     "units": {
       "SOCIAL_POST_one": "post",
@@ -373,7 +382,13 @@
       "PRESS_RECOMMENDATION_one": "article",
       "PRESS_RECOMMENDATION_other": "articles",
       "WORKSHOP_SUPPORT_one": "session",
-      "WORKSHOP_SUPPORT_other": "sessions"
+      "WORKSHOP_SUPPORT_other": "sessions",
+      "SHORT_VIDEO_one": "video",
+      "SHORT_VIDEO_other": "videos",
+      "KOL_BOOKING_one": "KOL",
+      "KOL_BOOKING_other": "KOLs",
+      "EMAIL_NEWSLETTER_one": "newsletter",
+      "EMAIL_NEWSLETTER_other": "newsletters"
     },
     "packageDescription": "Package description",
     "view": "View",
@@ -391,7 +406,7 @@
     "budgetOptional": "Budget · Optional",
     "durationOptional": "Duration · Optional",
     "millions": "{{amount}} million",
-    "selected": "{{count}}/4 selected",
+    "selected": "{{count}}/{{total}} selected",
     "include": "Include {{service}} in package",
     "notSelected": "Not selected",
     "chooseServices": "Select services to include. Each service has one deliverable.",
@@ -468,6 +483,54 @@
           "Content fits the intended participants.",
           "Materials meet the agreed scope.",
           "The schedule and activities are clearly described."
+        ]
+      },
+      "SHORT_VIDEO": {
+        "names": [
+          "Product introduction short video",
+          "Brand behind-the-scenes short video"
+        ],
+        "descriptions": [
+          "Develop the idea and a scene-by-scene script.",
+          "Shoot and edit the video from the approved script.",
+          "Write the caption and schedule publishing."
+        ],
+        "outcomes": [
+          "Matches the brand message and identity.",
+          "Fits each platform's length and format.",
+          "All agreed videos are delivered."
+        ]
+      },
+      "KOL_BOOKING": {
+        "names": [
+          "KOL product introduction booking",
+          "Influencer service experience booking"
+        ],
+        "descriptions": [
+          "Find and propose a shortlist of suitable KOLs.",
+          "Negotiate and send the brief to the KOL.",
+          "Review KOL content and track post results."
+        ],
+        "outcomes": [
+          "KOLs fit the target audience.",
+          "KOL content follows the agreed brief.",
+          "Each post has a results report."
+        ]
+      },
+      "EMAIL_NEWSLETTER": {
+        "names": [
+          "Regular customer newsletter",
+          "New product announcement email"
+        ],
+        "descriptions": [
+          "Write the newsletter subject and content.",
+          "Design the template with the brand identity.",
+          "Send to recipient groups who consented to email."
+        ],
+        "outcomes": [
+          "Content matches the brand message.",
+          "Only sent to people who consented.",
+          "Report covers sent, failed and unsubscribed."
         ]
       }
     }

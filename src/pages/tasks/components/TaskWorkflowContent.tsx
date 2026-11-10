@@ -69,6 +69,8 @@ function getTaskTypeBadge(type?: string) {
       };
     case "LIVESTREAM":
     case "EVENT_PLAN":
+    case "SHORT_VIDEO":
+    case "WORKSHOP":
       return {
         icon: Video,
         style:

@@ -52,7 +52,6 @@
       "VALIDATING": "Checking",
       "REJECTED": "Rejected",
       "FAILED": "Failed"
-
     }
   },
   "approvalPage": {
@@ -210,7 +209,11 @@
     "LIVESTREAM": "Livestream",
     "SURVEY": "Survey",
     "EVENT_PLAN": "Event plan",
-    "PRESS_RECOMMENDATION": "Press recommendation"
+    "PRESS_RECOMMENDATION": "Press recommendation",
+    "SHORT_VIDEO": "Short video",
+    "KOL_BOOKING": "KOL/Influencer",
+    "WORKSHOP": "Workshop",
+    "EMAIL_NEWSLETTER": "Email newsletter"
   },
   "status": {
     "BACKLOG": "Backlog",

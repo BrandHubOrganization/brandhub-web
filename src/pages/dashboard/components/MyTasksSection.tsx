@@ -54,12 +54,15 @@ const getTaskTypeIcon = (type: TaskType) => {
     case "POST":
       return <FileText className="size-3.5 text-muted-foreground" />;
     case "LIVESTREAM":
+    case "SHORT_VIDEO":
       return <Video className="size-3.5 text-muted-foreground" />;
     case "SURVEY":
       return <ClipboardList className="size-3.5 text-muted-foreground" />;
     case "EVENT_PLAN":
+    case "WORKSHOP":
       return <Calendar className="size-3.5 text-muted-foreground" />;
     case "PRESS_RECOMMENDATION":
+    case "KOL_BOOKING":
       return <Megaphone className="size-3.5 text-muted-foreground" />;
     default:
       return <CheckSquare className="size-3.5 text-muted-foreground" />;

@@ -24,6 +24,8 @@ export interface SubtaskDetails {
   assigneeId: string;
   supervisorOverrideId: string | null;
   dueDate: string;
+  /** Catalogue role (`tasks.subtaskRoles.<ROLE>`); null = free subtask. */
+  subtaskRole?: string | null;
 }
 
 export interface SubtaskRow {

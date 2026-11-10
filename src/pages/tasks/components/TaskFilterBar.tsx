@@ -29,6 +29,10 @@ export function TaskFilterBar({
     "SURVEY",
     "EVENT_PLAN",
     "PRESS_RECOMMENDATION",
+    "SHORT_VIDEO",
+    "KOL_BOOKING",
+    "WORKSHOP",
+    "EMAIL_NEWSLETTER",
   ];
   const typeOptions = [
     { value: "ALL", label: t("tasks.allTypes") },

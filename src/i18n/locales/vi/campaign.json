@@ -169,7 +169,11 @@
     "LIVESTREAM": "Chuẩn bị livestream",
     "SURVEY": "Khảo sát",
     "EVENT_PLAN": "Kế hoạch sự kiện",
-    "PRESS_RECOMMENDATION": "Gợi ý báo chí"
+    "PRESS_RECOMMENDATION": "Gợi ý báo chí",
+    "SHORT_VIDEO": "Video ngắn",
+    "KOL_BOOKING": "KOL/Influencer",
+    "WORKSHOP": "Workshop",
+    "EMAIL_NEWSLETTER": "Email/Bản tin"
   },
   "errors": {
     "CAMPAIGN_CLOSURE_BLOCKED": "Còn đầu việc hoặc yêu cầu đang xử lý; kiểm tra lại trước khi hoàn thành.",

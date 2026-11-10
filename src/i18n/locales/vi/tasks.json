@@ -52,7 +52,6 @@
       "VALIDATING": "Đang kiểm tra",
       "REJECTED": "Bị từ chối",
       "FAILED": "Lỗi"
-
     }
   },
   "approvalPage": {
@@ -210,7 +209,11 @@
     "LIVESTREAM": "Livestream",
     "SURVEY": "Khảo sát",
     "EVENT_PLAN": "Kế hoạch sự kiện",
-    "PRESS_RECOMMENDATION": "Gợi ý báo chí"
+    "PRESS_RECOMMENDATION": "Gợi ý báo chí",
+    "SHORT_VIDEO": "Video ngắn",
+    "KOL_BOOKING": "KOL/Influencer",
+    "WORKSHOP": "Workshop",
+    "EMAIL_NEWSLETTER": "Email/Bản tin"
   },
   "status": {
     "BACKLOG": "Chờ xác định",

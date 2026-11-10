@@ -15,6 +15,9 @@ const SERVICES: PackageServiceType[] = [
   "PRESS_RECOMMENDATION",
   "EVENT_PLANNING",
   "WORKSHOP_SUPPORT",
+  "SHORT_VIDEO",
+  "KOL_BOOKING",
+  "EMAIL_NEWSLETTER",
 ];
 export function OfferingEditor({
   value,
@@ -80,6 +83,7 @@ export function OfferingEditor({
               count: SERVICES.filter((s) =>
                 items.some((item) => item.serviceType === s),
               ).length,
+              total: SERVICES.length,
             })}
           </span>
         </div>

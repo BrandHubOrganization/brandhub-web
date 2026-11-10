@@ -8,6 +8,7 @@ export interface TimelineSubtask {
   supervisorOverrideId: string | null;
   dueDate: string | null;
   plannedStartDate: string | null;
+  subtaskRole?: string | null;
 }
 export interface TimelineTask {
   id: string;
