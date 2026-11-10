@@ -16,9 +16,12 @@ import {
   Volume1,
   X,
   FileText,
+  PictureInPicture2,
+  Loader2,
 } from "lucide-react";
 import { useChatMediaLightbox } from "@/pages/chat/hooks/useChatMediaLightbox";
 import { AdobePdfIcon } from "@/pages/chat/components/ChatAttachmentComposer";
+import { chatAttachmentService } from "@/pages/chat/services/chatAttachmentService";
 import { Button } from "@/components/ui/button";
 import { formatFileSize } from "@/lib/utils";
 
@@ -29,8 +32,33 @@ function formatVideoTime(seconds: number): string {
   return `${m}:${s < 10 ? "0" : ""}${s}`;
 }
 
+function formatSentTime(dateStr?: string, lang: string = "vi"): string {
+  if (!dateStr) return "";
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+    const now = new Date();
+    const diffSec = Math.floor((now.getTime() - date.getTime()) / 1000);
+    if (diffSec < 60) return lang === "vi" ? "Vừa xong" : "Just now";
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60)
+      return lang === "vi" ? `${diffMin} phút trước` : `${diffMin}m ago`;
+    const diffHour = Math.floor(diffMin / 60);
+    if (diffHour < 24)
+      return lang === "vi" ? `${diffHour} giờ trước` : `${diffHour}h ago`;
+    return new Intl.DateTimeFormat(lang === "vi" ? "vi-VN" : "en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  } catch {
+    return dateStr;
+  }
+}
+
 export function ChatMediaLightbox() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isOpen, item, closeLightbox } = useChatMediaLightbox();
 
   // Image states
@@ -53,6 +81,7 @@ export function ChatMediaLightbox() {
   // General states
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   // Reset transforms when item changes
   useEffect(() => {
@@ -99,7 +128,7 @@ export function ChatMediaLightbox() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, item]);
+  }, [isOpen, item, muted]);
 
   // Handle Fullscreen change
   useEffect(() => {
@@ -120,12 +149,41 @@ export function ChatMediaLightbox() {
     }
   }, []);
 
-  const handleDownload = () => {
-    if (!item?.url) return;
-    const link = document.createElement("a");
-    link.href = item.url;
-    link.download = item.filename;
-    link.click();
+  const handleDownload = async () => {
+    if (!item) return;
+    setDownloading(true);
+    try {
+      if (item.workspaceId && item.channelId && item.attachmentId) {
+        const current = await chatAttachmentService.inspect(
+          item.workspaceId,
+          item.channelId,
+          item.attachmentId,
+        );
+        const blob = await chatAttachmentService.content(
+          item.workspaceId,
+          item.channelId,
+          item.attachmentId,
+        );
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = current.filename || item.filename;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        return;
+      }
+    } catch (err) {
+      console.warn("Re-auth download error, falling back to direct URL:", err);
+    } finally {
+      setDownloading(false);
+    }
+
+    if (item.url) {
+      const link = document.createElement("a");
+      link.href = item.url;
+      link.download = item.filename;
+      link.click();
+    }
   };
 
   const handleOpenNewTab = () => {
@@ -166,7 +224,7 @@ export function ChatMediaLightbox() {
   const togglePlay = () => {
     if (!videoRef.current) return;
     if (videoRef.current.paused) {
-      videoRef.current.play();
+      videoRef.current.play().catch(() => {});
       setPlaying(true);
     } else {
       videoRef.current.pause();
@@ -205,6 +263,19 @@ export function ChatMediaLightbox() {
       videoRef.current.playbackRate = newSpeed;
     }
     setShowSpeedMenu(false);
+  };
+
+  const togglePiP = async () => {
+    if (!videoRef.current) return;
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else if (document.pictureInPictureEnabled) {
+        await videoRef.current.requestPictureInPicture();
+      }
+    } catch (err) {
+      console.warn("PiP error:", err);
+    }
   };
 
   if (!isOpen || !item) return null;
@@ -249,17 +320,19 @@ export function ChatMediaLightbox() {
               {item.senderName || t("chat.ui.roles.MEMBER")}
             </h2>
             <p className="flex items-center gap-1.5 truncate text-xs text-white/70">
-              {item.sentAt && <span>{item.sentAt}</span>}
+              {item.sentAt && (
+                <span>{formatSentTime(item.sentAt, i18n.language)}</span>
+              )}
               {item.channelName && (
                 <>
                   <span className="text-white/40">·</span>
                   <span className="font-medium text-white/80">
-                    #{item.channelName}
+                    trong #{item.channelName}
                   </span>
                 </>
               )}
               <span className="text-white/40">·</span>
-              <span className="truncate text-white/90 font-medium">
+              <span className="truncate font-medium text-white/90">
                 {item.filename}
               </span>
               <span className="text-white/50">
@@ -369,10 +442,15 @@ export function ChatMediaLightbox() {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={handleDownload}
+                onClick={() => void handleDownload()}
+                disabled={downloading}
                 className="ml-4 gap-1.5 rounded-lg bg-white/20 text-white hover:bg-white/30"
               >
-                <Download className="size-3.5" />
+                {downloading ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <Download className="size-3.5" />
+                )}
                 <span>Tải về</span>
               </Button>
             </div>
@@ -395,10 +473,15 @@ export function ChatMediaLightbox() {
             </p>
             <Button
               variant="orange"
-              onClick={handleDownload}
+              onClick={() => void handleDownload()}
+              disabled={downloading}
               className="mt-2 gap-2"
             >
-              <Download className="size-4" />
+              {downloading ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Download className="size-4" />
+              )}
               <span>Tải file về máy</span>
             </Button>
           </div>
@@ -440,7 +523,7 @@ export function ChatMediaLightbox() {
               step="0.05"
               value={zoom}
               onChange={(e) => setZoom(parseFloat(e.target.value))}
-              className="h-1.5 w-24 sm:w-32 cursor-pointer rounded-lg bg-white/20 accent-brand-orange"
+              className="h-1.5 w-24 cursor-pointer rounded-lg bg-white/20 accent-[#ff5722] sm:w-32"
             />
             <Button
               variant="ghost"
@@ -482,7 +565,7 @@ export function ChatMediaLightbox() {
               {playing ? (
                 <Pause className="size-4 fill-current" />
               ) : (
-                <Play className="size-4 fill-current ml-0.5" />
+                <Play className="ml-0.5 size-4 fill-current" />
               )}
             </Button>
 
@@ -509,7 +592,7 @@ export function ChatMediaLightbox() {
                 step="0.05"
                 value={muted ? 0 : volume}
                 onChange={handleVolumeChange}
-                className="h-1.5 w-16 cursor-pointer rounded-lg bg-white/20 accent-brand-orange"
+                className="h-1.5 w-16 cursor-pointer rounded-lg bg-white/20 accent-[#ff5722]"
               />
             </div>
 
@@ -531,8 +614,20 @@ export function ChatMediaLightbox() {
                   videoRef.current.currentTime = val;
                 }
               }}
-              className="h-1.5 flex-1 cursor-pointer rounded-lg bg-white/20 accent-brand-orange"
+              className="h-1.5 flex-1 cursor-pointer rounded-lg bg-white/20 accent-[#ff5722]"
             />
+
+            {/* Picture-in-Picture Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => void togglePiP()}
+              className="size-8 shrink-0 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+              title="Picture-in-Picture (PiP)"
+              aria-label="Picture in Picture"
+            >
+              <PictureInPicture2 className="size-4" />
+            </Button>
 
             {/* Playback speed selector */}
             <div className="relative">
@@ -545,14 +640,16 @@ export function ChatMediaLightbox() {
                 {speed}x
               </button>
               {showSpeedMenu && (
-                <div className="absolute bottom-9 right-0 flex flex-col rounded-xl border border-white/15 bg-zinc-900 p-1 shadow-xl">
+                <div className="absolute right-0 bottom-9 flex flex-col rounded-xl border border-white/15 bg-zinc-900 p-1 shadow-xl">
                   {[0.5, 0.75, 1, 1.25, 1.5, 2].map((s) => (
                     <button
                       key={s}
                       type="button"
                       onClick={() => handleSpeedChange(s)}
                       className={`rounded px-3 py-1 text-left text-xs transition-colors hover:bg-white/10 ${
-                        speed === s ? "font-bold text-brand-orange" : "text-white/80"
+                        speed === s
+                          ? "font-bold text-[#ff5722]"
+                          : "text-white/80"
                       }`}
                     >
                       {s}x
@@ -571,12 +668,17 @@ export function ChatMediaLightbox() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={handleDownload}
+            onClick={() => void handleDownload()}
+            disabled={downloading}
             className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
             title="Tải về máy"
             aria-label="Tải về"
           >
-            <Download className="size-4" />
+            {downloading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Download className="size-4" />
+            )}
           </Button>
 
           <Button
