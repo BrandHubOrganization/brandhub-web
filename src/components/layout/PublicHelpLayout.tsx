@@ -47,6 +47,13 @@ export function PublicHelpLayout() {
             {/* Quick Links */}
             <nav className="hidden md:flex items-center gap-4 text-xs">
               <Link
+                to="/blog"
+                className="text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md px-2.5 py-1.5 transition-colors font-medium flex items-center gap-1.5"
+              >
+                <BookOpen className="size-3.5 text-brand-orange" />
+                Blog &amp; Kiến thức
+              </Link>
+              <Link
                 to="/help/faq"
                 className="text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md px-2.5 py-1.5 transition-colors font-medium flex items-center gap-1.5"
               >
@@ -140,7 +147,10 @@ export function PublicHelpLayout() {
       <footer className="border-t border-border/80 bg-card py-6 text-center text-xs text-muted-foreground">
         <div className="w-full px-4 sm:px-6 md:px-8 xl:px-12 2xl:px-16 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>© {new Date().getFullYear()} BrandHub. Trung tâm Trợ giúp & Tài nguyên.</p>
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
+            <Link to="/blog" className="hover:text-foreground transition-colors font-medium">
+              Blog &amp; Kiến thức SEO
+            </Link>
             <Link to="/help/faq" className="hover:text-foreground transition-colors">
               Hỏi đáp FAQ
             </Link>

@@ -4,6 +4,13 @@
 
 ## Canonical Public Pages
 - [Trang chủ BrandHub](https://brandhub.id.vn/): Tổng quan nền tảng, kiến trúc AI GraphRAG, quy trình cộng tác 6 vai trò, bảng giá và demo tương tác.
+- [Blog & Thư viện 100 Chủ đề Quản trị Truyền thông Chuẩn SEO](https://brandhub.id.vn/blog): Hệ thống bài phân tích chuyên sâu về quản trị dự án như Jira/Notion, luồng phê duyệt nội dung 3 cấp, xây dựng Gói truyền thông (Media Package), AI GraphRAG Neo4j/ChromaDB và lịch đăng tự động 4 kênh.
+- [Quản lý dự án truyền thông như Jira và Notion với BrandHub](https://brandhub.id.vn/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub): Chuẩn hóa đa Workspace và phân quyền 6 vai trò (Guest, Owner, Manager, Creator, Client, Admin).
+- [Quy trình phê duyệt nội dung 3 cấp (Creator -> Manager -> Client)](https://brandhub.id.vn/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client): Khóa bản nháp tự động, quản lý phiên bản và xem trước đa nền tảng.
+- [Gói truyền thông (Media Package) gồm những gì?](https://brandhub.id.vn/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia): Cấu trúc báo giá tích hợp mạng xã hội, báo chí, truyền hình và tự động sinh Media Campaign.
+- [AI GraphRAG Brand Guidelines với Neo4j & ChromaDB](https://brandhub.id.vn/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb): Sáng tạo văn bản, hình ảnh, đại sứ ảo LoRA và bắt trend thời gian thực.
+- [Đặt lịch đăng bài tự động Facebook, Instagram, TikTok, Threads](https://brandhub.id.vn/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads): Kết nối OAuth 2.0 mã hóa AES-256 và phân tích chỉ số sau xuất bản.
+- [So sánh BrandHub với Buffer, Hootsuite, Planable và Jira + Notion](https://brandhub.id.vn/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion): Bài toán tối ưu 80% chi phí phần mềm SaaS và thanh toán VietQR (SePay / PayOS).
 - [Trung tâm Trợ giúp & Câu hỏi thường gặp (FAQ)](https://brandhub.id.vn/help/faq): 30+ hướng dẫn chi tiết về vận hành Agency, Workspace, Media Package, AI Studio, phê duyệt nội dung và thanh toán.
 - [Chính sách Quyền riêng tư (Privacy Policy)](https://brandhub.id.vn/privacy): Chính sách bảo vệ dữ liệu cá nhân, cô lập tài nguyên Workspace và bảo mật OAuth Access Token (AES-256).
 - [Điều khoản Dịch vụ (Terms of Service)](https://brandhub.id.vn/terms): Quy định sử dụng dịch vụ, phân quyền vai trò, AI Credits và xuất bản đa kênh.
