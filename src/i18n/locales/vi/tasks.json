@@ -597,5 +597,15 @@
   },
   "supervisor": "Người giám sát",
   "assigneeId": "Người thực hiện",
-  "supervisorId": "Người giám sát"
+  "supervisorId": "Người giám sát",
+  "sectionActions": {
+    "errors": {
+      "UNKNOWN": "Không thực hiện được. Thử lại sau.",
+      "FORBIDDEN": "Bạn không có quyền thao tác trên phần này.",
+      "VALIDATION_ERROR": "Dữ liệu chưa hợp lệ. Kiểm tra lại các trường.",
+      "SECTION_INVALID_TRANSITION": "Phần đã đổi trạng thái. Tải lại để xem trạng thái mới.",
+      "TASK_REVISION_CONFLICT": "Người khác vừa lưu phần này.",
+      "TASK_SECTIONS_UNAPPROVED": "Còn phần chưa được duyệt."
+    }
+  }
 }

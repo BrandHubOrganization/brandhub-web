@@ -597,5 +597,15 @@
   },
   "supervisor": "Supervisor",
   "assigneeId": "Assignee",
-  "supervisorId": "Supervisor"
+  "supervisorId": "Supervisor",
+  "sectionActions": {
+    "errors": {
+      "UNKNOWN": "Something went wrong. Try again later.",
+      "FORBIDDEN": "You don't have permission to do this on this section.",
+      "VALIDATION_ERROR": "Some fields are invalid. Check them and try again.",
+      "SECTION_INVALID_TRANSITION": "This section changed status. Reload to see the latest.",
+      "TASK_REVISION_CONFLICT": "Someone else just saved this section.",
+      "TASK_SECTIONS_UNAPPROVED": "Some sections are not approved yet."
+    }
+  }
 }

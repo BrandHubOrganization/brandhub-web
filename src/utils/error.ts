@@ -36,3 +36,11 @@ export function extractErrorMessage(err: unknown, defaultMsg: string): string {
 export function isNotFoundError(err: unknown): boolean {
   return (err as { response?: { status?: number } })?.response?.status === 404;
 }
+
+/** Backend `ApiResponse.error.code` (e.g. `TASK_REVISION_CONFLICT`), or null for network/unknown errors. */
+export function errorCode(err: unknown): string | null {
+  return (
+    (err as { response?: { data?: { error?: { code?: string } } } })?.response
+      ?.data?.error?.code ?? null
+  );
+}
