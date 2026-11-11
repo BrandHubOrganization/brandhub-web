@@ -351,6 +351,7 @@
     "currentServerValue": "Current server value: {{value}}",
     "fit": "Fit to view",
     "unscheduled": "Unscheduled",
+    "overdue": "Overdue",
     "createRange": "Create a task date range",
     "milestoneRail": "Milestone rail",
     "milestonePlaceholder": "Milestone name…",

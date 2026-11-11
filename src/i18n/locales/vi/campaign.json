@@ -351,6 +351,7 @@
     "currentServerValue": "Giá trị hiện tại trên hệ thống: {{value}}",
     "fit": "Vừa khung",
     "unscheduled": "Chưa có lịch",
+    "overdue": "Trễ hạn",
     "createRange": "Tạo khoảng thời gian cho công việc",
     "milestoneRail": "Thanh mốc kế hoạch",
     "milestonePlaceholder": "Tên mốc kế hoạch…",
