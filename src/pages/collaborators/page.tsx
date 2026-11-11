@@ -19,9 +19,8 @@ function Directory({ agencyId }: { agencyId: string }) {
   async function confirm() {
     if (
       action &&
-      (await state.mutate(
-        () => directoryService[action.kind](agencyId, action.partner),
-        { kind: action.kind, partner: action.partner }
+      (await state.mutate(() =>
+        directoryService[action.kind](agencyId, action.partner),
       ))
     ) {
       setAction(null);
@@ -32,9 +31,8 @@ function Directory({ agencyId }: { agencyId: string }) {
     <DirectoryResults state={state} onDetail={setDetail} onEdit={setEditing}
       onAction={(partner, kind) => setAction({ partner, kind })} />
     {editing !== undefined && <PartnerForm partner={editing} busy={state.busy} onClose={() => setEditing(undefined)}
-      onSave={fields => state.mutate(
-        () => editing ? directoryService.update(agencyId, editing, fields) : directoryService.create(agencyId, fields),
-        { kind: editing ? "update" : "create", partner: editing, fields }
+      onSave={fields => state.mutate(() =>
+        editing ? directoryService.update(agencyId, editing, fields) : directoryService.create(agencyId, fields)
       )} />}
     {detail && <PartnerDetails partner={detail} onClose={() => setDetail(null)} />}
     <PartnerAction action={action} busy={state.busy} onClose={() => setAction(null)} onConfirm={() => void confirm()} />
