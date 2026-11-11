@@ -841,6 +841,101 @@
           }
         }
       }
+    },
+    "KOL": {
+      "SHORTLIST": {
+        "title": "Tìm & đề xuất KOL",
+        "fields": {
+          "shortlist": {
+            "name": "Tên",
+            "channel": "Kênh",
+            "link": "Link",
+            "followers": "Follower",
+            "engagementRate": "Tỉ lệ tương tác",
+            "reason": "Lý do chọn"
+          }
+        }
+      },
+      "DEAL": {
+        "title": "Đàm phán",
+        "fields": {
+          "kol": "KOL đã chọn",
+          "priceVnd": "Giá thỏa thuận (VND)",
+          "deliverables": "Hạng mục deliverable",
+          "terms": "Điều khoản"
+        }
+      },
+      "BRIEF": {
+        "title": "Brief cho KOL",
+        "fields": {
+          "keyMessage": "Key message",
+          "dos": "Nên làm",
+          "donts": "Không nên làm",
+          "requiredHashtags": "Hashtag bắt buộc",
+          "postDeadline": "Deadline đăng"
+        }
+      },
+      "DRAFT": {
+        "title": "Duyệt nội dung KOL",
+        "fields": {
+          "draftCaption": "Caption nháp",
+          "draftMedia": "Media nháp",
+          "reviewNote": "Ghi chú duyệt"
+        }
+      },
+      "REPORT": {
+        "title": "Theo dõi & báo cáo",
+        "fields": {
+          "postLink": "Link bài KOL",
+          "postedAt": "Ngày đăng",
+          "views": "View",
+          "likes": "Like",
+          "comments": "Comment",
+          "shares": "Share"
+        }
+      }
+    },
+    "WORKSHOP": {
+      "PROGRAM": {
+        "title": "Nội dung chương trình",
+        "fields": {
+          "topic": "Chủ đề",
+          "agenda": "Agenda",
+          "materials": "Slide/tài liệu"
+        }
+      },
+      "SPEAKERS": {
+        "title": "Diễn giả",
+        "fields": {
+          "speakers": {
+            "name": "Tên",
+            "title": "Chức danh",
+            "topic": "Chủ đề",
+            "inviteStatus": "Trạng thái mời"
+          }
+        }
+      },
+      "LOGISTICS": {
+        "title": "Hậu cần",
+        "fields": {
+          "format": "Hình thức",
+          "venueOrMeetingUrl": "Địa điểm / phòng online",
+          "cost": "Chi phí"
+        }
+      },
+      "REGISTRATION": {
+        "title": "Đăng ký & truyền thông"
+      },
+      "REPORT": {
+        "title": "Tổng kết",
+        "fields": {
+          "registeredCount": "Số đăng ký",
+          "attendedCount": "Số tham dự",
+          "feedback": "Feedback",
+          "photos": "Ảnh",
+          "lessons": "Bài học"
+        }
+      }
     }
   },
   "sectionReview": {

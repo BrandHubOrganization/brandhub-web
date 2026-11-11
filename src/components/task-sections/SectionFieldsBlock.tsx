@@ -99,6 +99,67 @@ const FIELDS: Record<string, Record<string, FieldDef>> = {
       { key: "publishedAt" },
     ]),
   },
+  "KOL.SHORTLIST": {
+    shortlist: field("table", [
+      { key: "name" },
+      { key: "channel" },
+      { key: "link" },
+      { key: "followers", type: "number" },
+      { key: "engagementRate" },
+      { key: "reason" },
+    ]),
+  },
+  "KOL.DEAL": {
+    kol: field("text"),
+    priceVnd: field("text"),
+    deliverables: field("list"),
+    terms: field("text"),
+  },
+  "KOL.BRIEF": {
+    keyMessage: field("text"),
+    dos: field("list"),
+    donts: field("list"),
+    requiredHashtags: field("list"),
+    postDeadline: field("text"),
+  },
+  "KOL.DRAFT": {
+    draftCaption: field("text"),
+    draftMedia: field("list"),
+    reviewNote: field("text"),
+  },
+  "KOL.REPORT": {
+    postLink: field("text"),
+    postedAt: field("text"),
+    views: field("text"),
+    likes: field("text"),
+    comments: field("text"),
+    shares: field("text"),
+  },
+  "WORKSHOP.PROGRAM": {
+    topic: field("text"),
+    agenda: field("list"),
+    materials: field("list"),
+  },
+  "WORKSHOP.SPEAKERS": {
+    speakers: field("table", [
+      { key: "name" },
+      { key: "title" },
+      { key: "topic" },
+      { key: "inviteStatus" },
+    ]),
+  },
+  "WORKSHOP.LOGISTICS": {
+    format: field("text"),
+    venueOrMeetingUrl: field("text"),
+    cost: field("text"),
+  },
+  "WORKSHOP.REPORT": {
+    registeredCount: field("text"),
+    attendedCount: field("text"),
+    feedback: field("text"),
+    photos: field("list"),
+    lessons: field("text"),
+  },
 };
 
 const asLines = (value: unknown) =>

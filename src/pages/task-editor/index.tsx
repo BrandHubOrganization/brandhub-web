@@ -39,7 +39,13 @@ export default function TaskEditorPage() {
     return <Navigate to={`/workspaces/${id}/tasks/${taskId}/event`} replace />;
   if (task.type === "PRESS_RECOMMENDATION")
     return <Navigate to={`/workspaces/${id}/tasks/${taskId}/press`} replace />;
+  if (task.type === "KOL_BOOKING")
+    return <Navigate to={`/workspaces/${id}/tasks/${taskId}/kol`} replace />;
+  if (task.type === "WORKSHOP")
+    return (
+      <Navigate to={`/workspaces/${id}/tasks/${taskId}/workshop`} replace />
+    );
 
-  // skipped: KOL_BOOKING/WORKSHOP/EMAIL_NEWSLETTER editors — T8.5-T8.6
+  // skipped: EMAIL_NEWSLETTER editor — T8.6
   return <Navigate to={`/workspaces/${id}/tasks/${taskId}/detail`} replace />;
 }

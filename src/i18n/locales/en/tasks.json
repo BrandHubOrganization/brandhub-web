@@ -841,6 +841,101 @@
           }
         }
       }
+    },
+    "KOL": {
+      "SHORTLIST": {
+        "title": "KOL Sourcing",
+        "fields": {
+          "shortlist": {
+            "name": "Name",
+            "channel": "Channel",
+            "link": "Link",
+            "followers": "Followers",
+            "engagementRate": "Engagement rate",
+            "reason": "Reason"
+          }
+        }
+      },
+      "DEAL": {
+        "title": "Negotiation",
+        "fields": {
+          "kol": "Selected KOL",
+          "priceVnd": "Agreed price (VND)",
+          "deliverables": "Deliverables",
+          "terms": "Terms"
+        }
+      },
+      "BRIEF": {
+        "title": "KOL Brief",
+        "fields": {
+          "keyMessage": "Key message",
+          "dos": "Do",
+          "donts": "Don't",
+          "requiredHashtags": "Required hashtags",
+          "postDeadline": "Post deadline"
+        }
+      },
+      "DRAFT": {
+        "title": "Content Review",
+        "fields": {
+          "draftCaption": "Draft caption",
+          "draftMedia": "Draft media",
+          "reviewNote": "Review note"
+        }
+      },
+      "REPORT": {
+        "title": "Tracking & Report",
+        "fields": {
+          "postLink": "Post link",
+          "postedAt": "Posted at",
+          "views": "Views",
+          "likes": "Likes",
+          "comments": "Comments",
+          "shares": "Shares"
+        }
+      }
+    },
+    "WORKSHOP": {
+      "PROGRAM": {
+        "title": "Program Content",
+        "fields": {
+          "topic": "Topic",
+          "agenda": "Agenda",
+          "materials": "Slides/materials"
+        }
+      },
+      "SPEAKERS": {
+        "title": "Speakers",
+        "fields": {
+          "speakers": {
+            "name": "Name",
+            "title": "Title",
+            "topic": "Topic",
+            "inviteStatus": "Invite status"
+          }
+        }
+      },
+      "LOGISTICS": {
+        "title": "Logistics",
+        "fields": {
+          "format": "Format",
+          "venueOrMeetingUrl": "Venue / online room",
+          "cost": "Cost"
+        }
+      },
+      "REGISTRATION": {
+        "title": "Registration & Promotion"
+      },
+      "REPORT": {
+        "title": "Summary",
+        "fields": {
+          "registeredCount": "Registered",
+          "attendedCount": "Attended",
+          "feedback": "Feedback",
+          "photos": "Photos",
+          "lessons": "Lessons learned"
+        }
+      }
     }
   },
   "sectionReview": {
