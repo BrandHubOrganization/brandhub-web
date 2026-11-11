@@ -37,6 +37,7 @@ import { TaskStartAction } from "@/pages/tasks/components/TaskStartAction";
 import { TaskComments } from "@/pages/tasks/components/comments/TaskComments";
 import { TaskMeetingCard } from "@/pages/tasks/components/meeting";
 import { SurveyOverviewCard } from "@/pages/tasks/components/survey/SurveyOverviewCard";
+import { OpenRoleTaskEditorCard } from "@/pages/tasks/components/OpenRoleTaskEditorCard";
 import { TaskPhoneMedia } from "@/pages/tasks/components/TaskPhoneMedia";
 
 import {
@@ -561,6 +562,18 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
                       taskTitle={task.name}
                     />
                   </div>
+                )}
+
+                {(task.type === "EVENT_PLAN" ||
+                  task.type === "PRESS_RECOMMENDATION" ||
+                  task.type === "KOL_BOOKING" ||
+                  task.type === "WORKSHOP" ||
+                  task.type === "EMAIL_NEWSLETTER") && (
+                  <OpenRoleTaskEditorCard
+                    workspaceId={task.workspaceId}
+                    taskId={task.id}
+                    taskType={task.type}
+                  />
                 )}
 
                 {/* Social Post Content & Review Action Hub */}
