@@ -205,7 +205,7 @@ export function InvoiceDetail({
         </div>
 
         <div className="space-y-1">
-          <p className="text-muted-foreground text-xs font-medium">
+          <p className="text-foreground text-xs font-semibold">
             {t("subscription.invoices.amount")}
           </p>
           <p className="text-foreground font-mono text-3xl font-extrabold tracking-tight tabular-nums">
@@ -219,11 +219,11 @@ export function InvoiceDetail({
         <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
           {/* Order ID */}
           <div className="space-y-1">
-            <span className="text-brand-orange block text-xs font-semibold">
+            <span className="text-foreground block text-xs font-semibold">
               {t("subscription.invoices.number")}
             </span>
             <div className="flex min-w-0 items-center gap-1.5">
-              <span className="text-foreground truncate font-mono text-xs font-medium select-all">
+              <span className="text-muted-foreground truncate font-mono text-xs font-normal select-all">
                 {order.id}
               </span>
               <Button
@@ -245,11 +245,11 @@ export function InvoiceDetail({
 
           {/* Transfer Content */}
           <div className="space-y-1">
-            <span className="text-brand-orange block text-xs font-semibold">
+            <span className="text-foreground block text-xs font-semibold">
               {t("subscription.invoices.transferContent")}
             </span>
             <div className="flex min-w-0 items-center gap-1.5">
-              <span className="text-foreground truncate font-mono text-xs font-medium select-all">
+              <span className="text-muted-foreground truncate font-mono text-xs font-normal select-all">
                 {order.transferContent || "—"}
               </span>
               {order.transferContent && (
@@ -275,12 +275,12 @@ export function InvoiceDetail({
 
           {/* Agency */}
           <div className="space-y-1">
-            <span className="text-brand-orange block text-xs font-semibold">
+            <span className="text-foreground block text-xs font-semibold">
               {t("subscription.invoices.agency")}
             </span>
             <div className="flex min-w-0 items-center gap-1.5">
               <span
-                className="text-foreground truncate font-mono text-xs font-medium select-all"
+                className="text-muted-foreground truncate font-mono text-xs font-normal select-all"
                 title={order.agencyName || order.agencyId}
               >
                 {order.agencyName || order.agencyId}
@@ -304,7 +304,7 @@ export function InvoiceDetail({
 
           {/* Payer User */}
           <div className="space-y-1">
-            <span className="text-brand-orange block text-xs font-semibold">
+            <span className="text-foreground block text-xs font-semibold">
               {t("subscription.invoices.payer")}
             </span>
             <div className="flex min-w-0 items-center gap-1.5">
@@ -313,14 +313,14 @@ export function InvoiceDetail({
                   to={`/admin?view=users&search=${encodeURIComponent(order.payerUserId)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-brand-orange group inline-flex items-center gap-1 truncate font-mono text-xs font-medium hover:underline"
+                  className="text-muted-foreground hover:text-brand-orange group inline-flex items-center gap-1 truncate font-mono text-xs font-normal hover:underline"
                   title={`${t("subscription.invoices.payer")}: ${order.payerUserId}`}
                 >
                   <span className="truncate">{order.payerUserId}</span>
-                  <ExternalLink className="text-brand-orange size-3 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                  <ExternalLink className="text-muted-foreground group-hover:text-brand-orange size-3 shrink-0 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               ) : (
-                <span className="text-muted-foreground font-mono text-xs">
+                <span className="text-muted-foreground font-mono text-xs font-normal">
                   —
                 </span>
               )}
@@ -345,10 +345,10 @@ export function InvoiceDetail({
 
           {/* Tier / Plan */}
           <div className="space-y-1">
-            <span className="text-brand-orange block text-xs font-semibold">
+            <span className="text-foreground block text-xs font-semibold">
               {t("subscription.invoices.tier")}
             </span>
-            <p className="text-foreground text-xs font-medium uppercase">
+            <p className="text-muted-foreground text-xs font-normal uppercase">
               {order.planCode ||
                 (isCredit
                   ? t("subscription.invoices.kinds.CREDIT_TOPUP")
@@ -358,7 +358,7 @@ export function InvoiceDetail({
 
           {/* Status */}
           <div className="space-y-1">
-            <span className="text-brand-orange block text-xs font-semibold">
+            <span className="text-foreground block text-xs font-semibold">
               {t("subscription.invoices.status")}
             </span>
             <div>{renderStatusBadge(order.status)}</div>
@@ -366,30 +366,30 @@ export function InvoiceDetail({
 
           {/* Paid At */}
           <div className="space-y-1">
-            <span className="text-brand-orange block text-xs font-semibold">
+            <span className="text-foreground block text-xs font-semibold">
               {t("subscription.invoices.paidAt")}
             </span>
-            <p className="text-foreground text-xs font-medium">
+            <p className="text-muted-foreground text-xs font-normal">
               {formatDate(order.paidAt)}
             </p>
           </div>
 
           {/* Fulfilled At */}
           <div className="space-y-1">
-            <span className="text-brand-orange block text-xs font-semibold">
+            <span className="text-foreground block text-xs font-semibold">
               {t("subscription.invoices.fulfilledAt")}
             </span>
-            <p className="text-foreground text-xs font-medium">
+            <p className="text-muted-foreground text-xs font-normal">
               {formatDate(order.fulfilledAt)}
             </p>
           </div>
 
           {/* Service Period */}
           <div className="border-border/40 space-y-1 border-t pt-2 sm:col-span-2">
-            <span className="text-brand-orange block text-xs font-semibold">
+            <span className="text-foreground block text-xs font-semibold">
               {t("subscription.invoices.period")}
             </span>
-            <p className="text-foreground text-xs font-medium">
+            <p className="text-muted-foreground text-xs font-normal">
               {order.periodStart || order.periodEnd
                 ? `${formatDate(order.periodStart)} – ${formatDate(order.periodEnd)}`
                 : "—"}
@@ -401,7 +401,7 @@ export function InvoiceDetail({
       {/* 3. Recorded Payments List */}
       <div className="border-border bg-card space-y-3 rounded-xl border p-4">
         <div className="border-border/60 flex items-center justify-between border-b pb-2.5">
-          <h3 className="text-brand-orange text-xs font-semibold tracking-wider uppercase">
+          <h3 className="text-foreground text-xs font-semibold tracking-wider uppercase">
             {t("subscription.invoices.payments")}
           </h3>
           <span className="text-muted-foreground font-mono text-[11px]">
@@ -436,19 +436,19 @@ export function InvoiceDetail({
                 </div>
 
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-brand-orange font-semibold">
+                  <span className="text-foreground font-semibold">
                     {t("subscription.invoices.reference")}
                   </span>
-                  <span className="text-foreground font-mono font-medium select-all">
+                  <span className="text-muted-foreground font-mono font-normal select-all">
                     {payment.providerReference}
                   </span>
                 </div>
 
                 <div className="border-border/40 flex items-center justify-between border-t pt-1.5 text-xs">
-                  <span className="text-brand-orange font-semibold">
+                  <span className="text-foreground font-semibold">
                     {t("subscription.invoices.paidAt")}
                   </span>
-                  <span className="text-foreground font-medium">
+                  <span className="text-muted-foreground font-normal">
                     {formatDate(payment.paidAt)}
                   </span>
                 </div>

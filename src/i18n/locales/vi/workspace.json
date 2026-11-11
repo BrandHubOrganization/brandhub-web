@@ -315,6 +315,8 @@
   },
   "roles": {
     "OWNER": "Chủ sở hữu",
+    "OWNER_AGENCY": "Chủ sở hữu (Agency)",
+    "OWNER_WORKSPACE": "Chủ sở hữu (Workspace)",
     "MANAGER": "Quản lý workspace",
     "CREATOR": "Người tạo nội dung",
     "CLIENT": "Khách hàng"

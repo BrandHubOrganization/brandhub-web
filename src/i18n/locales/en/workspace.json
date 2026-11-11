@@ -315,6 +315,8 @@
   },
   "roles": {
     "OWNER": "Owner",
+    "OWNER_AGENCY": "Owner (Agency)",
+    "OWNER_WORKSPACE": "Owner (Workspace)",
     "MANAGER": "Workspace manager",
     "CREATOR": "Creator",
     "CLIENT": "Client"

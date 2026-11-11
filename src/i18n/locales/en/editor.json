@@ -402,7 +402,28 @@
     "uploading": "Uploading media...",
     "dragDropText": "Drag & drop images/videos here or",
     "browseText": "browse from your computer",
-    "supportedFormats": "Supports JPG, PNG, GIF, MP4 (up to 50MB)"
+    "supportedFormats": "Supports JPG, PNG, GIF, MP4 (up to 50MB)",
+    "tabs": {
+      "upload": "Upload from Device",
+      "repository": "Media Repository"
+    },
+    "repository": {
+      "searchPlaceholder": "Search media...",
+      "categoryAll": "All",
+      "categoryImage": "Images",
+      "categoryVideo": "Videos",
+      "categoryFile": "Documents",
+      "sortNewest": "Newest",
+      "sortOldest": "Oldest",
+      "sortNameAsc": "Name A-Z",
+      "sortNameDesc": "Name Z-A",
+      "empty": "No media found in repository",
+      "emptySearch": "No media matches the search term",
+      "emptySubtext": "Upload new media or try another search",
+      "videoBadge": "Video"
+    },
+    "selectedMedia": "Selected Media",
+    "removeMedia": "Remove media"
   },
   "richText": {
     "contentPlaceholder": "Start writing your post content here...",

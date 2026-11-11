@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { LogOut, ShieldCheck, TriangleAlert } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useAuthStore } from "@/store/authStore";
@@ -144,17 +145,13 @@ export function SecurityPage() {
   };
 
   return (
-    <section id="security" className="w-full scroll-mt-6">
-      {/* Header trải rộng w-full */}
-      <div className="mb-6 flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-foreground text-xl font-bold tracking-tight">
-            {t("security.title")}
-          </h2>
-          <p className="text-muted-foreground text-sm">
-            {t("security.description")}
-          </p>
-        </div>
+    <PageWrapper
+      title={t("security.title", "Bảo mật tài khoản")}
+      description={t(
+        "security.subtitle",
+        "Quản lý mật khẩu, xác thực hai yếu tố và phiên đăng nhập bảo mật.",
+      )}
+      actions={
         <Button
           variant="outline"
           size="sm"
@@ -164,10 +161,11 @@ export function SecurityPage() {
           <LogOut className="size-4" />
           {t("security.session.logoutButton")}
         </Button>
-      </div>
-
-      {/* Layout 2 cột responsive */}
-      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+      }
+    >
+      <section id="security" className="w-full scroll-mt-6">
+        {/* Layout 2 cột responsive */}
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
         {/* Cột trái: Quản lý bảo mật chính */}
         <div className="space-y-6 lg:col-span-7 xl:col-span-8">
           {/* 1. Đổi mật khẩu */}
@@ -455,7 +453,8 @@ export function SecurityPage() {
           {t("security.session.confirmDetails")}
         </p>
       </Modal>
-    </section>
+      </section>
+    </PageWrapper>
   );
 }
 

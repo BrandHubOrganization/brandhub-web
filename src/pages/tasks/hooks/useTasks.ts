@@ -6,6 +6,7 @@ export function useTasks(workspaceId: string) {
   const [tasks, setTasks] = useState<TaskListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(100);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [error, setError] = useState(false);
@@ -15,8 +16,8 @@ export function useTasks(workspaceId: string) {
 
   // Filters & Sorting state
   const [search, setSearchValue] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL");
-  const [typeFilter, setTypeFilter] = useState("ALL");
+  const [statusFilter, setStatusFilter] = useState<string[]>(["ALL"]);
+  const [typeFilter, setTypeFilter] = useState<string[]>(["ALL"]);
   const [sortField, setSortField] = useState<
     "dueDate" | "createdAt" | "name" | "status"
   >("createdAt");
@@ -31,7 +32,7 @@ export function useTasks(workspaceId: string) {
       try {
         const res = await taskService.getWorkspaceTasks(workspaceId, {
           page,
-          size: 10,
+          size: pageSize,
           sort: sortField,
           direction: sortDirection,
           status: statusFilter,
@@ -59,6 +60,7 @@ export function useTasks(workspaceId: string) {
     [
       workspaceId,
       page,
+      pageSize,
       sortField,
       sortDirection,
       statusFilter,
@@ -86,8 +88,8 @@ export function useTasks(workspaceId: string) {
 
   const resetFilters = () => {
     setSearch("");
-    setStatusFilter("ALL");
-    setTypeFilter("ALL");
+    setStatusFilter(["ALL"]);
+    setTypeFilter(["ALL"]);
     setPage(0);
   };
 
@@ -103,6 +105,8 @@ export function useTasks(workspaceId: string) {
     loading,
     page,
     setPage,
+    pageSize,
+    setPageSize,
     totalPages,
     totalElements,
     search,

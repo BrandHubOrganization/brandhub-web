@@ -116,12 +116,6 @@ export const NAV_SECTIONS: NavSection[] = [
         workspaceScoped: true,
         requiresWorkspace: true,
       },
-      {
-        to: "/analytics",
-        icon: BarChart3,
-        labelKey: "nav.analytics",
-        hideInWorkspace: true,
-      },
     ],
   },
   {
@@ -363,6 +357,7 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: Sparkles,
         labelKey: "nav.aiStudio",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
       {
         to: "/ai-studio/knowledge-base",
@@ -376,12 +371,14 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: TrendingUp,
         labelKey: "aiStudio.trends.title",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
       {
         to: "/ai-studio/video",
         icon: Clapperboard,
         labelKey: "aiStudio.video.title",
         hideInWorkspace: true,
+        hideInAgency: true,
       },
     ],
   },

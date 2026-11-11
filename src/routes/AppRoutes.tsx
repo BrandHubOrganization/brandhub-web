@@ -89,10 +89,6 @@ const DashboardPage = lazyNamed(
   "DashboardPage",
 );
 const PortalPage = lazyNamed(() => import("@/pages/portal"), "PortalPage");
-const AnalyticsPage = lazyNamed(
-  () => import("@/pages/analytics"),
-  "AnalyticsPage",
-);
 const CalendarPage = lazyNamed(
   () => import("@/pages/calendar"),
   "CalendarPage",
@@ -569,7 +565,10 @@ export function AppRoutes() {
             <Route path="/hashtag-groups" element={<HashtagGroupsPage />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/library" element={<ContentLibraryPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route
+              path="/analytics"
+              element={<Navigate to="/dashboard" replace />}
+            />
             <Route path="/social-accounts" element={<SocialAccountsPage />} />
             <Route
               path="/subscription"

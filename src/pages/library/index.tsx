@@ -38,7 +38,6 @@ export function ContentLibraryPage() {
     <PageWrapper
       title={t("library.page.title")}
       description={t("library.page.description")}
-      hideBanner
       actions={
         <>
           {activeTab === "media" && <StorageUsageSummary />}
