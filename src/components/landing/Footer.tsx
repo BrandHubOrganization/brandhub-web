@@ -132,9 +132,9 @@ export function Footer() {
                   to="/blog"
                   className="inline-flex items-center gap-1.5 text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange font-medium"
                 >
-                  <span>Blog &amp; Kiến thức SEO</span>
+                  <span>Blog &amp; 100 Chủ đề SEO</span>
                   <span className="rounded bg-brand-orange/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-orange">
-                    Mới
+                    100 bài
                   </span>
                 </Link>
               </li>
@@ -148,6 +148,14 @@ export function Footer() {
               </li>
               <li>
                 <Link
+                  to="/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
+                >
+                  Luồng phê duyệt 3 cấp
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia"
                   className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
                 >
@@ -155,12 +163,28 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-600">
-                  Cộng đồng
-                  <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[9px] font-medium text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
-                    {t("landing.footer.comingSoon")}
-                  </span>
-                </span>
+                <Link
+                  to="/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
+                >
+                  AI GraphRAG &amp; Brand Voice
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
+                >
+                  Lịch đăng tự động 4 MXH
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion"
+                  className="text-sm text-zinc-600 transition-colors hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange"
+                >
+                  So sánh Công cụ &amp; Tối ưu Chi phí
+                </Link>
               </li>
             </ul>
           </div>
@@ -217,7 +241,25 @@ export function Footer() {
           <p className="text-xs text-zinc-400 dark:text-zinc-500">
             {t("landing.footer.copyright", { year: new Date().getFullYear() })}
           </p>
-          <div className="flex items-center gap-6 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-5 text-xs">
+            <Link
+              to="/blog"
+              className="text-zinc-500 transition-colors hover:text-brand-orange dark:text-zinc-400"
+            >
+              Blog &amp; Cẩm nang
+            </Link>
+            <a
+              href="/rss.xml"
+              className="text-zinc-500 transition-colors hover:text-brand-orange dark:text-zinc-400"
+            >
+              RSS Feed
+            </a>
+            <a
+              href="/sitemap.xml"
+              className="text-zinc-500 transition-colors hover:text-brand-orange dark:text-zinc-400"
+            >
+              Sitemap
+            </a>
             <Link
               to="/privacy"
               className="text-zinc-500 transition-colors hover:text-brand-orange dark:text-zinc-400"

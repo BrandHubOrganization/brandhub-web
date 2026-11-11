@@ -39,7 +39,7 @@
     "title": "Soạn thảo Nội dung",
     "loadFailed": "Không thể tải nội dung. Vui lòng thử lại.",
     "connectionFailed": "Chưa thể kết nối đồng bộ. Nội dung đang sửa được giữ trên trang này.",
-    "description": "Canvas editor kiểu Google Docs — bản xem trước phần render lõi (FR 3.6.10)."
+    "description": "Trình soạn thảo văn bản trực quan chuẩn Agency — hỗ trợ định dạng phong phú và đồng bộ thời gian thực."
   },
   "emojiPicker": {
     "search": "Tìm emoji (tiếng Anh)…",
@@ -591,7 +591,7 @@
       "emotion": "Đọc lên: {{label}} {{value}}%",
       "trend": "Có dùng trend",
       "claims": "Cần xác nhận: {{claims}} không có trong chủ đề hay thông tin thương hiệu.",
-      "complianceHint": "Kiểm tra tuân thủ nội dung (FR 3.6.33) sẽ chạy tại đây khi được nối."
+      "complianceHint": "Hệ thống kiểm duyệt an toàn nội dung & từ cấm sẽ quét tự động trước khi xuất bản."
     },
     "compliance": {
       "NOT_CHECKED": "Chưa kiểm tra tuân thủ",

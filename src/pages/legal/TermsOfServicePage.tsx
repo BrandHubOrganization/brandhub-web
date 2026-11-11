@@ -140,7 +140,7 @@ export function TermsOfServicePage() {
                   2. Description of BrandHub
                 </h2>
                 <p className="text-muted-foreground">
-                  BrandHub is a multi-tenant cloud software platform engineered for Marketing Agencies (Owners, Managers, Creators) and Brand Clients. The platform facilitates:
+                  BrandHub is a multi-tenant cloud software platform engineered for Marketing Agencies (Owners, Managers, Creators) and Clients. The platform facilitates:
                 </p>
                 <ul className="space-y-1.5 text-muted-foreground">
                   <li>• Agency organization management and isolated client workspaces.</li>

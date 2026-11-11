@@ -323,10 +323,10 @@
   },
   "trustedBy": "Integrated Tech Ecosystem & Official Platforms",
   "stats": {
-    "microservices": "Distributed Microservices Architecture",
-    "trends": "Social Trend Signals Crawled Daily",
-    "latency": "Average API Gateway Latency",
-    "consistency": "Brand Tone Consistency & AI Compliance",
+    "microservices": "High-Availability Cloud Infrastructure",
+    "trends": "Social Trend Signals Analyzed Daily",
+    "latency": "Instant Sync & Real-Time Response",
+    "consistency": "Brand Tone Consistency & Content Safety",
     "contents": "Content pieces managed",
     "brands": "Brands & agencies",
     "platforms": "Platform integrations",
@@ -391,10 +391,6 @@
         "desc": "Batch-generate high-res commercial imagery, video variations, copywriting, and enforce workspace Brand Guidelines."
       },
       "complianceCheck": {
-        "title": "AI Content Compliance Guard",
-        "desc": "Automatically screen drafts for community safety, profanity, and brand policy compliance before submitting for approval."
-      },
-      "livestreamScript": {
         "title": "AI Content Compliance Guard",
         "desc": "Automatically screen drafts for community safety, profanity, and brand policy compliance before submitting for approval."
       },
@@ -653,12 +649,12 @@
         "manual": "Manual bank reconciliation"
       }
     },
-    "footerNote": "Comparison reflects BrandHub's official 141-feature enterprise specification against standard social media scheduling tools in 2026.",
+    "footerNote": "Comparison reflects BrandHub's comprehensive media operations platform against standard social media scheduling tools in 2026.",
     "cta": "Start Free Today"
   },
   "team": {
     "title": "Development Team",
-    "subtitle": "The student team building BrandHub for the SEP490 capstone project.",
+    "subtitle": "SynapForge software engineering team building the BrandHub platform.",
     "members": {
       "member1": {
         "name": "Nguyen Van A",
@@ -739,7 +735,7 @@
       },
       "q2": {
         "q": "Which social platforms are natively supported?",
-        "a": "BrandHub integrates natively with 4 official social platforms: Facebook, Instagram, TikTok, and Threads. Scheduled content is processed asynchronously by our dedicated Publisher microservice."
+        "a": "BrandHub integrates natively with 4 official social platforms: Facebook, Instagram, TikTok, and Threads. Scheduled content is processed asynchronously and published securely to each brand account."
       },
       "q3": {
         "q": "How does AI Trend Crawler & Brand Guidelines enforcement work?",
@@ -751,7 +747,7 @@
       },
       "q5": {
         "q": "How are social credentials and access tokens secured?",
-        "a": "Our microservices architecture isolates authentication through Spring Cloud Gateway. Social OAuth tokens are encrypted with AES-256 in the database, with Redis token blacklisting and complete workspace tenant isolation."
+        "a": "Our enterprise-grade cloud architecture protects sensitive data with multi-layer encryption. Social OAuth tokens are encrypted with AES-256 in the database, with complete workspace tenant isolation."
       }
     }
   },
@@ -781,6 +777,6 @@
       "resources": ["Help Center", "Blog", "Community", "Tutorials"],
       "company": ["About", "Careers", "Privacy", "Terms"]
     },
-    "copyright": "© {{year}} BrandHub · Engineered by SynapForge Team (SEP490 Capstone Project - FPT University)."
+    "copyright": "© {{year}} BrandHub · Engineered by SynapForge Team."
   }
 }

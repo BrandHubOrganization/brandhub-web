@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 interface StatItem {
   key: string;
   target: number;
+  decimals?: number;
   prefix: string;
   suffix: string;
   unit?: string;
@@ -22,12 +23,13 @@ interface StatItem {
 const STATS: StatItem[] = [
   {
     key: "microservices",
-    target: 8,
+    target: 99.9,
+    decimals: 1,
     prefix: "",
-    suffix: "+",
+    suffix: "%",
     labelKey: "landing.stats.microservices",
-    sublabel: "Gateway · Core · AI · Publisher · Infra",
-    floatingBadge: "CLOUD-NATIVE CLUSTER",
+    sublabel: "Vận hành ổn định 24/7 · Cân bằng tải tự động",
+    floatingBadge: "HIGH AVAILABILITY",
     icon: Server,
     cardSurface:
       "from-orange-500/20 via-[#15131D] to-[#0D0E14] border-orange-500/40",
@@ -41,7 +43,7 @@ const STATS: StatItem[] = [
     suffix: "+",
     unit: "/ ngày",
     labelKey: "landing.stats.trends",
-    sublabel: "TikTok · Facebook · Google Trends Crawler",
+    sublabel: "TikTok · Facebook · Google Trends Radar",
     floatingBadge: "REAL-TIME TREND STREAM",
     icon: Flame,
     cardSurface:
@@ -56,7 +58,7 @@ const STATS: StatItem[] = [
     suffix: "",
     unit: "ms",
     labelKey: "landing.stats.latency",
-    sublabel: "Spring WebFlux Netty & Redis 7.2 Cache",
+    sublabel: "Đồng bộ đa người dùng thời gian thực",
     floatingBadge: "ULTRA-LOW LATENCY",
     icon: Zap,
     cardSurface:
@@ -70,7 +72,7 @@ const STATS: StatItem[] = [
     prefix: "",
     suffix: "%",
     labelKey: "landing.stats.consistency",
-    sublabel: "GraphRAG & Kiểm duyệt Compliance AI",
+    sublabel: "Chuẩn Brand Tone & An toàn nội dung MXH",
     floatingBadge: "ZERO POLICY VIOLATION",
     icon: ShieldCheck,
     cardSurface:
@@ -181,6 +183,7 @@ export function StatsCounter() {
                       <CountValue
                         target={s.target}
                         suffix={s.suffix}
+                        decimals={s.decimals}
                         start={inView}
                         skipAnimation={!!reduce}
                       />

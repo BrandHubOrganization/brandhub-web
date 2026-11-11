@@ -879,7 +879,7 @@ export function AdminGuidePage() {
                   </>
                 ) : (
                   <>
-                    Nằm tại phân hệ <code className="font-mono text-brand-orange bg-muted px-1.5 py-0.5 rounded">/admin?view=moderation</code>, Hàng đợi kiểm duyệt đóng vai trò như một hội đồng phúc thẩm đối với toàn bộ nội dung truyền thông trên nền tảng.
+                    Nằm tại phân hệ <code className="font-mono text-brand-orange bg-muted px-1.5 py-0.5 rounded">/admin?view=moderation</code>, Hàng đợi kiểm duyệt đóng vai trò là trung tâm kiểm duyệt tập trung đối với toàn bộ nội dung truyền thông trên nền tảng.
                   </>
                 )}
               </p>

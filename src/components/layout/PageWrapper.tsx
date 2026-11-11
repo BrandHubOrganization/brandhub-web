@@ -54,7 +54,9 @@ export function PageWrapper({
   const { t } = useTranslation();
   const location = useLocation();
   React.useEffect(() => {
-    document.title = `${title} | BrandHub`;
+    if (document.documentElement.dataset.seoManaged !== "true") {
+      document.title = `${title} | BrandHub`;
+    }
   }, [title]);
 
   const isPublicHelp =
