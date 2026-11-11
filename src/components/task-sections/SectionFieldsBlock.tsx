@@ -160,6 +160,13 @@ const FIELDS: Record<string, Record<string, FieldDef>> = {
     photos: field("list"),
     lessons: field("text"),
   },
+  "EMAIL.REPORT": {
+    sentCount: field("text"),
+    successCount: field("text"),
+    bounceCount: field("text"),
+    unsubscribeCount: field("text"),
+    note: field("text"),
+  },
 };
 
 const asLines = (value: unknown) =>

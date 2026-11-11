@@ -936,7 +936,45 @@
           "lessons": "Bài học"
         }
       }
+    },
+    "EMAIL": {
+      "CONTENT": {
+        "title": "Viết nội dung",
+        "fields": {
+          "subject": "Tiêu đề (subject)",
+          "preheader": "Preheader"
+        }
+      },
+      "DESIGN": {
+        "title": "Thiết kế template"
+      },
+      "AUDIENCE": {
+        "title": "Danh sách & lịch gửi",
+        "fields": {
+          "recipientGroups": "Nhóm người nhận",
+          "scheduledAt": "Lịch gửi"
+        }
+      },
+      "REPORT": {
+        "title": "Báo cáo",
+        "fields": {
+          "sentCount": "Số đã gửi",
+          "successCount": "Thành công",
+          "bounceCount": "Lỗi/bounce",
+          "unsubscribeCount": "Huỷ đăng ký",
+          "note": "Nhận xét"
+        }
+      }
     }
+  },
+  "newsletter": {
+    "sendTest": "Gửi thử",
+    "send": "Gửi",
+    "testSent": "Đã gửi email thử.",
+    "sent": "Đã gửi cho {{count}} người nhận.",
+    "sendError": "Gửi thất bại.",
+    "noRecipients": "Chọn ít nhất một nhóm người nhận.",
+    "noGroups": "Chưa có nhóm người nhận nào. Tạo nhóm ở trang Mail Templates."
   },
   "sectionReview": {
     "queueTitle": "Phần chờ Khách hàng duyệt",

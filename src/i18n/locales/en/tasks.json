@@ -936,7 +936,45 @@
           "lessons": "Lessons learned"
         }
       }
+    },
+    "EMAIL": {
+      "CONTENT": {
+        "title": "Content",
+        "fields": {
+          "subject": "Subject",
+          "preheader": "Preheader"
+        }
+      },
+      "DESIGN": {
+        "title": "Template Design"
+      },
+      "AUDIENCE": {
+        "title": "Recipients & Schedule",
+        "fields": {
+          "recipientGroups": "Recipient groups",
+          "scheduledAt": "Send schedule"
+        }
+      },
+      "REPORT": {
+        "title": "Report",
+        "fields": {
+          "sentCount": "Sent",
+          "successCount": "Successful",
+          "bounceCount": "Bounced/failed",
+          "unsubscribeCount": "Unsubscribed",
+          "note": "Note"
+        }
+      }
     }
+  },
+  "newsletter": {
+    "sendTest": "Send test",
+    "send": "Send",
+    "testSent": "Test email sent.",
+    "sent": "Sent to {{count}} recipients.",
+    "sendError": "Send failed.",
+    "noRecipients": "Pick at least one recipient group.",
+    "noGroups": "No recipient groups yet. Create one on the Mail Templates page."
   },
   "sectionReview": {
     "queueTitle": "Sections waiting for the Client",

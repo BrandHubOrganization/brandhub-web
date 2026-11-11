@@ -45,7 +45,10 @@ export default function TaskEditorPage() {
     return (
       <Navigate to={`/workspaces/${id}/tasks/${taskId}/workshop`} replace />
     );
+  if (task.type === "EMAIL_NEWSLETTER")
+    return (
+      <Navigate to={`/workspaces/${id}/tasks/${taskId}/newsletter`} replace />
+    );
 
-  // skipped: EMAIL_NEWSLETTER editor — T8.6
   return <Navigate to={`/workspaces/${id}/tasks/${taskId}/detail`} replace />;
 }

@@ -175,6 +175,9 @@ const KolEditorPage = lazy(() => import("@/pages/tasks/kol-editor"));
 const WorkshopEditorPage = lazy(
   () => import("@/pages/tasks/workshop-editor"),
 );
+const NewsletterEditorPage = lazy(
+  () => import("@/pages/tasks/newsletter-editor"),
+);
 const TaskEditorPage = lazy(() => import("@/pages/task-editor"));
 const TaskApprovalsPage = lazy(() => import("@/pages/task-approvals"));
 const AgencyCreditPage = lazy(() => import("@/pages/credit"));
@@ -524,6 +527,10 @@ export function AppRoutes() {
             <Route
               path="/workspaces/:id/tasks/:taskId/workshop"
               element={<WorkshopEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/newsletter"
+              element={<NewsletterEditorPage />}
             />
             <Route
               path="/workspaces/:id/tasks/:taskId/survey"
