@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import type { TaskListItem, TaskListFilterParams } from "@/types/task";
+import type { TaskListItem, TaskListFilterParams, TaskStatus } from "@/types/task";
 import { requireApiData } from "@/lib/apiData";
 import type { ApiResponse } from "@/services/authService";
 import type { MeetingLinkResponse } from "@/pages/tasks/types/taskWorkflow";
@@ -11,6 +11,14 @@ export interface PagedTaskResponse {
   totalElements: number;
   totalPages: number;
   last: boolean;
+}
+
+function serializeFilter(param?: string | string[]): string | undefined {
+  if (!param) return undefined;
+  if (Array.isArray(param)) {
+    return param.length === 0 || param.includes("ALL") ? undefined : param.join(",");
+  }
+  return param === "ALL" ? undefined : param;
 }
 
 export const taskService = {
@@ -26,8 +34,8 @@ export const taskService = {
           size: params.size ?? 20,
           sort: params.sort ?? "createdAt",
           direction: params.direction ?? "desc",
-          status: params.status === "ALL" ? undefined : params.status,
-          type: params.type === "ALL" ? undefined : params.type,
+          status: serializeFilter(params.status),
+          type: serializeFilter(params.type),
           search: params.search?.trim() || undefined,
           campaignId: params.campaignId || undefined,
         },
@@ -96,5 +104,16 @@ export const taskService = {
     options?: { customMeetingUrl?: string; forceNew?: boolean },
   ): Promise<ApiResponse<MeetingLinkResponse>> => {
     return taskService.generateLivestreamMeetingLink(workspaceId, taskId, options);
+  },
+
+  updateTaskStatus: async (
+    workspaceId: string,
+    taskId: string,
+    status: TaskStatus,
+  ): Promise<void> => {
+    await api.patch(
+      `/api/v1/workspaces/${encodeURIComponent(workspaceId)}/tasks/${encodeURIComponent(taskId)}/status`,
+      { status },
+    );
   },
 };

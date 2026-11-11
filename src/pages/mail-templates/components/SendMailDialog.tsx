@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { format, isValid } from "date-fns";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { JiraDatePicker } from "@/components/ui/jira-date-picker";
 import { SelectMenu } from "@/components/ui/select-menu";
 import { Textarea } from "@/components/ui/textarea";
 import { errorCode } from "@/services/adminRevenueService";
@@ -537,20 +539,44 @@ export function SendMailDialog({
                 <p className="text-sm font-medium">
                   {t("mailTemplate.send.variables")}
                 </p>
-                {sharedNames.map((name) => (
-                  <label
-                    key={name}
-                    className="block space-y-1 text-xs font-medium"
-                  >
-                    <span className="font-mono">{`{{${name}}}`}</span>
-                    <Input
-                      value={shared[name] ?? ""}
-                      onChange={(e) =>
-                        setShared((c) => ({ ...c, [name]: e.target.value }))
-                      }
-                    />
-                  </label>
-                ))}
+                {sharedNames.map((name) => {
+                  const isDate = /date|time|ngay|gio|deadline/i.test(name);
+                  return (
+                    <div
+                      key={name}
+                      className="space-y-1 text-xs font-medium"
+                    >
+                      <label htmlFor={`var-input-${name}`} className="block font-mono">
+                        {`{{${name}}}`}
+                      </label>
+                      {isDate ? (
+                        <JiraDatePicker
+                          id={`var-input-${name}`}
+                          value={shared[name] ?? null}
+                          onChange={(val) => {
+                            if (!val) {
+                              setShared((c) => ({ ...c, [name]: "" }));
+                            } else {
+                              const d = new Date(val);
+                              const formatted = isValid(d) ? format(d, "dd/MM/yyyy") : val;
+                              setShared((c) => ({ ...c, [name]: formatted }));
+                            }
+                          }}
+                          placeholder={t("mailTemplate.send.selectDate", "Chọn ngày (dd/mm/yyyy)...")}
+                          allowClear={true}
+                        />
+                      ) : (
+                        <Input
+                          id={`var-input-${name}`}
+                          value={shared[name] ?? ""}
+                          onChange={(e) =>
+                            setShared((c) => ({ ...c, [name]: e.target.value }))
+                          }
+                        />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
 
@@ -580,15 +606,24 @@ export function SendMailDialog({
               </fieldset>
             )}
 
-            <label className="block space-y-1.5 text-sm font-medium">
-              <span>{t("mailTemplate.send.schedule")}</span>
-              <Input
-                type="datetime-local"
-                value={scheduleAt}
-                onChange={(e) => {
-                  setScheduleAt(e.target.value);
-                  setScheduleError(checkSchedule(e.target.value));
+            <div className="space-y-1.5">
+              <label htmlFor="mail-send-schedule-picker" className="text-sm font-medium">
+                {t("mailTemplate.send.schedule")}
+              </label>
+              <JiraDatePicker
+                id="mail-send-schedule-picker"
+                value={scheduleAt || null}
+                onChange={(val) => {
+                  const next = val ?? "";
+                  setScheduleAt(next);
+                  setScheduleError(checkSchedule(next));
                 }}
+                includeTime={true}
+                placeholder={t("mailTemplate.send.schedulePlaceholder", "Chọn ngày và giờ gửi...")}
+                minDate={new Date(Date.now() + MIN_LEAD_MS).toISOString()}
+                maxDate={new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString()}
+                allowClear={true}
+                isError={Boolean(scheduleError)}
               />
               <span
                 className={
@@ -599,7 +634,7 @@ export function SendMailDialog({
               >
                 {scheduleError ?? t("mailTemplate.send.scheduleHelp")}
               </span>
-            </label>
+            </div>
 
             {quota && (
               <p className="text-xs" data-testid="quota-line">

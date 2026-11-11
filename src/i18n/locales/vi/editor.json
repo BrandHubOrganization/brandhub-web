@@ -421,6 +421,27 @@
     "dragDropText": "Kéo thả hình ảnh/video vào đây hoặc",
     "browseText": "duyệt từ máy tính",
     "supportedFormats": "Hỗ trợ JPG, PNG, GIF, MP4 (tối đa 50MB)",
+    "tabs": {
+      "upload": "Tải lên từ máy",
+      "repository": "Kho tài nguyên"
+    },
+    "repository": {
+      "searchPlaceholder": "Tìm kiếm tài nguyên...",
+      "categoryAll": "Tất cả",
+      "categoryImage": "Hình ảnh",
+      "categoryVideo": "Video",
+      "categoryFile": "Tài liệu",
+      "sortNewest": "Mới nhất",
+      "sortOldest": "Cũ nhất",
+      "sortNameAsc": "Tên A-Z",
+      "sortNameDesc": "Tên Z-A",
+      "empty": "Không tìm thấy tài nguyên nào trong kho",
+      "emptySearch": "Không có tài nguyên phù hợp với từ khóa",
+      "emptySubtext": "Tải lên tài nguyên mới hoặc thử tìm kiếm khác",
+      "videoBadge": "Video"
+    },
+    "selectedMedia": "Tài nguyên đã chọn",
+    "removeMedia": "Gỡ bỏ phương tiện",
     "applyWatermark": "Áp watermark"
   },
   "richText": {

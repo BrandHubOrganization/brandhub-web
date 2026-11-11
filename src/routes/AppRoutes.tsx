@@ -105,10 +105,6 @@ const DashboardPage = lazyNamed(
   "DashboardPage",
 );
 const PortalPage = lazyNamed(() => import("@/pages/portal"), "PortalPage");
-const AnalyticsPage = lazyNamed(
-  () => import("@/pages/analytics"),
-  "AnalyticsPage",
-);
 const CalendarPage = lazyNamed(
   () => import("@/pages/calendar"),
   "CalendarPage",

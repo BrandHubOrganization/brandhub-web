@@ -33,9 +33,11 @@ export function useTaskWorkflow(
         queryKey: key,
         queryFn: () => service.read(workspaceId, taskId),
       }));
-    if (!task || task.workflowRevision == null)
-      throw new Error("MISSING_REVISION");
-    return task;
+    if (!task) throw new Error("TASK_NOT_FOUND");
+    return {
+      ...task,
+      workflowRevision: task.workflowRevision ?? 0,
+    };
   }
   async function publish(task: TaskWorkflow) {
     await client.cancelQueries({ queryKey: key });
@@ -50,7 +52,7 @@ export function useTaskWorkflow(
         await service.field(workspaceId, taskId, {
           field,
           value,
-          expectedRevision: task.workflowRevision!,
+          expectedRevision: task.workflowRevision ?? 0,
         }),
       );
     });
@@ -65,7 +67,7 @@ export function useTaskWorkflow(
           assigneeId: task.assigneeId || "",
           requiresClientApproval: task.requiresClientApproval,
           ...changes,
-          expectedRevision: task.workflowRevision!,
+          expectedRevision: task.workflowRevision ?? 0,
         }),
       );
     });
@@ -79,7 +81,7 @@ export function useTaskWorkflow(
     return session.run(identity, async () => {
       const task = await current();
       return publish(
-        await service.start(workspaceId, taskId, task.workflowRevision!),
+        await service.start(workspaceId, taskId, task.workflowRevision ?? 0),
       );
     });
   }

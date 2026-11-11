@@ -9,6 +9,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { toast } from "sonner";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { agencyService } from "@/services/agencyService";
 import { workspaceService } from "@/services/workspaceService";
@@ -366,7 +367,16 @@ export function AgencyDetailPage() {
   const effectiveLogoUrl = logoUrl.trim() || agency.logoUrl || null;
 
   return (
-    <div className="w-full space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6">
+    <PageWrapper
+      title={agency?.name || t("agency.detail.title", "Hồ sơ công ty")}
+      description={
+        agency?.tagline ||
+        t(
+          "agency.detail.description",
+          "Quản lý thông tin công ty, hồ sơ nhận diện và thương hiệu.",
+        )
+      }
+    >
       {/* Soft-Deleted Alert Banner */}
       {isDeleted && (
         <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-900 sm:flex-row sm:items-center sm:justify-between dark:text-amber-200">
@@ -683,7 +693,7 @@ export function AgencyDetailPage() {
         category="banner"
         onSelect={handleSelectRecentBanner}
       />
-    </div>
+    </PageWrapper>
   );
 }
 

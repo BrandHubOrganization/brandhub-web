@@ -33,6 +33,7 @@ export interface TaskListItem {
   sourceType?: string | null;
   sourceRefId?: string | null;
   meetingUrl?: string | null;
+  requiresClientApproval?: boolean | null;
 }
 
 export interface TaskListFilterParams {
@@ -40,8 +41,8 @@ export interface TaskListFilterParams {
   size?: number;
   sort?: "dueDate" | "createdAt" | "name" | "status";
   direction?: "asc" | "desc";
-  status?: string;
-  type?: string;
+  status?: string | string[];
+  type?: string | string[];
   search?: string;
   campaignId?: string;
 }

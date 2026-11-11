@@ -1,83 +1,109 @@
-import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { STATUS_CONFIG } from "@/pages/tasks/constants";
-import { SelectMenu } from "@/components/ui/select-menu";
+import { Search, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import type { TaskPriority, TaskStatus, TaskType } from "@/types/task";
+import type {
+  TaskTimelineAssignee,
+  TaskTimelineParent,
+} from "@/pages/tasks/utils/taskFilterUtils";
+import type { FilterCategory } from "./filters/TaskFilterPopoverOptions";
+import { TaskAssigneeFilterAvatars } from "./filters/TaskAssigneeFilterAvatars";
+import { TaskFilterPopover } from "./filters/TaskFilterPopover";
+import { TaskRefreshButton } from "./TaskViewSwitcher";
 
-interface TaskFilterBarProps {
+export interface TaskFilterBarProps {
   search: string;
   onSearchChange: (val: string) => void;
-  typeFilter: string;
-  onTypeFilterChange: (val: string) => void;
-  statusFilter: string;
-  onStatusFilterChange: (val: string) => void;
-  onSearchSubmit: () => void;
+  assignees: TaskTimelineAssignee[];
+  selectedAssignees: string[];
+  onToggleAssignee: (id: string) => void;
+  selectedStatuses: TaskStatus[];
+  onToggleStatus: (status: TaskStatus) => void;
+  selectedTypes: TaskType[];
+  onToggleType: (type: TaskType) => void;
+  selectedSchedules: string[];
+  onToggleSchedule: (schedule: string) => void;
+  parents?: TaskTimelineParent[];
+  selectedParents?: string[];
+  onToggleParent?: (id: string) => void;
+  selectedPriorities?: TaskPriority[];
+  onTogglePriority?: (priority: TaskPriority) => void;
+  reporters?: TaskTimelineAssignee[];
+  selectedReporters?: string[];
+  onToggleReporter?: (id: string) => void;
+  selectedApprovals?: ("YES" | "NO")[];
+  onToggleApproval?: (approval: "YES" | "NO") => void;
+  onClearCategory?: (category: FilterCategory) => void;
+  onClearFilters: () => void;
+  activeFilterCount: number;
+  onRefresh?: () => void;
+  loading?: boolean;
+  className?: string;
 }
 
-export function TaskFilterBar({
-  search,
-  onSearchChange,
-  typeFilter,
-  onTypeFilterChange,
-  statusFilter,
-  onStatusFilterChange,
-  onSearchSubmit,
-}: TaskFilterBarProps) {
+interface TaskFilterSearchProps {
+  search: string;
+  onChange: (val: string) => void;
+}
+
+function TaskFilterSearch({ search, onChange }: TaskFilterSearchProps) {
   const { t } = useTranslation();
-  const types = [
-    "POST",
-    "LIVESTREAM",
-    "SURVEY",
-    "EVENT_PLAN",
-    "PRESS_RECOMMENDATION",
-  ];
-  const typeOptions = [
-    { value: "ALL", label: t("tasks.allTypes") },
-    ...types.map((value) => ({ value, label: t(`tasks.types.${value}`) })),
-  ];
-  const statusOptions = [
-    { value: "ALL", label: t("tasks.allStatuses") },
-    ...Object.keys(STATUS_CONFIG).map((value) => ({
-      value,
-      label: t(`tasks.status.${value}`),
-    })),
-  ];
   return (
-    <div className="flex shrink-0 flex-col flex-wrap items-stretch justify-between gap-3 sm:flex-row sm:items-center">
-      {/* Search Input */}
-      <div className="relative max-w-md flex-1">
-        <Search className="text-muted-foreground/60 absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
-        <input
-          type="text"
-          placeholder={t("tasks.search")}
-          aria-label={t("tasks.search")}
-          maxLength={200}
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && onSearchSubmit()}
-          className="border-border bg-card/90 text-foreground placeholder:text-muted-foreground focus:ring-brand-orange/30 focus:border-brand-orange w-full rounded-xl border py-2 pr-4 pl-10 text-sm shadow-2xs transition-all focus:ring-2 focus:outline-hidden"
-        />
-      </div>
+    <div className="relative w-44 sm:w-56 md:w-64 shrink-0">
+      <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2 pointer-events-none" />
+      <Input
+        value={search}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={t("tasks.search", {
+          defaultValue: "Tìm kiếm công việc...",
+        })}
+        aria-label={t("tasks.search")}
+        className="bg-card/90 h-8 rounded-xl pl-8 pr-7 text-xs"
+      />
+      {search && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer p-0.5"
+          aria-label={t("common.clear", { defaultValue: "Xóa" })}
+        >
+          <X className="size-3.5" />
+        </button>
+      )}
+    </div>
+  );
+}
 
-      {/* Filter Dropdowns using Custom Radix SelectMenu */}
-      <div className="flex flex-wrap items-center gap-2.5">
-        {/* Type Filter */}
-        <SelectMenu
-          ariaLabel={t("tasks.filterType")}
-          value={typeFilter}
-          onChange={onTypeFilterChange}
-          options={typeOptions}
-          className="border-border bg-card h-9 min-w-[155px] rounded-xl shadow-2xs"
-        />
+export function TaskFilterBar(props: TaskFilterBarProps) {
+  const {
+    search,
+    onSearchChange,
+    assignees,
+    selectedAssignees,
+    onToggleAssignee,
+    onRefresh,
+    loading = false,
+    className,
+  } = props;
+  const hasAssignees = assignees.some(
+    (p) => p.id !== "UNASSIGNED" && p.name.trim().toLowerCase() !== "unknown",
+  );
 
-        {/* Status Filter */}
-        <SelectMenu
-          ariaLabel={t("tasks.filterStatus")}
-          value={statusFilter}
-          onChange={onStatusFilterChange}
-          options={statusOptions}
-          className="border-border bg-card h-9 min-w-[170px] rounded-xl shadow-2xs"
+  return (
+    <div className={cn("flex flex-wrap items-center gap-2.5", className)}>
+      <TaskFilterSearch search={search} onChange={onSearchChange} />
+      {hasAssignees && (
+        <TaskAssigneeFilterAvatars
+          assignees={assignees}
+          selectedAssignees={selectedAssignees}
+          onToggleAssignee={onToggleAssignee}
         />
-      </div>
+      )}
+      <TaskFilterPopover {...props} />
+      {onRefresh && (
+        <TaskRefreshButton onRefresh={onRefresh} loading={loading} />
+      )}
     </div>
   );
 }

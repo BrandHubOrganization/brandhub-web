@@ -1,5 +1,6 @@
 {
   "title": "Bảo mật",
+  "subtitle": "Quản lý mật khẩu, xác thực hai lớp (2FA) và các phiên đăng nhập của bạn.",
   "description": "Quản lý mật khẩu, xác thực hai lớp (2FA) và các phiên đăng nhập của bạn.",
   "2fa": {
     "title": "Xác thực hai lớp (2FA)",
