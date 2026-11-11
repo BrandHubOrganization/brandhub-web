@@ -163,7 +163,14 @@ export function Sidebar({
       ? role === "MANAGER"
         ? ["overview", "workspaceSettings"]
         : ["overview"]
-      : ["overview", "create", "content", "publish", "workspaceSettings"];
+      : [
+          "overview",
+          "create",
+          "content",
+          "video",
+          "publish",
+          "workspaceSettings",
+        ];
 
   // Filter sections and items based on role permission
   const filteredSections = NAV_SECTIONS.filter(
