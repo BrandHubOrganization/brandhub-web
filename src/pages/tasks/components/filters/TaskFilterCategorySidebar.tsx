@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import type {
   CategoryItem,
   ExtraFieldItem,
-  FilterCategory,
   TaskFilterCategorySidebarProps,
 } from "./types";
 

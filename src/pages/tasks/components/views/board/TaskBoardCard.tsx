@@ -1,4 +1,4 @@
-import type React from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Calendar,
@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAuthStore } from "@/store/authStore";
-import type { TaskListItem, TaskType } from "@/types/task";
+import type { TaskType } from "@/types/task";
 import { taskDeadline } from "@/pages/tasks/utils/taskViewData";
 import type { TaskBoardCardProps } from "../types/types";
 
@@ -70,11 +70,12 @@ export function TaskBoardCard({
   const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const userId = useAuthStore((s) => s.user?.id);
   const canDrag = currentMemberRole !== "CREATOR" || task.assigneeId === userId;
+  const [now] = useState(() => Date.now());
 
   const due = taskDeadline(task);
   const isOverdue = Boolean(
     due &&
-    due.getTime() < Date.now() &&
+    due.getTime() < now &&
     task.status !== "FINISHED" &&
     task.status !== "CANCELLED",
   );
