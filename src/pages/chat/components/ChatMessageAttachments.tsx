@@ -5,11 +5,11 @@ import { isAxiosError } from "axios";
 import {
   Download,
   FileText,
+  Image as ImageIcon,
+  Loader2,
   LockKeyhole,
   Maximize2,
   Play,
-  Film,
-  Image as ImageIcon,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,18 @@ import { AdobePdfIcon } from "@/pages/chat/components/ChatAttachmentComposer";
 import { useChatMediaLightbox } from "@/pages/chat/hooks/useChatMediaLightbox";
 import { cn, formatFileSize } from "@/lib/utils";
 
-// In-memory cache for Blob URLs across channel switches and re-renders
+/**
+ * In-memory Blob URL cache to enable instant (0ms) media rendering
+ * across channel switches, pagination, and message scrolling.
+ */
 const blobUrlCache = new Map<string, string>();
+
+function formatVideoDuration(seconds: number): string {
+  if (isNaN(seconds) || seconds <= 0) return "";
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s < 10 ? "0" : ""}${s}`;
+}
 
 function Attachment({
   workspace,
@@ -42,13 +52,23 @@ function Attachment({
   const actor = useAuthStore((s) => s.user?.id);
   const openLightbox = useChatMediaLightbox((s) => s.openLightbox);
   const host = useRef<HTMLDivElement>(null);
+
+  const cacheKey = `${workspace}:${channel}:${id}`;
   const [visible, setVisible] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
+  const [loadingMedia, setLoadingMedia] = useState(false);
+  const [videoDuration, setVideoDuration] = useState<number>(0);
   const [contentUrl, setContentUrl] = useState<string>(
-    () => blobUrlCache.get(id) ?? "",
+    () => blobUrlCache.get(cacheKey) || "",
   );
-  const [imgLoaded, setImgLoaded] = useState(false);
+
+  useEffect(() => {
+    const cached = blobUrlCache.get(cacheKey);
+    if (cached && contentUrl !== cached) {
+      setContentUrl(cached);
+    }
+  }, [cacheKey, contentUrl]);
 
   useEffect(() => {
     const element = host.current;
@@ -71,8 +91,8 @@ function Attachment({
     enabled: visible && !!actor,
     queryFn: ({ signal }) => service.inspect(workspace, channel, id, signal),
     retry: false,
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    gcTime: 1000 * 60 * 60, // 1 hour
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours - attachment metadata is immutable
+    gcTime: 1000 * 60 * 60 * 24,
   });
 
   const metadataAllowed = meta.isSuccess && !meta.isError;
@@ -84,19 +104,21 @@ function Attachment({
     ["video/mp4", "video/quicktime"].includes(meta.data.mimeType);
   const isPdf = !!meta.data && meta.data.mimeType === "application/pdf";
 
-  // Pre-download binary only for visual media (images & videos).
-  // PDFs only need metadata to display the Acrobat card instantly!
+  // PDF is NOT previewable automatically in the message feed;
+  // only Image & Video fetch blob preview upfront to save bandwidth and memory.
   const previewable =
     (isImage || isVideo) &&
     (meta.data?.byteSize ?? 0) <= 50 * 1024 * 1024;
 
+  const hasCachedUrl = Boolean(contentUrl || blobUrlCache.has(cacheKey));
+
   const preview = useQuery({
     queryKey: ["chat-attachment-content", actor, workspace, channel, id],
-    enabled: visible && metadataAllowed && previewable,
+    enabled: visible && metadataAllowed && previewable && !hasCachedUrl,
     queryFn: ({ signal }) => service.content(workspace, channel, id, signal),
     retry: false,
-    staleTime: Infinity, // Keep in memory while session is active
-    gcTime: 1000 * 60 * 60 * 2, // 2 hours
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours - binary content is immutable
+    gcTime: 1000 * 60 * 60 * 24,
   });
 
   const binaryDenied =
@@ -106,41 +128,43 @@ function Attachment({
   const allowed = metadataAllowed && !binaryDenied;
 
   useEffect(() => {
-    if (!allowed) {
-      setContentUrl("");
+    if (blobUrlCache.has(cacheKey)) {
+      const cached = blobUrlCache.get(cacheKey)!;
+      if (contentUrl !== cached) {
+        setContentUrl(cached);
+      }
       return;
     }
-    if (blobUrlCache.has(id)) {
-      setContentUrl(blobUrlCache.get(id)!);
+    if (!allowed || !preview.data) {
+      if (!blobUrlCache.has(cacheKey)) {
+        setContentUrl("");
+      }
       return;
     }
-    if (preview.data) {
-      const url = URL.createObjectURL(preview.data);
-      blobUrlCache.set(id, url);
-      setContentUrl(url);
-    }
-  }, [allowed, preview.data, id]);
+    const url = URL.createObjectURL(preview.data);
+    blobUrlCache.set(cacheKey, url);
+    setContentUrl(url);
+  }, [allowed, preview.data, cacheKey, contentUrl]);
 
   const handlePreview = async () => {
     if (!meta.data) return;
-
-    let targetUrl = contentUrl;
-    // For PDF, fetch blob lazily if not fetched yet
-    if (!targetUrl) {
+    let url = contentUrl || blobUrlCache.get(cacheKey) || "";
+    if (!url) {
       try {
+        setLoadingMedia(true);
         const blob = await service.content(workspace, channel, id);
-        targetUrl = URL.createObjectURL(blob);
-        blobUrlCache.set(id, targetUrl);
-        setContentUrl(targetUrl);
-      } catch {
-        // Fallback
-        void download();
+        url = URL.createObjectURL(blob);
+        blobUrlCache.set(cacheKey, url);
+        setContentUrl(url);
+      } catch (err) {
+        console.error("Failed to load media preview:", err);
         return;
+      } finally {
+        setLoadingMedia(false);
       }
     }
-
     openLightbox({
-      url: targetUrl,
+      url,
       filename: meta.data.filename,
       mimeType: meta.data.mimeType,
       byteSize: meta.data.byteSize,
@@ -158,14 +182,20 @@ function Attachment({
     setDownloading(true);
     setDownloadError("");
     try {
-      const current = await service.inspect(workspace, channel, id);
-      const blob = await service.content(workspace, channel, id);
-      const url = URL.createObjectURL(blob);
+      let url = contentUrl || blobUrlCache.get(cacheKey);
+      let filename = meta.data?.filename;
+      if (!url || !filename) {
+        const current = await service.inspect(workspace, channel, id);
+        filename = current.filename;
+        const blob = await service.content(workspace, channel, id);
+        url = URL.createObjectURL(blob);
+        blobUrlCache.set(cacheKey, url);
+        setContentUrl(url);
+      }
       const link = document.createElement("a");
       link.href = url;
-      link.download = current.filename;
+      link.download = filename;
       link.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch {
       setDownloadError(t("chat.attachments.unavailable"));
       void meta.refetch();
@@ -183,10 +213,11 @@ function Attachment({
   return (
     <div ref={host} className="w-fit max-w-full">
       {meta.isPending ? (
-        <div className="flex h-48 w-72 max-w-full animate-pulse items-center justify-center rounded-2xl border border-border/60 bg-muted/30">
-          <div className="flex flex-col items-center gap-2 text-muted-foreground/50">
-            <div className="h-2 w-28 rounded-full bg-muted-foreground/20" />
-            <div className="h-2 w-16 rounded-full bg-muted-foreground/15" />
+        <div className="flex h-[76px] w-64 items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-3 shadow-2xs animate-pulse">
+          <div className="size-12 shrink-0 rounded-xl bg-muted" />
+          <div className="flex-1 space-y-2">
+            <div className="h-3.5 w-3/4 rounded-md bg-muted" />
+            <div className="h-2.5 w-1/2 rounded-md bg-muted/60" />
           </div>
         </div>
       ) : !allowed ? (
@@ -215,135 +246,134 @@ function Attachment({
         </div>
       ) : isImage ? (
         <div className="group relative max-w-sm overflow-hidden rounded-xl border border-border/70 bg-muted/20 shadow-2xs">
-          {/* Skeleton loading while downloading binary or decoding image */}
-          {(!contentUrl || !imgLoaded) && (
-            <div className="flex h-52 w-80 max-w-full animate-pulse flex-col items-center justify-center gap-2.5 rounded-xl bg-muted/40 text-muted-foreground">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-muted-foreground/15">
-                <ImageIcon className="size-5 text-muted-foreground/60" />
+          {!contentUrl ? (
+            <div className="flex h-52 w-72 sm:w-80 flex-col items-center justify-center gap-2 rounded-xl border border-border/50 bg-muted/30 p-4 text-center animate-pulse">
+              <div className="flex size-12 items-center justify-center rounded-xl bg-muted/70 text-muted-foreground shadow-2xs">
+                <ImageIcon className="size-6 text-muted-foreground/80" />
               </div>
-              <p className="font-mono text-xs text-muted-foreground/80">
-                Đang tải ảnh...
-                {meta.data?.byteSize
-                  ? ` (${formatFileSize(meta.data.byteSize)})`
-                  : ""}
+              <p className="text-xs font-medium text-muted-foreground">
+                {t("chat.attachments.loadingImage", "Đang tải hình ảnh...")}
               </p>
+              {meta.data?.byteSize ? (
+                <span className="rounded-full bg-muted/60 px-2 py-0.5 text-[10px] font-mono text-muted-foreground/80">
+                  {formatFileSize(meta.data.byteSize)}
+                </span>
+              ) : null}
             </div>
-          )}
-
-          {contentUrl && (
-            <img
-              src={contentUrl}
-              alt={meta.data.filename}
-              className={cn(
-                "max-h-80 w-auto cursor-pointer rounded-xl object-contain transition-transform hover:scale-[1.01]",
-                !imgLoaded && "hidden",
-              )}
-              loading="lazy"
-              onLoad={() => setImgLoaded(true)}
-              onClick={() => void handlePreview()}
-              title={`${meta.data.filename} - Bấm để phóng to`}
-            />
-          )}
-
-          {imgLoaded && (
-            <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
-              <Button
-                variant="secondary"
-                size="icon"
-                className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80"
-                onClick={() => void handlePreview()}
-                aria-label="Xem trước phóng to"
-                title="Xem ảnh phóng to (Slack Lightbox)"
-              >
-                <Maximize2 className="size-3.5" />
-              </Button>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80"
-                loading={downloading}
-                disabled={downloading}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  void download();
-                }}
-                aria-label={t("chat.attachments.download")}
-                title="Tải về máy"
-              >
-                <Download className="size-3.5" />
-              </Button>
-            </div>
-          )}
-        </div>
-      ) : isVideo ? (
-        <div className="group relative max-w-md overflow-hidden rounded-xl border border-border/70 bg-black shadow-md">
-          {/* Skeleton loading while downloading video binary */}
-          {!contentUrl && (
-            <div className="flex h-56 w-84 max-w-full animate-pulse flex-col items-center justify-center gap-3 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-400">
-              <div className="flex size-12 items-center justify-center rounded-full bg-zinc-800/80">
-                <Play className="ml-0.5 size-6 fill-zinc-500 text-zinc-500" />
-              </div>
-              <p className="font-mono text-xs text-zinc-400">
-                Đang tải video...
-                {meta.data?.byteSize
-                  ? ` (${formatFileSize(meta.data.byteSize)})`
-                  : ""}
-              </p>
-            </div>
-          )}
-
-          {contentUrl && (
-            <div
-              className="relative cursor-pointer"
-              onClick={() => void handlePreview()}
-            >
-              <video
-                preload="metadata"
-                playsInline
+          ) : (
+            <>
+              <img
                 src={contentUrl}
-                className="max-h-76 w-full max-w-md rounded-xl bg-black object-contain"
-                onLoadedMetadata={(e) => {
-                  try {
-                    // Seek slightly forward to generate a sharp preview poster frame
-                    e.currentTarget.currentTime = 0.05;
-                  } catch {}
-                }}
+                alt={meta.data.filename}
+                className="max-h-80 w-auto cursor-pointer rounded-xl object-contain transition-transform hover:scale-[1.01]"
+                loading="lazy"
+                onClick={handlePreview}
+                title={`${meta.data.filename} - Bấm để phóng to`}
               />
-
-              {/* Slack-style Center Play Button Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/25 transition-all group-hover:bg-black/40">
-                <div className="flex size-14 items-center justify-center rounded-full bg-black/60 text-white shadow-xl backdrop-blur-xs transition-transform group-hover:scale-110 group-hover:bg-black/80">
-                  <Play className="ml-1 size-7 fill-current" />
-                </div>
-              </div>
-
-              {/* Video Badge */}
-              <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 rounded-md bg-black/70 px-2 py-0.5 text-[11px] font-medium text-white/90 backdrop-blur-xs">
-                <Film className="size-3" />
-                <span>VIDEO</span>
-                <span className="text-white/40">·</span>
-                <span>{formatFileSize(meta.data.byteSize)}</span>
-              </div>
-
-              {/* Hover Action Bar */}
               <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
                 <Button
+                  type="button"
                   variant="secondary"
                   size="icon"
-                  className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    void handlePreview();
-                  }}
-                  aria-label="Xem toàn màn hình"
-                  title="Xem toàn màn hình (Slack Lightbox)"
+                  className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80 hover:text-white"
+                  onClick={handlePreview}
+                  aria-label="Xem trước phóng to"
+                  title="Xem ảnh phóng to"
                 >
                   <Maximize2 className="size-3.5" />
                 </Button>
                 <Button
+                  type="button"
                   variant="secondary"
                   size="icon"
-                  className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80"
+                  className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80 hover:text-white"
+                  loading={downloading}
+                  disabled={downloading}
+                  onClick={() => void download()}
+                  aria-label={t("chat.attachments.download")}
+                  title="Tải về máy"
+                >
+                  <Download className="size-3.5" />
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      ) : isVideo ? (
+        <div className="w-full max-w-md">
+          {!contentUrl ? (
+            <div className="relative flex aspect-video max-h-72 w-full max-w-md flex-col items-center justify-center overflow-hidden rounded-xl border border-border/70 bg-zinc-950 p-4 shadow-2xs">
+              <div className="flex size-14 items-center justify-center rounded-full bg-zinc-900/90 text-zinc-400 ring-1 ring-white/10 shadow-lg">
+                <Play className="ml-1 size-7 fill-zinc-600 text-zinc-600 animate-pulse" />
+              </div>
+              <div className="mt-3 flex items-center gap-2 text-xs font-medium text-zinc-400">
+                <Loader2 className="size-3.5 animate-spin text-zinc-400" />
+                <span>
+                  {t("chat.attachments.loadingVideo", "Đang tải video...")}
+                </span>
+                {meta.data?.byteSize ? (
+                  <span className="font-mono text-zinc-500">
+                    ({formatFileSize(meta.data.byteSize)})
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            <div
+              className="group relative aspect-video max-h-72 w-full max-w-md cursor-pointer overflow-hidden rounded-xl border border-border/70 bg-black shadow-2xs transition-shadow hover:shadow-md"
+              onClick={handlePreview}
+            >
+              <video
+                src={contentUrl}
+                preload="metadata"
+                playsInline
+                muted
+                onLoadedMetadata={(e) => {
+                  if (e.currentTarget.duration) {
+                    setVideoDuration(e.currentTarget.duration);
+                  }
+                }}
+                className="h-full w-full object-contain pointer-events-none"
+              />
+
+              {/* Slack-Standard Center Big Play Overlay */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex size-14 items-center justify-center rounded-full bg-black/60 text-white shadow-xl backdrop-blur-md transition-all duration-200 group-hover:scale-110 group-hover:bg-black/80 ring-1 ring-white/20">
+                  <Play className="ml-1 size-7 fill-white text-white drop-shadow-sm" />
+                </div>
+              </div>
+
+              {/* Slack-Standard Duration / File Size Badge */}
+              <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 rounded-md bg-black/70 px-2 py-0.5 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-xs shadow-xs">
+                <span className="inline-block size-1.5 rounded-full bg-red-500" />
+                <span>
+                  {videoDuration > 0
+                    ? `${formatVideoDuration(videoDuration)} · ${formatFileSize(meta.data.byteSize)}`
+                    : `VIDEO · ${formatFileSize(meta.data.byteSize)}`}
+                </span>
+              </div>
+
+              {/* Floating Action Bar on Top-Right */}
+              <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80 hover:text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    void handlePreview();
+                  }}
+                  aria-label="Xem trước video toàn màn hình"
+                  title="Xem toàn màn hình"
+                >
+                  <Maximize2 className="size-3.5" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  className="size-7 rounded-full border-0 bg-black/60 text-white shadow-sm hover:bg-black/80 hover:text-white"
                   loading={downloading}
                   disabled={downloading}
                   onClick={(e) => {
@@ -402,9 +432,12 @@ function Attachment({
           <div className="flex items-center gap-1">
             {isPdf && (
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
                 className="size-8 shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
+                loading={loadingMedia}
+                disabled={loadingMedia}
                 onClick={(e) => {
                   e.stopPropagation();
                   void handlePreview();
@@ -416,6 +449,7 @@ function Attachment({
               </Button>
             )}
             <Button
+              type="button"
               variant="ghost"
               size="icon"
               className="size-8 shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
