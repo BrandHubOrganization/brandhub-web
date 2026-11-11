@@ -1024,7 +1024,9 @@ for (const theme of ["light", "dark"]) {
 
 test("converts chosen font family in Content Creator Studio and preserves it in Live Preview and published post payload", async ({
   page,
+  context,
 }, testInfo) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   let savedCaption = "";
   let publishCalled = false;
 
@@ -1071,18 +1073,27 @@ test("converts chosen font family in Content Creator Studio and preserves it in 
   // Live Preview must display the converted Unicode Serif font
   await expect(page.getByText(expectedUnicode).first()).toBeVisible();
 
-  // Test 1-click "Copy dán Facebook" button in Studio RichTextEditor toolbar
+  // Case A: Press Ctrl+C directly inside the Studio RichTextEditor and verify clipboard has converted Unicode font!
+  await editor.click();
+  await page.keyboard.press("Control+a");
+  await page.keyboard.press("Control+c");
+  const ctrlCCopied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(ctrlCCopied).toBe(expectedUnicode);
+
+  // Case B: Test 1-click "Copy dán Facebook" button in Studio RichTextEditor toolbar
   await page.getByTestId("studio-copy-publish-btn").click();
   await expect(page.getByTestId("studio-copy-publish-btn")).toContainText(
     /Đã copy Font/,
   );
+  const btnCopied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(btnCopied).toBe(expectedUnicode);
 
   await page.screenshot({
     path: testInfo.outputPath("studio-font-conversion-live-preview.png"),
     fullPage: true,
   });
 
-  // Publish now and verify the backend receives the exact converted Unicode font
+  // Case C: Publish now and verify the backend receives the exact converted Unicode font
   await page.getByRole("button", { name: "Đăng ngay", exact: true }).click();
   await expect.poll(() => publishCalled).toBe(true);
   expect(savedCaption).toBe(expectedUnicode);

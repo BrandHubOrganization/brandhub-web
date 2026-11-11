@@ -15,6 +15,13 @@ export const SORT_TO_API: Record<MediaSortOption, MaterialSort> = {
   NAME_DESC: "name_desc",
 };
 
+export interface StoredMediaEntry {
+  materialId?: string;
+  s3Key?: string;
+  externalUrl?: string;
+  mediaType?: "IMAGE" | "VIDEO";
+}
+
 export interface MediaDropzoneProps {
   mediaUrls: string[];
   onChange: (urls: string[]) => void;
@@ -22,6 +29,12 @@ export interface MediaDropzoneProps {
   onUploaded: (
     url: string,
     materialId: string,
+    mediaType: "IMAGE" | "VIDEO",
+  ) => void;
+  storedMedia?: Record<string, StoredMediaEntry>;
+  onWatermarked?: (
+    oldUrl: string,
+    newMaterial: MaterialItem,
     mediaType: "IMAGE" | "VIDEO",
   ) => void;
 }
@@ -45,6 +58,8 @@ export interface MediaRepositoryTabProps {
 export interface MediaSelectedPreviewsProps {
   mediaUrls: string[];
   onRemove: (index: number) => void;
+  storedMedia?: Record<string, StoredMediaEntry>;
+  onWatermark?: (url: string, materialId: string) => void;
 }
 
 export interface MediaRepositoryItemCardProps {

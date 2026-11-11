@@ -62,7 +62,9 @@ export function PageWrapper({
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
 
   React.useEffect(() => {
-    document.title = `${title} | BrandHub`;
+    if (document.documentElement.dataset.seoManaged !== "true") {
+      document.title = `${title} | BrandHub`;
+    }
   }, [title]);
 
   const isPublicHelp =
@@ -182,7 +184,7 @@ export function PageWrapper({
             </div>
 
             {/* Action Buttons & Guide Button */}
-            <div className="relative z-10 flex shrink-0 flex-wrap items-center gap-2 self-start md:self-center">
+            <div className="relative z-10 flex min-w-0 flex-wrap items-center gap-2 self-start md:max-w-[60%] md:justify-end md:self-center">
               {showGuideButton && (
                 <Link
                   to={guideUrl}
@@ -207,6 +209,7 @@ export function PageWrapper({
               )}
 
               {actions}
+            </div>
             </div>
           </div>
         </div>

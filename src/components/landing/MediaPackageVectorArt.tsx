@@ -76,7 +76,7 @@ export function MediaPackageVectorArt({
           <rect x="44" y="6" width="28" height="9" rx="2" fill="#F97316" fillOpacity="0.2" stroke="#F97316" strokeWidth="1" />
           <text x="47" y="13" fill="#F97316" fontSize="5.5" fontWeight="bold">POST (FB/TT)</text>
           <rect x="44" y="19" width="28" height="9" rx="2" fill="#F97316" fillOpacity="0.25" stroke="#F97316" strokeWidth="1" />
-          <text x="47" y="26" fill="#F97316" fontSize="5.5" fontWeight="bold">LIVESTREAM</text>
+          <text x="46" y="26" fill="#F97316" fontSize="5.5" fontWeight="bold">VIDEO REELS</text>
           <rect x="44" y="32" width="28" height="9" rx="2" fill="#F97316" fillOpacity="0.2" stroke="#F97316" strokeWidth="1" />
           <text x="47" y="39" fill="#F97316" fontSize="5.5" fontWeight="bold">WORKSHOP</text>
         </svg>

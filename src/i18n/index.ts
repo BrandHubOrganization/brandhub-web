@@ -1,10 +1,27 @@
 import i18n, { type BackendModule, type ResourceKey } from "i18next";
 import { initReactI18next } from "react-i18next";
 
-const savedLang =
-  typeof window !== "undefined" && typeof localStorage !== "undefined"
-    ? localStorage.getItem("brandhub-lang")
-    : null;
+function resolveInitialLanguage(): "vi" | "en" {
+  if (typeof window !== "undefined") {
+    try {
+      const urlLang = new URLSearchParams(window.location.search).get("lang");
+      if (urlLang === "en" || urlLang === "vi") {
+        return urlLang;
+      }
+    } catch {
+      // ignore URL parsing errors
+    }
+    if (typeof localStorage !== "undefined") {
+      const saved = localStorage.getItem("brandhub-lang");
+      if (saved === "en" || saved === "vi") {
+        return saved;
+      }
+    }
+  }
+  return "vi";
+}
+
+const initialLang = resolveInitialLanguage();
 
 // Each language is its own chunk, so a visitor does not download the one they are not reading.
 const languageChunks: Record<string, () => Promise<{ default: object }>> = {
@@ -25,7 +42,7 @@ const languageBackend: BackendModule = {
 };
 
 export const i18nReady = i18n.use(languageBackend).use(initReactI18next).init({
-  lng: savedLang === "en" ? "en" : "vi",
+  lng: initialLang,
   fallbackLng: "vi",
   interpolation: { escapeValue: false },
 });
@@ -40,14 +57,12 @@ const applyLanguage = (lng: string) => {
   }
 };
 void i18nReady.then(() => {
-  const currentSaved = localStorage.getItem("brandhub-lang");
-  if (currentSaved === "en" && i18n.language !== "en") {
-    void i18n.changeLanguage("en");
+  const preferred = resolveInitialLanguage();
+  if (preferred !== i18n.language) {
+    void i18n.changeLanguage(preferred);
     return;
   }
-  if (!currentSaved) {
-    localStorage.setItem("brandhub-lang", i18n.language);
-  }
+  localStorage.setItem("brandhub-lang", i18n.language);
   document.documentElement.lang = i18n.language;
 });
 i18n.on("languageChanged", applyLanguage);

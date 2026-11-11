@@ -118,14 +118,50 @@ jobs:
             --exclude "assets/*" \
             --exclude "index.html"
 
+      - name: Upload SEO metadata files with explicit MIME types
+        run: |
+          if [ -f "dist/robots.txt" ]; then
+            aws s3 cp dist/robots.txt s3://${{ secrets.S3_BUCKET_NAME }}/robots.txt \
+              --content-type "text/plain; charset=utf-8" \
+              --cache-control "public,max-age=3600"
+          fi
+          if [ -f "dist/llms.txt" ]; then
+            aws s3 cp dist/llms.txt s3://${{ secrets.S3_BUCKET_NAME }}/llms.txt \
+              --content-type "text/plain; charset=utf-8" \
+              --cache-control "public,max-age=3600"
+          fi
+          if [ -f "dist/sitemap.xml" ]; then
+            aws s3 cp dist/sitemap.xml s3://${{ secrets.S3_BUCKET_NAME }}/sitemap.xml \
+              --content-type "application/xml; charset=utf-8" \
+              --cache-control "public,max-age=3600"
+          fi
+          if [ -f "dist/site.webmanifest" ]; then
+            aws s3 cp dist/site.webmanifest s3://${{ secrets.S3_BUCKET_NAME }}/site.webmanifest \
+              --content-type "application/manifest+json; charset=utf-8" \
+              --cache-control "public,max-age=86400"
+          fi
+
+      - name: Upload prerendered public route HTML entrypoints
+        run: |
+          for route in "privacy" "terms" "help/faq"; do
+            if [ -f "dist/${route}/index.html" ]; then
+              aws s3 cp "dist/${route}/index.html" "s3://${{ secrets.S3_BUCKET_NAME }}/${route}/index.html" \
+                --content-type "text/html; charset=utf-8" \
+                --cache-control "no-cache,no-store,must-revalidate"
+              aws s3 cp "dist/${route}/index.html" "s3://${{ secrets.S3_BUCKET_NAME }}/${route}" \
+                --content-type "text/html; charset=utf-8" \
+                --cache-control "no-cache,no-store,must-revalidate"
+            fi
+          done
+
       - name: Upload index.html without cache
         run: |
           aws s3 cp dist/index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html \
-            --content-type "text/html" \
+            --content-type "text/html; charset=utf-8" \
             --cache-control "no-cache,no-store,must-revalidate"
 
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/index.html" "/"
+            --paths "/index.html" "/" "/robots.txt" "/llms.txt" "/sitemap.xml" "/site.webmanifest" "/og-banner.png" "/privacy*" "/terms*" "/help/faq*"

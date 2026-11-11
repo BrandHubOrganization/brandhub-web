@@ -1,0 +1,1349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://brandhub.id.vn/</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/" />
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog" />
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách quản lý dự án truyền thông Agency bài bản như Jira &amp; Notion nhưng có sẵn xuất bản đa kênh</image:title>
+      <image:caption>Bảng quản trị dự án truyền thông và phân rã tác vụ theo mô hình Workspace trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/jira-vs-notion-vs-brandhub-chon-cong-cu-quan-ly-cong-viec-marketing</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/jira-vs-notion-vs-brandhub-chon-cong-cu-quan-ly-cong-viec-marketing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/jira-vs-notion-vs-brandhub-chon-cong-cu-quan-ly-cong-viec-marketing" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>So sánh Jira, Notion và BrandHub: Đâu là mô hình quản lý công việc tối ưu cho đội ngũ Marketing?</image:title>
+      <image:caption>Đặt lên bàn cân mô hình quản lý công việc trên Jira, Notion và BrandHub cho đội ngũ truyền thông</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/thiet-ke-cau-truc-da-workspace-cho-agency-quan-ly-20-thuong-hieu</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/thiet-ke-cau-truc-da-workspace-cho-agency-quan-ly-20-thuong-hieu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/thiet-ke-cau-truc-da-workspace-cho-agency-quan-ly-20-thuong-hieu" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách thiết kế cấu trúc đa Workspace cho Agency vận hành đồng thời từ 10 đến 50 thương hiệu</image:title>
+      <image:caption>Kiến trúc đa Workspace cô lập dữ liệu từng nhãn hàng trên hệ thống BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/ma-tran-phan-quyen-rbac-6-vai-tro-owner-manager-creator-client-admin</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ma-tran-phan-quyen-rbac-6-vai-tro-owner-manager-creator-client-admin" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/ma-tran-phan-quyen-rbac-6-vai-tro-owner-manager-creator-client-admin" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Ma trận phân quyền RBAC 6 vai trò trong Agency: Phân tách rạch ròi giữa Owner, Manager, Creator và Client</image:title>
+      <image:caption>Ma trận kiểm soát truy cập theo 6 vai trò chuẩn hóa RBAC trên nền tảng BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quy-trinh-moi-thanh-vien-va-client-vao-workspace-qua-email-an-toan</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-moi-thanh-vien-va-client-vao-workspace-qua-email-an-toan" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quy-trinh-moi-thanh-vien-va-client-vao-workspace-qua-email-an-toan" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Quy trình mời nhân sự Creator và khách hàng Client vào Workspace qua liên kết xác thực một lần</image:title>
+      <image:caption>Giao diện gửi lời mời tham gia Workspace qua email xác thực một lần cho Creator và Client trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/chong-ro-ri-du-lieu-giua-cac-nhan-hang-doi-thu-trong-cung-agency</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/chong-ro-ri-du-lieu-giua-cac-nhan-hang-doi-thu-trong-cung-agency" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/chong-ro-ri-du-lieu-giua-cac-nhan-hang-doi-thu-trong-cung-agency" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Giải pháp chống rò rỉ dữ liệu chiến dịch khi một Agency phục vụ nhiều nhãn hàng cùng ngành</image:title>
+      <image:caption>Kiến trúc cô lập dữ liệu đa tầng giữa các Workspace nhãn hàng cùng ngành trên hệ thống BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-kpi-va-khoi-luong-cong-viec-cua-creator-tren-bang-dieu-khien</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-kpi-va-khoi-luong-cong-viec-cua-creator-tren-bang-dieu-khien" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-kpi-va-khoi-luong-cong-viec-cua-creator-tren-bang-dieu-khien" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách đo lường khối lượng công việc và tỷ lệ hoàn thành đúng hạn (SLA) của đội ngũ Creator</image:title>
+      <image:caption>Bảng điều khiển thống kê khối lượng Content Request và tỷ lệ hoàn thành đúng hạn SLA của đội ngũ Creator</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xay-dung-cong-thong-tin-khach-hang-client-portal-chuyen-nghiep</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-cong-thong-tin-khach-hang-client-portal-chuyen-nghiep" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xay-dung-cong-thong-tin-khach-hang-client-portal-chuyen-nghiep" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Xây dựng cổng thông tin khách hàng (Client Portal) minh bạch giúp tăng tỷ lệ gia hạn hợp đồng Agency</image:title>
+      <image:caption>Giao diện cổng thông tin khách hàng Client Portal hiển thị tiến độ chiến dịch và khung duyệt bài trực quan</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-mui-gio-va-ngon-ngu-cho-agency-phuc-vu-khach-hang-da-quoc-gia</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-mui-gio-va-ngon-ngu-cho-agency-phuc-vu-khach-hang-da-quoc-gia" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-mui-gio-va-ngon-ngu-cho-agency-phuc-vu-khach-hang-da-quoc-gia" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cấu hình múi giờ (Timezone) và giao diện song ngữ Việt/Anh cho dự án truyền thông xuyên biên giới</image:title>
+      <image:caption>Thiết lập múi giờ riêng biệt cho từng Workspace thương hiệu quốc tế và giao diện song ngữ trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-chuyen-giao-cong-viec-khi-creator-hoac-manager-nghi-viec-dot-xuat</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-chuyen-giao-cong-viec-khi-creator-hoac-manager-nghi-viec-dot-xuat" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-chuyen-giao-cong-viec-khi-creator-hoac-manager-nghi-viec-dot-xuat" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Quy trình bàn giao công việc trong 5 phút khi Creator hoặc Manager chuyển vị trí mà không đứt gãy dự án</image:title>
+      <image:caption>Điều chuyển người phụ trách Content Request và thu hồi quyền truy cập Workspace an toàn trong 5 phút</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/so-hoa-ho-so-nang-luc-agency-profile-de-thuyet-phuc-khach-hang-lon</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-hoa-ho-so-nang-luc-agency-profile-de-thuyet-phuc-khach-hang-lon" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/so-hoa-ho-so-nang-luc-agency-profile-de-thuyet-phuc-khach-hang-lon" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách chuẩn hóa hồ sơ năng lực Agency (Agency Profile) ngay trên hệ thống quản trị chiến dịch</image:title>
+      <image:caption>Số hóa hồ sơ năng lực Agency Profile đồng bộ cùng danh mục gói dịch vụ truyền thông chuyên nghiệp</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-danh-muc-doi-tac-bao-chi-truyen-hinh-trong-workspace</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-danh-muc-doi-tac-bao-chi-truyen-hinh-trong-workspace" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-danh-muc-doi-tac-bao-chi-truyen-hinh-trong-workspace" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách xây dựng cơ sở dữ liệu đối tác Báo điện tử và Đài truyền hình tập trung cho Agency PR</image:title>
+      <image:caption>Danh mục cơ sở dữ liệu đối tác Báo điện tử và Đài truyền hình tập trung trong Workspace trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/thay-the-nhom-chat-zalo-messenger-bang-luong-thao-luan-theo-tung-bai-viet</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/thay-the-nhom-chat-zalo-messenger-bang-luong-thao-luan-theo-tung-bai-viet" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/thay-the-nhom-chat-zalo-messenger-bang-luong-thao-luan-theo-tung-bai-viet" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Tại sao trao đổi công việc qua nhóm chat làm giảm 40% năng suất sáng tạo của đội ngũ nội dung?</image:title>
+      <image:caption>Luồng thảo luận và phản hồi gắn trực tiếp vào từng phiên bản bài viết thay thế nhóm chat rời rạc</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/to-chuc-kho-tai-nguyen-thuong-hieu-brand-assets-cho-tung-workspace</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/to-chuc-kho-tai-nguyen-thuong-hieu-brand-assets-cho-tung-workspace" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/to-chuc-kho-tai-nguyen-thuong-hieu-brand-assets-cho-tung-workspace" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Hướng dẫn tổ chức kho tài nguyên thương hiệu (Logo, Font, Bộ quy chuẩn) khoa học như Notion</image:title>
+      <image:caption>Tổ chức kho tài nguyên thương hiệu Brand Assets và tài liệu Brand Guidelines tập trung theo từng Workspace</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/kiem-soat-nhat-ky-hoat-dong-audit-log-trong-du-an-truyen-thong</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/kiem-soat-nhat-ky-hoat-dong-audit-log-trong-du-an-truyen-thong" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/kiem-soat-nhat-ky-hoat-dong-audit-log-trong-du-an-truyen-thong" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Tầm quan trọng của Nhật ký hoạt động (Audit Log) trong việc minh bạch hóa trách nhiệm giữa Agency và Client</image:title>
+      <image:caption>Giao diện nhật ký hoạt động hệ thống quản lý dự án truyền thông ghi vết thao tác theo thời gian thực trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/mo-hinh-van-hanh-phong-marketing-in-house-cho-tap-doan-da-thuong-hieu</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/mo-hinh-van-hanh-phong-marketing-in-house-cho-tap-doan-da-thuong-hieu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/mo-hinh-van-hanh-phong-marketing-in-house-cho-tap-doan-da-thuong-hieu" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Mô hình vận hành phòng Marketing In-house cho doanh nghiệp sở hữu chuỗi nhiều thương hiệu con</image:title>
+      <image:caption>Kiến trúc điều hành phòng Marketing In-house tập trung quản lý đồng thời nhiều Workspace thương hiệu con</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/checklist-10-buoc-chuyen-doi-so-quy-trinh-van-hanh-agency-trong-7-ngay</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/checklist-10-buoc-chuyen-doi-so-quy-trinh-van-hanh-agency-trong-7-ngay" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/checklist-10-buoc-chuyen-doi-so-quy-trinh-van-hanh-agency-trong-7-ngay" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Checklist 10 bước chuyển đổi số toàn diện quy trình vận hành Agency truyền thông chỉ trong 7 ngày</image:title>
+      <image:caption>Sơ đồ 10 bước chuyển đổi số cho agency marketing truyền thông triển khai gọn trong 7 ngày làm việc</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Quy trình làm bài truyền thông &amp; phê duyệt 3 cấp (Creator -&gt; Manager -&gt; Client) chống trôi việc</image:title>
+      <image:caption>Quy trình phê duyệt nội dung đa cấp giữa Creator, Manager và Client trên nền tảng BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-viet-content-brief-chuan-giup-creator-viet-dung-y-ngay-lan-dau</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-viet-content-brief-chuan-giup-creator-viet-dung-y-ngay-lan-dau" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-viet-content-brief-chuan-giup-creator-viet-dung-y-ngay-lan-dau" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Mẫu phiếu giao việc sáng tạo (Content Request Brief) giúp Creator viết đúng ý ngay từ bản nháp đầu tiên</image:title>
+      <image:caption>Giao diện khởi tạo phiếu giao việc Content Request Brief chi tiết trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/co-che-khoa-ban-nhap-content-locking-ngan-chan-loi-sua-de-noi-dung</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/co-che-khoa-ban-nhap-content-locking-ngan-chan-loi-sua-de-noi-dung" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/co-che-khoa-ban-nhap-content-locking-ngan-chan-loi-sua-de-noi-dung" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cơ chế khóa bản nháp (Content Locking) là gì và tại sao nó cứu Agency khỏi thảm họa đăng nhầm bản cũ?</image:title>
+      <image:caption>Cơ chế tự động khóa bản nháp khi bài viết chuyển sang trạng thái chờ phê duyệt trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-lich-su-chinh-sua-version-history-va-doi-chieu-cac-ban-nhap</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-lich-su-chinh-sua-version-history-va-doi-chieu-cac-ban-nhap" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-lich-su-chinh-sua-version-history-va-doi-chieu-cac-ban-nhap" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách theo dõi lịch sử phiên bản (Version History) để biết chính xác bài viết đã thay đổi những gì qua các vòng duyệt</image:title>
+      <image:caption>Giao diện quản lý lịch sử phiên bản Version History và đối chiếu các bản nháp nội dung trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xem-truoc-bai-dang-preview-tren-facebook-instagram-tiktok-threads</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xem-truoc-bai-dang-preview-tren-facebook-instagram-tiktok-threads" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xem-truoc-bai-dang-preview-tren-facebook-instagram-tiktok-threads" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Tính năng mô phỏng giao diện bài đăng (Live Preview) trên Facebook, Instagram, TikTok và Threads trước khi duyệt</image:title>
+      <image:caption>Khung mô phỏng hiển thị bài đăng trực tiếp trên Facebook, Instagram, TikTok và Threads của BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/kiem-duyet-noi-dung-tu-dong-compliance-check-chan-tu-cam-vi-pham</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/kiem-duyet-noi-dung-tu-dong-compliance-check-chan-tu-cam-vi-pham" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/kiem-duyet-noi-dung-tu-dong-compliance-check-chan-tu-cam-vi-pham" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Kiểm duyệt an toàn thương hiệu tự động (Check Compliance Content): Chặn từ ngữ nhạy cảm trước khi gửi Client</image:title>
+      <image:caption>Hệ thống AI quét kiểm duyệt tuân thủ an toàn nội dung cộng đồng trên trình soạn thảo BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quy-trinh-xu-ly-yeu-cau-chinh-sua-revision-request-tu-phia-client</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-xu-ly-yeu-cau-chinh-sua-revision-request-tu-phia-client" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quy-trinh-xu-ly-yeu-cau-chinh-sua-revision-request-tu-phia-client" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách chuẩn hóa luồng yêu cầu chỉnh sửa (Request Revision) từ Client để không bị sửa đi sửa lại vô tận</image:title>
+      <image:caption>Luồng xử lý yêu cầu chỉnh sửa Request Revision có ghi chú bắt buộc giữa Client, Manager và Creator</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/phan-loai-muc-do-uu-tien-priority-cho-cac-yeu-cau-san-xuat-noi-dung</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/phan-loai-muc-do-uu-tien-priority-cho-cac-yeu-cau-san-xuat-noi-dung" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/phan-loai-muc-do-uu-tien-priority-cho-cac-yeu-cau-san-xuat-noi-dung" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Thiết lập ma trận mức độ ưu tiên (Thấp, Trung bình, Cao, Khẩn cấp) cho hàng trăm yêu cầu nội dung mỗi tuần</image:title>
+      <image:caption>Bảng lọc yêu cầu sản xuất nội dung Content Request theo 4 mức độ ưu tiên và hạn chót trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/tich-hop-trinh-soan-thao-anh-va-video-ngay-trong-luong-viet-bai</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tich-hop-trinh-soan-thao-anh-va-video-ngay-trong-luong-viet-bai" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/tich-hop-trinh-soan-thao-anh-va-video-ngay-trong-luong-viet-bai" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Tối ưu hóa quy trình đính kèm hình ảnh, bộ ảnh (Carousel) và video ngắn ngay trong trình soạn thảo nội dung</image:title>
+      <image:caption>Trình soạn thảo nội dung tích hợp quản lý hình ảnh, sắp xếp bộ ảnh Carousel và video ngắn trực quan</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quy-trinh-duyet-bai-dang-bao-dien-tu-va-booking-truyen-hinh</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-duyet-bai-dang-bao-dien-tu-va-booking-truyen-hinh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quy-trinh-duyet-bai-dang-bao-dien-tu-va-booking-truyen-hinh" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Sự khác biệt giữa quy trình duyệt bài mạng xã hội và quy trình duyệt bài PR Báo chí / Truyền hình</image:title>
+      <image:caption>Đối chiếu quy trình thẩm định bài PR Báo điện tử, Truyền hình và bài đăng mạng xã hội trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xay-dung-bo-tieu-chi-checklist-cho-manager-truoc-khi-gui-bai-cho-client</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-bo-tieu-chi-checklist-cho-manager-truoc-khi-gui-bai-cho-client" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xay-dung-bo-tieu-chi-checklist-cho-manager-truoc-khi-gui-bai-cho-client" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>12 tiêu chí kiểm tra chất lượng nội dung (Internal QA Checklist) dành cho Manager trước khi bấm gửi Client</image:title>
+      <image:caption>Manager thực hiện rà soát chất lượng nội dung theo bộ tiêu chí Internal QA Checklist trước khi chuyển sang Client</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-rut-ngan-thoi-gian-cho-client-duyet-bai-tu-3-ngay-xuong-2-gio</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-rut-ngan-thoi-gian-cho-client-duyet-bai-tu-3-ngay-xuong-2-gio" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-rut-ngan-thoi-gian-cho-client-duyet-bai-tu-3-ngay-xuong-2-gio" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>5 bí quyết giúp khách hàng (Client) phê duyệt kế hoạch nội dung nhanh gấp 10 lần mà không cần hối thúc</image:title>
+      <image:caption>Khách hàng vai trò Client xem trước giao diện bài đăng thực tế và bấm phê duyệt nhanh trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-trang-thai-bai-viet-tu-draft-den-published-tren-mot-bang-duy-nhat</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-trang-thai-bai-viet-tu-draft-den-published-tren-mot-bang-duy-nhat" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-trang-thai-bai-viet-tu-draft-den-published-tren-mot-bang-duy-nhat" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Vòng đời của một bài truyền thông: Giải mã 7 trạng thái từ Khởi tạo (Draft) đến Xuất bản thành công (Published)</image:title>
+      <image:caption>Bảng điều khiển quản lý xuyên suốt vòng đời 7 trạng thái bài viết từ bản nháp Draft đến xuất bản Published</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xu-ly-tinh-huong-khan-cap-thu-hoi-hoac-huy-lich-bai-viet-da-duyet</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xu-ly-tinh-huong-khan-cap-thu-hoi-hoac-huy-lich-bai-viet-da-duyet" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xu-ly-tinh-huong-khan-cap-thu-hoi-hoac-huy-lich-bai-viet-da-duyet" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Quy trình xử lý khủng hoảng: Cách tạm dừng hoặc hủy lịch xuất bản các bài viết đã duyệt chỉ trong 3 giây</image:title>
+      <image:caption>Bảng điều khiển lịch xuất bản cho phép Manager hủy lịch bài viết khẩn cấp trên 4 nền tảng trong 3 giây</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/to-chuc-san-xuat-noi-dung-hang-loat-batch-content-production-cho-chien-dich-tet</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/to-chuc-san-xuat-noi-dung-hang-loat-batch-content-production-cho-chien-dich-tet" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/to-chuc-san-xuat-noi-dung-hang-loat-batch-content-production-cho-chien-dich-tet" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Phương pháp sản xuất và phê duyệt nội dung theo lô (Batch Production) cho các mùa chiến dịch cao điểm</image:title>
+      <image:caption>Đội ngũ Agency phối hợp triển khai quy trình sản xuất nội dung hàng loạt cho mùa chiến dịch Tết trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/so-an-thao-noi-dung-da-kenh-mot-goc-nhieu-bien-the-caption</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-an-thao-noi-dung-da-kenh-mot-goc-nhieu-bien-the-caption" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/so-an-thao-noi-dung-da-kenh-mot-goc-nhieu-bien-the-caption" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Kỹ thuật chuyển thể một ý tưởng cốt lõi thành 4 định dạng bài đăng cho Facebook, Instagram, TikTok và Threads</image:title>
+      <image:caption>Soạn thảo nội dung đa kênh chuyển thể từ một ý tưởng gốc sang bốn nền tảng Facebook, Instagram, TikTok và Threads</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/vai-tro-cua-admin-trong-hang-doi-kiem-duyet-noi-dung-he-thong</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/vai-tro-cua-admin-trong-hang-doi-kiem-duyet-noi-dung-he-thong" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/vai-tro-cua-admin-trong-hang-doi-kiem-duyet-noi-dung-he-thong" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cơ chế vận hành Hàng đợi kiểm duyệt nội dung (Content Moderation Queue) bảo vệ tiêu chuẩn cộng đồng toàn hệ thống</image:title>
+      <image:caption>Màn hình Hàng đợi kiểm duyệt nội dung kết hợp quét tự động và rà soát thủ công của Admin trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Gói truyền thông (Media Package) sẽ có những gì? Hướng dẫn xây dựng báo giá chuẩn B2B cho Agency</image:title>
+      <image:caption>Cấu trúc gói truyền thông Media Package và chuyển đổi thành chiến dịch Media Campaign trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-dinh-gia-goi-truyen-thong-social-media-va-pr-bao-chi-cho-agency</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-dinh-gia-goi-truyen-thong-social-media-va-pr-bao-chi-cho-agency" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-dinh-gia-goi-truyen-thong-social-media-va-pr-bao-chi-cho-agency" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Hướng dẫn định giá Gói truyền thông tích hợp (Social Media + PR Báo chí + Truyền hình) đảm bảo biên lợi nhuận</image:title>
+      <image:caption>Thiết lập cấu trúc định giá Gói truyền thông tích hợp mạng xã hội và đối tác báo đài trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quy-trinh-dam-phan-bao-gia-proposal-giua-agency-va-client-truc-tuyen</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-dam-phan-bao-gia-proposal-giua-agency-va-client-truc-tuyen" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quy-trinh-dam-phan-bao-gia-proposal-giua-agency-va-client-truc-tuyen" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552581234-26160f608093?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Số hóa quy trình gửi báo giá (Proposal) và đàm phán điều khoản gói truyền thông trực tiếp giữa Manager và Client</image:title>
+      <image:caption>Luồng chia sẻ liên kết báo giá và đàm phán trực tuyến 2 chiều giữa Agency và Client trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/tu-dong-chuyen-doi-goi-truyen-thong-da-chot-thanh-chien-dich-media-campaign</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tu-dong-chuyen-doi-goi-truyen-thong-da-chot-thanh-chien-dich-media-campaign" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/tu-dong-chuyen-doi-goi-truyen-thong-da-chot-thanh-chien-dich-media-campaign" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách biến hợp đồng gói truyền thông vừa ký thành kế hoạch chiến dịch (Media Campaign) chỉ bằng 1 cú nhấp chuột</image:title>
+      <image:caption>Quy trình chuyển đổi tự động từ Media Package sang Media Campaign và phân rã công việc trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/5-mau-goi-truyen-thong-pho-bien-nhat-cho-doanh-nghiep-sme-tai-viet-nam</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/5-mau-goi-truyen-thong-pho-bien-nhat-cho-doanh-nghiep-sme-tai-viet-nam" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/5-mau-goi-truyen-thong-pho-bien-nhat-cho-doanh-nghiep-sme-tai-viet-nam" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>5 cấu trúc Gói truyền thông bán chạy nhất dành cho doanh nghiệp SME: Từ duy trì nhận diện đến bùng nổ ra mắt</image:title>
+      <image:caption>Bảng cấu trúc 5 gói dịch vụ truyền thông phổ biến dành cho doanh nghiệp SME tại Việt Nam trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-tien-do-ban-giao-so-luong-bai-viet-trong-chien-dich-truyen-thong</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-tien-do-ban-giao-so-luong-bai-viet-trong-chien-dich-truyen-thong" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-tien-do-ban-giao-so-luong-bai-viet-trong-chien-dich-truyen-thong" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách kiểm soát tiến độ bàn giao (Deliverables Tracking) để không bao giờ giao thiếu bài cho khách hàng</image:title>
+      <image:caption>Bảng đối chiếu tiến độ bàn giao số lượng bài thực đăng so với cam kết trong Media Campaign</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/ket-hop-quang-ba-tren-4-mang-xa-hoi-va-booking-bao-chi-trong-cung-chien-dich</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ket-hop-quang-ba-tren-4-mang-xa-hoi-va-booking-bao-chi-trong-cung-chien-dich" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/ket-hop-quang-ba-tren-4-mang-xa-hoi-va-booking-bao-chi-trong-cung-chien-dich" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552581234-26160f608093?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Chiến lược phối hợp 4 kênh mạng xã hội (Facebook, Instagram, TikTok, Threads) với bài PR Báo điện tử</image:title>
+      <image:caption>Họp điều phối kế hoạch truyền thông tích hợp 4 mạng xã hội và đặt bài PR báo điện tử</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-client-gui-yeu-cau-dat-mua-goi-truyen-thong-va-theo-doi-ngan-sach</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-client-gui-yeu-cau-dat-mua-goi-truyen-thong-va-theo-doi-ngan-sach" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-client-gui-yeu-cau-dat-mua-goi-truyen-thong-va-theo-doi-ngan-sach" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Hướng dẫn dành cho Doanh nghiệp (Client): Cách chọn mua gói truyền thông, đề xuất ngân sách và giám sát Agency</image:title>
+      <image:caption>Đại diện doanh nghiệp Client xem danh mục gói truyền thông và phê duyệt ngân sách trực tuyến</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xay-dung-timeline-chien-dich-ra-mat-san-pham-moi-trong-30-ngay</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-timeline-chien-dich-ra-mat-san-pham-moi-trong-30-ngay" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xay-dung-timeline-chien-dich-ra-mat-san-pham-moi-trong-30-ngay" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Bản đồ thực thi chiến dịch truyền thông ra mắt sản phẩm mới trong 30 ngày: Từ giai đoạn Teasing đến Booming</image:title>
+      <image:caption>Bản đồ thực thi kế hoạch truyền thông ra mắt sản phẩm mới trong 30 ngày tích hợp mạng xã hội và báo chí</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-hop-dong-va-trang-thai-thanh-toan-cua-tung-chien-dich-truyen-thong</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-hop-dong-va-trang-thai-thanh-toan-cua-tung-chien-dich-truyen-thong" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-hop-dong-va-trang-thai-thanh-toan-cua-tung-chien-dich-truyen-thong" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách đồng bộ trạng thái phê duyệt gói truyền thông với quy trình nghiệm thu từng giai đoạn chiến dịch</image:title>
+      <image:caption>Đồng bộ trạng thái thực thi và quy trình nghiệm thu chiến dịch truyền thông minh bạch giữa Agency và Client</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/tai-sao-bao-gia-bang-file-pdf-va-excel-lam-giam-ty-le-chot-sale-cua-agency</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tai-sao-bao-gia-bang-file-pdf-va-excel-lam-giam-ty-le-chot-sale-cua-agency" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/tai-sao-bao-gia-bang-file-pdf-va-excel-lam-giam-ty-le-chot-sale-cua-agency" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Tại sao gửi báo giá bằng file bảng tính rời rạc khiến Agency mất điểm chuyên nghiệp trước khách hàng lớn?</image:title>
+      <image:caption>Chuyển đổi từ báo giá bảng tính rời rạc sang trình bày và đàm phán Gói truyền thông trực tuyến chuyên nghiệp</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-tinh-toan-nguon-luc-nhan-su-truoc-khi-nhan-them-chien-dich-moi</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-tinh-toan-nguon-luc-nhan-su-truoc-khi-nhan-them-chien-dich-moi" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-tinh-toan-nguon-luc-nhan-su-truoc-khi-nhan-them-chien-dich-moi" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Phương pháp hoạch định năng lực sản xuất (Capacity Planning) giúp Owner biết khi nào nên nhận thêm dự án mới</image:title>
+      <image:caption>Owner và Manager rà soát bảng phân bổ khối lượng công việc của đội ngũ Creator trước khi ký chiến dịch mới</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quy-trinh-lam-viec-voi-doi-tac-bao-dien-tu-va-dai-truyen-hinh-tren-brandhub</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-lam-viec-voi-doi-tac-bao-dien-tu-va-dai-truyen-hinh-tren-brandhub" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quy-trinh-lam-viec-voi-doi-tac-bao-dien-tu-va-dai-truyen-hinh-tren-brandhub" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Hướng dẫn quản lý hạng mục đăng bài trên hệ thống đối tác Báo chí &amp; Đài truyền hình trong chiến dịch tích hợp</image:title>
+      <image:caption>Bảng theo dõi tiến độ phối hợp giữa hạng mục bài PR báo điện tử, phóng sự truyền hình và chiến dịch mạng xã hội</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xu-ly-yeu-cau-thay-doi-pham-vi-cong-viec-scope-creep-trong-chien-dich</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xu-ly-yeu-cau-thay-doi-pham-vi-cong-viec-scope-creep-trong-chien-dich" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xu-ly-yeu-cau-thay-doi-pham-vi-cong-viec-scope-creep-trong-chien-dich" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552581234-26160f608093?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Kinh nghiệm kiểm soát tình trạng phát sinh ngoài hợp đồng (Scope Creep) khi triển khai chiến dịch truyền thông</image:title>
+      <image:caption>Cuộc họp đối chiếu định mức gói truyền thông giúp Manager kiểm soát phát sinh ngoài hợp đồng cùng Client</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/bao-cao-tong-ket-chien-dich-truyen-thong-campaign-wrap-up-report</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/bao-cao-tong-ket-chien-dich-truyen-thong-campaign-wrap-up-report" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/bao-cao-tong-ket-chien-dich-truyen-thong-campaign-wrap-up-report" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cấu trúc bản báo cáo tổng kết chiến dịch truyền thông (Campaign Wrap-up Report) thuyết phục Client tái ký hợp đồng</image:title>
+      <image:caption>Bảng điều khiển số liệu xuất bản và tương tác đa kênh phục vụ mẫu báo cáo tổng kết chiến dịch truyền thông trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xay-dung-goi-truyen-thong-duy-tri-hang-thang-monthly-retainer-package</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-goi-truyen-thong-duy-tri-hang-thang-monthly-retainer-package" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xay-dung-goi-truyen-thong-duy-tri-hang-thang-monthly-retainer-package" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách thiết kế Gói truyền thông duy trì hàng tháng (Monthly Retainer) tạo nguồn doanh thu định kỳ bền vững cho Agency</image:title>
+      <image:caption>Mô hình đóng gói dịch vụ phòng marketing thuê ngoài trọn gói Monthly Retainer tạo dòng tiền ổn định cho Agency</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/so-sanh-hieu-qua-giua-chien-dich-ngan-han-va-chien-dich-xay-dung-thuong-hieu-dai-han</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-hieu-qua-giua-chien-dich-ngan-han-va-chien-dich-xay-dung-thuong-hieu-dai-han" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/so-sanh-hieu-qua-giua-chien-dich-ngan-han-va-chien-dich-xay-dung-thuong-hieu-dai-han" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Phân bổ ngân sách giữa chiến dịch ngắn hạn (Seasonal Campaign) và gói duy trì thương hiệu (Always-on Content)</image:title>
+      <image:caption>Biểu đồ cách phân bổ ngân sách truyền thông thương hiệu kết hợp nhịp duy trì Always-on và các đỉnh chiến dịch Seasonal</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>AI GraphRAG là gì? Cách ứng dụng Neo4j và ChromaDB để AI viết bài đúng 100% Brand Guidelines</image:title>
+      <image:caption>Kiến trúc AI Studio tích hợp đồ thị tri thức Neo4j GraphRAG và ChromaDB trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/so-sanh-graphrag-va-rag-truyen-thong-trong-sang-tao-noi-dung-thuong-hieu</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-graphrag-va-rag-truyen-thong-trong-sang-tao-noi-dung-thuong-hieu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/so-sanh-graphrag-va-rag-truyen-thong-trong-sang-tao-noi-dung-thuong-hieu" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Tại sao RAG truyền thống vẫn mắc lỗi bịa đặt thông tin sản phẩm và cách Đồ thị tri thức (Knowledge Graph) khắc phục?</image:title>
+      <image:caption>So sánh cấu trúc truy xuất giữa Vector RAG truyền thống và Đồ thị tri thức GraphRAG Neo4j</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-chuan-bi-file-brand-guidelines-pdf-de-ai-hoc-giong-van-chinh-xac-nhat</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-chuan-bi-file-brand-guidelines-pdf-de-ai-hoc-giong-van-chinh-xac-nhat" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-chuan-bi-file-brand-guidelines-pdf-de-ai-hoc-giong-van-chinh-xac-nhat" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Hướng dẫn cấu trúc tài liệu Brand Guidelines (PDF/DOCX) để hệ thống AI trích xuất giọng văn và từ vựng đạt độ chính xác 99%</image:title>
+      <image:caption>Chuẩn bị tài liệu Brand Guidelines rõ ràng giúp hệ thống AI bóc tách giọng văn chính xác</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/he-thong-cao-xu-huong-trend-crawler-tiktok-facebook-google-trends-thoi-gian-thuc</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/he-thong-cao-xu-huong-trend-crawler-tiktok-facebook-google-trends-thoi-gian-thuc" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/he-thong-cao-xu-huong-trend-crawler-tiktok-facebook-google-trends-thoi-gian-thuc" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách hoạt động của hệ thống cào xu hướng thời gian thực (Trend Crawler) giúp thương hiệu bắt sóng thị trường trước đối thủ</image:title>
+      <image:caption>Bảng radar theo dõi xu hướng thịnh hành thời gian thực từ TikTok và Google Trends trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/ung-dung-ai-viet-bai-dang-facebook-instagram-tiktok-threads-tu-1-chu-de</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ung-dung-ai-viet-bai-dang-facebook-instagram-tiktok-threads-tu-1-chu-de" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/ung-dung-ai-viet-bai-dang-facebook-instagram-tiktok-threads-tu-1-chu-de" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách dùng AI tạo đồng loạt 4 kịch bản nội dung tối ưu riêng cho Facebook, Instagram, TikTok và Threads chỉ trong 30 giây</image:title>
+      <image:caption>Chuyển đổi một chủ đề gốc thành 4 định dạng bài đăng riêng biệt cho Facebook, Instagram, TikTok và Threads</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cong-nghe-huan-luyen-dai-su-ao-lora-brand-ambassador-cho-thuong-hieu</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cong-nghe-huan-luyen-dai-su-ao-lora-brand-ambassador-cho-thuong-hieu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cong-nghe-huan-luyen-dai-su-ao-lora-brand-ambassador-cho-thuong-hieu" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Đại sứ thương hiệu ảo (AI Virtual Brand Ambassador) là gì? Cách huấn luyện mô hình LoRA giữ nguyên khuôn mặt đại diện</image:title>
+      <image:caption>Quy trình huấn luyện mô hình LoRA tạo đại sứ thương hiệu ảo giữ nguyên đường nét gương mặt trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/tao-hinh-anh-quang-cao-san-pham-bang-ai-flux-sdxl-chuan-mau-sac-thuong-hieu</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tao-hinh-anh-quang-cao-san-pham-bang-ai-flux-sdxl-chuan-mau-sac-thuong-hieu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/tao-hinh-anh-quang-cao-san-pham-bang-ai-flux-sdxl-chuan-mau-sac-thuong-hieu" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Hướng dẫn tạo hình ảnh truyền thông bằng AI (Text-to-Image) tuân thủ chặt chẽ bảng màu và phong cách nhiếp ảnh của nhãn hàng</image:title>
+      <image:caption>Giao diện tạo ảnh quảng cáo sản phẩm bằng AI Flux và SDXL tuân thủ bảng màu HEX thương hiệu</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/san-xuat-video-ngan-reels-tiktok-bang-ai-tu-kich-ban-va-hinh-anh-tinh</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/san-xuat-video-ngan-reels-tiktok-bang-ai-tu-kich-ban-va-hinh-anh-tinh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/san-xuat-video-ngan-reels-tiktok-bang-ai-tu-kich-ban-va-hinh-anh-tinh" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Quy trình tạo video ngắn (Short-form Video) bằng AI phục vụ kênh TikTok và Instagram Reels tiết kiệm 70% chi phí quay dựng</image:title>
+      <image:caption>Sản xuất và theo dõi tiến trình render video ngắn 9:16 cho TikTok và Instagram Reels bằng AI</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-ket-hop-xu-huong-thinh-hanh-vao-thong-diep-san-pham-ma-khong-phan-cam</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-ket-hop-xu-huong-thinh-hanh-vao-thong-diep-san-pham-ma-khong-phan-cam" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-ket-hop-xu-huong-thinh-hanh-vao-thong-diep-san-pham-ma-khong-phan-cam" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Nghệ thuật bắt trend an toàn: Cách AI lọc bỏ các trào lưu tiêu cực và gợi ý góc tiếp cận phù hợp với định vị thương hiệu</image:title>
+      <image:caption>Hệ thống AI đối chiếu xu hướng thịnh hành thời gian thực với đồ thị Brand Knowledge để gợi ý góc tiếp cận an toàn</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-han-muc-ai-credits-va-phan-bo-ngan-sach-ai-trong-agency</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-han-muc-ai-credits-va-phan-bo-ngan-sach-ai-trong-agency" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-han-muc-ai-credits-va-phan-bo-ngan-sach-ai-trong-agency" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách quản lý hạn mức AI Credits minh bạch cho từng Workspace và tối ưu chi phí sử dụng AI cho toàn Agency</image:title>
+      <image:caption>Bảng điều khiển theo dõi số dư AI Credits, lịch sử tiêu thụ theo tác vụ và nạp bổ sung qua VietQR</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/15-cau-lenh-prompt-mau-giup-creator-toi-uu-hoa-bai-viet-quang-cao-chuyen-doi-cao</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/15-cau-lenh-prompt-mau-giup-creator-toi-uu-hoa-bai-viet-quang-cao-chuyen-doi-cao" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/15-cau-lenh-prompt-mau-giup-creator-toi-uu-hoa-bai-viet-quang-cao-chuyen-doi-cao" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Bộ 15 cấu trúc câu lệnh (Prompt Templates) chuyên sâu dành cho Creator khi phối hợp cùng trợ lý AI GraphRAG</image:title>
+      <image:caption>Creator sử dụng bộ cấu trúc câu lệnh chuyên sâu trên BrandHub AI Studio kết hợp đồ thị tri thức thương hiệu</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/ung-dung-ai-kiem-tra-muc-do-tuan-thu-brand-tone-truoc-khi-gui-duyet</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ung-dung-ai-kiem-tra-muc-do-tuan-thu-brand-tone-truoc-khi-gui-duyet" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/ung-dung-ai-kiem-tra-muc-do-tuan-thu-brand-tone-truoc-khi-gui-duyet" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách chấm điểm mức độ tuân thủ giọng văn thương hiệu (Brand Voice Consistency Score) tự động cho từng bài nháp</image:title>
+      <image:caption>Hệ thống AI đối chiếu bản nháp bài truyền thông với đồ thị quy tắc từ vựng và giọng văn thương hiệu trước bước phê duyệt</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xu-ly-tac-vu-ai-nang-bat-dong-bo-qua-hang-doi-rabbitmq-va-celery</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xu-ly-tac-vu-ai-nang-bat-dong-bo-qua-hang-doi-rabbitmq-va-celery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xu-ly-tac-vu-ai-nang-bat-dong-bo-qua-hang-doi-rabbitmq-va-celery" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Kiến trúc xử lý bất đồng bộ giúp Creator vừa tạo ảnh, dựng video AI vừa tiếp tục soạn thảo bài viết mượt mà</image:title>
+      <image:caption>Sơ đồ kiến trúc hàng đợi RabbitMQ và cụm Celery Worker xử lý sinh ảnh, dựng video AI bất đồng bộ trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/bao-mat-tri-thuc-thuong-hieu-khi-su-dung-ai-khong-dung-du-lieu-khach-hang-de-train-cong-khai</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/bao-mat-tri-thuc-thuong-hieu-khi-su-dung-ai-khong-dung-du-lieu-khach-hang-de-train-cong-khai" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/bao-mat-tri-thuc-thuong-hieu-khi-su-dung-ai-khong-dung-du-lieu-khach-hang-de-train-cong-khai" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cam kết bảo mật dữ liệu AI: Tại sao kho tri thức thương hiệu trên BrandHub hoàn toàn tách biệt với các mô hình công cộng?</image:title>
+      <image:caption>Kiến trúc cô lập kho tri thức thương hiệu theo từng Workspace độc lập bảo vệ bí mật chiến dịch doanh nghiệp</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/ai-goi-y-hashtag-va-khung-gio-dang-bai-toi-uu-cho-tung-nen-tang</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ai-goi-y-hashtag-va-khung-gio-dang-bai-toi-uu-cho-tung-nen-tang" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/ai-goi-y-hashtag-va-khung-gio-dang-bai-toi-uu-cho-tung-nen-tang" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Sử dụng AI đề xuất bộ Hashtag thịnh hành và cấu trúc đoạn mở đầu (Hook) thu hút người xem trong 3 giây đầu tiên</image:title>
+      <image:caption>Trình soạn thảo AI phân tích dữ liệu xu hướng để đề xuất bộ thẻ Hashtag phân tầng và câu mở đầu giữ chân người xem</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xay-dung-bo-tu-dien-thuong-hieu-brand-glossary-de-dong-bo-ngon-ngu-toan-cong-ty</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-bo-tu-dien-thuong-hieu-brand-glossary-de-dong-bo-ngon-ngu-toan-cong-ty" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xay-dung-bo-tu-dien-thuong-hieu-brand-glossary-de-dong-bo-ngon-ngu-toan-cong-ty" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách xây dựng Từ điển thương hiệu (Brand Glossary) giúp nhân sự mới hòa nhập văn phong viết bài chỉ sau 1 ngày</image:title>
+      <image:caption>Quy trình chuẩn hóa bộ từ điển ngôn ngữ thương hiệu Brand Glossary giúp đội ngũ Creator viết đúng chuẩn ngay ngày đầu</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/ung-dung-ai-dich-thuat-va-ban-dia-hoa-noi-dung-viet-anh-giu-nguyen-sac-thai</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ung-dung-ai-dich-thuat-va-ban-dia-hoa-noi-dung-viet-anh-giu-nguyen-sac-thai" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/ung-dung-ai-dich-thuat-va-ban-dia-hoa-noi-dung-viet-anh-giu-nguyen-sac-thai" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Chuyển ngữ nội dung truyền thông Việt - Anh bằng AI mà vẫn giữ trọn vẹn sắc thái cảm xúc và thông điệp thương hiệu</image:title>
+      <image:caption>Chuyển ngữ và bản địa hóa nội dung truyền thông song ngữ Việt - Anh giữ nguyên sắc thái cảm xúc trên BrandHub AI Studio</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/tuong-lai-cua-agency-truyen-thong-khi-ket-hop-con-nguoi-va-he-sinh-thai-ai-agent</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tuong-lai-cua-agency-truyen-thong-khi-ket-hop-con-nguoi-va-he-sinh-thai-ai-agent" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/tuong-lai-cua-agency-truyen-thong-khi-ket-hop-con-nguoi-va-he-sinh-thai-ai-agent" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Mô hình Hybrid Agency 2026: Khi trí tuệ sáng tạo của con người kết hợp cùng hệ thống AI hiểu sâu sắc thương hiệu</image:title>
+      <image:caption>Mô hình Hybrid Agency 2026 kết hợp tư duy chiến lược của đội ngũ nhân sự với hệ sinh thái AI Studio trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Hướng dẫn thiết lập lịch đăng bài tự động lên Facebook, Instagram, TikTok và Threads an toàn tuyệt đối</image:title>
+      <image:caption>Hệ thống đặt lịch xuất bản đa nền tảng Facebook, Instagram, TikTok và Threads trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/ket-noi-oauth-2-va-ma-hoa-token-aes-256-bao-ve-fanpage-va-kenh-tiktok</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ket-noi-oauth-2-va-ma-hoa-token-aes-256-bao-ve-fanpage-va-kenh-tiktok" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/ket-noi-oauth-2-va-ma-hoa-token-aes-256-bao-ve-fanpage-va-kenh-tiktok" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Tại sao cơ chế ủy quyền OAuth 2.0 và mã hóa AES-256 giúp doanh nghiệp trao quyền đăng bài mà không sợ mất kênh?</image:title>
+      <image:caption>Cơ chế ủy quyền OAuth 2.0 và mã hóa khóa truy cập AES-256 bảo vệ tài khoản mạng xã hội doanh nghiệp</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-xay-dung-lich-noi-dung-content-calendar-30-ngay-tren-4-nen-tang</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-xay-dung-lich-noi-dung-content-calendar-30-ngay-tren-4-nen-tang" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-xay-dung-lich-noi-dung-content-calendar-30-ngay-tren-4-nen-tang" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Phương pháp lập Lịch nội dung (Content Calendar) 30 ngày phủ sóng đồng bộ trên Facebook, Instagram, TikTok và Threads</image:title>
+      <image:caption>Giao diện lịch nội dung Content Calendar 30 ngày quản lý đồng bộ 4 kênh mạng xã hội trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quy-chuan-kich-thuoc-anh-va-video-cho-facebook-instagram-tiktok-threads-2026</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-chuan-kich-thuoc-anh-va-video-cho-facebook-instagram-tiktok-threads-2026" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quy-chuan-kich-thuoc-anh-va-video-cho-facebook-instagram-tiktok-threads-2026" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Bảng tổng hợp kích thước ảnh, bộ ảnh (Carousel) và thông số video chuẩn nhất năm 2026 cho Facebook, Instagram, TikTok và Threads</image:title>
+      <image:caption>Bảng quy chuẩn tỷ lệ khung hình ảnh và video cho Facebook, Instagram, TikTok và Threads năm 2026</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/chien-luoc-xay-dung-kenh-threads-cho-thuong-hieu-va-ket-hop-voi-instagram</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/chien-luoc-xay-dung-kenh-threads-cho-thuong-hieu-va-ket-hop-voi-instagram" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/chien-luoc-xay-dung-kenh-threads-cho-thuong-hieu-va-ket-hop-voi-instagram" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Chiến lược phát triển kênh Threads cho doanh nghiệp: Cách tận dụng luồng thảo luận ngắn để kéo tương tác tự nhiên</image:title>
+      <image:caption>Đội ngũ Creator và Manager lên kế hoạch nội dung thảo luận ngắn trên Threads kết hợp cùng kênh Instagram</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/khung-gio-vang-dang-bai-facebook-instagram-tiktok-threads-tai-viet-nam</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/khung-gio-vang-dang-bai-facebook-instagram-tiktok-threads-tai-viet-nam" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/khung-gio-vang-dang-bai-facebook-instagram-tiktok-threads-tai-viet-nam" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Phân tích khung giờ vàng đăng bài trên Facebook, Instagram, TikTok và Threads theo hành vi người dùng Việt Nam</image:title>
+      <image:caption>Bảng phân bổ lịch hẹn giờ xuất bản nội dung theo nhịp sinh hoạt người dùng Việt Nam trên 4 nền tảng</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/co-che-tu-dong-thu-lai-retry-va-xu-ly-loi-khi-api-mang-xa-hoi-gian-doan</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/co-che-tu-dong-thu-lai-retry-va-xu-ly-loi-khi-api-mang-xa-hoi-gian-doan" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/co-che-tu-dong-thu-lai-retry-va-xu-ly-loi-khi-api-mang-xa-hoi-gian-doan" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Điều gì xảy ra khi mạng xã hội bảo trì đúng giờ hẹn đăng? Tìm hiểu cơ chế tự động thử lại và cảnh báo tức thì của BrandHub</image:title>
+      <image:caption>Kiến trúc hàng đợi xuất bản tự động thử lại và giám sát Publish Logs khi API mạng xã hội gặp sự cố</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/phan-tich-chi-so-tuong-tac-post-analytics-sau-khi-xuat-ban-da-kenh</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/phan-tich-chi-so-tuong-tac-post-analytics-sau-khi-xuat-ban-da-kenh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/phan-tich-chi-so-tuong-tac-post-analytics-sau-khi-xuat-ban-da-kenh" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách đọc bảng chỉ số hiệu quả sau xuất bản (Lượt xem, Thích, Bình luận, Chia sẻ) để tối ưu chiến lược nội dung tuần tiếp theo</image:title>
+      <image:caption>Bảng điều khiển Post Analytics hợp nhất số liệu lượt xem, thích, bình luận và chia sẻ từ 4 nền tảng mạng xã hội</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/toi-uu-hoa-quy-trinh-dang-video-reels-va-tiktok-khong-bi-nen-giam-chat-luong</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/toi-uu-hoa-quy-trinh-dang-video-reels-va-tiktok-khong-bi-nen-giam-chat-luong" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/toi-uu-hoa-quy-trinh-dang-video-reels-va-tiktok-khong-bi-nen-giam-chat-luong" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Bí quyết xuất bản video ngắn lên TikTok và Instagram Reels qua hệ thống quản trị mà vẫn giữ nguyên độ nét cao</image:title>
+      <image:caption>Kỹ thuật tối ưu thông số xuất video ngắn 1080p và truyền tải tệp gốc từ đám mây AWS S3 sang TikTok và Instagram Reels</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-ly-nhieu-fanpage-va-tai-khoan-instagram-tiktok-trong-cung-mot-agency</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-nhieu-fanpage-va-tai-khoan-instagram-tiktok-trong-cung-mot-agency" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-ly-nhieu-fanpage-va-tai-khoan-instagram-tiktok-trong-cung-mot-agency" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Giải pháp quản lý hàng chục Fanpage Facebook, kênh TikTok và tài khoản Instagram mà không bao giờ đăng nhầm kênh</image:title>
+      <image:caption>Cấu trúc cô lập tài khoản Facebook, Instagram, TikTok và Threads theo từng Workspace thương hiệu trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/cach-kiem-tra-tinh-trang-ket-noi-token-health-truoc-chien-dich-lon</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-kiem-tra-tinh-trang-ket-noi-token-health-truoc-chien-dich-lon" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/cach-kiem-tra-tinh-trang-ket-noi-token-health-truoc-chien-dich-lon" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Quy trình kiểm tra sức khỏe kết nối (Token Health Check) trước các giờ mở bán hoặc sự kiện truyền thông trọng điểm</image:title>
+      <image:caption>Manager kiểm tra trạng thái sức khỏe kết nối OAuth Token của 4 nền tảng mạng xã hội trước giờ khởi chạy chiến dịch lớn</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xay-dung-ma-tran-noi-dung-content-pillar-phan-bo-deu-tren-content-calendar</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-ma-tran-noi-dung-content-pillar-phan-bo-deu-tren-content-calendar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xay-dung-ma-tran-noi-dung-content-pillar-phan-bo-deu-tren-content-calendar" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách phối hợp 4 nhóm tuyến bài (Giáo dục, Bắt trend, Bằng chứng xã hội, Chuyển đổi) hài hòa trên lịch xuất bản tháng</image:title>
+      <image:caption>Lịch xuất bản Content Calendar phân bổ trực quan 4 nhóm tuyến bài chiến lược trên Facebook, Instagram, TikTok và Threads</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/so-sanh-thuat-toan-phan-phoi-noi-dung-cua-facebook-instagram-tiktok-va-threads</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-thuat-toan-phan-phoi-noi-dung-cua-facebook-instagram-tiktok-va-threads" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/so-sanh-thuat-toan-phan-phoi-noi-dung-cua-facebook-instagram-tiktok-va-threads" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Giải mã thuật toán phân phối tự nhiên năm 2026 của 4 nền tảng: Facebook, Instagram, TikTok và Threads ưu tiên định dạng nào?</image:title>
+      <image:caption>Bảng phân tích chỉ số tiếp cận và tương tác tự nhiên theo thuật toán phân phối của Facebook, Instagram, TikTok và Threads</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quy-trinh-ngat-ket-noi-va-thu-hoi-quyen-truy-cap-mang-xa-hoi-khi-ket-thuc-hop-dong</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-ngat-ket-noi-va-thu-hoi-quyen-truy-cap-mang-xa-hoi-khi-ket-thuc-hop-dong" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quy-trinh-ngat-ket-noi-va-thu-hoi-quyen-truy-cap-mang-xa-hoi-khi-ket-thuc-hop-dong" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Quy trình bàn giao và ngắt kết nối tài khoản mạng xã hội văn minh, minh bạch khi kết thúc hợp đồng dịch vụ giữa Agency và Client</image:title>
+      <image:caption>Quy trình ngắt kết nối OAuth, xóa khóa truy cập AES-256 và bàn giao kênh truyền thông minh bạch giữa Agency và Client</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/ung-dung-ung-dung-di-dong-brandhub-mobile-de-duyet-bai-va-theo-doi-lich-dang-moi-noi</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ung-dung-ung-dung-di-dong-brandhub-mobile-de-duyet-bai-va-theo-doi-lich-dang-moi-noi" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/ung-dung-ung-dung-di-dong-brandhub-mobile-de-duyet-bai-va-theo-doi-lich-dang-moi-noi" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Quản trị chiến dịch mọi lúc mọi nơi: Cách Manager và Client duyệt bài, kiểm tra lịch xuất bản ngay trên điện thoại</image:title>
+      <image:caption>Trải nghiệm duyệt bài đăng một chạm và theo dõi lịch xuất bản Content Calendar trên điện thoại dành cho Manager và Client</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/toi-uu-hoa-tan-suat-dang-bai-posting-frequency-de-tang-truong-kenh-ben-vung</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/toi-uu-hoa-tan-suat-dang-bai-posting-frequency-de-tang-truong-kenh-ben-vung" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/toi-uu-hoa-tan-suat-dang-bai-posting-frequency-de-tang-truong-kenh-ben-vung" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Đăng bao nhiêu bài mỗi tuần là đủ? Cách thiết lập tần suất xuất bản ổn định trên 4 kênh mà không làm bão hòa người theo dõi</image:title>
+      <image:caption>Phân bổ mật độ và tần suất đăng bài hợp lý trên lịch xuất bản Content Calendar cho 4 nền tảng mạng xã hội</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>So sánh BrandHub với Buffer, Hootsuite, Planable và combo Jira + Notion cho Agency Việt Nam</image:title>
+      <image:caption>Bảng phân tích và so sánh hiệu quả đầu tư giữa BrandHub với các công cụ quản lý rời rạc</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/brandhub-vs-planable-giai-phap-duyet-bai-nao-phu-hop-hon-voi-agency-viet-nam</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/brandhub-vs-planable-giai-phap-duyet-bai-nao-phu-hop-hon-voi-agency-viet-nam" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/brandhub-vs-planable-giai-phap-duyet-bai-nao-phu-hop-hon-voi-agency-viet-nam" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Đặt lên bàn cân BrandHub và Planable: Đâu là nền tảng duyệt bài và quản trị chiến dịch tối ưu cho thị trường Việt Nam?</image:title>
+      <image:caption>So sánh nền tảng quản trị và phê duyệt nội dung BrandHub với Planable cho các Agency tại Việt Nam</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/brandhub-vs-hootsuite-va-buffer-tai-sao-cong-cu-hen-gio-don-thuan-la-chua-du</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/brandhub-vs-hootsuite-va-buffer-tai-sao-cong-cu-hen-gio-don-thuan-la-chua-du" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/brandhub-vs-hootsuite-va-buffer-tai-sao-cong-cu-hen-gio-don-thuan-la-chua-du" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>BrandHub vs Hootsuite &amp; Buffer: Tại sao Agency hiện đại cần nhiều hơn một công cụ chỉ biết hẹn giờ đăng bài?</image:title>
+      <image:caption>Đặt lên bàn cân công cụ hẹn giờ truyền thống Buffer, Hootsuite và nền tảng hợp nhất BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/bai-toan-roi-tiet-kiem-80-chi-phi-phan-mem-saas-cho-agency-voi-goi-pro-590k</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/bai-toan-roi-tiet-kiem-80-chi-phi-phan-mem-saas-cho-agency-voi-goi-pro-590k" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/bai-toan-roi-tiet-kiem-80-chi-phi-phan-mem-saas-cho-agency-voi-goi-pro-590k" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Phân tích bài toán hoàn vốn (ROI): Cách một Agency 20 nhân sự tiết kiệm 120 triệu đồng tiền phần mềm mỗi năm nhờ BrandHub</image:title>
+      <image:caption>Bảng tính hiệu quả đầu tư ROI giúp Agency tiết kiệm 80% chi phí thuê bao phần mềm hàng năm</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/huong-dan-nang-cap-goi-pro-va-nap-ai-credits-tu-dong-qua-vietqr-sepay-payos</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/huong-dan-nang-cap-goi-pro-va-nap-ai-credits-tu-dong-qua-vietqr-sepay-payos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/huong-dan-nang-cap-goi-pro-va-nap-ai-credits-tu-dong-qua-vietqr-sepay-payos" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Trải nghiệm thanh toán SaaS B2B không cần thẻ quốc tế: Nâng cấp gói Pro và nạp AI Credits trong 5 giây qua VietQR (SePay / PayOS)</image:title>
+      <image:caption>Giao diện quét mã VietQR qua cổng SePay và PayOS để nâng cấp gói Pro và nạp AI Credits tức thì trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/case-study-agency-giam-70-thoi-gian-duyet-bai-cho-12-thuong-hieu-fnb</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/case-study-agency-giam-70-thoi-gian-duyet-bai-cho-12-thuong-hieu-fnb" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/case-study-agency-giam-70-thoi-gian-duyet-bai-cho-12-thuong-hieu-fnb" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Câu chuyện thực tế: Cách một Agency chuyên ngành F&amp;B rút ngắn 70% thời gian chờ duyệt bài cho 12 chuỗi nhà hàng</image:title>
+      <image:caption>Đội ngũ Agency chuyên ngành F&amp;B rà soát lịch xuất bản món mới và phê duyệt trực quan cùng đại diện chuỗi nhà hàng</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/case-study-thuong-hieu-thoi-trang-ung-dung-dai-su-ao-lora-tang-gap-3-san-luong-anh</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/case-study-thuong-hieu-thoi-trang-ung-dung-dai-su-ao-lora-tang-gap-3-san-luong-anh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/case-study-thuong-hieu-thoi-trang-ung-dung-dai-su-ao-lora-tang-gap-3-san-luong-anh" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Case Study ngành Thời trang &amp; Mỹ phẩm: Ứng dụng Đại sứ ảo LoRA và lịch xuất bản 4 kênh để phủ sóng mùa lễ hội</image:title>
+      <image:caption>Nhãn hàng thời trang và mỹ phẩm ứng dụng mô hình đại sứ ảo LoRA để sản xuất bộ ảnh truyền thông đồng nhất mùa lễ hội</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/so-sanh-goi-starter-mien-phi-va-goi-pro-tren-brandhub-nen-chon-goi-nao</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-goi-starter-mien-phi-va-goi-pro-tren-brandhub-nen-chon-goi-nao" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/so-sanh-goi-starter-mien-phi-va-goi-pro-tren-brandhub-nen-chon-goi-nao" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Phân biệt chi tiết gói Starter (0đ) và gói Pro (590.000đ/tháng) trên BrandHub: Khi nào đội ngũ của bạn cần nâng cấp?</image:title>
+      <image:caption>Bảng đối chiếu quyền lợi giữa gói Starter miễn phí và gói Pro chuyên nghiệp trên nền tảng BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/quan-tri-he-thong-danh-cho-admin-giam-sat-nguoi-dung-goi-cuoc-va-kiem-duyet</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-tri-he-thong-danh-cho-admin-giam-sat-nguoi-dung-goi-cuoc-va-kiem-duyet" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/quan-tri-he-thong-danh-cho-admin-giam-sat-nguoi-dung-goi-cuoc-va-kiem-duyet" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Bên trong phân hệ Quản trị viên hệ thống (Admin Portal): Cách giám sát tài khoản, gói cước, doanh thu và an toàn nội dung</image:title>
+      <image:caption>Trung tâm điều hành Admin Portal giám sát sức khỏe hệ thống, đối soát gói cước VietQR và bảo vệ tiêu chuẩn an toàn nền tảng</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/kien-truc-microservices-spring-boot-va-fastapi-dang-sau-toc-do-cua-brandhub</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/kien-truc-microservices-spring-boot-va-fastapi-dang-sau-toc-do-cua-brandhub" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/kien-truc-microservices-spring-boot-va-fastapi-dang-sau-toc-do-cua-brandhub" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Khám phá kiến trúc công nghệ của BrandHub: Sự kết hợp giữa Spring Boot, FastAPI AI, Neo4j, ChromaDB và hạ tầng đám mây AWS</image:title>
+      <image:caption>Sơ đồ vận hành kiến trúc Microservices kết hợp Spring Boot, FastAPI, Neo4j, ChromaDB, RabbitMQ và AWS S3 của BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/7-dau-hieu-cho-thay-agency-cua-ban-da-qua-tai-voi-google-sheets-va-zalo</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/7-dau-hieu-cho-thay-agency-cua-ban-da-qua-tai-voi-google-sheets-va-zalo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/7-dau-hieu-cho-thay-agency-cua-ban-da-qua-tai-voi-google-sheets-va-zalo" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>7 dấu hiệu cảnh báo Agency của bạn đang đánh mất khách hàng vì vẫn quản lý dự án bằng bảng tính thủ công</image:title>
+      <image:caption>Đội ngũ Owner và Manager rà soát các điểm nghẽn thất lạc dữ liệu khi quản lý chiến dịch bằng bảng tính rời rạc</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/huong-dan-onboarding-danh-cho-nguoi-moi-bat-dau-su-dung-brandhub-trong-15-phut</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/huong-dan-onboarding-danh-cho-nguoi-moi-bat-dau-su-dung-brandhub-trong-15-phut" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/huong-dan-onboarding-danh-cho-nguoi-moi-bat-dau-su-dung-brandhub-trong-15-phut" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cẩm nang bắt đầu nhanh (Quickstart Guide): Thiết lập Workspace, nạp Brand Guidelines và đăng bài đầu tiên trong 15 phút</image:title>
+      <image:caption>Đội ngũ mới bắt đầu thiết lập Workspace, nạp tài liệu thương hiệu và xuất bản bài đăng đầu tiên trong 15 phút</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/chinh-sach-bao-mat-quyen-rieng-tu-va-xoa-du-lieu-nguoi-dung-tuan-thu-meta-tiktok</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/chinh-sach-bao-mat-quyen-rieng-tu-va-xoa-du-lieu-nguoi-dung-tuan-thu-meta-tiktok" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/chinh-sach-bao-mat-quyen-rieng-tu-va-xoa-du-lieu-nguoi-dung-tuan-thu-meta-tiktok" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cách BrandHub tuân thủ nghiêm ngặt tiêu chuẩn bảo mật dữ liệu và quy trình xử lý yêu cầu xóa dữ liệu của Meta &amp; TikTok</image:title>
+      <image:caption>Kiến trúc bảo mật đa tầng mã hóa AES-256 và quy trình xử lý yêu cầu xóa dữ liệu tuân thủ chuẩn Meta và TikTok trên BrandHub</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/xu-huong-martech-viet-nam-2026-su-len-ngoi-cua-nen-tang-quan-tri-tich-hop-ai</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xu-huong-martech-viet-nam-2026-su-len-ngoi-cua-nen-tang-quan-tri-tich-hop-ai" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/xu-huong-martech-viet-nam-2026-su-len-ngoi-cua-nen-tang-quan-tri-tich-hop-ai" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Báo cáo xu hướng MarTech Việt Nam 2026: Tại sao các nền tảng quản trị tích hợp sâu AI bản địa đang thay thế công cụ ngoại?</image:title>
+      <image:caption>Bức tranh dịch chuyển xu hướng MarTech tại Việt Nam năm 2026 sang các nền tảng hợp nhất tích hợp sâu AI bản địa</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog/tong-hop-100-cau-hoi-thuong-gap-khi-trien-khai-he-thong-quan-tri-truyen-thong-brandhub</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tong-hop-100-cau-hoi-thuong-gap-khi-trien-khai-he-thong-quan-tri-truyen-thong-brandhub" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog/tong-hop-100-cau-hoi-thuong-gap-khi-trien-khai-he-thong-quan-tri-truyen-thong-brandhub" />
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Giải đáp toàn diện các thắc mắc thường gặp của Owner, Manager, Creator và Client khi vận hành chiến dịch trên BrandHub</image:title>
+      <image:caption>Cẩm nang giải đáp toàn bộ thắc mắc vận hành hệ thống quản trị truyền thông BrandHub cho đầy đủ 6 vai trò chuẩn</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/help/faq</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/help/faq" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/help/faq?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/help/faq" />
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/privacy</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.50</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/privacy" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/privacy?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/privacy" />
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/terms</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.50</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/terms" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/terms?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/terms" />
+  </url>
+</urlset>

@@ -7,18 +7,16 @@ import {
   Copy,
   Eye,
   AlertCircle,
-  Share2,
-  Globe,
-  Video,
-  AtSign,
   X,
   Image as ImageIcon,
   Film,
   GalleryHorizontal,
   CircleDot,
 } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { copyTextToClipboard } from "@/pages/content-writing/contentUtils";
 
 interface PlatformPreviewModalProps {
   isOpen: boolean;
@@ -27,10 +25,10 @@ interface PlatformPreviewModalProps {
 }
 
 const PLATFORM_ICONS: Record<PlatformType, React.ReactNode> = {
-  FACEBOOK: <Share2 className="size-4 text-blue-500" />,
-  INSTAGRAM: <Globe className="size-4 text-pink-500" />,
-  TIKTOK: <Video className="text-foreground size-4" />,
-  THREADS: <AtSign className="text-muted-foreground size-4" />,
+  FACEBOOK: <FaFacebook className="size-4 text-[#1877F2]" />,
+  INSTAGRAM: <FaInstagram className="size-4 text-[#E1306C]" />,
+  TIKTOK: <FaTiktok className="size-4 text-black dark:text-white" />,
+  THREADS: <FaThreads className="size-4 text-black dark:text-white" />,
 };
 
 export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
@@ -62,9 +60,11 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
     PLATFORM_LIMITS[activePlatform] || PLATFORM_LIMITS.FACEBOOK;
   const isOverLimit = caption.length > activeConfig.maxCharacters;
 
-  const handleCopyCaption = () => {
-    navigator.clipboard.writeText(caption);
-    toast.success(t("editor.preview.copyCaptionSuccess"));
+  const handleCopyCaption = async () => {
+    await copyTextToClipboard(caption.trim());
+    toast.success(t("editor.preview.copyCaptionSuccess"), {
+      id: "brandhub-editor-toast",
+    });
   };
 
   return (

@@ -10,16 +10,14 @@ import {
   ChevronRight,
   UserPlus,
   ArrowRight,
-  Share2,
-  Globe,
-  Video,
-  AtSign,
   Clock,
   AlertTriangle,
   Eye,
   Inbox,
   Sparkles,
+  Share2,
 } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { Button } from "@/components/ui/button";
@@ -86,25 +84,25 @@ const PLATFORM_ICONS: Record<
   { icon: React.ReactNode; bgClass: string; textClass: string; label: string }
 > = {
   FACEBOOK: {
-    icon: <Share2 className="size-3" />,
+    icon: <FaFacebook className="size-3" />,
     bgClass: "bg-blue-500/10 border-blue-500/20",
     textClass: "text-blue-600 dark:text-blue-400",
     label: "FB",
   },
   INSTAGRAM: {
-    icon: <Globe className="size-3" />,
+    icon: <FaInstagram className="size-3" />,
     bgClass: "bg-pink-500/10 border-pink-500/20",
     textClass: "text-pink-600 dark:text-pink-400",
     label: "IG",
   },
   TIKTOK: {
-    icon: <Video className="size-3" />,
+    icon: <FaTiktok className="size-3" />,
     bgClass: "bg-foreground/10 border-foreground/20",
     textClass: "text-foreground",
     label: "TT",
   },
   THREADS: {
-    icon: <AtSign className="size-3" />,
+    icon: <FaThreads className="size-3" />,
     bgClass: "bg-foreground/10 border-foreground/20",
     textClass: "text-foreground",
     label: "TH",

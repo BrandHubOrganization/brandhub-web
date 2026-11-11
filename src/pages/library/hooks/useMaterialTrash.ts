@@ -158,7 +158,7 @@ export function useMaterialTrash(
       !(
         isAxiosError(error) &&
         [400, 403, 404, 429].includes(error.response?.status ?? 0)
-      ) && count < 1,
+      ) && count < 2,
     queryFn: async ({ signal }) => {
       try {
         if (!deleted || role !== "CLIENT") {

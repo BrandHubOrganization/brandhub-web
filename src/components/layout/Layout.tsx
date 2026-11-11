@@ -10,6 +10,8 @@ import { Sidebar } from "./Sidebar";
 import { AdminMobileNavigation } from "@/components/layout/AdminSidebar";
 import { Navbar } from "./Navbar";
 import { PageFallback } from "./PageFallback";
+import { SeoHead } from "@/components/seo/SeoHead";
+import { BackgroundTaskDock } from "@/components/common/BackgroundTaskDock";
 import {
   Sheet,
   SheetContent,
@@ -337,10 +339,14 @@ export function Layout() {
         <main
           className={`bg-background w-full min-w-0 flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
         >
+          {location.pathname !== "/help/faq" && (
+            <SeoHead noindex canonicalPath={location.pathname} />
+          )}
           <React.Suspense fallback={<PageFallback />}>
             <Outlet />
           </React.Suspense>
         </main>
+        <BackgroundTaskDock />
       </div>
 
       {/* ── BOTTOM TAB BAR (MOBILE ONLY <= 768px) ── */}

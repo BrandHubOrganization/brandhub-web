@@ -1,12 +1,28 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, X, Building2, Filter, ArrowUpDown } from "lucide-react";
+import {
+  Search,
+  X,
+  Building2,
+  Filter,
+  ArrowUpDown,
+  Shield,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { WORKSPACE_INDUSTRIES } from "@/pages/workspace/constants";
+import { AgencyQuickFilterPills } from "@/pages/agency/components/hub/AgencyQuickFilterPills";
+import {
+  CustomFilterDropdown,
+  HubAdvancedFilterPopover,
+  DEFAULT_WORKSPACE_ADVANCED_FILTERS,
+  getWorkspaceAdvancedFilterCount,
+  type WorkspaceAdvancedFilters,
+} from "@/pages/agency/components/hub/HubAdvancedFilterPopover";
 import type { Agency } from "@/types/agency";
+import type { Workspace } from "@/types/workspace";
 import type { RoleFilter, SortOption } from "../../hooks/useWorkspaceList";
 
-interface WorkspaceToolbarProps {
+export interface WorkspaceToolbarProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
   agencyFilter: string;
@@ -17,7 +33,11 @@ interface WorkspaceToolbarProps {
   onIndustryChange: (value: string) => void;
   sortOption: SortOption;
   onSortChange: (value: SortOption) => void;
+  advancedFilters?: WorkspaceAdvancedFilters;
+  onAdvancedFiltersChange?: (next: WorkspaceAdvancedFilters) => void;
   agencies: Agency[];
+  workspaces?: Workspace[];
+  workspaceCountByAgency?: Map<string, number> | Record<string, number>;
   filteredCount: number;
   totalCount: number;
   hasActiveFilters: boolean;
@@ -35,16 +55,113 @@ export function WorkspaceToolbar({
   onIndustryChange,
   sortOption,
   onSortChange,
+  advancedFilters: controlledAdvFilters,
+  onAdvancedFiltersChange,
   agencies,
+  workspaces,
+  workspaceCountByAgency,
   filteredCount,
   totalCount,
   hasActiveFilters,
   onClearFilters,
 }: WorkspaceToolbarProps) {
   const { t } = useTranslation();
+  const [internalAdvFilters, setInternalAdvFilters] =
+    useState<WorkspaceAdvancedFilters>(DEFAULT_WORKSPACE_ADVANCED_FILTERS);
+
+  const advFilters = controlledAdvFilters ?? internalAdvFilters;
+  const setAdvFilters = onAdvancedFiltersChange ?? setInternalAdvFilters;
+  const activeAdvCount = getWorkspaceAdvancedFilterCount(advFilters);
+
+  const agencyOptions = [
+    {
+      value: "",
+      label: t("workspace.list.filterAgency", "Tất cả công ty"),
+    },
+    ...agencies.map((a) => ({
+      value: a.id,
+      label: a.name,
+    })),
+  ];
+
+  const roleOptions = [
+    {
+      value: "all",
+      label: t("workspace.list.filterRole", "Tất cả vai trò"),
+    },
+    {
+      value: "OWNER",
+      label: t("workspace.roles.OWNER", "Chủ sở hữu"),
+    },
+    {
+      value: "MANAGER",
+      label: t("workspace.roles.MANAGER", "Quản lý"),
+    },
+    {
+      value: "CREATOR",
+      label: t("workspace.roles.CREATOR", "Sáng tạo"),
+    },
+    {
+      value: "CLIENT",
+      label: t("workspace.roles.CLIENT", "Khách hàng"),
+    },
+  ];
+
+  const industryOptions = [
+    {
+      value: "",
+      label: t("workspace.list.filterIndustry", "Tất cả ngành nghề"),
+    },
+    ...WORKSPACE_INDUSTRIES.map((ind) => ({
+      value: ind,
+      label: t(`workspace.industry.${ind}`, ind),
+    })),
+  ];
+
+  const sortOptions = [
+    {
+      value: "newest",
+      label: t("workspace.list.sortNewest", "Mới nhất"),
+    },
+    {
+      value: "oldest",
+      label: t("workspace.list.sortOldest", "Cũ nhất"),
+    },
+    {
+      value: "name_asc",
+      label: t("workspace.list.sortNameAsc", "Tên A → Z"),
+    },
+    {
+      value: "name_desc",
+      label: t("workspace.list.sortNameDesc", "Tên Z → A"),
+    },
+    {
+      value: "role",
+      label: t("workspace.list.sortRole", "Ưu tiên Owner"),
+    },
+  ];
+
+  const handleResetAll = () => {
+    setAdvFilters(DEFAULT_WORKSPACE_ADVANCED_FILTERS);
+    onClearFilters();
+  };
 
   return (
     <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
+      {/* Quick Filter Pills theo Công ty */}
+      {agencies.length > 0 && (
+        <div className="pb-1 border-b border-border/60">
+          <AgencyQuickFilterPills
+            agencies={agencies}
+            selectedAgencyId={agencyFilter}
+            onSelectAgency={onAgencyChange}
+            workspaces={workspaces}
+            workspaceCountByAgency={workspaceCountByAgency}
+            totalCount={agencies.length}
+          />
+        </div>
+      )}
+
       {/* Search Box */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         <div className="relative flex-1">
@@ -54,7 +171,7 @@ export function WorkspaceToolbar({
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={t(
               "workspace.list.searchPlaceholder",
-              "Tìm kiếm workspace theo tên, công ty, ngành nghề...",
+              "Tìm kiếm không gian làm việc theo tên, công ty, ngành nghề...",
             )}
             className="pl-9 pr-8 h-9 text-xs"
           />
@@ -73,88 +190,53 @@ export function WorkspaceToolbar({
       {/* Filter & Sort Controls */}
       <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-border/60">
         <div className="flex flex-wrap items-center gap-2">
-          {/* Agency/Company Filter */}
-          <div className="flex items-center gap-1.5">
-            <Building2 className="size-3.5 text-muted-foreground shrink-0" />
-            <Select
-              value={agencyFilter}
-              onChange={(e) => onAgencyChange(e.target.value)}
-              className="h-8 text-xs py-0 pr-7"
-              wrapperClassName="w-[150px] sm:w-[170px]"
-            >
-              <option value="">
-                {t("workspace.list.filterAgency", "Tất cả công ty")}
-              </option>
-              {agencies.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name}
-                </option>
-              ))}
-            </Select>
-          </div>
+          {/* Công ty Filter */}
+          <CustomFilterDropdown
+            value={agencyFilter}
+            onChange={onAgencyChange}
+            options={agencyOptions}
+            defaultValue=""
+            icon={<Building2 className="size-3.5" />}
+            className="w-[150px] sm:w-[175px]"
+          />
 
           {/* Role Filter */}
-          <Select
+          <CustomFilterDropdown
             value={roleFilter}
-            onChange={(e) => onRoleChange(e.target.value as RoleFilter)}
-            className="h-8 text-xs py-0 pr-7"
-            wrapperClassName="w-[130px] sm:w-[145px]"
-          >
-            <option value="all">
-              {t("workspace.list.filterRole", "Tất cả vai trò")}
-            </option>
-            <option value="OWNER">{t("workspace.roles.OWNER", "Chủ sở hữu")}</option>
-            <option value="MANAGER">{t("workspace.roles.MANAGER", "Quản lý")}</option>
-            <option value="CREATOR">{t("workspace.roles.CREATOR", "Sáng tạo")}</option>
-            <option value="CLIENT">{t("workspace.roles.CLIENT", "Khách hàng")}</option>
-          </Select>
+            onChange={(val) => onRoleChange(val as RoleFilter)}
+            options={roleOptions}
+            defaultValue="all"
+            icon={<Shield className="size-3.5" />}
+            className="w-[135px] sm:w-[155px]"
+          />
 
           {/* Industry Filter */}
-          <div className="flex items-center gap-1.5">
-            <Filter className="size-3.5 text-muted-foreground shrink-0" />
-            <Select
-              value={industryFilter}
-              onChange={(e) => onIndustryChange(e.target.value)}
-              className="h-8 text-xs py-0 pr-7"
-              wrapperClassName="w-[150px] sm:w-[170px]"
-            >
-              <option value="">
-                {t("workspace.list.filterIndustry", "Tất cả ngành nghề")}
-              </option>
-              {WORKSPACE_INDUSTRIES.map((ind) => (
-                <option key={ind} value={ind}>
-                  {t(`workspace.industry.${ind}`, ind)}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <CustomFilterDropdown
+            value={industryFilter}
+            onChange={onIndustryChange}
+            options={industryOptions}
+            defaultValue=""
+            icon={<Filter className="size-3.5" />}
+            className="w-[150px] sm:w-[175px]"
+          />
 
           {/* Sort Option */}
-          <div className="flex items-center gap-1.5">
-            <ArrowUpDown className="size-3.5 text-muted-foreground shrink-0" />
-            <Select
-              value={sortOption}
-              onChange={(e) => onSortChange(e.target.value as SortOption)}
-              className="h-8 text-xs py-0 pr-7"
-              wrapperClassName="w-[155px] sm:w-[175px]"
-            >
-              <option value="newest">
-                {t("workspace.list.sortNewest", "Mới nhất")}
-              </option>
-              <option value="oldest">
-                {t("workspace.list.sortOldest", "Cũ nhất")}
-              </option>
-              <option value="name_asc">
-                {t("workspace.list.sortNameAsc", "Tên A → Z")}
-              </option>
-              <option value="name_desc">
-                {t("workspace.list.sortNameDesc", "Tên Z → A")}
-              </option>
-              <option value="role">
-                {t("workspace.list.sortRole", "Ưu tiên Owner")}
-              </option>
-            </Select>
-          </div>
+          <CustomFilterDropdown
+            value={sortOption}
+            onChange={(val) => onSortChange(val as SortOption)}
+            options={sortOptions}
+            defaultValue="newest"
+            icon={<ArrowUpDown className="size-3.5" />}
+            className="w-[155px] sm:w-[175px]"
+          />
+
+          {/* Advanced Filter Popover */}
+          <HubAdvancedFilterPopover
+            mode="workspaces"
+            filters={advFilters}
+            onChange={setAdvFilters}
+            onReset={() => setAdvFilters(DEFAULT_WORKSPACE_ADVANCED_FILTERS)}
+          />
         </div>
 
         {/* Counts & Clear Filter summary */}
@@ -167,10 +249,10 @@ export function WorkspaceToolbar({
           <span>
             {agencies.length} {t("agency.list.companiesCount", "công ty")}
           </span>
-          {hasActiveFilters && (
+          {(hasActiveFilters || activeAdvCount > 0) && (
             <button
               type="button"
-              onClick={onClearFilters}
+              onClick={handleResetAll}
               className="text-brand-orange hover:underline cursor-pointer font-medium text-xs ml-1"
             >
               {t("workspace.list.clearFilter", "Xóa bộ lọc")}
@@ -178,6 +260,64 @@ export function WorkspaceToolbar({
           )}
         </div>
       </div>
+
+      {/* Active Advanced Filter Chips */}
+      {activeAdvCount > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/50">
+          <span className="text-[11px] text-muted-foreground mr-1">
+            {t("agency.list.activeFiltersLabel", "Đang lọc:")}
+          </span>
+          {advFilters.companySize !== "" && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-brand-orange/30 bg-brand-orange/10 px-2.5 py-0.5 text-[11px] font-medium text-brand-orange">
+              {t(
+                `agency.companySize.${advFilters.companySize}`,
+                advFilters.companySize,
+              )}
+              <button
+                type="button"
+                onClick={() =>
+                  setAdvFilters({ ...advFilters, companySize: "" })
+                }
+                className="ml-0.5 rounded-full p-0.5 hover:bg-brand-orange/20 cursor-pointer"
+              >
+                <X className="size-2.5" />
+              </button>
+            </span>
+          )}
+          {advFilters.packageStatus !== "all" && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-brand-orange/30 bg-brand-orange/10 px-2.5 py-0.5 text-[11px] font-medium text-brand-orange">
+              {advFilters.packageStatus === "APPROVED"
+                ? t("workspace.list.packageApproved", "Đã duyệt gói")
+                : advFilters.packageStatus === "NEGOTIATING"
+                  ? t("workspace.list.packageNegotiating", "Đang đàm phán")
+                  : t("workspace.list.packageNone", "Chưa có gói")}
+              <button
+                type="button"
+                onClick={() =>
+                  setAdvFilters({ ...advFilters, packageStatus: "all" })
+                }
+                className="ml-0.5 rounded-full p-0.5 hover:bg-brand-orange/20 cursor-pointer"
+              >
+                <X className="size-2.5" />
+              </button>
+            </span>
+          )}
+          {advFilters.hasWebsite !== "all" && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-brand-orange/30 bg-brand-orange/10 px-2.5 py-0.5 text-[11px] font-medium text-brand-orange">
+              {t("workspace.list.websiteAvailable", "Có Website")}
+              <button
+                type="button"
+                onClick={() =>
+                  setAdvFilters({ ...advFilters, hasWebsite: "all" })
+                }
+                className="ml-0.5 rounded-full p-0.5 hover:bg-brand-orange/20 cursor-pointer"
+              >
+                <X className="size-2.5" />
+              </button>
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

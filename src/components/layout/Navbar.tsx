@@ -290,6 +290,8 @@ export function Navbar({
     if (segments.length === 0)
       return [{ label: t("nav.dashboard"), path: "/" }];
 
+    if (location.pathname === "/agency")
+      return [{ label: t("nav.agencyList"), path: "/agency" }];
     const crumbs: { label: string; path: string }[] = [];
     segments.forEach((seg, idx) => {
       let path = "/" + segments.slice(0, idx + 1).join("/");
@@ -587,7 +589,7 @@ export function Navbar({
           <Button
             variant="ghost"
             size="icon"
-            className="group relative size-11 md:size-8 text-amber-500 transition-colors hover:bg-amber-500/10 hover:text-amber-600 dark:text-amber-400 dark:hover:bg-amber-400/15 dark:hover:text-amber-300"
+            className="group relative size-11 text-amber-500 transition-colors hover:bg-amber-500/10 hover:text-amber-600 md:size-8 dark:text-amber-400 dark:hover:bg-amber-400/15 dark:hover:text-amber-300"
             onClick={() => navigate("/subscription/plans")}
             title={t("subscription.plans.upgrade")}
             aria-label={t("subscription.plans.upgrade")}
@@ -601,7 +603,7 @@ export function Navbar({
 
         {/* User: Admin -> badge hiển thị tĩnh; Non-admin -> navigate to /settings */}
         {isAdmin ? (
-          <div className="flex min-h-11 select-none items-center gap-2 rounded-md px-1.5 py-1 md:min-h-0">
+          <div className="flex min-h-11 items-center gap-2 rounded-md px-1.5 py-1 select-none md:min-h-0">
             <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
               {username.charAt(0).toUpperCase()}
             </div>
@@ -614,7 +616,7 @@ export function Navbar({
             type="button"
             onClick={() => navigate("/settings")}
             title={t("nav.settings")}
-            className="hover:bg-muted flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 md:min-h-0 transition-colors outline-none"
+            className="hover:bg-muted flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 transition-colors outline-none md:min-h-0"
           >
             <div className="bg-brand-orange-soft text-brand-orange border-brand-orange/20 flex size-7 items-center justify-center rounded-full border text-xs font-bold">
               {username.charAt(0).toUpperCase()}
@@ -690,7 +692,7 @@ export function Navbar({
         <Button
           variant="ghost"
           size="icon"
-          className="size-11 md:size-8 text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/50"
+          className="size-11 text-rose-500 hover:bg-rose-50 hover:text-rose-600 md:size-8 dark:hover:bg-rose-950/50"
           onClick={handleLogout}
           title={t("nav.logout")}
         >

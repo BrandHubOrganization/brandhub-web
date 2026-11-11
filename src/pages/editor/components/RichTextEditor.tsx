@@ -5,6 +5,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import {
   Bold,
   Italic,
+  Underline as UnderlineIcon,
   Strikethrough,
   List,
   ListOrdered,
@@ -14,12 +15,18 @@ import {
   FileUp,
   Copy,
   Check,
+  Wand2,
+  Star,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { SocialPlatform } from "@/types/editor";
 import { toast } from "sonner";
 import { taskService } from "@/services/taskService";
 import {
+  ZANTEXT_CATEGORIES,
+  ZANTEXT_STYLE_PRESETS,
+  type ZantextCategory,
+  convertPlainTextToSocialStyle,
   copyTextToClipboard,
   stripUnicodeStyling,
   styleRunText,
@@ -27,7 +34,10 @@ import {
 } from "@/pages/content-writing/contentUtils";
 import { FONT_FAMILIES } from "@/pages/content-writing/components/FormattingToolbar";
 import { ImportDocumentModal } from "@/pages/content-writing/components/ImportDocumentModal";
-import type { DeltaOp, RunAttrs } from "@/pages/content-writing/components/richText";
+import type {
+  DeltaOp,
+  RunAttrs,
+} from "@/pages/content-writing/components/richText";
 
 interface RichTextEditorProps {
   value: string;
@@ -47,8 +57,29 @@ const PLATFORM_LIMITS: Record<SocialPlatform, { max: number; label: string }> =
   };
 
 /**
- * Extracts a DeltaOp[] from TipTap's JSON document so bold, italic, and
- * strikethrough marks are converted to Unicode styled characters via `toPublishText`.
+ * Converts plain multi-line strings (`\n`) into `<p>...</p>` paragraphs for TipTap
+ * while passing through strings that already contain block HTML tags.
+ */
+function plainTextOrHtmlToTiptapContent(raw: string): string {
+  if (!raw) return "";
+  if (/^\s*<(p|ul|ol|h[1-6]|div|blockquote)\b/i.test(raw)) {
+    return raw;
+  }
+  if (!raw.includes("\n")) {
+    return raw;
+  }
+  const escapeHtml = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return raw
+    .split("\n")
+    .map((line) => `<p>${escapeHtml(line)}</p>`)
+    .join("");
+}
+
+/**
+ * Extracts a DeltaOp[] from TipTap's JSON document (or selection slice) so bold,
+ * italic, underline, strikethrough, and list marks are converted to Unicode styled
+ * characters via `toPublishText`.
  * When no formatting marks are present, returns the exact plain text unchanged.
  */
 function tiptapDocToPublishText(
@@ -89,6 +120,10 @@ function tiptapDocToPublishText(
 
   const blocks = doc.content ?? [];
   blocks.forEach((block, blockIdx) => {
+    if (block.type === "text" || block.type === "hardBreak") {
+      walkInline([block]);
+      return;
+    }
     if (blockIdx > 0) {
       ops.push({ insert: "\n" });
     }
@@ -106,6 +141,10 @@ function tiptapDocToPublishText(
         ops.push({ insert: `${idx + 1}. ` });
         (item.content ?? []).forEach((p) => walkInline(p.content));
       });
+    } else if (block.type === "listItem") {
+      hasRichMarks = true;
+      ops.push({ insert: "• " });
+      (block.content ?? []).forEach((p) => walkInline(p.content));
     } else {
       walkInline(block.content);
     }
@@ -130,6 +169,42 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [selectedFont, setSelectedFont] = React.useState("");
   const [importOpen, setImportOpen] = React.useState(false);
   const [copiedStudio, setCopiedStudio] = React.useState(false);
+  const [zantextOpen, setZantextOpen] = React.useState(false);
+  const [copiedZantextId, setCopiedZantextId] = React.useState<string | null>(
+    null,
+  );
+  const [activeCategory, setActiveCategory] = React.useState<
+    "all" | "favorites" | ZantextCategory
+  >("all");
+  const [favoriteIds, setFavoriteIds] = React.useState<string[]>(() => {
+    try {
+      const saved = window.localStorage.getItem("brandhub-zantext-favorites");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {
+      // ignore storage error
+    }
+    return ["sans-bold", "serif-bold", "black-bubble", "slashthrough"];
+  });
+
+  const toggleFavoriteStyle = (styleId: string) => {
+    setFavoriteIds((prev) => {
+      const next = prev.includes(styleId)
+        ? prev.filter((id) => id !== styleId)
+        : [...prev, styleId];
+      try {
+        window.localStorage.setItem(
+          "brandhub-zantext-favorites",
+          JSON.stringify(next),
+        );
+      } catch {
+        // ignore storage error
+      }
+      return next;
+    });
+  };
   const selectedFontRef = useRef<string>("");
   const lastEmittedValueRef = useRef<string>(value);
 
@@ -183,13 +258,35 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         placeholder: t("editor.richText.contentPlaceholder"),
       }),
     ],
-    content: value,
+    content: plainTextOrHtmlToTiptapContent(value),
     editable: !readOnly,
     editorProps: {
       attributes: {
         role: "textbox",
         "aria-label": t("editor.page.captionLabel"),
         "aria-multiline": "true",
+      },
+      handleKeyDown: (_view, event) => {
+        const ctrl = event.ctrlKey || event.metaKey;
+        if (ctrl && !event.shiftKey && event.key.toLowerCase() === "c") {
+          const styled = lastEmittedValueRef.current;
+          if (styled) {
+            void copyTextToClipboard(styled);
+          }
+        }
+        return false;
+      },
+      handleDOMEvents: {
+        copy: (_view, event) => {
+          const styled = lastEmittedValueRef.current;
+          if (styled && event.clipboardData) {
+            event.clipboardData.setData("text/plain", styled);
+            void copyTextToClipboard(styled);
+            event.preventDefault();
+            return true;
+          }
+          return false;
+        },
       },
     },
     onUpdate: ({ editor }) => {
@@ -232,9 +329,19 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             font: fontValue,
             bold: editor.isActive("bold") ? true : undefined,
             italic: editor.isActive("italic") ? true : undefined,
+            underline: editor.isActive("underline") ? true : undefined,
+            strikethrough: editor.isActive("strike") ? true : undefined,
           })
         : baseSlice;
-      editor.chain().focus().insertContentAt({ from, to }, convertedSlice).run();
+      editor
+        .chain()
+        .focus()
+        .unsetBold()
+        .unsetItalic()
+        .unsetUnderline()
+        .unsetStrike()
+        .insertContentAt({ from, to }, convertedSlice)
+        .run();
       return;
     }
     selectedFontRef.current = fontValue;
@@ -253,12 +360,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   // Sync external value updates (e.g. from AI auto-populate or template)
   useEffect(() => {
     if (!editor || editor.isDestroyed || !editor.isInitialized) return;
-    if (
-      value !== lastEmittedValueRef.current &&
-      value !== editor.getText()
-    ) {
+    if (value !== lastEmittedValueRef.current && value !== editor.getText()) {
       lastEmittedValueRef.current = value;
-      editor.commands.setContent(value, { emitUpdate: false });
+      editor.commands.setContent(plainTextOrHtmlToTiptapContent(value), {
+        emitUpdate: false,
+      });
     }
   }, [value, editor]);
 
@@ -321,6 +427,20 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             title={t("editor.richText.italicTooltip")}
           >
             <Italic className="size-4" />
+          </button>
+
+          <button
+            type="button"
+            data-testid="studio-underline-btn"
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            className={`rounded-lg p-1.5 text-xs transition-colors ${
+              editor.isActive("underline")
+                ? "text-foreground bg-muted"
+                : "text-muted-foreground hover:bg-muted"
+            }`}
+            title="Gạch dưới (Ctrl+U)"
+          >
+            <UnderlineIcon className="size-4" />
           </button>
 
           <button
@@ -397,6 +517,173 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
+          {/* Zantext & YayText 36-Style Quick Converter & 1-Click Copy Popover */}
+          <div className="relative">
+            <button
+              type="button"
+              data-testid="studio-zantext-btn"
+              disabled={readOnly}
+              onClick={() => setZantextOpen((o) => !o)}
+              className="flex shrink-0 items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap text-purple-700 transition-colors hover:bg-purple-500/20 disabled:opacity-50 dark:border-purple-400/30 dark:bg-purple-500/20 dark:text-purple-300"
+              title="Bộ đổi Font Zantext & YayText (36 kiểu chữ Unicode cho Facebook / Instagram / TikTok / Threads)"
+            >
+              <Wand2 className="size-3.5" />
+              <span>Font Zantext</span>
+              <span className="py-0.2 rounded bg-purple-600 px-1 text-[9px] font-bold text-white">
+                36
+              </span>
+            </button>
+
+            {zantextOpen && (
+              <div
+                data-testid="studio-zantext-popover"
+                className="border-border bg-popover text-popover-foreground absolute top-full right-0 z-50 mt-1 w-96 rounded-xl border p-3 shadow-xl"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-bold">
+                      Bộ chuyển đổi 36 Font MXH (Zantext & YayText)
+                    </p>
+                    <p className="text-muted-foreground text-[10px]">
+                      Chọn kiểu font để áp dụng hoặc Copy dán thẳng lên Facebook
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setZantextOpen(false)}
+                    className="text-muted-foreground hover:text-foreground text-xs font-semibold"
+                  >
+                    Đóng
+                  </button>
+                </div>
+
+                {/* Category Filter Tabs */}
+                <div className="mb-2 flex flex-wrap gap-1">
+                  {ZANTEXT_CATEGORIES.map((cat) => {
+                    const isActive = activeCategory === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        data-testid={`studio-zantext-cat-${cat.id}`}
+                        onClick={() => setActiveCategory(cat.id)}
+                        className={`rounded-md px-2 py-0.5 text-[10px] font-semibold transition-colors ${
+                          isActive
+                            ? "bg-purple-600 text-white"
+                            : "bg-muted text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {cat.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="max-h-64 space-y-1.5 overflow-y-auto pr-1">
+                  {ZANTEXT_STYLE_PRESETS.filter((preset) => {
+                    if (activeCategory === "all") return true;
+                    if (activeCategory === "favorites") {
+                      return favoriteIds.includes(preset.id);
+                    }
+                    return preset.category === activeCategory;
+                  }).map((preset) => {
+                    const sourceText =
+                      stripUnicodeStyling(value).trim() ||
+                      "BrandHub Social Font";
+                    const converted = convertPlainTextToSocialStyle(
+                      sourceText,
+                      preset.id,
+                    );
+                    const isCopied = copiedZantextId === preset.id;
+                    const isFav = favoriteIds.includes(preset.id);
+                    return (
+                      <div
+                        key={preset.id}
+                        className="border-border bg-muted/30 hover:bg-muted/60 flex items-center justify-between gap-2 rounded-lg border p-2 transition-colors"
+                      >
+                        <button
+                          type="button"
+                          data-testid={`studio-zantext-fav-${preset.id}`}
+                          onClick={() => toggleFavoriteStyle(preset.id)}
+                          title={
+                            isFav ? "Bỏ ghim yêu thích" : "Ghim vào Yêu thích"
+                          }
+                          className={`shrink-0 rounded p-0.5 transition-colors ${
+                            isFav
+                              ? "text-amber-500"
+                              : "text-muted-foreground/40 hover:text-amber-400"
+                          }`}
+                        >
+                          <Star
+                            className="size-3.5"
+                            fill={isFav ? "currentColor" : "none"}
+                          />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            lastEmittedValueRef.current = converted;
+                            editor.commands.setContent(
+                              plainTextOrHtmlToTiptapContent(converted),
+                              { emitUpdate: false },
+                            );
+                            onChange(converted);
+                            setZantextOpen(false);
+                          }}
+                          className="min-w-0 flex-1 text-left"
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-muted-foreground text-[10px] font-medium">
+                              {preset.label}
+                            </span>
+                            <span className="bg-muted text-foreground py-0.2 rounded px-1 text-[9px] font-bold">
+                              {preset.badge}
+                            </span>
+                            {preset.vietnameseMode === "strip-accents-auto" && (
+                              <span className="py-0.2 rounded bg-amber-500/15 px-1 text-[8px] font-semibold text-amber-700 dark:text-amber-300">
+                                Tự lược dấu
+                              </span>
+                            )}
+                          </div>
+                          <p
+                            className="text-foreground truncate text-xs font-medium"
+                            style={{
+                              fontFamily:
+                                'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+                            }}
+                          >
+                            {converted}
+                          </p>
+                        </button>
+                        <button
+                          type="button"
+                          data-testid={`studio-zantext-copy-${preset.id}`}
+                          onClick={async () => {
+                            await copyTextToClipboard(converted);
+                            setCopiedZantextId(preset.id);
+                            toast.success(
+                              `Đã copy kiểu "${preset.label}"! Dán trực tiếp lên Facebook / MXH.`,
+                              { id: "brandhub-editor-toast" },
+                            );
+                            setTimeout(() => setCopiedZantextId(null), 1600);
+                          }}
+                          className="bg-brand-orange/15 text-brand-orange hover:bg-brand-orange flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold transition-colors hover:text-white"
+                        >
+                          {isCopied ? (
+                            <Check className="size-3" />
+                          ) : (
+                            <Copy className="size-3" />
+                          )}
+                          <span>{isCopied ? "Đã copy" : "Copy"}</span>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
             type="button"
             data-testid="studio-copy-publish-btn"
@@ -477,7 +764,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         style={{
           fontFamily:
             selectedFont ||
-            'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
+            'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Noto Sans Math", "Apple Symbols", sans-serif',
         }}
       >
         <EditorContent

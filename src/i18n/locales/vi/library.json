@@ -38,11 +38,11 @@
     "edited": "Đã chỉnh sửa"
   },
   "page": {
-    "title": "Kho nội dung",
-    "description": "Ảnh, video và mẫu bài viết của bạn.",
-    "mediaTab": "Tệp",
-    "hashtagsTab": "Hashtag",
-    "templatesTab": "Mẫu bài viết"
+    "title": "Kho lưu trữ nội dung",
+    "description": "Quản lý tập trung tệp đa phương tiện, thư mục, mẫu bài đăng và bộ hashtag của không gian làm việc.",
+    "mediaTab": "Tệp & Thư mục",
+    "hashtagsTab": "Nhóm Hashtag",
+    "templatesTab": "Mẫu bài đăng"
   },
   "templates": {
     "deleteSuccess": "Đã xóa mẫu bài viết",
@@ -187,18 +187,18 @@
     "resetFilters": "Xóa bộ lọc",
     "loadError": "Không thể tải danh sách tư liệu. Vui lòng thử lại.",
     "retry": "Thử lại",
-    "searchPlaceholder": "Tìm theo tên tệp…",
+    "searchPlaceholder": "Tìm kiếm tệp, hình ảnh, video trong kho...",
     "filterAll": "Tất cả",
     "filterImage": "Ảnh",
     "filterVideo": "Video",
     "filterFile": "Tài liệu",
     "processingTypeLabel": "Phân loại xử lý",
     "typeAll": "Mọi trạng thái xử lý",
-    "typeRaw": "Ảnh gốc (RAW)",
+    "typeRaw": "Ảnh gốc",
     "typeRetouched": "Đã chỉnh sửa (Retouched)",
     "typeWatermarked": "Đã đóng dấu (Watermarked)",
     "rawWarningBadge": "Ảnh chưa chỉnh sửa",
-    "rawWarning": "Ảnh chưa chỉnh sửa (RAW) — Cần kiểm tra hoặc chỉnh sửa trước khi sử dụng làm nội dung đăng tải.",
+    "rawWarning": "Ảnh chưa chỉnh sửa — Cần kiểm tra hoặc chỉnh sửa trước khi sử dụng làm nội dung đăng tải.",
     "purposeLabel": "Mục đích sử dụng",
     "purposeAll": "Mọi mục đích",
     "purposeMaterial": "Tư liệu sản xuất",
@@ -263,7 +263,7 @@
     "watermark": "Đóng dấu",
     "uploadRetouched": "Tải lên bản chỉnh sửa mới",
     "clientRequired": "Chọn hồ sơ Client",
-    "typeRAW": "Ảnh gốc (RAW)",
+    "typeRAW": "Ảnh gốc",
     "typeRETOUCHED": "Đã chỉnh sửa (Retouched)",
     "typeWATERMARKED": "Đã đóng dấu (Watermarked)",
     "download": "Tải xuống",
@@ -280,7 +280,7 @@
     "supportTicketPrompt": "Nhập mã Support Ticket (3-64 ký tự) để thực hiện thao tác hỗ trợ này:",
     "aiDraftBadge": "Bản nháp AI",
     "storageDriveBadge": "Google Drive",
-    "storageS3Badge": "S3 (2GB Free)"
+    "storageS3Badge": "Lưu trữ S3"
   },
   "drive": {
     "disconnect": "Ngắt kết nối",
@@ -310,7 +310,7 @@
     "open": "Mở",
     "actions": "Thao tác với {{name}}",
     "files": "Tệp",
-    "fromDrive": "Từ Drive",
+    "fromDrive": "Đồng bộ từ Google Drive",
     "usage": "Đã dùng {{used}} / {{quota}}",
     "storageDetails": "Dung lượng lưu trữ",
     "import": "Nhập"

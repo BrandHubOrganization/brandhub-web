@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Upload, FolderOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { WatermarkStudioModal } from "@/pages/library/components/watermark/WatermarkStudioModal";
 import type { MaterialItem } from "@/types/material";
 import type { MediaDropzoneProps } from "./media/types";
 import { MediaUploadTab } from "./media/MediaUploadTab";
@@ -14,10 +15,16 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
   onChange,
   workspaceId,
   onUploaded,
+  storedMedia,
+  onWatermarked,
 }) => {
   const { t } = useTranslation();
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
   const effectiveWorkspaceId = workspaceId ?? currentWorkspace?.id;
+  const [watermarkTarget, setWatermarkTarget] = useState<{
+    url: string;
+    materialId: string;
+  } | null>(null);
 
   const handleToggleItem = (item: MaterialItem) => {
     const isSelected =
@@ -94,7 +101,27 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
       <MediaSelectedPreviews
         mediaUrls={mediaUrls}
         onRemove={handleRemoveMedia}
+        storedMedia={storedMedia}
+        onWatermark={(url, materialId) =>
+          setWatermarkTarget({ url, materialId })
+        }
       />
+
+      {watermarkTarget && effectiveWorkspaceId && (
+        <WatermarkStudioModal
+          isOpen
+          onClose={() => setWatermarkTarget(null)}
+          workspaceId={effectiveWorkspaceId}
+          material={{
+            id: watermarkTarget.materialId,
+            url: watermarkTarget.url,
+          }}
+          onSuccess={(newMaterial) => {
+            onWatermarked?.(watermarkTarget.url, newMaterial, "IMAGE");
+            setWatermarkTarget(null);
+          }}
+        />
+      )}
     </div>
   );
 };

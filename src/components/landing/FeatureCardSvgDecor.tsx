@@ -25,7 +25,7 @@ export function FeatureCardSvgDecor({ featureKey, className }: FeatureCardSvgDec
           <rect x="71" y="5" width="58" height="68" rx="6" stroke="#F97316" strokeWidth="1.2" strokeDasharray="3 2" />
           <text x="78" y="22" fill="#F97316" fontSize="7.5" fontWeight="bold">TASK 02</text>
           <rect x="78" y="28" width="44" height="12" rx="3" fill="#F97316" fillOpacity="0.2" />
-          <text x="82" y="37" fill="#F97316" fontSize="6" fontWeight="semibold">Livestream</text>
+          <text x="80" y="37" fill="#F97316" fontSize="6" fontWeight="semibold">Video Reels</text>
           <polygon points="103,50 109,54 103,58" fill="#F97316" />
 
           <rect x="137" y="5" width="58" height="68" rx="6" stroke="#F97316" strokeWidth="1.2" strokeDasharray="3 2" />
@@ -56,7 +56,7 @@ export function FeatureCardSvgDecor({ featureKey, className }: FeatureCardSvgDec
           <line x1="62" y1="20" x2="78" y2="20" stroke="#F97316" strokeWidth="1.2" strokeDasharray="2 2" />
 
           <circle cx="88" cy="20" r="10" stroke="#F97316" strokeWidth="1.2" />
-          <text x="83" y="23" fill="#F97316" fontSize="7" fontWeight="bold">AM</text>
+          <text x="82" y="23" fill="#F97316" fontSize="7" fontWeight="bold">MG</text>
 
           <line x1="98" y1="20" x2="114" y2="20" stroke="#F97316" strokeWidth="1.2" strokeDasharray="2 2" />
 

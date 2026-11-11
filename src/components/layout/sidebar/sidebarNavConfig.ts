@@ -6,8 +6,6 @@ import {
   BarChart3,
   ShieldAlert,
   FolderKanban,
-  LayoutTemplate,
-  Hash,
   Link2,
   CreditCard,
   Sparkles,
@@ -17,7 +15,6 @@ import {
   User,
   Inbox,
   UserCheck,
-  Briefcase,
   Settings,
   Shield,
   Bell,
@@ -27,8 +24,6 @@ import {
   MessageCircleMore,
   Mail,
   Calendar,
-
-
   Brain,
   TrendingUp,
   Clapperboard,
@@ -178,27 +173,6 @@ export const NAV_SECTIONS: NavSection[] = [
         requiresWorkspace: true,
       },
       {
-        to: "/content-writing",
-        icon: FileEdit,
-        labelKey: "nav.contentWriting",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/templates",
-        icon: LayoutTemplate,
-        labelKey: "nav.templates",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
-        to: "/hashtag-groups",
-        icon: Hash,
-        labelKey: "nav.hashtagGroups",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
         to: "/library",
         icon: FolderKanban,
         labelKey: "nav.library",
@@ -329,13 +303,6 @@ export const NAV_SECTIONS: NavSection[] = [
         to: "/agency",
         icon: Building2,
         labelKey: "nav.agencyList",
-        hideInWorkspace: true,
-        hideInAgency: true,
-      },
-      {
-        to: "/workspace",
-        icon: Briefcase,
-        labelKey: "nav.workspaceList",
         hideInWorkspace: true,
       },
       {

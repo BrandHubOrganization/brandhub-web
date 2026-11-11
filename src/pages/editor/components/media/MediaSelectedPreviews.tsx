@@ -1,5 +1,5 @@
 import React from "react";
-import { X, Film } from "lucide-react";
+import { X, Film, Stamp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { MediaSelectedPreviewsProps } from "./types";
 
@@ -15,6 +15,8 @@ function isVideoUrl(url: string): boolean {
 export const MediaSelectedPreviews: React.FC<MediaSelectedPreviewsProps> = ({
   mediaUrls,
   onRemove,
+  storedMedia,
+  onWatermark,
 }) => {
   const { t } = useTranslation();
 
@@ -33,6 +35,8 @@ export const MediaSelectedPreviews: React.FC<MediaSelectedPreviewsProps> = ({
       <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
         {mediaUrls.map((url, idx) => {
           const isVideo = isVideoUrl(url);
+          const materialId = storedMedia?.[url]?.materialId;
+          const canWatermark = !isVideo && Boolean(materialId) && Boolean(onWatermark);
           return (
             <div
               key={`${url}-${idx}`}
@@ -59,6 +63,17 @@ export const MediaSelectedPreviews: React.FC<MediaSelectedPreviewsProps> = ({
                   loading="lazy"
                   className="size-full object-cover"
                 />
+              )}
+
+              {canWatermark && (
+                <button
+                  type="button"
+                  onClick={() => onWatermark?.(url, materialId!)}
+                  title={t("editor.mediaDropzone.applyWatermark", "Áp watermark")}
+                  className="hover:bg-brand-orange absolute bottom-1.5 right-1.5 cursor-pointer rounded-full bg-black/60 p-1 text-white shadow-xs transition-colors"
+                >
+                  <Stamp className="size-3" />
+                </button>
               )}
 
               <button

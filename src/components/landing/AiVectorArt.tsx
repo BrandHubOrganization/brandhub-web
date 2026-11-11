@@ -125,7 +125,7 @@ export function AiVectorArt({ type, className }: AiVectorArtProps) {
         </svg>
       );
 
-    case "livestreamScript":
+    case "complianceCheck":
       return (
         <svg
           viewBox="0 0 120 70"

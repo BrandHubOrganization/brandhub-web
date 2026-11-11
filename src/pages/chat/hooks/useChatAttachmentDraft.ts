@@ -4,6 +4,16 @@ import { chatAttachmentService } from "@/pages/chat/services/chatAttachmentServi
 import type { ChatAttachmentDraft } from "@/pages/chat/types/chatAttachment";
 import type { MaterialItem } from "@/types/material";
 
+const ALLOWED_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "video/mp4",
+  "video/quicktime",
+  "application/pdf",
+];
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
 export function useChatAttachmentDraft(workspace?: string, channel?: string) {
   const { t } = useTranslation();
   const [items, setItems] = useState<ChatAttachmentDraft[]>([]);
@@ -55,11 +65,9 @@ export function useChatAttachmentDraft(workspace?: string, channel?: string) {
     setError("");
     for (const file of files) {
       if (
-        !["image/jpeg", "image/png", "image/webp", "application/pdf"].includes(
-          file.type,
-        ) ||
+        !ALLOWED_MIME_TYPES.includes(file.type) ||
         file.size === 0 ||
-        file.size > 10 * 1024 * 1024
+        file.size > MAX_FILE_SIZE
       ) {
         setError(t("chat.attachments.invalidFile"));
         continue;

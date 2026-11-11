@@ -1,150 +1,199 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  Download,
+  FolderInput,
+  History,
+  RotateCcw,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { materialService } from "@/services/materialService";
-import { MaterialFolderPicker } from "@/pages/library/components/MaterialFolderPicker";
-import { formatFileSize } from "@/lib/utils";
+import { useWorkspaceStore } from "@/store/workspaceStore";
+import { MaterialFolderPicker } from "./MaterialFolderPicker";
 import type { MaterialItem } from "@/types/material";
+
 export function MaterialVersionHistoryPanel({
+  workspaceId,
   material,
+  canEdit,
+  onChanged,
 }: {
+  workspaceId: string;
   material: MaterialItem;
+  canEdit: boolean;
+  onChanged: () => void;
 }) {
-  const { t } = useTranslation();
   const client = useQueryClient();
+  const role = useWorkspaceStore((state) => state.currentMemberRole);
   const [moving, setMoving] = useState(false);
-  const label = (key: string) => t(`materials.repository.${key}`);
+
+  const canMove =
+    canEdit &&
+    !material.deletedAt &&
+    (role === "CLIENT" || material.scopeType !== "CLIENT_VAULT");
+
   const query = useQuery({
-    queryKey: ["material-versions", material.workspaceId, material.id],
+    queryKey: ["material-versions", workspaceId, material.id],
     queryFn: ({ signal }) =>
-      materialService.listVersions(material.workspaceId, material.id, signal),
+      materialService.listVersions(workspaceId, material.id, signal),
     retry: false,
   });
-  const mutation = useMutation({
-    mutationFn: async (action: () => Promise<unknown>) => action(),
-    onSuccess: () => {
-      void client.invalidateQueries({
-        queryKey: ["material-versions", material.workspaceId, material.id],
-      });
-      void client.invalidateQueries({ queryKey: ["material-detail"] });
-      void client.invalidateQueries({ queryKey: ["materials"] });
-      void client.invalidateQueries({ queryKey: ["material-storage-usage"] });
+
+  const refresh = () => {
+    void query.refetch();
+    void client.invalidateQueries({ queryKey: ["materials", workspaceId] });
+    onChanged();
+  };
+
+  const move = async (target: string | null) => {
+    try {
+      await materialService.moveMaterial(workspaceId, material.id, target);
       setMoving(false);
-    },
-    onError: () => toast.error(label("failed")),
-  });
+      refresh();
+      toast.success("Đã di chuyển tệp thành công");
+    } catch (e) {
+      toast.error(
+        (e as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ?? "Không thể di chuyển tệp",
+      );
+    }
+  };
+
+  const versions = query.data ?? [];
+
   return (
-    <section className="space-y-3 border-t pt-4">
-      <h3 className="font-semibold">
-        {label("versionHistory")}{" "}
-        <span className="text-muted-foreground">
-          v{material.currentVersionNumber ?? 1}
-        </span>
-      </h3>
-      {material.capabilities?.canRename &&
-        material.scopeType !== "CLIENT_VAULT" && (
-          <Button variant="outline" onClick={() => setMoving(!moving)}>
-            {label("moveFile")}
+    <section className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-2xs text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 bg-muted/25 px-4 py-2.5">
+        <div className="flex items-center gap-1.5 font-semibold text-foreground">
+          <History className="h-3.5 w-3.5 text-brand-orange" />
+          <span>Lịch sử phiên bản</span>
+          {versions.length > 0 && (
+            <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-muted-foreground">
+              {versions.length}
+            </span>
+          )}
+        </div>
+
+        {canMove && (
+          <Button
+            type="button"
+            size="sm"
+            variant={moving ? "orange" : "outline"}
+            onClick={() => setMoving((prev) => !prev)}
+            className={`h-7 gap-1.5 rounded-lg px-2.5 text-[11px] font-semibold transition-colors ${
+              moving
+                ? "border-brand-orange bg-brand-orange text-white hover:bg-brand-orange/90 hover:text-white"
+                : "text-foreground hover:border-brand-orange/50 hover:bg-brand-orange/10 hover:text-brand-orange"
+            }`}
+          >
+            <FolderInput className="h-3 w-3" />
+            <span>Di chuyển thư mục</span>
           </Button>
         )}
-      {moving && (
-        <MaterialFolderPicker
-          workspace={material.workspaceId}
-          onCancel={() => setMoving(false)}
-          onChoose={(target) =>
-            mutation.mutate(() =>
-              materialService.moveMaterial(
-                material.workspaceId,
-                material.id,
-                target,
-              ),
-            )
-          }
-        />
-      )}
-      {query.isPending ? (
-        <p role="status">{label("loading")}</p>
-      ) : query.isError ? (
-        <div role="alert">
-          {label("failed")}
-          <Button variant="ghost" onClick={() => void query.refetch()}>
-            {label("retry")}
-          </Button>
-        </div>
-      ) : !query.data?.length ? (
-        <p className="text-muted-foreground text-sm">{label("noVersions")}</p>
-      ) : (
-        query.data.map((version) => (
-          <article
-            key={version.id}
-            className="border-border space-y-2 rounded-md border p-3"
-          >
-            <p>
-              v{version.versionNumber} · {formatFileSize(version.fileSize)} ·{" "}
-              {new Date(version.createdAt).toLocaleString()}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                disabled={mutation.isPending}
-                onClick={() =>
-                  mutation.mutate(async () => {
-                    const result = await materialService.downloadVersion(
-                      material.workspaceId,
-                      material.id,
-                      version.id,
-                    );
-                    const anchor = document.createElement("a");
-                    anchor.href = result.downloadUrl;
-                    anchor.rel = "noopener noreferrer";
-                    anchor.click();
-                  })
-                }
+      </div>
+
+      <div className="space-y-3 p-4">
+        {moving && (
+          <MaterialFolderPicker
+            workspace={workspaceId}
+            onChoose={(id) => void move(id)}
+            onCancel={() => setMoving(false)}
+          />
+        )}
+
+        {versions.length === 0 ? (
+          <p className="text-[11px] text-muted-foreground">
+            Tệp đang ở phiên bản gốc (v1), chưa có bản ghi đè trước đó.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {versions.map((version) => (
+              <div
+                key={version.id}
+                className="flex items-center justify-between gap-2 rounded-xl border border-border/70 bg-muted/20 px-3 py-2"
               >
-                {label("download")}
-              </Button>
-              {material.capabilities?.canRename && (
-                <>
+                <span className="truncate font-medium text-foreground">
+                  <strong className="text-brand-orange">
+                    v{version.versionNumber}
+                  </strong>{" "}
+                  • {version.name || material.name}
+                </span>
+
+                <div className="flex shrink-0 items-center gap-1">
                   <Button
-                    variant="outline"
-                    disabled={mutation.isPending}
-                    onClick={() => {
-                      if (window.confirm(label("restoreVersionConfirm")))
-                        mutation.mutate(() =>
-                          materialService.restoreVersion(
-                            material.workspaceId,
-                            material.id,
-                            version.id,
-                          ),
-                        );
-                    }}
-                  >
-                    {label("restore")}
-                  </Button>
-                  <Button
+                    type="button"
+                    size="sm"
                     variant="ghost"
-                    disabled={mutation.isPending}
-                    onClick={() => {
-                      if (window.confirm(label("deleteVersionConfirm")))
-                        mutation.mutate(() =>
-                          materialService.deleteVersion(
-                            material.workspaceId,
-                            material.id,
-                            version.id,
+                    onClick={() =>
+                      void materialService
+                        .downloadVersion(workspaceId, material.id, version.id)
+                        .then((d) =>
+                          window.open(
+                            d.downloadUrl,
+                            "_blank",
+                            "noopener,noreferrer",
                           ),
-                        );
-                    }}
+                        )
+                        .catch(() =>
+                          toast.error("Không thể tải phiên bản này"),
+                        )
+                    }
+                    className="h-7 rounded-lg px-2 text-xs font-semibold text-foreground hover:bg-brand-orange/10 hover:text-brand-orange"
                   >
-                    {label("delete")}
+                    <Download className="mr-1 h-3 w-3" />
+                    Tải
                   </Button>
-                </>
-              )}
-            </div>
-          </article>
-        ))
-      )}
+
+                  {canEdit && (
+                    <>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          void materialService
+                            .restoreVersion(
+                              workspaceId,
+                              material.id,
+                              version.id,
+                            )
+                            .then(refresh)
+                            .catch(() =>
+                              toast.error("Không thể khôi phục phiên bản"),
+                            )
+                        }
+                        className="h-7 rounded-lg px-2 text-xs font-semibold text-foreground hover:border-brand-orange hover:bg-brand-orange/10 hover:text-brand-orange"
+                      >
+                        <RotateCcw className="mr-1 h-3 w-3" />
+                        Khôi phục
+                      </Button>
+
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        onClick={() =>
+                          void materialService
+                            .deleteVersion(workspaceId, material.id, version.id)
+                            .then(refresh)
+                            .catch(() =>
+                              toast.error("Không thể xoá phiên bản"),
+                            )
+                        }
+                        className="h-7 rounded-lg px-2 text-xs font-semibold text-white"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }
