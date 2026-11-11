@@ -165,8 +165,24 @@ export const materialService = {
       )
     ).data.data;
   },
+  async cancelDriveImport(
+    workspace: string,
+    id: string,
+  ): Promise<DriveImportJob> {
+    return (
+      await api.post<ApiResponse<DriveImportJob>>(
+        `/api/v1/workspaces/${workspace}/materials/drive-import/${encodeURIComponent(id)}/cancel`,
+      )
+    ).data.data;
+  },
   async browseClientVault(
-    params: { folderId?: string; sort?: string; page?: number; size?: number },
+    params: {
+      folderId?: string;
+      sort?: string;
+      search?: string;
+      page?: number;
+      size?: number;
+    },
     signal?: AbortSignal,
   ): Promise<MaterialBrowserResponse> {
     return (
@@ -176,15 +192,27 @@ export const materialService = {
       )
     ).data.data;
   },
+  async clientVaultStorageUsage(
+    signal?: AbortSignal,
+  ): Promise<MaterialStorageUsage> {
+    return (
+      await api.get<ApiResponse<MaterialStorageUsage>>(
+        "/api/v1/client-vault/storage-usage",
+        { signal },
+      )
+    ).data.data;
+  },
   async shareClientVaultToWorkspace(
     workspace: string,
     folderIds: string[],
-    sourceWorkspaceId: string,
+    sourceWorkspaceId?: string | null,
     shareAll = false,
+    materialIds: string[] = [],
   ) {
     return api.post(`/api/v1/workspaces/${workspace}/client-vault/shares`, {
       folderIds,
-      sourceWorkspaceId,
+      materialIds,
+      sourceWorkspaceId: sourceWorkspaceId || null,
       shareAll,
     });
   },
@@ -406,6 +434,63 @@ export const materialService = {
       { signal },
     );
     return response.data.data;
+  },
+
+  async cancelUploadSession(
+    workspaceId: string,
+    sessionId: string,
+  ): Promise<void> {
+    await api.delete(
+      `/api/v1/workspaces/${workspaceId}/materials/upload-session/${encodeURIComponent(sessionId)}`,
+    );
+  },
+
+  uploadBinaryWithProgress(
+    uploadUrl: string,
+    file: File,
+    headers: Record<string, string>,
+    signal: AbortSignal,
+    onProgress?: (percent: number) => void,
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (signal.aborted) {
+        reject(new DOMException("Aborted", "AbortError"));
+        return;
+      }
+      const xhr = new XMLHttpRequest();
+      xhr.open("PUT", uploadUrl, true);
+      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+      Object.entries(headers || {}).forEach(([k, v]) => {
+        if (k.toLowerCase() !== "content-type") {
+          xhr.setRequestHeader(k, v);
+        }
+      });
+      const handleAbort = () => {
+        xhr.abort();
+        reject(new DOMException("Aborted", "AbortError"));
+      };
+      signal.addEventListener("abort", handleAbort, { once: true });
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable && event.total > 0 && onProgress) {
+          onProgress(Math.min(99, Math.round((event.loaded / event.total) * 100)));
+        }
+      };
+      xhr.onload = () => {
+        signal.removeEventListener("abort", handleAbort);
+        if (xhr.status >= 200 && xhr.status < 300) {
+          onProgress?.(100);
+          resolve();
+        } else {
+          reject(new Error(`UPLOAD_BINARY_${xhr.status}`));
+        }
+      };
+      xhr.onerror = () => {
+        signal.removeEventListener("abort", handleAbort);
+        reject(new Error("UPLOAD_BINARY_NETWORK_ERROR"));
+      };
+      xhr.send(file);
+    });
   },
   async applyWatermark(
     workspaceId: string,

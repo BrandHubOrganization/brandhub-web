@@ -118,18 +118,23 @@ export function StudioPreviewPanel({
               <button
                 key={platform}
                 type="button"
+                aria-pressed={isActive}
                 onClick={() => setActivePlatform(platform)}
                 className={cn(
                   "flex items-center gap-1.5 rounded-md border px-2.5 py-2 text-xs font-medium transition-colors",
                   isActive
-                    ? PLATFORM_BRAND[platform].active
-                    : "text-muted-foreground hover:bg-muted border-transparent",
+                    ? cn(PLATFORM_BRAND[platform].active, "font-semibold shadow-2xs")
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground border-transparent",
                 )}
               >
                 <Icon
                   className={cn(
                     "size-3.5",
-                    !isActive && PLATFORM_BRAND[platform].icon,
+                    isActive
+                      ? platform === "THREADS"
+                        ? "text-white dark:text-black"
+                        : "text-white"
+                      : PLATFORM_BRAND[platform].icon,
                   )}
                 />
                 {t(`editor.studio.preview.platforms.${platform}`)}

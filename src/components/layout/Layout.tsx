@@ -11,6 +11,7 @@ import { AdminMobileNavigation } from "@/components/layout/AdminSidebar";
 import { Navbar } from "./Navbar";
 import { PageFallback } from "./PageFallback";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { BackgroundTaskDock } from "@/components/common/BackgroundTaskDock";
 import {
   Sheet,
   SheetContent,
@@ -347,6 +348,7 @@ export function Layout() {
             <Outlet />
           </React.Suspense>
         </main>
+        <BackgroundTaskDock />
       </div>
 
       {/* ── BOTTOM TAB BAR (MOBILE ONLY <= 768px) ── */}

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAuthStore } from "@/store/authStore";
@@ -19,6 +19,7 @@ import { Testimonials } from "@/components/landing/Testimonials";
 import { TeamSection } from "@/components/landing/TeamSection";
 import { ComparisonMatrix } from "@/components/landing/ComparisonMatrix";
 import { Pricing } from "@/components/landing/Pricing";
+import { BlogPreviewSection } from "@/components/landing/BlogPreviewSection";
 import { FAQ } from "@/components/landing/FAQ";
 import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
@@ -81,6 +82,7 @@ export function LandingPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { i18n } = useTranslation();
   const isEn = i18n.language === "en";
+  const location = useLocation();
 
   // Hero's pinned scroll spacer (end:"+=3500") finalizes its height only
   // after mount, which shifts every ScrollTrigger below it (the 4 sections
@@ -90,9 +92,18 @@ export function LandingPage() {
   // Entrance reveals no longer use ScrollTrigger (IntersectionObserver
   // instead, see useIntersectionObserver) so they don't need this.
   useEffect(() => {
-    const id = setTimeout(() => ScrollTrigger.refresh(), 300);
+    const id = setTimeout(() => {
+      ScrollTrigger.refresh();
+      if (location.hash) {
+        const targetId = location.hash.replace(/^#/, "");
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    }, 350);
     return () => clearTimeout(id);
-  }, []);
+  }, [location.hash]);
 
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
@@ -128,6 +139,7 @@ export function LandingPage() {
       <TeamSection />
       <ComparisonMatrix />
       <Pricing />
+      <BlogPreviewSection />
       <FAQ />
       <CTASection />
       <Footer />

@@ -84,6 +84,7 @@ const HOME_SEMANTIC_HTML = `
           </tbody>
         </table>
         <nav aria-label="Liên kết công khai">
+          <a href="https://brandhub.id.vn/blog">Blog &amp; Cẩm nang Quản trị Truyền thông (100 Chủ đề SEO)</a> |
           <a href="https://brandhub.id.vn/help/faq">Trung tâm Trợ giúp &amp; Câu hỏi thường gặp (FAQ)</a> |
           <a href="https://brandhub.id.vn/privacy">Chính sách Quyền riêng tư (Privacy Policy)</a> |
           <a href="https://brandhub.id.vn/terms">Điều khoản Dịch vụ (Terms of Service)</a> |
@@ -242,6 +243,165 @@ const PUBLIC_ROUTES = [
         <p><a href="https://brandhub.id.vn/">Quay lại Trang chủ BrandHub</a></p>
       </main>`,
   },
+  {
+    routePath: "blog",
+    canonicalUrl: "https://brandhub.id.vn/blog",
+    title: "Blog Quản trị Truyền thông, Quy trình Agency & AI Marketing | BrandHub",
+    description:
+      "Cẩm nang vận hành Agency như Jira & Notion, quy trình phê duyệt nội dung 3 cấp, báo giá Gói truyền thông (Media Package), AI GraphRAG và lịch đăng tự động Facebook, Instagram, TikTok, Threads.",
+    pageJsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "@id": "https://brandhub.id.vn/blog#blog",
+      name: "BrandHub Knowledge & Media Operations Blog",
+      url: "https://brandhub.id.vn/blog",
+    },
+    noscriptHtml: `
+      <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>Blog Quản trị Truyền thông, Quy trình Agency &amp; AI Marketing — BrandHub</h1>
+        <p>Thư viện 100 chủ đề truyền thông chuẩn SEO giúp Owner, Manager, Creator và Client làm chủ mô hình quản lý công việc chuẩn Jira / Notion, thiết kế Gói truyền thông (Media Package), ứng dụng AI GraphRAG và tự động hóa xuất bản trên Facebook, Instagram, TikTok, Threads.</p>
+        <ul>
+          <li><a href="https://brandhub.id.vn/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub">Quản lý dự án truyền thông như Jira và Notion với BrandHub</a></li>
+          <li><a href="https://brandhub.id.vn/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client">Quy trình phê duyệt nội dung 3 cấp (Creator -&gt; Manager -&gt; Client)</a></li>
+          <li><a href="https://brandhub.id.vn/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia">Gói truyền thông (Media Package) gồm những gì? Cách đóng gói báo giá</a></li>
+          <li><a href="https://brandhub.id.vn/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb">AI GraphRAG là gì? Ứng dụng Neo4j và ChromaDB giữ chuẩn giọng thương hiệu</a></li>
+          <li><a href="https://brandhub.id.vn/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads">Hướng dẫn đặt lịch đăng bài tự động lên Facebook, Instagram, TikTok và Threads</a></li>
+          <li><a href="https://brandhub.id.vn/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion">So sánh BrandHub với Buffer, Hootsuite, Planable và combo Jira + Notion</a></li>
+        </ul>
+      </main>`,
+  },
+  {
+    routePath: "blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub",
+    canonicalUrl:
+      "https://brandhub.id.vn/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub",
+    title: "Quản lý dự án truyền thông như Jira & Notion cho Agency | BrandHub",
+    description:
+      "Hướng dẫn chuẩn hóa quy trình quản lý dự án truyền thông như Jira và Notion trên BrandHub: cô lập đa Workspace, phân quyền 6 vai trò và theo dõi tiến độ.",
+    pageJsonLd: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline:
+        "Quản lý dự án truyền thông như Jira và Notion: Cách BrandHub chuẩn hóa đa Workspace cho Agency",
+      url: "https://brandhub.id.vn/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub",
+      datePublished: "2026-11-10",
+    },
+    noscriptHtml: `
+      <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>Quản lý dự án truyền thông như Jira và Notion: Cách BrandHub chuẩn hóa đa Workspace cho Agency</h1>
+        <p>BrandHub kết hợp kỷ luật quản lý tác vụ của Jira và không gian tri thức của Notion vào kiến trúc đa Workspace phân quyền 6 vai trò (Guest, Owner, Manager, Creator, Client, Admin).</p>
+        <p><a href="https://brandhub.id.vn/register">Đăng ký tạo Workspace miễn phí</a> | <a href="https://brandhub.id.vn/blog">Quay lại Blog</a></p>
+      </main>`,
+  },
+  {
+    routePath: "blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client",
+    canonicalUrl:
+      "https://brandhub.id.vn/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client",
+    title: "Quy trình phê duyệt nội dung 3 cấp chuẩn Agency (Creator - Manager - Client) | BrandHub",
+    description:
+      "Xây dựng luồng duyệt bài 3 cấp minh bạch giữa Creator, Manager và Client. Tự động khóa bản nháp khi chờ duyệt, lưu lịch sử phiên bản và xem trước đa kênh.",
+    pageJsonLd: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline:
+        "Quy trình phê duyệt nội dung 3 cấp (Creator -> Manager -> Client): Chấm dứt ác mộng duyệt bài qua chat",
+      url: "https://brandhub.id.vn/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client",
+      datePublished: "2026-11-10",
+    },
+    noscriptHtml: `
+      <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>Quy trình phê duyệt nội dung 3 cấp (Creator -&gt; Manager -&gt; Client)</h1>
+        <p>Chuẩn hóa quy trình kiểm duyệt nội bộ và phê duyệt khách hàng với cơ chế khóa bản nháp tự động và xem trước trực tiếp trên Facebook, Instagram, TikTok, Threads.</p>
+        <p><a href="https://brandhub.id.vn/register">Trải nghiệm luồng duyệt 3 cấp</a> | <a href="https://brandhub.id.vn/blog">Quay lại Blog</a></p>
+      </main>`,
+  },
+  {
+    routePath: "blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia",
+    canonicalUrl:
+      "https://brandhub.id.vn/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia",
+    title: "Gói truyền thông (Media Package) gồm những gì? Mẫu báo giá & Chiến dịch | BrandHub",
+    description:
+      "Giải mã chi tiết Gói truyền thông (Media Package) gồm những hạng mục nào, cách lập báo giá tích hợp mạng xã hội, báo chí, truyền hình và chuyển đổi thành chiến dịch.",
+    pageJsonLd: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline:
+        "Gói truyền thông (Media Package) gồm những gì? Cách đóng gói báo giá và quản lý chiến dịch khép kín",
+      url: "https://brandhub.id.vn/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia",
+      datePublished: "2026-11-10",
+    },
+    noscriptHtml: `
+      <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>Gói truyền thông (Media Package) gồm những gì? Cách đóng gói báo giá và quản lý chiến dịch khép kín</h1>
+        <p>Hướng dẫn thiết kế danh mục Gói truyền thông tích hợp 4 mạng xã hội cùng đối tác Báo điện tử, Đài truyền hình và tự động sinh Media Campaign khi chốt báo giá.</p>
+        <p><a href="https://brandhub.id.vn/#media-package">Khám phá Gói Truyền thông</a> | <a href="https://brandhub.id.vn/blog">Quay lại Blog</a></p>
+      </main>`,
+  },
+  {
+    routePath: "blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb",
+    canonicalUrl:
+      "https://brandhub.id.vn/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb",
+    title: "AI GraphRAG là gì? Viết Content chuẩn Brand Guidelines với Neo4j & ChromaDB | BrandHub",
+    description:
+      "Khám phá kiến trúc AI GraphRAG kết hợp đồ thị tri thức Neo4j và vector ChromaDB trên BrandHub giúp sáng tạo nội dung, hình ảnh, đại sứ ảo đúng 100% Brand Voice.",
+    pageJsonLd: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline:
+        "AI GraphRAG là gì? Cách BrandHub kết hợp Neo4j và ChromaDB để AI không bao giờ viết lệch giọng thương hiệu",
+      url: "https://brandhub.id.vn/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb",
+      datePublished: "2026-11-10",
+    },
+    noscriptHtml: `
+      <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>AI GraphRAG là gì? Cách BrandHub kết hợp Neo4j và ChromaDB để AI không bao giờ viết lệch giọng thương hiệu</h1>
+        <p>Ứng dụng đồ thị tri thức Neo4j, ChromaDB, đại sứ ảo LoRA và hệ thống cào xu hướng thời gian thực trong sáng tạo nội dung số.</p>
+        <p><a href="https://brandhub.id.vn/#ai-features">Trải nghiệm AI Studio</a> | <a href="https://brandhub.id.vn/blog">Quay lại Blog</a></p>
+      </main>`,
+  },
+  {
+    routePath: "blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads",
+    canonicalUrl:
+      "https://brandhub.id.vn/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads",
+    title: "Đăng bài tự động Facebook, Instagram, TikTok, Threads | BrandHub",
+    description:
+      "Cách quản lý lịch xuất bản đa kênh (Content Calendar) và đăng bài tự động lên Facebook, Instagram, TikTok, Threads qua API chính thức bảo mật AES-256.",
+    pageJsonLd: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline:
+        "Hướng dẫn thiết lập lịch đăng bài tự động lên Facebook, Instagram, TikTok và Threads an toàn tuyệt đối",
+      url: "https://brandhub.id.vn/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads",
+      datePublished: "2026-11-10",
+    },
+    noscriptHtml: `
+      <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>Hướng dẫn thiết lập lịch đăng bài tự động lên Facebook, Instagram, TikTok và Threads an toàn tuyệt đối</h1>
+        <p>Quản lý Content Calendar, kết nối OAuth 2.0 mã hóa AES-256 và theo dõi chỉ số tương tác thực tế sau xuất bản trên 4 nền tảng mạng xã hội.</p>
+        <p><a href="https://brandhub.id.vn/register">Đặt lịch đăng bài miễn phí</a> | <a href="https://brandhub.id.vn/blog">Quay lại Blog</a></p>
+      </main>`,
+  },
+  {
+    routePath: "blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion",
+    canonicalUrl:
+      "https://brandhub.id.vn/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion",
+    title: "So sánh BrandHub vs Buffer, Planable, Hootsuite & Jira Notion | BrandHub",
+    description:
+      "Bảng đối chiếu chi tiết giữa BrandHub với các công cụ ngoại (Buffer, Hootsuite, Planable) và bộ công cụ Jira + Notion về tính năng, AI tiếng Việt và chi phí.",
+    pageJsonLd: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline:
+        "So sánh BrandHub với Buffer, Hootsuite, Planable và combo Jira + Notion cho Agency Việt Nam",
+      url: "https://brandhub.id.vn/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion",
+      datePublished: "2026-11-10",
+    },
+    noscriptHtml: `
+      <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>So sánh BrandHub với Buffer, Hootsuite, Planable và combo Jira + Notion cho Agency Việt Nam</h1>
+        <p>Tiết kiệm tới 80% chi phí phần mềm hàng tháng khi hợp nhất quản lý công việc, báo giá Media Package, AI GraphRAG, duyệt 3 cấp và đăng tự động 4 kênh thanh toán qua VietQR.</p>
+        <p><a href="https://brandhub.id.vn/#pricing">Xem bảng giá Starter &amp; Pro</a> | <a href="https://brandhub.id.vn/blog">Quay lại Blog</a></p>
+      </main>`,
+  },
 ];
 
 function escapeHtml(str) {
@@ -251,6 +411,136 @@ function escapeHtml(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 }
+
+// Tự động trích xuất toàn bộ 27 bài viết đã xuất bản từ blogData.ts, blogBatch1Part1.ts, blogBatch1Part2.ts
+const blogSourceFiles = [
+  "../src/data/blogData.ts",
+  "../src/data/blogBatch1Part1.ts",
+  "../src/data/blogBatch1Part2.ts",
+];
+const combinedBlogSource = blogSourceFiles
+  .map((rel) => fs.readFileSync(path.resolve(import.meta.dirname, rel), "utf8"))
+  .join("\n");
+
+const rawPostBlocks = combinedBlogSource.split(/\{\s*\n\s*id:\s*"post-/).slice(1);
+const existingRoutes = new Set(PUBLIC_ROUTES.map((r) => r.routePath));
+
+for (const block of rawPostBlocks) {
+  const slugMatch = block.match(/slug:\s*"([^"]+)"/);
+  const titleMatch = block.match(/title:\s*\n?\s*"([^"]+)"/);
+  const metaTitleMatch = block.match(/metaTitle:\s*\n?\s*"([^"]+)"/);
+  const metaDescMatch = block.match(/metaDescription:\s*\n?\s*"([^"]+)"/);
+  const geoMatch = block.match(/geoSummary:\s*\n?\s*"([^"]+)"/);
+  const dateMatch = block.match(/publishedAt:\s*"([^"]+)"/);
+
+  if (!slugMatch || !titleMatch) continue;
+  const slug = slugMatch[1];
+  const routePath = `blog/${slug}`;
+  if (existingRoutes.has(routePath)) continue;
+
+  const title = titleMatch[1];
+  const metaTitle = metaTitleMatch ? metaTitleMatch[1] : `${title} | BrandHub`;
+  const metaDescription = metaDescMatch ? metaDescMatch[1] : title;
+  const geoSummary = geoMatch ? geoMatch[1] : metaDescription;
+  const publishedAt = dateMatch ? dateMatch[1] : "2026-11-10";
+  const canonicalUrl = `https://brandhub.id.vn/blog/${slug}`;
+
+  PUBLIC_ROUTES.push({
+    routePath,
+    canonicalUrl,
+    title: metaTitle,
+    description: metaDescription,
+    pageJsonLd: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: title,
+      description: metaDescription,
+      url: canonicalUrl,
+      datePublished: publishedAt,
+    },
+    noscriptHtml: `
+      <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>${escapeHtml(title)}</h1>
+        <p>${escapeHtml(geoSummary)}</p>
+        <p><a href="https://brandhub.id.vn/register">Đăng ký tài khoản miễn phí</a> | <a href="https://brandhub.id.vn/blog">Quay lại Blog BrandHub</a></p>
+      </main>`,
+  });
+  existingRoutes.add(routePath);
+}
+
+// Đồng bộ sitemap.xml cho toàn bộ bài viết đã xuất bản
+const blogRoutesForSitemap = PUBLIC_ROUTES.filter((r) =>
+  r.routePath.startsWith("blog/"),
+);
+const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://brandhub.id.vn/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/" />
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/blog</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/blog?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/blog" />
+  </url>
+${blogRoutesForSitemap
+  .map(
+    (r) => `  <url>
+    <loc>${r.canonicalUrl}</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="${r.canonicalUrl}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${r.canonicalUrl}" />
+  </url>`,
+  )
+  .join("\n")}
+  <url>
+    <loc>https://brandhub.id.vn/help/faq</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/help/faq" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/help/faq?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/help/faq" />
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/privacy</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/privacy" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/privacy?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/privacy" />
+  </url>
+  <url>
+    <loc>https://brandhub.id.vn/terms</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/terms" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/terms?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/terms" />
+  </url>
+</urlset>
+`;
+
+fs.writeFileSync(
+  path.resolve(import.meta.dirname, "../public/sitemap.xml"),
+  sitemapXml,
+  "utf8",
+);
+fs.writeFileSync(path.join(distDir, "sitemap.xml"), sitemapXml, "utf8");
 
 for (const route of PUBLIC_ROUTES) {
   const escapedTitle = escapeHtml(route.title);

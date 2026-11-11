@@ -10,6 +10,8 @@ User-agent: PerplexityBot
 User-agent: ClaudeBot
 User-agent: Google-Extended
 Allow: /
+Allow: /blog
+Allow: /blog/
 Allow: /help/faq
 Allow: /privacy
 Allow: /terms

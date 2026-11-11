@@ -14,10 +14,12 @@ export interface SeoHeadProps {
   canonicalPath?: string;
   ogType?: "website" | "article";
   ogImage?: string;
+  /** Optional comma-separated SEO keywords */
+  keywords?: string;
   /** Set true on private/auth/transactional pages so search engines do not index them */
   noindex?: boolean;
-  /** Optional page-specific JSON-LD object */
-  jsonLd?: Record<string, unknown> | null;
+  /** Optional page-specific JSON-LD object or array of objects */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[] | null;
 }
 
 function upsertMeta(
@@ -86,6 +88,7 @@ export function SeoHead({
   canonicalPath = "/",
   ogType = "website",
   ogImage = DEFAULT_OG_IMAGE,
+  keywords,
   noindex = false,
   jsonLd = null,
 }: SeoHeadProps) {
@@ -110,6 +113,9 @@ export function SeoHead({
     document.title = cleanTitle;
 
     upsertMeta("name", "description", description);
+    if (keywords) {
+      upsertMeta("name", "keywords", keywords);
+    }
     upsertMeta("name", "robots", robotsValue);
     upsertCanonical(canonicalUrl);
     syncHreflangLinks(baseCanonicalUrl, noindex);
@@ -151,7 +157,7 @@ export function SeoHead({
         existingScript.remove();
       }
     };
-  }, [title, description, canonicalPath, ogType, ogImage, noindex, jsonLd]);
+  }, [title, description, canonicalPath, ogType, ogImage, keywords, noindex, jsonLd]);
 
   return null;
 }

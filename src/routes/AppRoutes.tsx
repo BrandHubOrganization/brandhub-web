@@ -88,6 +88,14 @@ const TermsOfServicePage = lazyNamed(
   () => import("@/pages/legal/TermsOfServicePage"),
   "TermsOfServicePage",
 );
+const BlogHubPage = lazyNamed(
+  () => import("@/pages/blog/BlogHubPage"),
+  "BlogHubPage",
+);
+const BlogPostPage = lazyNamed(
+  () => import("@/pages/blog/BlogPostPage"),
+  "BlogPostPage",
+);
 const GuestMediaPackagePage = lazy(() => import("@/pages/media-package/guest"));
 const PublicSurveyPage = lazy(() => import("@/pages/public-survey"));
 
@@ -130,14 +138,6 @@ const PostDetailPage = lazyNamed(
 const SocialAccountsPage = lazyNamed(
   () => import("@/pages/social-accounts"),
   "SocialAccountsPage",
-);
-const TemplateBrowserPage = lazyNamed(
-  () => import("@/pages/templates"),
-  "TemplateBrowserPage",
-);
-const HashtagGroupsPage = lazyNamed(
-  () => import("@/pages/hashtag-groups"),
-  "HashtagGroupsPage",
 );
 const ReportsPage = lazyNamed(() => import("@/pages/reports"), "ReportsPage");
 
@@ -429,10 +429,12 @@ export function AppRoutes() {
           <Route path="/terms" element={<TermsOfServicePage />} />
         </Route>
 
-        {/* FAQ Route — public via PublicHelpLayout for guests/search engines, full sidebar Layout for authenticated users */}
+        {/* FAQ & Blog Routes — public via PublicHelpLayout for guests/search engines, full sidebar Layout for authenticated users */}
         <Route element={<AdaptiveHelpLayout />}>
           <Route path="/help/faq" element={<HelpFaqPage />} />
           <Route path="/faq" element={<Navigate to="/help/faq" replace />} />
+          <Route path="/blog" element={<BlogHubPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
         </Route>
 
         {/* Authenticated Routes — require login */}
@@ -519,15 +521,21 @@ export function AppRoutes() {
             />
             <Route
               path="/workspaces/:id/templates"
-              element={<TemplateBrowserPage />}
+              element={
+                <Navigate to="../library?tab=templates" relative="path" replace />
+              }
             />
             <Route
               path="/workspaces/:id/hashtags"
-              element={<HashtagGroupsPage />}
+              element={
+                <Navigate to="../library?tab=hashtags" relative="path" replace />
+              }
             />
             <Route
               path="/workspaces/:id/hashtag-groups"
-              element={<HashtagGroupsPage />}
+              element={
+                <Navigate to="../library?tab=hashtags" relative="path" replace />
+              }
             />
             <Route path="/workspaces/:id/calendar" element={<CalendarPage />} />
             <Route
@@ -632,15 +640,34 @@ export function AppRoutes() {
             />
             <Route path="/admin/guide" element={<AdminGuidePage />} />
             <Route path="/requests" element={<ContentRequestListPage />} />
-            <Route path="/editor" element={<EditorPage />} />
             <Route
-              path="/content-writing"
-              element={<ContentWritingRedirect />}
+              path="/templates"
+              element={
+                <WorkspaceScopedRedirect destination="library?tab=templates" />
+              }
             />
-            <Route path="/templates" element={<TemplateBrowserPage />} />
-            <Route path="/hashtag-groups" element={<HashtagGroupsPage />} />
+            <Route
+              path="/hashtags"
+              element={
+                <WorkspaceScopedRedirect destination="library?tab=hashtags" />
+              }
+            />
+            <Route
+              path="/hashtag-groups"
+              element={
+                <WorkspaceScopedRedirect destination="library?tab=hashtags" />
+              }
+            />
             <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/library" element={<ContentLibraryPage />} />
+            <Route
+              path="/library"
+              element={
+                <WorkspaceScopedRedirect
+                  destination="library"
+                  preserveSearch
+                />
+              }
+            />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/social-accounts" element={<SocialAccountsPage />} />
             <Route
