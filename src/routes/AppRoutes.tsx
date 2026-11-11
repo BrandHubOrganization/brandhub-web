@@ -139,14 +139,6 @@ const SocialAccountsPage = lazyNamed(
   () => import("@/pages/social-accounts"),
   "SocialAccountsPage",
 );
-const TemplateBrowserPage = lazyNamed(
-  () => import("@/pages/templates"),
-  "TemplateBrowserPage",
-);
-const HashtagGroupsPage = lazyNamed(
-  () => import("@/pages/hashtag-groups"),
-  "HashtagGroupsPage",
-);
 const ReportsPage = lazyNamed(() => import("@/pages/reports"), "ReportsPage");
 
 // ── Workspace & Chat Pages ──
@@ -529,15 +521,21 @@ export function AppRoutes() {
             />
             <Route
               path="/workspaces/:id/templates"
-              element={<TemplateBrowserPage />}
+              element={
+                <Navigate to="../library?tab=templates" relative="path" replace />
+              }
             />
             <Route
               path="/workspaces/:id/hashtags"
-              element={<HashtagGroupsPage />}
+              element={
+                <Navigate to="../library?tab=hashtags" relative="path" replace />
+              }
             />
             <Route
               path="/workspaces/:id/hashtag-groups"
-              element={<HashtagGroupsPage />}
+              element={
+                <Navigate to="../library?tab=hashtags" relative="path" replace />
+              }
             />
             <Route path="/workspaces/:id/calendar" element={<CalendarPage />} />
             <Route
@@ -642,15 +640,34 @@ export function AppRoutes() {
             />
             <Route path="/admin/guide" element={<AdminGuidePage />} />
             <Route path="/requests" element={<ContentRequestListPage />} />
-            <Route path="/editor" element={<EditorPage />} />
             <Route
-              path="/content-writing"
-              element={<ContentWritingRedirect />}
+              path="/templates"
+              element={
+                <WorkspaceScopedRedirect destination="library?tab=templates" />
+              }
             />
-            <Route path="/templates" element={<TemplateBrowserPage />} />
-            <Route path="/hashtag-groups" element={<HashtagGroupsPage />} />
+            <Route
+              path="/hashtags"
+              element={
+                <WorkspaceScopedRedirect destination="library?tab=hashtags" />
+              }
+            />
+            <Route
+              path="/hashtag-groups"
+              element={
+                <WorkspaceScopedRedirect destination="library?tab=hashtags" />
+              }
+            />
             <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/library" element={<ContentLibraryPage />} />
+            <Route
+              path="/library"
+              element={
+                <WorkspaceScopedRedirect
+                  destination="library"
+                  preserveSearch
+                />
+              }
+            />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/social-accounts" element={<SocialAccountsPage />} />
             <Route

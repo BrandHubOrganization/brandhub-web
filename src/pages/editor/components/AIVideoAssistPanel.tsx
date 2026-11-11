@@ -25,10 +25,8 @@ import {
   imageSourceToDataUrl,
 } from "@/services/aiGenerationService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useBackgroundTaskStore } from "@/store/backgroundTaskStore";
 import { aiVideoService } from "@/services/aiVideoService";
-
-const wait = (milliseconds: number) =>
-  new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
 
 const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
@@ -289,10 +287,23 @@ export function AIVideoAssistPanel({
 
   useEffect(() => {
     mountedRef.current = true;
+    const latestCompleted = useBackgroundTaskStore
+      .getState()
+      .tasks.find(
+        (task) =>
+          task.type === "AI_VIDEO" &&
+          task.status === "COMPLETED" &&
+          task.resultUrl &&
+          (!workspaceId || task.workspaceId === workspaceId),
+      );
+    if (latestCompleted?.resultUrl) {
+      setVideoUrl((prev) => prev || latestCompleted.resultUrl!);
+      setVideoS3Key((prev) => prev || latestCompleted.resultS3Key);
+    }
     return () => {
       mountedRef.current = false;
     };
-  }, []);
+  }, [workspaceId]);
 
   useEffect(() => {
     return () => {
@@ -424,26 +435,35 @@ export function AIVideoAssistPanel({
           prompt: videoBrief.trim(),
           clientId: workspaceId || "studio",
         });
-        for (let attempt = 0; attempt < 600; attempt += 1) {
-          await wait(500);
-          if (!mountedRef.current) return;
-          const status = await aiGenerationService.getVideoStatus(job.job_id);
-          setJobStatus(status.status);
-          if (status.status === "COMPLETED" && status.video_url) {
-            setVideoUrl(status.video_url);
-            setVideoS3Key(status.s3_key ?? undefined);
-            toast.success(t("editor.studio.video.generateSuccess"));
-            return;
-          }
-          if (status.status === "FAILED") {
-            throw new Error(
-              status.error_message ||
-                status.error_code ||
-                "Video generation failed",
-            );
-          }
-        }
-        throw new Error("Video generation timed out");
+        const completed = await useBackgroundTaskStore
+          .getState()
+          .startAiVideoTask({
+            workspaceId: workspaceId || "studio",
+            jobId: job.job_id,
+            title: "Tạo Video AI",
+            subtitle: videoBrief.trim().slice(0, 60),
+            pollIntervalMs: 500,
+            poll: async () => {
+              const status = await aiGenerationService.getVideoStatus(
+                job.job_id,
+              );
+              if (mountedRef.current) setJobStatus(status.status);
+              return {
+                status: status.status,
+                videoUrl: status.video_url,
+                s3Key: status.s3_key,
+                errorMessage:
+                  status.error_message ||
+                  status.error_code ||
+                  "Video generation failed",
+              };
+            },
+          });
+        if (!mountedRef.current) return;
+        setVideoUrl(completed.videoUrl);
+        setVideoS3Key(completed.s3Key);
+        toast.success(t("editor.studio.video.generateSuccess"));
+        return;
       }
 
       if (!workspaceId) throw new Error("A workspace is required for AI video");
@@ -463,22 +483,31 @@ export function AIVideoAssistPanel({
         durationSeconds: Math.round(poseVideoDuration! * 100) / 100,
       });
 
-      for (let attempt = 0; attempt < 600; attempt += 1) {
-        await wait(3000);
-        if (!mountedRef.current) return;
-        const status = await aiVideoService.status(workspaceId, job.jobId);
-        setJobStatus(status.status);
-        if (status.status === "COMPLETED" && status.videoUrl) {
-          setVideoUrl(status.videoUrl);
-          setVideoS3Key(status.s3Key ?? undefined);
-          toast.success(t("editor.studio.video.generateSuccess"));
-          return;
-        }
-        if (status.status === "FAILED") {
-          throw new Error(status.errorCode || "Video generation failed");
-        }
-      }
-      throw new Error("Video generation timed out");
+      const completed = await useBackgroundTaskStore
+        .getState()
+        .startAiVideoTask({
+          workspaceId,
+          jobId: job.jobId,
+          title: `Tạo Video AI (${aspectRatio})`,
+          subtitle:
+            videoBrief.trim().slice(0, 60) || poseVideoName || "Motion Video",
+          pollIntervalMs: 3000,
+          poll: async () => {
+            const status = await aiVideoService.status(workspaceId, job.jobId);
+            if (mountedRef.current) setJobStatus(status.status);
+            return {
+              status: status.status,
+              videoUrl: status.videoUrl,
+              s3Key: status.s3Key,
+              errorMessage: status.errorCode || "Video generation failed",
+            };
+          },
+        });
+
+      if (!mountedRef.current) return;
+      setVideoUrl(completed.videoUrl);
+      setVideoS3Key(completed.s3Key);
+      toast.success(t("editor.studio.video.generateSuccess"));
     } catch (error) {
       if (mountedRef.current)
         toast.error(

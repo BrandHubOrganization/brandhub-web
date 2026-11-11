@@ -38,10 +38,10 @@
     "edited": "Edited"
   },
   "page": {
-    "title": "Content library",
-    "description": "Your photos, videos and post templates.",
-    "mediaTab": "Files",
-    "hashtagsTab": "Hashtag",
+    "title": "Content repository",
+    "description": "Centralized media files, folders, post templates, and hashtag sets for your workspace.",
+    "mediaTab": "Files & Folders",
+    "hashtagsTab": "Hashtag Groups",
     "templatesTab": "Post templates"
   },
   "templates": {
@@ -187,18 +187,18 @@
     "resetFilters": "Reset filters",
     "loadError": "Failed to load materials. Please try again.",
     "retry": "Retry",
-    "searchPlaceholder": "Search by file name…",
+    "searchPlaceholder": "Search files, images, videos in repository...",
     "filterAll": "All",
     "filterImage": "Images",
     "filterVideo": "Videos",
     "filterFile": "Documents",
     "processingTypeLabel": "Processing Status",
     "typeAll": "All processing types",
-    "typeRaw": "Raw (Unedited)",
+    "typeRaw": "Original",
     "typeRetouched": "Retouched",
     "typeWatermarked": "Watermarked",
-    "rawWarningBadge": "Unedited RAW image",
-    "rawWarning": "Unedited RAW image — Please review or retouch before using in published content.",
+    "rawWarningBadge": "Unedited image",
+    "rawWarning": "Unedited image — Please review or retouch before using in published content.",
     "purposeLabel": "Purpose",
     "purposeAll": "All purposes",
     "purposeMaterial": "Production Material",
@@ -263,7 +263,7 @@
     "watermark": "Apply watermark",
     "uploadRetouched": "Upload a new retouched version",
     "clientRequired": "Select a Client Profile",
-    "typeRAW": "Raw (Unedited)",
+    "typeRAW": "Original",
     "typeRETOUCHED": "Retouched",
     "typeWATERMARKED": "Watermarked",
     "download": "Download",
@@ -280,7 +280,7 @@
     "supportTicketPrompt": "Enter Support Ticket ID (3-64 characters) to perform this support action:",
     "aiDraftBadge": "AI Draft",
     "storageDriveBadge": "Google Drive",
-    "storageS3Badge": "S3 (2GB Free)"
+    "storageS3Badge": "S3 Storage"
   },
   "drive": {
     "disconnect": "Disconnect",
@@ -310,7 +310,7 @@
     "open": "Open",
     "actions": "Actions for {{name}}",
     "files": "Files",
-    "fromDrive": "From Drive",
+    "fromDrive": "Sync from Google Drive",
     "usage": "Used {{used}} / {{quota}}",
     "storageDetails": "Storage usage",
     "import": "Import"

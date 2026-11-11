@@ -1,5 +1,9 @@
 export type MaterialType = "RAW" | "RETOUCHED" | "WATERMARKED";
 
+export type MaterialMediaKind = "IMAGE" | "VIDEO" | "FILE";
+
+export type MaterialVisibility = "INTERNAL" | "CLIENT";
+
 export type WatermarkMode = "SINGLE" | "TILED";
 
 export type WatermarkPosition =
@@ -123,13 +127,16 @@ export interface DownloadMaterialResponse {
   fileSize: number;
 }
 export interface MaterialStorageUsage {
-  workspaceUsedBytes: string;
-  agencyUsedBytes: string;
-  agencyReservedBytes: string;
-  agencyQuotaBytes: string;
-  storageMode: string;
-  isQuotaExceeded: boolean;
-  canExpandWithSubscription: boolean;
+  workspaceUsedBytes?: string;
+  agencyUsedBytes?: string;
+  agencyReservedBytes?: string;
+  agencyQuotaBytes?: string;
+  usedBytes?: string | number;
+  totalQuotaBytes?: string | number;
+  quotaBytes?: string | number;
+  storageMode?: string;
+  isQuotaExceeded?: boolean;
+  canExpandWithSubscription?: boolean;
 }
 export interface UpdateMaterialRequest {
   expectedVersion: number;
@@ -222,6 +229,7 @@ export interface MaterialBrowserResponse {
 }
 export interface MaterialVersionItem {
   id: string;
+  name?: string;
   versionNumber: number;
   fileSize: number;
   mimeType: string;
@@ -236,13 +244,15 @@ export interface MaterialDuplicateConflict {
 }
 export interface DriveImportJob {
   jobId: string;
-  status: "RUNNING" | "COMPLETED" | "FAILED";
+  status: "RUNNING" | "CANCELLING" | "CANCELLED" | "COMPLETED" | "FAILED";
   totalFiles: number;
   importedFolders: number;
   importedFiles: number;
   skippedFiles: number;
   totalBytesImported: number;
   errorMessage?: string;
+  folderName?: string;
+  currentFileName?: string;
 }
 export interface StorageAddonPlan {
   code: string;

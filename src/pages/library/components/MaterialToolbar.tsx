@@ -1,224 +1,297 @@
-import { Search, SlidersHorizontal, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import {
+  ArrowUpDown,
+  FileText,
+  Film,
+  FolderSync,
+  Image as ImageIcon,
+  LayoutGrid,
+  List as ListIcon,
+  Search,
+  Sparkles,
+  Trash2,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { useMaterialUploadProfiles } from "@/pages/library/hooks/useMaterialUploadProfiles";
-import type { MaterialFilters, MaterialStorageUsage } from "@/types/material";
+import { MediaUploadButton } from "./MediaUploadButton";
+import type { MaterialMediaKind, MaterialSort } from "@/types/material";
+
+export type RepositoryViewMode = "grid" | "list";
 
 interface Props {
-  workspace: string;
-  role: string | null;
   search: string;
-  filters: MaterialFilters;
-  usage?: MaterialStorageUsage;
-  onSearch: (search: string) => void;
-  onChange: (filters: MaterialFilters) => void;
+  onSearchChange: (value: string) => void;
+  mediaKind?: MaterialMediaKind;
+  onMediaKindChange: (value?: MaterialMediaKind) => void;
+  sort: MaterialSort;
+  onSortChange: (value: MaterialSort) => void;
+  trashMode: boolean;
+  onTrashModeChange: (value: boolean) => void;
+  draftMode: boolean;
+  onDraftModeChange: (value: boolean) => void;
+  folderId?: string | null;
+  tab: "WORKSPACE" | "CLIENT_VAULT";
+  onTabChange: (value: "WORKSPACE" | "CLIENT_VAULT") => void;
+  isClient: boolean;
+  onShareVault: () => void;
+  onUploaded: () => void;
+  viewMode?: RepositoryViewMode;
+  onViewModeChange?: (mode: RepositoryViewMode) => void;
 }
 
-export function MaterialToolbar({
-  workspace,
-  role,
-  search,
-  filters,
-  usage,
-  onSearch,
-  onChange,
-}: Props) {
+export function MaterialToolbar(props: Props) {
   const { t } = useTranslation();
-  const staff = role === "OWNER" || role === "MANAGER" || role === "CREATOR";
-  const profiles = useMaterialUploadProfiles(workspace, false, staff);
-  const label = (key: string) => t(`library.repository.${key}`);
-  const advancedCount = [
-    filters.type,
-    filters.purpose,
-    filters.clientProfileId,
-  ].filter(Boolean).length;
+  const viewMode = props.viewMode ?? "grid";
+
+  const categories: Array<{
+    id: string;
+    label: string;
+    icon: typeof ImageIcon;
+    isActive: boolean;
+    onClick: () => void;
+  }> = [
+    {
+      id: "ALL",
+      label: t("library.repository.kinds.all", "Tất cả"),
+      icon: LayoutGrid,
+      isActive:
+        !props.trashMode && !props.draftMode && props.mediaKind === undefined,
+      onClick: () => {
+        props.onTrashModeChange(false);
+        props.onDraftModeChange(false);
+        props.onMediaKindChange(undefined);
+      },
+    },
+    {
+      id: "IMAGE",
+      label: t("library.repository.kinds.image", "Hình ảnh"),
+      icon: ImageIcon,
+      isActive:
+        !props.trashMode && !props.draftMode && props.mediaKind === "IMAGE",
+      onClick: () => {
+        props.onTrashModeChange(false);
+        props.onDraftModeChange(false);
+        props.onMediaKindChange("IMAGE");
+      },
+    },
+    {
+      id: "VIDEO",
+      label: t("library.repository.kinds.video", "Video"),
+      icon: Film,
+      isActive:
+        !props.trashMode && !props.draftMode && props.mediaKind === "VIDEO",
+      onClick: () => {
+        props.onTrashModeChange(false);
+        props.onDraftModeChange(false);
+        props.onMediaKindChange("VIDEO");
+      },
+    },
+    {
+      id: "FILE",
+      label: t("library.repository.kinds.document", "Tài liệu"),
+      icon: FileText,
+      isActive:
+        !props.trashMode && !props.draftMode && props.mediaKind === "FILE",
+      onClick: () => {
+        props.onTrashModeChange(false);
+        props.onDraftModeChange(false);
+        props.onMediaKindChange("FILE");
+      },
+    },
+  ];
+
   return (
-    <div className="border-border bg-card space-y-2.5 rounded-xl border p-2.5 shadow-2xs">
-      <div className="flex flex-wrap items-center gap-2">
-        {/* Search Input */}
-        <div className="relative min-w-[200px] flex-1">
-          <Input
-            iconPrefix={<Search className="size-3.5" />}
-            aria-label={label("searchPlaceholder")}
-            placeholder={label("searchPlaceholder")}
-            value={search}
-            maxLength={100}
-            className="bg-muted/40 h-8 rounded-lg pr-8 text-xs"
-            onChange={(event) => onSearch(event.target.value)}
-          />
-          {search && (
+    <div className="space-y-3 rounded-2xl border border-border/80 bg-card p-3.5 shadow-xs">
+      {/* Row 1: Scope Switcher + Search + Primary Upload / Share Actions */}
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap items-center gap-2.5 flex-1">
+          {!props.isClient && (
+            <div className="inline-flex h-9 items-center rounded-xl border border-border/80 bg-muted/50 p-0.5">
+              {(["WORKSPACE", "CLIENT_VAULT"] as const).map((item) => {
+                const active = props.tab === item;
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => props.onTabChange(item)}
+                    className={`rounded-lg px-3 py-1 text-xs font-medium transition-all ${
+                      active
+                        ? "bg-background text-brand-orange font-semibold shadow-xs"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {item === "WORKSPACE" ? "Kho Workspace" : "Kho Khách hàng"}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Search input */}
+          <div className="relative min-w-[220px] flex-1 max-w-md">
+            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={props.search}
+              onChange={(event) => props.onSearchChange(event.target.value)}
+              placeholder={t(
+                "library.repository.searchPlaceholder",
+                "Tìm kiếm tệp, hình ảnh, video trong kho...",
+              )}
+              className="h-9 rounded-xl pl-9 pr-8 text-xs"
+            />
+            {props.search && (
+              <button
+                type="button"
+                onClick={() => props.onSearchChange("")}
+                className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-0.5 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Right Actions: Client Share from Vault + Upload File/Folder */}
+        <div className="flex flex-wrap items-center gap-2">
+          {props.isClient && (
             <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-0 right-0 size-8"
-              aria-label={label("clearSearch")}
-              onClick={() => onSearch("")}
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={props.onShareVault}
+              className="h-9 gap-1.5 rounded-xl border-brand-orange/40 bg-brand-orange/5 text-xs font-semibold text-brand-orange hover:bg-brand-orange hover:text-white"
             >
-              <X className="size-3.5" />
+              <FolderSync className="h-3.5 w-3.5" />
+              <span>Import từ Kho cá nhân / Workspace khác</span>
             </Button>
           )}
+          <MediaUploadButton
+            folderId={props.folderId}
+            onUploaded={props.onUploaded}
+          />
         </div>
-
-        {/* Media Type Pills */}
-        <div
-          className="bg-muted/50 flex flex-wrap items-center gap-0.5 rounded-lg p-0.5"
-          role="group"
-          aria-label={label("mediaKind")}
-        >
-          {([undefined, "IMAGE", "VIDEO", "FILE"] as const).map((kind) => (
-            <Button
-              key={kind ?? "all"}
-              variant={filters.mediaKind === kind ? "secondary" : "ghost"}
-              size="sm"
-              className={`h-7 rounded-md px-2.5 text-xs ${
-                filters.mediaKind === kind
-                  ? "bg-background text-foreground font-semibold shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-              aria-pressed={filters.mediaKind === kind}
-              onClick={() => onChange({ ...filters, mediaKind: kind })}
-            >
-              {label(
-                kind === "IMAGE"
-                  ? "filterImage"
-                  : kind === "VIDEO"
-                    ? "filterVideo"
-                    : kind === "FILE"
-                      ? "filterFile"
-                      : "filterAll",
-              )}
-            </Button>
-          ))}
-        </div>
-
-        {/* Sort Select */}
-        <Select
-          wrapperClassName="w-auto"
-          className="h-8 min-w-32 rounded-lg text-xs"
-          aria-label={label("sortLabel")}
-          value={filters.sort ?? "newest"}
-          onChange={(event) =>
-            onChange({
-              ...filters,
-              sort: event.target.value as MaterialFilters["sort"],
-            })
-          }
-        >
-          <option value="newest">{t("library.media.sortNewest")}</option>
-          <option value="oldest">{t("library.media.sortOldest")}</option>
-          <option value="name_asc">
-            {t("materials.repository.sortNameAsc")}
-          </option>
-          <option value="name_desc">
-            {t("materials.repository.sortNameDesc")}
-          </option>
-        </Select>
       </div>
 
-      {/* Expandable Advanced Filters */}
-      <details className="group">
-        <summary className="text-muted-foreground hover:text-foreground focus-visible:ring-ring flex w-fit cursor-pointer list-none items-center gap-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium focus-visible:ring-2">
-          <SlidersHorizontal className="size-3.5" />
-          {t("library.simple.filters")}
-          {advancedCount > 0 && (
-            <span className="bg-brand-orange/15 text-brand-orange py-0.2 rounded-full px-1.5 text-[10px] font-bold">
-              {advancedCount}
-            </span>
-          )}
-        </summary>
-        <div className="border-border mt-2 grid grid-cols-1 gap-2.5 border-t pt-2.5 sm:grid-cols-3">
-          <Select
-            className="h-8 text-xs"
-            aria-label={label("processingTypeLabel")}
-            value={filters.type ?? ""}
-            onChange={(event) =>
-              onChange({
-                ...filters,
-                type:
-                  (event.target.value as MaterialFilters["type"]) || undefined,
-              })
-            }
-          >
-            <option value="">{label("typeAll")}</option>
-            {["RAW", "RETOUCHED", "WATERMARKED"].map((type) => (
-              <option key={type} value={type}>
-                {label(`type${type}`)}
-              </option>
-            ))}
-          </Select>
-          <Select
-            className="h-8 text-xs"
-            aria-label={label("purposeLabel")}
-            value={filters.purpose ?? ""}
-            onChange={(event) =>
-              onChange({
-                ...filters,
-                purpose:
-                  (event.target.value as MaterialFilters["purpose"]) ||
-                  undefined,
-              })
-            }
-          >
-            <option value="">{label("purposeAll")}</option>
-            <option value="MATERIAL">{label("purposeMaterial")}</option>
-            <option value="BRAND_REFERENCE">
-              {label("purposeBrandReference")}
-            </option>
-          </Select>
-          {staff && (
-            <Select
-              className="h-8 text-xs"
-              aria-label={label("clientLabel")}
-              value={filters.clientProfileId ?? ""}
-              disabled={profiles.isPending || profiles.isError}
-              onChange={(event) =>
-                onChange({
-                  ...filters,
-                  clientProfileId: event.target.value || undefined,
-                })
-              }
-            >
-              <option value="">{label("clientAll")}</option>
-              {profiles.data?.map((profile) => (
-                <option key={profile.id} value={profile.id}>
-                  {profile.name}
-                </option>
-              ))}
-            </Select>
-          )}
-        </div>
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-          {advancedCount > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 text-xs"
-              onClick={() =>
-                onChange({ mediaKind: filters.mediaKind, sort: filters.sort })
-              }
-            >
-              <X className="size-3.5" />
-              {label("resetFilters")}
-            </Button>
-          )}
-        </div>
-      </details>
+      {/* Row 2: Category Filter Chips + AI Drafts / Trash + Sort & View Mode */}
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-2.5">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {categories.map((cat) => {
+            const Icon = cat.icon;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={cat.onClick}
+                className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all ${
+                  cat.isActive
+                    ? "bg-brand-orange text-white font-semibold shadow-xs"
+                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                <span>{cat.label}</span>
+              </button>
+            );
+          })}
 
-      {staff && profiles.isError && (
-        <p className="text-muted-foreground text-xs">
-          {label("profilesUnavailable")}
-        </p>
-      )}
-      {staff && usage?.isQuotaExceeded && (
-        <p
-          role="status"
-          className="bg-muted text-foreground rounded-md p-2.5 text-xs"
-        >
-          {label("quotaReadOnlyNotice")}
-        </p>
-      )}
+          <div className="mx-1 h-4 w-px bg-border" />
+
+          {!props.isClient && (
+            <button
+              type="button"
+              onClick={() => {
+                const next = !props.draftMode;
+                props.onDraftModeChange(next);
+                if (next) props.onTrashModeChange(false);
+              }}
+              className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all ${
+                props.draftMode
+                  ? "bg-brand-orange text-white font-semibold shadow-xs"
+                  : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>{t("library.repository.draftsToggle", "Bản nháp AI")}</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              const next = !props.trashMode;
+              props.onTrashModeChange(next);
+              if (next) props.onDraftModeChange(false);
+            }}
+            className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all ${
+              props.trashMode
+                ? "bg-destructive text-white font-semibold shadow-xs"
+                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            <span>{t("library.repository.trashToggle", "Thùng rác")}</span>
+          </button>
+        </div>
+
+        {/* Right: Sort & Grid/List View Toggle */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex items-center">
+            <ArrowUpDown className="pointer-events-none absolute left-2.5 z-10 h-3.5 w-3.5 text-muted-foreground" />
+            <Select
+              value={props.sort}
+              onChange={(e) =>
+                props.onSortChange(e.target.value as MaterialSort)
+              }
+              wrapperClassName="w-36"
+              className="h-8 rounded-xl pl-8 text-xs font-medium"
+            >
+              <option value="newest">
+                {t("library.repository.sort.newest", "Mới nhất")}
+              </option>
+              <option value="oldest">
+                {t("library.repository.sort.oldest", "Cũ nhất")}
+              </option>
+              <option value="name_asc">
+                {t("library.repository.sort.nameAsc", "Tên A → Z")}
+              </option>
+              <option value="name_desc">
+                {t("library.repository.sort.nameDesc", "Tên Z → A")}
+              </option>
+            </Select>
+          </div>
+
+          {props.onViewModeChange && (
+            <div className="inline-flex h-8 items-center rounded-xl border border-border/80 bg-muted/50 p-0.5">
+              <button
+                type="button"
+                onClick={() => props.onViewModeChange?.("grid")}
+                className={`rounded-lg p-1.5 transition-colors ${
+                  viewMode === "grid"
+                    ? "bg-background text-brand-orange shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                title="Chế độ lưới (Grid)"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => props.onViewModeChange?.("list")}
+                className={`rounded-lg p-1.5 transition-colors ${
+                  viewMode === "list"
+                    ? "bg-background text-brand-orange shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                title="Chế độ danh sách (List)"
+              >
+                <ListIcon className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
