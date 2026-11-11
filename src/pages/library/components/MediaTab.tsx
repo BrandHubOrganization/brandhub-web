@@ -34,6 +34,7 @@ import {
 } from "@/pages/library/components/MaterialToolbar";
 import { CustomerDrivePanel } from "@/pages/library/components/CustomerDrivePanel";
 import { WatermarkStudioModal } from "@/pages/library/components/watermark/WatermarkStudioModal";
+import { RenameMaterialModal } from "@/pages/library/components/RenameMaterialModal";
 import { materialService } from "@/services/materialService";
 import {
   onRepositoryTaskRefresh,
@@ -84,6 +85,7 @@ function RepositoryMedia() {
   const [watermarkTarget, setWatermarkTarget] = useState<MaterialItem | null>(
     null,
   );
+  const [renameTarget, setRenameTarget] = useState<MaterialItem | null>(null);
   const [movingMaterial, setMovingMaterial] = useState<MaterialItem | null>(
     null,
   );
@@ -91,6 +93,14 @@ function RepositoryMedia() {
 
   const startUploadBatch = useBackgroundTaskStore(
     (state) => state.startUploadBatch,
+  );
+  const isDriveImportActive = useBackgroundTaskStore((state) =>
+    state.tasks.some(
+      (t) =>
+        t.type === "DRIVE_IMPORT" &&
+        (t.status === "RUNNING" || t.status === "CANCEL_CLEANUP") &&
+        (!repository.workspace || t.workspaceId === repository.workspace),
+    ),
   );
 
   const effectiveFilters: MaterialFilters = {
@@ -190,6 +200,11 @@ function RepositoryMedia() {
     material.status !== "PURGE_IN_PROGRESS" &&
     (isClient || material.scopeType !== "CLIENT_VAULT") &&
     canDelete(material);
+
+  const canRename = (material: MaterialItem) =>
+    !material.deletedAt &&
+    material.status !== "PURGE_IN_PROGRESS" &&
+    (material.capabilities?.canRename ?? canDelete(material));
 
   const canMutateFolders =
     (isClient && tab === "CLIENT_VAULT") ||
@@ -379,7 +394,7 @@ function RepositoryMedia() {
               <span>{t("library.simple.fromDrive", "Đồng bộ từ Google Drive")}</span>
             </Button>
           </div>
-          {driveOpen && (
+          {(driveOpen || isDriveImportActive) && (
             <CustomerDrivePanel folderId={folderId ?? undefined} />
           )}
         </div>
@@ -539,8 +554,10 @@ function RepositoryMedia() {
                   canRestore={canRestore(material)}
                   canPromoteDraft={canPromoteDraft(material)}
                   canMove={canMoveMaterial(material)}
+                  canRename={canRename(material)}
                   onSelect={setSelected}
                   onDownload={(target) => void downloader.download(target)}
+                  onRename={setRenameTarget}
                   onWatermark={setWatermarkTarget}
                   onDelete={(target) => setConfirm(target)}
                   onPermanentDelete={(target) => setPurgeTarget(target)}
@@ -562,8 +579,10 @@ function RepositoryMedia() {
                   canRestore={canRestore(material)}
                   canPromoteDraft={canPromoteDraft(material)}
                   canMove={canMoveMaterial(material)}
+                  canRename={canRename(material)}
                   onSelect={setSelected}
                   onDownload={(target) => void downloader.download(target)}
+                  onRename={setRenameTarget}
                   onWatermark={setWatermarkTarget}
                   onDelete={(target) => setConfirm(target)}
                   onPermanentDelete={(target) => setPurgeTarget(target)}
@@ -691,6 +710,14 @@ function RepositoryMedia() {
               },
             });
         }}
+      />
+
+      <RenameMaterialModal
+        open={Boolean(renameTarget)}
+        material={renameTarget}
+        workspaceId={repository.workspace ?? ""}
+        onClose={() => setRenameTarget(null)}
+        onSuccess={uploaded}
       />
 
       <MediaDetailPanel
