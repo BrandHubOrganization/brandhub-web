@@ -27,6 +27,7 @@ export function useTaskFilters(tasks: TaskListItem[], workspaceId?: string) {
   const [selectedPriorities, setSelectedPriorities] = useState<TaskPriority[]>([]);
   const [selectedReporters, setSelectedReporters] = useState<string[]>([]);
   const [selectedApprovals, setSelectedApprovals] = useState<("YES" | "NO")[]>([]);
+  const [now] = useState(() => Date.now());
 
   // Defense-in-depth: Creator only sees and interacts with their own assigned tasks
   const scopedTasks = useMemo(() => {
@@ -201,10 +202,11 @@ export function useTaskFilters(tasks: TaskListItem[], workspaceId?: string) {
         reporters: selectedReporters,
         approvals: selectedApprovals,
       },
-      Date.now(),
+      now,
     );
   }, [
     scopedTasks,
+    now,
     search,
     selectedAssignees,
     selectedStatuses,

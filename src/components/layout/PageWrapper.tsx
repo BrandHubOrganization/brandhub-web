@@ -210,7 +210,6 @@ export function PageWrapper({
 
               {actions}
             </div>
-            </div>
           </div>
         </div>
       )}

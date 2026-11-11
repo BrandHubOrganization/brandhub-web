@@ -7,7 +7,7 @@ import {
   Megaphone,
   Video,
 } from "lucide-react";
-import type { TaskListItem, TaskType } from "@/types/task";
+import type { TaskType } from "@/types/task";
 import {
   JiraAssigneeAvatar,
   JiraStatusLozenge,
