@@ -11,6 +11,7 @@ import {
 } from "@/components/task-sections/SectionContentView";
 import { SectionReturnDialog } from "@/components/task-sections/SectionReturnDialog";
 import { SectionStatusBadge } from "@/components/task-sections/SectionStatusBadge";
+import { TaskExportButton } from "@/components/task-sections/TaskExportButton";
 import { taskPostService } from "@/pages/editor/services/taskPostService";
 import { taskSectionService } from "@/services/taskSectionService";
 import { errorCode } from "@/utils/error";
@@ -276,17 +277,20 @@ export function SectionApprovalQueue({ workspaceId }: { workspaceId: string }) {
         )}
         {tasks.map((task) => (
           <article key={task.taskId} className="space-y-3">
-            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-              <h3 className="text-sm font-semibold break-words">
-                {task.taskName}
-              </h3>
-              <span className="text-muted-foreground text-xs">
-                {t(`tasks.types.${task.taskType}`, {
-                  defaultValue: task.taskType,
-                })}
-                {task.dueDate &&
-                  ` · ${t("tasks.deadline")}: ${new Date(task.dueDate).toLocaleDateString(i18n.language)}`}
-              </span>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <h3 className="text-sm font-semibold break-words">
+                  {task.taskName}
+                </h3>
+                <span className="text-muted-foreground text-xs">
+                  {t(`tasks.types.${task.taskType}`, {
+                    defaultValue: task.taskType,
+                  })}
+                  {task.dueDate &&
+                    ` · ${t("tasks.deadline")}: ${new Date(task.dueDate).toLocaleDateString(i18n.language)}`}
+                </span>
+              </div>
+              <TaskExportButton workspaceId={workspaceId} taskId={task.taskId} />
             </div>
             <ReviewTask
               workspaceId={workspaceId}
@@ -334,9 +338,15 @@ export function TaskSectionsReview({
         <h3 id="task-sections-review" className="text-sm font-semibold">
           {t("tasks.sectionReview.taskTitle")}
         </h3>
-        <span className="text-muted-foreground text-xs">
-          {t("tasks.sectionReview.progress", { done, total: sections.length })}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground text-xs">
+            {t("tasks.sectionReview.progress", {
+              done,
+              total: sections.length,
+            })}
+          </span>
+          <TaskExportButton workspaceId={workspaceId} taskId={taskId} />
+        </div>
       </div>
       <ReviewTask
         workspaceId={workspaceId}

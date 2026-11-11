@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { PenSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TaskExportButton } from "@/components/task-sections/TaskExportButton";
 import { taskSectionService } from "@/services/taskSectionService";
 import type { TaskType } from "@/types/task";
 
@@ -52,12 +53,15 @@ export function OpenRoleTaskEditorCard({
           </p>
         )}
       </div>
-      <Button variant="orange" size="sm" className="shrink-0 gap-2" asChild>
-        <Link to={`/workspaces/${workspaceId}/tasks/${taskId}/${slug}`}>
-          <PenSquare className="size-4" />
-          {t("tasks.openEditor")}
-        </Link>
-      </Button>
+      <div className="flex shrink-0 items-center gap-2">
+        <TaskExportButton workspaceId={workspaceId} taskId={taskId} />
+        <Button variant="orange" size="sm" className="gap-2" asChild>
+          <Link to={`/workspaces/${workspaceId}/tasks/${taskId}/${slug}`}>
+            <PenSquare className="size-4" />
+            {t("tasks.openEditor")}
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }
