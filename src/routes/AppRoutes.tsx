@@ -135,6 +135,10 @@ const SocialAccountsPage = lazyNamed(
   () => import("@/pages/social-accounts"),
   "SocialAccountsPage",
 );
+const AnalyticsPage = lazyNamed(
+  () => import("@/pages/analytics"),
+  "AnalyticsPage",
+);
 const ReportsPage = lazyNamed(() => import("@/pages/reports"), "ReportsPage");
 
 // ── Workspace & Chat Pages ──
