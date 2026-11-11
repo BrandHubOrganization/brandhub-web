@@ -717,5 +717,16 @@
         }
       }
     }
+  },
+  "sectionReview": {
+    "queueTitle": "Phần chờ Khách hàng duyệt",
+    "queueHint": "Từng phần đã được Quản lý duyệt. Khách hàng duyệt hoặc trả lại từng phần; trả lại cần ghi chú.",
+    "empty": "Chưa có phần nào chờ duyệt.",
+    "loadError": "Không tải được danh sách phần chờ duyệt.",
+    "approved": "Đã duyệt phần.",
+    "returned": "Đã trả lại phần kèm ghi chú.",
+    "waitingSince": "Chờ từ {{date}}",
+    "taskTitle": "Duyệt theo từng phần",
+    "progress": "{{done}}/{{total}} phần đã duyệt xong"
   }
 }

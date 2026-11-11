@@ -89,6 +89,17 @@ export interface TaskSection {
   finalState: boolean;
   clientPendingSince: string | null;
   updatedAt: string | null;
+  /** Subtask roles the caller holds on this section (empty for the coordinator, Manager, Client). */
+  viewerRoles?: string[];
+}
+
+/** A task with sections waiting for the Client (`GET /sections/client-pending`). */
+export interface PendingSectionTask {
+  taskId: string;
+  taskName: string;
+  taskType: TaskType;
+  dueDate: string | null;
+  sections: TaskSection[];
 }
 
 export interface TaskSectionVersion {

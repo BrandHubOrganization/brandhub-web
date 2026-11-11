@@ -88,6 +88,11 @@ export function SectionFrame({
               {title}
             </h3>
             <SectionStatusBadge status={section.status} />
+            {Boolean(section.viewerRoles?.length) && (
+              <span className="bg-brand-orange-soft text-brand-orange rounded-full px-2 py-0.5 text-xs font-medium">
+                {t("editor.sections.yours")}
+              </span>
+            )}
             {section.visibility === "INTERNAL" && (
               <span className="text-muted-foreground text-xs">
                 {t("editor.sections.internal")}
@@ -253,8 +258,12 @@ function lockText(
   section: TaskSection,
   owners: string,
 ) {
-  const reason =
-    section.status === "SUBMITTED"
+  const waitsForWriter =
+    (section.status === "DRAFT" || section.status === "RETURNED") &&
+    section.viewerRoles?.some((role) => role.endsWith("_EDITING"));
+  const reason = waitsForWriter
+    ? t("editor.sections.lockedWaitWriter")
+    : section.status === "SUBMITTED"
       ? t("editor.sections.lockedSubmitted")
       : section.status === "INTERNAL_APPROVED" ||
           section.status === "CLIENT_APPROVED"

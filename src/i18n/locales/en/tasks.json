@@ -717,5 +717,16 @@
         }
       }
     }
+  },
+  "sectionReview": {
+    "queueTitle": "Sections waiting for the Client",
+    "queueHint": "Each section was approved by the Manager. The Client approves or returns each one; a return needs a note.",
+    "empty": "No sections are waiting for approval.",
+    "loadError": "Could not load the sections waiting for approval.",
+    "approved": "Section approved.",
+    "returned": "Section returned with a note.",
+    "waitingSince": "Waiting since {{date}}",
+    "taskTitle": "Review by section",
+    "progress": "{{done}}/{{total}} sections fully approved"
   }
 }

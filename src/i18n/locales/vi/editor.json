@@ -29,7 +29,9 @@
       "TASK_POST_LINK_CONFLICT": "Liên kết giữa công việc và bài viết cần được rà soát. Không tạo bài khác để thay thế.",
       "TASK_CAMPAIGN_COMPLETED": "Chiến dịch đã hoàn thành; nội dung của công việc chỉ được xem.",
       "FORBIDDEN": "Chỉ người sáng tạo được giao công việc mới có thể sửa nội dung trước khi gửi duyệt.",
-      "VALIDATION_ERROR": "Nội dung hoặc tài nguyên chưa hợp lệ. Hãy kiểm tra caption, số lượng ảnh và các tệp đã tải lên."
+      "VALIDATION_ERROR": "Nội dung hoặc tài nguyên chưa hợp lệ. Hãy kiểm tra caption, số lượng ảnh và các tệp đã tải lên.",
+      "TASK_SUBTASKS_UNFINISHED": "Còn công việc con chưa xong. Hãy hoàn thành hoặc hủy tất cả công việc con trước khi gửi duyệt.",
+      "TASK_SECTIONS_UNAPPROVED": "Còn phần chưa được duyệt. Mọi phần phải được duyệt trước khi gửi công việc."
     }
   },
   "submitSuccess": "Đã gửi bài viết để phê duyệt thành công!",
@@ -625,6 +627,8 @@
     "emptyHint": "Chưa có nội dung. Bắt đầu nhập phần việc của bạn.",
     "empty": "Chưa có nội dung.",
     "onePerLine": "Mỗi dòng một mục",
-    "comingSoon": "Khu vực làm việc của phần này sẽ có ở bản sau. Bạn vẫn có thể nộp, duyệt hoặc trả lại phần ở trên."
+    "comingSoon": "Khu vực làm việc của phần này sẽ có ở bản sau. Bạn vẫn có thể nộp, duyệt hoặc trả lại phần ở trên.",
+    "lockedWaitWriter": "Chờ người viết nộp phần rồi bạn mới biên tập được",
+    "yours": "Phần của bạn"
   }
 }

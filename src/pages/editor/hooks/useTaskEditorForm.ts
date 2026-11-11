@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/lib/axios";
 import { taskPostService } from "@/pages/editor/services/taskPostService";
@@ -25,6 +26,7 @@ const AUTOSAVE_MS = 30_000;
 
 export function useTaskEditorForm(workspaceId: string, taskId: string) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [draft, setDraft] = useState(emptyTaskDraft);
   const [session, setSession] = useState<Session>();
   const [isLoading, setIsLoading] = useState(true);
@@ -295,6 +297,10 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
       latest.current.session = { linked, review };
       setSession({ linked, review });
       setErrorCode(null);
+      // Submitting locks every section and approves the unowned ones: drop the stale can* flags.
+      void queryClient.invalidateQueries({
+        queryKey: ["task-sections", workspaceId, taskId],
+      });
       toast.success(t("editor.submitSuccess"));
     } catch (error) {
       if (lifecycle.current.live && lifecycle.current.epoch === epoch)

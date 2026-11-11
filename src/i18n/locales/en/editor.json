@@ -29,7 +29,9 @@
       "TASK_POST_LINK_CONFLICT": "The task–post link needs review. Do not create a replacement post to bypass this error.",
       "TASK_CAMPAIGN_COMPLETED": "The Campaign is completed; task content is read-only.",
       "FORBIDDEN": "Only the assigned Creator can edit the content before submission.",
-      "VALIDATION_ERROR": "Some content or media is invalid. Check the caption, media count and uploaded files."
+      "VALIDATION_ERROR": "Some content or media is invalid. Check the caption, media count and uploaded files.",
+      "TASK_SUBTASKS_UNFINISHED": "Some subtasks are not done. Finish or cancel every subtask before submitting for review.",
+      "TASK_SECTIONS_UNAPPROVED": "Some sections are not approved yet. Every section must be approved before submitting the task."
     }
   },
   "submitSuccess": "Post submitted for approval successfully!",
@@ -607,6 +609,8 @@
     "emptyHint": "Nothing here yet. Start with your part.",
     "empty": "Nothing here yet.",
     "onePerLine": "One item per line",
-    "comingSoon": "This section's workspace comes in a later release. You can still submit, approve or return it above."
+    "comingSoon": "This section's workspace comes in a later release. You can still submit, approve or return it above.",
+    "lockedWaitWriter": "You can edit once the writer submits this section",
+    "yours": "Your section"
   }
 }

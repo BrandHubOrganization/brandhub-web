@@ -1,6 +1,10 @@
 import { api } from "@/services/api";
 import { requireApiData } from "@/lib/apiData";
-import type { TaskSection, TaskSectionVersion } from "@/types/task";
+import type {
+  PendingSectionTask,
+  TaskSection,
+  TaskSectionVersion,
+} from "@/types/task";
 
 function route(workspaceId: string, taskId: string, tail = "") {
   return `/api/v1/workspaces/${encodeURIComponent(workspaceId)}/tasks/${encodeURIComponent(taskId)}/sections${tail}`;
@@ -14,6 +18,13 @@ export const taskSectionService = {
   async list(workspaceId: string, taskId: string) {
     const res = await api.get(route(workspaceId, taskId));
     return requireApiData<TaskSection[]>(res.data);
+  },
+  /** Sections waiting for the Client in a workspace, grouped by task. */
+  async clientPending(workspaceId: string) {
+    const res = await api.get(
+      `/api/v1/workspaces/${encodeURIComponent(workspaceId)}/sections/client-pending`,
+    );
+    return requireApiData<PendingSectionTask[]>(res.data);
   },
   async patch(
     workspaceId: string,

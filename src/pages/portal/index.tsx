@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
+import { SectionApprovalQueue } from "@/components/task-sections/SectionReview";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import {
@@ -23,6 +25,7 @@ export function PortalPage() {
   // (state giả lập demo, tách biệt real role) khoá cứng về "CLIENT" và ẩn
   // toggle, để nút Phê duyệt/Yêu cầu chỉnh sửa ở ApprovalQueueList (vốn
   // gate theo viewerStage === pendingStage.stage) chỉ bật đúng lượt CLIENT.
+  const { id: workspaceId = "" } = useParams<{ id: string }>();
   const memberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const isClient = memberRole === "CLIENT";
   const [items, setItems] = useState<ApprovalQueueItem[]>([]);
@@ -130,6 +133,7 @@ export function PortalPage() {
         <PortalCalendarView />
       ) : (
         <div className="space-y-4">
+          {workspaceId && <SectionApprovalQueue workspaceId={workspaceId} />}
           {!isClient && (
             <ViewerStageSwitcher
               value={viewerStage}
