@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { SeoHead } from "@/components/seo/SeoHead";
 import {
   ShieldCheck,
   Lock,
@@ -18,21 +19,29 @@ import {
 } from "lucide-react";
 
 export function PrivacyPolicyPage() {
-  const [lang, setLang] = useState<"en" | "vi">("en");
-
-  useEffect(() => {
-    document.title = "BrandHub - Privacy Policy";
-    let metaDescription = document.querySelector('meta[name="description"]');
-    if (!metaDescription) {
-      metaDescription = document.createElement("meta");
-      metaDescription.setAttribute("name", "description");
-      document.head.appendChild(metaDescription);
+  const [lang, setLang] = useState<"en" | "vi">(() => {
+    if (typeof window !== "undefined") {
+      const urlLang = new URLSearchParams(window.location.search).get("lang");
+      if (urlLang === "en" || urlLang === "vi") return urlLang;
     }
-    metaDescription.setAttribute("content", "Privacy Policy for BrandHub");
-  }, []);
+    return "vi";
+  });
 
   return (
     <div className="mx-auto max-w-4xl py-6 sm:py-10">
+      <SeoHead
+        title={
+          lang === "en"
+            ? "Privacy Policy | BrandHub"
+            : "Chính Sách Quyền Riêng Tư (Privacy Policy) | BrandHub"
+        }
+        description={
+          lang === "en"
+            ? "Learn how BrandHub collects, protects, and encrypts personal data, Workspace assets, and Google OAuth user data on https://brandhub.id.vn."
+            : "Chính sách quyền riêng tư giải thích cách BrandHub thu thập, mã hóa và bảo vệ dữ liệu cá nhân, tài nguyên Workspace trên https://brandhub.id.vn."
+        }
+        canonicalPath="/privacy"
+      />
       {/* Back button & Language Switcher */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <Link
@@ -172,7 +181,7 @@ export function PrivacyPolicyPage() {
                   <div className="rounded-xl border border-border/80 bg-background/60 p-4">
                     <h3 className="font-semibold text-foreground">C. Google Drive Integration (Optional Workspace Storage)</h3>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Agency Managers and Workspace Owners have the option to connect a Google Drive account to an Agency Workspace to sync and manage creative brand assets. When enabled, BrandHub uses the Google Drive API (<code className="rounded bg-muted px-1.5 py-0.5 text-3xs font-mono text-foreground">drive.file</code> or <code className="rounded bg-muted px-1.5 py-0.5 text-3xs font-mono text-foreground">drive</code> scope):
+                      Owners and Managers have the option to connect a Google Drive account to an Agency Workspace to sync and manage creative brand assets. When enabled, BrandHub uses the Google Drive API (<code className="rounded bg-muted px-1.5 py-0.5 text-3xs font-mono text-foreground">drive.file</code> or <code className="rounded bg-muted px-1.5 py-0.5 text-3xs font-mono text-foreground">drive</code> scope):
                     </p>
                     <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
                       <li>• <strong>Scope of Access:</strong> BrandHub only accesses designated agency storage folders (e.g. <code className="rounded bg-muted px-1 py-0.5 font-mono">brandhub-[agency-name]</code>) and files created or explicitly selected within the workspace integration. BrandHub does not inspect or access your personal, unrelated Google Drive files.</li>
@@ -351,7 +360,7 @@ export function PrivacyPolicyPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-1 size-1.5 rounded-full bg-brand-orange" />
-                    <span><strong>Google Drive Disconnection:</strong> Workspace Managers can disconnect Google Drive at any time in Workspace Storage Settings. Disconnecting immediately invalidates and purges the stored OAuth refresh token from BrandHub.</span>
+                    <span><strong>Google Drive Disconnection:</strong> Managers can disconnect Google Drive at any time in Workspace Storage Settings. Disconnecting immediately invalidates and purges the stored OAuth refresh token from BrandHub.</span>
                   </li>
                 </ul>
               </section>

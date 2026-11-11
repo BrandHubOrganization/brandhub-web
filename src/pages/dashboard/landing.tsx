@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAuthStore } from "@/store/authStore";
 import { Navbar } from "@/components/landing/Navbar";
@@ -16,14 +17,72 @@ import { Templates } from "@/components/landing/Templates";
 import { MediaPackage } from "@/components/landing/MediaPackage";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { TeamSection } from "@/components/landing/TeamSection";
+import { ComparisonMatrix } from "@/components/landing/ComparisonMatrix";
 import { Pricing } from "@/components/landing/Pricing";
+import { BlogPreviewSection } from "@/components/landing/BlogPreviewSection";
 import { FAQ } from "@/components/landing/FAQ";
 import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
 import { BackToTop } from "@/components/landing/BackToTop";
+import {
+  FloatingCtaStamp,
+  LandingMotionOrchestrator,
+} from "@/components/landing/MotionPrimitives";
+import { SeoHead } from "@/components/seo/SeoHead";
+
+const LANDING_FAQ_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://brandhub.id.vn/#faq",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Có thể dùng thử BrandHub miễn phí không?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Có! Gói Starter miễn phí cho phép tạo 1 Không gian làm việc, tối đa 5 thành viên, kết nối các kênh mạng xã hội cơ bản và trải nghiệm đầy đủ quy trình lên lịch, soạn thảo bài viết.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "BrandHub hỗ trợ liên kết những nền tảng mạng xã hội nào?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "BrandHub tích hợp chính thức 4 nền tảng mạng xã hội: Facebook, Instagram, TikTok và Threads. Các bài đăng được lên lịch tự động và phân phối an toàn, chuẩn xác tới từng kênh thương hiệu.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Tính năng AI Trend Crawler & Brand Guidelines hoạt động thế nào?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "BrandHub kết hợp mô hình GraphRAG (Neo4j kết hợp ChromaDB vector search) cùng bộ cào dữ liệu xu hướng thị trường. AI tổng hợp các xu hướng đang thịnh hành, đối chiếu nghiêm ngặt với Brand Guidelines (tone of voice, từ cấm, định dạng) và tự động kiểm duyệt an toàn nội dung cộng đồng trước khi đề xuất.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quy trình cộng tác & phê duyệt giữa Agency và Khách hàng (Client) diễn ra thế nào?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Hệ thống xây dựng cơ chế phân quyền chuẩn theo 6 vai trò (Guest, Owner, Manager, Creator, Client, Admin): Đội ngũ Agency (Owner, Manager, Creator) sáng tạo và quản trị chiến dịch; Khách hàng (Client) được cấp không gian riêng biệt để duyệt từng bài đăng và phản hồi trực tiếp trên từng phiên bản bản nháp.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Dữ liệu và Access Token mạng xã hội được bảo vệ như thế nào?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Hệ thống tuân thủ tiêu chuẩn bảo mật đám mây với cơ chế xác thực tập trung. Toàn bộ OAuth Access Token của mạng xã hội được mã hóa AES-256 trong cơ sở dữ liệu và dữ liệu từng Workspace được cô lập hoàn toàn.",
+      },
+    },
+  ],
+};
 
 export function LandingPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const { i18n } = useTranslation();
+  const isEn = i18n.language === "en";
+  const location = useLocation();
 
   // Hero's pinned scroll spacer (end:"+=3500") finalizes its height only
   // after mount, which shifts every ScrollTrigger below it (the 4 sections
@@ -33,14 +92,37 @@ export function LandingPage() {
   // Entrance reveals no longer use ScrollTrigger (IntersectionObserver
   // instead, see useIntersectionObserver) so they don't need this.
   useEffect(() => {
-    const id = setTimeout(() => ScrollTrigger.refresh(), 300);
+    const id = setTimeout(() => {
+      ScrollTrigger.refresh();
+      if (location.hash) {
+        const targetId = location.hash.replace(/^#/, "");
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    }, 350);
     return () => clearTimeout(id);
-  }, []);
+  }, [location.hash]);
 
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
   return (
     <div style={{ fontFamily: "var(--font-sans)" }}>
+      <SeoHead
+        title={
+          isEn
+            ? "BrandHub — All-in-One AI Brand & Multi-Channel Media Operations Platform"
+            : "BrandHub — Nền tảng Quản trị Thương hiệu & Nội dung Đa kênh AI"
+        }
+        description={
+          isEn
+            ? "Multi-agency workspace platform with Media Package negotiation, AI GraphRAG Brand Guidelines, 3-tier approval workflows, and automated publishing to Facebook, Instagram, TikTok, and Threads."
+            : "Nền tảng quản trị Agency, lập kế hoạch Media Campaign, sáng tạo với AI GraphRAG, duyệt bài đa cấp và đăng tự động Facebook, Instagram, TikTok, Threads."
+        }
+        canonicalPath="/"
+        jsonLd={LANDING_FAQ_JSONLD}
+      />
       <Navbar />
       <CinematicHero />
       <BrandMarquee />
@@ -55,10 +137,14 @@ export function LandingPage() {
       <MediaPackage />
       <Testimonials />
       <TeamSection />
+      <ComparisonMatrix />
       <Pricing />
+      <BlogPreviewSection />
       <FAQ />
       <CTASection />
       <Footer />
+      <FloatingCtaStamp />
+      <LandingMotionOrchestrator />
       <BackToTop />
     </div>
   );

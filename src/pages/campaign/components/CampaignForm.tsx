@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Target, Clock, Calendar, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { Badge } from "@/components/ui/badge";
 import { HelpHint } from "@/components/shared/HelpHint";
 import { CampaignStrategyInput } from "@/pages/campaign/components/CampaignStrategyInput";
@@ -259,33 +260,29 @@ export function CampaignForm({
                 </div>
 
                 <div className="space-y-3">
-                  <Input
-                    form={formId}
+                  <DatePicker
                     disabled={saving}
-                    type="date"
                     label={t("campaign.startDate")}
                     value={timeline.startDate ?? ""}
-                    onChange={(event) =>
+                    onChange={(val) =>
                       patchTimeline(
                         startDateChange(
                           timeline,
-                          event.target.value,
+                          val,
                           durationWeeks,
                         ),
                       )
                     }
                   />
                   <div className="space-y-1">
-                    <Input
-                      form={formId}
+                    <DatePicker
                       disabled={saving}
-                      type="date"
                       label={t("campaign.endDate")}
                       value={timeline.endDate ?? ""}
                       min={timeline.startDate}
-                      onChange={(event) =>
+                      onChange={(val) =>
                         patchTimeline({
-                          endDate: event.target.value || undefined,
+                          endDate: val || undefined,
                         })
                       }
                     />
@@ -373,22 +370,20 @@ export function CampaignForm({
                             })
                           }
                         />
-                        <Input
-                          form={formId}
+                        <DatePicker
                           disabled={saving}
                           required
-                          type="date"
-                          className="h-8.5 font-mono text-xs"
-                          aria-label={t("campaign.date")}
+                          triggerClassName="h-8.5 text-xs font-mono"
+                          placeholder={t("campaign.date")}
                           value={milestone.date}
                           min={timeline.startDate}
                           max={timeline.endDate}
-                          onChange={(event) =>
+                          onChange={(val) =>
                             patchTimeline({
                               milestones: timeline.milestones?.map(
                                 (entry, position) =>
                                   position === index
-                                    ? { ...entry, date: event.target.value }
+                                    ? { ...entry, date: val }
                                     : entry,
                               ),
                             })

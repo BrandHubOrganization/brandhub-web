@@ -1,6 +1,6 @@
 import React from "react";
 import type { PlatformType } from "@/types/calendar";
-import { Video, AtSign, Share2, Globe } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 
 interface PlatformFilterProps {
@@ -13,10 +13,10 @@ const PLATFORMS: {
   label: string;
   icon: React.ReactNode;
 }[] = [
-  { id: "FACEBOOK", label: "Facebook", icon: <Share2 className="size-3.5" /> },
-  { id: "INSTAGRAM", label: "Instagram", icon: <Globe className="size-3.5" /> },
-  { id: "TIKTOK", label: "TikTok", icon: <Video className="size-3.5" /> },
-  { id: "THREADS", label: "Threads", icon: <AtSign className="size-3.5" /> },
+  { id: "FACEBOOK", label: "Facebook", icon: <FaFacebook className="size-3.5 text-[#1877F2]" /> },
+  { id: "INSTAGRAM", label: "Instagram", icon: <FaInstagram className="size-3.5 text-[#E1306C]" /> },
+  { id: "TIKTOK", label: "TikTok", icon: <FaTiktok className="size-3.5" /> },
+  { id: "THREADS", label: "Threads", icon: <FaThreads className="size-3.5" /> },
 ];
 
 export const PlatformFilter: React.FC<PlatformFilterProps> = ({

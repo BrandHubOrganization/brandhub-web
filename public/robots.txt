@@ -1,0 +1,56 @@
+# BrandHub — https://brandhub.id.vn
+# Search Engine & AI Discovery Policy (RFC 9309 Compliant)
+
+User-agent: *
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: PerplexityBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+Allow: /
+Allow: /blog
+Allow: /blog/
+Allow: /help/faq
+Allow: /privacy
+Allow: /terms
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /rss.xml
+Allow: /sitemap.xml
+Allow: /og-banner.png
+
+# Private authenticated, transactional & tokenized routes (preserve crawl budget & prevent token indexing)
+Disallow: /dashboard
+Disallow: /workspace
+Disallow: /workspaces
+Disallow: /agency
+Disallow: /admin
+Disallow: /settings
+Disallow: /clients
+Disallow: /client-profiles
+Disallow: /requests
+Disallow: /editor
+Disallow: /content-writing
+Disallow: /templates
+Disallow: /hashtag-groups
+Disallow: /calendar
+Disallow: /library
+Disallow: /analytics
+Disallow: /social-accounts
+Disallow: /subscription
+Disallow: /ai-studio
+Disallow: /reports
+Disallow: /packages/share/
+Disallow: /public/surveys/
+Disallow: /oauth-callback
+Disallow: /verify-otp
+Disallow: /2fa-verify
+Disallow: /reset-password
+Disallow: /activate-account
+Disallow: /invitations
+Disallow: /mail/unsubscribe
+Disallow: /api/
+
+Sitemap: https://brandhub.id.vn/sitemap.xml

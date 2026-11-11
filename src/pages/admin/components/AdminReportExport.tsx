@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SelectMenu } from "@/components/ui/select-menu";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -20,8 +21,6 @@ import {
 } from "@/services/adminRevenueService";
 
 const TYPES: ReportType[] = ["REVENUE", "USER", "PLATFORM"];
-const field =
-  "border-input bg-card text-foreground focus-visible:outline-ring h-9 w-full rounded-lg border px-3 text-sm focus-visible:outline-2";
 
 export interface ReportDefaults {
   type: ReportType;
@@ -112,28 +111,22 @@ export function AdminReportForm({
         </p>
       </fieldset>
       <div className="grid gap-3 sm:grid-cols-3">
-        <label className="space-y-1.5 text-sm font-medium">
-          <span>{t("admin.reports.from")}</span>
-          <input
-            type="date"
+        <div className="space-y-1.5 text-sm font-medium sm:col-span-2">
+          <span>
+            {t("admin.revenue.dateRangePicker.title", "Khoảng thời gian")}
+          </span>
+          <DateRangePicker
+            from={from}
+            to={to}
             required
-            value={from}
-            max={to}
-            onChange={(e) => setFrom(e.target.value)}
-            className={field}
+            className="w-full"
+            triggerClassName="w-full"
+            onChange={(f, t) => {
+              setFrom(f);
+              setTo(t);
+            }}
           />
-        </label>
-        <label className="space-y-1.5 text-sm font-medium">
-          <span>{t("admin.reports.to")}</span>
-          <input
-            type="date"
-            required
-            value={to}
-            min={from}
-            onChange={(e) => setTo(e.target.value)}
-            className={field}
-          />
-        </label>
+        </div>
         <label className="space-y-1.5 text-sm font-medium">
           <span>{t("admin.reports.timezone")}</span>
           <SelectMenu

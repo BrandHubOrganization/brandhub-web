@@ -136,7 +136,16 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       const { data } = await workspaceService.list();
       set({ workspaceList: data.data });
     } catch {
-      set({ workspaceList: [] });
+      try {
+        await new Promise((r) => setTimeout(r, 400));
+        const { data } = await workspaceService.list();
+        set({ workspaceList: data.data });
+      } catch {
+        set((state) => ({
+          workspaceList:
+            state.workspaceList.length > 0 ? state.workspaceList : [],
+        }));
+      }
     }
   },
 

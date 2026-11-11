@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useTrendReplay } from "@/pages/admin/hooks/useTrendReplay";
@@ -145,25 +146,22 @@ export function AdminTrendReplayPanel() {
         <TrendReplayFlow stage="PREVIEW" />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <Input
-            type="date"
-            required
-            label={t("admin.trendReplay.from")}
-            max={today}
-            value={form.startDate}
-            disabled={busy}
-            onChange={(e) => change("startDate", e.target.value)}
-          />
-          <Input
-            type="date"
-            required
-            label={t("admin.trendReplay.to")}
-            value={form.endDate}
-            min={form.startDate}
-            max={today}
-            disabled={busy}
-            onChange={(e) => change("endDate", e.target.value)}
-          />
+          <div className="md:col-span-2">
+            <DateRangePicker
+              label={`${t("admin.trendReplay.from")} - ${t("admin.trendReplay.to")}`}
+              required
+              max={today}
+              disabled={busy}
+              from={form.startDate}
+              to={form.endDate}
+              className="w-full"
+              triggerClassName="w-full"
+              onChange={(f, t) => {
+                change("startDate", f);
+                change("endDate", t);
+              }}
+            />
+          </div>
           <Input
             label={t("admin.trendReplay.prefix")}
             placeholder={t("admin.trendReplay.prefixPlaceholder")}

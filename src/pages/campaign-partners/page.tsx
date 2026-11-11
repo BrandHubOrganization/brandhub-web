@@ -268,7 +268,10 @@ export default function CampaignPartnersPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
   return (
-    <PageWrapper title={t("campaign.partners.title")}>
+    <PageWrapper
+      title={t("campaign.partners.title")}
+      description={t("campaign.partners.description")}
+    >
       {id && <PartnerPanel key={id} workspaceId={id} />}
     </PageWrapper>
   );

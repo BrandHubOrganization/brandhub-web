@@ -179,7 +179,7 @@ export const WatermarkStudioModal: React.FC<WatermarkStudioModalProps> = ({
               <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
                 {t("materials.watermark.title")}
                 <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange border border-brand-orange/20">
-                  FR 3.6.15
+                  Pro Studio
                 </span>
               </h2>
               <p className="text-xs text-muted-foreground">

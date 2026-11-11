@@ -23,11 +23,12 @@ export default function CampaignPage() {
   });
   return (
     <PageWrapper
-      compact
-      hideHeader
       className="!pb-4"
-      showGuideButton={false}
       title={t("campaign.title")}
+      description={t(
+        "campaign.description",
+        "Quản lý và theo dõi các chiến dịch truyền thông",
+      )}
     >
       {loading && <CampaignLoadingState />}
       {!loading && error && (

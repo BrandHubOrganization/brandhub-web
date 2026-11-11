@@ -23,6 +23,7 @@ import { DownloadFormatDropdown } from "@/components/common/DownloadFormatDropdo
 import { downloadMediaWithFormat } from "@/utils/mediaDownloadHelper";
 import { cn } from "@/lib/utils";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useBackgroundTaskStore } from "@/store/backgroundTaskStore";
 import { errorCode } from "@/services/adminRevenueService";
 import { aiCaptionService } from "@/services/aiCaptionService";
 import { aiGenerationService } from "@/services/aiGenerationService";
@@ -147,6 +148,35 @@ function VideoStudio() {
       setNow(Date.now());
       void queries.invalidateQueries({ queryKey: ["ai-credits"] });
       void queries.invalidateQueries({ queryKey: ["video-jobs"] });
+      void useBackgroundTaskStore
+        .getState()
+        .startAiVideoTask({
+          workspaceId,
+          jobId: started.job.jobId,
+          title: `Tạo Video AI (${aspectRatio})`,
+          subtitle: prompt.trim().slice(0, 60),
+          targetRoute: "/ai-studio/video",
+          pollIntervalMs: 5000,
+          poll: async () => {
+            const st = await aiVideoService.status(
+              workspaceId,
+              started.job.jobId,
+            );
+            queries.setQueryData(
+              ["video-job", workspaceId, started.job.jobId],
+              st,
+            );
+            return {
+              status: st.status,
+              videoUrl: st.videoUrl,
+              s3Key: st.s3Key,
+              errorMessage: st.errorCode,
+            };
+          },
+        })
+        .catch(() => {
+          // Handled via query status in UI
+        });
     } catch (err) {
       const code = errorCode(err);
       setError(

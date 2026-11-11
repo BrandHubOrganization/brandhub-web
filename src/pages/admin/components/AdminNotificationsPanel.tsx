@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { SelectMenu } from "@/components/ui/select-menu";
+import { Pagination } from "@/components/ui/pagination";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -13,6 +14,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -55,7 +57,13 @@ function toLocalInput(iso: string | null) {
     .slice(0, 16);
 }
 
-export function AdminNotificationsPanel() {
+export interface AdminNotificationsPanelProps {
+  hideComposeButton?: boolean;
+}
+
+export function AdminNotificationsPanel({
+  hideComposeButton = false,
+}: AdminNotificationsPanelProps = {}) {
   const { t, i18n } = useTranslation();
   const actor = useAuthStore((s) => s.user?.id);
   const client = useQueryClient();
@@ -63,6 +71,7 @@ export function AdminNotificationsPanel() {
   const [editing, setEditing] = useState<AdminNotification | "new" | null>(
     null,
   );
+  const [cancelling, setCancelling] = useState<AdminNotification | null>(null);
   const list = useQuery({
     queryKey: ["admin-notifications", actor, page],
     queryFn: () => adminNotificationService.list(page),
@@ -79,6 +88,7 @@ export function AdminNotificationsPanel() {
       adminNotificationService.cancel(n.id, n.rowVersion),
     onSuccess: () => {
       toast.success(t("admin.notifications.cancelled"));
+      setCancelling(null);
       void client.invalidateQueries({ queryKey: ["admin-notifications"] });
     },
     onError: (error) =>
@@ -102,15 +112,14 @@ export function AdminNotificationsPanel() {
 
   return (
     <div className="space-y-5">
-      <div className="flex justify-end">
-        <Button
-          variant="orange"
-          onClick={() => setEditing("new")}
-        >
-          <Send className="size-4" />
-          {t("admin.notifications.compose")}
-        </Button>
-      </div>
+      {!hideComposeButton && (
+        <div className="flex justify-end">
+          <Button variant="orange" onClick={() => setEditing("new")}>
+            <Send className="size-4" />
+            {t("admin.notifications.compose")}
+          </Button>
+        </div>
+      )}
       <section className="bg-card border-border min-w-0 rounded-xl border p-5 lg:p-6">
         <h2 className="text-base font-semibold">
           {t("admin.notifications.historyTitle")}
@@ -235,11 +244,7 @@ export function AdminNotificationsPanel() {
                             size="sm"
                             className="text-destructive"
                             disabled={cancel.isPending}
-                            onClick={() =>
-                              window.confirm(
-                                t("admin.notifications.cancelConfirm"),
-                              ) && cancel.mutate(n)
-                            }
+                            onClick={() => setCancelling(n)}
                           >
                             <X className="size-3.5" />
                             {t("admin.notifications.cancel")}
@@ -254,27 +259,14 @@ export function AdminNotificationsPanel() {
           </div>
         )}
         {data && pages > 1 && (
-          <div className="mt-4 flex items-center justify-end gap-2 text-xs">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              {t("admin.accounts.previous")}
-            </Button>
-            <span className="font-sans">
-              {page}/{pages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= pages}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              {t("admin.accounts.next")}
-            </Button>
-          </div>
+          <Pagination
+            page={page}
+            total={data.total}
+            totalPages={pages}
+            isFetching={list.isFetching}
+            itemLabel={t("admin.notifications.itemLabel", "thông báo")}
+            onPageChange={setPage}
+          />
         )}
       </section>
       {editing && (
@@ -283,6 +275,37 @@ export function AdminNotificationsPanel() {
           onClose={() => setEditing(null)}
         />
       )}
+      <Dialog
+        open={!!cancelling}
+        onOpenChange={(open) => !open && !cancel.isPending && setCancelling(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("common.confirmDialog.title")}</DialogTitle>
+            <DialogDescription>
+              {t("admin.notifications.cancelConfirm")}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={cancel.isPending}
+              onClick={() => setCancelling(null)}
+            >
+              {t("common.confirmDialog.cancel")}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={cancel.isPending}
+              onClick={() => cancelling && cancel.mutate(cancelling)}
+            >
+              {t("common.confirmDialog.confirm")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -616,15 +639,6 @@ function NotificationComposer({
               onClick={() => save.mutate("SCHEDULE")}
             >
               {t("admin.notifications.scheduleSend")}
-            </Button>
-            <Button
-              type="button"
-              variant="orange"
-              disabled={invalid || save.isPending}
-              onClick={() => save.mutate("SEND_NOW")}
-            >
-              <Send className="size-4" />
-              {t("admin.notifications.sendNow")}
             </Button>
           </div>
         </form>

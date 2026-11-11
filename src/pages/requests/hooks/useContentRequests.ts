@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import { mockContentRequestService } from "@/services/mock/mockContentRequestService";
+import { contentRequestService } from "@/services/contentRequestService";
 import type {
   ContentRequest,
   ContentRequestStatus,
@@ -75,7 +75,7 @@ export function useContentRequests() {
   const fetchRequests = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await mockContentRequestService.getRequests({
+      const res = await contentRequestService.getRequests({
         search: searchQuery,
         status: selectedStatuses,
         platform: selectedPlatforms,
@@ -137,7 +137,7 @@ export function useContentRequests() {
 
   const handleConfirmAssign = async (assigneeId: string) => {
     if (!selectedRequestForAssign) return;
-    const updated = await mockContentRequestService.assignRequest(
+    const updated = await contentRequestService.assignRequest(
       selectedRequestForAssign.id,
       assigneeId,
     );
@@ -148,7 +148,7 @@ export function useContentRequests() {
   };
 
   const handleCreateRequest = async (payload: CreateContentRequestPayload) => {
-    const created = await mockContentRequestService.createRequest(payload);
+    const created = await contentRequestService.createRequest(payload);
     toast.success(t("requests.create.success", { topic: created.topic }));
     fetchRequests();
   };
@@ -157,7 +157,7 @@ export function useContentRequests() {
     requestId: string,
     payload: ReviseContentRequestPayload,
   ) => {
-    const updated = await mockContentRequestService.reviseRequest(
+    const updated = await contentRequestService.reviseRequest(
       requestId,
       payload,
     );
@@ -167,7 +167,7 @@ export function useContentRequests() {
   };
 
   const handleCancelRequest = async (requestId: string, reason?: string) => {
-    const updated = await mockContentRequestService.cancelRequest(
+    const updated = await contentRequestService.cancelRequest(
       requestId,
       reason,
     );

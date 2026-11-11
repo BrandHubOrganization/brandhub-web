@@ -10,6 +10,8 @@ import { Sidebar } from "./Sidebar";
 import { AdminMobileNavigation } from "@/components/layout/AdminSidebar";
 import { Navbar } from "./Navbar";
 import { PageFallback } from "./PageFallback";
+import { SeoHead } from "@/components/seo/SeoHead";
+import { BackgroundTaskDock } from "@/components/common/BackgroundTaskDock";
 import {
   Sheet,
   SheetContent,
@@ -22,7 +24,6 @@ import {
   FileEdit,
   CalendarDays,
   Users,
-  BarChart3,
   MessageCircleMore,
   PackageCheck,
 } from "lucide-react";
@@ -42,7 +43,6 @@ const MOBILE_TABS = [
     labelKey: "nav.chat",
     workspaceScoped: true,
   },
-  { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
   {
     to: "/editor",
     icon: FileEdit,
@@ -280,7 +280,7 @@ export function Layout() {
   };
 
   return (
-    <div className="bg-background text-foreground flex h-screen w-screen overflow-hidden font-sans">
+    <div className="bg-background text-foreground flex h-screen w-full min-w-0 overflow-hidden font-sans">
       {/* ── SIDEBAR (DESKTOP >= 768px) ── */}
       <aside className="hidden h-full shrink-0 md:block">
         <Sidebar
@@ -302,7 +302,7 @@ export function Layout() {
       </aside>
 
       {/* ── MAIN CONTENT CONTAINER ── */}
-      <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
+      <div className="relative flex w-full min-w-0 flex-1 flex-col overflow-hidden">
         <Navbar
           collapsed={collapsed}
           toggleCollapsed={toggleCollapsed}
@@ -340,12 +340,16 @@ export function Layout() {
 
         {/* Page Content Outlet */}
         <main
-          className={`bg-background flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout || videoWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
+          className={`bg-background w-full min-w-0 flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout || videoWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
         >
+          {location.pathname !== "/help/faq" && (
+            <SeoHead noindex canonicalPath={location.pathname} />
+          )}
           <React.Suspense fallback={<PageFallback />}>
             <Outlet />
           </React.Suspense>
         </main>
+        <BackgroundTaskDock />
       </div>
 
       {/* ── BOTTOM TAB BAR (MOBILE ONLY <= 768px) ── */}

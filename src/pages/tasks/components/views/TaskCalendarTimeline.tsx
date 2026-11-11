@@ -7,6 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { EventContentArg } from "@fullcalendar/core";
+import viLocale from "@fullcalendar/core/locales/vi";
 import type { TaskListItem } from "@/types/task";
 import {
   AlertCircle,
@@ -24,33 +25,19 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SelectMenu } from "@/components/ui/select-menu";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import type {
+  TaskCalendarTimelineProps,
+  CalendarViewType,
+  ActiveEventDetail,
+} from "./types/types";
 
-interface TaskCalendarTimelineProps {
-  tasks: TaskListItem[];
-  onTaskClick: (task: TaskListItem) => void;
-  workspaceId?: string;
-  onUpdated?: () => void;
-}
-
-type CalendarViewType =
-  "timeGridWeek" | "timeGridDay" | "dayGridMonth" | "yearGrid";
-
-interface ActiveEventDetail {
-  task: TaskListItem;
-  title: string;
-  timeText: string;
-  location: string;
-  pillColor: string;
-  dateStr: string;
-  x: number;
-  y: number;
-  isPinned: boolean;
-}
+export type { TaskCalendarTimelineProps, CalendarViewType, ActiveEventDetail };
 
 function toDateTimeLocalValue(isoOrDateString?: string | null): string {
   if (!isoOrDateString || !Number.isFinite(Date.parse(isoOrDateString))) {
@@ -150,11 +137,7 @@ export function TaskCalendarTimeline({
     dateValue: string,
     task: TaskListItem,
   ): { valid: boolean; error: string | null } => {
-    if (
-      task.status === "FINISHED" ||
-
-      task.status === "CANCELLED"
-    ) {
+    if (task.status === "FINISHED" || task.status === "CANCELLED") {
       return {
         valid: false,
         error:
@@ -589,14 +572,16 @@ export function TaskCalendarTimeline({
               e,
             )
           }
-          className={`flex w-full min-w-0 max-w-full items-center gap-1.5 rounded-md border ${scheme.border} ${scheme.bg} cursor-pointer px-1.5 py-0.5 text-xs font-semibold shadow-2xs transition-all hover:brightness-95`}
+          className={`flex w-full max-w-full min-w-0 items-center gap-1.5 rounded-md border ${scheme.border} ${scheme.bg} min-h-[26px] cursor-pointer px-1.5 py-1 text-xs font-semibold shadow-2xs transition-all hover:brightness-95`}
         >
           <span
-            className={`text-3xs py-0.2 shrink-0 rounded-xs px-1.5 font-bold tracking-wider uppercase ${scheme.pill}`}
+            className={`inline-flex shrink-0 items-center justify-center rounded px-1.5 py-0.5 text-[10px] leading-normal font-bold tracking-wide uppercase ${scheme.pill}`}
           >
             {scheme.type}
           </span>
-          <span className="min-w-0 flex-1 truncate">{eventInfo.event.title}</span>
+          <span className="min-w-0 flex-1 truncate">
+            {eventInfo.event.title}
+          </span>
         </div>
       );
     }
@@ -651,26 +636,42 @@ export function TaskCalendarTimeline({
   };
 
   // 12 Months matrix generator for Year View
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const weekDaysShort = ["M", "T", "W", "T", "F", "S", "S"];
+  const isVi = i18n.language?.startsWith("vi") ?? true;
+  const monthNames = isVi
+    ? [
+        "Tháng 1",
+        "Tháng 2",
+        "Tháng 3",
+        "Tháng 4",
+        "Tháng 5",
+        "Tháng 6",
+        "Tháng 7",
+        "Tháng 8",
+        "Tháng 9",
+        "Tháng 10",
+        "Tháng 11",
+        "Tháng 12",
+      ]
+    : [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+  const weekDaysShort = isVi
+    ? ["T2", "T3", "T4", "T5", "T6", "T7", "CN"]
+    : ["M", "T", "W", "T", "F", "S", "S"];
 
   // Canonical status for active event
-  const canonical = activeEvent
-    ? activeEvent.task.status
-    : "TODO";
+  const canonical = activeEvent ? activeEvent.task.status : "TODO";
   const statusCfg = STATUS_CONFIG[canonical];
 
   return (
@@ -691,7 +692,7 @@ export function TaskCalendarTimeline({
             onClick={handleToday}
             className="border-border bg-card text-foreground hover:bg-muted cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-2xs transition-colors"
           >
-            Today
+            {t("tasks.timelineGrid.today", { defaultValue: "Hôm nay" })}
           </button>
 
           <div className="flex items-center gap-1">
@@ -735,15 +736,13 @@ export function TaskCalendarTimeline({
             className="border-border bg-card h-8 min-w-[130px] rounded-lg text-xs shadow-2xs"
           />
 
-          <div className="border-border bg-card flex items-center rounded-lg border px-2.5 py-1 text-xs shadow-2xs">
-            <span className="text-muted-foreground text-2xs mr-1.5">Date:</span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => handleDateChange(e.target.value)}
-              className="text-foreground cursor-pointer bg-transparent text-xs font-medium focus:outline-hidden"
-            />
-          </div>
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            triggerClassName="h-8 rounded-lg text-xs"
+            className="w-auto"
+            allowClear={false}
+          />
         </div>
       </div>
 
@@ -825,18 +824,64 @@ export function TaskCalendarTimeline({
       ) : (
         /* FullCalendar for Day, Week, and Month with drag & drop for managers */
         <div className="w-full overflow-hidden p-3 sm:p-4">
-          <div ref={calendarContainerRef} className="fullcalendar-custom w-full min-w-0">
+          <div
+            ref={calendarContainerRef}
+            className="fullcalendar-custom w-full min-w-0"
+          >
             <FullCalendar
               ref={calendarRef}
               plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+              locales={[viLocale]}
+              locale={i18n.language?.startsWith("vi") ? "vi" : "en"}
               initialView={currentView}
               headerToolbar={false}
               datesSet={(arg) => setCurrentTitle(arg.view.title)}
+              views={{
+                timeGridWeek: {
+                  dayHeaderFormat: {
+                    weekday: "short",
+                    day: "numeric",
+                    omitCommas: true,
+                  },
+                },
+                timeGridDay: {
+                  dayHeaderFormat: {
+                    weekday: "short",
+                    day: "numeric",
+                    omitCommas: true,
+                  },
+                },
+                dayGridMonth: {
+                  dayHeaderFormat: { weekday: "short" },
+                },
+              }}
+              dayHeaderContent={(arg) => {
+                const isVi = i18n.language?.startsWith("vi") ?? true;
+                const d = arg.date;
+                const day = d.getDate();
+                const weekdaysVi = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+                const weekdaysEn = [
+                  "Sun",
+                  "Mon",
+                  "Tue",
+                  "Wed",
+                  "Thu",
+                  "Fri",
+                  "Sat",
+                ];
+                const weekday = isVi
+                  ? weekdaysVi[d.getDay()]
+                  : weekdaysEn[d.getDay()];
+
+                if (arg.view.type === "dayGridMonth") {
+                  return weekday;
+                }
+                return `${weekday} ${day}`;
+              }}
               slotMinTime="00:00:00"
               slotMaxTime="24:00:00"
               scrollTime="08:00:00"
-              allDaySlot={true}
-              allDayText="ALL DAY"
+              allDaySlot={false}
               events={calendarEvents}
               eventContent={renderEventContent}
               editable={isManager}
@@ -898,11 +943,7 @@ export function TaskCalendarTimeline({
                 const targetWs = workspaceId || task?.workspaceId;
 
                 // 1. Task status validation
-                if (
-                  task.status === "FINISHED" ||
-
-                  task.status === "CANCELLED"
-                ) {
+                if (task.status === "FINISHED" || task.status === "CANCELLED") {
                   dropInfo.revert();
                   toast.error(
                     "Không thể thay đổi hạn chót cho công việc đã hoàn thành hoặc đã hủy!",
@@ -1190,7 +1231,6 @@ export function TaskCalendarTimeline({
               {isManager &&
                 !isEditingDeadline &&
                 activeEvent.task.status !== "FINISHED" &&
-
                 activeEvent.task.status !== "CANCELLED" && (
                   <button
                     type="button"
@@ -1208,7 +1248,6 @@ export function TaskCalendarTimeline({
                   </button>
                 )}
               {(activeEvent.task.status === "FINISHED" ||
-
                 activeEvent.task.status === "CANCELLED") && (
                 <span className="text-3xs text-muted-foreground font-medium italic">
                   Không thể sửa

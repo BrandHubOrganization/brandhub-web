@@ -89,7 +89,6 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
             };
             const fallbackSession: Session = {
               linked: {
-                taskId,
                 taskRevision: 1,
                 post: null,
                 canEdit: true,
@@ -299,6 +298,25 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
       mediaUrls: Array.from(new Set([...current.mediaUrls, url])),
       storedMedia: { ...current.storedMedia, [url]: { materialId, mediaType } },
     }));
+  const handleReplaceMedia = (
+    oldUrl: string,
+    newUrl: string,
+    materialId: string,
+    mediaType: "IMAGE" | "VIDEO",
+  ) =>
+    edit((current) => {
+      const { [oldUrl]: _removed, ...restStoredMedia } = current.storedMedia;
+      return {
+        ...current,
+        mediaUrls: current.mediaUrls.map((url) =>
+          url === oldUrl ? newUrl : url,
+        ),
+        storedMedia: {
+          ...restStoredMedia,
+          [newUrl]: { materialId, mediaType },
+        },
+      };
+    });
   const handleApplyAIResult = (
     caption: string,
     hashtags: string[],
@@ -337,6 +355,7 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
       edit((current) => ({ ...current, mediaUrls })),
     handleGeneratedMedia,
     handleRepositoryMedia,
+    handleReplaceMedia,
     handleApplyAIResult,
     handleApplyTemplate,
     handleSubmitForReview,

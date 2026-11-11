@@ -9,7 +9,8 @@
   "generatedAt": "Generated at",
   "filters": {
     "from": "From",
-    "to": "To"
+    "to": "To",
+    "dateRange": "Date range"
   },
   "sections": {
     "overview": "Overview",

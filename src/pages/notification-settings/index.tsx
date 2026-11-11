@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Mail, Smartphone } from "lucide-react";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   DEFAULT_PREFERENCES,
   NOTIFICATION_TYPES,
-} from "@/services/mock/mockNotificationService";
+} from "@/types/notification";
 import { userService } from "@/services/userService";
 import type { NotificationPreferences } from "@/types/notification";
 import { ToggleRow } from "./components/ToggleRow";
@@ -81,15 +82,14 @@ export function NotificationSettingsPage() {
   }
 
   return (
-    <section id="notifications" className="scroll-mt-6">
-      <div className="mb-4">
-        <h2 className="text-foreground text-lg font-semibold">
-          {t("notifications.settings.title")}
-        </h2>
-        <p className="text-muted-foreground text-sm">
-          {t("notifications.settings.description")}
-        </p>
-      </div>
+    <PageWrapper
+      title={t("notifications.settings.title", "Cài đặt thông báo")}
+      description={t(
+        "notifications.settings.subtitle",
+        "Tùy chỉnh thông báo qua email và thông báo đẩy trong hệ thống.",
+      )}
+    >
+      <section id="notifications" className="scroll-mt-6">
       {isLoading && (
         <div className="space-y-4">
           <Skeleton className="h-40 rounded-xl" />
@@ -191,7 +191,8 @@ export function NotificationSettingsPage() {
           </div>
         </div>
       )}
-    </section>
+      </section>
+    </PageWrapper>
   );
 }
 

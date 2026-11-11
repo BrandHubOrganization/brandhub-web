@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { Label } from "@/components/ui/label";
 import type {
   Client,
@@ -162,20 +163,14 @@ export function ServicePackageModal({
           </div>
 
           {/* Ngày hết hạn gói */}
-          <div className="space-y-1.5">
-            <Label htmlFor="expiry" className="text-xs font-semibold">
-              {t("client.servicePackage.expiryLabel")}
-            </Label>
-            <Input
-              id="expiry"
-              type="date"
-              value={formData.expiryDate || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, expiryDate: e.target.value })
-              }
-              className="text-xs"
-            />
-          </div>
+          <DatePicker
+            id="expiry"
+            label={t("client.servicePackage.expiryLabel")}
+            value={formData.expiryDate || ""}
+            onChange={(val) =>
+              setFormData({ ...formData, expiryDate: val })
+            }
+          />
 
           <DialogFooter className="pt-3">
             <Button

@@ -3,9 +3,11 @@ import type {
   ContentRequestStatus,
   SocialPlatform,
 } from "@/types/contentRequest";
-import { Search, Calendar, RotateCcw, X, Share2, Video, Globe, AtSign } from "lucide-react";
+import { Search, RotateCcw, X } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 
 interface ContentRequestFilterBarProps {
   searchQuery: string;
@@ -67,22 +69,22 @@ const PLATFORM_ICONS: Record<
 > = {
   FACEBOOK: {
     label: "Facebook",
-    icon: <Share2 className="size-3.5" />,
+    icon: <FaFacebook className="size-3.5" />,
     activeClass: "bg-blue-600 text-white border-blue-600",
   },
   INSTAGRAM: {
     label: "Instagram",
-    icon: <Globe className="size-3.5" />,
+    icon: <FaInstagram className="size-3.5" />,
     activeClass: "bg-gradient-to-r from-pink-500 to-rose-500 text-white border-pink-500",
   },
   TIKTOK: {
     label: "TikTok",
-    icon: <Video className="size-3.5" />,
+    icon: <FaTiktok className="size-3.5" />,
     activeClass: "bg-foreground text-background border-foreground",
   },
   THREADS: {
     label: "Threads",
-    icon: <AtSign className="size-3.5" />,
+    icon: <FaThreads className="size-3.5" />,
     activeClass: "bg-foreground text-background border-foreground",
   },
 };
@@ -185,22 +187,16 @@ export const ContentRequestFilterBar: React.FC<
 
         {/* Date Range Picker & Reset */}
         <div className="flex items-center gap-2">
-          <div className="border-border bg-muted/50 text-muted-foreground flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs">
-            <Calendar className="text-muted-foreground size-3.5 shrink-0" />
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => onStartDateChange(e.target.value)}
-              className="text-foreground cursor-pointer bg-transparent text-xs focus:outline-hidden"
-            />
-            <span className="text-muted-foreground">-</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => onEndDateChange(e.target.value)}
-              className="text-foreground cursor-pointer bg-transparent text-xs focus:outline-hidden"
-            />
-          </div>
+          <DateRangePicker
+            from={startDate}
+            to={endDate}
+            allowClear
+            triggerClassName="rounded-xl h-9"
+            onChange={(f, t) => {
+              onStartDateChange(f);
+              onEndDateChange(t);
+            }}
+          />
 
           {hasActiveFilters && (
             <Button

@@ -44,3 +44,7 @@ test-results/
 /vendor/video-space/public/library/manifest.json
 /vendor/video-space/rust/target/
 
+# Graphify Knowledge Graph outputs
+graphify-out/
+
+

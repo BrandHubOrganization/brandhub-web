@@ -10,6 +10,7 @@ import {
   readTargets,
 } from "@/pages/admin/system-health/services/monitoringService";
 import { MonitoringFilters } from "@/pages/admin/system-health/components/MonitoringFilters";
+import { SystemTaskManager } from "@/pages/admin/system-health/components/SystemTaskManager";
 import { ServerCards } from "@/pages/admin/system-health/components/ServerCards";
 import { TargetCards } from "@/pages/admin/system-health/components/TargetCards";
 import { TargetDetails } from "@/pages/admin/system-health/components/TargetDetails";
@@ -91,7 +92,8 @@ export default function SystemHealthPage() {
           </p>
         )}
         {feed.loading && <Spinner aria-label={t("monitoring.loading")} />}
-        <TabsContent value="servers">
+        <TabsContent value="servers" className="space-y-4">
+          <SystemTaskManager servers={visibleServers} />
           <ServerCards servers={visibleServers} />
         </TabsContent>
         <TabsContent value="health">

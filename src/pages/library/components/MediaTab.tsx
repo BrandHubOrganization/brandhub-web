@@ -1,33 +1,51 @@
 import { useEffect, useState } from "react";
-import {
-  CloudDownload,
-  FolderOpen,
-  Sparkles,
-  Trash2,
-  Users,
-} from "lucide-react";
 import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import {
+  AlertCircle,
+  CloudDownload,
+  FolderOpen,
+  FolderUp,
+  Loader2,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useMaterialRepository } from "@/pages/library/hooks/useMaterialRepository";
 import { useMaterialDownload } from "@/pages/library/hooks/useMaterialDownload";
+import { useMaterialUploadProfiles } from "@/pages/library/hooks/useMaterialUploadProfiles";
 import { MaterialTrashList } from "@/pages/library/components/MaterialTrashList";
 import { MaterialRepositoryCard } from "@/pages/library/components/MaterialRepositoryCard";
 import { ConfirmPermanentDeleteModal } from "@/pages/library/components/ConfirmPermanentDeleteModal";
 import { ConfirmSoftDeleteModal } from "@/pages/library/components/ConfirmSoftDeleteModal";
-import { MediaUploadButton } from "@/pages/library/components/MediaUploadButton";
 import { MediaDetailPanel } from "@/pages/library/components/MediaDetailPanel";
-import { MaterialFolderSection } from "@/pages/library/components/MaterialFolderSection";
+import {
+  DRAG_MATERIAL_MIME,
+  MaterialFolderSection,
+} from "@/pages/library/components/MaterialFolderSection";
+import { MaterialFolderPicker } from "@/pages/library/components/MaterialFolderPicker";
 import { ShareFromClientVaultModal } from "@/pages/library/components/ShareFromClientVaultModal";
-import { MaterialToolbar } from "@/pages/library/components/MaterialToolbar";
+import {
+  MaterialToolbar,
+  type RepositoryViewMode,
+} from "@/pages/library/components/MaterialToolbar";
 import { CustomerDrivePanel } from "@/pages/library/components/CustomerDrivePanel";
-import type { MaterialFilters, MaterialItem } from "@/types/material";
-
-type RepositorySubTab = "active" | "client-vault" | "drafts" | "trash";
+import { WatermarkStudioModal } from "@/pages/library/components/watermark/WatermarkStudioModal";
+import { materialService } from "@/services/materialService";
+import {
+  onRepositoryTaskRefresh,
+  useBackgroundTaskStore,
+} from "@/store/backgroundTaskStore";
+import { extractFromDataTransfer } from "@/pages/library/utils/folderDropReader";
+import type {
+  MaterialFilters,
+  MaterialItem,
+  MaterialMediaKind,
+  MaterialSort,
+} from "@/types/material";
 
 export function MediaTab() {
   const workspace = useWorkspaceStore((state) => state.currentWorkspace?.id);
@@ -37,39 +55,66 @@ export function MediaTab() {
 
 function RepositoryMedia() {
   const { t } = useTranslation();
+  const workspaceObj = useWorkspaceStore((state) => state.currentWorkspace);
   const currentRole = useWorkspaceStore((state) => state.currentMemberRole);
-  const [subTab, setSubTab] = useState<RepositorySubTab>(
-    currentRole === "CLIENT" ? "client-vault" : "active",
+  const actorId = useAuthStore((state) => state.user?.id);
+  const isClient = currentRole === "CLIENT";
+
+  const [tab, setTab] = useState<"WORKSPACE" | "CLIENT_VAULT">(
+    isClient ? "CLIENT_VAULT" : "WORKSPACE",
   );
-  const [folderId, setFolderId] = useState<string>();
+  const [trashMode, setTrashMode] = useState(false);
+  const [draftMode, setDraftMode] = useState(false);
+  const [folderId, setFolderId] = useState<string | null>(null);
   const [driveOpen, setDriveOpen] = useState(false);
-  const [sharing, setSharing] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [trashBusy, setTrashBusy] = useState(false);
-  const deleted = subTab === "trash";
-  const isDrafts = subTab === "drafts";
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [debounced, setDebounced] = useState("");
-  const [filters, setFilters] = useState<MaterialFilters>({});
+  const [mediaKind, setMediaKind] = useState<MaterialMediaKind | undefined>();
+  const [sort, setSort] = useState<MaterialSort>("newest");
+  const [viewMode, setViewMode] = useState<RepositoryViewMode>("grid");
+
   const [confirm, setConfirm] = useState<MaterialItem | null>(null);
   const [purgeTarget, setPurgeTarget] = useState<MaterialItem | "all" | null>(
     null,
   );
   const [selected, setSelected] = useState<MaterialItem | null>(null);
+  const [watermarkTarget, setWatermarkTarget] = useState<MaterialItem | null>(
+    null,
+  );
+  const [movingMaterial, setMovingMaterial] = useState<MaterialItem | null>(
+    null,
+  );
+  const [isExternalDragOver, setIsExternalDragOver] = useState(false);
+
+  const startUploadBatch = useBackgroundTaskStore(
+    (state) => state.startUploadBatch,
+  );
+
   const effectiveFilters: MaterialFilters = {
-    ...filters,
-    folderId,
-    tab: subTab === "client-vault" ? "CLIENT_VAULT" : "LIBRARY",
-    draft: isDrafts ? true : undefined,
+    mediaKind,
+    sort,
+    folderId: folderId ?? undefined,
+    tab: isClient || tab === "CLIENT_VAULT" ? "CLIENT_VAULT" : "LIBRARY",
+    draft: draftMode ? true : undefined,
   };
+
   const repository = useMaterialRepository(
-    deleted,
+    trashMode,
     page,
     debounced,
     effectiveFilters,
   );
   const downloader = useMaterialDownload();
+  const uploadProfilesQuery = useMaterialUploadProfiles(
+    repository.workspace ?? "",
+    isClient,
+    isClient,
+  );
   const client = useQueryClient();
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebounced(search);
@@ -77,373 +122,543 @@ function RepositoryMedia() {
     }, 300);
     return () => clearTimeout(timer);
   }, [search]);
+
+  useEffect(() => {
+    if (!repository.workspace) return;
+    return onRepositoryTaskRefresh((wsId) => {
+      if (wsId === repository.workspace) {
+        void client.invalidateQueries({ queryKey: ["materials"] });
+        void client.invalidateQueries({ queryKey: ["material-storage-usage"] });
+        void repository.query.refetch();
+      }
+    });
+  }, [repository.workspace, repository.query, client]);
+
   const items =
     repository.forbidden || repository.query.isError
       ? []
       : (repository.query.data?.items ?? []);
+  const folders =
+    repository.forbidden || repository.query.isError
+      ? []
+      : (repository.query.data?.folders ?? []);
+  const breadcrumbs =
+    repository.forbidden || repository.query.isError
+      ? []
+      : (repository.query.data?.breadcrumbs ?? []);
   const total =
     repository.forbidden || repository.query.isError
       ? 0
       : (repository.query.data?.total ?? 0);
+
   const pending =
     trashBusy ||
     repository.remove.isPending ||
     repository.restore.isPending ||
     repository.promote.isPending ||
     repository.purge.isPending;
+
   const uploaded = () => {
     void client.invalidateQueries({ queryKey: ["materials"] });
     void client.invalidateQueries({ queryKey: ["material-storage-usage"] });
+    void repository.query.refetch();
   };
-  const label = (key: string) => t(`library.repository.${key}`);
-  const filtered = !!search || Object.values(filters).some(Boolean);
+
+  const canDelete = (material: MaterialItem) =>
+    currentRole === "OWNER" ||
+    currentRole === "MANAGER" ||
+    ((currentRole === "CREATOR" || currentRole === "CLIENT") &&
+      material.createdBy === actorId);
+
+  const canRestore = (material: MaterialItem) =>
+    currentRole === "OWNER" ||
+    currentRole === "MANAGER" ||
+    ((currentRole === "CREATOR" || currentRole === "CLIENT") &&
+      material.deletedBy === actorId &&
+      material.createdBy === actorId);
+
+  const canPermanentDelete = (material: MaterialItem) =>
+    Boolean(material.deletedAt) &&
+    material.status !== "PURGE_IN_PROGRESS" &&
+    canDelete(material);
+
+  const canPromoteDraft = (material: MaterialItem) =>
+    Boolean(material.draft) && !material.deletedAt && canDelete(material);
+
+  const canMoveMaterial = (material: MaterialItem) =>
+    !material.deletedAt &&
+    material.status !== "PURGE_IN_PROGRESS" &&
+    (isClient || material.scopeType !== "CLIENT_VAULT") &&
+    canDelete(material);
+
+  const canMutateFolders =
+    (isClient && tab === "CLIENT_VAULT") ||
+    (!isClient &&
+      tab === "WORKSPACE" &&
+      (currentRole === "OWNER" ||
+        currentRole === "MANAGER" ||
+        currentRole === "CREATOR"));
+
+  const handleFileDroppedToFolder = async (
+    materialId: string,
+    targetFolderId: string | null,
+    targetFolderName: string,
+  ) => {
+    if (!repository.workspace) return;
+    const item = items.find((m) => m.id === materialId);
+    if (item && (item.folderId ?? null) === (targetFolderId ?? null)) {
+      return;
+    }
+    try {
+      await materialService.moveMaterial(
+        repository.workspace,
+        materialId,
+        targetFolderId,
+      );
+      uploaded();
+      toast.success(`Đã di chuyển tệp vào "${targetFolderName}"`);
+    } catch (e) {
+      toast.error(
+        (e as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ?? "Không thể di chuyển tệp vào thư mục này",
+      );
+    }
+  };
+
+  const handleExternalDragOver = (event: React.DragEvent) => {
+    if (event.dataTransfer.types.includes(DRAG_MATERIAL_MIME)) {
+      return;
+    }
+    if (event.dataTransfer.types.includes("Files")) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "copy";
+      if (!isExternalDragOver) {
+        setIsExternalDragOver(true);
+      }
+    }
+  };
+
+  const handleExternalDragLeave = (event: React.DragEvent) => {
+    if (
+      event.currentTarget === event.target ||
+      !event.currentTarget.contains(event.relatedTarget as Node | null)
+    ) {
+      setIsExternalDragOver(false);
+    }
+  };
+
+  const handleExternalDrop = async (event: React.DragEvent) => {
+    if (event.dataTransfer.types.includes(DRAG_MATERIAL_MIME)) {
+      return;
+    }
+    if (!event.dataTransfer.types.includes("Files")) return;
+    event.preventDefault();
+    setIsExternalDragOver(false);
+
+    if (!repository.workspace) return;
+
+    const extracted = await extractFromDataTransfer(event.dataTransfer);
+    if (extracted.skippedCount > 0) {
+      toast.warning(
+        `Đã bỏ qua ${extracted.skippedCount} tệp không hợp lệ (${extracted.skippedReasons.join(", ")})`,
+      );
+    }
+    if (extracted.validFiles.length === 0) {
+      toast.error(
+        "Không có tệp hợp lệ để tải lên (PNG, JPG, WEBP, MP4, MOV, PDF ≤ 1 GiB)",
+      );
+      return;
+    }
+
+    const visibility = isClient ? "CLIENT" : "INTERNAL";
+    const clientProfileId =
+      visibility === "CLIENT"
+        ? workspaceObj?.clientProfileId ??
+          uploadProfilesQuery.data?.[0]?.id ??
+          undefined
+        : undefined;
+
+    void startUploadBatch({
+      workspaceId: repository.workspace,
+      files: extracted.validFiles,
+      baseFolderId: folderId,
+      visibility,
+      clientProfileId,
+      isClientRole: isClient,
+      rootFolderName: extracted.rootFolderName,
+    }).then(() => {
+      uploaded();
+    });
+  };
+
   const forbidden =
     isAxiosError(repository.query.error) &&
     repository.query.error.response?.status === 403;
+
   return (
-    <div className="space-y-4">
-      {/* Row 1: Source Navigation + Primary Actions */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Tabs
-          value={subTab}
-          onValueChange={(value) => {
-            setSubTab(value as RepositorySubTab);
-            setFolderId(undefined);
+    <div
+      onDragOver={handleExternalDragOver}
+      onDragLeave={handleExternalDragLeave}
+      onDrop={(e) => void handleExternalDrop(e)}
+      className="relative space-y-4"
+    >
+      {/* Full-canvas Google Drive dropzone overlay when dragging OS files/folders */}
+      {isExternalDragOver && (
+        <div className="pointer-events-none fixed inset-4 z-40 flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-brand-orange bg-brand-orange/10 backdrop-blur-xs">
+          <div className="flex flex-col items-center gap-2 rounded-2xl border border-brand-orange/30 bg-card/95 px-8 py-6 text-center shadow-xl">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-orange text-white shadow-md">
+              <FolderUp className="h-6 w-6" />
+            </div>
+            <p className="text-sm font-bold text-foreground">
+              Thả tệp hoặc thư mục từ thiết bị vào đây để tải lên
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Giữ nguyên cấu trúc thư mục và tự động chạy ngầm ở góc dưới phải
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Primary Toolbar */}
+      <MaterialToolbar
+        search={search}
+        onSearchChange={setSearch}
+        mediaKind={mediaKind}
+        onMediaKindChange={(next) => {
+          setMediaKind(next);
+          setPage(0);
+        }}
+        sort={sort}
+        onSortChange={(next) => {
+          setSort(next);
+          setPage(0);
+        }}
+        trashMode={trashMode}
+        onTrashModeChange={(next) => {
+          setTrashMode(next);
+          setFolderId(null);
+          setPage(0);
+        }}
+        draftMode={draftMode}
+        onDraftModeChange={(next) => {
+          setDraftMode(next);
+          setFolderId(null);
+          setPage(0);
+        }}
+        folderId={folderId}
+        tab={tab}
+        onTabChange={(next) => {
+          setTab(next);
+          setTrashMode(false);
+          setDraftMode(false);
+          setFolderId(null);
+          setPage(0);
+        }}
+        isClient={isClient}
+        onShareVault={() => setShareOpen(true)}
+        onUploaded={uploaded}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+      />
+
+      {/* Google Drive Import strip for Agency */}
+      {!isClient && !trashMode && !draftMode && tab === "WORKSPACE" && repository.workspace && (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-xs text-muted-foreground">
+              Kéo thả tệp vào thư mục để di chuyển, hoặc kéo cả thư mục từ máy tính thả vào đây.
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setDriveOpen((prev) => !prev)}
+              className="h-7 gap-1.5 rounded-lg text-xs font-semibold text-foreground hover:bg-brand-orange/10 hover:text-brand-orange"
+            >
+              <CloudDownload className="h-3.5 w-3.5 text-brand-orange" />
+              <span>{t("library.simple.fromDrive", "Đồng bộ từ Google Drive")}</span>
+            </Button>
+          </div>
+          {driveOpen && (
+            <CustomerDrivePanel folderId={folderId ?? undefined} />
+          )}
+        </div>
+      )}
+
+      {/* Folder Section + Breadcrumbs (supports drag & drop file-to-folder) */}
+      {repository.workspace && !trashMode && !draftMode && (
+        <MaterialFolderSection
+          workspaceId={repository.workspace}
+          breadcrumbs={breadcrumbs}
+          folders={folders}
+          trashMode={trashMode}
+          canCreate={canMutateFolders}
+          canMutate={canMutateFolders}
+          currentFolderId={folderId}
+          onOpenFolder={(id) => {
+            setFolderId(id);
             setPage(0);
             setSelected(null);
-            setConfirm(null);
-            setPurgeTarget(null);
           }}
-        >
-          <TabsList className="bg-muted/60 h-auto min-h-9 max-w-full flex-wrap justify-start gap-1 rounded-lg p-1 sm:h-9">
-            {currentRole !== "CLIENT" && (
-              <TabsTrigger
-                value="active"
-                disabled={pending}
-                data-testid="tab-active-library"
-                className="gap-1.5 rounded-md px-3 py-1 text-xs"
-              >
-                <FolderOpen className="size-3.5" />
-                {t("library.simple.allFiles")}
-              </TabsTrigger>
-            )}
-            <TabsTrigger
-              value="client-vault"
-              disabled={pending}
-              className="gap-1.5 rounded-md px-3 py-1 text-xs"
-            >
-              <Users className="size-3.5" />
-              {t("library.simple.vault")}
-            </TabsTrigger>
-            {currentRole !== "CLIENT" && (
-              <TabsTrigger
-                value="drafts"
-                disabled={pending}
-                data-testid="tab-ai-drafts"
-                className="gap-1.5 rounded-md px-3 py-1 text-xs"
-              >
-                <Sparkles className="size-3.5" />
-                {t("library.simple.drafts")}
-              </TabsTrigger>
-            )}
-            {currentRole !== "CLIENT" && (
-              <TabsTrigger
-                value="trash"
-                disabled={pending}
-                data-testid="tab-trash-library"
-                className="gap-1.5 rounded-md px-3 py-1 text-xs"
-              >
-                <Trash2 className="size-3.5" />
-                {t("library.trash.title")}
-              </TabsTrigger>
-            )}
-          </TabsList>
-        </Tabs>
+          onChanged={uploaded}
+          onFileDroppedToFolder={handleFileDroppedToFolder}
+        />
+      )}
 
-        <div className="flex flex-wrap items-center gap-2">
-          {deleted &&
-            (repository.role === "MANAGER" || repository.role === "CREATOR") &&
-            !repository.forbidden &&
-            !repository.query.isError && (
-              <Button
-                variant="destructive"
-                size="sm"
-                disabled={pending || repository.query.isFetching}
-                onClick={() => setPurgeTarget("all")}
-              >
-                <Trash2 className="size-4" />
-                {t("library.trash.emptyTrash")}
-              </Button>
-            )}
-          {subTab === "client-vault" &&
-            currentRole === "CLIENT" &&
-            repository.workspace && (
-              <>
+      {/* Trash Mode View */}
+      {trashMode && repository.workspace ? (
+        <div className="space-y-3">
+          {(items.length > 0 || folders.length > 0) &&
+            (currentRole === "OWNER" ||
+              currentRole === "MANAGER" ||
+              currentRole === "CREATOR") && (
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-destructive/25 bg-destructive/5 px-4 py-2.5">
+                <span className="text-xs text-muted-foreground">
+                  {t(
+                    "library.trash.quotaNotice",
+                    "Xoá vĩnh viễn các mục trong thùng rác để giải phóng dung lượng S3.",
+                  )}
+                </span>
                 <Button
-                  variant="outline"
+                  type="button"
+                  variant="destructive"
                   size="sm"
-                  className="h-9 rounded-lg text-xs"
-                  onClick={() => setSharing(true)}
+                  disabled={pending || repository.query.isFetching}
+                  onClick={() => setPurgeTarget("all")}
+                  className="h-8 gap-1.5 rounded-lg text-xs text-white"
                 >
-                  {t("materials.repository.shareFromVault")}
+                  <Trash2 className="h-3.5 w-3.5" />
+                  {t("library.trash.emptyTrash", "Dọn sạch thùng rác")}
                 </Button>
-                <ShareFromClientVaultModal
-                  workspace={repository.workspace}
-                  open={sharing}
-                  onClose={() => setSharing(false)}
-                />
-              </>
+              </div>
             )}
 
-          {subTab === "active" &&
-            repository.workspace &&
-            !repository.forbidden &&
-            !repository.query.isError && (
-              <Button
-                variant="outline"
-                size="sm"
-                aria-expanded={driveOpen}
-                onClick={() => setDriveOpen(!driveOpen)}
-              >
-                <CloudDownload className="size-4" />
-                {t("library.simple.fromDrive")}
-              </Button>
-            )}
-          {(subTab === "active" ||
-            (currentRole === "CLIENT" && subTab === "client-vault")) &&
-            !repository.forbidden &&
-            !repository.query.isError && (
-              <MediaUploadButton
-                key={`${subTab}:${folderId ?? "root"}`}
-                folderId={folderId}
-                onUploadSuccess={uploaded}
-                disabled={
-                  repository.usage.data?.storageMode !==
-                    "CUSTOMER_DRIVE_FIRST" &&
-                  repository.usage.data?.isQuotaExceeded
-                }
-              />
-            )}
-        </div>
-      </div>
-
-      {subTab === "active" &&
-        repository.workspace &&
-        !repository.forbidden &&
-        !repository.query.isError && (
-          <div hidden={!driveOpen}>
-            <CustomerDrivePanel folderId={folderId} />
-          </div>
-        )}
-      {/* Row 2: Compact Control Bar (Search + Format Chips + Sort + Advanced Filters) */}
-      {repository.workspace &&
-        !repository.forbidden &&
-        !repository.query.isError && (
-          <fieldset disabled={pending} className="min-w-0">
-            <MaterialToolbar
+          {repository.query.isPending ? (
+            <div className="flex h-48 items-center justify-center rounded-2xl border border-border/60 bg-card">
+              <Loader2 className="h-6 w-6 animate-spin text-brand-orange" />
+            </div>
+          ) : (
+            <MaterialTrashList
+              key={JSON.stringify([
+                repository.workspace,
+                repository.actor,
+                repository.role,
+                page,
+                debounced,
+                effectiveFilters,
+              ])}
               workspace={repository.workspace}
-              role={repository.role}
-              search={search}
-              filters={filters}
-              usage={repository.usage.data}
-              onSearch={setSearch}
-              onChange={(next) => {
-                setFilters(next);
-                setPage(0);
-              }}
+              files={items}
+              folders={folders}
+              busy={
+                pending || repository.query.isFetching || search !== debounced
+              }
+              onBusyChange={setTrashBusy}
             />
-          </fieldset>
-        )}
-
-      {/* Contextual Notice + Count Row */}
-      <div className="text-muted-foreground flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div aria-live="polite" className="font-medium">
-          {repository.forbidden
-            ? ""
-            : !repository.workspace
-              ? t("library.trash.chooseWorkspace")
-              : repository.query.isPending
-                ? t("library.trash.loading")
-                : deleted
-                  ? t("library.trash.inventory", {
-                      files: total,
-                      folders: repository.query.data?.folders?.length ?? 0,
-                    })
-                  : t("library.trash.count", { count: total })}
+          )}
         </div>
-        {subTab === "client-vault" && (
-          <span>{t("materials.repository.vaultNoShare")}</span>
-        )}
-        {isDrafts && <span>{t("library.trash.draftNotice")}</span>}
-        {deleted && <span>{t("library.trash.quotaNotice")}</span>}
-      </div>
-      {(repository.forbidden || repository.query.isError) && (
+      ) : repository.forbidden || repository.query.isError ? (
         <div
           role="alert"
-          className="text-destructive flex flex-wrap items-center gap-3 text-sm"
+          className="flex h-56 flex-col items-center justify-center gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-center"
         >
-          {label(repository.forbidden || forbidden ? "forbidden" : "loadError")}
+          <AlertCircle className="h-6 w-6 text-destructive" />
+          <p className="text-sm font-medium text-destructive">
+            {t(
+              `library.repository.${repository.forbidden || forbidden ? "forbidden" : "loadError"}`,
+              "Không thể tải danh sách tệp trong kho",
+            )}
+          </p>
           <Button
+            type="button"
             variant="outline"
+            size="sm"
             onClick={() =>
               repository.forbidden
                 ? repository.retryAccess()
                 : void repository.refresh()
             }
           >
-            {label("retry")}
+            {t("library.repository.retry", "Thử lại")}
           </Button>
         </div>
-      )}
-      {deleted &&
-        repository.workspace &&
-        !repository.forbidden &&
-        !repository.query.isError &&
-        !repository.query.isPending && (
-          <MaterialTrashList
-            key={JSON.stringify([
-              repository.workspace,
-              repository.actor,
-              repository.role,
-              page,
-              debounced,
-              effectiveFilters,
-            ])}
-            workspace={repository.workspace}
-            files={items}
-            folders={repository.query.data?.folders ?? []}
-            busy={
-              pending || repository.query.isFetching || search !== debounced
-            }
-            onBusyChange={setTrashBusy}
-          />
-        )}
-      {!deleted &&
-        repository.workspace &&
-        !repository.forbidden &&
-        !repository.query.isError && (
-          <MaterialFolderSection
-            workspace={repository.workspace}
-            showFiles={items.length > 0}
-            folders={repository.query.data?.folders ?? []}
-            breadcrumbs={repository.query.data?.breadcrumbs ?? []}
-            folderId={folderId}
-            onOpen={(id) => {
-              setFolderId(id);
-              setPage(0);
-              setSelected(null);
-            }}
-            mutable={
-              (subTab === "client-vault" && repository.role === "CLIENT") ||
-              (subTab !== "client-vault" &&
-                (repository.role === "MANAGER" ||
-                  repository.role === "CREATOR" ||
-                  repository.role === "OWNER"))
-            }
-            deleted={deleted}
-          />
-        )}
-      {!repository.query.isPending &&
-        !repository.forbidden &&
-        !repository.query.isError &&
-        items.length === 0 &&
-        !repository.query.data?.folders?.length && (
-          <div className="border-border text-muted-foreground space-y-2 rounded-xl border border-dashed p-5 text-center">
-            <FolderOpen
-              className="text-muted-foreground mx-auto size-8"
-              strokeWidth={1.5}
-            />
-            <p className="text-foreground font-medium">
-              {deleted
-                ? t("library.trash.empty")
-                : isDrafts
-                  ? t("library.trash.emptyDrafts")
-                  : filtered
-                    ? label("emptySearch")
-                    : t("library.simple.emptyTitle")}
-            </p>
-            {!deleted && !isDrafts && !filtered && (
-              <p className="text-sm">{t("library.simple.emptyHint")}</p>
-            )}
-            {filtered && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setFilters({});
-                  setSearch("");
-                  setPage(0);
-                }}
-              >
-                {label("resetFilters")}
-              </Button>
-            )}
-          </div>
-        )}
-      <div
-        className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        aria-busy={repository.query.isPending}
-      >
-        {repository.workspace &&
-          repository.query.isPending &&
-          Array.from({ length: 8 }, (_, i) => (
+      ) : repository.query.isPending ? (
+        <div
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+          aria-busy="true"
+        >
+          {Array.from({ length: 8 }, (_, i) => (
             <div
               key={i}
-              className="border-border rounded-xl border p-3"
+              className="rounded-2xl border border-border/70 bg-card p-3"
               aria-hidden="true"
             >
-              <div className="bg-muted aspect-video animate-pulse rounded-lg motion-reduce:animate-none" />
-              <div className="bg-muted mt-4 h-4 w-3/4 animate-pulse rounded motion-reduce:animate-none" />
+              <div className="aspect-[4/3] animate-pulse rounded-xl bg-muted" />
+              <div className="mt-3 h-4 w-3/4 animate-pulse rounded bg-muted" />
             </div>
           ))}
-        {!deleted &&
-          items.map((material) => (
-            <MaterialRepositoryCard
-              key={`${material.id}:${material.version}`}
-              material={material}
-              deleted={deleted}
-              pending={pending}
-              downloading={downloader.isDownloading(material.id)}
-              onDownload={(format) =>
-                void downloader.download(material, format)
-              }
-              onPromote={
-                material.draft
-                  ? () => repository.promote.mutate(material)
-                  : undefined
-              }
-              onDelete={() => setConfirm(material)}
-              onRestore={() => repository.restore.mutate(material)}
-              onPurge={() => setPurgeTarget(material)}
-              onOpen={() => setSelected(material)}
-            />
-          ))}
-      </div>
+        </div>
+      ) : items.length === 0 ? (
+        <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card/50 p-6 text-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-muted">
+            <FolderOpen className="h-5 w-5 text-muted-foreground" />
+          </div>
+          <p className="text-sm font-semibold text-foreground">
+            {draftMode
+              ? t("library.trash.emptyDrafts", "Chưa có bản nháp AI nào")
+              : search || mediaKind
+                ? t("library.repository.emptySearch", "Không tìm thấy tệp phù hợp")
+                : t(
+                    "library.simple.emptyTitle",
+                    "Chưa có tệp nào trong vị trí này",
+                  )}
+          </p>
+          {!draftMode && (
+            <p className="max-w-md text-xs text-muted-foreground">
+              Nhấn nút <strong>Tải lên</strong> ở góc phải hoặc kéo-thả trực tiếp tệp / thư mục từ máy tính vào đây.
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-2.5">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+              Tệp ({total})
+            </span>
+          </div>
+
+          {viewMode === "grid" ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {items.map((material) => (
+                <MaterialRepositoryCard
+                  key={`${material.id}:${material.version}`}
+                  material={material}
+                  viewMode="grid"
+                  canDelete={canDelete(material)}
+                  canPermanentDelete={canPermanentDelete(material)}
+                  canRestore={canRestore(material)}
+                  canPromoteDraft={canPromoteDraft(material)}
+                  canMove={canMoveMaterial(material)}
+                  onSelect={setSelected}
+                  onDownload={(target) => void downloader.download(target)}
+                  onWatermark={setWatermarkTarget}
+                  onDelete={(target) => setConfirm(target)}
+                  onPermanentDelete={(target) => setPurgeTarget(target)}
+                  onRestore={(target) => repository.restore.mutate(target)}
+                  onPromoteDraft={(target) => repository.promote.mutate(target)}
+                  onMoveRequest={(target) => setMovingMaterial(target)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {items.map((material) => (
+                <MaterialRepositoryCard
+                  key={`${material.id}:${material.version}`}
+                  material={material}
+                  viewMode="list"
+                  canDelete={canDelete(material)}
+                  canPermanentDelete={canPermanentDelete(material)}
+                  canRestore={canRestore(material)}
+                  canPromoteDraft={canPromoteDraft(material)}
+                  canMove={canMoveMaterial(material)}
+                  onSelect={setSelected}
+                  onDownload={(target) => void downloader.download(target)}
+                  onWatermark={setWatermarkTarget}
+                  onDelete={(target) => setConfirm(target)}
+                  onPermanentDelete={(target) => setPurgeTarget(target)}
+                  onRestore={(target) => repository.restore.mutate(target)}
+                  onPromoteDraft={(target) => repository.promote.mutate(target)}
+                  onMoveRequest={(target) => setMovingMaterial(target)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Pagination */}
       {total > 20 && (
-        <div className="flex items-center justify-between gap-3">
-          <Button
-            variant="outline"
-            disabled={pending || page === 0 || repository.query.isFetching}
-            onClick={() => setPage(page - 1)}
-          >
-            {t("library.trash.previous")}
-          </Button>
-          <Button
-            variant="outline"
-            disabled={
-              pending || (page + 1) * 20 >= total || repository.query.isFetching
-            }
-            onClick={() => setPage(page + 1)}
-          >
-            {t("library.trash.next")}
-          </Button>
-          <span className="text-muted-foreground text-sm tabular-nums">
+        <div className="flex items-center justify-between gap-3 pt-2">
+          <span className="text-xs tabular-nums text-muted-foreground">
             {t("library.simple.page", {
               page: page + 1,
               total: Math.ceil(total / 20),
             })}
           </span>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={pending || page === 0 || repository.query.isFetching}
+              onClick={() => setPage(page - 1)}
+            >
+              {t("library.trash.previous", "Trước")}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={
+                pending ||
+                (page + 1) * 20 >= total ||
+                repository.query.isFetching
+              }
+              onClick={() => setPage(page + 1)}
+            >
+              {t("library.trash.next", "Tiếp")}
+            </Button>
+          </div>
         </div>
       )}
+
+      {/* Quick Move-to-Folder Dialog */}
+      {repository.workspace && movingMaterial && (
+        <MaterialFolderPicker
+          open={Boolean(movingMaterial)}
+          onOpenChange={(open) => {
+            if (!open) setMovingMaterial(null);
+          }}
+          workspaceId={repository.workspace}
+          tab={tab}
+          title={`Di chuyển "${movingMaterial.name}"`}
+          confirmLabel="Chuyển tới đây"
+          onConfirm={async (targetFolderId) => {
+            await materialService.moveMaterial(
+              repository.workspace!,
+              movingMaterial.id,
+              targetFolderId,
+            );
+            setMovingMaterial(null);
+            uploaded();
+            toast.success("Đã di chuyển tệp thành công");
+          }}
+        />
+      )}
+
+      {/* Client Cross-Workspace / Vault Import Modal */}
+      {repository.workspace && isClient && (
+        <ShareFromClientVaultModal
+          open={shareOpen}
+          onOpenChange={setShareOpen}
+          workspaceId={repository.workspace}
+          onShared={uploaded}
+        />
+      )}
+
+      {/* Watermark Dialog */}
+      {watermarkTarget && repository.workspace && (
+        <WatermarkStudioModal
+          isOpen={Boolean(watermarkTarget)}
+          onClose={() => setWatermarkTarget(null)}
+          material={watermarkTarget}
+          workspaceId={repository.workspace}
+          onSuccess={() => {
+            setWatermarkTarget(null);
+            uploaded();
+          }}
+        />
+      )}
+
       <ConfirmPermanentDeleteModal
         target={
           repository.forbidden || repository.query.isError ? null : purgeTarget
@@ -460,6 +675,7 @@ function RepositoryMedia() {
             });
         }}
       />
+
       <ConfirmSoftDeleteModal
         material={
           repository.forbidden || repository.query.isError ? null : confirm
@@ -476,10 +692,17 @@ function RepositoryMedia() {
             });
         }}
       />
+
       <MediaDetailPanel
+        workspaceId={repository.workspace}
         material={
           repository.forbidden || repository.query.isError ? null : selected
         }
+        canEdit={Boolean(selected && canDelete(selected))}
+        canDelete={Boolean(selected && canDelete(selected))}
+        canPermanentDelete={Boolean(selected && canPermanentDelete(selected))}
+        canRestore={Boolean(selected && canRestore(selected))}
+        canPromoteDraft={Boolean(selected && canPromoteDraft(selected))}
         onClose={() => setSelected(null)}
         quotaExceeded={repository.usage.data?.isQuotaExceeded}
         downloading={selected ? downloader.isDownloading(selected.id) : false}
@@ -491,10 +714,16 @@ function RepositoryMedia() {
             onSuccess: () => setSelected(null),
           });
         }}
+        onWatermark={(latest) => setWatermarkTarget(latest)}
         onDelete={(latest) => {
           setConfirm(latest);
           setSelected(null);
         }}
+        onPermanentDelete={(latest) => {
+          setPurgeTarget(latest);
+          setSelected(null);
+        }}
+        onRestore={(latest) => repository.restore.mutate(latest)}
         onWatermarked={uploaded}
       />
     </div>

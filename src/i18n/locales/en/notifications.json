@@ -12,6 +12,7 @@
   },
   "settings": {
     "title": "Notification Settings",
+    "subtitle": "Customize notifications via email and in-system push notifications.",
     "description": "Manage how you receive notifications from BrandHub.",
     "loadError": "Failed to load notification settings.",
     "retry": "Retry",

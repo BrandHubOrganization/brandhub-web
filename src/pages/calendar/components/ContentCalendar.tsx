@@ -6,10 +6,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import type { EventDropArg, EventContentArg } from "@fullcalendar/core";
 import type { CalendarPostEvent, PlatformType, PostStatus } from "@/types/calendar";
 import {
-  Video,
-  AtSign,
-  Share2,
-  Globe,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -18,8 +14,10 @@ import {
   Eye,
   ListTodo,
 } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { SelectMenu } from "@/components/ui/select-menu";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { useNavigate, useParams } from "react-router-dom";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { formatRelativeScheduleTime } from "@/lib/dateUtils";
@@ -44,23 +42,23 @@ const PLATFORM_CONFIG: Record<
 > = {
   FACEBOOK: {
     name: "Facebook",
-    icon: <Share2 className="size-3.5 shrink-0 text-blue-500" />,
+    icon: <FaFacebook className="size-3.5 shrink-0 text-[#1877F2]" />,
     color: "bg-blue-500 text-white",
   },
   INSTAGRAM: {
     name: "Instagram",
-    icon: <Globe className="size-3.5 shrink-0 text-pink-500" />,
+    icon: <FaInstagram className="size-3.5 shrink-0 text-[#E1306C]" />,
     color: "bg-pink-500 text-white",
   },
   TIKTOK: {
     name: "TikTok",
-    icon: <Video className="size-3.5 shrink-0 text-slate-800 dark:text-slate-200" />,
+    icon: <FaTiktok className="size-3.5 shrink-0 text-slate-800 dark:text-slate-200" />,
     color: "bg-slate-900 text-white dark:bg-slate-200 dark:text-slate-900",
   },
   THREADS: {
     name: "Threads",
-    icon: <AtSign className="size-3.5 shrink-0 text-purple-500" />,
-    color: "bg-purple-600 text-white",
+    icon: <FaThreads className="size-3.5 shrink-0 text-slate-800 dark:text-slate-200" />,
+    color: "bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900",
   },
 };
 
@@ -466,15 +464,13 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
             className="border-border bg-card h-8 min-w-[130px] rounded-lg text-xs shadow-2xs"
           />
 
-          <div className="border-border bg-card flex items-center rounded-lg border px-2.5 py-1 text-xs shadow-2xs">
-            <span className="text-muted-foreground text-2xs mr-1.5">Ngày:</span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => handleDateChange(e.target.value)}
-              className="text-foreground cursor-pointer bg-transparent text-xs font-medium focus:outline-hidden"
-            />
-          </div>
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            triggerClassName="h-8 rounded-lg text-xs"
+            className="w-auto"
+            allowClear={false}
+          />
         </div>
       </div>
 

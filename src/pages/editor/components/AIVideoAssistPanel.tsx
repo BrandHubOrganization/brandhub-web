@@ -25,10 +25,8 @@ import {
   imageSourceToDataUrl,
 } from "@/services/aiGenerationService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useBackgroundTaskStore } from "@/store/backgroundTaskStore";
 import { aiVideoService } from "@/services/aiVideoService";
-
-const wait = (milliseconds: number) =>
-  new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
 
 const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
@@ -184,8 +182,7 @@ function readFileAsDataUrl(file: File): Promise<string> {
       typeof reader.result === "string"
         ? resolve(reader.result)
         : reject(new Error("Invalid file result"));
-    reader.onerror = () =>
-      reject(reader.error ?? new Error("File read failed"));
+    reader.onerror = () => reject(reader.error ?? new Error("File read failed"));
     reader.readAsDataURL(file);
   });
 }
@@ -265,16 +262,7 @@ export function AIVideoAssistPanel({
   );
 
   const [uploadedImage, setUploadedImage] = useState("");
-  const [characterImage, setCharacterImage] = useState("");
   const [selectedImage, setSelectedImage] = useState(postImageUrls[0] ?? "");
-  const [generationMode, setGenerationMode] = useState<"prompt" | "reference">(
-    "prompt",
-  );
-  const [imagePrompt, setImagePrompt] = useState("");
-  const [promptDuration, setPromptDuration] = useState(5);
-  const [promptAspectRatio, setPromptAspectRatio] = useState<"16:9" | "9:16">(
-    "9:16",
-  );
 
   const [poseVideoDataUrl, setPoseVideoDataUrl] = useState("");
   const [poseVideoObjectUrl, setPoseVideoObjectUrl] = useState("");
@@ -299,10 +287,23 @@ export function AIVideoAssistPanel({
 
   useEffect(() => {
     mountedRef.current = true;
+    const latestCompleted = useBackgroundTaskStore
+      .getState()
+      .tasks.find(
+        (task) =>
+          task.type === "AI_VIDEO" &&
+          task.status === "COMPLETED" &&
+          task.resultUrl &&
+          (!workspaceId || task.workspaceId === workspaceId),
+      );
+    if (latestCompleted?.resultUrl) {
+      setVideoUrl((prev) => prev || latestCompleted.resultUrl!);
+      setVideoS3Key((prev) => prev || latestCompleted.resultS3Key);
+    }
     return () => {
       mountedRef.current = false;
     };
-  }, []);
+  }, [workspaceId]);
 
   useEffect(() => {
     return () => {
@@ -411,18 +412,11 @@ export function AIVideoAssistPanel({
 
   const handleGenerate = async () => {
     const hasMotionInputs =
-      generationMode === "reference" &&
       Boolean(selectedImage) &&
       Boolean(poseVideoDataUrl) &&
       poseVideoDuration !== null;
-    const requestedPrompt = imagePrompt.trim() || videoBrief.trim();
-    const useImagePrompt = generationMode === "prompt" && Boolean(selectedImage);
 
-    if (useImagePrompt && requestedPrompt.length < 10) {
-      toast.error(t("editor.studio.video.promptTooShort"));
-      return;
-    }
-    if (!hasMotionInputs && !useImagePrompt && !videoBrief.trim()) {
+    if (!hasMotionInputs && !videoBrief.trim()) {
       if (!selectedImage) {
         toast.error(t("editor.studio.video.imageRequired"));
         return;
@@ -436,80 +430,84 @@ export function AIVideoAssistPanel({
     setVideoS3Key(undefined);
     setJobStatus("PENDING");
     try {
-      if (!hasMotionInputs && !useImagePrompt && videoBrief.trim()) {
+      if (!hasMotionInputs && videoBrief.trim()) {
         const job = await aiGenerationService.generateVideo({
           prompt: videoBrief.trim(),
           clientId: workspaceId || "studio",
         });
-        for (let attempt = 0; attempt < 600; attempt += 1) {
-          await wait(500);
-          if (!mountedRef.current) return;
-          const status = await aiGenerationService.getVideoStatus(job.job_id);
-          setJobStatus(status.status);
-          if (status.status === "COMPLETED" && status.video_url) {
-            setVideoUrl(status.video_url);
-            setVideoS3Key(status.s3_key ?? undefined);
-            toast.success(t("editor.studio.video.generateSuccess"));
-            return;
-          }
-          if (status.status === "FAILED") {
-            throw new Error(
-              status.error_message ||
-                status.error_code ||
-                "Video generation failed",
-            );
-          }
-        }
-        throw new Error("Video generation timed out");
+        const completed = await useBackgroundTaskStore
+          .getState()
+          .startAiVideoTask({
+            workspaceId: workspaceId || "studio",
+            jobId: job.job_id,
+            title: "Tạo Video AI",
+            subtitle: videoBrief.trim().slice(0, 60),
+            pollIntervalMs: 500,
+            poll: async () => {
+              const status = await aiGenerationService.getVideoStatus(
+                job.job_id,
+              );
+              if (mountedRef.current) setJobStatus(status.status);
+              return {
+                status: status.status,
+                videoUrl: status.video_url,
+                s3Key: status.s3_key,
+                errorMessage:
+                  status.error_message ||
+                  status.error_code ||
+                  "Video generation failed",
+              };
+            },
+          });
+        if (!mountedRef.current) return;
+        setVideoUrl(completed.videoUrl);
+        setVideoS3Key(completed.s3Key);
+        toast.success(t("editor.studio.video.generateSuccess"));
+        return;
       }
 
       if (!workspaceId) throw new Error("A workspace is required for AI video");
       const referenceImageBase64 = await imageSourceToDataUrl(selectedImage);
       const aspectRatio: "16:9" | "9:16" =
-        generationMode === "prompt"
-          ? promptAspectRatio
-          : poseVideoDimensions &&
-              poseVideoDimensions.width > poseVideoDimensions.height
-            ? "16:9"
-            : "9:16";
+        poseVideoDimensions &&
+        poseVideoDimensions.width > poseVideoDimensions.height
+          ? "16:9"
+          : "9:16";
 
       const { job } = await aiVideoService.generate(workspaceId, {
         prompt: videoBrief.trim() || undefined,
         aspectRatio,
         referenceImageBase64,
-        characterImageBase64:
-          generationMode === "prompt" && promptDuration === 20
-            ? characterImage || undefined
-            : undefined,
-        ...(generationMode === "prompt"
-          ? {
-              prompt: requestedPrompt,
-              durationSeconds: promptDuration,
-            }
-          : {
-              poseVideoBase64: poseVideoDataUrl,
-              poseVideoFilename: poseVideoName || "pose_video.mp4",
-              durationSeconds: Math.round(poseVideoDuration! * 100) / 100,
-            }),
+        poseVideoBase64: poseVideoDataUrl,
+        poseVideoFilename: poseVideoName || "pose_video.mp4",
+        durationSeconds: Math.round(poseVideoDuration! * 100) / 100,
       });
 
-      const maxAttempts = generationMode === "prompt" && promptDuration === 20 ? 1200 : 600;
-      for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-        await wait(3000);
-        if (!mountedRef.current) return;
-        const status = await aiVideoService.status(workspaceId, job.jobId);
-        setJobStatus(status.status);
-        if (status.status === "COMPLETED" && status.videoUrl) {
-          setVideoUrl(status.videoUrl);
-          setVideoS3Key(status.s3Key ?? undefined);
-          toast.success(t("editor.studio.video.generateSuccess"));
-          return;
-        }
-        if (status.status === "FAILED") {
-          throw new Error(status.errorCode || "Video generation failed");
-        }
-      }
-      throw new Error("Video generation timed out");
+      const completed = await useBackgroundTaskStore
+        .getState()
+        .startAiVideoTask({
+          workspaceId,
+          jobId: job.jobId,
+          title: `Tạo Video AI (${aspectRatio})`,
+          subtitle:
+            videoBrief.trim().slice(0, 60) || poseVideoName || "Motion Video",
+          pollIntervalMs: 3000,
+          poll: async () => {
+            const status = await aiVideoService.status(workspaceId, job.jobId);
+            if (mountedRef.current) setJobStatus(status.status);
+            return {
+              status: status.status,
+              videoUrl: status.videoUrl,
+              s3Key: status.s3Key,
+              errorMessage: status.errorCode || "Video generation failed",
+            };
+          },
+        });
+
+      if (!mountedRef.current) return;
+      setVideoUrl(completed.videoUrl);
+      setVideoS3Key(completed.s3Key);
+      toast.success(t("editor.studio.video.generateSuccess"));
     } catch (error) {
       if (mountedRef.current)
         toast.error(
@@ -546,24 +544,6 @@ export function AIVideoAssistPanel({
         />
       </div>
 
-      <label className="text-foreground block space-y-2 text-xs font-medium">
-        <span>{t("editor.studio.video.generationMode")}</span>
-        <select
-          value={generationMode}
-          disabled={isGenerating}
-          onChange={(event) =>
-            setGenerationMode(event.target.value as "prompt" | "reference")
-          }
-          className="border-border bg-background text-foreground w-full rounded-md border p-2"
-        >
-          <option value="prompt">
-            {t("editor.studio.video.imagePromptMode")}
-          </option>
-          <option value="reference">
-            {t("editor.studio.video.referenceMode")}
-          </option>
-        </select>
-      </label>
       {/* 1. Reference Image (1 ảnh tham chiếu) */}
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-2">
@@ -632,259 +612,157 @@ export function AIVideoAssistPanel({
         )}
       </div>
 
-      {generationMode === "prompt" && (
-        <div className="space-y-3">
-          {promptDuration === 20 && (
-            <div className="border-border space-y-2 rounded-md border p-3">
-              <label className="text-foreground block space-y-2 text-xs font-medium">
-                <span>{t("editor.studio.video.characterLabel")}</span>
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  disabled={isGenerating}
-                  aria-label={t("editor.studio.video.characterLabel")}
-                  className="border-border bg-background text-foreground w-full rounded-md border p-2"
-                  onChange={async (event) => {
-                    const file = event.target.files?.[0];
-                    event.target.value = "";
-                    if (!file) return;
-                    if (!isSupportedImageFile(file)) {
-                      toast.error(t("editor.studio.video.uploadImageOnly"));
-                      return;
-                    }
-                    if (file.size > MAX_IMAGE_BYTES) {
-                      toast.error(t("editor.studio.video.uploadImageTooLarge"));
-                      return;
-                    }
-                    try {
-                      const data = await readFileAsDataUrl(file);
-                      if (mountedRef.current) setCharacterImage(data);
-                    } catch {
-                      toast.error(t("editor.studio.image.uploadFailed"));
-                    }
-                  }}
-                />
-              </label>
-              {characterImage && (
-                <div className="flex items-center gap-3">
-                  <img src={characterImage} alt={t("editor.studio.video.characterLabel")} className="h-20 w-16 rounded-md object-cover" />
-                  <Button variant="ghost" size="sm" disabled={isGenerating} onClick={() => setCharacterImage("")}>
-                    {t("editor.studio.video.removeCharacter")}
-                  </Button>
-                </div>
-              )}
-              <p className="text-muted-foreground text-xs" role="status">
-                {t(characterImage ? "editor.studio.video.reviewModeHint" : "editor.studio.video.cinematicModeHint")}
-              </p>
-            </div>
-          )}
-          <label className="text-foreground block space-y-2 text-xs font-medium">
-            <span>{t("editor.studio.video.briefLabel")}</span>
-            <textarea
-              value={imagePrompt}
-              onChange={(event) => setImagePrompt(event.target.value)}
-              maxLength={1000}
-              rows={4}
-              disabled={isGenerating}
-              placeholder={t("editor.studio.video.promptHint")}
-              className="border-border bg-background text-foreground w-full rounded-md border p-2"
-            />
-          </label>
-          <div className="grid grid-cols-2 gap-3">
-            <label className="text-foreground space-y-2 text-xs font-medium">
-              <span>{t("editor.studio.video.durationLabel")}</span>
-              <select
-                value={promptDuration}
-                disabled={isGenerating}
-                onChange={(event) =>
-                  setPromptDuration(Number(event.target.value))
-                }
-                className="border-border bg-background text-foreground w-full rounded-md border p-2"
-              >
-                {[5, 10, 15, 20].map((seconds) => (
-                  <option key={seconds} value={seconds}>
-                    {t("editor.studio.video.durationMeasured", { seconds })}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-foreground space-y-2 text-xs font-medium">
-              <span>{t("editor.studio.video.aspectRatioLabel")}</span>
-              <select
-                value={promptAspectRatio}
-                disabled={isGenerating}
-                onChange={(event) =>
-                  setPromptAspectRatio(event.target.value as "16:9" | "9:16")
-                }
-                className="border-border bg-background text-foreground w-full rounded-md border p-2"
-              >
-                <option value="9:16">
-                  {t("editor.studio.video.portrait")}
-                </option>
-                <option value="16:9">
-                  {t("editor.studio.video.landscape")}
-                </option>
-              </select>
-            </label>
+      {/* 2. Reference Video (1 video chuyển động ref) */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5">
+            <Film className="text-muted-foreground size-3.5" />
+            <span className="text-muted-foreground text-2xs font-semibold tracking-wider uppercase">
+              {t("editor.studio.video.referenceVideoLabel")}
+            </span>
           </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="text-2xs h-7 gap-1 px-2"
+            disabled={isProbingVideo}
+            onClick={() => videoInputRef.current?.click()}
+          >
+            <Upload className="size-3" />
+            {poseVideoObjectUrl
+              ? t("editor.studio.video.changeVideoButton")
+              : t("editor.studio.video.uploadVideoButton")}
+          </Button>
+          <input
+            ref={videoInputRef}
+            data-testid="video-ref-video-input"
+            type="file"
+            accept="video/mp4,video/webm,video/quicktime"
+            className="hidden"
+            onChange={handleVideoUpload}
+          />
         </div>
-      )}
 
-      {generationMode === "reference" && (
-        <>
-          {/* 2. Reference Video (1 video chuyển động ref) */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5">
-                <Film className="text-muted-foreground size-3.5" />
-                <span className="text-muted-foreground text-2xs font-semibold tracking-wider uppercase">
-                  {t("editor.studio.video.referenceVideoLabel")}
-                </span>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="text-2xs h-7 gap-1 px-2"
-                disabled={isProbingVideo}
-                onClick={() => videoInputRef.current?.click()}
-              >
-                <Upload className="size-3" />
-                {poseVideoObjectUrl
-                  ? t("editor.studio.video.changeVideoButton")
-                  : t("editor.studio.video.uploadVideoButton")}
-              </Button>
-              <input
-                ref={videoInputRef}
-                data-testid="video-ref-video-input"
-                type="file"
-                accept="video/mp4,video/webm,video/quicktime"
-                className="hidden"
-                onChange={handleVideoUpload}
+        {poseVideoObjectUrl ? (
+          <div className="border-brand-orange bg-muted/30 space-y-2 overflow-hidden rounded-lg border-2 p-2">
+            <div className="relative overflow-hidden rounded-md bg-black">
+              <video
+                src={poseVideoObjectUrl}
+                controls
+                muted
+                playsInline
+                preload="metadata"
+                onLoadedMetadata={(event) => {
+                  const duration = event.currentTarget.duration;
+                  if (Number.isFinite(duration) && duration > 0) {
+                    setPoseVideoDuration(duration);
+                  }
+                  if (
+                    event.currentTarget.videoWidth &&
+                    event.currentTarget.videoHeight
+                  ) {
+                    setPoseVideoDimensions({
+                      width: event.currentTarget.videoWidth,
+                      height: event.currentTarget.videoHeight,
+                    });
+                  }
+                }}
+                className="max-h-48 w-full object-contain"
               />
+              <span className="bg-brand-orange absolute top-1.5 right-1.5 flex size-5 items-center justify-center rounded-full text-white shadow-xs">
+                <Check className="size-3" />
+              </span>
             </div>
-
-            {poseVideoObjectUrl ? (
-              <div className="border-brand-orange bg-muted/30 space-y-2 overflow-hidden rounded-lg border-2 p-2">
-                <div className="relative overflow-hidden rounded-md bg-black">
-                  <video
-                    src={poseVideoObjectUrl}
-                    controls
-                    muted
-                    playsInline
-                    preload="metadata"
-                    onLoadedMetadata={(event) => {
-                      const duration = event.currentTarget.duration;
-                      if (Number.isFinite(duration) && duration > 0) {
-                        setPoseVideoDuration(duration);
-                      }
-                      if (
-                        event.currentTarget.videoWidth &&
-                        event.currentTarget.videoHeight
-                      ) {
-                        setPoseVideoDimensions({
-                          width: event.currentTarget.videoWidth,
-                          height: event.currentTarget.videoHeight,
-                        });
-                      }
-                    }}
-                    className="max-h-48 w-full object-contain"
-                  />
-                  <span className="bg-brand-orange absolute top-1.5 right-1.5 flex size-5 items-center justify-center rounded-full text-white shadow-xs">
-                    <Check className="size-3" />
-                  </span>
-                </div>
-                <div className="flex items-center justify-between gap-2 px-1">
-                  <span className="text-foreground truncate text-xs font-medium">
-                    {poseVideoName}
-                  </span>
-                  {poseVideoSizeMb !== null && (
-                    <span className="text-muted-foreground text-2xs shrink-0 font-mono">
-                      {poseVideoSizeMb} MB
-                    </span>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <button
-                type="button"
-                disabled={isProbingVideo}
-                onClick={() => videoInputRef.current?.click()}
-                className="border-border bg-muted/40 hover:border-brand-orange/50 hover:bg-muted/70 flex w-full flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed px-3 py-5 text-center transition-colors"
-              >
-                {isProbingVideo ? (
-                  <Loader2 className="text-brand-orange size-5 animate-spin" />
-                ) : (
-                  <Film className="text-muted-foreground size-5" />
-                )}
-                <span className="text-foreground text-xs font-medium">
-                  {isProbingVideo
-                    ? t("editor.studio.video.durationProbing")
-                    : t("editor.studio.video.selectVideoPrompt")}
+            <div className="flex items-center justify-between gap-2 px-1">
+              <span className="text-foreground truncate text-xs font-medium">
+                {poseVideoName}
+              </span>
+              {poseVideoSizeMb !== null && (
+                <span className="text-muted-foreground text-2xs shrink-0 font-mono">
+                  {poseVideoSizeMb} MB
                 </span>
-                <span className="text-muted-foreground text-2xs">
-                  {t("editor.studio.video.referenceVideoHint")}
-                </span>
-              </button>
-            )}
+              )}
+            </div>
           </div>
+        ) : (
+          <button
+            type="button"
+            disabled={isProbingVideo}
+            onClick={() => videoInputRef.current?.click()}
+            className="border-border bg-muted/40 hover:border-brand-orange/50 hover:bg-muted/70 flex w-full flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed px-3 py-5 text-center transition-colors"
+          >
+            {isProbingVideo ? (
+              <Loader2 className="text-brand-orange size-5 animate-spin" />
+            ) : (
+              <Film className="text-muted-foreground size-5" />
+            )}
+            <span className="text-foreground text-xs font-medium">
+              {isProbingVideo
+                ? t("editor.studio.video.durationProbing")
+                : t("editor.studio.video.selectVideoPrompt")}
+            </span>
+            <span className="text-muted-foreground text-2xs">
+              {t("editor.studio.video.referenceVideoHint")}
+            </span>
+          </button>
+        )}
+      </div>
 
-          {/* 3. Auto-detected Duration Display (Tự đo thời lượng hiển thị ở dưới) */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-muted-foreground text-xs font-semibold">
-                {t("editor.studio.video.durationLabel")}
-              </span>
-              <span className="bg-brand-orange-soft text-brand-orange text-2xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium">
-                <Clock className="size-3" />
-                {t("editor.studio.video.durationAutoBadge")}
-              </span>
-            </div>
+      {/* 3. Auto-detected Duration Display (Tự đo thời lượng hiển thị ở dưới) */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-muted-foreground text-xs font-semibold">
+            {t("editor.studio.video.durationLabel")}
+          </span>
+          <span className="bg-brand-orange-soft text-brand-orange text-2xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium">
+            <Clock className="size-3" />
+            {t("editor.studio.video.durationAutoBadge")}
+          </span>
+        </div>
 
-            {poseVideoDuration !== null ? (
-              <div
-                data-testid="video-detected-duration"
-                className="border-brand-orange bg-brand-orange-soft/60 flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5"
-              >
-                <div className="flex items-center gap-2">
-                  <Video className="text-brand-orange size-4 shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-brand-orange font-mono text-sm font-bold">
-                      {t("editor.studio.video.durationMeasured", {
-                        seconds: formatDurationSeconds(poseVideoDuration),
+        {poseVideoDuration !== null ? (
+          <div
+            data-testid="video-detected-duration"
+            className="border-brand-orange bg-brand-orange-soft/60 flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5"
+          >
+            <div className="flex items-center gap-2">
+              <Video className="text-brand-orange size-4 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-brand-orange font-mono text-sm font-bold">
+                  {t("editor.studio.video.durationMeasured", {
+                    seconds: formatDurationSeconds(poseVideoDuration),
+                  })}
+                </p>
+                <p className="text-muted-foreground text-2xs">
+                  {poseVideoFrames
+                    ? t("editor.studio.video.durationMetaExact", {
+                        frames: poseVideoFrames,
+                        fps: poseVideoFps ?? DEFAULT_FPS_ESTIMATE,
+                        nodes: motionNodes ?? 1,
+                      })
+                    : t("editor.studio.video.durationMeta", {
+                        nodes: motionNodes ?? 1,
                       })}
-                    </p>
-                    <p className="text-muted-foreground text-2xs">
-                      {poseVideoFrames
-                        ? t("editor.studio.video.durationMetaExact", {
-                            frames: poseVideoFrames,
-                            fps: poseVideoFps ?? DEFAULT_FPS_ESTIMATE,
-                            nodes: motionNodes ?? 1,
-                          })
-                        : t("editor.studio.video.durationMeta", {
-                            nodes: motionNodes ?? 1,
-                          })}
-                    </p>
-                  </div>
-                </div>
-                {poseVideoDimensions && (
-                  <span className="border-brand-orange/30 bg-background/80 text-foreground text-2xs shrink-0 rounded-md border px-2 py-1 font-mono">
-                    {poseVideoDimensions.width}×{poseVideoDimensions.height}
-                  </span>
-                )}
+                </p>
               </div>
-            ) : (
-              <div
-                data-testid="video-duration-empty"
-                className="bg-muted text-muted-foreground text-2xs flex items-center gap-2 rounded-lg px-3 py-2.5"
-              >
-                <Video className="text-brand-orange size-3.5 shrink-0" />
-                <span>{t("editor.studio.video.durationEmptyNotice")}</span>
-              </div>
+            </div>
+            {poseVideoDimensions && (
+              <span className="border-brand-orange/30 bg-background/80 text-foreground text-2xs shrink-0 rounded-md border px-2 py-1 font-mono">
+                {poseVideoDimensions.width}×{poseVideoDimensions.height}
+              </span>
             )}
           </div>
-        </>
-      )}
+        ) : (
+          <div
+            data-testid="video-duration-empty"
+            className="bg-muted text-muted-foreground text-2xs flex items-center gap-2 rounded-lg px-3 py-2.5"
+          >
+            <Video className="text-brand-orange size-3.5 shrink-0" />
+            <span>{t("editor.studio.video.durationEmptyNotice")}</span>
+          </div>
+        )}
+      </div>
 
       <Button
         data-testid="generate-video"

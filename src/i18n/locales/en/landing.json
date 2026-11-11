@@ -224,7 +224,7 @@
     },
     "tiktok": {
       "0": {
-        "caption": "POV: you just found a tool that automates your entire content calendar across 5 platforms in one click. Content team went from 6 people to 3. My boss stopped asking 'where's the post' every morning."
+        "caption": "POV: you just found a tool that automates your entire content calendar across 4 platforms in one click. Content team went from 6 people to 3. My boss stopped asking 'where's the post' every morning."
       },
       "1": {
         "caption": "One tool replacing Canva + Google Calendar + Trello + Google Drive + Messenger. Sounds fake but it's real. This is the actual stack our team uses to run 8 clients at once. Who said agencies have to be chaos?"
@@ -247,7 +247,7 @@
       "2": {
         "authorName": "Duc Anh",
         "authorRole": "COO, NextGen Media Group",
-        "content": "Running the Tet 2026 campaign for 5 brands at once with an 8-person team. Without BrandHub, I honestly don't think we'd have survived January. Cross-platform publishing sends one post to 5 channels (FB, IG, TikTok, LinkedIn, X) with a single click. The content calendar gives us a bird's-eye view of every campaign on one screen — we catch double-bookings and duplicate content instantly. Our team's output is up 240%, and review meeting time is down 80%. Measurable ROI: roughly $3,200/month saved on tooling and headcount."
+        "content": "Running the Tet 2026 campaign for 5 brands at once with an 8-person team. Without BrandHub, I honestly don't think we'd have survived January. Cross-platform publishing sends one post to 4 channels (FB, IG, TikTok, Threads) with a single click. The content calendar gives us a bird's-eye view of every campaign on one screen — we catch double-bookings and duplicate content instantly. Our team's output is up 240%, and review meeting time is down 80%. Measurable ROI: roughly $3,200/month saved on tooling and headcount."
       }
     },
     "linkedin": {
@@ -323,10 +323,10 @@
   },
   "trustedBy": "Integrated Tech Ecosystem & Official Platforms",
   "stats": {
-    "microservices": "Distributed Microservices Architecture",
-    "trends": "Social Trend Signals Crawled Daily",
-    "latency": "Average API Gateway Latency",
-    "consistency": "Brand Tone Consistency & Watermarking",
+    "microservices": "High-Availability Cloud Infrastructure",
+    "trends": "Social Trend Signals Analyzed Daily",
+    "latency": "Instant Sync & Real-Time Response",
+    "consistency": "Brand Tone Consistency & Content Safety",
     "contents": "Content pieces managed",
     "brands": "Brands & agencies",
     "platforms": "Platform integrations",
@@ -337,46 +337,46 @@
   },
   "features": {
     "title": "All-in-One Media Operations Platform",
-    "subtitle": "From media package negotiations and 3 specialized task models to 4-tier QA governance and automated multi-channel publishing.",
+    "subtitle": "From media package negotiations and campaign task planning to multi-tier QA governance and automated multi-channel publishing.",
     "demoLabel": "See it in the demo",
     "demoAction": "View {{feature}} in the live MacBook demo above",
     "items": {
       "planning": {
-        "title": "Campaign Planning & 3 Task Models",
-        "desc": "Unified calendar managing 3 specialized task types: Social Media Posts, Livestream Production Plans, and Workshop/Survey Forms."
+        "title": "Campaign Planning & Task Execution",
+        "desc": "Unified calendar managing multi-channel social media posts, creative production deliverables, and interactive survey forms."
       },
       "creation": {
         "title": "AI Studio & Brand Consistency Engine",
-        "desc": "Create on-brand content with GraphRAG-enforced tone of voice, virtual brand ambassadors, and automated digital watermarking."
+        "desc": "Create on-brand content with GraphRAG-enforced tone of voice, virtual brand ambassadors, and automated AI content compliance checks."
       },
       "publishing": {
         "title": "Direct Publishing & Media Collaborators",
-        "desc": "Direct API publishing to Meta, TikTok, and Threads, alongside milestone tracking for third-party press, TV, and banner partners."
+        "desc": "Direct API publishing to Facebook, Instagram, TikTok, and Threads, alongside milestone tracking for third-party press, TV, and banner partners."
       },
       "analytics": {
         "title": "Performance Analytics & Social Listening",
         "desc": "Real-time engagement dashboards, campaign reach analytics, and social trend monitoring for proactive strategy refinement."
       },
       "collab": {
-        "title": "4-Tier Quality Approval Workflow",
-        "desc": "Agency-grade governance: Creator → Peer QC → Agency Manager → Client Approver with granular revision and feedback loops."
+        "title": "Multi-Tier Quality Approval Workflow",
+        "desc": "Agency-grade governance across Creator → Manager → Client with granular revision history and real-time feedback loops."
       },
       "automation": {
         "title": "End-to-End Campaign Automation",
-        "desc": "Auto-convert Media Packages into task backlogs, generate Google Meet links for workshops, and schedule optimal publish windows."
+        "desc": "Auto-convert Media Packages into task backlogs, synchronize campaign calendars, and schedule optimal publish windows."
       }
     }
   },
   "aiFeatures": {
     "badge": "AI Studio & Social Intelligence Suite",
     "title": "Enterprise AI for Modern Brands & Agencies",
-    "subtitle": "From real-time social trend crawling and GraphRAG tone compliance to photorealistic virtual ambassadors and livestream script generation.",
+    "subtitle": "From real-time social trend crawling and GraphRAG tone compliance to photorealistic virtual ambassadors and automated safety moderation.",
     "demoLabel": "See it in the demo",
     "demoAction": "View {{capability}} in the live MacBook demo above",
     "items": {
       "trendCrawler": {
         "title": "AI Social Trend Crawler",
-        "desc": "Automated social listening engine crawling real-time viral trends, sentiment signals, and trending discussions across platforms."
+        "desc": "Automated social listening engine crawling real-time viral trends from TikTok Creative Center, Google Trends, and social feeds."
       },
       "virtualAmbassador": {
         "title": "AI Virtual Ambassador",
@@ -388,11 +388,11 @@
       },
       "generativeStudio": {
         "title": "Multi-Modal Generative Studio",
-        "desc": "Batch-generate high-res commercial imagery, video variations, copywriting, and automatically apply dynamic digital watermarks."
+        "desc": "Batch-generate high-res commercial imagery, video variations, copywriting, and enforce workspace Brand Guidelines."
       },
-      "livestreamScript": {
-        "title": "AI Livestream Script Generator",
-        "desc": "Generate time-slotted livestream sales scripts, host talking points, promotional deal sequences, and technical checklists."
+      "complianceCheck": {
+        "title": "AI Content Compliance Guard",
+        "desc": "Automatically screen drafts for community safety, profanity, and brand policy compliance before submitting for approval."
       },
       "collaboratorRecommender": {
         "title": "AI Media Collaborator Recommender",
@@ -402,7 +402,7 @@
   },
   "agencyWorkspace": {
     "title": "Built for Agencies & Client Networks",
-    "subtitle": "Centrally manage every brand, campaign, and client workspace — with complete data isolation and 4-tier role-based access control.",
+    "subtitle": "Centrally manage every brand, campaign, and client workspace — with complete data isolation and role-based access control.",
     "demoLabel": "See it in the demo",
     "demoAction": "View {{capability}} in the live MacBook demo above",
     "items": {
@@ -415,27 +415,27 @@
         "desc": "Spin up dedicated workspaces per client with independent timezones, Brand Guidelines, and isolated digital asset vaults."
       },
       "roleAccess": {
-        "title": "4-Tier Role-Based Access (RBAC)",
-        "desc": "Crystal-clear boundary of duties across Agency Owner, Manager, Content Creator, and Client Approver on every campaign flight."
+        "title": "Role-Based Access Control (RBAC)",
+        "desc": "Crystal-clear boundary of duties across Owner, Manager, Creator, and Client on every workspace and campaign flight."
       }
     }
   },
   "howItWorks": {
     "title": "How it works",
-    "subtitle": "A seamless end-to-end lifecycle from commercial negotiation to AI creation, 4-tier QA, and automated multi-channel publishing.",
+    "subtitle": "A seamless end-to-end lifecycle from commercial negotiation to AI creation, multi-tier QA, and automated multi-channel publishing.",
     "input": "Input",
     "output": "Handoff",
     "demoAction": "View {{step}} in the live demo above",
     "roles": {
       "owner": {
-        "roleTag": "Agency Admin",
+        "roleTag": "Owner",
         "setupWorkspace": {
           "title": "Create Workspace",
           "desc": "Set up client workspace and Brand Guidelines"
         },
         "inviteTeam": {
           "title": "Invite Team & Roles",
-          "desc": "Assign Managers, Creators, and Client seats"
+          "desc": "Assign Manager, Creator, and Client seats"
         },
         "assignClient": {
           "title": "Media Package Catalog",
@@ -443,22 +443,22 @@
         }
       },
       "creator": {
-        "roleTag": "Content Creator",
+        "roleTag": "Creator",
         "draftContent": {
-          "title": "Draft 3 Task Types",
-          "desc": "Create Posts, Livestream Plans & Workshop Forms"
+          "title": "Draft Content & Surveys",
+          "desc": "Create multi-channel posts, media assets & survey forms"
         },
         "aiAssist": {
           "title": "AI Studio & GraphRAG",
-          "desc": "Enforce tone compliance, synthesize assets & watermark"
+          "desc": "Enforce tone compliance, synthesize assets & screen safety"
         },
         "submitReview": {
           "title": "Submit for Review",
-          "desc": "Push to Peer QC or Agency Manager"
+          "desc": "Push to Manager for quality review"
         }
       },
       "manager": {
-        "roleTag": "Campaign Manager",
+        "roleTag": "Manager",
         "reviewContent": {
           "title": "Quality Governance",
           "desc": "Validate deliverables against brand compliance & KPIs"
@@ -473,10 +473,10 @@
         }
       },
       "client": {
-        "roleTag": "Brand Owner",
+        "roleTag": "Client",
         "previewFinal": {
           "title": "Cross-Platform Preview",
-          "desc": "Inspect native formatting across Facebook, TikTok, Instagram"
+          "desc": "Inspect native formatting across Facebook, Instagram, TikTok, Threads"
         },
         "approve": {
           "title": "Formal Approval",
@@ -497,7 +497,7 @@
     "items": {
       "social": {
         "title": "Social Media Kits",
-        "desc": "Pre-made templates for Instagram, Facebook, TikTok, LinkedIn posts and stories."
+        "desc": "Pre-made templates for Facebook, Instagram, TikTok, and Threads posts and stories."
       },
       "blog": {
         "title": "Blog & Article",
@@ -523,7 +523,7 @@
       },
       "convert": {
         "title": "Instant Campaign Activation",
-        "desc": "1-click conversion from signed packages into live Media Campaigns with auto-populated tasks across posts, livestreams, and workshops."
+        "desc": "1-click conversion from signed packages into live Media Campaigns with auto-populated creative tasks and publishing schedules."
       },
       "replicate": {
         "title": "Workspace Cloning & Reuse",
@@ -552,15 +552,109 @@
     "templates": "Templates",
     "testimonials": "Testimonials",
     "team": "Team",
+    "comparison": "Compare",
     "pricing": "Pricing",
     "faq": "FAQ",
     "login": "Sign in",
     "register": "Sign up",
     "dashboard": "Go to Dashboard"
   },
+  "comparison": {
+    "badge": "Media Operations Platform Comparison",
+    "title": "Why Agencies & Brands Choose BrandHub Over Fragmented Tools",
+    "subtitle": "Compare BrandHub's unified architecture against legacy social media schedulers (Buffer, Hootsuite, Planable) and manual spreadsheet workflows.",
+    "caption": "Feature comparison matrix across BrandHub, legacy social schedulers, and manual workflows",
+    "columns": {
+      "criteria": "Operational & Technical Capability",
+      "brandhub": "BrandHub Platform",
+      "brandhubSub": "All-in-One Agency & AI",
+      "legacyTools": "Legacy Schedulers",
+      "scheduler": "Legacy Schedulers",
+      "legacySub": "Buffer / Planable / Hootsuite",
+      "schedulerSub": "Buffer / Planable / Hootsuite",
+      "manual": "Manual Workflow",
+      "manualSub": "Sheets + Drive + Chat"
+    },
+    "rows": {
+      "agencyWorkspace": {
+        "feature": "Multi-Agency Architecture & Workspace Isolation",
+        "criteria": "Multi-Agency Architecture & Workspace Isolation",
+        "desc": "Strict tenant data isolation, independent timezones, and 6 canonical roles (Guest, Owner, Manager, Creator, Client, Admin)",
+        "brandhub": "Native multi-tenant RBAC",
+        "legacy": "Limited / Costly add-ons",
+        "scheduler": "Limited / Costly add-ons",
+        "manual": "Fragmented & error-prone"
+      },
+      "mediaPackage": {
+        "feature": "Media Package Negotiation & Auto-Campaigns",
+        "criteria": "Media Package Negotiation & Auto-Campaigns",
+        "desc": "Standardized service catalogs, two-way Client contract negotiation, and 1-click task backlog generation",
+        "brandhub": "End-to-end automated",
+        "legacy": "Not supported",
+        "scheduler": "Not supported",
+        "manual": "Manual contracts & spreadsheets"
+      },
+      "graphRag": {
+        "feature": "AI GraphRAG Brand Guidelines & Virtual Model",
+        "criteria": "AI GraphRAG Brand Guidelines & Virtual Model",
+        "desc": "Tone-of-voice enforcement via Neo4j + ChromaDB and hyper-consistent LoRA virtual brand ambassadors",
+        "brandhub": "GraphRAG + LoRA Studio",
+        "legacy": "Basic caption prompts only",
+        "scheduler": "Basic caption prompts only",
+        "manual": "No automated verification"
+      },
+      "trendCrawler": {
+        "feature": "Real-Time AI Social Trend Crawler",
+        "criteria": "Real-Time AI Social Trend Crawler",
+        "desc": "Automated trend discovery from TikTok Creative Center & Google Trends with instant brief suggestions",
+        "brandhub": "Daily automated crawling",
+        "legacy": "Not natively integrated",
+        "scheduler": "Not natively integrated",
+        "manual": "Hours of manual research"
+      },
+      "complianceGuard": {
+        "feature": "Automated AI Content Compliance Guard",
+        "criteria": "Automated AI Content Compliance Guard",
+        "desc": "Pre-approval screening for community safety, profanity, and platform policy violations",
+        "brandhub": "Proactive AI safety guardrails",
+        "legacy": "None",
+        "scheduler": "None",
+        "manual": "Manual human review only"
+      },
+      "approvalWorkflow": {
+        "feature": "Multi-Tier Approval (Creator → Manager → Client)",
+        "criteria": "Multi-Tier Approval (Creator → Manager → Client)",
+        "desc": "Versioned draft reviews, native multi-platform previews, and transparent audit trails",
+        "brandhub": "3-tier agency governance",
+        "legacy": "Flat approvals",
+        "scheduler": "Flat approvals",
+        "manual": "Lost in chat threads"
+      },
+      "multiChannel": {
+        "feature": "Multi-Channel Publishing & Press/TV Collaborators",
+        "criteria": "Multi-Channel Publishing & Press/TV Collaborators",
+        "desc": "Direct API publishing to Facebook, Instagram, TikTok, Threads plus third-party Press, TV & Banner tracking",
+        "brandhub": "4 Social APIs + Press/TV",
+        "legacy": "Social posts only",
+        "scheduler": "Social posts only",
+        "manual": "Manual posting per channel"
+      },
+      "vietQrBilling": {
+        "feature": "Instant VietQR Billing & Native Vietnamese AI",
+        "criteria": "Instant VietQR Billing & Native Vietnamese AI",
+        "desc": "Seamless SePay / PayOS VietQR checkout and culturally fluent Vietnamese copywriting",
+        "brandhub": "Instant VietQR + Native VI AI",
+        "legacy": "USD credit card only",
+        "scheduler": "USD credit card only",
+        "manual": "Manual bank reconciliation"
+      }
+    },
+    "footerNote": "Comparison reflects BrandHub's comprehensive media operations platform against standard social media scheduling tools in 2026.",
+    "cta": "Start Free Today"
+  },
   "team": {
     "title": "Development Team",
-    "subtitle": "The student team building BrandHub for the SEP490 capstone project.",
+    "subtitle": "SynapForge software engineering team building the BrandHub platform.",
     "members": {
       "member1": {
         "name": "Nguyen Van A",
@@ -596,7 +690,7 @@
         "features": [
           "1 workspace",
           "5 team members",
-          "3 social channels",
+          "4 social channels (FB, IG, TikTok, Threads)",
           "Basic analytics",
           "100 scheduled posts/mo"
         ]
@@ -621,7 +715,7 @@
         "cta": "Contact sales",
         "features": [
           "Everything in Pro",
-          "Dedicated account manager",
+          "Dedicated Manager support",
           "Custom integrations",
           "SLA guarantee",
           "On-premise option",
@@ -641,19 +735,19 @@
       },
       "q2": {
         "q": "Which social platforms are natively supported?",
-        "a": "BrandHub integrates directly with Meta Graph API (Facebook Pages, Groups, Instagram Professional) and TikTok for Developers. Scheduled content is processed asynchronously by our dedicated Publisher microservice."
+        "a": "BrandHub integrates natively with 4 official social platforms: Facebook, Instagram, TikTok, and Threads. Scheduled content is processed asynchronously and published securely to each brand account."
       },
       "q3": {
         "q": "How does AI Trend Crawler & Brand Guidelines enforcement work?",
-        "a": "BrandHub combines GraphRAG (Neo4j and ChromaDB vector embeddings) with real-time social trend analysis. The AI identifies emerging viral discussions and strictly validates drafts against your Brand Guidelines (voice, tone, forbidden keywords) before automated digital watermarking."
+        "a": "BrandHub combines GraphRAG (Neo4j and ChromaDB vector embeddings) with real-time social trend analysis. The AI identifies emerging viral discussions, strictly validates drafts against your Brand Guidelines (voice, tone, forbidden keywords), and runs automated community safety compliance checks."
       },
       "q4": {
         "q": "How does collaboration between Agencies and Clients operate?",
-        "a": "We provide a 2-Tier RBAC architecture: Agency teams draft and manage multi-channel campaigns, while Clients access a dedicated approval portal to review, comment on drafts, and sign off without scattered chat threads."
+        "a": "We provide a role-based access control architecture across 6 canonical roles (Guest, Owner, Manager, Creator, Client, Admin): Agency teams (Owner, Manager, Creator) draft and manage multi-channel campaigns, while Clients access a dedicated approval portal to review, comment on drafts, and sign off."
       },
       "q5": {
         "q": "How are social credentials and access tokens secured?",
-        "a": "Our microservices architecture isolates authentication through Spring Cloud Gateway. Social OAuth tokens are encrypted with AES-256 in the database, with Redis token blacklisting and complete workspace tenant isolation."
+        "a": "Our enterprise-grade cloud architecture protects sensitive data with multi-layer encryption. Social OAuth tokens are encrypted with AES-256 in the database, with complete workspace tenant isolation."
       }
     }
   },
@@ -683,6 +777,6 @@
       "resources": ["Help Center", "Blog", "Community", "Tutorials"],
       "company": ["About", "Careers", "Privacy", "Terms"]
     },
-    "copyright": "© {{year}} BrandHub · Engineered by SynapForge Team (SEP490 Capstone Project - FPT University)."
+    "copyright": "© {{year}} BrandHub · Engineered by SynapForge Team."
   }
 }

@@ -87,7 +87,7 @@ export function CampaignTaskGroups({
                         task.status !== "CANCELLED" && (
                           <Link
                             className="underline underline-offset-4"
-                            to={`/workspaces/${workspaceId}/content-writing?taskId=${task.id}`}
+                            to={`/workspaces/${workspaceId}/editor?taskId=${task.id}`}
                           >
                             {t("campaign.delivery.openEditor")}
                           </Link>

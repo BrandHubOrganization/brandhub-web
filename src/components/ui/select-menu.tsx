@@ -46,15 +46,17 @@ export function SelectMenu({
           className,
         )}
       >
-        <span className="flex min-w-0 items-center gap-2 truncate">
+        <span className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden text-left">
           {selectedOption?.icon && (
             <span className="text-brand-orange shrink-0">
               {selectedOption.icon}
             </span>
           )}
-          <SelectPrimitive.Value />
+          <span className="block min-w-0 flex-1 truncate">
+            <SelectPrimitive.Value />
+          </span>
         </span>
-        <SelectPrimitive.Icon className="shrink-0">
+        <SelectPrimitive.Icon className="ml-1 shrink-0">
           <ChevronDown className="text-muted-foreground size-3.5" />
         </SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
@@ -74,7 +76,9 @@ export function SelectMenu({
                   value={option.value === "" ? EMPTY : option.value}
                   className="data-[highlighted]:bg-muted/80 data-[state=checked]:bg-brand-orange/10 data-[state=checked]:text-brand-orange relative flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs transition-colors outline-none select-none data-[state=checked]:font-semibold"
                 >
-                  {option.icon && <span className="shrink-0">{option.icon}</span>}
+                  {option.icon && (
+                    <span className="shrink-0">{option.icon}</span>
+                  )}
                   <span className="min-w-0 truncate">
                     <SelectPrimitive.ItemText>
                       {option.label}

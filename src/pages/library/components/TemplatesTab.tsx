@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import type { PostTemplate, HashtagGroup } from "@/types/contentLibrary";
-import { mockContentLibraryService } from "@/services/mock/mockContentLibraryService";
+import { contentLibraryService } from "@/services/contentLibraryService";
 import { FileText, ArrowRight, Plus, Trash2, Calendar, X, Search, Copy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -44,8 +44,8 @@ export const TemplatesTab: React.FC = () => {
     setLoading(true);
     try {
       const [tplData, hgData] = await Promise.all([
-        mockContentLibraryService.getTemplates(),
-        mockContentLibraryService.getHashtagGroups(),
+        contentLibraryService.getTemplates(),
+        contentLibraryService.getHashtagGroups(),
       ]);
       setTemplates(tplData);
       setHashtagGroups(hgData);
@@ -87,7 +87,7 @@ export const TemplatesTab: React.FC = () => {
 
     setIsSaving(true);
     try {
-      const created = await mockContentLibraryService.createTemplate(
+      const created = await contentLibraryService.createTemplate(
         title,
         caption,
         selectedHgId || undefined,
@@ -108,7 +108,7 @@ export const TemplatesTab: React.FC = () => {
   const handleDeleteTemplate = async (id: string, title: string) => {
     if (window.confirm(t("library.templates.deleteConfirm", { title }))) {
       try {
-        await mockContentLibraryService.deleteTemplate(id);
+        await contentLibraryService.deleteTemplate(id);
         setTemplates((prev) => prev.filter((t) => t.id !== id));
         toast.success(t("library.templates.deleteSuccess"));
       } catch {

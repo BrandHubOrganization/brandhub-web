@@ -14,6 +14,7 @@ import { DevQuickLogin } from "@/components/auth/DevQuickLogin";
 import { authService, oauthUrl } from "@/services/authService";
 import { extractErrorMessage } from "@/utils/error";
 import { consumeAuthRedirect, saveAuthRedirect } from "@/utils/authRedirect";
+import { SeoHead } from "@/components/seo/SeoHead";
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -88,6 +89,11 @@ export function LoginPage() {
       className="bg-background flex min-h-screen"
       style={{ fontFamily: "var(--font-sans)" }}
     >
+      <SeoHead
+        title="Đăng nhập | BrandHub"
+        canonicalPath="/login"
+        noindex
+      />
       <AuthBrandPanel />
       <div className="flex flex-1 items-center justify-center px-4 sm:px-8">
         <div className="w-full max-w-[400px]">

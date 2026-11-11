@@ -23,7 +23,7 @@ export function WorkspaceRequestTask({ workspaceId, requestId }: { workspaceId: 
       <Button asChild variant="outline"><Link to={`/workspaces/${workspaceId}/tasks?task=${encodeURIComponent(query.data.id)}`}>
         {t("tasks.workflow.openDetail")}</Link></Button>
       {query.data.canOpenEditor && <Button asChild variant="outline"><Link
-        to={`/workspaces/${workspaceId}/content-writing?taskId=${encodeURIComponent(query.data.id)}`}>
+        to={`/workspaces/${workspaceId}/editor?taskId=${encodeURIComponent(query.data.id)}`}>
         {t("requests.v2.review.openEditor")}</Link></Button>}
     </>}
   </section>;

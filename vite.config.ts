@@ -14,7 +14,12 @@ export default defineConfig({
   },
   // Unit tests only — tests/e2e/** are Playwright specs run by `playwright test`.
   test: {
-    include: ["src/**/*.test.ts", "tests/unit/**/*.test.ts"],
+    include: [
+      "src/**/*.test.ts",
+      "src/**/*.test.tsx",
+      "tests/unit/**/*.test.ts",
+      "tests/unit/**/*.test.tsx",
+    ],
   },
   server: {
     port: 3000,

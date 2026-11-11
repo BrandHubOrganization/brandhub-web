@@ -9,6 +9,7 @@ import type {
 } from "@/types/contentRequest";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-range-picker";
 import { Textarea } from "@/components/ui/textarea";
 
 const PLATFORMS: SocialPlatform[] = [
@@ -111,18 +112,12 @@ export const ReviseRequestModal: React.FC<ReviseRequestModalProps> = ({
             />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-foreground text-xs font-semibold">
-              {t("requests.create.deadlineLabel")}
-            </label>
-            <Input
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              className="bg-muted text-foreground focus:ring-brand-orange/20 border-border h-auto w-full rounded-xl border px-3 py-2 text-xs focus:ring-2 focus:outline-hidden"
-              required
-            />
-          </div>
+          <DatePicker
+            label={t("requests.create.deadlineLabel")}
+            required
+            value={deadline}
+            onChange={setDeadline}
+          />
 
           <div className="flex flex-col gap-1.5">
             <label className="text-foreground text-xs font-semibold">
