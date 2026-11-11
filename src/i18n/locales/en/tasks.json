@@ -716,6 +716,28 @@
           "scheduledAt": "Schedule"
         }
       }
+    },
+    "SURVEY": {
+      "FORM": {
+        "title": "Form design"
+      },
+      "DISTRIBUTION": {
+        "title": "Distribution & collection",
+        "fields": {
+          "publicLink": "Public link",
+          "channels": "Channels",
+          "closeAt": "Closes at",
+          "targetResponses": "Target responses"
+        }
+      },
+      "REPORT": {
+        "title": "Analysis & report",
+        "fields": {
+          "insight": "Insight",
+          "conclusion": "Conclusion",
+          "recommendations": "Recommendations"
+        }
+      }
     }
   },
   "sectionReview": {

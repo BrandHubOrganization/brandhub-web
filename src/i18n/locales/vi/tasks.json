@@ -716,6 +716,28 @@
           "scheduledAt": "Lịch đăng"
         }
       }
+    },
+    "SURVEY": {
+      "FORM": {
+        "title": "Thiết kế bảng hỏi"
+      },
+      "DISTRIBUTION": {
+        "title": "Phân phối & thu thập",
+        "fields": {
+          "publicLink": "Link công khai",
+          "channels": "Kênh phát",
+          "closeAt": "Hạn đóng",
+          "targetResponses": "Chỉ tiêu số phản hồi"
+        }
+      },
+      "REPORT": {
+        "title": "Phân tích & báo cáo",
+        "fields": {
+          "insight": "Nhận định",
+          "conclusion": "Kết luận",
+          "recommendations": "Đề xuất"
+        }
+      }
     }
   },
   "sectionReview": {

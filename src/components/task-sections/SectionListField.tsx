@@ -45,10 +45,9 @@ export function SectionListField({
   const { t } = useTranslation();
   const rows = asRows(value);
   const label = (col: ListColumn) =>
-    t(
-      col.i18nKey ?? `tasks.sections.${sectionKey}.fields.${name}.${col.key}`,
-      { defaultValue: col.key },
-    );
+    t(col.i18nKey ?? `tasks.sections.${sectionKey}.fields.${name}.${col.key}`, {
+      defaultValue: col.key,
+    });
 
   const setCell = (rowIndex: number, key: string, cell: unknown) =>
     onChange(
@@ -78,7 +77,9 @@ export function SectionListField({
                     <Input
                       type={col.type === "number" ? "number" : "text"}
                       disabled={disabled}
-                      value={(row[col.key] as string | number | undefined) ?? ""}
+                      value={
+                        (row[col.key] as string | number | undefined) ?? ""
+                      }
                       onChange={(e) =>
                         setCell(
                           rowIndex,

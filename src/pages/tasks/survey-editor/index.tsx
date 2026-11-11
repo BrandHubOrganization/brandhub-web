@@ -2,15 +2,27 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
 import { useSurveyEditor } from "@/pages/tasks/hooks/useSurveyEditor";
+import { useTaskSections } from "@/hooks/useTaskSections";
 import { SurveyEditorHeader } from "@/pages/tasks/components/survey/SurveyEditorHeader";
 import { SurveyQuestionsView } from "@/pages/tasks/components/survey/SurveyQuestionsView";
 import { SurveyAnalysisView } from "@/pages/tasks/components/survey/SurveyAnalysisView";
 import { SurveyShareDialog } from "@/pages/tasks/components/survey/SurveyShareDialog";
+import { SectionFrame } from "@/components/task-sections/SectionFrame";
+import {
+  SurveyDistributionBlock,
+  SurveyReportBlock,
+} from "@/pages/tasks/components/survey/SurveySectionBlocks";
 
 export default function SurveyEditorPage() {
   const { id = "", taskId = "" } = useParams<{ id: string; taskId: string }>();
   const { t } = useTranslation();
   const editor = useSurveyEditor(id, taskId);
+  const sectionsApi = useTaskSections(id, taskId, Boolean(id && taskId));
+  const sectionOf = (key: string) =>
+    sectionsApi.sections?.find((s) => s.key === key);
+  const formSection = sectionOf("SURVEY.FORM");
+  const distributionSection = sectionOf("SURVEY.DISTRIBUTION");
+  const reportSection = sectionOf("SURVEY.REPORT");
 
   if (editor.loading) {
     return (
@@ -40,35 +52,86 @@ export default function SurveyEditorPage() {
         canEdit={editor.canEdit}
       />
 
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-4xl space-y-4 px-4 py-8 sm:px-6">
         {editor.canEdit && editor.activeTab === "questions" ? (
-          <SurveyQuestionsView
-            title={editor.title}
-            description={editor.description}
-            bannerUrl={editor.bannerUrl}
-            onTitleChange={editor.setTitle}
-            onDescriptionChange={editor.setDescription}
-            onBannerChange={editor.setBannerUrl}
-            questions={editor.questions}
-            activeQuestionId={editor.activeQuestionId}
-            onSelectQuestion={editor.setActiveQuestionId}
-            onUpdateQuestion={editor.handleUpdateQuestion}
-            onDuplicateQuestion={editor.handleDuplicateQuestion}
-            onDeleteQuestion={editor.handleDeleteQuestion}
-            onMoveQuestion={editor.handleMoveQuestion}
-            onAddQuestion={editor.handleAddQuestion}
-            onAddSection={editor.handleAddSection}
-            onMergeSection={editor.handleMergeSection}
-            onDuplicateSection={editor.handleDuplicateSection}
-            onMoveSection={editor.handleMoveSection}
-            onDeleteSection={editor.handleDeleteSection}
-            onUpdateSectionNext={editor.handleUpdateSectionNext}
-            onSave={() => void editor.handleSave()}
-            saving={editor.saving}
-            isPublished={editor.isPublished}
-          />
+          formSection ? (
+            <SectionFrame
+              section={formSection}
+              api={sectionsApi}
+              saveBinding={{
+                dirty: false,
+                state: editor.saveStatus === "saving" ? "saving" : undefined,
+                save: async () => {
+                  await editor.handleSave();
+                  return true;
+                },
+              }}
+            >
+              <SurveyQuestionsView
+                title={editor.title}
+                description={editor.description}
+                bannerUrl={editor.bannerUrl}
+                onTitleChange={editor.setTitle}
+                onDescriptionChange={editor.setDescription}
+                onBannerChange={editor.setBannerUrl}
+                questions={editor.questions}
+                activeQuestionId={editor.activeQuestionId}
+                onSelectQuestion={editor.setActiveQuestionId}
+                onUpdateQuestion={editor.handleUpdateQuestion}
+                onDuplicateQuestion={editor.handleDuplicateQuestion}
+                onDeleteQuestion={editor.handleDeleteQuestion}
+                onMoveQuestion={editor.handleMoveQuestion}
+                onAddQuestion={editor.handleAddQuestion}
+                onAddSection={editor.handleAddSection}
+                onMergeSection={editor.handleMergeSection}
+                onDuplicateSection={editor.handleDuplicateSection}
+                onMoveSection={editor.handleMoveSection}
+                onDeleteSection={editor.handleDeleteSection}
+                onUpdateSectionNext={editor.handleUpdateSectionNext}
+                onSave={() => void editor.handleSave()}
+                saving={editor.saving}
+                isPublished={editor.isPublished}
+              />
+            </SectionFrame>
+          ) : (
+            <SurveyQuestionsView
+              title={editor.title}
+              description={editor.description}
+              bannerUrl={editor.bannerUrl}
+              onTitleChange={editor.setTitle}
+              onDescriptionChange={editor.setDescription}
+              onBannerChange={editor.setBannerUrl}
+              questions={editor.questions}
+              activeQuestionId={editor.activeQuestionId}
+              onSelectQuestion={editor.setActiveQuestionId}
+              onUpdateQuestion={editor.handleUpdateQuestion}
+              onDuplicateQuestion={editor.handleDuplicateQuestion}
+              onDeleteQuestion={editor.handleDeleteQuestion}
+              onMoveQuestion={editor.handleMoveQuestion}
+              onAddQuestion={editor.handleAddQuestion}
+              onAddSection={editor.handleAddSection}
+              onMergeSection={editor.handleMergeSection}
+              onDuplicateSection={editor.handleDuplicateSection}
+              onMoveSection={editor.handleMoveSection}
+              onDeleteSection={editor.handleDeleteSection}
+              onUpdateSectionNext={editor.handleUpdateSectionNext}
+              onSave={() => void editor.handleSave()}
+              saving={editor.saving}
+              isPublished={editor.isPublished}
+            />
+          )
         ) : (
           <SurveyAnalysisView workspaceId={id} taskId={taskId} />
+        )}
+        {distributionSection && (
+          <SurveyDistributionBlock
+            section={distributionSection}
+            api={sectionsApi}
+            publicUrl={editor.publicUrl}
+          />
+        )}
+        {reportSection && (
+          <SurveyReportBlock section={reportSection} api={sectionsApi} />
         )}
       </main>
 
