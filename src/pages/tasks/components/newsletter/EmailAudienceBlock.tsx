@@ -72,9 +72,7 @@ export function EmailAudienceBlock({
         recipientGroupIds: selectedIds,
         scheduledAt: scheduledAt || undefined,
       });
-      toast.success(
-        t("tasks.newsletter.sent", { count: result.accepted }),
-      );
+      toast.success(t("tasks.newsletter.sent", { count: result.accepted }));
     } catch {
       toast.error(t("tasks.newsletter.sendError"));
     } finally {
@@ -100,10 +98,7 @@ export function EmailAudienceBlock({
               </p>
             )}
             {groups.map((group) => (
-              <label
-                key={group.id}
-                className="flex items-center gap-2 text-sm"
-              >
+              <label key={group.id} className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
                   className="size-4"
@@ -124,9 +119,7 @@ export function EmailAudienceBlock({
           <Input
             type="datetime-local"
             value={scheduledAt}
-            onChange={(e) =>
-              api.edit(section, { scheduledAt: e.target.value })
-            }
+            onChange={(e) => api.edit(section, { scheduledAt: e.target.value })}
           />
         </div>
         <div className="flex gap-2">
@@ -139,7 +132,11 @@ export function EmailAudienceBlock({
             <TestTube className="size-4" />
             {t("tasks.newsletter.sendTest")}
           </Button>
-          <Button type="button" disabled={sending} onClick={() => void handleSend()}>
+          <Button
+            type="button"
+            disabled={sending}
+            onClick={() => void handleSend()}
+          >
             <Send className="size-4" />
             {t("tasks.newsletter.send")}
           </Button>

@@ -172,9 +172,7 @@ const SurveyEditorPage = lazy(() => import("@/pages/tasks/survey-editor"));
 const EventEditorPage = lazy(() => import("@/pages/tasks/event-editor"));
 const PressEditorPage = lazy(() => import("@/pages/tasks/press-editor"));
 const KolEditorPage = lazy(() => import("@/pages/tasks/kol-editor"));
-const WorkshopEditorPage = lazy(
-  () => import("@/pages/tasks/workshop-editor"),
-);
+const WorkshopEditorPage = lazy(() => import("@/pages/tasks/workshop-editor"));
 const NewsletterEditorPage = lazy(
   () => import("@/pages/tasks/newsletter-editor"),
 );

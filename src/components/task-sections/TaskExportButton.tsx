@@ -26,8 +26,7 @@ export function TaskExportButton({
         { responseType: "blob" },
       );
       const disposition = res.headers["content-disposition"] as
-        | string
-        | undefined;
+        string | undefined;
       const match = disposition?.match(/filename="?([^"]+)"?/);
       const filename = match?.[1] ?? "export";
       const url = URL.createObjectURL(res.data as Blob);

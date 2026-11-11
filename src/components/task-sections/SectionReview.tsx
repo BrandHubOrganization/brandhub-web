@@ -15,11 +15,7 @@ import { TaskExportButton } from "@/components/task-sections/TaskExportButton";
 import { taskPostService } from "@/pages/editor/services/taskPostService";
 import { taskSectionService } from "@/services/taskSectionService";
 import { errorCode } from "@/utils/error";
-import {
-  opensPostEditor,
-  type TaskSection,
-  type TaskType,
-} from "@/types/task";
+import { opensPostEditor, type TaskSection, type TaskType } from "@/types/task";
 
 type Decide = (
   taskId: string,
@@ -290,7 +286,10 @@ export function SectionApprovalQueue({ workspaceId }: { workspaceId: string }) {
                     ` · ${t("tasks.deadline")}: ${new Date(task.dueDate).toLocaleDateString(i18n.language)}`}
                 </span>
               </div>
-              <TaskExportButton workspaceId={workspaceId} taskId={task.taskId} />
+              <TaskExportButton
+                workspaceId={workspaceId}
+                taskId={task.taskId}
+              />
             </div>
             <ReviewTask
               workspaceId={workspaceId}

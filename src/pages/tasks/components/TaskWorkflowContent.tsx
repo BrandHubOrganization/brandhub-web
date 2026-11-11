@@ -577,170 +577,172 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
                 )}
 
                 {/* Social Post Content & Review Action Hub */}
-                {opensPostEditor(task.type) && !task.allowedActions.canStart && (
-                  <div className="border-brand-orange/30 from-brand-orange/10 via-card to-card relative space-y-3 overflow-hidden rounded-xl border bg-gradient-to-br p-4 shadow-xs">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <div className="bg-brand-orange/15 text-brand-orange flex size-7 items-center justify-center rounded-lg">
-                          <Sparkles className="size-4" />
-                        </div>
-                        <div>
-                          <h3 className="text-foreground text-sm font-semibold">
-                            {isOtherCreator
-                              ? "Xem bài viết (Post Content)"
-                              : "Nội dung bài viết (Post Content)"}
-                          </h3>
-                          <p className="text-2xs text-muted-foreground">
-                            {isOtherCreator
-                              ? "Chế độ xem bài viết của người phụ trách khác"
-                              : "Soạn thảo bài viết & theo dõi phê duyệt"}
-                          </p>
-                        </div>
-                      </div>
-                      <span
-                        className={cn(
-                          "text-2xs rounded-md px-2 py-0.5 font-semibold",
-                          isPostPublished
-                            ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                            : "bg-brand-orange-soft text-brand-orange",
-                        )}
-                      >
-                        {isOtherCreator
-                          ? "Chỉ xem"
-                          : isPostPublished
-                            ? "Đã đăng"
-                            : "Tự động đăng"}
-                      </span>
-                    </div>
-
-                    <TaskPostScheduleNotice
-                      workspaceId={task.workspaceId}
-                      taskId={task.id}
-                      timezone={task.dates.timezone || "UTC"}
-                      isTaskFinished={isTaskFinished}
-                      publishDate={task.publishDate}
-                      canOpenEditor={
-                        role === "MANAGER" || (role === "CREATOR" && isAssignee)
-                      }
-                    />
-
-                    {post?.status === "FAILED" && (
-                      <div className="bg-destructive/10 border-destructive/25 text-destructive flex items-start gap-3 rounded-lg border p-3 text-xs">
-                        <AlertCircle className="text-destructive mt-0.5 size-4 shrink-0" />
-                        <div className="min-w-0 space-y-1">
-                          <div className="text-destructive font-semibold">
-                            Xuất bản bài viết thất bại
+                {opensPostEditor(task.type) &&
+                  !task.allowedActions.canStart && (
+                    <div className="border-brand-orange/30 from-brand-orange/10 via-card to-card relative space-y-3 overflow-hidden rounded-xl border bg-gradient-to-br p-4 shadow-xs">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="bg-brand-orange/15 text-brand-orange flex size-7 items-center justify-center rounded-lg">
+                            <Sparkles className="size-4" />
                           </div>
-                          <p className="text-muted-foreground text-xs leading-relaxed">
-                            {post.errorMessage ||
-                              "Hệ thống đã thử lại 3 lần nhưng không thể đăng bài lên mạng xã hội."}
-                          </p>
-                          <p className="text-muted-foreground text-2xs">
-                            Vui lòng mở bài viết trong Editor để kiểm tra tài
-                            khoản mạng xã hội hoặc đổi lại lịch đăng bài để thử
-                            lại.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {post?.status === "IN_PROGRESS" && post?.errorMessage && (
-                      <div className="flex items-start gap-3 rounded-lg border border-blue-500/20 bg-blue-500/10 p-3 text-xs text-blue-600 dark:text-blue-400">
-                        <RefreshCw className="mt-0.5 size-4 shrink-0 animate-spin" />
-                        <div className="min-w-0">
-                          <div className="font-semibold">
-                            Đang trong tiến trình xuất bản
+                          <div>
+                            <h3 className="text-foreground text-sm font-semibold">
+                              {isOtherCreator
+                                ? "Xem bài viết (Post Content)"
+                                : "Nội dung bài viết (Post Content)"}
+                            </h3>
+                            <p className="text-2xs text-muted-foreground">
+                              {isOtherCreator
+                                ? "Chế độ xem bài viết của người phụ trách khác"
+                                : "Soạn thảo bài viết & theo dõi phê duyệt"}
+                            </p>
                           </div>
-                          <p className="text-muted-foreground mt-0.5 text-xs">
-                            {post.errorMessage}
-                          </p>
                         </div>
+                        <span
+                          className={cn(
+                            "text-2xs rounded-md px-2 py-0.5 font-semibold",
+                            isPostPublished
+                              ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                              : "bg-brand-orange-soft text-brand-orange",
+                          )}
+                        >
+                          {isOtherCreator
+                            ? "Chỉ xem"
+                            : isPostPublished
+                              ? "Đã đăng"
+                              : "Tự động đăng"}
+                        </span>
                       </div>
-                    )}
 
-                    <p className="text-muted-foreground text-xs leading-relaxed">
-                      {role === "OWNER"
-                        ? "Owner theo dõi tiến độ tại đây. Người được giao và Quản lý soạn bài trong Editor."
-                        : isOtherCreator
-                          ? (task.status as string) === "TODO" ||
+                      <TaskPostScheduleNotice
+                        workspaceId={task.workspaceId}
+                        taskId={task.id}
+                        timezone={task.dates.timezone || "UTC"}
+                        isTaskFinished={isTaskFinished}
+                        publishDate={task.publishDate}
+                        canOpenEditor={
+                          role === "MANAGER" ||
+                          (role === "CREATOR" && isAssignee)
+                        }
+                      />
+
+                      {post?.status === "FAILED" && (
+                        <div className="bg-destructive/10 border-destructive/25 text-destructive flex items-start gap-3 rounded-lg border p-3 text-xs">
+                          <AlertCircle className="text-destructive mt-0.5 size-4 shrink-0" />
+                          <div className="min-w-0 space-y-1">
+                            <div className="text-destructive font-semibold">
+                              Xuất bản bài viết thất bại
+                            </div>
+                            <p className="text-muted-foreground text-xs leading-relaxed">
+                              {post.errorMessage ||
+                                "Hệ thống đã thử lại 3 lần nhưng không thể đăng bài lên mạng xã hội."}
+                            </p>
+                            <p className="text-muted-foreground text-2xs">
+                              Vui lòng mở bài viết trong Editor để kiểm tra tài
+                              khoản mạng xã hội hoặc đổi lại lịch đăng bài để
+                              thử lại.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {post?.status === "IN_PROGRESS" && post?.errorMessage && (
+                        <div className="flex items-start gap-3 rounded-lg border border-blue-500/20 bg-blue-500/10 p-3 text-xs text-blue-600 dark:text-blue-400">
+                          <RefreshCw className="mt-0.5 size-4 shrink-0 animate-spin" />
+                          <div className="min-w-0">
+                            <div className="font-semibold">
+                              Đang trong tiến trình xuất bản
+                            </div>
+                            <p className="text-muted-foreground mt-0.5 text-xs">
+                              {post.errorMessage}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      <p className="text-muted-foreground text-xs leading-relaxed">
+                        {role === "OWNER"
+                          ? "Owner theo dõi tiến độ tại đây. Người được giao và Quản lý soạn bài trong Editor."
+                          : isOtherCreator
+                            ? (task.status as string) === "TODO" ||
+                              (task.status as string) === "BACKLOG"
+                              ? `Bài viết đang ở trạng thái cần làm. Đang chờ người phụ trách (${task.assigneeName || "chưa phân công"}) bắt đầu viết bài.`
+                              : "Bạn đang xem bài viết của người phụ trách khác. Chỉ người được giao hoặc Quản lý mới có quyền chỉnh sửa."
+                            : isTaskFinished
+                              ? isPostPublished
+                                ? "Bài viết đã hoàn thành phê duyệt và đã được đăng tải tự động lên các kênh mạng xã hội."
+                                : "Bài viết đã hoàn thành phê duyệt. Hệ thống sẽ tự động xuất bản lên các kênh mạng xã hội theo đúng lịch đăng đã lên."
+                              : "Soạn thảo nội dung và chuẩn bị hình ảnh bài viết. Lịch xuất bản do Quản lý thiết lập tại Chi tiết Task sẽ tự động áp dụng khi bài viết được duyệt."}
+                      </p>
+
+                      <div className="flex flex-wrap items-center gap-2 pt-1">
+                        {role === "OWNER" ? null : isOtherCreator ? (
+                          !(
+                            (task.status as string) === "TODO" ||
                             (task.status as string) === "BACKLOG"
-                            ? `Bài viết đang ở trạng thái cần làm. Đang chờ người phụ trách (${task.assigneeName || "chưa phân công"}) bắt đầu viết bài.`
-                            : "Bạn đang xem bài viết của người phụ trách khác. Chỉ người được giao hoặc Quản lý mới có quyền chỉnh sửa."
-                          : isTaskFinished
-                            ? isPostPublished
-                              ? "Bài viết đã hoàn thành phê duyệt và đã được đăng tải tự động lên các kênh mạng xã hội."
-                              : "Bài viết đã hoàn thành phê duyệt. Hệ thống sẽ tự động xuất bản lên các kênh mạng xã hội theo đúng lịch đăng đã lên."
-                            : "Soạn thảo nội dung và chuẩn bị hình ảnh bài viết. Lịch xuất bản do Quản lý thiết lập tại Chi tiết Task sẽ tự động áp dụng khi bài viết được duyệt."}
-                    </p>
-
-                    <div className="flex flex-wrap items-center gap-2 pt-1">
-                      {role === "OWNER" ? null : isOtherCreator ? (
-                        !(
-                          (task.status as string) === "TODO" ||
-                          (task.status as string) === "BACKLOG"
-                        ) && (
+                          ) && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="border-border text-muted-foreground hover:text-foreground gap-2 shadow-xs"
+                              asChild
+                            >
+                              <Link
+                                to={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}
+                              >
+                                <Eye className="size-4" />
+                                Xem bài viết (Chỉ xem)
+                              </Link>
+                            </Button>
+                          )
+                        ) : isTaskFinished ? (
                           <Button
                             variant="outline"
                             size="sm"
-                            className="border-border text-muted-foreground hover:text-foreground gap-2 shadow-xs"
+                            className="border-border/80 hover:border-brand-orange/60 hover:text-brand-orange gap-2 shadow-xs"
                             asChild
                           >
                             <Link
                               to={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}
                             >
                               <Eye className="size-4" />
-                              Xem bài viết (Chỉ xem)
+                              Xem bài viết trong Editor
                             </Link>
                           </Button>
-                        )
-                      ) : isTaskFinished ? (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="border-border/80 hover:border-brand-orange/60 hover:text-brand-orange gap-2 shadow-xs"
-                          asChild
-                        >
-                          <Link
-                            to={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}
+                        ) : (
+                          <Button
+                            variant="orange"
+                            size="sm"
+                            className="gap-2 shadow-xs"
+                            asChild
                           >
-                            <Eye className="size-4" />
-                            Xem bài viết trong Editor
-                          </Link>
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="orange"
-                          size="sm"
-                          className="gap-2 shadow-xs"
-                          asChild
-                        >
-                          <Link
-                            to={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}
-                          >
-                            <PenSquare className="size-4" />
-                            Mở bài viết trong Editor
-                          </Link>
-                        </Button>
-                      )}
+                            <Link
+                              to={`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`}
+                            >
+                              <PenSquare className="size-4" />
+                              Mở bài viết trong Editor
+                            </Link>
+                          </Button>
+                        )}
 
-                      {task.status === "IN_REVIEW" && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="border-border/80 hover:border-brand-orange/60 hover:text-brand-orange gap-2"
-                          asChild
-                        >
-                          <Link
-                            to={`/workspaces/${workspaceId}/task-approvals?task=${encodeURIComponent(taskId)}`}
+                        {task.status === "IN_REVIEW" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="border-border/80 hover:border-brand-orange/60 hover:text-brand-orange gap-2"
+                            asChild
                           >
-                            <ClipboardCheck className="text-brand-orange size-4" />
-                            {t("tasks.approvalPage.title")}
-                          </Link>
-                        </Button>
-                      )}
+                            <Link
+                              to={`/workspaces/${workspaceId}/task-approvals?task=${encodeURIComponent(taskId)}`}
+                            >
+                              <ClipboardCheck className="text-brand-orange size-4" />
+                              {t("tasks.approvalPage.title")}
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Start Task Action if startable */}
                 {task.allowedActions.canStart && (

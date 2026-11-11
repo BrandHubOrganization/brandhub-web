@@ -961,7 +961,8 @@
       "REPORT": {
         "title": "Báo cáo",
         "fields": {
-          "sentCount": "Số đã gửi",
+          "total": "Tổng gửi",
+          "sentCount": "Thành công",
           "successCount": "Thành công",
           "bounceCount": "Lỗi/bounce",
           "unsubscribeCount": "Huỷ đăng ký",
@@ -977,7 +978,8 @@
     "sent": "Đã gửi cho {{count}} người nhận.",
     "sendError": "Gửi thất bại.",
     "noRecipients": "Chọn ít nhất một nhóm người nhận.",
-    "noGroups": "Chưa có nhóm người nhận nào. Tạo nhóm ở trang Mail Templates."
+    "noGroups": "Chưa có nhóm người nhận nào. Tạo nhóm ở trang Mail Templates.",
+    "noBatchYet": "Chưa gửi, chưa có số liệu."
   },
   "sectionReview": {
     "queueTitle": "Phần chờ Khách hàng duyệt",

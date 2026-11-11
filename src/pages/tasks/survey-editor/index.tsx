@@ -8,6 +8,7 @@ import { SurveyQuestionsView } from "@/pages/tasks/components/survey/SurveyQuest
 import { SurveyAnalysisView } from "@/pages/tasks/components/survey/SurveyAnalysisView";
 import { SurveyShareDialog } from "@/pages/tasks/components/survey/SurveyShareDialog";
 import { SectionFrame } from "@/components/task-sections/SectionFrame";
+import { TaskExportButton } from "@/components/task-sections/TaskExportButton";
 import {
   SurveyDistributionBlock,
   SurveyReportBlock,
@@ -53,6 +54,11 @@ export default function SurveyEditorPage() {
       />
 
       <main className="mx-auto max-w-4xl space-y-4 px-4 py-8 sm:px-6">
+        {(formSection || distributionSection || reportSection) && (
+          <div className="flex justify-end">
+            <TaskExportButton workspaceId={id} taskId={taskId} />
+          </div>
+        )}
         {editor.canEdit && editor.activeTab === "questions" ? (
           formSection ? (
             <SectionFrame

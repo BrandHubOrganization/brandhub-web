@@ -352,6 +352,7 @@
     "fit": "Fit to view",
     "unscheduled": "Unscheduled",
     "overdue": "Overdue",
+    "awaitingClient": "Awaiting Client",
     "createRange": "Create a task date range",
     "milestoneRail": "Milestone rail",
     "milestonePlaceholder": "Milestone name…",

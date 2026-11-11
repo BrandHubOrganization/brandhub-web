@@ -48,6 +48,7 @@ import {
 import { useSearchParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { SectionFrame } from "@/components/task-sections/SectionFrame";
+import { TaskExportButton } from "@/components/task-sections/TaskExportButton";
 import {
   SectionFieldsBlock,
   SectionSlot,
@@ -475,6 +476,11 @@ function EditorWorkspace({
         </aside>
 
         <main className="order-1 min-w-0 space-y-4 xl:order-2">
+          {sectionsApi && workspaceId && taskId && (
+            <div className="flex justify-end">
+              <TaskExportButton workspaceId={workspaceId} taskId={taskId} />
+            </div>
+          )}
           {sectionsApi &&
             ownSections.map((section) =>
               section.key === "VIDEO.SHOOT" ? (

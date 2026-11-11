@@ -74,12 +74,7 @@ export interface SendResult {
 }
 
 export type BatchStatus =
-  | "SCHEDULED"
-  | "QUEUED"
-  | "SENDING"
-  | "COMPLETED"
-  | "CANCELLED"
-  | "FAILED";
+  "SCHEDULED" | "QUEUED" | "SENDING" | "COMPLETED" | "CANCELLED" | "FAILED";
 
 export const BATCH_STATUSES: BatchStatus[] = [
   "SCHEDULED",

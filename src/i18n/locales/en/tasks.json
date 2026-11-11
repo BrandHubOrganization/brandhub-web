@@ -961,7 +961,8 @@
       "REPORT": {
         "title": "Report",
         "fields": {
-          "sentCount": "Sent",
+          "total": "Total sent",
+          "sentCount": "Successful",
           "successCount": "Successful",
           "bounceCount": "Bounced/failed",
           "unsubscribeCount": "Unsubscribed",
@@ -977,7 +978,8 @@
     "sent": "Sent to {{count}} recipients.",
     "sendError": "Send failed.",
     "noRecipients": "Pick at least one recipient group.",
-    "noGroups": "No recipient groups yet. Create one on the Mail Templates page."
+    "noGroups": "No recipient groups yet. Create one on the Mail Templates page.",
+    "noBatchYet": "Not sent yet, no stats."
   },
   "sectionReview": {
     "queueTitle": "Sections waiting for the Client",

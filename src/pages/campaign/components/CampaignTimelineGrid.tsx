@@ -453,6 +453,14 @@ export function CampaignTimelineGrid({
                 {task.subtasks.length}
               </span>
             )}
+            {node.kind === "task" && task.awaitingClient && (
+              <span
+                className="inline-flex shrink-0 items-center gap-0.5 rounded border border-amber-500/25 bg-amber-500/10 px-1 py-0.5 text-[9px] font-semibold text-amber-600 dark:text-amber-400"
+                title={t("campaign.timeline.awaitingClient")}
+              >
+                {t("campaign.timeline.awaitingClient")}
+              </span>
+            )}
             {node.kind === "sub" &&
               isSubtaskOverdue(item.dueDate, isSubtaskDone(item.status)) && (
                 <span

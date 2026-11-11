@@ -2,9 +2,9 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
 import { useTaskSections } from "@/hooks/useTaskSections";
-import { SectionFieldsBlock } from "@/components/task-sections/SectionFieldsBlock";
 import { EmailBlockSection } from "@/pages/tasks/components/newsletter/EmailBlockSection";
 import { EmailAudienceBlock } from "@/pages/tasks/components/newsletter/EmailAudienceBlock";
+import { EmailReportBlock } from "@/pages/tasks/components/newsletter/EmailReportBlock";
 
 export default function NewsletterEditorPage() {
   const { id = "", taskId = "" } = useParams<{ id: string; taskId: string }>();
@@ -47,7 +47,12 @@ export default function NewsletterEditorPage() {
           />
         )}
         {reportSection && (
-          <SectionFieldsBlock section={reportSection} api={api} />
+          <EmailReportBlock
+            workspaceId={id}
+            taskId={taskId}
+            section={reportSection}
+            api={api}
+          />
         )}
       </main>
     </div>

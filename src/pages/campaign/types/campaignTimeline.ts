@@ -25,6 +25,7 @@ export interface TimelineTask {
   canAssign: boolean;
   canManageSubtasks: boolean;
   subtasks: TimelineSubtask[];
+  awaitingClient: boolean;
 }
 export interface TimelineView {
   timezone: string;

@@ -352,6 +352,7 @@
     "fit": "Vừa khung",
     "unscheduled": "Chưa có lịch",
     "overdue": "Trễ hạn",
+    "awaitingClient": "Chờ Client",
     "createRange": "Tạo khoảng thời gian cho công việc",
     "milestoneRail": "Thanh mốc kế hoạch",
     "milestonePlaceholder": "Tên mốc kế hoạch…",

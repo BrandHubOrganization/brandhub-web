@@ -46,9 +46,7 @@ export function EmailBlockSection({
               </label>
               <Input
                 value={subject}
-                onChange={(e) =>
-                  api.edit(section, { subject: e.target.value })
-                }
+                onChange={(e) => api.edit(section, { subject: e.target.value })}
               />
             </div>
             <div className="space-y-1">

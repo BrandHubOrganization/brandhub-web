@@ -29,9 +29,7 @@ export function ImportRecipientsDialog({
   const fileRef = useRef<HTMLInputElement>(null);
   const [groupName, setGroupName] = useState("");
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<ImportRecipientGroupResult | null>(
-    null,
-  );
+  const [result, setResult] = useState<ImportRecipientGroupResult | null>(null);
 
   const reset = () => {
     setGroupName("");
@@ -126,7 +124,11 @@ export function ImportRecipientsDialog({
           >
             {t("mailTemplate.import.close")}
           </Button>
-          <Button type="button" disabled={busy} onClick={() => void handleImport()}>
+          <Button
+            type="button"
+            disabled={busy}
+            onClick={() => void handleImport()}
+          >
             {t("mailTemplate.import.submit")}
           </Button>
         </DialogFooter>
