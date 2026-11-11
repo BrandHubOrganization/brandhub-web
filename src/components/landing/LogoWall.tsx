@@ -20,7 +20,7 @@ const TECH_PARTNERS: TechPartner[] = [
   { name: "RabbitMQ", category: "Message Broker" },
   { name: "Docker", category: "Containerization" },
   { name: "Cloudflare", category: "Edge & Turnstile" },
-  { name: "FPT University", category: "Incubation & Capstone" },
+  { name: "AWS Cloud", category: "Cloud Infrastructure" },
 ];
 
 export function LogoWall() {

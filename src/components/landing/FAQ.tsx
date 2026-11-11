@@ -271,7 +271,7 @@ export function FAQ() {
               </div>
 
               <SpinningSeal
-                text="BRANDHUB KNOWLEDGE • 141 FRs • "
+                text="BRANDHUB KNOWLEDGE • AGENCY & CLIENT • "
                 centerTop="FAQ"
                 centerBottom="24/7"
                 variant="orange"

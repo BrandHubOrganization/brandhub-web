@@ -244,8 +244,8 @@ export function Features() {
                           </div>
                           <SpinningSeal
                             text="CAMPAIGN STUDIO • ALL-IN-ONE • "
-                            centerTop="141"
-                            centerBottom="FRs"
+                            centerTop="360°"
+                            centerBottom="STUDIO"
                             variant="orange"
                             className="size-16 shrink-0"
                           />

@@ -7,11 +7,12 @@ import {
   Sparkles,
   Layers,
 } from "lucide-react";
-import { BLOG_CATEGORIES, BLOG_POSTS } from "@/data/blogData";
+import { BLOG_CATEGORIES } from "@/data/blogCategories";
+import { BLOG_FEATURED_POSTS } from "@/data/blogFeatured";
 import { SectionDecor } from "@/components/landing/SectionDecor";
 
 export function BlogPreviewSection() {
-  const featuredPosts = BLOG_POSTS.slice(0, 6);
+  const featuredPosts = BLOG_FEATURED_POSTS;
 
   return (
     <section
@@ -26,7 +27,7 @@ export function BlogPreviewSection() {
           <div className="space-y-3 max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 dark:border-orange-500/30 bg-orange-50 dark:bg-orange-500/10 px-3.5 py-1.5 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
               <BookOpen className="size-3.5" />
-              <span>Cẩm nang Quản trị Truyền thông &amp; AI (100 Chủ đề SEO)</span>
+              <span>Cẩm nang Quản trị Truyền thông &amp; AI Thực chiến</span>
             </div>
             <h2
               id="blog-insights-heading"
@@ -174,7 +175,7 @@ export function BlogPreviewSection() {
               to="/blog#roadmap-100-topics"
               className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-4 py-2.5 text-xs sm:text-sm font-semibold transition-colors"
             >
-              Xem 100 chủ đề SEO
+              Xem 100 chủ đề chuyên sâu
             </Link>
           </div>
         </div>

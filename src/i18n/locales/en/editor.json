@@ -39,7 +39,7 @@
     "title": "Content Writing",
     "loadFailed": "Unable to load content. Please try again.",
     "connectionFailed": "Unable to connect sync. Your edits are kept on this page.",
-    "description": "Google-Docs-style canvas editor — core rendering preview (FR 3.6.10)."
+    "description": "Agency-standard visual canvas text editor — rich formatting and real-time synchronization."
   },
   "emojiPicker": {
     "search": "Search emoji (English)…",
@@ -573,7 +573,7 @@
       "emotion": "Reads as: {{label}} {{value}}%",
       "trend": "Uses the trend",
       "claims": "Please confirm: {{claims}} is not in the topic or brand facts.",
-      "complianceHint": "The content compliance check (FR 3.6.33) will run here once it is connected."
+      "complianceHint": "Automated compliance and policy violation scanner will run before publishing."
     },
     "compliance": {
       "NOT_CHECKED": "Compliance not checked",

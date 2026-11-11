@@ -14,14 +14,14 @@ export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
     roleTitle: "Founder, Tech Lead & Engineering Manager — SynapForge",
     avatar: "/team/trunglc-white-polo-glasses.png",
     highlight: "Quán quân Hackathon CV 2026 · Kiến trúc sư trưởng BrandHub",
-    bio: "Trực tiếp thiết kế kiến trúc phân rã 141 Functional Requirements và mô hình quản trị đa Workspace theo 6 vai trò (Guest, Owner, Manager, Creator, Client, Admin) cho BrandHub.",
+    bio: "Trực tiếp thiết kế kiến trúc hệ thống quản trị truyền thông toàn diện và mô hình vận hành đa Workspace theo 6 vai trò chuẩn cho BrandHub.",
   },
   "nguyen-thanh-loc": {
     id: "nguyen-thanh-loc",
     name: "Nguyễn Thành Lộc",
     roleTitle: "Backend Architect & AI GraphRAG Lead — SynapForge",
     avatar: "/team/Locnt-white-polo.png",
-    highlight: "GPA 3.5/4.0 FPTU · Chuyên gia Neo4j GraphRAG & ChromaDB",
+    highlight: "Kỹ sư trưởng AI Studio · Chuyên gia Neo4j GraphRAG & ChromaDB",
     bio: "Phụ trách kiến trúc AI Studio của BrandHub, tích hợp đồ thị tri thức Neo4j cùng ChromaDB vector search để kiểm soát giọng văn thương hiệu và kiểm duyệt an toàn nội dung.",
   },
   "ha-van-an": {
