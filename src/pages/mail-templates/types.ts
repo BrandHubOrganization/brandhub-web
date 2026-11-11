@@ -167,3 +167,11 @@ export interface RecipientGroup {
   count: number;
   recipients: { email: string; name: string | null }[];
 }
+
+export interface ImportRecipientGroupResult {
+  groupId: string;
+  imported: number;
+  skippedNoConsent: number;
+  skippedSuppressed: number;
+  skippedInvalid: number;
+}

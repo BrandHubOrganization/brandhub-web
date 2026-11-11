@@ -6,6 +6,7 @@ import type {
   MailBatchDetail,
   MailQuota,
   MailSuppression,
+  ImportRecipientGroupResult,
   RecipientCandidate,
   RecipientPreview,
   RecipientGroup,
@@ -101,6 +102,22 @@ export const mailTemplateService = {
       .then(data),
   recipientGroups: (workspaceId: string) =>
     api.get<ApiResponse<RecipientGroup[]>>(`${base(workspaceId)}/mail-recipient-groups`).then(data),
+  importRecipientGroup: (
+    workspaceId: string,
+    file: File,
+    options: { groupId?: string; name?: string },
+  ) => {
+    const form = new FormData();
+    form.append("file", file);
+    if (options.groupId) form.append("groupId", options.groupId);
+    if (options.name) form.append("name", options.name);
+    return api
+      .post<ApiResponse<ImportRecipientGroupResult>>(
+        `${base(workspaceId)}/mail-recipient-groups/import`,
+        form,
+      )
+      .then(data);
+  },
   createRecipientGroup: (workspaceId: string, name: string, recipients: { email: string; name?: string }[]) =>
     api
       .post<ApiResponse<RecipientGroup>>(`${base(workspaceId)}/mail-recipient-groups`, { name, recipients })

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Copy, History, MailX, Pencil, Plus, Send, Trash2 } from "lucide-react";
+import { Copy, History, MailX, Pencil, Plus, Send, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { errorCode } from "@/services/adminRevenueService";
 import { SendMailDialog } from "./components/SendMailDialog";
+import { ImportRecipientsDialog } from "./components/ImportRecipientsDialog";
+import type { MailQuota } from "./types";
 import { SCOPES_BY_AUDIENCE } from "./blocks";
 import { TemplateFormDialog, type FormAdapter } from "./components/TemplateFormDialog";
 import { useWorkspaceStore } from "@/store/workspaceStore";
@@ -38,8 +40,17 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   const [sendFor, setSendFor] = useState<MailTemplateSummary | null>(null);
   const [toDelete, setToDelete] = useState<MailTemplateSummary | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [quota, setQuota] = useState<MailQuota | null>(null);
   const agencyId = useWorkspaceStore((s) => s.currentWorkspace?.agencyId);
   const [agencyRows, setAgencyRows] = useState<MailTemplateSummary[]>([]);
+
+  useEffect(() => {
+    mailTemplateService
+      .quota(workspaceId)
+      .then(setQuota)
+      .catch(() => setQuota(null));
+  }, [workspaceId]);
 
   // Agency templates are listed only for the agency OWNER (others get 403 -> nothing extra shown).
   useEffect(() => {
@@ -113,7 +124,18 @@ function Panel({ workspaceId }: { workspaceId: string }) {
             onChange={(e) => { setPage(0); setIncludeSystem(e.target.checked); }} />
           {t("mailTemplate.includeSystem")}
         </label>
+        {quota && (
+          <span className="text-muted-foreground text-xs" title={t("mailTemplate.quota.hint")}>
+            {t("mailTemplate.quota.label", {
+              used: quota.workspaceUsed,
+              limit: quota.workspaceLimit,
+            })}
+          </span>
+        )}
         <div className="ml-auto flex gap-2">
+          <Button variant="outline" onClick={() => setImportOpen(true)}>
+            <Upload className="size-4" />{t("mailTemplate.import.title")}
+          </Button>
           <Button asChild variant="outline">
             <Link to={`/workspaces/${workspaceId}/mail-templates/suppressions`}><MailX className="size-4" />{t("mailTemplate.suppressions.link")}</Link>
           </Button>
@@ -193,6 +215,14 @@ function Panel({ workspaceId }: { workspaceId: string }) {
       {sendFor && (
         <SendMailDialog open workspaceId={workspaceId} template={sendFor} agencyId={agencyId} onClose={() => setSendFor(null)} />
       )}
+      <ImportRecipientsDialog
+        workspaceId={workspaceId}
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        onImported={() => {
+          mailTemplateService.quota(workspaceId).then(setQuota).catch(() => undefined);
+        }}
+      />
       <Dialog open={!!toDelete} onOpenChange={(open) => !open && !deleting && setToDelete(null)}>
         <DialogContent>
           <DialogHeader>
