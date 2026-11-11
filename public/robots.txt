@@ -20,6 +20,21 @@ Allow: /llms-full.txt
 Allow: /rss.xml
 Allow: /sitemap.xml
 Allow: /og-banner.png
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /favicon*.png
+Allow: /apple-touch-icon.png
+Allow: /icon.png
+Allow: /site.webmanifest
+
+User-agent: Googlebot-Image
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /favicon*.png
+Allow: /apple-touch-icon.png
+Allow: /icon.png
+Allow: /og-banner.png
+Allow: /assets/
 
 # Private authenticated, transactional & tokenized routes (preserve crawl budget & prevent token indexing)
 Disallow: /dashboard
