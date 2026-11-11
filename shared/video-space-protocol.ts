@@ -125,15 +125,17 @@ function hasValidUpload(value: unknown): value is VideoSpaceUploadBody {
 
 export function parseVideoEditPlanBody(
   value: unknown,
-): { expected_revision: number; instruction: string; render_mp4?: boolean } | null {
+): { expected_revision: number; instruction: string; render_mp4?: boolean; parent_job_id?: string } | null {
   if (typeof value !== "string" || value.length > 24_000) return null;
   try {
     const body: unknown = JSON.parse(value);
     if (
       !isRecord(body) ||
       Object.keys(body).some(
-        (key) => !["expected_revision", "instruction", "render_mp4"].includes(key),
+        (key) => !["expected_revision", "instruction", "render_mp4", "parent_job_id"].includes(key),
       ) ||
+      (body.parent_job_id !== undefined &&
+        (typeof body.parent_job_id !== "string" || !UUID_PATTERN.test(body.parent_job_id))) ||
       (body.render_mp4 !== undefined && typeof body.render_mp4 !== "boolean") ||
       !Number.isSafeInteger(body.expected_revision) ||
       Number(body.expected_revision) < 1 ||
@@ -147,6 +149,8 @@ export function parseVideoEditPlanBody(
       instruction: body.instruction,
       // Only the non-default choice is forwarded, so old clients keep the same replay identity.
       ...(body.render_mp4 === false && { render_mp4: false }),
+      // Auto-edit chat follow-up: continues that turn's editing session.
+      ...(typeof body.parent_job_id === "string" && { parent_job_id: body.parent_job_id }),
     };
   } catch {
     return null;

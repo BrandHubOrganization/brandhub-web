@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+	useSyncExternalStore,
+} from "react";
 import type { ReactNode } from "react";
 import {
 	Headphones,
@@ -25,6 +31,9 @@ import { filterLibrary, loadLibrary, type LibraryItem } from "./catalog";
 import { ResourceArtwork } from "./artwork";
 import { useResourcePreviewStore } from "./preview-store";
 import "./resources.css";
+import { getHostContext, subscribeHostContext } from "@/platform/host";
+import { UploadedAudioView } from "./uploaded-audio";
+import { editorResourceMessages } from "./messages";
 
 const AUDIO_KINDS: LibraryItem["kind"][] = ["music", "sound"];
 const TEXT_KINDS: LibraryItem["kind"][] = ["font", "template"];
@@ -32,24 +41,30 @@ const STICKER_KINDS: LibraryItem["kind"][] = ["sticker"];
 const TEMPLATE_KINDS: LibraryItem["kind"][] = ["template"];
 
 export function AudioResourcesView() {
-	const [kind, setKind] = useState("music");
-	return (
+	const [kind, setKind] = useState("uploaded");
+	const { locale } = useSyncExternalStore(subscribeHostContext, getHostContext);
+	const t = editorResourceMessages[locale];
+	const navigation = (
+		<ResourceSwitch
+			options={[
+				{ id: "uploaded", label: t.uploaded },
+				{ id: "music", label: t.music },
+				{ id: "sound", label: t.sounds },
+			]}
+			value={kind}
+			onChange={setKind}
+			label={t.audioType}
+		/>
+	);
+	return kind === "uploaded" ? (
+		<UploadedAudioView navigation={navigation} locale={locale} />
+	) : (
 		<ResourceLibraryView
 			key={kind}
 			title="Audio"
 			kinds={AUDIO_KINDS}
 			kind={kind}
-			navigation={
-				<ResourceSwitch
-					options={[
-						{ id: "music", label: "Music" },
-						{ id: "sound", label: "Sound effects" },
-					]}
-					value={kind}
-					onChange={setKind}
-					label="Audio type"
-				/>
-			}
+			navigation={navigation}
 		/>
 	);
 }

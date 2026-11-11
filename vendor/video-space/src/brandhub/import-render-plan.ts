@@ -20,9 +20,12 @@ import { FONT_SIZE_SCALE_REFERENCE } from "@/text/typography";
 import { generateUUID } from "@/utils/id";
 import { TICKS_PER_SECOND, type MediaTime } from "@/wasm";
 import { entranceAnimation } from "./resources/templates";
+import libraryManifest from "../../resources/manifest.json";
 
 /** Server RenderPlan (ai-service server_video_edit_models.RenderPlan), already validated by the worker and Business. */
 export interface RenderPlan {
+  editable?: boolean;
+  grade?: { contrast: number; saturation: number; warmth: number } | null;
   width: number;
   height: number;
   fps: 24 | 30;
@@ -42,7 +45,14 @@ export interface RenderPlan {
     transition_frames: number;
   }[];
   graphics: {
-    kind: "title" | "caption" | "score" | "circle" | "arrow" | "portrait" | "motion";
+    kind:
+      | "title"
+      | "caption"
+      | "score"
+      | "circle"
+      | "arrow"
+      | "portrait"
+      | "motion";
     motion?: string | null;
     width?: number;
     start_frame: number;
@@ -70,6 +80,9 @@ export interface RenderPlan {
     source_start_seconds: number;
     speed: number;
     gain: number;
+    lowpass_hz?: number | null;
+    duck_music?: boolean;
+    fade_frames?: number;
   }[];
 }
 
@@ -104,7 +117,10 @@ export function renderPlanScene({
   plan: RenderPlan;
   name: string;
   canvas: { width: number; height: number };
-  mediaIds: Map<string, { type: "video" | "image" | "audio"; duration?: number }>;
+  mediaIds: Map<
+    string,
+    { type: "video" | "image" | "audio"; duration?: number }
+  >;
 }): { scene: TScene; mp4Only: string[] } {
   if (
     !plan ||
@@ -117,7 +133,8 @@ export function renderPlanScene({
     invalid();
   const tick = TICKS_PER_SECOND / plan.fps;
   const time = (frames: number) => Math.round(frames * tick) as MediaTime;
-  const seconds = (value: number) => Math.round(value * TICKS_PER_SECOND) as MediaTime;
+  const seconds = (value: number) =>
+    Math.round(value * TICKS_PER_SECOND) as MediaTime;
   const sx = canvas.width / plan.width,
     sy = canvas.height / plan.height;
   const mp4Only = new Set<string>();
@@ -129,7 +146,9 @@ export function renderPlanScene({
     const media = mediaIds.get(clip.asset_id);
     if (!media || media.type === "audio") invalid();
     const next = clips[index + 1];
-    const end = next ? Math.min(clip.start_frame + clip.duration_frames, next.start_frame) : clip.start_frame + clip.duration_frames;
+    const end = next
+      ? Math.min(clip.start_frame + clip.duration_frames, next.start_frame)
+      : clip.start_frame + clip.duration_frames;
     const frames = Math.max(1, end - clip.start_frame);
     const base = buildElementFromMedia({
       mediaId: clip.asset_id,
@@ -138,30 +157,51 @@ export function renderPlanScene({
       duration: time(frames),
       startTime: time(clip.start_frame),
     }) as Omit<VideoElement | ImageElement, "id">;
-    const element = { ...base, id: generateUUID() } as VideoElement | ImageElement;
+    const element = { ...base, id: generateUUID() } as
+      VideoElement | ImageElement;
     if (element.type === "video") {
       const source = seconds(media.duration ?? 0);
       const used = Math.round(frames * tick * clip.speed);
       element.trimStart = seconds(clip.source_start_seconds);
-      element.sourceDuration = source || ((element.trimStart + used) as MediaTime);
-      element.trimEnd = Math.max(0, (element.sourceDuration ?? 0) - element.trimStart - used) as MediaTime;
-      element.isSourceAudioEnabled = false;  // worker never keeps source audio implicitly
+      element.sourceDuration =
+        source || ((element.trimStart + used) as MediaTime);
+      element.trimEnd = Math.max(
+        0,
+        (element.sourceDuration ?? 0) - element.trimStart - used,
+      ) as MediaTime;
+      element.isSourceAudioEnabled = false; // worker never keeps source audio implicitly
       if (clip.speed !== 1) element.retime = { rate: clip.speed };
     }
     if (clip.zoom > 1) {
       // Push-in as scale keyframes over the shot, the same motion the server renders.
       const channel = (): ScalarAnimationChannel => ({
         keys: [
-          { id: generateUUID(), time: 0 as MediaTime, value: 1, segmentToNext: "linear", tangentMode: "auto" },
-          { id: generateUUID(), time: time(frames), value: clip.zoom, segmentToNext: "linear", tangentMode: "auto" },
+          {
+            id: generateUUID(),
+            time: 0 as MediaTime,
+            value: 1,
+            segmentToNext: "linear",
+            tangentMode: "auto",
+          },
+          {
+            id: generateUUID(),
+            time: time(frames),
+            value: clip.zoom,
+            segmentToNext: "linear",
+            tangentMode: "auto",
+          },
         ],
       });
-      element.animations = { "transform.scaleX": channel(), "transform.scaleY": channel() };
+      element.animations = {
+        "transform.scaleX": channel(),
+        "transform.scaleY": channel(),
+      };
     }
     if (clip.transition === "dissolve" || clip.transition === "slide") {
       element.params = {
         ...element.params,
-        "bh.transition": clip.transition === "dissolve" ? "dissolve" : "slide-left",
+        "bh.transition":
+          clip.transition === "dissolve" ? "dissolve" : "slide-left",
         "bh.transition.duration": time(Math.max(1, clip.transition_frames)),
       };
     }
@@ -208,50 +248,101 @@ export function renderPlanScene({
       id: generateUUID(),
     } as TextElement;
     const animation = g.animation ?? "none";
-    if (animation !== "none") text.animations = entranceAnimation({ animation: ANIMATION[animation], y });
-    if (animation === "slam" || animation === "words") mp4Only.add(`chữ động ${animation}`);
+    if (animation !== "none")
+      text.animations = entranceAnimation({
+        animation: ANIMATION[animation],
+        y,
+      });
+    if (animation === "slam" || animation === "words")
+      mp4Only.add(`chữ động ${animation}`);
     if (g.panel === "none") mp4Only.add("viền/bóng chữ không nền");
-    overlay.push({ id: generateUUID(), name: content.slice(0, 24) || "Text", type: "text", hidden: false, elements: [text] });
+    overlay.push({
+      id: generateUUID(),
+      name: content.slice(0, 24) || "Text",
+      type: "text",
+      hidden: false,
+      elements: [text],
+    });
   }
   scene.tracks.overlay = overlay;
 
   const audio: AudioElement[] = [];
   for (const a of plan.audio) {
     const volume = a.gain > 0 ? clampDb(20 * Math.log10(a.gain)) : 0;
-    if (a.music) {
-      const element = {
+    let element: AudioElement;
+    if (a.music || a.sfx) {
+      const name = a.music ?? a.sfx!;
+      if (!/^[a-z0-9_-]{1,40}$/.test(name)) invalid();
+      element = {
         ...buildLibraryAudioElement({
-          sourceUrl: `/video-space/library/assets/music/${a.music}.wav`,
-          name: a.music,
+          sourceUrl: `/video-space/library/assets/${a.music ? "music" : "sfx"}/${name}.${a.music ? "wav" : "ogg"}`,
+          name,
           duration: time(a.duration_frames),
           startTime: time(a.start_frame),
         }),
         id: generateUUID(),
       } as AudioElement;
-      element.params = { ...element.params, volume, muted: a.gain === 0 };
-      audio.push(element);
-    } else if (a.asset_id && mediaIds.get(a.asset_id)?.type === "audio") {
-      const media = mediaIds.get(a.asset_id)!;
-      const base = buildElementFromMedia({
-        mediaId: a.asset_id,
-        mediaType: "audio",
-        name: a.role,
-        duration: time(a.duration_frames),
-        startTime: time(a.start_frame),
-      });
-      const element = { ...base, id: generateUUID() } as AudioElement;
-      element.trimStart = seconds(a.source_start_seconds);
-      element.sourceDuration = seconds(media.duration ?? 0) || element.sourceDuration;
-      element.trimEnd = Math.max(0, (element.sourceDuration ?? 0) - element.trimStart - time(a.duration_frames) * a.speed) as MediaTime;
-      element.params = { ...element.params, volume, muted: a.gain === 0 };
-      audio.push(element);
     } else if (a.asset_id) {
-      // Source audio of a video clip: unmute that clip on the main track.
-      for (const element of main) if (element.type === "video" && element.mediaId === a.asset_id) element.isSourceAudioEnabled = true;
-    } else {
-      mp4Only.add("hiệu ứng âm thanh SFX");
-    }
+      const media = mediaIds.get(a.asset_id);
+      if (!media || media.type === "image") invalid();
+      element = {
+        ...buildElementFromMedia({
+          mediaId: a.asset_id,
+          mediaType: "audio",
+          name: a.role,
+          duration: time(a.duration_frames),
+          startTime: time(a.start_frame),
+        }),
+        id: generateUUID(),
+      } as AudioElement;
+      element.sourceDuration =
+        seconds(media.duration ?? 0) || element.sourceDuration;
+    } else invalid();
+    element.trimStart = seconds(a.source_start_seconds);
+    element.trimEnd = Math.max(
+      0,
+      (element.sourceDuration ?? 0) -
+        element.trimStart -
+        time(a.duration_frames) * a.speed,
+    ) as MediaTime;
+    if (a.speed !== 1) element.retime = { rate: a.speed };
+    element.params = { ...element.params, volume, muted: a.gain === 0 };
+    if (a.lowpass_hz) mp4Only.add("lọc âm thanh (low-pass)");
+    if (a.duck_music) mp4Only.add("tự giảm nhạc theo tiếng động");
+    if (a.fade_frames) mp4Only.add("âm thanh fade in/out");
+    if (a.music) {
+      const entry = libraryManifest.items.find(
+        (item) => item.id === `music-${a.music}`,
+      );
+      if (!entry?.duration || entry.duration <= 0) invalid();
+      const sourceDuration = seconds(entry.duration);
+      let offset = seconds(a.source_start_seconds) % sourceDuration;
+      let remaining = time(a.duration_frames),
+        start = time(a.start_frame);
+      while (remaining > 0) {
+        const duration = Math.min(
+          remaining,
+          Math.max(1, Math.floor((sourceDuration - offset) / a.speed)),
+        ) as MediaTime;
+        audio.push({
+          ...element,
+          id: generateUUID(),
+          startTime: start,
+          duration,
+          sourceDuration,
+          trimStart: offset as MediaTime,
+          trimEnd: Math.max(
+            0,
+            sourceDuration - offset - duration * a.speed,
+          ) as MediaTime,
+        });
+        remaining = (remaining - duration) as MediaTime;
+        start = (start + duration) as MediaTime;
+        offset = 0;
+      }
+    } else audio.push(element);
   }
+  if (plan.grade) mp4Only.add("chỉnh màu tổng thể");
   scene.tracks.audio = audio.map((element) => ({
     id: generateUUID(),
     name: element.name,
@@ -273,7 +364,10 @@ export class ImportRenderPlanCommand extends Command {
   }
   execute() {
     const project = this.editor.project.getActive();
-    this.previous = { scenes: [...this.editor.scenes.getScenes()], current: project.currentSceneId };
+    this.previous = {
+      scenes: [...this.editor.scenes.getScenes()],
+      current: project.currentSceneId,
+    };
     this.apply([...this.previous.scenes, this.scene], this.scene.id);
     return undefined;
   }
@@ -283,7 +377,9 @@ export class ImportRenderPlanCommand extends Command {
   private apply(scenes: TScene[], current: string) {
     this.editor.scenes.setScenes({ scenes, activeSceneId: current });
     const project = this.editor.project.getActive();
-    this.editor.project.setActiveProject({ project: { ...project, scenes, currentSceneId: current } });
+    this.editor.project.setActiveProject({
+      project: { ...project, scenes, currentSceneId: current },
+    });
     this.editor.save.markDirty();
   }
 }

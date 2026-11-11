@@ -27,8 +27,6 @@ import {
   MessageCircleMore,
   Mail,
   Calendar,
-
-
   Brain,
   TrendingUp,
   Clapperboard,
@@ -211,17 +209,30 @@ export const NAV_SECTIONS: NavSection[] = [
         workspaceScoped: true,
         requiresWorkspace: true,
       },
+    ],
+  },
+  {
+    key: "video",
+    titleKey: "nav.sections.video",
+    items: [
       {
-        to: "/video-space",
-        icon: Clapperboard,
-        labelKey: "nav.videoSpace",
+        to: "/ai-studio/video",
+        icon: Sparkles,
+        labelKey: "nav.aiVideo",
         workspaceScoped: true,
         requiresWorkspace: true,
       },
       {
-        to: "/ai-studio/video",
+        to: "/product-video",
+        icon: PackageCheck,
+        labelKey: "productVideo.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/video-space",
         icon: Clapperboard,
-        labelKey: "aiStudio.video.title",
+        labelKey: "nav.videoSpace",
         workspaceScoped: true,
         requiresWorkspace: true,
       },

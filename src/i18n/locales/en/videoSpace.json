@@ -18,5 +18,6 @@
   "invalidMedia": "This asset format is not supported.",
   "requestDenied": "You do not have permission to access this asset.",
   "snapshotInvalid": "The project data is not valid for saving.",
-  "fileTooLarge": "The asset exceeds the size limit. Each file can be up to 128 MB."
+  "fileTooLarge": "The asset exceeds the size limit. Each file can be up to 128 MB.",
+  "description": "Edit video, text and audio in your workspace."
 }

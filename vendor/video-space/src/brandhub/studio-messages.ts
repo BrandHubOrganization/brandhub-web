@@ -43,15 +43,18 @@ export const serverRenderMessages = {
     reconciliation:
       "Công việc cần kiểm tra lại kết quả. Hệ thống không tự gọi AI thêm lần nữa.",
     failed: "Chưa dựng được video. Media và bản dựng gốc vẫn được giữ nguyên.",
-    renderMp4: "Xuất thêm video MP4 (bỏ chọn để chỉ lấy bản dựng trên timeline)",
+    renderMp4:
+      "Xuất thêm video MP4 (bỏ chọn để chỉ lấy bản dựng trên timeline)",
     agentProgress: (turns: number, previews: number) =>
       `AI đang dựng: lượt ${turns}, đã xem lại ${previews} bản nháp`,
     openTimeline: "Mở trên timeline",
     sceneName: "Bản AI dựng",
-    importedAll: "Đã thêm thành cảnh mới trên timeline. Hoàn tác (Ctrl+Z) để gỡ.",
+    importedAll:
+      "Đã thêm thành cảnh mới trên timeline. Hoàn tác (Ctrl+Z) để gỡ.",
     mp4Only: (items: string) =>
       `Đã thêm thành cảnh mới (Ctrl+Z để gỡ). Chỉ có trong MP4, timeline chưa hỗ trợ: ${items}.`,
-    importFailed: "Chưa mở được bản dựng trên timeline. Media gốc của dự án cần còn đầy đủ.",
+    importFailed:
+      "Chưa mở được bản dựng trên timeline. Media gốc của dự án cần còn đầy đủ.",
     memoryTitle: (count: number) => `AI đang ghi nhớ ${count} sở thích của bạn`,
     forget: (note: string) => `Xóa ghi nhớ: ${note}`,
     memoryFailed: "Chưa xóa được ghi nhớ. Thử lại sau.",
@@ -90,10 +93,12 @@ export const serverRenderMessages = {
       `AI is editing: turn ${turns}, reviewed ${previews} drafts`,
     openTimeline: "Open on timeline",
     sceneName: "AI edit",
-    importedAll: "Added as a new scene on the timeline. Undo (Ctrl+Z) removes it.",
+    importedAll:
+      "Added as a new scene on the timeline. Undo (Ctrl+Z) removes it.",
     mp4Only: (items: string) =>
       `Added as a new scene (Ctrl+Z removes it). Only in the MP4, not yet on the timeline: ${items}.`,
-    importFailed: "Could not open the edit on the timeline. The project's original media must still be present.",
+    importFailed:
+      "Could not open the edit on the timeline. The project's original media must still be present.",
     memoryTitle: (count: number) => `AI remembers ${count} of your preferences`,
     forget: (note: string) => `Forget: ${note}`,
     memoryFailed: "Could not remove the preference. Try again later.",
@@ -126,7 +131,7 @@ export const assistantMessages = {
     changes: "Thay đổi đã áp dụng",
     close: "Đóng",
     description:
-      "Chỉnh trực tiếp trên timeline. AI sẽ hỏi lại nếu cần thêm thông tin.",
+      "Nhắn cho Claude để dựng video từ clip của bạn, rồi nhắn tiếp để sửa.",
     clarify: "Cần anh/chị làm rõ trước khi chỉnh; timeline chưa thay đổi.",
     answer: "Trả lời AI",
     reply: "Gửi trả lời",
@@ -192,7 +197,7 @@ export const assistantMessages = {
     changes: "Applied changes",
     close: "Close",
     description:
-      "Edit directly on the timeline. AI will ask if it needs more information.",
+      "Message Claude to edit a video from your clips, then keep messaging to refine it.",
     clarify: "Please clarify before editing; the timeline has not changed.",
     answer: "Reply to AI",
     reply: "Send reply",
@@ -243,5 +248,94 @@ export const assistantMessages = {
       speed: "Speed",
       transition_id: "Transition",
     },
+  },
+};
+
+export const autoEditChatMessages = {
+  vi: {
+    conversation: "Trò chuyện dựng video",
+    you: "Bạn",
+    assistant: "Claude",
+    hello: "Bạn muốn làm video gì?",
+    intro:
+      "Thêm clip vào dự án, rồi kể cho mình bằng lời thường: video để làm gì, dài khoảng bao lâu, cảm giác ra sao. Nếu chưa rõ mình sẽ hỏi lại. Xong bạn có thể nhắn để sửa tiếp.",
+    placeholder:
+      "Ví dụ: làm video 20 giây quảng cáo matcha latte, vui tươi, có chữ giới thiệu",
+    followUp: "Muốn sửa gì? Ví dụ: chữ to hơn, bỏ đoạn cuối, nhạc nhẹ hơn…",
+    send: "Gửi",
+    newVideo: "Làm video mới",
+    starting: "Đang bắt đầu…",
+    saving: "Đang lưu video cho bạn…",
+    patience:
+      "Thường mất 5–15 phút. Bạn có thể đóng bảng này, video vẫn được làm tiếp.",
+    checking: "Đang kiểm tra lại kết quả, bạn chờ một chút nhé.",
+    failed:
+      "Lần này mình chưa làm được video. Bạn thử nhắn lại, hoặc mô tả theo cách khác nhé.",
+    loadingVideo: "Đang mở video…",
+    videoFailed: "Chưa mở được video.",
+    retry: "Thử lại",
+    download: "Tải video về máy",
+    connection: "Đang kết nối lại… Bạn không cần gửi lại tin nhắn.",
+    sendFailed: "Chưa gửi được tin nhắn. Bạn thử lại sau ít giây nhé.",
+    sending: "Đang gửi cho Claude…",
+    stillWorking: "Claude đang làm lượt trước, đợi xong rồi nhắn tiếp nhé.",
+    apply: "Áp dụng vào timeline",
+    appliedAgain: "Áp dụng thêm lần nữa",
+    applied:
+      "Đã thêm thành cảnh mới trên timeline. Muốn gỡ thì bấm Hoàn tác (Ctrl+Z).",
+    applyFailed: "Chưa đưa được video vào timeline. Bạn thử lại nhé.",
+    sceneName: "Bản Claude dựng",
+    layersAvailable:
+      "Có lớp video, chữ và âm thanh riêng để chỉnh trên timeline.",
+    flattened:
+      "Bản này chỉ có MP4 liền. Gửi yêu cầu dựng mới để có các lớp chỉnh riêng.",
+    approximate:
+      "Một số hiệu ứng chỉ hiển thị đầy đủ trong MP4; trên timeline chúng được giản lược. Video, chữ và âm thanh được nhập theo các lớp đã xuất.",
+    saveFailed:
+      "Đã thêm vào timeline nhưng chưa lưu lên máy chủ. Bấm Lưu dự án để thử lại; Ctrl+Z vẫn hoàn tác được.",
+  },
+  en: {
+    conversation: "Video editing chat",
+    you: "You",
+    assistant: "Claude",
+    hello: "What video would you like?",
+    intro:
+      "Add your clips to the project, then describe it in plain words: what it is for, roughly how long, how it should feel. I will ask if something is unclear, and you can message me to change it afterwards.",
+    placeholder:
+      "e.g. a cheerful 20-second ad for a matcha latte with an intro title",
+    followUp:
+      "What should change? e.g. bigger text, drop the ending, softer music…",
+    send: "Send",
+    newVideo: "Start a new video",
+    starting: "Getting started…",
+    saving: "Saving your video…",
+    patience:
+      "This usually takes 5–15 minutes. You can close this panel; the work continues.",
+    checking: "Double-checking the result, one moment please.",
+    failed:
+      "I could not make the video this time. Please try again or describe it differently.",
+    loadingVideo: "Opening the video…",
+    videoFailed: "Could not open the video.",
+    retry: "Retry",
+    download: "Download video",
+    connection: "Reconnecting… You do not need to send your message again.",
+    sending: "Sending to Claude…",
+    stillWorking: "Claude is still working on the previous turn; message again when it finishes.",
+    sendFailed:
+      "Could not send the message. Please try again in a few seconds.",
+    apply: "Apply to timeline",
+    appliedAgain: "Apply again",
+    applied:
+      "Added as a new scene on the timeline. Press Undo (Ctrl+Z) to remove it.",
+    applyFailed: "Could not add the video to the timeline. Please try again.",
+    sceneName: "Claude edit",
+    layersAvailable:
+      "Separate video, text and audio layers are available for timeline editing.",
+    flattened:
+      "This result is a single MP4. Send a new editing request to get separate editable layers.",
+    approximate:
+      "Some effects are fully represented only in the MP4 and are simplified on the timeline. Video, text and audio follow the exported layers.",
+    saveFailed:
+      "Added to the timeline but not saved to the server. Click Save project to retry; Ctrl+Z still undoes the import.",
   },
 };

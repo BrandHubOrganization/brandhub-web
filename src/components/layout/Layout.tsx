@@ -75,6 +75,9 @@ export function Layout() {
   const packageWorkspaceLayout = /^\/workspaces\/[^/]+\/media-package\/?$/.test(
     location.pathname,
   );
+  const videoWorkspaceLayout = /^\/workspaces\/[^/]+\/video-space\/?$/.test(
+    location.pathname,
+  );
   const user = useAuthStore((s) => s.user);
   const systemRole = useAuthStore((s) => s.systemRole);
 
@@ -337,7 +340,7 @@ export function Layout() {
 
         {/* Page Content Outlet */}
         <main
-          className={`bg-background flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
+          className={`bg-background flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout || videoWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
         >
           <React.Suspense fallback={<PageFallback />}>
             <Outlet />

@@ -17,6 +17,7 @@ import {
   subscribeHostContext,
 } from "@/platform/host";
 import { scopeStorageName } from "@/platform/storage-scope";
+import { applyHostAppearance } from "@/platform/host-appearance";
 import "@/app/globals.css";
 
 let pendingSourceImport: Promise<void> | undefined;
@@ -33,6 +34,10 @@ function HostAppearance() {
   const { setTheme } = useTheme();
   useEffect(() => {
     setTheme(theme);
+    applyHostAppearance(
+      window.parent.getComputedStyle(window.parent.document.documentElement),
+      document.documentElement.style,
+    );
   }, [theme, setTheme]);
   return null;
 }

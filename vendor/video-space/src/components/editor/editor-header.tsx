@@ -13,8 +13,6 @@ import { RenameProjectDialog } from "@/project/components/rename-project-dialog"
 import { DeleteProjectDialog } from "@/project/components/delete-project-dialog";
 import { useRouter } from "next/navigation";
 import { ExportButton } from "./export-button";
-import { ThemeToggle } from "../theme-toggle";
-import { DEFAULT_LOGO_URL } from "@/site/brand";
 import { StudioControls } from "@/brandhub/studio-controls";
 import { toast } from "sonner";
 import { useEditor } from "@/editor/use-editor";
@@ -26,9 +24,8 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ShortcutsDialog } from "@/actions/components/shortcuts-dialog";
-import Image from "next/image";
 import { cn } from "@/utils/ui";
-import { ArrowLeft, Keyboard, Loader2 } from "lucide-react";
+import { ArrowLeft, Ellipsis, Keyboard, Loader2 } from "lucide-react";
 
 export function EditorHeader() {
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -74,15 +71,6 @@ export function EditorHeader() {
 					</span>
 				</Button>
 				<ProjectDropdown onExit={handleExit} isExiting={isExiting} />
-				<div className="hidden shrink-0 sm:block">
-					<p className="text-sm font-semibold leading-5">
-						BrandHub Video Space
-					</p>
-					<p className="text-muted-foreground text-xs leading-4">
-						Không gian làm việc
-					</p>
-				</div>
-				<div className="bg-border mx-1 hidden h-7 w-px shrink-0 sm:block" />
 				<EditableProjectName />
 			</div>
 			<nav
@@ -100,7 +88,6 @@ export function EditorHeader() {
 				</Button>
 				<StudioControls />
 				<ExportButton />
-				<ThemeToggle />
 			</nav>
 			<ShortcutsDialog isOpen={shortcutsOpen} onOpenChange={setShortcutsOpen} />
 		</header>
@@ -171,13 +158,7 @@ function ProjectDropdown({
 						className="size-9 shrink-0 rounded-md p-0.5"
 						aria-label="Mở menu dự án"
 					>
-						<Image
-							src={DEFAULT_LOGO_URL}
-							alt="BrandHub"
-							width={32}
-							height={32}
-							className="size-8"
-						/>
+						<Ellipsis className="size-4" />
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start" className="z-100 w-56">

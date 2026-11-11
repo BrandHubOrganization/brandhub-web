@@ -1,7 +1,6 @@
-import Link from "next/link";
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -22,17 +21,18 @@ import {
 	DialogDescription,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { DEFAULT_LOGO_URL } from "@/site/brand";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { createProjectFromFile } from "./import-file";
 import { storageService } from "@/services/storage/service";
 import type { TProjectMetadata } from "@/project/types";
 import { API_BASE, projectRequest, type ProjectSummary } from "./api";
 import { restoreFromServer } from "./sync";
-import { getHostContext } from "@/platform/host";
+import { getHostContext, subscribeHostContext } from "@/platform/host";
+import { libraryMessages } from "./library-messages";
 
 export function VideoProjectLibrary() {
 	const router = useRouter();
+	const { locale } = useSyncExternalStore(subscribeHostContext, getHostContext);
+	const m = libraryMessages[locale];
 	const fileInput = useRef<HTMLInputElement>(null);
 	const createTrigger = useRef<HTMLButtonElement>(null);
 	const [local, setLocal] = useState<TProjectMetadata[]>([]);
@@ -58,12 +58,9 @@ export function VideoProjectLibrary() {
 			if (b.status === "fulfilled") {
 				setRemote(b.value);
 				setHasMore(b.value.length === 50);
-			}
-			else
+			} else
 				setServerError(
-					b.reason instanceof Error
-						? b.reason.message
-						: "Chưa kết nối được máy chủ.",
+					b.reason instanceof Error ? b.reason.message : m.connectionFailed,
 				);
 			setLoading(false);
 		});
@@ -77,14 +74,22 @@ export function VideoProjectLibrary() {
 		setLoadingMore(true);
 		try {
 			const next = remotePage + 1;
-			const page = await projectRequest<ProjectSummary[]>({ path: `${API_BASE}?page=${next}&size=50` });
-			setRemote((current) => [...new Map([...current, ...page].map((project) => [project.id, project])).values()]);
+			const page = await projectRequest<ProjectSummary[]>({
+				path: `${API_BASE}?page=${next}&size=50`,
+			});
+			setRemote((current) => [
+				...new Map(
+					[...current, ...page].map((project) => [project.id, project]),
+				).values(),
+			]);
 			setRemotePage(next);
 			setHasMore(page.length === 50);
 			setServerError("");
 		} catch (error) {
-			setServerError(error instanceof Error ? error.message : "Could not load projects");
-		} finally { setLoadingMore(false); }
+			setServerError(error instanceof Error ? error.message : m.loadFailed);
+		} finally {
+			setLoadingMore(false);
+		}
 	}
 
 	async function create(file?: File) {
@@ -94,9 +99,7 @@ export function VideoProjectLibrary() {
 			const projectId = await createProjectFromFile({ file, name });
 			router.push(`/editor/${projectId}`);
 		} catch (error) {
-			toast.error(
-				error instanceof Error ? error.message : "Chưa tạo được bản dựng.",
-			);
+			toast.error(error instanceof Error ? error.message : m.createFailed);
 			setBusy(false);
 		}
 	}
@@ -105,9 +108,7 @@ export function VideoProjectLibrary() {
 		if (busy) return;
 		if (
 			local.some((p) => p.id === project.id) &&
-			!window.confirm(
-				`Mở bản đã lưu của “${project.name}”? Thao tác này thay bản trên trình duyệt bằng phiên bản máy chủ. Chọn Hủy để tiếp tục phần đang sửa trên máy.`,
-			)
+			!window.confirm(m.restoreConfirm.replace("{name}", project.name))
 		)
 			return;
 		setBusy(true);
@@ -115,9 +116,7 @@ export function VideoProjectLibrary() {
 			await restoreFromServer(project.id);
 			router.push(`/editor/${project.id}`);
 		} catch (error) {
-			toast.error(
-				error instanceof Error ? error.message : "Không mở được bản dựng.",
-			);
+			toast.error(error instanceof Error ? error.message : m.openFailed);
 			setBusy(false);
 		}
 	}
@@ -153,51 +152,18 @@ export function VideoProjectLibrary() {
 
 	return (
 		<div className="bh-library">
-			<aside className="bh-sidebar">
-				<Link className="bh-brand" href="/projects">
-					<Image src={DEFAULT_LOGO_URL} width={28} height={28} alt="" />
-					<span>
-						Brand<span className="text-primary">Hub</span>
-					</span>
-				</Link>
-				<div className="bh-scope">
-					<span className="bh-workspace-icon">B</span>
-					<div>
-						<strong>Video Space</strong>
-						<span>Không gian thử nghiệm</span>
-					</div>
-				</div>
-				<nav aria-label="Điều hướng video">
-					<Link className="bh-nav-active" href="/projects">
-						<FolderOpen size={17} />
-						Bản dựng của bạn
-					</Link>
-				</nav>
-				<div className="bh-sidebar-bottom">
-					<span>Được xây dựng trên OpenCut</span>
-					<ThemeToggle />
-				</div>
-			</aside>
 			<main className="bh-library-main">
 				<header className="bh-library-top">
-					<span>
-						Không gian làm việc{" "}
-						<span className="text-muted-foreground">/ Video Space</span>
-					</span>
 					<span className="bh-connection">
 						<span className={serverError ? "bh-dot-off" : "bh-dot"} />
-						{loading
-							? "Đang kết nối"
-							: serverError
-								? "Bản trên máy"
-								: "Máy chủ đã kết nối"}
+						{loading ? m.connecting : serverError ? m.localOnly : m.connected}
 					</span>
 				</header>
 				<div className="bh-library-content">
 					<div className="bh-page-title">
 						<div>
-							<h1>Bản dựng của bạn</h1>
-							<p>Biến video AI thành câu chuyện mang dấu ấn thương hiệu.</p>
+							<h1>{m.title}</h1>
+							<p>{m.description}</p>
 						</div>
 						<Button
 							ref={createTrigger}
@@ -205,7 +171,7 @@ export function VideoProjectLibrary() {
 							disabled={busy}
 						>
 							<Plus size={16} />
-							Tạo bản dựng
+							{m.create}
 						</Button>
 					</div>
 					<section className="bh-import-strip" aria-labelledby="import-title">
@@ -213,11 +179,8 @@ export function VideoProjectLibrary() {
 							<Film size={25} />
 						</div>
 						<div>
-							<h2 id="import-title">Video đã sẵn sàng. Bắt đầu chỉnh sửa.</h2>
-							<p>
-								Đưa clip AI vào timeline, thêm chữ, âm thanh và những nét riêng
-								của bạn.
-							</p>
+							<h2 id="import-title">{m.importTitle}</h2>
+							<p>{m.importDescription}</p>
 						</div>
 						<Button
 							variant="outline"
@@ -229,14 +192,14 @@ export function VideoProjectLibrary() {
 							) : (
 								<Upload size={16} />
 							)}
-							Nhập video
+							{m.importVideo}
 						</Button>
 						<input
 							ref={fileInput}
 							type="file"
 							accept="video/mp4,video/webm,video/quicktime"
 							hidden
-							aria-label="Chọn video để chỉnh sửa"
+							aria-label={m.chooseVideo}
 							onChange={(e) => {
 								const file = e.target.files?.[0];
 								if (file) void create(file);
@@ -246,19 +209,18 @@ export function VideoProjectLibrary() {
 					</section>
 					{serverError && (
 						<div role="status" className="bh-inline-notice">
-							{serverError} Các bản dựng trên trình duyệt vẫn có thể mở và chỉnh
-							sửa.
+							{serverError} {m.offlineNotice}
 						</div>
 					)}
 					<div className="bh-library-toolbar">
 						<h2>
-							Tất cả bản dựng <span>{projects.length}</span>
+							{m.allProjects} <span>{projects.length}</span>
 						</h2>
 						<label className="bh-search">
 							<Search size={16} />
 							<input
-								aria-label="Tìm bản dựng"
-								placeholder="Tìm bản dựng…"
+								aria-label={m.search}
+								placeholder={m.searchPlaceholder}
 								value={query}
 								onChange={(e) => setQuery(e.target.value)}
 							/>
@@ -267,7 +229,7 @@ export function VideoProjectLibrary() {
 					{loading ? (
 						<div className="bh-empty">
 							<Loader2 className="animate-spin" />
-							<p>Đang tải bản dựng…</p>
+							<p>{m.loading}</p>
 						</div>
 					) : projects.length ? (
 						<div className="bh-project-grid">
@@ -282,7 +244,7 @@ export function VideoProjectLibrary() {
 												? router.push(`/editor/${project.id}`)
 												: void openRemote(project.remote!)
 										}
-										aria-label={`Mở ${project.name}`}
+										aria-label={`${m.open} ${project.name}`}
 									>
 										{project.thumbnail ? (
 											<Image
@@ -302,22 +264,25 @@ export function VideoProjectLibrary() {
 									<div className="bh-project-info">
 										<h3 title={project.name}>{project.name}</h3>
 										<p>
-											{new Date(project.updated).toLocaleString("vi-VN", {
-												day: "2-digit",
-												month: "2-digit",
-												hour: "2-digit",
-												minute: "2-digit",
-											})}
+											{new Date(project.updated).toLocaleString(
+												locale === "en" ? "en-US" : "vi-VN",
+												{
+													day: "2-digit",
+													month: "2-digit",
+													hour: "2-digit",
+													minute: "2-digit",
+												},
+											)}
 										</p>
 										<div>
 											<span className="bh-project-state">
 												{project.remote ? (
 													<>
 														<Cloud size={12} />
-														Đã lưu máy chủ · v{project.remote.revision}
+														{m.cloudSaved} · v{project.remote.revision}
 													</>
 												) : (
-													"Trên trình duyệt"
+													m.browserSaved
 												)}
 											</span>
 											{project.remote && project.local && (
@@ -326,7 +291,7 @@ export function VideoProjectLibrary() {
 													disabled={busy}
 													onClick={() => void openRemote(project.remote!)}
 												>
-													Khôi phục
+													{m.restore}
 												</button>
 											)}
 										</div>
@@ -337,30 +302,31 @@ export function VideoProjectLibrary() {
 					) : (
 						<section className="bh-empty">
 							<FolderOpen size={34} strokeWidth={1.25} />
-							<h3>
-								{query
-									? "Không tìm thấy bản dựng"
-									: "Câu chuyện đầu tiên bắt đầu ở đây"}
-							</h3>
-							<p>
-								{query
-									? "Thử tìm bằng một tên khác."
-									: "Nhập một video có sẵn hoặc tạo timeline trống để bắt đầu."}
-							</p>
+							<h3>{query ? m.noResults : m.emptyTitle}</h3>
+							<p>{query ? m.noResultsHint : m.emptyHint}</p>
 							<Button
 								variant="outline"
 								onClick={() => fileInput.current?.click()}
 								disabled={busy}
 							>
 								<Upload size={16} />
-								Nhập video đầu tiên
+								{m.firstImport}
 							</Button>
 						</section>
 					)}
-					{hasMore && <div className="flex justify-center py-4"><Button variant="outline" disabled={loadingMore || busy} onClick={() => void loadMore()}>{loadingMore ? <Loader2 className="animate-spin" /> : null}{getHostContext().locale === "en" ? "Load more cloud projects" : "T?i th?m b?n d?ng tr?n m?y ch?"}</Button></div>}
-					<footer className="bh-library-footer">
-						Bản dựng có thể tiếp tục chỉnh sửa; MP4 là video xuất để sử dụng.
-					</footer>
+					{hasMore && (
+						<div className="flex justify-center py-4">
+							<Button
+								variant="outline"
+								disabled={loadingMore || busy}
+								onClick={() => void loadMore()}
+							>
+								{loadingMore ? <Loader2 className="animate-spin" /> : null}
+								{m.loadMore}
+							</Button>
+						</div>
+					)}
+					<footer className="bh-library-footer">{m.footer}</footer>
 				</div>
 			</main>
 			<Dialog
@@ -376,9 +342,9 @@ export function VideoProjectLibrary() {
 						createTrigger.current?.focus();
 					}}
 				>
-					<DialogTitle>Tạo bản dựng mới</DialogTitle>
+					<DialogTitle>{m.createTitle}</DialogTitle>
 					<DialogDescription className="sr-only">
-						Đặt tên cho bản dựng để bắt đầu biên tập video.
+						{m.createHint}
 					</DialogDescription>
 					<form
 						onSubmit={(e) => {
@@ -386,13 +352,13 @@ export function VideoProjectLibrary() {
 							void create();
 						}}
 					>
-						<label htmlFor="project-name">Tên bản dựng</label>
+						<label htmlFor="project-name">{m.projectName}</label>
 						<input
 							id="project-name"
 							maxLength={200}
 							value={name}
 							onChange={(e) => setName(e.target.value)}
-							placeholder="Ví dụ: Video giới thiệu sản phẩm"
+							placeholder={m.namePlaceholder}
 						/>
 						<div>
 							<Button
@@ -400,7 +366,7 @@ export function VideoProjectLibrary() {
 								disabled={busy}
 								onClick={() => setShowCreate(false)}
 							>
-								Hủy
+								{m.cancel}
 							</Button>
 							<Button type="submit" disabled={busy}>
 								{busy ? (
@@ -408,7 +374,7 @@ export function VideoProjectLibrary() {
 								) : (
 									<Plus size={16} />
 								)}
-								Tạo bản dựng
+								{m.create}
 							</Button>
 						</div>
 					</form>

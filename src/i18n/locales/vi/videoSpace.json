@@ -18,5 +18,6 @@
   "invalidMedia": "Định dạng tài nguyên không được hỗ trợ.",
   "requestDenied": "Bạn không có quyền truy cập tài nguyên này.",
   "snapshotInvalid": "Dữ liệu dự án chưa hợp lệ để lưu.",
-  "fileTooLarge": "Tài nguyên vượt quá dung lượng cho phép. Mỗi tệp tối đa 128 MB."
+  "fileTooLarge": "Tài nguyên vượt quá dung lượng cho phép. Mỗi tệp tối đa 128 MB.",
+  "description": "Chỉnh sửa video, chữ và âm thanh trong workspace của bạn."
 }

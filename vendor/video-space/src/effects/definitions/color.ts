@@ -9,7 +9,7 @@ const controls = [
 	{ key: "grayscale", label: "Đen trắng", default: 0, min: 0, max: 100 },
 ] as const;
 
-function colorDefinition({
+export function colorDefinition({
 	type,
 	name,
 	defaults = {},

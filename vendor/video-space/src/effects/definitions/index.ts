@@ -2,7 +2,13 @@ import { effectsRegistry } from "../registry";
 import { blurEffectDefinition } from "./blur";
 import { colorEffectDefinitions } from "./color";
 
-const defaultEffects = [blurEffectDefinition, ...colorEffectDefinitions];
+import { effectPresets } from "./presets";
+
+const defaultEffects = [
+	blurEffectDefinition,
+	...colorEffectDefinitions,
+	...effectPresets,
+];
 
 export function registerDefaultEffects(): void {
 	for (const definition of defaultEffects) {

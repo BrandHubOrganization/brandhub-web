@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useCallback, useState } from "react";
+import {
+	useEffect,
+	useRef,
+	useCallback,
+	useState,
+	useSyncExternalStore,
+} from "react";
 import { toast } from "sonner";
 import {
 	AddClipEffectCommand,
@@ -12,6 +18,13 @@ import { isVisualElement } from "@/timeline";
 import { usePropertiesStore } from "@/components/editor/panels/properties/stores/properties-store";
 import { useResourcePreviewStore } from "@/brandhub/resources/preview-store";
 import "./color-library.css";
+import { getHostContext, subscribeHostContext } from "@/platform/host";
+import {
+	editorResourceMessages,
+	effectName,
+} from "@/brandhub/resources/messages";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
 import { DraggableItem } from "@/components/editor/panels/assets/draggable-item";
 import { effectsRegistry, EFFECT_TARGET_ELEMENT_TYPES } from "@/effects";
@@ -21,21 +34,23 @@ import { buildEffectElement } from "@/timeline/element-utils";
 import type { EffectDefinition } from "@/effects/types";
 
 export function EffectsView() {
+	const { locale } = useSyncExternalStore(subscribeHostContext, getHostContext);
+	const t = editorResourceMessages[locale];
 	const effects = effectsRegistry
 		.getAll()
 		.filter((effect) => effect.category !== "filter");
 
 	return (
-		<PanelView title="Effects · Điều chỉnh">
-			<p className="bh-filter-hint">
-				Chọn clip để thêm hiệu ứng; chỉnh thông số ở tab Effects bên phải.
-			</p>
+		<PanelView title={t.effects}>
+			<p className="bh-filter-hint">{t.effectHint}</p>
 			<EffectsGrid effects={effects} />
 		</PanelView>
 	);
 }
 
 export function FiltersView() {
+	const { locale } = useSyncExternalStore(subscribeHostContext, getHostContext);
+	const t = editorResourceMessages[locale];
 	const editor = useEditor();
 	const selected = useEditor((e) => e.selection.getSelectedElements());
 	useEditor((e) => e.scenes.getActiveScene().tracks);
@@ -46,7 +61,7 @@ export function FiltersView() {
 		.getAll()
 		.filter((effect) => effect.category === "filter");
 	const shown = filters.filter((effect) =>
-		`${effect.name} ${effect.type}`
+		`${effectName(effect.type, locale, effect.name)} ${effect.type}`
 			.toLocaleLowerCase()
 			.includes(query.trim().toLocaleLowerCase()),
 	);
@@ -95,33 +110,40 @@ export function FiltersView() {
 		useResourcePreviewStore.getState().close();
 		toast.success(
 			effectType
-				? `Đã áp dụng ${effectsRegistry.get(effectType).name}`
-				: "Đã bỏ bộ lọc",
+				? t.applied.replace(
+						"{name}",
+						effectName(
+							effectType,
+							locale,
+							effectsRegistry.get(effectType).name,
+						),
+					)
+				: t.cleared,
 		);
 	}
 
 	return (
-		<PanelView title="Filters · Bộ lọc màu" aria-label="Bộ lọc màu">
-			<input
+		<PanelView title={t.filters} aria-label={t.filters}>
+			<Input
 				className="bh-filter-search"
-				aria-label="Tìm bộ lọc"
-				placeholder="Tìm bộ lọc..."
+				aria-label={t.searchFilters}
+				placeholder={t.searchFilters}
 				value={query}
 				onChange={(event) => setQuery(event.target.value)}
 			/>
 			<p className="bh-filter-hint">
-				{hasTarget
-					? "Bấm mẫu để áp dụng. Mẫu mới thay bộ lọc cũ; chỉnh màu ở bên phải."
-					: "Chọn một clip hoặc ảnh trên timeline để áp dụng bộ lọc."}
+				{hasTarget ? t.filterHint : t.selectClip}
 			</p>
-			<button
+			<Button
+				variant="outline"
+				size="sm"
 				className="bh-filter-clear"
 				type="button"
 				disabled={!hasTarget || !selectedFilter}
 				onClick={() => applyFilter()}
 			>
-				Bỏ bộ lọc
-			</button>
+				{t.clearFilter}
+			</Button>
 			<div className="bh-filter-grid">
 				{shown.map((effect) => (
 					<button
@@ -129,25 +151,27 @@ export function FiltersView() {
 						key={effect.type}
 						type="button"
 						disabled={!hasTarget}
-						aria-label={`Áp dụng ${effect.name}`}
+						aria-label={t.apply.replace(
+							"{name}",
+							effectName(effect.type, locale, effect.name),
+						)}
 						aria-pressed={selectedFilter?.type === effect.type}
 						onClick={() => applyFilter(effect.type)}
 					>
 						<div className="bh-filter-art">
 							<EffectPreviewCanvas effectType={effect.type} />
 						</div>
-						<span>{effect.name}</span>
+						<span>{effectName(effect.type, locale, effect.name)}</span>
 					</button>
 				))}
 			</div>
-			{shown.length === 0 && (
-				<p className="bh-filter-hint">Không tìm thấy bộ lọc.</p>
-			)}
+			{shown.length === 0 && <p className="bh-filter-hint">{t.noFilters}</p>}
 		</PanelView>
 	);
 }
 
 function EffectsGrid({ effects }: { effects: EffectDefinition[] }) {
+	const { locale } = useSyncExternalStore(subscribeHostContext, getHostContext);
 	return (
 		<div
 			className="grid gap-2"
@@ -157,7 +181,7 @@ function EffectsGrid({ effects }: { effects: EffectDefinition[] }) {
 				<div
 					key={effect.type}
 					role="group"
-					aria-label={`${effect.name} effect`}
+					aria-label={`${effectName(effect.type, locale, effect.name)} effect`}
 				>
 					<EffectItem effect={effect} />
 				</div>
@@ -188,6 +212,7 @@ function EffectPreviewCanvas({ effectType }: { effectType: string }) {
 }
 
 function EffectItem({ effect }: { effect: EffectDefinition }) {
+	const { locale } = useSyncExternalStore(subscribeHostContext, getHostContext);
 	const editor = useEditor();
 
 	const handleAddToTimeline = useCallback(() => {
@@ -228,7 +253,7 @@ function EffectItem({ effect }: { effect: EffectDefinition }) {
 
 	return (
 		<DraggableItem
-			name={effect.name}
+			name={effectName(effect.type, locale, effect.name)}
 			preview={preview}
 			dragData={{
 				id: effect.type,

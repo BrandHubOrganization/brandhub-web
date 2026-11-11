@@ -1,7 +1,13 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Loader2, Monitor, RotateCcw } from "lucide-react";
+import {
+  ArrowLeft,
+  Clapperboard,
+  Loader2,
+  Monitor,
+  RotateCcw,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useDocumentTheme } from "@/pages/video-space/hooks/useDocumentTheme";
@@ -74,13 +80,23 @@ export function VideoSpaceWorkspace({
 
   return (
     <section
-      className="bg-background flex h-[calc(100dvh-4rem)] min-h-96 flex-col"
+      className="bg-background flex h-full min-h-0 flex-col"
       aria-label={t("videoSpace.title")}
     >
       <header className="border-border bg-card flex min-h-12 shrink-0 flex-wrap items-center justify-between gap-2 border-b px-4 py-2">
-        <h1 className="text-foreground text-sm font-semibold">
-          {t("videoSpace.title")}
-        </h1>
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="bg-brand-orange-soft text-brand-orange flex size-9 shrink-0 items-center justify-center rounded-lg">
+            <Clapperboard className="size-4" />
+          </div>
+          <div>
+            <h1 className="text-foreground text-sm font-semibold">
+              {t("videoSpace.title")}
+            </h1>
+            <p className="text-muted-foreground hidden text-xs sm:block">
+              {t("videoSpace.description")}
+            </p>
+          </div>
+        </div>
         <Button
           variant="outline"
           size="sm"
