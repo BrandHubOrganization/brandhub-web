@@ -91,18 +91,6 @@ function RepositoryMedia() {
   );
   const [isExternalDragOver, setIsExternalDragOver] = useState(false);
 
-  const startUploadBatch = useBackgroundTaskStore(
-    (state) => state.startUploadBatch,
-  );
-  const isDriveImportActive = useBackgroundTaskStore((state) =>
-    state.tasks.some(
-      (t) =>
-        t.type === "DRIVE_IMPORT" &&
-        (t.status === "RUNNING" || t.status === "CANCEL_CLEANUP") &&
-        (!repository.workspace || t.workspaceId === repository.workspace),
-    ),
-  );
-
   const effectiveFilters: MaterialFilters = {
     mediaKind,
     sort,
@@ -116,6 +104,18 @@ function RepositoryMedia() {
     page,
     debounced,
     effectiveFilters,
+  );
+
+  const startUploadBatch = useBackgroundTaskStore(
+    (state) => state.startUploadBatch,
+  );
+  const isDriveImportActive = useBackgroundTaskStore((state) =>
+    state.tasks.some(
+      (t) =>
+        t.type === "DRIVE_IMPORT" &&
+        (t.status === "RUNNING" || t.status === "CANCEL_CLEANUP") &&
+        (!repository?.workspace || t.workspaceId === repository.workspace),
+    ),
   );
   const downloader = useMaterialDownload();
   const uploadProfilesQuery = useMaterialUploadProfiles(
