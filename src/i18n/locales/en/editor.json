@@ -609,6 +609,8 @@
     "emptyHint": "Nothing here yet. Start with your part.",
     "empty": "Nothing here yet.",
     "onePerLine": "One item per line",
+    "addRow": "Add row",
+    "removeRow": "Remove row",
     "comingSoon": "This section's workspace comes in a later release. You can still submit, approve or return it above.",
     "lockedWaitWriter": "You can edit once the writer submits this section",
     "yours": "Your section"

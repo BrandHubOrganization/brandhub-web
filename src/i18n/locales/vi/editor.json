@@ -627,6 +627,8 @@
     "emptyHint": "Chưa có nội dung. Bắt đầu nhập phần việc của bạn.",
     "empty": "Chưa có nội dung.",
     "onePerLine": "Mỗi dòng một mục",
+    "addRow": "Thêm dòng",
+    "removeRow": "Xoá dòng",
     "comingSoon": "Khu vực làm việc của phần này sẽ có ở bản sau. Bạn vẫn có thể nộp, duyệt hoặc trả lại phần ở trên.",
     "lockedWaitWriter": "Chờ người viết nộp phần rồi bạn mới biên tập được",
     "yours": "Phần của bạn"
