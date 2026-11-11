@@ -16,10 +16,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CircularPercent } from "@/components/common/BackgroundTaskDock";
 import {
+  clearCachedDriveImportToken,
   loadDriveImportAuthorization,
   requestDriveImportToken,
 } from "@/pages/library/hooks/driveImportAuthorization";
 import { materialService } from "@/services/materialService";
+import { useAuthStore } from "@/store/authStore";
 import { useBackgroundTaskStore } from "@/store/backgroundTaskStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 
@@ -43,6 +45,7 @@ export function CustomerDrivePanel({
     (state) => state.currentWorkspace?.id,
   );
   const workspace = workspaceIdOverride || storeWorkspace;
+  const userEmail = useAuthStore((state) => state.user?.email);
   const authorization = useRef<Promise<string> | null>(null);
   const [source, setSource] = useState("");
 
@@ -128,6 +131,16 @@ export function CustomerDrivePanel({
         });
       }
     },
+    onError: (err) => {
+      const code = extractFailureCode(err);
+      if (
+        code === "DRIVE_IMPORT_AUTH_REQUIRED" ||
+        code === "DRIVE_IMPORT_AUTH_EXPIRED" ||
+        code === "DRIVE_IMPORT_ACCESS_DENIED"
+      ) {
+        clearCachedDriveImportToken();
+      }
+    },
   });
 
   return (
@@ -140,7 +153,10 @@ export function CustomerDrivePanel({
         onSubmit={(event) => {
           event.preventDefault();
           if (!config.data || mutation.isPending || isBusy) return;
-          authorization.current = requestDriveImportToken(config.data.clientId);
+          authorization.current = requestDriveImportToken(
+            config.data.clientId,
+            userEmail,
+          );
           void authorization.current.catch(() => {});
           mutation.mutate();
         }}
