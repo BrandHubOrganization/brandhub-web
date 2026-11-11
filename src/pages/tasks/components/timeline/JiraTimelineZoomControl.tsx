@@ -13,7 +13,7 @@ import type {
   ZoomOption,
 } from "./types";
 
-export type { JiraTimelineZoomControlProps, ZoomOption };
+export type { JiraTimelineZoomControlProps, TimelineZoom, ZoomOption };
 
 const ZOOM_OPTIONS: ZoomOption[] = [
   { id: "week", labelKey: "tasks.timelineGrid.zoomWeeks", defaultLabel: "Tuần" },

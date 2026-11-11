@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { toast } from "sonner";
-import type { TaskListItem, TaskStatus } from "@/types/task";
+import type { TaskStatus } from "@/types/task";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
 import { dayNumber } from "@/pages/campaign/utils/timelineDates";

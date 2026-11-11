@@ -203,6 +203,14 @@ export function SendMailDialog({
   const overQuota =
     !agencyMode && remaining !== null && parsed.recipients.length > remaining;
 
+  const { minScheduleDate, maxScheduleDate } = useMemo(() => {
+    const now = Date.now();
+    return {
+      minScheduleDate: new Date(now + MIN_LEAD_MS).toISOString(),
+      maxScheduleDate: new Date(now + 30 * 24 * 3600 * 1000).toISOString(),
+    };
+  }, []);
+
   const fail = (e: unknown) => {
     const code = errorCode(e);
     setError(
@@ -620,8 +628,8 @@ export function SendMailDialog({
                 }}
                 includeTime={true}
                 placeholder={t("mailTemplate.send.schedulePlaceholder", "Chọn ngày và giờ gửi...")}
-                minDate={new Date(Date.now() + MIN_LEAD_MS).toISOString()}
-                maxDate={new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString()}
+                minDate={minScheduleDate}
+                maxDate={maxScheduleDate}
                 allowClear={true}
                 isError={Boolean(scheduleError)}
               />
