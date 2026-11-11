@@ -651,14 +651,16 @@ export function CampaignTimelineGrid({
                     timezone={data.timezone}
                     members={data.members}
                     busy={busy}
+                    taskType={node.parent.type}
                     onCancel={() => setCreating(null)}
-                    onCreate={(name, assigneeId, dueDate) =>
+                    onCreate={(name, assigneeId, dueDate, subtaskRole) =>
                       edit({
                         kind: "create",
                         taskId: node.parent.id,
                         name,
                         assigneeId,
                         dueDate,
+                        subtaskRole,
                       })
                     }
                   />

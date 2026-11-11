@@ -1,8 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { CalendarDays, ChevronDown, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Popover,
   PopoverContent,
@@ -15,20 +24,26 @@ import {
   todayIn,
 } from "@/pages/campaign/utils/timelineDates";
 import type { TaskMemberOption } from "@/pages/tasks/types/taskWorkflow";
+import { taskCatalogService } from "@/services/taskCatalogService";
+import type { TaskType } from "@/types/task";
 export function TimelineSubtaskCreator({
   timezone,
   members,
   busy,
+  taskType,
   onCreate,
   onCancel,
 }: {
   timezone: string;
   members: TaskMemberOption[];
   busy: boolean;
+  /** Offers "suggest from catalog" roles for this task type (T8.7); omitted/unknown = free subtask only. */
+  taskType?: string;
   onCreate: (
     name: string,
     assigneeId: string | null,
     dueDate: string,
+    subtaskRole?: string | null,
   ) => Promise<unknown>;
   onCancel: () => void;
 }) {
@@ -37,6 +52,14 @@ export function TimelineSubtaskCreator({
   const [assignee, setAssignee] = useState<string | null>(null);
   const [due, setDue] = useState(() => addDays(todayIn(timezone), 2));
   const [dateOpen, setDateOpen] = useState(false);
+  const [subtaskRole, setSubtaskRole] = useState<string | null>(null);
+  const catalog = useQuery({
+    queryKey: ["task-catalog", taskType],
+    queryFn: () => taskCatalogService.get(taskType as TaskType),
+    enabled: Boolean(taskType),
+    staleTime: Infinity,
+  });
+  const roles = catalog.data?.roles ?? [];
   const input = useRef<HTMLInputElement>(null);
   const focusAfterSubmit = useRef(false);
   const submitting = useRef(false);
@@ -52,8 +75,14 @@ export function TimelineSubtaskCreator({
     if (due <= todayIn(timezone)) return;
     submitting.current = true;
     try {
-      await onCreate(name.trim(), assignee, dayInstant(due, timezone));
+      await onCreate(
+        name.trim(),
+        assignee,
+        dayInstant(due, timezone),
+        subtaskRole,
+      );
       setName("");
+      setSubtaskRole(null);
       setDue(addDays(todayIn(timezone), 2));
       focusAfterSubmit.current = true;
     } catch {
@@ -88,6 +117,49 @@ export function TimelineSubtaskCreator({
           composing.current = false;
         }}
       />
+      {roles.length > 0 && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={busy}
+              className="h-8 shrink-0 gap-1 text-xs"
+            >
+              {subtaskRole
+                ? roles.find((r) => r.role === subtaskRole)?.name
+                : t("tasks.subtasks.suggestFromCatalog")}
+              <ChevronDown className="size-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="min-w-48">
+            <DropdownMenuLabel>
+              {t("tasks.subtasks.suggestFromCatalog")}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {roles.map((role) => (
+              <DropdownMenuItem
+                key={role.role}
+                onClick={() => {
+                  setSubtaskRole(role.role);
+                  if (!name.trim()) setName(role.name);
+                }}
+              >
+                {role.name}
+              </DropdownMenuItem>
+            ))}
+            {subtaskRole && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setSubtaskRole(null)}>
+                  {t("tasks.subtasks.freeSubtask")}
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
       <TimelineAssigneePicker
         value={assignee}
         name={members.find((m) => m.userId === assignee)?.displayName}

@@ -16,7 +16,9 @@ import {
   JiraStatusLozenge,
   JiraSubtaskDueDate,
   JiraSubtaskIcon,
+  JiraSubtaskRoleBadge,
 } from "@/pages/tasks/components/JiraSubtaskUI";
+import { taskCatalogService } from "@/services/taskCatalogService";
 import { isSubtaskDone } from "@/pages/tasks/utils/jiraSubtaskUtils";
 
 export interface SubtaskDetails {
@@ -88,6 +90,18 @@ export function WorkItemSubtasksList({
     enabled: Boolean(workspaceId && taskId),
   });
 
+  const taskType = parentTaskWorkflow?.type;
+  const catalog = useQuery({
+    queryKey: ["task-catalog", taskType],
+    queryFn: () => taskCatalogService.get(taskType!),
+    enabled: Boolean(taskType),
+    staleTime: Infinity,
+  });
+  const roleName = (role?: string | null) =>
+    role
+      ? catalog.data?.roles.find((r) => r.role === role)?.name ?? role
+      : null;
+
   const parentAssigneeId =
     data?.parentAssigneeId || parentTaskWorkflow?.assigneeId || null;
   const parentAssigneeName =
@@ -101,6 +115,7 @@ export function WorkItemSubtasksList({
       assigneeId: string;
       supervisorOverrideId: string | null;
       dueDate: string;
+      subtaskRole?: string | null;
     }) => {
       return (
         await api.post<ApiResponse<SubtasksView>>(path, payload)
@@ -267,6 +282,9 @@ export function WorkItemSubtasksList({
                   >
                     {row.subtask.name}
                   </span>
+                  <JiraSubtaskRoleBadge
+                    roleName={roleName(row.subtask.subtaskRole)}
+                  />
                 </div>
 
                 {/* Right metadata: Assignee avatar & name + Due date + Status */}
@@ -309,6 +327,7 @@ export function WorkItemSubtasksList({
           parentDueDate={parentDueDate}
           members={data?.members || []}
           isLoading={createSubtaskMutation.isPending}
+          taskType={taskType}
           onSubmit={(payload) => createSubtaskMutation.mutate(payload)}
           onCancel={() => setIsCreating(false)}
         />

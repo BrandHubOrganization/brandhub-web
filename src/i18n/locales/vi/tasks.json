@@ -2,6 +2,8 @@
   "subtasks": {
     "title": "Công việc con",
     "add": "Thêm công việc con",
+    "suggestFromCatalog": "Gợi ý theo danh mục",
+    "freeSubtask": "Công việc con tự do",
     "edit": "Chỉnh sửa",
     "empty": "Chưa có công việc con.",
     "assignee": "Người thực hiện",
@@ -186,6 +188,7 @@
     }
   },
   "title": "Quản lý công việc",
+  "openEditor": "Mở trình soạn",
   "description": "Theo dõi công việc thực tế trong không gian làm việc.",
   "loading": "Đang tải công việc…",
   "error": "Không thể tải danh sách công việc. Vui lòng thử lại.",

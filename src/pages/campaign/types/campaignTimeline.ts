@@ -76,5 +76,6 @@ export type TimelineEdit =
       name: string;
       assigneeId: string | null;
       dueDate: string;
+      subtaskRole?: string | null;
     }
   | { kind: "status"; taskId: string; subtaskId: string; status: string };

@@ -2,6 +2,8 @@
   "subtasks": {
     "title": "Subtasks",
     "add": "Add subtask",
+    "suggestFromCatalog": "Suggest from catalog",
+    "freeSubtask": "Free subtask",
     "edit": "Edit",
     "empty": "No subtasks yet.",
     "assignee": "Assignee",
@@ -186,6 +188,7 @@
     }
   },
   "title": "Task management",
+  "openEditor": "Open editor",
   "description": "Track actual work in this workspace.",
   "loading": "Loading tasks…",
   "error": "Unable to load tasks. Please try again.",
