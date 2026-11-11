@@ -738,6 +738,109 @@
           "recommendations": "Recommendations"
         }
       }
+    },
+    "EVENT": {
+      "AGENDA": {
+        "title": "Concept & Agenda",
+        "fields": {
+          "concept": "Concept",
+          "goal": "Goal",
+          "datetimeVenue": "Planned date/venue",
+          "agenda": {
+            "time": "Time",
+            "item": "Item",
+            "owner": "Owner"
+          }
+        }
+      },
+      "LOGISTICS": {
+        "title": "Logistics & Venue",
+        "fields": {
+          "venue": "Venue",
+          "vendors": {
+            "name": "Name",
+            "category": "Category",
+            "costVnd": "Cost (VND)",
+            "contact": "Contact"
+          },
+          "totalBudget": "Total budget",
+          "checklist": "Supplies checklist"
+        }
+      },
+      "PROMOTION": {
+        "title": "Event Promotion",
+        "fields": {
+          "plan": "Promotion plan",
+          "guests": {
+            "name": "Name",
+            "org": "Organization",
+            "inviteStatus": "Invite status"
+          }
+        }
+      },
+      "RUNSHEET": {
+        "title": "On-site Coordination",
+        "fields": {
+          "runsheet": {
+            "time": "Time",
+            "task": "Task",
+            "owner": "Owner"
+          },
+          "staffing": "Staffing"
+        }
+      },
+      "REPORT": {
+        "title": "Post-event Report",
+        "fields": {
+          "result": "Result",
+          "attendeeCount": "Attendee count",
+          "lessons": "Lessons learned"
+        }
+      }
+    },
+    "PRESS": {
+      "MEDIA_LIST": {
+        "title": "Media List",
+        "fields": {
+          "outlets": {
+            "outlet": "Outlet",
+            "section": "Section",
+            "journalist": "Journalist",
+            "contact": "Email/Phone",
+            "note": "Note"
+          }
+        }
+      },
+      "RELEASE": {
+        "title": "Press Release",
+        "fields": {
+          "title": "Title",
+          "sapo": "Lead",
+          "content": "Content"
+        }
+      },
+      "CONTACT_LOG": {
+        "title": "Pitching",
+        "fields": {
+          "log": {
+            "date": "Date",
+            "outlet": "Outlet",
+            "contact": "Contact",
+            "channel": "Channel",
+            "result": "Result"
+          }
+        }
+      },
+      "COVERAGE": {
+        "title": "Coverage Tracking",
+        "fields": {
+          "coverage": {
+            "outlet": "Outlet",
+            "link": "Article link",
+            "publishedAt": "Published at"
+          }
+        }
+      }
     }
   },
   "sectionReview": {

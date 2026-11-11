@@ -738,6 +738,109 @@
           "recommendations": "Đề xuất"
         }
       }
+    },
+    "EVENT": {
+      "AGENDA": {
+        "title": "Concept & Agenda",
+        "fields": {
+          "concept": "Concept",
+          "goal": "Mục tiêu",
+          "datetimeVenue": "Thời gian/địa điểm dự kiến",
+          "agenda": {
+            "time": "Giờ",
+            "item": "Hạng mục",
+            "owner": "Phụ trách"
+          }
+        }
+      },
+      "LOGISTICS": {
+        "title": "Hậu cần & Địa điểm",
+        "fields": {
+          "venue": "Địa điểm",
+          "vendors": {
+            "name": "Tên",
+            "category": "Hạng mục",
+            "costVnd": "Chi phí (VND)",
+            "contact": "Liên hệ"
+          },
+          "totalBudget": "Ngân sách tổng",
+          "checklist": "Checklist vật tư"
+        }
+      },
+      "PROMOTION": {
+        "title": "Truyền thông sự kiện",
+        "fields": {
+          "plan": "Kế hoạch truyền thông",
+          "guests": {
+            "name": "Tên",
+            "org": "Đơn vị",
+            "inviteStatus": "Trạng thái mời"
+          }
+        }
+      },
+      "RUNSHEET": {
+        "title": "Điều phối tại chỗ",
+        "fields": {
+          "runsheet": {
+            "time": "Giờ",
+            "task": "Việc",
+            "owner": "Người phụ trách"
+          },
+          "staffing": "Phân công nhân sự"
+        }
+      },
+      "REPORT": {
+        "title": "Báo cáo sau sự kiện",
+        "fields": {
+          "result": "Kết quả",
+          "attendeeCount": "Số khách tham dự",
+          "lessons": "Bài học"
+        }
+      }
+    },
+    "PRESS": {
+      "MEDIA_LIST": {
+        "title": "Lập danh sách báo",
+        "fields": {
+          "outlets": {
+            "outlet": "Tên báo",
+            "section": "Chuyên mục",
+            "journalist": "Nhà báo",
+            "contact": "Email/Điện thoại",
+            "note": "Ghi chú"
+          }
+        }
+      },
+      "RELEASE": {
+        "title": "Viết thông cáo",
+        "fields": {
+          "title": "Tiêu đề",
+          "sapo": "Sapo",
+          "content": "Nội dung"
+        }
+      },
+      "CONTACT_LOG": {
+        "title": "Liên hệ & pitching",
+        "fields": {
+          "log": {
+            "date": "Ngày",
+            "outlet": "Báo",
+            "contact": "Người liên hệ",
+            "channel": "Kênh",
+            "result": "Kết quả"
+          }
+        }
+      },
+      "COVERAGE": {
+        "title": "Theo dõi đưa tin",
+        "fields": {
+          "coverage": {
+            "outlet": "Báo",
+            "link": "Link bài",
+            "publishedAt": "Ngày đăng"
+          }
+        }
+      }
     }
   },
   "sectionReview": {

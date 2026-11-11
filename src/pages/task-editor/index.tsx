@@ -35,7 +35,11 @@ export default function TaskEditorPage() {
     );
   if (task.type === "SURVEY")
     return <Navigate to={`/workspaces/${id}/tasks/${taskId}/survey`} replace />;
+  if (task.type === "EVENT_PLAN")
+    return <Navigate to={`/workspaces/${id}/tasks/${taskId}/event`} replace />;
+  if (task.type === "PRESS_RECOMMENDATION")
+    return <Navigate to={`/workspaces/${id}/tasks/${taskId}/press`} replace />;
 
-  // skipped: EVENT_PLAN/PRESS/KOL_BOOKING/WORKSHOP/EMAIL_NEWSLETTER editors — T8.3-T8.6
+  // skipped: KOL_BOOKING/WORKSHOP/EMAIL_NEWSLETTER editors — T8.5-T8.6
   return <Navigate to={`/workspaces/${id}/tasks/${taskId}/detail`} replace />;
 }

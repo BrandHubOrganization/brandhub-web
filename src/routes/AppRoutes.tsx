@@ -169,6 +169,8 @@ const WorkspaceMembersPage = lazyNamed(
 const TaskListPage = lazyNamed(() => import("@/pages/tasks"), "TaskListPage");
 const TaskDetailPage = lazy(() => import("@/pages/tasks/detail"));
 const SurveyEditorPage = lazy(() => import("@/pages/tasks/survey-editor"));
+const EventEditorPage = lazy(() => import("@/pages/tasks/event-editor"));
+const PressEditorPage = lazy(() => import("@/pages/tasks/press-editor"));
 const TaskEditorPage = lazy(() => import("@/pages/task-editor"));
 const TaskApprovalsPage = lazy(() => import("@/pages/task-approvals"));
 const AgencyCreditPage = lazy(() => import("@/pages/credit"));
@@ -502,6 +504,14 @@ export function AppRoutes() {
             <Route
               path="/workspaces/:id/tasks/:taskId/detail"
               element={<TaskDetailPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/event"
+              element={<EventEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/press"
+              element={<PressEditorPage />}
             />
             <Route
               path="/workspaces/:id/tasks/:taskId/survey"
