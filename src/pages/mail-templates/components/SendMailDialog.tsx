@@ -203,13 +203,14 @@ export function SendMailDialog({
   const overQuota =
     !agencyMode && remaining !== null && parsed.recipients.length > remaining;
 
-  const { minScheduleDate, maxScheduleDate } = useMemo(() => {
+  const [scheduleBounds] = useState(() => {
     const now = Date.now();
     return {
       minScheduleDate: new Date(now + MIN_LEAD_MS).toISOString(),
       maxScheduleDate: new Date(now + 30 * 24 * 3600 * 1000).toISOString(),
     };
-  }, []);
+  });
+  const { minScheduleDate, maxScheduleDate } = scheduleBounds;
 
   const fail = (e: unknown) => {
     const code = errorCode(e);
