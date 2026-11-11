@@ -169,6 +169,7 @@ const WorkspaceMembersPage = lazyNamed(
 const TaskListPage = lazyNamed(() => import("@/pages/tasks"), "TaskListPage");
 const TaskDetailPage = lazy(() => import("@/pages/tasks/detail"));
 const SurveyEditorPage = lazy(() => import("@/pages/tasks/survey-editor"));
+const TaskEditorPage = lazy(() => import("@/pages/task-editor"));
 const TaskApprovalsPage = lazy(() => import("@/pages/task-approvals"));
 const AgencyCreditPage = lazy(() => import("@/pages/credit"));
 const CreditPricesPage = lazy(() => import("@/pages/credit/prices"));
@@ -506,6 +507,10 @@ export function AppRoutes() {
               path="/workspaces/:id/tasks/:taskId/survey"
               element={<SurveyEditorPage />}
             />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/editor"
+              element={<TaskEditorPage />}
+            />
             <Route path="/workspaces/:id/editor" element={<EditorPage />} />
             <Route
               path="/editor"
@@ -522,19 +527,31 @@ export function AppRoutes() {
             <Route
               path="/workspaces/:id/templates"
               element={
-                <Navigate to="../library?tab=templates" relative="path" replace />
+                <Navigate
+                  to="../library?tab=templates"
+                  relative="path"
+                  replace
+                />
               }
             />
             <Route
               path="/workspaces/:id/hashtags"
               element={
-                <Navigate to="../library?tab=hashtags" relative="path" replace />
+                <Navigate
+                  to="../library?tab=hashtags"
+                  relative="path"
+                  replace
+                />
               }
             />
             <Route
               path="/workspaces/:id/hashtag-groups"
               element={
-                <Navigate to="../library?tab=hashtags" relative="path" replace />
+                <Navigate
+                  to="../library?tab=hashtags"
+                  relative="path"
+                  replace
+                />
               }
             />
             <Route path="/workspaces/:id/calendar" element={<CalendarPage />} />
@@ -662,10 +679,7 @@ export function AppRoutes() {
             <Route
               path="/library"
               element={
-                <WorkspaceScopedRedirect
-                  destination="library"
-                  preserveSearch
-                />
+                <WorkspaceScopedRedirect destination="library" preserveSearch />
               }
             />
             <Route path="/analytics" element={<AnalyticsPage />} />
