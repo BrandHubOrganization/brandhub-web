@@ -31,6 +31,7 @@ import type {
   PageOf,
 } from "./types";
 
+const PAGE_SIZE = 10;
 type FormState = { mode: "create" | "edit"; template: MailTemplate | null } | null;
 
 function Panel({ workspaceId }: { workspaceId: string }) {
@@ -39,7 +40,6 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   const [category, setCategory] = useState<MailTemplateCategory>("ALL");
   const [sort, setSort] = useState<MailTemplateSort>("CREATED_DESC");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
 
   const [data, setData] = useState<PageOf<MailTemplateSummary> | null>(null);
   const [agencyRows, setAgencyRows] = useState<MailTemplateSummary[]>([]);
@@ -112,14 +112,14 @@ function Panel({ workspaceId }: { workspaceId: string }) {
     });
   }, [allRows, category, sort]);
 
-  useEffect(() => { setPage(1); }, [search, category, sort, pageSize]);
+  useEffect(() => { setPage(1); }, [search, category, sort]);
 
   const totalItems = sortedRows.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
   const paginatedRows = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return sortedRows.slice(start, start + pageSize);
-  }, [sortedRows, page, pageSize]);
+    const start = (page - 1) * PAGE_SIZE;
+    return sortedRows.slice(start, start + PAGE_SIZE);
+  }, [sortedRows, page]);
 
   const adapter: FormAdapter = {
     save: (payload, existing) =>
@@ -224,16 +224,11 @@ function Panel({ workspaceId }: { workspaceId: string }) {
       {totalItems > 0 && (
         <Pagination
           page={page}
-          size={pageSize}
+          size={PAGE_SIZE}
           total={totalItems}
           totalPages={totalPages}
           isFetching={loading}
           onPageChange={setPage}
-          onSizeChange={(newSize) => {
-            setPageSize(newSize);
-            setPage(1);
-          }}
-          pageSizeOptions={[10, 20, 50]}
           itemLabel={t("mailTemplate.itemLabel")}
           compact={false}
         />

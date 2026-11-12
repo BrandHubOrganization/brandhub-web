@@ -64,6 +64,7 @@ export function TaskActiveView({
           totalElements={state.totalElements}
           onPageChange={(value) => guard(() => state.setPage(value))}
           sortField={state.sortField}
+          sortDirection={state.sortDirection}
           onSort={(value) => guard(() => state.handleSort(value))}
           onResetFilters={onResetFilters}
           isFiltered={isFiltered}

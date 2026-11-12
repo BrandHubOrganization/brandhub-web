@@ -414,6 +414,7 @@
     "copyUrlButton": "Copy URL"
   },
   "mediaDropzone": {
+    "selectWorkspaceWarning": "Vui lòng chọn Workspace trước khi tải tệp lên!",
     "sizeExceededError": "File {{fileName}} vượt quá dung lượng 50MB",
     "uploadSuccess": "Đã upload thành công: {{fileName}}",
     "uploadError": "Lỗi khi upload file {{fileName}}",

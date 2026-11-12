@@ -2,8 +2,10 @@ import React, { useRef, useState } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { isAxiosError } from "axios";
 import { MAX_MEDIA_UPLOAD_SIZE } from "@/lib/constants";
 import { useMaterialUpload } from "@/pages/library/hooks/useMaterialUpload";
+import { DuplicateResolutionModal } from "@/pages/library/components/DuplicateResolutionModal";
 import type { MediaUploadTabProps } from "./types";
 
 export const MediaUploadTab: React.FC<MediaUploadTabProps> = ({
@@ -43,10 +45,30 @@ export const MediaUploadTab: React.FC<MediaUploadTabProps> = ({
         );
         return item.url;
       }
-    } catch {
-      toast.error(
-        t("editor.mediaDropzone.uploadError", { fileName: file.name }),
-      );
+    } catch (failure: unknown) {
+      const responseData = isAxiosError(failure) ? failure.response?.data : undefined;
+      console.error(`[MediaUploadTab] Upload failed for ${file.name}:`, failure, responseData);
+      const code = isAxiosError<{ error?: { code?: string; message?: string } }>(failure)
+        ? failure.response?.data?.error?.code
+        : undefined;
+      const backendMessage = isAxiosError<{ error?: { code?: string; message?: string } }>(failure)
+        ? failure.response?.data?.error?.message
+        : undefined;
+      const key =
+        code === "DRIVE_NOT_CONNECTED"
+          ? "library.repositoryUpload.driveNotConnected"
+          : code === "STORAGE_QUOTA_EXCEEDED"
+            ? "library.repositoryUpload.quotaExceeded"
+            : code === "STORAGE_POOL_CAPACITY_EXCEEDED"
+              ? "library.repositoryUpload.poolFull"
+              : code === "MATERIAL_STORAGE_UNAVAILABLE" ||
+                  code === "STORAGE_SCHEMA_NOT_READY"
+                ? "library.repositoryUpload.unavailable"
+                : null;
+      const errorMessage = key
+        ? t(key)
+        : backendMessage || t("editor.mediaDropzone.uploadError", { fileName: file.name });
+      toast.error(errorMessage, { duration: 5000 });
     }
     return null;
   };
@@ -55,7 +77,7 @@ export const MediaUploadTab: React.FC<MediaUploadTabProps> = ({
     const fileArray = Array.from(files);
     if (fileArray.length === 0) return;
     if (!effectiveWorkspaceId) {
-      toast.error("Vui lòng chọn Workspace trước khi tải tệp lên!");
+      toast.error(t("editor.mediaDropzone.selectWorkspaceWarning"));
       return;
     }
     setUploadProgress(10);
@@ -140,6 +162,11 @@ export const MediaUploadTab: React.FC<MediaUploadTabProps> = ({
           </div>
         )}
       </div>
+
+      <DuplicateResolutionModal
+        conflict={uploader.conflict}
+        onChoose={uploader.resolveConflict}
+      />
     </div>
   );
 };

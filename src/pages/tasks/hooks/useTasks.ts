@@ -77,8 +77,29 @@ export function useTasks(workspaceId: string) {
   }, [loadTasks]);
 
   const handleSort = (field: "dueDate" | "createdAt" | "name" | "status") => {
+    const nextDir =
+      sortField === field ? (sortDirection === "asc" ? "desc" : "asc") : "asc";
+    setTasks((prev) =>
+      [...prev].sort((a, b) => {
+        let cmp = 0;
+        if (field === "name") {
+          cmp = (a.name || "").localeCompare(b.name || "", "vi", { sensitivity: "base" });
+        } else if (field === "status") {
+          cmp = (a.status || "").localeCompare(b.status || "");
+        } else if (field === "dueDate") {
+          const tA = a.dueDate ? new Date(a.dueDate).getTime() : 0;
+          const tB = b.dueDate ? new Date(b.dueDate).getTime() : 0;
+          cmp = tA - tB;
+        } else {
+          const tA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const tB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          cmp = tA - tB;
+        }
+        return nextDir === "asc" ? cmp : -cmp;
+      }),
+    );
     if (sortField === field) {
-      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+      setSortDirection(nextDir);
     } else {
       setSortField(field);
       setSortDirection("asc");

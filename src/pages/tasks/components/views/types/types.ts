@@ -29,6 +29,7 @@ export interface TaskTableProps {
   totalElements: number;
   onPageChange: (page: number) => void;
   sortField: TaskTableSortField;
+  sortDirection?: "asc" | "desc";
   onSort: (field: TaskTableSortField) => void;
   onTaskClick: (task: TaskListItem) => void;
   activeTaskId?: string;

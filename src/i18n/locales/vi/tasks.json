@@ -698,5 +698,17 @@
     "HIGH": "Cao",
     "MEDIUM": "Trung bình",
     "LOW": "Thấp"
+  },
+  "sort": {
+    "label": "Sắp xếp",
+    "default": "Mặc định",
+    "nameAsc": "Tên (A-Z)",
+    "nameDesc": "Tên (Z-A)",
+    "dueDateAsc": "Hạn chót (Gần nhất)",
+    "dueDateDesc": "Hạn chót (Xa nhất)",
+    "startDateDesc": "Thời gian bắt đầu (Mới nhất)",
+    "startDateAsc": "Thời gian bắt đầu (Cũ nhất)",
+    "priorityDesc": "Độ ưu tiên (Cao → Thấp)",
+    "priorityAsc": "Độ ưu tiên (Thấp → Cao)"
   }
 }

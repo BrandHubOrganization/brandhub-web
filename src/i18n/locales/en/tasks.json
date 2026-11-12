@@ -698,5 +698,17 @@
     "HIGH": "High",
     "MEDIUM": "Medium",
     "LOW": "Low"
+  },
+  "sort": {
+    "label": "Sort",
+    "default": "Default",
+    "nameAsc": "Name (A-Z)",
+    "nameDesc": "Name (Z-A)",
+    "dueDateAsc": "Due date (Earliest)",
+    "dueDateDesc": "Due date (Latest)",
+    "startDateDesc": "Start date (Newest)",
+    "startDateAsc": "Start date (Oldest)",
+    "priorityDesc": "Priority (High → Low)",
+    "priorityAsc": "Priority (Low → High)"
   }
 }

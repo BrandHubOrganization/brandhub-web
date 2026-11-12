@@ -27,7 +27,7 @@ export function TaskDiscardDialog({
       }}
     >
       <DialogContent
-        className="rounded-xl [&>button]:hidden"
+        className="rounded-xl [&>button]:hidden z-[100]"
         onOpenAutoFocus={(event) => {
           event.preventDefault();
           keepEditing.current?.focus();

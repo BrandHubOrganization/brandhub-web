@@ -1,9 +1,22 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Search, X } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowDownAZ,
+  ArrowUp,
+  ArrowUpZA,
+  CalendarArrowDown,
+  CalendarArrowUp,
+  Clock,
+  Search,
+  X,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { SelectMenu, type SelectMenuOption } from "@/components/ui/select-menu";
 import { cn } from "@/lib/utils";
 import type { TaskPriority, TaskStatus, TaskType } from "@/types/task";
 import type {
+  TaskSortOption,
   TaskTimelineAssignee,
   TaskTimelineParent,
 } from "@/pages/tasks/utils/taskFilterUtils";
@@ -37,6 +50,8 @@ export interface TaskFilterBarProps {
   onClearCategory?: (category: FilterCategory) => void;
   onClearFilters: () => void;
   activeFilterCount: number;
+  sort?: TaskSortOption;
+  onSortChange?: (sort: TaskSortOption) => void;
   onRefresh?: () => void;
   loading?: boolean;
   className?: string;
@@ -50,14 +65,12 @@ interface TaskFilterSearchProps {
 function TaskFilterSearch({ search, onChange }: TaskFilterSearchProps) {
   const { t } = useTranslation();
   return (
-    <div className="relative w-44 sm:w-56 md:w-64 shrink-0">
-      <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2 pointer-events-none" />
+    <div className="relative w-44 shrink-0 sm:w-56 md:w-64">
+      <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
       <Input
         value={search}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={t("tasks.search", {
-          defaultValue: "Tìm kiếm công việc...",
-        })}
+        placeholder={t("tasks.search", { defaultValue: "Tìm kiếm công việc..." })}
         aria-label={t("tasks.search")}
         className="bg-card/90 h-8 rounded-xl pl-8 pr-7 text-xs"
       />
@@ -75,6 +88,80 @@ function TaskFilterSearch({ search, onChange }: TaskFilterSearchProps) {
   );
 }
 
+interface TaskSortSelectProps {
+  sort: TaskSortOption;
+  onSortChange: (sort: TaskSortOption) => void;
+}
+
+function TaskSortSelect({ sort, onSortChange }: TaskSortSelectProps) {
+  const { t } = useTranslation();
+
+  const options: SelectMenuOption[] = useMemo(
+    () => [
+      {
+        value: "DEFAULT",
+        label: t("tasks.sort.default", { defaultValue: "Mặc định" }),
+        icon: <Clock className="size-3.5" />,
+      },
+      {
+        value: "NAME_ASC",
+        label: t("tasks.sort.nameAsc", { defaultValue: "Tên (A-Z)" }),
+        icon: <ArrowDownAZ className="size-3.5" />,
+        dividerBefore: true,
+      },
+      {
+        value: "NAME_DESC",
+        label: t("tasks.sort.nameDesc", { defaultValue: "Tên (Z-A)" }),
+        icon: <ArrowUpZA className="size-3.5" />,
+      },
+      {
+        value: "DUE_DATE_ASC",
+        label: t("tasks.sort.dueDateAsc", { defaultValue: "Hạn chót (Gần nhất)" }),
+        icon: <CalendarArrowUp className="size-3.5" />,
+        dividerBefore: true,
+      },
+      {
+        value: "DUE_DATE_DESC",
+        label: t("tasks.sort.dueDateDesc", { defaultValue: "Hạn chót (Xa nhất)" }),
+        icon: <CalendarArrowDown className="size-3.5" />,
+      },
+      {
+        value: "START_DATE_DESC",
+        label: t("tasks.sort.startDateDesc", { defaultValue: "Thời gian bắt đầu (Mới nhất)" }),
+        icon: <Clock className="size-3.5" />,
+        dividerBefore: true,
+      },
+      {
+        value: "START_DATE_ASC",
+        label: t("tasks.sort.startDateAsc", { defaultValue: "Thời gian bắt đầu (Cũ nhất)" }),
+        icon: <Clock className="size-3.5" />,
+      },
+      {
+        value: "PRIORITY_DESC",
+        label: t("tasks.sort.priorityDesc", { defaultValue: "Độ ưu tiên (Cao → Thấp)" }),
+        icon: <ArrowDown className="size-3.5" />,
+        dividerBefore: true,
+      },
+      {
+        value: "PRIORITY_ASC",
+        label: t("tasks.sort.priorityAsc", { defaultValue: "Độ ưu tiên (Thấp → Cao)" }),
+        icon: <ArrowUp className="size-3.5" />,
+      },
+    ],
+    [t],
+  );
+
+  return (
+    <SelectMenu
+      value={sort}
+      onChange={(val) => onSortChange(val as TaskSortOption)}
+      options={options}
+      ariaLabel={t("tasks.sort.label", { defaultValue: "Sắp xếp" })}
+      className="bg-card/90 h-8 w-44 rounded-xl text-xs"
+    />
+  );
+}
+
 export function TaskFilterBar(props: TaskFilterBarProps) {
   const {
     search,
@@ -82,6 +169,8 @@ export function TaskFilterBar(props: TaskFilterBarProps) {
     assignees,
     selectedAssignees,
     onToggleAssignee,
+    sort,
+    onSortChange,
     onRefresh,
     loading = false,
     className,
@@ -101,6 +190,9 @@ export function TaskFilterBar(props: TaskFilterBarProps) {
         />
       )}
       <TaskFilterPopover {...props} />
+      {sort && onSortChange && (
+        <TaskSortSelect sort={sort} onSortChange={onSortChange} />
+      )}
       {onRefresh && (
         <TaskRefreshButton onRefresh={onRefresh} loading={loading} />
       )}

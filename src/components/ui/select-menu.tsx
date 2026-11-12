@@ -64,7 +64,7 @@ export function SelectMenu({
         <SelectPrimitive.Content
           position="popper"
           sideOffset={6}
-          className="bg-card text-foreground border-border data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 max-h-80 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border p-1.5 shadow-xl"
+          className="bg-card text-foreground border-border data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-[110] max-h-80 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border p-1.5 shadow-xl"
         >
           <SelectPrimitive.Viewport>
             {options.map((option) => (

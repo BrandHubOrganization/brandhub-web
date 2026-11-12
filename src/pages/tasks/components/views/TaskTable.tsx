@@ -3,6 +3,7 @@ import type React from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowUpDown, FolderKanban, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/pages/tasks/constants";
 import { TaskRowActions } from "@/pages/tasks/components/TaskRowActions";
 import type { TaskPriority } from "@/types/task";
@@ -38,6 +39,7 @@ function TaskPriorityBadge({ priority }: { priority?: TaskPriority }) {
 interface SortableHeaderProps {
   field: "name" | "status" | "dueDate";
   sortField?: string;
+  sortDirection?: "asc" | "desc";
   onSort: (field: "name" | "status" | "dueDate") => void;
   label: string;
   className: string;
@@ -46,14 +48,15 @@ interface SortableHeaderProps {
 function SortableHeader({ field, sortField, onSort, label, className }: SortableHeaderProps) {
   const active = sortField === field;
   return (
-    <th
-      onClick={() => onSort(field)}
-      className={`hover:text-foreground cursor-pointer px-3 py-3 transition-colors ${className}`}
-    >
-      <div className="flex items-center gap-1.5">
+    <th className={`px-3 py-3 ${className}`}>
+      <button
+        type="button"
+        onClick={(e) => { e.preventDefault(); onSort(field); }}
+        className="hover:text-foreground active:scale-97 group inline-flex cursor-pointer items-center gap-1.5 transition-all focus-visible:outline-none"
+      >
         <span>{label}</span>
-        <ArrowUpDown className={`size-3 ${active ? "text-brand-orange" : "opacity-40"}`} />
-      </div>
+        <ArrowUpDown className={`size-3 transition-colors ${active ? "text-brand-orange" : "text-muted-foreground/40 group-hover:text-muted-foreground"}`} />
+      </button>
     </th>
   );
 }
@@ -148,6 +151,7 @@ export function TaskTable(props: TaskTableProps) {
               <SortableHeader
                 field="name"
                 sortField={props.sortField}
+                sortDirection={props.sortDirection}
                 onSort={props.onSort}
                 label={t("tasks.inline.columns.work")}
                 className="w-[280px] px-4"
@@ -157,6 +161,7 @@ export function TaskTable(props: TaskTableProps) {
               <SortableHeader
                 field="status"
                 sortField={props.sortField}
+                sortDirection={props.sortDirection}
                 onSort={props.onSort}
                 label={t("tasks.inline.columns.status")}
                 className="w-[130px]"
@@ -164,6 +169,7 @@ export function TaskTable(props: TaskTableProps) {
               <SortableHeader
                 field="dueDate"
                 sortField={props.sortField}
+                sortDirection={props.sortDirection}
                 onSort={props.onSort}
                 label={t("tasks.deadline")}
                 className="w-[140px]"
@@ -171,8 +177,13 @@ export function TaskTable(props: TaskTableProps) {
               <th className="w-[110px] px-4 py-3 text-right">{t("tasks.inline.columns.actions")}</th>
             </tr>
           </thead>
-          <tbody className="divide-border divide-y">
-            {props.loading ? (
+          <tbody
+            className={cn(
+              "divide-border divide-y transition-opacity duration-150",
+              props.loading && props.tasks.length > 0 ? "opacity-60" : "opacity-100",
+            )}
+          >
+            {props.loading && props.tasks.length === 0 ? (
               <TableSkeletonRows />
             ) : props.tasks.length === 0 ? (
               <TableEmptyRow isFiltered={props.isFiltered} onResetFilters={props.onResetFilters} />
