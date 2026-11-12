@@ -50,8 +50,8 @@ interface TaskFilterSearchProps {
 function TaskFilterSearch({ search, onChange }: TaskFilterSearchProps) {
   const { t } = useTranslation();
   return (
-    <div className="relative w-44 sm:w-56 md:w-64 shrink-0">
-      <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2 pointer-events-none" />
+    <div className="relative w-44 shrink-0 sm:w-56 md:w-64">
+      <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
       <Input
         value={search}
         onChange={(e) => onChange(e.target.value)}
@@ -59,7 +59,7 @@ function TaskFilterSearch({ search, onChange }: TaskFilterSearchProps) {
           defaultValue: "Tìm kiếm công việc...",
         })}
         aria-label={t("tasks.search")}
-        className="bg-card/90 h-8 rounded-xl pl-8 pr-7 text-xs"
+        className="bg-card/90 h-8 rounded-xl pr-7 pl-8 text-xs"
       />
       {search && (
         <button

@@ -5,6 +5,7 @@ import {
   ClipboardList,
   Clock,
   FileText,
+  Mail,
   Megaphone,
   ShieldCheck,
   Video,
@@ -38,6 +39,22 @@ const TYPE_CONFIG: Record<TaskType, { icon: typeof FileText; color: string }> =
     PRESS_RECOMMENDATION: {
       icon: Megaphone,
       color: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+    },
+    SHORT_VIDEO: {
+      icon: Video,
+      color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
+    },
+    KOL_BOOKING: {
+      icon: Megaphone,
+      color: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+    },
+    WORKSHOP: {
+      icon: Calendar,
+      color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+    },
+    EMAIL_NEWSLETTER: {
+      icon: Mail,
+      color: "text-sky-500 bg-sky-500/10 border-sky-500/20",
     },
   };
 

@@ -13,6 +13,25 @@
   "cancel": "Cancel",
   "close": "Close",
   "deleted": "Template deleted.",
+  "quota": {
+    "label": "Monthly quota: {{used}}/{{limit}}",
+    "hint": "This workspace's monthly email send limit."
+  },
+  "import": {
+    "title": "Import recipients CSV",
+    "hint": "CSV needs columns email, name, consent. A row whose consent isn't true/yes/1 is dropped.",
+    "groupName": "Group name (optional)",
+    "groupNamePlaceholder": "Leave blank to auto-name a new group",
+    "file": "CSV file",
+    "noFile": "Pick a CSV file first.",
+    "error": "Import failed.",
+    "imported": "Imported",
+    "skippedNoConsent": "Skipped (no consent)",
+    "skippedSuppressed": "Skipped (suppressed)",
+    "skippedInvalid": "Skipped (invalid)",
+    "submit": "Import",
+    "close": "Close"
+  },
   "pagination": "Pagination",
   "previous": "Previous",
   "next": "Next",

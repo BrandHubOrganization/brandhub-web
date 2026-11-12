@@ -2,6 +2,8 @@
   "subtasks": {
     "title": "Subtasks",
     "add": "Add subtask",
+    "suggestFromCatalog": "Suggest from catalog",
+    "freeSubtask": "Free subtask",
     "edit": "Edit",
     "empty": "No subtasks yet.",
     "assignee": "Assignee",
@@ -35,6 +37,43 @@
       "CANCELLED": "Cancelled"
     }
   },
+  "subtaskRoles": {
+    "POST_RESEARCH": "Research / Interview",
+    "POST_CONTENT": "Write content",
+    "POST_MEDIA": "Media (shoot/design)",
+    "POST_EDITING": "Editing",
+    "POST_PUBLISHING": "Publish",
+    "VIDEO_SCRIPT": "Idea & Script",
+    "VIDEO_SHOOT": "Shoot",
+    "VIDEO_EDIT": "Edit / post-production",
+    "VIDEO_PUBLISH": "Caption & Publish",
+    "SURVEY_DESIGN": "Form design",
+    "SURVEY_DISTRIBUTE": "Distribution & collection",
+    "SURVEY_ANALYSIS": "Analysis & report",
+    "EVENT_AGENDA": "Concept & Agenda",
+    "EVENT_LOGISTICS": "Logistics & Venue",
+    "EVENT_PROMOTION": "Event Promotion",
+    "EVENT_ONSITE": "On-site Coordination",
+    "EVENT_REPORT": "Post-event Report",
+    "PRESS_MEDIA_LIST": "Media List",
+    "PRESS_RELEASE": "Press Release",
+    "PRESS_PITCHING": "Pitching",
+    "PRESS_TRACKING": "Coverage Tracking",
+    "KOL_SOURCING": "KOL Sourcing",
+    "KOL_NEGOTIATION": "Negotiation",
+    "KOL_BRIEF": "KOL Brief",
+    "KOL_CONTENT_REVIEW": "Content Review",
+    "KOL_TRACKING": "Tracking & Report",
+    "WORKSHOP_PROGRAM": "Program Content",
+    "WORKSHOP_SPEAKER": "Speakers",
+    "WORKSHOP_LOGISTICS": "Logistics",
+    "WORKSHOP_REGISTRATION": "Registration & Promotion",
+    "WORKSHOP_REPORT": "Summary",
+    "EMAIL_CONTENT": "Write Content",
+    "EMAIL_DESIGN": "Template Design",
+    "EMAIL_SEND": "Recipients & Schedule",
+    "EMAIL_REPORT": "Report"
+  },
   "phoneMedia": {
     "title": "Files from phone",
     "loading": "Loading files...",
@@ -52,7 +91,6 @@
       "VALIDATING": "Checking",
       "REJECTED": "Rejected",
       "FAILED": "Failed"
-
     }
   },
   "approvalPage": {
@@ -187,6 +225,7 @@
     }
   },
   "title": "Task management",
+  "openEditor": "Open editor",
   "description": "Track actual work in this workspace.",
   "loading": "Loading tasks…",
   "error": "Unable to load tasks. Please try again.",
@@ -210,7 +249,11 @@
     "LIVESTREAM": "Livestream",
     "SURVEY": "Survey",
     "EVENT_PLAN": "Event plan",
-    "PRESS_RECOMMENDATION": "Press recommendation"
+    "PRESS_RECOMMENDATION": "Press recommendation",
+    "SHORT_VIDEO": "Short video",
+    "KOL_BOOKING": "KOL/Influencer",
+    "WORKSHOP": "Workshop",
+    "EMAIL_NEWSLETTER": "Email newsletter"
   },
   "status": {
     "BACKLOG": "Backlog",
@@ -620,6 +663,397 @@
   "supervisor": "Supervisor",
   "assigneeId": "Assignee",
   "supervisorId": "Supervisor",
+  "sectionActions": {
+    "errors": {
+      "UNKNOWN": "Something went wrong. Try again later.",
+      "FORBIDDEN": "You don't have permission to do this on this section.",
+      "VALIDATION_ERROR": "Some fields are invalid. Check them and try again.",
+      "SECTION_INVALID_TRANSITION": "This section changed status. Reload to see the latest.",
+      "TASK_REVISION_CONFLICT": "Someone else just saved this section.",
+      "TASK_SECTIONS_UNAPPROVED": "Some sections are not approved yet."
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "saveError": "Save failed",
+    "unsaved": "Unsaved",
+    "reload": "Reload",
+    "versions": "Version history",
+    "submit": "Submit section",
+    "approve": "Approve",
+    "return": "Return",
+    "reopen": "Reopen",
+    "cancel": "Cancel",
+    "noteLabel": "Note",
+    "noteRequired": "Add a note before returning.",
+    "returnTitle": "Return section {{section}}",
+    "returnHint": "The section owner gets this note and revises the section.",
+    "reopenTitle": "Reopen section {{section}}",
+    "reopenHint": "The approved section goes back to Returned so it can be edited.",
+    "versionsTitle": "Versions: {{section}}",
+    "versionsHint": "Each submission saves a version. Pick two to compare.",
+    "versionsEmpty": "No versions yet. A version is saved when the section is submitted.",
+    "versionLabel": "Version {{no}} · {{date}}",
+    "currentVersion": "Current copy",
+    "compareFrom": "Compare from",
+    "compareTo": "To",
+    "unchanged": "unchanged",
+    "added": "Added:",
+    "removed": "Removed:",
+    "restore": "Restore",
+    "restoreTitle": "Restore version {{no}}?",
+    "restoreHint": "This version's content is copied into the current draft. The section must be submitted and approved again."
+  },
+  "sectionStatus": {
+    "DRAFT": "Draft",
+    "SUBMITTED": "Submitted",
+    "INTERNAL_APPROVED": "Approved internally",
+    "CLIENT_APPROVED": "Approved by Client",
+    "RETURNED": "Returned"
+  },
+  "sections": {
+    "POST": {
+      "BRIEF": {
+        "title": "Brief & research",
+        "emptyHint": "Interview notes, sources and material for the writer.",
+        "fields": {
+          "notes": "Notes",
+          "sources": "Sources",
+          "materials": "Material"
+        }
+      },
+      "CAPTION": {
+        "title": "Post copy",
+        "emptyHint": "Write the caption and hashtags.",
+        "fields": {
+          "caption": "Caption",
+          "hashtags": "Hashtags"
+        }
+      },
+      "MEDIA": {
+        "title": "Images / Video",
+        "emptyHint": "Upload or pick images and videos for the post.",
+        "fields": {
+          "media": "Media files"
+        }
+      },
+      "CHANNELS": {
+        "title": "Channels & schedule",
+        "emptyHint": "Pick the platforms to post to.",
+        "fields": {
+          "targetPlatforms": "Platforms",
+          "scheduledAt": "Schedule"
+        }
+      }
+    },
+    "VIDEO": {
+      "SCRIPT": {
+        "title": "Idea & script",
+        "emptyHint": "Describe the idea and list each scene.",
+        "fields": {
+          "idea": "Idea",
+          "scenes": "Scenes"
+        }
+      },
+      "SHOOT": {
+        "title": "Shoot"
+      },
+      "EDIT": {
+        "title": "Video edit",
+        "emptyHint": "Upload the edited video.",
+        "fields": {
+          "media": "Video file"
+        }
+      },
+      "CAPTION": {
+        "title": "Video caption",
+        "emptyHint": "Write the caption and hashtags for the video.",
+        "fields": {
+          "caption": "Caption",
+          "hashtags": "Hashtags"
+        }
+      },
+      "CHANNELS": {
+        "title": "Channels & schedule",
+        "emptyHint": "Pick the platforms to post the video to.",
+        "fields": {
+          "targetPlatforms": "Platforms",
+          "scheduledAt": "Schedule"
+        }
+      }
+    },
+    "SURVEY": {
+      "FORM": {
+        "title": "Form design"
+      },
+      "DISTRIBUTION": {
+        "title": "Distribution & collection",
+        "fields": {
+          "publicLink": "Public link",
+          "channels": "Channels",
+          "closeAt": "Closes at",
+          "targetResponses": "Target responses"
+        }
+      },
+      "REPORT": {
+        "title": "Analysis & report",
+        "fields": {
+          "insight": "Insight",
+          "conclusion": "Conclusion",
+          "recommendations": "Recommendations"
+        }
+      }
+    },
+    "EVENT": {
+      "AGENDA": {
+        "title": "Concept & Agenda",
+        "fields": {
+          "concept": "Concept",
+          "goal": "Goal",
+          "datetimeVenue": "Planned date/venue",
+          "agenda": {
+            "time": "Time",
+            "item": "Item",
+            "owner": "Owner"
+          }
+        }
+      },
+      "LOGISTICS": {
+        "title": "Logistics & Venue",
+        "fields": {
+          "venue": "Venue",
+          "vendors": {
+            "name": "Name",
+            "category": "Category",
+            "costVnd": "Cost (VND)",
+            "contact": "Contact"
+          },
+          "totalBudget": "Total budget",
+          "checklist": "Supplies checklist"
+        }
+      },
+      "PROMOTION": {
+        "title": "Event Promotion",
+        "fields": {
+          "plan": "Promotion plan",
+          "guests": {
+            "name": "Name",
+            "org": "Organization",
+            "inviteStatus": "Invite status"
+          }
+        }
+      },
+      "RUNSHEET": {
+        "title": "On-site Coordination",
+        "fields": {
+          "runsheet": {
+            "time": "Time",
+            "task": "Task",
+            "owner": "Owner"
+          },
+          "staffing": "Staffing"
+        }
+      },
+      "REPORT": {
+        "title": "Post-event Report",
+        "fields": {
+          "result": "Result",
+          "attendeeCount": "Attendee count",
+          "lessons": "Lessons learned"
+        }
+      }
+    },
+    "PRESS": {
+      "MEDIA_LIST": {
+        "title": "Media List",
+        "fields": {
+          "outlets": {
+            "outlet": "Outlet",
+            "section": "Section",
+            "journalist": "Journalist",
+            "contact": "Email/Phone",
+            "note": "Note"
+          }
+        }
+      },
+      "RELEASE": {
+        "title": "Press Release",
+        "fields": {
+          "title": "Title",
+          "sapo": "Lead",
+          "content": "Content"
+        }
+      },
+      "CONTACT_LOG": {
+        "title": "Pitching",
+        "fields": {
+          "log": {
+            "date": "Date",
+            "outlet": "Outlet",
+            "contact": "Contact",
+            "channel": "Channel",
+            "result": "Result"
+          }
+        }
+      },
+      "COVERAGE": {
+        "title": "Coverage Tracking",
+        "fields": {
+          "coverage": {
+            "outlet": "Outlet",
+            "link": "Article link",
+            "publishedAt": "Published at"
+          }
+        }
+      }
+    },
+    "KOL": {
+      "SHORTLIST": {
+        "title": "KOL Sourcing",
+        "fields": {
+          "shortlist": {
+            "name": "Name",
+            "channel": "Channel",
+            "link": "Link",
+            "followers": "Followers",
+            "engagementRate": "Engagement rate",
+            "reason": "Reason"
+          }
+        }
+      },
+      "DEAL": {
+        "title": "Negotiation",
+        "fields": {
+          "kol": "Selected KOL",
+          "priceVnd": "Agreed price (VND)",
+          "deliverables": "Deliverables",
+          "terms": "Terms"
+        }
+      },
+      "BRIEF": {
+        "title": "KOL Brief",
+        "fields": {
+          "keyMessage": "Key message",
+          "dos": "Do",
+          "donts": "Don't",
+          "requiredHashtags": "Required hashtags",
+          "postDeadline": "Post deadline"
+        }
+      },
+      "DRAFT": {
+        "title": "Content Review",
+        "fields": {
+          "draftCaption": "Draft caption",
+          "draftMedia": "Draft media",
+          "reviewNote": "Review note"
+        }
+      },
+      "REPORT": {
+        "title": "Tracking & Report",
+        "fields": {
+          "postLink": "Post link",
+          "postedAt": "Posted at",
+          "views": "Views",
+          "likes": "Likes",
+          "comments": "Comments",
+          "shares": "Shares"
+        }
+      }
+    },
+    "WORKSHOP": {
+      "PROGRAM": {
+        "title": "Program Content",
+        "fields": {
+          "topic": "Topic",
+          "agenda": "Agenda",
+          "materials": "Slides/materials"
+        }
+      },
+      "SPEAKERS": {
+        "title": "Speakers",
+        "fields": {
+          "speakers": {
+            "name": "Name",
+            "title": "Title",
+            "topic": "Topic",
+            "inviteStatus": "Invite status"
+          }
+        }
+      },
+      "LOGISTICS": {
+        "title": "Logistics",
+        "fields": {
+          "format": "Format",
+          "venueOrMeetingUrl": "Venue / online room",
+          "cost": "Cost"
+        }
+      },
+      "REGISTRATION": {
+        "title": "Registration & Promotion"
+      },
+      "REPORT": {
+        "title": "Summary",
+        "fields": {
+          "registeredCount": "Registered",
+          "attendedCount": "Attended",
+          "feedback": "Feedback",
+          "photos": "Photos",
+          "lessons": "Lessons learned"
+        }
+      }
+    },
+    "EMAIL": {
+      "CONTENT": {
+        "title": "Content",
+        "fields": {
+          "subject": "Subject",
+          "preheader": "Preheader"
+        }
+      },
+      "DESIGN": {
+        "title": "Template Design"
+      },
+      "AUDIENCE": {
+        "title": "Recipients & Schedule",
+        "fields": {
+          "recipientGroups": "Recipient groups",
+          "scheduledAt": "Send schedule"
+        }
+      },
+      "REPORT": {
+        "title": "Report",
+        "fields": {
+          "total": "Total sent",
+          "sentCount": "Successful",
+          "successCount": "Successful",
+          "bounceCount": "Bounced/failed",
+          "unsubscribeCount": "Unsubscribed",
+          "note": "Note"
+        }
+      }
+    }
+  },
+  "newsletter": {
+    "sendTest": "Send test",
+    "send": "Send",
+    "testSent": "Test email sent.",
+    "sent": "Sent to {{count}} recipients.",
+    "sendError": "Send failed.",
+    "noRecipients": "Pick at least one recipient group.",
+    "noGroups": "No recipient groups yet. Create one on the Mail Templates page.",
+    "noBatchYet": "Not sent yet, no stats."
+  },
+  "sectionReview": {
+    "queueTitle": "Sections waiting for the Client",
+    "queueHint": "Each section was approved by the Manager. The Client approves or returns each one; a return needs a note.",
+    "empty": "No sections are waiting for approval.",
+    "loadError": "Could not load the sections waiting for approval.",
+    "approved": "Section approved.",
+    "returned": "Section returned with a note.",
+    "waitingSince": "Waiting since {{date}}",
+    "taskTitle": "Review by section",
+    "progress": "{{done}}/{{total}} sections fully approved"
+  },
   "timelineGrid": {
     "searchPlaceholder": "Search tasks...",
     "today": "Today",

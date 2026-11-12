@@ -2,7 +2,8 @@ export type MediaPackageType = "BY_DURATION" | "BY_BUDGET" | "FULL_DELEGATION";
 
 export type OfferingModel = "CAMPAIGN" | "RETAINER" | "DELIVERABLE_BUNDLE";
 export type PackageServiceType = "SOCIAL_POST" | "EVENT_PLANNING" | "LIVESTREAM_PREPARATION"
-  | "PRESS_RECOMMENDATION" | "WORKSHOP_SUPPORT";
+  | "PRESS_RECOMMENDATION" | "WORKSHOP_SUPPORT" | "SHORT_VIDEO" | "KOL_BOOKING"
+  | "EMAIL_NEWSLETTER";
 export interface PackageDeliverable {
   id: string;
   serviceType: PackageServiceType;

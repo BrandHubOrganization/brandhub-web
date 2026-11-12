@@ -13,6 +13,25 @@
   "cancel": "Hủy",
   "close": "Đóng",
   "deleted": "Đã xóa mẫu email.",
+  "quota": {
+    "label": "Quota tháng: {{used}}/{{limit}}",
+    "hint": "Hạn mức gửi email tháng này của workspace."
+  },
+  "import": {
+    "title": "Import danh sách CSV",
+    "hint": "File CSV cần cột email, name, consent. Dòng consent khác true/yes/1 sẽ bị loại.",
+    "groupName": "Tên nhóm (tùy chọn)",
+    "groupNamePlaceholder": "Để trống sẽ tạo nhóm mới tự động đặt tên",
+    "file": "File CSV",
+    "noFile": "Chọn file CSV trước.",
+    "error": "Import thất bại.",
+    "imported": "Đã import",
+    "skippedNoConsent": "Loại vì không đồng ý",
+    "skippedSuppressed": "Loại vì trong suppression list",
+    "skippedInvalid": "Loại vì không hợp lệ",
+    "submit": "Import",
+    "close": "Đóng"
+  },
   "pagination": "Phân trang",
   "previous": "Trước",
   "next": "Sau",

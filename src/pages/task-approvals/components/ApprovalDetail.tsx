@@ -7,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { TaskApprovalSection } from "@/pages/tasks/components/approval/TaskApprovalSection";
 import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
+import { TaskSectionsReview } from "@/components/task-sections/SectionReview";
 
 export function ApprovalDetail({
   workspaceId,
@@ -71,6 +72,11 @@ export function ApprovalDetail({
           >
             {task.name}
           </h2>
+          <TaskSectionsReview
+            workspaceId={workspaceId}
+            taskId={taskId}
+            taskType={task.type}
+          />
           <TaskApprovalSection task={task} />
         </>
       )}

@@ -20,11 +20,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { JiraDatePicker } from "@/components/ui/jira-date-picker";
 import {
   formatJiraSubtaskDate,
   isSubtaskOverdue,
 } from "@/pages/tasks/utils/jiraSubtaskUtils";
+import { useTaskCatalogRoles } from "@/pages/tasks/hooks/useTaskCatalogRoles";
+import type { CatalogRoleDef } from "@/services/taskCatalogService";
+import type { TaskType } from "@/types/task";
 
 export function JiraSubtaskIcon({ className }: { className?: string }) {
   const { t } = useTranslation();
@@ -38,6 +42,28 @@ export function JiraSubtaskIcon({ className }: { className?: string }) {
       aria-label={t("tasks.subtasks.title")}
     >
       <CornerDownRight className="size-2.5 stroke-[2.5]" />
+    </span>
+  );
+}
+
+/** Catalogue role name shown on a subtask row; null/undefined = free subtask, renders nothing (T8.7). */
+export function JiraSubtaskRoleBadge({
+  roleName,
+  className,
+}: {
+  roleName?: string | null;
+  className?: string;
+}) {
+  if (!roleName) return null;
+  return (
+    <span
+      className={cn(
+        "text-3xs inline-flex shrink-0 items-center rounded border border-violet-500/25 bg-violet-500/10 px-1.5 py-0.5 font-medium whitespace-nowrap text-violet-600 dark:text-violet-400",
+        className,
+      )}
+      title={roleName}
+    >
+      {roleName}
     </span>
   );
 }
@@ -192,6 +218,7 @@ export interface JiraInlineSubtaskCreatorProps {
     assigneeId: string;
     supervisorOverrideId: string | null;
     dueDate: string;
+    subtaskRole?: string | null;
   }) => void | Promise<void>;
   onCancel?: () => void;
   parentAssigneeId?: string | null;
@@ -202,6 +229,8 @@ export interface JiraInlineSubtaskCreatorProps {
   autoFocus?: boolean;
   placeholder?: string;
   className?: string;
+  /** Offers "suggest from catalog" roles for this task type (T8.7); omitted = free subtask only. */
+  taskType?: TaskType;
 }
 
 export function JiraInlineSubtaskCreator({
@@ -215,6 +244,7 @@ export function JiraInlineSubtaskCreator({
   autoFocus = true,
   placeholder,
   className,
+  taskType,
 }: JiraInlineSubtaskCreatorProps) {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -226,6 +256,9 @@ export function JiraInlineSubtaskCreator({
   const [assigneeId, setAssigneeId] = useState<string>(
     parentAssigneeId || members[0]?.userId || "",
   );
+  const [subtaskRole, setSubtaskRole] = useState<string | null>(null);
+
+  const { roles, roleLabel } = useTaskCatalogRoles(taskType);
 
   // Sync if parent info loads after initial render
   useEffect(() => {
@@ -268,12 +301,19 @@ export function JiraInlineSubtaskCreator({
       assigneeId: finalAssigneeId,
       supervisorOverrideId: null,
       dueDate: finalDueDate,
+      subtaskRole,
     });
 
     setName("");
+    setSubtaskRole(null);
     setTimeout(() => {
       inputRef.current?.focus();
     }, 50);
+  };
+
+  const pickRole = (role: CatalogRoleDef) => {
+    setSubtaskRole(role.role);
+    if (!name.trim()) setName(role.name);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -308,6 +348,43 @@ export function JiraInlineSubtaskCreator({
         </div>
         <ChevronDown className="text-muted-foreground/70 size-3" />
       </div>
+
+      {roles.length > 0 && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-7 shrink-0 gap-1 px-2 text-xs"
+            >
+              {subtaskRole
+                ? roleLabel(subtaskRole)
+                : t("tasks.subtasks.suggestFromCatalog")}
+              <ChevronDown className="size-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="min-w-48">
+            <DropdownMenuLabel>
+              {t("tasks.subtasks.suggestFromCatalog")}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {roles.map((role) => (
+              <DropdownMenuItem key={role.role} onClick={() => pickRole(role)}>
+                {roleLabel(role.role)}
+              </DropdownMenuItem>
+            ))}
+            {subtaskRole && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setSubtaskRole(null)}>
+                  {t("tasks.subtasks.freeSubtask")}
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
 
       {/* Middle: Input */}
       <input

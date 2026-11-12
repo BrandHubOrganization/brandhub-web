@@ -8,6 +8,7 @@ export interface TimelineSubtask {
   supervisorOverrideId: string | null;
   dueDate: string | null;
   plannedStartDate: string | null;
+  subtaskRole?: string | null;
 }
 export interface TimelineTask {
   id: string;
@@ -24,6 +25,7 @@ export interface TimelineTask {
   canAssign: boolean;
   canManageSubtasks: boolean;
   subtasks: TimelineSubtask[];
+  awaitingClient: boolean;
 }
 export interface TimelineView {
   timezone: string;
@@ -75,5 +77,6 @@ export type TimelineEdit =
       name: string;
       assigneeId: string | null;
       dueDate: string;
+      subtaskRole?: string | null;
     }
   | { kind: "status"; taskId: string; subtaskId: string; status: string };

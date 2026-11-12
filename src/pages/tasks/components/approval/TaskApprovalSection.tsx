@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -142,7 +143,7 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
               {reviewError(view.postError, t)}
             </p>
           ) : null}
-          {task.type === "POST" &&
+          {opensPostEditor(task.type) &&
             view.review.supportedType &&
             (view.linked?.post ? (
               <TaskReviewContent post={view.linked.post} />
@@ -156,7 +157,7 @@ export function TaskApprovalSection({ task }: { task: TaskWorkflow }) {
               {t("tasks.review.contentMismatch")}
             </p>
           )}
-          {view.linked?.canEdit && task.type === "POST" && (
+          {view.linked?.canEdit && opensPostEditor(task.type) && (
             <Button variant="outline" size="sm" asChild className="gap-1.5">
               <Link
                 to={`/workspaces/${encodeURIComponent(task.workspaceId)}/editor?taskId=${encodeURIComponent(task.id)}`}

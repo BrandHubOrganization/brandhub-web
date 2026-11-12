@@ -72,7 +72,10 @@
       "EVENT_PLANNING": "Bàn giao kế hoạch sự kiện",
       "LIVESTREAM_PREPARATION": "Livestream",
       "PRESS_RECOMMENDATION": "Bài báo điện tử",
-      "WORKSHOP_SUPPORT": "Workshop"
+      "WORKSHOP_SUPPORT": "Workshop",
+      "SHORT_VIDEO": "Video ngắn",
+      "KOL_BOOKING": "Booking KOL/Influencer",
+      "EMAIL_NEWSLETTER": "Email/Bản tin"
     },
     "service": "Dịch vụ",
     "name": "Tên hạng mục bàn giao",
@@ -361,7 +364,13 @@
       "PRESS_RECOMMENDATION_one": "{{count}} bài báo điện tử",
       "PRESS_RECOMMENDATION_other": "{{count}} bài báo điện tử",
       "WORKSHOP_SUPPORT_one": "{{count}} buổi workshop",
-      "WORKSHOP_SUPPORT_other": "{{count}} buổi workshop"
+      "WORKSHOP_SUPPORT_other": "{{count}} buổi workshop",
+      "SHORT_VIDEO_one": "{{count}} video ngắn",
+      "SHORT_VIDEO_other": "{{count}} video ngắn",
+      "KOL_BOOKING_one": "{{count}} KOL",
+      "KOL_BOOKING_other": "{{count}} KOL",
+      "EMAIL_NEWSLETTER_one": "{{count}} bản tin email",
+      "EMAIL_NEWSLETTER_other": "{{count}} bản tin email"
     },
     "units": {
       "SOCIAL_POST_one": "bài",
@@ -373,7 +382,13 @@
       "PRESS_RECOMMENDATION_one": "bài",
       "PRESS_RECOMMENDATION_other": "bài",
       "WORKSHOP_SUPPORT_one": "buổi",
-      "WORKSHOP_SUPPORT_other": "buổi"
+      "WORKSHOP_SUPPORT_other": "buổi",
+      "SHORT_VIDEO_one": "video",
+      "SHORT_VIDEO_other": "video",
+      "KOL_BOOKING_one": "KOL",
+      "KOL_BOOKING_other": "KOL",
+      "EMAIL_NEWSLETTER_one": "bản tin",
+      "EMAIL_NEWSLETTER_other": "bản tin"
     },
     "packageDescription": "Mô tả gói",
     "view": "Xem",
@@ -391,7 +406,7 @@
     "budgetOptional": "Ngân sách · Tùy chọn",
     "durationOptional": "Thời lượng · Tùy chọn",
     "millions": "{{amount}} triệu",
-    "selected": "{{count}}/4 đã chọn",
+    "selected": "{{count}}/{{total}} đã chọn",
     "include": "Thêm {{service}} vào gói",
     "notSelected": "Chưa chọn",
     "chooseServices": "Tick dịch vụ để thêm vào gói. Mỗi dịch vụ có một hạng mục.",
@@ -468,6 +483,54 @@
           "Nội dung phù hợp đối tượng tham dự.",
           "Tài liệu đủ theo phạm vi đã thống nhất.",
           "Lịch trình và hoạt động được mô tả rõ."
+        ]
+      },
+      "SHORT_VIDEO": {
+        "names": [
+          "Video ngắn giới thiệu sản phẩm",
+          "Video ngắn hậu trường thương hiệu"
+        ],
+        "descriptions": [
+          "Lên ý tưởng và kịch bản theo cảnh.",
+          "Quay và dựng video theo kịch bản đã duyệt.",
+          "Viết caption và lên lịch đăng."
+        ],
+        "outcomes": [
+          "Đúng thông điệp và nhận diện thương hiệu.",
+          "Đúng thời lượng và định dạng từng nền tảng.",
+          "Bàn giao đủ video theo số lượng đã chốt."
+        ]
+      },
+      "KOL_BOOKING": {
+        "names": [
+          "Booking KOL giới thiệu sản phẩm",
+          "Booking influencer trải nghiệm dịch vụ"
+        ],
+        "descriptions": [
+          "Tìm và đề xuất danh sách KOL phù hợp.",
+          "Đàm phán và gửi brief cho KOL.",
+          "Duyệt nội dung và theo dõi kết quả bài đăng."
+        ],
+        "outcomes": [
+          "KOL phù hợp tệp khách hàng mục tiêu.",
+          "Nội dung KOL đúng brief đã thống nhất.",
+          "Có báo cáo số liệu từng bài đăng."
+        ]
+      },
+      "EMAIL_NEWSLETTER": {
+        "names": [
+          "Bản tin định kỳ cho khách hàng",
+          "Email giới thiệu sản phẩm mới"
+        ],
+        "descriptions": [
+          "Viết tiêu đề và nội dung bản tin.",
+          "Thiết kế template theo nhận diện thương hiệu.",
+          "Gửi tới nhóm người nhận đã đồng ý nhận mail."
+        ],
+        "outcomes": [
+          "Nội dung đúng thông điệp thương hiệu.",
+          "Chỉ gửi tới người đã đồng ý nhận mail.",
+          "Có báo cáo số đã gửi, lỗi và huỷ đăng ký."
         ]
       }
     }

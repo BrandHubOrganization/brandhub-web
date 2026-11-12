@@ -8,6 +8,7 @@ import {
   Clock,
   FileText,
   FolderKanban,
+  Mail,
   Megaphone,
   Video,
 } from "lucide-react";
@@ -31,7 +32,7 @@ export function FilterCheckbox({ isChecked }: { isChecked: boolean }) {
   return (
     <div
       className={cn(
-        "size-4 rounded border flex items-center justify-center shrink-0 transition-colors",
+        "flex size-4 shrink-0 items-center justify-center rounded border transition-colors",
         isChecked
           ? "border-brand-orange bg-brand-orange text-white"
           : "border-border bg-background group-hover:border-muted-foreground/50",
@@ -45,17 +46,25 @@ export function FilterCheckbox({ isChecked }: { isChecked: boolean }) {
 export const TYPE_ICONS: Record<TaskType, ReactNode> = {
   POST: <FileText className="size-3.5" />,
   LIVESTREAM: <Video className="size-3.5" />,
+  SHORT_VIDEO: <Video className="size-3.5" />,
   SURVEY: <ClipboardList className="size-3.5" />,
   EVENT_PLAN: <Calendar className="size-3.5" />,
+  WORKSHOP: <Calendar className="size-3.5" />,
   PRESS_RECOMMENDATION: <Megaphone className="size-3.5" />,
+  KOL_BOOKING: <Megaphone className="size-3.5" />,
+  EMAIL_NEWSLETTER: <Mail className="size-3.5" />,
 };
 
 export const ALL_TYPES: TaskType[] = [
   "POST",
   "LIVESTREAM",
+  "SHORT_VIDEO",
   "SURVEY",
   "EVENT_PLAN",
+  "WORKSHOP",
   "PRESS_RECOMMENDATION",
+  "KOL_BOOKING",
+  "EMAIL_NEWSLETTER",
 ];
 
 export const ALL_STATUSES: { value: TaskStatus; dot: string }[] = [
@@ -82,7 +91,7 @@ export function StatusOptionList({
 
   if (filtered.length === 0) {
     return (
-      <div className="py-6 text-center text-xs text-muted-foreground">
+      <div className="text-muted-foreground py-6 text-center text-xs">
         {t("tasks.timelineGrid.noOptionsFound", {
           defaultValue: "Không tìm thấy trạng thái phù hợp",
         })}
@@ -97,11 +106,11 @@ export function StatusOptionList({
           key={value}
           type="button"
           onClick={() => onToggleStatus(value)}
-          className="group flex w-full cursor-pointer select-none items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-muted/60"
+          className="group hover:bg-muted/60 flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors select-none"
         >
           <FilterCheckbox isChecked={selectedStatuses.includes(value)} />
-          <span className={cn("size-2 rounded-full shrink-0", dot)} />
-          <span className="truncate flex-1 text-foreground">
+          <span className={cn("size-2 shrink-0 rounded-full", dot)} />
+          <span className="text-foreground flex-1 truncate">
             {t(`tasks.status.${value}`, { defaultValue: value })}
           </span>
         </button>
@@ -126,7 +135,7 @@ export function TypeOptionList({
 
   if (filtered.length === 0) {
     return (
-      <div className="py-6 text-center text-xs text-muted-foreground">
+      <div className="text-muted-foreground py-6 text-center text-xs">
         {t("tasks.timelineGrid.noOptionsFound", {
           defaultValue: "Không tìm thấy loại công việc phù hợp",
         })}
@@ -141,13 +150,13 @@ export function TypeOptionList({
           key={type}
           type="button"
           onClick={() => onToggleType(type)}
-          className="group flex w-full cursor-pointer select-none items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-muted/60"
+          className="group hover:bg-muted/60 flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors select-none"
         >
           <FilterCheckbox isChecked={selectedTypes.includes(type)} />
           <span className="text-muted-foreground shrink-0">
             {TYPE_ICONS[type]}
           </span>
-          <span className="truncate flex-1 text-foreground">
+          <span className="text-foreground flex-1 truncate">
             {t(`tasks.types.${type}`, { defaultValue: type })}
           </span>
         </button>
@@ -170,7 +179,7 @@ export function ScheduleOptionList({
     {
       id: "ALL",
       label: t("tasks.timelineGrid.scheduleAll", { defaultValue: "Tất cả" }),
-      icon: <Calendar className="size-3.5 text-muted-foreground" />,
+      icon: <Calendar className="text-muted-foreground size-3.5" />,
       isChecked: isAll,
       className: "text-foreground",
     },
@@ -179,7 +188,7 @@ export function ScheduleOptionList({
       label: t("tasks.timelineGrid.scheduleUnscheduled", {
         defaultValue: "Chưa có hạn",
       }),
-      icon: <Clock className="size-3.5 text-muted-foreground" />,
+      icon: <Clock className="text-muted-foreground size-3.5" />,
       isChecked: selectedSchedules.includes("UNSCHEDULED"),
       className: "text-foreground",
     },
@@ -200,7 +209,7 @@ export function ScheduleOptionList({
 
   if (filtered.length === 0) {
     return (
-      <div className="py-6 text-center text-xs text-muted-foreground">
+      <div className="text-muted-foreground py-6 text-center text-xs">
         {t("tasks.timelineGrid.noOptionsFound", {
           defaultValue: "Không tìm thấy lịch trình phù hợp",
         })}
@@ -215,11 +224,11 @@ export function ScheduleOptionList({
           key={opt.id}
           type="button"
           onClick={() => onToggleSchedule(opt.id)}
-          className="group flex w-full cursor-pointer select-none items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-muted/60"
+          className="group hover:bg-muted/60 flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors select-none"
         >
           <FilterCheckbox isChecked={opt.isChecked} />
           {opt.icon}
-          <span className={cn("truncate flex-1", opt.className)}>
+          <span className={cn("flex-1 truncate", opt.className)}>
             {opt.label}
           </span>
         </button>
@@ -243,8 +252,8 @@ export function ParentOptionList({
 
   if (parents.length === 0) {
     return (
-      <div className="py-8 text-center text-xs text-muted-foreground">
-        <FolderKanban className="size-6 mx-auto mb-2 text-muted-foreground/40 stroke-1" />
+      <div className="text-muted-foreground py-8 text-center text-xs">
+        <FolderKanban className="text-muted-foreground/40 mx-auto mb-2 size-6 stroke-1" />
         <p>
           {t("tasks.timelineGrid.noParentsFound", {
             defaultValue: "Chưa có chiến dịch",
@@ -256,7 +265,7 @@ export function ParentOptionList({
 
   if (filtered.length === 0) {
     return (
-      <div className="py-6 text-center text-xs text-muted-foreground">
+      <div className="text-muted-foreground py-6 text-center text-xs">
         {t("tasks.timelineGrid.noOptionsFound", {
           defaultValue: "Không tìm thấy chiến dịch phù hợp",
         })}
@@ -271,11 +280,11 @@ export function ParentOptionList({
           key={p.id}
           type="button"
           onClick={() => onToggleParent(p.id)}
-          className="group flex w-full cursor-pointer select-none items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-muted/60"
+          className="group hover:bg-muted/60 flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors select-none"
         >
           <FilterCheckbox isChecked={selectedParents.includes(p.id)} />
-          <FolderKanban className="size-3.5 text-muted-foreground shrink-0" />
-          <span className="truncate flex-1 text-foreground">{p.name}</span>
+          <FolderKanban className="text-muted-foreground size-3.5 shrink-0" />
+          <span className="text-foreground flex-1 truncate">{p.name}</span>
         </button>
       ))}
     </>

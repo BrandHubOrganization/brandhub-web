@@ -1,7 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Copy, History, MailX, Pencil, Plus, Send, Trash2 } from "lucide-react";
+import {
+  Copy,
+  History,
+  MailX,
+  Pencil,
+  Plus,
+  Send,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
@@ -18,13 +27,24 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { errorCode } from "@/services/adminRevenueService";
 import { SendMailDialog } from "./components/SendMailDialog";
+import { ImportRecipientsDialog } from "./components/ImportRecipientsDialog";
+import type { MailQuota } from "./types";
 import { SCOPES_BY_AUDIENCE } from "./blocks";
-import { TemplateFormDialog, type FormAdapter } from "./components/TemplateFormDialog";
+import {
+  TemplateFormDialog,
+  type FormAdapter,
+} from "./components/TemplateFormDialog";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import { agencyMailTemplateService, mailTemplateService } from "./services/mailTemplateService";
+import {
+  agencyMailTemplateService,
+  mailTemplateService,
+} from "./services/mailTemplateService";
 import type { MailTemplate, MailTemplateSummary, PageOf } from "./types";
 
-type FormState = { mode: "create" | "edit"; template: MailTemplate | null } | null;
+type FormState = {
+  mode: "create" | "edit";
+  template: MailTemplate | null;
+} | null;
 
 function Panel({ workspaceId }: { workspaceId: string }) {
   const { t, i18n } = useTranslation();
@@ -38,17 +58,36 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   const [sendFor, setSendFor] = useState<MailTemplateSummary | null>(null);
   const [toDelete, setToDelete] = useState<MailTemplateSummary | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [quota, setQuota] = useState<MailQuota | null>(null);
   const agencyId = useWorkspaceStore((s) => s.currentWorkspace?.agencyId);
   const [agencyRows, setAgencyRows] = useState<MailTemplateSummary[]>([]);
 
+  useEffect(() => {
+    mailTemplateService
+      .quota(workspaceId)
+      .then(setQuota)
+      .catch(() => setQuota(null));
+  }, [workspaceId]);
+
   // Agency templates are listed only for the agency OWNER (others get 403 -> nothing extra shown).
   useEffect(() => {
-    if (!agencyId) { setAgencyRows([]); return; }
+    if (!agencyId) {
+      setAgencyRows([]);
+      return;
+    }
     let cancelled = false;
-    agencyMailTemplateService.list(agencyId, { q: query || undefined, size: 100 })
-      .then((p) => { if (!cancelled) setAgencyRows(p.content); })
-      .catch(() => { if (!cancelled) setAgencyRows([]); });
-    return () => { cancelled = true; };
+    agencyMailTemplateService
+      .list(agencyId, { q: query || undefined, size: 100 })
+      .then((p) => {
+        if (!cancelled) setAgencyRows(p.content);
+      })
+      .catch(() => {
+        if (!cancelled) setAgencyRows([]);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [agencyId, query]);
 
   const rows = [...(data?.content ?? []), ...(page === 0 ? agencyRows : [])];
@@ -57,7 +96,14 @@ function Panel({ workspaceId }: { workspaceId: string }) {
     setLoading(true);
     setFailed(false);
     try {
-      setData(await mailTemplateService.list(workspaceId, { q: query || undefined, includeSystem, page, size: 20 }));
+      setData(
+        await mailTemplateService.list(workspaceId, {
+          q: query || undefined,
+          includeSystem,
+          page,
+          size: 20,
+        }),
+      );
     } catch {
       setFailed(true);
     } finally {
@@ -65,7 +111,9 @@ function Panel({ workspaceId }: { workspaceId: string }) {
     }
   }, [workspaceId, query, includeSystem, page]);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   const adapter: FormAdapter = {
     save: (payload, existing) =>
@@ -74,17 +122,33 @@ function Panel({ workspaceId }: { workspaceId: string }) {
         : mailTemplateService.create(workspaceId, payload),
     scopes: SCOPES_BY_AUDIENCE.workspace,
     uploadAttachment: async (file) => {
-      const u = await mailTemplateService.upload(workspaceId, file, "attachments");
-      return { attachmentId: u.id, name: u.name, contentType: u.contentType, size: u.size };
+      const u = await mailTemplateService.upload(
+        workspaceId,
+        file,
+        "attachments",
+      );
+      return {
+        attachmentId: u.id,
+        name: u.name,
+        contentType: u.contentType,
+        size: u.size,
+      };
     },
   };
 
-  const openEdit = async (row: MailTemplateSummary, mode: "edit" | "create") => {
+  const openEdit = async (
+    row: MailTemplateSummary,
+    mode: "edit" | "create",
+  ) => {
     try {
       const full = await mailTemplateService.get(workspaceId, row.id);
       setForm({ mode, template: full });
     } catch (e) {
-      toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
+      toast.error(
+        t(`mailTemplate.errors.${errorCode(e)}`, {
+          defaultValue: t("mailTemplate.errors.generic"),
+        }),
+      );
     }
   };
 
@@ -97,7 +161,11 @@ function Panel({ workspaceId }: { workspaceId: string }) {
       setToDelete(null);
       void load();
     } catch (e) {
-      toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
+      toast.error(
+        t(`mailTemplate.errors.${errorCode(e)}`, {
+          defaultValue: t("mailTemplate.errors.generic"),
+        }),
+      );
     } finally {
       setDeleting(false);
     }
@@ -106,23 +174,61 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
-        <Input aria-label={t("mailTemplate.search")} placeholder={t("mailTemplate.search")} className="w-full sm:w-64"
-          value={query} onChange={(e) => { setPage(0); setQuery(e.target.value); }} />
+        <Input
+          aria-label={t("mailTemplate.search")}
+          placeholder={t("mailTemplate.search")}
+          className="w-full sm:w-64"
+          value={query}
+          onChange={(e) => {
+            setPage(0);
+            setQuery(e.target.value);
+          }}
+        />
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={includeSystem}
-            onChange={(e) => { setPage(0); setIncludeSystem(e.target.checked); }} />
+          <input
+            type="checkbox"
+            checked={includeSystem}
+            onChange={(e) => {
+              setPage(0);
+              setIncludeSystem(e.target.checked);
+            }}
+          />
           {t("mailTemplate.includeSystem")}
         </label>
+        {quota && (
+          <span
+            className="text-muted-foreground text-xs"
+            title={t("mailTemplate.quota.hint")}
+          >
+            {t("mailTemplate.quota.label", {
+              used: quota.workspaceUsed,
+              limit: quota.workspaceLimit,
+            })}
+          </span>
+        )}
         <div className="ml-auto flex gap-2">
-          <Button asChild variant="outline">
-            <Link to={`/workspaces/${workspaceId}/mail-templates/suppressions`}><MailX className="size-4" />{t("mailTemplate.suppressions.link")}</Link>
+          <Button variant="outline" onClick={() => setImportOpen(true)}>
+            <Upload className="size-4" />
+            {t("mailTemplate.import.title")}
           </Button>
           <Button asChild variant="outline">
-            <Link to={`/workspaces/${workspaceId}/mail-templates/batches`}><History className="size-4" />{t("mailTemplate.batches.title")}</Link>
+            <Link to={`/workspaces/${workspaceId}/mail-templates/suppressions`}>
+              <MailX className="size-4" />
+              {t("mailTemplate.suppressions.link")}
+            </Link>
           </Button>
-          <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white"
-            onClick={() => setForm({ mode: "create", template: null })}>
-            <Plus className="size-4" />{t("mailTemplate.create")}
+          <Button asChild variant="outline">
+            <Link to={`/workspaces/${workspaceId}/mail-templates/batches`}>
+              <History className="size-4" />
+              {t("mailTemplate.batches.title")}
+            </Link>
+          </Button>
+          <Button
+            className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+            onClick={() => setForm({ mode: "create", template: null })}
+          >
+            <Plus className="size-4" />
+            {t("mailTemplate.create")}
           </Button>
         </div>
       </div>
@@ -140,34 +246,74 @@ function Panel({ workspaceId }: { workspaceId: string }) {
       {!loading && !failed && data && rows.length > 0 && (
         <ul className="space-y-3" aria-label={t("mailTemplate.title")}>
           {rows.map((row) => (
-            <li key={row.id} className="bg-card flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center">
+            <li
+              key={row.id}
+              className="bg-card flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center"
+            >
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-medium break-words">{row.name}</h3>
-                  {row.type === "SYSTEM_DEFAULT" && <Badge variant="secondary">{t("mailTemplate.systemBadge")}</Badge>}
-                  {row.scope && <Badge variant="outline">{t(`mailTemplate.scopes.${row.scope}`)}</Badge>}
+                  {row.type === "SYSTEM_DEFAULT" && (
+                    <Badge variant="secondary">
+                      {t("mailTemplate.systemBadge")}
+                    </Badge>
+                  )}
+                  {row.scope && (
+                    <Badge variant="outline">
+                      {t(`mailTemplate.scopes.${row.scope}`)}
+                    </Badge>
+                  )}
                   {row.attachmentCount > 0 && (
-                    <span className="text-muted-foreground text-xs">{t("mailTemplate.attachmentCount", { count: row.attachmentCount })}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {t("mailTemplate.attachmentCount", {
+                        count: row.attachmentCount,
+                      })}
+                    </span>
                   )}
                 </div>
-                <p className="text-muted-foreground truncate text-sm">{row.subject}</p>
-                <p className="text-muted-foreground text-xs">{new Date(row.createdAt).toLocaleDateString(i18n.language)}</p>
+                <p className="text-muted-foreground truncate text-sm">
+                  {row.subject}
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  {new Date(row.createdAt).toLocaleDateString(i18n.language)}
+                </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button size="sm" variant="outline" onClick={() => setSendFor(row)}>
-                  <Send className="size-3.5" />{t("mailTemplate.actions.send")}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setSendFor(row)}
+                >
+                  <Send className="size-3.5" />
+                  {t("mailTemplate.actions.send")}
                 </Button>
-                {row.scope?.startsWith("AGENCY_") ? null : row.type === "SYSTEM_DEFAULT" ? (
-                  <Button size="sm" variant="outline" onClick={() => void openEdit(row, "create")}>
-                    <Copy className="size-3.5" />{t("mailTemplate.actions.use")}
+                {row.scope?.startsWith("AGENCY_") ? null : row.type ===
+                  "SYSTEM_DEFAULT" ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => void openEdit(row, "create")}
+                  >
+                    <Copy className="size-3.5" />
+                    {t("mailTemplate.actions.use")}
                   </Button>
                 ) : (
                   <>
-                    <Button size="sm" variant="outline" onClick={() => void openEdit(row, "edit")}>
-                      <Pencil className="size-3.5" />{t("mailTemplate.actions.edit")}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => void openEdit(row, "edit")}
+                    >
+                      <Pencil className="size-3.5" />
+                      {t("mailTemplate.actions.edit")}
                     </Button>
-                    <Button size="sm" variant="outline" onClick={() => setToDelete(row)}>
-                      <Trash2 className="size-3.5" />{t("mailTemplate.actions.delete")}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setToDelete(row)}
+                    >
+                      <Trash2 className="size-3.5" />
+                      {t("mailTemplate.actions.delete")}
                     </Button>
                   </>
                 )}
@@ -177,31 +323,93 @@ function Panel({ workspaceId }: { workspaceId: string }) {
         </ul>
       )}
       {data && data.totalPages > 1 && (
-        <nav aria-label={t("mailTemplate.pagination")} className="flex items-center gap-2">
-          <Button variant="outline" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>{t("mailTemplate.previous")}</Button>
-          <span className="text-sm">{t("mailTemplate.page", { page: page + 1, total: data.totalPages })}</span>
-          <Button variant="outline" disabled={page + 1 >= data.totalPages} onClick={() => setPage((p) => p + 1)}>{t("mailTemplate.next")}</Button>
+        <nav
+          aria-label={t("mailTemplate.pagination")}
+          className="flex items-center gap-2"
+        >
+          <Button
+            variant="outline"
+            disabled={page === 0}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            {t("mailTemplate.previous")}
+          </Button>
+          <span className="text-sm">
+            {t("mailTemplate.page", { page: page + 1, total: data.totalPages })}
+          </span>
+          <Button
+            variant="outline"
+            disabled={page + 1 >= data.totalPages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            {t("mailTemplate.next")}
+          </Button>
         </nav>
       )}
 
       {form && (
-        <TemplateFormDialog open key={`${form.mode}-${form.template?.id ?? "new"}`} mode={form.mode}
+        <TemplateFormDialog
+          open
+          key={`${form.mode}-${form.template?.id ?? "new"}`}
+          mode={form.mode}
           draftKey={`mail-template-draft:${workspaceId}`}
-          template={form.template} adapter={adapter} onClose={() => setForm(null)}
-          onSaved={() => { setForm(null); void load(); }} />
+          template={form.template}
+          adapter={adapter}
+          onClose={() => setForm(null)}
+          onSaved={() => {
+            setForm(null);
+            void load();
+          }}
+        />
       )}
       {sendFor && (
-        <SendMailDialog open workspaceId={workspaceId} template={sendFor} agencyId={agencyId} onClose={() => setSendFor(null)} />
+        <SendMailDialog
+          open
+          workspaceId={workspaceId}
+          template={sendFor}
+          agencyId={agencyId}
+          onClose={() => setSendFor(null)}
+        />
       )}
-      <Dialog open={!!toDelete} onOpenChange={(open) => !open && !deleting && setToDelete(null)}>
+      <ImportRecipientsDialog
+        workspaceId={workspaceId}
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        onImported={() => {
+          mailTemplateService
+            .quota(workspaceId)
+            .then(setQuota)
+            .catch(() => undefined);
+        }}
+      />
+      <Dialog
+        open={!!toDelete}
+        onOpenChange={(open) => !open && !deleting && setToDelete(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t("mailTemplate.confirmDelete.title")}</DialogTitle>
-            <DialogDescription>{t("mailTemplate.confirmDelete.body", { name: toDelete?.name ?? "" })}</DialogDescription>
+            <DialogDescription>
+              {t("mailTemplate.confirmDelete.body", {
+                name: toDelete?.name ?? "",
+              })}
+            </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" disabled={deleting} onClick={() => setToDelete(null)}>{t("mailTemplate.cancel")}</Button>
-            <Button variant="destructive" disabled={deleting} onClick={() => void confirmDelete()}>{t("mailTemplate.confirmDelete.confirm")}</Button>
+            <Button
+              variant="outline"
+              disabled={deleting}
+              onClick={() => setToDelete(null)}
+            >
+              {t("mailTemplate.cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={deleting}
+              onClick={() => void confirmDelete()}
+            >
+              {t("mailTemplate.confirmDelete.confirm")}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -213,7 +421,10 @@ export default function MailTemplatesPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
   return (
-    <PageWrapper title={t("mailTemplate.title")} description={t("mailTemplate.subtitle")}>
+    <PageWrapper
+      title={t("mailTemplate.title")}
+      description={t("mailTemplate.subtitle")}
+    >
       {id && <Panel key={id} workspaceId={id} />}
     </PageWrapper>
   );

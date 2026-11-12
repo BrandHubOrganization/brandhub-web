@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 ﻿import { useRef, useState } from "react";
 import {
   useInfiniteQuery,
@@ -20,7 +21,7 @@ export function useTaskApproval(
   { enabled = true, includeHistory = true } = {},
 ) {
   const { workspaceId, id: taskId } = task;
-  const isPost = task.type === "POST";
+  const isPost = opensPostEditor(task.type);
   const userId = useAuthStore((state) => state.user?.id);
   const client = useQueryClient();
   const { session, onUpdated } = useTaskEditContext();

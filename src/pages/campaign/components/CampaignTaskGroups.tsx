@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
@@ -83,7 +84,7 @@ export function CampaignTaskGroups({
                         )}
                       </Badge>
                       {canManage &&
-                        task.type === "POST" &&
+                        opensPostEditor(task.type) &&
                         task.status !== "CANCELLED" && (
                           <Link
                             className="underline underline-offset-4"

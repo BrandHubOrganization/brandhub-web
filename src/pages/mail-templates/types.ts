@@ -74,12 +74,7 @@ export interface SendResult {
 }
 
 export type BatchStatus =
-  | "SCHEDULED"
-  | "QUEUED"
-  | "SENDING"
-  | "COMPLETED"
-  | "CANCELLED"
-  | "FAILED";
+  "SCHEDULED" | "QUEUED" | "SENDING" | "COMPLETED" | "CANCELLED" | "FAILED";
 
 export const BATCH_STATUSES: BatchStatus[] = [
   "SCHEDULED",
@@ -166,4 +161,12 @@ export interface RecipientGroup {
   name: string;
   count: number;
   recipients: { email: string; name: string | null }[];
+}
+
+export interface ImportRecipientGroupResult {
+  groupId: string;
+  imported: number;
+  skippedNoConsent: number;
+  skippedSuppressed: number;
+  skippedInvalid: number;
 }
