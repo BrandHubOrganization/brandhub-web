@@ -39,7 +39,7 @@
     "title": "Soạn thảo Nội dung",
     "loadFailed": "Không thể tải nội dung. Vui lòng thử lại.",
     "connectionFailed": "Chưa thể kết nối đồng bộ. Nội dung đang sửa được giữ trên trang này.",
-    "description": "Canvas editor kiểu Google Docs — bản xem trước phần render lõi (FR 3.6.10)."
+    "description": "Trình soạn thảo văn bản trực quan chuẩn Agency — hỗ trợ định dạng phong phú và đồng bộ thời gian thực."
   },
   "emojiPicker": {
     "search": "Tìm emoji (tiếng Anh)…",
@@ -165,7 +165,15 @@
     },
     "video": {
       "title": "AI Video Assistant",
-      "subtitle": "Tạo video chuyển động AI từ 1 ảnh và 1 video tham chiếu",
+      "subtitle": "Tạo video từ ảnh và yêu cầu, hoặc dùng video chuyển động tham chiếu",
+      "generationMode": "Cách tạo video",
+      "imagePromptMode": "Ảnh + yêu cầu",
+      "referenceMode": "Ảnh + video tham chiếu",
+      "promptHint": "Giữ nguyên chai nước hoa, đổi nền thành studio xanh đậm và cho camera tiến gần nhẹ...",
+      "promptTooShort": "Nhập yêu cầu chỉnh ảnh và chuyển động, tối thiểu 10 ký tự.",
+      "aspectRatioLabel": "Khung hình",
+      "portrait": "Dọc 9:16",
+      "landscape": "Ngang 16:9",
       "briefLabel": "Yêu cầu video",
       "briefPlaceholder": "Mô tả video quảng cáo, thông điệp chính và đối tượng khán giả...",
       "briefRequired": "Vui lòng nhập yêu cầu video.",
@@ -211,7 +219,11 @@
       "eightSecondNotice": "Thời lượng video đầu ra khớp tự động với thời lượng video tham chiếu.",
       "status": "Trạng thái: {{status}}",
       "applyButton": "Thêm video vào bài đăng",
-      "generateFailed": "Không thể tạo video. Vui lòng kiểm tra cấu hình ai-worker-video và thử lại."
+      "generateFailed": "Không thể tạo video. Vui lòng kiểm tra cấu hình ai-worker-video và thử lại.",
+      "characterLabel": "Ảnh nhân vật (tùy chọn, video 20 giây)",
+      "removeCharacter": "Bỏ ảnh nhân vật",
+      "reviewModeHint": "Có ảnh nhân vật: tạo video review sản phẩm theo kịch bản.",
+      "cinematicModeHint": "Không có ảnh nhân vật: tạo video sản phẩm theo phong cách điện ảnh. Cần kết nối worker LTX."
     },
     "preview": {
       "title": "Live Preview",
@@ -421,6 +433,27 @@
     "dragDropText": "Kéo thả hình ảnh/video vào đây hoặc",
     "browseText": "duyệt từ máy tính",
     "supportedFormats": "Hỗ trợ JPG, PNG, GIF, MP4 (tối đa 50MB)",
+    "tabs": {
+      "upload": "Tải lên từ máy",
+      "repository": "Kho tài nguyên"
+    },
+    "repository": {
+      "searchPlaceholder": "Tìm kiếm tài nguyên...",
+      "categoryAll": "Tất cả",
+      "categoryImage": "Hình ảnh",
+      "categoryVideo": "Video",
+      "categoryFile": "Tài liệu",
+      "sortNewest": "Mới nhất",
+      "sortOldest": "Cũ nhất",
+      "sortNameAsc": "Tên A-Z",
+      "sortNameDesc": "Tên Z-A",
+      "empty": "Không tìm thấy tài nguyên nào trong kho",
+      "emptySearch": "Không có tài nguyên phù hợp với từ khóa",
+      "emptySubtext": "Tải lên tài nguyên mới hoặc thử tìm kiếm khác",
+      "videoBadge": "Video"
+    },
+    "selectedMedia": "Tài nguyên đã chọn",
+    "removeMedia": "Gỡ bỏ phương tiện",
     "applyWatermark": "Áp watermark"
   },
   "richText": {
@@ -591,7 +624,7 @@
       "emotion": "Đọc lên: {{label}} {{value}}%",
       "trend": "Có dùng trend",
       "claims": "Cần xác nhận: {{claims}} không có trong chủ đề hay thông tin thương hiệu.",
-      "complianceHint": "Kiểm tra tuân thủ nội dung (FR 3.6.33) sẽ chạy tại đây khi được nối."
+      "complianceHint": "Hệ thống kiểm duyệt an toàn nội dung & từ cấm sẽ quét tự động trước khi xuất bản."
     },
     "compliance": {
       "NOT_CHECKED": "Chưa kiểm tra tuân thủ",

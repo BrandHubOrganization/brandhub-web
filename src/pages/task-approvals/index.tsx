@@ -51,12 +51,10 @@ function ApprovalWorkspace({
   }
   return (
     <PageWrapper
-      compact
-      showGuideButton={false}
       title={t("tasks.approvalPage.title")}
       description={t("tasks.approvalPage.description")}
-      className="flex h-full min-h-0 flex-col !space-y-3 !pb-4"
-      contentClassName="flex min-h-0 flex-1 flex-col gap-3"
+      className="flex h-full min-h-0 flex-col !pb-4"
+      contentClassName="flex min-h-0 flex-1 flex-col gap-3.5 pt-1"
       actions={
         <Button
           variant="outline"

@@ -23,6 +23,8 @@ import viSocial from "./social.json";
 import viPublish from "./publish.json";
 import viSubscription from "./subscription.json";
 import viAiStudio from "./aiStudio.json";
+import viVideoSpace from "./videoSpace.json";
+import viProductVideo from "./productVideo.json";
 import viReports from "./reports.json";
 import viNotifications from "./notifications.json";
 import viSecurity from "./security.json";
@@ -63,6 +65,8 @@ export default {
   publish: viPublish,
   subscription: viSubscription,
   aiStudio: viAiStudio,
+  videoSpace: viVideoSpace,
+  productVideo: viProductVideo,
   reports: viReports,
   notifications: viNotifications,
   security: viSecurity,

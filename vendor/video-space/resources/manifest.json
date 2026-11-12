@@ -1,0 +1,1856 @@
+{
+  "version": 1,
+  "name": "Video Space Original Starter Library",
+  "generatedBy": "resources/generate.py",
+  "items": [
+    {
+      "id": "sound-silk-whoosh",
+      "kind": "sound",
+      "name": "Silk Whoosh",
+      "category": "Whoosh",
+      "tags": [
+        "whoosh",
+        "sfx",
+        "original",
+        "whoosh"
+      ],
+      "description": "Soft airy pass for clean cuts",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.9,
+      "file": "sounds/silk-whoosh.wav",
+      "mimeType": "audio/wav",
+      "sha256": "24d686cd16ff0e9b5f2f8741ae01895ad5bad96796d886db62a184cd441d316f",
+      "bytes": 158804
+    },
+    {
+      "id": "sound-wide-whoosh",
+      "kind": "sound",
+      "name": "Wide Whoosh",
+      "category": "Whoosh",
+      "tags": [
+        "whoosh",
+        "sfx",
+        "original",
+        "wide"
+      ],
+      "description": "Broad sweep with a low body",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.45,
+      "file": "sounds/wide-whoosh.wav",
+      "mimeType": "audio/wav",
+      "sha256": "c1181c6a5bbb3d8e12269d1446127cbb53ff9eb33a045e4f336f3df772c936fa",
+      "bytes": 255824
+    },
+    {
+      "id": "sound-reverse-air",
+      "kind": "sound",
+      "name": "Reverse Air",
+      "category": "Whoosh",
+      "tags": [
+        "whoosh",
+        "sfx",
+        "original",
+        "reverse"
+      ],
+      "description": "Inward pull before a reveal",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.3,
+      "file": "sounds/reverse-air.wav",
+      "mimeType": "audio/wav",
+      "sha256": "b87db47373c37be09a978ad3d7d28fed114607d3b7680b165eb0ae9f46fb7fd5",
+      "bytes": 229364
+    },
+    {
+      "id": "sound-quick-swish",
+      "kind": "sound",
+      "name": "Quick Swish",
+      "category": "Whoosh",
+      "tags": [
+        "whoosh",
+        "sfx",
+        "original",
+        "swish"
+      ],
+      "description": "Tight movement for text or a whip cut",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.48,
+      "file": "sounds/quick-swish.wav",
+      "mimeType": "audio/wav",
+      "sha256": "073fde619bb19f3246bc8cada115d6a2f7e17ccce14bac720a321c764657e963",
+      "bytes": 84716
+    },
+    {
+      "id": "sound-paper-flick",
+      "kind": "sound",
+      "name": "Paper Flick",
+      "category": "Foley",
+      "tags": [
+        "foley",
+        "sfx",
+        "original",
+        "paper"
+      ],
+      "description": "Dry textured flick for a card move",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.62,
+      "file": "sounds/paper-flick.wav",
+      "mimeType": "audio/wav",
+      "sha256": "3d5d2448d88db9f636b4b5c597ab002edfe7a767369d623408f8b698cd8c2599",
+      "bytes": 109412
+    },
+    {
+      "id": "sound-bubble-pop",
+      "kind": "sound",
+      "name": "Bubble Pop",
+      "category": "Pop",
+      "tags": [
+        "pop",
+        "sfx",
+        "original",
+        "pop"
+      ],
+      "description": "Rounded bubbly accent",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.46,
+      "file": "sounds/bubble-pop.wav",
+      "mimeType": "audio/wav",
+      "sha256": "e681c763f9d39dab38d9743ead8f8c1a6c7c093fe33ec343d72eddde09f8a580",
+      "bytes": 81188
+    },
+    {
+      "id": "sound-soft-pop",
+      "kind": "sound",
+      "name": "Soft Pop",
+      "category": "Pop",
+      "tags": [
+        "pop",
+        "sfx",
+        "original",
+        "softpop"
+      ],
+      "description": "Small warm UI punctuation",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.37,
+      "file": "sounds/soft-pop.wav",
+      "mimeType": "audio/wav",
+      "sha256": "05fa2ed541d6c95c145bcd527b35a4f935125cc0e561c15fffdf222824ba2a1e",
+      "bytes": 65312
+    },
+    {
+      "id": "sound-double-pop",
+      "kind": "sound",
+      "name": "Double Pop",
+      "category": "Pop",
+      "tags": [
+        "pop",
+        "sfx",
+        "original",
+        "doublepop"
+      ],
+      "description": "Two playful pops for a paired reveal",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.7,
+      "file": "sounds/double-pop.wav",
+      "mimeType": "audio/wav",
+      "sha256": "794d88c6ba24a96975a18b1fbb0c1afac8f7b666615e90136dfb771ef8e383e1",
+      "bytes": 123520
+    },
+    {
+      "id": "sound-wood-click",
+      "kind": "sound",
+      "name": "Wood Click",
+      "category": "Click",
+      "tags": [
+        "click",
+        "sfx",
+        "original",
+        "wood"
+      ],
+      "description": "Short wooden tap",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.25,
+      "file": "sounds/wood-click.wav",
+      "mimeType": "audio/wav",
+      "sha256": "af4ea46dcb2a683a33bb32d6aeb9b7072f871b9c97405da9a36c78c56d78fd81",
+      "bytes": 44144
+    },
+    {
+      "id": "sound-digital-click",
+      "kind": "sound",
+      "name": "Digital Click",
+      "category": "Click",
+      "tags": [
+        "click",
+        "sfx",
+        "original",
+        "click"
+      ],
+      "description": "Crisp high UI tick",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.22,
+      "file": "sounds/digital-click.wav",
+      "mimeType": "audio/wav",
+      "sha256": "8ff3e212ca56dcdfe532ba918461ba36e4c24a8f26dd99381796caf435a0206d",
+      "bytes": 38852
+    },
+    {
+      "id": "sound-camera-shutter",
+      "kind": "sound",
+      "name": "Camera Shutter",
+      "category": "Foley",
+      "tags": [
+        "foley",
+        "sfx",
+        "original",
+        "shutter"
+      ],
+      "description": "Mechanical double shutter accent",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.58,
+      "file": "sounds/camera-shutter.wav",
+      "mimeType": "audio/wav",
+      "sha256": "9e21b859d79e52cfd0ada6877bbd1d4cd512b41b7e19f129ce869dd03aa5aa0a",
+      "bytes": 102356
+    },
+    {
+      "id": "sound-keyboard-burst",
+      "kind": "sound",
+      "name": "Keyboard Burst",
+      "category": "Typing",
+      "tags": [
+        "typing",
+        "sfx",
+        "original",
+        "typing"
+      ],
+      "description": "A short original synthetic typing rhythm",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.65,
+      "file": "sounds/keyboard-burst.wav",
+      "mimeType": "audio/wav",
+      "sha256": "4bef71b11da51a7af1f630269ca84c1195be05515304af54f1cb1836e06995a7",
+      "bytes": 291104
+    },
+    {
+      "id": "sound-message-chime",
+      "kind": "sound",
+      "name": "Message Chime",
+      "category": "Notification",
+      "tags": [
+        "notification",
+        "sfx",
+        "original",
+        "message"
+      ],
+      "description": "Gentle two-note message bell",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.28,
+      "file": "sounds/message-chime.wav",
+      "mimeType": "audio/wav",
+      "sha256": "ce37a382d145bd8675222899819a301b04e2953fc28f04137d2d1fff1aa75a77",
+      "bytes": 225836
+    },
+    {
+      "id": "sound-success-chime",
+      "kind": "sound",
+      "name": "Success Chime",
+      "category": "Notification",
+      "tags": [
+        "notification",
+        "sfx",
+        "original",
+        "success"
+      ],
+      "description": "Bright three-note confirmation",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.65,
+      "file": "sounds/success-chime.wav",
+      "mimeType": "audio/wav",
+      "sha256": "514068bb442edeb9766eb013577a50d0287585be730473d527872a8269afdf7f",
+      "bytes": 291104
+    },
+    {
+      "id": "sound-gentle-alert",
+      "kind": "sound",
+      "name": "Gentle Alert",
+      "category": "Notification",
+      "tags": [
+        "notification",
+        "sfx",
+        "original",
+        "alert"
+      ],
+      "description": "A restrained repeated notification",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.2,
+      "file": "sounds/gentle-alert.wav",
+      "mimeType": "audio/wav",
+      "sha256": "2eb717d96f94b5126985b8cdbb5fa0adcae0b5f473cb52a5559ea5282b164cb1",
+      "bytes": 211724
+    },
+    {
+      "id": "sound-glass-twinkle",
+      "kind": "sound",
+      "name": "Glass Twinkle",
+      "category": "Notification",
+      "tags": [
+        "notification",
+        "sfx",
+        "original",
+        "twinkle"
+      ],
+      "description": "Four delicate ascending sparkles",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.75,
+      "file": "sounds/glass-twinkle.wav",
+      "mimeType": "audio/wav",
+      "sha256": "e70979867850b58e257c8715b7e9af5fcbcc80c07c0104a4bb6ab7b43eaa72ca",
+      "bytes": 308744
+    },
+    {
+      "id": "sound-soft-impact",
+      "kind": "sound",
+      "name": "Soft Impact",
+      "category": "Impact",
+      "tags": [
+        "impact",
+        "sfx",
+        "original",
+        "impact"
+      ],
+      "description": "Warm low impact for an understated cut",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.1,
+      "file": "sounds/soft-impact.wav",
+      "mimeType": "audio/wav",
+      "sha256": "f6ad5c951ca9476908e899a2f03f93696ab125cb496b7e86ac2d939e1a50e59c",
+      "bytes": 194084
+    },
+    {
+      "id": "sound-deep-impact",
+      "kind": "sound",
+      "name": "Deep Impact",
+      "category": "Impact",
+      "tags": [
+        "impact",
+        "sfx",
+        "original",
+        "deep"
+      ],
+      "description": "Sub drop and a textured hit",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 2.0,
+      "file": "sounds/deep-impact.wav",
+      "mimeType": "audio/wav",
+      "sha256": "72782df3ffb56b33c116ef80c8e4ac52169cf712624627ee2578421014533b3c",
+      "bytes": 352844
+    },
+    {
+      "id": "sound-crisp-hit",
+      "kind": "sound",
+      "name": "Crisp Hit",
+      "category": "Impact",
+      "tags": [
+        "impact",
+        "sfx",
+        "original",
+        "hit"
+      ],
+      "description": "Short punch with a bright attack",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 0.7,
+      "file": "sounds/crisp-hit.wav",
+      "mimeType": "audio/wav",
+      "sha256": "d76cca448dc80b76f5e1c5cbda1cd2aa8cc82fa6c273f497c02c6b2cb4d32d57",
+      "bytes": 123520
+    },
+    {
+      "id": "sound-tape-stop",
+      "kind": "sound",
+      "name": "Tape Stop",
+      "category": "Transition",
+      "tags": [
+        "transition",
+        "sfx",
+        "original",
+        "tapestop"
+      ],
+      "description": "Descending pitch brake into silence",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.2,
+      "file": "sounds/tape-stop.wav",
+      "mimeType": "audio/wav",
+      "sha256": "f061c70579e534f5a495abb4df43b11b45feb2b691c5375006e6c00203ac9ce8",
+      "bytes": 211724
+    },
+    {
+      "id": "sound-short-riser",
+      "kind": "sound",
+      "name": "Short Riser",
+      "category": "Riser",
+      "tags": [
+        "riser",
+        "sfx",
+        "original",
+        "riser"
+      ],
+      "description": "Tonal and air build before a reveal",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 2.6,
+      "file": "sounds/short-riser.wav",
+      "mimeType": "audio/wav",
+      "sha256": "496a1612385e37e0410c4ec3865c2b033a0b184e1d5d31079f8018d12d9c1c3e",
+      "bytes": 458684
+    },
+    {
+      "id": "sound-shimmer-rise",
+      "kind": "sound",
+      "name": "Shimmer Rise",
+      "category": "Riser",
+      "tags": [
+        "riser",
+        "sfx",
+        "original",
+        "shimmer"
+      ],
+      "description": "Light sparkling build for an opening",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 3.2,
+      "file": "sounds/shimmer-rise.wav",
+      "mimeType": "audio/wav",
+      "sha256": "823b35783c083022448b29eb977cb6d6420fa1348ec433516cac74479bb82a98",
+      "bytes": 564524
+    },
+    {
+      "id": "sound-reveal-hit",
+      "kind": "sound",
+      "name": "Reveal Hit",
+      "category": "Transition",
+      "tags": [
+        "transition",
+        "sfx",
+        "original",
+        "reveal"
+      ],
+      "description": "A short intake followed by a bright resolve",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 1.9,
+      "file": "sounds/reveal-hit.wav",
+      "mimeType": "audio/wav",
+      "sha256": "d92f7fbf8563bdacd3ec3fb851162634d497502537758b10f34abb4f26aadd7d",
+      "bytes": 335204
+    },
+    {
+      "id": "sound-soft-transition",
+      "kind": "sound",
+      "name": "Soft Transition",
+      "category": "Transition",
+      "tags": [
+        "transition",
+        "sfx",
+        "original",
+        "transition"
+      ],
+      "description": "Airy movement with a warm landing",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 2.1,
+      "file": "sounds/soft-transition.wav",
+      "mimeType": "audio/wav",
+      "sha256": "391fb5928aa7de60d97c4996e48ba300a1ec61bf4dc2de13cb9ced365a4937d7",
+      "bytes": 370484
+    },
+    {
+      "id": "music-morning-notes",
+      "kind": "music",
+      "name": "Morning Notes",
+      "category": "Acoustic",
+      "tags": [
+        "warm",
+        "instrumental",
+        "92 bpm",
+        "original"
+      ],
+      "description": "Warm plucked keys and a light pulse for daily stories",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 22.8696,
+      "file": "music/morning-notes.wav",
+      "mimeType": "audio/wav",
+      "bpm": 92,
+      "sha256": "d833df357529f7dfb6e5f5dedf63bdc00a66486afc3ff9618a28007b7332768d",
+      "bytes": 4034232
+    },
+    {
+      "id": "music-night-window",
+      "kind": "music",
+      "name": "Night Window",
+      "category": "Lo-fi",
+      "tags": [
+        "lofi",
+        "instrumental",
+        "78 bpm",
+        "original"
+      ],
+      "description": "Soft minor keys, rounded bass and a relaxed beat",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 26.6154,
+      "file": "music/night-window.wav",
+      "mimeType": "audio/wav",
+      "bpm": 78,
+      "sha256": "4d325489e103e0d2c31c55a011792d42d6967d0bd78b6d87b02d5a14e26ce12d",
+      "bytes": 4694996
+    },
+    {
+      "id": "music-clean-horizon",
+      "kind": "music",
+      "name": "Clean Horizon",
+      "category": "Ambient",
+      "tags": [
+        "ambient",
+        "instrumental",
+        "84 bpm",
+        "original"
+      ],
+      "description": "Open suspended pads for explainers and reflective scenes",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 24.8571,
+      "file": "music/clean-horizon.wav",
+      "mimeType": "audio/wav",
+      "bpm": 84,
+      "sha256": "8407ad57a0c49912e1036042bf68f57d104d14ecd4f275be70c1fb9fcf603ed3",
+      "bytes": 4384844
+    },
+    {
+      "id": "music-little-launch",
+      "kind": "music",
+      "name": "Little Launch",
+      "category": "Electronic",
+      "tags": [
+        "upbeat",
+        "instrumental",
+        "112 bpm",
+        "original"
+      ],
+      "description": "Upbeat mallet arpeggios and an understated electronic groove",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 19.1429,
+      "file": "music/little-launch.wav",
+      "mimeType": "audio/wav",
+      "bpm": 112,
+      "sha256": "a82436f4b9756fa637fd091c6a39826c94add48e3c0af6b0552cbf2cd3df1b4c",
+      "bytes": 3376844
+    },
+    {
+      "id": "music-after-rain",
+      "kind": "music",
+      "name": "After Rain",
+      "category": "Piano",
+      "tags": [
+        "piano",
+        "instrumental",
+        "72 bpm",
+        "original"
+      ],
+      "description": "Slow luminous keys with a gentle stereo tail",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "duration": 28.6667,
+      "file": "music/after-rain.wav",
+      "mimeType": "audio/wav",
+      "bpm": 72,
+      "sha256": "a7452c3cb565d21b8140b17c38d6f7ba67202a1d37c1ccc5f6c1260d11baf02a",
+      "bytes": 5056844
+    },
+    {
+      "id": "sticker-sparkle-cluster",
+      "kind": "sticker",
+      "name": "Golden Sparkles",
+      "category": "Decorative",
+      "tags": [
+        "decorative",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/sparkle-cluster.png",
+      "mimeType": "image/png",
+      "sha256": "341a9557c374bc27ab6ff709a739b05f975170d915dc9df3905c79d6572e1439",
+      "bytes": 25404
+    },
+    {
+      "id": "sticker-curved-arrow",
+      "kind": "sticker",
+      "name": "Look Here",
+      "category": "Arrows",
+      "tags": [
+        "arrows",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/curved-arrow.png",
+      "mimeType": "image/png",
+      "sha256": "2a6087f67c47a20c47d22bfa129db168fd3ad3f8fa1dd3434e16afd4841fa75a",
+      "bytes": 20403
+    },
+    {
+      "id": "sticker-brush-underline",
+      "kind": "sticker",
+      "name": "Mint Underline",
+      "category": "Decorative",
+      "tags": [
+        "decorative",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/brush-underline.png",
+      "mimeType": "image/png",
+      "sha256": "b4bbd6dae5bcf9ac0655a5815aef7a2a1a33db3f5ffedd5818092f140804928c",
+      "bytes": 17224
+    },
+    {
+      "id": "sticker-sale-burst",
+      "kind": "sticker",
+      "name": "Sale Burst",
+      "category": "Labels",
+      "tags": [
+        "labels",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/sale-burst.png",
+      "mimeType": "image/png",
+      "sha256": "39323e1effc7b3e58c20309b09f17e3c91ed345f33f40f0238a8f02a7d51e3d9",
+      "bytes": 33495
+    },
+    {
+      "id": "sticker-subscribe-pill",
+      "kind": "sticker",
+      "name": "Subscribe Pill",
+      "category": "Social",
+      "tags": [
+        "social",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/subscribe-pill.png",
+      "mimeType": "image/png",
+      "sha256": "1d4db531843a7f31a711bb6e629ae456b4ce02d159f3e880327bc95d399f0a76",
+      "bytes": 19897
+    },
+    {
+      "id": "sticker-tape-note",
+      "kind": "sticker",
+      "name": "Little Note",
+      "category": "Labels",
+      "tags": [
+        "labels",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/tape-note.png",
+      "mimeType": "image/png",
+      "sha256": "652fae3663c1971ed5ebce290b5e41cd2da8881a5957fcfc0f4d84bb4c1f5209",
+      "bytes": 23957
+    },
+    {
+      "id": "sticker-chat-bubble",
+      "kind": "sticker",
+      "name": "Say Something",
+      "category": "Social",
+      "tags": [
+        "social",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/chat-bubble.png",
+      "mimeType": "image/png",
+      "sha256": "33f7cc6db5613ac415a3d60743b3922787773e6a0aa9e6f362bfc411038fe7f1",
+      "bytes": 10465
+    },
+    {
+      "id": "sticker-heart-pop",
+      "kind": "sticker",
+      "name": "Coral Heart",
+      "category": "Reactions",
+      "tags": [
+        "reactions",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/heart-pop.png",
+      "mimeType": "image/png",
+      "sha256": "8f5b5469432b7c0e72dd98d92556c83bc6653001126dcb040092bfa300792a82",
+      "bytes": 26444
+    },
+    {
+      "id": "sticker-focus-ring",
+      "kind": "sticker",
+      "name": "Focus Ring",
+      "category": "Arrows",
+      "tags": [
+        "arrows",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/focus-ring.png",
+      "mimeType": "image/png",
+      "sha256": "e5e5e67c5235688371864157ec8ff94c0107cadb99c5663edc53c60a44d4826c",
+      "bytes": 37364
+    },
+    {
+      "id": "sticker-confetti-pop",
+      "kind": "sticker",
+      "name": "Confetti Pop",
+      "category": "Celebration",
+      "tags": [
+        "celebration",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/confetti-pop.png",
+      "mimeType": "image/png",
+      "sha256": "c0c3bb4c767852436c050e952ad53b83335c6afa69a03a277d8150692ec6075b",
+      "bytes": 36377
+    },
+    {
+      "id": "sticker-location-pin",
+      "kind": "sticker",
+      "name": "On Location",
+      "category": "Travel",
+      "tags": [
+        "travel",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/location-pin.png",
+      "mimeType": "image/png",
+      "sha256": "4a2b99515379a4ccff64806843ca73ff6f998c1a2f4b03dfed675ec05c2527b1",
+      "bytes": 31209
+    },
+    {
+      "id": "sticker-check-seal",
+      "kind": "sticker",
+      "name": "All Good",
+      "category": "Reactions",
+      "tags": [
+        "reactions",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/check-seal.png",
+      "mimeType": "image/png",
+      "sha256": "f56b280bd3f2534555f3f889ab0a616676eb4be4ccf7b2f866177ba7d8dd781e",
+      "bytes": 35550
+    },
+    {
+      "id": "sticker-little-fire",
+      "kind": "sticker",
+      "name": "On Fire",
+      "category": "Reactions",
+      "tags": [
+        "reactions",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/little-fire.png",
+      "mimeType": "image/png",
+      "sha256": "13374421f7358853ddd2f3bfd244fba717e49a1a6c56663d04b7e1d5fd88dbe9",
+      "bytes": 27491
+    },
+    {
+      "id": "sticker-lightning-bolt",
+      "kind": "sticker",
+      "name": "Big Energy",
+      "category": "Decorative",
+      "tags": [
+        "decorative",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/lightning-bolt.png",
+      "mimeType": "image/png",
+      "sha256": "a4c913f9197ec6d63c2524c362f61dd57af6a2d6ba078671d1f5ba6dc8993bd4",
+      "bytes": 27288
+    },
+    {
+      "id": "sticker-play-badge",
+      "kind": "sticker",
+      "name": "Press Play",
+      "category": "Social",
+      "tags": [
+        "social",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/play-badge.png",
+      "mimeType": "image/png",
+      "sha256": "e024c854d0fd3ea603bdd5cdd35bcc0c989cf0dfc6a24ca063760b66164d1b1b",
+      "bytes": 29331
+    },
+    {
+      "id": "sticker-curious-eyes",
+      "kind": "sticker",
+      "name": "Curious Eyes",
+      "category": "Reactions",
+      "tags": [
+        "reactions",
+        "transparent",
+        "vector",
+        "original"
+      ],
+      "description": "Original vector art, supplied as a transparent 640 × 640 PNG.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "file": "stickers/curious-eyes.png",
+      "mimeType": "image/png",
+      "sha256": "66b527cf7048a0295b7b9f0c2a1056ab14276a06a6724045e6e3194e5ccaed10",
+      "bytes": 29844
+    },
+    {
+      "id": "font-inter",
+      "kind": "font",
+      "name": "Inter",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Inter Project Authors",
+      "fontFamily": "Inter",
+      "file": "fonts/inter/inter.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/inter",
+      "sourceFile": "Inter[opsz,wght].ttf",
+      "licenseFile": "fonts/inter/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+      "bytes": 876576
+    },
+    {
+      "id": "font-be-vietnam-pro",
+      "kind": "font",
+      "name": "Be Vietnam Pro",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Be Vietnam Pro Project Authors",
+      "fontFamily": "Be Vietnam Pro",
+      "file": "fonts/be-vietnam-pro/be-vietnam-pro.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/bevietnampro",
+      "sourceFile": "BeVietnamPro-Regular.ttf",
+      "licenseFile": "fonts/be-vietnam-pro/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "cd1ef6e9d7db28ad5cdb88a65ccbe693870e60d340b791f349d248342b4fe4c3",
+      "bytes": 132948
+    },
+    {
+      "id": "font-montserrat",
+      "kind": "font",
+      "name": "Montserrat",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Montserrat.Git Project Authors",
+      "fontFamily": "Montserrat",
+      "file": "fonts/montserrat/montserrat.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/montserrat",
+      "sourceFile": "Montserrat[wght].ttf",
+      "licenseFile": "fonts/montserrat/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "0f7b311b2f3279e4eef9b2f968bcdbab6e28f4daeb1f049f4f278a902bcd82f7",
+      "bytes": 744936
+    },
+    {
+      "id": "font-roboto",
+      "kind": "font",
+      "name": "Roboto",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Roboto Project Authors",
+      "fontFamily": "Roboto",
+      "file": "fonts/roboto/roboto.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/roboto",
+      "sourceFile": "Roboto[wdth,wght].ttf",
+      "licenseFile": "fonts/roboto/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "d7598e12c5dbef095ff8272cfc55da0250bd07fbdecbac8a530b9b277872a134",
+      "bytes": 488584
+    },
+    {
+      "id": "font-open-sans",
+      "kind": "font",
+      "name": "Open Sans",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Open Sans Project Authors",
+      "fontFamily": "Open Sans",
+      "file": "fonts/open-sans/open-sans.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/opensans",
+      "sourceFile": "OpenSans[wdth,wght].ttf",
+      "licenseFile": "fonts/open-sans/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "36643644f318a812aab2d2ed3bb98f8cf0872527f835fe9398d95fe6b9adb878",
+      "bytes": 532636
+    },
+    {
+      "id": "font-nunito",
+      "kind": "font",
+      "name": "Nunito",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Nunito Project Authors",
+      "fontFamily": "Nunito",
+      "file": "fonts/nunito/nunito.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/nunito",
+      "sourceFile": "Nunito[wght].ttf",
+      "licenseFile": "fonts/nunito/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "bb55a5ca5c2042335b3991af27c4d0705d0ef41cac6164ac737fd8f2a1e85207",
+      "bytes": 276932
+    },
+    {
+      "id": "font-nunito-sans",
+      "kind": "font",
+      "name": "Nunito Sans",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Nunito Sans Project Authors",
+      "fontFamily": "Nunito Sans",
+      "file": "fonts/nunito-sans/nunito-sans.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/nunitosans",
+      "sourceFile": "NunitoSans[YTLC,opsz,wdth,wght].ttf",
+      "licenseFile": "fonts/nunito-sans/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "f934d7142fb4784bf828da485b7dcbd90c0c80d514e9d49a5da0ed3a1ae2491d",
+      "bytes": 571240
+    },
+    {
+      "id": "font-quicksand",
+      "kind": "font",
+      "name": "Quicksand",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Quicksand Project Authors",
+      "fontFamily": "Quicksand",
+      "file": "fonts/quicksand/quicksand.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/quicksand",
+      "sourceFile": "Quicksand[wght].ttf",
+      "licenseFile": "fonts/quicksand/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "39c9b64223561f56aaff6062a6f04063c4fc86809ad6768722c06614d977e1cc",
+      "bytes": 124824
+    },
+    {
+      "id": "font-oswald",
+      "kind": "font",
+      "name": "Oswald",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Oswald Project Authors",
+      "fontFamily": "Oswald",
+      "file": "fonts/oswald/oswald.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/oswald",
+      "sourceFile": "Oswald[wght].ttf",
+      "licenseFile": "fonts/oswald/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "5b38c246e255a12f5712d640d56bcced0472466fc68983d2d0410ec0457c2817",
+      "bytes": 172088
+    },
+    {
+      "id": "font-barlow",
+      "kind": "font",
+      "name": "Barlow",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Barlow Project Authors",
+      "fontFamily": "Barlow",
+      "file": "fonts/barlow/barlow.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/barlow",
+      "sourceFile": "Barlow-Regular.ttf",
+      "licenseFile": "fonts/barlow/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "95aa02c7c43096e0dd44d787ba6216864a67157e402adab59b35572e0c1577ea",
+      "bytes": 104068
+    },
+    {
+      "id": "font-roboto-condensed",
+      "kind": "font",
+      "name": "Roboto Condensed",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "Google Inc.",
+      "fontFamily": "Roboto Condensed",
+      "file": "fonts/roboto-condensed/roboto-condensed.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/robotocondensed",
+      "sourceFile": "RobotoCondensed[wght].ttf",
+      "licenseFile": "fonts/roboto-condensed/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "dace262afcee68a5276f200d8026c57221735c0118ab5fda8c2c0d3dc409a8d0",
+      "bytes": 371616
+    },
+    {
+      "id": "font-bitter",
+      "kind": "font",
+      "name": "Bitter",
+      "category": "Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Bitter Project Authors",
+      "fontFamily": "Bitter",
+      "file": "fonts/bitter/bitter.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/bitter",
+      "sourceFile": "Bitter[wght].ttf",
+      "licenseFile": "fonts/bitter/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "ef2b9a711fb02f1e5823b34da1b7450e0fc76793b7d733a8b41006e24916d4a7",
+      "bytes": 328636
+    },
+    {
+      "id": "font-source-serif-4",
+      "kind": "font",
+      "name": "Source Serif 4",
+      "category": "Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "Adobe",
+      "fontFamily": "Source Serif 4",
+      "file": "fonts/source-serif-4/source-serif-4.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/sourceserif4",
+      "sourceFile": "SourceSerif4[opsz,wght].ttf",
+      "licenseFile": "fonts/source-serif-4/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+      "bytes": 1209508
+    },
+    {
+      "id": "font-lora",
+      "kind": "font",
+      "name": "Lora",
+      "category": "Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Lora Project Authors",
+      "fontFamily": "Lora",
+      "file": "fonts/lora/lora.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/lora",
+      "sourceFile": "Lora[wght].ttf",
+      "licenseFile": "fonts/lora/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "822a6621ccbe8d97d20ac88c1c41f5615c9c2c202eaa75f272cd452aac6475a7",
+      "bytes": 212196
+    },
+    {
+      "id": "font-merriweather",
+      "kind": "font",
+      "name": "Merriweather",
+      "category": "Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Merriweather Project Authors",
+      "fontFamily": "Merriweather",
+      "file": "fonts/merriweather/merriweather.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/merriweather",
+      "sourceFile": "Merriweather[opsz,wdth,wght].ttf",
+      "licenseFile": "fonts/merriweather/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "d0ed0e359e396af7ad05e73dffd11a3a4c326ea0d0283c56bd9361cb2cc86a96",
+      "bytes": 4628080
+    },
+    {
+      "id": "font-playfair-display",
+      "kind": "font",
+      "name": "Playfair Display",
+      "category": "Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Playfair Display Project Authors",
+      "fontFamily": "Playfair Display",
+      "file": "fonts/playfair-display/playfair-display.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/playfairdisplay",
+      "sourceFile": "PlayfairDisplay[wght].ttf",
+      "licenseFile": "fonts/playfair-display/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "c40f2293766a503bc70cce9e512ef844a4ccb7cbcde792fe2ea31d191917d8d6",
+      "bytes": 300724
+    },
+    {
+      "id": "font-noto-serif",
+      "kind": "font",
+      "name": "Noto Serif",
+      "category": "Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Noto Project Authors",
+      "fontFamily": "Noto Serif",
+      "file": "fonts/noto-serif/noto-serif.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/notoserif",
+      "sourceFile": "NotoSerif[wdth,wght].ttf",
+      "licenseFile": "fonts/noto-serif/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "4d8e6761424656867019081a1a01336f3cb086982682698714054fc33f782713",
+      "bytes": 1887192
+    },
+    {
+      "id": "font-noto-sans",
+      "kind": "font",
+      "name": "Noto Sans",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Noto Project Authors",
+      "fontFamily": "Noto Sans",
+      "file": "fonts/noto-sans/noto-sans.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/notosans",
+      "sourceFile": "NotoSans[wdth,wght].ttf",
+      "licenseFile": "fonts/noto-sans/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+      "bytes": 2049096
+    },
+    {
+      "id": "font-fira-sans",
+      "kind": "font",
+      "name": "Fira Sans",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Mozilla Foundation and Telefonica S.A.",
+      "fontFamily": "Fira Sans",
+      "file": "fonts/fira-sans/fira-sans.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/firasans",
+      "sourceFile": "FiraSans-Regular.ttf",
+      "licenseFile": "fonts/fira-sans/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "c29556a2719bf613ef3d5e070e40d903a8965d9c081beca1375dc1e6e0f93c23",
+      "bytes": 456996
+    },
+    {
+      "id": "font-pacifico",
+      "kind": "font",
+      "name": "Pacifico",
+      "category": "Handwriting",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "handwriting",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Pacifico Project Authors",
+      "fontFamily": "Pacifico",
+      "file": "fonts/pacifico/pacifico.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/pacifico",
+      "sourceFile": "Pacifico-Regular.ttf",
+      "licenseFile": "fonts/pacifico/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "5b6c0d5334a7bf77dea52b975c5a0c408878c0f7115ed5b6fb151f634b7bf701",
+      "bytes": 329380
+    },
+    {
+      "id": "font-lobster",
+      "kind": "font",
+      "name": "Lobster",
+      "category": "Display",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "display",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Lobster Project Authors",
+      "fontFamily": "Lobster",
+      "file": "fonts/lobster/lobster.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/lobster",
+      "sourceFile": "Lobster-Regular.ttf",
+      "licenseFile": "fonts/lobster/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "d6568e697fd50cedc0be04d8aae4127fe95add607e7bff954ca88604be80c205",
+      "bytes": 406076
+    },
+    {
+      "id": "font-bangers",
+      "kind": "font",
+      "name": "Bangers",
+      "category": "Display",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "display",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Bangers Project Authors",
+      "fontFamily": "Bangers",
+      "file": "fonts/bangers/bangers.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/bangers",
+      "sourceFile": "Bangers-Regular.ttf",
+      "licenseFile": "fonts/bangers/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "4160a7311de9342674cce9160cde9fcbb30f48190397d86ff1b70b455af65824",
+      "bytes": 93148
+    },
+    {
+      "id": "font-chakra-petch",
+      "kind": "font",
+      "name": "Chakra Petch",
+      "category": "Sans Serif",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "sans serif",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "The Chakra Petch Project Authors",
+      "fontFamily": "Chakra Petch",
+      "file": "fonts/chakra-petch/chakra-petch.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/chakrapetch",
+      "sourceFile": "ChakraPetch-Regular.ttf",
+      "licenseFile": "fonts/chakra-petch/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "98fcd638baa5c81ff0316b7538ce330ee3b23b1302726de3526d5933a8ecf986",
+      "bytes": 78488
+    },
+    {
+      "id": "font-patrick-hand",
+      "kind": "font",
+      "name": "Patrick Hand",
+      "category": "Handwriting",
+      "tags": [
+        "vietnamese",
+        "latin",
+        "handwriting",
+        "ofl"
+      ],
+      "description": "Full, unmodified font with Vietnamese characters; bundled SIL Open Font License.",
+      "license": "OFL-1.1",
+      "author": "Patrick Wagesreiter",
+      "fontFamily": "Patrick Hand",
+      "file": "fonts/patrick-hand/patrick-hand.ttf",
+      "mimeType": "font/ttf",
+      "source": "https://github.com/google/fonts/tree/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/patrickhand",
+      "sourceFile": "PatrickHand-Regular.ttf",
+      "licenseFile": "fonts/patrick-hand/OFL.txt",
+      "sourceCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "sha256": "0f173b3e6cb6d1af25babf7f0057c5ac4ee11f9992b0469bb817e967ef4ad0fc",
+      "bytes": 214772
+    },
+    {
+      "id": "template-editorial-title",
+      "kind": "template",
+      "name": "Editorial Opening",
+      "category": "Titles",
+      "tags": [
+        "title",
+        "fade",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Câu chuyện bắt đầu",
+        "subtitle": "Một góc nhìn mới",
+        "accent": "#ffd866",
+        "fontFamily": "Be Vietnam Pro",
+        "duration": 5,
+        "placement": "title",
+        "animation": "fade"
+      }
+    },
+    {
+      "id": "template-bold-hook",
+      "kind": "template",
+      "name": "Bold Hook",
+      "category": "Titles",
+      "tags": [
+        "title",
+        "pop",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "DỪNG LẠI MỘT CHÚT",
+        "subtitle": "Điều này đáng để xem",
+        "accent": "#ff8069",
+        "fontFamily": "Montserrat",
+        "duration": 4,
+        "placement": "title",
+        "animation": "pop"
+      }
+    },
+    {
+      "id": "template-minimal-heading",
+      "kind": "template",
+      "name": "Minimal Heading",
+      "category": "Titles",
+      "tags": [
+        "title",
+        "slide",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "A little everyday magic",
+        "subtitle": "Stories worth keeping",
+        "accent": "#86d8c6",
+        "fontFamily": "Inter",
+        "duration": 5,
+        "placement": "title",
+        "animation": "slide"
+      }
+    },
+    {
+      "id": "template-chapter-card",
+      "kind": "template",
+      "name": "Chapter Card",
+      "category": "Titles",
+      "tags": [
+        "title",
+        "fade",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "01 / KHỞI ĐẦU",
+        "subtitle": "Từ ý tưởng đến hành động",
+        "accent": "#94b9ff",
+        "fontFamily": "Roboto",
+        "duration": 4,
+        "placement": "title",
+        "animation": "fade"
+      }
+    },
+    {
+      "id": "template-creator-name",
+      "kind": "template",
+      "name": "Creator Introduction",
+      "category": "Lower thirds",
+      "tags": [
+        "lower-third",
+        "slide",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Nguyễn Minh Anh",
+        "subtitle": "Nhà sáng tạo nội dung",
+        "accent": "#ffd866",
+        "fontFamily": "Be Vietnam Pro",
+        "duration": 6,
+        "placement": "lower-third",
+        "animation": "slide"
+      }
+    },
+    {
+      "id": "template-expert-name",
+      "kind": "template",
+      "name": "Expert Lower Third",
+      "category": "Lower thirds",
+      "tags": [
+        "lower-third",
+        "fade",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Lê Hoàng Nam",
+        "subtitle": "Chia sẻ kinh nghiệm thực tế",
+        "accent": "#86d8c6",
+        "fontFamily": "Inter",
+        "duration": 6,
+        "placement": "lower-third",
+        "animation": "fade"
+      }
+    },
+    {
+      "id": "template-location-caption",
+      "kind": "template",
+      "name": "Location Caption",
+      "category": "Lower thirds",
+      "tags": [
+        "lower-third",
+        "slide",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Đà Lạt, Việt Nam",
+        "subtitle": "Một buổi sáng rất khác",
+        "accent": "#ff8069",
+        "fontFamily": "Montserrat",
+        "duration": 5,
+        "placement": "lower-third",
+        "animation": "slide"
+      }
+    },
+    {
+      "id": "template-thank-you",
+      "kind": "template",
+      "name": "Thank You Outro",
+      "category": "Outros",
+      "tags": [
+        "outro",
+        "fade",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Cảm ơn bạn đã xem",
+        "subtitle": "Hẹn gặp ở câu chuyện tiếp theo",
+        "accent": "#ffd866",
+        "fontFamily": "Be Vietnam Pro",
+        "duration": 5,
+        "placement": "outro",
+        "animation": "fade"
+      }
+    },
+    {
+      "id": "template-follow-along",
+      "kind": "template",
+      "name": "Follow Along",
+      "category": "Outros",
+      "tags": [
+        "outro",
+        "pop",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "HẸN GẶP LẠI!",
+        "subtitle": "Theo dõi để xem những điều mới",
+        "accent": "#ff8069",
+        "fontFamily": "Montserrat",
+        "duration": 5,
+        "placement": "outro",
+        "animation": "pop"
+      }
+    },
+    {
+      "id": "template-brand-signoff",
+      "kind": "template",
+      "name": "Brand Sign-off",
+      "category": "Outros",
+      "tags": [
+        "outro",
+        "slide",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Made with a little care",
+        "subtitle": "Your next story starts here",
+        "accent": "#86d8c6",
+        "fontFamily": "Inter",
+        "duration": 5,
+        "placement": "outro",
+        "animation": "slide"
+      }
+    },
+    {
+      "id": "template-product-launch",
+      "kind": "template",
+      "name": "Product Launch",
+      "category": "Titles",
+      "tags": [
+        "title",
+        "pop",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Sản phẩm mới ra mắt",
+        "subtitle": "Khám phá điều làm nên khác biệt",
+        "accent": "#ff8069",
+        "fontFamily": "Be Vietnam Pro",
+        "duration": 5,
+        "placement": "title",
+        "animation": "pop"
+      }
+    },
+    {
+      "id": "template-feature-focus",
+      "kind": "template",
+      "name": "Feature Focus",
+      "category": "Titles",
+      "tags": [
+        "title",
+        "slide",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Chi tiết tạo khác biệt",
+        "subtitle": "Thiết kế cho điều bạn cần",
+        "accent": "#86d8c6",
+        "fontFamily": "Be Vietnam Pro",
+        "duration": 4,
+        "placement": "title",
+        "animation": "slide"
+      }
+    },
+    {
+      "id": "template-product-caption",
+      "kind": "template",
+      "name": "Product Caption",
+      "category": "Lower thirds",
+      "tags": [
+        "lower-third",
+        "slide",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Tên sản phẩm",
+        "subtitle": "Thêm đặc điểm nổi bật tại đây",
+        "accent": "#94b9ef",
+        "fontFamily": "Be Vietnam Pro",
+        "duration": 5,
+        "placement": "lower-third",
+        "animation": "slide"
+      }
+    },
+    {
+      "id": "template-creator-tip",
+      "kind": "template",
+      "name": "Creator Tip",
+      "category": "Lower thirds",
+      "tags": [
+        "lower-third",
+        "fade",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Mẹo nhỏ dành cho bạn",
+        "subtitle": "Lưu lại để thử khi cần",
+        "accent": "#ffd866",
+        "fontFamily": "Be Vietnam Pro",
+        "duration": 5,
+        "placement": "lower-third",
+        "animation": "fade"
+      }
+    },
+    {
+      "id": "template-shop-callout",
+      "kind": "template",
+      "name": "Shop Callout",
+      "category": "Outros",
+      "tags": [
+        "outro",
+        "pop",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Khám phá bộ sưu tập",
+        "subtitle": "Xem thêm tại cửa hàng của bạn",
+        "accent": "#ff8069",
+        "fontFamily": "Be Vietnam Pro",
+        "duration": 4,
+        "placement": "outro",
+        "animation": "pop"
+      }
+    },
+    {
+      "id": "template-contact-card",
+      "kind": "template",
+      "name": "Contact Card",
+      "category": "Outros",
+      "tags": [
+        "outro",
+        "fade",
+        "editable",
+        "original"
+      ],
+      "description": "Editable text, font, accent and timing. Vietnamese-ready starter copy.",
+      "license": "CC0-1.0",
+      "author": "Video Space Lab (original procedural collection)",
+      "template": {
+        "title": "Kết nối với chúng tôi",
+        "subtitle": "Thêm website hoặc thông tin liên hệ",
+        "accent": "#94b9ef",
+        "fontFamily": "Be Vietnam Pro",
+        "duration": 5,
+        "placement": "outro",
+        "animation": "fade"
+      }
+    }
+  ]
+}

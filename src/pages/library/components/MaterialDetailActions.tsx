@@ -1,131 +1,202 @@
-import { useState } from "react";
-import type { Ref } from "react";
 import { useTranslation } from "react-i18next";
-import { FolderPlus, Pencil, Stamp, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  Download,
+  RotateCcw,
+  Sparkles,
+  Stamp,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useWorkspaceStore } from "@/store/workspaceStore";
-import { MaterialUploadForm } from "@/pages/library/components/MaterialUploadForm";
-import { WatermarkStudioModal } from "@/pages/library/components/watermark/WatermarkStudioModal";
-import { DownloadFormatDropdown } from "@/components/common/DownloadFormatDropdown";
-import type { DownloadFormat } from "@/utils/mediaDownloadHelper";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { MaterialItem } from "@/types/material";
 
-interface Props {
-  material: MaterialItem;
-  quotaExceeded?: boolean;
-  downloading?: boolean;
-  editRef: Ref<HTMLButtonElement>;
-  onDownload?: (format?: DownloadFormat) => void;
-  onPromote?: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
-  onChanged: () => void;
-}
+const RASTER_DOWNLOAD_FORMATS = ["png", "jpg", "webp"] as const;
 
 export function MaterialDetailActions({
   material,
-  quotaExceeded,
-  downloading = false,
-  editRef,
+  canDelete,
+  canPermanentDelete,
+  canRestore,
+  canPromoteDraft,
+  busy,
   onDownload,
-  onPromote,
-  onEdit,
+  onWatermark,
   onDelete,
-  onChanged,
-}: Props) {
+  onPermanentDelete,
+  onRestore,
+  onPromoteDraft,
+}: {
+  material: MaterialItem;
+  previewUrl?: string;
+  canDelete: boolean;
+  canPermanentDelete?: boolean;
+  canRestore: boolean;
+  canPromoteDraft?: boolean;
+  busy: boolean;
+  onDownload: (format?: string) => void;
+  onWatermark: (material: MaterialItem) => void;
+  onDelete: (material: MaterialItem) => void;
+  onPermanentDelete?: (material: MaterialItem) => void;
+  onRestore: (material: MaterialItem) => void;
+  onPromoteDraft?: (material: MaterialItem) => void;
+}) {
   const { t } = useTranslation();
-  const role = useWorkspaceStore((state) => state.currentMemberRole);
-  const [watermark, setWatermark] = useState(false);
-  const [retouch, setRetouch] = useState(false);
-  const label = (key: string) => t(`library.repository.${key}`);
-  const canEdit =
-    material.capabilities?.canRename ||
-    material.capabilities?.canUpdateType ||
-    material.capabilities?.canChangeAudience;
+  const isImage =
+    material.mediaKind === "IMAGE" || material.mimeType?.startsWith("image/");
+  const isRasterConvertible =
+    isImage && material.mimeType?.toLowerCase() !== "image/svg+xml";
+  const isDeleted = Boolean(material.deletedAt);
+  const isPurging = material.status === "PURGE_IN_PROGRESS";
+  const isDraft = Boolean(material.draft);
+
   return (
-    <>
-      <div className="flex flex-wrap gap-2">
-        {material.status === "READY" &&
-          material.capabilities?.canDownload &&
-          onDownload && (
-            <DownloadFormatDropdown
-              mediaKind={material.mediaKind || "IMAGE"}
-              variant="default"
-              size="default"
-              disabled={downloading}
-              label={label(downloading ? "preparingDownload" : "download")}
-              onSelectFormat={(format) => onDownload(format)}
-            />
-          )}
-        {material.draft && onPromote && (
-          <Button variant="secondary" onClick={onPromote}>
-            <FolderPlus className="size-4" />
-            {t("library.trash.promoteToLibrary")}
-          </Button>
-        )}
-        {canEdit && (
-          <Button ref={editRef} variant="outline" onClick={onEdit}>
-            <Pencil />
-            {label("editMetadata")}
-          </Button>
-        )}
-        {material.capabilities?.canWatermark && (
-          <Button
-            variant="outline"
-            disabled={quotaExceeded}
-            onClick={() => setWatermark(true)}
-          >
-            <Stamp />
-            {label("watermark")}
-          </Button>
-        )}
-        {material.capabilities?.canDelete && (
-          <Button variant="destructive" onClick={onDelete}>
-            <Trash2 />
-            {t("library.trash.moveToTrash")}
-          </Button>
-        )}
-        {role === "CREATOR" &&
-          material.type === "RAW" &&
-          material.status === "READY" && (
+    <div
+      data-slot="material-detail-footer"
+      className="shrink-0 border-t border-border/80 bg-card/95 px-5 py-3.5 backdrop-blur-xs"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {!isDeleted && !isPurging && !isRasterConvertible && (
             <Button
-              variant="outline"
-              disabled={quotaExceeded}
-              onClick={() => setRetouch(!retouch)}
+              type="button"
+              size="sm"
+              disabled={busy}
+              onClick={() => onDownload()}
+              className="h-9 rounded-xl bg-brand-orange px-4 text-xs font-semibold text-white shadow-2xs hover:bg-brand-orange/90"
             >
-              {label("uploadRetouched")}
+              <Download className="mr-1.5 h-3.5 w-3.5" />
+              {t("common.download", "Tải xuống")}
             </Button>
           )}
+
+          {!isDeleted && !isPurging && isRasterConvertible && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={busy}
+                  className="h-9 rounded-xl bg-brand-orange px-3.5 text-xs font-semibold text-white shadow-2xs hover:bg-brand-orange/90"
+                >
+                  <Download className="mr-1.5 h-3.5 w-3.5" />
+                  <span>{t("common.download", "Tải xuống")}</span>
+                  <ChevronDown className="ml-1 h-3.5 w-3.5 opacity-85" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="rounded-xl">
+                <DropdownMenuItem
+                  onSelect={() => onDownload()}
+                  className="text-xs font-medium text-foreground focus:bg-brand-orange/10 focus:text-brand-orange"
+                >
+                  {t("library.repository.download.original", "Định dạng gốc")}
+                </DropdownMenuItem>
+                {RASTER_DOWNLOAD_FORMATS.map((fmt) => (
+                  <DropdownMenuItem
+                    key={fmt}
+                    onSelect={() => onDownload(fmt)}
+                    className="text-xs font-medium text-foreground focus:bg-brand-orange/10 focus:text-brand-orange"
+                  >
+                    {t(
+                      `library.repository.download.${fmt}`,
+                      `Tải bản .${fmt.toUpperCase()}`,
+                    )}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+
+          {!isDeleted &&
+            !isPurging &&
+            isDraft &&
+            canPromoteDraft &&
+            onPromoteDraft && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={() => onPromoteDraft(material)}
+                className="h-9 rounded-xl border-brand-orange/40 bg-brand-orange/10 px-3 text-xs font-semibold text-brand-orange hover:bg-brand-orange hover:text-white"
+              >
+                <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+                {t(
+                  "library.repository.actions.saveToLibrary",
+                  "Lưu vào kho chính",
+                )}
+              </Button>
+            )}
+
+          {!isDeleted && !isPurging && isImage && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => onWatermark(material)}
+              className="h-9 rounded-xl px-3 text-xs font-semibold text-foreground hover:border-brand-orange/50 hover:bg-brand-orange/10 hover:text-brand-orange"
+            >
+              <Stamp className="mr-1.5 h-3.5 w-3.5" />
+              {t("library.media.watermarkAction", "Watermark")}
+            </Button>
+          )}
+
+          {isDeleted && !isPurging && canRestore && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={busy}
+              onClick={() => onRestore(material)}
+              className="h-9 rounded-xl px-3.5 text-xs font-semibold text-foreground hover:border-brand-orange/50 hover:bg-brand-orange/10 hover:text-brand-orange"
+            >
+              <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+              {t("library.repository.actions.restore", "Khôi phục")}
+            </Button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          {!isDeleted && !isPurging && canDelete && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={busy}
+              onClick={() => onDelete(material)}
+              className="h-9 rounded-xl border-destructive/30 bg-destructive/5 px-3 text-xs font-semibold text-destructive hover:border-destructive hover:bg-destructive hover:text-white"
+            >
+              <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+              {t("library.repository.actions.moveToTrash", "Thùng rác")}
+            </Button>
+          )}
+
+          {isDeleted &&
+            !isPurging &&
+            canPermanentDelete &&
+            onPermanentDelete && (
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                disabled={busy}
+                onClick={() => onPermanentDelete(material)}
+                className="h-9 rounded-xl px-3.5 text-xs font-semibold text-white"
+              >
+                <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+                {t(
+                  "library.repository.actions.permanentDelete",
+                  "Xoá vĩnh viễn",
+                )}
+              </Button>
+            )}
+        </div>
       </div>
-      {retouch && (
-        <MaterialUploadForm
-          workspaceId={material.workspaceId}
-          isClient={false}
-          initialOptions={{
-            type: "RETOUCHED",
-            parentMaterialId: material.id,
-            visibility: material.visibility,
-            clientProfileId: material.clientProfileId,
-          }}
-          onSuccess={() => {
-            setRetouch(false);
-            onChanged();
-          }}
-          onClose={() => setRetouch(false)}
-        />
-      )}
-      {watermark && (
-        <WatermarkStudioModal
-          isOpen
-          onClose={() => setWatermark(false)}
-          workspaceId={material.workspaceId}
-          material={{ ...material, url: material.previewUrl ?? "" }}
-          onSuccess={() => {
-            setWatermark(false);
-            onChanged();
-          }}
-        />
-      )}
-    </>
+    </div>
   );
 }

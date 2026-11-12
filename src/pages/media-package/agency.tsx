@@ -75,7 +75,6 @@ export default function AgencyMediaPackagePage() {
 
   return (
     <PageWrapper
-      hideBanner
       hideHeader={createFormOpen}
       className={createFormOpen ? "p-2 pb-2 md:p-3 md:pb-3" : undefined}
       title={t("mediaPackage.agencyPage.title")}

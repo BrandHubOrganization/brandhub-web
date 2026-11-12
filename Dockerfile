@@ -1,7 +1,9 @@
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 COPY package*.json .
-RUN npm ci
+COPY vendor/video-space/package.json ./vendor/video-space/package.json
+# This build targets browsers and does not need optional ONNX Node binary downloads.
+RUN npm ci --ignore-scripts
 COPY . .
 RUN npm run build
 

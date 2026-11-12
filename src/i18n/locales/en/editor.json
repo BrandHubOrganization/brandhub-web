@@ -39,7 +39,7 @@
     "title": "Content Writing",
     "loadFailed": "Unable to load content. Please try again.",
     "connectionFailed": "Unable to connect sync. Your edits are kept on this page.",
-    "description": "Google-Docs-style canvas editor — core rendering preview (FR 3.6.10)."
+    "description": "Agency-standard visual canvas text editor — rich formatting and real-time synchronization."
   },
   "emojiPicker": {
     "search": "Search emoji (English)…",
@@ -165,7 +165,15 @@
     },
     "video": {
       "title": "AI Video Assistant",
-      "subtitle": "Generate AI motion video from 1 reference image and 1 reference video",
+      "subtitle": "Generate video from an image and prompt, or use a motion reference video",
+      "generationMode": "Generation mode",
+      "imagePromptMode": "Image + prompt",
+      "referenceMode": "Image + reference video",
+      "promptHint": "Keep the same perfume bottle, change the background to a forest-green studio and slowly push the camera in...",
+      "promptTooShort": "Describe the image edit and motion using at least 10 characters.",
+      "aspectRatioLabel": "Aspect ratio",
+      "portrait": "Portrait 9:16",
+      "landscape": "Landscape 16:9",
       "briefLabel": "Video brief",
       "briefPlaceholder": "Describe the campaign video, key message, and target audience...",
       "briefRequired": "Please enter a video brief.",
@@ -211,7 +219,11 @@
       "eightSecondNotice": "Output video duration automatically matches the reference video duration.",
       "status": "Status: {{status}}",
       "applyButton": "Add video to post",
-      "generateFailed": "Could not generate the video. Check the ai-worker-video configuration and try again."
+      "generateFailed": "Could not generate the video. Check the ai-worker-video configuration and try again.",
+      "characterLabel": "Character image (optional, 20-second video)",
+      "removeCharacter": "Remove character image",
+      "reviewModeHint": "With a character image: create a scripted product review.",
+      "cinematicModeHint": "Without a character image: create a cinematic product film. An LTX worker connection is required."
     },
     "preview": {
       "title": "Live Preview",
@@ -403,6 +415,27 @@
     "dragDropText": "Drag & drop images/videos here or",
     "browseText": "browse from your computer",
     "supportedFormats": "Supports JPG, PNG, GIF, MP4 (up to 50MB)",
+    "tabs": {
+      "upload": "Upload from Device",
+      "repository": "Media Repository"
+    },
+    "repository": {
+      "searchPlaceholder": "Search media...",
+      "categoryAll": "All",
+      "categoryImage": "Images",
+      "categoryVideo": "Videos",
+      "categoryFile": "Documents",
+      "sortNewest": "Newest",
+      "sortOldest": "Oldest",
+      "sortNameAsc": "Name A-Z",
+      "sortNameDesc": "Name Z-A",
+      "empty": "No media found in repository",
+      "emptySearch": "No media matches the search term",
+      "emptySubtext": "Upload new media or try another search",
+      "videoBadge": "Video"
+    },
+    "selectedMedia": "Selected Media",
+    "removeMedia": "Remove media",
     "applyWatermark": "Apply watermark"
   },
   "richText": {
@@ -573,7 +606,7 @@
       "emotion": "Reads as: {{label}} {{value}}%",
       "trend": "Uses the trend",
       "claims": "Please confirm: {{claims}} is not in the topic or brand facts.",
-      "complianceHint": "The content compliance check (FR 3.6.33) will run here once it is connected."
+      "complianceHint": "Automated compliance and policy violation scanner will run before publishing."
     },
     "compliance": {
       "NOT_CHECKED": "Compliance not checked",

@@ -11,6 +11,7 @@ import { AdminMobileNavigation } from "@/components/layout/AdminSidebar";
 import { Navbar } from "./Navbar";
 import { PageFallback } from "./PageFallback";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { BackgroundTaskDock } from "@/components/common/BackgroundTaskDock";
 import {
   Sheet,
   SheetContent,
@@ -23,7 +24,6 @@ import {
   FileEdit,
   CalendarDays,
   Users,
-  BarChart3,
   MessageCircleMore,
   PackageCheck,
 } from "lucide-react";
@@ -43,7 +43,6 @@ const MOBILE_TABS = [
     labelKey: "nav.chat",
     workspaceScoped: true,
   },
-  { to: "/analytics", icon: BarChart3, labelKey: "nav.analytics" },
   {
     to: "/editor",
     icon: FileEdit,
@@ -74,6 +73,9 @@ export function Layout() {
       location.pathname,
     );
   const packageWorkspaceLayout = /^\/workspaces\/[^/]+\/media-package\/?$/.test(
+    location.pathname,
+  );
+  const videoWorkspaceLayout = /^\/workspaces\/[^/]+\/video-space\/?$/.test(
     location.pathname,
   );
   const user = useAuthStore((s) => s.user);
@@ -298,7 +300,7 @@ export function Layout() {
       </aside>
 
       {/* ── MAIN CONTENT CONTAINER ── */}
-      <div className="relative flex min-w-0 flex-1 w-full flex-col overflow-hidden">
+      <div className="relative flex w-full min-w-0 flex-1 flex-col overflow-hidden">
         <Navbar
           collapsed={collapsed}
           toggleCollapsed={toggleCollapsed}
@@ -336,7 +338,7 @@ export function Layout() {
 
         {/* Page Content Outlet */}
         <main
-          className={`bg-background flex-1 w-full min-w-0 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
+          className={`bg-background w-full min-w-0 flex-1 pb-16 md:pb-0 ${taskWorkspaceLayout || packageWorkspaceLayout || videoWorkspaceLayout ? "min-h-0 overflow-hidden" : "overflow-y-auto"}`}
         >
           {location.pathname !== "/help/faq" && (
             <SeoHead noindex canonicalPath={location.pathname} />
@@ -345,6 +347,7 @@ export function Layout() {
             <Outlet />
           </React.Suspense>
         </main>
+        <BackgroundTaskDock />
       </div>
 
       {/* ── BOTTOM TAB BAR (MOBILE ONLY <= 768px) ── */}

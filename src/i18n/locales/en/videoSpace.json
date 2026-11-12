@@ -1,0 +1,23 @@
+{
+  "title": "Video Space",
+  "backToVideo": "Back to Video AI",
+  "loading": "Opening the video editor…",
+  "loadError": "The video editor could not load. Please try again.",
+  "retry": "Try again",
+  "noWorkspace": "Select a workspace to open Video Space.",
+  "frameTitle": "BrandHub video editor",
+  "unsupportedBrowser": "Use Chrome or Edge on a computer to edit videos.",
+  "sessionExpired": "Your session has expired. Please sign in again.",
+  "requestFailed": "Could not connect to Video Space. Please try again.",
+  "draftSaveFailed": "The draft could not be saved. Please try again before leaving.",
+  "conflict": "This project changed in another session. Reopen the latest version before saving.",
+  "uploadFailed": "The asset could not be uploaded. Please try again.",
+  "quotaExceeded": "This workspace has insufficient storage for this asset.",
+  "projectUnavailable": "This project or asset is not available in the workspace.",
+  "sourceUnavailable": "This video is not ready or you do not have access to it.",
+  "invalidMedia": "This asset format is not supported.",
+  "requestDenied": "You do not have permission to access this asset.",
+  "snapshotInvalid": "The project data is not valid for saving.",
+  "fileTooLarge": "The asset exceeds the size limit. Each file can be up to 128 MB.",
+  "description": "Edit video, text and audio in your workspace."
+}

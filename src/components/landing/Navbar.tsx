@@ -156,6 +156,17 @@ export function Navbar() {
               {t(link.labelKey)}
             </a>
           ))}
+          <Link
+            to="/blog"
+            className={cn(
+              "cursor-pointer rounded-md px-3 py-2 text-sm font-semibold transition-colors",
+              scrolledPastHero
+                ? "text-zinc-600 hover:bg-zinc-100 hover:text-brand-orange dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-brand-orange"
+                : "text-zinc-200 hover:bg-white/10 hover:text-white",
+            )}
+          >
+            Blog
+          </Link>
         </div>
 
         <div className="flex items-center gap-1.5">
@@ -255,6 +266,13 @@ export function Navbar() {
                 {t(link.labelKey)}
               </a>
             ))}
+            <Link
+              to="/blog"
+              onClick={() => setMobileOpen(false)}
+              className="cursor-pointer rounded-md px-3 py-2.5 text-left text-sm font-semibold text-brand-orange hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            >
+              Blog &amp; Cẩm nang
+            </Link>
           </div>
           <div className="mt-3 flex items-center gap-2 border-t border-zinc-100 pt-3 dark:border-zinc-800">
             <button

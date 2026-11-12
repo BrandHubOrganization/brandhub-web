@@ -88,7 +88,16 @@ const WEEKDAY_NAMES_VI = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
  * Parse an ISO or local date string to local Date object taking timezone into account.
  */
 function parseValueToLocalDate(value?: string | null, timezone?: string): Date | null {
-  if (!value || !Number.isFinite(Date.parse(value))) return null;
+  if (!value) return null;
+  const trimmed = value.trim();
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(trimmed)) {
+    const [datePart, timePart] = trimmed.split(" ");
+    const [d, m, y] = datePart.split("/").map(Number);
+    const [h, min] = (timePart || "00:00").split(":").map(Number);
+    const parsedObj = new Date(y, m - 1, d, h || 0, min || 0);
+    if (isValid(parsedObj)) return parsedObj;
+  }
+  if (!Number.isFinite(Date.parse(value))) return null;
   if (timezone) {
     try {
       const localMin = taskLocalMinute(value, timezone);

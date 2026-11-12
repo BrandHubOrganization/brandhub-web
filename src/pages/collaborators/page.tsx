@@ -17,15 +17,23 @@ function Directory({ agencyId }: { agencyId: string }) {
   const [detail, setDetail] = useState<DirectoryPartner | null>(null);
   const [action, setAction] = useState<DirectoryAction | null>(null);
   async function confirm() {
-    if (action && await state.mutate(() => directoryService[action.kind](agencyId, action.partner))) setAction(null);
+    if (
+      action &&
+      (await state.mutate(() =>
+        directoryService[action.kind](agencyId, action.partner),
+      ))
+    ) {
+      setAction(null);
+    }
   }
   return <div className="space-y-5">
     <DirectoryFilters state={state} onCreate={() => setEditing(null)} />
     <DirectoryResults state={state} onDetail={setDetail} onEdit={setEditing}
       onAction={(partner, kind) => setAction({ partner, kind })} />
     {editing !== undefined && <PartnerForm partner={editing} busy={state.busy} onClose={() => setEditing(undefined)}
-      onSave={fields => state.mutate(() => editing ? directoryService.update(agencyId, editing, fields)
-        : directoryService.create(agencyId, fields))} />}
+      onSave={fields => state.mutate(() =>
+        editing ? directoryService.update(agencyId, editing, fields) : directoryService.create(agencyId, fields)
+      )} />}
     {detail && <PartnerDetails partner={detail} onClose={() => setDetail(null)} />}
     <PartnerAction action={action} busy={state.busy} onClose={() => setAction(null)} onConfirm={() => void confirm()} />
   </div>;
@@ -33,7 +41,7 @@ function Directory({ agencyId }: { agencyId: string }) {
 export default function DirectoryPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
-  return <PageWrapper hideBanner title={t("collaborators.title")} description={t("collaborators.description")}>
+  return <PageWrapper title={t("collaborators.title")} description={t("collaborators.description")}>
     {id && <Directory key={id} agencyId={id} />}
   </PageWrapper>;
 }

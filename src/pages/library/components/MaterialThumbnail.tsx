@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { AlertCircle, FileText, Film, ImageIcon, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { toRepositoryThumbnailUrl } from "./MaterialRepositoryCard";
 import type { MaterialItem } from "@/types/material";
 
 export function MaterialThumbnail({ material }: { material: MaterialItem }) {
   const { t } = useTranslation();
   const [failed, setFailed] = useState(false);
+  const thumbUrl = toRepositoryThumbnailUrl(material.previewUrl);
   // A new signed URL from polling does not change an already loaded thumbnail.
   // The card remounts us when the material revision/status changes. If a load
   // failed, allow the next fresh URL to recover it without refreshing the page.
-  const [source, setSource] = useState(material.previewUrl);
-  if (failed && source !== material.previewUrl) {
-    setSource(material.previewUrl);
+  const [source, setSource] = useState(thumbUrl);
+  if (failed && source !== thumbUrl) {
+    setSource(thumbUrl);
     setFailed(false);
   }
   const pending =
@@ -36,12 +38,13 @@ export function MaterialThumbnail({ material }: { material: MaterialItem }) {
           )}
         </div>
       ) : ready &&
-        material.previewUrl &&
+        thumbUrl &&
         !failed &&
         material.mediaKind === "IMAGE" ? (
         <img
           src={source}
           loading="lazy"
+          decoding="async"
           alt={material.name}
           className="size-full object-cover"
           onError={() => setFailed(true)}
@@ -51,8 +54,8 @@ export function MaterialThumbnail({ material }: { material: MaterialItem }) {
         !failed &&
         material.mediaKind === "VIDEO" ? (
         <video
-          src={source}
-          preload="metadata"
+          src={material.previewUrl}
+          preload="none"
           muted
           playsInline
           className="size-full object-cover"

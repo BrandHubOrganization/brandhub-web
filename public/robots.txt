@@ -10,10 +10,14 @@ User-agent: PerplexityBot
 User-agent: ClaudeBot
 User-agent: Google-Extended
 Allow: /
+Allow: /blog
+Allow: /blog/
 Allow: /help/faq
 Allow: /privacy
 Allow: /terms
 Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /rss.xml
 Allow: /sitemap.xml
 Allow: /og-banner.png
 

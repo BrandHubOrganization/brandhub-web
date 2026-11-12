@@ -20,11 +20,7 @@ export function SettingsLayout() {
     return <Navigate to="/admin" replace />;
   }
 
-  return (
-    <div className="w-full space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6">
-      <Outlet />
-    </div>
-  );
+  return <Outlet />;
 }
 
 export default SettingsLayout;

@@ -24,7 +24,14 @@ const QUICK_LOGIN_ACCOUNTS = [
     email:
       import.meta.env.VITE_DEV_LOGIN_OWNER_EMAIL ||
       "user177@demo.brandhub.test",
-    labelKey: "workspace.roles.OWNER",
+    labelKey: "workspace.roles.OWNER_AGENCY",
+  },
+  {
+    email:
+      import.meta.env.VITE_DEV_LOGIN_OWNER_EMAIL ||
+      "user177@demo.brandhub.test",
+    labelKey: "workspace.roles.OWNER_WORKSPACE",
+    workspaceRole: "OWNER",
   },
   // A user can be Manager and Creator in different workspaces.
   {
@@ -103,7 +110,9 @@ export function DevQuickLogin() {
         // The seed-linked-demo profile links every account through this Workspace.
         const workspace =
           matches.find((item) => item.name.startsWith("TH True Milk")) ??
-          matches[0];
+          data.data.find((item) => item.name.startsWith("TH True Milk")) ??
+          matches[0] ??
+          data.data[0];
         if (workspace) navigate(`/workspaces/${workspace.id}/dashboard`);
         else {
           toast.info(t("auth.login.devWorkspaceMissing"));

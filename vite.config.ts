@@ -9,11 +9,17 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
+      "@video-space/protocol": path.resolve(import.meta.dirname, "./shared/video-space-protocol.ts"),
     },
   },
   // Unit tests only — tests/e2e/** are Playwright specs run by `playwright test`.
   test: {
-    include: ["src/**/*.test.ts", "tests/unit/**/*.test.ts"],
+    include: [
+      "src/**/*.test.ts",
+      "src/**/*.test.tsx",
+      "tests/unit/**/*.test.ts",
+      "tests/unit/**/*.test.tsx",
+    ],
   },
   server: {
     port: 3000,

@@ -1,0 +1,98 @@
+{
+  "Inter": {
+    "id": "font-inter",
+    "weight": "100 900"
+  },
+  "Be Vietnam Pro": {
+    "id": "font-be-vietnam-pro",
+    "weight": "400"
+  },
+  "Montserrat": {
+    "id": "font-montserrat",
+    "weight": "100 900"
+  },
+  "Roboto": {
+    "id": "font-roboto",
+    "weight": "100 900"
+  },
+  "Open Sans": {
+    "id": "font-open-sans",
+    "weight": "300 800"
+  },
+  "Nunito": {
+    "id": "font-nunito",
+    "weight": "200 1000"
+  },
+  "Nunito Sans": {
+    "id": "font-nunito-sans",
+    "weight": "200 1000"
+  },
+  "Quicksand": {
+    "id": "font-quicksand",
+    "weight": "300 700"
+  },
+  "Oswald": {
+    "id": "font-oswald",
+    "weight": "200 700"
+  },
+  "Barlow": {
+    "id": "font-barlow",
+    "weight": "400"
+  },
+  "Roboto Condensed": {
+    "id": "font-roboto-condensed",
+    "weight": "100 900"
+  },
+  "Bitter": {
+    "id": "font-bitter",
+    "weight": "100 900"
+  },
+  "Source Serif 4": {
+    "id": "font-source-serif-4",
+    "weight": "200 900"
+  },
+  "Lora": {
+    "id": "font-lora",
+    "weight": "400 700"
+  },
+  "Merriweather": {
+    "id": "font-merriweather",
+    "weight": "300 900"
+  },
+  "Playfair Display": {
+    "id": "font-playfair-display",
+    "weight": "400 900"
+  },
+  "Noto Serif": {
+    "id": "font-noto-serif",
+    "weight": "100 900"
+  },
+  "Noto Sans": {
+    "id": "font-noto-sans",
+    "weight": "100 900"
+  },
+  "Fira Sans": {
+    "id": "font-fira-sans",
+    "weight": "400"
+  },
+  "Pacifico": {
+    "id": "font-pacifico",
+    "weight": "400"
+  },
+  "Lobster": {
+    "id": "font-lobster",
+    "weight": "400"
+  },
+  "Bangers": {
+    "id": "font-bangers",
+    "weight": "400"
+  },
+  "Chakra Petch": {
+    "id": "font-chakra-petch",
+    "weight": "400"
+  },
+  "Patrick Hand": {
+    "id": "font-patrick-hand",
+    "weight": "400"
+  }
+}

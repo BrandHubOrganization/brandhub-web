@@ -179,7 +179,7 @@ export const FAQ_DATA_VI: FaqItem[] = [
     category: "content",
     question: "Khách hàng bận rộn muốn duyệt bài nhanh trên điện thoại di động như thế nào?",
     answer:
-      "BrandHub được tối ưu hóa giao diện hoàn hảo cho trình duyệt trên điện thoại (cả iOS và Android):\n\nTrải nghiệm duyệt di động nhanh chóng:\n• Bước 1: Khách hàng nhấp vào đường dẫn thông báo nhận được qua email hoặc tin nhắn.\n• Bước 2: Màn hình hiển thị bản xem trước bài viết đúng chuẩn tỷ lệ và bố cục mạng xã hội (Facebook, Instagram, TikTok, LinkedIn...).\n• Bước 3: Khách hàng có hai lựa chọn thuận tiện chỉ với 1 chạm:\n  + Nút 'Duyệt' (màu xanh lá): Đồng ý và xác nhận kết quả bài viết.\n  + Nút 'Từ chối' (màu đỏ): Nhập nhanh ghi chú những điểm cần hoàn thiện để gửi lại cho người làm nội dung.\n• Toàn bộ thao tác chỉ mất chưa đầy 30 giây trực tiếp trên trình duyệt điện thoại mà không cần cài đặt thêm bất kỳ ứng dụng nào.",
+      "BrandHub được tối ưu hóa giao diện hoàn hảo cho trình duyệt trên điện thoại (cả iOS và Android):\n\nTrải nghiệm duyệt di động nhanh chóng:\n• Bước 1: Khách hàng nhấp vào đường dẫn thông báo nhận được qua email hoặc tin nhắn.\n• Bước 2: Màn hình hiển thị bản xem trước bài viết đúng chuẩn tỷ lệ và bố cục mạng xã hội (Facebook, Instagram, TikTok, Threads).\n• Bước 3: Khách hàng có hai lựa chọn thuận tiện chỉ với 1 chạm:\n  + Nút 'Duyệt' (màu xanh lá): Đồng ý và xác nhận kết quả bài viết.\n  + Nút 'Từ chối' (màu đỏ): Nhập nhanh ghi chú những điểm cần hoàn thiện để gửi lại cho người làm nội dung.\n• Toàn bộ thao tác chỉ mất chưa đầy 30 giây trực tiếp trên trình duyệt điện thoại mà không cần cài đặt thêm bất kỳ ứng dụng nào.",
     tags: ["duyệt di động", "điện thoại", "khách hàng", "duyệt nhanh", "xem trước", "phê duyệt"],
   },
   {
@@ -203,16 +203,16 @@ export const FAQ_DATA_VI: FaqItem[] = [
     category: "content",
     question: "Bài viết đã được duyệt hoàn tất nhưng chưa thấy tự động đăng lên mạng xã hội?",
     answer:
-      "Nguyên nhân: Việc hoàn tất phê duyệt độc lập với tiến trình xuất bản để tránh trường hợp đăng nhầm khi chưa đến khung giờ hẹn hoặc tài khoản mạng xã hội bị gián đoạn kết nối.\n\nCách kiểm tra & xử lý:\n• Bước 1: Mở mục 'Xuất bản' (/publish hoặc /workspaces/:id/publish). Nếu bài được hẹn giờ phát hành trong tương lai, bài sẽ ở trạng thái 'Đã lên lịch' và tự động đăng khi đến đúng thời gian.\n• Bước 2: Nếu bài đã quá giờ đăng mà chuyển sang trạng thái 'Thất bại', hãy vào mục 'Tài khoản mạng xã hội' (/social-accounts hoặc /workspaces/:id/social-accounts) để kiểm tra xem tài khoản Facebook Page, TikTok hay Instagram có bị hết hạn token ủy quyền không.\n• Bước 3: Sau khi kết nối lại hoặc làm mới token tài khoản mạng xã hội thành công, bạn mở chi tiết bài viết trong Xuất bản và nhấn nút 'Thử lại' để hệ thống tiến hành đăng bài ngay lập tức.",
+      "Nguyên nhân: Việc hoàn tất phê duyệt độc lập với tiến trình xuất bản để tránh trường hợp đăng nhầm khi chưa đến khung giờ hẹn hoặc tài khoản mạng xã hội bị gián đoạn kết nối.\n\nCách kiểm tra & xử lý:\n• Bước 1: Mở mục 'Xuất bản' (/publish hoặc /workspaces/:id/publish). Nếu bài được hẹn giờ phát hành trong tương lai, bài sẽ ở trạng thái 'Đã lên lịch' và tự động đăng khi đến đúng thời gian.\n• Bước 2: Nếu bài đã quá giờ đăng mà chuyển sang trạng thái 'Thất bại', hãy vào mục 'Tài khoản mạng xã hội' (/social-accounts hoặc /workspaces/:id/social-accounts) để kiểm tra xem tài khoản Facebook, Instagram, TikTok hay Threads có bị hết hạn token ủy quyền không.\n• Bước 3: Sau khi kết nối lại hoặc làm mới token tài khoản mạng xã hội thành công, bạn mở chi tiết bài viết trong Xuất bản và nhấn nút 'Thử lại' để hệ thống tiến hành đăng bài ngay lập tức.",
     tags: ["hoàn tất duyệt", "xuất bản", "lịch đăng", "thử lại", "tài khoản mạng xã hội"],
   },
   {
     id: "faq-cnt-6",
     category: "content",
-    question: "Mất kết nối tài khoản mạng xã hội (kết nối Facebook, Instagram, TikTok bị hết hạn) thì làm sao?",
+    question: "Mất kết nối tài khoản mạng xã hội (kết nối Facebook, Instagram, TikTok, Threads bị hết hạn) thì làm sao?",
     answer:
-      "Nguyên nhân: Theo quy định bảo mật của Meta (Facebook, Instagram) và TikTok, phiên kết nối ủy quyền OAuth sẽ tự động hết hạn định kỳ hoặc khi người quản trị trang mạng xã hội thay đổi mật khẩu tài khoản cá nhân.\n\nCách kết nối lại:\n• Bước 1: Quản trị viên truy cập vào mục 'Tài khoản mạng xã hội' (/social-accounts hoặc /workspaces/:id/social-accounts).\n• Bước 2: Tìm thẻ tài khoản đang hiển thị thông báo 'Hết hạn' hoặc 'Sắp hết hạn'.\n• Bước 3: Bấm nút 'Kết nối lại' (Reconnect) trên thẻ tài khoản tương ứng.\n• Bước 4: Đăng nhập vào tài khoản mạng xã hội có quyền quản lý Fanpage/kênh và xác nhận cấp quyền xuất bản bài viết cho BrandHub.",
-    tags: ["tài khoản mạng xã hội", "kết nối hết hạn", "kết nối lại", "facebook", "tiktok", "instagram"],
+      "Nguyên nhân: Theo quy định bảo mật của Meta (Facebook, Instagram, Threads) và TikTok, phiên kết nối ủy quyền OAuth sẽ tự động hết hạn định kỳ hoặc khi người quản lý trang mạng xã hội thay đổi mật khẩu tài khoản cá nhân.\n\nCách kết nối lại:\n• Bước 1: Owner hoặc Manager truy cập vào mục 'Tài khoản mạng xã hội' (/social-accounts hoặc /workspaces/:id/social-accounts).\n• Bước 2: Tìm thẻ tài khoản đang hiển thị thông báo 'Hết hạn' hoặc 'Sắp hết hạn'.\n• Bước 3: Bấm nút 'Kết nối lại' (Reconnect) trên thẻ tài khoản tương ứng.\n• Bước 4: Đăng nhập vào tài khoản mạng xã hội có quyền quản lý Fanpage/kênh và xác nhận cấp quyền xuất bản bài viết cho BrandHub.",
+    tags: ["tài khoản mạng xã hội", "kết nối hết hạn", "kết nối lại", "facebook", "tiktok", "instagram", "threads"],
   },
   {
     id: "faq-cnt-7",
@@ -321,7 +321,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "general",
     question: "Did not receive account activation email or verification code?",
     answer:
-      "Cause: System emails might be redirected to your Spam/Junk folder, corporate email filters may block automated emails, or the email address was entered incorrectly.\n\nTroubleshooting steps:\n• Step 1: Check your Spam, Junk, and Promotions folders carefully. Search for keywords like 'BrandHub' or messages containing verification codes.\n• Step 2: Double-check every character of your email address entered on the sign-in or registration screen.\n• Step 3: Wait for the 60-second cooldown timer to finish and click 'Resend Code' on the OTP Verification (/verify-otp) or Account Activation (/activate-account) screen.\n• Step 4: If the issue persists, sign in directly with your linked Google account (OAuth) or contact your Agency Administrator to manually activate your account.",
+      "Cause: System emails might be redirected to your Spam/Junk folder, corporate email filters may block automated emails, or the email address was entered incorrectly.\n\nTroubleshooting steps:\n• Step 1: Check your Spam, Junk, and Promotions folders carefully. Search for keywords like 'BrandHub' or messages containing verification codes.\n• Step 2: Double-check every character of your email address entered on the sign-in or registration screen.\n• Step 3: Wait for the 60-second cooldown timer to finish and click 'Resend Code' on the OTP Verification (/verify-otp) or Account Activation (/activate-account) screen.\n• Step 4: If the issue persists, sign in directly with your linked Google account (OAuth) or contact your Agency Owner to manually activate your account.",
     tags: ["verification code", "sign in", "email", "activation", "spam"],
   },
   {
@@ -329,7 +329,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "general",
     question: "Lost your phone or unable to scan the Two-Factor Authentication (2FA) QR code?",
     answer:
-      "Cause: This occurs when you switch to a new phone, accidentally uninstall your authenticator app (such as Google Authenticator), or your camera cannot scan the QR code during setup.\n\nResolution:\n• Initial Setup: The setup screen displays both a QR code and a secret setup key (Secret Key). You can copy and manually enter this key into your authenticator app if your camera fails to scan.\n• Daily Sign-in: Enter the 6-digit verification code generated by your authenticator app on the Two-Factor Authentication screen (/2fa-verify).\n• Completely Lost 2FA Device: From your registered account email, submit a support request to your Agency Administrator or contact our support team at brandhub404@gmail.com to verify your identity and reset your 2FA method.",
+      "Cause: This occurs when you switch to a new phone, accidentally uninstall your authenticator app (such as Google Authenticator), or your camera cannot scan the QR code during setup.\n\nResolution:\n• Initial Setup: The setup screen displays both a QR code and a secret setup key (Secret Key). You can copy and manually enter this key into your authenticator app if your camera fails to scan.\n• Daily Sign-in: Enter the 6-digit verification code generated by your authenticator app on the Two-Factor Authentication screen (/2fa-verify).\n• Completely Lost 2FA Device: From your registered account email, submit a support request to your Agency Owner or contact our support team at brandhub404@gmail.com to verify your identity and reset your 2FA method.",
     tags: ["two-factor authentication", "2fa", "security", "lost phone", "support"],
   },
   {
@@ -365,7 +365,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "agency",
     question: "How to handle company invitations showing 'Expired' status?",
     answer:
-      "Cause: For security purposes, company invitation links have a defined validity period (default is 30 days).\n\nTroubleshooting steps:\n• Step 1: Administrators navigate to 'Members & Roles' in the main navigation -> select 'Agency members' (/agency/:id/members).\n• Step 2: Switch to the 'Invitations' tab to view all invitations marked as 'Expired' or 'Pending'.\n• Step 3: Click 'Revoke' on the expired invite, then in the invite form enter the email, select role (Manager, Creator, Client - selecting Client requires a target Workspace), and click 'Send Invitation'.\n• Step 4: Once generated, click 'Copy Link' (/invitations/accept?token=...) displayed below to share directly with the member for immediate activation. Members can also track their invitations under 'Invitations' (/invitations).",
+      "Cause: For security purposes, company invitation links have a defined validity period (default is 30 days).\n\nTroubleshooting steps:\n• Step 1: Owners or Managers navigate to 'Members & Roles' in the main navigation -> select 'Agency members' (/agency/:id/members).\n• Step 2: Switch to the 'Invitations' tab to view all invitations marked as 'Expired' or 'Pending'.\n• Step 3: Click 'Revoke' on the expired invite, then in the invite form enter the email, select role (Manager, Creator, Client - selecting Client requires a target Workspace), and click 'Send Invitation'.\n• Step 4: Once generated, click 'Copy Link' (/invitations/accept?token=...) displayed below to share directly with the member for immediate activation. Members can also track their invitations under 'Invitations' (/invitations).",
     tags: ["invitation", "expired", "members", "resend invite", "copy link", "members & roles"],
   },
   {
@@ -373,7 +373,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "agency",
     question: "What if a client reports not receiving the workspace invitation email?",
     answer:
-      "Cause: The client's corporate email spam filters might have routed the invite to Junk/Spam, or the email address was mistyped during entry.\n\nResolution:\n• Step 1: Managers or Administrators open the Workspace -> go to 'Clients' (/workspaces/:id/clients) under Workspace Settings in the navigation.\n• Step 2: Review the client list to verify whether the email address was spelled correctly.\n• Step 3: Click 'Add Client', pick the client brand profile, and input the email to trigger an official invitation.\n• Step 4: The client can also register or sign in to BrandHub directly with that exact email address, and the system will automatically associate them with the workspace.",
+      "Cause: The client's corporate email spam filters might have routed the invite to Junk/Spam, or the email address was mistyped during entry.\n\nResolution:\n• Step 1: Managers or Owners open the Workspace -> go to 'Clients' (/workspaces/:id/clients) under Workspace Settings in the navigation.\n• Step 2: Review the client list to verify whether the email address was spelled correctly.\n• Step 3: Click 'Add Client', pick the client brand profile, and input the email to trigger an official invitation.\n• Step 4: The client can also register or sign in to BrandHub directly with that exact email address, and the system will automatically associate them with the workspace.",
     tags: ["invite client", "workspace", "settings", "add client", "email delivery", "clients"],
   },
   {
@@ -441,7 +441,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "workspace",
     question: "How to check file storage usage in a workspace?",
     answer:
-      "Storage is shared across all high-resolution imagery, video assets, and documents within the Media Library:\n\nHow to inspect & optimize:\n• Step 1: Open 'Content Library' (/library or /workspaces/:id/library) from the left navigation bar.\n• Step 2: Check the 'Storage Usage' indicator and 'Used / Quota' progress bar in the top corner.\n• Step 3 - Optimize Storage & Trash: Deleted files in the Trash still count toward storage quota until permanently emptied or purged by retention policy.\n• Step 4 - Expand Capacity & Google Drive Sync: Connect your company Google Drive for cloud storage integration or contact your Administrator to upgrade your plan under 'Subscription Plans' (/subscription/plans).",
+      "Storage is shared across all high-resolution imagery, video assets, and documents within the Media Library:\n\nHow to inspect & optimize:\n• Step 1: Open 'Content Library' (/library or /workspaces/:id/library) from the left navigation bar.\n• Step 2: Check the 'Storage Usage' indicator and 'Used / Quota' progress bar in the top corner.\n• Step 3 - Optimize Storage & Trash: Deleted files in the Trash still count toward storage quota until permanently emptied or purged by retention policy.\n• Step 4 - Expand Capacity & Google Drive Sync: Connect your company Google Drive for cloud storage integration or contact your Owner to upgrade your plan under 'Subscription Plans' (/subscription/plans).",
     tags: ["storage quota", "content library", "google drive", "trash", "storage limit", "cloud storage"],
   },
 
@@ -461,7 +461,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "content",
     question: "How can busy clients review and approve posts quickly on mobile devices?",
     answer:
-      "BrandHub provides a responsive mobile interface optimized for smartphones (both iOS and Android):\n\nStreamlined mobile review experience:\n• Step 1: The client taps the notification link received via email or messaging app.\n• Step 2: The screen displays high-fidelity social previews matching native platform layouts (Facebook, Instagram, TikTok, LinkedIn...).\n• Step 3: Two one-tap actions are available:\n  + 'Approve' (Green): Confirms post content for approval.\n  + 'Reject' (Red): Allows entering quick feedback notes for the content team to revise.\n• The entire workflow takes less than 30 seconds directly in the mobile browser without requiring any app installation.",
+      "BrandHub provides a responsive mobile interface optimized for smartphones (both iOS and Android):\n\nStreamlined mobile review experience:\n• Step 1: The client taps the notification link received via email or messaging app.\n• Step 2: The screen displays high-fidelity social previews matching native platform layouts (Facebook, Instagram, TikTok, Threads).\n• Step 3: Two one-tap actions are available:\n  + 'Approve' (Green): Confirms post content for approval.\n  + 'Reject' (Red): Allows entering quick feedback notes for the content team to revise.\n• The entire workflow takes less than 30 seconds directly in the mobile browser without requiring any app installation.",
     tags: ["mobile review", "smartphone", "client approval", "quick approval", "social preview", "post approvals"],
   },
   {
@@ -485,16 +485,16 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "content",
     question: "Why hasn't an approved post published automatically to social channels yet?",
     answer:
-      "Cause: Post approval is decoupled from immediate publishing to respect scheduled publish times and prevent accidental publishing during connection interruptions.\n\nInspection & Resolution:\n• Step 1: Open 'Publish' (/publish or /workspaces/:id/publish). If the post has a future publish time, it stays in 'Scheduled' status and publishes automatically when the time arrives.\n• Step 2: If the scheduled time has passed and status shows 'Failed', go to 'Social Accounts' (/social-accounts or /workspaces/:id/social-accounts) to verify whether your Facebook Page, TikTok, or Instagram token authorization has expired.\n• Step 3: Once reconnecting or refreshing the social account token successfully, open the post details in Publish and click 'Retry' to trigger immediate publishing.",
+      "Cause: Post approval is decoupled from immediate publishing to respect scheduled publish times and prevent accidental publishing during connection interruptions.\n\nInspection & Resolution:\n• Step 1: Open 'Publish' (/publish or /workspaces/:id/publish). If the post has a future publish time, it stays in 'Scheduled' status and publishes automatically when the time arrives.\n• Step 2: If the scheduled time has passed and status shows 'Failed', go to 'Social Accounts' (/social-accounts or /workspaces/:id/social-accounts) to verify whether your Facebook, Instagram, TikTok, or Threads token authorization has expired.\n• Step 3: Once reconnecting or refreshing the social account token successfully, open the post details in Publish and click 'Retry' to trigger immediate publishing.",
     tags: ["approved post", "publishing", "scheduled post", "retry publish", "social accounts"],
   },
   {
     id: "faq-cnt-6",
     category: "content",
-    question: "How to reconnect expired social media accounts (Facebook, Instagram, TikTok)?",
+    question: "How to reconnect expired social media accounts (Facebook, Instagram, TikTok, Threads)?",
     answer:
-      "Cause: Due to platform security policies from Meta (Facebook, Instagram) and TikTok, OAuth authorization tokens expire periodically or whenever page administrators change account passwords.\n\nHow to reconnect:\n• Step 1: Workspace Administrators open 'Social Accounts' (/social-accounts or /workspaces/:id/social-accounts).\n• Step 2: Find the account card displaying 'Expired' or 'Expiring Soon' badge.\n• Step 3: Click 'Reconnect' on the respective platform card.\n• Step 4: Sign in with the administrative social account and grant required publishing permissions to BrandHub.",
-    tags: ["social accounts", "expired token", "reconnect account", "facebook", "tiktok", "instagram"],
+      "Cause: Due to platform security policies from Meta (Facebook, Instagram, Threads) and TikTok, OAuth authorization tokens expire periodically or whenever page managers change account passwords.\n\nHow to reconnect:\n• Step 1: Workspace Owners or Managers open 'Social Accounts' (/social-accounts or /workspaces/:id/social-accounts).\n• Step 2: Find the account card displaying 'Expired' or 'Expiring Soon' badge.\n• Step 3: Click 'Reconnect' on the respective platform card.\n• Step 4: Sign in with the administrative social account and grant required publishing permissions to BrandHub.",
+    tags: ["social accounts", "expired token", "reconnect account", "facebook", "tiktok", "instagram", "threads"],
   },
   {
     id: "faq-cnt-7",
@@ -514,7 +514,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     question: "How to resolve 'Insufficient AI Credits' error when generating copy or images?",
     answer:
       "Cause: Two possibilities: 1) Your individual user quota has been exhausted; 2) The agency's shared monthly credit pool is fully depleted.\n\nResolution:\n• Team Members / Creators: Visit 'AI Credits' (/agency/:id/credit) to check your consumed credits and assigned quota. Contact your Owner if you need an individual quota increase.\n• Owners: Visit 'AI Credits' (/agency/:id/credit) to reallocate member limits, top up instant credits via PayOS VietQR bank transfer, or upgrade subscription tier under 'Billing & Plans' / 'Subscription Plans' (/subscription/plans).",
-    tags: ["ai credits", "credit quota", "ai credit management", "top up credits", "administrator", "payos", "ai studio"],
+    tags: ["ai credits", "credit quota", "ai credit management", "top up credits", "owner", "payos", "ai studio"],
   },
   {
     id: "faq-sec-2",
@@ -557,7 +557,7 @@ export const FAQ_DATA_EN: FaqItem[] = [
     category: "billing",
     question: "How to upgrade subscription plans automatically via QR code bank transfer?",
     answer:
-      "Instant PayOS QR payment automation activates your upgraded plan within 30 seconds:\n\nExecution steps:\n• Step 1: Agency Administrators (Owner) open 'Subscription Plans' (/subscription/plans) or click the Upgrade icon in navigation.\n• Step 2: Compare plan benefits and click 'Upgrade' to generate a PayOS payment QR code.\n• Step 3: The screen renders a standardized VietQR code prefilled with exact transfer amount and order code.\n• Step 4: Open your banking app, scan the QR code, and confirm the transaction. The PayOS system automatically detects payment and activates the plan instantaneously.",
+      "Instant PayOS QR payment automation activates your upgraded plan within 30 seconds:\n\nExecution steps:\n• Step 1: Agency Owners open 'Subscription Plans' (/subscription/plans) or click the Upgrade icon in navigation.\n• Step 2: Compare plan benefits and click 'Upgrade' to generate a PayOS payment QR code.\n• Step 3: The screen renders a standardized VietQR code prefilled with exact transfer amount and order code.\n• Step 4: Open your banking app, scan the QR code, and confirm the transaction. The PayOS system automatically detects payment and activates the plan instantaneously.",
     tags: ["qr payment", "automated payment", "subscription", "upgrade plan", "payos", "vietqr"],
   },
   {
@@ -716,7 +716,7 @@ export function HelpFaqPage() {
         }
         description={
           isEn
-            ? "Find answers on Agency & Workspace setup, Media Package proposals, AI Studio GraphRAG, 4-tier content approval, and social publishing on BrandHub."
+            ? "Find answers on Agency & Workspace setup, Media Package proposals, AI Studio GraphRAG, 3-stage content approval, and social publishing on BrandHub."
             : "Giải đáp chi tiết về quản trị Agency & Workspace, Gói truyền thông Media Package, AI Studio GraphRAG, phê duyệt nội dung và xuất bản đa kênh trên BrandHub."
         }
         canonicalPath="/help/faq"
@@ -857,6 +857,101 @@ export function HelpFaqPage() {
             </div>
           )}
         </div>
+
+        {/* In-Depth Pillar Guides Bridge (/help/faq <-> /blog) */}
+        <section
+          aria-label={isEn ? "In-Depth Operational Guides" : "Cẩm nang Chuyên sâu Theo Từng Phân hệ"}
+          className="border-border bg-card rounded-2xl border p-4 sm:p-6 shadow-xs space-y-4 w-full min-w-0"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h2 className="text-foreground text-sm sm:text-base font-bold flex items-center gap-2">
+                <BookOpen className="size-4 text-brand-orange shrink-0" />
+                {isEn
+                  ? "In-Depth Operational Playbooks (100 Articles)"
+                  : "Cẩm nang Chuyên sâu Theo 6 Phân hệ Vận hành (100 Bài viết)"}
+              </h2>
+              <p className="text-muted-foreground text-xs mt-1">
+                {isEn
+                  ? "Explore comprehensive guides connecting Agency operations, Media Packages, AI GraphRAG, and 4-channel publishing."
+                  : "Khám phá hệ thống bài phân tích thực chiến dành cho Owner, Manager, Creator và Client."}
+              </p>
+            </div>
+            <Link
+              to="/blog"
+              className="text-brand-orange hover:underline text-xs font-semibold inline-flex items-center gap-1 shrink-0"
+            >
+              {isEn ? "Browse all 100 guides" : "Xem toàn bộ 100 bài viết"}
+              <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[
+              {
+                title: isEn
+                  ? "Multi-Workspace Agency Management (Jira & Notion Model)"
+                  : "Quản trị đa Workspace chuẩn mô hình Jira & Notion",
+                badge: isEn ? "Workspace & RBAC" : "Quản trị Agency",
+                href: "/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub",
+              },
+              {
+                title: isEn
+                  ? "3-Stage Content Approval: Creator → Manager → Client"
+                  : "Quy trình phê duyệt nội dung 3 cấp minh bạch",
+                badge: isEn ? "Approval Workflow" : "Phê duyệt 3 cấp",
+                href: "/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client",
+              },
+              {
+                title: isEn
+                  ? "B2B Media Package & Two-Way Client Proposal"
+                  : "Xây dựng Gói truyền thông & Đàm phán báo giá B2B",
+                badge: isEn ? "Media Package" : "Gói truyền thông",
+                href: "/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia",
+              },
+              {
+                title: isEn
+                  ? "AI GraphRAG (Neo4j + ChromaDB) Brand Voice Control"
+                  : "AI GraphRAG giữ chuẩn Brand Guidelines nhãn hàng",
+                badge: isEn ? "AI Studio" : "AI & GraphRAG",
+                href: "/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb",
+              },
+              {
+                title: isEn
+                  ? "Automated Scheduling for Facebook, Instagram, TikTok & Threads"
+                  : "Lịch đăng tự động Facebook, Instagram, TikTok & Threads",
+                badge: isEn ? "4-Channel Social" : "Xuất bản 4 kênh",
+                href: "/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads",
+              },
+              {
+                title: isEn
+                  ? "BrandHub vs. Buffer, Hootsuite, Planable, Jira & Notion"
+                  : "So sánh chi phí & hiệu năng BrandHub với bộ công cụ rời",
+                badge: isEn ? "Comparison & ROI" : "So sánh & Tối ưu",
+                href: "/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion",
+              },
+            ].map((guide) => (
+              <Link
+                key={guide.href}
+                to={guide.href}
+                className="group rounded-xl border border-border/70 bg-muted/20 p-3.5 hover:border-brand-orange/50 hover:bg-brand-orange/[0.03] transition-all flex flex-col justify-between gap-2"
+              >
+                <div className="space-y-1.5">
+                  <span className="inline-block text-[10px] font-semibold uppercase tracking-wider text-brand-orange bg-brand-orange/10 px-2 py-0.5 rounded-md">
+                    {guide.badge}
+                  </span>
+                  <h3 className="text-xs font-semibold text-foreground group-hover:text-brand-orange transition-colors leading-snug">
+                    {guide.title}
+                  </h3>
+                </div>
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground group-hover:text-brand-orange transition-colors">
+                  {isEn ? "Read playbook" : "Đọc cẩm nang"}
+                  <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {/* Contact Support & Admin Banner */}
         <div className="border-border bg-gradient-to-r from-card via-card to-brand-orange/5 rounded-2xl border p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4 w-full min-w-0">

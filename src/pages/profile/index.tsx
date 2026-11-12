@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { BadgeCheck, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { useAuthStore } from "@/store/authStore";
 import { userService } from "@/services/userService";
 import { extractErrorMessage } from "@/utils/error";
@@ -340,16 +341,15 @@ export function ProfilePage() {
   }
 
   return (
-    <section id="profile" className="scroll-mt-6">
-      <div className="mb-4">
-        <h2 className="text-foreground text-lg font-semibold">
-          {t("profile.title")}
-        </h2>
-        <p className="text-muted-foreground text-sm">
-          {t("profile.description")}
-        </p>
-      </div>
-      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
+    <PageWrapper
+      title={t("profile.title", "Hồ sơ cá nhân")}
+      description={t(
+        "profile.subtitle",
+        "Quản lý thông tin cá nhân, chức danh và hồ sơ nghề nghiệp.",
+      )}
+    >
+      <section id="profile" className="scroll-mt-6">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <ProfileBannerHeader
             bannerUrl={ext.bannerUrl || null}
@@ -495,7 +495,8 @@ export function ProfilePage() {
         category="banner"
         onSelect={handleSelectRecentBanner}
       />
-    </section>
+      </section>
+    </PageWrapper>
   );
 }
 

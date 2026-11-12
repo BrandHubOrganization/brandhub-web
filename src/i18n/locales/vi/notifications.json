@@ -12,6 +12,7 @@
   },
   "settings": {
     "title": "Cài đặt thông báo",
+    "subtitle": "Tùy chỉnh thông báo qua email và thông báo đẩy trong hệ thống.",
     "description": "Quản lý cách bạn nhận thông báo từ BrandHub.",
     "loadError": "Không thể tải cài đặt thông báo.",
     "retry": "Thử lại",

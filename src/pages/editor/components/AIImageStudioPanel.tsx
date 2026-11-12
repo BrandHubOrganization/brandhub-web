@@ -26,6 +26,8 @@ import {
   imageSourceToDataUrl,
   type AmbassadorPreset,
 } from "@/services/aiGenerationService";
+import { useBackgroundTaskStore } from "@/store/backgroundTaskStore";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 interface AIImageStudioPanelProps {
   referenceMediaUrls: string[];
@@ -57,6 +59,8 @@ export function AIImageStudioPanel({
   onApplyImage,
 }: AIImageStudioPanelProps) {
   const { t } = useTranslation();
+  const workspaceId = useWorkspaceStore((state) => state.currentWorkspace?.id);
+  const mountedRef = useRef(true);
   const productInputRef = useRef<HTMLInputElement>(null);
   const ambassadorInputRef = useRef<HTMLInputElement>(null);
   const poseInputRef = useRef<HTMLInputElement>(null);
@@ -82,6 +86,26 @@ export function AIImageStudioPanel({
   const [generatedImage, setGeneratedImage] = useState("");
   const [generatedImageKey, setGeneratedImageKey] = useState<string>();
   const [storageProvider, setStorageProvider] = useState<string>();
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const latestCompleted = useBackgroundTaskStore
+      .getState()
+      .tasks.find(
+        (task) =>
+          task.kind === "AI_IMAGE" &&
+          task.status === "COMPLETED" &&
+          task.resultUrl &&
+          (!workspaceId || task.workspaceId === workspaceId),
+      );
+    if (latestCompleted?.resultUrl) {
+      setGeneratedImage((prev) => prev || latestCompleted.resultUrl!);
+      setGeneratedImageKey((prev) => prev || latestCompleted.resultS3Key);
+    }
+    return () => {
+      mountedRef.current = false;
+    };
+  }, [workspaceId]);
 
   useEffect(() => {
     let active = true;
@@ -193,26 +217,38 @@ export function AIImageStudioPanel({
               preset_id: selectedAmbassador || presets[0]?.id || "default",
               reference_images: [] as [],
             };
-      const result = await aiGenerationService.generateCommercialImage({
-        prompt,
-        preset: imageStyle,
-        aspectRatio,
-        poseReferenceImage,
-        productReferenceImage,
-        ambassador,
-      });
+      const result = await useBackgroundTaskStore
+        .getState()
+        .startAiImageTask({
+          workspaceId,
+          title: `Tạo ảnh AI (${aspectRatio})`,
+          execute: () =>
+            aiGenerationService.generateCommercialImage({
+              prompt,
+              preset: imageStyle,
+              aspectRatio,
+              poseReferenceImage,
+              productReferenceImage,
+              ambassador,
+            }),
+        });
       if (!result.image_url) throw new Error("Missing generated image URL");
+      if (!mountedRef.current) return;
       setGeneratedImage(result.image_url);
       setGeneratedImageKey(result.s3_key);
       setStorageProvider(result.storage_provider);
       toast.success(t("editor.studio.image.generateSuccess"));
     } catch (error) {
-      toast.error(
-        aiCreditErrorMessage(error) ?? t("editor.studio.image.generateFailed"),
-        { duration: 8000 },
-      );
+      if (mountedRef.current) {
+        toast.error(
+          aiCreditErrorMessage(error) ?? t("editor.studio.image.generateFailed"),
+          { duration: 8000 },
+        );
+      }
     } finally {
-      setIsGenerating(false);
+      if (mountedRef.current) {
+        setIsGenerating(false);
+      }
     }
   };
 
