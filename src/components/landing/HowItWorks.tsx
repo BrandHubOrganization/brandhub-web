@@ -20,8 +20,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
-import { SectionDecor } from "@/components/landing/SectionDecor";
-import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 interface LaneNode {
@@ -170,76 +168,42 @@ export function HowItWorks() {
     <section
       id="how-it-works"
       ref={sectionRef}
-      className="relative overflow-hidden bg-zinc-50 py-24 dark:bg-zinc-900/50"
+      className="relative overflow-hidden bg-zinc-50/70 py-24 dark:bg-zinc-900/40"
     >
-      <SectionDecor corner="left" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div
           ref={headRef}
           className={cn(
-            "mx-auto mb-16 max-w-2xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            "mx-auto mb-14 max-w-2xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
             headVisible ? "opacity-100" : "opacity-0",
           )}
         >
-          <SectionEyebrow index={4} />
           <SplitHeading text={t("landing.howItWorks.title")} />
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.howItWorks.subtitle")}
           </p>
         </div>
 
-        <div className="flex flex-col gap-5 pt-2">
+        <div className="flex flex-col gap-4">
           {LANES.map((lane, laneIndex) => {
             const laneStartIndex = laneStarts[laneIndex];
             const laneEndIndex = laneStartIndex + lane.nodes.length - 1;
 
             return (
               <div key={lane.key}>
-                <div
-                  className={cn(
-                    "bh-reveal-card lane-card relative flex flex-col gap-5 rounded-[28px] rounded-br-[56px] border bg-gradient-to-r p-6 pt-8 shadow-sm transition-all duration-500 hover:shadow-xl sm:flex-row sm:items-center",
-                    lane.cardTheme,
-                  )}
-                >
-                  {/* Floating 3D Stage Badge (Khối nổi) */}
-                  <div
-                    data-bh-float
-                    className={cn(
-                      "absolute -top-3.5 left-6 z-20 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-[9px] font-black tracking-wider uppercase shadow-md",
-                      lane.pillTheme,
-                    )}
-                  >
-                    <span>{lane.floatingBadge}</span>
-                  </div>
-
-                  {/* Bottom-Right Cutout Pocket (Khối cắt) */}
-                  <div
-                    aria-hidden="true"
-                    className="absolute -right-2 -bottom-2 z-10 flex size-12 items-center justify-center rounded-tl-[20px] rounded-br-[20px] border-t border-l border-zinc-200/80 bg-zinc-50 font-mono text-xs font-black text-zinc-400 dark:border-zinc-800 dark:bg-zinc-950"
-                  >
-                    0{laneIndex + 1}
-                  </div>
-
-                  <div className="flex shrink-0 items-center gap-3 sm:w-48">
+                <div className="bh-reveal-card lane-card relative flex flex-col gap-5 rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-2xs transition-all duration-300 hover:border-brand-orange/45 hover:shadow-md sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900">
+                  <div className="flex shrink-0 items-center gap-3 sm:w-52">
                     <img
                       src={`https://images.unsplash.com/${PHOTO_IDS[lane.key]}?w=96&h=96&fit=crop&crop=faces`}
                       alt=""
                       loading="lazy"
-                      className={cn(
-                        "size-12 shrink-0 rounded-2xl object-cover ring-2 shadow-sm",
-                        lane.accentRing,
-                      )}
+                      className="size-12 shrink-0 rounded-xl border border-zinc-200 object-cover dark:border-zinc-700"
                     />
                     <div className="min-w-0">
-                      <p className="text-sm font-extrabold text-zinc-900 dark:text-zinc-100">
-                        {lane.roleLabel}
-                      </p>
-                      <p
-                        className={cn(
-                          "mt-0.5 w-fit rounded-full px-2 py-0.5 text-[10px] font-bold",
-                          lane.accentSoft,
-                        )}
-                      >
+                      <span className="font-mono text-[10px] font-bold text-brand-orange uppercase">
+                        0{laneIndex + 1} · {lane.roleLabel}
+                      </span>
+                      <p className="mt-0.5 truncate text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                         {t(`landing.howItWorks.roles.${lane.key}.roleTag`)}
                       </p>
                     </div>
@@ -373,7 +337,6 @@ export function HowItWorks() {
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 strokeDasharray={arrowLit ? "3 2" : undefined}
-                                className={arrowLit ? "animate-pulse" : ""}
                               />
                             </svg>
                           )}

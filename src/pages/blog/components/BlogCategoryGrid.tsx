@@ -1,16 +1,19 @@
 import {
+  Briefcase,
+  LayoutGrid,
   Layers,
   ListChecks,
-  Briefcase,
-  Sparkles,
-  Share2,
   Scale,
-  ArrowRight,
+  Share2,
+  Sparkles,
+  type LucideIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { BLOG_CATEGORIES } from "@/data/blogCategories";
+import type { BlogCategorySlug } from "@/data/blogTypes";
+import { cn } from "@/lib/utils";
+import { BlogSpotlightContainer } from "./BlogMotion";
 
-const CATEGORY_ICON_MAP: Record<string, typeof Layers> = {
+const CATEGORY_ICON_MAP: Record<string, LucideIcon> = {
   Layers,
   ListChecks,
   Briefcase,
@@ -21,8 +24,8 @@ const CATEGORY_ICON_MAP: Record<string, typeof Layers> = {
 
 interface BlogCategoryGridProps {
   selectedCategory: string;
-  categoryCounts: Record<string, number>;
-  onSelectCategory: (slug: string) => void;
+  categoryCounts: Record<BlogCategorySlug, number>;
+  onSelectCategory: (slug: BlogCategorySlug | "all") => void;
   totalPublishedCount: number;
 }
 
@@ -33,95 +36,86 @@ export function BlogCategoryGrid({
   totalPublishedCount,
 }: BlogCategoryGridProps) {
   return (
-    <section aria-label="Danh mục chủ đề" className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
-        <div>
-          <h2 className="text-lg sm:text-xl font-bold text-foreground tracking-tight">
-            Khám phá theo 6 Chuyên mục Cốt lõi
+    <section aria-labelledby="blog-categories-heading" className="space-y-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="space-y-1">
+          <h2
+            id="blog-categories-heading"
+            className="text-balance text-lg font-extrabold tracking-tight text-foreground sm:text-xl"
+          >
+            6 Trụ Cột Kiến Thức Dành Cho Agency &amp; Doanh Nghiệp
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Phân loại theo quy trình vận hành: Quản trị Workspace, Luồng duyệt nội dung, Gói dịch vụ, AI Studio và Đa kênh.
+          <p className="text-pretty text-xs text-muted-foreground sm:text-sm">
+            Chọn trụ cột bên dưới để lọc nhanh bộ tài liệu chuyên sâu theo nhu cầu đội ngũ.
           </p>
         </div>
-        {selectedCategory !== "all" && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onSelectCategory("all")}
-            className="text-xs text-brand-orange hover:text-brand-orange/80 hover:bg-brand-orange/10 self-start sm:self-auto cursor-pointer rounded-xl font-semibold"
-          >
-            Xem tất cả chuyên mục ({totalPublishedCount} bài đã đăng)
-          </Button>
-        )}
+
+        <button
+          type="button"
+          onClick={() => onSelectCategory("all")}
+          className={cn(
+            "inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all duration-200",
+            selectedCategory === "all"
+              ? "border-brand-orange bg-brand-orange text-white shadow-xs"
+              : "border-border bg-card text-muted-foreground hover:border-brand-orange/40 hover:text-foreground",
+          )}
+        >
+          <LayoutGrid className="size-3.5" />
+          <span>Tất cả</span>
+          <span className="tabular-nums opacity-85">({totalPublishedCount})</span>
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <BlogSpotlightContainer className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
         {BLOG_CATEGORIES.map((cat) => {
-          const Icon = CATEGORY_ICON_MAP[cat.iconName] || Layers;
-          const isActive = selectedCategory === cat.slug;
-          const count = categoryCounts[cat.slug] || 0;
+          const Icon = CATEGORY_ICON_MAP[cat.iconName] ?? Layers;
+          const isSelected = selectedCategory === cat.slug;
+          const publishedInCat = categoryCounts[cat.slug] ?? 0;
+
           return (
             <button
               key={cat.slug}
               type="button"
-              onClick={() => {
-                onSelectCategory(isActive ? "all" : cat.slug);
-                document.getElementById("articles-section")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className={`text-left p-5 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col justify-between gap-4 group relative overflow-hidden ${
-                isActive
-                  ? "border-brand-orange bg-brand-orange/[0.06] shadow-md ring-1 ring-brand-orange/40"
-                  : "border-border bg-card hover:border-brand-orange/50 hover:shadow-md hover:-translate-y-0.5"
-              }`}
-            >
-              {/* Subtle top indicator bar when active */}
-              {isActive && (
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-brand-orange to-amber-500" />
+              onClick={() =>
+                onSelectCategory(isSelected ? "all" : cat.slug)
+              }
+              aria-pressed={isSelected}
+              className={cn(
+                "bh-spotlight-card group relative flex cursor-pointer flex-col justify-between gap-3 rounded-xl border p-4 text-left transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange/60 sm:p-5",
+                isSelected
+                  ? "border-brand-orange bg-orange-50/50 shadow-sm ring-1 ring-brand-orange/30 dark:bg-orange-500/10"
+                  : "border-zinc-200/90 bg-white shadow-2xs hover:border-brand-orange/40 dark:border-zinc-800 dark:bg-zinc-900",
               )}
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className={`size-9 rounded-xl flex items-center justify-center transition-colors ${
-                        isActive
-                          ? "bg-brand-orange text-white shadow-xs"
-                          : "bg-brand-orange/10 text-brand-orange group-hover:bg-brand-orange group-hover:text-white"
-                      }`}
-                    >
-                      <Icon className="size-4.5 shrink-0" />
-                    </div>
-                    <span className="text-xs font-bold text-foreground group-hover:text-brand-orange transition-colors">
-                      {cat.shortName}
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-muted text-muted-foreground">
-                    {count} bài viết
-                  </span>
+            >
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div
+                  className={cn(
+                    "flex size-9 shrink-0 items-center justify-center rounded-lg border transition-colors",
+                    isSelected
+                      ? "border-brand-orange bg-brand-orange text-white"
+                      : "border-zinc-200 bg-zinc-50 text-brand-orange group-hover:border-brand-orange group-hover:bg-brand-orange group-hover:text-white dark:border-zinc-700 dark:bg-zinc-800",
+                  )}
+                >
+                  <Icon className="size-4" />
                 </div>
 
-                <h3 className="text-sm font-bold text-foreground leading-snug line-clamp-2 text-balance group-hover:text-brand-orange transition-colors">
-                  {cat.name}
-                </h3>
-
-                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed text-pretty">
-                  {cat.description}
-                </p>
+                <span className="tabular-nums rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                  {publishedInCat > 0 ? publishedInCat : cat.plannedCount} bài
+                </span>
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-border/60 text-xs">
-                <span className="text-muted-foreground font-medium">
-                  {cat.plannedCount} chuyên đề nghiên cứu
-                </span>
-                <span className="text-brand-orange font-bold inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                  <span>{isActive ? "Đang chọn" : "Khám phá"}</span>
-                  <ArrowRight className="size-3.5" />
-                </span>
+              <div className="relative z-10 space-y-1.5">
+                <h3 className="text-sm font-bold leading-snug text-zinc-900 transition-colors group-hover:text-brand-orange dark:text-zinc-100">
+                  {cat.shortName}
+                </h3>
+                <p className="line-clamp-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
+                  {cat.description}
+                </p>
               </div>
             </button>
           );
         })}
-      </div>
+      </BlogSpotlightContainer>
     </section>
   );
 }

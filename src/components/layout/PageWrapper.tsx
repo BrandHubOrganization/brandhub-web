@@ -61,6 +61,7 @@ export function PageWrapper({
 
   const isPublicHelp =
     location.pathname.startsWith("/help") ||
+    location.pathname.startsWith("/blog") ||
     location.pathname === "/privacy" ||
     location.pathname === "/terms";
 
@@ -68,7 +69,7 @@ export function PageWrapper({
     <div
       className={cn(
         "w-full max-w-full min-w-0 space-y-6 overflow-x-clip py-4 pb-24 md:py-6",
-        isPublicHelp ? "px-0" : "px-4 md:px-8",
+        isPublicHelp ? "px-4 sm:px-6 lg:px-8" : "px-4 md:px-8",
         !fullWidth && "mx-auto max-w-7xl",
         compact && "space-y-3 p-3 pb-24 md:px-5 md:py-4 md:pb-24",
         className,

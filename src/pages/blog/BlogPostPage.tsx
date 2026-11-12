@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowRight, Rocket } from "lucide-react";
+import { ArrowRight, CheckCircle2, Rocket } from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { SeoHead } from "@/components/seo/SeoHead";
@@ -23,6 +23,8 @@ import {
   BlogSidebar,
   BlogClusterNav,
   BlogTopicPlaceholder,
+  BlogReadingProgress,
+  BlogSpotlightContainer,
   stripInlineMarkdownLinks,
 } from "./components";
 
@@ -243,8 +245,9 @@ export function BlogPostPage() {
       title={summary.title}
       hideHeader
       hideBanner
-      className="max-w-7xl mx-auto py-4 px-3 sm:px-6 space-y-8 overflow-x-hidden"
+      className="mx-auto max-w-7xl space-y-10 overflow-x-clip px-4 py-6 sm:px-6 sm:py-10 lg:px-8"
     >
+      <BlogReadingProgress />
       <SeoHead
         title={summary.metaTitle}
         description={summary.metaDescription}
@@ -267,11 +270,11 @@ export function BlogPostPage() {
       <BlogPostHeader post={summary} categoryMeta={categoryMeta} />
 
       {/* Main 2-Column Content Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <BlogSpotlightContainer className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-10">
         {/* Left / Main Article Body (8 cols) */}
-        <article className="lg:col-span-8 space-y-8 min-w-0">
+        <article className="min-w-0 space-y-10 lg:col-span-8">
           {/* Cover Image */}
-          <figure className="rounded-2xl overflow-hidden border border-border bg-muted shadow-xs">
+          <figure className="overflow-hidden rounded-3xl border border-zinc-200/85 bg-zinc-100 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
             <img
               src={summary.coverImage}
               alt={summary.coverImageAlt}
@@ -279,9 +282,9 @@ export function BlogPostPage() {
               height={675}
               fetchPriority="high"
               decoding="async"
-              className="w-full max-h-[420px] object-cover"
+              className="max-h-[440px] w-full object-cover"
             />
-            <figcaption className="px-4 py-2.5 text-xs text-muted-foreground bg-card border-t border-border/60 italic">
+            <figcaption className="border-t border-zinc-200/75 bg-white px-5 py-3 text-xs italic text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
               {summary.coverImageAlt}
             </figcaption>
           </figure>
@@ -333,20 +336,20 @@ export function BlogPostPage() {
           <BlogAuthorBio author={summary.author} />
 
           {/* Bottom Primary Conversion Banner */}
-          <section className="rounded-3xl border border-brand-orange/40 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-6 sm:p-10 space-y-4 shadow-xl">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-300 bg-orange-500/15 border border-orange-500/30 px-3 py-1 rounded-full">
-              <Rocket className="size-3.5" />
+          <section className="bh-spotlight-card relative overflow-hidden rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-2xs sm:p-10 space-y-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+              <Rocket className="size-3.5 text-brand-orange" />
               {primaryCta.badge}
             </span>
-            <h2 className="text-xl sm:text-3xl font-extrabold leading-tight">
+            <h2 className="text-balance text-xl font-extrabold leading-tight text-zinc-900 sm:text-3xl dark:text-zinc-50">
               {primaryCta.title}
             </h2>
-            <p className="text-xs sm:text-base text-slate-300 leading-relaxed max-w-2xl">
+            <p className="max-w-2xl text-pretty text-sm leading-relaxed text-zinc-600 sm:text-base dark:text-zinc-300">
               {primaryCta.description}
             </p>
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Link to={primaryCta.primaryHref}>
-                <Button className="h-11 px-6 bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold gap-2 cursor-pointer">
+                <Button className="h-11 cursor-pointer gap-2 rounded-xl bg-brand-orange px-6 font-semibold text-white shadow-md shadow-orange-500/20 hover:bg-brand-orange/90">
                   <span>{primaryCta.primaryText}</span>
                   <ArrowRight className="size-4" />
                 </Button>
@@ -355,16 +358,19 @@ export function BlogPostPage() {
                 <Link to={primaryCta.secondaryHref}>
                   <Button
                     variant="outline"
-                    className="h-11 px-5 border-white/20 bg-white/5 hover:bg-white/10 text-white font-medium cursor-pointer"
+                    className="h-11 cursor-pointer rounded-xl border-zinc-200 bg-white px-5 font-semibold text-zinc-800 hover:border-brand-orange/45 hover:text-brand-orange dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
                   >
                     {primaryCta.secondaryText}
                   </Button>
                 </Link>
               )}
             </div>
-            <p className="text-xs text-slate-400 pt-1">
-              ✓ {primaryCta.featureHighlight}
-            </p>
+            {primaryCta.featureHighlight && (
+              <p className="inline-flex items-center gap-1.5 pt-1 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                <CheckCircle2 className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <span>{primaryCta.featureHighlight}</span>
+              </p>
+            )}
           </section>
         </article>
 
@@ -376,7 +382,7 @@ export function BlogPostPage() {
           secondaryKeywords={summary.secondaryKeywords}
           category={summary.category}
         />
-      </div>
+      </BlogSpotlightContainer>
 
       {/* Topic Cluster Pillar, Prev/Next & 4-Card Related Articles */}
       <BlogClusterNav

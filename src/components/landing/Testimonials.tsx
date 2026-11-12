@@ -5,12 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils";
-import { SectionDecor } from "@/components/landing/SectionDecor";
-import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
-import {
-  SplitHeading,
-  SpinningSeal,
-} from "@/components/landing/MotionPrimitives";
+import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -128,7 +123,7 @@ export function Testimonials() {
     <section
       id="testimonials"
       ref={sectionRef}
-      className="relative overflow-hidden bg-gradient-to-b from-[#FFF8F2] via-zinc-50 to-white py-24 dark:from-zinc-900/50 dark:via-zinc-950 dark:to-zinc-950"
+      className="relative overflow-hidden bg-zinc-50/70 py-24 dark:bg-zinc-950"
     >
       <img
         ref={bgPhotoRef}
@@ -139,13 +134,11 @@ export function Testimonials() {
         height={900}
         loading="lazy"
         decoding="async"
-        className="pointer-events-none absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover opacity-[0.06] will-change-transform dark:opacity-[0.04]"
+        className="pointer-events-none absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover opacity-[0.04] will-change-transform dark:opacity-[0.03]"
       />
-      <SectionDecor corner="left" />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-14 max-w-2xl text-center">
-          <SectionEyebrow index={7} />
           <SplitHeading
             text="Phản hồi thực chiến từ"
             highlightText="Beta Testers"
@@ -156,17 +149,9 @@ export function Testimonials() {
           </p>
         </div>
 
-        {/* Featured Obsidian Spotlight Stage */}
-        <div className="bh-stage-reveal relative mb-10 rounded-[32px] border border-zinc-800 bg-gradient-to-br from-zinc-950 via-[#12131C] to-zinc-900 p-7 text-white shadow-2xl sm:p-10">
-          <SpinningSeal
-            text="VERIFIED BETA TESTERS • 5.0 RATING • "
-            centerTop="5.0"
-            centerBottom="STARS"
-            variant="orange"
-            className="pointer-events-none absolute -top-6 -right-4 hidden size-22 sm:block"
-          />
-
-          <Quote className="text-brand-orange/20 absolute top-6 right-8 size-16 sm:right-24" />
+        {/* Featured Editorial Spotlight Stage */}
+        <div className="bh-stage-reveal relative mb-8 rounded-2xl border border-zinc-200/90 bg-white p-7 text-zinc-900 shadow-xs sm:p-10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white">
+          <Quote className="text-zinc-200 dark:text-zinc-800 absolute top-6 right-8 size-14" />
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -179,28 +164,26 @@ export function Testimonials() {
             >
               {/* Left Portrait Window */}
               <div className="flex flex-col items-center md:col-span-4">
-                <div className="relative">
-                  <div className="size-32 overflow-hidden rounded-2xl border-2 border-orange-500/50 p-1 shadow-xl sm:size-36">
-                    <img
-                      src={current.avatar}
-                      alt={current.name}
-                      width={240}
-                      height={240}
-                      loading="lazy"
-                      decoding="async"
-                      className="size-full rounded-xl object-cover"
-                    />
-                  </div>
-                  <span className="bg-brand-orange absolute -bottom-2.5 left-1/2 -translate-x-1/2 rounded-full px-3 py-0.5 text-[10px] font-black tracking-wider text-white uppercase shadow-md">
-                    {current.canonicalRole}
-                  </span>
+                <div className="size-32 overflow-hidden rounded-xl border border-zinc-200/80 bg-zinc-100 p-1 sm:size-36 dark:border-zinc-700 dark:bg-zinc-800">
+                  <img
+                    src={current.avatar}
+                    alt={current.name}
+                    width={240}
+                    height={240}
+                    loading="lazy"
+                    decoding="async"
+                    className="size-full rounded-lg object-cover"
+                  />
                 </div>
-                <p className="mt-4 text-base font-bold text-white">
+                <span className="mt-3 inline-flex items-center rounded-full bg-brand-orange/10 px-3 py-0.5 font-mono text-[10px] font-bold tracking-wider text-brand-orange uppercase">
+                  {current.canonicalRole}
+                </span>
+                <p className="mt-1.5 text-base font-bold text-zinc-900 dark:text-white">
                   {current.name}
                 </p>
-                <p className="text-xs text-zinc-400">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   {current.role} ·{" "}
-                  <span className="font-semibold text-orange-400">
+                  <span className="font-semibold text-zinc-700 dark:text-zinc-200">
                     {current.company}
                   </span>
                 </p>
@@ -217,17 +200,17 @@ export function Testimonials() {
                       />
                     ))}
                   </div>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-3 py-0.5 text-xs font-bold text-emerald-400 ring-1 ring-emerald-500/30">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200/80 dark:bg-emerald-500/15 dark:text-emerald-400 dark:ring-emerald-500/30">
                     <BadgeCheck className="size-3.5" />
                     <span>{current.badge}</span>
                   </span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 px-3 py-0.5 text-xs font-bold text-orange-300 ring-1 ring-orange-500/30">
-                    <TrendingUp className="size-3.5" />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-0.5 text-xs font-semibold text-zinc-700 ring-1 ring-zinc-200/80 dark:bg-zinc-800 dark:text-zinc-200 dark:ring-zinc-700">
+                    <TrendingUp className="text-brand-orange size-3.5" />
                     <span>{current.metricBadge}</span>
                   </span>
                 </div>
 
-                <p className="text-base leading-relaxed font-medium text-zinc-100 sm:text-xl">
+                <p className="text-base leading-relaxed font-medium text-zinc-800 sm:text-xl dark:text-zinc-100">
                   &ldquo;{current.quote}&rdquo;
                 </p>
               </div>
@@ -235,8 +218,8 @@ export function Testimonials() {
           </AnimatePresence>
         </div>
 
-        {/* 3 Interactive Cutout & Floating-Badge Persona Cards */}
-        <div className="grid grid-cols-1 gap-7 pt-3 md:grid-cols-3">
+        {/* 3 Clean Persona Selector Cards */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           {TESTIMONIALS.map((item, idx) => {
             const isSelected = idx === active;
             return (
@@ -245,35 +228,26 @@ export function Testimonials() {
                 type="button"
                 onClick={() => setActive(idx)}
                 className={cn(
-                  "bh-reveal-card group relative flex cursor-pointer flex-col justify-between rounded-[28px] rounded-tr-[52px] border bg-gradient-to-br p-6 pt-8 text-left transition-all duration-500 hover:shadow-xl",
-                  item.cardTheme,
-                  isSelected && "ring-2 ring-brand-orange shadow-lg",
+                  "bh-reveal-card group relative flex cursor-pointer flex-col justify-between rounded-2xl border bg-white p-6 text-left transition-all duration-300 hover:shadow-md dark:bg-zinc-900",
+                  isSelected
+                    ? "border-brand-orange shadow-sm ring-1 ring-brand-orange/30"
+                    : "border-zinc-200/90 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700",
                 )}
               >
-                {/* Floating 3D Metric Pill (Khối nổi) */}
-                <div
-                  data-bh-float
-                  className={cn(
-                    "absolute -top-3.5 left-5 z-20 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[9px] font-black tracking-wider uppercase shadow-md",
-                    item.pillTheme,
-                  )}
-                >
-                  <span>{item.metricBadge}</span>
-                </div>
-
-                {/* Top-Right Cutout Role Tag (Khối cắt) */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -top-2 -right-2 z-10 flex size-12 items-center justify-center rounded-bl-[20px] rounded-tr-[20px] border-b border-l border-zinc-200/80 bg-white font-mono text-[11px] font-black text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-                >
-                  0{idx + 1}
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center rounded-full bg-brand-orange/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-brand-orange uppercase">
+                    {item.metricBadge}
+                  </span>
+                  <span className="font-mono text-xs font-semibold text-zinc-400">
+                    0{idx + 1}
+                  </span>
                 </div>
 
                 <p className="line-clamp-3 text-xs leading-relaxed text-zinc-600 dark:text-zinc-300">
                   &ldquo;{item.quote}&rdquo;
                 </p>
 
-                <div className="mt-5 flex items-center gap-3 border-t border-zinc-200/60 pt-4 dark:border-zinc-800">
+                <div className="mt-5 flex items-center gap-3 border-t border-zinc-200/70 pt-4 dark:border-zinc-800">
                   <img
                     src={item.avatar}
                     alt={item.name}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Compass, Layers } from "lucide-react";
 import { BLOG_POST_SUMMARIES } from "@/data/blogLoader";
 import type { BlogCategory, BlogPostSummary } from "@/data/blogTypes";
+import { BlogSpotlightContainer } from "./BlogMotion";
 
 const PILLAR_TOPIC_BY_CATEGORY: Record<string, number> = {
   "agency-project-management": 1,
@@ -47,155 +48,136 @@ export function BlogClusterNav({
 
   return (
     <section
-      aria-label="Điều hướng cụm chủ đề và bài viết liên quan"
-      className="space-y-6 pt-6 border-t border-border"
+      aria-label="Điều hướng cụm chủ đề liên quan"
+      className="space-y-8 border-t border-zinc-200/80 pt-10 dark:border-zinc-800"
     >
-      {/* Category Pillar Hub Banner (for cluster articles) */}
-      {pillarPost && !isCurrentPillar && (
-        <div className="rounded-2xl border border-brand-orange/35 bg-gradient-to-r from-brand-orange/10 via-card to-card p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-orange uppercase tracking-wider">
-              <Compass className="size-4" />
-              <span>
-                Bài viết Trụ cột (Pillar Guide) · Chuyên mục{" "}
-                {categoryMeta?.shortName || "Kiến thức cốt lõi"} ({clusterCount}{" "}
-                chủ đề)
-              </span>
-            </div>
-            <h2 className="text-base sm:text-lg font-extrabold text-foreground leading-snug">
-              <Link
-                to={`/blog/${pillarPost.slug}`}
-                className="hover:text-brand-orange transition-colors"
-              >
-                {pillarPost.title}
-              </Link>
-            </h2>
-            <p className="text-xs text-muted-foreground line-clamp-2">
-              {pillarPost.metaDescription}
-            </p>
+      {/* Pillar + Prev / Next Cluster Navigator */}
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-zinc-700 uppercase dark:text-zinc-300">
+            <Compass className="size-4 text-brand-orange" />
+            <span>
+              Điều hướng trong cụm:{" "}
+              {categoryMeta?.shortName ?? currentPost.category} ({clusterCount}{" "}
+              bài)
+            </span>
           </div>
-          <Link
-            to={`/blog/${pillarPost.slug}`}
-            className="inline-flex items-center gap-1.5 shrink-0 rounded-xl bg-brand-orange px-4 py-2.5 text-xs font-bold text-white hover:bg-brand-orange/90 transition-colors self-start md:self-center"
-          >
-            <span>Đọc bài Trụ cột</span>
-            <ArrowRight className="size-3.5" />
-          </Link>
+          {categoryMeta && (
+            <Link
+              to={`/blog?category=${categoryMeta.slug}`}
+              className="text-xs font-semibold text-brand-orange hover:underline"
+            >
+              Xem toàn bộ cụm {categoryMeta.shortName} &rarr;
+            </Link>
+          )}
         </div>
-      )}
 
-      {/* Prev / Next Sequential Navigation inside the same Topic Cluster */}
-      {(prevInCluster || nextInCluster) && (
-        <nav
-          aria-label="Điều hướng tuần tự trong chuyên mục"
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
-        >
+        <BlogSpotlightContainer className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {/* Pillar Reference */}
+          {pillarPost && (
+            <Link
+              to={`/blog/${pillarPost.slug}`}
+              className="bh-spotlight-card group flex flex-col justify-between gap-2 rounded-xl border border-brand-orange/40 bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-orange hover:shadow-md dark:border-orange-500/35 dark:bg-zinc-900"
+            >
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-brand-orange">
+                <Layers className="size-3.5" />
+                {isCurrentPillar ? "Đang đọc Bài Trụ Cột" : "Bài Trụ Cột Cụm"}
+              </span>
+              <p className="line-clamp-2 text-xs font-bold leading-snug text-zinc-900 transition-colors group-hover:text-brand-orange sm:text-sm dark:text-zinc-100">
+                {pillarPost.title}
+              </p>
+              <span className="tabular-nums text-[11px] font-medium text-zinc-500">
+                Chuyên đề #{String(pillarPost.topicNumber).padStart(3, "0")}
+              </span>
+            </Link>
+          )}
+
+          {/* Prev in Cluster */}
           {prevInCluster ? (
             <Link
               to={`/blog/${prevInCluster.slug}`}
-              className="group rounded-2xl border border-border bg-card p-4 sm:p-5 hover:border-brand-orange/50 transition-all flex flex-col justify-between gap-2"
+              className="bh-spotlight-card group flex flex-col justify-between gap-2 rounded-2xl border border-zinc-200/85 bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-orange/45 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
             >
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-muted-foreground group-hover:text-brand-orange transition-colors">
-                <ArrowLeft className="size-3.5" />
-                <span>
-                  Bài trước cùng chuyên mục (#{String(prevInCluster.topicNumber).padStart(3, "0")})
-                </span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+                <ArrowLeft className="size-3.5 text-brand-orange" />
+                Bài trước trong cụm
               </span>
-              <span className="text-sm font-bold text-foreground group-hover:text-brand-orange transition-colors line-clamp-2">
+              <p className="line-clamp-2 text-xs font-bold leading-snug text-zinc-900 transition-colors group-hover:text-brand-orange sm:text-sm dark:text-zinc-100">
                 {prevInCluster.title}
+              </p>
+              <span className="tabular-nums text-[11px] text-zinc-500">
+                Chuyên đề #{String(prevInCluster.topicNumber).padStart(3, "0")}
               </span>
             </Link>
           ) : (
-            <Link
-              to={
-                categoryMeta
-                  ? `/blog?category=${categoryMeta.slug}`
-                  : "/blog"
-              }
-              className="group rounded-2xl border border-dashed border-border bg-card/60 p-4 sm:p-5 hover:border-brand-orange/50 transition-all flex flex-col justify-between gap-2"
-            >
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-orange">
-                <Layers className="size-3.5" />
-                <span>Tổng quan chuyên mục</span>
-              </span>
-              <span className="text-sm font-bold text-foreground group-hover:text-brand-orange transition-colors">
-                Xem trọn bộ {clusterCount} bài phân tích thuộc{" "}
-                {categoryMeta?.shortName || "chuyên mục này"}
-              </span>
-            </Link>
+            <div className="hidden rounded-2xl border border-dashed border-zinc-200 bg-zinc-50/50 p-4 md:flex md:items-center md:justify-center md:text-xs md:text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900/30">
+              Đầu lộ trình cụm chủ đề
+            </div>
           )}
 
-          {nextInCluster && (
+          {/* Next in Cluster */}
+          {nextInCluster ? (
             <Link
               to={`/blog/${nextInCluster.slug}`}
-              className="group rounded-2xl border border-border bg-card p-4 sm:p-5 hover:border-brand-orange/50 transition-all flex flex-col justify-between gap-2 md:text-right md:items-end"
+              className="bh-spotlight-card group flex flex-col justify-between gap-2 rounded-2xl border border-zinc-200/85 bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-orange/45 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
             >
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-muted-foreground group-hover:text-brand-orange transition-colors">
-                <span>
-                  Bài tiếp theo cùng chuyên mục (#{String(nextInCluster.topicNumber).padStart(3, "0")})
-                </span>
-                <ArrowRight className="size-3.5" />
+              <span className="inline-flex items-center justify-end gap-1 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+                Bài tiếp theo trong cụm
+                <ArrowRight className="size-3.5 text-brand-orange" />
               </span>
-              <span className="text-sm font-bold text-foreground group-hover:text-brand-orange transition-colors line-clamp-2">
+              <p className="line-clamp-2 text-xs font-bold leading-snug text-zinc-900 transition-colors group-hover:text-brand-orange sm:text-sm dark:text-zinc-100">
                 {nextInCluster.title}
+              </p>
+              <span className="tabular-nums text-right text-[11px] text-zinc-500">
+                Chuyên đề #{String(nextInCluster.topicNumber).padStart(3, "0")}
               </span>
             </Link>
+          ) : (
+            <div className="hidden rounded-2xl border border-dashed border-zinc-200 bg-zinc-50/50 p-4 md:flex md:items-center md:justify-center md:text-xs md:text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900/30">
+              Cuối lộ trình cụm chủ đề
+            </div>
           )}
-        </nav>
-      )}
-
-      {/* 4-Card Strategic Related Articles Grid */}
-      <div className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-lg sm:text-xl font-extrabold text-foreground">
-            Bài viết liên quan trong mạng lưới kiến thức BrandHub
-          </h2>
-          <div className="flex items-center gap-4">
-            {categoryMeta && (
-              <Link
-                to={`/blog?category=${categoryMeta.slug}`}
-                className="text-xs font-semibold text-muted-foreground hover:text-brand-orange transition-colors"
-              >
-                Chuyên mục: {categoryMeta.shortName}
-              </Link>
-            )}
-            <Link
-              to="/blog"
-              className="text-xs font-bold text-brand-orange hover:underline inline-flex items-center gap-1"
-            >
-              <span>Xem trọn bộ 100 chủ đề</span>
-              <ArrowRight className="size-3.5" />
-            </Link>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {relatedPosts.map((rel: BlogPostSummary) => (
-            <Link
-              key={rel.id}
-              to={`/blog/${rel.slug}`}
-              className="group rounded-2xl border border-border bg-card p-5 hover:border-brand-orange/50 hover:shadow-md transition-all flex flex-col justify-between gap-3"
-            >
-              <div className="space-y-2">
-                <span className="text-[11px] font-bold text-brand-orange">
-                  Chủ đề #{String(rel.topicNumber).padStart(3, "0")} ·{" "}
-                  {rel.readingTimeMinutes} phút đọc
-                </span>
-                <h3 className="text-sm font-bold text-foreground group-hover:text-brand-orange transition-colors leading-snug line-clamp-3">
-                  {rel.title}
-                </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">
-                  {rel.metaDescription}
-                </p>
-              </div>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand-orange">
-                <span>Đọc bài phân tích</span>
-                <ArrowRight className="size-3.5" />
-              </span>
-            </Link>
-          ))}
-        </div>
+        </BlogSpotlightContainer>
       </div>
+
+      {/* 4 Related Articles with Cover Image Previews */}
+      {relatedPosts.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-balance text-lg font-extrabold tracking-tight text-zinc-900 sm:text-xl dark:text-zinc-50">
+            Đọc tiếp Các Chuyên đề Liên quan
+          </h3>
+          <BlogSpotlightContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {relatedPosts.map((rp) => (
+              <Link
+                key={rp.id}
+                to={`/blog/${rp.slug}`}
+                className="bh-spotlight-card group flex flex-col overflow-hidden rounded-2xl border border-zinc-200/85 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-orange/45 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+              >
+                <div className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                  <img
+                    src={rp.coverImage}
+                    alt={rp.coverImageAlt}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                  />
+                  <span className="tabular-nums absolute top-2 right-2 rounded-full border border-orange-200/80 bg-white/95 px-2 py-0.5 text-[10px] font-bold text-brand-orange shadow-xs">
+                    #{String(rp.topicNumber).padStart(3, "0")}
+                  </span>
+                </div>
+                <div className="relative z-10 flex flex-1 flex-col justify-between space-y-2 p-4">
+                  <h4 className="line-clamp-2 text-xs font-bold leading-snug text-zinc-900 transition-colors group-hover:text-brand-orange sm:text-[13px] dark:text-zinc-100">
+                    {rp.title}
+                  </h4>
+                  <span className="tabular-nums text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                    {rp.readingTimeMinutes} phút đọc &rarr;
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </BlogSpotlightContainer>
+        </div>
+      )}
     </section>
   );
 }

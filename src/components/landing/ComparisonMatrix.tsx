@@ -10,8 +10,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { SectionDecor } from "@/components/landing/SectionDecor";
-import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 type SupportStatus = "full" | "partial" | "none";
@@ -139,9 +137,8 @@ export function ComparisonMatrix() {
   return (
     <section
       id="comparison"
-      className="relative overflow-hidden border-t border-zinc-100 bg-zinc-50/60 py-24 dark:border-zinc-800/80 dark:bg-zinc-900/30"
+      className="relative overflow-hidden border-t border-zinc-200/80 bg-zinc-50/70 py-24 dark:border-zinc-800/80 dark:bg-zinc-900/40"
     >
-      <SectionDecor corner="right" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div
           ref={headRef}
@@ -150,9 +147,8 @@ export function ComparisonMatrix() {
             headVisible ? "opacity-100" : "opacity-0",
           )}
         >
-          <SectionEyebrow index={9} />
-          <div className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange mb-3 inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold">
-            <Layers className="size-3.5" />
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3.5 py-1 text-xs font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+            <Layers className="size-3.5 text-brand-orange" />
             <span>{t("landing.comparison.badge")}</span>
           </div>
           <SplitHeading text={t("landing.comparison.title")} />
@@ -164,7 +160,7 @@ export function ComparisonMatrix() {
         <div
           ref={tableRef}
           className={cn(
-            "bh-stage-reveal overflow-hidden rounded-[28px] border border-zinc-200/90 bg-white shadow-sm transition-all duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none dark:border-zinc-800 dark:bg-zinc-950",
+            "bh-stage-reveal overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-sm transition-all duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none dark:border-zinc-800 dark:bg-zinc-950",
             tableVisible
               ? "translate-y-0 opacity-100"
               : "translate-y-6 opacity-0",

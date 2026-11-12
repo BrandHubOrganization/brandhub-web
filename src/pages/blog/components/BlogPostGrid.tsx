@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Layers } from "lucide-react";
+import { BookOpen, ChevronDown, RotateCcw } from "lucide-react";
+import type { BlogCategory, BlogCategorySlug, BlogPostSummary } from "@/data/blogTypes";
 import { Button } from "@/components/ui/button";
 import { BlogPostCard } from "./BlogPostCard";
-import type { BlogPost, BlogPostSummary, BlogCategory } from "@/data/blogTypes";
+import { BlogSpotlightContainer } from "./BlogMotion";
 
 interface BlogPostGridProps {
-  posts: (BlogPost | BlogPostSummary)[];
-  getCategoryMeta: (slug: BlogPost["category"]) => BlogCategory | undefined;
+  posts: BlogPostSummary[];
+  getCategoryMeta: (slug: BlogCategorySlug) => BlogCategory | undefined;
   searchQuery: string;
   onClearFilters: () => void;
 }
@@ -29,17 +30,27 @@ export function BlogPostGrid({
 
   if (posts.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-border p-10 text-center space-y-3">
-        <p className="text-sm text-muted-foreground">
-          Không tìm thấy bài viết nào khớp với từ khóa &quot;{searchQuery}&quot; trong chuyên mục này.
-        </p>
+      <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50/70 p-12 text-center space-y-4 dark:border-zinc-700 dark:bg-zinc-900/50">
+        <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-brand-orange/10 text-brand-orange">
+          <BookOpen className="size-6" />
+        </div>
+        <div className="space-y-1.5">
+          <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+            Không tìm thấy bài viết phù hợp
+          </h3>
+          <p className="mx-auto max-w-md text-pretty text-xs leading-relaxed text-zinc-500 sm:text-sm dark:text-zinc-400">
+            {searchQuery
+              ? `Không có bài viết nào khớp với từ khóa "${searchQuery}". Thử từ khóa khác hoặc đặt lại bộ lọc.`
+              : "Chưa có bài viết nào trong bộ lọc hiện tại."}
+          </p>
+        </div>
         <Button
           variant="outline"
-          size="sm"
           onClick={onClearFilters}
-          className="cursor-pointer"
+          className="cursor-pointer rounded-xl border-zinc-200 bg-white text-xs font-semibold hover:border-brand-orange/40 hover:text-brand-orange dark:border-zinc-700 dark:bg-zinc-900"
         >
-          Xóa bộ lọc tìm kiếm
+          <RotateCcw className="mr-1.5 size-3.5" />
+          Đặt lại bộ lọc
         </Button>
       </div>
     );
@@ -47,11 +58,24 @@ export function BlogPostGrid({
 
   const displayedPosts = posts.slice(0, visibleCount);
   const remainingPosts = posts.slice(visibleCount);
-  const hasMore = remainingPosts.length > 0;
 
   return (
-    <section aria-label="Danh sách bài viết đã xuất bản" className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section aria-labelledby="featured-library-heading" className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div className="space-y-1">
+          <h2
+            id="featured-library-heading"
+            className="text-balance text-lg font-extrabold tracking-tight text-foreground sm:text-xl"
+          >
+            Thư viện Cẩm nang &amp; Hướng dẫn Thực chiến
+          </h2>
+          <p className="text-pretty text-xs text-muted-foreground sm:text-sm">
+            Bài viết chi tiết kèm quy trình, checklist thực thi và bảng so sánh dành cho đội ngũ Agency &amp; In-house.
+          </p>
+        </div>
+      </div>
+
+      <BlogSpotlightContainer className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {displayedPosts.map((post) => (
           <BlogPostCard
             key={post.id}
@@ -59,42 +83,39 @@ export function BlogPostGrid({
             categoryMeta={getCategoryMeta(post.category)}
           />
         ))}
-      </div>
+      </BlogSpotlightContainer>
 
-      {hasMore && (
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+      {remainingPosts.length > 0 && (
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <Button
             type="button"
+            variant="outline"
             onClick={() =>
               setVisibleCount((prev) => Math.min(posts.length, prev + PAGE_STEP))
             }
-            className="h-11 px-6 rounded-xl bg-brand-orange hover:bg-brand-orange/90 text-white font-bold gap-2 cursor-pointer shadow-sm"
+            className="h-10 cursor-pointer rounded-xl border-zinc-200 bg-white px-5 text-xs font-semibold text-zinc-800 shadow-2xs transition-all hover:border-brand-orange/45 hover:bg-orange-50/40 hover:text-brand-orange dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
           >
-            <ChevronDown className="size-4" />
-            <span>
-              Xem thêm {Math.min(PAGE_STEP, remainingPosts.length)} bài viết chuyên sâu
-            </span>
+            <ChevronDown className="mr-1.5 size-4 text-brand-orange" />
+            Xem thêm{" "}
+            <span className="tabular-nums mx-1">
+              {Math.min(PAGE_STEP, remainingPosts.length)}
+            </span>{" "}
+            bài viết (còn {remainingPosts.length})
           </Button>
-          {remainingPosts.length > PAGE_STEP && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setVisibleCount(posts.length)}
-              className="h-11 px-5 rounded-xl font-semibold gap-2 cursor-pointer"
-            >
-              <Layers className="size-4 text-brand-orange" />
-              <span>Hiển thị toàn bộ ({posts.length} bài)</span>
-            </Button>
-          )}
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setVisibleCount(posts.length)}
+            className="h-10 cursor-pointer rounded-xl px-4 text-xs font-semibold text-muted-foreground hover:text-brand-orange"
+          >
+            Hiển thị tất cả ({posts.length})
+          </Button>
         </div>
       )}
 
-      {/* Crawlable semantic internal link directory for remaining articles */}
+      {/* Keep remaining article links crawlable in pre-rendered HTML without cluttering the viewport */}
       {remainingPosts.length > 0 && (
-        <nav
-          aria-label="Danh mục liên kết toàn bộ bài viết chuyên sâu"
-          className="sr-only"
-        >
+        <nav aria-label="Danh sách bài viết bổ sung" className="sr-only">
           <ul>
             {remainingPosts.map((post) => (
               <li key={post.id}>

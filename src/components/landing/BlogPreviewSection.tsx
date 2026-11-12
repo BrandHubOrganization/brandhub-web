@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { BLOG_CATEGORIES } from "@/data/blogCategories";
 import { BLOG_FEATURED_POSTS } from "@/data/blogFeatured";
-import { SectionDecor } from "@/components/landing/SectionDecor";
 
 export function BlogPreviewSection() {
   const featuredPosts = BLOG_FEATURED_POSTS;
@@ -18,27 +17,26 @@ export function BlogPreviewSection() {
     <section
       id="blog-insights"
       aria-labelledby="blog-insights-heading"
-      className="relative py-20 lg:py-28 bg-zinc-50/80 dark:bg-zinc-900/50 border-t border-zinc-200/70 dark:border-zinc-800/80 overflow-hidden"
+      className="border-t border-zinc-200/80 bg-zinc-50/70 py-24 dark:border-zinc-800/80 dark:bg-zinc-900/40"
     >
-      <SectionDecor corner="right" />
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-          <div className="space-y-3 max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 dark:border-orange-500/30 bg-orange-50 dark:bg-orange-500/10 px-3.5 py-1.5 text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
-              <BookOpen className="size-3.5" />
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+          <div className="max-w-3xl space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3.5 py-1 text-xs font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+              <BookOpen className="size-3.5 text-brand-orange" />
               <span>Cẩm nang Quản trị Truyền thông &amp; AI Thực chiến</span>
             </div>
             <h2
               id="blog-insights-heading"
-              className="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight"
+              className="text-3xl font-extrabold tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-100 leading-tight"
             >
               Kiến thức vận hành{" "}
-              <span className="bg-gradient-to-r from-orange-600 to-amber-500 dark:from-orange-400 dark:to-amber-300 bg-clip-text text-transparent">
+              <span className="text-brand-orange">
                 Agency, Gói Truyền thông &amp; AI Studio
               </span>
             </h2>
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <p className="text-sm leading-relaxed text-zinc-600 sm:text-base dark:text-zinc-400">
               Khám phá cách chuẩn hóa quy trình làm việc như Jira &amp; Notion, thiết kế
               Gói truyền thông (Media Package), ứng dụng AI GraphRAG và tự động hóa
               lịch đăng trên Facebook, Instagram, TikTok và Threads.
@@ -47,7 +45,7 @@ export function BlogPreviewSection() {
 
           <Link
             to="/blog"
-            className="inline-flex items-center gap-2 rounded-xl bg-zinc-900 dark:bg-brand-orange hover:bg-orange-600 dark:hover:bg-brand-orange/90 text-white px-5 py-3 text-sm font-bold transition-colors self-start lg:self-auto shrink-0 shadow-sm"
+            className="bg-brand-orange hover:bg-brand-orange/90 inline-flex shrink-0 items-center gap-2 self-start rounded-xl px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors lg:self-auto"
           >
             <span>Khám phá toàn bộ Blog &amp; 100 Chủ đề</span>
             <ArrowRight className="size-4" />
@@ -56,17 +54,17 @@ export function BlogPreviewSection() {
 
         {/* Category Quick Pills */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-500 dark:text-zinc-400 mr-1">
-            <Layers className="size-3.5 text-orange-500" /> Chuyên mục:
+          <span className="mr-1 inline-flex items-center gap-1.5 text-xs font-bold text-zinc-500 dark:text-zinc-400">
+            <Layers className="size-3.5 text-brand-orange" /> Chuyên mục:
           </span>
           {BLOG_CATEGORIES.map((cat) => (
             <Link
               key={cat.slug}
               to={`/blog?category=${cat.slug}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-orange-400 dark:hover:border-orange-500/60 hover:text-orange-600 dark:hover:text-orange-400 px-3.5 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 transition-all shadow-2xs"
+              className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-zinc-700 shadow-2xs transition-colors hover:border-brand-orange/50 hover:text-brand-orange dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-orange-500/50 dark:hover:text-orange-400"
             >
               <span>{cat.shortName}</span>
-              <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-bold">
+              <span className="tabular-nums text-[10px] font-bold text-zinc-400 dark:text-zinc-500">
                 ({cat.plannedCount})
               </span>
             </Link>
@@ -74,74 +72,77 @@ export function BlogPreviewSection() {
         </div>
 
         {/* 6 Pillar Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {featuredPosts.map((post) => {
             const cat = BLOG_CATEGORIES.find((c) => c.slug === post.category);
             return (
               <article
                 key={post.id}
-                className="group rounded-2xl border border-zinc-200/90 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs hover:shadow-xl hover:border-orange-300 dark:hover:border-orange-500/50 transition-all flex flex-col justify-between"
+                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-orange/45 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
               >
                 <div>
                   <Link
                     to={`/blog/${post.slug}`}
-                    className="block relative aspect-16/9 overflow-hidden bg-zinc-100 dark:bg-zinc-800"
+                    className="relative block aspect-16/9 overflow-hidden border-b border-zinc-100 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800"
                   >
                     <img
                       src={post.coverImage}
                       alt={post.coverImageAlt}
                       loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     />
-                    <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                      <span className="rounded-full bg-zinc-950/80 text-white px-2.5 py-0.5 text-[11px] font-bold">
-                        #{String(post.topicNumber).padStart(3, "0")}
-                      </span>
-                      {cat && (
-                        <span className="rounded-full bg-orange-600 text-white px-2.5 py-0.5 text-[11px] font-bold shadow-xs">
-                          {cat.shortName}
-                        </span>
-                      )}
-                    </div>
                   </Link>
 
-                  <div className="p-5 space-y-3">
+                  <div className="space-y-3 p-5">
+                    <div className="flex items-center justify-between gap-2 text-[11px]">
+                      {cat ? (
+                        <span className="truncate rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                          {cat.shortName}
+                        </span>
+                      ) : (
+                        <span />
+                      )}
+                      <span className="tabular-nums font-mono font-bold text-brand-orange">
+                        #{String(post.topicNumber).padStart(3, "0")}
+                      </span>
+                    </div>
+
                     <div className="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
-                      <span className="inline-flex items-center gap-1">
-                        <Calendar className="size-3.5 text-orange-500" />
+                      <span className="tabular-nums inline-flex items-center gap-1">
+                        <Calendar className="size-3.5 text-brand-orange" />
                         {post.publishedAt}
                       </span>
-                      <span className="inline-flex items-center gap-1">
-                        <Clock className="size-3.5 text-orange-500" />
+                      <span className="tabular-nums inline-flex items-center gap-1">
+                        <Clock className="size-3.5 text-brand-orange" />
                         {post.readingTimeMinutes} phút đọc
                       </span>
                     </div>
 
-                    <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors leading-snug line-clamp-2">
+                    <h3 className="line-clamp-2 text-base font-bold leading-snug text-zinc-900 transition-colors group-hover:text-brand-orange sm:text-lg dark:text-zinc-100">
                       <Link to={`/blog/${post.slug}`}>{post.title}</Link>
                     </h3>
 
-                    <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                    <p className="line-clamp-3 text-xs leading-relaxed text-zinc-600 sm:text-sm dark:text-zinc-400">
                       {post.metaDescription}
                     </p>
                   </div>
                 </div>
 
-                <div className="px-5 py-3.5 border-t border-zinc-100 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-950/40 flex items-center justify-between gap-2">
+                <div className="flex items-center justify-between gap-2 border-t border-zinc-100 bg-zinc-50/60 px-5 py-3.5 dark:border-zinc-800/80 dark:bg-zinc-950/40">
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate">
+                    <p className="truncate text-xs font-bold text-zinc-800 dark:text-zinc-200">
                       {post.author.name}
                     </p>
-                    <p className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
+                    <p className="truncate text-[11px] text-zinc-500 dark:text-zinc-400">
                       {post.author.roleTitle}
                     </p>
                   </div>
                   <Link
                     to={`/blog/${post.slug}`}
-                    className="shrink-0 inline-flex items-center gap-1 text-xs font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700"
+                    className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-brand-orange hover:underline"
                   >
                     <span>Đọc bài viết</span>
-                    <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 </div>
               </article>
@@ -150,30 +151,30 @@ export function BlogPreviewSection() {
         </div>
 
         {/* Bottom Conversion Strip */}
-        <div className="rounded-2xl border border-orange-200/80 dark:border-orange-500/30 bg-gradient-to-r from-orange-50 via-amber-50/60 to-orange-50 dark:from-orange-950/30 dark:via-zinc-900 dark:to-orange-950/30 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-2xs sm:flex-row sm:p-6 dark:border-zinc-800 dark:bg-zinc-900">
           <div className="flex items-center gap-3 text-center sm:text-left">
-            <div className="hidden sm:flex size-10 rounded-xl bg-orange-600 text-white items-center justify-center shrink-0">
+            <div className="hidden size-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange/10 text-brand-orange sm:flex">
               <Sparkles className="size-5" />
             </div>
             <div>
-              <p className="text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100">
+              <p className="text-sm font-bold text-zinc-900 sm:text-base dark:text-zinc-100">
                 Muốn áp dụng ngay các quy trình này cho đội ngũ của bạn?
               </p>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="text-xs text-zinc-600 sm:text-sm dark:text-zinc-400">
                 Khởi tạo Workspace miễn phí cho Owner, Manager, Creator và Client chỉ trong 30 giây.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex shrink-0 items-center gap-2.5">
             <Link
               to="/register"
-              className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 text-xs sm:text-sm font-bold transition-colors shadow-xs"
+              className="bg-brand-orange hover:bg-brand-orange/90 rounded-xl px-4 py-2.5 text-xs font-bold text-white shadow-xs transition-colors sm:text-sm"
             >
               Đăng ký dùng thử 0đ
             </Link>
             <Link
-              to="/blog#roadmap-100-topics"
-              className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-4 py-2.5 text-xs sm:text-sm font-semibold transition-colors"
+              to="/blog#danh-muc-100-chu-de"
+              className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2.5 text-xs font-semibold text-zinc-800 transition-colors hover:border-brand-orange/45 hover:text-brand-orange sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
             >
               Xem 100 chủ đề chuyên sâu
             </Link>
