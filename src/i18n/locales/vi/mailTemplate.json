@@ -3,7 +3,22 @@
   "subtitle": "Soạn mẫu email có biến, gửi cho Client hoặc danh sách người nhận, theo dõi lịch sử gửi.",
   "create": "Tạo mẫu email",
   "search": "Tìm theo tên mẫu",
+  "clearSearch": "Xóa tìm kiếm",
   "itemLabel": "mẫu email",
+  "categories": {
+    "ALL": "Tất cả",
+    "SYSTEM_DEFAULT": "Hệ thống",
+    "CUSTOM": "Tùy chỉnh",
+    "CAMPAIGN_BROADCAST": "Chiến dịch",
+    "WORKSPACE_MANAGER": "Nội bộ Workspace"
+  },
+  "sort": {
+    "label": "Sắp xếp theo",
+    "createdDesc": "Mới nhất",
+    "createdAsc": "Cũ nhất",
+    "nameAsc": "Tên A-Z",
+    "nameDesc": "Tên Z-A"
+  },
   "includeSystem": "Hiện mẫu hệ thống",
   "systemBadge": "Hệ thống",
   "attachmentCount": "{{count}} tệp đính kèm",
@@ -13,6 +28,10 @@
   "cancel": "Hủy",
   "close": "Đóng",
   "deleted": "Đã xóa mẫu email.",
+  "backToList": "Quay lại danh sách mẫu",
+  "detail": {
+    "breadcrumb": "Chi tiết mẫu email"
+  },
   "quota": {
     "label": "Quota tháng: {{used}}/{{limit}}",
     "hint": "Hạn mức gửi email tháng này của workspace."

@@ -1,5 +1,10 @@
 import { api } from "@/services/api";
-import type { TaskListItem, TaskListFilterParams, TaskStatus } from "@/types/task";
+import type {
+  TaskListItem,
+  TaskListFilterParams,
+  TaskStatus,
+  TaskPriority,
+} from "@/types/task";
 import { requireApiData } from "@/lib/apiData";
 import type { ApiResponse } from "@/services/authService";
 import type { MeetingLinkResponse } from "@/pages/tasks/types/taskWorkflow";
@@ -114,6 +119,34 @@ export const taskService = {
     await api.patch(
       `/api/v1/workspaces/${encodeURIComponent(workspaceId)}/tasks/${encodeURIComponent(taskId)}/status`,
       { status },
+    );
+  },
+
+  updateTaskPriority: async (
+    workspaceId: string,
+    taskId: string,
+    priority: TaskPriority,
+  ): Promise<void> => {
+    await api.patch(
+      `/api/v1/workspaces/${encodeURIComponent(workspaceId)}/tasks/${encodeURIComponent(taskId)}/priority`,
+      { priority },
+    );
+  },
+
+  updateTaskAssignee: async (
+    workspaceId: string,
+    taskId: string,
+    assigneeId: string | null,
+  ): Promise<void> => {
+    await api.patch(
+      `/api/v1/workspaces/${encodeURIComponent(workspaceId)}/tasks/${encodeURIComponent(taskId)}/assignee`,
+      { assigneeId: assigneeId || null },
+    );
+  },
+
+  deleteTask: async (workspaceId: string, taskId: string): Promise<void> => {
+    await api.delete(
+      `/api/v1/workspaces/${encodeURIComponent(workspaceId)}/tasks/${encodeURIComponent(taskId)}`,
     );
   },
 };

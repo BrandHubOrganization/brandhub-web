@@ -11,7 +11,7 @@ function App() {
   return (
     <BrowserRouter>
       <AppRoutes />
-      <Toaster position="top-right" closeButton richColors />
+      <Toaster position="bottom-right" closeButton richColors />
     </BrowserRouter>
   );
 }

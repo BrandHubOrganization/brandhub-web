@@ -198,6 +198,9 @@ const CampaignPartnersPage = lazy(
   () => import("@/pages/campaign-partners/page"),
 );
 const MailTemplatesPage = lazy(() => import("@/pages/mail-templates/page"));
+const MailTemplateEditPage = lazy(
+  () => import("@/pages/mail-templates/edit"),
+);
 const MailBatchesPage = lazy(() => import("@/pages/mail-templates/batches"));
 const MailSuppressionsPage = lazy(
   () => import("@/pages/mail-templates/suppressions"),
@@ -613,6 +616,14 @@ export function AppRoutes() {
             <Route
               path="/workspaces/:id/mail-templates"
               element={<MailTemplatesPage />}
+            />
+            <Route
+              path="/workspaces/:id/mail-templates/new"
+              element={<MailTemplateEditPage mode="create" />}
+            />
+            <Route
+              path="/workspaces/:id/mail-templates/:templateId/edit"
+              element={<MailTemplateEditPage mode="edit" />}
             />
             <Route
               path="/workspaces/:id/mail-templates/batches"

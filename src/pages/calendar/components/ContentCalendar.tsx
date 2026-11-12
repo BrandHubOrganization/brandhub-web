@@ -28,6 +28,7 @@ interface ContentCalendarProps {
   onDateClick: (date: Date) => void;
   onDatesChange: (startDate: Date, endDate: Date) => void;
   onEventEdit?: (event: CalendarPostEvent) => void;
+  headerFilter?: React.ReactNode;
 }
 
 type CalendarViewType =
@@ -52,12 +53,12 @@ const PLATFORM_CONFIG: Record<
   },
   TIKTOK: {
     name: "TikTok",
-    icon: <FaTiktok className="size-3.5 shrink-0 text-slate-800 dark:text-slate-200" />,
+    icon: <FaTiktok className="size-3.5 shrink-0 text-foreground dark:text-white" />,
     color: "bg-slate-900 text-white dark:bg-slate-200 dark:text-slate-900",
   },
   THREADS: {
     name: "Threads",
-    icon: <FaThreads className="size-3.5 shrink-0 text-slate-800 dark:text-slate-200" />,
+    icon: <FaThreads className="size-3.5 shrink-0 text-foreground dark:text-white" />,
     color: "bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900",
   },
 };
@@ -82,12 +83,12 @@ const STATUS_CONFIG: Record<
     label: "Bản nháp",
   },
   SCHEDULED: {
-    bg: "bg-brand-orange-soft dark:bg-brand-orange/15",
-    border: "border-brand-orange/30 dark:border-brand-orange/50 hover:border-brand-orange/70",
+    bg: "bg-blue-500/10 dark:bg-blue-500/15",
+    border: "border-blue-500/30 dark:border-blue-700/50 hover:border-blue-500/60",
     text: "text-foreground",
-    pill: "bg-brand-orange text-white",
-    accent: "border-l-brand-orange border-border",
-    label: "Lên lịch",
+    pill: "bg-blue-600 text-white",
+    accent: "border-l-blue-600 border-border",
+    label: "Đã lên lịch",
   },
   PUBLISHED: {
     bg: "bg-emerald-500/10 dark:bg-emerald-500/15",
@@ -121,6 +122,7 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
   onReschedule,
   onDateClick,
   onDatesChange,
+  headerFilter,
 }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -317,20 +319,32 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
               e,
             )
           }
-          className={`group relative flex w-full min-w-0 max-w-full cursor-pointer items-center gap-1.5 overflow-hidden rounded-md border px-2 py-0.5 text-xs font-medium shadow-2xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xs active:scale-[0.99] ${statusConfig.bg} ${statusConfig.border}`}
+          className={`group relative flex w-full flex-col gap-1 overflow-hidden rounded-md border p-1.5 text-xs font-medium shadow-2xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xs active:scale-[0.99] cursor-pointer ${statusConfig.bg} ${statusConfig.border}`}
           title={`${eventInfo.event.title}\nThời gian: ${timeText}\nNền tảng: ${platformConfig.name}\nTrạng thái: ${statusConfig.label}`}
         >
-          <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-background/80 shadow-2xs">
-            {platformConfig.icon}
-          </span>
-          <span className="min-w-0 flex-1 truncate text-xs font-semibold tracking-tight text-foreground">
+          {/* Header meta */}
+          <div className="flex items-center justify-between gap-1">
+            <div className="flex min-w-0 items-center gap-1.5">
+              <span className="flex size-4 shrink-0 items-center justify-center rounded-sm bg-background/80 shadow-2xs">
+                {platformConfig.icon}
+              </span>
+              <span
+                className={`rounded-xs px-1 py-0.2 text-[9px] font-semibold ${statusConfig.pill}`}
+              >
+                {statusConfig.label}
+              </span>
+            </div>
+            {timeText && (
+              <span className="text-muted-foreground shrink-0 font-mono text-[10px] font-medium">
+                {timeText}
+              </span>
+            )}
+          </div>
+
+          {/* Title: 2 lines clamp */}
+          <div className="line-clamp-2 text-xs font-semibold leading-tight text-foreground break-words group-hover:text-primary transition-colors">
             {eventInfo.event.title}
-          </span>
-          {timeText && (
-            <span className="text-muted-foreground ml-auto shrink-0 pr-1 font-mono text-[10px] font-medium">
-              {timeText}
-            </span>
-          )}
+          </div>
         </div>
       );
     }
@@ -451,6 +465,7 @@ export const ContentCalendar: React.FC<ContentCalendarProps> = ({
 
         {/* Right: View Switcher (Day / Week / Month / Year), Date Jump */}
         <div className="flex flex-wrap items-center gap-2.5">
+          {headerFilter}
           <SelectMenu
             ariaLabel="Chọn chế độ xem lịch xuất bản"
             value={currentView}

@@ -15,8 +15,17 @@
     "deselectAll": "Deselect All"
   },
   "filterBar": {
+    "all": "All",
     "resultCount": "{{count}} posts",
-    "clearAll": "Clear filters"
+    "clearAll": "Reset filters"
+  },
+  "filterPopover": {
+    "title": "Filters",
+    "reset": "Reset",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "platformCategory": "Platform",
+    "statusCategory": "Status"
   },
   "eventCard": {
     "noCaptionPreview": "No preview",

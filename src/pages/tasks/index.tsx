@@ -96,6 +96,8 @@ function WorkspaceTaskView({
               onClearCategory={(cat) => guard(() => filters.clearCategory(cat))}
               onClearFilters={() => guard(filters.clearAllFilters)}
               activeFilterCount={filters.activeFilterCount}
+              sort={filters.sort}
+              onSortChange={(sort) => guard(() => filters.setSort(sort))}
               onRefresh={() => guard(() => void state.loadTasks())}
               loading={state.loading}
             />
@@ -109,14 +111,14 @@ function WorkspaceTaskView({
                 : "overflow-auto",
             )}
           >
-            {state.loading && (
-              <div role="status" className="flex items-center gap-2">
+            {state.loading && state.tasks.length === 0 && (
+              <div role="status" className="flex items-center gap-2 p-6">
                 <Spinner />
                 {t("tasks.loading")}
               </div>
             )}
 
-            {!state.loading && state.error && (
+            {!state.loading && state.error && state.tasks.length === 0 && (
               <div
                 role="alert"
                 className="border-border bg-card rounded-xl border p-4"
@@ -132,19 +134,20 @@ function WorkspaceTaskView({
               </div>
             )}
 
-            {!state.loading && !state.error && (
-              <TaskActiveView
-                view={view}
-                workspaceId={workspaceId}
-                state={state}
-                filteredTasks={filters.filteredTasks}
-                panel={panel}
-                guard={guard}
-                unscheduled={unscheduled}
-                isFiltered={filters.isFiltered}
-                onResetFilters={() => guard(filters.clearAllFilters)}
-              />
-            )}
+            {(!state.loading || state.tasks.length > 0) &&
+              (!state.error || state.tasks.length > 0) && (
+                <TaskActiveView
+                  view={view}
+                  workspaceId={workspaceId}
+                  state={state}
+                  filteredTasks={filters.filteredTasks}
+                  panel={panel}
+                  guard={guard}
+                  unscheduled={unscheduled}
+                  isFiltered={filters.isFiltered}
+                  onResetFilters={() => guard(filters.clearAllFilters)}
+                />
+              )}
           </div>
 
           {view === "list" && filters.filteredTasks.length > 0 && (

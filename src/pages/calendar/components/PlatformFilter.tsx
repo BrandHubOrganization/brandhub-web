@@ -12,11 +12,36 @@ const PLATFORMS: {
   id: PlatformType;
   label: string;
   icon: React.ReactNode;
+  selectedClass: string;
 }[] = [
-  { id: "FACEBOOK", label: "Facebook", icon: <FaFacebook className="size-3.5 text-[#1877F2]" /> },
-  { id: "INSTAGRAM", label: "Instagram", icon: <FaInstagram className="size-3.5 text-[#E1306C]" /> },
-  { id: "TIKTOK", label: "TikTok", icon: <FaTiktok className="size-3.5" /> },
-  { id: "THREADS", label: "Threads", icon: <FaThreads className="size-3.5" /> },
+  {
+    id: "FACEBOOK",
+    label: "Facebook",
+    icon: <FaFacebook className="size-3.5 text-[#1877F2]" />,
+    selectedClass:
+      "border-[#1877F2]/50 bg-[#1877F2]/10 text-[#1877F2] dark:border-[#1877F2]/60 dark:bg-[#1877F2]/25 dark:text-[#1877F2] shadow-xs",
+  },
+  {
+    id: "INSTAGRAM",
+    label: "Instagram",
+    icon: <FaInstagram className="size-3.5 text-[#E1306C]" />,
+    selectedClass:
+      "border-[#E1306C]/50 bg-[#E1306C]/10 text-[#E1306C] dark:border-[#E1306C]/60 dark:bg-[#E1306C]/25 dark:text-[#E1306C] shadow-xs",
+  },
+  {
+    id: "TIKTOK",
+    label: "TikTok",
+    icon: <FaTiktok className="size-3.5 text-neutral-900 dark:text-white" />,
+    selectedClass:
+      "border-neutral-800 bg-neutral-900/10 text-neutral-900 dark:border-white/40 dark:bg-white/15 dark:text-white shadow-xs",
+  },
+  {
+    id: "THREADS",
+    label: "Threads",
+    icon: <FaThreads className="size-3.5 text-neutral-900 dark:text-white" />,
+    selectedClass:
+      "border-neutral-800 bg-neutral-900/10 text-neutral-900 dark:border-white/40 dark:bg-white/15 dark:text-white shadow-xs",
+  },
 ];
 
 export const PlatformFilter: React.FC<PlatformFilterProps> = ({
@@ -64,7 +89,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
             onClick={() => togglePlatform(p.id)}
             className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
               isSelected
-                ? "border-brand-orange bg-brand-orange-soft text-brand-orange dark:bg-brand-orange/20 shadow-xs"
+                ? p.selectedClass
                 : "border-transparent opacity-40 grayscale hover:opacity-70"
             }`}
           >
