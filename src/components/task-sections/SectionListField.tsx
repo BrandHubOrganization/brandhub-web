@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,15 @@ export function SectionListField({
 }) {
   const { t } = useTranslation();
   const rows = asRows(value);
+
+  // Stable per-row keys, independent of array index, so deleting/editing a
+  // row doesn't shift keys for the rows after it and remount their <Input>s.
+  const keySeq = useRef(0);
+  const keys = useRef<number[]>([]);
+  while (keys.current.length < rows.length) {
+    keys.current.push(keySeq.current++);
+  }
+
   const label = (col: ListColumn) =>
     t(col.i18nKey ?? `tasks.sections.${sectionKey}.fields.${name}.${col.key}`, {
       defaultValue: col.key,
@@ -54,8 +64,10 @@ export function SectionListField({
       rows.map((row, i) => (i === rowIndex ? { ...row, [key]: cell } : row)),
     );
   const addRow = () => onChange([...rows, {}]);
-  const removeRow = (rowIndex: number) =>
+  const removeRow = (rowIndex: number) => {
+    keys.current.splice(rowIndex, 1);
     onChange(rows.filter((_, i) => i !== rowIndex));
+  };
 
   return (
     <div className="space-y-2">
@@ -71,7 +83,7 @@ export function SectionListField({
           </TableHeader>
           <TableBody>
             {rows.map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
+              <TableRow key={keys.current[rowIndex]}>
                 {columns.map((col) => (
                   <TableCell key={col.key} className="p-1.5">
                     <Input
