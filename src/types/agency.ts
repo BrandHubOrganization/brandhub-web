@@ -1,6 +1,6 @@
 import type { MemberRole } from "@/types/workspace";
 
-export type AgencyMemberRole = "OWNER" | "ADMIN" | "PROJECT_MANAGER" | "CREATOR" | "VIEWER" | "MEMBER" | string;
+export type AgencyMemberRole = "OWNER" | "MEMBER";
 
 
 export type AgencyStatus = "ACTIVE" | "SOFT_DELETED" | "INACTIVE";

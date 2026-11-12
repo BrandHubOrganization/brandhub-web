@@ -166,9 +166,7 @@ export function Layout() {
     activeWorkspace?.myRole ??
     (currentAgencyMyRole === "OWNER"
       ? "OWNER"
-      : currentAgencyMyRole === "CLIENT"
-        ? "CLIENT"
-        : null);
+      : null);
 
   // BA mới — 1 user có N ClientProfile, gắn theo TỪNG WORKSPACE (không phải
   // agency) qua activeWorkspace.clientProfileId. Trước đây fetch theo

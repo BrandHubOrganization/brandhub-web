@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { formatRole } from "@/utils/workspaceHelper";
 import { agencyService } from "@/services/agencyService";
 import { workspaceService } from "@/services/workspaceService";
 import {
@@ -44,7 +45,7 @@ function NodeCard({ name, role, isRoot, onClick }: NodeCardProps) {
       <p className="max-w-56 truncate text-sm font-medium">{name}</p>
       {role && (
         <span className="text-muted-foreground bg-muted text-3xs shrink-0 rounded-full px-2 py-0.5 font-semibold">
-          {role}
+          {formatRole(role)}
         </span>
       )}
     </div>
