@@ -11,6 +11,7 @@ import {
   Image as ImageIcon,
   Lock,
   MoreVertical,
+  Pencil,
   RotateCcw,
   Sparkles,
   Stamp,
@@ -86,9 +87,11 @@ export function MaterialRepositoryCard({
   canRestore,
   canPromoteDraft,
   canMove = true,
+  canRename = false,
   viewMode = "grid",
   onSelect,
   onDownload,
+  onRename,
   onWatermark,
   onDelete,
   onPermanentDelete,
@@ -102,9 +105,11 @@ export function MaterialRepositoryCard({
   canRestore: boolean;
   canPromoteDraft?: boolean;
   canMove?: boolean;
+  canRename?: boolean;
   viewMode?: RepositoryViewMode;
   onSelect: (material: MaterialItem) => void;
   onDownload: (material: MaterialItem) => void;
+  onRename?: (material: MaterialItem) => void;
   onWatermark: (material: MaterialItem) => void;
   onDelete: (material: MaterialItem) => void;
   onPermanentDelete?: (material: MaterialItem) => void;
@@ -173,6 +178,15 @@ export function MaterialRepositoryCard({
           >
             <Download className="h-3.5 w-3.5 text-muted-foreground" />
             <span>{t("common.download", "Tải xuống")}</span>
+          </DropdownMenuItem>
+        )}
+        {!isDeleted && !isPurging && canRename && onRename && (
+          <DropdownMenuItem
+            onSelect={() => onRename(material)}
+            className="gap-2 rounded-lg text-xs font-medium"
+          >
+            <Pencil className="h-3.5 w-3.5 text-brand-orange" />
+            <span>{t("common.rename", "Đổi tên")}</span>
           </DropdownMenuItem>
         )}
         {!isDeleted && !isPurging && canMove && onMoveRequest && (

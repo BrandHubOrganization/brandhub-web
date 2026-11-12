@@ -97,8 +97,11 @@ export function MaterialFolderSection({
       setRenamingId(null);
       onChanged();
       toast.success("Đã đổi tên thư mục");
-    } catch {
-      toast.error("Không thể đổi tên thư mục");
+    } catch (e: unknown) {
+      toast.error(
+        (e as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Không thể đổi tên thư mục",
+      );
     } finally {
       setBusy(false);
     }
