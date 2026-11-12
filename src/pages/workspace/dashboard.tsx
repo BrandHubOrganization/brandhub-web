@@ -1,16 +1,14 @@
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { PostDashboardView } from "@/pages/publish/dashboard";
-import { SocialQuickSnapshot } from "./components/SocialQuickSnapshot";
 import { LeaveWorkspaceDialog } from "./components/LeaveWorkspaceDialog";
 import { useWorkspaceDashboard } from "./hooks/useWorkspaceDashboard";
 import { WorkspaceDashboardHeader } from "./components/dashboard/WorkspaceDashboardHeader";
 import { DashboardTabSwitcher } from "./components/dashboard/DashboardTabSwitcher";
-import { PackageStatusBanner } from "./components/dashboard/PackageStatusBanner";
-import { WorkspaceKpiCards } from "./components/dashboard/WorkspaceKpiCards";
-import { WorkspaceTasksSection } from "./components/dashboard/WorkspaceTasksSection";
-import { WorkspaceQuickActions } from "./components/dashboard/WorkspaceQuickActions";
-import { WorkspaceVisualAnalytics } from "./components/dashboard/WorkspaceVisualAnalytics";
+import { ClientWorkspaceDashboardView } from "./components/dashboard/ClientWorkspaceDashboardView";
+import { CreatorWorkspaceDashboardView } from "./components/dashboard/CreatorWorkspaceDashboardView";
+import { ManagerWorkspaceDashboardView } from "./components/dashboard/ManagerWorkspaceDashboardView";
+import { OwnerWorkspaceDashboardView } from "./components/dashboard/OwnerWorkspaceDashboardView";
 import { useClearStoragePreview } from "./hooks/useClearStoragePreview";
 
 export function WorkspaceDashboardPage() {
@@ -36,8 +34,6 @@ export function WorkspaceDashboardPage() {
     leaving,
     handleLeave,
     currentMemberRole,
-    isClient,
-    isManagerOrOwner,
     packageStatus,
     isPackageApproved,
     isPackageNegotiating,
@@ -60,7 +56,7 @@ export function WorkspaceDashboardPage() {
       }
       hideBanner
     >
-      {/* ── Top Workspace Header ── */}
+      {/* ── Top Workspace Header (No redundant role badge) ── */}
       <WorkspaceDashboardHeader
         workspace={workspace}
         workspaceId={workspaceId}
@@ -77,67 +73,56 @@ export function WorkspaceDashboardPage() {
         onTabChange={handleTabChange}
       />
 
+      {/* ── Tab Content: Publishing Deep Dive OR Role-Specific Views ── */}
       {activeTab === "publishing" ? (
         <PostDashboardView workspaceId={workspaceId} />
+      ) : currentMemberRole === "CLIENT" ? (
+        <ClientWorkspaceDashboardView
+          workspaceId={workspaceId}
+          workspace={workspace}
+          dashboard={dashboard}
+          packageStatus={packageStatus ?? undefined}
+          isPackageApproved={isPackageApproved}
+          onNavigateToPublishing={() => handleTabChange("publishing")}
+        />
+      ) : currentMemberRole === "CREATOR" ? (
+        <CreatorWorkspaceDashboardView
+          workspaceId={workspaceId}
+          workspace={workspace}
+          dashboard={dashboard}
+          tasks={tasks}
+          tasksTotal={tasksTotal}
+          tasksLoading={tasksLoading}
+        />
+      ) : currentMemberRole === "OWNER" ? (
+        <OwnerWorkspaceDashboardView
+          workspaceId={workspaceId}
+          workspace={workspace}
+          dashboard={dashboard}
+          packageStatus={packageStatus ?? undefined}
+          isPackageApproved={isPackageApproved}
+          isPackageNegotiating={isPackageNegotiating}
+          onNavigateToPublishing={() => handleTabChange("publishing")}
+        />
       ) : (
-        <>
-          {/* ── Package Status Banner (When not approved yet) ── */}
-          <PackageStatusBanner
-            workspaceId={workspaceId}
-            isPackageApproved={isPackageApproved}
-            isPackageNegotiating={isPackageNegotiating}
-            isClient={isClient}
-          />
-
-          {/* ── Key Metrics KPI Cards ── */}
-          <WorkspaceKpiCards
-            workspaceId={workspaceId}
-            tasksTotal={tasksTotal}
-            tasksLength={tasks.length}
-            taskStats={taskStats}
-            campaigns={campaigns}
-            campaignsLoading={campaignsLoading}
-            campaignsError={campaignsError}
-            dashboard={dashboard}
-            packageStatus={packageStatus ?? undefined}
-            isClient={isClient}
-          />
-
-          {/* ── Social Media Quick Snapshot Bridge ── */}
-          <div className="mt-6">
-            <SocialQuickSnapshot
-              workspaceId={workspaceId}
-              onNavigateToPublishing={() => handleTabChange("publishing")}
-            />
-          </div>
-
-          {/* ── Main Workspace Content: Tasks & Campaigns ── */}
-          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <WorkspaceTasksSection
-              workspaceId={workspaceId}
-              tasks={tasks}
-              tasksTotal={tasksTotal}
-              tasksLoading={tasksLoading}
-              campaigns={campaigns}
-              campaignsLoading={campaignsLoading}
-              campaignsError={campaignsError}
-              isManagerOrOwner={isManagerOrOwner}
-              onRetryCampaigns={() =>
-                setCampaignsAttempt((attempt) => attempt + 1)
-              }
-            />
-
-            <WorkspaceQuickActions
-              workspaceId={workspaceId}
-              isManagerOrOwner={isManagerOrOwner}
-              isClient={isClient}
-              membersByRole={dashboard.membersByRole}
-            />
-          </div>
-
-          {/* ── Visual Analytics Section ── */}
-          <WorkspaceVisualAnalytics workspaceId={workspaceId} />
-        </>
+        /* MANAGER or unassigned default role */
+        <ManagerWorkspaceDashboardView
+          workspaceId={workspaceId}
+          workspace={workspace}
+          dashboard={dashboard}
+          tasks={tasks}
+          tasksTotal={tasksTotal}
+          tasksLoading={tasksLoading}
+          taskStats={taskStats}
+          campaigns={campaigns}
+          campaignsLoading={campaignsLoading}
+          campaignsError={campaignsError}
+          packageStatus={packageStatus ?? undefined}
+          isPackageApproved={isPackageApproved}
+          isPackageNegotiating={isPackageNegotiating}
+          onRetryCampaigns={() => setCampaignsAttempt((attempt) => attempt + 1)}
+          onNavigateToPublishing={() => handleTabChange("publishing")}
+        />
       )}
 
       {/* Leave Workspace Confirmation Dialog */}
