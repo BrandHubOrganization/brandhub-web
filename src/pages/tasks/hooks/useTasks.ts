@@ -81,7 +81,7 @@ export function useTasks(workspaceId: string) {
       sortField === field ? (sortDirection === "asc" ? "desc" : "asc") : "asc";
     setTasks((prev) =>
       [...prev].sort((a, b) => {
-        let cmp = 0;
+        let cmp: number;
         if (field === "name") {
           cmp = (a.name || "").localeCompare(b.name || "", "vi", { sensitivity: "base" });
         } else if (field === "status") {

@@ -42,8 +42,6 @@ export function MailTemplateEditor({
   draftKey,
   className = "",
 }: MailTemplateEditorProps) {
-  if (open === false) return null;
-
   const { t } = useTranslation();
   const {
     name,
@@ -79,6 +77,8 @@ export function MailTemplateEditor({
     onSaved,
     draftKey,
   });
+
+  if (open === false) return null;
 
   return (
     <div

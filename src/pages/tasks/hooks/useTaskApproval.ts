@@ -1,5 +1,5 @@
 import { opensPostEditor } from "@/types/task";
-﻿import { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   useInfiniteQuery,
   useQuery,

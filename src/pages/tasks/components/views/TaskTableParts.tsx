@@ -1,4 +1,3 @@
-import type React from "react";
 import { ArrowUpDown, FolderKanban, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

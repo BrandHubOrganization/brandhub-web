@@ -16,14 +16,14 @@ interface MailTemplateEditPageProps {
   mode?: "create" | "edit";
 }
 
-export function MailTemplateEditPage({ mode }: MailTemplateEditPageProps) {
+export function MailTemplateEditPage({ mode }: MailTemplateEditPageProps = {}) {
   const { id: workspaceId = "", templateId = "" } = useParams<{ id: string; templateId?: string }>();
   const [searchParams] = useSearchParams();
   const cloneFrom = searchParams.get("cloneFrom");
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const effectiveMode: "create" | "edit" = templateId ? "edit" : "create";
+  const effectiveMode: "create" | "edit" = mode ?? (templateId ? "edit" : "create");
   const [template, setTemplate] = useState<MailTemplate | null>(null);
   const [loading, setLoading] = useState<boolean>(Boolean(templateId || cloneFrom));
 
