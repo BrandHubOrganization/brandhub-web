@@ -20,7 +20,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { useChatMediaLightbox } from "@/pages/chat/hooks/useChatMediaLightbox";
-import { AdobePdfIcon } from "@/pages/chat/components/ChatAttachmentComposer";
 import { chatAttachmentService } from "@/pages/chat/services/chatAttachmentService";
 import { Button } from "@/components/ui/button";
 import { formatFileSize } from "@/lib/utils";
@@ -346,6 +345,16 @@ export function ChatMediaLightbox() {
           <Button
             variant="ghost"
             size="icon"
+            onClick={handleOpenNewTab}
+            className="size-9 rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+            aria-label="Mở tab mới"
+            title="Mở trong tab mới"
+          >
+            <ExternalLink className="size-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={closeLightbox}
             className="size-9 rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
             aria-label={t("chat.actions.close")}
@@ -358,7 +367,9 @@ export function ChatMediaLightbox() {
 
       {/* 2. Main Content Area */}
       <main
-        className="relative flex flex-1 items-center justify-center overflow-hidden p-4 sm:p-6"
+        className={`relative flex flex-1 items-center justify-center overflow-hidden ${
+          isPdf ? "p-2 sm:p-3" : "p-4 sm:p-6"
+        }`}
         onWheel={handleWheel}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -426,38 +437,11 @@ export function ChatMediaLightbox() {
         )}
 
         {isPdf && (
-          <div className="flex h-full w-full max-w-5xl flex-col items-center justify-center">
-            <div className="mb-3 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 backdrop-blur-xs">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-[#e01e5a]">
-                <AdobePdfIcon className="size-5 text-white" />
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-white">
-                  {item.filename}
-                </p>
-                <p className="text-xs text-white/60">
-                  {formatFileSize(item.byteSize)}
-                </p>
-              </div>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => void handleDownload()}
-                disabled={downloading}
-                className="ml-4 gap-1.5 rounded-lg bg-white/20 text-white hover:bg-white/30"
-              >
-                {downloading ? (
-                  <Loader2 className="size-3.5 animate-spin" />
-                ) : (
-                  <Download className="size-3.5" />
-                )}
-                <span>Tải về</span>
-              </Button>
-            </div>
+          <div className="flex h-full w-full max-w-[96vw] flex-col items-center justify-center">
             <iframe
               src={item.url}
               title={item.filename}
-              className="h-[68vh] w-full rounded-xl border border-white/10 bg-white shadow-2xl"
+              className="h-full min-h-0 w-full rounded-xl border border-white/10 bg-white shadow-2xl"
             />
           </div>
         )}
@@ -488,226 +472,228 @@ export function ChatMediaLightbox() {
         )}
       </main>
 
-      {/* 3. Bottom Floating Control Bar (Slack Style) */}
-      <footer className="relative z-20 flex h-16 shrink-0 items-center justify-between border-t border-white/10 px-4 sm:px-6">
-        {/* Left / Center tools */}
-        {isImage && (
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setRotation((r) => (r + 90) % 360)}
-              className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
-              title="Xoay 90°"
-            >
-              <RotateCw className="size-4" />
-            </Button>
-            <div className="mx-1 h-4 w-px bg-white/20" />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() =>
-                setZoom((z) =>
-                  Math.max(0.25, Number((z - 0.25).toFixed(2))),
-                )
-              }
-              className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
-              title="Thu nhỏ"
-            >
-              <Minus className="size-4" />
-            </Button>
-            <input
-              type="range"
-              min="0.25"
-              max="3"
-              step="0.05"
-              value={zoom}
-              onChange={(e) => setZoom(parseFloat(e.target.value))}
-              className="h-1.5 w-24 cursor-pointer rounded-lg bg-white/20 accent-[#ff5722] sm:w-32"
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() =>
-                setZoom((z) =>
-                  Math.min(3, Number((z + 0.25).toFixed(2))),
-                )
-              }
-              className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
-              title="Phóng to"
-            >
-              <Plus className="size-4" />
-            </Button>
-            <button
-              type="button"
-              onClick={() => {
-                setZoom(1);
-                setPan({ x: 0, y: 0 });
-                setRotation(0);
-              }}
-              className="rounded bg-white/10 px-2 py-0.5 font-mono text-xs text-white/80 transition-colors hover:bg-white/20 hover:text-white"
-              title="Đặt lại kích thước (100%)"
-            >
-              {Math.round(zoom * 100)}%
-            </button>
-          </div>
-        )}
-
-        {isVideo && (
-          <div className="flex flex-1 items-center gap-3 pr-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={togglePlay}
-              className="size-8 shrink-0 rounded-lg text-white/90 hover:bg-white/10 hover:text-white"
-              title={playing ? "Tạm dừng (Space)" : "Phát (Space)"}
-            >
-              {playing ? (
-                <Pause className="size-4 fill-current" />
-              ) : (
-                <Play className="ml-0.5 size-4 fill-current" />
-              )}
-            </Button>
-
-            <div className="flex items-center gap-1.5">
+      {/* 3. Bottom Floating Control Bar (Slack Style) - hidden for PDF */}
+      {!isPdf && (
+        <footer className="relative z-20 flex h-16 shrink-0 items-center justify-between border-t border-white/10 px-4 sm:px-6">
+          {/* Left / Center tools */}
+          {isImage && (
+            <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={toggleMute}
-                className="size-8 shrink-0 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
-                title={muted ? "Bật âm thanh (M)" : "Tắt tiếng (M)"}
+                onClick={() => setRotation((r) => (r + 90) % 360)}
+                className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+                title="Xoay 90°"
               >
-                {muted || volume === 0 ? (
-                  <VolumeX className="size-4" />
-                ) : volume < 0.5 ? (
-                  <Volume1 className="size-4" />
-                ) : (
-                  <Volume2 className="size-4" />
-                )}
+                <RotateCw className="size-4" />
+              </Button>
+              <div className="mx-1 h-4 w-px bg-white/20" />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() =>
+                  setZoom((z) =>
+                    Math.max(0.25, Number((z - 0.25).toFixed(2))),
+                  )
+                }
+                className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+                title="Thu nhỏ"
+              >
+                <Minus className="size-4" />
               </Button>
               <input
                 type="range"
-                min="0"
-                max="1"
+                min="0.25"
+                max="3"
                 step="0.05"
-                value={muted ? 0 : volume}
-                onChange={handleVolumeChange}
-                className="h-1.5 w-16 cursor-pointer rounded-lg bg-white/20 accent-[#ff5722]"
+                value={zoom}
+                onChange={(e) => setZoom(parseFloat(e.target.value))}
+                className="h-1.5 w-24 cursor-pointer rounded-lg bg-white/20 accent-[#ff5722] sm:w-32"
               />
-            </div>
-
-            <span className="font-mono text-xs tabular-nums text-white/70">
-              {formatVideoTime(currentTime)} / {formatVideoTime(duration)}
-            </span>
-
-            {/* Video Scrubber bar */}
-            <input
-              type="range"
-              min="0"
-              max={duration || 100}
-              step="0.1"
-              value={currentTime}
-              onChange={(e) => {
-                const val = parseFloat(e.target.value);
-                setCurrentTime(val);
-                if (videoRef.current) {
-                  videoRef.current.currentTime = val;
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() =>
+                  setZoom((z) =>
+                    Math.min(3, Number((z + 0.25).toFixed(2))),
+                  )
                 }
-              }}
-              className="h-1.5 flex-1 cursor-pointer rounded-lg bg-white/20 accent-[#ff5722]"
-            />
+                className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+                title="Phóng to"
+              >
+                <Plus className="size-4" />
+              </Button>
+              <button
+                type="button"
+                onClick={() => {
+                  setZoom(1);
+                  setPan({ x: 0, y: 0 });
+                  setRotation(0);
+                }}
+                className="rounded bg-white/10 px-2 py-0.5 font-mono text-xs text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+                title="Đặt lại kích thước (100%)"
+              >
+                {Math.round(zoom * 100)}%
+              </button>
+            </div>
+          )}
 
-            {/* Picture-in-Picture Button */}
+          {isVideo && (
+            <div className="flex flex-1 items-center gap-3 pr-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={togglePlay}
+                className="size-8 shrink-0 rounded-lg text-white/90 hover:bg-white/10 hover:text-white"
+                title={playing ? "Tạm dừng (Space)" : "Phát (Space)"}
+              >
+                {playing ? (
+                  <Pause className="size-4 fill-current" />
+                ) : (
+                  <Play className="ml-0.5 size-4 fill-current" />
+                )}
+              </Button>
+
+              <div className="flex items-center gap-1.5">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleMute}
+                  className="size-8 shrink-0 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+                  title={muted ? "Bật âm thanh (M)" : "Tắt tiếng (M)"}
+                >
+                  {muted || volume === 0 ? (
+                    <VolumeX className="size-4" />
+                  ) : volume < 0.5 ? (
+                    <Volume1 className="size-4" />
+                  ) : (
+                    <Volume2 className="size-4" />
+                  )}
+                </Button>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={muted ? 0 : volume}
+                  onChange={handleVolumeChange}
+                  className="h-1.5 w-16 cursor-pointer rounded-lg bg-white/20 accent-[#ff5722]"
+                />
+              </div>
+
+              <span className="font-mono text-xs tabular-nums text-white/70">
+                {formatVideoTime(currentTime)} / {formatVideoTime(duration)}
+              </span>
+
+              {/* Video Scrubber bar */}
+              <input
+                type="range"
+                min="0"
+                max={duration || 100}
+                step="0.1"
+                value={currentTime}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  setCurrentTime(val);
+                  if (videoRef.current) {
+                    videoRef.current.currentTime = val;
+                  }
+                }}
+                className="h-1.5 flex-1 cursor-pointer rounded-lg bg-white/20 accent-[#ff5722]"
+              />
+
+              {/* Picture-in-Picture Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => void togglePiP()}
+                className="size-8 shrink-0 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+                title="Picture-in-Picture (PiP)"
+                aria-label="Picture in Picture"
+              >
+                <PictureInPicture2 className="size-4" />
+              </Button>
+
+              {/* Playback speed selector */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowSpeedMenu((s) => !s)}
+                  className="rounded bg-white/10 px-2 py-1 font-mono text-xs text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+                  title="Tốc độ phát"
+                >
+                  {speed}x
+                </button>
+                {showSpeedMenu && (
+                  <div className="absolute right-0 bottom-9 flex flex-col rounded-xl border border-white/15 bg-zinc-900 p-1 shadow-xl">
+                    {[0.5, 0.75, 1, 1.25, 1.5, 2].map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => handleSpeedChange(s)}
+                        className={`rounded px-3 py-1 text-left text-xs transition-colors hover:bg-white/10 ${
+                          speed === s
+                            ? "font-bold text-[#ff5722]"
+                            : "text-white/80"
+                        }`}
+                      >
+                        {s}x
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {!isImage && !isVideo && <div />}
+
+          {/* Right action tools */}
+          <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => void togglePiP()}
-              className="size-8 shrink-0 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
-              title="Picture-in-Picture (PiP)"
-              aria-label="Picture in Picture"
+              onClick={() => void handleDownload()}
+              disabled={downloading}
+              className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+              title="Tải về máy"
+              aria-label="Tải về"
             >
-              <PictureInPicture2 className="size-4" />
+              {downloading ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Download className="size-4" />
+              )}
             </Button>
 
-            {/* Playback speed selector */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowSpeedMenu((s) => !s)}
-                className="rounded bg-white/10 px-2 py-1 font-mono text-xs text-white/80 transition-colors hover:bg-white/20 hover:text-white"
-                title="Tốc độ phát"
-              >
-                {speed}x
-              </button>
-              {showSpeedMenu && (
-                <div className="absolute right-0 bottom-9 flex flex-col rounded-xl border border-white/15 bg-zinc-900 p-1 shadow-xl">
-                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => handleSpeedChange(s)}
-                      className={`rounded px-3 py-1 text-left text-xs transition-colors hover:bg-white/10 ${
-                        speed === s
-                          ? "font-bold text-[#ff5722]"
-                          : "text-white/80"
-                      }`}
-                    >
-                      {s}x
-                    </button>
-                  ))}
-                </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleOpenNewTab}
+              className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+              title="Mở trong tab mới"
+              aria-label="Mở tab mới"
+            >
+              <ExternalLink className="size-4" />
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleFullscreen}
+              className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+              title={isFullscreen ? "Thu nhỏ (F)" : "Toàn màn hình (F)"}
+              aria-label="Toàn màn hình"
+            >
+              {isFullscreen ? (
+                <Minimize className="size-4" />
+              ) : (
+                <Maximize className="size-4" />
               )}
-            </div>
+            </Button>
           </div>
-        )}
-
-        {!isImage && !isVideo && <div />}
-
-        {/* Right action tools */}
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => void handleDownload()}
-            disabled={downloading}
-            className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
-            title="Tải về máy"
-            aria-label="Tải về"
-          >
-            {downloading ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <Download className="size-4" />
-            )}
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleOpenNewTab}
-            className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
-            title="Mở trong tab mới"
-            aria-label="Mở tab mới"
-          >
-            <ExternalLink className="size-4" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleFullscreen}
-            className="size-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
-            title={isFullscreen ? "Thu nhỏ (F)" : "Toàn màn hình (F)"}
-            aria-label="Toàn màn hình"
-          >
-            {isFullscreen ? (
-              <Minimize className="size-4" />
-            ) : (
-              <Maximize className="size-4" />
-            )}
-          </Button>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>,
     document.body,
   );
