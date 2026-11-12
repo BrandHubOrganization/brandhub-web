@@ -388,7 +388,7 @@ function RepositoryMedia() {
               variant="ghost"
               size="sm"
               onClick={() => setDriveOpen((prev) => !prev)}
-              className="h-7 gap-1.5 rounded-lg text-xs font-semibold text-foreground hover:bg-brand-orange/10 hover:text-brand-orange"
+              className="h-7 gap-1.5 rounded-[4px] text-xs font-semibold text-foreground hover:bg-brand-orange/10 hover:text-brand-orange"
             >
               <CloudDownload className="h-3.5 w-3.5 text-brand-orange" />
               <span>{t("library.simple.fromDrive", "Đồng bộ từ Google Drive")}</span>
@@ -427,11 +427,11 @@ function RepositoryMedia() {
             (currentRole === "OWNER" ||
               currentRole === "MANAGER" ||
               currentRole === "CREATOR") && (
-              <div className="flex items-center justify-between gap-3 rounded-xl border border-destructive/25 bg-destructive/5 px-4 py-2.5">
+              <div className="flex items-center justify-between gap-3 rounded-none border border-destructive/25 bg-destructive/5 px-4 py-2.5">
                 <span className="text-xs text-muted-foreground">
                   {t(
                     "library.trash.quotaNotice",
-                    "Xoá vĩnh viễn các mục trong thùng rác để giải phóng dung lượng S3.",
+                    "Xoá vĩnh viễn các mục trong thùng rác để giải phóng dung lượng lưu trữ.",
                   )}
                 </span>
                 <Button
@@ -440,7 +440,7 @@ function RepositoryMedia() {
                   size="sm"
                   disabled={pending || repository.query.isFetching}
                   onClick={() => setPurgeTarget("all")}
-                  className="h-8 gap-1.5 rounded-lg text-xs text-white"
+                  className="h-8 gap-1.5 rounded-[4px] text-xs text-white"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   {t("library.trash.emptyTrash", "Dọn sạch thùng rác")}
@@ -449,7 +449,7 @@ function RepositoryMedia() {
             )}
 
           {repository.query.isPending ? (
-            <div className="flex h-48 items-center justify-center rounded-2xl border border-border/60 bg-card">
+            <div className="flex h-48 items-center justify-center rounded-none border border-[#d5dbdb] bg-card dark:border-border">
               <Loader2 className="h-6 w-6 animate-spin text-brand-orange" />
             </div>
           ) : (
@@ -475,7 +475,7 @@ function RepositoryMedia() {
       ) : repository.forbidden || repository.query.isError ? (
         <div
           role="alert"
-          className="flex h-56 flex-col items-center justify-center gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-center"
+          className="flex h-56 flex-col items-center justify-center gap-3 rounded-none border border-destructive/30 bg-destructive/5 p-6 text-center"
         >
           <AlertCircle className="h-6 w-6 text-destructive" />
           <p className="text-sm font-medium text-destructive">
@@ -488,6 +488,7 @@ function RepositoryMedia() {
             type="button"
             variant="outline"
             size="sm"
+            className="rounded-[4px]"
             onClick={() =>
               repository.forbidden
                 ? repository.retryAccess()
@@ -505,17 +506,17 @@ function RepositoryMedia() {
           {Array.from({ length: 8 }, (_, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-border/70 bg-card p-3"
+              className="rounded-none border border-[#d5dbdb] bg-card p-3 dark:border-border"
               aria-hidden="true"
             >
-              <div className="aspect-[4/3] animate-pulse rounded-xl bg-muted" />
-              <div className="mt-3 h-4 w-3/4 animate-pulse rounded bg-muted" />
+              <div className="aspect-[4/3] animate-pulse rounded-none bg-muted" />
+              <div className="mt-3 h-4 w-3/4 animate-pulse rounded-none bg-muted" />
             </div>
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card/50 p-6 text-center">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-muted">
+        <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-none border border-dashed border-[#d5dbdb] bg-card p-6 text-center dark:border-border">
+          <div className="flex h-11 w-11 items-center justify-center rounded-[4px] bg-muted">
             <FolderOpen className="h-5 w-5 text-muted-foreground" />
           </div>
           <p className="text-sm font-semibold text-foreground">
@@ -555,6 +556,7 @@ function RepositoryMedia() {
                   canPromoteDraft={canPromoteDraft(material)}
                   canMove={canMoveMaterial(material)}
                   canRename={canRename(material)}
+                  hideDraftBadge={draftMode}
                   onSelect={setSelected}
                   onDownload={(target) => void downloader.download(target)}
                   onRename={setRenameTarget}
@@ -568,7 +570,7 @@ function RepositoryMedia() {
               ))}
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="divide-y divide-[#eaeded] rounded-none border border-[#d5dbdb] bg-card shadow-[0_1px_1px_0_rgba(0,28,36,0.05)] dark:divide-border/70 dark:border-border">
               {items.map((material) => (
                 <MaterialRepositoryCard
                   key={`${material.id}:${material.version}`}
@@ -580,6 +582,7 @@ function RepositoryMedia() {
                   canPromoteDraft={canPromoteDraft(material)}
                   canMove={canMoveMaterial(material)}
                   canRename={canRename(material)}
+                  hideDraftBadge={draftMode}
                   onSelect={setSelected}
                   onDownload={(target) => void downloader.download(target)}
                   onRename={setRenameTarget}
@@ -609,6 +612,7 @@ function RepositoryMedia() {
             <Button
               variant="outline"
               size="sm"
+              className="rounded-[4px]"
               disabled={pending || page === 0 || repository.query.isFetching}
               onClick={() => setPage(page - 1)}
             >
@@ -617,6 +621,7 @@ function RepositoryMedia() {
             <Button
               variant="outline"
               size="sm"
+              className="rounded-[4px]"
               disabled={
                 pending ||
                 (page + 1) * 20 >= total ||

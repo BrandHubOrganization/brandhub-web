@@ -11,7 +11,6 @@ import {
   Image as ImageIcon,
   Lock,
   MoreVertical,
-  Pencil,
   RotateCcw,
   Sparkles,
   Stamp,
@@ -67,7 +66,7 @@ function KindBadge({ material }: { material: MaterialItem }) {
     "FILE";
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-md bg-black/65 px-2 py-0.5 text-[10px] font-bold tracking-wider text-white backdrop-blur-md">
+    <span className="inline-flex items-center gap-1 rounded-[3px] bg-black/65 px-2 py-0.5 text-[10px] font-bold tracking-wider text-white backdrop-blur-md">
       {isVideo ? (
         <Film className="h-3 w-3 text-brand-orange" />
       ) : isImage ? (
@@ -87,11 +86,10 @@ export function MaterialRepositoryCard({
   canRestore,
   canPromoteDraft,
   canMove = true,
-  canRename = false,
+  hideDraftBadge = false,
   viewMode = "grid",
   onSelect,
   onDownload,
-  onRename,
   onWatermark,
   onDelete,
   onPermanentDelete,
@@ -106,6 +104,7 @@ export function MaterialRepositoryCard({
   canPromoteDraft?: boolean;
   canMove?: boolean;
   canRename?: boolean;
+  hideDraftBadge?: boolean;
   viewMode?: RepositoryViewMode;
   onSelect: (material: MaterialItem) => void;
   onDownload: (material: MaterialItem) => void;
@@ -157,16 +156,16 @@ export function MaterialRepositoryCard({
           disabled={isPurging}
           aria-label={t("common.actions", "Tác vụ")}
           onClick={(e) => e.stopPropagation()}
-          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40"
+          className="rounded-[4px] p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40"
         >
           <MoreVertical className="h-4 w-4" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48 rounded-xl p-1">
+      <DropdownMenuContent align="end" className="w-48 rounded-none p-1">
         <DropdownMenuItem
           disabled={isPurging}
           onSelect={() => onSelect(material)}
-          className="gap-2 rounded-lg text-xs font-medium"
+          className="gap-2 rounded-[3px] text-xs font-medium"
         >
           <Eye className="h-3.5 w-3.5 text-muted-foreground" />
           <span>{t("library.media.details", "Xem chi tiết")}</span>
@@ -178,15 +177,6 @@ export function MaterialRepositoryCard({
           >
             <Download className="h-3.5 w-3.5 text-muted-foreground" />
             <span>{t("common.download", "Tải xuống")}</span>
-          </DropdownMenuItem>
-        )}
-        {!isDeleted && !isPurging && canRename && onRename && (
-          <DropdownMenuItem
-            onSelect={() => onRename(material)}
-            className="gap-2 rounded-lg text-xs font-medium"
-          >
-            <Pencil className="h-3.5 w-3.5 text-brand-orange" />
-            <span>{t("common.rename", "Đổi tên")}</span>
           </DropdownMenuItem>
         )}
         {!isDeleted && !isPurging && canMove && onMoveRequest && (
@@ -261,7 +251,7 @@ export function MaterialRepositoryCard({
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onClick={() => !isPurging && onSelect(material)}
-        className={`group flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-border/70 bg-card px-3.5 py-2.5 transition-all hover:border-brand-orange/40 hover:bg-muted/20 ${
+        className={`group flex cursor-pointer items-center justify-between gap-3 rounded-none bg-card px-3.5 py-2.5 transition-colors hover:bg-muted/30 ${
           isDragging ? "opacity-50 ring-2 ring-brand-orange" : ""
         }`}
       >
@@ -269,7 +259,7 @@ export function MaterialRepositoryCard({
           {isDraggable && (
             <GripVertical className="h-4 w-4 shrink-0 cursor-grab text-muted-foreground/50 group-hover:text-muted-foreground" />
           )}
-          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+          <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[4px] bg-muted">
             {isImage && thumbUrl && !imageBroken ? (
               <img
                 src={thumbUrl}
@@ -287,7 +277,7 @@ export function MaterialRepositoryCard({
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-semibold text-foreground">
+            <p className="truncate text-xs font-semibold text-foreground group-hover:underline">
               {material.name}
             </p>
             <div className="mt-0.5 flex items-center gap-2 text-[11px] text-muted-foreground">
@@ -321,7 +311,7 @@ export function MaterialRepositoryCard({
       draggable={isDraggable}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-orange/45 hover:shadow-md ${
+      className={`group relative flex flex-col overflow-hidden rounded-none border border-[#d5dbdb] bg-card shadow-[0_1px_1px_0_rgba(0,28,36,0.04)] transition-colors duration-150 hover:border-brand-orange/60 dark:border-border ${
         isDragging ? "scale-[0.97] opacity-50 ring-2 ring-brand-orange" : ""
       }`}
     >
@@ -371,8 +361,8 @@ export function MaterialRepositoryCard({
         {/* Top-left file kind badge */}
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
           <KindBadge material={material} />
-          {isDraft && !isDeleted && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white shadow-xs">
+          {isDraft && !isDeleted && !hideDraftBadge && (
+            <span className="inline-flex items-center gap-1 rounded-[3px] bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white shadow-xs">
               <Sparkles className="h-2.5 w-2.5" />
               Nháp AI
             </span>

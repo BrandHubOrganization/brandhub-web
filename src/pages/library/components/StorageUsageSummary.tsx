@@ -73,15 +73,15 @@ export function StorageUsageSummary() {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border border-border/80 bg-card px-3.5 py-2 shadow-2xs">
+      <div className="flex flex-wrap items-center gap-2.5 rounded-none border border-[#d5dbdb] bg-card px-3.5 py-2 shadow-[0_1px_1px_0_rgba(0,28,36,0.05)] dark:border-border">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-orange/10 text-brand-orange">
+          <div className="flex h-7 w-7 items-center justify-center rounded-[4px] bg-brand-orange/10 text-brand-orange">
             <HardDrive className="h-3.5 w-3.5" />
           </div>
           <div className="min-w-[140px]">
             <div className="flex items-center justify-between gap-2 text-[11px]">
               <span className="font-semibold text-foreground">
-                {isClient ? "Kho cá nhân S3" : "Dung lượng S3"}
+                {isClient ? "Kho cá nhân" : "Dung lượng"}
               </span>
               {quotaBytes > 0 && (
                 <span className="font-bold tabular-nums text-muted-foreground">
@@ -90,9 +90,9 @@ export function StorageUsageSummary() {
               )}
             </div>
             {quotaBytes > 0 && (
-              <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+              <div className="mt-1 h-1.5 w-full overflow-hidden rounded-[2px] bg-muted">
                 <div
-                  className={`h-full rounded-full transition-all duration-300 ${
+                  className={`h-full rounded-[2px] transition-all duration-300 ${
                     percent >= 90
                       ? "bg-destructive"
                       : percent >= 75
@@ -111,10 +111,10 @@ export function StorageUsageSummary() {
             type="button"
             size="sm"
             onClick={() => setAddonOpen(true)}
-            className="h-8 gap-1 rounded-xl bg-brand-orange px-3 text-xs font-semibold text-white shadow-xs hover:bg-brand-orange/90"
+            className="h-8 gap-1 rounded-[4px] bg-brand-orange px-3 text-xs font-semibold text-white shadow-none hover:bg-brand-orange/90"
           >
             <Plus className="h-3.5 w-3.5" />
-            <span>Mua thêm S3</span>
+            <span>Mua thêm</span>
           </Button>
         )}
       </div>

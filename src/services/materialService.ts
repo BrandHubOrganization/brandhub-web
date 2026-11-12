@@ -228,11 +228,12 @@ export const materialService = {
     agencyId: string | undefined,
     payerScope: "AGENCY" | "CLIENT_VAULT",
     key: string,
+    customGb?: number,
   ): Promise<StorageAddonOrder> {
     return (
       await api.post<ApiResponse<StorageAddonOrder>>(
         "/api/v1/storage/addons/checkout",
-        { planCode, agencyId, payerScope },
+        { planCode, agencyId, payerScope, ...(customGb ? { customGb } : {}) },
         { headers: { "Idempotency-Key": key } },
       )
     ).data.data;

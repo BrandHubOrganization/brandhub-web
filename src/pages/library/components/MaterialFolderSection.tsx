@@ -161,8 +161,8 @@ export function MaterialFolderSection({
 
   return (
     <div className="space-y-3">
-      {/* Breadcrumb Bar + New Folder Button (Google Drive style) */}
-      <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border/70 bg-card px-3.5 py-2.5 shadow-2xs">
+      {/* Breadcrumb Bar + New Folder Button (AWS Console style) */}
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-none border border-[#d5dbdb] bg-card px-3.5 py-2.5 shadow-[0_1px_1px_0_rgba(0,28,36,0.05)] dark:border-border">
         <nav
           aria-label="Đường dẫn thư mục"
           className="flex flex-wrap items-center gap-1 text-xs"
@@ -175,7 +175,7 @@ export function MaterialFolderSection({
             onDrop={(e) =>
               void handleDropOnFolder(e, null, "Kho lưu trữ gốc")
             }
-            className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-medium transition-all ${
+            className={`inline-flex items-center gap-1.5 rounded-[4px] px-2.5 py-1 font-medium transition-colors ${
               dragOverTargetId === "ROOT"
                 ? "ring-2 ring-brand-orange bg-brand-orange/15 text-brand-orange font-bold"
                 : currentFolderId === null
@@ -202,7 +202,7 @@ export function MaterialFolderSection({
                   onDrop={(e) =>
                     void handleDropOnFolder(e, crumb.id, crumb.name)
                   }
-                  className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 transition-all ${
+                  className={`inline-flex items-center gap-1.5 rounded-[4px] px-2.5 py-1 transition-colors ${
                     isDragTarget
                       ? "ring-2 ring-brand-orange bg-brand-orange/15 text-brand-orange font-bold"
                       : isLast
@@ -234,14 +234,14 @@ export function MaterialFolderSection({
                     }
                   }}
                   placeholder="Nhập tên thư mục..."
-                  className="h-8 w-48 rounded-lg text-xs"
+                  className="h-8 w-48 rounded-[4px] text-xs"
                 />
                 <Button
                   type="button"
                   size="sm"
                   disabled={busy || !name.trim()}
                   onClick={() => void create()}
-                  className="h-8 rounded-lg bg-brand-orange px-3 text-xs font-semibold text-white hover:bg-brand-orange/90"
+                  className="h-8 rounded-[4px] bg-brand-orange px-3 text-xs font-semibold text-white hover:bg-brand-orange/90"
                 >
                   Tạo
                 </Button>
@@ -253,7 +253,7 @@ export function MaterialFolderSection({
                     setIsCreating(false);
                     setName("");
                   }}
-                  className="h-8 rounded-lg px-2 text-xs"
+                  className="h-8 rounded-[4px] px-2 text-xs"
                 >
                   Huỷ
                 </Button>
@@ -264,7 +264,7 @@ export function MaterialFolderSection({
                 size="sm"
                 variant="outline"
                 onClick={() => setIsCreating(true)}
-                className="h-8 gap-1.5 rounded-xl text-xs font-semibold hover:border-brand-orange/50 hover:text-brand-orange"
+                className="h-8 gap-1.5 rounded-[4px] border-[#5f6b7a]/40 text-xs font-semibold hover:border-brand-orange/50 hover:text-brand-orange dark:border-border"
               >
                 <FolderPlus className="h-3.5 w-3.5 text-brand-orange" />
                 <span>Thư mục mới</span>
@@ -274,12 +274,12 @@ export function MaterialFolderSection({
         )}
       </div>
 
-      {/* Google Drive-style Folder Pill Cards */}
+      {/* Folder Cards */}
       {folders.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between px-1">
             <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
-              Thư mục ({folders.length}) • Kéo tệp thả vào thư mục để di chuyển
+              Thư mục ({folders.length})
             </span>
           </div>
 
@@ -307,10 +307,10 @@ export function MaterialFolderSection({
                           void handleDropOnFolder(e, folder.id, folder.name)
                       : undefined
                   }
-                  className={`group relative flex items-center justify-between gap-2.5 rounded-xl border px-3.5 py-2.5 transition-all duration-150 ${
+                  className={`group relative flex items-center justify-between gap-2.5 rounded-none border px-3.5 py-2.5 transition-colors duration-150 ${
                     isDropOver
-                      ? "scale-[1.02] border-brand-orange bg-brand-orange/10 ring-2 ring-brand-orange shadow-md"
-                      : "border-border/80 bg-card hover:border-brand-orange/40 hover:bg-muted/30 hover:shadow-xs"
+                      ? "border-brand-orange bg-brand-orange/10 ring-1 ring-brand-orange"
+                      : "border-[#d5dbdb] bg-card hover:border-brand-orange/50 hover:bg-muted/30 dark:border-border"
                   }`}
                 >
                   {isRenaming ? (
@@ -325,7 +325,7 @@ export function MaterialFolderSection({
                           if (e.key === "Escape") setRenamingId(null);
                         }}
                         onBlur={() => void commitRename(folder.id)}
-                        className="h-7 text-xs"
+                        className="h-7 rounded-[4px] text-xs"
                       />
                     </div>
                   ) : (
@@ -336,7 +336,7 @@ export function MaterialFolderSection({
                       className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
                     >
                       <div
-                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[4px] transition-colors ${
                           isDropOver
                             ? "bg-brand-orange text-white"
                             : "bg-brand-orange/10 text-brand-orange group-hover:bg-brand-orange group-hover:text-white"
@@ -345,7 +345,7 @@ export function MaterialFolderSection({
                         <Folder className="h-4 w-4 fill-current" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-xs font-semibold text-foreground">
+                        <p className="truncate text-xs font-semibold text-foreground group-hover:underline">
                           {folder.name}
                         </p>
                         {isDropOver && (
@@ -363,12 +363,12 @@ export function MaterialFolderSection({
                         <button
                           type="button"
                           onClick={(e) => e.stopPropagation()}
-                          className="rounded-lg p-1 text-muted-foreground opacity-75 transition-colors hover:bg-muted hover:text-foreground group-hover:opacity-100"
+                          className="rounded-[4px] p-1 text-muted-foreground opacity-75 transition-colors hover:bg-muted hover:text-foreground group-hover:opacity-100"
                         >
                           <MoreVertical className="h-4 w-4" />
                         </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40 rounded-xl">
+                      <DropdownMenuContent align="end" className="w-40 rounded-none">
                         {trashMode ? (
                           <>
                             <DropdownMenuItem

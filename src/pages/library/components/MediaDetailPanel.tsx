@@ -266,7 +266,7 @@ function DetailView({
             material && (
               <>
                 {editing ? (
-                  <div className="rounded-2xl border border-border/80 bg-card p-4 shadow-2xs">
+                  <div className="rounded-none border border-[#d5dbdb] bg-card p-4 dark:border-border">
                     <MaterialMetadataEditForm
                       key={`${material.id}:${material.version}`}
                       material={material}
