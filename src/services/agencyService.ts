@@ -41,6 +41,7 @@ export interface InviteAgencyMemberRequest {
   workspaceId?: string;
   role?: MemberRole;
   expiryDays?: number;
+  emailLanguage?: "vi" | "en";
 }
 
 export const agencyService = {

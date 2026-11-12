@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import {
-  Pencil,
-  Plus,
-  TriangleAlert,
-  User,
-  UserPlus,
-} from "lucide-react";
+import { Pencil, Plus, TriangleAlert, User, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
@@ -20,7 +14,10 @@ import { LOGO_ICON_OPTIONS, getLogoIcon } from "@/pages/agency/logoIcons";
 import { AgencyOrgChart } from "@/pages/agency/components/AgencyOrgChart";
 import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
 import { WorkspaceCardGrid } from "@/pages/workspace/components/WorkspaceCardGrid";
-import { ImageCropperModal, RecentAssetsModal } from "@/components/shared/image-editor";
+import {
+  ImageCropperModal,
+  RecentAssetsModal,
+} from "@/components/shared/image-editor";
 import { saveRecentAsset } from "@/utils/recentAssetsStorage";
 import type { Agency, AgencyCategory, CompanySize } from "@/types/agency";
 import type { Workspace } from "@/types/workspace";
@@ -28,7 +25,8 @@ import {
   AgencyDetailEditForm,
   type AgencyDetailFieldErrors,
 } from "./components/AgencyDetailEditForm";
-import { AgencyDetailInfo } from "./components/AgencyDetailInfo";
+import { AgencyProfileCard } from "./components/AgencyProfileCard";
+import { DEFAULT_AGENCY_COVER } from "@/pages/agency/agencyDefaults";
 import { AgencyDetailLivePreview } from "./components/AgencyDetailLivePreview";
 
 import {
@@ -93,7 +91,10 @@ export function AgencyDetailPage() {
     });
   };
 
-  const validateField = (field: keyof AgencyDetailFieldErrors, value: string) => {
+  const validateField = (
+    field: keyof AgencyDetailFieldErrors,
+    value: string,
+  ) => {
     let message: string | undefined;
     switch (field) {
       case "name":
@@ -181,7 +182,8 @@ export function AgencyDetailPage() {
       .finally(() => setLoading(false));
   }, [id, t]);
 
-  const isOwner = !!agency && !!currentUser && agency.ownerId === currentUser.id;
+  const isOwner =
+    !!agency && !!currentUser && agency.ownerId === currentUser.id;
   const isClientView = !!agency && !isOwner && !agency.myRole;
 
   useEffect(() => {
@@ -281,7 +283,9 @@ export function AgencyDetailPage() {
       if (newLogoUrl) saveRecentAsset("logo", newLogoUrl);
       toast.success(t("agency.detail.logoUploadSuccess"));
     } catch (err: unknown) {
-      toast.error(extractErrorMessage(err, t("agency.errors.uploadLogoFailed")));
+      toast.error(
+        extractErrorMessage(err, t("agency.errors.uploadLogoFailed")),
+      );
     } finally {
       setUploadingLogo(false);
     }
@@ -313,7 +317,9 @@ export function AgencyDetailPage() {
       if (newBannerUrl) saveRecentAsset("banner", newBannerUrl);
       toast.success(t("agency.detail.bannerUploadSuccess"));
     } catch (err: unknown) {
-      toast.error(extractErrorMessage(err, t("agency.errors.uploadBannerFailed")));
+      toast.error(
+        extractErrorMessage(err, t("agency.errors.uploadBannerFailed")),
+      );
     } finally {
       setUploadingBanner(false);
     }
@@ -363,7 +369,10 @@ export function AgencyDetailPage() {
   }
 
   const isDeleted = agency.status === "SOFT_DELETED";
-  const effectiveBannerUrl = agency.bannerUrl || null;
+  const effectiveBannerUrl =
+    agency.bannerUrl && !agency.bannerUrl.startsWith("seed:")
+      ? agency.bannerUrl
+      : DEFAULT_AGENCY_COVER;
   const effectiveLogoUrl = logoUrl.trim() || agency.logoUrl || null;
 
   return (
@@ -395,7 +404,7 @@ export function AgencyDetailPage() {
             <Button
               size="sm"
               loading={restoring}
-              className="bg-amber-600 hover:bg-amber-700 w-fit cursor-pointer text-white"
+              className="w-fit cursor-pointer bg-amber-600 text-white hover:bg-amber-700"
               onClick={handleRestore}
             >
               {t("agency.detail.restoreButton")}
@@ -430,7 +439,7 @@ export function AgencyDetailPage() {
                         const CurrentLogoIcon = getLogoIcon(logoIcon);
                         return (
                           <div className="bg-brand-orange flex size-full items-center justify-center text-white transition-colors">
-                            <CurrentLogoIcon className="size-10 sm:size-12 transition-transform text-white" />
+                            <CurrentLogoIcon className="size-10 text-white transition-transform sm:size-12" />
                           </div>
                         );
                       })()
@@ -534,39 +543,8 @@ export function AgencyDetailPage() {
               />
             </div>
           ) : (
-            <ProfileBannerHeader
-              bannerUrl={agency.bannerUrl || null}
-              bannerEmptyLabel={t("agency.detail.bannerEmptyLabel")}
-              uploadBannerLabel={t("agency.detail.uploadBannerButton")}
-              uploadingBanner={uploadingBanner}
-              bannerInputRef={bannerInputRef}
-              onBannerFileChange={handleBannerFileChange}
-              canEditBanner={false}
-              logo={
-                agency.logoUrl ? (
-                  <img
-                    src={agency.logoUrl}
-                    alt={agency.name}
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  (() => {
-                    const CurrentLogoIcon = getLogoIcon(agency.logoIcon);
-                    return (
-                      <div className="bg-brand-orange flex size-full items-center justify-center text-white transition-colors">
-                        <CurrentLogoIcon className="size-10 sm:size-12 transition-transform text-white" />
-                      </div>
-                    );
-                  })()
-                )
-              }
-              canEditLogo={false}
-              uploadingLogo={uploadingLogo}
-              logoInputRef={logoInputRef}
-              onLogoFileChange={handleLogoFileChange}
-              uploadLogoTitle={t("agency.detail.uploadLogoButton")}
-              title={agency.name}
-              subtitle={agency.tagline}
+            <AgencyProfileCard
+              profile={agency}
               hint={!isOwner ? t("agency.detail.ownerOnlyHint") : null}
               actions={
                 isOwner ? (
@@ -581,9 +559,7 @@ export function AgencyDetailPage() {
                   </Button>
                 ) : null
               }
-            >
-              <AgencyDetailInfo agency={agency} />
-            </ProfileBannerHeader>
+            />
           )}
 
           {isOwner && !isEditing && (
