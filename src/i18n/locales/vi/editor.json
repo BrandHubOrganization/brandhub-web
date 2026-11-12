@@ -430,8 +430,8 @@
   "mediaDropzone": {
     "selectWorkspaceWarning": "Vui lòng chọn Workspace trước khi tải tệp lên!",
     "sizeExceededError": "File {{fileName}} vượt quá dung lượng 50MB",
-    "uploadSuccess": "Đã upload thành công: {{fileName}}",
-    "uploadError": "Lỗi khi upload file {{fileName}}",
+    "uploadSuccess": "Đã tải lên thành công",
+    "uploadError": "Lỗi khi tải tệp lên",
     "uploading": "Đang tải phương tiện lên...",
     "dragDropText": "Kéo thả hình ảnh/video vào đây hoặc",
     "browseText": "duyệt từ máy tính",

@@ -28,6 +28,10 @@
   "cancel": "Hủy",
   "close": "Đóng",
   "deleted": "Đã xóa mẫu email.",
+  "backToList": "Quay lại danh sách mẫu",
+  "detail": {
+    "breadcrumb": "Chi tiết mẫu email"
+  },
   "quota": {
     "label": "Quota tháng: {{used}}/{{limit}}",
     "hint": "Hạn mức gửi email tháng này của workspace."

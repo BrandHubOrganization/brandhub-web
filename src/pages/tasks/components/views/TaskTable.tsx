@@ -1,115 +1,21 @@
 import { useState } from "react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowUpDown, FolderKanban, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/pages/tasks/constants";
+import { STATUS_CONFIG } from "@/pages/tasks/constants";
 import { TaskRowActions } from "@/pages/tasks/components/TaskRowActions";
-import type { TaskPriority } from "@/types/task";
+import { TaskBulkActionBar } from "../TaskBulkActionBar";
+import { TaskPriorityPicker } from "../TaskPriorityPicker";
+import {
+  formatTaskDate,
+  SortableHeader,
+  TableSkeletonRows,
+  TableEmptyRow,
+} from "./TaskTableParts";
 import type { TaskTableProps } from "./types/types";
 
 export type { TaskTableProps };
-
-function formatTaskDate(iso: string | null | undefined, lang: string, fallback: string): string {
-  if (!iso) return fallback;
-  try {
-    const d = new Date(iso);
-    if (isNaN(d.getTime())) return iso;
-    return new Intl.DateTimeFormat(lang, { dateStyle: "short", timeStyle: "short" }).format(d);
-  } catch {
-    return iso;
-  }
-}
-
-function TaskPriorityBadge({ priority }: { priority?: TaskPriority }) {
-  const p = priority ?? "MEDIUM";
-  const conf = PRIORITY_CONFIG[p] ?? PRIORITY_CONFIG.MEDIUM;
-  return (
-    <div className="flex items-center gap-1.5 text-xs font-medium">
-      <span className="flex flex-col gap-0.5">
-        <span className={`h-0.5 w-3 rounded-full ${conf.barColor}`} />
-        <span className={`h-0.5 w-3 rounded-full ${conf.barColor}`} />
-      </span>
-      <span className={conf.color}>{conf.label}</span>
-    </div>
-  );
-}
-
-interface SortableHeaderProps {
-  field: "name" | "status" | "dueDate";
-  sortField?: string;
-  sortDirection?: "asc" | "desc";
-  onSort: (field: "name" | "status" | "dueDate") => void;
-  label: string;
-  className: string;
-}
-
-function SortableHeader({ field, sortField, onSort, label, className }: SortableHeaderProps) {
-  const active = sortField === field;
-  return (
-    <th className={`px-3 py-3 ${className}`}>
-      <button
-        type="button"
-        onClick={(e) => { e.preventDefault(); onSort(field); }}
-        className="hover:text-foreground active:scale-97 group inline-flex cursor-pointer items-center gap-1.5 transition-all focus-visible:outline-none"
-      >
-        <span>{label}</span>
-        <ArrowUpDown className={`size-3 transition-colors ${active ? "text-brand-orange" : "text-muted-foreground/40 group-hover:text-muted-foreground"}`} />
-      </button>
-    </th>
-  );
-}
-
-function TableSkeletonRows() {
-  return (
-    <>
-      {Array.from({ length: 6 }).map((_, i) => (
-        <tr key={i} className="animate-pulse">
-          <td className="px-3 py-3"><div className="bg-muted mx-auto size-3.5 rounded-sm" /></td>
-          <td className="px-3 py-3"><div className="bg-muted h-4 w-48 rounded-md" /></td>
-          <td className="px-3 py-3"><div className="bg-muted h-4 w-28 rounded-md" /></td>
-          <td className="px-3 py-3"><div className="bg-muted h-4 w-16 rounded-md" /></td>
-          <td className="px-3 py-3"><div className="bg-muted h-4 w-20 rounded-md" /></td>
-          <td className="px-3 py-3"><div className="bg-muted h-4 w-24 rounded-md" /></td>
-          <td className="px-3 py-3"><div className="bg-muted ml-auto h-4 w-16 rounded-md" /></td>
-        </tr>
-      ))}
-    </>
-  );
-}
-
-function TableEmptyRow({
-  isFiltered,
-  onResetFilters,
-}: {
-  isFiltered?: boolean;
-  onResetFilters?: () => void;
-}) {
-  return (
-    <tr>
-      <td colSpan={7} className="py-12 text-center">
-        <FolderKanban className="text-muted-foreground/40 mx-auto size-12" />
-        <p className="text-foreground mt-3 font-medium">Không tìm thấy công việc nào</p>
-        <p className="text-muted-foreground mt-0.5 text-xs">
-          {isFiltered
-            ? "Không có công việc nào khớp với bộ lọc hiện tại."
-            : "Chưa có công việc nào trong không gian này."}
-        </p>
-        {isFiltered && onResetFilters && (
-          <button
-            type="button"
-            onClick={onResetFilters}
-            className="border-border bg-card text-foreground hover:bg-muted mt-3.5 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium shadow-2xs transition-colors"
-          >
-            <RotateCcw className="text-brand-orange size-3.5" />
-            <span>Xóa bộ lọc</span>
-          </button>
-        )}
-      </td>
-    </tr>
-  );
-}
 
 export function TaskTable(props: TaskTableProps) {
   const { t, i18n } = useTranslation();
@@ -119,7 +25,7 @@ export function TaskTable(props: TaskTableProps) {
     if (selectedTaskIds.length === props.tasks.length) {
       setSelectedTaskIds([]);
     } else {
-      setSelectedTaskIds(props.tasks.map((t) => t.id));
+      setSelectedTaskIds(props.tasks.map((task) => task.id));
     }
   };
 
@@ -135,14 +41,20 @@ export function TaskTable(props: TaskTableProps) {
 
   return (
     <div className="border-border bg-card/90 flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border shadow-xs">
-      <div data-task-scroll="list" className="min-h-0 flex-1 overflow-x-auto overflow-y-auto overscroll-contain">
+      <div
+        data-task-scroll="list"
+        className="min-h-0 flex-1 overflow-x-auto overflow-y-auto overscroll-contain"
+      >
         <table className="w-full min-w-[960px] table-fixed border-collapse text-left text-sm">
           <thead className="bg-card sticky top-0 z-10 border-b">
             <tr className="border-border bg-muted/40 text-muted-foreground border-b text-xs font-semibold tracking-wider">
               <th className="w-12 px-3 py-3 text-center">
                 <input
                   type="checkbox"
-                  checked={props.tasks.length > 0 && selectedTaskIds.length === props.tasks.length}
+                  checked={
+                    props.tasks.length > 0 &&
+                    selectedTaskIds.length === props.tasks.length
+                  }
                   onChange={toggleSelectAll}
                   aria-label="Chọn tất cả"
                   className="accent-brand-orange size-3.5 cursor-pointer rounded-sm"
@@ -157,7 +69,9 @@ export function TaskTable(props: TaskTableProps) {
                 className="w-[280px] px-4"
               />
               <th className="w-[180px] px-3 py-3">{t("tasks.assignee")}</th>
-              <th className="w-[110px] px-3 py-3">Độ ưu tiên</th>
+              <th className="w-[120px] px-3 py-3">
+                {t("tasks.priority.title", { defaultValue: "Độ ưu tiên" })}
+              </th>
               <SortableHeader
                 field="status"
                 sortField={props.sortField}
@@ -174,19 +88,26 @@ export function TaskTable(props: TaskTableProps) {
                 label={t("tasks.deadline")}
                 className="w-[140px]"
               />
-              <th className="w-[110px] px-4 py-3 text-right">{t("tasks.inline.columns.actions")}</th>
+              <th className="w-[110px] px-4 py-3 text-right">
+                {t("tasks.inline.columns.actions")}
+              </th>
             </tr>
           </thead>
           <tbody
             className={cn(
               "divide-border divide-y transition-opacity duration-150",
-              props.loading && props.tasks.length > 0 ? "opacity-60" : "opacity-100",
+              props.loading && props.tasks.length > 0
+                ? "opacity-60"
+                : "opacity-100",
             )}
           >
             {props.loading && props.tasks.length === 0 ? (
               <TableSkeletonRows />
             ) : props.tasks.length === 0 ? (
-              <TableEmptyRow isFiltered={props.isFiltered} onResetFilters={props.onResetFilters} />
+              <TableEmptyRow
+                isFiltered={props.isFiltered}
+                onResetFilters={props.onResetFilters}
+              />
             ) : (
               props.tasks.map((task) => {
                 const isSelected = selectedTaskIds.includes(task.id);
@@ -197,11 +118,17 @@ export function TaskTable(props: TaskTableProps) {
                   <tr
                     key={task.id}
                     onClick={() => props.onTaskClick(task)}
-                    className={`hover:bg-muted/40 group cursor-pointer transition-colors ${
-                      isSelected ? "bg-muted/30" : ""
-                    } ${props.activeTaskId === task.id ? "bg-brand-orange/10 font-medium" : ""}`}
+                    className={cn(
+                      "hover:bg-muted/40 group cursor-pointer transition-colors",
+                      isSelected && "bg-muted/30",
+                      props.activeTaskId === task.id &&
+                        "bg-brand-orange/10 font-medium",
+                    )}
                   >
-                    <td onClick={(e) => toggleSelectTask(e, task.id)} className="w-12 px-3 py-2.5 text-center">
+                    <td
+                      onClick={(e) => toggleSelectTask(e, task.id)}
+                      className="w-12 px-3 py-2.5 text-center"
+                    >
                       <input
                         type="checkbox"
                         checked={isSelected}
@@ -211,7 +138,10 @@ export function TaskTable(props: TaskTableProps) {
                       />
                     </td>
                     <td className="w-[280px] overflow-hidden px-4 py-2.5">
-                      <div className="flex max-w-[250px] min-w-0 flex-col" title={task.name}>
+                      <div
+                        className="flex max-w-[250px] min-w-0 flex-col"
+                        title={task.name}
+                      >
                         <span className="text-foreground group-hover:text-brand-orange truncate font-medium transition-colors">
                           {task.name}
                         </span>
@@ -220,28 +150,49 @@ export function TaskTable(props: TaskTableProps) {
                         </span>
                       </div>
                     </td>
-                    <td className="overflow-hidden px-3 py-2.5" onClick={(e) => e.stopPropagation()}>
-                      <TaskRowActions task={task} field="assignee" />
+                    <td
+                      className="overflow-hidden px-3 py-2.5"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <TaskRowActions
+                        task={task}
+                        field="assignee"
+                        onUpdated={props.onUpdated}
+                      />
                     </td>
                     <td
                       className="px-3 py-2.5 whitespace-nowrap"
-                      title={`Độ ưu tiên: ${PRIORITY_CONFIG[task.priority ?? "MEDIUM"]?.label ?? "Medium"}`}
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <TaskPriorityBadge priority={task.priority} />
+                      <TaskPriorityPicker
+                        workspaceId={props.workspaceId || task.workspaceId}
+                        taskId={task.id}
+                        priority={task.priority}
+                        onUpdated={() => props.onUpdated?.()}
+                      />
                     </td>
                     <td className="px-3 py-2.5 whitespace-nowrap">
                       <span
                         title={`Trạng thái: ${t(`tasks.status.${status}`, { defaultValue: task.status })}`}
                         className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap ${statusConf.bg} ${statusConf.text} ${statusConf.border}`}
                       >
-                        <span className={`size-1.5 shrink-0 rounded-full ${statusConf.dot}`} />
-                        <span className="truncate">{t(`tasks.status.${status}`, { defaultValue: task.status })}</span>
+                        <span
+                          className={`size-1.5 shrink-0 rounded-full ${statusConf.dot}`}
+                        />
+                        <span className="truncate">
+                          {t(`tasks.status.${status}`, {
+                            defaultValue: task.status,
+                          })}
+                        </span>
                       </span>
                     </td>
                     <td className="text-muted-foreground px-3 py-2.5 text-xs whitespace-nowrap">
                       {formatDate(task.dueDate)}
                     </td>
-                    <td className="px-4 py-2.5 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                    <td
+                      className="px-4 py-2.5 text-right whitespace-nowrap"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <TaskRowActions task={task} field="start" />
                     </td>
                   </tr>
@@ -254,7 +205,8 @@ export function TaskTable(props: TaskTableProps) {
 
       <footer className="border-border bg-card/60 flex shrink-0 flex-wrap items-center justify-between border-t px-4 py-3 text-sm">
         <span className="text-muted-foreground text-xs">
-          Showing <b>{props.tasks.length}</b> of <b>{props.totalElements}</b> tasks
+          Showing <b>{props.tasks.length}</b> of <b>{props.totalElements}</b>{" "}
+          tasks
         </span>
         <div className="flex items-center gap-2">
           <Button
@@ -280,6 +232,18 @@ export function TaskTable(props: TaskTableProps) {
           </Button>
         </div>
       </footer>
+
+      <TaskBulkActionBar
+        selectedTaskIds={selectedTaskIds}
+        workspaceId={props.workspaceId || ""}
+        isAllSelected={
+          props.tasks.length > 0 &&
+          selectedTaskIds.length === props.tasks.length
+        }
+        onToggleSelectAll={toggleSelectAll}
+        onClearSelection={() => setSelectedTaskIds([])}
+        onUpdated={props.onUpdated}
+      />
     </div>
   );
 }

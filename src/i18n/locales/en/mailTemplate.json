@@ -28,6 +28,10 @@
   "cancel": "Cancel",
   "close": "Close",
   "deleted": "Template deleted.",
+  "backToList": "Back to template list",
+  "detail": {
+    "breadcrumb": "Mail template details"
+  },
   "quota": {
     "label": "Monthly quota: {{used}}/{{limit}}",
     "hint": "This workspace's monthly email send limit."

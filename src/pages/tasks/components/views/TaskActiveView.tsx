@@ -70,6 +70,8 @@ export function TaskActiveView({
           isFiltered={isFiltered}
           activeTaskId={panel.taskId}
           onTaskClick={panel.open}
+          workspaceId={workspaceId}
+          onUpdated={() => void state.loadTasks(true)}
         />
       )}
 

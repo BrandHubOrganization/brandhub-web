@@ -35,6 +35,8 @@ export interface TaskTableProps {
   activeTaskId?: string;
   onResetFilters?: () => void;
   isFiltered?: boolean;
+  workspaceId?: string;
+  onUpdated?: () => void;
 }
 
 // Calendar & Timeline View Props

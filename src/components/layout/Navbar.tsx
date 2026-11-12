@@ -68,8 +68,8 @@ const WORKSPACE_SCOPED_LINKS = [
   "/publish",
 ];
 
-const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const ID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$|^[0-9a-f]{20,32}$|^\d+$/i;
 
 const NAV_KEY_MAP: Record<string, string> = {
   dashboard: "nav.dashboard",
@@ -77,6 +77,8 @@ const NAV_KEY_MAP: Record<string, string> = {
   workspaces: "nav.workspaceList",
   agency: "nav.agencyList",
   "mail-templates": "nav.mailTemplates",
+  edit: "nav.edit",
+  new: "nav.new",
   portal: "nav.portal",
   editor: "nav.editor",
   calendar: "nav.calendar",
@@ -157,6 +159,8 @@ function getChildResourceBreadcrumbLabel(
     return t("clients.detail.breadcrumb", "Chi tiết khách hàng");
   if (prevSeg === "campaigns")
     return t("campaign.detail.breadcrumb", "Chi tiết chiến dịch");
+  if (prevSeg === "mail-templates")
+    return t("mailTemplate.detail.breadcrumb", "Chi tiết mẫu email");
   return t("common.detail", "Chi tiết");
 }
 
@@ -297,8 +301,8 @@ export function Navbar({
       let path = "/" + segments.slice(0, idx + 1).join("/");
       const root = segments[0];
 
-      if (UUID_REGEX.test(seg)) {
-        // Workspace UUID: chỉ ở vị trí /workspaces/:id (idx === 1)
+      if (ID_REGEX.test(seg)) {
+        // Workspace UUID / ID: chỉ ở vị trí /workspaces/:id (idx === 1)
         if (root === "workspaces" && idx === 1) {
           const ws = workspaces.find((w) => w.id === seg);
           if (ws?.agencyId) {
@@ -308,10 +312,10 @@ export function Navbar({
               path: `/agency/${ws.agencyId}`,
             });
           }
-          crumbs.push({ label: ws?.name ?? seg, path });
+          crumbs.push({ label: ws?.name ?? t("nav.workspaceList"), path });
           return;
         }
-        // Agency UUID: chỉ ở vị trí /agency/:id (idx === 1)
+        // Agency UUID / ID: chỉ ở vị trí /agency/:id (idx === 1)
         if (root === "agency" && idx === 1) {
           const entity = agencies.find((a) => a.id === seg);
           crumbs.push({
@@ -320,7 +324,13 @@ export function Navbar({
           });
           return;
         }
-        // Child resource UUID (e.g. /workspaces/:id/posts/:postId)
+        // Nếu phía sau là action segment (vd: edit, new, editor, newsletter) thì không tạo crumb riêng cho ID
+        // nhằm tránh làm lộ ID thô trên thanh điều hướng
+        const nextSeg = segments[idx + 1];
+        if (nextSeg && ["edit", "new", "editor", "newsletter"].includes(nextSeg)) {
+          return;
+        }
+        // Child resource ID (e.g. /workspaces/:id/posts/:postId)
         crumbs.push({
           label: getChildResourceBreadcrumbLabel(segments[idx - 1], t),
           path,
@@ -346,6 +356,9 @@ export function Navbar({
         path = `/${segments.slice(0, idx).join("/")}/posts/dashboard`;
       }
       const navKey = NAV_KEY_MAP[seg];
+      if (!navKey && /^[0-9a-f]{16,}$/i.test(seg)) {
+        return;
+      }
       const label = navKey
         ? t(navKey)
         : seg.charAt(0).toUpperCase() + seg.slice(1);

@@ -41,7 +41,7 @@ export const MediaUploadTab: React.FC<MediaUploadTabProps> = ({
           item.mediaKind === "VIDEO" ? "VIDEO" : "IMAGE",
         );
         toast.success(
-          t("editor.mediaDropzone.uploadSuccess", { fileName: file.name }),
+          t("editor.mediaDropzone.uploadSuccess"),
         );
         return item.url;
       }
@@ -67,7 +67,7 @@ export const MediaUploadTab: React.FC<MediaUploadTabProps> = ({
                 : null;
       const errorMessage = key
         ? t(key)
-        : backendMessage || t("editor.mediaDropzone.uploadError", { fileName: file.name });
+        : backendMessage || t("editor.mediaDropzone.uploadError");
       toast.error(errorMessage, { duration: 5000 });
     }
     return null;

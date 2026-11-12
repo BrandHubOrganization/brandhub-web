@@ -1,40 +1,24 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Copy, Pencil, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Pagination } from "@/components/ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
 import { errorCode } from "@/services/adminRevenueService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import { SCOPES_BY_AUDIENCE } from "./blocks";
 import { MailTemplateFilters } from "./components/MailTemplateFilters";
 import { SendMailDialog } from "./components/SendMailDialog";
-import { TemplateFormDialog, type FormAdapter } from "./components/TemplateFormDialog";
 import { agencyMailTemplateService, mailTemplateService } from "./services/mailTemplateService";
-import type {
-  MailTemplate,
-  MailTemplateCategory,
-  MailTemplateSort,
-  MailTemplateSummary,
-  PageOf,
-} from "./types";
-
-type FormState = { mode: "create" | "edit"; template: MailTemplate | null } | null;
+import type { MailTemplateCategory, MailTemplateSort, MailTemplateSummary, PageOf } from "./types";
 
 function Panel({ workspaceId }: { workspaceId: string }) {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<MailTemplateCategory>("ALL");
   const [sort, setSort] = useState<MailTemplateSort>("CREATED_DESC");
@@ -45,7 +29,6 @@ function Panel({ workspaceId }: { workspaceId: string }) {
   const [agencyRows, setAgencyRows] = useState<MailTemplateSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
-  const [form, setForm] = useState<FormState>(null);
   const [sendFor, setSendFor] = useState<MailTemplateSummary | null>(null);
   const [toDelete, setToDelete] = useState<MailTemplateSummary | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -121,27 +104,6 @@ function Panel({ workspaceId }: { workspaceId: string }) {
     return sortedRows.slice(start, start + pageSize);
   }, [sortedRows, page, pageSize]);
 
-  const adapter: FormAdapter = {
-    save: (payload, existing) =>
-      existing
-        ? mailTemplateService.update(workspaceId, existing.id, payload)
-        : mailTemplateService.create(workspaceId, payload),
-    scopes: SCOPES_BY_AUDIENCE.workspace,
-    uploadAttachment: async (file) => {
-      const u = await mailTemplateService.upload(workspaceId, file, "attachments");
-      return { attachmentId: u.id, name: u.name, contentType: u.contentType, size: u.size };
-    },
-  };
-
-  const openEdit = async (row: MailTemplateSummary, mode: "edit" | "create") => {
-    try {
-      const full = await mailTemplateService.get(workspaceId, row.id);
-      setForm({ mode, template: full });
-    } catch (e) {
-      toast.error(t(`mailTemplate.errors.${errorCode(e)}`, { defaultValue: t("mailTemplate.errors.generic") }));
-    }
-  };
-
   const confirmDelete = async () => {
     if (!toDelete) return;
     setDeleting(true);
@@ -168,7 +130,7 @@ function Panel({ workspaceId }: { workspaceId: string }) {
         sort={sort}
         onSortChange={setSort}
         workspaceId={workspaceId}
-        onCreateTemplate={() => setForm({ mode: "create", template: null })}
+        onCreateTemplate={() => navigate(`/workspaces/${workspaceId}/mail-templates/new`)}
       />
 
       {loading && <Spinner />}
@@ -202,12 +164,20 @@ function Panel({ workspaceId }: { workspaceId: string }) {
                   <Send className="size-3.5" />{t("mailTemplate.actions.send")}
                 </Button>
                 {row.scope?.startsWith("AGENCY_") ? null : row.type === "SYSTEM_DEFAULT" ? (
-                  <Button size="sm" variant="outline" onClick={() => void openEdit(row, "create")}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => navigate(`/workspaces/${workspaceId}/mail-templates/new?cloneFrom=${row.id}`)}
+                  >
                     <Copy className="size-3.5" />{t("mailTemplate.actions.use")}
                   </Button>
                 ) : (
                   <>
-                    <Button size="sm" variant="outline" onClick={() => void openEdit(row, "edit")}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => navigate(`/workspaces/${workspaceId}/mail-templates/${row.id}/edit`)}
+                    >
                       <Pencil className="size-3.5" />{t("mailTemplate.actions.edit")}
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => setToDelete(row)}>
@@ -239,12 +209,6 @@ function Panel({ workspaceId }: { workspaceId: string }) {
         />
       )}
 
-      {form && (
-        <TemplateFormDialog open key={`${form.mode}-${form.template?.id ?? "new"}`} mode={form.mode}
-          draftKey={`mail-template-draft:${workspaceId}`}
-          template={form.template} adapter={adapter} onClose={() => setForm(null)}
-          onSaved={() => { setForm(null); void load(); }} />
-      )}
       {sendFor && (
         <SendMailDialog open workspaceId={workspaceId} template={sendFor} agencyId={agencyId} onClose={() => setSendFor(null)} />
       )}

@@ -1128,11 +1128,14 @@
     "updateFailed": "Failed to update task schedule. Please try again."
   },
   "priority": {
+    "title": "Priority",
     "URGENT": "Urgent",
     "HIGH": "High",
     "MEDIUM": "Medium",
     "LOW": "Low"
   },
+  "priorityUpdated": "Task priority updated successfully",
+  "priorityUpdateFailed": "Failed to update task priority",
   "sort": {
     "label": "Sort",
     "default": "Default",
@@ -1144,5 +1147,23 @@
     "startDateAsc": "Start date (Oldest)",
     "priorityDesc": "Priority (High → Low)",
     "priorityAsc": "Priority (Low → High)"
+  },
+  "bulk": {
+    "selected": "selected",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "changeStatus": "Change status",
+    "changePriority": "Change priority",
+    "assignMember": "Assign member",
+    "unassign": "Unassign",
+    "partialSuccess": "Updated {{succeeded}}/{{total}} tasks",
+    "delete": "Delete",
+    "deleteConfirmTitle": "Delete tasks",
+    "deleteConfirmDesc": "Are you sure you want to delete {{count}} selected tasks? This action cannot be undone.",
+    "statusUpdated": "Status updated for {{count}} tasks",
+    "priorityUpdated": "Priority updated for {{count}} tasks",
+    "assignedUpdated": "Assignee updated for {{count}} tasks",
+    "deletedSuccess": "Successfully deleted {{count}} tasks",
+    "close": "Close"
   }
 }
