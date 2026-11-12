@@ -82,6 +82,15 @@ export function ChatMediaLightbox() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
+  const toggleFullscreen = useCallback(() => {
+    if (!containerRef.current) return;
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  }, []);
+
   // Reset transforms when item changes
   useEffect(() => {
     setZoom(1);
@@ -137,15 +146,6 @@ export function ChatMediaLightbox() {
     document.addEventListener("fullscreenchange", onFullscreenChange);
     return () =>
       document.removeEventListener("fullscreenchange", onFullscreenChange);
-  }, []);
-
-  const toggleFullscreen = useCallback(() => {
-    if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
-    }
   }, []);
 
   const handleDownload = async () => {
