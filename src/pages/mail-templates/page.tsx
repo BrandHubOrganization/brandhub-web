@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Copy, History, MailX, Pencil, Plus, Send, Trash2 } from "lucide-react";
+import { Copy, Pencil, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
@@ -14,58 +14,112 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { Pagination } from "@/components/ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
 import { errorCode } from "@/services/adminRevenueService";
-import { SendMailDialog } from "./components/SendMailDialog";
-import { SCOPES_BY_AUDIENCE } from "./blocks";
-import { TemplateFormDialog, type FormAdapter } from "./components/TemplateFormDialog";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { SCOPES_BY_AUDIENCE } from "./blocks";
+import { MailTemplateFilters } from "./components/MailTemplateFilters";
+import { SendMailDialog } from "./components/SendMailDialog";
+import { TemplateFormDialog, type FormAdapter } from "./components/TemplateFormDialog";
 import { agencyMailTemplateService, mailTemplateService } from "./services/mailTemplateService";
-import type { MailTemplate, MailTemplateSummary, PageOf } from "./types";
+import type {
+  MailTemplate,
+  MailTemplateCategory,
+  MailTemplateSort,
+  MailTemplateSummary,
+  PageOf,
+} from "./types";
 
 type FormState = { mode: "create" | "edit"; template: MailTemplate | null } | null;
 
 function Panel({ workspaceId }: { workspaceId: string }) {
   const { t, i18n } = useTranslation();
-  const [query, setQuery] = useState("");
-  const [includeSystem, setIncludeSystem] = useState(true);
-  const [page, setPage] = useState(0);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState<MailTemplateCategory>("ALL");
+  const [sort, setSort] = useState<MailTemplateSort>("CREATED_DESC");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
   const [data, setData] = useState<PageOf<MailTemplateSummary> | null>(null);
+  const [agencyRows, setAgencyRows] = useState<MailTemplateSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [form, setForm] = useState<FormState>(null);
   const [sendFor, setSendFor] = useState<MailTemplateSummary | null>(null);
   const [toDelete, setToDelete] = useState<MailTemplateSummary | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const agencyId = useWorkspaceStore((s) => s.currentWorkspace?.agencyId);
-  const [agencyRows, setAgencyRows] = useState<MailTemplateSummary[]>([]);
 
-  // Agency templates are listed only for the agency OWNER (others get 403 -> nothing extra shown).
+  const agencyId = useWorkspaceStore((s) => s.currentWorkspace?.agencyId);
+
   useEffect(() => {
     if (!agencyId) { setAgencyRows([]); return; }
     let cancelled = false;
-    agencyMailTemplateService.list(agencyId, { q: query || undefined, size: 100 })
+    agencyMailTemplateService.list(agencyId, { q: search || undefined, size: 100 })
       .then((p) => { if (!cancelled) setAgencyRows(p.content); })
       .catch(() => { if (!cancelled) setAgencyRows([]); });
     return () => { cancelled = true; };
-  }, [agencyId, query]);
-
-  const rows = [...(data?.content ?? []), ...(page === 0 ? agencyRows : [])];
+  }, [agencyId, search]);
 
   const load = useCallback(async () => {
     setLoading(true);
     setFailed(false);
     try {
-      setData(await mailTemplateService.list(workspaceId, { q: query || undefined, includeSystem, page, size: 20 }));
+      setData(await mailTemplateService.list(workspaceId, { q: search || undefined, includeSystem: true, size: 100 }));
     } catch {
       setFailed(true);
     } finally {
       setLoading(false);
     }
-  }, [workspaceId, query, includeSystem, page]);
+  }, [workspaceId, search]);
 
   useEffect(() => { void load(); }, [load]);
+
+  const allRows = useMemo(() => {
+    const map = new Map<string, MailTemplateSummary>();
+    for (const r of data?.content ?? []) map.set(r.id, r);
+    for (const r of agencyRows) { if (!map.has(r.id)) map.set(r.id, r); }
+    return Array.from(map.values());
+  }, [data?.content, agencyRows]);
+
+  const categoryCounts = useMemo<Record<MailTemplateCategory, number>>(() => {
+    let all = 0, system = 0, custom = 0, campaign = 0, ws = 0;
+    for (const r of allRows) {
+      all++;
+      if (r.type === "SYSTEM_DEFAULT") system++;
+      if (r.type === "CUSTOM") custom++;
+      if (r.scope === "CAMPAIGN_BROADCAST") campaign++;
+      if (r.scope === "WORKSPACE_MANAGER") ws++;
+    }
+    return { ALL: all, SYSTEM_DEFAULT: system, CUSTOM: custom, CAMPAIGN_BROADCAST: campaign, WORKSPACE_MANAGER: ws };
+  }, [allRows]);
+
+  const sortedRows = useMemo(() => {
+    const filtered = allRows.filter((r) => {
+      if (category === "SYSTEM_DEFAULT") return r.type === "SYSTEM_DEFAULT";
+      if (category === "CUSTOM") return r.type === "CUSTOM";
+      if (category === "CAMPAIGN_BROADCAST") return r.scope === "CAMPAIGN_BROADCAST";
+      if (category === "WORKSPACE_MANAGER") return r.scope === "WORKSPACE_MANAGER";
+      return true;
+    });
+
+    return filtered.sort((a, b) => {
+      if (sort === "CREATED_DESC") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      if (sort === "CREATED_ASC") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      if (sort === "NAME_ASC") return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+      if (sort === "NAME_DESC") return b.name.localeCompare(a.name, undefined, { sensitivity: "base" });
+      return 0;
+    });
+  }, [allRows, category, sort]);
+
+  useEffect(() => { setPage(1); }, [search, category, sort, pageSize]);
+
+  const totalItems = sortedRows.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const paginatedRows = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return sortedRows.slice(start, start + pageSize);
+  }, [sortedRows, page, pageSize]);
 
   const adapter: FormAdapter = {
     save: (payload, existing) =>
@@ -105,27 +159,17 @@ function Panel({ workspaceId }: { workspaceId: string }) {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center gap-3">
-        <Input aria-label={t("mailTemplate.search")} placeholder={t("mailTemplate.search")} className="w-full sm:w-64"
-          value={query} onChange={(e) => { setPage(0); setQuery(e.target.value); }} />
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={includeSystem}
-            onChange={(e) => { setPage(0); setIncludeSystem(e.target.checked); }} />
-          {t("mailTemplate.includeSystem")}
-        </label>
-        <div className="ml-auto flex gap-2">
-          <Button asChild variant="outline">
-            <Link to={`/workspaces/${workspaceId}/mail-templates/suppressions`}><MailX className="size-4" />{t("mailTemplate.suppressions.link")}</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link to={`/workspaces/${workspaceId}/mail-templates/batches`}><History className="size-4" />{t("mailTemplate.batches.title")}</Link>
-          </Button>
-          <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white"
-            onClick={() => setForm({ mode: "create", template: null })}>
-            <Plus className="size-4" />{t("mailTemplate.create")}
-          </Button>
-        </div>
-      </div>
+      <MailTemplateFilters
+        search={search}
+        onSearchChange={setSearch}
+        category={category}
+        onCategoryChange={setCategory}
+        categoryCounts={categoryCounts}
+        sort={sort}
+        onSortChange={setSort}
+        workspaceId={workspaceId}
+        onCreateTemplate={() => setForm({ mode: "create", template: null })}
+      />
 
       {loading && <Spinner />}
       {failed && (
@@ -134,12 +178,12 @@ function Panel({ workspaceId }: { workspaceId: string }) {
           <Button onClick={() => void load()}>{t("mailTemplate.retry")}</Button>
         </div>
       )}
-      {!loading && !failed && data && rows.length === 0 && (
+      {!loading && !failed && totalItems === 0 && (
         <p className="text-muted-foreground">{t("mailTemplate.empty")}</p>
       )}
-      {!loading && !failed && data && rows.length > 0 && (
+      {!loading && !failed && totalItems > 0 && (
         <ul className="space-y-3" aria-label={t("mailTemplate.title")}>
-          {rows.map((row) => (
+          {paginatedRows.map((row) => (
             <li key={row.id} className="bg-card flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center">
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
@@ -176,12 +220,23 @@ function Panel({ workspaceId }: { workspaceId: string }) {
           ))}
         </ul>
       )}
-      {data && data.totalPages > 1 && (
-        <nav aria-label={t("mailTemplate.pagination")} className="flex items-center gap-2">
-          <Button variant="outline" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>{t("mailTemplate.previous")}</Button>
-          <span className="text-sm">{t("mailTemplate.page", { page: page + 1, total: data.totalPages })}</span>
-          <Button variant="outline" disabled={page + 1 >= data.totalPages} onClick={() => setPage((p) => p + 1)}>{t("mailTemplate.next")}</Button>
-        </nav>
+
+      {totalItems > 0 && (
+        <Pagination
+          page={page}
+          size={pageSize}
+          total={totalItems}
+          totalPages={totalPages}
+          isFetching={loading}
+          onPageChange={setPage}
+          onSizeChange={(newSize) => {
+            setPageSize(newSize);
+            setPage(1);
+          }}
+          pageSizeOptions={[10, 20, 50]}
+          itemLabel={t("mailTemplate.itemLabel")}
+          compact={false}
+        />
       )}
 
       {form && (

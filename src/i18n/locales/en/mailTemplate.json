@@ -3,7 +3,22 @@
   "subtitle": "Write email templates with variables, send them to Clients or a recipient list, and track delivery.",
   "create": "Create template",
   "search": "Search templates by name",
+  "clearSearch": "Clear search",
   "itemLabel": "templates",
+  "categories": {
+    "ALL": "All",
+    "SYSTEM_DEFAULT": "System",
+    "CUSTOM": "Custom",
+    "CAMPAIGN_BROADCAST": "Campaign",
+    "WORKSPACE_MANAGER": "Workspace Internal"
+  },
+  "sort": {
+    "label": "Sort by",
+    "createdDesc": "Newest",
+    "createdAsc": "Oldest",
+    "nameAsc": "Name A-Z",
+    "nameDesc": "Name Z-A"
+  },
   "includeSystem": "Show system templates",
   "systemBadge": "System",
   "attachmentCount": "{{count}} attachments",
