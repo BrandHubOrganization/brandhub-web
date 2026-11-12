@@ -29,6 +29,7 @@ import { useTimelineStatusWidth } from "@/pages/campaign/hooks/useTimelineStatus
 import { TimelineHorizontalScrollbar } from "@/pages/campaign/components/TimelineHorizontalScrollbar";
 import { TimelineRange } from "@/pages/campaign/components/TimelineRange";
 import { TimelineFilterBar } from "@/pages/campaign/components/TimelineFilterBar";
+import type { TaskType } from "@/types/task";
 import {
   useTimelineColumns,
   type TimelineColumn,
@@ -673,7 +674,7 @@ export function CampaignTimelineGrid({
                     timezone={data.timezone}
                     members={data.members}
                     busy={busy}
-                    taskType={node.parent.type}
+                    taskType={node.parent.type as TaskType}
                     onCancel={() => setCreating(null)}
                     onCreate={(name, assigneeId, dueDate, subtaskRole) =>
                       edit({

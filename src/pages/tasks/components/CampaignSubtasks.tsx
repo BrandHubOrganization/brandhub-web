@@ -31,7 +31,7 @@ import {
   JiraSubtaskRoleBadge,
 } from "@/pages/tasks/components/JiraSubtaskUI";
 import { isSubtaskDone } from "@/pages/tasks/utils/jiraSubtaskUtils";
-import { taskCatalogService } from "@/services/taskCatalogService";
+import { useTaskCatalogRoles } from "@/pages/tasks/hooks/useTaskCatalogRoles";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
 
 interface Details {
@@ -97,19 +97,7 @@ export function CampaignSubtasks({
     staleTime: 30000,
   });
   const taskType = workflowQuery.data?.type;
-  const catalog = useQuery({
-    queryKey: ["task-catalog", taskType],
-    queryFn: () => taskCatalogService.get(taskType!),
-    enabled: Boolean(taskType),
-    staleTime: Infinity,
-  });
-  const roleName = (role?: string | null) =>
-    role
-      ? t(`tasks.subtaskRoles.${role}`, {
-          defaultValue:
-            catalog.data?.roles.find((r) => r.role === role)?.name ?? role,
-        })
-      : null;
+  const { roleLabel: roleName } = useTaskCatalogRoles(taskType);
 
   const [draft, setDraft] = useState<(Details & { id?: string }) | null>(null);
   const supervisorId =

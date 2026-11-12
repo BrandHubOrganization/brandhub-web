@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, ChevronDown, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -24,7 +23,7 @@ import {
   todayIn,
 } from "@/pages/campaign/utils/timelineDates";
 import type { TaskMemberOption } from "@/pages/tasks/types/taskWorkflow";
-import { taskCatalogService } from "@/services/taskCatalogService";
+import { useTaskCatalogRoles } from "@/pages/tasks/hooks/useTaskCatalogRoles";
 import type { TaskType } from "@/types/task";
 export function TimelineSubtaskCreator({
   timezone,
@@ -38,7 +37,7 @@ export function TimelineSubtaskCreator({
   members: TaskMemberOption[];
   busy: boolean;
   /** Offers "suggest from catalog" roles for this task type (T8.7); omitted/unknown = free subtask only. */
-  taskType?: string;
+  taskType?: TaskType;
   onCreate: (
     name: string,
     assigneeId: string | null,
@@ -53,13 +52,7 @@ export function TimelineSubtaskCreator({
   const [due, setDue] = useState(() => addDays(todayIn(timezone), 2));
   const [dateOpen, setDateOpen] = useState(false);
   const [subtaskRole, setSubtaskRole] = useState<string | null>(null);
-  const catalog = useQuery({
-    queryKey: ["task-catalog", taskType],
-    queryFn: () => taskCatalogService.get(taskType as TaskType),
-    enabled: Boolean(taskType),
-    staleTime: Infinity,
-  });
-  const roles = catalog.data?.roles ?? [];
+  const { roles, roleLabel } = useTaskCatalogRoles(taskType);
   const input = useRef<HTMLInputElement>(null);
   const focusAfterSubmit = useRef(false);
   const submitting = useRef(false);
@@ -128,11 +121,7 @@ export function TimelineSubtaskCreator({
               className="h-8 shrink-0 gap-1 text-xs"
             >
               {subtaskRole
-                ? t(`tasks.subtaskRoles.${subtaskRole}`, {
-                    defaultValue:
-                      roles.find((r) => r.role === subtaskRole)?.name ??
-                      subtaskRole,
-                  })
+                ? roleLabel(subtaskRole)
                 : t("tasks.subtasks.suggestFromCatalog")}
               <ChevronDown className="size-3" />
             </Button>
@@ -150,9 +139,7 @@ export function TimelineSubtaskCreator({
                   if (!name.trim()) setName(role.name);
                 }}
               >
-                {t(`tasks.subtaskRoles.${role.role}`, {
-                  defaultValue: role.name,
-                })}
+                {roleLabel(role.role)}
               </DropdownMenuItem>
             ))}
             {subtaskRole && (

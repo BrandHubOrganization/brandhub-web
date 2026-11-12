@@ -18,7 +18,7 @@ import {
   JiraSubtaskIcon,
   JiraSubtaskRoleBadge,
 } from "@/pages/tasks/components/JiraSubtaskUI";
-import { taskCatalogService } from "@/services/taskCatalogService";
+import { useTaskCatalogRoles } from "@/pages/tasks/hooks/useTaskCatalogRoles";
 import { isSubtaskDone } from "@/pages/tasks/utils/jiraSubtaskUtils";
 
 export interface SubtaskDetails {
@@ -91,19 +91,7 @@ export function WorkItemSubtasksList({
   });
 
   const taskType = parentTaskWorkflow?.type;
-  const catalog = useQuery({
-    queryKey: ["task-catalog", taskType],
-    queryFn: () => taskCatalogService.get(taskType!),
-    enabled: Boolean(taskType),
-    staleTime: Infinity,
-  });
-  const roleName = (role?: string | null) =>
-    role
-      ? t(`tasks.subtaskRoles.${role}`, {
-          defaultValue:
-            catalog.data?.roles.find((r) => r.role === role)?.name ?? role,
-        })
-      : null;
+  const { roleLabel: roleName } = useTaskCatalogRoles(taskType);
 
   const parentAssigneeId =
     data?.parentAssigneeId || parentTaskWorkflow?.assigneeId || null;

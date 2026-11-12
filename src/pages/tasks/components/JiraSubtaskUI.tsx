@@ -20,17 +20,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { JiraDatePicker } from "@/components/ui/jira-date-picker";
 import {
   formatJiraSubtaskDate,
   isSubtaskOverdue,
 } from "@/pages/tasks/utils/jiraSubtaskUtils";
-import {
-  taskCatalogService,
-  type CatalogRoleDef,
-} from "@/services/taskCatalogService";
+import { useTaskCatalogRoles } from "@/pages/tasks/hooks/useTaskCatalogRoles";
+import type { CatalogRoleDef } from "@/services/taskCatalogService";
 import type { TaskType } from "@/types/task";
 
 export function JiraSubtaskIcon({ className }: { className?: string }) {
@@ -261,13 +258,7 @@ export function JiraInlineSubtaskCreator({
   );
   const [subtaskRole, setSubtaskRole] = useState<string | null>(null);
 
-  const catalog = useQuery({
-    queryKey: ["task-catalog", taskType],
-    queryFn: () => taskCatalogService.get(taskType as TaskType),
-    enabled: Boolean(taskType),
-    staleTime: Infinity,
-  });
-  const roles = catalog.data?.roles ?? [];
+  const { roles, roleLabel } = useTaskCatalogRoles(taskType);
 
   // Sync if parent info loads after initial render
   useEffect(() => {
@@ -368,11 +359,7 @@ export function JiraInlineSubtaskCreator({
               className="h-7 shrink-0 gap-1 px-2 text-xs"
             >
               {subtaskRole
-                ? t(`tasks.subtaskRoles.${subtaskRole}`, {
-                    defaultValue:
-                      roles.find((r) => r.role === subtaskRole)?.name ??
-                      subtaskRole,
-                  })
+                ? roleLabel(subtaskRole)
                 : t("tasks.subtasks.suggestFromCatalog")}
               <ChevronDown className="size-3" />
             </Button>
@@ -384,9 +371,7 @@ export function JiraInlineSubtaskCreator({
             <DropdownMenuSeparator />
             {roles.map((role) => (
               <DropdownMenuItem key={role.role} onClick={() => pickRole(role)}>
-                {t(`tasks.subtaskRoles.${role.role}`, {
-                  defaultValue: role.name,
-                })}
+                {roleLabel(role.role)}
               </DropdownMenuItem>
             ))}
             {subtaskRole && (
