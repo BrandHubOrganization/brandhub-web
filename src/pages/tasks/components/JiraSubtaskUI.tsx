@@ -383,10 +383,7 @@ export function JiraInlineSubtaskCreator({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {roles.map((role) => (
-              <DropdownMenuItem
-                key={role.role}
-                onClick={() => pickRole(role)}
-              >
+              <DropdownMenuItem key={role.role} onClick={() => pickRole(role)}>
                 {t(`tasks.subtaskRoles.${role.role}`, {
                   defaultValue: role.name,
                 })}

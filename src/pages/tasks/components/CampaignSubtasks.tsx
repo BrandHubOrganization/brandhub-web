@@ -106,7 +106,8 @@ export function CampaignSubtasks({
   const roleName = (role?: string | null) =>
     role
       ? t(`tasks.subtaskRoles.${role}`, {
-          defaultValue: catalog.data?.roles.find((r) => r.role === role)?.name ?? role,
+          defaultValue:
+            catalog.data?.roles.find((r) => r.role === role)?.name ?? role,
         })
       : null;
 

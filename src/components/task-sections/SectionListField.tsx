@@ -85,7 +85,9 @@ export function SectionListField({
                           rowIndex,
                           col.key,
                           col.type === "number"
-                            ? e.target.valueAsNumber
+                            ? Number.isNaN(e.target.valueAsNumber)
+                              ? ""
+                              : e.target.valueAsNumber
                             : e.target.value,
                         )
                       }

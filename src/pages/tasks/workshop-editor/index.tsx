@@ -5,6 +5,7 @@ import { useTaskSections } from "@/hooks/useTaskSections";
 import { useSurveyEditor } from "@/pages/tasks/hooks/useSurveyEditor";
 import { SectionFieldsBlock } from "@/components/task-sections/SectionFieldsBlock";
 import { SectionFrame } from "@/components/task-sections/SectionFrame";
+import { TaskExportButton } from "@/components/task-sections/TaskExportButton";
 import { SurveyQuestionsView } from "@/pages/tasks/components/survey/SurveyQuestionsView";
 
 const BEFORE_REGISTRATION = [
@@ -63,6 +64,9 @@ export default function WorkshopEditorPage() {
   return (
     <div className="bg-background min-h-screen">
       <main className="mx-auto max-w-4xl space-y-4 px-4 py-8 sm:px-6">
+        <div className="flex justify-end">
+          <TaskExportButton workspaceId={id} taskId={taskId} />
+        </div>
         {BEFORE_REGISTRATION.map((key) => {
           const section = api.sections?.find((s) => s.key === key);
           return section ? (

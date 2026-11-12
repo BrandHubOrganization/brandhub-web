@@ -5,6 +5,7 @@ import { useTaskSections } from "@/hooks/useTaskSections";
 import { EmailBlockSection } from "@/pages/tasks/components/newsletter/EmailBlockSection";
 import { EmailAudienceBlock } from "@/pages/tasks/components/newsletter/EmailAudienceBlock";
 import { EmailReportBlock } from "@/pages/tasks/components/newsletter/EmailReportBlock";
+import { TaskExportButton } from "@/components/task-sections/TaskExportButton";
 
 export default function NewsletterEditorPage() {
   const { id = "", taskId = "" } = useParams<{ id: string; taskId: string }>();
@@ -28,6 +29,9 @@ export default function NewsletterEditorPage() {
   return (
     <div className="bg-background min-h-screen">
       <main className="mx-auto max-w-5xl space-y-4 px-4 py-8 sm:px-6">
+        <div className="flex justify-end">
+          <TaskExportButton workspaceId={id} taskId={taskId} />
+        </div>
         {contentSection && (
           <EmailBlockSection section={contentSection} api={api} />
         )}

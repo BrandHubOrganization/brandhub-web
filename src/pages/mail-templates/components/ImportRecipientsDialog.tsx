@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { mailTemplateService } from "@/pages/mail-templates/services/mailTemplateService";
+import { errorCode } from "@/services/adminRevenueService";
 import type { ImportRecipientGroupResult } from "@/pages/mail-templates/types";
 
 /** CSV import for recipient groups: email,name,consent (spec AC13). */
@@ -52,8 +53,15 @@ export function ImportRecipientsDialog({
       );
       setResult(res);
       onImported();
-    } catch {
-      toast.error(t("mailTemplate.import.error"));
+    } catch (err) {
+      const code = errorCode(err);
+      toast.error(
+        code
+          ? t(`mailTemplate.errors.${code}`, {
+              defaultValue: t("mailTemplate.import.error"),
+            })
+          : t("mailTemplate.import.error"),
+      );
     } finally {
       setBusy(false);
     }
