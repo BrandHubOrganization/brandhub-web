@@ -99,7 +99,9 @@ export function WorkItemSubtasksList({
   });
   const roleName = (role?: string | null) =>
     role
-      ? catalog.data?.roles.find((r) => r.role === role)?.name ?? role
+      ? t(`tasks.subtaskRoles.${role}`, {
+          defaultValue: catalog.data?.roles.find((r) => r.role === role)?.name ?? role,
+        })
       : null;
 
   const parentAssigneeId =

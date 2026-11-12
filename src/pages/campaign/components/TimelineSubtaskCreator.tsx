@@ -128,7 +128,11 @@ export function TimelineSubtaskCreator({
               className="h-8 shrink-0 gap-1 text-xs"
             >
               {subtaskRole
-                ? roles.find((r) => r.role === subtaskRole)?.name
+                ? t(`tasks.subtaskRoles.${subtaskRole}`, {
+                    defaultValue:
+                      roles.find((r) => r.role === subtaskRole)?.name ??
+                      subtaskRole,
+                  })
                 : t("tasks.subtasks.suggestFromCatalog")}
               <ChevronDown className="size-3" />
             </Button>
@@ -146,7 +150,9 @@ export function TimelineSubtaskCreator({
                   if (!name.trim()) setName(role.name);
                 }}
               >
-                {role.name}
+                {t(`tasks.subtaskRoles.${role.role}`, {
+                  defaultValue: role.name,
+                })}
               </DropdownMenuItem>
             ))}
             {subtaskRole && (
