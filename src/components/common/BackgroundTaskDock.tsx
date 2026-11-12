@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   CheckCircle2,
   ChevronDown,
@@ -18,6 +18,50 @@ import {
   useBackgroundTaskStore,
   type BackgroundTask,
 } from "@/store/backgroundTaskStore";
+
+export function isTaskOnCurrentView(
+  task: BackgroundTask,
+  location: { pathname: string; search: string },
+): boolean {
+  if (!task.targetRoute) return false;
+  try {
+    const [targetPath, targetSearch = ""] = task.targetRoute.split("?");
+    const targetParams = new URLSearchParams(targetSearch);
+    const currentParams = new URLSearchParams(location.search);
+
+    const isTargetLibrary = targetPath.includes("/library");
+    const isCurrentLibrary = location.pathname.includes("/library");
+
+    const pathnameMatches =
+      location.pathname === targetPath ||
+      location.pathname.endsWith(targetPath) ||
+      (isTargetLibrary && isCurrentLibrary);
+
+    if (!pathnameMatches) return false;
+
+    if (task.workspaceId && location.pathname.includes("/workspaces/")) {
+      if (!location.pathname.includes(task.workspaceId)) {
+        return false;
+      }
+    }
+
+    if (isCurrentLibrary) {
+      const currentTab = currentParams.get("tab") || "media";
+      const targetTab = targetParams.get("tab") || "media";
+      return currentTab === targetTab;
+    }
+
+    const targetTab = targetParams.get("tab");
+    if (targetTab) {
+      const currentTab = currentParams.get("tab");
+      return currentTab === targetTab;
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function CircularPercent({
   percent,
@@ -99,6 +143,7 @@ function TypeBadgeIcon({ type }: { type: BackgroundTask["type"] }) {
 
 export function BackgroundTaskDock() {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     tasks,
     isDockMinimized,
@@ -109,9 +154,15 @@ export function BackgroundTaskDock() {
   } = useBackgroundTaskStore();
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
 
-  if (tasks.length === 0) return null;
+  // Chỉ hiển thị trong dock góc dưới bên phải các tác vụ KHÔNG thuộc tab/màn hình hiện tại.
+  // Khi user ở đúng tab/màn hình có tác vụ (vd: Drive Import trên MediaTab), giao diện inline đã hiển thị rõ ràng.
+  const visibleTasks = tasks.filter(
+    (task) => !isTaskOnCurrentView(task, location),
+  );
 
-  const runningTasks = tasks.filter(
+  if (visibleTasks.length === 0) return null;
+
+  const runningTasks = visibleTasks.filter(
     (t) => t.status === "RUNNING" || t.status === "CANCEL_CLEANUP",
   );
   const overallPercent =
@@ -125,7 +176,7 @@ export function BackgroundTaskDock() {
   const headerTitle =
     runningTasks.length > 0
       ? `Đang xử lý ${runningTasks.length} tiến trình • ${overallPercent}%`
-      : `Hoàn tất ${tasks.filter((t) => t.status === "COMPLETED").length}/${tasks.length} tác vụ`;
+      : `Hoàn tất ${visibleTasks.filter((t) => t.status === "COMPLETED").length}/${visibleTasks.length} tác vụ`;
 
   return (
     <aside
@@ -190,7 +241,7 @@ export function BackgroundTaskDock() {
 
       {!isDockMinimized && (
         <div className="max-h-80 divide-y divide-border/60 overflow-y-auto bg-card">
-          {tasks.map((task) => {
+          {visibleTasks.map((task) => {
             const isExpanded = expandedTaskId === task.id;
             const hasSubItems = task.items.length > 1;
             const isRunning = task.status === "RUNNING";

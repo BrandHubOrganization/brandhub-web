@@ -35,7 +35,7 @@ export function HashtagEntryGrid({
       {entries.map((entry) => (
         <article
           key={entry.id}
-          className="border-border bg-card space-y-3 rounded-xl border p-4"
+          className="border-[#d5dbdb] dark:border-border bg-card space-y-3 rounded-none border p-4 shadow-[0_1px_1px_0_rgba(0,28,36,0.04)]"
         >
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-semibold break-all">#{entry.tag}</h3>
@@ -44,6 +44,7 @@ export function HashtagEntryGrid({
                 <Button
                   variant="ghost"
                   size="icon"
+                  className="rounded-[4px]"
                   aria-label={t(prefix + "removeTag", { tag: entry.tag })}
                   onClick={() => onRemove(entry)}
                 >
@@ -53,6 +54,7 @@ export function HashtagEntryGrid({
                   <Button
                     variant="ghost"
                     size="sm"
+                    className="rounded-[4px]"
                     aria-label={t(prefix + "editTag", {
                       tag: entry.tag,
                       defaultValue: `Chỉnh sửa #${entry.tag}`,

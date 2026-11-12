@@ -8,10 +8,10 @@ import {
   HardDrive,
   Loader2,
   QrCode,
-  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { materialService } from "@/services/materialService";
 import { formatBytes } from "./MaterialRepositoryCard";
-import type { StorageAddonOrder, StorageAddonPlan } from "@/types/material";
+import type { StorageAddonOrder } from "@/types/material";
 
 const GiB = 1024 ** 3;
 
@@ -42,6 +42,7 @@ export function StorageAddonPanel({
 }) {
   const queryClient = useQueryClient();
   const [selectedPlanCode, setSelectedPlanCode] = useState<string | null>(null);
+  const [customGbInput, setCustomGbInput] = useState<string>("");
   const [order, setOrder] = useState<StorageAddonOrder | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -79,13 +80,44 @@ export function StorageAddonPanel({
 
   useEffect(() => {
     if (currentOrder?.status === "PAID") {
-      toast.success("Thanh toán thành công! Dung lượng S3 đã được cộng thêm.");
+      toast.success("Thanh toán thành công! Dung lượng lưu trữ đã được cộng thêm.");
       void queryClient.invalidateQueries({ queryKey: ["materials"] });
       void queryClient.invalidateQueries({ queryKey: ["client-vault-storage"] });
     }
   }, [currentOrder?.status, queryClient]);
 
-  const handleCheckout = async (plan: StorageAddonPlan) => {
+  const unitPricePerGb = 2000;
+
+  const parsedCustomGb = Number.parseInt(customGbInput, 10);
+  const validCustomGb =
+    Number.isFinite(parsedCustomGb) &&
+    parsedCustomGb >= 1 &&
+    parsedCustomGb <= 10000
+      ? parsedCustomGb
+      : 0;
+  const isCustomSelected = selectedPlanCode === "CUSTOM";
+  const customPriceVnd = validCustomGb * unitPricePerGb;
+
+  const selectedPlan = plansQuery.data?.find(
+    (p) => p.code === selectedPlanCode,
+  );
+
+  const effectiveGb = isCustomSelected
+    ? validCustomGb
+    : selectedPlan
+      ? Math.round(Number(selectedPlan.extraBytes) / GiB)
+      : 0;
+  const effectivePriceVnd = isCustomSelected
+    ? customPriceVnd
+    : selectedPlan
+      ? Number(selectedPlan.priceMonthlyVnd)
+      : 0;
+  const canCheckout = isCustomSelected
+    ? validCustomGb >= 1
+    : Boolean(selectedPlan);
+
+  const handleCheckout = async () => {
+    if (!canCheckout) return;
     if (payerScope === "AGENCY" && !agencyId) {
       toast.error("Không xác định được Agency để nâng cấp dung lượng");
       return;
@@ -93,16 +125,17 @@ export function StorageAddonPanel({
     setSubmitting(true);
     try {
       const created = await materialService.checkoutStorage(
-        plan.code,
+        isCustomSelected ? "CUSTOM" : selectedPlan!.code,
         agencyId,
         payerScope,
         crypto.randomUUID(),
+        isCustomSelected ? validCustomGb : undefined,
       );
       setOrder(created);
     } catch (e) {
       toast.error(
         (e as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Không thể khởi tạo đơn mua dung lượng S3",
+          ?.message ?? "Không thể khởi tạo đơn mua thêm dung lượng",
       );
     } finally {
       setSubmitting(false);
@@ -120,10 +153,6 @@ export function StorageAddonPanel({
   const usagePercent =
     quotaBytes > 0 ? Math.min(100, Math.round((usedBytes / quotaBytes) * 100)) : 0;
 
-  const selectedPlan = plansQuery.data?.find(
-    (p) => p.code === selectedPlanCode,
-  );
-
   return (
     <Dialog
       open={open}
@@ -134,22 +163,22 @@ export function StorageAddonPanel({
         onOpenChange(next);
       }}
     >
-      <DialogContent className="max-w-2xl overflow-hidden rounded-2xl p-0 [&>[data-slot=dialog-close]]:rounded-lg [&>[data-slot=dialog-close]]:p-1 [&>[data-slot=dialog-close]]:text-white [&>[data-slot=dialog-close]]:opacity-85 [&>[data-slot=dialog-close]]:hover:bg-white/10 [&>[data-slot=dialog-close]]:hover:opacity-100">
+      <DialogContent className="max-w-2xl sm:max-w-2xl gap-0 overflow-hidden rounded-none border-0 bg-[#16171B] p-0 shadow-2xl outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 [&>[data-slot=dialog-close]]:rounded-[4px] [&>[data-slot=dialog-close]]:p-1 [&>[data-slot=dialog-close]]:text-white [&>[data-slot=dialog-close]]:opacity-85 [&>[data-slot=dialog-close]]:outline-none [&>[data-slot=dialog-close]]:hover:bg-white/10 [&>[data-slot=dialog-close]]:hover:opacity-100 [&>[data-slot=dialog-close]]:focus:ring-0 [&>[data-slot=dialog-close]]:focus:ring-offset-0 [&>[data-slot=dialog-close]]:focus-visible:ring-0">
         {/* Dark BrandHub Header */}
         <div className="bg-[#16171B] px-6 py-5 text-white">
           <DialogHeader>
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-orange text-white shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] bg-brand-orange text-white">
                 <HardDrive className="h-5 w-5" />
               </div>
               <div>
                 <DialogTitle className="text-base font-bold text-white">
-                  Mua thêm dung lượng lưu trữ S3
+                  Nâng cấp dung lượng lưu trữ
                 </DialogTitle>
-                <DialogDescription className="text-xs text-zinc-400">
+                <DialogDescription className="mt-0.5 text-xs text-zinc-400">
                   {payerScope === "AGENCY"
-                    ? "Cộng dồn trực tiếp vào hạn mức lưu trữ S3 của Agency (vĩnh viễn)"
-                    : "Cộng dồn trực tiếp vào Kho lưu trữ cá nhân của bạn"}
+                    ? "Gia hạn theo tháng (30 ngày) • Cộng thêm trực tiếp vào kho lưu trữ của Agency"
+                    : "Gia hạn theo tháng (30 ngày) • Cộng thêm trực tiếp vào kho lưu trữ cá nhân"}
                 </DialogDescription>
               </div>
             </div>
@@ -157,16 +186,16 @@ export function StorageAddonPanel({
 
           {/* Current Usage Summary Strip */}
           {quotaBytes > 0 && (
-            <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3">
+            <div className="mt-4 rounded-none border border-white/15 bg-white/[0.04] px-3.5 py-2.5">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-zinc-300">Dung lượng đang sử dụng</span>
                 <span className="font-semibold tabular-nums text-white">
                   {formatBytes(usedBytes)} / {formatBytes(quotaBytes)} ({usagePercent}%)
                 </span>
               </div>
-              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
+              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-[2px] bg-white/10">
                 <div
-                  className={`h-full rounded-full transition-all duration-300 ${
+                  className={`h-full rounded-[2px] transition-all duration-300 ${
                     usagePercent >= 90
                       ? "bg-red-500"
                       : usagePercent >= 75
@@ -180,7 +209,7 @@ export function StorageAddonPanel({
           )}
         </div>
 
-        <div className="p-6">
+        <div className="bg-card p-6">
           {!currentOrder ? (
             <div className="space-y-5">
               {plansQuery.isLoading ? (
@@ -201,14 +230,14 @@ export function StorageAddonPanel({
                           key={plan.code}
                           type="button"
                           onClick={() => setSelectedPlanCode(plan.code)}
-                          className={`relative flex flex-col justify-between rounded-2xl border p-4 text-left transition-all ${
+                          className={`relative flex flex-col justify-between rounded-none border p-4 text-left transition-colors ${
                             isSelected
-                              ? "border-brand-orange bg-brand-orange/[0.06] ring-2 ring-brand-orange shadow-sm"
-                              : "border-border/80 bg-card hover:border-brand-orange/40 hover:bg-muted/30"
+                              ? "border-brand-orange bg-[#fffaf6] dark:bg-brand-orange/[0.08]"
+                              : "border-[#d5dbdb] bg-card hover:border-brand-orange/50 hover:bg-muted/30 dark:border-border"
                           }`}
                         >
                           {isPopular && (
-                            <span className="-top-2.5 right-3 absolute inline-flex items-center gap-1 rounded-full bg-brand-orange px-2.5 py-0.5 text-[10px] font-bold text-white shadow-xs">
+                            <span className="-top-2.5 right-3 absolute inline-flex items-center gap-1 rounded-[3px] bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white">
                               <Sparkles className="h-2.5 w-2.5" />
                               Phổ biến
                             </span>
@@ -216,32 +245,34 @@ export function StorageAddonPanel({
 
                           <div>
                             <div className="flex items-center justify-between">
-                              <span className="inline-flex items-center rounded-lg bg-brand-orange/15 px-2.5 py-1 text-xs font-extrabold text-brand-orange">
+                              <span className="inline-flex items-center rounded-[3px] bg-brand-orange/15 px-2 py-0.5 text-xs font-bold text-brand-orange">
                                 +{gb} GB
                               </span>
                               <div
-                                className={`flex h-5 w-5 items-center justify-center rounded-full border ${
+                                className={`flex h-4 w-4 items-center justify-center rounded-full border ${
                                   isSelected
                                     ? "border-brand-orange bg-brand-orange text-white"
                                     : "border-muted-foreground/40"
                                 }`}
                               >
-                                {isSelected && <Check className="h-3 w-3" />}
+                                {isSelected && <Check className="h-2.5 w-2.5" />}
                               </div>
                             </div>
 
-                            <p className="mt-3 text-lg font-extrabold tabular-nums text-foreground">
-                              {priceVnd.toLocaleString("vi-VN")} ₫
-                            </p>
-                            <p className="mt-1 text-[11px] text-muted-foreground">
-                              Thanh toán 1 lần • Cộng thêm {gb} GB S3
-                            </p>
+                            <div className="mt-3 flex items-baseline gap-1 whitespace-nowrap">
+                              <span className="text-lg font-extrabold tracking-tight tabular-nums text-foreground">
+                                {priceVnd.toLocaleString("vi-VN")} ₫
+                              </span>
+                              <span className="text-[11px] font-medium text-muted-foreground">
+                                /tháng
+                              </span>
+                            </div>
                           </div>
 
                           {quotaBytes > 0 && (
-                            <div className="mt-4 border-t border-border/60 pt-2.5 text-[11px] font-medium text-muted-foreground">
-                              Sau nâng cấp:{" "}
-                              <strong className="text-foreground">
+                            <div className="mt-3 flex items-center justify-between gap-2 border-t border-[#eaeded] pt-2.5 text-[11px] whitespace-nowrap dark:border-border/70">
+                              <span className="text-muted-foreground">Sau nâng cấp</span>
+                              <strong className="font-bold tabular-nums text-foreground">
                                 {formatBytes(quotaBytes + Number(plan.extraBytes))}
                               </strong>
                             </div>
@@ -251,32 +282,91 @@ export function StorageAddonPanel({
                     })}
                   </div>
 
-                  <div className="flex flex-col gap-3 rounded-xl border border-border/70 bg-muted/30 p-3.5 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
-                      <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-500" />
-                      <span>
-                        Kích hoạt tự động ngay sau khi quét mã VietQR (SePay)
-                      </span>
+                  {/* Custom GB Input Strip */}
+                  <div
+                    onClick={() => setSelectedPlanCode("CUSTOM")}
+                    className="flex flex-col gap-3 py-1 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-foreground">
+                          Tuỳ chỉnh dung lượng muốn mua
+                        </span>
+                        <span className="rounded-[3px] bg-muted px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-muted-foreground">
+                          2.000 ₫ / GB
+                        </span>
+                      </div>
+                      {validCustomGb > 0 && quotaBytes > 0 && (
+                        <p className="mt-0.5 text-[11px] text-muted-foreground">
+                          Sau nâng cấp: {formatBytes(quotaBytes + validCustomGb * GiB)}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex shrink-0 items-center gap-3">
+                      <div className="relative flex items-center">
+                        <Input
+                          type="text"
+                          inputMode="numeric"
+                          value={customGbInput}
+                          onFocus={() => setSelectedPlanCode("CUSTOM")}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/[^\d]/g, "");
+                            setCustomGbInput(raw);
+                            setSelectedPlanCode("CUSTOM");
+                          }}
+                          placeholder="VD: 50"
+                          aria-label="Số GB muốn mua"
+                          className="h-9 w-28 rounded-[4px] border-[#d5dbdb] bg-background pr-9 text-xs font-bold tabular-nums focus:border-brand-orange focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none dark:border-border"
+                        />
+                        <span className="pointer-events-none absolute right-2.5 text-xs font-bold text-muted-foreground">
+                          GB
+                        </span>
+                      </div>
+
+                      {validCustomGb > 0 && (
+                        <div className="text-right whitespace-nowrap">
+                          <span className="text-sm font-extrabold tabular-nums text-brand-orange">
+                            {customPriceVnd.toLocaleString("vi-VN")} ₫
+                          </span>
+                          <span className="text-[11px] text-muted-foreground">
+                            /tháng
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 rounded-none border border-[#d5dbdb] bg-muted/25 px-4 py-3 dark:border-border sm:flex-row sm:items-center sm:justify-between">
+                    <div className="text-xs text-muted-foreground">
+                      {canCheckout ? (
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span>Gói đã chọn:</span>
+                          <strong className="font-bold text-foreground">
+                            +{effectiveGb} GB / tháng
+                          </strong>
+                          <span>•</span>
+                          <strong className="font-bold tabular-nums text-brand-orange">
+                            {effectivePriceVnd.toLocaleString("vi-VN")} ₫
+                          </strong>
+                        </div>
+                      ) : (
+                        <span>Nhập số GB hợp lệ (1 – 10.000 GB) hoặc chọn gói có sẵn</span>
+                      )}
                     </div>
 
                     <Button
                       type="button"
-                      disabled={!selectedPlan || submitting}
-                      onClick={() =>
-                        selectedPlan && void handleCheckout(selectedPlan)
-                      }
-                      className="h-10 gap-2 rounded-xl bg-brand-orange px-5 text-xs font-bold text-white shadow-sm hover:bg-brand-orange/90"
+                      disabled={!canCheckout || submitting}
+                      onClick={() => void handleCheckout()}
+                      className="h-9 gap-2 rounded-[4px] bg-brand-orange px-5 text-xs font-bold text-white shadow-none hover:bg-brand-orange/90"
                     >
                       {submitting ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         <QrCode className="h-4 w-4" />
                       )}
-                      <span>
-                        {selectedPlan
-                          ? `Thanh toán +${Math.round(Number(selectedPlan.extraBytes) / GiB)} GB (${Number(selectedPlan.priceMonthlyVnd).toLocaleString("vi-VN")} ₫)`
-                          : "Chọn gói dung lượng"}
-                      </span>
+                      <span>Thanh toán</span>
                     </Button>
                   </div>
                 </>
@@ -288,21 +378,20 @@ export function StorageAddonPanel({
                 <CheckCircle2 className="h-8 w-8" />
               </div>
               <h3 className="text-base font-bold text-foreground">
-                Nâng cấp dung lượng S3 thành công!
+                Nâng cấp dung lượng thành công!
               </h3>
               <p className="max-w-sm text-xs text-muted-foreground">
                 Đã cộng thêm{" "}
                 <strong>
                   +
-                  {Math.round(
-                    Number(
-                      plansQuery.data?.find(
-                        (p) => p.code === currentOrder.planCode,
-                      )?.extraBytes ??
-                        selectedPlan?.extraBytes ??
-                        0,
-                    ) / GiB,
-                  )}{" "}
+                  {effectiveGb ||
+                    Math.round(
+                      Number(
+                        plansQuery.data?.find(
+                          (p) => p.code === currentOrder.planCode,
+                        )?.extraBytes ?? 0,
+                      ) / GiB,
+                    )}{" "}
                   GB
                 </strong>{" "}
                 vào kho lưu trữ của bạn. Bạn có thể tiếp tục tải tệp lên ngay.
@@ -313,7 +402,7 @@ export function StorageAddonPanel({
                   setOrder(null);
                   onOpenChange(false);
                 }}
-                className="mt-2 rounded-xl bg-brand-orange px-6 text-xs font-semibold text-white hover:bg-brand-orange/90"
+                className="mt-2 rounded-[4px] bg-brand-orange px-6 text-xs font-semibold text-white hover:bg-brand-orange/90"
               >
                 Hoàn tất
               </Button>
@@ -321,11 +410,11 @@ export function StorageAddonPanel({
           ) : (
             /* 2-Column SePay QR Checkout View */
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-border/80 bg-white p-4 text-center shadow-xs">
+              <div className="flex flex-col items-center justify-center rounded-none border border-[#d5dbdb] bg-white p-4 text-center dark:border-border">
                 {currentOrder.qrUrl ? (
                   <img
                     src={currentOrder.qrUrl}
-                    alt="Mã QR thanh toán dung lượng S3"
+                    alt="Mã QR thanh toán gói dung lượng"
                     className="h-52 w-52 object-contain"
                   />
                 ) : (
@@ -340,21 +429,20 @@ export function StorageAddonPanel({
               </div>
 
               <div className="flex flex-col justify-between space-y-3">
-                <div className="space-y-2.5 rounded-2xl border border-border/80 bg-muted/30 p-4 text-xs">
+                <div className="space-y-2.5 rounded-none border border-[#d5dbdb] bg-muted/30 p-4 text-xs dark:border-border">
                   <div className="flex items-center justify-between gap-2 border-b border-border/60 pb-2">
                     <span className="shrink-0 text-muted-foreground">Gói nâng cấp</span>
                     <span className="font-bold text-brand-orange">
                       +
-                      {Math.round(
-                        Number(
-                          plansQuery.data?.find(
-                            (p) => p.code === currentOrder.planCode,
-                          )?.extraBytes ??
-                            selectedPlan?.extraBytes ??
-                            0,
-                        ) / GiB,
-                      )}{" "}
-                      GB S3
+                      {effectiveGb ||
+                        Math.round(
+                          Number(
+                            plansQuery.data?.find(
+                              (p) => p.code === currentOrder.planCode,
+                            )?.extraBytes ?? 0,
+                          ) / GiB,
+                        )}{" "}
+                      GB / tháng
                     </span>
                   </div>
 
@@ -379,7 +467,7 @@ export function StorageAddonPanel({
                             currentOrder.transferContent,
                           )
                         }
-                        className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md bg-brand-orange px-2.5 py-1 text-[10px] font-bold text-white hover:bg-brand-orange/90"
+                        className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-[4px] bg-brand-orange px-2.5 py-1 text-[10px] font-bold text-white hover:bg-brand-orange/90"
                       >
                         {copiedField === "nội dung chuyển khoản" ? (
                           <Check className="h-3 w-3" />
@@ -389,7 +477,7 @@ export function StorageAddonPanel({
                         <span>Sao chép</span>
                       </button>
                     </div>
-                    <div className="rounded-xl border border-brand-orange/30 bg-brand-orange/10 px-3 py-2">
+                    <div className="rounded-none border border-brand-orange/30 bg-brand-orange/10 px-3 py-2">
                       <span className="block break-all font-mono text-xs font-extrabold tracking-wide text-brand-orange">
                         {currentOrder.transferContent}
                       </span>
@@ -402,7 +490,7 @@ export function StorageAddonPanel({
                   variant="outline"
                   size="sm"
                   onClick={() => setOrder(null)}
-                  className="w-full rounded-xl text-xs"
+                  className="w-full rounded-[4px] text-xs"
                 >
                   ← Chọn gói dung lượng khác
                 </Button>

@@ -38,11 +38,11 @@ export function MaterialMetadataEditForm({
           if (!busy) onCancel();
         }
       }}
-      className="space-y-4"
+      className="space-y-3"
     >
-      <fieldset disabled={busy} className="space-y-4">
-        <div className="space-y-2">
-          <label htmlFor={`${id}-name`} className="text-sm font-medium">
+      <fieldset disabled={busy} className="space-y-3">
+        <div className="space-y-1.5">
+          <label htmlFor={`${id}-name`} className="text-xs font-semibold text-foreground">
             {label("nameLabel")}
           </label>
           <div className="flex items-center gap-2">
@@ -51,22 +51,21 @@ export function MaterialMetadataEditForm({
               autoFocus
               value={draft.name}
               disabled={!material.capabilities?.canRename}
+              className="h-9 rounded-[4px] text-xs"
               onChange={(event) => change({ name: event.target.value })}
             />
-            <span className="text-muted-foreground text-sm">{extension}</span>
+            <span className="text-muted-foreground shrink-0 text-xs font-medium">{extension}</span>
           </div>
-          <p className="text-muted-foreground text-xs">
-            {t("library.repository.extensionLockedHint", { ext: extension })}
-          </p>
         </div>
         {material.capabilities?.canUpdateType && (
-          <div className="space-y-2">
-            <label htmlFor={`${id}-type`} className="text-sm font-medium">
+          <div className="space-y-1.5">
+            <label htmlFor={`${id}-type`} className="text-xs font-semibold text-foreground">
               {label("processingTypeLabel")}
             </label>
             <Select
               id={`${id}-type`}
               value={draft.type}
+              className="h-9 rounded-[4px] text-xs"
               onChange={(event) =>
                 change({ type: event.target.value as "RAW" | "RETOUCHED" })
               }
@@ -76,21 +75,14 @@ export function MaterialMetadataEditForm({
             </Select>
           </div>
         )}
-        {material.type === "WATERMARKED" && (
-          <p className="text-muted-foreground text-sm">
-            {label("watermarkedTypeLocked")}
-          </p>
-        )}
-        <p className="text-muted-foreground text-xs">
-          {label("typeMetadataHint")}
-        </p>
-        <div className="space-y-2">
-          <label htmlFor={`${id}-purpose`} className="text-sm font-medium">
+        <div className="space-y-1.5">
+          <label htmlFor={`${id}-purpose`} className="text-xs font-semibold text-foreground">
             {label("purposeLabel")}
           </label>
           <Select
             id={`${id}-purpose`}
             value={draft.purpose}
+            className="h-9 rounded-[4px] text-xs"
             onChange={(event) =>
               change({
                 purpose: event.target.value as "MATERIAL" | "BRAND_REFERENCE",
@@ -113,22 +105,24 @@ export function MaterialMetadataEditForm({
         )}
       </fieldset>
       {error && (
-        <div role="alert" className="text-destructive space-y-2 text-sm">
+        <div role="alert" className="text-destructive space-y-2 text-xs">
           <p>{label(error)}</p>
           {error === "conflict" && (
-            <Button type="button" variant="outline" onClick={onReload}>
+            <Button type="button" variant="outline" size="sm" className="rounded-[4px]" onClick={onReload}>
               {label("reloadLatest")}
             </Button>
           )}
         </div>
       )}
-      <div className="flex flex-wrap gap-2">
-        <Button type="submit" variant="orange" loading={busy}>
+      <div className="flex flex-wrap gap-2 pt-1">
+        <Button type="submit" variant="orange" size="sm" className="h-8 rounded-[4px] px-3.5 text-xs" loading={busy}>
           {label("save")}
         </Button>
         <Button
           type="button"
           variant="outline"
+          size="sm"
+          className="h-8 rounded-[4px] px-3.5 text-xs"
           disabled={busy}
           onClick={onCancel}
         >
