@@ -21,7 +21,6 @@ import {
 import {
   LayoutDashboard,
   FolderOpen,
-  FileEdit,
   CalendarDays,
   Users,
   MessageCircleMore,
@@ -41,12 +40,6 @@ const MOBILE_TABS = [
     to: "/chat",
     icon: MessageCircleMore,
     labelKey: "nav.chat",
-    workspaceScoped: true,
-  },
-  {
-    to: "/editor",
-    icon: FileEdit,
-    labelKey: "nav.editor",
     workspaceScoped: true,
   },
   {

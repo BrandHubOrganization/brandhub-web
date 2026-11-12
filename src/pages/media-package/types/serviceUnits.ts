@@ -16,9 +16,13 @@ export const SERVICE_UNITS: Record<PackageServiceType, string> = {
 
 export function copyOfferingDetails(details?: PackageOfferingDetails | null) {
   return {
-    deliverables: (details?.deliverables ?? []).map((item) => ({
-      ...item,
-      unit: SERVICE_UNITS[item.serviceType],
-    })),
+    // Custom packages can't include Livestream (backend rejects it on save);
+    // drop it if the source template still carries one from before that rule.
+    deliverables: (details?.deliverables ?? [])
+      .filter((item) => item.serviceType !== "LIVESTREAM_PREPARATION")
+      .map((item) => ({
+        ...item,
+        unit: SERVICE_UNITS[item.serviceType],
+      })),
   };
 }

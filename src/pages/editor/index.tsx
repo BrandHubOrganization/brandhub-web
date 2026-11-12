@@ -33,7 +33,7 @@ import { StudioPreviewPanel } from "@/pages/editor/components/StudioPreviewPanel
 import { TemplatePickerModal } from "@/pages/editor/components/TemplatePickerModal";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAuthStore } from "@/store/authStore";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { AlertTriangle, CheckCircle, ExternalLink } from "lucide-react";
 import { fetchSocialAccounts } from "@/pages/social-accounts/services/socialAccountService";
 import { useEditorForm } from "./hooks/useEditorForm";
@@ -783,11 +783,6 @@ function EditorWorkspace({
   );
 }
 
-function StandaloneEditor() {
-  const form = useEditorForm();
-  return <EditorWorkspace form={form} />;
-}
-
 function LinkedTaskEditor({
   workspaceId,
   taskId,
@@ -822,7 +817,12 @@ export function EditorPage() {
         taskId={taskId}
       />
     ) : null;
-  return <StandaloneEditor key={workspaceId} />;
+  return (
+    <Navigate
+      to={workspaceId ? `/workspaces/${workspaceId}/tasks` : "/tasks"}
+      replace
+    />
+  );
 }
 
 export default EditorPage;

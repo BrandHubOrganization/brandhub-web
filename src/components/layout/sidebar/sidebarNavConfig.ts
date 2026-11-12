@@ -159,13 +159,6 @@ export const NAV_SECTIONS: NavSection[] = [
     titleKey: "nav.sections.content",
     items: [
       {
-        to: "/editor",
-        icon: FileEdit,
-        labelKey: "nav.editor",
-        workspaceScoped: true,
-        requiresWorkspace: true,
-      },
-      {
         to: "/mail-templates",
         icon: Mail,
         labelKey: "nav.mailTemplates",
