@@ -1,90 +1,75 @@
 import { Link } from "react-router-dom";
-import { Rocket, ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2, Rocket, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const BENEFITS = [
+  "Cô lập Multi-Workspace cho từng thương hiệu & phân quyền 6 vai trò chuẩn (Guest, Owner, Manager, Creator, Client, Admin)",
+  "Quy trình kiểm duyệt an toàn nội dung & phê duyệt 3 cấp giảm tới 70% thời gian chỉnh sửa qua tin nhắn rời rạc",
+  "AI Studio tích hợp đồ thị tri thức Neo4j GraphRAG giúp giữ đúng Brand Guidelines & bắt trend thời gian thực",
+  "Xuất bản đồng loạt Facebook, Instagram, TikTok, Threads & nạp gói cước minh bạch qua SePay / PayOS VietQR",
+];
 
 export function BlogConversionBanner() {
   return (
     <section
-      aria-label="Giải pháp chuyển đổi BrandHub"
-      className="rounded-3xl border border-brand-orange/30 bg-gradient-to-r from-orange-500/10 via-amber-500/5 to-orange-500/10 p-6 sm:p-8 space-y-6"
+      aria-label="Khởi tạo không gian làm việc BrandHub"
+      className="bh-spotlight-card relative overflow-hidden rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-2xs sm:p-8 lg:p-10 dark:border-zinc-800 dark:bg-zinc-900"
     >
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div className="space-y-1.5 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-orange uppercase tracking-wider">
-            <Rocket className="size-3.5" />
-            <span>Áp dụng ngay kiến thức vào thực tế vận hành</span>
+      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+        <div className="space-y-4 lg:col-span-7">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-[11px] font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+            <Rocket className="size-3.5 text-brand-orange" />
+            Biến kiến thức thành quy trình vận hành thật
           </span>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
-            Trải nghiệm Nền tảng Quản trị Truyền thông All-in-One ngay hôm nay
+
+          <h2 className="text-balance text-2xl font-extrabold leading-tight tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-50">
+            Đưa toàn bộ đội ngũ Agency lên một Workspace duy nhất trong 30 giây
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            Từ quản lý công việc chuẩn Jira/Notion, đóng gói báo giá Media Package, sáng tạo nội dung
-            cùng AI GraphRAG đến đặt lịch đăng tự động lên Facebook, Instagram, TikTok và Threads.
+
+          <p className="text-pretty text-xs leading-relaxed text-zinc-600 sm:text-sm dark:text-zinc-300">
+            Ngừng cảnh copy-paste rời rạc giữa Jira, Notion, Zalo và trình hẹn
+            giờ thủ công. Mời Manager, Creator và Client vào cùng một luồng
+            nghiệp vụ minh bạch trên BrandHub.
           </p>
+
+          <ul className="space-y-2 pt-1">
+            {BENEFITS.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-2.5 text-xs leading-relaxed text-zinc-700 sm:text-[13px] dark:text-zinc-300"
+              >
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="flex flex-wrap items-center gap-3 shrink-0">
-          <Link to="/register">
-            <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold gap-2 cursor-pointer shadow-md">
-              <span>Đăng ký gói Starter 0đ</span>
-              <ArrowRight className="size-4" />
-            </Button>
-          </Link>
-          <Link to="/login">
-            <Button variant="outline" className="font-semibold cursor-pointer">
-              Đăng nhập vào Workspace
-            </Button>
-          </Link>
+
+        <div className="lg:col-span-5">
+          <div className="rounded-xl border border-zinc-200/90 bg-zinc-50/75 p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-950/75">
+            <div className="mb-4 flex items-center gap-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+              <ShieldCheck className="size-4 shrink-0 text-brand-orange" />
+              <span>Không cần thẻ tín dụng · Thanh toán VietQR khi nâng cấp</span>
+            </div>
+
+            <div className="space-y-3">
+              <Link to="/register" className="block">
+                <Button className="bg-brand-orange hover:bg-brand-orange/90 h-11 w-full cursor-pointer rounded-xl text-sm font-semibold text-white shadow-md shadow-orange-500/20 transition-all hover:-translate-y-0.5">
+                  Tạo Workspace Miễn phí ngay
+                  <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </Link>
+              <Link to="/#pricing" className="block">
+                <Button
+                  variant="outline"
+                  className="h-10 w-full cursor-pointer rounded-xl border-zinc-200 bg-zinc-50/70 text-xs font-semibold text-zinc-800 transition-colors hover:border-brand-orange/40 hover:bg-orange-50/50 hover:text-brand-orange dark:border-zinc-700 dark:bg-zinc-800/70 dark:text-zinc-200"
+                >
+                  Xem bảng giá Agency &amp; AI Credits
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
-        <Link
-          to="/#media-package"
-          className="p-4 rounded-2xl bg-card border border-border hover:border-brand-orange/50 transition-all group"
-        >
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-bold text-brand-orange">GÓI TRUYỀN THÔNG</span>
-            <ArrowRight className="size-3.5 text-muted-foreground group-hover:text-brand-orange group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <p className="text-sm font-bold text-foreground">
-            Đóng gói báo giá &amp; Chiến dịch đa kênh
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Tích hợp Social Media (4 kênh) cùng hệ thống đối tác Báo chí &amp; Đài truyền hình.
-          </p>
-        </Link>
-
-        <Link
-          to="/#ai-features"
-          className="p-4 rounded-2xl bg-card border border-border hover:border-brand-orange/50 transition-all group"
-        >
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-bold text-brand-orange">AI MARKETING STUDIO</span>
-            <ArrowRight className="size-3.5 text-muted-foreground group-hover:text-brand-orange group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <p className="text-sm font-bold text-foreground">
-            GraphRAG Neo4j + Đại sứ ảo LoRA
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Viết bài đúng 100% Brand Guidelines, tạo ảnh, video AI và bắt trend thời gian thực.
-          </p>
-        </Link>
-
-        <Link
-          to="/#pricing"
-          className="p-4 rounded-2xl bg-card border border-border hover:border-brand-orange/50 transition-all group"
-        >
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-bold text-brand-orange">BẢNG GIÁ &amp; VIETQR</span>
-            <ArrowRight className="size-3.5 text-muted-foreground group-hover:text-brand-orange group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <p className="text-sm font-bold text-foreground">
-            Nâng cấp Pro 590.000đ/tháng
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Mở khóa 10 Workspace, 5.000 AI Credits và thanh toán VietQR (SePay / PayOS) tức thì.
-          </p>
-        </Link>
       </div>
     </section>
   );

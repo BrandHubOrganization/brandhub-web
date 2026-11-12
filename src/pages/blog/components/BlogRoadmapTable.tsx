@@ -1,23 +1,42 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Tag,
-  Filter,
   ArrowRight,
+  Calendar,
+  CheckCircle2,
+  ChevronDown,
+  Clock,
+  Eye,
   LayoutGrid,
   List,
   Search,
   Sparkles,
-  Clock,
-  CheckCircle2,
-  ChevronDown,
-  RotateCcw,
+  Tag,
+  Users,
 } from "lucide-react";
-import type { PlannedBlogTopic, BlogCategory } from "@/data/blogTypes";
+import type {
+  BlogCategory,
+  BlogCategorySlug,
+  BlogPostSummary,
+  PlannedBlogTopic,
+} from "@/data/blogTypes";
+import { getBlogPostSummaryBySlug } from "@/data/blogLoader";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import { BlogSpotlightContainer } from "./BlogMotion";
 
 interface BlogRoadmapTableProps {
   catalog: PlannedBlogTopic[];
-  getCategoryMeta: (category: PlannedBlogTopic["category"]) => BlogCategory | undefined;
+  getCategoryMeta: (slug: BlogCategorySlug) => BlogCategory | undefined;
   selectedBatch: string;
   onBatchChange: (batch: string) => void;
   publishedCount: number;
@@ -26,6 +45,12 @@ interface BlogRoadmapTableProps {
 const INITIAL_VISIBLE_COUNT = 12;
 const LOAD_MORE_STEP = 12;
 
+interface EnrichedTopic {
+  topic: PlannedBlogTopic;
+  summary: BlogPostSummary | undefined;
+  categoryMeta: BlogCategory | undefined;
+}
+
 export function BlogRoadmapTable({
   catalog,
   getCategoryMeta,
@@ -33,31 +58,39 @@ export function BlogRoadmapTable({
   onBatchChange,
   publishedCount,
 }: BlogRoadmapTableProps) {
-  // View mode: default to modern cards view
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [roadmapQuery, setRoadmapQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
+  const [previewEntry, setPreviewEntry] = useState<EnrichedTopic | null>(null);
 
-  // Filter catalog by search query inside the roadmap section
   const filteredCatalog = useMemo(() => {
-    if (!searchQuery.trim()) return catalog;
-    const q = searchQuery.toLowerCase().trim();
-    return catalog.filter(
-      (item) =>
-        item.title.toLowerCase().includes(q) ||
-        item.brandhubFeature.toLowerCase().includes(q) ||
-        item.primaryKeyword.toLowerCase().includes(q) ||
-        item.targetRoles.some((role) => role.toLowerCase().includes(q)) ||
-        String(item.topicNumber).includes(q),
-    );
-  }, [catalog, searchQuery]);
+    let items = catalog;
+    if (selectedBatch === "published") {
+      items = items.filter((item) => item.isPublished);
+    } else if (selectedBatch !== "all") {
+      items = items.filter((item) => item.priorityBatch === selectedBatch);
+    }
+    const q = roadmapQuery.trim().toLowerCase();
+    if (q) {
+      items = items.filter((item) => {
+        const summary = getBlogPostSummaryBySlug(item.slug);
+        return (
+          item.title.toLowerCase().includes(q) ||
+          item.primaryKeyword.toLowerCase().includes(q) ||
+          item.brandhubFeature.toLowerCase().includes(q) ||
+          String(item.topicNumber).includes(q) ||
+          (summary?.metaDescription.toLowerCase().includes(q) ?? false) ||
+          item.targetRoles.some((r) => r.toLowerCase().includes(q))
+        );
+      });
+    }
+    return items;
+  }, [catalog, selectedBatch, roadmapQuery]);
 
-  // Items to display based on pagination / load more
-  const displayedItems = useMemo(
+  const visibleItems = useMemo(
     () => filteredCatalog.slice(0, visibleCount),
     [filteredCatalog, visibleCount],
   );
-
   const hasMore = visibleCount < filteredCatalog.length;
 
   const handleBatchSelect = (batchId: string) => {
@@ -65,95 +98,95 @@ export function BlogRoadmapTable({
     setVisibleCount(INITIAL_VISIBLE_COUNT);
   };
 
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
+  const handleQueryChange = (val: string) => {
+    setRoadmapQuery(val);
     setVisibleCount(INITIAL_VISIBLE_COUNT);
   };
 
   return (
     <section
-      id="roadmap-100-topics"
-      aria-label="Lộ trình 100 chủ đề truyền thông chuyên sâu"
-      className="space-y-6 pt-6"
+      id="danh-muc-100-chu-de"
+      aria-labelledby="roadmap-heading"
+      className="space-y-6 rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-2xs sm:p-8 dark:border-zinc-800 dark:bg-zinc-900"
     >
-      {/* Header & Description */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-border pb-5">
+      {/* Header Row */}
+      <div className="flex flex-col justify-between gap-4 border-b border-zinc-100 pb-6 md:flex-row md:items-end dark:border-zinc-800">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-orange/10 border border-brand-orange/20 text-xs font-bold text-brand-orange uppercase tracking-wider">
-            <Tag className="size-3.5" />
-            <span>LỘ TRÌNH BIÊN TẬP &amp; THƯ VIỆN KIẾN THỨC CHUYÊN SÂU</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-0.5 text-[11px] font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+              <Sparkles className="size-3.5 text-brand-orange" />
+              Danh mục Tri thức 100 Chủ đề
+            </span>
+            <span className="tabular-nums inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-[11px] font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+              <CheckCircle2 className="size-3 text-emerald-600 dark:text-emerald-400" />
+              {publishedCount} / 100 bài đã phát hành
+            </span>
           </div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
-            Danh mục 100 Chủ đề Chuyên sâu Dành cho Agency &amp; Doanh nghiệp
+
+          <h2
+            id="roadmap-heading"
+            className="text-balance text-xl font-extrabold tracking-tight text-zinc-900 sm:text-2xl dark:text-zinc-50"
+          >
+            Danh mục 100 Chủ đề Chuyên sâu Dành cho Agency &amp; Doanh Nghiệp
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-3xl leading-relaxed">
-            Tổng hợp 100 chủ đề và hướng dẫn thực chiến được quy hoạch theo 6 nhóm nghiệp vụ, cung cấp
-            phương pháp luận và giải pháp tối ưu cho từng bộ phận vận hành (Owner, Manager, Creator, Client).
+          <p className="max-w-3xl text-pretty text-xs leading-relaxed text-zinc-600 sm:text-sm dark:text-zinc-400">
+            Mỗi chủ đề đều đi kèm ảnh minh họa, tóm tắt chuyên sâu, vai trò áp
+            dụng và nút{" "}
+            <strong className="font-semibold text-zinc-900 dark:text-zinc-200">
+              Xem nhanh (Quick Preview)
+            </strong>{" "}
+            để bạn nắm trọn ý chính trước khi đọc toàn bài.
           </p>
         </div>
 
-        {/* View Mode Switcher */}
-        <div className="flex items-center gap-2 shrink-0 bg-muted/60 p-1 rounded-xl border border-border self-start lg:self-auto">
+        {/* View Mode Toggle */}
+        <div className="inline-flex shrink-0 items-center gap-1 self-start rounded-xl border border-zinc-200/90 bg-zinc-50 p-1 md:self-auto dark:border-zinc-800 dark:bg-zinc-950/60">
           <button
             type="button"
             onClick={() => setViewMode("cards")}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+            className={cn(
+              "inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all",
               viewMode === "cards"
-                ? "bg-card text-brand-orange shadow-xs border border-border/80"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-            title="Hiển thị dạng thẻ (Cards)"
+                ? "bg-white text-brand-orange shadow-2xs dark:bg-zinc-800 dark:text-orange-300"
+                : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200",
+            )}
           >
             <LayoutGrid className="size-3.5" />
-            <span>Dạng thẻ (Cards)</span>
+            <span>Dạng Thẻ Preview</span>
           </button>
           <button
             type="button"
             onClick={() => setViewMode("table")}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+            className={cn(
+              "inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all",
               viewMode === "table"
-                ? "bg-card text-brand-orange shadow-xs border border-border/80"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-            title="Hiển thị dạng bảng (Table)"
+                ? "bg-white text-brand-orange shadow-2xs dark:bg-zinc-800 dark:text-orange-300"
+                : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200",
+            )}
           >
             <List className="size-3.5" />
-            <span>Dạng bảng</span>
+            <span>Dạng Bảng</span>
           </button>
         </div>
       </div>
 
       {/* Control Bar: Search & Batch Filters */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-card/60 p-3 sm:p-4 rounded-2xl border border-border">
-        {/* Search inside roadmap */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Tìm theo chủ đề, từ khóa, tính năng giải pháp..."
-            className="w-full pl-9.5 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-border bg-background focus:outline-hidden focus:ring-2 focus:ring-brand-orange/30 focus:border-brand-orange transition-all placeholder:text-muted-foreground/70"
+      <div className="flex flex-col items-stretch justify-between gap-3 lg:flex-row lg:items-center">
+        <div className="relative max-w-md flex-1">
+          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-zinc-400" />
+          <Input
+            type="search"
+            value={roadmapQuery}
+            onChange={(e) => handleQueryChange(e.target.value)}
+            placeholder="Lọc nhanh 100 chủ đề theo số thứ tự, từ khóa hoặc tính năng..."
+            aria-label="Lọc danh mục 100 chủ đề"
+            className="h-10 rounded-xl border-zinc-200 bg-zinc-50/70 pl-10 text-xs sm:text-sm focus-visible:ring-brand-orange dark:border-zinc-700 dark:bg-zinc-950/60"
           />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearchChange("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground cursor-pointer"
-            >
-              ×
-            </button>
-          )}
         </div>
 
-        {/* Batch Filter Pills */}
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-xs text-muted-foreground inline-flex items-center gap-1 mr-1">
-            <Filter className="size-3.5" /> Giai đoạn:
-          </span>
           {[
-            { id: "all", label: "Tất cả (100)" },
-            { id: "published", label: `Đã xuất bản (${publishedCount})` },
+            { id: "all", label: `Tất cả (${catalog.length})` },
             { id: "Batch 1", label: "Đợt 1 (Ưu tiên)" },
             { id: "Batch 2", label: "Đợt 2" },
             { id: "Batch 3", label: "Đợt 3" },
@@ -163,11 +196,12 @@ export function BlogRoadmapTable({
               key={b.id}
               type="button"
               onClick={() => handleBatchSelect(b.id)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+              className={cn(
+                "tabular-nums cursor-pointer rounded-full border px-3 py-1.5 text-xs font-semibold transition-all",
                 selectedBatch === b.id
-                  ? "bg-brand-orange text-white font-semibold shadow-xs"
-                  : "bg-muted/80 text-muted-foreground hover:text-foreground hover:bg-muted"
-              }`}
+                  ? "border-brand-orange bg-brand-orange text-white shadow-2xs"
+                  : "border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-brand-orange/40 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300",
+              )}
             >
               {b.label}
             </button>
@@ -175,237 +209,264 @@ export function BlogRoadmapTable({
         </div>
       </div>
 
-      {/* Result Count Info */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
-        <span>
-          Hiển thị <strong>{displayedItems.length}</strong> / <strong>{filteredCatalog.length}</strong> chủ đề
-          {selectedBatch !== "all" && ` (${selectedBatch === "published" ? "Đã xuất bản" : selectedBatch})`}
-          {searchQuery && ` khớp từ khóa "${searchQuery}"`}
+      {/* Count Info Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+        <span className="tabular-nums">
+          Đang hiển thị{" "}
+          <strong className="font-semibold text-zinc-900 dark:text-zinc-100">
+            {visibleItems.length}
+          </strong>{" "}
+          / {filteredCatalog.length} chủ đề
+          {selectedBatch !== "all" && ` (${selectedBatch})`}
+          {roadmapQuery && ` khớp "${roadmapQuery}"`}
         </span>
-        {searchQuery && (
+        {visibleItems.length < filteredCatalog.length && (
           <button
             type="button"
-            onClick={() => handleSearchChange("")}
-            className="text-brand-orange hover:underline inline-flex items-center gap-1 cursor-pointer font-medium"
+            onClick={() => setVisibleCount(filteredCatalog.length)}
+            className="cursor-pointer font-semibold text-brand-orange hover:underline"
           >
-            <RotateCcw className="size-3" />
-            <span>Xóa bộ lọc tìm kiếm</span>
+            Xem toàn bộ {filteredCatalog.length} chủ đề &rarr;
           </button>
         )}
       </div>
 
-      {/* Main View: Cards Grid or Table */}
-      {displayedItems.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center space-y-3">
-          <p className="text-sm font-semibold text-foreground">Không tìm thấy chủ đề phù hợp</p>
-          <p className="text-xs text-muted-foreground max-w-md mx-auto">
-            Thử thay đổi từ khóa tìm kiếm hoặc chọn giai đoạn &quot;Tất cả (100)&quot; để xem toàn bộ danh mục bài viết.
+      {/* Content Area */}
+      {filteredCatalog.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50/70 p-10 text-center space-y-3 dark:border-zinc-700 dark:bg-zinc-950/40">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Không có chủ đề nào khớp với bộ lọc hiện tại.
           </p>
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => {
-              handleSearchChange("");
+              setRoadmapQuery("");
               handleBatchSelect("all");
             }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-brand-orange text-white hover:bg-brand-orange/90 transition-all cursor-pointer"
+            className="cursor-pointer rounded-xl text-xs font-semibold"
           >
-            <RotateCcw className="size-3.5" />
-            <span>Xem lại tất cả 100 chủ đề</span>
-          </button>
+            Hiển thị lại 100 chủ đề
+          </Button>
         </div>
       ) : viewMode === "cards" ? (
-        /* ================= CARD VIEW (DEFAULT) ================= */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {displayedItems.map((item) => {
+        <BlogSpotlightContainer className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {visibleItems.map((item) => {
             const catMeta = getCategoryMeta(item.category);
+            const summary = getBlogPostSummaryBySlug(item.slug);
+
             return (
               <article
                 key={item.topicNumber}
-                className="group rounded-2xl border border-border bg-card p-5 hover:border-brand-orange/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between gap-4"
+                className="bh-spotlight-card group flex flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-orange/45 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
               >
-                <div className="space-y-3.5">
-                  {/* Card Top: Topic # + Category + Status */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-slate-900 text-white dark:bg-slate-800">
-                        #{String(item.topicNumber).padStart(3, "0")}
-                      </span>
-                      {catMeta && (
-                        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange border border-brand-orange/20 truncate max-w-[140px]">
-                          {catMeta.shortName}
+                {/* Clean 16:9 Cover Thumbnail Preview (zero overlays) */}
+                <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-zinc-100 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800">
+                  {summary?.coverImage ? (
+                    <img
+                      src={summary.coverImage}
+                      alt={summary.coverImageAlt || item.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-zinc-50 text-brand-orange dark:bg-zinc-800">
+                      <Sparkles className="size-8 opacity-60" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Card Content */}
+                <div className="relative z-10 flex flex-1 flex-col justify-between space-y-3.5 p-4">
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="tabular-nums font-mono font-bold text-brand-orange">
+                          #{String(item.topicNumber).padStart(3, "0")}
+                        </span>
+                        {catMeta && (
+                          <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                            {catMeta.shortName}
+                          </span>
+                        )}
+                      </div>
+                      {summary && (
+                        <span className="tabular-nums inline-flex items-center gap-1 text-zinc-500 dark:text-zinc-400">
+                          <Clock className="size-3 text-brand-orange/80" />
+                          {summary.readingTimeMinutes} phút
                         </span>
                       )}
                     </div>
 
-                    {/* Status Badge */}
-                    {item.isPublished ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
-                        <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span>Đã xuất bản</span>
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-muted text-muted-foreground shrink-0">
-                        <Clock className="size-3" />
-                        <span>{item.priorityBatch}</span>
-                      </span>
-                    )}
+                    <h3 className="text-balance line-clamp-2 text-sm font-bold leading-snug text-zinc-900 transition-colors group-hover:text-brand-orange dark:text-zinc-100">
+                      <Link to={`/blog/${item.slug}`}>{item.title}</Link>
+                    </h3>
+
+                    <p className="text-pretty line-clamp-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
+                      {summary?.metaDescription ?? catMeta?.description}
+                    </p>
                   </div>
 
-                  {/* Title */}
-                  <h3 className="font-bold text-foreground text-sm sm:text-base leading-snug line-clamp-2 min-h-[2.75rem] group-hover:text-brand-orange transition-colors">
-                    {item.isPublished ? (
-                      <Link to={`/blog/${item.slug}`} className="hover:underline">
-                        {item.title}
-                      </Link>
-                    ) : (
-                      <span>{item.title}</span>
-                    )}
-                  </h3>
-
-                  {/* Summary / Category Description */}
-                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                    {catMeta?.description}
-                  </p>
-
-                  {/* Solution Capability Badge */}
-                  <div className="flex items-start gap-2 p-2.5 rounded-xl bg-muted/40 border border-border/50 text-xs">
-                    <Sparkles className="size-3.5 text-brand-orange shrink-0 mt-0.5" />
-                    <div className="min-w-0">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider block">
-                        Giải pháp giải quyết:
-                      </span>
-                      <p className="text-foreground/90 font-medium line-clamp-2 leading-snug mt-0.5">
-                        {item.brandhubFeature}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Target Roles */}
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">
-                      Đối tượng áp dụng:
-                    </span>
-                    <div className="flex flex-wrap gap-1">
-                      {item.targetRoles.map((role) => (
-                        <span
-                          key={role}
-                          className="px-2 py-0.5 rounded-md bg-muted text-[11px] font-medium text-foreground/80"
-                        >
-                          {role}
+                  <div className="space-y-2.5 border-t border-zinc-200/70 pt-3 dark:border-zinc-800">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                      <span className="inline-flex min-w-0 items-center gap-1 text-zinc-500 dark:text-zinc-400">
+                        <Tag className="size-3 shrink-0 text-brand-orange" />
+                        <span className="truncate font-medium">
+                          {item.brandhubFeature}
                         </span>
-                      ))}
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {item.targetRoles.slice(0, 3).map((role) => (
+                          <span
+                            key={role}
+                            className="rounded bg-zinc-200/65 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                          >
+                            {role}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 pt-0.5">
+                      {summary ? (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPreviewEntry({
+                              topic: item,
+                              summary,
+                              categoryMeta: catMeta,
+                            })
+                          }
+                          className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-zinc-700 transition-colors hover:text-brand-orange dark:text-zinc-300"
+                        >
+                          <Eye className="size-3.5" />
+                          <span>Tóm tắt nhanh</span>
+                        </button>
+                      ) : (
+                        <span />
+                      )}
+
+                      <Link
+                        to={`/blog/${item.slug}`}
+                        className="inline-flex items-center gap-1 text-xs font-bold text-brand-orange hover:underline"
+                      >
+                        <span>Đọc bài</span>
+                        <ArrowRight className="size-3.5" />
+                      </Link>
                     </div>
                   </div>
-                </div>
-
-                {/* Card Action Footer */}
-                <div className="pt-2 border-t border-border/60">
-                  {item.isPublished ? (
-                    <Link
-                      to={`/blog/${item.slug}`}
-                      className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-brand-orange/10 text-brand-orange hover:bg-brand-orange hover:text-white transition-all group-hover:shadow-xs cursor-pointer"
-                    >
-                      <span className="inline-flex items-center gap-1.5">
-                        <CheckCircle2 className="size-3.5" />
-                        <span>Đọc bài phân tích chi tiết</span>
-                      </span>
-                      <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
-                    </Link>
-                  ) : (
-                    <div className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs text-muted-foreground bg-muted/30 border border-border/40">
-                      <span className="inline-flex items-center gap-1.5">
-                        <Clock className="size-3.5 text-muted-foreground" />
-                        <span>Kế hoạch {item.priorityBatch}</span>
-                      </span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/75">
-                        Sắp xuất bản
-                      </span>
-                    </div>
-                  )}
                 </div>
               </article>
             );
           })}
-        </div>
+        </BlogSpotlightContainer>
       ) : (
-        /* ================= TABLE VIEW ================= */
-        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-xs">
+        <div className="overflow-hidden rounded-2xl border border-zinc-200/85 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs sm:text-sm">
+            <table className="w-full border-collapse text-left text-xs">
               <thead>
-                <tr className="border-b border-border bg-muted/50 text-muted-foreground font-semibold">
-                  <th className="py-3 px-4 w-16">#</th>
-                  <th className="py-3 px-4 min-w-[280px]">Chủ đề bài viết</th>
-                  <th className="py-3 px-4 w-44">Chuyên mục</th>
-                  <th className="py-3 px-4 w-44">Đối tượng phù hợp</th>
-                  <th className="py-3 px-4 min-w-[220px]">Giải pháp liên quan</th>
-                  <th className="py-3 px-4 w-32 text-right">Trạng thái</th>
+                <tr className="border-b border-zinc-200 bg-zinc-50/90 text-[11px] font-bold tracking-wide text-zinc-600 uppercase dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-400">
+                  <th className="w-16 px-4 py-3.5">#</th>
+                  <th className="min-w-[320px] px-4 py-3.5">
+                    Chủ đề &amp; Preview nội dung
+                  </th>
+                  <th className="min-w-[160px] px-4 py-3.5">Trụ cột</th>
+                  <th className="min-w-[140px] px-4 py-3.5">Vai trò</th>
+                  <th className="min-w-[160px] px-4 py-3.5">
+                    Tính năng BrandHub
+                  </th>
+                  <th className="w-40 px-4 py-3.5 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/60">
-                {displayedItems.map((item) => {
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                {visibleItems.map((item) => {
                   const catMeta = getCategoryMeta(item.category);
+                  const summary = getBlogPostSummaryBySlug(item.slug);
                   return (
                     <tr
                       key={item.topicNumber}
-                      className="hover:bg-muted/25 transition-colors"
+                      className="group transition-colors hover:bg-orange-50/35 dark:hover:bg-zinc-800/40"
                     >
-                      <td className="py-3.5 px-4 font-mono font-bold text-muted-foreground">
+                      <td className="tabular-nums px-4 py-3.5 font-mono font-bold text-brand-orange">
                         #{String(item.topicNumber).padStart(3, "0")}
                       </td>
-                      <td className="py-3.5 px-4 space-y-1">
-                        {item.isPublished ? (
-                          <Link
-                            to={`/blog/${item.slug}`}
-                            className="font-bold text-foreground hover:text-brand-orange transition-colors block leading-snug"
-                          >
-                            {item.title}
-                          </Link>
-                        ) : (
-                          <p className="font-semibold text-foreground leading-snug">
-                            {item.title}
-                          </p>
-                        )}
-                        <p className="text-[11px] text-muted-foreground">
-                          {catMeta?.description.slice(0, 75)}...
-                        </p>
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-start gap-3">
+                          {summary?.coverImage && (
+                            <img
+                              src={summary.coverImage}
+                              alt=""
+                              loading="lazy"
+                              className="hidden h-12 w-20 shrink-0 rounded-lg border border-zinc-200/80 object-cover sm:block dark:border-zinc-700"
+                            />
+                          )}
+                          <div className="min-w-0 space-y-1">
+                            <Link
+                              to={`/blog/${item.slug}`}
+                              className="line-clamp-1 font-bold text-zinc-900 transition-colors hover:text-brand-orange dark:text-zinc-100"
+                            >
+                              {item.title}
+                            </Link>
+                            <p className="line-clamp-1 text-[11px] text-zinc-500 dark:text-zinc-400">
+                              {summary?.metaDescription ?? item.primaryKeyword}
+                            </p>
+                          </div>
+                        </div>
                       </td>
-                      <td className="py-3.5 px-4">
+                      <td className="px-4 py-3.5">
                         {catMeta && (
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-brand-orange/10 text-brand-orange">
+                          <span
+                            className={cn(
+                              "inline-block rounded-full border px-2 py-0.5 text-[10px] font-semibold",
+                              catMeta.badgeColor,
+                            )}
+                          >
                             {catMeta.shortName}
                           </span>
                         )}
                       </td>
-                      <td className="py-3.5 px-4">
+                      <td className="px-4 py-3.5">
                         <div className="flex flex-wrap gap-1">
-                          {item.targetRoles.map((r: string) => (
+                          {item.targetRoles.map((r) => (
                             <span
                               key={r}
-                              className="px-1.5 py-0.5 rounded bg-muted text-[11px] font-medium text-foreground/80"
+                              className="rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
                             >
                               {r}
                             </span>
                           ))}
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 text-xs font-medium text-foreground/90">
+                      <td className="px-4 py-3.5 font-medium text-zinc-600 dark:text-zinc-400">
                         {item.brandhubFeature}
                       </td>
-                      <td className="py-3.5 px-4 text-right">
-                        {item.isPublished ? (
+                      <td className="px-4 py-3.5 text-right">
+                        <div className="inline-flex items-center justify-end gap-2">
+                          {summary && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setPreviewEntry({
+                                  topic: item,
+                                  summary,
+                                  categoryMeta: catMeta,
+                                })
+                              }
+                              className="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-zinc-700 transition-colors hover:border-brand-orange/45 hover:text-brand-orange dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+                            >
+                              <Eye className="size-3" />
+                              Xem nhanh
+                            </button>
+                          )}
                           <Link
                             to={`/blog/${item.slug}`}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/25 transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1 rounded-lg bg-brand-orange/10 px-2.5 py-1 text-[11px] font-bold text-brand-orange transition-colors hover:bg-brand-orange hover:text-white"
                           >
-                            <span>Đọc bài</span>
-                            <ArrowRight className="size-3" />
+                            Đọc bài
                           </Link>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-muted text-muted-foreground">
-                            {item.priorityBatch}
-                          </span>
-                        )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -416,34 +477,176 @@ export function BlogRoadmapTable({
         </div>
       )}
 
-      {/* Pagination / Load More Controls */}
+      {/* Pagination Buttons */}
       {hasMore && (
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <Button
             type="button"
-            onClick={() => setVisibleCount((prev) => Math.min(prev + LOAD_MORE_STEP, filteredCatalog.length))}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-card border border-border hover:border-brand-orange hover:text-brand-orange shadow-xs transition-all cursor-pointer"
+            variant="outline"
+            onClick={() =>
+              setVisibleCount((prev) =>
+                Math.min(prev + LOAD_MORE_STEP, filteredCatalog.length),
+              )
+            }
+            className="h-10 cursor-pointer rounded-xl border-zinc-200 bg-white px-5 text-xs font-semibold text-zinc-800 hover:border-brand-orange/45 hover:bg-orange-50/40 hover:text-brand-orange dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
           >
-            <ChevronDown className="size-4" />
-            <span>Xem thêm {Math.min(LOAD_MORE_STEP, filteredCatalog.length - visibleCount)} chủ đề tiếp theo</span>
-          </button>
-
-          <button
+            <ChevronDown className="mr-1.5 size-4 text-brand-orange" />
+            <span>
+              Xem thêm{" "}
+              {Math.min(
+                LOAD_MORE_STEP,
+                filteredCatalog.length - visibleCount,
+              )}{" "}
+              chủ đề
+            </span>
+          </Button>
+          <Button
             type="button"
+            variant="ghost"
             onClick={() => setVisibleCount(filteredCatalog.length)}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted transition-all cursor-pointer"
+            className="h-10 cursor-pointer rounded-xl px-4 text-xs font-semibold text-zinc-500 hover:text-brand-orange"
           >
-            <span>Hiển thị tất cả ({filteredCatalog.length} chủ đề)</span>
-          </button>
+            Mở toàn bộ {filteredCatalog.length} chủ đề
+          </Button>
         </div>
       )}
 
-      {/* Bottom Summary Callout */}
-      {!hasMore && displayedItems.length > 0 && (
-        <div className="text-center py-3 border-t border-border/60 text-xs text-muted-foreground">
-          Đã hiển thị toàn bộ <strong>{filteredCatalog.length}</strong> chủ đề trong lộ trình biên tập BrandHub.
-        </div>
-      )}
+      {/* Interactive Quick Preview Modal */}
+      <Dialog
+        open={Boolean(previewEntry)}
+        onOpenChange={(open) => {
+          if (!open) setPreviewEntry(null);
+        }}
+      >
+        {previewEntry && (
+          <DialogContent className="max-h-[88dvh] overflow-y-auto rounded-2xl border-zinc-200 bg-white p-0 sm:max-w-2xl dark:border-zinc-800 dark:bg-zinc-900">
+            {/* Preview Cover Header */}
+            {previewEntry.summary?.coverImage && (
+              <div className="aspect-[16/9] w-full overflow-hidden border-b border-zinc-100 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800">
+                <img
+                  src={previewEntry.summary.coverImage}
+                  alt={
+                    previewEntry.summary.coverImageAlt ||
+                    previewEntry.topic.title
+                  }
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+
+            <div className="space-y-5 p-6">
+              <DialogHeader className="space-y-2.5 text-left">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="tabular-nums rounded-full border border-orange-200 bg-orange-50 px-2.5 py-0.5 text-xs font-bold text-brand-orange dark:border-orange-500/30 dark:bg-orange-500/15 dark:text-orange-300">
+                    Chủ đề #{String(previewEntry.topic.topicNumber).padStart(3, "0")}
+                  </span>
+                  {previewEntry.categoryMeta && (
+                    <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                      {previewEntry.categoryMeta.shortName}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+                  {previewEntry.summary && (
+                    <>
+                      <span className="tabular-nums inline-flex items-center gap-1">
+                        <Calendar className="size-3.5 text-brand-orange" />
+                        {previewEntry.summary.publishedAt}
+                      </span>
+                      <span className="tabular-nums inline-flex items-center gap-1">
+                        <Clock className="size-3.5 text-brand-orange" />
+                        {previewEntry.summary.readingTimeMinutes} phút đọc
+                      </span>
+                    </>
+                  )}
+                  <span className="inline-flex items-center gap-1 font-medium text-zinc-700 dark:text-zinc-300">
+                    <Users className="size-3.5 text-brand-orange" />
+                    {previewEntry.topic.targetRoles.join(" · ")}
+                  </span>
+                </div>
+
+                <DialogTitle className="text-balance text-lg font-extrabold leading-snug text-zinc-900 sm:text-xl dark:text-zinc-50">
+                  {previewEntry.topic.title}
+                </DialogTitle>
+                <DialogDescription className="text-pretty text-xs leading-relaxed text-zinc-600 sm:text-sm dark:text-zinc-300">
+                  {previewEntry.summary?.metaDescription}
+                </DialogDescription>
+              </DialogHeader>
+
+              {/* Direct GEO Answer Preview */}
+              {previewEntry.summary?.geoSummary && (
+                <div className="space-y-2 rounded-xl border border-zinc-200/90 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-950/60">
+                  <p className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-orange">
+                    <Sparkles className="size-3.5" />
+                    Tóm tắt trọng tâm bài viết
+                  </p>
+                  <p className="text-pretty text-xs leading-relaxed text-zinc-700 sm:text-[13px] dark:text-zinc-200">
+                    {previewEntry.summary.geoSummary}
+                  </p>
+                </div>
+              )}
+
+              {/* Key Takeaways Preview */}
+              {previewEntry.summary?.keyTakeaways &&
+                previewEntry.summary.keyTakeaways.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-bold tracking-wide text-zinc-700 uppercase dark:text-zinc-300">
+                      Nội dung chính bạn sẽ nhận được
+                    </p>
+                    <ul className="space-y-2">
+                      {previewEntry.summary.keyTakeaways.map((point, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-start gap-2.5 text-xs leading-relaxed text-zinc-600 sm:text-[13px] dark:text-zinc-300"
+                        >
+                          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+              <DialogFooter className="flex-col gap-2 border-t border-zinc-100 pt-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
+                <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                  <Tag className="size-3.5 text-brand-orange" />
+                  <span className="font-medium">
+                    {previewEntry.topic.brandhubFeature}
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link
+                    to={previewEntry.topic.ctaTarget}
+                    onClick={() => setPreviewEntry(null)}
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="cursor-pointer rounded-xl text-xs font-semibold"
+                    >
+                      Mở tính năng hệ thống
+                    </Button>
+                  </Link>
+                  <Link
+                    to={`/blog/${previewEntry.topic.slug}`}
+                    onClick={() => setPreviewEntry(null)}
+                  >
+                    <Button
+                      size="sm"
+                      className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer rounded-xl text-xs font-semibold text-white"
+                    >
+                      Đọc trọn vẹn bài viết
+                      <ArrowRight className="ml-1.5 size-3.5" />
+                    </Button>
+                  </Link>
+                </div>
+              </DialogFooter>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
     </section>
   );
 }

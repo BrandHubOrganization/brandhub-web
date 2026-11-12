@@ -14,6 +14,7 @@ import {
   BlogPostGrid,
   BlogConversionBanner,
   BlogRoadmapTable,
+  BlogReveal,
   type BlogSortOption,
 } from "./components";
 
@@ -81,7 +82,7 @@ export function BlogHubPage() {
     });
 
     return [...filtered].sort((a, b) => {
-      if (sortOption === "topic-asc") {
+      if (sortOption === "topic-order") {
         return a.topicNumber - b.topicNumber;
       }
       if (sortOption === "newest") {
@@ -89,19 +90,13 @@ export function BlogHubPage() {
           new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
         return diff !== 0 ? diff : a.topicNumber - b.topicNumber;
       }
-      if (sortOption === "oldest") {
-        const diff =
-          new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime();
+      if (sortOption === "shortest") {
+        const diff = a.readingTimeMinutes - b.readingTimeMinutes;
         return diff !== 0 ? diff : a.topicNumber - b.topicNumber;
       }
-      if (sortOption === "reading-asc") {
-        return a.readingTimeMinutes - b.readingTimeMinutes;
-      }
-      if (sortOption === "reading-desc") {
-        return b.readingTimeMinutes - a.readingTimeMinutes;
-      }
-      if (sortOption === "alpha-asc") {
-        return a.title.localeCompare(b.title, "vi");
+      if (sortOption === "longest") {
+        const diff = b.readingTimeMinutes - a.readingTimeMinutes;
+        return diff !== 0 ? diff : a.topicNumber - b.topicNumber;
       }
       return 0;
     });
@@ -190,7 +185,7 @@ export function BlogHubPage() {
       title="Blog & Cẩm nang Quản trị Truyền thông"
       hideHeader
       hideBanner
-      className="space-y-8 max-w-7xl mx-auto py-4 px-3 sm:px-6 overflow-x-hidden"
+      className="mx-auto max-w-7xl space-y-10 overflow-x-clip px-4 py-6 sm:space-y-12 sm:px-6 sm:py-10 lg:px-8"
     >
       <SeoHead
         title="Blog Quản trị Agency, Gói Truyền thông & AI | BrandHub"
@@ -219,25 +214,29 @@ export function BlogHubPage() {
       <BlogHero />
 
       {/* 6 Core Categories Grid */}
-      <BlogCategoryGrid
-        selectedCategory={selectedCategory}
-        categoryCounts={categoryCounts}
-        onSelectCategory={handleCategoryChange}
-        totalPublishedCount={BLOG_POSTS.length}
-      />
+      <BlogReveal>
+        <BlogCategoryGrid
+          selectedCategory={selectedCategory}
+          categoryCounts={categoryCounts}
+          onSelectCategory={handleCategoryChange}
+          totalPublishedCount={BLOG_POSTS.length}
+        />
+      </BlogReveal>
 
       {/* Toolbar: Category Pills + Search + Sort */}
-      <BlogToolbar
-        selectedCategory={selectedCategory}
-        categoryCounts={categoryCounts}
-        onSelectCategory={handleCategoryChange}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        sortOption={sortOption}
-        onSortChange={setSortOption}
-        displayedCount={filteredAndSortedPosts.length}
-        totalCount={BLOG_POSTS.length}
-      />
+      <BlogReveal>
+        <BlogToolbar
+          selectedCategory={selectedCategory}
+          categoryCounts={categoryCounts}
+          onSelectCategory={handleCategoryChange}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          sortOption={sortOption}
+          onSortChange={setSortOption}
+          displayedCount={filteredAndSortedPosts.length}
+          totalCount={BLOG_POSTS.length}
+        />
+      </BlogReveal>
 
       {/* Published Articles Grid */}
       <BlogPostGrid
@@ -251,16 +250,20 @@ export function BlogHubPage() {
       />
 
       {/* Product Feature Conversion Banner */}
-      <BlogConversionBanner />
+      <BlogReveal>
+        <BlogConversionBanner />
+      </BlogReveal>
 
       {/* 100 Editorial Topics Roadmap Explorer */}
-      <BlogRoadmapTable
-        catalog={filteredCatalog}
-        getCategoryMeta={getCategoryMeta}
-        selectedBatch={selectedBatch}
-        onBatchChange={setSelectedBatch}
-        publishedCount={BLOG_POSTS.length}
-      />
+      <BlogReveal>
+        <BlogRoadmapTable
+          catalog={filteredCatalog}
+          getCategoryMeta={getCategoryMeta}
+          selectedBatch={selectedBatch}
+          onBatchChange={setSelectedBatch}
+          publishedCount={BLOG_POSTS.length}
+        />
+      </BlogReveal>
     </PageWrapper>
   );
 }

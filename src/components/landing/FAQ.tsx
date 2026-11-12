@@ -15,12 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { SectionDecor } from "@/components/landing/SectionDecor";
-import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
-import {
-  SplitHeading,
-  SpinningSeal,
-} from "@/components/landing/MotionPrimitives";
+import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 interface FaqItemMeta {
   key: "q1" | "q2" | "q3" | "q4" | "q5";
@@ -176,10 +171,9 @@ export function FAQ() {
       id="faq"
       className="relative overflow-hidden bg-zinc-50/70 py-24 dark:bg-zinc-950"
     >
-      <SectionDecor corner="right" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start lg:gap-12">
-          {/* Left Sticky Editorial & Live Visual Showcase Column */}
+          {/* Left Sticky Editorial & Visual Showcase Column */}
           <div
             ref={headRef}
             className={cn(
@@ -189,7 +183,6 @@ export function FAQ() {
                 : "translate-y-4 opacity-0",
             )}
           >
-            <SectionEyebrow index={11} />
             <div className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange mb-3 inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-bold tracking-wider uppercase">
               <HelpCircle className="size-3.5" />
               <span>
@@ -205,9 +198,9 @@ export function FAQ() {
               {t("landing.faq.subtitle")}
             </p>
 
-            {/* Interactive Rounded Visual Preview Stage */}
-            <div className="bh-stage-reveal relative mt-7 overflow-hidden rounded-[32px] border border-zinc-200/90 bg-zinc-900 p-3 shadow-xl dark:border-zinc-800">
-              <div className="relative aspect-[16/11] w-full overflow-hidden rounded-[24px]">
+            {/* Interactive Preview Stage */}
+            <div className="bh-stage-reveal mt-7 overflow-hidden rounded-2xl border border-zinc-200/90 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="aspect-[16/10] w-full overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
                 <img
                   key={activeMeta.key}
                   src={activeMeta.photo}
@@ -215,34 +208,33 @@ export function FAQ() {
                     isEn ? activeMeta.photoCaptionEn : activeMeta.photoCaptionVi
                   }
                   width={800}
-                  height={550}
+                  height={500}
                   loading="lazy"
                   decoding="async"
                   className="size-full object-cover transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/30 to-transparent" />
+              </div>
 
-                {/* Top Category Pill */}
-                <div className="absolute top-3.5 left-3.5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/65 px-3.5 py-1.5 text-xs font-bold text-white backdrop-blur-md">
-                  <ActiveIcon className="text-brand-orange size-3.5" />
-                  <span>{isEn ? activeMeta.tagEn : activeMeta.tagVi}</span>
-                </div>
-
-                {/* Bottom Caption inside Photo */}
-                <div className="absolute right-4 bottom-3.5 left-4">
-                  <span className="text-[10px] font-bold tracking-widest text-orange-400 uppercase">
+              {/* Caption & Category Info below Photo */}
+              <div className="mt-3.5 space-y-1.5 px-1">
+                <div className="flex items-center justify-between gap-2 text-xs">
+                  <span className="inline-flex items-center gap-1.5 font-semibold text-zinc-800 dark:text-zinc-100">
+                    <ActiveIcon className="text-brand-orange size-3.5" />
+                    <span>{isEn ? activeMeta.tagEn : activeMeta.tagVi}</span>
+                  </span>
+                  <span className="font-mono text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
                     TOPIC #{activeMeta.num}
                   </span>
-                  <p className="mt-0.5 text-xs font-semibold leading-snug text-white sm:text-sm">
-                    {isEn
-                      ? activeMeta.photoCaptionEn
-                      : activeMeta.photoCaptionVi}
-                  </p>
                 </div>
+                <p className="text-xs leading-relaxed text-zinc-600 sm:text-sm dark:text-zinc-300">
+                  {isEn
+                    ? activeMeta.photoCaptionEn
+                    : activeMeta.photoCaptionVi}
+                </p>
               </div>
 
               {/* Quick Resource Links Footer */}
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-zinc-950/80 px-4 py-3 text-xs text-zinc-300">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-200/80 bg-zinc-50/80 px-4 py-3 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-zinc-300">
                 <div className="flex items-center gap-2 font-medium">
                   <BookOpen className="text-brand-orange size-4 shrink-0" />
                   <span>
@@ -259,24 +251,16 @@ export function FAQ() {
                     <span>{isEn ? "Full FAQ" : "Tất cả câu hỏi"}</span>
                     <ArrowUpRight className="size-3.5" />
                   </Link>
-                  <span className="text-zinc-700">•</span>
+                  <span className="text-zinc-400 dark:text-zinc-600">·</span>
                   <Link
                     to="/help/guide"
-                    className="inline-flex items-center gap-1 font-semibold text-white hover:text-orange-300"
+                    className="inline-flex items-center gap-1 font-semibold text-zinc-700 hover:text-brand-orange dark:text-zinc-200 dark:hover:text-orange-300"
                   >
                     <span>{isEn ? "User Guide" : "Cẩm nang"}</span>
                     <ArrowUpRight className="size-3.5" />
                   </Link>
                 </div>
               </div>
-
-              <SpinningSeal
-                text="BRANDHUB KNOWLEDGE • AGENCY & CLIENT • "
-                centerTop="FAQ"
-                centerBottom="24/7"
-                variant="orange"
-                className="pointer-events-none absolute -top-4 -right-4 hidden size-20 sm:block"
-              />
             </div>
           </div>
 

@@ -1,5 +1,4 @@
-import { Sparkles, CheckCircle2 } from "lucide-react";
-import { BlogRichText } from "./BlogRichText";
+import { CheckCircle2, Sparkles } from "lucide-react";
 
 interface BlogKeyTakeawaysProps {
   geoSummary: string;
@@ -12,32 +11,37 @@ export function BlogKeyTakeaways({
 }: BlogKeyTakeawaysProps) {
   return (
     <section
-      aria-label="Tóm tắt cốt lõi"
-      className="rounded-2xl border-2 border-brand-orange/30 bg-gradient-to-br from-brand-orange/10 via-card to-amber-500/5 p-5 sm:p-6 space-y-4 shadow-xs"
+      aria-label="Tóm tắt trọng tâm bài viết"
+      className="rounded-xl border border-zinc-200/90 bg-zinc-50/75 p-5 shadow-2xs sm:p-6 dark:border-zinc-800 dark:bg-zinc-900/75"
     >
-      <div className="flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-2 text-xs font-extrabold text-brand-orange uppercase tracking-wider">
-          <Sparkles className="size-4" />
-          <span>Tóm tắt cốt lõi &amp; Điểm nhấn quản trị (Key Takeaways)</span>
-        </span>
-        <span className="text-[11px] font-medium text-muted-foreground">
-          Chuẩn trích dẫn AI Overview
-        </span>
-      </div>
+      <div className="space-y-4">
+        <div className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wide text-brand-orange uppercase">
+          <Sparkles className="size-3.5" />
+          <span>Tóm tắt Trọng tâm &amp; Giải pháp Cốt lõi</span>
+        </div>
 
-      <p className="text-sm sm:text-base text-foreground leading-relaxed font-medium">
-        <BlogRichText text={geoSummary} />
-      </p>
+        <p className="text-pretty text-sm leading-[1.75] font-medium text-zinc-800 sm:text-[15px] dark:text-zinc-200">
+          {geoSummary}
+        </p>
 
-      <div className="space-y-2 pt-2 border-t border-border/60">
-        {keyTakeaways.map((point, idx) => (
-          <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm">
-            <CheckCircle2 className="size-4 text-brand-orange shrink-0 mt-0.5" />
-            <span className="text-foreground/90 leading-relaxed">
-              <BlogRichText text={point} />
-            </span>
+        {keyTakeaways.length > 0 && (
+          <div className="border-t border-zinc-200/80 pt-4 dark:border-zinc-800">
+            <p className="mb-3 text-xs font-bold tracking-wide text-zinc-700 uppercase dark:text-zinc-300">
+              Điểm cốt lõi cần nắm ({keyTakeaways.length} ý chính)
+            </p>
+            <ul className="grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
+              {keyTakeaways.map((point, idx) => (
+                <li
+                  key={idx}
+                  className="flex items-start gap-2.5 text-xs leading-relaxed text-zinc-700 sm:text-[13.5px] dark:text-zinc-300"
+                >
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        ))}
+        )}
       </div>
     </section>
   );

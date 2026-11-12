@@ -763,3 +763,64 @@ body,
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
+
+/* ==========================================================================
+   BrandHub Cursor Spotlight Card (.bh-spotlight-card)
+   Available globally across Landing, Blog Hub, and Article Surfaces.
+   ========================================================================== */
+.bh-spotlight-card {
+  position: relative;
+  --bh-mx: 50%;
+  --bh-my: 50%;
+}
+
+.bh-spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    420px circle at var(--bh-mx) var(--bh-my),
+    rgba(240, 90, 40, 0.34),
+    rgba(249, 115, 22, 0.08) 42%,
+    transparent 65%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  z-index: 2;
+}
+
+.bh-spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    340px circle at var(--bh-mx) var(--bh-my),
+    rgba(240, 90, 40, 0.06),
+    transparent 62%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  z-index: 1;
+}
+
+.bh-spotlight-card:hover::before,
+.bh-spotlight-card:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bh-spotlight-card::before,
+  .bh-spotlight-card::after {
+    display: none;
+  }
+}

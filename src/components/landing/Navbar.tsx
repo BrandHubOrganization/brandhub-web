@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Languages, Sun, Moon, Menu, X, LayoutDashboard } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useAuthStore } from "@/store/authStore";
@@ -9,14 +9,14 @@ import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const NAV_LINKS = [
-  { id: "features", labelKey: "landing.nav.features" },
-  { id: "how-it-works", labelKey: "landing.nav.howItWorks" },
-  { id: "templates", labelKey: "landing.nav.templates" },
-  { id: "testimonials", labelKey: "landing.nav.testimonials" },
-  { id: "team", labelKey: "landing.nav.team" },
-  { id: "comparison", labelKey: "landing.nav.comparison" },
-  { id: "pricing", labelKey: "landing.nav.pricing" },
-  { id: "faq", labelKey: "landing.nav.faq" },
+  { id: "features", labelKey: "landing.nav.features", desktop: true },
+  { id: "how-it-works", labelKey: "landing.nav.howItWorks", desktop: true },
+  { id: "templates", labelKey: "landing.nav.templates", desktop: true },
+  { id: "testimonials", labelKey: "landing.nav.testimonials", desktop: false },
+  { id: "team", labelKey: "landing.nav.team", desktop: false },
+  { id: "comparison", labelKey: "landing.nav.comparison", desktop: false },
+  { id: "pricing", labelKey: "landing.nav.pricing", desktop: true },
+  { id: "faq", labelKey: "landing.nav.faq", desktop: true },
 ];
 
 function useIsDark() {
@@ -90,10 +90,14 @@ function useActiveSection(ids: string[]) {
 
 export function Navbar() {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHomePage = location.pathname === "/";
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { setTheme } = useTheme();
   const isDark = useIsDark();
   const scrolledPastHero = useShowAfterHero();
+  const useSolidNav = !isHomePage || scrolledPastHero;
   const progress = useScrollProgress();
   const activeSection = useActiveSection(NAV_LINKS.map((l) => l.id));
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -107,48 +111,57 @@ export function Navbar() {
 
   const scrollToSection = (id: string) => {
     setMobileOpen(false);
+    if (!isHomePage) {
+      navigate(`/#${id}`);
+      return;
+    }
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const isBlogRoute = location.pathname.startsWith("/blog");
 
   return (
     <nav
       aria-label="Main navigation"
       className={cn(
         "fixed inset-x-0 top-0 z-50 border-b transition-all duration-300",
-        scrolledPastHero
-          ? "translate-y-0 border-zinc-200 bg-white/90 opacity-100 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90"
+        useSolidNav
+          ? "translate-y-0 border-zinc-200/90 bg-white/92 opacity-100 shadow-xs backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/92"
           : "translate-y-0 border-white/10 bg-zinc-950/55 opacity-100 backdrop-blur-md",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
         <a
-          href="#top"
+          href={isHomePage ? "#top" : "/"}
           onClick={(e) => {
             e.preventDefault();
+            if (!isHomePage) {
+              navigate("/");
+            }
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           className="flex shrink-0 cursor-pointer items-center"
         >
           <BrandLogo
             size="md"
-            className={cn(!scrolledPastHero && "[&_span]:text-white")}
+            className={cn(!useSolidNav && "[&_span]:text-white")}
           />
         </a>
 
         <div className="hidden items-center gap-1 lg:flex">
-          {NAV_LINKS.map((link) => (
+          {NAV_LINKS.filter((link) => link.desktop).map((link) => (
             <a
               key={link.id}
-              href={`#${link.id}`}
+              href={isHomePage ? `#${link.id}` : `/#${link.id}`}
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection(link.id);
               }}
               className={cn(
-                "cursor-pointer rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                activeSection === link.id
+                "cursor-pointer whitespace-nowrap rounded-lg px-2.5 py-2 text-sm font-medium transition-colors xl:px-3",
+                isHomePage && activeSection === link.id
                   ? "text-brand-orange"
-                  : scrolledPastHero
+                  : useSolidNav
                     ? "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                     : "text-zinc-200 hover:bg-white/10 hover:text-white",
               )}
@@ -158,18 +171,21 @@ export function Navbar() {
           ))}
           <Link
             to="/blog"
+            aria-current={isBlogRoute ? "page" : undefined}
             className={cn(
-              "cursor-pointer rounded-md px-3 py-2 text-sm font-semibold transition-colors",
-              scrolledPastHero
-                ? "text-zinc-600 hover:bg-zinc-100 hover:text-brand-orange dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-brand-orange"
-                : "text-zinc-200 hover:bg-white/10 hover:text-white",
+              "cursor-pointer whitespace-nowrap rounded-lg px-2.5 py-2 text-sm font-semibold transition-colors xl:px-3",
+              isBlogRoute
+                ? "bg-brand-orange/10 text-brand-orange"
+                : useSolidNav
+                  ? "text-zinc-600 hover:bg-zinc-100 hover:text-brand-orange dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-brand-orange"
+                  : "text-zinc-200 hover:bg-white/10 hover:text-white",
             )}
           >
             Blog
           </Link>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
             onClick={toggleLanguage}
@@ -177,7 +193,7 @@ export function Navbar() {
             title={t("common.switchLanguage")}
             className={cn(
               "hidden cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors sm:flex",
-              scrolledPastHero
+              useSolidNav
                 ? "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                 : "text-zinc-200 hover:bg-white/10",
             )}
@@ -192,7 +208,7 @@ export function Navbar() {
             title={t("common.toggleTheme")}
             className={cn(
               "hidden size-8 cursor-pointer items-center justify-center rounded-full transition-colors sm:flex",
-              scrolledPastHero
+              useSolidNav
                 ? "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                 : "text-zinc-200 hover:bg-white/10",
             )}
@@ -203,7 +219,7 @@ export function Navbar() {
           {isAuthenticated ? (
             <Link
               to="/dashboard"
-              className="bg-brand-orange hover:bg-brand-orange/90 hidden cursor-pointer items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors sm:inline-flex"
+              className="bg-brand-orange hover:bg-brand-orange/90 hidden cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors sm:inline-flex"
             >
               <LayoutDashboard className="size-4" />
               {t("landing.nav.dashboard")}
@@ -213,8 +229,8 @@ export function Navbar() {
               <Link
                 to="/login"
                 className={cn(
-                  "hidden cursor-pointer rounded-lg px-4 py-2 text-sm font-medium transition-colors sm:inline-flex",
-                  scrolledPastHero
+                  "hidden cursor-pointer whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-medium transition-colors sm:inline-flex",
+                  useSolidNav
                     ? "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
                     : "text-zinc-100 hover:bg-white/10",
                 )}
@@ -223,7 +239,7 @@ export function Navbar() {
               </Link>
               <Link
                 to="/register"
-                className="bg-brand-orange hover:bg-brand-orange/90 hidden cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors sm:inline-flex"
+                className="bg-brand-orange hover:bg-brand-orange/90 hidden cursor-pointer whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors sm:inline-flex"
               >
                 {t("landing.nav.register")}
               </Link>
@@ -236,7 +252,7 @@ export function Navbar() {
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             className={cn(
               "flex size-9 cursor-pointer items-center justify-center rounded-md lg:hidden",
-              scrolledPastHero
+              useSolidNav
                 ? "text-zinc-600 dark:text-zinc-300"
                 : "text-zinc-200",
             )}
@@ -256,7 +272,7 @@ export function Navbar() {
             {NAV_LINKS.map((link) => (
               <a
                 key={link.id}
-                href={`#${link.id}`}
+                href={isHomePage ? `#${link.id}` : `/#${link.id}`}
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection(link.id);
@@ -269,7 +285,12 @@ export function Navbar() {
             <Link
               to="/blog"
               onClick={() => setMobileOpen(false)}
-              className="cursor-pointer rounded-md px-3 py-2.5 text-left text-sm font-semibold text-brand-orange hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className={cn(
+                "cursor-pointer rounded-md px-3 py-2.5 text-left text-sm font-semibold hover:bg-zinc-100 dark:hover:bg-zinc-800",
+                isBlogRoute
+                  ? "bg-brand-orange/10 text-brand-orange"
+                  : "text-brand-orange",
+              )}
             >
               Blog &amp; Cẩm nang
             </Link>
