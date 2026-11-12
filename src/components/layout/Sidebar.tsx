@@ -199,6 +199,21 @@ export function Sidebar({
         })
         .filter((item) => !item.requiresWorkspace || activeWorkspace)
         .map((item) => {
+          if (item.to === "/dashboard") {
+            if (activeWorkspace) {
+              return {
+                ...item,
+                to: `/workspaces/${activeWorkspace.id}/dashboard`,
+              };
+            }
+            if (currentAgencyId) {
+              return {
+                ...item,
+                to: `/agency/${currentAgencyId}/dashboard`,
+              };
+            }
+            return item;
+          }
           if (item.agencyScoped && currentAgencyId) {
             return {
               ...item,
@@ -360,29 +375,70 @@ export function Sidebar({
               hidden={!collapsed && closedSections.has(section.key)}
             >
               {section.items.map(({ to, icon: Icon, labelKey, children }) => {
+                const isDashboard =
+                  labelKey === "nav.dashboard" ||
+                  to === "/dashboard" ||
+                  to.endsWith("/dashboard");
+
+                const checkIsActive = (navActive: boolean) => {
+                  if (navActive) return true;
+                  if (isDashboard) {
+                    if (
+                      to.startsWith("/agency/") &&
+                      /^\/agency\/[^/]+\/dashboard(\/.*)?$/.test(
+                        location.pathname,
+                      )
+                    ) {
+                      return true;
+                    }
+                    if (
+                      to.startsWith("/workspaces/") &&
+                      /^\/workspaces\/[^/]+\/dashboard(\/.*)?$/.test(
+                        location.pathname,
+                      )
+                    ) {
+                      return true;
+                    }
+                    if (
+                      to === "/dashboard" &&
+                      (/^\/agency\/[^/]+\/dashboard(\/.*)?$/.test(
+                        location.pathname,
+                      ) ||
+                        /^\/workspaces\/[^/]+\/dashboard(\/.*)?$/.test(
+                          location.pathname,
+                        ))
+                    ) {
+                      return true;
+                    }
+                  }
+                  return false;
+                };
+
                 return (
                   <div key={to}>
                     <NavLink
                       to={to}
                       end
                       onClick={onMobileItemClick}
-                      className={({ isActive }) =>
-                        cn(
+                      className={({ isActive }) => {
+                        const active = checkIsActive(isActive);
+                        return cn(
                           "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs transition-colors",
                           collapsed ? "justify-center" : "",
-                          isActive ? "font-semibold" : "hover:text-white",
-                        )
-                      }
-                      style={({ isActive }) =>
-                        isActive
+                          active ? "font-semibold" : "hover:text-white",
+                        );
+                      }}
+                      style={({ isActive }) => {
+                        const active = checkIsActive(isActive);
+                        return active
                           ? {
                               background: "hsl(var(--primary))",
                               color: "#ffffff",
                             }
                           : {
                               color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
-                            }
-                      }
+                            };
+                      }}
                       title={collapsed ? t(labelKey) : undefined}
                     >
                       <Icon className="size-4 shrink-0" />
