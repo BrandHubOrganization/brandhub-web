@@ -23,6 +23,8 @@ import enSocial from "./social.json";
 import enPublish from "./publish.json";
 import enSubscription from "./subscription.json";
 import enAiStudio from "./aiStudio.json";
+import enVideoSpace from "./videoSpace.json";
+import enProductVideo from "./productVideo.json";
 import enReports from "./reports.json";
 import enNotifications from "./notifications.json";
 import enSecurity from "./security.json";
@@ -63,6 +65,8 @@ export default {
   publish: enPublish,
   subscription: enSubscription,
   aiStudio: enAiStudio,
+  videoSpace: enVideoSpace,
+  productVideo: enProductVideo,
   reports: enReports,
   notifications: enNotifications,
   security: enSecurity,

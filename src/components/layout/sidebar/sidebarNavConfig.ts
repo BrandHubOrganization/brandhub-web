@@ -182,6 +182,33 @@ export const NAV_SECTIONS: NavSection[] = [
     ],
   },
   {
+    key: "video",
+    titleKey: "nav.sections.video",
+    items: [
+      {
+        to: "/ai-studio/video",
+        icon: Sparkles,
+        labelKey: "nav.aiVideo",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/product-video",
+        icon: PackageCheck,
+        labelKey: "productVideo.title",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+      {
+        to: "/video-space",
+        icon: Clapperboard,
+        labelKey: "nav.videoSpace",
+        workspaceScoped: true,
+        requiresWorkspace: true,
+      },
+    ],
+  },
+  {
     key: "agency",
     titleKey: "nav.sections.agency",
     items: [
