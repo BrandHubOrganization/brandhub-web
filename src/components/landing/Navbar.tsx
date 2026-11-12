@@ -271,7 +271,7 @@ export function Navbar() {
               onClick={() => setMobileOpen(false)}
               className="cursor-pointer rounded-md px-3 py-2.5 text-left text-sm font-semibold text-brand-orange hover:bg-zinc-100 dark:hover:bg-zinc-800"
             >
-              Blog &amp; Kiến thức SEO
+              Blog &amp; Cẩm nang
             </Link>
           </div>
           <div className="mt-3 flex items-center gap-2 border-t border-zinc-100 pt-3 dark:border-zinc-800">

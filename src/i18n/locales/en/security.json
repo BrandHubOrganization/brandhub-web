@@ -1,5 +1,6 @@
 {
   "title": "Security",
+  "subtitle": "Manage password, two-factor authentication (2FA), and active sessions for your account.",
   "description": "Manage password, two-factor authentication (2FA), and active sessions for your account.",
   "2fa": {
     "title": "Two-Factor Authentication (2FA)",

@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { CheckCircle2, Info, KeyRound, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { ConfirmDialog } from "@/components/ui/dialog";
 import { authService, oauthLinkUrl } from "@/services/authService";
 import type { MeResponse } from "@/services/authService";
@@ -130,15 +131,14 @@ export function ConnectionsPage() {
   }
 
   return (
-    <section id="connections" className="flex flex-col gap-6">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold">
-          {t("settings.connections.title")}
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          {t("settings.connections.pageDescription")}
-        </p>
-      </header>
+    <PageWrapper
+      title={t("settings.connections.title", "Kết nối tài khoản")}
+      description={t(
+        "settings.connections.pageDescription",
+        "Quản lý các tài khoản liên kết đăng nhập mạng xã hội.",
+      )}
+    >
+      <section id="connections" className="flex flex-col gap-6">
 
       <div className="divide-border divide-y rounded-lg border">
         {/* Email + mật khẩu */}
@@ -270,7 +270,8 @@ export function ConnectionsPage() {
         variant="danger"
         isLoading={isUnlinking}
       />
-    </section>
+      </section>
+    </PageWrapper>
   );
 }
 

@@ -242,6 +242,7 @@
   "trendFit": {
     "title": "Trend hợp brand hôm nay",
     "notJudged": "AI chưa chấm được, đang xếp theo luật ngành",
+    "provisional": "Gợi ý sơ bộ từ mô tả của bạn; hồ sơ brand chưa đầy đủ.",
     "loading": "Đang chọn trend hợp brand…",
     "error": "Chưa tải được gợi ý trend.",
     "empty": "Hôm nay chưa có trend nào hợp brand.",
@@ -268,8 +269,7 @@
       "prompt_leak": "Bài lộ chữ của câu lệnh AI.",
       "sensitive": "Có từ nhạy cảm: {{term}}.",
       "too_long": "Dài hơn mức khuyến nghị của nền tảng."
-    },
-    "provisional": "Gợi ý sơ bộ từ mô tả của bạn; hồ sơ brand chưa đầy đủ."
+    }
   },
   "video": {
     "title": "AI Video Studio",

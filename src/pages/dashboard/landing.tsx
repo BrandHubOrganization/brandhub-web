@@ -48,7 +48,7 @@ const LANDING_FAQ_JSONLD = {
       name: "BrandHub hỗ trợ liên kết những nền tảng mạng xã hội nào?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "BrandHub tích hợp chính thức 4 nền tảng mạng xã hội: Facebook, Instagram, TikTok và Threads. Các bài đăng được lên lịch tự động và phân bổ qua microservice Publisher độc lập.",
+        text: "BrandHub tích hợp chính thức 4 nền tảng mạng xã hội: Facebook, Instagram, TikTok và Threads. Các bài đăng được lên lịch tự động và phân phối an toàn, chuẩn xác tới từng kênh thương hiệu.",
       },
     },
     {
@@ -72,7 +72,7 @@ const LANDING_FAQ_JSONLD = {
       name: "Dữ liệu và Access Token mạng xã hội được bảo vệ như thế nào?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Hệ thống bảo vệ theo tiêu chuẩn kiến trúc Microservices phân tán với Spring Cloud Gateway xác thực tập trung. Toàn bộ OAuth Access Token của mạng xã hội được mã hóa AES-256 trong cơ sở dữ liệu và dữ liệu từng Workspace được cô lập hoàn toàn.",
+        text: "Hệ thống tuân thủ tiêu chuẩn bảo mật đám mây với cơ chế xác thực tập trung. Toàn bộ OAuth Access Token của mạng xã hội được mã hóa AES-256 trong cơ sở dữ liệu và dữ liệu từng Workspace được cô lập hoàn toàn.",
       },
     },
   ],

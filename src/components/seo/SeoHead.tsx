@@ -6,6 +6,8 @@ export const DEFAULT_TITLE =
 export const DEFAULT_DESCRIPTION =
   "Nền tảng quản trị Agency, lập kế hoạch Media Campaign, sáng tạo với AI GraphRAG, duyệt bài đa cấp và đăng tự động Facebook, Instagram, TikTok, Threads.";
 export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-banner.png`;
+export const DEFAULT_OG_IMAGE_ALT =
+  "BrandHub — Nền tảng Quản trị Thương hiệu & Xuất bản Nội dung Đa kênh AI";
 
 export interface SeoHeadProps {
   title?: string;
@@ -14,10 +16,18 @@ export interface SeoHeadProps {
   canonicalPath?: string;
   ogType?: "website" | "article";
   ogImage?: string;
+  ogImageAlt?: string;
   /** Optional comma-separated SEO keywords */
   keywords?: string;
+  /** Optional ISO date strings & section for `og:type="article"` */
+  publishedTime?: string;
+  modifiedTime?: string;
+  articleSection?: string;
+  authorName?: string;
   /** Set true on private/auth/transactional pages so search engines do not index them */
   noindex?: boolean;
+  /** Whether this page has an active English translation via `?lang=en` (default true; false on Vietnamese-only blog routes) */
+  bilingual?: boolean;
   /** Optional page-specific JSON-LD object or array of objects */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[] | null;
 }
@@ -38,6 +48,15 @@ function upsertMeta(
   el.setAttribute("content", content);
 }
 
+function removeMeta(attrName: "name" | "property", attrValue: string) {
+  const el = document.head.querySelector<HTMLMetaElement>(
+    `meta[${attrName}="${attrValue}"]`,
+  );
+  if (el) {
+    el.remove();
+  }
+}
+
 function upsertCanonical(href: string) {
   let link = document.head.querySelector<HTMLLinkElement>(
     'link[rel="canonical"]',
@@ -50,14 +69,14 @@ function upsertCanonical(href: string) {
   link.setAttribute("href", href);
 }
 
-function syncHreflangLinks(baseHref: string, noindex: boolean) {
-  const langs = [
-    { lang: "vi", href: baseHref },
-    { lang: "en", href: `${baseHref}?lang=en` },
-    { lang: "x-default", href: baseHref },
-  ] as const;
+function syncHreflangLinks(
+  baseHref: string,
+  noindex: boolean,
+  bilingual: boolean,
+) {
+  const allLangs = ["vi", "en", "x-default"] as const;
   if (noindex) {
-    for (const { lang } of langs) {
+    for (const lang of allLangs) {
       const existing = document.head.querySelector<HTMLLinkElement>(
         `link[rel="alternate"][hreflang="${lang}"]`,
       );
@@ -68,7 +87,27 @@ function syncHreflangLinks(baseHref: string, noindex: boolean) {
     return;
   }
 
-  for (const { lang, href } of langs) {
+  const activeLangs = bilingual
+    ? ([
+        { lang: "vi", href: baseHref },
+        { lang: "en", href: `${baseHref}?lang=en` },
+        { lang: "x-default", href: baseHref },
+      ] as const)
+    : ([
+        { lang: "vi", href: baseHref },
+        { lang: "x-default", href: baseHref },
+      ] as const);
+
+  if (!bilingual) {
+    const staleEn = document.head.querySelector<HTMLLinkElement>(
+      'link[rel="alternate"][hreflang="en"]',
+    );
+    if (staleEn) {
+      staleEn.remove();
+    }
+  }
+
+  for (const { lang, href } of activeLangs) {
     let link = document.head.querySelector<HTMLLinkElement>(
       `link[rel="alternate"][hreflang="${lang}"]`,
     );
@@ -88,8 +127,14 @@ export function SeoHead({
   canonicalPath = "/",
   ogType = "website",
   ogImage = DEFAULT_OG_IMAGE,
+  ogImageAlt = DEFAULT_OG_IMAGE_ALT,
   keywords,
+  publishedTime,
+  modifiedTime,
+  articleSection,
+  authorName,
   noindex = false,
+  bilingual = true,
   jsonLd = null,
 }: SeoHeadProps) {
   useEffect(() => {
@@ -100,6 +145,7 @@ export function SeoHead({
       ? canonicalPath
       : `${SITE_ORIGIN}${canonicalPath.startsWith("/") ? canonicalPath : `/${canonicalPath}`}`;
     const isUrlLangEn =
+      bilingual &&
       typeof window !== "undefined" &&
       new URLSearchParams(window.location.search).get("lang") === "en";
     const canonicalUrl =
@@ -110,15 +156,19 @@ export function SeoHead({
       ? "noindex, nofollow"
       : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
 
+    document.documentElement.dataset.seoManaged = "true";
     document.title = cleanTitle;
 
     upsertMeta("name", "description", description);
     if (keywords) {
       upsertMeta("name", "keywords", keywords);
     }
+    if (authorName) {
+      upsertMeta("name", "author", authorName);
+    }
     upsertMeta("name", "robots", robotsValue);
     upsertCanonical(canonicalUrl);
-    syncHreflangLinks(baseCanonicalUrl, noindex);
+    syncHreflangLinks(baseCanonicalUrl, noindex, bilingual);
 
     // Open Graph synchronization (must agree with canonical, title, description)
     upsertMeta("property", "og:type", ogType);
@@ -127,6 +177,24 @@ export function SeoHead({
     upsertMeta("property", "og:description", description);
     upsertMeta("property", "og:url", canonicalUrl);
     upsertMeta("property", "og:image", ogImage);
+    upsertMeta("property", "og:image:secure_url", ogImage);
+    upsertMeta("property", "og:image:alt", ogImageAlt);
+
+    if (ogType === "article") {
+      if (publishedTime) {
+        upsertMeta("property", "article:published_time", publishedTime);
+      }
+      if (modifiedTime) {
+        upsertMeta("property", "article:modified_time", modifiedTime);
+      }
+      if (articleSection) {
+        upsertMeta("property", "article:section", articleSection);
+      }
+    } else {
+      removeMeta("property", "article:published_time");
+      removeMeta("property", "article:modified_time");
+      removeMeta("property", "article:section");
+    }
 
     // Twitter card synchronization
     upsertMeta("name", "twitter:card", "summary_large_image");
@@ -134,6 +202,7 @@ export function SeoHead({
     upsertMeta("name", "twitter:description", description);
     upsertMeta("name", "twitter:url", canonicalUrl);
     upsertMeta("name", "twitter:image", ogImage);
+    upsertMeta("name", "twitter:image:alt", ogImageAlt);
 
     const scriptId = "brandhub-page-jsonld";
     let scriptEl = document.getElementById(
@@ -152,15 +221,30 @@ export function SeoHead({
     }
 
     return () => {
+      delete document.documentElement.dataset.seoManaged;
       const existingScript = document.getElementById(scriptId);
       if (existingScript) {
         existingScript.remove();
       }
     };
-  }, [title, description, canonicalPath, ogType, ogImage, keywords, noindex, jsonLd]);
+  }, [
+    title,
+    description,
+    canonicalPath,
+    ogType,
+    ogImage,
+    ogImageAlt,
+    keywords,
+    publishedTime,
+    modifiedTime,
+    articleSection,
+    authorName,
+    noindex,
+    bilingual,
+    jsonLd,
+  ]);
 
   return null;
 }
 
 export default SeoHead;
-

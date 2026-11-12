@@ -169,7 +169,7 @@ export default function WorkspaceMediaPackagePage() {
   }
   return (
     <PageWrapper
-      compact
+      compact={editing}
       hideHeader={editing}
       className={
         editing
@@ -179,8 +179,11 @@ export default function WorkspaceMediaPackagePage() {
       contentClassName={
         editing ? undefined : "lg:flex lg:min-h-0 lg:flex-1 lg:flex-col"
       }
-      showGuideButton={false}
       title={t("mediaPackage.workspacePage.title")}
+      description={t(
+        "mediaPackage.workspacePage.description",
+        "Xem và quản lý các gói tài nguyên truyền thông cho workspace của bạn.",
+      )}
     >
       <div
         className={

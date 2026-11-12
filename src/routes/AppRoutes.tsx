@@ -105,10 +105,6 @@ const DashboardPage = lazyNamed(
   "DashboardPage",
 );
 const PortalPage = lazyNamed(() => import("@/pages/portal"), "PortalPage");
-const AnalyticsPage = lazyNamed(
-  () => import("@/pages/analytics"),
-  "AnalyticsPage",
-);
 const CalendarPage = lazyNamed(
   () => import("@/pages/calendar"),
   "CalendarPage",
@@ -140,6 +136,10 @@ const SocialAccountsPage = lazyNamed(
   "SocialAccountsPage",
 );
 const ReportsPage = lazyNamed(() => import("@/pages/reports"), "ReportsPage");
+const AnalyticsPage = lazyNamed(
+  () => import("@/pages/analytics"),
+  "AnalyticsPage",
+);
 
 // ── Workspace & Chat Pages ──
 const WorkspacePage = lazyNamed(
@@ -302,6 +302,8 @@ const VideoStudioPage = lazyNamed(
   () => import("@/pages/ai-studio/video"),
   "VideoStudioPage",
 );
+const VideoSpacePage = lazy(() => import("@/pages/video-space"));
+const ProductVideoPage = lazy(() => import("@/pages/product-video"));
 
 // ── Admin Pages ──
 const AdminInvoicesPage = lazy(() => import("@/pages/admin/InvoicesPage"));
@@ -772,6 +774,12 @@ export function AppRoutes() {
               element={<ClientProfileListPage />}
             />
             <Route path="/ai-studio/video" element={<VideoStudioPage />} />
+            <Route path="/workspaces/:id/ai-studio/video" element={<VideoStudioPage />} />
+            <Route path="/workspaces/:id/product-video" element={<ProductVideoPage />} />
+            <Route
+              path="/workspaces/:id/video-space"
+              element={<VideoSpacePage />}
+            />
             <Route path="/components/examples" element={<ExamplesPage />} />
           </Route>
         </Route>

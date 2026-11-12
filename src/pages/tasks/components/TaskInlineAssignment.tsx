@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -21,11 +21,28 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
   const state = useTaskWorkflow(task.workspaceId, task.id);
   const canEdit = task.allowedActions.canEditDetail;
 
-
   const [clientApprovalOpen, setClientApprovalOpen] = useState(false);
   const [isSavingApproval, setIsSavingApproval] = useState(false);
+  const [optimisticApproval, setOptimisticApproval] = useState<boolean | null>(
+    null,
+  );
   const [supervisorOpen, setSupervisorOpen] = useState(false);
   const [savingSupervisor, setSavingSupervisor] = useState(false);
+
+  useEffect(() => {
+    if (
+      optimisticApproval !== null &&
+      task.requiresClientApproval === optimisticApproval
+    ) {
+      setOptimisticApproval(null);
+    }
+  }, [task.requiresClientApproval, optimisticApproval]);
+
+  const currentApproval =
+    optimisticApproval !== null
+      ? optimisticApproval
+      : task.requiresClientApproval;
+
   const supervisorOptions = useQuery({
     queryKey: [
       "task-supervisor-options",
@@ -55,16 +72,22 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
   }
 
   async function handleSelectApproval(requiresApproval: boolean) {
-    if (requiresApproval === task.requiresClientApproval) {
+    if (requiresApproval === currentApproval) {
       setClientApprovalOpen(false);
       return;
     }
+    const previous = currentApproval;
+    setClientApprovalOpen(false);
+    setOptimisticApproval(requiresApproval);
     setIsSavingApproval(true);
     state.retry();
     try {
       await state.field("requiresClientApproval", requiresApproval);
-      setClientApprovalOpen(false);
+      toast.success(
+        t("tasks.workflow.approvalUpdated", "Đã cập nhật yêu cầu duyệt"),
+      );
     } catch (error) {
+      setOptimisticApproval(previous);
       toast.error(workflowError(error, t));
     } finally {
       setIsSavingApproval(false);
@@ -141,7 +164,9 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
           <DropdownMenu
             open={clientApprovalOpen}
             onOpenChange={(open) => {
-              if (!isSavingApproval) setClientApprovalOpen(open);
+              if (!open || !isSavingApproval) {
+                setClientApprovalOpen(open);
+              }
             }}
           >
             <DropdownMenuTrigger asChild>
@@ -155,7 +180,7 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
                 })}
               >
                 <span className="truncate font-medium">
-                  {task.requiresClientApproval
+                  {currentApproval
                     ? t("tasks.workflow.yes")
                     : t("tasks.workflow.no")}
                 </span>
@@ -174,7 +199,7 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
                 onSelect={() => void handleSelectApproval(true)}
               >
                 <span>{t("tasks.workflow.yes")}</span>
-                {task.requiresClientApproval && (
+                {currentApproval && (
                   <Check className="text-brand-orange size-3.5" />
                 )}
               </DropdownMenuItem>
@@ -183,7 +208,7 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
                 onSelect={() => void handleSelectApproval(false)}
               >
                 <span>{t("tasks.workflow.no")}</span>
-                {!task.requiresClientApproval && (
+                {!currentApproval && (
                   <Check className="text-brand-orange size-3.5" />
                 )}
               </DropdownMenuItem>
@@ -191,9 +216,7 @@ export function TaskInlineAssignment({ task }: { task: TaskWorkflow }) {
           </DropdownMenu>
         ) : (
           <p className="text-foreground px-2 py-1 text-xs font-normal">
-            {task.requiresClientApproval
-              ? t("tasks.workflow.yes")
-              : t("tasks.workflow.no")}
+            {currentApproval ? t("tasks.workflow.yes") : t("tasks.workflow.no")}
           </p>
         )}
       </div>

@@ -323,10 +323,10 @@
   },
   "trustedBy": "Hệ sinh thái công nghệ & nền tảng tích hợp chính thức",
   "stats": {
-    "microservices": "Kiến trúc Microservices phân tán",
-    "trends": "Tín hiệu Trend cào & vector hóa mỗi ngày",
-    "latency": "Độ trễ API Gateway trung bình",
-    "consistency": "Nhất quán Brand Tone & Kiểm duyệt AI",
+    "microservices": "Hạ tầng đám mây sẵn sàng cao",
+    "trends": "Tín hiệu xu hướng cập nhật liên tục",
+    "latency": "Tốc độ phản hồi & đồng bộ tức thì",
+    "consistency": "Nhất quán Brand Tone & Chuẩn mực MXH",
     "contents": "Nội dung được quản lý",
     "brands": "Thương hiệu & agency",
     "platforms": "Nền tảng tích hợp",
@@ -391,10 +391,6 @@
         "desc": "Sinh ảnh sản phẩm thương mại, video biến thể, copy bài đăng đa kênh và tự động đồng bộ quy chuẩn nhận diện thương hiệu."
       },
       "complianceCheck": {
-        "title": "AI Content Compliance Guard",
-        "desc": "Tự động kiểm tra an toàn cộng đồng, phát hiện ngôn từ nhạy cảm và đánh giá mức độ tuân thủ quy chuẩn nền tảng trước khi gửi duyệt."
-      },
-      "livestreamScript": {
         "title": "AI Content Compliance Guard",
         "desc": "Tự động kiểm tra an toàn cộng đồng, phát hiện ngôn từ nhạy cảm và đánh giá mức độ tuân thủ quy chuẩn nền tảng trước khi gửi duyệt."
       },
@@ -653,12 +649,12 @@
         "manual": "Đối soát sao kê thủ công"
       }
     },
-    "footerNote": "Số liệu đối chiếu dựa trên kiến trúc sản phẩm chính thức của BrandHub (141 tính năng chuyên sâu) so với mặt bằng công cụ quản lý mạng xã hội phổ thông năm 2026.",
+    "footerNote": "Số liệu đối chiếu dựa trên bộ tính năng quản trị toàn diện của BrandHub so với mặt bằng công cụ quản lý mạng xã hội phổ thông năm 2026.",
     "cta": "Trải nghiệm miễn phí ngay"
   },
   "team": {
     "title": "Đội ngũ phát triển",
-    "subtitle": "Nhóm sinh viên xây dựng BrandHub trong đồ án tốt nghiệp SEP490.",
+    "subtitle": "Đội ngũ kỹ sư phần mềm SynapForge phát triển nền tảng BrandHub.",
     "members": {
       "member1": {
         "name": "Nguyễn Văn A",
@@ -739,7 +735,7 @@
       },
       "q2": {
         "q": "BrandHub hỗ trợ liên kết những nền tảng mạng xã hội nào?",
-        "a": "BrandHub tích hợp chính thức 4 nền tảng mạng xã hội: Facebook, Instagram, TikTok và Threads. Các bài đăng được lên lịch tự động và phân bổ qua microservice Publisher độc lập."
+        "a": "BrandHub tích hợp chính thức 4 nền tảng mạng xã hội: Facebook, Instagram, TikTok và Threads. Các bài đăng được lên lịch tự động và phân phối an toàn, chuẩn xác tới từng trang mạng xã hội."
       },
       "q3": {
         "q": "Tính năng AI Trend Crawler & Brand Guidelines hoạt động thế nào?",
@@ -751,7 +747,7 @@
       },
       "q5": {
         "q": "Dữ liệu và Access Token mạng xã hội được bảo vệ như thế nào?",
-        "a": "Hệ thống bảo vệ theo tiêu chuẩn kiến trúc Microservices phân tán với Spring Cloud Gateway xác thực tập trung. Toàn bộ OAuth Access Token của mạng xã hội được mã hóa AES-256 trong cơ sở dữ liệu và phiên người dùng được cô lập hoàn toàn."
+        "a": "Hệ thống bảo vệ dữ liệu theo tiêu chuẩn điện toán đám mây với hạ tầng bảo mật đa tầng. Toàn bộ OAuth Access Token của mạng xã hội được mã hóa AES-256 trong cơ sở dữ liệu và dữ liệu từng Workspace khách hàng được cô lập hoàn toàn."
       }
     }
   },
@@ -781,6 +777,6 @@
       "resources": ["Trung tâm trợ giúp", "Blog", "Cộng đồng", "Hướng dẫn"],
       "company": ["Giới thiệu", "Tuyển dụng", "Bảo mật", "Điều khoản"]
     },
-    "copyright": "© {{year}} BrandHub · Phát triển bởi SynapForge Engineering Team (Đồ án Kỹ thuật Phần mềm SEP490 - Đại học FPT)."
+    "copyright": "© {{year}} BrandHub · Phát triển bởi SynapForge Engineering Team."
   }
 }

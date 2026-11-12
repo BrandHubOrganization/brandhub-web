@@ -35,7 +35,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     name: "Nguyễn Thành Lộc",
     roleBadge: "Backend Architect & Data Solutions",
     avatar: "/team/Locnt-white-polo.png",
-    highlight: "GPA xuất sắc 3.5/4.0 FPTU · AI Lead BrandHub",
+    highlight: "Chuyên gia Neo4j GraphRAG & AI Studio · SynapForge",
     experience:
       "AI Team Lead nền tảng BrandHub (FastAPI, GraphRAG Neo4j & ChromaDB). Team Lead UniNest (.NET 8). Backend .NET Intern FPT Software (chuyển đổi Clean Architecture).",
     skills: [".NET 8", "Neo4j GraphRAG", "ChromaDB", "Clean Arch", "FastAPI"],
@@ -103,16 +103,16 @@ export function TeamSection() {
           <SectionEyebrow index={8} />
           <div className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold">
             <Users className="size-3.5" />
-            <span>ĐỘI NGŨ PHÁT TRIỂN DỰ ÁN CAPSTONE SEP490</span>
+            <span>ĐỘI NGŨ KỸ SƯ PHÁT TRIỂN NỀN TẢNG</span>
           </div>
           <SplitHeading
             text="Kỹ sư xây dựng"
             highlightText="BrandHub Platform"
           />
           <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-            Đội ngũ sinh viên Kỹ thuật phần mềm Đại học FPT Đà Nẵng (SynapForge)
-            kết hợp kinh nghiệm thực chiến từ FPT Software, các giải thưởng công
-            nghệ quốc gia và nghiên cứu khoa học AI.
+            Đội ngũ kỹ sư phát triển sản phẩm SynapForge kết hợp kinh nghiệm
+            thực chiến từ các dự án phần mềm doanh nghiệp, giải thưởng công nghệ
+            quốc gia và nghiên cứu khoa học AI chuyên sâu.
           </p>
         </div>
 
@@ -122,7 +122,7 @@ export function TeamSection() {
             <div className="relative aspect-[16/8] w-full overflow-hidden sm:aspect-[21/9]">
               <img
                 src="/team/synapforge-team-trunglc-center.png"
-                alt="Đội ngũ kỹ sư SynapForge phát triển nền tảng BrandHub tại Đại học FPT Đà Nẵng"
+                alt="Đội ngũ kỹ sư SynapForge phát triển nền tảng BrandHub"
                 width={1400}
                 height={600}
                 loading="lazy"
@@ -136,20 +136,20 @@ export function TeamSection() {
             <div className="relative flex flex-col justify-between gap-4 bg-zinc-950/90 p-6 text-white backdrop-blur-md sm:absolute sm:bottom-5 sm:left-5 sm:max-w-xl sm:rounded-l-[24px] sm:rounded-r-[999px] sm:border sm:border-white/15 sm:bg-zinc-950/80 sm:py-5 sm:pr-12 sm:pl-7">
               <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-orange-400 uppercase">
                 <Sparkles className="size-3.5" />
-                <span>SYNAPFORGE ENGINEERING COLLECTIVE · FPT UNIVERSITY</span>
+                <span>SYNAPFORGE ENGINEERING COLLECTIVE · PRODUCT R&amp;D</span>
               </div>
               <p className="text-sm leading-relaxed text-zinc-200">
                 5 kỹ sư Full-Stack, AI GraphRAG &amp; Cloud DevOps đồng kiến tạo
-                hệ sinh thái 141 tính năng quản trị thương hiệu và xuất bản đa
-                kênh tự động.
+                hệ sinh thái quản trị thương hiệu và xuất bản đa kênh tự động
+                All-in-One.
               </p>
             </div>
           </div>
 
           <SpinningSeal
-            text="FPT UNIVERSITY DA NANG • SYNAPFORGE • "
-            centerTop="SEP"
-            centerBottom="490"
+            text="SYNAPFORGE • ENGINEERING TEAM • "
+            centerTop="TECH"
+            centerBottom="TEAM"
             variant="orange"
             className="absolute -top-6 -right-4 hidden size-24 sm:block"
           />
@@ -194,7 +194,7 @@ export function TeamSection() {
                     className="h-full w-full rounded-xl object-cover object-top transition-transform duration-500 will-change-transform group-hover:scale-105"
                   />
                   <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-xs">
-                    {member.isLead ? "TECH LEAD · FPTU" : "FPTU"}
+                    {member.isLead ? "TECH LEAD · CORE" : "CORE ENGINEER"}
                   </div>
                 </div>
 

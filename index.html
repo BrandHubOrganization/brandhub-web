@@ -26,8 +26,16 @@
     <link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/" />
     <link rel="alternate" hreflang="en" href="https://brandhub.id.vn/?lang=en" />
     <link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="BrandHub Blog — Quản trị Truyền thông &amp; AI"
+      href="https://brandhub.id.vn/rss.xml"
+    />
 
     <!-- Icons & Web App Manifest -->
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/icon.png" />
     <link rel="apple-touch-icon" href="/icon.png" />
@@ -111,7 +119,15 @@
             "publisher": {
               "@id": "https://brandhub.id.vn/#organization"
             },
-            "inLanguage": ["vi-VN", "en-US"]
+            "inLanguage": ["vi-VN", "en-US"],
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://brandhub.id.vn/blog?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
           },
           {
             "@type": "SoftwareApplication",
@@ -225,7 +241,7 @@
             "name": "BrandHub hỗ trợ liên kết những nền tảng mạng xã hội nào?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "BrandHub tích hợp chính thức 4 nền tảng mạng xã hội: Facebook, Instagram, TikTok và Threads. Các bài đăng được lên lịch tự động và phân bổ qua microservice Publisher độc lập."
+              "text": "BrandHub tích hợp chính thức 4 nền tảng mạng xã hội: Facebook, Instagram, TikTok và Threads. Các bài đăng được lên lịch xuất bản tự động, kèm cơ chế theo dõi trạng thái thời gian thực và thử lại an toàn khi kết nối gián đoạn."
             }
           },
           {
@@ -249,7 +265,7 @@
             "name": "Dữ liệu và Access Token mạng xã hội được bảo vệ như thế nào?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Hệ thống bảo vệ theo tiêu chuẩn kiến trúc Microservices phân tán với Spring Cloud Gateway xác thực tập trung. Toàn bộ OAuth Access Token của mạng xã hội được mã hóa AES-256 trong cơ sở dữ liệu và dữ liệu từng Workspace được cô lập hoàn toàn."
+              "text": "Hệ thống áp dụng xác thực tập trung đa lớp kết hợp bảo mật hai bước (2FA TOTP). Toàn bộ OAuth Access Token của mạng xã hội được mã hóa chuẩn AES-256 trong cơ sở dữ liệu và dữ liệu của từng Workspace thương hiệu được cô lập hoàn toàn."
             }
           }
         ]
@@ -287,6 +303,7 @@
           <li><strong>Xuất bản Đa kênh &amp; Phân tích:</strong> Đặt lịch đăng tự động và theo dõi chỉ số tăng trưởng thời gian thực trên Facebook, Instagram, TikTok và Threads.</li>
         </ul>
         <nav aria-label="Liên kết công khai">
+          <a href="https://brandhub.id.vn/blog">Blog &amp; Cẩm nang Quản trị Truyền thông (100 bài viết)</a> |
           <a href="https://brandhub.id.vn/help/faq">Trung tâm Trợ giúp &amp; Câu hỏi thường gặp (FAQ)</a> |
           <a href="https://brandhub.id.vn/privacy">Chính sách Quyền riêng tư (Privacy Policy)</a> |
           <a href="https://brandhub.id.vn/terms">Điều khoản Dịch vụ (Terms of Service)</a> |

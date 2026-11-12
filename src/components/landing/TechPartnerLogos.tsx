@@ -128,12 +128,28 @@ export function TechPartnerLogo({ name, className }: PartnerLogoProps) {
         </svg>
       );
 
-    case "FPT University":
+    case "AWS Cloud":
       return (
         <svg viewBox="0 0 24 24" fill="none" className={base}>
-          <circle cx="7" cy="12" r="4.5" fill="#F37021" />
-          <circle cx="12" cy="7" r="4.5" fill="#0054A6" />
-          <circle cx="17" cy="12" r="4.5" fill="#00A850" />
+          <path
+            d="M6 14.5c-.8.5-1.5 1.2-1.5 2 0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3c0-.8-.7-1.5-1.8-2"
+            stroke="#FF9900"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M17 17l1.5-.5L17 15"
+            stroke="#FF9900"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M7 10l2-5h1.5l2 5m-4.5-2h3.5"
+            stroke="#232F3E"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
         </svg>
       );
 

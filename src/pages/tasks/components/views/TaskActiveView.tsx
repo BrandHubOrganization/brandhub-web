@@ -1,58 +1,63 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import type { TaskViewMode } from "@/pages/tasks/components/TaskViewSwitcher";
-import { TaskTable } from "@/pages/tasks/components/views/TaskTable";
-import { TaskCalendarTimeline } from "@/pages/tasks/components/views/TaskCalendarTimeline";
-import { TaskBoardView } from "@/pages/tasks/components/views/TaskBoardView";
-import { TaskGanttView } from "@/pages/tasks/components/views/TaskGanttView";
-import type { useTasks } from "@/pages/tasks/hooks/useTasks";
-import type { useTaskPanel } from "@/pages/tasks/hooks/useTaskPanel";
+import { Info } from "lucide-react";
+import { TaskTable } from "./TaskTable";
+import { TaskCalendarTimeline } from "./TaskCalendarTimeline";
+import { TaskBoardView } from "./TaskBoardView";
+import { TaskGanttView } from "./TaskGanttView";
+import { TaskUnscheduledAlert } from "./TaskUnscheduledAlert";
+import { taskDeadline } from "@/pages/tasks/utils/taskViewData";
+import { taskService } from "@/services/taskService";
+import type { TaskActiveViewProps } from "./types/types";
 
-interface TaskActiveViewProps {
-  view: TaskViewMode;
-  workspaceId: string;
-  state: ReturnType<typeof useTasks>;
-  panel: ReturnType<typeof useTaskPanel>;
-  guard: (action: () => void) => void;
-  unscheduled: number;
-}
+export type { TaskActiveViewProps };
 
 export function TaskActiveView({
   view,
   workspaceId,
   state,
+  filteredTasks,
   panel,
   guard,
-  unscheduled,
+  isFiltered,
+  onResetFilters,
 }: TaskActiveViewProps) {
   const { t } = useTranslation();
 
+  const unscheduledTasks = useMemo(
+    () => filteredTasks.filter((t) => !taskDeadline(t)),
+    [filteredTasks],
+  );
+
+  const showUnscheduledAlert =
+    (view === "calendar" || view === "gantt") && unscheduledTasks.length > 0;
+
   return (
     <>
-      {state.tasks.length === 0 && (
+      {filteredTasks.length === 0 && (
         <p className="text-muted-foreground rounded-xl border p-6">
-          {t(
-            state.search.trim() ||
-              state.statusFilter !== "ALL" ||
-              state.typeFilter !== "ALL"
-              ? "tasks.noMatches"
-              : "tasks.empty",
-          )}
+          {t(isFiltered ? "tasks.noMatches" : "tasks.empty")}
         </p>
       )}
 
-      {view !== "list" && (
-        <p className="text-muted-foreground text-xs">{t("tasks.pageNotice")}</p>
+      {showUnscheduledAlert ? (
+        <TaskUnscheduledAlert
+          tasks={unscheduledTasks}
+          onTaskClick={panel.open}
+        />
+      ) : (
+        view !== "list" &&
+        view !== "board" && (
+          <div className="bg-muted/60 text-2xs text-muted-foreground mb-4 inline-flex w-fit items-center gap-1.5 rounded-md px-2.5 py-1">
+            <Info className="text-muted-foreground/80 size-3 shrink-0" />
+            <span>{t("tasks.pageNotice")}</span>
+          </div>
+        )
       )}
 
-      {(view === "calendar" || view === "gantt") && unscheduled > 0 && (
-        <p role="status" className="text-muted-foreground text-sm">
-          {t("tasks.unscheduled", { count: unscheduled })}
-        </p>
-      )}
-
-      {view === "list" && state.tasks.length > 0 && (
+      {view === "list" && filteredTasks.length > 0 && (
         <TaskTable
-          tasks={state.tasks}
+          tasks={filteredTasks}
           loading={state.loading}
           page={state.page}
           totalPages={state.totalPages}
@@ -60,12 +65,8 @@ export function TaskActiveView({
           onPageChange={(value) => guard(() => state.setPage(value))}
           sortField={state.sortField}
           onSort={(value) => guard(() => state.handleSort(value))}
-          onResetFilters={() => guard(state.resetFilters)}
-          isFiltered={Boolean(
-            state.search ||
-            state.typeFilter !== "ALL" ||
-            state.statusFilter !== "ALL",
-          )}
+          onResetFilters={onResetFilters}
+          isFiltered={isFiltered}
           activeTaskId={panel.taskId}
           onTaskClick={panel.open}
         />
@@ -73,7 +74,7 @@ export function TaskActiveView({
 
       {view === "calendar" && (
         <TaskCalendarTimeline
-          tasks={state.tasks}
+          tasks={filteredTasks}
           onTaskClick={panel.open}
           workspaceId={workspaceId}
           onUpdated={() => void state.loadTasks(true)}
@@ -81,11 +82,24 @@ export function TaskActiveView({
       )}
 
       {view === "board" && (
-        <TaskBoardView tasks={state.tasks} onTaskClick={panel.open} />
+        <TaskBoardView
+          tasks={filteredTasks}
+          onTaskClick={panel.open}
+          workspaceId={workspaceId}
+          onStatusChange={async (taskId, newStatus) => {
+            await taskService.updateTaskStatus(workspaceId, taskId, newStatus);
+            void state.loadTasks(true);
+          }}
+        />
       )}
 
       {view === "gantt" && (
-        <TaskGanttView tasks={state.tasks} onTaskClick={panel.open} />
+        <TaskGanttView
+          tasks={filteredTasks}
+          onTaskClick={panel.open}
+          workspaceId={workspaceId}
+          onUpdated={() => void state.loadTasks(true)}
+        />
       )}
     </>
   );

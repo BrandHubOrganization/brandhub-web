@@ -181,7 +181,7 @@ export function PrivacyPolicyPage() {
                   <div className="rounded-xl border border-border/80 bg-background/60 p-4">
                     <h3 className="font-semibold text-foreground">C. Google Drive Integration (Optional Workspace Storage)</h3>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Agency Managers and Workspace Owners have the option to connect a Google Drive account to an Agency Workspace to sync and manage creative brand assets. When enabled, BrandHub uses the Google Drive API (<code className="rounded bg-muted px-1.5 py-0.5 text-3xs font-mono text-foreground">drive.file</code> or <code className="rounded bg-muted px-1.5 py-0.5 text-3xs font-mono text-foreground">drive</code> scope):
+                      Owners and Managers have the option to connect a Google Drive account to an Agency Workspace to sync and manage creative brand assets. When enabled, BrandHub uses the Google Drive API (<code className="rounded bg-muted px-1.5 py-0.5 text-3xs font-mono text-foreground">drive.file</code> or <code className="rounded bg-muted px-1.5 py-0.5 text-3xs font-mono text-foreground">drive</code> scope):
                     </p>
                     <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
                       <li>• <strong>Scope of Access:</strong> BrandHub only accesses designated agency storage folders (e.g. <code className="rounded bg-muted px-1 py-0.5 font-mono">brandhub-[agency-name]</code>) and files created or explicitly selected within the workspace integration. BrandHub does not inspect or access your personal, unrelated Google Drive files.</li>

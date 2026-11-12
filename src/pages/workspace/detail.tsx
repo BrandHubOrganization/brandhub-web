@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Crop, Eye, History, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
 import { getLogoIcon } from "@/pages/agency/logoIcons";
 import { useWorkspaceSettings } from "./hooks/useWorkspaceSettings";
@@ -51,17 +52,21 @@ export function WorkspaceSettingsPage() {
   if (settings.loading) return null;
 
   return (
-    <div className="w-full space-y-6 px-4 py-4 pb-24 md:px-8 md:py-6">
+    <PageWrapper
+      title={
+        settings.name ||
+        t("workspace.settings.title", "Cài đặt Workspace")
+      }
+      description={
+        settings.description ||
+        settings.tagline ||
+        t(
+          "workspace.settings.description",
+          "Quản lý thông tin, định vị thương hiệu và cấu hình workspace.",
+        )
+      }
+    >
       <div className="min-w-0 space-y-6">
-        <div>
-          <h1 className="text-foreground text-xl font-bold">
-            {t("workspace.settings.title")}
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            {t("workspace.settings.description")}
-          </p>
-        </div>
-
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
           {/* Left Column: Workspace Banner, Details / Edit Form, Templates & Danger Zone */}
           <div className="space-y-6 lg:col-span-7">
@@ -358,7 +363,7 @@ export function WorkspaceSettingsPage() {
         onCloseBannerRecent={() => modals.setBannerRecentModalOpen(false)}
         onSelectRecentBanner={modals.onSelectRecentBanner}
       />
-    </div>
+    </PageWrapper>
   );
 }
 

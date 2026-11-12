@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Paperclip, X } from "lucide-react";
+import { Paperclip, RotateCcw, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -52,7 +53,7 @@ export interface FormAdapter {
 }
 
 interface Props {
-  open: boolean;
+  open?: boolean;
   /** Template being edited, or the system/own template used as the starting point for a new one. */
   template: MailTemplate | null;
   mode: "create" | "edit";
@@ -61,6 +62,7 @@ interface Props {
   onSaved: (template: MailTemplate) => void;
   /** When set, a new template keeps an autosaved draft under this localStorage key. */
   draftKey?: string;
+  inline?: boolean;
 }
 
 interface Draft {
@@ -116,6 +118,7 @@ export function TemplateFormDialog({
   onClose,
   onSaved,
   draftKey,
+  inline,
 }: Props) {
   const { t } = useTranslation();
   // Only a brand-new, blank template resumes a draft; cloning or editing starts from the template.
@@ -193,11 +196,15 @@ export function TemplateFormDialog({
   /** New templates keep their draft; unsaved edits of an existing template ask first. */
   const requestClose = () => {
     if (busy) return;
-    if (mode === "edit" && dirty) {
+    if (dirty) {
+      if (!inline && resumable) {
+        toast.message(t("mailTemplate.draft.kept"));
+        onClose();
+        return;
+      }
       setDiscardConfirmOpen(true);
       return;
     }
-    if (resumable && dirty) toast.message(t("mailTemplate.draft.kept"));
     onClose();
   };
 
@@ -266,8 +273,277 @@ export function TemplateFormDialog({
     }
   };
 
+  const discardDialog = (
+    <DiscardConfirmDialog
+      open={discardConfirmOpen}
+      onOpenChange={setDiscardConfirmOpen}
+      onConfirm={() => {
+        setDiscardConfirmOpen(false);
+        if (mode === "create") {
+          discardDraft();
+        }
+        onClose();
+      }}
+    />
+  );
+
+  const restoredNotice = showRestored && (
+    <div
+      role="status"
+      className="bg-muted/50 flex flex-wrap items-center justify-between gap-2 rounded border px-3 py-2 text-xs"
+    >
+      <span>{t("mailTemplate.draft.restored")}</span>
+      <Button
+        type="button"
+        variant="ghost"
+        size="default"
+        className="text-brand-orange font-medium"
+        onClick={discardDraft}
+      >
+        {t("mailTemplate.draft.discard")}
+      </Button>
+    </div>
+  );
+
+  const formContent = (
+    <form
+      className="grid gap-6 lg:grid-cols-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void submit();
+      }}
+    >
+      <div className="space-y-4">
+        <label className="block space-y-1.5 text-sm font-medium">
+          <span>{t("mailTemplate.form.name")} *</span>
+          <Input
+            value={name}
+            maxLength={120}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </label>
+        <label className="block space-y-1.5 text-sm font-medium">
+          <span>{t("mailTemplate.form.subject")} *</span>
+          <Input
+            value={subject}
+            maxLength={200}
+            onChange={(e) => setSubject(e.target.value)}
+          />
+        </label>
+        {mode === "create" && adapter.scopes.length > 1 && (
+          <div className="space-y-1.5 text-sm font-medium">
+            <span>{t("mailTemplate.form.scope")}</span>
+            <SelectMenu
+              className="w-full"
+              ariaLabel={t("mailTemplate.form.scope")}
+              value={scope}
+              onChange={(next) => setScope(next as MailTemplateScope)}
+              options={adapter.scopes.map((s) => ({
+                value: s,
+                label: t(`mailTemplate.scopes.${s}`),
+              }))}
+            />
+          </div>
+        )}
+        <div className="space-y-1.5 text-sm font-medium">
+          <span>{t("mailTemplate.form.locale")}</span>
+          <SelectMenu
+            className="w-full"
+            ariaLabel={t("mailTemplate.form.locale")}
+            value={locale}
+            onChange={(next) => setLocale(next as MailLocale)}
+            options={MAIL_LOCALES.map((l) => ({
+              value: l,
+              label: t(`mailTemplate.locales.${l}`),
+            }))}
+          />
+          <span className="text-muted-foreground block text-xs font-normal">
+            {t("mailTemplate.form.localeHint")}
+          </span>
+        </div>
+        {isLegacy && (
+          <p
+            role="status"
+            className="bg-muted/50 rounded border px-3 py-2 text-xs"
+          >
+            {t("mailTemplate.builder.legacy")}
+          </p>
+        )}
+        <div className="space-y-1.5 text-sm">
+          <span className="font-medium">
+            {t("mailTemplate.form.body")} *
+          </span>
+          <BlockBuilder
+            blocks={blocks}
+            onChange={setBlocks}
+            errors={blockErrors}
+            disabled={busy}
+          />
+        </div>
+        <VariableHints analysis={analysis} />
+        {adapter.uploadAttachment && (
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">
+                {t("mailTemplate.form.attachments")}
+              </span>
+              <label className="text-brand-orange cursor-pointer text-xs font-medium">
+                <Paperclip className="mr-1 inline size-3.5" />
+                {t("mailTemplate.form.addAttachment")}
+                <input
+                  type="file"
+                  className="hidden"
+                  data-testid="mail-attachment-input"
+                  accept=".pdf,.png,.jpg,.jpeg,.gif,.docx,.xlsx,.pptx"
+                  onChange={(e) => {
+                    void addAttachment(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+            </div>
+            <p className="text-muted-foreground text-xs">
+              {t("mailTemplate.form.attachmentRules")}
+            </p>
+            <ul className="space-y-1">
+              {attachments.map((a) => (
+                <li
+                  key={a.attachmentId}
+                  className="bg-muted/50 flex items-center justify-between rounded px-2 py-1"
+                >
+                  <span className="truncate">
+                    {a.name}{" "}
+                    <span className="text-muted-foreground text-xs">
+                      ({Math.ceil(a.size / 1024)} KB)
+                    </span>
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="default"
+                    aria-label={t("mailTemplate.form.removeAttachment", {
+                      name: a.name,
+                    })}
+                    onClick={() =>
+                      setAttachments((current) =>
+                        current.filter(
+                          (x) => x.attachmentId !== a.attachmentId,
+                        ),
+                      )
+                    }
+                  >
+                    <X className="size-3.5" />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {error && (
+          <p role="alert" className="text-destructive text-sm">
+            {error}
+          </p>
+        )}
+      </div>
+      <div className={`flex h-full flex-col ${inline ? "lg:sticky lg:top-6 lg:self-start" : ""}`}>
+        <MailPreview subject={subject} bodyHtml={previewHtml} fullHeight />
+      </div>
+      {inline ? (
+        <div className="border-border border-t pt-4 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 lg:col-span-2">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={busy}
+            onClick={requestClose}
+          >
+            {mode === "edit"
+              ? t("mailTemplate.form.cancelEdit", { defaultValue: "Hủy sửa" })
+              : t("mailTemplate.form.reset", { defaultValue: "Hủy / Đặt lại" })}
+          </Button>
+          <Button type="submit" variant="orange" disabled={busy}>
+            {busy
+              ? t("mailTemplate.form.saving")
+              : t("mailTemplate.form.saveTemplate", { defaultValue: "Lưu mẫu" })}
+          </Button>
+        </div>
+      ) : (
+        <DialogFooter className="border-border border-t pt-4 lg:col-span-2">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={busy}
+            onClick={requestClose}
+          >
+            {t("mailTemplate.cancel")}
+          </Button>
+          <Button type="submit" variant="orange" disabled={busy}>
+            {busy
+              ? t("mailTemplate.form.saving")
+              : t("mailTemplate.form.save")}
+          </Button>
+        </DialogFooter>
+      )}
+    </form>
+  );
+
+  if (inline) {
+    return (
+      <div
+        id="mail-template-editor-section"
+        className="bg-card border-border rounded-xl border p-5 sm:p-6 shadow-sm space-y-6 scroll-mt-6"
+      >
+        <div className="border-border border-b pb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h2 className="text-foreground text-lg sm:text-xl font-bold tracking-tight">
+                {mode === "edit"
+                  ? t("mailTemplate.form.editTitleWithName", {
+                      name: template?.name || name,
+                      defaultValue: `Chỉnh sửa mẫu: ${template?.name || name}`,
+                    })
+                  : t("mailTemplate.form.createTitleInline", {
+                      defaultValue: "Tạo mẫu email mới",
+                    })}
+              </h2>
+              {mode === "edit" ? (
+                <Badge
+                  variant="outline"
+                  className="border-brand-orange/40 bg-brand-orange/10 text-brand-orange text-xs font-medium"
+                >
+                  {t("mailTemplate.form.editingBadge", { defaultValue: "Đang chỉnh sửa" })}
+                </Badge>
+              ) : (
+                <Badge variant="secondary" className="text-xs font-normal">
+                  {t("mailTemplate.form.creatingBadge", { defaultValue: "Mẫu mới" })}
+                </Badge>
+              )}
+            </div>
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              {t("mailTemplate.form.variablesHint")}
+            </p>
+          </div>
+          {mode === "edit" && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={requestClose}
+              className="shrink-0 gap-1.5"
+            >
+              <RotateCcw className="size-3.5" />
+              {t("mailTemplate.form.cancelEdit", { defaultValue: "Hủy sửa / Tạo mẫu mới" })}
+            </Button>
+          )}
+        </div>
+        {restoredNotice}
+        {formContent}
+        {discardDialog}
+      </div>
+    );
+  }
+
   return (
-    <Dialog open={open} onOpenChange={(next) => !next && requestClose()}>
+    <Dialog open={open ?? true} onOpenChange={(next) => !next && requestClose()}>
       <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>
@@ -281,189 +557,9 @@ export function TemplateFormDialog({
             {t("mailTemplate.form.variablesHint")}
           </DialogDescription>
         </DialogHeader>
-        {showRestored && (
-          <div
-            role="status"
-            className="bg-muted/50 flex flex-wrap items-center justify-between gap-2 rounded border px-3 py-2 text-xs"
-          >
-            <span>{t("mailTemplate.draft.restored")}</span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="default"
-              className="text-brand-orange font-medium"
-              onClick={discardDraft}
-            >
-              {t("mailTemplate.draft.discard")}
-            </Button>
-          </div>
-        )}
-        <form
-          className="grid gap-6 lg:grid-cols-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            void submit();
-          }}
-        >
-          <div className="space-y-4">
-            <label className="block space-y-1.5 text-sm font-medium">
-              <span>{t("mailTemplate.form.name")} *</span>
-              <Input
-                value={name}
-                maxLength={120}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </label>
-            <label className="block space-y-1.5 text-sm font-medium">
-              <span>{t("mailTemplate.form.subject")} *</span>
-              <Input
-                value={subject}
-                maxLength={200}
-                onChange={(e) => setSubject(e.target.value)}
-              />
-            </label>
-            {mode === "create" && adapter.scopes.length > 1 && (
-              <div className="space-y-1.5 text-sm font-medium">
-                <span>{t("mailTemplate.form.scope")}</span>
-                <SelectMenu
-                  className="w-full"
-                  ariaLabel={t("mailTemplate.form.scope")}
-                  value={scope}
-                  onChange={(next) => setScope(next as MailTemplateScope)}
-                  options={adapter.scopes.map((s) => ({
-                    value: s,
-                    label: t(`mailTemplate.scopes.${s}`),
-                  }))}
-                />
-              </div>
-            )}
-            <div className="space-y-1.5 text-sm font-medium">
-              <span>{t("mailTemplate.form.locale")}</span>
-              <SelectMenu
-                className="w-full"
-                ariaLabel={t("mailTemplate.form.locale")}
-                value={locale}
-                onChange={(next) => setLocale(next as MailLocale)}
-                options={MAIL_LOCALES.map((l) => ({
-                  value: l,
-                  label: t(`mailTemplate.locales.${l}`),
-                }))}
-              />
-              <span className="text-muted-foreground block text-xs font-normal">
-                {t("mailTemplate.form.localeHint")}
-              </span>
-            </div>
-            {isLegacy && (
-              <p
-                role="status"
-                className="bg-muted/50 rounded border px-3 py-2 text-xs"
-              >
-                {t("mailTemplate.builder.legacy")}
-              </p>
-            )}
-            <div className="space-y-1.5 text-sm">
-              <span className="font-medium">
-                {t("mailTemplate.form.body")} *
-              </span>
-              <BlockBuilder
-                blocks={blocks}
-                onChange={setBlocks}
-                errors={blockErrors}
-                disabled={busy}
-              />
-            </div>
-            <VariableHints analysis={analysis} />
-            {adapter.uploadAttachment && (
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">
-                    {t("mailTemplate.form.attachments")}
-                  </span>
-                  <label className="text-brand-orange cursor-pointer text-xs font-medium">
-                    <Paperclip className="mr-1 inline size-3.5" />
-                    {t("mailTemplate.form.addAttachment")}
-                    <input
-                      type="file"
-                      className="hidden"
-                      data-testid="mail-attachment-input"
-                      accept=".pdf,.png,.jpg,.jpeg,.gif,.docx,.xlsx,.pptx"
-                      onChange={(e) => {
-                        void addAttachment(e.target.files?.[0]);
-                        e.target.value = "";
-                      }}
-                    />
-                  </label>
-                </div>
-                <p className="text-muted-foreground text-xs">
-                  {t("mailTemplate.form.attachmentRules")}
-                </p>
-                <ul className="space-y-1">
-                  {attachments.map((a) => (
-                    <li
-                      key={a.attachmentId}
-                      className="bg-muted/50 flex items-center justify-between rounded px-2 py-1"
-                    >
-                      <span className="truncate">
-                        {a.name}{" "}
-                        <span className="text-muted-foreground text-xs">
-                          ({Math.ceil(a.size / 1024)} KB)
-                        </span>
-                      </span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="default"
-                        aria-label={t("mailTemplate.form.removeAttachment", {
-                          name: a.name,
-                        })}
-                        onClick={() =>
-                          setAttachments((current) =>
-                            current.filter(
-                              (x) => x.attachmentId !== a.attachmentId,
-                            ),
-                          )
-                        }
-                      >
-                        <X className="size-3.5" />
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {error && (
-              <p role="alert" className="text-destructive text-sm">
-                {error}
-              </p>
-            )}
-          </div>
-          <div className="flex h-full flex-col">
-            <MailPreview subject={subject} bodyHtml={previewHtml} fullHeight />
-          </div>
-          <DialogFooter className="border-border border-t pt-4 lg:col-span-2">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={busy}
-              onClick={requestClose}
-            >
-              {t("mailTemplate.cancel")}
-            </Button>
-            <Button type="submit" variant="orange" disabled={busy}>
-              {busy
-                ? t("mailTemplate.form.saving")
-                : t("mailTemplate.form.save")}
-            </Button>
-          </DialogFooter>
-        </form>
-        <DiscardConfirmDialog
-          open={discardConfirmOpen}
-          onOpenChange={setDiscardConfirmOpen}
-          onConfirm={() => {
-            setDiscardConfirmOpen(false);
-            onClose();
-          }}
-        />
+        {restoredNotice}
+        {formContent}
+        {discardDialog}
       </DialogContent>
     </Dialog>
   );

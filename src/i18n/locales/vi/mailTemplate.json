@@ -55,7 +55,14 @@
     "locale": "Ngôn ngữ của các dòng cố định",
     "localeHint": "Chọn ngôn ngữ cho dòng chân thư và dòng liên hệ. Nội dung bạn viết không bị dịch.",
     "createTitle": "Tạo mẫu email",
+    "createTitleInline": "Tạo mẫu email mới",
     "editTitle": "Sửa mẫu email",
+    "editTitleWithName": "Chỉnh sửa mẫu: {{name}}",
+    "editingBadge": "Đang chỉnh sửa",
+    "creatingBadge": "Mẫu mới",
+    "cancelEdit": "Hủy sửa / Tạo mẫu mới",
+    "reset": "Hủy / Đặt lại",
+    "saveTemplate": "Lưu mẫu",
     "name": "Tên mẫu",
     "subject": "Tiêu đề email",
     "body": "Nội dung",
@@ -94,8 +101,10 @@
     "parsed": "{{count}} người nhận hợp lệ",
     "invalid": "{{count}} dòng không hợp lệ",
     "variables": "Giá trị biến dùng chung",
+    "selectDate": "Chọn ngày (dd/mm/yyyy)...",
     "attachments": "Tệp đính kèm",
     "schedule": "Hẹn giờ gửi (tùy chọn)",
+    "schedulePlaceholder": "Chọn ngày và giờ gửi…",
     "scheduleHelp": "Từ 5 phút đến 30 ngày kể từ bây giờ. Để trống để gửi ngay.",
     "quota": "Hôm nay đã dùng {{used}}/{{limit}} · còn {{remaining}} lượt",
     "quotaExceeded": "vượt hạn mức, hãy hẹn giờ hoặc giảm số người nhận",
@@ -259,7 +268,8 @@
   "agency": {
     "title": "Mẫu email của Agency",
     "create": "Tạo mẫu Agency",
-    "description": "Soạn email gửi thành viên Agency hoặc khách hàng đối tác bằng trình dựng khối."
+    "description": "Soạn email gửi thành viên Agency hoặc khách hàng đối tác bằng trình dựng khối.",
+    "noWorkspace": "Cần ít nhất một không gian làm việc để gửi email."
   },
   "builder": {
     "palette": "Khối",

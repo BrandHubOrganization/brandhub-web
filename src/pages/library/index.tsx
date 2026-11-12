@@ -153,7 +153,6 @@ export function ContentLibraryPage() {
         "library.page.description",
         "Quản lý tập trung tệp đa phương tiện, thư mục, mẫu bài đăng và bộ hashtag của không gian làm việc.",
       )}
-      hideBanner
       actions={<StorageUsageSummary />}
     >
       <div className="space-y-5">

@@ -55,7 +55,14 @@
     "locale": "Language of the fixed lines",
     "localeHint": "Sets the language of the footer and contact line. Your own text is not translated.",
     "createTitle": "Create mail template",
+    "createTitleInline": "Create new mail template",
     "editTitle": "Edit mail template",
+    "editTitleWithName": "Edit template: {{name}}",
+    "editingBadge": "Editing",
+    "creatingBadge": "New template",
+    "cancelEdit": "Cancel edit / New template",
+    "reset": "Cancel / Reset",
+    "saveTemplate": "Save template",
     "name": "Template name",
     "subject": "Email subject",
     "body": "Content",
@@ -94,8 +101,10 @@
     "parsed": "{{count}} valid recipients",
     "invalid": "{{count}} invalid rows",
     "variables": "Shared variable values",
+    "selectDate": "Select date (dd/mm/yyyy)...",
     "attachments": "Attachments",
     "schedule": "Schedule (optional)",
+    "schedulePlaceholder": "Select schedule date and time…",
     "scheduleHelp": "Between 5 minutes and 30 days from now. Leave empty to send now.",
     "quota": "Today {{used}}/{{limit}} used · {{remaining}} left",
     "quotaExceeded": "over the daily limit: schedule it or reduce recipients",
@@ -259,7 +268,8 @@
   "agency": {
     "title": "Agency mail templates",
     "create": "Create agency template",
-    "description": "Compose emails for your agency members or partner clients with the block builder."
+    "description": "Compose emails for your agency members or partner clients with the block builder.",
+    "noWorkspace": "At least one workspace is required to send emails."
   },
   "builder": {
     "palette": "Blocks",
