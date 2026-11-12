@@ -79,7 +79,8 @@
     "invitations": "Invitations",
     "settings": "Settings",
     "help": "Help & Resources",
-    "system": "System"
+    "system": "System",
+    "video": "Video"
   },
   "logout": "Log out",
   "openMenu": "Open menu",
@@ -98,5 +99,6 @@
   "faq": "Help & FAQ",
   "guide": "User & Admin Guide",
   "trends": "Trends",
-  "aiVideo": "Video AI"
+  "aiVideo": "Video AI",
+  "videoSpace": "Video Space"
 }

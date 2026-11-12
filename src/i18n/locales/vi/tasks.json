@@ -2,6 +2,8 @@
   "subtasks": {
     "title": "Công việc con",
     "add": "Thêm công việc con",
+    "suggestFromCatalog": "Gợi ý theo danh mục",
+    "freeSubtask": "Công việc con tự do",
     "edit": "Chỉnh sửa",
     "empty": "Chưa có công việc con.",
     "assignee": "Người thực hiện",
@@ -35,6 +37,43 @@
       "CANCELLED": "Đã hủy"
     }
   },
+  "subtaskRoles": {
+    "POST_RESEARCH": "Nghiên cứu / Phỏng vấn",
+    "POST_CONTENT": "Viết content",
+    "POST_MEDIA": "Media (quay/chụp/thiết kế)",
+    "POST_EDITING": "Biên tập",
+    "POST_PUBLISHING": "Đăng bài",
+    "VIDEO_SCRIPT": "Ý tưởng & Kịch bản",
+    "VIDEO_SHOOT": "Quay",
+    "VIDEO_EDIT": "Dựng / hậu kỳ",
+    "VIDEO_PUBLISH": "Caption & Đăng",
+    "SURVEY_DESIGN": "Thiết kế bảng hỏi",
+    "SURVEY_DISTRIBUTE": "Phân phối & thu thập",
+    "SURVEY_ANALYSIS": "Phân tích & báo cáo",
+    "EVENT_AGENDA": "Concept & Agenda",
+    "EVENT_LOGISTICS": "Hậu cần & Địa điểm",
+    "EVENT_PROMOTION": "Truyền thông sự kiện",
+    "EVENT_ONSITE": "Điều phối tại chỗ",
+    "EVENT_REPORT": "Báo cáo sau sự kiện",
+    "PRESS_MEDIA_LIST": "Lập danh sách báo",
+    "PRESS_RELEASE": "Viết thông cáo",
+    "PRESS_PITCHING": "Liên hệ & pitching",
+    "PRESS_TRACKING": "Theo dõi đưa tin",
+    "KOL_SOURCING": "Tìm & đề xuất KOL",
+    "KOL_NEGOTIATION": "Đàm phán",
+    "KOL_BRIEF": "Brief cho KOL",
+    "KOL_CONTENT_REVIEW": "Duyệt nội dung KOL",
+    "KOL_TRACKING": "Theo dõi & báo cáo",
+    "WORKSHOP_PROGRAM": "Nội dung chương trình",
+    "WORKSHOP_SPEAKER": "Diễn giả",
+    "WORKSHOP_LOGISTICS": "Hậu cần",
+    "WORKSHOP_REGISTRATION": "Đăng ký & truyền thông",
+    "WORKSHOP_REPORT": "Tổng kết",
+    "EMAIL_CONTENT": "Viết nội dung",
+    "EMAIL_DESIGN": "Thiết kế template",
+    "EMAIL_SEND": "Danh sách & lịch gửi",
+    "EMAIL_REPORT": "Báo cáo"
+  },
   "phoneMedia": {
     "title": "Tệp từ điện thoại",
     "loading": "Đang tải danh sách tệp...",
@@ -52,7 +91,6 @@
       "VALIDATING": "Đang kiểm tra",
       "REJECTED": "Bị từ chối",
       "FAILED": "Lỗi"
-
     }
   },
   "approvalPage": {
@@ -187,6 +225,7 @@
     }
   },
   "title": "Quản lý công việc",
+  "openEditor": "Mở trình soạn",
   "description": "Theo dõi công việc thực tế trong không gian làm việc.",
   "loading": "Đang tải công việc…",
   "error": "Không thể tải danh sách công việc. Vui lòng thử lại.",
@@ -210,7 +249,11 @@
     "LIVESTREAM": "Livestream",
     "SURVEY": "Khảo sát",
     "EVENT_PLAN": "Kế hoạch sự kiện",
-    "PRESS_RECOMMENDATION": "Gợi ý báo chí"
+    "PRESS_RECOMMENDATION": "Gợi ý báo chí",
+    "SHORT_VIDEO": "Video ngắn",
+    "KOL_BOOKING": "KOL/Influencer",
+    "WORKSHOP": "Workshop",
+    "EMAIL_NEWSLETTER": "Email/Bản tin"
   },
   "status": {
     "BACKLOG": "Chờ xác định",
@@ -620,6 +663,397 @@
   "supervisor": "Người giám sát",
   "assigneeId": "Người thực hiện",
   "supervisorId": "Người giám sát",
+  "sectionActions": {
+    "errors": {
+      "UNKNOWN": "Không thực hiện được. Thử lại sau.",
+      "FORBIDDEN": "Bạn không có quyền thao tác trên phần này.",
+      "VALIDATION_ERROR": "Dữ liệu chưa hợp lệ. Kiểm tra lại các trường.",
+      "SECTION_INVALID_TRANSITION": "Phần đã đổi trạng thái. Tải lại để xem trạng thái mới.",
+      "TASK_REVISION_CONFLICT": "Người khác vừa lưu phần này.",
+      "TASK_SECTIONS_UNAPPROVED": "Còn phần chưa được duyệt."
+    },
+    "save": "Lưu",
+    "saving": "Đang lưu…",
+    "saved": "Đã lưu",
+    "saveError": "Lưu lỗi",
+    "unsaved": "Chưa lưu",
+    "reload": "Tải lại",
+    "versions": "Lịch sử phiên bản",
+    "submit": "Nộp phần",
+    "approve": "Duyệt",
+    "return": "Trả lại",
+    "reopen": "Mở lại",
+    "cancel": "Huỷ",
+    "noteLabel": "Ghi chú",
+    "noteRequired": "Nhập ghi chú trước khi trả lại.",
+    "returnTitle": "Trả lại phần {{section}}",
+    "returnHint": "Người làm phần sẽ nhận ghi chú này và sửa lại.",
+    "reopenTitle": "Mở lại phần {{section}}",
+    "reopenHint": "Phần đã duyệt sẽ về trạng thái Bị trả lại để sửa tiếp.",
+    "versionsTitle": "Phiên bản: {{section}}",
+    "versionsHint": "Mỗi lần nộp lưu một bản. Chọn hai bản để so sánh.",
+    "versionsEmpty": "Chưa có phiên bản nào. Phiên bản được lưu khi nộp phần.",
+    "versionLabel": "Bản {{no}} · {{date}}",
+    "currentVersion": "Bản hiện tại",
+    "compareFrom": "So sánh từ",
+    "compareTo": "Đến",
+    "unchanged": "không đổi",
+    "added": "Thêm:",
+    "removed": "Bỏ:",
+    "restore": "Khôi phục",
+    "restoreTitle": "Khôi phục bản {{no}}?",
+    "restoreHint": "Nội dung bản này được chép vào bản nháp hiện tại. Phần phải nộp và duyệt lại."
+  },
+  "sectionStatus": {
+    "DRAFT": "Nháp",
+    "SUBMITTED": "Đã nộp",
+    "INTERNAL_APPROVED": "Đã duyệt nội bộ",
+    "CLIENT_APPROVED": "Client đã duyệt",
+    "RETURNED": "Bị trả lại"
+  },
+  "sections": {
+    "POST": {
+      "BRIEF": {
+        "title": "Brief & nghiên cứu",
+        "emptyHint": "Ghi chú phỏng vấn, nguồn tham khảo và tư liệu cho người viết.",
+        "fields": {
+          "notes": "Ghi chú",
+          "sources": "Nguồn tham khảo",
+          "materials": "Tư liệu"
+        }
+      },
+      "CAPTION": {
+        "title": "Nội dung bài viết",
+        "emptyHint": "Viết caption và hashtag cho bài đăng.",
+        "fields": {
+          "caption": "Caption",
+          "hashtags": "Hashtag"
+        }
+      },
+      "MEDIA": {
+        "title": "Hình ảnh / Video",
+        "emptyHint": "Tải lên hoặc chọn ảnh, video cho bài đăng.",
+        "fields": {
+          "media": "Tệp media"
+        }
+      },
+      "CHANNELS": {
+        "title": "Kênh đăng & lịch",
+        "emptyHint": "Chọn nền tảng sẽ đăng bài.",
+        "fields": {
+          "targetPlatforms": "Nền tảng",
+          "scheduledAt": "Lịch đăng"
+        }
+      }
+    },
+    "VIDEO": {
+      "SCRIPT": {
+        "title": "Ý tưởng & kịch bản",
+        "emptyHint": "Mô tả ý tưởng và liệt kê từng cảnh quay.",
+        "fields": {
+          "idea": "Ý tưởng",
+          "scenes": "Các cảnh"
+        }
+      },
+      "SHOOT": {
+        "title": "Quay"
+      },
+      "EDIT": {
+        "title": "Dựng video",
+        "emptyHint": "Tải lên video đã dựng.",
+        "fields": {
+          "media": "Tệp video"
+        }
+      },
+      "CAPTION": {
+        "title": "Caption video",
+        "emptyHint": "Viết caption và hashtag cho video.",
+        "fields": {
+          "caption": "Caption",
+          "hashtags": "Hashtag"
+        }
+      },
+      "CHANNELS": {
+        "title": "Kênh đăng & lịch",
+        "emptyHint": "Chọn nền tảng sẽ đăng video.",
+        "fields": {
+          "targetPlatforms": "Nền tảng",
+          "scheduledAt": "Lịch đăng"
+        }
+      }
+    },
+    "SURVEY": {
+      "FORM": {
+        "title": "Thiết kế bảng hỏi"
+      },
+      "DISTRIBUTION": {
+        "title": "Phân phối & thu thập",
+        "fields": {
+          "publicLink": "Link công khai",
+          "channels": "Kênh phát",
+          "closeAt": "Hạn đóng",
+          "targetResponses": "Chỉ tiêu số phản hồi"
+        }
+      },
+      "REPORT": {
+        "title": "Phân tích & báo cáo",
+        "fields": {
+          "insight": "Nhận định",
+          "conclusion": "Kết luận",
+          "recommendations": "Đề xuất"
+        }
+      }
+    },
+    "EVENT": {
+      "AGENDA": {
+        "title": "Concept & Agenda",
+        "fields": {
+          "concept": "Concept",
+          "goal": "Mục tiêu",
+          "datetimeVenue": "Thời gian/địa điểm dự kiến",
+          "agenda": {
+            "time": "Giờ",
+            "item": "Hạng mục",
+            "owner": "Phụ trách"
+          }
+        }
+      },
+      "LOGISTICS": {
+        "title": "Hậu cần & Địa điểm",
+        "fields": {
+          "venue": "Địa điểm",
+          "vendors": {
+            "name": "Tên",
+            "category": "Hạng mục",
+            "costVnd": "Chi phí (VND)",
+            "contact": "Liên hệ"
+          },
+          "totalBudget": "Ngân sách tổng",
+          "checklist": "Checklist vật tư"
+        }
+      },
+      "PROMOTION": {
+        "title": "Truyền thông sự kiện",
+        "fields": {
+          "plan": "Kế hoạch truyền thông",
+          "guests": {
+            "name": "Tên",
+            "org": "Đơn vị",
+            "inviteStatus": "Trạng thái mời"
+          }
+        }
+      },
+      "RUNSHEET": {
+        "title": "Điều phối tại chỗ",
+        "fields": {
+          "runsheet": {
+            "time": "Giờ",
+            "task": "Việc",
+            "owner": "Người phụ trách"
+          },
+          "staffing": "Phân công nhân sự"
+        }
+      },
+      "REPORT": {
+        "title": "Báo cáo sau sự kiện",
+        "fields": {
+          "result": "Kết quả",
+          "attendeeCount": "Số khách tham dự",
+          "lessons": "Bài học"
+        }
+      }
+    },
+    "PRESS": {
+      "MEDIA_LIST": {
+        "title": "Lập danh sách báo",
+        "fields": {
+          "outlets": {
+            "outlet": "Tên báo",
+            "section": "Chuyên mục",
+            "journalist": "Nhà báo",
+            "contact": "Email/Điện thoại",
+            "note": "Ghi chú"
+          }
+        }
+      },
+      "RELEASE": {
+        "title": "Viết thông cáo",
+        "fields": {
+          "title": "Tiêu đề",
+          "sapo": "Sapo",
+          "content": "Nội dung"
+        }
+      },
+      "CONTACT_LOG": {
+        "title": "Liên hệ & pitching",
+        "fields": {
+          "log": {
+            "date": "Ngày",
+            "outlet": "Báo",
+            "contact": "Người liên hệ",
+            "channel": "Kênh",
+            "result": "Kết quả"
+          }
+        }
+      },
+      "COVERAGE": {
+        "title": "Theo dõi đưa tin",
+        "fields": {
+          "coverage": {
+            "outlet": "Báo",
+            "link": "Link bài",
+            "publishedAt": "Ngày đăng"
+          }
+        }
+      }
+    },
+    "KOL": {
+      "SHORTLIST": {
+        "title": "Tìm & đề xuất KOL",
+        "fields": {
+          "shortlist": {
+            "name": "Tên",
+            "channel": "Kênh",
+            "link": "Link",
+            "followers": "Follower",
+            "engagementRate": "Tỉ lệ tương tác",
+            "reason": "Lý do chọn"
+          }
+        }
+      },
+      "DEAL": {
+        "title": "Đàm phán",
+        "fields": {
+          "kol": "KOL đã chọn",
+          "priceVnd": "Giá thỏa thuận (VND)",
+          "deliverables": "Hạng mục deliverable",
+          "terms": "Điều khoản"
+        }
+      },
+      "BRIEF": {
+        "title": "Brief cho KOL",
+        "fields": {
+          "keyMessage": "Key message",
+          "dos": "Nên làm",
+          "donts": "Không nên làm",
+          "requiredHashtags": "Hashtag bắt buộc",
+          "postDeadline": "Deadline đăng"
+        }
+      },
+      "DRAFT": {
+        "title": "Duyệt nội dung KOL",
+        "fields": {
+          "draftCaption": "Caption nháp",
+          "draftMedia": "Media nháp",
+          "reviewNote": "Ghi chú duyệt"
+        }
+      },
+      "REPORT": {
+        "title": "Theo dõi & báo cáo",
+        "fields": {
+          "postLink": "Link bài KOL",
+          "postedAt": "Ngày đăng",
+          "views": "View",
+          "likes": "Like",
+          "comments": "Comment",
+          "shares": "Share"
+        }
+      }
+    },
+    "WORKSHOP": {
+      "PROGRAM": {
+        "title": "Nội dung chương trình",
+        "fields": {
+          "topic": "Chủ đề",
+          "agenda": "Agenda",
+          "materials": "Slide/tài liệu"
+        }
+      },
+      "SPEAKERS": {
+        "title": "Diễn giả",
+        "fields": {
+          "speakers": {
+            "name": "Tên",
+            "title": "Chức danh",
+            "topic": "Chủ đề",
+            "inviteStatus": "Trạng thái mời"
+          }
+        }
+      },
+      "LOGISTICS": {
+        "title": "Hậu cần",
+        "fields": {
+          "format": "Hình thức",
+          "venueOrMeetingUrl": "Địa điểm / phòng online",
+          "cost": "Chi phí"
+        }
+      },
+      "REGISTRATION": {
+        "title": "Đăng ký & truyền thông"
+      },
+      "REPORT": {
+        "title": "Tổng kết",
+        "fields": {
+          "registeredCount": "Số đăng ký",
+          "attendedCount": "Số tham dự",
+          "feedback": "Feedback",
+          "photos": "Ảnh",
+          "lessons": "Bài học"
+        }
+      }
+    },
+    "EMAIL": {
+      "CONTENT": {
+        "title": "Viết nội dung",
+        "fields": {
+          "subject": "Tiêu đề (subject)",
+          "preheader": "Preheader"
+        }
+      },
+      "DESIGN": {
+        "title": "Thiết kế template"
+      },
+      "AUDIENCE": {
+        "title": "Danh sách & lịch gửi",
+        "fields": {
+          "recipientGroups": "Nhóm người nhận",
+          "scheduledAt": "Lịch gửi"
+        }
+      },
+      "REPORT": {
+        "title": "Báo cáo",
+        "fields": {
+          "total": "Tổng gửi",
+          "sentCount": "Thành công",
+          "successCount": "Thành công",
+          "bounceCount": "Lỗi/bounce",
+          "unsubscribeCount": "Huỷ đăng ký",
+          "note": "Nhận xét"
+        }
+      }
+    }
+  },
+  "newsletter": {
+    "sendTest": "Gửi thử",
+    "send": "Gửi",
+    "testSent": "Đã gửi email thử.",
+    "sent": "Đã gửi cho {{count}} người nhận.",
+    "sendError": "Gửi thất bại.",
+    "noRecipients": "Chọn ít nhất một nhóm người nhận.",
+    "noGroups": "Chưa có nhóm người nhận nào. Tạo nhóm ở trang Mail Templates.",
+    "noBatchYet": "Chưa gửi, chưa có số liệu."
+  },
+  "sectionReview": {
+    "queueTitle": "Phần chờ Khách hàng duyệt",
+    "queueHint": "Từng phần đã được Quản lý duyệt. Khách hàng duyệt hoặc trả lại từng phần; trả lại cần ghi chú.",
+    "empty": "Chưa có phần nào chờ duyệt.",
+    "loadError": "Không tải được danh sách phần chờ duyệt.",
+    "approved": "Đã duyệt phần.",
+    "returned": "Đã trả lại phần kèm ghi chú.",
+    "waitingSince": "Chờ từ {{date}}",
+    "taskTitle": "Duyệt theo từng phần",
+    "progress": "{{done}}/{{total}} phần đã duyệt xong"
+  },
   "timelineGrid": {
     "searchPlaceholder": "Tìm kiếm công việc...",
     "today": "Hôm nay",

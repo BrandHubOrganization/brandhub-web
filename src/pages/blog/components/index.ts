@@ -15,3 +15,9 @@ export { BlogTopicPlaceholder } from "./BlogTopicPlaceholder";
 export { BlogRichText, stripInlineMarkdownLinks } from "./BlogRichText";
 export { BlogFeatureBridge } from "./BlogFeatureBridge";
 export { BlogClusterNav } from "./BlogClusterNav";
+export {
+  BLOG_EASE,
+  BlogReadingProgress,
+  BlogSpotlightContainer,
+  BlogReveal,
+} from "./BlogMotion";

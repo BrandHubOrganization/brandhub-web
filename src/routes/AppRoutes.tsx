@@ -169,6 +169,14 @@ const WorkspaceMembersPage = lazyNamed(
 const TaskListPage = lazyNamed(() => import("@/pages/tasks"), "TaskListPage");
 const TaskDetailPage = lazy(() => import("@/pages/tasks/detail"));
 const SurveyEditorPage = lazy(() => import("@/pages/tasks/survey-editor"));
+const EventEditorPage = lazy(() => import("@/pages/tasks/event-editor"));
+const PressEditorPage = lazy(() => import("@/pages/tasks/press-editor"));
+const KolEditorPage = lazy(() => import("@/pages/tasks/kol-editor"));
+const WorkshopEditorPage = lazy(() => import("@/pages/tasks/workshop-editor"));
+const NewsletterEditorPage = lazy(
+  () => import("@/pages/tasks/newsletter-editor"),
+);
+const TaskEditorPage = lazy(() => import("@/pages/task-editor"));
 const TaskApprovalsPage = lazy(() => import("@/pages/task-approvals"));
 const AgencyCreditPage = lazy(() => import("@/pages/credit"));
 const CreditPricesPage = lazy(() => import("@/pages/credit/prices"));
@@ -294,6 +302,8 @@ const VideoStudioPage = lazyNamed(
   () => import("@/pages/ai-studio/video"),
   "VideoStudioPage",
 );
+const VideoSpacePage = lazy(() => import("@/pages/video-space"));
+const ProductVideoPage = lazy(() => import("@/pages/product-video"));
 
 // ── Admin Pages ──
 const AdminInvoicesPage = lazy(() => import("@/pages/admin/InvoicesPage"));
@@ -503,8 +513,32 @@ export function AppRoutes() {
               element={<TaskDetailPage />}
             />
             <Route
+              path="/workspaces/:id/tasks/:taskId/event"
+              element={<EventEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/press"
+              element={<PressEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/kol"
+              element={<KolEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/workshop"
+              element={<WorkshopEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/newsletter"
+              element={<NewsletterEditorPage />}
+            />
+            <Route
               path="/workspaces/:id/tasks/:taskId/survey"
               element={<SurveyEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/editor"
+              element={<TaskEditorPage />}
             />
             <Route path="/workspaces/:id/editor" element={<EditorPage />} />
             <Route
@@ -522,19 +556,31 @@ export function AppRoutes() {
             <Route
               path="/workspaces/:id/templates"
               element={
-                <Navigate to="../library?tab=templates" relative="path" replace />
+                <Navigate
+                  to="../library?tab=templates"
+                  relative="path"
+                  replace
+                />
               }
             />
             <Route
               path="/workspaces/:id/hashtags"
               element={
-                <Navigate to="../library?tab=hashtags" relative="path" replace />
+                <Navigate
+                  to="../library?tab=hashtags"
+                  relative="path"
+                  replace
+                />
               }
             />
             <Route
               path="/workspaces/:id/hashtag-groups"
               element={
-                <Navigate to="../library?tab=hashtags" relative="path" replace />
+                <Navigate
+                  to="../library?tab=hashtags"
+                  relative="path"
+                  replace
+                />
               }
             />
             <Route path="/workspaces/:id/calendar" element={<CalendarPage />} />
@@ -662,10 +708,7 @@ export function AppRoutes() {
             <Route
               path="/library"
               element={
-                <WorkspaceScopedRedirect
-                  destination="library"
-                  preserveSearch
-                />
+                <WorkspaceScopedRedirect destination="library" preserveSearch />
               }
             />
             <Route path="/analytics" element={<AnalyticsPage />} />
@@ -731,6 +774,12 @@ export function AppRoutes() {
               element={<ClientProfileListPage />}
             />
             <Route path="/ai-studio/video" element={<VideoStudioPage />} />
+            <Route path="/workspaces/:id/ai-studio/video" element={<VideoStudioPage />} />
+            <Route path="/workspaces/:id/product-video" element={<ProductVideoPage />} />
+            <Route
+              path="/workspaces/:id/video-space"
+              element={<VideoSpacePage />}
+            />
             <Route path="/components/examples" element={<ExamplesPage />} />
           </Route>
         </Route>

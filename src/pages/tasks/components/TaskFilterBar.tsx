@@ -72,7 +72,7 @@ function TaskFilterSearch({ search, onChange }: TaskFilterSearchProps) {
         onChange={(e) => onChange(e.target.value)}
         placeholder={t("tasks.search", { defaultValue: "Tìm kiếm công việc..." })}
         aria-label={t("tasks.search")}
-        className="bg-card/90 h-8 rounded-xl pl-8 pr-7 text-xs"
+        className="bg-card/90 h-8 rounded-xl pr-7 pl-8 text-xs"
       />
       {search && (
         <button

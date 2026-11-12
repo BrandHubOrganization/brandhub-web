@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   QueryClient,
   QueryClientProvider,
@@ -49,9 +50,12 @@ export function VideoStudioPage() {
 
 function VideoStudio() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const vi = !i18n.language.startsWith("en");
   const queries = useQueryClient();
-  const workspaceId = useWorkspaceStore((s) => s.currentWorkspace?.id);
+  const { id: routeWorkspaceId } = useParams<{ id: string }>();
+  const selectedWorkspaceId = useWorkspaceStore((s) => s.currentWorkspace?.id);
+  const workspaceId = routeWorkspaceId ?? selectedWorkspaceId;
   const [prompt, setPrompt] = useState("");
   const [styleKey, setStyleKey] = useState<string | null>(null);
   const [ambassadorId, setAmbassadorId] = useState<string | null>(null);
@@ -134,6 +138,7 @@ function VideoStudio() {
         styleKey,
         ambassadorId,
         aspectRatio,
+        durationSeconds: ambassadorId ? 5 : undefined,
       });
       queries.setQueryData(
         ["video-job", workspaceId, started.job.jobId],
@@ -194,11 +199,38 @@ function VideoStudio() {
       : Math.min(95, Math.round((elapsed / ESTIMATE_SECONDS) * 100));
   const styleName = (s: VideoStyle) => (vi ? s.name_vi : s.name_en);
   const tooShort = prompt.trim().length < 10;
+  const openEditor = (sourceJobId?: string) => {
+    if (!workspaceId) return;
+    const query = sourceJobId
+      ? `?jobId=${encodeURIComponent(sourceJobId)}`
+      : "";
+    navigate(`/workspaces/${workspaceId}/video-space${query}`);
+  };
 
   return (
     <PageWrapper
       title={t("aiStudio.video.title")}
       description={t("aiStudio.video.description")}
+      actions={
+        <>
+          <Button
+            variant="orange"
+            disabled={!workspaceId}
+            onClick={() => navigate(`/workspaces/${workspaceId}/product-video`)}
+          >
+            <Film className="size-4" />
+            {t("productVideo.entry")}
+          </Button>
+          <Button
+            variant="outline"
+            disabled={!workspaceId}
+            onClick={() => openEditor()}
+          >
+            <Clapperboard className="size-4" />
+            {t("aiStudio.video.openVideoSpace")}
+          </Button>
+        </>
+      }
     >
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
@@ -424,6 +456,15 @@ function VideoStudio() {
                       })
                     }
                   />
+                  <Button
+                    variant="orange"
+                    className="w-full gap-2"
+                    disabled={!current.s3Key}
+                    onClick={() => openEditor(current.jobId)}
+                  >
+                    <Clapperboard className="size-4" />
+                    {t("aiStudio.video.editInSpace")}
+                  </Button>
                 </>
               )}
               {current.status === "FAILED" && (
@@ -459,7 +500,7 @@ function VideoStudio() {
               </h2>
               <ul className="space-y-2">
                 {history.data!.map((item: VideoJob) => (
-                  <li key={item.jobId}>
+                  <li key={item.jobId} className="space-y-1">
                     <button
                       type="button"
                       onClick={() => {
@@ -483,6 +524,17 @@ function VideoStudio() {
                         {t(`aiStudio.video.status.${item.status}`)}
                       </span>
                     </button>
+                    {item.status === "COMPLETED" && item.s3Key && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5"
+                        onClick={() => openEditor(item.jobId)}
+                      >
+                        <Clapperboard className="size-3.5" />
+                        {t("aiStudio.video.editInSpace")}
+                      </Button>
+                    )}
                   </li>
                 ))}
               </ul>

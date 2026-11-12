@@ -3,6 +3,16 @@ import { defineConfig } from "vitest/config";
 
 // Unit tests do not need the native Tailwind/Vite UI build pipeline.
 export default defineConfig({
-  resolve: { alias: { "@": path.resolve(import.meta.dirname, "./src") } },
-  test: { include: ["src/**/*.test.{ts,tsx}", "tests/unit/**/*.test.{ts,tsx}"] },
+  resolve: {
+    alias: {
+      "@": path.resolve(import.meta.dirname, "./src"),
+      "@video-space/protocol": path.resolve(
+        import.meta.dirname,
+        "./shared/video-space-protocol.ts",
+      ),
+    },
+  },
+  test: {
+    include: ["src/**/*.test.{ts,tsx}", "tests/unit/**/*.test.{ts,tsx}"],
+  },
 });

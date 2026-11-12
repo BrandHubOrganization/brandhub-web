@@ -240,6 +240,7 @@
     }
   },
   "trendFit": {
+    "provisional": "Preliminary suggestions from your brief; the brand profile is incomplete.",
     "title": "Trends for your brand today",
     "notJudged": "AI could not score them; sorted by industry rules",
     "loading": "Picking trends for your brand…",
@@ -268,8 +269,7 @@
       "prompt_leak": "Shows words from the AI instructions.",
       "sensitive": "Sensitive word: {{term}}.",
       "too_long": "Longer than the platform recommends."
-    },
-    "provisional": "Preliminary suggestions from your brief; the brand profile is incomplete."
+    }
   },
   "video": {
     "title": "AI Video Studio",

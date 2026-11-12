@@ -29,7 +29,9 @@
       "TASK_POST_LINK_CONFLICT": "The task–post link needs review. Do not create a replacement post to bypass this error.",
       "TASK_CAMPAIGN_COMPLETED": "The Campaign is completed; task content is read-only.",
       "FORBIDDEN": "Only the assigned Creator can edit the content before submission.",
-      "VALIDATION_ERROR": "Some content or media is invalid. Check the caption, media count and uploaded files."
+      "VALIDATION_ERROR": "Some content or media is invalid. Check the caption, media count and uploaded files.",
+      "TASK_SUBTASKS_UNFINISHED": "Some subtasks are not done. Finish or cancel every subtask before submitting for review.",
+      "TASK_SECTIONS_UNAPPROVED": "Some sections are not approved yet. Every section must be approved before submitting the task."
     }
   },
   "submitSuccess": "Post submitted for approval successfully!",
@@ -165,7 +167,15 @@
     },
     "video": {
       "title": "AI Video Assistant",
-      "subtitle": "Generate AI motion video from 1 reference image and 1 reference video",
+      "subtitle": "Generate video from an image and prompt, or use a motion reference video",
+      "generationMode": "Generation mode",
+      "imagePromptMode": "Image + prompt",
+      "referenceMode": "Image + reference video",
+      "promptHint": "Keep the same perfume bottle, change the background to a forest-green studio and slowly push the camera in...",
+      "promptTooShort": "Describe the image edit and motion using at least 10 characters.",
+      "aspectRatioLabel": "Aspect ratio",
+      "portrait": "Portrait 9:16",
+      "landscape": "Landscape 16:9",
       "briefLabel": "Video brief",
       "briefPlaceholder": "Describe the campaign video, key message, and target audience...",
       "briefRequired": "Please enter a video brief.",
@@ -211,7 +221,11 @@
       "eightSecondNotice": "Output video duration automatically matches the reference video duration.",
       "status": "Status: {{status}}",
       "applyButton": "Add video to post",
-      "generateFailed": "Could not generate the video. Check the ai-worker-video configuration and try again."
+      "generateFailed": "Could not generate the video. Check the ai-worker-video configuration and try again.",
+      "characterLabel": "Character image (optional, 20-second video)",
+      "removeCharacter": "Remove character image",
+      "reviewModeHint": "With a character image: create a scripted product review.",
+      "cinematicModeHint": "Without a character image: create a cinematic product film. An LTX worker connection is required."
     },
     "preview": {
       "title": "Live Preview",
@@ -617,5 +631,24 @@
     "adapt": "Versions for other platforms",
     "adaptGo": "Create",
     "trendTopic": "Trend topic: {{topic}}"
+  },
+  "sections": {
+    "internal": "Internal, hidden from Client",
+    "owner": "Owned by {{names}}",
+    "lockedSubmitted": "Submitted, waiting for review",
+    "lockedApproved": "Approved",
+    "lockedNoRight": "You can only view this section",
+    "returned": "Returned:",
+    "conflict": "Someone else just saved this section. Your typing is kept; Reload to get the latest copy (it replaces your typing).",
+    "emptyHint": "Nothing here yet. Start with your part.",
+    "empty": "Nothing here yet.",
+    "onePerLine": "One item per line",
+    "addRow": "Add row",
+    "removeRow": "Remove row",
+    "exportFile": "Export file",
+    "exportError": "Export failed.",
+    "comingSoon": "This section's workspace comes in a later release. You can still submit, approve or return it above.",
+    "lockedWaitWriter": "You can edit once the writer submits this section",
+    "yours": "Your section"
   }
 }

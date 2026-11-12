@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/lib/axios";
 import { taskPostService } from "@/pages/editor/services/taskPostService";
 import { taskApprovalService } from "@/pages/tasks/services/taskApprovalService";
 import {
+  changedPostParts,
   draftFromPost,
+  postPartKey,
   emptyTaskDraft,
   postInput,
   taskEditorError,
@@ -23,6 +26,7 @@ const AUTOSAVE_MS = 30_000;
 
 export function useTaskEditorForm(workspaceId: string, taskId: string) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [draft, setDraft] = useState(emptyTaskDraft);
   const [session, setSession] = useState<Session>();
   const [isLoading, setIsLoading] = useState(true);
@@ -32,10 +36,15 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false);
+  // Role tasks: last saved copy (to find the edited sections) and sections hit by a conflict.
+  const [saved, setSaved] = useState(emptyTaskDraft);
+  const [conflictKeys, setConflictKeys] = useState<string[]>([]);
   const latest = useRef({
     draft: emptyTaskDraft(),
+    saved: emptyTaskDraft(),
     session: undefined as Session | undefined,
     dirty: false,
+    conflict: false,
   });
   const lifecycle = useRef({
     live: false,
@@ -56,11 +65,15 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
       const next = linked.post ? draftFromPost(linked.post) : emptyTaskDraft();
       latest.current = {
         draft: next,
+        saved: next,
         session: { linked, review },
         dirty: false,
+        conflict: false,
       };
       setSession({ linked, review });
       setDraft(next);
+      setSaved(next);
+      setConflictKeys([]);
       setIsDirty(false);
     } catch (error) {
       const explicitCode = (
@@ -106,8 +119,10 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
             };
             latest.current = {
               draft: next,
+              saved: next,
               session: fallbackSession,
               dirty: false,
+              conflict: false,
             };
             setSession(fallbackSession);
             setDraft(next);
@@ -159,6 +174,24 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
       return Promise.reject(new Error("INVALID_TASK_POST"));
     const epoch = lifecycle.current.epoch;
     const editVersion = lifecycle.current.edit;
+    const sections = current.session.linked.sections;
+    let sectionRevisions: Record<string, number> | undefined;
+    if (sections) {
+      if (current.conflict)
+        return Promise.reject(new Error("TASK_REVISION_CONFLICT"));
+      // Per-section save: only the edited sections, each with the revision we read.
+      sectionRevisions = {};
+      for (const part of changedPostParts(current.saved, current.draft)) {
+        const key = postPartKey(sections, part);
+        const section = sections.find((s) => s.key === key);
+        if (key && section) sectionRevisions[key] = section.revision;
+      }
+      if (!Object.keys(sectionRevisions).length) {
+        current.dirty = false;
+        setIsDirty(false);
+        return Promise.resolve();
+      }
+    }
     setIsSaving(true);
     const operation = taskPostService
       .save(workspaceId, taskId, {
@@ -166,6 +199,7 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
         expectedPostContentVersion:
           current.session.linked.post?.contentVersion ?? null,
         post: postInput(current.draft),
+        sectionRevisions,
       })
       .then((linked) => {
         if (!lifecycle.current.live || lifecycle.current.epoch !== epoch)
@@ -173,11 +207,32 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
         const next = { linked, review: current.session!.review };
         latest.current.session = next;
         setSession(next);
+        if (sections && linked.post) {
+          // Others may have saved other sections: take the server copy as the new baseline,
+          // and as the content too when nothing was typed meanwhile.
+          const server = draftFromPost(linked.post);
+          latest.current.saved = server;
+          setSaved(server);
+          if (lifecycle.current.edit === editVersion) {
+            latest.current.draft = server;
+            setDraft(server);
+          }
+        }
         if (lifecycle.current.edit === editVersion) {
           latest.current.dirty = false;
           setIsDirty(false);
         }
         setErrorCode(null);
+      })
+      .catch((error) => {
+        if (
+          sectionRevisions &&
+          taskEditorError(error) === "TASK_REVISION_CONFLICT"
+        ) {
+          latest.current.conflict = true;
+          setConflictKeys(Object.keys(sectionRevisions));
+        }
+        throw error;
       })
       .finally(() => {
         saving.current = null;
@@ -192,9 +247,16 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
     try {
       await persist();
     } catch (error) {
-      if (lifecycle.current.live) setErrorCode(taskEditorError(error));
+      // A section conflict shows on the section (banner + Reload), not as an editor error.
+      if (lifecycle.current.live && !latest.current.conflict)
+        setErrorCode(taskEditorError(error));
     }
   }, [persist]);
+  /** SectionFrame Save/Submit for post sections: true when the post is saved. */
+  const savePost = useCallback(async () => {
+    await save();
+    return !latest.current.dirty;
+  }, [save]);
   useEffect(() => {
     if (errorCode) return;
     const timer = window.setInterval(() => {
@@ -235,6 +297,10 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
       latest.current.session = { linked, review };
       setSession({ linked, review });
       setErrorCode(null);
+      // Submitting locks every section and approves the unowned ones: drop the stale can* flags.
+      void queryClient.invalidateQueries({
+        queryKey: ["task-sections", workspaceId, taskId],
+      });
       toast.success(t("editor.submitSuccess"));
     } catch (error) {
       if (lifecycle.current.live && lifecycle.current.epoch === epoch)
@@ -347,6 +413,17 @@ export function useTaskEditorForm(workspaceId: string, taskId: string) {
       ? new Date(session.linked.post.updatedAt).toLocaleTimeString()
       : "",
     publishStatus: "IDLE" as const,
+    postSections: {
+      sections: session?.linked.sections ?? null,
+      dirtyKeys: session?.linked.sections
+        ? changedPostParts(saved, draft).map((part) =>
+            postPartKey(session.linked.sections!, part),
+          )
+        : [],
+      conflictKeys,
+      isSaving,
+      save: savePost,
+    },
     handleCaptionChange: (caption: string) =>
       edit((current) => ({ ...current, caption })),
     handleHashtagsChange: (hashtags: string[]) =>

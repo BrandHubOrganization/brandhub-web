@@ -79,7 +79,8 @@
     "invitations": "Lời mời",
     "settings": "Cài đặt",
     "help": "Trợ giúp & Hướng dẫn",
-    "system": "Hệ thống"
+    "system": "Hệ thống",
+    "video": "Video"
   },
   "logout": "Đăng xuất",
   "openMenu": "Mở menu",
@@ -102,5 +103,6 @@
   "faq": "Hỏi đáp (FAQ)",
   "guide": "Cẩm nang hướng dẫn",
   "trends": "Xu hướng",
-  "aiVideo": "Video AI"
+  "aiVideo": "Video AI",
+  "videoSpace": "Video Space"
 }

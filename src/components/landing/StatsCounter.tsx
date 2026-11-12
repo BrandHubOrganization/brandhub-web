@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 import { Server, Flame, Zap, ShieldCheck, type LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface StatItem {
   key: string;
@@ -32,9 +31,9 @@ const STATS: StatItem[] = [
     floatingBadge: "HIGH AVAILABILITY",
     icon: Server,
     cardSurface:
-      "from-orange-500/20 via-[#15131D] to-[#0D0E14] border-orange-500/40",
+      "from-orange-50/90 via-white to-amber-50/40 border-orange-200/80 dark:from-orange-500/20 dark:via-[#15131D] dark:to-[#0D0E14] dark:border-orange-500/40",
     pillTheme: "bg-brand-orange text-white shadow-orange-500/30",
-    orbTheme: "bg-orange-500/20 text-orange-400 border-orange-500/40",
+    orbTheme: "bg-orange-50 text-brand-orange border-orange-200/80 dark:bg-orange-500/20 dark:text-orange-400 dark:border-orange-500/40",
   },
   {
     key: "trends",
@@ -47,9 +46,9 @@ const STATS: StatItem[] = [
     floatingBadge: "REAL-TIME TREND STREAM",
     icon: Flame,
     cardSurface:
-      "from-rose-500/20 via-[#17121A] to-[#0D0E14] border-rose-500/40",
+      "from-rose-50/90 via-white to-pink-50/40 border-rose-200/80 dark:from-rose-500/20 dark:via-[#17121A] dark:to-[#0D0E14] dark:border-rose-500/40",
     pillTheme: "bg-rose-600 text-white shadow-rose-500/30",
-    orbTheme: "bg-rose-500/20 text-rose-400 border-rose-500/40",
+    orbTheme: "bg-rose-50 text-rose-600 border-rose-200/80 dark:bg-rose-500/20 dark:text-rose-400 dark:border-rose-500/40",
   },
   {
     key: "latency",
@@ -62,9 +61,9 @@ const STATS: StatItem[] = [
     floatingBadge: "ULTRA-LOW LATENCY",
     icon: Zap,
     cardSurface:
-      "from-indigo-500/20 via-[#121422] to-[#0D0E14] border-indigo-500/40",
+      "from-indigo-50/90 via-white to-blue-50/40 border-indigo-200/80 dark:from-indigo-500/20 dark:via-[#121422] dark:to-[#0D0E14] dark:border-indigo-500/40",
     pillTheme: "bg-indigo-600 text-white shadow-indigo-500/30",
-    orbTheme: "bg-indigo-500/20 text-indigo-400 border-indigo-500/40",
+    orbTheme: "bg-indigo-50 text-indigo-600 border-indigo-200/80 dark:bg-indigo-500/20 dark:text-indigo-400 dark:border-indigo-500/40",
   },
   {
     key: "consistency",
@@ -76,9 +75,9 @@ const STATS: StatItem[] = [
     floatingBadge: "ZERO POLICY VIOLATION",
     icon: ShieldCheck,
     cardSurface:
-      "from-emerald-500/20 via-[#101A19] to-[#0D0E14] border-emerald-500/40",
+      "from-emerald-50/90 via-white to-teal-50/40 border-emerald-200/80 dark:from-emerald-500/20 dark:via-[#101A19] dark:to-[#0D0E14] dark:border-emerald-500/40",
     pillTheme: "bg-emerald-600 text-white shadow-emerald-500/30",
-    orbTheme: "bg-emerald-500/20 text-emerald-400 border-emerald-500/40",
+    orbTheme: "bg-emerald-50 text-emerald-600 border-emerald-200/80 dark:bg-emerald-500/20 dark:text-emerald-400 dark:border-emerald-500/40",
   },
 ];
 
@@ -119,66 +118,35 @@ export function StatsCounter() {
   const [inView, setInView] = useState(false);
 
   return (
-    <section className="relative overflow-hidden bg-[#090A10] py-20 text-white">
-      {/* Ambient Glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-500/60 to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-1/2 h-64 w-[48rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500/10 blur-[120px]"
-      />
-
+    <section className="relative overflow-hidden border-y border-zinc-200/80 bg-zinc-50/70 py-16 text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-white">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           onViewportEnter={() => setInView(true)}
-          transition={{ duration: 0.5 }}
-          className="grid grid-cols-1 gap-8 pt-8 sm:grid-cols-2 sm:pt-10 lg:grid-cols-4"
+          transition={{ duration: 0.45 }}
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
           {STATS.map((s) => {
             const Icon = s.icon;
             return (
               <div
                 key={s.key}
-                className={cn(
-                  "bh-reveal-card group relative flex min-h-[190px] flex-col justify-between rounded-[28px] rounded-tr-[56px] border bg-gradient-to-br p-6 pt-9 shadow-xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl",
-                  s.cardSurface,
-                )}
+                className="bh-reveal-card group flex min-h-[172px] flex-col justify-between rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-orange/45 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
               >
-                {/* Floating 3D Badge (Khối nổi) */}
-                <div
-                  data-bh-float
-                  className={cn(
-                    "absolute -top-3.5 left-5 z-20 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[9px] font-black tracking-wider uppercase shadow-lg",
-                    s.pillTheme,
-                  )}
-                >
-                  <span className="size-1.5 rounded-full bg-white animate-pulse" />
-                  <span>{s.floatingBadge}</span>
-                </div>
-
-                {/* Top-Right Cutout Pocket (Khối cắt) */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -top-2 -right-2 z-10 flex size-14 items-center justify-center rounded-bl-[24px] rounded-tr-[24px] border-b border-l border-white/10 bg-[#090A10] p-1.5"
-                >
-                  <div
-                    className={cn(
-                      "flex size-10 items-center justify-center rounded-xl border transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6",
-                      s.orbTheme,
-                    )}
-                  >
-                    <Icon className="size-5" />
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <span className="font-mono text-[10px] font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+                    {s.floatingBadge}
+                  </span>
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-orange/10 text-brand-orange">
+                    <Icon className="size-4" />
                   </div>
                 </div>
 
                 <div>
-                  <div className="my-2 flex flex-wrap items-baseline gap-1.5">
-                    <span className="text-3xl font-black tracking-tight text-white tabular-nums sm:text-4xl lg:text-[2.65rem] leading-none">
+                  <div className="flex flex-wrap items-baseline gap-1.5">
+                    <span className="text-3xl font-extrabold tracking-tight text-zinc-900 tabular-nums sm:text-4xl dark:text-white leading-none">
                       {s.prefix}
                       <CountValue
                         target={s.target}
@@ -189,17 +157,17 @@ export function StatsCounter() {
                       />
                     </span>
                     {s.unit && (
-                      <span className="font-mono text-xs font-bold text-zinc-400 sm:text-sm">
+                      <span className="font-mono text-xs font-semibold text-zinc-500 dark:text-zinc-400 sm:text-sm">
                         {s.unit}
                       </span>
                     )}
                   </div>
-                  <p className="mt-2 text-sm font-bold text-zinc-100">
+                  <p className="mt-2 text-sm font-bold text-zinc-800 dark:text-zinc-100">
                     {t(s.labelKey, s.key)}
                   </p>
                 </div>
 
-                <p className="mt-3 border-t border-white/10 pt-2.5 font-mono text-[11px] text-zinc-400">
+                <p className="mt-3 border-t border-zinc-100 pt-2.5 font-mono text-[11px] text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
                   {s.sublabel}
                 </p>
               </div>

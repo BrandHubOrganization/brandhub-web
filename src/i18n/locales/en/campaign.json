@@ -169,7 +169,11 @@
     "LIVESTREAM": "Livestream preparation",
     "SURVEY": "Survey",
     "EVENT_PLAN": "Event plan",
-    "PRESS_RECOMMENDATION": "Press recommendations"
+    "PRESS_RECOMMENDATION": "Press recommendations",
+    "SHORT_VIDEO": "Short video",
+    "KOL_BOOKING": "KOL/Influencer",
+    "WORKSHOP": "Workshop",
+    "EMAIL_NEWSLETTER": "Email newsletter"
   },
   "errors": {
     "CAMPAIGN_CLOSURE_BLOCKED": "Resolve unfinished Tasks and received Requests before completing.",
@@ -347,6 +351,8 @@
     "currentServerValue": "Current server value: {{value}}",
     "fit": "Fit to view",
     "unscheduled": "Unscheduled",
+    "overdue": "Overdue",
+    "awaitingClient": "Awaiting Client",
     "createRange": "Create a task date range",
     "milestoneRail": "Milestone rail",
     "milestonePlaceholder": "Milestone name…",

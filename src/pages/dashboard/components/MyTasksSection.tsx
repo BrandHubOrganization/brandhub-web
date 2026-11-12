@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -54,12 +55,15 @@ const getTaskTypeIcon = (type: TaskType) => {
     case "POST":
       return <FileText className="size-3.5 text-muted-foreground" />;
     case "LIVESTREAM":
+    case "SHORT_VIDEO":
       return <Video className="size-3.5 text-muted-foreground" />;
     case "SURVEY":
       return <ClipboardList className="size-3.5 text-muted-foreground" />;
     case "EVENT_PLAN":
+    case "WORKSHOP":
       return <Calendar className="size-3.5 text-muted-foreground" />;
     case "PRESS_RECOMMENDATION":
+    case "KOL_BOOKING":
       return <Megaphone className="size-3.5 text-muted-foreground" />;
     default:
       return <CheckSquare className="size-3.5 text-muted-foreground" />;
@@ -302,7 +306,7 @@ export function MyTasksSection({
               workspaceNames[task.workspaceId] ||
               task.workspaceId.slice(0, 8);
 
-            const isPostType = task.type === "POST";
+            const isPostType = opensPostEditor(task.type);
 
             return (
               <div

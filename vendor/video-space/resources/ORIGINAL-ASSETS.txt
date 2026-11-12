@@ -1,0 +1,26 @@
+Video Space Original Starter Library — 2026
+
+Scope: original synthetic WAV audio under assets/sounds and assets/music;
+original SVG/PNG sticker artwork under assets/stickers; editable text template
+recipes in manifest.json; generate.py and render_stickers.cjs.
+
+Author: Video Space Lab (original procedural collection).
+
+To the extent copyright or related rights exist in these original resources,
+the author dedicates them to the public domain under CC0 1.0 Universal, with the
+public-license fallback provided by that instrument. You may use, edit and
+redistribute these resources, including in commercial videos, without an
+attribution requirement. No trademark rights or endorsement are granted.
+
+License: CC0-1.0
+Canonical instrument: https://creativecommons.org/publicdomain/zero/1.0/
+Full legal text: CC0-1.0.txt
+
+Excluded: font files, font metadata and font notices under assets/fonts. These
+are unmodified upstream files, each distributed under the SIL Open Font License
+1.1 alongside its own OFL.txt notice. The rest of the Video Space application
+and its upstream dependencies are also outside the scope of this dedication.
+
+The collection uses no CapCut-owned assets, stock recordings, sampled songs,
+voice recordings or scraped editing packs. The procedural sources are retained
+for reproducibility and modification. This library is supplied as-is.

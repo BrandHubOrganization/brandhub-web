@@ -13,8 +13,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { SectionDecor } from "@/components/landing/SectionDecor";
-import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -130,7 +128,6 @@ export function MediaPackage() {
       id="media-package"
       className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950"
     >
-      <SectionDecor corner="right" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div
           ref={headRef}
@@ -139,14 +136,13 @@ export function MediaPackage() {
             headVisible ? "opacity-100" : "opacity-0",
           )}
         >
-          <SectionEyebrow index={6} />
           <SplitHeading text={t("landing.mediaPackage.title")} />
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.mediaPackage.subtitle")}
           </p>
         </div>
 
-        {/* Architectural Radial-Cutout Stage inspired by `.decode-stage` & `.decode-window` in giaimamanhai.vercel.app */}
+        {/* Clean Interactive Package Stage */}
         <div className="mb-20 grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
           <div className="space-y-4 lg:col-span-4">
             <span className="text-brand-orange font-mono text-xs font-extrabold tracking-widest uppercase">
@@ -177,7 +173,7 @@ export function MediaPackage() {
                   className={cn(
                     "cursor-pointer rounded-full px-4 py-2 text-xs font-bold transition-all duration-300",
                     activeStep === idx
-                      ? "bg-brand-orange text-white shadow-md shadow-orange-500/25 scale-105"
+                      ? "bg-brand-orange text-white shadow-sm"
                       : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800",
                   )}
                 >
@@ -187,83 +183,79 @@ export function MediaPackage() {
             </div>
           </div>
 
-          {/* Radial-Cutout Panel + Circular Window */}
-          <div className="bh-stage-reveal relative lg:col-span-8 lg:pl-20">
-            {/* Circular Window nestled inside left edge */}
-            <div className="mx-auto mb-6 size-44 overflow-hidden rounded-full border-4 border-white shadow-2xl ring-4 ring-brand-orange/30 lg:absolute lg:top-1/2 lg:left-20 lg:z-10 lg:mb-0 lg:size-52 lg:-translate-x-1/2 lg:-translate-y-1/2 dark:border-zinc-900">
-              <img
-                src={currentPoint.photo}
-                alt={t(`landing.mediaPackage.items.${currentPoint.key}.title`)}
-                width={500}
-                height={500}
-                loading="lazy"
-                decoding="async"
-                style={{
-                  transform: `rotate(${activeStep * 6}deg) scale(${1 + activeStep * 0.04})`,
-                }}
-                className="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              />
-            </div>
-
-            {/* Rounded Architectural Panel */}
-            <div className="relative overflow-hidden rounded-[32px] border border-orange-200/70 bg-gradient-to-br from-orange-50/90 via-white to-orange-50/40 p-8 shadow-xl lg:pl-36 dark:border-zinc-800 dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="bg-brand-orange/15 text-brand-orange inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold">
-                  <ActiveIcon className="size-4" />
-                  <span>{currentPoint.metric}</span>
-                </span>
-                <span className="text-brand-orange/25 font-mono text-4xl font-extrabold tabular-nums">
-                  {currentPoint.step}
-                </span>
+          <div className="bh-stage-reveal lg:col-span-8">
+            <div className="grid grid-cols-1 items-center gap-6 overflow-hidden rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-xs sm:grid-cols-12 sm:p-8 dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="aspect-[4/3] overflow-hidden rounded-xl border border-zinc-200/70 bg-zinc-100 sm:col-span-5 dark:border-zinc-800 dark:bg-zinc-800">
+                <img
+                  src={currentPoint.photo}
+                  alt={t(`landing.mediaPackage.items.${currentPoint.key}.title`)}
+                  width={500}
+                  height={375}
+                  loading="lazy"
+                  decoding="async"
+                  className="size-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                />
               </div>
 
-              <h4 className="mt-4 text-xl font-extrabold text-zinc-900 sm:text-2xl dark:text-zinc-100">
-                {t(`landing.mediaPackage.items.${currentPoint.key}.title`)}
-              </h4>
-              <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-                {t(`landing.mediaPackage.items.${currentPoint.key}.desc`)}
-              </p>
+              <div className="sm:col-span-7">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="bg-brand-orange/10 text-brand-orange inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold">
+                    <ActiveIcon className="size-3.5" />
+                    <span>{currentPoint.metric}</span>
+                  </span>
+                  <span className="font-mono text-lg font-bold text-zinc-400 tabular-nums dark:text-zinc-600">
+                    {currentPoint.step}
+                  </span>
+                </div>
 
-              <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                {POINTS.map((pt, idx) => (
-                  <button
-                    key={pt.key}
-                    type="button"
-                    onClick={() => setActiveStep(idx)}
-                    className={cn(
-                      "flex cursor-pointer items-center gap-2.5 rounded-2xl border px-3.5 py-2.5 text-left text-xs font-semibold transition-all",
-                      activeStep === idx
-                        ? "border-brand-orange bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-100"
-                        : "border-zinc-200/60 bg-white/60 text-zinc-500 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400",
-                    )}
-                  >
-                    <CheckCircle2
+                <h4 className="mt-4 text-xl font-extrabold text-zinc-900 dark:text-zinc-100">
+                  {t(`landing.mediaPackage.items.${currentPoint.key}.title`)}
+                </h4>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                  {t(`landing.mediaPackage.items.${currentPoint.key}.desc`)}
+                </p>
+
+                <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {POINTS.map((pt, idx) => (
+                    <button
+                      key={pt.key}
+                      type="button"
+                      onClick={() => setActiveStep(idx)}
                       className={cn(
-                        "size-4 shrink-0",
+                        "flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-semibold transition-all",
                         activeStep === idx
-                          ? "text-brand-orange"
-                          : "text-zinc-300 dark:text-zinc-600",
+                          ? "border-brand-orange/50 bg-zinc-50 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
+                          : "border-zinc-200/70 bg-white text-zinc-500 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400",
                       )}
-                    />
-                    <span className="truncate">
-                      {pt.step}. {t(`landing.mediaPackage.items.${pt.key}.title`)}
-                    </span>
-                  </button>
-                ))}
+                    >
+                      <CheckCircle2
+                        className={cn(
+                          "size-3.5 shrink-0",
+                          activeStep === idx
+                            ? "text-brand-orange"
+                            : "text-zinc-300 dark:text-zinc-600",
+                        )}
+                      />
+                      <span className="truncate">
+                        {pt.step}. {t(`landing.mediaPackage.items.${pt.key}.title`)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 4-Step Parallax Timeline with Arch & Pill Photo Frames */}
+        {/* 4-Step Timeline with Crisp Rectangular Photo Frames */}
         <div ref={setTimelineRef} className="relative mx-auto max-w-4xl">
           <div
             aria-hidden
             className="timeline-line bg-brand-orange/25 absolute top-0 bottom-0 left-6 w-0.5 origin-top sm:left-1/2 sm:-translate-x-1/2"
           />
 
-          <div className="flex flex-col gap-14">
-            {POINTS.map(({ key, icon: Icon, step, photo, frameShape }, i) => {
+          <div className="flex flex-col gap-12">
+            {POINTS.map(({ key, icon: Icon, step, photo }, i) => {
               const reversed = i % 2 === 1;
               return (
                 <div
@@ -291,18 +283,13 @@ export function MediaPackage() {
                   <div className="pl-14 sm:w-1/2 sm:pl-0">
                     <div
                       className={cn(
-                        "mp-card flex flex-col gap-4 rounded-[26px] border border-zinc-200/80 bg-zinc-50/60 p-5 transition-all duration-300 group-hover:-translate-y-1 group-hover:border-orange-200 group-hover:bg-white group-hover:shadow-lg sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900/50 dark:group-hover:bg-zinc-900",
+                        "mp-card flex flex-col gap-4 rounded-2xl border border-zinc-200/80 bg-white p-5 transition-all duration-300 group-hover:-translate-y-1 group-hover:border-brand-orange/40 group-hover:shadow-md sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900/70 dark:group-hover:bg-zinc-900",
                         reversed
                           ? "sm:flex-row-reverse sm:text-right"
                           : "sm:text-left",
                       )}
                     >
-                      <div
-                        className={cn(
-                          "relative size-24 shrink-0 overflow-hidden border border-orange-200/60 shadow-md sm:size-28 dark:border-zinc-700",
-                          frameShape,
-                        )}
-                      >
+                      <div className="relative size-24 shrink-0 overflow-hidden rounded-xl border border-zinc-200/70 bg-zinc-100 sm:size-28 dark:border-zinc-800 dark:bg-zinc-800">
                         <img
                           src={photo}
                           alt={t(`landing.mediaPackage.items.${key}.title`)}

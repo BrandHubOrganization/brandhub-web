@@ -1,11 +1,15 @@
 {
   "name": "brandhub-web-dashboard",
   "private": true,
+  "workspaces": ["vendor/video-space"],
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-blog-index.mjs && tsc -b && vite build && node scripts/prerender-public-routes.mjs",
+    "predev": "npm run build:video-space",
+    "build:video-space": "npm run build --workspace @brandhub/video-space-editor",
+    "type-check:video-space": "npm run typecheck --workspace @brandhub/video-space-editor",
+    "build": "npm run build:video-space && node scripts/generate-blog-index.mjs && tsc -b && vite build && node scripts/prerender-public-routes.mjs",
     "lint": "eslint .",
     "test": "vitest run",
     "type-check": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
