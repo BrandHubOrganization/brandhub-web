@@ -23,13 +23,14 @@ export function MaterialAudienceFields({
   const label = (key: string) => t(`library.repository.${key}`);
   return (
     <>
-      <div className="space-y-2">
-        <label htmlFor={`${id}-visibility`} className="text-sm font-medium">
+      <div className="space-y-1.5">
+        <label htmlFor={`${id}-visibility`} className="text-xs font-semibold text-foreground">
           {label("audienceLabel")}
         </label>
         <Select
           id={`${id}-visibility`}
           value={visibility}
+          className="h-9 rounded-[4px] text-xs"
           onChange={(event) =>
             onChange(
               event.target.value as "INTERNAL" | "CLIENT",
@@ -42,13 +43,14 @@ export function MaterialAudienceFields({
         </Select>
       </div>
       {visibility === "CLIENT" && (
-        <div className="space-y-2">
-          <label htmlFor={`${id}-profile`} className="text-sm font-medium">
+        <div className="space-y-1.5">
+          <label htmlFor={`${id}-profile`} className="text-xs font-semibold text-foreground">
             {label("clientLabel")}
           </label>
           <Select
             id={`${id}-profile`}
             value={profile}
+            className="h-9 rounded-[4px] text-xs"
             disabled={profiles.isPending || profiles.isError}
             onChange={(event) => onChange(visibility, event.target.value)}
           >
@@ -68,13 +70,10 @@ export function MaterialAudienceFields({
         </div>
       )}
       {profiles.isError && (
-        <p role="alert" className="text-destructive text-sm">
+        <p role="alert" className="text-destructive text-xs">
           {label("profilesUnavailable")}
         </p>
       )}
-      <p className="text-muted-foreground text-xs">
-        {label("derivativeAudienceHint")}
-      </p>
     </>
   );
 }

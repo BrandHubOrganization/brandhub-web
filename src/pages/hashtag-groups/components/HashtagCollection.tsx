@@ -86,7 +86,7 @@ function CollectionContent({
         </div>
       )}
       {result && result.items.length === 0 && (
-        <p className="border-border text-muted-foreground rounded-xl border p-8 text-center">
+        <p className="border-[#d5dbdb] dark:border-border bg-card text-muted-foreground rounded-none border p-8 text-center">
           {t(
             prefix +
               (filter.q || filter.purpose || filter.isRequired !== undefined

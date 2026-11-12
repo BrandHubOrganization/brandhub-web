@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isAxiosError, isCancel } from "axios";
 import { useTranslation } from "react-i18next";
-import { ExternalLink, ImageOff, Loader2, RefreshCw } from "lucide-react";
+import { ImageOff, Loader2 } from "lucide-react";
 import { materialService } from "@/services/materialService";
 import type { MaterialItem } from "@/types/material";
 
@@ -101,7 +101,6 @@ export function MaterialPreview({
   useEffect(() => () => controller.current?.abort(), []);
 
   const url = ready ? preview.url : undefined;
-  const openHref = url || (material.status !== "PURGE_IN_PROGRESS" ? material.url : undefined);
   const message =
     material.status === "FAILED" || material.status === "REJECTED"
       ? "previewUploadFailed"
@@ -117,53 +116,11 @@ export function MaterialPreview({
                 ? "previewUnavailable"
                 : "previewUnsupported";
 
-  const refreshLabel = t(
-    "library.repository.refreshPreview",
-    "Làm mới bản xem trước",
-  );
-  const openOriginalLabel = t(
-    "library.repository.openOriginal",
-    "Mở tệp gốc",
-  );
-
   return (
     <section
-      className="group relative overflow-hidden rounded-2xl border border-border/80 bg-muted/30"
+      className="group relative overflow-hidden rounded-none border border-[#d5dbdb] bg-muted/30 dark:border-border"
       aria-label={t("library.repository.preview", "Xem trước")}
     >
-      {(canRefresh || openHref) && (
-        <div
-          data-slot="preview-toolbar"
-          className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5"
-        >
-          {openHref && (
-            <a
-              href={openHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={openOriginalLabel}
-              title={openOriginalLabel}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-background/90 text-muted-foreground shadow-2xs backdrop-blur-md transition-colors hover:border-brand-orange/50 hover:text-brand-orange"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          )}
-          {canRefresh && (
-            <button
-              type="button"
-              disabled={busy}
-              aria-label={refreshLabel}
-              title={refreshLabel}
-              onClick={() => void refresh()}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-background/90 text-muted-foreground shadow-2xs backdrop-blur-md transition-colors hover:border-brand-orange/50 hover:text-brand-orange disabled:opacity-50"
-            >
-              <RefreshCw
-                className={`h-3.5 w-3.5 ${busy ? "animate-spin text-brand-orange" : ""}`}
-              />
-            </button>
-          )}
-        </div>
-      )}
 
       <div className="flex min-h-[210px] items-center justify-center p-3">
         {busy && !url ? (

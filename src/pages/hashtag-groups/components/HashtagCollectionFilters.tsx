@@ -25,18 +25,20 @@ export function HashtagCollectionFilters({
   const prefix = "hashtagGroups.collection.";
 
   return (
-    <div className="border-border bg-card flex flex-wrap items-end gap-3 rounded-xl border p-4">
+    <div className="border-[#d5dbdb] dark:border-border bg-card flex flex-wrap items-end gap-3 rounded-none border p-4 shadow-[0_1px_1px_0_rgba(0,28,36,0.05)]">
       <div className="min-w-40 flex-1">
         <Input
           label={t(prefix + "search")}
           value={filter.q}
           maxLength={100}
+          className="rounded-[4px]"
           onChange={(event) => onFilterChange({ q: event.target.value })}
         />
       </div>
       <Select
         aria-label={t(prefix + "purpose")}
         wrapperClassName="w-full sm:w-40"
+        className="rounded-[4px]"
         value={filter.purpose}
         onChange={(event) => onFilterChange({ purpose: event.target.value })}
       >
@@ -50,6 +52,7 @@ export function HashtagCollectionFilters({
       <Select
         aria-label={t(prefix + "required")}
         wrapperClassName="w-full sm:w-40"
+        className="rounded-[4px]"
         value={filter.isRequired === undefined ? "" : String(filter.isRequired)}
         onChange={(event) =>
           onFilterChange({
@@ -64,7 +67,11 @@ export function HashtagCollectionFilters({
         <option value="true">{t(prefix + "required")}</option>
         <option value="false">{t(prefix + "optional")}</option>
       </Select>
-      <Button disabled={!canAdd || isFetching} onClick={onAdd}>
+      <Button
+        disabled={!canAdd || isFetching}
+        onClick={onAdd}
+        className="rounded-[4px]"
+      >
         <Plus className="size-4" />
         {t(prefix + "add")}
       </Button>
