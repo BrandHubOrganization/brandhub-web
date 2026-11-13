@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import {
   CheckCircle2,
-  CloudDownload,
+  Link2,
   FolderOpen,
   FileCheck2,
   Loader2,
@@ -167,9 +167,9 @@ export function CustomerDrivePanel({
         }}
       >
         <div className="relative min-w-0 flex-1">
-          <CloudDownload className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-brand-orange" />
+          <Link2 className="text-brand-orange pointer-events-none absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2" />
           <Input
-            className="h-9 rounded-lg bg-background pl-9 text-xs focus-visible:ring-1 focus-visible:ring-brand-orange/60 focus-visible:ring-offset-0"
+            className="bg-background focus-visible:ring-brand-orange/60 h-9 rounded-lg pl-9 text-xs focus-visible:ring-1 focus-visible:ring-offset-0"
             disabled={mutation.isPending || isBusy}
             type="url"
             wrapperClassName="min-w-0 flex-1"
@@ -190,13 +190,10 @@ export function CustomerDrivePanel({
         <Button
           size="sm"
           variant="orange"
-          className="h-9 shrink-0 gap-1.5 rounded-lg px-4 text-xs font-semibold shadow-xs hover:bg-brand-orange/90"
+          className="hover:bg-brand-orange/90 h-9 shrink-0 rounded-lg px-4 text-xs font-semibold shadow-xs"
           type="submit"
           disabled={
-            !source.trim() ||
-            !config.isSuccess ||
-            mutation.isPending ||
-            isBusy
+            !source.trim() || !config.isSuccess || mutation.isPending || isBusy
           }
         >
           {mutation.isPending ? (
@@ -205,10 +202,7 @@ export function CustomerDrivePanel({
               Đang kết nối...
             </>
           ) : (
-            <>
-              <CloudDownload className="h-3.5 w-3.5" />
-              {t("library.simple.import", "Import")}
-            </>
+            t("library.simple.import", "Import")
           )}
         </Button>
       </form>
@@ -216,14 +210,14 @@ export function CustomerDrivePanel({
       {config.isError && (
         <div
           role="alert"
-          className="flex items-center justify-between gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+          className="border-destructive/30 bg-destructive/10 text-destructive flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs"
         >
           <span>{t("library.driveImport.notConfigured")}</span>
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className="h-7 rounded-md px-2.5 text-xs font-semibold text-destructive hover:bg-destructive/15"
+            className="text-destructive hover:bg-destructive/15 h-7 rounded-md px-2.5 text-xs font-semibold"
             onClick={() => void config.refetch()}
           >
             <RotateCcw className="mr-1 h-3 w-3" />
@@ -236,7 +230,7 @@ export function CustomerDrivePanel({
         extractFailureCode(mutation.error) !== "DRIVE_IMPORT_CANCELLED" && (
           <div
             role="alert"
-            className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive"
+            className="border-destructive/30 bg-destructive/10 text-destructive flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium"
           >
             <XCircle className="h-4 w-4 shrink-0" />
             <span>{importError(extractFailureCode(mutation.error))}</span>
@@ -271,32 +265,33 @@ export function CustomerDrivePanel({
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
               ) : activeTask.status === "FAILED" ? (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-destructive/15 text-destructive">
+                <div className="bg-destructive/15 text-destructive flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
                   <XCircle className="h-4 w-4" />
                 </div>
               ) : (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                <div className="bg-muted text-muted-foreground flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
                   <X className="h-4 w-4" />
                 </div>
               )}
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="truncate text-xs font-semibold text-foreground">
+                  <p className="text-foreground truncate text-xs font-semibold">
                     {activeTask.title}
                   </p>
                   {(activeTask.totalItems > 0 ||
                     (activeTask.importedFolders ?? 0) > 0) && (
                     <div className="flex flex-wrap items-center gap-1.5">
                       {activeTask.totalItems > 0 && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-border/70 bg-background/80 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-foreground">
-                          <FileCheck2 className="h-3 w-3 text-brand-orange" />
-                          {activeTask.completedItems}/{activeTask.totalItems} tệp
+                        <span className="border-border/70 bg-background/80 text-foreground inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
+                          <FileCheck2 className="text-brand-orange h-3 w-3" />
+                          {activeTask.completedItems}/{activeTask.totalItems}{" "}
+                          tệp
                         </span>
                       )}
                       {(activeTask.importedFolders ?? 0) > 0 && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-border/70 bg-background/80 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-muted-foreground">
-                          <FolderOpen className="h-3 w-3 text-brand-orange" />
+                        <span className="border-border/70 bg-background/80 text-muted-foreground inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
+                          <FolderOpen className="text-brand-orange h-3 w-3" />
                           {activeTask.importedFolders} thư mục
                         </span>
                       )}
@@ -304,7 +299,7 @@ export function CustomerDrivePanel({
                   )}
                 </div>
 
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                <p className="text-muted-foreground mt-0.5 truncate text-[11px]">
                   {activeTask.currentFileName
                     ? `Đang nhập tệp: ${activeTask.currentFileName}`
                     : activeTask.subtitle}
@@ -319,7 +314,7 @@ export function CustomerDrivePanel({
                   variant="outline"
                   size="sm"
                   onClick={() => void cancelTask(activeTask.id)}
-                  className="h-8 gap-1 rounded-lg border-destructive/30 bg-background px-2.5 text-xs font-semibold text-destructive hover:border-destructive hover:bg-destructive hover:text-white"
+                  className="border-destructive/30 bg-background text-destructive hover:border-destructive hover:bg-destructive h-8 gap-1 rounded-lg px-2.5 text-xs font-semibold hover:text-white"
                 >
                   <X className="h-3.5 w-3.5" />
                   <span>Huỷ import</span>
@@ -336,7 +331,7 @@ export function CustomerDrivePanel({
                 <button
                   type="button"
                   onClick={() => dismissTask(activeTask.id)}
-                  className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md p-1.5 transition-colors"
                   aria-label="Ẩn thông báo import"
                   title="Đóng"
                 >
@@ -347,12 +342,12 @@ export function CustomerDrivePanel({
           </div>
 
           {isBusy && (
-            <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-brand-orange/15">
+            <div className="bg-brand-orange/15 mt-2.5 h-1.5 w-full overflow-hidden rounded-full">
               <div
                 className={`h-full rounded-full transition-all duration-300 ease-out ${
                   isCleaning
                     ? "w-full animate-pulse bg-amber-500"
-                    : "bg-gradient-to-r from-brand-orange to-amber-400"
+                    : "from-brand-orange bg-gradient-to-r to-amber-400"
                 }`}
                 style={
                   isCleaning

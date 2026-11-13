@@ -10,12 +10,6 @@
   "lang": "vi",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
       "src": "/favicon-48x48.png",
       "sizes": "48x48",
       "type": "image/png",
@@ -41,4 +35,3 @@
     }
   ]
 }
-
