@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 export function CampaignInlineField({
   field,
   label,
@@ -86,7 +86,24 @@ export function CampaignInlineField({
         {label}
       </label>
       {type === "textarea" ? (
-        <Textarea {...props} rows={3} />
+        <RichTextInput
+          value={draft}
+          disabled={disabled || busy}
+          aria-invalid={error}
+          onChange={(html) => {
+            if (!changed.current) {
+              began.current = version;
+              setEditOrigin({ version, value });
+            }
+            setDraft(html);
+            changed.current = true;
+            onDirty(field, true);
+          }}
+          onBlur={() => {
+            if (changed.current) void save(draft);
+          }}
+          className={className}
+        />
       ) : (
         <Input
           {...props}

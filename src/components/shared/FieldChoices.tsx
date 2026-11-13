@@ -2,7 +2,7 @@ import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 import { Button } from "@/components/ui/button";
 
 export function QuickNumbers({
@@ -23,7 +23,7 @@ export function QuickNumbers({
           key={number}
           type="button"
           size="sm"
-          variant={value === String(number) ? "secondary" : "outline"}
+          variant={value === String(number) ? "orange" : "outline"}
           aria-pressed={value === String(number)}
           onClick={() => onChange(String(number))}
         >
@@ -39,7 +39,7 @@ export function TextChoices({
   value,
   onChange,
   options,
-  maxLength,
+  maxLength: _maxLength,
   id,
 }: {
   label: string;
@@ -77,12 +77,10 @@ export function TextChoices({
         <option value="custom">{t("mediaPackage.choices.other")}</option>
       </Select>
       {custom && (
-        <Textarea
+        <RichTextInput
           aria-label={`${label} — ${t("mediaPackage.choices.other")}`}
-          rows={3}
-          maxLength={maxLength}
           value={value}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={onChange}
         />
       )}
     </div>

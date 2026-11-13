@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, ChevronDown, ShieldOff, Trash2, TriangleAlert } from "lucide-react";
+import { Check, ChevronDown, RotateCcw, Search, ShieldOff, Trash2, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { SelectMenu } from "@/components/ui/select-menu";
+import { Pagination } from "@/components/ui/pagination";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -106,24 +109,206 @@ export function MembersTable({
     }
   };
 
+  // Filter, Sort & Pagination state
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("default");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const hasActiveFilters =
+    search.trim() !== "" || roleFilter !== "all" || sortBy !== "default";
+  const handleResetFilters = () => {
+    setSearch("");
+    setRoleFilter("all");
+    setSortBy("default");
+    setPage(1);
+  };
+
+  const filteredMembers = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return members.filter((m) => {
+      if (roleFilter !== "all" && m.role !== roleFilter) return false;
+      if (q) {
+        const name = (m.fullName || "").toLowerCase();
+        const email = (m.email || "").toLowerCase();
+        if (!name.includes(q) && !email.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [members, search, roleFilter]);
+
+  const sortedMembers = useMemo(() => {
+    return [...filteredMembers].sort((a, b) => {
+      switch (sortBy) {
+        case "name_asc":
+          return (a.fullName || a.email || "").localeCompare(
+            b.fullName || b.email || "",
+            "vi",
+          );
+        case "name_desc":
+          return (b.fullName || b.email || "").localeCompare(
+            a.fullName || a.email || "",
+            "vi",
+          );
+        case "role": {
+          const priority: Record<string, number> = {
+            OWNER: 4,
+            MANAGER: 3,
+            CREATOR: 2,
+            CLIENT: 1,
+          };
+          return (priority[b.role] || 0) - (priority[a.role] || 0);
+        }
+        case "joined_desc": {
+          const tA = a.joinedAt ? new Date(a.joinedAt).getTime() : 0;
+          const tB = b.joinedAt ? new Date(b.joinedAt).getTime() : 0;
+          return tB - tA;
+        }
+        case "joined_asc": {
+          const tA = a.joinedAt ? new Date(a.joinedAt).getTime() : 0;
+          const tB = b.joinedAt ? new Date(b.joinedAt).getTime() : 0;
+          return tA - tB;
+        }
+        default:
+          return 0;
+      }
+    });
+  }, [filteredMembers, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedMembers.length / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const paginatedMembers = useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return sortedMembers.slice(start, start + pageSize);
+  }, [sortedMembers, safePage, pageSize]);
+
   return (
-    <div className="border-border bg-card rounded-xl border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{t("workspace.members.emailLabel")}</TableHead>
-            <TableHead>{t("workspace.members.roleLabel")}</TableHead>
-            <TableHead>{t("workspace.members.joinedAtLabel")}</TableHead>
-            <TableHead>{t("workspace.members.statusLabel")}</TableHead>
-            {canManage && (
-              <TableHead className="text-right pr-4">
-                {t("workspace.members.actionsLabel", "Thao tác")}
-              </TableHead>
+    <div className="space-y-3">
+      {members.length > 0 && (
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+          <Input
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            placeholder={t(
+              "workspace.members.searchPlaceholder",
+              "Tìm theo tên hoặc email…",
             )}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {members.map((member) => {
+            iconPrefix={<Search className="size-3.5" />}
+            wrapperClassName="w-full sm:max-w-xs"
+            className="h-8.5 text-xs"
+          />
+          <div className="flex flex-wrap items-center gap-2">
+            <SelectMenu
+              ariaLabel={t("workspace.members.roleFilter", "Lọc theo vai trò")}
+              value={roleFilter}
+              onChange={(val) => {
+                setRoleFilter(val);
+                setPage(1);
+              }}
+              className="h-8.5 min-w-32 text-xs"
+              options={[
+                {
+                  value: "all",
+                  label: t("workspace.members.allRoles", "Tất cả vai trò"),
+                },
+                {
+                  value: "OWNER",
+                  label: t("workspace.roles.OWNER", "Chủ sở hữu"),
+                },
+                {
+                  value: "MANAGER",
+                  label: t("workspace.roles.MANAGER", "Người quản lý"),
+                },
+                {
+                  value: "CREATOR",
+                  label: t("workspace.roles.CREATOR", "Người tạo nội dung"),
+                },
+              ]}
+            />
+            <SelectMenu
+              ariaLabel={t("workspace.members.sortBy", "Sắp xếp theo")}
+              value={sortBy}
+              onChange={(val) => {
+                setSortBy(val);
+                setPage(1);
+              }}
+              className="h-8.5 min-w-32 text-xs"
+              options={[
+                { value: "default", label: t("common.sort.default", "Mặc định") },
+                {
+                  value: "name_asc",
+                  label: t("common.sort.nameAsc", "Tên: A → Z"),
+                },
+                {
+                  value: "name_desc",
+                  label: t("common.sort.nameDesc", "Tên: Z → A"),
+                },
+                {
+                  value: "role",
+                  label: t("workspace.members.sortRole", "Vai trò ưu tiên"),
+                },
+                {
+                  value: "joined_desc",
+                  label: t("workspace.members.sortNewest", "Mới tham gia"),
+                },
+                {
+                  value: "joined_asc",
+                  label: t("workspace.members.sortOldest", "Tham gia lâu nhất"),
+                },
+              ]}
+            />
+            {hasActiveFilters && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleResetFilters}
+                className="text-muted-foreground hover:text-foreground h-8.5 px-2 text-xs"
+              >
+                <RotateCcw className="mr-1 size-3.5" />
+                {t("common.reset", "Đặt lại")}
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="border-border bg-card overflow-hidden rounded-xl border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("workspace.members.emailLabel")}</TableHead>
+              <TableHead>{t("workspace.members.roleLabel")}</TableHead>
+              <TableHead>{t("workspace.members.joinedAtLabel")}</TableHead>
+              <TableHead>{t("workspace.members.statusLabel")}</TableHead>
+              {canManage && (
+                <TableHead className="pr-4 text-right">
+                  {t("workspace.members.actionsLabel", "Thao tác")}
+                </TableHead>
+              )}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedMembers.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={canManage ? 5 : 4}
+                  className="text-muted-foreground h-24 text-center text-sm"
+                >
+                  {hasActiveFilters
+                    ? t(
+                        "workspace.members.noFilterResults",
+                        "Không tìm thấy thành viên phù hợp.",
+                      )
+                    : t("workspace.members.noMembers", "Chưa có thành viên nào.")}
+                </TableCell>
+              </TableRow>
+            ) : (
+              paginatedMembers.map((member) => {
             const isTargetOwner = member.role === "OWNER";
             const isSelf = Boolean(
               currentUserId && member.userId === currentUserId,
@@ -253,9 +438,27 @@ export function MembersTable({
                 )}
               </TableRow>
             );
-          })}
+          }))}
         </TableBody>
       </Table>
+      </div>
+
+      {sortedMembers.length > 0 && (
+        <Pagination
+          page={safePage}
+          size={pageSize}
+          total={sortedMembers.length}
+          totalPages={totalPages}
+          pageSizeOptions={[5, 10, 20, 50]}
+          itemLabel={t("workspace.members.memberItemLabel", "thành viên")}
+          onPageChange={setPage}
+          onSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          className="pt-1"
+        />
+      )}
 
       {/* Promote confirmation dialog */}
       <Dialog

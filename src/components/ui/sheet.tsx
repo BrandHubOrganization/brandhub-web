@@ -49,14 +49,23 @@ function SheetContent({
   children,
   side = "right",
   showOverlay = true,
+  disableBackdropClick,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "top" | "right" | "bottom" | "left";
   showOverlay?: boolean;
+  disableBackdropClick?: boolean;
 }) {
   return (
     <SheetPortal>
-      {showOverlay && <SheetOverlay />}
+      {showOverlay &&
+        (disableBackdropClick ? (
+          <SheetOverlay />
+        ) : (
+          <SheetPrimitive.Close asChild aria-label="Close sheet overlay">
+            <SheetOverlay className="cursor-pointer" />
+          </SheetPrimitive.Close>
+        ))}
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(

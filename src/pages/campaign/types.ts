@@ -9,10 +9,56 @@ export interface WorkItem {
   type: TaskType;
   dueDate: string | null;
 }
+export type CampaignEventFormat = "OFFLINE" | "ONLINE" | "HYBRID" | "";
+export type CampaignCommFormat =
+  | "DIGITAL_SOCIAL"
+  | "BRAND_LAUNCH"
+  | "OFFLINE_ACTIVATION"
+  | "INFLUENCER_PR"
+  | "PROMOTION_SEASONAL";
+export type CampaignConceptType =
+  | "EMOTIONAL_STORY"
+  | "TEASER_LAUNCH_BOOM"
+  | "EXPERIENTIAL_INTERACTIVE"
+  | "VIRAL_COMMUNITY_UGC"
+  | "EXPERT_TRUST_EDUCATIONAL"
+  | "CONVERSION_OFFER_PUSH"
+  | "";
+export interface CampaignBrief {
+  campaignFormats?: CampaignCommFormat[];
+  conceptType?: CampaignConceptType;
+  conceptIdea?: string;
+  objectives?: string[];
+  targetAudiences?: string[];
+  audienceInsights?: string[];
+  audienceNote?: string;
+  channels?: string[];
+  contentPillars?: string[];
+  primaryCta?: string;
+  eventFormat?: CampaignEventFormat;
+  eventConcept?: string;
+  eventLocation?: string;
+  expectedScale?: string;
+  eventHighlights?: string[];
+  launchPhases?: string[];
+  uspFocus?: string[];
+  digitalFormats?: string[];
+  kpiFocus?: string[];
+  kolTiers?: string[];
+  prAngles?: string[];
+  promoMechanics?: string[];
+  seasonalHook?: string;
+  keyMessage?: string;
+  brandTones?: string[];
+  notes?: string;
+  generatedBrief?: string;
+  generatedBriefUpdatedAt?: string;
+}
 export interface Timeline {
   startDate?: string;
   endDate?: string;
   milestones?: { name: string; date: string }[];
+  brief?: CampaignBrief;
 }
 export interface CampaignPlan {
   name: string;

@@ -14,11 +14,13 @@ import { TaskWorkflowContent } from "@/pages/tasks/components/TaskWorkflowConten
 function GuardedTaskDialog({
   workspaceId,
   taskId,
+  initialSubtaskId,
   onClose,
   onUpdated,
 }: {
   workspaceId: string;
   taskId: string;
+  initialSubtaskId?: string | null;
   onClose: () => void;
   onUpdated: () => void;
 }) {
@@ -43,7 +45,6 @@ function GuardedTaskDialog({
           e.preventDefault();
           void close();
         }}
-        onPointerDownOutside={(e) => e.preventDefault()}
       >
         <DialogHeader className="border-border shrink-0 border-b px-5 py-3 pr-12">
           <DialogTitle>{t("tasks.details")}</DialogTitle>
@@ -55,6 +56,7 @@ function GuardedTaskDialog({
           <TaskWorkflowContent
             workspaceId={workspaceId}
             taskId={taskId}
+            initialSubtaskId={initialSubtaskId}
             onUpdated={onUpdated}
             onClose={() => void close()}
           />
@@ -66,6 +68,7 @@ function GuardedTaskDialog({
 export function CampaignTaskDialog(props: {
   workspaceId: string;
   taskId: string | null;
+  initialSubtaskId?: string | null;
   onClose: () => void;
   onUpdated: () => void;
 }) {

@@ -193,7 +193,7 @@ export function PackageTermsDiff({
             onClick={() => setMobileTab("before")}
             className={`rounded-md px-2.5 py-1 transition-all ${
               mobileTab === "before"
-                ? "bg-muted text-foreground font-semibold shadow-xs"
+                ? "bg-brand-orange text-white font-semibold shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -204,7 +204,7 @@ export function PackageTermsDiff({
             onClick={() => setMobileTab("both")}
             className={`rounded-md px-2.5 py-1 transition-all ${
               mobileTab === "both"
-                ? "bg-muted text-foreground font-semibold shadow-xs"
+                ? "bg-brand-orange text-white font-semibold shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >

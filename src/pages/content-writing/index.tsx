@@ -919,9 +919,13 @@ export function ContentWritingPage() {
           role="dialog"
           aria-modal="true"
           aria-label="Xuất bản bài viết lên mạng xã hội"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs cursor-pointer"
+          onClick={() => setPublishOpen(false)}
         >
-          <div className="border-border bg-card w-full max-w-lg space-y-4 rounded-2xl border p-5 shadow-xl">
+          <div
+            className="border-border bg-card w-full max-w-lg space-y-4 rounded-2xl border p-5 shadow-xl cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between">
               <h3 className="text-foreground text-base font-bold">
                 Đăng bài lên mạng xã hội

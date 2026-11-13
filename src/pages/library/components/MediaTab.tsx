@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { stripExtension } from "@/utils/mediaDownloadHelper";
+import { Pagination } from "@/components/ui/pagination";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useMaterialRepository } from "@/pages/library/hooks/useMaterialRepository";
@@ -766,38 +767,16 @@ function RepositoryMedia(props: MediaTabProps) {
 
       {/* Pagination */}
       {total > 20 && (
-        <div className="flex items-center justify-between gap-3 pt-2">
-          <span className="text-muted-foreground text-xs tabular-nums">
-            {t("library.simple.page", {
-              page: page + 1,
-              total: Math.ceil(total / 20),
-            })}
-          </span>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-[4px]"
-              disabled={pending || page === 0 || repository.query.isFetching}
-              onClick={() => setPage(page - 1)}
-            >
-              {t("library.trash.previous", "Trước")}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-[4px]"
-              disabled={
-                pending ||
-                (page + 1) * 20 >= total ||
-                repository.query.isFetching
-              }
-              onClick={() => setPage(page + 1)}
-            >
-              {t("library.trash.next", "Tiếp")}
-            </Button>
-          </div>
-        </div>
+        <Pagination
+          page={page + 1}
+          size={20}
+          total={total}
+          totalPages={Math.ceil(total / 20)}
+          isFetching={pending || repository.query.isFetching}
+          itemLabel={t("library.simple.mediaItemLabel", "tệp")}
+          onPageChange={(nextPage) => setPage(nextPage - 1)}
+          className="pt-2"
+        />
       )}
 
       {/* Quick Move-to-Folder Dialog */}

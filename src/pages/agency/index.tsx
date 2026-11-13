@@ -41,6 +41,7 @@ import { WorkspaceToolbar } from "@/pages/workspace/components/list/WorkspaceToo
 import { WorkspaceCardItem } from "@/pages/workspace/components/list/WorkspaceCardItem";
 import { WorkspaceEmptyState } from "@/pages/workspace/components/list/WorkspaceEmptyState";
 import { DuplicateWorkspaceDialog } from "@/pages/workspace/components/DuplicateWorkspaceDialog";
+import { Pagination } from "@/components/ui/pagination";
 import type {
   RoleFilter as WsRoleFilter,
   SortOption as WsSortOption,
@@ -385,6 +386,34 @@ export function AgencyPage({ defaultTab }: AgencyHubPageProps = {}) {
       0,
     );
   }, [filteredAgencies, workspacesByAgency]);
+
+  // Pagination for Agencies & Workspaces
+  const [agencyPage, setAgencyPage] = useState(1);
+  const [agencyPageSize, setAgencyPageSize] = useState(6);
+  const [wsPage, setWsPage] = useState(1);
+  const [wsPageSize, setWsPageSize] = useState(6);
+
+  useEffect(() => {
+    setAgencyPage(1);
+  }, [agencySearch, categoryFilter, agencyRoleFilter, agencySort, agencyAdvFilters]);
+
+  useEffect(() => {
+    setWsPage(1);
+  }, [wsSearch, wsAgencyFilter, wsRoleFilter, wsIndustryFilter, wsSort, wsAdvFilters]);
+
+  const totalAgencyPages = Math.max(1, Math.ceil(filteredAgencies.length / agencyPageSize));
+  const safeAgencyPage = Math.min(Math.max(1, agencyPage), totalAgencyPages);
+  const paginatedAgencies = useMemo(() => {
+    const start = (safeAgencyPage - 1) * agencyPageSize;
+    return filteredAgencies.slice(start, start + agencyPageSize);
+  }, [filteredAgencies, safeAgencyPage, agencyPageSize]);
+
+  const totalWsPages = Math.max(1, Math.ceil(filteredWorkspaces.length / wsPageSize));
+  const safeWsPage = Math.min(Math.max(1, wsPage), totalWsPages);
+  const paginatedWorkspaces = useMemo(() => {
+    const start = (safeWsPage - 1) * wsPageSize;
+    return filteredWorkspaces.slice(start, start + wsPageSize);
+  }, [filteredWorkspaces, safeWsPage, wsPageSize]);
 
   const toggleAgencyExpand = (agencyId: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -834,22 +863,41 @@ export function AgencyPage({ defaultTab }: AgencyHubPageProps = {}) {
                       </Button>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {filteredAgencies.map((a) => (
-                        <AgencyHubCard
-                          key={a.id}
-                          agency={a}
-                          workspaces={workspacesByAgency.get(a.id) || []}
-                          isExpanded={expandedAgencyIds.has(a.id)}
-                          isOwner={a.ownerId === user?.id}
-                          onToggleExpand={toggleAgencyExpand}
-                          onSelectAgency={setCurrentAgencyId}
-                          onFilterWorkspacesByAgency={
-                            handleFilterWorkspacesByAgency
-                          }
+                    <>
+                      <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {paginatedAgencies.map((a) => (
+                          <AgencyHubCard
+                            key={a.id}
+                            agency={a}
+                            workspaces={workspacesByAgency.get(a.id) || []}
+                            isExpanded={expandedAgencyIds.has(a.id)}
+                            isOwner={a.ownerId === user?.id}
+                            onToggleExpand={toggleAgencyExpand}
+                            onSelectAgency={setCurrentAgencyId}
+                            onFilterWorkspacesByAgency={
+                              handleFilterWorkspacesByAgency
+                            }
+                          />
+                        ))}
+                      </div>
+
+                      {filteredAgencies.length > 0 && (
+                        <Pagination
+                          page={safeAgencyPage}
+                          size={agencyPageSize}
+                          total={filteredAgencies.length}
+                          totalPages={totalAgencyPages}
+                          pageSizeOptions={[6, 9, 12, 18]}
+                          itemLabel={t("agency.hub.agencyItemLabel", "công ty")}
+                          onPageChange={setAgencyPage}
+                          onSizeChange={(size) => {
+                            setAgencyPageSize(size);
+                            setAgencyPage(1);
+                          }}
+                          className="pt-2"
                         />
-                      ))}
-                    </div>
+                      )}
+                    </>
                   )}
                 </>
               )}
@@ -894,22 +942,41 @@ export function AgencyPage({ defaultTab }: AgencyHubPageProps = {}) {
                       onClearFilters={clearWorkspaceFilters}
                     />
                   ) : (
-                    <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {filteredWorkspaces.map((ws) => (
-                        <WorkspaceCardItem
-                          key={ws.id}
-                          workspace={ws}
-                          parentAgency={
-                            ws.agencyId ? agenciesById.get(ws.agencyId) : null
-                          }
-                          currentUserId={user?.id}
-                          onDuplicate={setDuplicateSource}
-                          onFilterByAgency={(agencyId) =>
-                            setWsAgencyFilter(agencyId)
-                          }
+                    <>
+                      <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {paginatedWorkspaces.map((ws) => (
+                          <WorkspaceCardItem
+                            key={ws.id}
+                            workspace={ws}
+                            parentAgency={
+                              ws.agencyId ? agenciesById.get(ws.agencyId) : null
+                            }
+                            currentUserId={user?.id}
+                            onDuplicate={setDuplicateSource}
+                            onFilterByAgency={(agencyId) =>
+                              setWsAgencyFilter(agencyId)
+                            }
+                          />
+                        ))}
+                      </div>
+
+                      {filteredWorkspaces.length > 0 && (
+                        <Pagination
+                          page={safeWsPage}
+                          size={wsPageSize}
+                          total={filteredWorkspaces.length}
+                          totalPages={totalWsPages}
+                          pageSizeOptions={[6, 9, 12, 18]}
+                          itemLabel={t("workspace.list.itemLabel", "không gian làm việc")}
+                          onPageChange={setWsPage}
+                          onSizeChange={(size) => {
+                            setWsPageSize(size);
+                            setWsPage(1);
+                          }}
+                          className="pt-2"
                         />
-                      ))}
-                    </div>
+                      )}
+                    </>
                   )}
                 </>
               )}

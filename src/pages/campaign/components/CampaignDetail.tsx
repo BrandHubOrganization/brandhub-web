@@ -111,15 +111,20 @@ export function CampaignDetail({
       <header className="border-border/60 space-y-3 border-b pb-5">
         <div className="flex flex-wrap items-center gap-2.5">
           <Badge
-            variant={
-              campaign.status === "APPROVED" || campaign.status === "COMPLETED"
-                ? "APPROVED"
-                : campaign.status === "IN_PROGRESS"
-                  ? "SCHEDULED"
-                  : "outline"
-            }
-            className="font-medium"
+            variant="outline"
+            className={cn(
+              "gap-1.5 font-semibold",
+              campaign.status === "IN_PROGRESS" &&
+                "border-brand-orange/45 bg-brand-orange/15 text-brand-orange",
+              campaign.status === "DRAFT" &&
+                "border-amber-500/40 bg-amber-500/12 text-amber-900 dark:text-amber-200",
+              campaign.status === "APPROVED" &&
+                "border-sky-500/40 bg-sky-500/12 text-sky-800 dark:text-sky-300",
+              campaign.status === "COMPLETED" &&
+                "border-emerald-500/40 bg-emerald-500/12 text-emerald-800 dark:text-emerald-300",
+            )}
           >
+            <span aria-hidden className="size-1.5 rounded-full bg-current" />
             {t(`campaign.status.${campaign.status}`)}
           </Badge>
           <span className="text-muted-foreground/80 text-xs">

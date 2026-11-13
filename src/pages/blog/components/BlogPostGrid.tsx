@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, ChevronDown, RotateCcw } from "lucide-react";
+import { BookOpen, RotateCcw } from "lucide-react";
 import type { BlogCategory, BlogCategorySlug, BlogPostSummary } from "@/data/blogTypes";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 import { BlogPostCard } from "./BlogPostCard";
 import { BlogSpotlightContainer } from "./BlogMotion";
 
@@ -13,20 +14,26 @@ interface BlogPostGridProps {
   onClearFilters: () => void;
 }
 
-const INITIAL_PAGE_SIZE = 12;
-const PAGE_STEP = 12;
-
 export function BlogPostGrid({
   posts,
   getCategoryMeta,
   searchQuery,
   onClearFilters,
 }: BlogPostGridProps) {
-  const [visibleCount, setVisibleCount] = useState(INITIAL_PAGE_SIZE);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(12);
 
   useEffect(() => {
-    setVisibleCount(INITIAL_PAGE_SIZE);
+    setPage(1);
   }, [posts.length, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(posts.length / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+
+  const displayedPosts = useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return posts.slice(start, start + pageSize);
+  }, [posts, safePage, pageSize]);
 
   if (posts.length === 0) {
     return (
@@ -56,9 +63,6 @@ export function BlogPostGrid({
     );
   }
 
-  const displayedPosts = posts.slice(0, visibleCount);
-  const remainingPosts = posts.slice(visibleCount);
-
   return (
     <section aria-labelledby="featured-library-heading" className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-2">
@@ -85,46 +89,33 @@ export function BlogPostGrid({
         ))}
       </BlogSpotlightContainer>
 
-      {remainingPosts.length > 0 && (
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() =>
-              setVisibleCount((prev) => Math.min(posts.length, prev + PAGE_STEP))
-            }
-            className="h-10 cursor-pointer rounded-xl border-zinc-200 bg-white px-5 text-xs font-semibold text-zinc-800 shadow-2xs transition-all hover:border-brand-orange/45 hover:bg-orange-50/40 hover:text-brand-orange dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
-          >
-            <ChevronDown className="mr-1.5 size-4 text-brand-orange" />
-            Xem thêm{" "}
-            <span className="tabular-nums mx-1">
-              {Math.min(PAGE_STEP, remainingPosts.length)}
-            </span>{" "}
-            bài viết (còn {remainingPosts.length})
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => setVisibleCount(posts.length)}
-            className="h-10 cursor-pointer rounded-xl px-4 text-xs font-semibold text-muted-foreground hover:text-brand-orange"
-          >
-            Hiển thị tất cả ({posts.length})
-          </Button>
-        </div>
+      {posts.length > 0 && (
+        <Pagination
+          page={safePage}
+          size={pageSize}
+          total={posts.length}
+          totalPages={totalPages}
+          pageSizeOptions={[12, 24, 36]}
+          itemLabel="bài viết"
+          onPageChange={setPage}
+          onSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          className="pt-2"
+        />
       )}
 
-      {/* Keep remaining article links crawlable in pre-rendered HTML without cluttering the viewport */}
-      {remainingPosts.length > 0 && (
-        <nav aria-label="Danh sách bài viết bổ sung" className="sr-only">
-          <ul>
-            {remainingPosts.map((post) => (
-              <li key={post.id}>
-                <Link to={`/blog/${post.slug}`}>{post.title}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+      {/* Keep all article links crawlable in pre-rendered HTML for SEO */}
+      <nav aria-label="Danh sách bài viết bổ sung" className="sr-only">
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>
+              <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </section>
   );
 }

@@ -204,16 +204,29 @@ export function WorkspacePackageOverview({
             className="focus-visible:ring-ring max-h-96 min-h-0 space-y-3 overflow-y-auto overscroll-contain rounded-xl outline-none focus-visible:ring-2 lg:max-h-none lg:flex-1 lg:pr-2"
           >
             {currentPackage && (
-              <MediaPackageCard
-                compact
-                selected
-                viewed={isCurrent}
-                mediaPackage={currentPackage}
-                canSelect={false}
-                selecting={false}
-                onSelect={() => {}}
-                onViewDetails={onView}
-              />
+              <div className="space-y-2.5">
+                <div className="bg-emerald-500/10 border-emerald-500/25 flex items-center gap-2 rounded-lg border px-3 py-1.5">
+                  <span
+                    className="size-2 shrink-0 rounded-full bg-emerald-500"
+                    aria-hidden="true"
+                  />
+                  <h3 className="text-foreground text-sm font-bold tracking-tight">
+                    {t("mediaPackage.workspace.currentSection", {
+                      defaultValue: "Gói của Workspace hiện tại",
+                    })}
+                  </h3>
+                </div>
+                <MediaPackageCard
+                  compact
+                  selected
+                  viewed={isCurrent}
+                  mediaPackage={currentPackage}
+                  canSelect={false}
+                  selecting={false}
+                  onSelect={() => {}}
+                  onViewDetails={onView}
+                />
+              </div>
             )}
             {catalogPending ? (
               <PackageCatalogLoadingState />
@@ -230,7 +243,23 @@ export function WorkspacePackageOverview({
                 </Button>
               </section>
             ) : (
-              <>
+              <div className="space-y-2.5 pt-1">
+                <div className="bg-brand-orange-soft/70 border-brand-orange/25 flex items-center justify-between gap-2 rounded-lg border px-3 py-1.5">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="bg-brand-orange size-2 shrink-0 rounded-full"
+                      aria-hidden="true"
+                    />
+                    <h3 className="text-foreground text-sm font-bold tracking-tight">
+                      {t("mediaPackage.workspace.agencyCatalogSection", {
+                        defaultValue: "Các gói từ Agency",
+                      })}
+                    </h3>
+                  </div>
+                  <span className="bg-background/80 text-brand-orange rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums">
+                    {filtered.length}
+                  </span>
+                </div>
                 {filtered.slice(0, visibleCount).map((item) => (
                   <MediaPackageCard
                     key={item.id}
@@ -267,7 +296,7 @@ export function WorkspacePackageOverview({
                     {t("mediaPackage.ui.loadMore")}
                   </Button>
                 )}
-              </>
+              </div>
             )}
           </div>
         </aside>

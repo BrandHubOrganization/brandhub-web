@@ -131,7 +131,7 @@ export function AdminRevenuePanel() {
               className={cn(
                 "focus-visible:outline-ring rounded-md px-3 py-1.5 text-xs transition-colors focus-visible:outline-2",
                 preset === value
-                  ? "bg-card text-foreground font-semibold shadow-xs"
+                  ? "bg-brand-orange text-white font-semibold shadow-xs"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >

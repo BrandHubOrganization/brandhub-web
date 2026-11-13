@@ -5,6 +5,17 @@ export interface TaskReference {
   url: string;
 }
 
+export interface TaskPartnerSummary {
+  linkId: string | null;
+  collaboratorId: string;
+  partnerName: string;
+  partnerType: string;
+  cooperationStatus: string | null;
+  contactInfo?: Record<string, unknown> | null;
+  notes?: string | null;
+  active: boolean;
+}
+
 export interface TaskWorkflow {
   id: string;
   workspaceId: string;
@@ -49,6 +60,7 @@ export interface TaskWorkflow {
     acceptanceCriteria?: string;
     [key: string]: unknown;
   } | null;
+  partners?: TaskPartnerSummary[];
 }
 
 export interface TaskDetailFields {

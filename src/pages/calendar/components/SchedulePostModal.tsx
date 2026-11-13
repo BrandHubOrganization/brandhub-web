@@ -217,8 +217,14 @@ export const SchedulePostModal: React.FC<SchedulePostModalProps> = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
-        <div className="animate-in fade-in zoom-in-95 border-border bg-card max-h-[92vh] w-full max-w-lg space-y-5 overflow-y-auto rounded-2xl border p-6 shadow-2xl duration-200">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs cursor-pointer"
+        onClick={onClose}
+      >
+        <div
+          className="animate-in fade-in zoom-in-95 border-border bg-card max-h-[92vh] w-full max-w-lg space-y-5 overflow-y-auto rounded-2xl border p-6 shadow-2xl duration-200 cursor-default"
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Header */}
           <div className="border-border flex items-center justify-between border-b pb-3.5">
             <div className="flex items-center gap-2">

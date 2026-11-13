@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { directoryService } from "../services/directoryService";
+import { seedSamplePartnersToAgency } from "../services/seedSamplePartners";
 import type { DirectoryPartner, PartnerPage } from "../types";
-import { SAMPLE_DIRECTORY_PARTNERS } from "../sampleCollaborators";
 
 export function useDirectory(agencyId: string) {
   const { t } = useTranslation();
@@ -14,18 +14,14 @@ export function useDirectory(agencyId: string) {
   const [type, setType] = useState("");
   const [revision, setRevision] = useState(0);
   const [busy, setBusy] = useState(false);
-  const [demoLoaded, setDemoLoaded] = useState(false);
-  const [demoPartners] = useState<DirectoryPartner[]>(SAMPLE_DIRECTORY_PARTNERS);
   const [result, setResult] = useState<{ key: string; data?: PartnerPage<DirectoryPartner>; error?: boolean }>();
   const key = JSON.stringify([agencyId, page, search, active, type, revision]);
 
   const reload = () => {
-    setDemoLoaded(false);
     setRevision((value) => value + 1);
   };
 
   useEffect(() => {
-    if (demoLoaded) return;
     let current = true;
     const timer = setTimeout(() => {
       directoryService
@@ -46,22 +42,21 @@ export function useDirectory(agencyId: string) {
       current = false;
       clearTimeout(timer);
     };
-  }, [agencyId, page, search, active, type, key, demoLoaded]);
+  }, [agencyId, page, search, active, type, key]);
 
-  const loadDemoData = () => {
-    setDemoLoaded(true);
-    toast.success(t("collaborators.demoLoaded"));
+  const loadDemoData = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await seedSamplePartnersToAgency(agencyId);
+      toast.success(t("collaborators.demoLoaded"));
+      reload();
+    } catch {
+      toast.error(t("collaborators.error"));
+    } finally {
+      setBusy(false);
+    }
   };
-
-  const filteredDemo = useMemo(() => {
-    if (!demoLoaded) return null;
-    return demoPartners.filter((p) => {
-      if (search && !p.partnerName.toLowerCase().includes(search.toLowerCase())) return false;
-      if (active !== "all" && String(p.isActive) !== active) return false;
-      if (type && p.partnerType !== type) return false;
-      return true;
-    });
-  }, [demoLoaded, demoPartners, search, active, type]);
 
   async function mutate(operation: () => Promise<unknown>) {
     if (busy) return false;
@@ -101,17 +96,7 @@ export function useDirectory(agencyId: string) {
   };
 
   const data: PartnerPage<DirectoryPartner> | undefined =
-    demoLoaded && filteredDemo
-      ? {
-          content: filteredDemo,
-          totalElements: filteredDemo.length,
-          totalPages: Math.max(1, Math.ceil(filteredDemo.length / 20)),
-          size: 20,
-          number: page,
-        }
-      : result?.key === key
-        ? result.data
-        : undefined;
+    result?.key === key ? result.data : undefined;
 
   return {
     page,
@@ -126,9 +111,9 @@ export function useDirectory(agencyId: string) {
     mutate,
     reload,
     loadDemoData,
-    isDemo: demoLoaded,
-    loading: !demoLoaded && result?.key !== key,
+    isDemo: false,
+    loading: result?.key !== key,
     data,
-    error: !demoLoaded && result?.key === key && result.error,
+    error: result?.key === key && result.error,
   };
 }

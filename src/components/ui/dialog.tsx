@@ -48,14 +48,26 @@ function DialogOverlay({
   );
 }
 
+export interface DialogContentProps
+  extends React.ComponentProps<typeof DialogPrimitive.Content> {
+  disableBackdropClick?: boolean;
+}
+
 function DialogContent({
   className,
   children,
+  disableBackdropClick,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: DialogContentProps) {
   return (
     <DialogPortal data-slot="dialog-portal">
-      <DialogOverlay />
+      {disableBackdropClick ? (
+        <DialogOverlay />
+      ) : (
+        <DialogPrimitive.Close asChild aria-label="Close dialog overlay">
+          <DialogOverlay className="cursor-pointer" />
+        </DialogPrimitive.Close>
+      )}
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(

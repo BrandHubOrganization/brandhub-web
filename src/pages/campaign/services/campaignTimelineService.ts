@@ -1,7 +1,11 @@
 import { api } from "@/services/api";
 import { requireApiData } from "@/lib/apiData";
 import type { ApiResponse } from "@/services/authService";
-import type { TimelineView } from "@/pages/campaign/types/campaignTimeline";
+import type {
+  CreateOutOfScopeTaskInput,
+  TimelineTask,
+  TimelineView,
+} from "@/pages/campaign/types/campaignTimeline";
 export const campaignTimelineService = {
   async read(workspaceId: string, campaignId: string) {
     const response = await api.get<ApiResponse<TimelineView>>(
@@ -37,5 +41,16 @@ export const campaignTimelineService = {
       `/api/v1/workspaces/${workspaceId}/tasks/${taskId}/schedule`,
       { plannedStartDate, dueDate, expectedRevision },
     );
+  },
+  async createTask(
+    workspaceId: string,
+    campaignId: string,
+    payload: CreateOutOfScopeTaskInput,
+  ) {
+    const response = await api.post<ApiResponse<TimelineTask>>(
+      `/api/v1/workspaces/${workspaceId}/campaigns/${campaignId}/timeline/tasks`,
+      payload,
+    );
+    return requireApiData<TimelineTask>(response.data);
   },
 };

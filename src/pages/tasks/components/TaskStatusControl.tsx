@@ -83,7 +83,7 @@ export function TaskStatusControl({ task }: { task: TaskWorkflow }) {
             size="sm"
             disabled={starting || review.busy}
             aria-label={t("tasks.workflow.changeTaskStatus")}
-            className="h-8 gap-1 rounded-full px-1.5"
+            className="h-8 gap-1 rounded-md px-1.5"
           >
             <JiraStatusLozenge
               status={status}

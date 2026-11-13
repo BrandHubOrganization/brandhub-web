@@ -165,42 +165,49 @@ export function FAQ() {
   const activeMeta =
     FAQS.find((item) => item.key === (openKey ?? activePreviewKey)) ?? FAQS[0];
   const ActiveIcon = activeMeta.icon;
+  const activeHighlights = isEn
+    ? activeMeta.highlightsEn
+    : activeMeta.highlightsVi;
 
   return (
     <section
       id="faq"
-      className="relative overflow-hidden bg-zinc-50/70 py-24 dark:bg-zinc-950"
+      className="relative overflow-hidden bg-zinc-50/70 py-20 sm:py-24 dark:bg-zinc-950"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start lg:gap-12">
-          {/* Left Sticky Editorial & Visual Showcase Column */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-8 xl:gap-10">
+          {/* Left Full-Height Editorial & Visual Showcase Column */}
           <div
             ref={headRef}
             className={cn(
-              "transition-all duration-500 ease-out lg:sticky lg:top-24 lg:col-span-5 motion-reduce:opacity-100 motion-reduce:transition-none",
+              "flex flex-col justify-between h-full transition-all duration-500 ease-out lg:col-span-5 xl:col-span-6 motion-reduce:opacity-100 motion-reduce:transition-none",
               headVisible
                 ? "translate-y-0 opacity-100"
                 : "translate-y-4 opacity-0",
             )}
           >
-            <div className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange mb-3 inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-bold tracking-wider uppercase">
-              <HelpCircle className="size-3.5" />
-              <span>
-                {isEn ? "KNOWLEDGE BASE & SUPPORT" : "TRUNG TÂM GIẢI ĐÁP 24/7"}
-              </span>
+            {/* Header Area */}
+            <div className="shrink-0">
+              <div className="border-brand-orange/20 bg-brand-orange/10 text-brand-orange mb-3 inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-bold tracking-wider uppercase">
+                <HelpCircle className="size-3.5" />
+                <span>
+                  {isEn ? "KNOWLEDGE BASE & SUPPORT" : "TRUNG TÂM GIẢI ĐÁP 24/7"}
+                </span>
+              </div>
+
+              <SplitHeading
+                text={t("landing.faq.title")}
+                className="text-left"
+              />
+              <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-zinc-500 sm:text-base dark:text-zinc-400">
+                {t("landing.faq.subtitle")}
+              </p>
             </div>
 
-            <SplitHeading
-              text={t("landing.faq.title")}
-              className="text-left"
-            />
-            <p className="mt-3 text-sm leading-relaxed text-zinc-500 sm:text-base dark:text-zinc-400">
-              {t("landing.faq.subtitle")}
-            </p>
-
-            {/* Interactive Preview Stage */}
-            <div className="bh-stage-reveal mt-7 overflow-hidden rounded-2xl border border-zinc-200/90 bg-white p-4 shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="aspect-[16/10] w-full overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
+            {/* Interactive Preview Stage - Fills Remaining Vertical Space */}
+            <div className="bh-stage-reveal mt-5 flex flex-1 flex-col justify-between overflow-hidden rounded-3xl border border-zinc-200/90 bg-white p-4.5 shadow-sm sm:mt-6 sm:p-5 dark:border-zinc-800 dark:bg-zinc-900">
+              {/* Image Showcase: stretches naturally to balance the right column */}
+              <div className="group relative w-full flex-1 min-h-[220px] sm:min-h-[260px] overflow-hidden rounded-2xl bg-zinc-100 shadow-inner dark:bg-zinc-800">
                 <img
                   key={activeMeta.key}
                   src={activeMeta.photo}
@@ -211,30 +218,78 @@ export function FAQ() {
                   height={500}
                   loading="lazy"
                   decoding="async"
-                  className="size-full object-cover transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                 />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/30" />
+
+                {/* Floating Badges inside Image */}
+                <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/55 px-3 py-1 text-xs font-semibold text-white shadow-xs backdrop-blur-md">
+                  <ActiveIcon className="text-brand-orange size-3.5" />
+                  <span>{isEn ? activeMeta.tagEn : activeMeta.tagVi}</span>
+                </div>
+                <span className="absolute top-3 right-3 rounded-full bg-brand-orange px-2.5 py-0.5 font-mono text-[11px] font-bold text-white shadow-xs">
+                  TOPIC #{activeMeta.num}
+                </span>
+
+                {/* Caption overlaid on bottom of photo */}
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 text-white">
+                  <p className="text-xs font-semibold leading-snug drop-shadow-xs sm:text-sm">
+                    {isEn
+                      ? activeMeta.photoCaptionEn
+                      : activeMeta.photoCaptionVi}
+                  </p>
+                </div>
               </div>
 
-              {/* Caption & Category Info below Photo */}
-              <div className="mt-3.5 space-y-1.5 px-1">
-                <div className="flex items-center justify-between gap-2 text-xs">
-                  <span className="inline-flex items-center gap-1.5 font-semibold text-zinc-800 dark:text-zinc-100">
-                    <ActiveIcon className="text-brand-orange size-3.5" />
-                    <span>{isEn ? activeMeta.tagEn : activeMeta.tagVi}</span>
-                  </span>
-                  <span className="font-mono text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
-                    TOPIC #{activeMeta.num}
-                  </span>
+              {/* Topic Highlights & Interactive Browser */}
+              <div className="mt-3.5 shrink-0 space-y-2.5 px-0.5">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {activeHighlights.map((chip) => (
+                    <span
+                      key={chip}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-orange-200/80 bg-orange-50/70 px-2.5 py-1 text-xs font-medium text-zinc-700 shadow-2xs dark:border-orange-950/80 dark:bg-orange-950/30 dark:text-orange-200"
+                    >
+                      <span className="bg-brand-orange size-1.5 shrink-0 rounded-full" />
+                      <span>{chip}</span>
+                    </span>
+                  ))}
                 </div>
-                <p className="text-xs leading-relaxed text-zinc-600 sm:text-sm dark:text-zinc-300">
-                  {isEn
-                    ? activeMeta.photoCaptionEn
-                    : activeMeta.photoCaptionVi}
-                </p>
+
+                {/* Quick Topic Switcher Bar */}
+                <div className="flex items-center justify-between rounded-xl border border-zinc-100 bg-zinc-50/90 px-3.5 py-2 dark:border-zinc-800/80 dark:bg-zinc-950/60">
+                  <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                    {isEn ? "Select topic to preview:" : "Chọn nhanh chủ đề:"}
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {FAQS.map((faq) => {
+                      const isCurrent = activeMeta.key === faq.key;
+                      return (
+                        <button
+                          key={faq.key}
+                          type="button"
+                          onClick={() => {
+                            setActivePreviewKey(faq.key);
+                            setOpenKey(faq.key);
+                          }}
+                          className={cn(
+                            "group relative flex size-7 cursor-pointer items-center justify-center rounded-lg text-xs font-bold transition-all duration-200",
+                            isCurrent
+                              ? "bg-brand-orange text-white shadow-2xs scale-105"
+                              : "border border-zinc-200/80 bg-white text-zinc-600 hover:border-orange-300 hover:bg-orange-50 hover:text-brand-orange dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
+                          )}
+                          title={`${faq.num}. ${isEn ? faq.tagEn : faq.tagVi}`}
+                          aria-label={`Topic ${faq.num}`}
+                        >
+                          {faq.num}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               {/* Quick Resource Links Footer */}
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-200/80 bg-zinc-50/80 px-4 py-3 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-zinc-300">
+              <div className="mt-3.5 shrink-0 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-200/80 bg-zinc-50/80 px-3.5 py-2.5 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-zinc-300">
                 <div className="flex items-center gap-2 font-medium">
                   <BookOpen className="text-brand-orange size-4 shrink-0" />
                   <span>
@@ -243,7 +298,7 @@ export function FAQ() {
                       : "Cần tài liệu hướng dẫn chi tiết?"}
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <Link
                     to="/help/faq"
                     className="text-brand-orange inline-flex items-center gap-1 font-bold hover:underline"
@@ -251,7 +306,7 @@ export function FAQ() {
                     <span>{isEn ? "Full FAQ" : "Tất cả câu hỏi"}</span>
                     <ArrowUpRight className="size-3.5" />
                   </Link>
-                  <span className="text-zinc-400 dark:text-zinc-600">·</span>
+                  <span className="text-zinc-300 dark:text-zinc-700">·</span>
                   <Link
                     to="/help/guide"
                     className="inline-flex items-center gap-1 font-semibold text-zinc-700 hover:text-brand-orange dark:text-zinc-200 dark:hover:text-orange-300"
@@ -265,7 +320,10 @@ export function FAQ() {
           </div>
 
           {/* Right Interactive Rounded Accordion Column */}
-          <div ref={listRef} className="space-y-4 lg:col-span-7">
+          <div
+            ref={listRef}
+            className="flex flex-col justify-between space-y-3.5 lg:col-span-7 xl:col-span-6 sm:space-y-4"
+          >
             {FAQS.map((item, i) => {
               const isOpen = openKey === item.key;
               const ItemIcon = item.icon;

@@ -37,6 +37,20 @@ export function applyEffectiveTerms(
   };
 }
 
+export function formatVndInput(raw: string): string {
+  const digits = raw.replace(/\D/g, "");
+  if (!digits) return "";
+  return new Intl.NumberFormat("vi-VN", {
+    maximumFractionDigits: 0,
+  }).format(Number(digits));
+}
+
+export function parseVndInput(input: string): string {
+  const digits = input.replace(/\D/g, "");
+  if (!digits) return "";
+  return digits.replace(/^0+(?=\d)/, "");
+}
+
 export function formatPackageValue(
   mediaPackage: MediaPackage,
   language: string,

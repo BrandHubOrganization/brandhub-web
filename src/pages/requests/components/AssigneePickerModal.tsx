@@ -54,8 +54,14 @@ export const AssigneePickerModal: React.FC<AssigneePickerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-      <div className="bg-card border-border max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-xl border p-6 shadow-2xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs cursor-pointer"
+      onClick={onClose}
+    >
+      <div
+        className="bg-card border-border max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-xl border p-6 shadow-2xl cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="border-border flex items-center justify-between border-b pb-3">
           <div className="flex items-center gap-2">

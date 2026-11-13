@@ -94,24 +94,31 @@ export function OfferingEditor({
             return (
               <div
                 key={service}
-                className={`flex min-w-0 items-center gap-2 rounded-lg border px-3 transition-colors duration-150 motion-reduce:transition-none ${active ? "border-brand-orange bg-brand-orange-soft" : "hover:bg-muted border-transparent"}`}
+                onClick={() => {
+                  if (!item) {
+                    if (!clientNegotiation) toggle(service);
+                  } else {
+                    setSelected(item.id);
+                  }
+                }}
+                className={`flex min-w-0 items-center gap-2 rounded-lg border px-3 transition-colors duration-150 motion-reduce:transition-none ${!item && clientNegotiation ? "cursor-default opacity-60" : "cursor-pointer"} ${active ? "border-brand-orange bg-brand-orange-soft" : "hover:bg-muted border-transparent"}`}
               >
                 <input
                   type="checkbox"
-                  className="accent-brand-orange size-4 shrink-0"
+                  className="accent-brand-orange size-4 shrink-0 cursor-pointer disabled:cursor-default"
                   checked={Boolean(item)}
                   disabled={clientNegotiation}
                   aria-label={t("mediaPackage.editor.include", {
                     service: t(`mediaPackage.offering.services.${service}`),
                   })}
+                  onClick={(e) => e.stopPropagation()}
                   onChange={() => toggle(service)}
                 />
                 <button
                   type="button"
-                  className="min-h-16 min-w-0 flex-1 cursor-pointer py-3 text-left disabled:cursor-default disabled:opacity-60"
-                  disabled={!item}
+                  className="min-h-16 min-w-0 flex-1 cursor-pointer py-3 text-left disabled:cursor-default"
+                  disabled={!item && clientNegotiation}
                   aria-pressed={active}
-                  onClick={() => item && setSelected(item.id)}
                 >
                   <span className="block text-sm font-medium">
                     {t(`mediaPackage.offering.services.${service}`)}

@@ -2,6 +2,7 @@ import { api } from "@/services/api";
 import type { ApiResponse } from "@/services/authService";
 import type {
   Campaign,
+  CampaignBrief,
   CampaignPlan,
   CampaignReviewEvent,
   CampaignVersion,
@@ -21,6 +22,19 @@ export const campaignService = {
       ...plan,
       expectedVersion: campaign.contentVersion,
     }),
+  updateBrief: (
+    workspaceId: string,
+    campaignId: string,
+    payload: {
+      strategyDetail?: string;
+      brandGuideline?: string;
+      brief?: CampaignBrief | null;
+    },
+  ) =>
+    api.patch<ApiResponse<Campaign>>(
+      `${base(workspaceId)}/${campaignId}/brief`,
+      payload,
+    ),
   feedback: (workspaceId: string, campaign: Campaign, comment: string) =>
     api.post<ApiResponse<CampaignReviewEvent>>(
       `${base(workspaceId)}/${campaign.id}/feedback`,
@@ -39,10 +53,19 @@ export const campaignService = {
       `${base(workspaceId)}/${campaign.id}/approve`,
       { expectedVersion: campaign.contentVersion },
     ),
-  deploy: (workspaceId: string, campaign: Campaign) =>
+  deploy: (
+    workspaceId: string,
+    campaign: Campaign,
+    excludedSubtaskIds?: string[],
+  ) =>
     api.post<ApiResponse<CampaignDeployment>>(
       `${base(workspaceId)}/${campaign.id}/deploy`,
-      { expectedVersion: campaign.contentVersion },
+      {
+        expectedVersion: campaign.contentVersion,
+        ...(excludedSubtaskIds && excludedSubtaskIds.length > 0
+          ? { excludedSubtaskIds }
+          : {}),
+      },
     ),
   deployment: (workspaceId: string, campaignId: string) =>
     api.get<ApiResponse<CampaignDeployment | null>>(
@@ -81,5 +104,10 @@ export const campaignService = {
     api.post<ApiResponse<Campaign>>(
       `${base(workspaceId)}/${campaign.id}/complete`,
       { expectedVersion: campaign.contentVersion, reason },
+    ),
+  undeploy: (workspaceId: string, campaign: Campaign) =>
+    api.post<ApiResponse<Campaign>>(
+      `${base(workspaceId)}/${campaign.id}/undeploy`,
+      { expectedVersion: campaign.contentVersion },
     ),
 };

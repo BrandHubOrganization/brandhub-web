@@ -53,7 +53,7 @@ export function TrendHistoryPanel({
         {[7, 30, 90].map((value) => (
           <Button
             key={value}
-            variant={value === days ? "default" : "outline"}
+            variant={value === days ? "orange" : "outline"}
             size="sm"
             aria-pressed={value === days}
             onClick={() => setDays(value)}

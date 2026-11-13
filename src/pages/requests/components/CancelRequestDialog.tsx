@@ -34,8 +34,14 @@ export const CancelRequestDialog: React.FC<CancelRequestDialogProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-      <div className="bg-card border-border w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs cursor-pointer"
+      onClick={onClose}
+    >
+      <div
+        className="bg-card border-border w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Ban className="size-5 text-rose-500" />

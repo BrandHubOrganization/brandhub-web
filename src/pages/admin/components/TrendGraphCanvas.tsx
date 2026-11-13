@@ -346,7 +346,7 @@ export function TrendGraphCanvas({
           </span>
           <Button
             type="button"
-            variant={layoutMode === "force" ? "secondary" : "outline"}
+            variant={layoutMode === "force" ? "orange" : "outline"}
             size="sm"
             aria-pressed={layoutMode === "force"}
             onClick={() =>
@@ -373,7 +373,7 @@ export function TrendGraphCanvas({
           </Button>
           <Button
             type="button"
-            variant={activeHighlight ? "secondary" : "outline"}
+            variant={activeHighlight ? "orange" : "outline"}
             size="sm"
             aria-pressed={activeHighlight}
             onClick={handleToggleHighlight}
@@ -385,7 +385,7 @@ export function TrendGraphCanvas({
           </Button>
           <Button
             type="button"
-            variant={activeEdgeLabels ? "secondary" : "outline"}
+            variant={activeEdgeLabels ? "orange" : "outline"}
             size="sm"
             aria-pressed={activeEdgeLabels}
             onClick={handleToggleEdgeLabels}

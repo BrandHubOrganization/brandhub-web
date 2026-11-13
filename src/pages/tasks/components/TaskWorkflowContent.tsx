@@ -57,6 +57,7 @@ import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 interface Props {
   workspaceId: string;
   taskId: string;
+  initialSubtaskId?: string | null;
   onUpdated?: () => void;
   onClose?: () => void;
 }
@@ -257,7 +258,13 @@ function TaskPostScheduleNotice({
   );
 }
 
-function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
+function TaskWorkflowView({
+  workspaceId,
+  taskId,
+  initialSubtaskId,
+  onUpdated,
+  onClose,
+}: Props) {
   const { t } = useTranslation();
   const state = useTaskWorkflow(workspaceId, taskId);
   const task = state.query.data;
@@ -793,6 +800,7 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
                   taskId={task.id}
                   parentRevision={task.workflowRevision}
                   parentDueDate={task.dueDate}
+                  initialSubtaskId={initialSubtaskId}
                 />
 
                 {/* Section Activity (Tabs: All, Comments, History) */}
@@ -804,7 +812,7 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
                     isAssignee={task.assigneeId === userId}
                   />
                 )}
-                <div className="border-border/60 space-y-3.5 border-t pt-4">
+                <div className="space-y-3.5 pt-2">
                   <div className="flex items-center justify-between">
                     <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
                       <MessageSquare className="text-brand-orange size-4" />
@@ -857,7 +865,7 @@ function TaskWorkflowView({ workspaceId, taskId, onUpdated, onClose }: Props) {
                           taskId={taskId}
                         />
                       )}
-                      <div className="border-border/50 space-y-3 border-t pt-4">
+                      <div className="space-y-3 pt-2">
                         <h4 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
                           Nhật ký hoạt động &amp; Phê duyệt
                         </h4>

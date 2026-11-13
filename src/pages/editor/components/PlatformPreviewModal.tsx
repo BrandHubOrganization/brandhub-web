@@ -68,8 +68,14 @@ export const PlatformPreviewModal: React.FC<PlatformPreviewModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
-      <div className="animate-in fade-in zoom-in-95 border-border bg-card flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border shadow-2xl duration-200">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs cursor-pointer"
+      onClick={onClose}
+    >
+      <div
+        className="animate-in fade-in zoom-in-95 border-border bg-card flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border shadow-2xl duration-200 cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="border-border flex items-center justify-between border-b p-4">
           <div className="flex items-center gap-2">

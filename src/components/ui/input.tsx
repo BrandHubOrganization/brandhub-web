@@ -38,7 +38,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <Label
             htmlFor={inputId}
             className={cn(
-              "text-xs font-semibold tracking-wide flex items-center gap-0.5",
+              "text-foreground flex items-center gap-0.5 text-sm font-bold tracking-normal",
               error && "text-destructive",
             )}
           >

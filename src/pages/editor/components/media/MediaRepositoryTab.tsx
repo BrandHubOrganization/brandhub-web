@@ -198,11 +198,11 @@ export const MediaRepositoryTab: React.FC<MediaRepositoryTabProps> = ({
             <Button
               key={id}
               type="button"
-              variant={isActive ? "secondary" : "ghost"}
+              variant={isActive ? "orange" : "ghost"}
               size="sm"
               className={`h-7 rounded-md px-2.5 text-xs ${
                 isActive
-                  ? "bg-background text-foreground font-semibold shadow-2xs"
+                  ? "bg-brand-orange text-white font-semibold shadow-2xs hover:bg-brand-orange/90"
                   : "text-muted-foreground hover:text-foreground"
               }`}
               aria-pressed={isActive}

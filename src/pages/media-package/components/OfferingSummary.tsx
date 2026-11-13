@@ -23,6 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { ExpandablePackageText } from "./ExpandablePackageText";
 import type { OfferingFields, PackageServiceType } from "../types/mediaPackage";
 
 function getServiceIcon(serviceType: PackageServiceType | string) {
@@ -294,40 +295,50 @@ export function OfferingSummary({ value }: { value: OfferingFields }) {
 
                   {/* Expandable Row for complete description & criteria */}
                   {isExpanded && hasDetails && (
-                    <TableRow className="bg-muted/15 hover:bg-muted/15 border-border/60 border-b">
-                      <TableCell colSpan={3} className="px-3 py-2.5 sm:px-4">
-                        <div className="bg-card/90 border-border/50 grid gap-3 rounded-lg border p-3 text-xs sm:grid-cols-2">
+                    <TableRow className="bg-muted/30 hover:bg-muted/30 border-border/60 border-b">
+                      <TableCell colSpan={3} className="px-3 py-3 sm:px-4">
+                        <div className="grid gap-3 text-xs sm:grid-cols-2">
                           {item.description && (
-                            <div className="min-w-0 space-y-1">
-                              <div className="text-muted-foreground flex items-center gap-1.5 font-medium">
-                                <FileText
-                                  className="size-3.5 shrink-0"
-                                  aria-hidden="true"
-                                />
+                            <section className="border-border/75 bg-card min-w-0 rounded-xl border p-3 shadow-2xs">
+                              <h5 className="border-border/50 text-foreground mb-2 flex items-center gap-2 border-b pb-1.5 font-semibold tracking-tight">
+                                <span className="bg-brand-orange/10 text-brand-orange inline-flex size-5 shrink-0 items-center justify-center rounded-md">
+                                  <FileText
+                                    className="size-3.5"
+                                    aria-hidden="true"
+                                  />
+                                </span>
                                 <span>
                                   {t("mediaPackage.compact.requirements")}
                                 </span>
-                              </div>
-                              <p className="text-foreground/90 pl-5 text-xs leading-relaxed break-words whitespace-pre-line">
-                                {item.description}
-                              </p>
-                            </div>
+                              </h5>
+                              <ExpandablePackageText
+                                text={item.description}
+                                limitLines={null}
+                                tone="orange"
+                                size="xs"
+                              />
+                            </section>
                           )}
                           {item.acceptanceCriteria && (
-                            <div className="min-w-0 space-y-1">
-                              <div className="text-muted-foreground flex items-center gap-1.5 font-medium">
-                                <CheckCircle2
-                                  className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400"
-                                  aria-hidden="true"
-                                />
+                            <section className="border-border/75 bg-card min-w-0 rounded-xl border p-3 shadow-2xs">
+                              <h5 className="border-border/50 text-foreground mb-2 flex items-center gap-2 border-b pb-1.5 font-semibold tracking-tight">
+                                <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                                  <CheckCircle2
+                                    className="size-3.5"
+                                    aria-hidden="true"
+                                  />
+                                </span>
                                 <span>
                                   {t("mediaPackage.offering.acceptance")}
                                 </span>
-                              </div>
-                              <p className="text-foreground/90 pl-5 text-xs leading-relaxed break-words whitespace-pre-line">
-                                {item.acceptanceCriteria}
-                              </p>
-                            </div>
+                              </h5>
+                              <ExpandablePackageText
+                                text={item.acceptanceCriteria}
+                                limitLines={null}
+                                tone="emerald"
+                                size="xs"
+                              />
+                            </section>
                           )}
                         </div>
                       </TableCell>

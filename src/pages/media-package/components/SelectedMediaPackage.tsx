@@ -13,12 +13,12 @@ import {
   Wallet,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { RichTextContent } from "@/components/ui/rich-text-input";
 import { Button } from "@/components/ui/button";
+import { HoldButton, RubberSegment } from "@/components/micro";
 import {
   Tabs,
   TabsContent,
-  TabsList,
-  TabsTrigger,
 } from "@/components/ui/tabs";
 import { HelpHint } from "@/components/shared/HelpHint";
 import { applyEffectiveTerms } from "../lib/formatMediaPackage";
@@ -104,6 +104,9 @@ export function SelectedMediaPackage({
   const navigate = useNavigate();
   const { id: routeWorkspaceId } = useParams<{ id: string }>();
   const [negotiationOpen, setNegotiationOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<
+    "deliverables" | "termsDiff" | "history"
+  >("deliverables");
   const changeNegotiationOpen = (open: boolean) => {
     setNegotiationOpen(open);
     onEditingChange?.(open);
@@ -312,29 +315,46 @@ export function SelectedMediaPackage({
       <div className="grid items-start gap-5 lg:grid-cols-12">
         {/* Left Column: Master Canvas */}
         <div className="min-w-0 lg:col-span-8 space-y-4">
-          <Tabs defaultValue="deliverables" className="w-full">
-            <TabsList className="h-9 bg-muted/60 p-1 border border-border/60 rounded-lg flex items-center justify-start gap-1 w-full sm:w-auto">
-              <TabsTrigger value="deliverables" className="gap-1.5 text-xs">
-                <Layers className="size-3.5" aria-hidden="true" />
-                <span>{t("mediaPackage.ui.deliverables", "Hạng mục & Gói dịch vụ")}</span>
-              </TabsTrigger>
-              <TabsTrigger value="termsDiff" className="gap-1.5 text-xs">
-                <ArrowLeftRight className="size-3.5" aria-hidden="true" />
-                <span>{t("mediaPackage.ui.compare", "So sánh điều khoản")}</span>
-                {Boolean(selection.previousTerms) && (
-                  <Badge
-                    variant="secondary"
-                    className="ml-1 px-1.5 py-0 text-[10px] leading-tight font-medium"
-                  >
-                    {t("mediaPackage.ui.changed", "Đã đổi")}
-                  </Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="history" className="gap-1.5 text-xs">
-                <History className="size-3.5" aria-hidden="true" />
-                <span>{t("mediaPackage.history.title", "Lịch sử thương lượng")}</span>
-              </TabsTrigger>
-            </TabsList>
+          <Tabs
+            value={activeTab}
+            onValueChange={(next) =>
+              setActiveTab(next as "deliverables" | "termsDiff" | "history")
+            }
+            className="w-full"
+          >
+            <RubberSegment
+              size="sm"
+              variant="solid"
+              ariaLabel={t("mediaPackage.ui.deliverables", "Hạng mục & Gói dịch vụ")}
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full overflow-x-auto sm:w-auto"
+              options={[
+                {
+                  value: "deliverables" as const,
+                  icon: <Layers className="size-3.5" aria-hidden="true" />,
+                  label: t("mediaPackage.ui.deliverables", "Hạng mục & Gói dịch vụ"),
+                },
+                {
+                  value: "termsDiff" as const,
+                  icon: <ArrowLeftRight className="size-3.5" aria-hidden="true" />,
+                  label: t("mediaPackage.ui.compare", "So sánh điều khoản"),
+                  badge: selection.previousTerms ? (
+                    <Badge
+                      variant="secondary"
+                      className="px-1.5 py-0 text-[10px] leading-tight font-medium"
+                    >
+                      {t("mediaPackage.ui.changed", "Đã đổi")}
+                    </Badge>
+                  ) : undefined,
+                },
+                {
+                  value: "history" as const,
+                  icon: <History className="size-3.5" aria-hidden="true" />,
+                  label: t("mediaPackage.history.title", "Lịch sử thương lượng"),
+                },
+              ]}
+            />
 
             <TabsContent value="deliverables" className="mt-4 space-y-4 outline-none">
               {mediaPackage.scopeDescription && (
@@ -342,7 +362,10 @@ export function SelectedMediaPackage({
                   <p className="font-semibold text-foreground text-xs uppercase tracking-wider mb-1.5">
                     {t("mediaPackage.selected.scopeTitle", "Phạm vi công việc")}
                   </p>
-                  <p className="whitespace-pre-line">{mediaPackage.scopeDescription}</p>
+                  <RichTextContent
+                    value={mediaPackage.scopeDescription}
+                    className="text-xs leading-relaxed text-muted-foreground"
+                  />
                 </div>
               )}
               <OfferingSummary value={mediaPackage} />
@@ -402,18 +425,22 @@ export function SelectedMediaPackage({
           />
 
           {!isDualApproved && (isClient || isAgency) && !mineApproved && (
-            <Button
-              variant="orange"
-              className="w-full font-medium"
+            <HoldButton
+              size="default"
+              durationMs={850}
               loading={isActionLoading}
-              onClick={handleApprove}
+              holdHint={t("mediaPackage.actions.holdToApprove", {
+                defaultValue: "Giữ để chấp thuận gói",
+              })}
+              className="w-full"
+              onCommit={handleApprove}
             >
               {t(
                 isClient
                   ? "mediaPackage.actions.clientApprove"
                   : "mediaPackage.actions.agencyApprove",
               )}
-            </Button>
+            </HoldButton>
           )}
 
           {!isDualApproved && (

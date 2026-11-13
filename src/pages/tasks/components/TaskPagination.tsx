@@ -23,11 +23,11 @@ export function TaskPagination({
       page={page + 1}
       size={10}
       total={totalElements}
-      totalPages={totalPages}
+      totalPages={Math.max(1, totalPages)}
       isFetching={loading}
+      itemLabel={t("tasks.itemLabel", "công việc")}
       onPageChange={(newPage) => onPageChange(newPage - 1)}
-      itemLabel={t("tasks.itemLabel", { defaultValue: "công việc" })}
-      compact={false}
+      className="pt-2"
     />
   );
 }

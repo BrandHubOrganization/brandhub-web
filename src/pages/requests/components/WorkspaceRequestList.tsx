@@ -3,6 +3,7 @@ import { FileText, SearchX, RotateCcw, Check, CheckCircle2, Ban, Eye, Edit3 } fr
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Pagination } from "@/components/ui/pagination";
 import { SocialPlatformBadge } from "@/components/common/SocialPlatformBadge";
 import type { RequestPage, ReviewAction, WorkspaceRequest } from "@/pages/requests/types/workspaceRequest";
 
@@ -183,37 +184,17 @@ export function WorkspaceRequestList({
       </div>
 
       {/* Pagination Footer */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-1 pt-1">
-        <p className="text-muted-foreground text-xs">
-          {t("requests.v2.count", { count: result.total })}
-        </p>
-        <nav className="flex items-center gap-2" aria-label={t("requests.v2.pagination")}>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={result.page === 0}
-            onClick={() => onPage(result.page - 1)}
-            className="h-8 text-xs rounded-lg"
-          >
-            {t("requests.v2.previous")}
-          </Button>
-          <span className="text-muted-foreground px-1 text-xs">
-            {t("requests.v2.page", {
-              page: result.page + 1,
-              total: Math.max(1, result.totalPages),
-            })}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={result.page + 1 >= result.totalPages}
-            onClick={() => onPage(result.page + 1)}
-            className="h-8 text-xs rounded-lg"
-          >
-            {t("requests.v2.next")}
-          </Button>
-        </nav>
-      </div>
+      {result.total > 0 && (
+        <Pagination
+          page={result.page + 1}
+          size={10}
+          total={result.total}
+          totalPages={Math.max(1, result.totalPages)}
+          itemLabel={t("requests.v2.itemLabel", "yêu cầu")}
+          onPageChange={(nextPage) => onPage(nextPage - 1)}
+          className="pt-2 px-1"
+        />
+      )}
     </section>
   );
 }

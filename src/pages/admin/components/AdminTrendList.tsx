@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 import { AdminTrendDetail } from "@/pages/admin/components/AdminTrendDetail";
 import type { PublishedTrend } from "@/pages/admin/types/trendView";
 
@@ -124,6 +125,8 @@ export function AdminTrendList({ trends }: { trends: PublishedTrend[] }) {
   const { t, i18n } = useTranslation();
   const [sortBy, setSortBy] = useState<SortKey>("rank");
   const [sortAsc, setSortAsc] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   const number = useMemo(
     () =>
@@ -140,6 +143,7 @@ export function AdminTrendList({ trends }: { trends: PublishedTrend[] }) {
       setSortBy(key);
       setSortAsc(key === "rank");
     }
+    setPage(1);
   };
 
   const sortedTrends = useMemo(() => {
@@ -161,6 +165,13 @@ export function AdminTrendList({ trends }: { trends: PublishedTrend[] }) {
       return sortAsc ? diff : -diff;
     });
   }, [trends, sortBy, sortAsc]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedTrends.length / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const paginatedTrends = useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return sortedTrends.slice(start, start + pageSize);
+  }, [sortedTrends, safePage, pageSize]);
 
   const sortButtons: Array<{ key: SortKey; label: string }> = [
     {
@@ -202,11 +213,12 @@ export function AdminTrendList({ trends }: { trends: PublishedTrend[] }) {
             return (
               <Button
                 key={btn.key}
-                variant={isActive ? "secondary" : "ghost"}
+                variant={isActive ? "orange" : "ghost"}
                 size="sm"
+                aria-pressed={isActive}
                 className={`h-7 px-2.5 text-xs font-medium gap-1 rounded-lg ${
                   isActive
-                    ? "bg-primary/10 text-primary hover:bg-primary/15"
+                    ? "bg-brand-orange text-white font-semibold shadow-xs hover:bg-brand-orange/90"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 onClick={() => handleSort(btn.key)}
@@ -227,7 +239,7 @@ export function AdminTrendList({ trends }: { trends: PublishedTrend[] }) {
 
       {/* Trend Candidate List (Each MUST be details > summary for Playwright QA) */}
       <div className="space-y-3">
-        {sortedTrends.map((trend, index) => {
+        {paginatedTrends.map((trend, index) => {
           const statusText = trend.status
             ? t(`admin.trends.status.${trend.status}`, {
                 defaultValue: trend.status,
@@ -289,6 +301,23 @@ export function AdminTrendList({ trends }: { trends: PublishedTrend[] }) {
           );
         })}
       </div>
+
+      {sortedTrends.length > 0 && (
+        <Pagination
+          page={safePage}
+          size={pageSize}
+          total={sortedTrends.length}
+          totalPages={totalPages}
+          pageSizeOptions={[10, 20, 50]}
+          itemLabel={t("admin.trends.trendItemLabel", "xu hướng")}
+          onPageChange={setPage}
+          onSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          className="pt-2"
+        />
+      )}
     </div>
   );
 }

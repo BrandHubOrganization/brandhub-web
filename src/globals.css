@@ -134,6 +134,38 @@
   html {
     @apply font-sans;
   }
+
+  /* Universal interactive pointer cursor */
+  button,
+  [role="button"],
+  [type="button"],
+  [type="submit"],
+  [type="reset"],
+  a,
+  summary,
+  select,
+  [tabindex="0"]:not([role="textbox"]):not([contenteditable="true"]):not(input):not(textarea),
+  [data-slot="button"],
+  [data-slot="dropdown-menu-item"],
+  [data-slot="select-item"],
+  [data-slot="select-trigger"],
+  [data-slot="pagination-link"],
+  [data-slot="tabs-trigger"],
+  [data-radix-collection-item],
+  .cursor-pointer {
+    cursor: pointer !important;
+  }
+
+  button:disabled,
+  [role="button"][aria-disabled="true"],
+  [type="button"]:disabled,
+  [type="submit"]:disabled,
+  [type="reset"]:disabled,
+  select:disabled,
+  [data-disabled="true"],
+  .cursor-not-allowed {
+    cursor: not-allowed !important;
+  }
 }
 
 /* Định nghĩa cấu hình theme tương thích với Tailwind v4 */

@@ -1,18 +1,23 @@
 import { QuickNumbers } from "@/components/shared/FieldChoices";
 import { useId, useState } from "react";
+import { CheckCircle2, Eye, Pencil, Rocket } from "lucide-react";
 import { DiscardChangesDialog } from "./DiscardChangesDialog";
 import { useDraftUnloadWarning } from "../hooks/useDraftUnloadWarning";
 import { usePackageEditorHeight } from "@/pages/media-package/hooks/usePackageEditorHeight";
 import { OfferingEditor } from "@/pages/media-package/components/OfferingEditor";
+import { PackageProposalView } from "@/pages/media-package/components/PackageProposalView";
 import { copyOfferingDetails } from "@/pages/media-package/types/serviceUnits";
+import {
+  formatVndInput,
+  parseVndInput,
+} from "@/pages/media-package/lib/formatMediaPackage";
 import type { OfferingFields } from "@/pages/media-package/types/mediaPackage";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { InlineWorkArea } from "@/components/shared/InlineWorkArea";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 import type {
   CreateCustomMediaPackageRequest,
   MediaPackage,
@@ -21,6 +26,7 @@ import type {
 interface CreateCustomPackageFormProps {
   open: boolean;
   editing?: boolean;
+  mode?: "create" | "edit" | "workspace-deploy";
   sourceTemplate?: MediaPackage | null;
   loading: boolean;
   onOpenChange: (open: boolean) => void;
@@ -38,6 +44,7 @@ interface FormErrors {
 export function CreateCustomPackageForm({
   open,
   editing = false,
+  mode,
   sourceTemplate,
   loading,
   onOpenChange,
@@ -45,6 +52,11 @@ export function CreateCustomPackageForm({
 }: CreateCustomPackageFormProps) {
   const { t, i18n } = useTranslation();
   const formId = useId();
+  const effectiveMode = mode ?? (editing ? "edit" : "create");
+  const isWorkspaceDeploy = effectiveMode === "workspace-deploy";
+  const [agreed, setAgreed] = useState(false);
+  const [agreementError, setAgreementError] = useState(false);
+  const [adjusting, setAdjusting] = useState(false);
   const { ref: editorRef, height: editorHeight } = usePackageEditorHeight(open);
   const [offering, setOffering] = useState<OfferingFields>({
     offeringDetails: copyOfferingDetails(sourceTemplate?.offeringDetails),
@@ -94,24 +106,32 @@ export function CreateCustomPackageForm({
     setErrors({});
   };
 
+  const validateName = (val: string) =>
+    !val.trim() ? t("mediaPackage.form.errors.name") : undefined;
+
+  const validateDuration = (val: string) =>
+    val.trim() && (!Number.isInteger(Number(val)) || Number(val) <= 0)
+      ? t("mediaPackage.form.errors.duration")
+      : undefined;
+
+  const validateBudget = (val: string) =>
+    val.trim() && (!Number.isFinite(Number(val)) || Number(val) <= 0)
+      ? t("mediaPackage.form.errors.budget")
+      : undefined;
+
+  const validateScope = (val: string) =>
+    val.length > 5000 ? t("mediaPackage.form.errors.scopeLength") : undefined;
+
   const validate = () => {
     const nextErrors: FormErrors = {};
-    if (!name.trim()) nextErrors.name = t("mediaPackage.form.errors.name");
-    if (
-      durationWeeks.trim() &&
-      (!Number.isInteger(Number(durationWeeks)) || Number(durationWeeks) <= 0)
-    ) {
-      nextErrors.durationWeeks = t("mediaPackage.form.errors.duration");
-    }
-    if (
-      budgetAmount.trim() &&
-      (!Number.isFinite(Number(budgetAmount)) || Number(budgetAmount) <= 0)
-    ) {
-      nextErrors.budgetAmount = t("mediaPackage.form.errors.budget");
-    }
-    if (scopeDescription.length > 5000) {
-      nextErrors.scopeDescription = t("mediaPackage.form.errors.scopeLength");
-    }
+    const nameErr = validateName(name);
+    if (nameErr) nextErrors.name = nameErr;
+    const durationErr = validateDuration(durationWeeks);
+    if (durationErr) nextErrors.durationWeeks = durationErr;
+    const budgetErr = validateBudget(budgetAmount);
+    if (budgetErr) nextErrors.budgetAmount = budgetErr;
+    const scopeErr = validateScope(scopeDescription);
+    if (scopeErr) nextErrors.scopeDescription = scopeErr;
     if (!offering.offeringDetails?.deliverables.length)
       nextErrors.offering = t("mediaPackage.offering.required");
     setErrors(nextErrors);
@@ -122,12 +142,18 @@ export function CreateCustomPackageForm({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (isWorkspaceDeploy && !agreed) {
+      setAgreementError(true);
+      return;
+    }
     if (
       loading ||
       !validate() ||
       !offering.offeringDetails?.deliverables.length
-    )
+    ) {
+      if (isWorkspaceDeploy) setAdjusting(true);
       return;
+    }
     const success = await onSubmit({
       sourceTemplateId: sourceTemplate?.id,
       ...offering,
@@ -175,18 +201,28 @@ export function CreateCustomPackageForm({
                 type="submit"
                 form={formId}
                 variant="orange"
-                className="h-11 min-h-11 px-3 text-sm sm:h-9 sm:min-h-9"
+                className="h-11 min-h-11 gap-1.5 px-3.5 text-sm sm:h-9 sm:min-h-9"
                 loading={loading}
               >
-                {t("mediaPackage.editor.save")}
+                {isWorkspaceDeploy && <Rocket className="size-4 shrink-0" />}
+                {isWorkspaceDeploy
+                  ? t("mediaPackage.deploy.startButton", "Bắt đầu triển khai")
+                  : t("mediaPackage.editor.save")}
               </Button>
             </>
           }
-          title={t(
-            editing
-              ? "mediaPackage.editor.editTitle"
-              : "mediaPackage.form.title",
-          )}
+          title={
+            isWorkspaceDeploy
+              ? t(
+                  "mediaPackage.deploy.title",
+                  "Xác nhận & Triển khai gói truyền thông",
+                )
+              : t(
+                  editing
+                    ? "mediaPackage.editor.editTitle"
+                    : "mediaPackage.form.title",
+                )
+          }
           backLabel={t("mediaPackage.ui.backToPackages")}
           onBack={() => handleOpenChange(false)}
           disabled={loading}
@@ -206,7 +242,91 @@ export function CreateCustomPackageForm({
               disabled={loading}
               className="min-h-0 min-w-0 flex-1 [scrollbar-gutter:stable] space-y-5 overflow-y-auto overscroll-contain px-1 pb-2"
             >
-              {Object.values(errors).some(Boolean) && (
+              {isWorkspaceDeploy && (
+                <section
+                  aria-label="Xác nhận điều khoản triển khai"
+                  className="border-brand-orange/30 bg-brand-orange-soft/60 space-y-3 rounded-2xl border p-4 sm:p-5"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <h3 className="text-foreground flex items-center gap-2 text-base font-bold">
+                        <CheckCircle2 className="text-brand-orange size-5 shrink-0" />
+                        <span>
+                          Bạn đã đồng ý với các điều khoản trong gói này chưa?
+                        </span>
+                      </h3>
+                      <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">
+                        Vui lòng kiểm tra kỹ ngân sách, thời lượng, mô tả và
+                        hạng mục bàn giao bên dưới. Nếu cần thay đổi, bạn có
+                        thể cân chỉnh trước khi nhấn{" "}
+                        <strong className="text-foreground">
+                          Bắt đầu triển khai
+                        </strong>
+                        .
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant={adjusting ? "secondary" : "outline"}
+                      size="sm"
+                      className="shrink-0 gap-1.5 rounded-xl bg-background font-semibold"
+                      onClick={() => setAdjusting((prev) => !prev)}
+                    >
+                      {adjusting ? (
+                        <>
+                          <Eye className="size-4" />
+                          Xem bản tóm tắt
+                        </>
+                      ) : (
+                        <>
+                          <Pencil className="size-4" />
+                          Cân chỉnh gói
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
+                  <label className="border-border/70 bg-background/90 flex cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 py-2.5 text-sm font-medium">
+                    <input
+                      type="checkbox"
+                      className="accent-brand-orange size-4 shrink-0 cursor-pointer"
+                      checked={agreed}
+                      onChange={(e) => {
+                        setAgreed(e.target.checked);
+                        if (e.target.checked) setAgreementError(false);
+                      }}
+                    />
+                    <span className="text-foreground">
+                      Tôi đã xem xét và đồng ý với toàn bộ điều khoản, hạng mục
+                      của gói này để bắt đầu triển khai.
+                    </span>
+                  </label>
+                  {agreementError && (
+                    <p role="alert" className="text-destructive text-xs font-medium">
+                      Vui lòng tick xác nhận đồng ý với các điều khoản trước khi
+                      bắt đầu triển khai.
+                    </p>
+                  )}
+                </section>
+              )}
+
+              {isWorkspaceDeploy && !adjusting ? (
+                <PackageProposalView
+                  mediaPackage={{
+                    name: name.trim() || sourceTemplate?.name || "",
+                    budgetAmount: budgetAmount.trim()
+                      ? Number(budgetAmount)
+                      : null,
+                    durationWeeks: durationWeeks.trim()
+                      ? Number(durationWeeks)
+                      : null,
+                    scopeDescription: scopeDescription.trim() || null,
+                    offeringDetails: offering.offeringDetails ?? null,
+                  }}
+                />
+              ) : (
+                <>
+                  {Object.values(errors).some(Boolean) && (
                 <div
                   id="package-form-errors"
                   role="alert"
@@ -234,24 +354,43 @@ export function CreateCustomPackageForm({
                     value={name}
                     maxLength={255}
                     error={errors.name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setName(val);
+                      setErrors((prev) => ({
+                        ...prev,
+                        name: validateName(val),
+                      }));
+                    }}
                   />
                   <div className="[&_button[aria-pressed=true]]:border-brand-orange [&_button[aria-pressed=true]]:bg-brand-orange-soft [&_button[aria-pressed=true]]:text-foreground [&_button]:bg-muted space-y-2 [&_button]:min-h-9">
                     <Input
                       id="package-field-budgetAmount"
-                      type="number"
-                      min="0.01"
-                      step="0.01"
+                      type="text"
+                      inputMode="numeric"
                       label={t("mediaPackage.editor.budgetOptional")}
-                      value={budgetAmount}
+                      value={formatVndInput(budgetAmount)}
                       iconSuffix={<span className="text-xs">VND</span>}
                       error={errors.budgetAmount}
-                      onChange={(e) => setBudgetAmount(e.target.value)}
+                      onChange={(e) => {
+                        const val = parseVndInput(e.target.value);
+                        setBudgetAmount(val);
+                        setErrors((prev) => ({
+                          ...prev,
+                          budgetAmount: validateBudget(val),
+                        }));
+                      }}
                     />
                     <QuickNumbers
                       values={[10000000, 25000000, 50000000]}
                       value={budgetAmount}
-                      onChange={setBudgetAmount}
+                      onChange={(val) => {
+                        setBudgetAmount(val);
+                        setErrors((prev) => ({
+                          ...prev,
+                          budgetAmount: validateBudget(val),
+                        }));
+                      }}
                       format={(amount) =>
                         t("mediaPackage.editor.millions", {
                           amount: new Intl.NumberFormat(
@@ -270,12 +409,25 @@ export function CreateCustomPackageForm({
                       label={t("mediaPackage.editor.durationOptional")}
                       value={durationWeeks}
                       error={errors.durationWeeks}
-                      onChange={(e) => setDurationWeeks(e.target.value)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setDurationWeeks(val);
+                        setErrors((prev) => ({
+                          ...prev,
+                          durationWeeks: validateDuration(val),
+                        }));
+                      }}
                     />
                     <QuickNumbers
                       values={[2, 4, 6, 8]}
                       value={durationWeeks}
-                      onChange={setDurationWeeks}
+                      onChange={(val) => {
+                        setDurationWeeks(val);
+                        setErrors((prev) => ({
+                          ...prev,
+                          durationWeeks: validateDuration(val),
+                        }));
+                      }}
                       format={(count) =>
                         t("mediaPackage.values.duration", { count })
                       }
@@ -283,13 +435,9 @@ export function CreateCustomPackageForm({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="package-field-scopeDescription">
-                    {t("mediaPackage.proposal.packageDescription")}
-                  </Label>
-                  <Textarea
+                  <RichTextInput
                     id="package-field-scopeDescription"
-                    rows={2}
-                    maxLength={5000}
+                    label={t("mediaPackage.proposal.packageDescription")}
                     value={scopeDescription}
                     aria-invalid={Boolean(errors.scopeDescription)}
                     aria-describedby={
@@ -297,11 +445,35 @@ export function CreateCustomPackageForm({
                         ? "package-form-errors"
                         : undefined
                     }
-                    onChange={(e) => setScopeDescription(e.target.value)}
+                    onChange={(val) => {
+                      setScopeDescription(val);
+                      setErrors((prev) => ({
+                        ...prev,
+                        scopeDescription: validateScope(val),
+                      }));
+                    }}
                   />
+                  {errors.scopeDescription && (
+                    <p role="alert" className="text-destructive text-xs">
+                      {errors.scopeDescription}
+                    </p>
+                  )}
                 </div>
               </section>
-              <OfferingEditor value={offering} onChange={setOffering} />
+              <OfferingEditor
+                value={offering}
+                onChange={(next) => {
+                  setOffering(next);
+                  setErrors((prev) => ({
+                    ...prev,
+                    offering: next.offeringDetails?.deliverables.length
+                      ? undefined
+                      : t("mediaPackage.offering.required"),
+                  }));
+                }}
+              />
+                </>
+              )}
             </fieldset>
           </form>
         </InlineWorkArea>

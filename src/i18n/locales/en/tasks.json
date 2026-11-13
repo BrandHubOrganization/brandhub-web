@@ -1,4 +1,15 @@
 {
+  "partners": {
+    "title": "Partner contacts",
+    "selectAction": "Assign partner",
+    "fromCampaign": "Campaign partners",
+    "fromAgencyDirectory": "From Agency directory",
+    "noneAvailable": "No partners in this campaign or Agency directory yet.",
+    "openCampaignPartners": "Open Campaign Partners",
+    "empty": "No partners linked to this task yet.",
+    "detach": "Remove partner from task",
+    "saved": "Updated task partners"
+  },
   "subtasks": {
     "title": "Subtasks",
     "add": "Add subtask",
@@ -319,7 +330,7 @@
   "descriptionLabel": "Requirements",
   "reporter": "Created by",
   "sources": {
-    "CAMPAIGN": "Campaign plan",
+    "CAMPAIGN": "Media Campaign",
     "CONTENT_REQUEST": "Supplemental content request",
     "MANUAL": "Manually created"
   },

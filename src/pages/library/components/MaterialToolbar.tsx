@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Calendar,
-  Check,
   ChevronDown,
   Clock,
   FileText,
@@ -282,57 +281,85 @@ export function MaterialToolbar(props: Props) {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors ${
+                className={`inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition-colors ${
                   props.mediaKind !== undefined
                     ? "border-brand-orange/50 bg-brand-orange/10 font-semibold text-brand-orange shadow-2xs"
                     : "border-border/90 bg-background text-foreground hover:bg-muted/60"
                 }`}
               >
                 <span>{getMediaKindLabel()}</span>
-                <ChevronDown className="size-3.5 opacity-70" />
+                <ChevronDown className="size-3.5 opacity-70 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48 rounded-xl border border-border/80 bg-card p-1 shadow-lg">
+            <DropdownMenuContent align="start" className="w-52 rounded-2xl border border-border/80 bg-popover p-1.5 shadow-2xl z-[120]">
               <DropdownMenuItem
                 onSelect={() => props.onMediaKindChange(undefined)}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  props.mediaKind === undefined
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <LayoutGrid className="size-3.5 text-muted-foreground" />
-                  <span>{t("library.repository.kinds.all", "Tất cả")}</span>
-                </div>
-                {props.mediaKind === undefined && <Check className="size-3.5 text-brand-orange" />}
+                <LayoutGrid
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    props.mediaKind === undefined ? "text-brand-orange" : "text-muted-foreground",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.kinds.all", "Tất cả")}</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="bg-border/60 -mx-1 my-1" />
               <DropdownMenuItem
                 onSelect={() => props.onMediaKindChange("IMAGE")}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  props.mediaKind === "IMAGE"
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <ImageIcon className="size-3.5 text-blue-500" />
-                  <span>{t("library.repository.kinds.image", "Hình ảnh")}</span>
-                </div>
-                {props.mediaKind === "IMAGE" && <Check className="size-3.5 text-brand-orange" />}
+                <ImageIcon
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    props.mediaKind === "IMAGE" ? "text-brand-orange" : "text-blue-500",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.kinds.image", "Hình ảnh")}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => props.onMediaKindChange("VIDEO")}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  props.mediaKind === "VIDEO"
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Film className="size-3.5 text-purple-500" />
-                  <span>{t("library.repository.kinds.video", "Video")}</span>
-                </div>
-                {props.mediaKind === "VIDEO" && <Check className="size-3.5 text-brand-orange" />}
+                <Film
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    props.mediaKind === "VIDEO" ? "text-brand-orange" : "text-purple-500",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.kinds.video", "Video")}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => props.onMediaKindChange("FILE")}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  props.mediaKind === "FILE"
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <FileText className="size-3.5 text-emerald-500" />
-                  <span>{t("library.repository.kinds.document", "Tài liệu")}</span>
-                </div>
-                {props.mediaKind === "FILE" && <Check className="size-3.5 text-brand-orange" />}
+                <FileText
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    props.mediaKind === "FILE" ? "text-brand-orange" : "text-emerald-500",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.kinds.document", "Tài liệu")}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -342,31 +369,36 @@ export function MaterialToolbar(props: Props) {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors ${
+                className={`inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition-colors ${
                   peopleFilter !== "ANY"
                     ? "border-brand-orange/50 bg-brand-orange/10 font-semibold text-brand-orange shadow-2xs"
                     : "border-border/90 bg-background text-foreground hover:bg-muted/60"
                 }`}
               >
                 <span>{getPeopleLabel()}</span>
-                <ChevronDown className="size-3.5 opacity-70" />
+                <ChevronDown className="size-3.5 opacity-70 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-64 max-h-72 overflow-y-auto rounded-xl border border-border/80 bg-card p-1 shadow-lg">
+            <DropdownMenuContent align="start" className="w-64 max-h-72 overflow-y-auto rounded-2xl border border-border/80 bg-popover p-1.5 shadow-2xl z-[120]">
               <DropdownMenuItem
                 onSelect={() => props.onPeopleFilterChange?.("ANY")}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
-              >
-                <div className="flex items-center gap-2">
-                  <Users className="size-3.5 text-muted-foreground" />
-                  <span>{t("library.repository.filters.peopleAny", "Bất kỳ ai")}</span>
-                </div>
-                {(peopleFilter === "ANY" || !peopleFilter) && (
-                  <Check className="size-3.5 text-brand-orange" />
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  peopleFilter === "ANY" || !peopleFilter
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
                 )}
+              >
+                <Users
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    peopleFilter === "ANY" || !peopleFilter ? "text-brand-orange" : "text-muted-foreground",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.filters.peopleAny", "Bất kỳ ai")}</span>
               </DropdownMenuItem>
 
-              {sortedMembers.length > 0 && <DropdownMenuSeparator />}
+              {sortedMembers.length > 0 && <DropdownMenuSeparator className="bg-border/60 -mx-1 my-1" />}
 
               {sortedMembers.map((member) => {
                 const isMe = Boolean(
@@ -384,50 +416,50 @@ export function MaterialToolbar(props: Props) {
                   <DropdownMenuItem
                     key={member.id}
                     onSelect={() => props.onPeopleFilterChange?.(memberValue)}
-                    className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
-                  >
-                    <div className="flex min-w-0 items-center gap-2">
-                      <User
-                        className={cn(
-                          "size-3.5 shrink-0",
-                          isMe ? "text-brand-orange" : "text-muted-foreground",
-                        )}
-                      />
-                      <div className="flex min-w-0 items-center gap-1.5 truncate">
-                        <span
-                          className={cn(
-                            "truncate font-medium",
-                            isMe && "font-bold text-brand-orange",
-                          )}
-                        >
-                          {isMe ? "Me" : (member.fullName || member.email || "Thành viên")}
-                        </span>
-                        <span className="shrink-0 text-[11px] text-muted-foreground">
-                          - {roleLabel}
-                        </span>
-                      </div>
-                    </div>
-                    {isSelected && (
-                      <Check className="size-3.5 shrink-0 text-brand-orange" />
+                    className={cn(
+                      "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                      isSelected
+                        ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                        : "hover:bg-muted/80 text-foreground",
                     )}
+                  >
+                    <User
+                      className={cn(
+                        "size-4 shrink-0 transition-colors",
+                        isSelected || isMe ? "text-brand-orange" : "text-muted-foreground",
+                      )}
+                    />
+                    <div className="flex min-w-0 flex-1 items-center gap-1.5 truncate">
+                      <span
+                        className={cn(
+                          "truncate font-medium",
+                          (isSelected || isMe) && "font-bold text-brand-orange",
+                        )}
+                      >
+                        {isMe ? "Me" : (member.fullName || member.email || "Thành viên")}
+                      </span>
+                      <span className="shrink-0 text-[11px] text-muted-foreground">
+                        - {roleLabel}
+                      </span>
+                    </div>
                   </DropdownMenuItem>
                 );
               })}
 
               {sortedMembers.length === 0 && props.currentUserId && (
                 <>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-border/60 -mx-1 my-1" />
                   <DropdownMenuItem
                     onSelect={() => props.onPeopleFilterChange?.("ME")}
-                    className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <User className="size-3.5 text-brand-orange" />
-                      <span className="font-bold text-brand-orange">Me</span>
-                    </div>
-                    {(peopleFilter === "ME" || peopleFilter === props.currentUserId) && (
-                      <Check className="size-3.5 text-brand-orange" />
+                    className={cn(
+                      "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                      peopleFilter === "ME" || peopleFilter === props.currentUserId
+                        ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                        : "hover:bg-muted/80 text-foreground",
                     )}
+                  >
+                    <User className="size-4 shrink-0 text-brand-orange" />
+                    <span className="font-bold text-brand-orange">Me</span>
                   </DropdownMenuItem>
                 </>
               )}
@@ -439,67 +471,102 @@ export function MaterialToolbar(props: Props) {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors ${
+                className={`inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition-colors ${
                   modifiedFilter !== "ANY"
                     ? "border-brand-orange/50 bg-brand-orange/10 font-semibold text-brand-orange shadow-2xs"
                     : "border-border/90 bg-background text-foreground hover:bg-muted/60"
                 }`}
               >
                 <span>{getModifiedLabel()}</span>
-                <ChevronDown className="size-3.5 opacity-70" />
+                <ChevronDown className="size-3.5 opacity-70 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-52 rounded-xl border border-border/80 bg-card p-1 shadow-lg">
+            <DropdownMenuContent align="start" className="w-52 rounded-2xl border border-border/80 bg-popover p-1.5 shadow-2xl z-[120]">
               <DropdownMenuItem
                 onSelect={() => props.onModifiedFilterChange?.("ANY")}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  modifiedFilter === "ANY"
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Clock className="size-3.5 text-muted-foreground" />
-                  <span>{t("library.repository.filters.modAny", "Bất kỳ lúc nào")}</span>
-                </div>
-                {modifiedFilter === "ANY" && <Check className="size-3.5 text-brand-orange" />}
+                <Clock
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    modifiedFilter === "ANY" ? "text-brand-orange" : "text-muted-foreground",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.filters.modAny", "Bất kỳ lúc nào")}</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="bg-border/60 -mx-1 my-1" />
               <DropdownMenuItem
                 onSelect={() => props.onModifiedFilterChange?.("TODAY")}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  modifiedFilter === "TODAY"
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Calendar className="size-3.5 text-brand-orange" />
-                  <span>{t("library.repository.filters.modTodayLabel", "Hôm nay")}</span>
-                </div>
-                {modifiedFilter === "TODAY" && <Check className="size-3.5 text-brand-orange" />}
+                <Calendar
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    modifiedFilter === "TODAY" ? "text-brand-orange" : "text-brand-orange",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.filters.modTodayLabel", "Hôm nay")}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => props.onModifiedFilterChange?.("LAST_7_DAYS")}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  modifiedFilter === "LAST_7_DAYS"
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Calendar className="size-3.5 text-blue-500" />
-                  <span>{t("library.repository.filters.mod7DaysLabel", "7 ngày qua")}</span>
-                </div>
-                {modifiedFilter === "LAST_7_DAYS" && <Check className="size-3.5 text-brand-orange" />}
+                <Calendar
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    modifiedFilter === "LAST_7_DAYS" ? "text-brand-orange" : "text-blue-500",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.filters.mod7DaysLabel", "7 ngày qua")}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => props.onModifiedFilterChange?.("LAST_30_DAYS")}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  modifiedFilter === "LAST_30_DAYS"
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Calendar className="size-3.5 text-indigo-500" />
-                  <span>{t("library.repository.filters.mod30DaysLabel", "30 ngày qua")}</span>
-                </div>
-                {modifiedFilter === "LAST_30_DAYS" && <Check className="size-3.5 text-brand-orange" />}
+                <Calendar
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    modifiedFilter === "LAST_30_DAYS" ? "text-brand-orange" : "text-indigo-500",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.filters.mod30DaysLabel", "30 ngày qua")}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => props.onModifiedFilterChange?.("THIS_YEAR")}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  modifiedFilter === "THIS_YEAR"
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Calendar className="size-3.5 text-amber-500" />
-                  <span>{t("library.repository.filters.modThisYearLabel", "Năm nay")}</span>
-                </div>
-                {modifiedFilter === "THIS_YEAR" && <Check className="size-3.5 text-brand-orange" />}
+                <Calendar
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    modifiedFilter === "THIS_YEAR" ? "text-brand-orange" : "text-amber-500",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.filters.modThisYearLabel", "Năm nay")}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -509,56 +576,77 @@ export function MaterialToolbar(props: Props) {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors ${
+                className={`inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition-colors ${
                   props.trashMode || props.draftMode
                     ? "border-brand-orange/50 bg-brand-orange/10 font-semibold text-brand-orange shadow-2xs"
                     : "border-border/90 bg-background text-foreground hover:bg-muted/60"
                 }`}
               >
                 <span>{getSourceLabel()}</span>
-                <ChevronDown className="size-3.5 opacity-70" />
+                <ChevronDown className="size-3.5 opacity-70 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-52 rounded-xl border border-border/80 bg-card p-1 shadow-lg">
+            <DropdownMenuContent align="start" className="w-52 rounded-2xl border border-border/80 bg-popover p-1.5 shadow-2xl z-[120]">
               <DropdownMenuItem
                 onSelect={() => {
                   props.onTrashModeChange(false);
                   props.onDraftModeChange(false);
                 }}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  !props.trashMode && !props.draftMode
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Folder className="size-3.5 text-muted-foreground" />
-                  <span>{t("library.repository.filters.sourceMain", "Kho lưu trữ chính")}</span>
-                </div>
-                {!props.trashMode && !props.draftMode && <Check className="size-3.5 text-brand-orange" />}
+                <Folder
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    !props.trashMode && !props.draftMode ? "text-brand-orange" : "text-muted-foreground",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.filters.sourceMain", "Kho lưu trữ chính")}</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="bg-border/60 -mx-1 my-1" />
               <DropdownMenuItem
                 onSelect={() => {
                   props.onTrashModeChange(false);
                   props.onDraftModeChange(true);
                 }}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  props.draftMode
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Sparkles className="size-3.5 text-amber-500" />
-                  <span>{t("library.repository.draftsToggle", "Bản nháp AI")}</span>
-                </div>
-                {props.draftMode && <Check className="size-3.5 text-brand-orange" />}
+                <Sparkles
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    props.draftMode ? "text-brand-orange" : "text-amber-500",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.draftsToggle", "Bản nháp AI")}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => {
                   props.onDraftModeChange(false);
                   props.onTrashModeChange(true);
                 }}
-                className="flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs"
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-xs transition-colors",
+                  props.trashMode
+                    ? "bg-[#fff0eb] text-[#ca3d0e] dark:bg-brand-orange/20 dark:text-brand-orange font-semibold shadow-xs"
+                    : "hover:bg-muted/80 text-foreground",
+                )}
               >
-                <div className="flex items-center gap-2">
-                  <Trash2 className="size-3.5 text-destructive" />
-                  <span>{t("library.repository.trashToggle", "Thùng rác")}</span>
-                </div>
-                {props.trashMode && <Check className="size-3.5 text-destructive" />}
+                <Trash2
+                  className={cn(
+                    "size-4 shrink-0 transition-colors",
+                    props.trashMode ? "text-brand-orange" : "text-destructive",
+                  )}
+                />
+                <span className="flex-1 truncate">{t("library.repository.trashToggle", "Thùng rác")}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 import { SectionFrame } from "@/components/task-sections/SectionFrame";
 import type { TaskSectionsApi } from "@/hooks/useTaskSections";
 import type { TaskSection } from "@/types/task";
@@ -8,6 +8,16 @@ import type { TaskSection } from "@/types/task";
 const asText = (value: unknown) => (typeof value === "string" ? value : "");
 const asNumber = (value: unknown) =>
   typeof value === "number" ? value : "";
+
+const SURVEY_CHANNEL_OPTIONS = [
+  "Facebook",
+  "Instagram",
+  "TikTok",
+  "Threads",
+  "Email",
+  "QR tại sự kiện",
+  "Website",
+];
 
 /** SURVEY.DISTRIBUTION: public link is read-only (comes from the published form, not typed). */
 export function SurveyDistributionBlock({
@@ -33,13 +43,43 @@ export function SurveyDistributionBlock({
           </label>
           <Input readOnly disabled value={publicUrl} />
         </div>
-        <div className="space-y-1">
-          <label className="text-xs font-medium">
+        <div className="space-y-1.5">
+          <label className="text-xs font-semibold">
             {t(`${base}.channels`, { defaultValue: "channels" })}
           </label>
-          <Textarea
-            rows={2}
+          <div className="flex flex-wrap gap-1.5">
+            {SURVEY_CHANNEL_OPTIONS.map((ch) => {
+              const selected = asText(content.channels)
+                .split(/[,;\n]/)
+                .map((s) => s.trim())
+                .filter(Boolean);
+              const active = selected.includes(ch);
+              return (
+                <button
+                  key={ch}
+                  type="button"
+                  disabled={!section.canEdit}
+                  onClick={() => {
+                    const next = active
+                      ? selected.filter((s) => s !== ch)
+                      : [...selected, ch];
+                    api.edit(section, { channels: next.join(", ") });
+                  }}
+                  className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                    active
+                      ? "border-brand-orange bg-brand-orange-soft text-brand-orange"
+                      : "border-border bg-background text-muted-foreground hover:bg-muted/60"
+                  }`}
+                >
+                  {active ? `✓ ${ch}` : `+ ${ch}`}
+                </button>
+              );
+            })}
+          </div>
+          <Input
+            disabled={!section.canEdit}
             value={asText(content.channels)}
+            placeholder="Hoặc nhập thêm kênh phân phối..."
             onChange={(e) => api.edit(section, { channels: e.target.value })}
           />
         </div>
@@ -94,13 +134,11 @@ export function SurveyReportBlock({
       <div className="space-y-3">
         {names.map((name) => (
           <div key={name} className="space-y-1">
-            <label className="text-xs font-medium">
-              {t(`${base}.${name}`, { defaultValue: name })}
-            </label>
-            <Textarea
-              rows={3}
+            <RichTextInput
+              label={t(`${base}.${name}`, { defaultValue: name })}
               value={asText(content[name])}
-              onChange={(e) => api.edit(section, { [name]: e.target.value })}
+              disabled={!section.canEdit}
+              onChange={(html) => api.edit(section, { [name]: html })}
             />
           </div>
         ))}

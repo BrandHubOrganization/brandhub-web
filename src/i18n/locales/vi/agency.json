@@ -286,6 +286,17 @@
     "assignRoleLabel": "Vị trí (Vai trò)",
     "assignRolePlaceholder": "Chọn vai trò",
     "clientRequiresWorkspace": "Vai trò Client cần chọn một workspace",
+    "emailPreview": {
+      "title": "Xem trước email gửi đi",
+      "subtitle": "Cập nhật trực quan theo nội dung soạn thảo",
+      "toggleShow": "Xem trước email",
+      "toggleHide": "Thu gọn xem trước",
+      "to": "Gửi tới",
+      "subject": "Tiêu đề",
+      "memberBadge": "Lời mời Thành viên",
+      "clientBadge": "Lời mời Client",
+      "disclaimer": "Bố cục và nội dung email được bảo mật, tự động đồng bộ theo thông điệp bạn gửi."
+    },
     "inviteSuccess": "Đã gửi lời mời tới {{email}}",
     "removeSuccess": "Đã xóa thành viên",
     "cancelInviteSuccess": "Đã hủy lời mời",

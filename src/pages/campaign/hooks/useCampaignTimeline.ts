@@ -41,6 +41,22 @@ export function useCampaignTimeline(workspaceId: string, campaignId: string) {
         return api.patch(`${base}/${edit.subtaskId}/status`, {
           status: edit.status,
         });
+      if (edit.kind === "field") {
+        if (edit.subtaskId) {
+          const sub = row.subtasks.find((s) => s.id === edit.subtaskId);
+          if (!sub) throw new Error("TASK_NOT_FOUND");
+          return api.patch(`${base}/${sub.id}`, {
+            ...sub,
+            expectedRevision: row.workflowRevision,
+            [edit.field]: edit.value,
+          });
+        }
+        return taskWorkflowService.field(workspaceId, row.id, {
+          field: edit.field,
+          value: edit.value,
+          expectedRevision: row.workflowRevision,
+        });
+      }
       if (edit.subtaskId) {
         const sub = row.subtasks.find((s) => s.id === edit.subtaskId);
         if (!sub) throw new Error("TASK_NOT_FOUND");
@@ -71,6 +87,7 @@ export function useCampaignTimeline(workspaceId: string, campaignId: string) {
     onSuccess: async () => {
       await client.invalidateQueries({ queryKey });
       await client.invalidateQueries({ queryKey: ["campaign-subtasks"] });
+      await client.invalidateQueries({ queryKey: ["task-workflow", workspaceId] });
     },
     onError: async () => {
       toast.error(t("campaign.timeline.saveError"));

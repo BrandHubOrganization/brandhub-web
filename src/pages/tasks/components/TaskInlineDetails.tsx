@@ -23,6 +23,7 @@ import { InlineTaskField } from "@/pages/tasks/components/InlineTaskField";
 import { TaskInlineAssignment } from "@/pages/tasks/components/TaskInlineAssignment";
 import { TaskAssigneePicker } from "@/pages/tasks/components/TaskAssigneePicker";
 import { TaskTargetPlatformsPicker } from "@/pages/tasks/components/TaskTargetPlatformsPicker";
+import { TaskPartnerContactSection } from "@/pages/tasks/components/TaskPartnerContactSection";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { STATUS_CONFIG } from "@/pages/tasks/constants";
@@ -392,7 +393,7 @@ export function TaskDescriptionSection({ task }: { task: TaskWorkflow }) {
         />
 
         {task.sourceType === "CAMPAIGN" && (
-          <div className="border-border/50 mt-4 space-y-1.5 border-t pt-3.5">
+          <div className="mt-4 space-y-1.5 pt-1">
             <div className="text-2xs text-muted-foreground flex items-center gap-1.5 font-semibold tracking-wider uppercase">
               <Sparkles className="text-brand-orange size-3" />
               <span>
@@ -454,7 +455,7 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
 
   return (
     <aside className="border-border/70 bg-card/60 space-y-4 rounded-xl border p-4 shadow-2xs">
-      <div className="border-border/50 flex items-center justify-between border-b pb-2.5">
+      <div className="flex items-center justify-between pb-1">
         <h3 className="text-2xs text-muted-foreground flex items-center gap-1.5 font-bold tracking-wider uppercase">
           <Sparkles className="text-brand-orange size-3" />
           <span>{t("tasks.details")}</span>
@@ -464,7 +465,7 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
         </span>
       </div>
 
-      <div className="divide-border/40 space-y-4 divide-y">
+      <div className="space-y-4">
         {/* Assignee */}
         <div className="space-y-1.5 pt-1 first:pt-0">
           <div className="flex items-center justify-between">
@@ -598,6 +599,9 @@ export function TaskDetailsSidebar({ task }: { task: TaskWorkflow }) {
           </div>
         )}
 
+        {/* Contact with Campaign / Agency Partners */}
+        <TaskPartnerContactSection task={task} />
+
         {/* References */}
         <div className="space-y-1.5 pt-3">
           <span className="text-2xs text-muted-foreground flex items-center gap-1.5 font-semibold">
@@ -628,7 +632,7 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
       <div className="flex flex-wrap items-center gap-2">
         <span
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors",
+            "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-semibold transition-colors",
             statusCfg.bg,
             statusCfg.text,
             statusCfg.border,
@@ -646,7 +650,7 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
           })}
         </span>
 
-        <span className="bg-muted/60 text-foreground border-border/80 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium">
+        <span className="bg-muted/60 text-foreground border-border/80 inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium">
           {task.type === "POST" ? (
             <Share2 className="text-brand-orange size-3.5" />
           ) : (
@@ -656,7 +660,7 @@ export function TaskInlineDetails({ task }: { task: TaskWorkflow }) {
         </span>
 
         {task.reviewStep && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
+          <span className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
             <ShieldCheck className="size-3.5 text-amber-600 dark:text-amber-400" />
             {t(`tasks.inline.reviewSteps.${task.reviewStep}`)}
           </span>

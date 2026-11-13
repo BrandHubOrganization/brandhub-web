@@ -253,7 +253,7 @@ export function TrendGraphWorkspace({ graph }: { graph: TrendGraph }) {
             </Button>
             <Button
               type="button"
-              variant={highlightNeighbors ? "secondary" : "ghost"}
+              variant={highlightNeighbors ? "orange" : "ghost"}
               size="sm"
               aria-pressed={highlightNeighbors}
               onClick={() => setHighlightNeighbors((prev) => !prev)}

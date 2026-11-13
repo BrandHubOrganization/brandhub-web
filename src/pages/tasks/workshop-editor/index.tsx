@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { useTaskSections } from "@/hooks/useTaskSections";
 import { useSurveyEditor } from "@/pages/tasks/hooks/useSurveyEditor";
 import { SectionFieldsBlock } from "@/components/task-sections/SectionFieldsBlock";
@@ -62,45 +63,48 @@ export default function WorkshopEditorPage() {
   );
 
   return (
-    <div className="bg-background min-h-screen">
-      <main className="mx-auto max-w-4xl space-y-4 px-4 py-8 sm:px-6">
-        <div className="flex justify-end">
-          <TaskExportButton workspaceId={id} taskId={taskId} />
-        </div>
-        {BEFORE_REGISTRATION.map((key) => {
-          const section = api.sections?.find((s) => s.key === key);
-          return section ? (
-            <SectionFieldsBlock key={key} section={section} api={api} />
-          ) : null;
-        })}
-        {registrationSection ? (
-          <SectionFrame
-            section={registrationSection}
-            api={api}
-            saveBinding={{
-              dirty: false,
-              state:
-                registrationEditor.saveStatus === "saving"
-                  ? "saving"
-                  : undefined,
-              save: async () => {
-                await registrationEditor.handleSave();
-                return true;
-              },
-            }}
-          >
-            {registrationView}
-          </SectionFrame>
-        ) : (
-          registrationView
-        )}
-        {AFTER_REGISTRATION.map((key) => {
-          const section = api.sections?.find((s) => s.key === key);
-          return section ? (
-            <SectionFieldsBlock key={key} section={section} api={api} />
-          ) : null;
-        })}
-      </main>
-    </div>
+    <PageWrapper
+      title={t("tasks.title")}
+      description={t("tasks.description")}
+      guideUrl="/help/guide#tasks"
+      compact
+      fullWidth={false}
+      actions={<TaskExportButton workspaceId={id} taskId={taskId} />}
+      contentClassName="mx-auto max-w-4xl space-y-4"
+    >
+      {BEFORE_REGISTRATION.map((key) => {
+        const section = api.sections?.find((s) => s.key === key);
+        return section ? (
+          <SectionFieldsBlock key={key} section={section} api={api} />
+        ) : null;
+      })}
+      {registrationSection ? (
+        <SectionFrame
+          section={registrationSection}
+          api={api}
+          saveBinding={{
+            dirty: false,
+            state:
+              registrationEditor.saveStatus === "saving"
+                ? "saving"
+                : undefined,
+            save: async () => {
+              await registrationEditor.handleSave();
+              return true;
+            },
+          }}
+        >
+          {registrationView}
+        </SectionFrame>
+      ) : (
+        registrationView
+      )}
+      {AFTER_REGISTRATION.map((key) => {
+        const section = api.sections?.find((s) => s.key === key);
+        return section ? (
+          <SectionFieldsBlock key={key} section={section} api={api} />
+        ) : null;
+      })}
+    </PageWrapper>
   );
 }

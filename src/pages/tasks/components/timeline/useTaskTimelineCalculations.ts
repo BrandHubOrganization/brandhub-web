@@ -130,6 +130,10 @@ export function useTaskTimelineCalculations(tasks: TaskListItem[]) {
   const [zoom, setZoom] = useState<TimelineZoom>("week");
   const [groupBy, setGroupBy] = useState<TimelineGroupBy>("type");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [missingDetailsOnly, setMissingDetailsOnly] = useState(false);
+  const [expandedTasks, setExpandedTasks] = useState<Record<string, boolean>>({});
 
   const timezone = useMemo(() => {
     return (
@@ -143,15 +147,41 @@ export function useTaskTimelineCalculations(tasks: TaskListItem[]) {
     return tasks.map((task) => parseItemDates(task, timezone));
   }, [tasks, timezone]);
 
+  const missingDetailsCount = useMemo(() => {
+    return allItems.filter(
+      (item) => !item.task.description || !item.task.description.trim(),
+    ).length;
+  }, [allItems]);
+
+  const filteredItems = useMemo(() => {
+    return allItems.filter((item) => {
+      const { task } = item;
+      if (search.trim()) {
+        const query = search.trim().toLowerCase();
+        const matchesName = task.name.toLowerCase().includes(query);
+        const matchesDesc =
+          task.description?.toLowerCase().includes(query) ?? false;
+        if (!matchesName && !matchesDesc) return false;
+      }
+      if (statusFilter !== "ALL") {
+        if (task.status !== statusFilter) return false;
+      }
+      if (missingDetailsOnly) {
+        if (task.description && task.description.trim()) return false;
+      }
+      return true;
+    });
+  }, [allItems, search, statusFilter, missingDetailsOnly]);
+
   const groups = useMemo(() => {
-    if (groupBy === "type") return groupByType(allItems);
-    if (groupBy === "status") return groupByStatus(allItems);
-    return [{ id: "group:all", name: "allTasks", items: allItems }];
-  }, [allItems, groupBy]);
+    if (groupBy === "type") return groupByType(filteredItems);
+    if (groupBy === "status") return groupByStatus(filteredItems);
+    return [{ id: "group:all", name: "allTasks", items: filteredItems }];
+  }, [filteredItems, groupBy]);
 
   const { minDay, maxDay, count } = useMemo(() => {
-    return calculateRange(allItems, today, zoom);
-  }, [allItems, today, zoom]);
+    return calculateRange(filteredItems.length > 0 ? filteredItems : allItems, today, zoom);
+  }, [filteredItems, allItems, today, zoom]);
 
   const baseDayWidth =
     zoom === "day" ? 48 : zoom === "week" ? 36 : zoom === "month" ? 18 : 8;
@@ -179,9 +209,13 @@ export function useTaskTimelineCalculations(tasks: TaskListItem[]) {
     setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const toggleTaskExpand = (taskId: string) => {
+    setExpandedTasks((prev) => ({ ...prev, [taskId]: !prev[taskId] }));
+  };
+
   const unscheduledCount = useMemo(() => {
-    return allItems.filter((i) => !i.isScheduled).length;
-  }, [allItems]);
+    return filteredItems.filter((i) => !i.isScheduled).length;
+  }, [filteredItems]);
 
   return {
     zoom,
@@ -190,7 +224,7 @@ export function useTaskTimelineCalculations(tasks: TaskListItem[]) {
     setGroupBy,
     groups,
     allItems,
-    filteredItems: allItems,
+    filteredItems,
     unscheduledCount,
     minDay,
     maxDay,
@@ -203,5 +237,15 @@ export function useTaskTimelineCalculations(tasks: TaskListItem[]) {
     ticks,
     collapsed,
     toggleGroup,
+    search,
+    setSearch,
+    statusFilter,
+    setStatusFilter,
+    missingDetailsOnly,
+    setMissingDetailsOnly,
+    missingDetailsCount,
+    expandedTasks,
+    toggleTaskExpand,
+    timezone,
   };
 }

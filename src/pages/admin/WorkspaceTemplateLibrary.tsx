@@ -793,12 +793,17 @@ export function WorkspaceTemplateLibraryPage() {
                     className={cn(
                       "flex w-full cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-left text-xs transition-colors",
                       active
-                        ? "bg-muted text-foreground font-semibold"
+                        ? "bg-brand-orange font-semibold text-white shadow-2xs"
                         : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                     )}
                   >
                     <span>{item.label}</span>
-                    <span className="text-muted-foreground text-[11px] tabular-nums">
+                    <span
+                      className={cn(
+                        "text-[11px] tabular-nums",
+                        active ? "text-white/85" : "text-muted-foreground",
+                      )}
+                    >
                       {item.count}
                     </span>
                   </button>
@@ -819,14 +824,21 @@ export function WorkspaceTemplateLibraryPage() {
                 className={cn(
                   "flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-left text-xs transition-colors lg:w-full",
                   categoryFilter === ""
-                    ? "bg-muted text-foreground font-semibold"
+                    ? "bg-brand-orange font-semibold text-white shadow-2xs"
                     : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                 )}
               >
                 <span>
                   {t("workspace.templates.allCategories", "Tất cả ngành")}
                 </span>
-                <span className="text-muted-foreground ml-2 text-[11px] tabular-nums">
+                <span
+                  className={cn(
+                    "ml-2 text-[11px] tabular-nums",
+                    categoryFilter === ""
+                      ? "text-white/85"
+                      : "text-muted-foreground",
+                  )}
+                >
                   {counts.total}
                 </span>
               </button>
@@ -842,7 +854,7 @@ export function WorkspaceTemplateLibraryPage() {
                     className={cn(
                       "flex cursor-pointer items-center justify-between rounded-md px-2.5 py-1.5 text-left text-xs transition-colors lg:w-full",
                       active
-                        ? "bg-muted text-foreground font-semibold"
+                        ? "bg-brand-orange font-semibold text-white shadow-2xs"
                         : count > 0
                           ? "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                           : "text-muted-foreground/50 hover:text-muted-foreground",
@@ -852,7 +864,12 @@ export function WorkspaceTemplateLibraryPage() {
                       {t(`workspace.industry.${ind}`)}
                     </span>
                     {count > 0 && (
-                      <span className="text-muted-foreground ml-2 text-[11px] tabular-nums">
+                      <span
+                        className={cn(
+                          "ml-2 text-[11px] tabular-nums",
+                          active ? "text-white/85" : "text-muted-foreground",
+                        )}
+                      >
                         {count}
                       </span>
                     )}

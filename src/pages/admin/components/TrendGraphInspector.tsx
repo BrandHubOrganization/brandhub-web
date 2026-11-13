@@ -203,7 +203,7 @@ export function TrendGraphInspector({
             <Button
               key={value}
               size="sm"
-              variant={kind === value ? "secondary" : "ghost"}
+              variant={kind === value ? "orange" : "ghost"}
               aria-pressed={kind === value}
               onClick={() => {
                 setKind(value);

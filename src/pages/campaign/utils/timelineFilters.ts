@@ -4,11 +4,39 @@ import type {
   TimelineTask,
 } from "@/pages/campaign/types/campaignTimeline";
 import { localDay } from "@/pages/campaign/utils/timelineDates";
+function stripTimelineHtml(raw?: string | null): string {
+  return (raw ?? "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+}
+
+export function isTimelineItemMissingDetails(
+  item: TimelineTask | TimelineSubtask,
+): boolean {
+  if ("parentTaskId" in item) {
+    return (
+      !stripTimelineHtml(item.description) ||
+      !stripTimelineHtml(item.acceptanceCriteria)
+    );
+  }
+  if (
+    typeof item.description === "string" ||
+    typeof item.acceptanceCriteria === "string"
+  ) {
+    return (
+      !stripTimelineHtml(item.description) ||
+      !stripTimelineHtml(item.acceptanceCriteria)
+    );
+  }
+  return Boolean(item.missingDetails);
+}
+
 export function matchesTimeline(
   item: TimelineTask | TimelineSubtask,
   parent: TimelineTask,
   filters: TimelineFilters,
-  userId: string,
+  _userId: string,
   zone: string,
   today: string,
   deliverable: string,
@@ -17,14 +45,6 @@ export function matchesTimeline(
     "supervisorOverrideId" in item
       ? (item.supervisorOverrideId ?? parent.assigneeId)
       : item.supervisorId;
-  const assigned = item.assigneeId === userId,
-    supervising = supervisor === userId;
-  if (
-    (filters.mine === "related" && !assigned && !supervising) ||
-    (filters.mine === "assignee" && !assigned) ||
-    (filters.mine === "supervisor" && !supervising)
-  )
-    return false;
   if (
     filters.search &&
     !item.name
@@ -47,6 +67,11 @@ export function matchesTimeline(
   if (filters.types.length && !filters.types.includes(parent.type))
     return false;
   if (filters.deliverable.length && !filters.deliverable.includes(deliverable))
+    return false;
+  const itemMissingDetails = isTimelineItemMissingDetails(item);
+  if (filters.completeness === "missingDetails" && !itemMissingDetails)
+    return false;
+  if (filters.completeness === "complete" && itemMissingDetails)
     return false;
   if (filters.schedule === "all" && !filters.from && !filters.to) return true;
   const start = localDay(item.plannedStartDate, zone),

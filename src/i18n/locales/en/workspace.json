@@ -33,15 +33,15 @@
     "workspaceCampaign": {
       "title": "Workspace campaign",
       "loading": "Loading campaign",
-      "open": "View campaign plan",
+      "open": "View Media Campaign",
       "empty": "This Workspace has no campaign yet.",
-      "emptyHelp": "The Manager prepares the campaign plan after both sides approve the media package.",
+      "emptyHelp": "The Manager launches the Media Campaign after both sides approve the media package.",
       "error": "Unable to load the campaign. Please try again.",
       "retry": "Try again",
       "conflict": "This Workspace has more than one campaign. Review the data before continuing.",
       "version": "Version {{version}}",
       "plannedWork": "Planned work items: {{count}}",
-      "create": "Prepare campaign plan"
+      "create": "Launch Media Campaign"
     },
     "title": "Dashboard",
     "description": "Overview of this workspace's members, campaigns, and package status.",

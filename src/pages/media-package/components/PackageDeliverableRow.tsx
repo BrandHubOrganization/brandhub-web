@@ -98,36 +98,42 @@ export function PackageDeliverableRow({
           hidden={!open}
           data-package-detail-row
           data-package-item-id={item.id}
-          className="border-border bg-muted border-b"
+          className="border-border/80 bg-muted/40 border-b"
         >
-          <td colSpan={3} className="p-3">
+          <td colSpan={3} className="p-3 sm:p-3.5">
             <div
               id={id}
               ref={fieldsRef}
               className={`grid min-w-0 gap-3 ${item.description?.trim() && item.acceptanceCriteria?.trim() ? "md:grid-cols-2" : ""}`}
             >
               {item.description?.trim() && (
-                <section className="bg-card min-w-0 space-y-1 rounded-lg p-3">
-                  <h4 className="text-foreground flex items-center gap-1.5 text-xs font-semibold">
-                    <FileText className="size-3.5" aria-hidden="true" />
+                <section className="border-border/75 bg-card min-w-0 rounded-xl border p-3.5 shadow-2xs">
+                  <h4 className="border-border/50 text-foreground mb-2.5 flex items-center gap-2 border-b pb-2 text-xs font-semibold tracking-tight">
+                    <span className="bg-brand-orange/10 text-brand-orange inline-flex size-5 shrink-0 items-center justify-center rounded-md">
+                      <FileText className="size-3.5" aria-hidden="true" />
+                    </span>
                     {t("mediaPackage.proposal.description")}
                   </h4>
                   <ExpandablePackageText
                     key={item.description}
                     limitLines={limited ? 2 : null}
+                    tone="orange"
                     text={item.description}
                   />
                 </section>
               )}
               {item.acceptanceCriteria?.trim() && (
-                <section className="bg-card min-w-0 space-y-1 rounded-lg p-3">
-                  <h4 className="text-foreground flex items-center gap-1.5 text-xs font-semibold">
-                    <Target className="size-3.5" aria-hidden="true" />
+                <section className="border-border/75 bg-card min-w-0 rounded-xl border p-3.5 shadow-2xs">
+                  <h4 className="border-border/50 text-foreground mb-2.5 flex items-center gap-2 border-b pb-2 text-xs font-semibold tracking-tight">
+                    <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      <Target className="size-3.5" aria-hidden="true" />
+                    </span>
                     {t("mediaPackage.proposal.outcomes")}
                   </h4>
                   <ExpandablePackageText
                     key={item.acceptanceCriteria}
                     limitLines={limited ? 2 : null}
+                    tone="emerald"
                     text={item.acceptanceCriteria}
                   />
                 </section>

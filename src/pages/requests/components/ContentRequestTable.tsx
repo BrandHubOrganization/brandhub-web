@@ -6,8 +6,6 @@ import type {
 } from "@/types/contentRequest";
 import { useNavigate } from "react-router-dom";
 import {
-  ChevronLeft,
-  ChevronRight,
   UserPlus,
   ArrowRight,
   Clock,
@@ -21,6 +19,7 @@ import { FaFacebook, FaInstagram, FaTiktok, FaThreads } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 
 interface ContentRequestTableProps {
   requests: ContentRequest[];
@@ -377,40 +376,18 @@ export const ContentRequestTable: React.FC<ContentRequestTableProps> = ({
       </div>
 
       {/* Pagination Footer */}
-      <div className="border-border/80 text-muted-foreground bg-muted/40 flex flex-col items-center justify-between gap-3 border-t p-3.5 text-xs sm:flex-row">
-        <div>
-          {t("requests.table.showing", {
-            shown: requests.length,
-            total,
-          })}
+      {total > 0 && (
+        <div className="border-border/80 bg-muted/30 border-t p-3">
+          <Pagination
+            page={page}
+            size={10}
+            total={total}
+            totalPages={Math.max(1, totalPages)}
+            itemLabel={t("requests.table.itemLabel", "yêu cầu")}
+            onPageChange={onPageChange}
+          />
         </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(page - 1)}
-            disabled={page <= 1}
-            aria-label={t("requests.v2.previous", { defaultValue: "Trang trước" })}
-            className="h-7 w-7 p-0 cursor-pointer"
-          >
-            <ChevronLeft className="size-3.5" />
-          </Button>
-          <span className="text-foreground px-2 font-mono font-semibold">
-            {t("requests.table.page", { page, totalPages: Math.max(1, totalPages) })}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(page + 1)}
-            disabled={page >= totalPages}
-            aria-label={t("requests.v2.next", { defaultValue: "Trang sau" })}
-            className="h-7 w-7 p-0 cursor-pointer"
-          >
-            <ChevronRight className="size-3.5" />
-          </Button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

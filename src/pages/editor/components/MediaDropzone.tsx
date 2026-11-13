@@ -65,14 +65,14 @@ export const MediaDropzone: React.FC<MediaDropzoneProps> = ({
         <TabsList className="bg-muted/60 border-border/60 grid h-10 w-full grid-cols-2 rounded-xl border p-1 shadow-2xs">
           <TabsTrigger
             value="upload"
-            className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs flex items-center justify-center gap-2 rounded-lg py-1.5 text-xs font-semibold transition-all"
+            className="flex items-center justify-center gap-2 rounded-lg py-1.5 text-xs font-semibold transition-all"
           >
             <Upload className="size-3.5" />
             <span>{t("editor.mediaDropzone.tabs.upload", "Tải lên từ máy")}</span>
           </TabsTrigger>
           <TabsTrigger
             value="repository"
-            className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs flex items-center justify-center gap-2 rounded-lg py-1.5 text-xs font-semibold transition-all"
+            className="flex items-center justify-center gap-2 rounded-lg py-1.5 text-xs font-semibold transition-all"
           >
             <FolderOpen className="size-3.5" />
             <span>

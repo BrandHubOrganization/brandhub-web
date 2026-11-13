@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { Check, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -135,7 +135,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             aria-describedby={ariaDescribedBy}
             title={title}
             className={cn(
-              "border-input bg-input-background dark:bg-input/30 text-foreground flex h-9 w-full min-w-0 items-center justify-between gap-2 rounded-md border px-3 py-1 text-base transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+              "border-input bg-input-background dark:bg-input/30 text-foreground flex h-9 w-full min-w-0 items-center justify-between gap-2 rounded-xl border px-3 py-1 text-base transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm cursor-pointer",
               "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
               "data-[state=open]:border-brand-orange",
               className,
@@ -148,7 +148,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
               <SelectPrimitive.Value />
             </span>
             <SelectPrimitive.Icon asChild>
-              <ChevronDown className="text-muted-foreground size-4 shrink-0 opacity-60" />
+              <ChevronDown className="text-muted-foreground size-4 shrink-0 opacity-60 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
             </SelectPrimitive.Icon>
           </SelectPrimitive.Trigger>
 
@@ -156,9 +156,9 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             <SelectPrimitive.Content
               position="popper"
               sideOffset={6}
-              className="bg-popover text-popover-foreground border-border data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-[110] max-h-80 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border p-1.5 shadow-xl"
+              className="bg-popover text-popover-foreground border-border/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-[120] max-h-80 min-w-[var(--radix-select-trigger-width,180px)] overflow-hidden rounded-2xl border p-1.5 shadow-2xl"
             >
-              <SelectPrimitive.Viewport className="max-h-72 overflow-y-auto">
+              <SelectPrimitive.Viewport className="max-h-72 overflow-y-auto p-0.5">
                 {options.map((option, index) => {
                   const mappedValue = toRadixValue(option.value);
                   return (
@@ -166,14 +166,11 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                       key={`${index}-${mappedValue}`}
                       value={mappedValue}
                       disabled={option.disabled}
-                      className="relative flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm outline-none select-none transition-colors data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[state=checked]:bg-brand-orange/10 data-[state=checked]:text-brand-orange data-[state=checked]:font-medium data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                      className="group relative flex w-full cursor-pointer items-center justify-between gap-2.5 rounded-xl px-3 py-2 text-xs md:text-sm outline-none select-none transition-colors data-[highlighted]:bg-muted/80 data-[highlighted]:text-foreground data-[state=checked]:bg-[#fff0eb] data-[state=checked]:text-[#ca3d0e] dark:data-[state=checked]:bg-brand-orange/20 dark:data-[state=checked]:text-brand-orange data-[state=checked]:font-semibold data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                     >
                       <SelectPrimitive.ItemText>
                         {option.label}
                       </SelectPrimitive.ItemText>
-                      <SelectPrimitive.ItemIndicator>
-                        <Check className="size-3.5 shrink-0" />
-                      </SelectPrimitive.ItemIndicator>
                     </SelectPrimitive.Item>
                   );
                 })}

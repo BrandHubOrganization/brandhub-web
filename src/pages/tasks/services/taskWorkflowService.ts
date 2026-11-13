@@ -111,4 +111,16 @@ export const taskWorkflowService = {
     );
     return workflow(response.data, workspaceId, taskId);
   },
+  async partners(
+    workspaceId: string,
+    taskId: string,
+    partnerIds: string[],
+    expectedRevision: number,
+  ) {
+    const response = await api.patch<ApiResponse<TaskWorkflow>>(
+      `${scoped(workspaceId, taskId)}/partners`,
+      { partnerIds, expectedRevision },
+    );
+    return workflow(response.data, workspaceId, taskId);
+  },
 };

@@ -41,7 +41,6 @@ export function InvoiceDetailDrawer({
         side="right"
         className="w-full sm:max-w-lg lg:max-w-xl p-0 gap-0 border-l border-border bg-background flex flex-col shadow-2xl"
         onOpenAutoFocus={(event) => event.preventDefault()}
-        onInteractOutside={(event) => event.preventDefault()}
         onCloseAutoFocus={(event) => {
           event.preventDefault();
           triggerRef.current?.focus();

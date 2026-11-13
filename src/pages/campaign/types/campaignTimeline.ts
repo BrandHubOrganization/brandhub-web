@@ -9,6 +9,8 @@ export interface TimelineSubtask {
   dueDate: string | null;
   plannedStartDate: string | null;
   subtaskRole?: string | null;
+  description?: string | null;
+  acceptanceCriteria?: string | null;
 }
 export interface TimelineTask {
   id: string;
@@ -26,6 +28,20 @@ export interface TimelineTask {
   canManageSubtasks: boolean;
   subtasks: TimelineSubtask[];
   awaitingClient: boolean;
+  missingDetails?: boolean;
+  description?: string | null;
+  acceptanceCriteria?: string | null;
+  outOfScope?: boolean;
+}
+
+export interface CreateOutOfScopeTaskInput {
+  name: string;
+  type: string;
+  assigneeId: string | null;
+  plannedStartDate: string | null;
+  dueDate: string | null;
+  description: string | null;
+  acceptanceCriteria: string | null;
 }
 export interface TimelineView {
   timezone: string;
@@ -42,6 +58,7 @@ export interface TimelineFilters {
   types: string[];
   deliverable: string[];
   schedule: "all" | "missing" | "overdue";
+  completeness: "all" | "missingDetails" | "complete";
   from: string;
   to: string;
 }
@@ -54,6 +71,7 @@ export const EMPTY_FILTERS: TimelineFilters = {
   types: [],
   deliverable: [],
   schedule: "all",
+  completeness: "all",
   from: "",
   to: "",
 };
@@ -79,4 +97,11 @@ export type TimelineEdit =
       dueDate: string;
       subtaskRole?: string | null;
     }
-  | { kind: "status"; taskId: string; subtaskId: string; status: string };
+  | { kind: "status"; taskId: string; subtaskId: string; status: string }
+  | {
+      kind: "field";
+      taskId: string;
+      subtaskId?: string;
+      field: "description" | "acceptanceCriteria";
+      value: string;
+    };

@@ -32,8 +32,14 @@ export function SaveTemplateModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 cursor-pointer"
+      onClick={onClose}
+    >
+      <div
+        className="border-border bg-card w-full max-w-sm space-y-4 rounded-xl border p-6 shadow-2xl cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h3 className="text-foreground text-sm font-semibold">
           {t("workspace.settings.template.dialogTitle")}
         </h3>

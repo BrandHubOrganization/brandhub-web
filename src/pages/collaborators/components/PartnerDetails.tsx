@@ -204,13 +204,22 @@ export function PartnerDetails({
               <FileText className="size-4 shrink-0" />
               <span>{t("collaborators.notes")}</span>
             </div>
-            <p className="whitespace-pre-wrap break-words text-foreground font-normal leading-relaxed text-xs">
-              {partner.notes || (
-                <span className="text-muted-foreground italic">
-                  {t("collaborators.noNotes")}
-                </span>
-              )}
-            </p>
+            {partner.notes ? (
+              /<[a-z][\s\S]*>/i.test(partner.notes) ? (
+                <div
+                  className="prose prose-sm dark:prose-invert max-w-none text-foreground font-normal leading-relaxed text-xs [&_a]:text-brand-orange [&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: partner.notes }}
+                />
+              ) : (
+                <p className="whitespace-pre-wrap break-words text-foreground font-normal leading-relaxed text-xs">
+                  {partner.notes}
+                </p>
+              )
+            ) : (
+              <span className="text-muted-foreground italic">
+                {t("collaborators.noNotes")}
+              </span>
+            )}
           </div>
 
           {/* Delete Blocked Reason Alert */}

@@ -11,7 +11,7 @@ import { mockClientService } from "./services/mockClientService";
 import type { Client } from "./types/client";
 import { SearchHeader } from "./components/SearchHeader";
 import { ClientTable } from "./components/ClientTable";
-import { Pagination } from "./components/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { ClientListErrorBanner } from "./components/ClientListErrorBanner";
 import { ClientModals } from "./ClientModals";
 import { useClientListActions } from "./hooks/useClientListActions";
@@ -116,11 +116,19 @@ export function ClientListPage() {
               onSelectPackage={setClientForPackage}
               onSelectDelete={setClientForDelete}
             />
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              onPageChange={setPage}
-            />
+            {totalElements > 0 && (
+              <div className="border-border border-t p-3">
+                <Pagination
+                  page={page + 1}
+                  size={PAGE_SIZE}
+                  total={totalElements}
+                  totalPages={totalPages}
+                  isFetching={isLoading}
+                  itemLabel={t("client.list.itemLabel", "khách hàng")}
+                  onPageChange={(nextPage) => setPage(nextPage - 1)}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>

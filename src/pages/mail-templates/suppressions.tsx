@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Dialog,
   DialogContent,
@@ -104,11 +105,15 @@ export function SuppressionsPanel({ api, backTo }: { api: SuppressionApi; backTo
         </ul>
       )}
       {data && data.totalPages > 1 && (
-        <nav aria-label={t("mailTemplate.pagination")} className="flex items-center gap-2">
-          <Button variant="outline" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>{t("mailTemplate.previous")}</Button>
-          <span className="text-sm">{t("mailTemplate.page", { page: page + 1, total: data.totalPages })}</span>
-          <Button variant="outline" disabled={page + 1 >= data.totalPages} onClick={() => setPage((p) => p + 1)}>{t("mailTemplate.next")}</Button>
-        </nav>
+        <Pagination
+          page={page + 1}
+          size={data.size || 10}
+          total={data.totalElements}
+          totalPages={data.totalPages}
+          itemLabel={t("mailTemplate.suppressions.title", "địa chỉ hủy đăng ký").toLowerCase()}
+          onPageChange={(nextPage) => setPage(nextPage - 1)}
+          className="pt-2"
+        />
       )}
       <Dialog open={!!confirmRow} onOpenChange={(open) => !open && !resubscribing && setConfirmRow(null)}>
         <DialogContent className="sm:max-w-md">

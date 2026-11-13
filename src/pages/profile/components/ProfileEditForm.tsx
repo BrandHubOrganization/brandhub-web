@@ -2,7 +2,10 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  RichTextInput,
+  stripRichTextHtml,
+} from "@/components/ui/rich-text-input";
 import { Switch } from "@/components/ui/switch";
 import { Crop, History, ImagePlus, X, Globe } from "lucide-react";
 import {
@@ -148,15 +151,12 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             <label className="text-muted-foreground block text-xs font-medium">
               {t("profile.edit.bioLabel")}
             </label>
-            <CharacterCounter current={bio.length} max={500} />
+            <CharacterCounter current={stripRichTextHtml(bio).length} max={500} />
           </div>
-          <Textarea
+          <RichTextInput
             value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            maxLength={500}
+            onChange={setBio}
             placeholder={t("profile.edit.bioPlaceholder")}
-            rows={3}
-            className="border-border bg-background text-foreground placeholder:text-muted-foreground w-full resize-none rounded-md border px-3 py-2 text-sm outline-none"
           />
         </div>
         <div className="w-full min-w-0 sm:col-span-2">

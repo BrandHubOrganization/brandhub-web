@@ -2,7 +2,7 @@ import { packageMutationError } from "@/pages/media-package/lib/packageMutationE
 import { useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
@@ -221,6 +221,15 @@ export default function WorkspaceMediaPackagePage() {
                   {t("mediaPackage.workspace.retry")}
                 </Button>
               )}
+              {preparation.data.status === "DEPLOYED" && canManage && (
+                <Button asChild size="sm" variant="outline">
+                  <Link to={`/workspaces/${id}/campaigns`}>
+                    {t("mediaPackage.workspace.goToCampaignToRevert", {
+                      defaultValue: "Mở Chiến dịch truyền thông để hủy triển khai",
+                    })}
+                  </Link>
+                </Button>
+              )}
             </section>
           )}
         {confirmation.impact && (
@@ -234,6 +243,13 @@ export default function WorkspaceMediaPackagePage() {
             key={template?.id ?? "new"}
             open
             editing={Boolean(selection.data)}
+            mode={
+              template
+                ? template.id === selection.data?.mediaPackage.id
+                  ? "edit"
+                  : "workspace-deploy"
+                : "create"
+            }
             sourceTemplate={template}
             loading={busy}
             onOpenChange={setEditing}

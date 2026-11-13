@@ -58,7 +58,7 @@ export function TaskTimelineHeaderRow({
       >
         <span>
           {t("tasks.timelineGrid.assigneeColumn", {
-            defaultValue: "Phụ trách",
+            defaultValue: "Người phụ trách",
           })}
         </span>
       </div>

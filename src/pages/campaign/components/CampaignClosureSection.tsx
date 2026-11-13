@@ -3,7 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
-import { AlertTriangle, Check, Circle, Pin, RefreshCw, X } from "lucide-react";
+import { AlertTriangle, Pin, RefreshCw, X } from "lucide-react";
+import { HoldButton, StatusMark } from "@/components/micro";
 import {
   Popover,
   PopoverAnchor,
@@ -13,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -214,17 +215,12 @@ function ClosureContent({
               ] as [string, boolean][]
             ).map(([label, ready]) => (
               <li key={label} className="flex items-start gap-2">
-                {ready ? (
-                  <Check
-                    aria-hidden
-                    className="text-brand-orange mt-0.5 size-4 shrink-0"
-                  />
-                ) : (
-                  <Circle
-                    aria-hidden
-                    className="text-muted-foreground mt-0.5 size-4 shrink-0"
-                  />
-                )}
+                <StatusMark
+                  state={ready ? "success" : "idle"}
+                  tone="orange"
+                  size="sm"
+                  className="mt-0.5"
+                />
                 <span>{label}</span>
               </li>
             ))}
@@ -363,18 +359,12 @@ function ClosureContent({
                     </Select>
                     {reason === "OTHER" && (
                       <div className="space-y-2">
-                        <Label htmlFor="campaign-cancel-note">
-                          {t("campaign.closure.otherRequired")}
-                        </Label>
-                        <Textarea
+                        <RichTextInput
                           id="campaign-cancel-note"
-                          required
-                          maxLength={2000}
+                          label={t("campaign.closure.otherRequired")}
                           value={note}
                           disabled={busy}
-                          onChange={(event) => {
-                            setNote(event.target.value);
-                          }}
+                          onChange={setNote}
                         />
                       </div>
                     )}
@@ -525,17 +515,21 @@ function ClosureContent({
             >
               {t("campaign.cancel")}
             </Button>
-            <Button
-              variant="orange"
+            <HoldButton
+              size="default"
+              durationMs={850}
               loading={busy}
               disabled={!check?.canComplete || busy}
-              onClick={async () => {
+              holdHint={t("campaign.closure.holdToComplete", {
+                defaultValue: "Giữ để hoàn thành",
+              })}
+              onCommit={async () => {
                 await complete();
                 setCompleteOpen(false);
               }}
             >
               {t("campaign.delivery.complete")}
-            </Button>
+            </HoldButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

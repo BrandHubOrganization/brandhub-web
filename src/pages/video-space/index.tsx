@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { VideoSpaceWorkspace } from "@/pages/video-space/components/VideoSpaceWorkspace";
 
 export default function VideoSpacePage() {
@@ -54,13 +55,21 @@ export default function VideoSpacePage() {
     );
   }
   return (
-    <VideoSpaceWorkspace
-      key={`${userId}:${workspaceId}:${sourceJobId ?? "library"}:${sourceProductionId ?? ""}:${attempt}`}
-      userId={userId}
-      workspaceId={workspaceId}
-      sourceJobId={sourceJobId}
-      sourceProductionId={sourceProductionId}
-      onRetry={() => setAttempt((value) => value + 1)}
-    />
+    <PageWrapper
+      title={t("videoSpace.title")}
+      description={t("videoSpace.description")}
+      compact
+      className="flex h-full min-h-0 flex-col overflow-hidden p-2 pb-2 md:px-4 md:py-2.5 md:pb-2.5"
+      contentClassName="min-h-0 flex-1 overflow-hidden"
+    >
+      <VideoSpaceWorkspace
+        key={`${userId}:${workspaceId}:${sourceJobId ?? "library"}:${sourceProductionId ?? ""}:${attempt}`}
+        userId={userId}
+        workspaceId={workspaceId}
+        sourceJobId={sourceJobId}
+        sourceProductionId={sourceProductionId}
+        onRetry={() => setAttempt((value) => value + 1)}
+      />
+    </PageWrapper>
   );
 }

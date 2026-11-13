@@ -1137,7 +1137,7 @@ export function FormattingToolbar({
         >
           <Button
             type="button"
-            variant={!ribbon ? "secondary" : "ghost"}
+            variant={!ribbon ? "orange" : "ghost"}
             size="icon"
             className="size-6 rounded-full"
             onClick={() => setRibbon(false)}
@@ -1149,7 +1149,7 @@ export function FormattingToolbar({
           </Button>
           <Button
             type="button"
-            variant={ribbon ? "secondary" : "ghost"}
+            variant={ribbon ? "orange" : "ghost"}
             size="icon"
             className="size-6 rounded-full"
             onClick={() => setRibbon(true)}

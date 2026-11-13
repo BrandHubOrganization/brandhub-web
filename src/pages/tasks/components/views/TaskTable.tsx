@@ -46,8 +46,8 @@ export function TaskTable(props: TaskTableProps) {
         className="min-h-0 flex-1 overflow-x-auto overflow-y-auto overscroll-contain"
       >
         <table className="w-full min-w-[960px] table-fixed border-collapse text-left text-sm">
-          <thead className="bg-card sticky top-0 z-10 border-b">
-            <tr className="border-border bg-muted/40 text-muted-foreground border-b text-xs font-semibold tracking-wider">
+          <thead className="bg-brand-orange-soft/65 dark:bg-brand-orange/15 border-brand-orange/35 sticky top-0 z-10 border-b-2 backdrop-blur-xs">
+            <tr className="text-foreground text-xs font-bold tracking-wider">
               <th className="w-12 px-3 py-3 text-center">
                 <input
                   type="checkbox"

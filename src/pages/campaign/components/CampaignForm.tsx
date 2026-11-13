@@ -93,7 +93,10 @@ export function CampaignForm({
         <header className="border-border/60 flex flex-wrap items-center justify-between gap-3 border-b pb-5">
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2.5">
-              <Badge variant="outline" className="font-medium">
+              <Badge
+                variant="outline"
+                className="border-brand-orange/40 bg-brand-orange/12 text-brand-orange font-semibold"
+              >
                 {t("campaign.edit", "Chỉnh sửa kế hoạch")}
               </Badge>
               {campaign && (

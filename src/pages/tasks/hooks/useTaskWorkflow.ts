@@ -85,6 +85,19 @@ export function useTaskWorkflow(
       );
     });
   }
+  function partners(partnerIds: string[]) {
+    return session.run(identity, async () => {
+      const task = await current();
+      return publish(
+        await service.partners(
+          workspaceId,
+          taskId,
+          partnerIds,
+          task.workflowRevision ?? 0,
+        ),
+      );
+    });
+  }
   function retry() {
     session.retry(identity);
   }
@@ -93,5 +106,5 @@ export function useTaskWorkflow(
     if (result.isSuccess) session.retry(identity);
     return result;
   }
-  return { query, detail, field, assign, start, retry, reload, session };
+  return { query, detail, field, assign, start, partners, retry, reload, session };
 }

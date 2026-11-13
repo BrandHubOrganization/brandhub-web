@@ -7,16 +7,17 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { AlertCircle, ChevronDown, ChevronRight, Plus } from "lucide-react";
+import {
+  AlertCircle,
+  ChevronDown,
+  ChevronRight,
+  GanttChart,
+  Plus,
+  Table2,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-} from "@/components/ui/dropdown-menu";
+import { RubberSegment, SpringCheck } from "@/components/micro";
 import { JiraStatusLozenge } from "@/pages/tasks/components/JiraSubtaskUI";
 import {
   isSubtaskDone,
@@ -29,6 +30,8 @@ import { useTimelineStatusWidth } from "@/pages/campaign/hooks/useTimelineStatus
 import { TimelineHorizontalScrollbar } from "@/pages/campaign/components/TimelineHorizontalScrollbar";
 import { TimelineRange } from "@/pages/campaign/components/TimelineRange";
 import { TimelineFilterBar } from "@/pages/campaign/components/TimelineFilterBar";
+import { CampaignTimelineTableView } from "@/pages/campaign/components/CampaignTimelineTableView";
+import { CampaignOutOfScopeTaskDialog } from "@/pages/campaign/components/CampaignOutOfScopeTaskDialog";
 import type { TaskType } from "@/types/task";
 import {
   useTimelineColumns,
@@ -52,6 +55,7 @@ import {
   buildTimelineNodes,
   type TimelineNode,
 } from "@/pages/campaign/utils/timelineNodes";
+import { isTimelineItemMissingDetails } from "@/pages/campaign/utils/timelineFilters";
 import type { Campaign } from "@/pages/campaign/types";
 import { cn } from "@/lib/utils";
 import "@/pages/campaign/components/campaignTimeline.css";
@@ -70,6 +74,11 @@ export function CampaignTimelineGrid({
   milestoneBlocked,
   onMilestoneDirty,
   onMilestonesChange,
+  selectableSubtasks = false,
+  excludedSubtaskIds,
+  onToggleSubtask,
+  canCreateTask = false,
+  onOutOfScopeCreated,
 }: {
   workspaceId: string;
   campaign: Campaign;
@@ -77,8 +86,8 @@ export function CampaignTimelineGrid({
   userId: string;
   busy: boolean;
   edit: (value: TimelineEdit) => Promise<unknown>;
-  onOpenTask: (id: string) => void;
-  campaignDates: ReactNode;
+  onOpenTask: (id: string, subtaskId?: string) => void;
+  campaignDates?: ReactNode;
   campaignActions?: ReactNode;
   canEditMilestones: boolean;
   milestoneBusy: boolean;
@@ -88,12 +97,40 @@ export function CampaignTimelineGrid({
     milestones: { name: string; date: string }[],
     version: number,
   ) => Promise<unknown>;
+  selectableSubtasks?: boolean;
+  excludedSubtaskIds?: string[];
+  onToggleSubtask?: (subtaskId: string, included: boolean) => void;
+  canCreateTask?: boolean;
+  onOutOfScopeCreated?: () => void;
 }) {
   const { t } = useTranslation();
+  const excludedSet = useMemo(
+    () => new Set(excludedSubtaskIds ?? []),
+    [excludedSubtaskIds],
+  );
   const [filters, setFilters] = useState<TimelineFilters>(EMPTY_FILTERS);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [creating, setCreating] = useState<string | null>(null);
+  const [createTaskOpen, setCreateTaskOpen] = useState(false);
+  const viewStorageKey = `brandhub:campaign-view:${userId || "anon"}`;
+  const [viewMode, setViewMode] = useState<"gantt" | "table">(() => {
+    try {
+      return window.localStorage.getItem(viewStorageKey) === "table"
+        ? "table"
+        : "gantt";
+    } catch {
+      return "gantt";
+    }
+  });
+  function changeViewMode(mode: "gantt" | "table") {
+    setViewMode(mode);
+    try {
+      window.localStorage.setItem(viewStorageKey, mode);
+    } catch {
+      /* Ignore storage quota or private-mode restrictions. */
+    }
+  }
   const [zoom, setZoom] = useState("week");
   const scrollId = useId();
   const initializedRange = useRef("");
@@ -118,7 +155,7 @@ export function CampaignTimelineGrid({
     observer.observe(element);
     measure();
     return () => observer.disconnect();
-  }, []);
+  }, [viewMode]);
   const statusLabels = data.rows
     .flatMap((row) => [row.status, ...row.subtasks.map((sub) => sub.status)])
     .map((status) => t(`tasks.status.${status}`, { defaultValue: status }));
@@ -201,6 +238,7 @@ export function CampaignTimelineGrid({
     filters.types.length > 0 ||
     filters.deliverable.length > 0 ||
     filters.schedule !== "all" ||
+    filters.completeness !== "all" ||
     !!filters.from ||
     !!filters.to;
   const nodes = buildTimelineNodes(
@@ -315,10 +353,16 @@ export function CampaignTimelineGrid({
       >
         {rowKind === "header" ? (
           <span
-            className="ct-column-label"
+            className="ct-column-label flex items-center gap-1"
             title={typeof content === "string" ? content : undefined}
           >
-            {content}
+            {key === "status" && (
+              <span
+                aria-hidden
+                className="bg-brand-orange size-1.5 shrink-0 rounded-full"
+              />
+            )}
+            <span className="truncate">{content}</span>
           </span>
         ) : (
           content
@@ -368,12 +412,12 @@ export function CampaignTimelineGrid({
               }
             >
               {!!collapsed[node.id] && !filtered ? (
-                <ChevronRight className="size-3" />
+                <ChevronRight className="text-brand-orange size-3" />
               ) : (
-                <ChevronDown className="size-3" />
+                <ChevronDown className="text-brand-orange size-3" />
               )}
-              <span className="truncate">{node.name}</span>
-              <span className="text-muted-foreground text-[10px]">
+              <span className="truncate font-bold">{node.name}</span>
+              <span className="bg-brand-orange rounded-full px-1.5 py-0.5 text-[10px] font-bold text-white">
                 {node.count}
               </span>
             </Button>
@@ -422,10 +466,26 @@ export function CampaignTimelineGrid({
                 ) : (
                   <ChevronRight className="size-3" />
                 )
+              ) : selectableSubtasks && onToggleSubtask ? (
+                <span className="text-muted-foreground">↳</span>
               ) : (
                 <span className="text-muted-foreground">↳</span>
               )}
             </Button>
+            {node.kind === "sub" && selectableSubtasks && onToggleSubtask && (
+              <SpringCheck
+                checked={!excludedSet.has(item.id)}
+                disabled={busy}
+                stopPropagation
+                ariaLabel={t("campaign.timeline.toggleSubtaskDeploy", {
+                  name: item.name,
+                  defaultValue: `Triển khai công việc con ${item.name}`,
+                })}
+                onCheckedChange={(checked) =>
+                  onToggleSubtask(item.id, checked)
+                }
+              />
+            )}
             <Button
               variant="ghost"
               className={cn(
@@ -434,9 +494,15 @@ export function CampaignTimelineGrid({
                   node.contextOnly &&
                   "text-muted-foreground",
                 item.status === "FINISHED" && "line-through",
+                node.kind === "sub" &&
+                  selectableSubtasks &&
+                  excludedSet.has(item.id) &&
+                  "text-muted-foreground line-through opacity-60",
               )}
               title={item.name}
-              onClick={() => onOpenTask(task.id)}
+              onClick={() =>
+                onOpenTask(task.id, node.kind === "sub" ? item.id : undefined)
+              }
             >
               {item.name}
             </Button>
@@ -449,9 +515,60 @@ export function CampaignTimelineGrid({
               </span>
             )}
             {node.kind === "task" && task.subtasks.length > 0 && (
-              <span className="text-muted-foreground shrink-0 text-[9px]">
-                {task.subtasks.filter((s) => s.status === "FINISHED").length}/
-                {task.subtasks.length}
+              <span
+                className={cn(
+                  "shrink-0 text-[9px]",
+                  selectableSubtasks &&
+                    task.subtasks.some((s) => excludedSet.has(s.id))
+                    ? "font-medium text-amber-600 dark:text-amber-400"
+                    : "text-muted-foreground",
+                )}
+                title={
+                  selectableSubtasks
+                    ? t("campaign.timeline.selectedSubtasksCount", {
+                        defaultValue: "Số công việc con được chọn triển khai",
+                      })
+                    : undefined
+                }
+              >
+                {selectableSubtasks
+                  ? task.subtasks.filter((s) => !excludedSet.has(s.id)).length
+                  : task.subtasks.filter((s) => s.status === "FINISHED").length}
+                /{task.subtasks.length}
+              </span>
+            )}
+            {node.kind === "sub" &&
+              selectableSubtasks &&
+              excludedSet.has(item.id) && (
+                <span className="text-muted-foreground bg-muted shrink-0 rounded px-1 py-0.5 text-[9px]">
+                  {t("campaign.timeline.skipOnDeploy", {
+                    defaultValue: "Không triển khai",
+                  })}
+                </span>
+              )}
+            {node.kind === "task" && task.outOfScope && (
+              <span
+                className="border-brand-orange/45 bg-brand-orange/15 text-brand-orange inline-flex shrink-0 items-center rounded-md border px-1.5 py-0.5 text-[9px] font-bold"
+                title={t("campaign.timeline.outOfScopeBadge", {
+                  defaultValue: "Ngoài phạm vi",
+                })}
+              >
+                {t("campaign.timeline.outOfScopeBadge", {
+                  defaultValue: "Ngoài phạm vi",
+                })}
+              </span>
+            )}
+            {isTimelineItemMissingDetails(item) && (
+              <span
+                className="inline-flex shrink-0 items-center gap-0.5 rounded border border-amber-500/30 bg-amber-500/10 px-1 py-0.5 text-[9px] font-semibold text-amber-700 dark:text-amber-300"
+                title={t("campaign.timeline.missingDetailsTooltip", {
+                  defaultValue:
+                    "Manager/Owner chưa viết đầy đủ mô tả chi tiết hoặc tiêu chí nghiệm thu",
+                })}
+              >
+                {t("campaign.timeline.missingDetailsBadge", {
+                  defaultValue: "Thiếu mô tả",
+                })}
               </span>
             )}
             {node.kind === "task" && task.awaitingClient && (
@@ -506,63 +623,128 @@ export function CampaignTimelineGrid({
   }
   return (
     <section className="border-border bg-card ct-timeline-shell flex min-w-0 flex-col overflow-hidden rounded-xl border">
-      <div className="border-border flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2">
-        {campaignDates}
-        {campaignActions}
-      </div>
+      {(campaignDates || campaignActions) && (
+        <div className="border-border flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2">
+          {campaignDates}
+          {campaignActions}
+        </div>
+      )}
       <TimelineFilterBar
         filters={filters}
         onChange={setFilters}
         data={data}
         deliverables={campaign.deliverablePlan}
         trailingControls={
-          <div className="ml-auto flex shrink-0 items-center gap-2">
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-7 text-xs"
-              onClick={() =>
-                viewport.current?.scrollTo({
-                  left: Math.max(0, x(today) - 60),
-                  behavior: window.matchMedia(
-                    "(prefers-reduced-motion: reduce)",
-                  ).matches
-                    ? "instant"
-                    : "smooth",
-                })
-              }
-            >
-              {t("campaign.timeline.today")}
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+          <div className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-2">
+            {viewMode === "gantt" && (
+              <>
                 <Button
                   size="sm"
-                  variant="secondary"
-                  className="h-7 gap-2 text-xs"
-                  aria-label={t("campaign.timeline.zoom")}
+                  variant="ghost"
+                  className="h-7 text-xs"
+                  onClick={() =>
+                    viewport.current?.scrollTo({
+                      left: Math.max(0, x(today) - 60),
+                      behavior: window.matchMedia(
+                        "(prefers-reduced-motion: reduce)",
+                      ).matches
+                        ? "instant"
+                        : "smooth",
+                    })
+                  }
                 >
-                  {t(`campaign.timeline.zoomOptions.${zoom}`)}
-                  <ChevronDown className="size-3.5" />
+                  {t("campaign.timeline.today")}
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-36">
-                <DropdownMenuRadioGroup value={zoom} onValueChange={setZoom}>
-                  {["day", "week", "month"].map((value) => (
-                    <DropdownMenuRadioItem
-                      key={value}
-                      value={value}
-                      className="data-[state=checked]:bg-brand-orange-soft data-[state=checked]:text-brand-orange cursor-pointer pl-2 text-xs [&>span]:hidden"
-                    >
-                      {t(`campaign.timeline.zoomOptions.${value}`)}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <RubberSegment
+                  size="xs"
+                  variant="soft"
+                  ariaLabel={t("campaign.timeline.zoom")}
+                  value={zoom}
+                  onValueChange={setZoom}
+                  options={(["day", "week", "month"] as const).map((value) => ({
+                    value,
+                    label: t(`campaign.timeline.zoomOptions.${value}`),
+                  }))}
+                />
+              </>
+            )}
+            {viewMode === "table" && data.rows.some((r) => r.subtasks.length > 0 || r.canManageSubtasks) && (
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="h-7 text-xs"
+                onClick={() => {
+                  const anyCollapsed = data.rows.some((r) => !expanded[r.id]);
+                  const next: Record<string, boolean> = {};
+                  if (anyCollapsed) {
+                    for (const r of data.rows) next[r.id] = true;
+                  }
+                  setExpanded(next);
+                }}
+              >
+                {data.rows.some((r) => !expanded[r.id])
+                  ? t("campaign.timeline.expandAllTasks", {
+                      defaultValue: "Mở rộng việc con",
+                    })
+                  : t("campaign.timeline.collapseAllTasks", {
+                      defaultValue: "Thu gọn việc con",
+                    })}
+              </Button>
+            )}
+            <RubberSegment
+              size="xs"
+              variant="solid"
+              ariaLabel={t("campaign.timeline.viewModeLabel", {
+                defaultValue: "Chế độ hiển thị",
+              })}
+              value={viewMode}
+              onValueChange={changeViewMode}
+              options={[
+                {
+                  value: "gantt" as const,
+                  icon: <GanttChart className="size-3.5" />,
+                  label: t("campaign.timeline.viewModes.gantt", {
+                    defaultValue: "Gantt",
+                  }),
+                },
+                {
+                  value: "table" as const,
+                  icon: <Table2 className="size-3.5" />,
+                  label: t("campaign.timeline.viewModes.table", {
+                    defaultValue: "Danh sách",
+                  }),
+                },
+              ]}
+            />
           </div>
         }
       />
+      {viewMode === "table" ? (
+        <CampaignTimelineTableView
+          nodes={nodes}
+          data={data}
+          today={today}
+          busy={busy}
+          filtered={filtered}
+          expanded={expanded}
+          collapsed={collapsed}
+          selectableSubtasks={selectableSubtasks}
+          excludedSet={excludedSet}
+          onToggleGroup={(id) =>
+            setCollapsed((old) => ({ ...old, [id]: !old[id] }))
+          }
+          onToggleTask={toggle}
+          onStartCreating={(id) => setCreating(id)}
+          onCancelCreating={() => setCreating(null)}
+          onToggleSubtask={onToggleSubtask}
+          onOpenTask={onOpenTask}
+          canCreateTask={canCreateTask}
+          onOpenCreateTask={() => setCreateTaskOpen(true)}
+          edit={edit}
+        />
+      ) : (
+        <>
       <div
         id={scrollId}
         className="ct-scroll"
@@ -651,7 +833,12 @@ export function CampaignTimelineGrid({
           </div>
           <div
             className="ct-virtual-body"
-            style={{ height: Math.max(nodes.length * 36, 90) }}
+            style={{
+              height: Math.max(
+                (nodes.length + (canCreateTask ? 1 : 0)) * 36,
+                canCreateTask && nodes.length === 0 ? 108 : 90,
+              ),
+            }}
           >
             {shown.map(({ node, index }) => (
               <div
@@ -730,8 +917,41 @@ export function CampaignTimelineGrid({
                 )}
               </div>
             ))}
+            {canCreateTask && (
+              <div className="ct-node" style={{ top: nodes.length * 36 }}>
+                <div className="ct-grid-row" style={gridStyle}>
+                  {columnKeys.map((key) =>
+                    cell(
+                      key,
+                      key === "name" ? (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          className="text-brand-orange hover:bg-brand-orange/10 h-7 gap-1 px-1.5 text-xs font-medium"
+                          onClick={() => setCreateTaskOpen(true)}
+                        >
+                          <Plus className="size-3.5" />
+                          <span>
+                            {t("campaign.timeline.addOutOfScopeTask", {
+                              defaultValue: "Thêm công việc lớn",
+                            })}
+                          </span>
+                        </Button>
+                      ) : null,
+                    ),
+                  )}
+                  <div className="ct-axis">{guides}</div>
+                </div>
+              </div>
+            )}
             {nodes.length === 0 && (
-              <p className="text-muted-foreground sticky left-0 p-6 text-sm">
+              <p
+                className={cn(
+                  "text-muted-foreground sticky left-0 px-6 pb-6 text-sm",
+                  canCreateTask ? "pt-12" : "pt-6",
+                )}
+              >
                 {t("campaign.timeline.noResults")}
               </p>
             )}
@@ -748,6 +968,23 @@ export function CampaignTimelineGrid({
         controls={scrollId}
         onChange={(left) => viewport.current?.scrollTo({ left })}
       />
+        </>
+      )}
+      {canCreateTask && (
+        <CampaignOutOfScopeTaskDialog
+          open={createTaskOpen}
+          workspaceId={workspaceId}
+          campaignId={campaign.id}
+          userId={userId}
+          timezone={data.timezone}
+          members={data.members}
+          onClose={() => setCreateTaskOpen(false)}
+          onCreated={() => {
+            setCollapsed((old) => ({ ...old, other: false }));
+            onOutOfScopeCreated?.();
+          }}
+        />
+      )}
     </section>
   );
 }

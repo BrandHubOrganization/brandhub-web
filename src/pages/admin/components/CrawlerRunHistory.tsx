@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { History } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 import { DatePicker } from "@/components/ui/date-range-picker";
 import { SelectMenu } from "@/components/ui/select-menu";
 import {
@@ -190,24 +191,15 @@ export function CrawlerRunHistory() {
                 ))}
             </div>
             {filtered.length > 20 && (
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={!historyPage}
-                  onClick={() => setHistoryPage((p) => p - 1)}
-                >
-                  {t("admin.crawler.previous")}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={(historyPage + 1) * 20 >= filtered.length}
-                  onClick={() => setHistoryPage((p) => p + 1)}
-                >
-                  {t("admin.crawler.next")}
-                </Button>
-              </div>
+              <Pagination
+                page={historyPage + 1}
+                size={20}
+                total={filtered.length}
+                totalPages={Math.ceil(filtered.length / 20)}
+                itemLabel={t("admin.crawler.itemLabel", "phiên crawl")}
+                onPageChange={(p) => setHistoryPage(p - 1)}
+                className="pt-1"
+              />
             )}
           </div>
 

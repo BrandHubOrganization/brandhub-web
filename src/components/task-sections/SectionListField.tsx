@@ -4,6 +4,10 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  formatVndInput,
+  parseVndInput,
+} from "@/pages/media-package/lib/formatMediaPackage";
+import {
   Table,
   TableBody,
   TableCell,
@@ -15,7 +19,8 @@ import {
 export interface ListColumn {
   key: string;
   i18nKey?: string;
-  type?: "text" | "number";
+  type?: "text" | "number" | "currency" | "date" | "select";
+  options?: string[];
 }
 
 type Row = Record<string, unknown>;
@@ -86,24 +91,71 @@ export function SectionListField({
               <TableRow key={keys.current[rowIndex]}>
                 {columns.map((col) => (
                   <TableCell key={col.key} className="p-1.5">
-                    <Input
-                      type={col.type === "number" ? "number" : "text"}
-                      disabled={disabled}
-                      value={
-                        (row[col.key] as string | number | undefined) ?? ""
-                      }
-                      onChange={(e) =>
-                        setCell(
-                          rowIndex,
-                          col.key,
+                    {col.type === "select" && col.options ? (
+                      <select
+                        disabled={disabled}
+                        value={(row[col.key] as string | undefined) ?? ""}
+                        onChange={(e) =>
+                          setCell(rowIndex, col.key, e.target.value)
+                        }
+                        className="border-input bg-background focus-visible:ring-ring h-9 w-full min-w-[120px] rounded-md border px-2 text-xs focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <option value="">-- Chọn --</option>
+                        {col.options.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    ) : col.type === "currency" ? (
+                      <div className="relative min-w-[120px]">
+                        <Input
+                          type="text"
+                          inputMode="numeric"
+                          disabled={disabled}
+                          value={formatVndInput(
+                            String(row[col.key] ?? ""),
+                          )}
+                          onChange={(e) => {
+                            const raw = parseVndInput(e.target.value);
+                            setCell(
+                              rowIndex,
+                              col.key,
+                              raw ? Number(raw) : "",
+                            );
+                          }}
+                          className="pr-7"
+                        />
+                        <span className="text-muted-foreground pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[10px]">
+                          đ
+                        </span>
+                      </div>
+                    ) : (
+                      <Input
+                        type={
                           col.type === "number"
-                            ? Number.isNaN(e.target.valueAsNumber)
-                              ? ""
-                              : e.target.valueAsNumber
-                            : e.target.value,
-                        )
-                      }
-                    />
+                            ? "number"
+                            : col.type === "date"
+                              ? "date"
+                              : "text"
+                        }
+                        disabled={disabled}
+                        value={
+                          (row[col.key] as string | number | undefined) ?? ""
+                        }
+                        onChange={(e) =>
+                          setCell(
+                            rowIndex,
+                            col.key,
+                            col.type === "number"
+                              ? Number.isNaN(e.target.valueAsNumber)
+                                ? ""
+                                : e.target.valueAsNumber
+                              : e.target.value,
+                          )
+                        }
+                      />
+                    )}
                   </TableCell>
                 ))}
                 <TableCell className="p-1.5">

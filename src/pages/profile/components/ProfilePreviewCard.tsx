@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { RichTextContent } from "@/components/ui/rich-text-input";
 import {
   BadgeCheck,
   Briefcase,
@@ -134,9 +135,9 @@ export const ProfilePreviewCard: React.FC<ProfilePreviewCardProps> = ({
 
           {/* Bio block: nếu có bio, hiển thị trang nhã (line-clamp-3, text-xs) */}
           {bio.trim() && (
-            <p className="text-muted-foreground line-clamp-3 text-xs leading-relaxed whitespace-pre-wrap">
-              {bio}
-            </p>
+            <div className="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
+              <RichTextContent value={bio} className="text-xs leading-relaxed" />
+            </div>
           )}
 
           {/* Bố cục Lưới 2 Cột (2-Column Grid) */}

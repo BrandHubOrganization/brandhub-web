@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  RichTextContent,
+  RichTextInput,
+} from "@/components/ui/rich-text-input";
 import { SelectMenu, type SelectMenuOption } from "@/components/ui/select-menu";
 import { Label } from "@/components/ui/label";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
@@ -84,20 +87,47 @@ export function InlineTaskField(props: Props) {
               }}
             />
           ) : props.multiline ? (
-            <Textarea
-              id={props.id}
-              name={props.id}
-              value={field.value}
-              rows={5}
-              placeholder={props.placeholder}
-              required={props.required}
-              maxLength={props.maxLength}
-              readOnly={pending}
-              autoFocus
-              aria-invalid={Boolean(field.error)}
-              aria-describedby={`${props.id}-feedback`}
-              {...events}
-            />
+            <div className="space-y-2">
+              <RichTextInput
+                id={props.id}
+                value={field.value}
+                placeholder={props.placeholder}
+                disabled={pending}
+                aria-invalid={Boolean(field.error)}
+                aria-describedby={`${props.id}-feedback`}
+                onChange={(html) => field.change(html)}
+              />
+              <div className="flex items-center justify-end gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  disabled={pending}
+                  onClick={discard}
+                  className="h-7 px-2.5 text-xs"
+                >
+                  {t("tasks.inline.discard", { defaultValue: "Hủy" })}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="orange"
+                  disabled={pending}
+                  onClick={() => {
+                    if (props.required && !field.value.replace(/<[^>]*>/g, "").trim()) {
+                      field.invalid();
+                      return;
+                    }
+                    void field.commit().then((saved) => {
+                      if (saved) setEditing(false);
+                    });
+                  }}
+                  className="h-7 px-3 text-xs"
+                >
+                  {t("common.save", { defaultValue: "Lưu" })}
+                </Button>
+              </div>
+            </div>
           ) : (
             <Input
               id={props.id}
@@ -124,10 +154,18 @@ export function InlineTaskField(props: Props) {
           aria-label={t("tasks.inline.edit", { field: props.label })}
           onClick={() => setEditing(true)}
         >
-          <span className="min-w-0 break-words whitespace-pre-wrap">
-            {props.displayValue || props.value || props.placeholder || t("tasks.inline.empty")}
-          </span>
+          {props.multiline && props.value ? (
+            <RichTextContent value={props.value} className="w-full text-sm" />
+          ) : (
+            <span className="min-w-0 break-words whitespace-pre-wrap">
+              {props.displayValue || props.value || props.placeholder || t("tasks.inline.empty")}
+            </span>
+          )}
         </Button>
+      ) : props.multiline && props.value ? (
+        <div className="py-2 text-sm">
+          <RichTextContent value={props.value} />
+        </div>
       ) : (
         <p className="py-2 text-sm break-words whitespace-pre-wrap">
           {props.displayValue || props.value || props.placeholder || t("tasks.missing")}

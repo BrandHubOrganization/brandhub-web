@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -17,6 +16,8 @@ import { agencyService } from "@/services/agencyService";
 import { workspaceService } from "@/services/workspaceService";
 import { extractErrorMessage } from "@/utils/error";
 import type { InviteLookupResponse } from "@/types/agency";
+import { InvitationMailPreview } from "@/components/shared/InvitationMailPreview";
+import { Mail, UserCheck } from "lucide-react";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -111,65 +112,104 @@ export function AddClientDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t("workspace.members.addClientTitle")}</DialogTitle>
+      <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto">
+        <DialogHeader className="border-b border-border/60 pb-3">
+          <DialogTitle className="flex items-center gap-2 text-base">
+            <UserCheck className="size-5 text-brand-orange" />
+            <span>{t("workspace.members.addClientTitle")}</span>
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-3">
-          <Input
-            type="email"
-            placeholder={t("workspace.members.addClientEmailPlaceholder")}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start py-2">
+          <div className="space-y-4 lg:col-span-6">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold tracking-wide text-foreground">
+                {t("workspace.members.emailLabel", "Email")} *
+              </label>
+              <Input
+                type="email"
+                placeholder={t("workspace.members.addClientEmailPlaceholder")}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoFocus
+              />
+            </div>
 
-          {userMatch && (
-            <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
-              {userMatch.avatarUrl ? (
-                <img
-                  src={userMatch.avatarUrl}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                  className="size-4 shrink-0 rounded-full object-cover"
-                />
-              ) : (
-                <span className="bg-brand-orange-soft text-brand-orange text-3xs flex size-4 shrink-0 items-center justify-center rounded-full font-bold">
-                  {userMatch.fullName.charAt(0).toUpperCase()}
-                </span>
-              )}
-              {t("workspace.create.clientInviteUserMatch", {
-                name: userMatch.fullName,
-              })}
-            </p>
-          )}
+            {userMatch && (
+              <div className="flex items-center gap-2 rounded-lg border border-brand-orange/30 bg-brand-orange/5 p-2.5 text-xs">
+                {userMatch.avatarUrl ? (
+                  <img
+                    src={userMatch.avatarUrl}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="size-5 shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="bg-brand-orange-soft text-brand-orange text-3xs flex size-5 shrink-0 items-center justify-center rounded-full font-bold">
+                    {userMatch.fullName.charAt(0).toUpperCase()}
+                  </span>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-foreground truncate">
+                    {userMatch.fullName}
+                  </p>
+                  <p className="text-3xs text-muted-foreground truncate">
+                    {t("workspace.create.clientInviteUserMatch", {
+                      name: userMatch.fullName,
+                    })}
+                  </p>
+                </div>
+              </div>
+            )}
 
-          {lookup?.isAlreadyClientInAgency && (
-            <p className="bg-muted rounded-lg p-2 text-xs">
-              {t("workspace.members.addClientRecommendHint", {
-                workspace: lookup.existingWorkspaces[0]?.workspaceName,
-              })}
-            </p>
-          )}
+            {lookup?.isAlreadyClientInAgency && (
+              <p className="bg-muted/80 rounded-lg p-2.5 text-xs text-muted-foreground leading-relaxed border border-border/60">
+                {t("workspace.members.addClientRecommendHint", {
+                  workspace: lookup.existingWorkspaces[0]?.workspaceName,
+                })}
+              </p>
+            )}
 
-          <Textarea
-            placeholder={t("workspace.members.inviteNotePlaceholder")}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            rows={3}
-          />
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold tracking-wide text-foreground">
+                {t("workspace.members.noteLabel", "Lời nhắn (tuỳ chọn)")}
+              </label>
+              <Textarea
+                placeholder={t("workspace.members.inviteNotePlaceholder")}
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                rows={5}
+                className="text-xs leading-relaxed"
+              />
+            </div>
+
+            <div className="pt-2">
+              <Button
+                variant="orange"
+                loading={submitting}
+                onClick={handleInvite}
+                disabled={!isValid}
+                className="w-full gap-2 cursor-pointer shadow-xs"
+              >
+                <Mail className="size-4" />
+                {t("workspace.members.addClientSubmit")}
+              </Button>
+            </div>
+          </div>
+
+          <div className="lg:col-span-6">
+            <InvitationMailPreview
+              isClient={true}
+              role="CLIENT"
+              agencyName={agencyName}
+              workspaceName={workspaceName}
+              recipientEmail={email}
+              inviteeName={userMatch?.fullName}
+              note={note}
+              fullHeight
+            />
+          </div>
         </div>
-
-        <DialogFooter>
-          <Button
-            variant="orange"
-            loading={submitting}
-            onClick={handleInvite}
-            disabled={!isValid}
-          >
-            {t("workspace.members.addClientSubmit")}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

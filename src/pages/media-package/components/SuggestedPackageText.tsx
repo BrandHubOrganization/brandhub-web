@@ -1,7 +1,40 @@
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  RichTextInput,
+  stripRichTextHtml,
+} from "@/components/ui/rich-text-input";
+
+function toParagraphs(raw: string): string[] {
+  return stripRichTextHtml(raw)
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function removePhraseFromHtml(raw: string, phrase: string): string {
+  const remaining = toParagraphs(raw).filter((line) => line !== phrase);
+  if (remaining.length === 0) return "";
+  return remaining.map((line) => `<p>${escapeHtml(line)}</p>`).join("");
+}
+
+function appendPhraseToHtml(raw: string, phrase: string): string {
+  const existing = raw.trim();
+  const block = `<p>${escapeHtml(phrase)}</p>`;
+  if (!existing) return block;
+  if (/<[a-z][\s\S]*>/i.test(existing)) return `${existing}${block}`;
+  return `${toParagraphs(existing)
+    .map((line) => `<p>${escapeHtml(line)}</p>`)
+    .join("")}${block}`;
+}
 
 export function SuggestedPackageText({
   label,
@@ -17,7 +50,8 @@ export function SuggestedPackageText({
   const id = useId();
   const { t } = useTranslation();
   const [inserted, setInserted] = useState<Record<string, string>>({});
-  const lines = value.split("\n");
+  const lines = toParagraphs(value);
+  const plainLength = stripRichTextHtml(value).length;
   return (
     <div className="min-w-0 space-y-2">
       <Label htmlFor={id}>{label}</Label>
@@ -27,9 +61,8 @@ export function SuggestedPackageText({
           const phrase =
             previous && lines.includes(previous) ? previous : option.text;
           const checked = lines.includes(phrase);
-          const next = [value.trimEnd(), option.text]
-            .filter(Boolean)
-            .join("\n");
+          const next = appendPhraseToHtml(value, option.text);
+          const nextLength = stripRichTextHtml(next).length;
           return (
             <label
               key={option.id}
@@ -39,16 +72,14 @@ export function SuggestedPackageText({
                 type="checkbox"
                 className="accent-brand-orange mt-0.5 size-4 shrink-0"
                 checked={checked}
-                disabled={!checked && next.length > 2000}
+                disabled={!checked && nextLength > 2000}
                 onChange={() => {
                   if (checked) {
-                    onChange(
-                      lines.filter((line) => line !== phrase).join("\n"),
-                    );
+                    onChange(removePhraseFromHtml(value, phrase));
                     setInserted((previous) => {
-                      const next = { ...previous };
-                      delete next[option.id];
-                      return next;
+                      const nextMap = { ...previous };
+                      delete nextMap[option.id];
+                      return nextMap;
                     });
                   } else {
                     setInserted((previous) => ({
@@ -64,17 +95,10 @@ export function SuggestedPackageText({
           );
         })}
       </div>
-      <Textarea
-        id={id}
-        rows={4}
-        maxLength={2000}
-        value={value}
-        className="min-h-28 text-sm"
-        onChange={(e) => onChange(e.target.value)}
-      />
+      <RichTextInput id={id} value={value} onChange={onChange} />
       <p className="text-muted-foreground text-right text-xs" aria-live="off">
         {t("mediaPackage.editor.characters", {
-          count: value.length,
+          count: plainLength,
           max: 2000,
         })}
       </p>

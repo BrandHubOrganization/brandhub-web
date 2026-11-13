@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { TimelineHorizontalScrollbar } from "@/pages/campaign/components/TimelineHorizontalScrollbar";
 import { useTaskTimelineCalculations } from "./useTaskTimelineCalculations";
 import { TaskTimelineToolbar } from "./TaskTimelineToolbar";
-import { JiraTimelineZoomControl } from "./JiraTimelineZoomControl";
 import { TaskTimelineHeaderRow } from "./TaskTimelineHeaderRow";
 import { TaskTimelineGroupRow } from "./TaskTimelineGroupRow";
 import { TaskTimelineRow } from "./TaskTimelineRow";
@@ -40,6 +39,16 @@ export function TaskTimelineView({
     ticks,
     collapsed,
     toggleGroup,
+    search,
+    setSearch,
+    statusFilter,
+    setStatusFilter,
+    missingDetailsOnly,
+    setMissingDetailsOnly,
+    missingDetailsCount,
+    expandedTasks,
+    toggleTaskExpand,
+    timezone,
   } = useTaskTimelineCalculations(tasks);
 
   const pinnedWidth = 490; // Work 280px + Status 120px + Assignee 90px
@@ -48,12 +57,6 @@ export function TaskTimelineView({
     if (!viewportRef.current) return;
     const targetLeft = Math.max(0, todayX - 120);
     viewportRef.current.scrollTo({ left: targetLeft, behavior });
-  };
-
-  const stepForward = (behavior: ScrollBehavior = "smooth") => {
-    if (!viewportRef.current) return;
-    const scrollAmount = Math.max(250, dayWidth * 7);
-    viewportRef.current.scrollBy({ left: scrollAmount, behavior });
   };
 
   useEffect(() => {
@@ -82,6 +85,16 @@ export function TaskTimelineView({
         onGroupByChange={setGroupBy}
         totalCount={allItems.length}
         unscheduledCount={unscheduledCount}
+        search={search}
+        onSearchChange={setSearch}
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
+        missingDetailsOnly={missingDetailsOnly}
+        onToggleMissingDetails={() => setMissingDetailsOnly((prev) => !prev)}
+        missingDetailsCount={missingDetailsCount}
+        zoom={zoom}
+        onZoomChange={setZoom}
+        onScrollToToday={() => scrollToToday("smooth")}
       />
 
       <div
@@ -145,25 +158,15 @@ export function TaskTimelineView({
                         todayX={todayX}
                         workspaceId={workspaceId}
                         onUpdated={onUpdated}
+                        isExpanded={!!expandedTasks[item.task.id]}
+                        onToggleExpand={() => toggleTaskExpand(item.task.id)}
+                        timezone={timezone}
                       />
                     ))}
                 </div>
               );
             })
           )}
-        </div>
-      </div>
-
-      {/* Floating Jira Zoom Control at bottom right corner */}
-      <div className="pointer-events-none absolute bottom-10 right-4 z-30">
-        <div className="pointer-events-auto">
-          <JiraTimelineZoomControl
-            zoom={zoom}
-            onZoomChange={setZoom}
-            onScrollToToday={() => scrollToToday("smooth")}
-            onStepForward={stepForward}
-            className="shadow-md bg-card/95 backdrop-blur-md border-border/90"
-          />
         </div>
       </div>
 

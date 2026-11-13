@@ -62,8 +62,8 @@ export function TimelineAssigneePicker({
           title={name || t("campaign.timeline.unassigned")}
           aria-label={t("campaign.timeline.assignee")}
           className={cn(
-            "h-8 min-w-8 gap-2 px-1",
-            labelled && "border-border border px-2",
+            "h-8 max-w-full min-w-8 gap-2 overflow-hidden px-1",
+            labelled && "border-border w-full justify-start border px-2",
           )}
         >
           <span
@@ -77,7 +77,7 @@ export function TimelineAssigneePicker({
             {value ? initials : <UserRound className="size-3.5" />}
           </span>
           {labelled && (
-            <span className="max-w-28 truncate text-xs">
+            <span className="min-w-0 flex-1 truncate text-left text-xs">
               {name || t("campaign.timeline.assignee")}
             </span>
           )}

@@ -1,4 +1,15 @@
 {
+  "partners": {
+    "title": "Liên hệ với đối tác",
+    "selectAction": "Chọn đối tác",
+    "fromCampaign": "Đối tác của chiến dịch",
+    "fromAgencyDirectory": "Từ danh bạ Agency",
+    "noneAvailable": "Chiến dịch và Agency chưa có đối tác nào trong danh bạ.",
+    "openCampaignPartners": "Mở Đối tác chiến dịch",
+    "empty": "Chưa gán đối tác cho công việc này.",
+    "detach": "Gỡ đối tác khỏi công việc",
+    "saved": "Đã cập nhật đối tác phụ trách công việc"
+  },
   "subtasks": {
     "title": "Công việc con",
     "add": "Thêm công việc con",
@@ -319,7 +330,7 @@
   "descriptionLabel": "Yêu cầu",
   "reporter": "Người tạo",
   "sources": {
-    "CAMPAIGN": "Kế hoạch chiến dịch",
+    "CAMPAIGN": "Chiến dịch truyền thông",
     "CONTENT_REQUEST": "Yêu cầu nội dung bổ sung",
     "MANUAL": "Tạo thủ công"
   },

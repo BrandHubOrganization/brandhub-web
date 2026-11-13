@@ -124,7 +124,7 @@ export function ChatComposerToolbar({ editor }: { editor: Editor }) {
         <Button
           key={name}
           type="button"
-          variant={state[name] ? "secondary" : "ghost"}
+          variant={state[name] ? "orange" : "ghost"}
           size="icon"
           className="size-7 rounded-md"
           aria-label={t(`chat.rich.${name}`)}
@@ -141,7 +141,7 @@ export function ChatComposerToolbar({ editor }: { editor: Editor }) {
         <Button
           key={name}
           type="button"
-          variant={state[name] ? "secondary" : "ghost"}
+          variant={state[name] ? "orange" : "ghost"}
           size="icon"
           className="size-7 rounded-md"
           aria-label={t(`chat.rich.${name}`)}
@@ -158,7 +158,7 @@ export function ChatComposerToolbar({ editor }: { editor: Editor }) {
         <Button
           key={name}
           type="button"
-          variant={state[name] ? "secondary" : "ghost"}
+          variant={state[name] ? "orange" : "ghost"}
           size="icon"
           className="size-7 rounded-md"
           aria-label={t(`chat.rich.${name}`)}
@@ -214,7 +214,7 @@ export function ChatComposerToolbar({ editor }: { editor: Editor }) {
       >
         <Popover.Trigger asChild>
           <Button
-            variant={state.link ? "secondary" : "ghost"}
+            variant={state.link ? "orange" : "ghost"}
             size="icon"
             className="size-7 rounded-md"
             aria-label={t("chat.rich.link")}

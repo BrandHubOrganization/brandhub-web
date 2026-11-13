@@ -2,6 +2,10 @@ import { QuickNumbers, TextChoices } from "@/components/shared/FieldChoices";
 import { useEffect, useRef, useState } from "react";
 import { OfferingEditor } from "@/pages/media-package/components/OfferingEditor";
 import { PackageTermsDiff } from "@/pages/media-package/components/PackageTermsDiff";
+import {
+  formatVndInput,
+  parseVndInput,
+} from "@/pages/media-package/lib/formatMediaPackage";
 import type { OfferingFields } from "@/pages/media-package/types/mediaPackage";
 import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -13,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { InlineWorkArea } from "@/components/shared/InlineWorkArea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 import type {
   MediaPackage,
   NegotiateTermsRequest,
@@ -102,30 +106,38 @@ export function NegotiateTermsForm({
     }
     onOpenChange(next);
   };
+  const validateBudget = (val: string) => {
+    if (val.trim() === "") return undefined;
+    const budgetNum = Number(val);
+    return Number.isNaN(budgetNum) || budgetNum <= 0
+      ? t("mediaPackage.form.errors.budget")
+      : undefined;
+  };
+
+  const validateDuration = (val: string) => {
+    if (val.trim() === "") return undefined;
+    const durationNum = Number(val);
+    return Number.isNaN(durationNum) ||
+      durationNum <= 0 ||
+      !Number.isInteger(durationNum)
+      ? t("mediaPackage.form.errors.duration")
+      : undefined;
+  };
+
+  const validateScope = (val: string) =>
+    val.length > 5000 ? t("mediaPackage.form.errors.scopeLength") : undefined;
+
   const validate = (): boolean => {
     const nextErrors: FormErrors = {};
 
-    if (budgetAmount.trim() !== "") {
-      const budgetNum = Number(budgetAmount);
-      if (Number.isNaN(budgetNum) || budgetNum <= 0) {
-        nextErrors.budgetAmount = t("mediaPackage.form.errors.budget");
-      }
-    }
+    const budgetErr = validateBudget(budgetAmount);
+    if (budgetErr) nextErrors.budgetAmount = budgetErr;
 
-    if (durationWeeks.trim() !== "") {
-      const durationNum = Number(durationWeeks);
-      if (
-        Number.isNaN(durationNum) ||
-        durationNum <= 0 ||
-        !Number.isInteger(durationNum)
-      ) {
-        nextErrors.durationWeeks = t("mediaPackage.form.errors.duration");
-      }
-    }
+    const durationErr = validateDuration(durationWeeks);
+    if (durationErr) nextErrors.durationWeeks = durationErr;
 
-    if (scopeDescription.length > 5000) {
-      nextErrors.scopeDescription = t("mediaPackage.form.errors.scopeLength");
-    }
+    const scopeErr = validateScope(scopeDescription);
+    if (scopeErr) nextErrors.scopeDescription = scopeErr;
 
     if (
       budgetAmount.trim() === "" &&
@@ -250,28 +262,36 @@ export function NegotiateTermsForm({
                     errors.budgetAmount ? "negotiate-error-budget" : undefined
                   }
                   id="negotiate-budget"
-                  type="number"
-                  min="0"
-                  step="100000"
+                  type="text"
+                  inputMode="numeric"
                   placeholder={t(
                     "mediaPackage.form.budgetLabel",
-                    "Ví dụ: 15000000",
+                    "Ví dụ: 15.000.000",
                   )}
-                  value={budgetAmount}
+                  value={formatVndInput(budgetAmount)}
+                  iconSuffix={<span className="text-xs">VND</span>}
                   onChange={(e) => {
-                    setBudgetAmount(e.target.value);
-                    if (errors.budgetAmount)
-                      setErrors((prev) => ({
-                        ...prev,
-                        budgetAmount: undefined,
-                      }));
+                    const val = parseVndInput(e.target.value);
+                    setBudgetAmount(val);
+                    setErrors((prev) => ({
+                      ...prev,
+                      budgetAmount: validateBudget(val),
+                      general: undefined,
+                    }));
                   }}
                   disabled={loading}
                 />
                 <QuickNumbers
                   values={[5000000, 10000000, 18000000, 30000000, 50000000]}
                   value={budgetAmount}
-                  onChange={setBudgetAmount}
+                  onChange={(val) => {
+                    setBudgetAmount(val);
+                    setErrors((prev) => ({
+                      ...prev,
+                      budgetAmount: validateBudget(val),
+                      general: undefined,
+                    }));
+                  }}
                   format={(amount) =>
                     new Intl.NumberFormat(i18n.language).format(amount)
                   }
@@ -316,19 +336,27 @@ export function NegotiateTermsForm({
                   placeholder={t("mediaPackage.ui.durationExample")}
                   value={durationWeeks}
                   onChange={(e) => {
-                    setDurationWeeks(e.target.value);
-                    if (errors.durationWeeks)
-                      setErrors((prev) => ({
-                        ...prev,
-                        durationWeeks: undefined,
-                      }));
+                    const val = e.target.value;
+                    setDurationWeeks(val);
+                    setErrors((prev) => ({
+                      ...prev,
+                      durationWeeks: validateDuration(val),
+                      general: undefined,
+                    }));
                   }}
                   disabled={loading}
                 />
                 <QuickNumbers
                   values={[2, 4, 6, 8, 12]}
                   value={durationWeeks}
-                  onChange={setDurationWeeks}
+                  onChange={(val) => {
+                    setDurationWeeks(val);
+                    setErrors((prev) => ({
+                      ...prev,
+                      durationWeeks: validateDuration(val),
+                      general: undefined,
+                    }));
+                  }}
                 />
                 {errors.durationWeeks && (
                   <p
@@ -375,15 +403,12 @@ export function NegotiateTermsForm({
               clientNegotiation={clientNegotiation}
             />
             <div className="space-y-2">
-              <Label htmlFor="negotiation-note">
-                {t("mediaPackage.history.note")}
-              </Label>
-              <Textarea
+              <RichTextInput
                 id="negotiation-note"
+                label={t("mediaPackage.history.note")}
                 value={note}
-                maxLength={2000}
                 disabled={loading}
-                onChange={(event) => setNote(event.target.value)}
+                onChange={setNote}
               />
             </div>
             <PackageTermsDiff

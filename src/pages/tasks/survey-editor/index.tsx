@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 import { useSurveyEditor } from "@/pages/tasks/hooks/useSurveyEditor";
 import { useTaskSections } from "@/hooks/useTaskSections";
 import { SurveyEditorHeader } from "@/pages/tasks/components/survey/SurveyEditorHeader";
@@ -63,7 +64,18 @@ export default function SurveyEditorPage() {
   );
 
   return (
-    <div className="bg-background min-h-screen">
+    <PageWrapper
+      title={editor.formName || t("tasks.title")}
+      description={t("tasks.description")}
+      guideUrl="/help/guide#tasks"
+      compact
+      actions={
+        (formSection || distributionSection || reportSection) && (
+          <TaskExportButton workspaceId={id} taskId={taskId} />
+        )
+      }
+      contentClassName="space-y-4"
+    >
       <SurveyEditorHeader
         formName={editor.formName}
         onFormNameChange={editor.setFormName}
@@ -81,12 +93,7 @@ export default function SurveyEditorPage() {
         canEdit={editor.canEdit}
       />
 
-      <main className="mx-auto max-w-4xl space-y-4 px-4 py-8 sm:px-6">
-        {(formSection || distributionSection || reportSection) && (
-          <div className="flex justify-end">
-            <TaskExportButton workspaceId={id} taskId={taskId} />
-          </div>
-        )}
+      <main className="mx-auto max-w-4xl space-y-4">
         {editor.canEdit && editor.activeTab === "questions" ? (
           formSection ? (
             <SectionFrame
@@ -130,6 +137,6 @@ export default function SurveyEditorPage() {
           spreadsheetUrl={editor.survey?.spreadsheetUrl}
         />
       )}
-    </div>
+    </PageWrapper>
   );
 }

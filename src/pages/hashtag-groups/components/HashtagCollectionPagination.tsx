@@ -15,19 +15,17 @@ export function HashtagCollectionPagination({
 }: HashtagCollectionPaginationProps) {
   const { t } = useTranslation();
 
-  if (page.totalPages <= 1) return null;
+  if (page.totalPages <= 1 && page.totalElements <= page.size) return null;
 
   return (
     <Pagination
       page={currentPage + 1}
-      size={page.size || 10}
+      size={page.size}
       total={page.totalElements}
       totalPages={page.totalPages}
-      onPageChange={(p1) => onPageChange(p1 - 1)}
-      itemLabel={t("hashtagGroups.collection.itemLabel", {
-        defaultValue: "nhóm hashtag",
-      })}
-      compact={false}
+      itemLabel={t("hashtagGroups.collection.itemLabel", "nhóm hashtag")}
+      onPageChange={(nextPage) => onPageChange(nextPage - 1)}
+      className="pt-2"
     />
   );
 }

@@ -166,12 +166,16 @@ export function ImportDocumentModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs cursor-pointer"
       role="dialog"
       aria-modal="true"
       aria-labelledby="import-doc-modal-title"
+      onClick={onClose}
     >
-      <div className="border-border bg-card w-full max-w-2xl overflow-hidden rounded-2xl border shadow-2xl">
+      <div
+        className="border-border bg-card w-full max-w-2xl overflow-hidden rounded-2xl border shadow-2xl cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="border-border flex items-center justify-between border-b bg-[#f8fafd] px-5 py-3.5 dark:bg-zinc-900">
           <div className="flex items-center gap-2.5">

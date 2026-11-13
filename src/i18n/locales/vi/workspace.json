@@ -33,15 +33,15 @@
     "workspaceCampaign": {
       "title": "Chiến dịch của Workspace",
       "loading": "Đang tải chiến dịch",
-      "open": "Xem kế hoạch chiến dịch",
+      "open": "Xem chiến dịch truyền thông",
       "empty": "Workspace chưa có chiến dịch.",
-      "emptyHelp": "Quản lý lập kế hoạch chiến dịch sau khi hai bên chốt gói truyền thông.",
+      "emptyHelp": "Quản lý triển khai chiến dịch truyền thông sau khi hai bên chốt gói truyền thông.",
       "error": "Không tải được chiến dịch. Vui lòng thử lại.",
       "retry": "Thử lại",
       "conflict": "Workspace đang có nhiều hơn một chiến dịch. Cần kiểm tra dữ liệu trước khi tiếp tục.",
       "version": "Phiên bản {{version}}",
       "plannedWork": "Đầu việc trong kế hoạch: {{count}}",
-      "create": "Lập kế hoạch chiến dịch"
+      "create": "Triển khai chiến dịch truyền thông"
     },
     "title": "Tổng quan",
     "description": "Tổng quan thành viên, chiến dịch và trạng thái gói dịch vụ của workspace này.",

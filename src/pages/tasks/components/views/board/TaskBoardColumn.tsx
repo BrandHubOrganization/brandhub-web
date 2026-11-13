@@ -67,7 +67,14 @@ function TaskBoardColumnHeader({ status, count }: ColumnHeaderProps) {
   const config = STATUS_CONFIG[status];
 
   return (
-    <div className="flex items-center justify-between gap-2 pb-3 text-xs font-semibold">
+    <div
+      className={cn(
+        "mb-3 flex items-center justify-between gap-2 rounded-lg border px-2.5 py-2 text-xs font-bold tracking-wide",
+        config.bg,
+        config.border,
+        config.text,
+      )}
+    >
       <span className="flex items-center gap-2 truncate">
         <span
           aria-hidden
@@ -75,7 +82,13 @@ function TaskBoardColumnHeader({ status, count }: ColumnHeaderProps) {
         />
         <span className="truncate">{t(`tasks.status.${status}`)}</span>
       </span>
-      <span className="bg-muted/80 text-muted-foreground text-2xs shrink-0 rounded-full px-2 py-0.5 font-semibold">
+      <span
+        className={cn(
+          "text-2xs shrink-0 rounded-full border bg-background/85 px-2 py-0.5 font-bold",
+          config.border,
+          config.text,
+        )}
+      >
         {count}
       </span>
     </div>

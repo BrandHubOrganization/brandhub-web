@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { toast } from "sonner";
-import type { TaskStatus } from "@/types/task";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
 import { dayNumber } from "@/pages/campaign/utils/timelineDates";
@@ -11,22 +10,6 @@ import { useTaskTimelineResize } from "./useTaskTimelineResize";
 import type { TaskTimelineBarProps } from "./types";
 
 export type { TaskTimelineBarProps };
-
-function getStatusStyle(status: TaskStatus): string {
-  switch (status) {
-    case "FINISHED":
-      return "border-emerald-500/40 bg-emerald-500/20 text-emerald-800 dark:text-emerald-200";
-    case "IN_PROGRESS":
-      return "border-sky-500/40 bg-sky-500/20 text-sky-800 dark:text-sky-200";
-    case "IN_REVIEW":
-      return "border-amber-500/40 bg-amber-500/20 text-amber-800 dark:text-amber-200";
-    case "CANCELLED":
-      return "border-border bg-muted/60 text-muted-foreground line-through opacity-70";
-    case "TODO":
-    default:
-      return "border-brand-orange/40 bg-brand-orange/15 text-brand-orange";
-  }
-}
 
 function formatDisplayDate(dateStr: string): string {
   const [y, m, d] = dateStr.split("-");
@@ -196,8 +179,14 @@ export function TaskTimelineBar({
       }}
       title={tooltipTitle}
       className={cn(
-        "group/bar absolute top-1.5 flex h-6 cursor-pointer items-center rounded-md border px-2 shadow-2xs transition-[colors,box-shadow] select-none hover:brightness-105 active:scale-[0.99]",
-        getStatusStyle(task.status),
+        "ct-range group/bar absolute top-1.5 flex h-6 cursor-pointer items-center rounded-md border px-2 shadow-2xs transition-[colors,box-shadow] select-none hover:brightness-105 active:scale-[0.99]",
+        task.status === "FINISHED" && "ct-range-done",
+        task.status === "IN_PROGRESS" && "ct-range-working",
+        task.status === "IN_REVIEW" && "ct-range-review",
+        (task.status === "TODO" || !task.status) &&
+          "border-brand-orange/40 bg-brand-orange/15 text-brand-orange",
+        task.status === "CANCELLED" &&
+          "border-border bg-muted/60 text-muted-foreground line-through opacity-70",
         isDragging && "ring-primary/60 z-30 shadow-md ring-2 brightness-105",
         isSaving && "opacity-60",
       )}
@@ -206,8 +195,16 @@ export function TaskTimelineBar({
         width: barWidth,
       }}
     >
-      <span className="truncate pr-3 text-[10px] leading-none font-semibold">
-        {task.name}
+      <span
+        className={cn(
+          "truncate text-[10px] leading-none font-semibold text-center select-none w-full",
+          barWidth < 55 && "ct-short-duration"
+        )}
+      >
+        {t("campaign.timeline.days", {
+          count: barDurationDays,
+          defaultValue: `${barDurationDays} ngày`,
+        })}
       </span>
 
       {/* Resize Handle on the right edge */}

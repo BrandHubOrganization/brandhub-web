@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,12 +15,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  RichTextInput,
+  stripRichTextHtml,
+} from "@/components/ui/rich-text-input";
 import { useAuthStore } from "@/store/authStore";
 import { api } from "@/services/api";
 import type { ApiResponse } from "@/services/authService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { TimelineAssigneePicker } from "@/pages/campaign/components/TimelineAssigneePicker";
 import { cn } from "@/lib/utils";
 import {
   JiraAssigneeAvatar,
@@ -36,10 +41,13 @@ import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService"
 
 interface Details {
   name: string;
-  assigneeId: string;
+  assigneeId: string | null;
   supervisorOverrideId: string | null;
   dueDate: string;
   subtaskRole?: string | null;
+  description?: string | null;
+  acceptanceCriteria?: string | null;
+  expectedRevision?: number | null;
 }
 interface Row {
   subtask: Details & { id: string; status: string };
@@ -54,6 +62,7 @@ interface View {
   parentDueDate?: string | null;
   members: { userId: string; displayName: string }[];
   rows: Row[];
+  workflowRevision?: number | null;
 }
 
 function localDate(value: string) {
@@ -68,11 +77,13 @@ export function CampaignSubtasks({
   taskId,
   parentRevision,
   parentDueDate,
+  initialSubtaskId,
 }: {
   workspaceId: string;
   taskId: string;
   parentRevision: number | null;
   parentDueDate: string | null;
+  initialSubtaskId?: string | null;
 }) {
   const { t } = useTranslation();
   const client = useQueryClient();
@@ -99,7 +110,35 @@ export function CampaignSubtasks({
   const taskType = workflowQuery.data?.type;
   const { roleLabel: roleName } = useTaskCatalogRoles(taskType);
 
-  const [draft, setDraft] = useState<(Details & { id?: string }) | null>(null);
+  const [manualDraft, setManualDraft] = useState<
+    (Details & { id?: string }) | null
+  >(null);
+  const [dismissedInitialId, setDismissedInitialId] = useState<string | null>(
+    null,
+  );
+  const initialRow =
+    initialSubtaskId &&
+    dismissedInitialId !== initialSubtaskId &&
+    query.data?.canManage
+      ? query.data.rows.find((r) => r.subtask.id === initialSubtaskId)
+      : undefined;
+  const draft: (Details & { id?: string }) | null =
+    manualDraft ??
+    (initialRow
+      ? {
+          id: initialRow.subtask.id,
+          name: initialRow.subtask.name,
+          assigneeId: initialRow.subtask.assigneeId,
+          supervisorOverrideId: initialRow.subtask.supervisorOverrideId,
+          dueDate: localDate(initialRow.subtask.dueDate),
+          description: initialRow.subtask.description ?? "",
+          acceptanceCriteria: initialRow.subtask.acceptanceCriteria ?? "",
+          expectedRevision:
+            query.data?.workflowRevision ?? parentRevision ?? null,
+        }
+      : null);
+  const setDraft = setManualDraft;
+
   const supervisorId =
     draft?.supervisorOverrideId ?? query.data?.parentAssigneeId ?? "";
   const selectedSupervisor = query.data?.members.some(
@@ -109,6 +148,39 @@ export function CampaignSubtasks({
     : "";
   const [isCreating, setIsCreating] = useState(false);
   const [loadingRowId, setLoadingRowId] = useState<string | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const editFormRef = useRef<HTMLFormElement | null>(null);
+  const scrolledInitialSubtaskRef = useRef<string | null>(null);
+
+  const openEditDraft = (row: Row) => {
+    setManualDraft({
+      id: row.subtask.id,
+      name: row.subtask.name,
+      assigneeId: row.subtask.assigneeId,
+      supervisorOverrideId: row.subtask.supervisorOverrideId,
+      dueDate: localDate(row.subtask.dueDate),
+      description: row.subtask.description ?? "",
+      acceptanceCriteria: row.subtask.acceptanceCriteria ?? "",
+      expectedRevision: query.data?.workflowRevision ?? parentRevision ?? null,
+    });
+  };
+
+  useEffect(() => {
+    if (
+      !initialSubtaskId ||
+      scrolledInitialSubtaskRef.current === initialSubtaskId ||
+      !query.data?.rows.some((r) => r.subtask.id === initialSubtaskId)
+    ) {
+      return;
+    }
+    scrolledInitialSubtaskRef.current = initialSubtaskId;
+    requestAnimationFrame(() => {
+      (editFormRef.current ?? sectionRef.current)?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    });
+  }, [initialSubtaskId, query.data]);
 
   const change = useMutation({
     mutationFn: async (
@@ -135,7 +207,8 @@ export function CampaignSubtasks({
     onSuccess: async (view, command) => {
       client.setQueryData(queryKey, view);
       if ("details" in command) {
-        setDraft(null);
+        setManualDraft(null);
+        if (initialSubtaskId) setDismissedInitialId(initialSubtaskId);
         setIsCreating(false);
       }
       await client.invalidateQueries({
@@ -143,6 +216,9 @@ export function CampaignSubtasks({
       });
       await client.invalidateQueries({
         queryKey: ["campaign-subtasks"],
+      });
+      await client.invalidateQueries({
+        queryKey: ["campaign-timeline"],
       });
     },
     onSettled: () => {
@@ -170,9 +246,12 @@ export function CampaignSubtasks({
   const rows = query.data?.rows ?? [];
 
   return (
-    <section className="border-border bg-card/60 space-y-3.5 overflow-x-hidden rounded-xl border p-4 shadow-2xs">
+    <section
+      ref={sectionRef}
+      className="border-border bg-card/60 space-y-3.5 overflow-x-hidden rounded-xl border p-4 shadow-2xs"
+    >
       {/* Jira Subtasks Header & Actions */}
-      <div className="border-border/50 flex flex-wrap items-center justify-between gap-2 border-b pb-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
         <div className="flex items-center gap-2">
           <JiraSubtaskIcon />
           <h3 className="text-foreground text-sm font-semibold tracking-tight">
@@ -253,15 +332,21 @@ export function CampaignSubtasks({
 
       {/* Jira Subtask items list */}
       {rows.length > 0 && (
-        <div className="border-border/60 bg-card divide-border/40 divide-y overflow-hidden rounded-lg border shadow-2xs">
+        <div className="border-border/60 bg-card space-y-1 overflow-hidden rounded-lg border p-1 shadow-2xs">
           {rows.map((row) => {
             const isDone = isSubtaskDone(row.subtask.status);
             const isRowLoading = loadingRowId === row.subtask.id;
+            const isMissingSubtaskDetails =
+              !stripRichTextHtml(row.subtask.description ?? "") ||
+              !stripRichTextHtml(row.subtask.acceptanceCriteria ?? "");
 
             return (
               <div
                 key={row.subtask.id}
-                className="hover:bg-muted/30 group flex items-center justify-between gap-2.5 overflow-x-hidden p-2.5 text-xs transition-colors"
+                className={cn(
+                  "hover:bg-muted/30 group flex items-center justify-between gap-2.5 overflow-x-hidden p-2.5 text-xs transition-colors",
+                  draft?.id === row.subtask.id && "bg-brand-orange-soft/40",
+                )}
               >
                 {/* Left: Jira Subtask Icon + Title */}
                 <div className="flex min-w-0 flex-1 items-center gap-2">
@@ -270,14 +355,7 @@ export function CampaignSubtasks({
                     type="button"
                     onClick={() => {
                       if (query.data?.canManage) {
-                        setDraft({
-                          id: row.subtask.id,
-                          name: row.subtask.name,
-                          assigneeId: row.subtask.assigneeId,
-                          supervisorOverrideId:
-                            row.subtask.supervisorOverrideId,
-                          dueDate: localDate(row.subtask.dueDate),
-                        });
+                        openEditDraft(row);
                       }
                     }}
                     className={cn(
@@ -293,17 +371,51 @@ export function CampaignSubtasks({
                   <JiraSubtaskRoleBadge
                     roleName={roleName(row.subtask.subtaskRole)}
                   />
+                  {isMissingSubtaskDetails && (
+                    <span className="inline-flex shrink-0 items-center rounded border border-amber-500/30 bg-amber-500/10 px-1 py-0.5 text-[9px] font-semibold text-amber-700 dark:text-amber-300">
+                      {t("campaign.timeline.missingDetailsBadge", {
+                        defaultValue: "Thiếu mô tả",
+                      })}
+                    </span>
+                  )}
                 </div>
 
                 {/* Right: Assignee Avatar + Status Lozenge / Selector + Due Date + Edit */}
                 <div className="flex shrink-0 items-center gap-2">
-                  {/* Assignee Avatar */}
-                  <div
-                    title={`${t("tasks.subtasks.assignee")}: ${row.assigneeName || t("tasks.subtasks.unassigned", "Chưa phân công")}`}
-                    className="flex items-center"
-                  >
-                    <JiraAssigneeAvatar name={row.assigneeName} />
-                  </div>
+                  {/* Assignee Avatar / Picker */}
+                  {query.data?.canManage ? (
+                    <TimelineAssigneePicker
+                      value={row.subtask.assigneeId}
+                      name={row.assigneeName ?? undefined}
+                      options={query.data.members}
+                      allowEmpty
+                      disabled={change.isPending || isRowLoading}
+                      onChange={async (assigneeId) => {
+                        setLoadingRowId(row.subtask.id);
+                        await change.mutateAsync({
+                          id: row.subtask.id,
+                          details: {
+                            name: row.subtask.name,
+                            assigneeId,
+                            supervisorOverrideId:
+                              row.subtask.supervisorOverrideId,
+                            dueDate: row.subtask.dueDate,
+                            expectedRevision:
+                              query.data?.workflowRevision ??
+                              parentRevision ??
+                              null,
+                          },
+                        });
+                      }}
+                    />
+                  ) : (
+                    <div
+                      title={`${t("tasks.subtasks.assignee")}: ${row.assigneeName || t("tasks.subtasks.unassigned", "Chưa phân công")}`}
+                      className="flex items-center"
+                    >
+                      <JiraAssigneeAvatar name={row.assigneeName} />
+                    </div>
+                  )}
 
                   {/* Status: interactive Jira lozenge selector if allowed */}
                   {row.allowedStatuses.length > 0 ? (
@@ -317,7 +429,7 @@ export function CampaignSubtasks({
                             name: row.subtask.name,
                           })}
                           disabled={change.isPending || isRowLoading}
-                          className="h-8 gap-1 rounded-full px-1.5"
+                          className="h-8 gap-1 rounded-md px-1.5"
                         >
                           <JiraStatusLozenge
                             status={row.subtask.status}
@@ -373,16 +485,7 @@ export function CampaignSubtasks({
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() =>
-                        setDraft({
-                          id: row.subtask.id,
-                          name: row.subtask.name,
-                          assigneeId: row.subtask.assigneeId,
-                          supervisorOverrideId:
-                            row.subtask.supervisorOverrideId,
-                          dueDate: localDate(row.subtask.dueDate),
-                        })
-                      }
+                      onClick={() => openEditDraft(row)}
                       className="text-muted-foreground hover:text-brand-orange h-6 w-6 shrink-0 cursor-pointer p-0 opacity-70 transition-opacity group-hover:opacity-100"
                       title={t("tasks.subtasks.edit", "Chỉnh sửa")}
                     >
@@ -415,10 +518,11 @@ export function CampaignSubtasks({
       {/* Inline Edit Subtask Form */}
       {draft && draft.id && query.data?.canManage && (
         <form
+          ref={editFormRef}
           onSubmit={save}
           className="border-border/80 bg-muted/20 space-y-3 overflow-x-hidden rounded-lg border p-3.5 shadow-2xs"
         >
-          <div className="border-border/40 flex items-center justify-between border-b pb-2">
+          <div className="flex items-center justify-between pb-1">
             <span className="text-foreground flex items-center gap-1.5 text-xs font-semibold">
               <JiraSubtaskIcon />
               <span>{t("tasks.subtasks.edit", "Chỉnh sửa subtask")}</span>
@@ -444,7 +548,7 @@ export function CampaignSubtasks({
               </span>
               <Select
                 required
-                value={draft.assigneeId}
+                value={draft.assigneeId ?? ""}
                 onChange={(event) =>
                   setDraft({ ...draft, assigneeId: event.target.value })
                 }
@@ -497,6 +601,32 @@ export function CampaignSubtasks({
             }
           />
 
+          <RichTextInput
+            id={`subtask-description-${draft.id}`}
+            label={t("tasks.descriptionLabel", { defaultValue: "Mô tả thực hiện" })}
+            placeholder={t("tasks.descriptionPlaceholder", {
+              defaultValue: "Nhập hướng dẫn chi tiết cách thực hiện công việc con...",
+            })}
+            value={draft.description ?? ""}
+            onChange={(html) => setDraft({ ...draft, description: html })}
+            editorClassName="bg-background min-h-20 max-h-48 overflow-y-auto text-xs"
+          />
+
+          <RichTextInput
+            id={`subtask-criteria-${draft.id}`}
+            label={t("campaign.table.acceptanceCriteria", {
+              defaultValue: "Tiêu chí nghiệm thu & Đầu ra",
+            })}
+            placeholder={t("campaign.timeline.acceptancePlaceholder", {
+              defaultValue: "Nhập yêu cầu đầu ra cần đạt khi hoàn thành...",
+            })}
+            value={draft.acceptanceCriteria ?? ""}
+            onChange={(html) =>
+              setDraft({ ...draft, acceptanceCriteria: html })
+            }
+            editorClassName="bg-background min-h-20 max-h-48 overflow-y-auto text-xs"
+          />
+
           <div className="flex items-center gap-2 pt-1">
             <Button
               type="submit"
@@ -512,7 +642,10 @@ export function CampaignSubtasks({
               size="sm"
               variant="outline"
               disabled={change.isPending}
-              onClick={() => setDraft(null)}
+              onClick={() => {
+                setManualDraft(null);
+                if (initialSubtaskId) setDismissedInitialId(initialSubtaskId);
+              }}
               className="h-7 cursor-pointer px-3 text-xs"
             >
               {t("tasks.subtasks.dismiss", "Hủy")}

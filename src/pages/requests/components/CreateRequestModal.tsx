@@ -112,8 +112,14 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-card border-border w-full max-w-lg overflow-hidden rounded-2xl border shadow-2xl animate-in zoom-in-95 duration-200">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in duration-150 cursor-pointer"
+      onClick={onClose}
+    >
+      <div
+        className="bg-card border-border w-full max-w-lg overflow-hidden rounded-2xl border shadow-2xl animate-in zoom-in-95 duration-200 cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="border-border bg-muted/30 flex items-center justify-between border-b px-6 py-4">
           <div className="flex items-center gap-2.5">

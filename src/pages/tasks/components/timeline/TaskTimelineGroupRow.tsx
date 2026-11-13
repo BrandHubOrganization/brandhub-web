@@ -39,17 +39,17 @@ function renderTypeIcon(type?: TaskType): ReactNode {
 function renderStatusIcon(status?: TaskStatus): ReactNode {
   switch (status) {
     case "TODO":
-      return <FolderKanban className="size-3.5 text-muted-foreground" />;
+      return <FolderKanban className="size-3.5 text-amber-600" />;
     case "IN_PROGRESS":
-      return <PlayCircle className="size-3.5 text-sky-500" />;
+      return <PlayCircle className="size-3.5 text-brand-orange" />;
     case "IN_REVIEW":
-      return <Eye className="size-3.5 text-amber-500" />;
+      return <Eye className="size-3.5 text-sky-500" />;
     case "FINISHED":
       return <CheckCircle2 className="size-3.5 text-emerald-500" />;
     case "CANCELLED":
       return <Ban className="size-3.5 text-rose-500" />;
     default:
-      return <FolderKanban className="size-3.5 text-muted-foreground" />;
+      return <FolderKanban className="size-3.5 text-brand-orange" />;
   }
 }
 
@@ -64,11 +64,16 @@ export function TaskTimelineGroupRow({
   const { t } = useTranslation();
 
   const getGroupName = () => {
-    if (group.type) {
-      return t(`tasks.type.${group.type}`, { defaultValue: group.name });
+    const rawType = (group.type || group.name) as TaskType;
+    if (group.type || group.id.startsWith("type:")) {
+      const translated = t(`tasks.types.${rawType}`, {
+        defaultValue: t(`tasks.type.${rawType}`, { defaultValue: "" }),
+      });
+      if (translated) return translated;
     }
-    if (group.status) {
-      return t(`tasks.status.${group.status}`, { defaultValue: group.name });
+    if (group.status || group.id.startsWith("status:")) {
+      const rawStatus = (group.status || group.name) as TaskStatus;
+      return t(`tasks.status.${rawStatus}`, { defaultValue: group.name });
     }
     if (group.name === "allTasks") {
       return t("tasks.timelineGrid.allTasks", {
@@ -86,7 +91,7 @@ export function TaskTimelineGroupRow({
 
   return (
     <div
-      className="ct-grid-row ct-group cursor-pointer select-none"
+      className="ct-grid-row ct-group cursor-pointer select-none transition-colors hover:brightness-[0.98] dark:hover:brightness-[1.05]"
       onClick={onToggle}
       style={{
         gridTemplateColumns: `280px 120px 90px ${calendarWidth}px`,
@@ -118,7 +123,7 @@ export function TaskTimelineGroupRow({
         </button>
         {groupIcon}
         <span className="truncate text-xs font-semibold">{getGroupName()}</span>
-        <span className="bg-background/80 text-muted-foreground border-border/60 rounded-full border px-1.5 py-0.2 text-[10px] font-normal">
+        <span className="rounded-full bg-brand-orange text-white text-[10px] font-bold px-2 py-0.5 shadow-2xs tabular-nums">
           {group.items.length}
         </span>
       </div>

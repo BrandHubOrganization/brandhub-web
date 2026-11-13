@@ -286,6 +286,17 @@
     "assignRoleLabel": "Role (Position)",
     "assignRolePlaceholder": "Select role",
     "clientRequiresWorkspace": "The Client role requires a workspace",
+    "emailPreview": {
+      "title": "Outbound Email Preview",
+      "subtitle": "Live visual preview updates as you draft",
+      "toggleShow": "Email Preview",
+      "toggleHide": "Collapse Preview",
+      "to": "Recipient",
+      "subject": "Subject",
+      "memberBadge": "Member Invitation",
+      "clientBadge": "Client Invitation",
+      "disclaimer": "Layout and contents are secure and automatically synchronized with your message."
+    },
     "inviteSuccess": "Invite sent to {{email}}",
     "removeSuccess": "Member removed",
     "cancelInviteSuccess": "Invite cancelled",

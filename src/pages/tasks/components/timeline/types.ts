@@ -73,6 +73,9 @@ export interface TaskTimelineRowProps {
   todayX: number;
   workspaceId?: string;
   onUpdated?: () => void;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
+  timezone?: string;
 }
 
 export interface TaskTimelineToolbarProps {
@@ -80,6 +83,16 @@ export interface TaskTimelineToolbarProps {
   onGroupByChange: (groupBy: TimelineGroupBy) => void;
   totalCount: number;
   unscheduledCount: number;
+  search: string;
+  onSearchChange: (search: string) => void;
+  statusFilter: string;
+  onStatusFilterChange: (status: string) => void;
+  missingDetailsOnly: boolean;
+  onToggleMissingDetails: () => void;
+  missingDetailsCount: number;
+  zoom: TimelineZoom;
+  onZoomChange: (zoom: TimelineZoom) => void;
+  onScrollToToday: () => void;
 }
 
 export interface TaskTimelineViewProps {

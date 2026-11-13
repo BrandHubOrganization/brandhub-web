@@ -189,8 +189,14 @@ export function ClientDetailPage() {
       </div>
 
       {assignOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-card w-full max-w-sm rounded-xl border p-5">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 cursor-pointer"
+          onClick={() => setAssignOpen(false)}
+        >
+          <div
+            className="bg-card w-full max-w-sm rounded-xl border p-5 cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-foreground text-sm font-semibold">
               {t("client.detail.assignAm")}
             </h3>

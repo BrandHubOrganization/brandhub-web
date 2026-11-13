@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { RichTextContent } from "@/components/ui/rich-text-input";
 import {
   BellRing,
   Briefcase,
@@ -138,9 +139,16 @@ export const ProfileViewDetails: React.FC<ProfileViewDetailsProps> = ({
         <p className="text-muted-foreground text-3xs">
           {t("profile.view.bioLabel")}
         </p>
-        <p className="text-foreground text-xs font-medium whitespace-pre-wrap">
-          {bio || t("profile.view.bioEmpty")}
-        </p>
+        {bio.trim() ? (
+          <RichTextContent
+            value={bio}
+            className="text-foreground text-xs font-medium"
+          />
+        ) : (
+          <p className="text-foreground text-xs font-medium">
+            {t("profile.view.bioEmpty")}
+          </p>
+        )}
       </div>
       <div className="sm:col-span-2">
         <p className="text-muted-foreground text-3xs">

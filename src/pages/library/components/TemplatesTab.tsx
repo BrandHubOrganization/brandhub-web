@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
 import type { PostTemplate, HashtagGroup } from "@/types/contentLibrary";
 import { contentLibraryService } from "@/services/contentLibraryService";
-import { FileText, ArrowRight, Plus, Trash2, Calendar, X, Search, Copy } from "lucide-react";
+import { FileText, ArrowRight, Plus, Trash2, Calendar, X, Search, Copy, RotateCcw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
+import { SelectMenu } from "@/components/ui/select-menu";
+import { Pagination } from "@/components/ui/pagination";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 
 const CATEGORIES = [
@@ -32,6 +34,9 @@ export const TemplatesTab: React.FC = () => {
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+  const [sortBy, setSortBy] = useState("newest");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(6);
 
   // Modal create
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -125,8 +130,8 @@ export const TemplatesTab: React.FC = () => {
     toast.success("Đã sao chép nội dung bài mẫu vào bộ nhớ tạm!");
   };
 
-  const filteredTemplates = useMemo(() => {
-    return templates.filter((tpl) => {
+  const sortedTemplates = useMemo(() => {
+    const filtered = templates.filter((tpl) => {
       const matchesSearch =
         searchQuery.trim() === "" ||
         tpl.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -135,22 +140,89 @@ export const TemplatesTab: React.FC = () => {
         selectedCategory === "Tất cả" || tpl.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [templates, searchQuery, selectedCategory]);
+
+    return filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "name_asc":
+          return a.title.localeCompare(b.title, "vi");
+        case "name_desc":
+          return b.title.localeCompare(a.title, "vi");
+        case "oldest": {
+          const tA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const tB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return tA - tB;
+        }
+        case "newest":
+        default: {
+          const tA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const tB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return tB - tA;
+        }
+      }
+    });
+  }, [templates, searchQuery, selectedCategory, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedTemplates.length / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const paginatedTemplates = useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return sortedTemplates.slice(start, start + pageSize);
+  }, [sortedTemplates, safePage, pageSize]);
+
+  const hasActiveFilters =
+    searchQuery.trim() !== "" || selectedCategory !== "Tất cả" || sortBy !== "newest";
+
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("Tất cả");
+    setSortBy("newest");
+    setPage(1);
+  };
 
   return (
     <div className="space-y-4">
       {/* Search and Category Filters */}
       <div className="flex flex-col gap-3.5 rounded-xl border border-border/70 bg-card p-4 shadow-xs">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative max-w-md flex-1">
-            <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-            <Input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm kiếm mẫu bài đăng theo tiêu đề, nội dung..."
-              className="border-border bg-muted/40 text-foreground placeholder-muted-foreground rounded-lg pr-4 pl-9 text-xs"
+          <div className="flex flex-wrap items-center gap-2.5 flex-1 max-w-xl">
+            <div className="relative min-w-48 flex-1">
+              <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+              <Input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPage(1);
+                }}
+                placeholder="Tìm kiếm mẫu bài đăng theo tiêu đề, nội dung..."
+                className="border-border bg-muted/40 text-foreground placeholder-muted-foreground rounded-[4px] pr-4 pl-9 text-xs"
+              />
+            </div>
+            <SelectMenu
+              ariaLabel="Sắp xếp bài mẫu"
+              value={sortBy}
+              onChange={(val) => {
+                setSortBy(val);
+                setPage(1);
+              }}
+              className="h-8.5 min-w-36 text-xs"
+              options={[
+                { value: "newest", label: "Mới nhất" },
+                { value: "oldest", label: "Cũ nhất" },
+                { value: "name_asc", label: "Tiêu đề A → Z" },
+                { value: "name_desc", label: "Tiêu đề Z → A" },
+              ]}
             />
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 cursor-pointer text-xs"
+              >
+                <RotateCcw className="size-3" />
+                <span>Đặt lại</span>
+              </button>
+            )}
           </div>
 
           <button
@@ -168,8 +240,11 @@ export const TemplatesTab: React.FC = () => {
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`cursor-pointer rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+              onClick={() => {
+                setSelectedCategory(cat);
+                setPage(1);
+              }}
+              className={`cursor-pointer rounded-[4px] border px-2.5 py-1 text-[11px] font-medium transition-colors ${
                 selectedCategory === cat
                   ? "border-brand-orange bg-brand-orange text-white font-semibold"
                   : "border-border bg-background text-foreground hover:bg-muted/60"
@@ -186,20 +261,31 @@ export const TemplatesTab: React.FC = () => {
         <div className="text-muted-foreground py-12 text-center text-xs">
           {t("library.templates.loading")}
         </div>
-      ) : filteredTemplates.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/80 bg-card p-8 py-12 text-center">
+      ) : sortedTemplates.length === 0 ? (
+        <div className="border-[#d5dbdb] dark:border-border bg-card rounded-none border border-dashed p-8 py-12 text-center">
           <FileText className="text-muted-foreground mx-auto mb-2 size-10" />
           <p className="text-muted-foreground text-xs">
             Không tìm thấy mẫu bài đăng nào phù hợp với bộ lọc.
           </p>
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="text-brand-orange hover:underline text-xs mt-3 inline-flex items-center gap-1 cursor-pointer font-medium"
+            >
+              <RotateCcw className="size-3" />
+              <span>Đặt lại bộ lọc</span>
+            </button>
+          )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredTemplates.map((tpl) => (
-            <div
-              key={tpl.id}
-              className="group flex flex-col justify-between rounded-xl border border-border/70 bg-card p-5 shadow-xs transition-all duration-150 hover:border-brand-orange/60 hover:shadow-2xs"
-            >
+        <>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {paginatedTemplates.map((tpl) => (
+              <div
+                key={tpl.id}
+                className="hover:border-brand-orange/60 group border-[#d5dbdb] dark:border-border bg-card flex flex-col justify-between rounded-none border p-5 shadow-[0_1px_1px_0_rgba(0,28,36,0.04)] transition-colors"
+              >
               <div>
                 {/* Card Top: Category and Platforms */}
                 <div className="mb-2 flex items-center justify-between">
@@ -291,12 +377,36 @@ export const TemplatesTab: React.FC = () => {
             </div>
           ))}
         </div>
-      )}
+
+        {sortedTemplates.length > 0 && (
+          <Pagination
+            page={safePage}
+            size={pageSize}
+            total={sortedTemplates.length}
+            totalPages={totalPages}
+            pageSizeOptions={[6, 9, 12, 18]}
+            itemLabel="bài mẫu"
+            onPageChange={setPage}
+            onSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
+            className="pt-2"
+          />
+        )}
+      </>
+    )}
 
       {/* Modal Create Template */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-          <div className="border-border bg-card w-full max-w-md space-y-4 rounded-2xl border p-6 shadow-2xl">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs cursor-pointer"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="border-[#d5dbdb] dark:border-border bg-card w-full max-w-md space-y-4 rounded-none border p-6 shadow-2xl cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="border-border flex items-center justify-between border-b pb-3">
               <h3 className="text-foreground text-sm font-semibold">
                 {t("library.templates.modalTitle")}

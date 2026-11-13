@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextInput } from "@/components/ui/rich-text-input";
 import { SectionFrame } from "@/components/task-sections/SectionFrame";
 import {
   newsletterService,
@@ -65,13 +65,11 @@ export function EmailReportBlock({
           </p>
         )}
         <div className="space-y-1">
-          <label className="text-xs font-medium">
-            {t("tasks.sections.EMAIL.REPORT.fields.note")}
-          </label>
-          <Textarea
-            rows={3}
+          <RichTextInput
+            label={t("tasks.sections.EMAIL.REPORT.fields.note")}
             value={note}
-            onChange={(e) => api.edit(section, { note: e.target.value })}
+            disabled={!section.canEdit}
+            onChange={(html) => api.edit(section, { note: html })}
           />
         </div>
       </div>
