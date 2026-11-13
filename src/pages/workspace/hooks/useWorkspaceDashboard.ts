@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ import type { TaskListItem } from "@/types/task";
 import type { Campaign } from "@/pages/campaign/types";
 import type { DashboardTabType, TaskStatsSummary } from "../types/dashboard";
 
-export function useWorkspaceDashboard() {
+export function useWorkspaceDashboard(loadOverviewData = true) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -41,7 +41,8 @@ export function useWorkspaceDashboard() {
 
   const [dashboard, setDashboard] = useState<WorkspaceDashboard | null>(null);
   const [loading, setLoading] = useState(true);
-  const loadedWorkspaceIdRef = useRef<string | null>(null);
+  const [dashboardError, setDashboardError] = useState(false);
+  const [dashboardAttempt, setDashboardAttempt] = useState(0);
 
   // Tasks Data
   const [tasks, setTasks] = useState<TaskListItem[]>([]);
@@ -80,24 +81,30 @@ export function useWorkspaceDashboard() {
   // Fetch Dashboard
   useEffect(() => {
     if (!workspaceId) return;
-    if (loadedWorkspaceIdRef.current === workspaceId) return;
-    loadedWorkspaceIdRef.current = workspaceId;
+    let disposed = false;
     setLoading(true);
+    setDashboardError(false);
+    setDashboard(null);
 
     workspaceService
       .getDashboard(workspaceId)
-      .then(({ data }) => setDashboard(data.data))
-      .catch((err: unknown) =>
-        toast.error(
-          extractErrorMessage(err, t("workspace.dashboard.loadError")),
-        ),
-      )
-      .finally(() => setLoading(false));
-  }, [workspaceId, t]);
+      .then(({ data }) => {
+        if (!disposed) setDashboard(data.data);
+      })
+      .catch(() => {
+        if (!disposed) setDashboardError(true);
+      })
+      .finally(() => {
+        if (!disposed) setLoading(false);
+      });
+    return () => {
+      disposed = true;
+    };
+  }, [workspaceId, t, dashboardAttempt]);
 
   // Fetch Tasks
   useEffect(() => {
-    if (!workspaceId) return;
+    if (!workspaceId || !loadOverviewData) return;
     setTasksLoading(true);
     taskService
       .getWorkspaceTasks(workspaceId, {
@@ -113,12 +120,12 @@ export function useWorkspaceDashboard() {
         console.warn("Failed to load workspace tasks:", err);
       })
       .finally(() => setTasksLoading(false));
-  }, [workspaceId]);
+  }, [workspaceId, loadOverviewData]);
 
   // Fetch Campaigns
   useEffect(() => {
     // The API refuses this list to a Creator, who has no campaign screen either.
-    if (!workspaceId || currentMemberRole === "CREATOR") {
+    if (!loadOverviewData || !workspaceId || currentMemberRole === "CREATOR") {
       setCampaignsLoading(false);
       return;
     }
@@ -141,7 +148,7 @@ export function useWorkspaceDashboard() {
     return () => {
       disposed = true;
     };
-  }, [workspaceId, campaignsAttempt, currentMemberRole]);
+  }, [workspaceId, campaignsAttempt, currentMemberRole, loadOverviewData]);
 
   // Compute Task Stats
   const taskStats = useMemo<TaskStatsSummary>(() => {
@@ -171,6 +178,8 @@ export function useWorkspaceDashboard() {
 
   return {
     workspaceId: workspaceId || "",
+    dashboardError,
+    retryDashboard: () => setDashboardAttempt((value) => value + 1),
     activeTab,
     handleTabChange,
     dashboard,
