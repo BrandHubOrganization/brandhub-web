@@ -9,8 +9,8 @@ interface Props {
   options: MaterialUploadOptions;
   onChange: (options: MaterialUploadOptions) => void;
   onFile: (file: File | null) => void;
-  profiles: { id: string; name: string }[];
-  isClient: boolean;
+  profiles?: { id: string; name: string }[];
+  isClient?: boolean;
   canShare?: boolean;
   disabled: boolean;
   id: string;
@@ -21,9 +21,9 @@ export function MaterialUploadFields({
   options,
   onChange,
   onFile,
-  profiles,
-  isClient,
-  canShare = true,
+  profiles: _profiles,
+  isClient: _isClient,
+  canShare: _canShare = true,
   disabled,
   id,
 }: Props) {
@@ -56,7 +56,7 @@ export function MaterialUploadFields({
           aria-label={label("file")}
           id={`${id}-file`}
           type="file"
-          accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,application/pdf"
+          accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,application/pdf,text/plain,.txt,application/msword,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx,application/vnd.ms-excel,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx"
           onChange={(event) => {
             const file = event.target.files?.[0] ?? null;
             setFilename(file?.name ?? "");
@@ -67,10 +67,10 @@ export function MaterialUploadFields({
 
       <details className="group border-border bg-muted/20 rounded-lg border px-3 py-1.5">
         <summary className="text-muted-foreground hover:text-foreground focus-visible:ring-ring flex min-h-7 w-full cursor-pointer list-none items-center justify-between rounded text-xs font-medium focus-visible:ring-2">
-          <span>{label("options")} (Mặc định: Bản gốc · Tư liệu sản xuất · Nội bộ)</span>
+          <span>{label("options")} (Mặc định: Bản gốc · Tư liệu sản xuất)</span>
           <ChevronDown className="size-3.5 transition-transform group-open:rotate-180" />
         </summary>
-        <div className="[&_label]:text-muted-foreground grid gap-2.5 pt-2.5 pb-1 sm:grid-cols-3 [&_label]:text-[11px] [&_label]:font-medium">
+        <div className="[&_label]:text-muted-foreground grid gap-2.5 pt-2.5 pb-1 sm:grid-cols-2 [&_label]:text-[11px] [&_label]:font-medium">
           <div className="space-y-1">
             <label htmlFor={`${id}-type`}>{label("type")}</label>
             <Select
@@ -109,58 +109,8 @@ export function MaterialUploadFields({
               <option value="BRAND_REFERENCE">{label("reference")}</option>
             </Select>
           </div>
-          <div className="space-y-1">
-            <label htmlFor={`${id}-visibility`}>{label("audience")}</label>
-            <Select
-              id={`${id}-visibility`}
-              value={options.visibility}
-              disabled={disabled || isClient || !canShare}
-              onChange={(event) =>
-                onChange({
-                  ...options,
-                  visibility:
-                    event.target.value === "CLIENT" ? "CLIENT" : "INTERNAL",
-                  clientProfileId: undefined,
-                })
-              }
-            >
-              {!isClient && (
-                <option value="INTERNAL">{label("internal")}</option>
-              )}
-              {(isClient || canShare || options.visibility === "CLIENT") && (
-                <option value="CLIENT">{label("client")}</option>
-              )}
-            </Select>
-          </div>
         </div>
       </details>
-
-      {options.visibility === "CLIENT" && (
-        <div className="space-y-1.5">
-          <label htmlFor={`${id}-profile`} className="text-xs font-medium">
-            {label("profile")}
-          </label>
-          <Select
-            disabled={disabled}
-            id={`${id}-profile`}
-            required
-            value={options.clientProfileId ?? ""}
-            onChange={(event) =>
-              onChange({
-                ...options,
-                clientProfileId: event.target.value || undefined,
-              })
-            }
-          >
-            <option value="">{label("chooseProfile")}</option>
-            {profiles.map((profile) => (
-              <option key={profile.id} value={profile.id}>
-                {profile.name}
-              </option>
-            ))}
-          </Select>
-        </div>
-      )}
 
       {actions}
     </fieldset>

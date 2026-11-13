@@ -8,6 +8,7 @@ import {
   FileText,
   RotateCw,
   Play,
+  Maximize2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +23,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { ChatRepositoryPicker } from "@/pages/chat/components/ChatRepositoryPicker";
+import { useChatMediaLightbox } from "@/pages/chat/hooks/useChatMediaLightbox";
 import type { useChatAttachmentDraft } from "@/pages/chat/hooks/useChatAttachmentDraft";
 import type { ChatAttachmentDraft } from "@/pages/chat/types/chatAttachment";
 import { cn, formatFileSize } from "@/lib/utils";
@@ -76,6 +78,7 @@ function DraftMediaThumbnail({
   onRetry: () => void;
 }) {
   const { t } = useTranslation();
+  const openLightbox = useChatMediaLightbox((s) => s.openLightbox);
   const [url, setUrl] = useState<string>("");
   const isVideo = kind === "video";
 
@@ -91,6 +94,25 @@ function DraftMediaThumbnail({
     };
   }, [item.file]);
 
+  const previewUrl = item.previewUrl || url;
+  const canPreview = Boolean(previewUrl);
+
+  const handlePreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!previewUrl) return;
+    openLightbox({
+      url: previewUrl,
+      filename: item.file?.name || item.filename,
+      mimeType:
+        item.file?.type ||
+        item.attachment?.mimeType ||
+        (isVideo ? "video/mp4" : "image/jpeg"),
+      byteSize: item.file?.size || item.attachment?.byteSize || 0,
+      senderName: "Bản nháp",
+      sentAt: "Chưa gửi",
+    });
+  };
+
   if (item.status === "uploading") {
     return (
       <div className="group relative flex size-[76px] shrink-0 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-2xl border border-border/80 bg-muted/40 p-3 shadow-2xs">
@@ -101,7 +123,10 @@ function DraftMediaThumbnail({
           type="button"
           disabled={disabled}
           className="absolute top-1 right-1 z-10 flex size-5 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white opacity-0 shadow-xs transition-opacity hover:bg-black/80 group-hover:opacity-100"
-          onClick={onRemove}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
           aria-label={t("chat.attachments.remove", { name: item.filename })}
         >
           <X className="size-3" />
@@ -117,7 +142,10 @@ function DraftMediaThumbnail({
           <button
             type="button"
             disabled={disabled}
-            onClick={onRetry}
+            onClick={(e) => {
+              e.stopPropagation();
+              onRetry();
+            }}
             className="cursor-pointer p-1 text-destructive transition-transform hover:scale-110"
             aria-label={t("chat.actions.retry")}
           >
@@ -131,7 +159,10 @@ function DraftMediaThumbnail({
           type="button"
           disabled={disabled}
           className="absolute top-1 right-1 z-10 flex size-5 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white opacity-0 shadow-xs transition-opacity hover:bg-black/80 group-hover:opacity-100"
-          onClick={onRemove}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
           aria-label={t("chat.attachments.remove", { name: item.filename })}
         >
           <X className="size-3" />
@@ -140,12 +171,34 @@ function DraftMediaThumbnail({
     );
   }
 
+  const effectiveUrl = previewUrl;
+
   return (
-    <div className="group relative size-[76px] shrink-0 overflow-hidden rounded-2xl border border-border/80 bg-muted/30 shadow-2xs">
+    <div
+      role={canPreview ? "button" : undefined}
+      tabIndex={canPreview ? 0 : undefined}
+      onClick={canPreview ? handlePreview : undefined}
+      onKeyDown={
+        canPreview
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handlePreview(e as unknown as React.MouseEvent);
+              }
+            }
+          : undefined
+      }
+      className={cn(
+        "group relative size-[76px] shrink-0 overflow-hidden rounded-2xl border border-border/80 bg-muted/30 shadow-2xs transition-all",
+        canPreview &&
+          "cursor-pointer hover:border-brand-orange/60 hover:shadow-md",
+      )}
+      title={canPreview ? t("chat.actions.preview", "Xem trước") : item.filename}
+    >
       {isVideo ? (
-        url ? (
+        effectiveUrl ? (
           <video
-            src={url}
+            src={effectiveUrl}
             className="size-full rounded-2xl object-cover"
             preload="metadata"
             muted
@@ -156,9 +209,9 @@ function DraftMediaThumbnail({
             <Play className="size-6 text-zinc-400" />
           </div>
         )
-      ) : url ? (
+      ) : effectiveUrl ? (
         <img
-          src={url}
+          src={effectiveUrl}
           alt={item.filename}
           className="size-full rounded-2xl object-cover"
         />
@@ -168,9 +221,16 @@ function DraftMediaThumbnail({
         </div>
       )}
       {isVideo && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity group-hover:opacity-0">
           <div className="flex size-7 items-center justify-center rounded-full bg-black/50 text-white shadow-sm backdrop-blur-xs">
             <Play className="size-3.5 translate-x-0.5 fill-white text-white" />
+          </div>
+        </div>
+      )}
+      {canPreview && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/25 opacity-0 backdrop-blur-[0.5px] transition-opacity group-hover:opacity-100">
+          <div className="flex size-7 items-center justify-center rounded-full bg-black/60 text-white shadow-xs">
+            <Maximize2 className="size-3.5 text-white" />
           </div>
         </div>
       )}
@@ -178,7 +238,10 @@ function DraftMediaThumbnail({
         type="button"
         disabled={disabled}
         className="absolute top-1 right-1 z-10 flex size-5 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white opacity-0 shadow-xs transition-opacity hover:bg-black/80 group-hover:opacity-100"
-        onClick={onRemove}
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove();
+        }}
         aria-label={t("chat.attachments.remove", { name: item.filename })}
       >
         <X className="size-3" />
@@ -201,20 +264,91 @@ function DraftDocumentCard({
   onRetry: () => void;
 }) {
   const { t } = useTranslation();
-  const isPdf = kind === "pdf";
+  const openLightbox = useChatMediaLightbox((s) => s.openLightbox);
+  const [objectUrl, setObjectUrl] = useState<string>("");
+
+  const isPdf =
+    kind === "pdf" ||
+    item.file?.type === "application/pdf" ||
+    item.file?.name.toLowerCase().endsWith(".pdf") ||
+    item.filename.toLowerCase().endsWith(".pdf") ||
+    item.attachment?.mimeType === "application/pdf";
+
   const ext =
     item.filename.split(".").pop()?.toUpperCase() || (isPdf ? "PDF" : "DOC");
 
+  useEffect(() => {
+    if (!item.file || !isPdf) {
+      setObjectUrl("");
+      return;
+    }
+    const createdUrl = URL.createObjectURL(item.file);
+    setObjectUrl(createdUrl);
+    return () => {
+      URL.revokeObjectURL(createdUrl);
+    };
+  }, [item.file, isPdf]);
+
+  const previewTargetUrl = item.previewUrl || objectUrl;
+  const canPreview = isPdf && Boolean(previewTargetUrl);
+
+  const handlePreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!previewTargetUrl) return;
+    openLightbox({
+      url: previewTargetUrl,
+      filename: item.file?.name || item.filename,
+      mimeType:
+        item.file?.type || item.attachment?.mimeType || "application/pdf",
+      byteSize: item.file?.size || item.attachment?.byteSize || 0,
+      senderName: "Bản nháp",
+      sentAt: "Chưa gửi",
+    });
+  };
+
   return (
-    <div className="group relative flex h-[76px] min-w-[220px] max-w-[280px] shrink-0 items-center gap-3 rounded-2xl border border-border/80 bg-card p-3 shadow-2xs transition-colors hover:border-border">
+    <div
+      role={canPreview ? "button" : undefined}
+      tabIndex={canPreview ? 0 : undefined}
+      onClick={canPreview ? handlePreview : undefined}
+      onKeyDown={
+        canPreview
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handlePreview(e as unknown as React.MouseEvent);
+              }
+            }
+          : undefined
+      }
+      className={cn(
+        "group relative flex h-[76px] min-w-[220px] max-w-[280px] shrink-0 items-center gap-3 rounded-2xl border border-border/80 bg-card p-3 shadow-2xs transition-all",
+        canPreview
+          ? "cursor-pointer hover:border-brand-orange/60 hover:shadow-md"
+          : "hover:border-border",
+      )}
+      title={canPreview ? t("chat.actions.preview", "Xem trước PDF") : item.filename}
+    >
       <div
         className={cn(
-          "flex size-12 shrink-0 items-center justify-center rounded-xl font-bold text-white shadow-2xs",
+          "relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl font-bold text-white shadow-2xs transition-transform group-hover:scale-105",
           isPdf ? "bg-[#e01e5a]" : "bg-blue-600",
         )}
       >
         {isPdf ? (
-          <AdobePdfIcon className="size-6 text-white" />
+          <>
+            <AdobePdfIcon
+              className={cn(
+                "size-6 text-white transition-opacity",
+                canPreview && "group-hover:opacity-0",
+              )}
+            />
+            {canPreview && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/25 opacity-0 backdrop-blur-[0.5px] transition-opacity group-hover:opacity-100">
+                <Maximize2 className="size-5 text-white" />
+              </div>
+            )}
+          </>
         ) : (
           <FileText className="size-6 text-white" />
         )}
@@ -228,17 +362,29 @@ function DraftDocumentCard({
         </p>
         <p className="mt-0.5 text-[11px] font-medium uppercase text-muted-foreground">
           {isPdf ? "PDF" : ext}
-          {item.file?.size ? ` · ${formatFileSize(item.file.size)}` : ""}
+          {item.file?.size
+            ? ` · ${formatFileSize(item.file.size)}`
+            : item.attachment?.byteSize
+              ? ` · ${formatFileSize(item.attachment.byteSize)}`
+              : ""}
           {item.status === "uploading" &&
             ` · ${t("chat.attachments.uploading")}`}
           {item.status === "error" && ` · ${t("chat.attachments.failed")}`}
         </p>
       </div>
+      {canPreview && (
+        <div className="mr-0.5 hidden text-muted-foreground transition-colors group-hover:text-brand-orange sm:block">
+          <Maximize2 className="size-4" />
+        </div>
+      )}
       {item.status === "error" && (
         <button
           type="button"
           disabled={disabled}
-          onClick={onRetry}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRetry();
+          }}
           className="mr-1 flex size-6 cursor-pointer items-center justify-center rounded-full text-destructive transition-colors hover:bg-destructive/10"
           title={t("chat.actions.retry")}
           aria-label={t("chat.actions.retry")}
@@ -249,7 +395,10 @@ function DraftDocumentCard({
       <button
         type="button"
         disabled={disabled}
-        onClick={onRemove}
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove();
+        }}
         className="absolute -top-1.5 -right-1.5 z-10 flex size-5 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white opacity-0 shadow-xs transition-opacity hover:bg-black/80 group-hover:opacity-100"
         aria-label={t("chat.attachments.remove", { name: item.filename })}
       >

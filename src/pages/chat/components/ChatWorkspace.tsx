@@ -24,6 +24,7 @@ import { ChatConversation } from "@/pages/chat/components/ChatConversation";
 import { ChatThreadPanel } from "@/pages/chat/components/ChatThreadPanel";
 import { ChatCallBar } from "@/pages/chat/components/ChatCallBar";
 import { ChatScheduledPanel } from "@/pages/chat/components/ChatScheduledPanel";
+import { ChatMediaLightbox } from "@/pages/chat/components/ChatMediaLightbox";
 import { useChatCall } from "@/pages/chat/hooks/useChatCall";
 import type { ChatContextType } from "@/types/chat";
 import type { ChatChannel } from "@/types/chatCollaboration";
@@ -347,6 +348,7 @@ export function ChatWorkspace(props: WorkspaceProps) {
           {panelContent}
         </SheetContent>
       </Sheet>
+      <ChatMediaLightbox />
     </div>
   );
 }

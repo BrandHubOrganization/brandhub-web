@@ -8,10 +8,35 @@ import {
   User,
 } from "lucide-react";
 import { formatFileSize } from "@/lib/utils";
+import { stripExtension } from "@/utils/mediaDownloadHelper";
 import type { MaterialItem } from "@/types/material";
 
-export function MaterialDetailFacts({ material }: { material: MaterialItem }) {
-  const { t, i18n } = useTranslation();
+export function formatUploadedTime(dateInput?: string | number | Date | null): string {
+  if (!dateInput) return "—";
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return "—";
+  const day = d.getDate();
+  const month = d.getMonth() + 1;
+  const year = d.getFullYear();
+
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const formattedHours = String(hours).padStart(2, "0");
+
+  return `${day}/${month}/${year} ${formattedHours}:${minutes} ${ampm}`;
+}
+
+export function MaterialDetailFacts({
+  material,
+  onStartRename,
+}: {
+  material: MaterialItem;
+  onStartRename?: () => void;
+}) {
+  const { t } = useTranslation();
   const label = (key: string, fallback?: string) =>
     t(`library.repository.${key}`, fallback ?? key);
   const versionNum = material.currentVersionNumber ?? material.version ?? 1;
@@ -31,29 +56,29 @@ export function MaterialDetailFacts({ material }: { material: MaterialItem }) {
       </div>
 
       <dl className="divide-y divide-border/60 text-xs">
-        <div className="grid grid-cols-[135px_minmax(0,1fr)] items-start gap-3 px-4 py-2.5">
+        <div
+          onDoubleClick={onStartRename}
+          className={`grid grid-cols-[135px_minmax(0,1fr)] items-start gap-3 px-4 py-2.5 transition-colors ${
+            onStartRename ? "cursor-pointer select-none hover:bg-muted/30" : ""
+          }`}
+          title={onStartRename ? "Nhấp đúp (click 2 lần) để đổi tên file" : undefined}
+        >
           <dt className="flex items-center gap-1.5 text-muted-foreground">
             <FileText className="h-3.5 w-3.5 shrink-0 text-muted-foreground/80" />
             <span>{label("nameLabel", "Tên hiển thị")}</span>
           </dt>
           <dd className="break-words font-medium text-foreground">
-            {material.name}
+            {stripExtension(material.name)}
           </dd>
         </div>
 
         <div className="grid grid-cols-[135px_minmax(0,1fr)] items-start gap-3 px-4 py-2.5">
           <dt className="flex items-center gap-1.5 text-muted-foreground">
             <HardDrive className="h-3.5 w-3.5 shrink-0 text-muted-foreground/80" />
-            <span>{label("mediaKind", "Định dạng tệp")}</span>
+            <span>{label("sizeLabel", "Dung lượng")}</span>
           </dt>
-          <dd className="font-medium text-foreground">
-            <span className="uppercase">
-              {material.mimeType?.split("/").pop() || material.mimeType || "—"}
-            </span>{" "}
-            <span className="text-muted-foreground">•</span>{" "}
-            <span className="tabular-nums">
-              {formatFileSize(material.fileSize ?? 0)}
-            </span>
+          <dd className="tabular-nums font-medium text-foreground">
+            {formatFileSize(material.fileSize ?? 0)}
           </dd>
         </div>
 
@@ -85,7 +110,7 @@ export function MaterialDetailFacts({ material }: { material: MaterialItem }) {
             <span>{label("createdAtLabel", "Thời gian tải lên")}</span>
           </dt>
           <dd className="tabular-nums font-medium text-foreground">
-            {new Date(material.createdAt).toLocaleString(i18n.language)}
+            {formatUploadedTime(material.createdAt)}
           </dd>
         </div>
 

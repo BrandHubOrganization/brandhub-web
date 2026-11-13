@@ -198,6 +198,9 @@ const CampaignPartnersPage = lazy(
   () => import("@/pages/campaign-partners/page"),
 );
 const MailTemplatesPage = lazy(() => import("@/pages/mail-templates/page"));
+const MailTemplateEditPage = lazy(
+  () => import("@/pages/mail-templates/edit"),
+);
 const MailBatchesPage = lazy(() => import("@/pages/mail-templates/batches"));
 const MailSuppressionsPage = lazy(
   () => import("@/pages/mail-templates/suppressions"),
@@ -207,6 +210,10 @@ const MailUnsubscribePage = lazy(
 );
 
 // ── Agency Pages ──
+const AgencyDashboardPage = lazyNamed(
+  () => import("@/pages/agency/dashboard"),
+  "AgencyDashboardPage",
+);
 const AgencyPage = lazyNamed(() => import("@/pages/agency"), "AgencyPage");
 const AgencyDetailPage = lazyNamed(
   () => import("@/pages/agency/detail"),
@@ -615,6 +622,14 @@ export function AppRoutes() {
               element={<MailTemplatesPage />}
             />
             <Route
+              path="/workspaces/:id/mail-templates/new"
+              element={<MailTemplateEditPage mode="create" />}
+            />
+            <Route
+              path="/workspaces/:id/mail-templates/:templateId/edit"
+              element={<MailTemplateEditPage mode="edit" />}
+            />
+            <Route
               path="/workspaces/:id/mail-templates/batches"
               element={<MailBatchesPage />}
             />
@@ -648,6 +663,10 @@ export function AppRoutes() {
             />
             <Route path="/agency" element={<AgencyPage />} />
             <Route path="/agency/create" element={<CreateAgencyPage />} />
+            <Route
+              path="/agency/:id/dashboard"
+              element={<AgencyDashboardPage />}
+            />
             <Route path="/agency/:id" element={<AgencyDetailPage />} />
             <Route
               path="/agency/:id/collaborators"

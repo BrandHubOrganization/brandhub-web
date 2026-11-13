@@ -13,7 +13,6 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { ChatNotificationMenu } from "@/pages/chat/components/ChatNotificationMenu";
 import type { ChatChannel } from "@/types/chatCollaboration";
 import type { ChatConnectionState } from "@/types/chat";
 
@@ -71,25 +70,27 @@ export function ChatChannelHeader(props: HeaderProps) {
               t(`chat.channels.type.${props.channel.type}`)}
           </p>
         </div>
-        <span
-          role="status"
-          className="border-border/80 bg-muted/40 text-muted-foreground inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium"
-        >
+        {props.channel.type === "DIRECT" && (
           <span
-            aria-hidden="true"
-            className={cn(
-              "size-1.5 shrink-0 rounded-full",
-              props.connection === "CONNECTED"
-                ? "bg-emerald-500"
-                : props.connection === "DISCONNECTED"
-                  ? "bg-rose-500"
-                  : " animate-pulse bg-amber-500",
-            )}
-          />
-          <span className="truncate">
-            {t(`chat.connection.${props.connection.toLowerCase()}`)}
+            role="status"
+            className="border-border/80 bg-muted/40 text-muted-foreground inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium"
+          >
+            <span
+              aria-hidden="true"
+              className={cn(
+                "size-1.5 shrink-0 rounded-full",
+                props.connection === "CONNECTED"
+                  ? "bg-emerald-500"
+                  : props.connection === "DISCONNECTED"
+                    ? "bg-rose-500"
+                    : " animate-pulse bg-amber-500",
+              )}
+            />
+            <span className="truncate">
+              {t(`chat.connection.${props.connection.toLowerCase()}`)}
+            </span>
           </span>
-        </span>
+        )}
         <div className="order-last flex w-full items-center gap-1.5 md:order-none md:w-44 lg:w-60 xl:w-64">
           <Input
             type="search"
@@ -131,12 +132,6 @@ export function ChatChannelHeader(props: HeaderProps) {
               <Phone className="size-4" aria-hidden="true" />
             </Button>
           )}
-          <ChatNotificationMenu
-            key={`${props.userId}:${props.workspaceId}:${props.channel.id}`}
-            userId={props.userId}
-            workspaceId={props.workspaceId}
-            channelId={props.channel.id}
-          />
           <Button
             variant={props.pinned ? "secondary" : "ghost"}
             size="icon"

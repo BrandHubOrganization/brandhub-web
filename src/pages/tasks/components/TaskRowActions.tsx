@@ -18,9 +18,11 @@ import type { TaskListItem } from "@/types/task";
 export function TaskRowActions({
   task,
   field,
+  onUpdated,
 }: {
   task: TaskListItem;
   field: "assignee" | "deadline" | "start";
+  onUpdated?: () => void;
 }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -57,6 +59,7 @@ export function TaskRowActions({
           taskId={task.id}
           assigneeName={task.assigneeName}
           scope="row"
+          onUpdated={onUpdated}
         />
       );
     }

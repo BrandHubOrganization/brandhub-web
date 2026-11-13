@@ -78,7 +78,7 @@ describe("MediaDetailPanel Web Design Alignment", () => {
     expect(enLib.repository.storageS3Badge).not.toContain("2GB");
   });
 
-  it("renders MaterialPreview as a framed rounded-2xl stage with compact icon refresh control", () => {
+  it("renders MaterialPreview as a clean rounded-2xl stage without floating icon buttons", () => {
     const html = renderToString(
       createElement(MaterialPreview, {
         material: sampleMaterial,
@@ -86,8 +86,7 @@ describe("MediaDetailPanel Web Design Alignment", () => {
       }),
     );
     expect(html).toContain("rounded-2xl");
-    expect(html).toContain('aria-label="Làm mới bản xem trước"');
-    expect(html).toContain('data-slot="preview-toolbar"');
+    expect(html).not.toContain('data-slot="preview-toolbar"');
   });
 
   it("renders MaterialBadges and MediaDetailPanel without RAW warning banner or RAW text", () => {
@@ -99,15 +98,16 @@ describe("MediaDetailPanel Web Design Alignment", () => {
     const badgesHtml = renderToString(
       createElement(MaterialBadges, { material: sampleMaterial }),
     );
-    expect(badgesHtml).toContain(viLib.repository.storageS3Badge);
-    expect(badgesHtml).toContain("Ảnh gốc");
-    expect(badgesHtml).not.toContain("RAW");
+    expect(badgesHtml).toBe("");
 
-    const compactBadgesHtml = renderToString(
-      createElement(MaterialBadges, { material: sampleMaterial, compact: true }),
+    const draftBadgesHtml = renderToString(
+      createElement(MaterialBadges, {
+        material: { ...sampleMaterial, draft: true },
+      }),
     );
-    expect(compactBadgesHtml).not.toContain(viLib.repository.rawWarningBadge);
-    expect(compactBadgesHtml).not.toContain("RAW");
+    expect(draftBadgesHtml).not.toContain(viLib.repository.storageS3Badge);
+    expect(draftBadgesHtml).not.toContain("Ảnh gốc");
+    expect(draftBadgesHtml).not.toContain("RAW");
 
     const queryClient = new QueryClient();
     const panelHtml = renderToString(
@@ -132,7 +132,8 @@ describe("MediaDetailPanel Web Design Alignment", () => {
     );
     expect(html).toContain('data-slot="material-facts-card"');
     expect(html).toContain("rounded-2xl");
-    expect(html).toContain("images.jpg");
+    expect(html).toContain("images");
+    expect(html).not.toContain("images.jpg");
     expect(html).toContain("Quản lý Workspace");
     expect(html).toContain("v1");
   });

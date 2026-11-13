@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isAxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -19,7 +19,6 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import { formatFileSize } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import { useMaterialDetail } from "@/pages/library/hooks/useMaterialDetail";
 import { MaterialBadges } from "@/pages/library/components/MaterialBadges";
@@ -29,7 +28,10 @@ import { MaterialVersionHistoryPanel } from "@/pages/library/components/Material
 import { MaterialDetailFacts } from "@/pages/library/components/MaterialDetailFacts";
 import { MaterialDetailActions } from "@/pages/library/components/MaterialDetailActions";
 import { materialService } from "@/services/materialService";
-import type { DownloadFormat } from "@/utils/mediaDownloadHelper";
+import {
+  stripExtension,
+  type DownloadFormat,
+} from "@/utils/mediaDownloadHelper";
 import type { MaterialItem } from "@/types/material";
 
 interface Props {
@@ -103,6 +105,80 @@ function DetailView({
     requestAnimationFrame(() => editButton.current?.focus());
   };
 
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [renameValue, setRenameValue] = useState("");
+  const [isRenameSubmitting, setIsRenameSubmitting] = useState(false);
+  const renameInputRef = useRef<HTMLInputElement>(null);
+
+  const startRename = () => {
+    if (!canEdit || material.deletedAt || isRenameSubmitting) return;
+    const fullName = material.name || "";
+    const lastDot = fullName.lastIndexOf(".");
+    const base = lastDot > 0 ? fullName.slice(0, lastDot) : fullName;
+    setRenameValue(base);
+    setIsRenaming(true);
+  };
+
+  useEffect(() => {
+    if (isRenaming) {
+      renameInputRef.current?.focus();
+      renameInputRef.current?.select();
+    }
+  }, [isRenaming]);
+
+  const handleRenameSubmit = async () => {
+    if (!isRenaming || isRenameSubmitting) return;
+    const trimmed = renameValue.trim();
+    if (!trimmed) {
+      toast.error(
+        t("library.repository.nameRequired", "Tên tệp không được để trống"),
+      );
+      setIsRenaming(false);
+      return;
+    }
+
+    const fullName = material.name || "";
+    const lastDot = fullName.lastIndexOf(".");
+    const ext = lastDot > 0 ? fullName.slice(lastDot + 1) : "";
+    const finalName = ext ? `${trimmed}.${ext}` : trimmed;
+
+    if (finalName === material.name) {
+      setIsRenaming(false);
+      return;
+    }
+
+    setIsRenameSubmitting(true);
+    try {
+      const updated = await materialService.update(wsId, material.id, {
+        expectedVersion: material.version ?? 0,
+        name: finalName,
+      });
+      toast.success(
+        t("library.repository.renameSuccess", "Đã đổi tên tệp thành công"),
+      );
+      if (updated) {
+        saved(updated);
+      } else {
+        void query.refetch();
+        void client.invalidateQueries({ queryKey: ["materials", wsId] });
+      }
+      setIsRenaming(false);
+    } catch (err: unknown) {
+      const errorResponse = err as {
+        response?: { data?: { message?: string } };
+      };
+      toast.error(
+        errorResponse?.response?.data?.message ||
+          t(
+            "library.repository.renameError",
+            "Không thể đổi tên tệp. Vui lòng thử lại.",
+          ),
+      );
+    } finally {
+      setIsRenameSubmitting(false);
+    }
+  };
+
   function saved(updated: MaterialItem) {
     client.setQueryData(detailKey, updated);
     void client.invalidateQueries({
@@ -149,11 +225,6 @@ function DetailView({
   const isImage =
     material.mediaKind === "IMAGE" || material.mimeType?.startsWith("image/");
   const KindIcon = isVideo ? Film : isImage ? ImageIcon : FileText;
-  const extLabel = (
-    material.name?.split(".").pop() ||
-    material.mimeType?.split("/").pop() ||
-    "FILE"
-  ).toUpperCase();
 
   return (
     <Sheet
@@ -188,15 +259,49 @@ function DetailView({
               <KindIcon className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
-              <SheetTitle className="truncate text-sm font-bold text-foreground sm:text-base">
-                {material?.name ?? selected.name}
-              </SheetTitle>
-              <SheetDescription className="truncate text-xs text-muted-foreground">
-                {extLabel}
-                {material.fileSize != null
-                  ? ` • ${formatFileSize(material.fileSize)}`
-                  : ""}{" "}
-                • {label("detailDescription", "Thông tin và bản xem trước tư liệu")}
+              {isRenaming ? (
+                <div
+                  className="flex items-center gap-1.5"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <input
+                    ref={renameInputRef}
+                    type="text"
+                    value={renameValue}
+                    disabled={isRenameSubmitting}
+                    onChange={(e) => setRenameValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        void handleRenameSubmit();
+                      } else if (e.key === "Escape") {
+                        e.preventDefault();
+                        setIsRenaming(false);
+                      }
+                    }}
+                    onBlur={() => void handleRenameSubmit()}
+                    className="h-8 w-full min-w-[140px] rounded-lg border border-brand-orange/60 bg-background px-2.5 text-xs font-semibold text-foreground shadow-xs outline-none ring-2 ring-brand-orange/20"
+                  />
+                </div>
+              ) : (
+                <SheetTitle
+                  onDoubleClick={startRename}
+                  className={`truncate text-sm font-bold text-foreground transition-colors sm:text-base ${
+                    canEdit && !material.deletedAt
+                      ? "cursor-pointer select-none hover:text-brand-orange"
+                      : ""
+                  }`}
+                  title={
+                    canEdit && !material.deletedAt
+                      ? "Nhấp đúp (click 2 lần) để đổi tên file"
+                      : undefined
+                  }
+                >
+                  {stripExtension(material?.name ?? selected.name)}
+                </SheetTitle>
+              )}
+              <SheetDescription className="sr-only">
+                {stripExtension(material?.name ?? selected.name)}
               </SheetDescription>
             </div>
           </div>
@@ -266,7 +371,7 @@ function DetailView({
             material && (
               <>
                 {editing ? (
-                  <div className="rounded-none border border-[#d5dbdb] bg-card p-4 dark:border-border">
+                  <div className="rounded-xl border border-border/80 bg-card p-4">
                     <MaterialMetadataEditForm
                       key={`${material.id}:${material.version}`}
                       material={material}
@@ -289,7 +394,10 @@ function DetailView({
                     <MaterialBadges material={material} />
 
                     {/* 3. Structured File Facts Card */}
-                    <MaterialDetailFacts material={material} />
+                    <MaterialDetailFacts
+                      material={material}
+                      onStartRename={canEdit && !material.deletedAt ? startRename : undefined}
+                    />
 
                     {/* 4. Folder Move & Version History Card */}
                     <MaterialVersionHistoryPanel

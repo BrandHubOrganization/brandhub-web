@@ -5,6 +5,7 @@ import {
   Download,
   FolderInput,
   History,
+  Loader2,
   RotateCcw,
   Trash2,
 } from "lucide-react";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { materialService } from "@/services/materialService";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { MaterialFolderPicker } from "./MaterialFolderPicker";
+import { stripExtension } from "@/utils/mediaDownloadHelper";
 import type { MaterialItem } from "@/types/material";
 
 export function MaterialVersionHistoryPanel({
@@ -28,6 +30,8 @@ export function MaterialVersionHistoryPanel({
   const client = useQueryClient();
   const role = useWorkspaceStore((state) => state.currentMemberRole);
   const [moving, setMoving] = useState(false);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [busyAction, setBusyAction] = useState<"restore" | "delete" | null>(null);
 
   const canMove =
     canEdit &&
@@ -118,7 +122,7 @@ export function MaterialVersionHistoryPanel({
                   <strong className="text-brand-orange">
                     v{version.versionNumber}
                   </strong>{" "}
-                  • {version.name || material.name}
+                  • {stripExtension(version.name || material.name)}
                 </span>
 
                 <div className="flex shrink-0 items-center gap-1">
@@ -152,21 +156,37 @@ export function MaterialVersionHistoryPanel({
                         type="button"
                         size="sm"
                         variant="outline"
-                        onClick={() =>
+                        disabled={busyId !== null}
+                        onClick={() => {
+                          setBusyId(version.id);
+                          setBusyAction("restore");
                           void materialService
                             .restoreVersion(
                               workspaceId,
                               material.id,
                               version.id,
                             )
-                            .then(refresh)
+                            .then(() => {
+                              refresh();
+                              toast.success(
+                                `Đã khôi phục về phiên bản v${version.versionNumber}`,
+                              );
+                            })
                             .catch(() =>
                               toast.error("Không thể khôi phục phiên bản"),
                             )
-                        }
+                            .finally(() => {
+                              setBusyId(null);
+                              setBusyAction(null);
+                            });
+                        }}
                         className="h-7 rounded-lg px-2 text-xs font-semibold text-foreground hover:border-brand-orange hover:bg-brand-orange/10 hover:text-brand-orange"
                       >
-                        <RotateCcw className="mr-1 h-3 w-3" />
+                        {busyId === version.id && busyAction === "restore" ? (
+                          <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                        ) : (
+                          <RotateCcw className="mr-1 h-3 w-3" />
+                        )}
                         Khôi phục
                       </Button>
 
@@ -174,17 +194,31 @@ export function MaterialVersionHistoryPanel({
                         type="button"
                         size="sm"
                         variant="destructive"
-                        onClick={() =>
+                        disabled={busyId !== null}
+                        onClick={() => {
+                          setBusyId(version.id);
+                          setBusyAction("delete");
                           void materialService
                             .deleteVersion(workspaceId, material.id, version.id)
-                            .then(refresh)
+                            .then(() => {
+                              refresh();
+                              toast.success("Đã xoá phiên bản");
+                            })
                             .catch(() =>
                               toast.error("Không thể xoá phiên bản"),
                             )
-                        }
+                            .finally(() => {
+                              setBusyId(null);
+                              setBusyAction(null);
+                            });
+                        }}
                         className="h-7 rounded-lg px-2 text-xs font-semibold text-white"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        {busyId === version.id && busyAction === "delete" ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Trash2 className="h-3 w-3" />
+                        )}
                       </Button>
                     </>
                   )}

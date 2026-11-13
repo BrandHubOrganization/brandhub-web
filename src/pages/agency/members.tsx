@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { DataTable, type Column } from "@/components/ui/table";
 import {
   Briefcase,
@@ -24,6 +23,7 @@ import { agencyService } from "@/services/agencyService";
 import { workspaceService } from "@/services/workspaceService";
 import { useUserLookup } from "@/hooks/useUserLookup";
 import { extractErrorMessage } from "@/utils/error";
+import { formatRole } from "@/utils/workspaceHelper";
 import { useAuthStore } from "@/store/authStore";
 import { useAgencyStore } from "@/store/agencyStore";
 import { RemoveAgencyMemberDialog } from "./components/RemoveAgencyMemberDialog";
@@ -32,9 +32,13 @@ import {
   MemberProfileDrawer,
   type MemberProfileTarget,
 } from "./components/MemberProfileDrawer";
+import {
+  InviteEmailFields,
+  type InviteEmailLanguage,
+} from "./components/InviteEmailFields";
 import { Select } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Agency, AgencyMember, AgencyMemberRole } from "@/types/agency";
+import type { AgencyMember, AgencyMemberRole } from "@/types/agency";
 import type { MemberRole, Workspace } from "@/types/workspace";
 import type { TFunction } from "i18next";
 
@@ -110,149 +114,12 @@ function SafeAvatar({
   );
 }
 
-
-type InvitePresetType = "formal" | "project" | "casual";
-
-interface PresetItem {
-  id: InvitePresetType;
-  labelKey: string;
-}
-
-const PRESET_LIST: PresetItem[] = [
-  { id: "formal", labelKey: "agency.members.presetFormal" },
-  { id: "project", labelKey: "agency.members.presetProject" },
-  { id: "casual", labelKey: "agency.members.presetCasual" },
-];
-
-function buildInviteMessage(
-  type: InvitePresetType,
-  agency: Agency | null,
-  currentUser: { fullName?: string | null; email?: string | null } | null,
-  inviteeName: string,
-  _t: TFunction,
-  isEn?: boolean,
-  workspaceName?: string,
-  roleName?: string,
-): string {
-  const targetName = inviteeName.trim() || (isEn ? "there" : "bạn");
-  const senderName =
-    currentUser?.fullName?.trim() ||
-    currentUser?.email?.trim() ||
-    (isEn ? "me" : "tôi");
-  const agencyName = agency?.name?.trim() || (isEn ? "our company" : "công ty");
-  const tagline = agency?.tagline?.trim() || "";
-  const phone = agency?.phone?.trim() || "";
-  const website = agency?.website?.trim() || "";
-  const location = agency?.location?.trim() || "";
-
-  const footerParts: string[] = [];
-  if (phone) footerParts.push(`📞 ${phone}`);
-  if (website) footerParts.push(`🌐 ${website}`);
-  if (location) footerParts.push(`📍 ${location}`);
-  const footer = footerParts.length > 0 ? `\n---\n${footerParts.join(" | ")}` : "";
-
-  let inviteSentence: string;
-  if (isEn) {
-    if (workspaceName && roleName) {
-      inviteSentence = `I cordially invite you to join the workspace "${workspaceName}" under ${agencyName} as ${roleName} on the BrandHub platform.`;
-    } else if (workspaceName) {
-      inviteSentence = `I cordially invite you to join the workspace "${workspaceName}" under ${agencyName} on the BrandHub platform.`;
-    } else {
-      inviteSentence = `I cordially invite you to join as a member of ${agencyName} on the BrandHub platform to collaborate on upcoming projects.`;
-    }
-  } else {
-    if (workspaceName && roleName) {
-      inviteSentence = `Tôi trân trọng gửi lời mời bạn tham gia vào không gian làm việc "${workspaceName}" thuộc công ty ${agencyName} với vai trò ${roleName} trên nền tảng BrandHub.`;
-    } else if (workspaceName) {
-      inviteSentence = `Tôi trân trọng gửi lời mời bạn tham gia vào không gian làm việc "${workspaceName}" thuộc công ty ${agencyName} trên nền tảng BrandHub.`;
-    } else {
-      inviteSentence = `Tôi trân trọng gửi lời mời bạn tham gia làm thành viên của công ty ${agencyName} trên nền tảng BrandHub để cùng hợp tác trong các dự án sắp tới.`;
-    }
-  }
-
-  if (isEn) {
-    if (type === "formal") {
-      return `Hello ${targetName},
-
-I am ${senderName} from ${agencyName}. ${inviteSentence}
-
-Looking forward to having you with us!
-
-Best regards,
-${senderName}
-${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
-    }
-
-    if (type === "project") {
-      return `Hello ${targetName},
-
-I am ${senderName} representing ${agencyName}. ${inviteSentence}
-
-Looking forward to working together!
-
-Warm regards,
-${senderName}
-${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
-    }
-
-    // casual
-    return `Hi ${targetName}! 👋
-
-I am ${senderName} from ${agencyName}. ${inviteSentence}
-
-See you soon in our projects!
-
-Best regards,
-${senderName}
-${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
-  }
-
-  // Vietnamese
-  if (type === "formal") {
-    return `Xin chào ${targetName},
-
-Tôi là ${senderName} thuộc công ty ${agencyName}. ${inviteSentence}
-
-Rất mong nhận được sự đồng hành của bạn!
-
-Trân trọng,
-${senderName}
-${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
-  }
-
-  if (type === "project") {
-    return `Xin chào ${targetName},
-
-Tôi là ${senderName} đại diện công ty ${agencyName}. ${inviteSentence}
-
-Rất mong có cơ hội cùng bạn bắt đầu công việc!
-
-Thân mến,
-${senderName}
-${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
-  }
-
-  // casual
-  return `Chào ${targetName}! 👋
-
-Tôi là ${senderName} từ ${agencyName}. ${inviteSentence}
-
-Hẹn sớm gặp bạn trong các dự án của nhóm!
-
-Trân trọng,
-${senderName}
-${agencyName}${tagline ? ` - ${tagline}` : ""}${footer}`.trim();
-}
-
 export function AgencyMembersPage() {
   const { id } = useParams<{ id: string }>();
-  const { t, i18n } = useTranslation();
-  const isEn = i18n.language?.toLowerCase().startsWith("en");
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const currentUser = useAuthStore((s) => s.user);
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
-  const [agency, setAgency] = useState<Agency | null>(null);
-  const hasAutoFilledRef = useRef(false);
   const [members, setMembers] = useState<AgencyMember[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
   const [memberRows, setMemberRows] = useState<MemberRow[]>([]);
@@ -287,9 +154,9 @@ export function AgencyMembersPage() {
     }
   }, [userMatch]);
 
-  const [currentPreset, setCurrentPreset] =
-    useState<InvitePresetType>("formal");
-  const [note, setNote] = useState("");
+  const [emailLanguage, setEmailLanguage] = useState<InviteEmailLanguage>("vi");
+  const [notes, setNotes] = useState({ vi: "", en: "" });
+  const note = notes[emailLanguage];
   const [expiryDays, setExpiryDays] = useState(DEFAULT_EXPIRY_DAYS);
   const [inviteWorkspaceId, setInviteWorkspaceId] = useState("");
   const [inviteRole, setInviteRole] = useState<MemberRole | "">("");
@@ -299,28 +166,6 @@ export function AgencyMembersPage() {
   const [inviting, setInviting] = useState(false);
   const [removeTargetId, setRemoveTargetId] = useState<string | null>(null);
   const [removing, setRemoving] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-    agencyService
-      .getById(id)
-      .then(({ data }) => {
-        const agencyData = data.data;
-        setAgency(agencyData);
-        if (!hasAutoFilledRef.current) {
-          hasAutoFilledRef.current = true;
-          setNote((prev) => {
-            if (!prev.trim()) {
-              return buildInviteMessage("formal", agencyData, currentUser, inviteeName, t, isEn);
-            }
-            return prev;
-          });
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to load agency profile:", err);
-      });
-  }, [id, currentUser, inviteeName, t, isEn]);
 
   useEffect(() => {
     if (!id) return;
@@ -427,8 +272,10 @@ export function AgencyMembersPage() {
     e.preventDefault();
     if (!id) return;
 
-    const finalWorkspaceId = inviteWorkspaceId.trim() ? inviteWorkspaceId : undefined;
-    const finalRole = finalWorkspaceId ? (inviteRole || undefined) : undefined;
+    const finalWorkspaceId = inviteWorkspaceId.trim()
+      ? inviteWorkspaceId
+      : undefined;
+    const finalRole = finalWorkspaceId ? inviteRole || undefined : undefined;
 
     setInviting(true);
     try {
@@ -439,6 +286,7 @@ export function AgencyMembersPage() {
         workspaceId: finalWorkspaceId,
         role: finalRole,
         expiryDays,
+        emailLanguage,
       });
       setInviteLink(
         `${window.location.origin}/invitations/accept?token=${data.data.token}`,
@@ -446,8 +294,8 @@ export function AgencyMembersPage() {
       toast.success(t("agency.members.inviteSuccess", { email: email.trim() }));
       setEmail("");
       setInviteeName("");
-      setCurrentPreset("formal");
-      setNote(buildInviteMessage("formal", agency, currentUser, "", t, isEn));
+      setNotes({ vi: "", en: "" });
+      setEmailLanguage("vi");
       setExpiryDays(DEFAULT_EXPIRY_DAYS);
       setInviteWorkspaceId("");
       setInviteRole("");
@@ -546,31 +394,17 @@ export function AgencyMembersPage() {
   const roleCell = (row: MemberRow) => {
     if (!row.role) return "—";
 
-    const getRoleBadgeStyle = (r: string) => {
-      switch (r) {
-        case "OWNER":
-          return "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50";
-        case "ADMIN":
-          return "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-900/50";
-        case "PROJECT_MANAGER":
-          return "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50";
-        case "CREATOR":
-          return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50";
-        case "VIEWER":
-          return "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800";
-        default:
-          return "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50";
-      }
-    };
-
+    const isOwnerRole = row.role === "OWNER";
     return (
       <span
         className={cn(
-          "rounded-md px-2.5 py-0.5 text-xs font-semibold inline-flex items-center gap-1",
-          getRoleBadgeStyle(row.role)
+          "inline-flex items-center gap-1 rounded-md px-2.5 py-0.5 text-xs font-semibold",
+          isOwnerRole
+            ? "border border-red-200 bg-red-500/10 text-red-600 dark:border-red-900/50 dark:text-red-400"
+            : "border border-blue-200 bg-blue-500/10 text-blue-600 dark:border-blue-900/50 dark:text-blue-400",
         )}
       >
-        {row.role}
+        {formatRole(row.role)}
       </span>
     );
   };
@@ -725,29 +559,29 @@ export function AgencyMembersPage() {
                       }
                     }}
                     className={cn(
-                      "col-span-1 sm:col-span-2 rounded-xl border p-3.5 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs",
+                      "col-span-1 flex cursor-pointer flex-col justify-between gap-3 rounded-xl border p-3.5 shadow-xs transition-all sm:col-span-2 sm:flex-row sm:items-center",
                       inviteeName.trim() === userMatch.fullName
                         ? "border-emerald-500/40 bg-emerald-500/5 dark:bg-emerald-950/20"
                         : "border-brand-orange/40 bg-brand-orange/5 hover:bg-brand-orange/10",
                     )}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex min-w-0 items-center gap-3">
                       <SafeAvatar
                         src={userMatch.avatarUrl}
                         name={userMatch.fullName}
-                        className="size-11 border-2 border-background shadow-xs shrink-0"
+                        className="border-background size-11 shrink-0 border-2 shadow-xs"
                       />
                       <div className="min-w-0 space-y-1">
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <span className="font-semibold text-sm text-foreground truncate">
+                          <span className="text-foreground truncate text-sm font-semibold">
                             {userMatch.fullName}
                           </span>
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-3xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                          <span className="text-3xs inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
                             <CheckCircle2 className="size-3 shrink-0" />
                             {t("agency.members.userMatchBadge")}
                           </span>
                         </div>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                        <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
                           <span className="flex items-center gap-1">
                             <Mail className="size-3 shrink-0" />
                             {userMatch.email}
@@ -762,9 +596,9 @@ export function AgencyMembersPage() {
                       </div>
                     </div>
 
-                    <div className="shrink-0 flex items-center justify-end">
+                    <div className="flex shrink-0 items-center justify-end">
                       {inviteeName.trim() === userMatch.fullName ? (
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+                        <span className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                           <Check className="size-3.5" />
                           {t("agency.members.userMatchApplied")}
                         </span>
@@ -772,7 +606,7 @@ export function AgencyMembersPage() {
                         <Button
                           type="button"
                           size="sm"
-                          className="bg-brand-orange hover:bg-brand-orange/90 text-white text-xs gap-1.5 cursor-pointer shadow-xs"
+                          className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white shadow-xs"
                           onClick={(e) => {
                             e.stopPropagation();
                             setInviteeName(userMatch.fullName);
@@ -791,64 +625,17 @@ export function AgencyMembersPage() {
                   </div>
                 )}
               </div>
-              <div>
-                <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-foreground text-xs font-medium">
-                    {t("agency.members.noteLabel")}
-                  </label>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-muted-foreground text-3xs font-medium">
-                      {t("agency.members.presetsLabel")}:
-                    </span>
-                    {PRESET_LIST.map((preset) => (
-                      <button
-                        key={preset.id}
-                        type="button"
-                        onClick={() => {
-                          setCurrentPreset(preset.id);
-                          const wsName = inviteWorkspaceId
-                            ? workspaces.find((w) => w.id === inviteWorkspaceId)?.name
-                            : undefined;
-                          const roleName = inviteRole
-                            ? t(`workspace.roles.${inviteRole}`)
-                            : undefined;
-                          const msg = buildInviteMessage(
-                            preset.id,
-                            agency,
-                            currentUser,
-                            inviteeName,
-                            t,
-                            isEn,
-                            wsName,
-                            roleName,
-                          );
-                          setNote(msg);
-                          toast.success(
-                            t("agency.members.presetApplied", {
-                              name: t(preset.labelKey),
-                            }),
-                          );
-                        }}
-                        className={cn(
-                          "active:scale-95 cursor-pointer rounded-full border px-2.5 py-0.5 text-xs font-medium transition-all",
-                          currentPreset === preset.id
-                            ? "border-brand-orange bg-brand-orange/10 text-brand-orange"
-                            : "border-border text-muted-foreground hover:border-brand-orange hover:text-brand-orange",
-                        )}
-                      >
-                        {t(preset.labelKey)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <Textarea
-                  placeholder={t("agency.members.notePlaceholder")}
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  rows={9}
-                  className="min-h-[210px] resize-y font-normal leading-relaxed text-xs sm:text-sm"
-                />
-              </div>
+              <InviteEmailFields
+                language={emailLanguage}
+                note={note}
+                onLanguageChange={setEmailLanguage}
+                onNoteChange={(value) =>
+                  setNotes((previous) => ({
+                    ...previous,
+                    [emailLanguage]: value,
+                  }))
+                }
+              />
               <div className="max-w-50">
                 <label className="text-foreground mb-1 block text-xs font-medium">
                   {t("agency.members.expiryLabel")}
@@ -882,28 +669,7 @@ export function AgencyMembersPage() {
                     onChange={(e) => {
                       const nextWsId = e.target.value;
                       setInviteWorkspaceId(nextWsId);
-                      const nextRole = nextWsId ? inviteRole : "";
-                      if (!nextWsId) {
-                        setInviteRole("");
-                      }
-                      const wsName = nextWsId
-                        ? workspaces.find((w) => w.id === nextWsId)?.name
-                        : undefined;
-                      const roleName = nextRole
-                        ? t(`workspace.roles.${nextRole}`)
-                        : undefined;
-                      setNote(
-                        buildInviteMessage(
-                          currentPreset,
-                          agency,
-                          currentUser,
-                          inviteeName,
-                          t,
-                          isEn,
-                          wsName,
-                          roleName,
-                        ),
-                      );
+                      if (!nextWsId) setInviteRole("");
                     }}
                   >
                     <option value="">
@@ -926,26 +692,7 @@ export function AgencyMembersPage() {
                     value={inviteWorkspaceId ? inviteRole : ""}
                     disabled={!inviteWorkspaceId}
                     onChange={(e) => {
-                      const nextRole = e.target.value as MemberRole | "";
-                      setInviteRole(nextRole);
-                      const wsName = inviteWorkspaceId
-                        ? workspaces.find((w) => w.id === inviteWorkspaceId)?.name
-                        : undefined;
-                      const roleName = nextRole
-                        ? t(`workspace.roles.${nextRole}`)
-                        : undefined;
-                      setNote(
-                        buildInviteMessage(
-                          currentPreset,
-                          agency,
-                          currentUser,
-                          inviteeName,
-                          t,
-                          isEn,
-                          wsName,
-                          roleName,
-                        ),
-                      );
+                      setInviteRole(e.target.value as MemberRole | "");
                     }}
                   >
                     {!inviteWorkspaceId ? (
@@ -1034,14 +781,14 @@ export function AgencyMembersPage() {
               </TabsList>
 
               {activeTab === "members" && (
-                <div className="bg-muted inline-flex h-9 items-center rounded-lg p-1 text-muted-foreground">
+                <div className="bg-muted text-muted-foreground inline-flex h-9 items-center rounded-lg p-1">
                   <button
                     type="button"
                     onClick={() => setMemberViewMode("list")}
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs sm:text-sm font-medium transition-all cursor-pointer",
+                      "inline-flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-all sm:text-sm",
                       memberViewMode === "list"
-                        ? "bg-background text-foreground shadow-xs font-semibold"
+                        ? "bg-background text-foreground font-semibold shadow-xs"
                         : "hover:text-foreground",
                     )}
                   >
@@ -1052,9 +799,9 @@ export function AgencyMembersPage() {
                     type="button"
                     onClick={() => setMemberViewMode("tree")}
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs sm:text-sm font-medium transition-all cursor-pointer",
+                      "inline-flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-all sm:text-sm",
                       memberViewMode === "tree"
-                        ? "bg-background text-foreground shadow-xs font-semibold"
+                        ? "bg-background text-foreground font-semibold shadow-xs"
                         : "hover:text-foreground",
                     )}
                   >

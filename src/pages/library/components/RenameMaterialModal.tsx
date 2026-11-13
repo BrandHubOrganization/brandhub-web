@@ -132,18 +132,7 @@ export function RenameMaterialModal({
                 placeholder={t("library.repository.namePlaceholder", "Nhập tên tệp...")}
                 className="h-9 flex-1 rounded-xl text-sm"
               />
-              {extension ? (
-                <span className="inline-flex h-9 items-center rounded-xl border border-border/80 bg-muted/60 px-3 text-xs font-semibold text-muted-foreground">
-                  .{extension}
-                </span>
-              ) : null}
             </div>
-            <p className="text-[11px] text-muted-foreground">
-              {t(
-                "library.repository.extensionLockedNote",
-                "Định dạng tệp được giữ nguyên để bảo đảm tính tương thích.",
-              )}
-            </p>
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">

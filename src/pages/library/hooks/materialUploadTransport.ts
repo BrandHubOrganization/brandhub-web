@@ -1,8 +1,17 @@
+const DOCUMENT_MIME_TYPES = new Set([
+  "application/pdf",
+  "text/plain",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+]);
+
 export function materialUploadLimit(mime: string): number {
   if (["image/jpeg", "image/png", "image/webp"].includes(mime))
     return 20 * 1024 ** 2;
   if (["video/mp4", "video/quicktime"].includes(mime)) return 200 * 1024 ** 2;
-  return mime === "application/pdf" ? 25 * 1024 ** 2 : 0;
+  return DOCUMENT_MIME_TYPES.has(mime) ? 25 * 1024 ** 2 : 0;
 }
 
 export function putMaterialBytes(

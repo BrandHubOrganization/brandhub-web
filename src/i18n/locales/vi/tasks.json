@@ -1128,9 +1128,42 @@
     "updateFailed": "Không thể cập nhật thời hạn công việc. Vui lòng thử lại."
   },
   "priority": {
+    "title": "Độ ưu tiên",
     "URGENT": "Khẩn cấp",
     "HIGH": "Cao",
     "MEDIUM": "Trung bình",
     "LOW": "Thấp"
+  },
+  "priorityUpdated": "Đã cập nhật độ ưu tiên",
+  "priorityUpdateFailed": "Không thể cập nhật độ ưu tiên",
+  "sort": {
+    "label": "Sắp xếp",
+    "default": "Mặc định",
+    "nameAsc": "Tên (A-Z)",
+    "nameDesc": "Tên (Z-A)",
+    "dueDateAsc": "Hạn chót (Gần nhất)",
+    "dueDateDesc": "Hạn chót (Xa nhất)",
+    "startDateDesc": "Thời gian bắt đầu (Mới nhất)",
+    "startDateAsc": "Thời gian bắt đầu (Cũ nhất)",
+    "priorityDesc": "Độ ưu tiên (Cao → Thấp)",
+    "priorityAsc": "Độ ưu tiên (Thấp → Cao)"
+  },
+  "bulk": {
+    "selected": "đã chọn",
+    "selectAll": "Chọn tất cả",
+    "deselectAll": "Bỏ chọn tất cả",
+    "changeStatus": "Đổi trạng thái",
+    "changePriority": "Đổi độ ưu tiên",
+    "assignMember": "Giao việc",
+    "unassign": "Hủy phân công",
+    "partialSuccess": "Đã cập nhật {{succeeded}}/{{total}} công việc",
+    "delete": "Xóa",
+    "deleteConfirmTitle": "Xóa công việc",
+    "deleteConfirmDesc": "Bạn có chắc chắn muốn xóa {{count}} công việc đã chọn? Thao tác này không thể hoàn tác.",
+    "statusUpdated": "Đã cập nhật trạng thái cho {{count}} công việc",
+    "priorityUpdated": "Đã cập nhật độ ưu tiên cho {{count}} công việc",
+    "assignedUpdated": "Đã cập nhật người thực hiện cho {{count}} công việc",
+    "deletedSuccess": "Đã xóa thành công {{count}} công việc",
+    "close": "Đóng"
   }
 }

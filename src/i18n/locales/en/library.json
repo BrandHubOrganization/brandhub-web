@@ -38,7 +38,7 @@
     "edited": "Edited"
   },
   "page": {
-    "title": "Content repository",
+    "title": "Content Library",
     "description": "Centralized media files, folders, post templates, and hashtag sets for your workspace.",
     "mediaTab": "Files & Folders",
     "hashtagsTab": "Hashtag Groups",
@@ -103,7 +103,7 @@
     "copy": "Copy",
     "close": "Close",
     "sizeLimitError": "File exceeds the 50MB limit",
-    "uploadSuccess": "Successfully uploaded: {{filename}}",
+    "uploadSuccess": "Uploaded successfully",
     "uploadError": "File upload failed!"
   },
   "trash": {

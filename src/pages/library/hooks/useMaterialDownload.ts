@@ -8,6 +8,7 @@ import { useWorkspaceStore } from "@/store/workspaceStore";
 import type { DownloadMaterialResponse, MaterialItem } from "@/types/material";
 import {
   downloadMediaWithFormat,
+  stripExtension,
   type DownloadFormat,
 } from "@/utils/mediaDownloadHelper";
 
@@ -151,7 +152,7 @@ export function useMaterialDownload() {
       }
       toast.success(
         t("library.repository.downloadStarted", {
-          name: result.filename || material.name,
+          name: stripExtension(result.filename || material.name),
         }),
       );
     },

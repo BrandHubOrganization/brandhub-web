@@ -15,6 +15,7 @@ import {
   Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { stripExtension } from "@/utils/mediaDownloadHelper";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
@@ -407,7 +408,7 @@ export function ShareFromClientVaultModal({
                               {isImage && file.url ? (
                                 <img
                                   src={file.url}
-                                  alt={file.name}
+                                  alt={stripExtension(file.name)}
                                   className="h-full w-full object-cover"
                                 />
                               ) : isVideo ? (
@@ -421,7 +422,7 @@ export function ShareFromClientVaultModal({
 
                             <div className="min-w-0 flex-1">
                               <p className="truncate text-xs font-semibold text-foreground">
-                                {file.name}
+                                {stripExtension(file.name)}
                               </p>
                               <p className="text-[11px] text-muted-foreground">
                                 {formatBytes(file.fileSize)}

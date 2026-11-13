@@ -1,5 +1,18 @@
 export type MailTemplateType = "SYSTEM_DEFAULT" | "CUSTOM";
 
+export type MailTemplateCategory =
+  | "ALL"
+  | "SYSTEM_DEFAULT"
+  | "CUSTOM"
+  | "CAMPAIGN_BROADCAST"
+  | "WORKSPACE_MANAGER";
+
+export type MailTemplateSort =
+  | "CREATED_DESC"
+  | "CREATED_ASC"
+  | "NAME_ASC"
+  | "NAME_DESC";
+
 export type MailTemplateScope =
   | "CAMPAIGN_BROADCAST"
   | "WORKSPACE_MANAGER"

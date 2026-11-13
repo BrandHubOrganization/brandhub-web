@@ -72,7 +72,7 @@ export function ProvinceSelect({ label, value, onChange }: Props) {
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="border-input bg-input-background text-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex h-9 w-full items-center justify-between rounded-md border px-3 py-1 text-sm outline-none focus-visible:ring-[3px]"
+            className="border-input bg-input-background dark:bg-input/30 text-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex h-9 w-full items-center justify-between rounded-md border px-3 py-1 text-sm outline-none focus-visible:ring-[3px]"
           >
             <span className={cn(!value && "text-muted-foreground")}>
               {value || "—"}

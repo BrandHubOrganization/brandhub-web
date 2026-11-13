@@ -19,6 +19,7 @@ import {
 import { cn, formatFileSize } from "@/lib/utils";
 import { retentionDays } from "@/pages/library/hooks/materialTrashPolicy";
 import { useTrashSelection } from "@/pages/library/hooks/useTrashSelection";
+import { stripExtension } from "@/utils/mediaDownloadHelper";
 import type { MaterialFolderItem, MaterialItem } from "@/types/material";
 
 export function MaterialTrashList({
@@ -55,7 +56,7 @@ export function MaterialTrashList({
       className="space-y-3"
       aria-busy={pending}
     >
-      <div className="border-[#d5dbdb] dark:border-border bg-card flex flex-wrap items-center gap-3 rounded-none border p-3">
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/70 bg-card p-3 shadow-xs">
         <label className="flex min-h-8 cursor-pointer items-center gap-2 text-xs font-medium">
           <input
             type="checkbox"
@@ -120,7 +121,7 @@ export function MaterialTrashList({
           </p>
         )}
       {rows.length > 0 && (
-        <div className="border-[#d5dbdb] dark:border-border bg-card overflow-hidden rounded-none border">
+        <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-xs">
           <div className="bg-muted/40 text-muted-foreground hidden grid-cols-[minmax(0,1fr)_7rem_14rem] gap-4 border-b px-4 py-2.5 text-xs font-medium sm:grid">
             <span className="pl-7">{label("nameColumn")}</span>
             <span>{label("sizeColumn")}</span>
@@ -182,9 +183,9 @@ export function MaterialTrashList({
                       <span className="min-w-0">
                         <span
                           className="block truncate text-sm font-medium"
-                          title={row.name}
+                          title={row.folder ? row.name : stripExtension(row.name)}
                         >
-                          {row.name}
+                          {row.folder ? row.name : stripExtension(row.name)}
                         </span>
                         <span className="text-muted-foreground text-xs">
                           {row.folder ? label("folderType") : label("fileType")}

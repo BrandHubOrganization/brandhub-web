@@ -38,10 +38,10 @@
     "edited": "Đã chỉnh sửa"
   },
   "page": {
-    "title": "Kho lưu trữ nội dung",
+    "title": "Thư viện Nội dung",
     "description": "Quản lý tập trung tệp đa phương tiện, thư mục, mẫu bài đăng và bộ hashtag của không gian làm việc.",
     "mediaTab": "Tệp & Thư mục",
-    "hashtagsTab": "Nhóm Hashtag",
+    "hashtagsTab": "Hashtag Xu Hướng",
     "templatesTab": "Mẫu bài đăng"
   },
   "templates": {
@@ -103,7 +103,7 @@
     "copy": "Copy",
     "close": "Đóng",
     "sizeLimitError": "File vượt quá giới hạn 50MB",
-    "uploadSuccess": "Đã tải lên thành công: {{filename}}",
+    "uploadSuccess": "Đã tải lên thành công",
     "uploadError": "Tải file lên thất bại!"
   },
   "trash": {

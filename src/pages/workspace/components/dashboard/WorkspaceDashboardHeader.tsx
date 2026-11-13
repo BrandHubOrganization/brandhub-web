@@ -67,14 +67,6 @@ export function WorkspaceDashboardHeader({
               <h1 className="text-foreground text-xl font-bold sm:text-2xl">
                 {workspace.name}
               </h1>
-              {currentMemberRole && (
-                <Badge
-                  variant="outline"
-                  className="border-brand-orange/30 bg-brand-orange-soft/50 text-brand-orange text-2xs font-semibold"
-                >
-                  {t("workspace.dashboard.roleInWorkspace")}: {t(`workspace.roles.${currentMemberRole}`, currentMemberRole ?? "")}
-                </Badge>
-              )}
               {isPackageApproved ? (
                 <Badge className="text-2xs border-emerald-500/30 bg-emerald-500/15 text-emerald-600">
                   <BadgeCheck className="mr-1 size-3" />
