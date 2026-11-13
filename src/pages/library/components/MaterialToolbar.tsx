@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ArrowUpDown,
   Calendar,
   Check,
   ChevronDown,
@@ -200,22 +199,18 @@ export function MaterialToolbar(props: Props) {
     {
       value: "newest",
       label: t("library.repository.sort.newest", "Mới nhất"),
-      icon: <ArrowUpDown className="size-3.5" />,
     },
     {
       value: "oldest",
       label: t("library.repository.sort.oldest", "Cũ nhất"),
-      icon: <ArrowUpDown className="size-3.5" />,
     },
     {
       value: "name_asc",
       label: t("library.repository.sort.nameAsc", "Tên A → Z"),
-      icon: <ArrowUpDown className="size-3.5" />,
     },
     {
       value: "name_desc",
       label: t("library.repository.sort.nameDesc", "Tên Z → A"),
-      icon: <ArrowUpDown className="size-3.5" />,
     },
   ];
 

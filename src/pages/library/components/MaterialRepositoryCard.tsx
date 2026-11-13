@@ -7,6 +7,7 @@ import {
   Film,
   FolderInput,
   GripVertical,
+  Image as ImageIcon,
   MoreVertical,
   RotateCcw,
   Sparkles,
@@ -133,83 +134,100 @@ export function MaterialRepositoryCard({
           disabled={isPurging}
           aria-label={t("common.actions", "Tác vụ")}
           onClick={(e) => e.stopPropagation()}
-          className="rounded-[4px] p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-[4px] p-1.5 transition-colors disabled:opacity-40"
         >
           <MoreVertical className="h-4 w-4" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48 rounded-xl border border-border/80 bg-card p-1.5 shadow-xl">
+      <DropdownMenuContent
+        align="end"
+        className="border-border/80 bg-card w-48 rounded-xl border p-1.5 shadow-xl"
+      >
         <DropdownMenuItem
           disabled={isPurging}
           onSelect={() => onSelect(material)}
-          className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors hover:bg-muted/80 focus:bg-muted/80"
+          className="hover:bg-muted/80 focus:bg-muted/80 flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
         >
-          <Eye className="size-3.5 text-muted-foreground" />
+          <Eye className="text-muted-foreground size-3.5" />
           <span>{t("library.media.details", "Xem chi tiết")}</span>
         </DropdownMenuItem>
         {!isDeleted && !isPurging && (
           <DropdownMenuItem
             onSelect={() => onDownload(material)}
-            className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors hover:bg-muted/80 focus:bg-muted/80"
+            className="hover:bg-muted/80 focus:bg-muted/80 flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
           >
-            <Download className="size-3.5 text-muted-foreground" />
+            <Download className="text-muted-foreground size-3.5" />
             <span>{t("common.download", "Tải xuống")}</span>
           </DropdownMenuItem>
         )}
         {!isDeleted && !isPurging && canMove && onMoveRequest && (
           <DropdownMenuItem
             onSelect={() => onMoveRequest(material)}
-            className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors hover:bg-muted/80 focus:bg-muted/80"
+            className="hover:bg-muted/80 focus:bg-muted/80 flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
           >
-            <FolderInput className="size-3.5 text-brand-orange" />
+            <FolderInput className="text-brand-orange size-3.5" />
             <span>Di chuyển tới thư mục...</span>
           </DropdownMenuItem>
         )}
-        {!isDeleted && !isPurging && isDraft && canPromoteDraft && onPromoteDraft && (
-          <DropdownMenuItem
-            onSelect={() => onPromoteDraft(material)}
-            className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-brand-orange transition-colors hover:bg-brand-orange/10 focus:bg-brand-orange/10 focus:text-brand-orange"
-          >
-            <Sparkles className="size-3.5" />
-            <span>
-              {t("library.repository.actions.saveToLibrary", "Lưu vào kho chính")}
-            </span>
-          </DropdownMenuItem>
-        )}
+        {!isDeleted &&
+          !isPurging &&
+          isDraft &&
+          canPromoteDraft &&
+          onPromoteDraft && (
+            <DropdownMenuItem
+              onSelect={() => onPromoteDraft(material)}
+              className="text-brand-orange hover:bg-brand-orange/10 focus:bg-brand-orange/10 focus:text-brand-orange flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
+            >
+              <Sparkles className="size-3.5" />
+              <span>
+                {t(
+                  "library.repository.actions.saveToLibrary",
+                  "Lưu vào kho chính",
+                )}
+              </span>
+            </DropdownMenuItem>
+          )}
         {!isDeleted && !isPurging && isImage && (
           <DropdownMenuItem
             onSelect={() => onWatermark(material)}
-            className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors hover:bg-muted/80 focus:bg-muted/80"
+            className="hover:bg-muted/80 focus:bg-muted/80 flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
           >
-            <Stamp className="size-3.5 text-muted-foreground" />
-            <span>{t("library.media.watermarkAction", "Đóng dấu Watermark")}</span>
+            <Stamp className="text-muted-foreground size-3.5" />
+            <span>
+              {t("library.media.watermarkAction", "Đóng dấu Watermark")}
+            </span>
           </DropdownMenuItem>
         )}
         {!isDeleted && !isPurging && canDelete && (
           <>
-            <DropdownMenuSeparator className="-mx-1 my-1 bg-border/60" />
+            <DropdownMenuSeparator className="bg-border/60 -mx-1 my-1" />
             <DropdownMenuItem
               onSelect={() => onDelete(material)}
-              className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
+              className="text-destructive hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
             >
               <Trash2 className="size-3.5" />
-              <span>{t("library.repository.actions.moveToTrash", "Chuyển vào thùng rác")}</span>
+              <span>
+                {t(
+                  "library.repository.actions.moveToTrash",
+                  "Chuyển vào thùng rác",
+                )}
+              </span>
             </DropdownMenuItem>
           </>
         )}
         {isDeleted && !isPurging && canRestore && (
           <DropdownMenuItem
             onSelect={() => onRestore(material)}
-            className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors hover:bg-muted/80 focus:bg-muted/80"
+            className="hover:bg-muted/80 focus:bg-muted/80 flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
           >
-            <RotateCcw className="size-3.5 text-muted-foreground" />
+            <RotateCcw className="text-muted-foreground size-3.5" />
             <span>{t("library.repository.actions.restore", "Khôi phục")}</span>
           </DropdownMenuItem>
         )}
         {isDeleted && !isPurging && canPermanentDelete && onPermanentDelete && (
           <DropdownMenuItem
             onSelect={() => onPermanentDelete(material)}
-            className="flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
           >
             <Trash2 className="size-3.5" />
             <span>
@@ -239,19 +257,19 @@ export function MaterialRepositoryCard({
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onClick={() => !isPurging && onSelect(material)}
-        className={`group flex cursor-pointer items-center gap-3 bg-card px-3.5 py-2.5 transition-colors hover:bg-muted/40 ${
-          isDragging ? "opacity-50 ring-2 ring-brand-orange" : ""
+        className={`group bg-card hover:bg-muted/40 flex cursor-pointer items-center gap-3 px-3.5 py-2.5 transition-colors ${
+          isDragging ? "ring-brand-orange opacity-50 ring-2" : ""
         }`}
       >
         {/* Drag handle */}
         <div className="w-4 shrink-0">
           {isDraggable && (
-            <GripVertical className="h-4 w-4 cursor-grab text-muted-foreground/50 group-hover:text-muted-foreground" />
+            <GripVertical className="text-muted-foreground/50 group-hover:text-muted-foreground h-4 w-4 cursor-grab" />
           )}
         </div>
 
         {/* Thumbnail */}
-        <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+        <div className="bg-muted relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg">
           {isImage && thumbUrl && !imageBroken ? (
             <img
               src={thumbUrl}
@@ -263,20 +281,20 @@ export function MaterialRepositoryCard({
               className="h-full w-full object-cover"
             />
           ) : isVideo ? (
-            <Film className="h-4 w-4 text-brand-orange" />
+            <Film className="text-brand-orange h-4 w-4" />
           ) : (
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <FileText className="text-muted-foreground h-4 w-4" />
           )}
         </div>
 
         {/* Name */}
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <p className="truncate text-xs font-semibold text-foreground group-hover:underline">
+          <p className="text-foreground truncate text-xs font-semibold group-hover:underline">
             {stripExtension(material.name)}
           </p>
           {hasMultipleVersions && (
             <span
-              className="inline-flex shrink-0 items-center rounded-md bg-brand-orange/10 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-brand-orange"
+              className="bg-brand-orange/10 text-brand-orange inline-flex shrink-0 items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold tabular-nums"
               title={`Phiên bản mới nhất: v${versionNum}`}
             >
               v{versionNum}
@@ -285,38 +303,72 @@ export function MaterialRepositoryCard({
         </div>
 
         {/* Owner */}
-        <span className="hidden w-[130px] shrink-0 truncate text-xs text-muted-foreground sm:block">
+        <span className="text-muted-foreground hidden w-[130px] shrink-0 truncate text-xs sm:block">
           {material.createdByName || "—"}
         </span>
 
         {/* Modified date */}
-        <span className="hidden w-[110px] shrink-0 text-xs tabular-nums text-muted-foreground sm:block">
+        <span className="text-muted-foreground hidden w-[110px] shrink-0 text-xs tabular-nums sm:block">
           {modifiedDate}
         </span>
 
         {/* File size */}
-        <span className="hidden w-[90px] shrink-0 text-right text-xs tabular-nums text-muted-foreground sm:block">
+        <span className="text-muted-foreground hidden w-[90px] shrink-0 text-right text-xs tabular-nums sm:block">
           {material.fileSize ? formatBytes(material.fileSize) : "—"}
         </span>
 
         {/* Menu */}
-        <div className="w-8 shrink-0 text-right" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="w-8 shrink-0 text-right"
+          onClick={(e) => e.stopPropagation()}
+        >
           {renderMenu()}
         </div>
       </div>
     );
   }
 
+  const TypeIcon = isVideo ? Film : isImage ? ImageIcon : FileText;
+  const typeIconColor = isVideo
+    ? "text-red-500"
+    : isImage
+      ? "text-blue-500"
+      : "text-muted-foreground";
+
   return (
     <article
       draggable={isDraggable}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      className={`group relative flex flex-col overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xs transition-all duration-200 hover:border-brand-orange/60 hover:shadow-xs dark:border-border ${
-        isDragging ? "scale-[0.97] opacity-50 ring-2 ring-brand-orange" : ""
+      className={`group bg-muted/60 hover:bg-muted dark:bg-muted/40 dark:hover:bg-muted/70 relative flex flex-col gap-1.5 rounded-2xl p-2 pt-1.5 transition-colors duration-200 ${
+        isDragging ? "ring-brand-orange scale-[0.97] opacity-50 ring-2" : ""
       }`}
     >
-      {/* Thumbnail Preview Container */}
+      <div className="flex items-center gap-2 pl-1.5">
+        <button
+          type="button"
+          onClick={() => !isPurging && onSelect(material)}
+          className="flex min-w-0 flex-1 items-center gap-2.5 py-1 text-left"
+        >
+          <TypeIcon className={`h-4 w-4 shrink-0 ${typeIconColor}`} />
+          <p
+            className="text-foreground truncate text-[13px] font-medium"
+            title={stripExtension(material.name)}
+          >
+            {stripExtension(material.name)}
+          </p>
+          {hasMultipleVersions && (
+            <span
+              className="bg-brand-orange/10 text-brand-orange inline-flex shrink-0 items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold tabular-nums"
+              title={`Phiên bản mới nhất: v${versionNum}`}
+            >
+              v{versionNum}
+            </span>
+          )}
+        </button>
+        {renderMenu()}
+      </div>
+
       <button
         type="button"
         disabled={isPurging}
@@ -327,7 +379,7 @@ export function MaterialRepositoryCard({
         onMouseLeave={() => {
           if (isVideo) setVideoHovered(false);
         }}
-        className="relative aspect-[4/3] w-full overflow-hidden bg-muted/60 text-left disabled:cursor-not-allowed"
+        className="bg-card relative aspect-[4/3] w-full overflow-hidden rounded-xl text-left disabled:cursor-not-allowed"
       >
         {isImage && thumbUrl && !imageBroken ? (
           <img
@@ -337,7 +389,7 @@ export function MaterialRepositoryCard({
             decoding="async"
             draggable={false}
             onError={() => setImageBroken(true)}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover"
           />
         ) : isVideo && material.url && videoHovered ? (
           <video
@@ -350,26 +402,23 @@ export function MaterialRepositoryCard({
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-muted/50 to-muted text-muted-foreground">
-            {isVideo ? (
-              <Film className="h-9 w-9 text-brand-orange/80" />
-            ) : (
-              <FileText className="h-9 w-9 text-muted-foreground/70" />
-            )}
+          <div className="flex h-full w-full items-center justify-center">
+            <TypeIcon
+              className={`h-14 w-14 ${typeIconColor}`}
+              strokeWidth={1.5}
+            />
           </div>
         )}
 
-        {/* Top-left draft badge */}
         {isDraft && !isDeleted && !hideDraftBadge && (
           <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-            <span className="inline-flex items-center gap-1 rounded-[3px] bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white shadow-xs">
+            <span className="bg-brand-orange inline-flex items-center gap-1 rounded-[3px] px-2 py-0.5 text-[10px] font-bold text-white shadow-xs">
               <Sparkles className="h-2.5 w-2.5" />
               Nháp AI
             </span>
           </div>
         )}
 
-        {/* Top-right drag handle hint on hover */}
         {isDraggable && (
           <div
             className="absolute top-2.5 right-2.5 rounded-md bg-black/55 p-1 text-white opacity-0 backdrop-blur-xs transition-opacity group-hover:opacity-100"
@@ -379,41 +428,14 @@ export function MaterialRepositoryCard({
           </div>
         )}
 
-        {/* Status banner if deleted or purging */}
         {(isDeleted || isPurging) && (
-          <div className="absolute inset-x-0 bottom-0 bg-destructive/90 px-2.5 py-1 text-center text-[10px] font-semibold text-white">
+          <div className="bg-destructive/90 absolute inset-x-0 bottom-0 px-2.5 py-1 text-center text-[10px] font-semibold text-white">
             {isPurging
               ? t("library.repository.badges.purging", "Đang xoá vĩnh viễn...")
               : t("library.repository.badges.trashed", "Trong thùng rác")}
           </div>
         )}
       </button>
-
-      {/* Card Footer */}
-      <div className="flex items-center justify-between gap-2 p-3">
-        <button
-          type="button"
-          onClick={() => !isPurging && onSelect(material)}
-          className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
-        >
-          <p
-            className="truncate text-xs font-semibold text-foreground group-hover:text-brand-orange transition-colors"
-            title={stripExtension(material.name)}
-          >
-            {stripExtension(material.name)}
-          </p>
-          {hasMultipleVersions && (
-            <span
-              className="inline-flex shrink-0 items-center rounded-md bg-brand-orange/10 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-brand-orange"
-              title={`Phiên bản mới nhất: v${versionNum}`}
-            >
-              v{versionNum}
-            </span>
-          )}
-        </button>
-
-        {renderMenu()}
-      </div>
     </article>
   );
 }
