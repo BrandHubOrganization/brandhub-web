@@ -103,7 +103,7 @@
     "copy": "Copy",
     "close": "Close",
     "sizeLimitError": "File exceeds the 50MB limit",
-    "uploadSuccess": "Successfully uploaded: {{filename}}",
+    "uploadSuccess": "Uploaded successfully",
     "uploadError": "File upload failed!"
   },
   "trash": {

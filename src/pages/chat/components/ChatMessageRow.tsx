@@ -207,6 +207,9 @@ export function ChatMessageRow(props: ChatMessageRowProps) {
           workspace={message.workspaceId}
           channel={message.channelId}
           ids={message.attachmentIds}
+          senderName={message.senderDisplayName}
+          sentAt={message.createdAt}
+          channelName={message.channelId}
         />
         {message.contextType !== "GENERAL" && (
           <p className="border-border/70 bg-muted/40 text-muted-foreground mt-1 inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium">

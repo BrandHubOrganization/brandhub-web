@@ -14,4 +14,5 @@ export interface ChatAttachmentDraft {
   status: "uploading" | "ready" | "error";
   attachment?: ChatAttachment;
   file?: File;
+  previewUrl?: string;
 }

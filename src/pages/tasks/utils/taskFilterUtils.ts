@@ -26,21 +26,80 @@ export interface TaskFilterCriteria {
   approvals?: ("YES" | "NO")[];
 }
 
+export type TaskSortOption =
+  | "DEFAULT"
+  | "NAME_ASC"
+  | "NAME_DESC"
+  | "DUE_DATE_ASC"
+  | "DUE_DATE_DESC"
+  | "START_DATE_DESC"
+  | "START_DATE_ASC"
+  | "PRIORITY_DESC"
+  | "PRIORITY_ASC";
+
+const PRIORITY_ORDER: Record<string, number> = {
+  URGENT: 4,
+  HIGH: 3,
+  MEDIUM: 2,
+  LOW: 1,
+};
+
+function getTaskDueTime(task: TaskListItem): number | null {
+  const dateStr = task.dueDate || task.publishDate;
+  if (!dateStr) return null;
+  const time = new Date(dateStr).getTime();
+  return Number.isNaN(time) ? null : time;
+}
+
+function getTaskStartTime(task: TaskListItem): number {
+  if (!task.createdAt) return 0;
+  const time = new Date(task.createdAt).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function compareDue(a: TaskListItem, b: TaskListItem, asc: boolean): number {
+  const tA = getTaskDueTime(a);
+  const tB = getTaskDueTime(b);
+  if (tA === null && tB === null) return 0;
+  if (tA === null) return 1;
+  if (tB === null) return -1;
+  return asc ? tA - tB : tB - tA;
+}
+
+function comparePriority(a: TaskListItem, b: TaskListItem, desc: boolean): number {
+  const pA = a.priority ? (PRIORITY_ORDER[a.priority] ?? 0) : 0;
+  const pB = b.priority ? (PRIORITY_ORDER[b.priority] ?? 0) : 0;
+  return desc ? pB - pA : pA - pB;
+}
+
+const SORT_COMPARATORS: Record<
+  Exclude<TaskSortOption, "DEFAULT">,
+  (a: TaskListItem, b: TaskListItem) => number
+> = {
+  NAME_ASC: (a, b) => (a.name || "").localeCompare(b.name || "", undefined, { numeric: true }),
+  NAME_DESC: (a, b) => (b.name || "").localeCompare(a.name || "", undefined, { numeric: true }),
+  DUE_DATE_ASC: (a, b) => compareDue(a, b, true),
+  DUE_DATE_DESC: (a, b) => compareDue(a, b, false),
+  START_DATE_DESC: (a, b) => getTaskStartTime(b) - getTaskStartTime(a),
+  START_DATE_ASC: (a, b) => getTaskStartTime(a) - getTaskStartTime(b),
+  PRIORITY_DESC: (a, b) => comparePriority(a, b, true),
+  PRIORITY_ASC: (a, b) => comparePriority(a, b, false),
+};
+
+export function sortTasks(tasks: TaskListItem[], sort: TaskSortOption): TaskListItem[] {
+  if (sort === "DEFAULT" || !SORT_COMPARATORS[sort]) return tasks;
+  return [...tasks].sort(SORT_COMPARATORS[sort]);
+}
+
 const INVALID_ASSIGNEES = new Set([
   "unknown", "unassigned", "chưa giao việc", "chua giao viec", "none", "null", "undefined",
 ]);
 
-export function isValidAssignee(
-  id?: string | null,
-  name?: string | null,
-): boolean {
+export function isValidAssignee(id?: string | null, name?: string | null): boolean {
   if (!id || !name) return false;
-  const cleanId = id.trim();
-  const cleanName = name.trim();
-  if (!cleanId || !cleanName) return false;
-  if (INVALID_ASSIGNEES.has(cleanId.toLowerCase())) return false;
-  if (INVALID_ASSIGNEES.has(cleanName.toLowerCase())) return false;
-  return true;
+  const cleanId = id.trim().toLowerCase();
+  const cleanName = name.trim().toLowerCase();
+  return Boolean(cleanId && cleanName && !INVALID_ASSIGNEES.has(cleanId) && !INVALID_ASSIGNEES.has(cleanName));
 }
 
 export function computeAssigneeInitials(name: string): string {
@@ -51,35 +110,22 @@ export function computeAssigneeInitials(name: string): string {
   return name.slice(0, 2).toUpperCase();
 }
 
-export function extractUniqueAssignees(
-  tasks: TaskListItem[],
-): TaskTimelineAssignee[] {
+export function extractUniqueAssignees(tasks: TaskListItem[]): TaskTimelineAssignee[] {
   const map = new Map<string, TaskTimelineAssignee>();
   for (const t of tasks) {
     if (!isValidAssignee(t.assigneeId, t.assigneeName)) continue;
     const id = t.assigneeId!.trim();
     const name = t.assigneeName!.trim();
-
     if (!map.has(id)) {
-      map.set(id, {
-        id,
-        name,
-        avatar: t.assigneeAvatar ?? null,
-        initials: computeAssigneeInitials(name),
-      });
-    } else {
-      const existing = map.get(id)!;
-      if (!existing.avatar && t.assigneeAvatar) {
-        existing.avatar = t.assigneeAvatar;
-      }
+      map.set(id, { id, name, avatar: t.assigneeAvatar ?? null, initials: computeAssigneeInitials(name) });
+    } else if (!map.get(id)!.avatar && t.assigneeAvatar) {
+      map.get(id)!.avatar = t.assigneeAvatar;
     }
   }
   return Array.from(map.values());
 }
 
-export function extractUniqueReporters(
-  tasks: TaskListItem[],
-): TaskTimelineAssignee[] {
+export function extractUniqueReporters(tasks: TaskListItem[]): TaskTimelineAssignee[] {
   const map = new Map<string, TaskTimelineAssignee>();
   for (const t of tasks) {
     const rawId = t.reporterId || (t as { createdBy?: string }).createdBy;
@@ -87,19 +133,10 @@ export function extractUniqueReporters(
     if (!isValidAssignee(rawId, rawName)) continue;
     const id = rawId!.trim();
     const name = rawName!.trim();
-
     if (!map.has(id)) {
-      map.set(id, {
-        id,
-        name,
-        avatar: t.reporterAvatar ?? null,
-        initials: computeAssigneeInitials(name),
-      });
-    } else {
-      const existing = map.get(id)!;
-      if (!existing.avatar && t.reporterAvatar) {
-        existing.avatar = t.reporterAvatar;
-      }
+      map.set(id, { id, name, avatar: t.reporterAvatar ?? null, initials: computeAssigneeInitials(name) });
+    } else if (!map.get(id)!.avatar && t.reporterAvatar) {
+      map.get(id)!.avatar = t.reporterAvatar;
     }
   }
   return Array.from(map.values());
@@ -118,18 +155,13 @@ export function extractUniqueParents(
   for (const t of tasks) {
     if (t.campaignId && !map.has(t.campaignId)) {
       const customTask = t as { campaignName?: string };
-      map.set(
-        t.campaignId,
-        customTask.campaignName || `Campaign ${t.campaignId.slice(0, 6)}`,
-      );
+      map.set(t.campaignId, customTask.campaignName || `Campaign ${t.campaignId.slice(0, 6)}`);
     }
   }
   return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
 }
 
-export function countActiveFilters(
-  criteria: Omit<TaskFilterCriteria, "search">,
-): number {
+export function countActiveFilters(criteria: Omit<TaskFilterCriteria, "search">): number {
   let count = criteria.assignees.length + criteria.statuses.length + criteria.types.length;
   count += criteria.schedules.filter((s) => s !== "ALL").length;
   if (criteria.parents) count += criteria.parents.length;
@@ -154,15 +186,10 @@ export function isTaskUnassigned(task: TaskListItem): boolean {
   return !isValidAssignee(task.assigneeId, task.assigneeName);
 }
 
-export function matchesAssignee(
-  task: TaskListItem,
-  assignees: string[],
-): boolean {
+export function matchesAssignee(task: TaskListItem, assignees: string[]): boolean {
   if (assignees.length === 0) return true;
-  const unassigned = isTaskUnassigned(task);
-  if (unassigned) {
-    return assignees.includes("UNASSIGNED");
-  }
+  if (isTaskUnassigned(task)) return assignees.includes("UNASSIGNED");
+
   const aId = task.assigneeId?.trim();
   const aName = task.assigneeName?.trim();
   const currentUserId = useAuthStore.getState().user?.id;
@@ -171,43 +198,26 @@ export function matchesAssignee(
   if (assignees.includes("CURRENT_USER")) {
     if (
       (currentUserId && aId === currentUserId) ||
-      (currentUserName &&
-        aName &&
-        aName.toLowerCase() === currentUserName.toLowerCase())
+      (currentUserName && aName && aName.toLowerCase() === currentUserName.toLowerCase())
     ) {
       return true;
     }
   }
 
-  return (
-    (aId ? assignees.includes(aId) : false) ||
-    (aName ? assignees.includes(aName) : false)
-  );
+  return (aId ? assignees.includes(aId) : false) || (aName ? assignees.includes(aName) : false);
 }
 
-function matchesSchedule(
-  task: TaskListItem,
-  schedules: string[],
-  now: number,
-): boolean {
+function matchesSchedule(task: TaskListItem, schedules: string[], now: number): boolean {
   if (schedules.length === 0 || schedules.includes("ALL")) return true;
   const deadline = taskDeadline(task);
   const isUnscheduled = !deadline;
   const isOverdue = Boolean(
-    deadline &&
-      task.status !== "FINISHED" &&
-      task.status !== "CANCELLED" &&
-      deadline.getTime() < now,
+    deadline && task.status !== "FINISHED" && task.status !== "CANCELLED" && deadline.getTime() < now,
   );
-  const matchUnscheduled = schedules.includes("UNSCHEDULED") && isUnscheduled;
-  const matchOverdue = schedules.includes("OVERDUE") && isOverdue;
-  return matchUnscheduled || matchOverdue;
+  return (schedules.includes("UNSCHEDULED") && isUnscheduled) || (schedules.includes("OVERDUE") && isOverdue);
 }
 
-export function matchesReporter(
-  task: TaskListItem,
-  reporters: string[],
-): boolean {
+export function matchesReporter(task: TaskListItem, reporters: string[]): boolean {
   if (reporters.length === 0) return true;
   const rawId = task.reporterId || (task as { createdBy?: string }).createdBy;
   const rId = rawId?.trim();
@@ -218,28 +228,19 @@ export function matchesReporter(
   if (reporters.includes("CURRENT_USER")) {
     if (
       (currentUserId && rId === currentUserId) ||
-      (currentUserName &&
-        rName &&
-        rName.toLowerCase() === currentUserName.toLowerCase())
+      (currentUserName && rName && rName.toLowerCase() === currentUserName.toLowerCase())
     ) {
       return true;
     }
   }
 
-  return Boolean(
-    (rId && reporters.includes(rId)) || (rName && reporters.includes(rName)),
-  );
+  return Boolean((rId && reporters.includes(rId)) || (rName && reporters.includes(rName)));
 }
 
-function matchesApproval(
-  task: TaskListItem,
-  approvals: ("YES" | "NO")[],
-): boolean {
+function matchesApproval(task: TaskListItem, approvals: ("YES" | "NO")[]): boolean {
   if (approvals.length === 0) return true;
   const req = Boolean(task.requiresClientApproval);
-  const matchYes = approvals.includes("YES") && req;
-  const matchNo = approvals.includes("NO") && !req;
-  return matchYes || matchNo;
+  return (approvals.includes("YES") && req) || (approvals.includes("NO") && !req);
 }
 
 export function filterTasks(
@@ -247,39 +248,19 @@ export function filterTasks(
   criteria: TaskFilterCriteria,
   now: number = Date.now(),
 ): TaskListItem[] {
-  const {
-    search,
-    assignees,
-    statuses,
-    types,
-    schedules,
-    parents,
-    priorities,
-    reporters,
-    approvals,
-  } = criteria;
+  const { search, assignees, statuses, types, schedules, parents, priorities, reporters, approvals } = criteria;
   const q = search.trim().toLowerCase();
 
   return tasks.filter((task) => {
     if (!matchesSearch(task, q)) return false;
     if (!matchesAssignee(task, assignees)) return false;
     if (statuses.length > 0 && !statuses.includes(task.status)) return false;
-    if (types.length > 0 && (!task.type || !types.includes(task.type))) {
-      return false;
-    }
+    if (types.length > 0 && (!task.type || !types.includes(task.type))) return false;
     if (!matchesSchedule(task, schedules, now)) return false;
-    if (parents && parents.length > 0) {
-      if (!task.campaignId || !parents.includes(task.campaignId)) return false;
-    }
-    if (priorities && priorities.length > 0) {
-      if (!task.priority || !priorities.includes(task.priority)) return false;
-    }
-    if (reporters && reporters.length > 0 && !matchesReporter(task, reporters)) {
-      return false;
-    }
-    if (approvals && approvals.length > 0 && !matchesApproval(task, approvals)) {
-      return false;
-    }
+    if (parents && parents.length > 0 && (!task.campaignId || !parents.includes(task.campaignId))) return false;
+    if (priorities && priorities.length > 0 && (!task.priority || !priorities.includes(task.priority))) return false;
+    if (reporters && reporters.length > 0 && !matchesReporter(task, reporters)) return false;
+    if (approvals && approvals.length > 0 && !matchesApproval(task, approvals)) return false;
     return true;
   });
 }

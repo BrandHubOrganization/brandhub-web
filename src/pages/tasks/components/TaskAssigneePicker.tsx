@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, UserX } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,10 +10,12 @@ import {
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useTaskWorkflow } from "@/pages/tasks/hooks/useTaskWorkflow";
 import { useInlineTaskField } from "@/pages/tasks/hooks/useInlineTaskField";
 import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
+import { taskService } from "@/services/taskService";
 import { workflowError } from "@/pages/tasks/utils/taskWorkflowErrors";
 import type { TaskWorkflow } from "@/pages/tasks/types/taskWorkflow";
 
@@ -22,19 +25,22 @@ export function TaskAssigneePicker({
   assigneeName,
   task: propTask,
   scope = "detail",
+  onUpdated,
 }: {
   workspaceId: string;
   taskId: string;
   assigneeName?: string | null;
   task?: TaskWorkflow | null;
   scope?: "row" | "detail";
+  onUpdated?: () => void;
 }) {
   const { t } = useTranslation();
+  const qc = useQueryClient();
   const [open, setOpen] = useState(false);
-  const state = useTaskWorkflow(workspaceId, taskId, open || !propTask);
+  const shouldFetchWorkflow = scope === "detail" ? (open || !propTask) : open;
+  const state = useTaskWorkflow(workspaceId, taskId, shouldFetchWorkflow);
   const task = propTask || state.query.data;
-  const canPick = task?.allowedActions.canAssign === true;
-
+  const canPick = scope === "row" || task?.allowedActions.canAssign === true;
 
   const field = useInlineTaskField(
     `task-${taskId}-${scope}-assignee`,
@@ -50,11 +56,37 @@ export function TaskAssigneePicker({
     retry: false,
     refetchOnWindowFocus: false,
   });
+
   async function save(value: string) {
     field.change(value);
-    if (await field.commit(value)) setOpen(false);
+    if (await field.commit(value)) {
+      setOpen(false);
+      qc.invalidateQueries({ queryKey: ["task-workflow", workspaceId, taskId] });
+      onUpdated?.();
+    }
   }
-  const label = task?.assigneeName || assigneeName || t("tasks.unassigned");
+
+  async function handleUnassign() {
+    try {
+      await taskService.updateTaskAssignee(workspaceId, taskId, null);
+      toast.success(
+        t("tasks.bulk.assignedUpdated", {
+          defaultValue: "Đã hủy phân công",
+          count: 1,
+        }),
+      );
+      setOpen(false);
+      qc.invalidateQueries({ queryKey: ["task-workflow", workspaceId, taskId] });
+      onUpdated?.();
+    } catch {
+      toast.error(t("common.error", { defaultValue: "Có lỗi xảy ra" }));
+    }
+  }
+
+  const label =
+    scope === "row" && !pending
+      ? assigneeName || t("tasks.unassigned")
+      : task?.assigneeName || assigneeName || t("tasks.unassigned");
   return (
     <div
       onClick={(event) => event.stopPropagation()}
@@ -83,7 +115,7 @@ export function TaskAssigneePicker({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="start"
-          className="z-[70] w-72 max-w-[calc(100vw-2rem)] rounded-xl p-1 shadow-lg"
+          className="z-[70] w-64 max-w-[calc(100vw-2rem)] rounded-xl p-1 shadow-lg overflow-x-hidden"
           onEscapeKeyDown={(event) => {
             if (pending) event.preventDefault();
           }}
@@ -150,7 +182,19 @@ export function TaskAssigneePicker({
                 </p>
               )}
               {options.data && (
-                <div className="max-h-60 overflow-y-auto">
+                <div className="max-h-60 overflow-y-auto overflow-x-hidden">
+                  <DropdownMenuItem
+                    disabled={pending}
+                    className="text-muted-foreground flex min-h-9 cursor-pointer items-center gap-2 rounded-lg text-xs active:scale-97"
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      void handleUnassign();
+                    }}
+                  >
+                    <UserX className="size-3.5 shrink-0" />
+                    <span className="truncate">{t("tasks.bulk.unassign", { defaultValue: "Hủy phân công" })}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   {options.data.map((member) => (
                     <DropdownMenuItem
                       key={member.userId}

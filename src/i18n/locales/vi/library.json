@@ -103,7 +103,7 @@
     "copy": "Copy",
     "close": "Đóng",
     "sizeLimitError": "File vượt quá giới hạn 50MB",
-    "uploadSuccess": "Đã tải lên thành công: {{filename}}",
+    "uploadSuccess": "Đã tải lên thành công",
     "uploadError": "Tải file lên thất bại!"
   },
   "trash": {

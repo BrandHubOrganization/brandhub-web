@@ -10,6 +10,8 @@ import {
   extractUniqueParents,
   extractUniqueReporters,
   filterTasks,
+  sortTasks,
+  type TaskSortOption,
   type TaskTimelineAssignee,
   type TaskTimelineParent,
 } from "@/pages/tasks/utils/taskFilterUtils";
@@ -27,6 +29,7 @@ export function useTaskFilters(tasks: TaskListItem[], workspaceId?: string) {
   const [selectedPriorities, setSelectedPriorities] = useState<TaskPriority[]>([]);
   const [selectedReporters, setSelectedReporters] = useState<string[]>([]);
   const [selectedApprovals, setSelectedApprovals] = useState<("YES" | "NO")[]>([]);
+  const [sort, setSort] = useState<TaskSortOption>("DEFAULT");
   const [now] = useState(() => Date.now());
 
   // Defense-in-depth: Creator only sees and interacts with their own assigned tasks
@@ -189,7 +192,7 @@ export function useTaskFilters(tasks: TaskListItem[], workspaceId?: string) {
   ]);
 
   const filteredTasks = useMemo(() => {
-    return filterTasks(
+    const filtered = filterTasks(
       scopedTasks,
       {
         search,
@@ -204,6 +207,7 @@ export function useTaskFilters(tasks: TaskListItem[], workspaceId?: string) {
       },
       now,
     );
+    return sortTasks(filtered, sort);
   }, [
     scopedTasks,
     now,
@@ -216,6 +220,7 @@ export function useTaskFilters(tasks: TaskListItem[], workspaceId?: string) {
     selectedPriorities,
     selectedReporters,
     selectedApprovals,
+    sort,
   ]);
 
   const isFiltered = activeFilterCount > 0 || Boolean(search.trim());
@@ -223,6 +228,8 @@ export function useTaskFilters(tasks: TaskListItem[], workspaceId?: string) {
   return {
     search,
     setSearch,
+    sort,
+    setSort,
     selectedAssignees,
     toggleAssignee,
     selectedStatuses,

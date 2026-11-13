@@ -410,9 +410,10 @@
     "copyUrlButton": "Copy URL"
   },
   "mediaDropzone": {
+    "selectWorkspaceWarning": "Please select a Workspace before uploading files!",
     "sizeExceededError": "File {{fileName}} exceeds the 50MB size limit",
-    "uploadSuccess": "Successfully uploaded: {{fileName}}",
-    "uploadError": "Error uploading file {{fileName}}",
+    "uploadSuccess": "Uploaded successfully",
+    "uploadError": "Error uploading file",
     "uploading": "Uploading media...",
     "dragDropText": "Drag & drop images/videos here or",
     "browseText": "browse from your computer",

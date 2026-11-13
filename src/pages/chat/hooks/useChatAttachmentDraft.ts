@@ -92,7 +92,12 @@ export function useChatAttachmentDraft(workspace?: string, channel?: string) {
     const key = crypto.randomUUID();
     update([
       ...current.current,
-      { key, filename: material.name, status: "uploading" },
+      {
+        key,
+        filename: material.name,
+        status: "uploading",
+        previewUrl: material.previewUrl || material.url,
+      },
     ]);
     await run(key, (signal) =>
       chatAttachmentService.repository(

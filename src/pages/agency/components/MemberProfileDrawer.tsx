@@ -37,6 +37,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { agencyService } from "@/services/agencyService";
 import { extractErrorMessage } from "@/utils/error";
+import { formatRole } from "@/utils/workspaceHelper";
 import { cn } from "@/lib/utils";
 import type { AgencyMemberActivity, AgencyMemberProfile } from "@/types/agency";
 
@@ -295,7 +296,7 @@ export function MemberProfileDrawer({ agencyId, member, onOpenChange }: Props) {
                   getRoleBadgeStyle(member.role),
                 )}
               >
-                {member.role}
+                {formatRole(member.role)}
               </span>
             )}
           </div>
@@ -534,7 +535,7 @@ export function MemberProfileDrawer({ agencyId, member, onOpenChange }: Props) {
                           </span>
                         </div>
                         <span className="text-muted-foreground bg-muted text-3xs shrink-0 rounded-full px-2.5 py-0.5 font-semibold">
-                          {w.role}
+                          {formatRole(w.role)}
                         </span>
                       </button>
                     </li>
