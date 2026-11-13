@@ -1,8 +1,7 @@
 import type { PackageDeliverable } from "@/pages/media-package/types/mediaPackage";
-import type { TaskStatus } from "@/types/task";
+import type { TaskStatus, TaskType } from "@/types/task";
 
-export type TaskType =
-  "POST" | "LIVESTREAM" | "SURVEY" | "EVENT_PLAN" | "PRESS_RECOMMENDATION";
+export type { TaskType };
 export interface WorkItem {
   id: string;
   deliverableId: string;

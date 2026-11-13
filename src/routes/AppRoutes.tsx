@@ -135,11 +135,11 @@ const SocialAccountsPage = lazyNamed(
   () => import("@/pages/social-accounts"),
   "SocialAccountsPage",
 );
-const ReportsPage = lazyNamed(() => import("@/pages/reports"), "ReportsPage");
 const AnalyticsPage = lazyNamed(
   () => import("@/pages/analytics"),
   "AnalyticsPage",
 );
+const ReportsPage = lazyNamed(() => import("@/pages/reports"), "ReportsPage");
 
 // ── Workspace & Chat Pages ──
 const WorkspacePage = lazyNamed(
@@ -169,6 +169,14 @@ const WorkspaceMembersPage = lazyNamed(
 const TaskListPage = lazyNamed(() => import("@/pages/tasks"), "TaskListPage");
 const TaskDetailPage = lazy(() => import("@/pages/tasks/detail"));
 const SurveyEditorPage = lazy(() => import("@/pages/tasks/survey-editor"));
+const EventEditorPage = lazy(() => import("@/pages/tasks/event-editor"));
+const PressEditorPage = lazy(() => import("@/pages/tasks/press-editor"));
+const KolEditorPage = lazy(() => import("@/pages/tasks/kol-editor"));
+const WorkshopEditorPage = lazy(() => import("@/pages/tasks/workshop-editor"));
+const NewsletterEditorPage = lazy(
+  () => import("@/pages/tasks/newsletter-editor"),
+);
+const TaskEditorPage = lazy(() => import("@/pages/task-editor"));
 const TaskApprovalsPage = lazy(() => import("@/pages/task-approvals"));
 const AgencyCreditPage = lazy(() => import("@/pages/credit"));
 const CreditPricesPage = lazy(() => import("@/pages/credit/prices"));
@@ -190,6 +198,9 @@ const CampaignPartnersPage = lazy(
   () => import("@/pages/campaign-partners/page"),
 );
 const MailTemplatesPage = lazy(() => import("@/pages/mail-templates/page"));
+const MailTemplateEditPage = lazy(
+  () => import("@/pages/mail-templates/edit"),
+);
 const MailBatchesPage = lazy(() => import("@/pages/mail-templates/batches"));
 const MailSuppressionsPage = lazy(
   () => import("@/pages/mail-templates/suppressions"),
@@ -509,8 +520,32 @@ export function AppRoutes() {
               element={<TaskDetailPage />}
             />
             <Route
+              path="/workspaces/:id/tasks/:taskId/event"
+              element={<EventEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/press"
+              element={<PressEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/kol"
+              element={<KolEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/workshop"
+              element={<WorkshopEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/newsletter"
+              element={<NewsletterEditorPage />}
+            />
+            <Route
               path="/workspaces/:id/tasks/:taskId/survey"
               element={<SurveyEditorPage />}
+            />
+            <Route
+              path="/workspaces/:id/tasks/:taskId/editor"
+              element={<TaskEditorPage />}
             />
             <Route path="/workspaces/:id/editor" element={<EditorPage />} />
             <Route
@@ -528,19 +563,31 @@ export function AppRoutes() {
             <Route
               path="/workspaces/:id/templates"
               element={
-                <Navigate to="../library?tab=templates" relative="path" replace />
+                <Navigate
+                  to="../library?tab=templates"
+                  relative="path"
+                  replace
+                />
               }
             />
             <Route
               path="/workspaces/:id/hashtags"
               element={
-                <Navigate to="../library?tab=hashtags" relative="path" replace />
+                <Navigate
+                  to="../library?tab=hashtags"
+                  relative="path"
+                  replace
+                />
               }
             />
             <Route
               path="/workspaces/:id/hashtag-groups"
               element={
-                <Navigate to="../library?tab=hashtags" relative="path" replace />
+                <Navigate
+                  to="../library?tab=hashtags"
+                  relative="path"
+                  replace
+                />
               }
             />
             <Route path="/workspaces/:id/calendar" element={<CalendarPage />} />
@@ -573,6 +620,14 @@ export function AppRoutes() {
             <Route
               path="/workspaces/:id/mail-templates"
               element={<MailTemplatesPage />}
+            />
+            <Route
+              path="/workspaces/:id/mail-templates/new"
+              element={<MailTemplateEditPage mode="create" />}
+            />
+            <Route
+              path="/workspaces/:id/mail-templates/:templateId/edit"
+              element={<MailTemplateEditPage mode="edit" />}
             />
             <Route
               path="/workspaces/:id/mail-templates/batches"
@@ -672,10 +727,7 @@ export function AppRoutes() {
             <Route
               path="/library"
               element={
-                <WorkspaceScopedRedirect
-                  destination="library"
-                  preserveSearch
-                />
+                <WorkspaceScopedRedirect destination="library" preserveSearch />
               }
             />
             <Route path="/analytics" element={<AnalyticsPage />} />

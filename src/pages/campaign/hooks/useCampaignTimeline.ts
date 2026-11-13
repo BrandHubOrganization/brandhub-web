@@ -35,6 +35,7 @@ export function useCampaignTimeline(workspaceId: string, campaignId: string) {
           plannedStartDate: dayInstant(todayIn(data.timezone), data.timezone),
           dueDate: edit.dueDate,
           expectedRevision: row.workflowRevision,
+          subtaskRole: edit.subtaskRole ?? null,
         });
       if (edit.kind === "status")
         return api.patch(`${base}/${edit.subtaskId}/status`, {

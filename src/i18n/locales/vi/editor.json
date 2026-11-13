@@ -29,7 +29,9 @@
       "TASK_POST_LINK_CONFLICT": "Liên kết giữa công việc và bài viết cần được rà soát. Không tạo bài khác để thay thế.",
       "TASK_CAMPAIGN_COMPLETED": "Chiến dịch đã hoàn thành; nội dung của công việc chỉ được xem.",
       "FORBIDDEN": "Chỉ người sáng tạo được giao công việc mới có thể sửa nội dung trước khi gửi duyệt.",
-      "VALIDATION_ERROR": "Nội dung hoặc tài nguyên chưa hợp lệ. Hãy kiểm tra caption, số lượng ảnh và các tệp đã tải lên."
+      "VALIDATION_ERROR": "Nội dung hoặc tài nguyên chưa hợp lệ. Hãy kiểm tra caption, số lượng ảnh và các tệp đã tải lên.",
+      "TASK_SUBTASKS_UNFINISHED": "Còn công việc con chưa xong. Hãy hoàn thành hoặc hủy tất cả công việc con trước khi gửi duyệt.",
+      "TASK_SECTIONS_UNAPPROVED": "Còn phần chưa được duyệt. Mọi phần phải được duyệt trước khi gửi công việc."
     }
   },
   "submitSuccess": "Đã gửi bài viết để phê duyệt thành công!",
@@ -426,9 +428,10 @@
     "copyUrlButton": "Copy URL"
   },
   "mediaDropzone": {
+    "selectWorkspaceWarning": "Vui lòng chọn Workspace trước khi tải tệp lên!",
     "sizeExceededError": "File {{fileName}} vượt quá dung lượng 50MB",
-    "uploadSuccess": "Đã upload thành công: {{fileName}}",
-    "uploadError": "Lỗi khi upload file {{fileName}}",
+    "uploadSuccess": "Đã tải lên thành công",
+    "uploadError": "Lỗi khi tải tệp lên",
     "uploading": "Đang tải phương tiện lên...",
     "dragDropText": "Kéo thả hình ảnh/video vào đây hoặc",
     "browseText": "duyệt từ máy tính",
@@ -646,5 +649,24 @@
     "adapt": "Phiên bản cho nền tảng khác",
     "adaptGo": "Tạo",
     "trendTopic": "Lĩnh vực của trend: {{topic}}"
+  },
+  "sections": {
+    "internal": "Nội bộ, Client không thấy",
+    "owner": "Phần của {{names}}",
+    "lockedSubmitted": "Đã nộp, chờ duyệt",
+    "lockedApproved": "Đã duyệt",
+    "lockedNoRight": "Bạn chỉ xem được phần này",
+    "returned": "Bị trả lại:",
+    "conflict": "Người khác vừa lưu phần này. Nội dung bạn đang gõ vẫn còn; bấm Tải lại để lấy bản mới nhất (bản đang gõ sẽ bị thay).",
+    "emptyHint": "Chưa có nội dung. Bắt đầu nhập phần việc của bạn.",
+    "empty": "Chưa có nội dung.",
+    "onePerLine": "Mỗi dòng một mục",
+    "addRow": "Thêm dòng",
+    "removeRow": "Xoá dòng",
+    "exportFile": "Xuất file",
+    "exportError": "Xuất file thất bại.",
+    "comingSoon": "Khu vực làm việc của phần này sẽ có ở bản sau. Bạn vẫn có thể nộp, duyệt hoặc trả lại phần ở trên.",
+    "lockedWaitWriter": "Chờ người viết nộp phần rồi bạn mới biên tập được",
+    "yours": "Phần của bạn"
   }
 }

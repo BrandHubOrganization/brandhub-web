@@ -1,3 +1,4 @@
+import { opensPostEditor } from "@/types/task";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,9 +18,11 @@ import type { TaskListItem } from "@/types/task";
 export function TaskRowActions({
   task,
   field,
+  onUpdated,
 }: {
   task: TaskListItem;
   field: "assignee" | "deadline" | "start";
+  onUpdated?: () => void;
 }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -56,6 +59,7 @@ export function TaskRowActions({
           taskId={task.id}
           assigneeName={task.assigneeName}
           scope="row"
+          onUpdated={onUpdated}
         />
       );
     }
@@ -67,7 +71,7 @@ export function TaskRowActions({
   }
   if (!eligible) {
     if (field === "start") {
-      if (task.type === "POST") {
+      if (opensPostEditor(task.type)) {
         const isFinished = task.status === "FINISHED";
         const isInReview = task.status === "IN_REVIEW";
         const isTodo = todo;
@@ -149,7 +153,7 @@ export function TaskRowActions({
               try {
                 state.retry();
                 await state.start();
-                if (task.type === "POST") {
+                if (opensPostEditor(task.type)) {
                   navigate(`/workspaces/${task.workspaceId}/editor?taskId=${task.id}`);
                 }
               } finally {
@@ -157,7 +161,7 @@ export function TaskRowActions({
               }
             }}
           >
-            {task.type === "POST" ? (
+            {opensPostEditor(task.type) ? (
               <>
                 <PenSquare className="size-3.5 shrink-0" />
                 <span>Bắt đầu & Soạn bài</span>

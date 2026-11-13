@@ -15,8 +15,17 @@
     "deselectAll": "Bỏ Chọn Tất Cả"
   },
   "filterBar": {
+    "all": "Tất cả",
     "resultCount": "{{count}} bài đăng",
-    "clearAll": "Xóa bộ lọc"
+    "clearAll": "Đặt lại bộ lọc"
+  },
+  "filterPopover": {
+    "title": "Bộ lọc",
+    "reset": "Đặt lại",
+    "selectAll": "Chọn tất cả",
+    "deselectAll": "Bỏ chọn tất cả",
+    "platformCategory": "Nền tảng",
+    "statusCategory": "Trạng thái"
   },
   "eventCard": {
     "noCaptionPreview": "Không có xem trước",

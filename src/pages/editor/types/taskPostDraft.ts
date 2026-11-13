@@ -79,3 +79,35 @@ export function taskEditorError(error: unknown) {
   )?.response;
   return response?.data?.error?.code || "TASK_STORAGE_UNAVAILABLE";
 }
+
+export type PostPart = "CAPTION" | "MEDIA" | "CHANNELS";
+const same = (a: unknown, b: unknown) =>
+  JSON.stringify(a) === JSON.stringify(b);
+
+/** Post parts that differ from the saved copy; mirrors backend `TaskPostService.changedSections`. */
+export function changedPostParts(
+  saved: TaskPostDraft,
+  draft: TaskPostDraft,
+): PostPart[] {
+  const parts: PostPart[] = [];
+  if (saved.caption !== draft.caption || !same(saved.hashtags, draft.hashtags))
+    parts.push("CAPTION");
+  if (
+    !same(saved.mediaUrls, draft.mediaUrls) ||
+    !same(saved.storedMedia, draft.storedMedia)
+  )
+    parts.push("MEDIA");
+  if (!same(saved.targetPlatforms, draft.targetPlatforms))
+    parts.push("CHANNELS");
+  return parts;
+}
+
+/** Section key of a post part: POST.CAPTION / VIDEO.CAPTION…; media of a short video is `VIDEO.EDIT`. */
+export function postPartKey(
+  sections: { key: string }[],
+  part: PostPart,
+): string | undefined {
+  const video = sections.some((s) => s.key.startsWith("VIDEO."));
+  if (video) return part === "MEDIA" ? "VIDEO.EDIT" : `VIDEO.${part}`;
+  return `POST.${part}`;
+}

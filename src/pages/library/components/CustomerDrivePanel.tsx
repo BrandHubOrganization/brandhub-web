@@ -16,10 +16,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CircularPercent } from "@/components/common/BackgroundTaskDock";
 import {
+  clearCachedDriveImportToken,
   loadDriveImportAuthorization,
   requestDriveImportToken,
 } from "@/pages/library/hooks/driveImportAuthorization";
 import { materialService } from "@/services/materialService";
+import { useAuthStore } from "@/store/authStore";
 import { useBackgroundTaskStore } from "@/store/backgroundTaskStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 
@@ -43,6 +45,7 @@ export function CustomerDrivePanel({
     (state) => state.currentWorkspace?.id,
   );
   const workspace = workspaceIdOverride || storeWorkspace;
+  const userEmail = useAuthStore((state) => state.user?.email);
   const authorization = useRef<Promise<string> | null>(null);
   const [source, setSource] = useState("");
 
@@ -128,19 +131,32 @@ export function CustomerDrivePanel({
         });
       }
     },
+    onError: (err) => {
+      const code = extractFailureCode(err);
+      if (
+        code === "DRIVE_IMPORT_AUTH_REQUIRED" ||
+        code === "DRIVE_IMPORT_AUTH_EXPIRED" ||
+        code === "DRIVE_IMPORT_ACCESS_DENIED"
+      ) {
+        clearCachedDriveImportToken();
+      }
+    },
   });
 
   return (
     <section
       aria-label={t("library.simple.fromDrive", "Đồng bộ từ Google Drive")}
-      className="space-y-3 rounded-2xl border border-border/80 bg-card p-3.5 shadow-xs"
+      className="space-y-2.5 rounded-none border border-[#d5dbdb] bg-card p-3 shadow-[0_1px_1px_0_rgba(0,28,36,0.05)] dark:border-border"
     >
       <form
         className="flex flex-col gap-2 sm:flex-row sm:items-center"
         onSubmit={(event) => {
           event.preventDefault();
           if (!config.data || mutation.isPending || isBusy) return;
-          authorization.current = requestDriveImportToken(config.data.clientId);
+          authorization.current = requestDriveImportToken(
+            config.data.clientId,
+            userEmail,
+          );
           void authorization.current.catch(() => {});
           mutation.mutate();
         }}
@@ -148,7 +164,7 @@ export function CustomerDrivePanel({
         <div className="relative min-w-0 flex-1">
           <CloudDownload className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-brand-orange" />
           <Input
-            className="h-10 rounded-xl bg-muted/25 pl-9 text-sm"
+            className="h-9 rounded-[4px] bg-background pl-9 text-xs focus-visible:ring-1 focus-visible:ring-brand-orange/60 focus-visible:ring-offset-0"
             disabled={mutation.isPending || isBusy}
             type="url"
             wrapperClassName="min-w-0 flex-1"
@@ -169,7 +185,7 @@ export function CustomerDrivePanel({
         <Button
           size="sm"
           variant="orange"
-          className="h-10 shrink-0 rounded-xl px-4 text-xs font-semibold shadow-2xs"
+          className="h-9 shrink-0 rounded-[4px] px-4 text-xs font-semibold shadow-none"
           type="submit"
           disabled={
             !source.trim() ||
@@ -192,14 +208,14 @@ export function CustomerDrivePanel({
       {config.isError && (
         <div
           role="alert"
-          className="flex items-center justify-between gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+          className="flex items-center justify-between gap-2 rounded-none border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
         >
           <span>{t("library.driveImport.notConfigured")}</span>
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className="h-7 rounded-lg px-2.5 text-xs font-semibold text-destructive hover:bg-destructive/15"
+            className="h-7 rounded-[4px] px-2.5 text-xs font-semibold text-destructive hover:bg-destructive/15"
             onClick={() => void config.refetch()}
           >
             <RotateCcw className="mr-1 h-3 w-3" />
@@ -212,19 +228,19 @@ export function CustomerDrivePanel({
         extractFailureCode(mutation.error) !== "DRIVE_IMPORT_CANCELLED" && (
           <div
             role="alert"
-            className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive"
+            className="flex items-center gap-2 rounded-none border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive"
           >
             <XCircle className="h-4 w-4 shrink-0" />
             <span>{importError(extractFailureCode(mutation.error))}</span>
           </div>
         )}
 
-      {/* Canva / Google Drive style live status & progress card */}
+      {/* Live status & progress card */}
       {activeTask && (
         <div
           role="status"
           data-slot="drive-import-progress"
-          className={`rounded-xl border px-3.5 py-3 transition-all ${
+          className={`rounded-none border px-3.5 py-3 transition-colors ${
             isBusy
               ? "border-brand-orange/30 bg-brand-orange/5"
               : activeTask.status === "COMPLETED"
@@ -295,7 +311,7 @@ export function CustomerDrivePanel({
                   variant="outline"
                   size="sm"
                   onClick={() => void cancelTask(activeTask.id)}
-                  className="h-8 gap-1 rounded-lg border-destructive/30 bg-background px-2.5 text-xs font-semibold text-destructive hover:border-destructive hover:bg-destructive hover:text-white"
+                  className="h-8 gap-1 rounded-[4px] border-destructive/30 bg-background px-2.5 text-xs font-semibold text-destructive hover:border-destructive hover:bg-destructive hover:text-white"
                 >
                   <X className="h-3.5 w-3.5" />
                   <span>Huỷ import</span>
@@ -303,7 +319,7 @@ export function CustomerDrivePanel({
               )}
 
               {isCleaning && (
-                <span className="rounded-lg bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                <span className="rounded-[4px] bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
                   Đang huỷ...
                 </span>
               )}
@@ -312,7 +328,7 @@ export function CustomerDrivePanel({
                 <button
                   type="button"
                   onClick={() => dismissTask(activeTask.id)}
-                  className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  className="rounded-[4px] p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                   aria-label="Ẩn thông báo import"
                   title="Đóng"
                 >

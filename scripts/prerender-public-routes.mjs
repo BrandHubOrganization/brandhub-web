@@ -160,7 +160,7 @@ const SR_ONLY_STYLE =
 
 const HOME_SEMANTIC_HTML = `
       <main style="max-width: 960px; margin: 0 auto; padding: 2rem; font-family: system-ui, sans-serif; line-height: 1.6;">
-        <h1>BrandHub — Nền tảng Quản trị Thương hiệu &amp; Xuất bản Nội dung Đa kênh AI</h1>
+        <h1>BrandHub — Nền tảng Quản trị Agency &amp; Xuất bản Nội dung Đa kênh AI</h1>
         <p>
           BrandHub (<a href="${SITE_ORIGIN}">${SITE_ORIGIN}</a>) là nền tảng SaaS B2B2C giúp các Agency truyền thông và Thương hiệu tại Việt Nam quản lý trọn vẹn vòng đời chiến dịch nội dung số: từ xây dựng Gói truyền thông (Media Package), lập kế hoạch Chiến dịch (Media Campaign), sáng tạo nội dung bằng AI GraphRAG (Neo4j + ChromaDB), kiểm duyệt an toàn nội dung, phê duyệt đa cấp (Owner, Manager, Creator, Client) đến xuất bản tự động lên 4 nền tảng mạng xã hội (Facebook, Instagram, TikTok, Threads).
         </p>
@@ -799,6 +799,11 @@ const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
     <xhtml:link rel="alternate" hreflang="vi" href="${SITE_ORIGIN}/" />
     <xhtml:link rel="alternate" hreflang="en" href="${SITE_ORIGIN}/?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_ORIGIN}/" />
+    <image:image>
+      <image:loc>${SITE_ORIGIN}/icon.png</image:loc>
+      <image:title>BrandHub — Nền tảng Quản trị Agency &amp; Xuất bản Đa kênh AI</image:title>
+      <image:caption>Logo BrandHub</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>${SITE_ORIGIN}/blog</loc>

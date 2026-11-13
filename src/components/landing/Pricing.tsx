@@ -5,8 +5,6 @@ import { Check, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { SectionDecor } from "@/components/landing/SectionDecor";
-import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 const PLANS = [
@@ -133,7 +131,6 @@ export function Pricing() {
       id="pricing"
       className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950"
     >
-      <SectionDecor corner="left" />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div
           ref={headRef}
@@ -142,7 +139,6 @@ export function Pricing() {
             headVisible ? "opacity-100" : "opacity-0",
           )}
         >
-          <SectionEyebrow index={10} />
           <SplitHeading text={t("landing.pricing.title")} />
           <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400">
             {t("landing.pricing.subtitle")}
@@ -219,10 +215,10 @@ export function Pricing() {
                   transitionDelay: listVisible ? `${i * 100}ms` : "0ms",
                 }}
                 className={cn(
-                  "plan-row group rounded-[28px] border p-6 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:p-8 motion-reduce:opacity-100 motion-reduce:transition-none",
+                  "plan-row group rounded-2xl border p-6 transition-all duration-300 sm:p-8 motion-reduce:opacity-100 motion-reduce:transition-none",
                   plan.featured
-                    ? "border-brand-orange/50 bg-gradient-to-br from-orange-50/70 via-white to-orange-50/30 shadow-lg dark:border-brand-orange/40 dark:from-orange-950/20 dark:via-zinc-900 dark:to-zinc-900"
-                    : "border-zinc-200/80 bg-zinc-50/50 hover:border-orange-200 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:bg-zinc-900",
+                    ? "border-brand-orange/50 bg-white shadow-sm dark:border-brand-orange/45 dark:bg-zinc-900"
+                    : "border-zinc-200/80 bg-zinc-50/50 hover:border-brand-orange/40 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:bg-zinc-900",
                   listVisible
                     ? "translate-y-0 opacity-100"
                     : "translate-y-5 opacity-0",
@@ -237,10 +233,10 @@ export function Pricing() {
                   <div className="flex items-center gap-6">
                     <span
                       className={cn(
-                        "bg-clip-text text-5xl font-extrabold tabular-nums transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 sm:text-6xl",
+                        "font-mono text-4xl font-extrabold tabular-nums transition-colors sm:text-5xl",
                         plan.featured
-                          ? "bg-gradient-to-b from-brand-orange to-orange-400 text-transparent"
-                          : "bg-gradient-to-b from-zinc-400 to-zinc-200 text-transparent dark:from-zinc-500 dark:to-zinc-800",
+                          ? "text-brand-orange"
+                          : "text-zinc-300 dark:text-zinc-700",
                       )}
                     >
                       {String(i + 1).padStart(2, "0")}
@@ -332,7 +328,7 @@ export function Pricing() {
                           decoding="async"
                           className="size-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/55 via-zinc-950/15 to-transparent" />
                         <span className="absolute inset-x-3 bottom-3 text-center text-[11px] font-bold text-white drop-shadow">
                           {plan.photoCaption}
                         </span>

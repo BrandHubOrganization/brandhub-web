@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import type { HashtagPage } from "@/pages/hashtag-groups/types/hashtag";
 import { useTranslation } from "react-i18next";
+import { Pagination } from "@/components/ui/pagination";
+import type { HashtagPage } from "@/pages/hashtag-groups/types/hashtag";
 
 interface HashtagCollectionPaginationProps {
   page: HashtagPage;
@@ -14,32 +14,20 @@ export function HashtagCollectionPagination({
   onPageChange,
 }: HashtagCollectionPaginationProps) {
   const { t } = useTranslation();
-  const prefix = "hashtagGroups.collection.";
 
   if (page.totalPages <= 1) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-end gap-3">
-      <Button
-        variant="outline"
-        disabled={currentPage === 0}
-        onClick={() => onPageChange(currentPage - 1)}
-      >
-        {t(prefix + "previous")}
-      </Button>
-      <span>
-        {t(prefix + "page", {
-          page: page.page + 1,
-          total: page.totalPages,
-        })}
-      </span>
-      <Button
-        variant="outline"
-        disabled={currentPage + 1 >= page.totalPages}
-        onClick={() => onPageChange(currentPage + 1)}
-      >
-        {t(prefix + "next")}
-      </Button>
-    </div>
+    <Pagination
+      page={currentPage + 1}
+      size={page.size || 10}
+      total={page.totalElements}
+      totalPages={page.totalPages}
+      onPageChange={(p1) => onPageChange(p1 - 1)}
+      itemLabel={t("hashtagGroups.collection.itemLabel", {
+        defaultValue: "nhóm hashtag",
+      })}
+      compact={false}
+    />
   );
 }

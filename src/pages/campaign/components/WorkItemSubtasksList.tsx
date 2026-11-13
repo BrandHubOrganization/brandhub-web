@@ -16,7 +16,9 @@ import {
   JiraStatusLozenge,
   JiraSubtaskDueDate,
   JiraSubtaskIcon,
+  JiraSubtaskRoleBadge,
 } from "@/pages/tasks/components/JiraSubtaskUI";
+import { useTaskCatalogRoles } from "@/pages/tasks/hooks/useTaskCatalogRoles";
 import { isSubtaskDone } from "@/pages/tasks/utils/jiraSubtaskUtils";
 
 export interface SubtaskDetails {
@@ -24,6 +26,8 @@ export interface SubtaskDetails {
   assigneeId: string;
   supervisorOverrideId: string | null;
   dueDate: string;
+  /** Catalogue role (`tasks.subtaskRoles.<ROLE>`); null = free subtask. */
+  subtaskRole?: string | null;
 }
 
 export interface SubtaskRow {
@@ -86,6 +90,9 @@ export function WorkItemSubtasksList({
     enabled: Boolean(workspaceId && taskId),
   });
 
+  const taskType = parentTaskWorkflow?.type;
+  const { roleLabel: roleName } = useTaskCatalogRoles(taskType);
+
   const parentAssigneeId =
     data?.parentAssigneeId || parentTaskWorkflow?.assigneeId || null;
   const parentAssigneeName =
@@ -99,10 +106,10 @@ export function WorkItemSubtasksList({
       assigneeId: string;
       supervisorOverrideId: string | null;
       dueDate: string;
+      subtaskRole?: string | null;
     }) => {
-      return (
-        await api.post<ApiResponse<SubtasksView>>(path, payload)
-      ).data.data;
+      return (await api.post<ApiResponse<SubtasksView>>(path, payload)).data
+        .data;
     },
     onSuccess: (updatedView) => {
       queryClient.setQueryData(queryKey, updatedView);
@@ -138,11 +145,11 @@ export function WorkItemSubtasksList({
     return (
       <div
         className={cn(
-          "p-3 rounded-lg border border-border/50 bg-muted/10 flex items-center justify-center gap-2 text-2xs text-muted-foreground overflow-x-hidden",
+          "border-border/50 bg-muted/10 text-2xs text-muted-foreground flex items-center justify-center gap-2 overflow-x-hidden rounded-lg border p-3",
           className,
         )}
       >
-        <Loader2 className="size-3.5 animate-spin text-brand-orange" />
+        <Loader2 className="text-brand-orange size-3.5 animate-spin" />
         <span>{t("tasks.loading", "Đang tải danh sách subtasks...")}</span>
       </div>
     );
@@ -152,7 +159,7 @@ export function WorkItemSubtasksList({
     return (
       <div
         className={cn(
-          "p-2.5 rounded-lg border border-destructive/20 bg-destructive/5 flex items-center justify-between gap-2 text-2xs text-destructive overflow-x-hidden",
+          "border-destructive/20 bg-destructive/5 text-2xs text-destructive flex items-center justify-between gap-2 overflow-x-hidden rounded-lg border p-2.5",
           className,
         )}
       >
@@ -162,7 +169,7 @@ export function WorkItemSubtasksList({
         <button
           type="button"
           onClick={() => void refetch()}
-          className="underline font-medium text-destructive hover:text-destructive/80 cursor-pointer"
+          className="text-destructive hover:text-destructive/80 cursor-pointer font-medium underline"
         >
           {t("tasks.retry", "Thử lại")}
         </button>
@@ -174,17 +181,17 @@ export function WorkItemSubtasksList({
   const canManage = data?.canManage ?? true;
 
   return (
-    <div className={cn("space-y-2.5 overflow-x-hidden w-full", className)}>
+    <div className={cn("w-full space-y-2.5 overflow-x-hidden", className)}>
       {/* Jira Subtasks Header */}
-      <div className="bg-card/70 border border-border/60 rounded-lg p-2.5 shadow-2xs">
+      <div className="bg-card/70 border-border/60 rounded-lg border p-2.5 shadow-2xs">
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex min-w-0 items-center gap-2">
             <JiraSubtaskIcon />
-            <h4 className="text-xs font-semibold text-foreground tracking-tight">
+            <h4 className="text-foreground text-xs font-semibold tracking-tight">
               {t("tasks.subtasks.title", "Sub-tasks")}
             </h4>
             {rows.length > 0 && (
-              <span className="text-3xs font-mono text-muted-foreground bg-muted/60 px-1.5 py-0.5 rounded-full">
+              <span className="text-3xs text-muted-foreground bg-muted/60 rounded-full px-1.5 py-0.5 font-mono">
                 {rows.length}
               </span>
             )}
@@ -196,7 +203,7 @@ export function WorkItemSubtasksList({
               variant="ghost"
               size="sm"
               onClick={() => setIsCreating(true)}
-              className="h-6 px-2 text-3xs font-medium text-brand-orange hover:bg-brand-orange/10 gap-1 cursor-pointer"
+              className="text-3xs text-brand-orange hover:bg-brand-orange/10 h-6 cursor-pointer gap-1 px-2 font-medium"
             >
               <Plus className="size-3" />
               <span>{t("tasks.subtasks.add", "Create subtask")}</span>
@@ -210,13 +217,16 @@ export function WorkItemSubtasksList({
         <div
           onClick={canManage ? () => setIsCreating(true) : undefined}
           className={cn(
-            "p-2.5 rounded-lg border border-dashed border-border/70 bg-card/40 flex items-center justify-between gap-2 text-2xs overflow-x-hidden",
-            canManage && "cursor-pointer hover:bg-muted/20 hover:border-border transition-colors",
+            "border-border/70 bg-card/40 text-2xs flex items-center justify-between gap-2 overflow-x-hidden rounded-lg border border-dashed p-2.5",
+            canManage &&
+              "hover:bg-muted/20 hover:border-border cursor-pointer transition-colors",
           )}
-          title={canManage ? t("tasks.subtasks.add", "Create subtask") : undefined}
+          title={
+            canManage ? t("tasks.subtasks.add", "Create subtask") : undefined
+          }
         >
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <CornerDownRight className="size-3 text-muted-foreground/60 shrink-0" />
+          <div className="text-muted-foreground flex items-center gap-2">
+            <CornerDownRight className="text-muted-foreground/60 size-3 shrink-0" />
             <span className="italic">
               {t("tasks.subtasks.empty", "Chưa có công việc con.")}
             </span>
@@ -231,7 +241,7 @@ export function WorkItemSubtasksList({
 
       {/* Subtasks List: Jira Subtask Icon, Name, Assignee (Avatar + Name), Deadline, Status */}
       {rows.length > 0 && (
-        <div className="rounded-lg border border-border/60 bg-card/60 divide-y divide-border/40 overflow-hidden shadow-2xs">
+        <div className="border-border/60 bg-card/60 divide-border/40 divide-y overflow-hidden rounded-lg border shadow-2xs">
           {rows.map((row) => {
             const isDone = isSubtaskDone(row.subtask.status);
             const statusLabel =
@@ -243,8 +253,8 @@ export function WorkItemSubtasksList({
                 key={row.subtask.id}
                 onClick={handleOpenSheet}
                 className={cn(
-                  "flex items-center justify-between gap-2.5 min-h-[38px] px-3 py-2",
-                  "hover:bg-muted/40 transition-colors group text-xs overflow-x-hidden cursor-pointer",
+                  "flex min-h-[38px] items-center justify-between gap-2.5 px-3 py-2",
+                  "hover:bg-muted/40 group cursor-pointer overflow-x-hidden text-xs transition-colors",
                 )}
                 title={t(
                   "tasks.clickToOpenTaskDetails",
@@ -252,30 +262,33 @@ export function WorkItemSubtasksList({
                 )}
               >
                 {/* Left: Jira Subtask Icon + Title */}
-                <div className="flex items-center gap-2 min-w-0 flex-1">
+                <div className="flex min-w-0 flex-1 items-center gap-2">
                   <JiraSubtaskIcon />
                   <span
                     className={cn(
-                      "text-left truncate text-xs transition-colors flex-1 min-w-0",
+                      "min-w-0 flex-1 truncate text-left text-xs transition-colors",
                       isDone
-                        ? "line-through text-muted-foreground/75 font-normal"
-                        : "text-foreground font-medium group-hover:text-brand-orange",
+                        ? "text-muted-foreground/75 font-normal line-through"
+                        : "text-foreground group-hover:text-brand-orange font-medium",
                     )}
                     title={row.subtask.name}
                   >
                     {row.subtask.name}
                   </span>
+                  <JiraSubtaskRoleBadge
+                    roleName={roleName(row.subtask.subtaskRole)}
+                  />
                 </div>
 
                 {/* Right metadata: Assignee avatar & name + Due date + Status */}
-                <div className="flex items-center gap-2.5 shrink-0">
+                <div className="flex shrink-0 items-center gap-2.5">
                   {/* Assignee Avatar + Real Name */}
                   <div
-                    className="flex items-center gap-1.5 shrink-0 max-w-[140px]"
+                    className="flex max-w-[140px] shrink-0 items-center gap-1.5"
                     title={`${t("tasks.subtasks.assignee", "Người thực hiện (Assignee)")}: ${row.assigneeName || t("tasks.subtasks.unassigned", "Chưa phân công")}`}
                   >
                     <JiraAssigneeAvatar name={row.assigneeName} />
-                    <span className="text-2xs font-medium text-foreground/80 truncate hidden sm:inline">
+                    <span className="text-2xs text-foreground/80 hidden truncate font-medium sm:inline">
                       {row.assigneeName ||
                         t("tasks.subtasks.unassigned", "Chưa phân công")}
                     </span>
@@ -307,6 +320,7 @@ export function WorkItemSubtasksList({
           parentDueDate={parentDueDate}
           members={data?.members || []}
           isLoading={createSubtaskMutation.isPending}
+          taskType={taskType}
           onSubmit={(payload) => createSubtaskMutation.mutate(payload)}
           onCancel={() => setIsCreating(false)}
         />

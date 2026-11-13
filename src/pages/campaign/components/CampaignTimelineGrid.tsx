@@ -7,7 +7,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { ChevronDown, ChevronRight, Plus } from "lucide-react";
+import { AlertCircle, ChevronDown, ChevronRight, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,10 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { JiraStatusLozenge } from "@/pages/tasks/components/JiraSubtaskUI";
+import {
+  isSubtaskDone,
+  isSubtaskOverdue,
+} from "@/pages/tasks/utils/jiraSubtaskUtils";
 import { TimelineAssigneePicker } from "@/pages/campaign/components/TimelineAssigneePicker";
 import { TimelineSubtaskCreator } from "@/pages/campaign/components/TimelineSubtaskCreator";
 import { TimelineMilestoneRail } from "@/pages/campaign/components/TimelineMilestoneRail";
@@ -25,6 +29,7 @@ import { useTimelineStatusWidth } from "@/pages/campaign/hooks/useTimelineStatus
 import { TimelineHorizontalScrollbar } from "@/pages/campaign/components/TimelineHorizontalScrollbar";
 import { TimelineRange } from "@/pages/campaign/components/TimelineRange";
 import { TimelineFilterBar } from "@/pages/campaign/components/TimelineFilterBar";
+import type { TaskType } from "@/types/task";
 import {
   useTimelineColumns,
   type TimelineColumn,
@@ -449,6 +454,24 @@ export function CampaignTimelineGrid({
                 {task.subtasks.length}
               </span>
             )}
+            {node.kind === "task" && task.awaitingClient && (
+              <span
+                className="inline-flex shrink-0 items-center gap-0.5 rounded border border-amber-500/25 bg-amber-500/10 px-1 py-0.5 text-[9px] font-semibold text-amber-600 dark:text-amber-400"
+                title={t("campaign.timeline.awaitingClient")}
+              >
+                {t("campaign.timeline.awaitingClient")}
+              </span>
+            )}
+            {node.kind === "sub" &&
+              isSubtaskOverdue(item.dueDate, isSubtaskDone(item.status)) && (
+                <span
+                  className="inline-flex shrink-0 items-center gap-0.5 rounded border border-rose-500/25 bg-rose-500/10 px-1 py-0.5 text-[9px] font-semibold text-rose-600 dark:text-rose-400"
+                  title={t("campaign.timeline.overdue")}
+                >
+                  <AlertCircle className="size-2.5" />
+                  {t("campaign.timeline.overdue")}
+                </span>
+              )}
           </>
         ) : key === "status" ? (
           <JiraStatusLozenge
@@ -651,14 +674,16 @@ export function CampaignTimelineGrid({
                     timezone={data.timezone}
                     members={data.members}
                     busy={busy}
+                    taskType={node.parent.type as TaskType}
                     onCancel={() => setCreating(null)}
-                    onCreate={(name, assigneeId, dueDate) =>
+                    onCreate={(name, assigneeId, dueDate, subtaskRole) =>
                       edit({
                         kind: "create",
                         taskId: node.parent.id,
                         name,
                         assigneeId,
                         dueDate,
+                        subtaskRole,
                       })
                     }
                   />

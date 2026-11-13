@@ -6,8 +6,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
-import { SectionDecor } from "@/components/landing/SectionDecor";
-import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
 import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -103,14 +101,12 @@ export function Templates() {
   return (
     <section
       id="templates"
-      className="relative overflow-hidden bg-gradient-to-b from-white via-[#FFF9F4] to-white py-24 dark:from-zinc-950 dark:via-zinc-900/40 dark:to-zinc-950"
+      className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950"
     >
-      <SectionDecor corner="right" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <SectionEyebrow index={5} />
-          <div className="border-brand-orange/25 bg-brand-orange/10 text-brand-orange mb-3 inline-flex items-center gap-2 rounded-full border px-4 py-1 text-xs font-bold">
-            <Sparkles className="size-3.5" />
+        <div className="mx-auto mb-14 max-w-2xl text-center">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3.5 py-1 text-xs font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+            <Sparkles className="size-3.5 text-brand-orange" />
             <span>THƯ VIỆN MẪU CHIẾN DỊCH &amp; KHUNG WORKSPACE</span>
           </div>
           <SplitHeading text={t("landing.templates.title")} />
@@ -121,7 +117,7 @@ export function Templates() {
 
         <div
           ref={gridRef}
-          className="grid grid-cols-1 gap-8 pt-4 md:grid-cols-3"
+          className="grid grid-cols-1 gap-6 md:grid-cols-3"
         >
           {TEMPLATES.map((item, i) => (
             <div
@@ -138,38 +134,20 @@ export function Templates() {
                   goToPage(TEMPLATE_PAGE_INDEX);
                 }
               }}
-              className={cn(
-                "template-card group relative flex cursor-pointer flex-col justify-between rounded-[30px] rounded-bl-[56px] border bg-gradient-to-br p-5 pt-7 shadow-sm transition-all duration-500 hover:shadow-2xl focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:outline-none",
-                item.cardTheme,
-              )}
+              className="template-card group relative flex cursor-pointer flex-col justify-between rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-2xs transition-all duration-300 hover:-translate-y-1 hover:border-brand-orange/45 hover:shadow-md focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:outline-none dark:border-zinc-800 dark:bg-zinc-900"
             >
-              {/* Floating 3D Performance Pill (Khối nổi) */}
-              <div
-                data-bh-float
-                className={cn(
-                  "absolute -top-3.5 right-6 z-20 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-[10px] font-black tracking-wider uppercase shadow-lg",
-                  item.pillTheme,
-                )}
-              >
-                <Flame className="size-3 fill-current" />
-                <span>{item.stat}</span>
-              </div>
-
-              {/* Bottom-Left Cutout Badge (Khối cắt) */}
-              <div
-                aria-hidden="true"
-                className="absolute -bottom-2 -left-2 z-10 flex size-13 items-center justify-center rounded-tr-[22px] rounded-bl-[22px] border-t border-r border-zinc-200/80 bg-white font-mono text-xs font-black text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950"
-              >
-                0{i + 1}
-              </div>
-
               <div>
-                <div
-                  className={cn(
-                    "relative h-56 overflow-hidden border border-zinc-200/70 shadow-inner dark:border-zinc-800",
-                    item.frameClass,
-                  )}
-                >
+                <div className="mb-3 flex items-center justify-between gap-2 text-[11px]">
+                  <span className="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                    <Flame className="size-3 text-brand-orange" />
+                    {item.stat}
+                  </span>
+                  <span className="font-mono font-bold text-zinc-400">
+                    0{i + 1} · {item.badge}
+                  </span>
+                </div>
+
+                <div className="relative h-52 overflow-hidden rounded-xl border border-zinc-200/80 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800">
                   <img
                     src={item.photo}
                     alt={t(`landing.templates.items.${item.key}.title`)}
@@ -177,18 +155,11 @@ export function Templates() {
                     height={480}
                     loading="lazy"
                     decoding="async"
-                    className="template-photo absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:scale-110"
+                    className="template-photo absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-[1.04]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/30" />
-
-                  <div className="absolute inset-x-4 bottom-3 flex items-center justify-between gap-2">
-                    <span className="rounded-full bg-black/70 px-3 py-1 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-xs">
-                      {item.badge}
-                    </span>
-                  </div>
                 </div>
 
-                <div className="px-2 pt-5 pb-2">
+                <div className="pt-4 pb-1">
                   {/* Platform Tags */}
                   <div className="mb-3 flex flex-wrap items-center justify-between gap-1.5">
                     <div className="flex flex-wrap items-center gap-1.5">

@@ -10,6 +10,11 @@
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://brandhub.id.vn/?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://brandhub.id.vn/" />
+    <image:image>
+      <image:loc>https://brandhub.id.vn/icon.png</image:loc>
+      <image:title>BrandHub — Nền tảng Quản trị Agency &amp; Xuất bản Đa kênh AI</image:title>
+      <image:caption>Logo BrandHub</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog</loc>

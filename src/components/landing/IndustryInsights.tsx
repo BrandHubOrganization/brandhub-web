@@ -4,11 +4,9 @@ import {
   Sparkles,
   CheckCircle2,
   TrendingUp,
-  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { SectionDecor } from "@/components/landing/SectionDecor";
 import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 interface Insight {
@@ -132,14 +130,12 @@ export function IndustryInsights() {
   return (
     <section
       id="insights"
-      className="relative overflow-hidden bg-gradient-to-b from-[#FFF8F3] via-white to-[#FFF5EC] py-24 dark:from-zinc-950 dark:via-zinc-900/50 dark:to-zinc-950"
+      className="relative overflow-hidden bg-white py-24 dark:bg-zinc-950"
     >
-      <SectionDecor corner="right" />
-
       {/* Scroll-Scrubbed Horizontal Kinetic Ribbon */}
       <div
         aria-hidden="true"
-        className="pointer-events-none mb-12 overflow-hidden border-y border-orange-200/60 bg-white/70 py-2.5 backdrop-blur-xs dark:border-zinc-800 dark:bg-zinc-900/60"
+        className="pointer-events-none mb-12 overflow-hidden border-y border-zinc-200/80 bg-zinc-50/70 py-2.5 dark:border-zinc-800 dark:bg-zinc-900/60"
       >
         <div
           data-bh-horizontal-track="left"
@@ -173,97 +169,66 @@ export function IndustryInsights() {
             className="mt-4"
           />
           <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-            BrandHub không chỉ là công cụ tạo nội dung thông thường — nền tảng
+            BrandHub không chỉ là công cụ tạo nội dung thông thường, nền tảng
             được thiết kế dựa trên các khảo sát và nghiên cứu thực nghiệm nhằm
             giải phóng hiệu suất làm việc cho cả hai phía.
           </p>
         </div>
 
-        {/* 3 Architectural Cutout & Floating-Badge Insight Cards */}
-        <div className="grid grid-cols-1 gap-9 pt-4 lg:grid-cols-3">
+        {/* 3 Clean Editorial Insight Cards */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {INSIGHTS.map((item, i) => {
             const Icon = item.icon;
             return (
               <div
                 key={item.id}
-                className={cn(
-                  "insight-card group relative flex flex-col justify-between rounded-[32px] rounded-tr-[64px] border bg-gradient-to-br p-8 pt-10 shadow-sm transition-all duration-500 hover:shadow-2xl",
-                  item.cardTheme,
-                )}
+                className="insight-card group flex flex-col justify-between rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-xs transition-all duration-300 hover:border-brand-orange/40 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
               >
-                {/* Floating 3D Badge (Khối nổi) */}
-                <div
-                  data-bh-float
-                  className={cn(
-                    "absolute -top-4 left-7 z-20 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[10px] font-black tracking-wider uppercase shadow-lg",
-                    item.pillTheme,
-                  )}
-                >
-                  <Zap className="size-3 fill-current" />
-                  <span>{item.floatingBadge}</span>
-                </div>
-
-                {/* Architectural Top-Right Cutout Pocket (Khối cắt) */}
-                <div
-                  aria-hidden="true"
-                  className=" absolute -top-2 -right-2 z-10 flex size-16 items-center justify-center rounded-bl-[28px] rounded-tr-[28px] border-b border-l border-orange-200/70 bg-[#FFF8F3] p-2 dark:border-zinc-800 dark:bg-zinc-950"
-                >
-                  <div
-                    className={cn(
-                      "flex size-12 items-center justify-center rounded-2xl shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6",
-                      item.orbTheme,
-                    )}
-                  >
-                    <Icon className="size-6" />
-                  </div>
-                </div>
-
                 <div>
-                  {/* Stat Header */}
-                  <div className="flex items-start justify-between border-b border-zinc-200/60 pr-12 pb-5 dark:border-zinc-800">
-                    <div>
-                      <div className="flex items-baseline gap-2.5">
-                        <span className="text-5xl font-black tracking-tighter text-zinc-900 tabular-nums sm:text-6xl dark:text-zinc-50">
-                          {item.statNumber}
-                        </span>
-                        <span className="font-mono text-xs font-bold text-zinc-400">
-                          /0{i + 1}
-                        </span>
-                      </div>
-                      <p className="text-brand-orange mt-1 text-xs font-extrabold tracking-wide uppercase">
-                        {item.statLabel}
-                      </p>
-                      <p className="mt-0.5 text-[11px] font-medium text-zinc-400 dark:text-zinc-500">
-                        Nguồn: {item.source}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Cutout Photo Window */}
-                  <div
-                    className={cn(
-                      "relative mt-5 h-40 w-full overflow-hidden border border-zinc-200/70 shadow-inner dark:border-zinc-800",
-                      item.frameCutout,
-                    )}
-                  >
-                    <img
-                      src={item.image}
-                      alt={item.imageAlt}
-                      width={700}
-                      height={360}
-                      loading="lazy"
-                      decoding="async"
-                      className="size-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-                    <span className="absolute bottom-2.5 left-3.5 right-3.5 text-[11px] font-semibold text-white drop-shadow">
-                      {item.imageAlt}
+                  <div className="mb-4 flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-zinc-700 uppercase dark:bg-zinc-800 dark:text-zinc-200">
+                      <Icon className="text-brand-orange size-3" />
+                      <span>{item.floatingBadge}</span>
+                    </span>
+                    <span className="font-mono text-xs font-semibold text-zinc-400">
+                      /0{i + 1}
                     </span>
                   </div>
 
-                  {/* Problem Description */}
+                  {/* Stat Header */}
+                  <div className="border-b border-zinc-200/70 pb-4 dark:border-zinc-800">
+                    <span className="text-4xl font-extrabold tracking-tight text-zinc-900 tabular-nums sm:text-5xl dark:text-zinc-50">
+                      {item.statNumber}
+                    </span>
+                    <p className="text-brand-orange mt-1 text-xs font-bold tracking-wide uppercase">
+                      {item.statLabel}
+                    </p>
+                    <p className="mt-0.5 text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                      Nguồn: {item.source}
+                    </p>
+                  </div>
+
+                  {/* Clean Photo Frame */}
                   <div className="mt-5">
-                    <span className="inline-block rounded-full bg-rose-500/10 px-3 py-0.5 text-[10px] font-extrabold tracking-wider text-rose-600 uppercase dark:bg-rose-500/20 dark:text-rose-400">
+                    <div className="h-40 w-full overflow-hidden rounded-xl border border-zinc-200/70 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800">
+                      <img
+                        src={item.image}
+                        alt={item.imageAlt}
+                        width={700}
+                        height={360}
+                        loading="lazy"
+                        decoding="async"
+                        className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <p className="mt-2 text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+                      {item.imageAlt}
+                    </p>
+                  </div>
+
+                  {/* Problem Description */}
+                  <div className="mt-4">
+                    <span className="inline-block rounded-full bg-rose-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-rose-600 uppercase dark:bg-rose-500/20 dark:text-rose-400">
                       Nỗi đau thị trường
                     </span>
                     <h3 className="mt-2 text-base font-bold text-zinc-900 dark:text-zinc-100">
@@ -275,13 +240,8 @@ export function IndustryInsights() {
                   </div>
                 </div>
 
-                {/* BrandHub Solution Cutout Box */}
-                <div
-                  className={cn(
-                    "mt-7 rounded-2xl rounded-br-[36px] border p-5 backdrop-blur-xs",
-                    item.solutionTheme,
-                  )}
-                >
+                {/* BrandHub Solution Box */}
+                <div className="mt-6 rounded-xl border border-zinc-200/80 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-950/70">
                   <div className="text-brand-orange flex items-center gap-1.5 text-xs font-extrabold uppercase">
                     <CheckCircle2 className="size-4 shrink-0" />
                     <span>Giải pháp từ BrandHub</span>

@@ -28,14 +28,18 @@ import {
   JiraStatusLozenge,
   JiraSubtaskDueDate,
   JiraSubtaskIcon,
+  JiraSubtaskRoleBadge,
 } from "@/pages/tasks/components/JiraSubtaskUI";
 import { isSubtaskDone } from "@/pages/tasks/utils/jiraSubtaskUtils";
+import { useTaskCatalogRoles } from "@/pages/tasks/hooks/useTaskCatalogRoles";
+import { taskWorkflowService } from "@/pages/tasks/services/taskWorkflowService";
 
 interface Details {
   name: string;
   assigneeId: string;
   supervisorOverrideId: string | null;
   dueDate: string;
+  subtaskRole?: string | null;
 }
 interface Row {
   subtask: Details & { id: string; status: string };
@@ -86,6 +90,14 @@ export function CampaignSubtasks({
     queryKey,
     queryFn: async () => (await api.get<ApiResponse<View>>(path)).data.data,
   });
+
+  const workflowQuery = useQuery({
+    queryKey: ["task-workflow", workspaceId, taskId],
+    queryFn: () => taskWorkflowService.read(workspaceId, taskId),
+    staleTime: 30000,
+  });
+  const taskType = workflowQuery.data?.type;
+  const { roleLabel: roleName } = useTaskCatalogRoles(taskType);
 
   const [draft, setDraft] = useState<(Details & { id?: string }) | null>(null);
   const supervisorId =
@@ -278,6 +290,9 @@ export function CampaignSubtasks({
                   >
                     {row.subtask.name}
                   </button>
+                  <JiraSubtaskRoleBadge
+                    roleName={roleName(row.subtask.subtaskRole)}
+                  />
                 </div>
 
                 {/* Right: Assignee Avatar + Status Lozenge / Selector + Due Date + Edit */}
@@ -389,6 +404,7 @@ export function CampaignSubtasks({
           parentDueDate={parentDueDate || query.data?.parentDueDate}
           members={query.data?.members || []}
           isLoading={change.isPending}
+          taskType={taskType}
           onSubmit={(details) => {
             change.mutate({ details });
           }}

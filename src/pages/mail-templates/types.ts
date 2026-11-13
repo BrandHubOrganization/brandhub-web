@@ -1,5 +1,18 @@
 export type MailTemplateType = "SYSTEM_DEFAULT" | "CUSTOM";
 
+export type MailTemplateCategory =
+  | "ALL"
+  | "SYSTEM_DEFAULT"
+  | "CUSTOM"
+  | "CAMPAIGN_BROADCAST"
+  | "WORKSPACE_MANAGER";
+
+export type MailTemplateSort =
+  | "CREATED_DESC"
+  | "CREATED_ASC"
+  | "NAME_ASC"
+  | "NAME_DESC";
+
 export type MailTemplateScope =
   | "CAMPAIGN_BROADCAST"
   | "WORKSPACE_MANAGER"
@@ -74,12 +87,7 @@ export interface SendResult {
 }
 
 export type BatchStatus =
-  | "SCHEDULED"
-  | "QUEUED"
-  | "SENDING"
-  | "COMPLETED"
-  | "CANCELLED"
-  | "FAILED";
+  "SCHEDULED" | "QUEUED" | "SENDING" | "COMPLETED" | "CANCELLED" | "FAILED";
 
 export const BATCH_STATUSES: BatchStatus[] = [
   "SCHEDULED",
@@ -166,4 +174,12 @@ export interface RecipientGroup {
   name: string;
   count: number;
   recipients: { email: string; name: string | null }[];
+}
+
+export interface ImportRecipientGroupResult {
+  groupId: string;
+  imported: number;
+  skippedNoConsent: number;
+  skippedSuppressed: number;
+  skippedInvalid: number;
 }

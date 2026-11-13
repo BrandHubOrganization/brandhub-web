@@ -1,6 +1,4 @@
-import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import gsap from "gsap";
 import {
   Sparkles,
   TrendingUp,
@@ -16,9 +14,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useLandingDemoStore } from "@/store/landingDemoStore";
-import { SectionDecor } from "@/components/landing/SectionDecor";
-import { SectionEyebrow } from "@/components/landing/SectionEyebrow";
-import { AiVectorArt } from "@/components/landing/AiVectorArt";
 import { SplitHeading } from "@/components/landing/MotionPrimitives";
 
 // pageIndex 3 = AI Studio trong CinematicHero (xem NAV_ITEMS). Bấm card
@@ -50,10 +45,12 @@ const CAPABILITIES: AiCapability[] = [
     floatingChip: "LIVE TREND RADAR",
     shapeClass: "rounded-[22px] bh-cutout-tr",
     cardSurface:
-      "from-orange-950/60 via-[#12131C] to-[#0D0E15] border-orange-500/35 hover:border-orange-400/70",
-    iconBadge: "bg-orange-500/20 text-orange-400 ring-1 ring-orange-500/40",
-    chipBadge: "bg-gradient-to-r from-brand-orange to-amber-500 text-white shadow-orange-500/30",
-    orbBadge: "border-orange-500/50 bg-orange-500/20 text-orange-300",
+      "from-[#FFF5EE] via-white to-orange-50/60 border-orange-200/80 hover:border-orange-400 dark:from-orange-950/60 dark:via-[#12131C] dark:to-[#0D0E15] dark:border-orange-500/35 dark:hover:border-orange-400/70",
+    iconBadge:
+      "bg-orange-500/12 text-orange-600 ring-1 ring-orange-300/70 dark:bg-orange-500/20 dark:text-orange-400 dark:ring-orange-500/40",
+    chipBadge: "bg-gradient-to-r from-brand-orange to-amber-500 text-white shadow-orange-500/25",
+    orbBadge:
+      "border-orange-300 bg-orange-50 text-orange-600 dark:border-orange-500/50 dark:bg-orange-500/20 dark:text-orange-300",
   },
   {
     key: "virtualAmbassador",
@@ -65,10 +62,12 @@ const CAPABILITIES: AiCapability[] = [
     floatingChip: "CUSTOM LORA MODEL",
     shapeClass: "rounded-t-[999px] rounded-b-[22px]",
     cardSurface:
-      "from-fuchsia-950/55 via-[#13121E] to-[#0D0E15] border-fuchsia-500/35 hover:border-fuchsia-400/70",
-    iconBadge: "bg-fuchsia-500/20 text-fuchsia-300 ring-1 ring-fuchsia-500/40",
-    chipBadge: "bg-gradient-to-r from-fuchsia-600 to-rose-500 text-white shadow-fuchsia-500/30",
-    orbBadge: "border-fuchsia-500/50 bg-fuchsia-500/20 text-fuchsia-300",
+      "from-fuchsia-50/85 via-white to-rose-50/45 border-fuchsia-200/80 hover:border-fuchsia-400 dark:from-fuchsia-950/55 dark:via-[#13121E] dark:to-[#0D0E15] dark:border-fuchsia-500/35 dark:hover:border-fuchsia-400/70",
+    iconBadge:
+      "bg-fuchsia-500/12 text-fuchsia-600 ring-1 ring-fuchsia-300/70 dark:bg-fuchsia-500/20 dark:text-fuchsia-300 dark:ring-fuchsia-500/40",
+    chipBadge: "bg-gradient-to-r from-fuchsia-600 to-rose-500 text-white shadow-fuchsia-500/25",
+    orbBadge:
+      "border-fuchsia-300 bg-fuchsia-50 text-fuchsia-600 dark:border-fuchsia-500/50 dark:bg-fuchsia-500/20 dark:text-fuchsia-300",
   },
   {
     key: "graphRag",
@@ -80,10 +79,12 @@ const CAPABILITIES: AiCapability[] = [
     floatingChip: "KNOWLEDGE GRAPH",
     shapeClass: "rounded-l-[22px] rounded-r-[999px]",
     cardSurface:
-      "from-violet-950/60 via-[#121222] to-[#0D0E15] border-violet-500/35 hover:border-violet-400/70",
-    iconBadge: "bg-violet-500/20 text-violet-300 ring-1 ring-violet-500/40",
-    chipBadge: "bg-gradient-to-r from-violet-600 to-indigo-500 text-white shadow-violet-500/30",
-    orbBadge: "border-violet-500/50 bg-violet-500/20 text-violet-300",
+      "from-violet-50/85 via-white to-indigo-50/50 border-violet-200/80 hover:border-violet-400 dark:from-violet-950/60 dark:via-[#121222] dark:to-[#0D0E15] dark:border-violet-500/35 dark:hover:border-violet-400/70",
+    iconBadge:
+      "bg-violet-500/12 text-violet-600 ring-1 ring-violet-300/70 dark:bg-violet-500/20 dark:text-violet-300 dark:ring-violet-500/40",
+    chipBadge: "bg-gradient-to-r from-violet-600 to-indigo-500 text-white shadow-violet-500/25",
+    orbBadge:
+      "border-violet-300 bg-violet-50 text-violet-600 dark:border-violet-500/50 dark:bg-violet-500/20 dark:text-violet-300",
   },
   {
     key: "generativeStudio",
@@ -95,10 +96,12 @@ const CAPABILITIES: AiCapability[] = [
     floatingChip: "4K STUDIO RENDER",
     shapeClass: "rounded-l-[999px] rounded-r-[22px]",
     cardSurface:
-      "from-cyan-950/55 via-[#101620] to-[#0D0E15] border-cyan-500/35 hover:border-cyan-400/70",
-    iconBadge: "bg-cyan-500/20 text-cyan-300 ring-1 ring-cyan-500/40",
-    chipBadge: "bg-gradient-to-r from-cyan-600 to-sky-500 text-white shadow-cyan-500/30",
-    orbBadge: "border-cyan-500/50 bg-cyan-500/20 text-cyan-300",
+      "from-cyan-50/85 via-white to-sky-50/45 border-cyan-200/80 hover:border-cyan-400 dark:from-cyan-950/55 dark:via-[#101620] dark:to-[#0D0E15] dark:border-cyan-500/35 dark:hover:border-cyan-400/70",
+    iconBadge:
+      "bg-cyan-500/12 text-cyan-700 ring-1 ring-cyan-300/70 dark:bg-cyan-500/20 dark:text-cyan-300 dark:ring-cyan-500/40",
+    chipBadge: "bg-gradient-to-r from-cyan-600 to-sky-500 text-white shadow-cyan-500/25",
+    orbBadge:
+      "border-cyan-300 bg-cyan-50 text-cyan-700 dark:border-cyan-500/50 dark:bg-cyan-500/20 dark:text-cyan-300",
   },
   {
     key: "complianceCheck",
@@ -110,10 +113,12 @@ const CAPABILITIES: AiCapability[] = [
     floatingChip: "COMMUNITY GUARD",
     shapeClass: "rounded-t-[999px] rounded-b-[22px]",
     cardSurface:
-      "from-emerald-950/55 via-[#101918] to-[#0D0E15] border-emerald-500/35 hover:border-emerald-400/70",
-    iconBadge: "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/40",
-    chipBadge: "bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-emerald-500/30",
-    orbBadge: "border-emerald-500/50 bg-emerald-500/20 text-emerald-300",
+      "from-emerald-50/85 via-white to-teal-50/45 border-emerald-200/80 hover:border-emerald-400 dark:from-emerald-950/55 dark:via-[#101918] dark:to-[#0D0E15] dark:border-emerald-500/35 dark:hover:border-emerald-400/70",
+    iconBadge:
+      "bg-emerald-500/12 text-emerald-700 ring-1 ring-emerald-300/70 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-500/40",
+    chipBadge: "bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-emerald-500/25",
+    orbBadge:
+      "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-500/50 dark:bg-emerald-500/20 dark:text-emerald-300",
   },
   {
     key: "collaboratorRecommender",
@@ -125,10 +130,12 @@ const CAPABILITIES: AiCapability[] = [
     floatingChip: "PARTNER MATCH AI",
     shapeClass: "rounded-[22px] bh-cutout-br",
     cardSurface:
-      "from-amber-950/55 via-[#171412] to-[#0D0E15] border-amber-500/35 hover:border-amber-400/70",
-    iconBadge: "bg-amber-500/20 text-amber-300 ring-1 ring-amber-500/40",
-    chipBadge: "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-amber-500/30",
-    orbBadge: "border-amber-500/50 bg-amber-500/20 text-amber-300",
+      "from-amber-50/85 via-white to-orange-50/50 border-amber-200/80 hover:border-amber-400 dark:from-amber-950/55 dark:via-[#171412] dark:to-[#0D0E15] dark:border-amber-500/35 dark:hover:border-amber-400/70",
+    iconBadge:
+      "bg-amber-500/12 text-amber-700 ring-1 ring-amber-300/70 dark:bg-amber-500/20 dark:text-amber-300 dark:ring-amber-500/40",
+    chipBadge: "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-amber-500/25",
+    orbBadge:
+      "border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-500/50 dark:bg-amber-500/20 dark:text-amber-300",
   },
 ];
 
@@ -148,106 +155,21 @@ export function AIFeatures() {
     { threshold: 0.15, freezeOnceVisible: true },
   );
 
-  const gridDomRef = useRef<HTMLDivElement | null>(null);
-  const peekRef = useRef<HTMLDivElement | null>(null);
-  const peekImgRef = useRef<HTMLImageElement | null>(null);
-
-  // Cursor-following circular preview lens inspired by `.theme-peek` in giaimamanhai.vercel.app
-  useEffect(() => {
-    if (
-      typeof window === "undefined" ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      !window.matchMedia("(pointer: fine)").matches
-    ) {
-      return;
-    }
-    const gridEl = gridDomRef.current;
-    const peekEl = peekRef.current;
-    const imgEl = peekImgRef.current;
-    if (!gridEl || !peekEl || !imgEl) return;
-
-    const xTo = gsap.quickTo(peekEl, "x", { duration: 0.45, ease: "power3" });
-    const yTo = gsap.quickTo(peekEl, "y", { duration: 0.45, ease: "power3" });
-    let activeCard: Element | null = null;
-
-    gsap.set(peekEl, { scale: 0, autoAlpha: 0 });
-
-    const onPointerMove = (e: PointerEvent) => {
-      xTo(e.clientX + 28);
-      yTo(e.clientY - 28);
-    };
-
-    const hidePeek = () => {
-      activeCard = null;
-      gsap.to(peekEl, {
-        scale: 0,
-        autoAlpha: 0,
-        duration: 0.3,
-        ease: "power3.in",
-        overwrite: "auto",
-      });
-    };
-
-    const onPointerOver = (e: PointerEvent) => {
-      const target = (e.target as HTMLElement | null)?.closest("[data-peek-img]");
-      if (!target) {
-        if (activeCard) hidePeek();
-        return;
-      }
-      if (target !== activeCard) {
-        activeCard = target;
-        const src = target.getAttribute("data-peek-img");
-        if (src) imgEl.src = src;
-        gsap.to(peekEl, {
-          scale: 1,
-          autoAlpha: 1,
-          duration: 0.45,
-          ease: "back.out(1.6)",
-          overwrite: "auto",
-        });
-        gsap.fromTo(
-          imgEl,
-          { rotate: -10, scale: 1.2 },
-          { rotate: 0, scale: 1, duration: 0.65, ease: "power3.out" },
-        );
-      }
-    };
-
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    gridEl.addEventListener("pointerover", onPointerOver);
-    gridEl.addEventListener("pointerleave", hidePeek);
-
-    return () => {
-      window.removeEventListener("pointermove", onPointerMove);
-      gridEl.removeEventListener("pointerover", onPointerOver);
-      gridEl.removeEventListener("pointerleave", hidePeek);
-    };
-  }, []);
+  const { ref: gridDomRef } = { ref: { current: null } };
 
   return (
     <section
       id="ai-features"
-      className="relative overflow-hidden bg-[#090A10] py-24 text-white"
+      className="relative overflow-hidden border-y border-zinc-200/80 bg-white py-24 text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
     >
-      {/* Ambient Cyber-Editorial Glow Orbs */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 left-1/4 size-[28rem] rounded-full bg-orange-500/15 blur-[130px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute right-1/4 -bottom-24 size-[28rem] rounded-full bg-violet-600/15 blur-[130px]"
-      />
-      <SectionDecor corner="right" />
-
       {/* Scroll-Scrubbed Horizontal AI Telemetry Ribbon */}
       <div
         aria-hidden="true"
-        className="pointer-events-none mb-14 overflow-hidden border-y border-white/10 bg-white/[0.03] py-2.5 backdrop-blur-xs"
+        className="pointer-events-none mb-14 overflow-hidden border-y border-zinc-200/75 bg-zinc-50/75 py-2.5 dark:border-zinc-800 dark:bg-zinc-900/60"
       >
         <div
           data-bh-horizontal-track="right"
-          className="flex w-max items-center gap-8 px-4 font-mono text-[11px] font-bold tracking-[0.2em] text-zinc-400 uppercase will-change-transform"
+          className="flex w-max items-center gap-8 px-4 font-mono text-[11px] font-bold tracking-[0.2em] text-zinc-500 uppercase will-change-transform dark:text-zinc-400"
         >
           {[...AI_TELEMETRY_STREAM, ...AI_TELEMETRY_STREAM].map((item, idx) => (
             <span key={idx} className="inline-flex items-center gap-3">
@@ -262,27 +184,26 @@ export function AIFeatures() {
         <div
           ref={headRef}
           className={cn(
-            "mx-auto mb-16 max-w-2xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
+            "mx-auto mb-14 max-w-2xl text-center transition-opacity duration-500 ease-out motion-reduce:opacity-100 motion-reduce:transition-none",
             headVisible ? "opacity-100" : "opacity-0",
           )}
         >
-          <SectionEyebrow index={2} />
-          <span className="border-brand-orange/35 bg-brand-orange/15 text-brand-orange mb-4 inline-flex items-center gap-1.5 rounded-full border px-4 py-1 text-xs font-bold">
-            <Sparkles className="size-3.5" />
+          <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3.5 py-1 text-xs font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+            <Sparkles className="size-3.5 text-brand-orange" />
             {t("landing.aiFeatures.badge")}
           </span>
           <SplitHeading
             text={t("landing.aiFeatures.title")}
-            className="text-white"
+            className="text-zinc-900 dark:text-white"
           />
-          <p className="mt-4 text-base text-zinc-400">
+          <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
             {t("landing.aiFeatures.subtitle")}
           </p>
         </div>
 
         <div
           ref={gridDomRef}
-          className="grid grid-cols-1 gap-8 pt-3 md:grid-cols-2 lg:grid-cols-3"
+          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
         >
           {CAPABILITIES.map(
             (
@@ -293,11 +214,6 @@ export function AIFeatures() {
                 photoAlt,
                 tag,
                 floatingChip,
-                shapeClass,
-                cardSurface,
-                iconBadge,
-                chipBadge,
-                orbBadge,
               },
               i,
             ) => (
@@ -305,7 +221,6 @@ export function AIFeatures() {
                 key={key}
                 role="button"
                 tabIndex={0}
-                data-peek-img={photo}
                 aria-label={t("landing.aiFeatures.demoAction", {
                   capability: t(`landing.aiFeatures.items.${key}.title`),
                 })}
@@ -316,60 +231,21 @@ export function AIFeatures() {
                     goToPage(AI_STUDIO_PAGE);
                   }
                 }}
-                className={cn(
-                  "ai-card group relative flex cursor-pointer flex-col justify-between rounded-[30px] rounded-br-[68px] border bg-gradient-to-br p-6 pt-8 shadow-xl transition-all duration-500 hover:shadow-2xl focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:outline-none",
-                  cardSurface,
-                )}
+                className="ai-card group relative flex cursor-pointer flex-col justify-between rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-2xs transition-all duration-300 hover:-translate-y-1 hover:border-brand-orange/45 hover:shadow-md focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:outline-none dark:border-zinc-800 dark:bg-zinc-900"
               >
-                {/* Floating 3D Telemetry Badge (Khối nổi) */}
-                <div
-                  data-bh-float
-                  className={cn(
-                    "absolute -top-3.5 left-6 z-20 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-black tracking-wider uppercase shadow-lg",
-                    chipBadge,
-                  )}
-                >
-                  <Sparkles className="size-3" />
-                  <span>{floatingChip}</span>
-                </div>
-
-                {/* Architectural Bottom-Right Cutout Orb (Khối cắt) */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -right-2 -bottom-2 z-10 flex size-16 items-center justify-center rounded-tl-[28px] rounded-br-[28px] border-t border-l border-white/10 bg-[#090A10] p-2"
-                >
-                  <span
-                    className={cn(
-                      "flex size-11 items-center justify-center rounded-full border font-mono text-xs font-black transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12",
-                      orbBadge,
-                    )}
-                  >
-                    0{i + 1}
-                  </span>
-                </div>
-
                 <div>
-                  <div className="mb-4 flex w-full items-start justify-between">
-                    <div
-                      className={cn(
-                        "flex size-12 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6",
-                        iconBadge,
-                      )}
-                    >
-                      <Icon className="size-6" />
+                  <div className="mb-4 flex w-full items-center justify-between gap-2">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange/10 text-brand-orange">
+                      <Icon className="size-5" />
                     </div>
-                    <div className="group-hover:text-brand-orange h-10 w-20 text-zinc-500 transition-transform duration-300 group-hover:scale-105">
-                      <AiVectorArt type={key} />
+                    <div className="flex items-center gap-2 text-[10px] font-mono font-bold text-zinc-500 dark:text-zinc-400">
+                      <span className="truncate uppercase">{floatingChip}</span>
+                      <span className="text-brand-orange">0{i + 1}</span>
                     </div>
                   </div>
 
-                  {/* Architectural Cutout Photo Frame */}
-                  <div
-                    className={cn(
-                      "relative mb-5 h-40 w-full overflow-hidden border border-white/15 shadow-inner",
-                      shapeClass,
-                    )}
-                  >
+                  {/* Clean Photo Frame (zero scrim/overlays) */}
+                  <div className="mb-4 aspect-[16/10] w-full overflow-hidden rounded-xl border border-zinc-200/80 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800">
                     <img
                       src={photo}
                       alt={photoAlt}
@@ -377,23 +253,22 @@ export function AIFeatures() {
                       height={400}
                       loading="lazy"
                       decoding="async"
-                      className="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110"
+                      className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <span className="absolute bottom-2.5 left-3 rounded-full border border-white/15 bg-black/70 px-2.5 py-0.5 font-mono text-[10px] font-semibold text-white backdrop-blur-xs">
-                      {tag}
-                    </span>
                   </div>
 
-                  <h3 className="mb-2 text-lg font-bold text-white">
+                  <p className="mb-1.5 font-mono text-[11px] font-semibold text-brand-orange">
+                    {tag}
+                  </p>
+                  <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-white">
                     {t(`landing.aiFeatures.items.${key}.title`)}
                   </h3>
-                  <p className="text-sm leading-relaxed text-zinc-400">
+                  <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
                     {t(`landing.aiFeatures.items.${key}.desc`)}
                   </p>
                 </div>
 
-                <span className="text-brand-orange mt-5 flex items-center gap-1.5 pr-12 text-xs font-bold opacity-90 transition-all group-hover:translate-x-1 group-hover:opacity-100">
+                <span className="text-brand-orange mt-5 flex items-center gap-1.5 text-xs font-semibold opacity-85 transition-all group-hover:translate-x-1 group-hover:opacity-100">
                   <MousePointerClick className="size-3.5" />
                   {t("landing.aiFeatures.demoLabel")}
                 </span>
@@ -401,20 +276,6 @@ export function AIFeatures() {
             ),
           )}
         </div>
-      </div>
-
-      {/* Floating Cursor-Following Circular Preview Lens (.theme-peek) */}
-      <div
-        ref={peekRef}
-        aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-40 hidden size-36 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border-4 border-white shadow-2xl ring-2 ring-brand-orange/40 lg:block dark:border-zinc-900"
-      >
-        <img
-          ref={peekImgRef}
-          src={CAPABILITIES[0].photo}
-          alt=""
-          className="size-full object-cover"
-        />
       </div>
     </section>
   );
