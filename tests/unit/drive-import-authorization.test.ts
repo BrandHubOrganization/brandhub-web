@@ -1,10 +1,17 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   DRIVE_IMPORT_SCOPE,
+  clearCachedDriveImportToken,
   requestDriveImportToken,
 } from "../../src/pages/library/hooks/driveImportAuthorization";
 
-afterEach(() => vi.unstubAllGlobals());
+beforeEach(() => {
+  clearCachedDriveImportToken();
+});
+afterEach(() => {
+  clearCachedDriveImportToken();
+  vi.unstubAllGlobals();
+});
 function setup(result: Record<string, unknown>, popupError?: string) {
   const request = vi.fn();
   const init = vi.fn((options) => {
@@ -27,7 +34,7 @@ describe("one-time Drive import authorization", () => {
       scope: DRIVE_IMPORT_SCOPE,
     });
     const pending = requestDriveImportToken("public-client");
-    expect(request).toHaveBeenCalledWith({ prompt: "select_account" });
+    expect(request).toHaveBeenCalledWith({ prompt: "" });
     expect(init).toHaveBeenCalledWith(
       expect.objectContaining({
         scope: DRIVE_IMPORT_SCOPE,

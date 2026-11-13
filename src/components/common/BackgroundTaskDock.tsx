@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   CheckCircle2,
@@ -154,15 +154,27 @@ export function BackgroundTaskDock() {
   } = useBackgroundTaskStore();
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
 
-  // Chỉ hiển thị trong dock góc dưới bên phải các tác vụ KHÔNG thuộc tab/màn hình hiện tại.
-  // Khi user ở đúng tab/màn hình có tác vụ (vd: Drive Import trên MediaTab), giao diện inline đã hiển thị rõ ràng.
-  const visibleTasks = tasks.filter(
-    (task) => !isTaskOnCurrentView(task, location),
-  );
+  const prevTabRef = useRef<string>(location.pathname + location.search);
 
-  if (visibleTasks.length === 0) return null;
+  // Khi chuyển tab/trang khác, tự động thu gọn dock tiến trình chạy ngầm ở góc dưới bên phải
+  useEffect(() => {
+    const currentPath = location.pathname + location.search;
+    if (prevTabRef.current !== currentPath) {
+      prevTabRef.current = currentPath;
+      const hasActiveOnCurrent = tasks.some(
+        (t) =>
+          (t.status === "RUNNING" || t.status === "CANCEL_CLEANUP") &&
+          isTaskOnCurrentView(t, location),
+      );
+      if (!hasActiveOnCurrent) {
+        setDockMinimized(true);
+      }
+    }
+  }, [location.pathname, location.search, tasks, setDockMinimized]);
 
-  const runningTasks = visibleTasks.filter(
+  if (tasks.length === 0) return null;
+
+  const runningTasks = tasks.filter(
     (t) => t.status === "RUNNING" || t.status === "CANCEL_CLEANUP",
   );
   const overallPercent =
@@ -176,7 +188,7 @@ export function BackgroundTaskDock() {
   const headerTitle =
     runningTasks.length > 0
       ? `Đang xử lý ${runningTasks.length} tiến trình • ${overallPercent}%`
-      : `Hoàn tất ${visibleTasks.filter((t) => t.status === "COMPLETED").length}/${visibleTasks.length} tác vụ`;
+      : `Hoàn tất ${tasks.filter((t) => t.status === "COMPLETED").length}/${tasks.length} tác vụ`;
 
   return (
     <aside
@@ -241,7 +253,7 @@ export function BackgroundTaskDock() {
 
       {!isDockMinimized && (
         <div className="max-h-80 divide-y divide-border/60 overflow-y-auto bg-card">
-          {visibleTasks.map((task) => {
+          {tasks.map((task) => {
             const isExpanded = expandedTaskId === task.id;
             const hasSubItems = task.items.length > 1;
             const isRunning = task.status === "RUNNING";

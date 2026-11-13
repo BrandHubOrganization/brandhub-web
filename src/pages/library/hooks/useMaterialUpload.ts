@@ -187,6 +187,12 @@ export function useMaterialUpload(workspaceId: string | undefined) {
           await queryClient.invalidateQueries({
             queryKey: ["materials-storage-usage", workspaceId],
           });
+          await queryClient.invalidateQueries({
+            queryKey: ["material-storage-usage", workspaceId],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: ["client-vault-storage"],
+          });
           return isCurrent() ? material : null;
         } catch (failure) {
           const full =

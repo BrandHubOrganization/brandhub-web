@@ -118,10 +118,9 @@ export function MaterialPreview({
 
   return (
     <section
-      className="group relative overflow-hidden rounded-none border border-[#d5dbdb] bg-muted/30 dark:border-border"
+      className="group relative overflow-hidden rounded-2xl border border-border/80 bg-muted/30"
       aria-label={t("library.repository.preview", "Xem trước")}
     >
-
       <div className="flex min-h-[210px] items-center justify-center p-3">
         {busy && !url ? (
           <div

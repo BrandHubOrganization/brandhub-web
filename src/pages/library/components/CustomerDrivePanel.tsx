@@ -36,9 +36,13 @@ function extractFailureCode(error: unknown): string | undefined {
 export function CustomerDrivePanel({
   folderId,
   workspaceIdOverride,
+  showInlineProgress = true,
+  onImportStarted,
 }: {
   folderId?: string;
   workspaceIdOverride?: string;
+  showInlineProgress?: boolean;
+  onImportStarted?: () => void;
 }) {
   const { t } = useTranslation();
   const storeWorkspace = useWorkspaceStore(
@@ -130,6 +134,7 @@ export function CustomerDrivePanel({
           jobId: job.jobId,
         });
       }
+      onImportStarted?.();
     },
     onError: (err) => {
       const code = extractFailureCode(err);
@@ -146,10 +151,10 @@ export function CustomerDrivePanel({
   return (
     <section
       aria-label={t("library.simple.fromDrive", "Đồng bộ từ Google Drive")}
-      className="space-y-2.5 rounded-none border border-[#d5dbdb] bg-card p-3 shadow-[0_1px_1px_0_rgba(0,28,36,0.05)] dark:border-border"
+      className="space-y-2.5"
     >
       <form
-        className="flex flex-col gap-2 sm:flex-row sm:items-center"
+        className="flex items-center gap-2"
         onSubmit={(event) => {
           event.preventDefault();
           if (!config.data || mutation.isPending || isBusy) return;
@@ -164,7 +169,7 @@ export function CustomerDrivePanel({
         <div className="relative min-w-0 flex-1">
           <CloudDownload className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-brand-orange" />
           <Input
-            className="h-9 rounded-[4px] bg-background pl-9 text-xs focus-visible:ring-1 focus-visible:ring-brand-orange/60 focus-visible:ring-offset-0"
+            className="h-9 rounded-lg bg-background pl-9 text-xs focus-visible:ring-1 focus-visible:ring-brand-orange/60 focus-visible:ring-offset-0"
             disabled={mutation.isPending || isBusy}
             type="url"
             wrapperClassName="min-w-0 flex-1"
@@ -185,7 +190,7 @@ export function CustomerDrivePanel({
         <Button
           size="sm"
           variant="orange"
-          className="h-9 shrink-0 rounded-[4px] px-4 text-xs font-semibold shadow-none"
+          className="h-9 shrink-0 gap-1.5 rounded-lg px-4 text-xs font-semibold shadow-xs hover:bg-brand-orange/90"
           type="submit"
           disabled={
             !source.trim() ||
@@ -200,7 +205,10 @@ export function CustomerDrivePanel({
               Đang kết nối...
             </>
           ) : (
-            t("library.simple.import", "Nhập từ Drive")
+            <>
+              <CloudDownload className="h-3.5 w-3.5" />
+              {t("library.simple.import", "Import")}
+            </>
           )}
         </Button>
       </form>
@@ -208,14 +216,14 @@ export function CustomerDrivePanel({
       {config.isError && (
         <div
           role="alert"
-          className="flex items-center justify-between gap-2 rounded-none border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+          className="flex items-center justify-between gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
         >
           <span>{t("library.driveImport.notConfigured")}</span>
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className="h-7 rounded-[4px] px-2.5 text-xs font-semibold text-destructive hover:bg-destructive/15"
+            className="h-7 rounded-md px-2.5 text-xs font-semibold text-destructive hover:bg-destructive/15"
             onClick={() => void config.refetch()}
           >
             <RotateCcw className="mr-1 h-3 w-3" />
@@ -228,7 +236,7 @@ export function CustomerDrivePanel({
         extractFailureCode(mutation.error) !== "DRIVE_IMPORT_CANCELLED" && (
           <div
             role="alert"
-            className="flex items-center gap-2 rounded-none border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive"
+            className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive"
           >
             <XCircle className="h-4 w-4 shrink-0" />
             <span>{importError(extractFailureCode(mutation.error))}</span>
@@ -236,11 +244,11 @@ export function CustomerDrivePanel({
         )}
 
       {/* Live status & progress card */}
-      {activeTask && (
+      {showInlineProgress && activeTask && (
         <div
           role="status"
           data-slot="drive-import-progress"
-          className={`rounded-none border px-3.5 py-3 transition-colors ${
+          className={`rounded-xl border px-3.5 py-3 transition-colors ${
             isBusy
               ? "border-brand-orange/30 bg-brand-orange/5"
               : activeTask.status === "COMPLETED"
@@ -311,7 +319,7 @@ export function CustomerDrivePanel({
                   variant="outline"
                   size="sm"
                   onClick={() => void cancelTask(activeTask.id)}
-                  className="h-8 gap-1 rounded-[4px] border-destructive/30 bg-background px-2.5 text-xs font-semibold text-destructive hover:border-destructive hover:bg-destructive hover:text-white"
+                  className="h-8 gap-1 rounded-lg border-destructive/30 bg-background px-2.5 text-xs font-semibold text-destructive hover:border-destructive hover:bg-destructive hover:text-white"
                 >
                   <X className="h-3.5 w-3.5" />
                   <span>Huỷ import</span>
@@ -319,7 +327,7 @@ export function CustomerDrivePanel({
               )}
 
               {isCleaning && (
-                <span className="rounded-[4px] bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                <span className="rounded-md bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
                   Đang huỷ...
                 </span>
               )}
@@ -328,7 +336,7 @@ export function CustomerDrivePanel({
                 <button
                   type="button"
                   onClick={() => dismissTask(activeTask.id)}
-                  className="rounded-[4px] p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                   aria-label="Ẩn thông báo import"
                   title="Đóng"
                 >

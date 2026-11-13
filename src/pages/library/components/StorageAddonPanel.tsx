@@ -163,12 +163,12 @@ export function StorageAddonPanel({
         onOpenChange(next);
       }}
     >
-      <DialogContent className="max-w-2xl sm:max-w-2xl gap-0 overflow-hidden rounded-none border-0 bg-[#16171B] p-0 shadow-2xl outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 [&>[data-slot=dialog-close]]:rounded-[4px] [&>[data-slot=dialog-close]]:p-1 [&>[data-slot=dialog-close]]:text-white [&>[data-slot=dialog-close]]:opacity-85 [&>[data-slot=dialog-close]]:outline-none [&>[data-slot=dialog-close]]:hover:bg-white/10 [&>[data-slot=dialog-close]]:hover:opacity-100 [&>[data-slot=dialog-close]]:focus:ring-0 [&>[data-slot=dialog-close]]:focus:ring-offset-0 [&>[data-slot=dialog-close]]:focus-visible:ring-0">
+      <DialogContent className="max-w-2xl sm:max-w-2xl gap-0 overflow-hidden rounded-2xl border-0 bg-[#16171B] p-0 shadow-2xl outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 [&>[data-slot=dialog-close]]:rounded-lg [&>[data-slot=dialog-close]]:p-1 [&>[data-slot=dialog-close]]:text-white [&>[data-slot=dialog-close]]:opacity-85 [&>[data-slot=dialog-close]]:outline-none [&>[data-slot=dialog-close]]:hover:bg-white/10 [&>[data-slot=dialog-close]]:hover:opacity-100 [&>[data-slot=dialog-close]]:focus:ring-0 [&>[data-slot=dialog-close]]:focus:ring-offset-0 [&>[data-slot=dialog-close]]:focus-visible:ring-0">
         {/* Dark BrandHub Header */}
         <div className="bg-[#16171B] px-6 py-5 text-white">
           <DialogHeader>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] bg-brand-orange text-white">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange text-white">
                 <HardDrive className="h-5 w-5" />
               </div>
               <div>
@@ -186,7 +186,7 @@ export function StorageAddonPanel({
 
           {/* Current Usage Summary Strip */}
           {quotaBytes > 0 && (
-            <div className="mt-4 rounded-none border border-white/15 bg-white/[0.04] px-3.5 py-2.5">
+            <div className="mt-4 rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-zinc-300">Dung lượng đang sử dụng</span>
                 <span className="font-semibold tabular-nums text-white">
@@ -230,14 +230,14 @@ export function StorageAddonPanel({
                           key={plan.code}
                           type="button"
                           onClick={() => setSelectedPlanCode(plan.code)}
-                          className={`relative flex flex-col justify-between rounded-none border p-4 text-left transition-colors ${
+                          className={`relative flex flex-col justify-between rounded-xl border p-4 text-left transition-all ${
                             isSelected
-                              ? "border-brand-orange bg-[#fffaf6] dark:bg-brand-orange/[0.08]"
-                              : "border-[#d5dbdb] bg-card hover:border-brand-orange/50 hover:bg-muted/30 dark:border-border"
+                              ? "border-brand-orange bg-[#fffaf6] dark:bg-brand-orange/[0.08] shadow-xs"
+                              : "border-border/80 bg-card hover:border-brand-orange/50 hover:bg-muted/30"
                           }`}
                         >
                           {isPopular && (
-                            <span className="-top-2.5 right-3 absolute inline-flex items-center gap-1 rounded-[3px] bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white">
+                            <span className="-top-2.5 right-3 absolute inline-flex items-center gap-1 rounded-md bg-brand-orange px-2 py-0.5 text-[10px] font-bold text-white shadow-xs">
                               <Sparkles className="h-2.5 w-2.5" />
                               Phổ biến
                             </span>
@@ -245,7 +245,7 @@ export function StorageAddonPanel({
 
                           <div>
                             <div className="flex items-center justify-between">
-                              <span className="inline-flex items-center rounded-[3px] bg-brand-orange/15 px-2 py-0.5 text-xs font-bold text-brand-orange">
+                              <span className="inline-flex items-center rounded-md bg-brand-orange/15 px-2 py-0.5 text-xs font-bold text-brand-orange">
                                 +{gb} GB
                               </span>
                               <div
@@ -317,7 +317,7 @@ export function StorageAddonPanel({
                           }}
                           placeholder="VD: 50"
                           aria-label="Số GB muốn mua"
-                          className="h-9 w-28 rounded-[4px] border-[#d5dbdb] bg-background pr-9 text-xs font-bold tabular-nums focus:border-brand-orange focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none dark:border-border"
+                          className="h-9 w-28 rounded-lg border-border bg-background pr-9 text-xs font-bold tabular-nums focus:border-brand-orange focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
                         />
                         <span className="pointer-events-none absolute right-2.5 text-xs font-bold text-muted-foreground">
                           GB
@@ -337,9 +337,9 @@ export function StorageAddonPanel({
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-3 rounded-none border border-[#d5dbdb] bg-muted/25 px-4 py-3 dark:border-border sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-col gap-3 rounded-xl border border-border/70 bg-muted/25 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="text-xs text-muted-foreground">
-                      {canCheckout ? (
+                      {canCheckout && (
                         <div className="flex flex-wrap items-center gap-1.5">
                           <span>Gói đã chọn:</span>
                           <strong className="font-bold text-foreground">
@@ -350,8 +350,6 @@ export function StorageAddonPanel({
                             {effectivePriceVnd.toLocaleString("vi-VN")} ₫
                           </strong>
                         </div>
-                      ) : (
-                        <span>Nhập số GB hợp lệ (1 – 10.000 GB) hoặc chọn gói có sẵn</span>
                       )}
                     </div>
 
@@ -359,7 +357,7 @@ export function StorageAddonPanel({
                       type="button"
                       disabled={!canCheckout || submitting}
                       onClick={() => void handleCheckout()}
-                      className="h-9 gap-2 rounded-[4px] bg-brand-orange px-5 text-xs font-bold text-white shadow-none hover:bg-brand-orange/90"
+                      className="h-9 gap-2 rounded-lg bg-brand-orange px-5 text-xs font-bold text-white shadow-xs hover:bg-brand-orange/90"
                     >
                       {submitting ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -402,7 +400,7 @@ export function StorageAddonPanel({
                   setOrder(null);
                   onOpenChange(false);
                 }}
-                className="mt-2 rounded-[4px] bg-brand-orange px-6 text-xs font-semibold text-white hover:bg-brand-orange/90"
+                className="mt-2 rounded-lg bg-brand-orange px-6 text-xs font-semibold text-white hover:bg-brand-orange/90"
               >
                 Hoàn tất
               </Button>
@@ -410,7 +408,7 @@ export function StorageAddonPanel({
           ) : (
             /* 2-Column SePay QR Checkout View */
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <div className="flex flex-col items-center justify-center rounded-none border border-[#d5dbdb] bg-white p-4 text-center dark:border-border">
+              <div className="flex flex-col items-center justify-center rounded-xl border border-border/80 bg-white p-4 text-center dark:bg-card">
                 {currentOrder.qrUrl ? (
                   <img
                     src={currentOrder.qrUrl}
@@ -429,7 +427,7 @@ export function StorageAddonPanel({
               </div>
 
               <div className="flex flex-col justify-between space-y-3">
-                <div className="space-y-2.5 rounded-none border border-[#d5dbdb] bg-muted/30 p-4 text-xs dark:border-border">
+                <div className="space-y-2.5 rounded-xl border border-border/80 bg-muted/30 p-4 text-xs">
                   <div className="flex items-center justify-between gap-2 border-b border-border/60 pb-2">
                     <span className="shrink-0 text-muted-foreground">Gói nâng cấp</span>
                     <span className="font-bold text-brand-orange">
@@ -467,7 +465,7 @@ export function StorageAddonPanel({
                             currentOrder.transferContent,
                           )
                         }
-                        className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-[4px] bg-brand-orange px-2.5 py-1 text-[10px] font-bold text-white hover:bg-brand-orange/90"
+                        className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-lg bg-brand-orange px-2.5 py-1 text-[10px] font-bold text-white hover:bg-brand-orange/90"
                       >
                         {copiedField === "nội dung chuyển khoản" ? (
                           <Check className="h-3 w-3" />
@@ -477,7 +475,7 @@ export function StorageAddonPanel({
                         <span>Sao chép</span>
                       </button>
                     </div>
-                    <div className="rounded-none border border-brand-orange/30 bg-brand-orange/10 px-3 py-2">
+                    <div className="rounded-lg border border-brand-orange/30 bg-brand-orange/10 px-3 py-2">
                       <span className="block break-all font-mono text-xs font-extrabold tracking-wide text-brand-orange">
                         {currentOrder.transferContent}
                       </span>
@@ -490,7 +488,7 @@ export function StorageAddonPanel({
                   variant="outline"
                   size="sm"
                   onClick={() => setOrder(null)}
-                  className="w-full rounded-[4px] text-xs"
+                  className="w-full rounded-lg text-xs"
                 >
                   ← Chọn gói dung lượng khác
                 </Button>
