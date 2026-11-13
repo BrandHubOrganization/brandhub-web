@@ -149,7 +149,6 @@ export function ChatRichComposer(props: ChatRichComposerProps) {
         )}
         <div className="border-border focus-within:border-brand-orange/50 bg-card overflow-hidden rounded-xl border">
           {formatting && <ChatComposerToolbar editor={editor} />}
-          <ChatAttachmentDrafts draft={attachments} disabled={scheduling} />
           <div className="relative">
             {length === 0 && (
               <span

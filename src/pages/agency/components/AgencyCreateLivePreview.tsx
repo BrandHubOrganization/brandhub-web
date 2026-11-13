@@ -2,6 +2,7 @@ import React from "react";
 import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import { ProfileBannerHeader } from "@/components/shared/ProfileBannerHeader";
+import { DEFAULT_AGENCY_COVER } from "@/pages/agency/agencyDefaults";
 import { Eye, Globe, Phone, MapPin, type LucideIcon } from "lucide-react";
 
 interface AgencyCreateLivePreviewProps {
@@ -57,7 +58,7 @@ export const AgencyCreateLivePreview: React.FC<
 
       {/* Standardized Profile Header Card Preview */}
       <ProfileBannerHeader
-        bannerUrl={effectiveBannerUrl || null}
+        bannerUrl={effectiveBannerUrl || DEFAULT_AGENCY_COVER}
         bannerEmptyLabel={t("agency.detail.bannerEmptyLabel")}
         canEditBanner={false}
         canEditLogo={false}
