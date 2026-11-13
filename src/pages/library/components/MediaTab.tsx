@@ -99,6 +99,7 @@ function RepositoryMedia(props: MediaTabProps) {
   const [mediaKind, setMediaKind] = useState<MaterialMediaKind | undefined>();
   const [peopleFilter, setPeopleFilter] = useState<PeopleFilter>("ANY");
   const [modifiedFilter, setModifiedFilter] = useState<ModifiedFilter>("ANY");
+  const [modifiedFilterNow, setModifiedFilterNow] = useState(() => Date.now());
   const [sort, setSort] = useState<MaterialSort>("newest");
   const [viewMode, setViewMode] = useState<RepositoryViewMode>("grid");
 
@@ -157,7 +158,10 @@ function RepositoryMedia(props: MediaTabProps) {
     const map = new Map<string, string>();
     for (const member of members) {
       if (member.userId) {
-        map.set(member.userId, member.fullName || member.email || member.userId);
+        map.set(
+          member.userId,
+          member.fullName || member.email || member.userId,
+        );
       }
     }
     return map;
@@ -168,41 +172,7 @@ function RepositoryMedia(props: MediaTabProps) {
       setDebounced(search);
       setPage(0);
     }, 300);
-    const renderListFileRows = () =>
-    items.map((material) => (
-      <MaterialRepositoryCard
-        key={`${material.id}:${material.version}`}
-        material={material}
-        viewMode="list"
-        canDelete={canDelete(material)}
-        canPermanentDelete={canPermanentDelete(material)}
-        canRestore={canRestore(material)}
-        canPromoteDraft={canPromoteDraft(material)}
-        canMove={canMoveMaterial(material)}
-        canRename={canRename(material)}
-        hideDraftBadge={draftMode}
-        onSelect={setSelected}
-        onDownload={(target) => void downloader.download(target)}
-        onRename={setRenameTarget}
-        onWatermark={setWatermarkTarget}
-        onDelete={(target) => setConfirm(target)}
-        onPermanentDelete={(target) => setPurgeTarget(target)}
-        onRestore={(target) => repository.restore.mutate(target)}
-        onPromoteDraft={(target) => repository.promote.mutate(target)}
-        onMoveRequest={(target) => setMovingMaterial(target)}
-      />
-    ));
-
-  const unifiedListHandled =
-    Boolean(repository.workspace) &&
-    !trashMode &&
-    !draftMode &&
-    viewMode === "list" &&
-    !repository.forbidden &&
-    !repository.query.isError &&
-    !repository.query.isPending;
-
-  return () => clearTimeout(timer);
+    return () => clearTimeout(timer);
   }, [search]);
 
   useEffect(() => {
@@ -231,54 +201,21 @@ function RepositoryMedia(props: MediaTabProps) {
         const targetMember = members.find(
           (m) => m.userId === peopleFilter || m.id === peopleFilter,
         );
-        const renderListFileRows = () =>
-    items.map((material) => (
-      <MaterialRepositoryCard
-        key={`${material.id}:${material.version}`}
-        material={material}
-        viewMode="list"
-        canDelete={canDelete(material)}
-        canPermanentDelete={canPermanentDelete(material)}
-        canRestore={canRestore(material)}
-        canPromoteDraft={canPromoteDraft(material)}
-        canMove={canMoveMaterial(material)}
-        canRename={canRename(material)}
-        hideDraftBadge={draftMode}
-        onSelect={setSelected}
-        onDownload={(target) => void downloader.download(target)}
-        onRename={setRenameTarget}
-        onWatermark={setWatermarkTarget}
-        onDelete={(target) => setConfirm(target)}
-        onPermanentDelete={(target) => setPurgeTarget(target)}
-        onRestore={(target) => repository.restore.mutate(target)}
-        onPromoteDraft={(target) => repository.promote.mutate(target)}
-        onMoveRequest={(target) => setMovingMaterial(target)}
-      />
-    ));
-
-  const unifiedListHandled =
-    Boolean(repository.workspace) &&
-    !trashMode &&
-    !draftMode &&
-    viewMode === "list" &&
-    !repository.forbidden &&
-    !repository.query.isError &&
-    !repository.query.isPending;
-
-  return (
+        return (
           item.createdBy === peopleFilter ||
           (targetMember?.userId && item.createdBy === targetMember.userId) ||
-          (targetMember?.fullName && item.createdByName === targetMember.fullName)
+          (targetMember?.fullName &&
+            item.createdByName === targetMember.fullName)
         );
       });
     }
 
     if (modifiedFilter !== "ANY") {
-      const now = Date.now();
-      const startOfToday = new Date().setHours(0, 0, 0, 0);
+      const now = modifiedFilterNow;
+      const startOfToday = new Date(now).setHours(0, 0, 0, 0);
       const sevenDaysAgo = now - 7 * 86400000;
       const thirtyDaysAgo = now - 30 * 86400000;
-      const currentYear = new Date().getFullYear();
+      const currentYear = new Date(now).getFullYear();
 
       result = result.filter((item) => {
         const dateStr = item.updatedAt || item.createdAt;
@@ -300,7 +237,14 @@ function RepositoryMedia(props: MediaTabProps) {
     }
 
     return result;
-  }, [rawItems, peopleFilter, modifiedFilter, actorId, members]);
+  }, [
+    rawItems,
+    peopleFilter,
+    modifiedFilter,
+    modifiedFilterNow,
+    actorId,
+    members,
+  ]);
   const folders =
     repository.forbidden || repository.query.isError
       ? []
@@ -508,15 +452,15 @@ function RepositoryMedia(props: MediaTabProps) {
     >
       {/* Full-canvas Google Drive dropzone overlay when dragging OS files/folders */}
       {isExternalDragOver && (
-        <div className="pointer-events-none fixed inset-4 z-40 flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-brand-orange bg-brand-orange/10 backdrop-blur-xs">
-          <div className="flex flex-col items-center gap-2 rounded-2xl border border-brand-orange/30 bg-card/95 px-8 py-6 text-center shadow-xl">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-orange text-white shadow-md">
+        <div className="border-brand-orange bg-brand-orange/10 pointer-events-none fixed inset-4 z-40 flex flex-col items-center justify-center rounded-3xl border-2 border-dashed backdrop-blur-xs">
+          <div className="border-brand-orange/30 bg-card/95 flex flex-col items-center gap-2 rounded-2xl border px-8 py-6 text-center shadow-xl">
+            <div className="bg-brand-orange flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-md">
               <FolderUp className="h-6 w-6" />
             </div>
-            <p className="text-sm font-bold text-foreground">
+            <p className="text-foreground text-sm font-bold">
               Thả tệp hoặc thư mục từ thiết bị vào đây để tải lên
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Giữ nguyên cấu trúc thư mục và tự động chạy ngầm ở góc dưới phải
             </p>
           </div>
@@ -554,7 +498,10 @@ function RepositoryMedia(props: MediaTabProps) {
         members={members}
         currentUserId={actorId}
         modifiedFilter={modifiedFilter}
-        onModifiedFilterChange={setModifiedFilter}
+        onModifiedFilterChange={(value) => {
+          setModifiedFilterNow(Date.now());
+          setModifiedFilter(value);
+        }}
         folderId={folderId}
         tab={tab}
         onTabChange={(next) => {
@@ -581,18 +528,20 @@ function RepositoryMedia(props: MediaTabProps) {
                   variant="outline"
                   size="sm"
                   className={cn(
-                    "h-9 gap-1.5 rounded-lg border-border text-xs font-semibold shadow-2xs transition-all",
+                    "border-border h-9 gap-1.5 rounded-lg text-xs font-semibold shadow-2xs transition-all",
                     driveOpen
                       ? "border-brand-orange/60 bg-brand-orange/10 text-brand-orange"
                       : "bg-background text-foreground hover:border-brand-orange/40 hover:bg-brand-orange/5 hover:text-brand-orange",
                   )}
                 >
-                  <CloudDownload className="h-3.5 w-3.5 text-brand-orange" />
-                  <span>{t("library.simple.fromDrive", "Đồng bộ từ Google Drive")}</span>
+                  <CloudDownload className="text-brand-orange h-3.5 w-3.5" />
+                  <span>
+                    {t("library.simple.fromDrive", "Đồng bộ từ Google Drive")}
+                  </span>
                   <ChevronDown
                     className={cn(
-                      "h-3.5 w-3.5 text-muted-foreground transition-transform duration-200",
-                      driveOpen && "rotate-180 text-brand-orange",
+                      "text-muted-foreground h-3.5 w-3.5 transition-transform duration-200",
+                      driveOpen && "text-brand-orange rotate-180",
                     )}
                   />
                 </Button>
@@ -600,7 +549,7 @@ function RepositoryMedia(props: MediaTabProps) {
               <PopoverContent
                 align="end"
                 sideOffset={6}
-                className="w-[360px] sm:w-[460px] rounded-xl border border-border/80 bg-card p-2.5 shadow-xl"
+                className="border-border/80 bg-card w-[360px] rounded-xl border p-2.5 shadow-xl sm:w-[460px]"
               >
                 <CustomerDrivePanel
                   folderId={folderId ?? undefined}
@@ -626,7 +575,9 @@ function RepositoryMedia(props: MediaTabProps) {
           viewMode={viewMode}
           ownerNames={ownerNames}
           listChildren={
-            unifiedListHandled && items.length > 0 ? renderListFileRows() : undefined
+            unifiedListHandled && items.length > 0
+              ? renderListFileRows()
+              : undefined
           }
           onOpenFolder={(id) => {
             setFolderId(id);
@@ -645,8 +596,8 @@ function RepositoryMedia(props: MediaTabProps) {
             (currentRole === "OWNER" ||
               currentRole === "MANAGER" ||
               currentRole === "CREATOR") && (
-              <div className="flex items-center justify-between gap-3 rounded-xl border border-destructive/25 bg-destructive/5 px-4 py-2.5">
-                <span className="text-xs text-muted-foreground">
+              <div className="border-destructive/25 bg-destructive/5 flex items-center justify-between gap-3 rounded-xl border px-4 py-2.5">
+                <span className="text-muted-foreground text-xs">
                   {t(
                     "library.trash.quotaNotice",
                     "Xoá vĩnh viễn các mục trong thùng rác để giải phóng dung lượng lưu trữ.",
@@ -667,8 +618,8 @@ function RepositoryMedia(props: MediaTabProps) {
             )}
 
           {repository.query.isPending ? (
-            <div className="flex h-48 items-center justify-center rounded-xl border border-border/70 bg-card">
-              <Loader2 className="h-6 w-6 animate-spin text-brand-orange" />
+            <div className="border-border/70 bg-card flex h-48 items-center justify-center rounded-xl border">
+              <Loader2 className="text-brand-orange h-6 w-6 animate-spin" />
             </div>
           ) : (
             <MaterialTrashList
@@ -693,10 +644,10 @@ function RepositoryMedia(props: MediaTabProps) {
       ) : repository.forbidden || repository.query.isError ? (
         <div
           role="alert"
-          className="flex h-56 flex-col items-center justify-center gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-center"
+          className="border-destructive/30 bg-destructive/5 flex h-56 flex-col items-center justify-center gap-3 rounded-xl border p-6 text-center"
         >
-          <AlertCircle className="h-6 w-6 text-destructive" />
-          <p className="text-sm font-medium text-destructive">
+          <AlertCircle className="text-destructive h-6 w-6" />
+          <p className="text-destructive text-sm font-medium">
             {t(
               `library.repository.${repository.forbidden || forbidden ? "forbidden" : "loadError"}`,
               "Không thể tải danh sách tệp trong kho",
@@ -724,25 +675,28 @@ function RepositoryMedia(props: MediaTabProps) {
           {Array.from({ length: 8 }, (_, i) => (
             <div
               key={i}
-              className="rounded-xl border border-border/70 bg-card p-3"
+              className="border-border/70 bg-card rounded-xl border p-3"
               aria-hidden="true"
             >
-              <div className="aspect-[4/3] animate-pulse rounded-lg bg-muted" />
-              <div className="mt-3 h-4 w-3/4 animate-pulse rounded-md bg-muted" />
+              <div className="bg-muted aspect-[4/3] animate-pulse rounded-lg" />
+              <div className="bg-muted mt-3 h-4 w-3/4 animate-pulse rounded-md" />
             </div>
           ))}
         </div>
       ) : items.length === 0 ? (
         unifiedListHandled && folders.length > 0 ? null : (
-          <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border/80 bg-card p-6 text-center">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted">
-              <FolderOpen className="h-5 w-5 text-muted-foreground" />
+          <div className="border-border/80 bg-card flex h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed p-6 text-center">
+            <div className="bg-muted flex h-11 w-11 items-center justify-center rounded-xl">
+              <FolderOpen className="text-muted-foreground h-5 w-5" />
             </div>
-            <p className="text-sm font-semibold text-foreground">
+            <p className="text-foreground text-sm font-semibold">
               {draftMode
                 ? t("library.trash.emptyDrafts", "Chưa có bản nháp AI nào")
                 : search || mediaKind
-                  ? t("library.repository.emptySearch", "Không tìm thấy tệp phù hợp")
+                  ? t(
+                      "library.repository.emptySearch",
+                      "Không tìm thấy tệp phù hợp",
+                    )
                   : t(
                       "library.simple.emptyTitle",
                       "Chưa có tệp nào trong vị trí này",
@@ -754,7 +708,7 @@ function RepositoryMedia(props: MediaTabProps) {
         <div className="space-y-2.5">
           {viewMode === "grid" && (
             <div className="flex items-center justify-between px-1">
-              <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+              <span className="text-muted-foreground text-[11px] font-bold tracking-wider uppercase">
                 Tệp ({total})
               </span>
             </div>
@@ -787,15 +741,21 @@ function RepositoryMedia(props: MediaTabProps) {
               ))}
             </div>
           ) : (
-            <div className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xs">
+            <div className="divide-border/60 border-border/80 bg-card divide-y overflow-hidden rounded-xl border shadow-2xs">
               {/* List header */}
-              <div className="flex items-center gap-3 bg-muted/30 px-3.5 py-2.5 text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+              <div className="bg-muted/30 text-muted-foreground flex items-center gap-3 px-3.5 py-2.5 text-[11px] font-bold tracking-wider uppercase">
                 <span className="w-4 shrink-0" />
                 <span className="w-9 shrink-0" />
                 <span className="min-w-0 flex-1 whitespace-nowrap">Tên</span>
-                <span className="hidden w-[130px] shrink-0 whitespace-nowrap sm:block">Chủ sở hữu</span>
-                <span className="hidden w-[110px] shrink-0 whitespace-nowrap sm:block">Ngày sửa đổi</span>
-                <span className="hidden w-[90px] shrink-0 text-right whitespace-nowrap sm:block">Kích thước</span>
+                <span className="hidden w-[130px] shrink-0 whitespace-nowrap sm:block">
+                  Chủ sở hữu
+                </span>
+                <span className="hidden w-[110px] shrink-0 whitespace-nowrap sm:block">
+                  Ngày sửa đổi
+                </span>
+                <span className="hidden w-[90px] shrink-0 text-right whitespace-nowrap sm:block">
+                  Kích thước
+                </span>
                 <span className="w-8 shrink-0" />
               </div>
               {renderListFileRows()}
@@ -807,7 +767,7 @@ function RepositoryMedia(props: MediaTabProps) {
       {/* Pagination */}
       {total > 20 && (
         <div className="flex items-center justify-between gap-3 pt-2">
-          <span className="text-xs tabular-nums text-muted-foreground">
+          <span className="text-muted-foreground text-xs tabular-nums">
             {t("library.simple.page", {
               page: page + 1,
               total: Math.ceil(total / 20),

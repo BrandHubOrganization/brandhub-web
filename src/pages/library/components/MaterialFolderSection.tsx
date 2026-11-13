@@ -326,7 +326,7 @@ export function MaterialFolderSection({
                           onClick={() => onOpenFolder(folder.id)}
                           className="text-left"
                         >
-                          <p className="truncate text-xs font-semibold text-foreground group-hover:underline">
+                          <p className="truncate text-xs font-semibold text-foreground">
                             {folder.name}
                           </p>
                           {isDropOver && (
@@ -579,7 +579,7 @@ export function MaterialFolderSection({
                         <Folder className="h-4 w-4 fill-current" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-xs font-semibold text-foreground group-hover:underline">
+                        <p className="truncate text-xs font-semibold text-foreground">
                           {folder.name}
                         </p>
                         {isDropOver && (
