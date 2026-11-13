@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Pagination } from "@/components/ui/pagination";
 import type { useDirectory } from "../hooks/useDirectory";
 import { PartnerList } from "./PartnerList";
 import type { DirectoryPartner } from "../types";
@@ -184,15 +183,9 @@ export function DirectoryResults({
         onEdit={onEdit}
         onAction={onAction}
       />
-      <Pagination
-        page={state.page + 1}
-        totalPages={state.data.totalPages}
-        total={state.data.totalElements}
-        size={state.data.size}
-        isFetching={state.busy}
-        onPageChange={(page) => state.setPage(page - 1)}
-        itemLabel={t("collaborators.title").toLowerCase()}
-      />
+      <div className="text-muted-foreground text-center text-xs py-3">
+        {state.data.totalElements} {t("collaborators.title").toLowerCase()}
+      </div>
     </div>
   );
 }
