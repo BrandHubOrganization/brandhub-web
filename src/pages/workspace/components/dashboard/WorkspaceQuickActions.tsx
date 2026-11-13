@@ -133,7 +133,7 @@ export function WorkspaceQuickActions({
                   className="border-border hover:border-brand-orange/40 hover:bg-muted/40 flex items-center justify-between rounded-xl border p-3 text-left transition-colors cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex size-8 items-center justify-center rounded-lg bg-slate-500/10 text-slate-600">
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-slate-500/10 text-slate-600 dark:text-slate-400">
                       <Settings className="size-4" />
                     </div>
                     <div>

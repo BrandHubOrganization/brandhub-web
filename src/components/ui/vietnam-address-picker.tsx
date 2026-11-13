@@ -134,7 +134,7 @@ function SearchableSelect({
             type="button"
             disabled={disabled}
             className={cn(
-              "border-input bg-input-background text-foreground focus-visible:border-ring focus-visible:ring-ring/50",
+              "border-input bg-input-background dark:bg-input/30 text-foreground focus-visible:border-ring focus-visible:ring-ring/50",
               "flex h-9 w-full items-center justify-between rounded-md border px-3 py-1 text-sm outline-none",
               "transition-colors focus-visible:ring-[3px]",
               disabled && "bg-muted/40 cursor-not-allowed opacity-50",

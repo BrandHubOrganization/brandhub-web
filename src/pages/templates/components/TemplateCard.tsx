@@ -88,8 +88,8 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
         <div className="mb-4 flex flex-wrap items-center gap-1.5">
           {template.targetPlatforms.map((p) => {
             const pInfo = PLATFORM_COLOR_MAP[p] || {
-              bg: "bg-zinc-100",
-              text: "text-zinc-700",
+              bg: "bg-zinc-100 dark:bg-zinc-800",
+              text: "text-zinc-700 dark:text-zinc-300",
               label: p,
             };
             return (
