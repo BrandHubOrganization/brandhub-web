@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { ALL_ROLES } from "../hooks/useWorkspaceMembers";
 import type { MemberRole } from "@/types/workspace";
-import { InviteMessagePresets } from "@/components/shared/InviteMessagePresets";
+import { MailTemplateSelector } from "@/components/shared/MailTemplateSelector";
 import { InvitationMailPreview } from "@/components/shared/InvitationMailPreview";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAgencyStore } from "@/store/agencyStore";
@@ -32,6 +32,9 @@ interface Props {
   onSubmit: (e: React.FormEvent) => void;
   workspaceName?: string | null;
   agencyName?: string | null;
+  workspaceId?: string | null;
+  agencyId?: string | null;
+  selectedTemplateId?: string | null;
 }
 
 export function InviteMemberDialog({
@@ -47,6 +50,9 @@ export function InviteMemberDialog({
   onSubmit,
   workspaceName,
   agencyName,
+  workspaceId,
+  agencyId,
+  selectedTemplateId,
 }: Props) {
   const { t } = useTranslation();
   const currentWorkspace = useWorkspaceStore((s) => s.currentWorkspace);
@@ -57,6 +63,8 @@ export function InviteMemberDialog({
 
   const effectiveWorkspaceName = workspaceName || currentWorkspace?.name;
   const effectiveAgencyName = agencyName || currentAgency?.name;
+  const effectiveWorkspaceId = workspaceId || currentWorkspace?.id;
+  const effectiveAgencyId = agencyId || currentAgency?.id;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -123,10 +131,25 @@ export function InviteMemberDialog({
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold tracking-wide">
-                {t("workspace.members.noteLabel")}
-              </Label>
-              <InviteMessagePresets onPick={onNoteChange} />
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <Label className="text-xs font-semibold tracking-wide">
+                  {t("workspace.members.noteLabel")}
+                </Label>
+                <MailTemplateSelector
+                  workspaceId={effectiveWorkspaceId}
+                  agencyId={effectiveAgencyId}
+                  scope="WORKSPACE_MANAGER"
+                  selectedTemplateId={selectedTemplateId}
+                  onSelectNote={onNoteChange}
+                  contextVariables={{
+                    agencyName: effectiveAgencyName,
+                    workspaceName: effectiveWorkspaceName,
+                    role: t(`workspace.roles.${role}`),
+                    inviteeName: userMatch?.fullName,
+                  }}
+                  showPresets={true}
+                />
+              </div>
               <Textarea
                 value={note}
                 onChange={(e) => onNoteChange(e.target.value)}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
@@ -15,6 +15,10 @@ import type { MemberRole, WorkspaceMember } from "@/types/workspace";
 export function useWorkspaceClients() {
   const { t } = useTranslation();
   const { id: workspaceId } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const urlInvite = searchParams.get("invite");
+  const urlTemplateId = searchParams.get("templateId");
+
   const currentUserId = useAuthStore((s) => s.user?.id);
   const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const workspaceInStore = useWorkspaceStore((s) =>
@@ -37,6 +41,12 @@ export function useWorkspaceClients() {
   const [viewingClient, setViewingClient] = useState<WorkspaceMember | null>(
     null,
   );
+
+  useEffect(() => {
+    if (urlInvite === "true" || urlTemplateId) {
+      setAddClientOpen(true);
+    }
+  }, [urlInvite, urlTemplateId]);
 
   const loadMembers = useCallback(() => setReloadCount((c) => c + 1), []);
 
@@ -111,5 +121,6 @@ export function useWorkspaceClients() {
     handleRemove,
     viewingClient,
     setViewingClient,
+    urlTemplateId,
   };
 }

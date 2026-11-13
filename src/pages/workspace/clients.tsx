@@ -54,6 +54,7 @@ export function WorkspaceClientsPage() {
             workspaceName={state.workspaceName}
             agencyName={state.agencyName}
             onInvited={state.loadMembers}
+            selectedTemplateId={state.urlTemplateId}
           />
         )}
 

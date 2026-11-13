@@ -9,6 +9,7 @@
     "ALL": "Tất cả",
     "SYSTEM_DEFAULT": "Hệ thống",
     "CUSTOM": "Tùy chỉnh",
+    "INVITATION": "Thư mời",
     "CAMPAIGN_BROADCAST": "Chiến dịch",
     "WORKSPACE_MANAGER": "Nội bộ Workspace"
   },
@@ -59,7 +60,11 @@
     "send": "Gửi",
     "edit": "Sửa",
     "delete": "Xóa",
-    "use": "Dùng mẫu"
+    "use": "Dùng mẫu",
+    "inviteMember": "Mời thành viên",
+    "inviteClient": "Mời khách hàng",
+    "inviteAgencyMember": "Mời TV Agency",
+    "inviteWsMember": "Mời TV Workspace"
   },
   "confirmDelete": {
     "title": "Xóa mẫu email?",

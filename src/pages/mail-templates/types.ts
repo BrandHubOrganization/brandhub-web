@@ -5,7 +5,8 @@ export type MailTemplateCategory =
   | "SYSTEM_DEFAULT"
   | "CUSTOM"
   | "CAMPAIGN_BROADCAST"
-  | "WORKSPACE_MANAGER";
+  | "WORKSPACE_MANAGER"
+  | "INVITATION";
 
 export type MailTemplateSort =
   | "CREATED_DESC"

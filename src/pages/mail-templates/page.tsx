@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Copy, Pencil, Send, Trash2 } from "lucide-react";
+import { Copy, Pencil, Send, Trash2, UserCheck, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Badge } from "@/components/ui/badge";
@@ -65,22 +65,43 @@ function Panel({ workspaceId }: { workspaceId: string }) {
     return Array.from(map.values());
   }, [data?.content, agencyRows]);
 
+  const isInviteTemplate = useCallback((r: MailTemplateSummary) => {
+    return (
+      r.scope === "AGENCY_INTERNAL" ||
+      r.scope === "AGENCY_CLIENT" ||
+      r.name.toLowerCase().includes("mời") ||
+      r.name.toLowerCase().includes("invite") ||
+      r.name.toLowerCase().includes("gia nhập") ||
+      r.subject.toLowerCase().includes("mời") ||
+      r.subject.toLowerCase().includes("invite")
+    );
+  }, []);
+
   const categoryCounts = useMemo<Record<MailTemplateCategory, number>>(() => {
-    let all = 0, system = 0, custom = 0, campaign = 0, ws = 0;
+    let all = 0, system = 0, custom = 0, campaign = 0, ws = 0, invite = 0;
     for (const r of allRows) {
       all++;
       if (r.type === "SYSTEM_DEFAULT") system++;
       if (r.type === "CUSTOM") custom++;
       if (r.scope === "CAMPAIGN_BROADCAST") campaign++;
       if (r.scope === "WORKSPACE_MANAGER") ws++;
+      if (isInviteTemplate(r)) invite++;
     }
-    return { ALL: all, SYSTEM_DEFAULT: system, CUSTOM: custom, CAMPAIGN_BROADCAST: campaign, WORKSPACE_MANAGER: ws };
-  }, [allRows]);
+    return {
+      ALL: all,
+      SYSTEM_DEFAULT: system,
+      CUSTOM: custom,
+      INVITATION: invite,
+      CAMPAIGN_BROADCAST: campaign,
+      WORKSPACE_MANAGER: ws,
+    };
+  }, [allRows, isInviteTemplate]);
 
   const sortedRows = useMemo(() => {
     const filtered = allRows.filter((r) => {
       if (category === "SYSTEM_DEFAULT") return r.type === "SYSTEM_DEFAULT";
       if (category === "CUSTOM") return r.type === "CUSTOM";
+      if (category === "INVITATION") return isInviteTemplate(r);
       if (category === "CAMPAIGN_BROADCAST") return r.scope === "CAMPAIGN_BROADCAST";
       if (category === "WORKSPACE_MANAGER") return r.scope === "WORKSPACE_MANAGER";
       return true;
@@ -152,6 +173,11 @@ function Panel({ workspaceId }: { workspaceId: string }) {
                   <h3 className="font-medium break-words">{row.name}</h3>
                   {row.type === "SYSTEM_DEFAULT" && <Badge variant="secondary">{t("mailTemplate.systemBadge")}</Badge>}
                   {row.scope && <Badge variant="outline">{t(`mailTemplate.scopes.${row.scope}`)}</Badge>}
+                  {isInviteTemplate(row) && (
+                    <Badge variant="outline" className="border-brand-orange/40 bg-brand-orange/5 text-brand-orange text-3xs font-medium">
+                      {t("mailTemplate.categories.INVITATION", "Thư mời")}
+                    </Badge>
+                  )}
                   {row.attachmentCount > 0 && (
                     <span className="text-muted-foreground text-xs">{t("mailTemplate.attachmentCount", { count: row.attachmentCount })}</span>
                   )}
@@ -159,7 +185,42 @@ function Panel({ workspaceId }: { workspaceId: string }) {
                 <p className="text-muted-foreground truncate text-sm">{row.subject}</p>
                 <p className="text-muted-foreground text-xs">{new Date(row.createdAt).toLocaleDateString(i18n.language)}</p>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Dedicated Invitation Workflow Action */}
+                {row.scope === "AGENCY_INTERNAL" || (isInviteTemplate(row) && /agency.*thành viên|gia nhập công ty|thành viên agency/i.test(row.name)) ? (
+                  agencyId ? (
+                    <Button
+                      size="sm"
+                      variant="orange"
+                      className="gap-1.5 cursor-pointer shadow-xs"
+                      onClick={() => navigate(`/agency/${agencyId}/members?templateId=${row.id}`)}
+                    >
+                      <UserPlus className="size-3.5" />
+                      {t("mailTemplate.actions.inviteMember", "Mời thành viên")}
+                    </Button>
+                  ) : null
+                ) : row.scope === "AGENCY_CLIENT" || (isInviteTemplate(row) && /khách hàng|client/i.test(row.name)) ? (
+                  <Button
+                    size="sm"
+                    variant="orange"
+                    className="gap-1.5 cursor-pointer shadow-xs"
+                    onClick={() => navigate(`/workspaces/${workspaceId}/clients?invite=true&templateId=${row.id}`)}
+                  >
+                    <UserCheck className="size-3.5" />
+                    {t("mailTemplate.actions.inviteClient", "Mời khách hàng")}
+                  </Button>
+                ) : isInviteTemplate(row) ? (
+                  <Button
+                    size="sm"
+                    variant="orange"
+                    className="gap-1.5 cursor-pointer shadow-xs"
+                    onClick={() => navigate(`/workspaces/${workspaceId}/members?invite=true&templateId=${row.id}`)}
+                  >
+                    <UserPlus className="size-3.5" />
+                    {t("mailTemplate.actions.inviteMember", "Mời thành viên")}
+                  </Button>
+                ) : null}
+
                 <Button size="sm" variant="outline" onClick={() => setSendFor(row)}>
                   <Send className="size-3.5" />{t("mailTemplate.actions.send")}
                 </Button>

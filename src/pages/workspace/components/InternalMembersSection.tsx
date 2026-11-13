@@ -54,6 +54,7 @@ export function InternalMembersSection({
   handleLeave,
   leaveOpen,
   setLeaveOpen,
+  urlTemplateId,
 }: Props) {
   const { t } = useTranslation();
 
@@ -102,6 +103,8 @@ export function InternalMembersSection({
         onNoteChange={setInviteNote}
         submitting={inviting}
         onSubmit={handleInvite}
+        agencyId={agencyId}
+        selectedTemplateId={urlTemplateId}
       />
 
       <RemoveMemberDialog

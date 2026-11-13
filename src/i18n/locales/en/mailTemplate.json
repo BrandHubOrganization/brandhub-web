@@ -9,6 +9,7 @@
     "ALL": "All",
     "SYSTEM_DEFAULT": "System",
     "CUSTOM": "Custom",
+    "INVITATION": "Invitations",
     "CAMPAIGN_BROADCAST": "Campaign",
     "WORKSPACE_MANAGER": "Workspace Internal"
   },
@@ -59,7 +60,11 @@
     "send": "Send",
     "edit": "Edit",
     "delete": "Delete",
-    "use": "Use template"
+    "use": "Use template",
+    "inviteMember": "Invite Member",
+    "inviteClient": "Invite Client",
+    "inviteAgencyMember": "Invite Agency Member",
+    "inviteWsMember": "Invite Workspace Member"
   },
   "confirmDelete": {
     "title": "Delete this template?",

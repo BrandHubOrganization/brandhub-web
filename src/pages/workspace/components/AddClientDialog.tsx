@@ -17,6 +17,7 @@ import { workspaceService } from "@/services/workspaceService";
 import { extractErrorMessage } from "@/utils/error";
 import type { InviteLookupResponse } from "@/types/agency";
 import { InvitationMailPreview } from "@/components/shared/InvitationMailPreview";
+import { MailTemplateSelector } from "@/components/shared/MailTemplateSelector";
 import { Mail, UserCheck } from "lucide-react";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,6 +30,7 @@ interface Props {
   workspaceName: string | null;
   agencyName: string | null;
   onInvited: () => void;
+  selectedTemplateId?: string | null;
 }
 
 // Gmail-based: nhập email người đại diện, hệ thống gợi ý inline nếu email đã
@@ -43,6 +45,7 @@ export function AddClientDialog({
   workspaceName,
   agencyName,
   onInvited,
+  selectedTemplateId,
 }: Props) {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
@@ -54,22 +57,24 @@ export function AddClientDialog({
 
   useEffect(() => {
     if (open) {
-      setNote(
-        t("workspace.members.addClientNoteTemplate", {
-          agency:
-            agencyName ?? t("workspace.members.addClientNoteFallbackAgency"),
-          workspace:
-            workspaceName ??
-            t("workspace.members.addClientNoteFallbackWorkspace"),
-        }),
-      );
+      if (!selectedTemplateId) {
+        setNote(
+          t("workspace.members.addClientNoteTemplate", {
+            agency:
+              agencyName ?? t("workspace.members.addClientNoteFallbackAgency"),
+            workspace:
+              workspaceName ??
+              t("workspace.members.addClientNoteFallbackWorkspace"),
+          }),
+        );
+      }
     } else {
       setEmail("");
       setNote("");
       setLookup(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, agencyName, workspaceName]);
+  }, [open, agencyName, workspaceName, selectedTemplateId]);
 
   useEffect(() => {
     if (!EMAIL_RE.test(debouncedEmail)) {
@@ -171,9 +176,25 @@ export function AddClientDialog({
             )}
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold tracking-wide text-foreground">
-                {t("workspace.members.noteLabel", "Lời nhắn (tuỳ chọn)")}
-              </label>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="text-xs font-semibold tracking-wide text-foreground">
+                  {t("workspace.members.noteLabel", "Lời nhắn (tuỳ chọn)")}
+                </label>
+                <MailTemplateSelector
+                  workspaceId={workspaceId}
+                  agencyId={agencyId}
+                  scope="AGENCY_CLIENT"
+                  selectedTemplateId={selectedTemplateId}
+                  onSelectNote={setNote}
+                  contextVariables={{
+                    agencyName,
+                    workspaceName,
+                    role: "Khách hàng (Client)",
+                    inviteeName: userMatch?.fullName,
+                  }}
+                  showPresets={true}
+                />
+              </div>
               <Textarea
                 placeholder={t("workspace.members.inviteNotePlaceholder")}
                 value={note}

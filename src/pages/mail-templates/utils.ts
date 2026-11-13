@@ -167,7 +167,22 @@ export function htmlToPlainText(html: string): string {
     .trim();
 }
 
-const KNOWN_VARIABLES = ["name", "workspaceName", "senderName", "clientName", "company", "campaign"];
+const KNOWN_VARIABLES = [
+  "name",
+  "workspaceName",
+  "senderName",
+  "clientName",
+  "company",
+  "campaign",
+  "inviteeName",
+  "inviterName",
+  "agencyName",
+  "role",
+  "inviteLink",
+  "expiryDays",
+  "note",
+  "contactEmail",
+];
 const SAMPLE_VALUES: Record<string, string> = {
   name: "An",
   workspaceName: "Your Workspace",
@@ -175,6 +190,14 @@ const SAMPLE_VALUES: Record<string, string> = {
   ctaSiteUrl: "#",
   ctaCampaignUrl: "#",
   ctaClientUrl: "#",
+  inviteeName: "Nguyễn Văn A",
+  inviterName: "Nguyễn Quản Lý",
+  agencyName: "AIM Academy Agency",
+  role: "Thành viên",
+  inviteLink: "#",
+  expiryDays: "30",
+  note: "Rất mong được hợp tác cùng bạn trong các dự án sắp tới.",
+  contactEmail: "contact@agency.com",
 };
 
 export function escapeHtml(value: string): string {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
@@ -22,6 +22,10 @@ export const ALL_ROLES: MemberRole[] = [
 export function useWorkspaceMembers() {
   const { t } = useTranslation();
   const { id: workspaceId } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const urlInvite = searchParams.get("invite");
+  const urlTemplateId = searchParams.get("templateId");
+
   const currentUserId = useAuthStore((s) => s.user?.id);
   const currentMemberRole = useWorkspaceStore((s) => s.currentMemberRole);
   const workspaceInStore = useWorkspaceStore((s) =>
@@ -49,6 +53,12 @@ export function useWorkspaceMembers() {
   const [updatingRole, setUpdatingRole] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
+
+  useEffect(() => {
+    if (urlInvite === "true" || urlTemplateId) {
+      setInviteOpen(true);
+    }
+  }, [urlInvite, urlTemplateId]);
 
   const loadMembers = useCallback(() => setReloadCount((c) => c + 1), []);
 
@@ -215,5 +225,6 @@ export function useWorkspaceMembers() {
     handleLeave,
     leaveOpen,
     setLeaveOpen,
+    urlTemplateId,
   };
 }

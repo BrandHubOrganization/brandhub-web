@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
@@ -36,9 +36,10 @@ import {
   InviteEmailFields,
   type InviteEmailLanguage,
 } from "./components/InviteEmailFields";
+import { InvitationMailPreview } from "@/components/shared/InvitationMailPreview";
 import { Select } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { AgencyMember, AgencyMemberRole } from "@/types/agency";
+import type { Agency, AgencyMember, AgencyMemberRole } from "@/types/agency";
 import type { MemberRole, Workspace } from "@/types/workspace";
 import type { TFunction } from "i18next";
 
@@ -120,6 +121,14 @@ export function AgencyMembersPage() {
   const navigate = useNavigate();
   const currentUser = useAuthStore((s) => s.user);
   const setCurrentAgencyId = useAgencyStore((s) => s.setCurrentAgencyId);
+  const currentAgency = useAgencyStore((s) =>
+    s.agencyList.find((a) => a.id === id),
+  );
+  const [agencyDetail, setAgencyDetail] = useState<Agency | null>(null);
+
+  const [searchParams] = useSearchParams();
+  const queryTemplateId = searchParams.get("templateId");
+
   const [members, setMembers] = useState<AgencyMember[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
   const [memberRows, setMemberRows] = useState<MemberRow[]>([]);
@@ -131,8 +140,13 @@ export function AgencyMembersPage() {
   const [memberViewMode, setMemberViewMode] = useState<"list" | "tree">("list");
 
   useEffect(() => {
-    if (id) setCurrentAgencyId(id);
+    if (id) {
+      setCurrentAgencyId(id);
+      agencyService.getById(id).then(({ data }) => setAgencyDetail(data.data)).catch(() => {});
+    }
   }, [id, setCurrentAgencyId]);
+
+  const effectiveAgency = agencyDetail || currentAgency;
 
   const [email, setEmail] = useState("");
   const [inviteeName, setInviteeName] = useState("");
@@ -516,229 +530,261 @@ export function AgencyMembersPage() {
     >
       <div className="space-y-6">
         {isOwner && (
-          <div className="rounded-xl border p-5">
-            <p className="mb-3 flex items-center gap-1.5 text-sm font-semibold">
-              <UserPlus className="size-4" /> {t("agency.members.inviteTitle")}
+          <div className="bg-card rounded-2xl border p-5 shadow-xs">
+            <p className="mb-4 flex items-center gap-1.5 text-sm font-semibold">
+              <UserPlus className="size-4 text-brand-orange" /> {t("agency.members.inviteTitle")}
             </p>
-            <form onSubmit={handleInvite} className="space-y-3">
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div>
-                  <Input
-                    label={t("agency.members.emailLabel")}
-                    type="email"
-                    placeholder={t("agency.members.emailPlaceholder")}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Input
-                    label={t("agency.members.inviteeNameLabel")}
-                    placeholder={t("agency.members.inviteeNamePlaceholder")}
-                    value={inviteeName}
-                    onChange={(e) => setInviteeName(e.target.value)}
-                  />
-                </div>
-
-                {userMatch && (
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      setInviteeName(userMatch.fullName);
-                      toast.success(
-                        t("agency.members.nameApplied", {
-                          name: userMatch.fullName,
-                        }),
-                      );
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        setInviteeName(userMatch.fullName);
-                      }
-                    }}
-                    className={cn(
-                      "col-span-1 flex cursor-pointer flex-col justify-between gap-3 rounded-xl border p-3.5 shadow-xs transition-all sm:col-span-2 sm:flex-row sm:items-center",
-                      inviteeName.trim() === userMatch.fullName
-                        ? "border-emerald-500/40 bg-emerald-500/5 dark:bg-emerald-950/20"
-                        : "border-brand-orange/40 bg-brand-orange/5 hover:bg-brand-orange/10",
-                    )}
-                  >
-                    <div className="flex min-w-0 items-center gap-3">
-                      <SafeAvatar
-                        src={userMatch.avatarUrl}
-                        name={userMatch.fullName}
-                        className="border-background size-11 shrink-0 border-2 shadow-xs"
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="lg:col-span-6 space-y-3">
+                <form onSubmit={handleInvite} className="space-y-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div>
+                      <Input
+                        label={t("agency.members.emailLabel")}
+                        type="email"
+                        placeholder={t("agency.members.emailPlaceholder")}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
                       />
-                      <div className="min-w-0 space-y-1">
-                        <div className="flex flex-wrap items-center gap-1.5">
-                          <span className="text-foreground truncate text-sm font-semibold">
-                            {userMatch.fullName}
-                          </span>
-                          <span className="text-3xs inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-                            <CheckCircle2 className="size-3 shrink-0" />
-                            {t("agency.members.userMatchBadge")}
-                          </span>
+                    </div>
+                    <div>
+                      <Input
+                        label={t("agency.members.inviteeNameLabel")}
+                        placeholder={t("agency.members.inviteeNamePlaceholder")}
+                        value={inviteeName}
+                        onChange={(e) => setInviteeName(e.target.value)}
+                      />
+                    </div>
+
+                    {userMatch && (
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          setInviteeName(userMatch.fullName);
+                          toast.success(
+                            t("agency.members.nameApplied", {
+                              name: userMatch.fullName,
+                            }),
+                          );
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            setInviteeName(userMatch.fullName);
+                          }
+                        }}
+                        className={cn(
+                          "col-span-1 flex cursor-pointer flex-col justify-between gap-3 rounded-xl border p-3.5 shadow-xs transition-all sm:col-span-2 sm:flex-row sm:items-center",
+                          inviteeName.trim() === userMatch.fullName
+                            ? "border-emerald-500/40 bg-emerald-500/5 dark:bg-emerald-950/20"
+                            : "border-brand-orange/40 bg-brand-orange/5 hover:bg-brand-orange/10",
+                        )}
+                      >
+                        <div className="flex min-w-0 items-center gap-3">
+                          <SafeAvatar
+                            src={userMatch.avatarUrl}
+                            name={userMatch.fullName}
+                            className="border-background size-11 shrink-0 border-2 shadow-xs"
+                          />
+                          <div className="min-w-0 space-y-1">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <span className="text-foreground truncate text-sm font-semibold">
+                                {userMatch.fullName}
+                              </span>
+                              <span className="text-3xs inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                                <CheckCircle2 className="size-3 shrink-0" />
+                                {t("agency.members.userMatchBadge")}
+                              </span>
+                            </div>
+                            <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                              <span className="flex items-center gap-1">
+                                <Mail className="size-3 shrink-0" />
+                                {userMatch.email}
+                              </span>
+                              {userMatch.professionalTitle && (
+                                <span className="flex items-center gap-1">
+                                  <Briefcase className="size-3 shrink-0" />
+                                  {userMatch.professionalTitle}
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                          <span className="flex items-center gap-1">
-                            <Mail className="size-3 shrink-0" />
-                            {userMatch.email}
-                          </span>
-                          {userMatch.professionalTitle && (
-                            <span className="flex items-center gap-1">
-                              <Briefcase className="size-3 shrink-0" />
-                              {userMatch.professionalTitle}
+
+                        <div className="flex shrink-0 items-center justify-end">
+                          {inviteeName.trim() === userMatch.fullName ? (
+                            <span className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                              <Check className="size-3.5" />
+                              {t("agency.members.userMatchApplied")}
                             </span>
+                          ) : (
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white shadow-xs"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setInviteeName(userMatch.fullName);
+                                toast.success(
+                                  t("agency.members.nameApplied", {
+                                    name: userMatch.fullName,
+                                  }),
+                                );
+                              }}
+                            >
+                              <Sparkles className="size-3.5" />
+                              {t("agency.members.clickToFillName")}
+                            </Button>
                           )}
                         </div>
                       </div>
+                    )}
+                  </div>
+                  <InviteEmailFields
+                    language={emailLanguage}
+                    note={note}
+                    onLanguageChange={setEmailLanguage}
+                    onNoteChange={(value) =>
+                      setNotes((previous) => ({
+                        ...previous,
+                        [emailLanguage]: value,
+                      }))
+                    }
+                    agencyId={id}
+                    workspaceId={workspaces[0]?.id}
+                    selectedTemplateId={queryTemplateId}
+                    contextVariables={{
+                      agencyName: effectiveAgency?.name,
+                      senderName: currentUser?.name,
+                      inviteeName,
+                      role: inviteRole,
+                      workspaceName: workspaces.find((w) => w.id === inviteWorkspaceId)?.name,
+                    }}
+                  />
+                  <div className="max-w-50">
+                    <label className="text-foreground mb-1 block text-xs font-medium">
+                      {t("agency.members.expiryLabel")}
+                    </label>
+                    <Input
+                      type="number"
+                      min={MIN_EXPIRY_DAYS}
+                      max={MAX_EXPIRY_DAYS}
+                      value={expiryDays}
+                      onChange={(e) =>
+                        setExpiryDays(
+                          Math.min(
+                            MAX_EXPIRY_DAYS,
+                            Math.max(
+                              MIN_EXPIRY_DAYS,
+                              Number(e.target.value) || MIN_EXPIRY_DAYS,
+                            ),
+                          ),
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="text-foreground mb-1 block text-xs font-medium">
+                        {t("agency.members.assignWorkspaceLabel")}
+                      </label>
+                      <Select
+                        value={inviteWorkspaceId}
+                        disabled={workspaces.length === 0}
+                        onChange={(e) => {
+                          const nextWsId = e.target.value;
+                          setInviteWorkspaceId(nextWsId);
+                          if (!nextWsId) setInviteRole("");
+                        }}
+                      >
+                        <option value="">
+                          {workspaces.length === 0
+                            ? t("agency.members.assignWorkspaceEmpty")
+                            : t("agency.members.assignWorkspaceNone")}
+                        </option>
+                        {workspaces.map((w) => (
+                          <option key={w.id} value={w.id}>
+                            {w.name}
+                          </option>
+                        ))}
+                      </Select>
                     </div>
-
-                    <div className="flex shrink-0 items-center justify-end">
-                      {inviteeName.trim() === userMatch.fullName ? (
-                        <span className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                          <Check className="size-3.5" />
-                          {t("agency.members.userMatchApplied")}
-                        </span>
-                      ) : (
-                        <Button
-                          type="button"
-                          size="sm"
-                          className="bg-brand-orange hover:bg-brand-orange/90 cursor-pointer gap-1.5 text-xs text-white shadow-xs"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setInviteeName(userMatch.fullName);
-                            toast.success(
-                              t("agency.members.nameApplied", {
-                                name: userMatch.fullName,
-                              }),
-                            );
-                          }}
-                        >
-                          <Sparkles className="size-3.5" />
-                          {t("agency.members.clickToFillName")}
-                        </Button>
-                      )}
+                    <div>
+                      <label className="text-foreground mb-1 block text-xs font-medium">
+                        {t("agency.members.assignRoleLabel")}
+                      </label>
+                      <Select
+                        value={inviteWorkspaceId ? inviteRole : ""}
+                        disabled={!inviteWorkspaceId}
+                        onChange={(e) => {
+                          setInviteRole(e.target.value as MemberRole | "");
+                        }}
+                      >
+                        {!inviteWorkspaceId ? (
+                          <option value="">
+                            {t("agency.members.assignRoleOnlyAgency")}
+                          </option>
+                        ) : (
+                          <>
+                            <option value="">
+                              {t("agency.members.assignRolePlaceholder")}
+                            </option>
+                            {ASSIGNABLE_ROLES.map((r) => (
+                              <option key={r} value={r}>
+                                {t(`workspace.roles.${r}`)}
+                              </option>
+                            ))}
+                          </>
+                        )}
+                      </Select>
                     </div>
+                  </div>
+                  <Button
+                    type="submit"
+                    variant="orange"
+                    loading={inviting}
+                    className="cursor-pointer gap-1.5 shadow-xs"
+                  >
+                    <Mail className="size-4" />
+                    {t("agency.members.sendInvite")}
+                  </Button>
+                </form>
+                {inviteLink && (
+                  <div className="bg-muted mt-3 flex items-center gap-2 rounded-lg p-2">
+                    <code className="min-w-0 flex-1 truncate text-xs">
+                      {inviteLink}
+                    </code>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="cursor-pointer gap-1.5"
+                      onClick={copyLink}
+                    >
+                      <Copy className="size-3.5" /> {t("agency.members.copyLink")}
+                    </Button>
                   </div>
                 )}
               </div>
-              <InviteEmailFields
-                language={emailLanguage}
-                note={note}
-                onLanguageChange={setEmailLanguage}
-                onNoteChange={(value) =>
-                  setNotes((previous) => ({
-                    ...previous,
-                    [emailLanguage]: value,
-                  }))
-                }
-              />
-              <div className="max-w-50">
-                <label className="text-foreground mb-1 block text-xs font-medium">
-                  {t("agency.members.expiryLabel")}
-                </label>
-                <Input
-                  type="number"
-                  min={MIN_EXPIRY_DAYS}
-                  max={MAX_EXPIRY_DAYS}
-                  value={expiryDays}
-                  onChange={(e) =>
-                    setExpiryDays(
-                      Math.min(
-                        MAX_EXPIRY_DAYS,
-                        Math.max(
-                          MIN_EXPIRY_DAYS,
-                          Number(e.target.value) || MIN_EXPIRY_DAYS,
-                        ),
-                      ),
-                    )
-                  }
+              <div className="lg:col-span-6">
+                <InvitationMailPreview
+                  agencyName={effectiveAgency?.name}
+                  agencyLogoUrl={effectiveAgency?.logoUrl}
+                  agencyTagline={effectiveAgency?.tagline}
+                  agencyPhone={effectiveAgency?.phone}
+                  agencyWebsite={effectiveAgency?.website}
+                  agencyLocation={effectiveAgency?.location}
+                  recipientEmail={email}
+                  inviteeName={inviteeName || userMatch?.fullName}
+                  note={note}
+                  role={inviteRole || "MEMBER"}
+                  workspaceName={workspaces.find((w) => w.id === inviteWorkspaceId)?.name}
+                  expiryDays={expiryDays}
+                  isClient={inviteRole === "CLIENT"}
+                  fullHeight
                 />
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="text-foreground mb-1 block text-xs font-medium">
-                    {t("agency.members.assignWorkspaceLabel")}
-                  </label>
-                  <Select
-                    value={inviteWorkspaceId}
-                    disabled={workspaces.length === 0}
-                    onChange={(e) => {
-                      const nextWsId = e.target.value;
-                      setInviteWorkspaceId(nextWsId);
-                      if (!nextWsId) setInviteRole("");
-                    }}
-                  >
-                    <option value="">
-                      {workspaces.length === 0
-                        ? t("agency.members.assignWorkspaceEmpty")
-                        : t("agency.members.assignWorkspaceNone")}
-                    </option>
-                    {workspaces.map((w) => (
-                      <option key={w.id} value={w.id}>
-                        {w.name}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-foreground mb-1 block text-xs font-medium">
-                    {t("agency.members.assignRoleLabel")}
-                  </label>
-                  <Select
-                    value={inviteWorkspaceId ? inviteRole : ""}
-                    disabled={!inviteWorkspaceId}
-                    onChange={(e) => {
-                      setInviteRole(e.target.value as MemberRole | "");
-                    }}
-                  >
-                    {!inviteWorkspaceId ? (
-                      <option value="">
-                        {t("agency.members.assignRoleOnlyAgency")}
-                      </option>
-                    ) : (
-                      <>
-                        <option value="">
-                          {t("agency.members.assignRolePlaceholder")}
-                        </option>
-                        {ASSIGNABLE_ROLES.map((r) => (
-                          <option key={r} value={r}>
-                            {t(`workspace.roles.${r}`)}
-                          </option>
-                        ))}
-                      </>
-                    )}
-                  </Select>
-                </div>
-              </div>
-              <Button
-                type="submit"
-                variant="orange"
-                loading={inviting}
-                className="cursor-pointer gap-1.5"
-              >
-                <Mail className="size-4" />
-                {t("agency.members.sendInvite")}
-              </Button>
-            </form>
-            {inviteLink && (
-              <div className="bg-muted mt-3 flex items-center gap-2 rounded-lg p-2">
-                <code className="min-w-0 flex-1 truncate text-xs">
-                  {inviteLink}
-                </code>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="cursor-pointer gap-1.5"
-                  onClick={copyLink}
-                >
-                  <Copy className="size-3.5" /> {t("agency.members.copyLink")}
-                </Button>
-              </div>
-            )}
+            </div>
           </div>
         )}
 

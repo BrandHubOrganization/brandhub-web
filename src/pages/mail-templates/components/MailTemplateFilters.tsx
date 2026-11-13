@@ -13,6 +13,7 @@ import {
   Megaphone,
   Plus,
   Search,
+  UserPlus,
   Users,
   X,
   type LucideIcon,
@@ -39,6 +40,7 @@ const CATEGORIES: { id: MailTemplateCategory; icon: LucideIcon }[] = [
   { id: "ALL", icon: LayoutGrid },
   { id: "SYSTEM_DEFAULT", icon: Layers },
   { id: "CUSTOM", icon: FileText },
+  { id: "INVITATION", icon: UserPlus },
   { id: "CAMPAIGN_BROADCAST", icon: Megaphone },
   { id: "WORKSPACE_MANAGER", icon: Users },
 ];

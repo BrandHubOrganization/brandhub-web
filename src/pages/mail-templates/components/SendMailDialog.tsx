@@ -440,6 +440,80 @@ export function SendMailDialog({
               <p className="text-muted-foreground text-xs">{detail.subject}</p>
             )}
 
+            {Boolean(
+              detail &&
+                (detail.scope === "AGENCY_INTERNAL" ||
+                  detail.scope === "AGENCY_CLIENT" ||
+                  /mời|invite|gia nhập/i.test(detail.name) ||
+                  /mời|invite/i.test(detail.subject)),
+            ) && (
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-brand-orange/30 bg-brand-orange/5 p-3 text-xs">
+                <div className="space-y-0.5 min-w-0">
+                  <p className="font-semibold text-brand-orange">
+                    {t(
+                      "mailTemplate.send.inviteBannerTitle",
+                      "💡 Mẫu thư mời thành viên / khách hàng",
+                    )}
+                  </p>
+                  <p className="text-3xs text-muted-foreground">
+                    {t(
+                      "mailTemplate.send.inviteBannerDesc",
+                      "Mẫu này có thể được dùng trực tiếp trong tính năng Mời thành viên hoặc Mời khách hàng để hệ thống tự động sinh liên kết xác thực.",
+                    )}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+                  {agencyId && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-3xs font-medium cursor-pointer hover:border-brand-orange hover:text-brand-orange"
+                      asChild
+                    >
+                      <Link
+                        to={`/agency/${agencyId}/members?templateId=${detail?.id}`}
+                      >
+                        {t(
+                          "mailTemplate.actions.inviteAgencyMember",
+                          "Mời TV Agency",
+                        )}
+                      </Link>
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-3xs font-medium cursor-pointer hover:border-brand-orange hover:text-brand-orange"
+                    asChild
+                  >
+                    <Link
+                      to={`/workspaces/${workspaceId}/members?invite=true&templateId=${detail?.id}`}
+                    >
+                      {t(
+                        "mailTemplate.actions.inviteWsMember",
+                        "Mời TV Workspace",
+                      )}
+                    </Link>
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-3xs font-medium cursor-pointer hover:border-brand-orange hover:text-brand-orange"
+                    asChild
+                  >
+                    <Link
+                      to={`/workspaces/${workspaceId}/clients?invite=true&templateId=${detail?.id}`}
+                    >
+                      {t("mailTemplate.actions.inviteClient", "Mời Khách hàng")}
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            )}
+
             {agencyMode ? (
               <div className="space-y-1.5" data-testid="agency-recipients-note">
                 <p className="text-muted-foreground text-sm">
