@@ -200,7 +200,7 @@ export function BlogRoadmapTable({
                 "tabular-nums cursor-pointer rounded-full border px-3 py-1.5 text-xs font-semibold transition-all",
                 selectedBatch === b.id
                   ? "border-brand-orange bg-brand-orange text-white shadow-2xs"
-                  : "border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-brand-orange/40 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300",
+                  : "border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-brand-orange/40 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300 dark:hover:text-zinc-100",
               )}
             >
               {b.label}

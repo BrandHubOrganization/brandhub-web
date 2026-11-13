@@ -7,6 +7,7 @@
 
 @layer base {
   :root {
+    color-scheme: light;
     /* Biến CSS gốc cho shadcn/ui */
     --background: 0 0% 98%; /* #fafafa tương đương 240 5.9% 98% */
     --foreground: 222.2 84% 4.9%; /* #0a0a0a */
@@ -42,6 +43,7 @@
 
     --border: 240 5.9% 90%; /* #e4e4e7 */
     --input: 240 5.9% 90%; /* #e4e4e7 */
+    --input-background: 0 0% 100%; /* #ffffff */
     --ring: 15 86.95652174% 54.90196078%; /* focus ring dùng màu cam thương hiệu */
     --radius: 0.5rem;
 
@@ -62,6 +64,7 @@
   }
 
   .dark {
+    color-scheme: dark;
     --background: 222.2 84% 4.9%; /* #09090b */
     --foreground: 210 40% 98%; /* #fafafa */
     --card: 222.2 84% 6%; /* hơi sáng hơn nền đen */
@@ -93,6 +96,7 @@
 
     --border: 217.2 32.6% 17.5%; /* #27272a */
     --input: 217.2 32.6% 17.5%; /* #27272a */
+    --input-background: 217.2 32.6% 17.5% / 0.3;
     --ring: 15 86.95652174% 54.90196078%;
 
     /* Màu thương hiệu trong dark mode */
@@ -188,6 +192,7 @@
 
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
+  --color-input-background: hsl(var(--input-background));
   --color-ring: hsl(var(--ring));
 
   /* Các màu thương hiệu BrandHub */
@@ -213,8 +218,11 @@
     accent-color: hsl(var(--brand-orange));
   }
 
-  /* Bo góc cho option items (Webkit / Chromium) */
-  select option {
+  /* Bo góc & màu nền/chữ cho option items trong light/dark mode */
+  select option,
+  select optgroup {
+    background-color: hsl(var(--popover));
+    color: hsl(var(--popover-foreground));
     border-radius: 6px;
   }
 }
