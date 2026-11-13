@@ -26,6 +26,7 @@ import {
 } from "./MaterialFolderSection";
 import type { RepositoryViewMode } from "./MaterialToolbar";
 import type { MaterialItem } from "@/types/material";
+import { stripExtension } from "@/utils/mediaDownloadHelper";
 
 const units = ["B", "KB", "MB", "GB"];
 
@@ -112,7 +113,10 @@ export function MaterialRepositoryCard({
       return;
     }
     event.dataTransfer.setData(DRAG_MATERIAL_MIME, material.id);
-    event.dataTransfer.setData(DRAG_MATERIAL_NAME_MIME, material.name);
+    event.dataTransfer.setData(
+      DRAG_MATERIAL_NAME_MIME,
+      stripExtension(material.name),
+    );
     event.dataTransfer.effectAllowed = "move";
     setIsDragging(true);
   };
@@ -217,45 +221,86 @@ export function MaterialRepositoryCard({
     </DropdownMenu>
   );
 
+  const versionNum = material.currentVersionNumber ?? material.version ?? 1;
+  const hasMultipleVersions = versionNum > 1;
+
   if (viewMode === "list") {
+    const modifiedSource = material.updatedAt || material.createdAt;
+    const modifiedDate = modifiedSource
+      ? new Date(modifiedSource).toLocaleDateString("vi-VN", {
+          day: "numeric",
+          month: "short",
+        })
+      : "—";
+
     return (
       <div
         draggable={isDraggable}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onClick={() => !isPurging && onSelect(material)}
-        className={`group flex cursor-pointer items-center justify-between gap-3 rounded-lg bg-card px-3.5 py-2.5 transition-colors hover:bg-muted/40 ${
+        className={`group flex cursor-pointer items-center gap-3 bg-card px-3.5 py-2.5 transition-colors hover:bg-muted/40 ${
           isDragging ? "opacity-50 ring-2 ring-brand-orange" : ""
         }`}
       >
-        <div className="flex min-w-0 flex-1 items-center gap-3">
+        {/* Drag handle */}
+        <div className="w-4 shrink-0">
           {isDraggable && (
-            <GripVertical className="h-4 w-4 shrink-0 cursor-grab text-muted-foreground/50 group-hover:text-muted-foreground" />
+            <GripVertical className="h-4 w-4 cursor-grab text-muted-foreground/50 group-hover:text-muted-foreground" />
           )}
-          <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
-            {isImage && thumbUrl && !imageBroken ? (
-              <img
-                src={thumbUrl}
-                alt={material.name}
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-                onError={() => setImageBroken(true)}
-                className="h-full w-full object-cover"
-              />
-            ) : isVideo ? (
-              <Film className="h-4 w-4 text-brand-orange" />
-            ) : (
-              <FileText className="h-4 w-4 text-muted-foreground" />
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-semibold text-foreground group-hover:underline">
-              {material.name}
-            </p>
-          </div>
         </div>
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+
+        {/* Thumbnail */}
+        <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+          {isImage && thumbUrl && !imageBroken ? (
+            <img
+              src={thumbUrl}
+              alt={stripExtension(material.name)}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              onError={() => setImageBroken(true)}
+              className="h-full w-full object-cover"
+            />
+          ) : isVideo ? (
+            <Film className="h-4 w-4 text-brand-orange" />
+          ) : (
+            <FileText className="h-4 w-4 text-muted-foreground" />
+          )}
+        </div>
+
+        {/* Name */}
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <p className="truncate text-xs font-semibold text-foreground group-hover:underline">
+            {stripExtension(material.name)}
+          </p>
+          {hasMultipleVersions && (
+            <span
+              className="inline-flex shrink-0 items-center rounded-md bg-brand-orange/10 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-brand-orange"
+              title={`Phiên bản mới nhất: v${versionNum}`}
+            >
+              v{versionNum}
+            </span>
+          )}
+        </div>
+
+        {/* Owner */}
+        <span className="hidden w-[130px] shrink-0 truncate text-xs text-muted-foreground sm:block">
+          {material.createdByName || "—"}
+        </span>
+
+        {/* Modified date */}
+        <span className="hidden w-[110px] shrink-0 text-xs tabular-nums text-muted-foreground sm:block">
+          {modifiedDate}
+        </span>
+
+        {/* File size */}
+        <span className="hidden w-[90px] shrink-0 text-right text-xs tabular-nums text-muted-foreground sm:block">
+          {material.fileSize ? formatBytes(material.fileSize) : "—"}
+        </span>
+
+        {/* Menu */}
+        <div className="w-8 shrink-0 text-right" onClick={(e) => e.stopPropagation()}>
           {renderMenu()}
         </div>
       </div>
@@ -287,7 +332,7 @@ export function MaterialRepositoryCard({
         {isImage && thumbUrl && !imageBroken ? (
           <img
             src={thumbUrl}
-            alt={material.name}
+            alt={stripExtension(material.name)}
             loading="lazy"
             decoding="async"
             draggable={false}
@@ -349,14 +394,22 @@ export function MaterialRepositoryCard({
         <button
           type="button"
           onClick={() => !isPurging && onSelect(material)}
-          className="min-w-0 flex-1 text-left"
+          className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
         >
           <p
             className="truncate text-xs font-semibold text-foreground group-hover:text-brand-orange transition-colors"
-            title={material.name}
+            title={stripExtension(material.name)}
           >
-            {material.name}
+            {stripExtension(material.name)}
           </p>
+          {hasMultipleVersions && (
+            <span
+              className="inline-flex shrink-0 items-center rounded-md bg-brand-orange/10 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-brand-orange"
+              title={`Phiên bản mới nhất: v${versionNum}`}
+            >
+              v{versionNum}
+            </span>
+          )}
         </button>
 
         {renderMenu()}

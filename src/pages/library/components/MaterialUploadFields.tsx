@@ -56,7 +56,7 @@ export function MaterialUploadFields({
           aria-label={label("file")}
           id={`${id}-file`}
           type="file"
-          accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,application/pdf"
+          accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,application/pdf,text/plain,.txt,application/msword,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx,application/vnd.ms-excel,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx"
           onChange={(event) => {
             const file = event.target.files?.[0] ?? null;
             setFilename(file?.name ?? "");

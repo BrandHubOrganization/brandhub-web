@@ -19,6 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { stripExtension } from "@/utils/mediaDownloadHelper";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useMaterialRepository } from "@/pages/library/hooks/useMaterialRepository";
@@ -152,13 +153,56 @@ function RepositoryMedia(props: MediaTabProps) {
     staleTime: 60_000,
   });
   const members = membersQuery.data ?? [];
+  const ownerNames = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const member of members) {
+      if (member.userId) {
+        map.set(member.userId, member.fullName || member.email || member.userId);
+      }
+    }
+    return map;
+  }, [members]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebounced(search);
       setPage(0);
     }, 300);
-    return () => clearTimeout(timer);
+    const renderListFileRows = () =>
+    items.map((material) => (
+      <MaterialRepositoryCard
+        key={`${material.id}:${material.version}`}
+        material={material}
+        viewMode="list"
+        canDelete={canDelete(material)}
+        canPermanentDelete={canPermanentDelete(material)}
+        canRestore={canRestore(material)}
+        canPromoteDraft={canPromoteDraft(material)}
+        canMove={canMoveMaterial(material)}
+        canRename={canRename(material)}
+        hideDraftBadge={draftMode}
+        onSelect={setSelected}
+        onDownload={(target) => void downloader.download(target)}
+        onRename={setRenameTarget}
+        onWatermark={setWatermarkTarget}
+        onDelete={(target) => setConfirm(target)}
+        onPermanentDelete={(target) => setPurgeTarget(target)}
+        onRestore={(target) => repository.restore.mutate(target)}
+        onPromoteDraft={(target) => repository.promote.mutate(target)}
+        onMoveRequest={(target) => setMovingMaterial(target)}
+      />
+    ));
+
+  const unifiedListHandled =
+    Boolean(repository.workspace) &&
+    !trashMode &&
+    !draftMode &&
+    viewMode === "list" &&
+    !repository.forbidden &&
+    !repository.query.isError &&
+    !repository.query.isPending;
+
+  return () => clearTimeout(timer);
   }, [search]);
 
   useEffect(() => {
@@ -187,7 +231,41 @@ function RepositoryMedia(props: MediaTabProps) {
         const targetMember = members.find(
           (m) => m.userId === peopleFilter || m.id === peopleFilter,
         );
-        return (
+        const renderListFileRows = () =>
+    items.map((material) => (
+      <MaterialRepositoryCard
+        key={`${material.id}:${material.version}`}
+        material={material}
+        viewMode="list"
+        canDelete={canDelete(material)}
+        canPermanentDelete={canPermanentDelete(material)}
+        canRestore={canRestore(material)}
+        canPromoteDraft={canPromoteDraft(material)}
+        canMove={canMoveMaterial(material)}
+        canRename={canRename(material)}
+        hideDraftBadge={draftMode}
+        onSelect={setSelected}
+        onDownload={(target) => void downloader.download(target)}
+        onRename={setRenameTarget}
+        onWatermark={setWatermarkTarget}
+        onDelete={(target) => setConfirm(target)}
+        onPermanentDelete={(target) => setPurgeTarget(target)}
+        onRestore={(target) => repository.restore.mutate(target)}
+        onPromoteDraft={(target) => repository.promote.mutate(target)}
+        onMoveRequest={(target) => setMovingMaterial(target)}
+      />
+    ));
+
+  const unifiedListHandled =
+    Boolean(repository.workspace) &&
+    !trashMode &&
+    !draftMode &&
+    viewMode === "list" &&
+    !repository.forbidden &&
+    !repository.query.isError &&
+    !repository.query.isPending;
+
+  return (
           item.createdBy === peopleFilter ||
           (targetMember?.userId && item.createdBy === targetMember.userId) ||
           (targetMember?.fullName && item.createdByName === targetMember.fullName)
@@ -355,7 +433,7 @@ function RepositoryMedia(props: MediaTabProps) {
     }
     if (extracted.validFiles.length === 0) {
       toast.error(
-        "Không có tệp hợp lệ để tải lên (PNG, JPG, WEBP, MP4, MOV, PDF ≤ 1 GiB)",
+        "Không có tệp hợp lệ để tải lên (PNG, JPG, WEBP, MP4, MOV, PDF, TXT, DOC, DOCX, XLS, XLSX ≤ 1 GiB)",
       );
       return;
     }
@@ -386,6 +464,40 @@ function RepositoryMedia(props: MediaTabProps) {
   const forbidden =
     isAxiosError(repository.query.error) &&
     repository.query.error.response?.status === 403;
+
+  const renderListFileRows = () =>
+    items.map((material) => (
+      <MaterialRepositoryCard
+        key={`${material.id}:${material.version}`}
+        material={material}
+        viewMode="list"
+        canDelete={canDelete(material)}
+        canPermanentDelete={canPermanentDelete(material)}
+        canRestore={canRestore(material)}
+        canPromoteDraft={canPromoteDraft(material)}
+        canMove={canMoveMaterial(material)}
+        canRename={canRename(material)}
+        hideDraftBadge={draftMode}
+        onSelect={setSelected}
+        onDownload={(target) => void downloader.download(target)}
+        onRename={setRenameTarget}
+        onWatermark={setWatermarkTarget}
+        onDelete={(target) => setConfirm(target)}
+        onPermanentDelete={(target) => setPurgeTarget(target)}
+        onRestore={(target) => repository.restore.mutate(target)}
+        onPromoteDraft={(target) => repository.promote.mutate(target)}
+        onMoveRequest={(target) => setMovingMaterial(target)}
+      />
+    ));
+
+  const unifiedListHandled =
+    Boolean(repository.workspace) &&
+    !trashMode &&
+    !draftMode &&
+    viewMode === "list" &&
+    !repository.forbidden &&
+    !repository.query.isError &&
+    !repository.query.isPending;
 
   return (
     <div
@@ -501,7 +613,7 @@ function RepositoryMedia(props: MediaTabProps) {
         }
       />
 
-      {/* Folder Section + Breadcrumbs (supports drag & drop file-to-folder) */}
+      {/* Folder Section + Breadcrumbs (supports drag & drop file-to-folder; unified table in list mode) */}
       {repository.workspace && !trashMode && !draftMode && (
         <MaterialFolderSection
           workspaceId={repository.workspace}
@@ -511,6 +623,11 @@ function RepositoryMedia(props: MediaTabProps) {
           canCreate={canMutateFolders}
           canMutate={canMutateFolders}
           currentFolderId={folderId}
+          viewMode={viewMode}
+          ownerNames={ownerNames}
+          listChildren={
+            unifiedListHandled && items.length > 0 ? renderListFileRows() : undefined
+          }
           onOpenFolder={(id) => {
             setFolderId(id);
             setPage(0);
@@ -616,28 +733,32 @@ function RepositoryMedia(props: MediaTabProps) {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border/80 bg-card p-6 text-center">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted">
-            <FolderOpen className="h-5 w-5 text-muted-foreground" />
+        unifiedListHandled && folders.length > 0 ? null : (
+          <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border/80 bg-card p-6 text-center">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted">
+              <FolderOpen className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <p className="text-sm font-semibold text-foreground">
+              {draftMode
+                ? t("library.trash.emptyDrafts", "Chưa có bản nháp AI nào")
+                : search || mediaKind
+                  ? t("library.repository.emptySearch", "Không tìm thấy tệp phù hợp")
+                  : t(
+                      "library.simple.emptyTitle",
+                      "Chưa có tệp nào trong vị trí này",
+                    )}
+            </p>
           </div>
-          <p className="text-sm font-semibold text-foreground">
-            {draftMode
-              ? t("library.trash.emptyDrafts", "Chưa có bản nháp AI nào")
-              : search || mediaKind
-                ? t("library.repository.emptySearch", "Không tìm thấy tệp phù hợp")
-                : t(
-                    "library.simple.emptyTitle",
-                    "Chưa có tệp nào trong vị trí này",
-                  )}
-          </p>
-        </div>
-      ) : (
+        )
+      ) : unifiedListHandled ? null : (
         <div className="space-y-2.5">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
-              Tệp ({total})
-            </span>
-          </div>
+          {viewMode === "grid" && (
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+                Tệp ({total})
+              </span>
+            </div>
+          )}
 
           {viewMode === "grid" ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -667,29 +788,17 @@ function RepositoryMedia(props: MediaTabProps) {
             </div>
           ) : (
             <div className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xs">
-              {items.map((material) => (
-                <MaterialRepositoryCard
-                  key={`${material.id}:${material.version}`}
-                  material={material}
-                  viewMode="list"
-                  canDelete={canDelete(material)}
-                  canPermanentDelete={canPermanentDelete(material)}
-                  canRestore={canRestore(material)}
-                  canPromoteDraft={canPromoteDraft(material)}
-                  canMove={canMoveMaterial(material)}
-                  canRename={canRename(material)}
-                  hideDraftBadge={draftMode}
-                  onSelect={setSelected}
-                  onDownload={(target) => void downloader.download(target)}
-                  onRename={setRenameTarget}
-                  onWatermark={setWatermarkTarget}
-                  onDelete={(target) => setConfirm(target)}
-                  onPermanentDelete={(target) => setPurgeTarget(target)}
-                  onRestore={(target) => repository.restore.mutate(target)}
-                  onPromoteDraft={(target) => repository.promote.mutate(target)}
-                  onMoveRequest={(target) => setMovingMaterial(target)}
-                />
-              ))}
+              {/* List header */}
+              <div className="flex items-center gap-3 bg-muted/30 px-3.5 py-2.5 text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+                <span className="w-4 shrink-0" />
+                <span className="w-9 shrink-0" />
+                <span className="min-w-0 flex-1 whitespace-nowrap">Tên</span>
+                <span className="hidden w-[130px] shrink-0 whitespace-nowrap sm:block">Chủ sở hữu</span>
+                <span className="hidden w-[110px] shrink-0 whitespace-nowrap sm:block">Ngày sửa đổi</span>
+                <span className="hidden w-[90px] shrink-0 text-right whitespace-nowrap sm:block">Kích thước</span>
+                <span className="w-8 shrink-0" />
+              </div>
+              {renderListFileRows()}
             </div>
           )}
         </div>
@@ -740,7 +849,7 @@ function RepositoryMedia(props: MediaTabProps) {
           }}
           workspaceId={repository.workspace}
           tab={tab}
-          title={`Di chuyển "${movingMaterial.name}"`}
+          title={`Di chuyển "${stripExtension(movingMaterial.name)}"`}
           confirmLabel="Chuyển tới đây"
           onConfirm={async (targetFolderId) => {
             await materialService.moveMaterial(

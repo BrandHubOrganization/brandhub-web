@@ -28,7 +28,10 @@ import { MaterialVersionHistoryPanel } from "@/pages/library/components/Material
 import { MaterialDetailFacts } from "@/pages/library/components/MaterialDetailFacts";
 import { MaterialDetailActions } from "@/pages/library/components/MaterialDetailActions";
 import { materialService } from "@/services/materialService";
-import type { DownloadFormat } from "@/utils/mediaDownloadHelper";
+import {
+  stripExtension,
+  type DownloadFormat,
+} from "@/utils/mediaDownloadHelper";
 import type { MaterialItem } from "@/types/material";
 
 interface Props {
@@ -279,16 +282,6 @@ function DetailView({
                     onBlur={() => void handleRenameSubmit()}
                     className="h-8 w-full min-w-[140px] rounded-lg border border-brand-orange/60 bg-background px-2.5 text-xs font-semibold text-foreground shadow-xs outline-none ring-2 ring-brand-orange/20"
                   />
-                  {(() => {
-                    const lastDot = (material.name || "").lastIndexOf(".");
-                    const ext =
-                      lastDot > 0 ? (material.name || "").slice(lastDot) : "";
-                    return ext ? (
-                      <span className="shrink-0 select-none text-xs font-medium text-muted-foreground">
-                        {ext}
-                      </span>
-                    ) : null;
-                  })()}
                 </div>
               ) : (
                 <SheetTitle
@@ -304,11 +297,11 @@ function DetailView({
                       : undefined
                   }
                 >
-                  {material?.name ?? selected.name}
+                  {stripExtension(material?.name ?? selected.name)}
                 </SheetTitle>
               )}
               <SheetDescription className="sr-only">
-                {material?.name ?? selected.name}
+                {stripExtension(material?.name ?? selected.name)}
               </SheetDescription>
             </div>
           </div>

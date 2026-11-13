@@ -22,7 +22,7 @@ import { extractFromFileList } from "@/pages/library/utils/folderDropReader";
 import type { MaterialVisibility } from "@/types/material";
 
 const ACCEPTED_TYPES =
-  "image/png,image/jpeg,image/webp,video/mp4,video/quicktime,application/pdf";
+  "image/png,image/jpeg,image/webp,video/mp4,video/quicktime,application/pdf,text/plain,.txt,application/msword,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx,application/vnd.ms-excel,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx";
 
 export function MediaUploadButton({
   folderId,
@@ -71,7 +71,7 @@ export function MediaUploadButton({
     }
 
     if (extracted.validFiles.length === 0) {
-      toast.error("Không tìm thấy tệp hợp lệ (PNG, JPG, WEBP, MP4, MOV, PDF ≤ 1 GiB)");
+      toast.error("Không tìm thấy tệp hợp lệ (PNG, JPG, WEBP, MP4, MOV, PDF, TXT, DOC, DOCX, XLS, XLSX ≤ 1 GiB)");
       return;
     }
 

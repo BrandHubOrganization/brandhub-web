@@ -8,6 +8,7 @@ import {
   User,
 } from "lucide-react";
 import { formatFileSize } from "@/lib/utils";
+import { stripExtension } from "@/utils/mediaDownloadHelper";
 import type { MaterialItem } from "@/types/material";
 
 export function formatUploadedTime(dateInput?: string | number | Date | null): string {
@@ -67,7 +68,7 @@ export function MaterialDetailFacts({
             <span>{label("nameLabel", "Tên hiển thị")}</span>
           </dt>
           <dd className="break-words font-medium text-foreground">
-            {material.name}
+            {stripExtension(material.name)}
           </dd>
         </div>
 

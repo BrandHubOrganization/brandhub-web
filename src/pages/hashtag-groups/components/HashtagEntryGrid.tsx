@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { ApplyHashtagToPostButton } from "@/pages/hashtag-groups/components/ApplyHashtagToPostButton";
 import type { HashtagEntry } from "@/pages/hashtag-groups/types/hashtag";
 import type { MemberRole } from "@/types/workspace";
 import { useTranslation } from "react-i18next";
-import { Check, Clock, Copy, Cpu, Hash, Sparkles, TrendingUp } from "lucide-react";
+import { Check, Clock, Copy, Hash, Megaphone, Sparkles, Tag, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 interface HashtagEntryGridProps {
@@ -17,6 +16,13 @@ interface HashtagEntryGridProps {
   onRemove?: (entry: HashtagEntry) => void;
   onEdit?: (entry: HashtagEntry) => void;
 }
+
+const purposeConfig: Record<string, { icon: typeof TrendingUp; label: string; color: string }> = {
+  TRENDING: { icon: TrendingUp, label: "Xu hướng", color: "bg-brand-orange/10 text-brand-orange" },
+  BRAND: { icon: Tag, label: "Thương hiệu", color: "bg-blue-500/10 text-blue-600 dark:text-blue-400" },
+  CAMPAIGN: { icon: Megaphone, label: "Chiến dịch", color: "bg-violet-500/10 text-violet-600 dark:text-violet-400" },
+  EVENT_SPECIFIC: { icon: Sparkles, label: "Sự kiện", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" },
+};
 
 export function HashtagEntryGrid({
   entries,
@@ -36,98 +42,83 @@ export function HashtagEntryGrid({
     setTimeout(() => setCopiedTag(null), 1800);
   };
 
-  const formatRecordedDate = (dateStr: string) => {
+  const formatRelativeDate = (dateStr: string) => {
     try {
       const d = new Date(dateStr);
-      return `${d.toLocaleDateString(language || "vi-VN")} ${d.toLocaleTimeString(language || "vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      })}`;
+      const now = new Date();
+      const diffMs = now.getTime() - d.getTime();
+      const diffDays = Math.floor(diffMs / 86400000);
+
+      if (diffDays === 0) return "Hôm nay";
+      if (diffDays === 1) return "Hôm qua";
+      if (diffDays < 7) return `${diffDays} ngày trước`;
+      return d.toLocaleDateString(language || "vi-VN", {
+        day: "numeric",
+        month: "short",
+      });
     } catch {
       return dateStr;
     }
   };
 
   return (
-    <div className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-3">
-      {entries.map((entry) => (
-        <article
-          key={entry.id}
-          className="group relative flex flex-col justify-between space-y-3 rounded-xl border border-border/70 bg-card p-4 shadow-xs transition-all duration-150 hover:border-brand-orange/50 hover:shadow-2xs"
-        >
-          <div className="space-y-2.5">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex min-w-0 flex-1 items-center gap-1.5">
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand-orange/10 text-brand-orange">
-                  <Hash className="size-4" />
-                </span>
+    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+      {entries.map((entry) => {
+        const cfg = purposeConfig[entry.purpose] ?? purposeConfig.TRENDING;
+        const PurposeIcon = cfg.icon;
+
+        return (
+          <article
+            key={entry.id}
+            onClick={() => handleCopy(entry.tag)}
+            className={`group relative flex cursor-pointer items-center gap-3 rounded-xl border border-border/70 bg-card px-4 py-3.5 shadow-xs transition-all duration-150 hover:border-brand-orange/50 hover:shadow-2xs ${
+              copiedTag === entry.tag ? "border-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20" : ""
+            }`}
+          >
+            {/* Hash icon */}
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-orange/10 text-brand-orange transition-colors group-hover:bg-brand-orange group-hover:text-white">
+              <Hash className="size-4.5" />
+            </span>
+
+            {/* Content */}
+            <div className="min-w-0 flex-1 space-y-1">
+              <div className="flex items-center gap-2">
                 <h3
                   className="truncate text-sm font-bold text-foreground transition-colors group-hover:text-brand-orange"
                   title={`#${entry.tag}`}
                 >
                   #{entry.tag}
                 </h3>
-              </div>
-
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-8 shrink-0 gap-1 rounded-lg px-2 text-xs font-semibold text-muted-foreground hover:bg-brand-orange/10 hover:text-brand-orange"
-                onClick={() => handleCopy(entry.tag)}
-                title="Sao chép hashtag"
-              >
-                {copiedTag === entry.tag ? (
-                  <>
-                    <Check className="size-3.5 text-emerald-500" />
-                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                      Đã chép
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="size-3.5" />
-                    <span className="text-[11px]">Sao chép</span>
-                  </>
+                {copiedTag === entry.tag && (
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                    <Check className="size-3" />
+                    Đã chép
+                  </span>
                 )}
-              </Button>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 rounded-md bg-brand-orange/10 px-2 py-0.5 text-xs font-semibold text-brand-orange">
-                <TrendingUp className="size-3" />
-                {t(prefix + "purposes." + entry.purpose, "Xu hướng")}
-              </span>
-
-              <span className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                <Sparkles className="size-3 text-brand-orange" />
-                AI Trend Radar
-              </span>
-
-              {entry.campaignId && (
-                <span className="inline-flex items-center rounded-md border border-border px-2 py-0.5 text-xs font-medium text-foreground">
-                  {campaignNames.get(entry.campaignId) ??
-                    t(prefix + "campaignScope", { id: entry.campaignId })}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold ${cfg.color}`}>
+                  <PurposeIcon className="size-3" />
+                  {t(prefix + "purposes." + entry.purpose, cfg.label)}
                 </span>
-              )}
+                {entry.campaignId && (
+                  <span className="truncate text-[11px] text-muted-foreground">
+                    {campaignNames.get(entry.campaignId) ??
+                      t(prefix + "campaignScope", { id: entry.campaignId })}
+                  </span>
+                )}
+                <span className="ml-auto inline-flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground/70">
+                  <Clock className="size-3" />
+                  {formatRelativeDate(entry.createdAt)}
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2 border-t border-border/50 pt-2">
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <span className="inline-flex items-center gap-1">
-                <Cpu className="size-3 text-brand-orange" />
-                <span>Hệ thống phân tích</span>
-              </span>
-              <span className="inline-flex items-center gap-1 tabular-nums">
-                <Clock className="size-3" />
-                <span>{formatRecordedDate(entry.createdAt)}</span>
-              </span>
-            </div>
+            {/* Copy icon (subtle) */}
+            <Copy className="size-3.5 shrink-0 text-muted-foreground/40 transition-colors group-hover:text-brand-orange" />
 
             {role === "CREATOR" && (
-              <div className="pt-1">
+              <div onClick={(e) => e.stopPropagation()} className="shrink-0">
                 <ApplyHashtagToPostButton
                   workspaceId={workspaceId}
                   tag={entry.tag}
@@ -135,9 +126,9 @@ export function HashtagEntryGrid({
                 />
               </div>
             )}
-          </div>
-        </article>
-      ))}
+          </article>
+        );
+      })}
     </div>
   );
 }

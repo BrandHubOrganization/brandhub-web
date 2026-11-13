@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { isAxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { materialService } from "@/services/materialService";
+import { convertImageFileToWebp } from "@/utils/mediaDownloadHelper";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useAuthStore } from "@/store/authStore";
 import type {
@@ -87,11 +88,13 @@ export function useMaterialUpload(workspaceId: string | undefined) {
     setStage("uploading");
     setProgress(0);
     try {
+      const uploadFile = await convertImageFileToWebp(file);
+      if (!isCurrent()) return null;
       const contentHash =
         options.contentHash ??
         Array.from(
           new Uint8Array(
-            await crypto.subtle.digest("SHA-256", await file.arrayBuffer()),
+            await crypto.subtle.digest("SHA-256", await uploadFile.arrayBuffer()),
           ),
         )
           .map((byte) => byte.toString(16).padStart(2, "0"))
@@ -107,7 +110,7 @@ export function useMaterialUpload(workspaceId: string | undefined) {
           try {
             return await materialService.createUploadSession(
               workspaceId,
-              file,
+              uploadFile,
               resolvedOptions,
               currentAttempt.requestId,
               active.signal,
@@ -161,7 +164,7 @@ export function useMaterialUpload(workspaceId: string | undefined) {
           if (!currentAttempt.uploaded) {
             await putMaterialBytes(
               currentAttempt.session.uploadUrl,
-              file,
+              uploadFile,
               active.signal,
               (percent) => {
                 if (isCurrent()) setProgress(percent);

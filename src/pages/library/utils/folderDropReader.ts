@@ -5,6 +5,11 @@ const ALLOWED_MIME_TYPES = new Set([
   "video/mp4",
   "video/quicktime",
   "application/pdf",
+  "text/plain",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ]);
 
 const EXTENSION_MIME_FALLBACK: Record<string, string> = {
@@ -15,6 +20,11 @@ const EXTENSION_MIME_FALLBACK: Record<string, string> = {
   mp4: "video/mp4",
   mov: "video/quicktime",
   pdf: "application/pdf",
+  txt: "text/plain",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  xls: "application/vnd.ms-excel",
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 };
 
 const IGNORED_FILENAMES = new Set([

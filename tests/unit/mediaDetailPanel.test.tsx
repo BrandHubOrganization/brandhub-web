@@ -132,7 +132,8 @@ describe("MediaDetailPanel Web Design Alignment", () => {
     );
     expect(html).toContain('data-slot="material-facts-card"');
     expect(html).toContain("rounded-2xl");
-    expect(html).toContain("images.jpg");
+    expect(html).toContain("images");
+    expect(html).not.toContain("images.jpg");
     expect(html).toContain("Quản lý Workspace");
     expect(html).toContain("v1");
   });

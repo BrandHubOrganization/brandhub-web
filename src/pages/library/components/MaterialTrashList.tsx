@@ -19,6 +19,7 @@ import {
 import { cn, formatFileSize } from "@/lib/utils";
 import { retentionDays } from "@/pages/library/hooks/materialTrashPolicy";
 import { useTrashSelection } from "@/pages/library/hooks/useTrashSelection";
+import { stripExtension } from "@/utils/mediaDownloadHelper";
 import type { MaterialFolderItem, MaterialItem } from "@/types/material";
 
 export function MaterialTrashList({
@@ -182,9 +183,9 @@ export function MaterialTrashList({
                       <span className="min-w-0">
                         <span
                           className="block truncate text-sm font-medium"
-                          title={row.name}
+                          title={row.folder ? row.name : stripExtension(row.name)}
                         >
-                          {row.name}
+                          {row.folder ? row.name : stripExtension(row.name)}
                         </span>
                         <span className="text-muted-foreground text-xs">
                           {row.folder ? label("folderType") : label("fileType")}
