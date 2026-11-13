@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   AlertCircle,
+  ChevronDown,
   CloudDownload,
   FolderOpen,
   FolderUp,
@@ -12,6 +13,13 @@ import {
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { stripExtension } from "@/utils/mediaDownloadHelper";
 import { useAuthStore } from "@/store/authStore";
 import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useMaterialRepository } from "@/pages/library/hooks/useMaterialRepository";
@@ -30,12 +38,16 @@ import { MaterialFolderPicker } from "@/pages/library/components/MaterialFolderP
 import { ShareFromClientVaultModal } from "@/pages/library/components/ShareFromClientVaultModal";
 import {
   MaterialToolbar,
+  type ModifiedFilter,
+  type PeopleFilter,
   type RepositoryViewMode,
 } from "@/pages/library/components/MaterialToolbar";
+import type { LibraryResourceTab } from "@/pages/library/components/LibraryResourceDropdown";
 import { CustomerDrivePanel } from "@/pages/library/components/CustomerDrivePanel";
 import { WatermarkStudioModal } from "@/pages/library/components/watermark/WatermarkStudioModal";
 import { RenameMaterialModal } from "@/pages/library/components/RenameMaterialModal";
 import { materialService } from "@/services/materialService";
+import { workspaceService } from "@/services/workspaceService";
 import {
   onRepositoryTaskRefresh,
   useBackgroundTaskStore,
@@ -46,15 +58,26 @@ import type {
   MaterialItem,
   MaterialMediaKind,
   MaterialSort,
+  MaterialVisibility,
 } from "@/types/material";
 
-export function MediaTab() {
-  const workspace = useWorkspaceStore((state) => state.currentWorkspace?.id);
-  const actor = useAuthStore((state) => state.user?.id);
-  return <RepositoryMedia key={`${workspace}:${actor}`} />;
+export interface MediaTabProps {
+  activeResourceTab?: LibraryResourceTab;
+  onResourceTabChange?: (tab: LibraryResourceTab) => void;
+  resourceCounts?: {
+    media: number;
+    templates: number;
+    hashtags: number;
+  };
 }
 
-function RepositoryMedia() {
+export function MediaTab(props: MediaTabProps) {
+  const workspace = useWorkspaceStore((state) => state.currentWorkspace?.id);
+  const actor = useAuthStore((state) => state.user?.id);
+  return <RepositoryMedia key={`${workspace}:${actor}`} {...props} />;
+}
+
+function RepositoryMedia(props: MediaTabProps) {
   const { t } = useTranslation();
   const workspaceObj = useWorkspaceStore((state) => state.currentWorkspace);
   const currentRole = useWorkspaceStore((state) => state.currentMemberRole);
@@ -74,6 +97,8 @@ function RepositoryMedia() {
   const [search, setSearch] = useState("");
   const [debounced, setDebounced] = useState("");
   const [mediaKind, setMediaKind] = useState<MaterialMediaKind | undefined>();
+  const [peopleFilter, setPeopleFilter] = useState<PeopleFilter>("ANY");
+  const [modifiedFilter, setModifiedFilter] = useState<ModifiedFilter>("ANY");
   const [sort, setSort] = useState<MaterialSort>("newest");
   const [viewMode, setViewMode] = useState<RepositoryViewMode>("grid");
 
@@ -109,28 +134,75 @@ function RepositoryMedia() {
   const startUploadBatch = useBackgroundTaskStore(
     (state) => state.startUploadBatch,
   );
-  const isDriveImportActive = useBackgroundTaskStore((state) =>
-    state.tasks.some(
-      (t) =>
-        t.type === "DRIVE_IMPORT" &&
-        (t.status === "RUNNING" || t.status === "CANCEL_CLEANUP") &&
-        (!repository?.workspace || t.workspaceId === repository.workspace),
-    ),
-  );
   const downloader = useMaterialDownload();
   const uploadProfilesQuery = useMaterialUploadProfiles(
     repository.workspace ?? "",
     isClient,
-    isClient,
+    true,
   );
   const client = useQueryClient();
+
+  const workspaceId = repository.workspace;
+  const membersQuery = useQuery({
+    queryKey: ["workspace-members", workspaceId],
+    enabled: Boolean(workspaceId),
+    queryFn: async () => {
+      const res = await workspaceService.listMembers(workspaceId!);
+      return res.data.data;
+    },
+    staleTime: 60_000,
+  });
+  const members = membersQuery.data ?? [];
+  const ownerNames = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const member of members) {
+      if (member.userId) {
+        map.set(member.userId, member.fullName || member.email || member.userId);
+      }
+    }
+    return map;
+  }, [members]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebounced(search);
       setPage(0);
     }, 300);
-    return () => clearTimeout(timer);
+    const renderListFileRows = () =>
+    items.map((material) => (
+      <MaterialRepositoryCard
+        key={`${material.id}:${material.version}`}
+        material={material}
+        viewMode="list"
+        canDelete={canDelete(material)}
+        canPermanentDelete={canPermanentDelete(material)}
+        canRestore={canRestore(material)}
+        canPromoteDraft={canPromoteDraft(material)}
+        canMove={canMoveMaterial(material)}
+        canRename={canRename(material)}
+        hideDraftBadge={draftMode}
+        onSelect={setSelected}
+        onDownload={(target) => void downloader.download(target)}
+        onRename={setRenameTarget}
+        onWatermark={setWatermarkTarget}
+        onDelete={(target) => setConfirm(target)}
+        onPermanentDelete={(target) => setPurgeTarget(target)}
+        onRestore={(target) => repository.restore.mutate(target)}
+        onPromoteDraft={(target) => repository.promote.mutate(target)}
+        onMoveRequest={(target) => setMovingMaterial(target)}
+      />
+    ));
+
+  const unifiedListHandled =
+    Boolean(repository.workspace) &&
+    !trashMode &&
+    !draftMode &&
+    viewMode === "list" &&
+    !repository.forbidden &&
+    !repository.query.isError &&
+    !repository.query.isPending;
+
+  return () => clearTimeout(timer);
   }, [search]);
 
   useEffect(() => {
@@ -144,10 +216,91 @@ function RepositoryMedia() {
     });
   }, [repository.workspace, repository.query, client]);
 
-  const items =
+  const rawItems =
     repository.forbidden || repository.query.isError
       ? []
       : (repository.query.data?.items ?? []);
+
+  const items = useMemo(() => {
+    let result = rawItems;
+    if (peopleFilter && peopleFilter !== "ANY") {
+      result = result.filter((item) => {
+        if (peopleFilter === "ME" || (actorId && peopleFilter === actorId)) {
+          return item.createdBy === actorId || item.ownerUserId === actorId;
+        }
+        const targetMember = members.find(
+          (m) => m.userId === peopleFilter || m.id === peopleFilter,
+        );
+        const renderListFileRows = () =>
+    items.map((material) => (
+      <MaterialRepositoryCard
+        key={`${material.id}:${material.version}`}
+        material={material}
+        viewMode="list"
+        canDelete={canDelete(material)}
+        canPermanentDelete={canPermanentDelete(material)}
+        canRestore={canRestore(material)}
+        canPromoteDraft={canPromoteDraft(material)}
+        canMove={canMoveMaterial(material)}
+        canRename={canRename(material)}
+        hideDraftBadge={draftMode}
+        onSelect={setSelected}
+        onDownload={(target) => void downloader.download(target)}
+        onRename={setRenameTarget}
+        onWatermark={setWatermarkTarget}
+        onDelete={(target) => setConfirm(target)}
+        onPermanentDelete={(target) => setPurgeTarget(target)}
+        onRestore={(target) => repository.restore.mutate(target)}
+        onPromoteDraft={(target) => repository.promote.mutate(target)}
+        onMoveRequest={(target) => setMovingMaterial(target)}
+      />
+    ));
+
+  const unifiedListHandled =
+    Boolean(repository.workspace) &&
+    !trashMode &&
+    !draftMode &&
+    viewMode === "list" &&
+    !repository.forbidden &&
+    !repository.query.isError &&
+    !repository.query.isPending;
+
+  return (
+          item.createdBy === peopleFilter ||
+          (targetMember?.userId && item.createdBy === targetMember.userId) ||
+          (targetMember?.fullName && item.createdByName === targetMember.fullName)
+        );
+      });
+    }
+
+    if (modifiedFilter !== "ANY") {
+      const now = Date.now();
+      const startOfToday = new Date().setHours(0, 0, 0, 0);
+      const sevenDaysAgo = now - 7 * 86400000;
+      const thirtyDaysAgo = now - 30 * 86400000;
+      const currentYear = new Date().getFullYear();
+
+      result = result.filter((item) => {
+        const dateStr = item.updatedAt || item.createdAt;
+        if (!dateStr) return true;
+        const time = new Date(dateStr).getTime();
+        switch (modifiedFilter) {
+          case "TODAY":
+            return time >= startOfToday;
+          case "LAST_7_DAYS":
+            return time >= sevenDaysAgo;
+          case "LAST_30_DAYS":
+            return time >= thirtyDaysAgo;
+          case "THIS_YEAR":
+            return new Date(dateStr).getFullYear() === currentYear;
+          default:
+            return true;
+        }
+      });
+    }
+
+    return result;
+  }, [rawItems, peopleFilter, modifiedFilter, actorId, members]);
   const folders =
     repository.forbidden || repository.query.isError
       ? []
@@ -280,25 +433,27 @@ function RepositoryMedia() {
     }
     if (extracted.validFiles.length === 0) {
       toast.error(
-        "Không có tệp hợp lệ để tải lên (PNG, JPG, WEBP, MP4, MOV, PDF ≤ 1 GiB)",
+        "Không có tệp hợp lệ để tải lên (PNG, JPG, WEBP, MP4, MOV, PDF, TXT, DOC, DOCX, XLS, XLSX ≤ 1 GiB)",
       );
       return;
     }
 
-    const visibility = isClient ? "CLIENT" : "INTERNAL";
-    const clientProfileId =
-      visibility === "CLIENT"
-        ? workspaceObj?.clientProfileId ??
-          uploadProfilesQuery.data?.[0]?.id ??
-          undefined
-        : undefined;
+    const targetClientProfileId =
+      workspaceObj?.clientProfileId ??
+      uploadProfilesQuery.data?.[0]?.id ??
+      undefined;
+
+    const visibility: MaterialVisibility = targetClientProfileId
+      ? "CLIENT"
+      : "INTERNAL";
 
     void startUploadBatch({
       workspaceId: repository.workspace,
       files: extracted.validFiles,
       baseFolderId: folderId,
       visibility,
-      clientProfileId,
+      clientProfileId:
+        visibility === "CLIENT" ? targetClientProfileId : undefined,
       isClientRole: isClient,
       rootFolderName: extracted.rootFolderName,
     }).then(() => {
@@ -309,6 +464,40 @@ function RepositoryMedia() {
   const forbidden =
     isAxiosError(repository.query.error) &&
     repository.query.error.response?.status === 403;
+
+  const renderListFileRows = () =>
+    items.map((material) => (
+      <MaterialRepositoryCard
+        key={`${material.id}:${material.version}`}
+        material={material}
+        viewMode="list"
+        canDelete={canDelete(material)}
+        canPermanentDelete={canPermanentDelete(material)}
+        canRestore={canRestore(material)}
+        canPromoteDraft={canPromoteDraft(material)}
+        canMove={canMoveMaterial(material)}
+        canRename={canRename(material)}
+        hideDraftBadge={draftMode}
+        onSelect={setSelected}
+        onDownload={(target) => void downloader.download(target)}
+        onRename={setRenameTarget}
+        onWatermark={setWatermarkTarget}
+        onDelete={(target) => setConfirm(target)}
+        onPermanentDelete={(target) => setPurgeTarget(target)}
+        onRestore={(target) => repository.restore.mutate(target)}
+        onPromoteDraft={(target) => repository.promote.mutate(target)}
+        onMoveRequest={(target) => setMovingMaterial(target)}
+      />
+    ));
+
+  const unifiedListHandled =
+    Boolean(repository.workspace) &&
+    !trashMode &&
+    !draftMode &&
+    viewMode === "list" &&
+    !repository.forbidden &&
+    !repository.query.isError &&
+    !repository.query.isPending;
 
   return (
     <div
@@ -360,6 +549,12 @@ function RepositoryMedia() {
           setFolderId(null);
           setPage(0);
         }}
+        peopleFilter={peopleFilter}
+        onPeopleFilterChange={setPeopleFilter}
+        members={members}
+        currentUserId={actorId}
+        modifiedFilter={modifiedFilter}
+        onModifiedFilterChange={setModifiedFilter}
         folderId={folderId}
         tab={tab}
         onTabChange={(next) => {
@@ -374,33 +569,51 @@ function RepositoryMedia() {
         onUploaded={uploaded}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
+        resourceTab={props.activeResourceTab}
+        onResourceTabChange={props.onResourceTabChange}
+        resourceCounts={props.resourceCounts}
+        driveAction={
+          !isClient && !trashMode && !draftMode && repository.workspace ? (
+            <Popover open={driveOpen} onOpenChange={setDriveOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "h-9 gap-1.5 rounded-lg border-border text-xs font-semibold shadow-2xs transition-all",
+                    driveOpen
+                      ? "border-brand-orange/60 bg-brand-orange/10 text-brand-orange"
+                      : "bg-background text-foreground hover:border-brand-orange/40 hover:bg-brand-orange/5 hover:text-brand-orange",
+                  )}
+                >
+                  <CloudDownload className="h-3.5 w-3.5 text-brand-orange" />
+                  <span>{t("library.simple.fromDrive", "Đồng bộ từ Google Drive")}</span>
+                  <ChevronDown
+                    className={cn(
+                      "h-3.5 w-3.5 text-muted-foreground transition-transform duration-200",
+                      driveOpen && "rotate-180 text-brand-orange",
+                    )}
+                  />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="end"
+                sideOffset={6}
+                className="w-[360px] sm:w-[460px] rounded-xl border border-border/80 bg-card p-2.5 shadow-xl"
+              >
+                <CustomerDrivePanel
+                  folderId={folderId ?? undefined}
+                  showInlineProgress={false}
+                  onImportStarted={() => setDriveOpen(false)}
+                />
+              </PopoverContent>
+            </Popover>
+          ) : null
+        }
       />
 
-      {/* Google Drive Import strip for Agency */}
-      {!isClient && !trashMode && !draftMode && tab === "WORKSPACE" && repository.workspace && (
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-xs text-muted-foreground">
-              Kéo thả tệp vào thư mục để di chuyển, hoặc kéo cả thư mục từ máy tính thả vào đây.
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setDriveOpen((prev) => !prev)}
-              className="h-7 gap-1.5 rounded-[4px] text-xs font-semibold text-foreground hover:bg-brand-orange/10 hover:text-brand-orange"
-            >
-              <CloudDownload className="h-3.5 w-3.5 text-brand-orange" />
-              <span>{t("library.simple.fromDrive", "Đồng bộ từ Google Drive")}</span>
-            </Button>
-          </div>
-          {(driveOpen || isDriveImportActive) && (
-            <CustomerDrivePanel folderId={folderId ?? undefined} />
-          )}
-        </div>
-      )}
-
-      {/* Folder Section + Breadcrumbs (supports drag & drop file-to-folder) */}
+      {/* Folder Section + Breadcrumbs (supports drag & drop file-to-folder; unified table in list mode) */}
       {repository.workspace && !trashMode && !draftMode && (
         <MaterialFolderSection
           workspaceId={repository.workspace}
@@ -410,6 +623,11 @@ function RepositoryMedia() {
           canCreate={canMutateFolders}
           canMutate={canMutateFolders}
           currentFolderId={folderId}
+          viewMode={viewMode}
+          ownerNames={ownerNames}
+          listChildren={
+            unifiedListHandled && items.length > 0 ? renderListFileRows() : undefined
+          }
           onOpenFolder={(id) => {
             setFolderId(id);
             setPage(0);
@@ -427,7 +645,7 @@ function RepositoryMedia() {
             (currentRole === "OWNER" ||
               currentRole === "MANAGER" ||
               currentRole === "CREATOR") && (
-              <div className="flex items-center justify-between gap-3 rounded-none border border-destructive/25 bg-destructive/5 px-4 py-2.5">
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-destructive/25 bg-destructive/5 px-4 py-2.5">
                 <span className="text-xs text-muted-foreground">
                   {t(
                     "library.trash.quotaNotice",
@@ -449,7 +667,7 @@ function RepositoryMedia() {
             )}
 
           {repository.query.isPending ? (
-            <div className="flex h-48 items-center justify-center rounded-none border border-[#d5dbdb] bg-card dark:border-border">
+            <div className="flex h-48 items-center justify-center rounded-xl border border-border/70 bg-card">
               <Loader2 className="h-6 w-6 animate-spin text-brand-orange" />
             </div>
           ) : (
@@ -475,7 +693,7 @@ function RepositoryMedia() {
       ) : repository.forbidden || repository.query.isError ? (
         <div
           role="alert"
-          className="flex h-56 flex-col items-center justify-center gap-3 rounded-none border border-destructive/30 bg-destructive/5 p-6 text-center"
+          className="flex h-56 flex-col items-center justify-center gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-center"
         >
           <AlertCircle className="h-6 w-6 text-destructive" />
           <p className="text-sm font-medium text-destructive">
@@ -506,42 +724,41 @@ function RepositoryMedia() {
           {Array.from({ length: 8 }, (_, i) => (
             <div
               key={i}
-              className="rounded-none border border-[#d5dbdb] bg-card p-3 dark:border-border"
+              className="rounded-xl border border-border/70 bg-card p-3"
               aria-hidden="true"
             >
-              <div className="aspect-[4/3] animate-pulse rounded-none bg-muted" />
-              <div className="mt-3 h-4 w-3/4 animate-pulse rounded-none bg-muted" />
+              <div className="aspect-[4/3] animate-pulse rounded-lg bg-muted" />
+              <div className="mt-3 h-4 w-3/4 animate-pulse rounded-md bg-muted" />
             </div>
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-none border border-dashed border-[#d5dbdb] bg-card p-6 text-center dark:border-border">
-          <div className="flex h-11 w-11 items-center justify-center rounded-[4px] bg-muted">
-            <FolderOpen className="h-5 w-5 text-muted-foreground" />
-          </div>
-          <p className="text-sm font-semibold text-foreground">
-            {draftMode
-              ? t("library.trash.emptyDrafts", "Chưa có bản nháp AI nào")
-              : search || mediaKind
-                ? t("library.repository.emptySearch", "Không tìm thấy tệp phù hợp")
-                : t(
-                    "library.simple.emptyTitle",
-                    "Chưa có tệp nào trong vị trí này",
-                  )}
-          </p>
-          {!draftMode && (
-            <p className="max-w-md text-xs text-muted-foreground">
-              Nhấn nút <strong>Tải lên</strong> ở góc phải hoặc kéo-thả trực tiếp tệp / thư mục từ máy tính vào đây.
+        unifiedListHandled && folders.length > 0 ? null : (
+          <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border/80 bg-card p-6 text-center">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted">
+              <FolderOpen className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <p className="text-sm font-semibold text-foreground">
+              {draftMode
+                ? t("library.trash.emptyDrafts", "Chưa có bản nháp AI nào")
+                : search || mediaKind
+                  ? t("library.repository.emptySearch", "Không tìm thấy tệp phù hợp")
+                  : t(
+                      "library.simple.emptyTitle",
+                      "Chưa có tệp nào trong vị trí này",
+                    )}
             </p>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-2.5">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
-              Tệp ({total})
-            </span>
           </div>
+        )
+      ) : unifiedListHandled ? null : (
+        <div className="space-y-2.5">
+          {viewMode === "grid" && (
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+                Tệp ({total})
+              </span>
+            </div>
+          )}
 
           {viewMode === "grid" ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -570,30 +787,18 @@ function RepositoryMedia() {
               ))}
             </div>
           ) : (
-            <div className="divide-y divide-[#eaeded] rounded-none border border-[#d5dbdb] bg-card shadow-[0_1px_1px_0_rgba(0,28,36,0.05)] dark:divide-border/70 dark:border-border">
-              {items.map((material) => (
-                <MaterialRepositoryCard
-                  key={`${material.id}:${material.version}`}
-                  material={material}
-                  viewMode="list"
-                  canDelete={canDelete(material)}
-                  canPermanentDelete={canPermanentDelete(material)}
-                  canRestore={canRestore(material)}
-                  canPromoteDraft={canPromoteDraft(material)}
-                  canMove={canMoveMaterial(material)}
-                  canRename={canRename(material)}
-                  hideDraftBadge={draftMode}
-                  onSelect={setSelected}
-                  onDownload={(target) => void downloader.download(target)}
-                  onRename={setRenameTarget}
-                  onWatermark={setWatermarkTarget}
-                  onDelete={(target) => setConfirm(target)}
-                  onPermanentDelete={(target) => setPurgeTarget(target)}
-                  onRestore={(target) => repository.restore.mutate(target)}
-                  onPromoteDraft={(target) => repository.promote.mutate(target)}
-                  onMoveRequest={(target) => setMovingMaterial(target)}
-                />
-              ))}
+            <div className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xs">
+              {/* List header */}
+              <div className="flex items-center gap-3 bg-muted/30 px-3.5 py-2.5 text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+                <span className="w-4 shrink-0" />
+                <span className="w-9 shrink-0" />
+                <span className="min-w-0 flex-1 whitespace-nowrap">Tên</span>
+                <span className="hidden w-[130px] shrink-0 whitespace-nowrap sm:block">Chủ sở hữu</span>
+                <span className="hidden w-[110px] shrink-0 whitespace-nowrap sm:block">Ngày sửa đổi</span>
+                <span className="hidden w-[90px] shrink-0 text-right whitespace-nowrap sm:block">Kích thước</span>
+                <span className="w-8 shrink-0" />
+              </div>
+              {renderListFileRows()}
             </div>
           )}
         </div>
@@ -644,7 +849,7 @@ function RepositoryMedia() {
           }}
           workspaceId={repository.workspace}
           tab={tab}
-          title={`Di chuyển "${movingMaterial.name}"`}
+          title={`Di chuyển "${stripExtension(movingMaterial.name)}"`}
           confirmLabel="Chuyển tới đây"
           onConfirm={async (targetFolderId) => {
             await materialService.moveMaterial(

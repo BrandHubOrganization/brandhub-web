@@ -55,6 +55,69 @@ export function buildFormattedFilename(baseFilename: string, format: DownloadFor
   return `${stem}.${format}`;
 }
 
+/**
+ * Converts a raster image File (e.g. PNG, JPEG) to WebP in-browser before S3 upload.
+ * Returns the original file unchanged for non-raster images, already-WebP files, or on fallback.
+ */
+export async function convertImageFileToWebp(file: File, quality = 0.92): Promise<File> {
+  const mime = (file.type || "").toLowerCase();
+  const isConvertibleRaster =
+    mime.startsWith("image/") &&
+    mime !== "image/webp" &&
+    mime !== "image/svg+xml" &&
+    mime !== "image/gif";
+  if (!isConvertibleRaster) {
+    return file;
+  }
+
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const width = img.naturalWidth || img.width;
+        const height = img.naturalHeight || img.height;
+        if (!width || !height) {
+          reject(new Error("INVALID_IMAGE_DIMENSIONS"));
+          return;
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("CANVAS_CONTEXT_UNAVAILABLE"));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (result) => {
+            if (result && result.size > 0) {
+              resolve(result);
+            } else {
+              reject(new Error("WEBP_CONVERSION_FAILED"));
+            }
+          },
+          "image/webp",
+          quality,
+        );
+      };
+      img.onerror = () => reject(new Error("IMAGE_LOAD_FAILED"));
+      img.src = objectUrl;
+    });
+
+    const webpFilename = buildFormattedFilename(file.name, "webp");
+    return new File([blob], webpFilename, {
+      type: "image/webp",
+      lastModified: file.lastModified,
+    });
+  } catch {
+    return file;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 function triggerBlobDownload(blobUrl: string, filename: string): void {
   const anchor = document.createElement("a");
   anchor.href = blobUrl;

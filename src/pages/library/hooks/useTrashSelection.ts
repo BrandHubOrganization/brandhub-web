@@ -33,7 +33,7 @@ export function useTrashSelection({
   const role = useWorkspaceStore((state) => state.currentMemberRole);
   const [checked, setChecked] = useState<Set<string>>(new Set());
   const running = useRef(false);
-  const folderMutable = role === "MANAGER" || role === "CREATOR";
+  const folderMutable = role === "OWNER" || role === "MANAGER" || role === "CREATOR";
   const rows: TrashRow[] = [
     ...folders.map((folder) => ({
       key: `folder:${folder.id}`,
@@ -136,8 +136,11 @@ export function useTrashSelection({
               else await materialService.purgeMaterial(workspace, row.file);
             }
             succeeded.add(row.key);
-          } catch {
-            failed.push(row.name);
+          } catch (error) {
+            const msg = (
+              error as { response?: { data?: { message?: string } } }
+            )?.response?.data?.message;
+            failed.push(msg ? `${row.name} (${msg})` : row.name);
           }
         }
         if (!current()) return;

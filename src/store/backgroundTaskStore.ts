@@ -1,6 +1,10 @@
 import { create } from "zustand";
 import { toast } from "sonner";
 import { materialService } from "@/services/materialService";
+import {
+  convertImageFileToWebp,
+  stripExtension,
+} from "@/utils/mediaDownloadHelper";
 import type { MaterialItem, MaterialVisibility } from "@/types/material";
 import type { QueuedUploadFile } from "@/pages/library/utils/folderDropReader";
 
@@ -409,15 +413,15 @@ export const useBackgroundTaskStore = create<BackgroundTaskState>((set, get) => 
     const title = isFolderImport
       ? `Tải thư mục "${rootFolderName || files[0]?.folderSegments[0] || "Thư mục"}"`
       : files.length === 1
-        ? `Tải tệp "${files[0].file.name}"`
+        ? `Tải tệp "${stripExtension(files[0].file.name)}"`
         : `Tải lên ${files.length} tệp`;
 
     const subItems: BackgroundTaskSubItem[] = files.map((entry, idx) => ({
       id: `${taskId}-item-${idx}`,
       name:
         entry.folderSegments.length > 0
-          ? `${entry.folderSegments.join("/")}/${entry.file.name}`
-          : entry.file.name,
+          ? `${entry.folderSegments.join("/")}/${stripExtension(entry.file.name)}`
+          : stripExtension(entry.file.name),
       sizeBytes: entry.file.size,
       status: "PENDING",
       progress: 0,
@@ -520,7 +524,7 @@ export const useBackgroundTaskStore = create<BackgroundTaskState>((set, get) => 
                   ? {
                       ...t,
                       progress: overallProgress,
-                      subtitle: `Đang tải (${i + 1}/${files.length}): ${entry.file.name}`,
+                      subtitle: `Đang tải (${i + 1}/${files.length}): ${stripExtension(entry.file.name)}`,
                       items: t.items.map((it) =>
                         it.id === itemId
                           ? { ...it, status: "UPLOADING", progress: itemProgress }
@@ -534,7 +538,10 @@ export const useBackgroundTaskStore = create<BackgroundTaskState>((set, get) => 
 
           updateItemProgress(2);
 
-          const contentHash = await digestFileSha256(entry.file);
+          const uploadFile = await convertImageFileToWebp(entry.file);
+          if (controller.signal.aborted) return;
+
+          const contentHash = await digestFileSha256(uploadFile);
           if (controller.signal.aborted) return;
 
           const effectiveConflict =
@@ -542,7 +549,7 @@ export const useBackgroundTaskStore = create<BackgroundTaskState>((set, get) => 
 
           const session = await materialService.createUploadSession(
             workspaceId,
-            entry.file,
+            uploadFile,
             {
               type: "RAW",
               purpose: "MATERIAL",
@@ -566,7 +573,7 @@ export const useBackgroundTaskStore = create<BackgroundTaskState>((set, get) => 
           if (!session.skipped) {
             await materialService.uploadBinaryWithProgress(
               session.uploadUrl,
-              entry.file,
+              uploadFile,
               session.uploadHeaders ?? {},
               controller.signal,
               (binaryPct) => {

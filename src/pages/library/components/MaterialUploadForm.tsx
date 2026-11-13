@@ -54,8 +54,15 @@ export function MaterialUploadForm({
     }
     setError("");
     onStart?.();
+    const targetClientProfileId =
+      options.clientProfileId ?? profiles.data?.[0]?.id;
+    const finalOptions: MaterialUploadOptions = {
+      ...options,
+      visibility: targetClientProfileId ? "CLIENT" : "INTERNAL",
+      clientProfileId: targetClientProfileId,
+    };
     try {
-      const material = await uploader.upload(file, options);
+      const material = await uploader.upload(file, finalOptions);
       if (material) {
         toast.success(label("success"));
         onSuccess(material);
@@ -117,11 +124,7 @@ export function MaterialUploadForm({
               type="submit"
               variant="orange"
               size="sm"
-              disabled={
-                !file ||
-                uploader.busy ||
-                (options.visibility === "CLIENT" && !options.clientProfileId)
-              }
+              disabled={!file || uploader.busy}
               aria-busy={uploader.busy}
             >
               {label(error ? "retry" : "submit")}

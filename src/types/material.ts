@@ -214,6 +214,8 @@ export interface MaterialFolderItem {
   id: string;
   name: string;
   parentFolderId?: string | null;
+  createdBy?: string;
+  createdByName?: string;
   createdAt?: string;
   updatedAt?: string;
   itemCount: number;

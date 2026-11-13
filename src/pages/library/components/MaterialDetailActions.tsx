@@ -90,12 +90,6 @@ export function MaterialDetailActions({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="rounded-xl">
-                <DropdownMenuItem
-                  onSelect={() => onDownload()}
-                  className="text-xs font-medium text-foreground focus:bg-brand-orange/10 focus:text-brand-orange"
-                >
-                  {t("library.repository.download.original", "Định dạng gốc")}
-                </DropdownMenuItem>
                 {RASTER_DOWNLOAD_FORMATS.map((fmt) => (
                   <DropdownMenuItem
                     key={fmt}

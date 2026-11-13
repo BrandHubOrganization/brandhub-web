@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { useMaterialMetadataEdit } from "@/pages/library/hooks/useMaterialMetadataEdit";
-import { MaterialAudienceFields } from "@/pages/library/components/MaterialAudienceFields";
 import type { MaterialItem } from "@/types/material";
 
 interface Props {
@@ -95,14 +94,6 @@ export function MaterialMetadataEditForm({
             </option>
           </Select>
         </div>
-        {material.capabilities?.canChangeAudience && (
-          <MaterialAudienceFields
-            material={material}
-            visibility={draft.visibility}
-            profile={draft.profile}
-            onChange={(visibility, profile) => change({ visibility, profile })}
-          />
-        )}
       </fieldset>
       {error && (
         <div role="alert" className="text-destructive space-y-2 text-xs">
