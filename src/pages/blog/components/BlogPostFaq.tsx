@@ -44,7 +44,7 @@ export function BlogPostFaq({ faqs }: BlogPostFaqProps) {
                 "overflow-hidden rounded-2xl border transition-colors",
                 isOpen
                   ? "border-orange-200/90 bg-white shadow-xs dark:border-orange-500/30 dark:bg-zinc-900"
-                  : "border-zinc-200/85 bg-zinc-50/50 hover:border-orange-200/70 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/60",
+                  : "border-zinc-200/85 bg-zinc-50/50 hover:border-orange-200/70 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:bg-zinc-900",
               )}
             >
               <button

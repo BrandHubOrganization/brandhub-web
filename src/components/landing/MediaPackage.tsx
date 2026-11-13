@@ -225,7 +225,7 @@ export function MediaPackage() {
                         "flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-semibold transition-all",
                         activeStep === idx
                           ? "border-brand-orange/50 bg-zinc-50 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
-                          : "border-zinc-200/70 bg-white text-zinc-500 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400",
+                          : "border-zinc-200/70 bg-white text-zinc-500 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400 dark:hover:bg-zinc-800/80",
                       )}
                     >
                       <CheckCircle2

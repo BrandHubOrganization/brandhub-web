@@ -161,7 +161,7 @@ export function BlogClusterNav({
                     decoding="async"
                     className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                   />
-                  <span className="tabular-nums absolute top-2 right-2 rounded-full border border-orange-200/80 bg-white/95 px-2 py-0.5 text-[10px] font-bold text-brand-orange shadow-xs">
+                  <span className="tabular-nums absolute top-2 right-2 rounded-full border border-orange-200/80 bg-white/95 px-2 py-0.5 text-[10px] font-bold text-brand-orange shadow-xs dark:border-orange-500/30 dark:bg-zinc-900/90">
                     #{String(rp.topicNumber).padStart(3, "0")}
                   </span>
                 </div>

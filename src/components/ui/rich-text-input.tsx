@@ -52,7 +52,7 @@ export function RichTextInput({ label, placeholder, value, onChange }: Props) {
       {label && (
         <Label className="text-xs font-semibold tracking-wide">{label}</Label>
       )}
-      <div className="border-input bg-input-background overflow-hidden rounded-md border">
+      <div className="border-input bg-input-background dark:bg-input/30 overflow-hidden rounded-md border">
         <div className="border-border bg-muted/50 flex items-center gap-1 border-b p-1.5">
           <button
             type="button"
