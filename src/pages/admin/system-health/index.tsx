@@ -69,17 +69,19 @@ export default function SystemHealthPage() {
     >
       <AddServer onDenied={onDenied} />
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="servers">{t("monitoring.servers")}</TabsTrigger>
-          <TabsTrigger value="health">{t("monitoring.health")}</TabsTrigger>
-        </TabsList>
-        <MonitoringFilters
-          value={filters}
-          onChange={setFilters}
-          environments={environments}
-          servers={servers}
-          health={tab === "health"}
-        />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <TabsList>
+            <TabsTrigger value="servers">{t("monitoring.servers")}</TabsTrigger>
+            <TabsTrigger value="health">{t("monitoring.health")}</TabsTrigger>
+          </TabsList>
+          <MonitoringFilters
+            value={filters}
+            onChange={setFilters}
+            environments={environments}
+            servers={servers}
+            health={tab === "health"}
+          />
+        </div>
         {feed.failed && (
           <p role="alert" className="text-destructive">
             {t("monitoring.unavailable")}

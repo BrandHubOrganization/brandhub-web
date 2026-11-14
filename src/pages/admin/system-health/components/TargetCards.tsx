@@ -16,10 +16,11 @@ export function TargetCards({ targets, onSelect }: Props) {
     );
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      {targets.map((target) => (
+      {targets.map((target, idx) => (
         <article
           key={target.targetId}
-          className="bg-card space-y-3 rounded-xl border p-4 shadow-sm"
+          style={{ animationDelay: `${idx * 30}ms` }}
+          className="border-border bg-card hover:border-primary/35 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 fill-mode-both flex h-full flex-col justify-between space-y-3 rounded-xl border p-4 shadow-sm transition-all duration-200 ease-out"
         >
           <div className="flex flex-wrap justify-between gap-2">
             <h2 className="text-lg font-semibold">{target.name}</h2>

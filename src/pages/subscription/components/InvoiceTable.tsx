@@ -2,16 +2,11 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Check,
-  CheckCircle2,
   Clock,
   AlertTriangle,
-  XCircle,
   Copy,
   ChevronRight,
-  Sparkles,
-  Coins,
   Building2,
-  Calendar,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -91,23 +86,26 @@ export function InvoiceTable({
       case "FULFILLED":
       case "PAID":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-            <CheckCircle2 className="size-3.5 shrink-0" />
+          <span className="text-foreground inline-flex items-center gap-2 text-xs font-medium">
+            <span
+              className="size-1.5 shrink-0 rounded-full bg-emerald-500"
+              aria-hidden="true"
+            />
             <span>{t(`subscription.invoices.statuses.${status}`)}</span>
           </span>
         );
       case "PENDING_PAYMENT":
       case "PENDING":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-            <Clock className="size-3.5 shrink-0" />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+            <Clock className="size-3 shrink-0" />
             <span>{t(`subscription.invoices.statuses.${status}`)}</span>
           </span>
         );
       case "REVIEW_REQUIRED":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-            <AlertTriangle className="size-3.5 shrink-0" />
+          <span className="border-destructive/25 bg-destructive/10 text-destructive inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium">
+            <AlertTriangle className="size-3 shrink-0" />
             <span>{t(`subscription.invoices.statuses.${status}`)}</span>
           </span>
         );
@@ -116,8 +114,11 @@ export function InvoiceTable({
       case "FAILED":
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground border border-border">
-            <XCircle className="size-3.5 shrink-0" />
+          <span className="text-muted-foreground inline-flex items-center gap-2 text-xs font-medium">
+            <span
+              className="bg-muted-foreground/50 size-1.5 shrink-0 rounded-full"
+              aria-hidden="true"
+            />
             <span>{t(`subscription.invoices.statuses.${status}`, status)}</span>
           </span>
         );
@@ -127,47 +128,45 @@ export function InvoiceTable({
   const renderKindBadge = (invoice: BillingHistoryItem) => {
     if (invoice.kind === "CREDIT_TOPUP") {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
-          <Coins className="size-3.5 text-amber-500 shrink-0" />
-          <span>{t("subscription.invoices.kinds.CREDIT_TOPUP")}</span>
+        <span className="text-muted-foreground text-xs font-medium">
+          {t("subscription.invoices.kinds.CREDIT_TOPUP")}
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-medium bg-brand-orange-soft text-brand-orange border border-brand-orange/20">
-        <Sparkles className="size-3.5 text-brand-orange shrink-0" />
-        <span>{invoice.planCode || t("subscription.invoices.kinds.SUBSCRIPTION")}</span>
+      <span className="bg-muted/70 text-foreground inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium">
+        {invoice.planCode || t("subscription.invoices.kinds.SUBSCRIPTION")}
       </span>
     );
   };
 
   return (
-    <div className="rounded-2xl border border-border overflow-hidden bg-card shadow-xs">
+    <div className="border-border bg-card overflow-hidden rounded-2xl border shadow-xs">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted/40 hover:bg-muted/40 border-b border-border">
+            <TableRow className="bg-muted/40 hover:bg-muted/40 border-border border-b">
               {showAgency && (
-                <TableHead className="py-3 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                <TableHead className="text-muted-foreground px-4 py-3 text-xs font-medium tracking-wider uppercase">
                   {t("subscription.invoices.agency")}
                 </TableHead>
               )}
-              <TableHead className="py-3 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <TableHead className="text-muted-foreground px-4 py-3 text-xs font-medium tracking-wider uppercase">
                 {t("subscription.invoices.number")}
               </TableHead>
-              <TableHead className="py-3 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <TableHead className="text-muted-foreground px-4 py-3 text-xs font-medium tracking-wider uppercase">
                 {t("subscription.invoices.tier")}
               </TableHead>
-              <TableHead className="py-3 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <TableHead className="text-muted-foreground px-4 py-3 text-right text-xs font-medium tracking-wider uppercase">
                 {t("subscription.invoices.amount")}
               </TableHead>
-              <TableHead className="py-3 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <TableHead className="text-muted-foreground px-4 py-3 text-xs font-medium tracking-wider uppercase">
                 {t("subscription.invoices.status")}
               </TableHead>
-              <TableHead className="py-3 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <TableHead className="text-muted-foreground px-4 py-3 text-xs font-medium tracking-wider uppercase">
                 {t("subscription.invoices.issuedAt")}
               </TableHead>
-              <TableHead className="py-3 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground text-right">
+              <TableHead className="text-muted-foreground px-4 py-3 text-right text-xs font-medium tracking-wider uppercase">
                 {t("subscription.invoices.detail")}
               </TableHead>
             </TableRow>
@@ -184,33 +183,58 @@ export function InvoiceTable({
                   onClick={() => onSelect(invoice.id)}
                   data-state={isSelected ? "selected" : undefined}
                   className={cn(
-                    "cursor-pointer transition-colors group border-b border-border/60 hover:bg-muted/30",
+                    "group border-border/60 hover:bg-muted/30 cursor-pointer border-b transition-colors",
                     isSelected && "bg-brand-orange/5 hover:bg-brand-orange/10",
                   )}
                 >
                   {showAgency && (
-                    <TableCell className="py-3.5 px-4">
+                    <TableCell className="px-4 py-3.5">
                       <div className="flex items-center gap-2">
-                        <div className="size-8 rounded-lg bg-muted/60 flex items-center justify-center shrink-0 text-muted-foreground">
+                        <div className="bg-muted/60 text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-lg">
                           <Building2 className="size-4" />
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium text-sm text-foreground truncate max-w-48">
+                          <p className="text-foreground max-w-48 truncate text-sm font-medium">
                             {invoice.agencyName || invoice.agencyId}
                           </p>
                           {invoice.agencyName && (
-                            <p className="font-mono text-[11px] text-muted-foreground truncate max-w-44">
-                              {invoice.agencyId}
-                            </p>
+                            <div className="flex items-center gap-1">
+                              <p className="text-muted-foreground max-w-40 truncate font-mono text-[11px]">
+                                {invoice.agencyId}
+                              </p>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) =>
+                                  handleCopy(
+                                    invoice.agencyId,
+                                    `agency-${invoice.id}`,
+                                    e,
+                                  )
+                                }
+                                title={t("subscription.invoices.copyCode")}
+                                className="text-muted-foreground hover:text-foreground hover:bg-muted size-5 rounded"
+                              >
+                                {copiedId === `agency-${invoice.id}` ? (
+                                  <Check className="size-3 text-emerald-500" />
+                                ) : (
+                                  <Copy className="size-3 opacity-50 transition-opacity group-hover:opacity-100" />
+                                )}
+                                <span className="sr-only">
+                                  {t("subscription.invoices.copyCode")}
+                                </span>
+                              </Button>
+                            </div>
                           )}
                         </div>
                       </div>
                     </TableCell>
                   )}
 
-                  <TableCell className="py-3.5 px-4">
+                  <TableCell className="px-4 py-3.5">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono text-xs font-medium text-foreground/90 tracking-tight">
+                      <span className="text-foreground/90 font-mono text-xs font-medium tracking-tight">
                         {codeToCopy}
                       </span>
                       <Button
@@ -219,38 +243,37 @@ export function InvoiceTable({
                         size="icon"
                         onClick={(e) => handleCopy(codeToCopy, invoice.id, e)}
                         title={t("subscription.invoices.copyCode")}
-                        className="size-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted"
+                        className="text-muted-foreground hover:text-foreground hover:bg-muted size-7 rounded-md"
                       >
                         {isCopied ? (
                           <Check className="size-3.5 text-emerald-500" />
                         ) : (
-                          <Copy className="size-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
+                          <Copy className="size-3.5 opacity-60 transition-opacity group-hover:opacity-100" />
                         )}
-                        <span className="sr-only">{t("subscription.invoices.copyCode")}</span>
+                        <span className="sr-only">
+                          {t("subscription.invoices.copyCode")}
+                        </span>
                       </Button>
                     </div>
                   </TableCell>
 
-                  <TableCell className="py-3.5 px-4 whitespace-nowrap">
+                  <TableCell className="px-4 py-3.5 whitespace-nowrap">
                     {renderKindBadge(invoice)}
                   </TableCell>
 
-                  <TableCell className="py-3.5 px-4 whitespace-nowrap font-mono tabular-nums text-sm font-medium text-foreground">
+                  <TableCell className="text-foreground px-4 py-3.5 text-right font-mono text-sm font-medium whitespace-nowrap tabular-nums">
                     {formatCurrency(invoice.amount, invoice.currency)}
                   </TableCell>
 
-                  <TableCell className="py-3.5 px-4 whitespace-nowrap">
+                  <TableCell className="px-4 py-3.5 whitespace-nowrap">
                     {renderStatusBadge(invoice.status)}
                   </TableCell>
 
-                  <TableCell className="py-3.5 px-4 whitespace-nowrap text-muted-foreground text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="size-3.5 text-muted-foreground/70" />
-                      <span>{formatDate(invoice.createdAt)}</span>
-                    </div>
+                  <TableCell className="text-muted-foreground px-4 py-3.5 text-xs whitespace-nowrap tabular-nums">
+                    {formatDate(invoice.createdAt)}
                   </TableCell>
 
-                  <TableCell className="py-3.5 px-4 text-right whitespace-nowrap">
+                  <TableCell className="px-4 py-3.5 text-right whitespace-nowrap">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -259,10 +282,9 @@ export function InvoiceTable({
                         e.stopPropagation();
                         onSelect(invoice.id);
                       }}
-                      className="rounded-lg text-xs font-medium text-muted-foreground hover:text-brand-orange hover:bg-brand-orange-soft/60 group-hover:translate-x-0.5 transition-all"
+                      className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg text-xs font-medium transition-all group-hover:translate-x-0.5"
                     >
-                      <span>{t("subscription.invoices.detail")}</span>
-                      <ChevronRight className="size-3.5 ml-1" />
+                      <ChevronRight className="ml-1 size-3.5" />
                     </Button>
                   </TableCell>
                 </TableRow>

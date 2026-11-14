@@ -220,14 +220,14 @@ export function AdminAccountDistribution({ data }: { data: AdminStatistics }) {
     return `${STATUS_COLORS[status.status]} ${start}% ${start + pct(status.count)}%`;
   });
   return (
-    <section className="bg-card border-border min-w-0 rounded-xl border p-5 lg:p-6">
+    <section className="bg-card border-border flex h-full min-w-0 flex-col rounded-xl border p-5 lg:p-6">
       <h2 className="text-sm font-semibold">
         {t("admin.overview.statusTitle")}
       </h2>
       <p className="text-muted-foreground mt-1 text-xs leading-5">
         {t("admin.overview.statusHint")}
       </p>
-      <div className="my-6 flex flex-col items-center gap-6 sm:flex-row xl:flex-col 2xl:flex-row">
+      <div className="my-6 flex flex-1 flex-col items-center gap-6 sm:flex-row xl:flex-col 2xl:flex-row">
         <div
           className="bg-muted grid size-36 shrink-0 place-items-center rounded-full"
           style={

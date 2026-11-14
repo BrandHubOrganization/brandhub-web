@@ -1,140 +1,26 @@
+import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import {
-  Activity,
-  BookOpen,
-  Clock3,
-  FileText,
-  HelpCircle,
-  LayoutDashboard,
-  Mail,
-  Network,
-  Radar,
-  ShieldCheck,
-  TrendingUp,
-  Users,
-  Wallet,
-} from "lucide-react";
+import { ChevronDown, Clock3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandHubLogo } from "@/components/auth/BrandHubLogo";
-import { useAuthStore } from "@/store/authStore";
+import {
+  adminMenuGroups,
+  adminSections,
+  getAdminBreadcrumbData,
+  labelKey,
+  linkTo,
+  resolveAdminActiveKey,
+  type AdminBreadcrumbData,
+} from "./sidebar/adminNavConfig";
 
-const menuGroups = [
-  {
-    title: "workspace",
-    entries: [
-      { key: "overview", icon: LayoutDashboard, planned: false },
-      { key: "users", icon: Users, planned: false },
-      { key: "moderation", icon: ShieldCheck, planned: false },
-      { key: "health", icon: Activity, planned: false },
-    ],
-  },
-  {
-    title: "utilities",
-    entries: [
-      { key: "revenue", icon: Wallet, planned: false },
-      { key: "invoices", icon: FileText, planned: false },
-      { key: "email", icon: Mail, planned: false },
-      { key: "mailSuppressions", icon: Mail, planned: false },
-      { key: "workspaceTemplates", icon: LayoutDashboard, planned: false },
-    ],
-  },
-  {
-    title: "ai",
-    entries: [
-      { key: "credit", icon: Wallet, planned: false },
-      { key: "crawl", icon: Radar, planned: false },
-      { key: "trends", icon: TrendingUp, planned: false },
-      { key: "trendGraph", icon: Network, planned: false },
-      { key: "trendReplay", icon: Activity, planned: false },
-    ],
-  },
-  {
-    title: "help",
-    entries: [
-      { key: "guide", icon: BookOpen, planned: false },
-      { key: "faq", icon: HelpCircle, planned: false },
-    ],
-  },
-];
-
-const sections = menuGroups.flatMap((group) => group.entries);
-
-export const linkTo = (key: string) =>
-  key === "credit"
-    ? "/admin/credit-prices"
-    : key === "invoices"
-      ? "/admin/invoices"
-      : key === "workspaceTemplates"
-        ? "/admin/workspace-templates"
-        : key === "health"
-          ? "/admin/system-health"
-          : key === "guide"
-            ? "/admin/guide"
-            : key === "faq"
-              ? "/help/faq"
-              : key === "overview"
-                ? "/admin"
-                : `/admin?view=${key}`;
-
-export const labelKey = (key: string) =>
-  key === "credit"
-    ? "credit.price.title"
-    : key === "health"
-      ? "monitoring.title"
-      : key === "guide"
-        ? "admin.navigation.guide"
-        : key === "faq"
-          ? "admin.navigation.faq"
-          : `admin.navigation.${key}`;
-
-export function resolveAdminActiveKey(
-  pathname: string,
-  search: string,
-): string {
-  if (pathname === "/admin/guide") return "guide";
-  if (pathname === "/admin/system-health") return "health";
-  if (pathname === "/admin/credit-prices") return "credit";
-  if (pathname === "/admin/invoices") return "invoices";
-  if (pathname === "/admin/workspace-templates") return "workspaceTemplates";
-
-  const params = new URLSearchParams(search);
-  const rawView = params.get("view") || "overview";
-  if (rawView === "reports") return "overview";
-  const view = rawView === "trendPipeline" ? "crawl" : rawView;
-
-  return sections.some((section) => section.key === view && view !== "health")
-    ? view
-    : "overview";
-}
-
-export interface AdminBreadcrumbData {
-  groupTitleKey: string;
-  groupPath: string;
-  itemLabelKey: string;
-  itemPath: string;
-}
-
-export function getAdminBreadcrumbData(
-  pathname: string,
-  search: string,
-): AdminBreadcrumbData | null {
-  if (!pathname.startsWith("/admin")) return null;
-
-  const activeKey = resolveAdminActiveKey(pathname, search);
-  const group = menuGroups.find((g) =>
-    g.entries.some((entry) => entry.key === activeKey),
-  );
-
-  if (!group) return null;
-
-  return {
-    groupTitleKey: `admin.navigation.${group.title}`,
-    groupPath: linkTo(group.entries[0].key),
-    itemLabelKey: labelKey(activeKey),
-    itemPath: linkTo(activeKey),
-  };
-}
+export {
+  getAdminBreadcrumbData,
+  labelKey,
+  linkTo,
+  resolveAdminActiveKey,
+  type AdminBreadcrumbData,
+};
 
 function useAdminView() {
   const { pathname, search } = useLocation();
@@ -149,7 +35,7 @@ export function AdminMobileNavigation() {
       aria-label={t("admin.navigation.label")}
       className="flex w-full items-center justify-around"
     >
-      {sections.slice(0, 4).map(({ key, icon: Icon }) => (
+      {adminSections.slice(0, 4).map(({ key, icon: Icon }) => (
         <Link
           key={key}
           to={linkTo(key)}
@@ -180,102 +66,145 @@ export function AdminSidebar({
 }) {
   const { t } = useTranslation();
   const active = useAdminView();
-  const user = useAuthStore((s) => s.user);
-  const username = user?.name || user?.email || t("admin.roles.ADMIN");
+  const [closedGroups, setClosedGroups] = React.useState<Set<string>>(
+    new Set(),
+  );
+  const toggleGroup = (title: string) =>
+    setClosedGroups((closed) => {
+      const next = new Set(closed);
+      if (!next.delete(title)) next.add(title);
+      return next;
+    });
+
   return (
     <div
       className={cn(
-        "flex h-full flex-col border-r border-[hsl(var(--sidebar-border))] bg-[hsl(var(--sidebar))] text-[hsl(var(--sidebar-foreground))]",
+        "surface-dark flex h-full flex-col transition-all duration-200 select-none",
         collapsed ? "w-[60px]" : "w-[220px]",
         className,
       )}
+      style={{
+        background: "hsl(var(--sidebar, 240 6% 4%))",
+        color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
+        borderRight: "1px solid hsl(var(--sidebar-border, 240 5% 15%))",
+      }}
     >
       <Link
         to="/admin"
         onClick={onMobileItemClick}
         aria-label="BrandHub"
         className={cn(
-          "focus-visible:outline-ring flex h-14 shrink-0 items-center gap-2.5 border-b border-[hsl(var(--sidebar-border))] px-5 focus-visible:outline-2",
-          collapsed && "justify-center px-0",
+          "focus-visible:outline-ring flex h-14 shrink-0 items-center border-b px-3 focus-visible:outline-2",
+          collapsed ? "justify-center" : "gap-2.5",
         )}
+        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
       >
         <span className="flex size-7 shrink-0 items-center justify-center">
           <BrandHubLogo size={28} />
         </span>
         {!collapsed && (
-          <span className="text-sm font-bold tracking-tight text-white">
+          <span className="font-sans text-sm font-bold tracking-tight text-white">
             Brand<span className="text-brand-orange">Hub</span>
           </span>
         )}
       </Link>
+
       <nav
         aria-label={t("admin.navigation.label")}
-        className="flex-1 overflow-y-auto px-3 py-6"
+        className="flex flex-1 flex-col gap-4 overflow-y-auto p-2 pt-4"
       >
-        {menuGroups.map((group) => (
-          <div key={group.title} className="mb-7">
-            {!collapsed && (
-              <p className="mb-3 px-3 font-sans text-xs tracking-wide uppercase opacity-50">
+        {adminMenuGroups.map((group, idx) => (
+          <div key={group.title} className="space-y-1">
+            {!collapsed ? (
+              <button
+                type="button"
+                onClick={() => toggleGroup(group.title)}
+                aria-expanded={!closedGroups.has(group.title)}
+                className="text-muted-foreground text-3xs mb-1 flex w-full cursor-pointer items-center justify-between rounded px-2.5 font-bold tracking-wider uppercase hover:text-white"
+              >
                 {t(`admin.navigation.${group.title}`)}
-              </p>
-            )}
-            <div className="space-y-1">
-              {group.entries.map(({ key, icon: Icon, planned }) => (
-                <Link
-                  key={key}
-                  to={linkTo(key)}
-                  onClick={onMobileItemClick}
-                  aria-label={t(labelKey(key))}
-                  aria-current={active === key ? "page" : undefined}
-                  title={
-                    planned
-                      ? `${t(labelKey(key))} · ${t("admin.navigation.planned")}`
-                      : t(labelKey(key))
-                  }
+                <ChevronDown
                   className={cn(
-                    "focus-visible:outline-ring flex min-h-10 items-center gap-3 rounded-lg px-3 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
-                    collapsed && "justify-center px-0",
-                    active === key
-                      ? "bg-brand-orange text-primary-foreground font-medium"
-                      : "text-[hsl(var(--sidebar-foreground))]/65 hover:bg-[hsl(var(--sidebar-foreground))]/5 hover:text-[hsl(var(--sidebar-foreground))]",
+                    "size-3 transition-transform",
+                    closedGroups.has(group.title) && "-rotate-90",
                   )}
-                >
-                  <Icon className="size-4 shrink-0" aria-hidden="true" />
-                  {!collapsed && (
-                    <>
-                      <span className="flex-1">{t(labelKey(key))}</span>
-                      {planned && (
-                        <Clock3
-                          className="size-3 opacity-60"
-                          aria-hidden="true"
-                        />
-                      )}
-                    </>
-                  )}
-                </Link>
-              ))}
+                  aria-hidden="true"
+                />
+              </button>
+            ) : (
+              idx > 0 && <div className="bg-border mx-1 my-2 h-px opacity-20" />
+            )}
+
+            <div
+              className="space-y-0.5"
+              hidden={!collapsed && closedGroups.has(group.title)}
+            >
+              {group.entries.map(({ key, icon: Icon, planned }) => {
+                const isActive = active === key;
+                const label = t(labelKey(key));
+                return (
+                  <Link
+                    key={key}
+                    to={linkTo(key)}
+                    onClick={onMobileItemClick}
+                    aria-label={label}
+                    aria-current={isActive ? "page" : undefined}
+                    title={
+                      collapsed
+                        ? planned
+                          ? `${label} · ${t("admin.navigation.planned")}`
+                          : label
+                        : undefined
+                    }
+                    className={cn(
+                      "focus-visible:outline-ring flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
+                      collapsed && "justify-center",
+                      isActive ? "font-semibold" : "hover:text-white",
+                    )}
+                    style={
+                      isActive
+                        ? {
+                            background: "hsl(var(--primary))",
+                            color: "#ffffff",
+                          }
+                        : {
+                            color: "hsl(var(--sidebar-foreground, 0 0% 98%))",
+                          }
+                    }
+                  >
+                    <Icon className="size-4 shrink-0" aria-hidden="true" />
+                    {!collapsed && (
+                      <>
+                        <span className="flex-1 truncate">{label}</span>
+                        {planned && (
+                          <Clock3
+                            className="size-3 opacity-60"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </>
+                    )}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         ))}
       </nav>
+
       <div
         className={cn(
-          "flex shrink-0 items-center gap-3 border-t border-[hsl(var(--sidebar-border))] p-4",
-          collapsed && "justify-center px-0",
+          "flex flex-col gap-0.5 border-t p-2",
+          collapsed && "items-center",
         )}
+        style={{ borderColor: "hsl(var(--sidebar-border, 240 5% 15%))" }}
       >
-        <span
-          className="bg-brand-orange/15 text-brand-orange grid size-8 shrink-0 place-items-center rounded-full text-xs font-semibold"
-          aria-hidden="true"
-        >
-          {username.charAt(0).toUpperCase()}
-        </span>
         {!collapsed && (
-          <div className="min-w-0">
-            <p className="truncate text-xs font-medium">{username}</p>
-            <p className="mt-1 font-sans text-xs tracking-wide uppercase opacity-50">
+          <div className="text-muted-foreground text-3xs px-2.5 py-1 leading-snug">
+            {t("nav.roleLabelPrefix")}{" "}
+            <span className="font-semibold text-white">
               {t("admin.roles.ADMIN")}
-            </p>
+            </span>
           </div>
         )}
       </div>
