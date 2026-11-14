@@ -1,12 +1,9 @@
 import axios from "axios";
 import { useAuthStore } from "@/store/authStore";
 import { requireApiData } from "@/lib/apiData";
+import { getApiBaseUrl } from "@/lib/apiBaseUrl";
 
-const API_BASE_URL =
-  (typeof import.meta !== "undefined" &&
-    import.meta.env &&
-    import.meta.env.VITE_API_BASE_URL) ||
-  "http://localhost:8080";
+const API_BASE_URL = getApiBaseUrl();
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
