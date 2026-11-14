@@ -6,13 +6,11 @@ export function getApiBaseUrl(): string {
   if (configured) return configured;
 
   if (typeof window !== "undefined") {
-    const { hostname, origin } = window.location;
+    const { hostname } = window.location;
     if (hostname === "localhost" || hostname === "127.0.0.1") {
       return "http://localhost:8080";
     }
-    return origin;
   }
 
-  return "https://brandhub.id.vn";
+  return "https://api.brandhub.id.vn";
 }
-
