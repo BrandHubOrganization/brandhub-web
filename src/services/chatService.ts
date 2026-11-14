@@ -1,8 +1,9 @@
 import type { ApiResponse } from "@/services/authService";
 import { api } from "@/services/api";
 import type { ChatHistory } from "@/types/chat";
+import { getApiBaseUrl } from "@/lib/apiBaseUrl";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL = getApiBaseUrl();
 
 export const CHAT_SOCKET_URL =
   import.meta.env.VITE_WS_BASE_URL ||

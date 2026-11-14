@@ -1,4 +1,5 @@
 import { api } from "@/lib/axios";
+import { getApiBaseUrl } from "@/lib/apiBaseUrl";
 import type { Platform } from "@/types/post";
 import type {
   SocialAccount,
@@ -6,12 +7,7 @@ import type {
   SocialAccountStatusResponse,
 } from "../types/socialAccount";
 
-// URL của API Gateway (mặc định http://localhost:8080)
-const GATEWAY_API_URL =
-  (typeof import.meta !== "undefined" &&
-    import.meta.env &&
-    import.meta.env.VITE_API_BASE_URL) ||
-  "http://localhost:8080";
+const GATEWAY_API_URL = getApiBaseUrl();
 
 export function buildOAuthConnectUrl(
   platform: Platform,
