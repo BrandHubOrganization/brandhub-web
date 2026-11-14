@@ -1,8 +1,19 @@
-import { ArrowUpDown, RotateCcw, Search, X } from "lucide-react";
+import { ArrowUpDown, Hash, RotateCcw, Search, X } from "lucide-react";
 import { BLOG_CATEGORIES } from "@/data/blogCategories";
 import type { BlogCategorySlug } from "@/data/blogTypes";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+
+export const POPULAR_BLOG_HASHTAGS = [
+  "#BrandHub",
+  "#QuanTriAgency",
+  "#DuyetBai3Cap",
+  "#MediaPackage",
+  "#AIGraphRAG",
+  "#DangBaiDaKenh",
+  "#TikTokTrends",
+  "#VietQRSePayPayOS",
+] as const;
 
 export type BlogSortOption =
   | "newest"
@@ -54,7 +65,7 @@ export function BlogToolbar({
             type="search"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Tìm bài viết theo từ khóa, vai trò (Owner, Manager, Creator...), công cụ (Jira, Notion, GraphRAG)..."
+            placeholder="Tìm bài viết theo #Hashtag (#AIGraphRAG, #MediaPackage...), từ khóa, vai trò (Owner, Manager, Creator)..."
             aria-label="Tìm kiếm bài viết"
             className="h-10 rounded-lg border-zinc-200 bg-zinc-50/70 pr-10 pl-10 text-sm text-foreground placeholder:text-zinc-400 focus-visible:ring-brand-orange dark:border-zinc-700 dark:bg-zinc-950/60"
           />
@@ -96,6 +107,33 @@ export function BlogToolbar({
             })}
           </div>
         </div>
+      </div>
+
+      {/* Popular Hashtags Quick Filter Strip */}
+      <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+        <span className="mr-1 inline-flex items-center gap-1 text-[11px] font-bold text-zinc-500 dark:text-zinc-400">
+          <Hash className="size-3 text-brand-orange" />
+          Hashtag nổi bật:
+        </span>
+        {POPULAR_BLOG_HASHTAGS.map((tag) => {
+          const isActive =
+            searchQuery.trim().toLowerCase() === tag.toLowerCase();
+          return (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => onSearchChange(isActive ? "" : tag)}
+              className={cn(
+                "cursor-pointer rounded-md border px-2 py-0.5 font-mono text-[11px] font-semibold transition-colors",
+                isActive
+                  ? "border-brand-orange bg-brand-orange text-white shadow-2xs"
+                  : "border-zinc-200/85 bg-zinc-50 text-zinc-600 hover:border-brand-orange/45 hover:text-brand-orange dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-300 dark:hover:text-orange-400",
+              )}
+            >
+              {tag}
+            </button>
+          );
+        })}
       </div>
 
       {/* Concise Status & Active Filter Bar */}

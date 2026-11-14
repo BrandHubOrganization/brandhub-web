@@ -17,6 +17,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "đăng bài tự động lên threads",
       "cách tăng tương tác tự nhiên trên threads"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#XayKenhThreads",
+      "#KetHopInstagramThreads",
+      "#TangTuongTacTuNhien",
+      "#FacebookInstagramTikTokThreads"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -179,6 +187,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "khung giờ đăng threads hiệu quả",
       "hẹn giờ đăng bài chuẩn múi giờ việt nam"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#KhungGioVang",
+      "#LichDangBaiToiUu",
+      "#FacebookInstagramTikTokThreads",
+      "#ContentCalendar"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -339,6 +355,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "nhật ký xuất bản publish logs",
       "khắc phục lỗi hết hạn token fanpage tiktok"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#TuDongThuLaiAPI",
+      "#OfficialAPI",
+      "#KienTrucPublisher",
+      "#NhatKyXuatBan"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -495,6 +519,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "báo cáo hiệu quả bài đăng đa kênh",
       "phân tích tương tác facebook tiktok instagram threads",
       "tối ưu chiến lược nội dung theo số liệu"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#PostAnalytics",
+      "#PhanTichTuongTac",
+      "#DoLuongHieuSuat",
+      "#BaoCaoChienDich"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -653,6 +685,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "phân tách kênh mạng xã hội theo workspace",
       "công cụ quản lý đa kênh cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#QuanLyNhieuFanpage",
+      "#DaTaiKhoanMXH",
+      "#WorkspaceDaTang",
+      "#QuanTriAgency"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -810,6 +850,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "mua phần mềm saas không cần thẻ visa",
       "đối soát thanh toán vietqr tự động"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#VietQRSePayPayOS",
+      "#NangCapGoiPro",
+      "#NapAICredits",
+      "#ThanhToanTuDong"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Owner",
@@ -965,6 +1013,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "marketing ngành f&b đa kênh",
       "cách quản lý nội dung nhiều thương hiệu f&b",
       "rút ngắn thời gian duyệt bài với client"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#CaseStudyFnB",
+      "#RutNganThoiGianDuyet",
+      "#DuyetBai3Cap",
+      "#QuanTriAgency"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1124,6 +1180,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "chiến dịch mùa lễ hội ngành mỹ phẩm",
       "xuất bản đồng bộ instagram tiktok facebook threads"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#CaseStudyThoiTrang",
+      "#DaiSuAoLoRA",
+      "#AIStudio",
+      "#ToiUuChiPhiSanXuat"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Guest",
@@ -1282,6 +1346,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "phần mềm thay thế bảng tính cho agency",
       "dấu hiệu agency quá tải quy trình"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#ThayTheGoogleSheets",
+      "#ThayTheNhomChat",
+      "#ChuyenDoiSoAgency",
+      "#ChongTroiViec"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Guest",
@@ -1439,6 +1511,14 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "cách nạp brand guidelines vào ai studio",
       "thiết lập quy trình duyệt bài trong 15 phút"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#HuongDanOnboarding",
+      "#KhoiTaoWorkspace",
+      "#BatDauTrong15Phut",
+      "#QuanTriAgency"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Guest",
@@ -1587,5 +1667,5 @@ export const BLOG_BATCH2_PART3_POSTS: BlogPost[] = [
       "xu-huong-martech-viet-nam-2026-su-len-ngoi-cua-nen-tang-quan-tri-tich-hop-ai",
       "quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub"
     ]
-  }
+  },
 ];

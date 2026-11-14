@@ -17,6 +17,14 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "minh bạch trách nhiệm agency và client",
       "theo dõi lịch sử thao tác workspace"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#AuditLog",
+      "#NhatKyHoatDong",
+      "#MinhBachDuAn",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -179,6 +187,14 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "số hóa quy trình duyệt bài marketing",
       "lộ trình onboarding phần mềm cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#ChuyenDoiSoAgency",
+      "#QuyTrinhVanHanh",
+      "#Onboarding7Ngay",
+      "#KanbanMarketing"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Owner",
@@ -338,6 +354,14 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "tạm dừng xuất bản khi có khủng hoảng truyền thông",
       "quy trình thu hồi bài viết chờ đăng",
       "kiểm soát an toàn lịch đăng mạng xã hội"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ThuHoiBaiDang",
+      "#XuLyKhungHoang",
+      "#HuyLichHenGio",
+      "#ContentCalendar"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -499,6 +523,14 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "làm content chiến dịch tết hiệu quả",
       "quản lý sản xuất nội dung mùa cao điểm",
       "duyệt bài theo lô cho khách hàng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#SanXuatHangLoat",
+      "#ChienDichTet",
+      "#BatchProduction",
+      "#ContentCalendar"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -662,6 +694,14 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "chặn từ ngữ thô tục bạo lực truyền thông",
       "vai trò admin kiểm duyệt nội dung hệ thống"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ContentModerationQueue",
+      "#KiemDuyetHeThong",
+      "#AnToanCongDong",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Admin",
@@ -822,6 +862,14 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "xử lý yêu cầu ngoài hợp đồng truyền thông",
       "quản lý định mức hạng mục chiến dịch",
       "bảo vệ biên lợi nhuận dự án agency"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#ChongScopeCreep",
+      "#KiemSoatPhatSinh",
+      "#MediaCampaign",
+      "#BaoVeLoiNhuan"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -985,6 +1033,14 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "báo cáo hiệu quả chiến dịch social media",
       "bí quyết giữ chân khách hàng agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#BaoCaoTongKet",
+      "#CampaignWrapUp",
+      "#DoLuongHieuQua",
+      "#ClientPortal"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -1146,6 +1202,14 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "gói chăm sóc fanpage tiktok hàng tháng",
       "xây dựng doanh thu định kỳ cho agency",
       "bảng giá gói truyền thông duy trì sme"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MonthlyRetainer",
+      "#GoiDuyTriHangThang",
+      "#DoanhThuDinhKy",
+      "#GoiTruyenThong"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1309,6 +1373,14 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "tỷ lệ phân bổ ngân sách marketing năm",
       "lập kế hoạch truyền thông thương hiệu cả năm"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#ChienDichDaiHan",
+      "#AlwaysOnContent",
+      "#PhanBoNganSach",
+      "#MediaCampaign"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -1455,5 +1527,5 @@ export const BLOG_BATCH4_PART1_POSTS: BlogPost[] = [
       "quy-trinh-dam-phan-bao-gia-proposal-giua-agency-va-client-truc-tuyen",
       "ung-dung-ai-dich-thuat-va-ban-dia-hoa-noi-dung-viet-anh-giu-nguyen-sac-thai"
     ]
-  }
+  },
 ];

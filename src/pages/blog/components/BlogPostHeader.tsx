@@ -101,6 +101,22 @@ export function BlogPostHeader({ post, categoryMeta }: BlogPostHeaderProps) {
         <p className="max-w-3xl text-pretty text-base leading-relaxed text-zinc-600 sm:text-[17px] dark:text-zinc-300">
           {post.metaDescription}
         </p>
+        {post.hashtags && post.hashtags.length > 0 && (
+          <div
+            aria-label="Hashtag bài viết"
+            className="flex flex-wrap items-center gap-1.5 pt-0.5"
+          >
+            {post.hashtags.map((tag) => (
+              <Link
+                key={tag}
+                to={`/blog?q=${encodeURIComponent(tag)}`}
+                className="rounded-md border border-zinc-200/90 bg-zinc-50/90 px-2.5 py-0.5 font-mono text-xs font-semibold text-zinc-700 transition-colors hover:border-brand-orange/45 hover:bg-orange-50/80 hover:text-brand-orange dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-orange-500/40 dark:hover:text-orange-300"
+              >
+                {tag}
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Author & Reading Telemetry Strip */}

@@ -17,6 +17,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "cách tính định mức công việc creator",
       "khi nào agency nên tuyển thêm nhân sự"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#HoachDinhNguonLuc",
+      "#QuanTriNhanSu",
+      "#DieuPhoiDuAn",
+      "#QuanTriAgency"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -176,6 +184,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "kết hợp pr báo chí và mạng xã hội",
       "nghiệm thu link bài báo chiến dịch truyền thông",
       "phần mềm quản lý chiến dịch pr tích hợp"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#DoiTacBaoDai",
+      "#BaoDienTu",
+      "#BookingTruyenHinh",
+      "#NghiemThuPhatSong"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -338,6 +354,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "ứng dụng graphrag viết nội dung chuyển đổi",
       "công thức prompt cho nhân sự sáng tạo"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#MauPromptAI",
+      "#PromptCopywriting",
+      "#ToiUuChuyenDoi",
+      "#ContentMarketingAI"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -497,6 +521,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "cách giữ đồng bộ giọng văn thương hiệu",
       "kiểm soát chất lượng bài viết content trước khi duyệt",
       "đối chiếu brand guideline bằng ai"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#KiemTraBrandTone",
+      "#BrandGuidelines",
+      "#KiemDuyetNoiDung",
+      "#Neo4jChromaDB"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -659,6 +691,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "rủi ro lộ bí mật kinh doanh khi dùng ai",
       "kiến trúc ai an toàn cho agency truyền thông"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#BaoMatTriThucAI",
+      "#CoLapNamespace",
+      "#AnToanDuLieu",
+      "#Neo4jChromaDB"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -820,6 +860,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "khung giờ đăng bài tối ưu từng nền tảng",
       "tăng lượt tiếp cận tự nhiên bằng hashtag và hook"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#GoiYHashtagAI",
+      "#KhungGioVang",
+      "#ToiUuTuongTac",
+      "#FacebookInstagramTikTokThreads"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -979,6 +1027,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "đăng instagram reels qua api có bị giảm chất lượng không",
       "bitrate chuẩn cho video ngắn 1080x1920",
       "quy trình duyệt và đăng video ngắn cho agency"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#DangVideoChatLuongCao",
+      "#ChongNenVideo",
+      "#TikTokReels",
+      "#OfficialAPI"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1140,6 +1196,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "đảm bảo an toàn lịch đăng bài chiến dịch lớn",
       "quản lý kết nối mạng xã hội cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#TokenHealth",
+      "#GiamSatKetNoi",
+      "#BaoMatOAuth2",
+      "#ChienDichMegaSale"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1300,6 +1364,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "lập kế hoạch content calendar 30 ngày cân bằng",
       "phân bổ nội dung trên 4 mạng xã hội"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ContentPillar",
+      "#MaTranNoiDung",
+      "#ContentCalendar",
+      "#HoachDinhNoiDung"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1459,6 +1531,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "cách hoạt động thuật toán đề xuất tiktok và threads",
       "tín hiệu xếp hạng nội dung mạng xã hội",
       "tối ưu tương tác tự nhiên đa nền tảng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ThuatToanMangXaHoi",
+      "#PhanPhoiNoiDung",
+      "#FacebookInstagramTikTokThreads",
+      "#TangTruongTuNhien"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1621,6 +1701,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "đối soát thanh toán vietqr sepay payos tự động",
       "giám sát hạn mức tài nguyên và gói cước doanh nghiệp"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#PhanHeAdmin",
+      "#GiamSatHeThong",
+      "#ContentModerationQueue",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Admin",
@@ -1781,6 +1869,14 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "hạ tầng xuất bản mạng xã hội độ trễ thấp",
       "kiến trúc saas đa khách thuê trên aws"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#KienTrucMicroservices",
+      "#SpringBootFastAPI",
+      "#Neo4jChromaDB",
+      "#HaTangHieuNangCao"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Guest",
@@ -1926,5 +2022,5 @@ export const BLOG_BATCH3_PART2_POSTS: BlogPost[] = [
       "huong-dan-onboarding-danh-cho-nguoi-moi-bat-dau-su-dung-brandhub-trong-15-phut",
       "ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb"
     ]
-  }
+  },
 ];

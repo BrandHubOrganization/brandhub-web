@@ -15,6 +15,14 @@ export const BLOG_FEATURED_POSTS: BlogPostPreview[] = [
     metaDescription:
       "Hướng dẫn thiết lập Workspace quản lý dự án truyền thông như Jira và Notion cho Agency: phân quyền 6 vai trò, quản lý task Kanban và đăng thẳng lên 4 MXH.",
     category: "agency-project-management",
+    hashtags: [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#WorkspaceDaTang",
+      "#KanbanMarketing",
+      "#PhanQuyenRBAC",
+      "#ThayTheJiraNotion",
+    ],
     publishedAt: "2026-11-10",
     readingTimeMinutes: 10,
     author: BLOG_AUTHORS["le-tri-trung"],
@@ -32,6 +40,14 @@ export const BLOG_FEATURED_POSTS: BlogPostPreview[] = [
     metaDescription:
       "Chi tiết quy trình phê duyệt nội dung 3 cấp khép kín giữa Creator, Manager và Client. Cơ chế khóa bản nháp và lưu vết lịch sử giúp chống trôi bài và đăng nhầm.",
     category: "content-workflow-approval",
+    hashtags: [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ContentWorkflow",
+      "#ClientPortal",
+      "#ChongTroiViec",
+      "#AuditLog",
+    ],
     publishedAt: "2026-11-10",
     readingTimeMinutes: 9,
     author: BLOG_AUTHORS["nguyen-minh-tuan"],
@@ -49,6 +65,14 @@ export const BLOG_FEATURED_POSTS: BlogPostPreview[] = [
     metaDescription:
       "Phân tích 5 thành phần bắt buộc trong Gói truyền thông (Media Package) chuyên nghiệp: Social, AI Media, Booking Báo đài và quy trình đàm phán 2 chiều trực tuyến.",
     category: "media-package-campaign",
+    hashtags: [
+      "#BrandHub",
+      "#MediaPackage",
+      "#GoiTruyenThong",
+      "#BaoGiaAgency",
+      "#MediaCampaign",
+      "#DamPhanB2B",
+    ],
     publishedAt: "2026-11-10",
     readingTimeMinutes: 10,
     author: BLOG_AUTHORS["le-tri-trung"],
@@ -66,6 +90,14 @@ export const BLOG_FEATURED_POSTS: BlogPostPreview[] = [
     metaDescription:
       "Giải pháp ứng dụng đồ thị tri thức Neo4j và ChromaDB để AI hiểu sâu Brand Guidelines: viết caption đúng giọng văn, tạo đại sứ ảo và bắt trend thời gian thực.",
     category: "ai-studio-graphrag-trends",
+    hashtags: [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#BrandGuidelines",
+      "#Neo4jChromaDB",
+      "#AIStudio",
+      "#ContentMarketingAI",
+    ],
     publishedAt: "2026-11-10",
     readingTimeMinutes: 10,
     author: BLOG_AUTHORS["nguyen-thanh-loc"],
@@ -83,6 +115,14 @@ export const BLOG_FEATURED_POSTS: BlogPostPreview[] = [
     metaDescription:
       "Cách quản lý lịch xuất bản đa kênh (Content Calendar) và đăng bài tự động lên Facebook, Instagram, TikTok, Threads qua API chính thức bảo mật AES-256.",
     category: "multi-channel-publishing",
+    hashtags: [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ContentCalendar",
+      "#FacebookInstagramTikTokThreads",
+      "#OfficialAPI",
+      "#BaoMatAES256",
+    ],
     publishedAt: "2026-11-10",
     readingTimeMinutes: 10,
     author: BLOG_AUTHORS["nguyen-chon-phuoc"],
@@ -100,6 +140,14 @@ export const BLOG_FEATURED_POSTS: BlogPostPreview[] = [
     metaDescription:
       "Bảng đối chiếu chi tiết giữa BrandHub với các công cụ ngoại (Buffer, Hootsuite, Planable) và bộ công cụ Jira + Notion về tính năng, AI tiếng Việt và chi phí.",
     category: "tool-comparison-case-study",
+    hashtags: [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#BufferHootsuitePlanable",
+      "#ToiUuChiPhiSaaS",
+      "#VietQRSePayPayOS",
+      "#AgencyVietNam",
+    ],
     publishedAt: "2026-11-10",
     readingTimeMinutes: 11,
     author: BLOG_AUTHORS["ha-van-an"],

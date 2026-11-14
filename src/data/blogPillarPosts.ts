@@ -20,6 +20,14 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
       "mô hình workspace như notion cho agency",
       "phân quyền owner manager creator client",
     ],
+    hashtags: [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#WorkspaceDaTang",
+      "#KanbanMarketing",
+      "#PhanQuyenRBAC",
+      "#ThayTheJiraNotion",
+    ],
     searchIntent: "Commercial",
     targetRoles: ["Owner", "Manager", "Creator", "Client"],
     publishedAt: "2026-11-10",
@@ -191,6 +199,14 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
       "cách chống trôi bài đăng mạng xã hội",
       "kiểm duyệt an toàn nội dung truyền thông",
     ],
+    hashtags: [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ContentWorkflow",
+      "#ClientPortal",
+      "#ChongTroiViec",
+      "#AuditLog",
+    ],
     searchIntent: "Informational",
     targetRoles: ["Owner", "Manager", "Creator", "Client"],
     publishedAt: "2026-11-10",
@@ -360,6 +376,14 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
       "mẫu báo giá gói truyền thông agency",
       "quản lý chiến dịch truyền thông media campaign",
       "quản lý đối tác báo chí truyền hình",
+    ],
+    hashtags: [
+      "#BrandHub",
+      "#MediaPackage",
+      "#GoiTruyenThong",
+      "#BaoGiaAgency",
+      "#MediaCampaign",
+      "#DamPhanB2B",
     ],
     searchIntent: "Commercial",
     targetRoles: ["Guest", "Owner", "Manager", "Client"],
@@ -536,6 +560,14 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
       "tạo đại sứ ảo ai lora cho thương hiệu",
       "bắt trend tiktok creative center tự động",
     ],
+    hashtags: [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#BrandGuidelines",
+      "#Neo4jChromaDB",
+      "#AIStudio",
+      "#ContentMarketingAI",
+    ],
     searchIntent: "Informational",
     targetRoles: ["Owner", "Manager", "Creator", "Client"],
     publishedAt: "2026-11-10",
@@ -636,6 +668,7 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
           "Quy trình 4 bước ứng dụng AI Studio giúp Creator nhân 5 sản lượng mà Client vẫn gật đầu ngay",
         paragraphs: [
           "AI sinh ra để giải phóng sức sáng tạo, không phải thay thế người viết. Khi đưa AI Studio vào vận hành thực tế, Creator thoát khỏi 80% công việc tra cứu thủ công và biến thể định dạng lặp đi lặp lại. Người làm nội dung giữ vai trò đạo diễn ý tưởng. Hệ thống lo trọn khâu nhân bản chuẩn xác.",
+          "Thay vì mở hàng chục tab trình duyệt để dò bảng thành phần, kiểm tra từ cấm rồi tự gõ lại từng dòng mô tả cho từng mạng xã hội, quy trình 4 bước dưới đây biến một ý tưởng gốc thành bộ ấn phẩm đa kênh chỉ trong một buổi sáng.",
         ],
         checklist: [
           "Nạp tài liệu Brand Voice, bảng thông số sản phẩm và 5 bài viết mẫu tâm đắc nhất vào mục Kho tri thức của Workspace.",
@@ -704,6 +737,14 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
       "phần mềm quản lý fanpage instagram tiktok threads",
       "bảo mật access token mạng xã hội aes-256",
       "phân tích chỉ số mạng xã hội thời gian thực",
+    ],
+    hashtags: [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ContentCalendar",
+      "#FacebookInstagramTikTokThreads",
+      "#OfficialAPI",
+      "#BaoMatAES256",
     ],
     searchIntent: "Transactional",
     targetRoles: ["Owner", "Manager", "Creator", "Client"],
@@ -804,6 +845,7 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
           "Quy trình 4 bước thiết lập Content Calendar 30 ngày không bao giờ trễ khung giờ vàng",
         paragraphs: [
           "Có lịch xuất bản chuẩn thì cuối tuần mới ngủ ngon. Khi toàn bộ kế hoạch 30 ngày hiển thị trực quan bằng mã màu trạng thái trên màn hình lịch, mọi khoảng trống nội dung đều lộ diện ngay lập tức. Đội ngũ chủ động lấp đầy từ sớm thay vì chạy nước rút phút chót.",
+          "Để guồng máy xuất bản đa kênh vận hành êm ái suốt bốn tuần mà không gặp sự cố đứt kết nối hay lệch múi giờ phát sóng, Manager và Creator chỉ cần duy trì bốn bước kiểm soát định kỳ dưới đây.",
         ],
         checklist: [
           "Kiểm tra đèn báo trạng thái kết nối của cả 4 kênh Facebook, Instagram, TikTok, Threads trong phần cài đặt Workspace đầu mỗi tuần.",
@@ -872,6 +914,14 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
       "phần mềm thay thế jira notion cho marketing",
       "chi phí phần mềm quản lý agency tại việt nam",
       "thanh toán phần mềm saas qua vietqr sepay payos",
+    ],
+    hashtags: [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#BufferHootsuitePlanable",
+      "#ToiUuChiPhiSaaS",
+      "#VietQRSePayPayOS",
+      "#AgencyVietNam",
     ],
     searchIntent: "Comparison",
     targetRoles: ["Guest", "Owner", "Manager", "Client"],
@@ -956,6 +1006,7 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
           "Phân tích khách quan: Khi nào nên giữ công cụ cũ và khi nào nên chuyển hẳn sang BrandHub?",
         paragraphs: [
           "Mỗi sản phẩm phần mềm đều có thế mạnh riêng ở phân khúc mà nó nhắm tới. Việc đối chiếu [bảng ma trận tính năng trên BrandHub](/#comparison) và nhìn nhận thẳng thắn nhu cầu cốt lõi của đội ngũ sẽ giúp Owner đưa ra quyết định đầu tư chính xác mà không chạy theo phong trào.",
+          "Điểm mấu chốt nằm ở quy mô phối hợp nhân sự và độ phức tạp của quy trình nghiệm thu. Khi số lượng thành viên tham gia chiến dịch vượt quá ba người và đòi hỏi sự phê duyệt minh bạch từ phía Client, một nền tảng chuyên biệt sẽ phát huy giá trị vượt trội.",
         ],
         subheadings: [
           {
@@ -988,12 +1039,14 @@ export const BLOG_PILLAR_POSTS: BlogPost[] = [
         heading:
           "Lộ trình 3 ngày chuyển đổi êm ái từ bảng tính và công cụ rời rạc sang BrandHub không gián đoạn dự án",
         paragraphs: [
-          "Đổi phần mềm không có nghĩa là đập đi xây lại. Nỗi ngại lớn nhất của các chủ Agency là sợ nhân viên phản ứng hoặc làm đình trệ các chiến dịch đang chạy dở. Thực tế bạn chỉ cần chuyển dịch theo 3 bước cuốn chiếu rất gọn gàng.",
+          "Đổi phần mềm không có nghĩa là đập đi xây lại. Nỗi ngại lớn nhất của các chủ Agency là sợ nhân viên phản ứng hoặc làm đình trệ các chiến dịch đang chạy dở. Thực tế bạn chỉ cần chuyển dịch theo lộ trình cuốn chiếu rất gọn gàng.",
+          "Bằng cách chọn một thương hiệu tiêu biểu làm điểm tựa thực nghiệm trước khi nhân rộng toàn công ty, đội ngũ sẽ làm quen với thao tác mới một cách tự nhiên ngay trong luồng công việc hàng ngày.",
         ],
         checklist: [
           "Ngày 1 - Khởi tạo hạt nhân thử nghiệm: Chọn ra 1 thương hiệu khách hàng tiêu biểu nhất để tạo Workspace đầu tiên trên gói Starter 0đ, tải file Brand Guidelines PDF vào kho tri thức AI.",
           "Ngày 2 - Kết nối kênh & Mời đội ngũ nòng cốt: Liên kết OAuth cho 4 kênh Facebook, Instagram, TikTok, Threads của nhãn hàng đó và mời đúng 1 Manager + 2 Creator vào chạy thử 5 bài đăng tuần tới.",
-          "Ngày 3 - Đưa Client vào nghiệm thu & Nhân rộng: Gửi lời mời cho đại diện Client vào trải nghiệm duyệt bài 1 chạm trên giao diện mô phỏng; khi quy trình chạy trơn tru mới nhân bản sang toàn bộ các nhãn hàng còn lại với gói Pro.",
+          "Ngày 3 - Đưa Client vào nghiệm thu 1 chạm: Gửi lời mời cho đại diện Client vào trải nghiệm duyệt bài trên giao diện mô phỏng 4 kênh và kiểm chứng cơ chế khóa bản nháp tự động.",
+          "Ngày 4 - Chuẩn hóa mẫu & Nhân rộng toàn Agency: Lưu cấu trúc bảng công việc thành mẫu chuẩn rồi nâng cấp gói Pro qua VietQR (SePay / PayOS) để mở rộng sang toàn bộ khách hàng.",
         ],
         callout: {
           label: "Lời khuyên thực tế khi thuyết phục đội ngũ chuyển đổi",

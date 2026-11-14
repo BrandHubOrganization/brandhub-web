@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { BlogSpotlightContainer } from "./BlogMotion";
+import { BlogRichText } from "./BlogRichText";
 
 interface BlogRoadmapTableProps {
   catalog: PlannedBlogTopic[];
@@ -70,8 +71,9 @@ export function BlogRoadmapTable({
     } else if (selectedBatch !== "all") {
       items = items.filter((item) => item.priorityBatch === selectedBatch);
     }
-    const q = roadmapQuery.trim().toLowerCase();
-    if (q) {
+    const rawQ = roadmapQuery.trim().toLowerCase();
+    const q = rawQ.replace(/^#+/, "");
+    if (rawQ) {
       items = items.filter((item) => {
         const summary = getBlogPostSummaryBySlug(item.slug);
         return (
@@ -80,6 +82,11 @@ export function BlogRoadmapTable({
           item.brandhubFeature.toLowerCase().includes(q) ||
           String(item.topicNumber).includes(q) ||
           (summary?.metaDescription.toLowerCase().includes(q) ?? false) ||
+          (summary?.hashtags ?? []).some(
+            (tag) =>
+              tag.toLowerCase().includes(rawQ) ||
+              tag.toLowerCase().replace(/^#+/, "").includes(q),
+          ) ||
           item.targetRoles.some((r) => r.toLowerCase().includes(q))
         );
       });
@@ -306,6 +313,21 @@ export function BlogRoadmapTable({
                     <p className="text-pretty line-clamp-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
                       {summary?.metaDescription ?? catMeta?.description}
                     </p>
+
+                    {summary?.hashtags && summary.hashtags.length > 0 && (
+                      <div className="flex flex-wrap gap-1 pt-0.5">
+                        {summary.hashtags.slice(0, 3).map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => handleQueryChange(tag)}
+                            className="cursor-pointer rounded border border-zinc-200/80 bg-zinc-50 px-1.5 py-0.5 font-mono text-[10px] font-medium text-zinc-600 transition-colors hover:border-brand-orange/45 hover:text-brand-orange dark:border-zinc-800 dark:bg-zinc-800/80 dark:text-zinc-400"
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-2.5 border-t border-zinc-200/70 pt-3 dark:border-zinc-800">
@@ -572,6 +594,21 @@ export function BlogRoadmapTable({
                 <DialogDescription className="text-pretty text-xs leading-relaxed text-zinc-600 sm:text-sm dark:text-zinc-300">
                   {previewEntry.summary?.metaDescription}
                 </DialogDescription>
+                {previewEntry.summary?.hashtags &&
+                  previewEntry.summary.hashtags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {previewEntry.summary.hashtags.map((tag) => (
+                        <Link
+                          key={tag}
+                          to={`/blog?q=${encodeURIComponent(tag)}`}
+                          onClick={() => setPreviewEntry(null)}
+                          className="rounded-md border border-orange-200/80 bg-orange-50/70 px-2 py-0.5 font-mono text-[11px] font-semibold text-brand-orange transition-colors hover:bg-orange-100 dark:border-orange-500/30 dark:bg-orange-500/15 dark:text-orange-300"
+                        >
+                          {tag}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
               </DialogHeader>
 
               {/* Direct GEO Answer Preview */}
@@ -582,7 +619,7 @@ export function BlogRoadmapTable({
                     Tóm tắt trọng tâm bài viết
                   </p>
                   <p className="text-pretty text-xs leading-relaxed text-zinc-700 sm:text-[13px] dark:text-zinc-200">
-                    {previewEntry.summary.geoSummary}
+                    <BlogRichText text={previewEntry.summary.geoSummary} />
                   </p>
                 </div>
               )}
@@ -601,7 +638,9 @@ export function BlogRoadmapTable({
                           className="flex items-start gap-2.5 text-xs leading-relaxed text-zinc-600 sm:text-[13px] dark:text-zinc-300"
                         >
                           <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                          <span>{point}</span>
+                          <span>
+                            <BlogRichText text={point} />
+                          </span>
                         </li>
                       ))}
                     </ul>

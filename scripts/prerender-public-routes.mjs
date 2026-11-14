@@ -396,6 +396,25 @@ function buildArticleSemanticHtml(post, categoryMeta, relatedPosts) {
           ${sectionsHtml}
           ${featureBridgeHtml}
           ${faqsHtml}
+          <section aria-label="Hashtag và từ khóa bài viết">
+            <h2>Hashtag và từ khóa chủ đề</h2>
+            <p>
+              ${(post.hashtags || [])
+                .map(
+                  (tag) =>
+                    `<a href="${SITE_ORIGIN}/blog?q=${encodeURIComponent(tag)}">${escapeHtml(tag)}</a>`,
+                )
+                .join(" · ")}
+            </p>
+            <p>
+              ${[post.primaryKeyword, ...(post.secondaryKeywords || [])]
+                .map(
+                  (kw) =>
+                    `<a href="${SITE_ORIGIN}/blog?q=${encodeURIComponent(kw)}">${escapeHtml(kw)}</a>`,
+                )
+                .join(", ")}
+            </p>
+          </section>
           <footer>
             <p><a href="${resolveFullUrl(post.primaryCta.primaryHref)}">${escapeHtml(post.primaryCta.primaryText)}</a> | <a href="${SITE_ORIGIN}/blog">Xem toàn bộ ${BLOG_POSTS.length} bài viết tại Blog BrandHub</a> | <a href="${SITE_ORIGIN}/help/faq">Trung tâm Trợ giúp FAQ</a></p>
           </footer>
@@ -662,6 +681,7 @@ for (const post of sortedAllPosts) {
   const keywordsStr = [
     post.primaryKeyword,
     ...(post.secondaryKeywords || []),
+    ...(post.hashtags || []),
   ].join(", ");
 
   const breadcrumbItems = [
@@ -708,6 +728,11 @@ for (const post of sortedAllPosts) {
     publishedAt: post.publishedAt,
     updatedAt: post.updatedAt || post.publishedAt,
     articleSection: catMeta ? catMeta.name : "Quản trị Truyền thông & AI",
+    articleTags: [
+      ...(post.hashtags || []),
+      post.primaryKeyword,
+      ...(post.secondaryKeywords || []),
+    ],
     authorName: post.author.name,
     pageJsonLd: {
       "@context": "https://schema.org",
@@ -750,7 +775,11 @@ for (const post of sortedAllPosts) {
           abstract: stripInlineMarkdownLinks(post.geoSummary),
           speakable: {
             "@type": "SpeakableSpecification",
-            cssSelector: ["h1", "[aria-label='Tóm tắt cốt lõi']"],
+            cssSelector: [
+              "h1",
+              "[aria-label='Tóm tắt cốt lõi']",
+              "[aria-label='Tóm tắt trọng tâm bài viết']",
+            ],
           },
           mentions: relatedPosts.map((rel) => ({
             "@type": "BlogPosting",
@@ -786,7 +815,7 @@ for (const post of sortedAllPosts) {
 }
 
 // 1. Synchronize sitemap.xml (with Google Image Sitemap extensions & clean hreflang per route)
-const todayIso = "2026-11-11";
+const todayIso = "2026-11-14";
 const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
@@ -817,7 +846,7 @@ ${sortedAllPosts
   .map(
     (p) => `  <url>
     <loc>${SITE_ORIGIN}/blog/${escapeXml(p.slug)}</loc>
-    <lastmod>${escapeXml(p.updatedAt || p.publishedAt || todayIso)}</lastmod>
+    <lastmod>${escapeXml(todayIso)}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>${[1, 18, 35, 52, 70, 86].includes(p.topicNumber) ? "0.90" : "0.85"}</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="${SITE_ORIGIN}/blog/${escapeXml(p.slug)}" />
@@ -893,6 +922,9 @@ ${rssSortedPosts
       <pubDate>${pubDate}</pubDate>
       <dc:creator>${escapeXml(p.author.name)}</dc:creator>
       <category>${escapeXml(catMeta ? catMeta.name : p.category)}</category>
+${(p.hashtags || [])
+  .map((tag) => `      <category>${escapeXml(tag)}</category>`)
+  .join("\n")}
       <description>${escapeXml(stripInlineMarkdownLinks(p.geoSummary))}</description>
     </item>`;
   })
@@ -990,6 +1022,7 @@ ${BLOG_CATEGORIES.map((cat) => {
       return `#### #${String(p.topicNumber).padStart(3, "0")}. ${p.title}
 - URL: ${SITE_ORIGIN}/blog/${p.slug}
 - Từ khóa chính: ${p.primaryKeyword}
+- Hashtags: ${(p.hashtags || []).join(" ")}
 - Vai trò mục tiêu: ${(p.targetRoles || []).join(", ")}
 - Tóm tắt cốt lõi: ${stripInlineMarkdownLinks(p.geoSummary)}
 - Luận điểm thực chiến:
@@ -1146,6 +1179,9 @@ for (const route of PUBLIC_ROUTES) {
       route.articleSection
         ? `<meta property="article:section" content="${escapeHtml(route.articleSection)}" />`
         : "",
+      ...(route.articleTags || []).map(
+        (tag) => `<meta property="article:tag" content="${escapeHtml(tag)}" />`,
+      ),
     ]
       .filter(Boolean)
       .join("\n    ");

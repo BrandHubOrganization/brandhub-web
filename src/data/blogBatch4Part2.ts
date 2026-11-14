@@ -17,6 +17,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "hàng đợi tác vụ gpu cho agency truyền thông",
       "kiến trúc ai studio trên brandhub"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#XuLyBatDongBo",
+      "#RabbitMQCelery",
+      "#KienTrucHeThong",
+      "#AIStudio"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -189,6 +197,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "đồng bộ giọng văn thương hiệu cho nhân sự mới",
       "danh mục từ cấm trong content marketing",
       "huấn luyện ai viết đúng thuật ngữ nhãn hàng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TuDienThuongHieu",
+      "#BrandGlossary",
+      "#DongBoGiongVan",
+      "#BrandGuidelines"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -363,6 +379,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "viết bài fanpage song ngữ chuyên nghiệp",
       "dịch caption mạng xã hội giữ nguyên cảm xúc"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#BanDiaHoaNoiDung",
+      "#SongNguVietAnh",
+      "#DichThuatAI",
+      "#BrandGuidelines"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -536,6 +560,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "tăng biên lợi nhuận agency truyền thông",
       "kết hợp đội ngũ sáng tạo và ai graphrag"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TuongLaiAgencyAI",
+      "#MoHinhHybridAgency",
+      "#AIAgentMarketing",
+      "#ChuyenDoiSoAgency"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Guest",
@@ -707,6 +739,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "ngắt kết nối oauth mạng xã hội an toàn",
       "quy trình thanh lý hợp đồng truyền thông",
       "bảo vệ quyền sở hữu kênh truyền thông doanh nghiệp"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ThuHoiQuyenTruyCap",
+      "#NgatKetNoiKenh",
+      "#BaoMatOAuth2",
+      "#BanGiaoDuAn"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -881,6 +921,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "xem lịch đăng content calendar trên điện thoại",
       "quản trị chiến dịch truyền thông từ xa"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#DuyetBaiDiDong",
+      "#ResponsiveWebApp",
+      "#ContentCalendar",
+      "#ClientPortal"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -1054,6 +1102,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "cách tránh bão hòa nội dung mạng xã hội",
       "duy trì nhịp xuất bản đa kênh ổn định"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#TanSuatDangBai",
+      "#PostingFrequency",
+      "#TangTruongBenVung",
+      "#ContentCalendar"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1226,6 +1282,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "bảo mật ủy quyền oauth 2.0 và mã hóa aes-256",
       "an toàn thông tin phần mềm quản lý truyền thông",
       "chính sách quyền riêng tư brandhub"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#ChinhSachBaoMat",
+      "#TuanThuMetaTikTok",
+      "#BaoMatAES256",
+      "#QuyenRiengTuDuLieu"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1401,6 +1465,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "thay thế phần mềm quản lý mạng xã hội nước ngoài",
       "ứng dụng ai bản địa hóa cho doanh nghiệp việt"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#XuHuongMarTech2026",
+      "#NenTangAllInOne",
+      "#AIGraphRAG",
+      "#AgencyVietNam"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Guest",
@@ -1575,6 +1647,14 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "hướng dẫn vận hành chiến dịch truyền thông khép kín",
       "giải đáp bảng giá gói pro và vietqr brandhub"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#HoiDapBrandHub",
+      "#100CauHoiThuongGap",
+      "#CamNangVanHanh",
+      "#AgencyVietNam"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Guest",
@@ -1742,5 +1822,5 @@ export const BLOG_BATCH4_PART2_POSTS: BlogPost[] = [
       "brandhub-vs-hootsuite-va-buffer-tai-sao-cong-cu-hen-gio-don-thuan-la-chua-du",
       "ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb"
     ]
-  }
+  },
 ];

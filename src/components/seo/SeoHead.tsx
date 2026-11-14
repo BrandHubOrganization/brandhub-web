@@ -23,6 +23,8 @@ export interface SeoHeadProps {
   publishedTime?: string;
   modifiedTime?: string;
   articleSection?: string;
+  /** Optional list of hashtags & topic tags emitted as `<meta property="article:tag" />` */
+  articleTags?: string[];
   authorName?: string;
   /** Set true on private/auth/transactional pages so search engines do not index them */
   noindex?: boolean;
@@ -132,6 +134,7 @@ export function SeoHead({
   publishedTime,
   modifiedTime,
   articleSection,
+  articleTags,
   authorName,
   noindex = false,
   bilingual = true,
@@ -180,6 +183,11 @@ export function SeoHead({
     upsertMeta("property", "og:image:secure_url", ogImage);
     upsertMeta("property", "og:image:alt", ogImageAlt);
 
+    const staleArticleTags = document.head.querySelectorAll<HTMLMetaElement>(
+      'meta[property="article:tag"]',
+    );
+    staleArticleTags.forEach((el) => el.remove());
+
     if (ogType === "article") {
       if (publishedTime) {
         upsertMeta("property", "article:published_time", publishedTime);
@@ -189,6 +197,14 @@ export function SeoHead({
       }
       if (articleSection) {
         upsertMeta("property", "article:section", articleSection);
+      }
+      if (articleTags && articleTags.length > 0) {
+        for (const tag of articleTags) {
+          const el = document.createElement("meta");
+          el.setAttribute("property", "article:tag");
+          el.setAttribute("content", tag);
+          document.head.appendChild(el);
+        }
       }
     } else {
       removeMeta("property", "article:published_time");
@@ -238,6 +254,7 @@ export function SeoHead({
     publishedTime,
     modifiedTime,
     articleSection,
+    articleTags,
     authorName,
     noindex,
     bilingual,

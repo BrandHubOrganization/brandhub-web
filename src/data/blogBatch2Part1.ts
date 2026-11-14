@@ -17,6 +17,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "liên kết mời xác thực một lần",
       "phân quyền creator và client theo dự án"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#WorkspaceDaTang",
+      "#MoiThanhVien",
+      "#ClientPortal",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Owner",
@@ -176,6 +184,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "cô lập dữ liệu giữa các thương hiệu đối thủ",
       "quản lý nhiều nhãn hàng cùng ngành trong agency",
       "bảo mật tài khoản mạng xã hội khách hàng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#BaoMatDuLieu",
+      "#ChongRoRiThongTin",
+      "#CoLapWorkspace",
+      "#QuanLyNhanHang"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -337,6 +353,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "đánh giá hiệu suất viết bài truyền thông",
       "bảng điều khiển theo dõi tiến độ creator"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#QuanTriHieuSuat",
+      "#DoLuongKPI",
+      "#DieuPhoiNhanSu",
+      "#KanbanMarketing"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -495,6 +519,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "cách tăng tỷ lệ gia hạn hợp đồng retainer",
       "minh bạch tiến độ dự án với khách hàng",
       "không gian duyệt bài dành riêng cho client"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#ClientPortal",
+      "#CongThongTinKhachHang",
+      "#NghiemThuChienDich",
+      "#BaoCaoMinhBach"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -656,6 +688,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "phần mềm quản lý đối tác pr agency",
       "tích hợp báo đài vào gói truyền thông"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#DoiTacBaoDai",
+      "#BookingBaoChi",
+      "#BookingTruyenHinh",
+      "#MediaPackage"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -814,6 +854,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "tại sao không nên duyệt bài qua nhóm chat",
       "quản lý phản hồi nội dung tập trung",
       "tăng năng suất làm việc cho đội sáng tạo"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#ChongTroiViec",
+      "#ThaoLuanTheoBaiViet",
+      "#ThayTheNhomChat",
+      "#ContentWorkflow"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -976,6 +1024,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "khôi phục phiên bản bài viết cũ",
       "kiểm soát sửa đổi qua các vòng duyệt"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#VersionHistory",
+      "#LichSuChinhSua",
+      "#DoiChieuBanNhap",
+      "#AuditLog"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1135,6 +1191,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "giới hạn số lần sửa bài trong agency",
       "cách nhận góp ý sửa bài hiệu quả",
       "luồng request revision chuẩn b2b"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#RevisionRequest",
+      "#YeuCauChinhSua",
+      "#ClientFeedback",
+      "#ClientPortal"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1297,6 +1361,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "điều phối hàng trăm bài viết mỗi tuần",
       "quản lý hạn chót sản xuất nội dung"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#MaTranUuTien",
+      "#QuanLyDeadline",
+      "#DieuPhoiSanXuat",
+      "#KanbanMarketing"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1455,6 +1527,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "quy trình duyệt kịch bản truyền hình",
       "khác biệt giữa bài social và bài pr",
       "quản lý chiến dịch truyền thông tích hợp"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#DuyetBaiBaoChi",
+      "#BookingTruyenHinh",
+      "#DoiTacBaoDai",
+      "#QuyTrinhPheDuyet"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1617,6 +1697,14 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "giao diện duyệt bài 1 chạm cho khách hàng",
       "tăng tốc quy trình nghiệm thu nội dung"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#RutNganThoiGianDuyet",
+      "#ClientPortal",
+      "#DuyetBai1Cham",
+      "#ChongTroiViec"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -1761,5 +1849,5 @@ export const BLOG_BATCH2_PART1_POSTS: BlogPost[] = [
       "xu-ly-tinh-huong-khan-cap-thu-hoi-hoac-huy-lich-bai-viet-da-duyet",
       "cach-tinh-toan-nguon-luc-nhan-su-truoc-khi-nhan-them-chien-dich-moi"
     ]
-  }
+  },
 ];

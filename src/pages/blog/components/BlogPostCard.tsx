@@ -70,6 +70,20 @@ export function BlogPostCard({ post, categoryMeta }: BlogPostCardProps) {
           <p className="text-pretty line-clamp-3 text-xs leading-relaxed text-zinc-600 sm:text-[13px] dark:text-zinc-400">
             {post.metaDescription}
           </p>
+
+          {post.hashtags && post.hashtags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {post.hashtags.slice(0, 3).map((tag) => (
+                <Link
+                  key={tag}
+                  to={`/blog?q=${encodeURIComponent(tag)}`}
+                  className="rounded-md border border-zinc-200/80 bg-zinc-50 px-2 py-0.5 font-mono text-[11px] font-medium text-zinc-600 transition-colors hover:border-brand-orange/45 hover:text-brand-orange dark:border-zinc-800 dark:bg-zinc-800/80 dark:text-zinc-400 dark:hover:text-orange-400"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Footer Meta: Author & Read CTA */}

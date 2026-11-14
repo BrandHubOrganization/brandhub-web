@@ -51,6 +51,7 @@ for (const src of BATCH_SOURCES) {
       category: p.category,
       primaryKeyword: p.primaryKeyword,
       secondaryKeywords: p.secondaryKeywords,
+      hashtags: p.hashtags,
       searchIntent: p.searchIntent,
       targetRoles: p.targetRoles,
       publishedAt: p.publishedAt,

@@ -4,7 +4,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://brandhub.id.vn/</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/" />
@@ -18,7 +18,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog" />
@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.90</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-du-an-truyen-thong-agency-nhu-jira-notion-voi-brandhub" />
@@ -39,7 +39,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/jira-vs-notion-vs-brandhub-chon-cong-cu-quan-ly-cong-viec-marketing</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/jira-vs-notion-vs-brandhub-chon-cong-cu-quan-ly-cong-viec-marketing" />
@@ -52,7 +52,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/thiet-ke-cau-truc-da-workspace-cho-agency-quan-ly-20-thuong-hieu</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/thiet-ke-cau-truc-da-workspace-cho-agency-quan-ly-20-thuong-hieu" />
@@ -65,7 +65,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/ma-tran-phan-quyen-rbac-6-vai-tro-owner-manager-creator-client-admin</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ma-tran-phan-quyen-rbac-6-vai-tro-owner-manager-creator-client-admin" />
@@ -78,7 +78,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quy-trinh-moi-thanh-vien-va-client-vao-workspace-qua-email-an-toan</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-moi-thanh-vien-va-client-vao-workspace-qua-email-an-toan" />
@@ -91,7 +91,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/chong-ro-ri-du-lieu-giua-cac-nhan-hang-doi-thu-trong-cung-agency</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/chong-ro-ri-du-lieu-giua-cac-nhan-hang-doi-thu-trong-cung-agency" />
@@ -104,7 +104,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-kpi-va-khoi-luong-cong-viec-cua-creator-tren-bang-dieu-khien</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-kpi-va-khoi-luong-cong-viec-cua-creator-tren-bang-dieu-khien" />
@@ -117,7 +117,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xay-dung-cong-thong-tin-khach-hang-client-portal-chuyen-nghiep</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-cong-thong-tin-khach-hang-client-portal-chuyen-nghiep" />
@@ -130,7 +130,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-mui-gio-va-ngon-ngu-cho-agency-phuc-vu-khach-hang-da-quoc-gia</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-mui-gio-va-ngon-ngu-cho-agency-phuc-vu-khach-hang-da-quoc-gia" />
@@ -143,7 +143,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-chuyen-giao-cong-viec-khi-creator-hoac-manager-nghi-viec-dot-xuat</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-chuyen-giao-cong-viec-khi-creator-hoac-manager-nghi-viec-dot-xuat" />
@@ -156,7 +156,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/so-hoa-ho-so-nang-luc-agency-profile-de-thuyet-phuc-khach-hang-lon</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-hoa-ho-so-nang-luc-agency-profile-de-thuyet-phuc-khach-hang-lon" />
@@ -169,7 +169,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-danh-muc-doi-tac-bao-chi-truyen-hinh-trong-workspace</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-danh-muc-doi-tac-bao-chi-truyen-hinh-trong-workspace" />
@@ -182,7 +182,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/thay-the-nhom-chat-zalo-messenger-bang-luong-thao-luan-theo-tung-bai-viet</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/thay-the-nhom-chat-zalo-messenger-bang-luong-thao-luan-theo-tung-bai-viet" />
@@ -195,7 +195,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/to-chuc-kho-tai-nguyen-thuong-hieu-brand-assets-cho-tung-workspace</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/to-chuc-kho-tai-nguyen-thuong-hieu-brand-assets-cho-tung-workspace" />
@@ -208,7 +208,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/kiem-soat-nhat-ky-hoat-dong-audit-log-trong-du-an-truyen-thong</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/kiem-soat-nhat-ky-hoat-dong-audit-log-trong-du-an-truyen-thong" />
@@ -221,7 +221,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/mo-hinh-van-hanh-phong-marketing-in-house-cho-tap-doan-da-thuong-hieu</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/mo-hinh-van-hanh-phong-marketing-in-house-cho-tap-doan-da-thuong-hieu" />
@@ -234,7 +234,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/checklist-10-buoc-chuyen-doi-so-quy-trinh-van-hanh-agency-trong-7-ngay</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/checklist-10-buoc-chuyen-doi-so-quy-trinh-van-hanh-agency-trong-7-ngay" />
@@ -247,7 +247,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.90</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-phe-duyet-noi-dung-3-cap-creator-manager-client" />
@@ -260,7 +260,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-viet-content-brief-chuan-giup-creator-viet-dung-y-ngay-lan-dau</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-viet-content-brief-chuan-giup-creator-viet-dung-y-ngay-lan-dau" />
@@ -273,7 +273,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/co-che-khoa-ban-nhap-content-locking-ngan-chan-loi-sua-de-noi-dung</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/co-che-khoa-ban-nhap-content-locking-ngan-chan-loi-sua-de-noi-dung" />
@@ -286,7 +286,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-lich-su-chinh-sua-version-history-va-doi-chieu-cac-ban-nhap</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-lich-su-chinh-sua-version-history-va-doi-chieu-cac-ban-nhap" />
@@ -299,7 +299,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xem-truoc-bai-dang-preview-tren-facebook-instagram-tiktok-threads</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xem-truoc-bai-dang-preview-tren-facebook-instagram-tiktok-threads" />
@@ -312,7 +312,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/kiem-duyet-noi-dung-tu-dong-compliance-check-chan-tu-cam-vi-pham</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/kiem-duyet-noi-dung-tu-dong-compliance-check-chan-tu-cam-vi-pham" />
@@ -325,7 +325,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quy-trinh-xu-ly-yeu-cau-chinh-sua-revision-request-tu-phia-client</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-xu-ly-yeu-cau-chinh-sua-revision-request-tu-phia-client" />
@@ -338,7 +338,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/phan-loai-muc-do-uu-tien-priority-cho-cac-yeu-cau-san-xuat-noi-dung</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/phan-loai-muc-do-uu-tien-priority-cho-cac-yeu-cau-san-xuat-noi-dung" />
@@ -351,7 +351,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/tich-hop-trinh-soan-thao-anh-va-video-ngay-trong-luong-viet-bai</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tich-hop-trinh-soan-thao-anh-va-video-ngay-trong-luong-viet-bai" />
@@ -364,7 +364,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quy-trinh-duyet-bai-dang-bao-dien-tu-va-booking-truyen-hinh</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-duyet-bai-dang-bao-dien-tu-va-booking-truyen-hinh" />
@@ -377,7 +377,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xay-dung-bo-tieu-chi-checklist-cho-manager-truoc-khi-gui-bai-cho-client</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-bo-tieu-chi-checklist-cho-manager-truoc-khi-gui-bai-cho-client" />
@@ -390,7 +390,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-rut-ngan-thoi-gian-cho-client-duyet-bai-tu-3-ngay-xuong-2-gio</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-rut-ngan-thoi-gian-cho-client-duyet-bai-tu-3-ngay-xuong-2-gio" />
@@ -403,7 +403,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-trang-thai-bai-viet-tu-draft-den-published-tren-mot-bang-duy-nhat</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-trang-thai-bai-viet-tu-draft-den-published-tren-mot-bang-duy-nhat" />
@@ -416,7 +416,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xu-ly-tinh-huong-khan-cap-thu-hoi-hoac-huy-lich-bai-viet-da-duyet</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xu-ly-tinh-huong-khan-cap-thu-hoi-hoac-huy-lich-bai-viet-da-duyet" />
@@ -429,7 +429,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/to-chuc-san-xuat-noi-dung-hang-loat-batch-content-production-cho-chien-dich-tet</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/to-chuc-san-xuat-noi-dung-hang-loat-batch-content-production-cho-chien-dich-tet" />
@@ -442,7 +442,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/so-an-thao-noi-dung-da-kenh-mot-goc-nhieu-bien-the-caption</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-an-thao-noi-dung-da-kenh-mot-goc-nhieu-bien-the-caption" />
@@ -455,7 +455,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/vai-tro-cua-admin-trong-hang-doi-kiem-duyet-noi-dung-he-thong</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/vai-tro-cua-admin-trong-hang-doi-kiem-duyet-noi-dung-he-thong" />
@@ -468,7 +468,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.90</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/goi-truyen-thong-media-package-la-gi-cach-xay-dung-bao-gia" />
@@ -481,7 +481,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-dinh-gia-goi-truyen-thong-social-media-va-pr-bao-chi-cho-agency</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-dinh-gia-goi-truyen-thong-social-media-va-pr-bao-chi-cho-agency" />
@@ -494,7 +494,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quy-trinh-dam-phan-bao-gia-proposal-giua-agency-va-client-truc-tuyen</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-dam-phan-bao-gia-proposal-giua-agency-va-client-truc-tuyen" />
@@ -507,7 +507,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/tu-dong-chuyen-doi-goi-truyen-thong-da-chot-thanh-chien-dich-media-campaign</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tu-dong-chuyen-doi-goi-truyen-thong-da-chot-thanh-chien-dich-media-campaign" />
@@ -520,7 +520,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/5-mau-goi-truyen-thong-pho-bien-nhat-cho-doanh-nghiep-sme-tai-viet-nam</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/5-mau-goi-truyen-thong-pho-bien-nhat-cho-doanh-nghiep-sme-tai-viet-nam" />
@@ -533,7 +533,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-tien-do-ban-giao-so-luong-bai-viet-trong-chien-dich-truyen-thong</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-tien-do-ban-giao-so-luong-bai-viet-trong-chien-dich-truyen-thong" />
@@ -546,7 +546,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/ket-hop-quang-ba-tren-4-mang-xa-hoi-va-booking-bao-chi-trong-cung-chien-dich</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ket-hop-quang-ba-tren-4-mang-xa-hoi-va-booking-bao-chi-trong-cung-chien-dich" />
@@ -559,7 +559,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-client-gui-yeu-cau-dat-mua-goi-truyen-thong-va-theo-doi-ngan-sach</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-client-gui-yeu-cau-dat-mua-goi-truyen-thong-va-theo-doi-ngan-sach" />
@@ -572,7 +572,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xay-dung-timeline-chien-dich-ra-mat-san-pham-moi-trong-30-ngay</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-timeline-chien-dich-ra-mat-san-pham-moi-trong-30-ngay" />
@@ -585,7 +585,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-hop-dong-va-trang-thai-thanh-toan-cua-tung-chien-dich-truyen-thong</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-hop-dong-va-trang-thai-thanh-toan-cua-tung-chien-dich-truyen-thong" />
@@ -598,7 +598,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/tai-sao-bao-gia-bang-file-pdf-va-excel-lam-giam-ty-le-chot-sale-cua-agency</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tai-sao-bao-gia-bang-file-pdf-va-excel-lam-giam-ty-le-chot-sale-cua-agency" />
@@ -611,7 +611,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-tinh-toan-nguon-luc-nhan-su-truoc-khi-nhan-them-chien-dich-moi</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-tinh-toan-nguon-luc-nhan-su-truoc-khi-nhan-them-chien-dich-moi" />
@@ -624,7 +624,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quy-trinh-lam-viec-voi-doi-tac-bao-dien-tu-va-dai-truyen-hinh-tren-brandhub</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-lam-viec-voi-doi-tac-bao-dien-tu-va-dai-truyen-hinh-tren-brandhub" />
@@ -637,7 +637,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xu-ly-yeu-cau-thay-doi-pham-vi-cong-viec-scope-creep-trong-chien-dich</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xu-ly-yeu-cau-thay-doi-pham-vi-cong-viec-scope-creep-trong-chien-dich" />
@@ -650,7 +650,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/bao-cao-tong-ket-chien-dich-truyen-thong-campaign-wrap-up-report</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/bao-cao-tong-ket-chien-dich-truyen-thong-campaign-wrap-up-report" />
@@ -663,7 +663,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xay-dung-goi-truyen-thong-duy-tri-hang-thang-monthly-retainer-package</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-goi-truyen-thong-duy-tri-hang-thang-monthly-retainer-package" />
@@ -676,7 +676,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/so-sanh-hieu-qua-giua-chien-dich-ngan-han-va-chien-dich-xay-dung-thuong-hieu-dai-han</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-hieu-qua-giua-chien-dich-ngan-han-va-chien-dich-xay-dung-thuong-hieu-dai-han" />
@@ -689,7 +689,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.90</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ai-graphrag-brand-guidelines-la-gi-ung-dung-neo4j-chromadb" />
@@ -702,7 +702,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/so-sanh-graphrag-va-rag-truyen-thong-trong-sang-tao-noi-dung-thuong-hieu</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-graphrag-va-rag-truyen-thong-trong-sang-tao-noi-dung-thuong-hieu" />
@@ -715,7 +715,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-chuan-bi-file-brand-guidelines-pdf-de-ai-hoc-giong-van-chinh-xac-nhat</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-chuan-bi-file-brand-guidelines-pdf-de-ai-hoc-giong-van-chinh-xac-nhat" />
@@ -728,7 +728,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/he-thong-cao-xu-huong-trend-crawler-tiktok-facebook-google-trends-thoi-gian-thuc</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/he-thong-cao-xu-huong-trend-crawler-tiktok-facebook-google-trends-thoi-gian-thuc" />
@@ -741,7 +741,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/ung-dung-ai-viet-bai-dang-facebook-instagram-tiktok-threads-tu-1-chu-de</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ung-dung-ai-viet-bai-dang-facebook-instagram-tiktok-threads-tu-1-chu-de" />
@@ -754,7 +754,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cong-nghe-huan-luyen-dai-su-ao-lora-brand-ambassador-cho-thuong-hieu</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cong-nghe-huan-luyen-dai-su-ao-lora-brand-ambassador-cho-thuong-hieu" />
@@ -767,7 +767,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/tao-hinh-anh-quang-cao-san-pham-bang-ai-flux-sdxl-chuan-mau-sac-thuong-hieu</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tao-hinh-anh-quang-cao-san-pham-bang-ai-flux-sdxl-chuan-mau-sac-thuong-hieu" />
@@ -780,7 +780,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/san-xuat-video-ngan-reels-tiktok-bang-ai-tu-kich-ban-va-hinh-anh-tinh</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/san-xuat-video-ngan-reels-tiktok-bang-ai-tu-kich-ban-va-hinh-anh-tinh" />
@@ -793,7 +793,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-ket-hop-xu-huong-thinh-hanh-vao-thong-diep-san-pham-ma-khong-phan-cam</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-ket-hop-xu-huong-thinh-hanh-vao-thong-diep-san-pham-ma-khong-phan-cam" />
@@ -806,7 +806,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-han-muc-ai-credits-va-phan-bo-ngan-sach-ai-trong-agency</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-han-muc-ai-credits-va-phan-bo-ngan-sach-ai-trong-agency" />
@@ -819,7 +819,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/15-cau-lenh-prompt-mau-giup-creator-toi-uu-hoa-bai-viet-quang-cao-chuyen-doi-cao</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/15-cau-lenh-prompt-mau-giup-creator-toi-uu-hoa-bai-viet-quang-cao-chuyen-doi-cao" />
@@ -832,7 +832,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/ung-dung-ai-kiem-tra-muc-do-tuan-thu-brand-tone-truoc-khi-gui-duyet</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ung-dung-ai-kiem-tra-muc-do-tuan-thu-brand-tone-truoc-khi-gui-duyet" />
@@ -845,7 +845,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xu-ly-tac-vu-ai-nang-bat-dong-bo-qua-hang-doi-rabbitmq-va-celery</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xu-ly-tac-vu-ai-nang-bat-dong-bo-qua-hang-doi-rabbitmq-va-celery" />
@@ -858,7 +858,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/bao-mat-tri-thuc-thuong-hieu-khi-su-dung-ai-khong-dung-du-lieu-khach-hang-de-train-cong-khai</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/bao-mat-tri-thuc-thuong-hieu-khi-su-dung-ai-khong-dung-du-lieu-khach-hang-de-train-cong-khai" />
@@ -871,7 +871,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/ai-goi-y-hashtag-va-khung-gio-dang-bai-toi-uu-cho-tung-nen-tang</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ai-goi-y-hashtag-va-khung-gio-dang-bai-toi-uu-cho-tung-nen-tang" />
@@ -884,7 +884,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xay-dung-bo-tu-dien-thuong-hieu-brand-glossary-de-dong-bo-ngon-ngu-toan-cong-ty</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-bo-tu-dien-thuong-hieu-brand-glossary-de-dong-bo-ngon-ngu-toan-cong-ty" />
@@ -897,7 +897,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/ung-dung-ai-dich-thuat-va-ban-dia-hoa-noi-dung-viet-anh-giu-nguyen-sac-thai</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ung-dung-ai-dich-thuat-va-ban-dia-hoa-noi-dung-viet-anh-giu-nguyen-sac-thai" />
@@ -910,7 +910,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/tuong-lai-cua-agency-truyen-thong-khi-ket-hop-con-nguoi-va-he-sinh-thai-ai-agent</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tuong-lai-cua-agency-truyen-thong-khi-ket-hop-con-nguoi-va-he-sinh-thai-ai-agent" />
@@ -923,7 +923,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.90</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/lich-dang-bai-tu-dong-4-kenh-facebook-instagram-tiktok-threads" />
@@ -936,7 +936,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/ket-noi-oauth-2-va-ma-hoa-token-aes-256-bao-ve-fanpage-va-kenh-tiktok</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ket-noi-oauth-2-va-ma-hoa-token-aes-256-bao-ve-fanpage-va-kenh-tiktok" />
@@ -949,7 +949,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-xay-dung-lich-noi-dung-content-calendar-30-ngay-tren-4-nen-tang</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-xay-dung-lich-noi-dung-content-calendar-30-ngay-tren-4-nen-tang" />
@@ -962,7 +962,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quy-chuan-kich-thuoc-anh-va-video-cho-facebook-instagram-tiktok-threads-2026</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-chuan-kich-thuoc-anh-va-video-cho-facebook-instagram-tiktok-threads-2026" />
@@ -975,7 +975,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/chien-luoc-xay-dung-kenh-threads-cho-thuong-hieu-va-ket-hop-voi-instagram</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/chien-luoc-xay-dung-kenh-threads-cho-thuong-hieu-va-ket-hop-voi-instagram" />
@@ -988,7 +988,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/khung-gio-vang-dang-bai-facebook-instagram-tiktok-threads-tai-viet-nam</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/khung-gio-vang-dang-bai-facebook-instagram-tiktok-threads-tai-viet-nam" />
@@ -1001,7 +1001,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/co-che-tu-dong-thu-lai-retry-va-xu-ly-loi-khi-api-mang-xa-hoi-gian-doan</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/co-che-tu-dong-thu-lai-retry-va-xu-ly-loi-khi-api-mang-xa-hoi-gian-doan" />
@@ -1014,7 +1014,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/phan-tich-chi-so-tuong-tac-post-analytics-sau-khi-xuat-ban-da-kenh</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/phan-tich-chi-so-tuong-tac-post-analytics-sau-khi-xuat-ban-da-kenh" />
@@ -1027,7 +1027,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/toi-uu-hoa-quy-trinh-dang-video-reels-va-tiktok-khong-bi-nen-giam-chat-luong</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/toi-uu-hoa-quy-trinh-dang-video-reels-va-tiktok-khong-bi-nen-giam-chat-luong" />
@@ -1040,7 +1040,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-ly-nhieu-fanpage-va-tai-khoan-instagram-tiktok-trong-cung-mot-agency</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-ly-nhieu-fanpage-va-tai-khoan-instagram-tiktok-trong-cung-mot-agency" />
@@ -1053,7 +1053,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/cach-kiem-tra-tinh-trang-ket-noi-token-health-truoc-chien-dich-lon</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/cach-kiem-tra-tinh-trang-ket-noi-token-health-truoc-chien-dich-lon" />
@@ -1066,7 +1066,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xay-dung-ma-tran-noi-dung-content-pillar-phan-bo-deu-tren-content-calendar</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xay-dung-ma-tran-noi-dung-content-pillar-phan-bo-deu-tren-content-calendar" />
@@ -1079,7 +1079,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/so-sanh-thuat-toan-phan-phoi-noi-dung-cua-facebook-instagram-tiktok-va-threads</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-thuat-toan-phan-phoi-noi-dung-cua-facebook-instagram-tiktok-va-threads" />
@@ -1092,7 +1092,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quy-trinh-ngat-ket-noi-va-thu-hoi-quyen-truy-cap-mang-xa-hoi-khi-ket-thuc-hop-dong</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quy-trinh-ngat-ket-noi-va-thu-hoi-quyen-truy-cap-mang-xa-hoi-khi-ket-thuc-hop-dong" />
@@ -1105,7 +1105,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/ung-dung-ung-dung-di-dong-brandhub-mobile-de-duyet-bai-va-theo-doi-lich-dang-moi-noi</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/ung-dung-ung-dung-di-dong-brandhub-mobile-de-duyet-bai-va-theo-doi-lich-dang-moi-noi" />
@@ -1118,7 +1118,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/toi-uu-hoa-tan-suat-dang-bai-posting-frequency-de-tang-truong-kenh-ben-vung</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/toi-uu-hoa-tan-suat-dang-bai-posting-frequency-de-tang-truong-kenh-ben-vung" />
@@ -1131,7 +1131,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.90</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-brandhub-voi-buffer-hootsuite-planable-jira-notion" />
@@ -1144,7 +1144,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/brandhub-vs-planable-giai-phap-duyet-bai-nao-phu-hop-hon-voi-agency-viet-nam</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/brandhub-vs-planable-giai-phap-duyet-bai-nao-phu-hop-hon-voi-agency-viet-nam" />
@@ -1157,7 +1157,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/brandhub-vs-hootsuite-va-buffer-tai-sao-cong-cu-hen-gio-don-thuan-la-chua-du</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/brandhub-vs-hootsuite-va-buffer-tai-sao-cong-cu-hen-gio-don-thuan-la-chua-du" />
@@ -1170,7 +1170,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/bai-toan-roi-tiet-kiem-80-chi-phi-phan-mem-saas-cho-agency-voi-goi-pro-590k</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/bai-toan-roi-tiet-kiem-80-chi-phi-phan-mem-saas-cho-agency-voi-goi-pro-590k" />
@@ -1183,7 +1183,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/huong-dan-nang-cap-goi-pro-va-nap-ai-credits-tu-dong-qua-vietqr-sepay-payos</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/huong-dan-nang-cap-goi-pro-va-nap-ai-credits-tu-dong-qua-vietqr-sepay-payos" />
@@ -1196,7 +1196,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/case-study-agency-giam-70-thoi-gian-duyet-bai-cho-12-thuong-hieu-fnb</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/case-study-agency-giam-70-thoi-gian-duyet-bai-cho-12-thuong-hieu-fnb" />
@@ -1209,7 +1209,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/case-study-thuong-hieu-thoi-trang-ung-dung-dai-su-ao-lora-tang-gap-3-san-luong-anh</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/case-study-thuong-hieu-thoi-trang-ung-dung-dai-su-ao-lora-tang-gap-3-san-luong-anh" />
@@ -1222,7 +1222,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/so-sanh-goi-starter-mien-phi-va-goi-pro-tren-brandhub-nen-chon-goi-nao</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/so-sanh-goi-starter-mien-phi-va-goi-pro-tren-brandhub-nen-chon-goi-nao" />
@@ -1235,7 +1235,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/quan-tri-he-thong-danh-cho-admin-giam-sat-nguoi-dung-goi-cuoc-va-kiem-duyet</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/quan-tri-he-thong-danh-cho-admin-giam-sat-nguoi-dung-goi-cuoc-va-kiem-duyet" />
@@ -1248,7 +1248,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/kien-truc-microservices-spring-boot-va-fastapi-dang-sau-toc-do-cua-brandhub</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/kien-truc-microservices-spring-boot-va-fastapi-dang-sau-toc-do-cua-brandhub" />
@@ -1261,7 +1261,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/7-dau-hieu-cho-thay-agency-cua-ban-da-qua-tai-voi-google-sheets-va-zalo</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/7-dau-hieu-cho-thay-agency-cua-ban-da-qua-tai-voi-google-sheets-va-zalo" />
@@ -1274,7 +1274,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/huong-dan-onboarding-danh-cho-nguoi-moi-bat-dau-su-dung-brandhub-trong-15-phut</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/huong-dan-onboarding-danh-cho-nguoi-moi-bat-dau-su-dung-brandhub-trong-15-phut" />
@@ -1287,7 +1287,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/chinh-sach-bao-mat-quyen-rieng-tu-va-xoa-du-lieu-nguoi-dung-tuan-thu-meta-tiktok</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/chinh-sach-bao-mat-quyen-rieng-tu-va-xoa-du-lieu-nguoi-dung-tuan-thu-meta-tiktok" />
@@ -1300,7 +1300,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/xu-huong-martech-viet-nam-2026-su-len-ngoi-cua-nen-tang-quan-tri-tich-hop-ai</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/xu-huong-martech-viet-nam-2026-su-len-ngoi-cua-nen-tang-quan-tri-tich-hop-ai" />
@@ -1313,7 +1313,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/blog/tong-hop-100-cau-hoi-thuong-gap-khi-trien-khai-he-thong-quan-tri-truyen-thong-brandhub</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/blog/tong-hop-100-cau-hoi-thuong-gap-khi-trien-khai-he-thong-quan-tri-truyen-thong-brandhub" />
@@ -1326,7 +1326,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/help/faq</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/help/faq" />
@@ -1335,7 +1335,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/privacy</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.50</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/privacy" />
@@ -1344,7 +1344,7 @@
   </url>
   <url>
     <loc>https://brandhub.id.vn/terms</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.50</priority>
     <xhtml:link rel="alternate" hreflang="vi" href="https://brandhub.id.vn/terms" />

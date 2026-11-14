@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowRight, CheckCircle2, Rocket } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  CheckCircle2,
+  Copy,
+  Hash,
+  Rocket,
+  Tag,
+} from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { SeoHead } from "@/components/seo/SeoHead";
@@ -34,6 +42,18 @@ export function BlogPostPage() {
   const [fullPost, setFullPost] = useState<BlogPost | undefined>(() =>
     getCachedBlogPostBySlug(slug),
   );
+  const [copiedHashtags, setCopiedHashtags] = useState(false);
+
+  const handleCopyHashtags = async () => {
+    if (!summary?.hashtags?.length) return;
+    try {
+      await navigator.clipboard.writeText(summary.hashtags.join(" "));
+      setCopiedHashtags(true);
+      window.setTimeout(() => setCopiedHashtags(false), 2000);
+    } catch {
+      // Clipboard API unavailable in restricted contexts
+    }
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -156,11 +176,16 @@ export function BlogPostPage() {
           keywords: [
             summary.primaryKeyword,
             ...summary.secondaryKeywords,
+            ...(summary.hashtags || []),
           ].join(", "),
           abstract: stripInlineMarkdownLinks(summary.geoSummary),
           speakable: {
             "@type": "SpeakableSpecification",
-            cssSelector: ["h1", "[aria-label='Tóm tắt cốt lõi']"],
+            cssSelector: [
+              "h1",
+              "[aria-label='Tóm tắt cốt lõi']",
+              "[aria-label='Tóm tắt trọng tâm bài viết']",
+            ],
           },
           mentions: relatedPosts.map((rel) => ({
             "@type": "BlogPosting",
@@ -258,10 +283,17 @@ export function BlogPostPage() {
         publishedTime={summary.publishedAt}
         modifiedTime={summary.updatedAt}
         articleSection={categoryMeta?.name}
+        articleTags={[
+          ...(summary.hashtags || []),
+          summary.primaryKeyword,
+          ...summary.secondaryKeywords,
+        ]}
         authorName={summary.author.name}
-        keywords={[summary.primaryKeyword, ...summary.secondaryKeywords].join(
-          ", ",
-        )}
+        keywords={[
+          summary.primaryKeyword,
+          ...summary.secondaryKeywords,
+          ...(summary.hashtags || []),
+        ].join(", ")}
         bilingual={false}
         jsonLd={jsonLd}
       />
@@ -332,6 +364,73 @@ export function BlogPostPage() {
           {/* Article FAQ Section */}
           {faqs.length > 0 && <BlogPostFaq faqs={faqs} />}
 
+          {/* Article Hashtag & Topic Keywords Bar */}
+          <section
+            aria-label="Hashtag và từ khóa bài viết"
+            className="rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-2xs sm:p-6 space-y-4 dark:border-zinc-800 dark:bg-zinc-900"
+          >
+            {summary.hashtags && summary.hashtags.length > 0 && (
+              <div className="space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wide text-zinc-800 uppercase dark:text-zinc-200">
+                    <Hash className="size-3.5 text-brand-orange" />
+                    Hệ thống Hashtag bài viết
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyHashtags}
+                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs font-semibold text-zinc-700 transition-colors hover:border-brand-orange/45 hover:text-brand-orange dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+                  >
+                    {copiedHashtags ? (
+                      <>
+                        <Check className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span className="text-emerald-700 dark:text-emerald-300">
+                          Đã sao chép {summary.hashtags.length} Hashtag
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="size-3.5 text-brand-orange" />
+                        <span>Sao chép bộ Hashtag</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {summary.hashtags.map((tag) => (
+                    <Link
+                      key={tag}
+                      to={`/blog?q=${encodeURIComponent(tag)}`}
+                      className="rounded-lg border border-orange-200/80 bg-orange-50/70 px-3 py-1 font-mono text-xs font-semibold text-brand-orange transition-colors hover:border-brand-orange hover:bg-orange-100/80 dark:border-orange-500/30 dark:bg-orange-500/15 dark:text-orange-300"
+                    >
+                      {tag}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-2 border-t border-zinc-100 pt-3.5 dark:border-zinc-800">
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wide text-zinc-700 uppercase dark:text-zinc-300">
+                <Tag className="size-3.5 text-brand-orange" />
+                Từ khóa tìm kiếm liên quan
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {[summary.primaryKeyword, ...summary.secondaryKeywords].map(
+                  (kw) => (
+                    <Link
+                      key={kw}
+                      to={`/blog?q=${encodeURIComponent(kw)}`}
+                      className="rounded-lg border border-zinc-200/85 bg-zinc-50 px-2.5 py-1 text-xs font-medium text-zinc-600 transition-colors hover:border-brand-orange/45 hover:text-brand-orange dark:border-zinc-800 dark:bg-zinc-800/70 dark:text-zinc-300"
+                    >
+                      {kw}
+                    </Link>
+                  ),
+                )}
+              </div>
+            </div>
+          </section>
+
           {/* Verified Author Bio Card */}
           <BlogAuthorBio author={summary.author} />
 
@@ -380,6 +479,7 @@ export function BlogPostPage() {
           hasFaqs={faqs.length > 0}
           primaryKeyword={summary.primaryKeyword}
           secondaryKeywords={summary.secondaryKeywords}
+          hashtags={summary.hashtags || []}
           category={summary.category}
         />
       </BlogSpotlightContainer>

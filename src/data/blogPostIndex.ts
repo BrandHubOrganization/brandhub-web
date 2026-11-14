@@ -18,6 +18,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "mô hình workspace như notion cho agency",
       "phân quyền owner manager creator client"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#WorkspaceDaTang",
+      "#KanbanMarketing",
+      "#PhanQuyenRBAC",
+      "#ThayTheJiraNotion"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -60,6 +68,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "luồng duyệt bài creator manager client",
       "cách chống trôi bài đăng mạng xã hội",
       "kiểm duyệt an toàn nội dung truyền thông"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ContentWorkflow",
+      "#ClientPortal",
+      "#ChongTroiViec",
+      "#AuditLog"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -104,6 +120,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "quản lý chiến dịch truyền thông media campaign",
       "quản lý đối tác báo chí truyền hình"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#GoiTruyenThong",
+      "#BaoGiaAgency",
+      "#MediaCampaign",
+      "#DamPhanB2B"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Guest",
@@ -146,6 +170,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "kết hợp neo4j và chromadb trong marketing",
       "tạo đại sứ ảo ai lora cho thương hiệu",
       "bắt trend tiktok creative center tự động"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#BrandGuidelines",
+      "#Neo4jChromaDB",
+      "#AIStudio",
+      "#ContentMarketingAI"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -190,6 +222,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "bảo mật access token mạng xã hội aes-256",
       "phân tích chỉ số mạng xã hội thời gian thực"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ContentCalendar",
+      "#FacebookInstagramTikTokThreads",
+      "#OfficialAPI",
+      "#BaoMatAES256"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Owner",
@@ -232,6 +272,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "phần mềm thay thế jira notion cho marketing",
       "chi phí phần mềm quản lý agency tại việt nam",
       "thanh toán phần mềm saas qua vietqr sepay payos"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#BufferHootsuitePlanable",
+      "#ToiUuChiPhiSaaS",
+      "#VietQRSePayPayOS",
+      "#AgencyVietNam"
     ],
     "searchIntent": "Comparison",
     "targetRoles": [
@@ -276,6 +324,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "phần mềm quản lý task content marketing",
       "công cụ thay thế jira và notion cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#ThayTheJiraNotion",
+      "#SoSanhJiraNotion",
+      "#QuanLyTaskMarketing",
+      "#KanbanMarketing"
+    ],
     "searchIntent": "Comparison",
     "targetRoles": [
       "Owner",
@@ -317,6 +373,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cô lập dữ liệu khách hàng agency",
       "mẫu workspace template cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#WorkspaceDaTang",
+      "#MultiWorkspace",
+      "#QuanLyNhieuThuongHieu",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -357,6 +421,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "vai trò owner manager creator client trong agency",
       "kiểm soát quyền duyệt bài và đăng bài",
       "bảo mật phân quyền phần mềm quản lý dự án"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#PhanQuyenRBAC",
+      "#MaTranPhanQuyen",
+      "#BaoMatWorkspace",
+      "#ClientPortal"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -400,6 +472,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "quản lý yêu cầu sản xuất nội dung",
       "giảm số lần sửa bài content"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ContentBrief",
+      "#PhieuGiaoViec",
+      "#ContentRequest",
+      "#ContentWorkflow"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -440,6 +520,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "lỗi đăng nhầm bản nháp cũ",
       "thu hồi bài gửi duyệt",
       "kiểm soát tính toàn vẹn nội dung"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#KhoaBanNhap",
+      "#ContentLocking",
+      "#ChongSuaDeNoiDung",
+      "#QuanLyPhienBan"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -483,6 +571,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "kiểm tra hiển thị ảnh và caption trước khi đăng",
       "duyệt bài trực quan cho khách hàng"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#SocialPreview",
+      "#XemTruocBaiDang",
+      "#FacebookInstagramTikTokThreads",
+      "#ClientPortal"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Creator",
@@ -524,6 +620,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "kiểm duyệt an toàn thương hiệu bằng ai",
       "chặn từ ngữ nhạy cảm trong content",
       "bảo vệ fanpage khỏi hạn chế tương tác"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#KiemDuyetNoiDung",
+      "#ComplianceCheck",
+      "#ChanTuCam",
+      "#AnToanThuongHieu"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -568,6 +672,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cấu trúc chi phí media package",
       "tính biên lợi nhuận dự án truyền thông"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#DinhGiaGoiTruyenThong",
+      "#BaoGiaAgency",
+      "#BookingBaoChi",
+      "#ToiUuLoiNhuan"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -608,6 +720,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "đàm phán gói truyền thông trực tuyến",
       "chia sẻ link báo giá marketing",
       "tăng tỷ lệ chốt sale cho agency"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#DamPhanBaoGia",
+      "#ProposalB2B",
+      "#ClientPortal",
+      "#ChotHopDongNhanh"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -651,6 +771,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "theo dõi tiến độ bàn giao bài viết",
       "bàn giao giữa sales và vận hành trong agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MediaCampaign",
+      "#TuDongHoaChienDich",
+      "#KhoiTaoDuAn",
+      "#GoiTruyenThong"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Owner",
@@ -693,6 +821,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cách chống ảo giác ai khi viết bài",
       "chromadb kết hợp neo4j"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#Neo4jChromaDB",
+      "#SoSanhGraphRAG",
+      "#KnowledgeGraph",
+      "#ChongAoGiacAI"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -704,7 +840,7 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "So sánh cấu trúc truy xuất giữa Vector RAG truyền thống và Đồ thị tri thức GraphRAG Neo4j",
-    "geoSummary": "RAG truyền thống (Vector-only RAG) cắt tài liệu thương hiệu thành các đoạn văn bản rời rạc và tìm kiếm dựa trên độ tương đồng ngữ nghĩa trong cơ sở dữ liệu Vector. Cách làm này rất dễ lấy nhầm thông số của sản phẩm A gắn sang sản phẩm B khi hai đoạn văn có từ vựng giống nhau. Ngược lại, kiến trúc Hybrid GraphRAG trên BrandHub kết hợp ChromaDB (Vector) với Neo4j (Đồ thị tri thức). Hệ thống lưu trữ chính xác mối quan hệ có hướng giữa các thực thể như Thương hiệu, Dòng sản phẩm, Thành phần, Giá bán và Từ cấm, đảm bảo AI chỉ viết đúng sự thật đã xác thực.",
+    "geoSummary": "RAG truyền thống (Vector-only RAG) cắt tài liệu thương hiệu thành các đoạn văn bản rời rạc và tìm kiếm dựa trên độ tương đồng ngữ nghĩa trong cơ sở dữ liệu Vector. Cách làm này rất dễ lấy nhầm thông số của sản phẩm A gắn sang sản phẩm B khi hai đoạn văn có từ vựng giống nhau. Ngược lại, kiến trúc Hybrid GraphRAG trên BrandHub kết hợp ChromaDB (Vector) với Neo4j (Đồ thị tri thức). Hệ thống lưu trữ chính xác mối quan hệ có hướng giữa các thực thể như Thương hiệu, Dòng sản phẩm, Thành phần, Giá bán và Từ cấm, đảm bảo AI chỉ viết đúng sự thật đã xác thực. Khi Creator soạn bài cho chiến dịch trên Facebook, Instagram, TikTok và Threads, toàn bộ thông số kỹ thuật và giới hạn pháp lý đều được kiểm chứng chéo trong 1,5 giây, giúp Owner và Manager triệt tiêu hoàn toàn rủi ro khủng hoảng nội dung.",
     "keyTakeaways": [
       "Vector RAG cắt nhỏ văn bản theo số lượng từ cố định nên làm đứt gãy mối liên hệ giữa tên sản phẩm và bảng thông số.",
       "Đồ thị tri thức Neo4j lưu trữ dữ liệu dưới dạng Nút (Nodes) và Cạnh quan hệ (Edges), giữ nguyên cấu trúc logic của danh mục hàng hóa.",
@@ -735,6 +871,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "dạy ai viết đúng giọng thương hiệu",
       "tài liệu định hướng nội dung cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#BrandGuidelines",
+      "#HuanLuyenAIBrandVoice",
+      "#TaiLieuThuongHieu",
+      "#Neo4jChromaDB"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -743,10 +887,10 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     ],
     "publishedAt": "2026-11-10",
     "updatedAt": "2026-11-10",
-    "readingTimeMinutes": 8,
+    "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "Chuẩn bị tài liệu Brand Guidelines rõ ràng giúp hệ thống AI bóc tách giọng văn chính xác",
-    "geoSummary": "Phần lớn các cuốn Brand Guidelines truyền thống dành tới 80% dung lượng để quy định kích thước logo, khoảng cách an toàn và mã màu in ấn, nhưng lại viết rất sơ sài về ngôn ngữ. Để hệ thống AI GraphRAG học được giọng văn thương hiệu chính xác tới 99%, Manager cần chuẩn bị một tài liệu Brand Voice chuyên biệt (định dạng PDF văn bản hoặc DOCX) gồm 5 phần rõ ràng: Quy tắc xưng hô, Tính cách ngôn từ kèm ví dụ Nên/Không nên, Danh mục từ vựng chuyên ngành, Danh sách từ cấm kỵ và 5 bài viết mẫu tiêu biểu nhất.",
+    "geoSummary": "Phần lớn các cuốn Brand Guidelines truyền thống dành tới 80% dung lượng để quy định kích thước logo, khoảng cách an toàn và mã màu in ấn, nhưng lại viết rất sơ sài về ngôn ngữ. Để hệ thống AI GraphRAG học được giọng văn thương hiệu chính xác tới 99%, Manager cần chuẩn bị một tài liệu Brand Voice chuyên biệt (định dạng PDF văn bản hoặc DOCX) gồm 5 phần rõ ràng: Quy tắc xưng hô, Tính cách ngôn từ kèm ví dụ Nên/Không nên, Danh mục từ vựng chuyên ngành, Danh sách từ cấm kỵ và 5 bài viết mẫu tiêu biểu nhất. Ngay sau khi tài liệu được tải lên Workspace của BrandHub, đường ống dữ liệu sẽ tự động phân tách các quy tắc định danh vào đồ thị Neo4j và lưu trữ các đoạn văn mẫu vào ChromaDB, giúp Creator sản xuất hàng loạt bài đăng trên Facebook, Instagram, TikTok và Threads đồng nhất như một người viết duy nhất.",
     "keyTakeaways": [
       "Tránh tải lên các file PDF xuất dưới dạng ảnh chụp phẳng (Scan/Image PDF) không thể bôi đen chữ.",
       "Luôn chuyển các tính từ mô tả mơ hồ (như trẻ trung, sang trọng) thành cặp ví dụ câu văn cụ thể: Nên viết thế này / Không viết thế kia.",
@@ -777,6 +921,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tiktok creative center kết hợp google trends",
       "ý tưởng làm content bắt trend cho thương hiệu"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TikTokTrends",
+      "#TrendCrawler",
+      "#GoogleTrends",
+      "#BatTrendThoiGianThuc"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -785,10 +937,10 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     ],
     "publishedAt": "2026-11-10",
     "updatedAt": "2026-11-10",
-    "readingTimeMinutes": 8,
+    "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "Bảng radar theo dõi xu hướng thịnh hành thời gian thực từ TikTok và Google Trends trên BrandHub",
-    "geoSummary": "Trong truyền thông mạng xã hội, tốc độ bắt sóng xu hướng quyết định 80% lượng tương tác tự nhiên. Nếu chờ đến khi trào lưu đã tràn ngập bảng tin mới bắt đầu họp lên ý tưởng và chờ duyệt thì thương hiệu đã trở thành người đến sau. Hệ thống Trend Crawler của BrandHub tự động thu thập hơn 500 tín hiệu xu hướng mỗi ngày từ TikTok Creative Center, Facebook và Google Trends, phân loại theo ngành hàng, chấm điểm mức độ an toàn thương hiệu và gợi ý sẵn góc tiếp cận nội dung chỉ bằng một cú nhấp chuột.",
+    "geoSummary": "Trong truyền thông mạng xã hội, tốc độ bắt sóng xu hướng quyết định 80% lượng tương tác tự nhiên. Nếu chờ đến khi trào lưu đã tràn ngập bảng tin mới bắt đầu họp lên ý tưởng và chờ duyệt thì thương hiệu đã trở thành người đến sau. Hệ thống Trend Crawler của BrandHub tự động thu thập hơn 500 tín hiệu xu hướng mỗi ngày từ TikTok Creative Center, Facebook và Google Trends, phân loại theo ngành hàng, chấm điểm mức độ an toàn thương hiệu và gợi ý sẵn góc tiếp cận nội dung chỉ bằng một cú nhấp chuột. Toàn bộ quá trình từ lúc phát hiện từ khóa đang leo hạng đến khi chuyển hóa thành bộ 4 bản thảo hoàn chỉnh trên Facebook, Instagram, TikTok và Threads chỉ mất vài phút, giúp đội ngũ của Owner, Manager và Creator luôn chiếm lĩnh thảo luận tự nhiên mà vẫn giữ trọn sự an toàn cho thương hiệu.",
     "keyTakeaways": [
       "Tự động quét định kỳ các từ khóa tìm kiếm đột biến trên Google Trends và các thẻ Hashtag, âm thanh đang lên trên TikTok.",
       "Phân loại xu hướng theo từng nhóm ngành cụ thể như Ẩm thực, Thời trang, Công nghệ, Làm đẹp, Giáo dục.",
@@ -819,6 +971,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tạo kịch bản tiktok và bài đăng facebook cùng lúc",
       "viết bài threads tự động bằng ai"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#FacebookInstagramTikTokThreads",
+      "#ContentDaKenhAI",
+      "#AIStudio",
+      "#BienTapTuDong"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Creator",
@@ -826,10 +986,10 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     ],
     "publishedAt": "2026-11-10",
     "updatedAt": "2026-11-10",
-    "readingTimeMinutes": 8,
+    "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "Chuyển đổi một chủ đề gốc thành 4 định dạng bài đăng riêng biệt cho Facebook, Instagram, TikTok và Threads",
-    "geoSummary": "Sai lầm phổ biến nhất khi làm truyền thông đa kênh là sao chép nguyên xi một bài viết dài trên Facebook rồi dán sang Instagram, TikTok và Threads. Mỗi nền tảng có một văn hóa đọc và thuật toán phân phối hoàn toàn khác nhau. Với BrandHub AI Studio, Creator chỉ cần nhập một ý tưởng cốt lõi duy nhất. Dựa trên kho tri thức GraphRAG của nhãn hàng, hệ thống sẽ tự động biên tập thành 4 phiên bản riêng biệt: bài phân tích sâu cho Facebook, caption giàu tính thẩm mỹ kèm Hashtag cho Instagram, kịch bản phân cảnh ngắn gọn cho TikTok và lời mở đầu gợi mở tranh luận dưới 500 ký tự cho Threads.",
+    "geoSummary": "Sai lầm phổ biến nhất khi làm truyền thông đa kênh là sao chép nguyên xi một bài viết dài trên Facebook rồi dán sang Instagram, TikTok và Threads. Mỗi nền tảng có một văn hóa đọc và thuật toán phân phối hoàn toàn khác nhau. Với BrandHub AI Studio, Creator chỉ cần nhập một ý tưởng cốt lõi duy nhất. Dựa trên kho tri thức GraphRAG của nhãn hàng, hệ thống tự động biên tập thành 4 phiên bản riêng biệt: bài phân tích sâu cho Facebook, caption giàu tính thẩm mỹ kèm Hashtag cho Instagram, kịch bản phân cảnh ngắn gọn cho TikTok và lời mở đầu gợi mở tranh luận dưới 500 ký tự cho Threads. Creator và Manager có thể kiểm tra trực tiếp bố cục trên khung Preview 4 kênh và đẩy thẳng vào luồng phê duyệt 3 cấp trong một cú nhấp chuột.",
     "keyTakeaways": [
       "Tuyệt đối không dùng chung một văn bản cho cả 4 nền tảng vì hành vi lướt của người dùng trên mỗi ứng dụng rất khác nhau.",
       "Phiên bản Facebook tập trung vào câu chuyện dẫn dắt, phân tách đoạn rõ ràng và kêu gọi hành động ở cuối bài.",
@@ -860,6 +1020,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "mã hóa token aes-256",
       "cách giao kênh tiktok cho nhân viên an toàn"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#BaoMatOAuth2",
+      "#BaoMatAES256",
+      "#OfficialAPI",
+      "#FacebookInstagramTikTokThreads"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -868,10 +1036,10 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     ],
     "publishedAt": "2026-11-10",
     "updatedAt": "2026-11-10",
-    "readingTimeMinutes": 8,
+    "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "Cơ chế ủy quyền OAuth 2.0 và mã hóa khóa truy cập AES-256 bảo vệ tài khoản mạng xã hội doanh nghiệp",
-    "geoSummary": "Nhiều chủ doanh nghiệp và Client rất ngại giao kênh TikTok hoặc tài khoản Instagram cho nhân sự hay Agency vì sợ lộ mật khẩu gốc, bị đổi email khôi phục hoặc bị khóa tài khoản do đăng nhập từ nhiều địa chỉ IP lạ. BrandHub giải quyết bài toán này bằng chuẩn ủy quyền OAuth 2.0 chính thức của Meta và TikTok kết hợp mã hóa AES-256. Chủ kênh chỉ cần bấm xác nhận cấp quyền một lần trên trang chủ của nền tảng; mật khẩu gốc không bao giờ đi qua BrandHub và nhân sự có thể lên lịch đăng bài an toàn mà không cần chạm vào tài khoản gốc.",
+    "geoSummary": "Nhiều chủ doanh nghiệp và Client rất ngại giao kênh TikTok hoặc tài khoản Instagram cho nhân sự hay Agency vì sợ lộ mật khẩu gốc, bị đổi email khôi phục hoặc bị khóa tài khoản do đăng nhập từ nhiều địa chỉ IP lạ. BrandHub giải quyết bài toán này bằng chuẩn ủy quyền OAuth 2.0 chính thức của Meta và TikTok kết hợp mã hóa AES-256. Chủ kênh chỉ cần bấm xác nhận cấp quyền một lần trên trang chủ của nền tảng; mật khẩu gốc không bao giờ đi qua BrandHub và nhân sự có thể lên lịch đăng bài an toàn. Hệ thống còn tích hợp bộ giám sát thời hạn khóa kết nối tự động và phân quyền chặt chẽ theo 6 vai trò chuẩn (Guest, Owner, Manager, Creator, Client, Admin), đảm bảo nhân sự chỉ được phép soạn thảo và hẹn giờ bài đã duyệt.",
     "keyTakeaways": [
       "Tuyệt đối bỏ thói quen gửi tên đăng nhập, mật khẩu và mã OTP qua tin nhắn chat cho nhiều nhân viên cùng đăng nhập.",
       "Giao thức OAuth 2.0 chỉ cấp cho hệ thống một mã thông báo (Access Token) có phạm vi quyền hạn đúng bằng việc xuất bản bài viết và đọc số liệu.",
@@ -902,6 +1070,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "phần mềm quản lý lịch đăng bài mạng xã hội",
       "cách phân bổ nội dung các kênh mạng xã hội"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ContentCalendar",
+      "#KeHoach30Ngay",
+      "#FacebookInstagramTikTokThreads",
+      "#QuanTriNoiDung"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -913,7 +1089,7 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "Giao diện lịch nội dung Content Calendar 30 ngày quản lý đồng bộ 4 kênh mạng xã hội trên BrandHub",
-    "geoSummary": "Một bản Lịch nội dung (Content Calendar) 30 ngày hiệu quả không phải là bảng liệt kê ngày nào đăng gì một cách ngẫu hứng, mà là bản thiết kế nhịp điệu truyền thông đồng bộ giữa Facebook, Instagram, TikTok và Threads. Phương pháp chuẩn gồm 3 bước: phân bổ tỷ lệ tuyến bài theo công thức 40-30-20-10, sắp xếp độ lệch pha thông minh giữa các nền tảng trong cùng một tuần, và quản lý trực quan bằng mã màu trạng thái trên BrandHub Content Calendar để không bao giờ xảy ra tình trạng trống lịch hay dồn ứ bài vào phút chót.",
+    "geoSummary": "Một bản Lịch nội dung (Content Calendar) 30 ngày hiệu quả không phải là bảng liệt kê ngày nào đăng gì một cách ngẫu hứng, mà là bản thiết kế nhịp điệu truyền thông đồng bộ giữa Facebook, Instagram, TikTok và Threads. Phương pháp chuẩn gồm 3 bước: phân bổ tỷ lệ tuyến bài theo công thức 40-30-20-10, sắp xếp độ lệch pha thông minh giữa các nền tảng trong cùng một tuần, và quản lý trực quan bằng mã màu trạng thái trên BrandHub Content Calendar để không bao giờ xảy ra tình trạng trống lịch hay dồn ứ bài vào phút chót. Khi kết hợp cùng luồng phê duyệt 3 cấp và hệ thống xuất bản tự động qua API chính thức, bản lịch 30 ngày trên BrandHub biến thành trung tâm điều hành sống động: vừa giúp Creator chủ động tiến độ viết bài, vừa giúp Manager và Client kiểm soát toàn diện tần suất phủ sóng thương hiệu mỗi ngày.",
     "keyTakeaways": [
       "Áp dụng tỷ lệ vàng 40% Nội dung chia sẻ giá trị - 30% Bắt nhịp xu hướng & Tương tác - 20% Bằng chứng niềm tin - 10% Bán hàng trực tiếp.",
       "Không đăng cùng một nội dung vào cùng một khung giờ trên cả 4 kênh; hãy tạo độ trễ từ 4 đến 24 giờ tùy đặc thù từng nền tảng.",
@@ -944,6 +1120,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "vùng an toàn chữ trên video tiktok",
       "kích thước ảnh đăng threads"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#KichThuocAnhMXH",
+      "#TyLeVideo916",
+      "#FacebookInstagramTikTokThreads",
+      "#SocialPreview"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -951,10 +1135,10 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     ],
     "publishedAt": "2026-11-10",
     "updatedAt": "2026-11-10",
-    "readingTimeMinutes": 8,
+    "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "Bảng quy chuẩn tỷ lệ khung hình ảnh và video cho Facebook, Instagram, TikTok và Threads năm 2026",
-    "geoSummary": "Thiết kế sai tỷ lệ khung hình khiến bài đăng bị cắt mất tiêu đề, che khuất logo hoặc bị viền đen xấu xí khi xuất bản lên nhiều mạng xã hội. Năm 2026, chuẩn hiển thị trên thiết bị di động ưu tiên tuyệt đối hai tỷ lệ dọc: 4:5 (1080 x 1350 px) cho ảnh đơn cùng bộ ảnh Carousel trên Facebook, Instagram, Threads; và 9:16 (1080 x 1920 px) cho video ngắn trên TikTok, Reels. Trên BrandHub, hệ thống tự động kiểm tra định dạng tệp tải lên và mô phỏng khung cắt thực tế trước khi xuất bản.",
+    "geoSummary": "Thiết kế sai tỷ lệ khung hình khiến bài đăng bị cắt mất tiêu đề, che khuất logo hoặc bị viền đen xấu xí khi xuất bản lên nhiều mạng xã hội. Năm 2026, chuẩn hiển thị trên thiết bị di động ưu tiên tuyệt đối hai tỷ lệ dọc: 4:5 (1080 x 1350 px) cho ảnh đơn cùng bộ ảnh Carousel trên Facebook, Instagram, Threads; và 9:16 (1080 x 1920 px) cho video ngắn trên TikTok, Reels. Trên BrandHub, hệ thống tự động kiểm tra định dạng tệp tải lên và mô phỏng khung cắt thực tế trước khi xuất bản. Nhờ tích hợp sẵn bộ kiểm tra thông số kỹ thuật tự động ngay tại bước kéo thả tệp và khung Preview trực quan 4 nền tảng, Creator cùng Manager có thể phát hiện tức thì các lỗi lệch khung hình, mờ vỡ hạt hay lẹm chữ vào vùng nút bấm giao diện trước khi gửi bài cho Client nghiệm thu.",
     "keyTakeaways": [
       "Ưu tiên tỷ lệ dọc 4:5 (1080 x 1350 px) thay vì ảnh vuông 1:1 truyền thống để chiếm diện tích hiển thị lớn hơn trên màn hình điện thoại.",
       "Với video dọc 9:16 (1080 x 1920 px), luôn chừa trống 15% mép trên, 25% mép dưới và 12% mép phải để không bị nút bấm của TikTok che mất phụ đề.",
@@ -985,6 +1169,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "công cụ duyệt content cho agency việt nam",
       "so sánh phần mềm phê duyệt bài đăng mạng xã hội"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#SoSanhPlanable",
+      "#PhanMemDuyetBai",
+      "#DuyetBai3Cap",
+      "#AgencyVietNam"
+    ],
     "searchIntent": "Comparison",
     "targetRoles": [
       "Guest",
@@ -996,7 +1188,7 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "So sánh nền tảng quản trị và phê duyệt nội dung BrandHub với Planable cho các Agency tại Việt Nam",
-    "geoSummary": "Planable là một công cụ quốc tế rất nổi tiếng về giao diện xem trước và bình luận duyệt bài mạng xã hội. Tuy nhiên, khi áp dụng vào thực tế vận hành của các Agency tại Việt Nam, Planable bộc lộ 3 rào cản lớn: chi phí tính theo từng Workspace và từng người dùng bằng USD rất đắt đỏ, thiếu hoàn toàn phân hệ quản lý Gói truyền thông (Media Package) lẫn đối tác Báo đài địa phương, và AI đi kèm không có đồ thị tri thức GraphRAG tiếng Việt. BrandHub giữ trọn vẹn trải nghiệm duyệt bài trực quan đó nhưng bổ sung quy trình khép kín từ báo giá đến AI Studio với mức phí cố định chỉ 590.000đ/tháng thanh toán qua VietQR.",
+    "geoSummary": "Planable là một công cụ quốc tế nổi tiếng về giao diện xem trước và bình luận duyệt bài mạng xã hội. Tuy nhiên, khi áp dụng vào thực tế vận hành của các Agency tại Việt Nam, Planable bộc lộ 3 rào cản lớn: chi phí tính theo từng Workspace bằng USD rất đắt đỏ, thiếu hoàn toàn phân hệ quản lý Gói truyền thông (Media Package) lẫn đối tác Báo đài địa phương, và AI đi kèm không có đồ thị tri thức GraphRAG tiếng Việt. BrandHub giữ trọn vẹn trải nghiệm duyệt bài trực quan đó nhưng bổ sung quy trình khép kín từ báo giá đến AI Studio với mức phí cố định chỉ 590.000đ/tháng qua VietQR. Sự kết hợp giữa bảng việc Kanban, kho tri thức Neo4j + ChromaDB và xuất bản 4 kênh giúp đội ngũ Việt Nam nâng cao năng suất mà không lo hóa đơn ngoại tệ.",
     "keyTakeaways": [
       "Cả BrandHub và Planable đều cung cấp khung xem trước bài đăng (Preview) sát thực tế và luồng phê duyệt nhiều cấp.",
       "BrandHub vượt lên nhờ quản lý được cả khâu trước sản xuất: tạo Media Package, đàm phán báo giá với Client và quản lý lịch đăng Báo chí / Truyền hình.",
@@ -1027,6 +1219,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "nhược điểm của buffer khi làm agency",
       "công cụ quản lý mạng xã hội tích hợp ai"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#SoSanhBufferHootsuite",
+      "#PhanMemHenGio",
+      "#DangBaiDaKenh",
+      "#ToiUuChiPhiSaaS"
+    ],
     "searchIntent": "Comparison",
     "targetRoles": [
       "Guest",
@@ -1035,10 +1235,10 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     ],
     "publishedAt": "2026-11-10",
     "updatedAt": "2026-11-10",
-    "readingTimeMinutes": 8,
+    "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "Đặt lên bàn cân công cụ hẹn giờ truyền thống Buffer, Hootsuite và nền tảng hợp nhất BrandHub",
-    "geoSummary": "Buffer và Hootsuite ra đời cách đây hơn một thập kỷ để giải quyết bài toán duy nhất ở thời điểm đó: hẹn giờ đẩy một bài viết đã hoàn thiện lên mạng xã hội. Tuy nhiên, trong một Agency hiện đại, khâu bấm nút hẹn giờ chỉ chiếm đúng 5% khối lượng công việc; 95% thời gian còn lại nằm ở việc nhận Brief, phân công Task, tra cứu Brand Guidelines, viết nháp, chỉnh sửa qua lại và chờ Client phê duyệt. BrandHub bao trọn cả 95% quy trình sản xuất phía trước lẫn 5% khâu xuất bản phía sau, đồng thời xóa bỏ cách tính phí đắt đỏ theo từng kênh kết nối của Buffer và Hootsuite.",
+    "geoSummary": "Buffer và Hootsuite ra đời cách đây hơn một thập kỷ để giải quyết bài toán duy nhất ở thời điểm đó: hẹn giờ đẩy một bài viết đã hoàn thiện lên mạng xã hội. Tuy nhiên, trong một Agency hiện đại, khâu bấm nút hẹn giờ chỉ chiếm đúng 5% khối lượng công việc; 95% thời gian còn lại nằm ở việc nhận Brief, phân công Task, tra cứu Brand Guidelines, viết nháp, chỉnh sửa qua lại và chờ Client phê duyệt. BrandHub bao trọn cả 95% quy trình sản xuất phía trước lẫn 5% khâu xuất bản phía sau, đồng thời xóa bỏ cách tính phí đắt đỏ theo từng kênh kết nối. Việc hợp nhất bảng việc Kanban, phòng máy AI Studio, luồng duyệt 3 cấp và xuất bản 4 kênh vào gói Pro 590.000đ/tháng giúp doanh nghiệp tiết kiệm hơn 80% ngân sách.",
     "keyTakeaways": [
       "Buffer tính phí theo từng kênh mạng xã hội đơn lẻ, khiến chi phí đội lên rất nhanh khi Agency quản lý 4 nền tảng cho nhiều thương hiệu.",
       "Hootsuite có mức giá khởi điểm rất cao (từ 99 USD/tháng) và giao diện nặng nề, vượt quá nhu cầu thực tế của phần lớn doanh nghiệp vừa và nhỏ.",
@@ -1069,6 +1269,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "bài toán roi khi chuyển đổi số agency",
       "mua phần mềm marketing qua vietqr"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#BaiToanROI",
+      "#ToiUuChiPhiSaaS",
+      "#VietQRSePayPayOS",
+      "#QuanTriAgency"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -1076,10 +1284,10 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     ],
     "publishedAt": "2026-11-10",
     "updatedAt": "2026-11-10",
-    "readingTimeMinutes": 8,
+    "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "Bảng tính hiệu quả đầu tư ROI giúp Agency tiết kiệm 80% chi phí thuê bao phần mềm hàng năm",
-    "geoSummary": "Các phần mềm SaaS quốc tế thường áp dụng mô hình thu phí cộng dồn theo đầu người (Per-seat) hoặc theo từng kênh kết nối. Với một Agency quy mô 20 nhân sự đang phục vụ 10 thương hiệu, việc ghép rời rạc Notion/Jira để quản lý việc, Planable/Buffer để duyệt và đăng bài cùng các tài khoản AI lẻ sẽ ngốn từ 11 đến 14 triệu đồng mỗi tháng. Khi hợp nhất toàn bộ quy trình về gói BrandHub Pro với mức phí cố định 590.000 VNĐ/tháng (hỗ trợ tới 10 Workspace, 20 thành viên/Workspace và 2.000 AI Credits), doanh nghiệp tiết kiệm ngay hơn 120 triệu đồng tiền mặt mỗi năm.",
+    "geoSummary": "Các phần mềm SaaS quốc tế thường áp dụng mô hình thu phí cộng dồn theo đầu người (Per-seat) hoặc theo từng kênh kết nối. Với một Agency quy mô 20 nhân sự đang phục vụ 10 thương hiệu, việc ghép rời rạc Notion/Jira để quản lý việc, Planable/Buffer để duyệt và đăng bài cùng các tài khoản AI lẻ sẽ ngốn từ 11 đến 14 triệu đồng mỗi tháng. Khi hợp nhất toàn bộ quy trình về gói BrandHub Pro với mức phí cố định 590.000 VNĐ/tháng (hỗ trợ tới 10 Workspace, 20 thành viên/Workspace và 2.000 AI Credits), doanh nghiệp tiết kiệm ngay hơn 120 triệu đồng tiền mặt mỗi năm. Ngoài ra, việc gom toàn bộ quy trình báo giá Media Package, giao việc Kanban, sáng tạo AI GraphRAG và hẹn giờ 4 kênh về một nơi còn thu hồi hàng trăm giờ công lãng phí.",
     "keyTakeaways": [
       "Mô hình thu phí theo từng nhân sự (8 - 15 USD/người/tháng) là gánh nặng chi phí cố định lớn nhất khi Agency mở rộng quy mô.",
       "Gói BrandHub Pro có giá cố định 590.000 VNĐ/tháng, mở khóa tới 10 Workspace độc lập và 20 thành viên trên mỗi Workspace.",
@@ -1110,6 +1318,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cách nâng cấp tài khoản brandhub pro",
       "giới hạn workspace gói miễn phí"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#BangGiaBrandHub",
+      "#GoiStarterVaPro",
+      "#VietQRSePayPayOS",
+      "#WorkspaceDaTang"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Guest",
@@ -1118,10 +1334,10 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
     ],
     "publishedAt": "2026-11-10",
     "updatedAt": "2026-11-10",
-    "readingTimeMinutes": 7,
+    "readingTimeMinutes": 9,
     "coverImage": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=80",
     "coverImageAlt": "Bảng đối chiếu quyền lợi giữa gói Starter miễn phí và gói Pro chuyên nghiệp trên nền tảng BrandHub",
-    "geoSummary": "BrandHub cung cấp 2 gói dịch vụ minh bạch nhằm đồng hành cùng sự phát triển của từng đội ngũ. Gói Starter (0 VNĐ/tháng) không giới hạn thời gian sử dụng, cho phép khởi tạo 1 Workspace, mời tối đa 3 thành viên và tặng sẵn 100 AI Credits để các nhóm nhỏ hoặc thương hiệu cá nhân vận hành quy trình chuẩn. Khi đội ngũ mở rộng sang mô hình Agency quản lý nhiều khách hàng hoặc phòng Marketing quy mô lớn, việc nâng cấp lên gói Pro (590.000 VNĐ/tháng) sẽ mở khóa ngay hạn mức 10 Workspace, 20 thành viên/Workspace và 2.000 AI Credits mỗi tháng.",
+    "geoSummary": "BrandHub cung cấp 2 gói dịch vụ minh bạch nhằm đồng hành cùng sự phát triển của từng đội ngũ. Gói Starter (0 VNĐ/tháng) không giới hạn thời gian sử dụng, cho phép khởi tạo 1 Workspace, mời tối đa 3 thành viên và tặng sẵn 100 AI Credits để các nhóm nhỏ hoặc thương hiệu cá nhân vận hành quy trình chuẩn. Khi đội ngũ mở rộng sang mô hình Agency quản lý nhiều khách hàng hoặc phòng Marketing quy mô lớn, việc nâng cấp lên gói Pro (590.000 VNĐ/tháng) sẽ mở khóa ngay hạn mức 10 Workspace, 20 thành viên/Workspace và 2.000 AI Credits mỗi tháng. Cả hai gói cước đều giữ nguyên chuẩn mực bảo mật OAuth 2.0 mã hóa AES-256, luồng phê duyệt 3 cấp (Creator -> Manager -> Client) và khả năng xuất bản tự động lên 4 kênh Facebook, Instagram, TikTok, Threads, giúp doanh nghiệp khởi đầu an toàn với chi phí 0 đồng trước khi mở rộng quy mô lớn.",
     "keyTakeaways": [
       "Gói Starter hoàn toàn miễn phí (0đ), không yêu cầu nhập thẻ thanh toán khi đăng ký và vẫn có đầy đủ luồng duyệt bài 3 cấp.",
       "Gói Pro (590.000đ/tháng) mở rộng quy mô lên gấp 10 lần về số lượng Workspace (10 Workspace) và gấp 20 lần lượng AI Credits định kỳ.",
@@ -1151,6 +1367,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cấp quyền truy cập cho khách hàng agency",
       "liên kết mời xác thực một lần",
       "phân quyền creator và client theo dự án"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#WorkspaceDaTang",
+      "#MoiThanhVien",
+      "#ClientPortal",
+      "#PhanQuyenRBAC"
     ],
     "searchIntent": "Transactional",
     "targetRoles": [
@@ -1192,6 +1416,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cô lập dữ liệu giữa các thương hiệu đối thủ",
       "quản lý nhiều nhãn hàng cùng ngành trong agency",
       "bảo mật tài khoản mạng xã hội khách hàng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#BaoMatDuLieu",
+      "#ChongRoRiThongTin",
+      "#CoLapWorkspace",
+      "#QuanLyNhanHang"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1235,6 +1467,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "đánh giá hiệu suất viết bài truyền thông",
       "bảng điều khiển theo dõi tiến độ creator"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#QuanTriHieuSuat",
+      "#DoLuongKPI",
+      "#DieuPhoiNhanSu",
+      "#KanbanMarketing"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -1275,6 +1515,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cách tăng tỷ lệ gia hạn hợp đồng retainer",
       "minh bạch tiến độ dự án với khách hàng",
       "không gian duyệt bài dành riêng cho client"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#ClientPortal",
+      "#CongThongTinKhachHang",
+      "#NghiemThuChienDich",
+      "#BaoCaoMinhBach"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1318,6 +1566,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "phần mềm quản lý đối tác pr agency",
       "tích hợp báo đài vào gói truyền thông"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#DoiTacBaoDai",
+      "#BookingBaoChi",
+      "#BookingTruyenHinh",
+      "#MediaPackage"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -1358,6 +1614,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tại sao không nên duyệt bài qua nhóm chat",
       "quản lý phản hồi nội dung tập trung",
       "tăng năng suất làm việc cho đội sáng tạo"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#ChongTroiViec",
+      "#ThaoLuanTheoBaiViet",
+      "#ThayTheNhomChat",
+      "#ContentWorkflow"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1402,6 +1666,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "khôi phục phiên bản bài viết cũ",
       "kiểm soát sửa đổi qua các vòng duyệt"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#VersionHistory",
+      "#LichSuChinhSua",
+      "#DoiChieuBanNhap",
+      "#AuditLog"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1443,6 +1715,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "giới hạn số lần sửa bài trong agency",
       "cách nhận góp ý sửa bài hiệu quả",
       "luồng request revision chuẩn b2b"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#RevisionRequest",
+      "#YeuCauChinhSua",
+      "#ClientFeedback",
+      "#ClientPortal"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1486,6 +1766,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "điều phối hàng trăm bài viết mỗi tuần",
       "quản lý hạn chót sản xuất nội dung"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#MaTranUuTien",
+      "#QuanLyDeadline",
+      "#DieuPhoiSanXuat",
+      "#KanbanMarketing"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1526,6 +1814,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "quy trình duyệt kịch bản truyền hình",
       "khác biệt giữa bài social và bài pr",
       "quản lý chiến dịch truyền thông tích hợp"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#DuyetBaiBaoChi",
+      "#BookingTruyenHinh",
+      "#DoiTacBaoDai",
+      "#QuyTrinhPheDuyet"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1570,6 +1866,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "giao diện duyệt bài 1 chạm cho khách hàng",
       "tăng tốc quy trình nghiệm thu nội dung"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#RutNganThoiGianDuyet",
+      "#ClientPortal",
+      "#DuyetBai1Cham",
+      "#ChongTroiViec"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -1611,6 +1915,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "bảng giá chăm sóc kênh truyền thông",
       "đóng gói dịch vụ marketing agency",
       "media package cho doanh nghiệp vừa và nhỏ"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MauGoiTruyenThong",
+      "#DoanhNghiepSME",
+      "#BaoGiaAgency",
+      "#GoiTruyenThong"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1655,6 +1967,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "đối soát số lượng bài đăng nghiệm thu",
       "kiểm soát cam kết hợp đồng truyền thông"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MediaCampaign",
+      "#TheoDoiTienDo",
+      "#BanGiaoHangMuc",
+      "#ClientPortal"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -1696,6 +2016,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "chiến dịch truyền thông đa kênh tích hợp",
       "cách khuếch đại bài pr báo điện tử",
       "phối hợp facebook instagram tiktok threads và pr"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MediaCampaign",
+      "#FacebookInstagramTikTokThreads",
+      "#BookingBaoChi",
+      "#TruyenThongTichHop"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1739,6 +2067,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tiêu chí chọn gói dịch vụ truyền thông",
       "cổng làm việc dành cho khách hàng client"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#DatMuaGoiTruyenThong",
+      "#QuanLyNganSach",
+      "#ClientPortal",
+      "#DamPhanB2B"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Guest",
@@ -1779,6 +2115,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "huấn luyện mô hình lora giữ khuôn mặt",
       "đại sứ thương hiệu ảo cho thời trang mỹ phẩm",
       "cách tạo nhân vật đại diện ảo đồng nhất"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#DaiSuAoLoRA",
+      "#BrandAmbassadorAI",
+      "#AIStudio",
+      "#HinhAnhThuongHieu"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1823,6 +2167,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "prompt chụp ảnh sản phẩm studio bằng ai",
       "text to image cho marketing chuyên nghiệp"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TaoAnhSanPhamAI",
+      "#FluxSDXL",
+      "#AIStudio",
+      "#ThietKeQuangCao"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Creator",
@@ -1863,6 +2215,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "chuyển ảnh tĩnh thành video quảng cáo",
       "quy trình làm video tiktok tiết kiệm chi phí",
       "render video ai bất đồng bộ cho agency"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TaoVideoNganAI",
+      "#TikTokReelsAI",
+      "#KichBanVideo",
+      "#AIStudio"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1906,6 +2266,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "công cụ lọc xu hướng thịnh hành bằng ai",
       "kết hợp trào lưu vào thông điệp sản phẩm"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TikTokTrends",
+      "#BatTrendAnToan",
+      "#BrandSafety",
+      "#BrandGuidelines"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1947,6 +2315,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tối ưu ngân sách công cụ ai marketing",
       "nạp ai credits qua vietqr sepay payos",
       "theo dõi lịch sử tiêu thụ ai theo tác vụ"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#QuanLyAICredits",
+      "#NganSachAI",
+      "#VietQRSePayPayOS",
+      "#QuanTriAgency"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1990,6 +2366,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "đăng bài tự động lên threads",
       "cách tăng tương tác tự nhiên trên threads"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#XayKenhThreads",
+      "#KetHopInstagramThreads",
+      "#TangTuongTacTuNhien",
+      "#FacebookInstagramTikTokThreads"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -2032,6 +2416,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "khung giờ đăng threads hiệu quả",
       "hẹn giờ đăng bài chuẩn múi giờ việt nam"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#KhungGioVang",
+      "#LichDangBaiToiUu",
+      "#FacebookInstagramTikTokThreads",
+      "#ContentCalendar"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -2072,6 +2464,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cơ chế retry api mạng xã hội",
       "nhật ký xuất bản publish logs",
       "khắc phục lỗi hết hạn token fanpage tiktok"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#TuDongThuLaiAPI",
+      "#OfficialAPI",
+      "#KienTrucPublisher",
+      "#NhatKyXuatBan"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -2114,6 +2514,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "báo cáo hiệu quả bài đăng đa kênh",
       "phân tích tương tác facebook tiktok instagram threads",
       "tối ưu chiến lược nội dung theo số liệu"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#PostAnalytics",
+      "#PhanTichTuongTac",
+      "#DoLuongHieuSuat",
+      "#BaoCaoChienDich"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -2158,6 +2566,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "phân tách kênh mạng xã hội theo workspace",
       "công cụ quản lý đa kênh cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#QuanLyNhieuFanpage",
+      "#DaTaiKhoanMXH",
+      "#WorkspaceDaTang",
+      "#QuanTriAgency"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -2200,6 +2616,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "mua phần mềm saas không cần thẻ visa",
       "đối soát thanh toán vietqr tự động"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#VietQRSePayPayOS",
+      "#NangCapGoiPro",
+      "#NapAICredits",
+      "#ThanhToanTuDong"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Owner",
@@ -2240,6 +2664,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "marketing ngành f&b đa kênh",
       "cách quản lý nội dung nhiều thương hiệu f&b",
       "rút ngắn thời gian duyệt bài với client"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#CaseStudyFnB",
+      "#RutNganThoiGianDuyet",
+      "#DuyetBai3Cap",
+      "#QuanTriAgency"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -2283,6 +2715,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tạo ảnh lookbook bằng ai",
       "chiến dịch mùa lễ hội ngành mỹ phẩm",
       "xuất bản đồng bộ instagram tiktok facebook threads"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#CaseStudyThoiTrang",
+      "#DaiSuAoLoRA",
+      "#AIStudio",
+      "#ToiUuChiPhiSanXuat"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -2328,6 +2768,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "phần mềm thay thế bảng tính cho agency",
       "dấu hiệu agency quá tải quy trình"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#ThayTheGoogleSheets",
+      "#ThayTheNhomChat",
+      "#ChuyenDoiSoAgency",
+      "#ChongTroiViec"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Guest",
@@ -2369,6 +2817,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "quickstart guide brandhub cho người mới",
       "cách nạp brand guidelines vào ai studio",
       "thiết lập quy trình duyệt bài trong 15 phút"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#HuongDanOnboarding",
+      "#KhoiTaoWorkspace",
+      "#BatDauTrong15Phut",
+      "#QuanTriAgency"
     ],
     "searchIntent": "Transactional",
     "targetRoles": [
@@ -2414,6 +2870,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "giao diện quản lý dự án song ngữ việt anh",
       "lên lịch đăng bài theo giờ địa phương"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#DaMuiGio",
+      "#SongNguVietAnh",
+      "#AgencyQuocTe",
+      "#WorkspaceDaTang"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -2456,6 +2920,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "điều chuyển người phụ trách content request",
       "bảo vệ tài sản số agency khi nhân viên nghỉ"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#BanGiaoCongViec",
+      "#QuanTriNhanSu",
+      "#BaoToanDuLieu",
+      "#AuditLog"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -2497,6 +2969,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "định danh tổ chức agency b2b",
       "thuyết phục khách hàng doanh nghiệp lớn"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#HoSoNangLucAgency",
+      "#AgencyProfile",
+      "#ChotSaleB2B",
+      "#ClientPortal"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -2537,6 +3017,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tổ chức thư mục tài nguyên thương hiệu",
       "đồng bộ brand guidelines vào ai",
       "quản lý logo font chữ nhãn hàng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#KhoTaiNguyenSo",
+      "#BrandAssets",
+      "#QuanLyFileThietKe",
+      "#WorkspaceDaTang"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -2580,6 +3068,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "quản trị truyền thông chuỗi f&b bán lẻ",
       "cấu trúc workspace cho thương hiệu con"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#InHouseMarketing",
+      "#TapDoanDaThuongHieu",
+      "#WorkspaceDaTang",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -2620,6 +3116,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "đính kèm video ngắn tiktok trong trình soạn thảo",
       "kiểm tra tỷ lệ khung hình bài đăng mxh",
       "quy trình ghép ảnh và caption cho creator"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#TrinhSoanThaoDaPhuongTien",
+      "#ChinhSuaAnhVideo",
+      "#ContentStudio",
+      "#ContentWorkflow"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -2662,6 +3166,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cách giảm số vòng sửa bài với client",
       "internal qa content marketing agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ChecklistDuyetBai",
+      "#KiemSoatChatLuong",
+      "#QuanTriNoiDung",
+      "#ContentWorkflow"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -2702,6 +3214,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "quản lý tiến độ bài đăng từ draft đến published",
       "state machine quy trình duyệt bài",
       "bảng theo dõi trạng thái bài truyền thông"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#KanbanMarketing",
+      "#TrangThaiBaiViet",
+      "#ContentWorkflow",
+      "#DangBaiDaKenh"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -2745,6 +3265,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "sản xuất nội dung đa nền tảng cho creator",
       "một ý tưởng nhiều định dạng bài đăng"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#BienTheNoiDung",
+      "#DaKenhMangXaHoi",
+      "#FacebookInstagramTikTokThreads",
+      "#ContentWorkflow"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -2785,6 +3313,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "phối hợp mạng xã hội và pr báo chí khi ra mắt",
       "phân bổ content request theo giai đoạn chiến dịch",
       "checklist ra mắt sản phẩm mới cho agency"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MediaCampaign",
+      "#RaMatSanPhamMoi",
+      "#TimelineChienDich",
+      "#ContentCalendar"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -2829,6 +3365,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "nghiệm thu hợp đồng dịch vụ truyền thông",
       "chứng từ xuất bản bài đăng cho client"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#QuanLyHopDong",
+      "#TrangThaiThanhToan",
+      "#VietQRSePayPayOS",
+      "#MediaCampaign"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -2871,6 +3415,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "đàm phán báo giá marketing trực tuyến",
       "tăng tỷ lệ chốt sale cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#BaoGiaTrucTuyen",
+      "#ThayTheExcelPDF",
+      "#TangTyLeChotSale",
+      "#DamPhanB2B"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -2912,6 +3464,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cách tính định mức công việc creator",
       "khi nào agency nên tuyển thêm nhân sự"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#HoachDinhNguonLuc",
+      "#QuanTriNhanSu",
+      "#DieuPhoiDuAn",
+      "#QuanTriAgency"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -2952,6 +3512,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "kết hợp pr báo chí và mạng xã hội",
       "nghiệm thu link bài báo chiến dịch truyền thông",
       "phần mềm quản lý chiến dịch pr tích hợp"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#DoiTacBaoDai",
+      "#BaoDienTu",
+      "#BookingTruyenHinh",
+      "#NghiemThuPhatSong"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -2995,6 +3563,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "ứng dụng graphrag viết nội dung chuyển đổi",
       "công thức prompt cho nhân sự sáng tạo"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#MauPromptAI",
+      "#PromptCopywriting",
+      "#ToiUuChuyenDoi",
+      "#ContentMarketingAI"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -3035,6 +3611,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cách giữ đồng bộ giọng văn thương hiệu",
       "kiểm soát chất lượng bài viết content trước khi duyệt",
       "đối chiếu brand guideline bằng ai"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#KiemTraBrandTone",
+      "#BrandGuidelines",
+      "#KiemDuyetNoiDung",
+      "#Neo4jChromaDB"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -3078,6 +3662,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "rủi ro lộ bí mật kinh doanh khi dùng ai",
       "kiến trúc ai an toàn cho agency truyền thông"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#BaoMatTriThucAI",
+      "#CoLapNamespace",
+      "#AnToanDuLieu",
+      "#Neo4jChromaDB"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -3120,6 +3712,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "khung giờ đăng bài tối ưu từng nền tảng",
       "tăng lượt tiếp cận tự nhiên bằng hashtag và hook"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#GoiYHashtagAI",
+      "#KhungGioVang",
+      "#ToiUuTuongTac",
+      "#FacebookInstagramTikTokThreads"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -3160,6 +3760,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "đăng instagram reels qua api có bị giảm chất lượng không",
       "bitrate chuẩn cho video ngắn 1080x1920",
       "quy trình duyệt và đăng video ngắn cho agency"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#DangVideoChatLuongCao",
+      "#ChongNenVideo",
+      "#TikTokReels",
+      "#OfficialAPI"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -3202,6 +3810,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "đảm bảo an toàn lịch đăng bài chiến dịch lớn",
       "quản lý kết nối mạng xã hội cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#TokenHealth",
+      "#GiamSatKetNoi",
+      "#BaoMatOAuth2",
+      "#ChienDichMegaSale"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -3243,6 +3859,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "lập kế hoạch content calendar 30 ngày cân bằng",
       "phân bổ nội dung trên 4 mạng xã hội"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ContentPillar",
+      "#MaTranNoiDung",
+      "#ContentCalendar",
+      "#HoachDinhNoiDung"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -3283,6 +3907,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cách hoạt động thuật toán đề xuất tiktok và threads",
       "tín hiệu xếp hạng nội dung mạng xã hội",
       "tối ưu tương tác tự nhiên đa nền tảng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ThuatToanMangXaHoi",
+      "#PhanPhoiNoiDung",
+      "#FacebookInstagramTikTokThreads",
+      "#TangTruongTuNhien"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -3326,6 +3958,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "đối soát thanh toán vietqr sepay payos tự động",
       "giám sát hạn mức tài nguyên và gói cước doanh nghiệp"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#PhanHeAdmin",
+      "#GiamSatHeThong",
+      "#ContentModerationQueue",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Admin",
@@ -3366,6 +4006,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "ứng dụng neo4j chromadb rabbitmq cho martech",
       "hạ tầng xuất bản mạng xã hội độ trễ thấp",
       "kiến trúc saas đa khách thuê trên aws"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#KienTrucMicroservices",
+      "#SpringBootFastAPI",
+      "#Neo4jChromaDB",
+      "#HaTangHieuNangCao"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -3409,6 +4057,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "minh bạch trách nhiệm agency và client",
       "theo dõi lịch sử thao tác workspace"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#AuditLog",
+      "#NhatKyHoatDong",
+      "#MinhBachDuAn",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -3451,6 +4107,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "số hóa quy trình duyệt bài marketing",
       "lộ trình onboarding phần mềm cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#ChuyenDoiSoAgency",
+      "#QuyTrinhVanHanh",
+      "#Onboarding7Ngay",
+      "#KanbanMarketing"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Owner",
@@ -3492,6 +4156,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "quy trình thu hồi bài viết chờ đăng",
       "kiểm soát an toàn lịch đăng mạng xã hội"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ThuHoiBaiDang",
+      "#XuLyKhungHoang",
+      "#HuyLichHenGio",
+      "#ContentCalendar"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -3532,6 +4204,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "làm content chiến dịch tết hiệu quả",
       "quản lý sản xuất nội dung mùa cao điểm",
       "duyệt bài theo lô cho khách hàng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#SanXuatHangLoat",
+      "#ChienDichTet",
+      "#BatchProduction",
+      "#ContentCalendar"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -3575,6 +4255,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "chặn từ ngữ thô tục bạo lực truyền thông",
       "vai trò admin kiểm duyệt nội dung hệ thống"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ContentModerationQueue",
+      "#KiemDuyetHeThong",
+      "#AnToanCongDong",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Admin",
@@ -3615,6 +4303,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "xử lý yêu cầu ngoài hợp đồng truyền thông",
       "quản lý định mức hạng mục chiến dịch",
       "bảo vệ biên lợi nhuận dự án agency"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#ChongScopeCreep",
+      "#KiemSoatPhatSinh",
+      "#MediaCampaign",
+      "#BaoVeLoiNhuan"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -3658,6 +4354,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "báo cáo hiệu quả chiến dịch social media",
       "bí quyết giữ chân khách hàng agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#BaoCaoTongKet",
+      "#CampaignWrapUp",
+      "#DoLuongHieuQua",
+      "#ClientPortal"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -3699,6 +4403,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "gói chăm sóc fanpage tiktok hàng tháng",
       "xây dựng doanh thu định kỳ cho agency",
       "bảng giá gói truyền thông duy trì sme"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MonthlyRetainer",
+      "#GoiDuyTriHangThang",
+      "#DoanhThuDinhKy",
+      "#GoiTruyenThong"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -3742,6 +4454,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tỷ lệ phân bổ ngân sách marketing năm",
       "lập kế hoạch truyền thông thương hiệu cả năm"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#ChienDichDaiHan",
+      "#AlwaysOnContent",
+      "#PhanBoNganSach",
+      "#MediaCampaign"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -3783,6 +4503,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tạo ảnh và video ai không đơ trình duyệt",
       "hàng đợi tác vụ gpu cho agency truyền thông",
       "kiến trúc ai studio trên brandhub"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#XuLyBatDongBo",
+      "#RabbitMQCelery",
+      "#KienTrucHeThong",
+      "#AIStudio"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -3826,6 +4554,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "danh mục từ cấm trong content marketing",
       "huấn luyện ai viết đúng thuật ngữ nhãn hàng"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TuDienThuongHieu",
+      "#BrandGlossary",
+      "#DongBoGiongVan",
+      "#BrandGuidelines"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -3867,6 +4603,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "chuyển ngữ sáng tạo transcreation bằng ai",
       "viết bài fanpage song ngữ chuyên nghiệp",
       "dịch caption mạng xã hội giữ nguyên cảm xúc"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#BanDiaHoaNoiDung",
+      "#SongNguVietAnh",
+      "#DichThuatAI",
+      "#BrandGuidelines"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -3910,6 +4654,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "tăng biên lợi nhuận agency truyền thông",
       "kết hợp đội ngũ sáng tạo và ai graphrag"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TuongLaiAgencyAI",
+      "#MoHinhHybridAgency",
+      "#AIAgentMarketing",
+      "#ChuyenDoiSoAgency"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Guest",
@@ -3952,6 +4704,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "quy trình thanh lý hợp đồng truyền thông",
       "bảo vệ quyền sở hữu kênh truyền thông doanh nghiệp"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#ThuHoiQuyenTruyCap",
+      "#NgatKetNoiKenh",
+      "#BaoMatOAuth2",
+      "#BanGiaoDuAn"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -3993,6 +4753,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "brandhub mobile cho manager và client",
       "xem lịch đăng content calendar trên điện thoại",
       "quản trị chiến dịch truyền thông từ xa"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#DuyetBaiDiDong",
+      "#ResponsiveWebApp",
+      "#ContentCalendar",
+      "#ClientPortal"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -4037,6 +4805,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cách tránh bão hòa nội dung mạng xã hội",
       "duy trì nhịp xuất bản đa kênh ổn định"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DangBaiDaKenh",
+      "#TanSuatDangBai",
+      "#PostingFrequency",
+      "#TangTruongBenVung",
+      "#ContentCalendar"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -4078,6 +4854,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "bảo mật ủy quyền oauth 2.0 và mã hóa aes-256",
       "an toàn thông tin phần mềm quản lý truyền thông",
       "chính sách quyền riêng tư brandhub"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#ChinhSachBaoMat",
+      "#TuanThuMetaTikTok",
+      "#BaoMatAES256",
+      "#QuyenRiengTuDuLieu"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -4122,6 +4906,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "thay thế phần mềm quản lý mạng xã hội nước ngoài",
       "ứng dụng ai bản địa hóa cho doanh nghiệp việt"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#XuHuongMarTech2026",
+      "#NenTangAllInOne",
+      "#AIGraphRAG",
+      "#AgencyVietNam"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Guest",
@@ -4164,6 +4956,14 @@ export const BLOG_POST_SUMMARIES: BlogPostSummary[] = [
       "cẩm nang phân quyền 6 vai trò trên brandhub",
       "hướng dẫn vận hành chiến dịch truyền thông khép kín",
       "giải đáp bảng giá gói pro và vietqr brandhub"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#SoSanhCongCu",
+      "#HoiDapBrandHub",
+      "#100CauHoiThuongGap",
+      "#CamNangVanHanh",
+      "#AgencyVietNam"
     ],
     "searchIntent": "Informational",
     "targetRoles": [

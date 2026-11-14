@@ -17,6 +17,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "phần mềm quản lý task content marketing",
       "công cụ thay thế jira và notion cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#ThayTheJiraNotion",
+      "#SoSanhJiraNotion",
+      "#QuanLyTaskMarketing",
+      "#KanbanMarketing"
+    ],
     "searchIntent": "Comparison",
     "targetRoles": [
       "Owner",
@@ -186,6 +194,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "cô lập dữ liệu khách hàng agency",
       "mẫu workspace template cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#WorkspaceDaTang",
+      "#MultiWorkspace",
+      "#QuanLyNhieuThuongHieu",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -354,6 +370,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "vai trò owner manager creator client trong agency",
       "kiểm soát quyền duyệt bài và đăng bài",
       "bảo mật phân quyền phần mềm quản lý dự án"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#PhanQuyenRBAC",
+      "#MaTranPhanQuyen",
+      "#BaoMatWorkspace",
+      "#ClientPortal"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -525,6 +549,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "quản lý yêu cầu sản xuất nội dung",
       "giảm số lần sửa bài content"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ContentBrief",
+      "#PhieuGiaoViec",
+      "#ContentRequest",
+      "#ContentWorkflow"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -687,6 +719,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "lỗi đăng nhầm bản nháp cũ",
       "thu hồi bài gửi duyệt",
       "kiểm soát tính toàn vẹn nội dung"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#KhoaBanNhap",
+      "#ContentLocking",
+      "#ChongSuaDeNoiDung",
+      "#QuanLyPhienBan"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -851,6 +891,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "social media post preview tool",
       "kiểm tra hiển thị ảnh và caption trước khi đăng",
       "duyệt bài trực quan cho khách hàng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#SocialPreview",
+      "#XemTruocBaiDang",
+      "#FacebookInstagramTikTokThreads",
+      "#ClientPortal"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1022,6 +1070,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "chặn từ ngữ nhạy cảm trong content",
       "bảo vệ fanpage khỏi hạn chế tương tác"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#KiemDuyetNoiDung",
+      "#ComplianceCheck",
+      "#ChanTuCam",
+      "#AnToanThuongHieu"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -1186,6 +1242,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "bảng giá gói quản lý fanpage và pr báo chí",
       "cấu trúc chi phí media package",
       "tính biên lợi nhuận dự án truyền thông"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#DinhGiaGoiTruyenThong",
+      "#BaoGiaAgency",
+      "#BookingBaoChi",
+      "#ToiUuLoiNhuan"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1356,6 +1420,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "chia sẻ link báo giá marketing",
       "tăng tỷ lệ chốt sale cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#DamPhanBaoGia",
+      "#ProposalB2B",
+      "#ClientPortal",
+      "#ChotHopDongNhanh"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -1519,6 +1591,14 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "theo dõi tiến độ bàn giao bài viết",
       "bàn giao giữa sales và vận hành trong agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MediaCampaign",
+      "#TuDongHoaChienDich",
+      "#KhoiTaoDuAn",
+      "#GoiTruyenThong"
+    ],
     "searchIntent": "Transactional",
     "targetRoles": [
       "Owner",
@@ -1673,5 +1753,5 @@ export const BLOG_BATCH1_PART1_POSTS: BlogPost[] = [
       "quan-ly-tien-do-ban-giao-so-luong-bai-viet-trong-chien-dich-truyen-thong",
       "he-thong-cao-xu-huong-trend-crawler-tiktok-facebook-google-trends-thoi-gian-thuc"
     ]
-  }
+  },
 ];

@@ -17,6 +17,14 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "đóng gói dịch vụ marketing agency",
       "media package cho doanh nghiệp vừa và nhỏ"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MauGoiTruyenThong",
+      "#DoanhNghiepSME",
+      "#BaoGiaAgency",
+      "#GoiTruyenThong"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Guest",
@@ -179,6 +187,14 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "đối soát số lượng bài đăng nghiệm thu",
       "kiểm soát cam kết hợp đồng truyền thông"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MediaCampaign",
+      "#TheoDoiTienDo",
+      "#BanGiaoHangMuc",
+      "#ClientPortal"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -339,6 +355,14 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "chiến dịch truyền thông đa kênh tích hợp",
       "cách khuếch đại bài pr báo điện tử",
       "phối hợp facebook instagram tiktok threads và pr"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MediaCampaign",
+      "#FacebookInstagramTikTokThreads",
+      "#BookingBaoChi",
+      "#TruyenThongTichHop"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -501,6 +525,14 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "tiêu chí chọn gói dịch vụ truyền thông",
       "cổng làm việc dành cho khách hàng client"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#DatMuaGoiTruyenThong",
+      "#QuanLyNganSach",
+      "#ClientPortal",
+      "#DamPhanB2B"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Guest",
@@ -660,6 +692,14 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "huấn luyện mô hình lora giữ khuôn mặt",
       "đại sứ thương hiệu ảo cho thời trang mỹ phẩm",
       "cách tạo nhân vật đại diện ảo đồng nhất"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#DaiSuAoLoRA",
+      "#BrandAmbassadorAI",
+      "#AIStudio",
+      "#HinhAnhThuongHieu"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -823,6 +863,14 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "prompt chụp ảnh sản phẩm studio bằng ai",
       "text to image cho marketing chuyên nghiệp"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TaoAnhSanPhamAI",
+      "#FluxSDXL",
+      "#AIStudio",
+      "#ThietKeQuangCao"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Creator",
@@ -981,6 +1029,14 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "chuyển ảnh tĩnh thành video quảng cáo",
       "quy trình làm video tiktok tiết kiệm chi phí",
       "render video ai bất đồng bộ cho agency"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TaoVideoNganAI",
+      "#TikTokReelsAI",
+      "#KichBanVideo",
+      "#AIStudio"
     ],
     "searchIntent": "Commercial",
     "targetRoles": [
@@ -1143,6 +1199,14 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "công cụ lọc xu hướng thịnh hành bằng ai",
       "kết hợp trào lưu vào thông điệp sản phẩm"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#TikTokTrends",
+      "#BatTrendAnToan",
+      "#BrandSafety",
+      "#BrandGuidelines"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1303,6 +1367,14 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "nạp ai credits qua vietqr sepay payos",
       "theo dõi lịch sử tiêu thụ ai theo tác vụ"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#AIGraphRAG",
+      "#QuanLyAICredits",
+      "#NganSachAI",
+      "#VietQRSePayPayOS",
+      "#QuanTriAgency"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -1448,5 +1520,5 @@ export const BLOG_BATCH2_PART2_POSTS: BlogPost[] = [
       "ung-dung-ai-kiem-tra-muc-do-tuan-thu-brand-tone-truoc-khi-gui-duyet",
       "quan-ly-nhieu-fanpage-va-tai-khoan-instagram-tiktok-trong-cung-mot-agency"
     ]
-  }
+  },
 ];

@@ -264,6 +264,110 @@ for (const post of sortedPosts) {
     );
   }
 
+  // Hashtag validation
+  const tags = post.hashtags || [];
+  const uniqueTags = new Set(tags);
+  if (tags.length < 5 || tags.length > 8 || uniqueTags.size !== tags.length) {
+    postErrors.push(
+      `[Hashtags] Cần 5–8 hashtags phân biệt (hiện có ${tags.length}).`,
+    );
+  }
+  if (!tags.includes("#BrandHub")) {
+    postErrors.push(`[Hashtags] Thiếu hashtag thương hiệu bắt buộc "#BrandHub".`);
+  }
+  for (const tag of tags) {
+    if (!/^#[A-Za-z0-9_]{3,36}$/.test(tag)) {
+      postErrors.push(
+        `[Hashtags] Hashtag không hợp lệ (chứa khoảng trắng hoặc ký tự đặc biệt): "${tag}"`,
+      );
+    }
+  }
+
+  // GEO summary word count validation (130-170 words)
+  const geoWords = countWords(stripMarkdownLinks(post.geoSummary || ""));
+  if (geoWords < 130 || geoWords > 175) {
+    postErrors.push(
+      `[GEO Summary] Độ dài geoSummary=${geoWords} từ (cần 130–175 từ).`,
+    );
+  }
+
+  // Total article word count & structural completeness validation
+  const fullParts = [
+    post.title,
+    post.metaDescription,
+    post.geoSummary,
+    ...(post.keyTakeaways || []),
+  ];
+  let totalSubheadings = 0;
+  let totalChecklist = 0;
+  let hasTable = false;
+  let hasCallout = false;
+  let hasInlineCta = false;
+  for (const sec of post.sections || []) {
+    fullParts.push(sec.heading, ...(sec.paragraphs || []));
+    if (!sec.paragraphs || sec.paragraphs.length < 2) {
+      postErrors.push(
+        `[Structure] Section "${sec.id}" có ít hơn 2 đoạn văn (${sec.paragraphs?.length || 0}).`,
+      );
+    }
+    if (sec.subheadings) {
+      totalSubheadings += sec.subheadings.length;
+      for (const sub of sec.subheadings) fullParts.push(sub.title, sub.body);
+    }
+    if (sec.checklist) {
+      totalChecklist += sec.checklist.length;
+      fullParts.push(...sec.checklist);
+    }
+    if (sec.comparisonTable) {
+      hasTable = true;
+      fullParts.push(
+        sec.comparisonTable.caption,
+        ...sec.comparisonTable.headers,
+      );
+      for (const r of sec.comparisonTable.rows) fullParts.push(...r);
+    }
+    if (sec.callout) {
+      hasCallout = true;
+      fullParts.push(sec.callout.label, sec.callout.text);
+    }
+    if (sec.inlineCta) {
+      hasInlineCta = true;
+      fullParts.push(sec.inlineCta.title, sec.inlineCta.description);
+    }
+  }
+  for (const f of post.faqs || []) fullParts.push(f.question, f.answer);
+
+  const totalWordCount = countWords(stripMarkdownLinks(fullParts.join(" ")));
+  if (totalWordCount < 1450) {
+    postErrors.push(
+      `[Word Count] Tổng số từ=${totalWordCount} từ (cần >= 1450 từ).`,
+    );
+  }
+  if (totalSubheadings < 3) {
+    postErrors.push(
+      `[Structure] Tổng số subheadings=${totalSubheadings} (cần >= 3).`,
+    );
+  }
+  if (!hasTable) {
+    postErrors.push(`[Structure] Thiếu bảng đối chiếu comparisonTable.`);
+  }
+  if (totalChecklist < 4) {
+    postErrors.push(
+      `[Structure] Tổng số mục checklist=${totalChecklist} (cần >= 4).`,
+    );
+  }
+  if (!hasCallout) {
+    postErrors.push(`[Structure] Thiếu hộp ghi chú callout.`);
+  }
+  if (!hasInlineCta) {
+    postErrors.push(`[Structure] Thiếu khối chuyển đổi inlineCta.`);
+  }
+  if (!post.faqs || post.faqs.length < 3) {
+    postErrors.push(
+      `[Structure] Số lượng FAQs=${post.faqs?.length || 0} (cần >= 3).`,
+    );
+  }
+
   const relSlugs = post.relatedSlugs || [];
   const uniqueRel = new Set(relSlugs);
   if (relSlugs.length < 4 || uniqueRel.size !== relSlugs.length) {

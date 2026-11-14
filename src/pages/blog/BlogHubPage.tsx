@@ -65,19 +65,27 @@ export function BlogHubPage() {
   }, []);
 
   const filteredAndSortedPosts = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
+    const rawQ = searchQuery.trim().toLowerCase();
+    const qNoHash = rawQ.replace(/^#+/, "");
     const filtered = BLOG_POSTS.filter((post) => {
       const matchCat =
         selectedCategory === "all" || post.category === selectedCategory;
       const matchQuery =
-        !q ||
-        post.title.toLowerCase().includes(q) ||
-        post.metaDescription.toLowerCase().includes(q) ||
-        post.primaryKeyword.toLowerCase().includes(q) ||
-        post.secondaryKeywords.some((k) => k.toLowerCase().includes(q)) ||
-        post.targetRoles.some((r) => r.toLowerCase().includes(q)) ||
-        post.author.name.toLowerCase().includes(q) ||
-        post.geoSummary.toLowerCase().includes(q);
+        !rawQ ||
+        post.title.toLowerCase().includes(qNoHash) ||
+        post.metaDescription.toLowerCase().includes(qNoHash) ||
+        post.primaryKeyword.toLowerCase().includes(qNoHash) ||
+        post.secondaryKeywords.some((k) =>
+          k.toLowerCase().includes(qNoHash),
+        ) ||
+        (post.hashtags ?? []).some(
+          (tag) =>
+            tag.toLowerCase().includes(rawQ) ||
+            tag.toLowerCase().replace(/^#+/, "").includes(qNoHash),
+        ) ||
+        post.targetRoles.some((r) => r.toLowerCase().includes(qNoHash)) ||
+        post.author.name.toLowerCase().includes(qNoHash) ||
+        post.geoSummary.toLowerCase().includes(qNoHash);
       return matchCat && matchQuery;
     });
 
@@ -103,7 +111,8 @@ export function BlogHubPage() {
   }, [selectedCategory, searchQuery, sortOption]);
 
   const filteredCatalog = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
+    const rawQ = searchQuery.trim().toLowerCase();
+    const qNoHash = rawQ.replace(/^#+/, "");
     return BLOG_TOPIC_CATALOG.filter((item) => {
       const matchCat =
         selectedCategory === "all" || item.category === selectedCategory;
@@ -111,12 +120,18 @@ export function BlogHubPage() {
         selectedBatch === "all" ||
         (selectedBatch === "published" && item.isPublished) ||
         item.priorityBatch === selectedBatch;
+      const summary = BLOG_POSTS.find((p) => p.slug === item.slug);
       const matchQuery =
-        !q ||
-        item.title.toLowerCase().includes(q) ||
-        item.primaryKeyword.toLowerCase().includes(q) ||
-        item.brandhubFeature.toLowerCase().includes(q) ||
-        String(item.topicNumber).includes(q);
+        !rawQ ||
+        item.title.toLowerCase().includes(qNoHash) ||
+        item.primaryKeyword.toLowerCase().includes(qNoHash) ||
+        item.brandhubFeature.toLowerCase().includes(qNoHash) ||
+        String(item.topicNumber).includes(qNoHash) ||
+        (summary?.hashtags ?? []).some(
+          (tag) =>
+            tag.toLowerCase().includes(rawQ) ||
+            tag.toLowerCase().replace(/^#+/, "").includes(qNoHash),
+        );
       return matchCat && matchBatch && matchQuery;
     });
   }, [selectedCategory, selectedBatch, searchQuery]);

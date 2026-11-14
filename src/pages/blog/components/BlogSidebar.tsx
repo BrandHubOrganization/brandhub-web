@@ -5,6 +5,7 @@ import {
   ArrowUp,
   BookOpen,
   Check,
+  Hash,
   Link2,
   ListOrdered,
   Rocket,
@@ -20,6 +21,7 @@ interface BlogSidebarProps {
   hasFaqs: boolean;
   primaryKeyword: string;
   secondaryKeywords: string[];
+  hashtags: string[];
   category: BlogCategorySlug;
 }
 
@@ -28,6 +30,7 @@ export function BlogSidebar({
   hasFaqs,
   primaryKeyword,
   secondaryKeywords,
+  hashtags,
   category,
 }: BlogSidebarProps) {
   const [activeId, setActiveId] = useState<string>(sections[0]?.id ?? "");
@@ -172,25 +175,47 @@ export function BlogSidebar({
 
         <div
           className={cn(
-            "space-y-2.5",
+            "space-y-3",
             sections.length > 0 &&
               "mt-4 border-t border-zinc-100 pt-4 dark:border-zinc-800",
           )}
         >
-          <p className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-zinc-700 uppercase dark:text-zinc-300">
-            <Tag className="size-3.5 text-brand-orange" />
-            Chủ đề liên quan
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {allKeywords.map((kw) => (
-              <Link
-                key={kw}
-                to={`/blog?q=${encodeURIComponent(kw)}`}
-                className="rounded-md border border-zinc-200/80 bg-zinc-50 px-2.5 py-1 text-[11px] font-medium text-zinc-600 transition-colors hover:border-brand-orange/40 hover:text-brand-orange dark:border-zinc-800 dark:bg-zinc-800/70 dark:text-zinc-300"
-              >
-                #{kw}
-              </Link>
-            ))}
+          {hashtags.length > 0 && (
+            <div className="space-y-2">
+              <p className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-zinc-700 uppercase dark:text-zinc-300">
+                <Hash className="size-3.5 text-brand-orange" />
+                Thẻ Hashtag
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {hashtags.map((tag) => (
+                  <Link
+                    key={tag}
+                    to={`/blog?q=${encodeURIComponent(tag)}`}
+                    className="rounded-md border border-orange-200/80 bg-orange-50/70 px-2 py-0.5 font-mono text-[11px] font-semibold text-brand-orange transition-colors hover:border-brand-orange hover:bg-orange-100/80 dark:border-orange-500/30 dark:bg-orange-500/15 dark:text-orange-300"
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <p className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-zinc-700 uppercase dark:text-zinc-300">
+              <Tag className="size-3.5 text-brand-orange" />
+              Từ khóa chủ đề
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {allKeywords.map((kw) => (
+                <Link
+                  key={kw}
+                  to={`/blog?q=${encodeURIComponent(kw)}`}
+                  className="rounded-md border border-zinc-200/80 bg-zinc-50 px-2.5 py-1 text-[11px] font-medium text-zinc-600 transition-colors hover:border-brand-orange/40 hover:text-brand-orange dark:border-zinc-800 dark:bg-zinc-800/70 dark:text-zinc-300"
+                >
+                  {kw}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </nav>

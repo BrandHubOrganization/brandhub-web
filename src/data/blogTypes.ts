@@ -78,6 +78,7 @@ export interface BlogPost {
   category: BlogCategorySlug;
   primaryKeyword: string;
   secondaryKeywords: string[];
+  hashtags: string[];
   searchIntent: SearchIntentType;
   targetRoles: CanonicalRole[];
   publishedAt: string;
@@ -124,6 +125,7 @@ export interface BlogPostPreview {
   title: string;
   metaDescription: string;
   category: BlogCategorySlug;
+  hashtags: string[];
   publishedAt: string;
   readingTimeMinutes: number;
   author: BlogAuthor;

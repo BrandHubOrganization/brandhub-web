@@ -1,4 +1,5 @@
 import { CheckCircle2, Sparkles } from "lucide-react";
+import { BlogRichText } from "./BlogRichText";
 
 interface BlogKeyTakeawaysProps {
   geoSummary: string;
@@ -21,7 +22,7 @@ export function BlogKeyTakeaways({
         </div>
 
         <p className="text-pretty text-sm leading-[1.75] font-medium text-zinc-800 sm:text-[15px] dark:text-zinc-200">
-          {geoSummary}
+          <BlogRichText text={geoSummary} />
         </p>
 
         {keyTakeaways.length > 0 && (
@@ -36,7 +37,9 @@ export function BlogKeyTakeaways({
                   className="flex items-start gap-2.5 text-xs leading-relaxed text-zinc-700 sm:text-[13.5px] dark:text-zinc-300"
                 >
                   <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  <span>{point}</span>
+                  <span>
+                    <BlogRichText text={point} />
+                  </span>
                 </li>
               ))}
             </ul>

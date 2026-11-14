@@ -17,6 +17,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "giao diện quản lý dự án song ngữ việt anh",
       "lên lịch đăng bài theo giờ địa phương"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#DaMuiGio",
+      "#SongNguVietAnh",
+      "#AgencyQuocTe",
+      "#WorkspaceDaTang"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -179,6 +187,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "điều chuyển người phụ trách content request",
       "bảo vệ tài sản số agency khi nhân viên nghỉ"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#BanGiaoCongViec",
+      "#QuanTriNhanSu",
+      "#BaoToanDuLieu",
+      "#AuditLog"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -334,6 +350,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "định danh tổ chức agency b2b",
       "thuyết phục khách hàng doanh nghiệp lớn"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#HoSoNangLucAgency",
+      "#AgencyProfile",
+      "#ChotSaleB2B",
+      "#ClientPortal"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -488,6 +512,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "tổ chức thư mục tài nguyên thương hiệu",
       "đồng bộ brand guidelines vào ai",
       "quản lý logo font chữ nhãn hàng"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#KhoTaiNguyenSo",
+      "#BrandAssets",
+      "#QuanLyFileThietKe",
+      "#WorkspaceDaTang"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -651,6 +683,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "quản trị truyền thông chuỗi f&b bán lẻ",
       "cấu trúc workspace cho thương hiệu con"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#QuanTriAgency",
+      "#InHouseMarketing",
+      "#TapDoanDaThuongHieu",
+      "#WorkspaceDaTang",
+      "#PhanQuyenRBAC"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -812,6 +852,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "kiểm tra tỷ lệ khung hình bài đăng mxh",
       "quy trình ghép ảnh và caption cho creator"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#TrinhSoanThaoDaPhuongTien",
+      "#ChinhSuaAnhVideo",
+      "#ContentStudio",
+      "#ContentWorkflow"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -968,6 +1016,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "cách giảm số vòng sửa bài với client",
       "internal qa content marketing agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#ChecklistDuyetBai",
+      "#KiemSoatChatLuong",
+      "#QuanTriNoiDung",
+      "#ContentWorkflow"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Manager",
@@ -1123,6 +1179,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "quản lý tiến độ bài đăng từ draft đến published",
       "state machine quy trình duyệt bài",
       "bảng theo dõi trạng thái bài truyền thông"
+    ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#KanbanMarketing",
+      "#TrangThaiBaiViet",
+      "#ContentWorkflow",
+      "#DangBaiDaKenh"
     ],
     "searchIntent": "Informational",
     "targetRoles": [
@@ -1285,6 +1349,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "sản xuất nội dung đa nền tảng cho creator",
       "một ý tưởng nhiều định dạng bài đăng"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#DuyetBai3Cap",
+      "#BienTheNoiDung",
+      "#DaKenhMangXaHoi",
+      "#FacebookInstagramTikTokThreads",
+      "#ContentWorkflow"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Creator",
@@ -1446,6 +1518,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "phân bổ content request theo giai đoạn chiến dịch",
       "checklist ra mắt sản phẩm mới cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#MediaCampaign",
+      "#RaMatSanPhamMoi",
+      "#TimelineChienDich",
+      "#ContentCalendar"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -1604,6 +1684,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "nghiệm thu hợp đồng dịch vụ truyền thông",
       "chứng từ xuất bản bài đăng cho client"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#QuanLyHopDong",
+      "#TrangThaiThanhToan",
+      "#VietQRSePayPayOS",
+      "#MediaCampaign"
+    ],
     "searchIntent": "Informational",
     "targetRoles": [
       "Owner",
@@ -1760,6 +1848,14 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "đàm phán báo giá marketing trực tuyến",
       "tăng tỷ lệ chốt sale cho agency"
     ],
+    "hashtags": [
+      "#BrandHub",
+      "#MediaPackage",
+      "#BaoGiaTrucTuyen",
+      "#ThayTheExcelPDF",
+      "#TangTyLeChotSale",
+      "#DamPhanB2B"
+    ],
     "searchIntent": "Commercial",
     "targetRoles": [
       "Owner",
@@ -1904,5 +2000,5 @@ export const BLOG_BATCH3_PART1_POSTS: BlogPost[] = [
       "quy-trinh-lam-viec-voi-doi-tac-bao-dien-tu-va-dai-truyen-hinh-tren-brandhub",
       "15-cau-lenh-prompt-mau-giup-creator-toi-uu-hoa-bai-viet-quang-cao-chuyen-doi-cao"
     ]
-  }
+  },
 ];
