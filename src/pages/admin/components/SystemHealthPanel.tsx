@@ -21,36 +21,38 @@ export function SystemHealthPanel({ metrics }: SystemHealthPanelProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
+    <div className="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {metrics.map((metric) => (
         <div
           key={metric.service}
-          className="border-border bg-card space-y-3 rounded-xl border p-5"
+          className="border-border bg-card flex h-full flex-col justify-between gap-4 rounded-xl border p-5"
         >
-          <div className="flex items-center justify-between">
-            <span className="text-foreground text-sm font-semibold">
+          <div className="flex items-start justify-between gap-2">
+            <span className="text-foreground min-w-0 text-sm leading-snug font-semibold">
               {metric.service}
             </span>
             <span
-              className={`flex items-center gap-1.5 text-xs font-medium ${STATUS_TEXT[metric.status]}`}
+              className={`flex shrink-0 items-center gap-1.5 text-xs font-medium whitespace-nowrap ${STATUS_TEXT[metric.status]}`}
             >
               <span
-                className={`size-2 rounded-full ${STATUS_DOT[metric.status]}`}
+                className={`size-2 shrink-0 rounded-full ${STATUS_DOT[metric.status]}`}
               />
               {t(`dashboard.admin.health.statuses.${metric.status}`)}
             </span>
           </div>
-          <div className="text-muted-foreground flex items-center justify-between text-xs">
-            <span>{t("dashboard.admin.health.latency")}</span>
-            <span className="text-foreground font-medium">
-              {metric.latencyMs} ms
-            </span>
-          </div>
-          <div className="text-muted-foreground flex items-center justify-between text-xs">
-            <span>{t("dashboard.admin.health.uptime")}</span>
-            <span className="text-foreground font-medium">
-              {metric.uptime}%
-            </span>
+          <div className="space-y-2.5">
+            <div className="text-muted-foreground flex items-center justify-between gap-2 text-xs">
+              <span>{t("dashboard.admin.health.latency")}</span>
+              <span className="text-foreground font-medium tabular-nums">
+                {metric.latencyMs} ms
+              </span>
+            </div>
+            <div className="text-muted-foreground flex items-center justify-between gap-2 text-xs">
+              <span>{t("dashboard.admin.health.uptime")}</span>
+              <span className="text-foreground font-medium tabular-nums">
+                {metric.uptime}%
+              </span>
+            </div>
           </div>
         </div>
       ))}

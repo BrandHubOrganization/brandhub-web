@@ -24,7 +24,7 @@ export function AdminRecentUsers({
 }) {
   const { t, i18n } = useTranslation();
   return (
-    <section className="bg-card border-border min-w-0 overflow-hidden rounded-xl border">
+    <section className="bg-card border-border flex h-full min-w-0 flex-col overflow-hidden rounded-xl border">
       <div className="flex flex-wrap items-start justify-between gap-3 p-5 lg:p-6">
         <div>
           <h2 className="text-sm font-semibold">

@@ -196,7 +196,7 @@ export function AdminOverviewPanel({ timezone }: { timezone: string }) {
             />
             <AdminAttention data={data} />
           </div>
-          <div className="grid w-full min-w-0 items-start gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(340px,1fr)]">
+          <div className="grid w-full min-w-0 gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(340px,1fr)]">
             <AdminRecentUsers result={recent} timezone={data.timezone} />
             <AdminAccountDistribution data={data} />
           </div>

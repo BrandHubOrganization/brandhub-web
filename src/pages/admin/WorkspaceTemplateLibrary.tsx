@@ -1,7 +1,20 @@
 import { createElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowUpRight, Plus, Search, Trash2, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Building2,
+  Clock,
+  Globe,
+  MapPin,
+  Phone,
+  Plus,
+  Search,
+  Trash2,
+  Users,
+  X,
+} from "lucide-react";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1094,18 +1107,18 @@ export function WorkspaceTemplateLibraryPage() {
         </div>
       </div>
 
-      {/* Template Specification Sheet Dialog (Clean Property Table Style) */}
+      {/* Template Specification Sheet Dialog */}
       <Dialog
         open={!!previewTemplate}
         onOpenChange={(open) => !open && setPreviewTemplate(null)}
       >
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="max-h-[85vh] overflow-x-hidden overflow-y-auto sm:max-w-2xl">
           {previewTemplate && (
             <>
-              <DialogHeader>
-                <div className="flex items-start gap-3 text-left">
+              <DialogHeader className="pr-6">
+                <div className="flex items-start gap-3.5 text-left">
                   <div
-                    className="flex size-10 shrink-0 items-center justify-center rounded-lg"
+                    className="flex size-11 shrink-0 items-center justify-center rounded-xl"
                     style={{
                       backgroundColor: `${
                         previewTemplate.config.brandColor ||
@@ -1133,9 +1146,16 @@ export function WorkspaceTemplateLibraryPage() {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <DialogTitle className="text-base font-semibold">
-                      {previewTemplate.name}
-                    </DialogTitle>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <DialogTitle className="text-base font-semibold">
+                        {previewTemplate.name}
+                      </DialogTitle>
+                      <span className="border-border/70 bg-muted/50 text-muted-foreground rounded-full border px-2 py-0.5 text-[10px] font-medium">
+                        {previewTemplate.agencyId
+                          ? `Agency #${previewTemplate.agencyId.slice(0, 8)}`
+                          : "Global"}
+                      </span>
+                    </div>
                     <p className="text-muted-foreground mt-0.5 text-xs">
                       {previewTemplate.config.tagline ||
                         (previewTemplate.agencyId
@@ -1146,111 +1166,138 @@ export function WorkspaceTemplateLibraryPage() {
                 </div>
               </DialogHeader>
 
-              <div className="space-y-4 text-xs">
+              <div className="min-w-0 space-y-4 text-xs">
                 {previewTemplate.config.description && (
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="border-border/70 bg-muted/30 text-muted-foreground rounded-lg border px-3.5 py-2.5 leading-relaxed break-words">
                     {previewTemplate.config.description}
                   </p>
                 )}
 
-                {/* Property List */}
-                <dl className="divide-border/60 border-border/70 divide-y border-y">
-                  {previewTemplate.config.industry && (
-                    <div className="flex justify-between py-2">
-                      <dt className="text-muted-foreground">
-                        {t("workspace.create.industryLabel")}
-                      </dt>
-                      <dd className="text-foreground font-medium">
-                        {t(
-                          `workspace.industry.${previewTemplate.config.industry}`,
-                        )}
-                      </dd>
+                {/* Primary Summary Tiles */}
+                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+                  <div className="border-border/70 bg-muted/30 rounded-lg border px-3 py-2.5">
+                    <span className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
+                      <Building2 className="size-3" />
+                      {t("workspace.create.industryLabel")}
+                    </span>
+                    <p className="text-foreground mt-1 truncate text-xs font-semibold">
+                      {previewTemplate.config.industry
+                        ? t(
+                            `workspace.industry.${previewTemplate.config.industry}`,
+                          )
+                        : "—"}
+                    </p>
+                  </div>
+
+                  <div className="border-border/70 bg-muted/30 rounded-lg border px-3 py-2.5">
+                    <span className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
+                      <Users className="size-3" />
+                      {t("workspace.create.companySizeLabel")}
+                    </span>
+                    <p className="text-foreground mt-1 truncate text-xs font-semibold tabular-nums">
+                      {previewTemplate.config.companySize
+                        ? t(
+                            `agency.companySize.${previewTemplate.config.companySize}`,
+                          )
+                        : "—"}
+                    </p>
+                  </div>
+
+                  <div className="border-border/70 bg-muted/30 rounded-lg border px-3 py-2.5">
+                    <span className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
+                      <Clock className="size-3" />
+                      {t("workspace.settings.reportFrequencyLabel")}
+                    </span>
+                    <p className="text-foreground mt-1 truncate text-xs font-semibold">
+                      {previewTemplate.config.reportFrequency
+                        ? t(
+                            `workspace.reportFrequency.${previewTemplate.config.reportFrequency}`,
+                          )
+                        : "—"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Default Platforms */}
+                {previewTemplate.config.defaultPlatforms &&
+                  previewTemplate.config.defaultPlatforms.length > 0 && (
+                    <div className="space-y-1.5">
+                      <p className="text-muted-foreground text-[11px] font-medium">
+                        {t("workspace.settings.defaultPlatformsLabel")}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {previewTemplate.config.defaultPlatforms.map((p) => (
+                          <span
+                            key={p}
+                            className="border-border/70 bg-card text-foreground rounded-md border px-2.5 py-1 text-[11px] font-medium"
+                          >
+                            {PLATFORM_LABELS[p] || p}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
-                  {previewTemplate.config.companySize && (
-                    <div className="flex justify-between py-2">
-                      <dt className="text-muted-foreground">
-                        {t("workspace.create.companySizeLabel")}
-                      </dt>
-                      <dd className="text-foreground font-medium">
-                        {t(
-                          `agency.companySize.${previewTemplate.config.companySize}`,
-                        )}
-                      </dd>
-                    </div>
-                  )}
+
+                {/* 2-Column Metadata Grid */}
+                <dl className="grid min-w-0 grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {previewTemplate.config.foundedYear && (
-                    <div className="flex justify-between py-2">
-                      <dt className="text-muted-foreground">
+                    <div className="border-border/60 bg-card rounded-lg border px-3 py-2">
+                      <dt className="text-muted-foreground text-[11px] font-medium">
                         {t("workspace.create.foundedYearLabel")}
                       </dt>
-                      <dd className="text-foreground font-medium">
+                      <dd className="text-foreground mt-0.5 font-mono text-xs font-medium tabular-nums">
                         {previewTemplate.config.foundedYear}
                       </dd>
                     </div>
                   )}
                   {previewTemplate.config.timezone && (
-                    <div className="flex justify-between py-2">
-                      <dt className="text-muted-foreground">
+                    <div className="border-border/60 bg-card rounded-lg border px-3 py-2">
+                      <dt className="text-muted-foreground text-[11px] font-medium">
                         {t("workspace.settings.timezoneLabel")}
                       </dt>
-                      <dd className="text-foreground font-medium">
+                      <dd className="text-foreground mt-0.5 text-xs font-medium break-words">
                         {previewTemplate.config.timezone}
                       </dd>
                     </div>
                   )}
-                  {previewTemplate.config.reportFrequency && (
-                    <div className="flex justify-between py-2">
-                      <dt className="text-muted-foreground">
-                        {t("workspace.settings.reportFrequencyLabel")}
-                      </dt>
-                      <dd className="text-foreground font-medium">
-                        {t(
-                          `workspace.reportFrequency.${previewTemplate.config.reportFrequency}`,
-                        )}
-                      </dd>
-                    </div>
-                  )}
-                  {previewTemplate.config.defaultPlatforms &&
-                    previewTemplate.config.defaultPlatforms.length > 0 && (
-                      <div className="flex justify-between py-2">
-                        <dt className="text-muted-foreground">
-                          {t("workspace.settings.defaultPlatformsLabel")}
-                        </dt>
-                        <dd className="text-foreground font-medium">
-                          {previewTemplate.config.defaultPlatforms
-                            .map((p) => PLATFORM_LABELS[p] || p)
-                            .join(", ")}
-                        </dd>
-                      </div>
-                    )}
                   {previewTemplate.config.location && (
-                    <div className="flex justify-between py-2">
-                      <dt className="text-muted-foreground">
+                    <div className="border-border/60 bg-card rounded-lg border px-3 py-2">
+                      <dt className="text-muted-foreground flex items-center gap-1 text-[11px] font-medium">
+                        <MapPin className="size-3" />
                         {t("workspace.create.locationLabel")}
                       </dt>
-                      <dd className="text-foreground font-medium">
+                      <dd className="text-foreground mt-0.5 text-xs font-medium break-words">
                         {previewTemplate.config.location}
                       </dd>
                     </div>
                   )}
                   {previewTemplate.config.phone && (
-                    <div className="flex justify-between py-2">
-                      <dt className="text-muted-foreground">
+                    <div className="border-border/60 bg-card rounded-lg border px-3 py-2">
+                      <dt className="text-muted-foreground flex items-center gap-1 text-[11px] font-medium">
+                        <Phone className="size-3" />
                         {t("workspace.create.phoneLabel")}
                       </dt>
-                      <dd className="text-foreground font-medium">
+                      <dd className="text-foreground mt-0.5 font-mono text-xs font-medium break-words tabular-nums">
                         {previewTemplate.config.phone}
                       </dd>
                     </div>
                   )}
                   {previewTemplate.config.website && (
-                    <div className="flex justify-between gap-4 py-2">
-                      <dt className="text-muted-foreground shrink-0">
+                    <div className="border-border/60 bg-card rounded-lg border px-3 py-2 sm:col-span-2">
+                      <dt className="text-muted-foreground flex items-center gap-1 text-[11px] font-medium">
+                        <Globe className="size-3" />
                         {t("workspace.create.websiteLabel")}
                       </dt>
-                      <dd className="text-foreground truncate font-medium">
-                        {previewTemplate.config.website}
+                      <dd className="mt-0.5 min-w-0">
+                        <a
+                          href={previewTemplate.config.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-brand-orange inline-flex max-w-full items-center gap-1 text-xs font-medium break-all hover:underline"
+                        >
+                          <span>{previewTemplate.config.website}</span>
+                          <ArrowUpRight className="size-3 shrink-0" />
+                        </a>
                       </dd>
                     </div>
                   )}
@@ -1261,24 +1308,24 @@ export function WorkspaceTemplateLibraryPage() {
                   Object.entries(previewTemplate.config.industryFields).filter(
                     ([, v]) => v !== null && v !== "",
                   ).length > 0 && (
-                    <div>
-                      <p className="text-muted-foreground mb-2 text-[11px] font-medium">
+                    <div className="min-w-0 space-y-2">
+                      <p className="text-muted-foreground text-[11px] font-medium">
                         {t("workspace.createPreview.industrySpecific")}
                       </p>
-                      <dl className="divide-border/60 border-border/70 divide-y rounded-md border px-3">
+                      <dl className="grid min-w-0 grid-cols-1 gap-2.5 sm:grid-cols-2">
                         {Object.entries(previewTemplate.config.industryFields)
                           .filter(([, v]) => v !== null && v !== "")
                           .map(([k, v]) => (
                             <div
                               key={k}
-                              className="flex justify-between gap-4 py-2"
+                              className="border-border/60 bg-card rounded-lg border px-3 py-2"
                             >
-                              <dt className="text-muted-foreground">
+                              <dt className="text-muted-foreground text-[11px] font-medium">
                                 {INDUSTRY_FIELD_I18N_KEY[k]
                                   ? t(INDUSTRY_FIELD_I18N_KEY[k], k)
                                   : k}
                               </dt>
-                              <dd className="text-foreground text-right font-medium">
+                              <dd className="text-foreground mt-0.5 text-xs font-medium break-words">
                                 {String(v)}
                               </dd>
                             </div>
@@ -1288,7 +1335,7 @@ export function WorkspaceTemplateLibraryPage() {
                   )}
               </div>
 
-              <DialogFooter className="flex items-center justify-between">
+              <DialogFooter className="border-border/60 flex items-center justify-between border-t pt-3">
                 {!previewTemplate.agencyId && (
                   <Button
                     variant="ghost"

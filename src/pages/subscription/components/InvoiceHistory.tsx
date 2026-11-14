@@ -9,8 +9,6 @@ import {
   RotateCcw,
   Search,
   X,
-  ChevronLeft,
-  ChevronRight,
   Layers,
   Sparkles,
   Coins,
@@ -20,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { Pagination } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SelectMenu, type SelectMenuOption } from "@/components/ui/select-menu";
 import {
@@ -167,12 +166,12 @@ export function InvoiceHistory({
       {
         value: "SUBSCRIPTION",
         label: t("subscription.invoices.kinds.SUBSCRIPTION"),
-        icon: <Sparkles className="text-brand-orange size-3.5" />,
+        icon: <Sparkles className="text-muted-foreground size-3.5" />,
       },
       {
         value: "CREDIT_TOPUP",
         label: t("subscription.invoices.kinds.CREDIT_TOPUP"),
-        icon: <Coins className="size-3.5 text-amber-500" />,
+        icon: <Coins className="text-muted-foreground size-3.5" />,
       },
     ],
     [t],
@@ -223,71 +222,95 @@ export function InvoiceHistory({
 
   return (
     <div className="space-y-6">
-      {/* 1. FinTech KPI Summary Cards */}
+      {/* 1. Quiet Ledger KPI Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Card 1: Total Invoices */}
-        <div className="bg-card border-border hover:border-brand-orange/40 flex items-center justify-between rounded-xl border p-4 shadow-xs transition-all">
-          <div className="space-y-1">
+        <div className="bg-card border-border flex items-center justify-between rounded-xl border p-4 shadow-xs transition-colors">
+          <div className="min-w-0 space-y-1">
             <p className="text-muted-foreground text-xs font-medium">
               {t("subscription.invoices.kpi.total")}
             </p>
-            <p className="text-foreground font-mono text-2xl font-semibold tracking-tight">
+            <p className="text-foreground font-mono text-2xl font-semibold tracking-tight tabular-nums">
               {history.isPending ? "—" : totalCount}
             </p>
           </div>
-          <div className="bg-muted/80 text-foreground/80 flex size-10 shrink-0 items-center justify-center rounded-xl">
+          <div className="bg-muted/60 text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-xl">
             <Receipt className="size-5" />
           </div>
         </div>
 
         {/* Card 2: Paid & Fulfilled */}
-        <div className="bg-card border-border flex items-center justify-between rounded-xl border p-4 shadow-xs transition-all hover:border-emerald-500/40">
-          <div className="space-y-1">
+        <div className="bg-card border-border flex items-center justify-between rounded-xl border p-4 shadow-xs transition-colors">
+          <div className="min-w-0 space-y-1">
             <p className="text-muted-foreground text-xs font-medium">
               {t("subscription.invoices.kpi.fulfilled")}
             </p>
-            <div className="flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-semibold tracking-tight text-emerald-600 dark:text-emerald-400">
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <span className="text-foreground font-mono text-2xl font-semibold tracking-tight tabular-nums">
                 {history.isPending ? "—" : fulfilledCount}
               </span>
               {!history.isPending && fulfilledCount > 0 && (
-                <span className="text-muted-foreground max-w-28 truncate font-mono text-[11px]">
+                <span className="text-muted-foreground font-mono text-xs tabular-nums">
                   ({fulfilledRevenue})
                 </span>
               )}
             </div>
           </div>
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+          <div className="bg-muted/60 text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-xl">
             <CheckCircle2 className="size-5" />
           </div>
         </div>
 
         {/* Card 3: Pending Payment */}
-        <div className="bg-card border-border flex items-center justify-between rounded-xl border p-4 shadow-xs transition-all hover:border-amber-500/40">
-          <div className="space-y-1">
+        <div className="bg-card border-border flex items-center justify-between rounded-xl border p-4 shadow-xs transition-colors">
+          <div className="min-w-0 space-y-1">
             <p className="text-muted-foreground text-xs font-medium">
               {t("subscription.invoices.kpi.pending")}
             </p>
-            <p className="font-mono text-2xl font-semibold tracking-tight text-amber-600 dark:text-amber-400">
+            <p
+              className={
+                !history.isPending && pendingCount > 0
+                  ? "font-mono text-2xl font-semibold tracking-tight text-amber-600 tabular-nums dark:text-amber-400"
+                  : "text-foreground font-mono text-2xl font-semibold tracking-tight tabular-nums"
+              }
+            >
               {history.isPending ? "—" : pendingCount}
             </p>
           </div>
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+          <div
+            className={
+              !history.isPending && pendingCount > 0
+                ? "flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                : "bg-muted/60 text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-xl"
+            }
+          >
             <Clock className="size-5" />
           </div>
         </div>
 
         {/* Card 4: Action Required */}
-        <div className="bg-card border-border flex items-center justify-between rounded-xl border p-4 shadow-xs transition-all hover:border-rose-500/40">
-          <div className="space-y-1">
+        <div className="bg-card border-border flex items-center justify-between rounded-xl border p-4 shadow-xs transition-colors">
+          <div className="min-w-0 space-y-1">
             <p className="text-muted-foreground text-xs font-medium">
               {t("subscription.invoices.kpi.review")}
             </p>
-            <p className="font-mono text-2xl font-semibold tracking-tight text-rose-600 dark:text-rose-400">
+            <p
+              className={
+                !history.isPending && reviewCount > 0
+                  ? "text-destructive font-mono text-2xl font-semibold tracking-tight tabular-nums"
+                  : "text-foreground font-mono text-2xl font-semibold tracking-tight tabular-nums"
+              }
+            >
               {history.isPending ? "—" : reviewCount}
             </p>
           </div>
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+          <div
+            className={
+              !history.isPending && reviewCount > 0
+                ? "bg-destructive/10 text-destructive flex size-10 shrink-0 items-center justify-center rounded-xl"
+                : "bg-muted/60 text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-xl"
+            }
+          >
             <AlertTriangle className="size-5" />
           </div>
         </div>
@@ -323,23 +346,32 @@ export function InvoiceHistory({
                   placeholder={t(
                     "subscription.invoices.searchAgencyPlaceholder",
                   )}
+                  aria-label={t(
+                    "subscription.invoices.searchAgencyPlaceholder",
+                  )}
+                  aria-describedby={
+                    !isAgencyValid ? "agency-uuid-error" : undefined
+                  }
                   aria-invalid={!isAgencyValid}
                   className="h-9 rounded-lg pr-8 pl-8 text-xs"
                 />
                 {agencyInput && (
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => {
                       setAgencyInput("");
                       setAgencyIdFilter("");
                       setCursors([null]);
                       setSelected(null);
                     }}
-                    className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2"
+                    className="text-muted-foreground hover:text-foreground absolute top-1/2 right-1.5 size-7 -translate-y-1/2"
+                    aria-label={t("subscription.invoices.resetFilters")}
                     title={t("subscription.invoices.resetFilters")}
                   >
                     <X className="size-3.5" />
-                  </button>
+                  </Button>
                 )}
               </div>
             )}
@@ -401,7 +433,7 @@ export function InvoiceHistory({
 
         {/* Validation Warning for Agency UUID */}
         {admin && !isAgencyValid && (
-          <p className="text-destructive text-xs">
+          <p id="agency-uuid-error" className="text-destructive text-xs">
             {t("subscription.invoices.invalidAgencyId")}
           </p>
         )}
@@ -424,7 +456,7 @@ export function InvoiceHistory({
           role="alert"
           className="border-border bg-card space-y-3 rounded-2xl border p-6 text-center shadow-xs"
         >
-          <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-rose-500/10 text-rose-500">
+          <div className="bg-destructive/10 text-destructive mx-auto flex size-12 items-center justify-center rounded-full">
             <AlertTriangle className="size-6" />
           </div>
           <div className="space-y-1">
@@ -459,48 +491,29 @@ export function InvoiceHistory({
                 }}
               />
 
-              {/* 4. Polished Pagination Controls */}
-              <nav
-                aria-label={t("subscription.invoices.pagination")}
-                className="flex items-center justify-between gap-3 pt-2"
-              >
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={cursors.length === 1}
-                  onClick={() => {
-                    setCursors((current) => current.slice(0, -1));
+              {/* 4. Reusable Pagination Controls */}
+              <Pagination
+                page={cursors.length}
+                totalPages={
+                  history.data.nextCursor ? cursors.length + 1 : cursors.length
+                }
+                isFetching={history.isFetching}
+                onPageChange={(nextPage) => {
+                  if (nextPage < cursors.length) {
+                    setCursors((current) => current.slice(0, nextPage));
                     setSelected(null);
-                  }}
-                  className="h-9 rounded-lg px-3 text-xs"
-                >
-                  <ChevronLeft className="mr-1 size-3.5" />
-                  <span>{t("subscription.invoices.previous")}</span>
-                </Button>
-
-                <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
-                  <span className="bg-muted/60 border-border rounded-md border px-2.5 py-1 font-mono">
-                    {t("subscription.invoices.page", { value: cursors.length })}
-                  </span>
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={!history.data.nextCursor}
-                  onClick={() => {
+                  } else if (
+                    nextPage === cursors.length + 1 &&
+                    history.data?.nextCursor
+                  ) {
                     setCursors((current) => [
                       ...current,
                       history.data.nextCursor,
                     ]);
                     setSelected(null);
-                  }}
-                  className="h-9 rounded-lg px-3 text-xs"
-                >
-                  <span>{t("subscription.invoices.next")}</span>
-                  <ChevronRight className="ml-1 size-3.5" />
-                </Button>
-              </nav>
+                  }
+                }}
+              />
             </div>
           ) : (
             /* 4. Elegant Empty State */
